@@ -56,12 +56,19 @@ export function buildAss(wordTimings, opts = {}) {
   const {
     width = 1080,
     height = 1920,
-    fontName = 'DejaVu Sans',
-    fontSize = config.video.fontSize,
+    fontName = config.video.fontName,
+    maxSize = config.video.fontSizeMax,
+    minSize = config.video.fontSizeMin,
     uppercase = true,
     alignment = 5, // 5 = orta-orta
   } = opts;
 
+  const marginH = 90;
+  const usableW = width - 2 * marginH;
+  // Montserrat Black büyük harf ortalama genişlik katsayısı (güvenli taraf).
+  const charFactor = 0.82;
+
+  // Stil: kalın beyaz + kalın siyah kenar + yumuşak koyu gölge (referanstaki look).
   const header = `[Script Info]
 ScriptType: v4.00+
 PlayResX: ${width}
@@ -71,7 +78,7 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, BackColour, Bold, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Pop,${fontName},${fontSize},&H00FFFFFF,&H00000000,&H64000000,1,1,4,2,${alignment},140,140,120,1
+Style: Pop,${fontName},${maxSize},&H00FFFFFF,&H00000000,&H20000000,1,1,3,4,${alignment},${marginH},${marginH},140,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -84,7 +91,16 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     const next = words[i + 1];
     const end = next ? Math.max(w.end, next.start) : w.end;
     const text = assEscape(uppercase ? w.word.toUpperCase() : w.word);
-    return `Dialogue: 0,${assTime(start)},${assTime(end)},Pop,,0,0,0,,${text}`;
+
+    // Otomatik boyut: kelime ekrana sığmıyorsa küçült (kısa kelime = büyük/punchy).
+    let size = maxSize;
+    const est = text.length * charFactor * size;
+    if (est > usableW) {
+      size = Math.max(minSize, Math.floor(usableW / (text.length * charFactor)));
+    }
+
+    // \blur ile yumuşak gölge/kenar.
+    return `Dialogue: 0,${assTime(start)},${assTime(end)},Pop,,0,0,0,,{\\fs${size}\\blur2}${text}`;
   });
 
   return header + lines.join('\n') + '\n';
@@ -195,7 +211,12 @@ export async function renderVideo(job, opts = {}) {
         'fontcolor=white@0.92:borderw=2:bordercolor=black@0.5[vlogo]',
     );
   }
-  chain.push(hasSubs ? '[vlogo]ass=subs.ass[v]' : '[vlogo]null[v]');
+  // Gömülü fontu libass'a tanıt (fontsdir).
+  const fontsDir = path.resolve(config.video.fontsDir);
+  const assFilter = existsSync(fontsDir)
+    ? `ass=subs.ass:fontsdir=${fontsDir}`
+    : 'ass=subs.ass';
+  chain.push(hasSubs ? `[vlogo]${assFilter}[v]` : '[vlogo]null[v]');
 
   finalArgs.push(
     '-filter_complex', chain.join(';'),

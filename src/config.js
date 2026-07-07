@@ -37,8 +37,12 @@ export const config = {
     whisperModel: process.env.WHISPER_MODEL || 'base',
   },
   video: {
-    // Altyazı font boyutu (1080 genişlik için ~56-64 iyi okunur ve taşmaz)
-    fontSize: Number(process.env.VIDEO_FONT_SIZE || 58),
+    // Altyazı fontu (repoya gömülü). Aile adı ttf ile eşleşmeli.
+    fontName: process.env.VIDEO_FONT || 'Montserrat Black',
+    fontsDir: process.env.VIDEO_FONTS_DIR || 'assets/fonts',
+    // Kelime başına otomatik boyut: kısa kelime büyük, uzun kelime sığacak kadar küçülür.
+    fontSizeMax: Number(process.env.VIDEO_FONT_SIZE || 130),
+    fontSizeMin: Number(process.env.VIDEO_FONT_SIZE_MIN || 46),
     // Sol üst köşe logosu: bu dosya varsa görsel logo, yoksa yazı-logo kullanılır
     logoPath: process.env.LOGO_PATH || 'assets/logo.png',
     logoText: process.env.LOGO_TEXT || 'neosaniye',
