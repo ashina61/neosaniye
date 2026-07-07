@@ -46,6 +46,19 @@ export const config = {
     // Sol üst köşe logosu: bu dosya varsa görsel logo, yoksa yazı-logo kullanılır
     logoPath: process.env.LOGO_PATH || 'assets/logo.png',
     logoText: process.env.LOGO_TEXT || 'neosaniye',
+
+    // Klipler arası geçiş efektleri (xfade). 0 = kapalı.
+    transitionDuration: Number(process.env.VIDEO_TRANSITION || 0.4),
+    transitions: (process.env.VIDEO_TRANSITIONS ||
+      'fade,slideleft,wipeup,circleopen').split(','),
+
+    // Vurucu kelime vurgusu (sayılar ve uzun kelimeler) rengi (ASS &HBBGGRR&). Sarı.
+    accentColor: process.env.VIDEO_ACCENT || '&H00E6FF&',
+    emphasis: process.env.VIDEO_EMPHASIS !== '0',
+
+    // Geçişlerde 'whoosh' ses efekti (varsayılan kapalı; VIDEO_TRANSITION_SOUND=1 ile aç).
+    transitionSound: process.env.VIDEO_TRANSITION_SOUND === '1',
+    transitionSoundVolume: Number(process.env.VIDEO_TRANSITION_SOUND_VOL || 0.22),
   },
   pexels: {
     apiKey: process.env.PEXELS_API_KEY,
