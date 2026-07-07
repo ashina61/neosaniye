@@ -12,7 +12,7 @@ YouTube'a yükler.
 | 1   | Script üretim motoru (Gemini)   | ✅ Hazır     |
 | 2   | Ses / TTS (edge-tts + Piper yedek, erkek ses) | 🧪 Kod hazır (yerel test) |
 | 3   | Görsel toplama (Pexels, 9:16)   | 🧪 Kod hazır (yerel test) |
-| 4   | Video montaj (ffmpeg)           | ⏳           |
+| 4   | Video montaj (ffmpeg, 1080x1920)| ✅ Çalışıyor (uçtan uca test edildi) |
 | 5   | Firestore loglama               | ⏳           |
 | 6   | YouTube otomatik upload         | ⏳           |
 | 7   | GitHub Actions orkestrasyon     | ⏳ (en son)  |
@@ -34,10 +34,13 @@ src/
     align.js             # faster-whisper kelime zamanlaması (Piper yolu)
   media/
     fetchMedia.js        # Faz 3 Pexels dikey (9:16) klip/foto indirme
+  video/
+    renderVideo.js       # Faz 4 ffmpeg montaj + karaoke altyazı (1080x1920)
 scripts/
   generate-script.js     # Faz 1 test aracı (CLI)
   generate-audio.js      # Faz 2 test aracı (CLI)
   fetch-media.js         # Faz 3 test aracı (CLI)
+  render-video.js        # Faz 4 test aracı (CLI, job.json)
   whisper_align.py       # faster-whisper yardımcı betiği
 examples/                # 3 örnek script çıktısı
 requirements.txt         # Faz 2 Python araçları (edge-tts, piper-tts, faster-whisper)
