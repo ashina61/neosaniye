@@ -13,9 +13,15 @@ function fontFile() {
   return FONT_CANDIDATES.map((f) => path.resolve(f)).find((f) => existsSync(f)) || null;
 }
 
+/** Bir elemanın belirli anda yumuşak beliren alpha ifadesi (drawtext için). */
+function fadeAlpha(st, d = 0.5) {
+  return `if(lt(t,${st}),0,if(lt(t,${st + d}),(t-${st})/${d},1))`;
+}
+
 /**
- * Kapanış kartı (outro) klibini üretir: koyu zemin + logo + "FOLLOW FOR MORE"
- * + kırmızı SUBSCRIBE butonu + like/comment/subscribe ikonları ve etiketleri.
+ * Sinematik kapanış kartı (outro). Son klibi bulanık/koyu hareketli arka plan
+ * olarak kullanır; logo, "FOLLOW FOR MORE", kırmızı SUBSCRIBE butonu ve
+ * like/comment/subscribe ikonları sırayla (staggered) fade-in ile belirir.
  * Sadece video (sessiz) üretir; ses renderVideo tarafında bindirilir.
  *
  * @returns {Promise<string>} outro mp4 yolu
@@ -28,6 +34,7 @@ export async function buildOutro({
   fps = 30,
   logoPath = 'assets/logo.png',
   iconsDir = 'assets/icons',
+  bgClip = null,
 }) {
   const font = fontFile();
   const fo = font ? `fontfile=${font}:` : '';
@@ -37,59 +44,91 @@ export async function buildOutro({
   const subbtn = path.resolve(iconsDir, 'subbtn.png');
   const logo = path.resolve(logoPath);
   const hasLogo = existsSync(logo);
+  const hasBg = bgClip && existsSync(path.resolve(bgClip));
 
-  // Girişler
-  const inputs = ['-f', 'lavfi', '-i', `color=c=0x0f0f0f:s=${width}x${height}:d=${duration}`];
+  // Sıralı beliriş zamanlaması (saniye).
+  const T_LOGO = 0.15;
+  const T_HEAD = 0.5;
+  const T_SUB = 0.9;
+  const T_ICONS = 1.3;
+
+  // --- Girişler ---
+  const inputs = [];
+  if (hasBg) {
+    // Son klibi döngüle ve outro süresi boyunca oynat (hareketli arka plan).
+    // NOT: -t giriş opsiyonudur, ilgili -i'den ÖNCE gelmeli (yoksa döngü sonsuz olur).
+    inputs.push('-stream_loop', '-1', '-t', String(duration), '-i', path.resolve(bgClip));
+  } else {
+    inputs.push('-f', 'lavfi', '-i', `color=c=0x0b0b0f:s=${width}x${height}:d=${duration}`);
+  }
   let idx = 1;
+  // Görsel (PNG) girişleri: fade zaman ekseninde çalışabilsin diye -loop 1 -t ile
+  // çok-kareli akışa çevrilir (tek-kare still'de fade alpha=0'da takılır, görünmez olur).
+  const img = (p) => { inputs.push('-loop', '1', '-t', String(duration), '-i', p); const i = idx; idx += 1; return i; };
   let logoIdx = -1;
-  if (hasLogo) { logoIdx = idx; inputs.push('-i', logo); idx += 1; }
-  const subIdx = idx; inputs.push('-i', subbtn); idx += 1;
-  const likeIdx = idx; inputs.push('-i', like); idx += 1;
-  const comIdx = idx; inputs.push('-i', comment); idx += 1;
-  const bellIdx = idx; inputs.push('-i', bell); idx += 1;
+  if (hasLogo) { logoIdx = img(logo); }
+  const subIdx = img(subbtn);
+  const likeIdx = img(like);
+  const comIdx = img(comment);
+  const bellIdx = img(bell);
 
   const fc = [];
-  let base = '[0:v]';
 
-  // Logo (üst)
+  // --- Arka plan: doldur + bulanıklaştır + koyulaştır + vignette ---
+  if (hasBg) {
+    fc.push(
+      `[0:v]scale=${width}:${height}:force_original_aspect_ratio=increase,` +
+        `crop=${width}:${height},gblur=sigma=26,` +
+        `eq=brightness=-0.16:saturation=0.72:contrast=1.02,` +
+        `vignette=PI/4,format=yuv420p[bg]`,
+    );
+  } else {
+    fc.push(`[0:v]format=yuv420p[bg]`);
+  }
+  let base = '[bg]';
+
+  // --- Logo (üst), fade-in ---
   if (hasLogo) {
-    fc.push(`[${logoIdx}:v]scale=460:-1[lg]`);
+    fc.push(`[${logoIdx}:v]scale=460:-1,format=rgba,fade=t=in:st=${T_LOGO}:d=0.5:alpha=1[lg]`);
     fc.push(`${base}[lg]overlay=(W-w)/2:360[b1]`);
     base = '[b1]';
   }
 
-  // "FOLLOW FOR MORE"
+  // --- "FOLLOW FOR MORE" (drawtext alpha fade) ---
   fc.push(
-    `${base}drawtext=${fo}text='FOLLOW FOR MORE':fontcolor=white:fontsize=74:` +
-      `x=(w-text_w)/2:y=720:borderw=3:bordercolor=black@0.5[b2]`,
+    `${base}drawtext=${fo}text='FOLLOW FOR MORE':fontcolor=white:fontsize=78:` +
+      `x=(w-text_w)/2:y=740:borderw=4:bordercolor=black@0.55:` +
+      `alpha='${fadeAlpha(T_HEAD)}'[b2]`,
   );
 
-  // Kırmızı SUBSCRIBE butonu + üstüne yazı
-  fc.push(`[${subIdx}:v]scale=600:-1[sb]`);
-  fc.push(`[b2][sb]overlay=(W-w)/2:980[b3]`);
+  // --- Kırmızı SUBSCRIBE butonu + üstüne yazı ---
+  fc.push(`[${subIdx}:v]scale=600:-1,format=rgba,fade=t=in:st=${T_SUB}:d=0.5:alpha=1[sb]`);
+  fc.push(`[b2][sb]overlay=(W-w)/2:1000[b3]`);
   fc.push(
-    `[b3]drawtext=${fo}text='SUBSCRIBE':fontcolor=white:fontsize=60:` +
-      `x=(w-text_w)/2:y=1018[b4]`,
+    `[b3]drawtext=${fo}text='SUBSCRIBE':fontcolor=white:fontsize=62:` +
+      `x=(w-text_w)/2:y=1040:alpha='${fadeAlpha(T_SUB + 0.15)}'[b4]`,
   );
 
-  // İkon satırı (like / comment / bell) — merkezler 270, 540, 810
-  fc.push(`[${likeIdx}:v]scale=120:120[i1]`);
-  fc.push(`[${comIdx}:v]scale=120:120[i2]`);
-  fc.push(`[${bellIdx}:v]scale=120:120[i3]`);
-  fc.push(`[b4][i1]overlay=210:1330[b5]`);
-  fc.push(`[b5][i2]overlay=480:1330[b6]`);
-  fc.push(`[b6][i3]overlay=750:1330[b7]`);
+  // --- İkon satırı (like / comment / bell) — merkezler 270, 540, 810 ---
+  fc.push(`[${likeIdx}:v]scale=120:120,format=rgba,fade=t=in:st=${T_ICONS}:d=0.5:alpha=1[i1]`);
+  fc.push(`[${comIdx}:v]scale=120:120,format=rgba,fade=t=in:st=${T_ICONS + 0.12}:d=0.5:alpha=1[i2]`);
+  fc.push(`[${bellIdx}:v]scale=120:120,format=rgba,fade=t=in:st=${T_ICONS + 0.24}:d=0.5:alpha=1[i3]`);
+  fc.push(`[b4][i1]overlay=210:1360[b5]`);
+  fc.push(`[b5][i2]overlay=480:1360[b6]`);
+  fc.push(`[b6][i3]overlay=750:1360[b7]`);
 
-  // Etiketler
+  // --- Etiketler ---
   fc.push(
-    `[b7]drawtext=${fo}text='LIKE':fontcolor=white:fontsize=40:x=270-text_w/2:y=1470[b8]`,
+    `[b7]drawtext=${fo}text='LIKE':fontcolor=white:fontsize=40:x=270-text_w/2:y=1500:` +
+      `alpha='${fadeAlpha(T_ICONS)}'[b8]`,
   );
   fc.push(
-    `[b8]drawtext=${fo}text='COMMENT':fontcolor=white:fontsize=40:x=540-text_w/2:y=1470[b9]`,
+    `[b8]drawtext=${fo}text='COMMENT':fontcolor=white:fontsize=40:x=540-text_w/2:y=1500:` +
+      `alpha='${fadeAlpha(T_ICONS + 0.12)}'[b9]`,
   );
   fc.push(
-    `[b9]drawtext=${fo}text='SUBSCRIBE':fontcolor=white:fontsize=40:x=810-text_w/2:y=1470,` +
-      `format=yuv420p[v]`,
+    `[b9]drawtext=${fo}text='SUBSCRIBE':fontcolor=white:fontsize=40:x=810-text_w/2:y=1500:` +
+      `alpha='${fadeAlpha(T_ICONS + 0.24)}',format=yuv420p[v]`,
   );
 
   await run('ffmpeg', [

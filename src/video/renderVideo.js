@@ -116,12 +116,31 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
   return header + lines.join('\n') + '\n';
 }
 
-/** Tek bir medyayı (video/foto) sabit 1080x1920/fps klibe normalize eder. */
-async function normalizeClip(item, duration, outPath, { width, height, fps }) {
+/** Tek bir medyayı (video/foto) sabit 1080x1920/fps klibe normalize eder.
+ *  Sinematik his için: hafif renk grade + yavaş Ken Burns zoom (klip başına
+ *  yön değişir). Supersample (2x) sonra küçültme jitter'ı azaltır. */
+async function normalizeClip(item, duration, outPath, { width, height, fps, index = 0 }) {
+  // Supersample çözünürlüğü (Ken Burns zoom'unda titremeyi azaltır).
+  const sw = width * 2;
+  const sh = height * 2;
+  const zMax = 1.12;
+  const frames = Math.max(1, Math.round(duration * fps));
+  const inc = ((zMax - 1) / frames).toFixed(6);
+  // Tek klip zoom-in, çift klip zoom-out (çeşitlilik / sinematik ritim).
+  const zoomIn = index % 2 === 0;
+  const zExpr = zoomIn
+    ? `min(1+${inc}*on,${zMax})`
+    : `max(${zMax}-${inc}*on,1)`;
+
   const vf = [
-    `scale=${width}:${height}:force_original_aspect_ratio=increase`,
-    `crop=${width}:${height}`,
+    // Renk grade: hafif kontrast + doygunluk + minik parlaklık = pahalı görünüm.
+    'eq=contrast=1.06:saturation=1.16:brightness=0.008:gamma=0.98',
+    `scale=${sw}:${sh}:force_original_aspect_ratio=increase`,
+    `crop=${sw}:${sh}`,
     'setsar=1',
+    // Ken Burns: yavaş zoom, merkez sabit.
+    `zoompan=z='${zExpr}':d=1:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=${sw}x${sh}:fps=${fps}`,
+    `scale=${width}:${height}`,
     `fps=${fps}`,
     'format=yuv420p',
   ].join(',');
@@ -333,7 +352,7 @@ export async function renderVideo(job, opts = {}) {
       media[i],
       Math.max(0.6, dMain + (M > 1 ? 0.05 : 0)),
       clipPath,
-      { width, height, fps },
+      { width, height, fps, index: i },
     );
     clips.push(clipPath);
   }
@@ -346,6 +365,8 @@ export async function renderVideo(job, opts = {}) {
       duration: dOutro + 0.1,
       fps,
       logoPath: config.video.logoPath,
+      // Sinematik arka plan: son klibi bulanıklaştırıp koyulaştırarak kullan.
+      bgClip: clips[N - 1],
     });
     clips.push(outroPath);
   }
