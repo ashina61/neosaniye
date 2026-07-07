@@ -1,9 +1,21 @@
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { mkdir, writeFile, rm } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import path from 'node:path';
+import { config } from '../config.js';
 
 const run = promisify(execFile);
+
+// drawtext yazı-logosu için sistemde bulunan bir font dosyası ara.
+const FONT_CANDIDATES = [
+  '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
+  '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
+  '/usr/share/fonts/dejavu/DejaVuSans-Bold.ttf',
+];
+function findFontFile() {
+  return FONT_CANDIDATES.find((f) => existsSync(f)) || null;
+}
 
 /**
  * Faz 4 — Video Montaj (ffmpeg).
@@ -45,7 +57,7 @@ export function buildAss(wordTimings, opts = {}) {
     width = 1080,
     height = 1920,
     fontName = 'DejaVu Sans',
-    fontSize = 96,
+    fontSize = config.video.fontSize,
     uppercase = true,
     alignment = 5, // 5 = orta-orta
   } = opts;
@@ -54,12 +66,12 @@ export function buildAss(wordTimings, opts = {}) {
 ScriptType: v4.00+
 PlayResX: ${width}
 PlayResY: ${height}
-WrapStyle: 2
+WrapStyle: 0
 ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, BackColour, Bold, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Pop,${fontName},${fontSize},&H00FFFFFF,&H00000000,&H64000000,1,1,5,2,${alignment},80,80,120,1
+Style: Pop,${fontName},${fontSize},&H00FFFFFF,&H00000000,&H64000000,1,1,4,2,${alignment},140,140,120,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -153,19 +165,41 @@ export async function renderVideo(job, opts = {}) {
     '-c', 'copy', concatPath,
   ]);
 
-  // 4) Ses bindir + (varsa) karaoke altyazı yak.
-  // Not: cwd=workDir olduğu için concat.mp4/ses/çıktı MUTLAK yol olmalı;
+  // 4) Ses bindir + sol üst logo + (varsa) karaoke altyazı yak.
+  // Not: cwd=workDir olduğu için concat/ses/çıktı/logo MUTLAK yol olmalı;
   // yalnızca ass=subs.ass basit dosya adıyla kalır (path kaçış derdi yok).
-  const finalArgs = ['-y', '-i', path.resolve(concatPath), '-i', path.resolve(audioPath)];
   const hasSubs = wordTimings.length > 0;
   if (hasSubs) {
-    const assPath = path.join(workDir, 'subs.ass');
-    await writeFile(assPath, buildAss(wordTimings, { width, height }));
-    // ass filtresi basit dosya adı ile (cwd=workDir) -> path kaçış derdi yok.
-    finalArgs.push('-vf', 'ass=subs.ass');
+    await writeFile(
+      path.join(workDir, 'subs.ass'),
+      buildAss(wordTimings, { width, height }),
+    );
   }
+
+  const finalArgs = ['-y', '-i', path.resolve(concatPath), '-i', path.resolve(audioPath)];
+
+  // Sol üst köşe logosu: assets/logo.png varsa görsel; yoksa yazı-logo (drawtext).
+  const logoImg = path.resolve(config.video.logoPath);
+  const hasLogoImg = existsSync(logoImg);
+  const chain = [];
+  if (hasLogoImg) {
+    finalArgs.push('-i', logoImg); // giriş 2
+    chain.push('[2:v]scale=-1:64[lg]'); // ~64px yükseklik, küçük
+    chain.push('[0:v][lg]overlay=40:55[vlogo]');
+  } else {
+    const font = findFontFile();
+    const fontOpt = font ? `fontfile=${font}:` : '';
+    const txt = String(config.video.logoText).replace(/[:\\'%]/g, '');
+    chain.push(
+      `[0:v]drawtext=${fontOpt}text='${txt}':x=40:y=48:fontsize=44:` +
+        'fontcolor=white@0.92:borderw=2:bordercolor=black@0.5[vlogo]',
+    );
+  }
+  chain.push(hasSubs ? '[vlogo]ass=subs.ass[v]' : '[vlogo]null[v]');
+
   finalArgs.push(
-    '-map', '0:v', '-map', '1:a',
+    '-filter_complex', chain.join(';'),
+    '-map', '[v]', '-map', '1:a',
     '-c:v', 'libx264', '-preset', 'veryfast', '-pix_fmt', 'yuv420p',
     '-c:a', 'aac', '-b:a', '160k',
     '-shortest', '-r', String(fps),

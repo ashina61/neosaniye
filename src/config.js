@@ -36,6 +36,13 @@ export const config = {
     // -- whisper (yalnızca Piper yolunda kelime zamanlaması için) --
     whisperModel: process.env.WHISPER_MODEL || 'base',
   },
+  video: {
+    // Altyazı font boyutu (1080 genişlik için ~56-64 iyi okunur ve taşmaz)
+    fontSize: Number(process.env.VIDEO_FONT_SIZE || 58),
+    // Sol üst köşe logosu: bu dosya varsa görsel logo, yoksa yazı-logo kullanılır
+    logoPath: process.env.LOGO_PATH || 'assets/logo.png',
+    logoText: process.env.LOGO_TEXT || 'neosaniye',
+  },
   pexels: {
     apiKey: process.env.PEXELS_API_KEY,
     perKeyword: Number(process.env.PEXELS_PER_KEYWORD || 1),
