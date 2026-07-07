@@ -10,9 +10,26 @@ export const config = {
   },
   niche: {
     language: process.env.CONTENT_LANGUAGE || 'en',
+    // Genel konsept: tarih + bilim + doğa + uzay + gizem karışık "şaşırtıcı
+    // gerçek hikâyeler". Anlatı (storytelling) formatı.
     theme:
       process.env.CONTENT_THEME ||
-      'interesting facts, how it works, how to',
+      'surprising true stories and mind-blowing facts from history, science, space, nature, and mystery',
+  },
+  images: {
+    // AI görsel üretimi (Gemini). Kapatmak için IMAGES_ENABLED=0 (Pexels'e düşer).
+    enabled: process.env.IMAGES_ENABLED !== '0',
+    // Google'ın görsel modeli ("Nano Banana"). Ücretsiz tier, mevcut Gemini anahtarı.
+    model: process.env.IMAGE_MODEL || 'gemini-2.5-flash-image',
+    // Her sahne promptuna eklenen ortak sinematik stil (tutarlı "look").
+    styleSuffix:
+      process.env.IMAGE_STYLE ||
+      'cinematic photorealistic still, dramatic volumetric lighting, warm filmic ' +
+        'color grade, shallow depth of field, highly detailed, epic mood, ' +
+        'vertical 9:16 composition, no text, no watermark, no subtitles',
+    retries: Number(process.env.IMAGE_RETRIES || 2),
+    // Görsel üretimi başarısızsa Pexels'ten stok görsele düş.
+    pexelsFallback: process.env.IMAGE_PEXELS_FALLBACK !== '0',
   },
   firebase: {
     // GitHub Secret'ta tek satır JSON string olarak tutulur.
@@ -51,6 +68,14 @@ export const config = {
     transitionDuration: Number(process.env.VIDEO_TRANSITION || 0.4),
     transitions: (process.env.VIDEO_TRANSITIONS ||
       'fade,slideleft,wipeup,circleopen').split(','),
+
+    // Altyazı stili: 'caption' = sinematik alt-orta kısa ifade (referans tarzı),
+    // 'pop' = eski büyük karaoke kelime-pop. Anlatı formatı için 'caption' önerilir.
+    captionStyle: process.env.VIDEO_CAPTION_STYLE || 'caption',
+    captionWordsPerLine: Number(process.env.VIDEO_CAPTION_WORDS || 3),
+    captionSize: Number(process.env.VIDEO_CAPTION_SIZE || 76),
+    // Alt-üçte-bir: Shorts arayüzü (beğen/yorum) en altta olduğu için yukarıda tutulur.
+    captionMarginV: Number(process.env.VIDEO_CAPTION_MARGIN || 430),
 
     // Vurucu kelime vurgusu (sayılar ve uzun kelimeler) rengi (ASS &HBBGGRR&). Sarı.
     accentColor: process.env.VIDEO_ACCENT || '&H00E6FF&',

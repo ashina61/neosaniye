@@ -19,14 +19,20 @@ export { parseSrt } from './edgeTts.js';
  *   - Piper vermez; bu durumda faster-whisper ile hizalama yapılır.
  */
 
-/** Bir script nesnesini seslendirilecek düz metne çevirir. */
+/** Anlatı script'inin seslendirilecek metin parçalarını sırayla döndürür.
+ *  Yeni format: her sahnenin narration'ı + cta. Eski format: hook+body+cta. */
+export function scriptSegments(script) {
+  if (Array.isArray(script.scenes) && script.scenes.length) {
+    const segs = script.scenes.map((s) => (s.narration || '').trim()).filter(Boolean);
+    if (script.cta) segs.push(script.cta.trim());
+    return segs;
+  }
+  return [script.hook, script.body, script.cta].filter(Boolean).map((s) => s.trim());
+}
+
+/** Bir script nesnesini seslendirilecek tek düz metne çevirir. */
 export function scriptToNarration(script) {
-  return [script.hook, script.body, script.cta]
-    .filter(Boolean)
-    .map((s) => s.trim())
-    .join(' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+  return scriptSegments(script).join(' ').replace(/\s+/g, ' ').trim();
 }
 
 /**

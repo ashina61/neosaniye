@@ -49,28 +49,8 @@ function assEscape(text) {
   return text.replace(/[\r\n]+/g, ' ').replace(/[{}]/g, '').trim();
 }
 
-/**
- * Kelime zaman damgalarından "word-pop" karaoke ASS altyazısı üretir
- * (her kelime, kendi zaman aralığında büyük ve ortada belirir).
- */
-export function buildAss(wordTimings, opts = {}) {
-  const {
-    width = 1080,
-    height = 1920,
-    fontName = config.video.fontName,
-    maxSize = config.video.fontSizeMax,
-    minSize = config.video.fontSizeMin,
-    uppercase = true,
-    alignment = 5, // 5 = orta-orta
-  } = opts;
-
-  const marginH = 90;
-  const usableW = width - 2 * marginH;
-  // Montserrat Black büyük harf ortalama genişlik katsayısı (güvenli taraf).
-  const charFactor = 0.82;
-
-  // Stil: kalın beyaz + kalın siyah kenar + yumuşak koyu gölge (referanstaki look).
-  const header = `[Script Info]
+function assHeader(width, height, styleLine) {
+  return `[Script Info]
 ScriptType: v4.00+
 PlayResX: ${width}
 PlayResY: ${height}
@@ -79,41 +59,93 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, BackColour, Bold, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Pop,${fontName},${maxSize},&H00FFFFFF,&H00000000,&H20000000,1,1,3,4,${alignment},${marginH},${marginH},140,1
+${styleLine}
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 `;
+}
 
-  const words = wordTimings.filter((w) => w.word && w.end > w.start);
+/**
+ * Sinematik alt-orta altyazı: kelimeleri 2-4'lük ifadelere gruplar, konuşmayla
+ * senkron gösterir, yumuşak fade ile belirir (referans "Stellar Sagas" tarzı).
+ */
+function buildCaptionAss(words, opts) {
+  const {
+    width, height,
+    fontName = config.video.fontName,
+    size = config.video.captionSize,
+    marginV = config.video.captionMarginV,
+    perLine = config.video.captionWordsPerLine,
+    uppercase = true,
+  } = opts;
+
+  const marginH = 80;
+  // Alt-orta (alignment 2), kalın beyaz, belirgin kenar + yumuşak gölge.
+  const style =
+    `Style: Cap,${fontName},${size},&H00FFFFFF,&H00000000,&H90000000,` +
+    `1,1,3.5,2,2,${marginH},${marginH},${marginV},1`;
+
+  const lines = [];
+  for (let i = 0; i < words.length; i += perLine) {
+    const group = words.slice(i, i + perLine);
+    const start = group[0].start;
+    const nextGroupStart = words[i + perLine]?.start;
+    const end = Math.max(group[group.length - 1].end, nextGroupStart ?? group[group.length - 1].end);
+    const raw = group.map((w) => w.word).join(' ');
+    const text = assEscape(uppercase ? raw.toUpperCase() : raw);
+    // Vurgu: sayı içeren gruplar aksan rengiyle.
+    const emph = config.video.emphasis && /\d/.test(raw) ? `\\c${config.video.accentColor}` : '';
+    lines.push(
+      `Dialogue: 0,${assTime(start)},${assTime(end)},Cap,,0,0,0,,{\\fad(120,90)\\blur1.4${emph}}${text}`,
+    );
+  }
+  return assHeader(width, height, style) + lines.join('\n') + '\n';
+}
+
+/** Eski "word-pop" karaoke stili (VIDEO_CAPTION_STYLE=pop ile açılır). */
+function buildPopAss(words, opts) {
+  const {
+    width, height,
+    fontName = config.video.fontName,
+    maxSize = config.video.fontSizeMax,
+    minSize = config.video.fontSizeMin,
+    uppercase = true,
+    alignment = 5,
+  } = opts;
+
+  const marginH = 90;
+  const usableW = width - 2 * marginH;
+  const charFactor = 0.82;
+  const style = `Style: Pop,${fontName},${maxSize},&H00FFFFFF,&H00000000,&H20000000,1,1,3,4,${alignment},${marginH},${marginH},140,1`;
+
   const lines = words.map((w, i) => {
     const start = w.start;
-    // Boşlukları doldur: bir sonraki kelimenin başlangıcına kadar göster.
     const next = words[i + 1];
     const end = next ? Math.max(w.end, next.start) : w.end;
     const raw = uppercase ? w.word.toUpperCase() : w.word;
     const text = assEscape(raw);
-
-    // Otomatik boyut: kelime ekrana sığmıyorsa küçült (kısa kelime = büyük/punchy).
     let size = maxSize;
     const est = text.length * charFactor * size;
-    if (est > usableW) {
-      size = Math.max(minSize, Math.floor(usableW / (text.length * charFactor)));
-    }
-
-    // Vurucu kelime: sayı içeren veya uzun kelimeler renkli vurgulanır.
+    if (est > usableW) size = Math.max(minSize, Math.floor(usableW / (text.length * charFactor)));
     const isEmphasis =
       config.video.emphasis && (/\d/.test(raw) || raw.replace(/\W/g, '').length >= 8);
     const colorTag = isEmphasis ? `\\c${config.video.accentColor}` : '';
-
-    // Pop animasyonu: küçükten hızlıca büyüyüp yerine oturur + hafif fade + yumuşak gölge.
     const anim =
       `\\fs${size}\\blur2\\fad(50,0)${colorTag}` +
       '\\fscx58\\fscy58\\t(0,110,\\fscx112\\fscy112)\\t(110,190,\\fscx100\\fscy100)';
     return `Dialogue: 0,${assTime(start)},${assTime(end)},Pop,,0,0,0,,{${anim}}${text}`;
   });
+  return assHeader(width, height, style) + lines.join('\n') + '\n';
+}
 
-  return header + lines.join('\n') + '\n';
+/** Kelime zaman damgalarından ASS altyazısı üretir (stil config'e göre). */
+export function buildAss(wordTimings, opts = {}) {
+  const words = wordTimings.filter((w) => w.word && w.end > w.start);
+  const merged = { width: 1080, height: 1920, ...opts };
+  return config.video.captionStyle === 'pop'
+    ? buildPopAss(words, merged)
+    : buildCaptionAss(words, merged);
 }
 
 /** Tek bir medyayı (video/foto) sabit 1080x1920/fps klibe normalize eder.
@@ -133,8 +165,9 @@ async function normalizeClip(item, duration, outPath, { width, height, fps, inde
     : `max(${zMax}-${inc}*on,1)`;
 
   const vf = [
-    // Renk grade: hafif kontrast + doygunluk + minik parlaklık = pahalı görünüm.
-    'eq=contrast=1.06:saturation=1.16:brightness=0.008:gamma=0.98',
+    // Sinematik grade: kontrast + doygunluk + hafif sıcaklık (filmik "look").
+    'eq=contrast=1.07:saturation=1.14:brightness=0.006:gamma=0.98',
+    'colorbalance=rs=0.02:rm=0.03:gm=0.01:bm=-0.03',
     `scale=${sw}:${sh}:force_original_aspect_ratio=increase`,
     `crop=${sw}:${sh}`,
     'setsar=1',
@@ -149,7 +182,9 @@ async function normalizeClip(item, duration, outPath, { width, height, fps, inde
     item.type === 'photo' || /\.(jpg|jpeg|png|webp)$/i.test(item.path);
 
   const inputArgs = isPhoto
-    ? ['-loop', '1', '-t', String(duration), '-i', item.path]
+    // -framerate şart: aksi halde -loop 1 varsayılan 25fps okur ve -t süresi
+    // fps=30'da ~%17 kısalır (klip süresi bozulur).
+    ? ['-loop', '1', '-framerate', String(fps), '-t', String(duration), '-i', item.path]
     : ['-stream_loop', '-1', '-i', item.path, '-t', String(duration)];
 
   await run('ffmpeg', [
@@ -331,17 +366,30 @@ export async function renderVideo(job, opts = {}) {
   const M = N + (useOutro ? 1 : 0); // toplam görsel parça (klipler + outro)
 
   let td = M > 1 ? config.video.transitionDuration : 0;
-  let dMain = useOutro
-    ? (narrationDur - td) / N + td // N*(dMain-td) = narrationDur - td
-    : (narrationDur + (N - 1) * td) / N;
-  if (M > 1 && dMain <= td + 0.3) {
-    td = Math.max(0.15, dMain * 0.4);
-    dMain = useOutro
-      ? (narrationDur - td) / N + td
-      : (narrationDur + (N - 1) * td) / N;
+
+  // Ana klip süreleri: sahne ağırlıkları (kelime sayısı) verildiyse orantılı,
+  // yoksa eşit bölüşüm. Her iki durumda da ana bölüm ekranda narrationDur kadar
+  // görünür: sum(mainDurs) - (N-1)*td = narrationDur.
+  const span = narrationDur + (N - 1) * td;
+  const weights =
+    Array.isArray(job.sceneWeights) && job.sceneWeights.length === N
+      ? job.sceneWeights
+      : null;
+  let mainDurs;
+  if (weights) {
+    const sum = weights.reduce((a, b) => a + b, 0) || 1;
+    const minClip = td + 0.6;
+    mainDurs = weights.map((w) => Math.max(minClip, (w / sum) * span));
+    const s2 = mainDurs.reduce((a, b) => a + b, 0) || 1;
+    mainDurs = mainDurs.map((d) => (d * span) / s2); // clamp sonrası span'e geri ölçekle
+  } else {
+    let dMain = span / N;
+    if (M > 1 && dMain <= td + 0.3) td = Math.max(0.15, dMain * 0.4);
+    dMain = (narrationDur + (N - 1) * td) / N;
+    mainDurs = Array(N).fill(dMain);
   }
   const dOutro = outroExtra + td;
-  const clipDur = [...Array(N).fill(dMain), ...(useOutro ? [dOutro] : [])];
+  const clipDur = [...mainDurs, ...(useOutro ? [dOutro] : [])];
   const total = clipDur.reduce((a, b) => a + b, 0) - (M - 1) * td;
 
   // 2) Ana klipleri normalize et + outro klibini üret.
@@ -350,7 +398,7 @@ export async function renderVideo(job, opts = {}) {
     const clipPath = path.join(workDir, `clip-${String(i).padStart(2, '0')}.mp4`);
     await normalizeClip(
       media[i],
-      Math.max(0.6, dMain + (M > 1 ? 0.05 : 0)),
+      Math.max(0.6, clipDur[i] + (M > 1 ? 0.05 : 0)),
       clipPath,
       { width, height, fps, index: i },
     );

@@ -7,10 +7,14 @@ import {
 } from '../lib/firestore.js';
 
 /**
- * Faz 1 — Script Üretim Motoru (Google Gemini).
- * Gemini'ye istek atıp niş içinde yeni bir konu + 30-45 sn'lik senaryo üretir.
- * Structured output için Gemini'nin responseSchema (JSON schema) desteği kullanılır,
- * böylece çıktının şeması garanti edilir.
+ * Faz 1 — Script Üretim Motoru (Google Gemini) — ANLATI / HİKÂYE formatı.
+ *
+ * "Şaşırtıcı gerçek hikâyeler" (tarih + bilim + uzay + doğa + gizem) konseptinde,
+ * ~80-100 sn'lik dikey short için sahnelere bölünmüş bir mini-hikâye üretir.
+ * Her sahne: tek cümlelik anlatım + o anı gösteren sinematik AI görsel promptu
+ * + (yedek için) Pexels anahtar kelimeleri.
+ *
+ * Structured output için Gemini responseSchema (JSON schema) kullanılır.
  */
 
 export const SCRIPT_SCHEMA = {
@@ -20,59 +24,74 @@ export const SCRIPT_SCHEMA = {
       type: Type.STRING,
       description: 'Short topic title (English), used for duplicate checking',
     },
-    hook: {
+    title: {
       type: Type.STRING,
-      description: 'Attention-grabbing sentence that hooks the viewer in the first 3 seconds',
+      description: 'Curiosity-driven YouTube title for this story, <= 80 chars',
     },
-    body: {
+    category: {
       type: Type.STRING,
-      description: 'Main narration text (plain voiceover text)',
+      description: 'One of: history, science, space, nature, mystery, human body, technology',
+    },
+    scenes: {
+      type: Type.ARRAY,
+      description: '12-16 sequential story beats that together tell one gripping mini-story',
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          narration: {
+            type: Type.STRING,
+            description:
+              'ONE spoken sentence for this beat (~8-16 words), plain voiceover text, no emojis',
+          },
+          image_prompt: {
+            type: Type.STRING,
+            description:
+              'A single vivid cinematic SHOT that depicts this beat: subject, setting, era, ' +
+              'action, camera angle, lighting, mood. Photorealistic and concrete. NO on-screen text.',
+          },
+          keywords: {
+            type: Type.ARRAY,
+            items: { type: Type.STRING },
+            description: '1-3 concrete English nouns for a Pexels stock fallback',
+          },
+        },
+        required: ['narration', 'image_prompt', 'keywords'],
+        propertyOrdering: ['narration', 'image_prompt', 'keywords'],
+      },
     },
     cta: {
       type: Type.STRING,
       description:
-        'Short closing call-to-action, in English, tied to this specific topic (unique each time)',
-    },
-    visual_keywords: {
-      type: Type.ARRAY,
-      items: { type: Type.STRING },
-      description: '4-6 English keywords for Pexels searches',
-    },
-    estimated_duration_seconds: {
-      type: Type.INTEGER,
-      description: 'Estimated total voiceover duration in seconds (30-45)',
+        'Short closing spoken line tied to THIS story (unique each time), invites to follow',
     },
   },
-  required: [
-    'topic',
-    'hook',
-    'body',
-    'cta',
-    'visual_keywords',
-    'estimated_duration_seconds',
-  ],
-  // Gemini'de alan sırasını sabitlemek için önerilir.
-  propertyOrdering: [
-    'topic',
-    'hook',
-    'body',
-    'cta',
-    'visual_keywords',
-    'estimated_duration_seconds',
-  ],
+  required: ['topic', 'title', 'category', 'scenes', 'cta'],
+  propertyOrdering: ['topic', 'title', 'category', 'scenes', 'cta'],
 };
 
 function buildSystemPrompt() {
-  return `You are a YouTube Shorts scriptwriter. You write English, 30-45 second vertical short-video scripts on the theme "interesting facts / how it works / how to".
+  return `You are a master short-form STORYTELLER for a faceless YouTube Shorts channel.
+Concept: "${config.niche.theme}". Every video is ONE gripping true mini-story, narrated like a documentary trailer.
 
-Rules:
-- The text must be fluent, conversational, and written to be read aloud by a SINGLE narrator.
-- The hook must be curiosity-grabbing enough to stop the viewer within the first 3 seconds ("Did you know...", "The phone in your pocket right now...").
-- The body must be concrete, surprising, and ACCURATE; no jargon, plain English.
-- The CTA must be SHORT and tied to THIS specific topic, and it must be DIFFERENT every time. Never reuse a generic line like "Follow for more interesting facts." Make it feel connected to the subject (e.g. for a space topic: "Follow for more secrets of the universe.").
-- Adjust length so the total voiceover is 30-45 seconds (roughly 80-120 words total across hook+body+cta).
-- visual_keywords MUST be in English (the Pexels stock library works in English) and must match the scenes described. 4-6 keywords.
-- Do NOT use emojis, hashtags, or markdown; output plain narration text only.`;
+Write in English, for a SINGLE dramatic narrator. Target total voiceover ~80-100 seconds (about 200-260 words).
+
+Structure the story as 12-16 SCENES (beats) that flow as a narrative arc:
+1) A punchy hook in the first scene that creates an open loop ("In 1518, an entire town could not stop dancing — and dozens died.").
+2) Rising action: escalate the stakes, add concrete, surprising, ACCURATE details.
+3) A turning point or twist.
+4) A satisfying payoff / resolution that answers the hook.
+5) The cta closes it.
+
+Rules for each scene:
+- narration: exactly ONE sentence, spoken aloud, ~8-16 words, vivid and clear. No jargon, no emojis, no hashtags, no markdown.
+- image_prompt: describe a SINGLE cinematic photorealistic shot that literally depicts that sentence — name the subject, the place, the era/period, the action, camera framing, lighting and mood. Keep it concrete and filmable. Never request on-screen text, captions, letters, logos or watermarks. Keep a consistent cinematic, filmic look across scenes.
+- keywords: 1-3 simple English nouns as a stock-footage fallback if image generation is unavailable.
+
+Rules for the whole script:
+- Pick a genuinely FASCINATING, lesser-known TRUE story or fact. Prefer the "wait, what?!" kind.
+- Be historically/scientifically accurate. Do not invent fake facts.
+- cta: short, specific to this story, and DIFFERENT every time (never a generic "Follow for more facts").
+- title: curiosity-driven, <= 80 characters, no clickbait lies, no emojis.`;
 }
 
 function buildUserPrompt(avoidTopics) {
@@ -81,16 +100,15 @@ function buildUserPrompt(avoidTopics) {
         .map((t) => `- ${t}`)
         .join('\n')}`
     : 'No topics have been used yet.';
-  return `Theme: ${config.niche.theme}\n\n${avoid}\n\nPick a NEW, engaging topic that fits the theme and differs from the list above, then write the script.`;
+  return `${avoid}\n\nPick a NEW, mind-blowing true story that differs from the list above, then write the full scene-by-scene script.`;
 }
 
 /**
- * Yeni bir script üretir.
+ * Yeni bir anlatı-script üretir.
  * @param {object} opts
  * @param {number} [opts.maxRetries=3] - Konu tekrarı halinde yeniden deneme sayısı.
- * @param {string[]} [opts.avoidTopics=[]] - Firestore dışında ekstra kaçınılacak konular
- *   (ör. aynı çalıştırmada üretilenler; Firestore yoksa da tekrarı azaltır).
- * @returns {Promise<object>} - SCRIPT_SCHEMA'ya uygun script + normalizedTopic.
+ * @param {string[]} [opts.avoidTopics=[]] - Ekstra kaçınılacak konular.
+ * @returns {Promise<object>} - SCRIPT_SCHEMA + normalizedTopic.
  */
 export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid = [] } = {}) {
   assertGemini();
@@ -112,8 +130,6 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
         systemInstruction: buildSystemPrompt(),
         responseMimeType: 'application/json',
         responseSchema: SCRIPT_SCHEMA,
-        // Kısa JSON çıktısı için "düşünme"yi kapatıyoruz: daha hızlı ve
-        // ücretsiz tier kotasında daha verimli.
         thinkingConfig: { thinkingBudget: 0 },
       },
     });
@@ -127,7 +143,6 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
     const script = JSON.parse(text);
     lastScript = script;
 
-    // Firestore aktifse konu tekrarını engelle.
     if (await isTopicUsed(script.topic)) {
       avoidTopics.push(script.topic);
       continue;
@@ -136,7 +151,6 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
     return { ...script, normalizedTopic: normalizeTopic(script.topic) };
   }
 
-  // maxRetries sonunda hâlâ taze konu bulunamadıysa son scripti işaretleyerek döndür.
   return {
     ...lastScript,
     normalizedTopic: normalizeTopic(lastScript.topic),

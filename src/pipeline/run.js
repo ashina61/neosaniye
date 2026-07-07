@@ -2,8 +2,13 @@ import path from 'node:path';
 import { config } from '../config.js';
 import { generateScript } from '../script/generateScript.js';
 import { generateAudio } from '../tts/generateAudio.js';
-import { fetchMedia } from '../media/fetchMedia.js';
+import { generateImages } from '../media/generateImages.js';
 import { renderVideo } from '../video/renderVideo.js';
+
+/** Bir metindeki kelime sayısı (sahne ağırlığı için). */
+function wordCount(text) {
+  return String(text || '').trim().split(/\s+/).filter(Boolean).length;
+}
 import { buildMetadata } from '../youtube/buildMetadata.js';
 import { uploadVideo } from '../youtube/uploadVideo.js';
 import { recordProduction } from './recordProduction.js';
@@ -38,11 +43,21 @@ export async function runPipeline(opts = {}) {
     const audio = await generateAudio(script, { outDir: workDir, basename: base });
     console.log(`  motor: ${audio.engine}, süre~ ${audio.durationEstimate.toFixed(1)}s`);
 
-    // 3) Görsel (Pexels)
-    log('Faz 3: Görseller çekiliyor (Pexels)...');
-    const media = await fetchMedia(script, { outDir: root, basename: base });
-    console.log(`  ${media.items.length} medya indirildi`);
-    if (!media.items.length) throw new Error('Hiç medya indirilemedi.');
+    // 3) Görsel (sahne başına AI görsel + Pexels/placeholder yedeği)
+    log('Faz 3: Sahne görselleri üretiliyor (AI)...');
+    const media = await generateImages(script, { outDir: root, basename: base });
+    console.log(
+      `  ${media.items.length} sahne görseli — AI:${media.sources.ai} ` +
+        `Pexels:${media.sources.pexels} yedek:${media.sources.placeholder}`,
+    );
+    if (!media.items.length) throw new Error('Hiç sahne görseli üretilemedi.');
+
+    // Sahne süreleri, anlatım kelime sayısına göre orantılı (cta son sahneye eklenir).
+    const scenes = script.scenes || [];
+    const sceneWeights = scenes.map((s) => Math.max(1, wordCount(s.narration)));
+    if (script.cta && sceneWeights.length) {
+      sceneWeights[sceneWeights.length - 1] += wordCount(script.cta);
+    }
 
     // 4) Montaj (ffmpeg)
     log('Faz 4: Video montajı (ffmpeg)...');
@@ -51,6 +66,7 @@ export async function runPipeline(opts = {}) {
       audioPath: audio.audioPath,
       wordTimings: audio.wordTimings,
       media: media.items.map((m) => ({ path: m.path, type: m.type })),
+      sceneWeights: sceneWeights.length === media.items.length ? sceneWeights : undefined,
       outPath,
     });
     console.log(`  ${video.width}x${video.height}, ${video.duration.toFixed(1)}s -> ${outPath}`);

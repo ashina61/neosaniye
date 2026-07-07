@@ -32,15 +32,20 @@ export async function recordProduction(script, meta = {}) {
     topic: script.topic,
     normalizedTopic: script.normalizedTopic,
     script: {
-      hook: script.hook,
-      body: script.body,
+      title: script.title || null,
+      category: script.category || null,
+      scenes: (script.scenes || []).map((s) => ({
+        narration: s.narration,
+        image_prompt: s.image_prompt,
+      })),
       cta: script.cta,
-      visual_keywords: script.visual_keywords,
     },
     audioPath,
     videoPath,
     media: media.map((m) => ({
       type: m.type,
+      source: m.source || null,
+      scene: m.scene,
       keyword: m.keyword,
       path: m.path,
       sourceUrl: m.sourceUrl,

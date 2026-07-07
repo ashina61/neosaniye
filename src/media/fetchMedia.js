@@ -112,6 +112,25 @@ async function downloadFile(url, dest) {
 }
 
 /**
+ * Tek bir sahne için (birkaç anahtar kelime denenerek) Pexels'ten dikey medya
+ * indirir. AI görsel üretimi başarısız olursa yedek olarak kullanılır.
+ * @returns {Promise<{type:string, path:string, ...}|null>}
+ */
+export async function fetchOneForKeywords(keywords, destPath) {
+  for (const keyword of keywords || []) {
+    const hit = await findForKeyword(keyword);
+    if (!hit) continue;
+    try {
+      const bytes = await downloadFile(hit.downloadUrl, destPath);
+      return { ...hit, path: destPath, bytes };
+    } catch (err) {
+      console.warn(`[pexels] yedek indirme başarısız "${keyword}": ${err.message}`);
+    }
+  }
+  return null;
+}
+
+/**
  * @param {object} script - generateScript çıktısı (visual_keywords içermeli).
  * @param {object} [opts]
  * @param {string} [opts.outDir='output'] - Kök çıktı klasörü.

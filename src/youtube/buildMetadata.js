@@ -57,20 +57,31 @@ function finalize(meta, script) {
   return { title, description, tags };
 }
 
+/** Anlatı script'ini tek düz metne çevirir (scenes -> narration). */
+function scriptBody(script) {
+  if (Array.isArray(script.scenes) && script.scenes.length) {
+    return script.scenes.map((s) => s.narration).filter(Boolean).join(' ');
+  }
+  return script.body || '';
+}
+
 /** Gemini erişilemezse (kota/hata) script'ten makul bir meta veri üretir. */
 function fallbackMeta(script) {
   const stop = new Set(
     ('the a an and or of to in on for with how why what is are this that it its ' +
       'your you we do does can will from at by as be').split(' '),
   );
-  const words = `${script.topic} ${script.hook} ${script.body}`
+  const body = scriptBody(script);
+  const sceneKeywords = (script.scenes || []).flatMap((s) => s.keywords || []);
+  const words = `${script.topic} ${body}`
     .toLowerCase()
     .replace(/[^a-z0-9\s]/g, ' ')
     .split(/\s+/)
     .filter((w) => w.length > 3 && !stop.has(w));
-  const tags = Array.from(new Set([...(script.visual_keywords || []), ...words])).slice(0, 12);
-  const description = [script.hook, '', script.cta || 'Follow for more!'].join('\n');
-  return finalize({ title: script.topic, description, tags }, script);
+  const tags = Array.from(new Set([...sceneKeywords, ...words])).slice(0, 12);
+  const hook = (script.scenes?.[0]?.narration) || script.hook || script.topic;
+  const description = [hook, '', script.cta || 'Follow for more!'].join('\n');
+  return finalize({ title: script.title || script.topic, description, tags }, script);
 }
 
 /**
@@ -83,8 +94,8 @@ export async function buildMetadata(script) {
   const ai = new GoogleGenAI({ apiKey: config.gemini.apiKey });
 
   const prompt = `Topic: ${script.topic}
-Hook: ${script.hook}
-Body: ${script.body}
+Working title: ${script.title || script.topic}
+Story narration: ${scriptBody(script)}
 CTA: ${script.cta}
 
 Produce the metadata.`;
