@@ -43,7 +43,24 @@ export const config = {
     preferType: process.env.PEXELS_PREFER_TYPE || 'video', // 'video' | 'photo'
     size: process.env.PEXELS_SIZE || 'medium',
   },
+  youtube: {
+    clientId: process.env.YOUTUBE_CLIENT_ID,
+    clientSecret: process.env.YOUTUBE_CLIENT_SECRET,
+    refreshToken: process.env.YOUTUBE_REFRESH_TOKEN,
+    privacyStatus: process.env.YOUTUBE_PRIVACY || 'public', // public|unlisted|private
+    categoryId: process.env.YOUTUBE_CATEGORY_ID || '27', // 27 = Education
+  },
 };
+
+export function assertYouTube() {
+  const { clientId, clientSecret, refreshToken } = config.youtube;
+  if (!clientId || !clientSecret || !refreshToken) {
+    throw new Error(
+      'YouTube OAuth eksik. YOUTUBE_CLIENT_ID / YOUTUBE_CLIENT_SECRET / ' +
+        'YOUTUBE_REFRESH_TOKEN gerekli (bkz. docs/youtube-oauth-setup.md).',
+    );
+  }
+}
 
 export function assertPexels() {
   if (!config.pexels.apiKey) {

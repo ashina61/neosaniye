@@ -12,11 +12,14 @@
     "script:save": "node scripts/generate-script.js --save",
     "audio": "node scripts/generate-audio.js",
     "media": "node scripts/fetch-media.js",
-    "video": "node scripts/render-video.js"
+    "video": "node scripts/render-video.js",
+    "upload": "node scripts/upload-youtube.js",
+    "youtube:auth": "node scripts/youtube-auth.js"
   },
   "dependencies": {
     "@google/genai": "^1.0.0",
     "dotenv": "^16.4.5",
-    "firebase-admin": "^12.7.0"
+    "firebase-admin": "^12.7.0",
+    "googleapis": "^144.0.0"
   }
 }
