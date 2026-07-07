@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type } from '@google/genai';
-import { config, assertGemini } from '../config.js';
+import { config } from '../config.js';
 
 /**
  * Faz 6 — Script'ten YouTube Shorts meta verisi (başlık/açıklama/tag) üretir.
@@ -57,12 +57,29 @@ function finalize(meta, script) {
   return { title, description, tags };
 }
 
+/** Gemini erişilemezse (kota/hata) script'ten makul bir meta veri üretir. */
+function fallbackMeta(script) {
+  const stop = new Set(
+    ('the a an and or of to in on for with how why what is are this that it its ' +
+      'your you we do does can will from at by as be').split(' '),
+  );
+  const words = `${script.topic} ${script.hook} ${script.body}`
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .split(/\s+/)
+    .filter((w) => w.length > 3 && !stop.has(w));
+  const tags = Array.from(new Set([...(script.visual_keywords || []), ...words])).slice(0, 12);
+  const description = [script.hook, '', script.cta || 'Follow for more!'].join('\n');
+  return finalize({ title: script.topic, description, tags }, script);
+}
+
 /**
  * @param {object} script - generateScript çıktısı.
  * @returns {Promise<{title:string, description:string, tags:string[]}>}
  */
 export async function buildMetadata(script) {
-  assertGemini();
+  // Gemini yoksa/kota dolduysa upload'ı düşürme — script'ten üret.
+  if (!config.gemini.apiKey) return fallbackMeta(script);
   const ai = new GoogleGenAI({ apiKey: config.gemini.apiKey });
 
   const prompt = `Topic: ${script.topic}
@@ -72,18 +89,27 @@ CTA: ${script.cta}
 
 Produce the metadata.`;
 
-  const response = await ai.models.generateContent({
-    model: config.gemini.model,
-    contents: prompt,
-    config: {
-      systemInstruction: SYSTEM,
-      responseMimeType: 'application/json',
-      responseSchema: META_SCHEMA,
-      thinkingConfig: { thinkingBudget: 0 },
-    },
-  });
+  try {
+    const response = await ai.models.generateContent({
+      model: config.gemini.model,
+      contents: prompt,
+      config: {
+        systemInstruction: SYSTEM,
+        responseMimeType: 'application/json',
+        responseSchema: META_SCHEMA,
+        thinkingConfig: { thinkingBudget: 0 },
+      },
+    });
 
-  const text = response.text;
-  if (!text) throw new Error('Gemini meta verisi boş döndü.');
-  return finalize(JSON.parse(text), script);
+    const text = response.text;
+    if (!text) throw new Error('Gemini meta verisi boş döndü.');
+    return finalize(JSON.parse(text), script);
+  } catch (err) {
+    // Kota (429) veya geçici hata: video zaten hazır, basit meta ile yine yükle.
+    console.warn(
+      `[meta] Gemini meta verisi alınamadı (${err?.message || err}). ` +
+        'Script tabanlı yedek meta kullanılıyor.',
+    );
+    return fallbackMeta(script);
+  }
 }
