@@ -1,5 +1,5 @@
-import Anthropic from '@anthropic-ai/sdk';
-import { config, assertAnthropic } from '../config.js';
+import { GoogleGenAI, Type } from '@google/genai';
+import { config, assertGemini } from '../config.js';
 import {
   getRecentUsedTopics,
   isTopicUsed,
@@ -7,37 +7,38 @@ import {
 } from '../lib/firestore.js';
 
 /**
- * Faz 1 — Script Üretim Motoru.
- * Claude'a istek atıp niş içinde yeni bir konu + 30-45 sn'lik senaryo üretir.
- * Structured output (json_schema) ile çıktının şeması garanti edilir.
+ * Faz 1 — Script Üretim Motoru (Google Gemini).
+ * Gemini'ye istek atıp niş içinde yeni bir konu + 30-45 sn'lik senaryo üretir.
+ * Structured output için Gemini'nin responseSchema (JSON schema) desteği kullanılır,
+ * böylece çıktının şeması garanti edilir.
  */
 
 export const SCRIPT_SCHEMA = {
-  type: 'object',
+  type: Type.OBJECT,
   properties: {
     topic: {
-      type: 'string',
+      type: Type.STRING,
       description: 'Kısa konu başlığı (Türkçe), tekrar kontrolü için kullanılır',
     },
     hook: {
-      type: 'string',
+      type: Type.STRING,
       description: 'İlk 3 saniyede izleyiciyi durduran dikkat çekici cümle',
     },
     body: {
-      type: 'string',
+      type: Type.STRING,
       description: 'Ana anlatım metni (seslendirilecek düz metin)',
     },
     cta: {
-      type: 'string',
+      type: Type.STRING,
       description: 'Kapanış / harekete geçirici cümle',
     },
     visual_keywords: {
-      type: 'array',
-      items: { type: 'string' },
+      type: Type.ARRAY,
+      items: { type: Type.STRING },
       description: 'Pexels aramaları için 4-6 adet İngilizce anahtar kelime',
     },
     estimated_duration_seconds: {
-      type: 'integer',
+      type: Type.INTEGER,
       description: 'Tahmini toplam seslendirme süresi (30-45)',
     },
   },
@@ -49,7 +50,15 @@ export const SCRIPT_SCHEMA = {
     'visual_keywords',
     'estimated_duration_seconds',
   ],
-  additionalProperties: false,
+  // Gemini'de alan sırasını sabitlemek için önerilir.
+  propertyOrdering: [
+    'topic',
+    'hook',
+    'body',
+    'cta',
+    'visual_keywords',
+    'estimated_duration_seconds',
+  ],
 };
 
 function buildSystemPrompt() {
@@ -81,8 +90,8 @@ function buildUserPrompt(avoidTopics) {
  * @returns {Promise<object>} - SCRIPT_SCHEMA'ya uygun script + normalizedTopic.
  */
 export async function generateScript({ maxRetries = 3 } = {}) {
-  assertAnthropic();
-  const client = new Anthropic({ apiKey: config.anthropic.apiKey });
+  assertGemini();
+  const ai = new GoogleGenAI({ apiKey: config.gemini.apiKey });
 
   const recent = await getRecentUsedTopics(50);
   const avoidTopics = recent.map((r) => r.topic).filter(Boolean);
@@ -90,22 +99,24 @@ export async function generateScript({ maxRetries = 3 } = {}) {
   let lastScript = null;
 
   for (let attempt = 1; attempt <= maxRetries; attempt += 1) {
-    const response = await client.messages.create({
-      model: config.anthropic.model,
-      max_tokens: 1500,
-      system: buildSystemPrompt(),
-      output_config: {
-        format: { type: 'json_schema', schema: SCRIPT_SCHEMA },
+    const response = await ai.models.generateContent({
+      model: config.gemini.model,
+      contents: buildUserPrompt(avoidTopics),
+      config: {
+        systemInstruction: buildSystemPrompt(),
+        responseMimeType: 'application/json',
+        responseSchema: SCRIPT_SCHEMA,
+        // Kısa JSON çıktısı için "düşünme"yi kapatıyoruz: daha hızlı ve
+        // ücretsiz tier kotasında daha verimli.
+        thinkingConfig: { thinkingBudget: 0 },
       },
-      messages: [{ role: 'user', content: buildUserPrompt(avoidTopics) }],
     });
 
-    if (response.stop_reason === 'refusal') {
-      throw new Error('Model isteği güvenlik nedeniyle reddetti (refusal).');
+    const text = response.text;
+    if (!text) {
+      const reason = response.candidates?.[0]?.finishReason || 'bilinmiyor';
+      throw new Error(`Gemini boş yanıt döndü (finishReason: ${reason}).`);
     }
-
-    const text = response.content.find((b) => b.type === 'text')?.text;
-    if (!text) throw new Error('Model boş yanıt döndü.');
 
     const script = JSON.parse(text);
     lastScript = script;

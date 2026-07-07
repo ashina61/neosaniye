@@ -1,26 +1,28 @@
 # API Key / Secret Kurulum Rehberi (telefondan, tarayıcı üzerinden)
 
 Her fazda hangi anahtarın gerektiği ve nereden alınacağı. **Faz 1 için sadece
-1 numara (Anthropic) yeterli.** Diğerleri ilgili faza gelince istenecek.
+1 numara (Google Gemini) yeterli.** Diğerleri ilgili faza gelince istenecek.
 
 ---
 
-## 1) Anthropic API Key — GEREKLİ (Faz 1)
+## 1) Google Gemini API Key — GEREKLİ (Faz 1)
 
-Script üretimi için Claude API anahtarı.
+Script üretimi için Gemini API anahtarı. **Ücretsiz, kredi kartı istemez.**
 
-1. Tarayıcıdan `console.anthropic.com` adresine gir, giriş yap / kayıt ol.
-2. Sol menüden **API Keys** → **Create Key**.
-3. Anahtara bir isim ver (ör. `neosaniye`), oluştur ve **kopyala**
-   (bir daha gösterilmez).
-4. Ücretlendirme için **Billing** kısmından küçük bir kredi ekle (script'ler
-   çok küçük olduğu için maliyet aylık birkaç sentin altında kalır).
+1. Tarayıcıdan `aistudio.google.com/apikey` adresine gir, Google hesabınla
+   giriş yap.
+2. **Create API key** (Get API key) → istersen yeni bir proje seçip oluştur.
+3. Çıkan anahtarı **kopyala**.
+
+Ücretsiz tier notu: `gemini-2.5-flash` ücretsiz katmanda günlük/dakikalık
+istek limitleriyle gelir; günde 1-2 script üretimi bu limitlerin çok altında
+kalır. Kart eklemek gerekmez.
 
 Nereye yazılır:
 - **Yerel test:** proje kökünde `.env` dosyası oluştur (`.env.example`'ı
-  kopyala) ve `ANTHROPIC_API_KEY=...` satırını doldur.
+  kopyala) ve `GEMINI_API_KEY=...` satırını doldur.
 - **GitHub (Faz 7):** repo → **Settings → Secrets and variables → Actions →
-  New repository secret** → isim `ANTHROPIC_API_KEY`, değer anahtar.
+  New repository secret** → isim `GEMINI_API_KEY`, değer anahtar.
 
 ---
 

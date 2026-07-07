@@ -12,7 +12,7 @@
     "script:save": "node scripts/generate-script.js --save"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.70.0",
+    "@google/genai": "^1.0.0",
     "dotenv": "^16.4.5",
     "firebase-admin": "^12.7.0"
   }

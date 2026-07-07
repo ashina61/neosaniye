@@ -3,10 +3,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const config = {
-  anthropic: {
-    apiKey: process.env.ANTHROPIC_API_KEY,
-    // Varsayılan model: kaliteli hook + makul maliyet. Ucuz alternatif: claude-haiku-4-5
-    model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-5',
+  gemini: {
+    apiKey: process.env.GEMINI_API_KEY,
+    // Ücretsiz tier, kart gerektirmez. Alternatif: gemini-2.5-flash-lite (daha ucuz/hızlı)
+    model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
   },
   niche: {
     language: process.env.CONTENT_LANGUAGE || 'tr',
@@ -22,10 +22,11 @@ export const config = {
   },
 };
 
-export function assertAnthropic() {
-  if (!config.anthropic.apiKey) {
+export function assertGemini() {
+  if (!config.gemini.apiKey) {
     throw new Error(
-      'ANTHROPIC_API_KEY tanımlı değil. .env dosyasına ekleyin (bkz. .env.example).',
+      'GEMINI_API_KEY tanımlı değil. .env dosyasına ekleyin (bkz. .env.example). ' +
+        'Ücretsiz anahtar: https://aistudio.google.com/apikey',
     );
   }
 }

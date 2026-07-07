@@ -9,7 +9,7 @@ YouTube'a yükler.
 
 | Faz | İçerik                          | Durum        |
 | --- | ------------------------------- | ------------ |
-| 1   | Script üretim motoru (Claude)   | ✅ Hazır     |
+| 1   | Script üretim motoru (Gemini)   | ✅ Hazır     |
 | 2   | Ses / TTS (edge-tts) + whisper  | ⏳ Sırada    |
 | 3   | Görsel toplama (Pexels)         | ⏳           |
 | 4   | Video montaj (ffmpeg)           | ⏳           |
@@ -40,7 +40,7 @@ docs/
 
 ```bash
 npm install
-cp .env.example .env      # ANTHROPIC_API_KEY doldur
+cp .env.example .env      # GEMINI_API_KEY doldur (ücretsiz: aistudio.google.com/apikey)
 npm run script            # 1 script üret ve ekrana yaz
 npm run script 3          # 3 script üret
 npm run script -- 1 --save  # üret + used_topics'e işaretle (Firebase varsa)

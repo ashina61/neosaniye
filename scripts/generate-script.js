@@ -9,7 +9,7 @@
  *   node scripts/generate-script.js 3       -> 3 script üretir
  *   node scripts/generate-script.js 1 --save-> üretir ve Firestore'a konuyu işaretler
  *
- * .env dosyasında ANTHROPIC_API_KEY gereklidir. FIREBASE_SERVICE_ACCOUNT
+ * .env dosyasında GEMINI_API_KEY gereklidir. FIREBASE_SERVICE_ACCOUNT
  * verilmezse Firestore devre dışı kalır (konu tekrar kontrolü atlanır).
  */
 import { generateScript } from '../src/script/generateScript.js';
