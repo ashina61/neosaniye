@@ -13,3 +13,6 @@ output/
 # Firebase servis hesabı anahtarı asla commit edilmez
 serviceAccount*.json
 firebase-*.json
+
+# Faz 5 yerel state yedeği (Firebase yoksa)
+data/

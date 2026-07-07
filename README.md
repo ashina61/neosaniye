@@ -13,7 +13,7 @@ YouTube'a yükler.
 | 2   | Ses / TTS (edge-tts + Piper yedek, erkek ses) | 🧪 Kod hazır (yerel test) |
 | 3   | Görsel toplama (Pexels, 9:16)   | 🧪 Kod hazır (yerel test) |
 | 4   | Video montaj (ffmpeg, 1080x1920)| ✅ Çalışıyor (uçtan uca test edildi) |
-| 5   | Firestore loglama               | ⏳           |
+| 5   | Firestore loglama (+ yerel yedek)| ✅ Çalışıyor (yerel backend test edildi) |
 | 6   | YouTube otomatik upload         | ⏳           |
 | 7   | GitHub Actions orkestrasyon     | ⏳ (en son)  |
 
@@ -25,7 +25,9 @@ gelir, **cron EN SON açılır**.
 ```
 src/
   config.js              # .env okuma
-  lib/firestore.js       # Firestore + used_topics (kredensiyel yoksa no-op)
+  lib/firestore.js       # State katmanı: Firestore veya yerel JSON (used_topics + videos)
+  pipeline/
+    recordProduction.js  # Faz 5 üretim kaydı (video + konu işaretleme)
   script/generateScript.js  # Faz 1 çekirdek modül
   tts/
     generateAudio.js     # Faz 2 orkestratör (edge -> piper fallback + whisper)

@@ -1,14 +1,24 @@
 import admin from 'firebase-admin';
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import path from 'node:path';
 import { config } from '../config.js';
+
+/**
+ * Durum (state) katmanı. İki backend:
+ *   - Firestore: FIREBASE_SERVICE_ACCOUNT verilmişse (CI/prod için kalıcı).
+ *   - Yerel JSON: verilmemişse data/ altına yazar (geliştirme/test için).
+ *
+ * Not: GitHub'ın barındırdığı runner'lar ephemeral olduğu için CI'da çalışmalar
+ * arası kalıcılık (tekrar önleme, video geçmişi) yalnızca Firestore ile sağlanır.
+ */
+
+const STATE_DIR = process.env.STATE_DIR || 'data';
+const USED_TOPICS = 'used_topics';
+const VIDEOS = 'videos';
 
 let db = null;
 let initialized = false;
 
-/**
- * Firestore bağlantısını (tembel) döndürür.
- * FIREBASE_SERVICE_ACCOUNT yoksa null döner ve tüm fonksiyonlar
- * "no-op" olarak çalışır — böylece Faz 1'i Firebase kurmadan test edebilirsin.
- */
 export function getFirestore() {
   if (initialized) return db;
   initialized = true;
@@ -16,11 +26,10 @@ export function getFirestore() {
   const { serviceAccountJson, projectId } = config.firebase;
   if (!serviceAccountJson) {
     console.warn(
-      '[firestore] FIREBASE_SERVICE_ACCOUNT yok — Firestore devre dışı (yerel test modu).',
+      `[state] FIREBASE_SERVICE_ACCOUNT yok — yerel JSON yedeği kullanılıyor (${STATE_DIR}/).`,
     );
     return db;
   }
-
   try {
     const creds = JSON.parse(serviceAccountJson);
     if (!admin.apps.length) {
@@ -31,13 +40,13 @@ export function getFirestore() {
     }
     db = admin.firestore();
   } catch (err) {
-    console.error('[firestore] başlatma hatası:', err.message);
+    console.error('[state] Firestore başlatma hatası, yerele düşülüyor:', err.message);
     db = null;
   }
   return db;
 }
 
-/** Konu başlığını doc id olarak kullanılabilir hale getirir (Türkçe karakter -> ascii, tire). */
+/** Konu başlığını doc id olarak kullanılabilir hale getirir. */
 export function normalizeTopic(topic) {
   return topic
     .toLocaleLowerCase('tr')
@@ -48,44 +57,111 @@ export function normalizeTopic(topic) {
     .replace(/^-+|-+$/g, '');
 }
 
-const USED_TOPICS = 'used_topics';
+// ---- yerel JSON yardımcıları ----
+async function readLocal(file, fallback) {
+  try {
+    return JSON.parse(await readFile(path.join(STATE_DIR, file), 'utf8'));
+  } catch {
+    return fallback;
+  }
+}
+async function writeLocal(file, data) {
+  await mkdir(STATE_DIR, { recursive: true });
+  await writeFile(path.join(STATE_DIR, file), JSON.stringify(data, null, 2));
+}
 
-/** Son N kullanılmış konuyu döndürür (prompt'a "bunları seçme" olarak verilir). */
+// ---- used_topics ----
+
+/** Son N kullanılmış konuyu döndürür (createdAt'e göre azalan). */
 export async function getRecentUsedTopics(limit = 50) {
   const store = getFirestore();
-  if (!store) return [];
-  const snap = await store
-    .collection(USED_TOPICS)
-    .orderBy('createdAt', 'desc')
-    .limit(limit)
-    .get();
-  return snap.docs.map((d) => d.data());
+  if (store) {
+    const snap = await store
+      .collection(USED_TOPICS)
+      .orderBy('createdAt', 'desc')
+      .limit(limit)
+      .get();
+    return snap.docs.map((d) => d.data());
+  }
+  const map = await readLocal(`${USED_TOPICS}.json`, {});
+  return Object.values(map)
+    .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)))
+    .slice(0, limit);
 }
 
-/** Bir konunun daha önce kullanılıp kullanılmadığını (normalize edilmiş id üzerinden) kontrol eder. */
+/** Bir konunun daha önce kullanılıp kullanılmadığını kontrol eder. */
 export async function isTopicUsed(topic) {
-  const store = getFirestore();
-  if (!store) return false;
   const id = normalizeTopic(topic);
-  const doc = await store.collection(USED_TOPICS).doc(id).get();
-  return doc.exists;
+  const store = getFirestore();
+  if (store) {
+    const doc = await store.collection(USED_TOPICS).doc(id).get();
+    return doc.exists;
+  }
+  const map = await readLocal(`${USED_TOPICS}.json`, {});
+  return Boolean(map[id]);
 }
 
-/** Konuyu kullanılmış olarak işaretler. extra ile videoId/scriptId gibi alanlar eklenebilir. */
+/** Konuyu kullanılmış olarak işaretler. extra ile videoId vb. eklenebilir. */
 export async function markTopicUsed(topic, extra = {}) {
-  const store = getFirestore();
-  if (!store) return;
   const id = normalizeTopic(topic);
-  await store
-    .collection(USED_TOPICS)
-    .doc(id)
-    .set(
-      {
-        topic,
-        normalizedTopic: id,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        ...extra,
-      },
-      { merge: true },
-    );
+  const store = getFirestore();
+  if (store) {
+    await store
+      .collection(USED_TOPICS)
+      .doc(id)
+      .set(
+        {
+          topic,
+          normalizedTopic: id,
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          ...extra,
+        },
+        { merge: true },
+      );
+    return id;
+  }
+  const map = await readLocal(`${USED_TOPICS}.json`, {});
+  map[id] = {
+    ...map[id],
+    topic,
+    normalizedTopic: id,
+    createdAt: map[id]?.createdAt || new Date().toISOString(),
+    ...extra,
+  };
+  await writeLocal(`${USED_TOPICS}.json`, map);
+  return id;
+}
+
+// ---- videos ----
+
+/** Üretilen bir videoyu kaydeder, doküman id'sini döndürür. */
+export async function logVideo(record) {
+  const store = getFirestore();
+  if (store) {
+    const ref = await store.collection(VIDEOS).add({
+      ...record,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+    return ref.id;
+  }
+  const list = await readLocal(`${VIDEOS}.json`, []);
+  const id = `${record.normalizedTopic || 'video'}-${Date.now()}`;
+  list.push({ id, ...record, createdAt: new Date().toISOString() });
+  await writeLocal(`${VIDEOS}.json`, list);
+  return id;
+}
+
+/** Var olan bir video kaydını günceller (ör. Faz 6 YouTube bilgisi/status). */
+export async function updateVideo(id, patch) {
+  const store = getFirestore();
+  if (store) {
+    await store.collection(VIDEOS).doc(id).set(patch, { merge: true });
+    return;
+  }
+  const list = await readLocal(`${VIDEOS}.json`, []);
+  const idx = list.findIndex((v) => v.id === id);
+  if (idx >= 0) {
+    list[idx] = { ...list[idx], ...patch };
+    await writeLocal(`${VIDEOS}.json`, list);
+  }
 }

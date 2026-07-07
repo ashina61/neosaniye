@@ -27,7 +27,15 @@ normalize edilmiş hali (`normalizeTopic`) — böylece benzer başlıklar çak�
 }
 ```
 
-## Koleksiyon: `videos` (Faz 5'te eklenecek — önizleme)
+## Yerel JSON yedeği (Firebase yoksa)
+
+`FIREBASE_SERVICE_ACCOUNT` verilmezse veri katmanı otomatik olarak `data/`
+klasörüne yazar (`STATE_DIR` ile değiştirilebilir): `data/used_topics.json` ve
+`data/videos.json`. Bu geliştirme/test içindir. **CI'da runner'lar ephemeral
+olduğundan çalışmalar arası kalıcılık (tekrar önleme, geçmiş) için Firestore
+şarttır.**
+
+## Koleksiyon: `videos` (Faz 5 — uygulandı)
 
 Her üretilen video için tam kayıt.
 
@@ -38,6 +46,8 @@ Her üretilen video için tam kayıt.
 | `audioPath`     | string    | (Faz 2) Üretilen mp3 yolu / storage referansı     |
 | `videoPath`     | string    | (Faz 4) Üretilen mp4 yolu / storage referansı     |
 | `youtube`       | map       | (Faz 6) `{ videoId, url, publishedAt }`           |
+| `engine`        | string    | Kullanılan TTS motoru (edge-tts / piper)          |
+| `duration`      | number    | Süre (sn)                                         |
 | `status`        | string    | `draft` \| `rendered` \| `published` \| `failed`  |
 | `createdAt`     | timestamp | Üretim tarihi                                     |
 
