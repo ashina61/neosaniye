@@ -1,0 +1,15 @@
+{
+  "topic": "Uçak penceresindeki küçük delik",
+  "hook": "Uçağa bindiğinde pencerenin altındaki o küçük deliği fark ettin mi? İşte hayatını kurtaran şey tam olarak o.",
+  "body": "Uçak pencereleri aslında üst üste üç katmandan oluşuyor. Yükseklerde kabin içindeki basınç, dışarıdaki ince havaya göre çok daha yüksek ve bu fark cama muazzam bir yük bindiriyor. O küçük delik, bu basıncı dengeleyerek yükün tamamının dıştaki en güçlü cama gelmesini sağlıyor. Yani içteki cam çatlasa bile en dıştaki cam patlamadan görevini sürdürüyor. Bir bonusu daha var: o delik camlar arasındaki nemi dışarı atarak buğulanmayı da önlüyor.",
+  "cta": "Bir sonraki uçuşunda kontrol et, sonra takip etmeyi unutma.",
+  "visual_keywords": [
+    "airplane window",
+    "airplane cabin interior",
+    "clouds from plane",
+    "aircraft wing sky",
+    "passenger looking window"
+  ],
+  "estimated_duration_seconds": 42,
+  "normalizedTopic": "ucak-penceresindeki-kucuk-delik"
+}
