@@ -56,9 +56,19 @@ export const config = {
     accentColor: process.env.VIDEO_ACCENT || '&H00E6FF&',
     emphasis: process.env.VIDEO_EMPHASIS !== '0',
 
-    // Geçişlerde 'whoosh' ses efekti (varsayılan kapalı; VIDEO_TRANSITION_SOUND=1 ile aç).
-    transitionSound: process.env.VIDEO_TRANSITION_SOUND === '1',
-    transitionSoundVolume: Number(process.env.VIDEO_TRANSITION_SOUND_VOL || 0.22),
+    // Kapanış kartı (outro): FOLLOW FOR MORE + ikonlar.
+    outro: process.env.VIDEO_OUTRO !== '0',
+    outroDuration: Number(process.env.VIDEO_OUTRO_SECONDS || 3),
+
+    // Ses efektleri (geçiş whoosh + outro abone chime). Varsayılan açık.
+    sfx: process.env.VIDEO_SFX !== '0',
+    transitionSoundVolume: Number(process.env.VIDEO_TRANSITION_SOUND_VOL || 0.2),
+
+    // Arka plan müziği (narrasyon altında 'ducking' ile kısılır).
+    // assets/music/bed.mp3 varsa o kullanılır; yoksa yumuşak bir pad sentezlenir.
+    music: process.env.VIDEO_MUSIC !== '0',
+    musicPath: process.env.VIDEO_MUSIC_PATH || 'assets/music/bed.mp3',
+    musicVolume: Number(process.env.VIDEO_MUSIC_VOL || 0.14),
   },
   pexels: {
     apiKey: process.env.PEXELS_API_KEY,
