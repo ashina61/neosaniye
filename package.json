@@ -10,7 +10,8 @@
   "scripts": {
     "script": "node scripts/generate-script.js",
     "script:save": "node scripts/generate-script.js --save",
-    "audio": "node scripts/generate-audio.js"
+    "audio": "node scripts/generate-audio.js",
+    "media": "node scripts/fetch-media.js"
   },
   "dependencies": {
     "@google/genai": "^1.0.0",

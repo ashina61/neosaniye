@@ -38,8 +38,20 @@ export const config = {
   },
   pexels: {
     apiKey: process.env.PEXELS_API_KEY,
+    perKeyword: Number(process.env.PEXELS_PER_KEYWORD || 1),
+    orientation: process.env.PEXELS_ORIENTATION || 'portrait', // Shorts = 9:16
+    preferType: process.env.PEXELS_PREFER_TYPE || 'video', // 'video' | 'photo'
+    size: process.env.PEXELS_SIZE || 'medium',
   },
 };
+
+export function assertPexels() {
+  if (!config.pexels.apiKey) {
+    throw new Error(
+      'PEXELS_API_KEY tanımlı değil. .env dosyasına ekleyin (ücretsiz: pexels.com/api).',
+    );
+  }
+}
 
 export function assertGemini() {
   if (!config.gemini.apiKey) {

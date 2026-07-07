@@ -11,7 +11,7 @@ YouTube'a yükler.
 | --- | ------------------------------- | ------------ |
 | 1   | Script üretim motoru (Gemini)   | ✅ Hazır     |
 | 2   | Ses / TTS (edge-tts + Piper yedek, erkek ses) | 🧪 Kod hazır (yerel test) |
-| 3   | Görsel toplama (Pexels)         | ⏳           |
+| 3   | Görsel toplama (Pexels, 9:16)   | 🧪 Kod hazır (yerel test) |
 | 4   | Video montaj (ffmpeg)           | ⏳           |
 | 5   | Firestore loglama               | ⏳           |
 | 6   | YouTube otomatik upload         | ⏳           |
@@ -32,9 +32,12 @@ src/
     edgeTts.js           # edge-tts motoru + SRT parse
     piper.js             # Piper çevrimdışı yedek motor
     align.js             # faster-whisper kelime zamanlaması (Piper yolu)
+  media/
+    fetchMedia.js        # Faz 3 Pexels dikey (9:16) klip/foto indirme
 scripts/
   generate-script.js     # Faz 1 test aracı (CLI)
   generate-audio.js      # Faz 2 test aracı (CLI)
+  fetch-media.js         # Faz 3 test aracı (CLI)
   whisper_align.py       # faster-whisper yardımcı betiği
 examples/                # 3 örnek script çıktısı
 requirements.txt         # Faz 2 Python araçları (edge-tts, piper-tts, faster-whisper)
