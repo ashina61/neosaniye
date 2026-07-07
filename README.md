@@ -15,7 +15,7 @@ YouTube'a yükler.
 | 4   | Video montaj (ffmpeg, 1080x1920)| ✅ Çalışıyor (uçtan uca test edildi) |
 | 5   | Firestore loglama (+ yerel yedek)| ✅ Çalışıyor (yerel backend test edildi) |
 | 6   | YouTube upload (+ Gemini metadata)| 🧪 Kod hazır (metadata test edildi) |
-| 7   | GitHub Actions orkestrasyon     | ⏳ (en son)  |
+| 7   | Orkestrasyon + workflow         | ✅ Manuel tetikleme açık, cron kapalı |
 
 Sıralama kuralı: önce yerelde uçtan uca 1 video üretimi tamamen çalışır hale
 gelir, **cron EN SON açılır**.
@@ -27,6 +27,7 @@ src/
   config.js              # .env okuma
   lib/firestore.js       # State katmanı: Firestore veya yerel JSON (used_topics + videos)
   pipeline/
+    run.js               # Faz 7 orkestratör (tüm fazları sırayla)
     recordProduction.js  # Faz 5 üretim kaydı (video + konu işaretleme)
   script/generateScript.js  # Faz 1 çekirdek modül
   tts/
@@ -42,6 +43,7 @@ src/
     buildMetadata.js     # Faz 6 Gemini ile başlık/açıklama/tag + #Shorts
     uploadVideo.js       # Faz 6 YouTube Data API v3 upload (OAuth refresh token)
 scripts/
+  generate-and-publish.js # Faz 7 ANA script (tüm boru hattı)
   generate-script.js     # Faz 1 test aracı (CLI)
   generate-audio.js      # Faz 2 test aracı (CLI)
   fetch-media.js         # Faz 3 test aracı (CLI)
@@ -69,6 +71,21 @@ npm run script -- 1 --save  # üret + used_topics'e işaretle (Firebase varsa)
 
 Firebase anahtarı verilmezse konu tekrar kontrolü atlanır; script üretimi yine
 çalışır. Gerekli API anahtarları için `docs/secrets-setup.md`.
+
+## Tam boru hattı (Faz 7)
+
+```bash
+pip install -r requirements.txt        # edge-tts, piper-tts, faster-whisper
+sudo apt-get install -y ffmpeg
+node scripts/generate-and-publish.js --no-upload   # üret, YouTube'a yükleme
+node scripts/generate-and-publish.js               # üret + YouTube upload
+```
+
+Otomasyon: `.github/workflows/daily-short.yml` — şimdilik yalnızca **manuel**
+(Actions sekmesi → Run workflow). Hazır olunca dosyadaki `schedule` bloğunun
+yorumunu kaldırınca **cron** devreye girer. Gerekli GitHub Secrets:
+`GEMINI_API_KEY`, `PEXELS_API_KEY`, `FIREBASE_SERVICE_ACCOUNT`,
+`YOUTUBE_CLIENT_ID/SECRET/REFRESH_TOKEN`.
 
 ## Modülerlik
 

@@ -1,0 +1,65 @@
+name: Günlük Short Üret ve Yayınla
+
+# Önce manuel (workflow_dispatch) ile test edilir. Cron EN SON açılır:
+# aşağıdaki "schedule" bloğunun yorumunu kaldırınca otomatik çalışmaya başlar.
+on:
+  workflow_dispatch:
+    inputs:
+      no_upload:
+        description: "YouTube upload'ı atla (sadece üret)"
+        type: boolean
+        default: false
+  # schedule:
+  #   - cron: "0 9 * * *"    # her gün 09:00 UTC (~12:00 TR)
+  #   - cron: "0 17 * * *"   # istenirse günde 2. üretim
+
+concurrency:
+  group: daily-short
+  cancel-in-progress: false
+
+jobs:
+  produce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: ffmpeg kur
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Python TTS araçları
+        run: pip install -r requirements.txt
+
+      - name: Node bağımlılıkları
+        run: npm ci
+
+      - name: Üret ve yayınla
+        run: node scripts/generate-and-publish.js ${{ inputs.no_upload && '--no-upload' || '' }}
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          YOUTUBE_PRIVACY: ${{ vars.YOUTUBE_PRIVACY }}
+          TTS_VOICE: ${{ vars.TTS_VOICE }}
+
+      - name: Üretilen videoyu artifact olarak sakla
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: short-video
+          path: output/**/*.mp4
+          if-no-files-found: ignore
+          retention-days: 7

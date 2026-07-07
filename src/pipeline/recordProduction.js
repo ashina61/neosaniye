@@ -25,6 +25,7 @@ export async function recordProduction(script, meta = {}) {
     duration = script.estimated_duration_seconds || null,
     status = 'rendered',
     youtube = null,
+    error = null,
   } = meta;
 
   const record = {
@@ -49,6 +50,7 @@ export async function recordProduction(script, meta = {}) {
     duration,
     status,
     youtube,
+    ...(error ? { error } : {}),
   };
 
   const videoId = await logVideo(record);
