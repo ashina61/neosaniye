@@ -154,7 +154,9 @@ export async function renderVideo(job, opts = {}) {
   ]);
 
   // 4) Ses bindir + (varsa) karaoke altyazı yak.
-  const finalArgs = ['-y', '-i', concatPath, '-i', path.resolve(audioPath)];
+  // Not: cwd=workDir olduğu için concat.mp4/ses/çıktı MUTLAK yol olmalı;
+  // yalnızca ass=subs.ass basit dosya adıyla kalır (path kaçış derdi yok).
+  const finalArgs = ['-y', '-i', path.resolve(concatPath), '-i', path.resolve(audioPath)];
   const hasSubs = wordTimings.length > 0;
   if (hasSubs) {
     const assPath = path.join(workDir, 'subs.ass');
