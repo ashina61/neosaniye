@@ -10,7 +10,7 @@ YouTube'a yükler.
 | Faz | İçerik                          | Durum        |
 | --- | ------------------------------- | ------------ |
 | 1   | Script üretim motoru (Gemini)   | ✅ Hazır     |
-| 2   | Ses / TTS (edge-tts, erkek ses) | 🧪 Kod hazır (yerel test) |
+| 2   | Ses / TTS (edge-tts + Piper yedek, erkek ses) | 🧪 Kod hazır (yerel test) |
 | 3   | Görsel toplama (Pexels)         | ⏳           |
 | 4   | Video montaj (ffmpeg)           | ⏳           |
 | 5   | Firestore loglama               | ⏳           |
@@ -27,9 +27,17 @@ src/
   config.js              # .env okuma
   lib/firestore.js       # Firestore + used_topics (kredensiyel yoksa no-op)
   script/generateScript.js  # Faz 1 çekirdek modül
+  tts/
+    generateAudio.js     # Faz 2 orkestratör (edge -> piper fallback + whisper)
+    edgeTts.js           # edge-tts motoru + SRT parse
+    piper.js             # Piper çevrimdışı yedek motor
+    align.js             # faster-whisper kelime zamanlaması (Piper yolu)
 scripts/
   generate-script.js     # Faz 1 test aracı (CLI)
+  generate-audio.js      # Faz 2 test aracı (CLI)
+  whisper_align.py       # faster-whisper yardımcı betiği
 examples/                # 3 örnek script çıktısı
+requirements.txt         # Faz 2 Python araçları (edge-tts, piper-tts, faster-whisper)
 docs/
   firestore-schema.md
   github-actions-preview.md

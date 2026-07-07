@@ -1,0 +1,6 @@
+# Faz 2 — Seslendirme ve (yedek yolda) kelime zamanlaması için Python araçları.
+# Kurulum: pip install -r requirements.txt
+
+edge-tts>=7.0.0        # ana TTS (ücretsiz, Microsoft)
+piper-tts>=1.2.0       # çevrimdışı yedek TTS (403 riski yok)
+faster-whisper>=1.0.0  # yalnızca Piper yolunda kelime zaman damgaları için

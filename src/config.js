@@ -20,11 +20,21 @@ export const config = {
     projectId: process.env.FIREBASE_PROJECT_ID,
   },
   tts: {
-    // Popüler, doğal erkek US sesi. Alternatifler: en-US-BrianNeural,
-    // en-US-GuyNeural, en-US-ChristopherNeural, en-US-EricNeural
+    // auto = önce edge-tts, başarısız olursa Piper. Zorlamak için: 'edge' | 'piper'
+    engine: process.env.TTS_ENGINE || 'auto',
+
+    // -- edge-tts (ana) -- Popüler, doğal erkek US sesi. Alternatifler:
+    // en-US-BrianNeural, en-US-GuyNeural, en-US-ChristopherNeural, en-US-EricNeural
     voice: process.env.TTS_VOICE || 'en-US-AndrewNeural',
     rate: process.env.TTS_RATE || '+0%', // ör. "+10%" Shorts için biraz hızlı
     pitch: process.env.TTS_PITCH || '+0Hz',
+
+    // -- Piper (çevrimdışı yedek) -- Doğal erkek ses. Alternatif: en_US-lessac-medium
+    piperVoice: process.env.PIPER_VOICE || 'en_US-ryan-high',
+    piperDataDir: process.env.PIPER_DATA_DIR || 'models/piper',
+
+    // -- whisper (yalnızca Piper yolunda kelime zamanlaması için) --
+    whisperModel: process.env.WHISPER_MODEL || 'base',
   },
   pexels: {
     apiKey: process.env.PEXELS_API_KEY,

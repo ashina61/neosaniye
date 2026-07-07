@@ -1,19 +1,22 @@
-import { execFile } from 'node:child_process';
-import { promisify } from 'node:util';
-import { mkdir, writeFile, readFile, rm } from 'node:fs/promises';
-import path from 'node:path';
+import { mkdir } from 'node:fs/promises';
 import { config } from '../config.js';
+import { synthesizeEdge } from './edgeTts.js';
+import { synthesizePiper } from './piper.js';
+import { alignWords } from './align.js';
 
-const execFileAsync = promisify(execFile);
+export { parseSrt } from './edgeTts.js';
 
 /**
- * Faz 2 — Ses (TTS).
- * edge-tts (ücretsiz, Microsoft, API key gerekmez) ile script'i .mp3'e çevirir.
- * edge-tts kelime bazlı zaman damgalarını (WordBoundary) altyazı olarak da
- * üretir; bu sayede Faz 4'teki karaoke altyazılar için AYRICA whisper'a gerek
- * kalmaz (whisper opsiyonel bir yedek olarak düşünülebilir).
+ * Faz 2 — Ses (TTS) orkestratörü.
  *
- * Ön koşul: sistemde `edge-tts` CLI kurulu olmalı (pip install edge-tts).
+ * Motor stratejisi (config.tts.engine):
+ *   - 'auto'  : önce edge-tts; başarısız olursa (403/ağ/kurulu değil) Piper'a düşer.
+ *   - 'edge'  : sadece edge-tts.
+ *   - 'piper' : sadece Piper (çevrimdışı).
+ *
+ * Kelime zamanlaması:
+ *   - edge-tts kendi WordBoundary altyazısını verir (whisper gerekmez).
+ *   - Piper vermez; bu durumda faster-whisper ile hizalama yapılır.
  */
 
 /** Bir script nesnesini seslendirilecek düz metne çevirir. */
@@ -26,91 +29,66 @@ export function scriptToNarration(script) {
     .trim();
 }
 
-/** "00:00:01,250" -> 1.25 (saniye) */
-function srtTimeToSeconds(t) {
-  const m = t.trim().match(/(\d{2}):(\d{2}):(\d{2})[,.](\d{3})/);
-  if (!m) return 0;
-  const [, hh, mm, ss, ms] = m;
-  return Number(hh) * 3600 + Number(mm) * 60 + Number(ss) + Number(ms) / 1000;
-}
-
-/** edge-tts'in ürettiği SRT altyazısını [{ word, start, end }] dizisine çevirir. */
-export function parseSrt(srt) {
-  const blocks = srt.replace(/\r/g, '').trim().split(/\n\n+/);
-  const out = [];
-  for (const block of blocks) {
-    const lines = block.split('\n');
-    const timeLine = lines.find((l) => l.includes('-->'));
-    if (!timeLine) continue;
-    const [start, end] = timeLine.split('-->');
-    const text = lines
-      .slice(lines.indexOf(timeLine) + 1)
-      .join(' ')
-      .trim();
-    if (!text) continue;
-    out.push({
-      word: text,
-      start: srtTimeToSeconds(start),
-      end: srtTimeToSeconds(end),
-    });
-  }
-  return out;
-}
-
 /**
- * Script'i seslendirir.
- * @param {object} script - generateScript çıktısı (veya en az {hook,body,cta}).
+ * @param {object} script - generateScript çıktısı (en az {hook,body,cta}).
  * @param {object} [opts]
- * @param {string} [opts.outDir='output'] - Çıktı klasörü.
- * @param {string} [opts.basename] - Dosya adı kökü (varsayılan: normalizedTopic).
- * @param {string} [opts.voice] - edge-tts sesi (varsayılan config.tts.voice).
- * @param {string} [opts.rate]  - Konuşma hızı (varsayılan config.tts.rate).
- * @param {string} [opts.pitch] - Ton (varsayılan config.tts.pitch).
- * @returns {Promise<{audioPath:string, subtitlePath:string, wordTimings:Array, text:string, durationEstimate:number}>}
+ * @param {string} [opts.outDir='output']
+ * @param {string} [opts.basename] - Dosya adı kökü (varsayılan normalizedTopic).
+ * @param {'auto'|'edge'|'piper'} [opts.engine] - config.tts.engine'i geçersiz kılar.
+ * @returns {Promise<{engine:string, audioPath:string, subtitlePath:(string|null), wordTimings:Array, text:string, durationEstimate:number}>}
  */
 export async function generateAudio(script, opts = {}) {
   const {
     outDir = 'output',
     basename = script.normalizedTopic || 'script',
-    voice = config.tts.voice,
-    rate = config.tts.rate,
-    pitch = config.tts.pitch,
+    engine = config.tts.engine,
   } = opts;
 
   await mkdir(outDir, { recursive: true });
-
   const text = scriptToNarration(script);
-  const textPath = path.join(outDir, `${basename}.txt`);
-  const audioPath = path.join(outDir, `${basename}.mp3`);
-  const subtitlePath = path.join(outDir, `${basename}.srt`);
+  const base = { outDir, basename };
 
-  await writeFile(textPath, text, 'utf8');
+  let result;
 
-  const args = [
-    '--voice', voice,
-    '--rate', rate,
-    '--pitch', pitch,
-    '--file', textPath,
-    '--write-media', audioPath,
-    '--write-subtitles', subtitlePath,
-  ];
-
-  try {
-    await execFileAsync('edge-tts', args, { maxBuffer: 10 * 1024 * 1024 });
-  } catch (err) {
-    const hint =
-      'edge-tts başarısız. Kurulu mu? (pip install edge-tts). ' +
-      'Datacenter IP\'lerinde Microsoft 403 verebilir — yerelde/ev IP\'sinde deneyin.';
-    throw new Error(`${hint}\n${err.stderr || err.message}`);
-  } finally {
-    await rm(textPath, { force: true });
+  if (engine === 'edge') {
+    result = await synthesizeEdge(text, base);
+  } else if (engine === 'piper') {
+    result = await synthesizePiper(text, base);
+  } else {
+    // auto: edge-tts dene, olmazsa Piper'a düş.
+    try {
+      result = await synthesizeEdge(text, base);
+    } catch (edgeErr) {
+      console.warn(
+        `[tts] edge-tts başarısız, Piper'a düşülüyor: ${
+          (edgeErr.stderr || edgeErr.message || '').split('\n')[0]
+        }`,
+      );
+      try {
+        result = await synthesizePiper(text, base);
+      } catch (piperErr) {
+        throw new Error(
+          `Her iki TTS motoru da başarısız.\n- edge-tts: ${
+            edgeErr.stderr || edgeErr.message
+          }\n- piper: ${piperErr.stderr || piperErr.message}`,
+        );
+      }
+    }
   }
 
-  const srt = await readFile(subtitlePath, 'utf8').catch(() => '');
-  const wordTimings = parseSrt(srt);
-  const durationEstimate = wordTimings.length
-    ? wordTimings[wordTimings.length - 1].end
+  // Piper yolunda kelime zamanlaması yok -> whisper ile çıkar.
+  if (!result.wordTimings) {
+    result.wordTimings = await alignWords(result.audioPath).catch((err) => {
+      console.warn(
+        `[tts] whisper hizalaması başarısız (altyazı zamanlaması boş): ${err.message}`,
+      );
+      return [];
+    });
+  }
+
+  const durationEstimate = result.wordTimings.length
+    ? result.wordTimings[result.wordTimings.length - 1].end
     : 0;
 
-  return { audioPath, subtitlePath, wordTimings, text, durationEstimate };
+  return { ...result, text, durationEstimate };
 }
