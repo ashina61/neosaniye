@@ -18,28 +18,29 @@ export const SCRIPT_SCHEMA = {
   properties: {
     topic: {
       type: Type.STRING,
-      description: 'Kısa konu başlığı (Türkçe), tekrar kontrolü için kullanılır',
+      description: 'Short topic title (English), used for duplicate checking',
     },
     hook: {
       type: Type.STRING,
-      description: 'İlk 3 saniyede izleyiciyi durduran dikkat çekici cümle',
+      description: 'Attention-grabbing sentence that hooks the viewer in the first 3 seconds',
     },
     body: {
       type: Type.STRING,
-      description: 'Ana anlatım metni (seslendirilecek düz metin)',
+      description: 'Main narration text (plain voiceover text)',
     },
     cta: {
       type: Type.STRING,
-      description: 'Kapanış / harekete geçirici cümle',
+      description:
+        'Short closing call-to-action, in English, tied to this specific topic (unique each time)',
     },
     visual_keywords: {
       type: Type.ARRAY,
       items: { type: Type.STRING },
-      description: 'Pexels aramaları için 4-6 adet İngilizce anahtar kelime',
+      description: '4-6 English keywords for Pexels searches',
     },
     estimated_duration_seconds: {
       type: Type.INTEGER,
-      description: 'Tahmini toplam seslendirme süresi (30-45)',
+      description: 'Estimated total voiceover duration in seconds (30-45)',
     },
   },
   required: [
@@ -62,39 +63,44 @@ export const SCRIPT_SCHEMA = {
 };
 
 function buildSystemPrompt() {
-  return `Sen bir YouTube Shorts senaryo yazarısın. Türkçe, "ilginç bilgiler / nasıl çalışır / nasıl yapılır" temalı, 30-45 saniyelik dikey kısa video senaryoları üretirsin.
+  return `You are a YouTube Shorts scriptwriter. You write English, 30-45 second vertical short-video scripts on the theme "interesting facts / how it works / how to".
 
-Kurallar:
-- Metin akıcı, sohbet havasında ve TEK bir kişinin seslendirebileceği şekilde olmalı.
-- Hook ilk 3 saniyede izleyiciyi durduracak kadar merak uyandırıcı olmalı ("Biliyor muydun...", "Şu an cebindeki telefon..." gibi).
-- Body somut, şaşırtıcı ve DOĞRU bilgi içermeli; jargon yok, sade Türkçe.
-- CTA kısa olmalı (ör. "Takip et, her gün yeni bir bilgi.").
-- Toplam seslendirme süresi 30-45 saniye olacak şekilde uzunluğu ayarla (yaklaşık 80-120 kelime, hook+body+cta toplamı).
-- visual_keywords MUTLAKA İngilizce olmalı (Pexels stok arşivi İngilizce çalışır) ve anlatılan sahnelerle eşleşmeli. 4-6 kelime.
-- Emoji, hashtag veya markdown KULLANMA; sadece seslendirilecek düz metin üret.`;
+Rules:
+- The text must be fluent, conversational, and written to be read aloud by a SINGLE narrator.
+- The hook must be curiosity-grabbing enough to stop the viewer within the first 3 seconds ("Did you know...", "The phone in your pocket right now...").
+- The body must be concrete, surprising, and ACCURATE; no jargon, plain English.
+- The CTA must be SHORT and tied to THIS specific topic, and it must be DIFFERENT every time. Never reuse a generic line like "Follow for more interesting facts." Make it feel connected to the subject (e.g. for a space topic: "Follow for more secrets of the universe.").
+- Adjust length so the total voiceover is 30-45 seconds (roughly 80-120 words total across hook+body+cta).
+- visual_keywords MUST be in English (the Pexels stock library works in English) and must match the scenes described. 4-6 keywords.
+- Do NOT use emojis, hashtags, or markdown; output plain narration text only.`;
 }
 
 function buildUserPrompt(avoidTopics) {
   const avoid = avoidTopics.length
-    ? `Daha önce kullanılmış konular (bunları ve çok benzerlerini SEÇME):\n${avoidTopics
+    ? `Previously used topics (do NOT pick these or anything very similar):\n${avoidTopics
         .map((t) => `- ${t}`)
         .join('\n')}`
-    : 'Henüz kullanılmış konu yok.';
-  return `Tema: ${config.niche.theme}\n\n${avoid}\n\nYukarıdaki temaya uygun, listedekilerden farklı YENİ ve ilgi çekici bir konu seç ve senaryoyu üret.`;
+    : 'No topics have been used yet.';
+  return `Theme: ${config.niche.theme}\n\n${avoid}\n\nPick a NEW, engaging topic that fits the theme and differs from the list above, then write the script.`;
 }
 
 /**
  * Yeni bir script üretir.
  * @param {object} opts
  * @param {number} [opts.maxRetries=3] - Konu tekrarı halinde yeniden deneme sayısı.
+ * @param {string[]} [opts.avoidTopics=[]] - Firestore dışında ekstra kaçınılacak konular
+ *   (ör. aynı çalıştırmada üretilenler; Firestore yoksa da tekrarı azaltır).
  * @returns {Promise<object>} - SCRIPT_SCHEMA'ya uygun script + normalizedTopic.
  */
-export async function generateScript({ maxRetries = 3 } = {}) {
+export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid = [] } = {}) {
   assertGemini();
   const ai = new GoogleGenAI({ apiKey: config.gemini.apiKey });
 
   const recent = await getRecentUsedTopics(50);
-  const avoidTopics = recent.map((r) => r.topic).filter(Boolean);
+  const avoidTopics = [
+    ...recent.map((r) => r.topic).filter(Boolean),
+    ...extraAvoid,
+  ];
 
   let lastScript = null;
 

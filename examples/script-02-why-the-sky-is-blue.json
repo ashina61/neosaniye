@@ -1,0 +1,16 @@
+{
+  "topic": "Why the Sky is Blue",
+  "hook": "Ever wondered why the sky is blue, and not, say, purple or green?",
+  "body": "It's all thanks to something called Rayleigh scattering! The Earth's atmosphere is full of tiny nitrogen and oxygen molecules. When sunlight hits these molecules, the blue light waves get scattered in all directions more than other colors because they travel in shorter, smaller waves. This is why we see blue light from every part of the sky. Red and yellow light, with their longer wavelengths, mostly pass straight through to our eyes, which is why sunsets look so fiery when the sun is lower and its light has to travel through more atmosphere.",
+  "cta": "Explore more wonders of our amazing planet by following for more fascinating facts!",
+  "visual_keywords": [
+    "blue sky",
+    "sunlight",
+    "atmosphere",
+    "light scattering",
+    "sunset",
+    "earth from space"
+  ],
+  "estimated_duration_seconds": 44,
+  "normalizedTopic": "why-the-sky-is-blue"
+}

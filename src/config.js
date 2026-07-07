@@ -9,8 +9,10 @@ export const config = {
     model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
   },
   niche: {
-    language: process.env.CONTENT_LANGUAGE || 'tr',
-    theme: process.env.CONTENT_THEME || 'ilginç bilgiler, nasıl çalışır, nasıl yapılır',
+    language: process.env.CONTENT_LANGUAGE || 'en',
+    theme:
+      process.env.CONTENT_THEME ||
+      'interesting facts, how it works, how to',
   },
   firebase: {
     // GitHub Secret'ta tek satır JSON string olarak tutulur.
