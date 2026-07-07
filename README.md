@@ -10,7 +10,7 @@ YouTube'a yükler.
 | Faz | İçerik                          | Durum        |
 | --- | ------------------------------- | ------------ |
 | 1   | Script üretim motoru (Gemini)   | ✅ Hazır     |
-| 2   | Ses / TTS (edge-tts) + whisper  | ⏳ Sırada    |
+| 2   | Ses / TTS (edge-tts, erkek ses) | 🧪 Kod hazır (yerel test) |
 | 3   | Görsel toplama (Pexels)         | ⏳           |
 | 4   | Video montaj (ffmpeg)           | ⏳           |
 | 5   | Firestore loglama               | ⏳           |

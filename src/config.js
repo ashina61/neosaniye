@@ -19,6 +19,13 @@ export const config = {
     serviceAccountJson: process.env.FIREBASE_SERVICE_ACCOUNT,
     projectId: process.env.FIREBASE_PROJECT_ID,
   },
+  tts: {
+    // Popüler, doğal erkek US sesi. Alternatifler: en-US-BrianNeural,
+    // en-US-GuyNeural, en-US-ChristopherNeural, en-US-EricNeural
+    voice: process.env.TTS_VOICE || 'en-US-AndrewNeural',
+    rate: process.env.TTS_RATE || '+0%', // ör. "+10%" Shorts için biraz hızlı
+    pitch: process.env.TTS_PITCH || '+0Hz',
+  },
   pexels: {
     apiKey: process.env.PEXELS_API_KEY,
   },
