@@ -1,1 +1,108 @@
-[]
+[
+  {
+    "id": "great-emu-war-1783531206148",
+    "topic": "Great Emu War",
+    "normalizedTopic": "great-emu-war",
+    "script": {
+      "title": "When Australia Declared War on Emus... and LOST",
+      "category": "history",
+      "scenes": [
+        {
+          "narration": "In 1932, Western Australia faced an unexpected enemy: over 20,000 emus.",
+          "image_prompt": "Cinematic wide shot of a vast, dusty Australian outback landscape, with hundreds of emus silhouetted against a setting sun. Late afternoon light, desolate mood."
+        },
+        {
+          "narration": "These drought-driven birds were destroying crops, devastating farming communities.",
+          "image_prompt": "Close-up on a farmer's weathered hand sifting through dry, ruined wheat stalks in a parched field. Desperate, frustrated mood. 1930s era."
+        },
+        {
+          "narration": "Desperate, farmers petitioned the government, and the military was deployed.",
+          "image_prompt": "A small group of stoic Australian farmers in worn hats, gathered anxiously around a government official in a dusty, rural office. 1930s, low light, serious mood."
+        },
+        {
+          "narration": "Major G.P.W. Meredith led the operation, equipped with machine guns and ten soldiers.",
+          "image_prompt": "Major Meredith, a determined-looking man in a 1930s Australian military uniform, standing next to a Vickers machine gun mounted on a truck in the arid outback. Morning light, gritty."
+        },
+        {
+          "narration": "Their mission: to eradicate the emu threat, like a tactical military campaign.",
+          "image_prompt": "High-angle shot showing a convoy of military trucks, kicking up dust as they drive through the endless, flat Australian bush, hunting unseen targets. Hazy, intense."
+        },
+        {
+          "narration": "However, the emus proved to be surprisingly formidable and elusive opponents.",
+          "image_prompt": "Fast-panning shot following a flock of emus running at high speed across the barren landscape, easily evading a distant military vehicle. Dynamic, chaotic."
+        },
+        {
+          "narration": "After weeks of futile effort, minimal success, and expended ammunition, the \"Emu War\" officially ended.",
+          "image_prompt": "Close-up on a pile of spent ammunition casings on the dusty ground next to a discarded machine gun, hinting at extensive, unsuccessful firing. Overcast, somber mood."
+        },
+        {
+          "narration": "The emus had won, outsmarting the military in what became a bizarre historical footnote.",
+          "image_prompt": "A lone emu stands proudly on a small rise, looking out over the vast, empty landscape, a metaphorical victor. Golden hour, slightly triumphant and surreal."
+        }
+      ],
+      "cta": "Discover more incredible animal victories by subscribing!"
+    },
+    "audioPath": "output/great-emu-war/great-emu-war.mp3",
+    "videoPath": "output/great-emu-war/great-emu-war.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/great-emu-war/media/01-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/great-emu-war/media/02-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/great-emu-war/media/03-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 3,
+        "path": "output/great-emu-war/media/04-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 4,
+        "path": "output/great-emu-war/media/05-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 5,
+        "path": "output/great-emu-war/media/06-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 6,
+        "path": "output/great-emu-war/media/07-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 7,
+        "path": "output/great-emu-war/media/08-ai.jpg"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 45.58,
+    "status": "published",
+    "youtube": {
+      "videoId": "F4bHiEO5Ees",
+      "url": "https://www.youtube.com/shorts/F4bHiEO5Ees",
+      "title": "When Australia Declared War on Emus... and LOST #Shorts",
+      "publishedAt": "2026-07-08T17:20:06.147Z"
+    },
+    "createdAt": "2026-07-08T17:20:06.148Z"
+  }
+]
