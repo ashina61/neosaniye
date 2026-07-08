@@ -17,17 +17,27 @@ export const config = {
       'surprising true stories and mind-blowing facts from history, science, space, nature, and mystery',
   },
   images: {
-    // AI görsel üretimi (Gemini). Kapatmak için IMAGES_ENABLED=0 (Pexels'e düşer).
+    // AI görsel üretimi. Kapatmak için IMAGES_ENABLED=0 (Pexels'e düşer).
     enabled: process.env.IMAGES_ENABLED !== '0',
-    // Google'ın görsel modeli ("Nano Banana"). Ücretsiz tier, mevcut Gemini anahtarı.
+    // Sağlayıcı: 'pollinations' (ÜCRETSİZ, key yok, FLUX tabanlı, konuya bağlı görsel)
+    //           'gemini' (gemini-2.5-flash-image; genelde ücretli/kotalı)
+    //           'none' (doğrudan Pexels)
+    provider: process.env.IMAGE_PROVIDER || 'pollinations',
+    // Pollinations modeli: 'flux' (kaliteli) | 'turbo' (hızlı).
+    pollinationsModel: process.env.POLLINATIONS_MODEL || 'flux',
+    // Gemini görsel modeli (provider=gemini iken).
     model: process.env.IMAGE_MODEL || 'gemini-2.5-flash-image',
+    // Üretilen görsel çözünürlüğü (9:16). Pollinations bu boyutta üretir.
+    width: Number(process.env.IMAGE_WIDTH || 768),
+    height: Number(process.env.IMAGE_HEIGHT || 1344),
     // Her sahne promptuna eklenen ortak sinematik stil (tutarlı "look").
     styleSuffix:
       process.env.IMAGE_STYLE ||
       'cinematic photorealistic still, dramatic volumetric lighting, warm filmic ' +
         'color grade, shallow depth of field, highly detailed, epic mood, ' +
-        'vertical 9:16 composition, no text, no watermark, no subtitles',
+        'vertical composition, no text, no watermark, no subtitles',
     retries: Number(process.env.IMAGE_RETRIES || 2),
+    timeoutMs: Number(process.env.IMAGE_TIMEOUT_MS || 90000),
     // Görsel üretimi başarısızsa Pexels'ten stok görsele düş.
     pexelsFallback: process.env.IMAGE_PEXELS_FALLBACK !== '0',
   },
@@ -66,18 +76,19 @@ export const config = {
     logoMarkPath: process.env.LOGO_MARK_PATH || 'assets/logo-mark.png',
     logoText: process.env.LOGO_TEXT || 'neosaniye',
 
-    // Klipler arası geçiş efektleri (xfade). 0 = kapalı.
-    transitionDuration: Number(process.env.VIDEO_TRANSITION || 0.4),
+    // Klipler arası geçiş efektleri (xfade). Çeşitli/canlı set (sırayla döner).
+    transitionDuration: Number(process.env.VIDEO_TRANSITION || 0.5),
     transitions: (process.env.VIDEO_TRANSITIONS ||
-      'fade,slideleft,wipeup,circleopen').split(','),
+      'slideleft,wipeup,zoomin,smoothright,circleopen,slideright,wipedown,radial,fadeblack,diagtl')
+      .split(','),
 
-    // Altyazı stili: 'caption' = sinematik alt-orta kısa ifade (referans tarzı),
-    // 'pop' = eski büyük karaoke kelime-pop. Anlatı formatı için 'caption' önerilir.
+    // Altyazı stili: 'caption' = sinematik alt kısa ifade (ekranı kaplamaz),
+    // 'word' = tek kelime punchy, 'pop' = eski büyük karaoke. Shorts için 'caption'.
     captionStyle: process.env.VIDEO_CAPTION_STYLE || 'caption',
-    captionWordsPerLine: Number(process.env.VIDEO_CAPTION_WORDS || 3),
-    captionSize: Number(process.env.VIDEO_CAPTION_SIZE || 76),
-    // Alt-üçte-bir: Shorts arayüzü (beğen/yorum) en altta olduğu için yukarıda tutulur.
-    captionMarginV: Number(process.env.VIDEO_CAPTION_MARGIN || 430),
+    captionWordsPerLine: Number(process.env.VIDEO_CAPTION_WORDS || 2),
+    captionSize: Number(process.env.VIDEO_CAPTION_SIZE || 58),
+    // Alt bölge (ekranı kaplamasın): küçük marginV = daha aşağı. Shorts UI üstünde kalır.
+    captionMarginV: Number(process.env.VIDEO_CAPTION_MARGIN || 300),
 
     // Vurucu kelime vurgusu (sayılar ve uzun kelimeler) rengi (ASS &HBBGGRR&). Sarı.
     accentColor: process.env.VIDEO_ACCENT || '&H00E6FF&',

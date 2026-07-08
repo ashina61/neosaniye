@@ -9,12 +9,34 @@ import { fetchOneForKeywords } from './fetchMedia.js';
 const run = promisify(execFile);
 
 /**
- * Faz 3 (yeni) — Sahne başına AI görsel üretimi (Google Gemini görsel modeli).
+ * Faz 3 (yeni) — Sahne başına AI görsel üretimi.
  *
- * Her sahne için `image_prompt` + ortak sinematik stille bir dikey görsel üretir.
- * Üretim başarısız olursa (kota/hata) Pexels stok görseline, o da olmazsa koyu
- * bir sinematik zemine (placeholder) düşer. Böylece boru hattı asla kırılmaz.
+ * Sağlayıcı (config.images.provider):
+ *   - 'pollinations' : ÜCRETSİZ, anahtar gerekmez, FLUX tabanlı, konuya bağlı görsel.
+ *   - 'gemini'       : gemini-2.5-flash-image (genelde ücretli/kotalı).
+ * Üretim başarısızsa Pexels stok (video/foto) yedeğine, o da olmazsa koyu
+ * sinematik zemine (placeholder) düşer. Böylece boru hattı asla kırılmaz.
  */
+
+/** Pollinations.ai (ücretsiz, FLUX) — promptu dikey bir görsele çevirir. */
+async function fetchPollinations(prompt, dest, { width, height, seed }) {
+  const model = config.images.pollinationsModel;
+  const url =
+    `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}` +
+    `?width=${width}&height=${height}&model=${model}&seed=${seed}&nologo=true&enhance=true`;
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), config.images.timeoutMs);
+  try {
+    const res = await fetch(url, { signal: ctrl.signal });
+    if (!res.ok) throw new Error(`pollinations HTTP ${res.status}`);
+    const buf = Buffer.from(await res.arrayBuffer());
+    if (buf.length < 3000) throw new Error('pollinations boş/geçersiz görsel');
+    await writeFile(dest, buf);
+    return dest;
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 /** Gemini yanıtından ilk gömülü (inline) görseli çıkarır. */
 function extractInlineImage(response) {
@@ -88,31 +110,42 @@ export async function generateImages(script, opts = {}) {
   const mediaDir = path.join(outDir, basename, 'media');
   await mkdir(mediaDir, { recursive: true });
 
-  const useAI = config.images.enabled && config.gemini.apiKey;
-  const ai = useAI ? new GoogleGenAI({ apiKey: config.gemini.apiKey }) : null;
+  const provider = config.images.enabled ? config.images.provider : 'none';
+  const geminiAI =
+    provider === 'gemini' && config.gemini.apiKey
+      ? new GoogleGenAI({ apiKey: config.gemini.apiKey })
+      : null;
+  const { width, height } = config.images;
 
   const items = [];
   const sources = { ai: 0, pexels: 0, placeholder: 0 };
-  let quotaHit = false;
+  let providerDead = provider === 'none' || (provider === 'gemini' && !geminiAI);
 
   for (let i = 0; i < scenes.length; i += 1) {
     const scene = scenes[i];
     const idx = String(i + 1).padStart(2, '0');
-    const destPng = path.join(mediaDir, `${idx}-ai.png`);
     const prompt = `${scene.image_prompt}. ${config.images.styleSuffix}`;
     let done = null;
 
-    // 1) AI görsel (kota dolduysa sonraki sahnelerde denemeyi bırak).
-    if (ai && !quotaHit) {
+    // 1) AI görsel. Gemini kota dolarsa kalan sahnelerde denemez; Pollinations
+    //    her sahnede tekrar dener (geçici hatalarda o sahne yedeğe düşer).
+    if (!providerDead) {
       for (let attempt = 0; attempt <= config.images.retries && !done; attempt += 1) {
         try {
-          const buf = await generateOne(ai, prompt);
-          await writeFile(destPng, buf);
-          done = { path: destPng, type: 'photo', scene: i, source: 'ai' };
+          if (provider === 'pollinations') {
+            const dest = path.join(mediaDir, `${idx}-ai.jpg`);
+            await fetchPollinations(prompt, dest, { width, height, seed: i + 1 });
+            done = { path: dest, type: 'photo', scene: i, source: 'ai' };
+          } else if (provider === 'gemini') {
+            const dest = path.join(mediaDir, `${idx}-ai.png`);
+            const buf = await generateOne(geminiAI, prompt);
+            await writeFile(dest, buf);
+            done = { path: dest, type: 'photo', scene: i, source: 'ai' };
+          }
         } catch (err) {
           const msg = String(err?.message || err);
-          if (/quota|RESOURCE_EXHAUSTED|429/i.test(msg)) {
-            quotaHit = true;
+          if (provider === 'gemini' && /quota|RESOURCE_EXHAUSTED|429/i.test(msg)) {
+            providerDead = true;
             console.warn(`[img] sahne ${idx}: Gemini kotası doldu, yedeklere geçiliyor.`);
             break;
           }

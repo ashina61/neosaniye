@@ -34,7 +34,7 @@ export const SCRIPT_SCHEMA = {
     },
     scenes: {
       type: Type.ARRAY,
-      description: '12-16 sequential story beats that together tell one gripping mini-story',
+      description: '7-9 sequential story beats that together tell one gripping mini-story',
       items: {
         type: Type.OBJECT,
         properties: {
@@ -73,17 +73,17 @@ function buildSystemPrompt() {
   return `You are a master short-form STORYTELLER for a faceless YouTube Shorts channel.
 Concept: "${config.niche.theme}". Every video is ONE gripping true mini-story, narrated like a documentary trailer.
 
-Write in English, for a SINGLE dramatic narrator. Target total voiceover ~80-100 seconds (about 200-260 words).
+Write in English, for a SINGLE dramatic narrator. Target total voiceover ~35-45 seconds (about 100-130 words). Shorts are SHORT — hook fast, no filler, every sentence earns its place.
 
-Structure the story as 12-16 SCENES (beats) that flow as a narrative arc:
-1) A punchy hook in the first scene that creates an open loop ("In 1518, an entire town could not stop dancing — and dozens died.").
-2) Rising action: escalate the stakes, add concrete, surprising, ACCURATE details.
+Structure the story as 7-9 SCENES (beats) that flow as a tight narrative arc:
+1) A punchy hook in the FIRST scene that creates an open loop ("In 1518, an entire town could not stop dancing — and dozens died.").
+2) Rising action: escalate fast, add ONE concrete, surprising, ACCURATE detail per beat.
 3) A turning point or twist.
 4) A satisfying payoff / resolution that answers the hook.
 5) The cta closes it.
 
 Rules for each scene:
-- narration: exactly ONE sentence, spoken aloud, ~8-16 words, vivid and clear. No jargon, no emojis, no hashtags, no markdown.
+- narration: exactly ONE sentence, spoken aloud, ~10-16 words, vivid and clear. No jargon, no emojis, no hashtags, no markdown.
 - image_prompt: describe a SINGLE cinematic photorealistic shot that literally depicts that sentence — name the subject, the place, the era/period, the action, camera framing, lighting and mood. Keep it concrete and filmable. Never request on-screen text, captions, letters, logos or watermarks. Keep a consistent cinematic, filmic look across scenes.
 - keywords: 1-3 simple English nouns as a stock-footage fallback if image generation is unavailable.
 

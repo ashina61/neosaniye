@@ -143,9 +143,11 @@ function buildPopAss(words, opts) {
 export function buildAss(wordTimings, opts = {}) {
   const words = wordTimings.filter((w) => w.word && w.end > w.start);
   const merged = { width: 1080, height: 1920, ...opts };
-  return config.video.captionStyle === 'pop'
-    ? buildPopAss(words, merged)
-    : buildCaptionAss(words, merged);
+  const style = config.video.captionStyle;
+  if (style === 'pop') return buildPopAss(words, merged);
+  // 'word' = tek kelime punchy; 'caption' = 2 kelimelik alt ifade.
+  if (style === 'word') return buildCaptionAss(words, { ...merged, perLine: 1 });
+  return buildCaptionAss(words, merged);
 }
 
 /** Tek bir medyayı (video/foto) sabit 1080x1920/fps klibe normalize eder.
@@ -155,7 +157,7 @@ async function normalizeClip(item, duration, outPath, { width, height, fps, inde
   // Supersample çözünürlüğü (Ken Burns zoom'unda titremeyi azaltır).
   const sw = width * 2;
   const sh = height * 2;
-  const zMax = 1.12;
+  const zMax = 1.18;
   const frames = Math.max(1, Math.round(duration * fps));
   const inc = ((zMax - 1) / frames).toFixed(6);
   // Tek klip zoom-in, çift klip zoom-out (çeşitlilik / sinematik ritim).
@@ -198,12 +200,31 @@ async function normalizeClip(item, duration, outPath, { width, height, fps, inde
   ], { maxBuffer: 20 * 1024 * 1024 });
 }
 
-/** Basit 'whoosh' geçiş ses efekti üretir (pembe gürültü + bant geçiren + fade). */
-async function makeWhoosh(outPath) {
+/** Çeşitli geçiş ses efektleri (her geçişte sırayla değişir):
+ *  - whoosh: pembe gürültü süpürme
+ *  - riser:  yükselen beyaz gürültü (gerilim)
+ *  - impact: yumuşak alt-bas vuruş
+ *  - swish:  kısa yüksek frekanslı süpürme */
+async function makeSfx(type, outPath) {
+  let src;
+  let af;
+  if (type === 'riser') {
+    src = 'anoisesrc=d=0.6:c=white:a=0.5';
+    af = 'highpass=f=500,lowpass=f=7000,afade=t=in:st=0:d=0.5,afade=t=out:st=0.5:d=0.1,volume=1.1';
+  } else if (type === 'impact') {
+    src = 'sine=frequency=95:duration=0.5';
+    af = 'lowpass=f=200,afade=t=out:st=0.06:d=0.42,volume=1.4';
+  } else if (type === 'swish') {
+    src = 'anoisesrc=d=0.35:c=white:a=0.5';
+    af = 'highpass=f=1200,lowpass=f=9000,afade=t=in:st=0:d=0.08,afade=t=out:st=0.14:d=0.2';
+  } else {
+    // whoosh (varsayılan)
+    src = 'anoisesrc=d=0.45:c=pink:a=0.6';
+    af = 'highpass=f=250,lowpass=f=5000,afade=t=in:st=0:d=0.12,afade=t=out:st=0.2:d=0.25';
+  }
   await run('ffmpeg', [
-    '-y', '-f', 'lavfi', '-i', 'anoisesrc=d=0.45:c=pink:a=0.6',
-    '-af', 'highpass=f=250,lowpass=f=5000,afade=t=in:st=0:d=0.12,afade=t=out:st=0.2:d=0.25',
-    '-ar', '44100', '-ac', '2',
+    '-y', '-f', 'lavfi', '-i', src,
+    '-af', af, '-ar', '44100', '-ac', '2',
     outPath,
   ], { maxBuffer: 10 * 1024 * 1024 });
 }
@@ -271,13 +292,18 @@ async function buildFullAudio(
     idx += 1;
   }
 
-  let whooshIdx = -1;
+  // Her geçiş için farklı SFX (sırayla döner) — hep aynı ses olmasın.
+  const sfxCycle = ['whoosh', 'riser', 'swish', 'impact'];
+  const sfxIdxs = [];
   if (sfx && mainTransitions > 0) {
-    const whoosh = path.join(workDir, 'whoosh.wav');
-    await makeWhoosh(whoosh);
-    inputs.push('-i', path.resolve(whoosh));
-    whooshIdx = idx;
-    idx += 1;
+    for (let k = 1; k <= mainTransitions; k += 1) {
+      const type = sfxCycle[(k - 1) % sfxCycle.length];
+      const f = path.join(workDir, `sfx-${k}.wav`);
+      await makeSfx(type, f);
+      inputs.push('-i', path.resolve(f));
+      sfxIdxs.push(idx);
+      idx += 1;
+    }
   }
 
   let chimeIdx = -1;
@@ -305,13 +331,13 @@ async function buildFullAudio(
     mix.push('[nmix]');
   }
 
-  if (whooshIdx >= 0) {
-    const splits = [];
-    for (let k = 1; k <= mainTransitions; k += 1) splits.push(`[w${k}]`);
-    fc.push(`[${whooshIdx}:a]aresample=44100,asplit=${mainTransitions}${splits.join('')}`);
+  if (sfxIdxs.length) {
     for (let k = 1; k <= mainTransitions; k += 1) {
+      const inIdx = sfxIdxs[k - 1];
       const ms = Math.round((off[k - 1] + td / 2) * 1000);
-      fc.push(`[w${k}]adelay=${ms}|${ms},volume=${config.video.transitionSoundVolume}[wd${k}]`);
+      fc.push(
+        `[${inIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=${config.video.transitionSoundVolume}[wd${k}]`,
+      );
       mix.push(`[wd${k}]`);
     }
   }
@@ -463,8 +489,8 @@ export async function renderVideo(job, opts = {}) {
   }
 
   if (hasLogoImg) {
-    vfc.push(`[${logoIdx}:v]scale=-1:74[lg]`);
-    vfc.push(`${vbase}[lg]overlay=40:52[vlogo]`);
+    vfc.push(`[${logoIdx}:v]scale=-1:72[lg]`);
+    vfc.push(`${vbase}[lg]overlay=72:64[vlogo]`);
   } else {
     const font = findFontFile();
     const fontOpt = font ? `fontfile=${font}:` : '';
