@@ -31,8 +31,9 @@ export const SCRIPT_SCHEMA = {
     hook_text: {
       type: Type.STRING,
       description:
-        'A punchy on-screen COVER line for the first 2 seconds: 3-6 words, ALL CAPS feel, ' +
-        'creates instant curiosity (e.g. "A TOWN DANCED TO DEATH"). No period.',
+        'A SHORT punchy on-screen COVER line for the first 2 seconds: 3-5 words, MAX 24 characters, ' +
+        'shocking/curiosity-spiking (e.g. "AN ARMY LOST TO BIRDS", "A TOWN DANCED TO DEATH"). ' +
+        'Must be a bold statement, not a full sentence. No period, no quotes.',
     },
     category: {
       type: Type.STRING,

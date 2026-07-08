@@ -44,6 +44,11 @@ jobs:
       - name: Node bağımlılıkları
         run: npm ci
 
+      - name: Telifsiz müzik indir (opsiyonel, best-effort)
+        run: node scripts/fetch-music.js || true
+        env:
+          MUSIC_URLS: ${{ vars.MUSIC_URLS }}
+
       - name: Üret ve yayınla
         run: node scripts/generate-and-publish.js ${{ inputs.no_upload && '--no-upload' || '' }}
         env:

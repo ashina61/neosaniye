@@ -1,7 +1,7 @@
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { mkdir, writeFile, rm } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
+import { existsSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { config } from '../config.js';
 import { buildOutro } from './outro.js';
@@ -67,8 +67,9 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 }
 
 /**
- * Sinematik alt-orta altyazı: kelimeleri 2-4'lük ifadelere gruplar, konuşmayla
- * senkron gösterir, yumuşak fade ile belirir (referans "Stellar Sagas" tarzı).
+ * Sinematik alt altyazı: kelimeleri kısa ifadelere gruplar, konuşmayla senkron
+ * gösterir, yumuşak fade ile belirir. Küçük ve genişliğe göre otomatik küçülür
+ * (ekranı kaplamaz, taşıp 2 satıra bölünmez). Ayrıca opsiyonel büyük "hook" kartı.
  */
 function buildCaptionAss(words, opts) {
   const {
@@ -78,15 +79,32 @@ function buildCaptionAss(words, opts) {
     marginV = config.video.captionMarginV,
     perLine = config.video.captionWordsPerLine,
     uppercase = true,
+    hookText = '',
+    hookDuration = config.video.hookDuration,
   } = opts;
 
-  const marginH = 80;
-  // Alt-orta (alignment 2), kalın beyaz, belirgin kenar + yumuşak gölge.
-  const style =
-    `Style: Cap,${fontName},${size},&H00FFFFFF,&H00000000,&H90000000,` +
-    `1,1,3.5,2,2,${marginH},${marginH},${marginV},1`;
+  const marginH = 90;
+  const usableW = width - 2 * marginH;
+  const charFactor = 0.62; // Montserrat Black büyük harf yaklaşık genişlik oranı
 
-  const lines = [];
+  // Alt-orta (alignment 2), kalın beyaz, ince kenar + yumuşak gölge.
+  const capStyle =
+    `Style: Cap,${fontName},${size},&H00FFFFFF,&H00000000,&H90000000,` +
+    `1,1,2.5,1,2,${marginH},${marginH},${marginV},1`;
+  const styleLines = [capStyle];
+
+  const events = [];
+
+  // Hook kartı: ilk saniyeler, büyük, üst-orta, otomatik satır kaydırma ile sığar.
+  const hk = assEscape(String(hookText || '').toUpperCase());
+  if (hk) {
+    const hStyle = `Style: Hook,${fontName},74,&H00FFFFFF,&H00000000,&H00000000,1,1,4,3,8,100,100,380,1`;
+    styleLines.push(hStyle);
+    events.push(
+      `Dialogue: 1,0:00:00.00,${assTime(hookDuration)},Hook,,0,0,0,,{\\fad(200,350)}${hk}`,
+    );
+  }
+
   for (let i = 0; i < words.length; i += perLine) {
     const group = words.slice(i, i + perLine);
     const start = group[0].start;
@@ -94,13 +112,16 @@ function buildCaptionAss(words, opts) {
     const end = Math.max(group[group.length - 1].end, nextGroupStart ?? group[group.length - 1].end);
     const raw = group.map((w) => w.word).join(' ');
     const text = assEscape(uppercase ? raw.toUpperCase() : raw);
-    // Vurgu: sayı içeren gruplar aksan rengiyle.
+    // Genişliğe sığdır: taşarsa küçült (taşıp 2. satıra düşmesin).
+    let fs = size;
+    const est = text.length * charFactor * fs;
+    if (est > usableW) fs = Math.max(30, Math.floor(usableW / (text.length * charFactor)));
     const emph = config.video.emphasis && /\d/.test(raw) ? `\\c${config.video.accentColor}` : '';
-    lines.push(
-      `Dialogue: 0,${assTime(start)},${assTime(end)},Cap,,0,0,0,,{\\fad(120,90)\\blur1.4${emph}}${text}`,
+    events.push(
+      `Dialogue: 0,${assTime(start)},${assTime(end)},Cap,,0,0,0,,{\\fs${fs}\\fad(120,90)\\blur1.2${emph}}${text}`,
     );
   }
-  return assHeader(width, height, style) + lines.join('\n') + '\n';
+  return assHeader(width, height, styleLines.join('\n')) + events.join('\n') + '\n';
 }
 
 /** Eski "word-pop" karaoke stili (VIDEO_CAPTION_STYLE=pop ile açılır). */
@@ -139,13 +160,14 @@ function buildPopAss(words, opts) {
   return assHeader(width, height, style) + lines.join('\n') + '\n';
 }
 
-/** Kelime zaman damgalarından ASS altyazısı üretir (stil config'e göre). */
+/** Kelime zaman damgalarından ASS altyazısı üretir (stil config'e göre).
+ *  opts.hookText verilirse ilk saniyelerde büyük hook kartı da eklenir. */
 export function buildAss(wordTimings, opts = {}) {
   const words = wordTimings.filter((w) => w.word && w.end > w.start);
   const merged = { width: 1080, height: 1920, ...opts };
   const style = config.video.captionStyle;
   if (style === 'pop') return buildPopAss(words, merged);
-  // 'word' = tek kelime punchy; 'caption' = 2 kelimelik alt ifade.
+  // 'word' = tek kelime punchy; 'caption' = kısa alt ifade.
   if (style === 'word') return buildCaptionAss(words, { ...merged, perLine: 1 });
   return buildCaptionAss(words, merged);
 }
@@ -241,7 +263,23 @@ async function makeChime(outPath) {
   ], { maxBuffer: 10 * 1024 * 1024 });
 }
 
-/** Sinematik ambient müzik yatağı sentezler (assets/music/bed.mp3 yoksa).
+/** assets/music/ havuzundan rastgele telifsiz parça seçer (yoksa null). */
+function pickMusicTrack() {
+  const exts = ['.mp3', '.m4a', '.wav', '.ogg', '.aac', '.opus'];
+  const dir = path.resolve(config.video.musicDir || 'assets/music');
+  try {
+    const files = readdirSync(dir)
+      .filter((f) => exts.includes(path.extname(f).toLowerCase()))
+      .map((f) => path.join(dir, f));
+    if (files.length) return files[Math.floor(Math.random() * files.length)];
+  } catch {
+    /* klasör yok */
+  }
+  const single = path.resolve(config.video.musicPath);
+  return existsSync(single) ? single : null;
+}
+
+/** Sinematik ambient müzik yatağı sentezler (havuzda parça yoksa).
  *  A-minör hisli katmanlı pad: alt-bas + akort + yavaş hareket + yumuşak filtre. */
 async function makePad(outPath, total) {
   await run('ffmpeg', [
@@ -287,13 +325,15 @@ async function buildFullAudio(
 
   let musicIdx = -1;
   if (useMusic) {
-    const musicPath = path.resolve(config.video.musicPath);
-    if (existsSync(musicPath)) {
-      inputs.push('-stream_loop', '-1', '-i', musicPath);
+    const track = pickMusicTrack();
+    if (track) {
+      inputs.push('-stream_loop', '-1', '-i', track);
+      console.log(`[audio] müzik: ${path.basename(track)}`);
     } else {
       const pad = path.join(workDir, 'pad.wav');
       await makePad(pad, total + 0.5);
       inputs.push('-i', path.resolve(pad));
+      console.log('[audio] müzik: sentetik pad (havuzda parça yok)');
     }
     musicIdx = idx;
     idx += 1;
@@ -454,12 +494,14 @@ export async function renderVideo(job, opts = {}) {
     clips.push(outroPath);
   }
 
-  // 3) Altyazı (varsa) — pop animasyonu + vurgu buildAss içinde.
+  // 3) Altyazı + hook kartı (ikisi de aynı ASS içinde; hook otomatik satır kaydırır).
+  const hasHook = config.video.hookOverlay && Boolean(hookText);
   const hasSubs = wordTimings.length > 0;
-  if (hasSubs) {
+  const useAss = hasSubs || hasHook;
+  if (useAss) {
     await writeFile(
       path.join(workDir, 'subs.ass'),
-      buildAss(wordTimings, { width, height }),
+      buildAss(wordTimings, { width, height, hookText: hasHook ? hookText : '' }),
     );
   }
 
@@ -561,27 +603,11 @@ export async function renderVideo(job, opts = {}) {
     last = '[vsp2]';
   }
 
-  // Altyazı
+  // Altyazı + hook (aynı ASS dosyasında; hook otomatik satır kaydırır, sığar).
   const fontsDir = path.resolve(config.video.fontsDir);
   const assFilter = existsSync(fontsDir) ? `ass=subs.ass:fontsdir=${fontsDir}` : 'ass=subs.ass';
-  if (hasSubs) {
-    vfc.push(`${last}${assFilter}[vcap]`);
-    last = '[vcap]';
-  }
-
-  // Hook kapağı (ilk hookDuration saniye, büyük üst yazı, sona doğru fade)
-  const hk = dtxt(hookText);
-  if (config.video.hookOverlay && hk) {
-    const hsize = Math.max(52, Math.min(90, Math.floor((width - 140) / (Math.max(1, hk.length) * 0.62))));
-    const HD = config.video.hookDuration;
-    const hm = (HD - 0.4).toFixed(2);
-    const hf = HD.toFixed(2);
-    const hAlpha = `alpha='if(lt(t,${hm}),1,if(lt(t,${hf}),1-(t-${hm})/0.4,0))'`;
-    vfc.push(
-      `${last}drawtext=${drawFontOpt}text='${hk}':fontcolor=white:fontsize=${hsize}:` +
-        `x=(w-text_w)/2:y=300:borderw=7:bordercolor=black@0.85:shadowx=0:shadowy=5:` +
-        `shadowcolor=black@0.5:${hAlpha}[v]`,
-    );
+  if (useAss) {
+    vfc.push(`${last}${assFilter}[v]`);
   } else {
     vfc.push(`${last}null[v]`);
   }

@@ -10,6 +10,9 @@ output/
 *.mp4
 *.wav
 
+# İstisna: repoya konan telifsiz müzik parçaları İZLENİR
+!assets/music/**
+
 # Firebase servis hesabı anahtarı asla commit edilmez
 serviceAccount*.json
 firebase-*.json

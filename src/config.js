@@ -86,7 +86,7 @@ export const config = {
     // 'word' = tek kelime punchy, 'pop' = eski büyük karaoke. Shorts için 'caption'.
     captionStyle: process.env.VIDEO_CAPTION_STYLE || 'caption',
     captionWordsPerLine: Number(process.env.VIDEO_CAPTION_WORDS || 2),
-    captionSize: Number(process.env.VIDEO_CAPTION_SIZE || 58),
+    captionSize: Number(process.env.VIDEO_CAPTION_SIZE || 46),
     // Alt bölge (ekranı kaplamasın): küçük marginV = daha aşağı. Shorts UI üstünde kalır.
     captionMarginV: Number(process.env.VIDEO_CAPTION_MARGIN || 300),
 
@@ -110,8 +110,10 @@ export const config = {
     transitionSoundVolume: Number(process.env.VIDEO_TRANSITION_SOUND_VOL || 0.2),
 
     // Arka plan müziği (narrasyon altında 'ducking' ile kısılır).
-    // assets/music/bed.mp3 varsa o kullanılır; yoksa yumuşak bir pad sentezlenir.
+    // assets/music/ içindeki telifsiz parçalardan her video için rastgele biri
+    // seçilir; klasör boşsa musicPath, o da yoksa sentetik pad kullanılır.
     music: process.env.VIDEO_MUSIC !== '0',
+    musicDir: process.env.VIDEO_MUSIC_DIR || 'assets/music',
     musicPath: process.env.VIDEO_MUSIC_PATH || 'assets/music/bed.mp3',
     musicVolume: Number(process.env.VIDEO_MUSIC_VOL || 0.14),
   },
