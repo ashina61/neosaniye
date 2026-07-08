@@ -114,15 +114,19 @@ async function downloadFile(url, dest) {
 /**
  * Tek bir sahne için (birkaç anahtar kelime denenerek) Pexels'ten dikey medya
  * indirir. AI görsel üretimi başarısız olursa yedek olarak kullanılır.
+ * Video da foto da dönebilir (tür korunur); uzantı hit.ext'e göre seçilir.
+ * @param {string[]} keywords
+ * @param {string} destBase - Uzantısız hedef yol (örn. .../01-stock)
  * @returns {Promise<{type:string, path:string, ...}|null>}
  */
-export async function fetchOneForKeywords(keywords, destPath) {
+export async function fetchOneForKeywords(keywords, destBase) {
   for (const keyword of keywords || []) {
     const hit = await findForKeyword(keyword);
     if (!hit) continue;
+    const dest = `${destBase}.${hit.ext}`;
     try {
-      const bytes = await downloadFile(hit.downloadUrl, destPath);
-      return { ...hit, path: destPath, bytes };
+      const bytes = await downloadFile(hit.downloadUrl, dest);
+      return { ...hit, path: dest, bytes };
     } catch (err) {
       console.warn(`[pexels] yedek indirme başarısız "${keyword}": ${err.message}`);
     }

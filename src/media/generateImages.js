@@ -123,12 +123,13 @@ export async function generateImages(script, opts = {}) {
       }
     }
 
-    // 2) Pexels stok yedeği.
+    // 2) Pexels stok yedeği — video da foto da olabilir (tür korunur).
     if (!done && config.images.pexelsFallback && config.pexels.apiKey) {
-      const destStock = path.join(mediaDir, `${idx}-stock.jpg`);
+      const destBase = path.join(mediaDir, `${idx}-stock`);
       try {
-        const hit = await fetchOneForKeywords(scene.keywords, destStock);
-        if (hit) done = { ...hit, path: destStock, type: 'photo', scene: i, source: 'pexels' };
+        const hit = await fetchOneForKeywords(scene.keywords, destBase);
+        // hit.type: 'video' | 'photo' → normalizeClip buna göre işler.
+        if (hit) done = { ...hit, scene: i, source: 'pexels' };
       } catch (err) {
         console.warn(`[img] sahne ${idx}: Pexels yedeği başarısız (${err.message}).`);
       }
@@ -143,7 +144,7 @@ export async function generateImages(script, opts = {}) {
 
     sources[done.source] += 1;
     items.push(done);
-    console.log(`[img] sahne ${idx}/${scenes.length}: ${done.source}`);
+    console.log(`[img] sahne ${idx}/${scenes.length}: ${done.source} (${done.type})`);
   }
 
   return { mediaDir, items, sources };
