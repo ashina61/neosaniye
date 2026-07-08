@@ -67,6 +67,7 @@ export async function runPipeline(opts = {}) {
       wordTimings: audio.wordTimings,
       media: media.items.map((m) => ({ path: m.path, type: m.type })),
       sceneWeights: sceneWeights.length === media.items.length ? sceneWeights : undefined,
+      hookText: script.hook_text,
       outPath,
     });
     console.log(`  ${video.width}x${video.height}, ${video.duration.toFixed(1)}s -> ${outPath}`);

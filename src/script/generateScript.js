@@ -28,6 +28,12 @@ export const SCRIPT_SCHEMA = {
       type: Type.STRING,
       description: 'Curiosity-driven YouTube title for this story, <= 80 chars',
     },
+    hook_text: {
+      type: Type.STRING,
+      description:
+        'A punchy on-screen COVER line for the first 2 seconds: 3-6 words, ALL CAPS feel, ' +
+        'creates instant curiosity (e.g. "A TOWN DANCED TO DEATH"). No period.',
+    },
     category: {
       type: Type.STRING,
       description: 'One of: history, science, space, nature, mystery, human body, technology',
@@ -65,8 +71,8 @@ export const SCRIPT_SCHEMA = {
         'Short closing spoken line tied to THIS story (unique each time), invites to follow',
     },
   },
-  required: ['topic', 'title', 'category', 'scenes', 'cta'],
-  propertyOrdering: ['topic', 'title', 'category', 'scenes', 'cta'],
+  required: ['topic', 'title', 'hook_text', 'category', 'scenes', 'cta'],
+  propertyOrdering: ['topic', 'title', 'hook_text', 'category', 'scenes', 'cta'],
 };
 
 function buildSystemPrompt() {
@@ -89,9 +95,26 @@ Rules for each scene:
 
 Rules for the whole script:
 - Pick a genuinely FASCINATING, lesser-known TRUE story or fact. Prefer the "wait, what?!" kind.
-- Be historically/scientifically accurate. Do not invent fake facts.
+- ACCURACY IS MANDATORY. Use only well-documented, widely-accepted facts. Never invent events, quotes, names, or statistics. If a specific number or detail is uncertain, phrase it cautiously ("around", "some historians say") or leave it out. A wrong fact destroys the channel's credibility.
 - cta: short, specific to this story, and DIFFERENT every time (never a generic "Follow for more facts").
 - title: curiosity-driven, <= 80 characters, no clickbait lies, no emojis.`;
+}
+
+/** Geçici hatalarda (5xx / ağ / UNAVAILABLE) kısa backoff ile yeniden dener.
+ *  Kota (429) hatasında ısrar etmez — anlamsız. */
+async function generateWithRetry(ai, req, tries = 3) {
+  let lastErr;
+  for (let i = 0; i < tries; i += 1) {
+    try {
+      return await ai.models.generateContent(req);
+    } catch (err) {
+      lastErr = err;
+      const msg = String(err?.message || err);
+      if (/quota|RESOURCE_EXHAUSTED|429|API key|permission/i.test(msg)) throw err;
+      if (i < tries - 1) await new Promise((r) => setTimeout(r, 1500 * (i + 1)));
+    }
+  }
+  throw lastErr;
 }
 
 function buildUserPrompt(avoidTopics) {
@@ -123,7 +146,7 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
   let lastScript = null;
 
   for (let attempt = 1; attempt <= maxRetries; attempt += 1) {
-    const response = await ai.models.generateContent({
+    const response = await generateWithRetry(ai, {
       model: config.gemini.model,
       contents: buildUserPrompt(avoidTopics),
       config: {

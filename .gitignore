@@ -14,5 +14,8 @@ output/
 serviceAccount*.json
 firebase-*.json
 
-# Faz 5 yerel state yedeği (Firebase yoksa)
-data/
+# Faz 5 yerel state (Firebase yoksa) — dedup için state dosyaları İZLENİR,
+# gerisi (indirilen geçici veriler vb.) yok sayılır.
+data/*
+!data/used_topics.json
+!data/videos.json

@@ -241,15 +241,22 @@ async function makeChime(outPath) {
   ], { maxBuffer: 10 * 1024 * 1024 });
 }
 
-/** Yumuşak ambient 'pad' müzik yatağı sentezler (assets/music/bed.mp3 yoksa). */
+/** Sinematik ambient müzik yatağı sentezler (assets/music/bed.mp3 yoksa).
+ *  A-minör hisli katmanlı pad: alt-bas + akort + yavaş hareket + yumuşak filtre. */
 async function makePad(outPath, total) {
   await run('ffmpeg', [
     '-y',
-    '-f', 'lavfi', '-i', 'sine=f=220',
-    '-f', 'lavfi', '-i', 'sine=f=277',
-    '-f', 'lavfi', '-i', 'sine=f=330',
+    '-f', 'lavfi', '-i', 'sine=f=55',      // sub bass (A1)
+    '-f', 'lavfi', '-i', 'sine=f=110',     // A2
+    '-f', 'lavfi', '-i', 'sine=f=164.81',  // E3
+    '-f', 'lavfi', '-i', 'sine=f=220',     // A3
+    '-f', 'lavfi', '-i', 'sine=f=261.63',  // C4 (minör renk)
     '-filter_complex',
-    '[0][1][2]amix=inputs=3,tremolo=f=0.12:d=0.4,lowpass=f=700[a]',
+    '[0]volume=0.6[b];' +
+      '[b][1][2][3][4]amix=inputs=5:normalize=1,' +
+      'tremolo=f=0.1:d=0.35,vibrato=f=0.12:d=0.3,' +
+      'lowpass=f=1100,highpass=f=45,' +
+      `afade=t=in:st=0:d=2,afade=t=out:st=${Math.max(0, total - 2).toFixed(2)}:d=2[a]`,
     '-map', '[a]', '-t', total.toFixed(3), '-ar', '44100', '-ac', '2',
     outPath,
   ], { maxBuffer: 10 * 1024 * 1024 });
@@ -373,7 +380,7 @@ async function buildFullAudio(
  * @returns {Promise<{outPath:string, duration:number, width:number, height:number, clips:number}>}
  */
 export async function renderVideo(job, opts = {}) {
-  const { audioPath, wordTimings = [], media = [], outPath } = job;
+  const { audioPath, wordTimings = [], media = [], outPath, hookText = '' } = job;
   const { width = 1080, height = 1920, fps = 30 } = opts;
 
   if (!audioPath) throw new Error('job.audioPath gerekli.');
@@ -456,17 +463,41 @@ export async function renderVideo(job, opts = {}) {
     );
   }
 
-  // 4) VİDEO PASS: xfade geçişleri (klipler + outro) -> logo -> altyazı (sessiz).
+  // 4) VİDEO PASS: xfade -> logo -> abone uyarısı -> altyazı -> hook (sessiz).
+  const dtxt = (s) =>
+    String(s || '').toUpperCase().replace(/[\r\n]+/g, ' ').replace(/[\\:'%]/g, '').trim();
+  const montFont = path.resolve(config.video.fontsDir, 'Montserrat-Black.ttf');
+  const drawFontFile = existsSync(montFont) ? montFont : findFontFile();
+  const drawFontOpt = drawFontFile ? `fontfile=${drawFontFile}:` : '';
+
   const vInputs = [];
   clips.forEach((p) => vInputs.push('-i', path.resolve(p)));
+  let nextIdx = clips.length;
+
   // Köşe filigranı: kompakt monogram varsa onu, yoksa tam logoyu kullan.
   const markImg = config.video.logoMarkPath ? path.resolve(config.video.logoMarkPath) : '';
   const logoImg = existsSync(markImg) ? markImg : path.resolve(config.video.logoPath);
   const hasLogoImg = existsSync(logoImg);
   let logoIdx = -1;
-  if (hasLogoImg) {
-    logoIdx = clips.length;
-    vInputs.push('-i', logoImg);
+  if (hasLogoImg) { logoIdx = nextIdx; nextIdx += 1; vInputs.push('-i', logoImg); }
+
+  // Video-içi abone uyarısı (loop-dostu): pill + like ikonu, ortalarda kısa süre belirir.
+  const pillPath = path.resolve('assets/icons/subbtn.png');
+  const likePath = path.resolve('assets/icons/like.png');
+  const spOn = config.video.subPrompt && existsSync(pillPath) && total > 9;
+  let pillIdx = -1;
+  let likeIdx = -1;
+  let T1 = 0;
+  let T2 = 0;
+  if (spOn) {
+    T1 = Math.min(Math.max(total * 0.42, 3.5), Math.max(3.5, total - 4.8));
+    T2 = T1 + 2.6;
+    pillIdx = nextIdx; nextIdx += 1;
+    vInputs.push('-loop', '1', '-framerate', String(fps), '-t', total.toFixed(3), '-i', pillPath);
+    if (existsSync(likePath)) {
+      likeIdx = nextIdx; nextIdx += 1;
+      vInputs.push('-loop', '1', '-framerate', String(fps), '-t', total.toFixed(3), '-i', likePath);
+    }
   }
 
   const vfc = [];
@@ -488,32 +519,81 @@ export async function renderVideo(job, opts = {}) {
     vbase = '[vx]';
   }
 
+  // Logo
+  let last;
   if (hasLogoImg) {
     vfc.push(`[${logoIdx}:v]scale=-1:72[lg]`);
     vfc.push(`${vbase}[lg]overlay=72:64[vlogo]`);
+    last = '[vlogo]';
   } else {
-    const font = findFontFile();
-    const fontOpt = font ? `fontfile=${font}:` : '';
-    const txt = String(config.video.logoText).replace(/[:\\'%]/g, '');
+    const txt = dtxt(config.video.logoText);
     vfc.push(
-      `${vbase}drawtext=${fontOpt}text='${txt}':x=40:y=48:fontsize=44:` +
+      `${vbase}drawtext=${drawFontOpt}text='${txt}':x=40:y=48:fontsize=44:` +
         'fontcolor=white@0.92:borderw=2:bordercolor=black@0.5[vlogo]',
     );
+    last = '[vlogo]';
   }
 
+  // Abone uyarısı (fade in/out penceresi [T1, T2])
+  if (spOn) {
+    const win = `format=rgba,fade=t=in:st=${T1.toFixed(2)}:d=0.3:alpha=1,fade=t=out:st=${T2.toFixed(2)}:d=0.3:alpha=1`;
+    const groupLeft = Math.round((width - (88 + 14 + 300)) / 2);
+    const pillX = groupLeft + 88 + 14;
+    const pillY = 158;
+    vfc.push(`[${pillIdx}:v]scale=300:-1,${win}[pill]`);
+    if (likeIdx >= 0) {
+      vfc.push(`[${likeIdx}:v]scale=88:88,${win}[lk]`);
+      vfc.push(`${last}[lk]overlay=${groupLeft}:152[vsp0]`);
+      last = '[vsp0]';
+    }
+    vfc.push(`${last}[pill]overlay=${pillX}:${pillY}[vsp1]`);
+    const t1 = T1.toFixed(2);
+    const t1b = (T1 + 0.3).toFixed(2);
+    const t2 = T2.toFixed(2);
+    const t2b = (T2 + 0.3).toFixed(2);
+    const spAlpha =
+      `alpha='if(lt(t,${t1}),0,if(lt(t,${t1b}),(t-${t1})/0.3,if(lt(t,${t2}),1,if(lt(t,${t2b}),1-(t-${t2})/0.3,0))))'`;
+    const pillCx = pillX + 150;
+    vfc.push(
+      `[vsp1]drawtext=${drawFontOpt}text='SUBSCRIBE':fontcolor=white:fontsize=40:` +
+        `x=${pillCx}-text_w/2:y=${pillY + 15}:${spAlpha}[vsp2]`,
+    );
+    last = '[vsp2]';
+  }
+
+  // Altyazı
   const fontsDir = path.resolve(config.video.fontsDir);
-  const assFilter = existsSync(fontsDir)
-    ? `ass=subs.ass:fontsdir=${fontsDir}`
-    : 'ass=subs.ass';
-  vfc.push(hasSubs ? `[vlogo]${assFilter}[v]` : '[vlogo]null[v]');
+  const assFilter = existsSync(fontsDir) ? `ass=subs.ass:fontsdir=${fontsDir}` : 'ass=subs.ass';
+  if (hasSubs) {
+    vfc.push(`${last}${assFilter}[vcap]`);
+    last = '[vcap]';
+  }
+
+  // Hook kapağı (ilk hookDuration saniye, büyük üst yazı, sona doğru fade)
+  const hk = dtxt(hookText);
+  if (config.video.hookOverlay && hk) {
+    const hsize = Math.max(52, Math.min(90, Math.floor((width - 140) / (Math.max(1, hk.length) * 0.62))));
+    const HD = config.video.hookDuration;
+    const hm = (HD - 0.4).toFixed(2);
+    const hf = HD.toFixed(2);
+    const hAlpha = `alpha='if(lt(t,${hm}),1,if(lt(t,${hf}),1-(t-${hm})/0.4,0))'`;
+    vfc.push(
+      `${last}drawtext=${drawFontOpt}text='${hk}':fontcolor=white:fontsize=${hsize}:` +
+        `x=(w-text_w)/2:y=300:borderw=7:bordercolor=black@0.85:shadowx=0:shadowy=5:` +
+        `shadowcolor=black@0.5:${hAlpha}[v]`,
+    );
+  } else {
+    vfc.push(`${last}null[v]`);
+  }
 
   const fullv = path.join(workDir, 'fullv.mp4');
   await run('ffmpeg', [
     '-y', ...vInputs,
     '-filter_complex', vfc.join(';'),
     '-map', '[v]', '-an',
-    '-c:v', 'libx264', '-preset', 'veryfast', '-pix_fmt', 'yuv420p',
-    '-r', String(fps),
+    '-c:v', 'libx264', '-preset', 'fast', '-crf', '21',
+    '-maxrate', '12M', '-bufsize', '24M',
+    '-pix_fmt', 'yuv420p', '-r', String(fps),
     path.resolve(fullv),
   ], { cwd: workDir, maxBuffer: 20 * 1024 * 1024 });
 

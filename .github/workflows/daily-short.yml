@@ -17,6 +17,9 @@ concurrency:
   group: daily-short
   cancel-in-progress: false
 
+permissions:
+  contents: write # dedup state'ini (data/*.json) branch'e geri commit edebilmek için
+
 jobs:
   produce:
     runs-on: ubuntu-latest
@@ -65,3 +68,19 @@ jobs:
           path: output/**/*.mp4
           if-no-files-found: ignore
           retention-days: 7
+
+      # Konu tekrarını önlemek için üretilen state'i branch'e geri yaz.
+      # (Firebase yoksa dedup yalnızca böyle kalıcı olur.)
+      - name: Dedup state'ini kalıcı yap
+        if: always()
+        run: |
+          git config user.name "neosaniye-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/used_topics.json data/videos.json || true
+          if git diff --cached --quiet; then
+            echo "state değişmedi, commit yok"
+          else
+            git commit -m "chore(state): used_topics/videos güncelle [skip ci]"
+            git pull --rebase origin ${{ github.ref_name }} || true
+            git push origin HEAD:${{ github.ref_name }}
+          fi

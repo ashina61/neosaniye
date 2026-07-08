@@ -27,9 +27,9 @@ export const config = {
     pollinationsModel: process.env.POLLINATIONS_MODEL || 'flux',
     // Gemini görsel modeli (provider=gemini iken).
     model: process.env.IMAGE_MODEL || 'gemini-2.5-flash-image',
-    // Üretilen görsel çözünürlüğü (9:16). Pollinations bu boyutta üretir.
-    width: Number(process.env.IMAGE_WIDTH || 768),
-    height: Number(process.env.IMAGE_HEIGHT || 1344),
+    // Üretilen görsel çözünürlüğü (9:16). Tam 1080x1920 = büyütme yok, net.
+    width: Number(process.env.IMAGE_WIDTH || 1080),
+    height: Number(process.env.IMAGE_HEIGHT || 1920),
     // Her sahne promptuna eklenen ortak sinematik stil (tutarlı "look").
     styleSuffix:
       process.env.IMAGE_STYLE ||
@@ -53,7 +53,7 @@ export const config = {
     // -- edge-tts (ana) -- Popüler, doğal erkek US sesi. Alternatifler:
     // en-US-BrianNeural, en-US-GuyNeural, en-US-ChristopherNeural, en-US-EricNeural
     voice: process.env.TTS_VOICE || 'en-US-AndrewNeural',
-    rate: process.env.TTS_RATE || '+0%', // ör. "+10%" Shorts için biraz hızlı
+    rate: process.env.TTS_RATE || '+8%', // Shorts retention için biraz hızlı tempo
     pitch: process.env.TTS_PITCH || '+0Hz',
 
     // -- Piper (çevrimdışı yedek) -- Doğal erkek ses. Alternatif: en_US-lessac-medium
@@ -94,9 +94,16 @@ export const config = {
     accentColor: process.env.VIDEO_ACCENT || '&H00E6FF&',
     emphasis: process.env.VIDEO_EMPHASIS !== '0',
 
-    // Kapanış kartı (outro): FOLLOW FOR MORE + ikonlar.
-    outro: process.env.VIDEO_OUTRO !== '0',
+    // Kapanış kartı (outro): Shorts'ta loop'u kırdığı için VARSAYILAN KAPALI.
+    // Açmak için VIDEO_OUTRO=1. Yerine video-içi abone uyarısı kullanılır.
+    outro: process.env.VIDEO_OUTRO === '1',
     outroDuration: Number(process.env.VIDEO_OUTRO_SECONDS || 3),
+
+    // Video-içi abone/beğen uyarısı: ortalarda kısa süre belirir (loop'u bozmaz).
+    subPrompt: process.env.VIDEO_SUBPROMPT !== '0',
+    // İlk karede büyük hook yazısı (Shorts "kapağı").
+    hookOverlay: process.env.VIDEO_HOOK !== '0',
+    hookDuration: Number(process.env.VIDEO_HOOK_SECONDS || 2.8),
 
     // Ses efektleri (geçiş whoosh + outro abone chime). Varsayılan açık.
     sfx: process.env.VIDEO_SFX !== '0',
