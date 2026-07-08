@@ -60,8 +60,10 @@ export const config = {
     // Kelime başına otomatik boyut: kısa kelime büyük, uzun kelime sığacak kadar küçülür.
     fontSizeMax: Number(process.env.VIDEO_FONT_SIZE || 130),
     fontSizeMin: Number(process.env.VIDEO_FONT_SIZE_MIN || 46),
-    // Sol üst köşe logosu: bu dosya varsa görsel logo, yoksa yazı-logo kullanılır
+    // Tam logo (outro'da büyük, ortada). Bu dosya varsa görsel, yoksa yazı-logo.
     logoPath: process.env.LOGO_PATH || 'assets/logo.png',
+    // Köşe filigranı için kompakt monogram (varsa). Yoksa logoPath'e düşer.
+    logoMarkPath: process.env.LOGO_MARK_PATH || 'assets/logo-mark.png',
     logoText: process.env.LOGO_TEXT || 'neosaniye',
 
     // Klipler arası geçiş efektleri (xfade). 0 = kapalı.

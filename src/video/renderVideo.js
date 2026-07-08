@@ -431,7 +431,9 @@ export async function renderVideo(job, opts = {}) {
   // 4) VİDEO PASS: xfade geçişleri (klipler + outro) -> logo -> altyazı (sessiz).
   const vInputs = [];
   clips.forEach((p) => vInputs.push('-i', path.resolve(p)));
-  const logoImg = path.resolve(config.video.logoPath);
+  // Köşe filigranı: kompakt monogram varsa onu, yoksa tam logoyu kullan.
+  const markImg = config.video.logoMarkPath ? path.resolve(config.video.logoMarkPath) : '';
+  const logoImg = existsSync(markImg) ? markImg : path.resolve(config.video.logoPath);
   const hasLogoImg = existsSync(logoImg);
   let logoIdx = -1;
   if (hasLogoImg) {
@@ -459,8 +461,8 @@ export async function renderVideo(job, opts = {}) {
   }
 
   if (hasLogoImg) {
-    vfc.push(`[${logoIdx}:v]scale=-1:64[lg]`);
-    vfc.push(`${vbase}[lg]overlay=40:55[vlogo]`);
+    vfc.push(`[${logoIdx}:v]scale=-1:74[lg]`);
+    vfc.push(`${vbase}[lg]overlay=40:52[vlogo]`);
   } else {
     const font = findFontFile();
     const fontOpt = font ? `fontfile=${font}:` : '';
