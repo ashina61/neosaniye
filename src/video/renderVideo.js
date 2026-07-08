@@ -182,9 +182,11 @@ async function normalizeClip(item, duration, outPath, { width, height, fps, inde
     item.type === 'photo' || /\.(jpg|jpeg|png|webp)$/i.test(item.path);
 
   const inputArgs = isPhoto
+    // -f image2 şart: gerçek JPEG'ler (Pexels) 'mjpeg' demuxer'ına düşüyor ve
+    //   onda -loop yok ("Option loop not found"). image2 demuxer'ı zorlarız.
     // -framerate şart: aksi halde -loop 1 varsayılan 25fps okur ve -t süresi
-    // fps=30'da ~%17 kısalır (klip süresi bozulur).
-    ? ['-loop', '1', '-framerate', String(fps), '-t', String(duration), '-i', item.path]
+    //   fps=30'da ~%17 kısalır (klip süresi bozulur).
+    ? ['-f', 'image2', '-loop', '1', '-framerate', String(fps), '-t', String(duration), '-i', item.path]
     : ['-stream_loop', '-1', '-i', item.path, '-t', String(duration)];
 
   await run('ffmpeg', [
