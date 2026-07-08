@@ -105,11 +105,30 @@ function buildCaptionAss(words, opts) {
     );
   }
 
-  for (let i = 0; i < words.length; i += perLine) {
-    const group = words.slice(i, i + perLine);
+  // Konuşma ritmine göre grupla: doğal duraklarda (sessizlik) ve noktalamada
+  // böl — körlemesine N'li bölme "makine" gibi okunur, bu pro altyazı gibi akar.
+  const groups = [];
+  let cur = [];
+  for (let i = 0; i < words.length; i += 1) {
+    cur.push(words[i]);
+    const next = words[i + 1];
+    const gap = next ? next.start - words[i].end : Infinity;
+    const punct = /[.!?,;:]$/.test(String(words[i].word));
+    if (cur.length >= perLine || gap > 0.28 || punct || !next) {
+      groups.push(cur);
+      cur = [];
+    }
+  }
+
+  for (let gi = 0; gi < groups.length; gi += 1) {
+    const group = groups[gi];
     const start = group[0].start;
-    const nextGroupStart = words[i + perLine]?.start;
-    const end = Math.max(group[group.length - 1].end, nextGroupStart ?? group[group.length - 1].end);
+    const nextStart = groups[gi + 1]?.[0]?.start;
+    const lastEnd = group[group.length - 1].end;
+    // Bir sonraki grup hemen geliyorsa boşluk bırakma; uzun suskunlukta kaybol.
+    const end = nextStart !== undefined && nextStart - lastEnd < 0.6
+      ? Math.max(lastEnd, nextStart)
+      : lastEnd + 0.15;
     const raw = group.map((w) => w.word).join(' ');
     const text = assEscape(uppercase ? raw.toUpperCase() : raw);
     // Genişliğe sığdır: taşarsa küçült (taşıp 2. satıra düşmesin).
@@ -179,14 +198,23 @@ async function normalizeClip(item, duration, outPath, { width, height, fps, inde
   // Supersample çözünürlüğü (Ken Burns zoom'unda titremeyi azaltır).
   const sw = width * 2;
   const sh = height * 2;
-  const zMax = 1.18;
   const frames = Math.max(1, Math.round(duration * fps));
+
+  // Organik Ken Burns: zoom miktarı, yönü ve pan sürüklenmesi klip başına
+  // değişir (deterministik "rastgele"). Sabit hız/merkez = makine hissi verir.
+  const zMax = 1.09 + ((index * 37) % 9) / 100; // 1.09 .. 1.17
   const inc = ((zMax - 1) / frames).toFixed(6);
-  // Tek klip zoom-in, çift klip zoom-out (çeşitlilik / sinematik ritim).
   const zoomIn = index % 2 === 0;
   const zExpr = zoomIn
-    ? `min(1+${inc}*on,${zMax})`
-    : `max(${zMax}-${inc}*on,1)`;
+    ? `min(1+${inc}*on,${zMax.toFixed(3)})`
+    : `max(${zMax.toFixed(3)}-${inc}*on,1)`;
+  // Sürüklenme: merkezden sapma, zoom açıldıkça kendiliğinden büyür (sınır-güvenli).
+  const dxs = [0.35, -0.4, 0, 0.5, -0.3];
+  const dys = [-0.25, 0.3, 0.4, 0, -0.35];
+  const dx = dxs[index % dxs.length];
+  const dy = dys[(index + 2) % dys.length];
+  const xExpr = `(iw-iw/zoom)/2*(1+${dx.toFixed(2)})`;
+  const yExpr = `(ih-ih/zoom)/2*(1+${dy.toFixed(2)})`;
 
   const vf = [
     // Sinematik grade: kontrast + doygunluk + hafif sıcaklık (filmik "look").
@@ -195,10 +223,11 @@ async function normalizeClip(item, duration, outPath, { width, height, fps, inde
     `scale=${sw}:${sh}:force_original_aspect_ratio=increase`,
     `crop=${sw}:${sh}`,
     'setsar=1',
-    // Ken Burns: yavaş zoom, merkez sabit.
-    `zoompan=z='${zExpr}':d=1:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=${sw}x${sh}:fps=${fps}`,
+    `zoompan=z='${zExpr}':d=1:x='${xExpr}':y='${yExpr}':s=${sw}x${sh}:fps=${fps}`,
     `scale=${width}:${height}`,
     `fps=${fps}`,
+    // Hafif film greni: AI/stok görüntünün steril temizliğini kırar.
+    ...(config.video.grain ? ['noise=alls=5:allf=t'] : []),
     'format=yuv420p',
   ].join(',');
 
@@ -339,16 +368,18 @@ async function buildFullAudio(
     idx += 1;
   }
 
-  // Her geçiş için farklı SFX (sırayla döner) — hep aynı ses olmasın.
-  const sfxCycle = ['whoosh', 'riser', 'swish', 'impact'];
-  const sfxIdxs = [];
+  // SFX her geçişte DEĞİL (şablon hissi verir): atlamalı ve çeşitli.
+  // null = o geçiş sessiz, sade kesme gibi algılanır.
+  const sfxCycle = ['whoosh', null, 'swish', null, 'riser', null, 'impact', null];
+  const sfxPlan = []; // { idx, k }
   if (sfx && mainTransitions > 0) {
     for (let k = 1; k <= mainTransitions; k += 1) {
       const type = sfxCycle[(k - 1) % sfxCycle.length];
+      if (!type) continue;
       const f = path.join(workDir, `sfx-${k}.wav`);
       await makeSfx(type, f);
       inputs.push('-i', path.resolve(f));
-      sfxIdxs.push(idx);
+      sfxPlan.push({ idx, k });
       idx += 1;
     }
   }
@@ -365,8 +396,15 @@ async function buildFullAudio(
   const fc = [];
   const mix = [];
 
+  // Anlatım sesini "yayın" zincirinden geçir: alçak-frekans temizliği +
+  // presence EQ + kompresör. Ham TTS'ten çok daha dolgun/pro tınlar.
+  const voiceChain =
+    'highpass=f=70,equalizer=f=3200:t=q:w=1.2:g=1.5,' +
+    'acompressor=threshold=0.12:ratio=2.5:attack=8:release=140:makeup=1.4,' +
+    'aresample=44100';
+
   if (useMusic) {
-    fc.push('[0:a]aresample=44100,asplit=2[nkey][nmix]');
+    fc.push(`[0:a]${voiceChain},asplit=2[nkey][nmix]`);
     fc.push(
       `[${musicIdx}:a]aresample=44100,atrim=0:${total.toFixed(3)},volume=${config.video.musicVolume}[mus]`,
     );
@@ -374,19 +412,16 @@ async function buildFullAudio(
     fc.push('[mus][nkey]sidechaincompress=threshold=0.02:ratio=8:attack=15:release=350[musd]');
     mix.push('[nmix]', '[musd]');
   } else {
-    fc.push('[0:a]aresample=44100[nmix]');
+    fc.push(`[0:a]${voiceChain}[nmix]`);
     mix.push('[nmix]');
   }
 
-  if (sfxIdxs.length) {
-    for (let k = 1; k <= mainTransitions; k += 1) {
-      const inIdx = sfxIdxs[k - 1];
-      const ms = Math.round((off[k - 1] + td / 2) * 1000);
-      fc.push(
-        `[${inIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=${config.video.transitionSoundVolume}[wd${k}]`,
-      );
-      mix.push(`[wd${k}]`);
-    }
+  for (const { idx: inIdx, k } of sfxPlan) {
+    const ms = Math.round((off[k - 1] + td / 2) * 1000);
+    fc.push(
+      `[${inIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=${config.video.transitionSoundVolume}[wd${k}]`,
+    );
+    mix.push(`[wd${k}]`);
   }
 
   if (chimeIdx >= 0) {
@@ -395,10 +430,15 @@ async function buildFullAudio(
     mix.push('[chm]');
   }
 
+  // Karışım -> kapanışta yumuşak sönüş -> YouTube standardı -14 LUFS loudness.
+  const fadeStart = Math.max(0, total - 1.1).toFixed(3);
+  const master =
+    `apad,atrim=0:${total.toFixed(3)},afade=t=out:st=${fadeStart}:d=1.1,` +
+    'loudnorm=I=-14:TP=-1.5:LRA=11,aresample=44100';
   if (mix.length > 1) {
-    fc.push(`${mix.join('')}amix=inputs=${mix.length}:normalize=0:duration=longest,apad[a]`);
+    fc.push(`${mix.join('')}amix=inputs=${mix.length}:normalize=0:duration=longest,${master}[a]`);
   } else {
-    fc.push(`${mix[0]}apad[a]`);
+    fc.push(`${mix[0]}${master}[a]`);
   }
 
   await run('ffmpeg', [
@@ -463,6 +503,11 @@ export async function renderVideo(job, opts = {}) {
     dMain = (narrationDur + (N - 1) * td) / N;
     mainDurs = Array(N).fill(dMain);
   }
+  // Kuyruk: anlatım bitince video ANINDA kesilmesin; son sahne nefes alır,
+  // müzik bu pencerede yumuşakça söner (pro kapanış hissi).
+  const tail = Math.max(0, config.video.tailSeconds || 0);
+  mainDurs[N - 1] += tail;
+
   const dOutro = outroExtra + td;
   const clipDur = [...mainDurs, ...(useOutro ? [dOutro] : [])];
   const total = clipDur.reduce((a, b) => a + b, 0) - (M - 1) * td;

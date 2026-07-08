@@ -91,6 +91,7 @@ Structure the story as 7-9 SCENES (beats) that flow as a tight narrative arc:
 
 Rules for each scene:
 - narration: exactly ONE sentence, spoken aloud, ~10-16 words, vivid and clear. No jargon, no emojis, no hashtags, no markdown.
+- VARY the rhythm like a human storyteller: follow a long sentence with a short punchy one; use natural spoken phrasing (contractions are fine), never a monotone list of facts.
 - image_prompt: describe a SINGLE cinematic photorealistic shot that literally depicts that sentence — name the subject, the place, the era/period, the action, camera framing, lighting and mood. Keep it concrete and filmable. Never request on-screen text, captions, letters, logos or watermarks. Keep a consistent cinematic, filmic look across scenes.
 - keywords: 1-3 simple English nouns as a stock-footage fallback if image generation is unavailable.
 

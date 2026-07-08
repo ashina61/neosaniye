@@ -33,8 +33,9 @@ export const config = {
     // Her sahne promptuna eklenen ortak sinematik stil (tutarlı "look").
     styleSuffix:
       process.env.IMAGE_STYLE ||
-      'cinematic photorealistic still, dramatic volumetric lighting, warm filmic ' +
-        'color grade, shallow depth of field, highly detailed, epic mood, ' +
+      'cinematic documentary photograph, shot on 35mm film, natural realistic ' +
+        'textures and skin, dramatic practical lighting, warm filmic color grade, ' +
+        'shallow depth of field, subtle motion blur, imperfect natural framing, ' +
         'vertical composition, no text, no watermark, no subtitles',
     retries: Number(process.env.IMAGE_RETRIES || 2),
     timeoutMs: Number(process.env.IMAGE_TIMEOUT_MS || 90000),
@@ -76,16 +77,23 @@ export const config = {
     logoMarkPath: process.env.LOGO_MARK_PATH || 'assets/logo-mark.png',
     logoText: process.env.LOGO_TEXT || 'neosaniye',
 
-    // Klipler arası geçiş efektleri (xfade). Çeşitli/canlı set (sırayla döner).
-    transitionDuration: Number(process.env.VIDEO_TRANSITION || 0.5),
+    // Klipler arası geçişler (xfade). Pro kurgu: sade ve kısa — gösterişli
+    // wipe'lar (radial/circleopen vb.) şablon/AI hissi verdiği için çıkarıldı.
+    transitionDuration: Number(process.env.VIDEO_TRANSITION || 0.35),
     transitions: (process.env.VIDEO_TRANSITIONS ||
-      'slideleft,wipeup,zoomin,smoothright,circleopen,slideright,wipedown,radial,fadeblack,diagtl')
+      'fade,slideleft,zoomin,slideup,smoothleft,fade,slideright,wipeup')
       .split(','),
+
+    // Film greni: AI görsellerin "fazla temiz" parlaklığını kırar (0 = kapalı).
+    grain: process.env.VIDEO_GRAIN !== '0',
+    // Anlatım bittikten sonra son sahnenin nefes payı (müzik burada söner).
+    tailSeconds: Number(process.env.VIDEO_TAIL_SECONDS || 0.9),
 
     // Altyazı stili: 'caption' = sinematik alt kısa ifade (ekranı kaplamaz),
     // 'word' = tek kelime punchy, 'pop' = eski büyük karaoke. Shorts için 'caption'.
     captionStyle: process.env.VIDEO_CAPTION_STYLE || 'caption',
-    captionWordsPerLine: Number(process.env.VIDEO_CAPTION_WORDS || 2),
+    // Grup üst sınırı; asıl bölme konuşmadaki doğal duraklara göre yapılır.
+    captionWordsPerLine: Number(process.env.VIDEO_CAPTION_WORDS || 3),
     captionSize: Number(process.env.VIDEO_CAPTION_SIZE || 46),
     // Alt bölge (ekranı kaplamasın): küçük marginV = daha aşağı. Shorts UI üstünde kalır.
     captionMarginV: Number(process.env.VIDEO_CAPTION_MARGIN || 300),
@@ -105,9 +113,9 @@ export const config = {
     hookOverlay: process.env.VIDEO_HOOK !== '0',
     hookDuration: Number(process.env.VIDEO_HOOK_SECONDS || 2.8),
 
-    // Ses efektleri (geçiş whoosh + outro abone chime). Varsayılan açık.
+    // Ses efektleri: her geçişte DEĞİL, atlamalı ve kısık (pro kurgu hissi).
     sfx: process.env.VIDEO_SFX !== '0',
-    transitionSoundVolume: Number(process.env.VIDEO_TRANSITION_SOUND_VOL || 0.2),
+    transitionSoundVolume: Number(process.env.VIDEO_TRANSITION_SOUND_VOL || 0.12),
 
     // Arka plan müziği (narrasyon altında 'ducking' ile kısılır).
     // assets/music/ içindeki telifsiz parçalardan her video için rastgele biri
