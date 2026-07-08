@@ -5,6 +5,7 @@ import { existsSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { config } from '../config.js';
 import { buildOutro } from './outro.js';
+import { makeMusicBed } from '../audio/makeMusic.js';
 
 const run = promisify(execFile);
 
@@ -191,10 +192,41 @@ export function buildAss(wordTimings, opts = {}) {
   return buildCaptionAss(words, merged);
 }
 
+// Kategoriye göre renk paleti: tarih=sıcak, uzay=soğuk mavi, gizem=soluk koyu...
+// Aynı grade her videoda = şablon hissi; konuya uyan palet = bilinçli yönetmenlik.
+const CATEGORY_GRADES = {
+  history:
+    'eq=contrast=1.07:saturation=1.08:brightness=0.004:gamma=0.99,' +
+    'colorbalance=rs=0.05:rm=0.05:gm=0.015:bm=-0.05',
+  mystery:
+    'eq=contrast=1.12:saturation=0.9:brightness=-0.006:gamma=0.97,' +
+    'colorbalance=bm=0.04:bs=0.03:rm=-0.01',
+  space:
+    'eq=contrast=1.1:saturation=1.05:brightness=-0.004:gamma=0.98,' +
+    'colorbalance=rs=-0.03:rm=-0.02:bm=0.06:bs=0.04',
+  science:
+    'eq=contrast=1.08:saturation=1.12:brightness=0.004:gamma=0.99,' +
+    'colorbalance=bm=0.03:rm=0.01',
+  nature:
+    'eq=contrast=1.06:saturation=1.2:brightness=0.006:gamma=0.99,' +
+    'colorbalance=gm=0.03:gs=0.02',
+};
+const GRADE_ALIAS = { 'human body': 'science', technology: 'science' };
+function gradeFor(category) {
+  const key = String(category || '').toLowerCase();
+  return (
+    CATEGORY_GRADES[key] ||
+    CATEGORY_GRADES[GRADE_ALIAS[key]] ||
+    // varsayılan: mevcut sıcak filmik grade
+    'eq=contrast=1.07:saturation=1.14:brightness=0.006:gamma=0.98,' +
+      'colorbalance=rs=0.02:rm=0.03:gm=0.01:bm=-0.03'
+  );
+}
+
 /** Tek bir medyayı (video/foto) sabit 1080x1920/fps klibe normalize eder.
  *  Sinematik his için: hafif renk grade + yavaş Ken Burns zoom (klip başına
  *  yön değişir). Supersample (2x) sonra küçültme jitter'ı azaltır. */
-async function normalizeClip(item, duration, outPath, { width, height, fps, index = 0 }) {
+async function normalizeClip(item, duration, outPath, { width, height, fps, index = 0, category = '' }) {
   // Supersample çözünürlüğü (Ken Burns zoom'unda titremeyi azaltır).
   const sw = width * 2;
   const sh = height * 2;
@@ -205,8 +237,11 @@ async function normalizeClip(item, duration, outPath, { width, height, fps, inde
   const zMax = 1.09 + ((index * 37) % 9) / 100; // 1.09 .. 1.17
   const inc = ((zMax - 1) / frames).toFixed(6);
   const zoomIn = index % 2 === 0;
+  // İlk sahnede "zoom-punch": ilk ~0.3sn hızlı vuruş, sonra yavaş devam.
+  // Hook yazısıyla birleşince ilk saniye ekrana yapıştırır.
+  const punch = index === 0 ? `+0.07*min(on/9,1)` : '';
   const zExpr = zoomIn
-    ? `min(1+${inc}*on,${zMax.toFixed(3)})`
+    ? `min(1${punch}+${inc}*on,${(zMax + (index === 0 ? 0.07 : 0)).toFixed(3)})`
     : `max(${zMax.toFixed(3)}-${inc}*on,1)`;
   // Sürüklenme: merkezden sapma, zoom açıldıkça kendiliğinden büyür (sınır-güvenli).
   const dxs = [0.35, -0.4, 0, 0.5, -0.3];
@@ -217,9 +252,8 @@ async function normalizeClip(item, duration, outPath, { width, height, fps, inde
   const yExpr = `(ih-ih/zoom)/2*(1+${dy.toFixed(2)})`;
 
   const vf = [
-    // Sinematik grade: kontrast + doygunluk + hafif sıcaklık (filmik "look").
-    'eq=contrast=1.07:saturation=1.14:brightness=0.006:gamma=0.98',
-    'colorbalance=rs=0.02:rm=0.03:gm=0.01:bm=-0.03',
+    // Kategoriye uygun sinematik grade (tarih=sıcak, uzay=soğuk...).
+    gradeFor(category),
     `scale=${sw}:${sh}:force_original_aspect_ratio=increase`,
     `crop=${sw}:${sh}`,
     'setsar=1',
@@ -308,33 +342,15 @@ function pickMusicTrack() {
   return existsSync(single) ? single : null;
 }
 
-/** Sinematik ambient müzik yatağı sentezler (havuzda parça yoksa).
- *  A-minör hisli katmanlı pad: alt-bas + akort + yavaş hareket + yumuşak filtre. */
-async function makePad(outPath, total) {
-  await run('ffmpeg', [
-    '-y',
-    '-f', 'lavfi', '-i', 'sine=f=55',      // sub bass (A1)
-    '-f', 'lavfi', '-i', 'sine=f=110',     // A2
-    '-f', 'lavfi', '-i', 'sine=f=164.81',  // E3
-    '-f', 'lavfi', '-i', 'sine=f=220',     // A3
-    '-f', 'lavfi', '-i', 'sine=f=261.63',  // C4 (minör renk)
-    '-filter_complex',
-    '[0]volume=0.6[b];' +
-      '[b][1][2][3][4]amix=inputs=5:normalize=1,' +
-      'tremolo=f=0.1:d=0.35,vibrato=f=0.12:d=0.3,' +
-      'lowpass=f=1100,highpass=f=45,' +
-      `afade=t=in:st=0:d=2,afade=t=out:st=${Math.max(0, total - 2).toFixed(2)}:d=2[a]`,
-    '-map', '[a]', '-t', total.toFixed(3), '-ar', '44100', '-ac', '2',
-    outPath,
-  ], { maxBuffer: 10 * 1024 * 1024 });
-}
+// Havuzda gerçek parça yoksa müzik, src/audio/makeMusic.js'teki prosedürel
+// motorla sentezlenir (kategoriye uygun akor progresyonu, %100 telifsiz).
 
 /**
  * Tam ses yatağını üretir: narrasyon + arka plan müziği (ducking ile kısılır)
  * + geçiş whoosh'ları + outro chime. Toplam süre `total`.
  */
 async function buildFullAudio(
-  { workDir, narrationPath, total, clipDur, td, N, M, useOutro },
+  { workDir, narrationPath, total, clipDur, td, N, M, useOutro, category = '' },
   outPath,
 ) {
   const sfx = config.video.sfx;
@@ -359,10 +375,15 @@ async function buildFullAudio(
       inputs.push('-stream_loop', '-1', '-i', track);
       console.log(`[audio] müzik: ${path.basename(track)}`);
     } else {
-      const pad = path.join(workDir, 'pad.wav');
-      await makePad(pad, total + 0.5);
-      inputs.push('-i', path.resolve(pad));
-      console.log('[audio] müzik: sentetik pad (havuzda parça yok)');
+      const bed = path.join(workDir, 'music-bed.wav');
+      await makeMusicBed({
+        outPath: bed,
+        seconds: total + 1,
+        category,
+        seed: Math.floor(total * 97) + N, // videoya özgü varyasyon
+      });
+      inputs.push('-i', path.resolve(bed));
+      console.log(`[audio] müzik: prosedürel yatak (${category || 'default'})`);
     }
     musicIdx = idx;
     idx += 1;
@@ -460,7 +481,7 @@ async function buildFullAudio(
  * @returns {Promise<{outPath:string, duration:number, width:number, height:number, clips:number}>}
  */
 export async function renderVideo(job, opts = {}) {
-  const { audioPath, wordTimings = [], media = [], outPath, hookText = '' } = job;
+  const { audioPath, wordTimings = [], media = [], outPath, hookText = '', category = '' } = job;
   const { width = 1080, height = 1920, fps = 30 } = opts;
 
   if (!audioPath) throw new Error('job.audioPath gerekli.');
@@ -520,7 +541,7 @@ export async function renderVideo(job, opts = {}) {
       media[i],
       Math.max(0.6, clipDur[i] + (M > 1 ? 0.05 : 0)),
       clipPath,
-      { width, height, fps, index: i },
+      { width, height, fps, index: i, category },
     );
     clips.push(clipPath);
   }
@@ -671,7 +692,7 @@ export async function renderVideo(job, opts = {}) {
   // 5) SES PASS: narrasyon + arka plan müziği (ducking) + geçiş whoosh + outro chime.
   const fulla = path.join(workDir, 'fulla.m4a');
   await buildFullAudio(
-    { workDir, narrationPath: path.resolve(audioPath), total, clipDur, td, N, M, useOutro },
+    { workDir, narrationPath: path.resolve(audioPath), total, clipDur, td, N, M, useOutro, category },
     path.resolve(fulla),
   );
 

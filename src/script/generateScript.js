@@ -2,6 +2,7 @@ import { GoogleGenAI, Type } from '@google/genai';
 import { config, assertGemini } from '../config.js';
 import {
   getRecentUsedTopics,
+  getTopPerformingTopics,
   isTopicUsed,
   normalizeTopic,
 } from '../lib/firestore.js';
@@ -39,6 +40,14 @@ export const SCRIPT_SCHEMA = {
       type: Type.STRING,
       description: 'One of: history, science, space, nature, mystery, human body, technology',
     },
+    visual_anchor: {
+      type: Type.STRING,
+      description:
+        'ONE sentence describing the recurring visual identity every scene shares: the main ' +
+        'subject/character (appearance, clothing, era), the setting, and the light/color mood. ' +
+        'Used to keep all generated images consistent (e.g. "a weathered Australian soldier ' +
+        'in a khaki 1930s uniform, dusty golden outback light, dry grassland").',
+    },
     scenes: {
       type: Type.ARRAY,
       description: '7-9 sequential story beats that together tell one gripping mini-story',
@@ -72,13 +81,52 @@ export const SCRIPT_SCHEMA = {
         'Short closing spoken line tied to THIS story (unique each time), invites to follow',
     },
   },
-  required: ['topic', 'title', 'hook_text', 'category', 'scenes', 'cta'],
-  propertyOrdering: ['topic', 'title', 'hook_text', 'category', 'scenes', 'cta'],
+  required: ['topic', 'title', 'hook_text', 'category', 'visual_anchor', 'scenes', 'cta'],
+  propertyOrdering: ['topic', 'title', 'hook_text', 'category', 'visual_anchor', 'scenes', 'cta'],
 };
 
-function buildSystemPrompt() {
+// Format rotasyonu: izleyici tek kalıptan yorulmasın. Story ağırlıklı.
+const FORMATS = [
+  { key: 'story', weight: 6, brief: 'ONE gripping true mini-story with a narrative arc (hook, escalation, twist, payoff).' },
+  { key: 'facts3', weight: 2, brief: 'THREE rapid-fire, jaw-dropping TRUE facts around one tight theme. Scene 1 hooks the theme; then each fact gets 2 scenes (setup + payoff); close with the best "wait, WHAT?" fact.' },
+  { key: 'whatif', weight: 2, brief: 'A "What if...?" scenario answered with REAL science/history (e.g. "What if the Moon disappeared tonight?"). Grounded, accurate consequences presented as a story.' },
+];
+export function pickFormat(rand = Math.random()) {
+  const totalW = FORMATS.reduce((a, f) => a + f.weight, 0);
+  let r = rand * totalW;
+  for (const f of FORMATS) {
+    r -= f.weight;
+    if (r <= 0) return f;
+  }
+  return FORMATS[0];
+}
+
+/** Reddit TIL'den trend konu tohumları (best-effort; olmadıysa boş döner). */
+async function fetchTrendSeeds() {
+  if (process.env.TREND_DISCOVERY === '0') return [];
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 6000);
+  try {
+    const res = await fetch(
+      'https://www.reddit.com/r/todayilearned/top.json?t=week&limit=12',
+      { signal: ctrl.signal, headers: { 'user-agent': 'neosaniye/1.0' } },
+    );
+    if (!res.ok) return [];
+    const data = await res.json();
+    return (data?.data?.children || [])
+      .map((c) => String(c?.data?.title || '').replace(/^TIL:?\s*/i, '').trim())
+      .filter((t) => t.length > 20 && t.length < 200)
+      .slice(0, 8);
+  } catch {
+    return [];
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function buildSystemPrompt(format) {
   return `You are a master short-form STORYTELLER for a faceless YouTube Shorts channel.
-Concept: "${config.niche.theme}". Every video is ONE gripping true mini-story, narrated like a documentary trailer.
+Concept: "${config.niche.theme}". This video's format: ${format.brief}
 
 Write in English, for a SINGLE dramatic narrator. Target total voiceover ~35-45 seconds (about 100-130 words). Shorts are SHORT — hook fast, no filler, every sentence earns its place.
 
@@ -92,7 +140,8 @@ Structure the story as 7-9 SCENES (beats) that flow as a tight narrative arc:
 Rules for each scene:
 - narration: exactly ONE sentence, spoken aloud, ~10-16 words, vivid and clear. No jargon, no emojis, no hashtags, no markdown.
 - VARY the rhythm like a human storyteller: follow a long sentence with a short punchy one; use natural spoken phrasing (contractions are fine), never a monotone list of facts.
-- image_prompt: describe a SINGLE cinematic photorealistic shot that literally depicts that sentence — name the subject, the place, the era/period, the action, camera framing, lighting and mood. Keep it concrete and filmable. Never request on-screen text, captions, letters, logos or watermarks. Keep a consistent cinematic, filmic look across scenes.
+- image_prompt: describe a SINGLE cinematic photorealistic shot that literally depicts that sentence — name the subject, the place, the era/period, the action, camera framing, lighting and mood. Keep it concrete and filmable. Never request on-screen text, captions, letters, logos or watermarks.
+- VISUAL CONTINUITY: every image_prompt must be consistent with the visual_anchor (same character appearance, same era, same light/color mood) so the story looks like ONE film, not random pictures.
 - keywords: 1-3 simple English nouns as a stock-footage fallback if image generation is unavailable.
 
 Rules for the whole script:
@@ -119,13 +168,31 @@ async function generateWithRetry(ai, req, tries = 3) {
   throw lastErr;
 }
 
-function buildUserPrompt(avoidTopics) {
-  const avoid = avoidTopics.length
-    ? `Previously used topics (do NOT pick these or anything very similar):\n${avoidTopics
-        .map((t) => `- ${t}`)
-        .join('\n')}`
-    : 'No topics have been used yet.';
-  return `${avoid}\n\nPick a NEW, mind-blowing true story that differs from the list above, then write the full scene-by-scene script.`;
+function buildUserPrompt(avoidTopics, { topPerformers = [], trendSeeds = [] } = {}) {
+  const parts = [];
+  parts.push(
+    avoidTopics.length
+      ? `Previously used topics (do NOT pick these or anything very similar):\n${avoidTopics
+          .map((t) => `- ${t}`)
+          .join('\n')}`
+      : 'No topics have been used yet.',
+  );
+  if (topPerformers.length) {
+    parts.push(
+      'These past topics performed BEST with our audience (do not repeat them, but ' +
+        'favor NEW topics with a similar flavor/energy):\n' +
+        topPerformers.map((t) => `- ${t.topic} (${t.views} views)`).join('\n'),
+    );
+  }
+  if (trendSeeds.length) {
+    parts.push(
+      'OPTIONAL inspiration — facts people are currently fascinated by (you may pick one, ' +
+        'adapt one, or ignore them entirely):\n' +
+        trendSeeds.map((t) => `- ${t}`).join('\n'),
+    );
+  }
+  parts.push('Pick a NEW, mind-blowing TRUE topic that differs from the used list, then write the full scene-by-scene script.');
+  return parts.join('\n\n');
 }
 
 /**
@@ -145,14 +212,26 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
     ...extraAvoid,
   ];
 
+  // Öğrenme döngüsü + trend tohumları (ikisi de best-effort).
+  const [topPerformers, trendSeeds] = await Promise.all([
+    getTopPerformingTopics(5).catch(() => []),
+    fetchTrendSeeds(),
+  ]);
+  const format = pickFormat();
+  console.log(
+    `[script] format: ${format.key}` +
+      (topPerformers.length ? `, öğrenme: ${topPerformers.length} iyi konu` : '') +
+      (trendSeeds.length ? `, trend: ${trendSeeds.length} tohum` : ''),
+  );
+
   let lastScript = null;
 
   for (let attempt = 1; attempt <= maxRetries; attempt += 1) {
     const response = await generateWithRetry(ai, {
       model: config.gemini.model,
-      contents: buildUserPrompt(avoidTopics),
+      contents: buildUserPrompt(avoidTopics, { topPerformers, trendSeeds }),
       config: {
-        systemInstruction: buildSystemPrompt(),
+        systemInstruction: buildSystemPrompt(format),
         responseMimeType: 'application/json',
         responseSchema: SCRIPT_SCHEMA,
         thinkingConfig: { thinkingBudget: 0 },
@@ -173,11 +252,12 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
       continue;
     }
 
-    return { ...script, normalizedTopic: normalizeTopic(script.topic) };
+    return { ...script, format: format.key, normalizedTopic: normalizeTopic(script.topic) };
   }
 
   return {
     ...lastScript,
+    format: format.key,
     normalizedTopic: normalizeTopic(lastScript.topic),
     duplicate: true,
   };

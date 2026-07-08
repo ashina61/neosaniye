@@ -151,6 +151,41 @@ export async function logVideo(record) {
   return id;
 }
 
+/** YouTube'a yüklenmiş son videoları döndürür (istatistik güncelleme için). */
+export async function getVideosWithYouTube(limit = 25) {
+  const store = getFirestore();
+  if (store) {
+    const snap = await store
+      .collection(VIDEOS)
+      .orderBy('createdAt', 'desc')
+      .limit(limit * 2)
+      .get();
+    return snap.docs
+      .map((d) => ({ id: d.id, ...d.data() }))
+      .filter((v) => v.youtube?.videoId)
+      .slice(0, limit);
+  }
+  const list = await readLocal(`${VIDEOS}.json`, []);
+  return list
+    .filter((v) => v.youtube?.videoId)
+    .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)))
+    .slice(0, limit);
+}
+
+/** En çok izlenen geçmiş konuları döndürür (konu seçimini besler). */
+export async function getTopPerformingTopics(limit = 5) {
+  try {
+    const vids = await getVideosWithYouTube(50);
+    return vids
+      .filter((v) => v.stats?.views > 0)
+      .sort((a, b) => (b.stats?.views || 0) - (a.stats?.views || 0))
+      .slice(0, limit)
+      .map((v) => ({ topic: v.topic, views: v.stats.views }));
+  } catch {
+    return [];
+  }
+}
+
 /** Var olan bir video kaydını günceller (ör. Faz 6 YouTube bilgisi/status). */
 export async function updateVideo(id, patch) {
   const store = getFirestore();

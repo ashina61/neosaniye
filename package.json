@@ -8,13 +8,16 @@
     "node": ">=20"
   },
   "scripts": {
+    "produce": "node scripts/generate-and-publish.js",
+    "produce:dry": "node scripts/generate-and-publish.js --no-upload",
     "script": "node scripts/generate-script.js",
     "script:save": "node scripts/generate-script.js --save",
     "audio": "node scripts/generate-audio.js",
     "media": "node scripts/fetch-media.js",
     "video": "node scripts/render-video.js",
     "upload": "node scripts/upload-youtube.js",
-    "youtube:auth": "node scripts/youtube-auth.js"
+    "youtube:auth": "node scripts/youtube-auth.js",
+    "music": "node scripts/fetch-music.js"
   },
   "dependencies": {
     "@google/genai": "^1.0.0",

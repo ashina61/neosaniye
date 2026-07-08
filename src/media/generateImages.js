@@ -121,10 +121,22 @@ export async function generateImages(script, opts = {}) {
   const sources = { ai: 0, pexels: 0, placeholder: 0 };
   let providerDead = provider === 'none' || (provider === 'gemini' && !geminiAI);
 
+  // Görsel süreklilik: video başına SABİT seed (konudan türetilir) + her sahne
+  // promptuna "görsel çapa" eklenir → aynı karakter/dönem/ışık, tek film hissi.
+  const anchor = String(script.visual_anchor || '').trim();
+  let videoSeed = 0;
+  const seedSrc = String(script.normalizedTopic || script.topic || 'ns');
+  for (let c = 0; c < seedSrc.length; c += 1) {
+    videoSeed = (videoSeed * 31 + seedSrc.charCodeAt(c)) % 999983;
+  }
+  videoSeed = videoSeed + 7;
+
   for (let i = 0; i < scenes.length; i += 1) {
     const scene = scenes[i];
     const idx = String(i + 1).padStart(2, '0');
-    const prompt = `${scene.image_prompt}. ${config.images.styleSuffix}`;
+    const prompt = [scene.image_prompt, anchor, config.images.styleSuffix]
+      .filter(Boolean)
+      .join('. ');
     let done = null;
 
     // 1) AI görsel. Gemini kota dolarsa kalan sahnelerde denemez; Pollinations
@@ -134,7 +146,7 @@ export async function generateImages(script, opts = {}) {
         try {
           if (provider === 'pollinations') {
             const dest = path.join(mediaDir, `${idx}-ai.jpg`);
-            await fetchPollinations(prompt, dest, { width, height, seed: i + 1 });
+            await fetchPollinations(prompt, dest, { width, height, seed: videoSeed });
             done = { path: dest, type: 'photo', scene: i, source: 'ai' };
           } else if (provider === 'gemini') {
             const dest = path.join(mediaDir, `${idx}-ai.png`);

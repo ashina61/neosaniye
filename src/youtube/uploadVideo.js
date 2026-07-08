@@ -53,6 +53,8 @@ export async function uploadVideo({
       status: {
         privacyStatus,
         selfDeclaredMadeForKids: false,
+        // AI üretimi gerçekçi içerik beyanı (YouTube sentetik medya politikası).
+        containsSyntheticMedia: true,
       },
     },
     media: {

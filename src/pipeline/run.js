@@ -4,31 +4,27 @@ import { generateScript } from '../script/generateScript.js';
 import { generateAudio } from '../tts/generateAudio.js';
 import { generateImages } from '../media/generateImages.js';
 import { renderVideo } from '../video/renderVideo.js';
+import { buildMetadata } from '../youtube/buildMetadata.js';
+import { uploadVideo } from '../youtube/uploadVideo.js';
+import { postFirstComment, updateVideoStats } from '../youtube/engage.js';
+import { preflightCheck } from './preflight.js';
+import { recordProduction } from './recordProduction.js';
+import { notify } from '../lib/notify.js';
 
 /** Bir metindeki kelime sayısı (sahne ağırlığı için). */
 function wordCount(text) {
   return String(text || '').trim().split(/\s+/).filter(Boolean).length;
 }
-import { buildMetadata } from '../youtube/buildMetadata.js';
-import { uploadVideo } from '../youtube/uploadVideo.js';
-import { recordProduction } from './recordProduction.js';
 
 /**
  * Faz 7 — Uçtan uca orkestrasyon.
- * Sırayla: script -> ses -> görsel -> montaj -> (upload) -> loglama.
- * Herhangi bir adım hata verirse durum 'failed' olarak loglanır ve hata
- * yukarı fırlatılır (GitHub Actions böylece fail olur ve mail atar).
+ * script -> ses -> görsel -> montaj -> KALİTE KONTROLÜ -> upload -> yorum
+ * -> loglama -> bildirim. Ek olarak geçmiş videoların istatistikleri çekilir
+ * (konu seçimi bu veriyle beslenir: öğrenme döngüsü).
  */
 export async function runPipeline(opts = {}) {
   const { root = 'output', upload } = opts;
   const log = (msg) => console.log(`\n▶ ${msg}`);
-
-  // 1) Script
-  log('Faz 1: Script üretiliyor (Gemini)...');
-  const script = await generateScript();
-  const base = script.normalizedTopic;
-  const workDir = path.join(root, base);
-  console.log(`  konu: ${script.topic}`);
 
   // YouTube yüklenebilir mi?
   const hasYouTube =
@@ -36,6 +32,19 @@ export async function runPipeline(opts = {}) {
     config.youtube.clientSecret &&
     config.youtube.refreshToken;
   const willUpload = upload === true || (upload !== false && hasYouTube);
+
+  // 0) Öğrenme döngüsü: geçmiş videoların izlenme verisini tazele (best-effort).
+  if (hasYouTube) {
+    const n = await updateVideoStats().catch(() => 0);
+    if (n) console.log(`[stats] ${n} videonun istatistiği güncellendi.`);
+  }
+
+  // 1) Script
+  log('Faz 1: Script üretiliyor (Gemini)...');
+  const script = await generateScript();
+  const base = script.normalizedTopic;
+  const workDir = path.join(root, base);
+  console.log(`  konu: ${script.topic} (${script.format || 'story'}/${script.category || '-'})`);
 
   try {
     // 2) Ses (edge-tts -> piper yedek)
@@ -68,18 +77,35 @@ export async function runPipeline(opts = {}) {
       media: media.items.map((m) => ({ path: m.path, type: m.type })),
       sceneWeights: sceneWeights.length === media.items.length ? sceneWeights : undefined,
       hookText: script.hook_text,
+      category: script.category,
       outPath,
     });
     console.log(`  ${video.width}x${video.height}, ${video.duration.toFixed(1)}s -> ${outPath}`);
 
-    // 6) Upload (opsiyonel)
+    // 4.5) Yayın öncesi kalite kontrolü — bozuk video YouTube'a gitmez.
+    log('Faz 4.5: Kalite kontrolü (preflight)...');
+    const pf = await preflightCheck(outPath);
+    console.log(`  metrikler: ${JSON.stringify(pf.metrics)}`);
+    if (!pf.ok) {
+      console.error(`  ❌ preflight başarısız: ${pf.issues.join(' | ')}`);
+    } else {
+      console.log('  ✅ tüm kontroller geçti');
+    }
+
+    // 6) Upload (opsiyonel + preflight şartlı)
     let youtube = null;
-    if (willUpload) {
+    if (willUpload && pf.ok) {
       log('Faz 6: YouTube upload...');
       const meta = await buildMetadata(script);
       const res = await uploadVideo({ videoPath: outPath, ...meta });
       youtube = { ...res, title: meta.title, publishedAt: new Date().toISOString() };
       console.log(`  yüklendi: ${res.url}`);
+
+      // İlk yorum (etkileşim tetikleyici, best-effort).
+      const commented = await postFirstComment(res.videoId, script).catch(() => false);
+      if (commented) console.log('  ilk yorum atıldı');
+    } else if (willUpload && !pf.ok) {
+      console.log('\n▶ Faz 6: upload İPTAL (preflight başarısız) — video artifact olarak duruyor.');
     } else {
       console.log('\n▶ Faz 6: YouTube upload atlandı (kredensiyel yok veya --no-upload).');
     }
@@ -92,15 +118,27 @@ export async function runPipeline(opts = {}) {
       media: media.items,
       engine: audio.engine,
       duration: video.duration,
-      status: youtube ? 'published' : 'rendered',
+      status: youtube ? 'published' : pf.ok ? 'rendered' : 'failed_preflight',
       youtube,
     });
     console.log(`  kayıt id: ${videoId}`);
 
-    return { script, videoPath: outPath, youtube, videoId };
+    // 7) Bildirim (best-effort).
+    const msg = youtube
+      ? `✅ neosaniye: "${script.topic}" yayında (${video.duration.toFixed(0)}s, ` +
+        `AI:${media.sources.ai}/${media.items.length})\n${youtube.url}`
+      : pf.ok
+        ? `🎬 neosaniye: "${script.topic}" üretildi (upload atlandı).`
+        : `⚠️ neosaniye: "${script.topic}" preflight'a takıldı: ${pf.issues.join(' | ')}`;
+    await notify(msg).catch(() => {});
+
+    if (willUpload && !pf.ok) {
+      throw new Error(`Preflight başarısız: ${pf.issues.join(' | ')}`);
+    }
+    return { script, videoPath: outPath, youtube, videoId, preflight: pf };
   } catch (err) {
-    // Hatayı da kaydet (best-effort), sonra yukarı fırlat.
     await recordProduction(script, { status: 'failed', error: err.message }).catch(() => {});
+    await notify(`❌ neosaniye üretim hatası (${script.topic}): ${err.message.slice(0, 300)}`).catch(() => {});
     throw err;
   }
 }
