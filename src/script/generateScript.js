@@ -153,9 +153,11 @@ Rules for the whole script:
 - title: curiosity-driven, <= 80 characters, no clickbait lies, no emojis.`;
 }
 
-/** Geçici hatalarda (5xx / ağ / UNAVAILABLE) kısa backoff ile yeniden dener.
- *  Kota (429) hatasında ısrar etmez — anlamsız. */
-async function generateWithRetry(ai, req, tries = 3) {
+/** Geçici hatalarda (503 UNAVAILABLE / 5xx / ağ) sabırlı backoff ile dener.
+ *  Google'ın "high demand" dalgaları dakikalar sürebilir; kısa backoff pes
+ *  ettiriyordu (canlıda görüldü). Kota (429) hatasında ısrar etmez.  */
+async function generateWithRetry(ai, req, tries = 5) {
+  const delays = [2000, 6000, 15000, 30000];
   let lastErr;
   for (let i = 0; i < tries; i += 1) {
     try {
@@ -164,7 +166,11 @@ async function generateWithRetry(ai, req, tries = 3) {
       lastErr = err;
       const msg = String(err?.message || err);
       if (/quota|RESOURCE_EXHAUSTED|429|API key|permission/i.test(msg)) throw err;
-      if (i < tries - 1) await new Promise((r) => setTimeout(r, 1500 * (i + 1)));
+      if (i < tries - 1) {
+        const wait = delays[Math.min(i, delays.length - 1)];
+        console.warn(`[gemini] geçici hata, ${wait / 1000}sn sonra tekrar (${i + 1}/${tries}): ${msg.slice(0, 90)}`);
+        await new Promise((r) => setTimeout(r, wait));
+      }
     }
   }
   throw lastErr;
