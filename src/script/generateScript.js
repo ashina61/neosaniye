@@ -80,9 +80,17 @@ export const SCRIPT_SCHEMA = {
       description:
         'Short closing spoken line tied to THIS story (unique each time), invites to follow',
     },
+    emphasis_words: {
+      type: Type.ARRAY,
+      items: { type: Type.STRING },
+      description:
+        '6-12 single words copied EXACTLY as they appear in the narrations that deserve visual ' +
+        'emphasis in captions: numbers, names, shock words, the twist word (e.g. "20,000", ' +
+        '"emus", "surrendered", "vanished"). One word per entry, no phrases.',
+    },
   },
-  required: ['topic', 'title', 'hook_text', 'category', 'visual_anchor', 'scenes', 'cta'],
-  propertyOrdering: ['topic', 'title', 'hook_text', 'category', 'visual_anchor', 'scenes', 'cta'],
+  required: ['topic', 'title', 'hook_text', 'category', 'visual_anchor', 'scenes', 'cta', 'emphasis_words'],
+  propertyOrdering: ['topic', 'title', 'hook_text', 'category', 'visual_anchor', 'scenes', 'cta', 'emphasis_words'],
 };
 
 // Format rotasyonu: izleyici tek kalıptan yorulmasın. Story ağırlıklı.

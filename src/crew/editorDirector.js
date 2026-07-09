@@ -66,8 +66,9 @@ You receive a scene-by-scene story. Design the edit like a pro:
 - Pacing lives in CUTS: most boundaries are 'cut'. Use an animated transition only where the story's
   emotion shifts (a reveal, a time jump, entering the twist). Never more than ~40% animated.
 - Sound tells the story: place 'impact' exactly at the biggest shock/twist boundary, 'riser' on the
-  boundary building INTO a reveal, 'shimmer' at a moment of wonder, 'whoosh' for time/place jumps,
-  'none' on quiet cuts. Do not put an SFX on every boundary — silence has power.
+  boundary building INTO a reveal, 'shimmer' at a moment of wonder, 'whoosh' for time/place jumps.
+- EVERY animated (non-cut) transition MUST carry an sfx — a silent animated wipe feels broken.
+  'none' is allowed ONLY on plain cuts. Aim for 3-5 audible sfx per video total.
 - Pick the music mood by the story's FEELING, not its surface topic (a dark science story = mystery).
 - Place the subscribe reminder at the story's most natural breathing point.`;
 
@@ -101,10 +102,13 @@ Design the edit: exactly ${N - 1} boundaries, plus music mood and subscribe plac
 
   // --- Temizle/doğrula: model saçmalarsa mekanik plana düşülür ---
   if (!Array.isArray(plan.boundaries) || plan.boundaries.length !== N - 1) return null;
-  const boundaries = plan.boundaries.map((b) => ({
-    transition: TRANSITIONS.includes(b.transition) ? b.transition : 'cut',
-    sfx: SFX.includes(b.sfx) ? b.sfx : 'none',
-  }));
+  const boundaries = plan.boundaries.map((b) => {
+    const transition = TRANSITIONS.includes(b.transition) ? b.transition : 'cut';
+    let sfxType = SFX.includes(b.sfx) ? b.sfx : 'none';
+    // Animasyonlu geçiş asla sessiz olamaz (canlıda "bozuk" hissi verdi).
+    if (transition !== 'cut' && sfxType === 'none') sfxType = 'whoosh';
+    return { transition, sfx: sfxType };
+  });
   // Animasyon oranı %50'yi aşarsa fazlasını cut'a çevir (sondan başa).
   const animated = boundaries.filter((b) => b.transition !== 'cut').length;
   let excess = animated - Math.floor((N - 1) / 2);

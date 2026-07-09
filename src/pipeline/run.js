@@ -107,6 +107,7 @@ export async function runPipeline(opts = {}) {
       category: script.category,
       editPlan,
       musicMood: editPlan?.musicMood || undefined,
+      emphasisWords: script.emphasis_words || [],
       outPath,
     });
     console.log(`  ${video.width}x${video.height}, ${video.duration.toFixed(1)}s -> ${outPath}`);

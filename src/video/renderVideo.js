@@ -82,7 +82,14 @@ function buildCaptionAss(words, opts) {
     uppercase = true,
     hookText = '',
     hookDuration = config.video.hookDuration,
+    emphasisWords = [],
   } = opts;
+
+  // Vurgu sözlüğü: yönetmenin işaretlediği kelimeler (normalize edilmiş).
+  const normWord = (w) => String(w).toLowerCase().replace(/[^a-z0-9]/g, '');
+  const emphSet = new Set(emphasisWords.map(normWord).filter(Boolean));
+  const isEmph = (w) =>
+    config.video.emphasis && (/\d/.test(w) || emphSet.has(normWord(w)));
 
   const marginH = 90;
   const usableW = width - 2 * marginH;
@@ -131,14 +138,21 @@ function buildCaptionAss(words, opts) {
       ? Math.max(lastEnd, nextStart)
       : lastEnd + 0.15;
     const raw = group.map((w) => w.word).join(' ');
-    const text = assEscape(uppercase ? raw.toUpperCase() : raw);
     // Genişliğe sığdır: taşarsa küçült (taşıp 2. satıra düşmesin).
     let fs = size;
-    const est = text.length * charFactor * fs;
-    if (est > usableW) fs = Math.max(30, Math.floor(usableW / (text.length * charFactor)));
-    const emph = config.video.emphasis && /\d/.test(raw) ? `\\c${config.video.accentColor}` : '';
+    const est = raw.length * charFactor * fs;
+    if (est > usableW) fs = Math.max(30, Math.floor(usableW / (raw.length * charFactor)));
+    // Kelime bazlı vurgu: işaretli kelime aksan renginde + bir tık büyük yanar.
+    const text = group
+      .map((w) => {
+        const t = assEscape(uppercase ? w.word.toUpperCase() : w.word);
+        return isEmph(w.word)
+          ? `{\\c${config.video.accentColor}\\fs${Math.round(fs * 1.15)}\\b1}${t}{\\c&HFFFFFF&\\fs${fs}}`
+          : t;
+      })
+      .join(' ');
     events.push(
-      `Dialogue: 0,${assTime(start)},${assTime(end)},Cap,,0,0,0,,{\\fs${fs}\\fad(120,90)\\blur1.2${emph}}${text}`,
+      `Dialogue: 0,${assTime(start)},${assTime(end)},Cap,,0,0,0,,{\\fs${fs}\\fad(120,90)\\blur1.2}${text}`,
     );
   }
   return assHeader(width, height, styleLines.join('\n')) + events.join('\n') + '\n';
@@ -286,46 +300,65 @@ async function normalizeClip(item, duration, outPath, { width, height, fps, inde
   ], { maxBuffer: 20 * 1024 * 1024 });
 }
 
-/** Geçiş ses efektleri — DÖRT BARİZ FARKLI karakter (tek tip olmasın):
- *  - impact:  alçak gümleme + klik (bas vuruş, diğerlerinden net ayrışır)
- *  - riser:   kesime doğru yükselen gerilim süpürmesi
- *  - whoosh:  orta bant hareketli süpürme
- *  - shimmer: parlak çan/ışıltı (yüksek frekans) */
+/** Geçiş ses efektleri — katmanlı + echo kuyruklu (ham sentez "cacık" durur;
+ *  küçük bir mekân kuyruğu prodüksiyon sesi hissi verir):
+ *  - impact:  sub + gövde + klik + kuyruk (twist vuruşu)
+ *  - riser:   kesime tırmanan gerilim süpürmesi
+ *  - whoosh:  orta bant süpürme + kuyruk
+ *  - shimmer: parlak çan + uzun yumuşak kuyruk
+ *  - click:   UI tık sesi (abone kartı belirirken) */
 async function makeSfx(type, outPath) {
   let args;
   if (type === 'impact') {
     args = [
-      '-f', 'lavfi', '-i', 'sine=frequency=62:duration=0.6',
-      '-f', 'lavfi', '-i', 'anoisesrc=d=0.06:c=white:a=0.7',
+      '-f', 'lavfi', '-i', 'sine=frequency=48:duration=0.9',
+      '-f', 'lavfi', '-i', 'sine=frequency=90:duration=0.5',
+      '-f', 'lavfi', '-i', 'anoisesrc=d=0.05:c=white:a=0.8',
       '-filter_complex',
-      '[0]afade=t=out:st=0.04:d=0.5,volume=2.4[a];' +
-        '[1]highpass=f=2500,afade=t=out:st=0.01:d=0.05,volume=0.5[b];' +
-        '[a][b]amix=inputs=2:normalize=0[o]',
+      '[0]afade=t=out:st=0.05:d=0.8,volume=2.2[sub];' +
+        '[1]afade=t=out:st=0.03:d=0.4,volume=1.6[body];' +
+        '[2]highpass=f=1800,afade=t=out:st=0.005:d=0.045,volume=0.6[clk];' +
+        '[sub][body][clk]amix=inputs=3:normalize=0,' +
+        'aecho=0.7:0.4:40|75:0.35|0.2[o]',
       '-map', '[o]',
     ];
   } else if (type === 'riser') {
     args = [
-      '-f', 'lavfi', '-i', 'anoisesrc=d=0.8:c=white:a=0.55',
+      '-f', 'lavfi', '-i', 'anoisesrc=d=0.9:c=pink:a=0.6',
       '-af',
-      'highpass=f=400,lowpass=f=6500,vibrato=f=8:d=0.4,' +
-        'afade=t=in:st=0:d=0.68,afade=t=out:st=0.7:d=0.1,volume=1.2',
+      'highpass=f=350,lowpass=f=7000,vibrato=f=10:d=0.5,' +
+        'afade=t=in:st=0:d=0.75,afade=t=out:st=0.78:d=0.12,' +
+        'aecho=0.5:0.3:35:0.3,volume=1.3',
     ];
   } else if (type === 'shimmer') {
     args = [
-      '-f', 'lavfi', '-i', 'sine=frequency=1567:duration=0.55',
-      '-f', 'lavfi', '-i', 'sine=frequency=2093:duration=0.55',
+      '-f', 'lavfi', '-i', 'sine=frequency=1567:duration=0.7',
+      '-f', 'lavfi', '-i', 'sine=frequency=2093:duration=0.7',
+      '-f', 'lavfi', '-i', 'sine=frequency=3136:duration=0.7',
       '-filter_complex',
-      '[0][1]amix=inputs=2:normalize=0,tremolo=f=9:d=0.6,' +
-        'afade=t=in:st=0:d=0.03,afade=t=out:st=0.15:d=0.38,volume=0.9[o]',
+      '[0][1][2]amix=inputs=3:normalize=0,tremolo=f=8:d=0.5,' +
+        'afade=t=in:st=0:d=0.02,afade=t=out:st=0.18:d=0.5,' +
+        'aecho=0.6:0.45:80|140:0.4|0.25,volume=0.8[o]',
+      '-map', '[o]',
+    ];
+  } else if (type === 'click') {
+    args = [
+      '-f', 'lavfi', '-i', 'sine=frequency=1150:duration=0.06',
+      '-f', 'lavfi', '-i', 'anoisesrc=d=0.03:c=white:a=0.6',
+      '-filter_complex',
+      '[0]afade=t=out:st=0.015:d=0.045,volume=1.2[t];' +
+        '[1]highpass=f=3000,afade=t=out:st=0.004:d=0.026,volume=0.7[n];' +
+        '[t][n]amix=inputs=2:normalize=0,aecho=0.4:0.2:25:0.18[o]',
       '-map', '[o]',
     ];
   } else {
     // whoosh
     args = [
-      '-f', 'lavfi', '-i', 'anoisesrc=d=0.5:c=pink:a=0.7',
+      '-f', 'lavfi', '-i', 'anoisesrc=d=0.55:c=pink:a=0.75',
       '-af',
-      'bandpass=f=900:w=600,vibrato=f=6:d=0.5,' +
-        'afade=t=in:st=0:d=0.15,afade=t=out:st=0.25:d=0.25,volume=1.6',
+      'bandpass=f=850:w=700,vibrato=f=7:d=0.6,' +
+        'afade=t=in:st=0:d=0.16,afade=t=out:st=0.28:d=0.27,' +
+        'aecho=0.6:0.35:45:0.3,volume=1.7',
     ];
   }
   await run('ffmpeg', [
@@ -370,7 +403,7 @@ function pickMusicTrack() {
  * + geçiş whoosh'ları + outro chime. Toplam süre `total`.
  */
 async function buildFullAudio(
-  { workDir, narrationPath, total, clipDur, bts, N, M, useOutro, category = '', sfxTypes = [] },
+  { workDir, narrationPath, total, clipDur, bts, N, M, useOutro, category = '', sfxTypes = [], clickAt = null },
   outPath,
 ) {
   const sfx = config.video.sfx;
@@ -434,6 +467,16 @@ async function buildFullAudio(
     idx += 1;
   }
 
+  // Abone kartı belirirken UI 'tık' sesi (kart görselle senkron).
+  let clickIdx = -1;
+  if (sfx && Number.isFinite(clickAt) && clickAt > 0) {
+    const click = path.join(workDir, 'click.wav');
+    await makeSfx('click', click);
+    inputs.push('-i', path.resolve(click));
+    clickIdx = idx;
+    idx += 1;
+  }
+
   const fc = [];
   const mix = [];
 
@@ -470,6 +513,12 @@ async function buildFullAudio(
     const ms = Math.round((off[N - 1] + bts[N - 1] / 2) * 1000);
     fc.push(`[${chimeIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=0.35[chm]`);
     mix.push('[chm]');
+  }
+
+  if (clickIdx >= 0) {
+    const ms = Math.round(clickAt * 1000);
+    fc.push(`[${clickIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=0.6[clk]`);
+    mix.push('[clk]');
   }
 
   // Karışım -> kapanışta yumuşak sönüş -> YouTube standardı -14 LUFS loudness.
@@ -641,7 +690,12 @@ export async function renderVideo(job, opts = {}) {
   if (useAss) {
     await writeFile(
       path.join(workDir, 'subs.ass'),
-      buildAss(wordTimings, { width, height, hookText: hasHook ? hookText : '' }),
+      buildAss(wordTimings, {
+        width,
+        height,
+        hookText: hasHook ? hookText : '',
+        emphasisWords: job.emphasisWords || [],
+      }),
     );
   }
 
@@ -799,6 +853,8 @@ export async function renderVideo(job, opts = {}) {
       // Ses yönetmeni müzik ruhu seçtiyse o; yoksa konu kategorisi.
       category: job.musicMood || category,
       sfxTypes,
+      // Abone kartı otururken tık sesi (giriş animasyonunun bitişiyle senkron).
+      clickAt: spOn ? T1 + 0.4 : null,
     },
     path.resolve(fulla),
   );
