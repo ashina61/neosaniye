@@ -79,10 +79,12 @@ function buildCaptionAss(words, opts) {
     size = config.video.captionSize,
     marginV = config.video.captionMarginV,
     perLine = config.video.captionWordsPerLine,
-    uppercase = true,
+    // Referans stil: BAĞIRAN CAPS değil, doğal cümle akışı (premium his).
+    uppercase = false,
     hookText = '',
     hookDuration = config.video.hookDuration,
     emphasisWords = [],
+    finaleText = '',
   } = opts;
 
   // Vurgu sözlüğü: yönetmenin işaretlediği kelimeler (normalize edilmiş).
@@ -93,23 +95,44 @@ function buildCaptionAss(words, opts) {
 
   const marginH = 90;
   const usableW = width - 2 * marginH;
-  const charFactor = 0.62; // Montserrat Black büyük harf yaklaşık genişlik oranı
+  const charFactor = 0.56; // Montserrat SemiBold karışık harf yaklaşık genişlik oranı
 
-  // Alt-orta (alignment 2), kalın beyaz, ince kenar + yumuşak gölge.
+  // Normal altyazı: SemiBold (Black değil — referans stili daha ince/premium),
+  // alt-orta, beyaz, kenar yok, yumuşak gölge.
   const capStyle =
-    `Style: Cap,${fontName},${size},&H00FFFFFF,&H00000000,&H90000000,` +
-    `1,1,2.5,1,2,${marginH},${marginH},${marginV},1`;
+    `Style: Cap,Montserrat SemiBold,${size},&H00FFFFFF,&H00000000,&H98000000,` +
+    `0,1,1.6,2.2,2,${marginH},${marginH},${marginV},1`;
   const styleLines = [capStyle];
 
   const events = [];
 
-  // Hook kartı: ilk saniyeler, büyük, üst-orta, otomatik satır kaydırma ile sığar.
+  // Hook kartı: ilk saniyeler, büyük, üst-orta (Black + CAPS — kapak burası).
   const hk = assEscape(String(hookText || '').toUpperCase());
   if (hk) {
     const hStyle = `Style: Hook,${fontName},74,&H00FFFFFF,&H00000000,&H00000000,1,1,4,3,8,100,100,380,1`;
     styleLines.push(hStyle);
     events.push(
       `Dialogue: 1,0:00:00.00,${assTime(hookDuration)},Hook,,0,0,0,,{\\fad(200,350)}${hk}`,
+    );
+  }
+
+  // FİNAL VURUŞU: hikâyenin mic-drop cümlesi — normal altyazının ÜSTÜNDE,
+  // bambaşka tonda (zarif italik serif), son saniyelerde belirir (referans stil).
+  const fin = assEscape(String(finaleText || '').trim());
+  if (fin && words.length) {
+    let ffs = 84;
+    const finFactor = 0.5; // Playfair italik ortalama genişlik
+    if (fin.length * finFactor * ffs > usableW) {
+      ffs = Math.max(52, Math.floor(usableW / (fin.length * finFactor)));
+    }
+    const fStyle =
+      `Style: Finale,Playfair Display,${ffs},&H00FFFFFF,&H00000000,&HB4000000,` +
+      `0,1,0,3,2,${marginH},${marginH},${marginV + 210},1`;
+    styleLines.push(fStyle);
+    const tEnd = words[words.length - 1].end;
+    const st = Math.max(0.5, tEnd - 2.6);
+    events.push(
+      `Dialogue: 2,${assTime(st)},${assTime(tEnd + 1.6)},Finale,,0,0,0,,{\\i1\\fad(450,300)\\blur1.5}${fin}`,
     );
   }
 
@@ -138,21 +161,24 @@ function buildCaptionAss(words, opts) {
       ? Math.max(lastEnd, nextStart)
       : lastEnd + 0.15;
     const raw = group.map((w) => w.word).join(' ');
-    // Genişliğe sığdır: taşarsa küçült (taşıp 2. satıra düşmesin).
-    let fs = size;
+    // Vurgulu parça (referans stil): grup vurucu kelime/sayı içeriyorsa TÜM
+    // parça belirgin daha büyük ve kalın basılır — "100,000 acres" etkisi.
+    const emphChunk = group.some((w) => isEmph(w.word));
+    let fs = emphChunk ? Math.round(size * 1.3) : size;
     const est = raw.length * charFactor * fs;
     if (est > usableW) fs = Math.max(30, Math.floor(usableW / (raw.length * charFactor)));
-    // Kelime bazlı vurgu: işaretli kelime aksan renginde + bir tık büyük yanar.
+    // Vurgulu kelimenin kendisi ayrıca aksan renginde yanar (marka kimliği).
     const text = group
       .map((w) => {
         const t = assEscape(uppercase ? w.word.toUpperCase() : w.word);
         return isEmph(w.word)
-          ? `{\\c${config.video.accentColor}\\fs${Math.round(fs * 1.15)}\\b1}${t}{\\c&HFFFFFF&\\fs${fs}}`
+          ? `{\\c${config.video.accentColor}}${t}{\\c&HFFFFFF&}`
           : t;
       })
       .join(' ');
+    const boldTag = emphChunk ? '\\b1' : '';
     events.push(
-      `Dialogue: 0,${assTime(start)},${assTime(end)},Cap,,0,0,0,,{\\fs${fs}\\fad(120,90)\\blur1.2}${text}`,
+      `Dialogue: 0,${assTime(start)},${assTime(end)},Cap,,0,0,0,,{\\fs${fs}${boldTag}\\fad(120,90)\\blur1.2}${text}`,
     );
   }
   return assHeader(width, height, styleLines.join('\n')) + events.join('\n') + '\n';
@@ -695,6 +721,7 @@ export async function renderVideo(job, opts = {}) {
         height,
         hookText: hasHook ? hookText : '',
         emphasisWords: job.emphasisWords || [],
+        finaleText: job.finaleText || '',
       }),
     );
   }

@@ -88,9 +88,16 @@ export const SCRIPT_SCHEMA = {
         'emphasis in captions: numbers, names, shock words, the twist word (e.g. "20,000", ' +
         '"emus", "surrendered", "vanished"). One word per entry, no phrases.',
     },
+    finale_text: {
+      type: Type.STRING,
+      description:
+        'The mic-drop phrase of the story, 3-7 words, shown as an elegant on-screen title in the ' +
+        'final seconds (e.g. "the biggest drug dealer in history", "a war lost to birds"). ' +
+        'Lowercase feel, no period, no quotes.',
+    },
   },
-  required: ['topic', 'title', 'hook_text', 'category', 'visual_anchor', 'scenes', 'cta', 'emphasis_words'],
-  propertyOrdering: ['topic', 'title', 'hook_text', 'category', 'visual_anchor', 'scenes', 'cta', 'emphasis_words'],
+  required: ['topic', 'title', 'hook_text', 'category', 'visual_anchor', 'scenes', 'cta', 'emphasis_words', 'finale_text'],
+  propertyOrdering: ['topic', 'title', 'hook_text', 'category', 'visual_anchor', 'scenes', 'cta', 'emphasis_words', 'finale_text'],
 };
 
 // Format rotasyonu: izleyici tek kalıptan yorulmasın. Story ağırlıklı.
