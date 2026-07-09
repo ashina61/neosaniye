@@ -210,5 +210,101 @@
       "publishedAt": "2026-07-09T00:21:00.044Z"
     },
     "createdAt": "2026-07-09T00:21:00.186Z"
+  },
+  {
+    "id": "cicada-3301-1783560155152",
+    "topic": "Cicada 3301",
+    "normalizedTopic": "cicada-3301",
+    "script": {
+      "title": "The Internet's Deepest Mystery: Cicada 3301",
+      "category": "mystery",
+      "scenes": [
+        {
+          "narration": "In 2012, an enigmatic online entity called Cicada 3301 posted a cryptic message seeking 'highly intelligent individuals'.",
+          "image_prompt": "Extreme close-up on a retro-style computer monitor displaying a simple, text-based anonymous message from 'Cicada 3301' in a dark room, late 2000s, glowing blue light."
+        },
+        {
+          "narration": "This began one of the internet's most baffling and elaborate scavenger hunts.",
+          "image_prompt": "Medium shot of the hacker's hands typing furiously on a vintage keyboard, multiple complex lines of code visible on a screen in the background, cool green glow, late 2000s."
+        },
+        {
+          "narration": "Clues were hidden everywhere: in images, music, books, even real-world locations across the globe.",
+          "image_prompt": "Wide shot of the hacker in a chaotic room, surrounded by maps, printouts, and notes pinned to walls, connecting physical clues, late 2000s, dramatic overhead light."
+        },
+        {
+          "narration": "Participants scrambled to solve complex puzzles involving cryptography, steganography, and philosophy.",
+          "image_prompt": "Close-up on a detailed, cryptic drawing with mathematical symbols and hidden text, held by a hand, glowing screen light reflecting on it, late 2000s."
+        },
+        {
+          "narration": "Those who found later clues were often directed to phone numbers and physical posters in countries like the USA and Poland.",
+          "image_prompt": "Over-the-shoulder shot of the hacker looking at a vintage flip phone receiving a mysterious text message, map visible on another screen, late 2000s, blue light."
+        },
+        {
+          "narration": "The nature of Cicada 3301 remains completely unknown; some believe it's a recruitment tool, others a cyber-cult.",
+          "image_prompt": "Medium shot of the hacker staring intently at a complex network diagram on a large monitor, reflecting confusion and deep thought, late 2000s, multiple screens with varying data."
+        },
+        {
+          "narration": "The last puzzle was posted in 2014, and to this day, no one knows who or what Cicada 3301 truly is.",
+          "image_prompt": "Cinematic wide shot of the hacker standing up, turning away from the glowing screens, leaving the mysterious room, late 2000s, leaving the mystery unresolved, cold lighting."
+        }
+      ],
+      "cta": "Follow for more real-life puzzles that still baffle the world!"
+    },
+    "audioPath": "output/cicada-3301/cicada-3301.mp3",
+    "videoPath": "output/cicada-3301/cicada-3301.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/cicada-3301/media/01-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/cicada-3301/media/02-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/cicada-3301/media/03-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 3,
+        "path": "output/cicada-3301/media/04-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 4,
+        "path": "output/cicada-3301/media/05-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 5,
+        "path": "output/cicada-3301/media/06-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 6,
+        "path": "output/cicada-3301/media/07-ai.jpg"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 51.71,
+    "status": "published",
+    "youtube": {
+      "videoId": "B5XiCl6svAg",
+      "url": "https://www.youtube.com/shorts/B5XiCl6svAg",
+      "title": "The Internet's Deepest Mystery: Unraveling Cicada 3301's Cryptic Hunt #Shorts",
+      "publishedAt": "2026-07-09T01:22:35.048Z"
+    },
+    "createdAt": "2026-07-09T01:22:35.152Z"
   }
 ]

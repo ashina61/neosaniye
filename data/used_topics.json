@@ -16,5 +16,11 @@
     "normalizedTopic": "voynich-manuscript",
     "createdAt": "2026-07-09T00:21:00.187Z",
     "videoId": "voynich-manuscript-1783556460186"
+  },
+  "cicada-3301": {
+    "topic": "Cicada 3301",
+    "normalizedTopic": "cicada-3301",
+    "createdAt": "2026-07-09T01:22:35.154Z",
+    "videoId": "cicada-3301-1783560155152"
   }
 }
