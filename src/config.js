@@ -34,9 +34,10 @@ export const config = {
     styleSuffix:
       process.env.IMAGE_STYLE ||
       'cinematic documentary photograph, shot on 35mm film, natural realistic ' +
-        'textures and skin, dramatic practical lighting, warm filmic color grade, ' +
-        'shallow depth of field, subtle motion blur, imperfect natural framing, ' +
-        'vertical composition, no text, no watermark, no subtitles',
+        'textures and skin, dramatic practical lighting, subject clearly lit with ' +
+        'bright key light, warm filmic color grade, shallow depth of field, ' +
+        'subtle motion blur, imperfect natural framing, vertical composition, ' +
+        'no text, no watermark, no subtitles',
     retries: Number(process.env.IMAGE_RETRIES || 2),
     timeoutMs: Number(process.env.IMAGE_TIMEOUT_MS || 90000),
     // Görsel üretimi başarısızsa Pexels'ten stok görsele düş.
@@ -123,7 +124,8 @@ export const config = {
     music: process.env.VIDEO_MUSIC !== '0',
     musicDir: process.env.VIDEO_MUSIC_DIR || 'assets/music',
     musicPath: process.env.VIDEO_MUSIC_PATH || 'assets/music/bed.mp3',
-    musicVolume: Number(process.env.VIDEO_MUSIC_VOL || 0.14),
+    // Referans kurgulardaki gibi müzik biraz daha önde (ducking yine korur).
+    musicVolume: Number(process.env.VIDEO_MUSIC_VOL || 0.19),
   },
   pexels: {
     apiKey: process.env.PEXELS_API_KEY,

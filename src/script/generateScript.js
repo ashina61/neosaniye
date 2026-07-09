@@ -128,7 +128,7 @@ function buildSystemPrompt(format) {
   return `You are a master short-form STORYTELLER for a faceless YouTube Shorts channel.
 Concept: "${config.niche.theme}". This video's format: ${format.brief}
 
-Write in English, for a SINGLE dramatic narrator. Target total voiceover ~35-45 seconds (about 100-130 words). Shorts are SHORT — hook fast, no filler, every sentence earns its place.
+Write in English, for a SINGLE dramatic narrator. STRICT word budget: the total voiceover (all narrations + cta) must be 90-115 words — never more. That is ~35-42 seconds. Shorts are SHORT — hook fast, no filler, every sentence earns its place.
 
 Structure the story as 7-9 SCENES (beats) that flow as a tight narrative arc:
 1) A punchy hook in the FIRST scene that creates an open loop ("In 1518, an entire town could not stop dancing — and dozens died.").
@@ -142,6 +142,8 @@ Rules for each scene:
 - VARY the rhythm like a human storyteller: follow a long sentence with a short punchy one; use natural spoken phrasing (contractions are fine), never a monotone list of facts.
 - image_prompt: describe a SINGLE cinematic photorealistic shot that literally depicts that sentence — name the subject, the place, the era/period, the action, camera framing, lighting and mood. Keep it concrete and filmable. Never request on-screen text, captions, letters, logos or watermarks.
 - VISUAL CONTINUITY: every image_prompt must be consistent with the visual_anchor (same character appearance, same era, same light/color mood) so the story looks like ONE film, not random pictures.
+- SHOT VARIETY (critical): consecutive scenes must NOT repeat the same framing or location. Rotate deliberately like a film editor: wide establishing shot → medium shot → intimate close-up of hands/objects → over-the-shoulder → extreme close-up detail → a different location/angle. State the shot scale explicitly in each image_prompt.
+- LIGHTING: the main subject must be CLEARLY LIT and readable on a small phone screen, even in dark/moody scenes (bright key light on subject, darker background).
 - keywords: 1-3 simple English nouns as a stock-footage fallback if image generation is unavailable.
 
 Rules for the whole script:

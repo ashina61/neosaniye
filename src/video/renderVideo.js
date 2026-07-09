@@ -199,10 +199,11 @@ const CATEGORY_GRADES = {
     'eq=contrast=1.07:saturation=1.08:brightness=0.004:gamma=0.99,' +
     'colorbalance=rs=0.05:rm=0.05:gm=0.015:bm=-0.05',
   mystery:
-    'eq=contrast=1.12:saturation=0.9:brightness=-0.006:gamma=0.97,' +
+    // Not: karartma YOK — loş sahneler telefonda çamurlaşıyor; gamma ile aç.
+    'eq=contrast=1.09:saturation=0.94:brightness=0.008:gamma=1.04,' +
     'colorbalance=bm=0.04:bs=0.03:rm=-0.01',
   space:
-    'eq=contrast=1.1:saturation=1.05:brightness=-0.004:gamma=0.98,' +
+    'eq=contrast=1.08:saturation=1.05:brightness=0.004:gamma=1.02,' +
     'colorbalance=rs=-0.03:rm=-0.02:bm=0.06:bs=0.04',
   science:
     'eq=contrast=1.08:saturation=1.12:brightness=0.004:gamma=0.99,' +
@@ -350,20 +351,26 @@ function pickMusicTrack() {
  * + geçiş whoosh'ları + outro chime. Toplam süre `total`.
  */
 async function buildFullAudio(
-  { workDir, narrationPath, total, clipDur, td, N, M, useOutro, category = '' },
+  { workDir, narrationPath, total, clipDur, bts, N, M, useOutro, category = '' },
   outPath,
 ) {
   const sfx = config.video.sfx;
   const useMusic = config.video.music;
 
-  // Geçiş offsetleri (video ile aynı hesap).
+  // Geçiş offsetleri (video ile aynı hesap: sınır bazlı süreler).
   const off = [];
   let cum = 0;
+  let btSum = 0;
   for (let k = 1; k < M; k += 1) {
     cum += clipDur[k - 1];
-    off.push(cum - k * td);
+    btSum += bts[k - 1];
+    off.push(cum - btSum);
   }
-  const mainTransitions = Math.max(0, N - 1);
+  // SFX yalnızca GERÇEK geçişlere biner (sert kesmeler sessiz — pro kurgu).
+  const realMainBoundaries = [];
+  for (let k = 1; k <= Math.max(0, N - 1); k += 1) {
+    if (bts[k - 1] >= 0.2) realMainBoundaries.push(k);
+  }
 
   const inputs = ['-i', narrationPath]; // 0 = narrasyon
   let idx = 1;
@@ -389,14 +396,13 @@ async function buildFullAudio(
     idx += 1;
   }
 
-  // SFX her geçişte DEĞİL (şablon hissi verir): atlamalı ve çeşitli.
-  // null = o geçiş sessiz, sade kesme gibi algılanır.
-  const sfxCycle = ['whoosh', null, 'swish', null, 'riser', null, 'impact', null];
+  // Çeşitli SFX yalnızca gerçek geçişlerde (zaten seyrekler).
+  const sfxCycle = ['whoosh', 'swish', 'riser'];
   const sfxPlan = []; // { idx, k }
-  if (sfx && mainTransitions > 0) {
-    for (let k = 1; k <= mainTransitions; k += 1) {
-      const type = sfxCycle[(k - 1) % sfxCycle.length];
-      if (!type) continue;
+  if (sfx && realMainBoundaries.length) {
+    for (let n = 0; n < realMainBoundaries.length; n += 1) {
+      const k = realMainBoundaries[n];
+      const type = sfxCycle[n % sfxCycle.length];
       const f = path.join(workDir, `sfx-${k}.wav`);
       await makeSfx(type, f);
       inputs.push('-i', path.resolve(f));
@@ -438,7 +444,7 @@ async function buildFullAudio(
   }
 
   for (const { idx: inIdx, k } of sfxPlan) {
-    const ms = Math.round((off[k - 1] + td / 2) * 1000);
+    const ms = Math.round((off[k - 1] + bts[k - 1] / 2) * 1000);
     fc.push(
       `[${inIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=${config.video.transitionSoundVolume}[wd${k}]`,
     );
@@ -446,7 +452,7 @@ async function buildFullAudio(
   }
 
   if (chimeIdx >= 0) {
-    const ms = Math.round((off[N - 1] + td / 2) * 1000);
+    const ms = Math.round((off[N - 1] + bts[N - 1] / 2) * 1000);
     fc.push(`[${chimeIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=0.35[chm]`);
     mix.push('[chm]');
   }
@@ -501,12 +507,35 @@ export async function renderVideo(job, opts = {}) {
   const outroExtra = useOutro ? config.video.outroDuration : 0;
   const M = N + (useOutro ? 1 : 0); // toplam görsel parça (klipler + outro)
 
-  let td = M > 1 ? config.video.transitionDuration : 0;
+  const td = M > 1 ? config.video.transitionDuration : 0;
+
+  // KURGU PLANI (pro ritim): referans kurgular ağırlıkla SERT KESME kullanır.
+  // Her 3. sınırda gerçek bir geçiş; kalan sınırlar ~2 karelik mini-fade
+  // (algıda sert kesme). Yumuşak crossfade'in "AI slayt" hissi böyle kırılır.
+  const CUT = 2 / fps;
+  const trsList = config.video.transitions;
+  const bts = []; // sınır başına geçiş süresi (k=1..M-1)
+  const btName = []; // sınır başına geçiş tipi
+  let realCount = 0;
+  for (let k = 1; k < M; k += 1) {
+    const isOutroBoundary = useOutro && k === M - 1;
+    const real = isOutroBoundary || k % 3 === 0;
+    if (real) {
+      bts.push(td);
+      btName.push(trsList[realCount % trsList.length] || 'fade');
+      realCount += 1;
+    } else {
+      bts.push(CUT);
+      btName.push('fade');
+    }
+  }
+  const mainBts = bts.slice(0, Math.max(0, N - 1));
+  const mainTdSum = mainBts.reduce((a, b) => a + b, 0);
 
   // Ana klip süreleri: sahne ağırlıkları (kelime sayısı) verildiyse orantılı,
-  // yoksa eşit bölüşüm. Her iki durumda da ana bölüm ekranda narrationDur kadar
-  // görünür: sum(mainDurs) - (N-1)*td = narrationDur.
-  const span = narrationDur + (N - 1) * td;
+  // yoksa eşit bölüşüm. Ana bölüm ekranda narrationDur kadar görünür:
+  // sum(mainDurs) - sum(mainBts) = narrationDur.
+  const span = narrationDur + mainTdSum;
   const weights =
     Array.isArray(job.sceneWeights) && job.sceneWeights.length === N
       ? job.sceneWeights
@@ -514,24 +543,21 @@ export async function renderVideo(job, opts = {}) {
   let mainDurs;
   if (weights) {
     const sum = weights.reduce((a, b) => a + b, 0) || 1;
-    const minClip = td + 0.6;
+    const minClip = Math.max(0.8, td + 0.3);
     mainDurs = weights.map((w) => Math.max(minClip, (w / sum) * span));
     const s2 = mainDurs.reduce((a, b) => a + b, 0) || 1;
     mainDurs = mainDurs.map((d) => (d * span) / s2); // clamp sonrası span'e geri ölçekle
   } else {
-    let dMain = span / N;
-    if (M > 1 && dMain <= td + 0.3) td = Math.max(0.15, dMain * 0.4);
-    dMain = (narrationDur + (N - 1) * td) / N;
-    mainDurs = Array(N).fill(dMain);
+    mainDurs = Array(N).fill(span / N);
   }
   // Kuyruk: anlatım bitince video ANINDA kesilmesin; son sahne nefes alır,
   // müzik bu pencerede yumuşakça söner (pro kapanış hissi).
   const tail = Math.max(0, config.video.tailSeconds || 0);
   mainDurs[N - 1] += tail;
 
-  const dOutro = outroExtra + td;
+  const dOutro = outroExtra + (useOutro ? bts[M - 2] : 0);
   const clipDur = [...mainDurs, ...(useOutro ? [dOutro] : [])];
-  const total = clipDur.reduce((a, b) => a + b, 0) - (M - 1) * td;
+  const total = clipDur.reduce((a, b) => a + b, 0) - bts.reduce((a, b) => a + b, 0);
 
   // 2) Ana klipleri normalize et + outro klibini üret.
   const clips = [];
@@ -611,16 +637,16 @@ export async function renderVideo(job, opts = {}) {
   const vfc = [];
   let vbase = '[0:v]';
   if (M > 1) {
-    const trs = config.video.transitions;
     let prev = '[0:v]';
     let cum = 0;
+    let btSum = 0;
     for (let k = 1; k < M; k += 1) {
       cum += clipDur[k - 1];
-      const off = (cum - k * td).toFixed(3);
-      const t = trs[(k - 1) % trs.length] || 'fade';
+      btSum += bts[k - 1];
+      const off = (cum - btSum).toFixed(3);
       const out = k === M - 1 ? '[vx]' : `[x${k}]`;
       vfc.push(
-        `${prev}[${k}:v]xfade=transition=${t}:duration=${td.toFixed(3)}:offset=${off}${out}`,
+        `${prev}[${k}:v]xfade=transition=${btName[k - 1]}:duration=${bts[k - 1].toFixed(3)}:offset=${off}${out}`,
       );
       prev = out;
     }
@@ -692,7 +718,7 @@ export async function renderVideo(job, opts = {}) {
   // 5) SES PASS: narrasyon + arka plan müziği (ducking) + geçiş whoosh + outro chime.
   const fulla = path.join(workDir, 'fulla.m4a');
   await buildFullAudio(
-    { workDir, narrationPath: path.resolve(audioPath), total, clipDur, td, N, M, useOutro, category },
+    { workDir, narrationPath: path.resolve(audioPath), total, clipDur, bts, N, M, useOutro, category },
     path.resolve(fulla),
   );
 

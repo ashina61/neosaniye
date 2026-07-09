@@ -14,10 +14,14 @@ function srtTimeToSeconds(t) {
   return Number(hh) * 3600 + Number(mm) * 60 + Number(ss) + Number(ms) / 1000;
 }
 
-/** edge-tts'in ürettiği SRT altyazısını [{ word, start, end }] dizisine çevirir. */
+/** edge-tts'in ürettiği SRT altyazısını [{ word, start, end }] dizisine çevirir.
+ *
+ *  ÖNEMLİ: yeni edge-tts sürümleri (7.x) cue'ları KELİME değil CÜMLE bazında
+ *  yazar. Cue metni birden çok kelimeyse süre, kelime uzunluklarına orantılı
+ *  dağıtılarak kelime bazına bölünür — altyazı gruplama buna güvenir. */
 export function parseSrt(srt) {
   const blocks = srt.replace(/\r/g, '').trim().split(/\n\n+/);
-  const out = [];
+  const cues = [];
   for (const block of blocks) {
     const lines = block.split('\n');
     const timeLine = lines.find((l) => l.includes('-->'));
@@ -28,11 +32,32 @@ export function parseSrt(srt) {
       .join(' ')
       .trim();
     if (!text) continue;
-    out.push({
-      word: text,
+    cues.push({
+      text,
       start: srtTimeToSeconds(start),
       end: srtTimeToSeconds(end),
     });
+  }
+
+  const out = [];
+  for (const cue of cues) {
+    const parts = cue.text.split(/\s+/).filter(Boolean);
+    if (parts.length <= 1) {
+      out.push({ word: cue.text, start: cue.start, end: cue.end });
+      continue;
+    }
+    const span = Math.max(0.01, cue.end - cue.start);
+    const totalLen = parts.reduce((a, w) => a + w.length + 1, 0);
+    let t = cue.start;
+    for (const w of parts) {
+      const dur = (span * (w.length + 1)) / totalLen;
+      out.push({
+        word: w,
+        start: +t.toFixed(3),
+        end: +(t + dur * 0.92).toFixed(3),
+      });
+      t += dur;
+    }
   }
   return out;
 }
