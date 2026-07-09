@@ -22,5 +22,11 @@
     "normalizedTopic": "cicada-3301",
     "createdAt": "2026-07-09T01:22:35.154Z",
     "videoId": "cicada-3301-1783560155152"
+  },
+  "the-great-stink-of-london": {
+    "topic": "The Great Stink of London",
+    "normalizedTopic": "the-great-stink-of-london",
+    "createdAt": "2026-07-09T05:04:00.674Z",
+    "videoId": "the-great-stink-of-london-1783573440673"
   }
 }

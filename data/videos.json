@@ -306,5 +306,111 @@
       "publishedAt": "2026-07-09T01:22:35.048Z"
     },
     "createdAt": "2026-07-09T01:22:35.152Z"
+  },
+  {
+    "id": "the-great-stink-of-london-1783573440673",
+    "topic": "The Great Stink of London",
+    "normalizedTopic": "the-great-stink-of-london",
+    "script": {
+      "title": "When London's River Thames Became a Giant Open Sewer",
+      "category": "history",
+      "scenes": [
+        {
+          "narration": "In 1858, London experienced 'The Great Stink' — a stench so terrible it paralyzed the city.",
+          "image_prompt": "A wide, establishing shot of 1850s London's skyline, silhouetted against a hazy, sickly orange sky, with thick, visible fumes rising from the River Thames. The river itself looks dark and polluted. Overhead view."
+        },
+        {
+          "narration": "Decades of human waste, industrial runoff, and dead animals had turned the Thames into an open sewer.",
+          "image_prompt": "A medium shot of the filthy, green-brown water of the River Thames, with visible chunks of debris and waste floating on the surface. A lone, small wooden rowboat struggles through the murky water. Low angle, looking up at the polluted river."
+        },
+        {
+          "narration": "The summer heat intensified the smell, making it unbearable even for those indoors.",
+          "image_prompt": "An intimate close-up shot of a Victorian woman's face, pale and grimacing, holding a perfumed handkerchief to her nose, eyes watering from an unseen stench. Her elegant bonnet is slightly askew. Warm, oppressive lighting. Shallow depth of field."
+        },
+        {
+          "narration": "Parliament, situated right beside the river, found itself unable to conduct business.",
+          "image_prompt": "An interior shot of the British Parliament chamber, showing several exasperated Members of Parliament fanning themselves vigorously and covering their mouths, while sunlight streams through a high window, revealing dust motes. Over-the-shoulder shot, looking towards the Speaker's chair."
+        },
+        {
+          "narration": "Curtains soaked in chloride were hung to block the fumes, but nothing truly helped.",
+          "image_prompt": "A close-up of a heavy, dark curtain, visibly damp and stained, hanging across a grand window in a Victorian building. Drops of liquid are visible on the fabric. A faint, greenish haze can be seen outside the window. Extreme close-up on the curtain's texture."
+        },
+        {
+          "narration": "Disease outbreaks, especially cholera, were rampant, claiming thousands of lives.",
+          "image_prompt": "A dark, somber scene of a crowded, narrow Victorian London alleyway, with a few figures huddled together, looking ill. A doctor attends to a prone figure on the ground. Desaturated colors, handheld feel. Medium shot."
+        },
+        {
+          "narration": "Finally, the crisis spurred action: Joseph Bazalgette designed a revolutionary sewer system.",
+          "image_prompt": "A heroic, medium shot of Joseph Bazalgette, a stern-faced Victorian engineer, standing proudly beside a large, detailed blueprint of a complex underground sewer network. He points to a section with a confident expression. Bright key light on his face. Three-quarter profile."
+        },
+        {
+          "narration": "This massive undertaking transformed London, moving waste away and saving countless lives.",
+          "image_prompt": "A dynamic wide shot of numerous Victorian laborers, covered in grime, working tirelessly on an enormous underground brick sewer tunnel, lit by gas lamps. A sense of scale and monumental effort. Low angle, looking up the tunnel."
+        }
+      ],
+      "cta": "Learn how engineering saved a city and follow for more fascinating history!"
+    },
+    "audioPath": "output/the-great-stink-of-london/the-great-stink-of-london.mp3",
+    "videoPath": "output/the-great-stink-of-london/the-great-stink-of-london.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/the-great-stink-of-london/media/01-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/the-great-stink-of-london/media/02-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/the-great-stink-of-london/media/03-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 3,
+        "path": "output/the-great-stink-of-london/media/04-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 4,
+        "path": "output/the-great-stink-of-london/media/05-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 5,
+        "path": "output/the-great-stink-of-london/media/06-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 6,
+        "path": "output/the-great-stink-of-london/media/07-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 7,
+        "path": "output/the-great-stink-of-london/media/08-ai.jpg"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 49.481995,
+    "status": "published",
+    "youtube": {
+      "videoId": "TzDw7JaXSnM",
+      "url": "https://www.youtube.com/shorts/TzDw7JaXSnM",
+      "title": "When London's River Thames Became a Giant Open Sewer #Shorts",
+      "publishedAt": "2026-07-09T05:04:00.583Z"
+    },
+    "createdAt": "2026-07-09T05:04:00.673Z"
   }
 ]
