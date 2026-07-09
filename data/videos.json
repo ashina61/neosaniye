@@ -104,5 +104,111 @@
       "publishedAt": "2026-07-08T17:20:06.147Z"
     },
     "createdAt": "2026-07-08T17:20:06.148Z"
+  },
+  {
+    "id": "voynich-manuscript-1783556460186",
+    "topic": "Voynich Manuscript",
+    "normalizedTopic": "voynich-manuscript",
+    "script": {
+      "title": "The World's Most Mysterious Book: Unsolved for Centuries!",
+      "category": "mystery",
+      "scenes": [
+        {
+          "narration": "In the early 1900s, an antique book dealer stumbled upon a manuscript that would baffle the world.",
+          "image_prompt": "A close-up of a weathered hand, belonging to a 1900s antique book dealer, reverently touching an ancient, leather-bound book with strange symbols on its cover, in a dimly lit, cluttered antique shop. Low angle, warm light, mysterious mood."
+        },
+        {
+          "narration": "Known as the Voynich Manuscript, its 240 pages were filled with unknown script and bizarre illustrations.",
+          "image_prompt": "An overhead shot of an open, ancient manuscript, revealing pages filled with unidentifiable script and whimsical, hand-drawn illustrations of plants and figures, on a wooden library table. Soft, focused light, intriguing mood."
+        },
+        {
+          "narration": "Cryptographers from both World Wars, including top codebreakers, tried and failed to decipher its secrets.",
+          "image_prompt": "A serious-looking cryptographer, wearing a 1940s suit, intensely studying pages of the Voynich Manuscript with a magnifying glass under a desk lamp in a stark, war-era office. Close up, dramatic shadows, determined mood."
+        },
+        {
+          "narration": "Its strange plants didn't match any known species, and its astronomical charts showed unfamiliar constellations.",
+          "image_prompt": "A detailed close-up of a page from the Voynich Manuscript, showing an intricate, impossible-looking plant illustration alongside a circular astronomical chart with unusual star patterns. Macro shot, bright, curious mood."
+        },
+        {
+          "narration": "For centuries, theories ranged from an alien language to an elaborate hoax or even a forgotten lost language.",
+          "image_prompt": "The historian from the visual anchor, looking puzzled and deep in thought, with several open books on different theories (ancient scripts, conspiracy theories) surrounding the Voynich Manuscript on the library table. Mid-shot, contemplative mood."
+        },
+        {
+          "narration": "Even modern AI has struggled, finding statistical patterns but no actual readable meaning.",
+          "image_prompt": "A modern AI interface displaying complex algorithms and patterns, projected onto a screen behind the historian from the visual anchor, who looks intently at the Voynich Manuscript, conveying modern frustration. Darker lighting, technological mood."
+        },
+        {
+          "narration": "To this day, the Voynich Manuscript remains one of history's greatest unsolved linguistic puzzles.",
+          "image_prompt": "A sweeping shot of the vast, ancient library, with the historian from the visual anchor standing small in the foreground, holding the closed Voynich Manuscript, looking out at the endless shelves of knowledge. Wide shot, majestic, enduring mystery."
+        },
+        {
+          "narration": "Scholars still pore over every symbol, hoping to unlock its ultimate, hidden message.",
+          "image_prompt": "A close-up of the historian's hand, aged and delicate, gently tracing the enigmatic symbols on an open page of the Voynich Manuscript, a sense of patient, dedicated study. Soft, focused light, hopeful mood."
+        }
+      ],
+      "cta": "Like and subscribe if you love a good historical enigma!"
+    },
+    "audioPath": "output/voynich-manuscript/voynich-manuscript.mp3",
+    "videoPath": "output/voynich-manuscript/voynich-manuscript.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/voynich-manuscript/media/01-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/voynich-manuscript/media/02-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/voynich-manuscript/media/03-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 3,
+        "path": "output/voynich-manuscript/media/04-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 4,
+        "path": "output/voynich-manuscript/media/05-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 5,
+        "path": "output/voynich-manuscript/media/06-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 6,
+        "path": "output/voynich-manuscript/media/07-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 7,
+        "path": "output/voynich-manuscript/media/08-ai.jpg"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 53.080998,
+    "status": "published",
+    "youtube": {
+      "videoId": "Z78nWjYB6XE",
+      "url": "https://www.youtube.com/shorts/Z78nWjYB6XE",
+      "title": "The Voynich Manuscript: Earth's Most Mysterious Unsolved Book #Shorts",
+      "publishedAt": "2026-07-09T00:21:00.044Z"
+    },
+    "createdAt": "2026-07-09T00:21:00.186Z"
   }
 ]
