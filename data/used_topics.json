@@ -34,5 +34,11 @@
     "normalizedTopic": "mary-toft-rabbits",
     "createdAt": "2026-07-09T06:32:22.402Z",
     "videoId": "mary-toft-rabbits-1783578742401"
+  },
+  "coop-s-satellite": {
+    "topic": "Coop's Satellite",
+    "normalizedTopic": "coop-s-satellite",
+    "createdAt": "2026-07-09T13:54:15.743Z",
+    "videoId": "coop-s-satellite-1783605255742"
   }
 }

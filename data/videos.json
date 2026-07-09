@@ -527,5 +527,120 @@
       "publishedAt": "2026-07-09T06:32:22.319Z"
     },
     "createdAt": "2026-07-09T06:32:22.401Z"
+  },
+  {
+    "id": "coop-s-satellite-1783605255742",
+    "topic": "Coop's Satellite",
+    "normalizedTopic": "coop-s-satellite",
+    "script": {
+      "title": "A US Pilot Accidentally Created a Celestial Time Capsule",
+      "category": "space",
+      "scenes": [
+        {
+          "narration": "In 1957, a US Air Force pilot, William K. P. Co-op, launched a strange satellite.",
+          "image_prompt": "Medium shot of a clean-cut 1950s US Air Force pilot, William K. P. Co-op, in a crisp blue uniform, looking up at a detailed early satellite model in a dimly lit, high-tech command center. Soft, dramatic glow from monitors reflects on his face, clearly illuminating him."
+        },
+        {
+          "narration": "Instead of scientific gear, it carried a simple voice recording: his own voice.",
+          "image_prompt": "Close-up of a vintage reel-to-reel tape recorder in a dimly lit 1950s command center. The pilot's hand (wearing a wedding band) gently touches the spinning reels. The machine is brightly lit, contrasting with the dark background."
+        },
+        {
+          "narration": "This 'Talking Atlas' was proof America could launch ICBMs, calming Cold War fears.",
+          "image_prompt": "Wide establishing shot of a massive, early ICBM rocket on a launchpad at night, silhouetted against a dramatic, cloudy sky. Bright searchlights illuminate it from below. The pilot observes from a control room window in the distance."
+        },
+        {
+          "narration": "For weeks, people worldwide tuned in to hear Co-op's Christmas message from space.",
+          "image_prompt": "Over-the-shoulder shot of a diverse 1950s family gathered in a cozy living room, intently listening to a glowing vintage radio receiver. The radio is the focal point, emitting a soft, warm light."
+        },
+        {
+          "narration": "It was designed to orbit for just a few days, then fall back.",
+          "image_prompt": "Extreme close-up of a detailed miniature replica of the small 'Talking Atlas' satellite, suspended in darkness, catching a single beam of light to reveal its simple metallic surface. The satellite is clearly lit."
+        },
+        {
+          "narration": "But something unexpected happened: the satellite never returned.",
+          "image_prompt": "Medium shot of the clean-cut 1950s US Air Force pilot, William K. P. Co-op, looking confused and slightly concerned, staring at a bank of flickering, complex 1950s radar screens in the command center. His hand is raised to his chin, and he is clearly lit by the screen glow."
+        },
+        {
+          "narration": "Its higher-than-expected orbit means Co-op's voice is still up there, circling Earth.",
+          "image_prompt": "Wide establishing shot of a tiny, distant speck, the satellite, against the vast, star-filled blackness of space, slowly orbiting the beautiful blue and white Earth below. The satellite is a subtle but clear point of light."
+        },
+        {
+          "narration": "A cosmic time capsule, silently broadcasting across the ages.",
+          "image_prompt": "Detail insert of a weathered, vintage 1950s globe slowly spinning on a desk. A faint, ethereal glow emanates from it, suggesting a distant signal. Soft, reflective light illuminates the globe."
+        }
+      ],
+      "cta": "Imagine hearing that voice today; subscribe for more forgotten cosmic tales!"
+    },
+    "audioPath": "output/coop-s-satellite/coop-s-satellite.mp3",
+    "videoPath": "output/coop-s-satellite/coop-s-satellite.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/coop-s-satellite/media/01-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/coop-s-satellite/media/02-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 2,
+        "keyword": "rocket",
+        "path": "output/coop-s-satellite/media/03-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/a-mother-and-son-playing-7106683/",
+        "author": "Kindel Media"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 3,
+        "path": "output/coop-s-satellite/media/04-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 4,
+        "path": "output/coop-s-satellite/media/05-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 5,
+        "path": "output/coop-s-satellite/media/06-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 6,
+        "keyword": "satellite",
+        "path": "output/coop-s-satellite/media/07-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/earth-20349219/",
+        "author": "Iceberg San"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 7,
+        "keyword": "globe",
+        "path": "output/coop-s-satellite/media/08-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/apples-inside-a-globe-7601774/",
+        "author": "Marina Leonova"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 43.178005,
+    "status": "published",
+    "youtube": {
+      "videoId": "sVzYCK9NurA",
+      "url": "https://www.youtube.com/shorts/sVzYCK9NurA",
+      "title": "The US Pilot Who Accidentally Created a Celestial Time Capsule #Shorts",
+      "publishedAt": "2026-07-09T13:54:15.654Z"
+    },
+    "createdAt": "2026-07-09T13:54:15.742Z"
   }
 ]
