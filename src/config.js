@@ -116,7 +116,7 @@ export const config = {
 
     // Ses efektleri: gerçek geçişlerde, NET duyulur seviyede.
     sfx: process.env.VIDEO_SFX !== '0',
-    transitionSoundVolume: Number(process.env.VIDEO_TRANSITION_SOUND_VOL || 0.3),
+    transitionSoundVolume: Number(process.env.VIDEO_TRANSITION_SOUND_VOL || 0.6),
 
     // Arka plan müziği (narrasyon altında 'ducking' ile kısılır).
     // assets/music/ içindeki telifsiz parçalardan her video için rastgele biri
