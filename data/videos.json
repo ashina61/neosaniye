@@ -642,5 +642,107 @@
       "publishedAt": "2026-07-09T13:54:15.654Z"
     },
     "createdAt": "2026-07-09T13:54:15.742Z"
+  },
+  {
+    "id": "the-man-who-bought-the-eiffel-tower-twice-1783609146641",
+    "topic": "The Man Who Bought the Eiffel Tower Twice",
+    "normalizedTopic": "the-man-who-bought-the-eiffel-tower-twice",
+    "script": {
+      "title": "The Conman Who Sold The Eiffel Tower (Twice!)",
+      "category": "history",
+      "scenes": [
+        {
+          "narration": "In 1925, a notorious conman, Victor Lustig, hatched an outrageous scheme.",
+          "image_prompt": "A cunning, impeccably dressed conman, Victor Lustig, in 1920s Paris, with slicked-back hair and a sharp suit, a sly confident smile playing on his lips, sitting in a lavish, dimly lit Parisian cafe. Vintage sepia-toned cinematic mood, subject clearly lit."
+        },
+        {
+          "narration": "He invited six scrap metal dealers to a secret meeting, claiming a top-secret government project.",
+          "image_prompt": "A discreet, elegant private dining room in a grand 1920s Parisian hotel. Victor Lustig, impeccably dressed, sits at the head of a long polished table with five other men in suits attentively listening to him. Low-key dramatic lighting, vintage sepia-toned cinematic mood."
+        },
+        {
+          "narration": "Lustig announced the Eiffel Tower was structurally unsound and would be dismantled.",
+          "image_prompt": "Over-the-shoulder shot from behind Victor Lustig, impeccably dressed in 1920s Paris, looking towards a large window revealing a blurred, iconic view of the Eiffel Tower in the distance through a light haze. The shocked faces of two scrap metal dealers are visible in the foreground. Vintage sepia-toned cinematic mood, subject clearly lit."
+        },
+        {
+          "narration": "He needed to sell the scrap metal in secret to avoid public outcry.",
+          "image_prompt": "Detail insert of Victor Lustig's gloved hand, impeccably dressed in 1920s Paris, sliding a fake, aged government document across a polished wooden table towards a nervous-looking dealer's hands. Intimate framing, focused dramatic lighting on the hands. Vintage sepia-toned cinematic mood."
+        },
+        {
+          "narration": "One dealer, André Poisson, fell for the bait and paid a massive bribe.",
+          "image_prompt": "A nervous-looking businessman, André Poisson, in 1920s Paris, handing a heavy leather briefcase filled with money to Victor Lustig, impeccably dressed, in a dimly lit, plush hotel corridor. Dramatic side lighting, vintage sepia-toned cinematic mood, subject clearly lit."
+        },
+        {
+          "narration": "Lustig vanished with the fortune, leaving Poisson humiliated to report nothing.",
+          "image_prompt": "A bustling 1920s Parisian train station, steam rising from locomotives. Victor Lustig, impeccably dressed and wearing a fedora, quickly boarding a train, looking back with a smirk. The Eiffel Tower is faintly visible in the far background under golden hour lighting. Vintage sepia-toned cinematic mood."
+        },
+        {
+          "narration": "Weeks later, incredibly, he tried to sell the Eiffel Tower *again* to new victims.",
+          "image_prompt": "Extreme close-up on a vintage, sepia-toned 1920s newspaper headline with a blurry image of the Eiffel Tower, the headline hinting at another scandalous deal. Focus on the aged paper texture under dramatic overhead lighting, vintage sepia-toned cinematic mood."
+        }
+      ],
+      "cta": "For more mind-blowing schemes, follow for new stories!"
+    },
+    "audioPath": "output/the-man-who-bought-the-eiffel-tower-twice/the-man-who-bought-the-eiffel-tower-twice.mp3",
+    "videoPath": "output/the-man-who-bought-the-eiffel-tower-twice/the-man-who-bought-the-eiffel-tower-twice.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/the-man-who-bought-the-eiffel-tower-twice/media/01-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/the-man-who-bought-the-eiffel-tower-twice/media/02-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/the-man-who-bought-the-eiffel-tower-twice/media/03-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 3,
+        "keyword": "hands",
+        "path": "output/the-man-who-bought-the-eiffel-tower-twice/media/04-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/close-up-video-of-fingers-7477551/",
+        "author": "Angela Roma"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 4,
+        "path": "output/the-man-who-bought-the-eiffel-tower-twice/media/05-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 5,
+        "keyword": "train station",
+        "path": "output/the-man-who-bought-the-eiffel-tower-twice/media/06-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/busy-european-train-station-with-mountain-views-38076064/",
+        "author": "Marlon Castor"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 6,
+        "path": "output/the-man-who-bought-the-eiffel-tower-twice/media/07-ai.jpg"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 37.746009,
+    "status": "published",
+    "youtube": {
+      "videoId": "Md5MKh6oMlo",
+      "url": "https://www.youtube.com/shorts/Md5MKh6oMlo",
+      "title": "He Sold The Eiffel Tower. Twice! #Shorts",
+      "publishedAt": "2026-07-09T14:59:06.528Z"
+    },
+    "createdAt": "2026-07-09T14:59:06.641Z"
   }
 ]
