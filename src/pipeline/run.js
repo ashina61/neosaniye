@@ -1,6 +1,8 @@
 import path from 'node:path';
 import { config } from '../config.js';
 import { generateScript } from '../script/generateScript.js';
+import { directVisuals, applyShotList } from '../crew/visualDirector.js';
+import { planEdit } from '../crew/editorDirector.js';
 import { generateAudio } from '../tts/generateAudio.js';
 import { generateImages } from '../media/generateImages.js';
 import { renderVideo } from '../video/renderVideo.js';
@@ -46,6 +48,30 @@ export async function runPipeline(opts = {}) {
   const workDir = path.join(root, base);
   console.log(`  konu: ${script.topic} (${script.format || 'story'}/${script.category || '-'})`);
 
+  // 1.5) ORKESTRA: Görüntü Yönetmeni + Kurgucu/Ses Yönetmeni (paralel,
+  // best-effort — düşen rol mekanik varsayılana bırakır, boru hattı kırılmaz).
+  let editPlan = null;
+  if (config.crew.enabled) {
+    log('Faz 1.5: Orkestra (görüntü yönetmeni + kurgucu)...');
+    const [shotList, edit] = await Promise.all([
+      directVisuals(script).catch((e) => {
+        console.warn(`[crew] görüntü yönetmeni düştü: ${String(e.message).slice(0, 90)}`);
+        return null;
+      }),
+      planEdit(script).catch((e) => {
+        console.warn(`[crew] kurgucu düştü: ${String(e.message).slice(0, 90)}`);
+        return null;
+      }),
+    ]);
+    if (shotList) applyShotList(script, shotList);
+    editPlan = edit;
+    const motions = (script.scenes || []).filter((s) => s.motion).length;
+    console.log(
+      `  görüntü yönetmeni: ${shotList ? `✓ (${motions} hareketli sahne)` : '— (taslakla devam)'}` +
+        ` | kurgucu: ${edit ? `✓ (müzik:${edit.musicMood || script.category}, abone:sahne ${edit.subscribeScene + 1})` : '— (mekanik plan)'}`,
+    );
+  }
+
   try {
     // 2) Ses (edge-tts -> piper yedek)
     log('Faz 2: Seslendirme (TTS)...');
@@ -79,6 +105,8 @@ export async function runPipeline(opts = {}) {
       sceneWeights: sceneWeights.length === media.items.length ? sceneWeights : undefined,
       hookText: script.hook_text,
       category: script.category,
+      editPlan,
+      musicMood: editPlan?.musicMood || undefined,
       outPath,
     });
     console.log(`  ${video.width}x${video.height}, ${video.duration.toFixed(1)}s -> ${outPath}`);

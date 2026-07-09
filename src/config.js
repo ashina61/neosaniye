@@ -46,6 +46,11 @@ export const config = {
     // (Pexels, dikey). 0 = kapalı. Video bulunamazsa o sahne AI görsel olur.
     motionEvery: Number(process.env.IMAGE_MOTION_EVERY || 3),
   },
+  crew: {
+    // Orkestra: Görüntü Yönetmeni + Kurgucu/Ses Yönetmeni geçişleri.
+    // Kapatmak için CREW_ENABLED=0 (mekanik varsayılanlara dönülür).
+    enabled: process.env.CREW_ENABLED !== '0',
+  },
   firebase: {
     // GitHub Secret'ta tek satır JSON string olarak tutulur.
     serviceAccountJson: process.env.FIREBASE_SERVICE_ACCOUNT,

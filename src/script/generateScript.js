@@ -156,7 +156,7 @@ Rules for the whole script:
 /** Geçici hatalarda (503 UNAVAILABLE / 5xx / ağ) sabırlı backoff ile dener.
  *  Google'ın "high demand" dalgaları dakikalar sürebilir; kısa backoff pes
  *  ettiriyordu (canlıda görüldü). Kota (429) hatasında ısrar etmez.  */
-async function generateWithRetry(ai, req, tries = 5) {
+export async function generateWithRetry(ai, req, tries = 5) {
   const delays = [2000, 6000, 15000, 30000];
   let lastErr;
   for (let i = 0; i < tries; i += 1) {

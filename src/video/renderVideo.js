@@ -370,7 +370,7 @@ function pickMusicTrack() {
  * + geçiş whoosh'ları + outro chime. Toplam süre `total`.
  */
 async function buildFullAudio(
-  { workDir, narrationPath, total, clipDur, bts, N, M, useOutro, category = '' },
+  { workDir, narrationPath, total, clipDur, bts, N, M, useOutro, category = '', sfxTypes = [] },
   outPath,
 ) {
   const sfx = config.video.sfx;
@@ -384,11 +384,6 @@ async function buildFullAudio(
     cum += clipDur[k - 1];
     btSum += bts[k - 1];
     off.push(cum - btSum);
-  }
-  // SFX yalnızca GERÇEK geçişlere biner (sert kesmeler sessiz — pro kurgu).
-  const realMainBoundaries = [];
-  for (let k = 1; k <= Math.max(0, N - 1); k += 1) {
-    if (bts[k - 1] >= 0.2) realMainBoundaries.push(k);
   }
 
   const inputs = ['-i', narrationPath]; // 0 = narrasyon
@@ -415,15 +410,13 @@ async function buildFullAudio(
     idx += 1;
   }
 
-  // Çeşitli SFX yalnızca gerçek geçişlerde; başlangıç sırası videodan videoya
-  // kayar ki art arda videolar bile aynı diziyi kullanmasın.
-  const sfxCycle = ['whoosh', 'impact', 'riser', 'shimmer'];
-  const sfxShift = (N + Math.round(total)) % sfxCycle.length;
+  // SFX planı renderVideo'da belirlendi (kurgucu ya da mekanik): sınır başına
+  // tip veya null. Sadece dolu olanlar üretilip mix'e girer.
   const sfxPlan = []; // { idx, k }
-  if (sfx && realMainBoundaries.length) {
-    for (let n = 0; n < realMainBoundaries.length; n += 1) {
-      const k = realMainBoundaries[n];
-      const type = sfxCycle[(sfxShift + n) % sfxCycle.length];
+  if (sfx) {
+    for (let k = 1; k <= Math.max(0, N - 1); k += 1) {
+      const type = sfxTypes[k - 1];
+      if (!type) continue;
       const f = path.join(workDir, `sfx-${k}.wav`);
       await makeSfx(type, f);
       inputs.push('-i', path.resolve(f));
@@ -531,15 +524,29 @@ export async function renderVideo(job, opts = {}) {
 
   const td = M > 1 ? config.video.transitionDuration : 0;
 
-  // KURGU PLANI: kesme-geçiş-kesme-geçiş ritmi. Sert kesmeler tempo verir,
-  // her 2. sınırdaki animasyonlu geçiş (whoosh'uyla birlikte) dinamizm katar.
+  // KURGU PLANI: Kurgucu (orkestra) plan verdiyse dramaturjiye göre uygula;
+  // yoksa mekanik kesme-geçiş-kesme ritmi. Sert kesmeler tempo verir.
   const CUT = 2 / fps;
   const trsList = config.video.transitions;
+  const plan = job.editPlan;
+  const planOk =
+    plan && Array.isArray(plan.boundaries) && plan.boundaries.length === Math.max(0, N - 1);
   const bts = []; // sınır başına geçiş süresi (k=1..M-1)
   const btName = []; // sınır başına geçiş tipi
   let realCount = 0;
   for (let k = 1; k < M; k += 1) {
     const isOutroBoundary = useOutro && k === M - 1;
+    if (planOk && !isOutroBoundary) {
+      const b = plan.boundaries[k - 1];
+      if (b.transition === 'cut') {
+        bts.push(CUT);
+        btName.push('fade');
+      } else {
+        bts.push(td);
+        btName.push(b.transition);
+      }
+      continue;
+    }
     const real = isOutroBoundary || k % 2 === 0;
     if (real) {
       bts.push(td);
@@ -548,6 +555,26 @@ export async function renderVideo(job, opts = {}) {
     } else {
       bts.push(CUT);
       btName.push('fade');
+    }
+  }
+
+  // SFX planı (ana sınırlar, k=1..N-1): kurgucu seçtiyse onun tipi; yoksa
+  // mekanik — animasyonlu sınırlara sırayla döner, sıra videodan videoya kayar.
+  const sfxCycleAll = ['whoosh', 'impact', 'riser', 'shimmer'];
+  const sfxTypes = [];
+  {
+    const shift = (N + Math.round(narrationDur)) % sfxCycleAll.length;
+    let n = 0;
+    for (let k = 1; k <= Math.max(0, N - 1); k += 1) {
+      if (planOk) {
+        const s = plan.boundaries[k - 1].sfx;
+        sfxTypes.push(s && s !== 'none' ? s : null);
+      } else if (bts[k - 1] >= 0.2) {
+        sfxTypes.push(sfxCycleAll[(shift + n) % sfxCycleAll.length]);
+        n += 1;
+      } else {
+        sfxTypes.push(null);
+      }
     }
   }
   const mainBts = bts.slice(0, Math.max(0, N - 1));
@@ -645,7 +672,20 @@ export async function renderVideo(job, opts = {}) {
   let T1 = 0;
   let T2 = 0;
   if (spOn) {
-    T1 = Math.min(Math.max(total * 0.42, 3.5), Math.max(3.5, total - 4.8));
+    // Kurgucu doğal bir "nefes anı" seçtiyse kart o sahnenin başında çıkar;
+    // yoksa videonun ~%42'si (mekanik varsayılan).
+    let tCand = total * 0.42;
+    const subScene = plan?.subscribeScene;
+    if (planOk && Number.isInteger(subScene) && subScene >= 1 && subScene < N) {
+      let cum2 = 0;
+      let btSum2 = 0;
+      for (let i = 0; i < subScene; i += 1) {
+        cum2 += clipDur[i];
+        btSum2 += bts[i];
+      }
+      tCand = cum2 - btSum2 + 0.35;
+    }
+    T1 = Math.min(Math.max(tCand, 3.5), Math.max(3.5, total - 4.8));
     T2 = T1 + 2.6;
     pillIdx = nextIdx; nextIdx += 1;
     vInputs.push('-loop', '1', '-framerate', String(fps), '-t', total.toFixed(3), '-i', pillPath);
@@ -752,7 +792,14 @@ export async function renderVideo(job, opts = {}) {
   // 5) SES PASS: narrasyon + arka plan müziği (ducking) + geçiş whoosh + outro chime.
   const fulla = path.join(workDir, 'fulla.m4a');
   await buildFullAudio(
-    { workDir, narrationPath: path.resolve(audioPath), total, clipDur, bts, N, M, useOutro, category },
+    {
+      workDir,
+      narrationPath: path.resolve(audioPath),
+      total, clipDur, bts, N, M, useOutro,
+      // Ses yönetmeni müzik ruhu seçtiyse o; yoksa konu kategorisi.
+      category: job.musicMood || category,
+      sfxTypes,
+    },
     path.resolve(fulla),
   );
 

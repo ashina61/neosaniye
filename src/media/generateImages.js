@@ -121,10 +121,11 @@ export async function generateImages(script, opts = {}) {
   const sources = { ai: 0, stock: 0, pexels: 0, placeholder: 0 };
   let providerDead = provider === 'none' || (provider === 'gemini' && !geminiAI);
 
-  // Hareketli sahne planı: her N. sahne gerçek stok VİDEO dener (slayt hissini
-  // kırar). İlk sahne hariç (hook AI görselle daha kontrollü).
+  // Hareketli sahne planı: Görüntü Yönetmeni sahneleri işaretlediyse (motion)
+  // onlar; yoksa mekanik "her N. sahne". İlk sahne her zaman hariç (hook kapağı).
   const motionEvery = Math.max(0, config.images.motionEvery || 0);
   const canMotion = motionEvery > 0 && Boolean(config.pexels.apiKey);
+  const dpFlags = scenes.some((s) => s.motion === true);
 
   // Görsel süreklilik: video başına SABİT seed (konudan türetilir) + her sahne
   // promptuna "görsel çapa" eklenir → aynı karakter/dönem/ışık, tek film hissi.
@@ -145,10 +146,11 @@ export async function generateImages(script, opts = {}) {
     let done = null;
 
     // 0) Hareketli sahne: stok video dene (bulunamazsa AI görsele devam).
-    if (canMotion && i > 0 && i % motionEvery === 1) {
+    const motionSlot = dpFlags ? scene.motion === true : i > 0 && i % motionEvery === 1;
+    if (canMotion && i > 0 && motionSlot) {
       try {
         const hit = await fetchStockVideoForKeywords(
-          scene.keywords,
+          scene.stock_keywords || scene.keywords,
           path.join(mediaDir, `${idx}-motion`),
         );
         if (hit) done = { ...hit, scene: i, source: 'stock' };
