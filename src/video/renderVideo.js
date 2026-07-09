@@ -102,7 +102,12 @@ function buildCaptionAss(words, opts) {
   const capStyle =
     `Style: Cap,Montserrat SemiBold,${size},&H00FFFFFF,&H00000000,&H98000000,` +
     `0,1,1.6,2.2,2,${marginH},${marginH},${marginV},1`;
-  const styleLines = [capStyle];
+  // Vurgu parçası: AYRI ve FARKLI FONTTA (zarif italik serif) — referans stil.
+  const emphSize = Math.round(size * 1.55);
+  const emphStyle =
+    `Style: Emph,Playfair Display,${emphSize},&H00FFFFFF,&H00000000,&HA8000000,` +
+    `0,1,0,2.8,2,${marginH},${marginH},${marginV},1`;
+  const styleLines = [capStyle, emphStyle];
 
   const events = [];
 
@@ -138,16 +143,39 @@ function buildCaptionAss(words, opts) {
 
   // Konuşma ritmine göre grupla: doğal duraklarda (sessizlik) ve noktalamada
   // böl — körlemesine N'li bölme "makine" gibi okunur, bu pro altyazı gibi akar.
+  // VURGULU kelimeler kendi parçasını alır (referans stil: ayrı + farklı fontta).
   const groups = [];
   let cur = [];
+  const flush = () => {
+    if (cur.length) groups.push(cur);
+    cur = [];
+  };
   for (let i = 0; i < words.length; i += 1) {
-    cur.push(words[i]);
+    const w = words[i];
+    if (isEmph(w.word)) {
+      // Vurgu koşusu: ardışık vurgulu kelimeleri tek parçada topla (max 3) —
+      // "100,000 acres" gibi sayı+birim ikilisi bölünmesin.
+      flush();
+      const run = [w];
+      while (
+        i + 1 < words.length &&
+        run.length < 3 &&
+        isEmph(words[i + 1].word) &&
+        words[i + 1].start - words[i].end <= 0.28
+      ) {
+        i += 1;
+        run.push(words[i]);
+      }
+      run.isEmph = true;
+      groups.push(run);
+      continue;
+    }
+    cur.push(w);
     const next = words[i + 1];
-    const gap = next ? next.start - words[i].end : Infinity;
-    const punct = /[.!?,;:]$/.test(String(words[i].word));
-    if (cur.length >= perLine || gap > 0.28 || punct || !next) {
-      groups.push(cur);
-      cur = [];
+    const gap = next ? next.start - w.end : Infinity;
+    const punct = /[.!?,;:]$/.test(String(w.word));
+    if (cur.length >= perLine || gap > 0.28 || punct || !next || isEmph(next.word)) {
+      flush();
     }
   }
 
@@ -161,25 +189,28 @@ function buildCaptionAss(words, opts) {
       ? Math.max(lastEnd, nextStart)
       : lastEnd + 0.15;
     const raw = group.map((w) => w.word).join(' ');
-    // Vurgulu parça (referans stil): grup vurucu kelime/sayı içeriyorsa TÜM
-    // parça belirgin daha büyük ve kalın basılır — "100,000 acres" etkisi.
-    const emphChunk = group.some((w) => isEmph(w.word));
-    let fs = emphChunk ? Math.round(size * 1.3) : size;
-    const est = raw.length * charFactor * fs;
-    if (est > usableW) fs = Math.max(30, Math.floor(usableW / (raw.length * charFactor)));
-    // Vurgulu kelimenin kendisi ayrıca aksan renginde yanar (marka kimliği).
-    const text = group
-      .map((w) => {
-        const t = assEscape(uppercase ? w.word.toUpperCase() : w.word);
-        return isEmph(w.word)
-          ? `{\\c${config.video.accentColor}}${t}{\\c&HFFFFFF&}`
-          : t;
-      })
-      .join(' ');
-    const boldTag = emphChunk ? '\\b1' : '';
-    events.push(
-      `Dialogue: 0,${assTime(start)},${assTime(end)},Cap,,0,0,0,,{\\fs${fs}${boldTag}\\fad(120,90)\\blur1.2}${text}`,
-    );
+    const text = assEscape(uppercase ? raw.toUpperCase() : raw);
+    if (group.isEmph) {
+      // VURGU PARÇASI: ayrı olay, farklı font (Playfair italik), daha büyük —
+      // referanstaki "100,000 acres" / mic-drop kelime davranışı.
+      let fs = emphSize;
+      const emphFactor = 0.5; // Playfair italik ortalama genişlik
+      if (raw.length * emphFactor * fs > usableW) {
+        fs = Math.max(40, Math.floor(usableW / (raw.length * emphFactor)));
+      }
+      events.push(
+        `Dialogue: 0,${assTime(start)},${assTime(end)},Emph,,0,0,0,,` +
+          `{\\fs${fs}\\i1\\b1\\fad(90,70)\\blur1.2\\fscx92\\fscy92\\t(0,150,\\fscx100\\fscy100)}${text}`,
+      );
+    } else {
+      // Genişliğe sığdır: taşarsa küçült (taşıp 2. satıra düşmesin).
+      let fs = size;
+      const est = raw.length * charFactor * fs;
+      if (est > usableW) fs = Math.max(30, Math.floor(usableW / (raw.length * charFactor)));
+      events.push(
+        `Dialogue: 0,${assTime(start)},${assTime(end)},Cap,,0,0,0,,{\\fs${fs}\\fad(120,90)\\blur1.2}${text}`,
+      );
+    }
   }
   return assHeader(width, height, styleLines.join('\n')) + events.join('\n') + '\n';
 }
