@@ -56,8 +56,9 @@ export async function runPipeline(opts = {}) {
     log('Faz 3: Sahne görselleri üretiliyor (AI)...');
     const media = await generateImages(script, { outDir: root, basename: base });
     console.log(
-      `  ${media.items.length} sahne görseli — AI:${media.sources.ai} ` +
-        `Pexels:${media.sources.pexels} yedek:${media.sources.placeholder}`,
+      `  ${media.items.length} sahne — AI:${media.sources.ai} ` +
+        `stokVideo:${media.sources.stock || 0} Pexels:${media.sources.pexels} ` +
+        `yedek:${media.sources.placeholder}`,
     );
     if (!media.items.length) throw new Error('Hiç sahne görseli üretilemedi.');
 

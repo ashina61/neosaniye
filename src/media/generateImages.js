@@ -4,7 +4,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { GoogleGenAI } from '@google/genai';
 import { config } from '../config.js';
-import { fetchOneForKeywords } from './fetchMedia.js';
+import { fetchOneForKeywords, fetchStockVideoForKeywords } from './fetchMedia.js';
 
 const run = promisify(execFile);
 
@@ -118,8 +118,13 @@ export async function generateImages(script, opts = {}) {
   const { width, height } = config.images;
 
   const items = [];
-  const sources = { ai: 0, pexels: 0, placeholder: 0 };
+  const sources = { ai: 0, stock: 0, pexels: 0, placeholder: 0 };
   let providerDead = provider === 'none' || (provider === 'gemini' && !geminiAI);
+
+  // Hareketli sahne planı: her N. sahne gerçek stok VİDEO dener (slayt hissini
+  // kırar). İlk sahne hariç (hook AI görselle daha kontrollü).
+  const motionEvery = Math.max(0, config.images.motionEvery || 0);
+  const canMotion = motionEvery > 0 && Boolean(config.pexels.apiKey);
 
   // Görsel süreklilik: video başına SABİT seed (konudan türetilir) + her sahne
   // promptuna "görsel çapa" eklenir → aynı karakter/dönem/ışık, tek film hissi.
@@ -138,6 +143,19 @@ export async function generateImages(script, opts = {}) {
       .filter(Boolean)
       .join('. ');
     let done = null;
+
+    // 0) Hareketli sahne: stok video dene (bulunamazsa AI görsele devam).
+    if (canMotion && i > 0 && i % motionEvery === 1) {
+      try {
+        const hit = await fetchStockVideoForKeywords(
+          scene.keywords,
+          path.join(mediaDir, `${idx}-motion`),
+        );
+        if (hit) done = { ...hit, scene: i, source: 'stock' };
+      } catch (err) {
+        console.warn(`[img] sahne ${idx}: stok video hatası (${err.message}).`);
+      }
+    }
 
     // 1) AI görsel. Gemini kota dolarsa kalan sahnelerde denemez; Pollinations
     //    her sahnede tekrar dener (geçici hatalarda o sahne yedeğe düşer).

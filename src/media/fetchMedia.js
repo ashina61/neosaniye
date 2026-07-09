@@ -112,6 +112,27 @@ async function downloadFile(url, dest) {
 }
 
 /**
+ * Sadece dikey stok VİDEO arar/indirir (hareketli sahne karışımı için).
+ * Video bulunamazsa null döner — foto yedeğine düşmez (onu AI karşılar).
+ * @param {string[]} keywords
+ * @param {string} destBase - Uzantısız hedef yol
+ */
+export async function fetchStockVideoForKeywords(keywords, destBase) {
+  for (const keyword of keywords || []) {
+    try {
+      const hit = await searchVideo(keyword);
+      if (!hit) continue;
+      const dest = `${destBase}.mp4`;
+      const bytes = await downloadFile(hit.downloadUrl, dest);
+      return { ...hit, path: dest, bytes };
+    } catch (err) {
+      console.warn(`[pexels] stok video "${keyword}": ${err.message}`);
+    }
+  }
+  return null;
+}
+
+/**
  * Tek bir sahne için (birkaç anahtar kelime denenerek) Pexels'ten dikey medya
  * indirir. AI görsel üretimi başarısız olursa yedek olarak kullanılır.
  * Video da foto da dönebilir (tür korunur); uzantı hit.ext'e göre seçilir.

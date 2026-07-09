@@ -286,31 +286,50 @@ async function normalizeClip(item, duration, outPath, { width, height, fps, inde
   ], { maxBuffer: 20 * 1024 * 1024 });
 }
 
-/** Çeşitli geçiş ses efektleri (her geçişte sırayla değişir):
- *  - whoosh: pembe gürültü süpürme
- *  - riser:  yükselen beyaz gürültü (gerilim)
- *  - impact: yumuşak alt-bas vuruş
- *  - swish:  kısa yüksek frekanslı süpürme */
+/** Geçiş ses efektleri — DÖRT BARİZ FARKLI karakter (tek tip olmasın):
+ *  - impact:  alçak gümleme + klik (bas vuruş, diğerlerinden net ayrışır)
+ *  - riser:   kesime doğru yükselen gerilim süpürmesi
+ *  - whoosh:  orta bant hareketli süpürme
+ *  - shimmer: parlak çan/ışıltı (yüksek frekans) */
 async function makeSfx(type, outPath) {
-  let src;
-  let af;
-  if (type === 'riser') {
-    src = 'anoisesrc=d=0.6:c=white:a=0.5';
-    af = 'highpass=f=500,lowpass=f=7000,afade=t=in:st=0:d=0.5,afade=t=out:st=0.5:d=0.1,volume=1.1';
-  } else if (type === 'impact') {
-    src = 'sine=frequency=95:duration=0.5';
-    af = 'lowpass=f=200,afade=t=out:st=0.06:d=0.42,volume=1.4';
-  } else if (type === 'swish') {
-    src = 'anoisesrc=d=0.35:c=white:a=0.5';
-    af = 'highpass=f=1200,lowpass=f=9000,afade=t=in:st=0:d=0.08,afade=t=out:st=0.14:d=0.2';
+  let args;
+  if (type === 'impact') {
+    args = [
+      '-f', 'lavfi', '-i', 'sine=frequency=62:duration=0.6',
+      '-f', 'lavfi', '-i', 'anoisesrc=d=0.06:c=white:a=0.7',
+      '-filter_complex',
+      '[0]afade=t=out:st=0.04:d=0.5,volume=2.4[a];' +
+        '[1]highpass=f=2500,afade=t=out:st=0.01:d=0.05,volume=0.5[b];' +
+        '[a][b]amix=inputs=2:normalize=0[o]',
+      '-map', '[o]',
+    ];
+  } else if (type === 'riser') {
+    args = [
+      '-f', 'lavfi', '-i', 'anoisesrc=d=0.8:c=white:a=0.55',
+      '-af',
+      'highpass=f=400,lowpass=f=6500,vibrato=f=8:d=0.4,' +
+        'afade=t=in:st=0:d=0.68,afade=t=out:st=0.7:d=0.1,volume=1.2',
+    ];
+  } else if (type === 'shimmer') {
+    args = [
+      '-f', 'lavfi', '-i', 'sine=frequency=1567:duration=0.55',
+      '-f', 'lavfi', '-i', 'sine=frequency=2093:duration=0.55',
+      '-filter_complex',
+      '[0][1]amix=inputs=2:normalize=0,tremolo=f=9:d=0.6,' +
+        'afade=t=in:st=0:d=0.03,afade=t=out:st=0.15:d=0.38,volume=0.9[o]',
+      '-map', '[o]',
+    ];
   } else {
-    // whoosh (varsayılan)
-    src = 'anoisesrc=d=0.45:c=pink:a=0.6';
-    af = 'highpass=f=250,lowpass=f=5000,afade=t=in:st=0:d=0.12,afade=t=out:st=0.2:d=0.25';
+    // whoosh
+    args = [
+      '-f', 'lavfi', '-i', 'anoisesrc=d=0.5:c=pink:a=0.7',
+      '-af',
+      'bandpass=f=900:w=600,vibrato=f=6:d=0.5,' +
+        'afade=t=in:st=0:d=0.15,afade=t=out:st=0.25:d=0.25,volume=1.6',
+    ];
   }
   await run('ffmpeg', [
-    '-y', '-f', 'lavfi', '-i', src,
-    '-af', af, '-ar', '44100', '-ac', '2',
+    '-y', ...args, '-ar', '44100', '-ac', '2',
     outPath,
   ], { maxBuffer: 10 * 1024 * 1024 });
 }
@@ -396,13 +415,15 @@ async function buildFullAudio(
     idx += 1;
   }
 
-  // Çeşitli SFX yalnızca gerçek geçişlerde (zaten seyrekler).
-  const sfxCycle = ['whoosh', 'swish', 'riser'];
+  // Çeşitli SFX yalnızca gerçek geçişlerde; başlangıç sırası videodan videoya
+  // kayar ki art arda videolar bile aynı diziyi kullanmasın.
+  const sfxCycle = ['whoosh', 'impact', 'riser', 'shimmer'];
+  const sfxShift = (N + Math.round(total)) % sfxCycle.length;
   const sfxPlan = []; // { idx, k }
   if (sfx && realMainBoundaries.length) {
     for (let n = 0; n < realMainBoundaries.length; n += 1) {
       const k = realMainBoundaries[n];
-      const type = sfxCycle[n % sfxCycle.length];
+      const type = sfxCycle[(sfxShift + n) % sfxCycle.length];
       const f = path.join(workDir, `sfx-${k}.wav`);
       await makeSfx(type, f);
       inputs.push('-i', path.resolve(f));
@@ -437,7 +458,7 @@ async function buildFullAudio(
     );
     // Narrasyon konuşurken müziği HAFİFÇE kıs (önceki 8:1 oran müziği tamamen
     // susturuyordu — "müzik yok" şikayetinin sebebi buydu).
-    fc.push('[mus][nkey]sidechaincompress=threshold=0.06:ratio=3:attack=25:release=600[musd]');
+    fc.push('[mus][nkey]sidechaincompress=threshold=0.09:ratio=2.2:attack=30:release=700[musd]');
     mix.push('[nmix]', '[musd]');
   } else {
     fc.push(`[0:a]${voiceChain}[nmix]`);
@@ -677,22 +698,25 @@ export async function renderVideo(job, opts = {}) {
     const pillY = 158;
     const t1 = T1.toFixed(2);
     const t2 = T2.toFixed(2);
-    // base konumuna kayan y ifadesi: giriş ease-out (0.45s), çıkış ease-in (0.35s).
-    const slideY = (base) => {
+    // base konumuna kayan y ifadesi: giriş ease-out (0.45s), oturunca hafif
+    // SALLANMA (canlı dursun), çıkış ease-in (0.35s). amp/faz eleman başına.
+    const slideY = (base, amp = 4, phase = 0) => {
       const B = base + 400;
+      const bob = `${amp}*sin(2*PI*1.3*t+${phase})*gt(t,${t1}+0.5)`;
       return (
         `'if(lt(t,${t2}),` +
-        `-400+${B}*(1-pow(1-min(max(t-${t1},0)/0.45,1),2)),` +
+        `-400+${B}*(1-pow(1-min(max(t-${t1},0)/0.45,1),2))+${bob},` +
         `${base}-${B}*pow(min((t-${t2})/0.35,1),2))'`
       );
     };
     vfc.push(`[${pillIdx}:v]scale=300:-1,${win}[pill]`);
     if (likeIdx >= 0) {
       vfc.push(`[${likeIdx}:v]scale=88:88,${win}[lk]`);
-      vfc.push(`${last}[lk]overlay=x=${groupLeft}:y=${slideY(152)}[vsp0]`);
+      // like ikonu ters fazda ve daha geniş sallanır ("beğen" dürtmesi hissi)
+      vfc.push(`${last}[lk]overlay=x=${groupLeft}:y=${slideY(152, 7, 3.14)}[vsp0]`);
       last = '[vsp0]';
     }
-    vfc.push(`${last}[pill]overlay=x=${pillX}:y=${slideY(158)}[vsp1]`);
+    vfc.push(`${last}[pill]overlay=x=${pillX}:y=${slideY(158, 4, 0)}[vsp1]`);
     const t1b = (T1 + 0.3).toFixed(2);
     const t2b = (T2 + 0.3).toFixed(2);
     const spAlpha =
@@ -700,7 +724,7 @@ export async function renderVideo(job, opts = {}) {
     const pillCx = pillX + 150;
     vfc.push(
       `[vsp1]drawtext=${drawFontOpt}text='SUBSCRIBE':fontcolor=white:fontsize=40:` +
-        `x=${pillCx}-text_w/2:y=${slideY(pillY + 15)}:${spAlpha}[vsp2]`,
+        `x=${pillCx}-text_w/2:y=${slideY(pillY + 15, 4, 0)}:${spAlpha}[vsp2]`,
     );
     last = '[vsp2]';
   }

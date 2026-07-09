@@ -42,6 +42,9 @@ export const config = {
     timeoutMs: Number(process.env.IMAGE_TIMEOUT_MS || 90000),
     // Görsel üretimi başarısızsa Pexels'ten stok görsele düş.
     pexelsFallback: process.env.IMAGE_PEXELS_FALLBACK !== '0',
+    // Slayt hissini kırmak için her N. sahne GERÇEK stok video dener
+    // (Pexels, dikey). 0 = kapalı. Video bulunamazsa o sahne AI görsel olur.
+    motionEvery: Number(process.env.IMAGE_MOTION_EVERY || 3),
   },
   firebase: {
     // GitHub Secret'ta tek satır JSON string olarak tutulur.
@@ -96,8 +99,8 @@ export const config = {
     // Grup üst sınırı; asıl bölme konuşmadaki doğal duraklara göre yapılır.
     captionWordsPerLine: Number(process.env.VIDEO_CAPTION_WORDS || 3),
     captionSize: Number(process.env.VIDEO_CAPTION_SIZE || 46),
-    // Alt bölge (ekranı kaplamasın): küçük marginV = daha aşağı. Shorts UI üstünde kalır.
-    captionMarginV: Number(process.env.VIDEO_CAPTION_MARGIN || 300),
+    // Alt bölge (ekranı kaplamasın): büyük marginV = daha yukarı. Shorts UI'dan uzak.
+    captionMarginV: Number(process.env.VIDEO_CAPTION_MARGIN || 460),
 
     // Vurucu kelime vurgusu (sayılar ve uzun kelimeler) rengi (ASS &HBBGGRR&). Sarı.
     accentColor: process.env.VIDEO_ACCENT || '&H00E6FF&',
@@ -126,7 +129,7 @@ export const config = {
     musicPath: process.env.VIDEO_MUSIC_PATH || 'assets/music/bed.mp3',
     // Müzik NET duyulur (referans kurgulardaki gibi önde); yumuşak ducking
     // konuşurken sadece hafifçe kısar, susturmaz.
-    musicVolume: Number(process.env.VIDEO_MUSIC_VOL || 0.4),
+    musicVolume: Number(process.env.VIDEO_MUSIC_VOL || 0.55),
   },
   pexels: {
     apiKey: process.env.PEXELS_API_KEY,

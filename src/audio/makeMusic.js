@@ -24,23 +24,23 @@ const SUS = [0, 5, 7, 12]; // sus4 (askıda, gerilimli)
 const MOODS = {
   history: {
     prog: [[NOTE.A2, MIN], [NOTE.F2, MAJ], [NOTE.C3, MAJ], [NOTE.G2, MAJ]],
-    seg: 4.5, texture: 0.05, lp: 0.12,
+    seg: 4.5, texture: 0.05, lp: 0.12, bpm: 92,
   },
   mystery: {
     prog: [[NOTE.A2, MIN], [NOTE.E2, MIN], [NOTE.F2, MAJ], [NOTE.E2, SUS]],
-    seg: 5.0, texture: 0.06, lp: 0.08,
+    seg: 5.0, texture: 0.06, lp: 0.08, bpm: 84,
   },
   space: {
     prog: [[NOTE.D2, MIN], [NOTE.Bb2, MAJ], [NOTE.F2, MAJ], [NOTE.C3, MAJ]],
-    seg: 6.0, texture: 0.07, lp: 0.06,
+    seg: 6.0, texture: 0.07, lp: 0.06, bpm: 72,
   },
   science: {
     prog: [[NOTE.C3, MAJ], [NOTE.G2, MAJ], [NOTE.A2, MIN], [NOTE.F2, MAJ]],
-    seg: 4.0, texture: 0.04, lp: 0.14,
+    seg: 4.0, texture: 0.04, lp: 0.14, bpm: 100,
   },
   nature: {
     prog: [[NOTE.G2, MAJ], [NOTE.D3, MAJ], [NOTE.E2, MIN], [NOTE.C3, MAJ]],
-    seg: 4.5, texture: 0.045, lp: 0.16,
+    seg: 4.5, texture: 0.045, lp: 0.16, bpm: 96,
   },
 };
 const ALIAS = { 'human body': 'science', technology: 'science', default: 'history' };
@@ -122,6 +122,26 @@ export async function makeMusicBed({ outPath, seconds = 45, category = 'history'
     }
   }
 
+  // --- NABIZ katmanı: yumuşak alçak vuruş — "müzik var" hissinin anahtarı.
+  //     Düz pad kulakta oda tonu gibi kaybolur; hafif ritim parçayı duyurur. ---
+  const beat = 60 / (mood.bpm || 90);
+  const kickLen = Math.floor(0.24 * SR);
+  let beatNo = 0;
+  for (let t0 = 0.4; t0 < seconds - 0.3; t0 += beat) {
+    const accent = beatNo % 4 === 0 ? 1.35 : 1.0;
+    const startI = Math.floor(t0 * SR);
+    for (let j = 0; j < kickLen && startI + j < n; j += 1) {
+      const tt = j / SR;
+      const env = Math.exp(-tt / 0.075);
+      // hafif pitch düşüşlü vuruş (70Hz -> 52Hz) — yumuşak "boom"
+      const f = 70 - 18 * Math.min(1, tt / 0.12);
+      const s = Math.sin(2 * Math.PI * f * tt) * env * 0.24 * accent;
+      L[startI + j] += s;
+      R[startI + j] += s;
+    }
+    beatNo += 1;
+  }
+
   // --- Doku katmanı: alçak geçirenle yumuşatılmış kahverengi gürültü ---
   let br = 0;
   let lpL = 0;
@@ -150,7 +170,7 @@ export async function makeMusicBed({ outPath, seconds = 45, category = 'history'
     const a = Math.max(Math.abs(L[i]), Math.abs(R[i]));
     if (a > peak) peak = a;
   }
-  const norm = 0.5 / peak;
+  const norm = 0.6 / peak;
 
   // --- PCM16 stereo WAV yaz ---
   const dataBytes = n * 2 * 2;
