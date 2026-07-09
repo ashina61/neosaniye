@@ -114,9 +114,9 @@ export const config = {
     hookOverlay: process.env.VIDEO_HOOK !== '0',
     hookDuration: Number(process.env.VIDEO_HOOK_SECONDS || 2.8),
 
-    // Ses efektleri: her geçişte DEĞİL, atlamalı ve kısık (pro kurgu hissi).
+    // Ses efektleri: gerçek geçişlerde, NET duyulur seviyede.
     sfx: process.env.VIDEO_SFX !== '0',
-    transitionSoundVolume: Number(process.env.VIDEO_TRANSITION_SOUND_VOL || 0.12),
+    transitionSoundVolume: Number(process.env.VIDEO_TRANSITION_SOUND_VOL || 0.3),
 
     // Arka plan müziği (narrasyon altında 'ducking' ile kısılır).
     // assets/music/ içindeki telifsiz parçalardan her video için rastgele biri
@@ -124,8 +124,9 @@ export const config = {
     music: process.env.VIDEO_MUSIC !== '0',
     musicDir: process.env.VIDEO_MUSIC_DIR || 'assets/music',
     musicPath: process.env.VIDEO_MUSIC_PATH || 'assets/music/bed.mp3',
-    // Referans kurgulardaki gibi müzik biraz daha önde (ducking yine korur).
-    musicVolume: Number(process.env.VIDEO_MUSIC_VOL || 0.19),
+    // Müzik NET duyulur (referans kurgulardaki gibi önde); yumuşak ducking
+    // konuşurken sadece hafifçe kısar, susturmaz.
+    musicVolume: Number(process.env.VIDEO_MUSIC_VOL || 0.4),
   },
   pexels: {
     apiKey: process.env.PEXELS_API_KEY,

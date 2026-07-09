@@ -150,7 +150,7 @@ export async function makeMusicBed({ outPath, seconds = 45, category = 'history'
     const a = Math.max(Math.abs(L[i]), Math.abs(R[i]));
     if (a > peak) peak = a;
   }
-  const norm = 0.32 / peak;
+  const norm = 0.5 / peak;
 
   // --- PCM16 stereo WAV yaz ---
   const dataBytes = n * 2 * 2;

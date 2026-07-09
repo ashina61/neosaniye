@@ -227,11 +227,14 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
   );
 
   let lastScript = null;
+  let lengthFeedback = '';
 
   for (let attempt = 1; attempt <= maxRetries; attempt += 1) {
     const response = await generateWithRetry(ai, {
       model: config.gemini.model,
-      contents: buildUserPrompt(avoidTopics, { topPerformers, trendSeeds }),
+      contents:
+        buildUserPrompt(avoidTopics, { topPerformers, trendSeeds }) +
+        (lengthFeedback ? `\n\n${lengthFeedback}` : ''),
       config: {
         systemInstruction: buildSystemPrompt(format),
         responseMimeType: 'application/json',
@@ -251,6 +254,25 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
 
     if (await isTopicUsed(script.topic)) {
       avoidTopics.push(script.topic);
+      continue;
+    }
+
+    // SÜRE ZORLAMASI: prompt'taki bütçe yetmiyor, saymadan kabul etme.
+    // 125 kelime ≈ 45sn tavan; aşarsa aynı konuda kısaltma iste.
+    const totalWords = [
+      ...(script.scenes || []).map((s) => s.narration || ''),
+      script.cta || '',
+    ]
+      .join(' ')
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean).length;
+    if (totalWords > 125 && attempt < maxRetries) {
+      console.warn(`[script] ${totalWords} kelime — bütçe aşıldı, kısaltma isteniyor.`);
+      lengthFeedback =
+        `Your previous script about "${script.topic}" was ${totalWords} words — TOO LONG. ` +
+        `Rewrite the SAME topic "${script.topic}" with the total voiceover under 110 words: ` +
+        'fewer scenes (7 max), shorter sentences, cut the weakest details. Keep the same quality.';
       continue;
     }
 

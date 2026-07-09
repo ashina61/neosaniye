@@ -435,8 +435,9 @@ async function buildFullAudio(
     fc.push(
       `[${musicIdx}:a]aresample=44100,atrim=0:${total.toFixed(3)},volume=${config.video.musicVolume}[mus]`,
     );
-    // Narrasyon konuşurken müziği kıs (ducking).
-    fc.push('[mus][nkey]sidechaincompress=threshold=0.02:ratio=8:attack=15:release=350[musd]');
+    // Narrasyon konuşurken müziği HAFİFÇE kıs (önceki 8:1 oran müziği tamamen
+    // susturuyordu — "müzik yok" şikayetinin sebebi buydu).
+    fc.push('[mus][nkey]sidechaincompress=threshold=0.06:ratio=3:attack=25:release=600[musd]');
     mix.push('[nmix]', '[musd]');
   } else {
     fc.push(`[0:a]${voiceChain}[nmix]`);
@@ -509,9 +510,8 @@ export async function renderVideo(job, opts = {}) {
 
   const td = M > 1 ? config.video.transitionDuration : 0;
 
-  // KURGU PLANI (pro ritim): referans kurgular ağırlıkla SERT KESME kullanır.
-  // Her 3. sınırda gerçek bir geçiş; kalan sınırlar ~2 karelik mini-fade
-  // (algıda sert kesme). Yumuşak crossfade'in "AI slayt" hissi böyle kırılır.
+  // KURGU PLANI: kesme-geçiş-kesme-geçiş ritmi. Sert kesmeler tempo verir,
+  // her 2. sınırdaki animasyonlu geçiş (whoosh'uyla birlikte) dinamizm katar.
   const CUT = 2 / fps;
   const trsList = config.video.transitions;
   const bts = []; // sınır başına geçiş süresi (k=1..M-1)
@@ -519,7 +519,7 @@ export async function renderVideo(job, opts = {}) {
   let realCount = 0;
   for (let k = 1; k < M; k += 1) {
     const isOutroBoundary = useOutro && k === M - 1;
-    const real = isOutroBoundary || k % 3 === 0;
+    const real = isOutroBoundary || k % 2 === 0;
     if (real) {
       bts.push(td);
       btName.push(trsList[realCount % trsList.length] || 'fade');
@@ -668,29 +668,39 @@ export async function renderVideo(job, opts = {}) {
     last = '[vlogo]';
   }
 
-  // Abone uyarısı (fade in/out penceresi [T1, T2])
+  // Abone uyarısı: yukarıdan ease ile süzülür, bekler, yukarı kayarak çıkar
+  // (düpedüz bitivermesin — canlı bir eleman gibi hareket etsin).
   if (spOn) {
     const win = `format=rgba,fade=t=in:st=${T1.toFixed(2)}:d=0.3:alpha=1,fade=t=out:st=${T2.toFixed(2)}:d=0.3:alpha=1`;
     const groupLeft = Math.round((width - (88 + 14 + 300)) / 2);
     const pillX = groupLeft + 88 + 14;
     const pillY = 158;
+    const t1 = T1.toFixed(2);
+    const t2 = T2.toFixed(2);
+    // base konumuna kayan y ifadesi: giriş ease-out (0.45s), çıkış ease-in (0.35s).
+    const slideY = (base) => {
+      const B = base + 400;
+      return (
+        `'if(lt(t,${t2}),` +
+        `-400+${B}*(1-pow(1-min(max(t-${t1},0)/0.45,1),2)),` +
+        `${base}-${B}*pow(min((t-${t2})/0.35,1),2))'`
+      );
+    };
     vfc.push(`[${pillIdx}:v]scale=300:-1,${win}[pill]`);
     if (likeIdx >= 0) {
       vfc.push(`[${likeIdx}:v]scale=88:88,${win}[lk]`);
-      vfc.push(`${last}[lk]overlay=${groupLeft}:152[vsp0]`);
+      vfc.push(`${last}[lk]overlay=x=${groupLeft}:y=${slideY(152)}[vsp0]`);
       last = '[vsp0]';
     }
-    vfc.push(`${last}[pill]overlay=${pillX}:${pillY}[vsp1]`);
-    const t1 = T1.toFixed(2);
+    vfc.push(`${last}[pill]overlay=x=${pillX}:y=${slideY(158)}[vsp1]`);
     const t1b = (T1 + 0.3).toFixed(2);
-    const t2 = T2.toFixed(2);
     const t2b = (T2 + 0.3).toFixed(2);
     const spAlpha =
       `alpha='if(lt(t,${t1}),0,if(lt(t,${t1b}),(t-${t1})/0.3,if(lt(t,${t2}),1,if(lt(t,${t2b}),1-(t-${t2})/0.3,0))))'`;
     const pillCx = pillX + 150;
     vfc.push(
       `[vsp1]drawtext=${drawFontOpt}text='SUBSCRIBE':fontcolor=white:fontsize=40:` +
-        `x=${pillCx}-text_w/2:y=${pillY + 15}:${spAlpha}[vsp2]`,
+        `x=${pillCx}-text_w/2:y=${slideY(pillY + 15)}:${spAlpha}[vsp2]`,
     );
     last = '[vsp2]';
   }
