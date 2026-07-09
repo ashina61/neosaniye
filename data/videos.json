@@ -412,5 +412,120 @@
       "publishedAt": "2026-07-09T05:04:00.583Z"
     },
     "createdAt": "2026-07-09T05:04:00.673Z"
+  },
+  {
+    "id": "mary-toft-rabbits-1783578742401",
+    "topic": "Mary Toft Rabbits",
+    "normalizedTopic": "mary-toft-rabbits",
+    "script": {
+      "title": "The Woman Who Gave Birth To Rabbits (Seriously)",
+      "category": "history",
+      "scenes": [
+        {
+          "narration": "In 1726, a poor English woman named Mary Toft claimed she'd given birth to rabbits.",
+          "image_prompt": "CLOSE-UP on the face of a young, pale Mary Toft, early 18th-century, looking anxious yet resolute, her eyes wide, in a dimly lit, rustic cottage interior. Soft, dramatic candlelight illuminates her features."
+        },
+        {
+          "narration": "Doctors were skeptical, but her local surgeon was convinced after seeing parts of animals.",
+          "image_prompt": "MEDIUM SHOT of an early 18th-century surgeon, grave-faced, holding up a small, unidentifiable fleshy fragment in a dimly lit study, examining it with a magnifying glass. Mary Toft is in the blurry background, looking on from a bed. Cool, overcast daylight."
+        },
+        {
+          "narration": "Word reached King George I, who sent his personal physician, Nathaniel St. Andre, to investigate.",
+          "image_prompt": "WIDE SHOT of a grand, horse-drawn carriage arriving at a humble 18th-century village street, with villagers staring in awe. A formally dressed Nathaniel St. Andre steps out. Overcast daylight."
+        },
+        {
+          "narration": "St. Andre watched Toft 'birth' several more rabbit pieces, even reporting a live one.",
+          "image_prompt": "OVER-THE-SHOULDER SHOT of Dr. St. Andre, focused intently on Mary Toft's draped body in a bed, as she visibly strains. A small, indistinct, furry object lies beside her. Intimate, dramatic candlelight."
+        },
+        {
+          "narration": "The story became a national sensation, baffling medical professionals across England.",
+          "image_prompt": "EXTREME CLOSE-UP on a hand holding a printed pamphlet from the early 18th century, featuring a crude illustration of a woman and rabbits, with curious onlookers' blurred faces in the background. Dim, warm light."
+        },
+        {
+          "narration": "But a suspicious porter caught her bribing someone to smuggle in a rabbit.",
+          "image_prompt": "MEDIUM SHOT, slightly obscured, of a shadowy figure (the porter) peering through a slightly ajar wooden door, observing Mary Toft secretly receiving a small, dead rabbit from another person's hand. Dark, clandestine mood."
+        },
+        {
+          "narration": "Under intense questioning, Mary confessed to a bizarre hoax, inserting rabbit parts herself.",
+          "image_prompt": "CLOSE-UP on Mary Toft's face, her eyes downcast and tearful, reflecting the harsh light of a single candle, as she is interrogated by stern-faced men in 18th-century clothing, unseen off-camera. Intense, dramatic lighting."
+        },
+        {
+          "narration": "The 'rabbit-woman' scandal rocked the medical community, forever a strange footnote in history.",
+          "image_prompt": "WIDE SHOT of a bustling, chaotic 18th-century street scene, with caricatures of doctors and Mary Toft being sold, people gossiping and pointing, reflecting widespread public ridicule. Overcast, diffuse light."
+        }
+      ],
+      "cta": "Like and subscribe to unravel more of history's wildest deceptions!"
+    },
+    "audioPath": "output/mary-toft-rabbits/mary-toft-rabbits.mp3",
+    "videoPath": "output/mary-toft-rabbits/mary-toft-rabbits.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/mary-toft-rabbits/media/01-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 1,
+        "keyword": "surgeon",
+        "path": "output/mary-toft-rabbits/media/02-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/precise-neurosurgery-procedure-in-operating-room-31059637/",
+        "author": "Viktors Duks"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/mary-toft-rabbits/media/03-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 3,
+        "path": "output/mary-toft-rabbits/media/04-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 4,
+        "keyword": "pamphlet",
+        "path": "output/mary-toft-rabbits/media/05-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/a-young-man-ordering-food-online-13441362/",
+        "author": "Mizuno K"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 5,
+        "path": "output/mary-toft-rabbits/media/06-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 6,
+        "path": "output/mary-toft-rabbits/media/07-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 7,
+        "keyword": "scandal",
+        "path": "output/mary-toft-rabbits/media/08-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/a-woman-sitting-in-the-office-7841866/",
+        "author": "RDNE Stock project"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 47.813991,
+    "status": "published",
+    "youtube": {
+      "videoId": "zgqo00wmQ5Y",
+      "url": "https://www.youtube.com/shorts/zgqo00wmQ5Y",
+      "title": "The Woman Who Gave Birth To Rabbits (Seriously) #Shorts",
+      "publishedAt": "2026-07-09T06:32:22.319Z"
+    },
+    "createdAt": "2026-07-09T06:32:22.401Z"
   }
 ]

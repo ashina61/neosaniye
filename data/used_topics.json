@@ -28,5 +28,11 @@
     "normalizedTopic": "the-great-stink-of-london",
     "createdAt": "2026-07-09T05:04:00.674Z",
     "videoId": "the-great-stink-of-london-1783573440673"
+  },
+  "mary-toft-rabbits": {
+    "topic": "Mary Toft Rabbits",
+    "normalizedTopic": "mary-toft-rabbits",
+    "createdAt": "2026-07-09T06:32:22.402Z",
+    "videoId": "mary-toft-rabbits-1783578742401"
   }
 }
