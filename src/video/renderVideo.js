@@ -448,18 +448,44 @@ async function makeChime(outPath) {
   ], { maxBuffer: 10 * 1024 * 1024 });
 }
 
-/** assets/music/ havuzundan rastgele telifsiz parça seçer (yoksa null). */
-function pickMusicTrack() {
+/** assets/music/ havuzundan telifsiz parça seçer — önce kategorinin kendi
+ *  klasörü (assets/music/<mood>/), yoksa tüm havuz, o da yoksa null. */
+function pickMusicTrack(category = '') {
   const exts = ['.mp3', '.m4a', '.wav', '.ogg', '.aac', '.opus'];
   const dir = path.resolve(config.video.musicDir || 'assets/music');
-  try {
-    const files = readdirSync(dir)
-      .filter((f) => exts.includes(path.extname(f).toLowerCase()))
-      .map((f) => path.join(dir, f));
-    if (files.length) return files[Math.floor(Math.random() * files.length)];
-  } catch {
-    /* klasör yok */
+  const listDir = (d) => {
+    try {
+      return readdirSync(d, { withFileTypes: true });
+    } catch {
+      return [];
+    }
+  };
+  const alias = { 'human body': 'science', technology: 'science' };
+  const key = String(category || '').toLowerCase();
+  const mood = alias[key] || key;
+
+  // 1) Ruh haline özel klasör (assets/music/mystery/ gibi).
+  const moodDir = path.join(dir, mood);
+  const moodFiles = listDir(moodDir)
+    .filter((e) => e.isFile() && exts.includes(path.extname(e.name).toLowerCase()))
+    .map((e) => path.join(moodDir, e.name));
+  if (moodFiles.length) return moodFiles[Math.floor(Math.random() * moodFiles.length)];
+
+  // 2) Havuzun tamamı (kök + tüm alt klasörler).
+  const all = [];
+  for (const e of listDir(dir)) {
+    if (e.isFile() && exts.includes(path.extname(e.name).toLowerCase())) {
+      all.push(path.join(dir, e.name));
+    } else if (e.isDirectory()) {
+      for (const f of listDir(path.join(dir, e.name))) {
+        if (f.isFile() && exts.includes(path.extname(f.name).toLowerCase())) {
+          all.push(path.join(dir, e.name, f.name));
+        }
+      }
+    }
   }
+  if (all.length) return all[Math.floor(Math.random() * all.length)];
+
   const single = path.resolve(config.video.musicPath);
   return existsSync(single) ? single : null;
 }
@@ -492,11 +518,13 @@ async function buildFullAudio(
   let idx = 1;
 
   let musicIdx = -1;
+  let musicIsReal = false;
   if (useMusic) {
-    const track = pickMusicTrack();
+    const track = pickMusicTrack(category);
     if (track) {
+      musicIsReal = true;
       inputs.push('-stream_loop', '-1', '-i', track);
-      console.log(`[audio] müzik: ${path.basename(track)}`);
+      console.log(`[audio] müzik: ${path.basename(track)} (${category || 'havuz'})`);
     } else {
       const bed = path.join(workDir, 'music-bed.wav');
       await makeMusicBed({
@@ -558,8 +586,11 @@ async function buildFullAudio(
 
   if (useMusic) {
     fc.push(`[0:a]${voiceChain},asplit=2[nkey][nmix]`);
+    // Gerçek (mastered) parçalar sentetik yataktan çok daha sıcak basar —
+    // seviyeyi ona göre düşür; prosedürel yatak config seviyesinde kalır.
+    const musVol = musicIsReal ? Math.min(config.video.musicVolume, 0.32) : config.video.musicVolume;
     fc.push(
-      `[${musicIdx}:a]aresample=44100,atrim=0:${total.toFixed(3)},volume=${config.video.musicVolume}[mus]`,
+      `[${musicIdx}:a]aresample=44100,atrim=0:${total.toFixed(3)},volume=${musVol}[mus]`,
     );
     // Narrasyon konuşurken müziği HAFİFÇE kıs (önceki 8:1 oran müziği tamamen
     // susturuyordu — "müzik yok" şikayetinin sebebi buydu).
