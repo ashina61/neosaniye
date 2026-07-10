@@ -775,10 +775,10 @@
     },
     "createdAt": "2026-07-09T14:59:06.641Z",
     "stats": {
-      "views": 328,
+      "views": 329,
       "likes": 0,
       "comments": 0,
-      "statsAt": "2026-07-10T06:54:58.169Z"
+      "statsAt": "2026-07-10T15:24:52.233Z"
     }
   },
   {
@@ -894,6 +894,124 @@
       "title": "How Did Rasputin Survive So Many Assassination Attempts? #Shorts",
       "publishedAt": "2026-07-10T07:01:12.455Z"
     },
-    "createdAt": "2026-07-10T07:01:13.361Z"
+    "createdAt": "2026-07-10T07:01:13.361Z",
+    "stats": {
+      "views": 1187,
+      "likes": 22,
+      "comments": 1,
+      "statsAt": "2026-07-10T15:24:52.232Z"
+    }
+  },
+  {
+    "id": "lobster-thermidor-on-titanic-1783697508973",
+    "topic": "Lobster Thermidor on Titanic",
+    "normalizedTopic": "lobster-thermidor-on-titanic",
+    "script": {
+      "title": "Titanic's Last Meal: A Dish That Never Was?",
+      "category": "history",
+      "scenes": [
+        {
+          "narration": "Before its fateful night, the Titanic boasted unparalleled luxury, including a legendary final menu.",
+          "image_prompt": "A wide establishing shot of a dimly lit, luxurious early 20th-century dining room aboard a grand ocean liner, impeccably set with gleaming silverware and crystal, before passengers arrive. Polished wood, crystal, white linen, soft golden light from chandeliers create an elegant, slightly melancholic mood."
+        },
+        {
+          "narration": "Among its supposed 11-course feast was a dish often mentioned: Lobster Thermidor.",
+          "image_prompt": "A medium shot of a beautifully plated Lobster Thermidor dish, glistening with sauce and cheese, held by a gloved server's hand, against a blurred background of a dimly lit, luxurious early 20th-century dining room. The subject is clearly lit with soft, golden light, creating an elegant and tantalizing mood."
+        },
+        {
+          "narration": "It’s a rich, creamy, and expensive meal, perfectly fitting the opulent ship.",
+          "image_prompt": "A detail insert shot of a delicate silver fork piercing a succulent piece of lobster meat from a Lobster Thermidor dish, steam gently rising. The subject is clearly lit with soft, golden light, creating an intimate and detailed mood."
+        },
+        {
+          "narration": "However, here’s the fascinating twist: there's NO historical record of it on any actual Titanic menu.",
+          "image_prompt": "An over-the-shoulder shot of a historian, wearing period-appropriate glasses, scrutinizing an aged, handwritten menu document under a desk lamp in a library archive. The document, partially visible, shows a list of courses. The subject is clearly lit, creating a focused and studious mood, consistent with early 20th-century aesthetic."
+        },
+        {
+          "narration": "The famous ",
+          "image_prompt": "An extreme close-up of handwritten cursive text on an authentic Titanic First Class menu from 1912, showing several courses. The paper is slightly yellowed. The text is in sharp focus and clearly lit, creating a detailed and informative mood."
+        },
+        {
+          "narration": "The famous 'Last Supper' menu was meticulously preserved by a passenger, proving its absence.",
+          "image_prompt": "A medium shot of a gloved archivist carefully placing a framed, authentic Titanic menu into a protective display case in a museum exhibition. The scene is dimly lit with soft, golden light, creating a reverent and careful mood."
+        },
+        {
+          "narration": "So, where did the myth of Titanic's Lobster Thermidor come from?",
+          "image_prompt": "A wide establishing shot looking out from large windows of a dimly lit, luxurious early 20th-century dining room aboard a grand ocean liner onto the dark, calm ocean, with a subtle, reflective glimmer. A lone, empty chair is in the foreground. The scene is clearly lit with soft, golden light, creating an atmospheric and slightly eerie mood."
+        },
+        {
+          "narration": "It was simply a popular, high-end dish of the era, later romanticized into the Titanic's story.",
+          "image_prompt": "A close-up of an old, beautifully illustrated cookbook from the early 1900s, open to a recipe for Lobster Thermidor, perhaps with an elegant drawing of the dish. The pages are slightly yellowed. The subject is clearly lit with soft, golden light, creating a period-appropriate and informative mood."
+        }
+      ],
+      "cta": "Explore more forgotten stories by following for new historical insights!"
+    },
+    "audioPath": "output/lobster-thermidor-on-titanic/lobster-thermidor-on-titanic.mp3",
+    "videoPath": "output/lobster-thermidor-on-titanic/lobster-thermidor-on-titanic.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/lobster-thermidor-on-titanic/media/01-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/lobster-thermidor-on-titanic/media/02-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/lobster-thermidor-on-titanic/media/03-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 3,
+        "path": "output/lobster-thermidor-on-titanic/media/04-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 4,
+        "path": "output/lobster-thermidor-on-titanic/media/05-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 5,
+        "keyword": "archive",
+        "path": "output/lobster-thermidor-on-titanic/media/06-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/a-person-pulling-a-mini-drawer-6550672/",
+        "author": "Tima Miroshnichenko"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 6,
+        "keyword": "ocean",
+        "path": "output/lobster-thermidor-on-titanic/media/07-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/a-boat-is-in-the-water-with-a-person-on-it-25961000/",
+        "author": "Nisasu"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 7,
+        "path": "output/lobster-thermidor-on-titanic/media/08-ai.jpg"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 43.081995,
+    "status": "published",
+    "youtube": {
+      "videoId": "00PeCQNMpzk",
+      "url": "https://www.youtube.com/shorts/00PeCQNMpzk",
+      "title": "Titanic's Last Meal: The Lobster Thermidor Myth Debunked #Shorts",
+      "publishedAt": "2026-07-10T15:31:47.270Z"
+    },
+    "createdAt": "2026-07-10T15:31:48.973Z"
   }
 ]
