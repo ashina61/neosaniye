@@ -111,13 +111,25 @@ function buildCaptionAss(words, opts) {
 
   const events = [];
 
-  // Hook kartı: ilk saniyeler, büyük, üst-orta (Black + CAPS — kapak burası).
-  const hk = assEscape(String(hookText || '').toUpperCase());
+  // Hook kartı: vurgu stilinde (Playfair italik bold), yukarıdan AŞAĞI süzülerek
+  // açılır (move + blur çözülmesi) — sert CAPS blok yerine sinematik başlık.
+  const hk = assEscape(String(hookText || '').trim());
   if (hk) {
-    const hStyle = `Style: Hook,${fontName},74,&H00FFFFFF,&H00000000,&H00000000,1,1,4,3,8,100,100,380,1`;
+    // Otomatik boyut: tek satıra sığmazsa 2 satıra sarar; 2 satırı da aşarsa küçül.
+    const hookFactor = 0.5; // Playfair italik ortalama genişlik
+    let hfs = 96;
+    if (hk.length * hookFactor * hfs > 2 * usableW) {
+      hfs = Math.max(56, Math.floor((2 * usableW) / (hk.length * hookFactor)));
+    }
+    const hStyle =
+      `Style: Hook,Playfair Display,${hfs},&H00FFFFFF,&H00000000,&HB4000000,` +
+      `0,1,0,3.2,8,${marginH},${marginH},380,1`;
     styleLines.push(hStyle);
+    const cx = Math.round(width / 2);
     events.push(
-      `Dialogue: 1,0:00:00.00,${assTime(hookDuration)},Hook,,0,0,0,,{\\fad(200,350)}${hk}`,
+      `Dialogue: 1,0:00:00.00,${assTime(hookDuration)},Hook,,0,0,0,,` +
+        `{\\i1\\b1\\fad(160,380)\\move(${cx},330,${cx},392,0,480)` +
+        `\\blur6\\t(0,480,\\blur0.8)\\fscy88\\t(0,480,\\fscy100)}${hk}`,
     );
   }
 

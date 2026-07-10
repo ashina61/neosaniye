@@ -32,9 +32,10 @@ export const SCRIPT_SCHEMA = {
     hook_text: {
       type: Type.STRING,
       description:
-        'A SHORT punchy on-screen COVER line for the first 2 seconds: 3-5 words, MAX 24 characters, ' +
-        'shocking/curiosity-spiking (e.g. "AN ARMY LOST TO BIRDS", "A TOWN DANCED TO DEATH"). ' +
-        'Must be a bold statement, not a full sentence. No period, no quotes.',
+        'A SHORT punchy on-screen COVER line for the first 2 seconds: 3-5 words, MAX 26 characters, ' +
+        'shocking/curiosity-spiking, written in natural sentence case with proper-noun capitals ' +
+        '(e.g. "Rasputin wouldn\'t die", "An army lost to birds"). ' +
+        'A bold statement, not a full sentence. No period, no quotes, NOT all-caps.',
     },
     category: {
       type: Type.STRING,
