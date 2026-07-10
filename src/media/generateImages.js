@@ -105,6 +105,7 @@ export async function generateImages(script, opts = {}) {
   const {
     outDir = 'output',
     basename = script.normalizedTopic || 'script',
+    style = 'photo', // 'photo' | 'animated' (illüstrasyon)
   } = opts;
 
   const mediaDir = path.join(outDir, basename, 'media');
@@ -141,10 +142,14 @@ export async function generateImages(script, opts = {}) {
   }
   videoSeed = videoSeed + 7;
 
+  // Stil paketi: fotogerçekçi belgesel (varsayılan) ya da illüstrasyon.
+  const styleSuffix =
+    style === 'animated' ? config.images.animatedStyleSuffix : config.images.styleSuffix;
+
   for (let i = 0; i < scenes.length; i += 1) {
     const scene = scenes[i];
     const idx = String(i + 1).padStart(2, '0');
-    const prompt = [scene.image_prompt, anchor, config.images.styleSuffix]
+    const prompt = [scene.image_prompt, anchor, styleSuffix]
       .filter(Boolean)
       .join('. ');
     let done = null;

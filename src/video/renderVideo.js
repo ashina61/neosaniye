@@ -310,7 +310,7 @@ function gradeFor(category) {
 /** Tek bir medyayı (video/foto) sabit 1080x1920/fps klibe normalize eder.
  *  Sinematik his için: hafif renk grade + yavaş Ken Burns zoom (klip başına
  *  yön değişir). Supersample (2x) sonra küçültme jitter'ı azaltır. */
-async function normalizeClip(item, duration, outPath, { width, height, fps, index = 0, category = '' }) {
+async function normalizeClip(item, duration, outPath, { width, height, fps, index = 0, category = '', animated = false }) {
   // Supersample çözünürlüğü (Ken Burns zoom'unda titremeyi azaltır).
   const sw = width * 2;
   const sh = height * 2;
@@ -318,7 +318,8 @@ async function normalizeClip(item, duration, outPath, { width, height, fps, inde
 
   // Organik Ken Burns: zoom miktarı, yönü ve pan sürüklenmesi klip başına
   // değişir (deterministik "rastgele"). Sabit hız/merkez = makine hissi verir.
-  const zMax = 1.09 + ((index * 37) % 9) / 100; // 1.09 .. 1.17
+  // Animasyonlu stil: daha agresif kamera (illüstrasyona canlılık verir).
+  const zMax = (animated ? 1.14 : 1.09) + ((index * 37) % 9) / 100; // 1.09..1.17 | 1.14..1.22
   const inc = ((zMax - 1) / frames).toFixed(6);
   const zoomIn = index % 2 === 0;
   // İlk sahnede "zoom-punch": ilk ~0.3sn hızlı vuruş, sonra yavaş devam.
@@ -446,6 +447,73 @@ async function makeChime(outPath) {
     '-ar', '44100', '-ac', '2',
     outPath,
   ], { maxBuffer: 10 * 1024 * 1024 });
+}
+
+/** Animasyonlu stil için canlı doku katmanı: yukarı süzülen bulanık toz
+ *  zerreleri + yavaş gezinen çok saydam sıcak ışık lekesi. Saf ASS (libass)
+ *  çizimleriyle — ek bağımlılık yok, encode maliyeti ihmal edilebilir.
+ *  Altyazı ASS'inden AYRI dosya; captions'ın ALTINA (önce) uygulanır. */
+function buildFxAss(total, { width, height, seed = 1 } = {}) {
+  let s = (seed >>> 0) || 1;
+  const rnd = () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296);
+  const t2a = (t) => {
+    const cs = Math.max(0, Math.round(t * 100));
+    const h = Math.floor(cs / 360000);
+    const m = Math.floor((cs % 360000) / 6000);
+    const sec = Math.floor((cs % 6000) / 100);
+    return `${h}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}.${String(cs % 100).padStart(2, '0')}`;
+  };
+  const circle = 'm 0 -5 b 7 -5 7 5 0 5 b -7 5 -7 -5 0 -5';
+  const ev = [];
+
+  // Toz zerreleri (~0.8 adet/sn doğar; 3.5-7sn yaşar, yukarı süzülür).
+  const count = Math.round(total * 0.8);
+  for (let i = 0; i < count; i += 1) {
+    const born = rnd() * Math.max(0.1, total - 3);
+    const end = Math.min(total, born + 3.5 + rnd() * 3.5);
+    const x1 = Math.round(rnd() * width);
+    const y1 = Math.round(height * (0.25 + rnd() * 0.75));
+    const x2 = Math.round(x1 + (rnd() - 0.5) * 260);
+    const y2 = Math.round(y1 - (120 + rnd() * 260));
+    const sc = Math.round(35 + rnd() * 85);
+    const alpha = (160 + Math.floor(rnd() * 60)).toString(16).toUpperCase(); // A0..DB
+    ev.push(
+      `Dialogue: 1,${t2a(born)},${t2a(end)},Fx,,0,0,0,,` +
+        `{\\an7\\move(${x1},${y1},${x2},${y2})\\fad(700,900)\\blur3` +
+        `\\1c&HFFFFFF&\\1a&H${alpha}&\\fscx${sc}\\fscy${sc}\\p1}${circle}{\\p0}`,
+    );
+  }
+
+  // Işık lekesi: dev, aşırı saydam, sıcak; ~18sn'de bir yenisi gezinir.
+  const blobs = Math.max(1, Math.round(total / 18));
+  for (let i = 0; i < blobs; i += 1) {
+    const born = i * (total / blobs);
+    const end = Math.min(total, born + total / blobs + 2);
+    const x1 = Math.round(rnd() * width);
+    const y1 = Math.round(rnd() * height * 0.5);
+    const x2 = Math.round(rnd() * width);
+    const y2 = Math.round(rnd() * height * 0.5);
+    ev.push(
+      `Dialogue: 0,${t2a(born)},${t2a(end)},Fx,,0,0,0,,` +
+        `{\\an7\\move(${x1},${y1},${x2},${y2})\\fad(1500,1500)\\blur60` +
+        `\\1c&HD8F0FF&\\1a&HE8&\\fscx2600\\fscy2600\\p1}${circle}{\\p0}`,
+    );
+  }
+
+  return `[Script Info]
+ScriptType: v4.00+
+PlayResX: ${width}
+PlayResY: ${height}
+WrapStyle: 2
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Fx,Arial,20,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,0,0,7,0,0,0,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+${ev.join('\n')}
+`;
 }
 
 /** assets/music/ havuzundan telifsiz parça seçer — önce kategorinin kendi
@@ -778,6 +846,9 @@ export async function renderVideo(job, opts = {}) {
   const clipDur = [...mainDurs, ...(useOutro ? [dOutro] : [])];
   const total = clipDur.reduce((a, b) => a + b, 0) - bts.reduce((a, b) => a + b, 0);
 
+  // Animasyonlu hikâye kitabı stili: agresif kamera + canlı doku katmanı.
+  const animatedStyle = job.visualStyle === 'animated';
+
   // 2) Ana klipleri normalize et + outro klibini üret.
   const clips = [];
   for (let i = 0; i < N; i += 1) {
@@ -786,7 +857,7 @@ export async function renderVideo(job, opts = {}) {
       media[i],
       Math.max(0.6, clipDur[i] + (M > 1 ? 0.05 : 0)),
       clipPath,
-      { width, height, fps, index: i, category },
+      { width, height, fps, index: i, category, animated: animatedStyle },
     );
     clips.push(clipPath);
   }
@@ -968,15 +1039,25 @@ export async function renderVideo(job, opts = {}) {
     last = '[vsp2]';
   }
 
+  // Animasyonlu stil: canlı doku katmanı (toz + ışık) — altyazının ALTINA.
+  let fxFilter = '';
+  if (animatedStyle) {
+    await writeFile(
+      path.join(workDir, 'fx.ass'),
+      buildFxAss(total, { width, height, seed: Math.round(total * 131) + N }),
+    );
+    fxFilter = 'ass=fx.ass,';
+  }
+
   // Altyazı + hook (aynı ASS dosyasında; hook otomatik satır kaydırır, sığar).
   const fontsDir = path.resolve(config.video.fontsDir);
   const assFilter = existsSync(fontsDir) ? `ass=subs.ass:fontsdir=${fontsDir}` : 'ass=subs.ass';
   // Hafif keskinleştirme (altyazıdan ÖNCE — yazı kenarları temiz kalsın):
   // telefonda sıkıştırma sonrası algılanan netliği belirgin artırır.
   if (useAss) {
-    vfc.push(`${last}unsharp=5:5:0.35:3:3:0,${assFilter}[v]`);
+    vfc.push(`${last}${fxFilter}unsharp=5:5:0.35:3:3:0,${assFilter}[v]`);
   } else {
-    vfc.push(`${last}unsharp=5:5:0.35:3:3:0[v]`);
+    vfc.push(`${last}${fxFilter}unsharp=5:5:0.35:3:3:0[v]`);
   }
 
   const fullv = path.join(workDir, 'fullv.mp4');

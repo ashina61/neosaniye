@@ -38,6 +38,14 @@ export const config = {
         'bright key light, warm filmic color grade, shallow depth of field, ' +
         'subtle motion blur, imperfect natural framing, vertical composition, ' +
         'no text, no watermark, no subtitles',
+    // "Animasyonlu hikâye kitabı" stili: bazı videolar illüstrasyon görünümünde
+    // çıkar (run.js karar verir; VIDEO_STYLE=animated|photo ile zorlanır).
+    animatedStyleSuffix:
+      process.env.IMAGE_ANIMATED_STYLE ||
+      'cinematic 2D storybook illustration, painterly digital art, rich textured ' +
+        'brush strokes, dramatic warm lighting, subject clearly lit and readable, ' +
+        'consistent character design across scenes, detailed atmospheric background, ' +
+        'vertical composition, no text, no watermark, no speech bubbles',
     retries: Number(process.env.IMAGE_RETRIES || 2),
     timeoutMs: Number(process.env.IMAGE_TIMEOUT_MS || 90000),
     // Görsel üretimi başarısızsa Pexels'ten stok görsele düş.

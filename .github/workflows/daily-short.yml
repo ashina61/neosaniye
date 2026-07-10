@@ -8,6 +8,11 @@ on:
         description: "YouTube upload'ı atla (sadece üret)"
         type: boolean
         default: false
+      style:
+        description: "Görsel stil (auto = sistem karar verir)"
+        type: choice
+        options: [auto, animated, photo]
+        default: auto
   schedule:
     - cron: "0 15 * * *" # her gün 15:00 UTC (TR 18:00) — otomatik üretim
     # - cron: "0 21 * * *" # günde 2. üretim istenirse bu satırı aç
@@ -57,6 +62,8 @@ jobs:
           # İkinci stok kaynağı + ambiyans (opsiyonel; yoksa özellik atlanır).
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
           FREESOUND_API_KEY: ${{ secrets.FREESOUND_API_KEY }}
+          # Görsel stil zorlaması (manuel run'da seçilir; cron'da sistem karar verir).
+          VIDEO_STYLE: ${{ inputs.style == 'auto' && '' || inputs.style }}
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}

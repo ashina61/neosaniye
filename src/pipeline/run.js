@@ -96,9 +96,22 @@ export async function runPipeline(opts = {}) {
       }
     }
 
+    // Görsel stil: story/whatif videolarının ~%40'ı "animasyonlu hikâye
+    // kitabı" (illüstrasyon + canlı doku) stilinde çıkar. process/howworks
+    // gerçek görüntü ağırlıklı olduğundan hep fotogerçekçi kalır.
+    // VIDEO_STYLE=animated|photo ile elle zorlanabilir.
+    const styleEnv = process.env.VIDEO_STYLE;
+    const visualStyle =
+      styleEnv === 'animated' || styleEnv === 'photo'
+        ? styleEnv
+        : ['story', 'whatif'].includes(script.format || 'story') && Math.random() < 0.4
+          ? 'animated'
+          : 'photo';
+    if (visualStyle === 'animated') console.log('  görsel stil: animasyonlu hikâye kitabı');
+
     // 3) Görsel (sahne başına AI görsel + Pexels/placeholder yedeği)
     log('Faz 3: Sahne görselleri üretiliyor (AI)...');
-    const media = await generateImages(script, { outDir: root, basename: base });
+    const media = await generateImages(script, { outDir: root, basename: base, style: visualStyle });
     console.log(
       `  ${media.items.length} sahne — AI:${media.sources.ai} ` +
         `stokVideo:${media.sources.stock || 0} Pexels:${media.sources.pexels} ` +
@@ -126,6 +139,7 @@ export async function runPipeline(opts = {}) {
       editPlan,
       musicMood: editPlan?.musicMood || undefined,
       ambiencePath: ambience?.path || null,
+      visualStyle,
       emphasisWords: script.emphasis_words || [],
       finaleText: script.finale_text || '',
       outPath,
@@ -186,6 +200,7 @@ export async function runPipeline(opts = {}) {
       finale: script.finale_text || null,
       duration: +video.duration.toFixed(1),
       sources: media.sources,
+      visualStyle,
       ambience: ambience?.name || null,
       preflight: pf.metrics,
       editPlan: editPlan
