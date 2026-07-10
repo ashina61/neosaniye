@@ -125,7 +125,10 @@ export async function generateImages(script, opts = {}) {
   // onlar; yoksa mekanik "her N. sahne". İlk sahne her zaman hariç (hook kapağı).
   const motionEvery = Math.max(0, config.images.motionEvery || 0);
   const hasStockKey = Boolean(config.pexels.apiKey || config.pixabay.apiKey);
-  const canMotion = motionEvery > 0 && hasStockKey;
+  // process formatı: GERÇEK görüntü öncelikli — HER sahne (ilki dahil) önce
+  // stok video dener; AI görsel sadece klip bulunamayan sahneleri doldurur.
+  const processMode = script.format === 'process' && hasStockKey;
+  const canMotion = (motionEvery > 0 || processMode) && hasStockKey;
   const dpFlags = scenes.some((s) => s.motion === true);
 
   // Görsel süreklilik: video başına SABİT seed (konudan türetilir) + her sahne
@@ -147,8 +150,10 @@ export async function generateImages(script, opts = {}) {
     let done = null;
 
     // 0) Hareketli sahne: stok video dene (bulunamazsa AI görsele devam).
-    const motionSlot = dpFlags ? scene.motion === true : i > 0 && i % motionEvery === 1;
-    if (canMotion && i > 0 && motionSlot) {
+    const motionSlot = processMode
+      ? true
+      : dpFlags ? scene.motion === true : i > 0 && i % motionEvery === 1;
+    if (canMotion && (processMode || i > 0) && motionSlot) {
       try {
         const hit = await fetchStockVideoForKeywords(
           scene.stock_keywords || scene.keywords,

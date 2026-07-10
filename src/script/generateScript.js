@@ -101,18 +101,29 @@ export const SCRIPT_SCHEMA = {
   propertyOrdering: ['topic', 'title', 'hook_text', 'category', 'visual_anchor', 'scenes', 'cta', 'emphasis_words', 'finale_text'],
 };
 
-// Format rotasyonu: izleyici tek kalıptan yorulmasın. Story + how-it-works ağırlıklı.
+// Format rotasyonu: izleyici tek kalıptan yorulmasın. Story + how-it-works +
+// process (gerçek görüntü öncelikli) ağırlıklı.
 const FORMATS = [
-  { key: 'story', weight: 4, brief: 'ONE gripping true mini-story with a narrative arc (hook, escalation, twist, payoff).' },
+  { key: 'story', weight: 3, brief: 'ONE gripping true mini-story with a narrative arc (hook, escalation, twist, payoff).' },
   {
     key: 'howworks',
-    weight: 4,
+    weight: 3,
     brief:
       'Explain HOW something fascinating actually works, step by step, as a visual journey ' +
       '(e.g. "How do octopuses vanish in plain sight?", "How does a hurricane build its power?"). ' +
       'Each scene = one step of the process, building to a satisfying "so THAT\'s why" payoff. ' +
       'STRONGLY prefer subjects that exist in real film footage: nature, animals, weather, machines, ' +
       'the human body, space, oceans, cities — these will be shown with REAL video clips.',
+  },
+  {
+    key: 'process',
+    weight: 3,
+    brief:
+      'A mesmerizing REAL-FOOTAGE "watch how this is actually done/made" video (a craft, a repair, ' +
+      'a manufacturing process, cooking, a machine at work, nature in action). The narrator is a ' +
+      'fascinated guide REACTING to what the viewer is literally watching and explaining the hidden ' +
+      'why behind each step. The entire video is built from real stock clips — pick a subject with ' +
+      'ABUNDANT generic footage.',
   },
   { key: 'facts3', weight: 1, brief: 'THREE rapid-fire, jaw-dropping TRUE facts around one tight theme. Scene 1 hooks the theme; then each fact gets 2 scenes (setup + payoff); close with the best "wait, WHAT?" fact.' },
   { key: 'whatif', weight: 1, brief: 'A "What if...?" scenario answered with REAL science/history (e.g. "What if the Moon disappeared tonight?"). Grounded, accurate consequences presented as a story.' },
@@ -151,8 +162,25 @@ async function fetchTrendSeeds() {
 }
 
 function buildSystemPrompt(format) {
+  // process formatı: görüntü GERÇEK stok kliplerden gelir — kurallar farklı.
+  const processExtra =
+    format.key === 'process'
+      ? `
+
+PROCESS FORMAT RULES (this video is built from REAL stock footage, not generated images):
+- keywords are the PRIMARY visual source here: write 2-3 SEARCHABLE stock-video phrases per scene
+  (action + object, e.g. "blacksmith forging closeup", "glassblowing furnace", "pouring epoxy resin
+  table"). Generic and common — a stock library must plausibly HAVE this clip. No names, no eras.
+- narration speaks TO the footage like a fascinated guide, present tense: "Watch what he does
+  next...", "See that paste? It's not glue.", "This is the part nobody expects." Make the viewer
+  feel they're watching one continuous demonstration.
+- Choose subjects with abundant stock coverage: woodworking, forging, glassblowing, pottery,
+  baking, coffee roasting, machining, welding, farming, fishing, weaving, printing, honey
+  harvesting, cheese making. AVOID one-off events, specific people, or historical reenactments.
+- Still fill image_prompt for every scene (used only as a fallback if no clip is found).`
+      : '';
   return `You are a master short-form STORYTELLER for a faceless YouTube Shorts channel.
-Concept: "${config.niche.theme}". This video's format: ${format.brief}
+Concept: "${config.niche.theme}". This video's format: ${format.brief}${processExtra}
 
 Write in English, for a SINGLE dramatic narrator. STRICT word budget: the total voiceover (all narrations + cta) must be 90-115 words — never more. That is ~35-42 seconds. Shorts are SHORT — hook fast, no filler, every sentence earns its place.
 
@@ -240,7 +268,8 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
   assertGemini();
   const ai = new GoogleGenAI({ apiKey: config.gemini.apiKey });
 
-  const recent = await getRecentUsedTopics(50);
+  // 120: eski kanaldan tohumlanan konular da kaçınma listesinde kalsın.
+  const recent = await getRecentUsedTopics(120);
   const avoidTopics = [
     ...recent.map((r) => r.topic).filter(Boolean),
     ...extraAvoid,
