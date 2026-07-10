@@ -778,7 +778,7 @@
       "views": 329,
       "likes": 0,
       "comments": 0,
-      "statsAt": "2026-07-10T21:06:51.775Z"
+      "statsAt": "2026-07-10T22:39:44.455Z"
     }
   },
   {
@@ -896,10 +896,10 @@
     },
     "createdAt": "2026-07-10T07:01:13.361Z",
     "stats": {
-      "views": 1238,
+      "views": 1244,
       "likes": 22,
       "comments": 1,
-      "statsAt": "2026-07-10T21:06:51.774Z"
+      "statsAt": "2026-07-10T22:39:44.454Z"
     }
   },
   {
@@ -1014,10 +1014,10 @@
     },
     "createdAt": "2026-07-10T15:31:48.973Z",
     "stats": {
-      "views": 16,
+      "views": 18,
       "likes": 0,
       "comments": 1,
-      "statsAt": "2026-07-10T21:06:51.773Z"
+      "statsAt": "2026-07-10T22:39:44.453Z"
     }
   },
   {
@@ -1135,7 +1135,7 @@
       "views": 2,
       "likes": 0,
       "comments": 1,
-      "statsAt": "2026-07-10T21:06:51.771Z"
+      "statsAt": "2026-07-10T22:39:44.451Z"
     }
   },
   {
@@ -1247,5 +1247,117 @@
     "status": "rendered",
     "youtube": null,
     "createdAt": "2026-07-10T21:13:35.618Z"
+  },
+  {
+    "id": "the-unsinkable-aircraft-carrier-made-of-ice-1783723641809",
+    "topic": "The 'Unsinkable' Aircraft Carrier Made of Ice",
+    "normalizedTopic": "the-unsinkable-aircraft-carrier-made-of-ice",
+    "script": {
+      "title": "The Ice Ship That Never Sank",
+      "category": "history",
+      "scenes": [
+        {
+          "narration": "During World War II, facing critical steel shortages, Britain needed a new plan for naval dominance.",
+          "image_prompt": "CLOSE-UP on weathered hands of a high-ranking British naval officer, mid-40s, in a smart uniform, pointing with a finger to a strategic location on a large, detailed paper map of the Atlantic. The officer is in a dimly lit 1940s war room, strong shadows and dramatic spotlights define the scene. His face is partially shadowed, thoughtful. Shot from over his shoulder, focus on the hands and map, mood of desperate innovation."
+        },
+        {
+          "narration": "They considered an outrageous idea: build aircraft carriers from ice to fight U-boats.",
+          "image_prompt": "MEDIUM SHOT of three high-ranking naval officers, one British, two American, in smart 1940s uniforms, gathered around a blueprint-like drawing of a massive ship with aircraft on its deck, sketched on translucent paper, illuminated from below in a dimly lit 1940s war room. Their expressions are skeptical but intrigued, with strong shadows and dramatic spotlights."
+        },
+        {
+          "narration": "This wasn't just any ice; it was Pykrete, a super-material of ice and wood pulp.",
+          "image_prompt": "EXTREME CLOSE-UP of a scientist's gloved hand holding a small, opaque block of 'Pykrete' material, looking dense and fibrous. The material is being tested with a small hammer, the impact point visible. The scene is in a starkly lit, makeshift 1940s laboratory corner, with clear focus on the texture of the material and the action, strong shadows and dramatic spotlights."
+        },
+        {
+          "narration": "Pykrete was incredibly tough, bulletproof, and melted slowly, making it perfect for a massive ship.",
+          "image_prompt": "DETAIL INSERT of a large block of Pykrete, approximately a meter tall, with clear bullet dents on its surface. The block rests on a simple workbench in a 1940s laboratory setting. Strong, focused light emphasizes the bullet marks and fibrous texture. The mood is one of scientific examination, strong shadows and dramatic spotlights."
+        },
+        {
+          "narration": "Code-named Project Habbakuk, plans included a 600-meter vessel with 20 aircraft.",
+          "image_prompt": "WIDE ESTABLISHING SHOT of a vast, empty fjord in Canada under a pale, overcast sky. Engineers in heavy, practical 1940s coats review enormous, futuristic ship designs taped to temporary structures. The monumental scale of the intended ice vessel is hinted at by the vastness of the natural setting and the relatively small figures of the engineers. The mood is ambitious and slightly eerie, with cold, diffused light."
+        },
+        {
+          "narration": "They even built a large prototype in Canada to test its feasibility.",
+          "image_prompt": "HIGH ANGLE SHOT capturing a colossal, partially submerged block of ice, shaped like a ship's hull, floating in a calm, cold lake in Alberta, Canada. Tiny figures of workers in 1940s attire are visible on its surface, giving a clear sense of monumental scale. The light is soft and diffused, highlighting the icy structure and its stark contrast with the natural surroundings. No visible drone."
+        },
+        {
+          "narration": "However, the war shifted, and the logistical challenges proved too great to overcome.",
+          "image_prompt": "MEDIUM SHOT of the same three high-ranking naval officers from previous scenes, in smart 1940s uniforms, in the dimly lit 1940s war room. They now look resigned and slightly defeated, as one points to a new strategic front on a large paper map scattered with other papers. The atmosphere is somber, with strong shadows and dramatic spotlights emphasizing their expressions and the shift in priorities."
+        },
+        {
+          "narration": "Though never fully realized, Project Habbakuk remains a testament to wartime ingenuity.",
+          "image_prompt": "CLOSE-UP on an old, forgotten blueprint for 'Project Habbakuk', now slightly faded and rolled up at the edges, lying on a dusty wooden shelf in a historical archive. A single, focused beam of natural light illuminates a section of the blueprint, conveying a sense of lost potential and historical significance. The paper is yellowed with age."
+        }
+      ],
+      "cta": "For more astonishing forgotten histories, follow along!"
+    },
+    "audioPath": "output/the-unsinkable-aircraft-carrier-made-of-ice/the-unsinkable-aircraft-carrier-made-of-ice.mp3",
+    "videoPath": "output/the-unsinkable-aircraft-carrier-made-of-ice/the-unsinkable-aircraft-carrier-made-of-ice.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/the-unsinkable-aircraft-carrier-made-of-ice/media/01-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/the-unsinkable-aircraft-carrier-made-of-ice/media/02-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/the-unsinkable-aircraft-carrier-made-of-ice/media/03-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 3,
+        "path": "output/the-unsinkable-aircraft-carrier-made-of-ice/media/04-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 4,
+        "keyword": "fjord",
+        "path": "output/the-unsinkable-aircraft-carrier-made-of-ice/media/05-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/last-few-misty-autumn-evenings-in-tromso-18671186/",
+        "author": "Haseeb Ahmad"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 5,
+        "keyword": "iceberg",
+        "path": "output/the-unsinkable-aircraft-carrier-made-of-ice/media/06-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/arctic-ice-floes-drifting-in-an-icy-river-32344064/",
+        "author": "Artem Yellow"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 6,
+        "path": "output/the-unsinkable-aircraft-carrier-made-of-ice/media/07-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 7,
+        "path": "output/the-unsinkable-aircraft-carrier-made-of-ice/media/08-ai.jpg"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 47.261995,
+    "status": "published",
+    "youtube": {
+      "videoId": "BSqQ67VTq-E",
+      "url": "https://www.youtube.com/shorts/BSqQ67VTq-E",
+      "title": "The Ice Aircraft Carrier: How WWII Engineers Almost Built an Unsinkable Ship #Shorts",
+      "publishedAt": "2026-07-10T22:47:19.324Z"
+    },
+    "createdAt": "2026-07-10T22:47:21.809Z"
   }
 ]
