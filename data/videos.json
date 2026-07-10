@@ -103,7 +103,13 @@
       "title": "When Australia Declared War on Emus... and LOST #Shorts",
       "publishedAt": "2026-07-08T17:20:06.147Z"
     },
-    "createdAt": "2026-07-08T17:20:06.148Z"
+    "createdAt": "2026-07-08T17:20:06.148Z",
+    "stats": {
+      "views": 2,
+      "likes": 0,
+      "comments": 0,
+      "statsAt": "2026-07-10T06:54:58.175Z"
+    }
   },
   {
     "id": "voynich-manuscript-1783556460186",
@@ -209,7 +215,13 @@
       "title": "The Voynich Manuscript: Earth's Most Mysterious Unsolved Book #Shorts",
       "publishedAt": "2026-07-09T00:21:00.044Z"
     },
-    "createdAt": "2026-07-09T00:21:00.186Z"
+    "createdAt": "2026-07-09T00:21:00.186Z",
+    "stats": {
+      "views": 4,
+      "likes": 0,
+      "comments": 0,
+      "statsAt": "2026-07-10T06:54:58.174Z"
+    }
   },
   {
     "id": "cicada-3301-1783560155152",
@@ -411,7 +423,13 @@
       "title": "When London's River Thames Became a Giant Open Sewer #Shorts",
       "publishedAt": "2026-07-09T05:04:00.583Z"
     },
-    "createdAt": "2026-07-09T05:04:00.673Z"
+    "createdAt": "2026-07-09T05:04:00.673Z",
+    "stats": {
+      "views": 2,
+      "likes": 0,
+      "comments": 0,
+      "statsAt": "2026-07-10T06:54:58.173Z"
+    }
   },
   {
     "id": "mary-toft-rabbits-1783578742401",
@@ -526,7 +544,13 @@
       "title": "The Woman Who Gave Birth To Rabbits (Seriously) #Shorts",
       "publishedAt": "2026-07-09T06:32:22.319Z"
     },
-    "createdAt": "2026-07-09T06:32:22.401Z"
+    "createdAt": "2026-07-09T06:32:22.401Z",
+    "stats": {
+      "views": 4,
+      "likes": 0,
+      "comments": 0,
+      "statsAt": "2026-07-10T06:54:58.172Z"
+    }
   },
   {
     "id": "coop-s-satellite-1783605255742",
@@ -641,7 +665,13 @@
       "title": "The US Pilot Who Accidentally Created a Celestial Time Capsule #Shorts",
       "publishedAt": "2026-07-09T13:54:15.654Z"
     },
-    "createdAt": "2026-07-09T13:54:15.742Z"
+    "createdAt": "2026-07-09T13:54:15.742Z",
+    "stats": {
+      "views": 6,
+      "likes": 0,
+      "comments": 0,
+      "statsAt": "2026-07-10T06:54:58.171Z"
+    }
   },
   {
     "id": "the-man-who-bought-the-eiffel-tower-twice-1783609146641",
@@ -743,6 +773,127 @@
       "title": "He Sold The Eiffel Tower. Twice! #Shorts",
       "publishedAt": "2026-07-09T14:59:06.528Z"
     },
-    "createdAt": "2026-07-09T14:59:06.641Z"
+    "createdAt": "2026-07-09T14:59:06.641Z",
+    "stats": {
+      "views": 328,
+      "likes": 0,
+      "comments": 0,
+      "statsAt": "2026-07-10T06:54:58.169Z"
+    }
+  },
+  {
+    "id": "rasputin-s-death-1783666873361",
+    "topic": "Rasputin's Death",
+    "normalizedTopic": "rasputin-s-death",
+    "script": {
+      "title": "The Unkillable Monk: Rasputin's Miraculous Survival",
+      "category": "history",
+      "scenes": [
+        {
+          "narration": "In 1916, a group of Russian nobles plotted to assassinate Grigori Rasputin, the mystical advisor to the Romanovs.",
+          "image_prompt": "A clandestine meeting of early 20th-century Russian aristocrats in opulent attire with grim, determined expressions, gathered around a table in a dimly lit, richly decorated palace cellar. Maps and documents are spread on the table. Cold blue-grey lighting highlights their intense faces, creating a mood of serious plotting."
+        },
+        {
+          "narration": "They laced his cakes and red wine with enough cyanide to kill five men instantly.",
+          "image_prompt": "An extreme close-up of delicate frosted cakes and a glass of red wine on a silver tray, held by a gloved hand. The wine shimmers subtly, hinting at a hidden danger. The background is a blurred, opulent room, early 20th-century. Intimate, foreboding lighting emphasizes the dangerous feast."
+        },
+        {
+          "narration": "To their horror, Rasputin ate the cakes, drank the wine, and felt no ill effects.",
+          "image_prompt": "A medium shot of Grigori Rasputin, an imposing figure with a wild beard, calmly eating a cake and sipping red wine in a luxurious room. He is clearly lit, while surrounding early 20th-century nobles appear nervous and wide-eyed in the shadows, their faces reflecting horror."
+        },
+        {
+          "narration": "Frantic, Prince Yusupov then shot Rasputin in the chest with a revolver.",
+          "image_prompt": "An over-the-shoulder shot from behind Prince Yusupov, in opulent attire, aiming a vintage revolver. In the foreground, Rasputin clutches his chest, a look of profound surprise on his face. The scene takes place in a dimly lit palace cellar, early 20th-century. Harsh, dramatic lighting."
+        },
+        {
+          "narration": "Believing him dead, they left, but when Yusupov returned, Rasputin suddenly lunged at him.",
+          "image_prompt": "A low angle shot emphasizing Rasputin, an early 20th-century figure, pushing himself up from the cellar floor, eyes wide and feral, his hand reaching out menacingly towards a recoiling Prince Yusupov. The dimly lit, richly decorated cellar setting is visible. Intense, desperate lighting."
+        },
+        {
+          "narration": "The conspirators shot him again and again, even beating him brutally.",
+          "image_prompt": "A wide shot showing the chaos in the dimly lit, richly decorated palace cellar, early 20th-century. Conspirators in opulent attire are seen frantically shooting and beating Rasputin on the floor. The scene is filled with panic and disarray, with moody, low-key lighting punctuated by flashes from gunshots."
+        },
+        {
+          "narration": "Finally, they wrapped him in a carpet and threw him into the freezing Neva River.",
+          "image_prompt": "A medium shot of a large, rolled carpet, containing Rasputin's body, being pushed off a snow-covered bridge railing into a dark, icy river at night. The early 20th-century setting is cold and starkly lit by moonlight, emphasizing the final, desperate act."
+        },
+        {
+          "narration": "His autopsy later revealed he died from drowning, not the poison or bullets.",
+          "image_prompt": "An extreme close-up of a waterlogged, frozen, and recognizable hand of Rasputin, partially emerging from beneath a white forensic sheet on a cold autopsy table. The setting is clinical and starkly lit, early 20th-century, highlighting the morbid discovery."
+        }
+      ],
+      "cta": "His story is wild, don't miss more like this!"
+    },
+    "audioPath": "output/rasputin-s-death/rasputin-s-death.mp3",
+    "videoPath": "output/rasputin-s-death/rasputin-s-death.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/rasputin-s-death/media/01-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 1,
+        "keyword": "poison",
+        "path": "output/rasputin-s-death/media/02-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/witch-holding-a-magic-potion-7977571/",
+        "author": "RDNE Stock project"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/rasputin-s-death/media/03-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 3,
+        "path": "output/rasputin-s-death/media/04-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 4,
+        "path": "output/rasputin-s-death/media/05-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 5,
+        "keyword": "struggle",
+        "path": "output/rasputin-s-death/media/06-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/a-man-sitting-on-the-ground-with-a-sign-that-says-we-are-the-people-9484812/",
+        "author": "Timur Weber"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 6,
+        "keyword": "river",
+        "path": "output/rasputin-s-death/media/07-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/serene-river-with-reflective-water-patterns-38262510/",
+        "author": "Anna Lupa"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 7,
+        "path": "output/rasputin-s-death/media/08-ai.jpg"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 44.818005,
+    "status": "published",
+    "youtube": {
+      "videoId": "7ggH6fRJMpk",
+      "url": "https://www.youtube.com/shorts/7ggH6fRJMpk",
+      "title": "How Did Rasputin Survive So Many Assassination Attempts? #Shorts",
+      "publishedAt": "2026-07-10T07:01:12.455Z"
+    },
+    "createdAt": "2026-07-10T07:01:13.361Z"
   }
 ]
