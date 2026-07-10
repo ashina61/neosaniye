@@ -1,5 +1,10 @@
 import path from 'node:path';
+import { writeFile } from 'node:fs/promises';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
 import { config } from '../config.js';
+
+const execFileAsync = promisify(execFile);
 import { generateScript } from '../script/generateScript.js';
 import { directVisuals, applyShotList } from '../crew/visualDirector.js';
 import { planEdit } from '../crew/editorDirector.js';
@@ -9,6 +14,7 @@ import { renderVideo } from '../video/renderVideo.js';
 import { buildMetadata } from '../youtube/buildMetadata.js';
 import { uploadVideo } from '../youtube/uploadVideo.js';
 import { postFirstComment, updateVideoStats } from '../youtube/engage.js';
+import { buildSrtFromWords, uploadCaptions } from '../youtube/captions.js';
 import { preflightCheck } from './preflight.js';
 import { recordProduction } from './recordProduction.js';
 import { notify } from '../lib/notify.js';
@@ -135,10 +141,56 @@ export async function runPipeline(opts = {}) {
       // İlk yorum (etkileşim tetikleyici, best-effort).
       const commented = await postFirstComment(res.videoId, script).catch(() => false);
       if (commented) console.log('  ilk yorum atıldı');
+
+      // Kelime-mükemmel altyazıyı resmi altyazı olarak yükle (SEO + erişilebilirlik).
+      const srt = buildSrtFromWords(audio.wordTimings);
+      if (srt) {
+        const capOk = await uploadCaptions(res.videoId, srt).catch(() => false);
+        if (capOk) console.log('  altyazı (SRT) yüklendi');
+      }
+
+      // Cross-post kiti: TikTok/Reels'e elle atmak için hazır metin paketi.
+      const kit = [
+        `TITLE:\n${meta.title}`,
+        `\nDESCRIPTION:\n${meta.description}`,
+        `\nTAGS:\n${(meta.tags || []).join(', ')}`,
+        `\nHASHTAGS:\n${(meta.tags || []).slice(0, 6).map((t) => '#' + t.replace(/[^a-z0-9]/gi, '')).join(' ')}`,
+        `\nYOUTUBE:\n${res.url}`,
+      ].join('\n');
+      await writeFile(path.join(workDir, 'publish-kit.txt'), kit).catch(() => {});
     } else if (willUpload && !pf.ok) {
       console.log('\n▶ Faz 6: upload İPTAL (preflight başarısız) — video artifact olarak duruyor.');
     } else {
       console.log('\n▶ Faz 6: YouTube upload atlandı (kredensiyel yok veya --no-upload).');
+    }
+
+    // Üretim raporu + önizleme kareleri (inceleme kolaylığı; best-effort).
+    const report = {
+      topic: script.topic,
+      format: script.format || 'story',
+      category: script.category || null,
+      hook: script.hook_text || null,
+      finale: script.finale_text || null,
+      duration: +video.duration.toFixed(1),
+      sources: media.sources,
+      preflight: pf.metrics,
+      editPlan: editPlan
+        ? {
+            musicMood: editPlan.musicMood,
+            subscribeScene: editPlan.subscribeScene + 1,
+            transitions: editPlan.boundaries.map((b) => b.transition).join(','),
+            sfx: editPlan.boundaries.map((b) => b.sfx).join(','),
+          }
+        : 'mechanical',
+      youtube: youtube?.url || null,
+      createdAt: new Date().toISOString(),
+    };
+    await writeFile(path.join(workDir, 'report.json'), JSON.stringify(report, null, 2)).catch(() => {});
+    for (const [name, t] of [['preview-hook.jpg', 0.5], ['preview-mid.jpg', video.duration * 0.5]]) {
+      await execFileAsync('ffmpeg', [
+        '-y', '-ss', t.toFixed(2), '-i', outPath, '-frames:v', '1',
+        path.join(workDir, name),
+      ], { maxBuffer: 10 * 1024 * 1024 }).catch(() => {});
     }
 
     // 5) Loglama

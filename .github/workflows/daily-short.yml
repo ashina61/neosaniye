@@ -1,7 +1,6 @@
 name: Günlük Short Üret ve Yayınla
 
-# Önce manuel (workflow_dispatch) ile test edilir. Cron EN SON açılır:
-# aşağıdaki "schedule" bloğunun yorumunu kaldırınca otomatik çalışmaya başlar.
+# Manuel tetikleme her zaman açık; cron ile günlük otomatik üretim AKTİF.
 on:
   workflow_dispatch:
     inputs:
@@ -9,9 +8,9 @@ on:
         description: "YouTube upload'ı atla (sadece üret)"
         type: boolean
         default: false
-  # schedule:
-  #   - cron: "0 9 * * *"    # her gün 09:00 UTC (~12:00 TR)
-  #   - cron: "0 17 * * *"   # istenirse günde 2. üretim
+  schedule:
+    - cron: "0 15 * * *" # her gün 15:00 UTC (TR 18:00) — otomatik üretim
+    # - cron: "0 21 * * *" # günde 2. üretim istenirse bu satırı aç
 
 concurrency:
   group: daily-short
@@ -74,7 +73,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: short-video
-          path: output/**/*.mp4
+          path: |
+            output/**/*.mp4
+            output/**/publish-kit.txt
+            output/**/report.json
+            output/**/preview-*.jpg
           if-no-files-found: ignore
           retention-days: 7
 

@@ -838,6 +838,28 @@ export async function renderVideo(job, opts = {}) {
     vbase = '[vx]';
   }
 
+  // Işık vuruşu: gerçek geçiş anlarında ~4 karelik parlama ("flash cut") —
+  // pro kurgunun enerji hilesi; sadece animasyonlu sınırlarda, en fazla 4 kez.
+  {
+    const flashes = [];
+    let cum = 0;
+    let btSum = 0;
+    for (let k = 1; k < M && flashes.length < 4; k += 1) {
+      cum += clipDur[k - 1];
+      btSum += bts[k - 1];
+      if (k <= N - 1 && bts[k - 1] >= 0.2) {
+        const T = cum - btSum + bts[k - 1] * 0.35;
+        flashes.push(
+          `eq=brightness=0.15:saturation=1.05:enable='between(t,${T.toFixed(2)},${(T + 0.13).toFixed(2)})'`,
+        );
+      }
+    }
+    if (flashes.length) {
+      vfc.push(`${vbase}${flashes.join(',')}[vfl]`);
+      vbase = '[vfl]';
+    }
+  }
+
   // Logo
   let last;
   if (hasLogoImg) {
@@ -896,10 +918,12 @@ export async function renderVideo(job, opts = {}) {
   // Altyazı + hook (aynı ASS dosyasında; hook otomatik satır kaydırır, sığar).
   const fontsDir = path.resolve(config.video.fontsDir);
   const assFilter = existsSync(fontsDir) ? `ass=subs.ass:fontsdir=${fontsDir}` : 'ass=subs.ass';
+  // Hafif keskinleştirme (altyazıdan ÖNCE — yazı kenarları temiz kalsın):
+  // telefonda sıkıştırma sonrası algılanan netliği belirgin artırır.
   if (useAss) {
-    vfc.push(`${last}${assFilter}[v]`);
+    vfc.push(`${last}unsharp=5:5:0.35:3:3:0,${assFilter}[v]`);
   } else {
-    vfc.push(`${last}null[v]`);
+    vfc.push(`${last}unsharp=5:5:0.35:3:3:0[v]`);
   }
 
   const fullv = path.join(workDir, 'fullv.mp4');
