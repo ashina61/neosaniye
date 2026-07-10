@@ -778,7 +778,7 @@
       "views": 329,
       "likes": 0,
       "comments": 0,
-      "statsAt": "2026-07-10T16:57:18.060Z"
+      "statsAt": "2026-07-10T21:06:51.775Z"
     }
   },
   {
@@ -896,10 +896,10 @@
     },
     "createdAt": "2026-07-10T07:01:13.361Z",
     "stats": {
-      "views": 1225,
+      "views": 1238,
       "likes": 22,
       "comments": 1,
-      "statsAt": "2026-07-10T16:57:18.058Z"
+      "statsAt": "2026-07-10T21:06:51.774Z"
     }
   },
   {
@@ -1014,10 +1014,10 @@
     },
     "createdAt": "2026-07-10T15:31:48.973Z",
     "stats": {
-      "views": 8,
+      "views": 16,
       "likes": 0,
       "comments": 1,
-      "statsAt": "2026-07-10T16:57:18.056Z"
+      "statsAt": "2026-07-10T21:06:51.773Z"
     }
   },
   {
@@ -1130,6 +1130,122 @@
       "title": "The Mystery of England's Green Children: A Baffling 12th Century Enigma #Shorts",
       "publishedAt": "2026-07-10T17:05:19.971Z"
     },
-    "createdAt": "2026-07-10T17:05:21.990Z"
+    "createdAt": "2026-07-10T17:05:21.990Z",
+    "stats": {
+      "views": 2,
+      "likes": 0,
+      "comments": 1,
+      "statsAt": "2026-07-10T21:06:51.771Z"
+    }
+  },
+  {
+    "id": "the-great-molasses-flood-1783718015617",
+    "topic": "The Great Molasses Flood",
+    "normalizedTopic": "the-great-molasses-flood",
+    "script": {
+      "title": "A Tidal Wave of Molasses? The Sticky Disaster of 1919!",
+      "category": "history",
+      "scenes": [
+        {
+          "narration": "In January 1919, a colossal molasses tank stood 50 feet tall in Boston's North End.",
+          "image_prompt": "A massive, dark, riveted steel molasses storage tank, 50 feet tall, dominates a grey, industrial Boston cityscape in January 1919. A few horse-drawn carts are visible on wet cobblestones. Overcast sky, harsh, cold light."
+        },
+        {
+          "narration": "It held over two million gallons, used for making alcohol and industrial products.",
+          "image_prompt": "A worker in a heavy wool coat and gloved hands inspects the base of the enormous steel tank in Boston, January 1919. A slight, dark seepage of molasses is visible. His face shows concern under the cold, industrial light."
+        },
+        {
+          "narration": "But its construction was shoddy, and the owner ignored warnings about leaks.",
+          "image_prompt": "An extreme close-up of rusty, poorly riveted seams on the metal molasses tank in Boston, January 1919. Sticky dark molasses slowly oozes from small cracks. Gritty detail, harsh, cold light."
+        },
+        {
+          "narration": "Suddenly, on a warm winter day, the tank violently ruptured with a sound like a machine gun.",
+          "image_prompt": "A dramatic low-angle shot looking up at the colossal molasses tank in Boston, January 1919, as it violently ruptures. A dark, thick wave begins to burst outwards, with debris flying. The scene is chaotic with dynamic lighting."
+        },
+        {
+          "narration": "A 25-foot-high wave of molasses, traveling at 35 miles per hour, engulfed everything.",
+          "image_prompt": "An over-the-shoulder view of a towering, viscous, dark brown wave of molasses, 25-feet high, sweeping through a narrow Boston street in January 1919, knocking over lampposts and submerging horse-drawn carriages and startled pedestrians. Cold, chaotic light."
+        },
+        {
+          "narration": "Buildings were ripped from their foundations; people and horses were drowned or crushed.",
+          "image_prompt": "A close-up on a desperate person's hand reaching out from the sticky, slow-moving molasses in a devastated Boston street, January 1919. Debris floats around them. Muted, grim lighting."
+        },
+        {
+          "narration": "Twenty-one people died, and 150 were injured in this bizarre, sticky disaster.",
+          "image_prompt": "A wide establishing shot of first responders, covered in dark molasses, sifting through the sticky ruins of collapsed buildings and submerged streets in Boston, January 1919, searching for survivors. Desaturated, somber lighting."
+        },
+        {
+          "narration": "For weeks, the entire area was coated in thick, sweet, deadly sludge.",
+          "image_prompt": "A high angle shot looking down on a devastated Boston neighborhood in January 1919, completely covered in a vast, dark, shimmering expanse of molasses, like a strange, toxic lake under a grey sky. Cold, stark light."
+        }
+      ],
+      "cta": "For more unbelievable historical events, follow for a daily dose of wonder!"
+    },
+    "audioPath": "output/the-great-molasses-flood/the-great-molasses-flood.mp3",
+    "videoPath": "output/the-great-molasses-flood/the-great-molasses-flood.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/the-great-molasses-flood/media/01-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/the-great-molasses-flood/media/02-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/the-great-molasses-flood/media/03-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 3,
+        "path": "output/the-great-molasses-flood/media/04-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 4,
+        "keyword": "molasses",
+        "path": "output/the-great-molasses-flood/media/05-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/person-preparing-a-cookie-dough-5899928/",
+        "author": "olia danilevich"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 5,
+        "path": "output/the-great-molasses-flood/media/06-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 6,
+        "keyword": "rescue",
+        "path": "output/the-great-molasses-flood/media/07-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/man-on-a-stretcher-6520442/",
+        "author": "RDNE Stock project"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 7,
+        "keyword": "molasses",
+        "path": "output/the-great-molasses-flood/media/08-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/person-preparing-a-cookie-dough-5899928/",
+        "author": "olia danilevich"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 47.603991,
+    "status": "rendered",
+    "youtube": null,
+    "createdAt": "2026-07-10T21:13:35.618Z"
   }
 ]

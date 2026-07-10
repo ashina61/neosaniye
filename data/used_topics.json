@@ -304,5 +304,11 @@
     "normalizedTopic": "how-shoe-soles-are-made",
     "createdAt": "2025-09-15T00:00:00.000Z",
     "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "the-great-molasses-flood": {
+    "topic": "The Great Molasses Flood",
+    "normalizedTopic": "the-great-molasses-flood",
+    "createdAt": "2026-07-10T21:13:35.620Z",
+    "videoId": "the-great-molasses-flood-1783718015617"
   }
 }
