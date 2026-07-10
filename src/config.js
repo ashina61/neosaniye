@@ -168,7 +168,10 @@ export const config = {
   },
   meta: {
     // Instagram Reels + Facebook Reels cross-post (bkz. docs/meta-setup.md).
-    // Üçü de boşsa cross-post sessizce atlanır.
+    // Tek zorunlu değer: userToken (uzun ömürlü kullanıcı token'ı). Sayfa,
+    // sayfa token'ı ve Instagram ID'si run sırasında OTOMATİK keşfedilir.
+    // pageToken/pageId/igUserId isteğe bağlı elle geçersiz kılma değerleridir.
+    userToken: process.env.META_USER_TOKEN,
     pageToken: process.env.META_PAGE_TOKEN,
     pageId: process.env.META_PAGE_ID,
     igUserId: process.env.META_IG_USER_ID,

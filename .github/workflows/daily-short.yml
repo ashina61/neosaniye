@@ -65,6 +65,8 @@ jobs:
           # Görsel stil zorlaması (manuel run'da seçilir; cron'da sistem karar verir).
           VIDEO_STYLE: ${{ inputs.style == 'auto' && '' || inputs.style }}
           # Instagram + Facebook cross-post (opsiyonel; bkz. docs/meta-setup.md).
+          # Tek zorunlu secret: META_USER_TOKEN. Sayfa + IG otomatik keşfedilir.
+          META_USER_TOKEN: ${{ secrets.META_USER_TOKEN }}
           META_PAGE_TOKEN: ${{ secrets.META_PAGE_TOKEN }}
           META_PAGE_ID: ${{ vars.META_PAGE_ID }}
           META_IG_USER_ID: ${{ vars.META_IG_USER_ID }}

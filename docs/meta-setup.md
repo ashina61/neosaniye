@@ -3,95 +3,82 @@
 Her video YouTube'a yüklendikten sonra otomatik olarak **Instagram Reels** ve
 **Facebook Reels** olarak da yayınlanır. Kurulum tek seferlik, tamamen
 tarayıcıdan yapılır, ücretsizdir. Kendi hesabına yayın için Meta'nın uygulama
-incelemesi (App Review) GEREKMEZ — uygulama geliştirme modunda kalabilir.
+incelemesi (App Review) GEREKMEZ.
 
-Sonunda elde edeceklerin:
-
-| Nereye | Ad | Ne |
-|---|---|---|
-| GitHub Secret | `META_PAGE_TOKEN` | Süresiz sayfa erişim token'ı |
-| GitHub Variable | `META_PAGE_ID` | Facebook sayfa ID'si |
-| GitHub Variable | `META_IG_USER_ID` | Instagram hesap ID'si |
+**Tek zorunlu GitHub secret'ı: `META_USER_TOKEN`** (uzun ömürlü kullanıcı
+token'ı). Sayfa, sayfa token'ı ve Instagram hesabı her run'da otomatik
+keşfedilir; bir şey eksikse run logunda Türkçe olarak ne yapılacağı yazar.
 
 ---
 
 ## 1) Facebook Sayfası (yoksa)
 
-https://www.facebook.com/pages/create → kanal adıyla bir sayfa aç
-(ör. "neosaniye"). Zaten varsa geç.
+https://www.facebook.com/pages/create → kanal adıyla bir sayfa aç.
+Kişisel profil YETMEZ — "Sayfa" şart.
 
 ## 2) Instagram'ı profesyonel yapıp sayfaya bağla
 
-1. Instagram uygulaması → Ayarlar → **Hesap türü ve araçlar** →
-   **Profesyonel hesaba geç** → **İçerik Üreticisi (Creator)** seç.
-2. Instagram Ayarlar → **Hesap Merkezi** → **Hesaplar** → Facebook hesabını
-   ve 1. adımdaki SAYFAYI bağla. (Alternatif: Facebook sayfa ayarları →
-   Bağlı hesaplar → Instagram → Bağlan.)
+1. Instagram → Ayarlar → **Hesap türü ve araçlar** → **Profesyonel hesaba
+   geç** → **İçerik Üreticisi (Creator)**.
+2. Instagram → Ayarlar → **Hesap Merkezi** → **Hesaplar** → Facebook'u ve
+   1. adımdaki SAYFAYI bağla.
 
-## 3) Meta developer uygulaması aç
+## 3) Meta developer uygulaması (tek seferlik)
 
-1. https://developers.facebook.com → **My Apps** → **Create App**
-2. Use case: **Other** → App type: **Business** → isim: `neosaniye-crosspost`
-3. Oluşunca: **Settings → Basic** sayfasındaki **App ID** ve **App Secret**'ı
-   bir kenara not et (5. adımda lazım).
+1. Geliştirici kaydı: https://developers.facebook.com/async/registration
+2. Uygulama oluştur: https://developers.facebook.com/apps/creation/
+   (use case: Other, tip: Business). Telefonda buton görünmezse tarayıcıda
+   "Masaüstü sitesi"ni aç.
+3. Settings → Basic'ten **App ID** ve **App Secret**'ı not et.
 
-## 4) İzinli token üret (Graph API Explorer)
+## 4) Token üret (Graph API Explorer) — KRİTİK ADIM
 
-1. https://developers.facebook.com/tools/explorer aç
-2. Sağ üstte **Meta App**: az önce açtığın uygulamayı seç
-3. **Permissions** kısmına şu 5 izni ekle:
-   `pages_show_list`, `pages_read_engagement`, `pages_manage_posts`,
-   `instagram_basic`, `instagram_content_publish`
-4. **Generate Access Token** → açılan pencerede Facebook'a onay ver —
-   ⚠️ sorulduğunda hem SAYFANI hem INSTAGRAM hesabını seçtiğinden emin ol
-5. Çıkan token'ı kopyala (kısa ömürlüdür, hemen 5. adıma geç)
+1. https://developers.facebook.com/tools/explorer → sağ üstte uygulamanı seç
+2. Permissions'a şu 5 izni ekle: `pages_show_list`, `pages_read_engagement`,
+   `pages_manage_posts`, `instagram_basic`, `instagram_content_publish`
+3. **Generate Access Token** → açılan Facebook onay penceresinde:
+   - "Hangi Sayfalar?" adımında **sayfanı İŞARETLE** ⚠️ (varsayılan boş olabilir!)
+   - "Hangi Instagram hesapları?" adımında **Instagram hesabını İŞARETLE** ⚠️
+4. Çıkan token kısa ömürlüdür (~1-2 saat) — hemen 5. adıma geç.
 
-## 5) Kısa token'ı süresiz sayfa token'ına çevir
+> Daha önce onay verip sayfayı işaretlemeyi atladıysan pencere bir daha
+> çıkmaz. Önce https://www.facebook.com/settings/?tab=business_tools
+> sayfasından uygulamayı KALDIR, sonra bu adımı tekrarla.
 
-1. Tarayıcıda aç (üç yeri kendi değerlerinle doldur):
+## 5) Kısa token'ı uzun ömürlüye çevir
 
-   ```
-   https://graph.facebook.com/v21.0/oauth/access_token?grant_type=fb_exchange_token&client_id=APP_ID&client_secret=APP_SECRET&fb_exchange_token=KISA_TOKEN
-   ```
+Tarayıcıda aç (üç yeri doldur):
 
-   Çıkan JSON'daki `access_token` = **uzun ömürlü kullanıcı token'ı**.
+```
+https://graph.facebook.com/v21.0/oauth/access_token?grant_type=fb_exchange_token&client_id=APP_ID&client_secret=APP_SECRET&fb_exchange_token=KISA_TOKEN
+```
 
-2. Şimdi sayfa token'ı ve sayfa ID'si (UZUN_TOKEN'ı yapıştır):
+Çıkan JSON'daki `access_token` = **META_USER_TOKEN** (≈60 gün geçerli).
 
-   ```
-   https://graph.facebook.com/v21.0/me/accounts?access_token=UZUN_TOKEN
-   ```
+Doğrulamak istersen şu link sayfanı listelemeli (boş dönmemeli):
 
-   Çıkan listede sayfanın `id` değeri = **META_PAGE_ID**,
-   `access_token` değeri = **META_PAGE_TOKEN** (bu token pratikte süresizdir).
-
-3. Instagram ID (PAGE_ID ve PAGE_TOKEN'ı yapıştır):
-
-   ```
-   https://graph.facebook.com/v21.0/PAGE_ID?fields=instagram_business_account&access_token=PAGE_TOKEN
-   ```
-
-   Çıkan `instagram_business_account.id` = **META_IG_USER_ID**.
+```
+https://graph.facebook.com/v21.0/me/accounts?access_token=UZUN_TOKEN
+```
 
 ## 6) GitHub'a ekle
 
-Repo → Settings → Secrets and variables → Actions:
+Repo → Settings → Secrets and variables → Actions → **Secrets** →
+New repository secret → `META_USER_TOKEN` = uzun token.
 
-- **Secrets** sekmesi → New repository secret → `META_PAGE_TOKEN` = sayfa token'ı
-- **Variables** sekmesi → `META_PAGE_ID` ve `META_IG_USER_ID`
-
-Bitti. Sonraki run'dan itibaren loglarda `Instagram Reels yayınlandı` /
-`Facebook Reels yayınlandı` satırlarını görmelisin.
+Bitti. Sonraki run loglarında şunları görmelisin:
+`[meta] sayfa: <adı>` → `[meta] instagram: <id>` →
+`Instagram Reels yayınlandı` / `Facebook Reels yayınlandı`.
 
 ---
 
-### Notlar / sorun giderme
+### Sorun giderme
 
-- Token/ID'lerden herhangi biri eksikse sistem cross-post'u sessizce atlar;
-  YouTube yüklemesi hiçbir koşulda etkilenmez.
-- `(#200) Requires instagram_content_publish` benzeri hata: 4. adımda izinler
-  eksik seçilmiş — token'ı izinlerle yeniden üret ve 5. adımı tekrarla.
-- IG tarafı "Media upload has failed" derse video işlenirken zaman aşımı
-  olmuştur; sonraki run'da kendini toparlar (her run bağımsız dener).
-- Sayfa token'ı, Facebook şifresi değişirse veya oturumlar sonlandırılırsa
-  geçersiz kalır — aynı adımlarla 2 dakikada yenilenir.
+- **`[meta] Hesabında erişilebilir Facebook Sayfası yok`** → 4. adımdaki
+  pencerede sayfa işaretlenmemiş (ya da sayfa yok). Uyarıdaki kaldır-tekrarla
+  yolunu izle.
+- **`Sayfaya bağlı Instagram hesabı bulunamadı`** → 2. adım eksik; IG atlanır
+  ama Facebook yayını çalışmaya devam eder.
+- Token ~60 günde bir dolar → 4-5-6. adımları tekrarla (2 dakika). Dolarsa
+  loglarda "Error validating access token" görürsün; video yine YouTube'a
+  normal yüklenir.
