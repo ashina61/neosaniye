@@ -135,6 +135,11 @@ export const config = {
     // Müzik NET duyulur (referans kurgulardaki gibi önde); yumuşak ducking
     // konuşurken sadece hafifçe kısar, susturmaz.
     musicVolume: Number(process.env.VIDEO_MUSIC_VOL || 0.55),
+
+    // Ambiyans katmanı: sahnenin ortam sesi (Freesound, CC0) müziğin altına
+    // çok düşük seviyede serilir. FREESOUND_API_KEY yoksa otomatik atlanır.
+    ambience: process.env.VIDEO_AMBIENCE !== '0',
+    ambienceVolume: Number(process.env.VIDEO_AMBIENCE_VOL || 0.18),
   },
   pexels: {
     apiKey: process.env.PEXELS_API_KEY,
@@ -142,6 +147,16 @@ export const config = {
     orientation: process.env.PEXELS_ORIENTATION || 'portrait', // Shorts = 9:16
     preferType: process.env.PEXELS_PREFER_TYPE || 'video', // 'video' | 'photo'
     size: process.env.PEXELS_SIZE || 'medium',
+  },
+  pixabay: {
+    // İkinci stok kaynağı (ücretsiz, ~sınırsız): Pexels video bulamayınca
+    // buradan denenir. Key yoksa sessizce atlanır. https://pixabay.com/api/docs/
+    apiKey: process.env.PIXABAY_API_KEY,
+  },
+  freesound: {
+    // Sahne ambiyansı (ortam sesi) kaynağı — CC0 filtreli arama.
+    // Key yoksa ambiyans katmanı sessizce atlanır. https://freesound.org/apiv2/
+    apiKey: process.env.FREESOUND_API_KEY,
   },
   youtube: {
     clientId: process.env.YOUTUBE_CLIENT_ID,

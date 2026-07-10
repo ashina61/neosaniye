@@ -124,7 +124,8 @@ export async function generateImages(script, opts = {}) {
   // Hareketli sahne planı: Görüntü Yönetmeni sahneleri işaretlediyse (motion)
   // onlar; yoksa mekanik "her N. sahne". İlk sahne her zaman hariç (hook kapağı).
   const motionEvery = Math.max(0, config.images.motionEvery || 0);
-  const canMotion = motionEvery > 0 && Boolean(config.pexels.apiKey);
+  const hasStockKey = Boolean(config.pexels.apiKey || config.pixabay.apiKey);
+  const canMotion = motionEvery > 0 && hasStockKey;
   const dpFlags = scenes.some((s) => s.motion === true);
 
   // Görsel süreklilik: video başına SABİT seed (konudan türetilir) + her sahne
@@ -188,8 +189,8 @@ export async function generateImages(script, opts = {}) {
       }
     }
 
-    // 2) Pexels stok yedeği — video da foto da olabilir (tür korunur).
-    if (!done && config.images.pexelsFallback && config.pexels.apiKey) {
+    // 2) Stok yedeği (Pexels -> Pixabay) — video da foto da olabilir (tür korunur).
+    if (!done && config.images.pexelsFallback && hasStockKey) {
       const destBase = path.join(mediaDir, `${idx}-stock`);
       try {
         const hit = await fetchOneForKeywords(scene.keywords, destBase);

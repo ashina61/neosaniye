@@ -3,9 +3,11 @@ import path from 'node:path';
 import { config, assertPexels } from '../config.js';
 
 /**
- * Faz 3 — Görsel Toplama (Pexels).
+ * Faz 3 — Görsel Toplama (Pexels + Pixabay yedeği).
  * script.visual_keywords listesindeki her kelime için Pexels'ten dikey (9:16)
- * klip/foto çeker, yerel diske indirir ve bir manifest döndürür.
+ * klip/foto çeker, yerel diske indirir ve bir manifest döndürür. Pexels
+ * bulamazsa aynı kelime Pixabay'da denenir (ikinci ücretsiz stok kaynağı;
+ * PIXABAY_API_KEY yoksa sessizce atlanır).
  *
  * Video > foto tercih edilir (Shorts için daha dinamik). Dikey video yoksa
  * dikey fotoğrafa düşer. Not: kesin 1080x1920 kırpma/ölçekleme Faz 4'te ffmpeg
@@ -13,6 +15,7 @@ import { config, assertPexels } from '../config.js';
  */
 
 const API = 'https://api.pexels.com';
+const PIXABAY = 'https://pixabay.com/api';
 
 async function pexelsGet(url) {
   assertPexels();
@@ -86,7 +89,69 @@ async function searchPhoto(keyword) {
   };
 }
 
-/** Tek bir kelime için medya bulur (önce tercih edilen tür, sonra diğeri). */
+// ---------- Pixabay (ikinci kaynak; key yoksa fonksiyonlar null döner) ----------
+
+async function pixabayGet(url) {
+  const res = await fetch(url);
+  if (res.status === 429) throw new Error('Pixabay oran limiti aşıldı.');
+  if (!res.ok) throw new Error(`Pixabay API hatası ${res.status}`);
+  return res.json();
+}
+
+/** Pixabay'dan dikey stok video arar (varyantlar arasından 1080'e en yakını). */
+async function pixabaySearchVideo(keyword) {
+  if (!config.pixabay.apiKey) return null;
+  const url =
+    `${PIXABAY}/videos/?key=${config.pixabay.apiKey}` +
+    `&q=${encodeURIComponent(keyword)}&per_page=20&safesearch=true`;
+  const data = await pixabayGet(url);
+  for (const hit of data.hits || []) {
+    // Varyantlar aynı videonun çözünürlükleri — dikey olanları süz.
+    const files = Object.values(hit.videos || {}).filter(
+      (f) => f?.url && f.height > f.width,
+    );
+    if (!files.length) continue;
+    files.sort((a, b) => Math.abs(a.width - 1080) - Math.abs(b.width - 1080));
+    const f = files[0];
+    return {
+      type: 'video',
+      keyword,
+      downloadUrl: f.url,
+      ext: 'mp4',
+      width: f.width,
+      height: f.height,
+      duration: hit.duration,
+      sourceUrl: hit.pageURL,
+      author: hit.user,
+      provider: 'pixabay',
+    };
+  }
+  return null;
+}
+
+/** Pixabay'dan dikey stok fotoğraf arar. */
+async function pixabaySearchPhoto(keyword) {
+  if (!config.pixabay.apiKey) return null;
+  const url =
+    `${PIXABAY}/?key=${config.pixabay.apiKey}&q=${encodeURIComponent(keyword)}` +
+    '&image_type=photo&orientation=vertical&per_page=10&safesearch=true';
+  const data = await pixabayGet(url);
+  const hit = (data.hits || [])[0];
+  if (!hit) return null;
+  return {
+    type: 'photo',
+    keyword,
+    downloadUrl: hit.largeImageURL || hit.webformatURL,
+    ext: 'jpg',
+    width: hit.imageWidth,
+    height: hit.imageHeight,
+    sourceUrl: hit.pageURL,
+    author: hit.user,
+    provider: 'pixabay',
+  };
+}
+
+/** Tek bir kelime için medya bulur: Pexels (tercih sırası) -> Pixabay yedeği. */
 async function findForKeyword(keyword) {
   const order =
     config.pexels.preferType === 'photo'
@@ -98,6 +163,14 @@ async function findForKeyword(keyword) {
       if (hit) return hit;
     } catch (err) {
       console.warn(`[pexels] "${keyword}" arama hatası: ${err.message}`);
+    }
+  }
+  for (const fn of [pixabaySearchVideo, pixabaySearchPhoto]) {
+    try {
+      const hit = await fn(keyword);
+      if (hit) return hit;
+    } catch (err) {
+      console.warn(`[pixabay] "${keyword}" arama hatası: ${err.message}`);
     }
   }
   return null;
@@ -118,15 +191,23 @@ async function downloadFile(url, dest) {
  * @param {string} destBase - Uzantısız hedef yol
  */
 export async function fetchStockVideoForKeywords(keywords, destBase) {
-  for (const keyword of keywords || []) {
-    try {
-      const hit = await searchVideo(keyword);
-      if (!hit) continue;
-      const dest = `${destBase}.mp4`;
-      const bytes = await downloadFile(hit.downloadUrl, dest);
-      return { ...hit, path: dest, bytes };
-    } catch (err) {
-      console.warn(`[pexels] stok video "${keyword}": ${err.message}`);
+  // Önce tüm kelimeler Pexels'te, sonra tümü Pixabay'da denenir.
+  const sources = [
+    ['pexels', searchVideo],
+    ['pixabay', pixabaySearchVideo],
+  ];
+  for (const [name, search] of sources) {
+    for (const keyword of keywords || []) {
+      try {
+        const hit = await search(keyword);
+        if (!hit) continue;
+        const dest = `${destBase}.mp4`;
+        const bytes = await downloadFile(hit.downloadUrl, dest);
+        if (name === 'pixabay') console.log(`[pixabay] stok video: "${keyword}"`);
+        return { ...hit, path: dest, bytes };
+      } catch (err) {
+        console.warn(`[${name}] stok video "${keyword}": ${err.message}`);
+      }
     }
   }
   return null;

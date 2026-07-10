@@ -9,6 +9,7 @@ import { generateScript } from '../script/generateScript.js';
 import { directVisuals, applyShotList } from '../crew/visualDirector.js';
 import { planEdit } from '../crew/editorDirector.js';
 import { generateAudio } from '../tts/generateAudio.js';
+import { fetchAmbienceTrack, defaultAmbienceQuery } from '../audio/fetchAmbience.js';
 import { generateImages } from '../media/generateImages.js';
 import { renderVideo } from '../video/renderVideo.js';
 import { buildMetadata } from '../youtube/buildMetadata.js';
@@ -84,6 +85,17 @@ export async function runPipeline(opts = {}) {
     const audio = await generateAudio(script, { outDir: workDir, basename: base });
     console.log(`  motor: ${audio.engine}, süre~ ${audio.durationEstimate.toFixed(1)}s`);
 
+    // 2.5) Ambiyans yatağı (Freesound, CC0; best-effort). Kurgucu'nun seçtiği
+    // ortam sesi sorgusu; Kurgucu düştüyse kategori varsayılanı.
+    let ambience = null;
+    if (config.video.ambience && config.freesound.apiKey) {
+      const ambQuery = editPlan?.ambience || defaultAmbienceQuery(script.category);
+      ambience = await fetchAmbienceTrack(ambQuery, path.join(workDir, 'ambience.mp3'));
+      if (ambience) {
+        console.log(`[amb] ambiyans: "${ambQuery}" → ${ambience.name} (${Math.round(ambience.duration)}s)`);
+      }
+    }
+
     // 3) Görsel (sahne başına AI görsel + Pexels/placeholder yedeği)
     log('Faz 3: Sahne görselleri üretiliyor (AI)...');
     const media = await generateImages(script, { outDir: root, basename: base });
@@ -113,6 +125,7 @@ export async function runPipeline(opts = {}) {
       category: script.category,
       editPlan,
       musicMood: editPlan?.musicMood || undefined,
+      ambiencePath: ambience?.path || null,
       emphasisWords: script.emphasis_words || [],
       finaleText: script.finale_text || '',
       outPath,
@@ -173,6 +186,7 @@ export async function runPipeline(opts = {}) {
       finale: script.finale_text || null,
       duration: +video.duration.toFixed(1),
       sources: media.sources,
+      ambience: ambience?.name || null,
       preflight: pf.metrics,
       editPlan: editPlan
         ? {

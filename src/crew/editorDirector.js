@@ -56,9 +56,16 @@ const EDIT_SCHEMA = {
         'The 1-based scene number at whose START the subscribe reminder appears — pick a natural ' +
         'breathing point (never scene 1, never the final scene, ideally right after a payoff beat).',
     },
+    ambience: {
+      type: Type.STRING,
+      description:
+        'A 2-5 word sound-library search query for ONE background ambience bed matching the ' +
+        "story's SETTING (e.g. 'battlefield distant wind', 'rain forest night', 'spaceship " +
+        "engine hum', 'medieval market crowd'). Lowercase words only, no punctuation.",
+    },
   },
-  required: ['music_mood', 'boundaries', 'subscribe_after_scene'],
-  propertyOrdering: ['music_mood', 'boundaries', 'subscribe_after_scene'],
+  required: ['music_mood', 'boundaries', 'subscribe_after_scene', 'ambience'],
+  propertyOrdering: ['music_mood', 'boundaries', 'subscribe_after_scene', 'ambience'],
 };
 
 const SYSTEM = `You are the FILM EDITOR and SOUND DESIGNER of a premium faceless YouTube Shorts channel.
@@ -70,7 +77,11 @@ You receive a scene-by-scene story. Design the edit like a pro:
 - EVERY animated (non-cut) transition MUST carry an sfx — a silent animated wipe feels broken.
   'none' is allowed ONLY on plain cuts. Aim for 3-5 audible sfx per video total.
 - Pick the music mood by the story's FEELING, not its surface topic (a dark science story = mystery).
-- Place the subscribe reminder at the story's most natural breathing point.`;
+- Place the subscribe reminder at the story's most natural breathing point.
+- Choose ONE ambience bed for the whole video: the real-world background sound of the story's main
+  SETTING (a battlefield, a jungle, a lab, deep space). It plays very quietly under the music and
+  makes the video feel like real footage instead of narrated slides. Keep the query generic enough
+  to exist in a sound library — places and textures, not story specifics.`;
 
 /**
  * @param {object} script - generateScript çıktısı
@@ -122,5 +133,17 @@ Design the edit: exactly ${N - 1} boundaries, plus music mood and subscribe plac
   let sub = Number(plan.subscribe_after_scene);
   if (!Number.isFinite(sub) || sub < 2 || sub > N - 1) sub = Math.max(2, Math.round(N * 0.45));
 
-  return { boundaries, musicMood, subscribeScene: sub - 1 }; // 0-tabanlı sahne indeksi
+  // Ambiyans sorgusu: sade kelimelere indir (arama API'sine güvenli gider);
+  // boş/saçma kalırsa null — çağıran taraf kategori varsayılanına düşer.
+  const ambience =
+    String(plan.ambience || '')
+      .toLowerCase()
+      .replace(/[^a-z0-9 ]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .split(' ')
+      .slice(0, 5)
+      .join(' ') || null;
+
+  return { boundaries, musicMood, subscribeScene: sub - 1, ambience }; // subscribeScene 0-tabanlı
 }

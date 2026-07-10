@@ -498,7 +498,10 @@ function pickMusicTrack(category = '') {
  * + geçiş whoosh'ları + outro chime. Toplam süre `total`.
  */
 async function buildFullAudio(
-  { workDir, narrationPath, total, clipDur, bts, N, M, useOutro, category = '', sfxTypes = [], clickAt = null },
+  {
+    workDir, narrationPath, total, clipDur, bts, N, M, useOutro,
+    category = '', sfxTypes = [], clickAt = null, ambiencePath = null,
+  },
   outPath,
 ) {
   const sfx = config.video.sfx;
@@ -537,6 +540,14 @@ async function buildFullAudio(
       console.log(`[audio] müzik: prosedürel yatak (${category || 'default'})`);
     }
     musicIdx = idx;
+    idx += 1;
+  }
+
+  // Ambiyans yatağı (Freesound, best-effort): kısa kayıtlar loop'lanır.
+  let ambIdx = -1;
+  if (ambiencePath && existsSync(ambiencePath)) {
+    inputs.push('-stream_loop', '-1', '-i', path.resolve(ambiencePath));
+    ambIdx = idx;
     idx += 1;
   }
 
@@ -599,6 +610,17 @@ async function buildFullAudio(
   } else {
     fc.push(`[0:a]${voiceChain}[nmix]`);
     mix.push('[nmix]');
+  }
+
+  // Ambiyans: bant sınırlı (anlatımın konuşma bandını boğmasın) + çok düşük
+  // seviye + yumuşak giriş. Ducking'e gerek yok — zaten fısıltı seviyesinde.
+  if (ambIdx >= 0) {
+    fc.push(
+      `[${ambIdx}:a]aresample=44100,atrim=0:${total.toFixed(3)},` +
+        `highpass=f=70,lowpass=f=7000,volume=${config.video.ambienceVolume},` +
+        'afade=t=in:st=0:d=1.5[amb]',
+    );
+    mix.push('[amb]');
   }
 
   for (const { idx: inIdx, k } of sfxPlan) {
@@ -978,6 +1000,8 @@ export async function renderVideo(job, opts = {}) {
       // Ses yönetmeni müzik ruhu seçtiyse o; yoksa konu kategorisi.
       category: job.musicMood || category,
       sfxTypes,
+      // Sahne ambiyansı (Freesound'dan indirilmiş yerel dosya; yoksa katman yok).
+      ambiencePath: job.ambiencePath || null,
       // Abone kartı otururken tık sesi (giriş animasyonunun bitişiyle senkron).
       clickAt: spOn ? T1 + 0.4 : null,
     },
