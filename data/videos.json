@@ -778,7 +778,7 @@
       "views": 329,
       "likes": 0,
       "comments": 0,
-      "statsAt": "2026-07-10T15:24:52.233Z"
+      "statsAt": "2026-07-10T16:57:18.060Z"
     }
   },
   {
@@ -896,10 +896,10 @@
     },
     "createdAt": "2026-07-10T07:01:13.361Z",
     "stats": {
-      "views": 1187,
+      "views": 1225,
       "likes": 22,
       "comments": 1,
-      "statsAt": "2026-07-10T15:24:52.232Z"
+      "statsAt": "2026-07-10T16:57:18.058Z"
     }
   },
   {
@@ -1012,6 +1012,124 @@
       "title": "Titanic's Last Meal: The Lobster Thermidor Myth Debunked #Shorts",
       "publishedAt": "2026-07-10T15:31:47.270Z"
     },
-    "createdAt": "2026-07-10T15:31:48.973Z"
+    "createdAt": "2026-07-10T15:31:48.973Z",
+    "stats": {
+      "views": 8,
+      "likes": 0,
+      "comments": 1,
+      "statsAt": "2026-07-10T16:57:18.056Z"
+    }
+  },
+  {
+    "id": "the-green-children-of-woolpit-1783703121990",
+    "topic": "The Green Children of Woolpit",
+    "normalizedTopic": "the-green-children-of-woolpit",
+    "script": {
+      "title": "The Mystery of England's Green Children",
+      "category": "mystery",
+      "scenes": [
+        {
+          "narration": "In the 12th century, two children, a boy and a girl, appeared in Woolpit, England.",
+          "image_prompt": "A wide establishing shot of a medieval English village street. Several villagers, dressed in coarse woolen tunics and hose, look with a mixture of confusion and curiosity at two small children, a boy and a girl, whose skin has a distinct pale green tint. The children wear simple, unfamiliar clothes and stand bewildered in the foreground. The sky is soft and overcast, evoking ancient mystery. The subject is clearly lit."
+        },
+        {
+          "narration": "Their skin was distinctly green, and they spoke in a language no one understood.",
+          "image_prompt": "A close-up on the girl child's face, revealing her distinct green skin tint and wide, frightened eyes. An older medieval villager's hand is gently gesturing in the foreground, attempting to communicate. The lighting is dim but curious, clearly illuminating the child's features, in a rustic medieval setting."
+        },
+        {
+          "narration": "They refused all food except raw broad beans, which sustained them for months.",
+          "image_prompt": "A detail insert shot focusing on the hands of the green children as they meticulously shell raw broad beans. The boy's green-tinged hand holds a pod, while the girl's green hand extracts the beans. The setting is a rustic medieval kitchen, with soft, focused light clearly illuminating the hands."
+        },
+        {
+          "narration": "Eventually, the boy grew sick and died, but the girl slowly adapted.",
+          "image_prompt": "An over-the-shoulder shot from behind a concerned medieval villager, looking down at the boy child who lies ill in a rustic bed, his green hue noticeably fading. The girl child sits beside him, looking forlorn. The scene is illuminated by somber, warm candlelight, highlighting the figures in a medieval English interior."
+        },
+        {
+          "narration": "Her skin lost its green color, and she learned English, revealing their astonishing origin.",
+          "image_prompt": "A medium shot of the girl, now with a normal, healthy skin tone, sitting comfortably by a rustic fireplace, conversing with an older female medieval villager. She appears much healthier and more at ease. The interior is warm and firelit, clearly illuminating both subjects."
+        },
+        {
+          "narration": "She claimed they came from a subterranean \"St. Martin's Land\" where the sun never shone.",
+          "image_prompt": "A close-up of the now-normal-skinned girl's face as she recounts her astonishing story. Her eyes look up slightly, conveying a hint of wonder and sadness. The lighting is intimate and soft, clearly illuminating her features in a medieval English interior."
+        },
+        {
+          "narration": "They had followed a ringing sound through a dark cavern until they emerged into Woolpit.",
+          "image_prompt": "A low angle shot looking out from the mouth of a dark, rough-hewn cavern entrance. Beyond the dark opening, the bright, sun-dappled edge of a medieval English field is visible, creating an intense contrast of light. The perspective suggests emerging from a hidden world."
+        },
+        {
+          "narration": "Was it a forgotten folk tale, or a true encounter with a hidden world?",
+          "image_prompt": "A wide establishing shot of the medieval Woolpit village under a slightly eerie, overcast sky, emphasizing a sense of lingering mystery. Medieval villagers in period dress go about their daily lives, but the overall atmosphere remains enigmatic. The village is clearly lit, with a dramatic mood."
+        }
+      ],
+      "cta": "Explore more forgotten histories by following for new tales!"
+    },
+    "audioPath": "output/the-green-children-of-woolpit/the-green-children-of-woolpit.mp3",
+    "videoPath": "output/the-green-children-of-woolpit/the-green-children-of-woolpit.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/the-green-children-of-woolpit/media/01-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/the-green-children-of-woolpit/media/02-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/the-green-children-of-woolpit/media/03-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 3,
+        "path": "output/the-green-children-of-woolpit/media/04-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 4,
+        "path": "output/the-green-children-of-woolpit/media/05-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 5,
+        "path": "output/the-green-children-of-woolpit/media/06-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 6,
+        "keyword": "cave",
+        "path": "output/the-green-children-of-woolpit/media/07-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/stalactite-and-stalagmite-formations-in-cave-35061907/",
+        "author": "Vladimir Srajber"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 7,
+        "keyword": "medieval village",
+        "path": "output/the-green-children-of-woolpit/media/08-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/charming-medieval-street-in-rothenburg-ob-der-tauber-36720340/",
+        "author": "Alyona Nagel"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 42.455011,
+    "status": "published",
+    "youtube": {
+      "videoId": "bBOdG9idzU0",
+      "url": "https://www.youtube.com/shorts/bBOdG9idzU0",
+      "title": "The Mystery of England's Green Children: A Baffling 12th Century Enigma #Shorts",
+      "publishedAt": "2026-07-10T17:05:19.971Z"
+    },
+    "createdAt": "2026-07-10T17:05:21.990Z"
   }
 ]
