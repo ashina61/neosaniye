@@ -16,6 +16,7 @@ import { buildMetadata } from '../youtube/buildMetadata.js';
 import { uploadVideo } from '../youtube/uploadVideo.js';
 import { postFirstComment, updateVideoStats } from '../youtube/engage.js';
 import { buildSrtFromWords, uploadCaptions } from '../youtube/captions.js';
+import { crossPost } from '../social/meta.js';
 import { preflightCheck } from './preflight.js';
 import { recordProduction } from './recordProduction.js';
 import { notify } from '../lib/notify.js';
@@ -176,7 +177,18 @@ export async function runPipeline(opts = {}) {
         if (capOk) console.log('  altyazı (SRT) yüklendi');
       }
 
-      // Cross-post kiti: TikTok/Reels'e elle atmak için hazır metin paketi.
+      // Meta cross-post: aynı video Instagram Reels + Facebook Reels'e
+      // (best-effort; secrets yoksa sessizce atlanır, bkz. docs/meta-setup.md).
+      const social = await crossPost({
+        videoPath: outPath,
+        title: meta.title,
+        description: meta.description,
+        tags: meta.tags,
+      }).catch(() => ({ instagram: null, facebook: null }));
+      if (social.instagram) console.log('  Instagram Reels yayınlandı');
+      if (social.facebook) console.log('  Facebook Reels yayınlandı');
+
+      // Cross-post kiti: TikTok'a elle atmak için hazır metin paketi.
       const kit = [
         `TITLE:\n${meta.title}`,
         `\nDESCRIPTION:\n${meta.description}`,

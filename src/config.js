@@ -166,6 +166,13 @@ export const config = {
     // Key yoksa ambiyans katmanı sessizce atlanır. https://freesound.org/apiv2/
     apiKey: process.env.FREESOUND_API_KEY,
   },
+  meta: {
+    // Instagram Reels + Facebook Reels cross-post (bkz. docs/meta-setup.md).
+    // Üçü de boşsa cross-post sessizce atlanır.
+    pageToken: process.env.META_PAGE_TOKEN,
+    pageId: process.env.META_PAGE_ID,
+    igUserId: process.env.META_IG_USER_ID,
+  },
   youtube: {
     clientId: process.env.YOUTUBE_CLIENT_ID,
     clientSecret: process.env.YOUTUBE_CLIENT_SECRET,
