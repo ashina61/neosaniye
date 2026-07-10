@@ -65,9 +65,12 @@ Produce a professional SHOT LIST that makes the video feel like ONE cinematic fi
   detail insert -> over-the-shoulder... Consecutive scenes must NOT repeat the same framing or location.
 - Respect the visual anchor (same character appearance, era, light/color mood) in every prompt.
 - The subject must be CLEARLY LIT and readable on a small phone screen.
-- Mark 2-3 scenes as motion=true: pick the ones that benefit most from real live footage and are
-  GENERIC enough to exist in stock libraries (crowds, landscapes, storms, hands, machines, cities,
-  nature, ocean, fire). Scene 1 must always be motion=false (it carries the hook cover).
+- MOTION DECISION (critical): if the story's subject exists in real film footage — nature, animals,
+  weather, oceans, machines, the human body, space, cities, fire, crowds — mark MOST scenes
+  motion=true (up to 5): real video beats stills for these and holds attention far better.
+  For historical/period/impossible-to-film subjects, use motion=true only for the 2-3 scenes
+  generic enough for stock (landscapes, hands, fire, storms). Scene 1 must always be motion=false
+  (it carries the hook cover).
 - For motion scenes give 1-3 simple stock_keywords.
 - image_prompt must be a single concrete filmable shot. Never request text, captions, logos, watermarks.`;
 
@@ -115,8 +118,9 @@ export function applyShotList(script, shotList) {
       scene.image_prompt = shot.image_prompt;
     }
     scene.shot = shot.shot;
-    // İlk sahne asla motion olmaz (hook kapağı); üst sınır 3.
-    const wantMotion = Boolean(shot.motion) && i > 0 && motionCount < 3;
+    // İlk sahne asla motion olmaz (hook kapağı); üst sınır 5 (çekilebilir
+    // konularda video ağırlıklı, tarihîde AI ağırlıklı — DP karar verir).
+    const wantMotion = Boolean(shot.motion) && i > 0 && motionCount < 5;
     scene.motion = wantMotion;
     if (wantMotion) {
       motionCount += 1;

@@ -100,11 +100,21 @@ export const SCRIPT_SCHEMA = {
   propertyOrdering: ['topic', 'title', 'hook_text', 'category', 'visual_anchor', 'scenes', 'cta', 'emphasis_words', 'finale_text'],
 };
 
-// Format rotasyonu: izleyici tek kalıptan yorulmasın. Story ağırlıklı.
+// Format rotasyonu: izleyici tek kalıptan yorulmasın. Story + how-it-works ağırlıklı.
 const FORMATS = [
-  { key: 'story', weight: 6, brief: 'ONE gripping true mini-story with a narrative arc (hook, escalation, twist, payoff).' },
-  { key: 'facts3', weight: 2, brief: 'THREE rapid-fire, jaw-dropping TRUE facts around one tight theme. Scene 1 hooks the theme; then each fact gets 2 scenes (setup + payoff); close with the best "wait, WHAT?" fact.' },
-  { key: 'whatif', weight: 2, brief: 'A "What if...?" scenario answered with REAL science/history (e.g. "What if the Moon disappeared tonight?"). Grounded, accurate consequences presented as a story.' },
+  { key: 'story', weight: 4, brief: 'ONE gripping true mini-story with a narrative arc (hook, escalation, twist, payoff).' },
+  {
+    key: 'howworks',
+    weight: 4,
+    brief:
+      'Explain HOW something fascinating actually works, step by step, as a visual journey ' +
+      '(e.g. "How do octopuses vanish in plain sight?", "How does a hurricane build its power?"). ' +
+      'Each scene = one step of the process, building to a satisfying "so THAT\'s why" payoff. ' +
+      'STRONGLY prefer subjects that exist in real film footage: nature, animals, weather, machines, ' +
+      'the human body, space, oceans, cities — these will be shown with REAL video clips.',
+  },
+  { key: 'facts3', weight: 1, brief: 'THREE rapid-fire, jaw-dropping TRUE facts around one tight theme. Scene 1 hooks the theme; then each fact gets 2 scenes (setup + payoff); close with the best "wait, WHAT?" fact.' },
+  { key: 'whatif', weight: 1, brief: 'A "What if...?" scenario answered with REAL science/history (e.g. "What if the Moon disappeared tonight?"). Grounded, accurate consequences presented as a story.' },
 ];
 export function pickFormat(rand = Math.random()) {
   const totalW = FORMATS.reduce((a, f) => a + f.weight, 0);
