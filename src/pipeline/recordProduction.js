@@ -31,6 +31,9 @@ export async function recordProduction(script, meta = {}) {
   const record = {
     topic: script.topic,
     normalizedTopic: script.normalizedTopic,
+    // Baş Analist öğrenme döngüsü bunlara göre gruplar (format/stil/kategori).
+    format: script.format || null,
+    visualStyle: meta.visualStyle || null,
     script: {
       title: script.title || null,
       category: script.category || null,

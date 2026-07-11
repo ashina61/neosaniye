@@ -85,10 +85,14 @@ export async function directVisuals(script) {
   const brief = script.scenes
     .map((s, i) => `Scene ${i + 1}: "${s.narration}" (writer's draft visual: ${s.image_prompt})`)
     .join('\n');
+  // Baş Analist'in izlenmeden çıkardığı strateji notu (varsa) — veriyle karar.
+  const insight = script.strategyBrief
+    ? `PERFORMANCE INSIGHT (bias your visual choices toward what works): ${script.strategyBrief}\n\n`
+    : '';
   const prompt = `Topic: ${script.topic} (category: ${script.category})
 Visual anchor (must stay consistent): ${script.visual_anchor || '-'}
 
-${brief}
+${insight}${brief}
 
 Produce the shot list (exactly ${script.scenes.length} scenes, same order).`;
 

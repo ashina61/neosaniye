@@ -8,6 +8,7 @@ const execFileAsync = promisify(execFile);
 import { generateScript } from '../script/generateScript.js';
 import { directVisuals, applyShotList } from '../crew/visualDirector.js';
 import { planEdit } from '../crew/editorDirector.js';
+import { analyzePerformance } from '../crew/analyst.js';
 import { generateAudio } from '../tts/generateAudio.js';
 import { fetchAmbienceTrack, defaultAmbienceQuery } from '../audio/fetchAmbience.js';
 import { generateImages } from '../media/generateImages.js';
@@ -49,9 +50,19 @@ export async function runPipeline(opts = {}) {
     if (n) console.log(`[stats] ${n} videonun istatistiği güncellendi.`);
   }
 
+  // 0.5) BAŞ ANALİST: izlenme verisinden strateji notu (best-effort, +1 çağrı,
+  // yeterli veri yoksa sessizce atlar). Tüm orkestrayı veriyle besler.
+  let strategyBrief = '';
+  const analysis = await analyzePerformance().catch(() => null);
+  if (analysis?.brief) {
+    strategyBrief = analysis.brief;
+    console.log(`[analist] strateji: ${strategyBrief}`);
+  }
+
   // 1) Script
   log('Faz 1: Script üretiliyor (Gemini)...');
-  const script = await generateScript();
+  const script = await generateScript({ strategyBrief });
+  script.strategyBrief = strategyBrief; // şefler de okusun (görüntü + kurgu)
   const base = script.normalizedTopic;
   const workDir = path.join(root, base);
   console.log(`  konu: ${script.topic} (${script.format || 'story'}/${script.category || '-'})`);
@@ -244,6 +255,7 @@ export async function runPipeline(opts = {}) {
       media: media.items,
       engine: audio.engine,
       duration: video.duration,
+      visualStyle, // Baş Analist stile göre öğrensin
       status: youtube ? 'published' : pf.ok ? 'rendered' : 'failed_preflight',
       youtube,
     });

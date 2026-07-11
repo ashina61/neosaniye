@@ -237,8 +237,14 @@ export async function generateWithRetry(ai, req, tries = 5) {
   throw lastErr;
 }
 
-function buildUserPrompt(avoidTopics, { topPerformers = [], trendSeeds = [] } = {}) {
+function buildUserPrompt(avoidTopics, { topPerformers = [], trendSeeds = [], strategyBrief = '' } = {}) {
   const parts = [];
+  if (strategyBrief) {
+    parts.push(
+      'DATA-DRIVEN STRATEGY (from our own view analytics — let it steer your topic/angle choice):\n' +
+        strategyBrief,
+    );
+  }
   parts.push(
     avoidTopics.length
       ? `Previously used topics (do NOT pick these or anything very similar):\n${avoidTopics
@@ -271,7 +277,7 @@ function buildUserPrompt(avoidTopics, { topPerformers = [], trendSeeds = [] } = 
  * @param {string[]} [opts.avoidTopics=[]] - Ekstra kaçınılacak konular.
  * @returns {Promise<object>} - SCRIPT_SCHEMA + normalizedTopic.
  */
-export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid = [] } = {}) {
+export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid = [], strategyBrief = '' } = {}) {
   assertGemini();
   const ai = new GoogleGenAI({ apiKey: config.gemini.apiKey });
 
@@ -303,7 +309,7 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
     const response = await generateWithRetry(ai, {
       model: config.gemini.model,
       contents:
-        buildUserPrompt(avoidTopics, { topPerformers, trendSeeds }) +
+        buildUserPrompt(avoidTopics, { topPerformers, trendSeeds, strategyBrief }) +
         (lengthFeedback ? `\n\n${lengthFeedback}` : ''),
       config: {
         systemInstruction: buildSystemPrompt(format),

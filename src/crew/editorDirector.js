@@ -93,9 +93,12 @@ export async function planEdit(script) {
   const N = script.scenes.length;
 
   const brief = script.scenes.map((s, i) => `Scene ${i + 1}: ${s.narration}`).join('\n');
+  const insight = script.strategyBrief
+    ? `PERFORMANCE INSIGHT (bias the edit/mood toward what works): ${script.strategyBrief}\n\n`
+    : '';
   const prompt = `Topic: ${script.topic} (category: ${script.category})
 
-${brief}
+${insight}${brief}
 
 Design the edit: exactly ${N - 1} boundaries, plus music mood and subscribe placement.`;
 
