@@ -775,10 +775,10 @@
     },
     "createdAt": "2026-07-09T14:59:06.641Z",
     "stats": {
-      "views": 329,
+      "views": 328,
       "likes": 0,
       "comments": 0,
-      "statsAt": "2026-07-10T22:39:44.455Z"
+      "statsAt": "2026-07-11T10:18:53.495Z"
     }
   },
   {
@@ -896,10 +896,10 @@
     },
     "createdAt": "2026-07-10T07:01:13.361Z",
     "stats": {
-      "views": 1244,
-      "likes": 22,
+      "views": 1252,
+      "likes": 23,
       "comments": 1,
-      "statsAt": "2026-07-10T22:39:44.454Z"
+      "statsAt": "2026-07-11T10:18:53.494Z"
     }
   },
   {
@@ -1014,10 +1014,10 @@
     },
     "createdAt": "2026-07-10T15:31:48.973Z",
     "stats": {
-      "views": 18,
+      "views": 34,
       "likes": 0,
       "comments": 1,
-      "statsAt": "2026-07-10T22:39:44.453Z"
+      "statsAt": "2026-07-11T10:18:53.493Z"
     }
   },
   {
@@ -1358,6 +1358,109 @@
       "title": "The Ice Aircraft Carrier: How WWII Engineers Almost Built an Unsinkable Ship #Shorts",
       "publishedAt": "2026-07-10T22:47:19.324Z"
     },
-    "createdAt": "2026-07-10T22:47:21.809Z"
+    "createdAt": "2026-07-10T22:47:21.809Z",
+    "stats": {
+      "views": 188,
+      "likes": 5,
+      "comments": 5,
+      "statsAt": "2026-07-11T10:18:53.490Z"
+    }
+  },
+  {
+    "id": "the-great-serpent-mound-1783765541063",
+    "topic": "The Great Serpent Mound",
+    "normalizedTopic": "the-great-serpent-mound",
+    "script": {
+      "title": "The Ancient Earthwork That Mystifies Scientists",
+      "category": "mystery",
+      "scenes": [
+        {
+          "narration": "In Ohio, a colossal earthwork stretches over 1,300 feet, shaped like a giant serpent.",
+          "image_prompt": "An extreme wide aerial shot, drone perspective, revealing the full 1,300-foot serpentine earthwork in lush green grass, with a lone archaeologist in rugged 1930s field attire standing near its head. Clear, bright afternoon sky with soft shadows, awe-inspiring mood. Great Serpent Mound, Ohio, 1930s."
+        },
+        {
+          "narration": "This monumental effigy, built by ancient cultures, has baffled scientists for centuries.",
+          "image_prompt": "A medium shot of a lone archaeologist in rugged 1930s field attire, pensive, tracing the curve of the serpent's body with his hand, focusing on the intricate detail of the lush green earthwork. Clear, bright afternoon sky with soft shadows, mysterious mood. Great Serpent Mound, Ohio, 1930s."
+        },
+        {
+          "narration": "The serpent's head perfectly aligns with the summer solstice sunset, and its coils with solstices and equinoxes.",
+          "image_prompt": "A close-up detail insert shot of a lone archaeologist's hands in rugged 1930s field attire, holding an antique brass compass and a hand-drawn diagram of celestial alignments against the backdrop of the serpent's head, which aligns with the summer solstice. Golden hour light, contemplative mood. Great Serpent Mound, Ohio, 1930s."
+        },
+        {
+          "narration": "But for whom was this precise astronomical calendar carved into the earth?",
+          "image_prompt": "A low-angle shot, looking up at a lone archaeologist in rugged 1930s field attire, silhouetted against a bright, clear afternoon sky. He gazes out over the vast, lush green earthwork, his face obscured, emphasizing the scale of the mound. Clear, bright afternoon light, dramatic questioning mood. Great Serpent Mound, Ohio, 1930s."
+        },
+        {
+          "narration": "No burial sites or villages have been found directly associated with its builders.",
+          "image_prompt": "A medium shot of a lone archaeologist in rugged 1930s field attire, carefully sifting through a small patch of earth with a hand trowel, finding only soil and roots, no artifacts. Lush green earthwork in the background. Clear, bright afternoon sky with soft shadows, diligent mood. Great Serpent Mound, Ohio, 1930s."
+        },
+        {
+          "narration": "So, unlike most ancient mounds, its purpose remains an enduring enigma.",
+          "image_prompt": "An extreme close-up on the furrowed brow and pensive eyes of a lone archaeologist in rugged 1930s field attire, reflecting deep thought and puzzlement. His face is clearly lit under a clear, bright afternoon sky with soft shadows, contemplative and intrigued mood. Great Serpent Mound, Ohio, 1930s."
+        },
+        {
+          "narration": "Was it a spiritual guide, a territorial marker, or something entirely beyond our comprehension?",
+          "image_prompt": "An over-the-shoulder wide shot, looking out from behind a lone archaeologist in rugged 1930s field attire over the entire lush green serpentine earthwork as the sun begins to dip below the horizon, casting long, dramatic shadows. Clear sky, evoking wonder and mystery. Great Serpent Mound, Ohio, 1930s."
+        }
+      ],
+      "cta": "Follow for more ancient mysteries that stump modern science!"
+    },
+    "audioPath": "output/the-great-serpent-mound/the-great-serpent-mound.mp3",
+    "videoPath": "output/the-great-serpent-mound/the-great-serpent-mound.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/the-great-serpent-mound/media/01-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 1,
+        "keyword": "archaeologist",
+        "path": "output/the-great-serpent-mound/media/02-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/explore-underwater-wreck-with-diver-38045446/",
+        "author": "JUN HO LEE"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/the-great-serpent-mound/media/03-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 3,
+        "path": "output/the-great-serpent-mound/media/04-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 4,
+        "keyword": "excavation",
+        "path": "output/the-great-serpent-mound/media/05-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/heavy-machinery-operating-on-red-earth-hills-32208156/",
+        "author": "MELQUIZEDEQUE ALMEIDA"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 5,
+        "path": "output/the-great-serpent-mound/media/06-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 6,
+        "path": "output/the-great-serpent-mound/media/07-ai.jpg"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 42.261995,
+    "status": "rendered",
+    "youtube": null,
+    "createdAt": "2026-07-11T10:25:41.063Z"
   }
 ]
