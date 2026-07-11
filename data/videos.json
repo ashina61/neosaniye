@@ -778,7 +778,7 @@
       "views": 328,
       "likes": 0,
       "comments": 0,
-      "statsAt": "2026-07-11T10:18:53.495Z"
+      "statsAt": "2026-07-11T12:07:31.368Z"
     }
   },
   {
@@ -896,10 +896,10 @@
     },
     "createdAt": "2026-07-10T07:01:13.361Z",
     "stats": {
-      "views": 1252,
+      "views": 1258,
       "likes": 23,
       "comments": 1,
-      "statsAt": "2026-07-11T10:18:53.494Z"
+      "statsAt": "2026-07-11T12:07:31.367Z"
     }
   },
   {
@@ -1014,10 +1014,10 @@
     },
     "createdAt": "2026-07-10T15:31:48.973Z",
     "stats": {
-      "views": 34,
+      "views": 42,
       "likes": 0,
       "comments": 1,
-      "statsAt": "2026-07-11T10:18:53.493Z"
+      "statsAt": "2026-07-11T12:07:31.366Z"
     }
   },
   {
@@ -1360,10 +1360,10 @@
     },
     "createdAt": "2026-07-10T22:47:21.809Z",
     "stats": {
-      "views": 188,
-      "likes": 5,
+      "views": 296,
+      "likes": 10,
       "comments": 5,
-      "statsAt": "2026-07-11T10:18:53.490Z"
+      "statsAt": "2026-07-11T12:07:31.363Z"
     }
   },
   {
@@ -1462,5 +1462,117 @@
     "status": "rendered",
     "youtube": null,
     "createdAt": "2026-07-11T10:25:41.063Z"
+  },
+  {
+    "id": "roman-concrete-1783771852017",
+    "topic": "Roman Concrete",
+    "normalizedTopic": "roman-concrete",
+    "script": {
+      "title": "The Secret of Immortal Roman Concrete",
+      "category": "history",
+      "scenes": [
+        {
+          "narration": "Watch how Romans built structures that still stand today, baffling modern engineers.",
+          "image_prompt": "A wide establishing shot of a bustling ancient Roman construction site under a clear blue sky, showing a Roman craftsman in a simple tunic working, with laborers moving large stones and mixing materials. The scene features the Pantheon or Colosseum in the background, bathed in warm golden light, emphasizing the textures of stone and sand."
+        },
+        {
+          "narration": "They didn't just use sand and cement; their secret ingredient was volcanic ash, pozzolana.",
+          "image_prompt": "A medium shot focusing on the hands of a Roman craftsman, in a simple tunic, sifting dark gray volcanic ash into a wooden trough filled with other dry ingredients, on a sun-drenched Roman construction site. The ash's texture is prominent under bright sunlight, with warm golden light emphasizing the natural materials."
+        },
+        {
+          "narration": "See them mix it with lime and seawater, not fresh water, a crucial step.",
+          "image_prompt": "An extreme close-up of a Roman worker's hands adding a bucket of foamy seawater into a large mixing pit, creating a cloudy swirl with lime and volcanic ash. The wet, gritty texture of the mixture is clearly visible, illuminated by high contrast, warm golden light on a sun-drenched Roman construction site."
+        },
+        {
+          "narration": "This unique blend created a chemical reaction, forming durable crystals over centuries.",
+          "image_prompt": "A detail insert of a microscopic view of calcium-aluminate-silicate-hydrate crystals forming within a sample of ancient Roman concrete, glowing subtly with a scientific visualization style, under warm golden light."
+        },
+        {
+          "narration": "Unlike modern concrete that degrades, Roman structures heal themselves over time.",
+          "image_prompt": "An over-the-shoulder shot of a Roman engineer, in a simple tunic, pointing at a small crack in an ancient concrete wall on a sun-drenched Roman construction site, where new crystalline growth is visibly sealing the fissure. The scene is lit by bright sunlight with warm golden light, emphasizing the textures of stone and sand."
+        },
+        {
+          "narration": "Imagine, their harbor piers, submerged for 2,000 years, are stronger now than ever.",
+          "image_prompt": "A low angle underwater shot of ancient Roman harbor piers, encrusted with marine life, with visible concrete structures standing firm. Beams of sunlight penetrate the clear blue water, creating a serene and timeless mood, with warm golden light filtering through the surface."
+        },
+        {
+          "narration": "This lost art could revolutionize building today.",
+          "image_prompt": "A medium shot of a modern architect, focused and thoughtful, studying ancient Roman concrete samples in a well-lit laboratory, surrounded by blueprints and scientific equipment. The scene has a soft ambient light, with a subtle warm undertone, referencing the golden light of the Roman era."
+        }
+      ],
+      "cta": "Follow for more ancient engineering marvels!"
+    },
+    "audioPath": "output/roman-concrete/roman-concrete.mp3",
+    "videoPath": "output/roman-concrete/roman-concrete.mp4",
+    "media": [
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 0,
+        "keyword": "Roman construction",
+        "path": "output/roman-concrete/media/01-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/ancient-roman-monument-in-glanum-35743311/",
+        "author": "Paul Bredt"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 1,
+        "keyword": "volcanic ash",
+        "path": "output/roman-concrete/media/02-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/a-steaming-fumarole-9354647/",
+        "author": "Marina Leonova"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 2,
+        "keyword": "mixing",
+        "path": "output/roman-concrete/media/03-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/a-person-using-a-mixing-console-8118112/",
+        "author": "Anna Pou"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 3,
+        "keyword": "concrete crystals",
+        "path": "output/roman-concrete/media/04-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/close-up-of-a-hand-touching-a-crystal-6150667/",
+        "author": "cottonbro studio"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 4,
+        "keyword": "self-healing concrete",
+        "path": "output/roman-concrete/media/05-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/walking-person-reflection-in-puddle-10519857/",
+        "author": "Ekaterina"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 5,
+        "keyword": "underwater",
+        "path": "output/roman-concrete/media/06-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/underwater-exploration-of-sunken-airplane-wreck-37848692/",
+        "author": "JUN HO LEE"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 6,
+        "keyword": "modern architect",
+        "path": "output/roman-concrete/media/07-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/designing-a-house-layout-7646402/",
+        "author": "Alena Darmel"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 37.82,
+    "status": "rendered",
+    "youtube": null,
+    "createdAt": "2026-07-11T12:10:52.017Z"
   }
 ]
