@@ -6,6 +6,7 @@ import {
   isTopicUsed,
   normalizeTopic,
 } from '../lib/firestore.js';
+import { softenAdText } from '../lib/adSafe.js';
 
 /**
  * Faz 1 — Script Üretim Motoru (Google Gemini) — ANLATI / HİKÂYE formatı.
@@ -204,7 +205,13 @@ Rules for the whole script:
 - Pick a genuinely FASCINATING, lesser-known TRUE story or fact. Prefer the "wait, what?!" kind.
 - ACCURACY IS MANDATORY. Use only well-documented, widely-accepted facts. Never invent events, quotes, names, or statistics. If a specific number or detail is uncertain, phrase it cautiously ("around", "some historians say") or leave it out. A wrong fact destroys the channel's credibility.
 - cta: short, specific to this story, and DIFFERENT every time (never a generic "Follow for more facts").
-- title: curiosity-driven, <= 80 characters, no clickbait lies, no emojis.`;
+- title: curiosity-driven, <= 80 characters, no clickbait lies, no emojis.
+- MONETIZATION-SAFE LANGUAGE: the title, hook_text, and the FIRST scene's narration must be
+  advertiser-friendly — build curiosity/intrigue and AVOID explicit words of violence, death,
+  drugs, weapons or any profanity there (prefer "vanished", "the end came", "never returned",
+  "did not survive" over "killed/murdered/suicide/blood"). In later scenes, state the facts
+  accurately and neutrally, but never gratuitously graphic; prefer "died", "perished", "lost their
+  lives" over harsher wording, and never use profanity or slurs. Accuracy still comes first.`;
 }
 
 /** Geçici hatalarda (503 UNAVAILABLE / 5xx / ağ) sabırlı backoff ile dener.
@@ -339,9 +346,15 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
       continue;
     }
 
+    // Reklam-dostu güvenlik ağı: ekrandaki hook + başlık yumuşatılır
+    // (anlatım/altyazı doğruluğu korunur; asıl iş prompt'ta yapılır).
+    if (script.hook_text) script.hook_text = softenAdText(script.hook_text, 'hook');
+    if (script.title) script.title = softenAdText(script.title, 'başlık');
     return { ...script, format: format.key, normalizedTopic: normalizeTopic(script.topic) };
   }
 
+  if (lastScript?.hook_text) lastScript.hook_text = softenAdText(lastScript.hook_text, 'hook');
+  if (lastScript?.title) lastScript.title = softenAdText(lastScript.title, 'başlık');
   return {
     ...lastScript,
     format: format.key,

@@ -1,5 +1,6 @@
 import { GoogleGenAI, Type } from '@google/genai';
 import { config } from '../config.js';
+import { softenAdText } from '../lib/adSafe.js';
 
 /**
  * Faz 6 — Script'ten YouTube Shorts meta verisi (başlık/açıklama/tag) üretir.
@@ -31,13 +32,18 @@ const META_SCHEMA = {
 const SYSTEM = `You write high-CTR YouTube Shorts metadata in English for a faceless "interesting facts / how it works / how to" channel.
 Rules:
 - title: curiosity-driven, <= 90 chars, no clickbait lies, no emojis.
+- ADVERTISER-SAFE TITLE: never put explicit words of violence, death, drugs, weapons, or any
+  profanity in the title (e.g. "killed", "murder", "dead", "suicide", "blood", "drugs", "gun")
+  — these limit ads (yellow $). Use curiosity and intrigue instead ("vanished", "the end came",
+  "never returned", "what really happened").
 - description: 2-4 short lines; restate the hook, add value, end with a soft CTA. Plain text.
 - tags: 8-15 relevant lowercase English keywords, no "#" prefix, no spaces-only entries.
 Do not include markdown.`;
 
 /** YouTube başlık/açıklama sınırlarına göre kırpar ve #Shorts ekler. */
 function finalize(meta, script) {
-  let title = (meta.title || script.topic || '').trim().slice(0, 95);
+  // Reklam-dostu güvenlik ağı: başlıktaki riskli kelimeleri yumuşat (sarı $ önlemi).
+  let title = softenAdText((meta.title || script.topic || '').trim(), 'başlık').slice(0, 95);
   if (!/#shorts/i.test(title) && title.length <= 88) title += ' #Shorts';
 
   const hashtags = (meta.tags || [])
