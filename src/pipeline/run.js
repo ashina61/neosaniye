@@ -141,6 +141,8 @@ export async function runPipeline(opts = {}) {
       musicMood: editPlan?.musicMood || undefined,
       ambiencePath: ambience?.path || null,
       visualStyle,
+      // Process (gerçek görüntü) videolarında ok+etiket dikkat katmanı.
+      annotate: (script.format || 'story') === 'process',
       emphasisWords: script.emphasis_words || [],
       finaleText: script.finale_text || '',
       outPath,

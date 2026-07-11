@@ -516,6 +516,51 @@ ${ev.join('\n')}
 `;
 }
 
+/** "Satisfying video" tarzı DİKKAT ÇEKEN katman: patlayarak giren vurucu bir
+ *  etiket ("WATCH THIS") + hemen altında konuya işaret eden büyük sarı ok.
+ *  Process (gerçek görüntü) videolarında birkaç kez belirir. Saf ASS (libass);
+ *  ek bağımlılık yok. callouts: [{ t, dur, text }] */
+function buildAnnotationsAss(callouts, { width, height }) {
+  const cx = Math.round(width / 2);
+  // Kalın aşağı ok çizimi (gövde + baş), origin merkezli.
+  const arrow = 'm -16 -34 l 16 -34 l 16 -2 l 40 -2 l 0 46 l -40 -2 l -16 -2';
+  const ev = [];
+  for (const c of callouts) {
+    const t = c.t;
+    const end = c.t + (c.dur || 1.7);
+    const yl = Math.round(height * 0.24); // etiket (üst bölge, altyazıdan uzak)
+    const ya = yl + 96; // ok, etiketin altında
+    const txt = String(c.text || '').toUpperCase().replace(/[{}]/g, '');
+    // Etiket: hafif "overshoot" ile patlayarak girer, sonra oturur.
+    ev.push(
+      `Dialogue: 0,${assTime(t)},${assTime(end)},Anno,,0,0,0,,` +
+        `{\\an5\\pos(${cx},${yl})\\fad(120,180)\\fscx55\\fscy55` +
+        `\\t(0,170,\\fscx106\\fscy106)\\t(170,250,\\fscx100\\fscy100)}${txt}`,
+    );
+    // Ok: yukarıdan kayarak iner ve konuya işaret eder (sarı, kalın kenarlı).
+    // \p1 = vektör çizim modu (yoksa koordinatlar düz yazı olarak basılır).
+    ev.push(
+      `Dialogue: 0,${assTime(t)},${assTime(end)},AnnoArrow,,0,0,0,,` +
+        `{\\an5\\move(${cx},${ya - 46},${cx},${ya},0,240)\\fad(120,200)\\p1}${arrow}{\\p0}`,
+    );
+  }
+  return `[Script Info]
+ScriptType: v4.00+
+PlayResX: ${width}
+PlayResY: ${height}
+WrapStyle: 2
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Anno,Montserrat Black,62,&H00FFFFFF,&H000000FF,&H00101010,&H90000000,0,0,0,0,100,100,1,0,1,4,2,5,0,0,0,1
+Style: AnnoArrow,Arial,20,&H0000E6FF&,&H0000E6FF&,&H00101010,&H00000000,0,0,0,0,100,100,0,0,1,3,0,5,0,0,0,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+${ev.join('\n')}
+`;
+}
+
 /** assets/music/ havuzundan telifsiz parça seçer — önce kategorinin kendi
  *  klasörü (assets/music/<mood>/), yoksa tüm havuz, o da yoksa null. */
 function pickMusicTrack(category = '') {
@@ -1041,6 +1086,8 @@ export async function renderVideo(job, opts = {}) {
 
   // Animasyonlu stil: canlı doku katmanı (toz + ışık) — altyazının ALTINA.
   let fxFilter = '';
+  const fontsDir = path.resolve(config.video.fontsDir);
+
   if (animatedStyle) {
     await writeFile(
       path.join(workDir, 'fx.ass'),
@@ -1049,15 +1096,53 @@ export async function renderVideo(job, opts = {}) {
     fxFilter = 'ass=fx.ass,';
   }
 
+  // Dikkat çeken ok+etiket katmanı (process videoları): sahne başlarına patlayan
+  // vurucu etiket + konuya işaret eden büyük sarı ok — "satisfying video" havası.
+  let annoFilter = '';
+  if (job.annotate) {
+    const sceneStart = [];
+    let cc = 0;
+    let bb = 0;
+    for (let i = 0; i < N; i += 1) {
+      if (i > 0) {
+        cc += clipDur[i - 1];
+        bb += bts[i - 1];
+      }
+      sceneStart.push(cc - bb);
+    }
+    const POOL = ['WATCH THIS', 'LOOK CLOSELY', 'WAIT FOR IT', 'HERE IT COMES', 'SO SATISFYING', 'HOW?!'];
+    const seed = Math.round(total * 71) + N;
+    const inSub = (t) => spOn && t > T1 - 0.6 && t < T2 + 0.6;
+    const callouts = [];
+    const wantIdx = [Math.round(N * 0.34), Math.round(N * 0.66)];
+    for (let w = 0; w < wantIdx.length; w += 1) {
+      let k = Math.min(Math.max(wantIdx[w], 1), N - 1);
+      while (k < N - 1 && (sceneStart[k] < 3 || inSub(sceneStart[k]))) k += 1;
+      const t = sceneStart[k];
+      if (t < 3 || t > total - 3 || inSub(t)) continue;
+      if (callouts.some((c) => Math.abs(c.t - t) < 2)) continue;
+      callouts.push({
+        t,
+        dur: Math.min(1.8, Math.max(1.2, (clipDur[k] || 2) - 0.4)),
+        text: POOL[(seed + w * 3) % POOL.length],
+      });
+    }
+    if (callouts.length) {
+      await writeFile(path.join(workDir, 'anno.ass'), buildAnnotationsAss(callouts, { width, height }));
+      annoFilter = existsSync(fontsDir) ? `,ass=anno.ass:fontsdir=${fontsDir}` : ',ass=anno.ass';
+      console.log(`[video] dikkat etiketi: ${callouts.length} (${callouts.map((c) => c.text).join(', ')})`);
+    }
+  }
+
   // Altyazı + hook (aynı ASS dosyasında; hook otomatik satır kaydırır, sığar).
-  const fontsDir = path.resolve(config.video.fontsDir);
   const assFilter = existsSync(fontsDir) ? `ass=subs.ass:fontsdir=${fontsDir}` : 'ass=subs.ass';
   // Hafif keskinleştirme (altyazıdan ÖNCE — yazı kenarları temiz kalsın):
   // telefonda sıkıştırma sonrası algılanan netliği belirgin artırır.
+  // Katman sırası: [fx altta] -> keskinleştir -> [altyazı] -> [ok/etiket en üstte].
   if (useAss) {
-    vfc.push(`${last}${fxFilter}unsharp=5:5:0.35:3:3:0,${assFilter}[v]`);
+    vfc.push(`${last}${fxFilter}unsharp=5:5:0.35:3:3:0,${assFilter}${annoFilter}[v]`);
   } else {
-    vfc.push(`${last}${fxFilter}unsharp=5:5:0.35:3:3:0[v]`);
+    vfc.push(`${last}${fxFilter}unsharp=5:5:0.35:3:3:0${annoFilter}[v]`);
   }
 
   const fullv = path.join(workDir, 'fullv.mp4');

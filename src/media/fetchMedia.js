@@ -45,7 +45,7 @@ export function pickPortraitVideoFile(videoFiles) {
 async function searchVideo(keyword) {
   const url = `${API}/videos/search?query=${encodeURIComponent(
     keyword,
-  )}&orientation=${config.pexels.orientation}&size=${config.pexels.size}&per_page=5`;
+  )}&orientation=${config.pexels.orientation}&size=${config.pexels.size}&per_page=12`;
   const data = await pexelsGet(url);
   for (const video of data.videos || []) {
     const file = pickPortraitVideoFile(video.video_files || []);

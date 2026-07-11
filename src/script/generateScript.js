@@ -104,7 +104,7 @@ export const SCRIPT_SCHEMA = {
 // Format rotasyonu: izleyici tek kalıptan yorulmasın. Story + how-it-works +
 // process (gerçek görüntü öncelikli) ağırlıklı.
 const FORMATS = [
-  { key: 'story', weight: 3, brief: 'ONE gripping true mini-story with a narrative arc (hook, escalation, twist, payoff).' },
+  { key: 'story', weight: 2, brief: 'ONE gripping true mini-story with a narrative arc (hook, escalation, twist, payoff).' },
   {
     key: 'howworks',
     weight: 3,
@@ -117,7 +117,7 @@ const FORMATS = [
   },
   {
     key: 'process',
-    weight: 3,
+    weight: 6,
     brief:
       'A mesmerizing REAL-FOOTAGE "watch how this is actually done/made" video (a craft, a repair, ' +
       'a manufacturing process, cooking, a machine at work, nature in action). The narrator is a ' +
