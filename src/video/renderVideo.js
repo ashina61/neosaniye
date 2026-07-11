@@ -215,10 +215,13 @@ function buildCaptionAss(words, opts) {
           `{\\fs${fs}\\i1\\b1\\fad(90,70)\\blur1.2\\fscx92\\fscy92\\t(0,150,\\fscx100\\fscy100)}${text}`,
       );
     } else {
-      // Genişliğe sığdır: taşarsa küçült (taşıp 2. satıra düşmesin).
-      let fs = size;
-      const est = raw.length * charFactor * fs;
-      if (est > usableW) fs = Math.max(30, Math.floor(usableW / (raw.length * charFactor)));
+      // Genişliğe sığdır: HEM tüm satır HEM DE en uzun tek kelime usableW'e
+      // sığmalı. Aksi halde libass uzun bir kelimeyi ortadan bölebiliyor
+      // ("asphyxiation" -> "Ass-phyxiation" rezaleti buradan çıktı).
+      const longest = Math.max(1, ...group.map((w) => String(w.word).length));
+      const fitWhole = usableW / (raw.length * charFactor);
+      const fitWord = usableW / (longest * 0.62); // tek kelime için güvenli pay
+      const fs = Math.max(30, Math.min(size, Math.floor(fitWhole), Math.floor(fitWord)));
       events.push(
         `Dialogue: 0,${assTime(start)},${assTime(end)},Cap,,0,0,0,,{\\fs${fs}\\fad(120,90)\\blur1.2}${text}`,
       );
