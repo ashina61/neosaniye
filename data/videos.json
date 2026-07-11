@@ -778,7 +778,7 @@
       "views": 328,
       "likes": 0,
       "comments": 0,
-      "statsAt": "2026-07-11T12:07:31.368Z"
+      "statsAt": "2026-07-11T15:56:29.038Z"
     }
   },
   {
@@ -896,10 +896,10 @@
     },
     "createdAt": "2026-07-10T07:01:13.361Z",
     "stats": {
-      "views": 1258,
+      "views": 1265,
       "likes": 23,
       "comments": 1,
-      "statsAt": "2026-07-11T12:07:31.367Z"
+      "statsAt": "2026-07-11T15:56:29.037Z"
     }
   },
   {
@@ -1014,10 +1014,10 @@
     },
     "createdAt": "2026-07-10T15:31:48.973Z",
     "stats": {
-      "views": 42,
+      "views": 44,
       "likes": 0,
       "comments": 1,
-      "statsAt": "2026-07-11T12:07:31.366Z"
+      "statsAt": "2026-07-11T15:56:29.035Z"
     }
   },
   {
@@ -1360,10 +1360,10 @@
     },
     "createdAt": "2026-07-10T22:47:21.809Z",
     "stats": {
-      "views": 296,
+      "views": 373,
       "likes": 10,
       "comments": 5,
-      "statsAt": "2026-07-11T12:07:31.363Z"
+      "statsAt": "2026-07-11T15:56:29.033Z"
     }
   },
   {
@@ -1574,5 +1574,122 @@
     "status": "rendered",
     "youtube": null,
     "createdAt": "2026-07-11T12:10:52.017Z"
+  },
+  {
+    "id": "the-exploding-lake-of-cameroon-1783785685902",
+    "topic": "The Exploding Lake of Cameroon",
+    "normalizedTopic": "the-exploding-lake-of-cameroon",
+    "script": {
+      "title": "The Exploding Lake That Killed 1,746 People in Their Sleep!",
+      "category": "nature",
+      "scenes": [
+        {
+          "narration": "In Cameroon, a seemingly peaceful lake held a terrifying secret, waiting to erupt with deadly force.",
+          "image_prompt": "A wide establishing shot of a serene volcanic lake in a lush, green African landscape, from a high vantage point. The calm surface of the lake is nestled among verdant hills, under natural daylight with a slightly hazy, humid atmosphere. Subject clearly lit, peaceful mood."
+        },
+        {
+          "narration": "Deep beneath its surface, volcanic activity continuously seeped carbon dioxide, silently building immense pressure.",
+          "image_prompt": "A close-up of tiny bubbles slowly rising from a dark, murky lakebed. The light is dim, suggesting deep water. Subject clearly lit, mysterious and building tension."
+        },
+        {
+          "narration": "Then, one night, a landslide or tremor triggered a massive overturn, releasing a suffocating cloud.",
+          "image_prompt": "A medium shot of a volcanic lake's surface violently churning and foaming, with a visible plume of gas beginning to rise. Dark, ominous lighting under a night sky. Subject clearly lit, dramatic and terrifying."
+        },
+        {
+          "narration": "This invisible, odorless cloud flowed downhill, silently entering homes in nearby villages as people slept.",
+          "image_prompt": "A high angle shot looking down on a small, traditional African village nestled in a valley at night. A translucent, low-lying gas cloud creeps through the dwellings under faint moonlight. Subject clearly lit, eerie and foreboding."
+        },
+        {
+          "narration": "Over 1,700 people and 3,500 livestock perished from asphyxiation, never waking up.",
+          "image_prompt": "An over-the-shoulder shot down a silent, empty village street at dawn. A ghostly haze still lingers in the air. The mood is somber and desolate. Subject clearly lit."
+        },
+        {
+          "narration": "Engineers now use a degassing system, pumping water from the bottom to safely release the carbon dioxide.",
+          "image_prompt": "A detail insert of a large, pipe-like structure extending into a volcanic lake, with water visibly gushing out from an opening at the top, creating a fountain effect. Bright daylight illuminates the structure and water. Subject clearly lit, functional and hopeful."
+        },
+        {
+          "narration": "This prevents another silent catastrophe, ensuring Lake Nyos remains a serene natural wonder, not a ticking time bomb.",
+          "image_prompt": "A wide, calm establishing shot of a serene volcanic lake in a lush, green African landscape at sunset. The degassing fountain is subtly visible in the distance, bathed in golden light. The atmosphere is peaceful and beautiful. Subject clearly lit, reassuring mood."
+        }
+      ],
+      "cta": "Follow for more unbelievable natural events!"
+    },
+    "audioPath": "output/the-exploding-lake-of-cameroon/the-exploding-lake-of-cameroon.mp3",
+    "videoPath": "output/the-exploding-lake-of-cameroon/the-exploding-lake-of-cameroon.mp4",
+    "media": [
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 0,
+        "keyword": "volcanic lake",
+        "path": "output/the-exploding-lake-of-cameroon/media/01-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/scenic-view-of-kerid-crater-lake-in-iceland-29621368/",
+        "author": "Hub JACQU"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 1,
+        "keyword": "underwater",
+        "path": "output/the-exploding-lake-of-cameroon/media/02-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/underwater-exploration-of-sunken-airplane-wreck-37848692/",
+        "author": "JUN HO LEE"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 2,
+        "keyword": "lake eruption",
+        "path": "output/the-exploding-lake-of-cameroon/media/03-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/close-up-of-clay-volcano-11567559/",
+        "author": "Lorenzo  Castronovo"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 3,
+        "keyword": "village",
+        "path": "output/the-exploding-lake-of-cameroon/media/04-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/children-running-through-rural-fields-38396362/",
+        "author": "Ashad The Nomadic"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 4,
+        "keyword": "empty village",
+        "path": "output/the-exploding-lake-of-cameroon/media/05-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/abandoned-rustic-house-in-rural-setting-35223026/",
+        "author": "Ebahir"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 5,
+        "keyword": "degassing system",
+        "path": "output/the-exploding-lake-of-cameroon/media/06-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/automated-industrial-manufacturing-process-34775736/",
+        "author": "Val А"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 6,
+        "keyword": "volcanic lake",
+        "path": "output/the-exploding-lake-of-cameroon/media/07-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/scenic-view-of-kerid-crater-lake-in-iceland-29621368/",
+        "author": "Hub JACQU"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 52.239002,
+    "status": "published",
+    "youtube": {
+      "videoId": "n6IUGndIVvw",
+      "url": "https://www.youtube.com/shorts/n6IUGndIVvw",
+      "title": "The Exploding Lake That Killed 1,746 People in Their Sleep! #Shorts",
+      "publishedAt": "2026-07-11T16:01:23.652Z"
+    },
+    "createdAt": "2026-07-11T16:01:25.902Z"
   }
 ]
