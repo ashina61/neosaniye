@@ -19,8 +19,10 @@ on:
         options: [auto, process, story, howworks, facts3, whatif]
         default: auto
   schedule:
-    - cron: "0 15 * * *" # her gün 15:00 UTC (TR 18:00) — otomatik üretim
-    # - cron: "0 21 * * *" # günde 2. üretim istenirse bu satırı aç
+    # Günde 2 video — hedef kitle ABD + Avrupa (İngilizce). Saatler UTC.
+    # GitHub cron'u ~15-60 dk gecikmeli tetikler; birkaç dakika kayması normal.
+    - cron: "0 17 * * *" # 17:00 UTC — Avrupa akşamı + ABD öğle/öğleden sonrası (TR 20:00)
+    - cron: "0 23 * * *" # 23:00 UTC — ABD akşam prime-time (TR 02:00)
 
 concurrency:
   group: daily-short
