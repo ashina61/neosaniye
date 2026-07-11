@@ -13,6 +13,11 @@ on:
         type: choice
         options: [auto, animated, photo]
         default: auto
+      format:
+        description: "İçerik formatı (auto = rastgele; process = gerçek video + oklar)"
+        type: choice
+        options: [auto, process, story, howworks, facts3, whatif]
+        default: auto
   schedule:
     - cron: "0 15 * * *" # her gün 15:00 UTC (TR 18:00) — otomatik üretim
     # - cron: "0 21 * * *" # günde 2. üretim istenirse bu satırı aç
@@ -64,6 +69,8 @@ jobs:
           FREESOUND_API_KEY: ${{ secrets.FREESOUND_API_KEY }}
           # Görsel stil zorlaması (manuel run'da seçilir; cron'da sistem karar verir).
           VIDEO_STYLE: ${{ inputs.style == 'auto' && '' || inputs.style }}
+          # İçerik formatı zorlaması (test için; auto = rastgele rotasyon).
+          FORCE_FORMAT: ${{ inputs.format == 'auto' && '' || inputs.format }}
           # Instagram + Facebook cross-post (opsiyonel; bkz. docs/meta-setup.md).
           # Tek zorunlu secret: META_USER_TOKEN. Sayfa + IG otomatik keşfedilir.
           META_USER_TOKEN: ${{ secrets.META_USER_TOKEN }}

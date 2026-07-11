@@ -280,9 +280,11 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
     getTopPerformingTopics(5).catch(() => []),
     fetchTrendSeeds(),
   ]);
-  const format = pickFormat();
+  // FORCE_FORMAT ile format sabitlenebilir (test için; ör. 'process').
+  const forced = String(process.env.FORCE_FORMAT || '').trim();
+  const format = FORMATS.find((f) => f.key === forced) || pickFormat();
   console.log(
-    `[script] format: ${format.key}` +
+    `[script] format: ${format.key}${forced === format.key ? ' (zorlandı)' : ''}` +
       (topPerformers.length ? `, öğrenme: ${topPerformers.length} iyi konu` : '') +
       (trendSeeds.length ? `, trend: ${trendSeeds.length} tohum` : ''),
   );
