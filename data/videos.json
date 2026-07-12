@@ -778,7 +778,7 @@
       "views": 328,
       "likes": 0,
       "comments": 0,
-      "statsAt": "2026-07-12T18:00:31.651Z"
+      "statsAt": "2026-07-12T21:42:37.435Z"
     }
   },
   {
@@ -899,7 +899,7 @@
       "views": 1272,
       "likes": 24,
       "comments": 1,
-      "statsAt": "2026-07-12T18:00:31.650Z"
+      "statsAt": "2026-07-12T21:42:37.433Z"
     }
   },
   {
@@ -1017,7 +1017,7 @@
       "views": 74,
       "likes": 0,
       "comments": 1,
-      "statsAt": "2026-07-12T18:00:31.648Z"
+      "statsAt": "2026-07-12T21:42:37.432Z"
     }
   },
   {
@@ -1360,10 +1360,10 @@
     },
     "createdAt": "2026-07-10T22:47:21.809Z",
     "stats": {
-      "views": 398,
+      "views": 400,
       "likes": 11,
       "comments": 5,
-      "statsAt": "2026-07-12T18:00:31.647Z"
+      "statsAt": "2026-07-12T21:42:37.430Z"
     }
   },
   {
@@ -1692,10 +1692,10 @@
     },
     "createdAt": "2026-07-11T16:01:25.902Z",
     "stats": {
-      "views": 1178,
+      "views": 1170,
       "likes": 28,
       "comments": 3,
-      "statsAt": "2026-07-12T18:00:31.645Z"
+      "statsAt": "2026-07-12T21:42:37.429Z"
     }
   },
   {
@@ -1805,10 +1805,10 @@
     },
     "createdAt": "2026-07-12T00:05:52.083Z",
     "stats": {
-      "views": 280,
-      "likes": 33,
+      "views": 283,
+      "likes": 34,
       "comments": 1,
-      "statsAt": "2026-07-12T18:00:31.641Z"
+      "statsAt": "2026-07-12T21:42:37.427Z"
     }
   },
   {
@@ -1930,10 +1930,10 @@
     },
     "createdAt": "2026-07-12T15:24:39.551Z",
     "stats": {
-      "views": 212,
+      "views": 289,
       "likes": 6,
       "comments": 1,
-      "statsAt": "2026-07-12T18:00:31.639Z"
+      "statsAt": "2026-07-12T21:42:37.425Z"
     }
   },
   {
@@ -2053,6 +2053,131 @@
       "title": "The Silent Language of Trees: How Forests Secretly Communicate #Shorts",
       "publishedAt": "2026-07-12T18:04:32.769Z"
     },
-    "createdAt": "2026-07-12T18:04:35.208Z"
+    "createdAt": "2026-07-12T18:04:35.208Z",
+    "stats": {
+      "views": 524,
+      "likes": 35,
+      "comments": 2,
+      "statsAt": "2026-07-12T21:42:37.423Z"
+    }
+  },
+  {
+    "id": "how-sponges-filter-ocean-water-1783892794893",
+    "topic": "How Sponges Filter Ocean Water",
+    "normalizedTopic": "how-sponges-filter-ocean-water",
+    "format": "process",
+    "visualStyle": "photo",
+    "script": {
+      "title": "This is how a simple sponge CLEANS the ocean!",
+      "category": "nature",
+      "scenes": [
+        {
+          "narration": "Watch closely as this unassuming sea sponge performs an incredible, vital job for our oceans.",
+          "image_prompt": "Wide underwater shot of a large, colorful barrel sponge anchored to a vibrant coral reef, with small fish swimming around it. Clear blue water, natural sunlight dappling through the water, creating a serene and immersive atmosphere. Subject is clearly lit."
+        },
+        {
+          "narration": "It doesn't have a mouth, yet it constantly gulps water using thousands of tiny pores across its body.",
+          "image_prompt": "Medium shot of the surface of a vibrant sea sponge, clearly showing numerous small pores. Subtle currents in the clear blue water, natural sunlight dappling through the water, creating a serene and immersive atmosphere. Subject is clearly lit."
+        },
+        {
+          "narration": "Inside, specialized cells called choanocytes beat their flagella, creating powerful miniature currents.",
+          "image_prompt": "Extreme close-up macro shot illustrating conceptualized microscopic choanocyte cells with flagella inside a sponge's internal canal, glowing with rhythmic movements in a deep blue internal environment. Natural sunlight dappling through the water, creating a serene and immersive atmosphere. Subject is clearly lit."
+        },
+        {
+          "narration": "These currents draw in massive volumes of water, even from far away.",
+          "image_prompt": "Medium shot of a sea sponge, showing a subtle but clear inflow of water particles being drawn towards its surface. Surrounding clear blue ocean with vibrant coral reefs, natural sunlight dappling through the water, creating a serene and immersive atmosphere. Subject is clearly lit."
+        },
+        {
+          "narration": "The choanocytes then trap minuscule food particles, bacteria, and even pollutants from the water.",
+          "image_prompt": "Detail insert close-up of a small, colorful particle being trapped by the microscopic structures on the surface of a sponge pore. Clear blue water background with subtle light rays, natural sunlight dappling through the water, creating a serene and immersive atmosphere. Subject is clearly lit."
+        },
+        {
+          "narration": "Finally, the filtered, clean water is expelled through a large osculum, the sponge's excurrent opening.",
+          "image_prompt": "Low angle medium shot of the top of a large barrel sponge, clearly showing a visible plume of clean, clear water being ejected from its central osculum. Bright underwater lighting with natural sunlight dappling through the water, creating a serene and immersive atmosphere. Subject is clearly lit."
+        },
+        {
+          "narration": "Each day, one sponge can filter hundreds of gallons, making them unsung heroes of our healthy reefs.",
+          "image_prompt": "Wide, majestic underwater shot of a vibrant coral reef teeming with diverse marine life, featuring multiple large, healthy sponges actively filtering the crystal-clear water. Natural sunlight streaming through the water, creating a serene and immersive atmosphere. Subjects are clearly lit."
+        }
+      ],
+      "cta": "Dive into more amazing nature facts!"
+    },
+    "audioPath": "output/how-sponges-filter-ocean-water/how-sponges-filter-ocean-water.mp3",
+    "videoPath": "output/how-sponges-filter-ocean-water/how-sponges-filter-ocean-water.mp4",
+    "media": [
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 0,
+        "keyword": "sea sponge",
+        "path": "output/how-sponges-filter-ocean-water/media/01-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/person-squeezing-foam-8298623/",
+        "author": "cottonbro studio"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 1,
+        "keyword": "sponge",
+        "path": "output/how-sponges-filter-ocean-water/media/02-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/hands-dishwashing-5894544/",
+        "author": "cottonbro studio"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 2,
+        "keyword": "choanocytes",
+        "path": "output/how-sponges-filter-ocean-water/media/03-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/an-artist-s-illustration-of-artificial-intelligence-ai-this-image-explores-how-ai-can-be-for-sustainability-efforts-it-was-created-by-dada-projects-as-part-of-the-visualising-ai-projec-25935017/",
+        "author": "Google DeepMind"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 3,
+        "keyword": "water flow",
+        "path": "output/how-sponges-filter-ocean-water/media/04-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/stone-falling-into-lake-13723991/",
+        "author": "Marsel Sharipov"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 4,
+        "keyword": "particle capture",
+        "path": "output/how-sponges-filter-ocean-water/media/05-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/abstract-shapes-of-green-ink-underwater-15168373/",
+        "author": "Dan Cristian Pădureț"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 5,
+        "keyword": "water expulsion",
+        "path": "output/how-sponges-filter-ocean-water/media/06-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/stone-falling-into-lake-13723991/",
+        "author": "Marsel Sharipov"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 6,
+        "keyword": "healthy reef",
+        "path": "output/how-sponges-filter-ocean-water/media/07-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/stunning-coral-reefs-in-vibrant-seascape-36283736/",
+        "author": "JUN HO LEE"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 41.196009,
+    "status": "published",
+    "youtube": {
+      "videoId": "Rdomv4T6EKg",
+      "url": "https://www.youtube.com/shorts/Rdomv4T6EKg",
+      "title": "How a Simple Sponge Cleans the Ocean's Water #Shorts",
+      "publishedAt": "2026-07-12T21:46:32.594Z"
+    },
+    "createdAt": "2026-07-12T21:46:34.893Z"
   }
 ]
