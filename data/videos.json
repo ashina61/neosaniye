@@ -778,7 +778,7 @@
       "views": 328,
       "likes": 0,
       "comments": 0,
-      "statsAt": "2026-07-12T15:20:44.886Z"
+      "statsAt": "2026-07-12T18:00:31.651Z"
     }
   },
   {
@@ -896,10 +896,10 @@
     },
     "createdAt": "2026-07-10T07:01:13.361Z",
     "stats": {
-      "views": 1270,
+      "views": 1272,
       "likes": 24,
       "comments": 1,
-      "statsAt": "2026-07-12T15:20:44.503Z"
+      "statsAt": "2026-07-12T18:00:31.650Z"
     }
   },
   {
@@ -1014,10 +1014,10 @@
     },
     "createdAt": "2026-07-10T15:31:48.973Z",
     "stats": {
-      "views": 72,
+      "views": 74,
       "likes": 0,
       "comments": 1,
-      "statsAt": "2026-07-12T15:20:44.502Z"
+      "statsAt": "2026-07-12T18:00:31.648Z"
     }
   },
   {
@@ -1360,10 +1360,10 @@
     },
     "createdAt": "2026-07-10T22:47:21.809Z",
     "stats": {
-      "views": 396,
+      "views": 398,
       "likes": 11,
       "comments": 5,
-      "statsAt": "2026-07-12T15:20:44.501Z"
+      "statsAt": "2026-07-12T18:00:31.647Z"
     }
   },
   {
@@ -1692,10 +1692,10 @@
     },
     "createdAt": "2026-07-11T16:01:25.902Z",
     "stats": {
-      "views": 1176,
+      "views": 1178,
       "likes": 28,
       "comments": 3,
-      "statsAt": "2026-07-12T15:20:44.499Z"
+      "statsAt": "2026-07-12T18:00:31.645Z"
     }
   },
   {
@@ -1808,7 +1808,7 @@
       "views": 280,
       "likes": 33,
       "comments": 1,
-      "statsAt": "2026-07-12T15:20:44.497Z"
+      "statsAt": "2026-07-12T18:00:31.641Z"
     }
   },
   {
@@ -1928,6 +1928,131 @@
       "title": "Watch How Spiders Really Spin Their Incredible Webs #Shorts",
       "publishedAt": "2026-07-12T15:24:36.766Z"
     },
-    "createdAt": "2026-07-12T15:24:39.551Z"
+    "createdAt": "2026-07-12T15:24:39.551Z",
+    "stats": {
+      "views": 212,
+      "likes": 6,
+      "comments": 1,
+      "statsAt": "2026-07-12T18:00:31.639Z"
+    }
+  },
+  {
+    "id": "how-trees-communicate-1783879475208",
+    "topic": "How trees communicate",
+    "normalizedTopic": "how-trees-communicate",
+    "format": "process",
+    "visualStyle": "photo",
+    "script": {
+      "title": "The Hidden World: How Trees Talk to Each Other",
+      "category": "nature",
+      "scenes": [
+        {
+          "narration": "Beneath a forest canopy, it seems like silent solitude, but a hidden conversation is always happening.",
+          "image_prompt": "A wide establishing shot of a dense, lush forest floor bathed in dappled sunlight, showing a variety of trees and undergrowth, with a gentle, inquisitive mood. A slight mist hangs low, subject clearly lit."
+        },
+        {
+          "narration": "Trees actually talk using a vast underground network called the 'Wood Wide Web'.",
+          "image_prompt": "A low angle shot, eye-level with the forest floor, focusing on exposed tree roots intricately interwoven with visible mycelial networks, illuminated by a warm glow. The subject is clearly lit, maintaining an inquisitive mood in a vibrant forest."
+        },
+        {
+          "narration": "This incredible system of fungi connects nearly every tree, even different species, for miles.",
+          "image_prompt": "An extreme close-up of delicate, fine fungal threads (mycelium) intricately lacing through rich soil and around tiny rootlets, illuminated by a soft, scientific light. Macro photography style, vibrant and clearly lit within a forest setting."
+        },
+        {
+          "narration": "Through these fungal threads, trees share vital nutrients like carbon and nitrogen.",
+          "image_prompt": "A high angle shot looking down into a cross-section of forest soil, showing a glowing, intricate network of fungal threads connecting two distinct tree roots, symbolizing nutrient exchange. The subject is clearly lit, maintaining an inquisitive and vibrant forest mood."
+        },
+        {
+          "narration": "They also send alarm signals about pests or drought, warning their neighbors of danger.",
+          "image_prompt": "A medium shot of a tree trunk with subtle insect damage on its bark, with a faint red glow emanating from its base, subtly connecting to illuminated underground fungal threads in a vibrant forest. Moody, urgent lighting, subject clearly lit."
+        },
+        {
+          "narration": "Older 'mother trees' even nourish younger seedlings, ensuring the forest's survival.",
+          "image_prompt": "A low-angle shot, looking up at the majestic base of an ancient, 'mother' tree with strong, gnarled roots, surrounded by small, vibrant seedlings. The scene is bathed in a nurturing, warm light, maintaining the overall inquisitive and lush forest mood, subject clearly lit."
+        },
+        {
+          "narration": "So next time you're in a forest, remember the bustling, silent conversations happening all around you.",
+          "image_prompt": "A wide establishing shot of a vast, healthy, and vibrant forest from an elevated viewpoint, showing the expansive interconnectedness of the trees, bathed in the golden hour light. Peaceful and awe-inspiring mood, subject clearly lit."
+        }
+      ],
+      "cta": "Explore more of nature's secrets!"
+    },
+    "audioPath": "output/how-trees-communicate/how-trees-communicate.mp3",
+    "videoPath": "output/how-trees-communicate/how-trees-communicate.mp4",
+    "media": [
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 0,
+        "keyword": "forest",
+        "path": "output/how-trees-communicate/media/01-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/serene-pine-forest-with-tall-tree-trunks-32848154/",
+        "author": "Lauri Poldre"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 1,
+        "keyword": "roots",
+        "path": "output/how-trees-communicate/media/02-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/a-plant-with-roots-in-the-ground-9411399/",
+        "author": "Sasha  Kim"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 2,
+        "keyword": "fungi",
+        "path": "output/how-trees-communicate/media/03-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/close-up-shot-of-an-oyster-mushroom-on-a-tree-trunk-5787544/",
+        "author": "Konstantin Mishchenko"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 3,
+        "keyword": "nutrients",
+        "path": "output/how-trees-communicate/media/04-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/red-cabbage-and-beetroot-7048659/",
+        "author": "ROMAN ODINTSOV"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 4,
+        "keyword": "tree bark",
+        "path": "output/how-trees-communicate/media/05-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/autumn-park-with-tree-bark-close-up-34410633/",
+        "author": "Natallia  Vlasenko"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 5,
+        "keyword": "mother tree",
+        "path": "output/how-trees-communicate/media/06-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/a-tree-with-the-sun-shining-through-it-27410108/",
+        "author": "Furkan Elveren"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 6,
+        "keyword": "forest canopy",
+        "path": "output/how-trees-communicate/media/07-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/tranquil-view-of-sunlit-tree-canopy-34715630/",
+        "author": "SKP- Clicks"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 38.952993,
+    "status": "published",
+    "youtube": {
+      "videoId": "MjXWHkpafr8",
+      "url": "https://www.youtube.com/shorts/MjXWHkpafr8",
+      "title": "The Silent Language of Trees: How Forests Secretly Communicate #Shorts",
+      "publishedAt": "2026-07-12T18:04:32.769Z"
+    },
+    "createdAt": "2026-07-12T18:04:35.208Z"
   }
 ]
