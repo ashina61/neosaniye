@@ -80,7 +80,8 @@ export const SCRIPT_SCHEMA = {
     cta: {
       type: Type.STRING,
       description:
-        'Short closing spoken line tied to THIS story (unique each time), invites to follow',
+        'Short closing line tied to THIS story (unique each time), invites to follow. ' +
+        'NOT spoken in the voiceover — used only in the description/on-screen, so keep it snappy.',
     },
     emphasis_words: {
       type: Type.ARRAY,
@@ -183,14 +184,13 @@ PROCESS FORMAT RULES (this video is built from REAL stock footage, not generated
   return `You are a master short-form STORYTELLER for a faceless YouTube Shorts channel.
 Concept: "${config.niche.theme}". This video's format: ${format.brief}${processExtra}
 
-Write in English, for a SINGLE dramatic narrator. STRICT word budget: the total voiceover (all narrations + cta) must be 90-115 words — never more. That is ~35-42 seconds. Shorts are SHORT — hook fast, no filler, every sentence earns its place.
+Write in English, for a SINGLE dramatic narrator. STRICT word budget: the spoken voiceover is the SCENE NARRATIONS ONLY (the cta is NOT spoken) and their total must be 85-100 words — never more. That is ~35-40 seconds. Shorts are SHORT — hook fast, no filler, every sentence earns its place.
 
-Structure the story as 7-9 SCENES (beats) that flow as a tight narrative arc:
+Structure the story as 7-8 SCENES (beats) that flow as a tight narrative arc:
 1) A punchy hook in the FIRST scene that creates an open loop ("In 1518, an entire town could not stop dancing — and dozens died.").
 2) Rising action: escalate fast, add ONE concrete, surprising, ACCURATE detail per beat.
 3) A turning point or twist.
-4) A satisfying payoff / resolution that answers the hook.
-5) The cta closes it.
+4) A satisfying payoff / resolution in the FINAL scene that answers the hook (the story ends on this beat — the cta is a separate on-screen/description line, never spoken).
 
 Rules for each scene:
 - narration: exactly ONE sentence, spoken aloud, ~10-16 words, vivid and clear. No jargon, no emojis, no hashtags, no markdown.
@@ -204,7 +204,7 @@ Rules for each scene:
 Rules for the whole script:
 - Pick a genuinely FASCINATING, lesser-known TRUE story or fact. Prefer the "wait, what?!" kind.
 - ACCURACY IS MANDATORY. Use only well-documented, widely-accepted facts. Never invent events, quotes, names, or statistics. If a specific number or detail is uncertain, phrase it cautiously ("around", "some historians say") or leave it out. A wrong fact destroys the channel's credibility.
-- cta: short, specific to this story, and DIFFERENT every time (never a generic "Follow for more facts").
+- cta: short, specific to this story, and DIFFERENT every time (never a generic "Follow for more facts"). It is NOT spoken — description/on-screen only — so do not write it as a narration line.
 - title: curiosity-driven, <= 80 characters, no clickbait lies, no emojis.
 - MONETIZATION-SAFE LANGUAGE: the title, hook_text, and the FIRST scene's narration must be
   advertiser-friendly — build curiosity/intrigue and AVOID explicit words of violence, death,
@@ -333,21 +333,19 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
       continue;
     }
 
-    // SÜRE ZORLAMASI: prompt'taki bütçe yetmiyor, saymadan kabul etme.
-    // 125 kelime ≈ 45sn tavan; aşarsa aynı konuda kısaltma iste.
-    const totalWords = [
-      ...(script.scenes || []).map((s) => s.narration || ''),
-      script.cta || '',
-    ]
+    // SÜRE ZORLAMASI: yalnızca SESLENDİRİLEN sahne anlatımları sayılır (cta seslendirilmiyor).
+    // 105 kelime ≈ 40sn tavan; aşarsa aynı konuda kısaltma iste.
+    const totalWords = (script.scenes || [])
+      .map((s) => s.narration || '')
       .join(' ')
       .trim()
       .split(/\s+/)
       .filter(Boolean).length;
-    if (totalWords > 125 && attempt < maxRetries) {
+    if (totalWords > 105 && attempt < maxRetries) {
       console.warn(`[script] ${totalWords} kelime — bütçe aşıldı, kısaltma isteniyor.`);
       lengthFeedback =
-        `Your previous script about "${script.topic}" was ${totalWords} words — TOO LONG. ` +
-        `Rewrite the SAME topic "${script.topic}" with the total voiceover under 110 words: ` +
+        `Your previous script about "${script.topic}" was ${totalWords} words of narration — TOO LONG. ` +
+        `Rewrite the SAME topic "${script.topic}" with the total spoken narration under 95 words: ` +
         'fewer scenes (7 max), shorter sentences, cut the weakest details. Keep the same quality.';
       continue;
     }

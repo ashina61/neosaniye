@@ -20,14 +20,13 @@ export { parseSrt } from './edgeTts.js';
  */
 
 /** Anlatı script'inin seslendirilecek metin parçalarını sırayla döndürür.
- *  Yeni format: her sahnenin narration'ı + cta. Eski format: hook+body+cta. */
+ *  Yalnızca sahne anlatımları seslendirilir — cta (abone ol) SESLENDİRİLMEZ;
+ *  o yalnızca açıklama metninde ve görsel abone pilinde kullanılır. */
 export function scriptSegments(script) {
   if (Array.isArray(script.scenes) && script.scenes.length) {
-    const segs = script.scenes.map((s) => (s.narration || '').trim()).filter(Boolean);
-    if (script.cta) segs.push(script.cta.trim());
-    return segs;
+    return script.scenes.map((s) => (s.narration || '').trim()).filter(Boolean);
   }
-  return [script.hook, script.body, script.cta].filter(Boolean).map((s) => s.trim());
+  return [script.hook, script.body].filter(Boolean).map((s) => s.trim());
 }
 
 /** Bir script nesnesini seslendirilecek tek düz metne çevirir. */

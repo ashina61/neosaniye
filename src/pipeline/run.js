@@ -131,12 +131,10 @@ export async function runPipeline(opts = {}) {
     );
     if (!media.items.length) throw new Error('Hiç sahne görseli üretilemedi.');
 
-    // Sahne süreleri, anlatım kelime sayısına göre orantılı (cta son sahneye eklenir).
+    // Sahne süreleri, anlatım kelime sayısına göre orantılı.
+    // (cta artık seslendirilmiyor — yalnızca sahne anlatımları zamanlamayı belirler.)
     const scenes = script.scenes || [];
     const sceneWeights = scenes.map((s) => Math.max(1, wordCount(s.narration)));
-    if (script.cta && sceneWeights.length) {
-      sceneWeights[sceneWeights.length - 1] += wordCount(script.cta);
-    }
 
     // 4) Montaj (ffmpeg)
     log('Faz 4: Video montajı (ffmpeg)...');
