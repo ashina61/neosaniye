@@ -778,7 +778,7 @@
       "views": 328,
       "likes": 0,
       "comments": 0,
-      "statsAt": "2026-07-11T15:56:29.038Z"
+      "statsAt": "2026-07-11T23:59:33.342Z"
     }
   },
   {
@@ -896,10 +896,10 @@
     },
     "createdAt": "2026-07-10T07:01:13.361Z",
     "stats": {
-      "views": 1265,
-      "likes": 23,
+      "views": 1267,
+      "likes": 24,
       "comments": 1,
-      "statsAt": "2026-07-11T15:56:29.037Z"
+      "statsAt": "2026-07-11T23:59:33.340Z"
     }
   },
   {
@@ -1014,10 +1014,10 @@
     },
     "createdAt": "2026-07-10T15:31:48.973Z",
     "stats": {
-      "views": 44,
+      "views": 70,
       "likes": 0,
       "comments": 1,
-      "statsAt": "2026-07-11T15:56:29.035Z"
+      "statsAt": "2026-07-11T23:59:33.339Z"
     }
   },
   {
@@ -1360,10 +1360,10 @@
     },
     "createdAt": "2026-07-10T22:47:21.809Z",
     "stats": {
-      "views": 373,
-      "likes": 10,
+      "views": 379,
+      "likes": 11,
       "comments": 5,
-      "statsAt": "2026-07-11T15:56:29.033Z"
+      "statsAt": "2026-07-11T23:59:33.337Z"
     }
   },
   {
@@ -1690,6 +1690,119 @@
       "title": "The Exploding Lake That Killed 1,746 People in Their Sleep! #Shorts",
       "publishedAt": "2026-07-11T16:01:23.652Z"
     },
-    "createdAt": "2026-07-11T16:01:25.902Z"
+    "createdAt": "2026-07-11T16:01:25.902Z",
+    "stats": {
+      "views": 1168,
+      "likes": 28,
+      "comments": 3,
+      "statsAt": "2026-07-11T23:59:33.335Z"
+    }
+  },
+  {
+    "id": "how-hummingbirds-hover-1783814752082",
+    "topic": "How Hummingbirds Hover",
+    "normalizedTopic": "how-hummingbirds-hover",
+    "format": "howworks",
+    "visualStyle": "photo",
+    "script": {
+      "title": "How Do Hummingbirds Perform Their Incredible Mid-Air Acrobatics?",
+      "category": "nature",
+      "scenes": [
+        {
+          "narration": "Hummingbirds defy gravity, hovering perfectly still or even flying backward – how do they do it?",
+          "image_prompt": "A tiny, vibrant hummingbird with iridescent emerald green feathers, perfectly suspended mid-air against a soft-focus tropical flower, bright golden hour lighting, captured with high-speed photography."
+        },
+        {
+          "narration": "Unlike most birds, their wings don't just flap up and down; they rotate in a figure-eight pattern.",
+          "image_prompt": "Extreme close-up of a hummingbird's wing joint, showing a tiny shoulder rotating, captured with ultra-high-speed motion blur, natural vibrant colors, bright sunlight."
+        },
+        {
+          "narration": "This unique motion creates lift on both the downstroke and the upstroke, twice the normal avian lift.",
+          "image_prompt": "A scientific animation showing a slow-motion representation of air currents around a hummingbird's wing, illustrating two distinct lift vortices during both downstroke and upstroke against a dark, abstract background."
+        },
+        {
+          "narration": "Their incredibly fast wing beats, up to 80 times per second, create a tiny, powerful vortex of air.",
+          "image_prompt": "Close-up, low angle shot from below a hovering hummingbird, capturing the blur of its wings creating subtle air ripples, with focus on the bird's belly and a vibrant tropical flower below, warm sunlight."
+        },
+        {
+          "narration": "They also have uniquely strong pectoral muscles, making up nearly 30% of their body weight.",
+          "image_prompt": "A stylized anatomical view of a hummingbird's chest, highlighting the large, powerful pectoral muscles, set against a dark, informative background, clearly lit."
+        },
+        {
+          "narration": "This allows for precise control, letting them adjust their angle by mere degrees.",
+          "image_prompt": "Over-the-shoulder shot of a vibrant hummingbird, slightly angled down, subtly shifting its body position with exquisite control while hovering next to a feeder in lush tropical background, bright sunlight."
+        },
+        {
+          "narration": "It’s a living helicopter engine, consuming huge energy, but granting unparalleled aerial mastery.",
+          "image_prompt": "Wide establishing shot of a tiny, vibrant hummingbird darting away from a tropical flower with incredible speed, leaving a slight motion trail effect, backlit by the sun creating a halo effect around its body against a lush green background."
+        }
+      ],
+      "cta": "Explore more incredible animal adaptations – follow for fascinating facts!"
+    },
+    "audioPath": "output/how-hummingbirds-hover/how-hummingbirds-hover.mp3",
+    "videoPath": "output/how-hummingbirds-hover/how-hummingbirds-hover.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/how-hummingbirds-hover/media/01-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 1,
+        "keyword": "hummingbird",
+        "path": "output/how-hummingbirds-hover/media/02-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/vibrant-hummingbirds-in-lush-greenery-32022386/",
+        "author": "Jean Paul  Montanaro"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/how-hummingbirds-hover/media/03-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 3,
+        "keyword": "hummingbird",
+        "path": "output/how-hummingbirds-hover/media/04-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/vibrant-hummingbirds-in-lush-greenery-32022386/",
+        "author": "Jean Paul  Montanaro"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 4,
+        "path": "output/how-hummingbirds-hover/media/05-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 5,
+        "path": "output/how-hummingbirds-hover/media/06-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 6,
+        "keyword": "hummingbird",
+        "path": "output/how-hummingbirds-hover/media/07-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/vibrant-hummingbirds-in-lush-greenery-32022386/",
+        "author": "Jean Paul  Montanaro"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 46.873991,
+    "status": "published",
+    "youtube": {
+      "videoId": "UXjBvJbVCkM",
+      "url": "https://www.youtube.com/shorts/UXjBvJbVCkM",
+      "title": "How Do Hummingbirds Perform Their Incredible Mid-Air Acrobatics? #Shorts",
+      "publishedAt": "2026-07-12T00:05:49.563Z"
+    },
+    "createdAt": "2026-07-12T00:05:52.083Z"
   }
 ]
