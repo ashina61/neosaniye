@@ -778,7 +778,7 @@
       "views": 328,
       "likes": 0,
       "comments": 0,
-      "statsAt": "2026-07-11T23:59:33.342Z"
+      "statsAt": "2026-07-12T15:20:44.886Z"
     }
   },
   {
@@ -896,10 +896,10 @@
     },
     "createdAt": "2026-07-10T07:01:13.361Z",
     "stats": {
-      "views": 1267,
+      "views": 1270,
       "likes": 24,
       "comments": 1,
-      "statsAt": "2026-07-11T23:59:33.340Z"
+      "statsAt": "2026-07-12T15:20:44.503Z"
     }
   },
   {
@@ -1014,10 +1014,10 @@
     },
     "createdAt": "2026-07-10T15:31:48.973Z",
     "stats": {
-      "views": 70,
+      "views": 72,
       "likes": 0,
       "comments": 1,
-      "statsAt": "2026-07-11T23:59:33.339Z"
+      "statsAt": "2026-07-12T15:20:44.502Z"
     }
   },
   {
@@ -1360,10 +1360,10 @@
     },
     "createdAt": "2026-07-10T22:47:21.809Z",
     "stats": {
-      "views": 379,
+      "views": 396,
       "likes": 11,
       "comments": 5,
-      "statsAt": "2026-07-11T23:59:33.337Z"
+      "statsAt": "2026-07-12T15:20:44.501Z"
     }
   },
   {
@@ -1692,10 +1692,10 @@
     },
     "createdAt": "2026-07-11T16:01:25.902Z",
     "stats": {
-      "views": 1168,
+      "views": 1176,
       "likes": 28,
       "comments": 3,
-      "statsAt": "2026-07-11T23:59:33.335Z"
+      "statsAt": "2026-07-12T15:20:44.499Z"
     }
   },
   {
@@ -1803,6 +1803,131 @@
       "title": "How Do Hummingbirds Perform Their Incredible Mid-Air Acrobatics? #Shorts",
       "publishedAt": "2026-07-12T00:05:49.563Z"
     },
-    "createdAt": "2026-07-12T00:05:52.083Z"
+    "createdAt": "2026-07-12T00:05:52.083Z",
+    "stats": {
+      "views": 280,
+      "likes": 33,
+      "comments": 1,
+      "statsAt": "2026-07-12T15:20:44.497Z"
+    }
+  },
+  {
+    "id": "how-spiders-spin-webs-1783869879551",
+    "topic": "How Spiders Spin Webs",
+    "normalizedTopic": "how-spiders-spin-webs",
+    "format": "process",
+    "visualStyle": "photo",
+    "script": {
+      "title": "Watch How Spiders Really Spin Their Incredible Webs",
+      "category": "nature",
+      "scenes": [
+        {
+          "narration": "Watch closely as this garden spider begins to construct its intricate, deadly masterpiece.",
+          "image_prompt": "An extreme close-up of a vibrant, intricately patterned garden spider's spinnerets as a delicate silk thread emerges, sharply in focus, against a soft-focus green background, illuminated by strong, natural daylight."
+        },
+        {
+          "narration": "First, it releases a sticky dragline, letting the wind carry it until it snags a surface.",
+          "image_prompt": "A wide establishing shot of a vibrant, intricately patterned garden spider perched on a green branch, with a long silk thread carried by a gentle breeze into the blurred green foliage beyond, under strong, natural daylight."
+        },
+        {
+          "narration": "Once anchored, the spider pulls the slack tight, securing the crucial first bridge.",
+          "image_prompt": "A medium shot of a vibrant, intricately patterned garden spider actively pulling a silk thread taut between two anchor points, its legs working precisely, with strong, natural daylight highlighting the delicate threads against a soft-focus green background."
+        },
+        {
+          "narration": "Next, it drops a silk thread from the center, forming a 'Y' shape – the web's foundation.",
+          "image_prompt": "A high-angle shot looking down on a vibrant, intricately patterned garden spider creating the initial 'Y' shape of its web, dropping a central thread, with strong, natural daylight illuminating the intricate work against a soft-focus green background."
+        },
+        {
+          "narration": "Then, it rapidly adds radial spokes, extending outward like bicycle wheel spokes.",
+          "image_prompt": "A close-up of a vibrant, intricately patterned garden spider meticulously adding new radial spokes to its web, the delicate threads clearly visible, with strong, natural daylight highlighting them against a soft-focus green background."
+        },
+        {
+          "narration": "Now, it lays down a non-sticky spiral, a temporary scaffolding it uses to navigate.",
+          "image_prompt": "A detail insert shot focusing on the legs of a vibrant, intricately patterned garden spider as it carefully places a non-sticky spiral thread for temporary scaffolding, with strong, natural daylight illuminating the delicate process against a soft-focus green background."
+        },
+        {
+          "narration": "Finally, it replaces that frame with a new, sticky spiral, ready to trap its prey.",
+          "image_prompt": "A medium shot of a vibrant, intricately patterned garden spider patiently sitting at the center of its finished sticky spiral web, glistening with dew-like droplets, ready for prey. Strong, natural daylight highlights the delicate threads against a soft-focus green background."
+        }
+      ],
+      "cta": "See nature's wonders daily!"
+    },
+    "audioPath": "output/how-spiders-spin-webs/how-spiders-spin-webs.mp3",
+    "videoPath": "output/how-spiders-spin-webs/how-spiders-spin-webs.mp4",
+    "media": [
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 0,
+        "keyword": "spider spinnerets",
+        "path": "output/how-spiders-spin-webs/media/01-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/video-of-a-spider-web-8745497/",
+        "author": "ROMAN ODINTSOV"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 1,
+        "keyword": "spider",
+        "path": "output/how-spiders-spin-webs/media/02-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/video-of-a-spider-web-8745497/",
+        "author": "ROMAN ODINTSOV"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 2,
+        "keyword": "spider anchoring",
+        "path": "output/how-spiders-spin-webs/media/03-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/a-spider-on-a-branch-with-a-blue-sky-in-the-background-8514105/",
+        "author": "Peggy Anke"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 3,
+        "keyword": "spider",
+        "path": "output/how-spiders-spin-webs/media/04-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/video-of-a-spider-web-8745497/",
+        "author": "ROMAN ODINTSOV"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 4,
+        "keyword": "spider radial",
+        "path": "output/how-spiders-spin-webs/media/05-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/an-animation-of-a-mandala-9874837/",
+        "author": "Teena Dhaliwal"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 5,
+        "keyword": "spider spiral",
+        "path": "output/how-spiders-spin-webs/media/06-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/video-of-a-spider-web-8745497/",
+        "author": "ROMAN ODINTSOV"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 6,
+        "keyword": "spiderweb",
+        "path": "output/how-spiders-spin-webs/media/07-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/close-up-of-spider-on-web-in-sunny-garden-36107558/",
+        "author": "Airam Dato-on"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 38.803991,
+    "status": "published",
+    "youtube": {
+      "videoId": "hR1-nxMs9-c",
+      "url": "https://www.youtube.com/shorts/hR1-nxMs9-c",
+      "title": "Watch How Spiders Really Spin Their Incredible Webs #Shorts",
+      "publishedAt": "2026-07-12T15:24:36.766Z"
+    },
+    "createdAt": "2026-07-12T15:24:39.551Z"
   }
 ]
