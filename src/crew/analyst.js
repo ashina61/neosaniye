@@ -74,14 +74,42 @@ function mechanicalBrief(d) {
 /**
  * @returns {Promise<{brief:string, digest:object}|null>}
  */
+/** Son üretilen videoların kategorilerine bakar; en yenisi arka arkaya
+ *  tekrarlıyorsa, "bu kategoriyi ES" kuralı üretir (kanal tek konuya saplanmasın).
+ *  Örümcek→sinek kuşu→ağaç→sünger gibi üst üste doğa akışını kırar. */
+function diversityRule(allNewestFirst) {
+  const cats = allNewestFirst
+    .slice(0, 5)
+    .map((v) => String(v.script?.category || '').toLowerCase().trim())
+    .filter(Boolean);
+  const last = cats[0];
+  if (!last) return '';
+  let streak = 0;
+  for (const c of cats) {
+    if (c === last) streak += 1;
+    else break;
+  }
+  if (streak < 2) return ''; // henüz tekrar yok
+  return (
+    ` DIVERSITY RULE (overrides the data): the last ${streak} videos were ALL "${last}" — ` +
+    `do NOT pick "${last}" again this time. Choose a clearly DIFFERENT topic category to keep ` +
+    `the channel varied, even if "${last}" performs best. Variety protects reach.`
+  );
+}
+
 export async function analyzePerformance() {
   try {
-    const vids = (await getVideosWithYouTube(60)).filter((v) => v.stats?.views > 0);
+    const all = await getVideosWithYouTube(60);
+    const vids = all.filter((v) => v.stats?.views > 0);
     if (vids.length < MIN_VIDEOS) return null; // yeterli veri yok, körlemesine devam
 
     const digest = buildDigest(vids);
+    const diversity = diversityRule(all);
     const mech = mechanicalBrief(digest);
-    if (!config.gemini.apiKey) return mech ? { brief: mech, digest } : null;
+    if (!config.gemini.apiKey) {
+      const b = (mech + diversity).trim();
+      return b ? { brief: b, digest } : null;
+    }
 
     try {
       const ai = new GoogleGenAI({ apiKey: config.gemini.apiKey });
@@ -89,15 +117,21 @@ export async function analyzePerformance() {
         ai,
         {
           model: config.gemini.model,
-          contents: `Performance data for our channel:\n${digestToText(digest)}\n\nWrite the directive.`,
+          contents:
+            `Performance data for our channel:\n${digestToText(digest)}\n\n` +
+            (diversity ? `${diversity.trim()}\n\n` : '') +
+            'Write the directive.',
           config: { systemInstruction: ANALYST_SYSTEM, thinkingConfig: { thinkingBudget: 0 } },
         },
         3,
       );
-      const brief = String(resp.text || '').trim().replace(/\s+/g, ' ').slice(0, 400);
-      return { brief: brief || mech, digest };
+      let brief = String(resp.text || '').trim().replace(/\s+/g, ' ').slice(0, 360);
+      // Kuralı garantiye al: model unutsa bile brief'in sonuna ekle (aşağı akış görsün).
+      if (diversity && !new RegExp(`do not pick`, 'i').test(brief)) brief += diversity;
+      return { brief: (brief || mech + diversity).trim(), digest };
     } catch {
-      return mech ? { brief: mech, digest } : null;
+      const b = (mech + diversity).trim();
+      return b ? { brief: b, digest } : null;
     }
   } catch {
     return null;

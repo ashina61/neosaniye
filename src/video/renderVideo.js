@@ -103,13 +103,16 @@ function buildCaptionAss(words, opts) {
     `Style: Cap,Montserrat SemiBold,${size},&H00FFFFFF,&H00000000,&H98000000,` +
     `0,1,1.6,2.2,2,${marginH},${marginH},${marginV},1`;
   // Vurgu parçası: AYRI ve FARKLI FONTTA (zarif italik serif) — referans stil.
-  // Altın dolgu + KALIN opak siyah kenarlık (outline 0 idi, aydınlık arka planda
-  // soluk kalıyordu) — artık her zeminde net okunur. Kendi bandında, akan
-  // altyazının ÜSTÜNDE durur; böylece ekranda daha uzun kalsa da çakışmaz.
+  // Temiz BEYAZ dolgu + KALIN opak siyah kenarlık (outline 0 idi, aydınlık arka
+  // planda soluk kalıyordu; altın deneyince cırtlak oldu). Beyaz + güçlü kenarlık
+  // her zeminde net okunur ve premium/zarif durur. Kendi bandında, akan altyazının
+  // ÜSTÜNDE durur; böylece ekranda daha uzun kalsa da çakışmaz.
   const emphSize = Math.round(size * 1.55);
-  const emphMarginV = marginV + 235;
+  // Finale marginV+210'da; vurgu bandını belirgin ÜSTüne al (+370) ki son
+  // saniyelerde bir vurgu kelimesi finale ile aynı anda çıksa bile çakışmasın.
+  const emphMarginV = marginV + 370;
   const emphStyle =
-    `Style: Emph,Playfair Display,${emphSize},&H0000E6FF,&H00000000,&H64000000,` +
+    `Style: Emph,Playfair Display,${emphSize},&H00FFFFFF,&H00000000,&H64000000,` +
     `1,1,4,2,2,${marginH},${marginH},${emphMarginV},1`;
   const styleLines = [capStyle, emphStyle];
 
@@ -146,14 +149,18 @@ function buildCaptionAss(words, opts) {
     if (fin.length * finFactor * ffs > usableW) {
       ffs = Math.max(52, Math.floor(usableW / (fin.length * finFactor)));
     }
+    // Kapanış cümlesi: outline 0 + blur yüzünden hayalet gibi soluk kalıyordu.
+    // Artık gerçek kenarlık (2.6) + net (blur yok) — okunur ama yine zarif.
+    // İnce harf aralığı (\fsp) + yumuşak oturma ile "kapanış başlığı" havası.
     const fStyle =
-      `Style: Finale,Playfair Display,${ffs},&H00FFFFFF,&H00000000,&HB4000000,` +
-      `0,1,0,3,2,${marginH},${marginH},${marginV + 210},1`;
+      `Style: Finale,Playfair Display,${ffs},&H00FFFFFF,&H00000000,&H8C000000,` +
+      `0,1,2.6,2,2,${marginH},${marginH},${marginV + 210},1`;
     styleLines.push(fStyle);
     const tEnd = words[words.length - 1].end;
     const st = Math.max(0.5, tEnd - 2.6);
     events.push(
-      `Dialogue: 2,${assTime(st)},${assTime(tEnd + 1.6)},Finale,,0,0,0,,{\\i1\\fad(450,300)\\blur1.5}${fin}`,
+      `Dialogue: 2,${assTime(st)},${assTime(tEnd + 1.6)},Finale,,0,0,0,,` +
+        `{\\i1\\fsp2\\fad(420,320)\\fscx103\\fscy103\\t(0,520,\\fscx100\\fscy100)}${fin}`,
     );
   }
 
