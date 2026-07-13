@@ -778,7 +778,7 @@
       "views": 328,
       "likes": 0,
       "comments": 0,
-      "statsAt": "2026-07-12T21:42:37.435Z"
+      "statsAt": "2026-07-13T18:10:14.935Z"
     }
   },
   {
@@ -899,7 +899,7 @@
       "views": 1272,
       "likes": 24,
       "comments": 1,
-      "statsAt": "2026-07-12T21:42:37.433Z"
+      "statsAt": "2026-07-13T18:10:14.933Z"
     }
   },
   {
@@ -1017,7 +1017,7 @@
       "views": 74,
       "likes": 0,
       "comments": 1,
-      "statsAt": "2026-07-12T21:42:37.432Z"
+      "statsAt": "2026-07-13T18:10:14.931Z"
     }
   },
   {
@@ -1360,10 +1360,10 @@
     },
     "createdAt": "2026-07-10T22:47:21.809Z",
     "stats": {
-      "views": 400,
+      "views": 402,
       "likes": 11,
       "comments": 5,
-      "statsAt": "2026-07-12T21:42:37.430Z"
+      "statsAt": "2026-07-13T18:10:14.929Z"
     }
   },
   {
@@ -1692,10 +1692,10 @@
     },
     "createdAt": "2026-07-11T16:01:25.902Z",
     "stats": {
-      "views": 1170,
-      "likes": 28,
-      "comments": 3,
-      "statsAt": "2026-07-12T21:42:37.429Z"
+      "views": 1172,
+      "likes": 29,
+      "comments": 5,
+      "statsAt": "2026-07-13T18:10:14.928Z"
     }
   },
   {
@@ -1805,10 +1805,10 @@
     },
     "createdAt": "2026-07-12T00:05:52.083Z",
     "stats": {
-      "views": 283,
-      "likes": 34,
+      "views": 303,
+      "likes": 41,
       "comments": 1,
-      "statsAt": "2026-07-12T21:42:37.427Z"
+      "statsAt": "2026-07-13T18:10:14.926Z"
     }
   },
   {
@@ -1930,10 +1930,10 @@
     },
     "createdAt": "2026-07-12T15:24:39.551Z",
     "stats": {
-      "views": 289,
-      "likes": 6,
+      "views": 358,
+      "likes": 7,
       "comments": 1,
-      "statsAt": "2026-07-12T21:42:37.425Z"
+      "statsAt": "2026-07-13T18:10:14.924Z"
     }
   },
   {
@@ -2055,10 +2055,10 @@
     },
     "createdAt": "2026-07-12T18:04:35.208Z",
     "stats": {
-      "views": 524,
-      "likes": 35,
-      "comments": 2,
-      "statsAt": "2026-07-12T21:42:37.423Z"
+      "views": 964,
+      "likes": 45,
+      "comments": 3,
+      "statsAt": "2026-07-13T18:10:14.922Z"
     }
   },
   {
@@ -2178,6 +2178,12 @@
       "title": "How a Simple Sponge Cleans the Ocean's Water #Shorts",
       "publishedAt": "2026-07-12T21:46:32.594Z"
     },
-    "createdAt": "2026-07-12T21:46:34.893Z"
+    "createdAt": "2026-07-12T21:46:34.893Z",
+    "stats": {
+      "views": 443,
+      "likes": 6,
+      "comments": 1,
+      "statsAt": "2026-07-13T18:10:14.920Z"
+    }
   }
 ]
