@@ -778,7 +778,7 @@
       "views": 328,
       "likes": 0,
       "comments": 0,
-      "statsAt": "2026-07-13T18:38:47.656Z"
+      "statsAt": "2026-07-13T21:49:42.035Z"
     }
   },
   {
@@ -899,7 +899,7 @@
       "views": 1272,
       "likes": 24,
       "comments": 1,
-      "statsAt": "2026-07-13T18:38:47.654Z"
+      "statsAt": "2026-07-13T21:49:42.033Z"
     }
   },
   {
@@ -1017,7 +1017,7 @@
       "views": 74,
       "likes": 0,
       "comments": 1,
-      "statsAt": "2026-07-13T18:38:47.652Z"
+      "statsAt": "2026-07-13T21:49:42.031Z"
     }
   },
   {
@@ -1363,7 +1363,7 @@
       "views": 402,
       "likes": 11,
       "comments": 5,
-      "statsAt": "2026-07-13T18:38:47.651Z"
+      "statsAt": "2026-07-13T21:49:42.029Z"
     }
   },
   {
@@ -1692,10 +1692,10 @@
     },
     "createdAt": "2026-07-11T16:01:25.902Z",
     "stats": {
-      "views": 1172,
+      "views": 1173,
       "likes": 29,
       "comments": 5,
-      "statsAt": "2026-07-13T18:38:47.649Z"
+      "statsAt": "2026-07-13T21:49:42.028Z"
     }
   },
   {
@@ -1805,10 +1805,10 @@
     },
     "createdAt": "2026-07-12T00:05:52.083Z",
     "stats": {
-      "views": 303,
+      "views": 308,
       "likes": 41,
       "comments": 1,
-      "statsAt": "2026-07-13T18:38:47.648Z"
+      "statsAt": "2026-07-13T21:49:42.026Z"
     }
   },
   {
@@ -1930,10 +1930,10 @@
     },
     "createdAt": "2026-07-12T15:24:39.551Z",
     "stats": {
-      "views": 359,
+      "views": 361,
       "likes": 7,
       "comments": 1,
-      "statsAt": "2026-07-13T18:38:47.646Z"
+      "statsAt": "2026-07-13T21:49:42.025Z"
     }
   },
   {
@@ -2055,10 +2055,10 @@
     },
     "createdAt": "2026-07-12T18:04:35.208Z",
     "stats": {
-      "views": 964,
-      "likes": 45,
+      "views": 965,
+      "likes": 46,
       "comments": 3,
-      "statsAt": "2026-07-13T18:38:47.644Z"
+      "statsAt": "2026-07-13T21:49:42.023Z"
     }
   },
   {
@@ -2180,10 +2180,10 @@
     },
     "createdAt": "2026-07-12T21:46:34.893Z",
     "stats": {
-      "views": 443,
+      "views": 447,
       "likes": 6,
       "comments": 1,
-      "statsAt": "2026-07-13T18:38:47.642Z"
+      "statsAt": "2026-07-13T21:49:42.021Z"
     }
   },
   {
@@ -2291,6 +2291,119 @@
       "title": "The 1835 Moon Hoax That Fooled Millions #Shorts",
       "publishedAt": "2026-07-13T18:44:50.750Z"
     },
-    "createdAt": "2026-07-13T18:44:54.118Z"
+    "createdAt": "2026-07-13T18:44:54.118Z",
+    "stats": {
+      "views": 245,
+      "likes": 17,
+      "comments": 1,
+      "statsAt": "2026-07-13T21:49:42.019Z"
+    }
+  },
+  {
+    "id": "immortal-jellyfish-1783979731629",
+    "topic": "Immortal Jellyfish",
+    "normalizedTopic": "immortal-jellyfish",
+    "format": "story",
+    "visualStyle": "photo",
+    "script": {
+      "title": "This Jellyfish Can Live Forever?",
+      "category": "nature",
+      "scenes": [
+        {
+          "narration": "In the vast oceans, there lives a creature with an astonishing ability: biological immortality.",
+          "image_prompt": "A single, small, translucent jellyfish with a bell-shaped body and delicate tentacles, glowing softly in the deep blue ocean, illuminated by ethereal underwater light, gracefully drifting in the vast ocean. Wide establishing shot, serene mood."
+        },
+        {
+          "narration": "When faced with danger, injury, or old age, this tiny Turritopsis dohrnii jellyfish can transform itself.",
+          "image_prompt": "A small, translucent jellyfish with a bell-shaped body and delicate tentacles, glowing softly in the deep blue ocean, illuminated by ethereal underwater light, its bell slightly shrunken, tentacles beginning to retract as if in preparation for change. Medium shot, slightly tense mood."
+        },
+        {
+          "narration": "Instead of perishing, it reverts to an earlier, juvenile stage: a polyp.",
+          "image_prompt": "An extreme close-up of a small, translucent jellyfish with a bell-shaped body and delicate tentacles, glowing softly in the deep blue ocean, illuminated by ethereal underwater light, contracting and forming into a small, attached polyp on a rock surface. Extreme close-up, intimate, mysterious mood."
+        },
+        {
+          "narration": "It effectively hits a 'reset button' on its life cycle, becoming a baby again.",
+          "image_prompt": "A cluster of tiny, freshly formed jellyfish polyps clinging to a vibrant coral in the deep blue ocean. High angle shot, calm and wondrous mood."
+        },
+        {
+          "narration": "From this polyp stage, it can then mature and grow into a full adult jellyfish once more.",
+          "image_prompt": "An over-the-shoulder shot, looking from behind a growing polyp towards a tiny, newly detached jellyfish Medusa, starting to swim away from the colony. Dynamic perspective, bright key light on jellyfish, darker background. Hopeful mood."
+        },
+        {
+          "narration": "This incredible process can repeat indefinitely, granting it potential immortality.",
+          "image_prompt": "A mature, translucent jellyfish with a bell-shaped body and delicate tentacles, glowing softly in the deep blue ocean, illuminated by ethereal underwater light, swimming alone in open ocean, its bell pulsing gently. Medium shot, serene and awe-inspiring mood."
+        },
+        {
+          "narration": "The Turritopsis dohrnii is truly a biological marvel, endlessly restarting its existence.",
+          "image_prompt": "Multiple translucent jellyfish with bell-shaped bodies and delicate tentacles, glowing softly in the deep blue ocean, illuminated by ethereal underwater light, gracefully ascending from the deep ocean towards the surface, backlit by distant sun rays. Wide establishing shot, grand and majestic mood."
+        }
+      ],
+      "cta": "Dive into more nature facts!"
+    },
+    "audioPath": "output/immortal-jellyfish/immortal-jellyfish.mp3",
+    "videoPath": "output/immortal-jellyfish/immortal-jellyfish.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/immortal-jellyfish/media/01-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 1,
+        "keyword": "jellyfish",
+        "path": "output/immortal-jellyfish/media/02-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/girl-looking-at-jellyfishes-in-an-aquarium-8837845/",
+        "author": "Los Muertos Crew"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/immortal-jellyfish/media/03-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 3,
+        "keyword": "coral",
+        "path": "output/immortal-jellyfish/media/04-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/corals-in-aquarium-13320442/",
+        "author": "Boyan Minchev"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 4,
+        "path": "output/immortal-jellyfish/media/05-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 5,
+        "keyword": "jellyfish",
+        "path": "output/immortal-jellyfish/media/06-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/girl-looking-at-jellyfishes-in-an-aquarium-8837845/",
+        "author": "Los Muertos Crew"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 6,
+        "path": "output/immortal-jellyfish/media/07-ai.jpg"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 41.121995,
+    "status": "published",
+    "youtube": {
+      "videoId": "PBLOQBzIspI",
+      "url": "https://www.youtube.com/shorts/PBLOQBzIspI",
+      "title": "This Jellyfish Can Live Forever? #Shorts",
+      "publishedAt": "2026-07-13T21:55:29.056Z"
+    },
+    "createdAt": "2026-07-13T21:55:31.629Z"
   }
 ]
