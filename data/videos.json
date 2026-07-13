@@ -778,7 +778,7 @@
       "views": 328,
       "likes": 0,
       "comments": 0,
-      "statsAt": "2026-07-13T18:10:14.935Z"
+      "statsAt": "2026-07-13T18:38:47.656Z"
     }
   },
   {
@@ -899,7 +899,7 @@
       "views": 1272,
       "likes": 24,
       "comments": 1,
-      "statsAt": "2026-07-13T18:10:14.933Z"
+      "statsAt": "2026-07-13T18:38:47.654Z"
     }
   },
   {
@@ -1017,7 +1017,7 @@
       "views": 74,
       "likes": 0,
       "comments": 1,
-      "statsAt": "2026-07-13T18:10:14.931Z"
+      "statsAt": "2026-07-13T18:38:47.652Z"
     }
   },
   {
@@ -1363,7 +1363,7 @@
       "views": 402,
       "likes": 11,
       "comments": 5,
-      "statsAt": "2026-07-13T18:10:14.929Z"
+      "statsAt": "2026-07-13T18:38:47.651Z"
     }
   },
   {
@@ -1695,7 +1695,7 @@
       "views": 1172,
       "likes": 29,
       "comments": 5,
-      "statsAt": "2026-07-13T18:10:14.928Z"
+      "statsAt": "2026-07-13T18:38:47.649Z"
     }
   },
   {
@@ -1808,7 +1808,7 @@
       "views": 303,
       "likes": 41,
       "comments": 1,
-      "statsAt": "2026-07-13T18:10:14.926Z"
+      "statsAt": "2026-07-13T18:38:47.648Z"
     }
   },
   {
@@ -1930,10 +1930,10 @@
     },
     "createdAt": "2026-07-12T15:24:39.551Z",
     "stats": {
-      "views": 358,
+      "views": 359,
       "likes": 7,
       "comments": 1,
-      "statsAt": "2026-07-13T18:10:14.924Z"
+      "statsAt": "2026-07-13T18:38:47.646Z"
     }
   },
   {
@@ -2058,7 +2058,7 @@
       "views": 964,
       "likes": 45,
       "comments": 3,
-      "statsAt": "2026-07-13T18:10:14.922Z"
+      "statsAt": "2026-07-13T18:38:47.644Z"
     }
   },
   {
@@ -2183,7 +2183,114 @@
       "views": 443,
       "likes": 6,
       "comments": 1,
-      "statsAt": "2026-07-13T18:10:14.920Z"
+      "statsAt": "2026-07-13T18:38:47.642Z"
     }
+  },
+  {
+    "id": "the-great-moon-hoax-of-1835-1783968294118",
+    "topic": "The Great Moon Hoax of 1835",
+    "normalizedTopic": "the-great-moon-hoax-of-1835",
+    "format": "story",
+    "visualStyle": "animated",
+    "script": {
+      "title": "The Great Moon Hoax That Fooled The World",
+      "category": "history",
+      "scenes": [
+        {
+          "narration": "In 1835, a New York newspaper claimed Sir John Herschel discovered life on the moon.",
+          "image_prompt": "A bustling 19th-century New York street scene, filled with citizens in period clothing, eagerly reaching for newspapers from a vendor. Soft, sepia-toned daylight, creating an atmosphere of eager anticipation. The scene is wide, showing the crowded street and period architecture."
+        },
+        {
+          "narration": "The Sun newspaper published articles detailing incredible lunar landscapes, oceans, and strange animals.",
+          "image_prompt": "A close-up on a spread of an aged 19th-century newspaper, with large, bold headlines announcing extraordinary lunar discoveries. The paper is yellowed and slightly crinkled, held open. Dramatic, focused lighting highlights the text."
+        },
+        {
+          "narration": "They described blue unicorns, two-legged beavers, and even winged, human-like creatures called 'Vespertilio-homo'.",
+          "image_prompt": "A detailed insert shot of a highly imaginative engraved illustration from a 19th-century newspaper, depicting a 'Vespertilio-homo' (human-bat hybrid) figure in a detailed, slightly fantastical style. The print quality is typical of the era, with moody, low-key lighting."
+        },
+        {
+          "narration": "The public was absolutely enthralled, believing these to be genuine scientific discoveries.",
+          "image_prompt": "A medium shot of several people in a 19th-century parlor, gathered intently around a table, completely engrossed in reading a newspaper. Their faces express awe and animated discussion. Cozy, warm lamplight illuminates the scene."
+        },
+        {
+          "narration": "Sales of The Sun newspaper skyrocketed, making it one of the most popular papers of its time.",
+          "image_prompt": "An over-the-shoulder shot of a young newspaper boy on a bustling 19th-century New York street, energetically shouting headlines. He holds a stack of newspapers, with the blurred activity of the street and other pedestrians visible behind him. Bright, clear daylight."
+        },
+        {
+          "narration": "However, the famed astronomer Sir John Herschel was actually in South Africa, completely unaware of these reports.",
+          "image_prompt": "A low-angle shot of a distinguished 19th-century astronomer, reminiscent of Sir John Herschel, looking through a large, period telescope at a dark, star-dusted night sky. His silhouette is clear against the cosmos, with focused, calm expression. Cool, natural moonlight."
+        },
+        {
+          "narration": "Eventually, the newspaper admitted the entire series was a elaborate hoax designed to boost circulation.",
+          "image_prompt": "A close-up of a hand holding a 19th-century newspaper, with a prominent headline revealing 'HOAX CONFIRMED'. The paper appears stark and clear, conveying a sense of finality, with contrasting, dramatic lighting."
+        }
+      ],
+      "cta": "Believe everything you read? Follow for more unbelievable true tales!"
+    },
+    "audioPath": "output/the-great-moon-hoax-of-1835/the-great-moon-hoax-of-1835.mp3",
+    "videoPath": "output/the-great-moon-hoax-of-1835/the-great-moon-hoax-of-1835.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/the-great-moon-hoax-of-1835/media/01-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/the-great-moon-hoax-of-1835/media/02-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/the-great-moon-hoax-of-1835/media/03-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 3,
+        "keyword": "19th century",
+        "path": "output/the-great-moon-hoax-of-1835/media/04-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/people-dancing-together-6719103/",
+        "author": "cottonbro studio"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 4,
+        "keyword": "newspaper boy",
+        "path": "output/the-great-moon-hoax-of-1835/media/05-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/a-man-reading-a-newspaper-in-a-library-25957041/",
+        "author": "Esra Korkmaz"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 5,
+        "path": "output/the-great-moon-hoax-of-1835/media/06-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 6,
+        "keyword": "newspaper",
+        "path": "output/the-great-moon-hoax-of-1835/media/07-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/man-in-suit-reading-newspaper-10319603/",
+        "author": "cottonbro studio"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 42.217007,
+    "status": "published",
+    "youtube": {
+      "videoId": "eoNrVgkiRqo",
+      "url": "https://www.youtube.com/shorts/eoNrVgkiRqo",
+      "title": "The 1835 Moon Hoax That Fooled Millions #Shorts",
+      "publishedAt": "2026-07-13T18:44:50.750Z"
+    },
+    "createdAt": "2026-07-13T18:44:54.118Z"
   }
 ]
