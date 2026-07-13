@@ -21,8 +21,8 @@ on:
   schedule:
     # Günde 2 video — hedef kitle ABD + Avrupa (İngilizce). Saatler UTC.
     # GitHub cron'u ~15-60 dk gecikmeli tetikler; birkaç dakika kayması normal.
-    - cron: "0 17 * * *" # 17:00 UTC — Avrupa akşam prime (CET 19:00) + ABD öğleden sonra (TR 20:00)
-    - cron: "0 21 * * *" # 21:00 UTC — ABD Doğu 5 PM prime (ET 17:00) + Avrupa gece kuşağı (TR 00:00)
+    - cron: "0 8 * * *"  # 08:00 UTC — TR 11:00 sabah (Avrupa/Asya sabahı; gün boyu birikir)
+    - cron: "0 21 * * *" # 21:00 UTC — TR 00:00 gece (ABD Doğu 5 PM prime)
 
 concurrency:
   group: daily-short
