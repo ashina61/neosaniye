@@ -5,11 +5,12 @@ dotenv.config();
 export const config = {
   gemini: {
     apiKey: process.env.GEMINI_API_KEY,
-    // Ücretsiz tier, kart gerektirmez. Gemini 3.5 Flash artık ücretsiz katmanda —
-    // 2.5'ten daha güçlü (daha iyi hook/anlatı/olgu doğruluğu), aynı fiyat: 0.
-    // Launch dalgasında ara sıra 503 döner; generateWithRetry backoff'u yutar.
-    // Sorun olursa anında geri dön: GEMINI_MODEL=gemini-2.5-flash.
-    model: process.env.GEMINI_MODEL || 'gemini-3.5-flash',
+    // Ücretsiz tier, kart gerektirmez. VARSAYILAN: 2.5-flash (hızlı + KARARLI).
+    // NOT: 3.5-flash de ücretsiz ve daha güçlü AMA launch döneminde sürekli 503
+    // UNAVAILABLE dönüyor → generateScript retry'ları tükenip pipeline'ı kırdı
+    // (13 Tem run #29 bu yüzden patladı). 3.5'in 503 fırtınası dinince tek
+    // hamleyle geç: Actions → Variables → GEMINI_MODEL=gemini-3.5-flash.
+    model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
   },
   niche: {
     language: process.env.CONTENT_LANGUAGE || 'en',
