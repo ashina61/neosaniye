@@ -151,6 +151,22 @@ export const config = {
     // çok düşük seviyede serilir. FREESOUND_API_KEY yoksa otomatik atlanır.
     ambience: process.env.VIDEO_AMBIENCE !== '0',
     ambienceVolume: Number(process.env.VIDEO_AMBIENCE_VOL || 0.18),
+
+    // MOTION GRAPHICS (template tabanlı, saf ffmpeg — yeni bağımlılık yok).
+    // Şimdilik tek template: "stat card" (animasyonlu sayı sayacı). Görüntü
+    // Yönetmeni bir sahnenin çekirdeği ÇARPICI bir SAYIYSA stat verir; o sahne
+    // sayı kartına döner. Kapatmak için VIDEO_GFX=0. Video başına üst sınır.
+    gfx: process.env.VIDEO_GFX !== '0',
+    gfxMaxPerVideo: Number(process.env.VIDEO_GFX_MAX || 1),
+    // Marka stil sabitleri (ANIMATION_BIBLE.md'nin makine karşılığı) — tüm
+    // template'ler bunu okur, böylece üretilen her sahne aynı kanal hissini taşır.
+    styleBible: {
+      bg0: process.env.GFX_BG0 || '0b0f14', // koyu zemin (üst)
+      bg1: process.env.GFX_BG1 || '161d27', // koyu zemin (alt)
+      ink: process.env.GFX_INK || 'F5F1E6', // kırık beyaz tipografi
+      gold: process.env.GFX_GOLD || 'CB8B3A', // mat altın vurgu
+      red: process.env.GFX_RED || 'C0392B', // derin kırmızı vurgu
+    },
   },
   pexels: {
     apiKey: process.env.PEXELS_API_KEY,

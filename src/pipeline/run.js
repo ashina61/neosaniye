@@ -127,7 +127,7 @@ export async function runPipeline(opts = {}) {
     console.log(
       `  ${media.items.length} sahne — AI:${media.sources.ai} ` +
         `stokVideo:${media.sources.stock || 0} Pexels:${media.sources.pexels} ` +
-        `yedek:${media.sources.placeholder}`,
+        `gfx:${media.sources.gfx || 0} yedek:${media.sources.placeholder}`,
     );
     if (!media.items.length) throw new Error('Hiç sahne görseli üretilemedi.');
 

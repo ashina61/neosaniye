@@ -5,6 +5,7 @@ import path from 'node:path';
 import { GoogleGenAI } from '@google/genai';
 import { config } from '../config.js';
 import { fetchOneForKeywords, fetchStockVideoForKeywords } from './fetchMedia.js';
+import { renderStatCard, isUsableStat } from './renderTemplate.js';
 
 const run = promisify(execFile);
 
@@ -119,8 +120,10 @@ export async function generateImages(script, opts = {}) {
   const { width, height } = config.images;
 
   const items = [];
-  const sources = { ai: 0, stock: 0, pexels: 0, placeholder: 0 };
+  const sources = { ai: 0, stock: 0, pexels: 0, placeholder: 0, gfx: 0 };
   let providerDead = provider === 'none' || (provider === 'gemini' && !geminiAI);
+  // Motion graphics (sayı kartı) sayacı — video başına üst sınır.
+  let gfxCount = 0;
 
   // Hareketli sahne planı: Görüntü Yönetmeni sahneleri işaretlediyse (motion)
   // onlar; yoksa mekanik "her N. sahne". İlk sahne her zaman hariç (hook kapağı).
@@ -153,6 +156,27 @@ export async function generateImages(script, opts = {}) {
       .filter(Boolean)
       .join('. ');
     let done = null;
+
+    // 0.gfx) SAYI KARTI (motion graphics): sahnenin çekirdeği anlatımda GERÇEKTEN
+    // geçen çarpıcı bir sayıysa, o sahneyi animasyonlu sayaç kartına çevir.
+    // Guard: video başına üst sınır + sahne-1 hariç + anti-halüsinasyon
+    // (isUsableStat). Herhangi bir hata → aşağıdaki normal görsel zincirine düşer.
+    if (
+      config.video.gfx &&
+      gfxCount < config.video.gfxMaxPerVideo &&
+      i > 0 &&
+      isUsableStat(scene.stat, scene.narration)
+    ) {
+      try {
+        const dest = path.join(mediaDir, `${idx}-gfx.mp4`);
+        const clip = await renderStatCard(scene.stat, dest, { width, height, duration: 8 });
+        done = { ...clip, scene: i, source: 'gfx' };
+        gfxCount += 1;
+        console.log(`[img] sahne ${idx}: sayı kartı (${scene.stat.value} ${scene.stat.unit || ''})`);
+      } catch (err) {
+        console.warn(`[img] sahne ${idx}: sayı kartı üretilemedi (${String(err.message).slice(0, 90)}).`);
+      }
+    }
 
     // 0) Hareketli sahne: stok video dene (bulunamazsa AI görsele devam).
     const motionSlot = processMode

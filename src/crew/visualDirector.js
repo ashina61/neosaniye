@@ -48,9 +48,24 @@ const SHOT_SCHEMA = {
             items: { type: Type.STRING },
             description: '1-3 simple English stock-search nouns (only meaningful when motion=true)',
           },
+          stat: {
+            type: Type.OBJECT,
+            nullable: true,
+            description:
+              'Set ONLY when this scene\'s core IS one striking NUMBER that is EXPLICITLY stated in ' +
+              'this scene\'s narration (e.g. "50 times per second", "20,000 acres", "1,200 years"). ' +
+              'Then this scene becomes a bold animated number card instead of a photo. ' +
+              'Leave null for every other scene. Never scene 1. At most ONE scene per video.',
+            properties: {
+              value: { type: Type.NUMBER, description: 'The plain integer to count up to (e.g. 50, 20000). Digits only.' },
+              unit: { type: Type.STRING, description: 'Short unit/qualifier shown under the number, 1-4 words (e.g. "times per second", "acres", "years"). No symbols.' },
+              label: { type: Type.STRING, description: 'Tiny caption under the unit giving context, 2-5 words (e.g. "A hummingbird\'s wingbeat").' },
+            },
+            propertyOrdering: ['value', 'unit', 'label'],
+          },
         },
         required: ['shot', 'image_prompt', 'motion', 'stock_keywords'],
-        propertyOrdering: ['shot', 'image_prompt', 'motion', 'stock_keywords'],
+        propertyOrdering: ['shot', 'image_prompt', 'motion', 'stock_keywords', 'stat'],
       },
     },
   },
@@ -72,7 +87,11 @@ Produce a professional SHOT LIST that makes the video feel like ONE cinematic fi
   generic enough for stock (landscapes, hands, fire, storms). Scene 1 must always be motion=false
   (it carries the hook cover).
 - For motion scenes give 1-3 simple stock_keywords.
-- image_prompt must be a single concrete filmable shot. Never request text, captions, logos, watermarks.`;
+- image_prompt must be a single concrete filmable shot. Never request text, captions, logos, watermarks.
+- NUMBER CARD (optional, powerful): if exactly one scene's core is a striking NUMBER that is
+  literally stated in its narration, set that scene's "stat" (value/unit/label). It becomes a bold
+  animated count-up card — a strong pattern-interrupt. Use it for AT MOST one scene, never scene 1,
+  and only when the number is genuinely in the narration. Otherwise leave stat null everywhere.`;
 
 /**
  * @param {object} script - generateScript çıktısı (scenes, visual_anchor, topic, category)
@@ -131,6 +150,14 @@ export function applyShotList(script, shotList) {
       if (Array.isArray(shot.stock_keywords) && shot.stock_keywords.length) {
         scene.stock_keywords = shot.stock_keywords.slice(0, 3);
       }
+    }
+    // Sayı kartı adayı (opsiyonel) — doğrulama/guard generateImages'te yapılır.
+    if (shot.stat && Number(shot.stat.value) > 0 && i > 0) {
+      scene.stat = {
+        value: Number(shot.stat.value),
+        unit: String(shot.stat.unit || '').trim(),
+        label: String(shot.stat.label || '').trim(),
+      };
     }
   });
   return script;
