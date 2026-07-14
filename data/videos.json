@@ -778,7 +778,7 @@
       "views": 328,
       "likes": 0,
       "comments": 0,
-      "statsAt": "2026-07-13T21:49:42.035Z"
+      "statsAt": "2026-07-14T13:13:00.878Z"
     }
   },
   {
@@ -899,7 +899,7 @@
       "views": 1272,
       "likes": 24,
       "comments": 1,
-      "statsAt": "2026-07-13T21:49:42.033Z"
+      "statsAt": "2026-07-14T13:13:00.876Z"
     }
   },
   {
@@ -1014,10 +1014,10 @@
     },
     "createdAt": "2026-07-10T15:31:48.973Z",
     "stats": {
-      "views": 74,
+      "views": 75,
       "likes": 0,
       "comments": 1,
-      "statsAt": "2026-07-13T21:49:42.031Z"
+      "statsAt": "2026-07-14T13:13:00.875Z"
     }
   },
   {
@@ -1363,7 +1363,7 @@
       "views": 402,
       "likes": 11,
       "comments": 5,
-      "statsAt": "2026-07-13T21:49:42.029Z"
+      "statsAt": "2026-07-14T13:13:00.873Z"
     }
   },
   {
@@ -1692,10 +1692,10 @@
     },
     "createdAt": "2026-07-11T16:01:25.902Z",
     "stats": {
-      "views": 1173,
+      "views": 1182,
       "likes": 29,
       "comments": 5,
-      "statsAt": "2026-07-13T21:49:42.028Z"
+      "statsAt": "2026-07-14T13:13:00.871Z"
     }
   },
   {
@@ -1805,10 +1805,10 @@
     },
     "createdAt": "2026-07-12T00:05:52.083Z",
     "stats": {
-      "views": 308,
+      "views": 314,
       "likes": 41,
       "comments": 1,
-      "statsAt": "2026-07-13T21:49:42.026Z"
+      "statsAt": "2026-07-14T13:13:00.870Z"
     }
   },
   {
@@ -1930,10 +1930,10 @@
     },
     "createdAt": "2026-07-12T15:24:39.551Z",
     "stats": {
-      "views": 361,
-      "likes": 7,
+      "views": 386,
+      "likes": 9,
       "comments": 1,
-      "statsAt": "2026-07-13T21:49:42.025Z"
+      "statsAt": "2026-07-14T13:13:00.869Z"
     }
   },
   {
@@ -2055,10 +2055,10 @@
     },
     "createdAt": "2026-07-12T18:04:35.208Z",
     "stats": {
-      "views": 965,
-      "likes": 46,
+      "views": 998,
+      "likes": 47,
       "comments": 3,
-      "statsAt": "2026-07-13T21:49:42.023Z"
+      "statsAt": "2026-07-14T13:13:00.867Z"
     }
   },
   {
@@ -2180,10 +2180,10 @@
     },
     "createdAt": "2026-07-12T21:46:34.893Z",
     "stats": {
-      "views": 447,
-      "likes": 6,
+      "views": 464,
+      "likes": 7,
       "comments": 1,
-      "statsAt": "2026-07-13T21:49:42.021Z"
+      "statsAt": "2026-07-14T13:13:00.866Z"
     }
   },
   {
@@ -2293,10 +2293,10 @@
     },
     "createdAt": "2026-07-13T18:44:54.118Z",
     "stats": {
-      "views": 245,
-      "likes": 17,
-      "comments": 1,
-      "statsAt": "2026-07-13T21:49:42.019Z"
+      "views": 444,
+      "likes": 22,
+      "comments": 2,
+      "statsAt": "2026-07-14T13:13:00.864Z"
     }
   },
   {
@@ -2404,6 +2404,118 @@
       "title": "This Jellyfish Can Live Forever? #Shorts",
       "publishedAt": "2026-07-13T21:55:29.056Z"
     },
-    "createdAt": "2026-07-13T21:55:31.629Z"
+    "createdAt": "2026-07-13T21:55:31.629Z",
+    "stats": {
+      "views": 83,
+      "likes": 5,
+      "comments": 1,
+      "statsAt": "2026-07-14T13:13:00.862Z"
+    }
+  },
+  {
+    "id": "glass-flower-creation-1784034955945",
+    "topic": "Glass Flower Creation",
+    "normalizedTopic": "glass-flower-creation",
+    "format": "process",
+    "visualStyle": "photo",
+    "script": {
+      "title": "Unbelievable Art: Watch Molten Glass Become a Flower!",
+      "category": "nature",
+      "scenes": [
+        {
+          "narration": "Watch closely as this artist transforms simple molten glass into something breathtakingly delicate.",
+          "image_prompt": "A skilled glass artist with safety glasses and leather apron, pulling a glowing rod of molten glass from a roaring furnace, sparks flying, in a dimly lit glassblowing studio. Warm orange light bathes the scene, creating a dramatic and cinematic feel."
+        },
+        {
+          "narration": "First, a small blob of color is carefully added to give the flower its vibrant hue.",
+          "image_prompt": "A skilled glass artist's gloved hands, precisely adding a small, colorful glass frit shard to the hot, glowing glass on the end of a punty rod. The dimly lit studio shows a warm orange glow from the molten glass."
+        },
+        {
+          "narration": "They shape and pull the hot glass, stretching it thinner and thinner, almost like taffy.",
+          "image_prompt": "Over-the-shoulder shot of a skilled glass artist, wearing safety glasses and a leather apron, using tweezers and tools to stretch and manipulate soft, glowing glass into a thin, elongated form on a metal workbench. The studio is dimly lit with a warm orange glow from the furnace."
+        },
+        {
+          "narration": "This delicate pulling creates the individual petals, each one unique and paper-thin.",
+          "image_prompt": "An extreme close-up, macro shot of glowing, translucent glass being pulled into a fine, petal-like shape with incredible precision, light reflecting off the surface. The background is dark, emphasizing the delicate detail."
+        },
+        {
+          "narration": "Then, with expert touch, they bend and curl each petal, giving the flower its natural form.",
+          "image_prompt": "A detail insert shot focusing on the skilled glass artist's hands, wearing safety glasses and a leather apron, using small metal tools to carefully bend and sculpt a glowing glass petal into a gentle curve. The background is dark, with a subtle warm orange glow."
+        },
+        {
+          "narration": "Finally, the stem is attached, and the flower is allowed to slowly cool, preventing any cracks.",
+          "image_prompt": "A skilled glass artist, wearing safety glasses and a leather apron, gently fusing a still warm glass flower onto a pre-made glass stem in a dimly lit studio. A subtle heat shimmer is visible around the connection point, and the furnace emits a warm orange glow."
+        }
+      ],
+      "cta": "See more incredible crafts! Follow for daily wonders."
+    },
+    "audioPath": "output/glass-flower-creation/glass-flower-creation.mp3",
+    "videoPath": "output/glass-flower-creation/glass-flower-creation.mp4",
+    "media": [
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 0,
+        "keyword": "glassblowing furnace",
+        "path": "output/glass-flower-creation/media/01-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/glassblower-27723604/",
+        "author": "Alyona Nagel"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 1,
+        "keyword": "glassblowing",
+        "path": "output/glass-flower-creation/media/02-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/glassblower-27723604/",
+        "author": "Alyona Nagel"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 2,
+        "keyword": "shaping glass",
+        "path": "output/glass-flower-creation/media/03-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/blow-torching-a-glass-for-shaping-7519297/",
+        "author": "cottonbro studio"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 3,
+        "keyword": "molten glass",
+        "path": "output/glass-flower-creation/media/04-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/glassblowing-artisanal-craft-in-action-32853747/",
+        "author": "Alyona Nagel"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 4,
+        "keyword": "glass sculpting",
+        "path": "output/glass-flower-creation/media/05-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/a-man-blow-torching-a-glass-7519299/",
+        "author": "cottonbro studio"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 5,
+        "keyword": "glass art",
+        "path": "output/glass-flower-creation/media/06-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/a-shadow-of-a-hand-holding-a-wine-glass-7270300/",
+        "author": "Polina ⠀"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 33.952993,
+    "status": "published",
+    "youtube": {
+      "videoId": "fFd6TWwUX7E",
+      "url": "https://www.youtube.com/shorts/fFd6TWwUX7E",
+      "title": "How Molten Glass Transforms Into A Delicate Flower #Shorts",
+      "publishedAt": "2026-07-14T13:15:52.921Z"
+    },
+    "createdAt": "2026-07-14T13:15:55.945Z"
   }
 ]
