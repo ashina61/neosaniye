@@ -778,7 +778,7 @@
       "views": 328,
       "likes": 0,
       "comments": 0,
-      "statsAt": "2026-07-14T20:12:53.237Z"
+      "statsAt": "2026-07-14T23:42:44.901Z"
     }
   },
   {
@@ -899,7 +899,7 @@
       "views": 1272,
       "likes": 24,
       "comments": 1,
-      "statsAt": "2026-07-14T20:12:53.235Z"
+      "statsAt": "2026-07-14T23:42:44.899Z"
     }
   },
   {
@@ -1017,7 +1017,7 @@
       "views": 75,
       "likes": 0,
       "comments": 1,
-      "statsAt": "2026-07-14T20:12:53.233Z"
+      "statsAt": "2026-07-14T23:42:44.897Z"
     }
   },
   {
@@ -1363,7 +1363,7 @@
       "views": 402,
       "likes": 11,
       "comments": 5,
-      "statsAt": "2026-07-14T20:12:53.231Z"
+      "statsAt": "2026-07-14T23:42:44.895Z"
     }
   },
   {
@@ -1695,7 +1695,7 @@
       "views": 1183,
       "likes": 29,
       "comments": 5,
-      "statsAt": "2026-07-14T20:12:53.229Z"
+      "statsAt": "2026-07-14T23:42:44.893Z"
     }
   },
   {
@@ -1808,7 +1808,7 @@
       "views": 314,
       "likes": 41,
       "comments": 1,
-      "statsAt": "2026-07-14T20:12:53.226Z"
+      "statsAt": "2026-07-14T23:42:44.890Z"
     }
   },
   {
@@ -1933,7 +1933,7 @@
       "views": 389,
       "likes": 9,
       "comments": 1,
-      "statsAt": "2026-07-14T20:12:53.224Z"
+      "statsAt": "2026-07-14T23:42:44.888Z"
     }
   },
   {
@@ -2055,10 +2055,10 @@
     },
     "createdAt": "2026-07-12T18:04:35.208Z",
     "stats": {
-      "views": 1017,
+      "views": 1019,
       "likes": 47,
       "comments": 3,
-      "statsAt": "2026-07-14T20:12:53.222Z"
+      "statsAt": "2026-07-14T23:42:44.887Z"
     }
   },
   {
@@ -2180,10 +2180,10 @@
     },
     "createdAt": "2026-07-12T21:46:34.893Z",
     "stats": {
-      "views": 468,
+      "views": 470,
       "likes": 7,
       "comments": 1,
-      "statsAt": "2026-07-14T20:12:53.220Z"
+      "statsAt": "2026-07-14T23:42:44.885Z"
     }
   },
   {
@@ -2293,10 +2293,10 @@
     },
     "createdAt": "2026-07-13T18:44:54.118Z",
     "stats": {
-      "views": 473,
+      "views": 499,
       "likes": 22,
       "comments": 2,
-      "statsAt": "2026-07-14T20:12:53.219Z"
+      "statsAt": "2026-07-14T23:42:44.883Z"
     }
   },
   {
@@ -2406,10 +2406,10 @@
     },
     "createdAt": "2026-07-13T21:55:31.629Z",
     "stats": {
-      "views": 85,
+      "views": 90,
       "likes": 5,
       "comments": 1,
-      "statsAt": "2026-07-14T20:12:53.216Z"
+      "statsAt": "2026-07-14T23:42:44.880Z"
     }
   },
   {
@@ -2518,10 +2518,10 @@
     },
     "createdAt": "2026-07-14T13:15:55.945Z",
     "stats": {
-      "views": 1314,
+      "views": 1323,
       "likes": 25,
       "comments": 1,
-      "statsAt": "2026-07-14T20:12:53.213Z"
+      "statsAt": "2026-07-14T23:42:44.878Z"
     }
   },
   {
@@ -2641,6 +2641,119 @@
       "title": "How Roman Engineers Built Roads That Last 2000 Years #Shorts",
       "publishedAt": "2026-07-14T20:17:05.654Z"
     },
-    "createdAt": "2026-07-14T20:17:07.975Z"
+    "createdAt": "2026-07-14T20:17:07.975Z",
+    "stats": {
+      "views": 1089,
+      "likes": 38,
+      "comments": 1,
+      "statsAt": "2026-07-14T23:42:44.875Z"
+    }
+  },
+  {
+    "id": "how-a-venus-flytrap-catches-prey-1784072903882",
+    "topic": "How a Venus Flytrap Catches Prey",
+    "normalizedTopic": "how-a-venus-flytrap-catches-prey",
+    "format": "howworks",
+    "visualStyle": "photo",
+    "script": {
+      "title": "How Venus Flytraps Snap Shut So Fast",
+      "category": "nature",
+      "scenes": [
+        {
+          "narration": "A Venus flytrap sits patiently, its inviting red lobes open, waiting for an unsuspecting insect.",
+          "image_prompt": "An extreme close-up, macro view of a vibrant green Venus flytrap, its red inner lobes glowing under natural, diffused sunlight, open and waiting in a humid, slightly misty swamp environment. Shot from a low angle, emphasizing its form."
+        },
+        {
+          "narration": "Tiny trigger hairs on its surface act as tripwires, sensitive to the lightest touch.",
+          "image_prompt": "A detail insert, macro shot focusing on the tiny, hair-like trigger on the inner surface of a vibrant green Venus flytrap lobe, clearly lit under natural, diffused sunlight, against a soft, blurred background in a misty swamp."
+        },
+        {
+          "narration": "If an insect touches just one hair, nothing happens; a clever double-tap safety mechanism.",
+          "image_prompt": "A medium shot of an unsuspecting small fly crawling on one red lobe of a vibrant green Venus flytrap, carefully avoiding the trigger hairs, under natural, diffused sunlight in a misty swamp environment. Over-the-shoulder view from behind the fly."
+        },
+        {
+          "narration": "But a second touch, within about 20 seconds, signals a real meal, not a false alarm.",
+          "image_prompt": "A close-up of a small fly making a second contact with a trigger hair on a vibrant green Venus flytrap's red lobe, under bright, natural, diffused sunlight, suggesting tension in the humid swamp environment."
+        },
+        {
+          "narration": "This triggers specialized cells to rapidly change shape, causing water to rush out.",
+          "image_prompt": "An extreme close-up, almost microscopic view of specialized plant cells on the inner lobe of a vibrant green Venus flytrap, appearing to bulge and contract slightly, implying rapid fluid movement, under diffused backlighting in a misty swamp."
+        },
+        {
+          "narration": "The sudden loss of internal pressure makes the trap snap shut with incredible speed.",
+          "image_prompt": "A dynamic medium shot of a vibrant green Venus flytrap rapidly snapping its red lobes together around a trapped fly, with subtle motion blur capturing the incredible speed, under dramatic front lighting in a humid swamp environment."
+        },
+        {
+          "narration": "Digestive enzymes then begin to break down the insect, turning it into nutrients.",
+          "image_prompt": "A tight close-up of a fully closed vibrant green Venus flytrap, its red lobes interlocked with a slight bulge from the trapped insect inside, showing a hint of glistening fluid on the outer surface, under soft, slightly darker lighting in a humid swamp environment."
+        }
+      ],
+      "cta": "See more incredible plant facts! Follow us!"
+    },
+    "audioPath": "output/how-a-venus-flytrap-catches-prey/how-a-venus-flytrap-catches-prey.mp3",
+    "videoPath": "output/how-a-venus-flytrap-catches-prey/how-a-venus-flytrap-catches-prey.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/how-a-venus-flytrap-catches-prey/media/01-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/how-a-venus-flytrap-catches-prey/media/02-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 2,
+        "keyword": "insect",
+        "path": "output/how-a-venus-flytrap-catches-prey/media/03-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/macro-view-of-colorful-leaf-insect-on-plant-35196550/",
+        "author": "Anup Kumar"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 3,
+        "keyword": "flytrap",
+        "path": "output/how-a-venus-flytrap-catches-prey/media/04-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/portrait-of-woman-in-sunglasses-with-venus-flytrap-9770854/",
+        "author": "Ron Lach"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 4,
+        "path": "output/how-a-venus-flytrap-catches-prey/media/05-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 5,
+        "keyword": "flytrap closing",
+        "path": "output/how-a-venus-flytrap-catches-prey/media/06-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/a-woman-touching-a-carnivorous-plant-9770860/",
+        "author": "Ron Lach"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 6,
+        "path": "output/how-a-venus-flytrap-catches-prey/media/07-ai.jpg"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 38.759002,
+    "status": "published",
+    "youtube": {
+      "videoId": "AUWelXVmBrg",
+      "url": "https://www.youtube.com/shorts/AUWelXVmBrg",
+      "title": "How Do Venus Flytraps Snap Shut So Quickly? #Shorts",
+      "publishedAt": "2026-07-14T23:48:21.923Z"
+    },
+    "createdAt": "2026-07-14T23:48:23.882Z"
   }
 ]
