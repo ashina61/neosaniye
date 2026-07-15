@@ -54,6 +54,38 @@ export async function postFirstComment(videoId, script) {
  * Yayınlanmış videoların istatistiklerini çekip kayda işler.
  * @returns {Promise<number>} güncellenen video sayısı
  */
+/** YouTube Analytics'ten video başına retention % + kazanılan abone (best-effort).
+ *  Refresh token'da yt-analytics.readonly kapsamı yoksa sessizce boş döner —
+ *  kullanıcı yeni kapsamla token yenileyince kendiliğinden aktifleşir. */
+async function fetchAnalyticsMap(ids) {
+  const { clientId, clientSecret, refreshToken } = config.youtube;
+  if (!clientId || !refreshToken || !ids.length) return {};
+  try {
+    const auth = new google.auth.OAuth2(clientId, clientSecret);
+    auth.setCredentials({ refresh_token: refreshToken });
+    const an = google.youtubeAnalytics({ version: 'v2', auth });
+    const { data } = await an.reports.query({
+      ids: 'channel==MINE',
+      startDate: '2025-01-01',
+      endDate: new Date().toISOString().slice(0, 10),
+      metrics: 'averageViewPercentage,subscribersGained',
+      dimensions: 'video',
+      filters: 'video==' + ids.slice(0, 25).join(','),
+    });
+    const map = {};
+    for (const row of data.rows || []) {
+      map[row[0]] = {
+        avgViewPct: Math.round(Number(row[1]) * 10) / 10,
+        subsGained: Number(row[2]) || 0,
+      };
+    }
+    return map;
+  } catch (err) {
+    console.warn(`[stats] analytics verisi yok (yt-analytics kapsamı eklenince aktifleşir): ${String(err.message).slice(0, 70)}`);
+    return {};
+  }
+}
+
 export async function updateVideoStats(limit = 25) {
   const yt = getClient();
   if (!yt) return 0;
@@ -62,9 +94,11 @@ export async function updateVideoStats(limit = 25) {
   if (!withIds.length) return 0;
 
   try {
+    const ids = withIds.map((v) => v.youtube.videoId).slice(0, 50);
+    const anMap = await fetchAnalyticsMap(ids);
     const { data } = await yt.videos.list({
       part: ['statistics'],
-      id: withIds.map((v) => v.youtube.videoId).slice(0, 50),
+      id: ids,
     });
     let updated = 0;
     for (const item of data.items || []) {
@@ -74,6 +108,8 @@ export async function updateVideoStats(limit = 25) {
         views: Number(item.statistics?.viewCount || 0),
         likes: Number(item.statistics?.likeCount || 0),
         comments: Number(item.statistics?.commentCount || 0),
+        // Analytics zenginleştirmesi (retention + abone) — kapsam varsa dolar.
+        ...(anMap[item.id] || {}),
         statsAt: new Date().toISOString(),
       };
       await updateVideo(rec.id, { stats }).catch(() => {});

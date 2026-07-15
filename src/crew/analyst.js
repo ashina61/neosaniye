@@ -19,7 +19,9 @@ import { generateWithRetry } from '../script/generateScript.js';
 const MIN_VIDEOS = 6;
 
 const ANALYST_SYSTEM = `You are the DATA ANALYST for a faceless YouTube Shorts channel.
-You receive average view counts grouped by content FORMAT, VISUAL STYLE, and TOPIC CATEGORY.
+You receive average view counts (and, when available, retention % and subscribers gained) grouped
+by content FORMAT, VISUAL STYLE, and TOPIC CATEGORY. Retention shows what people actually WATCH;
+subscribers show what builds the channel — weigh both above raw views when present.
 Output ONLY a 2-3 sentence, concrete production directive for the NEXT video: which formats,
 visual styles, moods and topic types to favor (and which to avoid), based strictly on the data.
 Be specific and actionable. No preamble, no bullet points, no restating the numbers.`;
@@ -28,15 +30,25 @@ function avg(arr) {
   return arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : 0;
 }
 
-/** Videoları bir anahtara göre grupla → [{key, count, avgViews}] (izlenme sıralı). */
+/** Videoları bir anahtara göre grupla → [{key, count, avgViews, avgPct, subs}]
+ *  (izlenme sıralı). avgPct/subs yalnızca Analytics verisi varsa dolar. */
 function groupStat(videos, keyFn) {
   const m = {};
   for (const v of videos) {
     const k = String(keyFn(v) || '').trim() || 'unknown';
-    (m[k] = m[k] || []).push(v.stats.views);
+    (m[k] = m[k] || []).push(v.stats);
   }
   return Object.entries(m)
-    .map(([key, views]) => ({ key, count: views.length, avgViews: avg(views) }))
+    .map(([key, arr]) => {
+      const pcts = arr.map((s) => s.avgViewPct).filter(Number.isFinite);
+      return {
+        key,
+        count: arr.length,
+        avgViews: avg(arr.map((s) => s.views)),
+        avgPct: pcts.length ? Math.round(avg(pcts)) : null,
+        subs: arr.reduce((a, s) => a + (s.subsGained || 0), 0),
+      };
+    })
     .filter((x) => x.key !== 'unknown')
     .sort((a, b) => b.avgViews - a.avgViews);
 }
@@ -53,7 +65,17 @@ export function buildDigest(videos) {
 
 function digestToText(d) {
   const line = (arr) =>
-    arr.length ? arr.map((x) => `${x.key}: ${x.avgViews} avg (${x.count})`).join(', ') : 'no data';
+    arr.length
+      ? arr
+          .map(
+            (x) =>
+              `${x.key}: ${x.avgViews} avg views` +
+              (x.avgPct != null ? `, ${x.avgPct}% retention` : '') +
+              (x.subs ? `, +${x.subs} subs` : '') +
+              ` (${x.count})`,
+          )
+          .join(', ')
+      : 'no data';
   return (
     `Videos analyzed: ${d.total}\n` +
     `By format — ${line(d.byFormat)}\n` +

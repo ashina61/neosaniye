@@ -28,7 +28,11 @@ const oauth2 = new google.auth.OAuth2(clientId, clientSecret, redirectUri);
 const authUrl = oauth2.generateAuthUrl({
   access_type: 'offline',
   prompt: 'consent', // refresh_token'ın her seferinde dönmesini garanti eder
-  scope: ['https://www.googleapis.com/auth/youtube.upload'],
+  scope: [
+    'https://www.googleapis.com/auth/youtube.upload',
+    'https://www.googleapis.com/auth/youtube.force-ssl',
+    'https://www.googleapis.com/auth/yt-analytics.readonly',
+  ],
 });
 
 const server = http.createServer(async (req, res) => {

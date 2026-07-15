@@ -12,6 +12,11 @@ export const config = {
     // hamleyle geç: Actions → Variables → GEMINI_MODEL=gemini-3.5-flash.
     model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
   },
+  groq: {
+    // Ücretsiz yedek beyin (console.groq.com) — Gemini kota/503'te devreye girer.
+    apiKey: process.env.GROQ_API_KEY,
+    model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
+  },
   niche: {
     language: process.env.CONTENT_LANGUAGE || 'en',
     // Genel konsept: tarih + bilim + doğa + uzay + gizem karışık "şaşırtıcı

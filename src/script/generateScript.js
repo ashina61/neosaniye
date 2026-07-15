@@ -31,12 +31,28 @@ export const SCRIPT_SCHEMA = {
       type: Type.STRING,
       description: 'Curiosity-driven YouTube title for this story, <= 80 chars',
     },
+    hook_candidates: {
+      type: Type.ARRAY,
+      description:
+        'HOOK LAB: exactly 6 alternative cover lines for this story, each 3-5 words / MAX 26 chars, ' +
+        'each a DIFFERENT angle (impossible claim, curiosity gap, direct shock, question, number, irony). ' +
+        'Score each 1-100 for SCROLL-STOP power: would a bored phone user freeze mid-swipe?',
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          text: { type: Type.STRING, description: 'The candidate cover line' },
+          score: { type: Type.INTEGER, description: 'Scroll-stop score 1-100' },
+        },
+        required: ['text', 'score'],
+        propertyOrdering: ['text', 'score'],
+      },
+    },
     hook_text: {
       type: Type.STRING,
       description:
-        'A SHORT punchy on-screen COVER line for the first 2 seconds: 3-5 words, MAX 26 characters, ' +
-        'shocking/curiosity-spiking, written in natural sentence case with proper-noun capitals ' +
-        '(e.g. "Rasputin wouldn\'t die", "An army lost to birds"). ' +
+        'THE WINNING candidate from hook_candidates (highest scroll-stop score), copied exactly: ' +
+        'a SHORT punchy on-screen COVER line for the first 2 seconds, 3-5 words, MAX 26 characters, ' +
+        'natural sentence case with proper-noun capitals (e.g. "Rasputin wouldn\'t die"). ' +
         'A bold statement, not a full sentence. No period, no quotes, NOT all-caps.',
     },
     category: {
@@ -100,8 +116,8 @@ export const SCRIPT_SCHEMA = {
         'Lowercase feel, no period, no quotes.',
     },
   },
-  required: ['topic', 'title', 'hook_text', 'category', 'visual_anchor', 'scenes', 'cta', 'emphasis_words', 'finale_text'],
-  propertyOrdering: ['topic', 'title', 'hook_text', 'category', 'visual_anchor', 'scenes', 'cta', 'emphasis_words', 'finale_text'],
+  required: ['topic', 'title', 'hook_candidates', 'hook_text', 'category', 'visual_anchor', 'scenes', 'cta', 'emphasis_words', 'finale_text'],
+  propertyOrdering: ['topic', 'title', 'hook_candidates', 'hook_text', 'category', 'visual_anchor', 'scenes', 'cta', 'emphasis_words', 'finale_text'],
 };
 
 // Format rotasyonu: izleyici tek kalıptan yorulmasın. Story + how-it-works +
@@ -219,9 +235,44 @@ Rules for the whole script:
   lives" over harsher wording, and never use profanity or slurs. Accuracy still comes first.`;
 }
 
+/** GROQ YEDEK BEYNİ: Gemini tamamen düştüğünde aynı istek ücretsiz Groq'a
+ *  (Llama, OpenAI-uyumlu uç) gider. responseSchema JSON moda + sistem mesajına
+ *  gömülür; dönen {text} Gemini yanıtıyla aynı şekilde okunur (response.text).
+ *  Aşağı akıştaki doğrulama/sanitize katmanları bozuk çıktıyı zaten yakalar. */
+async function groqFallback(req) {
+  if (!config.groq.apiKey) return null;
+  const schema = req.config?.responseSchema;
+  const sys = [
+    req.config?.systemInstruction || '',
+    schema
+      ? 'Respond with ONLY one valid JSON object matching this JSON schema — no markdown fences, no commentary:\n' +
+        JSON.stringify(schema)
+      : 'Respond concisely in plain text.',
+  ].join('\n\n');
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: { authorization: `Bearer ${config.groq.apiKey}`, 'content-type': 'application/json' },
+    body: JSON.stringify({
+      model: config.groq.model,
+      temperature: 0.8,
+      messages: [
+        { role: 'system', content: sys },
+        { role: 'user', content: String(req.contents) },
+      ],
+      ...(schema ? { response_format: { type: 'json_object' } } : {}),
+    }),
+  });
+  if (!res.ok) throw new Error(`groq HTTP ${res.status}`);
+  const data = await res.json();
+  const text = data?.choices?.[0]?.message?.content || '';
+  if (!text) throw new Error('groq boş yanıt');
+  return { text };
+}
+
 /** Geçici hatalarda (503 UNAVAILABLE / 5xx / ağ) sabırlı backoff ile dener.
  *  Google'ın "high demand" dalgaları dakikalar sürebilir; kısa backoff pes
- *  ettiriyordu (canlıda görüldü). Kota (429) hatasında ısrar etmez.  */
+ *  ettiriyordu (canlıda görüldü). Kota (429) hatasında Gemini'de ısrar etmez;
+ *  her tükenişte (kota dahil) GROQ_API_KEY varsa yedek beyne geçilir. */
 export async function generateWithRetry(ai, req, tries = 5) {
   const delays = [2000, 6000, 15000, 30000];
   let lastErr;
@@ -231,13 +282,22 @@ export async function generateWithRetry(ai, req, tries = 5) {
     } catch (err) {
       lastErr = err;
       const msg = String(err?.message || err);
-      if (/quota|RESOURCE_EXHAUSTED|429|API key|permission/i.test(msg)) throw err;
+      if (/quota|RESOURCE_EXHAUSTED|429|API key|permission/i.test(msg)) break;
       if (i < tries - 1) {
         const wait = delays[Math.min(i, delays.length - 1)];
         console.warn(`[gemini] geçici hata, ${wait / 1000}sn sonra tekrar (${i + 1}/${tries}): ${msg.slice(0, 90)}`);
         await new Promise((r) => setTimeout(r, wait));
       }
     }
+  }
+  try {
+    const alt = await groqFallback(req);
+    if (alt) {
+      console.warn(`[groq] Gemini düştü — yedek beyin devrede (${config.groq.model}).`);
+      return alt;
+    }
+  } catch (gErr) {
+    console.warn(`[groq] yedek de düştü: ${String(gErr.message).slice(0, 90)}`);
   }
   throw lastErr;
 }
@@ -366,6 +426,19 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
 
     // Reklam-dostu güvenlik ağı: ekrandaki hook + başlık yumuşatılır
     // (anlatım/altyazı doğruluğu korunur; asıl iş prompt'ta yapılır).
+    // HOOK LAB: 6 adayın en yüksek scroll-stop puanlısı kazanır (model kendi
+    // seçimini yaptıysa bile puana göre doğrula — 30 karakteri aşan aday elenir).
+    if (Array.isArray(script.hook_candidates) && script.hook_candidates.length) {
+      const best = script.hook_candidates
+        .map((c) => ({ text: String(c.text || '').trim().replace(/["""]/g, ''), score: Number(c.score) || 0 }))
+        .filter((c) => c.text.length >= 6 && c.text.length <= 30)
+        .sort((a, b) => b.score - a.score)[0];
+      if (best) {
+        script.hook_text = best.text;
+        console.log(`[hooklab] ${script.hook_candidates.length} aday → "${best.text}" (puan ${best.score})`);
+      }
+      delete script.hook_candidates; // aşağı akışta gereksiz yük
+    }
     if (script.hook_text) script.hook_text = softenAdText(script.hook_text, 'hook');
     if (script.title) script.title = softenAdText(script.title, 'başlık');
     return { ...script, format: format.key, normalizedTopic: normalizeTopic(script.topic) };
