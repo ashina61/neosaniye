@@ -780,7 +780,7 @@
       "comments": 0,
       "avgViewPct": 39.2,
       "subsGained": 0,
-      "statsAt": "2026-07-15T23:16:30.553Z"
+      "statsAt": "2026-07-15T23:50:38.144Z"
     }
   },
   {
@@ -903,7 +903,7 @@
       "comments": 1,
       "avgViewPct": 90.4,
       "subsGained": 1,
-      "statsAt": "2026-07-15T23:16:30.550Z"
+      "statsAt": "2026-07-15T23:50:38.142Z"
     }
   },
   {
@@ -1023,7 +1023,7 @@
       "comments": 1,
       "avgViewPct": 68.6,
       "subsGained": 0,
-      "statsAt": "2026-07-15T23:16:30.546Z"
+      "statsAt": "2026-07-15T23:50:38.140Z"
     }
   },
   {
@@ -1371,7 +1371,7 @@
       "comments": 5,
       "avgViewPct": 55.7,
       "subsGained": 0,
-      "statsAt": "2026-07-15T23:16:30.532Z"
+      "statsAt": "2026-07-15T23:50:38.137Z"
     }
   },
   {
@@ -1705,7 +1705,7 @@
       "comments": 5,
       "avgViewPct": 73,
       "subsGained": 1,
-      "statsAt": "2026-07-15T23:16:30.526Z"
+      "statsAt": "2026-07-15T23:50:38.135Z"
     }
   },
   {
@@ -1820,7 +1820,7 @@
       "comments": 1,
       "avgViewPct": 167,
       "subsGained": 6,
-      "statsAt": "2026-07-15T23:16:30.524Z"
+      "statsAt": "2026-07-15T23:50:38.130Z"
     }
   },
   {
@@ -1947,7 +1947,7 @@
       "comments": 1,
       "avgViewPct": 52.6,
       "subsGained": 2,
-      "statsAt": "2026-07-15T23:16:30.522Z"
+      "statsAt": "2026-07-15T23:50:38.128Z"
     }
   },
   {
@@ -2074,7 +2074,7 @@
       "comments": 3,
       "avgViewPct": 60.6,
       "subsGained": 5,
-      "statsAt": "2026-07-15T23:16:30.519Z"
+      "statsAt": "2026-07-15T23:50:38.125Z"
     }
   },
   {
@@ -2201,7 +2201,7 @@
       "comments": 1,
       "avgViewPct": 45.8,
       "subsGained": 0,
-      "statsAt": "2026-07-15T23:16:30.517Z"
+      "statsAt": "2026-07-15T23:50:38.123Z"
     }
   },
   {
@@ -2316,7 +2316,7 @@
       "comments": 2,
       "avgViewPct": 167.7,
       "subsGained": 1,
-      "statsAt": "2026-07-15T23:16:30.515Z"
+      "statsAt": "2026-07-15T23:50:38.121Z"
     }
   },
   {
@@ -2426,12 +2426,12 @@
     },
     "createdAt": "2026-07-13T21:55:31.629Z",
     "stats": {
-      "views": 105,
+      "views": 103,
       "likes": 7,
       "comments": 1,
       "avgViewPct": 52.4,
       "subsGained": 1,
-      "statsAt": "2026-07-15T23:16:30.512Z"
+      "statsAt": "2026-07-15T23:50:38.119Z"
     }
   },
   {
@@ -2543,7 +2543,7 @@
       "views": 1331,
       "likes": 25,
       "comments": 1,
-      "statsAt": "2026-07-15T23:16:30.510Z"
+      "statsAt": "2026-07-15T23:50:38.116Z"
     }
   },
   {
@@ -2668,7 +2668,7 @@
       "views": 1242,
       "likes": 39,
       "comments": 1,
-      "statsAt": "2026-07-15T23:16:30.507Z"
+      "statsAt": "2026-07-15T23:50:38.114Z"
     }
   },
   {
@@ -2781,7 +2781,7 @@
       "views": 478,
       "likes": 11,
       "comments": 1,
-      "statsAt": "2026-07-15T23:16:30.505Z"
+      "statsAt": "2026-07-15T23:50:38.112Z"
     }
   },
   {
@@ -2906,7 +2906,7 @@
       "views": 426,
       "likes": 4,
       "comments": 1,
-      "statsAt": "2026-07-15T23:16:30.503Z"
+      "statsAt": "2026-07-15T23:50:38.110Z"
     }
   },
   {
@@ -3013,10 +3013,10 @@
     },
     "createdAt": "2026-07-15T20:16:30.321Z",
     "stats": {
-      "views": 439,
-      "likes": 37,
+      "views": 659,
+      "likes": 52,
       "comments": 1,
-      "statsAt": "2026-07-15T23:16:30.500Z"
+      "statsAt": "2026-07-15T23:50:38.107Z"
     }
   },
   {
@@ -3125,5 +3125,117 @@
     "status": "rendered",
     "youtube": null,
     "createdAt": "2026-07-15T23:21:06.918Z"
+  },
+  {
+    "id": "how-geysers-erupt-1784159720531",
+    "topic": "how geysers erupt",
+    "normalizedTopic": "how-geysers-erupt",
+    "format": "story",
+    "visualStyle": "animated",
+    "script": {
+      "title": "How Earth's Plumbing Creates Explosive Hot Water Showers",
+      "category": "nature",
+      "hook_text": "How geysers explode",
+      "finale_text": "Earth's explosive plumbing",
+      "scenes": [
+        {
+          "narration": "Have you ever wondered how geysers erupt, shooting scalding water high into the air?",
+          "image_prompt": "A cross-section view into the Earth, showing rock layers, groundwater, and a narrow fissure leading to the surface, illuminated by the internal heat of the Earth. A dramatic geyser erupts powerfully from the surface, sending a column of hot water and steam high into a clear sky, surrounded by rugged, rocky landscape, organic, earthy color palette, golden hour lighting."
+        },
+        {
+          "narration": "It all starts deep underground, where magma heats surrounding rock to extreme temperatures.",
+          "image_prompt": "An extreme close-up, cross-section view within the Earth, showing glowing orange magma beneath dark rock, with a subtle shimmering heat effect, intense red and orange lighting, organic, earthy color palette."
+        },
+        {
+          "narration": "Rainwater and melted snow seep through cracks, filling underground chambers and narrow channels.",
+          "image_prompt": "A medium shot, cross-section view of a subterranean rock chamber with intricate fissures, showing clear blue water slowly trickling down into it, illuminated by a faint, cool light from above, organic, earthy color palette."
+        },
+        {
+          "narration": "This water is trapped and superheated by the hot rock, but it cannot boil due to immense pressure.",
+          "image_prompt": "An intimate close-up, cross-section of a narrow, water-filled channel in solid rock, showing tiny, trapped bubbles forming but not escaping, steam rising within the confined space, lit by a warm, internal glow, organic, earthy color palette."
+        },
+        {
+          "narration": "Eventually, a small bubble of steam forms, pushing some water out of the opening.",
+          "image_prompt": "An over-the-shoulder shot looking down into a narrow, rocky vent, showing a large, turbulent steam bubble emerging from the superheated water below, slightly cloudy with steam, warm and bright light, organic, earthy color palette."
+        },
+        {
+          "narration": "This pressure release allows the remaining superheated water to flash into steam instantaneously.",
+          "image_prompt": "A medium shot looking up from inside a rock conduit as the superheated water violently and rapidly converts into a massive cloud of steam, a sudden burst of energy, bright white steam against dark rock, organic, earthy color palette."
+        },
+        {
+          "narration": "The sudden expansion blasts the column of water and steam skyward, creating a spectacular geyser eruption.",
+          "image_prompt": "A low angle, wide and dynamic shot of the fully developed geyser eruption, water and steam shooting dramatically into the sky, emphasizing its height and power, clear blue sky background, bright sunlight, organic, earthy color palette."
+        }
+      ],
+      "cta": "Uncover more of Earth's wonders – follow for daily discoveries!"
+    },
+    "audioPath": "output/how-geysers-erupt/how-geysers-erupt.mp3",
+    "videoPath": "output/how-geysers-erupt/how-geysers-erupt.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/how-geysers-erupt/media/01-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 1,
+        "keyword": "magma",
+        "path": "output/how-geysers-erupt/media/02-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/steam-coming-out-of-the-volcano-9354644/",
+        "author": "Marina Leonova"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 2,
+        "keyword": "water seepage",
+        "path": "output/how-geysers-erupt/media/03-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/stone-falling-into-lake-13723991/",
+        "author": "Marsel Sharipov"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 3,
+        "keyword": "boiling water",
+        "path": "output/how-geysers-erupt/media/04-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/boiling-water-in-stainless-steel-pot-34355146/",
+        "author": "Evgenij Mikhailov"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 4,
+        "path": "output/how-geysers-erupt/media/05-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "gfx",
+        "scene": 5,
+        "path": "output/how-geysers-erupt/media/06-gfx.mp4"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 6,
+        "keyword": "geyser eruption",
+        "path": "output/how-geysers-erupt/media/07-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/a-geyser-erupting-in-the-sun-with-the-words-geyser-27893537/",
+        "author": "Viktoria B."
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 39.728005,
+    "status": "published",
+    "youtube": {
+      "videoId": "4UWPFsxR0ig",
+      "url": "https://www.youtube.com/shorts/4UWPFsxR0ig",
+      "title": "How Earth's Underground Plumbing Creates Explosive Hot Water Showers #Shorts",
+      "publishedAt": "2026-07-15T23:55:17.814Z"
+    },
+    "createdAt": "2026-07-15T23:55:20.531Z"
   }
 ]
