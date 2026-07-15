@@ -778,7 +778,7 @@
       "views": 328,
       "likes": 0,
       "comments": 0,
-      "statsAt": "2026-07-15T14:33:57.208Z"
+      "statsAt": "2026-07-15T20:10:20.752Z"
     }
   },
   {
@@ -899,7 +899,7 @@
       "views": 1272,
       "likes": 24,
       "comments": 1,
-      "statsAt": "2026-07-15T14:33:57.205Z"
+      "statsAt": "2026-07-15T20:10:20.750Z"
     }
   },
   {
@@ -1017,7 +1017,7 @@
       "views": 75,
       "likes": 0,
       "comments": 1,
-      "statsAt": "2026-07-15T14:33:57.202Z"
+      "statsAt": "2026-07-15T20:10:20.748Z"
     }
   },
   {
@@ -1363,7 +1363,7 @@
       "views": 401,
       "likes": 11,
       "comments": 5,
-      "statsAt": "2026-07-15T14:33:57.200Z"
+      "statsAt": "2026-07-15T20:10:20.745Z"
     }
   },
   {
@@ -1692,10 +1692,10 @@
     },
     "createdAt": "2026-07-11T16:01:25.902Z",
     "stats": {
-      "views": 1200,
+      "views": 1205,
       "likes": 29,
       "comments": 5,
-      "statsAt": "2026-07-15T14:33:57.197Z"
+      "statsAt": "2026-07-15T20:10:20.743Z"
     }
   },
   {
@@ -1808,7 +1808,7 @@
       "views": 314,
       "likes": 41,
       "comments": 1,
-      "statsAt": "2026-07-15T14:33:57.194Z"
+      "statsAt": "2026-07-15T20:10:20.741Z"
     }
   },
   {
@@ -1933,7 +1933,7 @@
       "views": 395,
       "likes": 9,
       "comments": 1,
-      "statsAt": "2026-07-15T14:33:57.192Z"
+      "statsAt": "2026-07-15T20:10:20.739Z"
     }
   },
   {
@@ -2058,7 +2058,7 @@
       "views": 1020,
       "likes": 47,
       "comments": 3,
-      "statsAt": "2026-07-15T14:33:57.189Z"
+      "statsAt": "2026-07-15T20:10:20.736Z"
     }
   },
   {
@@ -2183,7 +2183,7 @@
       "views": 471,
       "likes": 7,
       "comments": 1,
-      "statsAt": "2026-07-15T14:33:57.187Z"
+      "statsAt": "2026-07-15T20:10:20.734Z"
     }
   },
   {
@@ -2293,10 +2293,10 @@
     },
     "createdAt": "2026-07-13T18:44:54.118Z",
     "stats": {
-      "views": 560,
+      "views": 583,
       "likes": 25,
       "comments": 2,
-      "statsAt": "2026-07-15T14:33:57.185Z"
+      "statsAt": "2026-07-15T20:10:20.732Z"
     }
   },
   {
@@ -2409,7 +2409,7 @@
       "views": 102,
       "likes": 7,
       "comments": 1,
-      "statsAt": "2026-07-15T14:33:57.183Z"
+      "statsAt": "2026-07-15T20:10:20.730Z"
     }
   },
   {
@@ -2518,10 +2518,10 @@
     },
     "createdAt": "2026-07-14T13:15:55.945Z",
     "stats": {
-      "views": 1337,
+      "views": 1331,
       "likes": 25,
       "comments": 1,
-      "statsAt": "2026-07-15T14:33:57.181Z"
+      "statsAt": "2026-07-15T20:10:20.728Z"
     }
   },
   {
@@ -2643,10 +2643,10 @@
     },
     "createdAt": "2026-07-14T20:17:07.975Z",
     "stats": {
-      "views": 1237,
+      "views": 1242,
       "likes": 39,
       "comments": 1,
-      "statsAt": "2026-07-15T14:33:57.179Z"
+      "statsAt": "2026-07-15T20:10:20.725Z"
     }
   },
   {
@@ -2756,10 +2756,10 @@
     },
     "createdAt": "2026-07-14T23:48:23.882Z",
     "stats": {
-      "views": 474,
+      "views": 476,
       "likes": 11,
       "comments": 1,
-      "statsAt": "2026-07-15T14:33:57.176Z"
+      "statsAt": "2026-07-15T20:10:20.723Z"
     }
   },
   {
@@ -2879,6 +2879,116 @@
       "title": "How a Pearl Forms Inside an Oyster: Nature's Secret Jewel Factory #Shorts",
       "publishedAt": "2026-07-15T14:38:35.994Z"
     },
-    "createdAt": "2026-07-15T14:38:38.805Z"
+    "createdAt": "2026-07-15T14:38:38.805Z",
+    "stats": {
+      "views": 401,
+      "likes": 3,
+      "comments": 1,
+      "statsAt": "2026-07-15T20:10:20.720Z"
+    }
+  },
+  {
+    "id": "antikythera-mechanism-1784146590321",
+    "topic": "Antikythera Mechanism",
+    "normalizedTopic": "antikythera-mechanism",
+    "format": "facts3",
+    "visualStyle": "photo",
+    "script": {
+      "title": "Ancient Greece's Mind-Blowing Supercomputer",
+      "category": "history",
+      "scenes": [
+        {
+          "narration": "In 1901, Greek sponge divers exploring a shipwreck near Antikythera made an astonishing find.",
+          "image_prompt": "A grizzled, sun-baked Greek sponge diver from the early 20th century in a heavy canvas diving suit and brass helmet, surrounded by murky underwater light filtering through to ancient ship wreckage, discovering a large, barnacle-encrusted wooden chest among ancient amphorae on the seabed. Early 20th century, deep blue and green murky water, sense of awe and discovery. Clearly lit."
+        },
+        {
+          "narration": "They recovered corroded bronze fragments, initially thought to be just more ancient debris.",
+          "image_prompt": "A close-up on the gloved hand of a grizzled Greek sponge diver carefully brushing away sediment from a heavily corroded bronze gear fragment resting on the sandy seabed, glinting faintly in the dim underwater light. Early 20th century, murky water, sense of discovery. Clearly lit."
+        },
+        {
+          "narration": "Years later, scientists realized these weren't simple artifacts; they were parts of an intricate machine.",
+          "image_prompt": "An extreme close-up of a perfectly preserved, complex bronze gear, cleaned of corrosion, with incredibly fine teeth and precision, sitting on a dark velvet cloth in a modern archaeological lab, under bright, focused lighting, with a sense of awe. Clearly lit."
+        },
+        {
+          "narration": "This device, now called the Antikythera Mechanism, had dozens of interlocking gears.",
+          "image_prompt": "An archaeologist's hands gently assembling several reconstructed bronze gears on a workbench, their fingers carefully fitting the intricate parts together to form a section of the Antikythera Mechanism. Modern lab, focused lighting, detailed shot, sense of awe and discovery. Clearly lit."
+        },
+        {
+          "narration": "It was an astronomical calculator, precisely predicting celestial events like eclipses and planetary movements.",
+          "image_prompt": "An over-the-shoulder shot of a Roman-era scholar with a stylus pointing to a detailed, reconstructed diagram of the Antikythera Mechanism, showing its internal workings and celestial calculations on a parchment scroll. Warm, scholarly light, ancient Greek setting, sense of awe and discovery. Clearly lit."
+        },
+        {
+          "narration": "Created by ancient Greeks around 200 BC, it was centuries ahead of its time.",
+          "image_prompt": "A close-up of the front dial of the fully reconstructed Antikythera Mechanism, showing intricate Greek inscriptions and pointers indicating zodiac signs and calendar dates. Ancient Greek style, artifact display, soft, dramatic key light highlighting its complexity, sense of awe. Clearly lit."
+        },
+        {
+          "narration": "Essentially, they built the world's first known analog computer.",
+          "image_prompt": "A wide shot of the complete Antikythera Mechanism, elegantly displayed in a dimly lit museum exhibit, glowing softly under a spotlight, with a few blurred, admiring spectators in the background. Modern museum, reverent mood, sense of awe. Clearly lit."
+        }
+      ],
+      "cta": "Uncover more ancient wonders – Follow for mind-blowing history!"
+    },
+    "audioPath": "output/antikythera-mechanism/antikythera-mechanism.mp3",
+    "videoPath": "output/antikythera-mechanism/antikythera-mechanism.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/antikythera-mechanism/media/01-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 1,
+        "keyword": "underwater",
+        "path": "output/antikythera-mechanism/media/02-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/underwater-exploration-of-sunken-airplane-wreck-37848692/",
+        "author": "JUN HO LEE"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/antikythera-mechanism/media/03-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 3,
+        "keyword": "gears",
+        "path": "output/antikythera-mechanism/media/04-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/close-up-video-of-a-machine-5846713/",
+        "author": "Tima Miroshnichenko"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 4,
+        "path": "output/antikythera-mechanism/media/05-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 5,
+        "path": "output/antikythera-mechanism/media/06-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 6,
+        "path": "output/antikythera-mechanism/media/07-ai.jpg"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 38.64,
+    "status": "published",
+    "youtube": {
+      "videoId": "ARgKlD6r-1c",
+      "url": "https://www.youtube.com/shorts/ARgKlD6r-1c",
+      "title": "Uncovering Ancient Greece's Mind-Blowing Supercomputer #Shorts",
+      "publishedAt": "2026-07-15T20:16:27.715Z"
+    },
+    "createdAt": "2026-07-15T20:16:30.321Z"
   }
 ]
