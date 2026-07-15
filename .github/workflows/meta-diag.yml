@@ -1,0 +1,21 @@
+name: Meta Teşhis
+
+# Instagram/Facebook token'ının neyi görebildiğini güvenli raporlar.
+# Log'a token BASILMAZ (yalnızca izin adları + sayılar + herkese açık ID'ler).
+on:
+  workflow_dispatch:
+
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Teşhis
+        run: node scripts/meta-diag.js
+        env:
+          META_USER_TOKEN: ${{ secrets.META_USER_TOKEN }}
+          META_IG_LOGIN_TOKEN: ${{ secrets.META_IG_LOGIN_TOKEN }}
