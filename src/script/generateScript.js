@@ -105,8 +105,12 @@ export const SCRIPT_SCHEMA = {
 
 // Format rotasyonu: izleyici tek kalıptan yorulmasın. Story + how-it-works +
 // process (gerçek görüntü öncelikli) ağırlıklı.
+// Ağırlık dengesi (15 Tem): process 6→3 — %46 process = yarı yarıya tamamen
+// stok-klip video; niş konularda kütüphanede birebir görüntü olmayınca alakasız
+// klipler giriyor ve kalite hissi düşüyordu. story 2→3 (Moon Hoax: 433 izlenme
+// + %167 retention — kanalın en iyi videosu bir story/history idi), facts3 1→2.
 const FORMATS = [
-  { key: 'story', weight: 2, brief: 'ONE gripping true mini-story with a narrative arc (hook, escalation, twist, payoff).' },
+  { key: 'story', weight: 3, brief: 'ONE gripping true mini-story with a narrative arc (hook, escalation, twist, payoff).' },
   {
     key: 'howworks',
     weight: 3,
@@ -119,7 +123,7 @@ const FORMATS = [
   },
   {
     key: 'process',
-    weight: 6,
+    weight: 3,
     brief:
       'A mesmerizing REAL-FOOTAGE "watch how this is actually done/made" video (a craft, a repair, ' +
       'a manufacturing process, cooking, a machine at work, nature in action). The narrator is a ' +
@@ -127,7 +131,7 @@ const FORMATS = [
       'why behind each step. The entire video is built from real stock clips — pick a subject with ' +
       'ABUNDANT generic footage.',
   },
-  { key: 'facts3', weight: 1, brief: 'THREE rapid-fire, jaw-dropping TRUE facts around one tight theme. Scene 1 hooks the theme; then each fact gets 2 scenes (setup + payoff); close with the best "wait, WHAT?" fact.' },
+  { key: 'facts3', weight: 2, brief: 'THREE rapid-fire, jaw-dropping TRUE facts around one tight theme. Scene 1 hooks the theme; then each fact gets 2 scenes (setup + payoff); close with the best "wait, WHAT?" fact.' },
   { key: 'whatif', weight: 1, brief: 'A "What if...?" scenario answered with REAL science/history (e.g. "What if the Moon disappeared tonight?"). Grounded, accurate consequences presented as a story.' },
 ];
 export function pickFormat(rand = Math.random()) {

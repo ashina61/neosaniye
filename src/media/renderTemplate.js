@@ -135,6 +135,81 @@ export async function renderStatCard(stat, dest, opts = {}) {
   return { path: dest, type: 'video' };
 }
 
+/**
+ * HOW IT WORKS kartı: çalışma prensibini 2-4 ultra kısa adımla, sırayla
+ * beliren satırlar hâlinde gösterir (altın numara + kırık beyaz metin).
+ * howworks/process videolarında güçlü bir "pattern interrupt".
+ *
+ * @param {object} diagram - { title:string, steps:string[] (2-4) }
+ * @param {string} dest - çıktı .mp4 yolu
+ * @param {object} opts - { width, height, fps, duration }
+ */
+export async function renderStepsCard(diagram, dest, opts = {}) {
+  const { width = 1080, height = 1920, fps = 30, duration = 8 } = opts;
+  if (!existsSync(FONT_BLACK)) throw new Error('Montserrat fontu yok — steps card atlandı');
+
+  const title = String(diagram.title || '').trim().slice(0, 30).toUpperCase();
+  const steps = (diagram.steps || []).map((s) => String(s).trim().slice(0, 44)).filter(Boolean).slice(0, 4);
+  if (steps.length < 2) throw new Error('steps card: en az 2 adım gerekli');
+  const dur = Math.max(3, Math.min(9, Number(duration) || 8));
+
+  const sb = config.video.styleBible;
+  const cx = Math.round(width / 2);
+  const titleSize = Math.round(width * 0.055);
+  const stepSize = Math.round(width * 0.048);
+  const numSize = Math.round(width * 0.052);
+  const yTitle = Math.round(height * 0.30);
+  const yStart = Math.round(height * 0.40);
+  const gap = Math.round(height * 0.085);
+  const xNum = 140;
+  const xText = 250;
+
+  const parts = [
+    // Başlık: altın, hafif harf aralıklı; ince altın ayraç altında.
+    `drawtext=fontfile='${FONT_SEMI}':text='${dt(title)}':fontcolor=0x${sb.gold}:` +
+      `fontsize=${titleSize}:x=(w-text_w)/2:y=${yTitle}:alpha='min(t/0.5,1)'`,
+    `drawbox=x=${cx - 70}:y=${yTitle + titleSize + 26}:w=140:h=4:color=0x${sb.gold}@0.9:t=fill:enable='gte(t,0.3)'`,
+  ];
+  // Adımlar: 0.9sn arayla sırayla belirir (fade), numara altın, metin beyaz.
+  steps.forEach((step, i) => {
+    const y = yStart + i * gap;
+    const t0 = (0.7 + i * 0.9).toFixed(2);
+    const a = `alpha='min(max((t-${t0})/0.45,0),1)'`;
+    parts.push(
+      `drawtext=fontfile='${FONT_BLACK}':text='${i + 1}':fontcolor=0x${sb.gold}:` +
+        `fontsize=${numSize}:x=${xNum}:y=${y}:${a}`,
+      `drawtext=fontfile='${FONT_SEMI}':text='${dt(step)}':fontcolor=0x${sb.ink}:` +
+        `fontsize=${stepSize}:x=${xText}:y=${y + Math.round((numSize - stepSize) / 2)}:` +
+        `shadowcolor=0x000000@0.5:shadowx=0:shadowy=4:${a}`,
+    );
+  });
+
+  const bgSrc =
+    `gradients=s=${width}x${height}:c0=0x${sb.bg0}:c1=0x${sb.bg1}:` +
+    `x0=0:y0=0:x1=0:y1=${height}:d=${dur}:r=${fps}`;
+  const vf = `vignette=PI/5,${parts.join(',')},fade=t=in:st=0:d=0.4,format=yuv420p`;
+  const args = [
+    '-y', '-f', 'lavfi', '-i', bgSrc, '-t', String(dur.toFixed(3)),
+    '-vf', vf, '-r', String(fps),
+    '-c:v', 'libx264', '-preset', 'veryfast', '-pix_fmt', 'yuv420p', dest,
+  ];
+  try {
+    await run('ffmpeg', args, { maxBuffer: 20 * 1024 * 1024 });
+  } catch {
+    const flat = args.slice();
+    flat[flat.indexOf(bgSrc)] = `color=c=0x${sb.bg1}:s=${width}x${height}:r=${fps}`;
+    await run('ffmpeg', flat, { maxBuffer: 20 * 1024 * 1024 });
+  }
+  return { path: dest, type: 'video' };
+}
+
+/** Diagram parametresi kullanılabilir mi? (2-4 kısa adım + başlık) */
+export function isUsableDiagram(diagram) {
+  if (!diagram || typeof diagram !== 'object') return false;
+  const steps = (diagram.steps || []).map((s) => String(s).trim()).filter((s) => s.length >= 3);
+  return Boolean(String(diagram.title || '').trim()) && steps.length >= 2 && steps.length <= 4;
+}
+
 const NUM_UNITS = {
   zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8,
   nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15,

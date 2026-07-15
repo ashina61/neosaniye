@@ -5,7 +5,7 @@ import path from 'node:path';
 import { GoogleGenAI } from '@google/genai';
 import { config } from '../config.js';
 import { fetchOneForKeywords, fetchStockVideoForKeywords } from './fetchMedia.js';
-import { renderStatCard, isUsableStat } from './renderTemplate.js';
+import { renderStatCard, isUsableStat, renderStepsCard, isUsableDiagram } from './renderTemplate.js';
 
 const run = promisify(execFile);
 
@@ -157,24 +157,31 @@ export async function generateImages(script, opts = {}) {
       .join('. ');
     let done = null;
 
-    // 0.gfx) SAYI KARTI (motion graphics): sahnenin çekirdeği anlatımda GERÇEKTEN
-    // geçen çarpıcı bir sayıysa, o sahneyi animasyonlu sayaç kartına çevir.
-    // Guard: video başına üst sınır + sahne-1 hariç + anti-halüsinasyon
-    // (isUsableStat). Herhangi bir hata → aşağıdaki normal görsel zincirine düşer.
-    if (
-      config.video.gfx &&
-      gfxCount < config.video.gfxMaxPerVideo &&
-      i > 0 &&
-      isUsableStat(scene.stat, scene.narration)
-    ) {
+    // 0.gfx) MOTION GRAPHICS kartları: sayı sayacı (stat) veya "how it works"
+    // adım kartı (diagram). Guard: video başına üst sınır + sahne-1 hariç +
+    // stat için anti-halüsinasyon (isUsableStat). Hata → normal görsel zinciri.
+    if (config.video.gfx && gfxCount < config.video.gfxMaxPerVideo && i > 0) {
+      if (scene.stat && !isUsableStat(scene.stat, scene.narration)) {
+        // Görünürlük: DP stat verdi ama sayı anlatımda birebir yok — sessiz
+        // kalmak teşhisi imkânsız kılıyordu (6 videoda gfx:0 kör noktası).
+        console.warn(`[img] sahne ${idx}: stat guard reddetti (value=${scene.stat.value} anlatımda geçmiyor).`);
+      }
       try {
-        const dest = path.join(mediaDir, `${idx}-gfx.mp4`);
-        const clip = await renderStatCard(scene.stat, dest, { width, height, duration: 8 });
-        done = { ...clip, scene: i, source: 'gfx' };
-        gfxCount += 1;
-        console.log(`[img] sahne ${idx}: sayı kartı (${scene.stat.value} ${scene.stat.unit || ''})`);
+        if (isUsableStat(scene.stat, scene.narration)) {
+          const dest = path.join(mediaDir, `${idx}-gfx.mp4`);
+          const clip = await renderStatCard(scene.stat, dest, { width, height, duration: 8 });
+          done = { ...clip, scene: i, source: 'gfx' };
+          gfxCount += 1;
+          console.log(`[img] sahne ${idx}: sayı kartı (${scene.stat.value} ${scene.stat.unit || ''})`);
+        } else if (isUsableDiagram(scene.diagram)) {
+          const dest = path.join(mediaDir, `${idx}-gfx.mp4`);
+          const clip = await renderStepsCard(scene.diagram, dest, { width, height, duration: 8 });
+          done = { ...clip, scene: i, source: 'gfx' };
+          gfxCount += 1;
+          console.log(`[img] sahne ${idx}: adım kartı ("${scene.diagram.title}", ${scene.diagram.steps.length} adım)`);
+        }
       } catch (err) {
-        console.warn(`[img] sahne ${idx}: sayı kartı üretilemedi (${String(err.message).slice(0, 90)}).`);
+        console.warn(`[img] sahne ${idx}: gfx kartı üretilemedi (${String(err.message).slice(0, 90)}).`);
       }
     }
 

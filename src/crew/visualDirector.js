@@ -63,9 +63,28 @@ const SHOT_SCHEMA = {
             },
             propertyOrdering: ['value', 'unit', 'label'],
           },
+          diagram: {
+            type: Type.OBJECT,
+            nullable: true,
+            description:
+              'Set ONLY for a how-it-works style story, on the ONE scene whose narration sums up ' +
+              'the mechanism: the scene becomes an animated step-by-step card. steps = 2-4 ultra-short ' +
+              'phrases (3-5 words each) strictly derived from what the script actually explains. ' +
+              'Leave null everywhere else. Never scene 1. A video may have AT MOST one special card ' +
+              '(stat OR diagram, never both).',
+            properties: {
+              title: { type: Type.STRING, description: 'Card heading, 2-4 words (e.g. "How it hovers"). No punctuation.' },
+              steps: {
+                type: Type.ARRAY,
+                items: { type: Type.STRING },
+                description: '2-4 steps, each 3-5 words, plain language, in process order',
+              },
+            },
+            propertyOrdering: ['title', 'steps'],
+          },
         },
         required: ['shot', 'image_prompt', 'motion', 'stock_keywords'],
-        propertyOrdering: ['shot', 'image_prompt', 'motion', 'stock_keywords', 'stat'],
+        propertyOrdering: ['shot', 'image_prompt', 'motion', 'stock_keywords', 'stat', 'diagram'],
       },
     },
   },
@@ -91,7 +110,11 @@ Produce a professional SHOT LIST that makes the video feel like ONE cinematic fi
 - NUMBER CARD (optional, powerful): if exactly one scene's core is a striking NUMBER that is
   literally stated in its narration, set that scene's "stat" (value/unit/label). It becomes a bold
   animated count-up card — a strong pattern-interrupt. Use it for AT MOST one scene, never scene 1,
-  and only when the number is genuinely in the narration. Otherwise leave stat null everywhere.`;
+  and only when the number is genuinely in the narration. Otherwise leave stat null everywhere.
+- HOW-IT-WORKS CARD (optional): for a mechanism/process story, you may set "diagram" on the ONE
+  scene whose narration sums up how it works: title (2-4 words) + 2-4 ultra-short steps (3-5 words
+  each) strictly from the script's actual explanation. Animated step-by-step reveal — great retention.
+  Never scene 1. A video gets AT MOST one special card total: stat OR diagram, never both.`;
 
 /**
  * @param {object} script - generateScript çıktısı (scenes, visual_anchor, topic, category)
@@ -157,6 +180,13 @@ export function applyShotList(script, shotList) {
         value: Number(shot.stat.value),
         unit: String(shot.stat.unit || '').trim(),
         label: String(shot.stat.label || '').trim(),
+      };
+    }
+    // "How it works" adım kartı adayı (opsiyonel) — guard generateImages'te.
+    if (shot.diagram && Array.isArray(shot.diagram.steps) && i > 0) {
+      scene.diagram = {
+        title: String(shot.diagram.title || '').trim(),
+        steps: shot.diagram.steps.map((s) => String(s).trim()).filter(Boolean).slice(0, 4),
       };
     }
   });
