@@ -778,7 +778,9 @@
       "views": 328,
       "likes": 0,
       "comments": 0,
-      "statsAt": "2026-07-15T20:10:20.752Z"
+      "avgViewPct": 39.2,
+      "subsGained": 0,
+      "statsAt": "2026-07-15T23:16:30.553Z"
     }
   },
   {
@@ -899,7 +901,9 @@
       "views": 1272,
       "likes": 24,
       "comments": 1,
-      "statsAt": "2026-07-15T20:10:20.750Z"
+      "avgViewPct": 90.4,
+      "subsGained": 1,
+      "statsAt": "2026-07-15T23:16:30.550Z"
     }
   },
   {
@@ -1017,7 +1021,9 @@
       "views": 75,
       "likes": 0,
       "comments": 1,
-      "statsAt": "2026-07-15T20:10:20.748Z"
+      "avgViewPct": 68.6,
+      "subsGained": 0,
+      "statsAt": "2026-07-15T23:16:30.546Z"
     }
   },
   {
@@ -1363,7 +1369,9 @@
       "views": 401,
       "likes": 11,
       "comments": 5,
-      "statsAt": "2026-07-15T20:10:20.745Z"
+      "avgViewPct": 55.7,
+      "subsGained": 0,
+      "statsAt": "2026-07-15T23:16:30.532Z"
     }
   },
   {
@@ -1695,7 +1703,9 @@
       "views": 1205,
       "likes": 29,
       "comments": 5,
-      "statsAt": "2026-07-15T20:10:20.743Z"
+      "avgViewPct": 73,
+      "subsGained": 1,
+      "statsAt": "2026-07-15T23:16:30.526Z"
     }
   },
   {
@@ -1808,7 +1818,9 @@
       "views": 314,
       "likes": 41,
       "comments": 1,
-      "statsAt": "2026-07-15T20:10:20.741Z"
+      "avgViewPct": 167,
+      "subsGained": 6,
+      "statsAt": "2026-07-15T23:16:30.524Z"
     }
   },
   {
@@ -1930,10 +1942,12 @@
     },
     "createdAt": "2026-07-12T15:24:39.551Z",
     "stats": {
-      "views": 395,
+      "views": 396,
       "likes": 9,
       "comments": 1,
-      "statsAt": "2026-07-15T20:10:20.739Z"
+      "avgViewPct": 52.6,
+      "subsGained": 2,
+      "statsAt": "2026-07-15T23:16:30.522Z"
     }
   },
   {
@@ -2055,10 +2069,12 @@
     },
     "createdAt": "2026-07-12T18:04:35.208Z",
     "stats": {
-      "views": 1020,
+      "views": 1021,
       "likes": 47,
       "comments": 3,
-      "statsAt": "2026-07-15T20:10:20.736Z"
+      "avgViewPct": 60.6,
+      "subsGained": 5,
+      "statsAt": "2026-07-15T23:16:30.519Z"
     }
   },
   {
@@ -2183,7 +2199,9 @@
       "views": 471,
       "likes": 7,
       "comments": 1,
-      "statsAt": "2026-07-15T20:10:20.734Z"
+      "avgViewPct": 45.8,
+      "subsGained": 0,
+      "statsAt": "2026-07-15T23:16:30.517Z"
     }
   },
   {
@@ -2293,10 +2311,12 @@
     },
     "createdAt": "2026-07-13T18:44:54.118Z",
     "stats": {
-      "views": 583,
+      "views": 586,
       "likes": 25,
       "comments": 2,
-      "statsAt": "2026-07-15T20:10:20.732Z"
+      "avgViewPct": 167.7,
+      "subsGained": 1,
+      "statsAt": "2026-07-15T23:16:30.515Z"
     }
   },
   {
@@ -2406,10 +2426,12 @@
     },
     "createdAt": "2026-07-13T21:55:31.629Z",
     "stats": {
-      "views": 102,
+      "views": 105,
       "likes": 7,
       "comments": 1,
-      "statsAt": "2026-07-15T20:10:20.730Z"
+      "avgViewPct": 52.4,
+      "subsGained": 1,
+      "statsAt": "2026-07-15T23:16:30.512Z"
     }
   },
   {
@@ -2521,7 +2543,7 @@
       "views": 1331,
       "likes": 25,
       "comments": 1,
-      "statsAt": "2026-07-15T20:10:20.728Z"
+      "statsAt": "2026-07-15T23:16:30.510Z"
     }
   },
   {
@@ -2646,7 +2668,7 @@
       "views": 1242,
       "likes": 39,
       "comments": 1,
-      "statsAt": "2026-07-15T20:10:20.725Z"
+      "statsAt": "2026-07-15T23:16:30.507Z"
     }
   },
   {
@@ -2756,10 +2778,10 @@
     },
     "createdAt": "2026-07-14T23:48:23.882Z",
     "stats": {
-      "views": 476,
+      "views": 478,
       "likes": 11,
       "comments": 1,
-      "statsAt": "2026-07-15T20:10:20.723Z"
+      "statsAt": "2026-07-15T23:16:30.505Z"
     }
   },
   {
@@ -2881,10 +2903,10 @@
     },
     "createdAt": "2026-07-15T14:38:38.805Z",
     "stats": {
-      "views": 401,
-      "likes": 3,
+      "views": 426,
+      "likes": 4,
       "comments": 1,
-      "statsAt": "2026-07-15T20:10:20.720Z"
+      "statsAt": "2026-07-15T23:16:30.503Z"
     }
   },
   {
@@ -2989,6 +3011,119 @@
       "title": "Uncovering Ancient Greece's Mind-Blowing Supercomputer #Shorts",
       "publishedAt": "2026-07-15T20:16:27.715Z"
     },
-    "createdAt": "2026-07-15T20:16:30.321Z"
+    "createdAt": "2026-07-15T20:16:30.321Z",
+    "stats": {
+      "views": 439,
+      "likes": 37,
+      "comments": 1,
+      "statsAt": "2026-07-15T23:16:30.500Z"
+    }
+  },
+  {
+    "id": "leafcutter-ant-ecosystems-1784157666918",
+    "topic": "Leafcutter Ant Ecosystems",
+    "normalizedTopic": "leafcutter-ant-ecosystems",
+    "format": "story",
+    "visualStyle": "animated",
+    "script": {
+      "title": "How Leafcutter Ants Farm for Millions of Years",
+      "category": "nature",
+      "hook_text": "World's oldest farmers",
+      "finale_text": "the rainforest's tiny farmers",
+      "scenes": [
+        {
+          "narration": "In the rainforests, an army of leafcutter ants marches, each carrying a piece of freshly cut leaf.",
+          "image_prompt": "A bustling tropical jungle floor, vibrant green foliage and dappled sunlight, focusing on a long line of leafcutter ants carrying leaf fragments across exposed roots and soil. Warm, natural light, eye-level shot."
+        },
+        {
+          "narration": "They aren't eating these leaves; instead, they're taking them back to their colossal underground nests.",
+          "image_prompt": "A bustling stream of leafcutter ants, each carrying a leaf fragment, entering a prominent, dark, carved-out entrance to an underground nest in reddish soil, surrounded by debris. Warm, natural light."
+        },
+        {
+          "narration": "Deep below, these leaves become vital compost for their intricate, carefully tended mushroom gardens.",
+          "image_prompt": "An intimate close-up shot of a small, humid underground chamber within an ant nest, with tiny leaf fragments piled neatly, covered in a delicate, white, fluffy fungus. Several ants are meticulously tending to the fungus. Soft, glowing subterranean light."
+        },
+        {
+          "narration": "These ants are true farmers, cultivating a specific type of fungus that they alone can digest.",
+          "image_prompt": "An extreme close-up of a single leafcutter ant carefully placing a minuscule piece of leaf onto a growing bed of white fungus, its antennae twitching. Sharp focus on the ant and fungus details. Macro shot, soft, diffused light."
+        },
+        {
+          "narration": "Their queen will literally carry a piece of this fungus when starting a new colony.",
+          "image_prompt": "A medium shot, slightly from above, showing a large leafcutter ant queen, distinguishable by her size, carefully holding a small, white blob of fungus in her mandibles as she crawls across damp soil. Bright, focused natural light."
+        },
+        {
+          "narration": "This symbiotic relationship has existed for over fifty million years, predating human agriculture.",
+          "image_prompt": "A wide, slightly stylized shot depicting a vast, ancient underground ant colony, with multiple chambers of fungus gardens stretching into the distance. A few large, shadowy ant figures move about. Ethereal, ancient-feeling lighting, suggesting immense age."
+        },
+        {
+          "narration": "These tiny insects perfected farming eons before we even conceived of it.",
+          "image_prompt": "A close-up over-the-shoulder shot, looking at a single leafcutter ant diligently working on its fungus garden, with blurred green leaves and soil in the background, emphasizing its focused effort. Warm, golden-hour light filtering through the canopy, highlighting the ant."
+        }
+      ],
+      "cta": "Learn more about insect societies!"
+    },
+    "audioPath": "output/leafcutter-ant-ecosystems/leafcutter-ant-ecosystems.mp3",
+    "videoPath": "output/leafcutter-ant-ecosystems/leafcutter-ant-ecosystems.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/leafcutter-ant-ecosystems/media/01-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 1,
+        "keyword": "leafcutter ants",
+        "path": "output/leafcutter-ant-ecosystems/media/02-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/ants-on-leaf-11876031/",
+        "author": "Albin Biju"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 2,
+        "keyword": "ant fungus farm",
+        "path": "output/leafcutter-ant-ecosystems/media/03-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/ants-on-leaf-11876031/",
+        "author": "Albin Biju"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 3,
+        "keyword": "leafcutter ant",
+        "path": "output/leafcutter-ant-ecosystems/media/04-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/ants-on-leaf-11876031/",
+        "author": "Albin Biju"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 4,
+        "path": "output/leafcutter-ant-ecosystems/media/05-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "gfx",
+        "scene": 5,
+        "path": "output/leafcutter-ant-ecosystems/media/06-gfx.mp4"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 6,
+        "keyword": "ant working",
+        "path": "output/leafcutter-ant-ecosystems/media/07-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/close-up-of-ants-on-a-rocky-pathway-37546818/",
+        "author": "Zarrina Khojimuratova"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 38.833991,
+    "status": "rendered",
+    "youtube": null,
+    "createdAt": "2026-07-15T23:21:06.918Z"
   }
 ]
