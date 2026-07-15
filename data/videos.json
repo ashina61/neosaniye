@@ -778,7 +778,7 @@
       "views": 328,
       "likes": 0,
       "comments": 0,
-      "statsAt": "2026-07-14T23:42:44.901Z"
+      "statsAt": "2026-07-15T14:33:57.208Z"
     }
   },
   {
@@ -899,7 +899,7 @@
       "views": 1272,
       "likes": 24,
       "comments": 1,
-      "statsAt": "2026-07-14T23:42:44.899Z"
+      "statsAt": "2026-07-15T14:33:57.205Z"
     }
   },
   {
@@ -1017,7 +1017,7 @@
       "views": 75,
       "likes": 0,
       "comments": 1,
-      "statsAt": "2026-07-14T23:42:44.897Z"
+      "statsAt": "2026-07-15T14:33:57.202Z"
     }
   },
   {
@@ -1360,10 +1360,10 @@
     },
     "createdAt": "2026-07-10T22:47:21.809Z",
     "stats": {
-      "views": 402,
+      "views": 401,
       "likes": 11,
       "comments": 5,
-      "statsAt": "2026-07-14T23:42:44.895Z"
+      "statsAt": "2026-07-15T14:33:57.200Z"
     }
   },
   {
@@ -1692,10 +1692,10 @@
     },
     "createdAt": "2026-07-11T16:01:25.902Z",
     "stats": {
-      "views": 1183,
+      "views": 1200,
       "likes": 29,
       "comments": 5,
-      "statsAt": "2026-07-14T23:42:44.893Z"
+      "statsAt": "2026-07-15T14:33:57.197Z"
     }
   },
   {
@@ -1808,7 +1808,7 @@
       "views": 314,
       "likes": 41,
       "comments": 1,
-      "statsAt": "2026-07-14T23:42:44.890Z"
+      "statsAt": "2026-07-15T14:33:57.194Z"
     }
   },
   {
@@ -1930,10 +1930,10 @@
     },
     "createdAt": "2026-07-12T15:24:39.551Z",
     "stats": {
-      "views": 389,
+      "views": 395,
       "likes": 9,
       "comments": 1,
-      "statsAt": "2026-07-14T23:42:44.888Z"
+      "statsAt": "2026-07-15T14:33:57.192Z"
     }
   },
   {
@@ -2055,10 +2055,10 @@
     },
     "createdAt": "2026-07-12T18:04:35.208Z",
     "stats": {
-      "views": 1019,
+      "views": 1020,
       "likes": 47,
       "comments": 3,
-      "statsAt": "2026-07-14T23:42:44.887Z"
+      "statsAt": "2026-07-15T14:33:57.189Z"
     }
   },
   {
@@ -2180,10 +2180,10 @@
     },
     "createdAt": "2026-07-12T21:46:34.893Z",
     "stats": {
-      "views": 470,
+      "views": 471,
       "likes": 7,
       "comments": 1,
-      "statsAt": "2026-07-14T23:42:44.885Z"
+      "statsAt": "2026-07-15T14:33:57.187Z"
     }
   },
   {
@@ -2293,10 +2293,10 @@
     },
     "createdAt": "2026-07-13T18:44:54.118Z",
     "stats": {
-      "views": 499,
-      "likes": 22,
+      "views": 560,
+      "likes": 25,
       "comments": 2,
-      "statsAt": "2026-07-14T23:42:44.883Z"
+      "statsAt": "2026-07-15T14:33:57.185Z"
     }
   },
   {
@@ -2406,10 +2406,10 @@
     },
     "createdAt": "2026-07-13T21:55:31.629Z",
     "stats": {
-      "views": 90,
-      "likes": 5,
+      "views": 102,
+      "likes": 7,
       "comments": 1,
-      "statsAt": "2026-07-14T23:42:44.880Z"
+      "statsAt": "2026-07-15T14:33:57.183Z"
     }
   },
   {
@@ -2518,10 +2518,10 @@
     },
     "createdAt": "2026-07-14T13:15:55.945Z",
     "stats": {
-      "views": 1323,
+      "views": 1337,
       "likes": 25,
       "comments": 1,
-      "statsAt": "2026-07-14T23:42:44.878Z"
+      "statsAt": "2026-07-15T14:33:57.181Z"
     }
   },
   {
@@ -2643,10 +2643,10 @@
     },
     "createdAt": "2026-07-14T20:17:07.975Z",
     "stats": {
-      "views": 1089,
-      "likes": 38,
+      "views": 1237,
+      "likes": 39,
       "comments": 1,
-      "statsAt": "2026-07-14T23:42:44.875Z"
+      "statsAt": "2026-07-15T14:33:57.179Z"
     }
   },
   {
@@ -2754,6 +2754,131 @@
       "title": "How Do Venus Flytraps Snap Shut So Quickly? #Shorts",
       "publishedAt": "2026-07-14T23:48:21.923Z"
     },
-    "createdAt": "2026-07-14T23:48:23.882Z"
+    "createdAt": "2026-07-14T23:48:23.882Z",
+    "stats": {
+      "views": 474,
+      "likes": 11,
+      "comments": 1,
+      "statsAt": "2026-07-15T14:33:57.176Z"
+    }
+  },
+  {
+    "id": "how-pearls-form-in-oysters-1784126318805",
+    "topic": "How pearls form in oysters",
+    "normalizedTopic": "how-pearls-form-in-oysters",
+    "format": "process",
+    "visualStyle": "photo",
+    "script": {
+      "title": "Watch a Pearl Form: Nature's Secret Jewel Factory",
+      "category": "nature",
+      "scenes": [
+        {
+          "narration": "Watch closely as an ordinary irritant begins an extraordinary transformation inside an oyster.",
+          "image_prompt": "Extreme close-up, a tiny grain of sand or a parasitic worm being carefully inserted into the soft mantle tissue of an open oyster shell, submerged in clear blue ocean water, bright natural light, slightly mysterious mood, consistent with an oyster farmer's work."
+        },
+        {
+          "narration": "See that tiny speck? It's the unexpected catalyst for one of nature's most beautiful creations.",
+          "image_prompt": "Close-up, inside an oyster, showing a microscopic foreign body embedded in the soft, iridescent mantle tissue, vibrant natural light illuminating the delicate textures, curious mood, consistent with an oyster farmer's work."
+        },
+        {
+          "narration": "The oyster can't expel the intruder, so it begins to secrete nacre, a protective, shimmering substance.",
+          "image_prompt": "Detail insert, an oyster's mantle slowly beginning to coat a small, embedded sphere with a thin, translucent layer of nacre, subtle iridescence, clear water background, peaceful mood, consistent with an oyster farmer's work."
+        },
+        {
+          "narration": "Layer by microscopic layer, this pearly material slowly builds up around the irritant.",
+          "image_prompt": "Extreme close-up, multiple concentric layers of nacre forming around a central core, creating a tiny, nascent pearl, soft light highlighting the increasing thickness, patient mood, consistent with an oyster farmer's work."
+        },
+        {
+          "narration": "This slow, continuous process can take years, sometimes even decades, within its shell.",
+          "image_prompt": "Medium shot, a mature oyster partially open, resting on an underwater oyster bed, surrounded by other oysters, suggesting the passage of time, warm sunlight filtering through water, serene mood, consistent with an oyster farmer's work."
+        },
+        {
+          "narration": "The result is a lustrous jewel, perfectly rounded and unique, born from discomfort.",
+          "image_prompt": "Close-up, a single, perfectly formed pearl being gently held by a weathered hand, freshly removed from an oyster, shimmering with iridescent light, clean background, triumphant mood, consistent with an oyster farmer's work."
+        },
+        {
+          "narration": "From a simple grain of sand emerges a breathtaking natural wonder.",
+          "image_prompt": "Wide establishing shot, a collection of various sized and colored pearls scattered artfully inside a large, open oyster shell, glistening under bright natural light, luxurious mood, consistent with an oyster farmer's work."
+        }
+      ],
+      "cta": "Dive deeper into nature's secrets!"
+    },
+    "audioPath": "output/how-pearls-form-in-oysters/how-pearls-form-in-oysters.mp3",
+    "videoPath": "output/how-pearls-form-in-oysters/how-pearls-form-in-oysters.mp4",
+    "media": [
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 0,
+        "keyword": "oyster",
+        "path": "output/how-pearls-form-in-oysters/media/01-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/a-person-squeezing-lime-on-oysters-10432196/",
+        "author": "RDNE Stock project"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 1,
+        "keyword": "oyster anatomy",
+        "path": "output/how-pearls-form-in-oysters/media/02-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/a-person-squeezing-lime-on-oysters-10432196/",
+        "author": "RDNE Stock project"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 2,
+        "keyword": "nacre secretion",
+        "path": "output/how-pearls-form-in-oysters/media/03-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/this-is-a-secret-27155339/",
+        "author": "RingTheBell.com Task Manager"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 3,
+        "keyword": "pearl growth",
+        "path": "output/how-pearls-form-in-oysters/media/04-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/a-woman-s-hands-holding-a-book-with-pearls-on-it-4659826/",
+        "author": "cottonbro studio"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 4,
+        "keyword": "oyster bed",
+        "path": "output/how-pearls-form-in-oysters/media/05-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/feet-walking-on-the-water-10231606/",
+        "author": "Peggy Anke"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 5,
+        "keyword": "pearl",
+        "path": "output/how-pearls-form-in-oysters/media/06-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/a-woman-s-hands-holding-a-book-with-pearls-on-it-4659826/",
+        "author": "cottonbro studio"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 6,
+        "keyword": "pearl collection",
+        "path": "output/how-pearls-form-in-oysters/media/07-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/a-woman-s-hands-holding-a-book-with-pearls-on-it-4659826/",
+        "author": "cottonbro studio"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 40.309002,
+    "status": "published",
+    "youtube": {
+      "videoId": "X1LNPrZ2AnI",
+      "url": "https://www.youtube.com/shorts/X1LNPrZ2AnI",
+      "title": "How a Pearl Forms Inside an Oyster: Nature's Secret Jewel Factory #Shorts",
+      "publishedAt": "2026-07-15T14:38:35.994Z"
+    },
+    "createdAt": "2026-07-15T14:38:38.805Z"
   }
 ]
