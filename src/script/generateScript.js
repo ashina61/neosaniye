@@ -3,6 +3,7 @@ import { config, assertGemini } from '../config.js';
 import {
   getRecentUsedTopics,
   getTopPerformingTopics,
+  getWinningHooks,
   isTopicUsed,
   normalizeTopic,
 } from '../lib/firestore.js';
@@ -241,7 +242,7 @@ export async function generateWithRetry(ai, req, tries = 5) {
   throw lastErr;
 }
 
-function buildUserPrompt(avoidTopics, { topPerformers = [], trendSeeds = [], strategyBrief = '' } = {}) {
+function buildUserPrompt(avoidTopics, { topPerformers = [], trendSeeds = [], strategyBrief = '', winningHooks = [] } = {}) {
   const parts = [];
   if (strategyBrief) {
     parts.push(
@@ -270,6 +271,14 @@ function buildUserPrompt(avoidTopics, { topPerformers = [], trendSeeds = [], str
         trendSeeds.map((t) => `- ${t}`).join('\n'),
     );
   }
+  if (winningHooks.length) {
+    parts.push(
+      'PROVEN HOOKS — these opening lines earned our channel the MOST views. Study their ' +
+        'energy (impossible claim, curiosity gap, "wait what?!") and write your hook_text ' +
+        'and first scene with the SAME punch (do not copy them):\n' +
+        winningHooks.map((h) => `- "${h.hook}" (${h.views} views)`).join('\n'),
+    );
+  }
   parts.push('Pick a NEW, mind-blowing TRUE topic that differs from the used list, then write the full scene-by-scene script.');
   return parts.join('\n\n');
 }
@@ -293,9 +302,10 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
   ];
 
   // Öğrenme döngüsü + trend tohumları (ikisi de best-effort).
-  const [topPerformers, trendSeeds] = await Promise.all([
+  const [topPerformers, trendSeeds, winningHooks] = await Promise.all([
     getTopPerformingTopics(5).catch(() => []),
     fetchTrendSeeds(),
+    getWinningHooks(3).catch(() => []),
   ]);
   // FORCE_FORMAT ile format sabitlenebilir (test için; ör. 'process').
   const forced = String(process.env.FORCE_FORMAT || '').trim();
@@ -313,7 +323,7 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
     const response = await generateWithRetry(ai, {
       model: config.gemini.model,
       contents:
-        buildUserPrompt(avoidTopics, { topPerformers, trendSeeds, strategyBrief }) +
+        buildUserPrompt(avoidTopics, { topPerformers, trendSeeds, strategyBrief, winningHooks }) +
         (lengthFeedback ? `\n\n${lengthFeedback}` : ''),
       config: {
         systemInstruction: buildSystemPrompt(format),

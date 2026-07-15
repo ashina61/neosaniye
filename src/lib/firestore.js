@@ -186,6 +186,25 @@ export async function getTopPerformingTopics(limit = 5) {
   }
 }
 
+/** En çok izlenen videoların HOOK'larını döndürür — yazar bunlardan üslup
+ *  öğrenir (few-shot). hook_text eski kayıtlarda yok; başlık vekil olur. */
+export async function getWinningHooks(limit = 3) {
+  try {
+    const vids = await getVideosWithYouTube(50);
+    return vids
+      .filter((v) => v.stats?.views > 0)
+      .sort((a, b) => (b.stats?.views || 0) - (a.stats?.views || 0))
+      .slice(0, limit)
+      .map((v) => ({
+        hook: v.script?.hook_text || v.script?.title || v.topic,
+        views: v.stats.views,
+      }))
+      .filter((h) => h.hook);
+  } catch {
+    return [];
+  }
+}
+
 /** Var olan bir video kaydını günceller (ör. Faz 6 YouTube bilgisi/status). */
 export async function updateVideo(id, patch) {
   const store = getFirestore();

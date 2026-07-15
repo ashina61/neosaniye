@@ -37,6 +37,10 @@ export async function recordProduction(script, meta = {}) {
     script: {
       title: script.title || null,
       category: script.category || null,
+      // Kazanan hook öğrenmesi için (getWinningHooks) — yazar kendi başarılı
+      // açılışlarından üslup öğrenir.
+      hook_text: script.hook_text || null,
+      finale_text: script.finale_text || null,
       scenes: (script.scenes || []).map((s) => ({
         narration: s.narration,
         image_prompt: s.image_prompt,
