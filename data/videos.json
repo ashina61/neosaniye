@@ -780,7 +780,7 @@
       "comments": 0,
       "avgViewPct": 39.2,
       "subsGained": 0,
-      "statsAt": "2026-07-15T23:50:38.144Z"
+      "statsAt": "2026-07-16T19:48:21.482Z"
     }
   },
   {
@@ -903,7 +903,7 @@
       "comments": 1,
       "avgViewPct": 90.4,
       "subsGained": 1,
-      "statsAt": "2026-07-15T23:50:38.142Z"
+      "statsAt": "2026-07-16T19:48:21.480Z"
     }
   },
   {
@@ -1023,7 +1023,7 @@
       "comments": 1,
       "avgViewPct": 68.6,
       "subsGained": 0,
-      "statsAt": "2026-07-15T23:50:38.140Z"
+      "statsAt": "2026-07-16T19:48:21.477Z"
     }
   },
   {
@@ -1371,7 +1371,7 @@
       "comments": 5,
       "avgViewPct": 55.7,
       "subsGained": 0,
-      "statsAt": "2026-07-15T23:50:38.137Z"
+      "statsAt": "2026-07-16T19:48:21.475Z"
     }
   },
   {
@@ -1703,9 +1703,9 @@
       "views": 1205,
       "likes": 29,
       "comments": 5,
-      "avgViewPct": 73,
+      "avgViewPct": 72.6,
       "subsGained": 1,
-      "statsAt": "2026-07-15T23:50:38.135Z"
+      "statsAt": "2026-07-16T19:48:21.473Z"
     }
   },
   {
@@ -1820,7 +1820,7 @@
       "comments": 1,
       "avgViewPct": 167,
       "subsGained": 6,
-      "statsAt": "2026-07-15T23:50:38.130Z"
+      "statsAt": "2026-07-16T19:48:21.470Z"
     }
   },
   {
@@ -1942,12 +1942,12 @@
     },
     "createdAt": "2026-07-12T15:24:39.551Z",
     "stats": {
-      "views": 396,
-      "likes": 9,
+      "views": 399,
+      "likes": 10,
       "comments": 1,
       "avgViewPct": 52.6,
       "subsGained": 2,
-      "statsAt": "2026-07-15T23:50:38.128Z"
+      "statsAt": "2026-07-16T19:48:21.466Z"
     }
   },
   {
@@ -2069,12 +2069,12 @@
     },
     "createdAt": "2026-07-12T18:04:35.208Z",
     "stats": {
-      "views": 1021,
+      "views": 1026,
       "likes": 47,
       "comments": 3,
-      "avgViewPct": 60.6,
+      "avgViewPct": 60.1,
       "subsGained": 5,
-      "statsAt": "2026-07-15T23:50:38.125Z"
+      "statsAt": "2026-07-16T19:48:21.463Z"
     }
   },
   {
@@ -2199,9 +2199,9 @@
       "views": 471,
       "likes": 7,
       "comments": 1,
-      "avgViewPct": 45.8,
+      "avgViewPct": 44.9,
       "subsGained": 0,
-      "statsAt": "2026-07-15T23:50:38.123Z"
+      "statsAt": "2026-07-16T19:48:21.461Z"
     }
   },
   {
@@ -2314,9 +2314,9 @@
       "views": 586,
       "likes": 25,
       "comments": 2,
-      "avgViewPct": 167.7,
+      "avgViewPct": 146.1,
       "subsGained": 1,
-      "statsAt": "2026-07-15T23:50:38.121Z"
+      "statsAt": "2026-07-16T19:48:21.459Z"
     }
   },
   {
@@ -2426,12 +2426,12 @@
     },
     "createdAt": "2026-07-13T21:55:31.629Z",
     "stats": {
-      "views": 103,
+      "views": 108,
       "likes": 7,
       "comments": 1,
-      "avgViewPct": 52.4,
+      "avgViewPct": 60,
       "subsGained": 1,
-      "statsAt": "2026-07-15T23:50:38.119Z"
+      "statsAt": "2026-07-16T19:48:21.456Z"
     }
   },
   {
@@ -2540,10 +2540,12 @@
     },
     "createdAt": "2026-07-14T13:15:55.945Z",
     "stats": {
-      "views": 1331,
+      "views": 1332,
       "likes": 25,
       "comments": 1,
-      "statsAt": "2026-07-15T23:50:38.116Z"
+      "avgViewPct": 84.8,
+      "subsGained": 2,
+      "statsAt": "2026-07-16T19:48:21.454Z"
     }
   },
   {
@@ -2665,10 +2667,12 @@
     },
     "createdAt": "2026-07-14T20:17:07.975Z",
     "stats": {
-      "views": 1242,
-      "likes": 39,
+      "views": 1314,
+      "likes": 40,
       "comments": 1,
-      "statsAt": "2026-07-15T23:50:38.114Z"
+      "avgViewPct": 58.6,
+      "subsGained": 1,
+      "statsAt": "2026-07-16T19:48:21.451Z"
     }
   },
   {
@@ -2778,10 +2782,12 @@
     },
     "createdAt": "2026-07-14T23:48:23.882Z",
     "stats": {
-      "views": 478,
+      "views": 479,
       "likes": 11,
       "comments": 1,
-      "statsAt": "2026-07-15T23:50:38.112Z"
+      "avgViewPct": 128,
+      "subsGained": 2,
+      "statsAt": "2026-07-16T19:48:21.449Z"
     }
   },
   {
@@ -2903,10 +2909,10 @@
     },
     "createdAt": "2026-07-15T14:38:38.805Z",
     "stats": {
-      "views": 426,
-      "likes": 4,
+      "views": 698,
+      "likes": 5,
       "comments": 1,
-      "statsAt": "2026-07-15T23:50:38.110Z"
+      "statsAt": "2026-07-16T19:48:21.447Z"
     }
   },
   {
@@ -3013,10 +3019,10 @@
     },
     "createdAt": "2026-07-15T20:16:30.321Z",
     "stats": {
-      "views": 659,
+      "views": 965,
       "likes": 52,
       "comments": 1,
-      "statsAt": "2026-07-15T23:50:38.107Z"
+      "statsAt": "2026-07-16T19:48:21.444Z"
     }
   },
   {
@@ -3236,6 +3242,130 @@
       "title": "How Earth's Underground Plumbing Creates Explosive Hot Water Showers #Shorts",
       "publishedAt": "2026-07-15T23:55:17.814Z"
     },
-    "createdAt": "2026-07-15T23:55:20.531Z"
+    "createdAt": "2026-07-15T23:55:20.531Z",
+    "stats": {
+      "views": 938,
+      "likes": 26,
+      "comments": 1,
+      "statsAt": "2026-07-16T19:48:21.441Z"
+    }
+  },
+  {
+    "id": "how-jellyfish-create-light-bioluminescence-1784231628891",
+    "topic": "How Jellyfish Create Light (Bioluminescence)",
+    "normalizedTopic": "how-jellyfish-create-light-bioluminescence",
+    "format": "process",
+    "visualStyle": "photo",
+    "script": {
+      "title": "Watch How Jellyfish Light Up the Deep Sea with Pure Magic!",
+      "category": "nature",
+      "hook_text": "The magic of bioluminescence",
+      "finale_text": "nature's living light show",
+      "scenes": [
+        {
+          "narration": "Watch the ocean light up with these incredible jellyfish, a magic trick powered by their own bodies.",
+          "image_prompt": "A mesmerizing, surreal underwater world, deep blue and purple hues. A wide shot of a glowing jellyfish pulsing gently in deep ocean water, surrounded by other faint glowing specks, cinematic, slow motion, with a sense of wonder and calm. Subject clearly lit."
+        },
+        {
+          "narration": "This isn't electricity; it's a chemical reaction called bioluminescence, a secret many deep-sea creatures share.",
+          "image_prompt": "A mesmerizing, surreal underwater world, deep blue and purple hues. A medium shot of a glowing jellyfish's bell and tentacles, highlighting the ethereal light emanating from its body in murky deep-sea water, slow motion. Subject clearly lit."
+        },
+        {
+          "narration": "Inside, special proteins and an enzyme called luciferase mix together, just waiting for a trigger.",
+          "image_prompt": "A mesmerizing, surreal underwater world, deep blue and purple hues. A stylized, animated detail insert showing microscopic particles (proteins and luciferase) swirling and mixing inside a transparent jellyfish body, subtle internal glow. Subject clearly lit."
+        },
+        {
+          "narration": "When the jellyfish feels threatened, perhaps by a passing predator, it unleashes a burst of calcium ions.",
+          "image_prompt": "A mesmerizing, surreal underwater world, deep blue and purple hues. A medium shot of a jellyfish suddenly contracting its bell, emitting a brighter pulse of light, as a shadowy shape suggesting a predator moves in the deep blue background. Subject clearly lit."
+        },
+        {
+          "narration": "These ions rush into the light-producing cells, instantly activating the stored chemicals.",
+          "image_prompt": "A mesmerizing, surreal underwater world, deep blue and purple hues. An animated extreme close-up showing glowing calcium ions rapidly flowing into a cell structure within a transparent jellyfish membrane, triggering a brighter internal light burst. Subject clearly lit."
+        },
+        {
+          "narration": "The resulting light can stun predators, attract mates, or even lure prey closer in the darkness.",
+          "image_prompt": "A mesmerizing, surreal underwater world, deep blue and purple hues. A low angle shot from below a single large jellyfish emitting bright, mesmerizing pulses of light, illuminating the surrounding deep-sea darkness with a sense of wonder. Subject clearly lit."
+        },
+        {
+          "narration": "It’s a spectacular survival strategy, transforming the black abyss into a living light show.",
+          "image_prompt": "A mesmerizing, surreal underwater world, deep blue and purple hues. A panoramic wide establishing shot of a vast underwater scene with countless glowing jellyfish of various sizes, creating a breathtaking, alien landscape of light in the deep ocean, slow motion, with a sense of wonder and calm. Subject clearly lit."
+        }
+      ],
+      "cta": "See more ocean wonders!"
+    },
+    "audioPath": "output/how-jellyfish-create-light-bioluminescence/how-jellyfish-create-light-bioluminescence.mp3",
+    "videoPath": "output/how-jellyfish-create-light-bioluminescence/how-jellyfish-create-light-bioluminescence.mp4",
+    "media": [
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 0,
+        "keyword": "bioluminescent jellyfish",
+        "path": "output/how-jellyfish-create-light-bioluminescence/media/01-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/close-up-of-swimming-jellyfish-12860648/",
+        "author": "Atlantic Ambience"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 1,
+        "keyword": "bioluminescent jellyfish",
+        "path": "output/how-jellyfish-create-light-bioluminescence/media/02-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/jellyfish-in-the-dark-with-blue-lights-17431546/",
+        "author": "iPhone Snaps 🇨🇦"
+      },
+      {
+        "type": "video",
+        "source": "gfx",
+        "scene": 2,
+        "path": "output/how-jellyfish-create-light-bioluminescence/media/03-gfx.mp4"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 3,
+        "keyword": "jellyfish pulsing light",
+        "path": "output/how-jellyfish-create-light-bioluminescence/media/04-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/graceful-jellyfish-swimming-in-aquarium-28635605/",
+        "author": "Alvin David"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 4,
+        "keyword": "calcium ions cell",
+        "path": "output/how-jellyfish-create-light-bioluminescence/media/05-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/dynamic-plasma-orb-with-electrical-arcs-34908797/",
+        "author": "Nicola Narracci"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 5,
+        "keyword": "bioluminescent jellyfish defense",
+        "path": "output/how-jellyfish-create-light-bioluminescence/media/06-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/mesmerizing-underwater-jellyfish-dance-31314196/",
+        "author": "Kateryna Hnidash"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 6,
+        "keyword": "bioluminescent deep sea",
+        "path": "output/how-jellyfish-create-light-bioluminescence/media/07-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/medusa-in-water-13320123/",
+        "author": "Boyan Minchev"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 42.69,
+    "status": "published",
+    "youtube": {
+      "videoId": "DpOpjZkkN3g",
+      "url": "https://www.youtube.com/shorts/DpOpjZkkN3g",
+      "title": "How Jellyfish Create Their Own Dazzling Light #Shorts",
+      "publishedAt": "2026-07-16T19:53:32.399Z"
+    },
+    "createdAt": "2026-07-16T19:53:48.891Z"
   }
 ]
