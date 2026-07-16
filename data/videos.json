@@ -780,7 +780,7 @@
       "comments": 0,
       "avgViewPct": 39.2,
       "subsGained": 0,
-      "statsAt": "2026-07-16T23:07:16.896Z"
+      "statsAt": "2026-07-16T23:29:57.745Z"
     }
   },
   {
@@ -903,7 +903,7 @@
       "comments": 1,
       "avgViewPct": 90.4,
       "subsGained": 1,
-      "statsAt": "2026-07-16T23:07:16.894Z"
+      "statsAt": "2026-07-16T23:29:57.743Z"
     }
   },
   {
@@ -1023,7 +1023,7 @@
       "comments": 1,
       "avgViewPct": 68.6,
       "subsGained": 0,
-      "statsAt": "2026-07-16T23:07:16.892Z"
+      "statsAt": "2026-07-16T23:29:57.741Z"
     }
   },
   {
@@ -1371,7 +1371,7 @@
       "comments": 5,
       "avgViewPct": 55.7,
       "subsGained": 0,
-      "statsAt": "2026-07-16T23:07:16.890Z"
+      "statsAt": "2026-07-16T23:29:57.739Z"
     }
   },
   {
@@ -1705,7 +1705,7 @@
       "comments": 5,
       "avgViewPct": 72.6,
       "subsGained": 1,
-      "statsAt": "2026-07-16T23:07:16.887Z"
+      "statsAt": "2026-07-16T23:29:57.737Z"
     }
   },
   {
@@ -1820,7 +1820,7 @@
       "comments": 1,
       "avgViewPct": 167,
       "subsGained": 6,
-      "statsAt": "2026-07-16T23:07:16.885Z"
+      "statsAt": "2026-07-16T23:29:57.735Z"
     }
   },
   {
@@ -1947,7 +1947,7 @@
       "comments": 1,
       "avgViewPct": 52.6,
       "subsGained": 2,
-      "statsAt": "2026-07-16T23:07:16.883Z"
+      "statsAt": "2026-07-16T23:29:57.731Z"
     }
   },
   {
@@ -2074,7 +2074,7 @@
       "comments": 3,
       "avgViewPct": 60.1,
       "subsGained": 5,
-      "statsAt": "2026-07-16T23:07:16.881Z"
+      "statsAt": "2026-07-16T23:29:57.728Z"
     }
   },
   {
@@ -2201,7 +2201,7 @@
       "comments": 1,
       "avgViewPct": 44.9,
       "subsGained": 0,
-      "statsAt": "2026-07-16T23:07:16.876Z"
+      "statsAt": "2026-07-16T23:29:57.726Z"
     }
   },
   {
@@ -2316,7 +2316,7 @@
       "comments": 2,
       "avgViewPct": 146.1,
       "subsGained": 1,
-      "statsAt": "2026-07-16T23:07:16.874Z"
+      "statsAt": "2026-07-16T23:29:57.724Z"
     }
   },
   {
@@ -2431,7 +2431,7 @@
       "comments": 1,
       "avgViewPct": 60,
       "subsGained": 1,
-      "statsAt": "2026-07-16T23:07:16.871Z"
+      "statsAt": "2026-07-16T23:29:57.722Z"
     }
   },
   {
@@ -2545,7 +2545,7 @@
       "comments": 1,
       "avgViewPct": 84.8,
       "subsGained": 2,
-      "statsAt": "2026-07-16T23:07:16.869Z"
+      "statsAt": "2026-07-16T23:29:57.720Z"
     }
   },
   {
@@ -2672,7 +2672,7 @@
       "comments": 1,
       "avgViewPct": 58.6,
       "subsGained": 1,
-      "statsAt": "2026-07-16T23:07:16.867Z"
+      "statsAt": "2026-07-16T23:29:57.718Z"
     }
   },
   {
@@ -2787,7 +2787,7 @@
       "comments": 1,
       "avgViewPct": 128,
       "subsGained": 2,
-      "statsAt": "2026-07-16T23:07:16.864Z"
+      "statsAt": "2026-07-16T23:29:57.715Z"
     }
   },
   {
@@ -2912,7 +2912,7 @@
       "views": 743,
       "likes": 5,
       "comments": 4,
-      "statsAt": "2026-07-16T23:07:16.861Z"
+      "statsAt": "2026-07-16T23:29:57.713Z"
     }
   },
   {
@@ -3022,7 +3022,7 @@
       "views": 965,
       "likes": 52,
       "comments": 1,
-      "statsAt": "2026-07-16T23:07:16.859Z"
+      "statsAt": "2026-07-16T23:29:57.711Z"
     }
   },
   {
@@ -3244,10 +3244,10 @@
     },
     "createdAt": "2026-07-15T23:55:20.531Z",
     "stats": {
-      "views": 964,
-      "likes": 28,
+      "views": 968,
+      "likes": 29,
       "comments": 1,
-      "statsAt": "2026-07-16T23:07:16.857Z"
+      "statsAt": "2026-07-16T23:29:57.708Z"
     }
   },
   {
@@ -3371,7 +3371,7 @@
       "views": 230,
       "likes": 8,
       "comments": 1,
-      "statsAt": "2026-07-16T23:07:16.854Z"
+      "statsAt": "2026-07-16T23:29:57.706Z"
     }
   },
   {
@@ -3487,6 +3487,139 @@
       "title": "Ancient Egypt's Mummy Secret: Preserving Bodies for Eternity #Shorts",
       "publishedAt": "2026-07-16T23:12:13.446Z"
     },
-    "createdAt": "2026-07-16T23:12:49.860Z"
+    "createdAt": "2026-07-16T23:12:49.860Z",
+    "stats": {
+      "views": 128,
+      "likes": 7,
+      "comments": 1,
+      "statsAt": "2026-07-16T23:29:57.704Z"
+    }
+  },
+  {
+    "id": "electric-eel-power-generation-1784245107063",
+    "topic": "Electric Eel Power Generation",
+    "normalizedTopic": "electric-eel-power-generation",
+    "format": "howworks",
+    "visualStyle": "photo",
+    "script": {
+      "title": "How Electric Eels Generate Shocking Power",
+      "category": "nature",
+      "hook_text": "Living lightning bolt",
+      "finale_text": "nature's living battery",
+      "scenes": [
+        {
+          "narration": "Deep in Amazonian rivers, the electric eel holds a shocking secret: it's a living power generator.",
+          "image_prompt": "An electric eel, Electrophorus electricus, small in frame, gracefully glides through murky but well-lit Amazonian river water, framed by submerged roots and aquatic plants. Golden-green light filters from above, illuminating its serpentine body and the underwater environment. Cinematic, high-detail."
+        },
+        {
+          "narration": "Its body contains thousands of specialized cells, called electrocytes, stacked like tiny batteries.",
+          "image_prompt": "An extreme close-up, slightly magnified, of the midsection skin of an electric eel, Electrophorus electricus, showing subtle, organized texture hinting at underlying electrocyte structures. Soft, diffused underwater lighting. Cinematic, high-detail."
+        },
+        {
+          "narration": "Each electrocyte produces a tiny voltage, about 0.15 volts, much like a single cell in a battery.",
+          "image_prompt": "A conceptual detail insert showing many tiny, translucent rectangular cells, glowing faintly, arranged in parallel rows within a dark, water-like fluid, creating a sense of electrical potential. Mimicking the stacked electrocytes of an electric eel. Cinematic, high-detail."
+        },
+        {
+          "narration": "When the eel wants to shock, its brain sends a signal, triggering these cells to fire simultaneously.",
+          "image_prompt": "A medium shot of an electric eel, Electrophorus electricus, suddenly tensing its body, a ripple of subtle energy appearing to flow along its length as if charging. The scene is set in murky river water with dramatic backlighting. Cinematic, high-detail."
+        },
+        {
+          "narration": "All those tiny voltages add up, creating a powerful electrical field of up to 600 volts.",
+          "image_prompt": "A wide shot of an electric eel, Electrophorus electricus, coiling slightly in murky river water. A subtle, ethereal blue glow radiates outwards from its body, dramatically illuminating the surrounding riverbed and aquatic plants. Cinematic, high-detail."
+        },
+        {
+          "narration": "This jolt stuns prey and warns predators, allowing the eel to dominate its watery domain.",
+          "image_prompt": "An over-the-shoulder shot from the perspective of an electric eel, Electrophorus electricus, looking towards a small, stunned fish floating motionless nearby in the dim river water. The eel appears calm and victorious. Cinematic, high-detail."
+        },
+        {
+          "narration": "It's an extraordinary example of nature's ingenious power generation, perfectly adapted for survival.",
+          "image_prompt": "A serene and majestic wide shot of an electric eel, Electrophorus electricus, swimming slowly and powerfully away into the deep, clear river. Its long body disappears into the blue-green distance, illuminated by a strong shaft of bright sunlight from above. Cinematic, high-detail."
+        }
+      ],
+      "cta": "Uncover more amazing animal abilities!"
+    },
+    "audioPath": "output/electric-eel-power-generation/electric-eel-power-generation.mp3",
+    "videoPath": "output/electric-eel-power-generation/electric-eel-power-generation.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/electric-eel-power-generation/media/01-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/electric-eel-power-generation/media/01b-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/electric-eel-power-generation/media/02-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/electric-eel-power-generation/media/02b-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/electric-eel-power-generation/media/03-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/electric-eel-power-generation/media/03b-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 3,
+        "keyword": "electric eel tensing",
+        "path": "output/electric-eel-power-generation/media/04-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/mesmerizing-electric-blue-light-patterns-28483048/",
+        "author": "Nicola Narracci"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 4,
+        "path": "output/electric-eel-power-generation/media/05-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 5,
+        "keyword": "electric eel stunning prey",
+        "path": "output/electric-eel-power-generation/media/06-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/moray-eel-in-aquatic-environment-36273365/",
+        "author": "lux werk"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 6,
+        "keyword": "electric eel swimming",
+        "path": "output/electric-eel-power-generation/media/07-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/penguin-swimming-underwater-in-an-aquarium-12802151/",
+        "author": "Sun452"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 43.487007,
+    "status": "published",
+    "youtube": {
+      "videoId": "nV6fECaWvCA",
+      "url": "https://www.youtube.com/shorts/nV6fECaWvCA",
+      "title": "How Electric Eels Generate Up to 600 Volts of Power #Shorts",
+      "publishedAt": "2026-07-16T23:37:50.337Z"
+    },
+    "createdAt": "2026-07-16T23:38:27.063Z"
   }
 ]
