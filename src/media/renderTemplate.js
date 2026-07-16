@@ -53,32 +53,58 @@ export async function renderStatCard(stat, dest, opts = {}) {
   const { width = 1080, height = 1920, fps = 30, duration = 4 } = opts;
   if (!existsSync(FONT_BLACK)) throw new Error('Montserrat-Black fontu yok — stat card atlandı');
 
-  const value = clampInt(stat.value, 0, 1e12);
-  const unit = String(stat.unit || '').trim().slice(0, 28);
+  let value = clampInt(stat.value, 0, 1e12);
+  let unit = String(stat.unit || '').trim().slice(0, 28);
   const label = String(stat.label || '').trim().slice(0, 60);
   const dur = Math.max(2.2, Math.min(9, Number(duration) || 4));
 
+  // BÜYÜK SAYI NORMALİZASYONU (canlıda "50000000" ekrana sığmadı — sadece
+  // sıfırlar görünüyordu): milyon/milyar kompakta indirilir, ölçek birime taşınır.
+  // "50 million years" gibi okunur; sayaç da 0→50 sayar (0→50.000.000 değil).
+  const scale = (word, div) => {
+    if (value >= div && value % (div / 10) === 0) {
+      const n = value / div;
+      if (n === Math.round(n) && n < 1000) {
+        value = n;
+        if (!new RegExp(word, 'i').test(unit)) unit = `${word} ${unit}`.trim();
+        return true;
+      }
+    }
+    return false;
+  };
+  scale('billion', 1e9) || scale('million', 1e6);
+
+  // 10.000-999.999 arası: sayaç yerine binlik ayraçlı SABİT reveal
+  // (%{eif} ifadesi ayraç basamaz; ham "20000" da ucuz görünür → "20,000").
+  const useCounter = value < 10000;
+  const staticText = value.toLocaleString('en-US');
+
   const sb = config.video.styleBible;
   const cx = Math.round(width / 2);
+  const marginH = 70;
+  const usableW = width - 2 * marginH;
 
   // Sayaç SABİT ~1.8 sn'de hedefe ulaşır (kart süresinden bağımsız), kalanı
   // sabit tutar. Kart uzun render edilir; renderVideo/normalizeClip sahne
-  // süresine göre kırpar — bu yüzden sayaç HER durumda tamamlanmış görünür,
-  // loop/erken-kesme sorunu olmaz.
+  // süresine göre kırpar — bu yüzden sayaç HER durumda tamamlanmış görünür.
   const countDur = Math.min(1.8, dur * 0.5).toFixed(2);
   const countExpr = `min(t/${countDur}\\,1)*${value}`;
-  const numText = `%{eif\\:${countExpr}\\:d}`;
+  const numText = useCounter ? `%{eif\\:${countExpr}\\:d}` : dt(staticText);
 
-  // Konum: dikey merkez biraz üstünde sayı; altında birim; en altta etiket.
-  const yNum = Math.round(height * 0.40);
-  const yUnit = Math.round(height * 0.50);
-  const yLabel = Math.round(height * 0.565);
-  const numSize = Math.round(width * 0.26); // devasa
+  // Konum: vurgu bandı ve akan altyazıyla çakışmasın diye yukarı alındı
+  // (canlıda kart etiketi ile vurgu kelimesi üst üste bindi).
+  const yNum = Math.round(height * 0.34);
+  const yUnit = Math.round(height * 0.435);
+  const yLabel = Math.round(height * 0.50);
+  // GENİŞLİĞE OTOSİĞDİRMA: en geniş hal (hedef değer/formatlı metin) usableW'i
+  // aşarsa font küçülür — sayı hiçbir karede ekran dışına taşamaz.
+  const numLen = Math.max(1, (useCounter ? String(value) : staticText).length);
+  const numSize = Math.min(Math.round(width * 0.26), Math.floor(usableW / (numLen * 0.68)));
   const unitSize = Math.round(width * 0.058);
   const labelSize = Math.round(width * 0.045);
 
   // İnce altın ayraç (birim ile etiket arası) — premium factual dokunuş.
-  const ruleY = Math.round(height * 0.535);
+  const ruleY = Math.round(height * 0.472);
   const ruleW = Math.round(width * 0.14);
 
   const drawNum =
@@ -110,7 +136,7 @@ export async function renderStatCard(stat, dest, opts = {}) {
     `x0=0:y0=0:x1=0:y1=${height}:d=${dur}:r=${fps}`;
 
   const vf =
-    `vignette=PI/5,${drawNum}${drawUnit}${drawRule}${drawLabel},` +
+    `vignette=PI/7,${drawNum}${drawUnit}${drawRule}${drawLabel},` +
     `fade=t=in:st=0:d=0.4,format=yuv420p`;
 
   const args = [

@@ -120,7 +120,7 @@ export const config = {
     captionStyle: process.env.VIDEO_CAPTION_STYLE || 'caption',
     // Grup üst sınırı; asıl bölme konuşmadaki doğal duraklara göre yapılır.
     captionWordsPerLine: Number(process.env.VIDEO_CAPTION_WORDS || 3),
-    captionSize: Number(process.env.VIDEO_CAPTION_SIZE || 46),
+    captionSize: Number(process.env.VIDEO_CAPTION_SIZE || 52),
     // Alt bölge (ekranı kaplamasın): büyük marginV = daha yukarı. Shorts UI'dan uzak.
     captionMarginV: Number(process.env.VIDEO_CAPTION_MARGIN || 460),
 
@@ -167,8 +167,8 @@ export const config = {
     // Marka stil sabitleri (ANIMATION_BIBLE.md'nin makine karşılığı) — tüm
     // template'ler bunu okur, böylece üretilen her sahne aynı kanal hissini taşır.
     styleBible: {
-      bg0: process.env.GFX_BG0 || '0b0f14', // koyu zemin (üst)
-      bg1: process.env.GFX_BG1 || '161d27', // koyu zemin (alt)
+      bg0: process.env.GFX_BG0 || '121826', // koyu zemin (üst)
+      bg1: process.env.GFX_BG1 || '1c2534', // koyu zemin (alt)
       ink: process.env.GFX_INK || 'F5F1E6', // kırık beyaz tipografi
       gold: process.env.GFX_GOLD || 'CB8B3A', // mat altın vurgu
       red: process.env.GFX_RED || 'C0392B', // derin kırmızı vurgu

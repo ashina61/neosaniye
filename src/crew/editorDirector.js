@@ -77,7 +77,7 @@ You receive a scene-by-scene story. Design the edit like a pro:
 - EVERY animated (non-cut) transition MUST carry an sfx — a silent animated wipe feels broken.
   'none' is allowed ONLY on plain cuts. Aim for 3-5 audible sfx per video total.
 - Pick the music mood by the story's FEELING, not its surface topic (a dark science story = mystery).
-- Place the subscribe reminder at the story's most natural breathing point.
+- Place the subscribe reminder LATE: in the final third of the story, right after a payoff beat — never mid-story (it interrupts immersion).
 - Choose ONE ambience bed for the whole video: the real-world background sound of the story's main
   SETTING (a battlefield, a jungle, a lab, deep space). It plays very quietly under the music and
   makes the video feel like real footage instead of narrated slides. Keep the query generic enough
@@ -134,7 +134,7 @@ Design the edit: exactly ${N - 1} boundaries, plus music mood and subscribe plac
   }
   const musicMood = MOODS.includes(plan.music_mood) ? plan.music_mood : null;
   let sub = Number(plan.subscribe_after_scene);
-  if (!Number.isFinite(sub) || sub < 2 || sub > N - 1) sub = Math.max(2, Math.round(N * 0.45));
+  if (!Number.isFinite(sub) || sub < 2 || sub > N - 1) sub = Math.max(2, Math.round(N * 0.68));
 
   // Ambiyans sorgusu: sade kelimelere indir (arama API'sine güvenli gider);
   // boş/saçma kalırsa null — çağıran taraf kategori varsayılanına düşer.
