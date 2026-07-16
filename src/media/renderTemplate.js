@@ -115,13 +115,13 @@ export async function renderStatCard(stat, dest, opts = {}) {
 
   const drawUnit = unit
     ? `,drawtext=fontfile='${FONT_SEMI}':text='${dt(unit)}':` +
-      `fontcolor=0x${sb.gold}:fontsize=${unitSize}:x=(w-text_w)/2:y=${yUnit}:` +
+      `fontcolor=0x${sb.accent}:fontsize=${unitSize}:x=(w-text_w)/2:y=${yUnit}:` +
       `alpha='min(max((t-0.25)/0.5,0),1)'`
     : '';
 
   const drawRule =
     `,drawbox=x=${cx - Math.round(ruleW / 2)}:y=${ruleY}:w=${ruleW}:h=4:` +
-    `color=0x${sb.gold}@0.9:t=fill:enable='gte(t,0.35)'`;
+    `color=0x${sb.accent}@0.9:t=fill:enable='gte(t,0.35)'`;
 
   const drawLabel = label
     ? `,drawtext=fontfile='${FONT_SEMI}':text='${dt(label)}':` +
@@ -136,7 +136,7 @@ export async function renderStatCard(stat, dest, opts = {}) {
     `x0=0:y0=0:x1=0:y1=${height}:d=${dur}:r=${fps}`;
 
   const frame =
-    `drawbox=x=44:y=44:w=${width - 88}:h=${height - 88}:color=0x${sb.gold}@0.22:t=2:enable='gte(t,0.15)',`;
+    `drawbox=x=44:y=44:w=${width - 88}:h=${height - 88}:color=0x${sb.accent}@0.22:t=2:enable='gte(t,0.15)',`;
   const vf =
     `vignette=PI/7,${frame}${drawNum}${drawUnit}${drawRule}${drawLabel},` +
     `fade=t=in:st=0:d=0.4,format=yuv420p`;
@@ -197,11 +197,11 @@ export async function renderStepsCard(diagram, dest, opts = {}) {
 
   const parts = [
     // İnce altın çerçeve (kenarlardan içeride) — premium belgesel dokunuşu.
-    `drawbox=x=44:y=44:w=${width - 88}:h=${height - 88}:color=0x${sb.gold}@0.22:t=2:enable='gte(t,0.15)'`,
+    `drawbox=x=44:y=44:w=${width - 88}:h=${height - 88}:color=0x${sb.accent}@0.22:t=2:enable='gte(t,0.15)'`,
     // Başlık: altın; altında ince altın ayraç.
-    `drawtext=fontfile='${FONT_SEMI}':text='${dt(title)}':fontcolor=0x${sb.gold}:` +
+    `drawtext=fontfile='${FONT_SEMI}':text='${dt(title)}':fontcolor=0x${sb.accent}:` +
       `fontsize=${titleSize}:x=(w-text_w)/2:y=${yTitle}:alpha='min(t/0.5,1)'`,
-    `drawbox=x=${cx - 70}:y=${yTitle + titleSize + 24}:w=140:h=3:color=0x${sb.gold}@0.9:t=fill:enable='gte(t,0.3)'`,
+    `drawbox=x=${cx - 70}:y=${yTitle + titleSize + 24}:w=140:h=3:color=0x${sb.accent}@0.9:t=fill:enable='gte(t,0.3)'`,
   ];
   // Adımlar: 0.9sn arayla belirir. Numara: koyu rozet + altın çerçeve içinde;
   // satır altlarında hayalet ayraç çizgileri (yapılandırılmış, premium his).
@@ -213,8 +213,8 @@ export async function renderStepsCard(diagram, dest, opts = {}) {
     parts.push(
       // rozet: koyu dolgu + altın kenar
       `drawbox=x=${xChip}:y=${y - Math.round(chip * 0.18)}:w=${chip}:h=${chip}:color=0x0c1119@0.85:t=fill:${en}`,
-      `drawbox=x=${xChip}:y=${y - Math.round(chip * 0.18)}:w=${chip}:h=${chip}:color=0x${sb.gold}@0.85:t=2:${en}`,
-      `drawtext=fontfile='${FONT_BLACK}':text='${i + 1}':fontcolor=0x${sb.gold}:` +
+      `drawbox=x=${xChip}:y=${y - Math.round(chip * 0.18)}:w=${chip}:h=${chip}:color=0x${sb.accent}@0.85:t=2:${en}`,
+      `drawtext=fontfile='${FONT_BLACK}':text='${i + 1}':fontcolor=0x${sb.accent}:` +
         `fontsize=${numSize}:x=${xChip}+(${chip}-text_w)/2:y=${y - Math.round(chip * 0.18)}+(${chip}-text_h)/2:${a}`,
       `drawtext=fontfile='${FONT_SEMI}':text='${dt(step)}':fontcolor=0x${sb.ink}:` +
         `fontsize=${stepSize}:x=${xText}:y=${y}:` +

@@ -170,11 +170,13 @@ export const config = {
     // Marka stil sabitleri (ANIMATION_BIBLE.md'nin makine karşılığı) — tüm
     // template'ler bunu okur, böylece üretilen her sahne aynı kanal hissini taşır.
     styleBible: {
-      bg0: process.env.GFX_BG0 || '121826', // koyu zemin (üst)
-      bg1: process.env.GFX_BG1 || '1c2534', // koyu zemin (alt)
-      ink: process.env.GFX_INK || 'F5F1E6', // kırık beyaz tipografi
-      gold: process.env.GFX_GOLD || 'CB8B3A', // mat altın vurgu
-      red: process.env.GFX_RED || 'C0392B', // derin kırmızı vurgu
+      // Palet (16 Tem revizyon): lacivert+altın "AI belgesel" kalıbı yerine
+      // MARKA paleti — kömür-siyah zemin + logonun turkuazı + temiz beyaz.
+      bg0: process.env.GFX_BG0 || '0f1113', // kömür zemin (üst)
+      bg1: process.env.GFX_BG1 || '1a1f24', // grafit zemin (alt)
+      ink: process.env.GFX_INK || 'F0F4F4', // temiz beyaz tipografi
+      accent: process.env.GFX_ACCENT || '3BD0C8', // logo turkuazı (vurgu)
+      red: process.env.GFX_RED || 'C0392B', // derin kırmızı (yedek vurgu)
     },
   },
   pexels: {

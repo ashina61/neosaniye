@@ -20,9 +20,9 @@ onu okur. Bu dosya insan + LLM (Görüntü Yönetmeni promptu) için özettir.
 
 ## Görsel dil
 
-- Koyu zemin (dikey gradyan `bg0`→`bg1`) + hafif vignette.
-- Kırık-beyaz tipografi (`ink`).
-- Mat altın (`gold`) ve derin kırmızı (`red`) vurgu.
+- Kömür-siyah zemin (dikey gradyan `bg0`→`bg1`) + hafif vignette + ince turkuaz çerçeve.
+- Temiz beyaz tipografi (`ink`).
+- Logo turkuazı (`accent`) vurgu; derin kırmızı (`red`) yedek.
 - Fontlar: Montserrat Black (sayı), Montserrat SemiBold (birim/etiket).
 
 ## Yasaklar
