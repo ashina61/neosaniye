@@ -51,6 +51,16 @@ const SHOT_SCHEMA = {
               '(e.g. "leafcutter ants carrying leaves", NOT just "ants"). Wrong-species footage ' +
               'destroys credibility. Only meaningful when motion=true.',
           },
+          real_subject: {
+            type: Type.STRING,
+            nullable: true,
+            description:
+              'If this scene depicts a SPECIFIC real, named, photographable thing — a famous ' +
+              'artifact, monument, painting, document, place or person (e.g. "Antikythera mechanism ' +
+              'fragment", "Rosetta Stone", "Great Serpent Mound aerial") — give its canonical English ' +
+              'name for an open-license archive photo search. REAL photos beat AI reconstructions for ' +
+              'credibility. Leave null for generic/atmospheric scenes.',
+          },
           stat: {
             type: Type.OBJECT,
             nullable: true,
@@ -87,7 +97,7 @@ const SHOT_SCHEMA = {
           },
         },
         required: ['shot', 'image_prompt', 'motion', 'stock_keywords'],
-        propertyOrdering: ['shot', 'image_prompt', 'motion', 'stock_keywords', 'stat', 'diagram'],
+        propertyOrdering: ['shot', 'image_prompt', 'motion', 'stock_keywords', 'real_subject', 'stat', 'diagram'],
       },
     },
   },
@@ -110,6 +120,9 @@ Produce a professional SHOT LIST that makes the video feel like ONE cinematic fi
   (it carries the hook cover).
 - For motion scenes give 1-3 stock_keywords that NAME THE EXACT SPECIES/SUBJECT ("leafcutter ants
   carrying leaves", never just "ants") — wrong-species footage is a credibility killer.
+- REAL ARTIFACTS: when the story is about a specific REAL named object/place (a mechanism, a
+  monument, a painting), set real_subject with its canonical name — the system will fetch a REAL
+  open-license photograph, which beats any AI reconstruction for documentary credibility.
 - LIVING CREATURES: AI image generation DEFORMS animal/insect anatomy in close-ups (wrong leg
   count, broken heads — seen live). For animal subjects prefer REAL footage (motion=true). When an
   AI image is unavoidable for an animal, avoid extreme close-up full-body anatomy: use wide
@@ -181,6 +194,10 @@ export function applyShotList(script, shotList) {
       if (Array.isArray(shot.stock_keywords) && shot.stock_keywords.length) {
         scene.stock_keywords = shot.stock_keywords.slice(0, 3);
       }
+    }
+    // Gerçek arşiv fotoğrafı adayı (opsiyonel) — generateImages Commons/Met'te arar.
+    if (shot.real_subject && String(shot.real_subject).trim().length > 2) {
+      scene.real_subject = String(shot.real_subject).trim().slice(0, 80);
     }
     // Sayı kartı adayı (opsiyonel) — doğrulama/guard generateImages'te yapılır.
     if (shot.stat && Number(shot.stat.value) > 0 && i > 0) {

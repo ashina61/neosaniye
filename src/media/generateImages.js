@@ -6,6 +6,7 @@ import { GoogleGenAI } from '@google/genai';
 import { config } from '../config.js';
 import { fetchOneForKeywords, fetchStockVideoForKeywords } from './fetchMedia.js';
 import { renderStatCard, isUsableStat, renderStepsCard, isUsableDiagram } from './renderTemplate.js';
+import { fetchArchiveImage } from './fetchArchive.js';
 
 const run = promisify(execFile);
 
@@ -121,7 +122,7 @@ export async function generateImages(script, opts = {}) {
   const { width, height } = config.images;
 
   const items = [];
-  const sources = { ai: 0, stock: 0, pexels: 0, placeholder: 0, gfx: 0 };
+  const sources = { ai: 0, stock: 0, pexels: 0, placeholder: 0, gfx: 0, archive: 0 };
   let providerDead = provider === 'none' || (provider === 'gemini' && !geminiAI);
   // Motion graphics (sayı kartı) sayacı — video başına üst sınır.
   let gfxCount = 0;
@@ -189,6 +190,18 @@ export async function generateImages(script, opts = {}) {
         }
       } catch (err) {
         console.warn(`[img] sahne ${idx}: gfx kartı üretilemedi (${String(err.message).slice(0, 90)}).`);
+      }
+    }
+
+    // 0.arc) GERÇEK ARŞİV: sahne gerçek/adlı bir nesneyi gösteriyorsa önce
+    // Wikimedia Commons / Met Museum'dan GERÇEK fotoğraf denenir — AI'nın
+    // uydurduğu rekonstrüksiyon yerine gerçek eser (belgesel güvenilirliği).
+    if (!done && scene.real_subject) {
+      const hit = await fetchArchiveImage(scene.real_subject, path.join(mediaDir, `${idx}-archive.jpg`))
+        .catch(() => null);
+      if (hit) {
+        done = { ...hit, scene: i, source: 'archive' };
+        console.log(`[img] sahne ${idx}: GERÇEK arşiv (${hit.provider}, ${hit.license}) — "${scene.real_subject}"`);
       }
     }
 

@@ -136,6 +136,7 @@ export async function runPipeline(opts = {}) {
     const media = await generateImages(script, { outDir: root, basename: base, style: visualStyle, sceneSeconds });
     console.log(
       `  ${media.items.length} plan / ${scenes.length} sahne — AI:${media.sources.ai} ` +
+        `arşiv:${media.sources.archive || 0} ` +
         `stokVideo:${media.sources.stock || 0} Pexels:${media.sources.pexels} ` +
         `gfx:${media.sources.gfx || 0} yedek:${media.sources.placeholder}`,
     );
@@ -210,6 +211,13 @@ export async function runPipeline(opts = {}) {
     if (willUpload && pf.ok) {
       log('Faz 6: YouTube upload...');
       const meta = await buildMetadata(script);
+      // Açık lisans atıfları (CC BY/BY-SA arşiv görselleri lisans gereği).
+      const credits = [...new Set(
+        media.items
+          .filter((m) => m.source === 'archive' && m.attribution)
+          .map((m) => `📷 ${m.author} — Wikimedia Commons (${m.license})`),
+      )];
+      if (credits.length) meta.description += '\n\n' + credits.join('\n');
       const res = await uploadVideo({ videoPath: outPath, ...meta });
       youtube = { ...res, title: meta.title, publishedAt: new Date().toISOString() };
       console.log(`  yüklendi: ${res.url}`);
