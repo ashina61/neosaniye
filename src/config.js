@@ -46,6 +46,8 @@ export const config = {
         'textures and skin, dramatic practical lighting, subject clearly lit with ' +
         'bright key light, warm filmic color grade, shallow depth of field, ' +
         'subtle motion blur, imperfect natural framing, vertical composition, ' +
+        'historically accurate period details, no futuristic or sci-fi elements, ' +
+        'no astronauts, no modern devices in historical scenes, ' +
         'no text, no watermark, no subtitles',
     // "Animasyonlu hikâye kitabı" stili: bazı videolar illüstrasyon görünümünde
     // çıkar (run.js karar verir; VIDEO_STYLE=animated|photo ile zorlanır).
@@ -54,6 +56,7 @@ export const config = {
       'cinematic 2D storybook illustration, painterly digital art, rich textured ' +
         'brush strokes, dramatic warm lighting, subject clearly lit and readable, ' +
         'consistent character design across scenes, detailed atmospheric background, ' +
+        'historically accurate period details, no futuristic or sci-fi elements, ' +
         'vertical composition, no text, no watermark, no speech bubbles',
     retries: Number(process.env.IMAGE_RETRIES || 2),
     timeoutMs: Number(process.env.IMAGE_TIMEOUT_MS || 90000),
@@ -113,7 +116,7 @@ export const config = {
     // Film greni: AI görsellerin "fazla temiz" parlaklığını kırar (0 = kapalı).
     grain: process.env.VIDEO_GRAIN !== '0',
     // Anlatım bittikten sonra son sahnenin nefes payı (müzik burada söner).
-    tailSeconds: Number(process.env.VIDEO_TAIL_SECONDS || 0.9),
+    tailSeconds: Number(process.env.VIDEO_TAIL_SECONDS || 0.4),
 
     // Altyazı stili: 'caption' = sinematik alt kısa ifade (ekranı kaplamaz),
     // 'word' = tek kelime punchy, 'pop' = eski büyük karaoke. Shorts için 'caption'.

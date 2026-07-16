@@ -107,6 +107,7 @@ export async function generateImages(script, opts = {}) {
     outDir = 'output',
     basename = script.normalizedTopic || 'script',
     style = 'photo', // 'photo' | 'animated' (illüstrasyon)
+    sceneSeconds = [], // tahmini sahne süreleri — uzun statikler ikiye bölünür
   } = opts;
 
   const mediaDir = path.join(outDir, basename, 'media');
@@ -126,6 +127,8 @@ export async function generateImages(script, opts = {}) {
   let gfxCount = 0;
   // Bu videoda kullanılan stok klip URL'leri — aynı klip iki sahnede tekrarlanmaz.
   const usedClips = new Set();
+  // Uzun statik sahne bölme sayacı (video başına üst sınır — süre bütçesi).
+  let splitCount = 0;
 
   // Hareketli sahne planı: Görüntü Yönetmeni sahneleri işaretlediyse (motion)
   // onlar; yoksa mekanik "her N. sahne". İlk sahne her zaman hariç (hook kapağı).
@@ -257,6 +260,23 @@ export async function generateImages(script, opts = {}) {
     sources[done.source] += 1;
     items.push(done);
     console.log(`[img] sahne ${idx}/${scenes.length}: ${done.source} (${done.type})`);
+
+    // TEMPO BÖLMESİ: 4.3sn'yi aşan STATİK AI sahnesi ikinci bir kadraj alır
+    // (farklı seed = farklı kompozisyon; Ken Burns yönü de plan indeksiyle
+    // değiştiği için iki parça gerçekten iki ayrı plan gibi durur).
+    const estSec = Number(sceneSeconds[i] || 0);
+    if (done.source === 'ai' && provider === 'pollinations' && estSec > 4.3 && splitCount < 3) {
+      try {
+        const dest2 = path.join(mediaDir, `${idx}b-ai.jpg`);
+        await fetchPollinations(prompt, dest2, { width, height, seed: videoSeed + 977 + i });
+        items.push({ path: dest2, type: 'photo', scene: i, source: 'ai', part: 2 });
+        sources.ai += 1;
+        splitCount += 1;
+        console.log(`[img] sahne ${idx}: uzun statik (${estSec.toFixed(1)}s) -> 2 plana bölündü`);
+      } catch {
+        /* bölme başarısızsa tek planla devam — kırılma yok */
+      }
+    }
   }
 
   return { mediaDir, items, sources };

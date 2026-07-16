@@ -121,20 +121,57 @@ export async function runPipeline(opts = {}) {
           : 'photo';
     if (visualStyle === 'animated') console.log('  görsel stil: animasyonlu hikâye kitabı');
 
-    // 3) Görsel (sahne başına AI görsel + Pexels/placeholder yedeği)
+    // Sahne süreleri, anlatım kelime sayısına göre orantılı.
+    // (cta artık seslendirilmiyor — yalnızca sahne anlatımları zamanlamayı belirler.)
+    const scenes = script.scenes || [];
+    const sceneWeights = scenes.map((s) => Math.max(1, wordCount(s.narration)));
+    const totalWeight = sceneWeights.reduce((a, b) => a + b, 0) || 1;
+    // Tahmini sahne süreleri (sn) — uzun statik sahnelerin ikiye bölünmesi için.
+    const sceneSeconds = sceneWeights.map((w) => (w / totalWeight) * (audio.durationEstimate || 40));
+
+    // 3) Görsel (sahne başına AI görsel + Pexels/placeholder yedeği).
+    // TEMPO: 4.3sn'yi aşan statik AI sahneleri İKİ farklı kadraja bölünür
+    // (canlı QC: 7 plan/5.5sn ortalama statikti — göz sıkılıyor).
     log('Faz 3: Sahne görselleri üretiliyor (AI)...');
-    const media = await generateImages(script, { outDir: root, basename: base, style: visualStyle });
+    const media = await generateImages(script, { outDir: root, basename: base, style: visualStyle, sceneSeconds });
     console.log(
-      `  ${media.items.length} sahne — AI:${media.sources.ai} ` +
+      `  ${media.items.length} plan / ${scenes.length} sahne — AI:${media.sources.ai} ` +
         `stokVideo:${media.sources.stock || 0} Pexels:${media.sources.pexels} ` +
         `gfx:${media.sources.gfx || 0} yedek:${media.sources.placeholder}`,
     );
     if (!media.items.length) throw new Error('Hiç sahne görseli üretilemedi.');
 
-    // Sahne süreleri, anlatım kelime sayısına göre orantılı.
-    // (cta artık seslendirilmiyor — yalnızca sahne anlatımları zamanlamayı belirler.)
-    const scenes = script.scenes || [];
-    const sceneWeights = scenes.map((s) => Math.max(1, wordCount(s.narration)));
+    // Plan (item) ağırlıkları: bölünen sahnenin ağırlığı parçalara eşit dağılır.
+    const partsPerScene = {};
+    for (const it of media.items) partsPerScene[it.scene] = (partsPerScene[it.scene] || 0) + 1;
+    const itemWeights = media.items.map(
+      (it) => Math.max(0.5, (sceneWeights[it.scene] ?? 1) / (partsPerScene[it.scene] || 1)),
+    );
+
+    // Kurgu planını plan sayısına genişlet: aynı sahnenin parçaları arasına
+    // sade 'cut' girer; sahneler arası sınırlar Kurgucu'nun kararını korur.
+    // Abone kartı sahne indeksinden plan indeksine çevrilir.
+    if (editPlan && media.items.length !== scenes.length) {
+      const firstItemOfScene = {};
+      media.items.forEach((it, idx) => {
+        if (!(it.scene in firstItemOfScene)) firstItemOfScene[it.scene] = idx;
+      });
+      const newBounds = [];
+      for (let k = 1; k < media.items.length; k += 1) {
+        const prev = media.items[k - 1];
+        const cur = media.items[k];
+        newBounds.push(
+          cur.scene === prev.scene
+            ? { transition: 'cut', sfx: 'none' }
+            : editPlan.boundaries[cur.scene - 1] || { transition: 'cut', sfx: 'none' },
+        );
+      }
+      editPlan = {
+        ...editPlan,
+        boundaries: newBounds,
+        subscribeScene: firstItemOfScene[editPlan.subscribeScene] ?? editPlan.subscribeScene,
+      };
+    }
 
     // 4) Montaj (ffmpeg)
     log('Faz 4: Video montajı (ffmpeg)...');
@@ -143,7 +180,7 @@ export async function runPipeline(opts = {}) {
       audioPath: audio.audioPath,
       wordTimings: audio.wordTimings,
       media: media.items.map((m) => ({ path: m.path, type: m.type })),
-      sceneWeights: sceneWeights.length === media.items.length ? sceneWeights : undefined,
+      sceneWeights: itemWeights,
       hookText: script.hook_text,
       category: script.category,
       editPlan,
