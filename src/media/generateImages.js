@@ -209,7 +209,7 @@ export async function generateImages(script, opts = {}) {
     const motionSlot = processMode
       ? true
       : dpFlags ? scene.motion === true : i > 0 && i % motionEvery === 1;
-    if (canMotion && (processMode || i > 0) && motionSlot) {
+    if (!done && canMotion && (processMode || i > 0) && motionSlot) {
       try {
         const hit = await fetchStockVideoForKeywords(
           scene.stock_keywords || scene.keywords,
