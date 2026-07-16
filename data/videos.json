@@ -780,7 +780,7 @@
       "comments": 0,
       "avgViewPct": 39.2,
       "subsGained": 0,
-      "statsAt": "2026-07-16T19:48:21.482Z"
+      "statsAt": "2026-07-16T23:07:16.896Z"
     }
   },
   {
@@ -903,7 +903,7 @@
       "comments": 1,
       "avgViewPct": 90.4,
       "subsGained": 1,
-      "statsAt": "2026-07-16T19:48:21.480Z"
+      "statsAt": "2026-07-16T23:07:16.894Z"
     }
   },
   {
@@ -1023,7 +1023,7 @@
       "comments": 1,
       "avgViewPct": 68.6,
       "subsGained": 0,
-      "statsAt": "2026-07-16T19:48:21.477Z"
+      "statsAt": "2026-07-16T23:07:16.892Z"
     }
   },
   {
@@ -1371,7 +1371,7 @@
       "comments": 5,
       "avgViewPct": 55.7,
       "subsGained": 0,
-      "statsAt": "2026-07-16T19:48:21.475Z"
+      "statsAt": "2026-07-16T23:07:16.890Z"
     }
   },
   {
@@ -1705,7 +1705,7 @@
       "comments": 5,
       "avgViewPct": 72.6,
       "subsGained": 1,
-      "statsAt": "2026-07-16T19:48:21.473Z"
+      "statsAt": "2026-07-16T23:07:16.887Z"
     }
   },
   {
@@ -1820,7 +1820,7 @@
       "comments": 1,
       "avgViewPct": 167,
       "subsGained": 6,
-      "statsAt": "2026-07-16T19:48:21.470Z"
+      "statsAt": "2026-07-16T23:07:16.885Z"
     }
   },
   {
@@ -1947,7 +1947,7 @@
       "comments": 1,
       "avgViewPct": 52.6,
       "subsGained": 2,
-      "statsAt": "2026-07-16T19:48:21.466Z"
+      "statsAt": "2026-07-16T23:07:16.883Z"
     }
   },
   {
@@ -2069,12 +2069,12 @@
     },
     "createdAt": "2026-07-12T18:04:35.208Z",
     "stats": {
-      "views": 1026,
+      "views": 1027,
       "likes": 47,
       "comments": 3,
       "avgViewPct": 60.1,
       "subsGained": 5,
-      "statsAt": "2026-07-16T19:48:21.463Z"
+      "statsAt": "2026-07-16T23:07:16.881Z"
     }
   },
   {
@@ -2201,7 +2201,7 @@
       "comments": 1,
       "avgViewPct": 44.9,
       "subsGained": 0,
-      "statsAt": "2026-07-16T19:48:21.461Z"
+      "statsAt": "2026-07-16T23:07:16.876Z"
     }
   },
   {
@@ -2316,7 +2316,7 @@
       "comments": 2,
       "avgViewPct": 146.1,
       "subsGained": 1,
-      "statsAt": "2026-07-16T19:48:21.459Z"
+      "statsAt": "2026-07-16T23:07:16.874Z"
     }
   },
   {
@@ -2431,7 +2431,7 @@
       "comments": 1,
       "avgViewPct": 60,
       "subsGained": 1,
-      "statsAt": "2026-07-16T19:48:21.456Z"
+      "statsAt": "2026-07-16T23:07:16.871Z"
     }
   },
   {
@@ -2545,7 +2545,7 @@
       "comments": 1,
       "avgViewPct": 84.8,
       "subsGained": 2,
-      "statsAt": "2026-07-16T19:48:21.454Z"
+      "statsAt": "2026-07-16T23:07:16.869Z"
     }
   },
   {
@@ -2667,12 +2667,12 @@
     },
     "createdAt": "2026-07-14T20:17:07.975Z",
     "stats": {
-      "views": 1314,
+      "views": 1329,
       "likes": 40,
       "comments": 1,
       "avgViewPct": 58.6,
       "subsGained": 1,
-      "statsAt": "2026-07-16T19:48:21.451Z"
+      "statsAt": "2026-07-16T23:07:16.867Z"
     }
   },
   {
@@ -2787,7 +2787,7 @@
       "comments": 1,
       "avgViewPct": 128,
       "subsGained": 2,
-      "statsAt": "2026-07-16T19:48:21.449Z"
+      "statsAt": "2026-07-16T23:07:16.864Z"
     }
   },
   {
@@ -2909,10 +2909,10 @@
     },
     "createdAt": "2026-07-15T14:38:38.805Z",
     "stats": {
-      "views": 698,
+      "views": 743,
       "likes": 5,
-      "comments": 1,
-      "statsAt": "2026-07-16T19:48:21.447Z"
+      "comments": 4,
+      "statsAt": "2026-07-16T23:07:16.861Z"
     }
   },
   {
@@ -3022,7 +3022,7 @@
       "views": 965,
       "likes": 52,
       "comments": 1,
-      "statsAt": "2026-07-16T19:48:21.444Z"
+      "statsAt": "2026-07-16T23:07:16.859Z"
     }
   },
   {
@@ -3244,10 +3244,10 @@
     },
     "createdAt": "2026-07-15T23:55:20.531Z",
     "stats": {
-      "views": 938,
-      "likes": 26,
+      "views": 964,
+      "likes": 28,
       "comments": 1,
-      "statsAt": "2026-07-16T19:48:21.441Z"
+      "statsAt": "2026-07-16T23:07:16.857Z"
     }
   },
   {
@@ -3366,6 +3366,127 @@
       "title": "How Jellyfish Create Their Own Dazzling Light #Shorts",
       "publishedAt": "2026-07-16T19:53:32.399Z"
     },
-    "createdAt": "2026-07-16T19:53:48.891Z"
+    "createdAt": "2026-07-16T19:53:48.891Z",
+    "stats": {
+      "views": 230,
+      "likes": 8,
+      "comments": 1,
+      "statsAt": "2026-07-16T23:07:16.854Z"
+    }
+  },
+  {
+    "id": "how-ancient-egyptians-made-mummies-1784243569860",
+    "topic": "How Ancient Egyptians Made Mummies",
+    "normalizedTopic": "how-ancient-egyptians-made-mummies",
+    "format": "howworks",
+    "visualStyle": "photo",
+    "script": {
+      "title": "Ancient Egypt's Mummy Secret: How They Preserved Bodies for Eternity",
+      "category": "history",
+      "hook_text": "Mummies for eternity",
+      "finale_text": "eternity in the afterlife",
+      "scenes": [
+        {
+          "narration": "Ancient Egyptians believed preserving a body was essential for the soul's eternal journey; but how did they do it?",
+          "image_prompt": "A wide establishing shot of a bustling ancient Egyptian funerary procession moving towards a grand tomb entrance at sunrise, with priests in white linen robes carrying offerings and a covered sarcophagus. Warm golden light illuminates the scene, casting long shadows. Viewed from a distance, conveying a sense of scale and ancient ritual."
+        },
+        {
+          "narration": "The first crucial step involved removing all internal organs, except the heart, from a carefully made incision.",
+          "image_prompt": "A medium shot of an ancient Egyptian embalmer priest in a white linen robe, wearing a stylized jackal-headed mask, carefully making a precise incision on the left side of a body lying on a stone slab. The scene is inside a dimly lit embalming tent made of draped fabrics, with warm torchlight illuminating his hands and the body."
+        },
+        {
+          "narration": "Next, the brain was extracted through the nostrils using a long, hooked tool, a delicate and precise procedure.",
+          "image_prompt": "A detail insert shot focusing on the skilled hands of an ancient Egyptian priest in a white linen robe, holding a long, slender bronze hook near a respectful, artistic representation of a body's nostril. The scene is inside a dimly lit embalming tent, with dramatic side torchlight highlighting the delicate nature of the procedure."
+        },
+        {
+          "narration": "The body was then covered with natron salt for forty days to thoroughly dry out all moisture, preventing decay.",
+          "image_prompt": "A high angle medium shot showing a body completely covered in a thick, even layer of white natron salt, resting on a stone slab. Ancient Egyptian priests in white linen robes are visible in the background, observing. The scene is inside a dimly lit embalming tent, with soft overhead torchlight highlighting the salt's texture and the body's form."
+        },
+        {
+          "narration": "After drying, the body was meticulously cleaned, perfumed, and packed with linen and sawdust to restore its shape.",
+          "image_prompt": "A close-up shot on the torso of a dried and firm body, as an ancient Egyptian priest in a white linen robe carefully packs it with aromatic linen bundles and sawdust to restore its natural shape. The scene is inside a dimly lit embalming tent, with warm torchlight intimately revealing the texture of the linen and the care in the process."
+        },
+        {
+          "narration": "Finally, hundreds of yards of linen bandages were expertly wrapped around the body, layer upon layer, sometimes with amulets.",
+          "image_prompt": "An over-the-shoulder shot from behind an ancient Egyptian priest in a white linen robe, meticulously wrapping linen bandages around a body. Another priest is carefully placing small, intricate amulets between the layers of bandages. The scene is inside a dimly lit embalming tent, with warm torchlight illuminating the intricate wrapping process."
+        },
+        {
+          "narration": "This complex, reverent process ensured the deceased would be perfectly preserved for their journey into the afterlife.",
+          "image_prompt": "A serene medium shot of a fully wrapped mummy, peacefully lying within a beautifully painted, ornate sarcophagus. Soft, ethereal light filters into a dark, grand tomb, conveying a sense of peace, eternity, and the successful completion of the sacred journey. The sarcophagus is intricately detailed, fitting the ancient Egyptian aesthetic."
+        }
+      ],
+      "cta": "Explore more ancient wonders – follow for daily history insights!"
+    },
+    "audioPath": "output/how-ancient-egyptians-made-mummies/how-ancient-egyptians-made-mummies.mp3",
+    "videoPath": "output/how-ancient-egyptians-made-mummies/how-ancient-egyptians-made-mummies.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/how-ancient-egyptians-made-mummies/media/01-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 1,
+        "keyword": "ancient egyptian embalming incision",
+        "path": "output/how-ancient-egyptians-made-mummies/media/02-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/close-up-on-egyptian-hieroglyphs-11276523/",
+        "author": "Артём Старшинов"
+      },
+      {
+        "type": "video",
+        "source": "pexels",
+        "scene": 2,
+        "keyword": "brain extraction",
+        "path": "output/how-ancient-egyptians-made-mummies/media/03-stock.mp4",
+        "sourceUrl": "https://www.pexels.com/video/a-doctor-using-tablet-while-looking-the-patient-s-results-of-disease-condition-6010950/",
+        "author": "Tima Miroshnichenko"
+      },
+      {
+        "type": "video",
+        "source": "gfx",
+        "scene": 3,
+        "path": "output/how-ancient-egyptians-made-mummies/media/04-gfx.mp4"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 4,
+        "keyword": "ancient egyptian embalming packing",
+        "path": "output/how-ancient-egyptians-made-mummies/media/05-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/baking-traditional-bread-in-outdoor-oven-32508433/",
+        "author": "Yaşar Başkurt"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 5,
+        "keyword": "ancient egyptian mummy wrapping",
+        "path": "output/how-ancient-egyptians-made-mummies/media/06-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/gift-being-wrapped-with-golden-sheet-6275432/",
+        "author": "ROMAN ODINTSOV"
+      },
+      {
+        "type": "video",
+        "source": "pexels",
+        "scene": 6,
+        "keyword": "sarcophagus",
+        "path": "output/how-ancient-egyptians-made-mummies/media/07-stock.mp4",
+        "sourceUrl": "https://www.pexels.com/video/detailed-gothic-tomb-in-historical-cathedral-35879422/",
+        "author": "Alexandre Henry Alves"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 47.592993,
+    "status": "published",
+    "youtube": {
+      "videoId": "B2BfyQ-dlys",
+      "url": "https://www.youtube.com/shorts/B2BfyQ-dlys",
+      "title": "Ancient Egypt's Mummy Secret: Preserving Bodies for Eternity #Shorts",
+      "publishedAt": "2026-07-16T23:12:13.446Z"
+    },
+    "createdAt": "2026-07-16T23:12:49.860Z"
   }
 ]
