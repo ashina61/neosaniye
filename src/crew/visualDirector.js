@@ -46,7 +46,10 @@ const SHOT_SCHEMA = {
           stock_keywords: {
             type: Type.ARRAY,
             items: { type: Type.STRING },
-            description: '1-3 simple English stock-search nouns (only meaningful when motion=true)',
+            description:
+              '1-3 SPECIFIC stock-search phrases naming the exact subject/species ' +
+              '(e.g. "leafcutter ants carrying leaves", NOT just "ants"). Wrong-species footage ' +
+              'destroys credibility. Only meaningful when motion=true.',
           },
           stat: {
             type: Type.OBJECT,
@@ -105,7 +108,12 @@ Produce a professional SHOT LIST that makes the video feel like ONE cinematic fi
   For historical/period/impossible-to-film subjects, use motion=true only for the 2-3 scenes
   generic enough for stock (landscapes, hands, fire, storms). Scene 1 must always be motion=false
   (it carries the hook cover).
-- For motion scenes give 1-3 simple stock_keywords.
+- For motion scenes give 1-3 stock_keywords that NAME THE EXACT SPECIES/SUBJECT ("leafcutter ants
+  carrying leaves", never just "ants") — wrong-species footage is a credibility killer.
+- LIVING CREATURES: AI image generation DEFORMS animal/insect anatomy in close-ups (wrong leg
+  count, broken heads — seen live). For animal subjects prefer REAL footage (motion=true). When an
+  AI image is unavoidable for an animal, avoid extreme close-up full-body anatomy: use wide
+  environment shots, silhouettes, or the creature small-in-frame instead.
 - image_prompt must be a single concrete filmable shot. Never request text, captions, logos, watermarks.
 - NUMBER CARD (optional, powerful): if exactly one scene's core is a striking NUMBER that is
   literally stated in its narration, set that scene's "stat" (value/unit/label). It becomes a bold

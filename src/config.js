@@ -192,6 +192,8 @@ export const config = {
     apiKey: process.env.FREESOUND_API_KEY,
   },
   meta: {
+    // SAYFASIZ Instagram yolu (Instagram Login API) — Sayfa/keşif gerektirmez.
+    igLoginToken: process.env.META_IG_LOGIN_TOKEN,
     // Instagram Reels + Facebook Reels cross-post (bkz. docs/meta-setup.md).
     // Tek zorunlu değer: userToken (uzun ömürlü kullanıcı token'ı). Sayfa,
     // sayfa token'ı ve Instagram ID'si run sırasında OTOMATİK keşfedilir.

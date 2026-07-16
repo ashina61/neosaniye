@@ -128,9 +128,11 @@ function buildCaptionAss(words, opts) {
     if (hk.length * hookFactor * hfs > 2 * usableW) {
       hfs = Math.max(56, Math.floor((2 * usableW) / (hk.length * hookFactor)));
     }
+    // Outline 0 idi — parlak gökyüzü/yaprak üstünde hook eriyip gidiyordu
+    // (canlıda görüldü). Gerçek kenarlık + gölge: her zeminde okunur.
     const hStyle =
-      `Style: Hook,Playfair Display,${hfs},&H00FFFFFF,&H00000000,&HB4000000,` +
-      `0,1,0,3.2,8,${marginH},${marginH},380,1`;
+      `Style: Hook,Playfair Display,${hfs},&H00FFFFFF,&H00000000,&H78000000,` +
+      `0,1,3,2,8,${marginH},${marginH},380,1`;
     styleLines.push(hStyle);
     const cx = Math.round(width / 2);
     events.push(

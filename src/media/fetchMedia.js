@@ -42,13 +42,15 @@ export function pickPortraitVideoFile(videoFiles) {
   return portrait[0];
 }
 
-async function searchVideo(keyword) {
+async function searchVideo(keyword, exclude = new Set()) {
   const url = `${API}/videos/search?query=${encodeURIComponent(
     keyword,
   )}&orientation=${config.pexels.orientation}&size=${config.pexels.size}&per_page=12`;
   const data = await pexelsGet(url);
   for (const video of data.videos || []) {
     const file = pickPortraitVideoFile(video.video_files || []);
+    // Aynı videoda aynı klibi iki kez kullanma (görsel tekrar canlıda görüldü).
+    if (file && exclude.has(file.link)) continue;
     if (file) {
       return {
         type: 'video',
@@ -99,7 +101,7 @@ async function pixabayGet(url) {
 }
 
 /** Pixabay'dan dikey stok video arar (varyantlar arasından 1080'e en yakını). */
-async function pixabaySearchVideo(keyword) {
+async function pixabaySearchVideo(keyword, exclude = new Set()) {
   if (!config.pixabay.apiKey) return null;
   const url =
     `${PIXABAY}/videos/?key=${config.pixabay.apiKey}` +
@@ -112,6 +114,7 @@ async function pixabaySearchVideo(keyword) {
     );
     if (!files.length) continue;
     files.sort((a, b) => Math.abs(a.width - 1080) - Math.abs(b.width - 1080));
+    if (files[0] && exclude.has(files[0].url)) continue;
     const f = files[0];
     return {
       type: 'video',
@@ -190,8 +193,9 @@ async function downloadFile(url, dest) {
  * @param {string[]} keywords
  * @param {string} destBase - Uzantısız hedef yol
  */
-export async function fetchStockVideoForKeywords(keywords, destBase) {
+export async function fetchStockVideoForKeywords(keywords, destBase, exclude = new Set()) {
   // Önce tüm kelimeler Pexels'te, sonra tümü Pixabay'da denenir.
+  // exclude: bu videoda zaten kullanılan klip URL'leri (tekrar engeli).
   const sources = [
     ['pexels', searchVideo],
     ['pixabay', pixabaySearchVideo],
@@ -199,8 +203,9 @@ export async function fetchStockVideoForKeywords(keywords, destBase) {
   for (const [name, search] of sources) {
     for (const keyword of keywords || []) {
       try {
-        const hit = await search(keyword);
+        const hit = await search(keyword, exclude);
         if (!hit) continue;
+        exclude.add(hit.downloadUrl);
         const dest = `${destBase}.mp4`;
         const bytes = await downloadFile(hit.downloadUrl, dest);
         if (name === 'pixabay') console.log(`[pixabay] stok video: "${keyword}"`);

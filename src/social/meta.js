@@ -19,6 +19,8 @@ import { config } from '../config.js';
 
 const V = 'v21.0';
 const GRAPH = `https://graph.facebook.com/${V}`;
+// Instagram Login (Sayfasız) yolu ayni akışı graph.instagram.com üzerinden kullanır.
+const IG_GRAPH = `https://graph.instagram.com/${V}`;
 
 async function graphCall(url, { method = 'POST', params = {}, token, timeoutMs = 30000 } = {}) {
   const ctrl = new AbortController();
@@ -133,10 +135,10 @@ async function ruploadBinary(uploadUrl, videoPath, token, { timeoutMs = 180000 }
  * Instagram Reels yayını: container (resumable) -> binary upload -> işlenmesini
  * bekle -> publish. ~20MB video için tipik toplam süre 1-2 dk.
  */
-async function publishInstagramReel({ videoPath, caption = '', igUserId, token }) {
+async function publishInstagramReel({ videoPath, caption = '', igUserId, token, graphBase = GRAPH }) {
   try {
     await stat(videoPath);
-    const container = await graphCall(`${GRAPH}/${igUserId}/media`, {
+    const container = await graphCall(`${graphBase}/${igUserId}/media`, {
       token,
       params: {
         media_type: 'REELS',
@@ -153,7 +155,7 @@ async function publishInstagramReel({ videoPath, caption = '', igUserId, token }
     const deadline = Date.now() + 4 * 60 * 1000;
     let status = '';
     while (Date.now() < deadline) {
-      const st = await graphCall(`${GRAPH}/${container.id}`, {
+      const st = await graphCall(`${graphBase}/${container.id}`, {
         method: 'GET',
         token,
         params: { fields: 'status_code' },
@@ -165,7 +167,7 @@ async function publishInstagramReel({ videoPath, caption = '', igUserId, token }
     }
     if (status !== 'FINISHED') throw new Error('işleme zaman aşımı');
 
-    const pub = await graphCall(`${GRAPH}/${igUserId}/media_publish`, {
+    const pub = await graphCall(`${graphBase}/${igUserId}/media_publish`, {
       token,
       params: { creation_id: container.id },
     });
@@ -210,8 +212,9 @@ async function publishFacebookReel({ videoPath, description = '', pageId, token 
  * @returns {Promise<{instagram: string|null, facebook: string|null}>}
  */
 export async function crossPost({ videoPath, title = '', description = '', tags = [] }) {
+  const igLoginToken = config.meta.igLoginToken;
   const targets = await resolveTargets();
-  if (!targets) return { instagram: null, facebook: null };
+  if (!targets && !igLoginToken) return { instagram: null, facebook: null };
 
   const hashtags = (tags || [])
     .slice(0, 8)
@@ -220,11 +223,35 @@ export async function crossPost({ videoPath, title = '', description = '', tags 
     .join(' ');
   const caption = [title, '', hashtags].filter(Boolean).join('\n');
 
-  const [instagram, facebook] = await Promise.all([
-    targets.igUserId
-      ? publishInstagramReel({ videoPath, caption, igUserId: targets.igUserId, token: targets.pageToken })
-      : Promise.resolve(null),
-    publishFacebookReel({ videoPath, description: caption, pageId: targets.pageId, token: targets.pageToken }),
-  ]);
+  // Instagram: öncelik SAYFASIZ Instagram-Login yolu (graph.instagram.com);
+  // yoksa eski Sayfa-tabanlı yol. Facebook: yalnızca Sayfa çözülebildiyse.
+  let igTask = Promise.resolve(null);
+  if (igLoginToken) {
+    igTask = (async () => {
+      try {
+        const me = await graphCall(`${IG_GRAPH}/me`, {
+          method: 'GET',
+          token: igLoginToken,
+          params: { fields: 'user_id,username' },
+        });
+        const igId = me.user_id || me.id;
+        if (!igId) throw new Error('IG kullanıcı kimliği çözülemedi');
+        console.log(`[meta] Instagram (IG-login): @${me.username || igId}`);
+        return await publishInstagramReel({
+          videoPath, caption, igUserId: igId, token: igLoginToken, graphBase: IG_GRAPH,
+        });
+      } catch (err) {
+        console.warn(`[meta] IG-login yolu başarısız: ${String(err.message).slice(0, 120)}`);
+        return null;
+      }
+    })();
+  } else if (targets?.igUserId) {
+    igTask = publishInstagramReel({ videoPath, caption, igUserId: targets.igUserId, token: targets.pageToken });
+  }
+  const fbTask = targets
+    ? publishFacebookReel({ videoPath, description: caption, pageId: targets.pageId, token: targets.pageToken })
+    : Promise.resolve(null);
+
+  const [instagram, facebook] = await Promise.all([igTask, fbTask]);
   return { instagram, facebook };
 }

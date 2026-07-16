@@ -124,6 +124,8 @@ export async function generateImages(script, opts = {}) {
   let providerDead = provider === 'none' || (provider === 'gemini' && !geminiAI);
   // Motion graphics (sayı kartı) sayacı — video başına üst sınır.
   let gfxCount = 0;
+  // Bu videoda kullanılan stok klip URL'leri — aynı klip iki sahnede tekrarlanmaz.
+  const usedClips = new Set();
 
   // Hareketli sahne planı: Görüntü Yönetmeni sahneleri işaretlediyse (motion)
   // onlar; yoksa mekanik "her N. sahne". İlk sahne her zaman hariç (hook kapağı).
@@ -132,7 +134,9 @@ export async function generateImages(script, opts = {}) {
   // process formatı: GERÇEK görüntü öncelikli — HER sahne (ilki dahil) önce
   // stok video dener; AI görsel sadece klip bulunamayan sahneleri doldurur.
   const processMode = script.format === 'process' && hasStockKey;
-  const canMotion = (motionEvery > 0 || processMode) && hasStockKey;
+  // Animasyonlu (illüstrasyon) stilde stok video KARIŞMAZ — gerçek çekim +
+  // çizim karışımı canlıda "yarı belgesel yarı çizgi film" çorbası yaptı.
+  const canMotion = (motionEvery > 0 || processMode) && hasStockKey && style !== 'animated';
   const dpFlags = scenes.some((s) => s.motion === true);
 
   // Görsel süreklilik: video başına SABİT seed (konudan türetilir) + her sahne
@@ -194,6 +198,7 @@ export async function generateImages(script, opts = {}) {
         const hit = await fetchStockVideoForKeywords(
           scene.stock_keywords || scene.keywords,
           path.join(mediaDir, `${idx}-motion`),
+          usedClips,
         );
         if (hit) done = { ...hit, scene: i, source: 'stock' };
       } catch (err) {
