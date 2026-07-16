@@ -135,8 +135,10 @@ export async function renderStatCard(stat, dest, opts = {}) {
     `gradients=s=${width}x${height}:c0=0x${sb.bg0}:c1=0x${sb.bg1}:` +
     `x0=0:y0=0:x1=0:y1=${height}:d=${dur}:r=${fps}`;
 
+  const frame =
+    `drawbox=x=44:y=44:w=${width - 88}:h=${height - 88}:color=0x${sb.gold}@0.22:t=2:enable='gte(t,0.15)',`;
   const vf =
-    `vignette=PI/7,${drawNum}${drawUnit}${drawRule}${drawLabel},` +
+    `vignette=PI/7,${frame}${drawNum}${drawUnit}${drawRule}${drawLabel},` +
     `fade=t=in:st=0:d=0.4,format=yuv420p`;
 
   const args = [
@@ -181,39 +183,55 @@ export async function renderStepsCard(diagram, dest, opts = {}) {
 
   const sb = config.video.styleBible;
   const cx = Math.round(width / 2);
-  const titleSize = Math.round(width * 0.055);
-  const stepSize = Math.round(width * 0.048);
-  const numSize = Math.round(width * 0.052);
-  const yTitle = Math.round(height * 0.30);
-  const yStart = Math.round(height * 0.40);
-  const gap = Math.round(height * 0.085);
-  const xNum = 140;
-  const xText = 250;
+  const titleSize = Math.round(width * 0.056);
+  const stepSize = Math.round(width * 0.047);
+  const numSize = Math.round(width * 0.044);
+  // Yerleşim yukarı + sıkı: alt altyazı bandı ve vurguyla çakışmasın
+  // (canlıda 2. satırın üstüne vurgu kelimesi bindi).
+  const yTitle = Math.round(height * 0.27);
+  const yStart = Math.round(height * 0.355);
+  const gap = Math.round(height * 0.074);
+  const chip = Math.round(width * 0.076); // numara rozeti (kare, altın çerçeveli)
+  const xChip = 132;
+  const xText = xChip + chip + 44;
 
   const parts = [
-    // Başlık: altın, hafif harf aralıklı; ince altın ayraç altında.
+    // İnce altın çerçeve (kenarlardan içeride) — premium belgesel dokunuşu.
+    `drawbox=x=44:y=44:w=${width - 88}:h=${height - 88}:color=0x${sb.gold}@0.22:t=2:enable='gte(t,0.15)'`,
+    // Başlık: altın; altında ince altın ayraç.
     `drawtext=fontfile='${FONT_SEMI}':text='${dt(title)}':fontcolor=0x${sb.gold}:` +
       `fontsize=${titleSize}:x=(w-text_w)/2:y=${yTitle}:alpha='min(t/0.5,1)'`,
-    `drawbox=x=${cx - 70}:y=${yTitle + titleSize + 26}:w=140:h=4:color=0x${sb.gold}@0.9:t=fill:enable='gte(t,0.3)'`,
+    `drawbox=x=${cx - 70}:y=${yTitle + titleSize + 24}:w=140:h=3:color=0x${sb.gold}@0.9:t=fill:enable='gte(t,0.3)'`,
   ];
-  // Adımlar: 0.9sn arayla sırayla belirir (fade), numara altın, metin beyaz.
+  // Adımlar: 0.9sn arayla belirir. Numara: koyu rozet + altın çerçeve içinde;
+  // satır altlarında hayalet ayraç çizgileri (yapılandırılmış, premium his).
   steps.forEach((step, i) => {
     const y = yStart + i * gap;
     const t0 = (0.7 + i * 0.9).toFixed(2);
     const a = `alpha='min(max((t-${t0})/0.45,0),1)'`;
+    const en = `enable='gte(t,${t0})'`;
     parts.push(
+      // rozet: koyu dolgu + altın kenar
+      `drawbox=x=${xChip}:y=${y - Math.round(chip * 0.18)}:w=${chip}:h=${chip}:color=0x0c1119@0.85:t=fill:${en}`,
+      `drawbox=x=${xChip}:y=${y - Math.round(chip * 0.18)}:w=${chip}:h=${chip}:color=0x${sb.gold}@0.85:t=2:${en}`,
       `drawtext=fontfile='${FONT_BLACK}':text='${i + 1}':fontcolor=0x${sb.gold}:` +
-        `fontsize=${numSize}:x=${xNum}:y=${y}:${a}`,
+        `fontsize=${numSize}:x=${xChip}+(${chip}-text_w)/2:y=${y - Math.round(chip * 0.18)}+(${chip}-text_h)/2:${a}`,
       `drawtext=fontfile='${FONT_SEMI}':text='${dt(step)}':fontcolor=0x${sb.ink}:` +
-        `fontsize=${stepSize}:x=${xText}:y=${y + Math.round((numSize - stepSize) / 2)}:` +
+        `fontsize=${stepSize}:x=${xText}:y=${y}:` +
         `shadowcolor=0x000000@0.5:shadowx=0:shadowy=4:${a}`,
     );
+    if (i < steps.length - 1) {
+      parts.push(
+        `drawbox=x=${xChip}:y=${y + Math.round(gap * 0.72)}:w=${width - xChip - 132}:h=2:` +
+          `color=0x${sb.ink}@0.10:t=fill:${en}`,
+      );
+    }
   });
 
   const bgSrc =
     `gradients=s=${width}x${height}:c0=0x${sb.bg0}:c1=0x${sb.bg1}:` +
     `x0=0:y0=0:x1=0:y1=${height}:d=${dur}:r=${fps}`;
-  const vf = `vignette=PI/5,${parts.join(',')},fade=t=in:st=0:d=0.4,format=yuv420p`;
+  const vf = `vignette=PI/7,${parts.join(',')},fade=t=in:st=0:d=0.4,format=yuv420p`;
   const args = [
     '-y', '-f', 'lavfi', '-i', bgSrc, '-t', String(dur.toFixed(3)),
     '-vf', vf, '-r', String(fps),

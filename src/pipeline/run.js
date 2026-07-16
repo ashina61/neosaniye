@@ -180,7 +180,7 @@ export async function runPipeline(opts = {}) {
     const video = await renderVideo({
       audioPath: audio.audioPath,
       wordTimings: audio.wordTimings,
-      media: media.items.map((m) => ({ path: m.path, type: m.type })),
+      media: media.items.map((m) => ({ path: m.path, type: m.type, gfx: m.source === 'gfx' })),
       sceneWeights: itemWeights,
       hookText: script.hook_text,
       category: script.category,

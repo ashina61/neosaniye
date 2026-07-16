@@ -85,13 +85,15 @@ function buildCaptionAss(words, opts) {
     hookDuration = config.video.hookDuration,
     emphasisWords = [],
     finaleText = '',
+    quietZones = [],
   } = opts;
 
   // Vurgu sözlüğü: yönetmenin işaretlediği kelimeler (normalize edilmiş).
   const normWord = (w) => String(w).toLowerCase().replace(/[^a-z0-9]/g, '');
   const emphSet = new Set(emphasisWords.map(normWord).filter(Boolean));
-  const isEmph = (w) =>
-    config.video.emphasis && (/\d/.test(w) || emphSet.has(normWord(w)));
+  const inQuiet = (t) => quietZones.some((z) => t >= z.start && t <= z.end);
+  const isEmph = (w, start = -1) =>
+    config.video.emphasis && !inQuiet(start) && (/\d/.test(w) || emphSet.has(normWord(w)));
 
   const marginH = 90;
   const usableW = width - 2 * marginH;
@@ -177,7 +179,7 @@ function buildCaptionAss(words, opts) {
   };
   for (let i = 0; i < words.length; i += 1) {
     const w = words[i];
-    if (isEmph(w.word)) {
+    if (isEmph(w.word, w.start)) {
       // Vurgu koşusu: ardışık vurgulu kelimeleri tek parçada topla (max 3) —
       // "100,000 acres" gibi sayı+birim ikilisi bölünmesin.
       flush();
@@ -185,7 +187,7 @@ function buildCaptionAss(words, opts) {
       while (
         i + 1 < words.length &&
         run.length < 3 &&
-        isEmph(words[i + 1].word) &&
+        isEmph(words[i + 1].word, words[i + 1].start) &&
         words[i + 1].start - words[i].end <= 0.28
       ) {
         i += 1;
@@ -199,7 +201,7 @@ function buildCaptionAss(words, opts) {
     const next = words[i + 1];
     const gap = next ? next.start - w.end : Infinity;
     const punct = /[.!?,;:]$/.test(String(w.word));
-    if (cur.length >= perLine || gap > 0.28 || punct || !next || isEmph(next.word)) {
+    if (cur.length >= perLine || gap > 0.28 || punct || !next || isEmph(next.word, next.start)) {
       flush();
     }
   }
@@ -897,6 +899,18 @@ export async function renderVideo(job, opts = {}) {
   }
 
   // 3) Altyazı + hook kartı (ikisi de aynı ASS içinde; hook otomatik satır kaydırır).
+  // SESSİZ BÖLGELER: gfx kartlarının (sayı/adım) zaman pencereleri — bu
+  // aralıklarda vurgu kelimesi ÜST BANDA çıkmaz (canlıda kartın satırlarına
+  // bindi); kelime normal alt altyazı akışında kalır.
+  const quietZones = [];
+  {
+    let cum = 0;
+    for (let k = 0; k < N; k += 1) {
+      const st = cum;
+      cum += clipDur[k] - (bts[k] || 0);
+      if ((job.media || [])[k]?.gfx) quietZones.push({ start: st - 0.3, end: st + clipDur[k] + 0.3 });
+    }
+  }
   const hasHook = config.video.hookOverlay && Boolean(hookText);
   const hasSubs = wordTimings.length > 0;
   const useAss = hasSubs || hasHook;
@@ -909,6 +923,7 @@ export async function renderVideo(job, opts = {}) {
         hookText: hasHook ? hookText : '',
         emphasisWords: job.emphasisWords || [],
         finaleText: job.finaleText || '',
+        quietZones,
       }),
     );
   }

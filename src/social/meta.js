@@ -223,10 +223,14 @@ export async function crossPost({ videoPath, title = '', description = '', tags 
     .join(' ');
   const caption = [title, '', hashtags].filter(Boolean).join('\n');
 
-  // Instagram: öncelik SAYFASIZ Instagram-Login yolu (graph.instagram.com);
-  // yoksa eski Sayfa-tabanlı yol. Facebook: yalnızca Sayfa çözülebildiyse.
+  // Instagram: öncelik SAYFA yolu (graph.facebook.com — resumable upload
+  // DESTEKLİ; canlıda doğrulandı). IG-login yolu (graph.instagram.com) yalnızca
+  // YEDEK: o uç video_url (herkese açık URL) istiyor ve bizde yok — canlıda
+  // "The parameter video_url is required" hatası verdi.
   let igTask = Promise.resolve(null);
-  if (igLoginToken) {
+  if (targets?.igUserId) {
+    igTask = publishInstagramReel({ videoPath, caption, igUserId: targets.igUserId, token: targets.pageToken });
+  } else if (igLoginToken) {
     igTask = (async () => {
       try {
         const me = await graphCall(`${IG_GRAPH}/me`, {
@@ -245,8 +249,6 @@ export async function crossPost({ videoPath, title = '', description = '', tags 
         return null;
       }
     })();
-  } else if (targets?.igUserId) {
-    igTask = publishInstagramReel({ videoPath, caption, igUserId: targets.igUserId, token: targets.pageToken });
   }
   const fbTask = targets
     ? publishFacebookReel({ videoPath, description: caption, pageId: targets.pageId, token: targets.pageToken })
