@@ -21,8 +21,8 @@ on:
   schedule:
     # Günde 2 video — hedef kitle ABD + Avrupa (İngilizce). Saatler UTC.
     # GitHub cron'u ~15-60 dk gecikmeli tetikler; birkaç dakika kayması normal.
-    - cron: "0 19 * * *" # 19:00 UTC — ABD Doğu 15:00 / Pasifik 12:00 (öğleden sonra) — TR 22:00
-    - cron: "0 23 * * *" # 23:00 UTC — ABD Doğu 19:00 prime / Pasifik 16:00 — TR 02:00
+    - cron: "23 18 * * *" # 18:23 UTC — ABD Doğu 14:23 / Pasifik 11:23 — TR 21:23 (saat başı YASAK: GitHub tam saatte tick yutuyor, 2 kez yaşandı)
+    - cron: "37 22 * * *" # 22:37 UTC — ABD Doğu 18:37 prime / Pasifik 15:37 — TR 01:37
 
 concurrency:
   group: daily-short
