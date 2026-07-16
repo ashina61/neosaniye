@@ -85,15 +85,13 @@ function buildCaptionAss(words, opts) {
     hookDuration = config.video.hookDuration,
     emphasisWords = [],
     finaleText = '',
-    quietZones = [],
   } = opts;
 
   // Vurgu sözlüğü: yönetmenin işaretlediği kelimeler (normalize edilmiş).
   const normWord = (w) => String(w).toLowerCase().replace(/[^a-z0-9]/g, '');
   const emphSet = new Set(emphasisWords.map(normWord).filter(Boolean));
-  const inQuiet = (t) => quietZones.some((z) => t >= z.start && t <= z.end);
-  const isEmph = (w, start = -1) =>
-    config.video.emphasis && !inQuiet(start) && (/\d/.test(w) || emphSet.has(normWord(w)));
+  const isEmph = (w) =>
+    config.video.emphasis && (/\d/.test(w) || emphSet.has(normWord(w)));
 
   const marginH = 90;
   const usableW = width - 2 * marginH;
@@ -109,13 +107,13 @@ function buildCaptionAss(words, opts) {
   // planda soluk kalıyordu; altın deneyince cırtlak oldu). Beyaz + güçlü kenarlık
   // her zeminde net okunur ve premium/zarif durur. Kendi bandında, akan altyazının
   // ÜSTÜNDE durur; böylece ekranda daha uzun kalsa da çakışmaz.
-  const emphSize = Math.round(size * 1.55);
-  // Finale marginV+210'da; vurgu bandını belirgin ÜSTüne al (+370) ki son
-  // saniyelerde bir vurgu kelimesi finale ile aynı anda çıksa bile çakışmasın.
-  const emphMarginV = marginV + 370;
+  // Vurgu ALTYAZI POZİSYONUNDA, akışın içinde tek başına görünür (ayrı orta
+  // bant "arada uçuyor" hissi veriyordu ve kartların üstüne biniyordu —
+  // kullanıcı geri bildirimi). Aynı taban çizgisi, daha büyük + serif italik.
+  const emphSize = Math.round(size * 1.5);
   const emphStyle =
     `Style: Emph,Playfair Display,${emphSize},&H00FFFFFF,&H00000000,&H64000000,` +
-    `1,1,4,2,2,${marginH},${marginH},${emphMarginV},1`;
+    `1,1,4,2,2,${marginH},${marginH},${marginV},1`;
   const styleLines = [capStyle, emphStyle];
 
   const events = [];
@@ -179,7 +177,7 @@ function buildCaptionAss(words, opts) {
   };
   for (let i = 0; i < words.length; i += 1) {
     const w = words[i];
-    if (isEmph(w.word, w.start)) {
+    if (isEmph(w.word)) {
       // Vurgu koşusu: ardışık vurgulu kelimeleri tek parçada topla (max 3) —
       // "100,000 acres" gibi sayı+birim ikilisi bölünmesin.
       flush();
@@ -187,7 +185,7 @@ function buildCaptionAss(words, opts) {
       while (
         i + 1 < words.length &&
         run.length < 3 &&
-        isEmph(words[i + 1].word, words[i + 1].start) &&
+        isEmph(words[i + 1].word) &&
         words[i + 1].start - words[i].end <= 0.28
       ) {
         i += 1;
@@ -201,7 +199,7 @@ function buildCaptionAss(words, opts) {
     const next = words[i + 1];
     const gap = next ? next.start - w.end : Infinity;
     const punct = /[.!?,;:]$/.test(String(w.word));
-    if (cur.length >= perLine || gap > 0.28 || punct || !next || isEmph(next.word, next.start)) {
+    if (cur.length >= perLine || gap > 0.28 || punct || !next || isEmph(next.word)) {
       flush();
     }
   }
@@ -225,13 +223,11 @@ function buildCaptionAss(words, opts) {
       if (raw.length * emphFactor * fs > usableW) {
         fs = Math.max(40, Math.floor(usableW / (raw.length * emphFactor)));
       }
-      // Vurgu 1-2 sn daha ekranda kalsın (kullanıcı isteği) + blur kaldırıldı
-      // (yazıyı soluklaştırıyordu). Kendi üst bandında olduğu için sonraki
-      // altyazıyla çakışmaz.
-      const emphEnd = end + 1.4;
+      // Altyazı bandında akışın PARÇASI: kendi zaman dilimini kullanır
+      // (uzatma yok — aynı banttaki sonraki altyazı grubunu ezerdi).
       events.push(
-        `Dialogue: 0,${assTime(start)},${assTime(emphEnd)},Emph,,0,0,0,,` +
-          `{\\fs${fs}\\i1\\b1\\fad(90,240)\\fscx92\\fscy92\\t(0,150,\\fscx100\\fscy100)}${text}`,
+        `Dialogue: 0,${assTime(start)},${assTime(end)},Emph,,0,0,0,,` +
+          `{\\fs${fs}\\i1\\b1\\fad(90,110)\\fscx92\\fscy92\\t(0,150,\\fscx100\\fscy100)}${text}`,
       );
     } else {
       // Genişliğe sığdır: HEM tüm satır HEM DE en uzun tek kelime usableW'e
@@ -899,18 +895,6 @@ export async function renderVideo(job, opts = {}) {
   }
 
   // 3) Altyazı + hook kartı (ikisi de aynı ASS içinde; hook otomatik satır kaydırır).
-  // SESSİZ BÖLGELER: gfx kartlarının (sayı/adım) zaman pencereleri — bu
-  // aralıklarda vurgu kelimesi ÜST BANDA çıkmaz (canlıda kartın satırlarına
-  // bindi); kelime normal alt altyazı akışında kalır.
-  const quietZones = [];
-  {
-    let cum = 0;
-    for (let k = 0; k < N; k += 1) {
-      const st = cum;
-      cum += clipDur[k] - (bts[k] || 0);
-      if ((job.media || [])[k]?.gfx) quietZones.push({ start: st - 0.3, end: st + clipDur[k] + 0.3 });
-    }
-  }
   const hasHook = config.video.hookOverlay && Boolean(hookText);
   const hasSubs = wordTimings.length > 0;
   const useAss = hasSubs || hasHook;
@@ -923,7 +907,6 @@ export async function renderVideo(job, opts = {}) {
         hookText: hasHook ? hookText : '',
         emphasisWords: job.emphasisWords || [],
         finaleText: job.finaleText || '',
-        quietZones,
       }),
     );
   }
