@@ -25,3 +25,5 @@ data/*
 
 # CC0 ses kütüphanesi (assets/audio) sürümlenir — global *.mp3 kuralının istisnası.
 !assets/audio/**/*.mp3
+# Manuel inceleme önizlemeleri (production seçicisi bu klasörü görmez).
+!artifacts/audio-review/*.mp3
