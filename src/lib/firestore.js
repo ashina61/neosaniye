@@ -205,6 +205,16 @@ export async function getWinningHooks(limit = 3) {
   }
 }
 
+/** Son videolarda kullanılan müzik dosya adları — parça tekrarını önler. */
+export async function getRecentMusic(limit = 2) {
+  try {
+    const vids = await getVideosWithYouTube(limit + 3);
+    return vids.map((v) => v.music?.file).filter(Boolean).slice(0, limit);
+  } catch {
+    return [];
+  }
+}
+
 /** Son üretilen videoların formatları (en yeni önce) — format tekrarını kırar. */
 export async function getRecentFormats(limit = 2) {
   try {

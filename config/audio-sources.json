@@ -1,0 +1,118 @@
+{
+  "$comment": "CC0/Public Domain ses kaynak kilidi. Her kaynak SABİT commit SHA'ya pinlenir; branch adıyla indirme yapılmaz. Lisans kanıtı doğrulanamayan kaynak import edilmez. Düzenledikten sonra: npm run audio:import",
+  "sources": [
+    {
+      "id": "kenney-ui-audio",
+      "repository": "https://github.com/Calinou/kenney-ui-audio",
+      "commit": "8c3d81b9159d058c444f89d12d518276b0b09345",
+      "allowedPaths": [
+        "addons/kenney_ui_audio/click1.wav",
+        "addons/kenney_ui_audio/click2.wav",
+        "addons/kenney_ui_audio/click3.wav",
+        "addons/kenney_ui_audio/click4.wav",
+        "addons/kenney_ui_audio/click5.wav",
+        "addons/kenney_ui_audio/switch1.wav",
+        "addons/kenney_ui_audio/switch2.wav",
+        "addons/kenney_ui_audio/switch3.wav",
+        "addons/kenney_ui_audio/switch4.wav",
+        "addons/kenney_ui_audio/switch5.wav",
+        "addons/kenney_ui_audio/rollover1.wav",
+        "addons/kenney_ui_audio/rollover2.wav",
+        "addons/kenney_ui_audio/rollover3.wav",
+        "addons/kenney_ui_audio/rollover4.wav",
+        "addons/kenney_ui_audio/rollover5.wav"
+      ],
+      "rejectedPaths": [],
+      "expectedLicense": "CC0-1.0",
+      "licenseEvidence": {
+        "licenseFile": "LICENSE.txt",
+        "licenseMustContain": "Creative Commons Zero, CC0",
+        "readmeFile": "README.md",
+        "readmeSection": "Licensed under CC0 1.0 Universal"
+      },
+      "assetType": "sfx",
+      "defaultMoods": ["neutral"],
+      "defaultTopics": ["ui"],
+      "enabled": true,
+      "notes": "Kenney UI ses paketi (kenney.nl). YALNIZCA sfx/ui — müzik kategorisine asla girmez. 50 dosyadan 15'lik temsili alt küme (tek kategoriye yığılmayı önlemek için)."
+    },
+    {
+      "id": "sample-pi",
+      "repository": "https://github.com/alex-esc/sample-pi",
+      "commit": "f14596be37abf227bf77d198c9b0b60d9eb4dca9",
+      "allowedPaths": ["ambient", "noise loops", "vinyl", "misc"],
+      "rejectedPaths": [
+        "drums", "bass", "guitar", "one cycle waveforms"
+      ],
+      "expectedLicense": "CC0-1.0",
+      "licenseEvidence": {
+        "licenseFile": null,
+        "readmeFile": "README.md",
+        "readmeSection": "placed in the public domain via the Creative Commons 0 License",
+        "note": "Ayrı LICENSE dosyası yok; README, Sonic Pi örneklerinin freesound CC0 beyanını ve örnek başına kaynak linklerini içeriyor. Kanıt README bölümüdür."
+      },
+      "assetType": "ambience",
+      "defaultMoods": ["dark"],
+      "defaultTopics": [],
+      "enabled": true,
+      "notes": "Sonic Pi ses paketi. SFX/ambience/texture/loop adayı — TAM MÜZİK DEĞİL, müzik diye sınıflandırılmaz. drums/bass/guitar/waveform tek sesleri Shorts için gereksiz: whitelist dışı."
+    },
+    {
+      "id": "danigb-samples",
+      "repository": "https://github.com/danigb/samples",
+      "commit": "eae8c5c7a10f4b0e06281211e704c36c30e25342",
+      "allowedPaths": [],
+      "rejectedPaths": [
+        "gs-e-pianos",
+        "drum-machines"
+      ],
+      "expectedLicense": "CC0-1.0",
+      "licenseEvidence": {
+        "licenseFile": null,
+        "readmeFile": "README.md",
+        "readmeSection": "License: [CC0 1.0]",
+        "note": "KLASÖR BAZLI lisans: dsmolken/jlearman/oldpiano-fb/vcsl/sample-pi CC0; splendid-grand-piano Public Domain; gs-e-pianos CC BY 3.0 (RED); drum-machines 'see folders' (belirsiz, RED)."
+      },
+      "assetType": "samples",
+      "defaultMoods": [],
+      "defaultTopics": [],
+      "enabled": false,
+      "notes": "DEVRE DIŞI: enstrüman tek-nota sample paketleri — Shorts arka planı için kullanışsız, kütüphaneyi şişirmemek için ilk aşamada alınmadı. Lisans haritası ileride gerekirse hazır."
+    },
+    {
+      "id": "awesome-cc0",
+      "repository": "https://github.com/madjin/awesome-cc0",
+      "commit": "ed888579ef78656ca3e0d4d116049a29d218724c",
+      "allowedPaths": [],
+      "rejectedPaths": [],
+      "expectedLicense": null,
+      "licenseEvidence": {
+        "licenseFile": null,
+        "readmeFile": "README.md",
+        "readmeSection": null,
+        "note": "Yalnızca KAYNAK KATALOĞU — ses dosyası içermez. İçindeki linkler otomatik güvenilir sayılmaz; her aday kaynak ayrı ayrı bu dosyaya pinlenip doğrulanmadan import edilemez."
+      },
+      "assetType": "catalog",
+      "defaultMoods": [],
+      "defaultTopics": [],
+      "enabled": false,
+      "notes": "İndirilebilir içerik yok; keşif amaçlı referans."
+    }
+  ],
+  "moodKeywords": {
+    "$comment": "Deterministik sınıflandırma: dosya adında geçen anahtar → mood etiketi.",
+    "dark": ["dark", "haunted", "shadow"],
+    "mystery": ["haunted", "mystery", "ghost"],
+    "space": ["drone", "lunar", "cosmic", "space"],
+    "science": ["glass", "buzz", "hum", "perlin"],
+    "nature": ["sauna", "crow", "water", "wind", "rain"],
+    "ancient": ["choir", "chant"],
+    "cinematic": ["cineboom", "boom", "impact"],
+    "neutral": ["click", "switch", "rollover", "piano", "stream"],
+    "suspense": ["woosh", "swoosh", "riser", "tension"]
+  },
+  "rejectKeywords": {
+    "$comment": "Shorts anlatımına uymayan içerik dosya adından reddedilir (gerekçe rejected-assets.json'a yazılır).",
+    "unfit": ["burp", "fart", "laugh", "cartoon", "arcade", "coin", "powerup", "jingle"]
+  }
+}

@@ -18,7 +18,9 @@
     "test": "node --test",
     "upload": "node scripts/upload-youtube.js",
     "youtube:auth": "node scripts/youtube-auth.js",
-    "music": "node scripts/fetch-music.js"
+    "music": "node scripts/fetch-music.js",
+    "audio:import": "node scripts/audio-import.js",
+    "audio:import:dry": "node scripts/audio-import.js --dry-run"
   },
   "dependencies": {
     "@google/genai": "^1.0.0",

@@ -21,6 +21,8 @@ import { crossPost } from '../social/meta.js';
 import { preflightCheck } from './preflight.js';
 import { runRetentionQC, uploadGate } from './retentionQC.js';
 import { appendQcHistory, buildQcHistoryEntry } from './qcHistory.js';
+import { getRecentMusic } from '../lib/firestore.js';
+import { describeMusicTrack } from '../audio/musicSelect.js';
 import { recordProduction } from './recordProduction.js';
 import { notify } from '../lib/notify.js';
 
@@ -179,6 +181,8 @@ export async function runPipeline(opts = {}) {
     // 4) Montaj (ffmpeg)
     log('Faz 4: Video montajı (ffmpeg)...');
     const outPath = path.join(workDir, `${base}.mp4`);
+    // Son videoların müziği tekrar seçilmesin (best-effort; state yoksa boş).
+    const recentMusic = await getRecentMusic().catch(() => []);
     const video = await renderVideo({
       audioPath: audio.audioPath,
       wordTimings: audio.wordTimings,
@@ -194,9 +198,12 @@ export async function runPipeline(opts = {}) {
       annotate: (script.format || 'story') === 'process',
       emphasisWords: script.emphasis_words || [],
       finaleText: script.finale_text || '',
+      avoidMusic: recentMusic,
       outPath,
     });
     console.log(`  ${video.width}x${video.height}, ${video.duration.toFixed(1)}s -> ${outPath}`);
+    // Müzik lisans künyesi (CC0 manifesti veya eski havuz) — rapor + kayda girer.
+    const musicMeta = video.musicTrack ? describeMusicTrack(video.musicTrack) : null;
 
     // 4.5) Yayın öncesi TEKNİK kalite kontrolü — final MP4 üzerinde ffprobe/
     // ffmpeg taraması (decode, siyah/donma/sessizlik, loudness). Bozuk video
@@ -324,6 +331,8 @@ export async function runPipeline(opts = {}) {
       sources: media.sources,
       visualStyle,
       ambience: ambience?.name || null,
+      // Video başına lisans manifesti: kullanılan müziğin kaynağı ve kanıtı.
+      music: musicMeta,
       preflight: pf.metrics,
       retentionScore: qc.score,
       editPlan: editPlan
@@ -354,6 +363,7 @@ export async function runPipeline(opts = {}) {
       engine: audio.engine,
       duration: video.duration,
       visualStyle, // Baş Analist stile göre öğrensin
+      music: musicMeta, // parça tekrarını önleme + lisans izi
       retention: qc.report ? { score: qc.score, status: qc.report.status } : null,
       // 'blocked_qc': QC engelledi (strict skor/hata veya QC exception) —
       // yayınlanmış GİBİ görünmesin.

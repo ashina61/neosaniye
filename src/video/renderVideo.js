@@ -7,6 +7,7 @@ import { config } from '../config.js';
 import { buildOutro } from './outro.js';
 import { groupCaptionWords, layoutGroup } from './captionLayout.js';
 import { makeMusicBed } from '../audio/makeMusic.js';
+import { pickMusicTrack } from '../audio/musicSelect.js';
 
 const run = promisify(execFile);
 
@@ -497,47 +498,8 @@ ${ev.join('\n')}
 `;
 }
 
-/** assets/music/ havuzundan telifsiz parça seçer — önce kategorinin kendi
- *  klasörü (assets/music/<mood>/), yoksa tüm havuz, o da yoksa null. */
-function pickMusicTrack(category = '') {
-  const exts = ['.mp3', '.m4a', '.wav', '.ogg', '.aac', '.opus'];
-  const dir = path.resolve(config.video.musicDir || 'assets/music');
-  const listDir = (d) => {
-    try {
-      return readdirSync(d, { withFileTypes: true });
-    } catch {
-      return [];
-    }
-  };
-  const alias = { 'human body': 'science', technology: 'science' };
-  const key = String(category || '').toLowerCase();
-  const mood = alias[key] || key;
-
-  // 1) Ruh haline özel klasör (assets/music/mystery/ gibi).
-  const moodDir = path.join(dir, mood);
-  const moodFiles = listDir(moodDir)
-    .filter((e) => e.isFile() && exts.includes(path.extname(e.name).toLowerCase()))
-    .map((e) => path.join(moodDir, e.name));
-  if (moodFiles.length) return moodFiles[Math.floor(Math.random() * moodFiles.length)];
-
-  // 2) Havuzun tamamı (kök + tüm alt klasörler).
-  const all = [];
-  for (const e of listDir(dir)) {
-    if (e.isFile() && exts.includes(path.extname(e.name).toLowerCase())) {
-      all.push(path.join(dir, e.name));
-    } else if (e.isDirectory()) {
-      for (const f of listDir(path.join(dir, e.name))) {
-        if (f.isFile() && exts.includes(path.extname(f.name).toLowerCase())) {
-          all.push(path.join(dir, e.name, f.name));
-        }
-      }
-    }
-  }
-  if (all.length) return all[Math.floor(Math.random() * all.length)];
-
-  const single = path.resolve(config.video.musicPath);
-  return existsSync(single) ? single : null;
-}
+// Müzik seçimi src/audio/musicSelect.js'e taşındı: CC0 kütüphane manifesti
+// kapısı + son kullanılan parçaların tekrarını önleme oradadır.
 
 // Havuzda gerçek parça yoksa müzik, src/audio/makeMusic.js'teki prosedürel
 // motorla sentezlenir (kategoriye uygun akor progresyonu, %100 telifsiz).
@@ -550,6 +512,7 @@ async function buildFullAudio(
   {
     workDir, narrationPath, total, clipDur, bts, N, M, useOutro,
     category = '', sfxTypes = [], clickAt = null, ambiencePath = null,
+    avoidMusic = [],
   },
   outPath,
 ) {
@@ -571,9 +534,11 @@ async function buildFullAudio(
 
   let musicIdx = -1;
   let musicIsReal = false;
+  let musicTrack = null;
   if (useMusic) {
-    const track = pickMusicTrack(category);
+    const track = pickMusicTrack(category, { avoid: avoidMusic });
     if (track) {
+      musicTrack = track;
       musicIsReal = true;
       inputs.push('-stream_loop', '-1', '-i', track);
       console.log(`[audio] müzik: ${path.basename(track)} (${category || 'havuz'})`);
@@ -710,6 +675,7 @@ async function buildFullAudio(
     '-c:a', 'aac', '-b:a', '160k',
     outPath,
   ], { maxBuffer: 20 * 1024 * 1024 });
+  return { musicTrack };
 }
 
 /**
@@ -1061,7 +1027,7 @@ export async function renderVideo(job, opts = {}) {
 
   // 5) SES PASS: narrasyon + arka plan müziği (ducking) + geçiş whoosh + outro chime.
   const fulla = path.join(workDir, 'fulla.m4a');
-  await buildFullAudio(
+  const audioInfo = await buildFullAudio(
     {
       workDir,
       narrationPath: path.resolve(audioPath),
@@ -1073,6 +1039,8 @@ export async function renderVideo(job, opts = {}) {
       ambiencePath: job.ambiencePath || null,
       // Abone kartı otururken tık sesi (giriş animasyonunun bitişiyle senkron).
       clickAt: spOn ? T1 + 0.4 : null,
+      // Son videolarda kullanılan müzikler (tekrar önleme; run.js state'ten geçirir).
+      avoidMusic: job.avoidMusic || [],
     },
     path.resolve(fulla),
   );
@@ -1097,5 +1065,7 @@ export async function renderVideo(job, opts = {}) {
     height,
     clips: N,
     outro: useOutro,
+    // Kullanılan müzik (lisans künyesi report/record'a yazılır; null = prosedürel).
+    musicTrack: audioInfo?.musicTrack || null,
   };
 }
