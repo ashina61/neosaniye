@@ -2,6 +2,7 @@ import { GoogleGenAI, Type } from '@google/genai';
 import { config, assertGemini } from '../config.js';
 import {
   getRecentUsedTopics,
+  getRecentFormats,
   getTopPerformingTopics,
   getWinningHooks,
   isTopicUsed,
@@ -362,14 +363,23 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
   ];
 
   // Öğrenme döngüsü + trend tohumları (ikisi de best-effort).
-  const [topPerformers, trendSeeds, winningHooks] = await Promise.all([
+  const [topPerformers, trendSeeds, winningHooks, recentFormats] = await Promise.all([
     getTopPerformingTopics(5).catch(() => []),
     fetchTrendSeeds(),
     getWinningHooks(3).catch(() => []),
+    getRecentFormats(2).catch(() => []),
   ]);
   // FORCE_FORMAT ile format sabitlenebilir (test için; ör. 'process').
   const forced = String(process.env.FORCE_FORMAT || '').trim();
-  const format = FORMATS.find((f) => f.key === forced) || pickFormat();
+  let format = FORMATS.find((f) => f.key === forced);
+  if (!format) {
+    format = pickFormat();
+    // Aynı format art arda 3 kez olmasın — kanal tek kalıba saplanmasın.
+    if (recentFormats.length >= 2 && recentFormats.every((f) => f === format.key)) {
+      for (let tries = 0; tries < 5 && format.key === recentFormats[0]; tries += 1) format = pickFormat();
+      console.log(`[script] format tekrarı kırıldı → ${format.key}`);
+    }
+  }
   console.log(
     `[script] format: ${format.key}${forced === format.key ? ' (zorlandı)' : ''}` +
       (topPerformers.length ? `, öğrenme: ${topPerformers.length} iyi konu` : '') +

@@ -66,6 +66,20 @@ export const config = {
     // (Pexels, dikey). 0 = kapalı. Video bulunamazsa o sahne AI görsel olur.
     motionEvery: Number(process.env.IMAGE_MOTION_EVERY || 3),
   },
+  retention: {
+    // Yayın öncesi deterministik editoryal kalite kapısı (retentionQC.js).
+    // disabled | warning (VARSAYILAN: raporlar, asla engellemez) | strict
+    // (skor < minScore → upload engellenir). Günlük yayın akışını bozmamak
+    // için strict yalnızca bilinçli olarak açılmalı.
+    mode: process.env.RETENTION_QC_MODE || 'warning',
+    minScore: Number(process.env.RETENTION_MIN_SCORE || 85),
+    maxStaticSegmentSeconds: Number(process.env.QC_MAX_STATIC_SECONDS || 4.5),
+    targetVisualEventInterval: Number(process.env.QC_TARGET_EVENT_INTERVAL || 3.4),
+    firstSpeechDeadlineMs: Number(process.env.QC_FIRST_SPEECH_MS || 900),
+    maxHookChars: Number(process.env.QC_MAX_HOOK_CHARS || 30),
+    minCaptionPx: Number(process.env.QC_MIN_CAPTION_PX || 50),
+    maxCaptionWords: Number(process.env.QC_MAX_CAPTION_WORDS || 4),
+  },
   crew: {
     // Orkestra: Görüntü Yönetmeni + Kurgucu/Ses Yönetmeni geçişleri.
     // Kapatmak için CREW_ENABLED=0 (mekanik varsayılanlara dönülür).

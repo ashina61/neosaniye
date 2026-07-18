@@ -33,6 +33,8 @@ export async function recordProduction(script, meta = {}) {
     normalizedTopic: script.normalizedTopic,
     // Baş Analist öğrenme döngüsü bunlara göre gruplar (format/stil/kategori).
     format: script.format || null,
+    // Retention QC skoru — Analist'in gelecekte kalite-izlenme bağını kurması için.
+    retention: meta.retention || null,
     visualStyle: meta.visualStyle || null,
     script: {
       title: script.title || null,

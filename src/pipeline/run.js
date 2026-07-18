@@ -19,6 +19,7 @@ import { postFirstComment, updateVideoStats } from '../youtube/engage.js';
 import { buildSrtFromWords, uploadCaptions } from '../youtube/captions.js';
 import { crossPost } from '../social/meta.js';
 import { preflightCheck } from './preflight.js';
+import { runRetentionQC } from './retentionQC.js';
 import { recordProduction } from './recordProduction.js';
 import { notify } from '../lib/notify.js';
 
@@ -206,9 +207,29 @@ export async function runPipeline(opts = {}) {
       console.log('  ✅ tüm kontroller geçti');
     }
 
-    // 6) Upload (opsiyonel + preflight şartlı)
+    // 4.6) RETENTION QC — deterministik editoryal kapı (rapor + mod kararı).
+    // warning modda (varsayılan) yalnızca raporlar; strict modda düşük skor
+    // upload'u engeller (video artifact olarak kalır, akış kırılmaz).
+    const wSum = itemWeights.reduce((a, b) => a + b, 0) || 1;
+    const itemSeconds = itemWeights.map((w) => (w / wSum) * video.duration);
+    const qc = await runRetentionQC({
+      script,
+      wordTimings: audio.wordTimings,
+      itemSeconds,
+      itemTypes: media.items.map((m) => m.type),
+      itemSources: media.items.map((m) => m.source),
+      editPlan,
+      duration: video.duration,
+      lufs: pf.metrics.lufs ?? null,
+      audioPresent: !pf.issues.some((i) => i.includes('ses akışı')),
+    }, workDir).catch((err) => {
+      console.error(`[qc] retention QC çalışmadı: ${err.message}`);
+      return { score: null, ok: true, blockUpload: false, report: null };
+    });
+
+    // 6) Upload (opsiyonel + preflight + strict-QC şartlı)
     let youtube = null;
-    if (willUpload && pf.ok) {
+    if (willUpload && pf.ok && !qc.blockUpload) {
       log('Faz 6: YouTube upload...');
       const meta = await buildMetadata(script);
       // Açık lisans atıfları (CC BY/BY-SA arşiv görselleri lisans gereği).
@@ -253,6 +274,8 @@ export async function runPipeline(opts = {}) {
         `\nYOUTUBE:\n${res.url}`,
       ].join('\n');
       await writeFile(path.join(workDir, 'publish-kit.txt'), kit).catch(() => {});
+    } else if (willUpload && pf.ok && qc.blockUpload) {
+      console.log('\n▶ Faz 6: upload İPTAL (strict retention QC) — video artifact olarak duruyor.');
     } else if (willUpload && !pf.ok) {
       console.log('\n▶ Faz 6: upload İPTAL (preflight başarısız) — video artifact olarak duruyor.');
     } else {
@@ -271,6 +294,7 @@ export async function runPipeline(opts = {}) {
       visualStyle,
       ambience: ambience?.name || null,
       preflight: pf.metrics,
+      retentionScore: qc.score,
       editPlan: editPlan
         ? {
             musicMood: editPlan.musicMood,
@@ -299,6 +323,7 @@ export async function runPipeline(opts = {}) {
       engine: audio.engine,
       duration: video.duration,
       visualStyle, // Baş Analist stile göre öğrensin
+      retention: qc.report ? { score: qc.score, status: qc.report.status } : null,
       status: youtube ? 'published' : pf.ok ? 'rendered' : 'failed_preflight',
       youtube,
     });

@@ -205,6 +205,16 @@ export async function getWinningHooks(limit = 3) {
   }
 }
 
+/** Son üretilen videoların formatları (en yeni önce) — format tekrarını kırar. */
+export async function getRecentFormats(limit = 2) {
+  try {
+    const vids = await getVideosWithYouTube(limit + 3);
+    return vids.map((v) => v.format || v.script?.format).filter(Boolean).slice(0, limit);
+  } catch {
+    return [];
+  }
+}
+
 /** Var olan bir video kaydını günceller (ör. Faz 6 YouTube bilgisi/status). */
 export async function updateVideo(id, patch) {
   const store = getFirestore();
