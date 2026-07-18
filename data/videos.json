@@ -780,7 +780,7 @@
       "comments": 0,
       "avgViewPct": 39.2,
       "subsGained": 0,
-      "statsAt": "2026-07-18T19:38:41.755Z"
+      "statsAt": "2026-07-18T21:02:40.557Z"
     }
   },
   {
@@ -903,7 +903,7 @@
       "comments": 1,
       "avgViewPct": 90.5,
       "subsGained": 1,
-      "statsAt": "2026-07-18T19:38:41.752Z"
+      "statsAt": "2026-07-18T21:02:40.555Z"
     }
   },
   {
@@ -1023,7 +1023,7 @@
       "comments": 1,
       "avgViewPct": 68.6,
       "subsGained": 0,
-      "statsAt": "2026-07-18T19:38:41.750Z"
+      "statsAt": "2026-07-18T21:02:40.552Z"
     }
   },
   {
@@ -1371,7 +1371,7 @@
       "comments": 5,
       "avgViewPct": 55.5,
       "subsGained": 0,
-      "statsAt": "2026-07-18T19:38:41.747Z"
+      "statsAt": "2026-07-18T21:02:40.549Z"
     }
   },
   {
@@ -1705,7 +1705,7 @@
       "comments": 5,
       "avgViewPct": 72.7,
       "subsGained": 1,
-      "statsAt": "2026-07-18T19:38:41.745Z"
+      "statsAt": "2026-07-18T21:02:40.547Z"
     }
   },
   {
@@ -1820,7 +1820,7 @@
       "comments": 1,
       "avgViewPct": 167,
       "subsGained": 6,
-      "statsAt": "2026-07-18T19:38:41.742Z"
+      "statsAt": "2026-07-18T21:02:40.544Z"
     }
   },
   {
@@ -1947,7 +1947,7 @@
       "comments": 1,
       "avgViewPct": 59,
       "subsGained": 2,
-      "statsAt": "2026-07-18T19:38:41.739Z"
+      "statsAt": "2026-07-18T21:02:40.541Z"
     }
   },
   {
@@ -2074,7 +2074,7 @@
       "comments": 3,
       "avgViewPct": 60,
       "subsGained": 5,
-      "statsAt": "2026-07-18T19:38:41.737Z"
+      "statsAt": "2026-07-18T21:02:40.538Z"
     }
   },
   {
@@ -2201,7 +2201,7 @@
       "comments": 1,
       "avgViewPct": 44.9,
       "subsGained": 0,
-      "statsAt": "2026-07-18T19:38:41.734Z"
+      "statsAt": "2026-07-18T21:02:40.536Z"
     }
   },
   {
@@ -2316,7 +2316,7 @@
       "comments": 2,
       "avgViewPct": 142.1,
       "subsGained": 1,
-      "statsAt": "2026-07-18T19:38:41.732Z"
+      "statsAt": "2026-07-18T21:02:40.533Z"
     }
   },
   {
@@ -2431,7 +2431,7 @@
       "comments": 1,
       "avgViewPct": 59,
       "subsGained": 1,
-      "statsAt": "2026-07-18T19:38:41.729Z"
+      "statsAt": "2026-07-18T21:02:40.530Z"
     }
   },
   {
@@ -2545,7 +2545,7 @@
       "comments": 1,
       "avgViewPct": 84.6,
       "subsGained": 2,
-      "statsAt": "2026-07-18T19:38:41.727Z"
+      "statsAt": "2026-07-18T21:02:40.528Z"
     }
   },
   {
@@ -2667,12 +2667,12 @@
     },
     "createdAt": "2026-07-14T20:17:07.975Z",
     "stats": {
-      "views": 1398,
+      "views": 1397,
       "likes": 41,
       "comments": 1,
       "avgViewPct": 57.6,
       "subsGained": 1,
-      "statsAt": "2026-07-18T19:38:41.724Z"
+      "statsAt": "2026-07-18T21:02:40.525Z"
     }
   },
   {
@@ -2787,7 +2787,7 @@
       "comments": 1,
       "avgViewPct": 122.4,
       "subsGained": 2,
-      "statsAt": "2026-07-18T19:38:41.719Z"
+      "statsAt": "2026-07-18T21:02:40.522Z"
     }
   },
   {
@@ -2914,7 +2914,7 @@
       "comments": 4,
       "avgViewPct": 45.3,
       "subsGained": 1,
-      "statsAt": "2026-07-18T19:38:41.707Z"
+      "statsAt": "2026-07-18T21:02:40.520Z"
     }
   },
   {
@@ -3026,7 +3026,7 @@
       "comments": 1,
       "avgViewPct": 76.3,
       "subsGained": 5,
-      "statsAt": "2026-07-18T19:38:41.696Z"
+      "statsAt": "2026-07-18T21:02:40.510Z"
     }
   },
   {
@@ -3253,7 +3253,7 @@
       "comments": 1,
       "avgViewPct": 67.3,
       "subsGained": 1,
-      "statsAt": "2026-07-18T19:38:41.693Z"
+      "statsAt": "2026-07-18T21:02:40.498Z"
     }
   },
   {
@@ -3379,7 +3379,7 @@
       "comments": 1,
       "avgViewPct": 55,
       "subsGained": 1,
-      "statsAt": "2026-07-18T19:38:41.689Z"
+      "statsAt": "2026-07-18T21:02:40.495Z"
     }
   },
   {
@@ -3497,12 +3497,12 @@
     },
     "createdAt": "2026-07-16T23:12:49.860Z",
     "stats": {
-      "views": 707,
+      "views": 712,
       "likes": 27,
       "comments": 3,
       "avgViewPct": 60.3,
       "subsGained": 1,
-      "statsAt": "2026-07-18T19:38:41.687Z"
+      "statsAt": "2026-07-18T21:02:40.492Z"
     }
   },
   {
@@ -3632,12 +3632,12 @@
     },
     "createdAt": "2026-07-16T23:38:27.063Z",
     "stats": {
-      "views": 360,
+      "views": 356,
       "likes": 25,
       "comments": 1,
       "avgViewPct": 70.6,
       "subsGained": 1,
-      "statsAt": "2026-07-18T19:38:41.684Z"
+      "statsAt": "2026-07-18T21:02:40.489Z"
     }
   },
   {
@@ -3767,10 +3767,10 @@
     },
     "createdAt": "2026-07-17T19:45:56.630Z",
     "stats": {
-      "views": 159,
-      "likes": 8,
+      "views": 162,
+      "likes": 9,
       "comments": 3,
-      "statsAt": "2026-07-18T19:38:41.681Z"
+      "statsAt": "2026-07-18T21:02:40.486Z"
     }
   },
   {
@@ -3899,7 +3899,7 @@
       "views": 867,
       "likes": 19,
       "comments": 1,
-      "statsAt": "2026-07-18T19:38:41.678Z"
+      "statsAt": "2026-07-18T21:02:40.483Z"
     }
   },
   {
@@ -4017,6 +4017,153 @@
       "title": "How Vikings Found Their Way Across Oceans With a Mysterious Sunstone #Shorts",
       "publishedAt": "2026-07-18T19:43:15.377Z"
     },
-    "createdAt": "2026-07-18T19:43:52.137Z"
+    "createdAt": "2026-07-18T19:43:52.137Z",
+    "stats": {
+      "views": 276,
+      "likes": 8,
+      "comments": 1,
+      "statsAt": "2026-07-18T21:02:40.480Z"
+    }
+  },
+  {
+    "id": "animal-migration-sleep-1784409183406",
+    "topic": "Animal Migration Sleep",
+    "normalizedTopic": "animal-migration-sleep",
+    "format": "facts3",
+    "retention": {
+      "score": 77,
+      "status": "warning"
+    },
+    "music": {
+      "file": "Marianas.mp3",
+      "assetId": null,
+      "source": "assets/music havuzu",
+      "license": null
+    },
+    "scheduleExperiment": {
+      "id": "us-audience-3-slots-v1",
+      "timezone": "UTC",
+      "scheduledSlot": "20:00",
+      "contentDate": "2026-07-18",
+      "experimentStartDate": "2026-07-19",
+      "experimentDurationDays": 14,
+      "strategy": "fixed-three-daily-slots",
+      "primaryAudience": "US",
+      "status": "pending",
+      "scheduledPublishAt": "2026-07-18T20:00:00.000Z",
+      "actualPublishAt": "2026-07-18T21:12:26.410Z"
+    },
+    "visualStyle": "photo",
+    "script": {
+      "title": "Do Animals Sleep During Migration? The Amazing Truth",
+      "category": "nature",
+      "hook_text": "One brain sleeps, one wakes",
+      "finale_text": "the ultimate flying nap",
+      "scenes": [
+        {
+          "narration": "Imagine flying for days, thousands of miles, without ever landing; how could you possibly sleep?",
+          "image_prompt": "A lone, magnificent frigatebird (Fregata magnificens) with glossy dark plumage soaring effortlessly on thermal currents over a vast, deep blue, sun-drenched ocean, tiny whitecaps below, dramatic cumulus clouds on the horizon, high angle, bright tropical sunlight, cinematic film still."
+        },
+        {
+          "narration": "Scientists once believed migrating birds didn’t sleep, pushing through epic journeys on pure endurance.",
+          "image_prompt": "A focused, weathered scientist, late 40s, looking up with binoculars at the sky from the deck of a research vessel in the middle of a deep blue tropical ocean, notepad in hand, warm tropical light, slightly cloudy sky, cinematic film still."
+        },
+        {
+          "narration": "However, groundbreaking studies on frigatebirds proved them wrong, revealing an astonishing trick.",
+          "image_prompt": "An extreme close-up detail shot of a tiny, feather-light tracking device subtly attached to the back of a frigatebird, resting briefly on a research platform, intricate wires visible, gentle morning light, shallow depth of field, cinematic film still."
+        },
+        {
+          "narration": "These birds engage in 'unihemispheric slow-wave sleep,' resting half their brain at a time.",
+          "image_prompt": "An abstract, medium close-up visualization of a frigatebird's head, one side of the brain (transparent overlay) glowing softly with calm blue light representing sleep, while the other half remains alert with a faint, active orange glow, ethereal lighting, cinematic film still."
+        },
+        {
+          "narration": "This allows one eye to remain open, constantly watching for predators or navigating, while the other side sleeps.",
+          "image_prompt": "An extreme close-up of a frigatebird's head in flight, one eye visibly wide open and sharp, focused forward, while the other eye is slightly closed in soft repose, strong side light emphasizing feather texture, deep blue sky background, cinematic film still."
+        },
+        {
+          "narration": "They can snatch brief, seconds-long naps mid-flight, accumulating just 42 minutes of sleep per day.",
+          "image_prompt": "A frigatebird with glossy dark plumage gliding high against a vast, clear deep blue sky, viewed from a slightly low angle, wings fully extended and motionless, bright afternoon tropical sunlight, serene and suspended, cinematic film footage."
+        },
+        {
+          "narration": "This incredible ability lets them cross vast oceans, enduring thousands of miles without a full stop.",
+          "image_prompt": "A solitary frigatebird as a small, sharp silhouette with glossy dark plumage, soaring against a vibrant, fiery sunset over a boundless, deep blue tropical ocean, emphasizing the immense scale of its journey, dramatic golden hour light, cinematic film footage."
+        }
+      ],
+      "cta": "Fly into more incredible facts — follow us!"
+    },
+    "audioPath": "output/animal-migration-sleep/animal-migration-sleep.mp3",
+    "videoPath": "output/animal-migration-sleep/animal-migration-sleep.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/animal-migration-sleep/media/01-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/animal-migration-sleep/media/01b-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/animal-migration-sleep/media/02-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/animal-migration-sleep/media/02b-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/animal-migration-sleep/media/03-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/animal-migration-sleep/media/03b-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "gfx",
+        "scene": 3,
+        "path": "output/animal-migration-sleep/media/04-gfx.mp4"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 4,
+        "path": "output/animal-migration-sleep/media/05-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 5,
+        "path": "output/animal-migration-sleep/media/06-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 6,
+        "path": "output/animal-migration-sleep/media/07-ai.jpg"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 42.763991,
+    "status": "published",
+    "youtube": {
+      "videoId": "10nEy2Gt8EY",
+      "url": "https://www.youtube.com/shorts/10nEy2Gt8EY",
+      "title": "Do Migrating Animals Sleep While Traveling? The Truth Revealed #Shorts",
+      "publishedAt": "2026-07-18T21:12:26.410Z"
+    },
+    "createdAt": "2026-07-18T21:13:03.406Z"
   }
 ]
