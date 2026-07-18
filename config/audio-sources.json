@@ -58,6 +58,30 @@
       "notes": "Sonic Pi ses paketi. SFX/ambience/texture/loop adayı — TAM MÜZİK DEĞİL, müzik diye sınıflandırılmaz. drums/bass/guitar/waveform tek sesleri Shorts için gereksiz: whitelist dışı."
     },
     {
+      "id": "lavenderdotpet-cc0",
+      "repository": "https://github.com/lavenderdotpet/CC0-Public-Domain-Sounds",
+      "commit": "f2b6264f9ab89fabc266914c3654685d68c5a39b",
+      "sparse": true,
+      "allowedPaths": ["warfork-cc0/music", "Maximiliano-Stradex-Ambient"],
+      "rejectedPaths": [
+        "MMRetroArcadeSoundsPack1_0_5", "BB_2HTC Samples Vol 4", "kenney_musicjingles",
+        "warfork-cc0/sounds"
+      ],
+      "expectedLicense": "CC0-1.0",
+      "licenseEvidence": {
+        "licenseFile": "LICENSE",
+        "licenseMustContain": "CC0 1.0 Universal",
+        "readmeFile": "warfork-cc0/warfork_assets_cc0.txt",
+        "readmeSection": "CC0 1.0 Universal",
+        "note": "Kök LICENSE = tam CC0 legal metni. warfork_assets_cc0.txt: 'Team Forbidden has waived all copyright' — müzik klasörünü dosya bazında kapsayan feragat."
+      },
+      "assetType": "music",
+      "defaultMoods": ["neutral"],
+      "defaultTopics": [],
+      "enabled": true,
+      "notes": "YALNIZCA whitelist: warfork-cc0/music (12 tam parça, Team Forbidden CC0 feragati) + Maximiliano-Stradex-Ambient (3 parça). kenney_musicjingles jingle olduğu için (tam parça değil) müzik sayılmaz; diğer 4.000+ SFX bilinçli olarak dışarıda."
+    },
+    {
       "id": "danigb-samples",
       "repository": "https://github.com/danigb/samples",
       "commit": "eae8c5c7a10f4b0e06281211e704c36c30e25342",
@@ -107,9 +131,9 @@
     "science": ["glass", "buzz", "hum", "perlin"],
     "nature": ["sauna", "crow", "water", "wind", "rain"],
     "ancient": ["choir", "chant"],
-    "cinematic": ["cineboom", "boom", "impact"],
-    "neutral": ["click", "switch", "rollover", "piano", "stream"],
-    "suspense": ["woosh", "swoosh", "riser", "tension"]
+    "cinematic": ["cineboom", "boom", "impact", "theme", "chronos", "fireworks"],
+    "neutral": ["click", "switch", "rollover", "piano", "stream", "favorite", "beat"],
+    "suspense": ["woosh", "swoosh", "riser", "tension", "3am"]
   },
   "rejectKeywords": {
     "$comment": "Shorts anlatımına uymayan içerik dosya adından reddedilir (gerekçe rejected-assets.json'a yazılır).",

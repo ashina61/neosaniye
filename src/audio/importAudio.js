@@ -59,7 +59,17 @@ export async function verifySource(source, { cacheDir }) {
   const dir = path.join(cacheDir, source.id);
   if (!existsSync(path.join(dir, '.git'))) {
     await mkdir(cacheDir, { recursive: true });
-    await run('git', ['clone', '--quiet', '--depth', '1', source.repository, dir], BUF);
+    if (source.sparse) {
+      // Büyük repolar: yalnızca whitelist blobları indirilir (dev SFX
+      // paketlerini çekmeden 15 müzik dosyası almak gibi). Lisans kanıt
+      // dosyaları kökte/yol üstünde olduğundan cone modu onları da getirir.
+      await run('git', ['clone', '--quiet', '--depth', '1', '--filter=blob:none',
+        '--no-checkout', source.repository, dir], BUF);
+      await run('git', ['-C', dir, 'sparse-checkout', 'set', ...source.allowedPaths], BUF);
+      await run('git', ['-C', dir, 'checkout', '--quiet'], BUF);
+    } else {
+      await run('git', ['clone', '--quiet', '--depth', '1', source.repository, dir], BUF);
+    }
   }
   let head = (await run('git', ['-C', dir, 'rev-parse', 'HEAD'])).stdout.trim();
   if (head !== source.commit) {

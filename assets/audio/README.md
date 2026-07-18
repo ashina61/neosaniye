@@ -4,7 +4,7 @@ Bu klasördeki TÜM dosyalar açıkça CC0 1.0 / Public Domain lisanslı kaynakl
 sabit commit SHA doğrulamasıyla ithal edilmiş ve Shorts için optimize edilmiştir
 (48kHz stereo mp3, loudness normalize). Kaynak dosyalar değiştirilmemiştir.
 
-Son ithalat: 2026-07-18T16:13:54.024Z · Toplam: 35 asset · Red: 3
+Son ithalat: 2026-07-18T19:33:12.656Z · Toplam: 47 asset · Red: 3
 
 Yeniden üretme: `npm run audio:import` (kaynak kilidi: `config/audio-sources.json`)
 
@@ -24,6 +24,14 @@ Yeniden üretme: `npm run audio:import` (kaynak kilidi: `config/audio-sources.js
 - Lisans: CC0-1.0 · Kanıt: README beyanı — Ayrı LICENSE dosyası yok; README, Sonic Pi örneklerinin freesound CC0 beyanını ve örnek başına kaynak linklerini içeriyor. Kanıt README bölümüdür.
 - Kabul edilen yollar: ambient, noise loops, vinyl, misc
 - Reddedilen yollar: drums, bass, guitar, one cycle waveforms
+- Atıf gerekli mi: hayır (CC0/PD)
+
+### lavenderdotpet-cc0 
+- Repo: https://github.com/lavenderdotpet/CC0-Public-Domain-Sounds
+- Commit: `f2b6264f9ab89fabc266914c3654685d68c5a39b`
+- Lisans: CC0-1.0 · Kanıt: LICENSE — Kök LICENSE = tam CC0 legal metni. warfork_assets_cc0.txt: 'Team Forbidden has waived all copyright' — müzik klasörünü dosya bazında kapsayan feragat.
+- Kabul edilen yollar: warfork-cc0/music, Maximiliano-Stradex-Ambient
+- Reddedilen yollar: MMRetroArcadeSoundsPack1_0_5, BB_2HTC Samples Vol 4, kenney_musicjingles, warfork-cc0/sounds
 - Atıf gerekli mi: hayır (CC0/PD)
 
 ### danigb-samples (devre dışı)
@@ -81,6 +89,18 @@ Yeniden üretme: `npm run audio:import` (kaynak kilidi: `config/audio-sources.js
 | sample-pi-vinyl-hiss | ambience | 8s | dark | `4e3fdaaff3399328…` |
 | sample-pi-vinyl-rewind | ambience | 2.68s | nature | `ad587a5598de7a12…` |
 | sample-pi-vinyl-scratch | sfx | 0.274s | dark | `2dc0fedcfeaa3088…` |
+| lavenderdotpet-cc0-ambient-1 | music | 162.038s | neutral | `1eec8b80bcf87b90…` |
+| lavenderdotpet-cc0-ambient-2 | music | 111.438s | neutral | `105c97933d69b6ab…` |
+| lavenderdotpet-cc0-theme-1 | music | 116.558s | cinematic | `e5240267578737d6…` |
+| lavenderdotpet-cc0-fvi-3amwestend | music | 291.187s | suspense | `02e8c22546f035ba…` |
+| lavenderdotpet-cc0-fvi-arpent | music | 162.038s | neutral | `215d6be066600393…` |
+| lavenderdotpet-cc0-fvi-beatone | music | 179.958s | neutral | `1bf3079e105e106c…` |
+| lavenderdotpet-cc0-fvi-chronos | music | 129.254s | cinematic | `9b2cb771ddbad228…` |
+| lavenderdotpet-cc0-fvi-favorite | music | 175.047s | neutral | `d1e0d000dc510ce0…` |
+| lavenderdotpet-cc0-fvi-fireworks | music | 140.972s | cinematic | `78700f62a423c448…` |
+| lavenderdotpet-cc0-fvi-goodnightmare | music | 240.039s | neutral | `5c35b2d5c0133e01…` |
+| lavenderdotpet-cc0-fvi-hippetyhop | music | 116.637s | neutral | `d77b359ddd49b63e…` |
+| lavenderdotpet-cc0-fvi-meditatingbeat | music | 157.205s | neutral | `af17f4462870d545…` |
 
 ## Reddedilenler
 
