@@ -23,6 +23,8 @@ import { runRetentionQC, uploadGate } from './retentionQC.js';
 import { appendQcHistory, buildQcHistoryEntry } from './qcHistory.js';
 import { getRecentMusic } from '../lib/firestore.js';
 import { describeMusicTrack } from '../audio/musicSelect.js';
+import { detectSlot } from './scheduleExperiment.js';
+import { emptySlotMetrics } from '../analytics/experimentMetrics.js';
 import { recordProduction } from './recordProduction.js';
 import { notify } from '../lib/notify.js';
 
@@ -40,6 +42,15 @@ function wordCount(text) {
 export async function runPipeline(opts = {}) {
   const { root = 'output', upload } = opts;
   const log = (msg) => console.log(`\n▶ ${msg}`);
+
+  // 14 günlük yayın saati deneyi: slot yalnızca TESPİT edilir ve etiketlenir;
+  // hiçbir saat otomatik değiştirilmez (docs/publishing-experiment.md).
+  const sched = detectSlot();
+  console.log(
+    `[deney] slot=${sched.slot} içerikGünü=${sched.contentDate}` +
+      (sched.scheduledPublishAt ? ` planlanan=${sched.scheduledPublishAt}` : '') +
+      ` durum=${sched.experiment.status}`,
+  );
 
   // YouTube yüklenebilir mi?
   const hasYouTube =
@@ -333,6 +344,13 @@ export async function runPipeline(opts = {}) {
       ambience: ambience?.name || null,
       // Video başına lisans manifesti: kullanılan müziğin kaynağı ve kanıtı.
       music: musicMeta,
+      // 14 günlük yayın deneyi etiketi + (API bağlanınca dolacak) metrik iskeleti.
+      scheduleExperiment: {
+        ...sched.experiment,
+        scheduledPublishAt: sched.scheduledPublishAt,
+        actualPublishAt: youtube?.publishedAt || null,
+      },
+      slotMetrics: emptySlotMetrics(), // SAHTE VERİ YOK — Analytics bağlanınca dolar
       preflight: pf.metrics,
       retentionScore: qc.score,
       editPlan: editPlan
@@ -364,6 +382,11 @@ export async function runPipeline(opts = {}) {
       duration: video.duration,
       visualStyle, // Baş Analist stile göre öğrensin
       music: musicMeta, // parça tekrarını önleme + lisans izi
+      scheduleExperiment: {
+        ...sched.experiment,
+        scheduledPublishAt: sched.scheduledPublishAt,
+        actualPublishAt: youtube?.publishedAt || null,
+      },
       retention: qc.report ? { score: qc.score, status: qc.report.status } : null,
       // 'blocked_qc': QC engelledi (strict skor/hata veya QC exception) —
       // yayınlanmış GİBİ görünmesin.
@@ -387,6 +410,10 @@ export async function runPipeline(opts = {}) {
         topic: script.topic,
         format: script.format || null,
         durationSeconds: +video.duration.toFixed(1),
+        scheduleExperimentId: sched.experiment.id,
+        scheduledSlot: sched.slot,
+        scheduledPublishAt: sched.scheduledPublishAt,
+        actualPublishAt: youtube?.publishedAt || null,
       }));
       if (hist.appended) console.log('[qc-history] data/qc-history.jsonl güncellendi');
       else if (hist.ok) console.log(`[qc-history] atlandı: ${hist.reason}`);

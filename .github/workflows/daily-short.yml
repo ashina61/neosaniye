@@ -18,11 +18,21 @@ on:
         type: choice
         options: [auto, process, story, howworks, facts3, whatif]
         default: auto
+      slot:
+        description: "Deney slotu (manuel run'lar varsayılan 'manual' kaydedilir)"
+        type: choice
+        options: [manual, "15:00", "20:00", "02:00"]
+        default: manual
   schedule:
-    # Günde 2 video — hedef kitle ABD + Avrupa (İngilizce). Saatler UTC.
-    # GitHub cron'u ~15-60 dk gecikmeli tetikler; birkaç dakika kayması normal.
-    - cron: "23 18 * * *" # 18:23 UTC — ABD Doğu 14:23 / Pasifik 11:23 — TR 21:23 (saat başı YASAK: GitHub tam saatte tick yutuyor, 2 kez yaşandı)
-    - cron: "37 22 * * *" # 22:37 UTC — ABD Doğu 18:37 prime / Pasifik 15:37 — TR 01:37
+    # 14 GÜNLÜK ABD-İZLEYİCİ DENEYİ (us-audience-3-slots-v1): günde 3 sabit
+    # slot — 15:00 / 20:00 / 02:00 UTC (TR yaz: 18:00 / 23:00 / 05:00).
+    # Deney süresince saatler DEĞİŞTİRİLMEZ (docs/publishing-experiment.md).
+    # Dakika +2 offset: GitHub tam saat (XX:00) tick'lerini iki kez yuttu —
+    # slot kimliği yine 15:00/20:00/02:00, tespit scheduleExperiment.js'te.
+    # 02:00 UTC koşusu bir önceki UTC içerik gününün 3. slotudur.
+    - cron: "2 15 * * *" # slot 15:00 UTC — ABD Doğu 11:00 / Pasifik 08:00
+    - cron: "2 20 * * *" # slot 20:00 UTC — ABD Doğu 16:00 / Pasifik 13:00
+    - cron: "2 2 * * *"  # slot 02:00 UTC — ABD Doğu 22:00 / Pasifik 19:00 (önceki içerik günü)
 
 concurrency:
   group: daily-short
@@ -70,6 +80,9 @@ jobs:
           RETENTION_MIN_SCORE: ${{ vars.RETENTION_MIN_SCORE }}
           # Teknik kapı retention'dan bağımsız (varsayılan strict — boş bırak).
           TECHNICAL_PREFLIGHT_MODE: ${{ vars.TECHNICAL_PREFLIGHT_MODE }}
+          # 14 günlük yayın deneyi: manuel run'da slot elle seçilebilir;
+          # cron'da boş kalır ve UTC saatinden deterministik tespit edilir.
+          SCHEDULE_SLOT: ${{ inputs.slot }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           # İkinci stok kaynağı + ambiyans (opsiyonel; yoksa özellik atlanır).
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}

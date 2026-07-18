@@ -5,6 +5,14 @@
 ile tetiklenir; script yazar, seslendirir, video oluşturur, altyazı ekler ve
 YouTube'a yükler.
 
+## 14-Day US Audience Publishing Experiment (AKTİF)
+
+**2026-07-19 → 2026-08-02 (UTC):** yayın saatleri 14 gün boyunca sabit 3 UTC
+slotuna kilitli — **15:00 / 20:00 / 02:00 UTC** (TR yaz: 18:00 / 23:00 / 05:00).
+Deney süresince saatler DEĞİŞTİRİLMEZ; sistem yalnızca slot etiketi + metrik
+verisi toplar. Karar medyanla verilir, tek viral video kazanan yapmaz.
+Ayrıntı: [docs/publishing-experiment.md](docs/publishing-experiment.md)
+
 ## Faz Durumu
 
 | Faz | İçerik                          | Durum        |

@@ -19,11 +19,20 @@ import path from 'node:path';
 
 const DEFAULT_FILE = () => path.join(process.env.STATE_DIR || 'data', 'qc-history.jsonl');
 
-/** production-report + üretim bağlamından geçmiş satırını kurar (saf). */
-export function buildQcHistoryEntry(report, { videoId, topic, format, durationSeconds } = {}) {
+/** production-report + üretim bağlamından geçmiş satırını kurar (saf).
+ *  scheduleExperiment alanları opsiyoneldir — eski kayıtlar bu alanlar
+ *  olmadan geçerli kalır (geriye dönük uyumlu, yalnızca ekleme). */
+export function buildQcHistoryEntry(report, {
+  videoId, topic, format, durationSeconds,
+  scheduleExperimentId, scheduledSlot, scheduledPublishAt, actualPublishAt,
+} = {}) {
   const s = report.scores || {};
   return {
     videoId: videoId ?? null,
+    scheduleExperimentId: scheduleExperimentId ?? null,
+    scheduledSlot: scheduledSlot ?? null,
+    scheduledPublishAt: scheduledPublishAt ?? null,
+    actualPublishAt: actualPublishAt ?? null,
     createdAt: report.createdAt ?? new Date().toISOString(),
     topic: topic ?? null,
     format: format ?? null,
