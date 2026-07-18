@@ -68,6 +68,8 @@ jobs:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           RETENTION_QC_MODE: ${{ vars.RETENTION_QC_MODE }}
           RETENTION_MIN_SCORE: ${{ vars.RETENTION_MIN_SCORE }}
+          # Teknik kapı retention'dan bağımsız (varsayılan strict — boş bırak).
+          TECHNICAL_PREFLIGHT_MODE: ${{ vars.TECHNICAL_PREFLIGHT_MODE }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           # İkinci stok kaynağı + ambiyans (opsiyonel; yoksa özellik atlanır).
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}

@@ -182,19 +182,34 @@ async function withMode(mode, minScore, fn) {
   }
 }
 
-test('disabled modda hiçbir şey yapılmaz', async () => {
+test('disabled mod: editoryal QC uygulanmaz, qcExecution.status=disabled, upload serbest', async () => {
   await withMode('disabled', 85, async (dir) => {
     const res = await runRetentionQC(strongInput(), dir);
-    assert.deepEqual(res, { score: null, ok: true, blockUpload: false, report: null, error: null });
+    assert.equal(res.score, null);
+    assert.equal(res.blockUpload, false);
+    assert.equal(res.error, null);
+    assert.equal(res.report.qcExecution.status, 'disabled');
+    assert.equal(res.report.editorialReady, null); // değerlendirilmedi
+    assert.equal(res.report.scores, null);
   });
 });
 
-test('warning modda düşük skor bile upload engellemez', async () => {
+test('warning mod + düşük skor: upload POLICY OVERRIDE ile devam eder ve raporda görünür', async () => {
   await withMode('warning', 85, async (dir) => {
-    const bad = strongInput({ audioPresent: false }); // kritik hata → fail
-    const res = await runRetentionQC(bad, dir);
+    const bad = strongInput({ audioPresent: false }); // kritik editoryal hata → fail
+    const res = await runRetentionQC(bad, dir, {
+      technicalPassed: true,
+      uploadRequested: true,
+      platforms: { youtube: true, instagram: true, facebook: true },
+    });
     assert.equal(res.blockUpload, false);
     assert.equal(res.report.status, 'fail');
+    assert.equal(res.report.editorialReady, false);
+    assert.equal(res.report.productionReady, false);
+    assert.equal(res.report.uploadAllowedByPolicy, true);
+    // Çelişki yok: hazır değil AMA politika izni açıkça yazılı.
+    assert.equal(res.report.uploadEligibility.policyOverride, true);
+    assert.ok(res.report.uploadEligibility.reasons.some((x) => x.includes('POLICY OVERRIDE')));
   });
 });
 
@@ -270,12 +285,15 @@ test('strict mod + QC exception → FAIL-CLOSED: upload engellenir', async () =>
   });
 });
 
-test('warning mod + QC exception → rapor yazılır, yayın politikası korunur', async () => {
+test('warning mod + QC exception → upload da ENGELLENİR (QC\'siz otomatik yayın yok)', async () => {
   await withMode('warning', 85, async (dir) => {
     const res = await runRetentionQC(explodingInput(), dir);
-    assert.equal(res.blockUpload, false);
+    // Düşük skordan FARKLI davranış: exception her aktif modda yayını durdurur.
+    assert.equal(res.blockUpload, true, 'QC hatası warning modda yayına sızdı!');
     assert.equal(res.report.productionReady, false);
+    assert.equal(res.report.uploadAllowedByPolicy, false);
     assert.equal(res.report.qcExecution.status, 'error');
+    assert.equal(res.report.uploadEligibility.policyOverride, false);
     // Artifact korunur: rapor dosyası hataya rağmen diske yazılmış olmalı.
     const json = JSON.parse(await readFile(path.join(dir, 'production-report.json'), 'utf8'));
     assert.equal(json.qcExecution.status, 'error');
@@ -285,20 +303,28 @@ test('warning mod + QC exception → rapor yazılır, yayın politikası korunur
   });
 });
 
-test('disabled mod + bozuk girdi → eski davranış (passthrough) korunur', async () => {
+test('disabled mod + bozuk girdi → QC değerlendirmesi hiç çalışmaz, üretim etkilenmez', async () => {
   await withMode('disabled', 85, async (dir) => {
     const res = await runRetentionQC(explodingInput(), dir);
-    assert.deepEqual(res, { score: null, ok: true, blockUpload: false, report: null, error: null });
+    assert.equal(res.score, null);
+    assert.equal(res.blockUpload, false);
+    assert.equal(res.error, null);
+    assert.equal(res.report.qcExecution.status, 'disabled');
   });
 });
 
 // ---- TEK ORTAK UPLOAD KAPISI (üç platform) ----
 
-test('uploadGate: preflight veya QC bloklarsa kapı kapalı, ikisi de temizse açık', () => {
-  assert.equal(uploadGate({ preflightOk: false, qc: { blockUpload: false } }), false);
-  assert.equal(uploadGate({ preflightOk: true, qc: { blockUpload: true } }), false);
-  assert.equal(uploadGate({ preflightOk: false, qc: { blockUpload: true } }), false);
-  assert.equal(uploadGate({ preflightOk: true, qc: { blockUpload: false } }), true);
+test('uploadGate: teknik strict kapı + QC kararı birleşimi', () => {
+  const tm = 'strict';
+  assert.equal(uploadGate({ preflightOk: false, qc: { blockUpload: false }, technicalMode: tm }), false);
+  assert.equal(uploadGate({ preflightOk: true, qc: { blockUpload: true }, technicalMode: tm }), false);
+  assert.equal(uploadGate({ preflightOk: false, qc: { blockUpload: true }, technicalMode: tm }), false);
+  assert.equal(uploadGate({ preflightOk: true, qc: { blockUpload: false }, technicalMode: tm }), true);
+  // TECHNICAL_PREFLIGHT_MODE=warning: teknik sorun kapıyı kapatmaz (bilinçli riskli mod)...
+  assert.equal(uploadGate({ preflightOk: false, qc: { blockUpload: false }, technicalMode: 'warning' }), true);
+  // ...ama QC bloğunu asla deldirmez.
+  assert.equal(uploadGate({ preflightOk: false, qc: { blockUpload: true }, technicalMode: 'warning' }), false);
 });
 
 test('strict fail → YouTube, Instagram, Facebook ÜÇÜ DE bloklanır', async () => {
@@ -332,20 +358,38 @@ test('başarılı QC → platformlar mevcut yapılandırmaya göre uygun işaret
   });
 });
 
-test('teknik preflight başarısızsa hiçbir platform uygun olamaz', () => {
+test('teknik preflight başarısızsa (strict teknik mod) hiçbir platform uygun olamaz', () => {
   const el = computeUploadEligibility({
     uploadRequested: true,
-    technicalPassed: false,
+    technicalReady: false,
+    technicalMode: 'strict',
     blockUpload: false,
     execError: null,
-    scoreOk: true,
+    editorialReady: true,
     mode: 'warning',
     platforms: { youtube: true, instagram: true, facebook: true },
   });
   assert.equal(el.youtube, false);
   assert.equal(el.instagram, false);
   assert.equal(el.facebook, false);
+  assert.equal(el.policyOverride, false);
   assert.ok(el.reasons.some((x) => x.includes('teknik preflight')));
+});
+
+test('teknik warning modda teknik sorunlu yayın POLICY OVERRIDE olarak işaretlenir', () => {
+  const el = computeUploadEligibility({
+    uploadRequested: true,
+    technicalReady: false,
+    technicalMode: 'warning',
+    blockUpload: false,
+    execError: null,
+    editorialReady: true,
+    mode: 'warning',
+    platforms: { youtube: true, instagram: true, facebook: true },
+  });
+  assert.equal(el.youtube, true);
+  assert.equal(el.policyOverride, true);
+  assert.ok(el.reasons.some((x) => x.includes('TECHNICAL_PREFLIGHT_MODE=warning')));
 });
 
 test('genişletilmiş rapor şeması: qcMode, qcExecution, technicalValidation, uploadEligibility', async () => {
@@ -366,11 +410,87 @@ test('genişletilmiş rapor şeması: qcMode, qcExecution, technicalValidation, 
       assert.ok(p in json.uploadEligibility, `uploadEligibility.${p} eksik`);
     }
     assert.ok(Array.isArray(json.uploadEligibility.reasons));
+    assert.equal(typeof json.uploadEligibility.policyOverride, 'boolean');
+    // Alan sözleşmesi: teknik / editoryal / production / politika ayrı ayrı.
+    assert.equal(json.technicalReady, true);
+    assert.equal(json.editorialReady, true);
     assert.equal(json.productionReady, true);
+    assert.equal(json.uploadAllowedByPolicy, true);
+    assert.equal(json.uploadEligibility.policyOverride, false); // hazır video: override yok
     assert.ok(json.metrics.captionLayout, 'metrics.captionLayout eksik');
     assert.equal(res.report.productionReady, true);
   });
 });
+
+// ---- UPLOAD GATE TRUTH TABLE ----
+// Kolonlar: teknik sonuç | QC modu | girdi türü | beklenen upload kararı.
+// Üç platform da (YouTube/Instagram/Facebook) aynı satır beklentisiyle doğrulanır.
+// Teknik mod: strict (üretim varsayılanı — cron güvenliği).
+
+/** Skoru düşük ama kritik hatasız fixture (truth table 'low' satırları). */
+function lowScoreInput() {
+  const inp = strongInput();
+  inp.script = {
+    hook_text: 'Did you know about the sea', // zayıf kalıp, vaat yok
+    finale_text: '',
+    format: 'facts3',
+    scenes: [
+      { narration: 'Did you know the sea is deep and vast and blue.' },
+      { narration: 'It has water and salt and fish inside.' },
+      { narration: 'Those were the facts about the sea.' },
+    ],
+  };
+  inp.itemSeconds = [12, 12, 12]; // uzun statik planlar
+  inp.itemTypes = ['photo', 'photo', 'photo'];
+  inp.itemSources = ['ai', 'ai', 'ai']; // tek kaynak
+  inp.editPlan = null;
+  return inp;
+}
+
+test('truth table ön koşulu: low fixture gerçekten "düşük skor + kritik hatasız"', () => {
+  const r = evaluateRetention(lowScoreInput(), CFG);
+  assert.ok(r.score < CFG.minScore, `low fixture skoru ${r.score} — eşiğin altında olmalı`);
+  assert.equal(r.failures.length, 0, `low fixture kritik hata içermemeli: ${r.failures}`);
+});
+
+const TRUTH_TABLE = [
+  // [ad, teknikGeçti, qcModu, girdi, beklenenUpload, policyOverrideBeklenir]
+  ['Technical FAIL | disabled | -    | any  → BLOCK', false, 'disabled', 'high', false, false],
+  ['Technical FAIL | warning  | pass | high → BLOCK', false, 'warning', 'high', false, false],
+  ['Technical FAIL | warning  | error| any  → BLOCK', false, 'warning', 'error', false, false],
+  ['Technical FAIL | strict   | pass | high → BLOCK', false, 'strict', 'high', false, false],
+  ['Technical PASS | disabled | -    | any  → ALLOW', true, 'disabled', 'high', true, false],
+  ['Technical PASS | warning  | pass | high → ALLOW', true, 'warning', 'high', true, false],
+  ['Technical PASS | warning  | fail | low  → ALLOW (policy override)', true, 'warning', 'low', true, true],
+  ['Technical PASS | warning  | error| any  → BLOCK', true, 'warning', 'error', false, false],
+  ['Technical PASS | strict   | pass | high → ALLOW', true, 'strict', 'high', true, false],
+  ['Technical PASS | strict   | fail | low  → BLOCK', true, 'strict', 'low', false, false],
+  ['Technical PASS | strict   | error| any  → BLOCK', true, 'strict', 'error', false, false],
+];
+
+for (const [name, techOk, mode, kind, expectAllow, expectOverride] of TRUTH_TABLE) {
+  test(`truth table: ${name}`, async () => {
+    await withMode(mode, 85, async (dir) => {
+      const input = kind === 'high' ? strongInput() : kind === 'low' ? lowScoreInput() : explodingInput();
+      const qc = await runRetentionQC(input, dir, {
+        technicalPassed: techOk,
+        uploadRequested: true,
+        platforms: { youtube: true, instagram: true, facebook: true },
+      });
+      const allowed = uploadGate({ preflightOk: techOk, qc, technicalMode: 'strict' });
+      assert.equal(allowed, expectAllow, `kapı kararı yanlış (blockUpload=${qc.blockUpload})`);
+      // Üç platform da aynı karara tabi — platform bazlı bypass yok.
+      const el = qc.report.uploadEligibility;
+      for (const p of ['youtube', 'instagram', 'facebook']) {
+        assert.equal(el[p], expectAllow, `${p} kapı kararından saptı`);
+      }
+      assert.equal(el.policyOverride, expectOverride, 'policyOverride beklentiyle uyuşmuyor');
+      if (expectOverride) {
+        assert.ok(el.reasons.some((x) => x.includes('POLICY OVERRIDE')), 'override nedeni raporda yok');
+      }
+    });
+  });
+}
 
 test('boş/eksik girdilerde çökmez, düşük skor + hata döner', () => {
   const r = evaluateRetention({ script: {}, duration: 0 }, CFG);

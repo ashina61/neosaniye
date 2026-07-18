@@ -106,12 +106,14 @@ const qc = await runRetentionQC(editorialInput, outDir, {
 
 const gate = uploadGate({ preflightOk: pf.ok, qc });
 console.log('\n===== QC DRY-RUN SONUCU =====');
-console.log(`skor              : ${qc.score}/100`);
-console.log(`productionReady   : ${qc.report?.productionReady}`);
-console.log(`qc modu           : ${config.retention.mode}`);
-console.log(`qcExecution       : ${qc.report?.qcExecution.status}${qc.error ? ` (${qc.error})` : ''}`);
-console.log(`teknik preflight  : ${pf.ok ? 'GEÇTİ' : 'KALDI: ' + pf.issues.join(' | ')}`);
-console.log(`upload kapısı     : ${gate ? 'AÇIK (ama dry-run, upload yok)' : 'KAPALI'}`);
-console.log(`uygunluk          : ${JSON.stringify(qc.report?.uploadEligibility)}`);
+console.log(`skor                 : ${qc.score}/100`);
+console.log(`technicalReady       : ${qc.report?.technicalReady} (mod: ${config.preflight.mode})`);
+console.log(`editorialReady       : ${qc.report?.editorialReady}`);
+console.log(`productionReady      : ${qc.report?.productionReady}`);
+console.log(`uploadAllowedByPolicy: ${qc.report?.uploadAllowedByPolicy} (qc modu: ${config.retention.mode})`);
+console.log(`qcExecution          : ${qc.report?.qcExecution.status}${qc.error ? ` (${qc.error})` : ''}`);
+console.log(`teknik preflight     : ${pf.ok ? 'GEÇTİ' : 'KALDI: ' + pf.issues.join(' | ')}`);
+console.log(`upload kapısı        : ${gate ? 'AÇIK (ama dry-run, upload yok)' : 'KAPALI'}`);
+console.log(`uygunluk             : ${JSON.stringify(qc.report?.uploadEligibility)}`);
 console.log(`rapor (json)      : ${path.join(outDir, 'production-report.json')}`);
 console.log(`rapor (md)        : ${path.join(outDir, 'production-report.md')}`);

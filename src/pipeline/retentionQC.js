@@ -232,9 +232,12 @@ export function evaluateRetention(input, cfg = config.retention) {
   };
 }
 
-function reportMd(r, mode, minScore) {
+function reportMd(r, mode, minScore, qcExecStatus = null) {
+  if (qcExecStatus === 'disabled') {
+    return `# Retention QC Raporu\n\n**Editoryal QC devre dışı** (RETENTION_QC_MODE=disabled). Teknik preflight bağımsız çalıştı — sonuçlar production-report.json → technicalValidation içinde.\n`;
+  }
   if (!r) {
-    return `# Retention QC Raporu\n\n**QC ÇALIŞTIRILAMADI** — mod: ${mode}. Ayrıntı production-report.json → qcExecution.error içinde.\n`;
+    return `# Retention QC Raporu\n\n**QC ÇALIŞTIRILAMADI** — mod: ${mode}. Upload engellendi (QC denetiminden geçmeyen video otomatik yayınlanmaz). Ayrıntı production-report.json → qcExecution.error içinde.\n`;
   }
   const lines = [
     `# Retention QC Raporu`,
@@ -259,33 +262,52 @@ function reportMd(r, mode, minScore) {
 /**
  * TEK ORTAK UPLOAD KAPISI — üç platform (YouTube, Instagram, Facebook) da
  * yalnızca bu koşuldan geçerek yayınlanabilir; platform bazlı bypass yoktur.
- * teknik preflight + QC mod kararı (strict'te productionReady) birleşir.
+ *
+ *   teknik kapı : preflight geçti VEYA TECHNICAL_PREFLIGHT_MODE=warning
+ *                 (varsayılan strict → teknik hata her zaman durdurur)
+ *   QC kapısı   : qc.blockUpload=false (mod sözleşmesine göre hesaplanır)
  */
-export function uploadGate({ preflightOk, qc }) {
-  return Boolean(preflightOk) && !qc?.blockUpload;
+export function uploadGate({ preflightOk, qc, technicalMode = config.preflight.mode }) {
+  const technicalGateOk = Boolean(preflightOk) || technicalMode !== 'strict';
+  return technicalGateOk && !qc?.blockUpload;
 }
 
-/** Platform bazlı yayın uygunluğu + insan-okur nedenler (rapor için). */
+/**
+ * Platform bazlı yayın uygunluğu + insan-okur nedenler (rapor için).
+ * uploadEligible tanımı: teknik kapı geçildi && QC exec hatası yok
+ * && politika izin veriyor && platform yapılandırılmış.
+ * policyOverride: video production-ready OLMADIĞI hâlde politika gereği
+ * yayına izin verildi (raporda açıkça görünür, rapor kendi içinde çelişmez).
+ */
 export function computeUploadEligibility({
   uploadRequested,
-  technicalPassed,
+  technicalReady,
+  technicalMode = config.preflight.mode,
   blockUpload,
   execError,
-  scoreOk,
+  editorialReady,
   mode,
   platforms = {},
 }) {
   const reasons = [];
+  const technicalGateOk = Boolean(technicalReady) || technicalMode !== 'strict';
+  const base = uploadRequested !== false && technicalGateOk && !blockUpload;
+
   if (uploadRequested === false) reasons.push('upload istenmedi (--no-upload veya kredensiyel yok)');
-  if (!technicalPassed) reasons.push('teknik preflight başarısız');
-  if (blockUpload) {
-    reasons.push(execError
-      ? 'strict mod: QC kendisi hata verdi (fail-closed)'
-      : 'strict mod: skor eşiğin altında veya kritik hata');
-  } else if (mode === 'warning' && !execError && scoreOk === false) {
-    reasons.push('warning mod: skor eşiğin altında ama mevcut yayın politikası korunuyor');
+  if (!technicalReady && technicalMode === 'strict') reasons.push('teknik preflight başarısız (TECHNICAL_PREFLIGHT_MODE=strict)');
+  if (execError) reasons.push('QC çalıştırılamadı — QC denetiminden geçmeyen video otomatik yayınlanmaz (fail-closed)');
+  if (!execError && blockUpload && mode === 'strict') reasons.push('strict mod: retention skoru eşiğin altında veya kritik editoryal hata');
+
+  // Policy override'lar: hazır OLMAYAN video, politika izniyle yayınlanıyor.
+  let policyOverride = false;
+  if (base && !technicalReady && technicalMode !== 'strict') {
+    policyOverride = true;
+    reasons.push('POLICY OVERRIDE: teknik sorunlar var ama TECHNICAL_PREFLIGHT_MODE=warning yayına izin veriyor');
   }
-  const base = uploadRequested !== false && Boolean(technicalPassed) && !blockUpload;
+  if (base && mode === 'warning' && !execError && editorialReady === false) {
+    policyOverride = true;
+    reasons.push('POLICY OVERRIDE: retention skoru hedefin altında ama warning-mod politikası yayına izin veriyor');
+  }
   for (const p of ['youtube', 'instagram', 'facebook']) {
     if (base && !platforms[p]) reasons.push(`${p} yapılandırılmamış (kredensiyel yok)`);
   }
@@ -293,6 +315,7 @@ export function computeUploadEligibility({
     youtube: Boolean(base && platforms.youtube),
     instagram: Boolean(base && platforms.instagram),
     facebook: Boolean(base && platforms.facebook),
+    policyOverride,
     reasons,
   };
 }
@@ -300,13 +323,22 @@ export function computeUploadEligibility({
 /**
  * Pipeline sarmalayıcı: değerlendirir, raporları yazar, mod kararını döndürür.
  *
- * HATA SÖZLEŞMESİ (QC'nin kendisi çökerse):
- *   disabled → QC zaten çalışmaz, üretim etkilenmez.
- *   warning  → hata rapora yazılır (qcExecution.status='error'),
- *              productionReady=false; mevcut yayın politikası korunur
- *              (blockUpload=false), render artifact'i her durumda kalır.
- *   strict   → FAIL-CLOSED: blockUpload=true, productionReady=false, hata
- *              açıkça loglanır. QC hatası yayın kapısını asla bypass edemez.
+ * ALAN SÖZLEŞMESİ (rapor kendi içinde çelişmez):
+ *   technicalReady       : final MP4 teknik olarak geçerli mi (preflight).
+ *   editorialReady       : retention skoru ≥ eşik VE kritik editoryal hata yok.
+ *   productionReady      : technicalReady && editorialReady && qcExecution=passed.
+ *   uploadAllowedByPolicy: mevcut mod/politika otomatik yüklemeye izin veriyor mu.
+ *   uploadEligibility    : platform bazlı nihai uygunluk (+policyOverride+nedenler).
+ *
+ * MOD SÖZLEŞMESİ:
+ *   disabled → editoryal QC uygulanmaz (qcExecution.status='disabled'); teknik
+ *              preflight BAĞIMSIZ çalışmaya devam eder. Upload engellenmez.
+ *   warning  → düşük skor/kritik editoryal hata yayını DURDURMAZ; ama bu bir
+ *              POLICY OVERRIDE'dır ve raporda açıkça görünür.
+ *              QC'nin KENDİSİ hata verirse (exception) upload ENGELLENİR:
+ *              QC denetiminden geçmeyen video otomatik yayınlanmaz.
+ *   strict   → düşük skor, kritik hata VEYA QC exception → upload engellenir
+ *              (fail-closed).
  *
  * @param {object} input  evaluateRetention girdisi
  * @param {string} workDir rapor dosyalarının yazılacağı klasör
@@ -315,33 +347,41 @@ export function computeUploadEligibility({
  */
 export async function runRetentionQC(input, workDir, extras = {}) {
   const cfg = config.retention;
-  if (cfg.mode === 'disabled') {
-    return { score: null, ok: true, blockUpload: false, report: null, error: null };
-  }
   // Teknik durum bilinmiyorsa (eski çağrı imzası) karara karıştırma.
-  const technicalPassed = extras.technicalPassed !== false;
+  const technicalReady = extras.technicalPassed !== false;
+  const disabled = cfg.mode === 'disabled';
 
   let r = null;
   let execError = null;
-  try {
-    r = evaluateRetention(input, cfg);
-  } catch (err) {
-    execError = String(err?.message || err);
-    console.error(`[qc] QC DEĞERLENDİRMESİ ÇÖKTÜ: ${execError}`);
+  if (!disabled) {
+    try {
+      r = evaluateRetention(input, cfg);
+    } catch (err) {
+      execError = String(err?.message || err);
+      console.error(`[qc] QC DEĞERLENDİRMESİ ÇÖKTÜ: ${execError}`);
+    }
   }
 
-  const scoreOk = r ? r.score >= cfg.minScore && r.failures.length === 0 : false;
-  const productionReady = !execError && scoreOk && technicalPassed;
-  // strict: skor düşük, kritik hata VEYA QC'nin kendisi çöktü → fail-closed.
-  const blockUpload = cfg.mode === 'strict' && !productionReady;
-  const status = execError ? 'error' : r.failures.length ? 'fail' : scoreOk ? 'pass' : 'warning';
+  // editorialReady: yalnızca editoryal ölçütler (teknik durum karışmaz).
+  const editorialReady = disabled ? null : r ? r.score >= cfg.minScore && r.failures.length === 0 : false;
+  const qcExecStatus = disabled ? 'disabled' : execError ? 'error' : editorialReady ? 'passed' : 'failed';
+  const productionReady = Boolean(technicalReady && editorialReady && qcExecStatus === 'passed');
+
+  // Upload politikası (yalnızca QC tarafının kararı; teknik kapı uploadGate'te):
+  //   exception → her aktif modda blok (QC'siz video otomatik yayınlanmaz),
+  //   strict    → editoryal hazır değilse blok,
+  //   warning   → editoryal sonuç ne olursa olsun politika izin verir,
+  //   disabled  → izin verir.
+  const blockUpload = disabled ? false : execError ? true : cfg.mode === 'strict' ? !editorialReady : false;
+  const uploadAllowedByPolicy = !blockUpload;
+  const status = disabled ? 'disabled' : execError ? 'error' : r.failures.length ? 'fail' : editorialReady ? 'pass' : 'warning';
 
   const uploadEligibility = computeUploadEligibility({
     uploadRequested: extras.uploadRequested,
-    technicalPassed,
+    technicalReady,
     blockUpload,
     execError,
-    scoreOk,
+    editorialReady,
     mode: cfg.mode,
     platforms: extras.platforms,
   });
@@ -349,14 +389,14 @@ export async function runRetentionQC(input, workDir, extras = {}) {
   const report = {
     retentionScore: r ? r.score : null,
     status,
+    technicalReady,
+    editorialReady,
     productionReady,
+    uploadAllowedByPolicy,
     mode: cfg.mode, // geriye dönük uyumluluk (eski alan adı)
     qcMode: cfg.mode,
     minScore: cfg.minScore,
-    qcExecution: {
-      status: execError ? 'error' : r.failures.length || !scoreOk ? 'failed' : 'passed',
-      error: execError,
-    },
+    qcExecution: { status: qcExecStatus, error: execError },
     technicalValidation: extras.technical || null,
     uploadEligibility,
     scores: r ? r.parts : null,
@@ -370,11 +410,14 @@ export async function runRetentionQC(input, workDir, extras = {}) {
   // ama QC raporu yazılamadı diye video üretimi çökmesin: hata logla, devam et.
   try {
     await writeFile(path.join(workDir, 'production-report.json'), JSON.stringify(report, null, 2));
-    await writeFile(path.join(workDir, 'production-report.md'), reportMd(r, cfg.mode, cfg.minScore));
+    await writeFile(path.join(workDir, 'production-report.md'), reportMd(r, cfg.mode, cfg.minScore, qcExecStatus));
   } catch (err) {
     console.error(`[qc] RAPOR YAZILAMADI: ${err.message}`);
   }
 
+  if (disabled) {
+    console.log('[qc] retention QC devre dışı (RETENTION_QC_MODE=disabled) — teknik preflight bağımsız çalıştı.');
+  }
   if (r) {
     const line = Object.entries(r.parts).map(([k, v]) => `${k}:${v}`).join(' ');
     console.log(`[qc] retention ${r.score}/100 (${status}) — ${line}`);
@@ -382,12 +425,14 @@ export async function runRetentionQC(input, workDir, extras = {}) {
     for (const w of r.warnings) console.warn(`[qc] ⚠️ ${w}`);
     for (const x of r.recommendedFixes) console.log(`[qc] 🔧 ${x}`);
   }
+  if (uploadEligibility.policyOverride) {
+    console.warn('[qc] ⚠️ POLICY OVERRIDE: video production-ready değil ama mevcut politika yayına izin veriyor (rapora yazıldı).');
+  }
   if (blockUpload) {
     const causes = [];
-    if (execError) causes.push('QC kendisi hata verdi (fail-closed)');
-    if (r && !scoreOk) causes.push(`skor ${r.score} < ${cfg.minScore} veya kritik hata`);
-    if (!technicalPassed) causes.push('teknik preflight başarısız');
-    console.error(`[qc] STRICT mod: ${causes.join(' + ')} — upload ENGELLENDİ.`);
+    if (execError) causes.push('QC kendisi hata verdi (fail-closed, her aktif modda)');
+    if (!execError && !editorialReady) causes.push(`skor ${r?.score} < ${cfg.minScore} veya kritik editoryal hata`);
+    console.error(`[qc] ${cfg.mode.toUpperCase()} mod: ${causes.join(' + ')} — upload ENGELLENDİ.`);
   }
   return { score: r ? r.score : null, ok: productionReady, blockUpload, report, error: execError };
 }

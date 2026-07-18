@@ -242,12 +242,12 @@ export async function runPipeline(opts = {}) {
       },
     }).catch((err) => {
       // QC'nin KENDİSİ çöktü (rapor bile yazılamadı) — mod sözleşmesi:
-      // warning: hata loglanır, mevcut yayın politikası korunur.
-      // strict: FAIL-CLOSED — QC hatası yayın kapısını bypass edemez.
-      const strict = config.retention.mode === 'strict';
+      // disabled: üretim etkilenmez. warning + strict: FAIL-CLOSED —
+      // QC denetiminden geçmeyen video hiçbir modda otomatik yayınlanmaz.
+      const block = config.retention.mode !== 'disabled';
       console.error(`[qc] RETENTION QC ÇALIŞTIRILAMADI: ${err.message}`);
-      if (strict) console.error('[qc] STRICT mod fail-closed: upload ENGELLENDİ.');
-      return { score: null, ok: false, blockUpload: strict, report: null, error: err.message };
+      if (block) console.error('[qc] Fail-closed: QC çalışmadan otomatik yayın yok — upload ENGELLENDİ.');
+      return { score: null, ok: false, blockUpload: block, report: null, error: err.message };
     });
 
     // 6) Upload — TEK ORTAK KAPI: YouTube + Instagram + Facebook'un ÜÇÜ DE
@@ -300,10 +300,10 @@ export async function runPipeline(opts = {}) {
         `\nYOUTUBE:\n${res.url}`,
       ].join('\n');
       await writeFile(path.join(workDir, 'publish-kit.txt'), kit).catch(() => {});
-    } else if (willUpload && pf.ok && qc.blockUpload) {
+    } else if (willUpload && qc.blockUpload) {
       console.log(
         qc.error
-          ? '\n▶ Faz 6: upload İPTAL (strict: QC hatası, fail-closed) — video artifact olarak duruyor.'
+          ? '\n▶ Faz 6: upload İPTAL (QC hatası, fail-closed) — video artifact olarak duruyor.'
           : '\n▶ Faz 6: upload İPTAL (strict retention QC) — video artifact olarak duruyor.',
       );
     } else if (willUpload && !pf.ok) {
@@ -354,10 +354,11 @@ export async function runPipeline(opts = {}) {
       duration: video.duration,
       visualStyle, // Baş Analist stile göre öğrensin
       retention: qc.report ? { score: qc.score, status: qc.report.status } : null,
-      // 'blocked_qc': strict QC engelledi — yayınlanmış GİBİ görünmesin.
+      // 'blocked_qc': QC engelledi (strict skor/hata veya QC exception) —
+      // yayınlanmış GİBİ görünmesin.
       status: youtube
         ? 'published'
-        : !pf.ok
+        : !pf.ok && config.preflight.mode === 'strict'
           ? 'failed_preflight'
           : willUpload && qc.blockUpload
             ? 'blocked_qc'
@@ -377,7 +378,7 @@ export async function runPipeline(opts = {}) {
           : `⚠️ neosaniye: "${script.topic}" preflight'a takıldı: ${pf.issues.join(' | ')}`;
     await notify(msg).catch(() => {});
 
-    if (willUpload && !pf.ok) {
+    if (willUpload && !pf.ok && config.preflight.mode === 'strict') {
       throw new Error(`Preflight başarısız: ${pf.issues.join(' | ')}`);
     }
     return { script, videoPath: outPath, youtube, videoId, preflight: pf };

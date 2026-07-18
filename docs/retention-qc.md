@@ -23,21 +23,71 @@ Eşikler: `src/config.js → config.retention`
 Kapı = teknik preflight geçti **VE** QC mod kararı engel koymadı. Platform
 bazlı bypass yoktur; IG/FB cross-post yalnızca aynı bloğun içinde çalışır.
 
-**QC'nin kendisi çökerse (hata sözleşmesi):**
+## Alan sözleşmesi (rapor kendi içinde çelişmez)
 
-| Mod | Davranış |
+| Alan | Anlamı |
 |---|---|
-| `disabled` | QC çalışmaz, üretim etkilenmez. |
-| `warning` | Hata rapora yazılır (`qcExecution.status='error'`), `productionReady=false`; mevcut yayın politikası korunur, render artifact'i kalır. |
-| `strict` | **FAIL-CLOSED:** upload kesinlikle iptal, `productionReady=false`, hata açıkça loglanır. QC hatası yayın kapısını asla bypass edemez. Kayıt `blocked_qc` status'üyle düşer — yayınlanmış gibi görünmez. |
+| `technicalReady` | Final MP4 teknik olarak geçerli mi (preflight sonucu). |
+| `editorialReady` | Retention skoru ≥ eşik VE kritik editoryal hata yok. Disabled modda `null` (değerlendirilmedi). |
+| `productionReady` | `technicalReady && editorialReady && qcExecution.status === 'passed'`. |
+| `uploadAllowedByPolicy` | Mevcut mod/politika otomatik yüklemeye izin veriyor mu. |
+| `uploadEligibility` | Platform bazlı nihai karar + `policyOverride` + nedenler. |
+
+`policyOverride: true` = video production-ready **değil** ama politika
+(warning modu) yayına bilerek izin verdi — neden raporda açıkça yazar.
+Yani "hazır değil ama yayınlandı" durumu artık çelişki değil, etiketli karar.
+
+**QC exception ≠ düşük skor.** Düşük skor bir editoryal *sonuçtur*; politika
+karar verebilir. Exception ise QC sisteminin hiç çalışmadığı anlamına gelir —
+denetimden geçmeyen video **hiçbir aktif modda otomatik yayınlanmaz**:
+
+| Mod | Düşük skor / kritik editoryal hata | QC exception |
+|---|---|---|
+| `disabled` | Değerlendirilmez (`qcExecution.status='disabled'`) | Değerlendirme hiç çalışmaz |
+| `warning` **(varsayılan)** | Yayın devam eder, **POLICY OVERRIDE** rapora yazılır | **Upload ENGELLENİR** (fail-closed) |
+| `strict` | Upload engellenir | Upload engellenir (fail-closed) |
+
+Engellenen kayıt `blocked_qc` status'üyle düşer — yayınlanmış gibi görünmez;
+render artifact'i her durumda korunur.
+
+## Teknik kapı retention'dan bağımsızdır
+
+`TECHNICAL_PREFLIGHT_MODE` (varsayılan **strict**) teknik kapıyı yönetir;
+`RETENTION_QC_MODE` yalnızca editoryal kapıyı. **Retention QC disabled olsa
+bile teknik preflight bağımsız olarak çalışmaya devam eder.**
+
+- `strict` (varsayılan): teknik sert hata (decode başarısız, video/ses akışı
+  yok, bozuk/sıfır dosya, geçersiz süre, yanlış çözünürlük, loudness) uploadı
+  her koşulda durdurur → `technicalReady=false`.
+- `warning`: teknik sorunlar raporlanır ama yayını durdurmaz (yalnızca elle
+  debug için; kullanılırsa rapora POLICY OVERRIDE düşer).
+
+Editoryal sorunlar (zayıf hook, uzun statik plan, düşük çeşitlilik, zayıf
+loop, altyazı yoğunluğu) yalnızca `editorialReady`'yi belirler.
+
+## Upload karar tablosu (testlerde birebir doğrulanır)
+
+| Teknik | QC modu | QC sonucu | Skor | Upload |
+|---|---|---|---|---|
+| FAIL | herhangi | herhangi | herhangi | **BLOCK** |
+| PASS | disabled | disabled | — | ALLOW |
+| PASS | warning | passed | yüksek | ALLOW |
+| PASS | warning | failed | düşük | ALLOW + **policyOverride** raporda |
+| PASS | warning | error | — | **BLOCK** (fail-closed) |
+| PASS | strict | passed | yüksek | ALLOW |
+| PASS | strict | failed | düşük | **BLOCK** |
+| PASS | strict | error | — | **BLOCK** |
+
+Tablo `test/retention.test.js` içinde parametrik olarak, üç platformun
+(YouTube/Instagram/Facebook) her biri için ayrı ayrı doğrulanır.
 
 ## Modlar
 
 | Mod | Davranış |
 |---|---|
-| `disabled` | Hiçbir şey yapılmaz. |
-| `warning` **(varsayılan)** | Skor + rapor üretilir, loglanır; upload **asla engellenmez**. |
-| `strict` | Skor < eşik **veya** kritik hata varsa upload engellenir; video artifact olarak kalır. |
+| `disabled` | Editoryal değerlendirme yapılmaz (`qcExecution.status='disabled'`); teknik preflight bağımsız çalışmaya devam eder. |
+| `warning` **(varsayılan)** | Skor + rapor üretilir; düşük skor yayını durdurmaz (POLICY OVERRIDE raporda). QC'nin kendisi hata verirse upload engellenir. |
+| `strict` | Skor < eşik, kritik hata **veya** QC hatası → upload engellenir; video artifact olarak kalır. |
 
 Mod, GitHub → Settings → Actions → Variables üzerinden ayarlanır:
 
@@ -102,18 +152,21 @@ Her üretimde çalışma klasörüne iki dosya yazılır (workflow artifact'ine 
 ```json
 {
   "retentionScore": 91,
-  "status": "pass",            // pass | warning | fail | error
-  "productionReady": true,     // skor ≥ eşik && kritik hata yok && teknik geçti && QC hatasız
+  "status": "pass",            // pass | warning | fail | error | disabled
+  "technicalReady": true,
+  "editorialReady": true,      // disabled modda null
+  "productionReady": true,     // technicalReady && editorialReady && qcExecution=passed
+  "uploadAllowedByPolicy": true,
   "mode": "warning",
   "qcMode": "warning",
   "minScore": 85,
-  "qcExecution": { "status": "passed", "error": null },  // passed|failed|error
+  "qcExecution": { "status": "passed", "error": null },  // passed|failed|error|disabled
   "technicalValidation": { "videoStreamPresent": true, "audioStreamPresent": true,
     "durationSeconds": 35.2, "resolution": "1080x1920", "fps": 30,
     "decodePassed": true, "blackSegmentCount": 0, "freezeSegmentCount": 0,
     "silenceSegmentCount": 0, "maxVolumeDb": -5.9, "lufs": -13.9 },
   "uploadEligibility": { "youtube": true, "instagram": true, "facebook": true,
-    "reasons": [] },
+    "policyOverride": false, "reasons": [] },
   "scores": { "hook": 25, "visualPacing": 16, "curiosity": 15, "captions": 10,
               "visualVariety": 10, "audioDesign": 8, "payoffAndLoop": 7 },
   "metrics": { "firstSpeechMs": 320, "planCount": 11,

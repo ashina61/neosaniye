@@ -86,8 +86,13 @@ export const config = {
     captionTopSafeRatio: Number(process.env.QC_CAPTION_TOP_SAFE_RATIO || 0.5),
   },
   preflight: {
+    // TEKNİK kapı modu — retention QC'den BAĞIMSIZ ayar:
+    //   strict  (VARSAYILAN): teknik sert hata (decode, akış yok, çözünürlük,
+    //           süre penceresi, loudness...) uploadı durdurur ve run fail olur.
+    //   warning : teknik sorunlar raporlanır ama upload engellenmez (bilinçli
+    //           riskli mod; yalnızca elle debug için).
+    mode: process.env.TECHNICAL_PREFLIGHT_MODE || 'strict',
     // Final MP4 üzerindeki ffmpeg-tabanlı teknik kontrollerin eşikleri.
-    // (Tespitler deterministiktir; blok kararı retention QC moduna bağlıdır.)
     blackMinSeconds: Number(process.env.PF_BLACK_MIN_SECONDS || 0.8),
     blackPixThreshold: Number(process.env.PF_BLACK_PIX_TH || 0.08),
     freezeMinSeconds: Number(process.env.PF_FREEZE_MIN_SECONDS || 3.0),
