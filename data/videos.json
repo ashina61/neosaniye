@@ -780,7 +780,7 @@
       "comments": 0,
       "avgViewPct": 39.2,
       "subsGained": 0,
-      "statsAt": "2026-07-17T23:29:31.128Z"
+      "statsAt": "2026-07-18T19:38:41.755Z"
     }
   },
   {
@@ -903,7 +903,7 @@
       "comments": 1,
       "avgViewPct": 90.5,
       "subsGained": 1,
-      "statsAt": "2026-07-17T23:29:31.126Z"
+      "statsAt": "2026-07-18T19:38:41.752Z"
     }
   },
   {
@@ -1023,7 +1023,7 @@
       "comments": 1,
       "avgViewPct": 68.6,
       "subsGained": 0,
-      "statsAt": "2026-07-17T23:29:31.124Z"
+      "statsAt": "2026-07-18T19:38:41.750Z"
     }
   },
   {
@@ -1371,7 +1371,7 @@
       "comments": 5,
       "avgViewPct": 55.5,
       "subsGained": 0,
-      "statsAt": "2026-07-17T23:29:31.121Z"
+      "statsAt": "2026-07-18T19:38:41.747Z"
     }
   },
   {
@@ -1705,7 +1705,7 @@
       "comments": 5,
       "avgViewPct": 72.7,
       "subsGained": 1,
-      "statsAt": "2026-07-17T23:29:31.119Z"
+      "statsAt": "2026-07-18T19:38:41.745Z"
     }
   },
   {
@@ -1820,7 +1820,7 @@
       "comments": 1,
       "avgViewPct": 167,
       "subsGained": 6,
-      "statsAt": "2026-07-17T23:29:31.117Z"
+      "statsAt": "2026-07-18T19:38:41.742Z"
     }
   },
   {
@@ -1945,9 +1945,9 @@
       "views": 399,
       "likes": 10,
       "comments": 1,
-      "avgViewPct": 58.5,
+      "avgViewPct": 59,
       "subsGained": 2,
-      "statsAt": "2026-07-17T23:29:31.114Z"
+      "statsAt": "2026-07-18T19:38:41.739Z"
     }
   },
   {
@@ -2072,9 +2072,9 @@
       "views": 1027,
       "likes": 47,
       "comments": 3,
-      "avgViewPct": 60.1,
+      "avgViewPct": 60,
       "subsGained": 5,
-      "statsAt": "2026-07-17T23:29:31.112Z"
+      "statsAt": "2026-07-18T19:38:41.737Z"
     }
   },
   {
@@ -2201,7 +2201,7 @@
       "comments": 1,
       "avgViewPct": 44.9,
       "subsGained": 0,
-      "statsAt": "2026-07-17T23:29:31.110Z"
+      "statsAt": "2026-07-18T19:38:41.734Z"
     }
   },
   {
@@ -2316,7 +2316,7 @@
       "comments": 2,
       "avgViewPct": 142.1,
       "subsGained": 1,
-      "statsAt": "2026-07-17T23:29:31.107Z"
+      "statsAt": "2026-07-18T19:38:41.732Z"
     }
   },
   {
@@ -2431,7 +2431,7 @@
       "comments": 1,
       "avgViewPct": 59,
       "subsGained": 1,
-      "statsAt": "2026-07-17T23:29:31.100Z"
+      "statsAt": "2026-07-18T19:38:41.729Z"
     }
   },
   {
@@ -2543,9 +2543,9 @@
       "views": 1333,
       "likes": 25,
       "comments": 1,
-      "avgViewPct": 84.7,
+      "avgViewPct": 84.6,
       "subsGained": 2,
-      "statsAt": "2026-07-17T23:29:31.087Z"
+      "statsAt": "2026-07-18T19:38:41.727Z"
     }
   },
   {
@@ -2667,12 +2667,12 @@
     },
     "createdAt": "2026-07-14T20:17:07.975Z",
     "stats": {
-      "views": 1345,
-      "likes": 40,
+      "views": 1398,
+      "likes": 41,
       "comments": 1,
-      "avgViewPct": 58,
+      "avgViewPct": 57.6,
       "subsGained": 1,
-      "statsAt": "2026-07-17T23:29:31.085Z"
+      "statsAt": "2026-07-18T19:38:41.724Z"
     }
   },
   {
@@ -2782,12 +2782,12 @@
     },
     "createdAt": "2026-07-14T23:48:23.882Z",
     "stats": {
-      "views": 480,
+      "views": 478,
       "likes": 11,
       "comments": 1,
-      "avgViewPct": 123.5,
+      "avgViewPct": 122.4,
       "subsGained": 2,
-      "statsAt": "2026-07-17T23:29:31.082Z"
+      "statsAt": "2026-07-18T19:38:41.719Z"
     }
   },
   {
@@ -2909,12 +2909,12 @@
     },
     "createdAt": "2026-07-15T14:38:38.805Z",
     "stats": {
-      "views": 986,
+      "views": 987,
       "likes": 7,
       "comments": 4,
-      "avgViewPct": 48.9,
-      "subsGained": 0,
-      "statsAt": "2026-07-17T23:29:31.080Z"
+      "avgViewPct": 45.3,
+      "subsGained": 1,
+      "statsAt": "2026-07-18T19:38:41.707Z"
     }
   },
   {
@@ -3024,9 +3024,9 @@
       "views": 972,
       "likes": 52,
       "comments": 1,
-      "avgViewPct": 76.6,
+      "avgViewPct": 76.3,
       "subsGained": 5,
-      "statsAt": "2026-07-17T23:29:31.077Z"
+      "statsAt": "2026-07-18T19:38:41.696Z"
     }
   },
   {
@@ -3248,12 +3248,12 @@
     },
     "createdAt": "2026-07-15T23:55:20.531Z",
     "stats": {
-      "views": 1019,
+      "views": 1022,
       "likes": 33,
       "comments": 1,
-      "avgViewPct": 70.2,
+      "avgViewPct": 67.3,
       "subsGained": 1,
-      "statsAt": "2026-07-17T23:29:31.074Z"
+      "statsAt": "2026-07-18T19:38:41.693Z"
     }
   },
   {
@@ -3374,10 +3374,12 @@
     },
     "createdAt": "2026-07-16T19:53:48.891Z",
     "stats": {
-      "views": 250,
-      "likes": 10,
+      "views": 258,
+      "likes": 11,
       "comments": 1,
-      "statsAt": "2026-07-17T23:29:31.072Z"
+      "avgViewPct": 55,
+      "subsGained": 1,
+      "statsAt": "2026-07-18T19:38:41.689Z"
     }
   },
   {
@@ -3495,10 +3497,12 @@
     },
     "createdAt": "2026-07-16T23:12:49.860Z",
     "stats": {
-      "views": 648,
-      "likes": 24,
+      "views": 707,
+      "likes": 27,
       "comments": 3,
-      "statsAt": "2026-07-17T23:29:31.069Z"
+      "avgViewPct": 60.3,
+      "subsGained": 1,
+      "statsAt": "2026-07-18T19:38:41.687Z"
     }
   },
   {
@@ -3628,10 +3632,12 @@
     },
     "createdAt": "2026-07-16T23:38:27.063Z",
     "stats": {
-      "views": 282,
-      "likes": 21,
+      "views": 360,
+      "likes": 25,
       "comments": 1,
-      "statsAt": "2026-07-17T23:29:31.067Z"
+      "avgViewPct": 70.6,
+      "subsGained": 1,
+      "statsAt": "2026-07-18T19:38:41.684Z"
     }
   },
   {
@@ -3761,10 +3767,10 @@
     },
     "createdAt": "2026-07-17T19:45:56.630Z",
     "stats": {
-      "views": 86,
-      "likes": 5,
+      "views": 159,
+      "likes": 8,
       "comments": 3,
-      "statsAt": "2026-07-17T23:29:31.063Z"
+      "statsAt": "2026-07-18T19:38:41.681Z"
     }
   },
   {
@@ -3888,6 +3894,129 @@
       "title": "Ancient Ohio Mystery: The Giant Serpent in the Earth #Shorts",
       "publishedAt": "2026-07-17T23:36:27.332Z"
     },
-    "createdAt": "2026-07-17T23:37:08.494Z"
+    "createdAt": "2026-07-17T23:37:08.494Z",
+    "stats": {
+      "views": 867,
+      "likes": 19,
+      "comments": 1,
+      "statsAt": "2026-07-18T19:38:41.678Z"
+    }
+  },
+  {
+    "id": "viking-sunstone-navigation-1784403832137",
+    "topic": "Viking Sunstone Navigation",
+    "normalizedTopic": "viking-sunstone-navigation",
+    "format": "process",
+    "retention": {
+      "score": 74,
+      "status": "warning"
+    },
+    "music": {
+      "file": "Ancient Rite.mp3",
+      "assetId": null,
+      "source": "assets/music havuzu",
+      "license": null
+    },
+    "visualStyle": "photo",
+    "script": {
+      "title": "How Vikings Navigated the Open Ocean with a Magic Stone",
+      "category": "history",
+      "hook_text": "Secret Viking compass",
+      "finale_text": "the Viking's invisible sun",
+      "scenes": [
+        {
+          "narration": "Imagine navigating vast, open oceans with no compass, no maps, and often, no sun.",
+          "image_prompt": "A weathered Viking longship with a single sail, cutting through misty, grey North Atlantic waves under an overcast sky. A lone Viking navigator stands at the helm, looking out at the horizon. Soft, cool blue-grey light."
+        },
+        {
+          "narration": "Vikings explored unknown lands, but how did they find their way when clouds obscured the sun?",
+          "image_prompt": "A Viking navigator's rugged, calloused hands holding a small, smooth, transparent sunstone up to an overcast sky, peering through it. The stone catches a faint light. Medium shot, diffuse light, with a braided beard and leather tunic sleeve in the frame."
+        },
+        {
+          "narration": "They likely used a 'sunstone' – a crystal that could reveal the sun’s exact position, even on cloudy days.",
+          "image_prompt": "A clear, crystalline sunstone (Icelandic spar) on a dark wooden surface, showing its distinct double-refraction property when light passes through it. The crystal is glowing subtly from within. Macro shot, focused light."
+        },
+        {
+          "narration": "This special mineral, often Icelandic spar, splits light into two distinct rays.",
+          "image_prompt": "A Viking navigator's shoulder and hand, holding the sunstone, with a faint double image of light visible through the crystal. Overcast but bright light, with the navigator's braided beard and leather tunic in the frame."
+        },
+        {
+          "narration": "By rotating the sunstone, they could pinpoint where the sun was, even when it was hidden.",
+          "image_prompt": "A Viking navigator's face, focused and squinting slightly, as they slowly rotate the small sunstone in their hand, searching for the alignment. The background is a blurred, grey sky. Medium shot, soft light, with a braided beard and leather tunic in the frame."
+        },
+        {
+          "narration": "This allowed them to navigate vast distances, connecting Europe to North America centuries ago.",
+          "image_prompt": "A Viking longship sailing confidently under a vast, grey, open sky, with the navigator in silhouette against the distant horizon. The sense of boundless exploration. Establishing shot, wide angle, cool light, with the longship's wooden hull and sail in the frame."
+        }
+      ],
+      "cta": "Uncover more ancient secrets! Follow us."
+    },
+    "audioPath": "output/viking-sunstone-navigation/viking-sunstone-navigation.mp3",
+    "videoPath": "output/viking-sunstone-navigation/viking-sunstone-navigation.mp4",
+    "media": [
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 0,
+        "keyword": "Viking longship sailing",
+        "path": "output/viking-sunstone-navigation/media/01-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/the-sun-sets-on-the-sailboat-with-the-words-sailboat-18509264/",
+        "author": "Siarhei Dalivelia"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 1,
+        "keyword": "Viking holding stone",
+        "path": "output/viking-sunstone-navigation/media/02-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/a-person-holding-a-wooden-toy-6952515/",
+        "author": "Artem Podrez"
+      },
+      {
+        "type": "photo",
+        "source": "archive",
+        "scene": 2,
+        "path": "output/viking-sunstone-navigation/media/03-archive.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:020220313_104404_Iceland_spar.jpg",
+        "author": "Silar"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 3,
+        "keyword": "Viking using sunstone",
+        "path": "output/viking-sunstone-navigation/media/04-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/village-documentry-20420665/",
+        "author": "Amanat Ali Warraich"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 4,
+        "keyword": "Viking concentrating",
+        "path": "output/viking-sunstone-navigation/media/05-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/a-man-meditating-6438231/",
+        "author": "Ivan S"
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 5,
+        "keyword": "Viking longship full",
+        "path": "output/viking-sunstone-navigation/media/06-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/serene-sunset-over-bosphorus-with-ferry-28811981/",
+        "author": "Ahmet Hilmi Ermiş"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 34.769002,
+    "status": "published",
+    "youtube": {
+      "videoId": "l_q1LkJahiY",
+      "url": "https://www.youtube.com/shorts/l_q1LkJahiY",
+      "title": "How Vikings Found Their Way Across Oceans With a Mysterious Sunstone #Shorts",
+      "publishedAt": "2026-07-18T19:43:15.377Z"
+    },
+    "createdAt": "2026-07-18T19:43:52.137Z"
   }
 ]
