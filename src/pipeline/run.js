@@ -20,6 +20,7 @@ import { buildSrtFromWords, uploadCaptions } from '../youtube/captions.js';
 import { crossPost } from '../social/meta.js';
 import { preflightCheck } from './preflight.js';
 import { runRetentionQC, uploadGate } from './retentionQC.js';
+import { appendQcHistory, buildQcHistoryEntry } from './qcHistory.js';
 import { recordProduction } from './recordProduction.js';
 import { notify } from '../lib/notify.js';
 
@@ -366,6 +367,22 @@ export async function runPipeline(opts = {}) {
       youtube,
     });
     console.log(`  kayıt id: ${videoId}`);
+
+    // 5.5) GÖZLEM KATMANI: QC geçmişi (data/qc-history.jsonl, append-only).
+    // Skor ↔ izlenme analizinin ham verisi. Başarısız olursa yayın akışı
+    // ETKİLENMEZ; hata appendQcHistory içinde açıkça loglanır.
+    if (qc.report) {
+      const hist = await appendQcHistory(buildQcHistoryEntry(qc.report, {
+        videoId,
+        topic: script.topic,
+        format: script.format || null,
+        durationSeconds: +video.duration.toFixed(1),
+      }));
+      if (hist.appended) console.log('[qc-history] data/qc-history.jsonl güncellendi');
+      else if (hist.ok) console.log(`[qc-history] atlandı: ${hist.reason}`);
+    } else {
+      console.error('[qc-history] production-report yok (QC çöktü) — geçmişe kayıt atılamadı.');
+    }
 
     // 7) Bildirim (best-effort).
     const msg = youtube
