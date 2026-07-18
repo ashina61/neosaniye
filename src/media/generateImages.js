@@ -7,6 +7,7 @@ import { config } from '../config.js';
 import { fetchOneForKeywords, fetchStockVideoForKeywords } from './fetchMedia.js';
 import { renderStatCard, isUsableStat, renderStepsCard, isUsableDiagram } from './renderTemplate.js';
 import { fetchArchiveImage } from './fetchArchive.js';
+import { isAssetRelevant } from './semanticRelevance.js';
 
 const run = promisify(execFile);
 
@@ -216,7 +217,17 @@ export async function generateImages(script, opts = {}) {
           path.join(mediaDir, `${idx}-motion`),
           usedClips,
         );
-        if (hit) done = { ...hit, scene: i, source: 'stock' };
+        // Semantik alaka guard: stok klip anlatımla alakasız (yasak-uyumsuzluk
+        // veya çok düşük örtüşme) ise KULLANMA — konuyla ilgisiz görsel
+        // "bulundu diye" seçilmez; sahne AI/arşiv zincirine düşer.
+        if (hit) {
+          const rel = isAssetRelevant(scene.narration, hit.keyword, {
+            minScore: config.retention.minSemanticRelevance,
+            forbiddenMismatches: scene.forbidden_mismatches || [],
+          });
+          if (rel.accepted) done = { ...hit, scene: i, source: 'stock' };
+          else console.warn(`[img] sahne ${idx}: stok "${hit.keyword}" alakasız (skor ${rel.score}${rel.mismatch ? ', yasak-uyumsuzluk' : ''}) — atlandı.`);
+        }
       } catch (err) {
         console.warn(`[img] sahne ${idx}: stok video hatası (${err.message}).`);
       }

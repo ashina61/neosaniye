@@ -95,9 +95,20 @@ const SHOT_SCHEMA = {
             },
             propertyOrdering: ['title', 'steps'],
           },
+          forbidden_mismatches: {
+            type: Type.ARRAY,
+            nullable: true,
+            items: { type: Type.STRING },
+            description:
+              'SEMANTIC GUARD: 2-5 single words that a stock clip for THIS scene must NOT be about ' +
+              '(topic-irrelevant subjects). E.g. for a Viking sea-navigation scene: ' +
+              '["cyclist","street","office","milk","portrait"]. The system rejects any stock hit ' +
+              'whose keyword matches these, so an off-topic clip (a cyclist in a Viking video) is ' +
+              'never used just because it exists. Derive from what would clearly NOT explain the line.',
+          },
         },
         required: ['shot', 'image_prompt', 'motion', 'stock_keywords'],
-        propertyOrdering: ['shot', 'image_prompt', 'motion', 'stock_keywords', 'real_subject', 'stat', 'diagram'],
+        propertyOrdering: ['shot', 'image_prompt', 'motion', 'stock_keywords', 'real_subject', 'stat', 'diagram', 'forbidden_mismatches'],
       },
     },
   },
@@ -132,10 +143,18 @@ Produce a professional SHOT LIST that makes the video feel like ONE cinematic fi
   literally stated in its narration, set that scene's "stat" (value/unit/label). It becomes a bold
   animated count-up card — a strong pattern-interrupt. Use it for AT MOST one scene, never scene 1,
   and only when the number is genuinely in the narration. Otherwise leave stat null everywhere.
-- HOW-IT-WORKS CARD (optional): for a mechanism/process story, you may set "diagram" on the ONE
-  scene whose narration sums up how it works: title (2-4 words) + 2-4 ultra-short steps (3-5 words
-  each) strictly from the script's actual explanation. Animated step-by-step reveal — great retention.
-  Never scene 1. A video gets AT MOST one special card total: stat OR diagram, never both.`;
+- HOW-IT-WORKS CARD (mechanism videos: REQUIRED, not optional): if ANY narration explains how
+  something works (splits light, refracts, "the reason", a 2-4 step process), you MUST set "diagram"
+  on the scene that sums up the mechanism — a plain object B-roll is NOT enough to explain a
+  mechanism. title (2-4 words) + 2-4 ultra-short steps (3-5 words each) strictly from the script.
+  Keep it readable at a glance: arrows/rays/highlights, never a tiny dense scientific chart.
+  Never scene 1. A video gets AT MOST one special card total: stat OR diagram, never both.
+- DEMONSTRATION SCENES: if a scene shows someone USING an object to prove a point, the shot must
+  show the RESULT of the action (the object turning, two brightnesses changing, a direction arrow
+  appearing) — a person merely holding/looking at the object does not demonstrate anything.
+- SEMANTIC RELEVANCE: every shot must visually explain its exact narration line. For each scene set
+  "forbidden_mismatches" (topic-irrelevant subjects to reject) so stock search never picks an
+  off-topic clip just because footage exists.`;
 
 /**
  * @param {object} script - generateScript çıktısı (scenes, visual_anchor, topic, category)
@@ -213,6 +232,11 @@ export function applyShotList(script, shotList) {
         title: String(shot.diagram.title || '').trim(),
         steps: shot.diagram.steps.map((s) => String(s).trim()).filter(Boolean).slice(0, 4),
       };
+    }
+    // Semantik yasak-uyumsuzluk listesi (stok görsel reddi + QC alaka ölçümü).
+    if (Array.isArray(shot.forbidden_mismatches) && shot.forbidden_mismatches.length) {
+      scene.forbidden_mismatches = shot.forbidden_mismatches
+        .map((w) => String(w).toLowerCase().trim()).filter(Boolean).slice(0, 5);
     }
   });
   return script;

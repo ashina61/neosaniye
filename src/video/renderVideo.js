@@ -99,11 +99,12 @@ function buildCaptionAss(words, opts) {
   const usableW = width - 2 * marginH;
   const charFactor = 0.56; // Montserrat SemiBold karışık harf yaklaşık genişlik oranı
 
-  // Normal altyazı: SemiBold (Black değil — referans stili daha ince/premium),
-  // alt-orta, beyaz, kenar yok, yumuşak gölge.
+  // Normal altyazı: SemiBold, alt-orta, beyaz. Okunabilirlik için GÜÇLÜ
+  // kenarlık (2.6) + belirgin gölge (2.6) — küçük/düşük kontrast şikâyeti
+  // sonrası artırıldı; her zeminde net, banda gerek kalmadan okunur.
   const capStyle =
-    `Style: Cap,Montserrat SemiBold,${size},&H00FFFFFF,&H00000000,&H98000000,` +
-    `0,1,1.6,2.2,2,${marginH},${marginH},${marginV},1`;
+    `Style: Cap,Montserrat SemiBold,${size},&H00FFFFFF,&H00000000,&HB4000000,` +
+    `0,1,2.6,2.6,2,${marginH},${marginH},${marginV},1`;
   // Vurgu parçası: AYRI ve FARKLI FONTTA (zarif italik serif) — referans stil.
   // Temiz BEYAZ dolgu + KALIN opak siyah kenarlık (outline 0 idi, aydınlık arka
   // planda soluk kalıyordu; altın deneyince cırtlak oldu). Beyaz + güçlü kenarlık
@@ -120,27 +121,30 @@ function buildCaptionAss(words, opts) {
 
   const events = [];
 
-  // Hook kartı: vurgu stilinde (Playfair italik bold), yukarıdan AŞAĞI süzülerek
-  // açılır (move + blur çözülmesi) — sert CAPS blok yerine sinematik başlık.
-  const hk = assEscape(String(hookText || '').trim());
+  // Hook kartı: BÜYÜK, KALIN SANS-SERIF (Montserrat Black), YÜKSEK KONTRAST,
+  // BÜYÜK HARF — ilk 0-1.5sn'de telefonda ilk bakışta okunmalı. İnce dekoratif
+  // serif (Playfair) küçük/soluk kalıyordu (kullanıcı geri bildirimi); scroll-stop
+  // gücü için kalın sans + kalın kenarlık + yarı opak zemin kutusu.
+  const hkRaw = String(hookText || '').trim();
+  const hk = assEscape(hkRaw.toUpperCase());
   if (hk) {
-    // Otomatik boyut: tek satıra sığmazsa 2 satıra sarar; 2 satırı da aşarsa küçül.
-    const hookFactor = 0.5; // Playfair italik ortalama genişlik
-    let hfs = 96;
-    if (hk.length * hookFactor * hfs > 2 * usableW) {
-      hfs = Math.max(56, Math.floor((2 * usableW) / (hk.length * hookFactor)));
+    // Kalın sans daha geniş: tek satıra sığmazsa 2 satıra sarar, sonra küçülür.
+    const hookFactor = 0.62; // Montserrat Black büyük-harf ortalama genişlik
+    let hfs = 104;
+    if (hkRaw.length * hookFactor * hfs > 2 * usableW) {
+      hfs = Math.max(60, Math.floor((2 * usableW) / (hkRaw.length * hookFactor)));
     }
-    // Outline 0 idi — parlak gökyüzü/yaprak üstünde hook eriyip gidiyordu
-    // (canlıda görüldü). Gerçek kenarlık + gölge: her zeminde okunur.
+    // BorderStyle 3 = opak zemin kutusu (BackColour) → en karmaşık arka planda
+    // bile hook net okunur. Kalın kenarlık + güçlü gölge.
     const hStyle =
-      `Style: Hook,Playfair Display,${hfs},&H00FFFFFF,&H00000000,&H78000000,` +
-      `0,1,3,2,8,${marginH},${marginH},380,1`;
+      `Style: Hook,Montserrat Black,${hfs},&H00FFFFFF,&H00000000,&HA0000000,` +
+      `1,3,4,3,8,${marginH},${marginH},360,1`;
     styleLines.push(hStyle);
     const cx = Math.round(width / 2);
     events.push(
       `Dialogue: 1,0:00:00.00,${assTime(hookDuration)},Hook,,0,0,0,,` +
-        `{\\i1\\b1\\fad(160,380)\\move(${cx},330,${cx},392,0,480)` +
-        `\\blur6\\t(0,480,\\blur0.8)\\fscy88\\t(0,480,\\fscy100)}${hk}`,
+        `{\\b1\\fad(140,340)\\move(${cx},322,${cx},384,0,460)` +
+        `\\blur4\\t(0,460,\\blur0)\\fscy90\\t(0,460,\\fscy100)}${hk}`,
     );
   }
 

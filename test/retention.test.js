@@ -22,12 +22,21 @@ import { config } from '../src/config.js';
 const CFG = {
   mode: 'warning',
   minScore: 85,
-  maxStaticSegmentSeconds: 4.5,
-  targetVisualEventInterval: 3.4,
+  maxStaticSegmentSeconds: 4.0,
+  targetVisualEventInterval: 3.2,
+  minVisualEvents: 10,
+  minPatternInterrupts: 3,
+  idealPatternInterrupts: 5,
   firstSpeechDeadlineMs: 900,
   maxHookChars: 30,
+  maxHookWords: 7,
   minCaptionPx: 50,
   maxCaptionWords: 4,
+  minAudibleSfx: 3,
+  maxAudibleSfx: 6,
+  minSfxGapSeconds: 3.0,
+  ctaEarliestRatio: 0.7,
+  minSemanticRelevance: 0.34,
 };
 
 /** Yüksek skor alması gereken "iyi kurgulanmış video" fixture'ı. */
@@ -54,18 +63,25 @@ function strongInput(overrides = {}) {
       start: 0.3 + i * 0.8,
       end: 0.3 + i * 0.8 + 0.5,
     })),
-    // 10 plan / 34s → ort. 3.4s; en uzun statik 4.0s; video payı ~%38.
-    itemSeconds: [3.0, 3.4, 4.0, 3.2, 3.6, 3.4, 3.4, 3.4, 3.2, 3.4],
-    itemTypes: ['video', 'photo', 'photo', 'video', 'photo', 'photo', 'video', 'photo', 'video', 'photo'],
-    itemSources: ['stock', 'archive', 'ai', 'stock', 'gfx', 'ai', 'stock', 'archive', 'stock', 'ai'],
+    // 11 plan / 34s → ort. 3.09s (≤3.2); en uzun statik 3.8s (≤4.0); video payı ~%44.
+    itemSeconds: [3.0, 3.2, 3.8, 3.0, 3.2, 3.0, 3.2, 3.0, 3.2, 3.0, 3.4],
+    itemTypes: ['video', 'photo', 'photo', 'video', 'photo', 'video', 'photo', 'video', 'photo', 'video', 'photo'],
+    itemSources: ['stock', 'archive', 'ai', 'stock', 'gfx', 'ai', 'stock', 'archive', 'stock', 'ai', 'archive'],
     editPlan: {
+      // 10 sınır; iyi aralıklı 4 duyulur sfx (whoosh/impact/whoosh/chime).
       boundaries: [
         { transition: 'cut', sfx: 'whoosh' },
         { transition: 'fade', sfx: 'none' },
+        { transition: 'cut', sfx: 'none' },
         { transition: 'cut', sfx: 'impact' },
+        { transition: 'fade', sfx: 'none' },
+        { transition: 'cut', sfx: 'none' },
         { transition: 'cut', sfx: 'whoosh' },
+        { transition: 'fade', sfx: 'none' },
+        { transition: 'cut', sfx: 'none' },
+        { transition: 'cut', sfx: 'chime' },
       ],
-      subscribeScene: 7, // 10 planın %70'i — geç CTA ✓
+      subscribeScene: 8, // 11 planın %73'ü — geç CTA ✓
     },
     duration: 34,
     lufs: -14,
@@ -159,11 +175,14 @@ test('konuşmadaki ölü boşluklar sayılır ve uyarı üretir', () => {
   assert.ok(r.warnings.some((w) => w.includes('ölü boşluk')));
 });
 
-test('erken abone kartı uyarı üretir', () => {
+test('erken abone kartı GERÇEK puan cezası üretir (sadece uyarı değil)', () => {
   const early = strongInput();
-  early.editPlan = { ...early.editPlan, subscribeScene: 2 }; // 10 planın %20'si
+  early.editPlan = { ...early.editPlan, subscribeScene: 2 }; // 11 planın %18'i
   const r = evaluateRetention(early, CFG);
-  assert.ok(r.warnings.some((w) => w.includes('abone kartı')));
+  const good = evaluateRetention(strongInput(), CFG);
+  // Payoff kategorisinden puan kaybı + fix önerisi (payoff öncesi CTA).
+  assert.ok(r.parts.payoffAndLoop < good.parts.payoffAndLoop, 'erken CTA puan cezası vermedi');
+  assert.ok(r.recommendedFixes.some((f) => f.includes('CTA') || f.includes('Abone')));
 });
 
 // ---- runRetentionQC: mod davranışı + rapor dosyaları ----

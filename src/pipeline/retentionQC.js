@@ -2,6 +2,14 @@ import { writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { config } from '../config.js';
 import { analyzeCaptionLayout } from '../video/captionLayout.js';
+import {
+  countPatternInterrupts,
+  detectMechanismCoverage,
+  classifyFactualCertainty,
+  sfxQuality,
+} from './editorialSignals.js';
+import { summarizeRelevance } from '../media/semanticRelevance.js';
+import { assessHookReadability, assessCaptionReadability } from '../video/readability.js';
 
 /**
  * RETENTION QC — yayın öncesi DETERMİNİSTİK editoryal kalite kapısı.
@@ -75,18 +83,37 @@ export function evaluateRetention(input, cfg = config.retention) {
     if (words[i].start - words[i - 1].end > 1.5) deadAirCount += 1;
   }
 
+  // ---------- yeni editoryal sinyaller (saf, deterministik) ----------
+  const pi = countPatternInterrupts({ itemSources: sources, itemTypes: types, editPlan: input.editPlan });
+  const mech = detectMechanismCoverage(s, sources);
+  const allNarration = (s.scenes || []).map((sc) => sc.narration || '').join(' ') +
+    ' ' + String(s.hook_text || '') + ' ' + String(s.finale_text || '');
+  const certainty = classifyFactualCertainty(allNarration);
+  const sfx = sfxQuality(input.editPlan, secs, { minGap: cfg.minSfxGapSeconds });
+  const relevance = summarizeRelevance(input.itemRelevance || []);
+
   // ---------- A) HOOK (25) ----------
   let hook = 0;
+  let hookRead = null;
   const ht = String(s.hook_text || '').trim();
   const firstNar = String(s.scenes?.[0]?.narration || '').trim();
+  const hookWords = ht.split(/\s+/).filter(Boolean).length;
   if (ht) {
     hook += 5;
     if (ht.length <= cfg.maxHookChars) hook += 3;
     else fixes.push(`hook_text ${ht.length} karakter — ${cfg.maxHookChars} altına indir (kapakta büyük dursun).`);
     if (!WEAK_HOOK.some((r) => r.test(ht)) && !WEAK_HOOK.some((r) => r.test(firstNar))) hook += 5;
     else fixes.push('Zayıf hook kalıbı ("did you know" tarzı) — doğrudan imkânsız iddia/merak boşluğu kullan.');
-    if (PROMISE_HOOK.some((r) => r.test(ht)) || PROMISE_HOOK.some((r) => r.test(firstNar))) hook += 6;
+    if (PROMISE_HOOK.some((r) => r.test(ht)) || PROMISE_HOOK.some((r) => r.test(firstNar))) hook += 5;
     else fixes.push('Hook bir vaat/çelişki/sayı/soru içermiyor — scroll-stop gücü düşük.');
+    // Mobil okunabilirlik: hook 5-7 kelimeyi aşmamalı (ilk bakışta okunmalı).
+    if (hookWords <= cfg.maxHookWords) hook += 3;
+    else fixes.push(`Hook ${hookWords} kelime — ${cfg.maxHookWords} kelimeyi aşıyor, telefonda ilk bakışta okunmaz.`);
+    // 360x640 ön izlemede gerçek görünür boyut (uzun hook = küçük font).
+    hookRead = assessHookReadability(ht, {
+      minPreviewPx: cfg.hookMinPreviewPx ?? 20, maxWords: cfg.maxHookWords, hasContrastBox: true,
+    });
+    if (!hookRead.ok) for (const r of hookRead.reasons) if (!fixes.some((f) => f.includes('Hook'))) fixes.push(`Hook okunabilirlik: ${r}.`);
   } else {
     failures.push('hook_text yok');
   }
@@ -97,36 +124,44 @@ export function evaluateRetention(input, cfg = config.retention) {
       hook += 1;
     }
   }
-  const firstNarWords = firstNar.split(/\s+/).filter(Boolean).length;
-  if (firstNarWords > 0 && firstNarWords <= 16) hook += 2;
 
-  // ---------- B) GÖRSEL TEMPO (20) ----------
+  // ---------- B) GÖRSEL TEMPO + PATTERN INTERRUPT (20) ----------
   let pacing = 0;
   if (avgEventInterval !== null) {
-    if (avgEventInterval <= cfg.targetVisualEventInterval) pacing += 8;
-    else if (avgEventInterval <= cfg.targetVisualEventInterval + 1.3) pacing += 5;
-    else fixes.push(`Ortalama plan süresi ${avgEventInterval}s — hedef ≤${cfg.targetVisualEventInterval}s (daha çok plan/bölme).`);
+    if (avgEventInterval <= cfg.targetVisualEventInterval) pacing += 6;
+    else if (avgEventInterval <= cfg.targetVisualEventInterval + 1.3) pacing += 3;
+    else fixes.push(`Ortalama görsel olay aralığı ${avgEventInterval}s — hedef ≤${cfg.targetVisualEventInterval}s (daha çok plan/bölme).`);
   }
-  if (longestStatic <= cfg.maxStaticSegmentSeconds) pacing += 8;
-  else if (longestStatic <= cfg.maxStaticSegmentSeconds + 1.5) {
-    pacing += 4;
+  if (longestStatic <= cfg.maxStaticSegmentSeconds) pacing += 6;
+  else if (longestStatic <= cfg.maxStaticSegmentSeconds + 1.0) {
+    pacing += 3;
     warnings.push(`en uzun statik plan ${longestStatic}s (hedef ≤${cfg.maxStaticSegmentSeconds}s)`);
-  } else fixes.push(`${longestStatic}s'lik statik plan var — bölünmeli veya harekete çevrilmeli.`);
+  } else fixes.push(`${longestStatic}s statik plan — pattern interrupt (crop/pan/diagram/cutaway) ile bölünmeli.`);
+  // Pattern interrupt: 30-35sn için min/ideal hedef.
+  if (pi.count >= cfg.idealPatternInterrupts) pacing += 5;
+  else if (pi.count >= cfg.minPatternInterrupts) pacing += 3;
+  else fixes.push(`Yalnızca ${pi.count} güçlü pattern interrupt — hedef ≥${cfg.minPatternInterrupts} (yeni kaynak/diagram/harita/cutaway).`);
   const motionShare = 1 - staticShare;
-  if (motionShare >= 0.25) pacing += 4;
-  else if (motionShare >= 0.1) pacing += 2;
+  if (motionShare >= 0.25) pacing += 3;
+  else if (motionShare >= 0.1) pacing += 1;
 
-  // ---------- C) MERAK ZİNCİRİ (15) ----------
+  // ---------- C) MERAK + İÇERİK BÜTÜNLÜĞÜ (15) ----------
   let curiosity = 0;
   const scenes = s.scenes || [];
-  if (scenes.length >= 6 && scenes.length <= 9) curiosity += 4;
+  if (scenes.length >= 6 && scenes.length <= 10) curiosity += 3;
   const twists = scenes.filter((sc) => TWIST_WORDS.test(sc.narration || '')).length;
-  if (twists >= 2) curiosity += 6;
-  else if (twists === 1) curiosity += 3;
+  if (twists >= 2) curiosity += 4;
+  else if (twists === 1) curiosity += 2;
   else fixes.push('Anlatıda dönüş kelimesi (but/until/turns out...) yok — merak zinciri düz.');
-  if (deadAirCount === 0) curiosity += 3;
+  if (deadAirCount === 0) curiosity += 2;
   else warnings.push(`konuşmada ${deadAirCount} ölü boşluk (>1.5s)`);
-  if (String(s.finale_text || '').trim()) curiosity += 2;
+  if (String(s.finale_text || '').trim()) curiosity += 1;
+  // Mekanizma: "nasıl çalışır" anlatan video en az bir açıklayıcı görsel içermeli.
+  if (mech.ok) curiosity += 3;
+  else fixes.push('Mekanizma anlatılıyor ama açıklayıcı görsel (diagram/oklar/ışın) yok — salt B-roll yetmez.');
+  // Olgusal kesinlik: kaynaksız mutlak iddia (definitely/proven...) yumuşatılmalı.
+  if (!certainty.overclaim) curiosity += 2;
+  else fixes.push(`Tartışmalı iddia kesin dille ("${certainty.absolute ? 'definitely/proven' : ''}") — "may/experiments suggest" ile yumuşat.`);
 
   // ---------- D) ALTYAZI (10) ----------
   // Metin uzunluğu tahmini DEĞİL: render'ın kullandığı gerçek yerleşim
@@ -134,6 +169,7 @@ export function evaluateRetention(input, cfg = config.retention) {
   // ve güvenli alan render ile birebir aynı hesaptan doğrulanır.
   let captions = 0;
   let capLayout = null;
+  let capRead = null;
   if (words.length) {
     capLayout = analyzeCaptionLayout(words, { emphasisWords: input.emphasisWords || [] });
     if (!capLayout.safeArea.ok) {
@@ -147,37 +183,54 @@ export function evaluateRetention(input, cfg = config.retention) {
     else warnings.push(`ekranda aynı anda ${capLayout.maxWordsOnScreen} kelime (hedef ≤${cfg.maxCaptionWords})`);
     if (capLayout.belowFloorCount === 0) captions += 3;
     else warnings.push(`${capLayout.belowFloorCount} altyazı olayı font tabanına rağmen sığmıyor (çok uzun kelime)`);
+    // Güvenli alan içinde OLSA BİLE mobil görünür boyut düşükse yakala.
+    capRead = assessCaptionReadability({
+      minFontPx: capLayout.minFontUsed, outlinePx: 2.6, minPreviewPx: cfg.captionMinPreviewPx ?? 15,
+    });
+    if (!capRead.ok) warnings.push(`altyazı okunabilirlik: ${capRead.reason}`);
   } else {
     // Kelime akışı yoksa yerleşim değerlendirilemez; yapı ayarına bakılır.
     if (config.video.captionWordsPerLine <= cfg.maxCaptionWords) captions += 3;
     captions += 3;
   }
 
-  // ---------- E) GÖRSEL ÇEŞİTLİLİK (10) ----------
+  // ---------- E) GÖRSEL ÇEŞİTLİLİK + SEMANTİK ALAKA (10) ----------
   let variety = 0;
   const srcSet = new Set(sources);
-  if (srcSet.size >= 3) variety += 4;
-  else if (srcSet.size === 2) variety += 2;
+  if (srcSet.size >= 3) variety += 3;
+  else if (srcSet.size === 2) variety += 1;
   let maxRun = 0;
   let run = 0;
   for (let i = 0; i < sources.length; i += 1) {
     run = i > 0 && sources[i] === sources[i - 1] ? run + 1 : 1;
     maxRun = Math.max(maxRun, run);
   }
-  if (maxRun <= 3 || (sources[0] === 'stock' && maxRun === sources.length)) variety += 3;
+  if (maxRun <= 3 || (sources[0] === 'stock' && maxRun === sources.length)) variety += 2;
   if (!sources.includes('placeholder')) variety += 3;
   else failures.push('placeholder görsel üretimde — asset zinciri incelenmeli');
+  // Semantik alaka: görseller cümleyi gerçekten açıklamalı (alakasız stok yasak).
+  if (relevance.count === 0 || (relevance.mismatchCount === 0 && (relevance.mean ?? 1) >= cfg.minSemanticRelevance)) {
+    variety += 2;
+  } else {
+    fixes.push(`${relevance.mismatchCount} sahnede görsel anlatımla alakasız (alaka<${cfg.minSemanticRelevance}) — konuyu açıklayan görselle değiştir.`);
+  }
 
   // ---------- F) SES TASARIMI (10) ----------
   let audio = 0;
-  if (input.audioPresent) audio += 4;
+  if (input.audioPresent) audio += 3;
   else failures.push('ses akışı yok');
-  if (input.lufs !== null && input.lufs >= -16.5 && input.lufs <= -12.5) audio += 3;
+  if (input.lufs !== null && input.lufs >= -16.5 && input.lufs <= -12.5) audio += 2;
   else if (input.lufs !== null) warnings.push(`loudness ${input.lufs} LUFS (hedef -14±2)`);
-  const sfxList = (input.editPlan?.boundaries || []).map((b) => b.sfx).filter((x) => x && x !== 'none');
-  if (sfxList.length >= 2 && sfxList.length <= 6) audio += 2;
-  else if (input.editPlan) warnings.push(`duyulur sfx sayısı ${sfxList.length} (hedef 2-6)`);
-  if (new Set(sfxList).size >= Math.min(2, sfxList.length)) audio += 1;
+  // Duyulur sfx yeterliliği: 30-35sn bilgi videosu için min 3 (ideal 3-5, max 6).
+  if (sfx.count >= cfg.minAudibleSfx && sfx.count <= cfg.maxAudibleSfx) audio += 3;
+  else if (sfx.count >= 1) { audio += 1; fixes.push(`Yalnızca ${sfx.count} duyulur sfx — hedef ${cfg.minAudibleSfx}-${cfg.maxAudibleSfx} anlamlı, zamanlı vuruş.`); }
+  else if (input.editPlan) fixes.push('Hiç duyulur sfx yok — hook/reveal/final anlarına anlamlı vuruşlar ekle.');
+  // Aralık + çeşitlilik: birbirine çok yakın veya hep aynı sfx puan kazandırmaz.
+  if (sfx.count >= 2) {
+    if (sfx.spacedOk && sfx.distinctCount >= 2) audio += 2;
+    else if (!sfx.spacedOk) warnings.push(`sfx'ler çok sık (${sfx.minGapSeconds}s < ${cfg.minSfxGapSeconds}s) — seyrelt.`);
+    else warnings.push('sfx çeşitliliği düşük — aynı efekt tekrar ediyor.');
+  }
 
   // ---------- G) FİNAL + LOOP (10) ----------
   let payoff = 0;
@@ -185,9 +238,11 @@ export function evaluateRetention(input, cfg = config.retention) {
   else fixes.push('finale_text yok — kapanış vuruşu eksik.');
   if (config.video.tailSeconds <= 0.6) payoff += 3;
   else warnings.push(`kuyruk ${config.video.tailSeconds}s — loop hissi için ≤0.6s`);
+  // CTA/abone kartı: payoff öncesi (ilk %70) görünürse GERÇEK puan cezası.
   const subScene = input.editPlan?.subscribeScene;
-  if (subScene === undefined || subScene === null || planCount === 0 || subScene / planCount >= 0.55) payoff += 3;
-  else warnings.push('abone kartı hikâyenin ilk yarısında — geç bölüme alınmalı');
+  const ctaRatio = (subScene !== undefined && subScene !== null && planCount > 0) ? subScene / planCount : null;
+  if (ctaRatio === null || ctaRatio >= cfg.ctaEarliestRatio) payoff += 3;
+  else fixes.push(`Abone/CTA kartı %${Math.round(ctaRatio * 100)}'de (payoff öncesi) — son %${Math.round((1 - cfg.ctaEarliestRatio) * 100)}'e al veya kaldır.`);
 
   const parts = {
     hook: clamp(hook, 0, 25),
@@ -211,7 +266,17 @@ export function evaluateRetention(input, cfg = config.retention) {
       staticShare,
       deadAirCount,
       twistCount: twists,
-      sfxCount: sfxList.length,
+      sfxCount: sfx.count,
+      patternInterrupts: pi.count,
+      patternInterruptIndices: pi.indices,
+      sfxCues: sfx.cues,
+      sfxMinGapSeconds: sfx.minGapSeconds,
+      mechanism: { isMechanism: mech.isMechanism, hasExplanatoryVisual: mech.hasExplanatoryVisual, ok: mech.ok },
+      factualCertainty: { level: certainty.level, overclaim: certainty.overclaim },
+      semanticRelevance: relevance,
+      hookWords,
+      hookReadability: hookRead ? { previewPx: hookRead.previewPx, ok: hookRead.ok } : null,
+      captionReadability: capRead ? { previewPx: capRead.previewPx, ok: capRead.ok } : null,
       sourceMix: [...srcSet].join('+'),
       durationSeconds: +duration.toFixed(1),
       captionLayout: capLayout

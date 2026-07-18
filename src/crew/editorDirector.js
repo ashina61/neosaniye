@@ -74,10 +74,16 @@ You receive a scene-by-scene story. Design the edit like a pro:
   emotion shifts (a reveal, a time jump, entering the twist). Never more than ~40% animated.
 - Sound tells the story: place 'impact' exactly at the biggest shock/twist boundary, 'riser' on the
   boundary building INTO a reveal, 'shimmer' at a moment of wonder, 'whoosh' for time/place jumps.
+- SFX DISCIPLINE (required): aim for 3-5 audible sfx per video — minimum 3, never fewer, never more
+  than 6. Each must land ON a meaningful narration moment (hook entry, the crystal/object reveal,
+  the split/reveal, the final resolution) — NOT random. Space them out (don't stack two within a few
+  seconds) and vary the type. Never add a whoosh just to hit a count.
 - EVERY animated (non-cut) transition MUST carry an sfx — a silent animated wipe feels broken.
-  'none' is allowed ONLY on plain cuts. Aim for 3-5 audible sfx per video total.
+  'none' is allowed ONLY on plain cuts.
 - Pick the music mood by the story's FEELING, not its surface topic (a dark science story = mystery).
-- Place the subscribe reminder LATE: in the final third of the story, right after a payoff beat — never mid-story (it interrupts immersion).
+- Place the subscribe reminder in the LAST 20-30% of the story ONLY, right after the payoff beat —
+  NEVER before the payoff, never mid-story (an early CTA cuts retention and is penalized). If no
+  natural late beat exists, omit it entirely.
 - Choose ONE ambience bed for the whole video: the real-world background sound of the story's main
   SETTING (a battlefield, a jungle, a lab, deep space). It plays very quietly under the music and
   makes the video feel like real footage instead of narrated slides. Keep the query generic enough

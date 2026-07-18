@@ -73,12 +73,30 @@ export const config = {
     // için strict yalnızca bilinçli olarak açılmalı.
     mode: process.env.RETENTION_QC_MODE || 'warning',
     minScore: Number(process.env.RETENTION_MIN_SCORE || 85),
-    maxStaticSegmentSeconds: Number(process.env.QC_MAX_STATIC_SECONDS || 4.5),
-    targetVisualEventInterval: Number(process.env.QC_TARGET_EVENT_INTERVAL || 3.4),
+    // TEMPO (Viking videosu düzeltmesi: 5.79s ort / 7.26s statik → sıkılaştırıldı).
+    maxStaticSegmentSeconds: Number(process.env.QC_MAX_STATIC_SECONDS || 4.0),
+    targetVisualEventInterval: Number(process.env.QC_TARGET_EVENT_INTERVAL || 3.2),
+    // 30-35sn videoda anlamlı görsel olay ve pattern interrupt hedefleri.
+    minVisualEvents: Number(process.env.QC_MIN_VISUAL_EVENTS || 10),
+    minPatternInterrupts: Number(process.env.QC_MIN_PATTERN_INTERRUPTS || 3),
+    idealPatternInterrupts: Number(process.env.QC_IDEAL_PATTERN_INTERRUPTS || 5),
     firstSpeechDeadlineMs: Number(process.env.QC_FIRST_SPEECH_MS || 900),
     maxHookChars: Number(process.env.QC_MAX_HOOK_CHARS || 30),
+    maxHookWords: Number(process.env.QC_MAX_HOOK_WORDS || 7),
     minCaptionPx: Number(process.env.QC_MIN_CAPTION_PX || 50),
     maxCaptionWords: Number(process.env.QC_MAX_CAPTION_WORDS || 4),
+    // SES: 30-35sn bilgi videosu için duyulur sfx min/ideal/max + aralık.
+    minAudibleSfx: Number(process.env.QC_MIN_SFX || 3),
+    maxAudibleSfx: Number(process.env.QC_MAX_SFX || 6),
+    minSfxGapSeconds: Number(process.env.QC_MIN_SFX_GAP || 3.0),
+    // CTA/abone kartı en erken bu orandan sonra görünebilir (payoff öncesi yasak).
+    ctaEarliestRatio: Number(process.env.QC_CTA_EARLIEST_RATIO || 0.7),
+    // Semantik alaka: bu eşiğin altındaki asset o sahne için reddedilir.
+    minSemanticRelevance: Number(process.env.QC_MIN_RELEVANCE || 0.34),
+    // Mobil okunabilirlik: 360x640 ön izlemede görünür minimum piksel yüksekliği
+    // (fontSize≥52 tek başına yetmez — asıl ölçü telefondaki gerçek boyut).
+    hookMinPreviewPx: Number(process.env.QC_HOOK_MIN_PREVIEW_PX || 20),
+    captionMinPreviewPx: Number(process.env.QC_CAPTION_MIN_PREVIEW_PX || 15),
     // Altyazı güvenli alanı: alt kenardan en az bu kadar boşluk (YouTube
     // Shorts UI başlık/açıklama bandı alt ~220px'i kapatır) ve altyazı bloğu
     // ekranın üst yarısına taşmamalı.

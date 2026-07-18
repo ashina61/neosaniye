@@ -1,0 +1,37 @@
+
+===== ESKİ (raporlanan yapı ≈ 74/100) =====
+SKOR: 62/100  (⚠️ <85)
+kategoriler: {"hook":25,"visualPacing":5,"curiosity":7,"captions":10,"visualVariety":6,"audioDesign":6,"payoffAndLoop":3}
+sahne: 6 | ort. görsel olay aralığı: 5.83s | en uzun statik: 6s
+pattern interrupts: 6 | sfx: 1 | semantik mismatch: 1
+mekanizma açıklayıcı görsel: false | overclaim: false | finale: YOK
+sfx cue planı (sn): [{"atSeconds":6,"sfx":"whoosh"}]
+fixler:
+  - Ortalama görsel olay aralığı 5.83s — hedef ≤3.2s (daha çok plan/bölme).
+  - 6s statik plan — pattern interrupt (crop/pan/diagram/cutaway) ile bölünmeli.
+  - Anlatıda dönüş kelimesi (but/until/turns out...) yok — merak zinciri düz.
+  - Mekanizma anlatılıyor ama açıklayıcı görsel (diagram/oklar/ışın) yok — salt B-roll yetmez.
+  - 1 sahnede görsel anlatımla alakasız (alaka<0.34) — konuyu açıklayan görselle değiştir.
+  - Yalnızca 1 duyulur sfx — hedef 3-6 anlamlı, zamanlı vuruş.
+  - finale_text yok — kapanış vuruşu eksik.
+  - Abone/CTA kartı %50'de (payoff öncesi) — son %30'e al veya kaldır.
+
+===== YENİ (önerilen akış) =====
+SKOR: 91/100  (✅ ≥85)
+kategoriler: {"hook":25,"visualPacing":20,"curiosity":8,"captions":10,"visualVariety":8,"audioDesign":10,"payoffAndLoop":10}
+sahne: 11 | ort. görsel olay aralığı: 3.14s | en uzun statik: 3.6s
+pattern interrupts: 11 | sfx: 4 | semantik mismatch: 0
+mekanizma açıklayıcı görsel: true | overclaim: false | finale: var
+sfx cue planı (sn): [{"atSeconds":3,"sfx":"whoosh"},{"atSeconds":9.2,"sfx":"shimmer"},{"atSeconds":22.4,"sfx":"riser"},{"atSeconds":31.6,"sfx":"impact"}]
+fixler:
+  - Anlatıda dönüş kelimesi (but/until/turns out...) yok — merak zinciri düz.
+
+===== KARŞILAŞTIRMA =====
+skor                           ESKİ: 62         YENİ: 91
+sahne/plan                     ESKİ: 6          YENİ: 11
+ort. görsel olay aralığı       ESKİ: 5.83       YENİ: 3.14
+en uzun statik segment         ESKİ: 6          YENİ: 3.6
+pattern interrupts             ESKİ: 6          YENİ: 11
+sfx sayısı                     ESKİ: 1          YENİ: 4
+semantik mismatch              ESKİ: 1          YENİ: 0
+mekanizma görseli              ESKİ: false      YENİ: true

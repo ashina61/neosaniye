@@ -226,6 +226,17 @@ Rules for each scene:
 Rules for the whole script:
 - Pick a genuinely FASCINATING, lesser-known TRUE story or fact. Prefer the "wait, what?!" kind.
 - ACCURACY IS MANDATORY. Use only well-documented, widely-accepted facts. Never invent events, quotes, names, or statistics. If a specific number or detail is uncertain, phrase it cautiously ("around", "some historians say") or leave it out. A wrong fact destroys the channel's credibility.
+- FACTUAL CERTAINTY: match your wording to how established each claim is. Only use absolute language
+  ("definitely", "proven", "always") for firmly established facts. For a supported-but-unproven theory
+  or a debated point, HEDGE explicitly ("may have", "experiments suggest it could have worked",
+  "historians still debate"). Never present a debated theory as certain.
+- hook_text: MAX 5-7 words, a bold promise/question read at a glance on a phone — not a full sentence.
+- LOOP: the finale_text should answer the very question the hook opened, so the end flows back into
+  the beginning (hook: "How did Vikings find the Sun through clouds?" → finale: "by finding the Sun
+  they couldn't see"). Never leave the finale incomplete just to force a loop.
+- MECHANISM: if the story explains HOW something works, at least one scene's narration must state the
+  actual working principle in a way that can be shown as a 2-4 step visual (light enters → splits →
+  brightness compared → direction found), not just "it worked".
 - cta: short, specific to this story, and DIFFERENT every time (never a generic "Follow for more facts"). It is NOT spoken — description/on-screen only — so do not write it as a narration line.
 - title: curiosity-driven, <= 80 characters, no clickbait lies, no emojis.
 - MONETIZATION-SAFE LANGUAGE: the title, hook_text, and the FIRST scene's narration must be

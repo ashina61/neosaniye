@@ -25,6 +25,7 @@ import { getRecentMusic } from '../lib/firestore.js';
 import { describeMusicTrack } from '../audio/musicSelect.js';
 import { detectSlot } from './scheduleExperiment.js';
 import { emptySlotMetrics } from '../analytics/experimentMetrics.js';
+import { semanticRelevanceScore } from '../media/semanticRelevance.js';
 import { recordProduction } from './recordProduction.js';
 import { notify } from '../lib/notify.js';
 
@@ -234,6 +235,15 @@ export async function runPipeline(opts = {}) {
     // upload'u engeller (video artifact olarak kalır, akış kırılmaz).
     const wSum = itemWeights.reduce((a, b) => a + b, 0) || 1;
     const itemSeconds = itemWeights.map((w) => (w / wSum) * video.duration);
+    // Semantik alaka (best-effort): stok görsellerin anahtar kelimesi o sahnenin
+    // anlatımıyla örtüşüyor mu? AI/gfx/arşiv üretimde konu-türevi olduğundan
+    // null (cezasız); yalnızca stok/pexels için ölçülür (alakasız stok yakalanır).
+    const itemRelevance = media.items.map((m) => {
+      if (!m.keyword || !['stock', 'pexels'].includes(m.source)) return null;
+      const nar = script.scenes?.[m.scene]?.narration || '';
+      const forbidden = script.scenes?.[m.scene]?.forbidden_mismatches || [];
+      return semanticRelevanceScore(nar, m.keyword, { forbiddenMismatches: forbidden }).score;
+    });
     const qc = await runRetentionQC({
       script,
       wordTimings: audio.wordTimings,
@@ -241,6 +251,7 @@ export async function runPipeline(opts = {}) {
       itemSeconds,
       itemTypes: media.items.map((m) => m.type),
       itemSources: media.items.map((m) => m.source),
+      itemRelevance,
       editPlan,
       duration: video.duration,
       lufs: pf.metrics.lufs ?? null,
