@@ -3,7 +3,12 @@ import assert from 'node:assert/strict';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { evaluateRetention, runRetentionQC } from '../src/pipeline/retentionQC.js';
+import {
+  evaluateRetention,
+  runRetentionQC,
+  uploadGate,
+  computeUploadEligibility,
+} from '../src/pipeline/retentionQC.js';
 import { config } from '../src/config.js';
 
 /**
@@ -180,7 +185,7 @@ async function withMode(mode, minScore, fn) {
 test('disabled modda hiçbir şey yapılmaz', async () => {
   await withMode('disabled', 85, async (dir) => {
     const res = await runRetentionQC(strongInput(), dir);
-    assert.deepEqual(res, { score: null, ok: true, blockUpload: false, report: null });
+    assert.deepEqual(res, { score: null, ok: true, blockUpload: false, report: null, error: null });
   });
 });
 
@@ -238,6 +243,133 @@ test('kategori puanları üst sınırlara sabitlenir (clamp)', () => {
   const total = Object.values(r.parts).reduce((a, b) => a + b, 0);
   assert.equal(r.score, total);
   assert.ok(r.score <= 100);
+});
+
+// ---- QC'nin KENDİSİ çökerse (fail-closed sözleşmesi) ----
+// script alanına erişim anında patlayan Proxy: evaluateRetention'ı gerçek bir
+// istisnayla düşürür — sahte "throw" mock'u değil, gerçek çalışma yolu.
+function explodingInput() {
+  return {
+    ...strongInput(),
+    script: new Proxy({}, {
+      get() {
+        throw new Error('QC iç hatası (test)');
+      },
+    }),
+  };
+}
+
+test('strict mod + QC exception → FAIL-CLOSED: upload engellenir', async () => {
+  await withMode('strict', 85, async (dir) => {
+    const res = await runRetentionQC(explodingInput(), dir);
+    assert.equal(res.blockUpload, true, 'QC hatası strict modda kapıyı bypass etti!');
+    assert.equal(res.report.productionReady, false);
+    assert.equal(res.report.qcExecution.status, 'error');
+    assert.ok(res.report.qcExecution.error.includes('QC iç hatası'));
+    assert.equal(res.error, res.report.qcExecution.error);
+  });
+});
+
+test('warning mod + QC exception → rapor yazılır, yayın politikası korunur', async () => {
+  await withMode('warning', 85, async (dir) => {
+    const res = await runRetentionQC(explodingInput(), dir);
+    assert.equal(res.blockUpload, false);
+    assert.equal(res.report.productionReady, false);
+    assert.equal(res.report.qcExecution.status, 'error');
+    // Artifact korunur: rapor dosyası hataya rağmen diske yazılmış olmalı.
+    const json = JSON.parse(await readFile(path.join(dir, 'production-report.json'), 'utf8'));
+    assert.equal(json.qcExecution.status, 'error');
+    assert.ok(json.qcExecution.error.includes('QC iç hatası'));
+    const md = await readFile(path.join(dir, 'production-report.md'), 'utf8');
+    assert.ok(md.includes('ÇALIŞTIRILAMADI'));
+  });
+});
+
+test('disabled mod + bozuk girdi → eski davranış (passthrough) korunur', async () => {
+  await withMode('disabled', 85, async (dir) => {
+    const res = await runRetentionQC(explodingInput(), dir);
+    assert.deepEqual(res, { score: null, ok: true, blockUpload: false, report: null, error: null });
+  });
+});
+
+// ---- TEK ORTAK UPLOAD KAPISI (üç platform) ----
+
+test('uploadGate: preflight veya QC bloklarsa kapı kapalı, ikisi de temizse açık', () => {
+  assert.equal(uploadGate({ preflightOk: false, qc: { blockUpload: false } }), false);
+  assert.equal(uploadGate({ preflightOk: true, qc: { blockUpload: true } }), false);
+  assert.equal(uploadGate({ preflightOk: false, qc: { blockUpload: true } }), false);
+  assert.equal(uploadGate({ preflightOk: true, qc: { blockUpload: false } }), true);
+});
+
+test('strict fail → YouTube, Instagram, Facebook ÜÇÜ DE bloklanır', async () => {
+  await withMode('strict', 85, async (dir) => {
+    const bad = strongInput({ audioPresent: false }); // kritik hata
+    const res = await runRetentionQC(bad, dir, {
+      technicalPassed: true,
+      uploadRequested: true,
+      platforms: { youtube: true, instagram: true, facebook: true },
+    });
+    const el = res.report.uploadEligibility;
+    assert.equal(el.youtube, false);
+    assert.equal(el.instagram, false);
+    assert.equal(el.facebook, false);
+    assert.ok(el.reasons.some((x) => x.includes('strict')));
+  });
+});
+
+test('başarılı QC → platformlar mevcut yapılandırmaya göre uygun işaretlenir', async () => {
+  await withMode('warning', 85, async (dir) => {
+    const res = await runRetentionQC(strongInput(), dir, {
+      technicalPassed: true,
+      uploadRequested: true,
+      platforms: { youtube: true, instagram: false, facebook: true },
+    });
+    const el = res.report.uploadEligibility;
+    assert.equal(el.youtube, true);
+    assert.equal(el.instagram, false); // kredensiyel yok → uygun değil
+    assert.equal(el.facebook, true);
+    assert.ok(el.reasons.some((x) => x.includes('instagram yapılandırılmamış')));
+  });
+});
+
+test('teknik preflight başarısızsa hiçbir platform uygun olamaz', () => {
+  const el = computeUploadEligibility({
+    uploadRequested: true,
+    technicalPassed: false,
+    blockUpload: false,
+    execError: null,
+    scoreOk: true,
+    mode: 'warning',
+    platforms: { youtube: true, instagram: true, facebook: true },
+  });
+  assert.equal(el.youtube, false);
+  assert.equal(el.instagram, false);
+  assert.equal(el.facebook, false);
+  assert.ok(el.reasons.some((x) => x.includes('teknik preflight')));
+});
+
+test('genişletilmiş rapor şeması: qcMode, qcExecution, technicalValidation, uploadEligibility', async () => {
+  await withMode('warning', 85, async (dir) => {
+    const technical = { videoStreamPresent: true, audioStreamPresent: true, resolution: '1080x1920', fps: 30 };
+    const res = await runRetentionQC(strongInput(), dir, {
+      technical,
+      technicalPassed: true,
+      uploadRequested: true,
+      platforms: { youtube: true, instagram: true, facebook: true },
+    });
+    const json = JSON.parse(await readFile(path.join(dir, 'production-report.json'), 'utf8'));
+    assert.equal(json.qcMode, 'warning');
+    assert.equal(json.qcExecution.status, 'passed');
+    assert.equal(json.qcExecution.error, null);
+    assert.deepEqual(json.technicalValidation, technical);
+    for (const p of ['youtube', 'instagram', 'facebook']) {
+      assert.ok(p in json.uploadEligibility, `uploadEligibility.${p} eksik`);
+    }
+    assert.ok(Array.isArray(json.uploadEligibility.reasons));
+    assert.equal(json.productionReady, true);
+    assert.ok(json.metrics.captionLayout, 'metrics.captionLayout eksik');
+    assert.equal(res.report.productionReady, true);
+  });
 });
 
 test('boş/eksik girdilerde çökmez, düşük skor + hata döner', () => {

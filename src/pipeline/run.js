@@ -19,7 +19,7 @@ import { postFirstComment, updateVideoStats } from '../youtube/engage.js';
 import { buildSrtFromWords, uploadCaptions } from '../youtube/captions.js';
 import { crossPost } from '../social/meta.js';
 import { preflightCheck } from './preflight.js';
-import { runRetentionQC } from './retentionQC.js';
+import { runRetentionQC, uploadGate } from './retentionQC.js';
 import { recordProduction } from './recordProduction.js';
 import { notify } from '../lib/notify.js';
 
@@ -197,14 +197,17 @@ export async function runPipeline(opts = {}) {
     });
     console.log(`  ${video.width}x${video.height}, ${video.duration.toFixed(1)}s -> ${outPath}`);
 
-    // 4.5) Yayın öncesi kalite kontrolü — bozuk video YouTube'a gitmez.
+    // 4.5) Yayın öncesi TEKNİK kalite kontrolü — final MP4 üzerinde ffprobe/
+    // ffmpeg taraması (decode, siyah/donma/sessizlik, loudness). Bozuk video
+    // hiçbir platforma gitmez.
     log('Faz 4.5: Kalite kontrolü (preflight)...');
-    const pf = await preflightCheck(outPath);
+    const pf = await preflightCheck(outPath, { expectedDuration: video.duration });
     console.log(`  metrikler: ${JSON.stringify(pf.metrics)}`);
+    for (const w of pf.warnings || []) console.warn(`  ⚠️ ${w}`);
     if (!pf.ok) {
       console.error(`  ❌ preflight başarısız: ${pf.issues.join(' | ')}`);
     } else {
-      console.log('  ✅ tüm kontroller geçti');
+      console.log('  ✅ tüm sert kontroller geçti');
     }
 
     // 4.6) RETENTION QC — deterministik editoryal kapı (rapor + mod kararı).
@@ -215,6 +218,7 @@ export async function runPipeline(opts = {}) {
     const qc = await runRetentionQC({
       script,
       wordTimings: audio.wordTimings,
+      emphasisWords: script.emphasis_words || [],
       itemSeconds,
       itemTypes: media.items.map((m) => m.type),
       itemSources: media.items.map((m) => m.source),
@@ -222,14 +226,36 @@ export async function runPipeline(opts = {}) {
       duration: video.duration,
       lufs: pf.metrics.lufs ?? null,
       audioPresent: !pf.issues.some((i) => i.includes('ses akışı')),
-    }, workDir).catch((err) => {
-      console.error(`[qc] retention QC çalışmadı: ${err.message}`);
-      return { score: null, ok: true, blockUpload: false, report: null };
+    }, workDir, {
+      technical: pf.technical || null,
+      technicalPassed: pf.ok,
+      uploadRequested: willUpload,
+      platforms: {
+        youtube: Boolean(hasYouTube),
+        instagram: Boolean(
+          config.meta.userToken || config.meta.igLoginToken ||
+          (config.meta.pageToken && config.meta.igUserId),
+        ),
+        facebook: Boolean(
+          config.meta.userToken || (config.meta.pageToken && config.meta.pageId),
+        ),
+      },
+    }).catch((err) => {
+      // QC'nin KENDİSİ çöktü (rapor bile yazılamadı) — mod sözleşmesi:
+      // warning: hata loglanır, mevcut yayın politikası korunur.
+      // strict: FAIL-CLOSED — QC hatası yayın kapısını bypass edemez.
+      const strict = config.retention.mode === 'strict';
+      console.error(`[qc] RETENTION QC ÇALIŞTIRILAMADI: ${err.message}`);
+      if (strict) console.error('[qc] STRICT mod fail-closed: upload ENGELLENDİ.');
+      return { score: null, ok: false, blockUpload: strict, report: null, error: err.message };
     });
 
-    // 6) Upload (opsiyonel + preflight + strict-QC şartlı)
+    // 6) Upload — TEK ORTAK KAPI: YouTube + Instagram + Facebook'un ÜÇÜ DE
+    // bu bloğun içindedir; uploadGate (teknik preflight + QC mod kararı)
+    // geçilmeden hiçbir platforma yayın yapılmaz, platform bazlı bypass yoktur.
     let youtube = null;
-    if (willUpload && pf.ok && !qc.blockUpload) {
+    const canUpload = uploadGate({ preflightOk: pf.ok, qc });
+    if (willUpload && canUpload) {
       log('Faz 6: YouTube upload...');
       const meta = await buildMetadata(script);
       // Açık lisans atıfları (CC BY/BY-SA arşiv görselleri lisans gereği).
@@ -275,7 +301,11 @@ export async function runPipeline(opts = {}) {
       ].join('\n');
       await writeFile(path.join(workDir, 'publish-kit.txt'), kit).catch(() => {});
     } else if (willUpload && pf.ok && qc.blockUpload) {
-      console.log('\n▶ Faz 6: upload İPTAL (strict retention QC) — video artifact olarak duruyor.');
+      console.log(
+        qc.error
+          ? '\n▶ Faz 6: upload İPTAL (strict: QC hatası, fail-closed) — video artifact olarak duruyor.'
+          : '\n▶ Faz 6: upload İPTAL (strict retention QC) — video artifact olarak duruyor.',
+      );
     } else if (willUpload && !pf.ok) {
       console.log('\n▶ Faz 6: upload İPTAL (preflight başarısız) — video artifact olarak duruyor.');
     } else {
@@ -324,7 +354,14 @@ export async function runPipeline(opts = {}) {
       duration: video.duration,
       visualStyle, // Baş Analist stile göre öğrensin
       retention: qc.report ? { score: qc.score, status: qc.report.status } : null,
-      status: youtube ? 'published' : pf.ok ? 'rendered' : 'failed_preflight',
+      // 'blocked_qc': strict QC engelledi — yayınlanmış GİBİ görünmesin.
+      status: youtube
+        ? 'published'
+        : !pf.ok
+          ? 'failed_preflight'
+          : willUpload && qc.blockUpload
+            ? 'blocked_qc'
+            : 'rendered',
       youtube,
     });
     console.log(`  kayıt id: ${videoId}`);
@@ -333,9 +370,11 @@ export async function runPipeline(opts = {}) {
     const msg = youtube
       ? `✅ neosaniye: "${script.topic}" yayında (${video.duration.toFixed(0)}s, ` +
         `AI:${media.sources.ai}/${media.items.length})\n${youtube.url}`
-      : pf.ok
-        ? `🎬 neosaniye: "${script.topic}" üretildi (upload atlandı).`
-        : `⚠️ neosaniye: "${script.topic}" preflight'a takıldı: ${pf.issues.join(' | ')}`;
+      : willUpload && pf.ok && qc.blockUpload
+        ? `🛑 neosaniye: "${script.topic}" strict QC'ye takıldı (skor ${qc.score ?? 'yok'}) — artifact'te duruyor.`
+        : pf.ok
+          ? `🎬 neosaniye: "${script.topic}" üretildi (upload atlandı).`
+          : `⚠️ neosaniye: "${script.topic}" preflight'a takıldı: ${pf.issues.join(' | ')}`;
     await notify(msg).catch(() => {});
 
     if (willUpload && !pf.ok) {

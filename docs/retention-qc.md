@@ -13,12 +13,23 @@ Eşikler: `src/config.js → config.retention`
 ## Pipeline'daki yeri
 
 ```
-... → Montaj (render) → Preflight (teknik) → Retention QC (editoryal) → Upload
+... → Montaj (render) → Preflight (teknik, final MP4 üzerinde) → Retention QC (editoryal) → TEK UPLOAD KAPISI → YT + IG + FB
 ```
 
 `src/pipeline/run.js` preflight'tan hemen sonra `runRetentionQC(...)` çağırır.
-QC çökerse bile üretim durmaz (hata loglanır, video yayınlanır) — günlük akış
-QC yüzünden asla kesilmez.
+
+**Tek ortak upload kapısı:** YouTube, Instagram ve Facebook'un ÜÇÜ de aynı
+`uploadGate({preflightOk, qc})` koşulundan geçer (`run.js` Faz 6 bloğu).
+Kapı = teknik preflight geçti **VE** QC mod kararı engel koymadı. Platform
+bazlı bypass yoktur; IG/FB cross-post yalnızca aynı bloğun içinde çalışır.
+
+**QC'nin kendisi çökerse (hata sözleşmesi):**
+
+| Mod | Davranış |
+|---|---|
+| `disabled` | QC çalışmaz, üretim etkilenmez. |
+| `warning` | Hata rapora yazılır (`qcExecution.status='error'`), `productionReady=false`; mevcut yayın politikası korunur, render artifact'i kalır. |
+| `strict` | **FAIL-CLOSED:** upload kesinlikle iptal, `productionReady=false`, hata açıkça loglanır. QC hatası yayın kapısını asla bypass edemez. Kayıt `blocked_qc` status'üyle düşer — yayınlanmış gibi görünmez. |
 
 ## Modlar
 
@@ -44,13 +55,38 @@ Mod, GitHub → Settings → Actions → Variables üzerinden ayarlanır:
 | Hook | 25 | hook_text var mı (5) · ≤30 karakter (3) · zayıf kalıp yok ("did you know", "today we"...) (5) · vaat/sayı/soru/çelişki içeriyor (6) · ilk konuşma ≤900ms (4) · ilk cümle ≤16 kelime (2) |
 | Görsel tempo | 20 | ortalama plan süresi ≤3.4s (8) · en uzun statik plan ≤4.5s (8) · hareketli görüntü payı ≥%25 (4) |
 | Merak zinciri | 15 | 6-9 sahne (4) · ≥2 dönüş kelimesi (but/until/turns out...) (6) · konuşmada ölü boşluk yok (3) · finale_text var (2) |
-| Altyazı | 10 | punto ≥50px (4) · satırda ≤4 kelime (3) · 24+ karakterlik kelime yok (3) |
+| Altyazı | 10 | punto ≥50px (4) · ekranda aynı anda ≤4 kelime (3) · tüm olaylar font tabanına sığıyor (3) — GERÇEK yerleşim hesabıyla (render ile aynı `captionLayout.js` matematiği; safe-area ihlali ayrıca **kritik hata**) |
 | Görsel çeşitlilik | 10 | ≥3 farklı kaynak (ai/stok/arşiv/gfx) (4) · aynı kaynaktan ≤3 ardışık plan (3) · placeholder yok (3) |
 | Ses tasarımı | 10 | ses akışı var (4) · loudness -14±2 LUFS (3) · 2-6 duyulur sfx (2) · sfx çeşitli (1) |
 | Final + loop | 10 | finale_text var (4) · kuyruk ≤0.6s (3) · abone kartı son %45'te (3) |
 
 **Kritik hatalar** (skordan bağımsız `status: fail` + strict'te engel):
-`hook_text yok` · `placeholder görsel üretimde` · `ses akışı yok`.
+`hook_text yok` · `placeholder görsel üretimde` · `ses akışı yok` ·
+`altyazı güvenli alan dışında`.
+
+## Teknik doğrulama (final MP4, preflight.js)
+
+Render bittikten sonra final MP4 üzerinde ffprobe/ffmpeg ile deterministik
+kontroller çalışır ve sonuç rapora `technicalValidation` olarak girer:
+akış varlığı (video/ses), gerçek süre + beklenen süreden sapma, çözünürlük
+(1080x1920), fps, dosya boyutu, **tam decode testi** (bozuk bitstream),
+siyah segmentler (`blackdetect`), donmuş kareler (`freezedetect`), sessiz
+bölümler (`silencedetect`), peak clipping (`volumedetect`), LUFS
+(`loudnorm`), ses-video süre uyumsuzluğu, başlangıç siyahı ve kuyruk
+sessizliği. Eşikler `config.preflight`'ta (env: `PF_*`). Sert hatalar
+(decode, akış yok, çözünürlük, süre penceresi, loudness) uploadı her modda
+durdurur; segment tespitleri uyarı olarak rapora ve skora yansır.
+
+## Altyazı yerleşim doğrulaması (captionLayout.js)
+
+Altyazı kontrolü metin uzunluğu tahmini değildir: render'ın kullandığı
+yerleşim matematiği (`src/video/captionLayout.js`) QC'de birebir yeniden
+çalıştırılır. Kurallar: her olay tek satır; **split-before-shrink** (grup,
+fontu `captionSplitRatio`'nun altına ezecekse önce ikiye bölünür); font
+tabanı `captionMinPx`/`captionEmphMinPx` altına asla inilmez; vurgu koşusu
+(sayı+birim) bölünmez; alt kenar boşluğu YouTube Shorts UI bandının
+(`captionBottomSafePx`) üstünde ve blok üst kenarı ekranın üst yarısının
+dışında kalmalı — ihlal **kritik hata** sayılır (strict'te fail).
 
 Tüm eşikler `config.retention`'da toplanır ve env ile ezilebilir
 (`QC_MAX_STATIC_SECONDS`, `QC_TARGET_EVENT_INTERVAL`, `QC_FIRST_SPEECH_MS`,
@@ -66,10 +102,18 @@ Her üretimde çalışma klasörüne iki dosya yazılır (workflow artifact'ine 
 ```json
 {
   "retentionScore": 91,
-  "status": "pass",            // pass | warning | fail
-  "productionReady": true,
+  "status": "pass",            // pass | warning | fail | error
+  "productionReady": true,     // skor ≥ eşik && kritik hata yok && teknik geçti && QC hatasız
   "mode": "warning",
+  "qcMode": "warning",
   "minScore": 85,
+  "qcExecution": { "status": "passed", "error": null },  // passed|failed|error
+  "technicalValidation": { "videoStreamPresent": true, "audioStreamPresent": true,
+    "durationSeconds": 35.2, "resolution": "1080x1920", "fps": 30,
+    "decodePassed": true, "blackSegmentCount": 0, "freezeSegmentCount": 0,
+    "silenceSegmentCount": 0, "maxVolumeDb": -5.9, "lufs": -13.9 },
+  "uploadEligibility": { "youtube": true, "instagram": true, "facebook": true,
+    "reasons": [] },
   "scores": { "hook": 25, "visualPacing": 16, "curiosity": 15, "captions": 10,
               "visualVariety": 10, "audioDesign": 8, "payoffAndLoop": 7 },
   "metrics": { "firstSpeechMs": 320, "planCount": 11,
@@ -94,8 +138,10 @@ izlenme bağını bu veriden kuracak.
 ## Yerel komutlar
 
 ```bash
-npm test                      # 17 birim testi (node:test, ek bağımlılık yok)
-RETENTION_QC_MODE=strict npm run produce:dry   # strict modu upload'suz dene
+npm test                      # 40 birim/entegrasyon testi (node:test, ek bağımlılık yok)
+node scripts/qc-dryrun.js     # sentetik fixture ile uçtan uca QC provası (upload yok)
+node scripts/qc-dryrun.js output/<konu>/<konu>.mp4   # gerçek videoyla
+RETENTION_QC_MODE=strict node scripts/qc-dryrun.js   # strict kapıyı dene
 ```
 
 ## Sık fail nedenleri

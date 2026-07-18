@@ -1,6 +1,7 @@
 import { writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { config } from '../config.js';
+import { analyzeCaptionLayout } from '../video/captionLayout.js';
 
 /**
  * RETENTION QC — yayın öncesi DETERMİNİSTİK editoryal kalite kapısı.
@@ -128,13 +129,29 @@ export function evaluateRetention(input, cfg = config.retention) {
   if (String(s.finale_text || '').trim()) curiosity += 2;
 
   // ---------- D) ALTYAZI (10) ----------
+  // Metin uzunluğu tahmini DEĞİL: render'ın kullandığı gerçek yerleşim
+  // matematiği (captionLayout.js) burada da çalıştırılır — bölme, font tabanı
+  // ve güvenli alan render ile birebir aynı hesaptan doğrulanır.
   let captions = 0;
+  let capLayout = null;
+  if (words.length) {
+    capLayout = analyzeCaptionLayout(words, { emphasisWords: input.emphasisWords || [] });
+    if (!capLayout.safeArea.ok) {
+      failures.push('altyazı güvenli alan dışında (Shorts UI çakışması riski)');
+    }
+  }
   if (config.video.captionSize >= cfg.minCaptionPx) captions += 4;
   else fixes.push(`Altyazı ${config.video.captionSize}px — ${cfg.minCaptionPx}px altı telefonda okunmuyor.`);
-  if (config.video.captionWordsPerLine <= cfg.maxCaptionWords) captions += 3;
-  const longWord = words.some((w) => String(w.word).length > 24);
-  if (!longWord) captions += 3;
-  else warnings.push('24+ karakterlik kelime var — otomatik küçültme devrede, kontrol et.');
+  if (capLayout) {
+    if (capLayout.maxWordsOnScreen <= cfg.maxCaptionWords) captions += 3;
+    else warnings.push(`ekranda aynı anda ${capLayout.maxWordsOnScreen} kelime (hedef ≤${cfg.maxCaptionWords})`);
+    if (capLayout.belowFloorCount === 0) captions += 3;
+    else warnings.push(`${capLayout.belowFloorCount} altyazı olayı font tabanına rağmen sığmıyor (çok uzun kelime)`);
+  } else {
+    // Kelime akışı yoksa yerleşim değerlendirilemez; yapı ayarına bakılır.
+    if (config.video.captionWordsPerLine <= cfg.maxCaptionWords) captions += 3;
+    captions += 3;
+  }
 
   // ---------- E) GÖRSEL ÇEŞİTLİLİK (10) ----------
   let variety = 0;
@@ -197,6 +214,17 @@ export function evaluateRetention(input, cfg = config.retention) {
       sfxCount: sfxList.length,
       sourceMix: [...srcSet].join('+'),
       durationSeconds: +duration.toFixed(1),
+      captionLayout: capLayout
+        ? {
+            eventCount: capLayout.eventCount,
+            splitCount: capLayout.splitCount,
+            belowFloorCount: capLayout.belowFloorCount,
+            maxLinesUsed: capLayout.maxLinesUsed,
+            maxWordsOnScreen: capLayout.maxWordsOnScreen,
+            minFontUsed: capLayout.minFontUsed,
+            safeAreaOk: capLayout.safeArea.ok,
+          }
+        : null,
     },
     warnings,
     failures,
@@ -205,6 +233,9 @@ export function evaluateRetention(input, cfg = config.retention) {
 }
 
 function reportMd(r, mode, minScore) {
+  if (!r) {
+    return `# Retention QC Raporu\n\n**QC ÇALIŞTIRILAMADI** — mod: ${mode}. Ayrıntı production-report.json → qcExecution.error içinde.\n`;
+  }
   const lines = [
     `# Retention QC Raporu`,
     ``,
@@ -226,26 +257,113 @@ function reportMd(r, mode, minScore) {
 }
 
 /**
- * Pipeline sarmalayıcı: değerlendirir, raporları yazar, mod kararını döndürür.
- * @returns {{score:number, ok:boolean, blockUpload:boolean, report:object}}
+ * TEK ORTAK UPLOAD KAPISI — üç platform (YouTube, Instagram, Facebook) da
+ * yalnızca bu koşuldan geçerek yayınlanabilir; platform bazlı bypass yoktur.
+ * teknik preflight + QC mod kararı (strict'te productionReady) birleşir.
  */
-export async function runRetentionQC(input, workDir) {
-  const cfg = config.retention;
-  if (cfg.mode === 'disabled') return { score: null, ok: true, blockUpload: false, report: null };
+export function uploadGate({ preflightOk, qc }) {
+  return Boolean(preflightOk) && !qc?.blockUpload;
+}
 
-  const r = evaluateRetention(input, cfg);
-  const ready = r.score >= cfg.minScore && r.failures.length === 0;
-  const report = {
-    retentionScore: r.score,
-    status: r.failures.length ? 'fail' : ready ? 'pass' : 'warning',
-    productionReady: ready,
+/** Platform bazlı yayın uygunluğu + insan-okur nedenler (rapor için). */
+export function computeUploadEligibility({
+  uploadRequested,
+  technicalPassed,
+  blockUpload,
+  execError,
+  scoreOk,
+  mode,
+  platforms = {},
+}) {
+  const reasons = [];
+  if (uploadRequested === false) reasons.push('upload istenmedi (--no-upload veya kredensiyel yok)');
+  if (!technicalPassed) reasons.push('teknik preflight başarısız');
+  if (blockUpload) {
+    reasons.push(execError
+      ? 'strict mod: QC kendisi hata verdi (fail-closed)'
+      : 'strict mod: skor eşiğin altında veya kritik hata');
+  } else if (mode === 'warning' && !execError && scoreOk === false) {
+    reasons.push('warning mod: skor eşiğin altında ama mevcut yayın politikası korunuyor');
+  }
+  const base = uploadRequested !== false && Boolean(technicalPassed) && !blockUpload;
+  for (const p of ['youtube', 'instagram', 'facebook']) {
+    if (base && !platforms[p]) reasons.push(`${p} yapılandırılmamış (kredensiyel yok)`);
+  }
+  return {
+    youtube: Boolean(base && platforms.youtube),
+    instagram: Boolean(base && platforms.instagram),
+    facebook: Boolean(base && platforms.facebook),
+    reasons,
+  };
+}
+
+/**
+ * Pipeline sarmalayıcı: değerlendirir, raporları yazar, mod kararını döndürür.
+ *
+ * HATA SÖZLEŞMESİ (QC'nin kendisi çökerse):
+ *   disabled → QC zaten çalışmaz, üretim etkilenmez.
+ *   warning  → hata rapora yazılır (qcExecution.status='error'),
+ *              productionReady=false; mevcut yayın politikası korunur
+ *              (blockUpload=false), render artifact'i her durumda kalır.
+ *   strict   → FAIL-CLOSED: blockUpload=true, productionReady=false, hata
+ *              açıkça loglanır. QC hatası yayın kapısını asla bypass edemez.
+ *
+ * @param {object} input  evaluateRetention girdisi
+ * @param {string} workDir rapor dosyalarının yazılacağı klasör
+ * @param {object} [extras] {technical, technicalPassed, uploadRequested, platforms}
+ * @returns {{score:number|null, ok:boolean, blockUpload:boolean, report:object|null, error:string|null}}
+ */
+export async function runRetentionQC(input, workDir, extras = {}) {
+  const cfg = config.retention;
+  if (cfg.mode === 'disabled') {
+    return { score: null, ok: true, blockUpload: false, report: null, error: null };
+  }
+  // Teknik durum bilinmiyorsa (eski çağrı imzası) karara karıştırma.
+  const technicalPassed = extras.technicalPassed !== false;
+
+  let r = null;
+  let execError = null;
+  try {
+    r = evaluateRetention(input, cfg);
+  } catch (err) {
+    execError = String(err?.message || err);
+    console.error(`[qc] QC DEĞERLENDİRMESİ ÇÖKTÜ: ${execError}`);
+  }
+
+  const scoreOk = r ? r.score >= cfg.minScore && r.failures.length === 0 : false;
+  const productionReady = !execError && scoreOk && technicalPassed;
+  // strict: skor düşük, kritik hata VEYA QC'nin kendisi çöktü → fail-closed.
+  const blockUpload = cfg.mode === 'strict' && !productionReady;
+  const status = execError ? 'error' : r.failures.length ? 'fail' : scoreOk ? 'pass' : 'warning';
+
+  const uploadEligibility = computeUploadEligibility({
+    uploadRequested: extras.uploadRequested,
+    technicalPassed,
+    blockUpload,
+    execError,
+    scoreOk,
     mode: cfg.mode,
+    platforms: extras.platforms,
+  });
+
+  const report = {
+    retentionScore: r ? r.score : null,
+    status,
+    productionReady,
+    mode: cfg.mode, // geriye dönük uyumluluk (eski alan adı)
+    qcMode: cfg.mode,
     minScore: cfg.minScore,
-    scores: r.parts,
-    metrics: r.metrics,
-    warnings: r.warnings,
-    failures: r.failures,
-    recommendedFixes: r.recommendedFixes,
+    qcExecution: {
+      status: execError ? 'error' : r.failures.length || !scoreOk ? 'failed' : 'passed',
+      error: execError,
+    },
+    technicalValidation: extras.technical || null,
+    uploadEligibility,
+    scores: r ? r.parts : null,
+    metrics: r ? r.metrics : null,
+    warnings: r ? r.warnings : [],
+    failures: r ? r.failures : [],
+    recommendedFixes: r ? r.recommendedFixes : [],
     createdAt: new Date().toISOString(),
   };
   // Rapor yazımı görünür şekilde başarısız olmalı (sessiz yutma yok) —
@@ -257,13 +375,19 @@ export async function runRetentionQC(input, workDir) {
     console.error(`[qc] RAPOR YAZILAMADI: ${err.message}`);
   }
 
-  const line = Object.entries(r.parts).map(([k, v]) => `${k}:${v}`).join(' ');
-  console.log(`[qc] retention ${r.score}/100 (${report.status}) — ${line}`);
-  for (const f of r.failures) console.error(`[qc] ❌ ${f}`);
-  for (const w of r.warnings) console.warn(`[qc] ⚠️ ${w}`);
-  for (const x of r.recommendedFixes) console.log(`[qc] 🔧 ${x}`);
-
-  const blockUpload = cfg.mode === 'strict' && !ready;
-  if (blockUpload) console.error(`[qc] STRICT mod: skor ${r.score} < ${cfg.minScore} veya kritik hata — upload ENGELLENDİ.`);
-  return { score: r.score, ok: ready, blockUpload, report };
+  if (r) {
+    const line = Object.entries(r.parts).map(([k, v]) => `${k}:${v}`).join(' ');
+    console.log(`[qc] retention ${r.score}/100 (${status}) — ${line}`);
+    for (const f of r.failures) console.error(`[qc] ❌ ${f}`);
+    for (const w of r.warnings) console.warn(`[qc] ⚠️ ${w}`);
+    for (const x of r.recommendedFixes) console.log(`[qc] 🔧 ${x}`);
+  }
+  if (blockUpload) {
+    const causes = [];
+    if (execError) causes.push('QC kendisi hata verdi (fail-closed)');
+    if (r && !scoreOk) causes.push(`skor ${r.score} < ${cfg.minScore} veya kritik hata`);
+    if (!technicalPassed) causes.push('teknik preflight başarısız');
+    console.error(`[qc] STRICT mod: ${causes.join(' + ')} — upload ENGELLENDİ.`);
+  }
+  return { score: r ? r.score : null, ok: productionReady, blockUpload, report, error: execError };
 }

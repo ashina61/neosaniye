@@ -79,6 +79,24 @@ export const config = {
     maxHookChars: Number(process.env.QC_MAX_HOOK_CHARS || 30),
     minCaptionPx: Number(process.env.QC_MIN_CAPTION_PX || 50),
     maxCaptionWords: Number(process.env.QC_MAX_CAPTION_WORDS || 4),
+    // Altyazı güvenli alanı: alt kenardan en az bu kadar boşluk (YouTube
+    // Shorts UI başlık/açıklama bandı alt ~220px'i kapatır) ve altyazı bloğu
+    // ekranın üst yarısına taşmamalı.
+    captionBottomSafePx: Number(process.env.QC_CAPTION_BOTTOM_SAFE_PX || 220),
+    captionTopSafeRatio: Number(process.env.QC_CAPTION_TOP_SAFE_RATIO || 0.5),
+  },
+  preflight: {
+    // Final MP4 üzerindeki ffmpeg-tabanlı teknik kontrollerin eşikleri.
+    // (Tespitler deterministiktir; blok kararı retention QC moduna bağlıdır.)
+    blackMinSeconds: Number(process.env.PF_BLACK_MIN_SECONDS || 0.8),
+    blackPixThreshold: Number(process.env.PF_BLACK_PIX_TH || 0.08),
+    freezeMinSeconds: Number(process.env.PF_FREEZE_MIN_SECONDS || 3.0),
+    silenceMinSeconds: Number(process.env.PF_SILENCE_MIN_SECONDS || 2.5),
+    silenceNoiseDb: Number(process.env.PF_SILENCE_NOISE_DB || -45),
+    clippingPeakDb: Number(process.env.PF_CLIPPING_PEAK_DB || -0.05),
+    avSyncToleranceSeconds: Number(process.env.PF_AV_SYNC_TOLERANCE || 0.8),
+    durationDeltaTolerance: Number(process.env.PF_DURATION_DELTA_TOLERANCE || 1.5),
+    trailingSilenceMaxSeconds: Number(process.env.PF_TRAILING_SILENCE_MAX || 3.0),
   },
   crew: {
     // Orkestra: Görüntü Yönetmeni + Kurgucu/Ses Yönetmeni geçişleri.
@@ -138,6 +156,12 @@ export const config = {
     // Grup üst sınırı; asıl bölme konuşmadaki doğal duraklara göre yapılır.
     captionWordsPerLine: Number(process.env.VIDEO_CAPTION_WORDS || 3),
     captionSize: Number(process.env.VIDEO_CAPTION_SIZE || 52),
+    // Sığdırma tabanları: normal altyazı ve vurgu bu boyutun altına ASLA inmez
+    // (önce bölme denenir — split-before-shrink, bkz. captionLayout.js).
+    captionMinPx: Number(process.env.VIDEO_CAPTION_MIN_PX || 30),
+    captionEmphMinPx: Number(process.env.VIDEO_CAPTION_EMPH_MIN_PX || 40),
+    // Grup bu orandan fazla küçülecekse fontu ezmek yerine grup ikiye bölünür.
+    captionSplitRatio: Number(process.env.VIDEO_CAPTION_SPLIT_RATIO || 0.72),
     // Alt bölge (ekranı kaplamasın): büyük marginV = daha yukarı. Shorts UI'dan uzak.
     captionMarginV: Number(process.env.VIDEO_CAPTION_MARGIN || 460),
 

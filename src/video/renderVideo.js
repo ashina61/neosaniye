@@ -5,6 +5,7 @@ import { existsSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { config } from '../config.js';
 import { buildOutro } from './outro.js';
+import { groupCaptionWords, layoutGroup } from './captionLayout.js';
 import { makeMusicBed } from '../audio/makeMusic.js';
 
 const run = promisify(execFile);
@@ -166,79 +167,41 @@ function buildCaptionAss(words, opts) {
     );
   }
 
-  // Konuşma ritmine göre grupla: doğal duraklarda (sessizlik) ve noktalamada
-  // böl — körlemesine N'li bölme "makine" gibi okunur, bu pro altyazı gibi akar.
-  // VURGULU kelimeler kendi parçasını alır (referans stil: ayrı + farklı fontta).
-  const groups = [];
-  let cur = [];
-  const flush = () => {
-    if (cur.length) groups.push(cur);
-    cur = [];
-  };
-  for (let i = 0; i < words.length; i += 1) {
-    const w = words[i];
-    if (isEmph(w.word)) {
-      // Vurgu koşusu: ardışık vurgulu kelimeleri tek parçada topla (max 3) —
-      // "100,000 acres" gibi sayı+birim ikilisi bölünmesin.
-      flush();
-      const run = [w];
-      while (
-        i + 1 < words.length &&
-        run.length < 3 &&
-        isEmph(words[i + 1].word) &&
-        words[i + 1].start - words[i].end <= 0.28
-      ) {
-        i += 1;
-        run.push(words[i]);
-      }
-      run.isEmph = true;
-      groups.push(run);
-      continue;
-    }
-    cur.push(w);
-    const next = words[i + 1];
-    const gap = next ? next.start - w.end : Infinity;
-    const punct = /[.!?,;:]$/.test(String(w.word));
-    if (cur.length >= perLine || gap > 0.28 || punct || !next || isEmph(next.word)) {
-      flush();
-    }
+  // Konuşma ritmine göre grupla ve yerleştir — matematik captionLayout.js'te
+  // (Retention QC aynı hesabı kullanır; render ile QC asla ayrışmaz).
+  // Vurgulu kelimeler kendi koşusunu alır; normal gruplar fontu ezmek yerine
+  // önce bölünür (split-before-shrink), taban captionMinPx'in altına inilmez.
+  const groups = groupCaptionWords(words, { perLine, isEmph });
+  const laid = [];
+  for (const g of groups) {
+    const opts = g.isEmph
+      ? // Vurgu koşusu bölünmez (splitRatio 0) — "100,000 acres" ikilisi bir arada.
+        { usableW, baseSize: emphSize, minSize: config.video.captionEmphMinPx, charFactor: 0.5, wordFactor: 0.5, splitRatio: 0 }
+      : { usableW, baseSize: size, minSize: config.video.captionMinPx, charFactor, wordFactor: 0.62, splitRatio: config.video.captionSplitRatio };
+    for (const ev of layoutGroup(g, opts)) laid.push({ ...ev, isEmph: Boolean(g.isEmph) });
   }
 
-  for (let gi = 0; gi < groups.length; gi += 1) {
-    const group = groups[gi];
-    const start = group[0].start;
-    const nextStart = groups[gi + 1]?.[0]?.start;
-    const lastEnd = group[group.length - 1].end;
+  for (let gi = 0; gi < laid.length; gi += 1) {
+    const ev = laid[gi];
+    const start = ev.words[0].start;
+    const nextStart = laid[gi + 1]?.words[0]?.start;
+    const lastEnd = ev.words[ev.words.length - 1].end;
     // Bir sonraki grup hemen geliyorsa boşluk bırakma; uzun suskunlukta kaybol.
     const end = nextStart !== undefined && nextStart - lastEnd < 0.6
       ? Math.max(lastEnd, nextStart)
       : lastEnd + 0.15;
-    const raw = group.map((w) => w.word).join(' ');
-    const text = assEscape(uppercase ? raw.toUpperCase() : raw);
-    if (group.isEmph) {
-      // VURGU PARÇASI: ayrı olay, farklı font (Playfair italik), daha büyük —
-      // referanstaki "100,000 acres" / mic-drop kelime davranışı.
-      let fs = emphSize;
-      const emphFactor = 0.5; // Playfair italik ortalama genişlik
-      if (raw.length * emphFactor * fs > usableW) {
-        fs = Math.max(40, Math.floor(usableW / (raw.length * emphFactor)));
-      }
-      // Altyazı bandında akışın PARÇASI: kendi zaman dilimini kullanır
-      // (uzatma yok — aynı banttaki sonraki altyazı grubunu ezerdi).
+    const text = assEscape(uppercase ? ev.text.toUpperCase() : ev.text);
+    if (ev.isEmph) {
+      // VURGU PARÇASI: altyazı bandında akışın PARÇASI, farklı font (Playfair
+      // italik), daha büyük. Kendi zaman dilimini kullanır (uzatma yok —
+      // aynı banttaki sonraki altyazı grubunu ezerdi).
       events.push(
         `Dialogue: 0,${assTime(start)},${assTime(end)},Emph,,0,0,0,,` +
-          `{\\fs${fs}\\i1\\b1\\fad(90,110)\\fscx92\\fscy92\\t(0,150,\\fscx100\\fscy100)}${text}`,
+          `{\\fs${ev.fontSize}\\i1\\b1\\fad(90,110)\\fscx92\\fscy92\\t(0,150,\\fscx100\\fscy100)}${text}`,
       );
     } else {
-      // Genişliğe sığdır: HEM tüm satır HEM DE en uzun tek kelime usableW'e
-      // sığmalı. Aksi halde libass uzun bir kelimeyi ortadan bölebiliyor
-      // ("asphyxiation" -> "Ass-phyxiation" rezaleti buradan çıktı).
-      const longest = Math.max(1, ...group.map((w) => String(w.word).length));
-      const fitWhole = usableW / (raw.length * charFactor);
-      const fitWord = usableW / (longest * 0.62); // tek kelime için güvenli pay
-      const fs = Math.max(30, Math.min(size, Math.floor(fitWhole), Math.floor(fitWord)));
       events.push(
-        `Dialogue: 0,${assTime(start)},${assTime(end)},Cap,,0,0,0,,{\\fs${fs}\\fad(120,90)\\blur1.2}${text}`,
+        `Dialogue: 0,${assTime(start)},${assTime(end)},Cap,,0,0,0,,{\\fs${ev.fontSize}\\fad(120,90)\\blur1.2}${text}`,
       );
     }
   }
