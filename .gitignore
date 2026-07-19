@@ -22,6 +22,7 @@ firebase-*.json
 data/*
 !data/used_topics.json
 !data/videos.json
+!data/qc-history.jsonl
 
 # CC0 ses kütüphanesi (assets/audio) sürümlenir — global *.mp3 kuralının istisnası.
 !assets/audio/**/*.mp3
