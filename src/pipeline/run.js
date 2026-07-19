@@ -280,6 +280,13 @@ export async function runPipeline(opts = {}) {
       return { score: null, ok: false, blockUpload: block, report: null, error: err.message };
     });
 
+    // Retention editörü — acımasız oto-eleştiri (Actions logunda görünür).
+    const ec = qc.report?.editorCritique;
+    if (ec) {
+      console.log(`[editör] retention riski: ${ec.overallRetentionRisk} | en sıkıcı an: ${ec.mostBoringMoment ? ec.mostBoringMoment.atSeconds + 's' : '—'} | AI oranı: ${ec.visualRepetition.aiShare} | en iyi iyileştirme: ${ec.bestImprovement}`);
+      if (qc.report.belowQualityTarget) console.log(`[editör] ⚠️ kalite hedefi ${qc.report.qualityTarget} altında (skor ${qc.score}) — iyileştirme planı: ${qc.report.improvementPlan.join(' | ')}`);
+    }
+
     // 6) Upload — TEK ORTAK KAPI: YouTube + Instagram + Facebook'un ÜÇÜ DE
     // bu bloğun içindedir; uploadGate (teknik preflight + QC mod kararı)
     // geçilmeden hiçbir platforma yayın yapılmaz, platform bazlı bypass yoktur.
@@ -364,6 +371,11 @@ export async function runPipeline(opts = {}) {
       slotMetrics: emptySlotMetrics(), // SAHTE VERİ YOK — Analytics bağlanınca dolar
       preflight: pf.metrics,
       retentionScore: qc.score,
+      // Retention editörü: kalite hedefi + acımasız oto-eleştiri özeti (madde 12).
+      qualityTarget: qc.report?.qualityTarget ?? null,
+      belowQualityTarget: qc.report?.belowQualityTarget ?? null,
+      editorCritique: qc.report?.editorCritique || null,
+      improvementPlan: qc.report?.improvementPlan || [],
       editPlan: editPlan
         ? {
             musicMood: editPlan.musicMood,

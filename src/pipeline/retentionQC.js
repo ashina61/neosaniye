@@ -8,8 +8,9 @@ import {
   classifyFactualCertainty,
   sfxQuality,
 } from './editorialSignals.js';
-import { summarizeRelevance } from '../media/semanticRelevance.js';
+import { summarizeRelevance, extractKeywords } from '../media/semanticRelevance.js';
 import { assessHookReadability, assessCaptionReadability } from '../video/readability.js';
+import { buildEditorCritique } from './editorCritique.js';
 
 /**
  * RETENTION QC — yayın öncesi DETERMİNİSTİK editoryal kalite kapısı.
@@ -91,6 +92,17 @@ export function evaluateRetention(input, cfg = config.retention) {
   const certainty = classifyFactualCertainty(allNarration);
   const sfx = sfxQuality(input.editPlan, secs, { minGap: cfg.minSfxGapSeconds });
   const relevance = summarizeRelevance(input.itemRelevance || []);
+  // FİLM YAPISI — loop: finale hook'un açtığı soruyu kapatıyor mu? (kelime örtüşmesi)
+  const hookKw = new Set(extractKeywords(s.hook_text || s.scenes?.[0]?.narration || ''));
+  const finaleKw = extractKeywords(s.finale_text || '');
+  const loopClosed = finaleKw.length > 0 && finaleKw.some((w) => hookKw.has(w));
+  // GÖRSEL TEKRAR — en uzun aynı-kaynak dizisi + AI oranı (estetik tekdüzeliği).
+  let srcRun = 0; let srcMaxRun = 0;
+  for (let i = 0; i < sources.length; i += 1) {
+    srcRun = i > 0 && sources[i] === sources[i - 1] ? srcRun + 1 : 1;
+    srcMaxRun = Math.max(srcMaxRun, srcRun);
+  }
+  const aiShare = sources.length ? +(sources.filter((x) => x === 'ai').length / sources.length).toFixed(2) : 0;
 
   // ---------- A) HOOK (25) ----------
   let hook = 0;
@@ -243,6 +255,14 @@ export function evaluateRetention(input, cfg = config.retention) {
   const ctaRatio = (subScene !== undefined && subScene !== null && planCount > 0) ? subScene / planCount : null;
   if (ctaRatio === null || ctaRatio >= cfg.ctaEarliestRatio) payoff += 3;
   else fixes.push(`Abone/CTA kartı %${Math.round(ctaRatio * 100)}'de (payoff öncesi) — son %${Math.round((1 - cfg.ctaEarliestRatio) * 100)}'e al veya kaldır.`);
+  // Film yapısı loop: finale hook sorusunu kapatmalı (başa dönüş hissi).
+  if (String(s.finale_text || '').trim() && !loopClosed) {
+    fixes.push('Loop yok — finale hook sorusuna geri bağlanmıyor; hook kelimesini finalede kapat.');
+  }
+  // Görsel tekdüzelik: uzun AI dizisi / yüksek AI oranı estetiği tekrarlıyor.
+  if (srcMaxRun >= 4 || aiShare > 0.6) {
+    fixes.push(`Görsel çeşitlilik düşük (AI oranı ${aiShare}, en uzun aynı-kaynak ${srcMaxRun}) — arşiv/diagram/stok/harita serpiştir.`);
+  }
 
   const parts = {
     hook: clamp(hook, 0, 25),
@@ -277,6 +297,8 @@ export function evaluateRetention(input, cfg = config.retention) {
       hookWords,
       hookReadability: hookRead ? { previewPx: hookRead.previewPx, ok: hookRead.ok } : null,
       captionReadability: capRead ? { previewPx: capRead.previewPx, ok: capRead.ok } : null,
+      loop: { closed: loopClosed },
+      visualRepetition: { longestSameSourceRun: srcMaxRun, aiShare },
       sourceMix: [...srcSet].join('+'),
       durationSeconds: +duration.toFixed(1),
       captionLayout: capLayout
@@ -297,7 +319,7 @@ export function evaluateRetention(input, cfg = config.retention) {
   };
 }
 
-function reportMd(r, mode, minScore, qcExecStatus = null) {
+function reportMd(r, mode, minScore, qcExecStatus = null, extra = {}) {
   if (qcExecStatus === 'disabled') {
     return `# Retention QC Raporu\n\n**Editoryal QC devre dışı** (RETENTION_QC_MODE=disabled). Teknik preflight bağımsız çalıştı — sonuçlar production-report.json → technicalValidation içinde.\n`;
   }
@@ -321,6 +343,22 @@ function reportMd(r, mode, minScore, qcExecStatus = null) {
   if (r.failures.length) lines.push('', '## ❌ Kritik', ...r.failures.map((f) => `- ${f}`));
   if (r.warnings.length) lines.push('', '## ⚠️ Uyarılar', ...r.warnings.map((w) => `- ${w}`));
   if (r.recommendedFixes.length) lines.push('', '## 🔧 Önerilen düzeltmeler', ...r.recommendedFixes.map((x) => `- ${x}`));
+  const c = extra.critique;
+  if (c) {
+    lines.push('', '## 🎬 Editör Eleştirisi (acımasız)',
+      `- Genel retention riski: **${c.overallRetentionRisk}**`,
+      `- En sıkıcı an: ${c.mostBoringMoment ? `${c.mostBoringMoment.atSeconds}s (${c.mostBoringMoment.verdict})` : '—'}`,
+      `- En zayıf sahne: ${c.weakestScene ? `#${c.weakestScene.plan} — "${(c.weakestScene.narration || '').slice(0, 60)}"` : '—'}`,
+      `- En güçlü sahne: ${c.strongestScene ? `#${c.strongestScene.plan} — "${(c.strongestScene.narration || '').slice(0, 60)}"` : '—'}`,
+      `- Görsel tekrar: en uzun aynı-kaynak ${c.visualRepetition.longestSameSourceRun}, AI oranı ${c.visualRepetition.aiShare}, farklı kaynak ${c.visualRepetition.distinctSources}`,
+      `- Anlatım tekrarı: ${c.narrationRepetition.hasRepetition ? c.narrationRepetition.repeatedWords.join(', ') : 'yok'}`,
+      `- Kaydırma riski anları (sn): ${c.swipeRiskMoments.length ? c.swipeRiskMoments.join(', ') : 'yok'}`,
+      `- **En iyi iyileştirme:** ${c.bestImprovement}`);
+  }
+  if (extra.improvementPlan?.length) {
+    lines.push('', `## 🎯 İyileştirme Planı (kalite hedefi ${extra.qualityTarget || 90} altında)`,
+      ...extra.improvementPlan.map((x, i) => `${i + 1}. ${x}`));
+  }
   return lines.join('\n') + '\n';
 }
 
@@ -451,6 +489,25 @@ export async function runRetentionQC(input, workDir, extras = {}) {
     platforms: extras.platforms,
   });
 
+  // RETENTION EDİTÖRÜ: kalite hedefi (90) altındaysa acımasız oto-eleştiri +
+  // insan gözü simülasyonu + öncelikli iyileştirme planı. Upload kapısı DEĞİL.
+  const qualityTarget = cfg.qualityTarget || 90;
+  const belowQualityTarget = r ? r.score < qualityTarget : null;
+  let critique = null;
+  let attention = null;
+  if (r && !execError) {
+    try {
+      const c = buildEditorCritique(input, r);
+      critique = c.editorCritique;
+      attention = c.attentionForecast;
+    } catch (err) {
+      console.error(`[qc] editör eleştirisi hesaplanamadı: ${err.message}`);
+    }
+  }
+  const improvementPlan = r && belowQualityTarget
+    ? (r.recommendedFixes || []).slice(0, 3)
+    : [];
+
   const report = {
     retentionScore: r ? r.score : null,
     status,
@@ -458,6 +515,8 @@ export async function runRetentionQC(input, workDir, extras = {}) {
     editorialReady,
     productionReady,
     uploadAllowedByPolicy,
+    qualityTarget,
+    belowQualityTarget,
     mode: cfg.mode, // geriye dönük uyumluluk (eski alan adı)
     qcMode: cfg.mode,
     minScore: cfg.minScore,
@@ -466,6 +525,9 @@ export async function runRetentionQC(input, workDir, extras = {}) {
     uploadEligibility,
     scores: r ? r.parts : null,
     metrics: r ? r.metrics : null,
+    editorCritique: critique,
+    attentionForecast: attention,
+    improvementPlan,
     warnings: r ? r.warnings : [],
     failures: r ? r.failures : [],
     recommendedFixes: r ? r.recommendedFixes : [],
@@ -475,7 +537,7 @@ export async function runRetentionQC(input, workDir, extras = {}) {
   // ama QC raporu yazılamadı diye video üretimi çökmesin: hata logla, devam et.
   try {
     await writeFile(path.join(workDir, 'production-report.json'), JSON.stringify(report, null, 2));
-    await writeFile(path.join(workDir, 'production-report.md'), reportMd(r, cfg.mode, cfg.minScore, qcExecStatus));
+    await writeFile(path.join(workDir, 'production-report.md'), reportMd(r, cfg.mode, cfg.minScore, qcExecStatus, { critique, improvementPlan, qualityTarget }));
   } catch (err) {
     console.error(`[qc] RAPOR YAZILAMADI: ${err.message}`);
   }

@@ -154,7 +154,19 @@ Produce a professional SHOT LIST that makes the video feel like ONE cinematic fi
   appearing) — a person merely holding/looking at the object does not demonstrate anything.
 - SEMANTIC RELEVANCE: every shot must visually explain its exact narration line. For each scene set
   "forbidden_mismatches" (topic-irrelevant subjects to reject) so stock search never picks an
-  off-topic clip just because footage exists.`;
+  off-topic clip just because footage exists.
+- THINK LIKE A 10M-VIEW SHORTS EDITOR, not an illustrator. For EVERY scene silently ask "why would a
+  viewer keep watching THIS shot?" If the honest answer is "it's just a nice picture", change it into
+  something that DELIVERS INFO: a diagram, a labelled close-up, an arrow, a comparison, a map.
+- DIAGRAM TAXONOMY (prefer an info-graphic over a pretty render when explaining): science/mechanism →
+  step diagram (light → splits → compared → direction); history → a MAP with a route/marker; space →
+  an orbit/scale diagram; animals → anatomy call-out (brain hemispheres, wing, migration path). Use
+  the "diagram" field for these; a plain beauty shot does NOT explain a fact.
+- SHOT-SCALE VARIETY IS MANDATORY: never let two consecutive scenes share the same framing/lens. Cycle
+  macro → wide → close-up → POV → top-down → silhouette → cross-section → drone. Same lens twice in a
+  row reads as AI slideshow and kills retention.
+- NO AI-ONLY RUNS: across the video, mix sources deliberately (AI / real archive / diagram / stock /
+  macro / map). Three AI stills in a row is a failure — insert a diagram, an archive photo, or motion.`;
 
 /**
  * @param {object} script - generateScript çıktısı (scenes, visual_anchor, topic, category)

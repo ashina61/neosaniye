@@ -72,7 +72,13 @@ export const config = {
     // (skor < minScore → upload engellenir). Günlük yayın akışını bozmamak
     // için strict yalnızca bilinçli olarak açılmalı.
     mode: process.env.RETENTION_QC_MODE || 'warning',
+    // minScore: SERT upload kapısı (strict modda). Cron güvenliği için 85'te
+    // kalır — bunu değiştirmek gece yayınını kilitleyebilir.
     minScore: Number(process.env.RETENTION_MIN_SCORE || 85),
+    // qualityTarget: EDİTORYAL hedef (upload kapısı DEĞİL). Skor bu hedefin
+    // altındaysa video yine yayınlanabilir ama rapor bir iyileştirme planı
+    // (improvementPlan) + acımasız oto-eleştiri üretir. "İyi değil, harika" barı.
+    qualityTarget: Number(process.env.RETENTION_QUALITY_TARGET || 90),
     // TEMPO (Viking videosu düzeltmesi: 5.79s ort / 7.26s statik → sıkılaştırıldı).
     maxStaticSegmentSeconds: Number(process.env.QC_MAX_STATIC_SECONDS || 4.0),
     targetVisualEventInterval: Number(process.env.QC_TARGET_EVENT_INTERVAL || 3.2),

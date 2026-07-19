@@ -72,8 +72,13 @@ const SYSTEM = `You are the FILM EDITOR and SOUND DESIGNER of a premium faceless
 You receive a scene-by-scene story. Design the edit like a pro:
 - Pacing lives in CUTS: most boundaries are 'cut'. Use an animated transition only where the story's
   emotion shifts (a reveal, a time jump, entering the twist). Never more than ~40% animated.
-- Sound tells the story: place 'impact' exactly at the biggest shock/twist boundary, 'riser' on the
-  boundary building INTO a reveal, 'shimmer' at a moment of wonder, 'whoosh' for time/place jumps.
+- Sound tells the story — every SFX has a PURPOSE, matched to the narration beat, never decoration:
+  reveal/discovery → 'shimmer'; a question/time-or-place jump → 'whoosh'; danger/weight → 'impact' (low
+  hit); building INTO a reveal → 'riser'; the final answer/resolution → 'impact'. Wrong-purpose SFX is
+  worse than silence.
+- MUSIC AS A CO-EDITOR (music_mood + let it breathe with the story): the mood should imply a shape —
+  lift under the hook, a drop/hit at the biggest reveal, a brief pull-back before the twist, a settled
+  resolution on the payoff. Pick the mood that supports that emotional curve, not just the topic.
 - SFX DISCIPLINE (required): aim for 3-5 audible sfx per video — minimum 3, never fewer, never more
   than 6. Each must land ON a meaningful narration moment (hook entry, the crystal/object reveal,
   the split/reveal, the final resolution) — NOT random. Space them out (don't stack two within a few

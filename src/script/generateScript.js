@@ -208,11 +208,16 @@ Concept: "${config.niche.theme}". This video's format: ${format.brief}${processE
 
 Write in English, for a SINGLE dramatic narrator. STRICT word budget: the spoken voiceover is the SCENE NARRATIONS ONLY (the cta is NOT spoken) and their total must be 85-100 words — never more. That is ~35-40 seconds. Shorts are SHORT — hook fast, no filler, every sentence earns its place.
 
-Structure the story as 7-8 SCENES (beats) that flow as a tight narrative arc:
-1) A punchy hook in the FIRST scene that creates an open loop ("In 1518, an entire town could not stop dancing — and dozens died.").
-2) Rising action: escalate fast, add ONE concrete, surprising, ACCURATE detail per beat.
-3) A turning point or twist.
-4) A satisfying payoff / resolution in the FINAL scene that answers the hook (the story ends on this beat — the cta is a separate on-screen/description line, never spoken).
+Structure the story as 8-11 SCENES following this EXACT retention arc (a 10M-view Shorts shape):
+QUESTION → MYSTERY → EVIDENCE → REVEAL → TWIST → ANSWER → PAYOFF → LOOP.
+1) QUESTION: scene 1 opens a curiosity gap the viewer NEEDS closed (often literally a question).
+2) MYSTERY + EVIDENCE: escalate fast, ONE concrete, surprising, ACCURATE detail per beat — each beat
+   must add NEW information (never restate the previous line in new words).
+3) REVEAL then TWIST: the "wait, what?!" turn.
+4) ANSWER + PAYOFF: the final scene ANSWERS the opening question so the end loops back to the hook
+   (hook "how did they find the invisible sun?" → finale "by finding the sun they couldn't see"). The
+   story ends on the payoff; the cta is a separate on-screen/description line, never spoken.
+- Prefer more, SHORTER beats (8-11) over few long ones: on Shorts the eye needs a new idea every ~3s.
 
 Rules for each scene:
 - narration: exactly ONE sentence, spoken aloud, ~10-16 words, vivid and clear. No jargon, no emojis, no hashtags, no markdown.
