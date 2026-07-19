@@ -48,6 +48,8 @@ export function buildQcHistoryEntry(report, {
     patternInterrupts: report.metrics?.patternInterrupts ?? null,
     overallRetentionRisk: report.editorCritique?.overallRetentionRisk ?? null,
     belowQualityTarget: report.belowQualityTarget ?? null,
+    ctaApplied: report.motion?.ctaApplied ?? null,
+    ctaType: report.motion?.ctaType ?? null,
     technicalReady: report.technicalReady ?? null,
     editorialReady: report.editorialReady ?? null,
     productionReady: report.productionReady ?? null,

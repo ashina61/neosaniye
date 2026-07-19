@@ -282,6 +282,42 @@ export const config = {
     privacyStatus: process.env.YOUTUBE_PRIVACY || 'public', // public|unlisted|private
     categoryId: process.env.YOUTUBE_CATEGORY_ID || '27', // 27 = Education
   },
+  // NEO MOTION ENGINE v1 — video üstüne özgün CTA animasyonları (ASS/libass,
+  // tek ffmpeg post-pass, sıfır bağımlılık, tamamen bize ait tasarım).
+  motion: {
+    enabled: process.env.MOTION_ENABLED !== '0',
+    cta: {
+      enabled: process.env.MOTION_CTA_ENABLED !== '0',
+      // editorial = kurallar + olasılık karar verir; always = her uygun videoya; off.
+      mode: process.env.MOTION_CTA_MODE || 'editorial',
+      probability: Number(process.env.MOTION_CTA_PROB || 0.35),
+      allowedTypes: (process.env.MOTION_CTA_TYPES || 'subscribe,like,bell,comment,follow,save').split(','),
+      maxPerVideo: Number(process.env.MOTION_CTA_MAX || 1),
+      minVideoDurationSec: Number(process.env.MOTION_CTA_MIN_DUR || 20),
+      earliestStartSec: Number(process.env.MOTION_CTA_EARLIEST || 8),
+      latestEndBufferSec: Number(process.env.MOTION_CTA_END_BUFFER || 2),
+      durationRangeSec: [
+        Number(process.env.MOTION_CTA_DUR_MIN || 1.8),
+        Number(process.env.MOTION_CTA_DUR_MAX || 2.8),
+      ],
+      position: process.env.MOTION_CTA_POSITION || 'auto',
+      avoidCaptions: process.env.MOTION_CTA_AVOID_CAPTIONS !== '0',
+      avoidHook: process.env.MOTION_CTA_AVOID_HOOK !== '0',
+      avoidOutro: process.env.MOTION_CTA_AVOID_OUTRO !== '0',
+      seededRandom: process.env.MOTION_CTA_SEEDED !== '0',
+      sfx: process.env.MOTION_CTA_SFX !== '0',
+      sfxVolume: Number(process.env.MOTION_CTA_SFX_VOL || 0.3),
+      assetsDir: process.env.MOTION_ASSETS_DIR || 'assets/motion',
+    },
+    // Marka stil sabitleri (styleBible ile uyumlu) — tüm CTA'lar bunu okur.
+    style: {
+      accent: process.env.MOTION_ACCENT || '3BD0C8', // logo turkuazı
+      ink: process.env.MOTION_INK || 'F0F4F4',
+      card: process.env.MOTION_CARD || '141A1E', // koyu cam kart
+      font: process.env.MOTION_FONT || 'Montserrat SemiBold',
+      fontFallback: process.env.MOTION_FONT_FALLBACK || 'DejaVu Sans',
+    },
+  },
 };
 
 export function assertYouTube() {

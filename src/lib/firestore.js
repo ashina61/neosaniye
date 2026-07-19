@@ -205,6 +205,16 @@ export async function getWinningHooks(limit = 3) {
   }
 }
 
+/** Son videolarda kullanılan CTA tipleri (en yeni önce) — CTA tekrarını kırar. */
+export async function getRecentCtaTypes(limit = 3) {
+  try {
+    const vids = await getVideosWithYouTube(limit + 3);
+    return vids.map((v) => v.motion?.ctaType).filter(Boolean).slice(0, limit);
+  } catch {
+    return [];
+  }
+}
+
 /** Son videolarda kullanılan müzik dosya adları — parça tekrarını önler. */
 export async function getRecentMusic(limit = 2) {
   try {

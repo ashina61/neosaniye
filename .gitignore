@@ -28,3 +28,9 @@ data/*
 !assets/audio/**/*.mp3
 # Manuel inceleme önizlemeleri (production seçicisi bu klasörü görmez).
 !artifacts/audio-review/*.mp3
+
+# Neo Motion: SFX wav + manifest + showcase görselleri sürümlenir; ara render'lar değil.
+!assets/motion/sfx/*.wav
+artifacts/motion/*
+!artifacts/motion/cta-contact-sheet.png
+!artifacts/motion/safe-area-debug.png

@@ -1,0 +1,65 @@
+{
+  "generatedAt": "2026-07-19T21:15:09.762Z",
+  "assets": [
+    {
+      "id": "soft_click",
+      "type": "sfx",
+      "file": "sfx/soft_click.wav",
+      "origin": "programmatically-generated",
+      "author": "NeoSaniye",
+      "license": "proprietary-original",
+      "externalSource": null,
+      "synthesis": "ffmpeg-lavfi",
+      "peakDb": -26,
+      "version": 1
+    },
+    {
+      "id": "pop",
+      "type": "sfx",
+      "file": "sfx/pop.wav",
+      "origin": "programmatically-generated",
+      "author": "NeoSaniye",
+      "license": "proprietary-original",
+      "externalSource": null,
+      "synthesis": "ffmpeg-lavfi",
+      "peakDb": -14.4,
+      "version": 1
+    },
+    {
+      "id": "bell_tick",
+      "type": "sfx",
+      "file": "sfx/bell_tick.wav",
+      "origin": "programmatically-generated",
+      "author": "NeoSaniye",
+      "license": "proprietary-original",
+      "externalSource": null,
+      "synthesis": "ffmpeg-lavfi",
+      "peakDb": -13.4,
+      "version": 1
+    },
+    {
+      "id": "swipe",
+      "type": "sfx",
+      "file": "sfx/swipe.wav",
+      "origin": "programmatically-generated",
+      "author": "NeoSaniye",
+      "license": "proprietary-original",
+      "externalSource": null,
+      "synthesis": "ffmpeg-lavfi",
+      "peakDb": -23.8,
+      "version": 1
+    },
+    {
+      "id": "confirmation",
+      "type": "sfx",
+      "file": "sfx/confirmation.wav",
+      "origin": "programmatically-generated",
+      "author": "NeoSaniye",
+      "license": "proprietary-original",
+      "externalSource": null,
+      "synthesis": "ffmpeg-lavfi",
+      "peakDb": -16,
+      "version": 1
+    }
+  ]
+}

@@ -865,7 +865,11 @@ export async function renderVideo(job, opts = {}) {
   // Video-içi abone uyarısı (loop-dostu): pill + like ikonu, ortalarda kısa süre belirir.
   const pillPath = path.resolve('assets/icons/subbtn.png');
   const likePath = path.resolve('assets/icons/like.png');
-  const spOn = config.video.subPrompt && existsSync(pillPath) && total > 9;
+  // Neo Motion CTA açıkken eski ham abone-uyarısı kapanır (çift CTA olmasın);
+  // job.subPrompt=false ile de zorlanabilir. Motion kapalıysa eski davranış birebir.
+  const motionCtaOn = config.motion?.enabled && config.motion?.cta?.enabled;
+  const subPromptWanted = job.subPrompt !== undefined ? job.subPrompt : (config.video.subPrompt && !motionCtaOn);
+  const spOn = subPromptWanted && existsSync(pillPath) && total > 9;
   let pillIdx = -1;
   let likeIdx = -1;
   let T1 = 0;

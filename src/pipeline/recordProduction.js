@@ -37,6 +37,8 @@ export async function recordProduction(script, meta = {}) {
     retention: meta.retention || null,
     // Kullanılan müzik künyesi (lisans manifesti + parça tekrarını önleme).
     music: meta.music || null,
+    // Neo Motion CTA katmanı (tip tekrarını önleme + izleme).
+    motion: meta.motion || null,
     // 14 günlük yayın saati deneyi etiketi (us-audience-3-slots-v1).
     scheduleExperiment: meta.scheduleExperiment || null,
     visualStyle: meta.visualStyle || null,

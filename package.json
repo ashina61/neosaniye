@@ -20,7 +20,10 @@
     "youtube:auth": "node scripts/youtube-auth.js",
     "music": "node scripts/fetch-music.js",
     "audio:import": "node scripts/audio-import.js",
-    "audio:import:dry": "node scripts/audio-import.js --dry-run"
+    "audio:import:dry": "node scripts/audio-import.js --dry-run",
+    "motion:sfx": "node scripts/motion-sfx-gen.js",
+    "motion:preview": "node scripts/motion-preview.js",
+    "motion:debug-safe-area": "node scripts/motion-preview.js --debug-safe-area"
   },
   "dependencies": {
     "@google/genai": "^1.0.0",

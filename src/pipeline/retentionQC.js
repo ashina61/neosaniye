@@ -522,6 +522,7 @@ export async function runRetentionQC(input, workDir, extras = {}) {
     minScore: cfg.minScore,
     qcExecution: { status: qcExecStatus, error: execError },
     technicalValidation: extras.technical || null,
+    motion: extras.motion || null,
     uploadEligibility,
     scores: r ? r.parts : null,
     metrics: r ? r.metrics : null,

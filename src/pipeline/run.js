@@ -26,6 +26,8 @@ import { describeMusicTrack } from '../audio/musicSelect.js';
 import { detectSlot } from './scheduleExperiment.js';
 import { emptySlotMetrics } from '../analytics/experimentMetrics.js';
 import { semanticRelevanceScore } from '../media/semanticRelevance.js';
+import { applyCta } from '../motion/ctaEngine.js';
+import { getRecentCtaTypes } from '../lib/firestore.js';
 import { recordProduction } from './recordProduction.js';
 import { notify } from '../lib/notify.js';
 
@@ -217,6 +219,36 @@ export async function runPipeline(opts = {}) {
     // Müzik lisans künyesi (CC0 manifesti veya eski havuz) — rapor + kayda girer.
     const musicMeta = video.musicTrack ? describeMusicTrack(video.musicTrack) : null;
 
+    // 4.2) NEO MOTION ENGINE — özgün CTA animasyonu (editoryal seçim + safe-area).
+    // Preflight/QC ÖNCESİ uygulanır ki final MP4 CTA'lı olsun. CTA hatası ana
+    // videoyu ASLA çökertmez (fail-safe); uygulanırsa outPath yerine geçer.
+    let motionReport = { enabled: false, ctaApplied: false, selectionReason: 'disabled' };
+    if (config.motion.enabled && config.motion.cta.enabled) {
+      const recentCtaTypes = await getRecentCtaTypes().catch(() => []);
+      const outroOn = config.video.outro;
+      const m = await applyCta({
+        videoPath: outPath,
+        workDir,
+        duration: video.duration,
+        seed: script.normalizedTopic || base,
+        outroStartSec: outroOn ? video.duration - (config.video.outroDuration || 3) : null,
+        recentCtaTypes,
+      });
+      motionReport = m.report;
+      if (m.videoPath !== outPath) {
+        // CTA'lı sürümü ana çıktının üstüne al (downstream tek yol kullanır).
+        await execFileAsync('mv', ['-f', m.videoPath, outPath]).catch(async () => {
+          const { rename } = await import('node:fs/promises');
+          await rename(m.videoPath, outPath);
+        });
+      }
+      console.log(
+        m.report.ctaApplied
+          ? `  🎬 CTA: ${m.report.ctaId} (${m.report.ctaType}, ${m.report.startSec}s, ${m.report.position})`
+          : `  🎬 CTA yok: ${m.report.selectionReason}`,
+      );
+    }
+
     // 4.5) Yayın öncesi TEKNİK kalite kontrolü — final MP4 üzerinde ffprobe/
     // ffmpeg taraması (decode, siyah/donma/sessizlik, loudness). Bozuk video
     // hiçbir platforma gitmez.
@@ -259,6 +291,7 @@ export async function runPipeline(opts = {}) {
     }, workDir, {
       technical: pf.technical || null,
       technicalPassed: pf.ok,
+      motion: motionReport,
       uploadRequested: willUpload,
       platforms: {
         youtube: Boolean(hasYouTube),
@@ -362,6 +395,8 @@ export async function runPipeline(opts = {}) {
       ambience: ambience?.name || null,
       // Video başına lisans manifesti: kullanılan müziğin kaynağı ve kanıtı.
       music: musicMeta,
+      // Neo Motion Engine CTA katmanı raporu.
+      motion: motionReport,
       // 14 günlük yayın deneyi etiketi + (API bağlanınca dolacak) metrik iskeleti.
       scheduleExperiment: {
         ...sched.experiment,
@@ -405,6 +440,7 @@ export async function runPipeline(opts = {}) {
       duration: video.duration,
       visualStyle, // Baş Analist stile göre öğrensin
       music: musicMeta, // parça tekrarını önleme + lisans izi
+      motion: motionReport, // CTA tipi tekrarını önleme + izleme
       scheduleExperiment: {
         ...sched.experiment,
         scheduledPublishAt: sched.scheduledPublishAt,
