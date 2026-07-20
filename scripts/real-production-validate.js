@@ -18,6 +18,7 @@ import { readFile, writeFile, mkdir, copyFile, readdir, stat } from 'node:fs/pro
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { verifySfxInOutput } from '../src/pipeline/outputVerify.js';
+import { ctaMeta } from '../src/motion/ctaTemplates.js';
 
 const run = promisify(execFile);
 const OUT = 'artifacts/real-production-validation';
@@ -62,8 +63,71 @@ async function recentSfxTypes(currentPath) {
   } catch { return []; }
 }
 
+/**
+ * Editoryal koşunun RESOLVED CONFIG kapısı: koşu, gerçek editoryal koşulları
+ * taşımıyorsa ÖLÇÜME BİLE GEÇMEDEN hemen FAIL. Kaynak: koşuda geçerli env
+ * (JOB seviyesinde ayarlandığı için hem üret hem doğrula adımı aynısını görür).
+ * @returns {{config:object, invalid:string[]}}
+ */
+function resolveEditorialConfig() {
+  // config ile birebir: crew, CREW_ENABLED !== '0' ise açık. Mekanik = '0'.
+  const crewEnabled = process.env.CREW_ENABLED !== '0';
+  const mechanical = process.env.CREW_ENABLED === '0';
+  const ctaType = process.env.MOTION_CTA_TYPES || '';
+  const lang = process.env.CONTENT_LANGUAGE || 'en';
+  const ctaLabel = ctaMeta(ctaType || 'subscribe', lang).label;
+  const uploadEnabled = Boolean(
+    process.env.YOUTUBE_REFRESH_TOKEN || process.env.YOUTUBE_CLIENT_ID || process.env.YOUTUBE_CLIENT_SECRET ||
+    process.env.META_USER_TOKEN || process.env.META_PAGE_TOKEN || process.env.META_IG_LOGIN_TOKEN,
+  );
+  const config = { mode: 'editorial', crewEnabled, sfxForced: mechanical, ctaType: ctaType || null, ctaLabel, uploadEnabled };
+
+  const invalid = [];
+  if (crewEnabled !== true) invalid.push('crewEnabled !== true');
+  if (mechanical) invalid.push('mekanik SFX modu etkin (CREW_ENABLED=0)');
+  if (ctaType !== 'subscribe') invalid.push(`ctaType !== subscribe (${ctaType || '—'})`);
+  if (ctaLabel !== 'SUBSCRIBE') invalid.push(`ctaLabel !== SUBSCRIBE (${ctaLabel})`);
+  if (uploadEnabled) invalid.push('upload bir platform için açık (kredensiyel mevcut)');
+  return { config, invalid };
+}
+
 async function main() {
   await mkdir(OUT, { recursive: true });
+
+  // EDİTORYAL RESOLVED-CONFIG KAPISI — ölçümden ÖNCE. Geçersizse hemen FAIL.
+  if (MODE === 'editorial') {
+    const { config, invalid } = resolveEditorialConfig();
+    console.log('[validate] resolvedConfig=' + JSON.stringify(config));
+    if (invalid.length) {
+      const md = [
+        '# Gerçek Editoryal Üretim Doğrulaması — ❌ FAIL',
+        '',
+        '## EDITORIAL_VALIDATION_CONFIG_INVALID',
+        '',
+        'Koşu gerçek editoryal koşulları taşımıyor; ölçüme geçilmeden reddedildi.',
+        '',
+        '```json',
+        JSON.stringify(config, null, 2),
+        '```',
+        '',
+        '### İhlaller',
+        ...invalid.map((x) => `- ${x}`),
+        '',
+        '## Sonuçlar',
+        '- mixPipelineResult: **N/A**',
+        '- editorialSfxResult: **N/A**',
+        '- ctaResult: **N/A**',
+        '- musicResult: **N/A**',
+        '- **overallResult: ❌ FAIL (EDITORIAL_VALIDATION_CONFIG_INVALID)**',
+        '',
+      ].join('\n');
+      await writeFile(path.join(OUT, 'validation-summary.md'), md);
+      console.error('[validate] EDITORIAL_VALIDATION_CONFIG_INVALID: ' + invalid.join(' | '));
+      process.exitCode = 3;
+      return;
+    }
+  }
+
   const prod = await findProduction();
   if (!prod) {
     await writeFile(path.join(OUT, 'validation-summary.md'), `# Doğrulama (${MODE}): FAIL\n\nGerçek pipeline çıktısı (output/<base>/<base>.mp4) bulunamadı.\n`);

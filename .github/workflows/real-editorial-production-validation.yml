@@ -24,6 +24,18 @@ jobs:
   editorial:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # JOB seviyesi env → hem üret hem doğrula adımı AYNI resolved config'i görür.
+    # Collector bu değerleri okuyup EDITORIAL_VALIDATION_CONFIG_INVALID kapısını uygular.
+    env:
+      CONTENT_LANGUAGE: "en"
+      FORCE_TOPIC: ${{ inputs.topic }}
+      # Gerçek production değeri: crew AÇIK (config: CREW_ENABLED !== '0').
+      CREW_ENABLED: "1"
+      MOTION_ENABLED: "1"
+      MOTION_CTA_ENABLED: "1"
+      # CTA yalnızca doğrulama için sabit: subscribe → İngilizce "SUBSCRIBE".
+      MOTION_CTA_MODE: "always"
+      MOTION_CTA_TYPES: "subscribe"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -54,17 +66,10 @@ jobs:
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
           FREESOUND_API_KEY: ${{ secrets.FREESOUND_API_KEY }}
           TTS_VOICE: ${{ vars.TTS_VOICE }}
-          CONTENT_LANGUAGE: "en"
-          FORCE_TOPIC: ${{ inputs.topic }}
-          # CTA doğrulama için sabit (yalnızca bu koşu): subscribe / SUBSCRIBE.
-          MOTION_ENABLED: "1"
-          MOTION_CTA_ENABLED: "1"
-          MOTION_CTA_MODE: "always"
-          MOTION_CTA_TYPES: "subscribe"
-          # CREW_ENABLED ZORLANMAZ → gerçek üretimdeki değeriyle AÇIK (editoryal SFX).
-          # SFX sayısı/zamanı zorlanmaz; sistem kendi seçer.
           RETENTION_QC_MODE: ${{ vars.RETENTION_QC_MODE }}
           TECHNICAL_PREFLIGHT_MODE: ${{ vars.TECHNICAL_PREFLIGHT_MODE }}
+          # İçerik/CTA/crew konfigürasyonu JOB seviyesinde (yukarıda) — üret + doğrula
+          # aynı değerleri görsün. SFX sayısı/zamanı ZORLANMAZ; sistem kendi seçer.
           # YOUTUBE_* / META_* BİLEREK yok → yayın imkânsız.
 
       - name: Doğrula (editorial → production-ready kapısı)
