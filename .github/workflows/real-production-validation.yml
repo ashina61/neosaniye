@@ -1,0 +1,105 @@
+name: Gerçek Üretim Doğrulaması (upload KAPALI)
+
+# Yalnızca MANUEL tetiklenir. Gerçek pipeline ile TEK doğrulama videosu üretir,
+# HİÇBİR platforma yayın YAPMAZ (--no-upload + YouTube/Meta secret'ları verilmez).
+# bee-honeycomb regresyon patch'inin gerçek çıktıda doğrulanması içindir.
+on:
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: "Zorlanacak konu (boş = Bee Honeycomb Hexagons)"
+        type: string
+        default: "Bee Honeycomb Hexagons"
+
+concurrency:
+  group: real-production-validation
+  cancel-in-progress: false
+
+# Yazma izni YOK — bu doğrulama koşusu state commit'lemez.
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: ffmpeg kur
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Python TTS araçları
+        run: pip install -r requirements.txt
+
+      - name: Node bağımlılıkları
+        run: npm ci
+
+      - name: Telifsiz müzik indir (best-effort)
+        run: node scripts/fetch-music.js || true
+        env:
+          MUSIC_URLS: ${{ vars.MUSIC_URLS }}
+
+      # ÜRET — upload KESİN kapalı: --no-upload VE YouTube/Meta secret'ları YOK.
+      # Doğrulama koşulları: CTA zorla açık + tip subscribe + İngilizce + bee konusu +
+      # mekanik SFX (her sınıra efekt → ≥5 farklı sahne SFX garantisi).
+      - name: Üret (upload KAPALI)
+        id: produce
+        run: node scripts/generate-and-publish.js --no-upload
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          FREESOUND_API_KEY: ${{ secrets.FREESOUND_API_KEY }}
+          TTS_VOICE: ${{ vars.TTS_VOICE }}
+          # İçerik + CTA doğrulama koşulları:
+          CONTENT_LANGUAGE: "en"
+          FORCE_TOPIC: ${{ inputs.topic }}
+          MOTION_ENABLED: "1"
+          MOTION_CTA_ENABLED: "1"
+          MOTION_CTA_MODE: "always"
+          MOTION_CTA_TYPES: "subscribe"
+          # Mekanik kurgu → her animasyonlu sınıra SFX (≥5 farklı sahne cue garantisi).
+          CREW_ENABLED: "0"
+          # QC/preflight gerçek modlarında kalsın (rapor için); upload zaten kapalı.
+          RETENTION_QC_MODE: ${{ vars.RETENTION_QC_MODE }}
+          TECHNICAL_PREFLIGHT_MODE: ${{ vars.TECHNICAL_PREFLIGHT_MODE }}
+          # DİKKAT: YOUTUBE_* ve META_* secret'ları BİLEREK verilmedi → yayın imkânsız.
+
+      # DOĞRULA — gerçek final MP4'ten bağımsız ölçüm + kontrol listesi + kareler.
+      - name: Gerçek çıktıyı doğrula
+        if: ${{ !cancelled() && steps.produce.conclusion == 'success' }}
+        run: node scripts/real-production-validate.js
+
+      - name: Doğrulama artifact'larını sakla
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: real-production-validation-${{ github.run_number }}
+          path: artifacts/real-production-validation/
+          if-no-files-found: warn
+          retention-days: 14
+
+      # Ham üretim de saklansın (final MP4 + raporlar) — çapraz kontrol için.
+      - name: Ham üretimi sakla
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: raw-production-${{ github.run_number }}
+          path: |
+            output/**/*.mp4
+            output/**/report.json
+            output/**/production-report.json
+            output/**/production-report.md
+          if-no-files-found: warn
+          retention-days: 14

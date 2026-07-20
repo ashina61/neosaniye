@@ -356,7 +356,18 @@ function buildUserPrompt(avoidTopics, { topPerformers = [], trendSeeds = [], str
         winningHooks.map((h) => `- "${h.hook}" (${h.views} views)`).join('\n'),
     );
   }
-  parts.push('Pick a NEW, mind-blowing TRUE topic that differs from the used list, then write the full scene-by-scene script.');
+  // FORCE_TOPIC: doğrulama/test için konuyu sabitle (FORCE_FORMAT ile aynı ruh).
+  // Ayarlıysa kaçınma listesini geçersiz kılar ve tam bu konuyu yazdırır.
+  const forcedTopic = String(process.env.FORCE_TOPIC || '').trim();
+  if (forcedTopic) {
+    parts.push(
+      `FORCED TOPIC (validation run): write the full scene-by-scene script about ` +
+        `"${forcedTopic}". Ignore the "previously used" avoidance for THIS run; this exact ` +
+        `topic is required. Keep it a true, accurate nature/science explainer.`,
+    );
+  } else {
+    parts.push('Pick a NEW, mind-blowing TRUE topic that differs from the used list, then write the full scene-by-scene script.');
+  }
   return parts.join('\n\n');
 }
 
@@ -428,7 +439,9 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
     const script = JSON.parse(text);
     lastScript = script;
 
-    if (await isTopicUsed(script.topic)) {
+    // FORCE_TOPIC doğrulama koşusunda tekrar kontrolü atlanır (bee konusu zaten
+    // kullanılmış olabilir; bu bilinçli bir yeniden-üretimdir).
+    if (!process.env.FORCE_TOPIC && await isTopicUsed(script.topic)) {
       avoidTopics.push(script.topic);
       continue;
     }

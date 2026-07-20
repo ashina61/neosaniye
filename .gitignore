@@ -29,6 +29,10 @@ data/*
 # Manuel inceleme önizlemeleri (production seçicisi bu klasörü görmez).
 !artifacts/audio-review/*.mp3
 
+# Gerçek üretim doğrulaması: yerel/dev koşularının çıktısı commit'lenmez;
+# GERÇEK artifact'lar CI workflow'unda (real-production-validation) üretilir.
+artifacts/real-production-validation/
+
 # Bee regresyon kanıtı (gerçek ffmpeg proof seti) — küçük ve sürümlenir.
 !artifacts/regression/*.mp4
 !artifacts/regression/*.png
