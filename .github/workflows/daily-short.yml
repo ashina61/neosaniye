@@ -71,6 +71,7 @@ jobs:
           MUSIC_URLS: ${{ vars.MUSIC_URLS }}
 
       - name: Üret ve yayınla
+        id: produce
         run: node scripts/generate-and-publish.js ${{ inputs.no_upload && '--no-upload' || '' }}
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -111,6 +112,27 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ vars.TELEGRAM_CHAT_ID }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+      # GÖZLEM (yalnızca okuma): kalıcı kayıtlar (videos.json + qc-history) yazıldıktan
+      # SONRA rollout raporu üret. Render/motion/upload'a DOKUNMAZ; hata toleranslı —
+      # rapor/log başarısızlığı job'ı ASLA düşürmez. Üretim adımı çalıştıysa çalışır
+      # (produce skip edilmediyse); iptal edildiyse çalışmaz.
+      - name: Motion rollout raporu (gözlem)
+        if: ${{ !cancelled() && steps.produce.conclusion != 'skipped' }}
+        run: |
+          npm run motion:rollout-report || echo "[motion-rollout] report generation failed; production continues"
+          node scripts/motion-rollout-log.js || echo "[motion-rollout] log helper failed; production continues"
+
+      - name: Motion rollout raporunu artifact olarak sakla
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: motion-rollout-report-${{ github.run_number }}
+          path: |
+            artifacts/motion/rollout/rollout-report.json
+            artifacts/motion/rollout/rollout-report.md
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Üretilen videoyu artifact olarak sakla
         if: always()
