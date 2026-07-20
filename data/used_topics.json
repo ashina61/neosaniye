@@ -484,5 +484,11 @@
     "normalizedTopic": "the-great-lisbon-earthquake",
     "createdAt": "2026-07-20T16:33:20.324Z",
     "videoId": "the-great-lisbon-earthquake-1784565200321"
+  },
+  "leap-year": {
+    "topic": "Leap Year",
+    "normalizedTopic": "leap-year",
+    "createdAt": "2026-07-20T21:25:08.696Z",
+    "videoId": "leap-year-1784582708699"
   }
 }
