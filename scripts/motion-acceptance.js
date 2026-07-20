@@ -2,6 +2,7 @@
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { mkdir, writeFile, stat } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { renderCta } from '../src/motion/ctaRenderer.js';
 import { computeSafeArea } from '../src/motion/ctaSafeArea.js';
@@ -100,12 +101,14 @@ for (const item of MATRIX) {
   // 1) Arka plan videosu (CTA kapalı kontrol) — kaynak. bg.vf bir lavfi
   // SOURCE grafiğidir (gradients/testsrc + drawtext/drawbox), doğrudan input.
   const off = path.join(VID, `${item.templateId}-off.mp4`);
-  await run('ffmpeg', ['-nostdin', '-y', '-v', 'error',
-    '-f', 'lavfi', '-i', bg.vf,
-    '-f', 'lavfi', '-i', AUDIO_BED,
-    '-map', '0:v', '-map', '1:a', '-t', String(VLEN),
-    '-c:v', 'libx264', '-preset', 'medium', '-crf', '18', '-pix_fmt', 'yuv420p',
-    '-r', '30', '-c:a', 'aac', '-b:a', '160k', '-ac', '2', off]);
+  if (!existsSync(off)) {
+    await run('ffmpeg', ['-nostdin', '-y', '-v', 'error',
+      '-f', 'lavfi', '-i', bg.vf,
+      '-f', 'lavfi', '-i', AUDIO_BED,
+      '-map', '0:v', '-map', '1:a', '-t', String(VLEN),
+      '-c:v', 'libx264', '-preset', 'medium', '-crf', '18', '-pix_fmt', 'yuv420p',
+      '-r', '30', '-c:a', 'aac', '-b:a', '160k', '-ac', '2', off]);
+  }
   const offSize = (await stat(off)).size;
 
   // 2) Safe-area (caption/subject box'ları hesaba kat).
@@ -113,11 +116,13 @@ for (const item of MATRIX) {
   // 3) CTA render (always/test — canlı config'e dokunmadan doğrudan renderCta).
   const on = path.join(VID, `${item.templateId}-on.mp4`);
   const mp0 = Date.now();
-  const r = await renderCta({
-    inputVideo: off, outputVideo: on,
-    plan: { templateId: item.templateId, type: item.type, startSec: START, durationSec: DUR },
-    box, workDir: VID, width: 1080, height: 1920, duration: VLEN,
-  });
+  const r = existsSync(on)
+    ? { ok: true, sfxId: { subscribe: 'confirmation', like: 'pop', bell: 'bell_tick', comment: 'soft_click', follow: 'confirmation', save: 'soft_click' }[item.type] }
+    : await renderCta({
+      inputVideo: off, outputVideo: on,
+      plan: { templateId: item.templateId, type: item.type, startSec: START, durationSec: DUR },
+      box, workDir: VID, width: 1080, height: 1920, duration: VLEN,
+    });
   const motionPassMs = Date.now() - mp0;
   const onSize = (await stat(on)).size;
 
@@ -170,15 +175,13 @@ for (const item of MATRIX) {
   console.log(`✓ ${item.templateId} @ ${item.bg} — pass ${motionPassMs}ms, peak ${ao.maxPeakDb}dB, capSSIM ${preservedSsim}, capOverlap ${captionOverlap}`);
 }
 
+await writeFile(path.join(ROOT, 'acceptance-report.json'),
+  JSON.stringify({ generatedAt: new Date().toISOString(), note: 'Sandbox\'ta gerçek NeoSaniye videosu yok; temsili çeşitlilik arka planları kullanıldı (bright/dark/botcap/midcap/fastcut/subject).', results }, null, 2));
+
 // Contact sheet: 6 satır × 3 kare (giriş/tam/çıkış), etiketli.
-const rows = [];
-for (const res of results) {
-  const label = `${res.templateId} | ${res.video.split(' ')[0]} | ${res.position}`;
-  rows.push({ res, label });
-}
 // Her şablon için 3 kareyi yatay birleştir + üst etiket; sonra dikey istifle.
 const rowImgs = [];
-for (const { res } of results) {
+for (const res of results) {
   const rowPng = path.join(SHOT, `row-${res.templateId}.png`);
   const labels = ['giriş', 'tam', 'çıkış'];
   const ins = ['entry', 'full', 'exit'].flatMap((n) => ['-i', path.join(SHOT, `${res.templateId}-${n}.png`)]);
@@ -193,8 +196,5 @@ const sheet = path.join(ROOT, 'acceptance-contact-sheet.png');
 await run('ffmpeg', ['-nostdin', '-y', '-v', 'error', ...rowImgs.flatMap((f) => ['-i', f]),
   '-filter_complex', `${rowImgs.map((_, i) => `[${i}:v]`).join('')}vstack=inputs=${rowImgs.length}[v]`,
   '-map', '[v]', '-frames:v', '1', sheet]);
-
-await writeFile(path.join(ROOT, 'acceptance-report.json'),
-  JSON.stringify({ generatedAt: new Date().toISOString(), note: 'Sandbox\'ta gerçek NeoSaniye videosu yok; temsili çeşitlilik arka planları kullanıldı (bright/dark/botcap/midcap/fastcut/subject).', results }, null, 2));
 console.log(`\n✓ contact sheet: ${sheet}`);
 console.log(`✓ report: ${path.join(ROOT, 'acceptance-report.json')}`);

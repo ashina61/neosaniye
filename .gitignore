@@ -34,3 +34,6 @@ data/*
 artifacts/motion/*
 !artifacts/motion/cta-contact-sheet.png
 !artifacts/motion/safe-area-debug.png
+!artifacts/motion/acceptance/
+artifacts/motion/acceptance/videos/
+artifacts/motion/acceptance/screenshots/
