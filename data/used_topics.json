@@ -478,5 +478,11 @@
     "normalizedTopic": "bee-honeycomb-hexagons",
     "createdAt": "2026-07-20T05:58:12.254Z",
     "videoId": "bee-honeycomb-hexagons-1784527092251"
+  },
+  "the-great-lisbon-earthquake": {
+    "topic": "The Great Lisbon Earthquake",
+    "normalizedTopic": "the-great-lisbon-earthquake",
+    "createdAt": "2026-07-20T16:33:20.324Z",
+    "videoId": "the-great-lisbon-earthquake-1784565200321"
   }
 }
