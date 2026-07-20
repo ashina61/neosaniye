@@ -1,8 +1,9 @@
-name: Gerçek Üretim Doğrulaması (upload KAPALI)
+name: Ses Boru Hattı Doğrulaması (plumbing — production-ready DEĞİL)
 
-# Yalnızca MANUEL tetiklenir. Gerçek pipeline ile TEK doğrulama videosu üretir,
-# HİÇBİR platforma yayın YAPMAZ (--no-upload + YouTube/Meta secret'ları verilmez).
-# bee-honeycomb regresyon patch'inin gerçek çıktıda doğrulanması içindir.
+# YALNIZCA mikser + output-verification katmanını test eder. Mekanik/zorlanmış SFX
+# (CREW_ENABLED=0 → her animasyonlu sınıra efekt). Sonuç sadece MIX_PIPELINE_PASS/FAIL.
+# BU KOŞUDAN production-ready KARARI ÇIKMAZ (o real-editorial koşusundan çıkar).
+# Upload çift kilitli: --no-upload + YouTube/Meta secret'ları verilmez.
 on:
   workflow_dispatch:
     inputs:
@@ -12,46 +13,36 @@ on:
         default: "Bee Honeycomb Hexagons"
 
 concurrency:
-  group: real-production-validation
+  group: audio-plumbing-validation
   cancel-in-progress: false
 
-# Yazma izni YOK — bu doğrulama koşusu state commit'lemez.
 permissions:
   contents: read
 
 jobs:
-  validate:
+  plumbing:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-
       - name: ffmpeg kur
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-
       - name: Python TTS araçları
         run: pip install -r requirements.txt
-
       - name: Node bağımlılıkları
         run: npm ci
-
       - name: Telifsiz müzik indir (best-effort)
         run: node scripts/fetch-music.js || true
         env:
           MUSIC_URLS: ${{ vars.MUSIC_URLS }}
 
-      # ÜRET — upload KESİN kapalı: --no-upload VE YouTube/Meta secret'ları YOK.
-      # Doğrulama koşulları: CTA zorla açık + tip subscribe + İngilizce + bee konusu +
-      # mekanik SFX (her sınıra efekt → ≥5 farklı sahne SFX garantisi).
-      - name: Üret (upload KAPALI)
+      - name: Üret (MEKANİK SFX, upload KAPALI)
         id: produce
         run: node scripts/generate-and-publish.js --no-upload
         env:
@@ -62,44 +53,39 @@ jobs:
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
           FREESOUND_API_KEY: ${{ secrets.FREESOUND_API_KEY }}
           TTS_VOICE: ${{ vars.TTS_VOICE }}
-          # İçerik + CTA doğrulama koşulları:
           CONTENT_LANGUAGE: "en"
           FORCE_TOPIC: ${{ inputs.topic }}
           MOTION_ENABLED: "1"
           MOTION_CTA_ENABLED: "1"
           MOTION_CTA_MODE: "always"
           MOTION_CTA_TYPES: "subscribe"
-          # Mekanik kurgu → her animasyonlu sınıra SFX (≥5 farklı sahne cue garantisi).
+          # MEKANİK SFX zorlaması — SADECE mikser/output test için.
           CREW_ENABLED: "0"
-          # QC/preflight gerçek modlarında kalsın (rapor için); upload zaten kapalı.
           RETENTION_QC_MODE: ${{ vars.RETENTION_QC_MODE }}
           TECHNICAL_PREFLIGHT_MODE: ${{ vars.TECHNICAL_PREFLIGHT_MODE }}
-          # DİKKAT: YOUTUBE_* ve META_* secret'ları BİLEREK verilmedi → yayın imkânsız.
+          # YOUTUBE_* / META_* BİLEREK yok → yayın imkânsız.
 
-      # DOĞRULA — gerçek final MP4'ten bağımsız ölçüm + kontrol listesi + kareler.
-      - name: Gerçek çıktıyı doğrula
+      - name: Doğrula (plumbing)
         if: ${{ !cancelled() && steps.produce.conclusion == 'success' }}
-        run: node scripts/real-production-validate.js
+        run: node scripts/real-production-validate.js --mode=plumbing
 
-      - name: Doğrulama artifact'larını sakla
+      - name: Artifact — plumbing doğrulaması
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: real-production-validation-${{ github.run_number }}
+          name: audio-plumbing-validation-${{ github.run_number }}
           path: artifacts/real-production-validation/
           if-no-files-found: warn
           retention-days: 14
 
-      # Ham üretim de saklansın (final MP4 + raporlar) — çapraz kontrol için.
-      - name: Ham üretimi sakla
+      - name: Artifact — ham üretim
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: raw-production-${{ github.run_number }}
+          name: raw-production-plumbing-${{ github.run_number }}
           path: |
             output/**/*.mp4
             output/**/report.json
             output/**/production-report.json
-            output/**/production-report.md
           if-no-files-found: warn
           retention-days: 14

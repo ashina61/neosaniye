@@ -39,6 +39,8 @@ export async function recordProduction(script, meta = {}) {
     music: meta.music || null,
     // Neo Motion CTA katmanı (tip tekrarını önleme + izleme).
     motion: meta.motion || null,
+    // Editoryal SFX tipleri (son videolarda SFX tekrarını izlemek için).
+    audioSfx: meta.audioSfx || null,
     // 14 günlük yayın saati deneyi etiketi (us-audience-3-slots-v1).
     scheduleExperiment: meta.scheduleExperiment || null,
     visualStyle: meta.visualStyle || null,

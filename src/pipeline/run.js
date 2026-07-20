@@ -328,6 +328,28 @@ export async function runPipeline(opts = {}) {
     // upload'u engeller (video artifact olarak kalır, akış kırılmaz).
     const wSum = itemWeights.reduce((a, b) => a + b, 0) || 1;
     const itemSeconds = itemWeights.map((w) => (w / wSum) * video.duration);
+
+    // EDİTORYAL SFX EŞLEME: her (gerçekten miks edilmiş) SFX cue'sunu düştüğü
+    // sahnenin anlatımıyla eşle — editoryal doğrulama (semantik uyum: riser=build,
+    // impact=reveal, shimmer=uygun sahne) bunu okur. Sayı ZORLANMAZ; sistem ne
+    // seçtiyse odur. cumStart[i] = i. medya öğesinin başlangıç saniyesi.
+    const cumStart = [];
+    { let acc = 0; for (const s of itemSeconds) { cumStart.push(acc); acc += s; } }
+    const itemAt = (t) => { let idx = 0; for (let k = 0; k < cumStart.length; k += 1) if (t >= cumStart[k] - 0.001) idx = k; return idx; };
+    const editorialSfx = (video.sfxCues || []).map((c) => {
+      const i = itemAt(c.atSeconds);
+      const it = media.items[i];
+      const sc = it ? script.scenes?.[it.scene] : null;
+      return {
+        atSeconds: c.atSeconds,
+        type: c.sfxId,
+        sceneIndex: it?.scene ?? null,
+        narration: String(sc?.narration || '').slice(0, 160),
+      };
+    });
+    outputVerification.editorialSfx = editorialSfx;
+    outputVerification.ambience = ambience?.name || null;
+
     // Semantik alaka (best-effort): stok görsellerin anahtar kelimesi o sahnenin
     // anlatımıyla örtüşüyor mu? AI/gfx/arşiv üretimde konu-türevi olduğundan
     // null (cezasız); yalnızca stok/pexels için ölçülür (alakasız stok yakalanır).
@@ -517,6 +539,7 @@ export async function runPipeline(opts = {}) {
       visualStyle, // Baş Analist stile göre öğrensin
       music: musicMeta, // parça tekrarını önleme + lisans izi
       motion: motionReport, // CTA tipi tekrarını önleme + izleme
+      audioSfx: editorialSfx.map((e) => e.type).filter(Boolean), // SFX tekrarını izleme (son 5 video)
       scheduleExperiment: {
         ...sched.experiment,
         scheduledPublishAt: sched.scheduledPublishAt,

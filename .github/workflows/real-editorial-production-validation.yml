@@ -1,0 +1,94 @@
+name: Gerçek Editoryal Üretim Doğrulaması (production-ready kapısı)
+
+# GERÇEK production konfigürasyonu: crew AÇIK (editoryal SFX seçimi), SFX sayısı
+# veya zamanlaması ZORLANMAZ — sistem konuya/sahneye göre KENDİ seçer. Yalnızca CTA
+# doğrulama için subscribe/SUBSCRIBE'a sabitlenir. Upload çift kilitli
+# (--no-upload + YouTube/Meta secret'ları verilmez). overallResult=PASS SADECE bu
+# koşudan çıkar; mekanik plumbing koşusundan production-ready kararı çıkarılmaz.
+on:
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: "Zorlanacak konu (boş = Bee Honeycomb Hexagons)"
+        type: string
+        default: "Bee Honeycomb Hexagons"
+
+concurrency:
+  group: real-editorial-production-validation
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  editorial:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: ffmpeg kur
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Python TTS araçları
+        run: pip install -r requirements.txt
+      - name: Node bağımlılıkları
+        run: npm ci
+      - name: Telifsiz müzik indir (best-effort)
+        run: node scripts/fetch-music.js || true
+        env:
+          MUSIC_URLS: ${{ vars.MUSIC_URLS }}
+
+      - name: Üret (GERÇEK editoryal, upload KAPALI)
+        id: produce
+        run: node scripts/generate-and-publish.js --no-upload
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          FREESOUND_API_KEY: ${{ secrets.FREESOUND_API_KEY }}
+          TTS_VOICE: ${{ vars.TTS_VOICE }}
+          CONTENT_LANGUAGE: "en"
+          FORCE_TOPIC: ${{ inputs.topic }}
+          # CTA doğrulama için sabit (yalnızca bu koşu): subscribe / SUBSCRIBE.
+          MOTION_ENABLED: "1"
+          MOTION_CTA_ENABLED: "1"
+          MOTION_CTA_MODE: "always"
+          MOTION_CTA_TYPES: "subscribe"
+          # CREW_ENABLED ZORLANMAZ → gerçek üretimdeki değeriyle AÇIK (editoryal SFX).
+          # SFX sayısı/zamanı zorlanmaz; sistem kendi seçer.
+          RETENTION_QC_MODE: ${{ vars.RETENTION_QC_MODE }}
+          TECHNICAL_PREFLIGHT_MODE: ${{ vars.TECHNICAL_PREFLIGHT_MODE }}
+          # YOUTUBE_* / META_* BİLEREK yok → yayın imkânsız.
+
+      - name: Doğrula (editorial → production-ready kapısı)
+        if: ${{ !cancelled() && steps.produce.conclusion == 'success' }}
+        run: node scripts/real-production-validate.js --mode=editorial
+
+      - name: Artifact — editoryal doğrulama
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: real-editorial-production-validation-${{ github.run_number }}
+          path: artifacts/real-production-validation/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Artifact — ham üretim
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: raw-production-editorial-${{ github.run_number }}
+          path: |
+            output/**/*.mp4
+            output/**/report.json
+            output/**/production-report.json
+            output/**/production-report.md
+          if-no-files-found: warn
+          retention-days: 14
