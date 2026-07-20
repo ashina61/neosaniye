@@ -83,6 +83,8 @@ sfxId, warnings, failures`. `report.json` + video kaydı + qc-history'ye de
 npm run motion:sfx             # SFX üret (assets/motion/sfx)
 npm run motion:preview         # 6 CTA demo videosu + contact sheet (artifacts/motion)
 npm run motion:debug-safe-area # güvenli alan + kaçınılan bölgeler görseli
+npm run motion:rollout-report  # ilk 20 gerçek üretimde CTA davranışı (yalnızca okuma;
+                               # data/videos.json + qc-history → PASS/REVIEW/FAIL/PENDING)
 ```
 
 ## Config (`config.motion`)
