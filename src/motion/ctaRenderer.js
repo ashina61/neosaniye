@@ -65,10 +65,13 @@ export async function renderCta(o) {
     // anahtarı apad ile sonsuza doldurulur; taban (main) süresi belirleyici olur.
     const fc = [
       `[0:v]${assFilter}[v]`,
-      `[1:a]adelay=${delayMs}|${delayMs},volume=${cfg.sfxVolume},asplit=2[sfxkey0][sfxmix]`,
-      `[sfxkey0]apad[sfxkey]`,
-      `[0:a][sfxkey]sidechaincompress=threshold=0.08:ratio=6:attack=3:release=220[base]`,
-      `[base][sfxmix]amix=inputs=2:normalize=0:duration=first,aformat=channel_layouts=stereo[a]`,
+      // Confirmation's source is intentionally soft; this calibrated gain and
+      // 100 ms anticipatory music pocket keep it audible after AAC without
+      // changing any CTA visual treatment or aggressively ducking TTS.
+      `[1:a]adelay=${delayMs}|${delayMs},volume=${cfg.sfxVolume * 2.15},asplit=2[sfxkey0][sfxmix]`,
+      `[sfxkey0]asetpts=PTS-0.1/TB,apad[sfxkey]`,
+      `[0:a][sfxkey]sidechaincompress=threshold=0.055:ratio=4:attack=8:release=240[base]`,
+      `[base][sfxmix]amix=inputs=2:normalize=0:duration=first,alimiter=limit=0.89:attack=5:release=80,aformat=channel_layouts=stereo[a]`,
     ];
     args.push('-filter_complex', fc.join(';'), '-map', '[v]', '-map', '[a]',
       '-c:a', 'aac', '-b:a', '160k', '-ac', '2');

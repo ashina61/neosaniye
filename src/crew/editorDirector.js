@@ -79,8 +79,8 @@ You receive a scene-by-scene story. Design the edit like a pro:
 - MUSIC AS A CO-EDITOR (music_mood + let it breathe with the story): the mood should imply a shape —
   lift under the hook, a drop/hit at the biggest reveal, a brief pull-back before the twist, a settled
   resolution on the payoff. Pick the mood that supports that emotional curve, not just the topic.
-- SFX DISCIPLINE (required): aim for 3-5 audible sfx per video — minimum 3, never fewer, never more
-  than 6. Each must land ON a meaningful narration moment (hook entry, the crystal/object reveal,
+- SFX DISCIPLINE (required): use only as many audible SFX as the story earns (often 2-5; silence is
+  better than decoration). Each must land ON a meaningful narration moment (hook entry, the crystal/object reveal,
   the split/reveal, the final resolution) — NOT random. Space them out (don't stack two within a few
   seconds) and vary the type. Never add a whoosh just to hit a count.
 - EVERY animated (non-cut) transition MUST carry an sfx — a silent animated wipe feels broken.
@@ -127,11 +127,14 @@ Design the edit: exactly ${N - 1} boundaries, plus music mood and subscribe plac
 
   // --- Temizle/doğrula: model saçmalarsa mekanik plana düşülür ---
   if (!Array.isArray(plan.boundaries) || plan.boundaries.length !== N - 1) return null;
-  const boundaries = plan.boundaries.map((b) => {
+  const boundaries = plan.boundaries.map((b, i) => {
     const transition = TRANSITIONS.includes(b.transition) ? b.transition : 'cut';
     let sfxType = SFX.includes(b.sfx) ? b.sfx : 'none';
     // Animasyonlu geçiş asla sessiz olamaz (canlıda "bozuk" hissi verdi).
     if (transition !== 'cut' && sfxType === 'none') sfxType = 'whoosh';
+    const narration = String(script.scenes[i + 1]?.narration || '').toLowerCase();
+    if (sfxType === 'impact' && !/(answer|finally|reveals?|turns out|instead|but |therefore|because|surpris|secret|result|why)/.test(narration)) sfxType = 'none';
+    if (sfxType === 'shimmer' && !/(discover|reveal|found|first|perfect|complete|beautiful|wonder|glow|crystal|finally)/.test(narration)) sfxType = 'none';
     return { transition, sfx: sfxType };
   });
   // Animasyon oranı %50'yi aşarsa fazlasını cut'a çevir (sondan başa).

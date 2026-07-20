@@ -37,17 +37,20 @@ test('measureSegmentDb: yüksek vuruş penceresi tabandan yüksek okunur', { ski
   } finally { await rm(dir, { recursive: true, force: true }); }
 });
 
-test('verifySfxInOutput: gerçekten miks edilmiş duyulur cue → verified', { skip: !hasFfmpeg }, async () => {
+test('verifySfxInOutput: final AAC içinde impact, shimmer ve CTA confirmation hedeflerini geçer', { skip: !hasFfmpeg }, async () => {
   const dir = await mkdtemp(path.join(os.tmpdir(), 'ov2-'));
   try {
     const clip = path.join(dir, 'hit.mp4');
     await makeClipWithHit(clip);
-    const r = await verifySfxInOutput(clip, [
-      { atSeconds: 2.0, sfxId: 'impact', assetResolved: true, mixedInGraph: true },
-    ]);
+    const r = await verifySfxInOutput(clip, ['impact', 'shimmer', 'confirmation'].map((sfxId) => (
+      { atSeconds: 2.0, sfxId, assetResolved: true, mixedInGraph: true }
+    )));
     assert.equal(r.ok, true, `doğrulama başarısız: ${r.failures}`);
-    assert.equal(r.cues[0].verified, true);
-    assert.ok(r.cues[0].audibleDeltaDb >= 3);
+    assert.deepEqual(r.cues.map((cue) => cue.minAudibleDeltaDb), [5, 4, 5]);
+    for (const cue of r.cues) {
+      assert.equal(cue.verified, true, `${cue.requested} final AAC içinde doğrulanamadı`);
+      assert.ok(cue.audibleDeltaDb >= cue.minAudibleDeltaDb);
+    }
   } finally { await rm(dir, { recursive: true, force: true }); }
 });
 

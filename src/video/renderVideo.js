@@ -617,7 +617,10 @@ async function buildFullAudio(
   // maskeleniyordu — gerçek koşuda riser/shimmer/CTA pop gömüldü (+-1/-0.1/+0.4 dB),
   // yalnız impact geçti (+3.6). Taban seviye yükseltildi; ayrıca cue anında HEM
   // müzik HEM konuşma sidechain ile kısılıp vuruşa "pocket" açılır (aşağıda).
-  const sfxVol = Math.max(1.4, config.video.transitionSoundVolume);
+  // Calibrated per sound class: short bright cues need more separation than a
+  // dense impact source.  This avoids a blind global SFX boost.
+  const sfxVol = Math.max(1.0, config.video.transitionSoundVolume);
+  const sfxGain = { impact: 1.7, shimmer: 2.35, riser: 1.35, whoosh: 1.8, click: 1.55 };
 
   // Anlatım sesini "yayın" zincirinden geçir: alçak-frekans temizliği +
   // presence EQ + kompresör. Ham TTS'ten çok daha dolgun/pro tınlar.
@@ -658,9 +661,8 @@ async function buildFullAudio(
   for (const { idx: inIdx, k } of sfxPlan) {
     const at = off[k - 1] + bts[k - 1] / 2;
     const ms = Math.round(at * 1000);
-    fc.push(
-      `[${inIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=${sfxVol}[wd${k}]`,
-    );
+    const gain = sfxVol * (sfxGain[sfxTypes[k - 1]] || 1);
+    fc.push(`[${inIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=${gain}[wd${k}]`);
     sfxLabels.push(`[wd${k}]`);
     sfxCues.push({ atSeconds: +at.toFixed(2), sfxId: sfxTypes[k - 1], assetResolved: true, mixedInGraph: true });
   }
@@ -675,7 +677,7 @@ async function buildFullAudio(
 
   if (clickIdx >= 0) {
     const ms = Math.round(clickAt * 1000);
-    fc.push(`[${clickIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=1.0[clk]`);
+    fc.push(`[${clickIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=${sfxVol * sfxGain.click}[clk]`);
     sfxLabels.push('[clk]');
     sfxCues.push({ atSeconds: +clickAt.toFixed(2), sfxId: 'click', assetResolved: true, mixedInGraph: true });
   }
@@ -692,13 +694,15 @@ async function buildFullAudio(
     }
     fc.push(`${sfxAll}asplit=2[sfxkey0][sfxmix]`);
     if (musKey) {
-      fc.push(`[sfxkey0]apad,asplit=2[sfxkeyM][sfxkeyV]`);
+      // Start the key 100 ms before the audible cue, so music yields before
+      // the transient while the picture-aligned [sfxmix] is unchanged.
+      fc.push(`[sfxkey0]asetpts=PTS-0.1/TB,apad,asplit=2[sfxkeyM][sfxkeyV]`);
       // Konuşmaya sığ pocket (≈2-3 dB), müziğe daha derin dip (≈4-5 dB).
       fc.push(`${voiceOut}[sfxkeyV]sidechaincompress=threshold=0.05:ratio=2:attack=4:release=170[voiced]`);
       fc.push(`${musKey}[sfxkeyM]sidechaincompress=threshold=0.1:ratio=4:attack=4:release=240[musd2]`);
       finalMix.push('[voiced]', '[musd2]', '[sfxmix]');
     } else {
-      fc.push(`[sfxkey0]apad[sfxkeyV]`);
+      fc.push(`[sfxkey0]asetpts=PTS-0.1/TB,apad[sfxkeyV]`);
       fc.push(`${voiceOut}[sfxkeyV]sidechaincompress=threshold=0.05:ratio=2:attack=4:release=170[voiced]`);
       finalMix.push('[voiced]', '[sfxmix]');
     }
@@ -712,7 +716,10 @@ async function buildFullAudio(
   // STEREO garanti: rapor "stereo" derken çıktı mono çıkmasın (bee hatası #8).
   const master =
     `apad,atrim=0:${total.toFixed(3)},afade=t=out:st=${fadeStart}:d=1.1,` +
-    'loudnorm=I=-14:TP=-1.5:LRA=11,aresample=44100,aformat=channel_layouts=stereo';
+    // Keep the safety limiter before loudness measurement: post-loudnorm
+    // limiting was flattening the very transients the editorial gate measures.
+    'alimiter=limit=0.89:attack=5:release=80,loudnorm=I=-14:TP=-1.5:LRA=11,' +
+    'aresample=44100,aformat=channel_layouts=stereo';
   if (finalMix.length > 1) {
     fc.push(`${finalMix.join('')}amix=inputs=${finalMix.length}:normalize=0:duration=longest,${master}[a]`);
   } else {

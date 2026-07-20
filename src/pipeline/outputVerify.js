@@ -23,6 +23,14 @@ const BUF = { maxBuffer: 12 * 1024 * 1024 };
 // Duyulabilirlik eşiği: cue anındaki tepe (max) enerji, hemen önceki tabana
 // göre en az bu kadar dB yükselmeli. Geçici (transient) vuruş için makul alt sınır.
 export const SFX_AUDIBLE_MIN_DELTA_DB = 3.0;
+// A generic floor is insufficient for payoff cues: they must be distinguishable
+// in the final AAC, not merely present in the graph.
+export const SFX_AUDIBLE_MIN_DELTA_BY_TYPE = {
+  impact: 5.0,
+  shimmer: 4.0,
+  whoosh: 4.0,
+  confirmation: 5.0,
+};
 // Tek SFX'in bir videoda azami tekrarı (aşılırsa REPETITION_EXCESSIVE).
 export const SFX_MAX_REPEAT_PER_VIDEO = 4;
 // Near-silent asset eşiği: WAV'ın tepe seviyesi bunun altındaysa "sessiz" sayılır.
@@ -128,7 +136,8 @@ export async function verifySfxInOutput(outputPath, cues = []) {
       continue;
     }
     rec.audibleDeltaDb = +(during.maxDb - before.maxDb).toFixed(2);
-    rec.verified = rec.audibleDeltaDb >= SFX_AUDIBLE_MIN_DELTA_DB;
+    rec.minAudibleDeltaDb = SFX_AUDIBLE_MIN_DELTA_BY_TYPE[requested] || SFX_AUDIBLE_MIN_DELTA_DB;
+    rec.verified = rec.audibleDeltaDb >= rec.minAudibleDeltaDb;
     if (!rec.verified) { rec.code = 'SFX_INAUDIBLE'; failures.add('SFX_INAUDIBLE'); }
     out.push(rec);
   }
