@@ -42,7 +42,7 @@ test('verifySfxInOutput: final AAC içinde impact, shimmer ve CTA confirmation h
   try {
     const clip = path.join(dir, 'hit.mp4');
     await makeClipWithHit(clip);
-    const r = await verifySfxInOutput(clip, ['impact', 'shimmer', 'confirmation'].map((sfxId) => (
+    const r = await verifySfxInOutput(clip, ['impact', 'shimmer', 'cta:confirmation'].map((sfxId) => (
       { atSeconds: 2.0, sfxId, assetResolved: true, mixedInGraph: true }
     )));
     assert.equal(r.ok, true, `doğrulama başarısız: ${r.failures}`);

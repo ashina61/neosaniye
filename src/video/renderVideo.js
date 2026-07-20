@@ -660,11 +660,16 @@ async function buildFullAudio(
 
   for (const { idx: inIdx, k } of sfxPlan) {
     const at = off[k - 1] + bts[k - 1] / 2;
-    const ms = Math.round(at * 1000);
-    const gain = sfxVol * (sfxGain[sfxTypes[k - 1]] || 1);
+    const type = sfxTypes[k - 1];
+    // A riser resolves AT the cut; delaying its start to the cut made the
+    // verifier inspect only its near-silent attack.  Other SFX remain centred
+    // on the visual transition.
+    const cueStart = type === 'riser' ? Math.max(0, at - 0.78) : at;
+    const ms = Math.round(cueStart * 1000);
+    const gain = sfxVol * (sfxGain[type] || 1);
     fc.push(`[${inIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=${gain}[wd${k}]`);
     sfxLabels.push(`[wd${k}]`);
-    sfxCues.push({ atSeconds: +at.toFixed(2), sfxId: sfxTypes[k - 1], assetResolved: true, mixedInGraph: true });
+    sfxCues.push({ atSeconds: +cueStart.toFixed(2), durationSec: type === 'riser' ? 0.9 : undefined, sfxId: type, assetResolved: true, mixedInGraph: true });
   }
 
   if (chimeIdx >= 0) {

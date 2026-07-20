@@ -58,20 +58,16 @@ export async function renderCta(o) {
 
   if (useSfx) {
     const delayMs = Math.round(o.plan.startSec * 1000);
-    // CTA 'pop' NET duyulsun: taban sesi cue anında hafifçe DUCK et (sidechain),
-    // pop üstüne binsin. Ayrıca stereo garanti (mono çıktı hatasını önler).
-    // NOT: sidechaincompress çıktısı EN KISA girdinin uzunluğunda biter. Kısa
-    // pop sidechain'i tabanı KESER (sesi erken bitirir). Bu yüzden sidechain
-    // anahtarı apad ile sonsuza doldurulur; taban (main) süresi belirleyici olur.
+    // CTA pass has only the already-mastered programme, not separate music and
+    // narration stems.  Sidechaining that complete programme altered TTS peaks
+    // but could not create a music-only pocket.  Keep the programme intact and
+    // mix the delayed PCM cue explicitly; duration=first keeps the original
+    // programme duration authoritative.
     const fc = [
       `[0:v]${assFilter}[v]`,
-      // Confirmation's source is intentionally soft; this calibrated gain and
-      // 100 ms anticipatory music pocket keep it audible after AAC without
-      // changing any CTA visual treatment or aggressively ducking TTS.
-      `[1:a]adelay=${delayMs}|${delayMs},volume=${cfg.sfxVolume * 2.15},asplit=2[sfxkey0][sfxmix]`,
-      `[sfxkey0]asetpts=PTS-0.1/TB,apad[sfxkey]`,
-      `[0:a][sfxkey]sidechaincompress=threshold=0.055:ratio=4:attack=8:release=240[base]`,
-      `[base][sfxmix]amix=inputs=2:normalize=0:duration=first,alimiter=limit=0.89:attack=5:release=80,aformat=channel_layouts=stereo[a]`,
+      `[1:a]aresample=44100,adelay=${delayMs}|${delayMs},volume=${cfg.sfxVolume}[sfxmix]`,
+      `[0:a][sfxmix]amix=inputs=2:normalize=0:duration=first,` +
+        'alimiter=limit=0.89:attack=5:release=80,aformat=channel_layouts=stereo[a]',
     ];
     args.push('-filter_complex', fc.join(';'), '-map', '[v]', '-map', '[a]',
       '-c:a', 'aac', '-b:a', '160k', '-ac', '2');
