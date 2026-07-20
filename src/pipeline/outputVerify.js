@@ -27,7 +27,12 @@ export const SFX_AUDIBLE_MIN_DELTA_DB = 3.0;
 export const SFX_MAX_REPEAT_PER_VIDEO = 4;
 // Near-silent asset eşiği: WAV'ın tepe seviyesi bunun altındaysa "sessiz" sayılır.
 export const NEAR_SILENT_MAX_DB = -50;
-const WIN = 0.30; // ölçüm penceresi (sn)
+const WIN = 0.30;        // near-silent asset ölçüm penceresi
+// Cue enerjisi anlık değildir: riser ~0.9s tırmanır, shimmer kuyruğu ~0.5s. Cue
+// öncesi taban kısa (0.30s) ölçülür; cue "sırası" SFX enerji süresini kapsayacak
+// kadar geniş (0.55s) — eşik yine 3 dB, yalnız pencere adil.
+const BEFORE_WIN = 0.30;
+const DURING_WIN = 0.55;
 
 /** Bir ses segmentinin {meanDb, maxDb} değerlerini ölçer (volumedetect). */
 export async function measureSegmentDb(file, startSec, durSec = WIN) {
@@ -112,9 +117,10 @@ export async function verifySfxInOutput(outputPath, cues = []) {
     }
     if (!Number.isFinite(at)) { out.push(rec); continue; }
 
-    // Cue öncesi taban (biten pencere) vs cue anındaki tepe — GERÇEK çıktıdan.
-    const before = await measureSegmentDb(outputPath, Math.max(0, at - WIN - 0.06), WIN).catch(() => ({ maxDb: null }));
-    const during = await measureSegmentDb(outputPath, at - 0.02, WIN).catch(() => ({ maxDb: null }));
+    // Cue öncesi taban (biten pencere) vs cue "sırası" tepe (SFX enerji süresini
+    // kapsar) — GERÇEK çıktıdan. Pencere adil; eşik (3 dB) değişmedi.
+    const before = await measureSegmentDb(outputPath, Math.max(0, at - BEFORE_WIN - 0.05), BEFORE_WIN).catch(() => ({ maxDb: null }));
+    const during = await measureSegmentDb(outputPath, at - 0.05, DURING_WIN).catch(() => ({ maxDb: null }));
     if (before.maxDb === null || during.maxDb === null) {
       rec.code = 'SFX_OUTPUT_VERIFICATION_FAILED';
       failures.add('SFX_OUTPUT_VERIFICATION_FAILED');

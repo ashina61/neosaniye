@@ -613,9 +613,11 @@ async function buildFullAudio(
   const sfxLabels = []; // gecikmeli SFX akış etiketleri
   const sfxCues = [];   // {atSeconds, sfxId, assetPath, mixedInGraph} — çıktı doğrulaması için
 
-  // SFX seviyesi: geçici vuruşun tabana göre NET yükselmesi için müzik+narrasyon
-  // altında kaybolmayacak taban. Ducking ile birlikte cue anında ≥3 dB fark hedefi.
-  const sfxVol = Math.max(0.85, config.video.transitionSoundVolume);
+  // SFX seviyesi: GERÇEK yoğun mikste (TTS+müzik+ambiyans, -14 LUFS) vuruş
+  // maskeleniyordu — gerçek koşuda riser/shimmer/CTA pop gömüldü (+-1/-0.1/+0.4 dB),
+  // yalnız impact geçti (+3.6). Taban seviye yükseltildi; ayrıca cue anında HEM
+  // müzik HEM konuşma sidechain ile kısılıp vuruşa "pocket" açılır (aşağıda).
+  const sfxVol = Math.max(1.4, config.video.transitionSoundVolume);
 
   // Anlatım sesini "yayın" zincirinden geçir: alçak-frekans temizliği +
   // presence EQ + kompresör. Ham TTS'ten çok daha dolgun/pro tınlar.
@@ -624,7 +626,8 @@ async function buildFullAudio(
     'acompressor=threshold=0.12:ratio=2.5:attack=8:release=140:makeup=1.4,' +
     'aresample=44100';
 
-  let musKey = null; // müzik akışı (SFX bus ile ayrıca duck edilecek)
+  let musKey = null;        // müzik akışı (SFX bus ile ayrıca duck edilecek)
+  let voiceOut = '[nmix]';  // final mikse giren konuşma (SFX ile pocket açılır)
   if (useMusic) {
     fc.push(`[0:a]${voiceChain},asplit=2[nkey][nmix]`);
     // Gerçek (mastered) parçalar sentetik yataktan çok daha sıcak basar —
@@ -637,10 +640,8 @@ async function buildFullAudio(
     // susturuyordu — "müzik yok" şikayetinin sebebi buydu).
     fc.push('[mus][nkey]sidechaincompress=threshold=0.09:ratio=2.2:attack=30:release=700[musd]');
     musKey = '[musd]';
-    bedMix.push('[nmix]');
   } else {
     fc.push(`[0:a]${voiceChain}[nmix]`);
-    bedMix.push('[nmix]');
   }
 
   // Ambiyans: bant sınırlı (anlatımın konuşma bandını boğmasın) + çok düşük
@@ -667,40 +668,43 @@ async function buildFullAudio(
   if (chimeIdx >= 0) {
     const at = off[N - 1] + bts[N - 1] / 2;
     const ms = Math.round(at * 1000);
-    fc.push(`[${chimeIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=0.5[chm]`);
+    fc.push(`[${chimeIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=0.7[chm]`);
     sfxLabels.push('[chm]');
     sfxCues.push({ atSeconds: +at.toFixed(2), sfxId: 'chime', assetResolved: true, mixedInGraph: true });
   }
 
   if (clickIdx >= 0) {
     const ms = Math.round(clickAt * 1000);
-    fc.push(`[${clickIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=0.75[clk]`);
+    fc.push(`[${clickIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=1.0[clk]`);
     sfxLabels.push('[clk]');
     sfxCues.push({ atSeconds: +clickAt.toFixed(2), sfxId: 'click', assetResolved: true, mixedInGraph: true });
   }
 
-  // SFX bus'ı: müziği cue anında 2-4 dB DUCK etmek için sidechain anahtarı.
-  // Böylece her efekt anlık olarak müzik yatağını açar, vuruş öne çıkar.
+  // SFX bus'ı: cue anında HEM müzik HEM konuşma sidechain ile kısılır → vuruşa
+  // "pocket" açılır. Böylece yoğun -14 LUFS mikste (TTS+müzik+ambiyans) SFX
+  // gömülmez. Konuşma ducking'i SIĞ + HIZLI (anlaşılırlık korunur, vuruş öne çıkar).
+  // sidechaincompress EN KISA girdide biter → anahtar apad ile doldurulur.
   const finalMix = [...bedMix];
   if (sfxLabels.length) {
     const sfxAll = sfxLabels.length === 1 ? sfxLabels[0] : '[sfxall]';
     if (sfxLabels.length > 1) {
       fc.push(`${sfxLabels.join('')}amix=inputs=${sfxLabels.length}:normalize=0:duration=longest[sfxall]`);
     }
+    fc.push(`${sfxAll}asplit=2[sfxkey0][sfxmix]`);
     if (musKey) {
-      // Müziği DUCK etmek için SFX bus'ından bir anahtar üret. sidechaincompress
-      // EN KISA girdide biter; kısa SFX bus'ı müziği erken keserdi → anahtarı apad
-      // ile sonsuza doldur (müzik tam süre kalır, yalnız SFX anlarında 2-4 dB dip).
-      fc.push(`${sfxAll}asplit=2[sfxkey0][sfxmix]`);
-      fc.push(`[sfxkey0]apad[sfxkey]`);
-      fc.push(`${musKey}[sfxkey]sidechaincompress=threshold=0.2:ratio=3:attack=5:release=260[musd2]`);
-      finalMix.push('[musd2]', '[sfxmix]');
+      fc.push(`[sfxkey0]apad,asplit=2[sfxkeyM][sfxkeyV]`);
+      // Konuşmaya sığ pocket (≈2-3 dB), müziğe daha derin dip (≈4-5 dB).
+      fc.push(`${voiceOut}[sfxkeyV]sidechaincompress=threshold=0.05:ratio=2:attack=4:release=170[voiced]`);
+      fc.push(`${musKey}[sfxkeyM]sidechaincompress=threshold=0.1:ratio=4:attack=4:release=240[musd2]`);
+      finalMix.push('[voiced]', '[musd2]', '[sfxmix]');
     } else {
-      // Müzik yok → SFX doğrudan mix'e (anahtara/split'e gerek yok).
-      finalMix.push(sfxAll);
+      fc.push(`[sfxkey0]apad[sfxkeyV]`);
+      fc.push(`${voiceOut}[sfxkeyV]sidechaincompress=threshold=0.05:ratio=2:attack=4:release=170[voiced]`);
+      finalMix.push('[voiced]', '[sfxmix]');
     }
-  } else if (musKey) {
-    finalMix.push(musKey);
+  } else {
+    finalMix.push(voiceOut);
+    if (musKey) finalMix.push(musKey);
   }
 
   // Karışım -> kapanışta yumuşak sönüş -> YouTube standardı -14 LUFS loudness.

@@ -67,7 +67,7 @@ export async function renderCta(o) {
       `[0:v]${assFilter}[v]`,
       `[1:a]adelay=${delayMs}|${delayMs},volume=${cfg.sfxVolume},asplit=2[sfxkey0][sfxmix]`,
       `[sfxkey0]apad[sfxkey]`,
-      `[0:a][sfxkey]sidechaincompress=threshold=0.15:ratio=4:attack=5:release=250[base]`,
+      `[0:a][sfxkey]sidechaincompress=threshold=0.08:ratio=6:attack=3:release=220[base]`,
       `[base][sfxmix]amix=inputs=2:normalize=0:duration=first,aformat=channel_layouts=stereo[a]`,
     ];
     args.push('-filter_complex', fc.join(';'), '-map', '[v]', '-map', '[a]',

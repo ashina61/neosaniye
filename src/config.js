@@ -310,9 +310,9 @@ export const config = {
       avoidOutro: process.env.MOTION_CTA_AVOID_OUTRO !== '0',
       seededRandom: process.env.MOTION_CTA_SEEDED !== '0',
       sfx: process.env.MOTION_CTA_SFX !== '0',
-      // CTA 'pop' NET duyulur olmalı: taban ses cue anında kısılır (ducking) +
-      // pop bu seviyede biner. Eski 0.3 miks içinde kayboluyordu (bee hatası #7).
-      sfxVolume: Number(process.env.MOTION_CTA_SFX_VOL || 0.7),
+      // CTA 'pop' NET duyulur olmalı: taban ses cue anında DERİN kısılır (ducking) +
+      // pop bu seviyede biner. Gerçek koşuda 0.7 hâlâ gömüldü (+0.4 dB) → 1.1.
+      sfxVolume: Number(process.env.MOTION_CTA_SFX_VOL || 1.1),
       assetsDir: process.env.MOTION_ASSETS_DIR || 'assets/motion',
     },
     // Marka stil sabitleri (styleBible ile uyumlu) — tüm CTA'lar bunu okur.
