@@ -1371,7 +1371,7 @@
       "comments": 5,
       "avgViewPct": 55.5,
       "subsGained": 0,
-      "statsAt": "2026-07-19T21:03:33.846Z"
+      "statsAt": "2026-07-20T05:47:16.257Z"
     }
   },
   {
@@ -1705,7 +1705,7 @@
       "comments": 5,
       "avgViewPct": 72.7,
       "subsGained": 1,
-      "statsAt": "2026-07-19T21:03:33.843Z"
+      "statsAt": "2026-07-20T05:47:16.255Z"
     }
   },
   {
@@ -1820,7 +1820,7 @@
       "comments": 1,
       "avgViewPct": 167,
       "subsGained": 6,
-      "statsAt": "2026-07-19T21:03:33.840Z"
+      "statsAt": "2026-07-20T05:47:16.252Z"
     }
   },
   {
@@ -1947,7 +1947,7 @@
       "comments": 1,
       "avgViewPct": 59,
       "subsGained": 2,
-      "statsAt": "2026-07-19T21:03:33.837Z"
+      "statsAt": "2026-07-20T05:47:16.248Z"
     }
   },
   {
@@ -2074,7 +2074,7 @@
       "comments": 3,
       "avgViewPct": 60,
       "subsGained": 5,
-      "statsAt": "2026-07-19T21:03:33.834Z"
+      "statsAt": "2026-07-20T05:47:16.246Z"
     }
   },
   {
@@ -2201,7 +2201,7 @@
       "comments": 1,
       "avgViewPct": 44.9,
       "subsGained": 0,
-      "statsAt": "2026-07-19T21:03:33.831Z"
+      "statsAt": "2026-07-20T05:47:16.243Z"
     }
   },
   {
@@ -2316,7 +2316,7 @@
       "comments": 2,
       "avgViewPct": 142.1,
       "subsGained": 1,
-      "statsAt": "2026-07-19T21:03:33.829Z"
+      "statsAt": "2026-07-20T05:47:16.240Z"
     }
   },
   {
@@ -2431,7 +2431,7 @@
       "comments": 1,
       "avgViewPct": 59,
       "subsGained": 1,
-      "statsAt": "2026-07-19T21:03:33.826Z"
+      "statsAt": "2026-07-20T05:47:16.237Z"
     }
   },
   {
@@ -2545,7 +2545,7 @@
       "comments": 1,
       "avgViewPct": 84.6,
       "subsGained": 2,
-      "statsAt": "2026-07-19T21:03:33.823Z"
+      "statsAt": "2026-07-20T05:47:16.233Z"
     }
   },
   {
@@ -2672,7 +2672,7 @@
       "comments": 1,
       "avgViewPct": 58.6,
       "subsGained": 1,
-      "statsAt": "2026-07-19T21:03:33.821Z"
+      "statsAt": "2026-07-20T05:47:16.231Z"
     }
   },
   {
@@ -2787,7 +2787,7 @@
       "comments": 1,
       "avgViewPct": 122.4,
       "subsGained": 2,
-      "statsAt": "2026-07-19T21:03:33.818Z"
+      "statsAt": "2026-07-20T05:47:16.228Z"
     }
   },
   {
@@ -2909,12 +2909,12 @@
     },
     "createdAt": "2026-07-15T14:38:38.805Z",
     "stats": {
-      "views": 987,
+      "views": 986,
       "likes": 7,
       "comments": 4,
       "avgViewPct": 42.1,
       "subsGained": 1,
-      "statsAt": "2026-07-19T21:03:33.815Z"
+      "statsAt": "2026-07-20T05:47:16.225Z"
     }
   },
   {
@@ -3021,12 +3021,12 @@
     },
     "createdAt": "2026-07-15T20:16:30.321Z",
     "stats": {
-      "views": 973,
+      "views": 974,
       "likes": 52,
       "comments": 1,
       "avgViewPct": 76.5,
       "subsGained": 5,
-      "statsAt": "2026-07-19T21:03:33.812Z"
+      "statsAt": "2026-07-20T05:47:16.222Z"
     }
   },
   {
@@ -3253,7 +3253,7 @@
       "comments": 1,
       "avgViewPct": 67.1,
       "subsGained": 1,
-      "statsAt": "2026-07-19T21:03:33.809Z"
+      "statsAt": "2026-07-20T05:47:16.219Z"
     }
   },
   {
@@ -3379,7 +3379,7 @@
       "comments": 1,
       "avgViewPct": 57.6,
       "subsGained": 1,
-      "statsAt": "2026-07-19T21:03:33.804Z"
+      "statsAt": "2026-07-20T05:47:16.216Z"
     }
   },
   {
@@ -3497,12 +3497,12 @@
     },
     "createdAt": "2026-07-16T23:12:49.860Z",
     "stats": {
-      "views": 763,
-      "likes": 29,
+      "views": 765,
+      "likes": 28,
       "comments": 3,
       "avgViewPct": 59.6,
       "subsGained": 2,
-      "statsAt": "2026-07-19T21:03:33.801Z"
+      "statsAt": "2026-07-20T05:47:16.213Z"
     }
   },
   {
@@ -3637,7 +3637,7 @@
       "comments": 1,
       "avgViewPct": 80.1,
       "subsGained": 1,
-      "statsAt": "2026-07-19T21:03:33.798Z"
+      "statsAt": "2026-07-20T05:47:16.208Z"
     }
   },
   {
@@ -3767,12 +3767,12 @@
     },
     "createdAt": "2026-07-17T19:45:56.630Z",
     "stats": {
-      "views": 233,
+      "views": 239,
       "likes": 17,
       "comments": 3,
       "avgViewPct": 59.9,
       "subsGained": 0,
-      "statsAt": "2026-07-19T21:03:33.795Z"
+      "statsAt": "2026-07-20T05:47:16.205Z"
     }
   },
   {
@@ -3898,12 +3898,12 @@
     },
     "createdAt": "2026-07-17T23:37:08.494Z",
     "stats": {
-      "views": 872,
+      "views": 873,
       "likes": 19,
       "comments": 1,
       "avgViewPct": 56.1,
       "subsGained": 3,
-      "statsAt": "2026-07-19T21:03:33.792Z"
+      "statsAt": "2026-07-20T05:47:16.202Z"
     }
   },
   {
@@ -4023,10 +4023,10 @@
     },
     "createdAt": "2026-07-18T19:43:52.137Z",
     "stats": {
-      "views": 654,
-      "likes": 17,
+      "views": 683,
+      "likes": 19,
       "comments": 1,
-      "statsAt": "2026-07-19T21:03:33.789Z"
+      "statsAt": "2026-07-20T05:47:16.199Z"
     }
   },
   {
@@ -4170,10 +4170,10 @@
     },
     "createdAt": "2026-07-18T21:13:03.406Z",
     "stats": {
-      "views": 471,
-      "likes": 66,
-      "comments": 1,
-      "statsAt": "2026-07-19T21:03:33.786Z"
+      "views": 583,
+      "likes": 73,
+      "comments": 2,
+      "statsAt": "2026-07-20T05:47:16.196Z"
     }
   },
   {
@@ -4320,7 +4320,7 @@
       "views": 3,
       "likes": 0,
       "comments": 1,
-      "statsAt": "2026-07-19T21:03:33.783Z"
+      "statsAt": "2026-07-20T05:47:16.193Z"
     }
   },
   {
@@ -4469,10 +4469,10 @@
     },
     "createdAt": "2026-07-19T16:02:40.024Z",
     "stats": {
-      "views": 58,
-      "likes": 5,
+      "views": 100,
+      "likes": 7,
       "comments": 1,
-      "statsAt": "2026-07-19T21:03:33.779Z"
+      "statsAt": "2026-07-20T05:47:16.190Z"
     }
   },
   {
@@ -4614,6 +4614,170 @@
       "title": "How Animals See Earth's Magnetic Field: The Invisible Compass #Shorts",
       "publishedAt": "2026-07-19T21:13:12.231Z"
     },
-    "createdAt": "2026-07-19T21:13:50.386Z"
+    "createdAt": "2026-07-19T21:13:50.386Z",
+    "stats": {
+      "views": 159,
+      "likes": 22,
+      "comments": 1,
+      "statsAt": "2026-07-20T05:47:16.186Z"
+    }
+  },
+  {
+    "id": "bee-honeycomb-hexagons-1784527092251",
+    "topic": "Bee Honeycomb Hexagons",
+    "normalizedTopic": "bee-honeycomb-hexagons",
+    "format": "process",
+    "retention": {
+      "score": 82,
+      "status": "warning"
+    },
+    "music": {
+      "file": "Marianas.mp3",
+      "assetId": null,
+      "source": "assets/music havuzu",
+      "license": null
+    },
+    "motion": {
+      "enabled": true,
+      "ctaRequested": true,
+      "ctaApplied": true,
+      "ctaId": "neo_like_pop",
+      "ctaType": "like",
+      "startSec": 40.91,
+      "durationSec": 2.65,
+      "position": "lower_third_left",
+      "selectionReason": "editorial-rule",
+      "safeAreaPassed": true,
+      "sfxId": "pop",
+      "warnings": [],
+      "failures": [],
+      "label": "BEĞEN",
+      "layerDiff": 0.02
+    },
+    "scheduleExperiment": {
+      "id": "us-audience-3-slots-v1",
+      "timezone": "UTC",
+      "scheduledSlot": "02:00",
+      "contentDate": "2026-07-19",
+      "experimentStartDate": "2026-07-19",
+      "experimentDurationDays": 14,
+      "strategy": "fixed-three-daily-slots",
+      "primaryAudience": "US",
+      "status": "active",
+      "scheduledPublishAt": "2026-07-20T02:00:00.000Z",
+      "actualPublishAt": "2026-07-20T05:57:37.372Z"
+    },
+    "visualStyle": "photo",
+    "script": {
+      "title": "Why Bee Honeycombs are Perfect Hexagons (It's Genius!)",
+      "category": "nature",
+      "hook_text": "Honeycomb's impossible secret",
+      "finale_text": "nature's perfect geometry",
+      "scenes": [
+        {
+          "narration": "Watch worker bees meticulously construct their honeycomb; it looks simple, but there's a hidden genius at play.",
+          "image_prompt": "Extreme close-up, a worker bee meticulously shaping a wax cell, golden hour light filtering into a bustling beehive interior, showing tiny wax flakes being added to the structure, warm and detailed."
+        },
+        {
+          "narration": "They start by secreting tiny wax flakes, almost invisible, which they then chew and mold with incredible precision.",
+          "image_prompt": "Detail insert, a worker bee's mandibles and front legs precisely chewing and molding a tiny, translucent wax flake into a cell wall, shallow depth of field, warm light."
+        },
+        {
+          "narration": "Initially, these cells are actually round; the bees don't start with perfect hexagons.",
+          "image_prompt": "Medium shot, several newly formed, distinctly round wax cells within a developing honeycomb, before hardening, soft golden light on the translucent wax, subtle curvature visible."
+        },
+        {
+          "narration": "See how they pack together? The magic happens as they warm the wax to 45 degrees Celsius.",
+          "image_prompt": "Close-up, multiple worker bees densely packed on a section of developing honeycomb, bodies gently vibrating to generate warmth, soft glow emanating from the cluster, conveying heat transfer."
+        },
+        {
+          "narration": "At this exact temperature, the wax softens, and surface tension pulls the malleable walls into perfect, efficient hexagons.",
+          "image_prompt": "Extreme close-up, the walls of several wax cells visibly softening and shifting into perfect hexagonal shapes due to surface tension, a subtle shimmer on the malleable wax surface, clearly demonstrating the transformation."
+        },
+        {
+          "narration": "This self-organizing process minimizes wax usage while maximizing storage volume for honey, pollen, and larvae.",
+          "image_prompt": "Wide establishing shot of a complete, fully formed honeycomb frame, filled with glistening golden honey, capped cells, and some pollen stores, showcasing vast and efficient storage capacity, golden and rich light."
+        },
+        {
+          "narration": "So the bees aren't master geometers; they're master engineers, letting physics do the work to create nature's strongest design.",
+          "image_prompt": "Low angle shot, a single worker bee moving purposefully across the crisp, perfectly hexagonal surface of a completed honeycomb, the geometry sharp and precise, cinematic lighting highlighting the structure."
+        }
+      ],
+      "cta": "See more incredible nature facts!"
+    },
+    "audioPath": "output/bee-honeycomb-hexagons/bee-honeycomb-hexagons.mp3",
+    "videoPath": "output/bee-honeycomb-hexagons/bee-honeycomb-hexagons.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/bee-honeycomb-hexagons/media/01-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/bee-honeycomb-hexagons/media/01b-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/bee-honeycomb-hexagons/media/02-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/bee-honeycomb-hexagons/media/02b-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/bee-honeycomb-hexagons/media/03-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/bee-honeycomb-hexagons/media/03b-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "gfx",
+        "scene": 3,
+        "path": "output/bee-honeycomb-hexagons/media/04-gfx.mp4"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 4,
+        "path": "output/bee-honeycomb-hexagons/media/05-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 5,
+        "path": "output/bee-honeycomb-hexagons/media/06-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 6,
+        "path": "output/bee-honeycomb-hexagons/media/07-ai.jpg"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 45.805011,
+    "status": "published",
+    "youtube": {
+      "videoId": "HUlOS4PT_3c",
+      "url": "https://www.youtube.com/shorts/HUlOS4PT_3c",
+      "title": "Why Bee Honeycombs Are Perfect Hexagons (It's Pure Genius) #Shorts",
+      "publishedAt": "2026-07-20T05:57:37.372Z"
+    },
+    "createdAt": "2026-07-20T05:58:12.251Z"
   }
 ]
