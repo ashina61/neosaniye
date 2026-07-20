@@ -65,15 +65,34 @@ function iconPath(kind, s = ICON) {
   }
 }
 
-// Tip → etiket (Türkçe) + ikon.
-const TYPE_META = {
-  subscribe: { label: 'ABONE OL', icon: 'plus' },
-  like: { label: 'BEĞEN', icon: 'heart' },
-  bell: { label: 'BİLDİRİM AÇ', icon: 'bell' },
-  comment: { label: 'YORUM YAP', icon: 'bubble' },
-  follow: { label: 'TAKİP ET', icon: 'plus' },
-  save: { label: 'KAYDET', icon: 'bookmark' },
+// Tip → ikon + DİLE GÖRE etiket. Kanal İngilizce/ABD → varsayılan 'en'.
+// Türkçe etiket YALNIZCA Türkçe içerikte (config.content.language==='tr').
+const ICON_BY_TYPE = { subscribe: 'plus', like: 'heart', bell: 'bell', comment: 'bubble', follow: 'plus', save: 'bookmark' };
+const LABELS = {
+  en: { subscribe: 'SUBSCRIBE', like: 'LIKE', bell: 'TURN ON NOTIFICATIONS', comment: 'COMMENT', follow: 'FOLLOW', save: 'SAVE' },
+  tr: { subscribe: 'ABONE OL', like: 'BEĞEN', bell: 'BİLDİRİM AÇ', comment: 'YORUM YAP', follow: 'TAKİP ET', save: 'KAYDET' },
 };
+
+/** Dile göre CTA künyesi: {label, icon, resolvedLanguage}. */
+export function ctaMeta(type, language = config.content?.language || 'en') {
+  const lang = LABELS[language] ? language : 'en';
+  return { label: (LABELS[lang][type] || LABELS[lang].subscribe), icon: ICON_BY_TYPE[type] || 'plus', resolvedLanguage: lang };
+}
+
+// Geriye dönük: eski TYPE_META adı (varsayılan içerik diliyle).
+const TYPE_META = Object.fromEntries(Object.keys(ICON_BY_TYPE).map((t) => [t, ctaMeta(t)]));
+
+/**
+ * Etiket uzunluğuna göre önerilen kart ölçüsü (safe-area yerleşiminden ÖNCE).
+ * Uzun İngilizce etiket ("TURN ON NOTIFICATIONS") için kart genişler; font
+ * buildCtaAss içinde bu genişliğe fit edilir (≈40px hedef).
+ * @returns {{w:number, h:number}}
+ */
+export function ctaCardSize(type, language = config.content?.language || 'en') {
+  const meta = ctaMeta(type, language);
+  const w = Math.max(300, Math.min(720, 150 + Math.round(24 * meta.label.length)));
+  return { w, h: CARD_H };
+}
 
 /** ASS başlığı (CTA'ya özel; captions'tan bağımsız dosya). */
 function header(width, height, styleLines) {
@@ -116,24 +135,32 @@ export function buildCtaAss(o) {
   const S = o.startSec;
   const E = o.startSec + o.durSec;
   const type = o.type;
-  const meta = TYPE_META[type] || TYPE_META.subscribe;
+  const meta = ctaMeta(type, o.language);
 
-  // Kart ve ikon konumları (üst-sol orijin \an7 + \pos).
+  // Kart ölçüsü: safe-area kutusundan (adaptif genişlik) — uzun İngilizce
+  // etiket (TURN ON NOTIFICATIONS) sığsın. Font etikete göre fit edilir.
+  const cardW = box.w || CARD_W;
+  const cardH = box.h || CARD_H;
   const cardX = box.x;
   const cardY = box.y;
+  const iconBox = Math.round(cardH * 0.46);
   const iconX = cardX + 34;
-  const iconY = cardY + Math.round((CARD_H - ICON) / 2);
-  const textX = iconX + ICON + 26;
-  const textY = cardY + Math.round(CARD_H / 2);
+  const iconY = cardY + Math.round((cardH - iconBox) / 2);
+  const textX = iconX + iconBox + 24;
+  const textY = cardY + Math.round(cardH / 2);
+  // Metin fit: kalan genişliğe sığacak font (min 26, tercih 46).
+  const usableTextW = cardW - (textX - cardX) - 30;
+  const fontSize = Math.max(26, Math.min(46, Math.floor(usableTextW / Math.max(1, meta.label.length * 0.60))));
+  const radius = Math.min(26, Math.round(cardH / 4));
 
   // Giriş: soldan süzülme (\move) + fade. Kart 40px soldan gelir.
   const slideFrom = cardX - 44;
-  const fadIn = 180;
-  const fadOut = 220;
+  const fadIn = 200;
+  const fadOut = 300; // çıkış YUMUŞAK
 
   const styles = [
     `Style: NeoShape,${font},40,${accent},${shadow},${shadow},0,0,0,0,100,100,0,0,1,0,3,7,0,0,0,1`,
-    `Style: NeoText,${font},44,${ink},${shadow},${shadow},1,0,0,0,100,100,1,0,1,0,2,4,0,0,0,1`,
+    `Style: NeoText,${font},${fontSize},${ink},${shadow},${shadow},1,0,0,0,100,100,1,0,1,0,2,4,0,0,0,1`,
   ];
 
   const ev = [];
@@ -143,29 +170,31 @@ export function buildCtaAss(o) {
   // 1) Gölge kartı (hafif offset, derinlik hissi).
   ev.push(dlg(0, 'NeoShape',
     `{\\an7\\move(${slideFrom + 4},${cardY + 6},${cardX + 4},${cardY + 6},0,240)\\fad(${fadIn},${fadOut})\\1c${shadow}\\p1}`,
-    roundRect(CARD_W, CARD_H, 26) + '{\\p0}'));
+    roundRect(cardW, cardH, radius) + '{\\p0}'));
 
   // 2) Cam kart gövdesi + sol turkuaz aksan barı.
   ev.push(dlg(1, 'NeoShape',
     `{\\an7\\move(${slideFrom},${cardY},${cardX},${cardY},0,240)\\fad(${fadIn},${fadOut})\\1c${card}\\p1}`,
-    roundRect(CARD_W, CARD_H, 26) + '{\\p0}'));
+    roundRect(cardW, cardH, radius) + '{\\p0}'));
+  const barTop = Math.round(cardH * 0.2);
+  const barBot = cardH - barTop;
   ev.push(dlg(2, 'NeoShape',
     `{\\an7\\move(${slideFrom},${cardY},${cardX},${cardY},0,240)\\fad(${fadIn},${fadOut})\\1c${accent}\\p1}`,
-    `m 0 22 l 7 22 l 7 ${CARD_H - 22} l 0 ${CARD_H - 22}{\\p0}`));
+    `m 0 ${barTop} l 7 ${barTop} l 7 ${barBot} l 0 ${barBot}{\\p0}`));
 
   // 3) İkon — şablona göre hareket (pop / shake / sabit).
   let iconTags = `{\\an7\\pos(${iconX},${iconY})\\fad(${fadIn},${fadOut})\\1c${accent}\\p1}`;
   if (o.templateId === 'neo_like_pop') {
-    iconTags = `{\\an7\\pos(${iconX + ICON / 2},${iconY + ICON / 2})\\fad(${fadIn},${fadOut})\\1c${accent}` +
-      `\\fscx40\\fscy40\\t(${0},${220},\\fscx118\\fscy118)\\t(${220},${360},\\fscx100\\fscy100)\\org(${iconX + ICON / 2},${iconY + ICON / 2})\\p1}`;
+    iconTags = `{\\an7\\pos(${iconX + iconBox / 2},${iconY + iconBox / 2})\\fad(${fadIn},${fadOut})\\1c${accent}` +
+      `\\fscx40\\fscy40\\t(${0},${220},\\fscx118\\fscy118)\\t(${220},${360},\\fscx100\\fscy100)\\org(${iconX + iconBox / 2},${iconY + iconBox / 2})\\p1}`;
   } else if (o.templateId === 'neo_bell_ring') {
-    iconTags = `{\\an7\\pos(${iconX},${iconY})\\fad(${fadIn},${fadOut})\\1c${accent}\\org(${iconX + ICON / 2},${iconY})` +
+    iconTags = `{\\an7\\pos(${iconX},${iconY})\\fad(${fadIn},${fadOut})\\1c${accent}\\org(${iconX + iconBox / 2},${iconY})` +
       `\\frz10\\t(0,140,\\frz-10)\\t(140,280,\\frz8)\\t(280,420,\\frz0)\\p1}`;
   }
   // like_pop ikonu merkez-orijinli çizilecek: offset düzelt.
   const iconDraw = o.templateId === 'neo_like_pop'
-    ? shiftPath(iconPath(meta.icon), -ICON / 2, -ICON / 2)
-    : iconPath(meta.icon);
+    ? shiftPath(iconPath(meta.icon, iconBox), -iconBox / 2, -iconBox / 2)
+    : iconPath(meta.icon, iconBox);
   ev.push(dlg(3, 'NeoShape', iconTags, iconDraw + '{\\p0}'));
 
   // 4) Etiket metni.
@@ -183,7 +212,7 @@ export function buildCtaAss(o) {
       const re = assTime(Math.min(E, S + delay / 1000 + 0.9));
       ev.push(`Dialogue: 0,${rs},${re},NeoShape,,0,0,0,,` +
         `{\\an7\\pos(${cardX},${cardY})\\1a&HFF&\\3c${accent}\\3a&H40&\\bord3\\fscx100\\fscy100` +
-        `\\t(0,900,\\fscx112\\fscy112\\3a&HFF&)\\p1}` + roundRect(CARD_W, CARD_H, 26) + '{\\p0}');
+        `\\t(0,900,\\fscx112\\fscy112\\3a&HFF&)\\p1}` + roundRect(cardW, cardH, radius) + '{\\p0}');
     }
   }
 

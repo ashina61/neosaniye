@@ -24,7 +24,8 @@
     "motion:sfx": "node scripts/motion-sfx-gen.js",
     "motion:preview": "node scripts/motion-preview.js",
     "motion:debug-safe-area": "node scripts/motion-preview.js --debug-safe-area",
-    "motion:rollout-report": "node scripts/motion-rollout-report.js"
+    "motion:rollout-report": "node scripts/motion-rollout-report.js",
+    "bee:regression": "node scripts/bee-regression.js"
   },
   "dependencies": {
     "@google/genai": "^1.0.0",

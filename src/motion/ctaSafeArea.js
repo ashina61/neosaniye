@@ -29,6 +29,27 @@ function intersects(a, b) {
 }
 
 /**
+ * Kaçınılan bölgeler (ADLANDIRILMIŞ) — hem yerleşim hem render sonrası CTA
+ * çıktı doğrulaması aynı gerçeği kullansın diye tek kaynaktan üretilir.
+ * @returns {Array<{name:string,x:number,y:number,w:number,h:number}>}
+ */
+export function avoidZones(opts = {}) {
+  const d = { ...DEFAULTS, ...opts };
+  const { width, height, rightStrip, hookBottom, captionBandHeight } = d;
+  const captionMarginV = opts.captionMarginV ?? config.video.captionMarginV ?? 460;
+  const bottomSafe = opts.bottomSafePx ?? config.retention.captionBottomSafePx ?? 220;
+  const captionTop = height - captionMarginV - captionBandHeight;
+  const zones = [
+    { name: 'hook', x: 0, y: 0, w: width, h: hookBottom },
+    { name: 'caption', x: 0, y: captionTop, w: width, h: captionBandHeight },
+    { name: 'bottom-ui', x: 0, y: height - bottomSafe, w: width, h: bottomSafe },
+    { name: 'right-icon-strip', x: width - rightStrip, y: 0, w: rightStrip, h: height },
+  ];
+  if (opts.subjectBox) zones.push({ name: 'subject', ...opts.subjectBox });
+  return zones;
+}
+
+/**
  * @param {object} opts
  * @param {string} [opts.position] bottom_left|bottom_center|lower_third_left|
  *   lower_third_right|center_left|auto
@@ -43,15 +64,9 @@ export function computeSafeArea(opts = {}) {
   const captionMarginV = opts.captionMarginV ?? config.video.captionMarginV ?? 460;
   const bottomSafe = opts.bottomSafePx ?? config.retention.captionBottomSafePx ?? 220;
 
-  // Kaçınılacak bölgeler (üst-sol köşe koordinatları).
+  // Kaçınılacak bölgeler — render sonrası doğrulama ile TEK kaynaktan.
   const captionTop = height - captionMarginV - captionBandHeight;
-  const avoid = [
-    { x: 0, y: 0, w: width, h: hookBottom }, // hook
-    { x: 0, y: captionTop, w: width, h: captionBandHeight }, // altyazı bandı
-    { x: 0, y: height - bottomSafe, w: width, h: bottomSafe }, // alt UI
-    { x: width - rightStrip, y: 0, w: rightStrip, h: height }, // sağ ikon şeridi
-  ];
-  if (opts.subjectBox) avoid.push(opts.subjectBox);
+  const avoid = avoidZones(opts);
 
   // Aday konumlar (üst-sol köşe).
   const leftX = margin;

@@ -73,6 +73,10 @@ test('preflightCheck: gerçek üretilmiş MP4 üzerinde teknik alanları dolduru
     assert.ok(t.maxVolumeDb !== null, 'volumedetect çalışmadı');
     // Sinüs -20dB tam ölçekte değil → clipping uyarısı OLMAMALI.
     assert.ok(!pf.warnings.some((w) => w.includes('clipping')));
+    // ÖLÇÜLEN kanal gerçeği (rapor hedefi değil): mono sinüs → 1 kanal, 44100 Hz.
+    assert.equal(t.audioChannels, 1);
+    assert.ok(t.audioChannelLayout === 'mono' || t.audioChannelLayout === null);
+    assert.equal(t.audioSampleRate, 44100);
   } finally {
     await rm(dir, { recursive: true, force: true });
   }

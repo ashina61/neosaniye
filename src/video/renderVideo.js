@@ -7,7 +7,7 @@ import { config } from '../config.js';
 import { buildOutro } from './outro.js';
 import { groupCaptionWords, layoutGroup } from './captionLayout.js';
 import { makeMusicBed } from '../audio/makeMusic.js';
-import { pickMusicTrack } from '../audio/musicSelect.js';
+import { selectMusic } from '../audio/musicSelect.js';
 
 const run = promisify(execFile);
 
@@ -516,7 +516,7 @@ async function buildFullAudio(
   {
     workDir, narrationPath, total, clipDur, bts, N, M, useOutro,
     category = '', sfxTypes = [], clickAt = null, ambiencePath = null,
-    avoidMusic = [],
+    avoidMusic = [], musicSeed = '',
   },
   outPath,
 ) {
@@ -539,13 +539,18 @@ async function buildFullAudio(
   let musicIdx = -1;
   let musicIsReal = false;
   let musicTrack = null;
+  let musicDecision = null;
   if (useMusic) {
-    const track = pickMusicTrack(category, { avoid: avoidMusic });
+    // Deterministik seed = videoya özgü (aynı video → aynı, farklı video → çeşitli).
+    const decision = selectMusic(category, { avoid: avoidMusic, seed: musicSeed || `${category}:${N}:${Math.round(total)}` });
+    musicDecision = decision;
+    const track = decision.track;
     if (track) {
       musicTrack = track;
       musicIsReal = true;
       inputs.push('-stream_loop', '-1', '-i', track);
-      console.log(`[audio] müzik: ${path.basename(track)} (${category || 'havuz'})`);
+      console.log(`[audio] müzik: ${path.basename(track)} (${category || 'havuz'}, ${decision.reason})`);
+      if (decision.poolExhausted) console.warn(`[audio] ⚠️ müzik havuzu tükendi (${decision.reason}) — çeşitlilik kısıtlı.`);
     } else {
       const bed = path.join(workDir, 'music-bed.wav');
       await makeMusicBed({
@@ -604,7 +609,13 @@ async function buildFullAudio(
   }
 
   const fc = [];
-  const mix = [];
+  const bedMix = [];    // konuşma + müzik + ambiyans (SFX olmayan yataklar)
+  const sfxLabels = []; // gecikmeli SFX akış etiketleri
+  const sfxCues = [];   // {atSeconds, sfxId, assetPath, mixedInGraph} — çıktı doğrulaması için
+
+  // SFX seviyesi: geçici vuruşun tabana göre NET yükselmesi için müzik+narrasyon
+  // altında kaybolmayacak taban. Ducking ile birlikte cue anında ≥3 dB fark hedefi.
+  const sfxVol = Math.max(0.85, config.video.transitionSoundVolume);
 
   // Anlatım sesini "yayın" zincirinden geçir: alçak-frekans temizliği +
   // presence EQ + kompresör. Ham TTS'ten çok daha dolgun/pro tınlar.
@@ -613,6 +624,7 @@ async function buildFullAudio(
     'acompressor=threshold=0.12:ratio=2.5:attack=8:release=140:makeup=1.4,' +
     'aresample=44100';
 
+  let musKey = null; // müzik akışı (SFX bus ile ayrıca duck edilecek)
   if (useMusic) {
     fc.push(`[0:a]${voiceChain},asplit=2[nkey][nmix]`);
     // Gerçek (mastered) parçalar sentetik yataktan çok daha sıcak basar —
@@ -624,10 +636,11 @@ async function buildFullAudio(
     // Narrasyon konuşurken müziği HAFİFÇE kıs (önceki 8:1 oran müziği tamamen
     // susturuyordu — "müzik yok" şikayetinin sebebi buydu).
     fc.push('[mus][nkey]sidechaincompress=threshold=0.09:ratio=2.2:attack=30:release=700[musd]');
-    mix.push('[nmix]', '[musd]');
+    musKey = '[musd]';
+    bedMix.push('[nmix]');
   } else {
     fc.push(`[0:a]${voiceChain}[nmix]`);
-    mix.push('[nmix]');
+    bedMix.push('[nmix]');
   }
 
   // Ambiyans: bant sınırlı (anlatımın konuşma bandını boğmasın) + çok düşük
@@ -638,48 +651,78 @@ async function buildFullAudio(
         `highpass=f=70,lowpass=f=7000,volume=${config.video.ambienceVolume},` +
         'afade=t=in:st=0:d=1.5[amb]',
     );
-    mix.push('[amb]');
+    bedMix.push('[amb]');
   }
 
   for (const { idx: inIdx, k } of sfxPlan) {
-    const ms = Math.round((off[k - 1] + bts[k - 1] / 2) * 1000);
+    const at = off[k - 1] + bts[k - 1] / 2;
+    const ms = Math.round(at * 1000);
     fc.push(
-      `[${inIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=${config.video.transitionSoundVolume}[wd${k}]`,
+      `[${inIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=${sfxVol}[wd${k}]`,
     );
-    mix.push(`[wd${k}]`);
+    sfxLabels.push(`[wd${k}]`);
+    sfxCues.push({ atSeconds: +at.toFixed(2), sfxId: sfxTypes[k - 1], assetResolved: true, mixedInGraph: true });
   }
 
   if (chimeIdx >= 0) {
-    const ms = Math.round((off[N - 1] + bts[N - 1] / 2) * 1000);
-    fc.push(`[${chimeIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=0.35[chm]`);
-    mix.push('[chm]');
+    const at = off[N - 1] + bts[N - 1] / 2;
+    const ms = Math.round(at * 1000);
+    fc.push(`[${chimeIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=0.5[chm]`);
+    sfxLabels.push('[chm]');
+    sfxCues.push({ atSeconds: +at.toFixed(2), sfxId: 'chime', assetResolved: true, mixedInGraph: true });
   }
 
   if (clickIdx >= 0) {
     const ms = Math.round(clickAt * 1000);
-    fc.push(`[${clickIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=0.6[clk]`);
-    mix.push('[clk]');
+    fc.push(`[${clickIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=0.75[clk]`);
+    sfxLabels.push('[clk]');
+    sfxCues.push({ atSeconds: +clickAt.toFixed(2), sfxId: 'click', assetResolved: true, mixedInGraph: true });
+  }
+
+  // SFX bus'ı: müziği cue anında 2-4 dB DUCK etmek için sidechain anahtarı.
+  // Böylece her efekt anlık olarak müzik yatağını açar, vuruş öne çıkar.
+  const finalMix = [...bedMix];
+  if (sfxLabels.length) {
+    const sfxAll = sfxLabels.length === 1 ? sfxLabels[0] : '[sfxall]';
+    if (sfxLabels.length > 1) {
+      fc.push(`${sfxLabels.join('')}amix=inputs=${sfxLabels.length}:normalize=0:duration=longest[sfxall]`);
+    }
+    if (musKey) {
+      // Müziği DUCK etmek için SFX bus'ından bir anahtar üret. sidechaincompress
+      // EN KISA girdide biter; kısa SFX bus'ı müziği erken keserdi → anahtarı apad
+      // ile sonsuza doldur (müzik tam süre kalır, yalnız SFX anlarında 2-4 dB dip).
+      fc.push(`${sfxAll}asplit=2[sfxkey0][sfxmix]`);
+      fc.push(`[sfxkey0]apad[sfxkey]`);
+      fc.push(`${musKey}[sfxkey]sidechaincompress=threshold=0.2:ratio=3:attack=5:release=260[musd2]`);
+      finalMix.push('[musd2]', '[sfxmix]');
+    } else {
+      // Müzik yok → SFX doğrudan mix'e (anahtara/split'e gerek yok).
+      finalMix.push(sfxAll);
+    }
+  } else if (musKey) {
+    finalMix.push(musKey);
   }
 
   // Karışım -> kapanışta yumuşak sönüş -> YouTube standardı -14 LUFS loudness.
   const fadeStart = Math.max(0, total - 1.1).toFixed(3);
+  // STEREO garanti: rapor "stereo" derken çıktı mono çıkmasın (bee hatası #8).
   const master =
     `apad,atrim=0:${total.toFixed(3)},afade=t=out:st=${fadeStart}:d=1.1,` +
-    'loudnorm=I=-14:TP=-1.5:LRA=11,aresample=44100';
-  if (mix.length > 1) {
-    fc.push(`${mix.join('')}amix=inputs=${mix.length}:normalize=0:duration=longest,${master}[a]`);
+    'loudnorm=I=-14:TP=-1.5:LRA=11,aresample=44100,aformat=channel_layouts=stereo';
+  if (finalMix.length > 1) {
+    fc.push(`${finalMix.join('')}amix=inputs=${finalMix.length}:normalize=0:duration=longest,${master}[a]`);
   } else {
-    fc.push(`${mix[0]}${master}[a]`);
+    fc.push(`${finalMix[0]}${master}[a]`);
   }
 
   await run('ffmpeg', [
     '-y', ...inputs,
     '-filter_complex', fc.join(';'),
     '-map', '[a]', '-t', total.toFixed(3),
-    '-c:a', 'aac', '-b:a', '160k',
+    '-c:a', 'aac', '-b:a', '160k', '-ac', '2',
     outPath,
   ], { maxBuffer: 20 * 1024 * 1024 });
-  return { musicTrack };
+  return { musicTrack, sfxCues, musicDecision };
 }
 
 /**
@@ -1049,6 +1092,8 @@ export async function renderVideo(job, opts = {}) {
       clickAt: spOn ? T1 + 0.4 : null,
       // Son videolarda kullanılan müzikler (tekrar önleme; run.js state'ten geçirir).
       avoidMusic: job.avoidMusic || [],
+      // Deterministik müzik seed'i (aynı video → aynı parça; farklı → çeşitli).
+      musicSeed: job.musicSeed || '',
     },
     path.resolve(fulla),
   );
@@ -1057,7 +1102,7 @@ export async function renderVideo(job, opts = {}) {
   await run('ffmpeg', [
     '-y', '-i', path.resolve(fullv), '-i', path.resolve(fulla),
     '-map', '0:v', '-map', '1:a',
-    '-c:v', 'copy', '-c:a', 'aac', '-b:a', '160k',
+    '-c:v', 'copy', '-c:a', 'aac', '-b:a', '160k', '-ac', '2',
     '-shortest',
     path.resolve(outPath),
   ], { maxBuffer: 20 * 1024 * 1024 });
@@ -1075,5 +1120,10 @@ export async function renderVideo(job, opts = {}) {
     outro: useOutro,
     // Kullanılan müzik (lisans künyesi report/record'a yazılır; null = prosedürel).
     musicTrack: audioInfo?.musicTrack || null,
+    // Müzik seçim kararı (çeşitlilik + sert kapı için: poolExhausted vb.).
+    musicDecision: audioInfo?.musicDecision || null,
+    // Filtre grafiğine GERÇEKTEN giren SFX cue'ları (adı planda geçmesi değil,
+    // fiilen miks edildiği) — render sonrası çıktı doğrulaması bunları ölçer.
+    sfxCues: audioInfo?.sfxCues || [],
   };
 }

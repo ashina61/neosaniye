@@ -116,8 +116,8 @@ test('validatePlan: ilk 5sn / sınır dışı / süre hatalarını yakalar', () 
   assert.ok(noSa.failures.includes('no-safe-area'));
 });
 
-// ---- ŞABLON ÜRETİMİ ----
-test('6 şablon geçerli ASS üretir (Türkçe etiket + çizim)', () => {
+// ---- ŞABLON ÜRETİMİ + DİL YERELLEŞTİRME ----
+test('6 şablon geçerli ASS üretir (varsayılan İngilizce etiket + çizim)', () => {
   const box = computeSafeArea({ position: 'auto' });
   const types = { neo_subscribe_minimal: 'subscribe', neo_subscribe_pulse: 'subscribe', neo_like_pop: 'like', neo_bell_ring: 'bell', neo_comment_slide: 'comment', neo_follow_compact: 'follow' };
   for (const id of TEMPLATE_IDS) {
@@ -126,9 +126,19 @@ test('6 şablon geçerli ASS üretir (Türkçe etiket + çizim)', () => {
     assert.ok(ass.includes('Dialogue:'));
     assert.ok(/\\p1/.test(ass), 'vektör çizim yok');
   }
-  // Türkçe karakter doğru geçiyor.
-  const bell = buildCtaAss({ templateId: 'neo_bell_ring', type: 'bell', box, startSec: 10, durSec: 2.4 });
-  assert.ok(bell.includes('BİLDİRİM'));
+  // Varsayılan içerik dili İngilizce → LIKE (Türkçe BEĞEN DEĞİL). Bee hatası #1.
+  const like = buildCtaAss({ templateId: 'neo_like_pop', type: 'like', box, startSec: 10, durSec: 2.4 });
+  assert.ok(like.includes('LIKE'), 'İngilizce LIKE etiketi yok');
+  assert.ok(!like.includes('BEĞEN'), 'İngilizce videoda Türkçe BEĞEN çıktı!');
+  // Uzun İngilizce etiket ("TURN ON NOTIFICATIONS") kart genişleyince sığar.
+  const bell = buildCtaAss({ templateId: 'neo_bell_ring', type: 'bell', box: { x: box.x, y: box.y, w: 640, h: 112 }, startSec: 10, durSec: 2.4 });
+  assert.ok(bell.includes('TURN ON NOTIFICATIONS'));
+});
+
+test('dil=tr açıkça verilince Türkçe etiket üretilir', () => {
+  const box = computeSafeArea({ position: 'auto' });
+  const like = buildCtaAss({ templateId: 'neo_like_pop', type: 'like', box, startSec: 10, durSec: 2.4, language: 'tr' });
+  assert.ok(like.includes('BEĞEN'), 'Türkçe içerikte BEĞEN yok');
 });
 
 // ---- ENGINE (fail-safe) ----

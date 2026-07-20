@@ -1,0 +1,102 @@
+{
+  "source": "bee-after.mp4",
+  "measuredFromFinalMp4": true,
+  "audioTruth": {
+    "expectedChannels": 2,
+    "actualChannels": 2,
+    "layoutExpected": "stereo",
+    "layoutActual": "stereo"
+  },
+  "sfxVerification": {
+    "ok": true,
+    "cues": [
+      {
+        "atSeconds": 0.4,
+        "requested": "hook",
+        "assetResolved": true,
+        "mixed": true,
+        "audibleDeltaDb": 13.4,
+        "verified": true,
+        "code": null
+      },
+      {
+        "atSeconds": 3.2,
+        "requested": "whoosh",
+        "assetResolved": true,
+        "mixed": true,
+        "audibleDeltaDb": 18.2,
+        "verified": true,
+        "code": null
+      },
+      {
+        "atSeconds": 6.4,
+        "requested": "shimmer",
+        "assetResolved": true,
+        "mixed": true,
+        "audibleDeltaDb": 15.6,
+        "verified": true,
+        "code": null
+      },
+      {
+        "atSeconds": 9,
+        "requested": "impact",
+        "assetResolved": true,
+        "mixed": true,
+        "audibleDeltaDb": 16.3,
+        "verified": true,
+        "code": null
+      },
+      {
+        "atSeconds": 7,
+        "requested": "cta:pop",
+        "assetResolved": true,
+        "mixed": true,
+        "audibleDeltaDb": 7.8,
+        "verified": true,
+        "code": null
+      }
+    ],
+    "failures": [],
+    "repetition": {
+      "counts": {
+        "hook": 1,
+        "whoosh": 1,
+        "shimmer": 1,
+        "impact": 1,
+        "cta:pop": 1
+      },
+      "excessive": []
+    }
+  },
+  "ctaVerification": {
+    "ok": true,
+    "failures": [],
+    "report": {
+      "bbox": {
+        "x": 56,
+        "y": 1040,
+        "w": 300,
+        "h": 112
+      },
+      "edgeMargins": {
+        "left": 56,
+        "right": 724,
+        "top": 1040,
+        "bottom": 768
+      },
+      "withinSafeMargin": true,
+      "captionOverlap": false,
+      "uiOverlap": false,
+      "layerPresent": true,
+      "resolvedLanguage": "en",
+      "requestedLanguage": "en",
+      "languageMatch": true,
+      "label": "LIKE"
+    }
+  },
+  "hardGate": {
+    "block": false,
+    "failures": [],
+    "reasons": []
+  }
+}

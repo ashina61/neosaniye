@@ -41,6 +41,10 @@ export async function preflightCheck(videoPath, opts = {}) {
     durationDeltaSeconds: null,
     resolution: null,
     fps: null,
+    // Ses kanal gerçeği — rapor HEDEF değil ÖLÇÜLEN değeri yazar (ffprobe).
+    audioChannels: null,
+    audioChannelLayout: null,
+    audioSampleRate: null,
     fileSizeMB: null,
     decodePassed: null,
     blackSegmentCount: 0,
@@ -66,7 +70,7 @@ export async function preflightCheck(videoPath, opts = {}) {
   try {
     const { stdout } = await run('ffprobe', [
       '-v', 'error',
-      '-show_entries', 'format=duration:stream=codec_type,width,height,r_frame_rate,duration',
+      '-show_entries', 'format=duration:stream=codec_type,width,height,r_frame_rate,duration,channels,channel_layout,sample_rate',
       '-of', 'json', videoPath,
     ], BUF);
     info = JSON.parse(stdout);
@@ -92,6 +96,12 @@ export async function preflightCheck(videoPath, opts = {}) {
   technical.audioStreamPresent = Boolean(aStream);
   if (!vStream) issues.push('video akışı yok');
   if (!aStream) issues.push('ses akışı yok');
+  if (aStream) {
+    // ÖLÇÜLEN kanal gerçeği (rapor bunu yazar, hedefi değil).
+    technical.audioChannels = Number(aStream.channels) || null;
+    technical.audioChannelLayout = aStream.channel_layout || null;
+    technical.audioSampleRate = Number(aStream.sample_rate) || null;
+  }
   if (vStream) {
     technical.resolution = `${vStream.width}x${vStream.height}`;
     if (vStream.width !== 1080 || vStream.height !== 1920) {

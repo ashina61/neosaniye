@@ -29,6 +29,12 @@ data/*
 # Manuel inceleme önizlemeleri (production seçicisi bu klasörü görmez).
 !artifacts/audio-review/*.mp3
 
+# Bee regresyon kanıtı (gerçek ffmpeg proof seti) — küçük ve sürümlenir.
+!artifacts/regression/*.mp4
+!artifacts/regression/*.png
+!artifacts/regression/*.json
+!artifacts/regression/*.md
+
 # Neo Motion: SFX wav + manifest + showcase görselleri sürümlenir; ara render'lar değil.
 !assets/motion/sfx/*.wav
 artifacts/motion/*

@@ -27,6 +27,8 @@ import { detectSlot } from './scheduleExperiment.js';
 import { emptySlotMetrics } from '../analytics/experimentMetrics.js';
 import { semanticRelevanceScore } from '../media/semanticRelevance.js';
 import { applyCta } from '../motion/ctaEngine.js';
+import { verifySfxInOutput } from './outputVerify.js';
+import { evaluateHardGate } from './hardGate.js';
 import { getRecentCtaTypes } from '../lib/firestore.js';
 import { recordProduction } from './recordProduction.js';
 import { notify } from '../lib/notify.js';
@@ -195,8 +197,8 @@ export async function runPipeline(opts = {}) {
     // 4) Montaj (ffmpeg)
     log('Faz 4: Video montajı (ffmpeg)...');
     const outPath = path.join(workDir, `${base}.mp4`);
-    // Son videoların müziği tekrar seçilmesin (best-effort; state yoksa boş).
-    const recentMusic = await getRecentMusic().catch(() => []);
+    // Son 5 videonun müziği tekrar seçilmesin (çeşitlilik; state yoksa boş).
+    const recentMusic = await getRecentMusic(5).catch(() => []);
     const video = await renderVideo({
       audioPath: audio.audioPath,
       wordTimings: audio.wordTimings,
@@ -213,6 +215,8 @@ export async function runPipeline(opts = {}) {
       emphasisWords: script.emphasis_words || [],
       finaleText: script.finale_text || '',
       avoidMusic: recentMusic,
+      // Deterministik müzik seed'i — aynı konu aynı parçayı, farklı konu çeşidi verir.
+      musicSeed: script.normalizedTopic || base,
       outPath,
     });
     console.log(`  ${video.width}x${video.height}, ${video.duration.toFixed(1)}s -> ${outPath}`);
@@ -233,6 +237,9 @@ export async function runPipeline(opts = {}) {
         seed: script.normalizedTopic || base,
         outroStartSec: outroOn ? video.duration - (config.video.outroDuration || 3) : null,
         recentCtaTypes,
+        // İçerik dili → CTA yerelleştirme (İngilizce kanal = 'en'). Betikte
+        // dil belirtildiyse onu, yoksa global config'i kullan.
+        language: script.language || config.content?.language || 'en',
       });
       motionReport = m.report;
       if (m.videoPath !== outPath) {
@@ -261,6 +268,60 @@ export async function runPipeline(opts = {}) {
     } else {
       console.log('  ✅ tüm sert kontroller geçti');
     }
+
+    // 4.55) RENDER SONRASI GERÇEK ÇIKTI DOĞRULAMASI — kaynak gerçek FINAL MP4.
+    // SFX'in "adı planda geçmesi" kanıt DEĞİL: her cue'nun cue-öncesi tabana
+    // göre duyulur enerji farkı final videodan ÖLÇÜLÜR. CTA dil/yerleşim ve
+    // kanal (stereo) gerçeği de burada. Sert ihlaller upload'u HER MODDA durdurur.
+    log('Faz 4.55: Render sonrası çıktı doğrulaması...');
+    const sfxCues = [...(video.sfxCues || [])];
+    // CTA 'pop' cue'su (ayrı pass'te bindirildi) — o da doğrulanır.
+    if (motionReport.ctaApplied && config.motion.cta.sfx && motionReport.sfxId) {
+      sfxCues.push({
+        atSeconds: motionReport.startSec,
+        sfxId: `cta:${motionReport.sfxId}`,
+        assetResolved: true,
+        mixedInGraph: true,
+      });
+    }
+    const sfxVerification = await verifySfxInOutput(outPath, sfxCues).catch((err) => {
+      console.error(`[verify] SFX doğrulaması çöktü: ${err.message}`);
+      return { ok: false, cues: [], failures: ['SFX_OUTPUT_VERIFICATION_FAILED'], repetition: {} };
+    });
+    for (const c of sfxVerification.cues) {
+      if (c.verified) console.log(`  🔊 SFX ✓ ${c.atSeconds}s ${c.requested} (+${c.audibleDeltaDb}dB)`);
+      else console.warn(`  🔇 SFX ✗ ${c.atSeconds}s ${c.requested} — ${c.code}${c.audibleDeltaDb != null ? ` (+${c.audibleDeltaDb}dB)` : ''}`);
+    }
+
+    // Kanal gerçeği: çıktı stereo (2) olmalı; mono ise metadata ile çelişki.
+    const channelTruth = {
+      expectedChannels: 2,
+      actualChannels: pf.technical?.audioChannels ?? null,
+      layoutExpected: 'stereo',
+      layoutActual: pf.technical?.audioChannelLayout ?? null,
+    };
+
+    // Müzik çeşitlilik gerçeği (renderVideo kararından).
+    const musicDecision = video.musicDecision || null;
+
+    // SERT KAPI — warning-mod override BUNU AŞAMAZ.
+    const hard = evaluateHardGate({
+      sfxVerification,
+      ctaVerification: motionReport.ctaVerification || null,
+      ctaApplied: motionReport.ctaApplied,
+      ctaLanguageMatch: motionReport.languageMatch ?? null,
+      music: musicDecision
+        ? { repeatedFallback: musicDecision.repeatedFallback, poolExhausted: musicDecision.poolExhausted, silentFallback: musicDecision.silentFallback }
+        : null,
+      channelTruth,
+    });
+    if (hard.block) {
+      console.error(`  ⛔ SERT KAPI: upload HER MODDA engellendi — ${hard.failures.join(', ')}`);
+      for (const rsn of hard.reasons) console.error(`     • ${rsn}`);
+    } else {
+      console.log('  ✅ gerçek çıktı doğrulaması geçti (SFX duyulur, CTA dil/yerleşim, kanal stereo)');
+    }
+    const outputVerification = { sfx: sfxVerification, cta: motionReport.ctaVerification || null, channelTruth, music: musicDecision, hardGate: hard };
 
     // 4.6) RETENTION QC — deterministik editoryal kapı (rapor + mod kararı).
     // warning modda (varsayılan) yalnızca raporlar; strict modda düşük skor
@@ -324,7 +385,8 @@ export async function runPipeline(opts = {}) {
     // bu bloğun içindedir; uploadGate (teknik preflight + QC mod kararı)
     // geçilmeden hiçbir platforma yayın yapılmaz, platform bazlı bypass yoktur.
     let youtube = null;
-    const canUpload = uploadGate({ preflightOk: pf.ok, qc });
+    // SERT KAPI upload'u HER MODDA kesebilir (warning override aşamaz).
+    const canUpload = uploadGate({ preflightOk: pf.ok, qc }) && !hard.block;
     if (willUpload && canUpload) {
       log('Faz 6: YouTube upload...');
       const meta = await buildMetadata(script);
@@ -370,6 +432,8 @@ export async function runPipeline(opts = {}) {
         `\nYOUTUBE:\n${res.url}`,
       ].join('\n');
       await writeFile(path.join(workDir, 'publish-kit.txt'), kit).catch(() => {});
+    } else if (willUpload && hard.block) {
+      console.log(`\n▶ Faz 6: upload İPTAL (SERT KAPI: ${hard.failures.join(', ')}) — warning-mod override AŞAMAZ, video artifact olarak duruyor.`);
     } else if (willUpload && qc.blockUpload) {
       console.log(
         qc.error
@@ -397,6 +461,18 @@ export async function runPipeline(opts = {}) {
       music: musicMeta,
       // Neo Motion Engine CTA katmanı raporu.
       motion: motionReport,
+      // RENDER SONRASI GERÇEK ÇIKTI DOĞRULAMASI (final MP4'ten ölçülen gerçek).
+      // Kanal sayısı/layout ÖLÇÜLEN değer (hedef değil); SFX cue duyulabilirlik
+      // farkları; CTA dil/yerleşim; sert kapı sonucu.
+      outputVerification,
+      // ÖLÇÜLEN ses kanal gerçeği (rapor iddiası değil, ffprobe).
+      audioTruth: {
+        channels: pf.technical?.audioChannels ?? null,
+        channelLayout: pf.technical?.audioChannelLayout ?? null,
+        sampleRate: pf.technical?.audioSampleRate ?? null,
+        lufs: pf.technical?.lufs ?? null,
+        maxVolumeDb: pf.technical?.maxVolumeDb ?? null,
+      },
       // 14 günlük yayın deneyi etiketi + (API bağlanınca dolacak) metrik iskeleti.
       scheduleExperiment: {
         ...sched.experiment,

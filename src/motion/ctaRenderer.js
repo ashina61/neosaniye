@@ -5,6 +5,7 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { config } from '../config.js';
 import { buildCtaAss } from './ctaTemplates.js';
+import { isNearSilentAsset } from '../pipeline/outputVerify.js';
 
 const run = promisify(execFile);
 
@@ -30,6 +31,7 @@ export async function renderCta(o) {
   const ass = buildCtaAss({
     templateId: o.plan.templateId, type: o.plan.type, box: o.box,
     startSec: o.plan.startSec, durSec: o.plan.durationSec, width, height,
+    language: o.language,
   });
   const assPath = path.join(o.workDir, 'cta.ass');
   await writeFile(assPath, ass, 'utf8');
@@ -40,20 +42,36 @@ export async function renderCta(o) {
   const cfg = config.motion.cta;
   const sfxId = TYPE_SFX[o.plan.type] || null;
   const sfxPath = sfxId ? path.join(cfg.assetsDir, 'sfx', `${sfxId}.wav`) : null;
-  const useSfx = cfg.sfx && sfxPath && existsSync(sfxPath);
+  let useSfx = cfg.sfx && sfxPath && existsSync(sfxPath);
+  // Near-silent (bozuk/boş sentez) asset MİKS EDİLMEZ — sessiz pop'u miks'e
+  // sokmak "SFX var" yanılsaması yaratır; çıktı doğrulaması da onu yakalardı.
+  if (useSfx) {
+    const sil = await isNearSilentAsset(sfxPath).catch(() => ({ silent: false }));
+    if (sil.silent) {
+      console.warn(`[motion] CTA SFX '${sfxId}' near-silent (${sil.maxDb} dB) — miks edilmedi.`);
+      useSfx = false;
+    }
+  }
 
   const args = ['-nostdin', '-y', '-v', 'error', '-i', path.resolve(o.inputVideo)];
   if (useSfx) args.push('-i', path.resolve(sfxPath));
 
   if (useSfx) {
     const delayMs = Math.round(o.plan.startSec * 1000);
+    // CTA 'pop' NET duyulsun: taban sesi cue anında hafifçe DUCK et (sidechain),
+    // pop üstüne binsin. Ayrıca stereo garanti (mono çıktı hatasını önler).
+    // NOT: sidechaincompress çıktısı EN KISA girdinin uzunluğunda biter. Kısa
+    // pop sidechain'i tabanı KESER (sesi erken bitirir). Bu yüzden sidechain
+    // anahtarı apad ile sonsuza doldurulur; taban (main) süresi belirleyici olur.
     const fc = [
       `[0:v]${assFilter}[v]`,
-      `[1:a]adelay=${delayMs}|${delayMs},volume=${cfg.sfxVolume}[sfx]`,
-      `[0:a][sfx]amix=inputs=2:normalize=0:duration=first[a]`,
+      `[1:a]adelay=${delayMs}|${delayMs},volume=${cfg.sfxVolume},asplit=2[sfxkey0][sfxmix]`,
+      `[sfxkey0]apad[sfxkey]`,
+      `[0:a][sfxkey]sidechaincompress=threshold=0.15:ratio=4:attack=5:release=250[base]`,
+      `[base][sfxmix]amix=inputs=2:normalize=0:duration=first,aformat=channel_layouts=stereo[a]`,
     ];
     args.push('-filter_complex', fc.join(';'), '-map', '[v]', '-map', '[a]',
-      '-c:a', 'aac', '-b:a', '160k');
+      '-c:a', 'aac', '-b:a', '160k', '-ac', '2');
   } else {
     args.push('-vf', assFilter, '-map', '0:v', '-map', '0:a?', '-c:a', 'copy');
   }
