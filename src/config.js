@@ -298,6 +298,9 @@ export const config = {
       allowedTypes: (process.env.MOTION_CTA_TYPES || 'subscribe,like,bell,comment,follow,save').split(','),
       maxPerVideo: Number(process.env.MOTION_CTA_MAX || 1),
       minVideoDurationSec: Number(process.env.MOTION_CTA_MIN_DUR || 20),
+      // `always` is an explicit editorial instruction, so it may use the
+      // compact CTA treatment on a short (but still viable) Short.
+      alwaysMinVideoDurationSec: Number(process.env.MOTION_CTA_ALWAYS_MIN_DUR || 10),
       earliestStartSec: Number(process.env.MOTION_CTA_EARLIEST || 8),
       latestEndBufferSec: Number(process.env.MOTION_CTA_END_BUFFER || 2),
       durationRangeSec: [

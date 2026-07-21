@@ -57,7 +57,8 @@ export function selectCta(input, cfg = config.motion.cta) {
     return { ...base, reason: 'disabled' };
   }
   const duration = Number(input.durationSec) || 0;
-  if (duration < cfg.minVideoDurationSec) {
+  const compactAlways = cfg.mode === 'always' && duration >= (cfg.alwaysMinVideoDurationSec || 10) && duration < cfg.minVideoDurationSec;
+  if (duration < cfg.minVideoDurationSec && !compactAlways) {
     return { ...base, reason: 'video-too-short' };
   }
 
@@ -76,14 +77,20 @@ export function selectCta(input, cfg = config.motion.cta) {
   const templateId = pick(rng, TYPE_TEMPLATES[type]);
 
   // Süre + başlangıç (seed'li). İlk earliestStart sn ve son latestEndBuffer sn yasak.
-  const [dMin, dMax] = cfg.durationRangeSec;
+  const [normalMin, normalMax] = cfg.durationRangeSec;
+  // A 10–15s video has no room for the normal 1.8–2.8s card after its hook.
+  // In explicit always mode use a compact 1.2–1.6s card, positioned so its
+  // ending remains 2–3 seconds before the video end.
+  const [dMin, dMax] = compactAlways ? [1.2, 1.6] : [normalMin, normalMax];
   const durSec = +(dMin + rng() * (dMax - dMin)).toFixed(2);
-  const earliest = Math.max(cfg.earliestStartSec, 5); // ilk 5sn kesin yasak
+  const earliest = compactAlways ? 5 : Math.max(cfg.earliestStartSec, 5); // ilk 5sn kesin yasak
   const latestStart = duration - cfg.latestEndBufferSec - durSec;
   if (latestStart <= earliest) {
     return { ...base, reason: 'timeline-conflict' };
   }
-  let startSec = +(earliest + rng() * (latestStart - earliest)).toFixed(2);
+  let startSec = compactAlways
+    ? +(Math.max(earliest, duration - cfg.latestEndBufferSec - durSec - 0.4)).toFixed(2)
+    : +(earliest + rng() * (latestStart - earliest)).toFixed(2);
 
   // Outro çakışması: CTA penceresi outro'ya taşarsa geri çek; sığmazsa atla.
   if (cfg.avoidOutro && Number.isFinite(input.outroStartSec)) {

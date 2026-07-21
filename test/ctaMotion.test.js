@@ -36,8 +36,21 @@ test('CTA disabled → skipped:disabled', () => {
 });
 
 test('video kısa → skipped:video-too-short', () => {
-  const r = selectCta({ seed: 'x', durationSec: 15 }, { ...CTA_CFG, mode: 'always', minVideoDurationSec: 20 });
+  const r = selectCta({ seed: 'x', durationSec: 9.9 }, { ...CTA_CFG, mode: 'always', minVideoDurationSec: 20, alwaysMinVideoDurationSec: 10 });
   assert.equal(r.reason, 'video-too-short');
+});
+
+test('always modunda 13.8sn video için kompakt subscribe CTA uygulanır', () => {
+  const cfg = {
+    ...CTA_CFG, mode: 'always', allowedTypes: ['subscribe'], minVideoDurationSec: 20,
+    alwaysMinVideoDurationSec: 10, earliestStartSec: 8, latestEndBufferSec: 2,
+  };
+  const r = selectCta({ seed: 'bee-short', durationSec: 13.8 }, cfg);
+  assert.equal(r.applied, true);
+  assert.equal(r.type, 'subscribe');
+  assert.ok(r.durationSec >= 1.2 && r.durationSec <= 1.6);
+  assert.ok(r.startSec + r.durationSec <= 11.8 + 0.01, 'CTA son 2 saniye bufferını ihlal etti');
+  assert.ok(r.startSec >= 5, 'CTA hook içine girdi');
 });
 
 test('seed determinizmi: aynı seed → aynı seçim', () => {

@@ -384,7 +384,10 @@ async function makeSfx(type, outPath) {
       '-af',
       'highpass=f=350,lowpass=f=7000,vibrato=f=10:d=0.5,' +
         'afade=t=in:st=0:d=0.75,afade=t=out:st=0.78:d=0.12,' +
-        'aecho=0.5:0.3:35:0.3,volume=1.3',
+        // Normalize the complete envelope before it enters the delayed SFX
+        // bus.  The old source had no loudness control, so its quiet attack
+        // never crossed the sidechain threshold and received no local pocket.
+        'aecho=0.5:0.3:35:0.3,loudnorm=I=-18:TP=-3:LRA=3',
     ];
   } else if (type === 'shimmer') {
     args = [
@@ -620,7 +623,7 @@ async function buildFullAudio(
   // Calibrated per sound class: short bright cues need more separation than a
   // dense impact source.  This avoids a blind global SFX boost.
   const sfxVol = Math.max(1.0, config.video.transitionSoundVolume);
-  const sfxGain = { impact: 1.7, shimmer: 2.35, riser: 1.35, whoosh: 1.8, click: 1.55 };
+  const sfxGain = { impact: 1.7, shimmer: 2.35, riser: 1, whoosh: 1.8, click: 1.55 };
 
   // Anlatım sesini "yayın" zincirinden geçir: alçak-frekans temizliği +
   // presence EQ + kompresör. Ham TTS'ten çok daha dolgun/pro tınlar.
