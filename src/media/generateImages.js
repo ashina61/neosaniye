@@ -109,7 +109,7 @@ export async function generateImages(script, opts = {}) {
     outDir = 'output',
     basename = script.normalizedTopic || 'script',
     style = 'photo', // 'photo' | 'animated' (illüstrasyon)
-    sceneSeconds = [], // tahmini sahne süreleri — uzun statikler ikiye bölünür
+    avoidAssetIds = [],
   } = opts;
 
   const mediaDir = path.join(outDir, basename, 'media');
@@ -129,8 +129,7 @@ export async function generateImages(script, opts = {}) {
   let gfxCount = 0;
   // Bu videoda kullanılan stok klip URL'leri — aynı klip iki sahnede tekrarlanmaz.
   const usedClips = new Set();
-  // Uzun statik sahne bölme sayacı (video başına üst sınır — süre bütçesi).
-  let splitCount = 0;
+  const usedAssets = new Set(avoidAssetIds.map(String));
 
   // Hareketli sahne planı: Görüntü Yönetmeni sahneleri işaretlediyse (motion)
   // onlar; yoksa mekanik "her N. sahne". İlk sahne her zaman hariç (hook kapağı).
@@ -179,13 +178,13 @@ export async function generateImages(script, opts = {}) {
         if (isUsableStat(scene.stat, scene.narration)) {
           const dest = path.join(mediaDir, `${idx}-gfx.mp4`);
           const clip = await renderStatCard(scene.stat, dest, { width, height, duration: 8 });
-          done = { ...clip, scene: i, source: 'gfx' };
+          done = { ...clip, scene: i, source: 'gfx', provider: 'neosaniye-renderTemplate', license: 'proprietary-original', licenseEvidence: 'src/media/renderTemplate.js' };
           gfxCount += 1;
           console.log(`[img] sahne ${idx}: sayı kartı (${scene.stat.value} ${scene.stat.unit || ''})`);
         } else if (isUsableDiagram(scene.diagram)) {
           const dest = path.join(mediaDir, `${idx}-gfx.mp4`);
           const clip = await renderStepsCard(scene.diagram, dest, { width, height, duration: 8 });
-          done = { ...clip, scene: i, source: 'gfx' };
+          done = { ...clip, scene: i, source: 'gfx', provider: 'neosaniye-renderTemplate', license: 'proprietary-original', licenseEvidence: 'src/media/renderTemplate.js' };
           gfxCount += 1;
           console.log(`[img] sahne ${idx}: adım kartı ("${scene.diagram.title}", ${scene.diagram.steps.length} adım)`);
         }
@@ -201,8 +200,12 @@ export async function generateImages(script, opts = {}) {
       const hit = await fetchArchiveImage(scene.real_subject, path.join(mediaDir, `${idx}-archive.jpg`))
         .catch(() => null);
       if (hit) {
-        done = { ...hit, scene: i, source: 'archive' };
-        console.log(`[img] sahne ${idx}: GERÇEK arşiv (${hit.provider}, ${hit.license}) — "${scene.real_subject}"`);
+        const identity = String(hit.assetId || hit.sourceUrl);
+        if (!usedAssets.has(identity)) {
+          usedAssets.add(identity);
+          done = { ...hit, scene: i, source: 'archive' };
+          console.log(`[img] sahne ${idx}: GERÇEK arşiv (${hit.provider}, ${hit.license}) — "${scene.real_subject}"`);
+        }
       }
     }
 
@@ -225,7 +228,11 @@ export async function generateImages(script, opts = {}) {
             minScore: config.retention.minSemanticRelevance,
             forbiddenMismatches: scene.forbidden_mismatches || [],
           });
-          if (rel.accepted) done = { ...hit, scene: i, source: 'stock' };
+          const identity = String(hit.assetId || hit.sourceUrl || hit.downloadUrl);
+          if (rel.accepted && !usedAssets.has(identity)) {
+            usedAssets.add(identity);
+            done = { ...hit, scene: i, source: 'stock' };
+          }
           else console.warn(`[img] sahne ${idx}: stok "${hit.keyword}" alakasız (skor ${rel.score}${rel.mismatch ? ', yasak-uyumsuzluk' : ''}) — atlandı.`);
         }
       } catch (err) {
@@ -240,13 +247,13 @@ export async function generateImages(script, opts = {}) {
         try {
           if (provider === 'pollinations') {
             const dest = path.join(mediaDir, `${idx}-ai.jpg`);
-            await fetchPollinations(prompt, dest, { width, height, seed: videoSeed });
-            done = { path: dest, type: 'photo', scene: i, source: 'ai' };
+            await fetchPollinations(prompt, dest, { width, height, seed: videoSeed + i * 997 });
+            done = { path: dest, type: 'photo', scene: i, source: 'ai', provider: 'pollinations', assetId: `${script.normalizedTopic}:${i}:${videoSeed + i * 997}`, query: prompt, model: config.images.pollinationsModel, generatedAt: new Date().toISOString(), rightsClass: 'ai-generated', license: null, licenseEvidence: null };
           } else if (provider === 'gemini') {
             const dest = path.join(mediaDir, `${idx}-ai.png`);
             const buf = await generateOne(geminiAI, prompt);
             await writeFile(dest, buf);
-            done = { path: dest, type: 'photo', scene: i, source: 'ai' };
+            done = { path: dest, type: 'photo', scene: i, source: 'ai', provider: 'gemini', assetId: `${script.normalizedTopic}:${i}:${videoSeed}`, query: prompt, model: config.images.model, generatedAt: new Date().toISOString(), rightsClass: 'ai-generated', license: null, licenseEvidence: null };
           }
         } catch (err) {
           const msg = String(err?.message || err);
@@ -268,7 +275,10 @@ export async function generateImages(script, opts = {}) {
       try {
         const hit = await fetchOneForKeywords(scene.keywords, destBase);
         // hit.type: 'video' | 'photo' → normalizeClip buna göre işler.
-        if (hit) done = { ...hit, scene: i, source: 'pexels' };
+        if (hit && !usedAssets.has(hit.assetId || hit.sourceUrl)) {
+          usedAssets.add(hit.assetId || hit.sourceUrl);
+          done = { ...hit, scene: i, source: 'pexels' };
+        }
       } catch (err) {
         console.warn(`[img] sahne ${idx}: Pexels yedeği başarısız (${err.message}).`);
       }
@@ -278,29 +288,21 @@ export async function generateImages(script, opts = {}) {
     if (!done) {
       const destPh = path.join(mediaDir, `${idx}-bg.png`);
       await makePlaceholder(destPh, i + 1);
-      done = { path: destPh, type: 'photo', scene: i, source: 'placeholder' };
+      done = { path: destPh, type: 'photo', scene: i, source: 'placeholder', provider: 'neosaniye-ffmpeg', assetId: `placeholder:${videoSeed}:${i}`, query: 'approved generated fallback background', generatedAt: new Date().toISOString(), rightsClass: 'repository-owned', license: 'proprietary-original', licenseEvidence: 'src/media/generateImages.js' };
     }
 
+    done.query ||= scene.visual_query || scene.keywords?.join(' ') || scene.image_prompt || null;
+    done.assetId ||= done.sourceUrl || `${done.provider || done.source}:${script.normalizedTopic || basename}:${i}`;
+    done.retrievedAt ||= done.generatedAt || new Date().toISOString();
+    done.rightsClass ||= done.source === 'ai'
+      ? 'ai-generated'
+      : done.source === 'gfx' || done.source === 'placeholder' ? 'repository-owned'
+        : /^(CC0|public domain)$/i.test(done.license || '') ? 'cc0-public-domain'
+          : done.attribution ? 'attribution-required' : 'externally-licensed';
     sources[done.source] += 1;
     items.push(done);
     console.log(`[img] sahne ${idx}/${scenes.length}: ${done.source} (${done.type})`);
 
-    // TEMPO BÖLMESİ: 4.3sn'yi aşan STATİK AI sahnesi ikinci bir kadraj alır
-    // (farklı seed = farklı kompozisyon; Ken Burns yönü de plan indeksiyle
-    // değiştiği için iki parça gerçekten iki ayrı plan gibi durur).
-    const estSec = Number(sceneSeconds[i] || 0);
-    if (done.source === 'ai' && provider === 'pollinations' && estSec > 4.3 && splitCount < 3) {
-      try {
-        const dest2 = path.join(mediaDir, `${idx}b-ai.jpg`);
-        await fetchPollinations(prompt, dest2, { width, height, seed: videoSeed + 977 + i });
-        items.push({ path: dest2, type: 'photo', scene: i, source: 'ai', part: 2 });
-        sources.ai += 1;
-        splitCount += 1;
-        console.log(`[img] sahne ${idx}: uzun statik (${estSec.toFixed(1)}s) -> 2 plana bölündü`);
-      } catch {
-        /* bölme başarısızsa tek planla devam — kırılma yok */
-      }
-    }
   }
 
   return { mediaDir, items, sources };

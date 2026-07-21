@@ -225,6 +225,16 @@ export async function getRecentMusic(limit = 2) {
   }
 }
 
+/** Recently published visual asset identities/URLs for cross-video rotation. */
+export async function getRecentAssetIds(limit = 5) {
+  try {
+    const vids = await getVideosWithYouTube(limit + 3);
+    return vids.slice(0, limit).flatMap((v) => (v.media || []).flatMap((m) => [m.assetId, m.sourceUrl]).filter(Boolean));
+  } catch {
+    return [];
+  }
+}
+
 /** Son üretilen videoların formatları (en yeni önce) — format tekrarını kırar. */
 export async function getRecentFormats(limit = 2) {
   try {

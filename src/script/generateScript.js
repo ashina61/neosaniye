@@ -9,6 +9,7 @@ import {
   normalizeTopic,
 } from '../lib/firestore.js';
 import { softenAdText } from '../lib/adSafe.js';
+import { validateViewerFirstScript } from '../pipeline/viewerFirstValidation.js';
 
 /**
  * Faz 1 — Script Üretim Motoru (Google Gemini) — ANLATI / HİKÂYE formatı.
@@ -98,7 +99,7 @@ export const SCRIPT_SCHEMA = {
     cta: {
       type: Type.STRING,
       description:
-        'Short closing line tied to THIS story (unique each time), invites to follow. ' +
+        'Short closing line tied to THIS story (unique each time), explicitly asks the viewer to SUBSCRIBE. ' +
         'NOT spoken in the voiceover — used only in the description/on-screen, so keep it snappy.',
     },
     emphasis_words: {
@@ -220,7 +221,7 @@ QUESTION → MYSTERY → EVIDENCE → REVEAL → TWIST → ANSWER → PAYOFF →
 - Prefer more, SHORTER beats (8-11) over few long ones: on Shorts the eye needs a new idea every ~3s.
 
 Rules for each scene:
-- narration: exactly ONE sentence, spoken aloud, ~10-16 words, vivid and clear. No jargon, no emojis, no hashtags, no markdown.
+- narration: exactly ONE sentence, spoken aloud. Scene 1 is 6-10 concrete words so the opening shot can cut within ~3 seconds; later scenes are ~8-14 words. No jargon, emojis, hashtags, or markdown.
 - VARY the rhythm like a human storyteller: follow a long sentence with a short punchy one; use natural spoken phrasing (contractions are fine), never a monotone list of facts.
 - ANIMAL SUBJECTS: avoid extreme close-up full-body animal/insect anatomy in image_prompt (AI deforms legs/heads) — prefer wide environment shots or the creature small-in-frame; always name the EXACT species.\n- image_prompt: describe a SINGLE cinematic photorealistic shot that literally depicts that sentence — name the subject, the place, the era/period, the action, camera framing, lighting and mood. Keep it concrete and filmable. Never request on-screen text, captions, letters, logos or watermarks.
 - VISUAL CONTINUITY: every image_prompt must be consistent with the visual_anchor (same character appearance, same era, same light/color mood) so the story looks like ONE film, not random pictures.
@@ -242,7 +243,9 @@ Rules for the whole script:
 - MECHANISM: if the story explains HOW something works, at least one scene's narration must state the
   actual working principle in a way that can be shown as a 2-4 step visual (light enters → splits →
   brightness compared → direction found), not just "it worked".
-- cta: short, specific to this story, and DIFFERENT every time (never a generic "Follow for more facts"). It is NOT spoken — description/on-screen only — so do not write it as a narration line.
+- OPENING UNITY: hook_text, scene 1 narration, and scene 1 image_prompt must name the same concrete subject and promise. Never begin with "Did you know", "You won't believe", or a vague generic question. The first spoken sentence must reveal a concrete surprise, contradiction, danger, scale, mystery, or consequence.
+- MIDPOINT RE-HOOK: near the middle, use one earned contrast or new consequence that deepens the SAME central question; do not bolt on a random pattern interrupt.
+- CTA: after the payoff, short, story-specific, language-matched, and explicitly asks viewers to SUBSCRIBE ("Subscribe..." / "ABONE OL"). Never ask for a like and never use "Follow for more facts". It is NOT spoken.
 - title: curiosity-driven, <= 80 characters, no clickbait lies, no emojis.
 - MONETIZATION-SAFE LANGUAGE: the title, hook_text, and the FIRST scene's narration must be
   advertiser-friendly — build curiosity/intrigue and AVOID explicit words of violence, death,
@@ -462,6 +465,14 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
         'fewer scenes (7 max), shorter sentences, cut the weakest details. Keep the same quality.';
       continue;
     }
+
+    const viewerValidation = validateViewerFirstScript(script);
+    if (!viewerValidation.ok && attempt < maxRetries) {
+      console.warn(`[script] viewer-first doğrulama reddetti: ${viewerValidation.failures.join(', ')}`);
+      lengthFeedback = `Rewrite the SAME topic and fix these release blockers: ${viewerValidation.failures.join(', ')}. Keep the factual content and word budget.`;
+      continue;
+    }
+    script.viewerFirstValidation = viewerValidation;
 
     // Reklam-dostu güvenlik ağı: ekrandaki hook + başlık yumuşatılır
     // (anlatım/altyazı doğruluğu korunur; asıl iş prompt'ta yapılır).

@@ -6,6 +6,17 @@ import { config } from '../config.js';
 const run = promisify(execFile);
 const BUF = { maxBuffer: 20 * 1024 * 1024 };
 
+export function validateRenderPlan(renderPlan) {
+  const issues = [];
+  if (!renderPlan) return ['RENDER_PLAN_MISSING'];
+  if (renderPlan.captionsIncluded !== true || !(renderPlan.captionEventCount > 0)) issues.push('RENDER_PLAN_CAPTIONS_MISSING');
+  if (!(renderPlan.expectedSceneCount > 0)) issues.push('RENDER_PLAN_SCENES_MISSING');
+  if ((renderPlan.sceneBoundaries?.length || 0) !== Math.max(0, renderPlan.expectedSceneCount - 1)) issues.push('RENDER_PLAN_BOUNDARIES_INCONSISTENT');
+  if ((renderPlan.transitions || []).some((x) => !Number.isFinite(x.atSeconds))) issues.push('RENDER_PLAN_TRANSITION_TIME_UNKNOWN');
+  if ((renderPlan.motionIssues || []).length) issues.push(...renderPlan.motionIssues);
+  return issues;
+}
+
 /**
  * Yayın öncesi TEKNİK kalite kontrolü (preflight). Otomatik yayında insan gözü
  * olmadığı için sigorta: bozuk/yanlış video YouTube'a hiç gitmez. Tüm
@@ -46,6 +57,7 @@ export async function preflightCheck(videoPath, opts = {}) {
     audioChannelLayout: null,
     audioSampleRate: null,
     fileSizeMB: null,
+    fileSizeBytes: null,
     decodePassed: null,
     blackSegmentCount: 0,
     freezeSegmentCount: 0,
@@ -62,6 +74,7 @@ export async function preflightCheck(videoPath, opts = {}) {
   if (!st) return { ok: false, issues: [`dosya yok: ${videoPath}`], warnings, metrics, technical };
   metrics.sizeMB = +(st.size / 1e6).toFixed(1);
   technical.fileSizeMB = metrics.sizeMB;
+  technical.fileSizeBytes = st.size;
   if (st.size < 0.3e6) issues.push(`dosya çok küçük (${metrics.sizeMB} MB)`);
   if (st.size > 80e6) issues.push(`dosya çok büyük (${metrics.sizeMB} MB)`);
 
@@ -86,7 +99,7 @@ export async function preflightCheck(videoPath, opts = {}) {
   if (opts.expectedDuration) {
     technical.durationDeltaSeconds = +(duration - opts.expectedDuration).toFixed(2);
     if (Math.abs(technical.durationDeltaSeconds) > t.durationDeltaTolerance) {
-      warnings.push(`süre beklenenden sapıyor (beklenen ${opts.expectedDuration.toFixed(1)}s, gerçek ${metrics.duration}s)`);
+      issues.push(`süre beklenenden sapıyor (beklenen ${opts.expectedDuration.toFixed(1)}s, gerçek ${metrics.duration}s)`);
     }
   }
 
@@ -112,17 +125,33 @@ export async function preflightCheck(videoPath, opts = {}) {
     if (technical.fps !== null && (technical.fps < 23 || technical.fps > 61)) {
       warnings.push(`frame rate alışılmadık (${technical.fps} fps)`);
     }
+    const expectedFps = Number(opts.expectedFps || 30);
+    technical.expectedFps = expectedFps;
+    if (technical.fps !== null && Math.abs(technical.fps - expectedFps) > 0.2) {
+      issues.push(`frame rate beklenenden farklı (${technical.fps}, beklenen ${expectedFps})`);
+    }
   }
   // Ses videodan erken mi bitiyor (veya tersi)?
   if (vStream?.duration && aStream?.duration) {
     const gap = +(parseFloat(vStream.duration) - parseFloat(aStream.duration)).toFixed(2);
     technical.audioVideoDurationGapSeconds = gap;
     if (Math.abs(gap) > t.avSyncToleranceSeconds) {
-      warnings.push(gap > 0
+      issues.push(gap > 0
         ? `ses videodan ${gap}s erken bitiyor`
         : `video sesten ${Math.abs(gap)}s erken bitiyor`);
     }
   }
+
+  const renderPlan = opts.renderPlan || null;
+  technical.renderPlan = renderPlan ? {
+    captionsIncluded: renderPlan.captionsIncluded === true,
+    captionEventCount: Number(renderPlan.captionEventCount) || 0,
+    expectedSceneCount: Number(renderPlan.expectedSceneCount) || 0,
+    sceneBoundaryCount: renderPlan.sceneBoundaries?.length || 0,
+    expectedSfxCount: Number(renderPlan.expectedSfxCount) || 0,
+    transitionCount: renderPlan.transitions?.length || 0,
+  } : null;
+  for (const issue of validateRenderPlan(renderPlan)) issues.push(`render plan: ${issue}`);
 
   // DECODE testi: tüm dosya baştan sona çözülür; bitstream hatası varsa yakalanır.
   if (vStream || aStream) {
@@ -161,13 +190,16 @@ export async function preflightCheck(videoPath, opts = {}) {
       // Kuyruk sessizliği: video sonunda biten sessizlik ayrı raporlanır.
       if (duration && s.end !== null && duration - s.end < 0.5) {
         technical.trailingSilenceSeconds = +s.duration.toFixed(2);
-        if (s.duration > t.trailingSilenceMaxSeconds) warnings.push(`sonda ${technical.trailingSilenceSeconds}s sessiz boşluk`);
+        if (s.duration > t.trailingSilenceMaxSeconds) issues.push(`sonda ${technical.trailingSilenceSeconds}s sessiz boşluk`);
+      } else if (s.start <= 0.05 && (s.duration || 0) > 0.35) {
+        technical.leadingSilenceSeconds = +(s.duration || 0).toFixed(2);
+        issues.push(`başta ${technical.leadingSilenceSeconds}s sessiz boşluk`);
       } else {
         warnings.push(`sessiz bölüm ${s.start.toFixed(1)}s @ ${(s.duration ?? 0).toFixed(1)}s`);
       }
     }
     if (ev.maxVolumeDb !== null && ev.maxVolumeDb >= t.clippingPeakDb) {
-      warnings.push(`peak clipping riski (max ${ev.maxVolumeDb} dB)`);
+      issues.push(`peak clipping riski (max ${ev.maxVolumeDb} dB)`);
     }
   }
 

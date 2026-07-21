@@ -5,11 +5,19 @@ import { promisify } from 'node:util';
 import { mkdtemp, writeFile, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { preflightCheck, parseFfmpegFilterEvents } from '../src/pipeline/preflight.js';
+import { preflightCheck, parseFfmpegFilterEvents, validateRenderPlan } from '../src/pipeline/preflight.js';
 
 const run = promisify(execFile);
 
 const hasFfmpeg = await run('ffmpeg', ['-version']).then(() => true).catch(() => false);
+
+test('render plan requires captions, canonical boundaries and transition times', () => {
+  assert.deepEqual(validateRenderPlan({ captionsIncluded: true, captionEventCount: 4, expectedSceneCount: 2, sceneBoundaries: [2], transitions: [{ type: 'cut', atSeconds: 2 }], motionIssues: [] }), []);
+  const bad = validateRenderPlan({ captionsIncluded: false, expectedSceneCount: 2, sceneBoundaries: [], transitions: [{ type: 'fade', atSeconds: null }] });
+  assert.ok(bad.includes('RENDER_PLAN_CAPTIONS_MISSING'));
+  assert.ok(bad.includes('RENDER_PLAN_BOUNDARIES_INCONSISTENT'));
+  assert.ok(bad.includes('RENDER_PLAN_TRANSITION_TIME_UNKNOWN'));
+});
 
 // ---- saf ayrıştırıcı (fixture stderr — ffmpeg'in gerçek log biçimleri) ----
 
@@ -59,7 +67,11 @@ test('preflightCheck: gerçek üretilmiş MP4 üzerinde teknik alanları dolduru
       '-c:a', 'aac', '-shortest', file,
     ], { maxBuffer: 20 * 1024 * 1024 });
 
-    const pf = await preflightCheck(file, { expectedDuration: 16 });
+    const pf = await preflightCheck(file, { expectedDuration: 16, renderPlan: {
+      captionsIncluded: true, captionEventCount: 8, expectedSceneCount: 2,
+      sceneBoundaries: [8], transitions: [{ type: 'cut', atSeconds: 8 }],
+      expectedSfxCount: 0, motionIssues: [],
+    } });
     const t = pf.technical;
     assert.equal(t.videoStreamPresent, true);
     assert.equal(t.audioStreamPresent, true);

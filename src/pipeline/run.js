@@ -19,9 +19,9 @@ import { postFirstComment, updateVideoStats } from '../youtube/engage.js';
 import { buildSrtFromWords, uploadCaptions } from '../youtube/captions.js';
 import { crossPost } from '../social/meta.js';
 import { preflightCheck } from './preflight.js';
-import { runRetentionQC, uploadGate } from './retentionQC.js';
+import { recordPublicationBlock, runRetentionQC, uploadGate } from './retentionQC.js';
 import { appendQcHistory, buildQcHistoryEntry } from './qcHistory.js';
-import { getRecentMusic } from '../lib/firestore.js';
+import { getRecentMusic, getRecentAssetIds } from '../lib/firestore.js';
 import { describeMusicTrack } from '../audio/musicSelect.js';
 import { detectSlot } from './scheduleExperiment.js';
 import { emptySlotMetrics } from '../analytics/experimentMetrics.js';
@@ -32,6 +32,14 @@ import { evaluateHardGate } from './hardGate.js';
 import { getRecentCtaTypes } from '../lib/firestore.js';
 import { recordProduction } from './recordProduction.js';
 import { notify } from '../lib/notify.js';
+import {
+  buildPublishingAttemptId,
+  reservePublishingAttempt,
+  updatePublishingPlatform,
+} from './publishingLedger.js';
+import { evaluateEmergencyQualityGate } from './emergencyQualityGate.js';
+import { buildCanonicalTimeline, expandTimelineForMedia } from './canonicalTimeline.js';
+import { validatePacing, validateViewerFirstScript } from './viewerFirstValidation.js';
 
 /** Bir metindeki kelime sayısı (sahne ağırlığı için). */
 function wordCount(text) {
@@ -116,6 +124,14 @@ export async function runPipeline(opts = {}) {
     log('Faz 2: Seslendirme (TTS)...');
     const audio = await generateAudio(script, { outDir: workDir, basename: base });
     console.log(`  motor: ${audio.engine}, süre~ ${audio.durationEstimate.toFixed(1)}s`);
+    const canonicalTimeline = buildCanonicalTimeline({
+      scenes: script.scenes || [],
+      segmentTexts: audio.segmentTexts,
+      wordTimings: audio.wordTimings,
+      duration: audio.duration,
+      timingSource: audio.timingSource,
+    });
+    console.log(`  timeline: ${canonicalTimeline.source}${canonicalTimeline.fallbackUsed ? ' (fallback)' : ''}`);
 
     // 2.5) Ambiyans yatağı (Freesound, CC0; best-effort). Kurgucu'nun seçtiği
     // ortam sesi sorgusu; Kurgucu düştüyse kategori varsayılanı.
@@ -145,15 +161,14 @@ export async function runPipeline(opts = {}) {
     // (cta artık seslendirilmiyor — yalnızca sahne anlatımları zamanlamayı belirler.)
     const scenes = script.scenes || [];
     const sceneWeights = scenes.map((s) => Math.max(1, wordCount(s.narration)));
-    const totalWeight = sceneWeights.reduce((a, b) => a + b, 0) || 1;
-    // Tahmini sahne süreleri (sn) — uzun statik sahnelerin ikiye bölünmesi için.
-    const sceneSeconds = sceneWeights.map((w) => (w / totalWeight) * (audio.durationEstimate || 40));
+    const sceneSeconds = canonicalTimeline.scenes.map((s) => s.duration);
 
     // 3) Görsel (sahne başına AI görsel + Pexels/placeholder yedeği).
     // TEMPO: 4.3sn'yi aşan statik AI sahneleri İKİ farklı kadraja bölünür
     // (canlı QC: 7 plan/5.5sn ortalama statikti — göz sıkılıyor).
     log('Faz 3: Sahne görselleri üretiliyor (AI)...');
-    const media = await generateImages(script, { outDir: root, basename: base, style: visualStyle, sceneSeconds });
+    const recentAssetIds = await getRecentAssetIds(5).catch(() => []);
+    const media = await generateImages(script, { outDir: root, basename: base, style: visualStyle, sceneSeconds, avoidAssetIds: recentAssetIds });
     console.log(
       `  ${media.items.length} plan / ${scenes.length} sahne — AI:${media.sources.ai} ` +
         `arşiv:${media.sources.archive || 0} ` +
@@ -161,6 +176,7 @@ export async function runPipeline(opts = {}) {
         `gfx:${media.sources.gfx || 0} yedek:${media.sources.placeholder}`,
     );
     if (!media.items.length) throw new Error('Hiç sahne görseli üretilemedi.');
+    const renderTimeline = expandTimelineForMedia(canonicalTimeline, media.items);
 
     // Plan (item) ağırlıkları: bölünen sahnenin ağırlığı parçalara eşit dağılır.
     const partsPerScene = {};
@@ -203,6 +219,9 @@ export async function runPipeline(opts = {}) {
       audioPath: audio.audioPath,
       wordTimings: audio.wordTimings,
       media: media.items.map((m) => ({ path: m.path, type: m.type, gfx: m.source === 'gfx' })),
+      mediaScene: media.items.map((m) => m.scene),
+      scenes,
+      timeline: renderTimeline,
       sceneWeights: itemWeights,
       hookText: script.hook_text,
       category: script.category,
@@ -221,7 +240,20 @@ export async function runPipeline(opts = {}) {
     });
     console.log(`  ${video.width}x${video.height}, ${video.duration.toFixed(1)}s -> ${outPath}`);
     // Müzik lisans künyesi (CC0 manifesti veya eski havuz) — rapor + kayda girer.
-    const musicMeta = video.musicTrack ? describeMusicTrack(video.musicTrack) : null;
+    const musicMeta = video.musicTrack
+      ? describeMusicTrack(video.musicTrack)
+      : video.musicDecision?.reason === 'procedural-bed'
+        ? {
+            file: 'procedural',
+            source: 'src/audio/makeMusic.js',
+            license: 'proprietary-original',
+            licenseEvidence: 'src/audio/makeMusic.js',
+          }
+        : null;
+    if (musicMeta) {
+      musicMeta.assetId ||= musicMeta.file || 'procedural';
+      musicMeta.selectedAt = new Date().toISOString();
+    }
 
     // 4.2) NEO MOTION ENGINE — özgün CTA animasyonu (editoryal seçim + safe-area).
     // Preflight/QC ÖNCESİ uygulanır ki final MP4 CTA'lı olsun. CTA hatası ana
@@ -260,7 +292,7 @@ export async function runPipeline(opts = {}) {
     // ffmpeg taraması (decode, siyah/donma/sessizlik, loudness). Bozuk video
     // hiçbir platforma gitmez.
     log('Faz 4.5: Kalite kontrolü (preflight)...');
-    const pf = await preflightCheck(outPath, { expectedDuration: video.duration });
+    const pf = await preflightCheck(outPath, { expectedDuration: video.duration, renderPlan: video.renderPlan });
     console.log(`  metrikler: ${JSON.stringify(pf.metrics)}`);
     for (const w of pf.warnings || []) console.warn(`  ⚠️ ${w}`);
     if (!pf.ok) {
@@ -323,11 +355,57 @@ export async function runPipeline(opts = {}) {
     }
     const outputVerification = { sfx: sfxVerification, cta: motionReport.ctaVerification || null, channelTruth, music: musicDecision, hardGate: hard };
 
+    // Acil üretim kapısı: yalnızca mevcut, doğrulanabilir metadata ve final-file
+    // teknik gerçeğini kullanır. Piksel semantiği/OCR/AI kalite tahmini yapmaz.
+    const emergencyQuality = evaluateEmergencyQualityGate({
+      script,
+      wordTimings: audio.wordTimings,
+      mediaItems: media.items,
+      music: musicMeta,
+      ambience,
+      technical: pf.technical || {},
+      duration: pf.technical?.durationSeconds || video.duration,
+      timeline: renderTimeline,
+      renderPlan: video.renderPlan,
+      viewerValidation: validateViewerFirstScript(script),
+      musicRequired: Boolean(config.video.music),
+    });
+    outputVerification.emergencyQuality = emergencyQuality;
+    const assetManifest = {
+      version: 1,
+      createdAt: new Date().toISOString(),
+      videoId: script.normalizedTopic || base,
+      visuals: media.items.map((m, index) => ({
+        index, scene: m.scene, type: m.type, source: m.source || null,
+        provider: m.provider || null, assetId: m.assetId || m.pexelsId || null,
+        sourceUrl: m.sourceUrl || null, query: m.query || m.keyword || null,
+        creator: m.author || null, license: m.license || null,
+        licenseEvidence: m.licenseEvidence || null,
+        rightsClass: m.rightsClass || null,
+        retrievedAt: m.retrievedAt || m.generatedAt || null,
+      })),
+      music: musicMeta,
+      ambience,
+      generatedSfx: (video.sfxCues || []).map((cue) => ({
+        id: cue.sfxId, atSeconds: cue.atSeconds, source: 'src/video/renderVideo.js',
+        license: 'proprietary-original', licenseEvidence: 'src/video/renderVideo.js',
+      })),
+    };
+    await writeFile(path.join(workDir, 'asset-manifest.json'), JSON.stringify(assetManifest, null, 2));
+    if (emergencyQuality.block) {
+      console.error(`  ⛔ ACİL KALİTE KAPISI: ${emergencyQuality.failures.join(', ')}`);
+      for (const reason of emergencyQuality.reasons) console.error(`     • ${reason}`);
+    }
+
     // 4.6) RETENTION QC — deterministik editoryal kapı (rapor + mod kararı).
     // warning modda (varsayılan) yalnızca raporlar; strict modda düşük skor
     // upload'u engeller (video artifact olarak kalır, akış kırılmaz).
-    const wSum = itemWeights.reduce((a, b) => a + b, 0) || 1;
-    const itemSeconds = itemWeights.map((w) => (w / wSum) * video.duration);
+    const itemSeconds = renderTimeline.items.map((item) => item.duration);
+    const pacingIssues = validatePacing({
+      timeline: renderTimeline,
+      mediaItems: media.items,
+      transitions: editPlan?.boundaries?.map((b) => b.transition) || [],
+    });
 
     // EDİTORYAL SFX EŞLEME: her (gerçekten miks edilmiş) SFX cue'sunu düştüğü
     // sahnenin anlatımıyla eşle — editoryal doğrulama (semantik uyum: riser=build,
@@ -368,13 +446,19 @@ export async function runPipeline(opts = {}) {
       itemSources: media.items.map((m) => m.source),
       itemRelevance,
       editPlan,
+      timeline: renderTimeline,
+      renderPlan: video.renderPlan,
+      pacingIssues,
       duration: video.duration,
       lufs: pf.metrics.lufs ?? null,
       audioPresent: !pf.issues.some((i) => i.includes('ses akışı')),
     }, workDir, {
       technical: pf.technical || null,
       technicalPassed: pf.ok,
+      blockingReasons: [...(hard.reasons || []), ...(emergencyQuality.reasons || [])],
       motion: motionReport,
+      assetManifest,
+      ttsPhrasingIssues: audio.phrasingIssues || [],
       uploadRequested: willUpload,
       platforms: {
         youtube: Boolean(hasYouTube),
@@ -407,8 +491,40 @@ export async function runPipeline(opts = {}) {
     // bu bloğun içindedir; uploadGate (teknik preflight + QC mod kararı)
     // geçilmeden hiçbir platforma yayın yapılmaz, platform bazlı bypass yoktur.
     let youtube = null;
+    let social = { instagram: null, facebook: null };
+    let publishingAttemptId = null;
+    let publishingAttemptBlocked = false;
     // SERT KAPI upload'u HER MODDA kesebilir (warning override aşamaz).
-    const canUpload = uploadGate({ preflightOk: pf.ok, qc }) && !hard.block;
+    let canUpload = uploadGate({ preflightOk: pf.ok, qc }) && !hard.block;
+    if (willUpload && canUpload) {
+      publishingAttemptId = buildPublishingAttemptId(script);
+      try {
+        const reservation = await reservePublishingAttempt({
+          attemptId: publishingAttemptId,
+          topic: script.topic,
+          configuredPlatforms: {
+            youtube: Boolean(hasYouTube),
+            instagram: Boolean(
+              config.meta.userToken || config.meta.igLoginToken ||
+              (config.meta.pageToken && config.meta.igUserId),
+            ),
+            facebook: Boolean(
+              config.meta.userToken || (config.meta.pageToken && config.meta.pageId),
+            ),
+          },
+        }, { requireDurable: process.env.GITHUB_ACTIONS === 'true' });
+        if (!reservation.acquired) {
+          publishingAttemptBlocked = true;
+          canUpload = false;
+          await recordPublicationBlock(qc, workDir, `PUBLISH_ATTEMPT_EXISTS: ${publishingAttemptId}`);
+          console.error(`[publish] aynı içerik için mevcut attempt var (${publishingAttemptId}) — kör yeniden upload engellendi.`);
+        }
+      } catch (err) {
+        canUpload = false;
+        await recordPublicationBlock(qc, workDir, `PUBLISH_STATE_UNAVAILABLE: ${err.message}`).catch(() => {});
+        throw err;
+      }
+    }
     if (willUpload && canUpload) {
       log('Faz 6: YouTube upload...');
       const meta = await buildMetadata(script);
@@ -419,7 +535,21 @@ export async function runPipeline(opts = {}) {
           .map((m) => `📷 ${m.author} — Wikimedia Commons (${m.license})`),
       )];
       if (credits.length) meta.description += '\n\n' + credits.join('\n');
-      const res = await uploadVideo({ videoPath: outPath, ...meta });
+      await updatePublishingPlatform(publishingAttemptId, 'youtube', 'uploading', {}, {
+        requireDurable: process.env.GITHUB_ACTIONS === 'true',
+      });
+      let res;
+      try {
+        res = await uploadVideo({ videoPath: outPath, ...meta });
+        await updatePublishingPlatform(publishingAttemptId, 'youtube', 'published', { remoteId: res.videoId }, {
+          requireDurable: process.env.GITHUB_ACTIONS === 'true',
+        });
+      } catch (err) {
+        await updatePublishingPlatform(publishingAttemptId, 'youtube', 'remote_unknown', {
+          lastError: String(err.message || err).slice(0, 300),
+        }, { requireDurable: process.env.GITHUB_ACTIONS === 'true' }).catch(() => {});
+        throw err;
+      }
       youtube = { ...res, title: meta.title, publishedAt: new Date().toISOString() };
       console.log(`  yüklendi: ${res.url}`);
 
@@ -436,12 +566,29 @@ export async function runPipeline(opts = {}) {
 
       // Meta cross-post: aynı video Instagram Reels + Facebook Reels'e
       // (best-effort; secrets yoksa sessizce atlanır, bkz. docs/meta-setup.md).
-      const social = await crossPost({
+      const instagramConfigured = Boolean(
+        config.meta.userToken || config.meta.igLoginToken ||
+        (config.meta.pageToken && config.meta.igUserId),
+      );
+      const facebookConfigured = Boolean(
+        config.meta.userToken || (config.meta.pageToken && config.meta.pageId),
+      );
+      if (instagramConfigured) await updatePublishingPlatform(publishingAttemptId, 'instagram', 'uploading');
+      if (facebookConfigured) await updatePublishingPlatform(publishingAttemptId, 'facebook', 'uploading');
+      social = await crossPost({
         videoPath: outPath,
         title: meta.title,
         description: meta.description,
         tags: meta.tags,
       }).catch(() => ({ instagram: null, facebook: null }));
+      if (instagramConfigured) await updatePublishingPlatform(
+        publishingAttemptId, 'instagram', social.instagram ? 'published' : 'remote_unknown',
+        social.instagram ? { remoteId: social.instagram } : { lastError: 'cross-post sonucu belirsiz/başarısız' },
+      );
+      if (facebookConfigured) await updatePublishingPlatform(
+        publishingAttemptId, 'facebook', social.facebook ? 'published' : 'remote_unknown',
+        social.facebook ? { remoteId: social.facebook } : { lastError: 'cross-post sonucu belirsiz/başarısız' },
+      );
       if (social.instagram) console.log('  Instagram Reels yayınlandı');
       if (social.facebook) console.log('  Facebook Reels yayınlandı');
 
@@ -454,6 +601,8 @@ export async function runPipeline(opts = {}) {
         `\nYOUTUBE:\n${res.url}`,
       ].join('\n');
       await writeFile(path.join(workDir, 'publish-kit.txt'), kit).catch(() => {});
+    } else if (willUpload && publishingAttemptBlocked) {
+      console.log('\n▶ Faz 6: upload İPTAL (aynı içerik için publishing attempt zaten var) — artifact korunuyor.');
     } else if (willUpload && hard.block) {
       console.log(`\n▶ Faz 6: upload İPTAL (SERT KAPI: ${hard.failures.join(', ')}) — warning-mod override AŞAMAZ, video artifact olarak duruyor.`);
     } else if (willUpload && qc.blockUpload) {
@@ -487,6 +636,13 @@ export async function runPipeline(opts = {}) {
       // Kanal sayısı/layout ÖLÇÜLEN değer (hedef değil); SFX cue duyulabilirlik
       // farkları; CTA dil/yerleşim; sert kapı sonucu.
       outputVerification,
+      canonicalTimeline: renderTimeline,
+      renderPlan: video.renderPlan,
+      viewerFirst: {
+        script: validateViewerFirstScript(script),
+        pacingIssues,
+        ttsPhrasingIssues: audio.phrasingIssues || [],
+      },
       // ÖLÇÜLEN ses kanal gerçeği (rapor iddiası değil, ffprobe).
       audioTruth: {
         channels: pf.technical?.audioChannels ?? null,
@@ -518,6 +674,7 @@ export async function runPipeline(opts = {}) {
           }
         : 'mechanical',
       youtube: youtube?.url || null,
+      publishing: publishingAttemptId ? { attemptId: publishingAttemptId, platforms: { youtube, ...social } } : null,
       createdAt: new Date().toISOString(),
     };
     await writeFile(path.join(workDir, 'report.json'), JSON.stringify(report, null, 2)).catch(() => {});
@@ -534,6 +691,8 @@ export async function runPipeline(opts = {}) {
       audioPath: audio.audioPath,
       videoPath: outPath,
       media: media.items,
+      canonicalTimeline: renderTimeline,
+      renderPlan: video.renderPlan,
       engine: audio.engine,
       duration: video.duration,
       visualStyle, // Baş Analist stile göre öğrensin
@@ -556,6 +715,7 @@ export async function runPipeline(opts = {}) {
             ? 'blocked_qc'
             : 'rendered',
       youtube,
+      publishing: publishingAttemptId ? { attemptId: publishingAttemptId, platforms: { youtube, ...social } } : null,
     });
     console.log(`  kayıt id: ${videoId}`);
 

@@ -8,6 +8,7 @@ import { buildOutro } from './outro.js';
 import { groupCaptionWords, layoutGroup } from './captionLayout.js';
 import { makeMusicBed } from '../audio/makeMusic.js';
 import { selectMusic } from '../audio/musicSelect.js';
+import { selectSceneMotion, validateMotionPlan } from './motionPlan.js';
 
 const run = promisify(execFile);
 
@@ -90,7 +91,7 @@ function buildCaptionAss(words, opts) {
   } = opts;
 
   // Vurgu sözlüğü: yönetmenin işaretlediği kelimeler (normalize edilmiş).
-  const normWord = (w) => String(w).toLowerCase().replace(/[^a-z0-9]/g, '');
+  const normWord = (w) => String(w).toLocaleLowerCase('tr-TR').replace(/[^\p{L}\p{N}]/gu, '');
   const emphSet = new Set(emphasisWords.map(normWord).filter(Boolean));
   const isEmph = (w) =>
     config.video.emphasis && (/\d/.test(w) || emphSet.has(normWord(w)));
@@ -296,31 +297,21 @@ function gradeFor(category) {
 /** Tek bir medyayı (video/foto) sabit 1080x1920/fps klibe normalize eder.
  *  Sinematik his için: hafif renk grade + yavaş Ken Burns zoom (klip başına
  *  yön değişir). Supersample (2x) sonra küçültme jitter'ı azaltır. */
-async function normalizeClip(item, duration, outPath, { width, height, fps, index = 0, category = '', animated = false }) {
+async function normalizeClip(item, duration, outPath, { width, height, fps, index = 0, category = '', motion = null }) {
   // Supersample çözünürlüğü (Ken Burns zoom'unda titremeyi azaltır).
   const sw = width * 2;
   const sh = height * 2;
   const frames = Math.max(1, Math.round(duration * fps));
 
-  // Organik Ken Burns: zoom miktarı, yönü ve pan sürüklenmesi klip başına
-  // değişir (deterministik "rastgele"). Sabit hız/merkez = makine hissi verir.
-  // Animasyonlu stil: daha agresif kamera (illüstrasyona canlılık verir).
-  const zMax = (animated ? 1.14 : 1.09) + ((index * 37) % 9) / 100; // 1.09..1.17 | 1.14..1.22
+  const motionType = motion?.type || 'slow-push-in';
+  const zMax = Math.min(1.14, Math.max(1, motion?.maxZoom || 1.08));
   const inc = ((zMax - 1) / frames).toFixed(6);
-  const zoomIn = index % 2 === 0;
-  // İlk sahnede "zoom-punch": ilk ~0.3sn hızlı vuruş, sonra yavaş devam.
-  // Hook yazısıyla birleşince ilk saniye ekrana yapıştırır.
-  const punch = index === 0 ? `+0.07*min(on/9,1)` : '';
-  const zExpr = zoomIn
-    ? `min(1${punch}+${inc}*on,${(zMax + (index === 0 ? 0.07 : 0)).toFixed(3)})`
-    : `max(${zMax.toFixed(3)}-${inc}*on,1)`;
-  // Sürüklenme: merkezden sapma, zoom açıldıkça kendiliğinden büyür (sınır-güvenli).
-  const dxs = [0.35, -0.4, 0, 0.5, -0.3];
-  const dys = [-0.25, 0.3, 0.4, 0, -0.35];
-  const dx = dxs[index % dxs.length];
-  const dy = dys[(index + 2) % dys.length];
-  const xExpr = `(iw-iw/zoom)/2*(1+${dx.toFixed(2)})`;
-  const yExpr = `(ih-ih/zoom)/2*(1+${dy.toFixed(2)})`;
+  const pull = motionType === 'slow-pull-out';
+  const zExpr = motionType === 'static-hold' ? '1' : pull ? `max(${zMax.toFixed(3)}-${inc}*on,1)` : `min(1+${inc}*on,${zMax.toFixed(3)})`;
+  const xExpr = motionType === 'pan-left-to-right'
+    ? `(iw-iw/zoom)*on/${frames}`
+    : motionType === 'pan-right-to-left' ? `(iw-iw/zoom)*(1-on/${frames})` : '(iw-iw/zoom)/2';
+  const yExpr = motionType === 'top-to-bottom-reveal' ? `(ih-ih/zoom)*on/${frames}` : '(ih-ih/zoom)/2';
 
   const vf = [
     // Kategoriye uygun sinematik grade (tarih=sıcak, uzay=soğuk...).
@@ -328,7 +319,7 @@ async function normalizeClip(item, duration, outPath, { width, height, fps, inde
     `scale=${sw}:${sh}:force_original_aspect_ratio=increase`,
     `crop=${sw}:${sh}`,
     'setsar=1',
-    `zoompan=z='${zExpr}':d=1:x='${xExpr}':y='${yExpr}':s=${sw}x${sh}:fps=${fps}`,
+    ...((item.type === 'video' || motionType === 'native-motion') ? [] : [`zoompan=z='${zExpr}':d=1:x='${xExpr}':y='${yExpr}':s=${sw}x${sh}:fps=${fps}`]),
     `scale=${width}:${height}`,
     `fps=${fps}`,
     // Hafif film greni: AI/stok görüntünün steril temizliğini kırar.
@@ -516,7 +507,7 @@ async function buildFullAudio(
   {
     workDir, narrationPath, total, clipDur, bts, N, M, useOutro,
     category = '', sfxTypes = [], clickAt = null, ambiencePath = null,
-    avoidMusic = [], musicSeed = '',
+    avoidMusic = [], musicSeed = '', hookSfx = null,
   },
   outPath,
 ) {
@@ -576,7 +567,7 @@ async function buildFullAudio(
 
   // SFX planı renderVideo'da belirlendi (kurgucu ya da mekanik): sınır başına
   // tip veya null. Sadece dolu olanlar üretilip mix'e girer.
-  const sfxPlan = []; // { idx, k }
+  const sfxPlan = []; // { idx, k, type, at }
   if (sfx) {
     for (let k = 1; k <= Math.max(0, N - 1); k += 1) {
       const type = sfxTypes[k - 1];
@@ -584,7 +575,16 @@ async function buildFullAudio(
       const f = path.join(workDir, `sfx-${k}.wav`);
       await makeSfx(type, f);
       inputs.push('-i', path.resolve(f));
-      sfxPlan.push({ idx, k });
+      const boundary = off[k - 1];
+      const at = type === 'riser' ? Math.max(0, boundary - 0.75) : boundary;
+      sfxPlan.push({ idx, k, type, at });
+      idx += 1;
+    }
+    if (hookSfx) {
+      const f = path.join(workDir, 'sfx-hook.wav');
+      await makeSfx(hookSfx, f);
+      inputs.push('-i', path.resolve(f));
+      sfxPlan.push({ idx, k: 'hook', type: hookSfx, at: 0.12 });
       idx += 1;
     }
   }
@@ -655,14 +655,13 @@ async function buildFullAudio(
     bedMix.push('[amb]');
   }
 
-  for (const { idx: inIdx, k } of sfxPlan) {
-    const at = off[k - 1] + bts[k - 1] / 2;
+  for (const { idx: inIdx, k, type, at } of sfxPlan) {
     const ms = Math.round(at * 1000);
     fc.push(
-      `[${inIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=${sfxVol}[wd${k}]`,
+      `[${inIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=${k === 'hook' ? Math.min(sfxVol, 1.0) : sfxVol}[wd${k}]`,
     );
     sfxLabels.push(`[wd${k}]`);
-    sfxCues.push({ atSeconds: +at.toFixed(2), sfxId: sfxTypes[k - 1], assetResolved: true, mixedInGraph: true });
+    sfxCues.push({ atSeconds: +at.toFixed(2), sfxId: type, event: k === 'hook' ? 'hook' : 'scene-boundary', assetResolved: true, mixedInGraph: true });
   }
 
   if (chimeIdx >= 0) {
@@ -817,16 +816,20 @@ export async function renderVideo(job, opts = {}) {
   const mainBts = bts.slice(0, Math.max(0, N - 1));
   const mainTdSum = mainBts.reduce((a, b) => a + b, 0);
 
-  // Ana klip süreleri: sahne ağırlıkları (kelime sayısı) verildiyse orantılı,
-  // yoksa eşit bölüşüm. Ana bölüm ekranda narrationDur kadar görünür:
-  // sum(mainDurs) - sum(mainBts) = narrationDur.
+  // Canonical item spans are the single edit authority. Each xfade input owns
+  // its visible span plus its outgoing overlap, so cut offsets equal canonical
+  // boundaries exactly. Legacy weights remain fallback-only.
+  const canonicalItems = Array.isArray(job.timeline?.items) && job.timeline.items.length === N
+    ? job.timeline.items : null;
   const span = narrationDur + mainTdSum;
   const weights =
     Array.isArray(job.sceneWeights) && job.sceneWeights.length === N
       ? job.sceneWeights
       : null;
   let mainDurs;
-  if (weights) {
+  if (canonicalItems) {
+    mainDurs = canonicalItems.map((item, i) => Math.max(0.6, item.duration + (mainBts[i] || 0)));
+  } else if (weights) {
     const sum = weights.reduce((a, b) => a + b, 0) || 1;
     const minClip = Math.max(0.8, td + 0.3);
     mainDurs = weights.map((w) => Math.max(minClip, (w / sum) * span));
@@ -844,8 +847,16 @@ export async function renderVideo(job, opts = {}) {
   const clipDur = [...mainDurs, ...(useOutro ? [dOutro] : [])];
   const total = clipDur.reduce((a, b) => a + b, 0) - bts.reduce((a, b) => a + b, 0);
 
-  // Animasyonlu hikâye kitabı stili: agresif kamera + canlı doku katmanı.
-  const animatedStyle = job.visualStyle === 'animated';
+  const motionPlan = [];
+  const priorMotions = [];
+  for (let i = 0; i < N; i += 1) {
+    const sceneIndex = canonicalItems?.[i]?.scene ?? job.mediaScene?.[i] ?? i;
+    const selected = selectSceneMotion(job.scenes?.[sceneIndex] || {}, media[i], { previous: priorMotions, index: i });
+    const rec = { ...selected, duration: canonicalItems?.[i]?.duration ?? mainDurs[i] - (mainBts[i] || 0), scene: sceneIndex };
+    motionPlan.push(rec);
+    priorMotions.push(selected.type);
+  }
+  const motionIssues = validateMotionPlan(motionPlan, motionPlan.map((m) => m.duration));
 
   // 2) Ana klipleri normalize et + outro klibini üret.
   const clips = [];
@@ -855,7 +866,7 @@ export async function renderVideo(job, opts = {}) {
       media[i],
       Math.max(0.6, clipDur[i] + (M > 1 ? 0.05 : 0)),
       clipPath,
-      { width, height, fps, index: i, category, animated: animatedStyle },
+      { width, height, fps, index: i, category, motion: motionPlan[i] },
     );
     clips.push(clipPath);
   }
@@ -1098,6 +1109,7 @@ export async function renderVideo(job, opts = {}) {
       avoidMusic: job.avoidMusic || [],
       // Deterministik müzik seed'i (aynı video → aynı parça; farklı → çeşitli).
       musicSeed: job.musicSeed || '',
+      hookSfx: job.hookText ? 'impact' : null,
     },
     path.resolve(fulla),
   );
@@ -1106,7 +1118,7 @@ export async function renderVideo(job, opts = {}) {
   await run('ffmpeg', [
     '-y', '-i', path.resolve(fullv), '-i', path.resolve(fulla),
     '-map', '0:v', '-map', '1:a',
-    '-c:v', 'copy', '-c:a', 'aac', '-b:a', '160k', '-ac', '2',
+    '-c:v', 'copy', '-c:a', 'copy',
     '-shortest',
     path.resolve(outPath),
   ], { maxBuffer: 20 * 1024 * 1024 });
@@ -1129,5 +1141,16 @@ export async function renderVideo(job, opts = {}) {
     // Filtre grafiğine GERÇEKTEN giren SFX cue'ları (adı planda geçmesi değil,
     // fiilen miks edildiği) — render sonrası çıktı doğrulaması bunları ölçer.
     sfxCues: audioInfo?.sfxCues || [],
+    timeline: job.timeline || null,
+    renderPlan: {
+      expectedSceneCount: N,
+      sceneBoundaries: canonicalItems ? canonicalItems.slice(0, -1).map((x) => x.end) : [],
+      transitions: btName.slice(0, Math.max(0, N - 1)).map((type, i) => ({ type: planOk ? plan.boundaries[i]?.transition || 'cut' : type, atSeconds: canonicalItems?.[i]?.end ?? null })),
+      captionsIncluded: hasSubs,
+      captionEventCount: wordTimings.length,
+      expectedSfxCount: audioInfo?.sfxCues?.length || 0,
+      motion: motionPlan,
+      motionIssues,
+    },
   };
 }

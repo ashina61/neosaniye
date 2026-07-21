@@ -133,7 +133,7 @@ export function analyzeCaptionLayout(words, {
 } = {}) {
   const marginH = 90;
   const usableW = width - 2 * marginH;
-  const normWord = (w) => String(w).toLowerCase().replace(/[^a-z0-9]/g, '');
+  const normWord = (w) => String(w).toLocaleLowerCase('tr-TR').replace(/[^\p{L}\p{N}]/gu, '');
   const emphSet = new Set(emphasisWords.map(normWord).filter(Boolean));
   const isEmph = (w) => config.video.emphasis && (/\d/.test(w) || emphSet.has(normWord(w)));
 
@@ -150,6 +150,21 @@ export function analyzeCaptionLayout(words, {
   const minFontUsed = events.length ? Math.min(...events.map((e) => e.fontSize)) : baseSize;
   const maxFontUsed = events.length ? Math.max(...events.map((e) => e.fontSize)) : emphSize;
   const safeArea = checkCaptionSafeArea({ height, marginV, maxFontPx: maxFontUsed });
+  const timingIssues = [];
+  events.forEach((event, index) => {
+    const start = event.words[0]?.start;
+    const end = event.words.at(-1)?.end;
+    const duration = Number(end) - Number(start);
+    const chars = event.text.length;
+    if (event.lines > 2) timingIssues.push(`CAPTION_TOO_MANY_LINES:${index}`);
+    if (event.words.length > 5) timingIssues.push(`CAPTION_TOO_MANY_WORDS:${index}`);
+    if (chars > 34) timingIssues.push(`CAPTION_TOO_MANY_CHARACTERS:${index}`);
+    if (duration < 0.28) timingIssues.push(`CAPTION_TOO_SHORT:${index}`);
+    if (duration > 2.8) timingIssues.push(`CAPTION_TOO_LONG:${index}`);
+    if (duration > 0 && chars / duration > 20) timingIssues.push(`CAPTION_READING_SPEED_HIGH:${index}`);
+    if (index && start < events[index - 1].words.at(-1)?.end - 0.01) timingIssues.push(`CAPTION_OVERLAP:${index}`);
+  });
+  if (!safeArea.ok) timingIssues.push('CAPTION_OUTSIDE_SAFE_AREA');
   return {
     eventCount: events.length,
     splitCount: events.filter((e) => e.splitFrom).length,
@@ -159,6 +174,7 @@ export function analyzeCaptionLayout(words, {
     minFontUsed,
     maxFontUsed,
     safeArea,
+    timingIssues,
     events,
   };
 }

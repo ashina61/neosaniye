@@ -61,6 +61,10 @@ async function searchVideo(keyword, exclude = new Set()) {
         height: file.height,
         duration: video.duration,
         pexelsId: video.id,
+        assetId: String(video.id),
+        provider: 'pexels',
+        license: 'Pexels License',
+        licenseEvidence: 'https://www.pexels.com/license/',
         sourceUrl: video.url,
         author: video.user?.name,
         authorUrl: video.user?.url,
@@ -85,6 +89,10 @@ async function searchPhoto(keyword) {
     width: photo.width,
     height: photo.height,
     pexelsId: photo.id,
+    assetId: String(photo.id),
+    provider: 'pexels',
+    license: 'Pexels License',
+    licenseEvidence: 'https://www.pexels.com/license/',
     sourceUrl: photo.url,
     author: photo.photographer,
     authorUrl: photo.photographer_url,
@@ -125,8 +133,11 @@ async function pixabaySearchVideo(keyword, exclude = new Set()) {
       height: f.height,
       duration: hit.duration,
       sourceUrl: hit.pageURL,
+      assetId: String(hit.id),
       author: hit.user,
       provider: 'pixabay',
+      license: 'Pixabay Content License',
+      licenseEvidence: 'https://pixabay.com/service/license-summary/',
     };
   }
   return null;
@@ -149,8 +160,11 @@ async function pixabaySearchPhoto(keyword) {
     width: hit.imageWidth,
     height: hit.imageHeight,
     sourceUrl: hit.pageURL,
+    assetId: String(hit.id),
     author: hit.user,
     provider: 'pixabay',
+    license: 'Pixabay Content License',
+    licenseEvidence: 'https://pixabay.com/service/license-summary/',
   };
 }
 
@@ -209,7 +223,7 @@ export async function fetchStockVideoForKeywords(keywords, destBase, exclude = n
         const dest = `${destBase}.mp4`;
         const bytes = await downloadFile(hit.downloadUrl, dest);
         if (name === 'pixabay') console.log(`[pixabay] stok video: "${keyword}"`);
-        return { ...hit, path: dest, bytes };
+        return { ...hit, path: dest, bytes, query: keyword, retrievedAt: new Date().toISOString() };
       } catch (err) {
         console.warn(`[${name}] stok video "${keyword}": ${err.message}`);
       }
@@ -233,7 +247,7 @@ export async function fetchOneForKeywords(keywords, destBase) {
     const dest = `${destBase}.${hit.ext}`;
     try {
       const bytes = await downloadFile(hit.downloadUrl, dest);
-      return { ...hit, path: dest, bytes };
+      return { ...hit, path: dest, bytes, query: keyword, retrievedAt: new Date().toISOString() };
     } catch (err) {
       console.warn(`[pexels] yedek indirme başarısız "${keyword}": ${err.message}`);
     }

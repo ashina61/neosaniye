@@ -113,8 +113,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 }
 
 export const TEMPLATE_IDS = [
-  'neo_subscribe_minimal', 'neo_subscribe_pulse', 'neo_like_pop',
-  'neo_bell_ring', 'neo_comment_slide', 'neo_follow_compact',
+  'neo_subscribe_minimal', 'neo_subscribe_pulse',
 ];
 
 /**

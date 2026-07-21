@@ -61,6 +61,7 @@ async function searchWikimedia(query) {
       sourceUrl: ii.descriptionurl || `https://commons.wikimedia.org/wiki/${encodeURIComponent(p.title || '')}`,
       author: author || 'Wikimedia Commons',
       license: licRaw,
+      licenseEvidence: ii.descriptionurl || `https://commons.wikimedia.org/wiki/${encodeURIComponent(p.title || '')}`,
       attribution: /^cc[ -]by/i.test(licRaw), // CC BY / CC BY-SA → atıf zorunlu
       provider: 'wikimedia',
     };
@@ -84,6 +85,7 @@ async function searchMet(query) {
         sourceUrl: o.objectURL || `https://www.metmuseum.org/art/collection/search/${id}`,
         author: String(o.artistDisplayName || 'The Met Museum').slice(0, 60),
         license: 'CC0',
+        licenseEvidence: o.objectURL || `https://www.metmuseum.org/art/collection/search/${id}`,
         attribution: false,
         provider: 'met',
       };
@@ -113,7 +115,7 @@ export async function fetchArchiveImage(query, dest) {
         const buf = Buffer.from(await res.arrayBuffer());
         if (buf.length < 20000) continue; // bozuk/ikon boyutlu dosya
         await writeFile(dest, buf);
-        return { path: dest, type: 'photo', ...hit };
+        return { path: dest, type: 'photo', query: q, retrievedAt: new Date().toISOString(), assetId: hit.sourceUrl, ...hit };
       } finally {
         clearTimeout(timer);
       }
