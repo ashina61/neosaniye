@@ -79,8 +79,8 @@ function buildCaptionAss(words, opts) {
   const {
     width, height,
     fontName = config.video.fontName,
-    size = config.video.captionSize,
-    marginV = config.video.captionMarginV,
+    size = Math.max(12, Math.round(config.video.captionSize * height / 1920)),
+    marginV = Math.max(12, Math.round(config.video.captionMarginV * height / 1920)),
     perLine = config.video.captionWordsPerLine,
     // Referans stil: BAĞIRAN CAPS değil, doğal cümle akışı (premium his).
     uppercase = false,
@@ -96,7 +96,7 @@ function buildCaptionAss(words, opts) {
   const isEmph = (w) =>
     config.video.emphasis && (/\d/.test(w) || emphSet.has(normWord(w)));
 
-  const marginH = 90;
+  const marginH = Math.max(8, Math.round(90 * width / 1080));
   const usableW = width - 2 * marginH;
   const charFactor = 0.56; // Montserrat SemiBold karışık harf yaklaşık genişlik oranı
 
@@ -715,7 +715,7 @@ async function buildFullAudio(
   // STEREO garanti: rapor "stereo" derken çıktı mono çıkmasın (bee hatası #8).
   const master =
     `apad,atrim=0:${total.toFixed(3)},afade=t=out:st=${fadeStart}:d=1.1,` +
-    'alimiter=limit=0.95:attack=5:release=60:level=0,aresample=44100,aformat=channel_layouts=stereo';
+    'alimiter=limit=0.75:attack=5:release=60:level=0,aresample=44100,aformat=channel_layouts=stereo';
   if (finalMix.length > 1) {
     fc.push(`${finalMix.join('')}amix=inputs=${finalMix.length}:normalize=0:duration=longest,${master}[a]`);
   } else {

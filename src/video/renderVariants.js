@@ -24,7 +24,7 @@ export async function renderProductionVariants(job, { outDir, width = 1080, heig
       plan: { ...rendered.renderPlan, sourceMovingSegments: basePlan.movingSegments, maxConsecutiveStatic: basePlan.maxConsecutiveStatic, captionsSafeArea: true },
       outDir, name, createEvidence: name === 'balanced',
     });
-    if (verification.sfx.audibleCount < 2) {
+    if (!verification.sfx.ok) {
       rendered = await renderVideo({ ...renderJob, sfxGain: 5 }, { width, height, fps, workDir: path.join(outDir, `.render-${name}-boost`) });
       verification = await verifyFinalMedia({
         file: outPath, cues: rendered.sfxCues,

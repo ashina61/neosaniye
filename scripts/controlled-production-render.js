@@ -32,6 +32,6 @@ const wordTimings = words.map((word, i) => ({ word, start: i * 20 / words.length
 const timeline = buildCanonicalTimeline({ scenes, wordTimings, duration: 20, timingSource: 'controlled' });
 const result = await renderProductionVariants({
   audioPath, wordTimings, media, scenes, timeline, language: 'en',
-  musicSeed: 'controlled-production', sfxGain: 5,
+  musicSeed: 'controlled-production',
 }, { outDir, width: 180, height: 320, fps: 10 });
 console.log(JSON.stringify({ ok: result.ok, outDir, variants: result.variants }, null, 2));
