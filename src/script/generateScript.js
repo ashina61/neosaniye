@@ -10,12 +10,13 @@ import {
 } from '../lib/firestore.js';
 import { softenAdText } from '../lib/adSafe.js';
 import { validateViewerFirstScript } from '../pipeline/viewerFirstValidation.js';
+import { evaluateNarrationLength } from '../pipeline/durationPolicy.js';
 
 /**
  * Faz 1 — Script Üretim Motoru (Google Gemini) — ANLATI / HİKÂYE formatı.
  *
  * "Şaşırtıcı gerçek hikâyeler" (tarih + bilim + uzay + doğa + gizem) konseptinde,
- * ~80-100 sn'lik dikey short için sahnelere bölünmüş bir mini-hikâye üretir.
+ * 35-58 sn'lik dikey short için sahnelere bölünmüş bir mini-hikâye üretir.
  * Her sahne: tek cümlelik anlatım + o anı gösteren sinematik AI görsel promptu
  * + (yedek için) Pexels anahtar kelimeleri.
  *
@@ -207,7 +208,7 @@ PROCESS FORMAT RULES (this video is built from REAL stock footage, not generated
   return `You are a master short-form STORYTELLER for a faceless YouTube Shorts channel.
 Concept: "${config.niche.theme}". This video's format: ${format.brief}${processExtra}
 
-Write in English, for a SINGLE dramatic narrator. STRICT word budget: the spoken voiceover is the SCENE NARRATIONS ONLY (the cta is NOT spoken) and their total must be 85-100 words — never more. That is ~35-40 seconds. Shorts are SHORT — hook fast, no filler, every sentence earns its place.
+Write in English, for a SINGLE dramatic narrator. STRICT word budget: the spoken voiceover is the SCENE NARRATIONS ONLY (the cta is NOT spoken) and their total must be ${config.content.minNarrationWords}-${config.content.maxNarrationWords} words — never outside that range. This is a complete 35-58 second story, NOT a 15-second fragment. Hook fast, but give the mystery, evidence, twist, and payoff enough room to land; every sentence still earns its place.
 
 Structure the story as 8-11 SCENES following this EXACT retention arc (a 10M-view Shorts shape):
 QUESTION → MYSTERY → EVIDENCE → REVEAL → TWIST → ANSWER → PAYOFF → LOOP.
@@ -449,22 +450,23 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
       continue;
     }
 
-    // SÜRE ZORLAMASI: yalnızca SESLENDİRİLEN sahne anlatımları sayılır (cta seslendirilmiyor).
-    // 105 kelime ≈ 40sn tavan; aşarsa aynı konuda kısaltma iste.
-    const totalWords = (script.scenes || [])
-      .map((s) => s.narration || '')
-      .join(' ')
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean).length;
-    if (totalWords > 105 && attempt < maxRetries) {
-      console.warn(`[script] ${totalWords} kelime — bütçe aşıldı, kısaltma isteniyor.`);
-      lengthFeedback =
-        `Your previous script about "${script.topic}" was ${totalWords} words of narration — TOO LONG. ` +
-        `Rewrite the SAME topic "${script.topic}" with the total spoken narration under 95 words: ` +
-        'fewer scenes (7 max), shorter sentences, cut the weakest details. Keep the same quality.';
+    // CTA is not spoken. The old one-sided "under 95 words / 7 scenes max"
+    // repair could turn a healthy script into a ~15-second fragment.
+    const length = evaluateNarrationLength(script.scenes, config.content);
+    if (!length.ok && attempt < maxRetries) {
+      console.warn(`[script] ${length.words} kelime — ${length.code}, yeniden yazım isteniyor.`);
+      lengthFeedback = length.direction === 'expand'
+        ? `Your previous script about "${script.topic}" has only ${length.words} spoken words — TOO SHORT. Rewrite the SAME topic with ${config.content.minNarrationWords}-${config.content.maxNarrationWords} spoken narration words, 8-11 distinct scenes, and a full evidence → reveal → twist → payoff arc. Do not pad with filler.`
+        : `Your previous script about "${script.topic}" has ${length.words} spoken words — TOO LONG. Rewrite the SAME topic with ${config.content.minNarrationWords}-${config.content.maxNarrationWords} spoken narration words. Preserve the hook, evidence, twist, and payoff; remove only repetition.`;
       continue;
     }
+    if (!length.ok) {
+      throw new Error(
+        `SCRIPT_DURATION_POLICY_FAILED: ${length.code} (${length.words} words); ` +
+        `required ${config.content.minNarrationWords}-${config.content.maxNarrationWords} words.`,
+      );
+    }
+    script.narrationWordCount = length.words;
 
     const viewerValidation = validateViewerFirstScript(script);
     if (!viewerValidation.ok && attempt < maxRetries) {

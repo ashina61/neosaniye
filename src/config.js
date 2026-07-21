@@ -212,6 +212,11 @@ export const config = {
     // Ses efektleri: gerçek geçişlerde, NET duyulur seviyede.
     sfx: process.env.VIDEO_SFX !== '0',
     transitionSoundVolume: Number(process.env.VIDEO_TRANSITION_SOUND_VOL || 0.6),
+    // A 35-58s Short needs setup → reveal → payoff audio punctuation. The
+    // renderer fills a weak editor plan to this floor while respecting spacing.
+    minSfxPerVideo: Number(process.env.VIDEO_SFX_MIN || 3),
+    maxSfxPerVideo: Number(process.env.VIDEO_SFX_MAX || 5),
+    minSfxGapSeconds: Number(process.env.VIDEO_SFX_MIN_GAP || 4),
 
     // Arka plan müziği (narrasyon altında 'ducking' ile kısılır).
     // assets/music/ içindeki telifsiz parçalardan her video için rastgele biri
@@ -278,6 +283,11 @@ export const config = {
   // İçerik dili — CTA localization + dil kapısı bunu kullanır. Kanal İngilizce/ABD.
   content: {
     language: process.env.CONTENT_LANGUAGE || 'en', // 'en' | 'tr'
+    // A full short story, not a 15-second fragment. Validated at script and TTS stages.
+    minNarrationWords: Number(process.env.CONTENT_MIN_WORDS || 105),
+    maxNarrationWords: Number(process.env.CONTENT_MAX_WORDS || 135),
+    minDurationSeconds: Number(process.env.CONTENT_MIN_SECONDS || 35),
+    maxDurationSeconds: Number(process.env.CONTENT_MAX_SECONDS || 58),
   },
   youtube: {
     clientId: process.env.YOUTUBE_CLIENT_ID,
@@ -292,10 +302,11 @@ export const config = {
     enabled: process.env.MOTION_ENABLED !== '0',
     cta: {
       enabled: process.env.MOTION_CTA_ENABLED !== '0',
-      // editorial = kurallar + olasılık karar verir; always = her uygun videoya; off.
-      mode: process.env.MOTION_CTA_MODE || 'editorial',
-      probability: Number(process.env.MOTION_CTA_PROB || 0.35),
-      allowedTypes: (process.env.MOTION_CTA_TYPES || 'subscribe,like,bell,comment,follow,save').split(','),
+      // Her uygun videoda tek, payoff-sonrası subscribe CTA. "editorial" yalnızca
+      // bilinçli A/B testi için kullanılmalı; varsayılan görünürlük garantilidir.
+      mode: process.env.MOTION_CTA_MODE || 'always',
+      probability: Number(process.env.MOTION_CTA_PROB || 1),
+      allowedTypes: (process.env.MOTION_CTA_TYPES || 'subscribe').split(','),
       maxPerVideo: Number(process.env.MOTION_CTA_MAX || 1),
       minVideoDurationSec: Number(process.env.MOTION_CTA_MIN_DUR || 20),
       earliestStartSec: Number(process.env.MOTION_CTA_EARLIEST || 8),

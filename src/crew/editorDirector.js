@@ -79,7 +79,7 @@ You receive a scene-by-scene story. Design the edit like a pro:
 - MUSIC AS A CO-EDITOR (music_mood + let it breathe with the story): the mood should imply a shape —
   lift under the hook, a drop/hit at the biggest reveal, a brief pull-back before the twist, a settled
   resolution on the payoff. Pick the mood that supports that emotional curve, not just the topic.
-- SFX DISCIPLINE: use 1-4 audible boundary sfx per video, only when the story earns one. Each must land ON a meaningful narration moment (the crystal/object reveal,
+- SFX DISCIPLINE: nominate 3-5 audible boundary sfx per video, only when the story earns one. Each must land ON a meaningful narration moment (the crystal/object reveal,
   the split/reveal, the final resolution) — NOT random. Space them out (don't stack two within a few
   seconds) and vary the type. Never add a whoosh just to hit a count. The renderer adds a separate subtle hook cue.
 - EVERY animated (non-cut) transition MUST carry an sfx — a silent animated wipe feels broken.

@@ -6,6 +6,7 @@ import { config } from '../config.js';
 
 const execFileAsync = promisify(execFile);
 import { generateScript } from '../script/generateScript.js';
+import { evaluateMeasuredDuration } from './durationPolicy.js';
 import { directVisuals, applyShotList } from '../crew/visualDirector.js';
 import { planEdit } from '../crew/editorDirector.js';
 import { analyzePerformance } from '../crew/analyst.js';
@@ -124,6 +125,15 @@ export async function runPipeline(opts = {}) {
     log('Faz 2: Seslendirme (TTS)...');
     const audio = await generateAudio(script, { outDir: workDir, basename: base });
     console.log(`  motor: ${audio.engine}, süre~ ${audio.durationEstimate.toFixed(1)}s`);
+    // A valid MP3 alone is not enough: do not spend the rest of a production
+    // run rendering a fragmentary 15-second video.
+    const runtime = evaluateMeasuredDuration(audio.duration, config.content);
+    if (!runtime.ok) {
+      throw new Error(
+        `${runtime.code}: ölçülen anlatım ${runtime.seconds.toFixed(1)}s; hedef ` +
+        `${config.content.minDurationSeconds}-${config.content.maxDurationSeconds}s. Scripti yeniden üretin.`,
+      );
+    }
     const canonicalTimeline = buildCanonicalTimeline({
       scenes: script.scenes || [],
       segmentTexts: audio.segmentTexts,
