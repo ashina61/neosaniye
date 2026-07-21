@@ -37,6 +37,7 @@ import {
   reservePublishingAttempt,
   updatePublishingPlatform,
 } from './publishingLedger.js';
+import { evaluateEmergencyQualityGate } from './emergencyQualityGate.js';
 
 /** Bir metindeki kelime sayısı (sahne ağırlığı için). */
 function wordCount(text) {
@@ -226,7 +227,16 @@ export async function runPipeline(opts = {}) {
     });
     console.log(`  ${video.width}x${video.height}, ${video.duration.toFixed(1)}s -> ${outPath}`);
     // Müzik lisans künyesi (CC0 manifesti veya eski havuz) — rapor + kayda girer.
-    const musicMeta = video.musicTrack ? describeMusicTrack(video.musicTrack) : null;
+    const musicMeta = video.musicTrack
+      ? describeMusicTrack(video.musicTrack)
+      : video.musicDecision?.reason === 'procedural-bed'
+        ? {
+            file: 'procedural',
+            source: 'src/audio/makeMusic.js',
+            license: 'proprietary-original',
+            licenseEvidence: 'src/audio/makeMusic.js',
+          }
+        : null;
 
     // 4.2) NEO MOTION ENGINE — özgün CTA animasyonu (editoryal seçim + safe-area).
     // Preflight/QC ÖNCESİ uygulanır ki final MP4 CTA'lı olsun. CTA hatası ana
@@ -328,6 +338,24 @@ export async function runPipeline(opts = {}) {
     }
     const outputVerification = { sfx: sfxVerification, cta: motionReport.ctaVerification || null, channelTruth, music: musicDecision, hardGate: hard };
 
+    // Acil üretim kapısı: yalnızca mevcut, doğrulanabilir metadata ve final-file
+    // teknik gerçeğini kullanır. Piksel semantiği/OCR/AI kalite tahmini yapmaz.
+    const emergencyQuality = evaluateEmergencyQualityGate({
+      script,
+      wordTimings: audio.wordTimings,
+      mediaItems: media.items,
+      music: musicMeta,
+      ambience,
+      technical: pf.technical || {},
+      duration: pf.technical?.durationSeconds || video.duration,
+      musicRequired: Boolean(config.video.music),
+    });
+    outputVerification.emergencyQuality = emergencyQuality;
+    if (emergencyQuality.block) {
+      console.error(`  ⛔ ACİL KALİTE KAPISI: ${emergencyQuality.failures.join(', ')}`);
+      for (const reason of emergencyQuality.reasons) console.error(`     • ${reason}`);
+    }
+
     // 4.6) RETENTION QC — deterministik editoryal kapı (rapor + mod kararı).
     // warning modda (varsayılan) yalnızca raporlar; strict modda düşük skor
     // upload'u engeller (video artifact olarak kalır, akış kırılmaz).
@@ -379,7 +407,7 @@ export async function runPipeline(opts = {}) {
     }, workDir, {
       technical: pf.technical || null,
       technicalPassed: pf.ok,
-      blockingReasons: hard.reasons || [],
+      blockingReasons: [...(hard.reasons || []), ...(emergencyQuality.reasons || [])],
       motion: motionReport,
       uploadRequested: willUpload,
       platforms: {

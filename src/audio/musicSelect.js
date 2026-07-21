@@ -102,6 +102,7 @@ export function describeMusicTrack(trackPath, audioRoot = 'assets/audio') {
       source: entry.sourceRepository,
       sourceCommit: entry.sourceCommit,
       license: entry.license,
+      licenseEvidence: entry.licenseEvidence,
       sha256: entry.sha256,
     };
   }

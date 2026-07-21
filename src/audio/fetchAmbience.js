@@ -47,7 +47,7 @@ export async function fetchAmbienceTrack(query, dest, { timeoutMs = 45000 } = {}
     const url =
       `${API}/search/text/?query=${encodeURIComponent(q)}` +
       `&filter=${encodeURIComponent(filter)}` +
-      '&fields=id,name,duration,previews&sort=downloads_desc&page_size=10' +
+      '&fields=id,name,username,duration,license,previews&sort=downloads_desc&page_size=10' +
       `&token=${key}`;
     const res = await fetch(url, { signal: ctrl.signal });
     if (!res.ok) throw new Error(`Freesound HTTP ${res.status}`);
@@ -64,7 +64,17 @@ export async function fetchAmbienceTrack(query, dest, { timeoutMs = 45000 } = {}
     const buf = Buffer.from(await dl.arrayBuffer());
     if (buf.length < 10000) throw new Error('Freesound önizleme boş/geçersiz');
     await writeFile(dest, buf);
-    return { path: dest, name: sound.name, duration: sound.duration };
+    return {
+      path: dest,
+      name: sound.name,
+      duration: sound.duration,
+      provider: 'freesound',
+      assetId: sound.id,
+      author: sound.username || null,
+      sourceUrl: `https://freesound.org/s/${sound.id}/`,
+      license: sound.license || null,
+      licenseEvidence: sound.license ? `Freesound API asset ${sound.id}: ${sound.license}` : null,
+    };
   } catch (err) {
     console.warn(`[amb] ambiyans alınamadı ("${q}"): ${String(err.message).slice(0, 100)}`);
     return null;

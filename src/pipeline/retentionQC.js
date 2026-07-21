@@ -200,9 +200,7 @@ export function evaluateRetention(input, cfg = config.retention) {
     });
     if (!capRead.ok) warnings.push(`altyazı okunabilirlik: ${capRead.reason}`);
   } else {
-    // Kelime akışı yoksa yerleşim değerlendirilemez; yapı ayarına bakılır.
-    if (config.video.captionWordsPerLine <= cfg.maxCaptionWords) captions += 3;
-    captions += 3;
+    failures.push('altyazı zamanlaması yok veya boş');
   }
 
   // ---------- E) GÖRSEL ÇEŞİTLİLİK + SEMANTİK ALAKA (10) ----------

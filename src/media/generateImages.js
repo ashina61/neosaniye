@@ -179,13 +179,13 @@ export async function generateImages(script, opts = {}) {
         if (isUsableStat(scene.stat, scene.narration)) {
           const dest = path.join(mediaDir, `${idx}-gfx.mp4`);
           const clip = await renderStatCard(scene.stat, dest, { width, height, duration: 8 });
-          done = { ...clip, scene: i, source: 'gfx' };
+          done = { ...clip, scene: i, source: 'gfx', provider: 'neosaniye-renderTemplate', license: 'proprietary-original', licenseEvidence: 'src/media/renderTemplate.js' };
           gfxCount += 1;
           console.log(`[img] sahne ${idx}: sayı kartı (${scene.stat.value} ${scene.stat.unit || ''})`);
         } else if (isUsableDiagram(scene.diagram)) {
           const dest = path.join(mediaDir, `${idx}-gfx.mp4`);
           const clip = await renderStepsCard(scene.diagram, dest, { width, height, duration: 8 });
-          done = { ...clip, scene: i, source: 'gfx' };
+          done = { ...clip, scene: i, source: 'gfx', provider: 'neosaniye-renderTemplate', license: 'proprietary-original', licenseEvidence: 'src/media/renderTemplate.js' };
           gfxCount += 1;
           console.log(`[img] sahne ${idx}: adım kartı ("${scene.diagram.title}", ${scene.diagram.steps.length} adım)`);
         }
@@ -241,12 +241,12 @@ export async function generateImages(script, opts = {}) {
           if (provider === 'pollinations') {
             const dest = path.join(mediaDir, `${idx}-ai.jpg`);
             await fetchPollinations(prompt, dest, { width, height, seed: videoSeed });
-            done = { path: dest, type: 'photo', scene: i, source: 'ai' };
+            done = { path: dest, type: 'photo', scene: i, source: 'ai', provider: 'pollinations', license: null, licenseEvidence: null };
           } else if (provider === 'gemini') {
             const dest = path.join(mediaDir, `${idx}-ai.png`);
             const buf = await generateOne(geminiAI, prompt);
             await writeFile(dest, buf);
-            done = { path: dest, type: 'photo', scene: i, source: 'ai' };
+            done = { path: dest, type: 'photo', scene: i, source: 'ai', provider: 'gemini', license: null, licenseEvidence: null };
           }
         } catch (err) {
           const msg = String(err?.message || err);
@@ -293,7 +293,7 @@ export async function generateImages(script, opts = {}) {
       try {
         const dest2 = path.join(mediaDir, `${idx}b-ai.jpg`);
         await fetchPollinations(prompt, dest2, { width, height, seed: videoSeed + 977 + i });
-        items.push({ path: dest2, type: 'photo', scene: i, source: 'ai', part: 2 });
+        items.push({ path: dest2, type: 'photo', scene: i, source: 'ai', part: 2, provider: 'pollinations', license: null, licenseEvidence: null });
         sources.ai += 1;
         splitCount += 1;
         console.log(`[img] sahne ${idx}: uzun statik (${estSec.toFixed(1)}s) -> 2 plana bölündü`);
