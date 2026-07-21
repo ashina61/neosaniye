@@ -19,7 +19,7 @@ import { postFirstComment, updateVideoStats } from '../youtube/engage.js';
 import { buildSrtFromWords, uploadCaptions } from '../youtube/captions.js';
 import { crossPost } from '../social/meta.js';
 import { preflightCheck } from './preflight.js';
-import { runRetentionQC, uploadGate } from './retentionQC.js';
+import { recordPublicationBlock, runRetentionQC, uploadGate } from './retentionQC.js';
 import { appendQcHistory, buildQcHistoryEntry } from './qcHistory.js';
 import { getRecentMusic } from '../lib/firestore.js';
 import { describeMusicTrack } from '../audio/musicSelect.js';
@@ -32,6 +32,11 @@ import { evaluateHardGate } from './hardGate.js';
 import { getRecentCtaTypes } from '../lib/firestore.js';
 import { recordProduction } from './recordProduction.js';
 import { notify } from '../lib/notify.js';
+import {
+  buildPublishingAttemptId,
+  reservePublishingAttempt,
+  updatePublishingPlatform,
+} from './publishingLedger.js';
 
 /** Bir metindeki kelime sayısı (sahne ağırlığı için). */
 function wordCount(text) {
@@ -408,8 +413,40 @@ export async function runPipeline(opts = {}) {
     // bu bloğun içindedir; uploadGate (teknik preflight + QC mod kararı)
     // geçilmeden hiçbir platforma yayın yapılmaz, platform bazlı bypass yoktur.
     let youtube = null;
+    let social = { instagram: null, facebook: null };
+    let publishingAttemptId = null;
+    let publishingAttemptBlocked = false;
     // SERT KAPI upload'u HER MODDA kesebilir (warning override aşamaz).
-    const canUpload = uploadGate({ preflightOk: pf.ok, qc }) && !hard.block;
+    let canUpload = uploadGate({ preflightOk: pf.ok, qc }) && !hard.block;
+    if (willUpload && canUpload) {
+      publishingAttemptId = buildPublishingAttemptId(script);
+      try {
+        const reservation = await reservePublishingAttempt({
+          attemptId: publishingAttemptId,
+          topic: script.topic,
+          configuredPlatforms: {
+            youtube: Boolean(hasYouTube),
+            instagram: Boolean(
+              config.meta.userToken || config.meta.igLoginToken ||
+              (config.meta.pageToken && config.meta.igUserId),
+            ),
+            facebook: Boolean(
+              config.meta.userToken || (config.meta.pageToken && config.meta.pageId),
+            ),
+          },
+        }, { requireDurable: process.env.GITHUB_ACTIONS === 'true' });
+        if (!reservation.acquired) {
+          publishingAttemptBlocked = true;
+          canUpload = false;
+          await recordPublicationBlock(qc, workDir, `PUBLISH_ATTEMPT_EXISTS: ${publishingAttemptId}`);
+          console.error(`[publish] aynı içerik için mevcut attempt var (${publishingAttemptId}) — kör yeniden upload engellendi.`);
+        }
+      } catch (err) {
+        canUpload = false;
+        await recordPublicationBlock(qc, workDir, `PUBLISH_STATE_UNAVAILABLE: ${err.message}`).catch(() => {});
+        throw err;
+      }
+    }
     if (willUpload && canUpload) {
       log('Faz 6: YouTube upload...');
       const meta = await buildMetadata(script);
@@ -420,7 +457,21 @@ export async function runPipeline(opts = {}) {
           .map((m) => `📷 ${m.author} — Wikimedia Commons (${m.license})`),
       )];
       if (credits.length) meta.description += '\n\n' + credits.join('\n');
-      const res = await uploadVideo({ videoPath: outPath, ...meta });
+      await updatePublishingPlatform(publishingAttemptId, 'youtube', 'uploading', {}, {
+        requireDurable: process.env.GITHUB_ACTIONS === 'true',
+      });
+      let res;
+      try {
+        res = await uploadVideo({ videoPath: outPath, ...meta });
+        await updatePublishingPlatform(publishingAttemptId, 'youtube', 'published', { remoteId: res.videoId }, {
+          requireDurable: process.env.GITHUB_ACTIONS === 'true',
+        });
+      } catch (err) {
+        await updatePublishingPlatform(publishingAttemptId, 'youtube', 'remote_unknown', {
+          lastError: String(err.message || err).slice(0, 300),
+        }, { requireDurable: process.env.GITHUB_ACTIONS === 'true' }).catch(() => {});
+        throw err;
+      }
       youtube = { ...res, title: meta.title, publishedAt: new Date().toISOString() };
       console.log(`  yüklendi: ${res.url}`);
 
@@ -437,12 +488,29 @@ export async function runPipeline(opts = {}) {
 
       // Meta cross-post: aynı video Instagram Reels + Facebook Reels'e
       // (best-effort; secrets yoksa sessizce atlanır, bkz. docs/meta-setup.md).
-      const social = await crossPost({
+      const instagramConfigured = Boolean(
+        config.meta.userToken || config.meta.igLoginToken ||
+        (config.meta.pageToken && config.meta.igUserId),
+      );
+      const facebookConfigured = Boolean(
+        config.meta.userToken || (config.meta.pageToken && config.meta.pageId),
+      );
+      if (instagramConfigured) await updatePublishingPlatform(publishingAttemptId, 'instagram', 'uploading');
+      if (facebookConfigured) await updatePublishingPlatform(publishingAttemptId, 'facebook', 'uploading');
+      social = await crossPost({
         videoPath: outPath,
         title: meta.title,
         description: meta.description,
         tags: meta.tags,
       }).catch(() => ({ instagram: null, facebook: null }));
+      if (instagramConfigured) await updatePublishingPlatform(
+        publishingAttemptId, 'instagram', social.instagram ? 'published' : 'remote_unknown',
+        social.instagram ? { remoteId: social.instagram } : { lastError: 'cross-post sonucu belirsiz/başarısız' },
+      );
+      if (facebookConfigured) await updatePublishingPlatform(
+        publishingAttemptId, 'facebook', social.facebook ? 'published' : 'remote_unknown',
+        social.facebook ? { remoteId: social.facebook } : { lastError: 'cross-post sonucu belirsiz/başarısız' },
+      );
       if (social.instagram) console.log('  Instagram Reels yayınlandı');
       if (social.facebook) console.log('  Facebook Reels yayınlandı');
 
@@ -455,6 +523,8 @@ export async function runPipeline(opts = {}) {
         `\nYOUTUBE:\n${res.url}`,
       ].join('\n');
       await writeFile(path.join(workDir, 'publish-kit.txt'), kit).catch(() => {});
+    } else if (willUpload && publishingAttemptBlocked) {
+      console.log('\n▶ Faz 6: upload İPTAL (aynı içerik için publishing attempt zaten var) — artifact korunuyor.');
     } else if (willUpload && hard.block) {
       console.log(`\n▶ Faz 6: upload İPTAL (SERT KAPI: ${hard.failures.join(', ')}) — warning-mod override AŞAMAZ, video artifact olarak duruyor.`);
     } else if (willUpload && qc.blockUpload) {
@@ -519,6 +589,7 @@ export async function runPipeline(opts = {}) {
           }
         : 'mechanical',
       youtube: youtube?.url || null,
+      publishing: publishingAttemptId ? { attemptId: publishingAttemptId, platforms: { youtube, ...social } } : null,
       createdAt: new Date().toISOString(),
     };
     await writeFile(path.join(workDir, 'report.json'), JSON.stringify(report, null, 2)).catch(() => {});
@@ -557,6 +628,7 @@ export async function runPipeline(opts = {}) {
             ? 'blocked_qc'
             : 'rendered',
       youtube,
+      publishing: publishingAttemptId ? { attemptId: publishingAttemptId, platforms: { youtube, ...social } } : null,
     });
     console.log(`  kayıt id: ${videoId}`);
 

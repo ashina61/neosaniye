@@ -1,4 +1,4 @@
-import { writeFile } from 'node:fs/promises';
+import { appendFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { config } from '../config.js';
 import { analyzeCaptionLayout } from '../video/captionLayout.js';
@@ -378,6 +378,25 @@ export function uploadGate({ preflightOk, qc }) {
     qc.report?.editorialReady === true &&
     qc.report?.productionReady === true,
   );
+}
+
+/** Persist a blocker discovered after QC but before a remote side effect. */
+export async function recordPublicationBlock(qc, workDir, reason) {
+  if (!qc?.report || !reason) return;
+  qc.blockUpload = true;
+  qc.ok = false;
+  qc.report.productionReady = false;
+  qc.report.uploadAllowedByPolicy = false;
+  qc.report.blockingReasons = [...new Set([...(qc.report.blockingReasons || []), reason])];
+  if (qc.report.uploadEligibility) {
+    for (const platform of ['youtube', 'instagram', 'facebook']) qc.report.uploadEligibility[platform] = false;
+    qc.report.uploadEligibility.policyOverride = false;
+    qc.report.uploadEligibility.reasons = [
+      ...new Set([...(qc.report.uploadEligibility.reasons || []), reason]),
+    ];
+  }
+  await writeFile(path.join(workDir, 'production-report.json'), JSON.stringify(qc.report, null, 2));
+  await appendFile(path.join(workDir, 'production-report.md'), `\n## ⛔ Yayın Engeli\n- ${reason}\n`);
 }
 
 /**

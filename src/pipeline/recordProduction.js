@@ -72,6 +72,7 @@ export async function recordProduction(script, meta = {}) {
     duration,
     status,
     youtube,
+    publishing: meta.publishing || null,
     ...(error ? { error } : {}),
   };
 
