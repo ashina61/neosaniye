@@ -201,11 +201,11 @@ async function withMode(mode, minScore, fn) {
   }
 }
 
-test('disabled mod: editoryal QC uygulanmaz, qcExecution.status=disabled, upload serbest', async () => {
+test('disabled mod: editoryal QC uygulanmaz, render sürer ama upload fail-closed', async () => {
   await withMode('disabled', 85, async (dir) => {
     const res = await runRetentionQC(strongInput(), dir);
     assert.equal(res.score, null);
-    assert.equal(res.blockUpload, false);
+    assert.equal(res.blockUpload, true);
     assert.equal(res.error, null);
     assert.equal(res.report.qcExecution.status, 'disabled');
     assert.equal(res.report.editorialReady, null); // değerlendirilmedi
@@ -213,7 +213,7 @@ test('disabled mod: editoryal QC uygulanmaz, qcExecution.status=disabled, upload
   });
 });
 
-test('warning mod + düşük skor: upload POLICY OVERRIDE ile devam eder ve raporda görünür', async () => {
+test('warning mod + düşük skor: editorialReady false uploadu engeller', async () => {
   await withMode('warning', 85, async (dir) => {
     const bad = strongInput({ audioPresent: false }); // kritik editoryal hata → fail
     const res = await runRetentionQC(bad, dir, {
@@ -221,14 +221,14 @@ test('warning mod + düşük skor: upload POLICY OVERRIDE ile devam eder ve rapo
       uploadRequested: true,
       platforms: { youtube: true, instagram: true, facebook: true },
     });
-    assert.equal(res.blockUpload, false);
+    assert.equal(res.blockUpload, true);
     assert.equal(res.report.status, 'fail');
     assert.equal(res.report.editorialReady, false);
     assert.equal(res.report.productionReady, false);
-    assert.equal(res.report.uploadAllowedByPolicy, true);
-    // Çelişki yok: hazır değil AMA politika izni açıkça yazılı.
-    assert.equal(res.report.uploadEligibility.policyOverride, true);
-    assert.ok(res.report.uploadEligibility.reasons.some((x) => x.includes('POLICY OVERRIDE')));
+    assert.equal(res.report.uploadAllowedByPolicy, false);
+    assert.equal(res.report.uploadEligibility.policyOverride, false);
+    assert.ok(res.report.uploadEligibility.reasons.some((x) => x.includes('editorialReady')));
+    assert.ok(res.report.blockingReasons.includes('EDITORIAL_NOT_READY'));
   });
 });
 
@@ -322,11 +322,11 @@ test('warning mod + QC exception → upload da ENGELLENİR (QC\'siz otomatik yay
   });
 });
 
-test('disabled mod + bozuk girdi → QC değerlendirmesi hiç çalışmaz, üretim etkilenmez', async () => {
+test('disabled mod + bozuk girdi → render raporu kalır ama upload fail-closed', async () => {
   await withMode('disabled', 85, async (dir) => {
     const res = await runRetentionQC(explodingInput(), dir);
     assert.equal(res.score, null);
-    assert.equal(res.blockUpload, false);
+    assert.equal(res.blockUpload, true);
     assert.equal(res.error, null);
     assert.equal(res.report.qcExecution.status, 'disabled');
   });
@@ -335,15 +335,11 @@ test('disabled mod + bozuk girdi → QC değerlendirmesi hiç çalışmaz, üret
 // ---- TEK ORTAK UPLOAD KAPISI (üç platform) ----
 
 test('uploadGate: teknik strict kapı + QC kararı birleşimi', () => {
-  const tm = 'strict';
-  assert.equal(uploadGate({ preflightOk: false, qc: { blockUpload: false }, technicalMode: tm }), false);
-  assert.equal(uploadGate({ preflightOk: true, qc: { blockUpload: true }, technicalMode: tm }), false);
-  assert.equal(uploadGate({ preflightOk: false, qc: { blockUpload: true }, technicalMode: tm }), false);
-  assert.equal(uploadGate({ preflightOk: true, qc: { blockUpload: false }, technicalMode: tm }), true);
-  // TECHNICAL_PREFLIGHT_MODE=warning: teknik sorun kapıyı kapatmaz (bilinçli riskli mod)...
-  assert.equal(uploadGate({ preflightOk: false, qc: { blockUpload: false }, technicalMode: 'warning' }), true);
-  // ...ama QC bloğunu asla deldirmez.
-  assert.equal(uploadGate({ preflightOk: false, qc: { blockUpload: true }, technicalMode: 'warning' }), false);
+  const ready = { blockUpload: false, report: { editorialReady: true, productionReady: true } };
+  assert.equal(uploadGate({ preflightOk: false, qc: ready }), false);
+  assert.equal(uploadGate({ preflightOk: true, qc: { ...ready, blockUpload: true } }), false);
+  assert.equal(uploadGate({ preflightOk: true, qc: { blockUpload: false, report: { editorialReady: false, productionReady: false } } }), false);
+  assert.equal(uploadGate({ preflightOk: true, qc: ready }), true);
 });
 
 test('strict fail → YouTube, Instagram, Facebook ÜÇÜ DE bloklanır', async () => {
@@ -395,7 +391,7 @@ test('teknik preflight başarısızsa (strict teknik mod) hiçbir platform uygun
   assert.ok(el.reasons.some((x) => x.includes('teknik preflight')));
 });
 
-test('teknik warning modda teknik sorunlu yayın POLICY OVERRIDE olarak işaretlenir', () => {
+test('teknik warning modda teknik sorunlu yayın yine bloklanır', () => {
   const el = computeUploadEligibility({
     uploadRequested: true,
     technicalReady: false,
@@ -403,12 +399,13 @@ test('teknik warning modda teknik sorunlu yayın POLICY OVERRIDE olarak işaretl
     blockUpload: false,
     execError: null,
     editorialReady: true,
+    productionReady: false,
     mode: 'warning',
     platforms: { youtube: true, instagram: true, facebook: true },
   });
-  assert.equal(el.youtube, true);
-  assert.equal(el.policyOverride, true);
-  assert.ok(el.reasons.some((x) => x.includes('TECHNICAL_PREFLIGHT_MODE=warning')));
+  assert.equal(el.youtube, false);
+  assert.equal(el.policyOverride, false);
+  assert.ok(el.reasons.some((x) => x.includes('teknik preflight')));
 });
 
 test('genişletilmiş rapor şeması: qcMode, qcExecution, technicalValidation, uploadEligibility', async () => {
@@ -478,9 +475,9 @@ const TRUTH_TABLE = [
   ['Technical FAIL | warning  | pass | high → BLOCK', false, 'warning', 'high', false, false],
   ['Technical FAIL | warning  | error| any  → BLOCK', false, 'warning', 'error', false, false],
   ['Technical FAIL | strict   | pass | high → BLOCK', false, 'strict', 'high', false, false],
-  ['Technical PASS | disabled | -    | any  → ALLOW', true, 'disabled', 'high', true, false],
+  ['Technical PASS | disabled | -    | any  → BLOCK', true, 'disabled', 'high', false, false],
   ['Technical PASS | warning  | pass | high → ALLOW', true, 'warning', 'high', true, false],
-  ['Technical PASS | warning  | fail | low  → ALLOW (policy override)', true, 'warning', 'low', true, true],
+  ['Technical PASS | warning  | fail | low  → BLOCK', true, 'warning', 'low', false, false],
   ['Technical PASS | warning  | error| any  → BLOCK', true, 'warning', 'error', false, false],
   ['Technical PASS | strict   | pass | high → ALLOW', true, 'strict', 'high', true, false],
   ['Technical PASS | strict   | fail | low  → BLOCK', true, 'strict', 'low', false, false],

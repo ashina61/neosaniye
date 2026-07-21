@@ -374,6 +374,7 @@ export async function runPipeline(opts = {}) {
     }, workDir, {
       technical: pf.technical || null,
       technicalPassed: pf.ok,
+      blockingReasons: hard.reasons || [],
       motion: motionReport,
       uploadRequested: willUpload,
       platforms: {
