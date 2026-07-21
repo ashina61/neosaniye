@@ -1371,7 +1371,7 @@
       "comments": 5,
       "avgViewPct": 55.5,
       "subsGained": 0,
-      "statsAt": "2026-07-21T16:42:18.791Z"
+      "statsAt": "2026-07-21T21:21:37.816Z"
     }
   },
   {
@@ -1705,7 +1705,7 @@
       "comments": 5,
       "avgViewPct": 72.7,
       "subsGained": 1,
-      "statsAt": "2026-07-21T16:42:18.787Z"
+      "statsAt": "2026-07-21T21:21:37.812Z"
     }
   },
   {
@@ -1820,7 +1820,7 @@
       "comments": 1,
       "avgViewPct": 167,
       "subsGained": 6,
-      "statsAt": "2026-07-21T16:42:18.783Z"
+      "statsAt": "2026-07-21T21:21:37.809Z"
     }
   },
   {
@@ -1947,7 +1947,7 @@
       "comments": 1,
       "avgViewPct": 59,
       "subsGained": 2,
-      "statsAt": "2026-07-21T16:42:18.780Z"
+      "statsAt": "2026-07-21T21:21:37.806Z"
     }
   },
   {
@@ -2074,7 +2074,7 @@
       "comments": 3,
       "avgViewPct": 60,
       "subsGained": 5,
-      "statsAt": "2026-07-21T16:42:18.776Z"
+      "statsAt": "2026-07-21T21:21:37.802Z"
     }
   },
   {
@@ -2201,7 +2201,7 @@
       "comments": 1,
       "avgViewPct": 44.9,
       "subsGained": 0,
-      "statsAt": "2026-07-21T16:42:18.773Z"
+      "statsAt": "2026-07-21T21:21:37.799Z"
     }
   },
   {
@@ -2316,7 +2316,7 @@
       "comments": 2,
       "avgViewPct": 142.1,
       "subsGained": 1,
-      "statsAt": "2026-07-21T16:42:18.770Z"
+      "statsAt": "2026-07-21T21:21:37.795Z"
     }
   },
   {
@@ -2431,7 +2431,7 @@
       "comments": 1,
       "avgViewPct": 59,
       "subsGained": 1,
-      "statsAt": "2026-07-21T16:42:18.766Z"
+      "statsAt": "2026-07-21T21:21:37.789Z"
     }
   },
   {
@@ -2545,7 +2545,7 @@
       "comments": 1,
       "avgViewPct": 84.6,
       "subsGained": 2,
-      "statsAt": "2026-07-21T16:42:18.763Z"
+      "statsAt": "2026-07-21T21:21:37.785Z"
     }
   },
   {
@@ -2672,7 +2672,7 @@
       "comments": 1,
       "avgViewPct": 64.2,
       "subsGained": 1,
-      "statsAt": "2026-07-21T16:42:18.760Z"
+      "statsAt": "2026-07-21T21:21:37.782Z"
     }
   },
   {
@@ -2787,7 +2787,7 @@
       "comments": 1,
       "avgViewPct": 122.4,
       "subsGained": 2,
-      "statsAt": "2026-07-21T16:42:18.756Z"
+      "statsAt": "2026-07-21T21:21:37.778Z"
     }
   },
   {
@@ -2914,7 +2914,7 @@
       "comments": 4,
       "avgViewPct": 42.2,
       "subsGained": 1,
-      "statsAt": "2026-07-21T16:42:18.753Z"
+      "statsAt": "2026-07-21T21:21:37.774Z"
     }
   },
   {
@@ -3026,7 +3026,7 @@
       "comments": 1,
       "avgViewPct": 76.5,
       "subsGained": 5,
-      "statsAt": "2026-07-21T16:42:18.746Z"
+      "statsAt": "2026-07-21T21:21:37.771Z"
     }
   },
   {
@@ -3253,7 +3253,7 @@
       "comments": 1,
       "avgViewPct": 67.1,
       "subsGained": 1,
-      "statsAt": "2026-07-21T16:42:18.734Z"
+      "statsAt": "2026-07-21T21:21:37.767Z"
     }
   },
   {
@@ -3379,7 +3379,7 @@
       "comments": 1,
       "avgViewPct": 57.1,
       "subsGained": 1,
-      "statsAt": "2026-07-21T16:42:18.728Z"
+      "statsAt": "2026-07-21T21:21:37.763Z"
     }
   },
   {
@@ -3501,8 +3501,8 @@
       "likes": 28,
       "comments": 3,
       "avgViewPct": 58.4,
-      "subsGained": 2,
-      "statsAt": "2026-07-21T16:42:18.724Z"
+      "subsGained": 3,
+      "statsAt": "2026-07-21T21:21:37.759Z"
     }
   },
   {
@@ -3635,9 +3635,9 @@
       "views": 388,
       "likes": 29,
       "comments": 1,
-      "avgViewPct": 78.6,
+      "avgViewPct": 78.4,
       "subsGained": 1,
-      "statsAt": "2026-07-21T16:42:18.720Z"
+      "statsAt": "2026-07-21T21:21:37.756Z"
     }
   },
   {
@@ -3770,9 +3770,9 @@
       "views": 239,
       "likes": 17,
       "comments": 3,
-      "avgViewPct": 62.6,
+      "avgViewPct": 64.6,
       "subsGained": 0,
-      "statsAt": "2026-07-21T16:42:18.716Z"
+      "statsAt": "2026-07-21T21:21:37.752Z"
     }
   },
   {
@@ -3898,12 +3898,12 @@
     },
     "createdAt": "2026-07-17T23:37:08.494Z",
     "stats": {
-      "views": 873,
+      "views": 874,
       "likes": 19,
       "comments": 1,
       "avgViewPct": 56.1,
       "subsGained": 3,
-      "statsAt": "2026-07-21T16:42:18.713Z"
+      "statsAt": "2026-07-21T21:21:37.748Z"
     }
   },
   {
@@ -4026,9 +4026,9 @@
       "views": 720,
       "likes": 19,
       "comments": 1,
-      "avgViewPct": 58.4,
+      "avgViewPct": 63,
       "subsGained": 2,
-      "statsAt": "2026-07-21T16:42:18.709Z"
+      "statsAt": "2026-07-21T21:21:37.744Z"
     }
   },
   {
@@ -4172,12 +4172,12 @@
     },
     "createdAt": "2026-07-18T21:13:03.406Z",
     "stats": {
-      "views": 676,
+      "views": 674,
       "likes": 79,
       "comments": 3,
-      "avgViewPct": 74.1,
-      "subsGained": 4,
-      "statsAt": "2026-07-21T16:42:18.705Z"
+      "avgViewPct": 74.5,
+      "subsGained": 6,
+      "statsAt": "2026-07-21T21:21:37.738Z"
     }
   },
   {
@@ -4321,12 +4321,12 @@
     },
     "createdAt": "2026-07-19T05:46:10.622Z",
     "stats": {
-      "views": 7,
+      "views": 9,
       "likes": 0,
       "comments": 1,
-      "avgViewPct": 0,
+      "avgViewPct": 82.8,
       "subsGained": 0,
-      "statsAt": "2026-07-21T16:42:18.701Z"
+      "statsAt": "2026-07-21T21:21:37.733Z"
     }
   },
   {
@@ -4475,10 +4475,12 @@
     },
     "createdAt": "2026-07-19T16:02:40.024Z",
     "stats": {
-      "views": 170,
+      "views": 171,
       "likes": 11,
       "comments": 1,
-      "statsAt": "2026-07-21T16:42:18.697Z"
+      "avgViewPct": 73.4,
+      "subsGained": 0,
+      "statsAt": "2026-07-21T21:21:37.723Z"
     }
   },
   {
@@ -4622,10 +4624,12 @@
     },
     "createdAt": "2026-07-19T21:13:50.386Z",
     "stats": {
-      "views": 201,
+      "views": 205,
       "likes": 24,
       "comments": 1,
-      "statsAt": "2026-07-21T16:42:18.694Z"
+      "avgViewPct": 87.1,
+      "subsGained": 0,
+      "statsAt": "2026-07-21T21:21:37.707Z"
     }
   },
   {
@@ -4786,10 +4790,12 @@
     },
     "createdAt": "2026-07-20T05:58:12.251Z",
     "stats": {
-      "views": 103,
+      "views": 107,
       "likes": 12,
       "comments": 1,
-      "statsAt": "2026-07-21T16:42:18.689Z"
+      "avgViewPct": 48.6,
+      "subsGained": 0,
+      "statsAt": "2026-07-21T21:21:37.703Z"
     }
   },
   {
