@@ -35,14 +35,14 @@ const BEFORE_WIN = 0.30;
 const DURING_WIN = 0.55;
 
 /** Bir ses segmentinin {meanDb, maxDb} değerlerini ölçer (volumedetect). */
-export async function measureSegmentDb(file, startSec, durSec = WIN) {
+export async function measureSegmentDb(file, startSec, durSec = WIN, preFilter = null) {
   const ss = Math.max(0, startSec).toFixed(3);
   // NOT: '-v error' volumedetect'in info seviyesindeki istatistiklerini gizler;
   // '-hide_banner' kullan ki mean/max_volume satırları stderr'e düşsün.
   const { stderr } = await run('ffmpeg', [
     '-nostdin', '-hide_banner',
     '-ss', ss, '-t', Math.max(0.05, durSec).toFixed(3), '-i', file,
-    '-vn', '-af', 'volumedetect', '-f', 'null', '-',
+    '-vn', '-af', `${preFilter ? `${preFilter},` : ''}volumedetect`, '-f', 'null', '-',
   ], BUF).catch((e) => ({ stderr: e.stderr || '' }));
   const mean = /mean_volume:\s*(-?[\d.]+)\s*dB/.exec(stderr || '');
   const max = /max_volume:\s*(-?[\d.]+)\s*dB/.exec(stderr || '');
@@ -119,15 +119,19 @@ export async function verifySfxInOutput(outputPath, cues = []) {
 
     // Cue öncesi taban (biten pencere) vs cue "sırası" tepe (SFX enerji süresini
     // kapsar) — GERÇEK çıktıdan. Pencere adil; eşik (3 dB) değişmedi.
-    const before = await measureSegmentDb(outputPath, Math.max(0, at - BEFORE_WIN - 0.05), BEFORE_WIN).catch(() => ({ maxDb: null }));
-    const during = await measureSegmentDb(outputPath, at - 0.05, DURING_WIN).catch(() => ({ maxDb: null }));
+    // Accents occupy the transient/presence band. Measuring that band avoids a
+    // steady narration fundamental or bass-heavy music masking real SFX energy.
+    const before = await measureSegmentDb(outputPath, Math.max(0, at - BEFORE_WIN - 0.05), BEFORE_WIN, 'highpass=f=700').catch(() => ({ maxDb: null }));
+    const during = await measureSegmentDb(outputPath, at - 0.05, DURING_WIN, 'highpass=f=700').catch(() => ({ maxDb: null }));
     if (before.maxDb === null || during.maxDb === null) {
       rec.code = 'SFX_OUTPUT_VERIFICATION_FAILED';
       failures.add('SFX_OUTPUT_VERIFICATION_FAILED');
       out.push(rec);
       continue;
     }
-    rec.audibleDeltaDb = +(during.maxDb - before.maxDb).toFixed(2);
+    const peakDelta = during.maxDb - before.maxDb;
+    const energyDelta = during.meanDb != null && before.meanDb != null ? during.meanDb - before.meanDb : -Infinity;
+    rec.audibleDeltaDb = +Math.max(peakDelta, energyDelta).toFixed(2);
     rec.verified = rec.audibleDeltaDb >= SFX_AUDIBLE_MIN_DELTA_DB;
     if (!rec.verified) { rec.code = 'SFX_INAUDIBLE'; failures.add('SFX_INAUDIBLE'); }
     out.push(rec);

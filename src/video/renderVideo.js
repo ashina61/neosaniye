@@ -617,14 +617,15 @@ async function buildFullAudio(
   // maskeleniyordu — gerçek koşuda riser/shimmer/CTA pop gömüldü (+-1/-0.1/+0.4 dB),
   // yalnız impact geçti (+3.6). Taban seviye yükseltildi; ayrıca cue anında HEM
   // müzik HEM konuşma sidechain ile kısılıp vuruşa "pocket" açılır (aşağıda).
-  const sfxVol = Math.min(3, Math.max(1.4, config.video.transitionSoundVolume) * Math.max(1, sfxGain));
+  const sfxVol = Math.min(8, Math.max(1.4, config.video.transitionSoundVolume) * Math.max(1, sfxGain));
 
   // Anlatım sesini "yayın" zincirinden geçir: alçak-frekans temizliği +
   // presence EQ + kompresör. Ham TTS'ten çok daha dolgun/pro tınlar.
   const voiceChain =
     'highpass=f=70,equalizer=f=3200:t=q:w=1.2:g=1.5,' +
     'acompressor=threshold=0.12:ratio=2.5:attack=8:release=140:makeup=1.4,' +
-    'loudnorm=I=-16:TP=-2:LRA=9,' +
+    // Preserve transient headroom for effects added after narration normalization.
+    'loudnorm=I=-19:TP=-9:LRA=9,' +
     'aresample=44100';
 
   let musKey = null;        // müzik akışı (SFX bus ile ayrıca duck edilecek)
@@ -633,7 +634,7 @@ async function buildFullAudio(
     fc.push(`[0:a]${voiceChain},asplit=2[nkey][nmix]`);
     // Gerçek (mastered) parçalar sentetik yataktan çok daha sıcak basar —
     // seviyeyi ona göre düşür; prosedürel yatak config seviyesinde kalır.
-    const musVol = musicIsReal ? Math.min(config.video.musicVolume, 0.32) : config.video.musicVolume;
+    const musVol = Math.min(config.video.musicVolume, musicIsReal ? 0.18 : 0.2);
     fc.push(
       `[${musicIdx}:a]aresample=44100,atrim=0:${total.toFixed(3)},volume=${musVol}[mus]`,
     );
@@ -659,10 +660,11 @@ async function buildFullAudio(
   for (const { idx: inIdx, k, type, at } of sfxPlan) {
     const ms = Math.round(at * 1000);
     fc.push(
-      `[${inIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=${k === 'hook' ? Math.min(sfxVol, 1.0) : sfxVol}[wd${k}]`,
+      `[${inIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=${sfxVol}[wd${k}]`,
     );
     sfxLabels.push(`[wd${k}]`);
-    sfxCues.push({ atSeconds: +at.toFixed(2), sfxId: type, event: k === 'hook' ? 'hook' : 'scene-boundary', assetResolved: true, mixedInGraph: true });
+    const verifyAt = type === 'riser' ? at + 0.7 : at;
+    sfxCues.push({ atSeconds: +verifyAt.toFixed(2), startsAtSeconds: +at.toFixed(2), sfxId: type, event: k === 'hook' ? 'hook' : 'scene-boundary', assetResolved: true, mixedInGraph: true });
   }
 
   if (chimeIdx >= 0) {
@@ -675,7 +677,7 @@ async function buildFullAudio(
 
   if (clickIdx >= 0) {
     const ms = Math.round(clickAt * 1000);
-    fc.push(`[${clickIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=1.0[clk]`);
+    fc.push(`[${clickIdx}:a]aresample=44100,adelay=${ms}|${ms},volume=${sfxVol}[clk]`);
     sfxLabels.push('[clk]');
     sfxCues.push({ atSeconds: +clickAt.toFixed(2), sfxId: 'click', assetResolved: true, mixedInGraph: true });
   }
@@ -694,12 +696,12 @@ async function buildFullAudio(
     if (musKey) {
       fc.push(`[sfxkey0]apad,asplit=2[sfxkeyM][sfxkeyV]`);
       // Konuşmaya sığ pocket (≈2-3 dB), müziğe daha derin dip (≈4-5 dB).
-      fc.push(`${voiceOut}[sfxkeyV]sidechaincompress=threshold=0.05:ratio=2:attack=4:release=170[voiced]`);
-      fc.push(`${musKey}[sfxkeyM]sidechaincompress=threshold=0.1:ratio=4:attack=4:release=240[musd2]`);
+      fc.push(`${voiceOut}[sfxkeyV]sidechaincompress=threshold=0.02:ratio=8:attack=3:release=150[voiced]`);
+      fc.push(`${musKey}[sfxkeyM]sidechaincompress=threshold=0.03:ratio=12:attack=3:release=220[musd2]`);
       finalMix.push('[voiced]', '[musd2]', '[sfxmix]');
     } else {
       fc.push(`[sfxkey0]apad[sfxkeyV]`);
-      fc.push(`${voiceOut}[sfxkeyV]sidechaincompress=threshold=0.05:ratio=2:attack=4:release=170[voiced]`);
+      fc.push(`${voiceOut}[sfxkeyV]sidechaincompress=threshold=0.02:ratio=8:attack=3:release=150[voiced]`);
       finalMix.push('[voiced]', '[sfxmix]');
     }
   } else {
@@ -713,7 +715,7 @@ async function buildFullAudio(
   // STEREO garanti: rapor "stereo" derken çıktı mono çıkmasın (bee hatası #8).
   const master =
     `apad,atrim=0:${total.toFixed(3)},afade=t=out:st=${fadeStart}:d=1.1,` +
-    'alimiter=limit=0.95:attack=5:release=60,aresample=44100,aformat=channel_layouts=stereo';
+    'alimiter=limit=0.95:attack=5:release=60:level=0,aresample=44100,aformat=channel_layouts=stereo';
   if (finalMix.length > 1) {
     fc.push(`${finalMix.join('')}amix=inputs=${finalMix.length}:normalize=0:duration=longest,${master}[a]`);
   } else {
@@ -1179,6 +1181,12 @@ export async function renderVideo(job, opts = {}) {
       transitions: btName.slice(0, Math.max(0, N - 1)).map((type, i) => ({ type: planOk ? plan.boundaries[i]?.transition || 'cut' : type, atSeconds: canonicalItems?.[i]?.end ?? null })),
       captionsIncluded: hasSubs,
       captionEventCount: wordTimings.length,
+      firstCaptionAt: wordTimings.length ? Math.max(0.05, (wordTimings[0].start + wordTimings[0].end) / 2) : null,
+      movingWindows: canonicalItems
+        ? canonicalItems.flatMap((item, i) => media[i]?.type === 'video'
+          ? [{ start: item.start, end: item.end, scene: item.scene }]
+          : [])
+        : [],
       expectedSfxCount: audioInfo?.sfxCues?.length || 0,
       motion: motionPlan,
       motionIssues,

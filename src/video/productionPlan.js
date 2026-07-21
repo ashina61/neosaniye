@@ -24,7 +24,7 @@ export function orderVariantMedia(items = [], variant = 'balanced') {
 
 export function buildVariantEditPlan(items = [], variant = 'balanced') {
   const profile = VARIANT_PROFILES[variant] || VARIANT_PROFILES.balanced;
-  const accents = ['whoosh', 'riser', 'shimmer'];
+  const accents = ['shimmer', 'riser', 'whoosh'];
   let accent = 0;
   const boundaries = items.slice(1).map((item, index) => {
     const boundaryNumber = index + 1;
