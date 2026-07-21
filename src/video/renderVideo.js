@@ -507,7 +507,7 @@ async function buildFullAudio(
   {
     workDir, narrationPath, total, clipDur, bts, N, M, useOutro,
     category = '', sfxTypes = [], clickAt = null, ambiencePath = null,
-    avoidMusic = [], musicSeed = '', hookSfx = null,
+    avoidMusic = [], musicSeed = '', hookSfx = null, sfxGain = 1,
   },
   outPath,
 ) {
@@ -617,13 +617,14 @@ async function buildFullAudio(
   // maskeleniyordu — gerçek koşuda riser/shimmer/CTA pop gömüldü (+-1/-0.1/+0.4 dB),
   // yalnız impact geçti (+3.6). Taban seviye yükseltildi; ayrıca cue anında HEM
   // müzik HEM konuşma sidechain ile kısılıp vuruşa "pocket" açılır (aşağıda).
-  const sfxVol = Math.max(1.4, config.video.transitionSoundVolume);
+  const sfxVol = Math.min(3, Math.max(1.4, config.video.transitionSoundVolume) * Math.max(1, sfxGain));
 
   // Anlatım sesini "yayın" zincirinden geçir: alçak-frekans temizliği +
   // presence EQ + kompresör. Ham TTS'ten çok daha dolgun/pro tınlar.
   const voiceChain =
     'highpass=f=70,equalizer=f=3200:t=q:w=1.2:g=1.5,' +
     'acompressor=threshold=0.12:ratio=2.5:attack=8:release=140:makeup=1.4,' +
+    'loudnorm=I=-16:TP=-2:LRA=9,' +
     'aresample=44100';
 
   let musKey = null;        // müzik akışı (SFX bus ile ayrıca duck edilecek)
@@ -706,12 +707,13 @@ async function buildFullAudio(
     if (musKey) finalMix.push(musKey);
   }
 
-  // Karışım -> kapanışta yumuşak sönüş -> YouTube standardı -14 LUFS loudness.
+  // Narration is normalized before the SFX bus. The completed mix only gets a
+  // safety limiter here, so transient accents are not flattened back out.
   const fadeStart = Math.max(0, total - 1.1).toFixed(3);
   // STEREO garanti: rapor "stereo" derken çıktı mono çıkmasın (bee hatası #8).
   const master =
     `apad,atrim=0:${total.toFixed(3)},afade=t=out:st=${fadeStart}:d=1.1,` +
-    'loudnorm=I=-14:TP=-1.5:LRA=11,aresample=44100,aformat=channel_layouts=stereo';
+    'alimiter=limit=0.95:attack=5:release=60,aresample=44100,aformat=channel_layouts=stereo';
   if (finalMix.length > 1) {
     fc.push(`${finalMix.join('')}amix=inputs=${finalMix.length}:normalize=0:duration=longest,${master}[a]`);
   } else {
@@ -798,15 +800,22 @@ export async function renderVideo(job, opts = {}) {
   // mekanik — animasyonlu sınırlara sırayla döner, sıra videodan videoya kayar.
   const sfxCycleAll = ['whoosh', 'impact', 'riser', 'shimmer'];
   const sfxTypes = [];
+  const usedSfx = new Set(['impact']); // hook impact is mandatory and unique
   {
     const shift = (N + Math.round(narrationDur)) % sfxCycleAll.length;
     let n = 0;
     for (let k = 1; k <= Math.max(0, N - 1); k += 1) {
       if (planOk) {
-        const s = plan.boundaries[k - 1].sfx;
-        sfxTypes.push(s && s !== 'none' ? s : null);
+        const requested = plan.boundaries[k - 1].sfx;
+        let s = requested && requested !== 'none' ? requested : null;
+        if (s && usedSfx.has(s)) s = sfxCycleAll.find((x) => !usedSfx.has(x)) || null;
+        if (s) usedSfx.add(s);
+        sfxTypes.push(s);
       } else if (bts[k - 1] >= 0.2) {
-        sfxTypes.push(sfxCycleAll[(shift + n) % sfxCycleAll.length]);
+        const s = sfxCycleAll.find((x, j) => !usedSfx.has(x) && j >= (shift + n) % sfxCycleAll.length)
+          || sfxCycleAll.find((x) => !usedSfx.has(x)) || null;
+        if (s) usedSfx.add(s);
+        sfxTypes.push(s);
         n += 1;
       } else {
         sfxTypes.push(null);
@@ -1076,10 +1085,29 @@ export async function renderVideo(job, opts = {}) {
   // telefonda sıkıştırma sonrası algılanan netliği belirgin artırır.
   // Katman sırası: [fx altta] -> keskinleştir -> [altyazı] -> [ok/etiket en üstte].
   if (useAss) {
-    vfc.push(`${last}${fxFilter}unsharp=5:5:0.35:3:3:0,${assFilter}${annoFilter}[v]`);
+    vfc.push(`${last}${fxFilter}unsharp=5:5:0.35:3:3:0,${assFilter}${annoFilter}[vpre]`);
   } else {
-    vfc.push(`${last}${fxFilter}unsharp=5:5:0.35:3:3:0${annoFilter}[v]`);
+    vfc.push(`${last}${fxFilter}unsharp=5:5:0.35:3:3:0${annoFilter}[vpre]`);
   }
+
+  // Mandatory viewer-facing CTA in the final 1.3 seconds. The turquoise pill
+  // slides in from the right and the localized label fades up over it.
+  const ctaDuration = Math.min(1.5, Math.max(1, job.ctaDuration || 1.3));
+  const ctaStart = Math.max(0, total - ctaDuration);
+  const ctaLabel = (job.language || config.content?.language || 'en') === 'tr' ? 'ABONE OL' : 'SUBSCRIBE';
+  const ctaW = Math.min(700, Math.round(width * 0.62));
+  const ctaH = Math.max(90, Math.round(height * 0.07));
+  const ctaX = Math.round((width - ctaW) / 2);
+  const ctaY = Math.round(height * 0.69);
+  const enterEnd = +(ctaStart + 0.24).toFixed(3);
+  const pillX = `if(lt(t,${enterEnd}),${width}-(${width - ctaX})*(t-${ctaStart.toFixed(3)})/0.24,${ctaX})`;
+  vfc.push(
+    `[vpre]drawbox=x='${pillX}':y=${ctaY}:w=${ctaW}:h=${ctaH}:color=0x3BD0C8@0.94:t=fill:` +
+      `enable='between(t,${ctaStart.toFixed(3)},${total.toFixed(3)})',` +
+      `drawtext=${drawFontOpt}text='${ctaLabel}':x=(w-text_w)/2:y=${ctaY}+((${ctaH})-text_h)/2:` +
+      `fontsize=${Math.max(34, Math.round(height * 0.035))}:fontcolor=0x0F1113:` +
+      `alpha='if(lt(t,${enterEnd}),max(0,(t-${ctaStart.toFixed(3)})/0.24),1)'[v]`,
+  );
 
   const fullv = path.join(workDir, 'fullv.mp4');
   await run('ffmpeg', [
@@ -1105,12 +1133,13 @@ export async function renderVideo(job, opts = {}) {
       // Sahne ambiyansı (Freesound'dan indirilmiş yerel dosya; yoksa katman yok).
       ambiencePath: job.ambiencePath || null,
       // Abone kartı otururken tık sesi (giriş animasyonunun bitişiyle senkron).
-      clickAt: spOn ? T1 + 0.4 : null,
+      clickAt: ctaStart + 0.08,
       // Son videolarda kullanılan müzikler (tekrar önleme; run.js state'ten geçirir).
       avoidMusic: job.avoidMusic || [],
       // Deterministik müzik seed'i (aynı video → aynı parça; farklı → çeşitli).
       musicSeed: job.musicSeed || '',
-      hookSfx: job.hookText ? 'impact' : null,
+      hookSfx: 'impact',
+      sfxGain: job.sfxGain || 1,
     },
     path.resolve(fulla),
   );
@@ -1142,6 +1171,7 @@ export async function renderVideo(job, opts = {}) {
     // Filtre grafiğine GERÇEKTEN giren SFX cue'ları (adı planda geçmesi değil,
     // fiilen miks edildiği) — render sonrası çıktı doğrulaması bunları ölçer.
     sfxCues: audioInfo?.sfxCues || [],
+    cta: { startSec: +ctaStart.toFixed(3), durationSec: ctaDuration, label: ctaLabel, box: { x: ctaX, y: ctaY, w: ctaW, h: ctaH } },
     timeline: job.timeline || null,
     renderPlan: {
       expectedSceneCount: N,

@@ -38,6 +38,10 @@ test('animated render plan reaches the real montage path without a scope error',
 
     assert.equal(result.outPath, outPath);
     assert.ok(result.duration > 0);
+    assert.equal(result.cta.label, 'SUBSCRIBE');
+    assert.ok(result.cta.startSec >= result.duration - 1.5);
+    assert.ok(result.sfxCues.some((cue) => cue.event === 'hook' && cue.assetResolved));
+    assert.ok(result.sfxCues.some((cue) => cue.sfxId === 'click' && cue.assetResolved));
   } finally {
     Object.assign(config.video, original);
     await rm(dir, { recursive: true, force: true });
