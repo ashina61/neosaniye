@@ -5,6 +5,25 @@
 ile tetiklenir; script yazar, seslendirir, video oluşturur, altyazı ekler ve
 YouTube'a yükler.
 
+## Süre sözleşmesi (önemli)
+
+Fabrika artık "Shorts = 15 saniye" varsayımıyla çalışmaz. Her üretim,
+seslendirilen sahne anlatımı için **105–135 kelime** ve ölçülmüş TTS için
+**35–58 saniye** hedefler. Script katmanı kısa veya uzun taslağı yeniden ister;
+TTS'den sonraki ikinci kapı da medya indirme ve render başlamadan gerçek süreyi
+doğrular. Final acil kalite kapısı aynı aralığın dışındaki MP4'ü yayınlamaz.
+Gerekirse `.env` içinde `CONTENT_MIN_WORDS`, `CONTENT_MAX_WORDS`,
+`CONTENT_MIN_SECONDS` ve `CONTENT_MAX_SECONDS` değerlerini birlikte ayarlayın.
+
+## Ses ve abone CTA standardı
+
+Her uygun videoda, payoff sonrasında tek bir **Subscribe** CTA görünür; bunu
+kapatmak için `MOTION_CTA_MODE=off` kullanın. Ses tasarımı hook vuruşuna ek
+olarak kurulum, reveal ve payoff'a dağılmış **3–5** SFX hedefler; minimum aralık
+4 saniyedir. İnce ayar için `VIDEO_SFX_MIN`, `VIDEO_SFX_MAX` ve
+`VIDEO_SFX_MIN_GAP` kullanılabilir. Bu efektler yalnızca gerçek sahne
+sınırlarına yerleştirilir; aynı anda yığılmaz.
+
 ## 14-Day US Audience Publishing Experiment (AKTİF)
 
 **2026-07-19 → 2026-08-02 (UTC):** yayın saatleri 14 gün boyunca sabit 3 UTC

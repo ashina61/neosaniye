@@ -7,6 +7,7 @@ import { config } from '../config.js';
 import { buildOutro } from './outro.js';
 import { groupCaptionWords, layoutGroup } from './captionLayout.js';
 import { makeMusicBed } from '../audio/makeMusic.js';
+import { normalizeSfxPlan } from '../audio/sfxPlan.js';
 import { selectMusic } from '../audio/musicSelect.js';
 import { selectSceneMotion, validateMotionPlan } from './motionPlan.js';
 
@@ -794,10 +795,10 @@ export async function renderVideo(job, opts = {}) {
     }
   }
 
-  // SFX planı (ana sınırlar, k=1..N-1): kurgucu seçtiyse onun tipi; yoksa
+  // SFX adayları (ana sınırlar, k=1..N-1): kurgucu seçtiyse onun tipi; yoksa
   // mekanik — animasyonlu sınırlara sırayla döner, sıra videodan videoya kayar.
   const sfxCycleAll = ['whoosh', 'impact', 'riser', 'shimmer'];
-  const sfxTypes = [];
+  let sfxTypes = [];
   {
     const shift = (N + Math.round(narrationDur)) % sfxCycleAll.length;
     let n = 0;
@@ -846,6 +847,22 @@ export async function renderVideo(job, opts = {}) {
   const dOutro = outroExtra + (useOutro ? bts[M - 2] : 0);
   const clipDur = [...mainDurs, ...(useOutro ? [dOutro] : [])];
   const total = clipDur.reduce((a, b) => a + b, 0) - bts.reduce((a, b) => a + b, 0);
+  // Director planı tek bir efekt seçse bile 35-58 saniyelik videoda hook,
+  // reveal ve payoff işitilebilir şekilde noktalanmalı. Zamanlar gerçek render
+  // sınırlarından hesaplanır; aynı anda efekt yığılmaz.
+  const boundaryTimes = [];
+  let boundaryCursor = 0;
+  for (let i = 0; i < N - 1; i += 1) {
+    boundaryCursor += clipDur[i] - bts[i];
+    boundaryTimes.push(boundaryCursor);
+  }
+  if (config.video.sfx) {
+    sfxTypes = normalizeSfxPlan(sfxTypes, boundaryTimes, {
+      minCues: config.video.minSfxPerVideo,
+      maxCues: config.video.maxSfxPerVideo,
+      minGapSeconds: config.video.minSfxGapSeconds,
+    });
+  }
   const animatedStyle = job.visualStyle === 'animated';
 
   const motionPlan = [];

@@ -1,7 +1,12 @@
 import { validateAssetRepetition } from './viewerFirstValidation.js';
+import { config } from '../config.js';
 
-const SHORTS_MIN_SECONDS = 15;
-const SHORTS_MAX_SECONDS = 65;
+function durationLimits() {
+  return {
+    min: config.content.minDurationSeconds,
+    max: config.content.maxDurationSeconds,
+  };
+}
 
 function usableCaptionWords(words = []) {
   return words.filter((w) =>
@@ -59,8 +64,9 @@ export function evaluateEmergencyQualityGate({
   if (!renderPlan || renderPlan.captionsIncluded !== true || !(renderPlan.captionEventCount > 0)) add('CAPTIONS_NOT_IN_RENDER_PLAN', 'Altyazılar final render planına dahil edilmedi.');
   if (viewerValidation && viewerValidation.ok !== true) add('VIEWER_FIRST_SCRIPT_INVALID', `Hook/payoff/CTA doğrulaması başarısız: ${(viewerValidation.failures || []).join(', ')}`);
   const seconds = Number(duration || technical.durationSeconds || 0);
-  if (seconds < SHORTS_MIN_SECONDS || seconds > SHORTS_MAX_SECONDS) {
-    add('SHORTS_DURATION_OUT_OF_RANGE', `Final süre ${seconds}s; kabul edilen aralık ${SHORTS_MIN_SECONDS}-${SHORTS_MAX_SECONDS}s.`);
+  const limits = durationLimits();
+  if (seconds < limits.min || seconds > limits.max) {
+    add('SHORTS_DURATION_OUT_OF_RANGE', `Final süre ${seconds}s; kabul edilen aralık ${limits.min}-${limits.max}s.`);
   }
 
   for (let i = 0; i < mediaItems.length; i += 1) {
