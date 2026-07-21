@@ -115,7 +115,7 @@ export async function fetchArchiveImage(query, dest) {
         const buf = Buffer.from(await res.arrayBuffer());
         if (buf.length < 20000) continue; // bozuk/ikon boyutlu dosya
         await writeFile(dest, buf);
-        return { path: dest, type: 'photo', ...hit };
+        return { path: dest, type: 'photo', query: q, retrievedAt: new Date().toISOString(), assetId: hit.sourceUrl, ...hit };
       } finally {
         clearTimeout(timer);
       }

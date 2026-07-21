@@ -193,6 +193,7 @@ export function evaluateRetention(input, cfg = config.retention) {
     if (capLayout.maxWordsOnScreen <= cfg.maxCaptionWords) captions += 3;
     else warnings.push(`ekranda aynı anda ${capLayout.maxWordsOnScreen} kelime (hedef ≤${cfg.maxCaptionWords})`);
     if (capLayout.belowFloorCount === 0) captions += 3;
+    if (capLayout.timingIssues?.length) failures.push(...capLayout.timingIssues);
     else warnings.push(`${capLayout.belowFloorCount} altyazı olayı font tabanına rağmen sığmıyor (çok uzun kelime)`);
     // Güvenli alan içinde OLSA BİLE mobil görünür boyut düşükse yakala.
     capRead = assessCaptionReadability({
@@ -502,6 +503,7 @@ export async function runRetentionQC(input, workDir, extras = {}) {
     execError,
     editorialReady,
     productionReady,
+    uploadEligible: uploadEligibility.eligible === true,
     blockingReasons: externalBlockingReasons,
     mode: cfg.mode,
     platforms: extras.platforms,
@@ -540,6 +542,9 @@ export async function runRetentionQC(input, workDir, extras = {}) {
     minScore: cfg.minScore,
     qcExecution: { status: qcExecStatus, error: execError },
     technicalValidation: extras.technical || null,
+    canonicalTimeline: input.timeline || null,
+    renderPlan: input.renderPlan || null,
+    assetManifest: extras.assetManifest || null,
     motion: extras.motion || null,
     blockingReasons: [
       ...(!technicalReady ? ['TECHNICAL_NOT_READY'] : []),
@@ -549,6 +554,19 @@ export async function runRetentionQC(input, workDir, extras = {}) {
     ],
     uploadEligibility,
     scores: r ? r.parts : null,
+    viewerFacingScoreBreakdown: {
+      basis: 'deterministic metadata/render checks; null means not verified',
+      hook: r?.parts?.hook ?? null,
+      story: r ? { curiosity: r.parts.curiosity, payoffAndLoop: r.parts.payoffAndLoop } : null,
+      visualDiversity: r?.parts?.visualVariety ?? null,
+      timing: input.pacingIssues?.length ? 0 : 10,
+      captions: r?.parts?.captions ?? null,
+      narration: extras.ttsPhrasingIssues?.length ? 0 : null,
+      sound: r?.parts?.audioDesign ?? null,
+      technical: technicalReady ? 10 : 0,
+      rights: externalBlockingReasons.some((x) => /license|rights|provenance|lisans/i.test(x)) ? 0 : 10,
+      repetition: input.pacingIssues?.some((x) => /REPEAT/i.test(x)) ? 0 : null,
+    },
     metrics: r ? r.metrics : null,
     editorCritique: critique,
     attentionForecast: attention,

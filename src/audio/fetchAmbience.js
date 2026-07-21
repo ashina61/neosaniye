@@ -74,6 +74,8 @@ export async function fetchAmbienceTrack(query, dest, { timeoutMs = 45000 } = {}
       sourceUrl: `https://freesound.org/s/${sound.id}/`,
       license: sound.license || null,
       licenseEvidence: sound.license ? `Freesound API asset ${sound.id}: ${sound.license}` : null,
+      query: q,
+      retrievedAt: new Date().toISOString(),
     };
   } catch (err) {
     console.warn(`[amb] ambiyans alınamadı ("${q}"): ${String(err.message).slice(0, 100)}`);

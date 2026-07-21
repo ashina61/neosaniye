@@ -3,6 +3,11 @@ import { config } from '../config.js';
 import { synthesizeEdge } from './edgeTts.js';
 import { synthesizePiper } from './piper.js';
 import { alignWords } from './align.js';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import { prepareNarrationForTts, validateNarrationPhrasing } from './phrasing.js';
+
+const run = promisify(execFile);
 
 export { parseSrt } from './edgeTts.js';
 
@@ -34,6 +39,11 @@ export function scriptToNarration(script) {
   return scriptSegments(script).join(' ').replace(/\s+/g, ' ').trim();
 }
 
+async function probeDuration(file) {
+  const { stdout } = await run('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'default=nw=1:nk=1', file]);
+  return Number.parseFloat(stdout) || 0;
+}
+
 /**
  * @param {object} script - generateScript çıktısı (en az {hook,body,cta}).
  * @param {object} [opts]
@@ -50,7 +60,10 @@ export async function generateAudio(script, opts = {}) {
   } = opts;
 
   await mkdir(outDir, { recursive: true });
-  const text = scriptToNarration(script);
+  const language = script.language || config.content?.language || 'en';
+  const rawText = scriptToNarration(script);
+  const segmentTexts = scriptSegments(script).map((segment) => prepareNarrationForTts(segment, { language }));
+  const text = segmentTexts.join(' ').replace(/\s+/g, ' ').trim();
   const base = { outDir, basename };
 
   let result;
@@ -91,9 +104,22 @@ export async function generateAudio(script, opts = {}) {
     });
   }
 
-  const durationEstimate = result.wordTimings.length
+  const measuredDuration = await probeDuration(result.audioPath).catch(() => 0);
+  const durationEstimate = measuredDuration || (result.wordTimings.length
     ? result.wordTimings[result.wordTimings.length - 1].end
-    : 0;
+    : 0);
+  const timingSource = result.engine === 'edge-tts'
+    ? 'edge-srt-segment-interpolated'
+    : result.wordTimings.length ? 'whisper-word-alignment' : 'estimated-word-count-fallback';
 
-  return { ...result, text, durationEstimate };
+  return {
+    ...result,
+    text,
+    rawText,
+    segmentTexts,
+    duration: durationEstimate,
+    durationEstimate,
+    timingSource,
+    phrasingIssues: validateNarrationPhrasing(text),
+  };
 }

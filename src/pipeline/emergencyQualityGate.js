@@ -1,3 +1,5 @@
+import { validateAssetRepetition } from './viewerFirstValidation.js';
+
 const SHORTS_MIN_SECONDS = 15;
 const SHORTS_MAX_SECONDS = 65;
 
@@ -10,8 +12,11 @@ function usableCaptionWords(words = []) {
 function hasRightsEvidence(asset) {
   return Boolean(
     asset &&
+    String(asset.source || asset.provider || '').trim() &&
+    String(asset.assetId || asset.file || asset.sourceUrl || '').trim() &&
     String(asset.license || '').trim() &&
-    String(asset.licenseEvidence || asset.sourceUrl || '').trim(),
+    String(asset.licenseEvidence || asset.sourceUrl || '').trim() &&
+    String(asset.retrievedAt || asset.selectedAt || asset.generatedAt || '').trim(),
   );
 }
 
@@ -22,6 +27,7 @@ function hasRightsEvidence(asset) {
 export function evaluateEmergencyQualityGate({
   script = {}, wordTimings = [], mediaItems = [], music = null, ambience = null,
   technical = {}, duration = 0, p0Contradictions = [], musicRequired = false,
+  timeline = null, renderPlan = null, viewerValidation = null,
 } = {}) {
   const failures = [];
   const reasons = [];
@@ -49,6 +55,9 @@ export function evaluateEmergencyQualityGate({
 
   if (technical.videoStreamPresent !== true) add('VIDEO_STREAM_MISSING', 'Final çıktıda video akışı doğrulanmadı.');
   if (technical.audioStreamPresent !== true) add('AUDIO_STREAM_MISSING', 'Final çıktıda ses akışı doğrulanmadı.');
+  if (!timeline || (timeline.issues || []).length || !timeline.items?.length) add('CANONICAL_TIMELINE_INVALID', 'Canonical narration timeline eksik veya geçersiz.');
+  if (!renderPlan || renderPlan.captionsIncluded !== true || !(renderPlan.captionEventCount > 0)) add('CAPTIONS_NOT_IN_RENDER_PLAN', 'Altyazılar final render planına dahil edilmedi.');
+  if (viewerValidation && viewerValidation.ok !== true) add('VIEWER_FIRST_SCRIPT_INVALID', `Hook/payoff/CTA doğrulaması başarısız: ${(viewerValidation.failures || []).join(', ')}`);
   const seconds = Number(duration || technical.durationSeconds || 0);
   if (seconds < SHORTS_MIN_SECONDS || seconds > SHORTS_MAX_SECONDS) {
     add('SHORTS_DURATION_OUT_OF_RANGE', `Final süre ${seconds}s; kabul edilen aralık ${SHORTS_MIN_SECONDS}-${SHORTS_MAX_SECONDS}s.`);
@@ -63,6 +72,7 @@ export function evaluateEmergencyQualityGate({
       );
     }
   }
+  for (const issue of validateAssetRepetition(mediaItems)) add(issue, `Görsel tekrar kontrolü başarısız: ${issue}`);
   if (musicRequired && !hasRightsEvidence(music)) {
     add('MUSIC_RIGHTS_EVIDENCE_MISSING', 'Seçilen/prosedürel müzik için lisans kanıtı eksik.');
   }

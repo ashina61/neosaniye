@@ -21,7 +21,7 @@ import { crossPost } from '../social/meta.js';
 import { preflightCheck } from './preflight.js';
 import { recordPublicationBlock, runRetentionQC, uploadGate } from './retentionQC.js';
 import { appendQcHistory, buildQcHistoryEntry } from './qcHistory.js';
-import { getRecentMusic } from '../lib/firestore.js';
+import { getRecentMusic, getRecentAssetIds } from '../lib/firestore.js';
 import { describeMusicTrack } from '../audio/musicSelect.js';
 import { detectSlot } from './scheduleExperiment.js';
 import { emptySlotMetrics } from '../analytics/experimentMetrics.js';
@@ -38,6 +38,8 @@ import {
   updatePublishingPlatform,
 } from './publishingLedger.js';
 import { evaluateEmergencyQualityGate } from './emergencyQualityGate.js';
+import { buildCanonicalTimeline, expandTimelineForMedia } from './canonicalTimeline.js';
+import { validatePacing, validateViewerFirstScript } from './viewerFirstValidation.js';
 
 /** Bir metindeki kelime sayısı (sahne ağırlığı için). */
 function wordCount(text) {
@@ -122,6 +124,14 @@ export async function runPipeline(opts = {}) {
     log('Faz 2: Seslendirme (TTS)...');
     const audio = await generateAudio(script, { outDir: workDir, basename: base });
     console.log(`  motor: ${audio.engine}, süre~ ${audio.durationEstimate.toFixed(1)}s`);
+    const canonicalTimeline = buildCanonicalTimeline({
+      scenes: script.scenes || [],
+      segmentTexts: audio.segmentTexts,
+      wordTimings: audio.wordTimings,
+      duration: audio.duration,
+      timingSource: audio.timingSource,
+    });
+    console.log(`  timeline: ${canonicalTimeline.source}${canonicalTimeline.fallbackUsed ? ' (fallback)' : ''}`);
 
     // 2.5) Ambiyans yatağı (Freesound, CC0; best-effort). Kurgucu'nun seçtiği
     // ortam sesi sorgusu; Kurgucu düştüyse kategori varsayılanı.
@@ -151,15 +161,14 @@ export async function runPipeline(opts = {}) {
     // (cta artık seslendirilmiyor — yalnızca sahne anlatımları zamanlamayı belirler.)
     const scenes = script.scenes || [];
     const sceneWeights = scenes.map((s) => Math.max(1, wordCount(s.narration)));
-    const totalWeight = sceneWeights.reduce((a, b) => a + b, 0) || 1;
-    // Tahmini sahne süreleri (sn) — uzun statik sahnelerin ikiye bölünmesi için.
-    const sceneSeconds = sceneWeights.map((w) => (w / totalWeight) * (audio.durationEstimate || 40));
+    const sceneSeconds = canonicalTimeline.scenes.map((s) => s.duration);
 
     // 3) Görsel (sahne başına AI görsel + Pexels/placeholder yedeği).
     // TEMPO: 4.3sn'yi aşan statik AI sahneleri İKİ farklı kadraja bölünür
     // (canlı QC: 7 plan/5.5sn ortalama statikti — göz sıkılıyor).
     log('Faz 3: Sahne görselleri üretiliyor (AI)...');
-    const media = await generateImages(script, { outDir: root, basename: base, style: visualStyle, sceneSeconds });
+    const recentAssetIds = await getRecentAssetIds(5).catch(() => []);
+    const media = await generateImages(script, { outDir: root, basename: base, style: visualStyle, sceneSeconds, avoidAssetIds: recentAssetIds });
     console.log(
       `  ${media.items.length} plan / ${scenes.length} sahne — AI:${media.sources.ai} ` +
         `arşiv:${media.sources.archive || 0} ` +
@@ -167,6 +176,7 @@ export async function runPipeline(opts = {}) {
         `gfx:${media.sources.gfx || 0} yedek:${media.sources.placeholder}`,
     );
     if (!media.items.length) throw new Error('Hiç sahne görseli üretilemedi.');
+    const renderTimeline = expandTimelineForMedia(canonicalTimeline, media.items);
 
     // Plan (item) ağırlıkları: bölünen sahnenin ağırlığı parçalara eşit dağılır.
     const partsPerScene = {};
@@ -209,6 +219,9 @@ export async function runPipeline(opts = {}) {
       audioPath: audio.audioPath,
       wordTimings: audio.wordTimings,
       media: media.items.map((m) => ({ path: m.path, type: m.type, gfx: m.source === 'gfx' })),
+      mediaScene: media.items.map((m) => m.scene),
+      scenes,
+      timeline: renderTimeline,
       sceneWeights: itemWeights,
       hookText: script.hook_text,
       category: script.category,
@@ -237,6 +250,10 @@ export async function runPipeline(opts = {}) {
             licenseEvidence: 'src/audio/makeMusic.js',
           }
         : null;
+    if (musicMeta) {
+      musicMeta.assetId ||= musicMeta.file || 'procedural';
+      musicMeta.selectedAt = new Date().toISOString();
+    }
 
     // 4.2) NEO MOTION ENGINE — özgün CTA animasyonu (editoryal seçim + safe-area).
     // Preflight/QC ÖNCESİ uygulanır ki final MP4 CTA'lı olsun. CTA hatası ana
@@ -275,7 +292,7 @@ export async function runPipeline(opts = {}) {
     // ffmpeg taraması (decode, siyah/donma/sessizlik, loudness). Bozuk video
     // hiçbir platforma gitmez.
     log('Faz 4.5: Kalite kontrolü (preflight)...');
-    const pf = await preflightCheck(outPath, { expectedDuration: video.duration });
+    const pf = await preflightCheck(outPath, { expectedDuration: video.duration, renderPlan: video.renderPlan });
     console.log(`  metrikler: ${JSON.stringify(pf.metrics)}`);
     for (const w of pf.warnings || []) console.warn(`  ⚠️ ${w}`);
     if (!pf.ok) {
@@ -348,9 +365,33 @@ export async function runPipeline(opts = {}) {
       ambience,
       technical: pf.technical || {},
       duration: pf.technical?.durationSeconds || video.duration,
+      timeline: renderTimeline,
+      renderPlan: video.renderPlan,
+      viewerValidation: validateViewerFirstScript(script),
       musicRequired: Boolean(config.video.music),
     });
     outputVerification.emergencyQuality = emergencyQuality;
+    const assetManifest = {
+      version: 1,
+      createdAt: new Date().toISOString(),
+      videoId: script.normalizedTopic || base,
+      visuals: media.items.map((m, index) => ({
+        index, scene: m.scene, type: m.type, source: m.source || null,
+        provider: m.provider || null, assetId: m.assetId || m.pexelsId || null,
+        sourceUrl: m.sourceUrl || null, query: m.query || m.keyword || null,
+        creator: m.author || null, license: m.license || null,
+        licenseEvidence: m.licenseEvidence || null,
+        rightsClass: m.rightsClass || null,
+        retrievedAt: m.retrievedAt || m.generatedAt || null,
+      })),
+      music: musicMeta,
+      ambience,
+      generatedSfx: (video.sfxCues || []).map((cue) => ({
+        id: cue.sfxId, atSeconds: cue.atSeconds, source: 'src/video/renderVideo.js',
+        license: 'proprietary-original', licenseEvidence: 'src/video/renderVideo.js',
+      })),
+    };
+    await writeFile(path.join(workDir, 'asset-manifest.json'), JSON.stringify(assetManifest, null, 2));
     if (emergencyQuality.block) {
       console.error(`  ⛔ ACİL KALİTE KAPISI: ${emergencyQuality.failures.join(', ')}`);
       for (const reason of emergencyQuality.reasons) console.error(`     • ${reason}`);
@@ -359,8 +400,12 @@ export async function runPipeline(opts = {}) {
     // 4.6) RETENTION QC — deterministik editoryal kapı (rapor + mod kararı).
     // warning modda (varsayılan) yalnızca raporlar; strict modda düşük skor
     // upload'u engeller (video artifact olarak kalır, akış kırılmaz).
-    const wSum = itemWeights.reduce((a, b) => a + b, 0) || 1;
-    const itemSeconds = itemWeights.map((w) => (w / wSum) * video.duration);
+    const itemSeconds = renderTimeline.items.map((item) => item.duration);
+    const pacingIssues = validatePacing({
+      timeline: renderTimeline,
+      mediaItems: media.items,
+      transitions: editPlan?.boundaries?.map((b) => b.transition) || [],
+    });
 
     // EDİTORYAL SFX EŞLEME: her (gerçekten miks edilmiş) SFX cue'sunu düştüğü
     // sahnenin anlatımıyla eşle — editoryal doğrulama (semantik uyum: riser=build,
@@ -401,6 +446,9 @@ export async function runPipeline(opts = {}) {
       itemSources: media.items.map((m) => m.source),
       itemRelevance,
       editPlan,
+      timeline: renderTimeline,
+      renderPlan: video.renderPlan,
+      pacingIssues,
       duration: video.duration,
       lufs: pf.metrics.lufs ?? null,
       audioPresent: !pf.issues.some((i) => i.includes('ses akışı')),
@@ -409,6 +457,8 @@ export async function runPipeline(opts = {}) {
       technicalPassed: pf.ok,
       blockingReasons: [...(hard.reasons || []), ...(emergencyQuality.reasons || [])],
       motion: motionReport,
+      assetManifest,
+      ttsPhrasingIssues: audio.phrasingIssues || [],
       uploadRequested: willUpload,
       platforms: {
         youtube: Boolean(hasYouTube),
@@ -586,6 +636,13 @@ export async function runPipeline(opts = {}) {
       // Kanal sayısı/layout ÖLÇÜLEN değer (hedef değil); SFX cue duyulabilirlik
       // farkları; CTA dil/yerleşim; sert kapı sonucu.
       outputVerification,
+      canonicalTimeline: renderTimeline,
+      renderPlan: video.renderPlan,
+      viewerFirst: {
+        script: validateViewerFirstScript(script),
+        pacingIssues,
+        ttsPhrasingIssues: audio.phrasingIssues || [],
+      },
       // ÖLÇÜLEN ses kanal gerçeği (rapor iddiası değil, ffprobe).
       audioTruth: {
         channels: pf.technical?.audioChannels ?? null,
@@ -634,6 +691,8 @@ export async function runPipeline(opts = {}) {
       audioPath: audio.audioPath,
       videoPath: outPath,
       media: media.items,
+      canonicalTimeline: renderTimeline,
+      renderPlan: video.renderPlan,
       engine: audio.engine,
       duration: video.duration,
       visualStyle, // Baş Analist stile göre öğrensin
