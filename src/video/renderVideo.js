@@ -846,6 +846,7 @@ export async function renderVideo(job, opts = {}) {
   const dOutro = outroExtra + (useOutro ? bts[M - 2] : 0);
   const clipDur = [...mainDurs, ...(useOutro ? [dOutro] : [])];
   const total = clipDur.reduce((a, b) => a + b, 0) - bts.reduce((a, b) => a + b, 0);
+  const animatedStyle = job.visualStyle === 'animated';
 
   const motionPlan = [];
   const priorMotions = [];
