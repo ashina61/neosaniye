@@ -1,4 +1,5 @@
-import { mkdir } from 'node:fs/promises';
+import { mkdir, rename } from 'node:fs/promises';
+import path from 'node:path';
 import { config } from '../config.js';
 import { synthesizeEdge } from './edgeTts.js';
 import { synthesizePiper } from './piper.js';
@@ -42,6 +43,27 @@ export function scriptToNarration(script) {
 async function probeDuration(file) {
   const { stdout } = await run('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'default=nw=1:nk=1', file]);
   return Number.parseFloat(stdout) || 0;
+}
+
+export async function trimNarrationSilence(audioPath, wordTimings = []) {
+  const duration = await probeDuration(audioPath);
+  const { stderr = '' } = await run('ffmpeg', ['-hide_banner', '-i', audioPath, '-af', 'silencedetect=noise=-42dB:d=0.12', '-f', 'null', '-'])
+    .catch((error) => ({ stderr: error.stderr || '' }));
+  const starts = [...stderr.matchAll(/silence_start:\s*([\d.]+)/g)].map((m) => Number(m[1]));
+  const ends = [...stderr.matchAll(/silence_end:\s*([\d.]+)/g)].map((m) => Number(m[1]));
+  const trimStart = starts[0] <= 0.02 && ends.length ? ends[0] : 0;
+  const lastStart = starts.at(-1);
+  const trimEnd = Number.isFinite(lastStart) && lastStart > duration - 2 ? lastStart : duration;
+  if (trimStart < 0.03 && duration - trimEnd < 0.03) return { audioPath, wordTimings, duration };
+  const ext = path.extname(audioPath) || '.wav';
+  const trimmed = audioPath.slice(0, -ext.length) + '.trimmed' + ext;
+  await run('ffmpeg', ['-y', '-v', 'error', '-i', audioPath, '-af', `atrim=start=${trimStart.toFixed(4)}:end=${trimEnd.toFixed(4)},asetpts=PTS-STARTPTS`, trimmed]);
+  await rename(trimmed, audioPath);
+  return {
+    audioPath,
+    duration: Math.max(0, trimEnd - trimStart),
+    wordTimings: wordTimings.map((w) => ({ ...w, start: Math.max(0, w.start - trimStart), end: Math.max(0.02, w.end - trimStart) })),
+  };
 }
 
 /**
@@ -104,7 +126,11 @@ export async function generateAudio(script, opts = {}) {
     });
   }
 
-  const measuredDuration = await probeDuration(result.audioPath).catch(() => 0);
+  const trimmed = await trimNarrationSilence(result.audioPath, result.wordTimings);
+  result.audioPath = trimmed.audioPath;
+  result.wordTimings = trimmed.wordTimings;
+
+  const measuredDuration = trimmed.duration || await probeDuration(result.audioPath).catch(() => 0);
   const durationEstimate = measuredDuration || (result.wordTimings.length
     ? result.wordTimings[result.wordTimings.length - 1].end
     : 0);
