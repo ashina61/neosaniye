@@ -1371,7 +1371,7 @@
       "comments": 5,
       "avgViewPct": 55.5,
       "subsGained": 0,
-      "statsAt": "2026-07-20T21:19:37.157Z"
+      "statsAt": "2026-07-21T05:28:40.427Z"
     }
   },
   {
@@ -1705,7 +1705,7 @@
       "comments": 5,
       "avgViewPct": 72.7,
       "subsGained": 1,
-      "statsAt": "2026-07-20T21:19:37.154Z"
+      "statsAt": "2026-07-21T05:28:40.425Z"
     }
   },
   {
@@ -1820,7 +1820,7 @@
       "comments": 1,
       "avgViewPct": 167,
       "subsGained": 6,
-      "statsAt": "2026-07-20T21:19:37.151Z"
+      "statsAt": "2026-07-21T05:28:40.422Z"
     }
   },
   {
@@ -1947,7 +1947,7 @@
       "comments": 1,
       "avgViewPct": 59,
       "subsGained": 2,
-      "statsAt": "2026-07-20T21:19:37.148Z"
+      "statsAt": "2026-07-21T05:28:40.420Z"
     }
   },
   {
@@ -2074,7 +2074,7 @@
       "comments": 3,
       "avgViewPct": 60,
       "subsGained": 5,
-      "statsAt": "2026-07-20T21:19:37.144Z"
+      "statsAt": "2026-07-21T05:28:40.417Z"
     }
   },
   {
@@ -2201,7 +2201,7 @@
       "comments": 1,
       "avgViewPct": 44.9,
       "subsGained": 0,
-      "statsAt": "2026-07-20T21:19:37.141Z"
+      "statsAt": "2026-07-21T05:28:40.414Z"
     }
   },
   {
@@ -2316,7 +2316,7 @@
       "comments": 2,
       "avgViewPct": 142.1,
       "subsGained": 1,
-      "statsAt": "2026-07-20T21:19:37.138Z"
+      "statsAt": "2026-07-21T05:28:40.412Z"
     }
   },
   {
@@ -2431,7 +2431,7 @@
       "comments": 1,
       "avgViewPct": 59,
       "subsGained": 1,
-      "statsAt": "2026-07-20T21:19:37.135Z"
+      "statsAt": "2026-07-21T05:28:40.409Z"
     }
   },
   {
@@ -2545,7 +2545,7 @@
       "comments": 1,
       "avgViewPct": 84.6,
       "subsGained": 2,
-      "statsAt": "2026-07-20T21:19:37.132Z"
+      "statsAt": "2026-07-21T05:28:40.407Z"
     }
   },
   {
@@ -2672,7 +2672,7 @@
       "comments": 1,
       "avgViewPct": 64.2,
       "subsGained": 1,
-      "statsAt": "2026-07-20T21:19:37.129Z"
+      "statsAt": "2026-07-21T05:28:40.404Z"
     }
   },
   {
@@ -2787,7 +2787,7 @@
       "comments": 1,
       "avgViewPct": 122.4,
       "subsGained": 2,
-      "statsAt": "2026-07-20T21:19:37.126Z"
+      "statsAt": "2026-07-21T05:28:40.401Z"
     }
   },
   {
@@ -2914,7 +2914,7 @@
       "comments": 4,
       "avgViewPct": 42.1,
       "subsGained": 1,
-      "statsAt": "2026-07-20T21:19:37.123Z"
+      "statsAt": "2026-07-21T05:28:40.399Z"
     }
   },
   {
@@ -3026,7 +3026,7 @@
       "comments": 1,
       "avgViewPct": 76.5,
       "subsGained": 5,
-      "statsAt": "2026-07-20T21:19:37.120Z"
+      "statsAt": "2026-07-21T05:28:40.396Z"
     }
   },
   {
@@ -3253,7 +3253,7 @@
       "comments": 1,
       "avgViewPct": 67.1,
       "subsGained": 1,
-      "statsAt": "2026-07-20T21:19:37.117Z"
+      "statsAt": "2026-07-21T05:28:40.394Z"
     }
   },
   {
@@ -3379,7 +3379,7 @@
       "comments": 1,
       "avgViewPct": 57.1,
       "subsGained": 1,
-      "statsAt": "2026-07-20T21:19:37.114Z"
+      "statsAt": "2026-07-21T05:28:40.391Z"
     }
   },
   {
@@ -3502,7 +3502,7 @@
       "comments": 3,
       "avgViewPct": 58.6,
       "subsGained": 2,
-      "statsAt": "2026-07-20T21:19:37.111Z"
+      "statsAt": "2026-07-21T05:28:40.389Z"
     }
   },
   {
@@ -3637,7 +3637,7 @@
       "comments": 1,
       "avgViewPct": 78.6,
       "subsGained": 1,
-      "statsAt": "2026-07-20T21:19:37.108Z"
+      "statsAt": "2026-07-21T05:28:40.386Z"
     }
   },
   {
@@ -3772,7 +3772,7 @@
       "comments": 3,
       "avgViewPct": 62.6,
       "subsGained": 0,
-      "statsAt": "2026-07-20T21:19:37.103Z"
+      "statsAt": "2026-07-21T05:28:40.378Z"
     }
   },
   {
@@ -3903,7 +3903,7 @@
       "comments": 1,
       "avgViewPct": 56,
       "subsGained": 3,
-      "statsAt": "2026-07-20T21:19:37.099Z"
+      "statsAt": "2026-07-21T05:28:40.368Z"
     }
   },
   {
@@ -4023,12 +4023,12 @@
     },
     "createdAt": "2026-07-18T19:43:52.137Z",
     "stats": {
-      "views": 718,
+      "views": 720,
       "likes": 19,
       "comments": 1,
       "avgViewPct": 58.4,
       "subsGained": 2,
-      "statsAt": "2026-07-20T21:19:37.096Z"
+      "statsAt": "2026-07-21T05:28:40.365Z"
     }
   },
   {
@@ -4172,12 +4172,12 @@
     },
     "createdAt": "2026-07-18T21:13:03.406Z",
     "stats": {
-      "views": 663,
+      "views": 676,
       "likes": 79,
       "comments": 3,
       "avgViewPct": 74.1,
       "subsGained": 4,
-      "statsAt": "2026-07-20T21:19:37.093Z"
+      "statsAt": "2026-07-21T05:28:40.363Z"
     }
   },
   {
@@ -4321,12 +4321,12 @@
     },
     "createdAt": "2026-07-19T05:46:10.622Z",
     "stats": {
-      "views": 4,
+      "views": 5,
       "likes": 0,
       "comments": 1,
       "avgViewPct": 0,
       "subsGained": 0,
-      "statsAt": "2026-07-20T21:19:37.090Z"
+      "statsAt": "2026-07-21T05:28:40.360Z"
     }
   },
   {
@@ -4475,10 +4475,10 @@
     },
     "createdAt": "2026-07-19T16:02:40.024Z",
     "stats": {
-      "views": 143,
+      "views": 153,
       "likes": 10,
       "comments": 1,
-      "statsAt": "2026-07-20T21:19:37.086Z"
+      "statsAt": "2026-07-21T05:28:40.357Z"
     }
   },
   {
@@ -4622,10 +4622,10 @@
     },
     "createdAt": "2026-07-19T21:13:50.386Z",
     "stats": {
-      "views": 184,
-      "likes": 22,
+      "views": 191,
+      "likes": 23,
       "comments": 1,
-      "statsAt": "2026-07-20T21:19:37.083Z"
+      "statsAt": "2026-07-21T05:28:40.354Z"
     }
   },
   {
@@ -4786,10 +4786,10 @@
     },
     "createdAt": "2026-07-20T05:58:12.251Z",
     "stats": {
-      "views": 94,
-      "likes": 9,
+      "views": 98,
+      "likes": 10,
       "comments": 1,
-      "statsAt": "2026-07-20T21:19:37.079Z"
+      "statsAt": "2026-07-21T05:28:40.351Z"
     }
   },
   {
@@ -5182,5 +5182,164 @@
     "youtube": null,
     "error": "Preflight başarısız: süre çok kısa (13.8s < 15s)",
     "createdAt": "2026-07-20T21:25:08.699Z"
+  },
+  {
+    "id": "medieval-trebuchet-mechanics-1784612251176",
+    "topic": "Medieval Trebuchet Mechanics",
+    "normalizedTopic": "medieval-trebuchet-mechanics",
+    "format": "facts3",
+    "retention": {
+      "score": 85,
+      "status": "pass"
+    },
+    "music": {
+      "file": "The Anunnaki Return.mp3",
+      "assetId": null,
+      "source": "assets/music havuzu",
+      "license": null
+    },
+    "motion": {
+      "enabled": true,
+      "ctaRequested": true,
+      "ctaApplied": false,
+      "ctaId": null,
+      "ctaType": null,
+      "startSec": null,
+      "durationSec": null,
+      "position": null,
+      "selectionReason": "probability-skip",
+      "safeAreaPassed": false,
+      "sfxId": null,
+      "resolvedLanguage": "en",
+      "label": null,
+      "languageMatch": null,
+      "warnings": [],
+      "failures": []
+    },
+    "audioSfx": [
+      "riser",
+      "whoosh",
+      "impact"
+    ],
+    "scheduleExperiment": {
+      "id": "us-audience-3-slots-v1",
+      "timezone": "UTC",
+      "scheduledSlot": "02:00",
+      "contentDate": "2026-07-20",
+      "experimentStartDate": "2026-07-19",
+      "experimentDurationDays": 14,
+      "strategy": "fixed-three-daily-slots",
+      "primaryAudience": "US",
+      "status": "active",
+      "scheduledPublishAt": "2026-07-21T02:00:00.000Z",
+      "actualPublishAt": null
+    },
+    "visualStyle": "photo",
+    "script": {
+      "title": "How Medieval Trebuchets Launched 300-Pound Stones Over 1,000 Feet",
+      "category": "history",
+      "hook_text": "Siege machine's shocking power",
+      "finale_text": "mastering the physics of destruction",
+      "scenes": [
+        {
+          "narration": "How did medieval engineers create a siege weapon that could hurl massive stones with such devastating force?",
+          "image_prompt": "A large, imposing medieval trebuchet, constructed from rough-hewn timber, positioned on a grassy hill overlooking a formidable stone castle. Bright, clear sunny 13th-century lighting with a slight haze of dust. Wide shot."
+        },
+        {
+          "narration": "The trebuchet's secret wasn't gunpowder, but pure counterweight power, harnessing gravity itself.",
+          "image_prompt": "A close-up focusing on the massive wooden counterweight box of a medieval trebuchet, filled with heavy rocks, positioned high on one side of the machine's pivot point. Sunlight glints off the timber, bright 13th-century lighting. Close-up."
+        },
+        {
+          "narration": "Teams of men would painstakingly pull the launch arm down, raising the immense counterweight high into the air.",
+          "image_prompt": "An over-the-shoulder shot from behind medieval soldiers, showing their hands straining with ropes to pull down the long wooden launch arm of a trebuchet. The counterweight is visible in the background, slowly rising against a bright 13th-century sky. Over-the-shoulder shot."
+        },
+        {
+          "narration": "Once released, this enormous weight plummeted, converting gravitational potential energy into kinetic energy.",
+          "image_prompt": "A dramatic low-angle shot from below the trebuchet's counterweight, looking up as the heavy wooden box rapidly drops. Dust is kicking up from the ground impact point. Bright 13th-century lighting. Low angle."
+        },
+        {
+          "narration": "This rapid descent snapped the long arm upwards, accelerating a 300-pound projectile to incredible speeds.",
+          "image_prompt": "A diagram of a trebuchet showing the counterweight dropping, the arm swinging up, and the projectile trajectory. Clearly lit, 13th-century feel."
+        },
+        {
+          "narration": "A precisely timed sling mechanism then released the stone, sending it flying over a thousand feet.",
+          "image_prompt": "An extreme close-up on the end of a trebuchet's leather sling, showing a large stone precisely separating from the pouch at the moment of release. The wooden arm is blurred in the background. Bright 13th-century lighting. Extreme close-up."
+        },
+        {
+          "narration": "Trebuchets became the ultimate castle-destroying machines, a testament to medieval ingenuity.",
+          "image_prompt": "A high-angle wide shot from behind a large medieval trebuchet, overlooking a besieged stone castle with visible battle damage. A large stone projectile is captured mid-air, nearing the castle walls. Bright 13th-century lighting with dust haze. High angle."
+        }
+      ],
+      "cta": "See more feats of medieval engineering!"
+    },
+    "audioPath": "output/medieval-trebuchet-mechanics/medieval-trebuchet-mechanics.mp3",
+    "videoPath": "output/medieval-trebuchet-mechanics/medieval-trebuchet-mechanics.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/medieval-trebuchet-mechanics/media/01-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/medieval-trebuchet-mechanics/media/01b-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/medieval-trebuchet-mechanics/media/02-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/medieval-trebuchet-mechanics/media/02b-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/medieval-trebuchet-mechanics/media/03-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/medieval-trebuchet-mechanics/media/03b-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 3,
+        "path": "output/medieval-trebuchet-mechanics/media/04-ai.jpg"
+      },
+      {
+        "type": "video",
+        "source": "gfx",
+        "scene": 4,
+        "path": "output/medieval-trebuchet-mechanics/media/05-gfx.mp4"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 5,
+        "path": "output/medieval-trebuchet-mechanics/media/06-ai.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 6,
+        "path": "output/medieval-trebuchet-mechanics/media/07-ai.jpg"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 44.671995,
+    "status": "rendered",
+    "youtube": null,
+    "createdAt": "2026-07-21T05:37:31.176Z"
   }
 ]
