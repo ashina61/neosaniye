@@ -110,6 +110,7 @@ export async function generateImages(script, opts = {}) {
     basename = script.normalizedTopic || 'script',
     style = 'photo', // 'photo' | 'animated' (illüstrasyon)
     avoidAssetIds = [],
+    sceneSeconds = [],
   } = opts;
 
   const mediaDir = path.join(outDir, basename, 'media');
@@ -138,9 +139,9 @@ export async function generateImages(script, opts = {}) {
   // process formatı: GERÇEK görüntü öncelikli — HER sahne (ilki dahil) önce
   // stok video dener; AI görsel sadece klip bulunamayan sahneleri doldurur.
   const processMode = script.format === 'process' && hasStockKey;
-  // Animasyonlu (illüstrasyon) stilde stok video KARIŞMAZ — gerçek çekim +
-  // çizim karışımı canlıda "yarı belgesel yarı çizgi film" çorbası yaptı.
-  const canMotion = (motionEvery > 0 || processMode) && hasStockKey && style !== 'animated';
+  // Viewer-first üretimde gerçek hareket stil paketinden daha önemlidir: stok
+  // video bütün stillerde denenir; illüstrasyon yalnızca açıklayıcı/fallbacktir.
+  const canMotion = hasStockKey;
   const dpFlags = scenes.some((s) => s.motion === true);
 
   // Görsel süreklilik: video başına SABİT seed (konudan türetilir) + her sahne
@@ -210,10 +211,8 @@ export async function generateImages(script, opts = {}) {
     }
 
     // 0) Hareketli sahne: stok video dene (bulunamazsa AI görsele devam).
-    const motionSlot = processMode
-      ? true
-      : dpFlags ? scene.motion === true : i > 0 && i % motionEvery === 1;
-    if (!done && canMotion && (processMode || i > 0) && motionSlot) {
+    const motionSlot = processMode || (dpFlags ? scene.motion === true : motionEvery > 0);
+    if (!done && canMotion && (motionSlot || Number(sceneSeconds[i]) > 2.5)) {
       try {
         const hit = await fetchStockVideoForKeywords(
           scene.stock_keywords || scene.keywords,
@@ -302,6 +301,38 @@ export async function generateImages(script, opts = {}) {
     sources[done.source] += 1;
     items.push(done);
     console.log(`[img] sahne ${idx}/${scenes.length}: ${done.source} (${done.type})`);
+
+    // Uzun anlatım sahneleri A/B olarak iki GERÇEK materyale bölünür. İkinci
+    // klip aynı indirme havuzundan gelir ve aynı sahnede hemen A'nın arkasına
+    // yerleşir; canonical timeline iki eşit görünür parçaya böler.
+    if (Number(sceneSeconds[i]) > 2.5 && hasStockKey) {
+      const second = await fetchStockVideoForKeywords(
+        scene.stock_keywords || scene.keywords,
+        path.join(mediaDir, `${idx}-motion-b`),
+        usedClips,
+      ).catch((err) => {
+        console.warn(`[img] sahne ${idx}: B klibi alınamadı (${err.message}).`);
+        return null;
+      });
+      if (second) {
+        const identity = String(second.assetId || second.sourceUrl || second.downloadUrl);
+        const rel = isAssetRelevant(scene.narration, second.keyword, {
+          minScore: config.retention.minSemanticRelevance,
+          forbiddenMismatches: scene.forbidden_mismatches || [],
+        });
+        if (rel.accepted && !usedAssets.has(identity)) {
+          usedAssets.add(identity);
+          const b = { ...second, scene: i, source: 'stock', visualPart: 'B' };
+          b.assetId ||= identity;
+          b.retrievedAt ||= new Date().toISOString();
+          b.rightsClass ||= 'externally-licensed';
+          items.push(b);
+          sources.stock += 1;
+          done.visualPart = 'A';
+          console.log(`[img] sahne ${idx}: A/B ikinci stok video (${second.keyword})`);
+        }
+      }
+    }
 
   }
 
