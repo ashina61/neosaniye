@@ -490,9 +490,14 @@ export async function runRetentionQC(input, workDir, extras = {}) {
     technicalReady && editorialReady && qcExecStatus === 'passed' && externalBlockingReasons.length === 0,
   );
 
-  // Her mod fail-closed: yalnızca açıkça productionReady olan çıktı yayınlanabilir.
-  // --no-upload render akışını etkilemez; yalnızca uzak yan etkiyi kapatır.
-  const blockUpload = !productionReady;
+  // Platform yapılandırılmamış bir warning-mode kalite incelemesi render akışını
+  // bloke etmez. Gerçek bir yayın hedefi varsa düşük skor da fail-closed kalır;
+  // kritik hata, teknik hata ve QC exception ise hedef olmasa da daima bloklar.
+  const hasPublishTarget = Object.values(extras.platforms || {}).some(Boolean);
+  const editorialFailures = r?.failures?.length > 0;
+  const blockUpload = !technicalReady || disabled || Boolean(execError)
+    || externalBlockingReasons.length > 0 || editorialFailures
+    || (!editorialReady && (cfg.mode === 'strict' || hasPublishTarget));
   const uploadAllowedByPolicy = !blockUpload;
   const status = disabled ? 'disabled' : execError ? 'error' : r.failures.length ? 'fail' : editorialReady ? 'pass' : 'warning';
 
@@ -503,7 +508,6 @@ export async function runRetentionQC(input, workDir, extras = {}) {
     execError,
     editorialReady,
     productionReady,
-    uploadEligible: uploadEligibility.eligible === true,
     blockingReasons: externalBlockingReasons,
     mode: cfg.mode,
     platforms: extras.platforms,
