@@ -79,16 +79,13 @@ You receive a scene-by-scene story. Design the edit like a pro:
 - MUSIC AS A CO-EDITOR (music_mood + let it breathe with the story): the mood should imply a shape —
   lift under the hook, a drop/hit at the biggest reveal, a brief pull-back before the twist, a settled
   resolution on the payoff. Pick the mood that supports that emotional curve, not just the topic.
-- SFX DISCIPLINE (required): aim for 3-5 audible sfx per video — minimum 3, never fewer, never more
-  than 6. Each must land ON a meaningful narration moment (hook entry, the crystal/object reveal,
+- SFX DISCIPLINE: use 1-4 audible boundary sfx per video, only when the story earns one. Each must land ON a meaningful narration moment (the crystal/object reveal,
   the split/reveal, the final resolution) — NOT random. Space them out (don't stack two within a few
-  seconds) and vary the type. Never add a whoosh just to hit a count.
+  seconds) and vary the type. Never add a whoosh just to hit a count. The renderer adds a separate subtle hook cue.
 - EVERY animated (non-cut) transition MUST carry an sfx — a silent animated wipe feels broken.
   'none' is allowed ONLY on plain cuts.
 - Pick the music mood by the story's FEELING, not its surface topic (a dark science story = mystery).
-- Place the subscribe reminder in the LAST 20-30% of the story ONLY, right after the payoff beat —
-  NEVER before the payoff, never mid-story (an early CTA cuts retention and is penalized). If no
-  natural late beat exists, omit it entirely.
+- Place the subscribe reminder only after the payoff, in the final beat.
 - Choose ONE ambience bed for the whole video: the real-world background sound of the story's main
   SETTING (a battlefield, a jungle, a lab, deep space). It plays very quietly under the music and
   makes the video feel like real footage instead of narrated slides. Keep the query generic enough
@@ -134,9 +131,9 @@ Design the edit: exactly ${N - 1} boundaries, plus music mood and subscribe plac
     if (transition !== 'cut' && sfxType === 'none') sfxType = 'whoosh';
     return { transition, sfx: sfxType };
   });
-  // Animasyon oranı %50'yi aşarsa fazlasını cut'a çevir (sondan başa).
+  // Decorative transitions are exceptional: max two and no more than 25%.
   const animated = boundaries.filter((b) => b.transition !== 'cut').length;
-  let excess = animated - Math.floor((N - 1) / 2);
+  let excess = animated - Math.min(2, Math.floor((N - 1) / 4));
   for (let i = boundaries.length - 1; i >= 0 && excess > 0; i -= 1) {
     if (boundaries[i].transition !== 'cut') {
       boundaries[i].transition = 'cut';
@@ -145,7 +142,7 @@ Design the edit: exactly ${N - 1} boundaries, plus music mood and subscribe plac
   }
   const musicMood = MOODS.includes(plan.music_mood) ? plan.music_mood : null;
   let sub = Number(plan.subscribe_after_scene);
-  if (!Number.isFinite(sub) || sub < 2 || sub > N - 1) sub = Math.max(2, Math.round(N * 0.68));
+  if (!Number.isFinite(sub) || sub < N - 1 || sub > N) sub = N;
 
   // Ambiyans sorgusu: sade kelimelere indir (arama API'sine güvenli gider);
   // boş/saçma kalırsa null — çağıran taraf kategori varsayılanına düşer.

@@ -68,7 +68,8 @@ export function selectCta(input, cfg = config.motion.cta) {
   }
 
   // Tip seçimi — mümkünse son kullanılanı tekrar etme (anti-tekrar).
-  const allowed = (cfg.allowedTypes || []).filter((t) => TYPE_TEMPLATES[t]);
+  // Viewer-first release policy: the only CTA objective is subscription.
+  const allowed = (cfg.allowedTypes || []).filter((t) => t === 'subscribe' && TYPE_TEMPLATES[t]);
   if (!allowed.length) return { ...base, reason: 'editorial-skip' };
   const recent = new Set((input.recentCtaTypes || []).slice(0, 1));
   const fresh = allowed.filter((t) => !recent.has(t));
@@ -83,7 +84,8 @@ export function selectCta(input, cfg = config.motion.cta) {
   if (latestStart <= earliest) {
     return { ...base, reason: 'timeline-conflict' };
   }
-  let startSec = +(earliest + rng() * (latestStart - earliest)).toFixed(2);
+  // CTA belongs after the payoff, not at a random mid-story point.
+  let startSec = +latestStart.toFixed(2);
 
   // Outro çakışması: CTA penceresi outro'ya taşarsa geri çek; sığmazsa atla.
   if (cfg.avoidOutro && Number.isFinite(input.outroStartSec)) {
