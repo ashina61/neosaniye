@@ -15,6 +15,7 @@
     "audio": "node scripts/generate-audio.js",
     "media": "node scripts/fetch-media.js",
     "video": "node scripts/render-video.js",
+    "render:controlled": "node scripts/controlled-production-render.js",
     "test": "node --test",
     "upload": "node scripts/upload-youtube.js",
     "youtube:auth": "node scripts/youtube-auth.js",

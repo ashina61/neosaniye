@@ -1,6 +1,6 @@
 name: Günlük Short Üret ve Yayınla
 
-# Manuel tetikleme her zaman açık; cron ile günlük otomatik üretim AKTİF.
+# Viewer-first review workflow: manual only. Publishing and cron stay disabled.
 on:
   workflow_dispatch:
     inputs:
@@ -23,23 +23,13 @@ on:
         type: choice
         options: [manual, "15:00", "20:00", "02:00"]
         default: manual
-  schedule:
-    # 14 GÜNLÜK ABD-İZLEYİCİ DENEYİ (us-audience-3-slots-v1): günde 3 sabit
-    # slot — 15:00 / 20:00 / 02:00 UTC (TR yaz: 18:00 / 23:00 / 05:00).
-    # Deney süresince saatler DEĞİŞTİRİLMEZ (docs/publishing-experiment.md).
-    # Dakika +2 offset: GitHub tam saat (XX:00) tick'lerini iki kez yuttu —
-    # slot kimliği yine 15:00/20:00/02:00, tespit scheduleExperiment.js'te.
-    # 02:00 UTC koşusu bir önceki UTC içerik gününün 3. slotudur.
-    - cron: "2 15 * * *" # slot 15:00 UTC — ABD Doğu 11:00 / Pasifik 08:00
-    - cron: "2 20 * * *" # slot 20:00 UTC — ABD Doğu 16:00 / Pasifik 13:00
-    - cron: "2 2 * * *"  # slot 02:00 UTC — ABD Doğu 22:00 / Pasifik 19:00 (önceki içerik günü)
 
 concurrency:
   group: daily-short
   cancel-in-progress: false
 
 permissions:
-  contents: write # dedup state'ini (data/*.json) branch'e geri commit edebilmek için
+  contents: read
 
 jobs:
   produce:

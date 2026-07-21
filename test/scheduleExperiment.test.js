@@ -10,15 +10,11 @@ import { emptySlotMetrics, buildSlotComparisonReport } from '../src/analytics/ex
 
 const CRON = { eventName: 'schedule', manualSlot: '' };
 
-test('workflow üç deney cron ifadesini içerir, eski cronlar kaldırıldı', async () => {
+test('workflow is manual-only while viewer-first variants are under review', async () => {
   const yml = await readFile('.github/workflows/daily-short.yml', 'utf8');
-  // Slotlar 15:00/20:00/02:00; dakika +2 (GitHub tam saat tick'i yutuyor — 2 kez yaşandı).
-  assert.ok(yml.includes('cron: "2 15 * * *"'), '15:00 slot cronu eksik');
-  assert.ok(yml.includes('cron: "2 20 * * *"'), '20:00 slot cronu eksik');
-  assert.ok(yml.includes('cron: "2 2 * * *"'), '02:00 slot cronu eksik');
-  assert.ok(!yml.includes('23 18 * * *'), 'eski 18:23 cronu hâlâ duruyor');
-  assert.ok(!yml.includes('37 22 * * *'), 'eski 22:37 cronu hâlâ duruyor');
-  assert.equal((yml.match(/- cron:/g) || []).length, 3, 'tam 3 cron olmalı (çift tetik yok)');
+  assert.ok(yml.includes('workflow_dispatch:'));
+  assert.ok(!/^\s+schedule:/m.test(yml));
+  assert.ok(!/^\s+- cron:/m.test(yml));
 });
 
 test('cron: her slot saati doğru scheduledSlot üretir (gecikme toleranslı)', () => {

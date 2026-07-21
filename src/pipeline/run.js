@@ -12,7 +12,7 @@ import { analyzePerformance } from '../crew/analyst.js';
 import { generateAudio } from '../tts/generateAudio.js';
 import { fetchAmbienceTrack, defaultAmbienceQuery } from '../audio/fetchAmbience.js';
 import { generateImages } from '../media/generateImages.js';
-import { renderVideo } from '../video/renderVideo.js';
+import { renderProductionVariants } from '../video/renderVariants.js';
 import { buildMetadata } from '../youtube/buildMetadata.js';
 import { uploadVideo } from '../youtube/uploadVideo.js';
 import { postFirstComment, updateVideoStats } from '../youtube/engage.js';
@@ -70,7 +70,9 @@ export async function runPipeline(opts = {}) {
     config.youtube.clientId &&
     config.youtube.clientSecret &&
     config.youtube.refreshToken;
-  const willUpload = upload === true || (upload !== false && hasYouTube);
+  // Viewer-first production is review-only until explicitly re-enabled in code.
+  const willUpload = false;
+  if (upload === true) console.warn('[publish] disabled: variants are review artifacts only');
 
   // 0) Öğrenme döngüsü: geçmiş videoların izlenme verisini tazele (best-effort).
   if (hasYouTube) {
@@ -212,13 +214,13 @@ export async function runPipeline(opts = {}) {
 
     // 4) Montaj (ffmpeg)
     log('Faz 4: Video montajı (ffmpeg)...');
-    const outPath = path.join(workDir, `${base}.mp4`);
+    const outPath = path.join(workDir, 'balanced.mp4');
     // Son 5 videonun müziği tekrar seçilmesin (çeşitlilik; state yoksa boş).
     const recentMusic = await getRecentMusic(5).catch(() => []);
-    const video = await renderVideo({
+    const variants = await renderProductionVariants({
       audioPath: audio.audioPath,
       wordTimings: audio.wordTimings,
-      media: media.items.map((m) => ({ path: m.path, type: m.type, gfx: m.source === 'gfx' })),
+      media: media.items.map((m) => ({ path: m.path, type: m.type, scene: m.scene, source: m.source, gfx: m.source === 'gfx' })),
       mediaScene: media.items.map((m) => m.scene),
       scenes,
       timeline: renderTimeline,
@@ -236,8 +238,9 @@ export async function runPipeline(opts = {}) {
       avoidMusic: recentMusic,
       // Deterministik müzik seed'i — aynı konu aynı parçayı, farklı konu çeşidi verir.
       musicSeed: script.normalizedTopic || base,
-      outPath,
-    });
+      language: script.language || config.content?.language || 'en',
+    }, { outDir: workDir });
+    const video = variants.results.find((x) => x.name === 'balanced').render;
     console.log(`  ${video.width}x${video.height}, ${video.duration.toFixed(1)}s -> ${outPath}`);
     // Müzik lisans künyesi (CC0 manifesti veya eski havuz) — rapor + kayda girer.
     const musicMeta = video.musicTrack
@@ -258,35 +261,13 @@ export async function runPipeline(opts = {}) {
     // 4.2) NEO MOTION ENGINE — özgün CTA animasyonu (editoryal seçim + safe-area).
     // Preflight/QC ÖNCESİ uygulanır ki final MP4 CTA'lı olsun. CTA hatası ana
     // videoyu ASLA çökertmez (fail-safe); uygulanırsa outPath yerine geçer.
-    let motionReport = { enabled: false, ctaApplied: false, selectionReason: 'disabled' };
-    if (config.motion.enabled && config.motion.cta.enabled) {
-      const recentCtaTypes = await getRecentCtaTypes().catch(() => []);
-      const outroOn = config.video.outro;
-      const m = await applyCta({
-        videoPath: outPath,
-        workDir,
-        duration: video.duration,
-        seed: script.normalizedTopic || base,
-        outroStartSec: outroOn ? video.duration - (config.video.outroDuration || 3) : null,
-        recentCtaTypes,
-        // İçerik dili → CTA yerelleştirme (İngilizce kanal = 'en'). Betikte
-        // dil belirtildiyse onu, yoksa global config'i kullan.
-        language: script.language || config.content?.language || 'en',
-      });
-      motionReport = m.report;
-      if (m.videoPath !== outPath) {
-        // CTA'lı sürümü ana çıktının üstüne al (downstream tek yol kullanır).
-        await execFileAsync('mv', ['-f', m.videoPath, outPath]).catch(async () => {
-          const { rename } = await import('node:fs/promises');
-          await rename(m.videoPath, outPath);
-        });
-      }
-      console.log(
-        m.report.ctaApplied
-          ? `  🎬 CTA: ${m.report.ctaId} (${m.report.ctaType}, ${m.report.startSec}s, ${m.report.position})`
-          : `  🎬 CTA yok: ${m.report.selectionReason}`,
-      );
-    }
+    const balancedVerification = variants.results.find((x) => x.name === 'balanced').verification;
+    const motionReport = {
+      enabled: true, ctaApplied: balancedVerification.cta.visible,
+      startSec: video.cta.startSec, languageMatch: true,
+      ctaVerification: balancedVerification.cta,
+      selectionReason: 'mandatory-final-burn-in',
+    };
 
     // 4.5) Yayın öncesi TEKNİK kalite kontrolü — final MP4 üzerinde ffprobe/
     // ffmpeg taraması (decode, siyah/donma/sessizlik, loudness). Bozuk video
