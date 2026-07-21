@@ -828,6 +828,15 @@ export async function renderVideo(job, opts = {}) {
         sfxTypes.push(null);
       }
     }
+    // An editorial plan may intentionally leave most cuts quiet, but an
+    // all-silent plan makes the final-output SFX gate impossible to satisfy
+    // and leaves a real scene transition without any sonic punctuation.  This
+    // is a single semantic fallback (whoosh is transition-safe), not a quota:
+    // use the first actual transition only when the director selected none.
+    if (planOk && !sfxTypes.some(Boolean)) {
+      const firstTransition = bts.findIndex((d, i) => i < N - 1 && d >= 0.2);
+      if (firstTransition >= 0) sfxTypes[firstTransition] = 'whoosh';
+    }
   }
   const mainBts = bts.slice(0, Math.max(0, N - 1));
   const mainTdSum = mainBts.reduce((a, b) => a + b, 0);
