@@ -12,12 +12,12 @@ const run = promisify(execFile);
 const hasFfmpeg = await run('ffmpeg', ['-version']).then(() => true).catch(() => false);
 
 /** Sessizce başlayıp t=2.0s'de kısa yüksek bir vuruş içeren ses+video MP4 üretir. */
-async function makeClipWithHit(out) {
+async function makeClipWithHit(out, frequency = 440) {
   // 4sn: düşük seviye pembe gürültü tabanı + 2.0s'de 0.15s yüksek sinüs vuruşu.
   await run('ffmpeg', ['-y', '-v', 'error',
     '-f', 'lavfi', '-i', 'color=c=black:s=256x256:d=4:r=24',
     '-f', 'lavfi', '-i', 'anoisesrc=d=4:c=pink:a=0.02',
-    '-f', 'lavfi', '-i', 'sine=frequency=440:duration=0.15',
+    '-f', 'lavfi', '-i', `sine=frequency=${frequency}:duration=0.15`,
     '-filter_complex',
     '[2]adelay=2000|2000,volume=3.0[hit];[1][hit]amix=inputs=2:normalize=0,aformat=channel_layouts=stereo[a]',
     '-map', '0:v', '-map', '[a]', '-t', '4',
@@ -34,6 +34,17 @@ test('measureSegmentDb: yüksek vuruş penceresi tabandan yüksek okunur', { ski
     const during = await measureSegmentDb(clip, 1.98, 0.3);
     assert.ok(during.maxDb !== null && before.maxDb !== null, 'ölçüm başarısız');
     assert.ok(during.maxDb - before.maxDb >= 3, `vuruş tabandan yükselmedi (${during.maxDb} vs ${before.maxDb})`);
+  } finally { await rm(dir, { recursive: true, force: true }); }
+});
+
+test('verifySfxInOutput: final AAC içinde whoosh kendi frekans bandında doğrulanır', { skip: !hasFfmpeg }, async () => {
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'ov-whoosh-'));
+  try {
+    const clip = path.join(dir, 'whoosh.mp4');
+    await makeClipWithHit(clip, 850);
+    const r = await verifySfxInOutput(clip, [{ atSeconds: 2, sfxId: 'whoosh', assetResolved: true, mixedInGraph: true }]);
+    assert.equal(r.ok, true, `whoosh doğrulanamadı: ${r.failures}`);
+    assert.ok(r.cues[0].audibleDeltaDb >= 4);
   } finally { await rm(dir, { recursive: true, force: true }); }
 });
 

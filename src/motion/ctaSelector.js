@@ -78,10 +78,10 @@ export function selectCta(input, cfg = config.motion.cta) {
 
   // Süre + başlangıç (seed'li). İlk earliestStart sn ve son latestEndBuffer sn yasak.
   const [normalMin, normalMax] = cfg.durationRangeSec;
-  // A 10–15s video has no room for the normal 1.8–2.8s card after its hook.
-  // In explicit always mode use a compact 1.2–1.6s card, positioned so its
-  // ending remains 2–3 seconds before the video end.
-  const [dMin, dMax] = compactAlways ? [1.2, 1.6] : [normalMin, normalMax];
+  // Compact mode changes placement, never the validated duration contract.
+  // The previous 1.2–1.6s range was rejected by validatePlan's 1.8s minimum.
+  // Keep the normal minimum and cap only the visual dwell time on short videos.
+  const [dMin, dMax] = compactAlways ? [normalMin, Math.min(normalMax, normalMin + 0.3)] : [normalMin, normalMax];
   const durSec = +(dMin + rng() * (dMax - dMin)).toFixed(2);
   const earliest = compactAlways ? 5 : Math.max(cfg.earliestStartSec, 5); // ilk 5sn kesin yasak
   const latestStart = duration - cfg.latestEndBufferSec - durSec;

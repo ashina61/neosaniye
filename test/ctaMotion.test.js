@@ -48,7 +48,7 @@ test('always modunda 13.8sn video için kompakt subscribe CTA uygulanır', () =>
   const r = selectCta({ seed: 'bee-short', durationSec: 13.8 }, cfg);
   assert.equal(r.applied, true);
   assert.equal(r.type, 'subscribe');
-  assert.ok(r.durationSec >= 1.2 && r.durationSec <= 1.6);
+  assert.ok(r.durationSec >= 1.8 && r.durationSec <= 2.1);
   assert.ok(r.startSec + r.durationSec <= 11.8 + 0.01, 'CTA son 2 saniye bufferını ihlal etti');
   assert.ok(r.startSec >= 5, 'CTA hook içine girdi');
 });

@@ -64,8 +64,14 @@ async function measureCueDelta(file, at, requested, durationSec) {
   // The confirmation is a deliberately narrow two-tone cue. Full-band peak
   // comparison measures whichever narration syllable is loudest instead of the
   // cue; inspect the cue's own 500–1200 Hz band in both windows.
-  const isConfirmation = String(requested || '').replace(/^cta:/, '') === 'confirmation';
-  const filter = isConfirmation ? 'bandpass=f=850:w=700,volumedetect' : 'volumedetect';
+  const cueType = String(requested || '').replace(/^cta:/, '');
+  const isConfirmation = cueType === 'confirmation';
+  // Whoosh is synthesized as a 850 Hz / 700 Hz-wide band-pass sweep.  Its
+  // full-band peak is commonly a narration consonant, which can make equal
+  // before/during programme peaks look like a 0 dB SFX result.  Measure the
+  // cue's own occupied band, exactly as confirmation already does.
+  const isWhoosh = cueType === 'whoosh';
+  const filter = (isConfirmation || isWhoosh) ? 'bandpass=f=850:w=700,volumedetect' : 'volumedetect';
   if (String(requested || '') !== 'riser') {
     const before = await measureSegmentDb(file, Math.max(0, at - BEFORE_WIN - 0.05), BEFORE_WIN, filter);
     const during = await measureSegmentDb(file, at - 0.05, DURING_WIN, filter);
