@@ -715,7 +715,7 @@ async function buildFullAudio(
   // STEREO garanti: rapor "stereo" derken çıktı mono çıkmasın (bee hatası #8).
   const master =
     `apad,atrim=0:${total.toFixed(3)},afade=t=out:st=${fadeStart}:d=1.1,` +
-    'alimiter=limit=0.75:attack=5:release=60:level=0,aresample=44100,aformat=channel_layouts=stereo';
+    'alimiter=limit=0.65:attack=5:release=60:level=0,aresample=44100,aformat=channel_layouts=stereo';
   if (finalMix.length > 1) {
     fc.push(`${finalMix.join('')}amix=inputs=${finalMix.length}:normalize=0:duration=longest,${master}[a]`);
   } else {
@@ -1098,7 +1098,7 @@ export async function renderVideo(job, opts = {}) {
   const ctaStart = Math.max(0, total - ctaDuration);
   const ctaLabel = (job.language || config.content?.language || 'en') === 'tr' ? 'ABONE OL' : 'SUBSCRIBE';
   const ctaW = Math.min(700, Math.round(width * 0.62));
-  const ctaH = Math.max(90, Math.round(height * 0.07));
+  const ctaH = Math.max(18, Math.round(height * 0.07));
   const ctaX = Math.round((width - ctaW) / 2);
   const ctaY = Math.round(height * 0.69);
   const enterEnd = +(ctaStart + 0.24).toFixed(3);
@@ -1107,7 +1107,7 @@ export async function renderVideo(job, opts = {}) {
     `[vpre]drawbox=x='${pillX}':y=${ctaY}:w=${ctaW}:h=${ctaH}:color=0x3BD0C8@0.94:t=fill:` +
       `enable='between(t,${ctaStart.toFixed(3)},${total.toFixed(3)})',` +
       `drawtext=${drawFontOpt}text='${ctaLabel}':x=(w-text_w)/2:y=${ctaY}+((${ctaH})-text_h)/2:` +
-      `fontsize=${Math.max(34, Math.round(height * 0.035))}:fontcolor=0x0F1113:` +
+      `fontsize=${Math.max(12, Math.round(height * 0.035))}:fontcolor=0x0F1113:` +
       `alpha='if(lt(t,${enterEnd}),max(0,(t-${ctaStart.toFixed(3)})/0.24),1)'[v]`,
   );
 
