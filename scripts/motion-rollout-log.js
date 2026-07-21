@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 import { readFile } from 'node:fs/promises';
+import { realpathSync } from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 /**
  * NEO MOTION ROLLOUT — CRON LOG HELPER (yalnızca okuma).
@@ -53,4 +55,4 @@ async function main() {
   for (const a of annotations) console.log(a);
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) await main();
+if (process.argv[1] && realpathSync(fileURLToPath(import.meta.url)) === realpathSync(process.argv[1])) await main();

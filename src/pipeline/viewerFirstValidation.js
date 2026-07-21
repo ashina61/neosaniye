@@ -54,7 +54,7 @@ export function validatePacing({ timeline, mediaItems = [], transitions = [] } =
   if (items[0]?.duration > 3.2) issues.push('FIRST_VISUAL_HELD_TOO_LONG');
   if (items.at(-1)?.duration < 1.5) issues.push('PAYOFF_SCENE_TOO_SHORT');
   const decorative = transitions.filter((x) => x && x !== 'cut').length;
-  if (decorative > Math.max(2, Math.floor(transitions.length / 3))) issues.push('TOO_MANY_TRANSITIONS');
+  if (decorative >= 2 && decorative > Math.floor(transitions.length / 3)) issues.push('TOO_MANY_TRANSITIONS');
   if (items.length < 5) issues.push('TOO_FEW_VISUAL_CHANGES');
   return issues;
 }
