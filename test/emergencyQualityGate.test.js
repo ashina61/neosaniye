@@ -15,10 +15,13 @@ function validInput() {
     ],
     mediaItems: [{
       scene: 0, path: '/tmp/archive.jpg', source: 'archive', provider: 'wikimedia',
+      assetId: 'commons:123', retrievedAt: '2026-07-21T00:00:00.000Z',
       license: 'CC BY-SA 4.0', licenseEvidence: 'https://commons.wikimedia.org/example',
     }],
-    music: { license: 'CC0-1.0', licenseEvidence: 'audio-manifest.json#track' },
+    music: { source: 'repo-manifest', assetId: 'track', selectedAt: '2026-07-21T00:00:00.000Z', license: 'CC0-1.0', licenseEvidence: 'audio-manifest.json#track' },
     technical: { videoStreamPresent: true, audioStreamPresent: true, durationSeconds: 35 },
+    timeline: { issues: [], items: [{ scene: 0, start: 0, end: 35, duration: 35 }] },
+    renderPlan: { captionsIncluded: true, captionEventCount: 3 },
     duration: 35,
     musicRequired: true,
   };
@@ -67,4 +70,13 @@ test('explicit P0 contradiction and duplicate script block publication', () => {
   assert.ok(result.failures.includes('DUPLICATE_SCRIPT'));
   assert.ok(result.failures.includes('P0_CONTRADICTION'));
   assert.ok(result.reasons.some((x) => x.includes('Archive subject contradicts narration')));
+});
+
+test('invalid canonical timeline or absent caption render plan blocks publication', () => {
+  const input = validInput();
+  input.timeline.issues = ['TIMELINE_FINAL_SCENE_INCOMPLETE'];
+  input.renderPlan.captionsIncluded = false;
+  const result = evaluateEmergencyQualityGate(input);
+  assert.ok(result.failures.includes('CANONICAL_TIMELINE_INVALID'));
+  assert.ok(result.failures.includes('CAPTIONS_NOT_IN_RENDER_PLAN'));
 });

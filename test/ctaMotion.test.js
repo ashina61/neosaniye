@@ -66,11 +66,10 @@ test('outro çakışması: CTA outro\'ya taşarsa geri çekilir veya atlanır', 
   if (r.applied) assert.ok(r.startSec + r.durationSec <= 20 + 0.01, 'CTA outro içine girdi');
 });
 
-test('anti-tekrar: son kullanılan tip mümkünse tekrar seçilmez', () => {
+test('viewer-first policy always selects subscribe, never like', () => {
   const cfg = { ...CTA_CFG, mode: 'always', allowedTypes: ['subscribe', 'like'] };
   const r = selectCta({ seed: 'z', durationSec: 35, recentCtaTypes: ['subscribe'] }, cfg);
-  // Alternatif (like) varken subscribe tekrar edilmemeli — çoğu seed için.
-  assert.ok(['subscribe', 'like'].includes(r.type));
+  assert.equal(r.type, 'subscribe');
 });
 
 test('video başına en fazla 1 CTA (selector tek plan döner)', () => {
@@ -117,7 +116,7 @@ test('validatePlan: ilk 5sn / sınır dışı / süre hatalarını yakalar', () 
 });
 
 // ---- ŞABLON ÜRETİMİ + DİL YERELLEŞTİRME ----
-test('6 şablon geçerli ASS üretir (varsayılan İngilizce etiket + çizim)', () => {
+test('subscribe şablonları geçerli ASS üretir', () => {
   const box = computeSafeArea({ position: 'auto' });
   const types = { neo_subscribe_minimal: 'subscribe', neo_subscribe_pulse: 'subscribe', neo_like_pop: 'like', neo_bell_ring: 'bell', neo_comment_slide: 'comment', neo_follow_compact: 'follow' };
   for (const id of TEMPLATE_IDS) {
@@ -126,19 +125,15 @@ test('6 şablon geçerli ASS üretir (varsayılan İngilizce etiket + çizim)', 
     assert.ok(ass.includes('Dialogue:'));
     assert.ok(/\\p1/.test(ass), 'vektör çizim yok');
   }
-  // Varsayılan içerik dili İngilizce → LIKE (Türkçe BEĞEN DEĞİL). Bee hatası #1.
-  const like = buildCtaAss({ templateId: 'neo_like_pop', type: 'like', box, startSec: 10, durSec: 2.4 });
-  assert.ok(like.includes('LIKE'), 'İngilizce LIKE etiketi yok');
-  assert.ok(!like.includes('BEĞEN'), 'İngilizce videoda Türkçe BEĞEN çıktı!');
-  // Uzun İngilizce etiket ("TURN ON NOTIFICATIONS") kart genişleyince sığar.
-  const bell = buildCtaAss({ templateId: 'neo_bell_ring', type: 'bell', box: { x: box.x, y: box.y, w: 640, h: 112 }, startSec: 10, durSec: 2.4 });
-  assert.ok(bell.includes('TURN ON NOTIFICATIONS'));
+  const subscribe = buildCtaAss({ templateId: 'neo_subscribe_minimal', type: 'subscribe', box, startSec: 10, durSec: 2.4 });
+  assert.ok(subscribe.includes('SUBSCRIBE'));
+  assert.ok(!subscribe.includes('LIKE'));
 });
 
-test('dil=tr açıkça verilince Türkçe etiket üretilir', () => {
+test('dil=tr açıkça verilince ABONE OL üretilir', () => {
   const box = computeSafeArea({ position: 'auto' });
-  const like = buildCtaAss({ templateId: 'neo_like_pop', type: 'like', box, startSec: 10, durSec: 2.4, language: 'tr' });
-  assert.ok(like.includes('BEĞEN'), 'Türkçe içerikte BEĞEN yok');
+  const subscribe = buildCtaAss({ templateId: 'neo_subscribe_minimal', type: 'subscribe', box, startSec: 10, durSec: 2.4, language: 'tr' });
+  assert.ok(subscribe.includes('ABONE OL'), 'Türkçe içerikte ABONE OL yok');
 });
 
 // ---- ENGINE (fail-safe) ----
