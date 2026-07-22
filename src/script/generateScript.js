@@ -318,35 +318,47 @@ async function openRouterFallback(req) {
   if (!config.openrouter.apiKey || providerCircuit.openrouter) return null;
   const model = config.openrouter.model;
   providerRun.openRouterRequestedModel = model;
-  providerRun.openRouterAttempts += 1;
   console.log(`[openrouter] model=${model}`);
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 30_000);
-  try {
-    const res = await fetch(`${config.openrouter.baseUrl}/chat/completions`, {
-      method: 'POST', signal: controller.signal,
-      headers: { authorization: `Bearer ${config.openrouter.apiKey}`, 'content-type': 'application/json' },
-      body: JSON.stringify({ model, ...openAiRequest(req) }),
-    });
-    if (!res.ok) {
-      const err = new Error(`openrouter HTTP ${res.status}`);
-      err.status = res.status;
+  const attempts = Math.max(1, config.openrouter.attempts);
+  let lastErr;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), config.openrouter.timeoutMs);
+    providerRun.openRouterAttempts += 1;
+    try {
+      const res = await fetch(`${config.openrouter.baseUrl}/chat/completions`, {
+        method: 'POST', signal: controller.signal,
+        headers: { authorization: `Bearer ${config.openrouter.apiKey}`, 'content-type': 'application/json' },
+        body: JSON.stringify({ model, ...openAiRequest(req) }),
+      });
+      if (!res.ok) {
+        const err = new Error(`openrouter HTTP ${res.status}`);
+        err.status = res.status;
+        throw err;
+      }
+      const data = await res.json();
+      const text = data?.choices?.[0]?.message?.content || '';
+      if (!text) throw new Error('openrouter boş yanıt');
+      providerRun.openRouterUsed = true;
+      providerRun.openRouterResolvedModel = data?.model || model;
+      console.log(`[openrouter] resolved=${providerRun.openRouterResolvedModel}`);
+      console.log('[openrouter] success');
+      return { text };
+    } catch (err) {
+      lastErr = err;
+      providerRun.openRouterFailures += 1;
+      const retryable = err?.name === 'AbortError' || /network|fetch failed|socket|ECONNRESET/i.test(String(err?.message || err));
+      if (retryable && attempt < attempts) {
+        console.warn(`[openrouter] temporary failure; retrying (${attempt}/${attempts}): ${String(err?.message || err).slice(0, 90)}`);
+        if (config.openrouter.retryDelayMs > 0) await new Promise((resolve) => setTimeout(resolve, config.openrouter.retryDelayMs));
+        continue;
+      }
+      if (PROVIDER_BREAKER_STATUSES.has(err?.status) || retryable) providerCircuit.openrouter = true;
+      console.warn(`[openrouter] failed: ${String(err?.message || err).slice(0, 90)}`);
       throw err;
-    }
-    const data = await res.json();
-    const text = data?.choices?.[0]?.message?.content || '';
-    if (!text) throw new Error('openrouter boş yanıt');
-    providerRun.openRouterUsed = true;
-    providerRun.openRouterResolvedModel = data?.model || model;
-    console.log(`[openrouter] resolved=${providerRun.openRouterResolvedModel}`);
-    console.log('[openrouter] success');
-    return { text };
-  } catch (err) {
-    providerRun.openRouterFailures += 1;
-    if (PROVIDER_BREAKER_STATUSES.has(err?.status) || err?.name === 'AbortError') providerCircuit.openrouter = true;
-    console.warn(`[openrouter] failed: ${String(err?.message || err).slice(0, 90)}`);
-    throw err;
-  } finally { clearTimeout(timeout); }
+    } finally { clearTimeout(timeout); }
+  }
+  throw lastErr;
 }
 
 /** GROQ YEDEK BEYNİ: Gemini tamamen düştüğünde aynı istek ücretsiz Groq'a
