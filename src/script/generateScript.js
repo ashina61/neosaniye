@@ -72,14 +72,18 @@ export const SCRIPT_SCHEMA = {
     },
     scenes: {
       type: Type.ARRAY,
-      description: '7-9 sequential story beats that together tell one gripping mini-story',
+      // Seven short beats cannot reliably meet the 105-word narration floor.
+      // Enforce the same shape in structured output as in the prompt.
+      minItems: 10,
+      maxItems: 11,
+      description: 'Exactly 10 or 11 sequential story beats that together tell one gripping mini-story',
       items: {
         type: Type.OBJECT,
         properties: {
           narration: {
             type: Type.STRING,
             description:
-              'ONE spoken sentence for this beat (~8-16 words), plain voiceover text, no emojis',
+              'ONE spoken sentence (scene 1: 8-10 words; later scenes: 11-14 words), plain voiceover text, no emojis',
           },
           image_prompt: {
             type: Type.STRING,
@@ -210,7 +214,7 @@ Concept: "${config.niche.theme}". This video's format: ${format.brief}${processE
 
 Write in English, for a SINGLE dramatic narrator. STRICT word budget: the spoken voiceover is the SCENE NARRATIONS ONLY (the cta is NOT spoken) and their total must be ${config.content.minNarrationWords}-${config.content.maxNarrationWords} words — never outside that range. This is a complete 35-58 second story, NOT a 15-second fragment. Hook fast, but give the mystery, evidence, twist, and payoff enough room to land; every sentence still earns its place.
 
-Structure the story as 8-11 SCENES following this EXACT retention arc (a 10M-view Shorts shape):
+Structure the story as EXACTLY 10 or 11 SCENES following this EXACT retention arc (a 10M-view Shorts shape):
 QUESTION → MYSTERY → EVIDENCE → REVEAL → TWIST → ANSWER → PAYOFF → LOOP.
 1) QUESTION: scene 1 opens a curiosity gap the viewer NEEDS closed (often literally a question).
 2) MYSTERY + EVIDENCE: escalate fast, ONE concrete, surprising, ACCURATE detail per beat — each beat
@@ -219,10 +223,10 @@ QUESTION → MYSTERY → EVIDENCE → REVEAL → TWIST → ANSWER → PAYOFF →
 4) ANSWER + PAYOFF: the final scene ANSWERS the opening question so the end loops back to the hook
    (hook "how did they find the invisible sun?" → finale "by finding the sun they couldn't see"). The
    story ends on the payoff; the cta is a separate on-screen/description line, never spoken.
-- Prefer more, SHORTER beats (8-11) over few long ones: on Shorts the eye needs a new idea every ~3s.
+- Use exactly 10 or 11 beats: on Shorts the eye needs a new idea every ~3s.
 
 Rules for each scene:
-- narration: exactly ONE sentence, spoken aloud. Scene 1 is 6-10 concrete words so the opening shot can cut within ~3 seconds; later scenes are ~8-14 words. No jargon, emojis, hashtags, or markdown.
+- narration: exactly ONE sentence, spoken aloud. Scene 1 is 8-10 concrete words so the opening shot can cut within ~3 seconds; every later scene is 11-14 words. Before answering, count all scene narration words: the total MUST be ${config.content.minNarrationWords}-${config.content.maxNarrationWords}. No jargon, emojis, hashtags, or markdown.
 - VARY the rhythm like a human storyteller: follow a long sentence with a short punchy one; use natural spoken phrasing (contractions are fine), never a monotone list of facts.
 - ANIMAL SUBJECTS: avoid extreme close-up full-body animal/insect anatomy in image_prompt (AI deforms legs/heads) — prefer wide environment shots or the creature small-in-frame; always name the EXACT species.\n- image_prompt: describe a SINGLE cinematic photorealistic shot that literally depicts that sentence — name the subject, the place, the era/period, the action, camera framing, lighting and mood. Keep it concrete and filmable. Never request on-screen text, captions, letters, logos or watermarks.
 - VISUAL CONTINUITY: every image_prompt must be consistent with the visual_anchor (same character appearance, same era, same light/color mood) so the story looks like ONE film, not random pictures.
@@ -276,6 +280,9 @@ async function groqFallback(req) {
     body: JSON.stringify({
       model: config.groq.model,
       temperature: 0.8,
+      // Groq's default completion budget is too small for a complete script
+      // with ten image prompts and the required metadata.
+      max_tokens: 3000,
       messages: [
         { role: 'system', content: sys },
         { role: 'user', content: String(req.contents) },
