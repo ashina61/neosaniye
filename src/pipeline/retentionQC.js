@@ -533,6 +533,11 @@ export async function runRetentionQC(input, workDir, extras = {}) {
     : [];
 
   const report = {
+    openRouterUsed: extras.aiProvider?.openRouterUsed || false,
+    openRouterRequestedModel: extras.aiProvider?.openRouterRequestedModel || null,
+    openRouterResolvedModel: extras.aiProvider?.openRouterResolvedModel || null,
+    openRouterAttempts: extras.aiProvider?.openRouterAttempts || 0,
+    openRouterFailures: extras.aiProvider?.openRouterFailures || 0,
     retentionScore: r ? r.score : null,
     status,
     technicalReady,

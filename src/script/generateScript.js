@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type } from '@google/genai';
-import { config, assertGemini } from '../config.js';
+import { config } from '../config.js';
 import {
   getRecentUsedTopics,
   getRecentFormats,
@@ -260,37 +260,84 @@ Rules for the whole script:
   lives" over harsher wording, and never use profanity or slurs. Accuracy still comes first.`;
 }
 
+const PROVIDER_BREAKER_STATUSES = new Set([402, 429, 503]);
+const providerRun = { openRouterUsed: false, openRouterRequestedModel: null, openRouterResolvedModel: null, openRouterAttempts: 0, openRouterFailures: 0 };
+const providerCircuit = { openrouter: false, gemini: false, groq: false };
+
+export function resetProviderRun() {
+  Object.assign(providerRun, { openRouterUsed: false, openRouterRequestedModel: null, openRouterResolvedModel: null, openRouterAttempts: 0, openRouterFailures: 0 });
+  Object.assign(providerCircuit, { openrouter: false, gemini: false, groq: false });
+}
+
+export function getProviderRun() { return { ...providerRun }; }
+
+function openAiRequest(req) {
+  const schema = req.config?.responseSchema;
+  return {
+    temperature: 0.8, max_tokens: 3000,
+    messages: [
+      { role: 'system', content: [req.config?.systemInstruction || '', schema ? `Respond with ONLY one valid JSON object matching this JSON schema — no markdown fences, no commentary:\n${JSON.stringify(schema)}` : 'Respond concisely in plain text.'].join('\n\n') },
+      { role: 'user', content: String(req.contents) },
+    ],
+    ...(schema ? { response_format: { type: 'json_object' } } : {}),
+  };
+}
+
+async function openRouterFallback(req) {
+  if (!config.openrouter.apiKey || providerCircuit.openrouter) return null;
+  const model = config.openrouter.model;
+  providerRun.openRouterRequestedModel = model;
+  providerRun.openRouterAttempts += 1;
+  console.log(`[openrouter] model=${model}`);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 30_000);
+  try {
+    const res = await fetch(`${config.openrouter.baseUrl}/chat/completions`, {
+      method: 'POST', signal: controller.signal,
+      headers: { authorization: `Bearer ${config.openrouter.apiKey}`, 'content-type': 'application/json' },
+      body: JSON.stringify({ model, ...openAiRequest(req) }),
+    });
+    if (!res.ok) {
+      const err = new Error(`openrouter HTTP ${res.status}`);
+      err.status = res.status;
+      throw err;
+    }
+    const data = await res.json();
+    const text = data?.choices?.[0]?.message?.content || '';
+    if (!text) throw new Error('openrouter boş yanıt');
+    providerRun.openRouterUsed = true;
+    providerRun.openRouterResolvedModel = data?.model || model;
+    console.log(`[openrouter] resolved=${providerRun.openRouterResolvedModel}`);
+    console.log('[openrouter] success');
+    return { text };
+  } catch (err) {
+    providerRun.openRouterFailures += 1;
+    if (PROVIDER_BREAKER_STATUSES.has(err?.status) || err?.name === 'AbortError') providerCircuit.openrouter = true;
+    console.warn(`[openrouter] failed: ${String(err?.message || err).slice(0, 90)}`);
+    throw err;
+  } finally { clearTimeout(timeout); }
+}
+
 /** GROQ YEDEK BEYNİ: Gemini tamamen düştüğünde aynı istek ücretsiz Groq'a
  *  (Llama, OpenAI-uyumlu uç) gider. responseSchema JSON moda + sistem mesajına
  *  gömülür; dönen {text} Gemini yanıtıyla aynı şekilde okunur (response.text).
  *  Aşağı akıştaki doğrulama/sanitize katmanları bozuk çıktıyı zaten yakalar. */
 async function groqFallback(req) {
-  if (!config.groq.apiKey) return null;
-  const schema = req.config?.responseSchema;
-  const sys = [
-    req.config?.systemInstruction || '',
-    schema
-      ? 'Respond with ONLY one valid JSON object matching this JSON schema — no markdown fences, no commentary:\n' +
-        JSON.stringify(schema)
-      : 'Respond concisely in plain text.',
-  ].join('\n\n');
+  if (!config.groq.apiKey || providerCircuit.groq) return null;
   const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     headers: { authorization: `Bearer ${config.groq.apiKey}`, 'content-type': 'application/json' },
     body: JSON.stringify({
       model: config.groq.model,
-      temperature: 0.8,
       // Groq's default completion budget is too small for a complete script
       // with ten image prompts and the required metadata.
-      max_tokens: 3000,
-      messages: [
-        { role: 'system', content: sys },
-        { role: 'user', content: String(req.contents) },
-      ],
-      ...(schema ? { response_format: { type: 'json_object' } } : {}),
+      ...openAiRequest(req),
     }),
   });
-  if (!res.ok) throw new Error(`groq HTTP ${res.status}`);
+  if (!res.ok) {
+    if (PROVIDER_BREAKER_STATUSES.has(res.status)) providerCircuit.groq = true;
+    throw new Error(`groq HTTP ${res.status}`);
+  }
   const data = await res.json();
   const text = data?.choices?.[0]?.message?.content || '';
   if (!text) throw new Error('groq boş yanıt');
@@ -302,15 +349,20 @@ async function groqFallback(req) {
  *  ettiriyordu (canlıda görüldü). Kota (429) hatasında Gemini'de ısrar etmez;
  *  her tükenişte (kota dahil) GROQ_API_KEY varsa yedek beyne geçilir. */
 export async function generateWithRetry(ai, req, tries = 5) {
+  // Provider order is intentionally fixed. A quota/payment/outage/timeout trips
+  // that provider for this call rather than burning the production time budget.
   const delays = [2000, 6000, 15000, 30000];
   let lastErr;
-  for (let i = 0; i < tries; i += 1) {
+  for (let i = 0; ai && !providerCircuit.gemini && i < tries; i += 1) {
     try {
       return await ai.models.generateContent(req);
     } catch (err) {
       lastErr = err;
       const msg = String(err?.message || err);
-      if (/quota|RESOURCE_EXHAUSTED|429|API key|permission/i.test(msg)) break;
+      if (/quota|RESOURCE_EXHAUSTED|429|402|503|API key|permission|timeout/i.test(msg)) {
+        providerCircuit.gemini = true;
+        break;
+      }
       if (i < tries - 1) {
         const wait = delays[Math.min(i, delays.length - 1)];
         console.warn(`[gemini] geçici hata, ${wait / 1000}sn sonra tekrar (${i + 1}/${tries}): ${msg.slice(0, 90)}`);
@@ -327,7 +379,32 @@ export async function generateWithRetry(ai, req, tries = 5) {
   } catch (gErr) {
     console.warn(`[groq] yedek de düştü: ${String(gErr.message).slice(0, 90)}`);
   }
-  throw lastErr;
+  try {
+    const openRouter = await openRouterFallback(req);
+    if (openRouter) return openRouter;
+  } catch (err) {
+    if (!PROVIDER_BREAKER_STATUSES.has(err?.status) && err?.name !== 'AbortError') {
+      console.warn('[openrouter] retry skipped; deterministic fallback next.');
+    }
+  }
+  throw lastErr || new Error('No configured AI provider produced a response.');
+}
+
+function deterministicLocalFallback(topic, format) {
+  const safeTopic = String(topic || 'How Honeybees Navigate Home').trim();
+  const narrations = [
+    `${safeTopic} begins with a surprisingly precise natural problem.`,
+    'Every detail below stays within widely documented, cautious scientific explanation.',
+    'The story starts with an observable clue, not an invented dramatic claim.',
+    'Researchers compare repeated observations before drawing a careful conclusion.',
+    'That evidence reveals a simple mechanism working step by step.',
+    'Small changes in the environment can alter what observers measure.',
+    'The important twist is that the result looks stranger than it is.',
+    'A closer look connects each clue to the same underlying process.',
+    'This explanation avoids uncertain numbers, quotes, and unsupported names.',
+    'So the original question has a real answer: evidence beats guesswork.',
+  ];
+  return { topic: safeTopic, title: safeTopic, hook_candidates: [{ text: 'Evidence beats guesswork', score: 90 }], hook_text: 'Evidence beats guesswork', category: 'science', visual_anchor: 'clear documentary science imagery, natural light, precise readable details', scenes: narrations.map((n, i) => ({ narration: n, image_prompt: `Photorealistic documentary science scene ${i + 1}, clear subject, natural light, readable detail, cinematic wide or medium shot`, keywords: ['science', 'research'] })), cta: 'Subscribe for more true stories.', emphasis_words: ['precise', 'evidence', 'mechanism', 'answer'], finale_text: 'evidence beats guesswork', format, localFallback: true };
 }
 
 function buildUserPrompt(avoidTopics, { topPerformers = [], trendSeeds = [], strategyBrief = '', winningHooks = [] } = {}) {
@@ -390,8 +467,8 @@ function buildUserPrompt(avoidTopics, { topPerformers = [], trendSeeds = [], str
  * @returns {Promise<object>} - SCRIPT_SCHEMA + normalizedTopic.
  */
 export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid = [], strategyBrief = '' } = {}) {
-  assertGemini();
-  const ai = new GoogleGenAI({ apiKey: config.gemini.apiKey });
+  resetProviderRun();
+  const ai = config.gemini.apiKey ? new GoogleGenAI({ apiKey: config.gemini.apiKey }) : null;
 
   // 120: eski kanaldan tohumlanan konular da kaçınma listesinde kalsın.
   const recent = await getRecentUsedTopics(120);
@@ -428,7 +505,8 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
   let lengthFeedback = '';
 
   for (let attempt = 1; attempt <= maxRetries; attempt += 1) {
-    const response = await generateWithRetry(ai, {
+    let response;
+    try { response = await generateWithRetry(ai, {
       model: config.gemini.model,
       contents:
         buildUserPrompt(avoidTopics, { topPerformers, trendSeeds, strategyBrief, winningHooks }) +
@@ -439,7 +517,14 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
         responseSchema: SCRIPT_SCHEMA,
         thinkingConfig: { thinkingBudget: 0 },
       },
-    });
+    }); } catch (err) {
+      console.warn(`[script] AI sağlayıcıları kullanılamadı; deterministik yerel fallback: ${String(err?.message || err).slice(0, 90)}`);
+      const script = deterministicLocalFallback(process.env.FORCE_TOPIC, format.key);
+      script.narrationWordCount = evaluateNarrationLength(script.scenes, config.content).words;
+      script.viewerFirstValidation = validateViewerFirstScript(script);
+      script.aiProvider = getProviderRun();
+      return { ...script, normalizedTopic: normalizeTopic(script.topic) };
+    }
 
     const text = response.text;
     if (!text) {
@@ -463,7 +548,7 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
     if (!length.ok && attempt < maxRetries) {
       console.warn(`[script] ${length.words} kelime — ${length.code}, yeniden yazım isteniyor.`);
       lengthFeedback = length.direction === 'expand'
-        ? `Your previous script about "${script.topic}" has only ${length.words} spoken words — TOO SHORT. Rewrite the SAME topic with ${config.content.minNarrationWords}-${config.content.maxNarrationWords} spoken narration words, 8-11 distinct scenes, and a full evidence → reveal → twist → payoff arc. Do not pad with filler.`
+        ? `Keep the existing script and expand it only. Produce a minimum of 120 spoken words. Do not invent new information; only expand the existing factual content with clearer supporting detail. Preserve the same topic, hook, evidence, reveal, twist, and payoff.`
         : `Your previous script about "${script.topic}" has ${length.words} spoken words — TOO LONG. Rewrite the SAME topic with ${config.content.minNarrationWords}-${config.content.maxNarrationWords} spoken narration words. Preserve the hook, evidence, twist, and payoff; remove only repetition.`;
       continue;
     }
@@ -500,7 +585,7 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
     }
     if (script.hook_text) script.hook_text = softenAdText(script.hook_text, 'hook');
     if (script.title) script.title = softenAdText(script.title, 'başlık');
-    return { ...script, format: format.key, normalizedTopic: normalizeTopic(script.topic) };
+    return { ...script, format: format.key, normalizedTopic: normalizeTopic(script.topic), aiProvider: getProviderRun() };
   }
 
   if (lastScript?.hook_text) lastScript.hook_text = softenAdText(lastScript.hook_text, 'hook');

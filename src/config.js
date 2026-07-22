@@ -3,6 +3,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const config = {
+  openrouter: {
+    apiKey: process.env.OPENROUTER_API_KEY,
+    model: process.env.OPENROUTER_MODEL || 'openrouter/free',
+    baseUrl: 'https://openrouter.ai/api/v1',
+  },
   gemini: {
     apiKey: process.env.GEMINI_API_KEY,
     // Ücretsiz tier, kart gerektirmez. VARSAYILAN: 2.5-flash (hızlı + KARARLI).
