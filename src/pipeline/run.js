@@ -35,7 +35,6 @@ import { recordProduction } from './recordProduction.js';
 import { notify } from '../lib/notify.js';
 import {
   buildPublishingAttemptId,
-  requireDurablePublishingState,
   reservePublishingAttempt,
   updatePublishingPlatform,
 } from './publishingLedger.js';
@@ -73,12 +72,6 @@ export async function runPipeline(opts = {}) {
     config.youtube.clientSecret &&
     config.youtube.refreshToken;
   const willUpload = upload === true || (upload !== false && hasYouTube);
-
-  // Do this before generating media: an Actions runner's local JSON fallback
-  // vanishes with the job and must never be used to guard a remote upload.
-  if (willUpload && process.env.GITHUB_ACTIONS === 'true') {
-    requireDurablePublishingState();
-  }
 
   // 0) Öğrenme döngüsü: geçmiş videoların izlenme verisini tazele (best-effort).
   if (hasYouTube) {
@@ -535,7 +528,7 @@ export async function runPipeline(opts = {}) {
               config.meta.userToken || (config.meta.pageToken && config.meta.pageId),
             ),
           },
-        }, { requireDurable: process.env.GITHUB_ACTIONS === 'true' });
+        });
         if (!reservation.acquired) {
           publishingAttemptBlocked = true;
           canUpload = false;
@@ -558,15 +551,11 @@ export async function runPipeline(opts = {}) {
           .map((m) => `📷 ${m.author} — Wikimedia Commons (${m.license})`),
       )];
       if (credits.length) meta.description += '\n\n' + credits.join('\n');
-      await updatePublishingPlatform(publishingAttemptId, 'youtube', 'uploading', {}, {
-        requireDurable: process.env.GITHUB_ACTIONS === 'true',
-      });
+      await updatePublishingPlatform(publishingAttemptId, 'youtube', 'uploading');
       let res = null;
       try {
         res = await uploadVideo({ videoPath: outPath, ...meta });
-        await updatePublishingPlatform(publishingAttemptId, 'youtube', 'published', { remoteId: res.videoId }, {
-          requireDurable: process.env.GITHUB_ACTIONS === 'true',
-        });
+        await updatePublishingPlatform(publishingAttemptId, 'youtube', 'published', { remoteId: res.videoId });
         youtube = { ...res, title: meta.title, publishedAt: new Date().toISOString() };
         console.log(`  YouTube yüklendi: ${res.url}`);
       } catch (err) {
@@ -574,7 +563,7 @@ export async function runPipeline(opts = {}) {
         console.error(`  ⚠️ YouTube upload başarısız; Meta platformları yine denenecek: ${youtubeUploadError.slice(0, 180)}`);
         await updatePublishingPlatform(publishingAttemptId, 'youtube', 'remote_unknown', {
           lastError: youtubeUploadError.slice(0, 300),
-        }, { requireDurable: process.env.GITHUB_ACTIONS === 'true' }).catch(() => {});
+        }).catch(() => {});
       }
       if (res) {
         // İlk yorum ve SRT, YouTube yayınlandıktan sonra best-effort çalışır.

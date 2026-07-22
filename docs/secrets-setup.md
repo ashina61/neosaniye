@@ -26,12 +26,11 @@ Nereye yazılır:
 
 ---
 
-## 2) Firebase Servis Hesabı — yayınlama için zorunlu kalıcı durum
+## 2) Firebase Servis Hesabı — opsiyonel kalıcı durum
 
-> Yerel, `--no-upload` çalıştırmalarında zorunlu değildir. Ancak GitHub
-> Actions'ta otomatik yayın için **zorunludur**: runner'ın yerel JSON yedeği
-> job bittiğinde kaybolur ve aynı videonun yeniden yüklenmesini güvenle
-> engelleyemez. Secret eksikse pipeline render başlamadan durur.
+> Zorunlu değil. Firebase ayarlanmamışsa sistem `data/` altındaki JSON state'i
+> kullanır; GitHub Actions bu state'i iş sonunda repoya commit eder. Firestore,
+> Git dışından merkezi ve daha dayanıklı bir state katmanı istersen eklenebilir.
 
 1. `console.firebase.google.com` → projeni seç.
 2. **Project settings (dişli) → Service accounts → Generate new private key**.
