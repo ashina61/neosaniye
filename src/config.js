@@ -7,6 +7,11 @@ export const config = {
     apiKey: process.env.OPENROUTER_API_KEY,
     model: process.env.OPENROUTER_MODEL || 'openrouter/free',
     baseUrl: 'https://openrouter.ai/api/v1',
+    // Free-model routing can spend a while waiting for capacity. Thirty seconds
+    // was short enough to cancel healthy requests before OpenRouter replied.
+    timeoutMs: Number(process.env.OPENROUTER_TIMEOUT_MS || 90000),
+    attempts: Number(process.env.OPENROUTER_ATTEMPTS || 2),
+    retryDelayMs: Number(process.env.OPENROUTER_RETRY_DELAY_MS || 2000),
   },
   gemini: {
     apiKey: process.env.GEMINI_API_KEY,

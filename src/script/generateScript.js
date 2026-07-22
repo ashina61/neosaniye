@@ -318,35 +318,69 @@ async function openRouterFallback(req) {
   if (!config.openrouter.apiKey || providerCircuit.openrouter) return null;
   const model = config.openrouter.model;
   providerRun.openRouterRequestedModel = model;
-  providerRun.openRouterAttempts += 1;
   console.log(`[openrouter] model=${model}`);
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 30_000);
-  try {
-    const res = await fetch(`${config.openrouter.baseUrl}/chat/completions`, {
-      method: 'POST', signal: controller.signal,
-      headers: { authorization: `Bearer ${config.openrouter.apiKey}`, 'content-type': 'application/json' },
-      body: JSON.stringify({ model, ...openAiRequest(req) }),
-    });
-    if (!res.ok) {
-      const err = new Error(`openrouter HTTP ${res.status}`);
-      err.status = res.status;
+  const attempts = Math.max(1, config.openrouter.attempts);
+  let lastErr;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), config.openrouter.timeoutMs);
+    providerRun.openRouterAttempts += 1;
+    try {
+      const res = await fetch(`${config.openrouter.baseUrl}/chat/completions`, {
+        method: 'POST', signal: controller.signal,
+        headers: { authorization: `Bearer ${config.openrouter.apiKey}`, 'content-type': 'application/json' },
+        body: JSON.stringify({ model, ...openAiRequest(req) }),
+      });
+      if (!res.ok) {
+        const err = new Error(`openrouter HTTP ${res.status}`);
+        err.status = res.status;
+        throw err;
+      }
+      const data = await res.json();
+      const text = data?.choices?.[0]?.message?.content || '';
+      if (!text) {
+        const err = new Error('openrouter boş yanıt');
+        // Free backends occasionally return a successful envelope with no
+        // completion while they are being rerouted. Treat it like a transient
+        // provider failure instead of abandoning the only remaining fallback.
+        err.name = 'OpenRouterEmptyResponseError';
+        throw err;
+      }
+      // OpenRouter's JSON-object mode is best-effort for some free backends.
+      // Do not report a provider success and let the pipeline crash later on a
+      // malformed/truncated payload; retry it while the same fallback is active.
+      if (req.config?.responseSchema) {
+        try {
+          JSON.parse(text);
+        } catch (cause) {
+          const err = new Error(`openrouter geçersiz JSON: ${cause.message}`);
+          err.name = 'OpenRouterInvalidJsonError';
+          throw err;
+        }
+      }
+      providerRun.openRouterUsed = true;
+      providerRun.openRouterResolvedModel = data?.model || model;
+      console.log(`[openrouter] resolved=${providerRun.openRouterResolvedModel}`);
+      console.log('[openrouter] success');
+      return { text };
+    } catch (err) {
+      lastErr = err;
+      providerRun.openRouterFailures += 1;
+      const retryable = err?.name === 'AbortError' ||
+        err?.name === 'OpenRouterEmptyResponseError' ||
+        err?.name === 'OpenRouterInvalidJsonError' ||
+        /network|fetch failed|socket|ECONNRESET/i.test(String(err?.message || err));
+      if (retryable && attempt < attempts) {
+        console.warn(`[openrouter] temporary failure; retrying (${attempt}/${attempts}): ${String(err?.message || err).slice(0, 90)}`);
+        if (config.openrouter.retryDelayMs > 0) await new Promise((resolve) => setTimeout(resolve, config.openrouter.retryDelayMs));
+        continue;
+      }
+      if (PROVIDER_BREAKER_STATUSES.has(err?.status) || retryable) providerCircuit.openrouter = true;
+      console.warn(`[openrouter] failed: ${String(err?.message || err).slice(0, 90)}`);
       throw err;
-    }
-    const data = await res.json();
-    const text = data?.choices?.[0]?.message?.content || '';
-    if (!text) throw new Error('openrouter boş yanıt');
-    providerRun.openRouterUsed = true;
-    providerRun.openRouterResolvedModel = data?.model || model;
-    console.log(`[openrouter] resolved=${providerRun.openRouterResolvedModel}`);
-    console.log('[openrouter] success');
-    return { text };
-  } catch (err) {
-    providerRun.openRouterFailures += 1;
-    if (PROVIDER_BREAKER_STATUSES.has(err?.status) || err?.name === 'AbortError') providerCircuit.openrouter = true;
-    console.warn(`[openrouter] failed: ${String(err?.message || err).slice(0, 90)}`);
-    throw err;
-  } finally { clearTimeout(timeout); }
+    } finally { clearTimeout(timeout); }
+  }
+  throw lastErr;
 }
 
 /** GROQ YEDEK BEYNİ: Gemini tamamen düştüğünde aynı istek ücretsiz Groq'a
@@ -408,12 +442,14 @@ export async function generateWithRetry(ai, req, tries = 5) {
       return alt;
     }
   } catch (gErr) {
+    lastErr = gErr;
     console.warn(`[groq] yedek de düştü: ${String(gErr.message).slice(0, 90)}`);
   }
   try {
     const openRouter = await openRouterFallback(req);
     if (openRouter) return openRouter;
   } catch (err) {
+    lastErr = err;
     if (!PROVIDER_BREAKER_STATUSES.has(err?.status) && err?.name !== 'AbortError') {
       console.warn('[openrouter] retry skipped; deterministic fallback next.');
     }
