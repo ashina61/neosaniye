@@ -1,21 +1,26 @@
 /**
- * 14 GÜNLÜK YAYIN SAATİ DENEYİ — us-audience-3-slots-v1
+ * ABD-İZLEYİCİ YAYIN SAATİ DENEYİ — us-audience-3-slots-v2
  *
  * Kanal ~%69 ABD izleyicili; gelir optimizasyonundan önce izlenme/abone/
- * algoritma verisi toplamak için günde 3 SABİT UTC slotu test edilir:
- *   15:00 / 20:00 / 02:00 UTC (TR yaz saati: 18:00 / 23:00 / 05:00).
+ * algoritma verisi toplamak için günde 3 SABİT UTC slotu test edilir. Slotlar
+ * ABD Doğu saatine göre SABAH / ÖĞLEDEN SONRA / AKŞAM pencerelerine denk gelir:
+ *   13:00 / 18:00 / 23:00 UTC.
+ *   - 13:00 UTC → ET 08:00 (EST) / 09:00 (EDT)  → SABAH
+ *   - 18:00 UTC → ET 13:00 (EST) / 14:00 (EDT)  → ÖĞLEDEN SONRA
+ *   - 23:00 UTC → ET 18:00 (EST) / 19:00 (EDT)  → AKŞAM
+ * GitHub cron yalnızca UTC'dir (yaz/kış otomatik geçiş yok); slotlar hem EST
+ * hem EDT altında iyi ET pencerelerine düşecek şekilde seçildi. Üç slot da AYNI
+ * UTC gününde kaldığından eski 02:00 slotunun "ertesi güne taşma" karmaşası yok.
+ *
  * Deney boyunca saatler DEĞİŞTİRİLMEZ; bu modül yalnızca tespit + etiket
  * üretir, hiçbir şeyi otomatik optimize etmez.
- *
- * 02:00 UTC koşusu takvimde ertesi güne düşer ama İÇERİK GÜNÜ olarak bir
- * önceki UTC gününün 3. slotudur (contentDate alanı bunu netleştirir).
  */
 
 export const EXPERIMENT = {
-  id: 'us-audience-3-slots-v1',
+  id: 'us-audience-3-slots-v2',
   timezone: 'UTC',
-  slots: ['15:00', '20:00', '02:00'],
-  experimentStartDate: '2026-07-19', // ilk tam 3-slot günü
+  slots: ['13:00', '18:00', '23:00'],
+  experimentStartDate: '2026-07-22', // yeni ABD-optimize slotların ilk tam günü
   experimentDurationDays: 14,
   strategy: 'fixed-three-daily-slots',
   primaryAudience: 'US',
@@ -83,9 +88,13 @@ export function detectSlot(now = new Date(), {
     if (scheduledAt > now) scheduledAt.setTime(scheduledAt.getTime() - DAY_MS);
   }
 
-  // İÇERİK GÜNÜ: 02:00 slotu bir önceki UTC gününün 3. slotu sayılır.
+  // İÇERİK GÜNÜ: mevcut slotların üçü de aynı UTC gününde (13:00/18:00/23:00),
+  // bu yüzden içerik günü = slotun UTC tarihi. Genel kural (ileride bir slot UTC
+  // gece yarısından önceye, saat < 06:00'a alınırsa): erken sabah UTC slotu bir
+  // önceki UTC içerik gününün son slotu sayılır.
   const anchor = scheduledAt || now;
-  const contentDate = slot === '02:00'
+  const slotHour = slot !== 'manual' ? Number(slot.split(':')[0]) : null;
+  const contentDate = slotHour !== null && slotHour < 6
     ? utcDate(new Date(anchor.getTime() - DAY_MS))
     : utcDate(anchor);
 

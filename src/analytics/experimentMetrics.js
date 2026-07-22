@@ -1,5 +1,6 @@
 /**
- * DENEY METRİK ADAPTÖRÜ — us-audience-3-slots-v1
+ * DENEY METRİK ADAPTÖRÜ — deney kimliği scheduleExperiment.js'ten gelir
+ * (tek kaynak: EXPERIMENT.id, şu an us-audience-3-slots-v2).
  *
  * YouTube Analytics API henüz bağlı DEĞİL (kullanıcı OAuth kapsamını
  * yenilemedi). Bu modül:
@@ -7,6 +8,7 @@
  *  - API bağlandığında yalnızca collectSlotMetrics içinin doldurulması
  *    yeterli olacak temiz bir arayüz tanımlar; akışın geri kalanı değişmez.
  */
+import { EXPERIMENT } from '../pipeline/scheduleExperiment.js';
 
 /** Bir videonun deney metrik iskeleti. API yoksa alanlar null kalır. */
 export function emptySlotMetrics() {
@@ -85,7 +87,7 @@ export function buildSlotComparisonReport(records, { minSample = 7 } = {}) {
     };
   }
   return {
-    experimentId: 'us-audience-3-slots-v1',
+    experimentId: EXPERIMENT.id,
     generatedAt: new Date().toISOString(),
     minSample,
     slots,
