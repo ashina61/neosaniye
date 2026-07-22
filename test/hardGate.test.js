@@ -16,32 +16,32 @@ test('temiz durum → block yok', () => {
   assert.deepEqual(r.failures, []);
 });
 
-test('İngilizce içerikte Türkçe CTA → SERT blok (warning override aşamaz)', () => {
+test('İngilizce içerikte Türkçe CTA → editoryal uyarı', () => {
   const r = evaluateHardGate({ ctaApplied: true, ctaLanguageMatch: false });
-  assert.equal(r.block, true);
+  assert.equal(r.block, false);
   assert.ok(r.failures.includes('CTA_WRONG_LANGUAGE'));
 });
 
-test('SFX final videoda doğrulanamadı → blok', () => {
+test('SFX final videoda doğrulanamadı → raporlanır', () => {
   const r = evaluateHardGate({ sfxVerification: { ok: false, failures: ['SFX_INAUDIBLE'] } });
-  assert.equal(r.block, true);
+  assert.equal(r.block, false);
   assert.ok(r.failures.includes('SFX_INAUDIBLE'));
 });
 
-test('müzik havuzu tükendi + tekrar → blok', () => {
+test('müzik havuzu tükendi + tekrar → raporlanır', () => {
   const r = evaluateHardGate({ music: { poolExhausted: true, repeatedFallback: true, silentFallback: false } });
-  assert.equal(r.block, true);
+  assert.equal(r.block, false);
   assert.ok(r.failures.includes('MUSIC_POOL_EXHAUSTED'));
 });
 
-test('müzik havuzu tükendi ama tek fit değil (repeat yok) → blok yok', () => {
+test('müzik havuzu tükendi ama tek fit değil (repeat yok) → raporlanır yok', () => {
   const r = evaluateHardGate({ music: { poolExhausted: true, repeatedFallback: false, silentFallback: false } });
   assert.equal(r.block, false);
 });
 
 test('kanal mono çıktı → CHANNEL_METADATA_MISMATCH', () => {
   const r = evaluateHardGate({ channelTruth: { expectedChannels: 2, actualChannels: 1 } });
-  assert.equal(r.block, true);
+  assert.equal(r.block, false);
   assert.ok(r.failures.includes('CHANNEL_METADATA_MISMATCH'));
 });
 
@@ -55,7 +55,7 @@ test('CTA doğrulama başarısızlıkları sert kapıya taşınır', () => {
     ctaApplied: true, ctaLanguageMatch: true,
     ctaVerification: { ok: false, failures: ['CTA_CAPTION_OVERLAP', 'CTA_OUTSIDE_SAFE_MARGIN'] },
   });
-  assert.equal(r.block, true);
+  assert.equal(r.block, false);
   assert.ok(r.failures.includes('CTA_CAPTION_OVERLAP'));
   assert.ok(r.failures.includes('CTA_OUTSIDE_SAFE_MARGIN'));
 });

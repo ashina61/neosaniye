@@ -215,15 +215,15 @@ Concept: "${config.niche.theme}". This video's format: ${format.brief}${processE
 Write in English, for a SINGLE dramatic narrator. STRICT word budget: the spoken voiceover is the SCENE NARRATIONS ONLY (the cta is NOT spoken) and their total must be ${config.content.minNarrationWords}-${config.content.maxNarrationWords} words — never outside that range. This is a complete 35-58 second story, NOT a 15-second fragment. Hook fast, but give the mystery, evidence, twist, and payoff enough room to land; every sentence still earns its place.
 
 Structure the story as EXACTLY 10 or 11 SCENES following this EXACT retention arc (a 10M-view Shorts shape):
-QUESTION → MYSTERY → EVIDENCE → REVEAL → TWIST → ANSWER → PAYOFF → LOOP.
-1) QUESTION: scene 1 opens a curiosity gap the viewer NEEDS closed (often literally a question).
+HOOK → FIRST ANSWER → "BUT..." → NEW INFORMATION → "THE INTERESTING PART..." → STRONGEST FACT → PAYOFF → CTA.
+1) HOOK: in the first two seconds use at least one of: a surprising number, question, contradiction, incredible claim, unexpected result, or mystery. Scene 1 must open a curiosity gap the viewer NEEDS closed.
 2) MYSTERY + EVIDENCE: escalate fast, ONE concrete, surprising, ACCURATE detail per beat — each beat
    must add NEW information (never restate the previous line in new words).
 3) REVEAL then TWIST: the "wait, what?!" turn.
 4) ANSWER + PAYOFF: the final scene ANSWERS the opening question so the end loops back to the hook
    (hook "how did they find the invisible sun?" → finale "by finding the sun they couldn't see"). The
    story ends on the payoff; the cta is a separate on-screen/description line, never spoken.
-- Use exactly 10 or 11 beats: on Shorts the eye needs a new idea every ~3s.
+- Use exactly 10 or 11 beats: create a fresh curiosity point every 5-8 seconds. The middle must explicitly pivot with "But..." (or a natural equivalent), then "The interesting part..." before the strongest fact.
 
 Rules for each scene:
 - narration: exactly ONE sentence, spoken aloud. Scene 1 is 8-10 concrete words so the opening shot can cut within ~3 seconds; every later scene is 11-14 words. Before answering, count all scene narration words: the total MUST be ${config.content.minNarrationWords}-${config.content.maxNarrationWords}. No jargon, emojis, hashtags, or markdown.

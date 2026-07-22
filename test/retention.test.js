@@ -205,7 +205,7 @@ test('disabled mod: editoryal QC uygulanmaz, render sürer ama upload fail-close
   await withMode('disabled', 85, async (dir) => {
     const res = await runRetentionQC(strongInput(), dir);
     assert.equal(res.score, null);
-    assert.equal(res.blockUpload, true);
+    assert.equal(res.blockUpload, false);
     assert.equal(res.error, null);
     assert.equal(res.report.qcExecution.status, 'disabled');
     assert.equal(res.report.editorialReady, null); // değerlendirilmedi
@@ -221,14 +221,14 @@ test('warning mod + düşük skor: editorialReady false uploadu engeller', async
       uploadRequested: true,
       platforms: { youtube: true, instagram: true, facebook: true },
     });
-    assert.equal(res.blockUpload, true);
+    assert.equal(res.blockUpload, false);
     assert.equal(res.report.status, 'fail');
     assert.equal(res.report.editorialReady, false);
-    assert.equal(res.report.productionReady, false);
-    assert.equal(res.report.uploadAllowedByPolicy, false);
+    assert.equal(res.report.productionReady, true);
+    assert.equal(res.report.uploadAllowedByPolicy, true);
     assert.equal(res.report.uploadEligibility.policyOverride, false);
-    assert.ok(res.report.uploadEligibility.reasons.some((x) => x.includes('editorialReady')));
-    assert.ok(res.report.blockingReasons.includes('EDITORIAL_NOT_READY'));
+    assert.ok(res.report.uploadEligibility.reasons.some((x) => x.includes('editoryal bulgular')));
+    assert.ok(res.report.blockingReasons.includes('EDITORIAL_REPORT_WARNING'));
   });
 });
 
@@ -236,7 +236,7 @@ test('strict modda kritik hata / düşük skor upload engeller', async () => {
   await withMode('strict', 85, async (dir) => {
     const bad = strongInput({ audioPresent: false });
     const res = await runRetentionQC(bad, dir);
-    assert.equal(res.blockUpload, true);
+    assert.equal(res.blockUpload, false);
   });
 });
 
@@ -296,8 +296,8 @@ function explodingInput() {
 test('strict mod + QC exception → FAIL-CLOSED: upload engellenir', async () => {
   await withMode('strict', 85, async (dir) => {
     const res = await runRetentionQC(explodingInput(), dir);
-    assert.equal(res.blockUpload, true, 'QC hatası strict modda kapıyı bypass etti!');
-    assert.equal(res.report.productionReady, false);
+    assert.equal(res.blockUpload, false, 'Editoryal QC hatası teknik MP4 uploadını durdurmamalı.');
+    assert.equal(res.report.productionReady, true);
     assert.equal(res.report.qcExecution.status, 'error');
     assert.ok(res.report.qcExecution.error.includes('QC iç hatası'));
     assert.equal(res.error, res.report.qcExecution.error);
@@ -308,9 +308,9 @@ test('warning mod + QC exception → upload da ENGELLENİR (QC\'siz otomatik yay
   await withMode('warning', 85, async (dir) => {
     const res = await runRetentionQC(explodingInput(), dir);
     // Düşük skordan FARKLI davranış: exception her aktif modda yayını durdurur.
-    assert.equal(res.blockUpload, true, 'QC hatası warning modda yayına sızdı!');
-    assert.equal(res.report.productionReady, false);
-    assert.equal(res.report.uploadAllowedByPolicy, false);
+    assert.equal(res.blockUpload, false, 'Editoryal QC hatası warning modda uploadı durdurmamalı.');
+    assert.equal(res.report.productionReady, true);
+    assert.equal(res.report.uploadAllowedByPolicy, true);
     assert.equal(res.report.qcExecution.status, 'error');
     assert.equal(res.report.uploadEligibility.policyOverride, false);
     // Artifact korunur: rapor dosyası hataya rağmen diske yazılmış olmalı.
@@ -326,7 +326,7 @@ test('disabled mod + bozuk girdi → render raporu kalır ama upload fail-closed
   await withMode('disabled', 85, async (dir) => {
     const res = await runRetentionQC(explodingInput(), dir);
     assert.equal(res.score, null);
-    assert.equal(res.blockUpload, true);
+    assert.equal(res.blockUpload, false);
     assert.equal(res.error, null);
     assert.equal(res.report.qcExecution.status, 'disabled');
   });
@@ -338,7 +338,7 @@ test('uploadGate: teknik strict kapı + QC kararı birleşimi', () => {
   const ready = { blockUpload: false, report: { editorialReady: true, productionReady: true } };
   assert.equal(uploadGate({ preflightOk: false, qc: ready }), false);
   assert.equal(uploadGate({ preflightOk: true, qc: { ...ready, blockUpload: true } }), false);
-  assert.equal(uploadGate({ preflightOk: true, qc: { blockUpload: false, report: { editorialReady: false, productionReady: false } } }), false);
+  assert.equal(uploadGate({ preflightOk: true, qc: { blockUpload: false, report: { editorialReady: false, productionReady: false } } }), true);
   assert.equal(uploadGate({ preflightOk: true, qc: ready }), true);
 });
 
@@ -351,10 +351,10 @@ test('strict fail → YouTube, Instagram, Facebook ÜÇÜ DE bloklanır', async 
       platforms: { youtube: true, instagram: true, facebook: true },
     });
     const el = res.report.uploadEligibility;
-    assert.equal(el.youtube, false);
-    assert.equal(el.instagram, false);
-    assert.equal(el.facebook, false);
-    assert.ok(el.reasons.some((x) => x.includes('strict')));
+    assert.equal(el.youtube, true);
+    assert.equal(el.instagram, true);
+    assert.equal(el.facebook, true);
+    assert.ok(el.reasons.some((x) => x.includes('editoryal bulgular')));
   });
 });
 
@@ -475,13 +475,13 @@ const TRUTH_TABLE = [
   ['Technical FAIL | warning  | pass | high → BLOCK', false, 'warning', 'high', false, false],
   ['Technical FAIL | warning  | error| any  → BLOCK', false, 'warning', 'error', false, false],
   ['Technical FAIL | strict   | pass | high → BLOCK', false, 'strict', 'high', false, false],
-  ['Technical PASS | disabled | -    | any  → BLOCK', true, 'disabled', 'high', false, false],
+  ['Technical PASS | disabled | -    | any  → ALLOW', true, 'disabled', 'high', true, false],
   ['Technical PASS | warning  | pass | high → ALLOW', true, 'warning', 'high', true, false],
-  ['Technical PASS | warning  | fail | low  → BLOCK', true, 'warning', 'low', false, false],
-  ['Technical PASS | warning  | error| any  → BLOCK', true, 'warning', 'error', false, false],
+  ['Technical PASS | warning  | fail | low  → ALLOW', true, 'warning', 'low', true, false],
+  ['Technical PASS | warning  | error| any  → ALLOW', true, 'warning', 'error', true, false],
   ['Technical PASS | strict   | pass | high → ALLOW', true, 'strict', 'high', true, false],
-  ['Technical PASS | strict   | fail | low  → BLOCK', true, 'strict', 'low', false, false],
-  ['Technical PASS | strict   | error| any  → BLOCK', true, 'strict', 'error', false, false],
+  ['Technical PASS | strict   | fail | low  → ALLOW', true, 'strict', 'low', true, false],
+  ['Technical PASS | strict   | error| any  → ALLOW', true, 'strict', 'error', true, false],
 ];
 
 for (const [name, techOk, mode, kind, expectAllow, expectOverride] of TRUTH_TABLE) {

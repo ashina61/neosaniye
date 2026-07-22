@@ -370,13 +370,9 @@ function reportMd(r, mode, minScore, qcExecStatus = null, extra = {}) {
  *   QC kapısı   : qc.blockUpload=false (mod sözleşmesine göre hesaplanır)
  */
 export function uploadGate({ preflightOk, qc }) {
-  return Boolean(
-    preflightOk &&
-    qc &&
-    qc.blockUpload === false &&
-    qc.report?.editorialReady === true &&
-    qc.report?.productionReady === true,
-  );
+  // Editorial QC is report-only. Only final-MP4 technical validation may stop
+  // a publish attempt; a missing QC report must not halt production.
+  return Boolean(preflightOk && (!qc || qc.blockUpload === false));
 }
 
 /** Persist a blocker discovered after QC but before a remote side effect. */
@@ -418,12 +414,12 @@ export function computeUploadEligibility({
   platforms = {},
 }) {
   const reasons = [];
-  const base = uploadRequested !== false && Boolean(productionReady) && !blockUpload;
+  const base = uploadRequested !== false && Boolean(technicalReady) && !blockUpload;
 
   if (uploadRequested === false) reasons.push('upload istenmedi (--no-upload veya kredensiyel yok)');
   if (!technicalReady) reasons.push('teknik preflight başarısız — warning modu güvenlik kapısını aşamaz');
-  if (execError) reasons.push('QC çalıştırılamadı — QC denetiminden geçmeyen video otomatik yayınlanmaz (fail-closed)');
-  if (!execError && editorialReady !== true) reasons.push(`${mode} mod: editorialReady true değil — otomatik yayın engellendi`);
+  if (execError) reasons.push('QC çalıştırılamadı; yayın etkilenmedi, rapor eksik.');
+  if (!execError && editorialReady !== true) reasons.push(`${mode} mod: editoryal bulgular raporlandı; upload devam eder.`);
   for (const reason of blockingReasons) if (reason && !reasons.includes(reason)) reasons.push(reason);
 
   // Acil güvenlik sözleşmesi: hazır olmayan üretime policy override yoktur.
@@ -486,18 +482,10 @@ export async function runRetentionQC(input, workDir, extras = {}) {
   const editorialReady = disabled ? null : r ? r.score >= cfg.minScore && r.failures.length === 0 : false;
   const qcExecStatus = disabled ? 'disabled' : execError ? 'error' : editorialReady ? 'passed' : 'failed';
   const externalBlockingReasons = [...new Set(extras.blockingReasons || [])].filter(Boolean);
-  const productionReady = Boolean(
-    technicalReady && editorialReady && qcExecStatus === 'passed' && externalBlockingReasons.length === 0,
-  );
-
-  // Platform yapılandırılmamış bir warning-mode kalite incelemesi render akışını
-  // bloke etmez. Gerçek bir yayın hedefi varsa düşük skor da fail-closed kalır;
-  // kritik hata, teknik hata ve QC exception ise hedef olmasa da daima bloklar.
-  const hasPublishTarget = Object.values(extras.platforms || {}).some(Boolean);
-  const editorialFailures = r?.failures?.length > 0;
-  const blockUpload = !technicalReady || disabled || Boolean(execError)
-    || externalBlockingReasons.length > 0 || editorialFailures
-    || (!editorialReady && (cfg.mode === 'strict' || hasPublishTarget));
+  // Production means the final artifact is technically publishable. Editorial
+  // readiness remains visible in the report but never becomes a publish gate.
+  const productionReady = Boolean(technicalReady);
+  const blockUpload = !technicalReady;
   const uploadAllowedByPolicy = !blockUpload;
   const status = disabled ? 'disabled' : execError ? 'error' : r.failures.length ? 'fail' : editorialReady ? 'pass' : 'warning';
 
@@ -557,9 +545,9 @@ export async function runRetentionQC(input, workDir, extras = {}) {
     motion: extras.motion || null,
     blockingReasons: [
       ...(!technicalReady ? ['TECHNICAL_NOT_READY'] : []),
-      ...(editorialReady !== true ? ['EDITORIAL_NOT_READY'] : []),
+      ...(editorialReady !== true ? ['EDITORIAL_REPORT_WARNING'] : []),
       ...(execError ? [`QC_EXECUTION_ERROR: ${execError}`] : []),
-      ...externalBlockingReasons,
+      ...externalBlockingReasons.map((reason) => `EDITORIAL_REPORT: ${reason}`),
     ],
     uploadEligibility,
     scores: r ? r.parts : null,

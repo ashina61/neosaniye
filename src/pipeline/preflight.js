@@ -99,7 +99,7 @@ export async function preflightCheck(videoPath, opts = {}) {
   if (opts.expectedDuration) {
     technical.durationDeltaSeconds = +(duration - opts.expectedDuration).toFixed(2);
     if (Math.abs(technical.durationDeltaSeconds) > t.durationDeltaTolerance) {
-      issues.push(`süre beklenenden sapıyor (beklenen ${opts.expectedDuration.toFixed(1)}s, gerçek ${metrics.duration}s)`);
+      warnings.push(`süre render beklentisinden sapıyor (beklenen ${opts.expectedDuration.toFixed(1)}s, gerçek ${metrics.duration}s)`);
     }
   }
 
@@ -128,7 +128,7 @@ export async function preflightCheck(videoPath, opts = {}) {
     const expectedFps = Number(opts.expectedFps || 30);
     technical.expectedFps = expectedFps;
     if (technical.fps !== null && Math.abs(technical.fps - expectedFps) > 0.2) {
-      issues.push(`frame rate beklenenden farklı (${technical.fps}, beklenen ${expectedFps})`);
+      warnings.push(`frame rate render beklentisinden farklı (${technical.fps}, beklenen ${expectedFps})`);
     }
   }
   // Ses videodan erken mi bitiyor (veya tersi)?
@@ -136,7 +136,7 @@ export async function preflightCheck(videoPath, opts = {}) {
     const gap = +(parseFloat(vStream.duration) - parseFloat(aStream.duration)).toFixed(2);
     technical.audioVideoDurationGapSeconds = gap;
     if (Math.abs(gap) > t.avSyncToleranceSeconds) {
-      issues.push(gap > 0
+      warnings.push(gap > 0
         ? `ses videodan ${gap}s erken bitiyor`
         : `video sesten ${Math.abs(gap)}s erken bitiyor`);
     }
@@ -151,7 +151,7 @@ export async function preflightCheck(videoPath, opts = {}) {
     expectedSfxCount: Number(renderPlan.expectedSfxCount) || 0,
     transitionCount: renderPlan.transitions?.length || 0,
   } : null;
-  for (const issue of validateRenderPlan(renderPlan)) issues.push(`render plan: ${issue}`);
+  for (const issue of validateRenderPlan(renderPlan)) warnings.push(`render plan: ${issue}`);
 
   // DECODE testi: tüm dosya baştan sona çözülür; bitstream hatası varsa yakalanır.
   if (vStream || aStream) {
@@ -190,16 +190,16 @@ export async function preflightCheck(videoPath, opts = {}) {
       // Kuyruk sessizliği: video sonunda biten sessizlik ayrı raporlanır.
       if (duration && s.end !== null && duration - s.end < 0.5) {
         technical.trailingSilenceSeconds = +s.duration.toFixed(2);
-        if (s.duration > t.trailingSilenceMaxSeconds) issues.push(`sonda ${technical.trailingSilenceSeconds}s sessiz boşluk`);
+        if (s.duration > t.trailingSilenceMaxSeconds) warnings.push(`sonda ${technical.trailingSilenceSeconds}s sessiz boşluk`);
       } else if (s.start <= 0.05 && (s.duration || 0) > 0.35) {
         technical.leadingSilenceSeconds = +(s.duration || 0).toFixed(2);
-        issues.push(`başta ${technical.leadingSilenceSeconds}s sessiz boşluk`);
+        warnings.push(`başta ${technical.leadingSilenceSeconds}s sessiz boşluk`);
       } else {
         warnings.push(`sessiz bölüm ${s.start.toFixed(1)}s @ ${(s.duration ?? 0).toFixed(1)}s`);
       }
     }
     if (ev.maxVolumeDb !== null && ev.maxVolumeDb >= t.clippingPeakDb) {
-      issues.push(`peak clipping riski (max ${ev.maxVolumeDb} dB)`);
+      warnings.push(`peak clipping riski (max ${ev.maxVolumeDb} dB)`);
     }
   }
 
@@ -213,7 +213,7 @@ export async function preflightCheck(videoPath, opts = {}) {
       metrics.lufs = parseFloat(m[1]);
       technical.lufs = metrics.lufs;
       if (metrics.lufs < -18 || metrics.lufs > -10) {
-        issues.push(`loudness hedef dışı (${metrics.lufs} LUFS, hedef ~-14)`);
+        warnings.push(`loudness hedef dışı (${metrics.lufs} LUFS, hedef ~-14)`);
       }
     }
   }

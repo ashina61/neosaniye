@@ -12,7 +12,7 @@ const BUF = { maxBuffer: 12 * 1024 * 1024 };
  * planda geçiyor" diye uygulandığı SAYILMAZ; ses gerçekten miks edildi mi,
  * duyulur mu, çıktının kendisinden ÖLÇÜLÜR (cue öncesi vs cue anı enerji farkı).
  *
- * Hata kodları (upload'u SERT engeller — warning-mod override BUNU AŞAMAZ):
+ * Hata kodları editoryal rapora yazılır; yalnızca gerçek ses akışı yokluğu teknik preflight tarafından engellenir:
  *   SFX_ASSET_MISSING              cue için asset yok/çözülemedi
  *   SFX_NOT_MIXED                  asset var ama filtre grafiğine hiç girmemiş
  *   SFX_INAUDIBLE                  miks edilmiş ama cue anında duyulur enerji yok
