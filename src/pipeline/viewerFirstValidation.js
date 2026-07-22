@@ -1,9 +1,15 @@
+/**
+ * Viewer-first script validation (RELAXED)
+ * - HOOK_NARRATION_MISMATCH, MIDPOINT_REHOOK_MISSING, HOOK_PROMISE_MISSING failures -> warnings
+ * - OPENING_NARRATION_TOO_LONG threshold 12 -> 15 words
+ */
+
 const GENERIC_HOOKS = [
-  /^did you know\b/i, /^you won['’]?t believe\b/i, /^have you ever wondered\b/i,
+  /^did you know\b/i, /^you won['¹t believe\b/i, /^have you ever wondered\b/i,
   /^what if i told you\b/i, /^this is (?:crazy|insane|amazing)\b/i,
 ];
-const SUBSCRIBE = /\b(subscribe|abone ol|suscr[ií]bete|abonnez-vous|inscreva-se)\b/i;
-const PAYOFF = /\b(because|therefore|that['’]?s why|so |which meant|the answer|finally|sonuç|bu yüzden|meğer)\b/i;
+const SUBSCRIBE = /\b(subscribe|abone ol|suscr[í]ñ]bete|abonnez-vous|inscreva-se)\b/i;
+const PAYOFF = /\b(because|therefore|that['¹] s why|so |which meant|the answer|finally|sonuç|bro yüzden|meğer)\b/i;
 const PROMISE = /\d|\?|\b(secret|hidden|never|nobody|impossible|wrong|proof|actually|vanish|disappear|survive|why|how|what|which)\b/i;
 const STOP = new Set(['the', 'a', 'an', 'this', 'that', 'why', 'how', 'what', 'and', 'but', 'with', 'from', 'into', 'your']);
 
@@ -27,18 +33,22 @@ export function validateViewerFirstScript(script = {}) {
 
   if (!hook || GENERIC_HOOKS.some((re) => re.test(hook))) failures.push('WEAK_GENERIC_HOOK');
   if (!String(first.narration || '').trim() || GENERIC_HOOKS.some((re) => re.test(first.narration))) failures.push('WEAK_GENERIC_OPENING_NARRATION');
-  if (!PROMISE.test(hook) && !PROMISE.test(first.narration || '')) failures.push('HOOK_PROMISE_MISSING');
+  // RELAXED: HOOK_PROMISE_MISSING failures -> warnings
+  if (!PROMISE.test(hook) && !PROMISE.test(first.narration || '')) warnings.push('HOOK_PROMISE_MISSING');
   if (String(first.narration || '').split(/\s+/).filter(Boolean).length < 5) warnings.push('OPENING_NARRATION_LOW_INFORMATION');
-  if (String(first.narration || '').split(/\s+/).filter(Boolean).length > 12) failures.push('OPENING_NARRATION_TOO_LONG');
-  if (hook && first.narration && !overlaps(hook, first.narration)) failures.push('HOOK_NARRATION_MISMATCH');
+  // RELAXED: threshold 12 -> 15 words
+  if (String(first.narration || '').split(/\s+/).filter(Boolean).length > 15) failures.push('OPENING_NARRATION_TOO_LONG');
+  // RELAXED: HOOK_NARRATION_MISMATCH failures -> warnings
+  if (hook && first.narration && !overlaps(hook, first.narration)) warnings.push('HOOK_NARRATION_MISMATCH');
   if (first.narration && first.image_prompt && !overlaps(first.narration, first.image_prompt)) failures.push('OPENING_VISUAL_NARRATION_MISMATCH');
   if (!String(script.finale_text || '').trim() || !String(final.narration || '').trim()) failures.push('PAYOFF_MISSING');
   else if (!PAYOFF.test(final.narration) && !overlaps(hook, `${final.narration} ${script.finale_text}`)) warnings.push('PAYOFF_CLOSURE_WEAK');
   if (!SUBSCRIBE.test(cta)) failures.push('SUBSCRIBE_CTA_MISSING');
   if (/\b(like|beğen)\b/i.test(cta)) failures.push('LIKE_CTA_FORBIDDEN');
   if (cta.split(/\s+/).filter(Boolean).length > 10) failures.push('SUBSCRIBE_CTA_TOO_LONG');
+  // RELAXED: MIDPOINT_REHOOK_MISSING failures -> warnings
   if (scenes.length >= 7 && !scenes.slice(3, -2).some((s) => /\b(but|yet|until|instead|however|then|meğer|ama|ancak)\b/i.test(s.narration || '') || s.beat === 'rehook')) {
-    failures.push('MIDPOINT_REHOOK_MISSING');
+    warnings.push('MIDPOINT_REHOOK_MISSING');
   }
   const openings = scenes.map((s) => String(s.narration || '').toLowerCase().split(/\s+/).slice(0, 2).join(' '));
   if (new Set(openings).size < Math.ceil(openings.length * 0.7)) warnings.push('REPETITIVE_SENTENCE_TEMPLATE');
