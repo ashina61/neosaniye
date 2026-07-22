@@ -35,6 +35,7 @@ import { recordProduction } from './recordProduction.js';
 import { notify } from '../lib/notify.js';
 import {
   buildPublishingAttemptId,
+  requireDurablePublishingState,
   reservePublishingAttempt,
   updatePublishingPlatform,
 } from './publishingLedger.js';
@@ -72,6 +73,12 @@ export async function runPipeline(opts = {}) {
     config.youtube.clientSecret &&
     config.youtube.refreshToken;
   const willUpload = upload === true || (upload !== false && hasYouTube);
+
+  // Do this before generating media: an Actions runner's local JSON fallback
+  // vanishes with the job and must never be used to guard a remote upload.
+  if (willUpload && process.env.GITHUB_ACTIONS === 'true') {
+    requireDurablePublishingState();
+  }
 
   // 0) Öğrenme döngüsü: geçmiş videoların izlenme verisini tazele (best-effort).
   if (hasYouTube) {
