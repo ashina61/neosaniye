@@ -491,13 +491,36 @@ function buildUserPrompt(avoidTopics, { topPerformers = [], trendSeeds = [], str
 }
 
 /**
+ * Providers do not retain the prior response between generateContent calls.
+ * Include the actual narration in a repair request so "rewrite the previous
+ * script" is actionable rather than an instruction the model has to guess at.
+ */
+export function buildNarrationLengthRepair(script, length, content = config.content) {
+  const narration = (script?.scenes || [])
+    .map((scene, index) => `${index + 1}. ${String(scene?.narration || '').trim()}`)
+    .join('\n');
+  const target = Math.floor((content.minNarrationWords + content.maxNarrationWords) / 2);
+  const action = length.direction === 'expand'
+    ? 'Add only clear, factual supporting detail; do not invent facts.'
+    : 'Remove only repetition, filler, and nonessential qualifiers; do not remove factual claims.';
+
+  return `NARRATION LENGTH REPAIR — REQUIRED BEFORE YOU RESPOND:
+The previous response contains ${length.words} spoken narration words, which is ${length.code}.
+Rewrite the SAME complete JSON script and preserve its topic, hook, evidence, twist, payoff, metadata, and scene count.
+${action}
+The scene narrations MUST total EXACTLY about ${target} words (accepted range: ${content.minNarrationWords}-${content.maxNarrationWords}). Count only narration fields. Scene 1 must have 8-10 words; every later scene must have 11-14 words. Count again before returning JSON.
+Previous narration to repair:
+${narration}`;
+}
+
+/**
  * Yeni bir anlatı-script üretir.
  * @param {object} opts
- * @param {number} [opts.maxRetries=3] - Konu tekrarı halinde yeniden deneme sayısı.
+ * @param {number} [opts.maxRetries=5] - Konu/şema/duration retry sayısı.
  * @param {string[]} [opts.avoidTopics=[]] - Ekstra kaçınılacak konular.
  * @returns {Promise<object>} - SCRIPT_SCHEMA + normalizedTopic.
  */
-export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid = [], strategyBrief = '' } = {}) {
+export async function generateScript({ maxRetries = 5, avoidTopics: extraAvoid = [], strategyBrief = '' } = {}) {
   resetProviderRun();
   const ai = config.gemini.apiKey ? new GoogleGenAI({ apiKey: config.gemini.apiKey }) : null;
 
@@ -585,9 +608,7 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
     const length = evaluateNarrationLength(script.scenes, config.content);
     if (!length.ok && attempt < maxRetries) {
       console.warn(`[script] ${length.words} kelime — ${length.code}, yeniden yazım isteniyor.`);
-      lengthFeedback = length.direction === 'expand'
-        ? `Keep the existing script and expand it only. Produce a minimum of 120 spoken words. Do not invent new information; only expand the existing factual content with clearer supporting detail. Preserve the same topic, hook, evidence, reveal, twist, and payoff.`
-        : `Your previous script about "${script.topic}" has ${length.words} spoken words — TOO LONG. Rewrite the SAME topic with ${config.content.minNarrationWords}-${config.content.maxNarrationWords} spoken narration words. Preserve the hook, evidence, twist, and payoff; remove only repetition.`;
+      lengthFeedback = buildNarrationLengthRepair(script, length, config.content);
       continue;
     }
     if (!length.ok) {
