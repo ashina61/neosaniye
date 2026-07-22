@@ -27,6 +27,25 @@ test('accepts aligned concrete hook and subscribe CTA', () => {
   assert.equal(r.ok, true);
 });
 
+test('rejects an opening without a promise, question, contradiction, or number', () => {
+  const r = validateViewerFirstScript({
+    hook_text: 'Honeybees navigate home',
+    cta: 'Subscribe for more nature stories.',
+    finale_text: 'The answer is their sun compass.',
+    scenes: Array.from({ length: 8 }, (_, i) => ({
+      narration: i === 0
+        ? 'Honeybees navigate home using familiar landscape details every day.'
+        : i === 4
+          ? 'But polarized light gives their internal compass another reliable signal.'
+          : i === 7
+            ? 'The answer is their sun compass and remembered landscape.'
+            : 'Workers compare changing light with familiar flowers near their hive.',
+      image_prompt: 'honeybee navigating flowers in sunlight',
+    })),
+  });
+  assert.ok(r.failures.includes('HOOK_PROMISE_MISSING'));
+});
+
 test('pacing flags long opening holds and decorative transition excess', () => {
   const issues = validatePacing({
     timeline: { items: [{ duration: 4 }, { duration: 2 }, { duration: 1 }] },

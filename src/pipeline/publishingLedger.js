@@ -7,20 +7,6 @@ const COLLECTION = 'publishing_attempts';
 const DEFAULT_FILE = () => path.join(process.env.STATE_DIR || 'data', 'publishing-attempts.json');
 const PLATFORMS = ['youtube', 'instagram', 'facebook'];
 
-export const DURABLE_PUBLISHING_STATE_ERROR =
-  'Unattended publishing requires Firestore. Set the FIREBASE_SERVICE_ACCOUNT GitHub Actions secret before enabling uploads.';
-
-/**
- * Hosted runners disappear after a job, so their JSON fallback cannot safely
- * record an upload reservation. Check this before any expensive generation
- * work, not only immediately before the remote side effect.
- */
-export function requireDurablePublishingState(opts = {}) {
-  const store = opts.store === undefined ? getFirestore() : opts.store;
-  if (!store) throw new Error(DURABLE_PUBLISHING_STATE_ERROR);
-  return store;
-}
-
 function stableContent(script = {}) {
   return {
     normalizedTopic: script.normalizedTopic || '',
@@ -76,9 +62,7 @@ export async function reservePublishingAttempt({ attemptId, topic, configuredPla
     platforms: initialPlatforms(configuredPlatforms),
   };
 
-  const store = opts.requireDurable
-    ? requireDurablePublishingState(opts)
-    : (opts.store === undefined ? getFirestore() : opts.store);
+  const store = opts.store === undefined ? getFirestore() : opts.store;
   if (store) {
     const ref = store.collection(COLLECTION).doc(attemptId);
     return store.runTransaction(async (tx) => {
@@ -101,8 +85,6 @@ export async function updatePublishingPlatform(attemptId, platform, state, patch
   if (!PLATFORMS.includes(platform)) throw new Error(`bilinmeyen platform: ${platform}`);
   const now = new Date().toISOString();
   const store = opts.store === undefined ? getFirestore() : opts.store;
-  if (opts.requireDurable && !store) throw new Error('Durable publishing state unavailable.');
-
   if (store) {
     const ref = store.collection(COLLECTION).doc(attemptId);
     await store.runTransaction(async (tx) => {

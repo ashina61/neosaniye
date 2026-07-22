@@ -421,23 +421,6 @@ export async function generateWithRetry(ai, req, tries = 5) {
   throw lastErr || new Error('No configured AI provider produced a response.');
 }
 
-function deterministicLocalFallback(topic, format) {
-  const safeTopic = String(topic || 'How Honeybees Navigate Home').trim();
-  const narrations = [
-    `${safeTopic} begins with a surprisingly precise natural problem.`,
-    'Every detail below stays within widely documented, cautious scientific explanation.',
-    'The story starts with an observable clue, not an invented dramatic claim.',
-    'Researchers compare repeated observations before drawing a careful conclusion.',
-    'That evidence reveals a simple mechanism working step by step.',
-    'Small changes in the environment can alter what observers measure.',
-    'The important twist is that the result looks stranger than it is.',
-    'A closer look connects each clue to the same underlying process.',
-    'This explanation avoids uncertain numbers, quotes, and unsupported names.',
-    'So the original question has a real answer: evidence beats guesswork.',
-  ];
-  return { topic: safeTopic, title: safeTopic, hook_candidates: [{ text: 'Evidence beats guesswork', score: 90 }], hook_text: 'Evidence beats guesswork', category: 'science', visual_anchor: 'clear documentary science imagery, natural light, precise readable details', scenes: narrations.map((n, i) => ({ narration: n, image_prompt: `Photorealistic documentary science scene ${i + 1}, clear subject, natural light, readable detail, cinematic wide or medium shot`, keywords: ['science', 'research'] })), cta: 'Subscribe for more true stories.', emphasis_words: ['precise', 'evidence', 'mechanism', 'answer'], finale_text: 'evidence beats guesswork', format, localFallback: true };
-}
-
 function buildUserPrompt(avoidTopics, { topPerformers = [], trendSeeds = [], strategyBrief = '', winningHooks = [] } = {}) {
   const parts = [];
   if (strategyBrief) {
@@ -578,12 +561,13 @@ export async function generateScript({ maxRetries = 5, avoidTopics: extraAvoid =
         thinkingConfig: { thinkingBudget: 0 },
       },
     }); } catch (err) {
-      console.warn(`[script] AI sağlayıcıları kullanılamadı; deterministik yerel fallback: ${String(err?.message || err).slice(0, 90)}`);
-      const script = deterministicLocalFallback(process.env.FORCE_TOPIC, format.key);
-      script.narrationWordCount = evaluateNarrationLength(script.scenes, config.content).words;
-      script.viewerFirstValidation = validateViewerFirstScript(script);
-      script.aiProvider = getProviderRun();
-      return { ...script, normalizedTopic: normalizeTopic(script.topic) };
+      // A generic local script used to let a provider outage become a 10-scene
+      // AI slideshow (and even reused the same non-hook). Do not spend render
+      // time or publish a video when no model has supplied factual, scene-level
+      // material; the next scheduled run can retry with a working provider.
+      throw new Error(
+        `SCRIPT_PROVIDER_UNAVAILABLE: no AI provider produced a quality-safe script (${String(err?.message || err).slice(0, 140)}).`,
+      );
     }
 
     const text = response.text;
@@ -618,14 +602,6 @@ export async function generateScript({ maxRetries = 5, avoidTopics: extraAvoid =
     }
     script.narrationWordCount = length.words;
 
-    const viewerValidation = validateViewerFirstScript(script);
-    if (!viewerValidation.ok && attempt < maxRetries) {
-      console.warn(`[script] viewer-first doğrulama reddetti: ${viewerValidation.failures.join(', ')}`);
-      lengthFeedback = `Rewrite the SAME topic and fix these release blockers: ${viewerValidation.failures.join(', ')}. Keep the factual content and word budget.`;
-      continue;
-    }
-    script.viewerFirstValidation = viewerValidation;
-
     // Reklam-dostu güvenlik ağı: ekrandaki hook + başlık yumuşatılır
     // (anlatım/altyazı doğruluğu korunur; asıl iş prompt'ta yapılır).
     // HOOK LAB: 6 adayın en yüksek scroll-stop puanlısı kazanır (model kendi
@@ -656,15 +632,23 @@ export async function generateScript({ maxRetries = 5, avoidTopics: extraAvoid =
     }
     if (script.hook_text) script.hook_text = softenAdText(script.hook_text, 'hook');
     if (script.title) script.title = softenAdText(script.title, 'başlık');
+
+    // Validate the final A/B-selected and safety-softened hook, not merely the
+    // model's pre-selection draft. Otherwise a winning candidate can silently
+    // stop matching scene 1 and create exactly the weak opening QC observed in
+    // production.
+    const viewerValidation = validateViewerFirstScript(script);
+    if (!viewerValidation.ok) {
+      if (attempt < maxRetries) {
+        console.warn(`[script] viewer-first doğrulama reddetti: ${viewerValidation.failures.join(', ')}`);
+        lengthFeedback = `Rewrite the SAME topic and fix these release blockers: ${viewerValidation.failures.join(', ')}. Keep the factual content and word budget.`;
+        continue;
+      }
+      throw new Error(`VIEWER_FIRST_SCRIPT_INVALID: ${viewerValidation.failures.join(', ')}`);
+    }
+    script.viewerFirstValidation = viewerValidation;
     return { ...script, format: format.key, viralTemplate: viralTemplate?.key || null, normalizedTopic: normalizeTopic(script.topic), aiProvider: getProviderRun() };
   }
 
-  if (lastScript?.hook_text) lastScript.hook_text = softenAdText(lastScript.hook_text, 'hook');
-  if (lastScript?.title) lastScript.title = softenAdText(lastScript.title, 'başlık');
-  return {
-    ...lastScript,
-    format: format.key,
-    normalizedTopic: normalizeTopic(lastScript.topic),
-    duplicate: true,
-  };
+  throw new Error(`SCRIPT_GENERATION_EXHAUSTED: ${lastScript?.topic || 'no valid script returned'}`);
 }

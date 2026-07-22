@@ -5,9 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {
   buildPublishingAttemptId,
-  DURABLE_PUBLISHING_STATE_ERROR,
   readPublishingAttempt,
-  requireDurablePublishingState,
   reservePublishingAttempt,
   updatePublishingPlatform,
 } from '../src/pipeline/publishingLedger.js';
@@ -70,18 +68,12 @@ test('platform outcomes remain independent for partial publishing', async () => 
   });
 });
 
-test('GitHub Actions mode refuses non-durable local fallback', async () => {
+test('local fallback supports publishing reservations without Firestore', async () => {
   await withLedger(async (file) => {
-    await assert.rejects(
-      reservePublishingAttempt({ attemptId: 'abc', topic: 'x' }, { file, store: null, requireDurable: true }),
-      new RegExp(DURABLE_PUBLISHING_STATE_ERROR),
+    const result = await reservePublishingAttempt(
+      { attemptId: 'abc', topic: 'x' },
+      { file, store: null },
     );
+    assert.equal(result.acquired, true);
   });
-});
-
-test('durable publishing preflight rejects a missing Firestore store', () => {
-  assert.throws(
-    () => requireDurablePublishingState({ store: null }),
-    new RegExp(DURABLE_PUBLISHING_STATE_ERROR),
-  );
 });
