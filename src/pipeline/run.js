@@ -89,7 +89,7 @@ export async function runPipeline(opts = {}) {
   }
 
   // 1) Script
-  log('Faz 1: Script üretiliyor (Gemini)...');
+  log('Faz 1: Script üretiliyor (Gemini → Groq → OpenRouter)...');
   const script = await generateScript({ strategyBrief });
   script.strategyBrief = strategyBrief; // şefler de okusun (görüntü + kurgu)
   const base = script.normalizedTopic;
@@ -464,6 +464,7 @@ export async function runPipeline(opts = {}) {
       audioPresent: !pf.issues.some((i) => i.includes('ses akışı')),
     }, workDir, {
       technical: pf.technical || null,
+      aiProvider: script.aiProvider || null,
       technicalPassed: pf.ok,
       blockingReasons: [...(hard.reasons || []), ...(emergencyQuality.reasons || [])],
       motion: motionReport,
