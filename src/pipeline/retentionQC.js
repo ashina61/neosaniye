@@ -262,6 +262,49 @@ export function evaluateRetention(input, cfg = config.retention) {
     fixes.push(`Görsel çeşitlilik düşük (AI oranı ${aiShare}, en uzun aynı-kaynak ${srcMaxRun}) — arşiv/diagram/stok/harita serpiştir.`);
   }
 
+  // ---------- YENİ METRİKLER (ilk-3sn hook / CTA / bilgi yoğunluğu) ----------
+  // Puanlama 100 tabanını (7 kategori) BOZMAZ; bunlar ölçülebilir teşhis
+  // metrikleridir + düşükse önerilen düzeltme üretirler (editoryal rapora yansır).
+  // İlk 3 saniye hook gücü (0-10): kapak sözü sinyalleri + konuşma erken mi başlıyor.
+  let first3sHookScore = 0;
+  if (ht) {
+    if (!WEAK_HOOK.some((r) => r.test(ht))) first3sHookScore += 2;
+    if (PROMISE_HOOK.some((r) => r.test(ht))) first3sHookScore += 3;
+    if (/\d/.test(ht)) first3sHookScore += 2;   // şok istatistik = pattern interrupt
+    if (/\?/.test(ht)) first3sHookScore += 1;   // curiosity gap sorusu
+    if (hookWords <= cfg.maxHookWords) first3sHookScore += 1;
+  }
+  if (firstSpeechMs !== null && firstSpeechMs <= cfg.firstSpeechDeadlineMs) first3sHookScore += 1;
+  first3sHookScore = clamp(first3sHookScore, 0, 10);
+
+  // CTA varlık + yerleşim skoru (0-10): metin var mı + net abone çağrısı + payoff sonrası mı.
+  let ctaScore = 0;
+  const ctaText = String(s.cta || '').trim();
+  if (ctaText) {
+    ctaScore += 4;
+    if (/\b(subscribe|abone|follow|takip)\b/i.test(ctaText)) ctaScore += 3;
+    if (ctaRatio === null || ctaRatio >= cfg.ctaEarliestRatio) ctaScore += 3; // payoff sonrası / kart yok
+  }
+  ctaScore = clamp(ctaScore, 0, 10);
+
+  // Bilgi yoğunluğu skoru (0-10): dönüş kelimeleri + sayısal iddialar + konuşma akış hızı.
+  const narrationWordCount = scenes.reduce(
+    (a, sc) => a + String(sc.narration || '').split(/\s+/).filter(Boolean).length, 0,
+  );
+  const wordsPerSecond = duration > 0 ? +(narrationWordCount / duration).toFixed(2) : 0;
+  const numericBeats = scenes.filter((sc) => /\d/.test(sc.narration || '')).length;
+  let infoDensityScore = 0;
+  if (twists >= 2) infoDensityScore += 3; else if (twists === 1) infoDensityScore += 1;
+  if (numericBeats >= 3) infoDensityScore += 3; else if (numericBeats >= 1) infoDensityScore += 1;
+  if (wordsPerSecond >= 2.2 && wordsPerSecond <= 3.4) infoDensityScore += 3; // ideal konuşma yoğunluğu
+  else if (wordsPerSecond >= 1.8) infoDensityScore += 1;
+  if (deadAirCount === 0) infoDensityScore += 1;
+  infoDensityScore = clamp(infoDensityScore, 0, 10);
+
+  if (first3sHookScore < 6) fixes.push(`İlk-3sn hook skoru ${first3sHookScore}/10 — pattern interrupt (şok sayı/soru) ile ilk 3 saniyeyi güçlendir.`);
+  if (ctaScore < 6) fixes.push(`CTA skoru ${ctaScore}/10 — net "ABONE OL" çağrısı ekle ve payoff sonrasına (son %30) al.`);
+  if (infoDensityScore < 6) fixes.push(`Bilgi yoğunluğu ${infoDensityScore}/10 — her sahneye yeni somut bilgi/sayı ekle, ölü boşlukları at.`);
+
   const parts = {
     hook: clamp(hook, 0, 25),
     visualPacing: clamp(pacing, 0, 20),
@@ -284,6 +327,12 @@ export function evaluateRetention(input, cfg = config.retention) {
       staticShare,
       deadAirCount,
       twistCount: twists,
+      // Yeni retention metrikleri (0-10) — teşhis + önerilen düzeltme kaynağı.
+      first3sHookScore,
+      ctaScore,
+      infoDensityScore,
+      narrationWordsPerSecond: wordsPerSecond,
+      numericBeats,
       sfxCount: sfx.count,
       patternInterrupts: pi.count,
       patternInterruptIndices: pi.indices,

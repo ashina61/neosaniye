@@ -11,6 +11,7 @@ import {
 import { softenAdText } from '../lib/adSafe.js';
 import { validateViewerFirstScript } from '../pipeline/viewerFirstValidation.js';
 import { evaluateNarrationLength } from '../pipeline/durationPolicy.js';
+import { pickViralTemplate, findViralTemplate } from './viral-templates.js';
 
 /**
  * Faz 1 — Script Üretim Motoru (Google Gemini) — ANLATI / HİKÂYE formatı.
@@ -191,6 +192,35 @@ async function fetchTrendSeeds() {
   }
 }
 
+/**
+ * A/B HOOK TESTİ için deterministik, retention-odaklı hook puanlayıcı (0-100).
+ * retentionQC'nin hook sinyalleriyle aynı ruhta çalışır: pattern-interrupt gücü
+ * (sayı/istatistik), curiosity gap (soru), şok kelimeleri ve kısalık (ilk 3 sn'de
+ * tek bakışta okunur). İki hook varyantından retention'ı yüksek olanı seçmek için
+ * kullanılır — modelin öznel scroll-stop puanına ek, nesnel bir ikinci oy.
+ */
+export function scoreHookRetention(text) {
+  const t = String(text || '').trim();
+  if (!t) return 0;
+  let s = 40;
+  const words = t.split(/\s+/).filter(Boolean);
+  // Kısalık: ilk 3 sn'de tek bakışta okunmalı (3-5 kelime ideal).
+  if (words.length >= 3 && words.length <= 5) s += 14;
+  else if (words.length <= 7) s += 6;
+  else s -= 8;
+  if (t.length <= 26) s += 8;
+  // Sayı/istatistik = pattern interrupt gücü.
+  if (/\d/.test(t)) s += 16;
+  // Soru = curiosity gap (açık uçlu merak boşluğu).
+  if (/\?/.test(t) || /^(how|why|what|who|when|where|which|nasıl|neden|niçin|kim|ne|hangi|neredr?)\b/i.test(t)) s += 14;
+  // Şok / patern-kırıcı kelimeler.
+  const shock = /(secret|hidden|never|nobody|impossible|shocking|forbidden|banned|deadly|actually|wrong|proof|gizli|asla|kimse|imkansız|şok|yasak|ölümcül|aslında|yanlış|kanıt)/i;
+  if (shock.test(t)) s += 12;
+  // Zayıf/klişe açılışlar retention'ı düşürür (scroll-past sinyali).
+  if (/^(did you know|you won'?t believe|let'?s talk|in this video|bu videoda|biliyor muydun)/i.test(t)) s -= 25;
+  return Math.max(0, Math.min(100, s));
+}
+
 function buildSystemPrompt(format) {
   // process formatı: görüntü GERÇEK stok kliplerden gelir — kurallar farklı.
   const processExtra =
@@ -216,7 +246,7 @@ Write in English, for a SINGLE dramatic narrator. STRICT word budget: the spoken
 
 Structure the story as EXACTLY 10 or 11 SCENES following this EXACT retention arc (a 10M-view Shorts shape):
 HOOK → FIRST ANSWER → "BUT..." → NEW INFORMATION → "THE INTERESTING PART..." → STRONGEST FACT → PAYOFF → CTA.
-1) HOOK: in the first two seconds use at least one of: a surprising number, question, contradiction, incredible claim, unexpected result, or mystery. Scene 1 must open a curiosity gap the viewer NEEDS closed.
+1) HOOK / PATTERN INTERRUPT: the FIRST 3 SECONDS must jolt a scrolling viewer out of autopilot — lead with a PATTERN INTERRUPT: a SHOCKING STATISTIC (a concrete, verifiable number/percentage/scale) OR a POINTED QUESTION. Scene 1 must open a CURIOSITY GAP the viewer NEEDS closed. CRITICAL: that exact gap must stay UNRESOLVED until the final scene (curiosity-gap payoff) — tease the answer, withhold it through the middle, then deliver it in the finale so viewers must watch to the end.
 2) MYSTERY + EVIDENCE: escalate fast, ONE concrete, surprising, ACCURATE detail per beat — each beat
    must add NEW information (never restate the previous line in new words).
 3) REVEAL then TWIST: the "wait, what?!" turn.
@@ -496,8 +526,14 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
       console.log(`[script] format tekrarı kırıldı → ${format.key}`);
     }
   }
+  // VİRAL ŞABLON: FORMATS rotasyonunun ÜSTÜNE hafif bir viral paketleme katmanı.
+  // VIRAL_TEMPLATES=0 ile kapatılır; FORCE_VIRAL_TEMPLATE ile sabitlenir (test).
+  const viralTemplate = process.env.VIRAL_TEMPLATES === '0'
+    ? null
+    : (findViralTemplate(process.env.FORCE_VIRAL_TEMPLATE) || pickViralTemplate());
   console.log(
     `[script] format: ${format.key}${forced === format.key ? ' (zorlandı)' : ''}` +
+      (viralTemplate ? `, viral şablon: ${viralTemplate.key}` : '') +
       (topPerformers.length ? `, öğrenme: ${topPerformers.length} iyi konu` : '') +
       (trendSeeds.length ? `, trend: ${trendSeeds.length} tohum` : ''),
   );
@@ -511,6 +547,7 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
       model: config.gemini.model,
       contents:
         buildUserPrompt(avoidTopics, { topPerformers, trendSeeds, strategyBrief, winningHooks }) +
+        (viralTemplate ? `\n\nVIRAL TEMPLATE STYLING (soft packaging guide — keep the story's factual integrity and the format above): ${viralTemplate.promptHint}` : '') +
         (lengthFeedback ? `\n\n${lengthFeedback}` : ''),
       config: {
         systemInstruction: buildSystemPrompt(format),
@@ -574,19 +611,32 @@ export async function generateScript({ maxRetries = 3, avoidTopics: extraAvoid =
     // HOOK LAB: 6 adayın en yüksek scroll-stop puanlısı kazanır (model kendi
     // seçimini yaptıysa bile puana göre doğrula — 30 karakteri aşan aday elenir).
     if (Array.isArray(script.hook_candidates) && script.hook_candidates.length) {
-      const best = script.hook_candidates
+      const valid = script.hook_candidates
         .map((c) => ({ text: String(c.text || '').trim().replace(/["""]/g, ''), score: Number(c.score) || 0 }))
         .filter((c) => c.text.length >= 6 && c.text.length <= 30)
-        .sort((a, b) => b.score - a.score)[0];
+        .sort((a, b) => b.score - a.score);
+      // A/B HOOK TESTİ: modelin en iyi 2 adayını al, deterministik retention
+      // puanıyla yeniden yarıştır; retention'ı yüksek olan varyant kazanır.
+      const ab = valid.slice(0, 2).map((c) => ({ ...c, retention: scoreHookRetention(c.text) }));
+      const [variantA, variantB] = ab;
+      const best = [...ab].sort((a, b) => b.retention - a.retention)[0] || valid[0];
       if (best) {
         script.hook_text = best.text;
-        console.log(`[hooklab] ${script.hook_candidates.length} aday → "${best.text}" (puan ${best.score})`);
+        if (variantA && variantB) {
+          console.log(
+            `[hook A/B] A="${variantA.text}" (ret ${variantA.retention}) vs ` +
+              `B="${variantB.text}" (ret ${variantB.retention}) → kazanan "${best.text}"`,
+          );
+        } else {
+          console.log(`[hooklab] ${script.hook_candidates.length} aday → "${best.text}" (retention ${best.retention ?? '-'})`);
+        }
+        script.hookAbTest = ab.map((c) => ({ text: c.text, modelScore: c.score, retentionScore: c.retention }));
       }
       delete script.hook_candidates; // aşağı akışta gereksiz yük
     }
     if (script.hook_text) script.hook_text = softenAdText(script.hook_text, 'hook');
     if (script.title) script.title = softenAdText(script.title, 'başlık');
-    return { ...script, format: format.key, normalizedTopic: normalizeTopic(script.topic), aiProvider: getProviderRun() };
+    return { ...script, format: format.key, viralTemplate: viralTemplate?.key || null, normalizedTopic: normalizeTopic(script.topic), aiProvider: getProviderRun() };
   }
 
   if (lastScript?.hook_text) lastScript.hook_text = softenAdText(lastScript.hook_text, 'hook');

@@ -104,9 +104,15 @@ function buildCaptionAss(words, opts) {
   // Normal altyazı: SemiBold, alt-orta, beyaz. Okunabilirlik için GÜÇLÜ
   // kenarlık (2.6) + belirgin gölge (2.6) — küçük/düşük kontrast şikâyeti
   // sonrası artırıldı; her zeminde net, banda gerek kalmadan okunur.
-  const capStyle =
-    `Style: Cap,Montserrat SemiBold,${size},&H00FFFFFF,&H00000000,&HB4000000,` +
-    `0,1,2.6,2.6,2,${marginH},${marginH},${marginV},1`;
+  // captionBox açıkken BorderStyle 3 = metin arkasında yarı saydam koyu kutu
+  // (blur/box zemin) → en karmaşık görüntüde bile altyazı net okunur. Kutu rengi
+  // hem OutlineColour hem BackColour'a verilir; geniş Outline metne dolgu (padding)
+  // bırakır. Kapalıyken eski güçlü kenarlık+gölge stiline düşer (geriye dönük uyum).
+  const capStyle = config.video.captionBox
+    ? `Style: Cap,Montserrat SemiBold,${size},&H00FFFFFF,${config.video.captionBoxColor},${config.video.captionBoxColor},` +
+      `0,3,18,0,2,${marginH},${marginH},${marginV},1`
+    : `Style: Cap,Montserrat SemiBold,${size},&H00FFFFFF,&H00000000,&HB4000000,` +
+      `0,1,2.6,2.6,2,${marginH},${marginH},${marginV},1`;
   // Vurgu parçası: AYRI ve FARKLI FONTTA (zarif italik serif) — referans stil.
   // Temiz BEYAZ dolgu + KALIN opak siyah kenarlık (outline 0 idi, aydınlık arka
   // planda soluk kalıyordu; altın deneyince cırtlak oldu). Beyaz + güçlü kenarlık
@@ -197,7 +203,10 @@ function buildCaptionAss(words, opts) {
     const end = nextStart !== undefined && nextStart - lastEnd < 0.6
       ? Math.max(lastEnd, nextStart)
       : lastEnd + 0.15;
-    const text = assEscape(uppercase ? ev.text.toUpperCase() : ev.text);
+    // Vurgu kelimeleri BÜYÜK HARF + kalın (captionUppercaseEmphasis): sayılar ve
+    // şok kelimeleri gözden kaçmasın. Normal akış küçük harf kalır (premium his).
+    const doUpper = uppercase || (ev.isEmph && config.video.captionUppercaseEmphasis);
+    const text = assEscape(doUpper ? ev.text.toUpperCase() : ev.text);
     if (ev.isEmph) {
       // VURGU PARÇASI: altyazı bandında akışın PARÇASI, farklı font (Playfair
       // italik), daha büyük. Kendi zaman dilimini kullanır (uzatma yok —
@@ -206,6 +215,28 @@ function buildCaptionAss(words, opts) {
         `Dialogue: 0,${assTime(start)},${assTime(end)},Emph,,0,0,0,,` +
           `{\\fs${ev.fontSize}\\i1\\b1\\fad(90,110)\\fscx92\\fscy92\\t(0,150,\\fscx100\\fscy100)}${text}`,
       );
+    } else if (config.video.captionKaraoke && ev.words.length > 1) {
+      // KARAOKE: o an konuşulan kelime büyür + vurgu rengine döner (aktif kelime
+      // takibi, TikTok/Reels tarzı). Her kelime için ayrı Dialogue; tüm satır
+      // görünür kalır, yalnız aktif kelime öne çıkar. \r stili sıfırlar, sonra
+      // taban fontuna geri döneriz.
+      const big = Math.round(ev.fontSize * config.video.captionKaraokeScale);
+      const accent = config.video.accentColor;
+      for (let wi = 0; wi < ev.words.length; wi += 1) {
+        const wStart = ev.words[wi].start;
+        const wEnd = wi + 1 < ev.words.length ? ev.words[wi + 1].start : end;
+        const parts = ev.words.map((w, k) => {
+          const t = assEscape(doUpper ? String(w.word).toUpperCase() : w.word);
+          return k === wi
+            ? `{\\fs${big}\\c${accent}\\b1}${t}{\\r\\fs${ev.fontSize}}`
+            : t;
+        });
+        const fadeIn = wi === 0 ? '\\fad(120,0)' : '';
+        events.push(
+          `Dialogue: 0,${assTime(wStart)},${assTime(Math.max(wStart + 0.05, wEnd))},Cap,,0,0,0,,` +
+            `{\\fs${ev.fontSize}${fadeIn}\\blur1.2}${parts.join(' ')}`,
+        );
+      }
     } else {
       events.push(
         `Dialogue: 0,${assTime(start)},${assTime(end)},Cap,,0,0,0,,{\\fs${ev.fontSize}\\fad(120,90)\\blur1.2}${text}`,
@@ -631,15 +662,27 @@ async function buildFullAudio(
   let voiceOut = '[nmix]';  // final mikse giren konuşma (SFX ile pocket açılır)
   if (useMusic) {
     fc.push(`[0:a]${voiceChain},asplit=2[nkey][nmix]`);
-    // Gerçek (mastered) parçalar sentetik yataktan çok daha sıcak basar —
-    // seviyeyi ona göre düşür; prosedürel yatak config seviyesinde kalır.
-    const musVol = musicIsReal ? Math.min(config.video.musicVolume, 0.32) : config.video.musicVolume;
+    // DİNAMİK DUCKING (dB tabanlı): müziğin TABAN seviyesi "konuşma yok" hedefi
+    // (-12dB); narrasyon konuşurken sidechain ile "konuşma var" hedefine (-18dB)
+    // düşer. Böylece intro/outro/nefes anlarında müzik dolgun, konuşma sırasında
+    // geri çekilip anlaşılırlığı korur. dB → lineer: 10^(dB/20).
+    const dbToLin = (db) => Math.pow(10, db / 20);
+    const silenceLin = dbToLin(config.video.musicDuckSilenceDb);   // -12dB ≈ 0.251 (taban)
+    // Konuşurken hedef ≈ config.video.musicDuckSpeakingDb (-18dB ≈ 0.126 lineer).
+    // Konuşma sırasında hedeflenen bastırma (dB) → sidechain ratio yaklaşımı.
+    const duckDb = Math.max(0, config.video.musicDuckSilenceDb - config.video.musicDuckSpeakingDb);
+    // Gerçek (mastered) parçalar sentetik yataktan sıcak basar; taban seviyeyi
+    // yine de "konuşma yok" hedefinin üstüne çıkarma.
+    const musBaseLin = musicIsReal
+      ? Math.min(silenceLin, dbToLin(config.video.musicDuckSilenceDb - 2))
+      : silenceLin;
     fc.push(
-      `[${musicIdx}:a]aresample=44100,atrim=0:${total.toFixed(3)},volume=${musVol}[mus]`,
+      `[${musicIdx}:a]aresample=44100,atrim=0:${total.toFixed(3)},volume=${musBaseLin.toFixed(3)}[mus]`,
     );
-    // Narrasyon konuşurken müziği HAFİFÇE kıs (önceki 8:1 oran müziği tamamen
-    // susturuyordu — "müzik yok" şikayetinin sebebi buydu).
-    fc.push('[mus][nkey]sidechaincompress=threshold=0.09:ratio=2.2:attack=30:release=700[musd]');
+    // Sidechaincompress konuşma anahtarıyla müziği ~duckDb kadar kıs (taban
+    // -12dB → konuşurken ≈ -18dB). ratio duckDb hedefine göre ölçekli.
+    const duckRatio = Math.max(2, Math.min(8, 1 + duckDb / 2)).toFixed(1);
+    fc.push(`[mus][nkey]sidechaincompress=threshold=0.06:ratio=${duckRatio}:attack=25:release=500[musd]`);
     musKey = '[musd]';
   } else {
     fc.push(`[0:a]${voiceChain}[nmix]`);
@@ -707,11 +750,15 @@ async function buildFullAudio(
     if (musKey) finalMix.push(musKey);
   }
 
-  // Karışım -> kapanışta yumuşak sönüş -> YouTube standardı -14 LUFS loudness.
-  const fadeStart = Math.max(0, total - 1.1).toFixed(3);
+  // Karışım -> intro fade-in + kapanışta yumuşak sönüş -> -14 LUFS loudness.
+  // Intro/outro fade süresi config'ten (0.5s): sert giriş/çıkış yok. Fade-in
+  // ilk konuşmadan (~0.9s) önce biter, hook kelimesini kesmez.
+  const fadeDur = Math.max(0.1, config.video.audioFadeSeconds);
+  const fadeStart = Math.max(0, total - fadeDur).toFixed(3);
   // STEREO garanti: rapor "stereo" derken çıktı mono çıkmasın (bee hatası #8).
   const master =
-    `apad,atrim=0:${total.toFixed(3)},afade=t=out:st=${fadeStart}:d=1.1,` +
+    `apad,atrim=0:${total.toFixed(3)},` +
+    `afade=t=in:st=0:d=${fadeDur.toFixed(2)},afade=t=out:st=${fadeStart}:d=${fadeDur.toFixed(2)},` +
     'loudnorm=I=-14:TP=-1.5:LRA=11,aresample=44100,aformat=channel_layouts=stereo';
   if (finalMix.length > 1) {
     fc.push(`${finalMix.join('')}amix=inputs=${finalMix.length}:normalize=0:duration=longest,${master}[a]`);
@@ -723,7 +770,7 @@ async function buildFullAudio(
     '-y', ...inputs,
     '-filter_complex', fc.join(';'),
     '-map', '[a]', '-t', total.toFixed(3),
-    '-c:a', 'aac', '-b:a', '160k', '-ac', '2',
+    '-c:a', 'aac', '-b:a', config.video.audioBitrate, '-ac', '2',
     outPath,
   ], { maxBuffer: 20 * 1024 * 1024 });
   return { musicTrack, sfxCues, musicDecision };
@@ -1103,8 +1150,8 @@ export async function renderVideo(job, opts = {}) {
     '-y', ...vInputs,
     '-filter_complex', vfc.join(';'),
     '-map', '[v]', '-an',
-    '-c:v', 'libx264', '-preset', 'fast', '-crf', '21',
-    '-maxrate', '12M', '-bufsize', '24M',
+    '-c:v', 'libx264', '-preset', config.video.encodePreset, '-crf', String(config.video.encodeCrf),
+    '-maxrate', config.video.encodeMaxrate, '-bufsize', config.video.encodeBufsize,
     '-pix_fmt', 'yuv420p', '-r', String(fps),
     path.resolve(fullv),
   ], { cwd: workDir, maxBuffer: 20 * 1024 * 1024 });
