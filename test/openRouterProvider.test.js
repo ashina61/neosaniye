@@ -78,3 +78,24 @@ test('OpenRouter retries a timed-out free-model request before opening its circu
   assert.equal(payload.report.openRouterAttempts, 2);
   assert.equal(payload.report.openRouterFailures, 1);
 });
+
+test('OpenRouter retries malformed JSON when structured output is required', () => {
+  const result = run(`
+    let calls = 0;
+    globalThis.fetch = async () => {
+      calls += 1;
+      const content = calls === 1 ? '{"topic":"truncated' : '{"topic":"recovered"}';
+      return new Response(JSON.stringify({ model: 'provider/free-model', choices: [{ message: { content } }] }), { status: 200 });
+    };
+    const m = await import('${moduleUrl}'); m.resetProviderRun();
+    const response = await m.generateWithRetry(null, { contents: 'hello', config: { responseSchema: { type: 'object' } } });
+    console.log('RESULT=' + JSON.stringify({ calls, response, report: m.getProviderRun() }));
+  `, { OPENROUTER_ATTEMPTS: '2', OPENROUTER_RETRY_DELAY_MS: '0' });
+  assert.equal(result.status, 0, result.stderr);
+  const payload = JSON.parse(result.stdout.match(/RESULT=(.*)/)[1]);
+  assert.equal(payload.calls, 2);
+  assert.equal(payload.response.text, '{"topic":"recovered"}');
+  assert.equal(payload.report.openRouterAttempts, 2);
+  assert.equal(payload.report.openRouterFailures, 1);
+  assert.equal(payload.report.openRouterUsed, true);
+});

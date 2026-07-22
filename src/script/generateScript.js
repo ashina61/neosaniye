@@ -339,6 +339,18 @@ async function openRouterFallback(req) {
       const data = await res.json();
       const text = data?.choices?.[0]?.message?.content || '';
       if (!text) throw new Error('openrouter boş yanıt');
+      // OpenRouter's JSON-object mode is best-effort for some free backends.
+      // Do not report a provider success and let the pipeline crash later on a
+      // malformed/truncated payload; retry it while the same fallback is active.
+      if (req.config?.responseSchema) {
+        try {
+          JSON.parse(text);
+        } catch (cause) {
+          const err = new Error(`openrouter geçersiz JSON: ${cause.message}`);
+          err.name = 'OpenRouterInvalidJsonError';
+          throw err;
+        }
+      }
       providerRun.openRouterUsed = true;
       providerRun.openRouterResolvedModel = data?.model || model;
       console.log(`[openrouter] resolved=${providerRun.openRouterResolvedModel}`);
@@ -347,7 +359,7 @@ async function openRouterFallback(req) {
     } catch (err) {
       lastErr = err;
       providerRun.openRouterFailures += 1;
-      const retryable = err?.name === 'AbortError' || /network|fetch failed|socket|ECONNRESET/i.test(String(err?.message || err));
+      const retryable = err?.name === 'AbortError' || err?.name === 'OpenRouterInvalidJsonError' || /network|fetch failed|socket|ECONNRESET/i.test(String(err?.message || err));
       if (retryable && attempt < attempts) {
         console.warn(`[openrouter] temporary failure; retrying (${attempt}/${attempts}): ${String(err?.message || err).slice(0, 90)}`);
         if (config.openrouter.retryDelayMs > 0) await new Promise((resolve) => setTimeout(resolve, config.openrouter.retryDelayMs));
