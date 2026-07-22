@@ -41,7 +41,7 @@ export async function recordProduction(script, meta = {}) {
     motion: meta.motion || null,
     // Editoryal SFX tipleri (son videolarda SFX tekrarını izlemek için).
     audioSfx: meta.audioSfx || null,
-    // 14 günlük yayın saati deneyi etiketi (us-audience-3-slots-v1).
+    // ABD-izleyici yayın saati deneyi etiketi (us-audience-3-slots-v2).
     scheduleExperiment: meta.scheduleExperiment || null,
     visualStyle: meta.visualStyle || null,
     script: {

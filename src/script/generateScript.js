@@ -249,6 +249,7 @@ Rules for the whole script:
   actual working principle in a way that can be shown as a 2-4 step visual (light enters → splits →
   brightness compared → direction found), not just "it worked".
 - OPENING UNITY: hook_text, scene 1 narration, and scene 1 image_prompt must name the same concrete subject and promise. Never begin with "Did you know", "You won't believe", or a vague generic question. The first spoken sentence must reveal a concrete surprise, contradiction, danger, scale, mystery, or consequence.
+- COVER FRAME: scene 1's image_prompt is the video's cover in the feed — make it the single most visually arresting, high-contrast, instantly-readable shot of the whole story (a striking subject centered, dramatic light), because it alone decides whether a scrolling viewer stops.
 - MIDPOINT RE-HOOK: near the middle, use one earned contrast or new consequence that deepens the SAME central question; do not bolt on a random pattern interrupt.
 - CTA: after the payoff, short, story-specific, language-matched, and explicitly asks viewers to SUBSCRIBE ("Subscribe..." / "ABONE OL"). Never ask for a like and never use "Follow for more facts". It is NOT spoken.
 - title: curiosity-driven, <= 80 characters, no clickbait lies, no emojis.

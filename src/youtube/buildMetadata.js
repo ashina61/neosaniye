@@ -12,32 +12,47 @@ const META_SCHEMA = {
   properties: {
     title: {
       type: Type.STRING,
-      description: 'Merak uyandıran YouTube Shorts başlığı, en fazla 90 karakter',
+      description:
+        'Curiosity-driven YouTube Shorts title, <= 90 chars, the main searchable keyword front-loaded',
     },
     description: {
       type: Type.STRING,
       description:
-        '2-4 satır açıklama: kancayı yeniden ifade et, değer ver, kısa bir CTA ekle',
+        '2-4 lines: first line is the strongest keyword-rich hook, add value, end with a subscribe CTA',
     },
     tags: {
       type: Type.ARRAY,
       items: { type: Type.STRING },
-      description: '8-15 alakalı İngilizce etiket (hashtag işareti olmadan)',
+      description:
+        '8-15 relevant lowercase English tags (no "#"): mix broad niche, specific subject, and long-tail search phrases',
     },
   },
   required: ['title', 'description', 'tags'],
   propertyOrdering: ['title', 'description', 'tags'],
 };
 
-const SYSTEM = `You write high-CTR YouTube Shorts metadata in English for a faceless "interesting facts / how it works / how to" channel.
-Rules:
-- title: curiosity-driven, <= 90 chars, no clickbait lies, no emojis.
+const SYSTEM = `You write high-CTR, search-optimized YouTube Shorts metadata in English for a faceless "interesting facts / how it works / how to" channel. The audience is mostly US-based, mobile viewers scrolling fast.
+TITLE (the single biggest driver of clicks):
+- <= 90 chars, curiosity-driven, no clickbait lies, no emojis, natural Title Case.
+- FRONT-LOAD the most searchable concrete keyword (the subject/topic) in the first 3-4 words so it
+  reads at a glance and matches search — do not bury the topic behind filler.
+- Open a curiosity gap: a number, a contradiction, a "why/how", or a surprising outcome
+  (e.g. "Why Emus Won a War Against Australia", "The 20,000-Year Secret Hidden in Ice").
+  Prefer specific numbers and proper nouns over vague words ("this animal", "something").
 - ADVERTISER-SAFE TITLE: never put explicit words of violence, death, drugs, weapons, or any
   profanity in the title (e.g. "killed", "murder", "dead", "suicide", "blood", "drugs", "gun")
   — these limit ads (yellow $). Use curiosity and intrigue instead ("vanished", "the end came",
   "never returned", "what really happened").
-- description: 2-4 short lines; restate the hook, add value, end with a soft CTA. Plain text.
-- tags: 8-15 relevant lowercase English keywords, no "#" prefix, no spaces-only entries.
+DESCRIPTION (drives watch-time + suggested/search reach):
+- 2-4 short lines, plain text. The FIRST line is the strongest standalone hook (it shows in feed and
+  must make the topic and payoff-promise instantly clear + keyword-rich for search).
+- Middle line adds one extra intriguing detail or the value the viewer gets.
+- End with a short, specific SUBSCRIBE call to action tied to the channel's niche.
+TAGS:
+- 8-15 lowercase English keywords, no "#" prefix, no spaces-only entries.
+- Blend three types for maximum discovery: (1) broad niche terms (e.g. "history facts", "shorts",
+  "did you know"), (2) specific subject terms naming the exact topic/person/place, and (3) 2-3
+  long-tail phrases someone would actually search (e.g. "why did emus win the war").
 Do not include markdown.`;
 
 /** YouTube başlık/açıklama sınırlarına göre kırpar ve #Shorts ekler. */

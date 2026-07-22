@@ -47,22 +47,26 @@ export const config = {
     // Her sahne promptuna eklenen ortak sinematik stil (tutarlı "look").
     styleSuffix:
       process.env.IMAGE_STYLE ||
-      'cinematic documentary photograph, shot on 35mm film, natural realistic ' +
+      'cinematic documentary photograph, shot on 35mm film, ultra sharp focus on ' +
+        'the main subject, crisp fine detail, high dynamic range, natural realistic ' +
         'textures and skin, dramatic practical lighting, subject clearly lit with ' +
-        'bright key light, warm filmic color grade, shallow depth of field, ' +
-        'subtle motion blur, imperfect natural framing, vertical composition, ' +
+        'bright key light, professional warm filmic color grade, shallow depth of field, ' +
+        'rule-of-thirds composition with clear focal point, subtle motion blur, ' +
+        'imperfect natural framing, vertical 9:16 composition, ' +
         'historically accurate period details, no futuristic or sci-fi elements, ' +
         'no astronauts, no modern devices in historical scenes, ' +
-        'no text, no watermark, no subtitles',
+        'no text, no watermark, no subtitles, no distorted faces or hands',
     // "Animasyonlu hikâye kitabı" stili: bazı videolar illüstrasyon görünümünde
     // çıkar (run.js karar verir; VIDEO_STYLE=animated|photo ile zorlanır).
     animatedStyleSuffix:
       process.env.IMAGE_ANIMATED_STYLE ||
       'cinematic 2D storybook illustration, painterly digital art, rich textured ' +
-        'brush strokes, dramatic warm lighting, subject clearly lit and readable, ' +
+        'brush strokes, high detail, clean confident linework, dramatic warm lighting, ' +
+        'strong focal composition, subject clearly lit and readable, ' +
         'consistent character design across scenes, detailed atmospheric background, ' +
-        'historically accurate period details, no futuristic or sci-fi elements, ' +
-        'vertical composition, no text, no watermark, no speech bubbles',
+        'harmonious cohesive color palette, historically accurate period details, ' +
+        'no futuristic or sci-fi elements, vertical 9:16 composition, ' +
+        'no text, no watermark, no speech bubbles, no distorted faces or hands',
     retries: Number(process.env.IMAGE_RETRIES || 2),
     timeoutMs: Number(process.env.IMAGE_TIMEOUT_MS || 90000),
     // Görsel üretimi başarısızsa Pexels'ten stok görsele düş.
