@@ -84,7 +84,7 @@ export const SCRIPT_SCHEMA = {
           narration: {
             type: Type.STRING,
             description:
-              'ONE spoken sentence (scene 1: 8-10 words; later scenes: 11-14 words), plain voiceover text, no emojis',
+              'ONE spoken sentence (scene 1: exactly 9 words; later scenes: exactly 12 words), plain voiceover text, no emojis',
           },
           image_prompt: {
             type: Type.STRING,
@@ -256,7 +256,7 @@ HOOK → FIRST ANSWER → "BUT..." → NEW INFORMATION → "THE INTERESTING PART
 - Use exactly 10 or 11 beats: create a fresh curiosity point every 5-8 seconds. The middle must explicitly pivot with "But..." (or a natural equivalent), then "The interesting part..." before the strongest fact.
 
 Rules for each scene:
-- narration: exactly ONE sentence, spoken aloud. Scene 1 is 8-10 concrete words so the opening shot can cut within ~3 seconds; every later scene is 11-14 words. Before answering, count all scene narration words: the total MUST be ${config.content.minNarrationWords}-${config.content.maxNarrationWords}. No jargon, emojis, hashtags, or markdown.
+- narration: exactly ONE sentence, spoken aloud. Use a fixed word budget: scene 1 is EXACTLY 9 concrete words; every later scene is EXACTLY 12 words. That produces 117 words for 10 scenes or 129 words for 11 scenes, both safely inside the ${config.content.minNarrationWords}-${config.content.maxNarrationWords} limit. Count speakable words, including every word in contractions, before answering. No jargon, emojis, hashtags, or markdown.
 - VARY the rhythm like a human storyteller: follow a long sentence with a short punchy one; use natural spoken phrasing (contractions are fine), never a monotone list of facts.
 - ANIMAL SUBJECTS: avoid extreme close-up full-body animal/insect anatomy in image_prompt (AI deforms legs/heads) — prefer wide environment shots or the creature small-in-frame; always name the EXACT species.\n- image_prompt: describe a SINGLE cinematic photorealistic shot that literally depicts that sentence — name the subject, the place, the era/period, the action, camera framing, lighting and mood. Keep it concrete and filmable. Never request on-screen text, captions, letters, logos or watermarks.
 - VISUAL CONTINUITY: every image_prompt must be consistent with the visual_anchor (same character appearance, same era, same light/color mood) so the story looks like ONE film, not random pictures.
@@ -499,7 +499,6 @@ export function buildNarrationLengthRepair(script, length, content = config.cont
   const narration = (script?.scenes || [])
     .map((scene, index) => `${index + 1}. ${String(scene?.narration || '').trim()}`)
     .join('\n');
-  const target = Math.floor((content.minNarrationWords + content.maxNarrationWords) / 2);
   const action = length.direction === 'expand'
     ? 'Add only clear, factual supporting detail; do not invent facts.'
     : 'Remove only repetition, filler, and nonessential qualifiers; do not remove factual claims.';
@@ -508,7 +507,7 @@ export function buildNarrationLengthRepair(script, length, content = config.cont
 The previous response contains ${length.words} spoken narration words, which is ${length.code}.
 Rewrite the SAME complete JSON script and preserve its topic, hook, evidence, twist, payoff, metadata, and scene count.
 ${action}
-The scene narrations MUST total EXACTLY about ${target} words (accepted range: ${content.minNarrationWords}-${content.maxNarrationWords}). Count only narration fields. Scene 1 must have 8-10 words; every later scene must have 11-14 words. Count again before returning JSON.
+The scene narrations MUST use this exact allocation: scene 1 has EXACTLY 9 spoken words and every remaining scene has EXACTLY 12 spoken words. This makes the total 117 words for 10 scenes or 129 words for 11 scenes, both accepted. Count only narration fields, and count every speakable word in contractions before returning JSON.
 Previous narration to repair:
 ${narration}`;
 }
