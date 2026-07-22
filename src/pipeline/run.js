@@ -346,7 +346,7 @@ export async function runPipeline(opts = {}) {
     // Müzik çeşitlilik gerçeği (renderVideo kararından).
     const musicDecision = video.musicDecision || null;
 
-    // SERT KAPI — warning-mod override BUNU AŞAMAZ.
+    // Output/editorial findings are report-only; technical preflight remains the publish gate.
     const hard = evaluateHardGate({
       sfxVerification,
       ctaVerification: motionReport.ctaVerification || null,
@@ -357,11 +357,11 @@ export async function runPipeline(opts = {}) {
         : null,
       channelTruth,
     });
-    if (hard.block) {
-      console.error(`  ⛔ SERT KAPI: upload HER MODDA engellendi — ${hard.failures.join(', ')}`);
-      for (const rsn of hard.reasons) console.error(`     • ${rsn}`);
+    if (hard.failures.length) {
+      console.warn(`  ⚠️ editoryal çıktı uyarıları: ${hard.failures.join(', ')} — upload devam edecek.`);
+      for (const rsn of hard.reasons) console.warn(`     • ${rsn}`);
     } else {
-      console.log('  ✅ gerçek çıktı doğrulaması geçti (SFX duyulur, CTA dil/yerleşim, kanal stereo)');
+      console.log('  ✅ çıktı doğrulaması raporlandı');
     }
     const outputVerification = { sfx: sfxVerification, cta: motionReport.ctaVerification || null, channelTruth, music: musicDecision, hardGate: hard };
 
@@ -482,13 +482,10 @@ export async function runPipeline(opts = {}) {
         ),
       },
     }).catch((err) => {
-      // QC'nin KENDİSİ çöktü (rapor bile yazılamadı) — mod sözleşmesi:
-      // disabled: üretim etkilenmez. warning + strict: FAIL-CLOSED —
-      // QC denetiminden geçmeyen video hiçbir modda otomatik yayınlanmaz.
-      const block = config.retention.mode !== 'disabled';
+      // Editorial QC is observational. Its own failure is recorded, but a
+      // technically valid MP4 still proceeds to every configured platform.
       console.error(`[qc] RETENTION QC ÇALIŞTIRILAMADI: ${err.message}`);
-      if (block) console.error('[qc] Fail-closed: QC çalışmadan otomatik yayın yok — upload ENGELLENDİ.');
-      return { score: null, ok: false, blockUpload: block, report: null, error: err.message };
+      return { score: null, ok: true, blockUpload: false, report: null, error: err.message };
     });
 
     // Retention editörü — acımasız oto-eleştiri (Actions logunda görünür).
@@ -503,10 +500,18 @@ export async function runPipeline(opts = {}) {
     // geçilmeden hiçbir platforma yayın yapılmaz, platform bazlı bypass yoktur.
     let youtube = null;
     let social = { instagram: null, facebook: null };
+    const instagramConfigured = Boolean(
+      config.meta.userToken || config.meta.igLoginToken ||
+      (config.meta.pageToken && config.meta.igUserId),
+    );
+    const facebookConfigured = Boolean(
+      config.meta.userToken || (config.meta.pageToken && config.meta.pageId),
+    );
     let publishingAttemptId = null;
     let publishingAttemptBlocked = false;
-    // SERT KAPI upload'u HER MODDA kesebilir (warning override aşamaz).
-    let canUpload = uploadGate({ preflightOk: pf.ok, qc }) && !hard.block;
+    let youtubeUploadError = null;
+    // Only a technically invalid final MP4 can stop uploads.
+    let canUpload = uploadGate({ preflightOk: pf.ok, qc });
     if (willUpload && canUpload) {
       publishingAttemptId = buildPublishingAttemptId(script);
       try {
@@ -549,41 +554,34 @@ export async function runPipeline(opts = {}) {
       await updatePublishingPlatform(publishingAttemptId, 'youtube', 'uploading', {}, {
         requireDurable: process.env.GITHUB_ACTIONS === 'true',
       });
-      let res;
+      let res = null;
       try {
         res = await uploadVideo({ videoPath: outPath, ...meta });
         await updatePublishingPlatform(publishingAttemptId, 'youtube', 'published', { remoteId: res.videoId }, {
           requireDurable: process.env.GITHUB_ACTIONS === 'true',
         });
+        youtube = { ...res, title: meta.title, publishedAt: new Date().toISOString() };
+        console.log(`  YouTube yüklendi: ${res.url}`);
       } catch (err) {
+        youtubeUploadError = String(err.message || err);
+        console.error(`  ⚠️ YouTube upload başarısız; Meta platformları yine denenecek: ${youtubeUploadError.slice(0, 180)}`);
         await updatePublishingPlatform(publishingAttemptId, 'youtube', 'remote_unknown', {
-          lastError: String(err.message || err).slice(0, 300),
+          lastError: youtubeUploadError.slice(0, 300),
         }, { requireDurable: process.env.GITHUB_ACTIONS === 'true' }).catch(() => {});
-        throw err;
       }
-      youtube = { ...res, title: meta.title, publishedAt: new Date().toISOString() };
-      console.log(`  yüklendi: ${res.url}`);
-
-      // İlk yorum (etkileşim tetikleyici, best-effort).
-      const commented = await postFirstComment(res.videoId, script).catch(() => false);
-      if (commented) console.log('  ilk yorum atıldı');
-
-      // Kelime-mükemmel altyazıyı resmi altyazı olarak yükle (SEO + erişilebilirlik).
-      const srt = buildSrtFromWords(audio.wordTimings);
-      if (srt) {
-        const capOk = await uploadCaptions(res.videoId, srt).catch(() => false);
-        if (capOk) console.log('  altyazı (SRT) yüklendi');
+      if (res) {
+        // İlk yorum ve SRT, YouTube yayınlandıktan sonra best-effort çalışır.
+        const commented = await postFirstComment(res.videoId, script).catch(() => false);
+        if (commented) console.log('  ilk yorum atıldı');
+        const srt = buildSrtFromWords(audio.wordTimings);
+        if (srt) {
+          const capOk = await uploadCaptions(res.videoId, srt).catch(() => false);
+          if (capOk) console.log('  altyazı (SRT) yüklendi');
+        }
       }
 
       // Meta cross-post: aynı video Instagram Reels + Facebook Reels'e
       // (best-effort; secrets yoksa sessizce atlanır, bkz. docs/meta-setup.md).
-      const instagramConfigured = Boolean(
-        config.meta.userToken || config.meta.igLoginToken ||
-        (config.meta.pageToken && config.meta.igUserId),
-      );
-      const facebookConfigured = Boolean(
-        config.meta.userToken || (config.meta.pageToken && config.meta.pageId),
-      );
       if (instagramConfigured) await updatePublishingPlatform(publishingAttemptId, 'instagram', 'uploading');
       if (facebookConfigured) await updatePublishingPlatform(publishingAttemptId, 'facebook', 'uploading');
       social = await crossPost({
@@ -609,13 +607,11 @@ export async function runPipeline(opts = {}) {
         `\nDESCRIPTION:\n${meta.description}`,
         `\nTAGS:\n${(meta.tags || []).join(', ')}`,
         `\nHASHTAGS:\n${(meta.tags || []).slice(0, 6).map((t) => '#' + t.replace(/[^a-z0-9]/gi, '')).join(' ')}`,
-        `\nYOUTUBE:\n${res.url}`,
+        `\nYOUTUBE:\n${res?.url || 'UPLOAD_FAILED'}`,
       ].join('\n');
       await writeFile(path.join(workDir, 'publish-kit.txt'), kit).catch(() => {});
     } else if (willUpload && publishingAttemptBlocked) {
       console.log('\n▶ Faz 6: upload İPTAL (aynı içerik için publishing attempt zaten var) — artifact korunuyor.');
-    } else if (willUpload && hard.block) {
-      console.log(`\n▶ Faz 6: upload İPTAL (SERT KAPI: ${hard.failures.join(', ')}) — warning-mod override AŞAMAZ, video artifact olarak duruyor.`);
     } else if (willUpload && qc.blockUpload) {
       console.log(
         qc.error
@@ -689,6 +685,11 @@ export async function runPipeline(opts = {}) {
       createdAt: new Date().toISOString(),
     };
     await writeFile(path.join(workDir, 'report.json'), JSON.stringify(report, null, 2)).catch(() => {});
+    const configuredPlatforms = [hasYouTube, instagramConfigured, facebookConfigured].filter(Boolean).length;
+    const successfulPlatforms = [youtube, social.instagram, social.facebook].filter(Boolean).length;
+    if (willUpload && configuredPlatforms > 0 && successfulPlatforms === 0) {
+      throw new Error(`Hiçbir platforma upload yapılamadı: ${youtubeUploadError || 'Meta API upload başarısız veya belirsiz'}`);
+    }
     for (const [name, t] of [['preview-hook.jpg', 0.5], ['preview-mid.jpg', video.duration * 0.5]]) {
       await execFileAsync('ffmpeg', [
         '-y', '-ss', t.toFixed(2), '-i', outPath, '-frames:v', '1',

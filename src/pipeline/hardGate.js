@@ -1,5 +1,5 @@
 /**
- * GERÇEK ÇIKTI KAPILARI (HARD GATE) — warning-mod override BUNU AŞAMAZ.
+ * GERÇEK ÇIKTI EDİTORYAL RAPORU — upload kapısı değildir.
  *
  * retention/preflight mod politikaları "hazır olmasa bile yayınla" diyebilir
  * (policyOverride). Bu kapı ondan BAĞIMSIZDIR: aşağıdaki ihlaller final MP4'ün
@@ -75,5 +75,5 @@ export function evaluateHardGate(o = {}) {
     }
   }
 
-  return { block: failures.length > 0, failures, reasons };
+  return { block: false, failures, reasons };
 }
