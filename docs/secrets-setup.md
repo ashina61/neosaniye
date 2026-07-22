@@ -26,10 +26,12 @@ Nereye yazılır:
 
 ---
 
-## 2) Firebase Servis Hesabı — Faz 5 (konu/geçmiş kaydı)
+## 2) Firebase Servis Hesabı — yayınlama için zorunlu kalıcı durum
 
-> Faz 1'de zorunlu değil. Verilmezse tekrar kontrolü atlanır, script üretimi
-> yine çalışır. Zaten Firebase kullandığımız için mevcut projeyi kullanacağız.
+> Yerel, `--no-upload` çalıştırmalarında zorunlu değildir. Ancak GitHub
+> Actions'ta otomatik yayın için **zorunludur**: runner'ın yerel JSON yedeği
+> job bittiğinde kaybolur ve aynı videonun yeniden yüklenmesini güvenle
+> engelleyemez. Secret eksikse pipeline render başlamadan durur.
 
 1. `console.firebase.google.com` → projeni seç.
 2. **Project settings (dişli) → Service accounts → Generate new private key**.
