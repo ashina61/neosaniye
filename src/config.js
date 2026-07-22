@@ -44,6 +44,16 @@ export const config = {
     // Üretilen görsel çözünürlüğü (9:16). Tam 1080x1920 = büyütme yok, net.
     width: Number(process.env.IMAGE_WIDTH || 1080),
     height: Number(process.env.IMAGE_HEIGHT || 1920),
+    // GÖRSEL TUTARLILIK: her sahne promptunun EN BAŞINA eklenen ortak kalite
+    // prefix'i — üretici için en yüksek öncelikli stil sinyali (baştaki
+    // kelimeler ağırlıklıdır). Sahneler arası tek "look" garantisi.
+    stylePrefix:
+      process.env.IMAGE_STYLE_PREFIX ||
+      'cinematic, 4K, ultra sharp, professional photography',
+    // Sahneler arası tutarlılık için TEK sabit seed kullan (her sahne aynı
+    // seed → aynı karakter/dönem/ışık estetiği). 0 = her sahne farklı seed
+    // (eski davranış, daha çeşitli ama daha az tutarlı).
+    fixedSeed: process.env.IMAGE_FIXED_SEED !== '0',
     // Her sahne promptuna eklenen ortak sinematik stil (tutarlı "look").
     styleSuffix:
       process.env.IMAGE_STYLE ||
@@ -82,7 +92,8 @@ export const config = {
     // için strict yalnızca bilinçli olarak açılmalı.
     mode: process.env.RETENTION_QC_MODE || 'warning',
     // minScore yalnızca editoryal rapor/eğilim eşiğidir; upload kapısı değildir.
-    minScore: Number(process.env.RETENTION_MIN_SCORE || 85),
+    // Minimum geçer (editoryal hazır) skor: 70 → 75 (kalite barı yükseltildi).
+    minScore: Number(process.env.RETENTION_MIN_SCORE || 75),
     // qualityTarget: EDİTORYAL hedef (upload kapısı DEĞİL). Skor bu hedefin
     // altındaysa video yine yayınlanabilir ama rapor bir iyileştirme planı
     // (improvementPlan) + acımasız oto-eleştiri üretir. "İyi değil, harika" barı.
@@ -154,6 +165,11 @@ export const config = {
     voice: process.env.TTS_VOICE || 'en-US-AndrewNeural',
     rate: process.env.TTS_RATE || '+8%', // Shorts retention için biraz hızlı tempo
     pitch: process.env.TTS_PITCH || '+0Hz',
+    // KONUYA GÖRE HIZ: heyecanlı/aksiyon konularında taban hıza +%10 eklenir
+    // (enerji), bilimsel/açıklayıcı konularda -%5 (anlaşılırlık). generateAudio
+    // konu kategorisi/formatına göre bu yüzdeyi tabana ekler.
+    rateExcitedDelta: Number(process.env.TTS_RATE_EXCITED || 10),
+    rateScientificDelta: Number(process.env.TTS_RATE_SCIENTIFIC || -5),
 
     // -- Piper (çevrimdışı yedek) -- Doğal erkek ses. Alternatif: en_US-lessac-medium
     piperVoice: process.env.PIPER_VOICE || 'en_US-ryan-high',
@@ -175,9 +191,21 @@ export const config = {
     logoMarkPath: process.env.LOGO_MARK_PATH || 'assets/logo-mark.png',
     logoText: process.env.LOGO_TEXT || 'neosaniye',
 
+    // NİHAİ ENCODE KALİTESİ (fullv video pass + mux). Shorts için maksimum
+    // keskinlik: CRF 18 (görsel olarak kayıpsıza yakın), preset 'slow' (aynı
+    // bit bütçesinde daha iyi sıkıştırma/kalite), YouTube Shorts için maxrate
+    // 8M üst sınır (yükleme/decode dostu, bant genişliği optimalize).
+    encodeCrf: Number(process.env.VIDEO_CRF || 18),
+    encodePreset: process.env.VIDEO_PRESET || 'slow',
+    encodeMaxrate: process.env.VIDEO_MAXRATE || '8M',
+    encodeBufsize: process.env.VIDEO_BUFSIZE || '16M',
+    // Ses (AAC) bit hızı: 160k → 192k (daha temiz, dolgun ses).
+    audioBitrate: process.env.VIDEO_AUDIO_BITRATE || '192k',
+
     // Klipler arası geçişler (xfade). Pro kurgu: sade ve kısa — gösterişli
     // wipe'lar (radial/circleopen vb.) şablon/AI hissi verdiği için çıkarıldı.
-    transitionDuration: Number(process.env.VIDEO_TRANSITION || 0.35),
+    // Crossfade süresi 0.3s → 0.5s: sahne geçişleri daha yumuşak/sinematik.
+    transitionDuration: Number(process.env.VIDEO_TRANSITION || 0.5),
     transitions: (process.env.VIDEO_TRANSITIONS ||
       'fade,slideleft,zoomin,slideup,smoothleft,fade,slideright,wipeup')
       .split(','),
@@ -205,6 +233,18 @@ export const config = {
     // Vurucu kelime vurgusu (sayılar ve uzun kelimeler) rengi (ASS &HBBGGRR&). Sarı.
     accentColor: process.env.VIDEO_ACCENT || '&H00E6FF&',
     emphasis: process.env.VIDEO_EMPHASIS !== '0',
+    // KARAOKE ALTYAZI: konuşulan (aktif) kelime anlık olarak büyür + vurgu
+    // rengine döner (\kf zamanlaması kelime damgalarından). Kapatmak için
+    // VIDEO_CAPTION_KARAOKE=0.
+    captionKaraoke: process.env.VIDEO_CAPTION_KARAOKE !== '0',
+    // Aktif kelimenin büyüme oranı (1.0 = sabit; 1.18 = %18 büyür).
+    captionKaraokeScale: Number(process.env.VIDEO_CAPTION_KARAOKE_SCALE || 1.18),
+    // Altyazı arkasına yarı saydam koyu kutu (okunabilirlik). Kutu alfa ASS
+    // BackColour olarak (&HAABBGGRR); AA=alfa (00 opak, FF şeffaf). ~%55 opak.
+    captionBox: process.env.VIDEO_CAPTION_BOX !== '0',
+    captionBoxColor: process.env.VIDEO_CAPTION_BOX_COLOR || '&H8C0F0F0F',
+    // Önemli kelimeler (sayı/şok ifade) BÜYÜK HARF + kalın gösterilsin.
+    captionUppercaseEmphasis: process.env.VIDEO_CAPTION_UPPER_EMPH !== '0',
 
     // Kapanış kartı (outro): Shorts'ta loop'u kırdığı için VARSAYILAN KAPALI.
     // Açmak için VIDEO_OUTRO=1. Yerine video-içi abone uyarısı kullanılır.
@@ -235,6 +275,12 @@ export const config = {
     // Müzik NET duyulur (referans kurgulardaki gibi önde); yumuşak ducking
     // konuşurken sadece hafifçe kısar, susturmaz.
     musicVolume: Number(process.env.VIDEO_MUSIC_VOL || 0.55),
+    // DİNAMİK DUCKING: konuşma varken müzik -18dB'ye çekilir (anlaşılırlık),
+    // konuşma yokken -12dB'ye yükselir (intro/outro/nefes anları dolgun kalır).
+    musicDuckSpeakingDb: Number(process.env.VIDEO_MUSIC_DUCK_SPEAK_DB || -18),
+    musicDuckSilenceDb: Number(process.env.VIDEO_MUSIC_DUCK_SILENCE_DB || -12),
+    // Intro/outro ses fade in/out süresi (sn) — sert giriş/çıkış yok.
+    audioFadeSeconds: Number(process.env.VIDEO_AUDIO_FADE || 0.5),
 
     // Ambiyans katmanı: sahnenin ortam sesi (Freesound, CC0) müziğin altına
     // çok düşük seviyede serilir. FREESOUND_API_KEY yoksa otomatik atlanır.

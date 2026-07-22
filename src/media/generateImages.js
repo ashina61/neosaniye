@@ -156,13 +156,21 @@ export async function generateImages(script, opts = {}) {
   // Stil paketi: fotogerçekçi belgesel (varsayılan) ya da illüstrasyon.
   const styleSuffix =
     style === 'animated' ? config.images.animatedStyleSuffix : config.images.styleSuffix;
+  // Ortak kalite prefix'i (en yüksek öncelikli stil sinyali, promptun başında).
+  const stylePrefix = String(config.images.stylePrefix || '').trim();
+  // GÖRSEL TUTARLILIK: sabit seed modunda TÜM sahneler aynı seed'i kullanır
+  // (aynı estetik/karakter/dönem/ışık). Kapalıysa her sahne farklı seed.
+  const useFixedSeed = config.images.fixedSeed !== false;
 
   for (let i = 0; i < scenes.length; i += 1) {
     const scene = scenes[i];
     const idx = String(i + 1).padStart(2, '0');
-    const prompt = [scene.image_prompt, anchor, styleSuffix]
+    const prompt = [stylePrefix, scene.image_prompt, anchor, styleSuffix]
       .filter(Boolean)
       .join('. ');
+    // Sahne seed'i: sabit modda tek video seed'i (tutarlılık); değilse eski
+    // sahne-başı türetme (çeşitlilik).
+    const sceneSeed = useFixedSeed ? videoSeed : videoSeed + i * 997;
     let done = null;
 
     // 0.gfx) MOTION GRAPHICS kartları: sayı sayacı (stat) veya "how it works"
@@ -247,8 +255,8 @@ export async function generateImages(script, opts = {}) {
         try {
           if (provider === 'pollinations') {
             const dest = path.join(mediaDir, `${idx}-ai.jpg`);
-            await fetchPollinations(prompt, dest, { width, height, seed: videoSeed + i * 997 });
-            done = { path: dest, type: 'photo', scene: i, source: 'ai', provider: 'pollinations', assetId: `${script.normalizedTopic}:${i}:${videoSeed + i * 997}`, query: prompt, model: config.images.pollinationsModel, generatedAt: new Date().toISOString(), rightsClass: 'ai-generated', license: null, licenseEvidence: null };
+            await fetchPollinations(prompt, dest, { width, height, seed: sceneSeed });
+            done = { path: dest, type: 'photo', scene: i, source: 'ai', provider: 'pollinations', assetId: `${script.normalizedTopic}:${i}:${sceneSeed}`, query: prompt, model: config.images.pollinationsModel, generatedAt: new Date().toISOString(), rightsClass: 'ai-generated', license: null, licenseEvidence: null };
           } else if (provider === 'gemini') {
             const dest = path.join(mediaDir, `${idx}-ai.png`);
             const buf = await generateOne(geminiAI, prompt);

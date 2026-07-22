@@ -39,6 +39,32 @@ export function scriptToNarration(script) {
   return scriptSegments(script).join(' ').replace(/\s+/g, ' ').trim();
 }
 
+/** Konu tipine göre TTS taban hızını ayarlar.
+ *  - Heyecanlı/aksiyon konuları (mystery, history, nature + story/facts3/whatif):
+ *    +rateExcitedDelta (%10) → daha enerjik tempo.
+ *  - Bilimsel/açıklayıcı konular (science, space, human body, technology +
+ *    howworks/process): +rateScientificDelta (-%5) → daha anlaşılır tempo.
+ *  Diğer durumlarda taban hız korunur.
+ *  @returns {string} edge-tts rate ("+18%", "+3%" gibi)
+ */
+export function ttsRateForTopic(script, baseRate = config.tts.rate) {
+  const base = Number.parseInt(String(baseRate).replace('%', ''), 10) || 0;
+  const category = String(script?.category || '').toLowerCase();
+  const format = String(script?.format || '').toLowerCase();
+  const EXCITED = ['mystery', 'history', 'nature'];
+  const SCIENTIFIC = ['science', 'space', 'human body', 'technology'];
+  const EXCITED_FMT = ['story', 'facts3', 'whatif'];
+  const SCIENTIFIC_FMT = ['howworks', 'process'];
+  let delta = 0;
+  if (EXCITED.includes(category) || EXCITED_FMT.includes(format)) {
+    delta = config.tts.rateExcitedDelta;
+  } else if (SCIENTIFIC.includes(category) || SCIENTIFIC_FMT.includes(format)) {
+    delta = config.tts.rateScientificDelta;
+  }
+  const total = base + delta;
+  return `${total >= 0 ? '+' : ''}${total}%`;
+}
+
 async function probeDuration(file) {
   const { stdout } = await run('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'default=nw=1:nk=1', file]);
   return Number.parseFloat(stdout) || 0;
@@ -64,7 +90,13 @@ export async function generateAudio(script, opts = {}) {
   const rawText = scriptToNarration(script);
   const segmentTexts = scriptSegments(script).map((segment) => prepareNarrationForTts(segment, { language }));
   const text = segmentTexts.join(' ').replace(/\s+/g, ' ').trim();
-  const base = { outDir, basename };
+  // Konu tipine göre TTS hızı (heyecanlı +%10 / bilimsel -%5). edge-tts yolu
+  // bu hızı kullanır; Piper (çevrimdışı yedek) sabit hızda çalışır.
+  const topicRate = ttsRateForTopic(script);
+  if (topicRate !== config.tts.rate) {
+    console.log(`[tts] konu hızı: ${config.tts.rate} → ${topicRate} (kategori: ${script.category || '-'}, format: ${script.format || '-'})`);
+  }
+  const base = { outDir, basename, rate: topicRate };
 
   let result;
 
