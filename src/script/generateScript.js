@@ -338,7 +338,14 @@ async function openRouterFallback(req) {
       }
       const data = await res.json();
       const text = data?.choices?.[0]?.message?.content || '';
-      if (!text) throw new Error('openrouter boş yanıt');
+      if (!text) {
+        const err = new Error('openrouter boş yanıt');
+        // Free backends occasionally return a successful envelope with no
+        // completion while they are being rerouted. Treat it like a transient
+        // provider failure instead of abandoning the only remaining fallback.
+        err.name = 'OpenRouterEmptyResponseError';
+        throw err;
+      }
       // OpenRouter's JSON-object mode is best-effort for some free backends.
       // Do not report a provider success and let the pipeline crash later on a
       // malformed/truncated payload; retry it while the same fallback is active.
@@ -359,7 +366,10 @@ async function openRouterFallback(req) {
     } catch (err) {
       lastErr = err;
       providerRun.openRouterFailures += 1;
-      const retryable = err?.name === 'AbortError' || err?.name === 'OpenRouterInvalidJsonError' || /network|fetch failed|socket|ECONNRESET/i.test(String(err?.message || err));
+      const retryable = err?.name === 'AbortError' ||
+        err?.name === 'OpenRouterEmptyResponseError' ||
+        err?.name === 'OpenRouterInvalidJsonError' ||
+        /network|fetch failed|socket|ECONNRESET/i.test(String(err?.message || err));
       if (retryable && attempt < attempts) {
         console.warn(`[openrouter] temporary failure; retrying (${attempt}/${attempts}): ${String(err?.message || err).slice(0, 90)}`);
         if (config.openrouter.retryDelayMs > 0) await new Promise((resolve) => setTimeout(resolve, config.openrouter.retryDelayMs));
@@ -432,12 +442,14 @@ export async function generateWithRetry(ai, req, tries = 5) {
       return alt;
     }
   } catch (gErr) {
+    lastErr = gErr;
     console.warn(`[groq] yedek de düştü: ${String(gErr.message).slice(0, 90)}`);
   }
   try {
     const openRouter = await openRouterFallback(req);
     if (openRouter) return openRouter;
   } catch (err) {
+    lastErr = err;
     if (!PROVIDER_BREAKER_STATUSES.has(err?.status) && err?.name !== 'AbortError') {
       console.warn('[openrouter] retry skipped; deterministic fallback next.');
     }
