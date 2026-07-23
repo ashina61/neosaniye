@@ -23,6 +23,18 @@ const BUF = { maxBuffer: 12 * 1024 * 1024 };
 // Duyulabilirlik eşiği: cue anındaki tepe (max) enerji, hemen önceki tabana
 // göre en az bu kadar dB yükselmeli. Geçici (transient) vuruş için makul alt sınır.
 export const SFX_AUDIBLE_MIN_DELTA_DB = 3.0;
+// BAND-ENERJİ eşiği: broadband tepe konuşma altında hareket etmese bile, SFX
+// KENDİ frekans bandında enerji ekler. Cue'nun band-ortalaması tabana göre bu
+// kadar yükselirse duyulur sayılır (konuşma altında spektral varlığı kredi eder).
+export const SFX_BAND_MIN_DELTA_DB = 4.0;
+// SFX tipi → karakteristik frekans bandı [lo,hi] Hz. "cta:" öneki soyulur.
+const SFX_BAND = {
+  impact: [30, 220], riser: [300, 5000], whoosh: [300, 3000], shimmer: [2000, 8000],
+  chime: [500, 4000], click: [1500, 6000], confirmation: [600, 4000], pop: [800, 5000],
+  bell_tick: [1500, 7000], soft_click: [1500, 6000], swipe: [500, 5000],
+};
+const DEFAULT_BAND = [200, 6000];
+const bandOf = (id) => SFX_BAND[String(id || '').replace(/^cta:/, '')] || DEFAULT_BAND;
 // Tek SFX'in bir videoda azami tekrarı (aşılırsa REPETITION_EXCESSIVE).
 export const SFX_MAX_REPEAT_PER_VIDEO = 4;
 // Near-silent asset eşiği: WAV'ın tepe seviyesi bunun altındaysa "sessiz" sayılır.
@@ -50,6 +62,19 @@ export async function measureSegmentDb(file, startSec, durSec = WIN) {
     meanDb: mean ? parseFloat(mean[1]) : null,
     maxDb: max ? parseFloat(max[1]) : null,
   };
+}
+
+/** Bir segmentin BELİRLİ frekans bandındaki ortalama enerjisini ölçer (dB). */
+export async function measureBandDb(file, startSec, durSec, band) {
+  const [lo, hi] = band || DEFAULT_BAND;
+  const ss = Math.max(0, startSec).toFixed(3);
+  const { stderr } = await run('ffmpeg', [
+    '-nostdin', '-hide_banner',
+    '-ss', ss, '-t', Math.max(0.05, durSec).toFixed(3), '-i', file,
+    '-vn', '-af', `highpass=f=${lo},lowpass=f=${hi},volumedetect`, '-f', 'null', '-',
+  ], BUF).catch((e) => ({ stderr: e.stderr || '' }));
+  const mean = /mean_volume:\s*(-?[\d.]+)\s*dB/.exec(stderr || '');
+  return { meanDb: mean ? parseFloat(mean[1]) : null };
 }
 
 /** Bir WAV asset'i near-silent mı (üretim hatası/boş sentez)? */
@@ -99,6 +124,7 @@ export async function verifySfxInOutput(outputPath, cues = []) {
       assetResolved,
       mixed,
       audibleDeltaDb: null,
+      bandDeltaDb: null,
       verified: false,
       code: null,
     };
@@ -119,8 +145,15 @@ export async function verifySfxInOutput(outputPath, cues = []) {
 
     // Cue öncesi taban (biten pencere) vs cue "sırası" tepe (SFX enerji süresini
     // kapsar) — GERÇEK çıktıdan. Pencere adil; eşik (3 dB) değişmedi.
-    const before = await measureSegmentDb(outputPath, Math.max(0, at - BEFORE_WIN - 0.05), BEFORE_WIN).catch(() => ({ maxDb: null }));
-    const during = await measureSegmentDb(outputPath, at - 0.05, DURING_WIN).catch(() => ({ maxDb: null }));
+    const bStart = Math.max(0, at - BEFORE_WIN - 0.05);
+    const dStart = at - 0.05;
+    const band = bandOf(requested);
+    const [before, during, beforeBand, duringBand] = await Promise.all([
+      measureSegmentDb(outputPath, bStart, BEFORE_WIN).catch(() => ({ maxDb: null })),
+      measureSegmentDb(outputPath, dStart, DURING_WIN).catch(() => ({ maxDb: null })),
+      measureBandDb(outputPath, bStart, BEFORE_WIN, band).catch(() => ({ meanDb: null })),
+      measureBandDb(outputPath, dStart, DURING_WIN, band).catch(() => ({ meanDb: null })),
+    ]);
     if (before.maxDb === null || during.maxDb === null) {
       rec.code = 'SFX_OUTPUT_VERIFICATION_FAILED';
       failures.add('SFX_OUTPUT_VERIFICATION_FAILED');
@@ -128,7 +161,12 @@ export async function verifySfxInOutput(outputPath, cues = []) {
       continue;
     }
     rec.audibleDeltaDb = +(during.maxDb - before.maxDb).toFixed(2);
-    rec.verified = rec.audibleDeltaDb >= SFX_AUDIBLE_MIN_DELTA_DB;
+    if (beforeBand.meanDb !== null && duringBand.meanDb !== null) {
+      rec.bandDeltaDb = +(duringBand.meanDb - beforeBand.meanDb).toFixed(2);
+    }
+    // Duyulur: broadband tepe ≥3 dB YA DA kendi bandında enerji ≥4 dB yükseldi.
+    rec.verified = rec.audibleDeltaDb >= SFX_AUDIBLE_MIN_DELTA_DB ||
+      (rec.bandDeltaDb !== null && rec.bandDeltaDb >= SFX_BAND_MIN_DELTA_DB);
     if (!rec.verified) { rec.code = 'SFX_INAUDIBLE'; failures.add('SFX_INAUDIBLE'); }
     out.push(rec);
   }

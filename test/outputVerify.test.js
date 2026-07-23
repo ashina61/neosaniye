@@ -25,6 +25,33 @@ async function makeClipWithHit(out) {
   ], { maxBuffer: 12 * 1024 * 1024 });
 }
 
+/** YÜKSEK broadband taban (bas gürültü) + t=2.0s'de tiz (shimmer bandı) patlama.
+ *  Broadband tepe zar zor kımıldar ama 2-8kHz band ortalaması net yükselir. */
+async function makeClipBandOnly(out) {
+  await run('ffmpeg', ['-y', '-v', 'error',
+    '-f', 'lavfi', '-i', 'color=c=black:s=256x256:d=4:r=24',
+    '-f', 'lavfi', '-i', 'sine=frequency=90:duration=4', // yüksek, sabit BAS taban
+    '-f', 'lavfi', '-i', 'sine=frequency=3500:duration=0.3', // tiz shimmer bandı patlama
+    '-filter_complex',
+    '[1]volume=0.9[bed];[2]adelay=2000|2000,volume=0.5[hi];[bed][hi]amix=inputs=2:normalize=0,aformat=channel_layouts=stereo[a]',
+    '-map', '0:v', '-map', '[a]', '-t', '4',
+    '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-ac', '2', out,
+  ], { maxBuffer: 12 * 1024 * 1024 });
+}
+
+test('band-metrik: broadband kımıldamasa da SFX kendi bandında yükselince verified', { skip: !hasFfmpeg }, async () => {
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'ov-band-'));
+  try {
+    const clip = path.join(dir, 'band.mp4');
+    await makeClipBandOnly(clip);
+    const r = await verifySfxInOutput(clip, [
+      { atSeconds: 2.0, sfxId: 'shimmer', assetResolved: true, mixedInGraph: true },
+    ]);
+    assert.equal(r.cues[0].verified, true, `band ile doğrulanmalı: broadband=${r.cues[0].audibleDeltaDb} band=${r.cues[0].bandDeltaDb}`);
+    assert.ok(r.cues[0].bandDeltaDb >= 4, `band delta ${r.cues[0].bandDeltaDb} < 4`);
+  } finally { await rm(dir, { recursive: true, force: true }); }
+});
+
 test('measureSegmentDb: yüksek vuruş penceresi tabandan yüksek okunur', { skip: !hasFfmpeg }, async () => {
   const dir = await mkdtemp(path.join(os.tmpdir(), 'ov-'));
   try {
