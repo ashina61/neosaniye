@@ -42,7 +42,7 @@ const pick = (rng, arr) => arr[Math.floor(rng() * arr.length)];
 
 /**
  * @param {object} input
- * @param {string} input.seed  videoId veya içerik seed'i (deterministik)
+ * @param {string} input.seed  videoId veya icçerik seed'i (deterministik)
  * @param {number} input.durationSec
  * @param {number} [input.outroStartSec] outro başlangıcı (varsa)
  * @param {string[]} [input.recentCtaTypes] son videolarda kullanılan tipler (anti-tekrar)
@@ -67,11 +67,10 @@ export function selectCta(input, cfg = config.motion.cta) {
     return { ...base, reason: 'probability-skip' };
   }
 
-  // Tip seçimi — mümkünse son kullanılanı tekrar etme (anti-tekrar).
-  // Viewer-first release policy: the only CTA objective is subscription.
-  const allowed = (cfg.allowedTypes || []).filter((t) => t === 'subscribe' && TYPE_TEMPLATES[t]);
+  // Tip seçimi — tüm CTA tiplerine izin ver, son 3 videoda kullanılanı tekrar etme.
+  const allowed = (cfg.allowedTypes || []).filter((t) => TYPE_TEMPLATES[t]);
   if (!allowed.length) return { ...base, reason: 'editorial-skip' };
-  const recent = new Set((input.recentCtaTypes || []).slice(0, 1));
+  const recent = new Set((input.recentCtaTypes || []).slice(0, 3));
   const fresh = allowed.filter((t) => !recent.has(t));
   const type = pick(rng, fresh.length ? fresh : allowed);
   const templateId = pick(rng, TYPE_TEMPLATES[type]);
@@ -80,14 +79,21 @@ export function selectCta(input, cfg = config.motion.cta) {
   const [dMin, dMax] = cfg.durationRangeSec;
   const durSec = +(dMin + rng() * (dMax - dMin)).toFixed(2);
   const earliest = Math.max(cfg.earliestStartSec, 5); // ilk 5sn kesin yasak
-  const latestStart = duration - cfg.latestEndBufferSec - durSec;
-  if (latestStart <= earliest) {
-    return { ...base, reason: 'timeline-conflict' };
-  }
-  // CTA belongs after the payoff, not at a random mid-story point.
-  let startSec = +latestStart.toFixed(2);
 
-  // Outro çakışması: CTA penceresi outro'ya taşarsa geri çek; sığmazsa atla.
+  // CTA payoff sonrası altın noktada: duration * 0.70-0.85 aralığı.
+  const payoffStart = duration * (0.70 + rng() * 0.15);
+  const latestStart = duration - cfg.latestEndBufferSec - durSec;
+  let startSec = +Math.min(payoffStart, latestStart).toFixed(2);
+
+  if (startSec < earliest) {
+    // Payoff penceresi çok erken → sona yakın ama earliest'ten sonra.
+    startSec = +Math.max(earliest, latestStart).toFixed(2);
+    if (startSec < earliest || startSec + durSec > duration - 0.5) {
+      return { ...base, reason: 'timeline-conflict' };
+    }
+  }
+
+  // Outro çak�şması: CTA penceresi outro'ya taşarsa geri çek; sığmazsa atla.
   if (cfg.avoidOutro && Number.isFinite(input.outroStartSec)) {
     const outroStart = input.outroStartSec;
     if (startSec + durSec > outroStart) {
