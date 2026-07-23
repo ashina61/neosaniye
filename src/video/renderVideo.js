@@ -336,7 +336,7 @@ async function normalizeClip(item, duration, outPath, { width, height, fps, inde
   const frames = Math.max(1, Math.round(duration * fps));
 
   const motionType = motion?.type || 'slow-push-in';
-  const zMax = Math.min(1.14, Math.max(1, motion?.maxZoom || 1.08));
+  const zMax = Math.min(1.15, Math.max(1, motion?.maxZoom || 1.10));
   const inc = ((zMax - 1) / frames).toFixed(6);
   const pull = motionType === 'slow-pull-out';
   const zExpr = motionType === 'static-hold' ? '1' : pull ? `max(${zMax.toFixed(3)}-${inc}*on,1)` : `min(1+${inc}*on,${zMax.toFixed(3)})`;
@@ -355,7 +355,8 @@ async function normalizeClip(item, duration, outPath, { width, height, fps, inde
     `scale=${width}:${height}`,
     `fps=${fps}`,
     // Hafif film greni: AI/stok görüntünün steril temizliğini kırar.
-    ...(config.video.grain ? ['noise=alls=5:allf=t'] : []),
+    // Dinamik film greni: kategoriye göre yoğunluk (history:7, mystery:6, space:3, science:4, nature:5, default:5)
+    ...(config.video.grain ? [`noise=alls=${(() => { const map = { history:7, mystery:6, space:3, science:4, nature:5 }; return map[String(category||'').toLowerCase()] || 5; })()}:allf=t`] : []),
     'format=yuv420p',
   ].join(',');
 
