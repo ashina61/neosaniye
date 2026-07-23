@@ -1,19 +1,41 @@
-const MOTIONS = ['slow-push-in', 'slow-pull-out', 'pan-left-to-right', 'pan-right-to-left', 'top-to-bottom-reveal', 'detail-zoom'];
+const MOTIONS = ['slow-push-in', 'slow-pull-out', 'pan-left-to-right', 'pan-right-to-left', 'top-to-bottom-reveal', 'detail-zoom', 'slow-pan-up', 'slow-pan-down', 'zoom-to-detail'];
 
 export function selectSceneMotion(scene = {}, item = {}, { previous = [], index = 0 } = {}) {
   if (item.type === 'video') return { type: 'native-motion', maxZoom: 1, reason: 'live-footage' };
   const text = `${scene.image_prompt || ''} ${scene.narration || ''}`.toLowerCase();
   const textHeavy = item.source === 'gfx' || /\b(diagram|map|timeline|label|chart|text)\b/.test(text);
   if (textHeavy) return { type: 'static-hold', maxZoom: 1, reason: 'text-heavy-or-explanatory' };
+
   let type = scene.motion_type;
   if (!MOTIONS.includes(type)) {
+    // Sahne icäerigine göre aklılı cekim seçimi
     if (/\b(detail|macro|close-up|closeup|tiny|cell|mechanism)\b/.test(text)) type = 'detail-zoom';
     else if (/\b(tower|mountain|vertical|falls|descending|underground)\b/.test(text)) type = 'top-to-bottom-reveal';
     else if (/\b(wide|landscape|environment|panorama|map)\b/.test(text)) type = index % 2 ? 'pan-right-to-left' : 'pan-left-to-right';
-    else type = index === 0 ? 'slow-push-in' : index % 3 === 0 ? 'slow-pull-out' : 'slow-push-in';
+    else if (/\b(sky|space|stars|galaxy|cosmic|upward|rising)\b/.test(text)) type = 'slow-pan-up';
+    else if (/\b(deep|ocean|digging|below|underwater|sinking)\b/.test(text)) type = 'slow-pan-down';
+    else if (index === 0) type = 'slow-push-in';  // Hook sahnesi için push-in
+    else if (index % 4 === 1) type = 'slow-pull-out';
+    else if (index % 4 === 2) type = 'pan-left-to-right';
+    else if (index % 4 === 3) type = 'zoom-to-detail';
+    else type = 'slow-push-in';
   }
-  if (previous.at(-1) === type) type = type === 'slow-push-in' ? 'slow-pull-out' : 'slow-push-in';
-  return { type, maxZoom: type === 'detail-zoom' ? 1.12 : 1.08, reason: scene.motion_type ? 'scene-metadata' : 'scene-content' };
+
+  // Anti-tekrar: son 2 hareketi tekrar etme, açıkça devam et.
+  const recent2 = previous.slice(-2);
+  if (recent2.includes(type)) {
+    const alts = MOTIONS.filter(m => !recent2.includes(m));
+    if (alts.length) {
+      // Belli bir seçim yap: önce sahne içerigine uygun alternatif
+      const preferred = alts.find(m => 
+        (m === 'detail-zoom' && /\b(detail|macro|close)\b/.test(text)) ||
+        (m === 'top-to-bottom-reveal' && /\b(tower|mountain|vertical)\b/.test(text))
+      );
+      type = preferred || alts[0];
+    }
+  }
+
+  return { type, maxZoom: type === 'detail-zoom' ? 1.12 : type === 'zoom-to-detail' ? 1.14 : 1.08, reason: scene.motion_type ? 'scene-metadata' : 'scene-content' };
 }
 
 export function validateMotionPlan(plan = [], durations = []) {
