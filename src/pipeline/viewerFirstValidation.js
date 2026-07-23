@@ -5,11 +5,11 @@
  */
 
 const GENERIC_HOOKS = [
-  /^did you know\b/i, /^you won['¹t believe\b/i, /^have you ever wondered\b/i,
+  /^did you know\b/i, /^you won't believe\b/i, /^have you ever wondered\b/i,
   /^what if i told you\b/i, /^this is (?:crazy|insane|amazing)\b/i,
 ];
-const SUBSCRIBE = /\b(subscribe|abone ol|suscr[í]ñ]bete|abonnez-vous|inscreva-se)\b/i;
-const PAYOFF = /\b(because|therefore|that['¹] s why|so |which meant|the answer|finally|sonuç|bro yüzden|meğer)\b/i;
+const SUBSCRIBE = /\b(subscribe|abone ol|suscríbete|abonnez-vous|inscreva-se)\b/i;
+const PAYOFF = /\b(because|therefore|that's why|so |which meant|the answer|finally|sonuç|bu yüzden|meğer)\b/i;
 const PROMISE = /\d|\?|\b(secret|hidden|never|nobody|impossible|wrong|proof|actually|vanish|disappear|survive|why|how|what|which)\b/i;
 const STOP = new Set(['the', 'a', 'an', 'this', 'that', 'why', 'how', 'what', 'and', 'but', 'with', 'from', 'into', 'your']);
 
