@@ -386,6 +386,37 @@ async function normalizeClip(item, duration, outPath, { width, height, fps, inde
   ], { maxBuffer: 20 * 1024 * 1024 });
 }
 
+/**
+ * SFX HAVUZU (kullanıcı-sağlanan telifsiz dosyalar) — sentezden ÖNCE denenir.
+ * assets/sfx/<tip>/ içinde .wav/.mp3/... varsa deterministik-rastgele biri seçilir
+ * (aynı video→aynı ses, farklı video→çeşitlenir) ve outPath'e 44.1kHz mono WAV
+ * olarak normalize edilir. Klasör boş/yoksa false → sentez fallback devreye girer.
+ * Böylece "hep aynı geçiş sesi" biter; dosya eklemek yeter, kod değişmez.
+ * SFX_POOL_DIR ile kök klasör değiştirilebilir.
+ * @returns {Promise<boolean>} havuzdan gerçek dosya kullanıldıysa true
+ */
+async function resolveSfxAsset(type, outPath, seed) {
+  const poolRoot = process.env.SFX_POOL_DIR || 'assets/sfx';
+  const dir = path.join(poolRoot, String(type || ''));
+  if (!type || !existsSync(dir)) return false;
+  let files;
+  try {
+    files = readdirSync(dir).filter((f) => /\.(wav|mp3|ogg|m4a|aac|flac)$/i.test(f)).sort();
+  } catch { return false; }
+  if (!files.length) return false;
+  // Deterministik seçim (FNV-1a): aynı seed → aynı parça, tekrar render tutarlı.
+  let h = 2166136261;
+  const s = String(seed);
+  for (let i = 0; i < s.length; i += 1) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  const pick = files[(h >>> 0) % files.length];
+  try {
+    // Mono + 44.1kHz + hafif tepe sınırlama → mix'e tutarlı girsin.
+    await run('ffmpeg', ['-y', '-v', 'error', '-i', path.resolve(path.join(dir, pick)),
+      '-ac', '1', '-ar', '44100', '-af', 'alimiter=limit=0.95', outPath], { maxBuffer: 12 * 1024 * 1024 });
+    return true;
+  } catch { return false; }
+}
+
 /** Geçiş ses efektleri — katmanlı + echo kuyruklu (ham sentez "cacık" durur;
  *  küçük bir mekân kuyruğu prodüksiyon sesi hissi verir):
  *  - impact:  sub + gövde + klik + kuyruk (twist vuruşu)
@@ -612,7 +643,9 @@ async function buildFullAudio(
       const type = sfxTypes[k - 1];
       if (!type) continue;
       const f = path.join(workDir, `sfx-${k}.wav`);
-      await makeSfx(type, f);
+      // Önce kullanıcı havuzu (assets/sfx/<tip>/), yoksa sentez.
+      const fromPool = await resolveSfxAsset(type, f, `${musicSeed}:${type}:${k}`);
+      if (!fromPool) await makeSfx(type, f);
       inputs.push('-i', path.resolve(f));
       const boundary = off[k - 1];
       const at = type === 'riser' ? Math.max(0, boundary - 0.75) : boundary;
@@ -621,7 +654,8 @@ async function buildFullAudio(
     }
     if (hookSfx) {
       const f = path.join(workDir, 'sfx-hook.wav');
-      await makeSfx(hookSfx, f);
+      const fromPool = await resolveSfxAsset(hookSfx, f, `${musicSeed}:hook:${hookSfx}`);
+      if (!fromPool) await makeSfx(hookSfx, f);
       inputs.push('-i', path.resolve(f));
       sfxPlan.push({ idx, k: 'hook', type: hookSfx, at: 0.12 });
       idx += 1;

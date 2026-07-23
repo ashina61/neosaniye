@@ -41,6 +41,11 @@ artifacts/real-production-validation/
 
 # Neo Motion: SFX wav + manifest + showcase görselleri sürümlenir; ara render'lar değil.
 !assets/motion/sfx/*.wav
+# SFX havuzu (kullanıcı-sağlanan telifsiz geçiş sesleri) sürümlenir.
+!assets/sfx/**/*.wav
+!assets/sfx/**/*.mp3
+!assets/sfx/**/*.ogg
+!assets/sfx/**/*.m4a
 artifacts/motion/*
 !artifacts/motion/cta-contact-sheet.png
 !artifacts/motion/safe-area-debug.png
