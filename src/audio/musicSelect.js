@@ -22,7 +22,7 @@ import { config } from '../config.js';
  */
 
 const EXTS = ['.mp3', '.m4a', '.wav', '.ogg', '.aac', '.opus'];
-const ALIAS = { 'human body': 'science', technology: 'science', history: 'ancient' };
+const ALIAS = { 'human body': 'science', technology: 'science', history: 'ancient', space: 'epic', mystery: 'suspense', nature: 'ambient' };
 
 function listDir(d) {
   try {
