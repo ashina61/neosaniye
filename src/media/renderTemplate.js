@@ -50,7 +50,7 @@ function clampInt(n, lo, hi) {
  * @returns {Promise<{path:string,type:'video'}>}
  */
 export async function renderStatCard(stat, dest, opts = {}) {
-  const { width = 1080, height = 1920, fps = 30, duration = 4 } = opts;
+  const { width = 1080, height = 1920, fps = 30, duration = 4, bgImage = null } = opts;
   if (!existsSync(FONT_BLACK)) throw new Error('Montserrat-Black fontu yok — stat card atlandı');
 
   let value = clampInt(stat.value, 0, 1e12);
@@ -137,6 +137,29 @@ export async function renderStatCard(stat, dest, opts = {}) {
 
   const frame =
     `drawbox=x=44:y=44:w=${width - 88}:h=${height - 88}:color=0x${sb.accent}@0.22:t=2:enable='gte(t,0.15)',`;
+
+  // AKIŞI KORUYAN MOD: sahnenin gerçek görseli arka planda, sayı ÜSTÜNE biner
+  // (kullanıcı geri bildirimi: düz kara kart akışı kesiyordu). Okunurluk için
+  // koyu scrim + vignette. Görsel yoksa/işlenemezse marka gradyanına düşer.
+  if (bgImage && existsSync(bgImage)) {
+    const vfImg =
+      `scale=${width}:${height}:force_original_aspect_ratio=increase,crop=${width}:${height},` +
+      `drawbox=x=0:y=0:w=${width}:h=${height}:color=0x${sb.bg1}@0.42:t=fill,` +
+      // Sayı/etiket bölgesine ekstra koyu bant (üst-orta) → beyaz sayı parlak
+      // görselde bile okunur; kenarlarda görsel açık kalır (akış korunur).
+      `drawbox=x=0:y=${Math.round(height * 0.26)}:w=${width}:h=${Math.round(height * 0.26)}:color=0x0a0e14@0.32:t=fill,vignette=PI/7,` +
+      `${frame}${drawNum}${drawUnit}${drawRule}${drawLabel},fade=t=in:st=0:d=0.4,format=yuv420p`;
+    try {
+      await run('ffmpeg', ['-y', '-loop', '1', '-i', path.resolve(bgImage),
+        '-t', String(dur.toFixed(3)), '-vf', vfImg, '-r', String(fps),
+        '-c:v', 'libx264', '-preset', 'veryfast', '-pix_fmt', 'yuv420p', dest],
+        { maxBuffer: 20 * 1024 * 1024 });
+      return { path: dest, type: 'video' };
+    } catch {
+      /* görsel işlenemedi → aşağıdaki marka gradyanı moduna düş */
+    }
+  }
+
   const vf =
     `vignette=PI/7,${frame}${drawNum}${drawUnit}${drawRule}${drawLabel},` +
     `fade=t=in:st=0:d=0.4,format=yuv420p`;

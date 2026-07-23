@@ -1,6 +1,7 @@
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { mkdir, writeFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { GoogleGenAI } from '@google/genai';
 import { config } from '../config.js';
@@ -101,6 +102,43 @@ async function makePlaceholder(destPath, seed = 0) {
  * @returns {Promise<{mediaDir:string, items:Array, sources:object}>}
  *   items: [{ path, type:'photo', scene, source:'ai'|'pexels'|'placeholder' }]
  */
+// Cümle başı OLMAYAN büyük harfli kelimeler İngilizce'de güçlü özel-isim
+// sinyalidir. Görüntü Yönetmeni real_subject vermezse, anlatımdaki adlı gerçek
+// varlığı (Sümela Monastery, Giza, Rasputin...) yakalayıp GERÇEK arşiv fotoğrafı
+// tetiklemek için deterministik yedek. LLM'e bağımlı değil → her zaman çalışır.
+const SUBJECT_STOP = new Set(['The', 'A', 'An', 'This', 'That', 'These', 'Those', 'I', 'You', 'He', 'She',
+  'It', 'We', 'They', 'But', 'And', 'Or', 'So', 'If', 'When', 'Why', 'How', 'What', 'Who', 'Where',
+  'Their', 'His', 'Her', 'Its', 'Our', 'Your', 'In', 'On', 'At', 'For', 'To', 'Of', 'As', 'By', 'Then',
+  'Now', 'Here', 'There', 'Yet', 'Still', 'Every', 'Some', 'Most', 'Many', 'One', 'Two', 'Three']);
+const CONNECT = /^(of|the|and|de|la|von|van|del|di)$/i;
+function detectRealSubject(text) {
+  const s = String(text || '');
+  if (!s) return null;
+  let best = null;
+  for (const sent of s.split(/(?<=[.!?])\s+/)) {
+    const toks = sent.trim().split(/\s+/);
+    let i = 1; // cümlenin İLK kelimesini atla (baştaki büyük harf sinyal değil)
+    while (i < toks.length) {
+      const clean = toks[i].replace(/[^\p{L}\p{N}''-]/gu, '');
+      if (/^\p{Lu}[\p{L}''-]{2,}$/u.test(clean) && !SUBJECT_STOP.has(clean)) {
+        const phrase = [clean];
+        let j = i + 1;
+        while (j < toks.length) {
+          const c2 = toks[j].replace(/[^\p{L}\p{N}''-]/gu, '');
+          if (CONNECT.test(c2)) { phrase.push(c2); j += 1; continue; }
+          if (/^\p{Lu}[\p{L}''-]{1,}$/u.test(c2) && !SUBJECT_STOP.has(c2)) { phrase.push(c2); j += 1; continue; }
+          break;
+        }
+        while (phrase.length && CONNECT.test(phrase[phrase.length - 1])) phrase.pop();
+        const p = phrase.join(' ');
+        if (p.length >= 4 && (!best || p.length > best.length)) best = p;
+        i = j;
+      } else i += 1;
+    }
+  }
+  return best;
+}
+
 export async function generateImages(script, opts = {}) {
   const scenes = script.scenes || [];
   if (!scenes.length) throw new Error('script.scenes boş — anlatı sahneleri gerekli.');
@@ -124,6 +162,7 @@ export async function generateImages(script, opts = {}) {
 
   const items = [];
   const sources = { ai: 0, stock: 0, pexels: 0, placeholder: 0, gfx: 0, archive: 0 };
+  let archiveFbAttempts = 0; // DP real_subject vermediğinde deterministik yedek denemeleri
   let providerDead = provider === 'none' || (provider === 'gemini' && !geminiAI);
   // Motion graphics (sayı kartı) sayacı — video başına üst sınır.
   let gfxCount = 0;
@@ -185,10 +224,20 @@ export async function generateImages(script, opts = {}) {
       try {
         if (isUsableStat(scene.stat, scene.narration)) {
           const dest = path.join(mediaDir, `${idx}-gfx.mp4`);
-          const clip = await renderStatCard(scene.stat, dest, { width, height, duration: 8 });
-          done = { ...clip, scene: i, source: 'gfx', provider: 'neosaniye-renderTemplate', license: 'proprietary-original', licenseEvidence: 'src/media/renderTemplate.js' };
+          // AKIŞI KORU: sayıyı sahnenin gerçek görseli ÜZERİNE bindir (düz kara
+          // kart akışı kesiyordu — kullanıcı geri bildirimi). Arka planı ÜCRETSİZ/
+          // anahtarsız Pollinations üretir (Gemini kotası yakmaz); olmazsa marka
+          // gradyanına düşer.
+          let statBg = null;
+          try {
+            const bgDest = path.join(mediaDir, `${idx}-statbg.jpg`);
+            await fetchPollinations(prompt, bgDest, { width, height, seed: sceneSeed });
+            if (existsSync(bgDest)) statBg = bgDest;
+          } catch { /* düz karta düş */ }
+          const clip = await renderStatCard(scene.stat, dest, { width, height, duration: 8, bgImage: statBg });
+          done = { ...clip, scene: i, source: 'gfx', provider: 'neosaniye-renderTemplate', license: 'proprietary-original', licenseEvidence: 'src/media/renderTemplate.js', statBg: Boolean(statBg) };
           gfxCount += 1;
-          console.log(`[img] sahne ${idx}: sayı kartı (${scene.stat.value} ${scene.stat.unit || ''})`);
+          console.log(`[img] sahne ${idx}: sayı kartı (${scene.stat.value} ${scene.stat.unit || ''})${statBg ? ' [görsel zemin]' : ''}`);
         } else if (isUsableDiagram(scene.diagram)) {
           const dest = path.join(mediaDir, `${idx}-gfx.mp4`);
           const clip = await renderStepsCard(scene.diagram, dest, { width, height, duration: 8 });
@@ -204,6 +253,14 @@ export async function generateImages(script, opts = {}) {
     // 0.arc) GERÇEK ARŞİV: sahne gerçek/adlı bir nesneyi gösteriyorsa önce
     // Wikimedia Commons / Met Museum'dan GERÇEK fotoğraf denenir — AI'nın
     // uydurduğu rekonstrüksiyon yerine gerçek eser (belgesel güvenilirliği).
+    // DP real_subject vermediyse: anlatımdaki adlı gerçek varlığı deterministik
+    // yakala (Sümela Monastery gibi). Video başına ≤2 arşiv görseli hedefle
+    // (çeşitlilik korunsun, QC "hep aynı kaynak" cezasına düşmesin) → ≤3 deneme.
+    if (!done && !scene.real_subject && archiveFbAttempts < 3 && sources.archive < 2) {
+      const sub = detectRealSubject(scene.narration);
+      if (sub) { scene.real_subject = sub; archiveFbAttempts += 1; }
+    }
+
     if (!done && scene.real_subject) {
       const hit = await fetchArchiveImage(scene.real_subject, path.join(mediaDir, `${idx}-archive.jpg`))
         .catch(() => null);
