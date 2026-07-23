@@ -625,7 +625,11 @@ export async function generateScript({ maxRetries = 5, avoidTopics: extraAvoid =
 
     // CTA is not spoken. The old one-sided "under 95 words / 7 scenes max"
     // repair could turn a healthy script into a ~15-second fragment.
-    const length = evaluateNarrationLength(script.scenes, config.content);
+    // NOT: evaluateNarrationLength {minWords,maxWords} bekler; config.content
+    // {minNarrationWords,maxNarrationWords} tutar → doğru ANAHTARLARLA geçir,
+    // yoksa fonksiyon 135 default'unu kullanıp config'i (150) yok sayar.
+    const lengthOpts = { minWords: config.content.minNarrationWords, maxWords: config.content.maxNarrationWords };
+    const length = evaluateNarrationLength(script.scenes, lengthOpts);
     if (!length.ok && attempt < maxRetries) {
       console.warn(`[script] ${length.words} kelime — ${length.code}, yeniden yazım isteniyor.`);
       lengthFeedback = buildNarrationLengthRepair(script, length, config.content);
@@ -637,10 +641,10 @@ export async function generateScript({ maxRetries = 5, avoidTopics: extraAvoid =
       // değildir (gerçek içerik gerekir) → yalnızca o durumda fail.
       if (length.code === 'NARRATION_TOO_LONG' && Array.isArray(script.scenes) && script.scenes.length > 5) {
         while (script.scenes.length > 5 &&
-          evaluateNarrationLength(script.scenes, config.content).words > config.content.maxNarrationWords) {
+          evaluateNarrationLength(script.scenes, lengthOpts).words > config.content.maxNarrationWords) {
           script.scenes.splice(script.scenes.length - 2, 1); // finale'den önceki son sahneyi at
         }
-        const trimmed = evaluateNarrationLength(script.scenes, config.content);
+        const trimmed = evaluateNarrationLength(script.scenes, lengthOpts);
         console.warn(`[script] son çare: sahne kırpma → ${trimmed.words} kelime (${script.scenes.length} sahne)`);
         length.ok = trimmed.ok;
         length.words = trimmed.words;
