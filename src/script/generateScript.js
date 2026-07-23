@@ -351,7 +351,8 @@ async function openRouterFallback(req) {
       // malformed/truncated payload; retry it while the same fallback is active.
       if (req.config?.responseSchema) {
         try {
-          JSON.parse(text);
+          const match = text.match(/\{[\s\S]*\}/);
+          JSON.parse(match ? match[0] : text);
         } catch (cause) {
           const err = new Error(`openrouter geçersiz JSON: ${cause.message}`);
           err.name = 'OpenRouterInvalidJsonError';
