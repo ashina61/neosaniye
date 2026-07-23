@@ -7649,5 +7649,299 @@
       }
     },
     "createdAt": "2026-07-23T16:34:19.874Z"
+  },
+  {
+    "id": "basilisk-lizard-walking-on-water-1784843425273",
+    "topic": "Basilisk Lizard Walking on Water",
+    "normalizedTopic": "basilisk-lizard-walking-on-water",
+    "format": "story",
+    "retention": {
+      "score": 80,
+      "status": "fail"
+    },
+    "music": {
+      "file": "Alien Spaceship Atmosphere.mp3",
+      "assetId": "Alien Spaceship Atmosphere.mp3",
+      "source": "assets/music havuzu",
+      "license": null,
+      "selectedAt": "2026-07-23T21:48:36.232Z"
+    },
+    "motion": {
+      "enabled": true,
+      "ctaRequested": true,
+      "ctaApplied": true,
+      "ctaId": "neo_subscribe_pulse",
+      "ctaType": "subscribe",
+      "startSec": 34.66,
+      "durationSec": 1.94,
+      "position": "bottom_center_low",
+      "selectionReason": "editorial-rule",
+      "safeAreaPassed": true,
+      "sfxId": "confirmation",
+      "resolvedLanguage": "en",
+      "label": "SUBSCRIBE",
+      "languageMatch": true,
+      "warnings": [],
+      "failures": [],
+      "box": {
+        "x": 262,
+        "y": 1148,
+        "w": 556,
+        "h": 112
+      },
+      "layerDiff": 0.031,
+      "ctaVerification": {
+        "ok": true,
+        "failures": [],
+        "report": {
+          "bbox": {
+            "x": 262,
+            "y": 1148,
+            "w": 556,
+            "h": 112
+          },
+          "edgeMargins": {
+            "left": 262,
+            "right": 262,
+            "top": 1148,
+            "bottom": 660
+          },
+          "withinSafeMargin": true,
+          "captionOverlap": false,
+          "uiOverlap": false,
+          "layerPresent": true,
+          "resolvedLanguage": "en",
+          "requestedLanguage": "en",
+          "languageMatch": true,
+          "label": "SUBSCRIBE"
+        }
+      }
+    },
+    "audioSfx": [
+      "shimmer",
+      "riser",
+      "impact",
+      "impact"
+    ],
+    "scheduleExperiment": {
+      "id": "us-audience-3-slots-v2",
+      "timezone": "UTC",
+      "scheduledSlot": "manual",
+      "contentDate": "2026-07-23",
+      "experimentStartDate": "2026-07-22",
+      "experimentDurationDays": 14,
+      "strategy": "fixed-three-daily-slots",
+      "primaryAudience": "US",
+      "status": "active",
+      "scheduledPublishAt": null,
+      "actualPublishAt": "2026-07-23T21:49:45.614Z"
+    },
+    "visualStyle": "photo",
+    "script": {
+      "title": "How One Lizard Walks On Water Without Sinking",
+      "category": "nature",
+      "hook_text": "Jesus Christ lizard",
+      "finale_text": "how science explains the miracle",
+      "scenes": [
+        {
+          "narration": "This basilisk lizard can run across water without sinking. How?",
+          "image_prompt": "Vibrant green Basilisk lizard's back leg touching the water surface, creating a small dimple, lush jungle backdrop, bright natural light"
+        },
+        {
+          "narration": "They can sprint up to five feet per second over water, a truly incredible feat.",
+          "image_prompt": "Vibrant green Basilisk lizard running at full speed across a calm jungle river, creating small splashes, surrounded by dense tropical plants, bright daylight"
+        },
+        {
+          "narration": "Their secret involves a unique combination of speed, stride, and specialized foot structure.",
+          "image_prompt": "Basilisk lizard standing still on a large green leaf next to the water's edge, showing its long toes and tail, calm forest river in background, dappled sunlight"
+        },
+        {
+          "narration": "As they run, their fringed feet slap down, trapping a temporary air pocket underneath.",
+          "image_prompt": "Basilisk lizard's foot hitting the water, showing the intricate fringes on its toes spreading out, a clear bubble of air forming beneath the foot, clear water, bright sunlight"
+        },
+        {
+          "narration": "This trapped air creates a temporary platform, preventing the lizard from breaking the surface.",
+          "image_prompt": "Underwater view, looking up at a Basilisk lizard's foot from directly below, showing the flattened sole and trapped air pocket pushing down on the water, ripples expanding outwards, clear blue water, bright surface light"
+        },
+        {
+          "narration": "But the crucial part is their speed, allowing rapid steps before the air pocket collapses.",
+          "image_prompt": "Behind a Basilisk lizard, watching it intensely focusing on running across the water, showing the rapid blur of its legs, bright jungle environment"
+        },
+        {
+          "narration": "The interesting part is how their body posture uses their long tail for balance.",
+          "image_prompt": "Basilisk lizard in profile, running on water, its long tail held high for balance, showing splashes around its feet, bright tropical light"
+        },
+        {
+          "narration": "Their powerful hind legs quickly push off, generating enough force to stay afloat.",
+          "image_prompt": "Basilisk lizard's powerful hind leg extending fully to push off the water, creating a visible splash and wake, clear jungle stream, bright sunlight"
+        },
+        {
+          "narration": "This creates a dynamic cycle: slap, push, recover, repeating hundreds of times per second.",
+          "image_prompt": "Basilisk lizard's feet striking and pushing off the water in a rhythmic pattern, creating a series of small waves behind it, bright green jungle backdrop, photorealistic"
+        },
+        {
+          "narration": "So, their legendary water-walking isn't magic; it's pure biomechanical engineering.",
+          "image_prompt": "Basilisk lizard successfully reaching the far bank of a jungle river, climbing onto a mossy rock, looking back at its path across the water, bright and triumphant, photorealistic"
+        }
+      ],
+      "cta": "See more incredible natural engineering? Subscribe!"
+    },
+    "audioPath": "output/basilisk-lizard-walking-on-water/basilisk-lizard-walking-on-water.mp3",
+    "videoPath": "output/basilisk-lizard-walking-on-water/basilisk-lizard-walking-on-water.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/basilisk-lizard-walking-on-water/media/01-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "basilisk-lizard-walking-on-water:0:586065",
+        "query": "cinematic, 4K, ultra sharp, professional photography. Vibrant green Basilisk lizard's back leg touching the water surface, creating a small dimple, lush jungle backdrop, bright natural light. A vibrant green Basilisk lizard, mid-stride, running across the surface of a clear jungle stream, with lush tropical foliage in the background under bright, dappled sunlight.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T21:39:12.758Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/basilisk-lizard-walking-on-water/media/02-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "basilisk-lizard-walking-on-water:1:586065",
+        "query": "cinematic, 4K, ultra sharp, professional photography. Vibrant green Basilisk lizard running at full speed across a calm jungle river, creating small splashes, surrounded by dense tropical plants, bright daylight. A vibrant green Basilisk lizard, mid-stride, running across the surface of a clear jungle stream, with lush tropical foliage in the background under bright, dappled sunlight.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T21:39:57.859Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/basilisk-lizard-walking-on-water/media/03-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "basilisk-lizard-walking-on-water:2:586065",
+        "query": "cinematic, 4K, ultra sharp, professional photography. Basilisk lizard standing still on a large green leaf next to the water's edge, showing its long toes and tail, calm forest river in background, dappled sunlight. A vibrant green Basilisk lizard, mid-stride, running across the surface of a clear jungle stream, with lush tropical foliage in the background under bright, dappled sunlight.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T21:40:42.871Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 3,
+        "path": "output/basilisk-lizard-walking-on-water/media/04-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "basilisk-lizard-walking-on-water:3:586065",
+        "query": "cinematic, 4K, ultra sharp, professional photography. Basilisk lizard's foot hitting the water, showing the intricate fringes on its toes spreading out, a clear bubble of air forming beneath the foot, clear water, bright sunlight. A vibrant green Basilisk lizard, mid-stride, running across the surface of a clear jungle stream, with lush tropical foliage in the background under bright, dappled sunlight.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T21:41:28.723Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 4,
+        "path": "output/basilisk-lizard-walking-on-water/media/05-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "basilisk-lizard-walking-on-water:4:586065",
+        "query": "cinematic, 4K, ultra sharp, professional photography. Underwater view, looking up at a Basilisk lizard's foot from directly below, showing the flattened sole and trapped air pocket pushing down on the water, ripples expanding outwards, clear blue water, bright surface light. A vibrant green Basilisk lizard, mid-stride, running across the surface of a clear jungle stream, with lush tropical foliage in the background under bright, dappled sunlight.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T21:42:14.092Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 5,
+        "path": "output/basilisk-lizard-walking-on-water/media/06-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "basilisk-lizard-walking-on-water:5:586065",
+        "query": "cinematic, 4K, ultra sharp, professional photography. Behind a Basilisk lizard, watching it intensely focusing on running across the water, showing the rapid blur of its legs, bright jungle environment. A vibrant green Basilisk lizard, mid-stride, running across the surface of a clear jungle stream, with lush tropical foliage in the background under bright, dappled sunlight.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T21:42:57.486Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 6,
+        "path": "output/basilisk-lizard-walking-on-water/media/07-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "basilisk-lizard-walking-on-water:6:586065",
+        "query": "cinematic, 4K, ultra sharp, professional photography. Basilisk lizard in profile, running on water, its long tail held high for balance, showing splashes around its feet, bright tropical light. A vibrant green Basilisk lizard, mid-stride, running across the surface of a clear jungle stream, with lush tropical foliage in the background under bright, dappled sunlight.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T21:43:42.326Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 7,
+        "path": "output/basilisk-lizard-walking-on-water/media/08-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "basilisk-lizard-walking-on-water:7:586065",
+        "query": "cinematic, 4K, ultra sharp, professional photography. Basilisk lizard's powerful hind leg extending fully to push off the water, creating a visible splash and wake, clear jungle stream, bright sunlight. A vibrant green Basilisk lizard, mid-stride, running across the surface of a clear jungle stream, with lush tropical foliage in the background under bright, dappled sunlight.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T21:44:27.293Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "video",
+        "source": "gfx",
+        "scene": 8,
+        "path": "output/basilisk-lizard-walking-on-water/media/09-gfx.mp4",
+        "provider": "neosaniye-renderTemplate",
+        "assetId": "neosaniye-renderTemplate:basilisk-lizard-walking-on-water:8",
+        "query": "lizard running cycle water running mechanics",
+        "retrievedAt": "2026-07-23T21:44:35.311Z",
+        "rightsClass": "repository-owned",
+        "license": "proprietary-original",
+        "licenseEvidence": "src/media/renderTemplate.js"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 9,
+        "path": "output/basilisk-lizard-walking-on-water/media/10-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "basilisk-lizard-walking-on-water:9:586065",
+        "query": "cinematic, 4K, ultra sharp, professional photography. Basilisk lizard successfully reaching the far bank of a jungle river, climbing onto a mossy rock, looking back at its path across the water, bright and triumphant, photorealistic. A vibrant green Basilisk lizard, mid-stride, running across the surface of a clear jungle stream, with lush tropical foliage in the background under bright, dappled sunlight.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T21:45:12.290Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 46.383991,
+    "status": "published",
+    "youtube": {
+      "videoId": "WcfUgloc79Q",
+      "url": "https://www.youtube.com/shorts/WcfUgloc79Q",
+      "title": "Basilisk Lizard: How This Animal Walks on Water #Shorts",
+      "publishedAt": "2026-07-23T21:49:45.614Z"
+    },
+    "publishing": {
+      "attemptId": "7061eb815424c33076fecc1e278a55fd",
+      "platforms": {
+        "youtube": {
+          "videoId": "WcfUgloc79Q",
+          "url": "https://www.youtube.com/shorts/WcfUgloc79Q",
+          "title": "Basilisk Lizard: How This Animal Walks on Water #Shorts",
+          "publishedAt": "2026-07-23T21:49:45.614Z"
+        },
+        "instagram": null,
+        "facebook": "2501791033658900"
+      }
+    },
+    "createdAt": "2026-07-23T21:50:25.273Z"
   }
 ]
