@@ -7348,5 +7348,306 @@
       }
     },
     "createdAt": "2026-07-23T15:16:17.347Z"
+  },
+  {
+    "id": "how-electric-eels-generate-power-1784824459874",
+    "topic": "How Electric Eels Generate Power",
+    "normalizedTopic": "how-electric-eels-generate-power",
+    "format": "howworks",
+    "retention": {
+      "score": 75,
+      "status": "fail"
+    },
+    "music": {
+      "file": "lavenderdotpet-cc0-fvi-arpent.mp3",
+      "assetId": "lavenderdotpet-cc0-fvi-arpent",
+      "title": "fvi-Arpent",
+      "source": "https://github.com/lavenderdotpet/CC0-Public-Domain-Sounds",
+      "sourceCommit": "f2b6264f9ab89fabc266914c3654685d68c5a39b",
+      "license": "CC0-1.0",
+      "licenseEvidence": "LICENSE + README",
+      "sha256": "215d6be06660039346ea11470135390c571f9c26473e9112dce3c93768d01683",
+      "selectedAt": "2026-07-23T16:32:41.874Z"
+    },
+    "motion": {
+      "enabled": true,
+      "ctaRequested": true,
+      "ctaApplied": true,
+      "ctaId": "neo_subscribe_minimal",
+      "ctaType": "subscribe",
+      "startSec": 41.23,
+      "durationSec": 2.73,
+      "position": "lower_third_left",
+      "selectionReason": "editorial-rule",
+      "safeAreaPassed": true,
+      "sfxId": "confirmation",
+      "resolvedLanguage": "en",
+      "label": "SUBSCRIBE",
+      "languageMatch": true,
+      "warnings": [],
+      "failures": [],
+      "box": {
+        "x": 56,
+        "y": 1040,
+        "w": 366,
+        "h": 112
+      },
+      "layerDiff": 0.01682,
+      "ctaVerification": {
+        "ok": true,
+        "failures": [],
+        "report": {
+          "bbox": {
+            "x": 56,
+            "y": 1040,
+            "w": 366,
+            "h": 112
+          },
+          "edgeMargins": {
+            "left": 56,
+            "right": 658,
+            "top": 1040,
+            "bottom": 768
+          },
+          "withinSafeMargin": true,
+          "captionOverlap": false,
+          "uiOverlap": false,
+          "layerPresent": true,
+          "resolvedLanguage": "en",
+          "requestedLanguage": "en",
+          "languageMatch": true,
+          "label": "SUBSCRIBE"
+        }
+      }
+    },
+    "audioSfx": [
+      "shimmer",
+      "riser",
+      "impact",
+      "impact"
+    ],
+    "scheduleExperiment": {
+      "id": "us-audience-3-slots-v2",
+      "timezone": "UTC",
+      "scheduledSlot": "manual",
+      "contentDate": "2026-07-23",
+      "experimentStartDate": "2026-07-22",
+      "experimentDurationDays": 14,
+      "strategy": "fixed-three-daily-slots",
+      "primaryAudience": "US",
+      "status": "active",
+      "scheduledPublishAt": null,
+      "actualPublishAt": "2026-07-23T16:33:42.035Z"
+    },
+    "visualStyle": "photo",
+    "script": {
+      "title": "How Electric Eels Generate 600 Volts",
+      "category": "nature",
+      "hook_text": "Eels: 600-volt shockers?",
+      "finale_text": "the eel's living battery",
+      "scenes": [
+        {
+          "narration": "Electric eels deliver over 600 volts, enough to stun a horse.",
+          "image_prompt": "A sleek, dark electric eel (Electrophorus electricus) swims powerfully through a murky, sun-dappled Amazonian river. Overhead light pierces the water, creating strong shadows and highlights. The camera is low angle, emphasizing the eel's size."
+        },
+        {
+          "narration": "This incredible power comes from specialized organs, covering most of their long bodies.",
+          "image_prompt": "A medium shot of an electric eel (Electrophorus electricus) gliding past, revealing subtle textures on its side. The camera focuses on its midsection where specialized electric organs are located. Water is slightly clearer here, showing the eel's form distinctly."
+        },
+        {
+          "narration": "Inside, thousands of 'electrocytes,' disk-shaped cells, are stacked like tiny batteries.",
+          "image_prompt": "An extreme close-up of a cross-section of an electric eel's (Electrophorus electricus) electric organ, showing tightly packed, coin-like electrocytes arranged in columns. The lighting is scientific and precise, highlighting the cellular structure."
+        },
+        {
+          "narration": "Each electrocyte generates a small positive charge on one side, negative on the other.",
+          "image_prompt": "A close-up diagrammatic animation still showing a single electrocyte cell in isolation, with arrows indicating ion flow creating a positive charge on one side and a negative charge on the other. The background is dark, emphasizing the cell."
+        },
+        {
+          "narration": "But how do they coordinate thousands of these tiny charges into one powerful shock?",
+          "image_prompt": "An over-the-shoulder shot of a biologist in a lab coat observing a glowing digital readout on a monitor, showing complex wave patterns. The light from the screen illuminates their face with a curious, questioning expression."
+        },
+        {
+          "narration": "The interesting part: their nervous system acts like a master switch for all the electrocytes.",
+          "image_prompt": "A wide shot of an electric eel (Electrophorus electricus) in an observation tank, a subtle blue glow emanating from its body, suggesting neural activity. The tank is well-lit, showing the eel clearly against a dark background."
+        },
+        {
+          "narration": "When threatened, brain signals cause all electrocytes to fire simultaneously, in sequence.",
+          "image_prompt": "An artistic visualization of a brain signal traveling down the length of an electric eel's (Electrophorus electricus) body, depicted as a wave of light activating the electrocytes in rapid succession."
+        },
+        {
+          "narration": "This creates a chain reaction, multiplying each cell's voltage to an astonishing total.",
+          "image_prompt": "A dynamic shot showing multiple columns of electrocytes (represented as stacked discs) inside the eel's (Electrophorus electricus) body, each stack discharging in unison, with arcs of electricity connecting them, illustrating voltage summation. Dark, dramatic lighting."
+        },
+        {
+          "narration": "They can precisely control the intensity too, from mild zaps to full predatory blasts.",
+          "image_prompt": "A medium shot of an electric eel (Electrophorus electricus) subtly changing its posture in the water, a faint, controlled electric pulse rippling visually around its head, suggesting precise control. The water is clear, showing the eel's focused expression."
+        },
+        {
+          "narration": "So, electric eels don't just generate electricity; they command it, making them living biological batteries.",
+          "image_prompt": "A powerful, slightly elevated shot of an electric eel (Electrophorus electricus) unleashing a significant electric shock, visible as distorted water and subtle light around its body, stunning a small fish nearby. The scene is dramatic and intense, capturing the full force of its power."
+        }
+      ],
+      "cta": "Uncover more shocking facts. Subscribe!"
+    },
+    "audioPath": "output/how-electric-eels-generate-power/how-electric-eels-generate-power.mp3",
+    "videoPath": "output/how-electric-eels-generate-power/how-electric-eels-generate-power.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/how-electric-eels-generate-power/media/01-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "how-electric-eels-generate-power:0:155451",
+        "query": "cinematic, 4K, ultra sharp, professional photography. A sleek, dark electric eel (Electrophorus electricus) swims powerfully through a murky, sun-dappled Amazonian river. Overhead light pierces the water, creating strong shadows and highlights. The camera is low angle, emphasizing the eel's size.. A sleek, dark electric eel (Electrophorus electricus) swimming through murky freshwater in a South American river, with sunlight filtering through the water from above, creating a dramatic chiaroscuro effect. The mood is mysterious and powerful.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T16:23:41.972Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/how-electric-eels-generate-power/media/02-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "how-electric-eels-generate-power:1:155451",
+        "query": "cinematic, 4K, ultra sharp, professional photography. A medium shot of an electric eel (Electrophorus electricus) gliding past, revealing subtle textures on its side. The camera focuses on its midsection where specialized electric organs are located. Water is slightly clearer here, showing the eel's form distinctly.. A sleek, dark electric eel (Electrophorus electricus) swimming through murky freshwater in a South American river, with sunlight filtering through the water from above, creating a dramatic chiaroscuro effect. The mood is mysterious and powerful.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T16:24:25.730Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/how-electric-eels-generate-power/media/03-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "how-electric-eels-generate-power:2:155451",
+        "query": "cinematic, 4K, ultra sharp, professional photography. An extreme close-up of a cross-section of an electric eel's (Electrophorus electricus) electric organ, showing tightly packed, coin-like electrocytes arranged in columns. The lighting is scientific and precise, highlighting the cellular structure.. A sleek, dark electric eel (Electrophorus electricus) swimming through murky freshwater in a South American river, with sunlight filtering through the water from above, creating a dramatic chiaroscuro effect. The mood is mysterious and powerful.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T16:25:12.316Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 3,
+        "path": "output/how-electric-eels-generate-power/media/04-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "how-electric-eels-generate-power:3:155451",
+        "query": "cinematic, 4K, ultra sharp, professional photography. A close-up diagrammatic animation still showing a single electrocyte cell in isolation, with arrows indicating ion flow creating a positive charge on one side and a negative charge on the other. The background is dark, emphasizing the cell.. A sleek, dark electric eel (Electrophorus electricus) swimming through murky freshwater in a South American river, with sunlight filtering through the water from above, creating a dramatic chiaroscuro effect. The mood is mysterious and powerful.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T16:26:00.176Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 4,
+        "path": "output/how-electric-eels-generate-power/media/05-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "how-electric-eels-generate-power:4:155451",
+        "query": "cinematic, 4K, ultra sharp, professional photography. An over-the-shoulder shot of a biologist in a lab coat observing a glowing digital readout on a monitor, showing complex wave patterns. The light from the screen illuminates their face with a curious, questioning expression.. A sleek, dark electric eel (Electrophorus electricus) swimming through murky freshwater in a South American river, with sunlight filtering through the water from above, creating a dramatic chiaroscuro effect. The mood is mysterious and powerful.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T16:26:43.234Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 5,
+        "path": "output/how-electric-eels-generate-power/media/06-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "how-electric-eels-generate-power:5:155451",
+        "query": "cinematic, 4K, ultra sharp, professional photography. A wide shot of an electric eel (Electrophorus electricus) in an observation tank, a subtle blue glow emanating from its body, suggesting neural activity. The tank is well-lit, showing the eel clearly against a dark background.. A sleek, dark electric eel (Electrophorus electricus) swimming through murky freshwater in a South American river, with sunlight filtering through the water from above, creating a dramatic chiaroscuro effect. The mood is mysterious and powerful.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T16:27:29.904Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 6,
+        "path": "output/how-electric-eels-generate-power/media/07-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "how-electric-eels-generate-power:6:155451",
+        "query": "cinematic, 4K, ultra sharp, professional photography. An artistic visualization of a brain signal traveling down the length of an electric eel's (Electrophorus electricus) body, depicted as a wave of light activating the electrocytes in rapid succession.. A sleek, dark electric eel (Electrophorus electricus) swimming through murky freshwater in a South American river, with sunlight filtering through the water from above, creating a dramatic chiaroscuro effect. The mood is mysterious and powerful.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T16:28:12.861Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 7,
+        "path": "output/how-electric-eels-generate-power/media/08-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "how-electric-eels-generate-power:7:155451",
+        "query": "cinematic, 4K, ultra sharp, professional photography. A dynamic shot showing multiple columns of electrocytes (represented as stacked discs) inside the eel's (Electrophorus electricus) body, each stack discharging in unison, with arcs of electricity connecting them, illustrating voltage summation. Dark, dramatic lighting.. A sleek, dark electric eel (Electrophorus electricus) swimming through murky freshwater in a South American river, with sunlight filtering through the water from above, creating a dramatic chiaroscuro effect. The mood is mysterious and powerful.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T16:28:56.210Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 8,
+        "path": "output/how-electric-eels-generate-power/media/09-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "how-electric-eels-generate-power:8:155451",
+        "query": "cinematic, 4K, ultra sharp, professional photography. A medium shot of an electric eel (Electrophorus electricus) subtly changing its posture in the water, a faint, controlled electric pulse rippling visually around its head, suggesting precise control. The water is clear, showing the eel's focused expression.. A sleek, dark electric eel (Electrophorus electricus) swimming through murky freshwater in a South American river, with sunlight filtering through the water from above, creating a dramatic chiaroscuro effect. The mood is mysterious and powerful.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T16:29:44.349Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "video",
+        "source": "stock",
+        "scene": 9,
+        "keyword": "electric eel shocking fish",
+        "path": "output/how-electric-eels-generate-power/media/10-motion.mp4",
+        "sourceUrl": "https://www.pexels.com/video/underwater-aquarium-scene-with-various-fishes-34660139/",
+        "author": "Stephan Leuzinger",
+        "provider": "pexels",
+        "assetId": "34660139",
+        "query": "electric eel shocking fish",
+        "retrievedAt": "2026-07-23T16:29:44.773Z",
+        "rightsClass": "externally-licensed",
+        "license": "Pexels License",
+        "licenseEvidence": "https://www.pexels.com/license/"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 49.071995,
+    "status": "published",
+    "youtube": {
+      "videoId": "WPytW31phLk",
+      "url": "https://www.youtube.com/shorts/WPytW31phLk",
+      "title": "Electric Eels: How They Generate 600 Volts to Shock Prey #Shorts",
+      "publishedAt": "2026-07-23T16:33:42.035Z"
+    },
+    "publishing": {
+      "attemptId": "e50ff1ae1014aaa193ab6c31bed74fea",
+      "platforms": {
+        "youtube": {
+          "videoId": "WPytW31phLk",
+          "url": "https://www.youtube.com/shorts/WPytW31phLk",
+          "title": "Electric Eels: How They Generate 600 Volts to Shock Prey #Shorts",
+          "publishedAt": "2026-07-23T16:33:42.035Z"
+        },
+        "instagram": "18365523724239265",
+        "facebook": "1606630077831368"
+      }
+    },
+    "createdAt": "2026-07-23T16:34:19.874Z"
   }
 ]
