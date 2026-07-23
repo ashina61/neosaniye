@@ -48,7 +48,9 @@ export function getFirestore() {
 
 /** Konu başlığını doc id olarak kullanılabilir hale getirir. */
 export function normalizeTopic(topic) {
-  return topic
+  // Savunma: zayıf sağlayıcılar (OpenRouter/nemotron) bazen topic'i boş bırakır;
+  // undefined.toLocaleLowerCase() tüm boru hattını çökertiyordu. String'e zorla.
+  return String(topic || 'script')
     .toLocaleLowerCase('tr')
     .replaceAll('ı', 'i')
     .normalize('NFKD')

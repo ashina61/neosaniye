@@ -616,6 +616,22 @@ export async function generateScript({ maxRetries = 5, avoidTopics: extraAvoid =
     const script = JSON.parse(text);
     lastScript = script;
 
+    // Zayıf sağlayıcılar (OpenRouter/nemotron) şemaya tam uymayıp `topic`'i boş
+    // bırakabiliyor; Gemini structured-output garanti ediyordu. topic tüm alt
+    // akışın anahtarı (dedup, metadata, doc id) → başlıktan türet; o da yoksa
+    // bu script'i geçersiz say ve (mümkünse) başka sağlayıcıyla tekrar dene.
+    if (!script.topic || !String(script.topic).trim()) {
+      if (script.title && String(script.title).trim()) {
+        script.topic = String(script.title).trim();
+        console.warn('[script] sağlayıcı topic vermedi — başlıktan türetildi.');
+      } else if (attempt < maxRetries) {
+        console.warn('[script] sağlayıcı geçerli topic/title vermedi — yeniden deneniyor.');
+        continue;
+      } else {
+        throw new Error('SCRIPT_MISSING_TOPIC: sağlayıcı geçerli topic/title döndürmedi.');
+      }
+    }
+
     // FORCE_TOPIC doğrulama koşusunda tekrar kontrolü atlanır (bee konusu zaten
     // kullanılmış olabilir; bu bilinçli bir yeniden-üretimdir).
     if (!process.env.FORCE_TOPIC && await isTopicUsed(script.topic)) {
