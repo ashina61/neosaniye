@@ -7061,5 +7061,292 @@
       }
     },
     "createdAt": "2026-07-22T21:30:33.114Z"
+  },
+  {
+    "id": "how-ancient-egyptians-moved-massive-stones-1784819777347",
+    "topic": "How Ancient Egyptians Moved Massive Stones",
+    "normalizedTopic": "how-ancient-egyptians-moved-massive-stones",
+    "format": "facts3",
+    "retention": {
+      "score": 82,
+      "status": "fail"
+    },
+    "music": {
+      "file": "Eyes of Glory.mp3",
+      "assetId": "Eyes of Glory.mp3",
+      "source": "assets/music havuzu",
+      "license": null,
+      "selectedAt": "2026-07-23T15:14:12.917Z"
+    },
+    "motion": {
+      "enabled": true,
+      "ctaRequested": true,
+      "ctaApplied": true,
+      "ctaId": "neo_subscribe_minimal",
+      "ctaType": "subscribe",
+      "startSec": 38.38,
+      "durationSec": 2.06,
+      "position": "lower_third_left",
+      "selectionReason": "editorial-rule",
+      "safeAreaPassed": true,
+      "sfxId": "confirmation",
+      "resolvedLanguage": "en",
+      "label": "SUBSCRIBE",
+      "languageMatch": true,
+      "warnings": [],
+      "failures": [],
+      "box": {
+        "x": 56,
+        "y": 1040,
+        "w": 366,
+        "h": 112
+      },
+      "layerDiff": 0.02099,
+      "ctaVerification": {
+        "ok": true,
+        "failures": [],
+        "report": {
+          "bbox": {
+            "x": 56,
+            "y": 1040,
+            "w": 366,
+            "h": 112
+          },
+          "edgeMargins": {
+            "left": 56,
+            "right": 658,
+            "top": 1040,
+            "bottom": 768
+          },
+          "withinSafeMargin": true,
+          "captionOverlap": false,
+          "uiOverlap": false,
+          "layerPresent": true,
+          "resolvedLanguage": "en",
+          "requestedLanguage": "en",
+          "languageMatch": true,
+          "label": "SUBSCRIBE"
+        }
+      }
+    },
+    "audioSfx": [
+      "whoosh",
+      "shimmer",
+      "riser",
+      "impact",
+      "impact"
+    ],
+    "scheduleExperiment": {
+      "id": "us-audience-3-slots-v2",
+      "timezone": "UTC",
+      "scheduledSlot": "manual",
+      "contentDate": "2026-07-23",
+      "experimentStartDate": "2026-07-22",
+      "experimentDurationDays": 14,
+      "strategy": "fixed-three-daily-slots",
+      "primaryAudience": "US",
+      "status": "active",
+      "scheduledPublishAt": null,
+      "actualPublishAt": null
+    },
+    "visualStyle": "photo",
+    "script": {
+      "title": "Ancient Egypt's Impossible Feat: Moving 70-Ton Stones with NO Wheels!",
+      "category": "history",
+      "hook_text": "70-ton stones, no wheels?",
+      "finale_text": "moving mountains with water",
+      "scenes": [
+        {
+          "narration": "Imagine moving a 70-ton stone block without modern technology.",
+          "image_prompt": "A colossal 70-ton granite block on a wooden sled, pulled by dozens of Ancient Egyptian workers across a vast, sun-drenched desert landscape, with pyramids in the distant background. Low-angle shot, dramatic lighting, epic scale. Circa 2500 BCE."
+        },
+        {
+          "narration": "This was the colossal challenge faced by Ancient Egyptians building their iconic pyramids thousands of years ago.",
+          "image_prompt": "Several weary but determined Ancient Egyptian workers straining to pull thick ropes attached to a large stone sled across a desert path, sweat gleaming on their skin. Eye-level shot, warm golden hour light. Circa 2500 BCE."
+        },
+        {
+          "narration": "They didn't have wheels for these enormous blocks; instead, they used ingenious, low-tech methods.",
+          "image_prompt": "A sturdy wooden sled runner, with a massive stone block resting above, being dragged over a layer of visibly wet sand. Ground-level shot, bright midday sun, focus on the interface of wood and wet sand."
+        },
+        {
+          "narration": "One key discovery involved pouring water onto the sand in front of the moving sleds.",
+          "image_prompt": "An Ancient Egyptian worker, seen from behind, pouring water from a large clay jar directly onto the sand path ahead of a moving stone sled. The water glistens on the sand under clear desert light. Circa 2500 BCE."
+        },
+        {
+          "narration": "The interesting part: this drastically reduced the friction, making the sleds up to 50% easier to pull.",
+          "image_prompt": "An extreme close-up of the wooden runner of a sled moving over wet sand, showing how the water creates a smooth, less resistant surface. Sharp focus on the texture of the wet sand and wood interface. Circa 2500 BCE."
+        },
+        {
+          "narration": "Laboratory experiments confirmed this ancient technique, proving how sophisticated their engineering knowledge truly was.",
+          "image_prompt": "A modern laboratory setting, with a scaled-down model of an ancient Egyptian sled on a sand track. Scientists in lab coats observe data on a screen in the background. Bright, clean lab lighting, conveying scientific confirmation."
+        },
+        {
+          "narration": "They also employed ramps made of rubble, spiraling up the pyramid, for gradually lifting blocks.",
+          "image_prompt": "A massive stone pyramid under construction, with a complex system of rubble ramps spiraling upwards around its sides. Dozens of tiny figures pulling sleds are visible on the ramps. Late afternoon sun casting long shadows. Circa 2500 BCE."
+        },
+        {
+          "narration": "Some theories suggest they wet the wooden ramps too, further easing the monumental effort.",
+          "image_prompt": "Several Ancient Egyptian workers diligently wetting a segment of a wooden ramp with large buckets of water, creating a slick surface for movement. Focus on the wet wood under soft morning light. Circa 2500 BCE."
+        },
+        {
+          "narration": "Hundreds of men were needed to pull just one of these colossal stone blocks into place.",
+          "image_prompt": "A dynamic, low-angle shot showing a long line of Ancient Egyptian workers, ropes taut, united in pulling a massive stone block up a ramp. Their faces are grimacing with effort, conveying power in numbers. Circa 2500 BCE."
+        },
+        {
+          "narration": "This combination of damp sand and carefully constructed ramps allowed them to achieve impossible architectural feats.",
+          "image_prompt": "A grand, wide shot of the Great Pyramid of Giza, nearly complete, towering against a clear blue sky. Some remaining rubble ramps are visible at its base, conveying a sense of awe and scale. Bright afternoon sun. Circa 2500 BCE."
+        }
+      ],
+      "cta": "Uncover more ancient wonders! Subscribe for daily history facts!"
+    },
+    "audioPath": "output/how-ancient-egyptians-moved-massive-stones/how-ancient-egyptians-moved-massive-stones.mp3",
+    "videoPath": "output/how-ancient-egyptians-moved-massive-stones/how-ancient-egyptians-moved-massive-stones.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/how-ancient-egyptians-moved-massive-stones/media/01-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "how-ancient-egyptians-moved-massive-stones:0:398701",
+        "query": "cinematic, 4K, ultra sharp, professional photography. A colossal 70-ton granite block on a wooden sled, pulled by dozens of Ancient Egyptian workers across a vast, sun-drenched desert landscape, with pyramids in the distant background. Low-angle shot, dramatic lighting, epic scale. Circa 2500 BCE.. Ancient Egyptian workers in simple linen kilts, moving massive stone blocks under a scorching desert sun, with an earthy, warm color palette and strong shadows, circa 2500 BCE.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T15:04:57.358Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/how-ancient-egyptians-moved-massive-stones/media/02-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "how-ancient-egyptians-moved-massive-stones:1:398701",
+        "query": "cinematic, 4K, ultra sharp, professional photography. Several weary but determined Ancient Egyptian workers straining to pull thick ropes attached to a large stone sled across a desert path, sweat gleaming on their skin. Eye-level shot, warm golden hour light. Circa 2500 BCE.. Ancient Egyptian workers in simple linen kilts, moving massive stone blocks under a scorching desert sun, with an earthy, warm color palette and strong shadows, circa 2500 BCE.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T15:05:40.892Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/how-ancient-egyptians-moved-massive-stones/media/03-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "how-ancient-egyptians-moved-massive-stones:2:398701",
+        "query": "cinematic, 4K, ultra sharp, professional photography. A sturdy wooden sled runner, with a massive stone block resting above, being dragged over a layer of visibly wet sand. Ground-level shot, bright midday sun, focus on the interface of wood and wet sand.. Ancient Egyptian workers in simple linen kilts, moving massive stone blocks under a scorching desert sun, with an earthy, warm color palette and strong shadows, circa 2500 BCE.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T15:06:26.843Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 3,
+        "path": "output/how-ancient-egyptians-moved-massive-stones/media/04-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "how-ancient-egyptians-moved-massive-stones:3:398701",
+        "query": "cinematic, 4K, ultra sharp, professional photography. An Ancient Egyptian worker, seen from behind, pouring water from a large clay jar directly onto the sand path ahead of a moving stone sled. The water glistens on the sand under clear desert light. Circa 2500 BCE.. Ancient Egyptian workers in simple linen kilts, moving massive stone blocks under a scorching desert sun, with an earthy, warm color palette and strong shadows, circa 2500 BCE.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T15:07:12.208Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "video",
+        "source": "gfx",
+        "scene": 4,
+        "path": "output/how-ancient-egyptians-moved-massive-stones/media/05-gfx.mp4",
+        "provider": "neosaniye-renderTemplate",
+        "assetId": "neosaniye-renderTemplate:how-ancient-egyptians-moved-massive-stones:4",
+        "query": "friction reduction wet sand surface sled runner",
+        "retrievedAt": "2026-07-23T15:07:19.116Z",
+        "rightsClass": "repository-owned",
+        "license": "proprietary-original",
+        "licenseEvidence": "src/media/renderTemplate.js"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 5,
+        "path": "output/how-ancient-egyptians-moved-massive-stones/media/06-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "how-ancient-egyptians-moved-massive-stones:5:398701",
+        "query": "cinematic, 4K, ultra sharp, professional photography. A modern laboratory setting, with a scaled-down model of an ancient Egyptian sled on a sand track. Scientists in lab coats observe data on a screen in the background. Bright, clean lab lighting, conveying scientific confirmation.. Ancient Egyptian workers in simple linen kilts, moving massive stone blocks under a scorching desert sun, with an earthy, warm color palette and strong shadows, circa 2500 BCE.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T15:07:53.182Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 6,
+        "path": "output/how-ancient-egyptians-moved-massive-stones/media/07-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "how-ancient-egyptians-moved-massive-stones:6:398701",
+        "query": "cinematic, 4K, ultra sharp, professional photography. A massive stone pyramid under construction, with a complex system of rubble ramps spiraling upwards around its sides. Dozens of tiny figures pulling sleds are visible on the ramps. Late afternoon sun casting long shadows. Circa 2500 BCE.. Ancient Egyptian workers in simple linen kilts, moving massive stone blocks under a scorching desert sun, with an earthy, warm color palette and strong shadows, circa 2500 BCE.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T15:08:37.546Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 7,
+        "path": "output/how-ancient-egyptians-moved-massive-stones/media/08-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "how-ancient-egyptians-moved-massive-stones:7:398701",
+        "query": "cinematic, 4K, ultra sharp, professional photography. Several Ancient Egyptian workers diligently wetting a segment of a wooden ramp with large buckets of water, creating a slick surface for movement. Focus on the wet wood under soft morning light. Circa 2500 BCE.. Ancient Egyptian workers in simple linen kilts, moving massive stone blocks under a scorching desert sun, with an earthy, warm color palette and strong shadows, circa 2500 BCE.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T15:09:22.180Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 8,
+        "path": "output/how-ancient-egyptians-moved-massive-stones/media/09-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "how-ancient-egyptians-moved-massive-stones:8:398701",
+        "query": "cinematic, 4K, ultra sharp, professional photography. A dynamic, low-angle shot showing a long line of Ancient Egyptian workers, ropes taut, united in pulling a massive stone block up a ramp. Their faces are grimacing with effort, conveying power in numbers. Circa 2500 BCE.. Ancient Egyptian workers in simple linen kilts, moving massive stone blocks under a scorching desert sun, with an earthy, warm color palette and strong shadows, circa 2500 BCE.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-23T15:10:04.249Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "archive",
+        "scene": 9,
+        "path": "output/how-ancient-egyptians-moved-massive-stones/media/10-archive.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Great_Sphinx_of_Giza_(%D8%A3%D8%A8%D9%88_%D8%A7%D9%84%D9%87%D9%88%D9%84).jpg",
+        "author": "Petar Milošević",
+        "provider": "wikimedia",
+        "assetId": "https://commons.wikimedia.org/wiki/File:Great_Sphinx_of_Giza_(%D8%A3%D8%A8%D9%88_%D8%A7%D9%84%D9%87%D9%88%D9%84).jpg",
+        "query": "Great Pyramid of Giza",
+        "retrievedAt": "2026-07-23T15:10:04.773Z",
+        "rightsClass": "attribution-required",
+        "license": "CC BY-SA 4.0",
+        "licenseEvidence": "https://commons.wikimedia.org/wiki/File:Great_Sphinx_of_Giza_(%D8%A3%D8%A8%D9%88_%D8%A7%D9%84%D9%87%D9%88%D9%84).jpg"
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 52.383991,
+    "status": "rendered",
+    "youtube": null,
+    "publishing": {
+      "attemptId": "fdcfd034fca4754ebc8b2102ab70357c",
+      "platforms": {
+        "youtube": null,
+        "instagram": null,
+        "facebook": "3704108286394596"
+      }
+    },
+    "createdAt": "2026-07-23T15:16:17.347Z"
   }
 ]
