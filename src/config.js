@@ -344,7 +344,10 @@ export const config = {
     language: process.env.CONTENT_LANGUAGE || 'en', // 'en' | 'tr'
     // A full short story, not a 15-second fragment. Validated at script and TTS stages.
     minNarrationWords: Number(process.env.CONTENT_MIN_WORDS || 105),
-    maxNarrationWords: Number(process.env.CONTENT_MAX_WORDS || 135),
+    // Tavan 135→150: yedek LLM'ler (OpenRouter free) Gemini/Groq düşünce daha
+    // verbose ~140-147 kelime üretiyordu ve 135 tavanı 5 denemede tutmayıp üretimi
+    // sert-fail ediyordu. 150 kelime ≈ 50s (maxDurationSeconds=58 içinde).
+    maxNarrationWords: Number(process.env.CONTENT_MAX_WORDS || 150),
     minDurationSeconds: Number(process.env.CONTENT_MIN_SECONDS || 35),
     maxDurationSeconds: Number(process.env.CONTENT_MAX_SECONDS || 58),
   },

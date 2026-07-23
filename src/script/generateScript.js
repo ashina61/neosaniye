@@ -632,10 +632,25 @@ export async function generateScript({ maxRetries = 5, avoidTopics: extraAvoid =
       continue;
     }
     if (!length.ok) {
-      throw new Error(
-        `SCRIPT_DURATION_POLICY_FAILED: ${length.code} (${length.words} words); ` +
-        `required ${config.content.minNarrationWords}-${config.content.maxNarrationWords} words.`,
-      );
+      // ÇOK UZUN her zaman kırpılabilir → üretimi sert-fail etme, sondan sahne
+      // atarak (finale + ilk 4 sahne korunur) bütçeye in. ÇOK KISA salvageable
+      // değildir (gerçek içerik gerekir) → yalnızca o durumda fail.
+      if (length.code === 'NARRATION_TOO_LONG' && Array.isArray(script.scenes) && script.scenes.length > 5) {
+        while (script.scenes.length > 5 &&
+          evaluateNarrationLength(script.scenes, config.content).words > config.content.maxNarrationWords) {
+          script.scenes.splice(script.scenes.length - 2, 1); // finale'den önceki son sahneyi at
+        }
+        const trimmed = evaluateNarrationLength(script.scenes, config.content);
+        console.warn(`[script] son çare: sahne kırpma → ${trimmed.words} kelime (${script.scenes.length} sahne)`);
+        length.ok = trimmed.ok;
+        length.words = trimmed.words;
+      }
+      if (!length.ok) {
+        throw new Error(
+          `SCRIPT_DURATION_POLICY_FAILED: ${length.code} (${length.words} words); ` +
+          `required ${config.content.minNarrationWords}-${config.content.maxNarrationWords} words.`,
+        );
+      }
     }
     script.narrationWordCount = length.words;
 
