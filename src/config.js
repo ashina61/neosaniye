@@ -6,6 +6,12 @@ export const config = {
   openrouter: {
     apiKey: process.env.OPENROUTER_API_KEY,
     model: process.env.OPENROUTER_MODEL || 'openrouter/free',
+    // DAYANIKLILIK: tek "boş dönen" auto-router yerine birden çok ücretsiz modeli
+    // SIRAYLA dene. Biri boş/404/hata → sıradakine geç (breaker sadece 402/429/503'te).
+    // openrouter/free ilk (mevcut davranış); yanlış model ID zararsızca atlanır.
+    models: (process.env.OPENROUTER_MODELS ||
+      'openrouter/free,meta-llama/llama-3.3-70b-instruct:free,deepseek/deepseek-chat-v3-0324:free')
+      .split(',').map((m) => m.trim()).filter(Boolean),
     baseUrl: 'https://openrouter.ai/api/v1',
     // Free-model routing can spend a while waiting for capacity. Thirty seconds
     // was short enough to cancel healthy requests before OpenRouter replied.
