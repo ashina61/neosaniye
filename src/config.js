@@ -382,6 +382,11 @@ export const config = {
       avoidHook: process.env.MOTION_CTA_AVOID_HOOK !== '0',
       avoidOutro: process.env.MOTION_CTA_AVOID_OUTRO !== '0',
       seededRandom: process.env.MOTION_CTA_SEEDED !== '0',
+      // SUBSCRIBE kartı YouTube tarzı: kırmızı buton + beyaz çan (bildirim) +
+      // "SUBSCRIBE" + beyaz beğen (thumbs-up). İzleyicinin refleksle tanıdığı
+      // dil → daha yüksek abone dönüşümü. MOTION_CTA_YT_STYLE=0 ile eski
+      // turkuaz cam karta dön.
+      youtubeStyle: process.env.MOTION_CTA_YT_STYLE !== '0',
       sfx: process.env.MOTION_CTA_SFX !== '0',
       // CTA 'pop' NET duyulur olmalı: taban ses cue anında DERİN kısılır (ducking) +
       // pop bu seviyede biner. Gerçek koşuda 0.7 hâlâ gömüldü (+0.4 dB) → 1.1.
@@ -393,6 +398,8 @@ export const config = {
       accent: process.env.MOTION_ACCENT || '3BD0C8', // logo turkuazı
       ink: process.env.MOTION_INK || 'F0F4F4',
       card: process.env.MOTION_CARD || '141A1E', // koyu cam kart
+      youtubeRed: process.env.MOTION_YT_RED || 'FF0000', // YouTube marka kırmızısı
+      youtubeInk: process.env.MOTION_YT_INK || 'FFFFFF', // buton üstü beyaz
       font: process.env.MOTION_FONT || 'Montserrat SemiBold',
       fontFallback: process.env.MOTION_FONT_FALLBACK || 'DejaVu Sans',
     },

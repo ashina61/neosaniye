@@ -73,6 +73,9 @@ export function computeSafeArea(opts = {}) {
   const rightX = width - rightStrip - cardW - margin;
   const centerX = Math.round((width - cardW) / 2);
   const candidates = {
+    // ALT-MERKEZ (profesyonel varsayılan): altyazı bandının hemen üstünde,
+    // ekranın ortasında hizalı — YouTube alt-şerit CTA'sının doğal yeri.
+    bottom_center_low: { x: centerX, y: captionTop - cardH - 30 },
     lower_third_left: { x: leftX, y: Math.round(height * 0.60) - cardH },
     bottom_left: { x: leftX, y: captionTop - cardH - 20 },
     center_left: { x: leftX, y: Math.round(height * 0.46) },
@@ -82,7 +85,7 @@ export function computeSafeArea(opts = {}) {
 
   const order = opts.position && opts.position !== 'auto'
     ? [opts.position]
-    : ['lower_third_left', 'bottom_left', 'center_left', 'lower_third_right'];
+    : ['bottom_center_low', 'bottom_left', 'lower_third_left', 'center_left', 'lower_third_right'];
 
   for (const pos of order) {
     const c = candidates[pos];

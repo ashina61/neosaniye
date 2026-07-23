@@ -53,6 +53,16 @@ function iconPath(kind, s = ICON) {
         `l ${p(0.86)} ${p(0.72)} l ${p(0.14)} ${p(0.72)} l ${p(0.22)} ${p(0.6)} ` +
         `b ${p(0.26)} ${p(0.4)} ${p(0.28)} ${p(0.1)} ${p(0.5)} ${p(0.06)} ` +
         `m ${p(0.42)} ${p(0.78)} b ${p(0.42)} ${p(0.9)} ${p(0.58)} ${p(0.9)} ${p(0.58)} ${p(0.78)} l ${p(0.42)} ${p(0.78)}`;
+    case 'thumbup':
+      // YouTube "beğen" başparmağı: el gövdesi + yukarı başparmak (kapalı yol)
+      // + sol-alt bilek bloğu (ayrı alt-yol). ICON kutusuna fit, üst-sol orijin.
+      return `m ${p(0.36)} ${p(0.44)} l ${p(0.36)} ${p(0.95)} l ${p(0.80)} ${p(0.95)} ` +
+        `b ${p(0.90)} ${p(0.95)} ${p(0.92)} ${p(0.86)} ${p(0.90)} ${p(0.78)} ` +
+        `l ${p(0.84)} ${p(0.54)} b ${p(0.82)} ${p(0.46)} ${p(0.86)} ${p(0.44)} ${p(0.76)} ${p(0.44)} ` +
+        `l ${p(0.54)} ${p(0.44)} l ${p(0.60)} ${p(0.20)} ` +
+        `b ${p(0.62)} ${p(0.05)} ${p(0.46)} ${p(0.03)} ${p(0.44)} ${p(0.17)} ` +
+        `l ${p(0.38)} ${p(0.40)} b ${p(0.37)} ${p(0.43)} ${p(0.38)} ${p(0.44)} ${p(0.36)} ${p(0.44)} ` +
+        `m ${p(0.10)} ${p(0.52)} l ${p(0.30)} ${p(0.52)} l ${p(0.30)} ${p(0.95)} l ${p(0.10)} ${p(0.95)} l ${p(0.10)} ${p(0.52)}`;
     case 'bubble':
       return `m ${p(0.1)} ${p(0.12)} l ${p(0.9)} ${p(0.12)} l ${p(0.9)} ${p(0.58)} ` +
         `l ${p(0.42)} ${p(0.58)} l ${p(0.3)} ${p(0.8)} l ${p(0.3)} ${p(0.58)} ` +
@@ -90,7 +100,10 @@ const TYPE_META = Object.fromEntries(Object.keys(ICON_BY_TYPE).map((t) => [t, ct
  */
 export function ctaCardSize(type, language = config.content?.language || 'en') {
   const meta = ctaMeta(type, language);
-  const w = Math.max(300, Math.min(720, 150 + Math.round(24 * meta.label.length)));
+  // YouTube subscribe kartı iki yan ikon taşır (sol çan + sağ beğen) → metin
+  // için ~2 ikon slotu (≈180px) fazladan yer aç, yoksa etiket ikonlara girer.
+  const iconAllowance = (type === 'subscribe' && config.motion?.cta?.youtubeStyle) ? 190 : 0;
+  const w = Math.max(300, Math.min(760, 150 + Math.round(24 * meta.label.length) + iconAllowance));
   return { w, h: CARD_H };
 }
 
@@ -135,6 +148,12 @@ export function buildCtaAss(o) {
   const E = o.startSec + o.durSec;
   const type = o.type;
   const meta = ctaMeta(type, o.language);
+
+  // YOUTUBE TARZI SUBSCRIBE: kırmızı buton + beyaz çan (bildirim) + "SUBSCRIBE"
+  // + beyaz beğen (thumbs-up). İzleyicinin refleksle tanıdığı dil.
+  if (type === 'subscribe' && config.motion?.cta?.youtubeStyle) {
+    return buildYouTubeSubscribeAss(o, { width, height, font, meta, S, E });
+  }
 
   // Kart ölçüsü: safe-area kutusundan (adaptif genişlik) — uzun İngilizce
   // etiket (TURN ON NOTIFICATIONS) sığsın. Font etikete göre fit edilir.
@@ -212,6 +231,98 @@ export function buildCtaAss(o) {
       ev.push(`Dialogue: 0,${rs},${re},NeoShape,,0,0,0,,` +
         `{\\an7\\pos(${cardX},${cardY})\\1a&HFF&\\3c${accent}\\3a&H40&\\bord3\\fscx100\\fscy100` +
         `\\t(0,900,\\fscx112\\fscy112\\3a&HFF&)\\p1}` + roundRect(cardW, cardH, radius) + '{\\p0}');
+    }
+  }
+
+  return header(width, height, styles.join('\n')) + ev.join('\n') + '\n';
+}
+
+/**
+ * YOUTUBE TARZI SUBSCRIBE KARTI (ASS vektör; PNG/asset YOK).
+ * Kırmızı yuvarlatılmış buton: [beyaz çan]  SUBSCRIBE  [beyaz beğen].
+ * Çan = bildirim, thumbs-up = beğen — YouTube etkileşim dili.
+ * @param {object} o buildCtaAss ile aynı girdi
+ * @param {object} ctx {width,height,font,meta,S,E}
+ */
+function buildYouTubeSubscribeAss(o, ctx) {
+  const { width, height, font, meta, S, E } = ctx;
+  const st = config.motion.style;
+  const red = assColor(st.youtubeRed || 'FF0000');
+  const white = assColor(st.youtubeInk || 'FFFFFF');
+  const shadow = assColor('000000', '64');
+  const redShadow = assColor('7A0000', '3C'); // koyu kırmızı derinlik gölgesi
+
+  const box = o.box;
+  const cardW = box.w || 520;
+  const cardH = box.h || CARD_H;
+  const cardX = box.x;
+  const cardY = box.y;
+  const radius = Math.round(cardH * 0.26); // modern yuvarlatılmış dikdörtgen
+  const iconBox = Math.round(cardH * 0.44);
+  const iconY = cardY + Math.round((cardH - iconBox) / 2);
+
+  const bellX = cardX + 28;
+  const thumbX = cardX + cardW - 28 - iconBox;
+  const regionLeft = bellX + iconBox + 14;
+  const regionRight = thumbX - 14;
+  const centerX = Math.round((regionLeft + regionRight) / 2);
+  const centerY = cardY + Math.round(cardH / 2);
+  const regionW = Math.max(60, regionRight - regionLeft);
+  const fontSize = Math.max(30, Math.min(52, Math.floor(regionW / Math.max(1, meta.label.length * 0.60))));
+
+  const fadIn = 180;
+  const fadOut = 280;
+  const styles = [
+    // Şekiller: fill \1c ile override edilir; outline 0 (temiz düz buton).
+    `Style: YtShape,${font},40,${red},${shadow},${shadow},0,0,0,0,100,100,0,0,1,0,0,7,0,0,0,1`,
+    // Metin: kalın beyaz, ince koyu outline (kırmızı üstünde net okunur).
+    `Style: YtText,${font},${fontSize},${white},${assColor('3A0000')},${shadow},1,0,0,0,100,100,1,0,1,1.5,3,5,0,0,0,1`,
+  ];
+
+  const ev = [];
+  const dlg = (layer, style, tags, text) =>
+    `Dialogue: ${layer},${assTime(S)},${assTime(E)},${style},,0,0,0,,${tags}${text}`;
+
+  // 1) Derinlik gölgesi (hafif offset kırmızı-siyah).
+  ev.push(dlg(0, 'YtShape',
+    `{\\an7\\pos(${cardX + 3},${cardY + 5})\\fad(${fadIn},${fadOut})\\1c${redShadow}\\p1}`,
+    roundRect(cardW, cardH, radius) + '{\\p0}'));
+
+  // 2) Kırmızı buton gövdesi — hafif aşağı-yerleşme + %90→%100 pop.
+  const cx = cardX + Math.round(cardW / 2);
+  const cy = cardY + Math.round(cardH / 2);
+  ev.push(dlg(1, 'YtShape',
+    `{\\an7\\pos(${cardX},${cardY})\\fad(${fadIn},${fadOut})\\1c${red}\\org(${cx},${cy})` +
+    `\\fscx90\\fscy90\\t(0,200,\\fscx100\\fscy100)\\p1}`,
+    roundRect(cardW, cardH, radius) + '{\\p0}'));
+
+  // 3) Çan (bildirim) — kısa "çalma" salınımı (neo_bell_ring dili).
+  const bellOrg = `\\org(${bellX + iconBox / 2},${iconY})`;
+  ev.push(dlg(2, 'YtShape',
+    `{\\an7\\pos(${bellX},${iconY})\\fad(${fadIn},${fadOut})\\1c${white}${bellOrg}` +
+    `\\frz10\\t(0,140,\\frz-10)\\t(140,280,\\frz8)\\t(280,420,\\frz0)\\p1}`,
+    iconPath('bell', iconBox) + '{\\p0}'));
+
+  // 4) "SUBSCRIBE" metni (iki ikon arasında ortalı).
+  ev.push(dlg(3, 'YtText', `{\\an5\\pos(${centerX},${centerY})\\fad(${fadIn},${fadOut})}`, meta.label));
+
+  // 5) Beğen (thumbs-up) — merkez-orijinli pop.
+  const thumbCx = thumbX + iconBox / 2;
+  const thumbCy = iconY + iconBox / 2;
+  ev.push(dlg(4, 'YtShape',
+    `{\\an7\\pos(${thumbCx},${thumbCy})\\fad(${fadIn},${fadOut})\\1c${white}` +
+    `\\fscx40\\fscy40\\t(120,340,\\fscx116\\fscy116)\\t(340,480,\\fscx100\\fscy100)` +
+    `\\org(${thumbCx},${thumbCy})\\p1}`,
+    shiftPath(iconPath('thumbup', iconBox), -iconBox / 2, -iconBox / 2) + '{\\p0}'));
+
+  // 6) neo_subscribe_pulse: butonun etrafında kırmızı nabız halkası.
+  if (o.templateId === 'neo_subscribe_pulse') {
+    for (const delay of [0, 500]) {
+      const rs = assTime(S + delay / 1000);
+      const re = assTime(Math.min(E, S + delay / 1000 + 0.9));
+      ev.push(`Dialogue: 0,${rs},${re},YtShape,,0,0,0,,` +
+        `{\\an7\\pos(${cardX},${cardY})\\1a&HFF&\\3c${red}\\3a&H40&\\bord3\\fscx100\\fscy100` +
+        `\\t(0,900,\\fscx110\\fscy110\\3a&HFF&)\\p1}` + roundRect(cardW, cardH, radius) + '{\\p0}');
     }
   }
 
