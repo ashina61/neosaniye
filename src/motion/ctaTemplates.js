@@ -293,7 +293,9 @@ function buildYouTubeSubscribeAss(o, ctx) {
   const cy = cardY + Math.round(cardH / 2);
   ev.push(dlg(1, 'YtShape',
     `{\\an7\\pos(${cardX},${cardY})\\fad(${fadIn},${fadOut})\\1c${red}\\org(${cx},${cy})` +
-    `\\fscx90\\fscy90\\t(0,200,\\fscx100\\fscy100)\\p1}`,
+    `\\fscx90\\fscy90\\t(0,200,\\fscx100\\fscy100)` +
+    // Giriş sonrası hafif "nefes" nabzı — buton canlı kalsın, göz kayması azalsın.
+    `\\t(700,1150,\\fscx103\\fscy103)\\t(1150,1600,\\fscx100\\fscy100)\\p1}`,
     roundRect(cardW, cardH, radius) + '{\\p0}'));
 
   // 3) Çan (bildirim) — kısa "çalma" salınımı (neo_bell_ring dili).

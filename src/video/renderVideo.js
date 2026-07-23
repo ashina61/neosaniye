@@ -142,17 +142,23 @@ function buildCaptionAss(words, opts) {
     if (hkRaw.length * hookFactor * hfs > 2 * usableW) {
       hfs = Math.max(60, Math.floor((2 * usableW) / (hkRaw.length * hookFactor)));
     }
-    // BorderStyle 3 = opak zemin kutusu (BackColour) → en karmaşık arka planda
-    // bile hook net okunur. Kalın kenarlık + güçlü gölge.
+    // DİKKAT ÇEKEN HOOK: beyaz metin + kalın koyu kenarlık (her arka planda
+    // okunur) + MARKA TURKUAZ neon parıltısı (renkli gölge \4c). Eski düz
+    // siyah-beyaz kutu cansız duruyordu (kullanıcı geri bildirimi). Accent BGR:
+    // 3BD0C8 → C8D03B. BorderStyle 1 (kutu değil), kalın kenarlık okunurluğu tutar.
+    const hookAccentBGR = 'C8D03B'; // config.motion.style.accent (3BD0C8) BGR
     const hStyle =
-      `Style: Hook,Montserrat Black,${hfs},&H00FFFFFF,&H00000000,&HA0000000,` +
-      `1,3,4,3,8,${marginH},${marginH},360,1`;
+      `Style: Hook,Montserrat Black,${hfs},&H00FFFFFF,&H00121212,&H00${hookAccentBGR},` +
+      `1,1,6,4,8,${marginH},${marginH},360,1`;
     styleLines.push(hStyle);
     const cx = Math.round(width / 2);
+    // Giriş: alttan süzülme + blur çözülme + %88→%100 pop, sonra hafif nabız
+    // (turkuaz parıltı canlı dursun). Renkli gölge (\4c accent) + \blur = neon hâle.
     events.push(
       `Dialogue: 1,0:00:00.00,${assTime(hookDuration)},Hook,,0,0,0,,` +
-        `{\\b1\\fad(140,340)\\move(${cx},322,${cx},384,0,460)` +
-        `\\blur4\\t(0,460,\\blur0)\\fscy90\\t(0,460,\\fscy100)}${hk}`,
+        `{\\b1\\4c&H00${hookAccentBGR}&\\shad4\\blur7\\fad(140,340)\\move(${cx},322,${cx},384,0,460)` +
+        `\\t(0,460,\\blur3)\\fscx88\\fscy88\\t(0,300,\\fscx104\\fscy104)\\t(300,460,\\fscx100\\fscy100)` +
+        `\\t(700,1100,\\blur5)\\t(1100,1500,\\blur3)}${hk}`,
     );
   }
 
