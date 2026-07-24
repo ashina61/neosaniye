@@ -6,6 +6,11 @@ export function selectSceneMotion(scene = {}, item = {}, { previous = [], index 
   const textHeavy = item.source === 'gfx' || /\b(diagram|map|timeline|label|chart|text)\b/.test(text);
   if (textHeavy) return { type: 'static-hold', maxZoom: 1, reason: 'text-heavy-or-explanatory' };
 
+  // TEMPO alt-çekimi (punch-in): part1 gerçekten yakın kadraj → belirgin kesme.
+  if (item.motionHint && MOTIONS.includes(item.motionHint)) {
+    return { type: item.motionHint, maxZoom: item.motionHint === 'detail-zoom' ? 1.14 : 1.1, reason: 'sub-shot-framing' };
+  }
+
   let type = scene.motion_type;
   if (!MOTIONS.includes(type)) {
     // Sahne icäerigine göre aklılı cekim seçimi

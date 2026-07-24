@@ -148,7 +148,12 @@ export async function generateImages(script, opts = {}) {
     basename = script.normalizedTopic || 'script',
     style = 'photo', // 'photo' | 'animated' (illüstrasyon)
     avoidAssetIds = [],
+    sceneSeconds = [], // sahne başı süre (uzun sahneyi tempo için bölmek üzere)
   } = opts;
+  // TEMPO: bu saniyeyi aşan statik foto sahnesi 2 alt-çekime bölünür (geniş →
+  // punch-in). Shorts retention'ının #1 kaldıracı: göz akışını canlı tut.
+  const SPLIT_SEC = Number(process.env.SCENE_SPLIT_SEC || 3.6);
+  const SPLIT_ENABLED = process.env.SCENE_SPLIT !== '0';
 
   const mediaDir = path.join(outDir, basename, 'media');
   await mkdir(mediaDir, { recursive: true });
@@ -367,6 +372,31 @@ export async function generateImages(script, opts = {}) {
     sources[done.source] += 1;
     items.push(done);
     console.log(`[img] sahne ${idx}/${scenes.length}: ${done.source} (${done.type})`);
+
+    // TEMPO BÖLME: uzun statik foto sahnesini İKİ alt-çekime böl — part0 geniş,
+    // part1 GERÇEK yakın kadraj (merkez crop). Sert kesme + yakınlaşma = Shorts
+    // retention. Aynı görsel, ekstra API yok. Video/gfx/placeholder ve hook(0)
+    // bölünmez. part1 ayrı assetId → QC 'asset repeated' yanlış-tetiklenmesin.
+    if (SPLIT_ENABLED && i > 0 && done.type === 'photo'
+        && done.source !== 'gfx' && done.source !== 'placeholder'
+        && (sceneSeconds[i] || 0) > SPLIT_SEC && existsSync(done.path)) {
+      try {
+        const cropDest = path.join(mediaDir, `${idx}-b.jpg`);
+        // Merkezden ~%66 crop + tam boyuta ölçekle → belirgin daha yakın çekim.
+        await run('ffmpeg', ['-y', '-v', 'error', '-i', done.path,
+          '-vf', `crop=iw*0.66:ih*0.66,scale=${width}:${height}:flags=lanczos`, cropDest],
+          { maxBuffer: 20 * 1024 * 1024 });
+        if (existsSync(cropDest)) {
+          done.part = 0;
+          const partB = {
+            ...done, path: cropDest, part: 1, subShot: true,
+            motionHint: 'detail-zoom', assetId: `${done.assetId}#b`,
+          };
+          items.push(partB);
+          console.log(`[img] sahne ${idx}: tempo bölme → 2 alt-çekim (${sceneSeconds[i].toFixed(1)}s, punch-in)`);
+        }
+      } catch { /* bölme best-effort — olmazsa tek çekim kalır */ }
+    }
 
   }
 
