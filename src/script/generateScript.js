@@ -691,31 +691,45 @@ export async function generateScript({ maxRetries = 5, avoidTopics: extraAvoid =
     // HOOK LAB: 6 adayın en yüksek scroll-stop puanlısı kazanır (model kendi
     // seçimini yaptıysa bile puana göre doğrula — 30 karakteri aşan aday elenir).
     if (Array.isArray(script.hook_candidates) && script.hook_candidates.length) {
+      // TÜM geçerli adaylar deterministik retention puanıyla yarışır (yalnız
+      // modelin ilk 2'si değil) → en iyi hook havuzun 5.'si olsa bile kazanır.
+      // Eşitlikte modelin kendi puanı ayırır.
       const valid = script.hook_candidates
         .map((c) => ({ text: String(c.text || '').trim().replace(/["""]/g, ''), score: Number(c.score) || 0 }))
         .filter((c) => c.text.length >= 6 && c.text.length <= 30)
-        .sort((a, b) => b.score - a.score);
-      // A/B HOOK TESTİ: modelin en iyi 2 adayını al, deterministik retention
-      // puanıyla yeniden yarıştır; retention'ı yüksek olan varyant kazanır.
-      const ab = valid.slice(0, 2).map((c) => ({ ...c, retention: scoreHookRetention(c.text) }));
-      const [variantA, variantB] = ab;
-      const best = [...ab].sort((a, b) => b.retention - a.retention)[0] || valid[0];
+        .map((c) => ({ ...c, retention: scoreHookRetention(c.text) }))
+        .sort((a, b) => b.retention - a.retention || b.score - a.score);
+      const best = valid[0];
       if (best) {
         script.hook_text = best.text;
-        if (variantA && variantB) {
-          console.log(
-            `[hook A/B] A="${variantA.text}" (ret ${variantA.retention}) vs ` +
-              `B="${variantB.text}" (ret ${variantB.retention}) → kazanan "${best.text}"`,
-          );
+        const runnerUp = valid[1];
+        if (runnerUp) {
+          console.log(`[hook] ${valid.length} aday → kazanan "${best.text}" (ret ${best.retention}) | 2.: "${runnerUp.text}" (ret ${runnerUp.retention})`);
         } else {
-          console.log(`[hooklab] ${script.hook_candidates.length} aday → "${best.text}" (retention ${best.retention ?? '-'})`);
+          console.log(`[hooklab] ${valid.length} aday → "${best.text}" (retention ${best.retention})`);
         }
-        script.hookAbTest = ab.map((c) => ({ text: c.text, modelScore: c.score, retentionScore: c.retention }));
+        script.hookAbTest = valid.slice(0, 3).map((c) => ({ text: c.text, modelScore: c.score, retentionScore: c.retention }));
       }
       delete script.hook_candidates; // aşağı akışta gereksiz yük
     }
     if (script.hook_text) script.hook_text = softenAdText(script.hook_text, 'hook');
     if (script.title) script.title = softenAdText(script.title, 'başlık');
+
+    // #2 LOOP: final hook'a bağlanmalı (curiosity-gap payoff) → izleyici baştan
+    // izler (replay = Shorts view motoru). Bağlanmıyorsa ERKEN denemelerde
+    // yeniden yazdır; son denemeleri riske atma (üretimi asla sert-fail etme).
+    if (attempt <= 2) {
+      const hookK = new Set(String(script.hook_text || '').toLowerCase().match(/[\p{L}\p{N}]{4,}/gu) || []);
+      const closing = `${script.scenes?.at(-1)?.narration || ''} ${script.finale_text || ''}`.toLowerCase();
+      const closingK = new Set(closing.match(/[\p{L}\p{N}]{4,}/gu) || []);
+      const loops = [...hookK].some((k) => closingK.has(k)) ||
+        /\b(because|therefore|that'?s why|which is why|the answer|finally|turns out)\b/i.test(closing);
+      if (!loops) {
+        console.warn('[script] loop zayıf: finale hook\'a bağlanmıyor — yeniden yazım isteniyor.');
+        lengthFeedback = `Rewrite the SAME script (same topic, facts, scene count, and word budget) but make the FINAL scene narration and finale_text explicitly ANSWER and echo the hook "${script.hook_text}", so the ending loops straight back into the opening — a curiosity-gap payoff that makes viewers rewatch.`;
+        continue;
+      }
+    }
 
     // Validate the final A/B-selected and safety-softened hook, not merely the
     // model's pre-selection draft. Otherwise a winning candidate can silently
