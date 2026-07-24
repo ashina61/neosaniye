@@ -808,12 +808,12 @@ async function buildFullAudio(
   }
 
   await run('ffmpeg', [
-    '-y', ...inputs,
+    '-y', '-hide_banner', '-loglevel', 'error', '-nostats', ...inputs,
     '-filter_complex', fc.join(';'),
     '-map', '[a]', '-t', total.toFixed(3),
     '-c:a', 'aac', '-b:a', config.video.audioBitrate, '-ac', '2',
     outPath,
-  ], { maxBuffer: 20 * 1024 * 1024 });
+  ], { maxBuffer: 128 * 1024 * 1024 });
   return { musicTrack, sfxCues, musicDecision };
 }
 
@@ -1187,15 +1187,19 @@ export async function renderVideo(job, opts = {}) {
   }
 
   const fullv = path.join(workDir, 'fullv.mp4');
+  // NOT: -loglevel error + -nostats ŞART — sahne bölme ile klip sayısı artınca
+  // (10→18) ffmpeg'in varsayılan progress/filtre-graph stderr'i 20MB tamponu
+  // aşıp "stderr maxBuffer length exceeded" ile üretimi çökertti. Hata satırları
+  // yine görünür; sadece progress spam susar. Tampon da bol tutulur.
   await run('ffmpeg', [
-    '-y', ...vInputs,
+    '-y', '-hide_banner', '-loglevel', 'error', '-nostats', ...vInputs,
     '-filter_complex', vfc.join(';'),
     '-map', '[v]', '-an',
     '-c:v', 'libx264', '-preset', config.video.encodePreset, '-crf', String(config.video.encodeCrf),
     '-maxrate', config.video.encodeMaxrate, '-bufsize', config.video.encodeBufsize,
     '-pix_fmt', 'yuv420p', '-r', String(fps),
     path.resolve(fullv),
-  ], { cwd: workDir, maxBuffer: 20 * 1024 * 1024 });
+  ], { cwd: workDir, maxBuffer: 128 * 1024 * 1024 });
 
   // 5) SES PASS: narrasyon + arka plan müziği (ducking) + geçiş whoosh + outro chime.
   const fulla = path.join(workDir, 'fulla.m4a');
