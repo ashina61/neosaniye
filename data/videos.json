@@ -2074,7 +2074,7 @@
       "comments": 3,
       "avgViewPct": 60,
       "subsGained": 5,
-      "statsAt": "2026-07-24T05:28:32.143Z"
+      "statsAt": "2026-07-24T16:59:42.077Z"
     }
   },
   {
@@ -2201,7 +2201,7 @@
       "comments": 1,
       "avgViewPct": 44.9,
       "subsGained": 0,
-      "statsAt": "2026-07-24T05:28:32.138Z"
+      "statsAt": "2026-07-24T16:59:42.072Z"
     }
   },
   {
@@ -2316,7 +2316,7 @@
       "comments": 2,
       "avgViewPct": 142.1,
       "subsGained": 1,
-      "statsAt": "2026-07-24T05:28:32.134Z"
+      "statsAt": "2026-07-24T16:59:42.067Z"
     }
   },
   {
@@ -2431,7 +2431,7 @@
       "comments": 1,
       "avgViewPct": 59,
       "subsGained": 1,
-      "statsAt": "2026-07-24T05:28:32.123Z"
+      "statsAt": "2026-07-24T16:59:42.062Z"
     }
   },
   {
@@ -2545,7 +2545,7 @@
       "comments": 1,
       "avgViewPct": 84.6,
       "subsGained": 2,
-      "statsAt": "2026-07-24T05:28:32.112Z"
+      "statsAt": "2026-07-24T16:59:42.058Z"
     }
   },
   {
@@ -2672,7 +2672,7 @@
       "comments": 1,
       "avgViewPct": 64.2,
       "subsGained": 1,
-      "statsAt": "2026-07-24T05:28:32.103Z"
+      "statsAt": "2026-07-24T16:59:42.052Z"
     }
   },
   {
@@ -2787,7 +2787,7 @@
       "comments": 1,
       "avgViewPct": 122.4,
       "subsGained": 2,
-      "statsAt": "2026-07-24T05:28:32.097Z"
+      "statsAt": "2026-07-24T16:59:42.046Z"
     }
   },
   {
@@ -2914,7 +2914,7 @@
       "comments": 4,
       "avgViewPct": 42.2,
       "subsGained": 1,
-      "statsAt": "2026-07-24T05:28:32.092Z"
+      "statsAt": "2026-07-24T16:59:42.041Z"
     }
   },
   {
@@ -3026,7 +3026,7 @@
       "comments": 1,
       "avgViewPct": 76.5,
       "subsGained": 5,
-      "statsAt": "2026-07-24T05:28:32.082Z"
+      "statsAt": "2026-07-24T16:59:42.036Z"
     }
   },
   {
@@ -3248,12 +3248,12 @@
     },
     "createdAt": "2026-07-15T23:55:20.531Z",
     "stats": {
-      "views": 1023,
+      "views": 1025,
       "likes": 33,
       "comments": 1,
       "avgViewPct": 67.1,
       "subsGained": 1,
-      "statsAt": "2026-07-24T05:28:32.071Z"
+      "statsAt": "2026-07-24T16:59:42.032Z"
     }
   },
   {
@@ -3379,7 +3379,7 @@
       "comments": 1,
       "avgViewPct": 57.1,
       "subsGained": 1,
-      "statsAt": "2026-07-24T05:28:32.065Z"
+      "statsAt": "2026-07-24T16:59:42.027Z"
     }
   },
   {
@@ -3502,7 +3502,7 @@
       "comments": 3,
       "avgViewPct": 58.5,
       "subsGained": 3,
-      "statsAt": "2026-07-24T05:28:32.060Z"
+      "statsAt": "2026-07-24T16:59:42.022Z"
     }
   },
   {
@@ -3637,7 +3637,7 @@
       "comments": 1,
       "avgViewPct": 78.4,
       "subsGained": 1,
-      "statsAt": "2026-07-24T05:28:32.050Z"
+      "statsAt": "2026-07-24T16:59:42.018Z"
     }
   },
   {
@@ -3772,7 +3772,7 @@
       "comments": 3,
       "avgViewPct": 64.6,
       "subsGained": 0,
-      "statsAt": "2026-07-24T05:28:32.040Z"
+      "statsAt": "2026-07-24T16:59:42.013Z"
     }
   },
   {
@@ -3898,12 +3898,12 @@
     },
     "createdAt": "2026-07-17T23:37:08.494Z",
     "stats": {
-      "views": 874,
-      "likes": 19,
+      "views": 875,
+      "likes": 20,
       "comments": 1,
       "avgViewPct": 56,
       "subsGained": 3,
-      "statsAt": "2026-07-24T05:28:32.035Z"
+      "statsAt": "2026-07-24T16:59:42.008Z"
     }
   },
   {
@@ -4028,7 +4028,7 @@
       "comments": 1,
       "avgViewPct": 63.5,
       "subsGained": 2,
-      "statsAt": "2026-07-24T05:28:32.029Z"
+      "statsAt": "2026-07-24T16:59:42.001Z"
     }
   },
   {
@@ -4175,9 +4175,9 @@
       "views": 674,
       "likes": 79,
       "comments": 3,
-      "avgViewPct": 76.2,
+      "avgViewPct": 75.9,
       "subsGained": 6,
-      "statsAt": "2026-07-24T05:28:32.020Z"
+      "statsAt": "2026-07-24T16:59:41.996Z"
     }
   },
   {
@@ -4326,7 +4326,7 @@
       "comments": 1,
       "avgViewPct": 106.9,
       "subsGained": 0,
-      "statsAt": "2026-07-24T05:28:31.844Z"
+      "statsAt": "2026-07-24T16:59:41.991Z"
     }
   },
   {
@@ -4480,7 +4480,7 @@
       "comments": 1,
       "avgViewPct": 89.5,
       "subsGained": 0,
-      "statsAt": "2026-07-24T05:28:31.840Z"
+      "statsAt": "2026-07-24T16:59:41.986Z"
     }
   },
   {
@@ -4629,7 +4629,7 @@
       "comments": 1,
       "avgViewPct": 84.6,
       "subsGained": 0,
-      "statsAt": "2026-07-24T05:28:31.835Z"
+      "statsAt": "2026-07-24T16:59:41.981Z"
     }
   },
   {
@@ -4795,7 +4795,7 @@
       "comments": 1,
       "avgViewPct": 69.7,
       "subsGained": 0,
-      "statsAt": "2026-07-24T05:28:31.830Z"
+      "statsAt": "2026-07-24T16:59:41.976Z"
     }
   },
   {
@@ -7062,10 +7062,10 @@
     },
     "createdAt": "2026-07-22T21:30:33.114Z",
     "stats": {
-      "views": 129,
-      "likes": 14,
+      "views": 140,
+      "likes": 17,
       "comments": 1,
-      "statsAt": "2026-07-24T05:28:31.824Z"
+      "statsAt": "2026-07-24T16:59:41.971Z"
     }
   },
   {
@@ -7656,10 +7656,10 @@
     },
     "createdAt": "2026-07-23T16:34:19.874Z",
     "stats": {
-      "views": 262,
-      "likes": 21,
-      "comments": 1,
-      "statsAt": "2026-07-24T05:28:31.819Z"
+      "views": 285,
+      "likes": 24,
+      "comments": 2,
+      "statsAt": "2026-07-24T16:59:41.965Z"
     }
   },
   {
@@ -7956,10 +7956,10 @@
     },
     "createdAt": "2026-07-23T21:50:25.273Z",
     "stats": {
-      "views": 3,
+      "views": 4,
       "likes": 0,
       "comments": 0,
-      "statsAt": "2026-07-24T05:28:31.813Z"
+      "statsAt": "2026-07-24T16:59:41.960Z"
     }
   },
   {
@@ -8258,6 +8258,416 @@
         "facebook": "27223429414003620"
       }
     },
-    "createdAt": "2026-07-24T05:39:17.906Z"
+    "createdAt": "2026-07-24T05:39:17.906Z",
+    "stats": {
+      "views": 408,
+      "likes": 20,
+      "comments": 1,
+      "statsAt": "2026-07-24T16:59:41.954Z"
+    }
+  },
+  {
+    "id": "how-the-moon-got-its-craters-1784913049051",
+    "topic": "How the Moon Got its Craters",
+    "normalizedTopic": "how-the-moon-got-its-craters",
+    "format": "facts3",
+    "retention": {
+      "score": 96,
+      "status": "fail"
+    },
+    "music": {
+      "file": "Big Eyes.mp3",
+      "assetId": "Big Eyes.mp3",
+      "source": "assets/music havuzu",
+      "license": null,
+      "selectedAt": "2026-07-24T17:09:02.738Z"
+    },
+    "motion": {
+      "enabled": true,
+      "ctaRequested": true,
+      "ctaApplied": true,
+      "ctaId": "neo_subscribe_minimal",
+      "ctaType": "subscribe",
+      "startSec": 36.5,
+      "durationSec": 2.42,
+      "position": "bottom_center_low",
+      "selectionReason": "editorial-rule",
+      "safeAreaPassed": true,
+      "sfxId": "confirmation",
+      "resolvedLanguage": "en",
+      "label": "SUBSCRIBE",
+      "languageMatch": true,
+      "warnings": [],
+      "failures": [],
+      "box": {
+        "x": 262,
+        "y": 1148,
+        "w": 556,
+        "h": 112
+      },
+      "layerDiff": 0.02584,
+      "ctaVerification": {
+        "ok": true,
+        "failures": [],
+        "report": {
+          "bbox": {
+            "x": 262,
+            "y": 1148,
+            "w": 556,
+            "h": 112
+          },
+          "edgeMargins": {
+            "left": 262,
+            "right": 262,
+            "top": 1148,
+            "bottom": 660
+          },
+          "withinSafeMargin": true,
+          "captionOverlap": false,
+          "uiOverlap": false,
+          "layerPresent": true,
+          "resolvedLanguage": "en",
+          "requestedLanguage": "en",
+          "languageMatch": true,
+          "label": "SUBSCRIBE"
+        }
+      }
+    },
+    "audioSfx": [
+      "impact",
+      "whoosh",
+      "riser",
+      "impact"
+    ],
+    "scheduleExperiment": {
+      "id": "us-audience-3-slots-v2",
+      "timezone": "UTC",
+      "scheduledSlot": "manual",
+      "contentDate": "2026-07-24",
+      "experimentStartDate": "2026-07-22",
+      "experimentDurationDays": 14,
+      "strategy": "fixed-three-daily-slots",
+      "primaryAudience": "US",
+      "status": "active",
+      "scheduledPublishAt": null,
+      "actualPublishAt": "2026-07-24T17:10:06.683Z"
+    },
+    "visualStyle": "photo",
+    "script": {
+      "title": "Why the Moon is Covered in Holes: The Surprising Truth",
+      "category": "science",
+      "hook_text": "How did Moon get holes?",
+      "finale_text": "the Moon's frozen history",
+      "scenes": [
+        {
+          "narration": "Billions of craters riddle our Moon's face: but why?",
+          "image_prompt": "A dramatic wide shot of the full Moon, highly detailed, showing countless craters on its surface against the blackness of space. Emphasize texture and depth. Cold, scientific lighting."
+        },
+        {
+          "narration": "For centuries, people believed these were ancient volcanoes, spewing rock and ash.",
+          "image_prompt": "An antique astronomical drawing, from the era of early telescopes, depicting a stylized Moon with exaggerated volcanic eruptions and plumes of smoke, against a sepia-toned backdrop. Medium shot, warm, conceptual light."
+        },
+        {
+          "narration": "But the truth is far more violent, revealing a cosmic history of destruction.",
+          "image_prompt": "A close-up shot of an asteroid with a jagged, rocky surface streaking through the inky blackness of space, glowing faintly from friction, on a direct collision course. Dynamic, explosive lighting, cold mood."
+        },
+        {
+          "narration": "Early Earth was bombarded by countless meteors, leaving massive scars everywhere.",
+          "image_prompt": "An artistic rendering of the early Earth, glowing red-hot with molten surface features, being struck by multiple large meteors creating fiery impacts and ejecta plumes. Wide shot, chaotic, dramatic light."
+        },
+        {
+          "narration": "The interesting part: Earth's geology, like erosion and plate tectonics, erased most evidence.",
+          "image_prompt": "An abstract visualization from a high angle showing tectonic plates slowly shifting across the Earth's surface, represented by moving landmasses and emerging mountain ranges, over a very long geological timescale. Dynamic, evolving light."
+        },
+        {
+          "narration": "However, the Moon lacks these active geological processes to resurface its terrain.",
+          "image_prompt": "A stark, desolate medium shot of a flat, ancient lunar plain, pockmarked with smaller, eroded craters, under the cold, steady light of deep space, emphasizing geological inactivity."
+        },
+        {
+          "narration": "So, every major impact from space created a permanent crater, frozen in time.",
+          "image_prompt": "An overhead shot directly into a perfectly circular, well-preserved lunar crater, showing its distinct raised rim and central peak, casting long, sharp shadows under overhead lighting. The crater is frozen in time."
+        },
+        {
+          "narration": "When a meteor strikes, the immense energy excavates a bowl-shaped depression.",
+          "image_prompt": "A detailed animation frame illustrating the precise moment a meteor impacts the lunar surface, creating a powerful shockwave radiating outwards and a visible plume of ejected debris. Explosive, bright impact lighting."
+        },
+        {
+          "narration": "The impact heats and compresses material, forming the distinctive raised rim and central peaks.",
+          "image_prompt": "A clear, well-lit cross-section diagram of a lunar impact crater, explicitly labeling the 'raised rim', 'central peak', and the surrounding 'ejecta blanket'. Scientific, clear illumination against a dark space background."
+        },
+        {
+          "narration": "Therefore, the Moon's pockmarked appearance is a perfectly preserved record of its violent past.",
+          "image_prompt": "A majestic wide shot of the Moon, half-illuminated by distant starlight, showcasing the incredible density and variety of its craters. The lunar surface looks like a cosmic archive, emphasizing the cold, scientific mood of deep space."
+        }
+      ],
+      "cta": "Uncover more cosmic secrets: Subscribe!"
+    },
+    "audioPath": "output/how-the-moon-got-its-craters/how-the-moon-got-its-craters.mp3",
+    "videoPath": "output/how-the-moon-got-its-craters/how-the-moon-got-its-craters.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "archive",
+        "scene": 0,
+        "path": "output/how-the-moon-got-its-craters/media/01-archive.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:FullMoon2010.jpg",
+        "author": "Gregory H. Revera",
+        "provider": "wikimedia",
+        "assetId": "https://commons.wikimedia.org/wiki/File:FullMoon2010.jpg",
+        "query": "Moon's",
+        "retrievedAt": "2026-07-24T17:00:57.975Z",
+        "rightsClass": "attribution-required",
+        "license": "CC BY-SA 3.0",
+        "licenseEvidence": "https://commons.wikimedia.org/wiki/File:FullMoon2010.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/how-the-moon-got-its-craters/media/02-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "how-the-moon-got-its-craters:1:159957",
+        "query": "cinematic, 4K, ultra sharp, professional photography. An antique astronomical drawing, from the era of early telescopes, depicting a stylized Moon with exaggerated volcanic eruptions and plumes of smoke, against a sepia-toned backdrop. Medium shot, warm, conceptual light.. A detailed, high-resolution view of the lunar surface, showing craters and shadowed areas under the stark, cold light of deep space, emphasizing scientific observation.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-24T17:01:12.090Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 1,
+        "path": "output/how-the-moon-got-its-craters/media/02-b.jpg",
+        "provider": "pollinations",
+        "assetId": "how-the-moon-got-its-craters:1:159957#b",
+        "query": "cinematic, 4K, ultra sharp, professional photography. An antique astronomical drawing, from the era of early telescopes, depicting a stylized Moon with exaggerated volcanic eruptions and plumes of smoke, against a sepia-toned backdrop. Medium shot, warm, conceptual light.. A detailed, high-resolution view of the lunar surface, showing craters and shadowed areas under the stark, cold light of deep space, emphasizing scientific observation.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-24T17:01:12.090Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/how-the-moon-got-its-craters/media/03-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "how-the-moon-got-its-craters:2:159957",
+        "query": "cinematic, 4K, ultra sharp, professional photography. A close-up shot of an asteroid with a jagged, rocky surface streaking through the inky blackness of space, glowing faintly from friction, on a direct collision course. Dynamic, explosive lighting, cold mood.. A detailed, high-resolution view of the lunar surface, showing craters and shadowed areas under the stark, cold light of deep space, emphasizing scientific observation.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-24T17:01:59.160Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/how-the-moon-got-its-craters/media/03-b.jpg",
+        "provider": "pollinations",
+        "assetId": "how-the-moon-got-its-craters:2:159957#b",
+        "query": "cinematic, 4K, ultra sharp, professional photography. A close-up shot of an asteroid with a jagged, rocky surface streaking through the inky blackness of space, glowing faintly from friction, on a direct collision course. Dynamic, explosive lighting, cold mood.. A detailed, high-resolution view of the lunar surface, showing craters and shadowed areas under the stark, cold light of deep space, emphasizing scientific observation.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-24T17:01:59.160Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "archive",
+        "scene": 3,
+        "path": "output/how-the-moon-got-its-craters/media/04-archive.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:The_Earth_seen_from_Apollo_17.jpg",
+        "author": "NASA/Apollo 17 crew; taken by either Harrison Schmitt or Ron",
+        "provider": "wikimedia",
+        "assetId": "https://commons.wikimedia.org/wiki/File:The_Earth_seen_from_Apollo_17.jpg",
+        "query": "Earth",
+        "retrievedAt": "2026-07-24T17:02:00.849Z",
+        "rightsClass": "cc0-public-domain",
+        "license": "Public domain",
+        "licenseEvidence": "https://commons.wikimedia.org/wiki/File:The_Earth_seen_from_Apollo_17.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "archive",
+        "scene": 3,
+        "path": "output/how-the-moon-got-its-craters/media/04-b.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:The_Earth_seen_from_Apollo_17.jpg",
+        "author": "NASA/Apollo 17 crew; taken by either Harrison Schmitt or Ron",
+        "provider": "wikimedia",
+        "assetId": "https://commons.wikimedia.org/wiki/File:The_Earth_seen_from_Apollo_17.jpg#b",
+        "query": "Earth",
+        "retrievedAt": "2026-07-24T17:02:00.849Z",
+        "rightsClass": "cc0-public-domain",
+        "license": "Public domain",
+        "licenseEvidence": "https://commons.wikimedia.org/wiki/File:The_Earth_seen_from_Apollo_17.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 4,
+        "path": "output/how-the-moon-got-its-craters/media/05-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "how-the-moon-got-its-craters:4:159957",
+        "query": "cinematic, 4K, ultra sharp, professional photography. An abstract visualization from a high angle showing tectonic plates slowly shifting across the Earth's surface, represented by moving landmasses and emerging mountain ranges, over a very long geological timescale. Dynamic, evolving light.. A detailed, high-resolution view of the lunar surface, showing craters and shadowed areas under the stark, cold light of deep space, emphasizing scientific observation.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-24T17:02:44.253Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 4,
+        "path": "output/how-the-moon-got-its-craters/media/05-b.jpg",
+        "provider": "pollinations",
+        "assetId": "how-the-moon-got-its-craters:4:159957#b",
+        "query": "cinematic, 4K, ultra sharp, professional photography. An abstract visualization from a high angle showing tectonic plates slowly shifting across the Earth's surface, represented by moving landmasses and emerging mountain ranges, over a very long geological timescale. Dynamic, evolving light.. A detailed, high-resolution view of the lunar surface, showing craters and shadowed areas under the stark, cold light of deep space, emphasizing scientific observation.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-24T17:02:44.253Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 5,
+        "path": "output/how-the-moon-got-its-craters/media/06-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "how-the-moon-got-its-craters:5:159957",
+        "query": "cinematic, 4K, ultra sharp, professional photography. A stark, desolate medium shot of a flat, ancient lunar plain, pockmarked with smaller, eroded craters, under the cold, steady light of deep space, emphasizing geological inactivity.. A detailed, high-resolution view of the lunar surface, showing craters and shadowed areas under the stark, cold light of deep space, emphasizing scientific observation.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-24T17:03:27.299Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 5,
+        "path": "output/how-the-moon-got-its-craters/media/06-b.jpg",
+        "provider": "pollinations",
+        "assetId": "how-the-moon-got-its-craters:5:159957#b",
+        "query": "cinematic, 4K, ultra sharp, professional photography. A stark, desolate medium shot of a flat, ancient lunar plain, pockmarked with smaller, eroded craters, under the cold, steady light of deep space, emphasizing geological inactivity.. A detailed, high-resolution view of the lunar surface, showing craters and shadowed areas under the stark, cold light of deep space, emphasizing scientific observation.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-24T17:03:27.299Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 6,
+        "path": "output/how-the-moon-got-its-craters/media/07-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "how-the-moon-got-its-craters:6:159957",
+        "query": "cinematic, 4K, ultra sharp, professional photography. An overhead shot directly into a perfectly circular, well-preserved lunar crater, showing its distinct raised rim and central peak, casting long, sharp shadows under overhead lighting. The crater is frozen in time.. A detailed, high-resolution view of the lunar surface, showing craters and shadowed areas under the stark, cold light of deep space, emphasizing scientific observation.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-24T17:04:06.467Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 6,
+        "path": "output/how-the-moon-got-its-craters/media/07-b.jpg",
+        "provider": "pollinations",
+        "assetId": "how-the-moon-got-its-craters:6:159957#b",
+        "query": "cinematic, 4K, ultra sharp, professional photography. An overhead shot directly into a perfectly circular, well-preserved lunar crater, showing its distinct raised rim and central peak, casting long, sharp shadows under overhead lighting. The crater is frozen in time.. A detailed, high-resolution view of the lunar surface, showing craters and shadowed areas under the stark, cold light of deep space, emphasizing scientific observation.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-24T17:04:06.467Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "video",
+        "source": "gfx",
+        "scene": 7,
+        "path": "output/how-the-moon-got-its-craters/media/08-gfx.mp4",
+        "provider": "neosaniye-renderTemplate",
+        "assetId": "neosaniye-renderTemplate:how-the-moon-got-its-craters:7",
+        "query": "meteor strike crater formation impact mechanics",
+        "retrievedAt": "2026-07-24T17:04:13.383Z",
+        "rightsClass": "repository-owned",
+        "license": "proprietary-original",
+        "licenseEvidence": "src/media/renderTemplate.js"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 8,
+        "path": "output/how-the-moon-got-its-craters/media/09-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "how-the-moon-got-its-craters:8:159957",
+        "query": "cinematic, 4K, ultra sharp, professional photography. A clear, well-lit cross-section diagram of a lunar impact crater, explicitly labeling the 'raised rim', 'central peak', and the surrounding 'ejecta blanket'. Scientific, clear illumination against a dark space background.. A detailed, high-resolution view of the lunar surface, showing craters and shadowed areas under the stark, cold light of deep space, emphasizing scientific observation.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-24T17:04:45.787Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 8,
+        "path": "output/how-the-moon-got-its-craters/media/09-b.jpg",
+        "provider": "pollinations",
+        "assetId": "how-the-moon-got-its-craters:8:159957#b",
+        "query": "cinematic, 4K, ultra sharp, professional photography. A clear, well-lit cross-section diagram of a lunar impact crater, explicitly labeling the 'raised rim', 'central peak', and the surrounding 'ejecta blanket'. Scientific, clear illumination against a dark space background.. A detailed, high-resolution view of the lunar surface, showing craters and shadowed areas under the stark, cold light of deep space, emphasizing scientific observation.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-24T17:04:45.787Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 9,
+        "path": "output/how-the-moon-got-its-craters/media/10-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "how-the-moon-got-its-craters:9:159957",
+        "query": "cinematic, 4K, ultra sharp, professional photography. A majestic wide shot of the Moon, half-illuminated by distant starlight, showcasing the incredible density and variety of its craters. The lunar surface looks like a cosmic archive, emphasizing the cold, scientific mood of deep space.. A detailed, high-resolution view of the lunar surface, showing craters and shadowed areas under the stark, cold light of deep space, emphasizing scientific observation.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-24T17:05:29.967Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 9,
+        "path": "output/how-the-moon-got-its-craters/media/10-b.jpg",
+        "provider": "pollinations",
+        "assetId": "how-the-moon-got-its-craters:9:159957#b",
+        "query": "cinematic, 4K, ultra sharp, professional photography. A majestic wide shot of the Moon, half-illuminated by distant starlight, showcasing the incredible density and variety of its craters. The lunar surface looks like a cosmic archive, emphasizing the cold, scientific mood of deep space.. A detailed, high-resolution view of the lunar surface, showing craters and shadowed areas under the stark, cold light of deep space, emphasizing scientific observation.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-24T17:05:29.967Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 46.743991,
+    "status": "published",
+    "youtube": {
+      "videoId": "VFUm_u5CSJc",
+      "url": "https://www.youtube.com/shorts/VFUm_u5CSJc",
+      "title": "Moon Craters: Why Our Moon Is Covered in Billions of Holes #Shorts",
+      "publishedAt": "2026-07-24T17:10:06.683Z"
+    },
+    "publishing": {
+      "attemptId": "96d936ff67758939bdc0b27ef6bc04e0",
+      "platforms": {
+        "youtube": {
+          "videoId": "VFUm_u5CSJc",
+          "url": "https://www.youtube.com/shorts/VFUm_u5CSJc",
+          "title": "Moon Craters: Why Our Moon Is Covered in Billions of Holes #Shorts",
+          "publishedAt": "2026-07-24T17:10:06.683Z"
+        },
+        "instagram": "18435385171121807",
+        "facebook": "1729748781480724"
+      }
+    },
+    "createdAt": "2026-07-24T17:10:49.051Z"
   }
 ]
