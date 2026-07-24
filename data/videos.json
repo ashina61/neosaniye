@@ -1945,9 +1945,9 @@
       "views": 401,
       "likes": 10,
       "comments": 1,
-      "avgViewPct": 59,
+      "avgViewPct": 58.8,
       "subsGained": 2,
-      "statsAt": "2026-07-22T21:18:35.191Z"
+      "statsAt": "2026-07-24T05:28:32.147Z"
     }
   },
   {
@@ -2074,7 +2074,7 @@
       "comments": 3,
       "avgViewPct": 60,
       "subsGained": 5,
-      "statsAt": "2026-07-22T21:18:35.187Z"
+      "statsAt": "2026-07-24T05:28:32.143Z"
     }
   },
   {
@@ -2201,7 +2201,7 @@
       "comments": 1,
       "avgViewPct": 44.9,
       "subsGained": 0,
-      "statsAt": "2026-07-22T21:18:35.183Z"
+      "statsAt": "2026-07-24T05:28:32.138Z"
     }
   },
   {
@@ -2316,7 +2316,7 @@
       "comments": 2,
       "avgViewPct": 142.1,
       "subsGained": 1,
-      "statsAt": "2026-07-22T21:18:35.179Z"
+      "statsAt": "2026-07-24T05:28:32.134Z"
     }
   },
   {
@@ -2431,7 +2431,7 @@
       "comments": 1,
       "avgViewPct": 59,
       "subsGained": 1,
-      "statsAt": "2026-07-22T21:18:35.176Z"
+      "statsAt": "2026-07-24T05:28:32.123Z"
     }
   },
   {
@@ -2545,7 +2545,7 @@
       "comments": 1,
       "avgViewPct": 84.6,
       "subsGained": 2,
-      "statsAt": "2026-07-22T21:18:35.172Z"
+      "statsAt": "2026-07-24T05:28:32.112Z"
     }
   },
   {
@@ -2672,7 +2672,7 @@
       "comments": 1,
       "avgViewPct": 64.2,
       "subsGained": 1,
-      "statsAt": "2026-07-22T21:18:35.169Z"
+      "statsAt": "2026-07-24T05:28:32.103Z"
     }
   },
   {
@@ -2787,7 +2787,7 @@
       "comments": 1,
       "avgViewPct": 122.4,
       "subsGained": 2,
-      "statsAt": "2026-07-22T21:18:35.165Z"
+      "statsAt": "2026-07-24T05:28:32.097Z"
     }
   },
   {
@@ -2914,7 +2914,7 @@
       "comments": 4,
       "avgViewPct": 42.2,
       "subsGained": 1,
-      "statsAt": "2026-07-22T21:18:35.161Z"
+      "statsAt": "2026-07-24T05:28:32.092Z"
     }
   },
   {
@@ -3026,7 +3026,7 @@
       "comments": 1,
       "avgViewPct": 76.5,
       "subsGained": 5,
-      "statsAt": "2026-07-22T21:18:35.157Z"
+      "statsAt": "2026-07-24T05:28:32.082Z"
     }
   },
   {
@@ -3253,7 +3253,7 @@
       "comments": 1,
       "avgViewPct": 67.1,
       "subsGained": 1,
-      "statsAt": "2026-07-22T21:18:35.153Z"
+      "statsAt": "2026-07-24T05:28:32.071Z"
     }
   },
   {
@@ -3379,7 +3379,7 @@
       "comments": 1,
       "avgViewPct": 57.1,
       "subsGained": 1,
-      "statsAt": "2026-07-22T21:18:35.150Z"
+      "statsAt": "2026-07-24T05:28:32.065Z"
     }
   },
   {
@@ -3497,12 +3497,12 @@
     },
     "createdAt": "2026-07-16T23:12:49.860Z",
     "stats": {
-      "views": 764,
+      "views": 765,
       "likes": 28,
       "comments": 3,
       "avgViewPct": 58.5,
       "subsGained": 3,
-      "statsAt": "2026-07-22T21:18:35.131Z"
+      "statsAt": "2026-07-24T05:28:32.060Z"
     }
   },
   {
@@ -3637,7 +3637,7 @@
       "comments": 1,
       "avgViewPct": 78.4,
       "subsGained": 1,
-      "statsAt": "2026-07-22T21:18:35.124Z"
+      "statsAt": "2026-07-24T05:28:32.050Z"
     }
   },
   {
@@ -3772,7 +3772,7 @@
       "comments": 3,
       "avgViewPct": 64.6,
       "subsGained": 0,
-      "statsAt": "2026-07-22T21:18:35.120Z"
+      "statsAt": "2026-07-24T05:28:32.040Z"
     }
   },
   {
@@ -3901,9 +3901,9 @@
       "views": 874,
       "likes": 19,
       "comments": 1,
-      "avgViewPct": 56.1,
+      "avgViewPct": 56,
       "subsGained": 3,
-      "statsAt": "2026-07-22T21:18:35.116Z"
+      "statsAt": "2026-07-24T05:28:32.035Z"
     }
   },
   {
@@ -4023,12 +4023,12 @@
     },
     "createdAt": "2026-07-18T19:43:52.137Z",
     "stats": {
-      "views": 718,
+      "views": 720,
       "likes": 19,
       "comments": 1,
       "avgViewPct": 63.5,
       "subsGained": 2,
-      "statsAt": "2026-07-22T21:18:35.111Z"
+      "statsAt": "2026-07-24T05:28:32.029Z"
     }
   },
   {
@@ -4172,12 +4172,12 @@
     },
     "createdAt": "2026-07-18T21:13:03.406Z",
     "stats": {
-      "views": 676,
+      "views": 674,
       "likes": 79,
       "comments": 3,
-      "avgViewPct": 76.1,
+      "avgViewPct": 76.2,
       "subsGained": 6,
-      "statsAt": "2026-07-22T21:18:35.107Z"
+      "statsAt": "2026-07-24T05:28:32.020Z"
     }
   },
   {
@@ -4321,12 +4321,12 @@
     },
     "createdAt": "2026-07-19T05:46:10.622Z",
     "stats": {
-      "views": 9,
+      "views": 10,
       "likes": 0,
       "comments": 1,
-      "avgViewPct": 88.2,
+      "avgViewPct": 106.9,
       "subsGained": 0,
-      "statsAt": "2026-07-22T21:18:35.103Z"
+      "statsAt": "2026-07-24T05:28:31.844Z"
     }
   },
   {
@@ -4478,9 +4478,9 @@
       "views": 171,
       "likes": 11,
       "comments": 1,
-      "avgViewPct": 87.8,
+      "avgViewPct": 89.5,
       "subsGained": 0,
-      "statsAt": "2026-07-22T21:18:35.099Z"
+      "statsAt": "2026-07-24T05:28:31.840Z"
     }
   },
   {
@@ -4627,9 +4627,9 @@
       "views": 205,
       "likes": 24,
       "comments": 1,
-      "avgViewPct": 82.4,
+      "avgViewPct": 84.6,
       "subsGained": 0,
-      "statsAt": "2026-07-22T21:18:35.095Z"
+      "statsAt": "2026-07-24T05:28:31.835Z"
     }
   },
   {
@@ -4793,9 +4793,9 @@
       "views": 114,
       "likes": 13,
       "comments": 1,
-      "avgViewPct": 71,
+      "avgViewPct": 69.7,
       "subsGained": 0,
-      "statsAt": "2026-07-22T21:18:35.090Z"
+      "statsAt": "2026-07-24T05:28:31.830Z"
     }
   },
   {
@@ -7060,7 +7060,13 @@
         "facebook": "27576919215293652"
       }
     },
-    "createdAt": "2026-07-22T21:30:33.114Z"
+    "createdAt": "2026-07-22T21:30:33.114Z",
+    "stats": {
+      "views": 129,
+      "likes": 14,
+      "comments": 1,
+      "statsAt": "2026-07-24T05:28:31.824Z"
+    }
   },
   {
     "id": "how-ancient-egyptians-moved-massive-stones-1784819777347",
@@ -7648,7 +7654,13 @@
         "facebook": "1606630077831368"
       }
     },
-    "createdAt": "2026-07-23T16:34:19.874Z"
+    "createdAt": "2026-07-23T16:34:19.874Z",
+    "stats": {
+      "views": 262,
+      "likes": 21,
+      "comments": 1,
+      "statsAt": "2026-07-24T05:28:31.819Z"
+    }
   },
   {
     "id": "basilisk-lizard-walking-on-water-1784843425273",
@@ -7942,6 +7954,310 @@
         "facebook": "2501791033658900"
       }
     },
-    "createdAt": "2026-07-23T21:50:25.273Z"
+    "createdAt": "2026-07-23T21:50:25.273Z",
+    "stats": {
+      "views": 3,
+      "likes": 0,
+      "comments": 0,
+      "statsAt": "2026-07-24T05:28:31.813Z"
+    }
+  },
+  {
+    "id": "ancient-city-power-grids-1784871557906",
+    "topic": "Ancient City Power Grids",
+    "normalizedTopic": "ancient-city-power-grids",
+    "format": "facts3",
+    "retention": {
+      "score": 85,
+      "status": "fail"
+    },
+    "music": {
+      "file": "After the End.mp3",
+      "assetId": "After the End.mp3",
+      "source": "assets/music havuzu",
+      "license": null,
+      "selectedAt": "2026-07-24T05:37:20.493Z"
+    },
+    "motion": {
+      "enabled": true,
+      "ctaRequested": true,
+      "ctaApplied": true,
+      "ctaId": "neo_subscribe_minimal",
+      "ctaType": "subscribe",
+      "startSec": 39.37,
+      "durationSec": 2.54,
+      "position": "bottom_center_low",
+      "selectionReason": "editorial-rule",
+      "safeAreaPassed": true,
+      "sfxId": "confirmation",
+      "resolvedLanguage": "en",
+      "label": "SUBSCRIBE",
+      "languageMatch": true,
+      "warnings": [],
+      "failures": [],
+      "box": {
+        "x": 262,
+        "y": 1148,
+        "w": 556,
+        "h": 112
+      },
+      "layerDiff": 0.02624,
+      "ctaVerification": {
+        "ok": true,
+        "failures": [],
+        "report": {
+          "bbox": {
+            "x": 262,
+            "y": 1148,
+            "w": 556,
+            "h": 112
+          },
+          "edgeMargins": {
+            "left": 262,
+            "right": 262,
+            "top": 1148,
+            "bottom": 660
+          },
+          "withinSafeMargin": true,
+          "captionOverlap": false,
+          "uiOverlap": false,
+          "layerPresent": true,
+          "resolvedLanguage": "en",
+          "requestedLanguage": "en",
+          "languageMatch": true,
+          "label": "SUBSCRIBE"
+        }
+      }
+    },
+    "audioSfx": [
+      "whoosh",
+      "riser",
+      "shimmer",
+      "impact"
+    ],
+    "scheduleExperiment": {
+      "id": "us-audience-3-slots-v2",
+      "timezone": "UTC",
+      "scheduledSlot": "23:00",
+      "contentDate": "2026-07-23",
+      "experimentStartDate": "2026-07-22",
+      "experimentDurationDays": 14,
+      "strategy": "fixed-three-daily-slots",
+      "primaryAudience": "US",
+      "status": "active",
+      "scheduledPublishAt": "2026-07-23T23:00:00.000Z",
+      "actualPublishAt": "2026-07-24T05:38:36.411Z"
+    },
+    "visualStyle": "photo",
+    "script": {
+      "title": "Ancient City Lights: Rome vs. Mohenjo-Daro Power!",
+      "category": "history",
+      "hook_text": "Electric grids 4500 years ago?",
+      "finale_text": "the 4500-year-old city grid",
+      "scenes": [
+        {
+          "narration": "Did ancient civilizations have complex power grids, like modern cities?",
+          "image_prompt": "A bustling ancient Roman marketplace at dusk, with lanterns beginning to glow and citizens moving through crowded stalls, soft warm golden light, high angle"
+        },
+        {
+          "narration": "Ancient Rome, renowned for engineering, used aqueducts for water and oil lamps for light.",
+          "image_prompt": "A Roman aqueduct with water flowing visibly, and a Roman citizen lighting a small oil lamp in the foreground, golden hour light"
+        },
+        {
+          "narration": "Their urban planning was sophisticated, but powered entirely by human and animal labor.",
+          "image_prompt": "A Roman worker's hands and face, pulling a cart of goods through a cobblestone street, sweat on his brow, architectural details in the background, bright clear daylight"
+        },
+        {
+          "narration": "But 2500 years before Rome, in the Indus Valley, something extraordinary existed.",
+          "image_prompt": "The excavated ruins of Mohenjo-Daro, showing its grid-like city plan and large public bath, under a vast cloudless desert sky, harsh sunlight"
+        },
+        {
+          "narration": "Mohenjo-Daro featured advanced drainage systems, with covered sewers under every street.",
+          "image_prompt": "An ancient perfectly fitted terracotta sewer pipe unearthed in Mohenjo-Daro, showing its intricate construction, focus on the pipe, dusty light"
+        },
+        {
+          "narration": "The interesting part: every house had private bathrooms connected to this vast network.",
+          "image_prompt": "Inside an excavated Mohenjo-Daro home, revealing a small tiled bathing area with a drainage outlet, looking out to the street grid, clear interior light"
+        },
+        {
+          "narration": "This required an unprecedented, centralized water pressure system to function.",
+          "image_prompt": "An archaeological cross-section diagram of Mohenjo-Daro's water system, showing interconnected wells pipes and drains, depicted in an ancient-style scroll, overhead view"
+        },
+        {
+          "narration": "Such widespread, consistent water flow hints at an unknown, highly advanced power source.",
+          "image_prompt": "A single large perfectly circular brick well in Mohenjo-Daro, remarkably preserved, with sunlight reflecting off unseen water deep inside, dramatic light"
+        },
+        {
+          "narration": "While not 'electricity', Mohenjo-Daro had a sophisticated, pressurized public utility grid.",
+          "image_prompt": "An archeologist carefully brushing dust from an intricately laid brick street in Mohenjo-Daro, highlighting the precision of the urban planning, golden desert light"
+        },
+        {
+          "narration": "Far more comprehensive than anything built for millennia after its mysterious collapse.",
+          "image_prompt": "The setting sun over the vast empty ruins of Mohenjo-Daro, casting long shadows, a solitary figure stands observing, poignant warm light"
+        }
+      ],
+      "cta": "Uncover more ancient wonders! Subscribe for daily history."
+    },
+    "audioPath": "output/ancient-city-power-grids/ancient-city-power-grids.mp3",
+    "videoPath": "output/ancient-city-power-grids/ancient-city-power-grids.mp4",
+    "media": [
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 0,
+        "path": "output/ancient-city-power-grids/media/01-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "ancient-city-power-grids:0:752154",
+        "query": "cinematic, 4K, ultra sharp, professional photography. A bustling ancient Roman marketplace at dusk, with lanterns beginning to glow and citizens moving through crowded stalls, soft warm golden light, high angle. a bustling ancient Roman market scene, bathed in warm, golden afternoon light, with citizens in togas and tunics, contrasted with a stark, ancient Indus Valley city scene, geometric mud-brick structures under a strong, clear desert sun.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-24T05:29:06.157Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "archive",
+        "scene": 1,
+        "path": "output/ancient-city-power-grids/media/02-archive.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Rome_(Italy),_Piazza_della_Rotonda,_Hub_of_a_Coach_--_2013_--_10.jpg",
+        "author": "Dietmar Rabich",
+        "provider": "wikimedia",
+        "assetId": "https://commons.wikimedia.org/wiki/File:Rome_(Italy),_Piazza_della_Rotonda,_Hub_of_a_Coach_--_2013_--_10.jpg",
+        "query": "Rome",
+        "retrievedAt": "2026-07-24T05:29:07.183Z",
+        "rightsClass": "attribution-required",
+        "license": "CC BY-SA 4.0",
+        "licenseEvidence": "https://commons.wikimedia.org/wiki/File:Rome_(Italy),_Piazza_della_Rotonda,_Hub_of_a_Coach_--_2013_--_10.jpg"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 2,
+        "path": "output/ancient-city-power-grids/media/03-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "ancient-city-power-grids:2:752154",
+        "query": "cinematic, 4K, ultra sharp, professional photography. A Roman worker's hands and face, pulling a cart of goods through a cobblestone street, sweat on his brow, architectural details in the background, bright clear daylight. a bustling ancient Roman market scene, bathed in warm, golden afternoon light, with citizens in togas and tunics, contrasted with a stark, ancient Indus Valley city scene, geometric mud-brick structures under a strong, clear desert sun.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-24T05:29:51.303Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "archive",
+        "scene": 3,
+        "path": "output/ancient-city-power-grids/media/04-archive.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mohenjo-daro_complex_entrance_gate.JPG",
+        "author": "Saqib Qayyum",
+        "provider": "wikimedia",
+        "assetId": "https://commons.wikimedia.org/wiki/File:Mohenjo-daro_complex_entrance_gate.JPG",
+        "query": "Mohenjo-Daro",
+        "retrievedAt": "2026-07-24T05:29:52.435Z",
+        "rightsClass": "attribution-required",
+        "license": "CC BY-SA 3.0",
+        "licenseEvidence": "https://commons.wikimedia.org/wiki/File:Mohenjo-daro_complex_entrance_gate.JPG"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 4,
+        "path": "output/ancient-city-power-grids/media/05-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "ancient-city-power-grids:4:752154",
+        "query": "cinematic, 4K, ultra sharp, professional photography. An ancient perfectly fitted terracotta sewer pipe unearthed in Mohenjo-Daro, showing its intricate construction, focus on the pipe, dusty light. a bustling ancient Roman market scene, bathed in warm, golden afternoon light, with citizens in togas and tunics, contrasted with a stark, ancient Indus Valley city scene, geometric mud-brick structures under a strong, clear desert sun.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-24T05:30:36.279Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 5,
+        "path": "output/ancient-city-power-grids/media/06-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "ancient-city-power-grids:5:752154",
+        "query": "cinematic, 4K, ultra sharp, professional photography. Inside an excavated Mohenjo-Daro home, revealing a small tiled bathing area with a drainage outlet, looking out to the street grid, clear interior light. a bustling ancient Roman market scene, bathed in warm, golden afternoon light, with citizens in togas and tunics, contrasted with a stark, ancient Indus Valley city scene, geometric mud-brick structures under a strong, clear desert sun.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-24T05:31:21.167Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "video",
+        "source": "gfx",
+        "scene": 6,
+        "path": "output/ancient-city-power-grids/media/07-gfx.mp4",
+        "provider": "neosaniye-renderTemplate",
+        "assetId": "neosaniye-renderTemplate:ancient-city-power-grids:6",
+        "query": "Mohenjo-Daro water system ancient diagram water pressure",
+        "retrievedAt": "2026-07-24T05:31:29.077Z",
+        "rightsClass": "repository-owned",
+        "license": "proprietary-original",
+        "licenseEvidence": "src/media/renderTemplate.js"
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 7,
+        "path": "output/ancient-city-power-grids/media/08-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "ancient-city-power-grids:7:752154",
+        "query": "cinematic, 4K, ultra sharp, professional photography. A single large perfectly circular brick well in Mohenjo-Daro, remarkably preserved, with sunlight reflecting off unseen water deep inside, dramatic light. a bustling ancient Roman market scene, bathed in warm, golden afternoon light, with citizens in togas and tunics, contrasted with a stark, ancient Indus Valley city scene, geometric mud-brick structures under a strong, clear desert sun.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-24T05:32:06.184Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 8,
+        "path": "output/ancient-city-power-grids/media/09-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "ancient-city-power-grids:8:752154",
+        "query": "cinematic, 4K, ultra sharp, professional photography. An archeologist carefully brushing dust from an intricately laid brick street in Mohenjo-Daro, highlighting the precision of the urban planning, golden desert light. a bustling ancient Roman market scene, bathed in warm, golden afternoon light, with citizens in togas and tunics, contrasted with a stark, ancient Indus Valley city scene, geometric mud-brick structures under a strong, clear desert sun.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-24T05:32:51.450Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      },
+      {
+        "type": "photo",
+        "source": "ai",
+        "scene": 9,
+        "path": "output/ancient-city-power-grids/media/10-ai.jpg",
+        "provider": "pollinations",
+        "assetId": "ancient-city-power-grids:9:752154",
+        "query": "cinematic, 4K, ultra sharp, professional photography. The setting sun over the vast empty ruins of Mohenjo-Daro, casting long shadows, a solitary figure stands observing, poignant warm light. a bustling ancient Roman market scene, bathed in warm, golden afternoon light, with citizens in togas and tunics, contrasted with a stark, ancient Indus Valley city scene, geometric mud-brick structures under a strong, clear desert sun.. cinematic documentary photograph, shot on 35mm film, ultra sharp focus on the main subject, crisp fine detail, high dynamic range, natural realistic textures and skin, dramatic practical lighting, subject clearly lit with bright key light, professional warm filmic color grade, shallow depth of field, rule-of-thirds composition with clear focal point, subtle motion blur, imperfect natural framing, vertical 9:16 composition, historically accurate period details, no futuristic or sci-fi elements, no astronauts, no modern devices in historical scenes, no text, no watermark, no subtitles, no distorted faces or hands",
+        "retrievedAt": "2026-07-24T05:33:36.439Z",
+        "rightsClass": "ai-generated",
+        "license": null,
+        "licenseEvidence": null
+      }
+    ],
+    "engine": "edge-tts",
+    "duration": 47.991995,
+    "status": "published",
+    "youtube": {
+      "videoId": "TNY8Rjbuljw",
+      "url": "https://www.youtube.com/shorts/TNY8Rjbuljw",
+      "title": "Ancient City Power: How Mohenjo-Daro Outdid Rome by 2,500 Years #Shorts",
+      "publishedAt": "2026-07-24T05:38:36.411Z"
+    },
+    "publishing": {
+      "attemptId": "054549175cafc3fad88f64e285ab6935",
+      "platforms": {
+        "youtube": {
+          "videoId": "TNY8Rjbuljw",
+          "url": "https://www.youtube.com/shorts/TNY8Rjbuljw",
+          "title": "Ancient City Power: How Mohenjo-Daro Outdid Rome by 2,500 Years #Shorts",
+          "publishedAt": "2026-07-24T05:38:36.411Z"
+        },
+        "instagram": "18110103952812073",
+        "facebook": "27223429414003620"
+      }
+    },
+    "createdAt": "2026-07-24T05:39:17.906Z"
   }
 ]
