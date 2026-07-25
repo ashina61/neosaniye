@@ -27,7 +27,7 @@ test('accepts aligned concrete hook and subscribe CTA', () => {
   assert.equal(r.ok, true);
 });
 
-test('rejects an opening without a promise, question, contradiction, or number', () => {
+test('flags (warns) an opening without a promise, question, contradiction, or number', () => {
   const r = validateViewerFirstScript({
     hook_text: 'Honeybees navigate home',
     cta: 'Subscribe for more nature stories.',
@@ -43,7 +43,9 @@ test('rejects an opening without a promise, question, contradiction, or number',
       image_prompt: 'honeybee navigating flowers in sunlight',
     })),
   });
-  assert.ok(r.failures.includes('HOOK_PROMISE_MISSING'));
+  // RELAXED policy: promise-missing is a warning (never hard-fails production).
+  assert.ok(r.warnings.includes('HOOK_PROMISE_MISSING'));
+  assert.ok(!r.failures.includes('HOOK_PROMISE_MISSING'));
 });
 
 test('pacing flags long opening holds and decorative transition excess', () => {

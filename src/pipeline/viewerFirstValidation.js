@@ -40,7 +40,10 @@ export function validateViewerFirstScript(script = {}) {
   if (String(first.narration || '').split(/\s+/).filter(Boolean).length > 15) failures.push('OPENING_NARRATION_TOO_LONG');
   // RELAXED: HOOK_NARRATION_MISMATCH failures -> warnings
   if (hook && first.narration && !overlaps(hook, first.narration)) warnings.push('HOOK_NARRATION_MISMATCH');
-  if (first.narration && first.image_prompt && !overlaps(first.narration, first.image_prompt)) failures.push('OPENING_VISUAL_NARRATION_MISMATCH');
+  // RELAXED: OPENING_VISUAL_NARRATION_MISMATCH failures -> warnings. Sahne-kırpma (NARRATION_TOO_LONG
+  // son çaresi) ilk sahne anlatımını kısaltınca image_prompt ile kelime örtüşmesi kopabilir; bu görsel
+  // uygunluk sezgisi, olgusal/CTA güvenlik kapısı DEĞİL → prodüksiyonu düşürmemeli.
+  if (first.narration && first.image_prompt && !overlaps(first.narration, first.image_prompt)) warnings.push('OPENING_VISUAL_NARRATION_MISMATCH');
   if (!String(script.finale_text || '').trim() || !String(final.narration || '').trim()) failures.push('PAYOFF_MISSING');
   else if (!PAYOFF.test(final.narration) && !overlaps(hook, `${final.narration} ${script.finale_text}`)) warnings.push('PAYOFF_CLOSURE_WEAK');
   if (!SUBSCRIBE.test(cta)) failures.push('SUBSCRIBE_CTA_MISSING');
