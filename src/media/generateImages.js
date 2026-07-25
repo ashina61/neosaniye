@@ -261,7 +261,7 @@ export async function generateImages(script, opts = {}) {
     // DP real_subject vermediyse: anlatımdaki adlı gerçek varlığı deterministik
     // yakala (Sümela Monastery gibi). Video başına ≤2 arşiv görseli hedefle
     // (çeşitlilik korunsun, QC "hep aynı kaynak" cezasına düşmesin) → ≤3 deneme.
-    if (!done && !scene.real_subject && archiveFbAttempts < 3 && sources.archive < 2) {
+    if (!done && !scene.real_subject && archiveFbAttempts < 4 && sources.archive < 3) {
       const sub = detectRealSubject(scene.narration);
       if (sub) { scene.real_subject = sub; archiveFbAttempts += 1; }
     }

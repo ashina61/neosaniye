@@ -94,7 +94,7 @@ export const config = {
     pexelsFallback: process.env.IMAGE_PEXELS_FALLBACK !== '0',
     // Slayt hissini kırmak için her N. sahne GERÇEK stok video dener
     // (Pexels, dikey). 0 = kapalı. Video bulunamazsa o sahne AI görsel olur.
-    motionEvery: Number(process.env.IMAGE_MOTION_EVERY || 3),
+    motionEvery: Number(process.env.IMAGE_MOTION_EVERY || 2),
   },
   retention: {
     // Yayın öncesi deterministik editoryal kalite kapısı (retentionQC.js).
@@ -303,7 +303,7 @@ export const config = {
     // Yönetmeni bir sahnenin çekirdeği ÇARPICI bir SAYIYSA stat verir; o sahne
     // sayı kartına döner. Kapatmak için VIDEO_GFX=0. Video başına üst sınır.
     gfx: process.env.VIDEO_GFX !== '0',
-    gfxMaxPerVideo: Number(process.env.VIDEO_GFX_MAX || 1),
+    gfxMaxPerVideo: Number(process.env.VIDEO_GFX_MAX || 2),
     // Marka stil sabitleri (ANIMATION_BIBLE.md'nin makine karşılığı) — tüm
     // template'ler bunu okur, böylece üretilen her sahne aynı kanal hissini taşır.
     styleBible: {
@@ -349,7 +349,7 @@ export const config = {
   content: {
     language: process.env.CONTENT_LANGUAGE || 'en', // 'en' | 'tr'
     // A full short story, not a 15-second fragment. Validated at script and TTS stages.
-    minNarrationWords: Number(process.env.CONTENT_MIN_WORDS || 105),
+    minNarrationWords: Number(process.env.CONTENT_MIN_WORDS || 120),
     // Tavan 135→150: yedek LLM'ler (OpenRouter free) Gemini/Groq düşünce daha
     // verbose ~140-147 kelime üretiyordu ve 135 tavanı 5 denemede tutmayıp üretimi
     // sert-fail ediyordu. 150 kelime ≈ 50s (maxDurationSeconds=58 içinde).

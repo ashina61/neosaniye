@@ -722,8 +722,9 @@ export async function generateScript({ maxRetries = 5, avoidTopics: extraAvoid =
       const hookK = new Set(String(script.hook_text || '').toLowerCase().match(/[\p{L}\p{N}]{4,}/gu) || []);
       const closing = `${script.scenes?.at(-1)?.narration || ''} ${script.finale_text || ''}`.toLowerCase();
       const closingK = new Set(closing.match(/[\p{L}\p{N}]{4,}/gu) || []);
-      const loops = [...hookK].some((k) => closingK.has(k)) ||
-        /\b(because|therefore|that'?s why|which is why|the answer|finally|turns out)\b/i.test(closing);
+      // QC ile hizalı: finale HOOK KELİMESİNİ kapatmalı (yalnız "because/finally"
+      // gibi payoff sözcüğü yetmez — o zaman QC yine "loop yok" diyordu).
+      const loops = [...hookK].some((k) => closingK.has(k));
       if (!loops) {
         console.warn('[script] loop zayıf: finale hook\'a bağlanmıyor — yeniden yazım isteniyor.');
         lengthFeedback = `Rewrite the SAME script (same topic, facts, scene count, and word budget) but make the FINAL scene narration and finale_text explicitly ANSWER and echo the hook "${script.hook_text}", so the ending loops straight back into the opening — a curiosity-gap payoff that makes viewers rewatch.`;
