@@ -21,6 +21,7 @@ import { buildSrtFromWords, uploadCaptions } from '../youtube/captions.js';
 import { crossPost } from '../social/meta.js';
 import { preflightCheck } from './preflight.js';
 import { recordPublicationBlock, runRetentionQC, uploadGate } from './retentionQC.js';
+import { assessVisualNarration } from './visualNarrationQC.js';
 import { appendQcHistory, buildQcHistoryEntry } from './qcHistory.js';
 import { getRecentMusic, getRecentAssetIds } from '../lib/firestore.js';
 import { describeMusicTrack } from '../audio/musicSelect.js';
@@ -249,6 +250,26 @@ export async function runPipeline(opts = {}) {
       outPath,
     });
     console.log(`  ${video.width}x${video.height}, ${video.duration.toFixed(1)}s -> ${outPath}`);
+
+    // GÖRSEL ANLATIM KAPISI: "slayt mı, anlatım mı?" Aynı görselin tekrarını ve
+    // semantik anlatım yokluğunu yakalar — mevcut kapıların hiçbiri görmüyordu
+    // (10 sahnenin hepsi aynı kare olan bir video tüm QC'lerden geçmişti).
+    const vnQC = assessVisualNarration({
+      items: media.items,
+      beats: video.semanticBeats || [],
+      motionPlan: video.renderPlan?.motion || [],
+      duration: video.duration,
+    });
+    const m = vnQC.metrics;
+    console.log(
+      `  görsel anlatım: ${m.uniqueVisuals} benzersiz plan / ${m.semanticBeats} semantik kompozisyon ` +
+        `(${Object.entries(m.semanticKinds).map(([k, v]) => `${k}:${v}`).join(' ') || 'yok'}) ` +
+        `hook-olayı:${m.hookEvent ? 'var' : 'YOK'}`,
+    );
+    for (const w of vnQC.warnings) console.warn(`  [görsel-anlatım] uyarı: ${w}`);
+    for (const f of vnQC.failures) console.error(`  [görsel-anlatım] BAŞARISIZ: ${f}`);
+    for (const f of vnQC.fixes) console.error(`  [görsel-anlatım] öneri: ${f}`);
+
     // Müzik lisans künyesi (CC0 manifesti veya eski havuz) — rapor + kayda girer.
     const musicMeta = video.musicTrack
       ? describeMusicTrack(video.musicTrack)

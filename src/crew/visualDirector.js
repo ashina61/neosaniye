@@ -139,16 +139,23 @@ Produce a professional SHOT LIST that makes the video feel like ONE cinematic fi
   AI image is unavoidable for an animal, avoid extreme close-up full-body anatomy: use wide
   environment shots, silhouettes, or the creature small-in-frame instead.
 - image_prompt must be a single concrete filmable shot. Never request text, captions, logos, watermarks.
-- NUMBER CARD (optional, powerful): if exactly one scene's core is a striking NUMBER that is
-  literally stated in its narration, set that scene's "stat" (value/unit/label). It becomes a bold
-  animated count-up card — a strong pattern-interrupt. Use it for AT MOST one scene, never scene 1,
-  and only when the number is genuinely in the narration. Otherwise leave stat null everywhere.
+- NUMBER CARD: whenever a scene's core is a striking NUMBER literally stated in its narration, set
+  that scene's "stat" (value/unit/label). It becomes a bold animated count-up card with a
+  proportional scale bar — a strong pattern-interrupt. Set it on EVERY scene that genuinely has such
+  a number (the renderer caps how many are drawn); only leave stat null when the number is not
+  actually in the narration. Never invent a number.
 - HOW-IT-WORKS CARD (mechanism videos: REQUIRED, not optional): if ANY narration explains how
   something works (splits light, refracts, "the reason", a 2-4 step process), you MUST set "diagram"
-  on the scene that sums up the mechanism — a plain object B-roll is NOT enough to explain a
+  on EVERY scene that describes a mechanism — a plain object B-roll is NOT enough to explain a
   mechanism. title (2-4 words) + 2-4 ultra-short steps (3-5 words each) strictly from the script.
   Keep it readable at a glance: arrows/rays/highlights, never a tiny dense scientific chart.
-  Never scene 1. A video gets AT MOST one special card total: stat OR diagram, never both.
+- NO ONE-CARD LIMIT: earlier versions allowed only ONE special card per video, which forced the other
+  9-10 scenes to be plain "pretty pictures with a slow zoom" — the result read as a slideshow. Mark
+  every scene that genuinely carries a number, a mechanism, a comparison, a place or a behaviour.
+  The renderer decides how many to draw and never crowds the frame.
+- SCENE 1 CARRIES A VISUAL EVENT: the hook must SHOW something happening in the first 3 seconds
+  (a step revealing itself, a number counting, two things contrasted) — not a static beauty shot.
+  Give scene 1 an image_prompt with a clear action already in progress.
 - DEMONSTRATION SCENES: if a scene shows someone USING an object to prove a point, the shot must
   show the RESULT of the action (the object turning, two brightnesses changing, a direction arrow
   appearing) — a person merely holding/looking at the object does not demonstrate anything.

@@ -17,29 +17,29 @@ const WARN = '00C8FF';     // dikkat (amber-ish, BGR)
 const INK = 'FFFFFF';
 
 /** RRGGBB → ASS &HAABBGGRR. */
-function assColor(hex, alpha = '00') {
+export function assColor(hex, alpha = '00') {
   const r = hex.slice(0, 2); const g = hex.slice(2, 4); const b = hex.slice(4, 6);
   return `&H${alpha}${b}${g}${r}&`.toUpperCase();
 }
-function assTime(sec) {
+export function assTime(sec) {
   const s = Math.max(0, sec);
   const h = Math.floor(s / 3600); const m = Math.floor((s % 3600) / 60);
   const ss = (s % 60).toFixed(2).padStart(5, '0');
   return `${h}:${String(m).padStart(2, '0')}:${ss}`;
 }
 /** Merkez (r,r), yarıçap r dairesi (4 kübik bezier). */
-function circlePath(r) {
+export function circlePath(r) {
   const k = +(0.5523 * r).toFixed(1); const R = +r.toFixed(1); const D = +(2 * r).toFixed(1);
   return `m ${D} ${R} b ${D} ${R + k} ${R + k} ${D} ${R} ${D} ` +
     `b ${R - k} ${D} 0 ${R + k} 0 ${R} b 0 ${R - k} ${R - k} 0 ${R} 0 ` +
     `b ${R + k} 0 ${D} ${R - k} ${D} ${R}`;
 }
 /** Yuvarlatılmış dikdörtgen (üst-sol orijin). */
-function roundRect(w, h, r) {
+export function roundRect(w, h, r) {
   return `m ${r} 0 l ${w - r} 0 b ${w} 0 ${w} 0 ${w} ${r} l ${w} ${h - r} ` +
     `b ${w} ${h} ${w} ${h} ${w - r} ${h} l ${r} ${h} b 0 ${h} 0 ${h} 0 ${h - r} l 0 ${r} b 0 0 0 0 ${r} 0`;
 }
-function esc(t) { return String(t || '').replace(/[{}]/g, '').replace(/\\/g, '/').replace(/\n/g, ' '); }
+export function esc(t) { return String(t || '').replace(/[{}]/g, '').replace(/\\/g, '/').replace(/\n/g, ' '); }
 
 const HEADER = (w, h) => `[Script Info]
 ScriptType: v4.00+

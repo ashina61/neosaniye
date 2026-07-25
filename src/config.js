@@ -66,10 +66,19 @@ export const config = {
     stylePrefix:
       process.env.IMAGE_STYLE_PREFIX ||
       'cinematic, 4K, ultra sharp, professional photography',
-    // Sahneler arası tutarlılık için TEK sabit seed kullan (her sahne aynı
-    // seed → aynı karakter/dönem/ışık estetiği). 0 = her sahne farklı seed
-    // (eski davranış, daha çeşitli ama daha az tutarlı).
-    fixedSeed: process.env.IMAGE_FIXED_SEED !== '0',
+    // SABİT SEED ARTIK VARSAYILAN KAPALI. Açıkken (tüm sahneler aynı seed) +
+    // ortak stil metni promptun çoğunu kapladığı için FLUX her sahnede
+    // NEREDEYSE AYNI görseli üretti: gerçek koşuda 39sn'lik videoda ffmpeg
+    // 0.05 eşiğinde bile SIFIR sahne kesmesi buldu (tek resmin üstünde zoom).
+    // Tutarlılık artık seed'le değil, kısa stil paketi + visual_anchor ile
+    // sağlanıyor. Eski davranışı geri istemek için IMAGE_FIXED_SEED=1.
+    fixedSeed: process.env.IMAGE_FIXED_SEED === '1',
+    // Üretilen iki görsel algısal olarak bu eşikten yakınsa (dHash hamming
+    // mesafesi) sahne YENİDEN üretilir (farklı seed + kadraj varyasyonu).
+    // 64 bitlik hash'te <=6 "pratikte aynı kare" demek.
+    minHashDistance: Number(process.env.IMAGE_MIN_HASH_DISTANCE || 10),
+    // Benzersizlik için sahne başına ek üretim denemesi (0 = kapalı).
+    uniquenessRetries: Number(process.env.IMAGE_UNIQUENESS_RETRIES || 2),
     // Her sahne promptuna eklenen ortak sinematik stil (tutarlı "look").
     styleSuffix:
       process.env.IMAGE_STYLE ||
@@ -407,9 +416,21 @@ export const config = {
       sfxVolume: Number(process.env.MOTION_CTA_SFX_VOL || 1.1),
       assetsDir: process.env.MOTION_ASSETS_DIR || 'assets/motion',
     },
-    // GÖRSEL ANLATIM KATMANI (V2): "seslendirilmiş slayt"tan aktif görsel anlatıya.
-    // Her sahneye anlatıyla ilişkili görsel olay (ok/daire/spotlight/etiket/sayaç).
-    // Şimdilik varsayılan KAPALI — render'a bağlanıp gerçek videoda doğrulanınca açılır.
+    // SEMANTİK GÖRSEL ANLATIM (V3) — "cümleyi ekranda gerçekleştir".
+    // V2 dekoratifti (rastgele oval + tek kelimelik etiket) ve slayt hissini
+    // hiç kırmadı; kaldırıldı. V3 anlatımın YAPISINI çıkarıp gösterir:
+    // süreç→numaralı adım+yön oku, karşılaştırma→split-screen, sayı→sayaç+ölçek,
+    // konum→harita paneli, davranış→yön izi. Yapı yoksa hiçbir şey basmaz.
+    // Sessiz izleyici anlatılanı anlayabilsin diye VARSAYILAN AÇIK.
+    semanticVisuals: {
+      enabled: process.env.SEMANTIC_VISUALS !== '0',
+      // Bir videoda en fazla kaç semantik kompozisyon (kalabalık olmasın).
+      maxPerVideo: Number(process.env.SEMANTIC_MAX_PER_VIDEO || 6),
+      // İlk 3 saniyede semantik bir olay ZORUNLU mu (hook gücü).
+      requireHookEvent: process.env.SEMANTIC_HOOK_EVENT !== '0',
+      subtitleSafeArea: { top: 0.08, bottom: 0.25, left: 0.06, right: 0.06 },
+    },
+    // ESKİ V2 dekoratif katman — varsayılan KAPALI, geri dönüş için korunuyor.
     visualStorytelling: {
       enabled: process.env.VISUAL_STORYTELLING === '1',
       minActivityScore: Number(process.env.VS_MIN_ACTIVITY || 70),

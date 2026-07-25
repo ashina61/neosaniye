@@ -10,8 +10,8 @@ import { makeMusicBed } from '../audio/makeMusic.js';
 import { normalizeSfxPlan } from '../audio/sfxPlan.js';
 import { selectMusic } from '../audio/musicSelect.js';
 import { selectSceneMotion, validateMotionPlan } from './motionPlan.js';
-import { directVideo } from '../visual/visualDirector.js';
-import { buildEffectsAss } from '../visual/effects.js';
+import { directSemantics } from '../visual/semanticDirector.js';
+import { buildSemanticAss } from '../visual/semanticShots.js';
 
 const run = promisify(execFile);
 
@@ -1180,27 +1180,42 @@ export async function renderVideo(job, opts = {}) {
   // Altyazı + hook (aynı ASS dosyasında; hook otomatik satır kaydırır, sığar).
   const assFilter = existsSync(fontsDir) ? `ass=subs.ass:fontsdir=${fontsDir}` : 'ass=subs.ass';
 
-  // GÖRSEL ANLATIM KATMANI (V2, flag'li): sahne metnini analiz edip anlatıyla
-  // ilişkili güvenli semantik efektler (etiket/sayaç/spotlight) üretir → slayt
-  // hissini kırar. Altyazının ALTINDA (safe-area'ya girmez). Kapalıysa/hata olsa
-  // render birebir eski davranış (üretimi bozmaz).
+  // SEMANTİK GÖRSEL ANLATIM (V3): anlatım cümlesinin YAPISINI çıkarıp ekranda
+  // gerçekleştirir (süreç→adım+ok, karşılaştırma→split, sayı→sayaç+ölçek,
+  // konum→harita, davranış→yön izi). Yapı yoksa hiçbir şey basılmaz — eski V2
+  // dekoratif oval/etiket katmanı bu yüzden kaldırıldı. Altyazı safe-area'sına
+  // girmez; hata olursa render eski davranışa döner (üretim kırılmaz).
   let effectsFilter = '';
-  const vsCfg = config.motion?.visualStorytelling;
-  if (vsCfg?.enabled && canonicalItems && Array.isArray(job.scenes)) {
+  let semanticBeatsUsed = [];
+  const semCfg = config.motion?.semanticVisuals;
+  if (semCfg?.enabled && canonicalItems && Array.isArray(job.scenes)) {
     try {
       const vtl = canonicalItems.map((it, i) => ({
         narration: job.scenes[it.scene]?.narration || '',
         index: i, start: it.start, end: it.end, part: media[i]?.part,
       }));
-      const { effects } = directVideo(vtl, vsCfg);
-      const ass = buildEffectsAss(effects, { width, height, cfg: vsCfg });
+      let { beats } = directSemantics(vtl);
+      // Kalabalık olmasın: en bilgilendirici tipleri koru, üst sınırı uygula.
+      const max = Math.max(1, semCfg.maxPerVideo || 6);
+      if (beats.length > max) {
+        const rank = { process: 0, number: 1, compare: 2, location: 3, behavior: 4 };
+        beats = [...beats]
+          .sort((a, b) => (rank[a.kind] ?? 9) - (rank[b.kind] ?? 9) || a.start - b.start)
+          .slice(0, max)
+          .sort((a, b) => a.start - b.start);
+      }
+      const ass = buildSemanticAss(beats, { width, height, cfg: semCfg });
       if (ass) {
-        await writeFile(path.join(workDir, 'effects.ass'), ass);
-        effectsFilter = existsSync(fontsDir) ? `ass=effects.ass:fontsdir=${fontsDir}` : 'ass=effects.ass';
-        console.log(`[visual] görsel anlatım katmanı: ${effects.length} efekt`);
+        await writeFile(path.join(workDir, 'semantic.ass'), ass);
+        effectsFilter = existsSync(fontsDir) ? `ass=semantic.ass:fontsdir=${fontsDir}` : 'ass=semantic.ass';
+        const kinds = beats.map((b) => b.kind).join(', ');
+        console.log(`[visual] semantik anlatım: ${beats.length} kompozisyon (${kinds})`);
+        semanticBeatsUsed = beats.map((b) => ({ kind: b.kind, index: b.index, start: b.start }));
+      } else {
+        console.log('[visual] semantik yapı bulunamadı — ekran temiz bırakıldı.');
       }
     } catch (err) {
-      console.warn(`[visual] efekt katmanı atlandı: ${String(err.message).slice(0, 90)}`);
+      console.warn(`[visual] semantik katman atlandı: ${String(err.message).slice(0, 90)}`);
     }
   }
 
@@ -1277,6 +1292,8 @@ export async function renderVideo(job, opts = {}) {
     // fiilen miks edildiği) — render sonrası çıktı doğrulaması bunları ölçer.
     sfxCues: audioInfo?.sfxCues || [],
     timeline: job.timeline || null,
+    // Ekranda GERÇEKTEN çizilen semantik kompozisyonlar (görsel anlatım QC'si bunu ölçer).
+    semanticBeats: semanticBeatsUsed,
     renderPlan: {
       expectedSceneCount: N,
       sceneBoundaries: canonicalItems ? canonicalItems.slice(0, -1).map((x) => x.end) : [],

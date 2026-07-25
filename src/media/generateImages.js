@@ -9,8 +9,30 @@ import { fetchOneForKeywords, fetchStockVideoForKeywords } from './fetchMedia.js
 import { renderStatCard, isUsableStat, renderStepsCard, isUsableDiagram } from './renderTemplate.js';
 import { fetchArchiveImage } from './fetchArchive.js';
 import { isAssetRelevant } from './semanticRelevance.js';
+import { perceptualHash, isTooSimilar } from './imageHash.js';
 
 const run = promisify(execFile);
+
+/**
+ * KADRAJ ROTASYONU — her sahneye FARKLI bir kompozisyon dayatır.
+ * Sahne promptları tek başına yeterince ayrışmıyor (hepsi aynı konuyu anlatır);
+ * bu liste sırayla uygulanarak her 3sn'lik bloğun ayrı bir görsel kompozisyon
+ * almasını garantiler. Gerçek koşuda 14 karenin 14'ü aynı kadrajdı.
+ */
+const SHOT_VARIATIONS = [
+  'extreme wide establishing shot, subject small in frame, vast environment',
+  'tight macro close-up, shallow depth of field, texture filling the frame',
+  'low angle looking upward, dramatic perspective',
+  'overhead top-down bird view, flat lay geometry',
+  'medium shot from the side, profile silhouette against light',
+  'over-the-shoulder point-of-view, foreground element framing the subject',
+  'extreme close-up detail insert, single isolated element',
+  'high angle wide shot, diagonal composition, strong leading lines',
+  'backlit rim-light shot, subject as dark shape against bright background',
+  'dutch tilted angle, off-center subject, negative space on one side',
+  'ground level worm-eye view, foreground blur in front of subject',
+  'symmetrical centered composition, subject dead center, mirrored surroundings',
+];
 
 /**
  * Faz 3 (yeni) — Sahne başına AI görsel üretimi.
@@ -202,19 +224,26 @@ export async function generateImages(script, opts = {}) {
     style === 'animated' ? config.images.animatedStyleSuffix : config.images.styleSuffix;
   // Ortak kalite prefix'i (en yüksek öncelikli stil sinyali, promptun başında).
   const stylePrefix = String(config.images.stylePrefix || '').trim();
-  // GÖRSEL TUTARLILIK: sabit seed modunda TÜM sahneler aynı seed'i kullanır
-  // (aynı estetik/karakter/dönem/ışık). Kapalıysa her sahne farklı seed.
-  const useFixedSeed = config.images.fixedSeed !== false;
+  // GÖRSEL TUTARLILIK: sabit seed modunda TÜM sahneler aynı seed'i kullanır.
+  // ARTIK VARSAYILAN KAPALI — açıkken her sahne aynı görseli üretti (bkz.
+  // config.images.fixedSeed yorumu). Tutarlılığı anchor + stil paketi taşır.
+  const useFixedSeed = config.images.fixedSeed === true;
+  // Üretilen AI karelerinin algısal parmak izleri (aynı kare tekrarını yakalar).
+  const aiHashes = [];
 
   for (let i = 0; i < scenes.length; i += 1) {
     const scene = scenes[i];
     const idx = String(i + 1).padStart(2, '0');
-    const prompt = [stylePrefix, scene.image_prompt, anchor, styleSuffix]
+    // PROMPT SIRASI KRİTİK: üreticiler baştaki kelimelere daha çok ağırlık verir.
+    // Eskiden sıra [ortak stil, sahne, anchor, ortak stil] idi → sahneyi ayıran
+    // tek parça devasa ortak metnin içinde boğuluyor, her sahne aynı çıkıyordu.
+    // Artık SAHNE ÖNCE, ardından kadraj varyasyonu, sonra ortak stil.
+    const framing = SHOT_VARIATIONS[i % SHOT_VARIATIONS.length];
+    const prompt = [scene.image_prompt, framing, anchor, stylePrefix, styleSuffix]
       .filter(Boolean)
       .join('. ');
-    // Sahne seed'i: sabit modda tek video seed'i (tutarlılık); değilse eski
-    // sahne-başı türetme (çeşitlilik).
-    const sceneSeed = useFixedSeed ? videoSeed : videoSeed + i * 997;
+    // Sahne seed'i: her sahne FARKLI (benzersiz kompozisyon). Sabit mod opt-in.
+    const sceneSeed = useFixedSeed ? videoSeed : videoSeed + i * 9973;
     let done = null;
 
     // 0.gfx) MOTION GRAPHICS kartları: sayı sayacı (stat) veya "how it works"
@@ -313,29 +342,60 @@ export async function generateImages(script, opts = {}) {
     // 1) AI görsel. Gemini kota dolarsa kalan sahnelerde denemez; Pollinations
     //    her sahnede tekrar dener (geçici hatalarda o sahne yedeğe düşer).
     if (!providerDead) {
-      for (let attempt = 0; attempt <= config.images.retries && !done; attempt += 1) {
-        try {
-          if (provider === 'pollinations') {
-            const dest = path.join(mediaDir, `${idx}-ai.jpg`);
-            await fetchPollinations(prompt, dest, { width, height, seed: sceneSeed });
-            done = { path: dest, type: 'photo', scene: i, source: 'ai', provider: 'pollinations', assetId: `${script.normalizedTopic}:${i}:${sceneSeed}`, query: prompt, model: config.images.pollinationsModel, generatedAt: new Date().toISOString(), rightsClass: 'ai-generated', license: null, licenseEvidence: null };
-          } else if (provider === 'gemini') {
-            const dest = path.join(mediaDir, `${idx}-ai.png`);
-            const buf = await generateOne(geminiAI, prompt);
-            await writeFile(dest, buf);
-            done = { path: dest, type: 'photo', scene: i, source: 'ai', provider: 'gemini', assetId: `${script.normalizedTopic}:${i}:${videoSeed}`, query: prompt, model: config.images.model, generatedAt: new Date().toISOString(), rightsClass: 'ai-generated', license: null, licenseEvidence: null };
-          }
-        } catch (err) {
-          const msg = String(err?.message || err);
-          if (provider === 'gemini' && /quota|RESOURCE_EXHAUSTED|429/i.test(msg)) {
-            providerDead = true;
-            console.warn(`[img] sahne ${idx}: Gemini kotası doldu, yedeklere geçiliyor.`);
-            break;
-          }
-          if (attempt === config.images.retries) {
-            console.warn(`[img] sahne ${idx}: AI görsel başarısız (${msg.slice(0, 120)}).`);
+      // BENZERSİZLİK KAPISI: üretilen kare önceki sahnelerden birine algısal
+      // olarak çok benziyorsa (dHash) at ve farklı seed + kadraj zorlamasıyla
+      // yeniden üret. Bu kapı olmadan FLUX aynı konuda hep aynı kareyi verdi.
+      const uniqTries = Math.max(0, config.images.uniquenessRetries || 0);
+      for (let uniq = 0; uniq <= uniqTries && !done; uniq += 1) {
+        // Her benzersizlik turunda seed'i belirgin kaydır + ek kadraj direktifi.
+        const trySeed = sceneSeed + uniq * 104729;
+        const tryPrompt = uniq === 0
+          ? prompt
+          : [prompt, SHOT_VARIATIONS[(i + uniq * 5) % SHOT_VARIATIONS.length],
+            'completely different composition, different angle, different framing'].join('. ');
+        let candidate = null;
+
+        for (let attempt = 0; attempt <= config.images.retries && !candidate; attempt += 1) {
+          try {
+            if (provider === 'pollinations') {
+              const dest = path.join(mediaDir, `${idx}-ai.jpg`);
+              await fetchPollinations(tryPrompt, dest, { width, height, seed: trySeed });
+              candidate = { path: dest, type: 'photo', scene: i, source: 'ai', provider: 'pollinations', assetId: `${script.normalizedTopic}:${i}:${trySeed}`, query: tryPrompt, model: config.images.pollinationsModel, generatedAt: new Date().toISOString(), rightsClass: 'ai-generated', license: null, licenseEvidence: null };
+            } else if (provider === 'gemini') {
+              const dest = path.join(mediaDir, `${idx}-ai.png`);
+              const buf = await generateOne(geminiAI, tryPrompt);
+              await writeFile(dest, buf);
+              candidate = { path: dest, type: 'photo', scene: i, source: 'ai', provider: 'gemini', assetId: `${script.normalizedTopic}:${i}:${trySeed}`, query: tryPrompt, model: config.images.model, generatedAt: new Date().toISOString(), rightsClass: 'ai-generated', license: null, licenseEvidence: null };
+            }
+          } catch (err) {
+            const msg = String(err?.message || err);
+            if (provider === 'gemini' && /quota|RESOURCE_EXHAUSTED|429/i.test(msg)) {
+              providerDead = true;
+              console.warn(`[img] sahne ${idx}: Gemini kotası doldu, yedeklere geçiliyor.`);
+              break;
+            }
+            if (attempt === config.images.retries) {
+              console.warn(`[img] sahne ${idx}: AI görsel başarısız (${msg.slice(0, 120)}).`);
+            }
           }
         }
+        if (providerDead) break;
+        if (!candidate) break; // üretim tamamen başarısız → yedek zincirine düş
+
+        const hash = await perceptualHash(candidate.path);
+        const { tooSimilar, nearest } = isTooSimilar(hash, aiHashes, config.images.minHashDistance);
+        // Son turda benzer bile olsa kabul et (hiç görselsiz kalmaktan iyi).
+        if (tooSimilar && uniq < uniqTries) {
+          console.warn(`[img] sahne ${idx}: önceki kareye çok benziyor (mesafe ${nearest}) — yeniden üretiliyor.`);
+          continue;
+        }
+        if (tooSimilar) {
+          console.warn(`[img] sahne ${idx}: benzersizlik sağlanamadı (mesafe ${nearest}), kabul edildi.`);
+        }
+        if (hash != null) aiHashes.push(hash);
+        candidate.visualHash = hash == null ? null : hash.toString(16);
+        candidate.hashDistance = nearest;
+        done = candidate;
       }
     }
 
