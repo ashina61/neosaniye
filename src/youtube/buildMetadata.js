@@ -61,11 +61,16 @@ function finalize(meta, script) {
   let title = softenAdText((meta.title || script.topic || '').trim(), 'başlık').slice(0, 95);
   if (!/#shorts/i.test(title) && title.length <= 88) title += ' #Shorts';
 
-  const hashtags = (meta.tags || [])
+  // Kategori hashtag'i (tutarlı niş etiketi → Shorts hashtag keşfi) + en güçlü
+  // 5 tag hashtag'i, deduplike.
+  const catTag = script.category
+    ? '#' + String(script.category).replace(/[^a-z0-9]/gi, '').toLowerCase()
+    : '';
+  const tagHashes = (meta.tags || [])
     .slice(0, 5)
     .map((t) => '#' + t.replace(/[^a-z0-9]/gi, ''))
-    .filter((t) => t.length > 1)
-    .join(' ');
+    .filter((t) => t.length > 1);
+  const hashtags = [...new Set([catTag, ...tagHashes].filter((t) => t.length > 1))].join(' ');
   let description = (meta.description || '').trim();
   description += `\n\n${hashtags} #Shorts`.trimEnd();
   description = description.slice(0, 4900); // YouTube limiti 5000

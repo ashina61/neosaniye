@@ -552,9 +552,14 @@ export async function runPipeline(opts = {}) {
       )];
       if (credits.length) meta.description += '\n\n' + credits.join('\n');
       await updatePublishingPlatform(publishingAttemptId, 'youtube', 'uploading');
+      // ÖZEL KAPAK: hook karesini çıkar (neon başlık + çarpıcı görsel) → keşif CTR'si.
+      // ~1.0s: hook yazısı tam oturmuş, CTA/outro yok. best-effort.
+      const coverPath = path.join(workDir, 'cover.jpg');
+      await execFileAsync('ffmpeg', ['-y', '-ss', '1.0', '-i', outPath, '-frames:v', '1',
+        '-q:v', '2', coverPath], { maxBuffer: 10 * 1024 * 1024 }).catch(() => {});
       let res = null;
       try {
-        res = await uploadVideo({ videoPath: outPath, ...meta });
+        res = await uploadVideo({ videoPath: outPath, ...meta, coverPath });
         await updatePublishingPlatform(publishingAttemptId, 'youtube', 'published', { remoteId: res.videoId });
         youtube = { ...res, title: meta.title, publishedAt: new Date().toISOString() };
         console.log(`  YouTube yüklendi: ${res.url}`);

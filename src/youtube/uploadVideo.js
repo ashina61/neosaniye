@@ -33,6 +33,7 @@ export async function uploadVideo({
   tags,
   privacyStatus = config.youtube.privacyStatus,
   categoryId = config.youtube.categoryId,
+  coverPath = null,
 }) {
   if (!videoPath || !fs.existsSync(videoPath)) {
     throw new Error(`Video bulunamadı: ${videoPath}`);
@@ -63,5 +64,20 @@ export async function uploadVideo({
   });
 
   const videoId = res.data.id;
-  return { videoId, url: `https://www.youtube.com/shorts/${videoId}` };
+
+  // ÖZEL KAPAK (best-effort): Shorts kanal sayfası / arama / keşif'te görünen
+  // kapak karesi — CTR'yi artırır (swipe feed'de görünmez ama keşif view'inin
+  // kaynağı). thumbnails.set kanal DOĞRULAMASI ister; doğrulanmamışsa hata verir
+  // → upload'ı BOZMADAN atlanır, kanal doğrulanınca otomatik aktifleşir.
+  let thumbnailSet = false;
+  if (coverPath && fs.existsSync(coverPath)) {
+    try {
+      await youtube.thumbnails.set({ videoId, media: { body: fs.createReadStream(coverPath) } });
+      thumbnailSet = true;
+    } catch (err) {
+      console.warn(`  [kapak] thumbnail set edilemedi (kanal doğrulaması gerekebilir): ${String(err.message || err).slice(0, 90)}`);
+    }
+  }
+
+  return { videoId, url: `https://www.youtube.com/shorts/${videoId}`, thumbnailSet };
 }
