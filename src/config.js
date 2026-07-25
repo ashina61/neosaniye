@@ -6,25 +6,16 @@ export const config = {
   openrouter: {
     apiKey: process.env.OPENROUTER_API_KEY,
     model: process.env.OPENROUTER_MODEL || 'openrouter/free',
-    // DAYANIKLILIK: tek "boş dönen" auto-router yerine birden çok ücretsiz modeli
-    // SIRAYLA dene. Biri boş/404/hata → sıradakine geç (breaker sadece 402/429/503'te).
-    // openrouter/free ilk (mevcut davranış); yanlış model ID zararsızca atlanır.
-    //
-    // SPONSOR ÇEŞİTLİLİĞİ: OpenRouter'daki ücretsiz modeller SPONSOR kapasitesine
-    // bağlı; bir sponsor kapasiteyi çekince o model geçici HTTP 404 döner (25 Tem
-    // run'ı: llama-3.3:free VE deepseek-v3:free aynı anda 404 → tüm zincir çöktü,
-    // Gemini kota + Groq 429 ile birleşince SCRIPT_PROVIDER_UNAVAILABLE). Çözüm:
-    // FARKLI sağlayıcı ailelerinden geniş bir liste — biri düşse ötekiler ayakta.
-    models: (process.env.OPENROUTER_MODELS || [
-      'openrouter/free',                                  // auto-router (mevcut davranış)
-      'deepseek/deepseek-chat-v3-0324:free',              // DeepSeek
-      'meta-llama/llama-3.3-70b-instruct:free',           // Meta
-      'qwen/qwen-2.5-72b-instruct:free',                  // Alibaba/Qwen
-      'google/gemini-2.0-flash-exp:free',                 // Google (OpenRouter üstünden — ayrı kota)
-      'mistralai/mistral-small-3.1-24b-instruct:free',    // Mistral
-      'nvidia/llama-3.1-nemotron-70b-instruct:free',      // NVIDIA
-      'deepseek/deepseek-r1:free',                         // DeepSeek R1 (son çare, yavaş ama güçlü)
-    ].join(','))
+    // DAYANIKLILIK: openrouter/free = AUTO-ROUTER; OpenRouter o an ayakta olan
+    // ücretsiz modele (ör. google/gemma-4-*:free) kendi yönlendirir ve KENDİNİ
+    // ONARIR. Sabit "model:free" slug'ları yazmak KÖKTEN kırılgan: OpenRouter bu
+    // slug'ları sürekli sürümlüyor/emekliye ayırıyor → 25 Tem run'ında elle yazılan
+    // 7 :free slug'ın HEPSİ 15ms'de HTTP 404 döndü, oysa openrouter/free çalışıp
+    // gemma-4'e yönlendi. Ders: auto-router'a güven, gerçek dayanıklılık aşağıda —
+    // kısa/kusurlu script'i reddedip sağlayıcı yakmak yerine kabul et (generateScript
+    // graceful degradation + generateAudio süre kurtarma). Ekstra model denemek
+    // istersen OPENROUTER_MODELS ile ver (virgülle), ama :free slug'lar oynak.
+    models: (process.env.OPENROUTER_MODELS || 'openrouter/free')
       .split(',').map((m) => m.trim()).filter(Boolean),
     baseUrl: 'https://openrouter.ai/api/v1',
     // Free-model routing can spend a while waiting for capacity. Thirty seconds

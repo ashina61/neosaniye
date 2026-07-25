@@ -658,6 +658,21 @@ export async function generateScript({ maxRetries = 5, avoidTopics: extraAvoid =
     // yoksa fonksiyon 135 default'unu kullanıp config'i (150) yok sayar.
     const lengthOpts = { minWords: config.content.minNarrationWords, maxWords: config.content.maxNarrationWords };
     const length = evaluateNarrationLength(script.scenes, lengthOpts);
+    // SÜRE KURTARMA (25 Tem dersi): Gemini kota + Groq 429 olunca zayıf yedek
+    // sağlayıcı hedefin (120) biraz altında GERÇEK bir script verebiliyor (o run:
+    // 92 kelime). Eskiden bunu "TOO_SHORT" diye reddedip yeniden yazdırıyorduk →
+    // o yeniden-yazım çürük sağlayıcı zincirine düşüp SCRIPT_PROVIDER_UNAVAILABLE
+    // ile TÜM run'ı çöpe atıyordu (elde ÇALIŞAN script varken sıfır video). Artık
+    // kelime SALVAGE_FLOOR'un (~%70) üstündeyse gerçek script'i KABUL ediyoruz;
+    // süreyi generateAudio yavaş-yeniden-sentezle 35s kapısının üstüne çekiyor.
+    // Böylece kısa script AUDIO_TOO_SHORT'a taşınmıyor. Sadece taban-altı (çok
+    // kısa, kurtarılamaz) durumda yeniden yazım/başarısızlık.
+    const salvageFloor = Math.round(config.content.minNarrationWords * 0.70);
+    if (length.code === 'NARRATION_TOO_SHORT' && length.words >= salvageFloor) {
+      console.warn(`[script] ${length.words} kelime — hedefin altında ama ${salvageFloor}+ tabanında: KABUL (yeniden yazıp sağlayıcı yakmak yerine; süreyi TTS kurtaracak).`);
+      length.ok = true;
+      script.shortNarration = true; // generateAudio süre kurtarma sinyali
+    }
     if (!length.ok && attempt < maxRetries) {
       console.warn(`[script] ${length.words} kelime — ${length.code}, yeniden yazım isteniyor.`);
       lengthFeedback = buildNarrationLengthRepair(script, length, config.content);
@@ -665,8 +680,8 @@ export async function generateScript({ maxRetries = 5, avoidTopics: extraAvoid =
     }
     if (!length.ok) {
       // ÇOK UZUN her zaman kırpılabilir → üretimi sert-fail etme, sondan sahne
-      // atarak (finale + ilk 4 sahne korunur) bütçeye in. ÇOK KISA salvageable
-      // değildir (gerçek içerik gerekir) → yalnızca o durumda fail.
+      // atarak (finale + ilk 4 sahne korunur) bütçeye in. ÇOK KISA (taban-altı)
+      // salvageable değildir (gerçek içerik gerekir) → yalnızca o durumda fail.
       if (length.code === 'NARRATION_TOO_LONG' && Array.isArray(script.scenes) && script.scenes.length > 5) {
         while (script.scenes.length > 5 &&
           evaluateNarrationLength(script.scenes, lengthOpts).words > config.content.maxNarrationWords) {

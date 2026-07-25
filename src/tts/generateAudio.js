@@ -126,6 +126,35 @@ export async function generateAudio(script, opts = {}) {
     }
   }
 
+  // SÜRE KURTARMA: Kısa script (bozuk-sağlayıcı günü; generateScript hedefin
+  // altında gerçek bir script'i graceful kabul etti) + hızlı tempo (+8%/+18%)
+  // birleşince ölçülen ses 35s AUDIO_TOO_SHORT kapısının ALTINA düşüp tüm run'ı
+  // çöpe atabiliyordu. Ölçüp gerekirse BİR KEZ daha yavaş hızla yeniden sentezle:
+  // kelimeyi değiştirmeden süreyi hedefe çek. Lineer hız modeli (süre ∝ 1/faktör):
+  // yeni_faktör = mevcut_faktör × (ölçülen / hedef). Sadece edge-tts'te ve sadece
+  // yavaşlatarak; başarısızsa mevcut sesi koru (asla sert-fail etme).
+  let firstProbe = await probeDuration(result.audioPath).catch(() => 0);
+  const minSec = config.content?.minDurationSeconds || 35;
+  if (result.engine === 'edge-tts' && firstProbe > 0 && firstProbe < minSec + 2) {
+    const targetSec = minSec + 4; // 35s kapısının rahat üstü
+    const curPct = Number.parseInt(String(topicRate).replace('%', ''), 10) || 0;
+    const curFactor = 1 + curPct / 100;
+    let newFactor = curFactor * (firstProbe / targetSec);
+    newFactor = Math.max(0.7, Math.min(curFactor, newFactor)); // yalnız yavaşlat, dibe vurma
+    const newPct = Math.round((newFactor - 1) * 100);
+    const slowRate = `${newPct >= 0 ? '+' : ''}${newPct}%`;
+    if (slowRate !== topicRate) {
+      console.warn(`[tts] ölçülen ${firstProbe.toFixed(1)}s < ${minSec}s eşiği — ${topicRate}→${slowRate} ile yeniden sentez (süre kurtarma).`);
+      try {
+        const slow = await synthesizeEdge(text, { ...base, rate: slowRate });
+        const slowDur = await probeDuration(slow.audioPath).catch(() => 0);
+        if (slowDur > firstProbe) { result = slow; firstProbe = slowDur; }
+      } catch (e) {
+        console.warn(`[tts] yavaş yeniden sentez başarısız, mevcut ses korunuyor: ${String(e.stderr || e.message || '').split('\n')[0]}`);
+      }
+    }
+  }
+
   // Piper yolunda kelime zamanlaması yok -> whisper ile çıkar.
   if (!result.wordTimings) {
     result.wordTimings = await alignWords(result.audioPath).catch((err) => {
@@ -136,7 +165,7 @@ export async function generateAudio(script, opts = {}) {
     });
   }
 
-  const measuredDuration = await probeDuration(result.audioPath).catch(() => 0);
+  const measuredDuration = firstProbe || await probeDuration(result.audioPath).catch(() => 0);
   const durationEstimate = measuredDuration || (result.wordTimings.length
     ? result.wordTimings[result.wordTimings.length - 1].end
     : 0);
