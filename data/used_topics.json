@@ -562,5 +562,11 @@
     "normalizedTopic": "bat-echolocation-vs-owl-silent-flight",
     "createdAt": "2026-07-24T21:28:04.424Z",
     "videoId": "bat-echolocation-vs-owl-silent-flight-1784928484419"
+  },
+  "spider-silk-strength": {
+    "topic": "Spider Silk Strength",
+    "normalizedTopic": "spider-silk-strength",
+    "createdAt": "2026-07-25T05:35:30.834Z",
+    "videoId": "spider-silk-strength-1784957730827"
   }
 }
