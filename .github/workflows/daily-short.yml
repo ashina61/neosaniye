@@ -23,6 +23,10 @@ on:
         type: choice
         options: [manual, "15:00", "20:00", "02:00"]
         default: manual
+      visual_fx:
+        description: "Görsel anlatım katmanı (V2: etiket/sayaç/spotlight) — test için aç"
+        type: boolean
+        default: false
   schedule:
     # 14 GÜNLÜK ABD-İZLEYİCİ DENEYİ (us-audience-3-slots-v1): günde 3 sabit
     # slot — 15:00 / 20:00 / 02:00 UTC (TR yaz: 18:00 / 23:00 / 05:00).
@@ -90,6 +94,8 @@ jobs:
           # İkinci stok kaynağı + ambiyans (opsiyonel; yoksa özellik atlanır).
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
           FREESOUND_API_KEY: ${{ secrets.FREESOUND_API_KEY }}
+          # Görsel anlatım katmanı (V2) — manuel run'da 'visual_fx' ile açılır; cron'da kapalı.
+          VISUAL_STORYTELLING: ${{ inputs.visual_fx && '1' || '0' }}
           # Görsel stil zorlaması (manuel run'da seçilir; cron'da sistem karar verir).
           VIDEO_STYLE: ${{ inputs.style == 'auto' && '' || inputs.style }}
           # İçerik formatı zorlaması (test için; auto = rastgele rotasyon).
