@@ -278,3 +278,53 @@ test('odak halkası KAYDIRILMAZ: sığmıyorsa hiç çizilmez', () => {
   assert.deepEqual(mk(0.93), [], 'altyazı bandındaki nesne için halka çizildi');
   assert.deepEqual(mk(0.02), [], 'logo bandındaki nesne için halka çizildi');
 });
+
+// ---------------- HAREKET DİZİSİ ----------------
+test('dizi SADECE davranış sahnelerinde tetiklenir', () => {
+  assert.equal(classifyBeat('The cleaner fish signals danger and the school turns away').kind, 'behavior');
+  // Sayı/konum/dolgu sahneleri dizi almamalı (boşuna API + ritim bozulması).
+  assert.notEqual(classifyBeat('Over 4000 species live inside this reef')?.kind, 'behavior');
+  assert.equal(classifyBeat('It was an ordinary afternoon'), null);
+});
+
+test('süreklilik bandı: değişmeyen ve kopan kare elenir', () => {
+  // Dizinin dayanağı "aynı seed → aynı sahne, değişen eylem" varsayımıdır.
+  // Varsayım doğrulanamadığı için ÖLÇÜLÜR: bandın dışı atılır.
+  const MIN = 3; const MAX = 26;
+  const accept = (d) => d >= MIN && d <= MAX;
+  assert.equal(accept(0), false, 'birebir aynı kare kabul edildi (kesme bir şey göstermez)');
+  assert.equal(accept(1), false, 'gözle görülür değişim yokken kabul edildi');
+  assert.equal(accept(8), true, 'sürekli+değişmiş kare reddedildi');
+  assert.equal(accept(20), true, 'sürekli+değişmiş kare reddedildi');
+  assert.equal(accept(40), false, 'tamamen farklı sahne kabul edildi (kopukluk)');
+});
+
+test('dizi kareleri kamera hareketi ALMAZ (hareket kesmeden gelir)', async () => {
+  const { selectSceneMotion } = await import('../src/video/motionPlan.js');
+  const m = selectSceneMotion({ narration: 'fish turns away' }, { type: 'photo', sequence: true }, { index: 3 });
+  assert.equal(m.type, 'static-hold', `dizi karesine kamera hareketi verildi: ${m.type}`);
+  assert.equal(m.maxZoom, 1);
+  // Dizi olmayan sahne normal kamera hareketini almaya devam etmeli.
+  const n = selectSceneMotion({ narration: 'a wide reef' }, { type: 'photo' }, { index: 3 });
+  assert.notEqual(n.type, 'static-hold');
+});
+
+test('QC: dizi kareleri KOPYA sayılmaz (doğru davranış cezalandırılmaz)', () => {
+  // 10 benzersiz sahne + bir sahnenin 2 ek dizi karesi (kasıtlı benzer).
+  const items = Array.from({ length: 10 }, (_, i) => ({
+    visualHash: ((BigInt(i) * 0x9E3779B97F4A7C15n) % (2n ** 64n)).toString(16),
+    assetId: `s${i}`,
+  }));
+  const dupHash = items[4].visualHash; // diziler baz kareye çok benzer
+  items.push({ visualHash: dupHash, assetId: 's4#seq1', sequence: true, part: 1 });
+  items.push({ visualHash: dupHash, assetId: 's4#seq2', sequence: true, part: 2 });
+  const beats = [
+    { kind: 'process', index: 0, start: 1 }, { kind: 'number', index: 2, start: 8 },
+    { kind: 'behavior', index: 4, start: 15 }, { kind: 'location', index: 6, start: 22 },
+  ];
+  const r = assessVisualNarration({ items, beats, motionPlan: new Array(10).fill({}), duration: 39 });
+  assert.equal(r.metrics.sequenceFrames, 2);
+  assert.equal(r.metrics.duplicatePairs, 0, 'dizi kareleri kopya sayıldı');
+  assert.equal(r.metrics.uniqueVisuals, 10, 'dizi kareleri benzersiz sayımını bozdu');
+  assert.equal(r.passed, true, JSON.stringify(r.failures));
+});

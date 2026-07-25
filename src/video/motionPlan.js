@@ -2,6 +2,10 @@ const MOTIONS = ['slow-push-in', 'slow-pull-out', 'pan-left-to-right', 'pan-righ
 
 export function selectSceneMotion(scene = {}, item = {}, { previous = [], index = 0 } = {}) {
   if (item.type === 'video') return { type: 'native-motion', maxZoom: 1, reason: 'live-footage' };
+  // HAREKET DİZİSİ kareleri SABİT durur: hareket ardışık karelerin arasındaki
+  // sert kesmeden gelir. Üstüne bir de zoom binerse iki hareket çakışır ve
+  // eylem okunmaz olur.
+  if (item.sequence) return { type: 'static-hold', maxZoom: 1, reason: 'action-sequence-frame' };
   const text = `${scene.image_prompt || ''} ${scene.narration || ''}`.toLowerCase();
   const textHeavy = item.source === 'gfx' || /\b(diagram|map|timeline|label|chart|text)\b/.test(text);
   if (textHeavy) return { type: 'static-hold', maxZoom: 1, reason: 'text-heavy-or-explanatory' };

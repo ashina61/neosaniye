@@ -109,6 +109,25 @@ export const config = {
     // Slayt hissini kırmak için her N. sahne GERÇEK stok video dener
     // (Pexels, dikey). 0 = kapalı. Video bulunamazsa o sahne AI görsel olur.
     motionEvery: Number(process.env.IMAGE_MOTION_EVERY || 2),
+    // HAREKET DİZİSİ: canlı davranış anlatan sahnelerde ("balık yön değiştirir")
+    // tek durağan kare eylemi GÖSTEREMEZ. O sahne için eylemin ardışık
+    // anlarını (öncesi → esnası → sonrası) üretip hızlı kesme yapılır.
+    // Buradaki AYNI SEED bilinçlidir: sahneler ARASI aynı seed her kareyi
+    // aynı yapıyordu, ama bir dizinin İÇİNDE aynı seed tam istediğimiz şeyi
+    // verir — aynı özne/kadraj, değişen tek şey eylemin anı.
+    actionSequence: {
+      enabled: process.env.IMAGE_ACTION_SEQUENCE !== '0',
+      frames: Math.max(2, Math.min(3, Number(process.env.IMAGE_SEQUENCE_FRAMES || 3))),
+      // Bu süreden kısa sahnede dizi yapma (kesmeler göz kırpması gibi olur).
+      minSceneSeconds: Number(process.env.IMAGE_SEQUENCE_MIN_SEC || 2.4),
+      // Video başına en fazla kaç dizi (API maliyeti + ritim).
+      maxPerVideo: Number(process.env.IMAGE_SEQUENCE_MAX || 2),
+      // SÜREKLİLİK BANDI (algısal hash mesafesi). Bu bandın dışındaki kare
+      // atılır: altında "kesme hiçbir şey göstermiyor", üstünde "başka sahneye
+      // atladı". Varsayım doğrulanamadığı için ölçülüyor.
+      minChange: Number(process.env.IMAGE_SEQUENCE_MIN_CHANGE || 3),
+      maxChange: Number(process.env.IMAGE_SEQUENCE_MAX_CHANGE || 26),
+    },
   },
   retention: {
     // Yayın öncesi deterministik editoryal kalite kapısı (retentionQC.js).

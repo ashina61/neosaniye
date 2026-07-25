@@ -229,7 +229,7 @@ export async function runPipeline(opts = {}) {
     const video = await renderVideo({
       audioPath: audio.audioPath,
       wordTimings: audio.wordTimings,
-      media: media.items.map((m) => ({ path: m.path, type: m.type, gfx: m.source === 'gfx' })),
+      media: media.items.map((m) => ({ path: m.path, type: m.type, gfx: m.source === 'gfx', sequence: Boolean(m.sequence) })),
       mediaScene: media.items.map((m) => m.scene),
       scenes,
       timeline: renderTimeline,

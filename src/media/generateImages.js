@@ -9,7 +9,8 @@ import { fetchOneForKeywords, fetchStockVideoForKeywords } from './fetchMedia.js
 import { renderStatCard, isUsableStat, renderStepsCard, isUsableDiagram } from './renderTemplate.js';
 import { fetchArchiveImage } from './fetchArchive.js';
 import { isAssetRelevant } from './semanticRelevance.js';
-import { perceptualHash, isTooSimilar } from './imageHash.js';
+import { perceptualHash, isTooSimilar, hammingDistance } from './imageHash.js';
+import { classifyBeat } from '../visual/semanticDirector.js';
 
 const run = promisify(execFile);
 
@@ -230,6 +231,8 @@ export async function generateImages(script, opts = {}) {
   const useFixedSeed = config.images.fixedSeed === true;
   // Üretilen AI karelerinin algısal parmak izleri (aynı kare tekrarını yakalar).
   const aiHashes = [];
+  // Kaç hareket dizisi üretildi (video başına üst sınır için).
+  let sequenceCount = 0;
 
   for (let i = 0; i < scenes.length; i += 1) {
     const scene = scenes[i];
@@ -432,6 +435,72 @@ export async function generateImages(script, opts = {}) {
     sources[done.source] += 1;
     items.push(done);
     console.log(`[img] sahne ${idx}/${scenes.length}: ${done.source} (${done.type})`);
+
+    // HAREKET DİZİSİ: sahne canlı bir DAVRANIŞ anlatıyorsa ("balık yön
+    // değiştirir") tek durağan kare o eylemi gösteremez — izleyici hareketi
+    // görmeli. Eylemin ardışık anları üretilip aralarına sert kesme konur.
+    // AYNI SEED kasıtlı: özne/kadraj sabit kalsın, değişen tek şey eylemin anı.
+    const seqCfg = config.images.actionSequence;
+    if (seqCfg?.enabled && sequenceCount < seqCfg.maxPerVideo && i > 0
+        && done.type === 'photo' && done.source === 'ai'
+        && (sceneSeconds[i] || 0) >= seqCfg.minSceneSeconds
+        && !providerDead && classifyBeat(scene.narration)?.kind === 'behavior') {
+      const phases = [
+        'the instant BEFORE the action starts, subject still, tension held',
+        'MID-ACTION: the movement is happening right now, motion blur on the moving part, body committed to the move',
+        'immediately AFTER the action, subject in the new position, disturbed water and settling motion trails',
+      ].slice(0, seqCfg.frames);
+      // SÜREKLİLİK KAPISI. Dizinin dayanağı "aynı seed + faz promptu → aynı
+      // sahne, değişen eylem" varsayımıdır. Bu varsayım her konuda tutmayabilir,
+      // o yüzden VARSAYILMAZ, ÖLÇÜLÜR:
+      //   çok benzer (mesafe < min) → kesme hiçbir şey göstermez, boşuna
+      //   çok farklı (mesafe > max) → başka bir sahneye atlamış olur, kopukluk
+      // İkisinde de kare atılır; hiç dizi kalmazsa sahne tek çekim olarak sürer.
+      const baseHash = await perceptualHash(done.path);
+      const SEQ_MIN = seqCfg.minChange ?? 3;
+      const SEQ_MAX = seqCfg.maxChange ?? 26;
+      const extra = [];
+      for (let f = 1; f < phases.length; f += 1) {
+        try {
+          const dest = path.join(mediaDir, `${idx}-seq${f}.jpg`);
+          const seqPrompt = [scene.image_prompt, phases[f], framing, anchor, stylePrefix, styleSuffix]
+            .filter(Boolean).join('. ');
+          await fetchPollinations(seqPrompt, dest, { width, height, seed: sceneSeed });
+          if (!existsSync(dest)) break;
+          const h = await perceptualHash(dest);
+          const d = hammingDistance(baseHash, h);
+          if (baseHash != null && h != null && (d < SEQ_MIN || d > SEQ_MAX)) {
+            console.warn(`[img] sahne ${idx}: dizi karesi ${f} elendi (fark ${d}, ` +
+              `${d < SEQ_MIN ? 'gözle görülür değişim yok' : 'sahne kopuyor'}).`);
+            continue;
+          }
+          extra.push({
+            ...done,
+            path: dest,
+            part: f,
+            sequence: true,          // QC: dizi kareleri kasıtlı benzer, kopya sayılmaz
+            motionHint: null,        // hareket KESMEDEN gelir, zoom'dan değil
+            assetId: `${done.assetId}#seq${f}`,
+            query: seqPrompt,
+            seqDelta: d,
+          });
+        } catch (err) {
+          console.warn(`[img] sahne ${idx}: dizi karesi ${f} üretilemedi (${String(err.message).slice(0, 70)}).`);
+          break;
+        }
+      }
+      // Kareler sırayla numaralansın (aradan eleme olmuş olabilir).
+      extra.forEach((it, k) => { it.part = k + 1; });
+      if (extra.length) {
+        done.part = 0;
+        done.sequence = true;
+        done.motionHint = null;
+        items.push(...extra);
+        sequenceCount += 1;
+        console.log(`[img] sahne ${idx}: HAREKET DİZİSİ → ${extra.length + 1} kare (${(sceneSeconds[i] / (extra.length + 1)).toFixed(1)}s/kare, sert kesme)`);
+        continue; // dizi varken ayrıca tempo bölme yapma (ritim bozulmasın)
+      }
+    }
 
     // TEMPO BÖLME: uzun statik foto sahnesini İKİ alt-çekime böl — part0 geniş,
     // part1 GERÇEK yakın kadraj (merkez crop). Sert kesme + yakınlaşma = Shorts

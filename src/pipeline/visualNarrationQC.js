@@ -45,7 +45,12 @@ export function assessVisualNarration({
   // ---------- 1) BENZERSİZ GÖRSEL PLAN SAYISI ----------
   // Aynı görselin tekrar kullanılması = slayt. Algısal hash varsa gerçek
   // benzersizliği ölçeriz; yoksa varlık kimliğine (assetId) düşeriz.
-  const hashed = items.filter((it) => it?.visualHash);
+  // HAREKET DİZİSİ kareleri hariç tutulur: onlar KASITLI olarak birbirine
+  // benzer (aynı özne, değişen tek şey eylemin anı). Diziyi "kopya" saymak,
+  // düzeltilmek istenen hatayı ödüllendirip doğru davranışı cezalandırırdı.
+  const sequenceFrames = items.filter((it) => it?.sequence && it?.part > 0).length;
+  const countable = items.filter((it) => !(it?.sequence && it?.part > 0));
+  const hashed = countable.filter((it) => it?.visualHash);
   let uniqueVisuals;
   let duplicatePairs = 0;
   if (hashed.length >= 2) {
@@ -57,11 +62,11 @@ export function assessVisualNarration({
       else kept.push(h);
     }
     // Hash'i olmayan varlıklar (stok/arşiv/gfx) kimlikleriyle sayılır.
-    const others = new Set(items.filter((it) => !it?.visualHash)
+    const others = new Set(countable.filter((it) => !it?.visualHash)
       .map((it) => it?.assetId || it?.sourceUrl || it?.path).filter(Boolean));
     uniqueVisuals = kept.length + others.size;
   } else {
-    uniqueVisuals = new Set(items.map((it) => it?.assetId || it?.sourceUrl || it?.path)
+    uniqueVisuals = new Set(countable.map((it) => it?.assetId || it?.sourceUrl || it?.path)
       .filter(Boolean)).size;
   }
   if (uniqueVisuals < th.minUniqueVisuals) {
@@ -119,6 +124,8 @@ export function assessVisualNarration({
     metrics: {
       uniqueVisuals,
       duplicatePairs,
+      // Eylemi gösteren ek kareler (benzersizlik sayımının DIŞINDA).
+      sequenceFrames,
       semanticBeats: beats.length,
       semanticKinds: kindCounts,
       distinctKinds,
