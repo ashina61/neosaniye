@@ -399,6 +399,22 @@ export const config = {
       sfxVolume: Number(process.env.MOTION_CTA_SFX_VOL || 1.1),
       assetsDir: process.env.MOTION_ASSETS_DIR || 'assets/motion',
     },
+    // GÖRSEL ANLATIM KATMANI (V2): "seslendirilmiş slayt"tan aktif görsel anlatıya.
+    // Her sahneye anlatıyla ilişkili görsel olay (ok/daire/spotlight/etiket/sayaç).
+    // Şimdilik varsayılan KAPALI — render'a bağlanıp gerçek videoda doğrulanınca açılır.
+    visualStorytelling: {
+      enabled: process.env.VISUAL_STORYTELLING === '1',
+      minActivityScore: Number(process.env.VS_MIN_ACTIVITY || 70),
+      maxPassiveIntervalSeconds: Number(process.env.VS_MAX_PASSIVE || 2.5),
+      maxStaticOnlySceneRatio: Number(process.env.VS_MAX_STATIC_RATIO || 0.3),
+      minFirstThreeSecondsEvents: Number(process.env.VS_MIN_FIRST3 || 2),
+      maxConsecutiveBasicCameraScenes: Number(process.env.VS_MAX_BASIC_CAM || 2),
+      allowParticles: process.env.VS_PARTICLES !== '0',
+      allowFog: process.env.VS_FOG !== '0',
+      allowCameraShake: process.env.VS_SHAKE !== '0',
+      effectIntensity: process.env.VS_INTENSITY || 'medium',
+      subtitleSafeArea: { top: 0.08, bottom: 0.25, left: 0.06, right: 0.06 },
+    },
     // Marka stil sabitleri (styleBible ile uyumlu) — tüm CTA'lar bunu okur.
     style: {
       accent: process.env.MOTION_ACCENT || '3BD0C8', // logo turkuazı
