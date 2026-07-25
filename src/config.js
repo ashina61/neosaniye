@@ -428,6 +428,8 @@ export const config = {
       maxPerVideo: Number(process.env.SEMANTIC_MAX_PER_VIDEO || 6),
       // İlk 3 saniyede semantik bir olay ZORUNLU mu (hook gücü).
       requireHookEvent: process.env.SEMANTIC_HOOK_EVENT !== '0',
+      // Davranış sahnelerinde özneyi daire içine al — SADECE konumu ölçülebildiyse.
+      focusHighlight: process.env.SEMANTIC_FOCUS !== '0',
       subtitleSafeArea: { top: 0.08, bottom: 0.25, left: 0.06, right: 0.06 },
     },
     // ESKİ V2 dekoratif katman — varsayılan KAPALI, geri dönüş için korunuyor.

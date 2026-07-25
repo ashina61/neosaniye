@@ -16,6 +16,7 @@
  */
 import { assColor, assTime, roundRect, circlePath, esc } from './effects.js';
 import { CANVAS, safeArea } from './coords.js';
+import { buildMapPaths } from './geo.js';
 
 const ACCENT = '3BD0C8';   // marka turkuazı
 const INK = 'FFFFFF';
@@ -254,39 +255,45 @@ function locationShot(beat, cfg) {
   const out = [];
   const s = beat.start;
 
-  // HARİTA PANELİ olarak çizilir. Önceki tasarım fotoğrafın üstünde serbest
-  // yüzen çemberlerdi ve tam da şikâyet edilen "rastgele yuvarlak" gibi
-  // görünüyordu. Kapalı bir panel + ızgara + işaret = tartışmasız "harita".
-  const panelW = 660;
-  const panelH = 440;
+  // GERÇEK HARİTA. Sahte ızgara + rastgele işaret kaldırıldı: yer adı Natural
+  // Earth sınırlarına çözülür, ülke haritada GERÇEK yerinde vurgulanır ve
+  // işaret GERÇEK enlem/boylama oturur. Ad tanınmıyorsa hiçbir şey çizilmez
+  // (uydurma harita göstermektense göstermemek doğru).
+  const panelW = 680;
+  const mapH = 340;
+  const panelH = mapH + 110;
   const px = Math.round((CANVAS.w - panelW) / 2);
-  const py = Math.round((top + bottom) / 2 - panelH / 2) - 30;
+  const py = Math.round((top + bottom) / 2 - panelH / 2) - 20;
 
-  // Panel zemini (koyu, okunur) + ince turkuaz kenar.
+  const map = buildMapPaths(beat.payload.place, { w: panelW - 36, h: mapH });
+  if (!map) return [];
+  const mapX = px + 18;
+  const mapY = py + 18;
+
+  // Panel zemini (deniz) + ince turkuaz kenar.
   out.push(D(4, 'SemShape', s, beat.end,
-    `{\\an7\\pos(${px},${py})\\1c${assColor(CARD, '20')}\\3c${assColor(ACCENT)}\\3a&H50&\\bord3` +
+    `{\\an7\\pos(${px},${py})\\1c${assColor('08161D', '20')}\\3c${assColor(ACCENT)}\\3a&H50&\\bord3` +
     `\\fad(160,200)\\fscx88\\fscy88\\t(0,240,\\fscx100\\fscy100)\\p1}` +
     roundRect(panelW, panelH, 24) + '{\\p0}'));
 
-  // Izgara (enlem/boylam) — panelin harita olduğunu söyleyen işaret.
-  const cols = 4;
-  const rows = 3;
-  for (let c = 1; c < cols; c += 1) {
-    const gx = px + Math.round((panelW * c) / cols);
-    out.push(D(4, 'SemShape', s + 0.08, beat.end,
-      `{\\an7\\pos(${gx},${py + 14})\\1c${assColor(ACCENT)}\\1a&HB0&\\bord0\\fad(200,200)\\p1}` +
-      roundRect(2, panelH - 28, 1) + '{\\p0}'));
-  }
-  for (let r = 1; r < rows; r += 1) {
-    const gy = py + Math.round((panelH * r) / rows);
-    out.push(D(4, 'SemShape', s + 0.08, beat.end,
-      `{\\an7\\pos(${px + 14},${gy})\\1c${assColor(ACCENT)}\\1a&HB0&\\bord0\\fad(200,200)\\p1}` +
-      roundRect(panelW - 28, 2, 1) + '{\\p0}'));
+  // Harita çizimleri panelin DIŞINA taşmasın: pencereye kırp. (Kırpma olmadan
+  // komşu kıtalar panel kenarını aşıp ekrana yayılıyordu.)
+  const clip = `\\clip(${mapX},${mapY},${mapX + panelW - 36},${mapY + mapH})`;
+
+  // Kara parçaları (gerçek sınırlar) — bağlam için sönük.
+  out.push(D(4, 'SemShape', s + 0.06, beat.end,
+    `{\\an7\\pos(${mapX},${mapY})${clip}\\1c${assColor('4A6B78')}\\1a&H40&\\bord0\\fad(200,200)\\p1}` +
+    map.land + '{\\p0}'));
+  // Hedef ülke — marka renginde dolu (hangi ülke olduğu tartışmasız).
+  if (map.target) {
+    out.push(D(5, 'SemShape', s + 0.18, beat.end,
+      `{\\an7\\pos(${mapX},${mapY})${clip}\\1c${assColor(ACCENT)}\\1a&H10&\\bord0\\fad(200,200)\\p1}` +
+      map.target + '{\\p0}'));
   }
 
-  // Konum işareti: nabız atan halka + dolu nokta (dikkat oraya gider).
-  const mx = px + Math.round(panelW * 0.62);
-  const my = py + Math.round(panelH * 0.40);
+  // Konum işareti: GERÇEK enlem/boylamda, nabız atan halka + dolu nokta.
+  const mx = mapX + map.marker.x;
+  const my = mapY + map.marker.y;
   out.push(D(5, 'SemShape', s + 0.3, beat.end,
     `{\\an5\\pos(${mx},${my})\\1a&HFF&\\3c${assColor(ACCENT)}\\3a&H30&\\bord4` +
     `\\fscx20\\fscy20\\t(0,900,\\fscx180\\fscy180\\3a&HFF&)\\p1}` + circlePath(30) + '{\\p0}'));
@@ -294,14 +301,14 @@ function locationShot(beat, cfg) {
     `{\\an5\\pos(${mx},${my})\\1c${assColor(ACCENT)}\\bord0\\fad(160,180)` +
     `\\fscx50\\fscy50\\t(0,240,\\fscx100\\fscy100)\\p1}` + circlePath(14) + '{\\p0}'));
   // İşaretten yer adına inen bağ çizgisi (işaret ↔ etiket ilişkisi net olsun).
-  const labelY = py + panelH - 74;
+  const labelY = py + mapH + 66;
   if (labelY > my + 30) {
     out.push(D(5, 'SemShape', s + 0.42, beat.end,
       `{\\an7\\pos(${mx - 1},${my + 18})\\1c${assColor(ACCENT)}\\1a&H40&\\bord0\\fad(180,180)` +
       `\\fscy0\\t(0,260,\\fscy100)\\p1}` + roundRect(2, labelY - my - 40, 1) + '{\\p0}'));
   }
 
-  // Yer adı — panelin İÇİNDE, alt şeritte (zemin ve metin aynı noktada).
+  // Yer adı — panelin İÇİNDE, haritanın ALTINDAKİ şeritte.
   const fit = fitText(place, panelW - 120, 52, 34);
   const badgeW = Math.min(panelW - 60, textWidth(fit.text, fit.fs) + 72);
   out.push(D(5, 'SemShape', s + 0.35, beat.end,
@@ -320,8 +327,17 @@ function behaviorShot(beat, cfg) {
   const { subject, action } = beat.payload;
   if (!subject || !action) return [];
   const { top, bottom } = band(cfg);
-  const out = [];
   const s = beat.start;
+
+  // GERÇEK ÖZNEYİ İŞARETLE: kare üzerinde odak DOĞRULANMIŞSA daire tam o
+  // nesnenin üstüne oturur ve ok oraya bakar. Odak yoksa (focusDetect emin
+  // değilse) işaret ÇİZİLMEZ — soyut yön izine düşülür. Rastgele konuma
+  // daire çizmek tam da düzeltilmek istenen hataydı.
+  if (beat.focus && Number.isFinite(beat.focus.x) && Number.isFinite(beat.focus.y)) {
+    return focusHighlightShot(beat, cfg);
+  }
+
+  const out = [];
   const cy = Math.round((top + bottom) / 2);
   const leftX = Math.round(CANVAS.w * 0.26);
   const rightX = Math.round(CANVAS.w * 0.74);
@@ -355,6 +371,76 @@ function behaviorShot(beat, cfg) {
   out.push(D(6, 'SemShape', s + 0.55, beat.end,
     `{\\an5\\pos(${rightX + 40},${cy})\\1c${assColor(ACCENT)}\\bord0\\fad(160,180)\\p1}` +
     circlePath(13) + '{\\p0}'));
+  return out;
+}
+
+/* ------------------------------------------------------------------ *
+ * 6) ODAK VURGUSU — DOĞRULANMIŞ konuma daire + ona bakan ok
+ * ------------------------------------------------------------------ */
+function focusHighlightShot(beat, cfg) {
+  const { subject, action } = beat.payload;
+  const { top, bottom } = band(cfg);
+  const out = [];
+  const s = beat.start;
+
+  // Odak noktası — focusDetect'in GERÇEKTEN ölçtüğü konum (normalize → px).
+  //
+  // KONUM ASLA KAYDIRILMAZ. Önceki sürüm halkayı "güvenli banda" sıkıştırıyordu
+  // ve bu, halkayı nesnenin ~100px yukarısına taşıyıp tam da düzeltilmek
+  // istenen hatayı üretiyordu (daire nesnenin üstünde değil). Doğru davranış:
+  // ya halka nesnenin GERÇEK yerinde durur, ya da hiç çizilmez.
+  const fxN = beat.focus.x;
+  const fyN = beat.focus.y;
+  const R = 128;
+  // Halka ekrana sığmıyorsa (logo bandı / altyazı bandı) işaretlemeyi bırak.
+  const minY = (top + R * 0.55) / CANVAS.h;
+  const maxY = (bottom + R * 0.35) / CANVAS.h;
+  if (fyN < minY || fyN > maxY) return [];
+  if (fxN < 0.12 || fxN > 0.88) return [];
+  const fx = Math.round(fxN * CANVAS.w);
+  const cyClamped = Math.round(fyN * CANVAS.h);
+
+  // 1) Nesnenin çevresinde halka — nabızla kilitlenir (ilgi oraya gider).
+  out.push(D(5, 'SemShape', s + 0.1, beat.end,
+    `{\\an5\\pos(${fx},${cyClamped})\\1a&HFF&\\3c${assColor(ACCENT)}\\3a&H18&\\bord6\\fad(160,200)` +
+    `\\fscx55\\fscy55\\t(0,300,\\fscx104\\fscy104)\\t(300,520,\\fscx100\\fscy100)\\p1}` +
+    circlePath(R) + '{\\p0}'));
+  // İnce dış halka (nabız) — canlı his, konum aynı.
+  out.push(D(4, 'SemShape', s + 0.1, beat.end,
+    `{\\an5\\pos(${fx},${cyClamped})\\1a&HFF&\\3c${assColor(ACCENT)}\\3a&H70&\\bord3` +
+    `\\fscx60\\fscy60\\t(0,1100,\\fscx150\\fscy150\\3a&HFF&)\\p1}` + circlePath(R) + '{\\p0}'));
+
+  // 2) Etiket, halkanın ÜSTÜNDE ya da ALTINDA — hangisi sığıyorsa.
+  const labelText = `${esc(subject)} ${esc(action)}`;
+  const fit = fitText(labelText, 620, 44, 32);
+  const labelW = Math.min(700, textWidth(fit.text.split('\\N')[0], fit.fs) + 64);
+  // Etiket halkadan yeterince UZAK olmalı, yoksa aradaki ok sığmıyor
+  // (önceki mesafede ok hiç çizilmiyordu).
+  const labelGap = 150;
+  const above = cyClamped - R - labelGap - 60 > top;
+  const labelY = above ? cyClamped - R - labelGap : cyClamped + R + labelGap;
+  const labelX = Math.round(Math.max(labelW / 2 + 40, Math.min(CANVAS.w - labelW / 2 - 40, fx)));
+
+  out.push(D(4, 'SemShape', s + 0.3, beat.end,
+    `{\\an5\\pos(${labelX},${labelY})\\1c${assColor(CARD, '26')}\\bord0\\fad(160,180)` +
+    `\\fscx70\\t(0,240,\\fscx100)\\p1}` +
+    roundRect(labelW, fit.lines === 2 ? 150 : 92, 20) + '{\\p0}'));
+  out.push(D(6, 'SemText', s + 0.32, beat.end,
+    `{\\an5\\pos(${labelX},${labelY})\\fs${fit.fs}\\fad(160,180)}`, fit.text));
+
+  // 3) Etiketten HALKAYA bakan ok — işaret ettiği şey tartışmasız olsun.
+  const gapTop = above ? labelY + 50 : cyClamped + R + 6;
+  const gapBot = above ? cyClamped - R - 6 : labelY - 50;
+  if (gapBot - gapTop > 26) {
+    const len = gapBot - gapTop;
+    // Yukarı bakan ok (etiket altta) ya da aşağı bakan ok (etiket üstte).
+    const arrow = above
+      ? `m -4 0 l 4 0 l 4 ${len - 20} l 15 ${len - 20} l 0 ${len} l -15 ${len - 20} l -4 ${len - 20}`
+      : `m -4 ${len} l 4 ${len} l 4 20 l 15 20 l 0 0 l -15 20 l -4 20`;
+    out.push(D(5, 'SemShape', s + 0.42, beat.end,
+      `{\\an7\\pos(${fx},${gapTop})\\1c${assColor(ACCENT)}\\1a&H20&\\bord0\\fad(170,170)` +
+      `\\fscy0\\t(0,280,\\fscy100)\\p1}` + arrow + '{\\p0}'));
+  }
   return out;
 }
 

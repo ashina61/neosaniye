@@ -12,6 +12,7 @@ import { selectMusic } from '../audio/musicSelect.js';
 import { selectSceneMotion, validateMotionPlan } from './motionPlan.js';
 import { directSemantics } from '../visual/semanticDirector.js';
 import { buildSemanticAss } from '../visual/semanticShots.js';
+import { detectFocus } from '../visual/focusDetect.js';
 
 const run = promisify(execFile);
 
@@ -1204,6 +1205,25 @@ export async function renderVideo(job, opts = {}) {
           .slice(0, max)
           .sort((a, b) => a.start - b.start);
       }
+      // ODAK: "davranış" kompozisyonu görüntüdeki özneyi DAİRE İÇİNE alır.
+      // Daireyi ancak konumu ÖLÇÜLDÜYSE çiziyoruz — focusDetect emin değilse
+      // (her yeri eşit dokulu kare gibi) null döner ve daire hiç çizilmez.
+      // Rastgele konuma daire çizmek düzeltilen asıl hataydı.
+      if (semCfg.focusHighlight !== false) {
+        for (const b of beats) {
+          if (b.kind !== 'behavior') continue;
+          const src = media[b.index]?.path;
+          if (!src) continue;
+          const focus = await detectFocus(src).catch(() => null);
+          if (focus) {
+            b.focus = focus;
+            console.log(`[visual] sahne ${b.index + 1}: odak (${focus.x}, ${focus.y}) güven ${focus.confidence}`);
+          } else {
+            console.log(`[visual] sahne ${b.index + 1}: odak belirsiz — daire çizilmedi.`);
+          }
+        }
+      }
+
       const ass = buildSemanticAss(beats, { width, height, cfg: semCfg });
       if (ass) {
         await writeFile(path.join(workDir, 'semantic.ass'), ass);

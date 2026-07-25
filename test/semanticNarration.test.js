@@ -198,3 +198,83 @@ test('semantik katman gerçekten videoya biner (SSIM farkı)', { skip: !hasFfmpe
     await rm(dir, { recursive: true, force: true });
   }
 });
+
+// ---------------- GERÇEK HARİTA ----------------
+test('gerçek coğrafya: yer adı doğru enlem/boylama çözülür', async () => {
+  const { resolvePlace } = await import('../src/visual/geo.js');
+  const au = resolvePlace('AUSTRALIA');
+  assert.equal(au.country, 'Australia');
+  // Avustralya ~133°D, ~24°G — sahte ızgarada bu doğrulama mümkün değildi.
+  assert.ok(au.lon > 110 && au.lon < 155, `boylam yanlış: ${au.lon}`);
+  assert.ok(au.lat < -10 && au.lat > -40, `enlem yanlış: ${au.lat}`);
+  const jp = resolvePlace('JAPAN');
+  assert.ok(jp.lon > 125 && jp.lon < 146, `Japonya boylamı yanlış: ${jp.lon}`);
+  assert.ok(jp.lat > 24 && jp.lat < 46, `Japonya enlemi yanlış: ${jp.lat}`);
+});
+
+test('tanınmayan yer adı için harita ÇİZİLMEZ (uydurma yok)', async () => {
+  const { resolvePlace, buildMapPaths } = await import('../src/visual/geo.js');
+  assert.equal(resolvePlace('ZORTAVIA'), null);
+  assert.equal(buildMapPaths('ZORTAVIA', { w: 640, h: 320 }), null);
+  assert.deepEqual(beatEvents({ kind: 'location', payload: { place: 'ZORTAVIA' }, start: 0, end: 3 }, SAFE), []);
+});
+
+test('harita işareti panel içinde ve hedef ülke vurgulanır', async () => {
+  const { buildMapPaths } = await import('../src/visual/geo.js');
+  const m = buildMapPaths('AUSTRALIA', { w: 644, h: 340 });
+  assert.ok(m.target, 'hedef ülke poligonu yok');
+  assert.ok(m.marker.x >= 0 && m.marker.x <= 644, `işaret x panel dışında: ${m.marker.x}`);
+  assert.ok(m.marker.y >= 0 && m.marker.y <= 340, `işaret y panel dışında: ${m.marker.y}`);
+  assert.match(m.land, /^m -?\d+ -?\d+/, 'kara yolu ASS çizim biçiminde değil');
+});
+
+// ---------------- ODAK TESPİTİ ----------------
+test('odak: nesnenin GERÇEK konumunu bulur', { skip: !hasFfmpeg && 'ffmpeg yok' }, async () => {
+  const { detectFocus } = await import('../src/visual/focusDetect.js');
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'fd-'));
+  try {
+    // Bilinen konuma (merkez 0.694, 0.536) turuncu disk koy.
+    const img = path.join(dir, 'disk.png');
+    await run('ffmpeg', ['-y', '-v', 'error',
+      '-f', 'lavfi', '-i', 'color=c=0x1a3a4a:s=1080x1920',
+      '-f', 'lavfi', '-i', 'color=c=0xFF8800:s=260x260',
+      '-filter_complex',
+      "[1:v]format=yuva420p,geq=lum='p(X,Y)':a='if(lt(hypot(X-130,Y-130),125),255,0)'[d];[0:v][d]overlay=620:900",
+      '-frames:v', '1', img], { maxBuffer: 20 * 1024 * 1024 });
+    const f = await detectFocus(img);
+    assert.ok(f, 'net bir nesne bulunamadı');
+    const err = Math.hypot(f.x - (620 + 130) / 1080, f.y - (900 + 130) / 1920);
+    assert.ok(err < 0.06, `odak nesneden uzak: sapma ${err.toFixed(3)}`);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test('odak: her yeri eşit dokulu karede SUSAR (daire çizilmez)', { skip: !hasFfmpeg && 'ffmpeg yok' }, async () => {
+  const { detectFocus } = await import('../src/visual/focusDetect.js');
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'fd2-'));
+  try {
+    const img = path.join(dir, 'uniform.png');
+    await run('ffmpeg', ['-y', '-v', 'error', '-f', 'lavfi', '-i', 'testsrc2=s=1080x1920:d=1',
+      '-frames:v', '1', img]);
+    assert.equal(await detectFocus(img), null, 'belirsiz karede daire çizmeye kalktı');
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test('odak halkası KAYDIRILMAZ: sığmıyorsa hiç çizilmez', () => {
+  // Regresyon: güvenli-bant kırpması halkayı nesnenin ~100px yukarısına
+  // taşıyıp "daire nesnenin üstünde değil" hatasını üretiyordu.
+  const mk = (y) => beatEvents({
+    kind: 'behavior', payload: { subject: 'FISH', action: 'TURNS' },
+    start: 0, end: 4, focus: { x: 0.5, y, confidence: 2 },
+  }, SAFE);
+  const ok = mk(0.5);
+  assert.ok(ok.length > 0, 'geçerli konumda halka çizilmedi');
+  const posY = Number(/\\pos\(\d+,(\d+)\)/.exec(ok.join('\n'))[1]);
+  assert.equal(posY, Math.round(0.5 * 1920), `halka kaydırıldı: ${posY}`);
+  // Altyazı bandının derininde: kaydırmak yerine hiç çizme.
+  assert.deepEqual(mk(0.93), [], 'altyazı bandındaki nesne için halka çizildi');
+  assert.deepEqual(mk(0.02), [], 'logo bandındaki nesne için halka çizildi');
+});
