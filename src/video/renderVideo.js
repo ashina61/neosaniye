@@ -10,6 +10,8 @@ import { makeMusicBed } from '../audio/makeMusic.js';
 import { normalizeSfxPlan } from '../audio/sfxPlan.js';
 import { selectMusic } from '../audio/musicSelect.js';
 import { selectSceneMotion, validateMotionPlan } from './motionPlan.js';
+import { directVideo } from '../visual/visualDirector.js';
+import { buildEffectsAss } from '../visual/effects.js';
 
 const run = promisify(execFile);
 
@@ -1177,14 +1179,37 @@ export async function renderVideo(job, opts = {}) {
 
   // Altyazı + hook (aynı ASS dosyasında; hook otomatik satır kaydırır, sığar).
   const assFilter = existsSync(fontsDir) ? `ass=subs.ass:fontsdir=${fontsDir}` : 'ass=subs.ass';
-  // Hafif keskinleştirme (altyazıdan ÖNCE — yazı kenarları temiz kalsın):
-  // telefonda sıkıştırma sonrası algılanan netliği belirgin artırır.
-  // Katman sırası: [fx altta] -> keskinleştir -> [altyazı] -> [ok/etiket en üstte].
-  if (useAss) {
-    vfc.push(`${last}${fxFilter}unsharp=5:5:0.35:3:3:0,${assFilter}${annoFilter}[v]`);
-  } else {
-    vfc.push(`${last}${fxFilter}unsharp=5:5:0.35:3:3:0${annoFilter}[v]`);
+
+  // GÖRSEL ANLATIM KATMANI (V2, flag'li): sahne metnini analiz edip anlatıyla
+  // ilişkili güvenli semantik efektler (etiket/sayaç/spotlight) üretir → slayt
+  // hissini kırar. Altyazının ALTINDA (safe-area'ya girmez). Kapalıysa/hata olsa
+  // render birebir eski davranış (üretimi bozmaz).
+  let effectsFilter = '';
+  const vsCfg = config.motion?.visualStorytelling;
+  if (vsCfg?.enabled && canonicalItems && Array.isArray(job.scenes)) {
+    try {
+      const vtl = canonicalItems.map((it, i) => ({
+        narration: job.scenes[it.scene]?.narration || '',
+        index: i, start: it.start, end: it.end, part: media[i]?.part,
+      }));
+      const { effects } = directVideo(vtl, vsCfg);
+      const ass = buildEffectsAss(effects, { width, height, cfg: vsCfg });
+      if (ass) {
+        await writeFile(path.join(workDir, 'effects.ass'), ass);
+        effectsFilter = existsSync(fontsDir) ? `ass=effects.ass:fontsdir=${fontsDir}` : 'ass=effects.ass';
+        console.log(`[visual] görsel anlatım katmanı: ${effects.length} efekt`);
+      }
+    } catch (err) {
+      console.warn(`[visual] efekt katmanı atlandı: ${String(err.message).slice(0, 90)}`);
+    }
   }
+
+  // Hafif keskinleştirme (altyazıdan ÖNCE — yazı kenarları temiz kalsın).
+  // Katman sırası: [fx altta] -> keskinleştir -> [görsel efektler] -> [altyazı üstte].
+  const post = ['unsharp=5:5:0.35:3:3:0'];
+  if (effectsFilter) post.push(effectsFilter);
+  if (useAss) post.push(assFilter);
+  vfc.push(`${last}${fxFilter}${post.join(',')}${annoFilter}[v]`);
 
   const fullv = path.join(workDir, 'fullv.mp4');
   // NOT: -loglevel error + -nostats ŞART — sahne bölme ile klip sayısı artınca
