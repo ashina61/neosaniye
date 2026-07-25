@@ -610,6 +610,52 @@ export async function generateScript({ maxRetries = 5, avoidTopics: extraAvoid =
         thinkingConfig: { thinkingBudget: 0 },
       },
     }); } catch (err) {
+      // ELDEKİ SCRIPT'İ ÇÖPE ATMA. Bu döngü bir script'i "biraz kısa" bulunca
+      // YENİDEN YAZIM istiyor; o ikinci çağrı sağlayıcı zincirini yeniden
+      // zarlıyor. Zincir o an ölüyse (Gemini down + Groq 429 + OpenRouter
+      // bozuk JSON — 25 Tem 23:31 koşusu) elde ÇALIŞAN bir script varken tüm
+      // run çöpe gidiyordu. lastScript zaten tutuluyordu ama yalnızca hata
+      // metninde kullanılıyordu; artık gerçek yedek olarak kullanılıyor.
+      //
+      // Kalite çıtası korunur: yalnızca salvage tabanını geçen (gerçek,
+      // sahne-düzeyinde içerik taşıyan) script kabul edilir. Taban altındaysa
+      // eskisi gibi fail — uydurma içerikle video yayınlamaktan iyidir.
+      const floor = Math.round(config.content.minNarrationWords * 0.70);
+      const hasBones = lastScript
+        && Array.isArray(lastScript.scenes) && lastScript.scenes.length >= 5
+        && String(lastScript.hook_text || '').trim()
+        && String(lastScript.topic || lastScript.title || '').trim();
+      const salvage = hasBones
+        ? evaluateNarrationLength(lastScript.scenes, {
+          minWords: config.content.minNarrationWords,
+          maxWords: config.content.maxNarrationWords,
+        })
+        : null;
+      if (salvage && salvage.words >= floor) {
+        // Kurtarılan script NORMAL yolla AYNI yayın kapısından geçer; geçemezse
+        // kurtarma yapılmaz (kapıyı atlatmak için kestirme değil).
+        if (!lastScript.topic) lastScript.topic = String(lastScript.title).trim();
+        delete lastScript.hook_candidates;
+        lastScript.hook_text = softenAdText(lastScript.hook_text, 'hook');
+        if (lastScript.title) lastScript.title = softenAdText(lastScript.title, 'başlık');
+        const check = validateViewerFirstScript(lastScript);
+        if (check.ok) {
+          console.warn(
+            `[script] sağlayıcı zinciri düştü (${String(err?.message || err).slice(0, 70)}) — ` +
+            `önceki denemedeki GERÇEK script kurtarıldı (${salvage.words} kelime, ${lastScript.scenes.length} sahne).`,
+          );
+          return {
+            ...lastScript,
+            shortNarration: salvage.ok ? undefined : true, // TTS süre kurtarma sinyali
+            viewerFirstValidation: check,
+            format: format.key,
+            viralTemplate: viralTemplate?.key || null,
+            normalizedTopic: normalizeTopic(lastScript.topic),
+            aiProvider: getProviderRun(),
+          };
+        }
+        console.warn(`[script] kurtarma reddedildi (yayın kapısı): ${check.failures.join(', ')}`);
+      }
       // A generic local script used to let a provider outage become a 10-scene
       // AI slideshow (and even reused the same non-hook). Do not spend render
       // time or publish a video when no model has supplied factual, scene-level
