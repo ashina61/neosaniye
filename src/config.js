@@ -353,7 +353,10 @@ export const config = {
     // Tavan 135→150: yedek LLM'ler (OpenRouter free) Gemini/Groq düşünce daha
     // verbose ~140-147 kelime üretiyordu ve 135 tavanı 5 denemede tutmayıp üretimi
     // sert-fail ediyordu. 150 kelime ≈ 50s (maxDurationSeconds=58 içinde).
-    maxNarrationWords: Number(process.env.CONTENT_MAX_WORDS || 150),
+    // ÜST SINIR 58s AUDIO_TOO_LONG kapısının ALTINDA kalmalı. 150 kelime yavaş
+    // TTS kategorilerinde (human body +3% hız) 60.9s'e çıkıp üretimi kırdı →
+    // 138'e çekildi (~56s en yavaşta, güvenli). min 120 ile ~46-56s aralığı (>45sn).
+    maxNarrationWords: Number(process.env.CONTENT_MAX_WORDS || 138),
     minDurationSeconds: Number(process.env.CONTENT_MIN_SECONDS || 35),
     maxDurationSeconds: Number(process.env.CONTENT_MAX_SECONDS || 58),
   },
