@@ -81,10 +81,15 @@ export async function synthesizeEdge(text, {
 
   await writeFile(textPath, text, 'utf8');
 
+  // NOT: rate/pitch NEGATİF olabilir (ör. süre kurtarma "-4%", pitch "-2Hz").
+  // edge-tts argparse tabanlı: '--rate', '-4%' ayrı argv geçilince '-4%' bir
+  // BAYRAK sanılıp usage hatası veriyordu (pozitif '+18%' hep çalışıyordu çünkü
+  // '+' bayrak değil). '--rate=-4%' TEK argv formu, '=' sonrasını değer sayar →
+  // negatif değerler güvenle geçer.
   const args = [
     '--voice', voice,
-    '--rate', rate,
-    '--pitch', pitch,
+    `--rate=${rate}`,
+    `--pitch=${pitch}`,
     '--file', textPath,
     '--write-media', audioPath,
     '--write-subtitles', subtitlePath,
