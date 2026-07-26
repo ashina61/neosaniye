@@ -47,11 +47,15 @@ test('zaman işaretleri uydurulmaz, metinden çıkarılır', () => {
   assert.equal(extractTimeMarks('30 years later, after 200 years of silence').length, 2);
 });
 
-test('şablon kütüphanesi 14 hikâye + sayım + dolgu', () => {
-  assert.equal(STORY_TEMPLATES.length, 16);
+test('şablon kütüphanesi 14 hikâye + sayım + dolgu + 4 V3 aktif şablonu', () => {
+  assert.equal(STORY_TEMPLATES.length, 20);
   for (const t of ['communication', 'cause_effect', 'chain_reaction', 'timeline',
     'navigation', 'problem_solution']) {
     assert.ok(STORY_TEMPLATES.includes(t), `${t} eksik`);
+  }
+  // V3 (§4): eylem anlatan cümlelerin gideceği yer.
+  for (const t of ['filtering', 'reconstruct', 'retrieval', 'emotion_link']) {
+    assert.ok(STORY_TEMPLATES.includes(t), `V3 şablonu eksik: ${t}`);
   }
 });
 

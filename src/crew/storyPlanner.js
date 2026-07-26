@@ -151,6 +151,55 @@ const TEMPLATES = {
     viewerTask: 'Spot how it gets around it',
     actorFromFocus: true,
   },
+  // ---- V3 ŞABLONLARI (§4) ----
+  // Hepsi AKTİF anlatım içindir: ekranda bir şey OLUR, sadece durmaz.
+  //
+  // FİLTRELEME — "beyin önemsiz ayrıntıları eler". Eski davranışta bu cümle
+  // atmosphere'a düşüyor ve ekranda bir bilim insanı hologramına bakıyordu.
+  // İzleyicinin göreceği şey: çok sayıda kart, önemliler parlak kalır,
+  // önemsizler soluklaşıp kaybolur, sayaç azalır.
+  filtering: {
+    composition:
+      'many small information cards or fragments spread across a dark uncluttered '
+      + 'field, a few of them clearly brighter and sharper than the rest, '
+      + 'the dim ones fading toward the edges, no text',
+    camera: { start: 'wide', end: 'detail', motivation: 'watch-what-survives' },
+    viewerTask: 'Watch what gets kept',
+    actorFromFocus: true,
+  },
+  // YENİDEN KURMA — "eksik anıyı tamamlar". Parçalanmış görüntü, boşluklar,
+  // parçaların sırayla yerleşmesi, son parçanın TAHMİN olduğu belli olacak.
+  reconstruct: {
+    composition:
+      'a fragmented image broken into irregular pieces with visible gaps between '
+      + 'them, several pieces missing entirely, the empty slots clearly outlined, '
+      + 'plain background, no text',
+    camera: { start: 'detail', end: 'wide', motivation: 'watch-it-complete' },
+    viewerTask: 'Spot the piece that was guessed',
+    actorFromFocus: true,
+  },
+  // GERİ ÇAĞIRMA — "veri deposundan kayıt bulunur". Depolama blokları, sorgu,
+  // doğru bloğun aydınlanması, verinin merkeze taşınması.
+  retrieval: {
+    composition:
+      'a grid of identical storage blocks filling the frame, one single block '
+      + 'clearly brighter and isolated from the others, clean geometric layout, '
+      + 'even lighting, no text',
+    camera: { start: 'wide', end: 'detail', motivation: 'find-the-record' },
+    viewerTask: 'Find the one that lights up',
+    actorFromFocus: true,
+  },
+  // DUYGU BAĞI — "anılar duyguyla bağlanır". Merkezde anı, çevresinde bağlanan
+  // düğümler; bağlantılar SIRAYLA oluşur (tek karede hepsi değil).
+  emotion_link: {
+    composition:
+      'one central subject with several distinct smaller elements arranged around '
+      + 'it at clear distances, empty space between them so connections can be '
+      + 'drawn, plain uncluttered background, no text',
+    camera: { start: 'detail', end: 'wide', motivation: 'watch-links-form' },
+    viewerTask: 'Watch what connects to it',
+    actorFromFocus: true,
+  },
   // Yapı çıkarılamayan sahne: hikâye zorlanmaz, güzel ama SAKİN bir kadraj.
   atmosphere: {
     composition: null, // image_prompt'a dokunma
@@ -227,6 +276,55 @@ const OVERRIDES = [
 ];
 
 /**
+ * ================== ATMOSPHERE KAÇIŞI (§3) ==================
+ *
+ * brain-vs-ai-memory videosunda 10 sahnenin 9'u `atmosphere` sınıfına düştü.
+ * Sonuç, izleyicinin gördüğü şeydi: bilim insanı holograma bakıyor → sunucu
+ * odası → mavi beyin → tekrar bilim insanı. Anlatım eylemden söz ediyordu
+ * ("beyin ayrıntıları filtreler", "AI kaydı geri çağırır") ama ekranda hiçbir
+ * eylem yoktu, çünkü sınıflandırıcı sessiz kalınca sahne "güzel ama sakin
+ * kadraj" oluyordu.
+ *
+ * YENİ KURAL: içinde EYLEM, KARŞILAŞTIRMA, DEĞİŞİM, FİLTRELEME, SEÇİM,
+ * AKTARIM, DÖNÜŞÜM, SEBEP-SONUÇ ya da SÜREÇ bulunan cümle atmosphere OLAMAZ.
+ * atmosphere yalnızca kısa establishing shot, duygu geçişi, ortam tanıtımı ve
+ * final nefes alan plan için kalır.
+ *
+ * Sıra önemlidir: ilk eşleşen kazanır, en belirgin yapı en üstte.
+ */
+const ACTION_SIGNALS = [
+  { template: 'filtering', re: /\b(filters?|filtered|filtering|discards?|discarded|ignores?|screens? out|weeds? out|prunes?|keeps? only|throws? away|sifts?|sorts? out)\b/i },
+  { template: 'retrieval', re: /\b(retrieves?|retrieval|recalls?|looks? up|searches?|queries|queried|fetch(?:es|ed)?|pulls? up|finds? the record|stored? (?:data|records?))\b/i },
+  { template: 'reconstruct', re: /\b(reconstructs?|rebuilds?|fills? (?:in|the gaps?)|pieces? together|completes? the|restores?|patches?|gaps?|missing (?:pieces?|parts?|details?))\b/i },
+  { template: 'emotion_link', re: /\b(links?|linked|linking|connects?|connected|associat\w+|ties? (?:to|together)|bound (?:to|up)|attached to)\b/i },
+  { template: 'comparison', re: /\b(unlike|whereas|in contrast|compared (?:with|to)|instead of|versus|vs\.?|while (?:humans?|we|most|ai)|but (?:humans?|we|most|ai)|neither|both)\b/i },
+  { template: 'timeline', re: /\b(changes? over time|over the years|as time passes|later|decades?|gradually|slowly (?:becomes?|turns?)|ages?|fades? with)\b/i },
+  { template: 'cause_effect', re: /\b(causes?|caused|triggers?|triggered|leads? to|led to|results? in|because|so that|which makes?)\b/i },
+  { template: 'flow', re: /\b(moves?|travels?|carries|carried|transfers?|transferred|sends?|passes? (?:through|to)|flows?|delivers?)\b/i },
+  { template: 'mechanism', re: /\b(works? by|process|processes|converts?|transforms?|turns? into|becomes?|encodes?|decodes?|breaks? down|builds? up)\b/i },
+  { template: 'quantity', re: /\b\d[\d,.]*\s*(?:gb|tb|mb|kg|km|percent|%|times|million|billion|thousand)\b/i },
+];
+
+/**
+ * Cümle bir EYLEM anlatıyor mu? Anlatıyorsa hangi şablon?
+ * @param {string} text
+ * @returns {string|null} şablon adı ya da null
+ */
+export function activeTemplateFor(text = '') {
+  for (const a of ACTION_SIGNALS) if (a.re.test(text)) return a.template;
+  return null;
+}
+
+/** Bir cümlenin "eylem yoğunluğu" — tavan aşıldığında hangi sahnenin önce
+ *  yeniden sınıflandırılacağını seçmek için. Kaç ayrı sinyal eşleşiyor? */
+export function actionDensity(text = '') {
+  return ACTION_SIGNALS.reduce((n, a) => n + (a.re.test(text) ? 1 : 0), 0);
+}
+
+/** Bir videoda atmosphere sahnelerinin izin verilen en yüksek oranı. */
+export const MAX_ATMOSPHERE_SHARE = 0.20;
+
+/**
  * Bir sahne için görsel hikâye planı.
  * @param {object} scene {narration, image_prompt}
  * @param {number} index
@@ -270,6 +368,10 @@ export function planScene(scene = {}, index = 0) {
   // "Between 1969 and 2024..." cümlesinde sınıflandırıcı yılları sayı sanıp
   // sayaç şablonu seçiyordu — ekranda "2.024" diye dolan bir ölçek anlamsız.
   if (marks.length >= 2 && (!template || template === 'quantity')) template = 'timeline';
+  // ATMOSPHERE'A DÜŞMEDEN ÖNCE SON SORU: bu cümle bir EYLEM anlatıyor mu?
+  // Anlatıyorsa sakin kadraj yanlış cevaptır — izleyici anlatılan şeyi
+  // göremeyecek demektir.
+  if (!template) template = activeTemplateFor(narration);
   if (!template) template = 'atmosphere';
   const spec = TEMPLATES[template] || TEMPLATES.atmosphere;
 
@@ -345,6 +447,45 @@ export function planVisualStory(script = {}) {
     counts[plan.story_template] = (counts[plan.story_template] || 0) + 1;
   });
 
+  // ---- ATMOSPHERE TAVANI (§3): en fazla %20 ----
+  //
+  // Tek tek bakıldığında her sahne haklı olarak atmosphere olabilir; toplamda
+  // videonun %90'ı atmosphere olduğunda ortaya "güzel görseller slayt gösterisi"
+  // çıkar. Tavan aşılırsa EN EYLEM YOĞUN atmosphere sahneleri yeniden
+  // sınıflandırılır — en zayıf olanlar değil, çünkü amaç en çok kazandıracak
+  // sahneyi kurtarmak.
+  const reclassified = [];
+  const limit = Math.max(1, Math.floor(scenes.length * MAX_ATMOSPHERE_SHARE));
+  let atmosphereIdx = scenes
+    .map((sc, i) => ({ i, sc, density: actionDensity(sc.narration || '') }))
+    .filter((x) => x.sc.story_template === 'atmosphere');
+
+  if (atmosphereIdx.length > limit) {
+    // Eylem yoğunluğu YÜKSEK olan önce kurtarılır; hiç sinyali olmayanlar
+    // gerçekten sakin sahnelerdir ve atmosphere olarak kalmayı hak eder.
+    atmosphereIdx.sort((a, b) => b.density - a.density);
+    const toFix = atmosphereIdx.filter((x) => x.density > 0).slice(0, atmosphereIdx.length - limit);
+    for (const { i, sc } of toFix) {
+      const forced = activeTemplateFor(sc.narration || '');
+      if (!forced || forced === 'atmosphere') continue;
+      const spec = TEMPLATES[forced];
+      counts.atmosphere -= 1;
+      counts[forced] = (counts[forced] || 0) + 1;
+      sc.story_template = forced;
+      sc.viewer_task = spec.viewerTask;
+      sc.camera_plan = spec.camera;
+      sc.story_beat = { kind: 'story', payload: {}, template: forced };
+      if (spec.composition && sc.image_prompt) {
+        sc.image_prompt = `${spec.composition}. ${sc.image_prompt}`;
+        composed += 1;
+      }
+      reclassified.push({ scene: i, to: forced });
+    }
+  }
+
+  const atmosphereOnly = counts.atmosphere || 0;
+  const atmosphereShare = scenes.length ? +(atmosphereOnly / scenes.length).toFixed(2) : 0;
+
   return {
     script,
     stats: {
@@ -352,9 +493,19 @@ export function planVisualStory(script = {}) {
       composed,                       // kompozisyonu hikâyeye göre kısıtlanan sahne
       byTemplate: counts,
       viewerTasks: scenes.filter((s) => s.viewer_task).length,
-      atmosphereOnly: counts.atmosphere || 0,
+      atmosphereOnly,
+      atmosphereShare,
+      atmosphereCapExceeded: atmosphereShare > MAX_ATMOSPHERE_SHARE,
+      reclassified,
     },
   };
 }
 
 export const STORY_TEMPLATES = Object.keys(TEMPLATES);
+
+/**
+ * Şablon tanımları — semantik düzeltme turu bir sahneyi yükseltirken aynı
+ * kompozisyon/kamera/izleyici-görevi sözleşmesini kullanmak zorunda. İki yerde
+ * ayrı ayrı tanımlanan şablonlar zamanla birbirinden ayrılır.
+ */
+export const STORY_TEMPLATE_SPECS = TEMPLATES;

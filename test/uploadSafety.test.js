@@ -103,13 +103,54 @@ test('acil kalite kapısı bloke ederse upload YOK', () => {
   assert.equal(d.code, 'EMERGENCY_GATE');
 });
 
-test('yayın kapıları düşerse upload YOK', () => {
+test('EDİTORYAL kapılar düşse bile teknik sağlamsa YAYINLANIR (uyarıyla)', () => {
+  // V3 politikası: "QC cellat değil editördür." Editoryal kapı düşmesi videonun
+  // BOZUK olduğunu söylemez. Karar kodu bunu saklamaz: ALLOWED_WITH_QUALITY_WARNINGS.
   const d = resolveUploadPolicy({
     ...OK, cliUpload: true, env: {},
+    technicalGate: { technicalPublishReady: true, blockers: [], unverified: [] },
+    publishGates: { passed: false, failures: ['SEMANTIC_ACTION_INCOMPLETE: ortalama 0.07'] },
+  });
+  assert.equal(d.allowed, true, JSON.stringify(d));
+  assert.equal(d.code, 'ALLOWED_WITH_QUALITY_WARNINGS');
+  assert.equal(d.checks.editorialQualityPassed, false);
+});
+
+test('enforceEditorialGates ile eski SIKI davranış geri gelir', () => {
+  const d = resolveUploadPolicy({
+    ...OK, cliUpload: true, env: {},
+    technicalGate: { technicalPublishReady: true, blockers: [], unverified: [] },
     publishGates: { passed: false, failures: ['CAPTION_TOKENS_LOST'] },
+    enforceEditorialGates: true,
   });
   assert.equal(d.allowed, false);
   assert.equal(d.code, 'PUBLISH_GATES_FAILED');
+});
+
+test('TEKNİK kapı düşerse upload YOK (kalite ne olursa olsun)', () => {
+  for (const blocker of ['DECODE_FAILED', 'VIDEO_ALL_BLACK', 'AUDIO_SILENT',
+    'FINAL_VIDEO_HASH_MISMATCH: analiz edilen dosya yayınlanacak dosya değil',
+    'TIMELINE_ORDER_INVALID:OVERLAP', 'CAPTION_TEXT_DIVERGED: kapsama 0.4 < 0.85',
+    'FILE_MISSING_OR_EMPTY: 0 byte', 'NO_VIDEO_STREAM', 'INVALID_RESOLUTION: 1920x1080 dikey değil']) {
+    const d = resolveUploadPolicy({
+      ...OK, cliUpload: true, env: {},
+      technicalGate: { technicalPublishReady: false, blockers: [blocker], unverified: [] },
+      publishGates: { passed: true, failures: [] },
+    });
+    assert.equal(d.allowed, false, `${blocker} geçirdi`);
+    assert.equal(d.code, 'TECHNICAL_GATE_FAILED');
+    assert.match(d.reason, /UPLOAD BLOCKED/);
+  }
+});
+
+test('teknik kapı ölçülemediyse de upload YOK (fail-closed)', () => {
+  const d = resolveUploadPolicy({
+    ...OK, cliUpload: true, env: {},
+    technicalGate: { technicalPublishReady: false, blockers: [], unverified: ['FINAL_VIDEO_HASH'] },
+    publishGates: { passed: true, failures: [] },
+  });
+  assert.equal(d.allowed, false);
+  assert.match(d.reason, /doğrulanamadı:FINAL_VIDEO_HASH/);
 });
 
 test('kimlik bilgisi yoksa upload YOK', () => {

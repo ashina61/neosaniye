@@ -34,6 +34,20 @@
  * Talep varsa kapılar sırayla sorulur; biri bile geçilmezse upload yok.
  * Hiçbir eski config anahtarı, hiçbir yedek değer bu sırayı atlayamaz:
  * `resolveUploadPolicy` dışında upload'a izin veren başka kod yoktur.
+ *
+ * ================== V3: KAPI ≠ CELLAT ==================
+ * İlk sözleşme yayını güvene aldı ama başka bir uca savruldu: EDİTORYAL
+ * ölçütler de engelleyici yapıldı. Sonuç, üretimin tamamen durmasıydı —
+ * özne doğrulaması için model olmadığından o kapı HER koşuda düşüyor, semantik
+ * eylem eşiği üretimin ürettiğinin çok üstünde kalıyordu. Video üretiliyor,
+ * artifact'e yazılıyor, kimse görmüyor; geri bildirim olmadığı için sistem
+ * öğrenmiyordu.
+ *
+ * Artık iki ayrı soru var ve karıştırılmıyor:
+ *   TEKNİK    → "bu dosya izleyicinin ekranında düzgün oynar mı?"  ENGELLER.
+ *   EDİTORYAL → "bu video yeterince iyi mi?"                       ENGELLEMEZ.
+ * Editoryal sonuç raporlanır ve `PUBLISHING WITH QUALITY WARNINGS` olarak
+ * loglanır; `enforceEditorialGates: true` ile eski sıkı davranış geri gelir.
  */
 
 const TRUE_RE = /^(1|true|yes|on)$/i;
@@ -61,7 +75,10 @@ export const UPLOAD_BLOCKED_MESSAGE = 'UPLOAD BLOCKED: manual approval is requir
  * @param {boolean} input.preflightOk          teknik preflight geçti mi
  * @param {object|null} input.qc               retention QC sonucu (yoksa null)
  * @param {object|null} [input.emergencyGate]  acil kalite kapısı sonucu
- * @param {object|null} [input.publishGates]   yayın kapıları (subject/caption/list…)
+ * @param {object|null} [input.technicalGate]  evaluateTechnicalPublishGate çıktısı
+ * @param {object|null} [input.publishGates]   EDİTORYAL kapılar — varsayılan olarak
+ *   yayını DURDURMAZ (aşağıdaki nota bak)
+ * @param {boolean} [input.enforceEditorialGates] editoryal kapılar da engellesin mi
  * @returns {{allowed:boolean, requested:boolean, code:string, reason:string,
  *            checks:object}}
  */
@@ -72,7 +89,9 @@ export function resolveUploadPolicy({
   preflightOk = false,
   qc = null,
   emergencyGate = null,
+  technicalGate = null,
   publishGates = null,
+  enforceEditorialGates = false,
 } = {}) {
   const autoUpload = envFlag(env.AUTO_UPLOAD);
   const requireApproval = envFlag(env.REQUIRE_MANUAL_APPROVAL) !== false; // varsayılan TRUE
@@ -95,7 +114,9 @@ export function resolveUploadPolicy({
     qcPresent: Boolean(qc),
     qcPassed: null,
     emergencyBlock: Boolean(emergencyGate?.block),
+    technicalPublishReady: null,
     publishGatesPassed: null,
+    editorialQualityPassed: null,
   };
 
   const deny = (code, reason) => ({ allowed: false, requested, code, reason, checks });
@@ -131,16 +152,48 @@ export function resolveUploadPolicy({
     return deny('EMERGENCY_GATE', `UPLOAD BLOCKED: ${(emergencyGate.blocking || []).join(', ')}`);
   }
 
-  // ---- 7) YAYIN KAPILARI (subject/caption/liste/CTA…) ----
+  // ---- 7) TEKNİK YAYIN KAPISI (TEK ENGELLEYİCİ OTORİTE) ----
+  //
+  // "QC cellat değil editördür": yayını yalnızca TEKNİK olarak bozuk video
+  // durdurur. Dosya açılmıyor, akış yok, tamamen siyah/sessiz, hash tutmuyor,
+  // sahne sırası kırık, altyazı metni TTS'ten kopmuş — bunlar izleyicinin
+  // ekranında somut arızadır. Kalite görüşü burada karar vermez.
+  if (technicalGate) {
+    checks.technicalPublishReady = technicalGate.technicalPublishReady === true;
+    if (technicalGate.technicalPublishReady !== true) {
+      const why = [...(technicalGate.blockers || []),
+        ...(technicalGate.unverified || []).map((u) => `doğrulanamadı:${u}`)];
+      return deny('TECHNICAL_GATE_FAILED', `UPLOAD BLOCKED: ${why.join(', ') || 'teknik kapı geçilemedi'}`);
+    }
+  }
+
+  // ---- 8) EDİTORYAL KAPILAR — VARSAYILAN OLARAK ENGELLEMEZ ----
+  //
+  // Semantik eylem skoru, görsel çeşitlilik, özne doğrulaması, retention…
+  // Bunlar videonun BOZUK olduğunu söylemez, "daha iyi olabilirdi" der.
+  // Engel yapıldıklarında kanal tamamen durmuştu: her koşu üretiyor, hiçbiri
+  // yayınlanmıyordu — dolayısıyla hiç geri bildirim, dolayısıyla hiç öğrenme.
+  // Sonuç RAPORLANIR (checks + PUBLISHING WITH QUALITY WARNINGS logu) ama
+  // yayını durdurmaz. Sıkı davranış isteyen çağıran enforceEditorialGates ile
+  // eski davranışı açıkça geri alabilir.
   if (publishGates) {
     checks.publishGatesPassed = publishGates.passed === true;
-    if (publishGates.passed !== true) {
+    checks.editorialQualityPassed = publishGates.passed === true;
+    if (enforceEditorialGates && publishGates.passed !== true) {
       return deny('PUBLISH_GATES_FAILED',
         `UPLOAD BLOCKED: ${(publishGates.failures || []).join(', ') || 'yayın kapıları geçilemedi'}`);
     }
   }
 
-  return { allowed: true, requested: true, code: 'ALLOWED', reason: 'tüm kapılar geçildi', checks };
+  return {
+    allowed: true,
+    requested: true,
+    code: checks.editorialQualityPassed === false ? 'ALLOWED_WITH_QUALITY_WARNINGS' : 'ALLOWED',
+    reason: checks.editorialQualityPassed === false
+      ? 'teknik kapılar geçildi; editoryal uyarılarla yayınlanıyor'
+      : 'tüm kapılar geçildi',
+    checks,
+  };
 }
 
 /** Kararı okunur biçimde logla (her kapı ayrı satır — tek skorla maskelenmez). */
@@ -152,7 +205,10 @@ export function logUploadDecision(decision, logger = console) {
     `kimlik:${c.hasCredentials ? '✓' : '✗'} preflight:${c.preflightOk ? '✓' : '✗'} ` +
     `qcVar:${c.qcPresent ? '✓' : '✗'} qcGeçti:${c.qcPassed === null ? '—' : c.qcPassed ? '✓' : '✗'} ` +
     `acilKapı:${c.emergencyBlock ? 'BLOKE' : '✓'} ` +
-    `yayınKapıları:${c.publishGatesPassed === null ? '—' : c.publishGatesPassed ? '✓' : '✗'}`,
+    `teknik:${c.technicalPublishReady === null ? '—' : c.technicalPublishReady ? '✓' : '✗'} ` +
+    `editoryal:${c.editorialQualityPassed === null ? '—' : c.editorialQualityPassed ? '✓' : '✗'}`,
   );
   if (!decision.allowed) logger.error(decision.reason);
+  // Kalitesi düşük ama teknik olarak sağlam video YAYINLANIR — sessizce değil.
+  else if (c.editorialQualityPassed === false) logger.warn('PUBLISHING WITH QUALITY WARNINGS');
 }

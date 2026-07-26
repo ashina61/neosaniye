@@ -8,7 +8,8 @@ const execFileAsync = promisify(execFile);
 import { generateScript } from '../script/generateScript.js';
 import { evaluateMeasuredDuration } from './durationPolicy.js';
 import { directVisuals, applyShotList } from '../crew/visualDirector.js';
-import { planVisualStory } from '../crew/storyPlanner.js';
+import { planVisualStory, MAX_ATMOSPHERE_SHARE } from '../crew/storyPlanner.js';
+import { repairSemanticActions } from './semanticRepair.js';
 import { planEdit } from '../crew/editorDirector.js';
 import { analyzePerformance } from '../crew/analyst.js';
 import { generateAudio } from '../tts/generateAudio.js';
@@ -44,6 +45,7 @@ import { evaluateEmergencyQualityGate } from './emergencyQualityGate.js';
 import { buildCanonicalTimeline, expandTimelineForMedia } from './canonicalTimeline.js';
 import { validatePacing, validateViewerFirstScript } from './viewerFirstValidation.js';
 import { resolveUploadPolicy, logUploadDecision, UPLOAD_BLOCKED_MESSAGE } from './uploadPolicy.js';
+import { evaluateTechnicalPublishGate, decidePublish, logPublishDecision } from './technicalPublishGate.js';
 import { validateFinalVideo } from './finalVideoValidator.js';
 import { buildRunIntegrity } from './runIntegrity.js';
 import { evaluatePublishGates } from './publishGates.js';
@@ -238,6 +240,43 @@ export async function runPipeline(opts = {}) {
       `(${Object.entries(storyPlan.stats.byTemplate).map(([k, v]) => `${k}:${v}`).join(' ')}) ` +
       `| izleyici görevi: ${storyPlan.stats.viewerTasks}`,
     );
+    if (storyPlan.stats.atmosphereCapExceeded) {
+      console.warn(`  ⚠️ atmosphere oranı ${storyPlan.stats.atmosphereShare} (tavan ${MAX_ATMOSPHERE_SHARE}) `
+        + `— ${storyPlan.stats.reclassified.length} sahne aktif şablona çekildi.`);
+    }
+
+    // ---- SEMANTİK OTOMATİK DÜZELTME (§15) — RENDER'DAN ÖNCE, TEK TUR ----
+    //
+    // QC artık cellat değil editör: düşük semantik skor cron'u durdurmaz,
+    // önce DÜZELTİLMEYE çalışılır. Ölçüm bu noktada plandan yapılır (odak ve
+    // aktörler henüz yok, onlar render sırasında ölçülüyor); amaç "bu sahne
+    // anlattığı eylemi barındıran bir kadraj mı istiyor" sorusunu görsel
+    // ÜRETİLMEDEN ÖNCE yanıtlamak. Görsel üretildikten sonra düzeltmek,
+    // yeniden üretim demek olurdu.
+    const planSemantics = assessSemanticActions(
+      (script.scenes || []).map((sc) => ({
+        narration: sc.narration,
+        template: sc.story_template,
+        focus: null,
+        hasSequence: false,
+        actors: [],
+      })),
+    );
+    const semanticRepairResult = repairSemanticActions(script, planSemantics);
+    if (semanticRepairResult.attempted) {
+      console.log(`  [semantik-onarım] ${semanticRepairResult.reason}`);
+      for (const c of semanticRepairResult.changedScenes) {
+        console.log(`     sahne ${c.scene}: ${c.from} → ${c.to}`);
+      }
+      // Atlananlar GİZLENMEZ: neyin düzeltilemediğini bilmek, sonraki turda
+      // neyi geliştirmek gerektiğini söyler.
+      for (const sk of semanticRepairResult.skipped.slice(0, 4)) {
+        console.log(`     sahne ${sk.scene} atlandı: ${sk.reason}`);
+      }
+      if (semanticRepairResult.qualityDegraded) {
+        console.warn('  [semantik-onarım] quality_degraded=true — mevcut güvenli plan ile devam.');
+      }
+    }
 
     // 3) Görsel (sahne başına AI görsel + Pexels/placeholder yedeği).
     // TEMPO: 4.3sn'yi aşan statik AI sahneleri İKİ farklı kadraja bölünür
@@ -617,6 +656,27 @@ export async function runPipeline(opts = {}) {
     }
 
 
+    // ALTYAZI + SEMANTİK EYLEM ÖLÇÜMÜ — retention puanı bunlara BAĞLI olduğu
+    // için QC'den ÖNCE hesaplanmak zorunda. (Aşağıya bırakıldığında TDZ hatası
+    // veriyordu: "Cannot access 'semanticActions' before initialization" —
+    // test/pipelineOrder.test.js bu sınıf hatayı statik olarak yakalıyor.)
+    const captionLayout = analyzeCaptionLayout(audio.wordTimings || [], {
+      emphasisWords: script.emphasis_words || [],
+    });
+    const captionIntegrity = validateCaptionIntegrity({
+      events: captionLayout.events,
+      ttsText: (script.scenes || []).map((s) => s.narration).join(' '),
+    });
+    const semanticActions = assessSemanticActions(
+      (script.scenes || []).map((s, i) => ({
+        narration: s.narration,
+        template: s.story_template,
+        focus: video.sceneFocus?.[i] || null,
+        hasSequence: media.items.some((m) => m.scene === i && m.sequence),
+        actors: (video.actorsByScene?.[i]) || [],
+      })),
+    );
+
     const qc = await runRetentionQC({
       script,
       wordTimings: audio.wordTimings,
@@ -624,6 +684,13 @@ export async function runPipeline(opts = {}) {
       itemSeconds,
       itemTypes: media.items.map((m) => m.type),
       itemSources: media.items.map((m) => m.source),
+      // §7: türev klipler (#b/#c) yeni plan sayılmasın diye TEMEL varlık kimliği.
+      itemAssetIds: media.items.map((m) => m.assetId || m.path),
+      // §14: puanın gerçeği tarif etmesi için editoryal ölçümler skora girer.
+      semanticActionAverage: semanticActions?.average ?? null,
+      captionReadability: captionLayout?.readability?.ok ?? null,
+      finalVideoStructuralFailure: (finalVideo?.failures || [])
+        .some((f) => /UNREADABLE|TIMELINE_ORDER_INVALID|DURATION_MISMATCH/.test(String(f))),
       itemRelevance,
       editPlan,
       timeline: renderTimeline,
@@ -693,22 +760,6 @@ export async function runPipeline(opts = {}) {
     // Her kapı AYRI ölçülür. Sea cucumbers videosu retention'dan 84/100 aldı;
     // ortalama iyi göründüğü için altındaki kritik hatalar görünmedi. Tek
     // skorla maskeleme yok: bir kapı düşerse video yayınlanmaz.
-    const captionLayout = analyzeCaptionLayout(audio.wordTimings || [], {
-      emphasisWords: script.emphasis_words || [],
-    });
-    const captionIntegrity = validateCaptionIntegrity({
-      events: captionLayout.events,
-      ttsText: (script.scenes || []).map((s) => s.narration).join(' '),
-    });
-    const semanticActions = assessSemanticActions(
-      (script.scenes || []).map((s, i) => ({
-        narration: s.narration,
-        template: s.story_template,
-        focus: video.sceneFocus?.[i] || null,
-        hasSequence: media.items.some((m) => m.scene === i && m.sequence),
-        actors: (video.actorsByScene?.[i]) || [],
-      })),
-    );
     const listStructure = assessListStructure(script);
     const ctaReport = assessCta({
       ctaStart: video.ctaCue?.atSeconds ?? null,
@@ -765,10 +816,30 @@ export async function runPipeline(opts = {}) {
         actors: (video.actorsByScene?.[i] || []).map((a) => a.type),
         focus: video.sceneFocus?.[i] || null,
       })), null, 2)).catch(() => {});
-    await writeFile(path.join(workDir, 'publish-gates.json'), JSON.stringify({
-      publishGates, finalVideo, runIntegrity, captionIntegrity, semanticActions,
-      listStructure, ctaReport, repetition, subjectBible: bible,
-    }, null, 2)).catch(() => {});
+
+    // TEKNİK YAYIN KAPISI — yayını durdurma yetkisi OLAN tek ölçüt kümesi.
+    // Yayınlanacak dosyanın kendi sha256'sı, doğrulayıcının incelediği hash ile
+    // karşılaştırılır: kapıların hangi dosyaya baktığı belirsizse hiçbir kararın
+    // anlamı yoktur.
+    const publishHash = runIntegrity?.parts?.finalVideo || finalVideo?.analyzedVideoHash || null;
+    const technicalGate = await evaluateTechnicalPublishGate({
+      videoPath: outPath,
+      preflight: pf,
+      finalVideo,
+      expectedVideoHash: publishHash,
+      captionIntegrity,
+    }).catch((err) => {
+      // Teknik kapı ÇALIŞAMADIYSA geçti sayılmaz (fail-closed): ölçütlerin
+      // hepsi ucuz ve deterministik, çalışmaması bir arıza işaretidir.
+      console.warn(`[teknik-kapı] çalıştırılamadı: ${String(err.message).slice(0, 90)}`);
+      return { technicalPublishReady: false, blockers: ['TECHNICAL_GATE_ERROR'], unverified: [], checks: {} };
+    });
+    const publishVerdict = decidePublish({
+      technical: technicalGate,
+      publishGates,
+      cronPublishingEnabled: true,
+    });
+    logPublishDecision(publishVerdict);
 
     const uploadDecision = resolveUploadPolicy({
       cliUpload: upload,
@@ -776,9 +847,24 @@ export async function runPipeline(opts = {}) {
       preflightOk: pf.ok,
       qc,
       emergencyGate: emergencyQuality,
+      technicalGate,
       publishGates,
     });
     logUploadDecision(uploadDecision);
+    await writeFile(path.join(workDir, 'publish-gates.json'), JSON.stringify({
+      // Görevde istenen üç alanlı sözleşme, raporun EN ÜSTÜNDE.
+      technicalPublishReady: publishVerdict.technicalPublishReady,
+      editorialQualityPassed: publishVerdict.editorialQualityPassed,
+      uploadAllowed: uploadDecision.allowed,
+      uploadDecisionCode: uploadDecision.code,
+      qualityWarnings: publishVerdict.qualityWarnings,
+      // §15 — düzeltme turunun ne yaptığı ve neyi düzeltemediği.
+      semanticRepair: semanticRepairResult,
+      qualityDegraded: semanticRepairResult.qualityDegraded === true,
+      technicalGate,
+      publishGates, finalVideo, runIntegrity, captionIntegrity, semanticActions,
+      listStructure, ctaReport, repetition, subjectBible: bible,
+    }, null, 2)).catch(() => {});
     let canUpload = uploadDecision.allowed;
     if (!canUpload && uploadDecision.requested) {
       await recordPublicationBlock(qc, workDir,

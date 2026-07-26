@@ -35,14 +35,19 @@ on:
         default: false
   schedule:
     # 14 GÜNLÜK ABD-İZLEYİCİ DENEYİ (us-audience-3-slots-v1): günde 3 sabit
-    # slot — 15:00 / 20:00 / 02:00 UTC (TR yaz: 18:00 / 23:00 / 05:00).
-    # Deney süresince saatler DEĞİŞTİRİLMEZ (docs/publishing-experiment.md).
-    # Dakika +2 offset: GitHub tam saat (XX:00) tick'lerini iki kez yuttu —
-    # slot kimliği yine 15:00/20:00/02:00, tespit scheduleExperiment.js'te.
-    # 02:00 UTC koşusu bir önceki UTC içerik gününün 3. slotudur.
-    - cron: "2 15 * * *" # slot 15:00 UTC — ABD Doğu 11:00 / Pasifik 08:00
-    - cron: "2 20 * * *" # slot 20:00 UTC — ABD Doğu 16:00 / Pasifik 13:00
-    - cron: "2 2 * * *"  # slot 02:00 UTC — ABD Doğu 22:00 / Pasifik 19:00 (önceki içerik günü)
+    # slot — 13:00 / 18:00 / 23:00 UTC. Karşılıkları scheduleExperiment.js'te:
+    # SABAH / ÖĞLEDEN SONRA / AKŞAM (ET).
+    #
+    # BURADAKİ SAATLER KODLA AYNI OLMAK ZORUNDA. Workflow 15/20/02'de
+    # koşarken kod 13/18/23 bekliyordu; detectSlot gecikme toleranslı olduğu
+    # için 15:02 koşusunu "2 saat gecikmiş 13:00 slotu" sayıyor ve sessizce
+    # kabul ediyordu. Sonuç: deney boyunca her koşu YANLIŞ slota kaydedildi,
+    # yani "hangi saat daha iyi tutuyor" sorusunun verisi bozuktu.
+    #
+    # Dakika +2 offset: GitHub tam saat (XX:00) tick'lerini iki kez yuttu.
+    - cron: "2 13 * * *" # slot 13:00 UTC — ET 08:00/09:00 → SABAH
+    - cron: "2 18 * * *" # slot 18:00 UTC — ET 13:00/14:00 → ÖĞLEDEN SONRA
+    - cron: "2 23 * * *" # slot 23:00 UTC — ET 18:00/19:00 → AKŞAM
 
 concurrency:
   group: daily-short

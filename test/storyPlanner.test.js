@@ -60,10 +60,14 @@ test('metin override\'ı beat sınıfını EZER', () => {
 });
 
 test('her şablonun kamera planı ve tanımı var', () => {
-  // audit §3.2'nin 14 şablonu + sayım (quantity) + dolgu (atmosphere).
+  // audit §3.2'nin 14 şablonu + sayım (quantity) + dolgu (atmosphere)
+  // + V3'ün dört aktif anlatım şablonu (filtering/reconstruct/retrieval/
+  // emotion_link). V3'te eklendiler çünkü "beyin ayrıntıları filtreler" gibi
+  // apaçık eylem cümleleri karşılıksız kalıp atmosphere'a düşüyordu.
   const KNOWN = ['mechanism', 'flow', 'comparison', 'scale', 'search_reveal',
     'construction', 'map', 'chain', 'quantity', 'communication', 'cause_effect',
-    'chain_reaction', 'timeline', 'navigation', 'problem_solution', 'atmosphere'];
+    'chain_reaction', 'timeline', 'navigation', 'problem_solution',
+    'filtering', 'reconstruct', 'retrieval', 'emotion_link', 'atmosphere'];
   for (const t of STORY_TEMPLATES) {
     assert.ok(KNOWN.includes(t), `bilinmeyen şablon: ${t}`);
   }

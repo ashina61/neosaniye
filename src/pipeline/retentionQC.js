@@ -1,6 +1,7 @@
 import { appendFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { config } from '../config.js';
+import { measureVisualNovelty } from './visualNovelty.js';
 import { analyzeCaptionLayout } from '../video/captionLayout.js';
 import {
   countPatternInterrupts,
@@ -205,6 +206,13 @@ export function evaluateRetention(input, cfg = config.retention) {
   }
 
   // ---------- E) GÖRSEL ÇEŞİTLİLİK + SEMANTİK ALAKA (10) ----------
+  //
+  // TÜREV KLİPLER SAYILMAZ. `photo-3`, `photo-3#b` ve `photo-3#c` üç plan
+  // değil, aynı fotoğrafta gezinen tek kameradır. Eskiden puan klip sayısına
+  // bakıyordu ve 10 görselden türetilen 27 klibi "çeşitli" sayıyordu.
+  const novelty = measureVisualNovelty(
+    (input.itemAssetIds || []).map((assetId, i) => ({ assetId, source: sources[i] })),
+  );
   let variety = 0;
   const srcSet = new Set(sources);
   if (srcSet.size >= 3) variety += 3;
@@ -216,6 +224,12 @@ export function evaluateRetention(input, cfg = config.retention) {
     maxRun = Math.max(maxRun, run);
   }
   if (maxRun <= 3 || (sources[0] === 'stock' && maxRun === sources.length)) variety += 2;
+  // Aynı temel görselden ardışık ikiden fazla türev: her ihlal yarım puan.
+  if (novelty.violations.length) {
+    variety -= Math.min(3, novelty.violations.length * 0.5);
+    fixes.push(`${novelty.violations.length} yerde aynı temel görselin ${novelty.longestSameBaseRun} türevi arka arkaya `
+      + '— üçüncü mikro klip yerine overlay, diyagram ya da farklı kompozisyon koy.');
+  }
   if (!sources.includes('placeholder')) variety += 3;
   else failures.push('placeholder görsel üretimde — asset zinciri incelenmeli');
   // Semantik alaka: görseller cümleyi gerçekten açıklamalı (alakasız stok yasak).
@@ -323,10 +337,47 @@ export function evaluateRetention(input, cfg = config.retention) {
     audioDesign: clamp(audio, 0, 10),
     payoffAndLoop: clamp(payoff, 0, 10),
   };
-  const score = Object.values(parts).reduce((a, b) => a + b, 0);
+  const rawScore = Object.values(parts).reduce((a, b) => a + b, 0);
+
+  // ================== GERÇEKÇİLİK CEZALARI ==================
+  //
+  // brain-vs-ai-memory videosu 85/100 aldı. Aynı raporda staticShare 0.99,
+  // aiShare 1.0 ve semantik eylem ortalaması 0.07 yazıyordu: ekran neredeyse
+  // hiç değişmiyor, bütün görseller tek kaynaktan ve sahnelerin hiçbiri
+  // anlattığı eylemi göstermiyor. 85 puan bu videoyu tarif etmiyordu.
+  //
+  // Retention artık yayını ENGELLEMİYOR (V3 kararı) — tam da bu yüzden dürüst
+  // olmak zorunda. Engellemeyen bir ölçü yanlışsa hiçbir şey ifade etmez.
+  const penalties = [];
+  const caps = [];
+  const sem = Number.isFinite(input.semanticActionAverage) ? input.semanticActionAverage : null;
+  const noveltyRatio = novelty.derivedClipCount ? novelty.trueVisualNoveltyRatio : null;
+
+  if (staticShare > 0.90) penalties.push(['staticShare>0.90', 20]);
+  if (noveltyRatio != null && noveltyRatio < 0.50) penalties.push(['trueVisualNoveltyRatio<0.50', 12]);
+  if (input.captionReadability === false) penalties.push(['captionReadability=false', 8]);
+  if (sources.length >= 3 && new Set(sources).size === 1) penalties.push(['tek kaynak', 8]);
+  if (duration > 45 && infoDensityScore < 8) penalties.push(['süre>45 & bilgi yoğunluğu<8', 8]);
+
+  // TAVAN: semantik eylem yoksa video "iyi" olamaz. Ceza değil ÜST SINIR —
+  // diğer bileşenler ne kadar iyi olursa olsun toplam bunu aşamaz.
+  if (sem != null && sem < 0.30) caps.push(['semanticActionAverage<0.30', 55]);
+  else if (sem != null && sem < 0.60) caps.push(['semanticActionAverage<0.60', 70]);
+
+  const penaltyTotal = penalties.reduce((a, [, v]) => a + v, 0);
+  const capValue = caps.length ? Math.min(...caps.map(([, v]) => v)) : 100;
+  const score = Math.max(0, Math.min(capValue, rawScore - penaltyTotal));
+
+  // Final MP4 yapısal olarak bozuksa retention ÖLÇÜLEMEZ: ölçtüğümüz şeyin
+  // izleyicinin göreceği şey olduğuna dair güvencemiz yok.
+  const reliable = input.finalVideoStructuralFailure !== true;
 
   return {
     score,
+    rawScore,
+    scoreReliable: reliable,
+    scorePenalties: penalties.map(([reason, value]) => ({ reason, value })),
+    scoreCaps: caps.map(([reason, value]) => ({ reason, value })),
     parts,
     metrics: {
       firstSpeechMs,
@@ -355,6 +406,11 @@ export function evaluateRetention(input, cfg = config.retention) {
       captionReadability: capRead ? { previewPx: capRead.previewPx, ok: capRead.ok } : null,
       loop: { closed: loopClosed },
       visualRepetition: { longestSameSourceRun: srcMaxRun, aiShare },
+      // §7 sözleşmesi — türev klipler yeni plan sayılmaz.
+      baseAssetCount: novelty.baseAssetCount,
+      derivedClipCount: novelty.derivedClipCount,
+      trueVisualNoveltyRatio: novelty.trueVisualNoveltyRatio,
+      longestSameBaseRun: novelty.longestSameBaseRun,
       sourceMix: [...srcSet].join('+'),
       durationSeconds: +duration.toFixed(1),
       captionLayout: capLayout
@@ -554,7 +610,13 @@ export async function runRetentionQC(input, workDir, extras = {}) {
   // kapıları FAIL veriyordu. Raporun kendi sözlüğü yalan söylüyordu.
   const finalVideoOk = extras.finalVideo ? extras.finalVideo.ok === true : null;
   const productionReady = Boolean(technicalReady) && finalVideoOk !== false;
-  const blockUpload = !technicalReady || finalVideoOk === false;
+  // ENGEL YALNIZCA TEKNİK. Final MP4 doğrulayıcısının bulguları artık kendi
+  // başlarına yayını durdurmaz: içlerinde editoryal olanlar var (görsel tekrar
+  // uyarısı, plan dışı bindirme iddiası). Bunlardan TEKNİK olanları — dosya
+  // okunamıyor, sahne sırası kırık — technicalPublishGate ayrıca ve açıkça
+  // engelliyor. Burada iki kez engellemek, editoryal bulguyu teknik arıza gibi
+  // göstermek anlamına geliyordu ve kanalı kilitleyen zincirin halkasıydı.
+  const blockUpload = !technicalReady;
   const uploadAllowedByPolicy = !blockUpload;
   const status = disabled ? 'disabled' : execError ? 'error' : r.failures.length ? 'fail' : editorialReady ? 'pass' : 'warning';
 
@@ -689,10 +751,6 @@ export async function runRetentionQC(input, workDir, extras = {}) {
     // engelin sebebi de o değildi. Yanlış teşhis, hatayı aramayı zorlaştırdı.
     const causes = [];
     if (!technicalReady) causes.push('teknik preflight başarısız');
-    if (finalVideoOk === false) {
-      const ff = extras.finalVideo?.failures || [];
-      causes.push(`final MP4 doğrulaması başarısız${ff.length ? `: ${ff.slice(0, 4).join(', ')}` : ''}`);
-    }
     if (execError) causes.push(`QC kendisi hata verdi: ${execError}`);
     console.error(`[qc] ${cfg.mode.toUpperCase()} mod: ${causes.join(' + ')} — upload ENGELLENDİ.`);
     // Aşağıdakiler engelin sebebi değil ama karara EŞLİK eden bulgular;
