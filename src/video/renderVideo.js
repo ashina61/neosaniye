@@ -1270,16 +1270,11 @@ export async function renderVideo(job, opts = {}) {
           .slice(0, actorMax)
           .sort((a, b) => a.start - b.start);
       }
-      // Kart katmanı ayrıca sınırlıdır: ekranın üstünde duran panel sayısı
-      // arttıkça video yine "kart gösterisi"ne döner.
-      {
-        let cards = 0;
-        beats = beats.filter((b) => {
-          if (actorable(b)) return true;
-          cards += 1;
-          return cards <= max;
-        });
-      }
+      // NOT: kart sınırı BURADA uygulanamaz. Bir beat'in aktöre dönüşüp
+      // dönüşmeyeceği ancak odak ölçümünden SONRA belli olur; burada "aktör
+      // olacak" diye geçirdiğimiz beat, ölçüm tutmazsa karta düşüyordu.
+      // Canlıda sonuç 7 karttı (26 Tem, deniz hıyarı). Sınır artık
+      // planActors'tan SONRA, gerçek kart listesine uygulanıyor.
       // ODAK: "davranış" kompozisyonu görüntüdeki özneyi DAİRE İÇİNE alır.
       // Daireyi ancak konumu ÖLÇÜLDÜYSE çiziyoruz — focusDetect emin değilse
       // (her yeri eşit dokulu kare gibi) null döner ve daire hiç çizilmez.
@@ -1304,7 +1299,19 @@ export async function renderVideo(job, opts = {}) {
 
       // V3: önce AKTÖR koreografisi (kadrajın İÇİNDE durum değiştiren
       // elemanlar), aktöre çevrilemeyen beat'ler eski kart yoluna düşer.
-      const { actors, cardBeats, stats: actorStats } = planActors(beats);
+      const { actors, cardBeats: allCardBeats, stats: actorStats } = planActors(beats);
+      // KART TAVANI (aktör planından sonra, gerçek listeye). Kart kadrajın
+      // ÜSTÜNDE durur; sayısı arttıkça video "kart gösterisi"ne döner.
+      // En bilgilendirici tipler önce: sayı ve karşılaştırma bir kartla
+      // gerçekten anlatılır, konum/davranış çoğu zaman anlatılmaz.
+      const cardRank = { number: 0, compare: 1, process: 2, location: 3 };
+      const cardBeats = [...allCardBeats]
+        .sort((a, b) => (cardRank[a.kind] ?? 9) - (cardRank[b.kind] ?? 9) || a.start - b.start)
+        .slice(0, max)
+        .sort((a, b) => a.start - b.start);
+      if (allCardBeats.length > cardBeats.length) {
+        console.log(`[visual] ${allCardBeats.length - cardBeats.length} kart atlandı (tavan ${max}).`);
+      }
       const filters = [];
 
       const actorAss = buildActorAss(actors, { width, height });

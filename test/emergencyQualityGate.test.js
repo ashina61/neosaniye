@@ -28,7 +28,8 @@ function validInput() {
 }
 
 test('complete existing evidence passes the emergency gate', () => {
-  assert.deepEqual(evaluateEmergencyQualityGate(validInput()), { ok: true, block: false, failures: [], reasons: [] });
+  assert.deepEqual(evaluateEmergencyQualityGate(validInput()),
+    { ok: true, block: false, blocking: [], advisory: [], failures: [], reasons: [] });
 });
 
 test('missing/effectively empty captions block publication', () => {

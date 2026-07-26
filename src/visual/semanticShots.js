@@ -337,41 +337,16 @@ function behaviorShot(beat, cfg) {
     return focusHighlightShot(beat, cfg);
   }
 
-  const out = [];
-  const cy = Math.round((top + bottom) / 2);
-  const leftX = Math.round(CANVAS.w * 0.26);
-  const rightX = Math.round(CANVAS.w * 0.74);
-
-  // Özne rozeti (solda).
-  const sw = Math.min(400, 120 + esc(subject).length * 26);
-  out.push(D(4, 'SemShape', s, beat.end,
-    `{\\an5\\pos(${leftX},${cy})\\1c${assColor(CARD, '28')}\\bord0\\fad(140,180)` +
-    `\\fscx70\\t(0,220,\\fscx100)\\p1}` + roundRect(sw, 86, 20) + '{\\p0}'));
-  out.push(D(6, 'SemText', s, beat.end,
-    `{\\an5\\pos(${leftX},${cy})\\fs44\\fad(140,180)}`, esc(subject)));
-
-  // EYLEM OKU: soldan sağa GERÇEKTEN ilerler (hareket yönü).
-  const arrowLen = rightX - leftX - 180;
-  if (arrowLen > 40) {
-    const shaft = `m 0 -5 l ${arrowLen - 26} -5 l ${arrowLen - 26} -18 l ${arrowLen} 0 ` +
-      `l ${arrowLen - 26} 18 l ${arrowLen - 26} 5 l 0 5`;
-    out.push(D(5, 'SemShape', s + 0.25, beat.end,
-      `{\\an4\\move(${leftX + 70},${cy},${leftX + 90},${cy},0,320)\\1c${assColor(ACCENT)}` +
-      `\\bord0\\fad(160,180)\\fscx0\\t(0,420,\\fscx100)\\p1}` + shaft + '{\\p0}'));
-    // Eylem adı okun üstünde.
-    out.push(D(6, 'SemSmall', s + 0.3, beat.end,
-      `{\\an5\\pos(${Math.round((leftX + rightX) / 2)},${cy - 46})\\fs38\\1c${assColor(ACCENT)}\\fad(160,180)}`,
-      esc(action)));
-  }
-
-  // Sonuç noktası (sağda) — nabızla vurgulanır.
-  out.push(D(5, 'SemShape', s + 0.55, beat.end,
-    `{\\an5\\pos(${rightX + 40},${cy})\\1a&HFF&\\3c${assColor(ACCENT)}\\3a&H30&\\bord4` +
-    `\\fscx30\\fscy30\\t(0,700,\\fscx150\\fscy150\\3a&HFF&)\\p1}` + circlePath(30) + '{\\p0}'));
-  out.push(D(6, 'SemShape', s + 0.55, beat.end,
-    `{\\an5\\pos(${rightX + 40},${cy})\\1c${assColor(ACCENT)}\\bord0\\fad(160,180)\\p1}` +
-    circlePath(13) + '{\\p0}'));
-  return out;
+  // ODAK YOKSA HİÇBİR ŞEY ÇİZİLMEZ.
+  //
+  // Buradaki eski yedek plan ("ÖZNE rozeti → ok → sonuç noktası") canlıda tam
+  // olarak kullanıcının en baştan beri şikâyet ettiği şeyi üretiyordu: deniz
+  // hıyarı videosunda kabarcık fotoğrafının köşesinde tek başına duran
+  // "ORGANS" kutusu ve yanında okunmayan bir kelime (26 Tem, 0:04 ve 0:12).
+  // Kutu görselin İÇİNDEKİ hiçbir şeye bağlı değildi — çünkü öznenin nerede
+  // olduğu ölçülememişti. Bağlanamayan etiket bilgi taşımaz, ekranı kirletir.
+  void subject; void action; void top; void bottom; void s;
+  return [];
 }
 
 /* ------------------------------------------------------------------ *

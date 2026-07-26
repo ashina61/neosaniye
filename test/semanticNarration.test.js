@@ -75,7 +75,12 @@ test('her semantik tip ASS event üretir', () => {
     behavior: { subject: 'FISH', action: 'SIGNALS' },
   };
   for (const [kind, payload] of Object.entries(kinds)) {
-    const ev = beatEvents({ kind, payload, start: 0, end: 4 }, SAFE);
+    // behavior artık ÖLÇÜLMÜŞ odak olmadan hiçbir şey çizmez (aşağıdaki
+    // ayrı teste bakın): kadrajın içinde bir yere bağlanamayan etiket
+    // canlıda anlamsız bir kutu olarak görünüyordu.
+    const beat = { kind, payload, start: 0, end: 4 };
+    if (kind === 'behavior') beat.focus = { x: 0.6, y: 0.5, confidence: 2 };
+    const ev = beatEvents(beat, SAFE);
     assert.ok(ev.length > 0, `${kind} hiç event üretmedi`);
     assert.ok(!ev.join('').includes('undefined'), `${kind}: "undefined" sızdı`);
     assert.ok(!ev.join('').includes('NaN'), `${kind}: "NaN" sızdı`);

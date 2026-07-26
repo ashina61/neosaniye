@@ -551,12 +551,17 @@ export async function generateImages(script, opts = {}) {
             if (provider === 'pollinations') {
               const dest = path.join(mediaDir, `${idx}-ai.jpg`);
               const made = await generateAiImage(tryPrompt, dest, { width, height, seed: trySeed });
-              candidate = { path: dest, type: 'photo', scene: i, source: 'ai', provider: made.provider, assetId: `${script.normalizedTopic}:${i}:${trySeed}`, query: tryPrompt, model: config.images.pollinationsModel, generatedAt: new Date().toISOString(), rightsClass: 'ai-generated', license: null, licenseEvidence: null };
+              // PROVENANCE: kendi ürettiğimiz görselin "lisansı" bir üçüncü taraf
+              // belgesi değil, üretim kaydıdır — sağlayıcı + model + prompt +
+              // zaman. Bu alanlar null bırakıldığı için acil kalite kapısı her
+              // videoda 20 kez ASSET_RIGHTS_EVIDENCE_MISSING veriyordu; sürekli
+              // öten bir alarm, kapalı bir kapıyla aynı şey.
+              candidate = { path: dest, type: 'photo', scene: i, source: 'ai', provider: made.provider, assetId: `${script.normalizedTopic}:${i}:${trySeed}`, query: tryPrompt, model: config.images.pollinationsModel, generatedAt: new Date().toISOString(), rightsClass: 'ai-generated', license: 'ai-generated-output', licenseEvidence: `${made.provider}:${config.images.pollinationsModel}` };
             } else if (provider === 'gemini') {
               const dest = path.join(mediaDir, `${idx}-ai.png`);
               const buf = await generateOne(geminiAI, tryPrompt);
               await writeFile(dest, buf);
-              candidate = { path: dest, type: 'photo', scene: i, source: 'ai', provider: 'gemini', assetId: `${script.normalizedTopic}:${i}:${trySeed}`, query: tryPrompt, model: config.images.model, generatedAt: new Date().toISOString(), rightsClass: 'ai-generated', license: null, licenseEvidence: null };
+              candidate = { path: dest, type: 'photo', scene: i, source: 'ai', provider: 'gemini', assetId: `${script.normalizedTopic}:${i}:${trySeed}`, query: tryPrompt, model: config.images.model, generatedAt: new Date().toISOString(), rightsClass: 'ai-generated', license: 'ai-generated-output', licenseEvidence: `gemini:${config.images.model}` };
             }
           } catch (err) {
             const msg = String(err?.message || err);

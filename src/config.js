@@ -508,7 +508,10 @@ export const config = {
     semanticVisuals: {
       enabled: process.env.SEMANTIC_VISUALS !== '0',
       // Bir videoda en fazla kaç semantik kompozisyon (kalabalık olmasın).
-      maxPerVideo: Number(process.env.SEMANTIC_MAX_PER_VIDEO || 6),
+      // KART tavanı. 6'ydı; canlıda 39sn'lik videoda 7 kart çıktı ve ekran
+      // anlamsız etiket kutularıyla doldu (26 Tem, deniz hıyarı). Kart artık
+      // istisna: 3 tane. Anlatımın ekranda gerçekleşmesi AKTÖRLERİN işi.
+      maxPerVideo: Number(process.env.SEMANTIC_MAX_PER_VIDEO || 3),
       // AKTÖR sınırı ayrıdır ve daha geniştir: aktör kadrajın İÇİNDE yaşar,
       // kart gibi ekranı kaplamaz. Sessiz anlaşılırlık hedefi (sahnelerin
       // ≥%60'ında olay) 6 kartlık sınırla matematiksel olarak tutturulamıyordu.

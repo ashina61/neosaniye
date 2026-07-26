@@ -18,6 +18,7 @@
  * yeterli sinyali veriyor.
  */
 import { classifyBeat } from '../visual/semanticDirector.js';
+import { resolvePlace } from '../visual/geo.js';
 
 /**
  * ŞABLON → GÖRSELDEN İSTENEN KOMPOZİSYON.
@@ -42,6 +43,7 @@ const TEMPLATES = {
       + 'from the background',
     camera: { start: 'wide', end: 'follow', motivation: 'follow-the-subject' },
     viewerTask: 'Follow the trail',
+    actorFromFocus: true,
   },
   comparison: {
     composition:
@@ -157,6 +159,23 @@ const TEMPLATES = {
   },
 };
 
+/**
+ * ÖZNE OKUNABİLİRLİĞİ — konuma bağlı aktörlerin ön şartı.
+ *
+ * Canlı ders (26 Tem, deniz hıyarı): sahneler baştan sona mercan dokusuyla
+ * dolu üretildi. O kadrajlarda odak tespiti öznenin yerini ÖLÇEMEZ (kabarcık
+ * tarlasına kilitlendi), ölçemeyince de halka/iz çizilmez ve sahne dekoratif
+ * kalır. Yani "aktör yok" sorununun kaynağı aktör katmanı değil, GÖRSELDİ.
+ *
+ * Sığ alan derinliği tam olarak ölçüm için gereken şeyi üretir: kadrajda tek
+ * bir net, doygun bölge — ölçülebilir bir özne. Konum gerektiren her şablonun
+ * kompozisyonuna eklenir.
+ */
+const SUBJECT_CLARITY =
+  ' Exactly one subject in sharp focus, everything else softly blurred '
+  + '(shallow depth of field), the subject clearly brighter and more saturated '
+  + 'than its surroundings, no busy foreground clutter';
+
 /** Beat türü → şablon. Aktör katmanının ürettiğiyle hizalı. */
 const BEAT_TO_TEMPLATE = {
   behavior: 'flow',
@@ -219,6 +238,20 @@ export function planScene(scene = {}, index = 0) {
   // mekanizma override'ını tetikleyip sayım şablonunu eziyordu.
   const STRONG = new Set(['number', 'compare']);
   let template = beat ? BEAT_TO_TEMPLATE[beat.kind] : null;
+
+  // HARİTA ŞABLONU GERÇEK COĞRAFYA İSTER.
+  //
+  // Canlı hata (26 Tem, deniz hıyarı): sınıflandırıcı "on the ocean floor",
+  // "in the deep sea" gibi her yer ifadesini 'location' sayıyor, bu da harita
+  // şablonunu seçiyordu. Şablon image_prompt'un başına "aerial or
+  // satellite-like view, terrain and coastline readable" yazdığı için
+  // 10 sahnenin 4'ü ÖZNESİZ geniş resif manzarası olarak üretildi —
+  // videoda deniz hıyarını göremiyorsun. Üstelik yer adı Natural Earth'te
+  // çözülemediği için harita paneli de zaten çizilmiyordu: kompozisyonu
+  // mahvedip karşılığında hiçbir şey vermeyen bir şablon.
+  //
+  // Artık harita, ancak ad GERÇEK bir coğrafyaya çözülüyorsa seçilir.
+  if (template === 'map' && !resolvePlace(beat?.payload?.place)) template = null;
   if (!beat || !STRONG.has(beat.kind)) {
     for (const o of OVERRIDES) {
       if (o.re.test(narration)) { template = o.template; break; }
@@ -254,7 +287,11 @@ export function planScene(scene = {}, index = 0) {
   return {
     story_template: template,
     // Görselden İSTENEN kompozisyon — image_prompt'un başına eklenecek.
-    composition: spec.composition,
+    // Konuma bağlı aktör kullanacak şablonlar ayrıca ÖLÇÜLEBİLİR bir özne
+    // ister: sığ alan derinliği olmadan odak tespiti kalabalık dokuda kaybolur.
+    composition: spec.composition
+      ? spec.composition + (spec.actorFromFocus ? SUBJECT_CLARITY : '')
+      : null,
     viewer_task: spec.viewerTask,
     camera_plan: spec.camera,
     // Aktör katmanı için beat (renderVideo yeniden sınıflandırmasın).

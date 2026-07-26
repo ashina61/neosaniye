@@ -783,6 +783,13 @@ export async function generateScript({ maxRetries = 5, avoidTopics: extraAvoid =
 
   let lastScript = null;
   let lengthFeedback = '';
+  // DENEMELER ARASI EN İYİ HOOK. Loop yüzünden yeniden yazdırdığımızda yeni
+  // script'in hook'u çok daha kötü olabiliyor ve olduğu gibi kabul ediliyordu:
+  // canlıda "3 Hidden Sea Cucumber Powers" (ret 82) → "What Sea Cucumbers
+  // Can Do!" (46) → 3. denemede hiç aday gelmediği için modelin ham metni
+  // "5 Incredible Facts About Sea Cucumbers!" (39 karakter, liste başlığı)
+  // ekrana bastı. Hook, retention puanının EN BÜYÜK kalemi.
+  let bestHook = null;
 
   for (let attempt = 1; attempt <= maxRetries; attempt += 1) {
     let response;
@@ -964,6 +971,36 @@ export async function generateScript({ maxRetries = 5, avoidTopics: extraAvoid =
     }
     if (script.hook_text) script.hook_text = softenAdText(script.hook_text, 'hook');
     if (script.title) script.title = softenAdText(script.title, 'başlık');
+
+    // HOOK KALİTE TABANI — hook lab aday üretmezse modelin ham metni denetimsiz
+    // geçiyordu. Kapak yazısı 30 karakteri aşamaz ve daha önceki bir denemede
+    // daha iyi bir hook gördüysek ona döneriz.
+    {
+      const cur = String(script.hook_text || '').trim();
+      const curRet = cur ? scoreHookRetention(cur) : -99;
+      if (cur && cur.length <= 30 && (!bestHook || curRet > bestHook.retention)) {
+        bestHook = { text: cur, retention: curRet };
+      }
+      const tooLong = cur.length > 30;
+      if (bestHook && (tooLong || curRet + 12 < bestHook.retention)) {
+        // AÇILIŞ BÜTÜNLÜĞÜ korunmalı: devralınan hook, bu script'in ilk
+        // cümlesiyle ortak bir kelime paylaşmıyorsa kullanılmaz (aksi hâlde
+        // hook başka şey, ilk cümle başka şey söyler).
+        const k = new Set(String(script.scenes?.[0]?.narration || '').toLowerCase()
+          .match(/[\p{L}\p{N}]{4,}/gu) || []);
+        const shares = (bestHook.text.toLowerCase().match(/[\p{L}\p{N}]{4,}/gu) || [])
+          .some((w) => k.has(w));
+        if (shares) {
+          console.log(`[hook] "${cur}" (ret ${curRet}${tooLong ? `, ${cur.length} karakter` : ''}) ` +
+            `yerine önceki denemenin daha güçlü hook'u: "${bestHook.text}" (ret ${bestHook.retention})`);
+          script.hook_text = bestHook.text;
+        } else if (tooLong && attempt <= 2) {
+          console.warn(`[script] hook ${cur.length} karakter ve daha iyi aday yok — yeniden yazım isteniyor.`);
+          lengthFeedback = 'Rewrite the SAME script but make hook_text MAX 30 characters: a bold question or promise, never a listicle title like "5 Incredible Facts About X".';
+          continue;
+        }
+      }
+    }
 
     // #2 LOOP: final hook'a bağlanmalı (curiosity-gap payoff) → izleyici baştan
     // izler (replay = Shorts view motoru). Bağlanmıyorsa ERKEN denemelerde

@@ -74,16 +74,28 @@ export function validatePacing({ timeline, mediaItems = [], transitions = [] } =
   return issues;
 }
 
+/**
+ * Görsel tekrar denetimi.
+ *
+ * ESKİ KURAL KALDIRILDI (AI_STILL_RUN): "arka arkaya 3 AI karesi = hata"
+ * diyordu. Bu sistem TÜM görsellerini kasten AI ile üretiyor; kural 20 planlık
+ * bir videoda 18 kez ateşleniyordu. Her koşuda kesin ateşlenen bir kural, bilgi
+ * taşımaz — kapının tamamının "uyarı" moduna alınmasının sebebi buydu ve
+ * gerçekten kötü bir video (26 Tem, deniz hıyarı) o yüzden üç platforma birden
+ * çıktı. Sürekli öten alarm, kapalı alarmla aynıdır.
+ *
+ * Yerine gerçek slayt sinyali: AYNI varlığın kadrajlanmadan tekrar kullanılması.
+ * Kasıtlı tekrarlar muaftır — mikro plan kadrajları (subShot), hareket dizisi
+ * kareleri (sequence) ve döngü kapanışı (loopEcho).
+ */
 export function validateAssetRepetition(mediaItems = []) {
   const issues = [];
   const seen = new Map();
   mediaItems.forEach((item, i) => {
+    if (item?.subShot || item?.sequence || item?.loopEcho) return;
     const id = item.assetId || item.sourceUrl || item.path;
     if (id && seen.has(id)) issues.push(`VISUAL_ASSET_REPEATED:${seen.get(id)}:${i}`);
     else if (id) seen.set(id, i);
-    if (i >= 2 && mediaItems[i - 1]?.source === item.source && mediaItems[i - 2]?.source === item.source && item.source === 'ai') {
-      issues.push(`AI_STILL_RUN:${i - 2}-${i}`);
-    }
   });
   return issues;
 }

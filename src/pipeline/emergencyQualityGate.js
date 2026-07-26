@@ -101,5 +101,27 @@ export function evaluateEmergencyQualityGate({
     add('P0_CONTRADICTION', `Açık P0 olgusal/görsel çelişki: ${text || 'ayrıntı yok'}`);
   }
 
-  return { ok: failures.length === 0, block: failures.length > 0, failures, reasons };
+  // AĞIRLIK AYRIMI — kapının gerçekten kapı olabilmesi için.
+  //
+  // Kapı bugüne kadar `block: true` döndürüyordu ama run.js bu değeri upload
+  // kararına HİÇ bağlamamıştı; sonuç: 26 Tem'de retention'dan da kalan bir
+  // video YouTube + Instagram + Facebook'a çıktı. Sebep anlaşılır: kural
+  // setinde her koşuda kesin ateşlenen maddeler vardı, bağlansa hiçbir video
+  // yayınlanamazdı.
+  //
+  // Artık iki küme var:
+  //   BLOKE  — izleyicinin gördüğü şeyi bozan / bütünlük ihlali olan her şey.
+  //   KAYIT  — hak/künye defter tutma eksikleri. Gerçek ve raporlanır, ama
+  //            yayını durdurmaz: müzik künyesi eksik diye kanal susmamalı.
+  const ADVISORY = /^(ASSET_RIGHTS_EVIDENCE_MISSING|MUSIC_RIGHTS_EVIDENCE_MISSING|AMBIENCE_RIGHTS_EVIDENCE_MISSING)/;
+  const blocking = failures.filter((f) => !ADVISORY.test(f));
+  const advisory = failures.filter((f) => ADVISORY.test(f));
+  return {
+    ok: failures.length === 0,
+    block: blocking.length > 0,
+    blocking,
+    advisory,
+    failures,
+    reasons,
+  };
 }

@@ -450,8 +450,11 @@ export async function runPipeline(opts = {}) {
     };
     await writeFile(path.join(workDir, 'asset-manifest.json'), JSON.stringify(assetManifest, null, 2));
     if (emergencyQuality.block) {
-      console.error(`  ⛔ ACİL KALİTE KAPISI: ${emergencyQuality.failures.join(', ')}`);
+      console.error(`  ⛔ ACİL KALİTE KAPISI (YAYIN DURDU): ${emergencyQuality.blocking.join(', ')}`);
       for (const reason of emergencyQuality.reasons) console.error(`     • ${reason}`);
+    }
+    if (emergencyQuality.advisory?.length) {
+      console.warn(`  📋 künye eksiği (yayını durdurmaz): ${emergencyQuality.advisory.length} kayıt`);
     }
 
     // 4.6) RETENTION QC — deterministik editoryal kapı (rapor + mod kararı).
@@ -557,8 +560,19 @@ export async function runPipeline(opts = {}) {
     let publishingAttemptId = null;
     let publishingAttemptBlocked = false;
     let youtubeUploadError = null;
-    // Only a technically invalid final MP4 can stop uploads.
+    // YAYIN KAPISI. 26 Tem'e kadar burada yalnızca "MP4 teknik olarak geçerli
+    // mi" soruluyordu; acil kalite kapısının kararı hesaplanıp loglanıyor ama
+    // KULLANILMIYORDU. Sonuç: retention 84/100 ile kalan ve ekranında
+    // bağlamsız etiket kutuları olan bir video üç platforma birden çıktı.
+    // Kapı artık gerçekten kapı: bloke eden bir bulgu varsa yayın olmaz,
+    // video artifact olarak kalır ve akış kırılmaz.
     let canUpload = uploadGate({ preflightOk: pf.ok, qc });
+    if (canUpload && emergencyQuality.block) {
+      canUpload = false;
+      await recordPublicationBlock(qc, workDir,
+        `EMERGENCY_QUALITY_GATE: ${emergencyQuality.blocking.join(', ')}`).catch(() => {});
+      console.error('[publish] acil kalite kapısı yayını durdurdu — video artifact olarak kaldı.');
+    }
     if (willUpload && canUpload) {
       publishingAttemptId = buildPublishingAttemptId(script);
       try {

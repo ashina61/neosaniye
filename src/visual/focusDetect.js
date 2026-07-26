@@ -103,6 +103,33 @@ export async function detectFocus(imagePath, { minConfidence = 1.35 } = {}) {
     }
   }
 
+  // AŞINDIRMA (erosion) — "özne bir ALANDIR, bir benek değildir".
+  //
+  // Canlı hata (26 Tem, deniz hıyarı): odak, boş suyun üstündeki KABARCIK
+  // tarlasına kilitlendi; gerçek özne sol altta duruyordu. Kabarcıklar hücre
+  // ölçeğinde maksimum yerel kontrast üretir, yani ham "ilgi" sinyalinin en
+  // sevdiği şeydir. Ama bir kabarcık tek hücredir; bir canlının gövdesi
+  // bitişik birkaç hücreyi birden kaplar.
+  //
+  // 3x3 minimum filtresi tam bu farkı ölçer: dağınık benek aşınmada söner,
+  // bitişik bir kütle ayakta kalır. Pencere puanı AŞINMIŞ sinyalden hesaplanır;
+  // ağırlık merkezi ise ham sinyalden (konum hassasiyeti kaybolmasın).
+  const eroded = new Float64Array(GRID_W * GRID_H);
+  for (let y = 0; y < GRID_H; y += 1) {
+    for (let x = 0; x < GRID_W; x += 1) {
+      let mn = Infinity;
+      for (let dy = -1; dy <= 1; dy += 1) {
+        for (let dx = -1; dx <= 1; dx += 1) {
+          const nx = x + dx; const ny = y + dy;
+          if (nx < 0 || ny < 0 || nx >= GRID_W || ny >= GRID_H) continue;
+          const v = interest[ny * GRID_W + nx];
+          if (v < mn) mn = v;
+        }
+      }
+      eroded[y * GRID_W + x] = mn === Infinity ? 0 : mn;
+    }
+  }
+
   // En ilgi çekici pencere (yaklaşık kadrajın 1/3'ü).
   const winW = Math.max(3, Math.round(GRID_W / 3));
   const winH = Math.max(3, Math.round(GRID_H / 4));
@@ -110,14 +137,23 @@ export async function detectFocus(imagePath, { minConfidence = 1.35 } = {}) {
   let total = 0;
   let windows = 0;
   const scores = [];
+  const windowPos = [];
   for (let y = 0; y + winH <= GRID_H; y += 1) {
     for (let x = 0; x + winW <= GRID_W; x += 1) {
       let sc = 0;
+      let rr = 0; let rg = 0; let rb = 0;
       for (let j = 0; j < winH; j += 1) {
-        for (let i = 0; i < winW; i += 1) sc += interest[(y + j) * GRID_W + (x + i)];
+        for (let i = 0; i < winW; i += 1) {
+          const k = (y + j) * GRID_W + (x + i);
+          sc += eroded[k];
+          rr += px[k * 3]; rg += px[k * 3 + 1]; rb += px[k * 3 + 2];
+        }
       }
-      sc /= winW * winH;
+      const cells = winW * winH;
+      sc /= cells;
+      void rr; void rg; void rb;
       scores.push(sc);
+      windowPos.push({ x, y, score: sc });
       total += sc; windows += 1;
       if (sc > best.score) best = { score: sc, x, y };
     }
@@ -131,6 +167,24 @@ export async function detectFocus(imagePath, { minConfidence = 1.35 } = {}) {
   const confidence = mean > 0 ? best.score / mean : 0;
   const zScore = (best.score - mean) / sd;
   if (confidence < minConfidence || zScore < 1.2) return null;
+
+  // MEKÂNSAL BENZERSİZLİK — "tek bir özne var mı, yoksa kadraj baştan sona
+  // ilginç mi?"
+  //
+  // Canlı hata (26 Tem): deniz hıyarı karesinde odak, boş suyun üstündeki
+  // kabarcık tarlasına oturdu; güven 1.41 ile eşiği geçti. Sebebi şu: o
+  // fotoğrafta kadrajın ÜST ŞERİDİ de, ALT ŞERİDİ de, ORTASI da benzer
+  // puanlıydı — yani "en iyi pencere" aslında rastgele bir yarış kazananıydı.
+  // Ortalamayla kıyaslamak bunu görmüyor; kazananı, ONUNLA ÇAKIŞMAYAN en iyi
+  // rakiple kıyaslamak görüyor. Gerçek bir özne varsa (düz zeminde bir canlı)
+  // kazanan rakibini açık farkla geçer.
+  let rivalBest = 0;
+  for (const w of windowPos) {
+    const overlaps = Math.abs(w.x - best.x) < winW * 0.75 && Math.abs(w.y - best.y) < winH * 0.75;
+    if (!overlaps && w.score > rivalBest) rivalBest = w.score;
+  }
+  const separation = rivalBest > 0 ? best.score / rivalBest : Infinity;
+  if (separation < 1.30) return null;
 
   // İNCE AYAR: pencere MERKEZİ yerine pencere içindeki ilginin AĞIRLIK
   // MERKEZİ. Nesne pencerenin ortasında durmayabilir; kaba merkez halkayı
