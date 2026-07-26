@@ -26,6 +26,15 @@ test('her aktör tipi ASS üretir, çöp değer sızdırmaz', () => {
     spread: { at: [0.5, 0.45] },
     axis: { marks: [{ label: '1969' }, { label: '2024' }] },
     build_up: { at: [0.5, 0.55] },
+    // V3 §5 — oklar, işaretler, ekrana kitleme.
+    arrow_pointer: { at: [0.62, 0.48] },
+    focus_box: { at: [0.5, 0.5] },
+    spotlight: { at: [0.5, 0.5] },
+    card_dissolve: { at: [0.5, 0.5], count: 10, keep: 3 },
+    piece_fill: { at: [0.5, 0.5], slots: 4 },
+    block_grid: { at: [0.5, 0.46], cols: 5, rows: 4 },
+    link_burst: { at: [0.5, 0.46], nodes: 4 },
+    scan_line: {},
   };
   for (const type of ACTOR_TYPES) {
     const ev = actorEvents({ type, start: 0, end: 4, ...samples[type] });

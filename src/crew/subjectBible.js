@@ -36,10 +36,44 @@ const PHYLUM_FORBIDDEN = {
 };
 
 /** Her konuda geçerli yasaklar — bilimsel içerikte fantezi yok. */
+// KOŞULSUZ yasaklar: hiçbir sahnede istenmez.
 const UNIVERSAL_FORBIDDEN = [
   'fantasy creature', 'alien monster', 'mythical beast', 'cartoon mascot',
-  'incorrect anatomy', 'extra limbs', 'human face', 'text', 'watermark', 'logo',
+  'incorrect anatomy', 'extra limbs', 'text', 'watermark', 'logo',
 ];
+
+/**
+ * §10 — BAĞLAMA DUYARLI NEGATİF PROMPT.
+ *
+ * `human face` eskiden KOŞULSUZ yasaklıydı. Sahne "bir bilim insanı holograma
+ * bakıyor" istediğinde üretici, istenen şeyin kendisini yasaklanmış buluyor ve
+ * ya yüzü kadraj dışına itiyor ya da bozuk bir şey üretiyordu — prompt kendi
+ * kendisiyle çelişiyordu.
+ *
+ * Doğrusu: sahnede insan VARSA yüzü yasaklama, KÖTÜ yüzü yasakla.
+ */
+const HUMAN_ABSENT_FORBIDDEN = ['human face', 'people', 'human hands'];
+const HUMAN_PRESENT_FORBIDDEN = [
+  'distorted face', 'asymmetrical eyes', 'fused facial features',
+  'extra fingers', 'malformed hands', 'uncanny valley skin',
+];
+/** Sahne/konu metninde insan öznesi geçiyor mu? */
+const HUMAN_RE = /\b(human|humans|person|people|scientist|researcher|doctor|worker|child|man|woman|hand|hands|face|crowd|patient|student|engineer|astronaut)\b/i;
+
+/**
+ * Bir sahne için negatif prompt terimleri — özne ve kompozisyona göre.
+ * @param {object} bible
+ * @param {string} sceneText  narration + image_prompt
+ * @returns {string[]}
+ */
+export function contextualForbidden(bible, sceneText = '') {
+  const humanPresent = HUMAN_RE.test(sceneText)
+    || HUMAN_RE.test(String(bible?.canonicalName || ''));
+  return [
+    ...(bible?.forbiddenTraits || []),
+    ...(humanPresent ? HUMAN_PRESENT_FORBIDDEN : HUMAN_ABSENT_FORBIDDEN),
+  ];
+}
 
 /**
  * Konu metninden şube tahmini (deterministik, sözlük tabanlı).
@@ -205,7 +239,10 @@ export function applySubjectBible(script = {}) {
       if (!scene?.image_prompt) continue;
       if (scene.image_prompt.startsWith(prefix)) continue; // idempotent
       scene.image_prompt = `${prefix} ${scene.image_prompt}`;
-      scene.negative_prompt = negativePromptFor(bible);
+      // Negatif prompt sahnenin KENDİ içeriğine göre kurulur: insan isteyen
+      // sahnede "human face" yasaklanmaz, bozuk yüz yasaklanır.
+      const sceneText = `${scene.narration || ''} ${scene.image_prompt || ''}`;
+      scene.negative_prompt = [...new Set(contextualForbidden(bible, sceneText))].join(', ');
       applied += 1;
     }
   }

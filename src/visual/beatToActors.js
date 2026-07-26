@@ -138,6 +138,51 @@ const TEMPLATE_ACTORS = {
     if (!focus) return [];
     return [{ type: 'build_up', at: safePoint([focus.x, focus.y]), start: b.start + 0.2, end: b.end }];
   },
+  // ---- V3 §4 ŞABLONLARI ----
+  //
+  // Hepsinin ortak yanı: bir SÜREÇ gösterirler. "Bilim insanı holograma
+  // bakıyor" fotoğrafının anlatamadığı şey tam olarak budur — ekranda bir şey
+  // OLMASI gerekiyordu.
+  //
+  // FİLTRELEME: kartlar gelir, önemliler kalır, önemsizler söner.
+  // Odak GEREKTİRMEZ: kartlar kendi ızgarasında yaşar, fotoğrafın öznesine
+  // bağlı değildir. (Odak şartı koşulsaydı, focusDetect ölçemediğinde sahne
+  // yine dekoratif kalırdı — kaçışın kaynağı buydu.)
+  filtering: (b, focus) => {
+    const at = focus ? safePoint([focus.x, focus.y]) : [0.5, 0.5];
+    return [
+      { type: 'card_dissolve', at, count: 10, keep: 3, start: b.start + 0.2, end: b.end },
+      // Kalan kartı işaretleyen kutu: "hangisi kaldı" sorusunu yanıtlar.
+      { type: 'focus_box', at: [0.22, 0.30], width: 0.16, height: 0.075,
+        start: b.start + Math.min(1.2, (b.end - b.start) * 0.5), end: b.end },
+    ];
+  },
+  // YENİDEN KURMA: boş yuvalar sırayla dolar, son parça TAHMİN rengiyle gelir.
+  reconstruct: (b, focus) => {
+    const at = focus ? safePoint([focus.x, Math.min(0.66, focus.y)]) : [0.5, 0.52];
+    return [{ type: 'piece_fill', at, slots: 4, start: b.start + 0.2, end: b.end }];
+  },
+  // GERİ ÇAĞIRMA: depolama ızgarası, doğru blok aydınlanır.
+  retrieval: (b) => [
+    { type: 'block_grid', at: [0.5, 0.46], cols: 5, rows: 4, start: b.start + 0.2, end: b.end },
+  ],
+  // DUYGU BAĞI: merkez + düğümler, bağlantılar SIRAYLA oluşur.
+  emotion_link: (b, focus) => {
+    const at = focus ? safePoint([focus.x, Math.min(0.60, focus.y)]) : [0.5, 0.46];
+    return [{ type: 'link_burst', at, nodes: 4, radius: 0.24, start: b.start + 0.2, end: b.end }];
+  },
+  // KARŞILAŞTIRMA: iki taraf aynı anda. Ortada ayırıcı yok (fotoğrafın kendisi
+  // iki özneyi yan yana getiriyor); bunun yerine her tarafa sırayla işaret
+  // konur — göz önce birine, sonra diğerine gider.
+  comparison: (b) => {
+    const span = Math.max(1.2, b.end - b.start);
+    return [
+      { type: 'focus_box', at: [0.27, 0.48], width: 0.34, height: 0.30,
+        start: b.start + 0.25, end: b.start + span * 0.5 },
+      { type: 'focus_box', at: [0.73, 0.48], width: 0.34, height: 0.30,
+        start: b.start + span * 0.52, end: b.end },
+    ];
+  },
   // Zaman ekseni: işaretler anlatımdan ÇIKARILMIŞtır, konum gerektirmez.
   timeline: (b) => {
     const marks = b.payload?.marks || [];
@@ -150,8 +195,10 @@ const TEMPLATE_ACTORS = {
  * Konum ÖLÇÜMÜ gerektiren şablonlar — renderVideo bu sahnelerde focusDetect
  * çalıştırır. Listede olmayan şablon için ölçüm yapılmaz (boşuna maliyet).
  */
+// `retrieval` ve `comparison` kendi ızgaralarında/yarılarında yaşar; odak
+// ölçümü onların yerleşimini değiştirmez, boşuna maliyet olur.
 export const FOCUS_TEMPLATES = new Set(
-  Object.keys(TEMPLATE_ACTORS).filter((k) => k !== 'timeline'),
+  Object.keys(TEMPLATE_ACTORS).filter((k) => !['timeline', 'retrieval', 'comparison'].includes(k)),
 );
 
 /**

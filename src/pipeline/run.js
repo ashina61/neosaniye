@@ -10,6 +10,8 @@ import { evaluateMeasuredDuration } from './durationPolicy.js';
 import { directVisuals, applyShotList } from '../crew/visualDirector.js';
 import { planVisualStory, MAX_ATMOSPHERE_SHARE } from '../crew/storyPlanner.js';
 import { repairSemanticActions } from './semanticRepair.js';
+import { applyPromptStyle } from '../crew/promptStyle.js';
+import { applySideIdentity } from '../visual/sideIdentity.js';
 import { planEdit } from '../crew/editorDirector.js';
 import { analyzePerformance } from '../crew/analyst.js';
 import { generateAudio } from '../tts/generateAudio.js';
@@ -276,6 +278,24 @@ export async function runPipeline(opts = {}) {
       if (semanticRepairResult.qualityDegraded) {
         console.warn('  [semantik-onarım] quality_degraded=true — mevcut güvenli plan ile devam.');
       }
+    }
+
+    // ---- §9 PROMPT ÇELİŞKİLERİ + §8 TARAF RENK KİMLİĞİ ----
+    //
+    // SIRA ÖNEMLİ: önce kategori stili (çelişen yasakları temizler), sonra
+    // taraf kimliği (her sahneye kendi renk/doku dilini yazar). Ters sırada
+    // kategori temizliği, taraf kimliğinin eklediği renk terimlerini de
+    // süpürebilirdi.
+    const promptStyleResult = applyPromptStyle(script);
+    if (promptStyleResult.contradictionsRemoved.length) {
+      console.log(`  [prompt-stil] ${promptStyleResult.style}: çelişen yasak kaldırıldı — `
+        + promptStyleResult.contradictionsRemoved.join(', '));
+    }
+    const sideIdentityResult = applySideIdentity(script);
+    if (sideIdentityResult.pair) {
+      console.log(`  [taraf-kimliği] ${sideIdentityResult.pair.a} ↔ ${sideIdentityResult.pair.b} `
+        + `(${Object.entries(sideIdentityResult.assigned).map(([k, v]) => `${k}:${v}`).join(' ')}) `
+        + '— sesi kapalı izleyici hangi tarafın anlatıldığını renkten görür.');
     }
 
     // 3) Görsel (sahne başına AI görsel + Pexels/placeholder yedeği).

@@ -461,6 +461,301 @@ function buildUpActor(a) {
   return out;
 }
 
+/* ================================================================== *
+ * V3 §5 — OKLAR, İŞARETLER VE EKRANA KİTLEME
+ *
+ * ANA KURAL: her overlay şu soruyu cevaplamalı — "izleyici şu anda tam olarak
+ * NEREYE ve NEDEN bakmalı?" Cevabı olmayan overlay çizilmez. Bu yüzden
+ * aşağıdaki aktörlerin hepsi bir HEDEF (`at` / `to`) ister ve hedefsiz
+ * çağrıldıklarında boş döner — rastgele dekorasyon üretmezler.
+ * ================================================================== */
+
+/* ------------------------------------------------------------------ *
+ * ARROW_POINTER — "şuraya bak". Kısa, keskin, hedefe DOKUNAN ok.
+ * flow_arrow'dan farkı: o bir AKIŞI (A'dan B'ye taşınma) anlatır, bu bir
+ * İŞARETTİR. İkisini karıştırmak "veri buraya aktı" ile "buraya bak"ı
+ * aynı görsele indirir.
+ * ------------------------------------------------------------------ */
+function arrowPointerActor(a) {
+  if (!a.at) return [];
+  const tip = px(a.at);
+  const col = assColor(a.color || ACCENT);
+  const len = Math.round((a.length || 0.16) * CANVAS.w);
+  // Geliş yönü: hedef solda ise sağdan, sağdaysa soldan gelir (kadraj dışına
+  // taşmasın diye). Dikey kaçış payı sabit.
+  const dir = a.at[0] > 0.5 ? -1 : 1;
+  const tail = { x: tip.x - dir * len, y: tip.y - Math.round(len * 0.42) };
+  const head = 16;
+  const dx = tip.x - tail.x; const dy = tip.y - tail.y;
+  const L = Math.hypot(dx, dy) || 1;
+  const ux = dx / L; const uy = dy / L;
+  // Uç, hedefin ÜSTÜNE binmesin: 10px önce durur.
+  const stop = { x: Math.round(tip.x - ux * 10), y: Math.round(tip.y - uy * 10) };
+  const grow = Math.min(0.45, Math.max(0.22, (a.end - a.start) * 0.3));
+  const r = Math.round;
+  return [
+    // Gövde: soldan sağa GERÇEKTEN uzar (\fscx ile değil, an7 çizim +
+    // clip yerine iki adımlı süre; libass \fscx çizimi \pos etrafında
+    // ölçeklemiyor, bu ders daha önce halkalarda alındı).
+    D(5, 'ActShape', a.start, a.end,
+      `{\\an7\\pos(0,0)\\1c${col}\\1a&H18&\\bord0\\fad(120,160)` +
+      `\\clip(${Math.min(tail.x, stop.x) - 4},${Math.min(tail.y, stop.y) - 20},` +
+      `${Math.min(tail.x, stop.x) - 4},${Math.max(tail.y, stop.y) + 20})` +
+      `\\t(0,${r(grow * 1000)},\\clip(${Math.min(tail.x, stop.x) - 4},${Math.min(tail.y, stop.y) - 20},` +
+      `${Math.max(tail.x, stop.x) + 4},${Math.max(tail.y, stop.y) + 20}))\\p1}` +
+      segmentQuad(tail, stop, a.width || 9) + '{\\p0}'),
+    // Uç üçgeni: gövde uzadıktan SONRA belirir → "vardı" hissi.
+    D(6, 'ActShape', a.start + grow, a.end,
+      `{\\an7\\pos(0,0)\\1c${col}\\1a&H10&\\bord0\\fad(90,160)\\p1}` +
+      `m ${r(stop.x + ux * head)} ${r(stop.y + uy * head)} ` +
+      `l ${r(stop.x - uy * head * 0.62)} ${r(stop.y + ux * head * 0.62)} ` +
+      `l ${r(stop.x + uy * head * 0.62)} ${r(stop.y - ux * head * 0.62)}{\\p0}`),
+  ];
+}
+
+/* ------------------------------------------------------------------ *
+ * FOCUS_BOX — hedefi çerçeveleyen köşe parantezleri.
+ * Tam dikdörtgen yerine DÖRT KÖŞE: fotoğrafın içeriğini kapatmaz, yine de
+ * "bu bölge" der. Kamera vizörü dili, izleyici anında tanır.
+ * ------------------------------------------------------------------ */
+function focusBoxActor(a) {
+  if (!a.at) return [];
+  const c = px(a.at);
+  const w = Math.round((a.width || 0.26) * CANVAS.w);
+  const h = Math.round((a.height || 0.20) * CANVAS.h);
+  const col = assColor(a.color || ACCENT);
+  const arm = Math.round(Math.min(w, h) * 0.30);
+  const t = a.thickness || 7;
+  const x0 = c.x - Math.round(w / 2); const x1 = c.x + Math.round(w / 2);
+  const y0 = c.y - Math.round(h / 2); const y1 = c.y + Math.round(h / 2);
+  const P = (x, y) => ({ x, y });
+  const corner = (cx, cy, sx, sy) => [
+    segmentQuad(P(cx, cy), P(cx + sx * arm, cy), t),
+    segmentQuad(P(cx, cy), P(cx, cy + sy * arm), t),
+  ];
+  const paths = [
+    ...corner(x0, y0, 1, 1), ...corner(x1, y0, -1, 1),
+    ...corner(x0, y1, 1, -1), ...corner(x1, y1, -1, -1),
+  ];
+  // Hafif dışarıdan içeri oturma: 6px büyükten gelip yerine kilitlenir.
+  const lock = Math.min(0.4, Math.max(0.2, (a.end - a.start) * 0.22));
+  return [
+    D(5, 'ActShape', a.start, a.start + lock,
+      `{\\an7\\pos(0,0)\\1c${col}\\1a&H55&\\bord0\\fad(100,0)\\p1}` +
+      paths.join(' ') + '{\\p0}'),
+    D(5, 'ActShape', a.start + lock, a.end,
+      `{\\an7\\pos(0,0)\\1c${col}\\1a&H18&\\bord0\\fad(0,180)\\p1}` +
+      paths.join(' ') + '{\\p0}'),
+  ];
+}
+
+/* ------------------------------------------------------------------ *
+ * SPOTLIGHT — çevreyi karart, hedefi bırak.
+ * libass'te gerçek maske yok; hedefin ETRAFINA dört karartma dikdörtgeni
+ * konur. Sonuç aynı: göz tek aydınlık bölgeye gider.
+ * ------------------------------------------------------------------ */
+function spotlightActor(a) {
+  if (!a.at) return [];
+  const c = px(a.at);
+  const w = Math.round((a.width || 0.34) * CANVAS.w);
+  const h = Math.round((a.height || 0.26) * CANVAS.h);
+  const x0 = Math.max(0, c.x - Math.round(w / 2));
+  const x1 = Math.min(CANVAS.w, c.x + Math.round(w / 2));
+  const y0 = Math.max(0, c.y - Math.round(h / 2));
+  const y1 = Math.min(CANVAS.h, c.y + Math.round(h / 2));
+  const rect = (ax, ay, bx, by) => `m ${ax} ${ay} l ${bx} ${ay} l ${bx} ${by} l ${ax} ${by}`;
+  // Karartma yumuşak: %45 saydam. Fotoğraf görünmeye devam eder, yalnızca
+  // hiyerarşi değişir — tamamen siyah bir çerçeve videoyu ucuzlatırdı.
+  const alpha = a.alpha || '8C';
+  return [
+    D(3, 'ActShape', a.start, a.end,
+      `{\\an7\\pos(0,0)\\1c${assColor('05080A')}\\1a&H${alpha}&\\bord0\\fad(200,220)\\p1}` +
+      [rect(0, 0, CANVAS.w, y0), rect(0, y1, CANVAS.w, CANVAS.h),
+        rect(0, y0, x0, y1), rect(x1, y0, CANVAS.w, y1)].join(' ') + '{\\p0}'),
+  ];
+}
+
+/* ------------------------------------------------------------------ *
+ * CARD_DISSOLVE — FİLTRELEME şablonunun aktörü.
+ * "Beyin önemsiz ayrıntıları eler" cümlesinin görsel karşılığı: çok sayıda
+ * kart gelir, önemliler PARLAK kalır, önemsizler SOLUKLAŞIP KAYBOLUR.
+ * Bilim insanı fotoğrafı bu cümleyi anlatmaz; bu anlatır.
+ * ------------------------------------------------------------------ */
+function cardDissolveActor(a) {
+  const total = Math.max(6, Math.min(14, a.count || 10));
+  const keep = Math.max(1, Math.min(total - 1, a.keep ?? 3));
+  const col = assColor(a.color || ACCENT);
+  const cw = Math.round(0.13 * CANVAS.w);
+  const ch = Math.round(0.055 * CANVAS.h);
+  const span = Math.max(1.0, a.end - a.start);
+  const out = [];
+  // Deterministik yerleşim: kartlar ızgaraya oturur, rastgelelik yok —
+  // aynı sahne iki kez render edilirse aynı görüntü çıkar.
+  const cols = 3;
+  for (let i = 0; i < total; i += 1) {
+    const cx = Math.round((0.22 + (i % cols) * 0.28) * CANVAS.w);
+    const cy = Math.round((0.30 + Math.floor(i / cols) * 0.115) * CANVAS.h);
+    const survives = i < keep;
+    const rect = `m ${cx - cw / 2} ${cy - ch / 2} l ${cx + cw / 2} ${cy - ch / 2} ` +
+      `l ${cx + cw / 2} ${cy + ch / 2} l ${cx - cw / 2} ${cy + ch / 2}`;
+    if (survives) {
+      // Kalanlar: parlak, kenarlıklı, sahne sonuna kadar DURUR.
+      out.push(D(5, 'ActShape', a.start, a.end,
+        `{\\an7\\pos(0,0)\\1c${col}\\1a&H2A&\\3c${assColor(INK)}\\3a&H30&\\bord3` +
+        `\\fad(160,200)\\p1}${rect}{\\p0}`));
+    } else {
+      // Elenenler: kısa süre görünür, SONRA söner. Sönme zamanları kademeli
+      // olduğu için ekranda "azalma" hareketi oluşur.
+      const outAt = a.start + 0.35 + (span * 0.55 * ((i - keep + 1) / Math.max(1, total - keep)));
+      if (outAt <= a.start + 0.2) continue;
+      out.push(D(4, 'ActShape', a.start, Math.min(a.end, outAt),
+        `{\\an7\\pos(0,0)\\1c${assColor('7C8B92')}\\1a&H72&\\bord0` +
+        `\\fad(140,${Math.round(320)})\\p1}${rect}{\\p0}`));
+    }
+  }
+  return out;
+}
+
+/* ------------------------------------------------------------------ *
+ * PIECE_FILL — YENİDEN KURMA şablonunun aktörü.
+ * Boş yuvalar sırayla dolar; SON parça farklı renkte gelir çünkü o bir
+ * TAHMİNDİR. "Beyin eksik anıyı tamamlar" cümlesinin dürüst görselleştirmesi:
+ * tamamlanan şeyin uydurma olduğu ekranda görünür.
+ * ------------------------------------------------------------------ */
+function pieceFillActor(a) {
+  const slots = Math.max(3, Math.min(6, a.slots || 4));
+  const col = assColor(a.color || ACCENT);
+  const guess = assColor(a.guessColor || 'F0A72B');
+  const c = px(a.at || [0.5, 0.5]);
+  const pw = Math.round(0.15 * CANVAS.w);
+  const ph = Math.round(0.075 * CANVAS.h);
+  const gap = 10;
+  const totalW = slots * pw + (slots - 1) * gap;
+  const span = Math.max(1.0, a.end - a.start);
+  const per = Math.min(0.5, (span * 0.7) / slots);
+  const out = [];
+  for (let i = 0; i < slots; i += 1) {
+    const x = c.x - Math.round(totalW / 2) + i * (pw + gap);
+    const rect = `m ${x} ${c.y - ph / 2} l ${x + pw} ${c.y - ph / 2} ` +
+      `l ${x + pw} ${c.y + ph / 2} l ${x} ${c.y + ph / 2}`;
+    // Boş yuva: kesik görünümlü ince çerçeve, baştan sona durur.
+    out.push(D(4, 'ActShape', a.start, a.end,
+      `{\\an7\\pos(0,0)\\1a&HFF&\\3c${assColor(INK)}\\3a&H88&\\bord3\\fad(140,180)\\p1}` +
+      `${rect}{\\p0}`));
+    // Parça yerine oturur.
+    const t0 = a.start + 0.25 + per * i;
+    if (t0 + 0.15 >= a.end) continue;
+    const last = i === slots - 1;
+    out.push(D(5, 'ActShape', t0, a.end,
+      `{\\an7\\pos(0,0)\\1c${last ? guess : col}\\1a&H${last ? '30' : '1C'}&\\bord0` +
+      `\\fad(180,180)\\p1}${rect}{\\p0}`));
+  }
+  return out;
+}
+
+/* ------------------------------------------------------------------ *
+ * BLOCK_GRID — GERİ ÇAĞIRMA şablonunun aktörü.
+ * Depolama blokları ızgarası; DOĞRU blok aydınlanır ve merkeze taşınır.
+ * "AI kaydı bulur" cümlesi bir sunucu odası fotoğrafıyla değil böyle anlatılır.
+ * ------------------------------------------------------------------ */
+function blockGridActor(a) {
+  const cols = Math.max(3, Math.min(6, a.cols || 5));
+  const rows = Math.max(2, Math.min(5, a.rows || 4));
+  const col = assColor(a.color || ACCENT);
+  const bw = Math.round(0.11 * CANVAS.w);
+  const bh = Math.round(0.045 * CANVAS.h);
+  const gap = 12;
+  const gridW = cols * bw + (cols - 1) * gap;
+  const gridH = rows * bh + (rows - 1) * gap;
+  const cx = Math.round((a.at?.[0] ?? 0.5) * CANVAS.w);
+  const cy = Math.round((a.at?.[1] ?? 0.46) * CANVAS.h);
+  const x0 = cx - Math.round(gridW / 2);
+  const y0 = cy - Math.round(gridH / 2);
+  // Hedef blok deterministik: ortaya yakın ama tam ortada değil (aranıp
+  // bulunduğu hissi için).
+  const hitCol = a.hitCol ?? Math.min(cols - 1, Math.floor(cols / 2) + 1);
+  const hitRow = a.hitRow ?? Math.min(rows - 1, Math.floor(rows / 2));
+  const span = Math.max(1.2, a.end - a.start);
+  const findAt = a.start + span * 0.42;
+  const out = [];
+  const rect = (x, y) => `m ${x} ${y} l ${x + bw} ${y} l ${x + bw} ${y + bh} l ${x} ${y + bh}`;
+  for (let r = 0; r < rows; r += 1) {
+    for (let cIdx = 0; cIdx < cols; cIdx += 1) {
+      const x = x0 + cIdx * (bw + gap);
+      const y = y0 + r * (bh + gap);
+      const isHit = r === hitRow && cIdx === hitCol;
+      // Sıradan bloklar: sönük, eşit, ayırt edilemez → "aranan hangisi?" hissi.
+      out.push(D(4, 'ActShape', a.start, a.end,
+        `{\\an7\\pos(0,0)\\1c${assColor('47575E')}\\1a&H7A&\\bord0\\fad(160,180)\\p1}` +
+        `${rect(x, y)}{\\p0}`));
+      if (!isHit) continue;
+      // Doğru blok: arama süresi dolunca AYDINLANIR.
+      out.push(D(6, 'ActShape', findAt, a.end,
+        `{\\an7\\pos(0,0)\\1c${col}\\1a&H12&\\3c${assColor(INK)}\\3a&H28&\\bord3` +
+        `\\fad(140,180)\\p1}${rect(x, y)}{\\p0}`));
+      // Nabız halkası: bulunma anını işaretler.
+      out.push(...radialSteps({ x: x + Math.round(bw / 2), y: y + Math.round(bh / 2) }, {
+        r0: Math.round(bw * 0.6), r1: Math.round(bw * 1.35),
+        start: findAt, end: Math.min(a.end, findAt + 0.9),
+        color: col, bord: 3, fromAlpha: 0x60, toAlpha: 0xF0, steps: 7, layer: 5,
+      }));
+    }
+  }
+  return out;
+}
+
+/* ------------------------------------------------------------------ *
+ * LINK_BURST — DUYGU BAĞI şablonunun aktörü.
+ * Merkezdeki anı + çevresindeki düğümler; bağlantılar SIRAYLA oluşur.
+ * Hepsinin aynı anda belirmesi bir diyagram olurdu; sırayla oluşması bir OLAY.
+ * ------------------------------------------------------------------ */
+function linkBurstActor(a) {
+  const c = px(a.at || [0.5, 0.46]);
+  const n = Math.max(3, Math.min(6, a.nodes || 4));
+  const col = assColor(a.color || ACCENT);
+  const R = Math.round((a.radius || 0.24) * CANVAS.w);
+  const span = Math.max(1.2, a.end - a.start);
+  const per = Math.min(0.55, (span * 0.72) / n);
+  const out = [];
+  // Merkez: baştan var, sahne boyunca durur.
+  out.push(D(5, 'ActShape', a.start, a.end,
+    `{\\an7\\pos(0,0)\\1c${col}\\1a&H22&\\bord0\\fad(160,200)\\p1}` +
+    `${circlePath(c.x, c.y, Math.round(R * 0.24))}{\\p0}`));
+  for (let i = 0; i < n; i += 1) {
+    // Düğümler tam daire üzerinde, üstten başlayıp saat yönünde.
+    const ang = -Math.PI / 2 + (i * 2 * Math.PI) / n;
+    const nx = Math.round(c.x + Math.cos(ang) * R);
+    const ny = Math.round(c.y + Math.sin(ang) * R * 0.62);
+    const t0 = a.start + 0.2 + per * i;
+    if (t0 + 0.15 >= a.end) break;
+    // Bağlantı çizgisi önce, düğüm sonra: "bağ kuruldu" okunur.
+    out.push(D(4, 'ActShape', t0, a.end,
+      `{\\an7\\pos(0,0)\\1c${col}\\1a&H4E&\\bord0\\fad(200,180)\\p1}` +
+      segmentQuad({ x: c.x, y: c.y }, { x: nx, y: ny }, 5) + '{\\p0}'));
+    out.push(D(5, 'ActShape', t0 + 0.12, a.end,
+      `{\\an7\\pos(0,0)\\1a&HFF&\\3c${col}\\3a&H1C&\\bord5\\fad(160,180)\\p1}` +
+      `${circlePath(nx, ny, Math.round(R * 0.13))}{\\p0}`));
+  }
+  return out;
+}
+
+/* ------------------------------------------------------------------ *
+ * SCAN_LINE — yukarıdan aşağı süpüren ince çizgi. "İnceleniyor" dili.
+ * Tek başına anlatı taşımaz; YARDIMCI katmandır (bütçede öyle sayılır).
+ * ------------------------------------------------------------------ */
+function scanLineActor(a) {
+  const col = assColor(a.color || ACCENT);
+  const y0 = Math.round((a.from ?? 0.18) * CANVAS.h);
+  const y1 = Math.round((a.to ?? 0.78) * CANVAS.h);
+  const ms = Math.round(Math.max(0.6, a.end - a.start) * 1000);
+  const w = CANVAS.w;
+  return [
+    D(3, 'ActShape', a.start, a.end,
+      `{\\an7\\move(0,${y0},0,${y1},0,${ms})\\1c${col}\\1a&H5A&\\bord0\\fad(180,220)\\p1}` +
+      `m 0 0 l ${w} 0 l ${w} 3 l 0 3{\\p0}`),
+  ];
+}
+
 const ACTORS = {
   trail: trailActor,
   walker: walkerActor,
@@ -473,7 +768,60 @@ const ACTORS = {
   spread: spreadActor,
   axis: axisActor,
   build_up: buildUpActor,
+  // V3 §5
+  arrow_pointer: arrowPointerActor,
+  focus_box: focusBoxActor,
+  spotlight: spotlightActor,
+  card_dissolve: cardDissolveActor,
+  piece_fill: pieceFillActor,
+  block_grid: blockGridActor,
+  link_burst: linkBurstActor,
+  scan_line: scanLineActor,
 };
+
+/**
+ * OVERLAY BÜTÇESİ (§5) — "ekranı doldurup okunmaz hâle getirme."
+ *
+ * Aynı anda en fazla: 1 ANA semantik overlay + 1 YARDIMCI hareket.
+ * (Altyazı ayrı katman, render tarafında zaten tek.)
+ *
+ * Ana aktörler anlatının kendisini taşır; ikisi üst üste binerse hangisinin
+ * anlatıldığı belirsizleşir. Yardımcılar (tarama çizgisi, spotlight, işaret)
+ * dikkat yönlendirir, anlatı taşımaz — biri geçerlidir.
+ */
+const PRIMARY_ACTORS = new Set(['trail', 'walker', 'flow_arrow', 'fill_meter', 'chain',
+  'signal_wave', 'spread', 'axis', 'build_up', 'card_dissolve', 'piece_fill',
+  'block_grid', 'link_burst']);
+const HELPER_ACTORS = new Set(['ring', 'readout', 'arrow_pointer', 'focus_box',
+  'spotlight', 'scan_line']);
+
+/** İki aktörün zaman aralıkları kesişiyor mu? */
+const overlaps = (a, b) => a.start < b.end - 0.05 && b.start < a.end - 0.05;
+
+/**
+ * Bütçeyi uygula: zaman sırasına göre gez, kesişen fazlalıkları AT.
+ * @param {Array} actors
+ * @returns {{kept:Array, dropped:Array}}
+ */
+export function applyOverlayBudget(actors = []) {
+  const sorted = [...actors].filter((a) => Number.isFinite(a?.start) && Number.isFinite(a?.end))
+    .sort((a, b) => a.start - b.start);
+  const kept = [];
+  const dropped = [];
+  for (const a of sorted) {
+    const isPrimary = PRIMARY_ACTORS.has(a.type);
+    const isHelper = HELPER_ACTORS.has(a.type);
+    if (!isPrimary && !isHelper) { kept.push(a); continue; }
+    const sameClass = kept.filter((k) => (isPrimary ? PRIMARY_ACTORS.has(k.type) : HELPER_ACTORS.has(k.type)));
+    if (sameClass.some((k) => overlaps(k, a))) {
+      dropped.push({ type: a.type, start: a.start, reason: isPrimary
+        ? 'aynı anda ikinci ANA overlay' : 'aynı anda ikinci YARDIMCI overlay' });
+      continue;
+    }
+    kept.push(a);
+  }
+  return { kept, dropped };
+}
 
 const HEADER = (w, h) => `[Script Info]
 ScriptType: v4.00+
@@ -516,13 +864,19 @@ export function actorEvents(actor) {
  * @param {Array} actors
  * @returns {string} '' = çizilecek aktör yok (ekran temiz kalır)
  */
-export function buildActorAss(actors = [], { width = CANVAS.w, height = CANVAS.h } = {}) {
+export function buildActorAss(actors = [], { width = CANVAS.w, height = CANVAS.h, budget = true } = {}) {
   const SUPPORT = new Set(['fill_meter', 'trail', 'chain', 'flow_arrow', 'walker',
-    'spread', 'axis', 'signal_wave']);
+    'spread', 'axis', 'signal_wave', 'card_dissolve', 'block_grid', 'piece_fill']);
+  // §5 BÜTÇESİ: ekran kalabalıklaşırsa hiçbiri okunmaz.
+  const { kept, dropped } = budget ? applyOverlayBudget(actors) : { kept: actors, dropped: [] };
+  if (dropped.length) {
+    console.warn(`[aktör] overlay bütçesi: ${dropped.length} overlay atlandı `
+      + `(${dropped.slice(0, 3).map((d) => `${d.type}@${d.start.toFixed(1)}s`).join(', ')})`);
+  }
   const events = [];
-  for (const a of actors) {
+  for (const a of kept) {
     if (a?.type === 'readout') {
-      const supported = actors.some((o) => o !== a && SUPPORT.has(o?.type)
+      const supported = kept.some((o) => o !== a && SUPPORT.has(o?.type)
         && Number.isFinite(o.start) && Math.abs(o.start - a.start) < 3.5);
       if (!supported) continue; // havada kalan sayaç çizilmez
     }

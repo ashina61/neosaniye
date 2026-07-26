@@ -13,6 +13,7 @@ import { selectSceneMotion, validateMotionPlan } from './motionPlan.js';
 import { directSemantics } from '../visual/semanticDirector.js';
 import { buildSemanticAss } from '../visual/semanticShots.js';
 import { planActors, FOCUS_TEMPLATES } from '../visual/beatToActors.js';
+import { planWithFallback, summarizeLadder } from '../visual/fallbackLadder.js';
 import { buildActorAss } from '../visual/actors.js';
 import { detectFocus } from '../visual/focusDetect.js';
 import { planSemanticSfx, describeSfxPlan } from '../audio/semanticSfx.js';
@@ -1210,6 +1211,8 @@ export async function renderVideo(job, opts = {}) {
   let actorAssWritten = false;
   let cardAssWritten = false;
   const actorsBySceneUsed = {};
+  // §16 merdiven özeti dış kapsamda yaşar: render planı onu bildirecek.
+  let ladderSummaryOut = null;
   const sceneFocusUsed = {};
   const semCfg = config.motion?.semanticVisuals;
   if (semCfg?.enabled && canonicalItems && Array.isArray(job.scenes)) {
@@ -1305,12 +1308,38 @@ export async function renderVideo(job, opts = {}) {
 
       // V3: önce AKTÖR koreografisi (kadrajın İÇİNDE durum değiştiren
       // elemanlar), aktöre çevrilemeyen beat'ler eski kart yoluna düşer.
-      const { actors, cardBeats: allCardBeats, stats: actorStats } = planActors(beats);
-      // Sahne → aktör eşlemesi (denetim için): hangi sahnede NE çizildi.
+      const { actors: plannedActors, cardBeats: allCardBeats, stats: actorStats } = planActors(beats);
+      // ---- §16 FALLBACK MERDİVENİ ----
+      // Şablon aktör üretemediyse sahne SESSİZCE boş bırakılmaz; merdivenden
+      // aşağı inilir. En alt basamak (Ken Burns) her zaman uygulanabilir,
+      // dolayısıyla hiçbir sahne "animasyon kurulamadı" diye videoyu durdurmaz.
+      const ladderResults = [];
+      const fallbackActors = [];
       for (const b of beats) {
         if (!Number.isFinite(b.scene)) continue;
         const made = planActors([b]).actors;
-        if (made.length) actorsBySceneUsed[b.scene] = made;
+        const scene = job.scenes?.[b.scene] || {};
+        const step = planWithFallback({
+          actors: made,
+          side: scene.side || null,
+          focus: b.focus || null,
+          start: b.start,
+          end: b.end,
+          accent: scene.sideAccent || null,
+        });
+        ladderResults.push({ scene: b.scene, rung: step.rung, reason: step.reason });
+        if (made.length) { actorsBySceneUsed[b.scene] = made; continue; }
+        if (step.actors.length) {
+          actorsBySceneUsed[b.scene] = step.actors;
+          fallbackActors.push(...step.actors);
+        }
+      }
+      const actors = [...plannedActors, ...fallbackActors];
+      const ladderSummary = summarizeLadder(ladderResults);
+      ladderSummaryOut = ladderSummary;
+      if (ladderResults.length) {
+        console.log(`[visual] merdiven: ${Object.entries(ladderSummary.byRung).map(([k, v]) => `${k}:${v}`).join(' ')} `
+          + `| aktif sahne oranı ${ladderSummary.activeSceneShare}`);
       }
       // KART TAVANI (aktör planından sonra, gerçek listeye). Kart kadrajın
       // ÜSTÜNDE durur; sayısı arttıkça video "kart gösterisi"ne döner.
@@ -1537,6 +1566,8 @@ export async function renderVideo(job, opts = {}) {
       // Eski ad geriye dönük uyum için korunuyor (preflight + acil kapı okuyor).
       captionEventCount: wordTimings.length,
       wordHighlightEventCount: wordTimings.length,
+      // §16 — hangi sahne hangi basamakta kaldı (aktiflik ölçüsü).
+      fallbackLadder: ladderSummaryOut,
       expectedSfxCount: audioInfo?.sfxCues?.length || 0,
       motion: motionPlan,
       motionIssues,
