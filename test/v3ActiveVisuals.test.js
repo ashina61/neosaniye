@@ -335,3 +335,36 @@ test('yeni overlay katmanı GERÇEK videoya biner (SSIM farkı ölçülür)', as
       `overlay ekranda görünmüyor (SSIM ${m[1]}) — ASS geçerli ama libass çizmiyor`);
   } finally { await rm(dir, { recursive: true, force: true }); }
 });
+
+// ---------------- §6 GÖRSEL DEĞİŞİM TEMPOSU ----------------
+test('sabit ekran YAVAŞ tempo uyarısı verir, hareketli ekran vermez', async () => {
+  const { validateFinalVideo } = await import('../src/pipeline/finalVideoValidator.js');
+  const { execFile } = await import('node:child_process');
+  const { promisify } = await import('node:util');
+  const { mkdtemp, rm } = await import('node:fs/promises');
+  const os = await import('node:os');
+  const path = await import('node:path');
+  const run2 = promisify(execFile);
+  if (!await run2('ffmpeg', ['-version']).then(() => true).catch(() => false)) return;
+
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'v3-cadence-'));
+  try {
+    // Tamamen sabit 8 saniye: ekran hiç değişmiyor.
+    const still = path.join(dir, 'still.mp4');
+    await run2('ffmpeg', ['-y', '-v', 'error', '-f', 'lavfi',
+      '-i', 'color=c=0x203040:s=180x320:d=8:r=10', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', still]);
+    const a = await validateFinalVideo(still, { duration: 8, clips: [] }, { fps: 2 });
+    assert.ok(a.warnings.some((w) => w.startsWith('SLOW_VISUAL_CADENCE')),
+      `sabit ekran uyarı üretmedi: ${JSON.stringify(a.warnings)}`);
+    assert.ok(a.meanChangeIntervalSeconds >= 1.8, String(a.meanChangeIntervalSeconds));
+
+    // Sürekli değişen gradyan: tempo hedefin içinde.
+    const moving = path.join(dir, 'moving.mp4');
+    await run2('ffmpeg', ['-y', '-v', 'error', '-f', 'lavfi',
+      '-i', 'testsrc2=s=180x320:d=8:r=10', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', moving]);
+    const b = await validateFinalVideo(moving, { duration: 8, clips: [] }, { fps: 2 });
+    assert.ok(!b.warnings.some((w) => w.startsWith('SLOW_VISUAL_CADENCE')),
+      `hareketli ekran yanlış uyarı verdi: ${JSON.stringify(b.warnings)}`);
+    assert.ok(b.perceptibleChangeCount > a.perceptibleChangeCount);
+  } finally { await rm(dir, { recursive: true, force: true }); }
+});

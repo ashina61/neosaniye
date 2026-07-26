@@ -355,6 +355,36 @@ export async function validateFinalVideo(videoPath, plan = {}, opts = {}) {
     failures.push(`UNDECLARED_OVERLAY:${undeclared.join(',')}`);
   }
 
+  // ---- 3.5) GÖRSEL DEĞİŞİM TEMPOSU (§6) ----
+  //
+  // "Ortalama her 1.2-1.8 saniyede algılanabilir bir görsel değişim olsun."
+  // Bu, staticShare'den FARKLI bir soru: staticShare planın TİPİNE bakar
+  // (fotoğraf mı video mu), bu ise EKRANDA ne olduğuna bakar. Ken Burns'lü bir
+  // fotoğraf "statik plan"dır ama ekran değişiyordur; üç saniye donan bir
+  // video klibi "hareketli plan"dır ama ekran donmuştur.
+  //
+  // Ölçüm final MP4'ten: ardışık kareler arasındaki yapısal mesafe eşiği
+  // aşıyorsa "algılanabilir değişim" sayılır.
+  const CHANGE_THRESHOLD = 4;              // 64 bitte 4 bit ≈ gözle seçilir
+  const changeTimes = [];
+  for (let i = 1; i < sampledFrames; i += 1) {
+    const moved = hamming(frameHashes[i], frameHashes[i - 1]) > CHANGE_THRESHOLD
+      || Math.abs((luma[i] ?? 0) - (luma[i - 1] ?? 0)) > 0.02;
+    if (moved) changeTimes.push(+(i / fps).toFixed(2));
+  }
+  const gaps = [];
+  for (let i = 1; i < changeTimes.length; i += 1) gaps.push(changeTimes[i] - changeTimes[i - 1]);
+  const meanChangeIntervalSeconds = gaps.length
+    ? +(gaps.reduce((a, b) => a + b, 0) / gaps.length).toFixed(2)
+    : (durationSeconds ?? 0);
+  const longestNoChangeSeconds = gaps.length ? +Math.max(...gaps).toFixed(2)
+    : +(durationSeconds ?? 0).toFixed(2);
+  // EDİTORYAL bulgu — yayını durdurmaz (V3: kalite kapı değil).
+  if (meanChangeIntervalSeconds > 1.8) {
+    warnings.push(`SLOW_VISUAL_CADENCE: ortalama ${meanChangeIntervalSeconds}s `
+      + '(hedef 1.2-1.8s) — ekran yeterince sık değişmiyor');
+  }
+
   // ---- 4) UZUN DURAĞAN AKIŞ ----
   let longestStaticStreakSeconds = 0;
   let streak = 1;
@@ -399,6 +429,10 @@ export async function validateFinalVideo(videoPath, plan = {}, opts = {}) {
     duplicateFrameGroups,
     duplicateShots,
     similarShots,
+    // §6 — ekranın gerçekten ne sıklıkta değiştiği (plan tipinden bağımsız).
+    meanChangeIntervalSeconds,
+    longestNoChangeSeconds,
+    perceptibleChangeCount: changeTimes.length,
     duplicateHooks,
     duplicateDiagrams,
     duplicateCTA,
