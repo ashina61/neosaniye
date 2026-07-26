@@ -49,7 +49,10 @@ export function assessVisualNarration({
   // benzer (aynı özne, değişen tek şey eylemin anı). Diziyi "kopya" saymak,
   // düzeltilmek istenen hatayı ödüllendirip doğru davranışı cezalandırırdı.
   const sequenceFrames = items.filter((it) => it?.sequence && it?.part > 0).length;
-  const countable = items.filter((it) => !(it?.sequence && it?.part > 0));
+  // loopEcho: son plan KASITLI olarak ilk görseli tekrar eder (döngü kapanışı).
+  // Onu "kopya" saymak, istenen davranışı cezalandırırdı.
+  const loopEchoes = items.filter((it) => it?.loopEcho).length;
+  const countable = items.filter((it) => !(it?.sequence && it?.part > 0) && !it?.loopEcho);
   const hashed = countable.filter((it) => it?.visualHash);
   let uniqueVisuals;
   let duplicatePairs = 0;
@@ -126,6 +129,7 @@ export function assessVisualNarration({
       duplicatePairs,
       // Eylemi gösteren ek kareler (benzersizlik sayımının DIŞINDA).
       sequenceFrames,
+      loopEchoes,
       semanticBeats: beats.length,
       semanticKinds: kindCounts,
       distinctKinds,

@@ -40,7 +40,12 @@ export const SCRIPT_SCHEMA = {
       description:
         'HOOK LAB: exactly 6 alternative cover lines for this story, each 3-5 words / MAX 26 chars, ' +
         'each a DIFFERENT angle (impossible claim, curiosity gap, direct shock, question, number, irony). ' +
-        'Score each 1-100 for SCROLL-STOP power: would a bored phone user freeze mid-swipe?',
+        'A HOOK IS NOT A TITLE. Never announce the topic ("How blind termites build homes" is a TITLE — ' +
+        'it tells the viewer what the video is about and gives them nothing to wonder about). ' +
+        'Instead open a GAP or a CONTRADICTION the viewer needs resolved: state the impossible part ' +
+        'flatly ("Blind builders. 13ft towers."), or a number that should not be possible, or a ' +
+        'blunt claim that begs "wait, what?". Prefer concrete nouns and contradictions over ' +
+        'explanations. Score each 1-100 for SCROLL-STOP power: would a bored phone user freeze mid-swipe?',
       items: {
         type: Type.OBJECT,
         properties: {
@@ -211,11 +216,30 @@ export function scoreHookRetention(text) {
   if (t.length <= 26) s += 8;
   // Sayı/istatistik = pattern interrupt gücü.
   if (/\d/.test(t)) s += 16;
-  // Soru = curiosity gap (açık uçlu merak boşluğu).
-  if (/\?/.test(t) || /^(how|why|what|who|when|where|which|nasıl|neden|niçin|kim|ne|hangi|neredr?)\b/i.test(t)) s += 14;
+
+  // GERÇEK SORU (soru işaretli) = açık uçlu merak boşluğu.
+  const isQuestion = /\?/.test(t);
+  if (isQuestion) s += 16;
+
+  // AÇIKLAYICI BAŞLIK TUZAĞI: "HOW BLIND TERMITES BUILD HOMES" gibi soru
+  // işareti OLMAYAN "how/why X does Y" kalıbı bir hook değil, videonun
+  // BAŞLIĞIdır — konuyu duyurur, gerilim kurmaz. Eski skorlama bunu soruyla
+  // aynı kefeye koyup +14 veriyordu ve canlıda tam bu hook seçildi.
+  const explainerTitle = !isQuestion
+    && /^(how|why|what|the way)\b/i.test(t)
+    && /\b(build|builds|work|works|make|makes|do|does|create|creates|survive|survives|grow|grows)\b/i.test(t);
+  if (explainerTitle) s -= 16;
+  else if (!isQuestion && /^(how|why|what|who|when|where|which|nasıl|neden|niçin|kim|ne|hangi)\b/i.test(t)) s += 4;
+
   // Şok / patern-kırıcı kelimeler.
   const shock = /(secret|hidden|never|nobody|impossible|shocking|forbidden|banned|deadly|actually|wrong|proof|gizli|asla|kimse|imkansız|şok|yasak|ölümcül|aslında|yanlış|kanıt)/i;
   if (shock.test(t)) s += 12;
+
+  // ÇELİŞKİ/GERİLİM: "kör olan inşa ediyor", "ölü ama hareket ediyor" gibi
+  // kendi içinde çatışan ifadeler izleyiciyi durdurur — hook'un asıl motoru.
+  const tension = /\b(blind|deaf|dead|frozen|without|no one|nothing|can'?t|couldn'?t|shouldn'?t|yet|still|despite|but|upside|backwards|inside out|kör|sağır|ölü|olmadan|rağmen|ama|tersine)\b/i;
+  if (tension.test(t)) s += 10;
+
   // Zayıf/klişe açılışlar retention'ı düşürür (scroll-past sinyali).
   if (/^(did you know|you won'?t believe|let'?s talk|in this video|bu videoda|biliyor muydun)/i.test(t)) s -= 25;
   return Math.max(0, Math.min(100, s));

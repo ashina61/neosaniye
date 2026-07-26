@@ -347,10 +347,14 @@ export async function runPipeline(opts = {}) {
         mixedInGraph: true,
       });
     }
-    const sfxVerification = await verifySfxInOutput(outPath, sfxCues).catch((err) => {
-      console.error(`[verify] SFX doğrulaması çöktü: ${err.message}`);
-      return { ok: false, cues: [], failures: ['SFX_OUTPUT_VERIFICATION_FAILED'], repetition: {} };
-    });
+    // SFX kapalıyken doğrulanacak cue yoktur; kapıyı "başarısız" saymak
+    // (26 Tem'de sesler bilinçli kapatıldı) her videoyu boş yere bloklardı.
+    const sfxVerification = config.video.sfx === false
+      ? { ok: true, cues: [], failures: [], repetition: {}, skipped: 'sfx-disabled' }
+      : await verifySfxInOutput(outPath, sfxCues).catch((err) => {
+        console.error(`[verify] SFX doğrulaması çöktü: ${err.message}`);
+        return { ok: false, cues: [], failures: ['SFX_OUTPUT_VERIFICATION_FAILED'], repetition: {} };
+      });
     for (const c of sfxVerification.cues) {
       if (c.verified) console.log(`  🔊 SFX ✓ ${c.atSeconds}s ${c.requested} (+${c.audibleDeltaDb}dB)`);
       else console.warn(`  🔇 SFX ✗ ${c.atSeconds}s ${c.requested} — ${c.code}${c.audibleDeltaDb != null ? ` (+${c.audibleDeltaDb}dB)` : ''}`);

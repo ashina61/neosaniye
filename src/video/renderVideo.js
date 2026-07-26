@@ -1196,6 +1196,23 @@ export async function renderVideo(job, opts = {}) {
         index: i, start: it.start, end: it.end, part: media[i]?.part,
       }));
       let { beats } = directSemantics(vtl);
+
+      // ÇAKIŞMA KORUMASI: sahne zaten bir GFX kartıysa (sayı kartı / adım
+      // kartı) o klip KENDİ sayacını ve grafiğini içerir. Üstüne bir de
+      // semantik kompozisyon binince canlıda İKİ SAYAÇ üst üste sayıyordu
+      // ("71/125", "160/250" iç içe — 26 Tem, 0:18). Gfx sahnesi semantik
+      // katmandan muaftır: kart zaten bilgiyi gösteriyor.
+      const gfxScenes = new Set(
+        (media || []).map((m, i) => (m?.gfx ? i : -1)).filter((i) => i >= 0),
+      );
+      if (gfxScenes.size) {
+        const before = beats.length;
+        beats = beats.filter((b) => !gfxScenes.has(b.index));
+        if (beats.length !== before) {
+          console.log(`[visual] ${before - beats.length} kompozisyon atlandı (sahnede zaten gfx kartı var).`);
+        }
+      }
+
       // Kalabalık olmasın: en bilgilendirici tipleri koru, üst sınırı uygula.
       const max = Math.max(1, semCfg.maxPerVideo || 6);
       if (beats.length > max) {

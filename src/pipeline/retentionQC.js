@@ -231,12 +231,21 @@ export function evaluateRetention(input, cfg = config.retention) {
   else failures.push('ses akışı yok');
   if (input.lufs !== null && input.lufs >= -16.5 && input.lufs <= -12.5) audio += 2;
   else if (input.lufs !== null) warnings.push(`loudness ${input.lufs} LUFS (hedef -14±2)`);
-  // Duyulur sfx yeterliliği: 30-35sn bilgi videosu için min 3 (ideal 3-5, max 6).
-  if (sfx.count >= cfg.minAudibleSfx && sfx.count <= cfg.maxAudibleSfx) audio += 3;
+  // SFX KAPALIYSA CEZA YOK. Geçiş sesleri bilinçli olarak kapatıldı
+  // (26 Tem kullanıcı kararı: "hiçbir videoda olmasın"). Kapalı bir özelliğin
+  // yokluğunu eksiklik sayıp her videoyu cezalandırmak QC'yi anlamsızlaştırır;
+  // sfx'in payı bu durumda tam verilir.
+  // Kapı YALNIZCA "sfx kapalı VE gerçekten hiç sfx yok" durumunda nötrleşir.
+  // Sfx varsa (ör. özellik elle açılmış) normal skorlama işler.
+  const sfxNeutral = config.video.sfx === false && sfx.count === 0;
+  if (sfxNeutral) {
+    audio += 3;
+  } else if (sfx.count >= cfg.minAudibleSfx && sfx.count <= cfg.maxAudibleSfx) audio += 3;
   else if (sfx.count >= 1) { audio += 1; fixes.push(`Yalnızca ${sfx.count} duyulur sfx — hedef ${cfg.minAudibleSfx}-${cfg.maxAudibleSfx} anlamlı, zamanlı vuruş.`); }
   else if (input.editPlan) fixes.push('Hiç duyulur sfx yok — hook/reveal/final anlarına anlamlı vuruşlar ekle.');
   // Aralık + çeşitlilik: birbirine çok yakın veya hep aynı sfx puan kazandırmaz.
-  if (sfx.count >= 2) {
+  if (sfxNeutral) audio += 2;
+  else if (sfx.count >= 2) {
     if (sfx.spacedOk && sfx.distinctCount >= 2) audio += 2;
     else if (!sfx.spacedOk) warnings.push(`sfx'ler çok sık (${sfx.minGapSeconds}s < ${cfg.minSfxGapSeconds}s) — seyrelt.`);
     else warnings.push('sfx çeşitliliği düşük — aynı efekt tekrar ediyor.');

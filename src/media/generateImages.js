@@ -644,5 +644,30 @@ export async function generateImages(script, opts = {}) {
 
   }
 
+  // LOOP KAPANIŞI: son plan, İLK planın görselini tekrar kullanır. Shorts'ta
+  // video başa sarınca son kare ile ilk kare aynıysa dikiş görünmez ve izleyici
+  // farkında olmadan tekrar izler (replay = Shorts görüntülenme motoru).
+  // Canlıda ilk/son kare tamamen farklıydı (algısal mesafe 24) ve döngü kopuyordu.
+  if (config.video.loopClosure !== false && items.length >= 4) {
+    const first = items[0];
+    const last = items[items.length - 1];
+    // Yalnızca ikisi de düz görselse yap: gfx kartı ya da stok video olan bir
+    // finali ezmek anlatıyı bozar (kart bilgi taşır, video kendi hareketini).
+    const eligible = first?.type === 'photo' && last?.type === 'photo'
+      && first.source !== 'gfx' && last.source !== 'gfx'
+      && existsSync(first.path);
+    if (eligible && first.path !== last.path) {
+      items[items.length - 1] = {
+        ...last,
+        path: first.path,
+        loopEcho: true,               // QC: kasıtlı tekrar, "kopya" sayılmaz
+        motionHint: null,
+        assetId: `${first.assetId}#loop`,
+        query: first.query,
+      };
+      console.log('[img] loop kapanışı: son plan ilk görsele döndürüldü.');
+    }
+  }
+
   return { mediaDir, items, sources };
 }
