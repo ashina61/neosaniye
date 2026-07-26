@@ -6,10 +6,22 @@ import { config } from '../src/config.js';
 
 // 26 Tem geri bildirimi (termite videosu) — dört somut kusur.
 
-// ---------------- 1) SFX TAMAMEN KAPALI ----------------
-test('SFX varsayılan KAPALI (geçiş sesi + CTA pop)', () => {
-  assert.equal(config.video.sfx, false, 'geçiş sesleri hâlâ açık');
-  assert.equal(config.motion.cta.sfx, false, 'CTA pop sesi hâlâ açık');
+// ---------------- 1) SFX: ANLAMA BAĞLI ----------------
+// İlk düzeltmede sesler tamamen kapatılmıştı. Kullanıcı sonra "olsun ama
+// yerine göre ve mantıklı" dedi → motor anlamlı hale getirildi ve geri açıldı.
+test('geçiş sesleri AÇIK ama anlama bağlı; CTA pop KAPALI', () => {
+  assert.equal(config.video.sfx, true, 'anlamlı sfx motoru devre dışı');
+  assert.equal(config.motion.cta.sfx, false, 'CTA pop sesi anlamla ilişkilendirilemiyor, kapalı kalmalı');
+  // Seyreklik: en fazla 4 ses, aralarında en az 5sn.
+  assert.ok(config.video.maxSfxPerVideo <= 4, 'ses üst sınırı çok yüksek');
+  assert.ok(config.video.minSfxGapSeconds >= 5, 'sesler çok sık olabilir');
+});
+
+test('anlamsız anlatım ses üretmez (kota doldurma yok)', async () => {
+  const { planSemanticSfx } = await import('../src/audio/semanticSfx.js');
+  const scenes = ['a quiet field here', 'a calm morning again', 'the grass looked green']
+    .map((n) => ({ narration: n }));
+  assert.deepEqual(planSemanticSfx(scenes, [4, 8]), [null, null]);
 });
 
 // ---------------- 2) ÇİFT SAYAÇ ÇAKIŞMASI ----------------

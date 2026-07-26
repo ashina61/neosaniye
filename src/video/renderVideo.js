@@ -13,6 +13,7 @@ import { selectSceneMotion, validateMotionPlan } from './motionPlan.js';
 import { directSemantics } from '../visual/semanticDirector.js';
 import { buildSemanticAss } from '../visual/semanticShots.js';
 import { detectFocus } from '../visual/focusDetect.js';
+import { planSemanticSfx, describeSfxPlan } from '../audio/semanticSfx.js';
 
 const run = promisify(execFile);
 
@@ -875,7 +876,10 @@ export async function renderVideo(job, opts = {}) {
       }
       continue;
     }
-    const real = isOutroBoundary || k % 2 === 0;
+    // KESME ÇOĞUNLUKTA: eskiden sınırların YARISI (k % 2) animasyonluydu ve
+    // video sürekli eriyordu. Artık yalnızca her 3. sınır yumuşak geçiş alır
+    // (outro hariç) → çoğu sınır sert kesme, tempo kurguya benzer.
+    const real = isOutroBoundary || k % 3 === 0;
     if (real) {
       bts.push(td);
       btName.push(trsList[realCount % trsList.length] || 'fade');
@@ -888,22 +892,33 @@ export async function renderVideo(job, opts = {}) {
 
   // SFX adayları (ana sınırlar, k=1..N-1): kurgucu seçtiyse onun tipi; yoksa
   // mekanik — animasyonlu sınırlara sırayla döner, sıra videodan videoya kayar.
-  const sfxCycleAll = ['whoosh', 'impact', 'riser', 'shimmer'];
+  // ANLAMLI SES: artık sınıra ne düştüğüne değil, o sınırda BAŞLAYAN sahnenin
+  // NE ANLATTIĞINA bakılır. Eski mekanik döngü (whoosh→impact→riser→shimmer)
+  // sesi ekranla ilgisiz yerlere basıyordu; canlıda "alakasız" bulundu.
+  // Anlatım bir sesi hak etmiyorsa o sınır SESSİZ kalır (kota/dolgu yok).
   let sfxTypes = [];
   {
-    const shift = (N + Math.round(narrationDur)) % sfxCycleAll.length;
-    let n = 0;
-    for (let k = 1; k <= Math.max(0, N - 1); k += 1) {
-      if (planOk) {
-        const s = plan.boundaries[k - 1].sfx;
-        sfxTypes.push(s && s !== 'none' ? s : null);
-      } else if (bts[k - 1] >= 0.2) {
-        sfxTypes.push(sfxCycleAll[(shift + n) % sfxCycleAll.length]);
-        n += 1;
-      } else {
-        sfxTypes.push(null);
-      }
+    // Sınır zamanları ve sahne metinleri kanonik zaman çizelgesinden gelir.
+    const tlItems = Array.isArray(job.timeline?.items) ? job.timeline.items : [];
+    const boundaryTimes = [];
+    // Sınırda BAŞLAYAN sahnenin anlatımı (ses geleni duyurur, gideni değil).
+    const sfxScenes = [];
+    for (let k = 0; k < N; k += 1) {
+      const it = tlItems[k];
+      sfxScenes.push({ narration: job.scenes?.[it?.scene]?.narration || '' });
+      if (k < N - 1) boundaryTimes.push(Number.isFinite(it?.end) ? it.end : null);
     }
+    const editorPlan = planOk
+      ? plan.boundaries.slice(0, Math.max(0, N - 1)).map((b) => b.sfx || 'none')
+      : null;
+    sfxTypes = planSemanticSfx(sfxScenes, boundaryTimes, {
+      maxCues: config.video.maxSfxPerVideo,
+      minGapSeconds: config.video.minSfxGapSeconds,
+      editorPlan,
+    });
+    const summary = describeSfxPlan(sfxTypes);
+    console.log(`[sfx] anlamlı plan: ${summary.count} ses (${
+      Object.entries(summary.types).map(([t, c]) => `${t}:${c}`).join(' ') || 'yok'})`);
   }
   const mainBts = bts.slice(0, Math.max(0, N - 1));
   const mainTdSum = mainBts.reduce((a, b) => a + b, 0);

@@ -70,7 +70,9 @@ const EDIT_SCHEMA = {
 
 const SYSTEM = `You are the FILM EDITOR and SOUND DESIGNER of a premium faceless YouTube Shorts channel.
 You receive a scene-by-scene story. Design the edit like a pro:
-- Pacing lives in CUTS: most boundaries are 'cut'. Use an animated transition only where the story's
+- Pacing lives in CUTS: at LEAST two thirds of boundaries must be 'cut'. A real Shorts edit breathes
+  through hard cuts; a video that dissolves everywhere reads as a slideshow, not an edit (measured
+  live: zero detectable scene changes across a 39s video). Use an animated transition only where the story's
   emotion shifts (a reveal, a time jump, entering the twist). Never more than ~40% animated.
 - Sound tells the story — every SFX has a PURPOSE, matched to the narration beat, never decoration:
   reveal/discovery → 'shimmer'; a question/time-or-place jump → 'whoosh'; danger/weight → 'impact' (low
@@ -82,7 +84,11 @@ You receive a scene-by-scene story. Design the edit like a pro:
 - SFX DISCIPLINE: nominate 3-5 audible boundary sfx per video, only when the story earns one. Each must land ON a meaningful narration moment (the crystal/object reveal,
   the split/reveal, the final resolution) — NOT random. Space them out (don't stack two within a few
   seconds) and vary the type. Never add a whoosh just to hit a count. The renderer adds a separate subtle hook cue.
-- EVERY animated (non-cut) transition MUST carry an sfx — a silent animated wipe feels broken.
+- SFX ARE EARNED, NOT SCHEDULED: leave 'none' unless the incoming line genuinely carries that meaning
+  (impact=a hard turn/shock, riser=tension climbing into a reveal, shimmer=discovery/light,
+  whoosh=physical movement or a time jump). A sound with no relationship to what is being said is
+  worse than silence — live feedback called the old scheduled cues "completely irrelevant".
+  An animated transition may be silent; do NOT add a whoosh just because a transition animates.
   'none' is allowed ONLY on plain cuts.
 - Pick the music mood by the story's FEELING, not its surface topic (a dark science story = mystery).
 - Place the subscribe reminder only after the payoff, in the final beat.
@@ -128,7 +134,9 @@ Design the edit: exactly ${N - 1} boundaries, plus music mood and subscribe plac
     const transition = TRANSITIONS.includes(b.transition) ? b.transition : 'cut';
     let sfxType = SFX.includes(b.sfx) ? b.sfx : 'none';
     // Animasyonlu geçiş asla sessiz olamaz (canlıda "bozuk" hissi verdi).
-    if (transition !== 'cut' && sfxType === 'none') sfxType = 'whoosh';
+    // ZORLA WHOOSH KALDIRILDI: "animasyonlu geçiş sessiz kalmasın" diye her
+    // geçişe whoosh basmak, sesi anlamdan kopartıyordu (26 Tem: "alakasız").
+    // Sesi artık semanticSfx anlatımdan türetiyor; burada 'none' NONE kalır.
     return { transition, sfx: sfxType };
   });
   // Decorative transitions are exceptional: max two and no more than 25%.

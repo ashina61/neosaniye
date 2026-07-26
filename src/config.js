@@ -299,8 +299,11 @@ export const config = {
 
     // Klipler arası geçişler (xfade). Pro kurgu: sade ve kısa — gösterişli
     // wipe'lar (radial/circleopen vb.) şablon/AI hissi verdiği için çıkarıldı.
-    // Crossfade süresi 0.3s → 0.5s: sahne geçişleri daha yumuşak/sinematik.
-    transitionDuration: Number(process.env.VIDEO_TRANSITION || 0.5),
+    // Crossfade süresi 0.5s → 0.28s. 0.5s ÇOK uzundu: 3.5sn'lik sahnelerde
+    // videonun ~%14'ü eriyip akıyordu ve gerçek koşuda ffmpeg 0.05 eşiğinde
+    // bile SIFIR sahne kesmesi buldu — kurgu değil, slayt geçişi hissi.
+    // Shorts kurgusu KESMEyle nefes alır; yumuşak geçiş istisnadır.
+    transitionDuration: Number(process.env.VIDEO_TRANSITION || 0.28),
     transitions: (process.env.VIDEO_TRANSITIONS ||
       'fade,slideleft,zoomin,slideup,smoothleft,fade,slideright,wipeup')
       .split(','),
@@ -355,16 +358,18 @@ export const config = {
     hookOverlay: process.env.VIDEO_HOOK !== '0',
     hookDuration: Number(process.env.VIDEO_HOOK_SECONDS || 2.8),
 
-    // SES EFEKTLERİ ARTIK VARSAYILAN KAPALI (kullanıcı kararı, 26 Tem):
-    // canlı videoda geçiş sesleri "kötü ve saçma" bulundu — hiçbir videoda
-    // olmasın istendi. Anlatım + müzik yatağı yeterli. Geri açmak: VIDEO_SFX=1.
-    sfx: process.env.VIDEO_SFX === '1',
+    // SES EFEKTLERİ: geri AÇIK, ama artık ANLAMA BAĞLI. Eski sistem kotayla
+    // ses dolduruyordu (zaman çizelgesinin %24/%54/%82'sine körlemesine) ve
+    // canlıda "alakasız/salakça" bulundu. Yeni motor (audio/semanticSfx.js)
+    // sesi o sınırda BAŞLAYAN sahnenin anlatımından türetir; anlatım bir sesi
+    // hak etmiyorsa o sınır SESSİZ kalır. Tamamen kapatmak: VIDEO_SFX=0.
+    sfx: process.env.VIDEO_SFX !== '0',
     transitionSoundVolume: Number(process.env.VIDEO_TRANSITION_SOUND_VOL || 0.6),
     // A 35-58s Short needs setup → reveal → payoff audio punctuation. The
     // renderer fills a weak editor plan to this floor while respecting spacing.
     minSfxPerVideo: Number(process.env.VIDEO_SFX_MIN || 3),
-    maxSfxPerVideo: Number(process.env.VIDEO_SFX_MAX || 5),
-    minSfxGapSeconds: Number(process.env.VIDEO_SFX_MIN_GAP || 4),
+    maxSfxPerVideo: Number(process.env.VIDEO_SFX_MAX || 4),
+    minSfxGapSeconds: Number(process.env.VIDEO_SFX_MIN_GAP || 5),
 
     // Arka plan müziği (narrasyon altında 'ducking' ile kısılır).
     // assets/music/ içindeki telifsiz parçalardan her video için rastgele biri
@@ -485,8 +490,9 @@ export const config = {
       // dil → daha yüksek abone dönüşümü. MOTION_CTA_YT_STYLE=0 ile eski
       // turkuaz cam karta dön.
       youtubeStyle: process.env.MOTION_CTA_YT_STYLE !== '0',
-      // CTA 'pop' sesi de kapatıldı — sfx kararı TÜM sesleri kapsıyor.
-      // Geri açmak: MOTION_CTA_SFX=1.
+      // CTA 'pop' sesi KAPALI kalır: abone kartı anlatımdan bağımsız bir
+      // arayüz öğesi, sesi de anlamla ilişkilendirilemiyor. MOTION_CTA_SFX=1
+      // ile açılabilir.
       sfx: process.env.MOTION_CTA_SFX === '1',
       // CTA 'pop' NET duyulur olmalı: taban ses cue anında DERİN kısılır (ducking) +
       // pop bu seviyede biner. Gerçek koşuda 0.7 hâlâ gömüldü (+0.4 dB) → 1.1.
