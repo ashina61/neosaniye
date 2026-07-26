@@ -547,8 +547,14 @@ export async function runRetentionQC(input, workDir, extras = {}) {
   const externalBlockingReasons = [...new Set(extras.blockingReasons || [])].filter(Boolean);
   // Production means the final artifact is technically publishable. Editorial
   // readiness remains visible in the report but never becomes a publish gate.
-  const productionReady = Boolean(technicalReady);
-  const blockUpload = !technicalReady;
+  // FINAL MP4 KARARI — "plan doğru olabilir, çıkan video yanlışsa sistem
+  // başarısızdır." Eskiden productionReady = technicalReady idi: MP4 decode
+  // edilebiliyorsa rapor "production-ready" yazıyordu. Kolibri koşusunda rapor
+  // aynı sayfada productionReady=true, uploadAllowed=true derken yayın
+  // kapıları FAIL veriyordu. Raporun kendi sözlüğü yalan söylüyordu.
+  const finalVideoOk = extras.finalVideo ? extras.finalVideo.ok === true : null;
+  const productionReady = Boolean(technicalReady) && finalVideoOk !== false;
+  const blockUpload = !technicalReady || finalVideoOk === false;
   const uploadAllowedByPolicy = !blockUpload;
   const status = disabled ? 'disabled' : execError ? 'error' : r.failures.length ? 'fail' : editorialReady ? 'pass' : 'warning';
 
@@ -591,6 +597,23 @@ export async function runRetentionQC(input, workDir, extras = {}) {
     openRouterFailures: extras.aiProvider?.openRouterFailures || 0,
     retentionScore: r ? r.score : null,
     status,
+    // --- FINAL MP4'TEN HESAPLANAN ALANLAR (plan JSON'undan DEĞİL) ---
+    finalVideoHash: extras.runIntegrity?.parts?.finalVideo || null,
+    analyzedVideoHash: extras.finalVideo?.analyzedVideoHash || null,
+    duplicateHooks: extras.finalVideo?.duplicateHooks ?? null,
+    duplicateDiagrams: extras.finalVideo?.duplicateDiagrams ?? null,
+    duplicateCTA: extras.finalVideo?.duplicateCTA ?? null,
+    duplicateScenes: extras.finalVideo?.duplicateShots?.length ?? null,
+    duplicateCaptions: extras.finalVideo?.duplicateCaptions ?? null,
+    duplicateFrames: extras.finalVideo?.duplicateFrameGroups?.length ?? null,
+    duplicateAssets: extras.finalVideo?.duplicateShots?.length ?? null,
+    sceneOrderValid: extras.finalVideo?.sceneOrderValid ?? null,
+    timelineIntegrity: extras.finalVideo?.timelineIntegrity || null,
+    renderIntegrity: extras.runIntegrity
+      ? { runId: extras.runIntegrity.runId, chainHash: extras.runIntegrity.chainHash }
+      : null,
+    undeclaredOverlays: extras.finalVideo?.undeclaredOverlays || null,
+    finalVideoOk: finalVideoOk,
     technicalReady,
     editorialReady,
     productionReady,

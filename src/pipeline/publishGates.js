@@ -36,6 +36,8 @@ export const DEFAULT_THRESHOLDS = {
  * @returns {{passed:boolean, status:string, failures:string[], review:string[], gates:object}}
  */
 export function evaluatePublishGates({
+  finalVideo = null,
+  runIntegrity = null,
   captionIntegrity = null,
   subjectContinuity = null,
   semanticActions = null,
@@ -48,6 +50,43 @@ export function evaluatePublishGates({
   const failures = [];
   const review = [];
   const gates = {};
+
+  // ---- FINAL MP4 (BİRİNCİL KAPI) ----
+  //
+  // KURAL: plan başarılı olabilir, final video başarısızsa VİDEO BAŞARISIZDIR.
+  // Doğrulama hiç çalışmadıysa da geçilmiş sayılmaz — doğrulanmamış video
+  // yayınlanmaz ("rapor üretilemedi" bir başarı değildir).
+  if (!finalVideo) {
+    review.push('FINAL_VIDEO_UNVERIFIED');
+    gates.finalVideo = null;
+  } else {
+    gates.finalVideo = {
+      analyzedVideoHash: finalVideo.analyzedVideoHash,
+      sampledFrames: finalVideo.sampledFrames,
+      duplicateShots: finalVideo.duplicateShots?.length ?? null,
+      duplicateHooks: finalVideo.duplicateHooks,
+      duplicateDiagrams: finalVideo.duplicateDiagrams,
+      duplicateCTA: finalVideo.duplicateCTA,
+      duplicateCaptions: finalVideo.duplicateCaptions,
+      longestStaticStreakSeconds: finalVideo.longestStaticStreakSeconds,
+      sceneOrderValid: finalVideo.sceneOrderValid,
+    };
+    // Doğrulayıcının kendi bulguları doğrudan yayın engelidir.
+    for (const f of finalVideo.failures || []) failures.push(`FINAL_VIDEO/${f}`);
+  }
+
+  // ---- RUN INTEGRITY ----
+  // Artifact'ler aynı koşuya ait değilse, karşılaştırdığımız plan o videonun
+  // planı olmayabilir; bu durumda hiçbir kapının sonucuna güvenilemez.
+  if (!runIntegrity?.chainHash) {
+    review.push('RUN_INTEGRITY_UNVERIFIED');
+  } else {
+    gates.runId = runIntegrity.runId;
+    gates.chainHash = runIntegrity.chainHash;
+    if (!runIntegrity.parts?.finalVideo) {
+      failures.push('RUN_INTEGRITY_NO_VIDEO_HASH');
+    }
+  }
 
   // ---- ALTYAZI BÜTÜNLÜĞÜ ----
   if (!captionIntegrity) {

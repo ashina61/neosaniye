@@ -1206,6 +1206,9 @@ export async function renderVideo(job, opts = {}) {
   let effectsFilter = '';
   let semanticBeatsUsed = [];
   let actorStatsUsed = null;
+  // Bildirim bayrakları (renderPlan.overlayLayers bunlardan kurulur).
+  let actorAssWritten = false;
+  let cardAssWritten = false;
   const actorsBySceneUsed = {};
   const sceneFocusUsed = {};
   const semCfg = config.motion?.semanticVisuals;
@@ -1325,6 +1328,7 @@ export async function renderVideo(job, opts = {}) {
 
       const actorAss = buildActorAss(actors, { width, height });
       if (actorAss) {
+        actorAssWritten = true;
         await writeFile(path.join(workDir, 'actors.ass'), actorAss);
         filters.push(existsSync(fontsDir) ? `ass=actors.ass:fontsdir=${fontsDir}` : 'ass=actors.ass');
         console.log(`[visual] AKTÖR koreografisi: ${actors.length} aktör / ` +
@@ -1334,6 +1338,7 @@ export async function renderVideo(job, opts = {}) {
 
       const ass = buildSemanticAss(cardBeats, { width, height, cfg: semCfg });
       if (ass) {
+        cardAssWritten = true;
         await writeFile(path.join(workDir, 'semantic.ass'), ass);
         filters.push(existsSync(fontsDir) ? `ass=semantic.ass:fontsdir=${fontsDir}` : 'ass=semantic.ass');
         console.log(`[visual] kart katmanı: ${cardBeats.length} kompozisyon (${
@@ -1462,6 +1467,51 @@ export async function renderVideo(job, opts = {}) {
     actorsByScene: actorsBySceneUsed,
     sceneFocus: sceneFocusUsed,
     renderPlan: {
+      // BİLDİRİM TAMLIĞI — render'ın ekrana KOYDUĞU her katman burada listelenir.
+      //
+      // 26 Tem kolibri koşusu: production report "CTA uygulanmadı" diyordu ve
+      // doğruydu — motion.cta gerçekten çalışmamıştı. Ama ekranda 40-42.6s
+      // arasında bir SUBSCRIBE pili vardı; onu bu dosyanın BAŞKA bir kod yolu
+      // (spOn) çiziyor ve hiçbir rapora kendini bildirmiyordu. Final video
+      // doğrulayıcısı, referans penceresi olmayan bir bindirmeyi piksel
+      // taramasıyla bulamaz; bu yüzden bildirim ZORUNLUdur.
+      overlayLayers: [
+        ...(hasHook ? ['hook'] : []),
+        ...(hasSubs ? ['caption'] : []),
+        ...(listMarkers.length ? ['listMarker'] : []),
+        ...(actorAssWritten ? ['actor'] : []),
+        ...(cardAssWritten ? ['card'] : []),
+        ...(spOn ? ['cta'] : []),
+        ...(job.finaleText ? ['finale'] : []),
+      ],
+      // Bindirmelerin GERÇEK zaman pencereleri — doğrulayıcının referansı.
+      overlayWindows: {
+        hook: hasHook ? [[0, config.video.hookDuration]] : [],
+        cta: spOn ? [[+T1.toFixed(2), +T2.toFixed(2)]] : [],
+        diagram: (media || []).map((m, i) => (m?.gfx && canonicalItems?.[i]
+          ? [+canonicalItems[i].start.toFixed(2), +canonicalItems[i].end.toFixed(2)] : null))
+          .filter(Boolean),
+        loopEcho: (media || []).map((m, i) => (m?.loopEcho && canonicalItems?.[i]
+          ? [+canonicalItems[i].start.toFixed(2), +canonicalItems[i].end.toFixed(2)] : null))
+          .filter(Boolean),
+        listMarker: listMarkers.map((m) => [+m.start.toFixed(2), +m.end.toFixed(2)]),
+      },
+      // TIMELINE BÜTÜNLÜĞÜ: her klibin kimliği + sırası. scene_03_clip_02,
+      // scene_04_clip_00'dan önce gelmeli; doğrulayıcı bunu denetler.
+      clips: (canonicalItems || []).map((it, i) => {
+        const sceneIdx = it?.scene ?? job.mediaScene?.[i] ?? i;
+        const part = media?.[i]?.part ?? 0;
+        return {
+          id: `scene_${String(sceneIdx).padStart(2, '0')}_clip_${String(part).padStart(2, '0')}`,
+          scene: sceneIdx,
+          sequence: part,
+          renderOrder: i,
+          start: +Number(it.start).toFixed(3),
+          end: +Number(it.end).toFixed(3),
+          assetId: media?.[i]?.assetId || media?.[i]?.path || null,
+          source: media?.[i]?.source || null,
+        };
+      }),
       expectedSceneCount: N,
       sceneBoundaries: canonicalItems ? canonicalItems.slice(0, -1).map((x) => x.end) : [],
       transitions: btName.slice(0, Math.max(0, N - 1)).map((type, i) => ({ type: planOk ? plan.boundaries[i]?.transition || 'cut' : type, atSeconds: canonicalItems?.[i]?.end ?? null })),

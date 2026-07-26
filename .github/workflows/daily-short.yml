@@ -149,6 +149,20 @@ jobs:
       # SONRA rollout raporu üret. Render/motion/upload'a DOKUNMAZ; hata toleranslı —
       # rapor/log başarısızlığı job'ı ASLA düşürmez. Üretim adımı çalıştıysa çalışır
       # (produce skip edilmediyse); iptal edildiyse çalışmaz.
+      # FINAL MP4 DENETİMİ — plana değil, çıkan videoya bakar. Boru hattı içinde
+      # de koşuyor (publish gate'in birincil girdisi); bu adım aynı denetimi
+      # artifact'ten bağımsız olarak log'a döker ki insan gözüyle okunabilsin.
+      - name: Final MP4 denetimi (kare taraması)
+        if: ${{ !cancelled() && steps.produce.conclusion != 'skipped' }}
+        run: |
+          V=$(find output -name '*.mp4' -not -name 'fullv.mp4' | head -1)
+          G=$(find output -name 'publish-gates.json' | head -1)
+          if [ -n "$V" ]; then
+            node scripts/audit-final-video.js "$V" ${G:+"$G"} --fps 2 || echo "[final-video] DENETİM BAŞARISIZ (yayın engelli)"
+          else
+            echo "[final-video] mp4 bulunamadı"
+          fi
+
       - name: Motion rollout raporu (gözlem)
         if: ${{ !cancelled() && steps.produce.conclusion != 'skipped' }}
         run: |
