@@ -35,6 +35,9 @@ test('her aktör tipi ASS üretir, çöp değer sızdırmaz', () => {
     block_grid: { at: [0.5, 0.46], cols: 5, rows: 4 },
     link_burst: { at: [0.5, 0.46], nodes: 4 },
     scan_line: {},
+    split_screen: { left: { label: 'human', rows: ['forgets details'] },
+      right: { label: 'AI', rows: ['stores records'] } },
+    label_tag: { at: [0.6, 0.5], label: 'queen ant' },
   };
   for (const type of ACTOR_TYPES) {
     const ev = actorEvents({ type, start: 0, end: 4, ...samples[type] });

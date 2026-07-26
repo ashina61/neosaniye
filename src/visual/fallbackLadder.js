@@ -39,7 +39,7 @@ export const LADDER = [
  * @returns {{rung:string, actors:Array, reason:string}}
  */
 export function planWithFallback({
-  actors = [], side = null, focus = null, start = 0, end = 4, accent = null,
+  actors = [], side = null, focus = null, start = 0, end = 4, accent = null, sides = null,
 } = {}) {
   const span = Math.max(0.6, end - start);
   const col = accent || undefined;
@@ -49,17 +49,15 @@ export function planWithFallback({
     return { rung: 'semantic_diagram', actors, reason: 'şablon aktörleri üretildi' };
   }
 
-  // 2) SPLIT-SCREEN — sahne iki tarafı birden anlatıyorsa.
-  if (side === 'both') {
+  // 2) SPLIT-SCREEN — sahne iki tarafı birden anlatıyorsa GERÇEK bölünme.
+  // İki köşe parantezi karşılaştırma değildir; izleyici neyin neyle
+  // kıyaslandığını göremez. Taraf adları biliniyorsa ekran ikiye bölünür.
+  if (side === 'both' && sides?.left?.label && sides?.right?.label) {
     return {
       rung: 'split_screen',
-      actors: [
-        { type: 'focus_box', at: [0.27, 0.48], width: 0.34, height: 0.32, color: col,
-          start: start + 0.2, end: start + span * 0.5 },
-        { type: 'focus_box', at: [0.73, 0.48], width: 0.34, height: 0.32, color: col,
-          start: start + span * 0.52, end },
-      ],
-      reason: 'sahne iki tarafı birden anlatıyor',
+      actors: [{ type: 'split_screen', left: sides.left, right: sides.right,
+        top: 0.30, start: start + 0.2, end }],
+      reason: `iki taraf adlandırıldı (${sides.left.label} ↔ ${sides.right.label})`,
     };
   }
 

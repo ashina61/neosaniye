@@ -1326,6 +1326,7 @@ export async function renderVideo(job, opts = {}) {
           start: b.start,
           end: b.end,
           accent: scene.sideAccent || null,
+          sides: b.payload?.sides || null,
         });
         ladderResults.push({ scene: b.scene, rung: step.rung, reason: step.reason });
         if (made.length) { actorsBySceneUsed[b.scene] = made; continue; }

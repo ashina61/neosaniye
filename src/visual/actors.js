@@ -777,6 +777,118 @@ function scanLineActor(a) {
   ];
 }
 
+/* ------------------------------------------------------------------ *
+ * SPLIT_SCREEN — GERÇEK karşılaştırma: ekran ikiye bölünür.
+ *
+ * Kullanıcı isteği aynen: "karşılaştırma yapıyorsak ekranı ikiye bölersin
+ * sağ sol şeklinde alt alta animasyon olacak şekilde yazarsın."
+ *
+ * Önceki hâli iki köşe parantezinden ibaretti — izleyici neyin neyle
+ * karşılaştırıldığını göremiyordu. Artık: dikey ayırıcı, iki başlık ve
+ * SIRAYLA beliren satırlar. Satırlar alt alta gelirken göz iki tarafı
+ * eşleştirir; hepsi aynı anda gelse tablo olur, sırayla gelince olay olur.
+ * ------------------------------------------------------------------ */
+function splitScreenActor(a) {
+  const left = a.left || {};
+  const right = a.right || {};
+  const rowsL = (left.rows || []).slice(0, 4);
+  const rowsR = (right.rows || []).slice(0, 4);
+  if (!left.label && !right.label && !rowsL.length) return [];
+  const colL = assColor(left.color || 'F0A72B');
+  const colR = assColor(right.color || ACCENT);
+  const midX = Math.round(CANVAS.w / 2);
+  const topY = Math.round((a.top ?? 0.30) * CANVAS.h);
+  const rowGap = Math.round(0.062 * CANVAS.h);
+  const span = Math.max(1.2, a.end - a.start);
+  const rows = Math.max(rowsL.length, rowsR.length);
+  const per = rows ? Math.min(0.75, (span * 0.72) / rows) : 0;
+  const out = [];
+
+  // Karartma paneli: yazılar fotoğrafın üstünde OKUNUR olsun. Panelsiz metin
+  // orman dokusunun üstünde kayboluyordu.
+  const panelTop = topY - Math.round(0.085 * CANVAS.h);
+  const panelBot = topY + rowGap * (rows + 0.4);
+  out.push(D(2, 'ActShape', a.start, a.end,
+    `{\\an7\\pos(0,0)\\1c${assColor('05080A')}\\1a&H74&\\bord0\\fad(200,220)\\p1}` +
+    `m 0 ${panelTop} l ${CANVAS.w} ${panelTop} l ${CANVAS.w} ${panelBot} l 0 ${panelBot}{\\p0}`));
+
+  // Dikey ayırıcı: yukarıdan aşağı ÇİZİLİR (bölünme bir olay olarak okunur).
+  out.push(D(4, 'ActShape', a.start, a.end,
+    `{\\an7\\pos(0,0)\\1c${assColor(INK)}\\1a&H55&\\bord0\\fad(180,200)` +
+    `\\clip(${midX - 3},${panelTop},${midX + 3},${panelTop})` +
+    `\\t(0,420,\\clip(${midX - 3},${panelTop},${midX + 3},${panelBot}))\\p1}` +
+    `m ${midX - 2} ${panelTop} l ${midX + 2} ${panelTop} l ${midX + 2} ${panelBot} l ${midX - 2} ${panelBot}{\\p0}`));
+
+  // Başlıklar: iki tarafın kimliği. Renk taraf kimliğinden gelir (§8).
+  const headY = topY - Math.round(0.038 * CANVAS.h);
+  if (left.label) {
+    out.push(D(6, 'ActText', a.start + 0.1, a.end,
+      `{\\an5\\pos(${Math.round(midX / 2)},${headY})\\fs52\\b1\\1c${colL}\\fad(160,180)}`,
+      String(left.label).toUpperCase()));
+  }
+  if (right.label) {
+    out.push(D(6, 'ActText', a.start + 0.1, a.end,
+      `{\\an5\\pos(${Math.round(midX * 1.5)},${headY})\\fs52\\b1\\1c${colR}\\fad(160,180)}`,
+      String(right.label).toUpperCase()));
+  }
+
+  // Satırlar ALT ALTA ve SIRAYLA.
+  for (let i = 0; i < rows; i += 1) {
+    const t0 = a.start + 0.35 + per * i;
+    if (t0 + 0.2 >= a.end) break;
+    const y = topY + rowGap * (i + 0.6);
+    if (rowsL[i]) {
+      out.push(D(6, 'ActSmall', t0, a.end,
+        `{\\an5\\pos(${Math.round(midX / 2)},${y})\\fs38\\1c${assColor(INK)}\\fad(180,160)}`,
+        String(rowsL[i])));
+    }
+    if (rowsR[i]) {
+      out.push(D(6, 'ActSmall', t0 + Math.min(0.28, per * 0.4), a.end,
+        `{\\an5\\pos(${Math.round(midX * 1.5)},${y})\\fs38\\1c${assColor(INK)}\\fad(180,160)}`,
+        String(rowsR[i])));
+    }
+  }
+  return out;
+}
+
+/* ------------------------------------------------------------------ *
+ * LABEL_TAG — ÖLÇÜLEN özneyi yuvarlağa al ve ADINI yaz.
+ *
+ * Kullanıcı isteği aynen: "karıncaları anlatıyorsak kraliçeyi yuvarlak içine
+ * alırsın." Halka tek başına "buraya bak" der ama NEYE baktığını söylemez;
+ * etiket onu bir bilgiye çevirir. Bağlayıcı çizgi, etiketin hangi nesneye ait
+ * olduğunu belirsiz bırakmaz.
+ *
+ * ÖLÇÜLMÜŞ KONUM ŞART: `at` yoksa çizilmez (etiketi boşluğa koymak yalan olur).
+ * ------------------------------------------------------------------ */
+function labelTagActor(a) {
+  if (!a.at || !a.label) return [];
+  const c = px(a.at);
+  const col = assColor(a.color || ACCENT);
+  const r = Math.round((a.radius || 0.105) * CANVAS.w);
+  const out = [...ringActor({ ...a, radius: a.radius || 0.105 })];
+  // Etiket, halkanın kadraj İÇİNDE kalan tarafına konur.
+  const side = a.at[0] > 0.5 ? -1 : 1;
+  const lx = Math.max(0.14 * CANVAS.w, Math.min(0.86 * CANVAS.w, c.x + side * (r + Math.round(0.16 * CANVAS.w))));
+  const ly = Math.max(Math.round(0.16 * CANVAS.h), c.y - Math.round(0.075 * CANVAS.h));
+  const appear = a.start + Math.min(0.65, Math.max(0.35, (a.end - a.start) * 0.3));
+  if (appear + 0.2 >= a.end) return out;
+  // Bağlayıcı: halkanın kenarından etikete.
+  out.push(D(5, 'ActShape', appear, a.end,
+    `{\\an7\\pos(0,0)\\1c${col}\\1a&H30&\\bord0\\fad(150,170)\\p1}` +
+    segmentQuad({ x: c.x + side * r, y: c.y - Math.round(r * 0.3) }, { x: lx, y: ly }, 4) + '{\\p0}'));
+  // Etiket kutusu + metin: fotoğrafın üstünde okunur olmak zorunda.
+  const text = String(a.label).toUpperCase();
+  const w = Math.round(text.length * 22 + 34);
+  const h = 56;
+  out.push(D(5, 'ActShape', appear, a.end,
+    `{\\an5\\pos(${lx},${ly})\\1c${assColor('05080A')}\\1a&H3C&\\3c${col}\\3a&H28&\\bord2` +
+    `\\fad(150,170)\\p1}m ${-w / 2} ${-h / 2} l ${w / 2} ${-h / 2} l ${w / 2} ${h / 2} l ${-w / 2} ${h / 2}{\\p0}`));
+  out.push(D(6, 'ActSmall', appear, a.end,
+    `{\\an5\\pos(${lx},${ly})\\fs36\\b1\\1c${col}\\fad(160,170)}`, text));
+  return out;
+}
+
 const ACTORS = {
   trail: trailActor,
   walker: walkerActor,
@@ -798,6 +910,8 @@ const ACTORS = {
   block_grid: blockGridActor,
   link_burst: linkBurstActor,
   scan_line: scanLineActor,
+  split_screen: splitScreenActor,
+  label_tag: labelTagActor,
 };
 
 /**

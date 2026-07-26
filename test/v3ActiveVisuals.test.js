@@ -109,19 +109,63 @@ test('bütçe buildActorAss içinde GERÇEKTEN uygulanır', () => {
 });
 
 // ---------------- §4 ŞABLONLAR GERÇEKTEN ÇİZİYOR ----------------
-test('dört V3 şablonu odak OLMADAN da aktör üretir', () => {
-  // Kaçışın kaynağı buydu: focusDetect ölçemeyince sahne dekoratif kalıyordu.
-  for (const template of ['filtering', 'reconstruct', 'retrieval', 'emotion_link']) {
+test('DİYAGRAM şablonları odak OLMADAN çizer (kendi düzenleri var)', () => {
+  // Bunlar fotoğrafın bir noktasına iddia ETMEZ; kendi ızgaralarında yaşarlar.
+  for (const template of ['filtering', 'reconstruct', 'retrieval']) {
     const a = beatToActors({ kind: 'story', template, payload: {}, start: 0, end: 4 });
     assert.ok(a.length > 0, `${template} odaksız hiçbir şey üretmedi`);
   }
 });
 
-test('karşılaştırma iki tarafı SIRAYLA işaretler', () => {
-  const a = beatToActors({ kind: 'story', template: 'comparison', payload: {}, start: 0, end: 6 });
-  assert.equal(a.length, 2);
-  assert.ok(a[0].at[0] < 0.5 && a[1].at[0] > 0.5, JSON.stringify(a.map((x) => x.at)));
-  assert.ok(a[0].end <= a[1].start + 0.01, 'iki kutu aynı anda — göz nereye bakacağını bilemez');
+test('HEDEFE BAĞLI şablon, ölçüm yoksa HİÇBİR ŞEY çizmez', () => {
+  // GERÇEK HATA (fungal-networks): emotion_link odak ölçülemeyince merkezi
+  // [0.5,0.46]'ya koyuyordu ve ormanın ortasında hiçbir şeye bağlanmayan dört
+  // turkuaz halka çıkıyordu. "Bunlar neye bağlanıyor?" sorusunun cevabı yoktu.
+  assert.deepEqual(beatToActors({ kind: 'story', template: 'emotion_link', payload: {}, start: 0, end: 4 }), []);
+  const withFocus = beatToActors({
+    kind: 'story', template: 'emotion_link', payload: {}, start: 0, end: 4,
+    focus: { x: 0.5, y: 0.5, confidence: 2 },
+  });
+  assert.equal(withFocus.length, 1);
+  assert.equal(withFocus[0].type, 'link_burst');
+});
+
+test('işaret ADIYLA gelir: kraliçeyi yuvarlağa al, adını yaz', async () => {
+  // Kullanıcı isteği aynen. Çıplak halka "buraya bak" der ama neye baktığını
+  // söylemez.
+  const a = beatToActors({
+    kind: 'story', template: 'search_reveal', payload: { label: 'queen ant' },
+    start: 0, end: 4, focus: { x: 0.6, y: 0.5, confidence: 2 },
+  });
+  assert.equal(a[0].type, 'label_tag');
+  const ev = actorEvents({ ...a[0] });
+  assert.match(ev.join('\n'), /QUEEN ANT/);
+  // Ad yoksa uydurulmaz — sade halka kalır.
+  const noLabel = beatToActors({
+    kind: 'story', template: 'search_reveal', payload: {},
+    start: 0, end: 4, focus: { x: 0.6, y: 0.5, confidence: 2 },
+  });
+  assert.equal(noLabel[0].type, 'ring');
+});
+
+test('karşılaştırma GERÇEK bölünmüş ekran çizer (iki köşe parantezi değil)', () => {
+  const a = beatToActors({
+    kind: 'story', template: 'comparison', start: 0, end: 6,
+    payload: { sides: { left: { label: 'humans', rows: ['forget details'] },
+      right: { label: 'ai', rows: ['stores records'] } } },
+  });
+  assert.equal(a.length, 1);
+  assert.equal(a[0].type, 'split_screen');
+  const ev = actorEvents({ ...a[0] });
+  const text = ev.join('\n');
+  assert.match(text, /HUMANS/);
+  assert.match(text, /AI/);
+  assert.match(text, /forget details/);
+});
+
+test('taraf adı çıkarılamadıysa boş çerçeve çizilmez', () => {
+  // Ekranı bölüp içini boş bırakmak anlatım değildir.
+  assert.deepEqual(beatToActors({ kind: 'story', template: 'comparison', payload: {}, start: 0, end: 6 }), []);
 });
 
 // ---------------- §16 FALLBACK MERDİVENİ ----------------
@@ -131,7 +175,10 @@ test('şablon aktörü varsa en üst basamak', () => {
 });
 
 test('aktör yoksa merdivenden inilir ama ASLA boş kalmaz', () => {
-  const both = planWithFallback({ actors: [], side: 'both', start: 0, end: 4 });
+  const both = planWithFallback({
+    actors: [], side: 'both', start: 0, end: 4,
+    sides: { left: { label: 'humans', rows: [] }, right: { label: 'ai', rows: [] } },
+  });
   assert.equal(both.rung, 'split_screen');
   assert.ok(both.actors.length);
 
@@ -169,7 +216,8 @@ test('merdiven özeti aktif sahne oranını verir', () => {
 test('merdivenin ürettiği her aktör tipi GERÇEKTEN render edilebilir', () => {
   // Merdiven var olmayan bir tip üretirse sahne sessizce boş kalırdı.
   const all = [
-    planWithFallback({ actors: [], side: 'both', start: 0, end: 4 }),
+    planWithFallback({ actors: [], side: 'both', start: 0, end: 4,
+      sides: { left: { label: 'humans', rows: ['a'] }, right: { label: 'ai', rows: ['b'] } } }),
     planWithFallback({ actors: [], side: 'ai', start: 0, end: 4 }),
     planWithFallback({ actors: [], focus: { x: 0.5, y: 0.5 }, start: 0, end: 4 }),
     planWithFallback({ actors: [], start: 0, end: 4 }),
@@ -468,4 +516,59 @@ test('kapalı/yeraltı sahnesine "golden hour light" eklenmez', () => {
   applyPromptStyle(script);
   assert.ok(!/golden hour/i.test(script.scenes[0].image_prompt),
     `yeraltı sahnesine altın saat ışığı eklendi: ${script.scenes[0].image_prompt.slice(-80)}`);
+});
+
+// ---------------- SAHNE-ANLATIM UYUMU ----------------
+test('görsel konunun dışındaysa yakalanır, doğru sahneler temiz kalır', async () => {
+  const { detectOffTopicVisual } = await import('../src/media/semanticRelevance.js');
+  const topicWords = ['fungal networks', 'tree'];
+  // GERÇEK SAHNE (fungal-networks #2): mantar ağları videosunun ortasında
+  // "mikroskopla toprak inceleyen araştırmacı".
+  const off = detectOffTopicVisual({
+    narration: 'But how do these networks actually work in detail?',
+    imageText: 'An over-the-shoulder shot of a researcher examining soil under a microscope in a lab',
+    sceneKeywords: ['researcher', 'microscope', 'soil'],
+    topicWords,
+  });
+  assert.equal(off.offTopic, true, JSON.stringify(off));
+  // Sahnenin KENDİ anahtarları prompt'ta var ama konuya bağlı değil —
+  // bu bir mazeret değil, kaymanın kanıtı.
+  assert.equal(off.keywordsConnected, false);
+
+  for (const [narration, imageText, keywords] of [
+    ['With fungi playing a crucial role in tree health.', 'A close-up of a mushroom cap on a forest floor', ['fungi', 'mushroom']],
+    ['Through tiny fungal networks underground, trees connect.', 'tree roots intertwined with white mycelium threads', ['mycelium', 'roots']],
+  ]) {
+    const r = detectOffTopicVisual({ narration, imageText, sceneKeywords: keywords, topicWords });
+    assert.equal(r.offTopic, false, `yanlış alarm: ${imageText}`);
+  }
+});
+
+test('dağarcık çok küçükse iddia ÜRETİLMEZ', async () => {
+  const { detectOffTopicVisual } = await import('../src/media/semanticRelevance.js');
+  const r = detectOffTopicVisual({ narration: 'Silence.', imageText: 'a quiet room', topicWords: [] });
+  assert.equal(r.checked, false);
+  assert.equal(r.offTopic, false);
+});
+
+// ---------------- OKUNABİLİR ALTYAZI ----------------
+test('anlatım temposu altyazının yetişebileceği hızda', async () => {
+  const { config } = await import('../src/config.js');
+  // Canlı koşu: 2.82 kelime/sn → 31 bloğun 11'i CAPTION_READING_SPEED_HIGH.
+  // Mini belgesel temposu: TTS hızlandırılmaz.
+  assert.ok(!/^\+/.test(config.tts.rate), `TTS hâlâ hızlandırıyor: ${config.tts.rate}`);
+  // Kelime bütçesi SÜREDEN geri hesaplanmalı, tersi değil.
+  const slowest = config.content.maxNarrationWords / 2.3;
+  assert.ok(slowest <= config.content.maxDurationSeconds,
+    `${config.content.maxNarrationWords} kelime ≈ ${slowest.toFixed(1)}s > tavan ${config.content.maxDurationSeconds}s`);
+  // Süre uzayabilir: mini belgesel.
+  assert.ok(config.content.idealMaxSeconds >= 45, String(config.content.idealMaxSeconds));
+});
+
+test('gerçek harita çizilir, belirsiz yer için çizilmez', async () => {
+  const { resolvePlace, buildMapPaths } = await import('../src/visual/geo.js');
+  assert.ok(resolvePlace('Australia'), 'gerçek coğrafya çözülmedi');
+  assert.equal(resolvePlace('the deep sea'), null, 'belirsiz yer harita üretti');
+  const m = buildMapPaths('Australia', { w: 600, h: 340 });
+  assert.ok(m?.land && m?.marker, 'harita yolu eksik');
 });

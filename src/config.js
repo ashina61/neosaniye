@@ -271,7 +271,12 @@ export const config = {
     // -- edge-tts (ana) -- Popüler, doğal erkek US sesi. Alternatifler:
     // en-US-BrianNeural, en-US-GuyNeural, en-US-ChristopherNeural, en-US-EricNeural
     voice: process.env.TTS_VOICE || 'en-US-AndrewNeural',
-    rate: process.env.TTS_RATE || '+8%', // Shorts retention için biraz hızlı tempo
+    // MİNİ BELGESEL TEMPOSU. +8% "Shorts hızlı olsun" diye konmuştu ama sonuç
+    // 2.82 kelime/sn oldu ve altyazı okunamaz hâle geldi: canlı koşuda 31
+    // bloğun 11'i CAPTION_READING_SPEED_HIGH verdi (>20 karakter/sn).
+    // Kanal mini belgesel; anlatım yetişilebilir olmalı. -2% ≈ 2.3 kelime/sn,
+    // aynı senaryo ~39 saniyeye yayılır ve okuma hızı ~16 kar/sn'ye iner.
+    rate: process.env.TTS_RATE || '-2%',
     pitch: process.env.TTS_PITCH || '+0Hz',
     // KONUYA GÖRE HIZ: heyecanlı/aksiyon konularında taban hıza +%10 eklenir
     // (enerji), bilimsel/açıklayıcı konularda -%5 (anlaşılırlık). generateAudio
@@ -467,8 +472,8 @@ export const config = {
   content: {
     language: process.env.CONTENT_LANGUAGE || 'en', // 'en' | 'tr'
     // A full short story, not a 15-second fragment. Validated at script and TTS stages.
-    // Taban 120→92: 28s alt sınırıyla tutarlı (92 kelime ≈ 30s hızlı TTS'te).
-    minNarrationWords: Number(process.env.CONTENT_MIN_WORDS || 92),
+    // Taban: 30s alt sınırıyla tutarlı (~2.3 kelime/sn → 70 kelime ≈ 30s).
+    minNarrationWords: Number(process.env.CONTENT_MIN_WORDS || 95),
     // Tavan 135→150: yedek LLM'ler (OpenRouter free) Gemini/Groq düşünce daha
     // verbose ~140-147 kelime üretiyordu ve 135 tavanı 5 denemede tutmayıp üretimi
     // sert-fail ediyordu. 150 kelime ≈ 50s (maxDurationSeconds=58 içinde).
@@ -480,15 +485,16 @@ export const config = {
     // izleyici orada düşüyordu. Kelime tavanı süreye göre geri hesaplandı:
     // ~2.6 kelime/sn ile 118 kelime ≈ 45s, en yavaş kategoride bile 44s
     // tavanının altında kalır.
-    // 114 kelime ≈ 43.8s (en yavaş TTS, 2.6 kelime/sn) — sert tavan 44s'nin
-    // ALTINDA kalmak zorunda, yoksa script üretimi kendi kapısına çarpar.
-    maxNarrationWords: Number(process.env.CONTENT_MAX_WORDS || 114),
-    minDurationSeconds: Number(process.env.CONTENT_MIN_SECONDS || 28),
-    maxDurationSeconds: Number(process.env.CONTENT_MAX_SECONDS || 44),
-    // İDEAL BANT — sert kapı değil, script üreticisine verilen hedef ve
-    // retention'ın "gereğinden uzun" cezasının dayanağı.
-    idealMinSeconds: Number(process.env.CONTENT_IDEAL_MIN_SECONDS || 35),
-    idealMaxSeconds: Number(process.env.CONTENT_IDEAL_MAX_SECONDS || 40),
+    // 130 kelime ≈ 56.5s (2.3 kelime/sn, yavaşlatılmış tempo) — sert tavan
+    // 58s'nin altında. Kelime bütçesi süreden GERİ hesaplanır; ters yönde
+    // hesaplayınca script kendi kapısına çarpıyordu.
+    maxNarrationWords: Number(process.env.CONTENT_MAX_WORDS || 130),
+    // MİNİ BELGESEL: süre uzayabilir. Okunabilirlik hızdan önce gelir —
+    // 35-40 bandı 2.8 kelime/sn'yi zorunlu kılıyordu ve altyazı yetişmiyordu.
+    minDurationSeconds: Number(process.env.CONTENT_MIN_SECONDS || 30),
+    maxDurationSeconds: Number(process.env.CONTENT_MAX_SECONDS || 58),
+    idealMinSeconds: Number(process.env.CONTENT_IDEAL_MIN_SECONDS || 38),
+    idealMaxSeconds: Number(process.env.CONTENT_IDEAL_MAX_SECONDS || 50),
   },
   youtube: {
     clientId: process.env.YOUTUBE_CLIENT_ID,

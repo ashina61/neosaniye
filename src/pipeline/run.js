@@ -31,7 +31,7 @@ import { getRecentMusic, getRecentAssetIds } from '../lib/firestore.js';
 import { describeMusicTrack } from '../audio/musicSelect.js';
 import { detectSlot } from './scheduleExperiment.js';
 import { emptySlotMetrics } from '../analytics/experimentMetrics.js';
-import { semanticRelevanceScore } from '../media/semanticRelevance.js';
+import { semanticRelevanceScore, detectOffTopicVisual } from '../media/semanticRelevance.js';
 import { applyCta } from '../motion/ctaEngine.js';
 import { verifySfxInOutput } from './outputVerify.js';
 import { evaluateHardGate } from './hardGate.js';
@@ -618,12 +618,54 @@ export async function runPipeline(opts = {}) {
     // Semantik alaka (best-effort): stok görsellerin anahtar kelimesi o sahnenin
     // anlatımıyla örtüşüyor mu? AI/gfx/arşiv üretimde konu-türevi olduğundan
     // null (cezasız); yalnızca stok/pexels için ölçülür (alakasız stok yakalanır).
+    // SAHNE-ANLATIM UYUMU — AI GÖRSELLER DE ÖLÇÜLÜR.
+    //
+    // Eski koşul yalnızca stock/pexels'i ölçüyordu. fungal-networks koşusu
+    // %100 AI görseldi, dolayısıyla `semanticRelevance.count = 0` çıktı: uyum
+    // HİÇ ölçülmedi. Sahne 2'nin anlatımı "how do these networks actually
+    // work?" iken görsel "mikroskopla toprak inceleyen bir araştırmacı"ydı ve
+    // hiçbir kapı bunu görmedi — oysa ölçülseydi örtüşme sıfıra yakın çıkardı.
+    //
+    // AI tarafında karşılaştırma metni ÇEKİRDEK prompt'tur (modelin sahne için
+    // yazdığı özgün tarif). Tam prompt kullanılsaydı her sahnede aynı olan
+    // kompozisyon+stil metni örtüşmeyi şişirir ve ölçüm anlamsızlaşırdı.
     const itemRelevance = media.items.map((m) => {
-      if (!m.keyword || !['stock', 'pexels'].includes(m.source)) return null;
-      const nar = script.scenes?.[m.scene]?.narration || '';
-      const forbidden = script.scenes?.[m.scene]?.forbidden_mismatches || [];
-      return semanticRelevanceScore(nar, m.keyword, { forbiddenMismatches: forbidden }).score;
+      const scene = script.scenes?.[m.scene];
+      if (!scene) return null;
+      const forbidden = scene.forbidden_mismatches || [];
+      const tags = ['stock', 'pexels'].includes(m.source)
+        ? m.keyword
+        : (m.source === 'ai' ? scene.image_prompt_core : null);
+      if (!tags) return null;
+      return semanticRelevanceScore(scene.narration || '', tags, { forbiddenMismatches: forbidden }).score;
     });
+
+    // SAHNE İLE ANLATIM AYNI ŞEYİ Mİ ANLATIYOR? Dar ve kanıtlı kontrol:
+    // görselin tarifi, sahnenin ya da videonun söz ettiği HİÇBİR şeyi
+    // içermiyorsa görsel başka bir konuyu gösteriyordur.
+    const topicWords = [script.topic, script.subjectBible?.canonicalName].filter(Boolean);
+    const offTopicScenes = [];
+    media.items.forEach((m, i) => {
+      const scene = script.scenes?.[m.scene];
+      if (!scene) return;
+      const imageText = ['stock', 'pexels'].includes(m.source)
+        ? String(m.keyword || '')
+        : String(scene.image_prompt_core || '');
+      const r = detectOffTopicVisual({
+        narration: scene.narration || '',
+        imageText,
+        sceneKeywords: scene.keywords || [],
+        topicWords,
+      });
+      if (r.checked && r.offTopic) {
+        offTopicScenes.push({ clip: i, scene: m.scene, narration: (scene.narration || '').slice(0, 70) });
+      }
+    });
+    if (offTopicScenes.length) {
+      console.warn(`  ⚠️ sahne-anlatım uyumsuz (${offTopicScenes.length}): `
+        + offTopicScenes.slice(0, 3).map((o) => `sahne ${o.scene}`).join(', ')
+        + ' — görsel, anlatımın ya da konunun hiçbir öğesini içermiyor.');
+    }
     // ---- FINAL MP4 DOĞRULAMASI (tek gerçek kaynak) ----
     //
     // Buraya kadar her kapı PLANI okuyordu. Kolibri koşusu şunu kanıtladı:
@@ -883,6 +925,8 @@ export async function runPipeline(opts = {}) {
       qualityWarnings: publishVerdict.qualityWarnings,
       // §15 — düzeltme turunun ne yaptığı ve neyi düzeltemediği.
       semanticRepair: semanticRepairResult,
+      // Sahne-anlatım uyumu: görsel gerçekten anlatılan şeyi mi gösteriyor?
+      offTopicScenes,
       qualityDegraded: semanticRepairResult.qualityDegraded === true,
       technicalGate,
       publishGates, finalVideo, runIntegrity, captionIntegrity, semanticActions,

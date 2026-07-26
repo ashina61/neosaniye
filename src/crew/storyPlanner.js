@@ -267,7 +267,10 @@ const OVERRIDES = [
   // hikâyesiz kalınca kapı haklı olarak düştü. Karşıtlık belirteçleri açık bir
   // yapısal sinyaldir.
   { template: 'comparison', re: /\b(unlike|whereas|in contrast|compared with|instead of|while (?:humans|we|most)|but (?:humans|we|most))\b/i },
-  { template: 'search_reveal', re: /\b(hidden|camouflage|disguise|spot|find|invisible|blend)\b/i },
+  // `finds?` ve `spots?` ÇIPLAK HÂLDE fazla açgözlü: "It finds its way home"
+  // bir ROTA cümlesidir ve navigation'a aittir. Yalnızca gerçekten "gizlenme"
+  // anlamı taşıyan kalıplar alınır.
+  { template: 'search_reveal', re: /\b(hidden|hides?|hiding|camouflage|disguise|invisible|blends? in|among (?:thousands|hundreds|dozens|the)|conceal\w*|spot the|find the)\b/i },
   { template: 'construction', re: /\b(build|builds|built|construct|assembl\w+|stack|layer|tower)\b/i },
   { template: 'navigation', re: /\b(route|migrat\w+|journey|navigat\w+|finds? its way|homing|way back)\b/i },
   { template: 'problem_solution', re: /\b(problem|solution|solves?|solved|overcomes?|gets? around|way around)\b/i },
@@ -328,6 +331,91 @@ export function actionDensity(text = '') {
 export const MAX_ATMOSPHERE_SHARE = 0.20;
 
 /**
+ * ================== KARŞILAŞTIRMA TARAFLARI ==================
+ *
+ * "Ekranı ikiye bölersin, sağ sol, alt alta yazarsın" isteğinin veri tarafı.
+ * Bölünmüş ekran ancak İKİ TARAFIN ADI biliniyorsa çizilebilir; ad yoksa
+ * ekranı bölmek boş bir çerçeve üretir.
+ *
+ * Adlar anlatımdan ÇIKARILIR, uydurulmaz. Karşıtlık kalıpları:
+ *   "Unlike A, B ..."      "A, whereas B ..."
+ *   "While A ..., B ..."   "A ... but B ..."   "A vs B"
+ * Hiçbiri tutmazsa null döner ve şablon bölünmüş ekran çizmez.
+ */
+const CONTRAST_PATTERNS = [
+  /\bunlike\s+([\w\s'-]{2,28}?)\s*,\s*([\w\s'-]{2,28}?)\s+(?:can|do|does|is|are|has|have|stores?|uses?|keeps?|works?|makes?)/i,
+  /\b([\w\s'-]{2,28}?)\s+(?:whereas|while)\s+([\w\s'-]{2,28}?)\s+(?:can|do|does|is|are|has|have|stores?|uses?|keeps?)/i,
+  /\b([\w\s'-]{2,28}?)\s+(?:vs\.?|versus)\s+([\w\s'-]{2,28})/i,
+  /\bboth\s+([\w\s'-]{2,28}?)\s+and\s+([\w\s'-]{2,28}?)\b/i,
+];
+
+const SIDE_STOP = new Set(['the', 'a', 'an', 'their', 'its', 'this', 'that', 'these', 'those']);
+
+/** "the human brain" → "human brain"; 2 kelimeyi aşan ad başlık olmaz. */
+function tidySide(raw = '') {
+  const words = String(raw).trim().toLowerCase()
+    .replace(/[^\p{L}\p{N}\s'-]/gu, '')
+    .split(/\s+/)
+    .filter((w) => w && !SIDE_STOP.has(w));
+  return words.slice(-2).join(' ');
+}
+
+/**
+ * Bir cümleden karşılaştırma taraflarını çıkar.
+ * @param {string} narration
+ * @returns {{left:{label:string,rows:string[]}, right:{label:string,rows:string[]}}|null}
+ */
+export function extractComparisonSides(narration = '') {
+  for (const re of CONTRAST_PATTERNS) {
+    const m = narration.match(re);
+    if (!m) continue;
+    const left = tidySide(m[1]);
+    const right = tidySide(m[2]);
+    if (!left || !right || left === right) continue;
+    return { left: { label: left, rows: [] }, right: { label: right, rows: [] } };
+  }
+  return null;
+}
+
+/**
+ * Video genelinde karşılaştırma satırlarını topla ve karşılaştırma
+ * sahnelerine dağıt.
+ *
+ * Satır metni, o tarafı anlatan cümlelerin KISALTILMIŞ hâlidir; uydurma
+ * değil, senaryonun kendi cümlelerinden gelir.
+ *
+ * @param {object[]} scenes
+ * @param {{left:{label:string}, right:{label:string}}} sides
+ */
+export function collectComparisonRows(scenes = [], sides) {
+  if (!sides) return sides;
+  const wordRe = (label) => new RegExp(`\\b${label.split(/\s+/).slice(-1)[0]}\\w*\\b`, 'i');
+  const reL = wordRe(sides.left.label);
+  const reR = wordRe(sides.right.label);
+  // Satır sonu ASKIDA KALMAMALI: "forget details over the" okunmuyor.
+  const DANGLING = /\b(the|a|an|of|in|on|at|to|for|with|and|or|over|from|by|its|their)$/i;
+  const shorten = (t) => {
+    const cleaned = String(t).replace(/^[^,]*,\s*/, '').replace(/[.!?]$/, '');
+    let words = cleaned.split(/\s+/).filter(Boolean);
+    // Baştaki özneyi at (başlık zaten onu söylüyor).
+    if (words.length > 4) words = words.slice(1);
+    words = words.slice(0, 4);
+    while (words.length > 1 && DANGLING.test(words[words.length - 1])) words.pop();
+    return words.join(' ').toLowerCase();
+  };
+  for (const sc of scenes) {
+    const n = sc.narration || '';
+    const hitL = reL.test(n);
+    const hitR = reR.test(n);
+    // Yalnızca TEK tarafı anlatan cümle o tarafın satırı olur; ikisini birden
+    // anlatan cümle ayırt edici değildir.
+    if (hitL && !hitR && sides.left.rows.length < 4) sides.left.rows.push(shorten(n));
+    else if (hitR && !hitL && sides.right.rows.length < 4) sides.right.rows.push(shorten(n));
+  }
+  return sides;
+}
+
+/**
  * Bir sahne için görsel hikâye planı.
  * @param {object} scene {narration, image_prompt}
  * @param {number} index
@@ -382,6 +470,19 @@ export function planScene(scene = {}, index = 0) {
   // soğuk hava iner"). Cümle gerçekten bir AKIŞTAN söz etmiyorsa ok çizilmez:
   // "inside/chamber" geçen her cümleye hava akışı oku koymak, olmayan bir
   // iddiada bulunmak olurdu (tuzak 2'nin akış hâli).
+  // KARŞILAŞTIRMA TARAFLARI: bölünmüş ekran ancak iki tarafın ADI varsa
+  // çizilir. Ad çıkarılamazsa şablon korunur (kompozisyon yine iki özne ister)
+  // ama overlay çizilmez — boş bir çerçeve göstermek anlatım değildir.
+  const sides = template === 'comparison' ? extractComparisonSides(narration) : null;
+
+  // İŞARETİN ADI. Halka "buraya bak" der ama neye baktığını söylemez.
+  // "Karıncaları anlatıyorsak kraliçeyi yuvarlak içine alırsın" isteğinin
+  // karşılığı: yuvarlağın yanına o şeyin ADI yazılır. Ad UYDURULMAZ —
+  // sahnenin kendi anahtar kelimesinden ya da öznenin adından gelir.
+  // Her sahne için hesaplanır; kullanıp kullanmamaya aktör katmanı karar verir
+  // (yalnızca ÖLÇÜLMÜŞ bir konuma etiket konur).
+  const label = String(scene.keywords?.[0] || '').trim().slice(0, 18) || null;
+
   let flow = null;
   if (template === 'mechanism') {
     if (/\b(heat|hot|warm|cold|cool|temperature|thermal)\b/i.test(narration)) flow = 'thermal';
@@ -413,6 +514,8 @@ export function planScene(scene = {}, index = 0) {
           ...(beat?.payload || {}),
           ...(marks.length >= 2 ? { marks } : {}),
           ...(flow ? { flow } : {}),
+          ...(sides ? { sides } : {}),
+          ...(label ? { label } : {}),
         },
         template,
       }
@@ -443,6 +546,13 @@ export function planVisualStory(script = {}) {
 
     // KRİTİK: kompozisyon gereği image_prompt'un BAŞINA eklenir. Görsel artık
     // hikâyeyi barındırmak ZORUNDA — "güzel manzara" değil, "kesit" istenir.
+    // ÇEKİRDEK PROMPT: modelin sahne için yazdığı ÖZGÜN tarif, biz eklemeden
+    // önce saklanır. Alaka ölçümü bunu kullanmak zorunda — eklenen kompozisyon
+    // ve stil metni her sahnede aynı olduğu için örtüşmeyi şişirir ve ölçüm
+    // her sahneyi "alakalı" gösterir.
+    if (scene.image_prompt && !scene.image_prompt_core) {
+      scene.image_prompt_core = scene.image_prompt;
+    }
     if (plan.composition && scene.image_prompt) {
       scene.image_prompt = `${plan.composition}. ${scene.image_prompt}`;
       composed += 1;
@@ -483,6 +593,14 @@ export function planVisualStory(script = {}) {
         composed += 1;
       }
       reclassified.push({ scene: i, to: forced });
+    }
+  }
+
+  // Karşılaştırma satırları VİDEO GENELİNDEN toplanır: taraf adları bir
+  // cümlede geçiyor, o tarafı anlatan ayrıntılar başka cümlelerde.
+  for (const sc of scenes) {
+    if (sc.story_beat?.payload?.sides) {
+      collectComparisonRows(scenes, sc.story_beat.payload.sides);
     }
   }
 

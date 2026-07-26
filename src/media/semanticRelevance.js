@@ -79,3 +79,63 @@ export function summarizeRelevance(scores = []) {
     mismatchCount,
   };
 }
+
+/**
+ * SAHNE GÖRSELİ KONUNUN DIŞINDA MI? (dar ve kanıtlı kontrol)
+ *
+ * ================== NEDEN AYRI BİR KONTROL ==================
+ * Ham örtüşme skoru AI görsellerde ZAYIFTIR: "fungi" ile "mushroom",
+ * "network" ile "threads" aynı şeyi anlatır ama kelime olarak eşleşmez.
+ * Ölçülen değerler (fungal-networks): doğru eşleşen sahneler 0.17, yanlış
+ * sahne 0.00 — ayrım var ama eşik koymak için bant çok dar. Eşiğe bağlanan
+ * bir kapı ya her sahneyi suçlar ya hiçbirini.
+ *
+ * Bu yüzden soru daraltıldı ve KANITA bağlandı:
+ *   "Görselin tarifi, sahnenin ya da videonun SÖZ ETTİĞİ hiçbir şeyi
+ *    içermiyor mu?"
+ * Cevap evetse görsel gerçekten başka bir şeyi gösteriyordur.
+ *
+ * Canlı kanıt: "But how do these networks actually work?" anlatımına karşılık
+ * "mikroskopla toprak inceleyen bir araştırmacı" görseli üretildi. Sahne
+ * anahtar kelimeleri (researcher, microscope, soil) prompt'ta VARDI ama
+ * videonun konusu (fungal, network, tree) hiç geçmiyordu — mantar ağları
+ * videosunun ortasında konusuz bir laboratuvar planı.
+ *
+ * @param {object} input
+ * @param {string} input.narration
+ * @param {string} input.imageText   görselin tarifi (çekirdek prompt / etiketler)
+ * @param {string[]} [input.sceneKeywords]
+ * @param {string[]} [input.topicWords] videonun konu kelimeleri
+ * @returns {{offTopic:boolean, matched:string[], checked:boolean}}
+ */
+export function detectOffTopicVisual({
+  narration = '', imageText = '', sceneKeywords = [], topicWords = [],
+} = {}) {
+  const text = String(imageText).toLowerCase();
+  if (!text.trim()) return { offTopic: false, matched: [], checked: false };
+
+  // SAHNE ANAHTARLARI DAİRESELDİR: aynı model hem anahtarları hem prompt'u
+  // yazdığı için ikisi daima uyuşur. İlk sürümde bu yüzden mikroskop sahnesi
+  // "konuyla ilgili" çıktı — kendi anahtarları (researcher, microscope, soil)
+  // prompt'ta vardı. Anahtarlar ancak KONUYA bağlıysa dağarcığa girer;
+  // konuyla hiç ilgisi olmayan anahtar seti, sahnenin kaymış olduğunun
+  // kanıtıdır, mazereti değil.
+  const stem = (w) => w.slice(0, 4);
+  const topicKw = topicWords.flatMap((k) => extractKeywords(String(k))).filter((w) => w.length >= 4);
+  const topicStems = new Set(topicKw.map(stem));
+  const sceneKw = sceneKeywords.flatMap((k) => extractKeywords(String(k))).filter((w) => w.length >= 4);
+  const keywordsConnected = sceneKw.some((w) => topicStems.has(stem(w)));
+
+  const vocab = [...new Set([
+    ...extractKeywords(narration),
+    ...(keywordsConnected ? sceneKw : []),
+    ...topicKw,
+  ])].filter((w) => w.length >= 4);
+
+  // Dağarcık çok küçükse (retorik soru, "Silence." gibi) iddia üretilmez.
+  if (vocab.length < 2) return { offTopic: false, matched: [], checked: false };
+
+  // Eşleşme kökten yapılır: "fungi" ile "fungal", "root" ile "roots" aynı şeydir.
+  const matched = vocab.filter((w) => text.includes(w) || text.includes(stem(w)));
+  return { offTopic: matched.length === 0, matched, keywordsConnected, checked: true };
+}

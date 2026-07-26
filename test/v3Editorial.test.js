@@ -15,30 +15,31 @@ import { findFalseAbsolutes, classifyFactualCertainty } from '../src/pipeline/ed
 import { evaluateMeasuredDuration } from '../src/pipeline/durationPolicy.js';
 
 // ---------------- §11 SÜRE ----------------
-test('ideal bant 35-40s, sert tavan 44s', () => {
-  assert.equal(config.content.idealMinSeconds, 35);
-  assert.equal(config.content.idealMaxSeconds, 40);
-  assert.equal(config.content.maxDurationSeconds, 44);
-  assert.equal(config.content.minDurationSeconds, 28);
+test('mini belgesel bandı: ideal 38-50s, sert bant 30-58s', () => {
+  // Süre hedefi OKUNABİLİRLİK için gevşetildi: 35-40 bandı 2.8 kelime/sn'yi
+  // zorunlu kılıyordu ve altyazı yetişmiyordu (31 bloğun 11'i çok hızlıydı).
+  assert.equal(config.content.idealMinSeconds, 38);
+  assert.equal(config.content.idealMaxSeconds, 50);
+  assert.equal(config.content.maxDurationSeconds, 58);
+  assert.equal(config.content.minDurationSeconds, 30);
 });
 
-test('56.9 saniyelik video artık süre kapısını GEÇMEZ', () => {
-  // Üretilen son video tam bu süredeydi ve "geçerli" sayılıyordu.
-  const r = evaluateMeasuredDuration(56.9, config.content);
+test('çok kısa video hâlâ reddedilir', () => {
+  const r = evaluateMeasuredDuration(18, config.content);
   assert.equal(r.ok, false);
-  assert.equal(r.code, 'AUDIO_TOO_LONG');
+  assert.equal(r.code, 'AUDIO_TOO_SHORT');
 });
 
-test('38 saniyelik video ideal bandın içinde', () => {
-  const r = evaluateMeasuredDuration(38, config.content);
+test('44 saniyelik video ideal bandın içinde', () => {
+  const r = evaluateMeasuredDuration(44, config.content);
   assert.equal(r.ok, true);
-  assert.ok(38 >= config.content.idealMinSeconds && 38 <= config.content.idealMaxSeconds);
+  assert.ok(44 >= config.content.idealMinSeconds && 44 <= config.content.idealMaxSeconds);
 });
 
 test('kelime tavanı süreye göre geri hesaplanmış (tutarlılık)', () => {
   // ~2.6 kelime/sn: tavan kelime sayısı sert süre tavanını aşmamalı, yoksa
   // script üretimi kendi kapısına çarpar (canlıda tam bu yaşandı).
-  const worstCaseSeconds = config.content.maxNarrationWords / 2.6;
+  const worstCaseSeconds = config.content.maxNarrationWords / 2.3;
   assert.ok(worstCaseSeconds <= config.content.maxDurationSeconds,
     `${config.content.maxNarrationWords} kelime ≈ ${worstCaseSeconds.toFixed(1)}s > tavan ${config.content.maxDurationSeconds}s`);
 });

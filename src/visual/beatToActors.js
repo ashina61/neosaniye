@@ -101,10 +101,18 @@ const TEMPLATE_ACTORS = {
     ];
   },
   // Kalabalıkta hedefi bul: halka ÖLÇÜLEN konuma kilitlenir.
+  //
+  // ADI VARSA ETİKETLİ İŞARET. Çıplak halka "buraya bak" der ama neye
+  // baktığını söylemez; kraliçe karıncayı yuvarlağa alıp yanına "QUEEN"
+  // yazmak onu bilgiye çevirir. Ad yoksa sade halka kalır (uydurma etiket
+  // koymak, olmayan bir iddiada bulunmak olurdu).
   search_reveal: (b, focus) => {
     if (!focus) return [];
-    return [{ type: 'ring', at: safePoint([focus.x, focus.y]), radius: 0.13,
-      start: b.start + 0.3, end: b.end }];
+    const at = safePoint([focus.x, focus.y]);
+    return b.payload?.label
+      ? [{ type: 'label_tag', at, radius: 0.11, label: b.payload.label,
+        start: b.start + 0.3, end: b.end }]
+      : [{ type: 'ring', at, radius: 0.13, start: b.start + 0.3, end: b.end }];
   },
   // Engel → çözüm: engelin etrafından geçen yol.
   problem_solution: (b, focus) => {
@@ -154,40 +162,50 @@ const TEMPLATE_ACTORS = {
   // Odak GEREKTİRMEZ: kartlar kendi ızgarasında yaşar, fotoğrafın öznesine
   // bağlı değildir. (Odak şartı koşulsaydı, focusDetect ölçemediğinde sahne
   // yine dekoratif kalırdı — kaçışın kaynağı buydu.)
-  filtering: (b, focus) => {
-    const at = focus ? safePoint([focus.x, focus.y]) : [0.5, 0.5];
-    return [
-      { type: 'card_dissolve', at, count: 10, keep: 3, start: b.start + 0.2, end: b.end },
-      // Kalan kartı işaretleyen kutu: "hangisi kaldı" sorusunu yanıtlar.
-      { type: 'focus_box', at: [0.22, 0.30], width: 0.16, height: 0.075,
-        start: b.start + Math.min(1.2, (b.end - b.start) * 0.5), end: b.end },
-    ];
-  },
-  // YENİDEN KURMA: boş yuvalar sırayla dolar, son parça TAHMİN rengiyle gelir.
-  reconstruct: (b, focus) => {
-    const at = focus ? safePoint([focus.x, Math.min(0.66, focus.y)]) : [0.5, 0.52];
-    return [{ type: 'piece_fill', at, slots: 4, start: b.start + 0.2, end: b.end }];
-  },
-  // GERİ ÇAĞIRMA: depolama ızgarası, doğru blok aydınlanır.
+  // FİLTRELEME — DİYAGRAM sınıfı: kendi ızgarasında yaşar, fotoğrafın bir
+  // noktasına iddia ETMEZ, bu yüzden odak gerektirmez. Kartlar ekranın kendi
+  // düzeninde durur; okunabilirlik için panel arka planı card_dissolve'un
+  // içinde değil, çağıran tarafta değerlendirilir.
+  filtering: (b) => [
+    { type: 'card_dissolve', at: [0.5, 0.44], count: 9, keep: 3, start: b.start + 0.2, end: b.end },
+  ],
+  // YENİDEN KURMA — DİYAGRAM: yuvalar kadrajın kendi merkezinde.
+  reconstruct: (b) => [
+    { type: 'piece_fill', at: [0.5, 0.5], slots: 4, start: b.start + 0.2, end: b.end },
+  ],
+  // GERİ ÇAĞIRMA — DİYAGRAM: depolama ızgarası.
   retrieval: (b) => [
     { type: 'block_grid', at: [0.5, 0.46], cols: 5, rows: 4, start: b.start + 0.2, end: b.end },
   ],
-  // DUYGU BAĞI: merkez + düğümler, bağlantılar SIRAYLA oluşur.
+  // DUYGU BAĞI — HEDEFE BAĞLI. Merkez, fotoğraftaki GERÇEK bir özne olmalı.
+  //
+  // CANLI HATA (fungal-networks): odak ölçülemediğinde merkez [0.5,0.46]'ya
+  // konuluyordu ve ormanın ortasında hiçbir şeye bağlanmayan dört turkuaz
+  // halka çıkıyordu. "Bunlar neye bağlanıyor?" sorusunun cevabı yoktu.
+  // Ölçüm yoksa bu şablon HİÇBİR ŞEY çizmez; merdiven (§16) daha alt bir
+  // basamağa iner.
   emotion_link: (b, focus) => {
-    const at = focus ? safePoint([focus.x, Math.min(0.60, focus.y)]) : [0.5, 0.46];
-    return [{ type: 'link_burst', at, nodes: 4, radius: 0.24, start: b.start + 0.2, end: b.end }];
+    if (!focus) return [];
+    const at = safePoint([focus.x, Math.min(0.60, focus.y)]);
+    return [{ type: 'link_burst', at, nodes: 4, radius: 0.22, start: b.start + 0.2, end: b.end }];
   },
-  // KARŞILAŞTIRMA: iki taraf aynı anda. Ortada ayırıcı yok (fotoğrafın kendisi
-  // iki özneyi yan yana getiriyor); bunun yerine her tarafa sırayla işaret
-  // konur — göz önce birine, sonra diğerine gider.
+  // KARŞILAŞTIRMA — GERÇEK BÖLÜNMÜŞ EKRAN.
+  //
+  // İki köşe parantezi karşılaştırma DEĞİLDİR: izleyici neyin neyle
+  // kıyaslandığını göremez. Ekran ikiye bölünür, iki başlık konur ve satırlar
+  // ALT ALTA sırayla gelir. Satırlar anlatımdan çıkarılır (payload.sides);
+  // çıkarılamadıysa yalnızca başlıklarla bölünme yine de okunur.
   comparison: (b) => {
-    const span = Math.max(1.2, b.end - b.start);
-    return [
-      { type: 'focus_box', at: [0.27, 0.48], width: 0.34, height: 0.30,
-        start: b.start + 0.25, end: b.start + span * 0.5 },
-      { type: 'focus_box', at: [0.73, 0.48], width: 0.34, height: 0.30,
-        start: b.start + span * 0.52, end: b.end },
-    ];
+    const sides = b.payload?.sides;
+    if (!sides?.left?.label && !sides?.right?.label) return [];
+    return [{
+      type: 'split_screen',
+      left: sides.left,
+      right: sides.right,
+      top: 0.30,
+      start: b.start + 0.25,
+      end: b.end,
+    }];
   },
   // Zaman ekseni: işaretler anlatımdan ÇIKARILMIŞtır, konum gerektirmez.
   timeline: (b) => {
