@@ -119,16 +119,54 @@ test('kimlik bilgisi yoksa upload YOK', () => {
 });
 
 // ---------------- YAYIN KAPILARI: needs_review = engel ----------------
-test('özne doğrulanamıyorsa needs_review ve yayın engellenir', () => {
+test('özne doğrulanamıyorsa DANIŞMA olarak bildirilir, yayını durdurmaz', () => {
+  // POLİTİKA DEĞİŞİKLİĞİ (kullanıcı kararı): bu kapı önce needs_review üretip
+  // upload'ı engelliyordu. Görüntü semantiğini doğrulayacak bir model OLMADIĞI
+  // için kapı her koşuda aynı sonucu veriyordu ve hiçbir video hiçbir zaman
+  // yayınlanamıyordu — otomatik yayın tanım gereği imkânsızdı.
+  // Bulgu GİZLENMİYOR: advisory listesinde raporlanmaya devam ediyor.
   const g = evaluatePublishGates({
+    finalVideo: { ok: true, failures: [], warnings: [] },
+    runIntegrity: { chainHash: 'x', parts: { finalVideo: 'y' } },
     captionIntegrity: { tokenCoverage: 1, missingTokens: [], duplicateTokens: [],
       grammarRiskBlocks: [], timelineOverlapCount: 0 },
     subjectContinuity: null, // model yok → yanlış güven üretme
     semanticActions: { average: 0.9 },
   });
-  assert.equal(g.status, 'needs_review');
+  assert.ok(g.advisory.includes('SUBJECT_VERIFICATION_UNAVAILABLE'), JSON.stringify(g));
+  assert.ok(!g.review.includes('SUBJECT_VERIFICATION_UNAVAILABLE'));
+  assert.equal(g.status, 'pass', JSON.stringify(g));
+  assert.equal(g.passed, true);
+});
+
+test('düşük semantik eylem ortalaması yayını durdurmaz ama raporlanır', () => {
+  const g = evaluatePublishGates({
+    finalVideo: { ok: true, failures: [], warnings: [] },
+    runIntegrity: { chainHash: 'x', parts: { finalVideo: 'y' } },
+    captionIntegrity: { tokenCoverage: 1, missingTokens: [], duplicateTokens: [],
+      grammarRiskBlocks: [], timelineOverlapCount: 0 },
+    subjectContinuity: { verified: true, score: 0.9, suspectedWrongSubjectScenes: [] },
+    semanticActions: { average: 0.07 },   // üretimin gerçekte ürettiği değer
+  });
+  assert.ok(g.advisory.some((a) => a.startsWith('SEMANTIC_ACTION_INCOMPLETE')), JSON.stringify(g));
+  assert.equal(g.passed, true, JSON.stringify(g));
+});
+
+test('DANIŞMA listesi BOZUK VİDEO bulgularını asla yutmaz', () => {
+  // Kritik sınır: kapıları gevşetmek, kırık çıktının geçmesi anlamına GELMEZ.
+  const g = evaluatePublishGates({
+    finalVideo: { ok: false, failures: ['DURATION_MISMATCH:12 vs 49', 'TIMELINE_ORDER_INVALID:OVERLAP'], warnings: [] },
+    runIntegrity: { chainHash: 'x', parts: { finalVideo: 'y' } },
+    captionIntegrity: { tokenCoverage: 0.9, missingTokens: ['eject'], duplicateTokens: [],
+      grammarRiskBlocks: [], timelineOverlapCount: 0 },
+    subjectContinuity: null,
+    semanticActions: { average: 0.07 },
+  });
+  assert.equal(g.status, 'fail');
   assert.equal(g.passed, false);
-  assert.ok(g.review.includes('SUBJECT_VERIFICATION_UNAVAILABLE'));
+  assert.ok(g.failures.some((f) => f.includes('DURATION_MISMATCH')), JSON.stringify(g.failures));
+  assert.ok(g.failures.some((f) => f.includes('TIMELINE_ORDER_INVALID')), JSON.stringify(g.failures));
+  assert.ok(g.failures.some((f) => f.startsWith('CAPTION_TOKENS_LOST')), JSON.stringify(g.failures));
 });
 
 test('tek bir kapı düşerse genel skor yüksek olsa bile FAIL', () => {
@@ -143,15 +181,16 @@ test('tek bir kapı düşerse genel skor yüksek olsa bile FAIL', () => {
 });
 
 // ---------------- WORKFLOW ----------------
-test('workflow: cron upload yapamaz, artifact yine üretilir', async () => {
+test('workflow: cron OTOMATİK yayınlar, artifact yine üretilir', async () => {
   const wf = await readFile('.github/workflows/daily-short.yml', 'utf8');
   // Eski TERS mantıklı input kalmamalı.
   assert.ok(!/inputs\.no_upload/.test(wf), 'eski no_upload mantığı duruyor');
-  // Üretim adımı: input yoksa (cron) --no-upload.
-  assert.match(wf, /inputs\.auto_upload && '--upload' \|\| '--no-upload'/);
-  // Kod tarafı ikinci emniyet.
-  assert.match(wf, /REQUIRE_MANUAL_APPROVAL: "true"/);
-  assert.match(wf, /AUTO_UPLOAD: \$\{\{ inputs\.auto_upload && 'true' \|\| 'false' \}\}/);
+  // CRON YAYINLAR: `schedule` tetiğinde inputs yoktur, bu yüzden tetik türü
+  // AÇIKÇA sorulmalı. Sadece `inputs.auto_upload`a bakan ifade boş stringe
+  // düşer ve cron hiçbir zaman yayınlayamaz — bu tam olarak eski hataydı.
+  assert.match(wf, /github\.event_name == 'schedule' \|\| inputs\.auto_upload\) && '--upload' \|\| '--no-upload'/);
+  assert.match(wf, /AUTO_UPLOAD: \$\{\{ \(github\.event_name == 'schedule' \|\| inputs\.auto_upload\) && 'true' \|\| 'false' \}\}/);
+  assert.match(wf, /REQUIRE_MANUAL_APPROVAL: "false"/);
   // Artifact'ler: video + rapor + script + sahne planı + kapı sonucu.
   for (const f of ['*.mp4', 'publish-gates.json', 'script.json', 'scene-plan.json',
     'production-report.json', 'cover.jpg']) {

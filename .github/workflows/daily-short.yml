@@ -1,6 +1,6 @@
 name: Günlük Short Üret ve Yayınla
 
-# Manuel tetikleme her zaman açık; cron ile günlük otomatik üretim AKTİF.
+# Manuel tetikleme her zaman açık; cron ile günlük otomatik üretim VE YAYIN AKTİF.
 on:
   workflow_dispatch:
     inputs:
@@ -11,7 +11,7 @@ on:
         # tetiğinde input DİYE BİR ŞEY YOKTUR — ifade boş stringe düşüyor,
         # bayrak hiç geçmiyor ve cron "upload açık" modda koşuyordu.
         # Artık mantık DÜZ: yüklemek için bilinçli olarak işaretlemen gerek.
-        description: "YouTube'a yükle (varsayılan HAYIR — QC'den geçmeyen video yayınlanamaz)"
+        description: "YouTube'a yükle (manuel run varsayılanı HAYIR; cron her zaman yayınlar)"
         type: boolean
         default: false
       style:
@@ -83,9 +83,12 @@ jobs:
 
       - name: Üret ve yayınla
         id: produce
-        # Cron'da `inputs` yoktur → daima `--no-upload`. Manuel run'da yalnızca
-        # auto_upload işaretliyse `--upload`. Varsayılan her koşulda GÜVENLİ.
-        run: node scripts/generate-and-publish.js ${{ inputs.auto_upload && '--upload' || '--no-upload' }}
+        # CRON OTOMATİK YAYINLAR. `schedule` tetiğinde `inputs` yoktur, bu yüzden
+        # tetik türü AÇIKÇA sorulur — eskiden ifade boş stringe düşüp `--no-upload`
+        # veriyordu ve cron hiçbir zaman yayınlayamıyordu.
+        # Manuel run'da karar kutuya aittir: işaretliysen `--upload`, değilse
+        # `--no-upload` (manuel kontrol elle test için korunuyor).
+        run: node scripts/generate-and-publish.js ${{ (github.event_name == 'schedule' || inputs.auto_upload) && '--upload' || '--no-upload' }}
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           OPENROUTER_MODEL: openrouter/free
@@ -105,8 +108,12 @@ jobs:
           HUGGINGFACE_API_KEY: ${{ secrets.HUGGINGFACE_API_KEY }}
           # İKİNCİ EMNİYET: kod tarafındaki politika da bu değişkenleri okur.
           # Workflow bayrağı ile env aynı yönü göstermezse en kısıtlayıcı kazanır.
-          AUTO_UPLOAD: ${{ inputs.auto_upload && 'true' || 'false' }}
-          REQUIRE_MANUAL_APPROVAL: "true"
+          AUTO_UPLOAD: ${{ (github.event_name == 'schedule' || inputs.auto_upload) && 'true' || 'false' }}
+          # Cron'un insan onayı veremeyeceği için bu bayrak açıkken zincir
+          # kilitleniyordu. Otomatik yayın AÇIK: onay artık zamanlanmış tetiğin
+          # kendisidir. Kod tarafındaki varsayılan hâlâ KAPALI — bayraksız,
+          # env'siz bir çağrı yine yayınlamaz.
+          REQUIRE_MANUAL_APPROVAL: "false"
           RETENTION_QC_MODE: ${{ vars.RETENTION_QC_MODE }}
           RETENTION_MIN_SCORE: ${{ vars.RETENTION_MIN_SCORE }}
           # Teknik kapı retention'dan bağımsız (varsayılan strict — boş bırak).

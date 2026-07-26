@@ -376,7 +376,7 @@ test('farklı varlıklar görsel olarak yakınsa UYARI, sert engel değil', { sk
   } finally { await rm(dir, { recursive: true, force: true }); }
 });
 
-test('SIMILAR_SHOT sert engel değil, insan gözüne gider (needs_review)', async () => {
+test('SIMILAR_SHOT sert engel değil, DANIŞMA olarak raporlanır', async () => {
   const { evaluatePublishGates } = await import('../src/pipeline/publishGates.js');
   const base = {
     runIntegrity: { chainHash: 'x', parts: { finalVideo: 'y' } },
@@ -390,7 +390,7 @@ test('SIMILAR_SHOT sert engel değil, insan gözüne gider (needs_review)', asyn
     finalVideo: { ok: true, failures: [], warnings: ['SIMILAR_SHOT:1 — farklı varlıklar'] },
   });
   assert.ok(!r.failures.some((f) => f.includes('SIMILAR_SHOT')), JSON.stringify(r.failures));
-  assert.ok(r.review.some((x) => x.includes('SIMILAR_SHOT')), JSON.stringify(r.review));
+  assert.ok(r.advisory.some((x) => x.includes('SIMILAR_SHOT')), JSON.stringify(r.advisory));
   assert.notEqual(r.status, 'fail');
 });
 

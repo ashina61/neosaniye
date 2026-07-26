@@ -748,6 +748,9 @@ export async function runPipeline(opts = {}) {
     );
     for (const f of publishGates.failures) console.error(`  [yayın-kapısı] BAŞARISIZ: ${f}`);
     for (const r of publishGates.review) console.warn(`  [yayın-kapısı] doğrulanamadı: ${r}`);
+    // Danışma bulguları yayını durdurmaz ama GİZLENMEZ: kalite bu satırlardan
+    // izlenir, aksi hâlde otomatik yayın körleşir.
+    for (const a of publishGates.advisory || []) console.warn(`  [yayın-kapısı] danışma (yayın durmaz): ${a}`);
     // İncelenebilirlik: script, sahne planı ve TTS metni de artifact olur.
     await writeFile(path.join(workDir, 'script.json'), JSON.stringify(script, null, 2)).catch(() => {});
     await writeFile(path.join(workDir, 'scene-plan.json'), JSON.stringify(

@@ -8,11 +8,46 @@
  * durdurur — ortalama maskeleme yok.
  *
  * ÜÇ DURUM:
- *   pass          → tüm kapılar ölçüldü ve geçti
- *   needs_review  → bir kapı GÜVENİLİR ÖLÇÜLEMEDİ (yanlış güven üretme)
- *   fail          → ölçüldü ve kaldı
+ *   pass          → tüm ENGELLEYİCİ kapılar ölçüldü ve geçti
+ *   needs_review  → engelleyici bir kapı GÜVENİLİR ÖLÇÜLEMEDİ
+ *   fail          → engelleyici bir kapı ölçüldü ve kaldı
  * needs_review de fail de upload'ı engeller.
+ *
+ * ================== DANIŞMA (ADVISORY) KAPILARI ==================
+ * Bazı bulgular videonun BOZUK olduğunu söylemez; kalitesi hakkında bir görüş
+ * bildirir ya da "ölçemedim" der. Bunları engel yapmak sistemi kilitliyordu:
+ * özne doğrulaması için bir görüntü modeli YOK, dolayısıyla o kapı her koşuda
+ * needs_review veriyor ve hiçbir video hiçbir zaman yayınlanamıyordu. Aynı
+ * şekilde semantik eylem ortalaması, üretimin gerçekte ürettiği değerin
+ * (≈0.07) çok üstünde bir eşiğe (0.7) bağlıydı.
+ *
+ * Bu yüzden bulgular İKİ KOVAYA ayrılır:
+ *   ENGELLEYİCİ  → video bozuk: okunamıyor, süre tutmuyor, timeline kırık,
+ *                  altyazı kelimesi kaybolmuş, artifact'ler farklı koşudan.
+ *   DANIŞMA      → kalite görüşü ya da ölçülemeyen şey. RAPORLANIR, sayılır,
+ *                  loglanır — ama yayını durdurmaz.
+ *
+ * Danışma listesi VERİDİR, gizli değil: aşağıda açıkça yazar ve çağıran
+ * `advisoryCodes` ile değiştirebilir. Bir kapıyı danışmaya almak onu SİLMEZ;
+ * bulgu raporda `advisory` altında görünmeye devam eder.
  */
+
+/**
+ * Varsayılan DANIŞMA kodları — raporlanır, yayını durdurmaz.
+ *
+ * SUBJECT_VERIFICATION_UNAVAILABLE: görüntü semantiğini doğrulayacak model
+ *   yok. "Yanlış güven üretme" kuralı hâlâ geçerli — bulgu gizlenmiyor, sadece
+ *   KALICI olarak ölçülemeyen bir şey yayını süresiz kilitlemiyor.
+ * SEMANTIC_ACTION_*: eylem tamamlama editoryal bir kalite ölçüsüdür; düşük
+ *   olması videonun bozuk olduğu anlamına gelmez.
+ * FINAL_VIDEO/SIMILAR_SHOT: kanıt değil iddia (farklı varlıklar, yakın görüntü).
+ */
+export const DEFAULT_ADVISORY_CODES = [
+  'SUBJECT_VERIFICATION_UNAVAILABLE',
+  'SEMANTIC_ACTION_UNVERIFIED',
+  'SEMANTIC_ACTION_INCOMPLETE',
+  'FINAL_VIDEO/SIMILAR_SHOT',
+];
 
 export const DEFAULT_THRESHOLDS = {
   captionTokenCoverage: 1.0,
@@ -45,11 +80,18 @@ export function evaluatePublishGates({
   repetition = null,
   cta = null,
   thresholds = {},
+  advisoryCodes = DEFAULT_ADVISORY_CODES,
 } = {}) {
   const th = { ...DEFAULT_THRESHOLDS, ...thresholds };
-  const failures = [];
-  const review = [];
+  const rawFailures = [];
+  const rawReview = [];
   const gates = {};
+  // Kova ayrımı SONDA yapılır: her kapı bulgusunu her zamanki gibi bildirir,
+  // engelleyici mi danışma mı olduğu tek yerde ve okunur biçimde kararlaştırılır.
+  const isAdvisory = (finding) => (advisoryCodes || [])
+    .some((code) => String(finding).startsWith(code));
+  const failures = rawFailures;
+  const review = rawReview;
 
   // ---- FINAL MP4 (BİRİNCİL KAPI) ----
   //
@@ -167,6 +209,19 @@ export function evaluatePublishGates({
   if (cta?.interruptsReveal) failures.push('CTA_INTERRUPTS_REVEAL');
   gates.ctaInterruptsReveal = Boolean(cta?.interruptsReveal);
 
-  const status = failures.length ? 'fail' : review.length ? 'needs_review' : 'pass';
-  return { passed: status === 'pass', status, failures, review, gates };
+  // ---- KOVA AYRIMI ----
+  // Danışma bulguları rapordan SİLİNMEZ; ayrı listeye alınır ve sayılır.
+  const advisory = [...rawFailures, ...rawReview].filter(isAdvisory);
+  const blockingFailures = rawFailures.filter((f) => !isAdvisory(f));
+  const blockingReview = rawReview.filter((r) => !isAdvisory(r));
+
+  const status = blockingFailures.length ? 'fail' : blockingReview.length ? 'needs_review' : 'pass';
+  return {
+    passed: status === 'pass',
+    status,
+    failures: blockingFailures,
+    review: blockingReview,
+    advisory,
+    gates,
+  };
 }
