@@ -689,6 +689,9 @@ export async function runPipeline(opts = {}) {
       // §14: puanın gerçeği tarif etmesi için editoryal ölçümler skora girer.
       semanticActionAverage: semanticActions?.average ?? null,
       captionReadability: captionLayout?.readability?.ok ?? null,
+      // §13 — blok sayısı ile kelime vurgu sayısı AYRI alanlar.
+      captionBlockCount: captionLayout?.events?.length ?? null,
+      wordHighlightEventCount: (audio.wordTimings || []).length,
       finalVideoStructuralFailure: (finalVideo?.failures || [])
         .some((f) => /UNREADABLE|TIMELINE_ORDER_INVALID|DURATION_MISMATCH/.test(String(f))),
       itemRelevance,

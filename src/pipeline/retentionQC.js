@@ -406,6 +406,9 @@ export function evaluateRetention(input, cfg = config.retention) {
       captionReadability: capRead ? { previewPx: capRead.previewPx, ok: capRead.ok } : null,
       loop: { closed: loopClosed },
       visualRepetition: { longestSameSourceRun: srcMaxRun, aiShare },
+      // §13 — "45 blok" ile "137 kelime" artık aynı isimle raporlanmıyor.
+      captionBlockCount: input.captionBlockCount ?? null,
+      wordHighlightEventCount: input.wordHighlightEventCount ?? null,
       // §7 sözleşmesi — türev klipler yeni plan sayılmaz.
       baseAssetCount: novelty.baseAssetCount,
       derivedClipCount: novelty.derivedClipCount,

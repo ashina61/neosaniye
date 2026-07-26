@@ -216,7 +216,10 @@ export const config = {
     // Mobil okunabilirlik: 360x640 ön izlemede görünür minimum piksel yüksekliği
     // (fontSize≥52 tek başına yetmez — asıl ölçü telefondaki gerçek boyut).
     hookMinPreviewPx: Number(process.env.QC_HOOK_MIN_PREVIEW_PX || 20),
-    captionMinPreviewPx: Number(process.env.QC_CAPTION_MIN_PREVIEW_PX || 15),
+    // V3 (§13) — 15px hedefi yetersizdi: brain-vs-ai-memory'de altyazı 14.7px
+    // ölçüldü ve okunabilirlik testi düştü, ama 15 eşiği o rakama zaten çok
+    // yakın olduğu için "sınırda geçer" bir bant oluşuyordu. Hedef 17px.
+    captionMinPreviewPx: Number(process.env.QC_CAPTION_MIN_PREVIEW_PX || 17),
     // Altyazı güvenli alanı: alt kenardan en az bu kadar boşluk (YouTube
     // Shorts UI başlık/açıklama bandı alt ~220px'i kapatır) ve altyazı bloğu
     // ekranın üst yarısına taşmamalı.
@@ -318,10 +321,13 @@ export const config = {
     captionStyle: process.env.VIDEO_CAPTION_STYLE || 'caption',
     // Grup üst sınırı; asıl bölme konuşmadaki doğal duraklara göre yapılır.
     captionWordsPerLine: Number(process.env.VIDEO_CAPTION_WORDS || 3),
-    captionSize: Number(process.env.VIDEO_CAPTION_SIZE || 52),
+    captionSize: Number(process.env.VIDEO_CAPTION_SIZE || 58),
     // Sığdırma tabanları: normal altyazı ve vurgu bu boyutun altına ASLA inmez
     // (önce bölme denenir — split-before-shrink, bkz. captionLayout.js).
-    captionMinPx: Number(process.env.VIDEO_CAPTION_MIN_PX || 30),
+    // KÜÇÜLTME TABANI 30→52: split-before-shrink zinciri uzun bloklarda fontu
+    // 30px'e kadar indirebiliyordu; ön izlemede 14.7px eden tam buydu.
+    // Görevdeki kural: "minimum render font >= 52".
+    captionMinPx: Number(process.env.VIDEO_CAPTION_MIN_PX || 52),
     captionEmphMinPx: Number(process.env.VIDEO_CAPTION_EMPH_MIN_PX || 40),
     // Grup bu orandan fazla küçülecekse fontu ezmek yerine grup ikiye bölünür.
     captionSplitRatio: Number(process.env.VIDEO_CAPTION_SPLIT_RATIO || 0.72),
@@ -451,16 +457,28 @@ export const config = {
   content: {
     language: process.env.CONTENT_LANGUAGE || 'en', // 'en' | 'tr'
     // A full short story, not a 15-second fragment. Validated at script and TTS stages.
-    minNarrationWords: Number(process.env.CONTENT_MIN_WORDS || 120),
+    // Taban 120→92: 28s alt sınırıyla tutarlı (92 kelime ≈ 30s hızlı TTS'te).
+    minNarrationWords: Number(process.env.CONTENT_MIN_WORDS || 92),
     // Tavan 135→150: yedek LLM'ler (OpenRouter free) Gemini/Groq düşünce daha
     // verbose ~140-147 kelime üretiyordu ve 135 tavanı 5 denemede tutmayıp üretimi
     // sert-fail ediyordu. 150 kelime ≈ 50s (maxDurationSeconds=58 içinde).
     // ÜST SINIR 58s AUDIO_TOO_LONG kapısının ALTINDA kalmalı. 150 kelime yavaş
     // TTS kategorilerinde (human body +3% hız) 60.9s'e çıkıp üretimi kırdı →
     // 138'e çekildi (~56s en yavaşta, güvenli). min 120 ile ~46-56s aralığı (>45sn).
-    maxNarrationWords: Number(process.env.CONTENT_MAX_WORDS || 138),
-    minDurationSeconds: Number(process.env.CONTENT_MIN_SECONDS || 35),
-    maxDurationSeconds: Number(process.env.CONTENT_MAX_SECONDS || 58),
+    // V3 (§11) — HEDEF 35-40s. 56.9 saniyelik brain-vs-ai-memory videosu
+    // gereğinden uzundu: son iki sahne yeni bilgi taşımayan soyut özetlerdi ve
+    // izleyici orada düşüyordu. Kelime tavanı süreye göre geri hesaplandı:
+    // ~2.6 kelime/sn ile 118 kelime ≈ 45s, en yavaş kategoride bile 44s
+    // tavanının altında kalır.
+    // 114 kelime ≈ 43.8s (en yavaş TTS, 2.6 kelime/sn) — sert tavan 44s'nin
+    // ALTINDA kalmak zorunda, yoksa script üretimi kendi kapısına çarpar.
+    maxNarrationWords: Number(process.env.CONTENT_MAX_WORDS || 114),
+    minDurationSeconds: Number(process.env.CONTENT_MIN_SECONDS || 28),
+    maxDurationSeconds: Number(process.env.CONTENT_MAX_SECONDS || 44),
+    // İDEAL BANT — sert kapı değil, script üreticisine verilen hedef ve
+    // retention'ın "gereğinden uzun" cezasının dayanağı.
+    idealMinSeconds: Number(process.env.CONTENT_IDEAL_MIN_SECONDS || 35),
+    idealMaxSeconds: Number(process.env.CONTENT_IDEAL_MAX_SECONDS || 40),
   },
   youtube: {
     clientId: process.env.YOUTUBE_CLIENT_ID,

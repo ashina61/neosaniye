@@ -1531,7 +1531,12 @@ export async function renderVideo(job, opts = {}) {
       sceneBoundaries: canonicalItems ? canonicalItems.slice(0, -1).map((x) => x.end) : [],
       transitions: btName.slice(0, Math.max(0, N - 1)).map((type, i) => ({ type: planOk ? plan.boundaries[i]?.transition || 'cut' : type, atSeconds: canonicalItems?.[i]?.end ?? null })),
       captionsIncluded: hasSubs,
+      // §13 — ALAN ADLARI AYRIŞTI. `captionEventCount` aslında KELİME sayısını
+      // tutuyordu ("45 blok" ile "137 kelime" aynı isimle raporlanıyordu ve
+      // altyazı yoğunluğu tartışmaları hep yanlış sayı üzerinden yürüyordu).
+      // Eski ad geriye dönük uyum için korunuyor (preflight + acil kapı okuyor).
       captionEventCount: wordTimings.length,
+      wordHighlightEventCount: wordTimings.length,
       expectedSfxCount: audioInfo?.sfxCues?.length || 0,
       motion: motionPlan,
       motionIssues,
