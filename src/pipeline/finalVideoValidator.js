@@ -184,6 +184,12 @@ export async function validateFinalVideo(videoPath, plan = {}, opts = {}) {
   const {
     fps = 2,
     shotDuplicateThreshold = 6,
+    // TEKRAR SAYILMASI İÇİN ASGARİ BOŞLUK. 2fps'te ardışık örnekler 0.5s
+    // arayla gelir; sıkıştırma gürültüsü tek bir kareyi eşiğin dışına itince
+    // aynı klip iki bloğa ayrılıyor ve "0.5s sonra tekrar etti" gibi görünüyordu
+    // (canlıda 07-motion.mp4 üzerinde üç sahte kopya böyle çıktı). Gerçek tekrar,
+    // araya BAŞKA planlar girdikten sonra olur.
+    minDuplicateGapSeconds = 2.0,
     staticStreakLimitSeconds = 5.0,
     overlayThreshold = 12,
   } = opts;
@@ -248,7 +254,8 @@ export async function validateFinalVideo(videoPath, plan = {}, opts = {}) {
     // Kasıtlı döngü kapanışı muaf: ilk blok başta, ikinci blok loop penceresinde.
     const nonLoop = runs.filter(([a]) => !inLoop(a));
     if (nonLoop.length >= 2) {
-      duplicateShots.push({ runs: nonLoop, gapSeconds: +(nonLoop[1][0] - nonLoop[0][1]).toFixed(2) });
+      const gap = +(nonLoop[1][0] - nonLoop[0][1]).toFixed(2);
+      if (gap >= minDuplicateGapSeconds) duplicateShots.push({ runs: nonLoop, gapSeconds: gap });
     }
   }
   if (duplicateShots.length) {

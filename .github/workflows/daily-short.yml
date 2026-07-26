@@ -155,7 +155,10 @@ jobs:
       - name: Final MP4 denetimi (kare taraması)
         if: ${{ !cancelled() && steps.produce.conclusion != 'skipped' }}
         run: |
-          V=$(find output -name '*.mp4' -not -name 'fullv.mp4' | head -1)
+          # Final video output/<konu>/<konu>.mp4'tür. media/ altındaki ara
+          # ürünler (07-motion.mp4 vb.) ve fullv.mp4 DENETLENMEZ — canlıda
+          # 19sn'lik bir ara klip denetlenip yanlış rapor üretmişti.
+          V=$(find output -maxdepth 2 -name '*.mp4' -not -path '*/media/*' -not -name 'fullv.mp4' | head -1)
           G=$(find output -name 'publish-gates.json' | head -1)
           if [ -n "$V" ]; then
             node scripts/audit-final-video.js "$V" ${G:+"$G"} --fps 2 || echo "[final-video] DENETİM BAŞARISIZ (yayın engelli)"

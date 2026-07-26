@@ -546,6 +546,58 @@ export async function runPipeline(opts = {}) {
       const forbidden = script.scenes?.[m.scene]?.forbidden_mismatches || [];
       return semanticRelevanceScore(nar, m.keyword, { forbiddenMismatches: forbidden }).score;
     });
+    // ---- FINAL MP4 DOĞRULAMASI (tek gerçek kaynak) ----
+    //
+    // Buraya kadar her kapı PLANI okuyordu. Kolibri koşusu şunu kanıtladı:
+    // plan doğru olabilir, çıkan video yanlış olabilir ve hiçbir rapor bunu
+    // görmez ("CTA uygulanmadı" derken ekranda pil vardı). Bu çağrı gerçek
+    // MP4'ü kare kare tarar ve sonucu yayın kapısının BİRİNCİL girdisi olur.
+    const renderedOverlays = [
+      ...(video.renderPlan?.overlayLayers || []),
+      // motion CTA run.js'te uygulanır — render'ın bildirimine eklenir.
+      ...(motionReport.ctaApplied ? ['cta'] : []),
+    ];
+    const ow = video.renderPlan?.overlayWindows || {};
+    const finalVideo = await validateFinalVideo(outPath, {
+      duration: video.duration,
+      clips: video.renderPlan?.clips || [],
+      hookWindows: ow.hook || [],
+      diagramWindows: ow.diagram || [],
+      ctaWindows: [
+        ...(ow.cta || []),
+        ...(motionReport.ctaApplied && Number.isFinite(motionReport.startSec)
+          ? [[motionReport.startSec, motionReport.startSec + (motionReport.durationSec || 1)]] : []),
+      ],
+      loopEchoWindows: ow.loopEcho || [],
+      declaredOverlays: [...new Set(renderedOverlays)],
+    }).catch((err) => {
+      console.warn(`[final-video] doğrulama çalıştırılamadı: ${String(err.message).slice(0, 90)}`);
+      return null;
+    });
+    if (finalVideo) {
+      console.log(
+        `  final MP4: ${finalVideo.sampledFrames} kare @${finalVideo.fps}fps | ` +
+        `hook ${finalVideo.hookOccurrences.length}× | diyagram ${finalVideo.diagramOccurrences.length}× | ` +
+        `CTA ${finalVideo.ctaOccurrences.length}× | kopya plan ${finalVideo.duplicateShots.length} | ` +
+        `en uzun durağan ${finalVideo.longestStaticStreakSeconds}s | sıra ${finalVideo.sceneOrderValid ? '✓' : 'BOZUK'}`,
+      );
+      for (const f of finalVideo.failures) console.error(`  [final-video] BAŞARISIZ: ${f}`);
+      for (const w of finalVideo.warnings) console.warn(`  [final-video] uyarı: ${w}`);
+    } else {
+      console.error('  [final-video] DOĞRULANAMADI — doğrulanmamış video yayınlanmaz.');
+    }
+    outputVerification.finalVideo = finalVideo;
+
+    // ---- RUN INTEGRITY: bütün artifact'ler AYNI koşuya mı ait? ----
+    const runIntegrity = await buildRunIntegrity({
+      workDir, videoPath: outPath, script, renderPlan: video.renderPlan,
+    }).catch(() => null);
+    outputVerification.runIntegrity = runIntegrity;
+    if (runIntegrity) {
+      console.log(`  run integrity: ${runIntegrity.runId} (zincir ${runIntegrity.chainHash.slice(0, 12)}…)`);
+    }
+
+
     const qc = await runRetentionQC({
       script,
       wordTimings: audio.wordTimings,
@@ -618,57 +670,6 @@ export async function runPipeline(opts = {}) {
     // bağlamsız etiket kutuları olan bir video üç platforma birden çıktı.
     // Kapı artık gerçekten kapı: bloke eden bir bulgu varsa yayın olmaz,
     // video artifact olarak kalır ve akış kırılmaz.
-    // ---- FINAL MP4 DOĞRULAMASI (tek gerçek kaynak) ----
-    //
-    // Buraya kadar her kapı PLANI okuyordu. Kolibri koşusu şunu kanıtladı:
-    // plan doğru olabilir, çıkan video yanlış olabilir ve hiçbir rapor bunu
-    // görmez ("CTA uygulanmadı" derken ekranda pil vardı). Bu çağrı gerçek
-    // MP4'ü kare kare tarar ve sonucu yayın kapısının BİRİNCİL girdisi olur.
-    const renderedOverlays = [
-      ...(video.renderPlan?.overlayLayers || []),
-      // motion CTA run.js'te uygulanır — render'ın bildirimine eklenir.
-      ...(motionReport.ctaApplied ? ['cta'] : []),
-    ];
-    const ow = video.renderPlan?.overlayWindows || {};
-    const finalVideo = await validateFinalVideo(outPath, {
-      duration: video.duration,
-      clips: video.renderPlan?.clips || [],
-      hookWindows: ow.hook || [],
-      diagramWindows: ow.diagram || [],
-      ctaWindows: [
-        ...(ow.cta || []),
-        ...(motionReport.ctaApplied && Number.isFinite(motionReport.startSec)
-          ? [[motionReport.startSec, motionReport.startSec + (motionReport.durationSec || 1)]] : []),
-      ],
-      loopEchoWindows: ow.loopEcho || [],
-      declaredOverlays: [...new Set(renderedOverlays)],
-    }).catch((err) => {
-      console.warn(`[final-video] doğrulama çalıştırılamadı: ${String(err.message).slice(0, 90)}`);
-      return null;
-    });
-    if (finalVideo) {
-      console.log(
-        `  final MP4: ${finalVideo.sampledFrames} kare @${finalVideo.fps}fps | ` +
-        `hook ${finalVideo.hookOccurrences.length}× | diyagram ${finalVideo.diagramOccurrences.length}× | ` +
-        `CTA ${finalVideo.ctaOccurrences.length}× | kopya plan ${finalVideo.duplicateShots.length} | ` +
-        `en uzun durağan ${finalVideo.longestStaticStreakSeconds}s | sıra ${finalVideo.sceneOrderValid ? '✓' : 'BOZUK'}`,
-      );
-      for (const f of finalVideo.failures) console.error(`  [final-video] BAŞARISIZ: ${f}`);
-      for (const w of finalVideo.warnings) console.warn(`  [final-video] uyarı: ${w}`);
-    } else {
-      console.error('  [final-video] DOĞRULANAMADI — doğrulanmamış video yayınlanmaz.');
-    }
-    outputVerification.finalVideo = finalVideo;
-
-    // ---- RUN INTEGRITY: bütün artifact'ler AYNI koşuya mı ait? ----
-    const runIntegrity = await buildRunIntegrity({
-      workDir, videoPath: outPath, script, renderPlan: video.renderPlan,
-    }).catch(() => null);
-    outputVerification.runIntegrity = runIntegrity;
-    if (runIntegrity) {
-      console.log(`  run integrity: ${runIntegrity.runId} (zincir ${runIntegrity.chainHash.slice(0, 12)}…)`);
-    }
-
     // ---- YAYIN KAPILARI (Faz 6) ----
     // Her kapı AYRI ölçülür. Sea cucumbers videosu retention'dan 84/100 aldı;
     // ortalama iyi göründüğü için altındaki kritik hatalar görünmedi. Tek
