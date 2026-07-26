@@ -8,6 +8,7 @@ const execFileAsync = promisify(execFile);
 import { generateScript } from '../script/generateScript.js';
 import { evaluateMeasuredDuration } from './durationPolicy.js';
 import { directVisuals, applyShotList } from '../crew/visualDirector.js';
+import { planVisualStory } from '../crew/storyPlanner.js';
 import { planEdit } from '../crew/editorDirector.js';
 import { analyzePerformance } from '../crew/analyst.js';
 import { generateAudio } from '../tts/generateAudio.js';
@@ -173,6 +174,21 @@ export async function runPipeline(opts = {}) {
     const scenes = script.scenes || [];
     const sceneWeights = scenes.map((s) => Math.max(1, wordCount(s.narration)));
     const sceneSeconds = canonicalTimeline.scenes.map((s) => s.duration);
+
+    // 2.9) GÖRSEL HİKÂYE PLANI — SIRALAMA BURADA TERSİNE DÖNER (V3 Faz 2).
+    // Eskiden görsel önce üretiliyor, anlam sonra üstüne yapıştırılıyordu;
+    // dekorasyonun kök nedeni buydu. Artık her cümle ÖNCE bir görsel hikâye
+    // şablonuna bağlanır ve image_prompt o şablonun gerektirdiği kompozisyonu
+    // ZORUNLU kılar (ör. mekanizma anlatan sahne "kesit" ister — yoksa hava
+    // akışı okları çizilebilecek bir zemin bulamaz).
+    // Deterministiktir: sağlayıcı zinciri düşse bile çalışır.
+    const storyPlan = planVisualStory(script);
+    console.log(
+      `  görsel hikâye: ${storyPlan.stats.composed}/${storyPlan.stats.total} sahnenin ` +
+      `kompozisyonu hikâyeye göre kısıtlandı ` +
+      `(${Object.entries(storyPlan.stats.byTemplate).map(([k, v]) => `${k}:${v}`).join(' ')}) ` +
+      `| izleyici görevi: ${storyPlan.stats.viewerTasks}`,
+    );
 
     // 3) Görsel (sahne başına AI görsel + Pexels/placeholder yedeği).
     // TEMPO: 4.3sn'yi aşan statik AI sahneleri İKİ farklı kadraja bölünür

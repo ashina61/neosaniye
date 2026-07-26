@@ -1212,7 +1212,22 @@ export async function renderVideo(job, opts = {}) {
         narration: job.scenes[it.scene]?.narration || '',
         index: i, start: it.start, end: it.end, part: media[i]?.part,
       }));
-      let { beats } = directSemantics(vtl);
+      // V3 Faz 2: hikâye planı ÖNCEDEN yapıldıysa (storyPlanner) onu kullan —
+      // renderVideo cümleyi yeniden sınıflandırmasın. Plan yoksa (eski akış,
+      // doğrudan renderVideo çağrısı) eskisi gibi burada çözümlenir.
+      const planned = vtl
+        .map((it, i) => {
+          const sc = job.scenes?.[canonicalItems[i]?.scene];
+          if (!sc?.story_beat) return null;
+          return { ...sc.story_beat, index: i, start: it.start, end: it.end };
+        })
+        .filter(Boolean);
+      let beats = planned.length
+        ? planned
+        : directSemantics(vtl).beats;
+      if (planned.length) {
+        console.log(`[visual] hikâye planı kullanıldı: ${planned.length} beat (yeniden sınıflandırma yok).`);
+      }
 
       // ÇAKIŞMA KORUMASI: sahne zaten bir GFX kartıysa (sayı kartı / adım
       // kartı) o klip KENDİ sayacını ve grafiğini içerir. Üstüne bir de
