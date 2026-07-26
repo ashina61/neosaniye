@@ -88,3 +88,59 @@ test('çelişki/gerilim kelimeleri ödüllendirilir', () => {
 test('klişe açılışlar hâlâ cezalı', () => {
   assert.ok(scoreHookRetention('Did you know termites build') < 40);
 });
+
+// ---------------- 5) HARİTA: TARİHÎ AD ≠ MODERN ÜLKE ----------------
+// Canlı hata: "The Roman Empire" → "ROMAN" → gevşek önek eşleşmesi
+// ("ROMANIA".startsWith("ROMAN")) → haritada modern ROMANYA vurgulandı.
+test('ROMAN artık Romanya\'ya bağlanmaz', async () => {
+  const { resolvePlace } = await import('../src/visual/geo.js');
+  const r = resolvePlace('ROMAN');
+  assert.equal(r.country, null, 'tarihî ad modern bir ülkeye bağlandı');
+  assert.ok(r.lon > 6 && r.lon < 20, `Roma bölgesinde değil: ${r.lon}`);
+  // Romanya'nın kendisi hâlâ doğru çözülmeli.
+  assert.equal(resolvePlace('ROMANIA').country, 'Romania');
+});
+
+test('tarihî ad için ülke DOLGUSU çizilmez', async () => {
+  const { buildMapPaths } = await import('../src/visual/geo.js');
+  for (const p of ['ROMAN', 'OTTOMAN', 'SPARTA', 'ROME']) {
+    const m = buildMapPaths(p, { w: 640, h: 320 });
+    assert.ok(m, `${p} için harita üretilmedi`);
+    assert.equal(m.target, null, `${p}: modern ülke vurgulandı (yanlış iddia)`);
+  }
+  // Gerçek ülkede dolgu OLMALI.
+  assert.ok(buildMapPaths('JAPAN', { w: 640, h: 320 }).target, 'Japonya vurgulanmadı');
+});
+
+test('gevşek önek eşleşmesi kalmadı; demonim hâlâ çalışır', async () => {
+  const { resolvePlace } = await import('../src/visual/geo.js');
+  assert.equal(resolvePlace('ZORTAVIA'), null);
+  assert.equal(resolvePlace('AUSTRALIAN').country, 'Australia', 'demonim bozuldu');
+});
+
+// ---------------- 6) LOOP: KARE GERÇEKTEN EŞLEŞSİN ----------------
+test('loop karesi hareketsizdir (ilk karenin zoom\'uyla eşleşir)', async () => {
+  const { selectSceneMotion } = await import('../src/video/motionPlan.js');
+  const m = selectSceneMotion({ narration: 'x' }, { type: 'photo', loopEcho: true }, { index: 9 });
+  assert.equal(m.type, 'static-hold', 'loop karesine kamera hareketi verildi');
+  assert.equal(m.maxZoom, 1, 'loop karesi zoom yapıyor — dikiş tutmaz');
+});
+
+test('ilk klip zoom 1\'den başlar (pull-out loop dikişini bozardı)', async () => {
+  const { selectSceneMotion } = await import('../src/video/motionPlan.js');
+  // renderVideo'da zoom'u YÜKSEKTEN başlatan tek hareket 'slow-pull-out'.
+  const first = selectSceneMotion({ narration: 'a', motion_type: 'slow-pull-out' },
+    { type: 'photo' }, { index: 0 });
+  assert.notEqual(first.type, 'slow-pull-out', 'ilk klip yakın kadrajdan başlıyor');
+
+  // detail-zoom zaten zoom 1'den başlayıp içeri girer → dokunulmamalı
+  // (aksi hâlde motionPlan'ın içerik-güdümlü seçimi bozulurdu).
+  const detail = selectSceneMotion({ narration: 'a', motion_type: 'detail-zoom' },
+    { type: 'photo' }, { index: 0 });
+  assert.equal(detail.type, 'detail-zoom', 'zararsız hareket gereksiz yere değiştirildi');
+
+  // Sonraki klipler serbest kalmalı.
+  const later = selectSceneMotion({ narration: 'a', motion_type: 'slow-pull-out' },
+    { type: 'photo' }, { index: 4 });
+  assert.equal(later.type, 'slow-pull-out');
+});

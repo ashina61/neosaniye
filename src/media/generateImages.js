@@ -367,7 +367,10 @@ export async function generateImages(script, opts = {}) {
     // 0.gfx) MOTION GRAPHICS kartları: sayı sayacı (stat) veya "how it works"
     // adım kartı (diagram). Guard: video başına üst sınır + sahne-1 hariç +
     // stat için anti-halüsinasyon (isUsableStat). Hata → normal görsel zinciri.
-    if (config.video.gfx && gfxCount < config.video.gfxMaxPerVideo && i > 0) {
+    // SON sahne gfx kartı ALMAZ: loop kapanışı son planın düz bir görsel
+    // olmasını gerektiriyor (kart kendi grafiğini taşır, ilk kareyle eşleşemez).
+    const isLastScene = i === scenes.length - 1;
+    if (config.video.gfx && gfxCount < config.video.gfxMaxPerVideo && i > 0 && !isLastScene) {
       if (scene.stat && !isUsableStat(scene.stat, scene.narration)) {
         // Görünürlük: DP stat verdi ama sayı anlatımda birebir yok — sessiz
         // kalmak teşhisi imkânsız kılıyordu (6 videoda gfx:0 kör noktası).
@@ -429,7 +432,8 @@ export async function generateImages(script, opts = {}) {
     // 0) Hareketli sahne: stok video dene (bulunamazsa AI görsele devam).
     const motionSlot = processMode
       ? true
-      : dpFlags ? scene.motion === true : i > 0 && i % motionEvery === 1;
+      : isLastScene ? false   // son plan düz görsel kalsın (loop kapanışı)
+        : dpFlags ? scene.motion === true : i > 0 && i % motionEvery === 1;
     if (!done && canMotion && (processMode || i > 0) && motionSlot) {
       try {
         const hit = await fetchStockVideoForKeywords(
@@ -666,6 +670,10 @@ export async function generateImages(script, opts = {}) {
         query: first.query,
       };
       console.log('[img] loop kapanışı: son plan ilk görsele döndürüldü.');
+    } else if (!eligible) {
+      // Sessiz atlama teşhisi imkânsız kılıyordu ("yine loop yok").
+      console.warn('[img] loop kapanışı ATLANDI — son plan uygun değil ' +
+        `(tip=${last?.type}, kaynak=${last?.source}; ilk: tip=${first?.type}, kaynak=${first?.source}).`);
     }
   }
 

@@ -25,31 +25,74 @@ const COUNTRY_BY_UPPER = Object.fromEntries(
 );
 
 /**
+ * ŞEHİRLER ve TARİHÎ/DEMONİM adlar. Bunlar bir MODERN ÜLKE değildir; yalnızca
+ * koordinat verirler ve haritada ülke DOLGUSU yapılmaz.
+ *
+ * Gerekçe (26 Tem, canlı hata): "The Roman Empire" cümlesinden "ROMAN"
+ * çıkarılıyor, gevşek önek eşleşmesi ("ROMANIA".startsWith("ROMAN")) bunu
+ * ROMANYA'ya bağlıyor ve haritada modern Romanya vurgulanıyordu. Roma
+ * İmparatorluğu'nu modern bir ülke sınırıyla göstermek zaten yanlış olurdu;
+ * bu yüzden tarihî adlar için ülke doldurulmaz, sadece bölge işaretlenir.
+ */
+const POINT_ONLY = {
+  // Tarihî devletler/uygarlıklar — modern sınırla eşitlemek yanlış olur.
+  ROMAN: [12.5, 41.9], 'ROMAN EMPIRE': [12.5, 41.9], ROME: [12.5, 41.9],
+  BYZANTINE: [28.98, 41.01], BYZANTIUM: [28.98, 41.01],
+  OTTOMAN: [28.98, 41.01], PERSIAN: [52.0, 32.0], PERSIA: [52.0, 32.0],
+  MESOPOTAMIA: [44.4, 33.3], BABYLON: [44.42, 32.54], SUMER: [45.6, 31.3],
+  'ANCIENT EGYPT': [31.2, 29.9], PHARAOH: [31.2, 29.9],
+  MAYA: [-89.6, 20.7], MAYAN: [-89.6, 20.7], AZTEC: [-99.1, 19.4],
+  INCA: [-72.5, -13.5], VIKING: [10.7, 59.9], NORSE: [10.7, 59.9],
+  SPARTA: [22.43, 37.07], SPARTAN: [22.43, 37.07],
+  'ANCIENT GREECE': [23.7, 37.98], GREEK: [23.7, 37.98],
+  // Şehirler — nokta işaretidir, ülke dolgusu değil.
+  ATHENS: [23.73, 37.98], CAIRO: [31.24, 30.04], LONDON: [-0.13, 51.51],
+  PARIS: [2.35, 48.86], BERLIN: [13.4, 52.52], MOSCOW: [37.62, 55.75],
+  BEIJING: [116.4, 39.9], TOKYO: [139.7, 35.68], DELHI: [77.2, 28.6],
+  ISTANBUL: [28.98, 41.01], JERUSALEM: [35.22, 31.78], BAGHDAD: [44.36, 33.31],
+  'NEW YORK': [-74.0, 40.71], POMPEII: [14.49, 40.75], ALEXANDRIA: [29.92, 31.2],
+};
+
+/**
  * Yer adını gerçek koordinata ve (varsa) ülke geometrisine çöz.
+ *
+ * EŞLEŞME KATIDIR: yalnızca tam ad, tam ISO kodu ya da yukarıdaki küratörlü
+ * tablo kabul edilir. Gevşek önek eşleştirmesi KALDIRILDI — kısa bir özel ad
+ * kendinden uzun herhangi bir ülkeye yapışıp tamamen alakasız bir harita
+ * çizdiriyordu (ROMAN → ROMANIA).
+ *
  * @param {string} place
- * @returns {{lon:number, lat:number, country:string|null, name:string}|null}
+ * @returns {{lon:number, lat:number, country:string|null, name:string,
+ *            pointOnly:boolean}|null}
  */
 export function resolvePlace(place) {
   const key = norm(place);
   if (!key) return null;
 
-  // 1) Doğrudan gazetteer (ülke adı, ISO kodu, okyanus/bölge).
-  let coords = GEO.gazetteer[key];
-  let country = COUNTRY_BY_UPPER[key] || null;
+  // 1) Şehir / tarihî ad: koordinat evet, ülke dolgusu HAYIR.
+  if (POINT_ONLY[key]) {
+    const [lon, lat] = POINT_ONLY[key];
+    return { lon, lat, country: null, name: key, pointOnly: true };
+  }
 
-  // 2) Kısmi eşleşme: "GREAT BARRIER REEF" gibi çok kelimeli adlarda
-  //    ya da "AUSTRALIAN" → "AUSTRALIA" gibi eklerde.
-  if (!coords) {
-    const hit = Object.keys(GEO.gazetteer).find(
-      (k) => k === key || (k.length > 3 && (key.startsWith(k) || k.startsWith(key))),
-    );
-    if (hit) {
-      coords = GEO.gazetteer[hit];
-      country = COUNTRY_BY_UPPER[hit] || null;
+  // 2) Tam ülke adı ya da ISO kodu (gazetteer'da birebir).
+  if (GEO.gazetteer[key]) {
+    const [lon, lat] = GEO.gazetteer[key];
+    return { lon, lat, country: COUNTRY_BY_UPPER[key] || null, name: key, pointOnly: false };
+  }
+
+  // 3) Demonim → ülke ("AUSTRALIAN" → "AUSTRALIA"). YALNIZCA bilinen ekler,
+  //    ve kökün kendisi gerçek bir ülke adı olmalı.
+  const stem = key.replace(/(IAN|EAN|ISH|ESE|IC|N)$/,'');
+  for (const suffix of ['', 'A', 'Y', 'IA']) {
+    const candidate = stem + suffix;
+    if (candidate.length >= 4 && GEO.gazetteer[candidate] && COUNTRY_BY_UPPER[candidate]) {
+      const [lon, lat] = GEO.gazetteer[candidate];
+      return { lon, lat, country: COUNTRY_BY_UPPER[candidate], name: candidate, pointOnly: false };
     }
   }
-  if (!coords) return null;
-  return { lon: coords[0], lat: coords[1], country, name: key };
+
+  return null; // tanınmadı → harita ÇİZİLMEZ (uydurma coğrafya yok)
 }
 
 /** Hedefin çevresinde gösterilecek harita penceresi (derece cinsinden). */
@@ -107,7 +150,9 @@ export function buildMapPaths(place, { w = 640, h = 320 } = {}) {
   const landParts = [];
   const targetParts = [];
   for (const [name, rings] of Object.entries(GEO.countries)) {
-    const isTarget = name === target.country;
+    // pointOnly (şehir/tarihî ad) ise HİÇBİR ülke vurgulanmaz: "Roma
+    // İmparatorluğu = modern İtalya" gibi yanlış bir iddiada bulunmayız.
+    const isTarget = !target.pointOnly && name === target.country;
     for (const ring of rings) {
       // Pencereyle kesişmiyorsa atla (çizim boyutunu küçük tutar).
       let minX = 180; let maxX = -180; let minY = 90; let maxY = -90;

@@ -6,6 +6,11 @@ export function selectSceneMotion(scene = {}, item = {}, { previous = [], index 
   // sert kesmeden gelir. Üstüne bir de zoom binerse iki hareket çakışır ve
   // eylem okunmaz olur.
   if (item.sequence) return { type: 'static-hold', maxZoom: 1, reason: 'action-sequence-frame' };
+  // LOOP KARESİ: son plan ilk görsele döner. Kareler GERÇEKTEN eşleşsin diye
+  // hareket YOK (zoom 1) — ilk klip de zoom 1'den başlar. Aynı görseli koyup
+  // üstüne zoom uygulamak, ilk kareyle son kareyi yine farklı gösteriyordu
+  // (26 Tem: "yine loop yok").
+  if (item.loopEcho) return { type: 'static-hold', maxZoom: 1, reason: 'loop-closure' };
   const text = `${scene.image_prompt || ''} ${scene.narration || ''}`.toLowerCase();
   const textHeavy = item.source === 'gfx' || /\b(diagram|map|timeline|label|chart|text)\b/.test(text);
   if (textHeavy) return { type: 'static-hold', maxZoom: 1, reason: 'text-heavy-or-explanatory' };
@@ -29,6 +34,12 @@ export function selectSceneMotion(scene = {}, item = {}, { previous = [], index 
     else if (index % 4 === 3) type = 'zoom-to-detail';
     else type = 'slow-push-in';
   }
+
+  // İLK KLİP zoom 1'den BAŞLAMALI: loop karesi zoom 1'de sabit duruyor, ilk
+  // klip yakın kadrajdan başlarsa dikiş tutmaz. renderVideo'da zoom'u YÜKSEKTEN
+  // başlayan TEK hareket 'slow-pull-out' (pull); detail-zoom dahil diğerleri
+  // zaten 1'den başlayıp içeri girer, onlara dokunma.
+  if (index === 0 && type === 'slow-pull-out') type = 'slow-push-in';
 
   // Anti-tekrar: son 2 hareketi tekrar etme, açıkça devam et.
   const recent2 = previous.slice(-2);
