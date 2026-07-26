@@ -219,15 +219,7 @@ function buildCaptionAss(words, opts) {
     // şok kelimeleri gözden kaçmasın. Normal akış küçük harf kalır (premium his).
     const doUpper = uppercase || (ev.isEmph && config.video.captionUppercaseEmphasis);
     const text = assEscape(doUpper ? ev.text.toUpperCase() : ev.text);
-    if (ev.isEmph) {
-      // VURGU PARÇASI: altyazı bandında akışın PARÇASI, farklı font (Playfair
-      // italik), daha büyük. Kendi zaman dilimini kullanır (uzatma yok —
-      // aynı banttaki sonraki altyazı grubunu ezerdi).
-      events.push(
-        `Dialogue: 0,${assTime(start)},${assTime(end)},Emph,,0,0,0,,` +
-          `{\\fs${ev.fontSize}\\i1\\b1\\fad(90,110)\\fscx92\\fscy92\\t(0,150,\\fscx100\\fscy100)}${text}`,
-      );
-    } else if (config.video.captionKaraoke && ev.words.length > 1) {
+    if (config.video.captionKaraoke && ev.words.length > 1) {
       // KARAOKE: o an konuşulan kelime büyür + vurgu rengine döner (aktif kelime
       // takibi, TikTok/Reels tarzı). Her kelime için ayrı Dialogue; tüm satır
       // görünür kalır, yalnız aktif kelime öne çıkar. \r stili sıfırlar, sonra
@@ -239,9 +231,11 @@ function buildCaptionAss(words, opts) {
         const wEnd = wi + 1 < ev.words.length ? ev.words[wi + 1].start : end;
         const parts = ev.words.map((w, k) => {
           const t = assEscape(doUpper ? String(w.word).toUpperCase() : w.word);
-          return k === wi
-            ? `{\\fs${big}\\c${accent}\\b1}${t}{\\r\\fs${ev.fontSize}}`
-            : t;
+          if (k === wi) return `{\\fs${big}\\c${accent}\\b1}${t}{\\r\\fs${ev.fontSize}}`;
+          // SATIR İÇİ VURGU: kelime cümleden KOPARILMADAN öne çıkar. Boyut
+          // değişmez (satır zıplamasın), yalnızca kalın + marka rengi.
+          if (isEmph(w.word)) return `{\\c${accent}\\b1}${t}{\\r\\fs${ev.fontSize}}`;
+          return t;
         });
         const fadeIn = wi === 0 ? '\\fad(120,0)' : '';
         events.push(
@@ -250,9 +244,15 @@ function buildCaptionAss(words, opts) {
         );
       }
     } else {
+      // Karaoke kapalıyken de vurgu satır içi verilir (ayrı olay YOK).
+      const inline = ev.words.map((w) => {
+        const t = assEscape(doUpper ? String(w.word).toUpperCase() : w.word);
+        return isEmph(w.word) ? `{\\c${config.video.accentColor}\\b1}${t}{\\r\\fs${ev.fontSize}}` : t;
+      }).join(' ');
       events.push(
-        `Dialogue: 0,${assTime(start)},${assTime(end)},Cap,,0,0,0,,{\\fs${ev.fontSize}\\fad(120,90)\\blur1.2}${text}`,
+        `Dialogue: 0,${assTime(start)},${assTime(end)},Cap,,0,0,0,,{\\fs${ev.fontSize}\\fad(120,90)\\blur1.2}${inline}`,
       );
+      void text;
     }
   }
   return assHeader(width, height, styleLines.join('\n')) + events.join('\n') + '\n';
@@ -1206,6 +1206,8 @@ export async function renderVideo(job, opts = {}) {
   let effectsFilter = '';
   let semanticBeatsUsed = [];
   let actorStatsUsed = null;
+  const actorsBySceneUsed = {};
+  const sceneFocusUsed = {};
   const semCfg = config.motion?.semanticVisuals;
   if (semCfg?.enabled && canonicalItems && Array.isArray(job.scenes)) {
     try {
@@ -1290,6 +1292,7 @@ export async function renderVideo(job, opts = {}) {
           const focus = await detectFocus(src).catch(() => null);
           if (focus) {
             b.focus = focus;
+            if (Number.isFinite(b.scene)) sceneFocusUsed[b.scene] = focus;
             console.log(`[visual] sahne ${b.index + 1}: odak (${focus.x}, ${focus.y}) güven ${focus.confidence}`);
           } else {
             console.log(`[visual] sahne ${b.index + 1}: odak belirsiz — daire çizilmedi.`);
@@ -1300,6 +1303,12 @@ export async function renderVideo(job, opts = {}) {
       // V3: önce AKTÖR koreografisi (kadrajın İÇİNDE durum değiştiren
       // elemanlar), aktöre çevrilemeyen beat'ler eski kart yoluna düşer.
       const { actors, cardBeats: allCardBeats, stats: actorStats } = planActors(beats);
+      // Sahne → aktör eşlemesi (denetim için): hangi sahnede NE çizildi.
+      for (const b of beats) {
+        if (!Number.isFinite(b.scene)) continue;
+        const made = planActors([b]).actors;
+        if (made.length) actorsBySceneUsed[b.scene] = made;
+      }
       // KART TAVANI (aktör planından sonra, gerçek listeye). Kart kadrajın
       // ÜSTÜNDE durur; sayısı arttıkça video "kart gösterisi"ne döner.
       // En bilgilendirici tipler önce: sayı ve karşılaştırma bir kartla
@@ -1346,6 +1355,34 @@ export async function renderVideo(job, opts = {}) {
   // Hafif keskinleştirme (altyazıdan ÖNCE — yazı kenarları temiz kalsın).
   // Katman sırası: [fx altta] -> keskinleştir -> [görsel efektler] -> [altyazı üstte].
   const post = ['unsharp=5:5:0.35:3:3:0'];
+  // LİSTE NUMARALARI — "5 facts" vaadinin ekrandaki karşılığı. Küçük, üst
+  // güvenli alanda, ekranı kaplamaz. Canlıda video "5 incredible facts" diye
+  // açılıyor ama tek bir numara görünmüyordu.
+  const listMarkers = [];
+  if (canonicalItems && Array.isArray(job.scenes)) {
+    const shownFor = new Set();
+    canonicalItems.forEach((it, i) => {
+      const sceneIdx = it?.scene ?? job.mediaScene?.[i];
+      const n = job.scenes?.[sceneIdx]?.list_index;
+      if (!Number.isFinite(n) || shownFor.has(n)) return;
+      shownFor.add(n);
+      listMarkers.push({ n, start: it.start, end: Math.min(it.end, it.start + 1.6) });
+    });
+  }
+  if (listMarkers.length) {
+    const head = `[Script Info]\nScriptType: v4.00+\nPlayResX: ${width}\nPlayResY: ${height}\n` +
+      'ScaledBorderAndShadow: yes\nWrapStyle: 2\n\n[V4+ Styles]\n' +
+      'Format: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\n' +
+      `Style: ListNo,Montserrat Black,64,&H00FFFFFF,&H00121212,&H64000000,1,0,0,0,100,100,0,0,1,4,2,7,72,72,0,1\n\n` +
+      '[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n';
+    const evs = listMarkers.map((m) => (
+      `Dialogue: 3,${assTime(m.start)},${assTime(m.end)},ListNo,,0,0,0,,` +
+      `{\\an7\\pos(72,470)\\fad(160,220)\\fscx86\\fscy86\\t(0,220,\\fscx100\\fscy100)}${m.n}`
+    ));
+    await writeFile(path.join(workDir, 'list.ass'), head + evs.join('\n') + '\n');
+    post.push(existsSync(fontsDir) ? `ass=list.ass:fontsdir=${fontsDir}` : 'ass=list.ass');
+    console.log(`[visual] liste numaraları: ${listMarkers.map((m) => m.n).join(', ')}`);
+  }
   if (effectsFilter) post.push(effectsFilter);
   if (useAss) post.push(assFilter);
   vfc.push(`${last}${fxFilter}${post.join(',')}${annoFilter}[v]`);
@@ -1420,6 +1457,10 @@ export async function renderVideo(job, opts = {}) {
     semanticBeats: semanticBeatsUsed,
     // V3: aktör/kart ayrımı (sessiz anlaşılırlık QC'si bunu ölçer).
     actorStats: actorStatsUsed,
+    // Sahne başına GERÇEKTEN çizilen aktörler + ölçülen odak — semantik eylem
+    // tamamlama denetimi bunları okur ("çizgi var" ile "olay oldu" farkı).
+    actorsByScene: actorsBySceneUsed,
+    sceneFocus: sceneFocusUsed,
     renderPlan: {
       expectedSceneCount: N,
       sceneBoundaries: canonicalItems ? canonicalItems.slice(0, -1).map((x) => x.end) : [],

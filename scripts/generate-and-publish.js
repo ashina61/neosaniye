@@ -4,9 +4,15 @@
  * Tüm fazları sırayla çalıştırır: script -> ses -> görsel -> montaj -> loglama
  * ve (kredensiyel varsa) YouTube upload.
  *
+ * YAYIN VARSAYILAN OLARAK KAPALIDIR. Bayrak yokken boru hattı videoyu üretir,
+ * QC'yi çalıştırır, artifact'leri yazar ve upload YAPMAZ. Eskiden bayrak yoksa
+ * `undefined` gönderiliyor, run.js de bunu "kimlik bilgisi varsa yükle" diye
+ * yorumluyordu; cron'un onaysız yayın yapmasının üç sebebinden biri buydu.
+ *
  * Kullanım:
- *   node scripts/generate-and-publish.js            # tam boru hattı
- *   node scripts/generate-and-publish.js --no-upload# upload'ı atla (yerel test)
+ *   node scripts/generate-and-publish.js             # üret, YÜKLEME
+ *   node scripts/generate-and-publish.js --upload    # üret ve (kapılar geçilirse) yükle
+ *   node scripts/generate-and-publish.js --no-upload # kesin yükleme
  *
  * Gerekli anahtarlar (.env / GitHub Secrets):
  *   GEMINI_API_KEY, PEXELS_API_KEY,
@@ -16,7 +22,12 @@
 import { runPipeline } from '../src/pipeline/run.js';
 
 const args = process.argv.slice(2);
-const upload = args.includes('--no-upload') ? false : undefined;
+// --no-upload en yüksek öncelik (kesin hayır), sonra --upload (talep).
+// Hiçbiri yoksa karar AUTO_UPLOAD ortam değişkenine bırakılır; o da yoksa
+// varsayılan KAPALIdır (bkz. src/pipeline/uploadPolicy.js).
+const upload = args.includes('--no-upload') ? false
+  : args.includes('--upload') ? true
+    : undefined;
 
 try {
   const result = await runPipeline({ upload });

@@ -466,7 +466,12 @@ export const config = {
   motion: {
     enabled: process.env.MOTION_ENABLED !== '0',
     cta: {
-      enabled: process.env.MOTION_CTA_ENABLED !== '0',
+      // CTA VARSAYILAN KAPALI (26 Tem kararı). Canlıda akış şöyleydi:
+      //   "But here's the real kicker" → SUBSCRIBE kartı → reveal
+      // yani izleyici tam merak doruğundayken araya reklam giriyordu ve final
+      // bilgi kesiliyordu. CTA artık retention için ZORUNLU görülmedikçe hiç
+      // eklenmez; açmak için MOTION_CTA_ENABLED=1.
+      enabled: process.env.MOTION_CTA_ENABLED === '1',
       // Her uygun videoda tek, payoff-sonrası subscribe CTA. "editorial" yalnızca
       // bilinçli A/B testi için kullanılmalı; varsayılan görünürlük garantilidir.
       mode: process.env.MOTION_CTA_MODE || 'always',
@@ -476,9 +481,10 @@ export const config = {
       minVideoDurationSec: Number(process.env.MOTION_CTA_MIN_DUR || 20),
       earliestStartSec: Number(process.env.MOTION_CTA_EARLIEST || 8),
       latestEndBufferSec: Number(process.env.MOTION_CTA_END_BUFFER || 2),
+      // Kısa tutulur: 1.8-2.8sn ekranın yarısını saniyelerce kapatıyordu.
       durationRangeSec: [
-        Number(process.env.MOTION_CTA_DUR_MIN || 1.8),
-        Number(process.env.MOTION_CTA_DUR_MAX || 2.8),
+        Number(process.env.MOTION_CTA_DUR_MIN || 0.6),
+        Number(process.env.MOTION_CTA_DUR_MAX || 0.9),
       ],
       position: process.env.MOTION_CTA_POSITION || 'auto',
       avoidCaptions: process.env.MOTION_CTA_AVOID_CAPTIONS !== '0',

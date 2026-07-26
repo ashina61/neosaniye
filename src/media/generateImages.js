@@ -115,11 +115,17 @@ export function shotLadder(template, seconds) {
  */
 
 /** Pollinations.ai (ücretsiz, FLUX) — promptu dikey bir görsele çevirir. */
-async function fetchPollinations(prompt, dest, { width, height, seed }) {
+async function fetchPollinations(prompt, dest, { width, height, seed, negative }) {
   const model = config.images.pollinationsModel;
+  // NEGATİF PROMPT gerçekten İSTEĞE girer. Pollinations gövde parametresi
+  // almaz; hem sorgu parametresi olarak hem de prompt içi dışlama cümlesi
+  // olarak gönderilir. (Sadece üretip loglamak, 26 Tem'de yanlış hayvanları
+  // engellemedi — kısıt isteğe ulaşmalı.)
+  const full = negative ? `${prompt} Absolutely not: ${negative}.` : prompt;
   const url =
-    `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}` +
-    `?width=${width}&height=${height}&model=${model}&seed=${seed}&nologo=true&enhance=true`;
+    `https://image.pollinations.ai/prompt/${encodeURIComponent(full)}` +
+    `?width=${width}&height=${height}&model=${model}&seed=${seed}&nologo=true&enhance=true` +
+    (negative ? `&negative=${encodeURIComponent(negative)}` : '');
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), config.images.timeoutMs);
   try {
@@ -141,7 +147,7 @@ const deadImageProviders = new Set();
 export function resetImageProviders() { deadImageProviders.clear(); }
 
 /** Cloudflare Workers AI (FLUX) — metin tarafıyla AYNI kimlik bilgileri. */
-async function fetchCloudflareImage(prompt, dest, { width, height, seed }) {
+async function fetchCloudflareImage(prompt, dest, { width, height, seed, negative }) {
   const { apiKey, accountId } = config.cloudflareAi;
   if (!apiKey || !accountId) throw new Error('cloudflare kimlik bilgisi yok');
   const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${config.images.cloudflareModel}`;
@@ -152,7 +158,7 @@ async function fetchCloudflareImage(prompt, dest, { width, height, seed }) {
       method: 'POST',
       signal: ctrl.signal,
       headers: { authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
-      body: JSON.stringify({ prompt, width, height, seed }),
+      body: JSON.stringify({ prompt, width, height, seed, ...(negative ? { negative_prompt: negative } : {}) }),
     });
     if (!res.ok) throw new Error(`cloudflare HTTP ${res.status}`);
     const ct = res.headers.get('content-type') || '';
@@ -173,7 +179,7 @@ async function fetchCloudflareImage(prompt, dest, { width, height, seed }) {
 }
 
 /** Together AI — FLUX.1-schnell-Free (ücretsiz uç). */
-async function fetchTogetherImage(prompt, dest, { width, height, seed }) {
+async function fetchTogetherImage(prompt, dest, { width, height, seed, negative }) {
   const { apiKey, model } = config.images.together;
   if (!apiKey) throw new Error('together anahtarı yok');
   const ctrl = new AbortController();
@@ -183,7 +189,8 @@ async function fetchTogetherImage(prompt, dest, { width, height, seed }) {
       method: 'POST',
       signal: ctrl.signal,
       headers: { authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
-      body: JSON.stringify({ model, prompt, width, height, seed, n: 1, response_format: 'b64_json' }),
+      body: JSON.stringify({ model, prompt, width, height, seed, n: 1, response_format: 'b64_json',
+        ...(negative ? { negative_prompt: negative } : {}) }),
     });
     if (!res.ok) throw new Error(`together HTTP ${res.status}`);
     const data = await res.json();
@@ -197,7 +204,7 @@ async function fetchTogetherImage(prompt, dest, { width, height, seed }) {
 }
 
 /** Hugging Face Inference API (ücretsiz katman) — ham görsel döner. */
-async function fetchHuggingFaceImage(prompt, dest) {
+async function fetchHuggingFaceImage(prompt, dest, { negative } = {}) {
   const { apiKey, model } = config.images.huggingface;
   if (!apiKey) throw new Error('huggingface anahtarı yok');
   const ctrl = new AbortController();
@@ -207,7 +214,8 @@ async function fetchHuggingFaceImage(prompt, dest) {
       method: 'POST',
       signal: ctrl.signal,
       headers: { authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
-      body: JSON.stringify({ inputs: prompt }),
+      body: JSON.stringify({ inputs: prompt,
+        ...(negative ? { parameters: { negative_prompt: negative } } : {}) }),
     });
     if (!res.ok) throw new Error(`huggingface HTTP ${res.status}`);
     const buf = Buffer.from(await res.arrayBuffer());
@@ -235,7 +243,7 @@ export async function generateAiImage(prompt, dest, opts) {
       if (name === 'pollinations') await fetchPollinations(prompt, dest, opts);
       else if (name === 'cloudflare') await fetchCloudflareImage(prompt, dest, opts);
       else if (name === 'together') await fetchTogetherImage(prompt, dest, opts);
-      else if (name === 'huggingface') await fetchHuggingFaceImage(prompt, dest);
+      else if (name === 'huggingface') await fetchHuggingFaceImage(prompt, dest, opts);
       else continue;
       if (name !== chain[0]) console.log(`[img] sağlayıcı yedeği: ${name}`);
       return { path: dest, provider: name };
@@ -421,6 +429,11 @@ export async function generateImages(script, opts = {}) {
   for (let i = 0; i < scenes.length; i += 1) {
     const scene = scenes[i];
     const idx = String(i + 1).padStart(2, '0');
+    // ÖZNE KİMLİĞİ: yasaklı anatomi listesi sahnede taşınır ve HER üretim
+    // çağrısına (ilk deneme, yeniden deneme, dizi kareleri) verilir. Sadece
+    // ilk çağrıda uygulanan bir kısıt, yeniden üretimde kaybolurdu — canlıda
+    // aynı videoda dört farklı hayvan çıkmasının sebeplerinden biri buydu.
+    const negative = scene.negative_prompt || '';
     // PROMPT SIRASI KRİTİK: üreticiler baştaki kelimelere daha çok ağırlık verir.
     // Eskiden sıra [ortak stil, sahne, anchor, ortak stil] idi → sahneyi ayıran
     // tek parça devasa ortak metnin içinde boğuluyor, her sahne aynı çıkıyordu.
@@ -550,7 +563,7 @@ export async function generateImages(script, opts = {}) {
           try {
             if (provider === 'pollinations') {
               const dest = path.join(mediaDir, `${idx}-ai.jpg`);
-              const made = await generateAiImage(tryPrompt, dest, { width, height, seed: trySeed });
+              const made = await generateAiImage(tryPrompt, dest, { width, height, seed: trySeed, negative });
               // PROVENANCE: kendi ürettiğimiz görselin "lisansı" bir üçüncü taraf
               // belgesi değil, üretim kaydıdır — sağlayıcı + model + prompt +
               // zaman. Bu alanlar null bırakıldığı için acil kalite kapısı her
@@ -658,7 +671,7 @@ export async function generateImages(script, opts = {}) {
           const dest = path.join(mediaDir, `${idx}-seq${f}.jpg`);
           const seqPrompt = [scene.image_prompt, phases[f], framing, anchor, stylePrefix, styleSuffix]
             .filter(Boolean).join('. ');
-          await generateAiImage(seqPrompt, dest, { width, height, seed: sceneSeed });
+          await generateAiImage(seqPrompt, dest, { width, height, seed: sceneSeed, negative });
           if (!existsSync(dest)) break;
           const h = await perceptualHash(dest);
           const d = hammingDistance(baseHash, h);

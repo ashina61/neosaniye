@@ -26,7 +26,10 @@ function withMotion(over, fn) {
   })();
 }
 
-const CTA_CFG = { ...config.motion.cta };
+// CTA artık VARSAYILAN KAPALI (26 Tem: canlıda reveal'i kesiyordu). Seçici
+// davranışını sınayan testler bunu açıkça açar; "kapalıyken atlanır" durumu
+// aşağıda ayrıca test edilir.
+const CTA_CFG = { ...config.motion.cta, enabled: true };
 
 // ---- SEÇİCİ ----
 test('CTA disabled → skipped:disabled', () => {
@@ -103,7 +106,9 @@ test('safe-area: yer yoksa null döner (CTA atlanır, kapatmaz)', () => {
 
 // ---- VALİDATOR ----
 test('validatePlan: ilk 5sn / sınır dışı / süre hatalarını yakalar', () => {
-  const cfg = config.motion.cta;
+  // CTA süresi artık 0.6-0.9sn (canlıda 2.2sn ekranı uzun süre kapatıyordu);
+  // bu test yerleşim kurallarını sınıyor, süre bandını değil.
+  const cfg = { ...config.motion.cta, durationRangeSec: [0.6, 2.8] };
   const sa = computeSafeArea({ position: 'auto' });
   const early = validatePlan({ applied: true, startSec: 3, durationSec: 2.2 }, { duration: 35, cfg, safeArea: sa });
   assert.ok(early.failures.includes('cta-in-first-5s'));
@@ -147,7 +152,7 @@ test('engine: motion kapalı → orijinal video korunur, ctaApplied:false', asyn
 });
 
 test('engine: probability-skip → orijinal korunur', async () => {
-  await withMotion({ cta: { mode: 'editorial', probability: 0 } }, async () => {
+  await withMotion({ cta: { enabled: true, mode: 'editorial', probability: 0 } }, async () => {
     const res = await applyCta({ videoPath: '/x/orig.mp4', workDir: '/tmp', duration: 40, seed: 's' });
     assert.equal(res.videoPath, '/x/orig.mp4');
     assert.equal(res.report.ctaApplied, false);

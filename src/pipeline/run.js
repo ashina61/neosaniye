@@ -43,6 +43,14 @@ import {
 import { evaluateEmergencyQualityGate } from './emergencyQualityGate.js';
 import { buildCanonicalTimeline, expandTimelineForMedia } from './canonicalTimeline.js';
 import { validatePacing, validateViewerFirstScript } from './viewerFirstValidation.js';
+import { resolveUploadPolicy, logUploadDecision, UPLOAD_BLOCKED_MESSAGE } from './uploadPolicy.js';
+import { evaluatePublishGates } from './publishGates.js';
+import { applySubjectBible } from '../crew/subjectBible.js';
+import { validateCaptionIntegrity } from '../video/captionIntegrity.js';
+import { analyzeCaptionLayout } from '../video/captionLayout.js';
+import {
+  assessSemanticActions, assessListStructure, assessCta, detectRepetition, assignListMarkers,
+} from './storyAudit.js';
 
 /** Bir metindeki kelime sayısı (sahne ağırlığı için). */
 function wordCount(text) {
@@ -73,7 +81,25 @@ export async function runPipeline(opts = {}) {
     config.youtube.clientId &&
     config.youtube.clientSecret &&
     config.youtube.refreshToken;
-  const willUpload = upload === true || (upload !== false && hasYouTube);
+  // YAYIN TALEBİ — kimlik bilgisi İZİN DEĞİLDİR.
+  //
+  // Eski satır: `upload === true || (upload !== false && hasYouTube)`.
+  // Bayrak verilmediğinde (cron'da hep böyleydi) ifade `hasYouTube`e
+  // indirgeniyordu: YouTube secret'ı tanımlıysa video yayınlanıyordu. Bir
+  // anahtarın varlığı, o gün üretilen videonun yayınlanabilir olduğunu
+  // söylemez. Karar artık uploadPolicy'de ve varsayılanı KAPALI.
+  const uploadIntent = resolveUploadPolicy({
+    cliUpload: upload,
+    hasCredentials: Boolean(hasYouTube),
+    // Bu aşamada yalnızca TALEP soruluyor; kapılar render + QC sonrasında.
+    preflightOk: true,
+    qc: { report: {} },
+  });
+  const willUpload = uploadIntent.requested;
+  if (!willUpload) {
+    console.log(`[yayın] upload kapalı (${uploadIntent.checks.source}) — video artifact olarak kalacak.`);
+    console.log(UPLOAD_BLOCKED_MESSAGE);
+  }
 
   // 0) Öğrenme döngüsü: geçmiş videoların izlenme verisini tazele (best-effort).
   if (hasYouTube) {
@@ -182,6 +208,27 @@ export async function runPipeline(opts = {}) {
     // ZORUNLU kılar (ör. mekanizma anlatan sahne "kesit" ister — yoksa hava
     // akışı okları çizilebilecek bir zemin bulamaz).
     // Deterministiktir: sağlayıcı zinciri düşse bile çalışır.
+    // 2.84) LİSTE YAPISI — "5 facts" diyorsan beş madde ve beş numara olacak.
+    // Teslim edilemiyorsa sayı hook'tan KALDIRILIR (vaat edip vermemektense).
+    const listPlan = assignListMarkers(script);
+    if (listPlan.declared) {
+      console.log(listPlan.strippedClaim
+        ? `  liste: ${listPlan.declared} madde vaat edildi ama ayrılamadı — sayı hook'tan kaldırıldı.`
+        : `  liste: ${listPlan.assigned}/${listPlan.declared} madde işaretlendi.`);
+    }
+
+    // 2.85) ÖZNE KİMLİK KİLİDİ — hikâye planından ÖNCE. Kimlik ön eki
+    // image_prompt'un en başına girer; hikâye kompozisyonu onun üstüne biner.
+    // Canlıda sahneler arası tırtıl/kırkayak/zırhlı solucan geçişlerinin
+    // sebebi, her sahnenin promptunun bağımsız üretilmesiydi.
+    const { bible, applied: bibleApplied } = applySubjectBible(script);
+    console.log(
+      `  özne kilidi: "${bible.canonicalName}"` +
+      `${bible.scientificCategory ? ` (${bible.scientificCategory})` : ''} — ` +
+      `${bibleApplied}/${(script.scenes || []).length} sahneye uygulandı, ` +
+      `${bible.forbiddenTraits.length} yasak anatomi terimi, kaynak: ${bible.verifiedSource}`,
+    );
+
     const storyPlan = planVisualStory(script);
     console.log(
       `  görsel hikâye: ${storyPlan.stats.composed}/${storyPlan.stats.total} sahnenin ` +
@@ -566,13 +613,97 @@ export async function runPipeline(opts = {}) {
     // bağlamsız etiket kutuları olan bir video üç platforma birden çıktı.
     // Kapı artık gerçekten kapı: bloke eden bir bulgu varsa yayın olmaz,
     // video artifact olarak kalır ve akış kırılmaz.
-    let canUpload = uploadGate({ preflightOk: pf.ok, qc });
-    if (canUpload && emergencyQuality.block) {
-      canUpload = false;
+    // ---- YAYIN KAPILARI (Faz 6) ----
+    // Her kapı AYRI ölçülür. Sea cucumbers videosu retention'dan 84/100 aldı;
+    // ortalama iyi göründüğü için altındaki kritik hatalar görünmedi. Tek
+    // skorla maskeleme yok: bir kapı düşerse video yayınlanmaz.
+    const captionLayout = analyzeCaptionLayout(audio.wordTimings || [], {
+      emphasisWords: script.emphasis_words || [],
+    });
+    const captionIntegrity = validateCaptionIntegrity({
+      events: captionLayout.events,
+      ttsText: (script.scenes || []).map((s) => s.narration).join(' '),
+    });
+    const semanticActions = assessSemanticActions(
+      (script.scenes || []).map((s, i) => ({
+        narration: s.narration,
+        template: s.story_template,
+        focus: video.sceneFocus?.[i] || null,
+        hasSequence: media.items.some((m) => m.scene === i && m.sequence),
+        actors: (video.actorsByScene?.[i]) || [],
+      })),
+    );
+    const listStructure = assessListStructure(script);
+    const ctaReport = assessCta({
+      ctaStart: video.ctaCue?.atSeconds ?? null,
+      ctaDuration: video.ctaCue?.duration ?? 0,
+      duration: video.duration,
+      // Final açıklama = son sahnenin başlangıcı (reveal orada yapılır).
+      revealStart: renderTimeline.items.at(-1)?.start ?? null,
+    });
+    const repetition = detectRepetition({
+      narrations: (script.scenes || []).map((s) => s.narration),
+      captionStarts: captionLayout.events.map((e) => e.words.slice(0, 3).map((w) => w.word).join(" ")),
+      scenePlans: (script.scenes || []).map((s) => `${s.story_template}|${s.viewer_task || ''}`),
+    });
+    const publishGates = evaluatePublishGates({
+      captionIntegrity,
+      // Görüntü semantiğini doğrulayacak model YOK → yanlış güven üretme.
+      subjectContinuity: null,
+      semanticActions,
+      listStructure,
+      repetition,
+      cta: ctaReport,
+    });
+    outputVerification.publishGates = publishGates;
+    outputVerification.captionIntegrity = captionIntegrity;
+    outputVerification.semanticActions = semanticActions;
+    outputVerification.listStructure = listStructure;
+    outputVerification.subjectBible = bible;
+    console.log(
+      `  yayın kapıları: ${publishGates.status.toUpperCase()} | ` +
+      `altyazı kapsama ${captionIntegrity.tokenCoverage} | ` +
+      `eylem tamamlama ${semanticActions.average} | ` +
+      `liste ${listStructure.declared ? (listStructure.valid ? '✓' : 'GEÇERSİZ') : '—'} | ` +
+      `CTA reveal keser: ${ctaReport.interruptsReveal ? 'EVET' : 'hayır'}`,
+    );
+    for (const f of publishGates.failures) console.error(`  [yayın-kapısı] BAŞARISIZ: ${f}`);
+    for (const r of publishGates.review) console.warn(`  [yayın-kapısı] doğrulanamadı: ${r}`);
+    // İncelenebilirlik: script, sahne planı ve TTS metni de artifact olur.
+    await writeFile(path.join(workDir, 'script.json'), JSON.stringify(script, null, 2)).catch(() => {});
+    await writeFile(path.join(workDir, 'scene-plan.json'), JSON.stringify(
+      (script.scenes || []).map((s, i) => ({
+        index: i,
+        narration: s.narration,
+        story_template: s.story_template,
+        viewer_task: s.viewer_task,
+        camera_plan: s.camera_plan,
+        image_prompt: s.image_prompt,
+        negative_prompt: s.negative_prompt,
+        actors: (video.actorsByScene?.[i] || []).map((a) => a.type),
+        focus: video.sceneFocus?.[i] || null,
+      })), null, 2)).catch(() => {});
+    await writeFile(path.join(workDir, 'publish-gates.json'), JSON.stringify({
+      publishGates, captionIntegrity, semanticActions, listStructure, ctaReport,
+      repetition, subjectBible: bible,
+    }, null, 2)).catch(() => {});
+
+    const uploadDecision = resolveUploadPolicy({
+      cliUpload: upload,
+      hasCredentials: Boolean(hasYouTube),
+      preflightOk: pf.ok,
+      qc,
+      emergencyGate: emergencyQuality,
+      publishGates,
+    });
+    logUploadDecision(uploadDecision);
+    let canUpload = uploadDecision.allowed;
+    if (!canUpload && uploadDecision.requested) {
       await recordPublicationBlock(qc, workDir,
-        `EMERGENCY_QUALITY_GATE: ${emergencyQuality.blocking.join(', ')}`).catch(() => {});
-      console.error('[publish] acil kalite kapısı yayını durdurdu — video artifact olarak kaldı.');
+        `${uploadDecision.code}: ${uploadDecision.reason}`).catch(() => {});
     }
+    // Eski kapı hâlâ ikinci bir emniyet olarak sorulur (savunma derinliği).
+    if (canUpload && !uploadGate({ preflightOk: pf.ok, qc })) canUpload = false;
     if (willUpload && canUpload) {
       publishingAttemptId = buildPublishingAttemptId(script);
       try {

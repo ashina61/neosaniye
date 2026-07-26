@@ -4,8 +4,14 @@ name: Günlük Short Üret ve Yayınla
 on:
   workflow_dispatch:
     inputs:
-      no_upload:
-        description: "YouTube upload'ı atla (sadece üret)"
+      auto_upload:
+        # YAYIN VARSAYILAN KAPALI (26 Tem güvenlik yaması).
+        # Eski input `no_upload` idi ve TERS mantıkla çalışıyordu: bayrak
+        # yalnızca işaretlenirse `--no-upload` geçiliyordu. `schedule`
+        # tetiğinde input DİYE BİR ŞEY YOKTUR — ifade boş stringe düşüyor,
+        # bayrak hiç geçmiyor ve cron "upload açık" modda koşuyordu.
+        # Artık mantık DÜZ: yüklemek için bilinçli olarak işaretlemen gerek.
+        description: "YouTube'a yükle (varsayılan HAYIR — QC'den geçmeyen video yayınlanamaz)"
         type: boolean
         default: false
       style:
@@ -77,7 +83,9 @@ jobs:
 
       - name: Üret ve yayınla
         id: produce
-        run: node scripts/generate-and-publish.js ${{ inputs.no_upload && '--no-upload' || '' }}
+        # Cron'da `inputs` yoktur → daima `--no-upload`. Manuel run'da yalnızca
+        # auto_upload işaretliyse `--upload`. Varsayılan her koşulda GÜVENLİ.
+        run: node scripts/generate-and-publish.js ${{ inputs.auto_upload && '--upload' || '--no-upload' }}
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           OPENROUTER_MODEL: openrouter/free
@@ -95,6 +103,10 @@ jobs:
           # Cloudflare metin tarafıyla AYNI kimlik bilgilerini kullanır.
           TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
           HUGGINGFACE_API_KEY: ${{ secrets.HUGGINGFACE_API_KEY }}
+          # İKİNCİ EMNİYET: kod tarafındaki politika da bu değişkenleri okur.
+          # Workflow bayrağı ile env aynı yönü göstermezse en kısıtlayıcı kazanır.
+          AUTO_UPLOAD: ${{ inputs.auto_upload && 'true' || 'false' }}
+          REQUIRE_MANUAL_APPROVAL: "true"
           RETENTION_QC_MODE: ${{ vars.RETENTION_QC_MODE }}
           RETENTION_MIN_SCORE: ${{ vars.RETENTION_MIN_SCORE }}
           # Teknik kapı retention'dan bağımsız (varsayılan strict — boş bırak).
@@ -161,11 +173,17 @@ jobs:
           name: short-video
           path: |
             output/**/*.mp4
+            output/**/cover.jpg
+            output/**/preview-*.jpg
             output/**/publish-kit.txt
             output/**/report.json
             output/**/production-report.json
             output/**/production-report.md
-            output/**/preview-*.jpg
+            output/**/publish-gates.json
+            output/**/asset-manifest.json
+            output/**/script.json
+            output/**/scene-plan.json
+            output/**/subs.srt
           if-no-files-found: ignore
           retention-days: 7
 
