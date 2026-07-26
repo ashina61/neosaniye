@@ -368,3 +368,104 @@ test('sabit ekran YAVAŞ tempo uyarısı verir, hareketli ekran vermez', async (
     assert.ok(b.perceptibleChangeCount > a.perceptibleChangeCount);
   } finally { await rm(dir, { recursive: true, force: true }); }
 });
+
+// ---------------- CANLI ÇIKTIDAN ÖĞRENİLENLER (fungal-networks) ----------------
+test('DAİRELER GERÇEKTEN DAİRE: genişlik/yükseklik oranı 1', () => {
+  // GERÇEK HATA: circlePath kontrol noktalarını cy∓k'ya koyuyordu. Yarım
+  // daireyi tek kübik Bézier ile çizerken bu yanlıştır — eğri t=0.5'te yalnızca
+  // 0.75k yükselir, yani şekil 2k genişliğinde ama 1.5k yüksekliğinde bir
+  // ELİPS olur. Canlı önizlemede camgöbeği "daireler" gözle görülür yayvandı
+  // ve sistemdeki BÜTÜN daireler (halka, düğüm, nabız) bunu taşıyordu.
+  const ev = actorEvents({ type: 'ring', at: [0.5, 0.5], radius: 0.1, start: 0, end: 3 });
+  const draw = ev.map((l) => l.slice(l.indexOf('}') + 1)).find((d) => d.startsWith('m '));
+  assert.ok(draw, 'çizim yolu bulunamadı');
+  // "m x0 y b c1x c1y c2x c2y x1 y ..." — kontrol ofseti yarıçapın 4/3'ü olmalı.
+  const n = draw.replace(/[a-z{}\\/]/gi, ' ').trim().split(/\s+/).map(Number).filter(Number.isFinite);
+  const [x0, y0, , c1y, , , x1] = n;
+  const rx = Math.abs(x1 - x0) / 2;
+  const ctrlOffset = Math.abs(y0 - c1y);
+  // Bézier tepe noktası = (P0+3P1+3P2+P3)/8 → ofset*0.75 = gerçek yükseklik.
+  const ry = ctrlOffset * 0.75;
+  assert.ok(Math.abs(rx - ry) / rx < 0.05,
+    `daire elips çiziyor: yatay ${rx}px, dikey ${ry.toFixed(1)}px`);
+});
+
+test('link_burst merkezi DOLU DİSK değil, içi boş halka', () => {
+  // Canlı önizlemede orman fotoğrafının ortasında ~124 piksellik opak
+  // camgöbeği bir leke vardı: hiçbir şey anlatmayan dekorasyon.
+  const ev = actorEvents({ type: 'link_burst', at: [0.5, 0.46], nodes: 4, start: 0, end: 4 });
+  const center = ev[0];
+  assert.match(center, /\\1a&HFF&/, `merkez dolu çiziliyor: ${center.slice(0, 120)}`);
+  assert.match(center, /\\bord\d/, 'merkezin kenarlığı yok — görünmez olur');
+});
+
+test('hook penceresinde overlay çizilmez (ekran zaten dolu)', () => {
+  // Canlı önizleme-hook: 0.5s'te AYNI ANDA hook başlığı + altyazı + halka.
+  const { kept, dropped } = applyOverlayBudget([
+    { type: 'link_burst', start: 0.2, end: 4 },
+    { type: 'card_dissolve', start: 5, end: 8 },
+  ], { reservedWindows: [[0, 2.8]] });
+  assert.equal(kept.length, 1);
+  assert.equal(kept[0].type, 'card_dissolve');
+  assert.match(dropped[0].reason, /ayrılmış pencere/);
+});
+
+test('odak kadrajın üst şeridine kilitlenirse anlatı bandına çekilir', async () => {
+  // Canlı: focusDetect güneş huzmesine kilitlendi (y=0.189) ve sinyal dalgası
+  // boş gökyüzünden yayıldı.
+  const a = beatToActors({
+    kind: 'story', template: 'communication', payload: {},
+    start: 0, end: 4, focus: { x: 0.382, y: 0.189, confidence: 1.72 },
+  });
+  assert.equal(a.length, 1);
+  assert.ok(a[0].at[1] >= 0.28, `overlay hâlâ gökyüzünde: y=${a[0].at[1]}`);
+});
+
+test('"trees share nutrients" aktarım eylemidir, atmosphere olamaz', async () => {
+  const { activeTemplateFor } = await import('../src/crew/storyPlanner.js');
+  assert.equal(activeTemplateFor('Trees share nutrients with each other through this connection.'), 'flow');
+});
+
+test('sahnenin KENDİ promptuyla çelişen negatif terim kaldırılır', () => {
+  // Canlı sahne 9: pozitif "animals moving freely", negatif "animal anatomy".
+  const script = {
+    topic: 'Fungal Networks', category: 'nature',
+    scenes: [{
+      narration: 'This hidden network supports life.',
+      image_prompt: 'A wide shot of a thriving forest with animals moving freely',
+      negative_prompt: 'animal anatomy, fantasy creature',
+    }],
+  };
+  const r = applyPromptStyle(script);
+  assert.ok(r.contradictionsRemoved.includes('animal anatomy'), JSON.stringify(r));
+  assert.ok(!script.scenes[0].negative_prompt.includes('animal anatomy'));
+  assert.ok(script.scenes[0].negative_prompt.includes('fantasy creature'));
+});
+
+test('ortak stil eki artık konuya özel kısıt TAŞIMAZ', async () => {
+  // Canlı manifest: mantar ağları hakkındaki DOĞA videosunun her promptunda
+  // "no astronauts" ve "no modern devices in historical scenes" yazıyordu.
+  const { config } = await import('../src/config.js');
+  for (const suffix of [config.images.styleSuffix, config.images.animatedStyleSuffix]) {
+    assert.ok(!/astronaut/i.test(suffix), `ortak ek hâlâ konuya özel: ${suffix.slice(-90)}`);
+    assert.ok(!/historical scenes|historically accurate/i.test(suffix), suffix.slice(-90));
+    assert.ok(!/futuristic/i.test(suffix), suffix.slice(-90));
+    // Her koşulda geçerli olanlar KALMALI.
+    assert.match(suffix, /no text/);
+    assert.match(suffix, /no watermark/);
+  }
+});
+
+test('kapalı/yeraltı sahnesine "golden hour light" eklenmez', () => {
+  const script = {
+    topic: 'Fungal Networks', category: 'nature',
+    scenes: [{
+      narration: 'a',
+      image_prompt: 'A medium shot of tree roots intertwined with mycelium underground, soft lighting',
+      negative_prompt: '',
+    }],
+  };
+  applyPromptStyle(script);
+  assert.ok(!/golden hour/i.test(script.scenes[0].image_prompt),
+    `yeraltı sahnesine altın saat ışığı eklendi: ${script.scenes[0].image_prompt.slice(-80)}`);
+});

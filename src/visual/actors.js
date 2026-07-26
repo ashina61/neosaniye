@@ -48,9 +48,22 @@ function segmentQuad(p1, p2, w) {
 /** Merkezi (cx,cy) olan, MUTLAK kanvas koordinatlarında daire yolu. */
 function circlePath(cx, cy, r) {
   const k = Math.round(r);
-  return `m ${Math.round(cx) - k} ${Math.round(cy)} ` +
-    `b ${Math.round(cx) - k} ${Math.round(cy) - k} ${Math.round(cx) + k} ${Math.round(cy) - k} ${Math.round(cx) + k} ${Math.round(cy)} ` +
-    `b ${Math.round(cx) + k} ${Math.round(cy) + k} ${Math.round(cx) - k} ${Math.round(cy) + k} ${Math.round(cx) - k} ${Math.round(cy)}`;
+  // KONTROL NOKTASI (4/3)k OLMAK ZORUNDA, k DEĞİL.
+  //
+  // İlk sürüm kontrol noktalarını cy∓k'ya koyuyordu. Yarım daireyi tek kübik
+  // Bézier ile çizerken bu YANLIŞTIR: t=0.5'te eğri yalnızca 0.75k yükselir,
+  // yani şekil 2k genişliğinde ama 1.5k yüksekliğinde bir ELİPS olur.
+  // Canlı kanıt (fungal-networks önizlemeleri): ekrandaki camgöbeği "daireler"
+  // gözle görülür biçimde yayvandı. Sistemdeki BÜTÜN daireler (halka, düğüm,
+  // nabız) bu hatayı taşıyordu.
+  // Doğrusu: (P0+3P1+3P2+P3)/8 = cy-k olması için kontrol ofseti (4/3)k.
+  const c = Math.round(k * 4 / 3);
+  const x0 = Math.round(cx) - k;
+  const x1 = Math.round(cx) + k;
+  const y = Math.round(cy);
+  return `m ${x0} ${y} ` +
+    `b ${x0} ${y - c} ${x1} ${y - c} ${x1} ${y} ` +
+    `b ${x1} ${y + c} ${x0} ${y + c} ${x0} ${y}`;
 }
 
 /**
@@ -717,10 +730,18 @@ function linkBurstActor(a) {
   const span = Math.max(1.2, a.end - a.start);
   const per = Math.min(0.55, (span * 0.72) / n);
   const out = [];
-  // Merkez: baştan var, sahne boyunca durur.
+  // MERKEZ: İÇİ BOŞ HALKA, dolu disk DEĞİL.
+  //
+  // İlk sürüm `\1a&H22&` ile neredeyse opak, 0.24R yarıçaplı bir disk
+  // çiziyordu: 1080 genişlikte ~124 piksellik camgöbeği bir leke. Canlı
+  // çıktıda (fungal-networks) orman fotoğrafının ortasında hiçbir şey
+  // anlatmayan bir blob olarak duruyordu — tam da "rastgele dekorasyon
+  // eklenmemelidir" kuralının ihlali. Merkez, bağlantıların NEREDE
+  // buluştuğunu göstermeli; görüntüyü kapatmamalı.
+  const rc = Math.round(R * 0.16);
   out.push(D(5, 'ActShape', a.start, a.end,
-    `{\\an7\\pos(0,0)\\1c${col}\\1a&H22&\\bord0\\fad(160,200)\\p1}` +
-    `${circlePath(c.x, c.y, Math.round(R * 0.24))}{\\p0}`));
+    `{\\an7\\pos(0,0)\\1a&HFF&\\3c${col}\\3a&H20&\\bord5\\fad(160,200)\\p1}` +
+    `${circlePath(c.x, c.y, rc)}{\\p0}`));
   for (let i = 0; i < n; i += 1) {
     // Düğümler tam daire üzerinde, üstten başlayıp saat yönünde.
     const ang = -Math.PI / 2 + (i * 2 * Math.PI) / n;
@@ -803,12 +824,22 @@ const overlaps = (a, b) => a.start < b.end - 0.05 && b.start < a.end - 0.05;
  * @param {Array} actors
  * @returns {{kept:Array, dropped:Array}}
  */
-export function applyOverlayBudget(actors = []) {
+export function applyOverlayBudget(actors = [], { reservedWindows = [] } = {}) {
   const sorted = [...actors].filter((a) => Number.isFinite(a?.start) && Number.isFinite(a?.end))
     .sort((a, b) => a.start - b.start);
   const kept = [];
   const dropped = [];
+  // AYRILMIŞ PENCERELER — hook gibi ekranın zaten dolu olduğu aralıklar.
+  // Canlı çıktıda (fungal-networks, önizleme-hook) 0.5. saniyede ekranda AYNI
+  // ANDA hook başlığı, altyazı ve bir link_burst halkası vardı. Bütçe yalnızca
+  // aktörleri sayıyordu; hook'u hesaba katmıyordu. Hook'un tek işi ilk saniyede
+  // izleyiciyi durdurmaktır — üstüne overlay binmez.
+  const inReserved = (a) => reservedWindows.some(([s, e]) => a.start < e - 0.05 && s < a.end - 0.05);
   for (const a of sorted) {
+    if (inReserved(a)) {
+      dropped.push({ type: a.type, start: a.start, reason: 'ayrılmış pencere (hook) — ekran zaten dolu' });
+      continue;
+    }
     const isPrimary = PRIMARY_ACTORS.has(a.type);
     const isHelper = HELPER_ACTORS.has(a.type);
     if (!isPrimary && !isHelper) { kept.push(a); continue; }
@@ -864,11 +895,15 @@ export function actorEvents(actor) {
  * @param {Array} actors
  * @returns {string} '' = çizilecek aktör yok (ekran temiz kalır)
  */
-export function buildActorAss(actors = [], { width = CANVAS.w, height = CANVAS.h, budget = true } = {}) {
+export function buildActorAss(actors = [], {
+  width = CANVAS.w, height = CANVAS.h, budget = true, reservedWindows = [],
+} = {}) {
   const SUPPORT = new Set(['fill_meter', 'trail', 'chain', 'flow_arrow', 'walker',
     'spread', 'axis', 'signal_wave', 'card_dissolve', 'block_grid', 'piece_fill']);
   // §5 BÜTÇESİ: ekran kalabalıklaşırsa hiçbiri okunmaz.
-  const { kept, dropped } = budget ? applyOverlayBudget(actors) : { kept: actors, dropped: [] };
+  const { kept, dropped } = budget
+    ? applyOverlayBudget(actors, { reservedWindows })
+    : { kept: actors, dropped: [] };
   if (dropped.length) {
     console.warn(`[aktör] overlay bütçesi: ${dropped.length} overlay atlandı `
       + `(${dropped.slice(0, 3).map((d) => `${d.type}@${d.start.toFixed(1)}s`).join(', ')})`);

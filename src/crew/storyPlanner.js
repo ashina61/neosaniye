@@ -300,7 +300,10 @@ const ACTION_SIGNALS = [
   { template: 'comparison', re: /\b(unlike|whereas|in contrast|compared (?:with|to)|instead of|versus|vs\.?|while (?:humans?|we|most|ai)|but (?:humans?|we|most|ai)|neither|both)\b/i },
   { template: 'timeline', re: /\b(changes? over time|over the years|as time passes|later|decades?|gradually|slowly (?:becomes?|turns?)|ages?|fades? with)\b/i },
   { template: 'cause_effect', re: /\b(causes?|caused|triggers?|triggered|leads? to|led to|results? in|because|so that|which makes?)\b/i },
-  { template: 'flow', re: /\b(moves?|travels?|carries|carried|transfers?|transferred|sends?|passes? (?:through|to)|flows?|delivers?)\b/i },
+  // AKTARIM — canlı boşluk (fungal-networks): "Trees share nutrients with each
+  // other through this connection" apaçık bir aktarım eylemiydi ama listede
+  // `share` yoktu; sahne atmosphere'a düştü ve ekranda hiçbir şey olmadı.
+  { template: 'flow', re: /\b(moves?|travels?|carries|carried|transfers?|transferred|sends?|passes? (?:through|to)|flows?|delivers?|shares?|shared|sharing|exchanges?|distributes?|supplies|supplied|feeds?|trades?)\b/i },
   { template: 'mechanism', re: /\b(works? by|process|processes|converts?|transforms?|turns? into|becomes?|encodes?|decodes?|breaks? down|builds? up)\b/i },
   { template: 'quantity', re: /\b\d[\d,.]*\s*(?:gb|tb|mb|kg|km|percent|%|times|million|billion|thousand)\b/i },
 ];

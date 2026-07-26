@@ -208,15 +208,43 @@ test('skor zaten iyiyse düzeltme HİÇ çalışmaz (çalışanı bozma)', async
   assert.equal(script.scenes[0].image_prompt, 'BASE');
 });
 
-test('şablon zaten doğruysa eksiğin RENDER tarafında olduğu söylenir', async () => {
-  // Dürüstlük sınırı: bu tur aktör/odak ölçümünü düzeltemez. "Düzelttim" demek
-  // yerine neyin eksik olduğunu söyler.
+test('şablon zaten HİKÂYE taşıyorsa onarım DOKUNMAZ', async () => {
+  // GERÇEK REGRESYON (fungal-networks): bu tur render'dan ÖNCE koşuyor ve o
+  // anda hiçbir sahnenin odağı/aktörü yok, dolayısıyla tüm skorlar 0. Onarım
+  // her sahneyi aday sayıp GEÇERLİ şablonları eziyordu: sahne 0 search_reveal
+  // → emotion_link, sahne 1 scale → emotion_link. İki komşu sahne aynı şablona
+  // düşünce aynı overlay peş peşe iki kez çizildi.
   const { repairSemanticActions } = await import('../src/pipeline/semanticRepair.js');
-  const script = { scenes: [{ narration: 'The brain filters details.', image_prompt: 'BASE', story_template: 'filtering' }] };
-  const r = repairSemanticActions(script, { average: 0.1, perScene: [{ completionScore: 0.1 }] });
-  assert.equal(r.repaired, false);
-  assert.match(r.skipped[0].reason, /şablon zaten filtering/);
-  assert.match(r.skipped[0].reason, /aktör|odak/);
+  const script = { scenes: [
+    { narration: 'Fungi connect trees somehow in a hidden network.', image_prompt: 'BASE', story_template: 'search_reveal' },
+    { narration: 'Through tiny fungal networks deep underground, trees connect.', image_prompt: 'BASE', story_template: 'scale' },
+  ] };
+  const r = repairSemanticActions(script, { average: 0, perScene: [{ completionScore: 0 }, { completionScore: 0 }] });
+  assert.equal(r.repaired, false, JSON.stringify(r.changedScenes));
+  assert.equal(script.scenes[0].story_template, 'search_reveal');
+  assert.equal(script.scenes[1].story_template, 'scale');
+  assert.match(r.skipped[0].reason, /şablon zaten hikâye taşıyor/);
+});
+
+test('onarım ARDIŞIK aynı şablonu üretmez', async () => {
+  const { repairSemanticActions } = await import('../src/pipeline/semanticRepair.js');
+  const script = { scenes: [
+    { narration: 'The brain filters out details.', image_prompt: 'BASE', story_template: 'filtering' },
+    { narration: 'It filters out the noise as well.', image_prompt: 'BASE', story_template: 'atmosphere' },
+  ] };
+  const r = repairSemanticActions(script, { average: 0, perScene: [{ completionScore: 0 }, { completionScore: 0 }] });
+  assert.equal(script.scenes[1].story_template, 'atmosphere', JSON.stringify(r));
+  assert.ok(r.skipped.some((x) => /komşu sahne zaten filtering/.test(x.reason)), JSON.stringify(r.skipped));
+});
+
+test('hikâyesiz sahne YİNE onarılır (kapsam daralmadı)', async () => {
+  const { repairSemanticActions } = await import('../src/pipeline/semanticRepair.js');
+  const script = { scenes: [
+    { narration: 'AI retrieves stored records.', image_prompt: 'BASE', story_template: 'atmosphere' },
+  ] };
+  const r = repairSemanticActions(script, { average: 0, perScene: [{ completionScore: 0 }] });
+  assert.equal(r.repaired, true, JSON.stringify(r));
+  assert.equal(script.scenes[0].story_template, 'retrieval');
 });
 
 test('ölçüm yoksa düzeltme uydurulmaz', async () => {

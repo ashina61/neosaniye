@@ -1335,6 +1335,18 @@ export async function renderVideo(job, opts = {}) {
         }
       }
       const actors = [...plannedActors, ...fallbackActors];
+      // MERDİVEN ÖZETİ TÜM SAHNELER ÜZERİNDEN. `beats` yalnızca story_beat
+      // taşıyan sahneler için üretiliyor; özet onların üstünden alınınca
+      // beat'siz sahneler hiç sayılmıyordu. Canlı raporda 10 sahnelik videoda
+      // toplam 6 satır vardı ve "aktif sahne oranı 0.67" yazıyordu — oysa
+      // sayılmayan 4 sahne de sadeydi, gerçek oran 0.40'tı. Rapor kendini
+      // olduğundan iyi gösteriyordu.
+      const beatScenes = new Set(ladderResults.map((r) => r.scene));
+      const sceneTotal = Array.isArray(job.scenes) ? job.scenes.length : beatScenes.size;
+      for (let si = 0; si < sceneTotal; si += 1) {
+        if (beatScenes.has(si)) continue;
+        ladderResults.push({ scene: si, rung: 'ken_burns', reason: 'sahnenin hikâye beat\'i yok — sade kamera' });
+      }
       const ladderSummary = summarizeLadder(ladderResults);
       ladderSummaryOut = ladderSummary;
       if (ladderResults.length) {
@@ -1355,7 +1367,12 @@ export async function renderVideo(job, opts = {}) {
       }
       const filters = [];
 
-      const actorAss = buildActorAss(actors, { width, height });
+      // Hook penceresi AYRILMIŞ: ekranda zaten büyük başlık var, üstüne
+      // overlay binmez (canlıda 0.5s'te hook + altyazı + halka üst üsteydi).
+      const actorAss = buildActorAss(actors, {
+        width, height,
+        reservedWindows: hasHook ? [[0, config.video.hookDuration]] : [],
+      });
       if (actorAss) {
         actorAssWritten = true;
         await writeFile(path.join(workDir, 'actors.ass'), actorAss);

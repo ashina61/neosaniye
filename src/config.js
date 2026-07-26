@@ -118,8 +118,19 @@ export const config = {
         'bright key light, professional warm filmic color grade, shallow depth of field, ' +
         'rule-of-thirds composition with clear focal point, subtle motion blur, ' +
         'imperfect natural framing, vertical 9:16 composition, ' +
-        'historically accurate period details, no futuristic or sci-fi elements, ' +
-        'no astronauts, no modern devices in historical scenes, ' +
+        // KONUYA ÖZEL KISITLAR BURADAN ÇIKARILDI (§9).
+        //
+        // Bu son ek HER sahneye, HER konuda ekleniyor. İçinde
+        // "historically accurate period details", "no futuristic or sci-fi
+        // elements", "no astronauts", "no modern devices in historical scenes"
+        // vardı. Canlı kanıt (fungal-networks, asset-manifest): mantar ağları
+        // hakkındaki bir DOĞA videosunun her promptunda "no astronauts" yazıyordu.
+        // Beyin-vs-AI koşusunda ise aynı ek, sahnenin İSTEDİĞİ "futuristic
+        // control room" ile doğrudan çelişiyordu.
+        //
+        // Konuya özel izin/yasak artık crew/promptStyle.js'te kategori bazlı
+        // duruyor ve sahnenin negative_prompt'una yazılıyor. Burada yalnızca
+        // her koşulda geçerli olanlar kalır.
         'no text, no watermark, no subtitles, no distorted faces or hands',
     // "Animasyonlu hikâye kitabı" stili: bazı videolar illüstrasyon görünümünde
     // çıkar (run.js karar verir; VIDEO_STYLE=animated|photo ile zorlanır).
@@ -129,8 +140,7 @@ export const config = {
         'brush strokes, high detail, clean confident linework, dramatic warm lighting, ' +
         'strong focal composition, subject clearly lit and readable, ' +
         'consistent character design across scenes, detailed atmospheric background, ' +
-        'harmonious cohesive color palette, historically accurate period details, ' +
-        'no futuristic or sci-fi elements, vertical 9:16 composition, ' +
+        'harmonious cohesive color palette, vertical 9:16 composition, ' +
         'no text, no watermark, no speech bubbles, no distorted faces or hands',
     // GÖRSEL SAĞLAYICI ZİNCİRİ. Script tarafındaki dersin aynısı: tek ücretsiz
     // sağlayıcıya bağlı kalmak kırılgan. Pollinations düşerse/limitlerse TÜM

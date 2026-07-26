@@ -18,7 +18,13 @@
 function safePoint(p) {
   return [
     Math.max(0.12, Math.min(0.88, p[0])),
-    Math.max(0.16, Math.min(0.70, p[1])),
+    // ÜST SINIR 0.16 → 0.28. Kadrajın en üst şeridi Shorts'ta gökyüzü/tavan
+    // olur ve orada anlatılacak bir özne yoktur. Canlı kanıt (fungal-networks,
+    // önizleme-orta): focusDetect güneş huzmesine kilitlendi (y=0.189) ve
+    // sinyal dalgası boş gökyüzünden yayıldı — izleyici için anlamsız iki
+    // camgöbeği leke. Odak ölçümü güvenilmez olduğunda bile overlay en azından
+    // anlatının yaşadığı bantta kalmalı.
+    Math.max(0.28, Math.min(0.70, p[1])),
   ];
 }
 

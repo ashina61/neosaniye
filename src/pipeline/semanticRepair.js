@@ -64,6 +64,25 @@ export function repairSemanticActions(script = {}, semanticActions = null, opts 
     // Zaten iyi puan alan sahneye dokunulmaz: çalışanı bozma.
     if (score >= triggerAverage) return;
 
+    // ================== YALNIZCA HİKÂYESİZ SAHNE ONARILIR ==================
+    //
+    // CANLI HATA (fungal-networks): bu tur RENDER'DAN ÖNCE koşuyor ve o anda
+    // odak da aktör de yok, dolayısıyla HER sahnenin completionScore'u 0.
+    // Sonuç: onarım her sahneyi aday saydı ve zaten geçerli şablonları ezdi —
+    // sahne 0 `search_reveal`dan, sahne 1 `scale`dan `emotion_link`e çevrildi.
+    // İkisi de aynı şablona düşünce aynı overlay arka arkaya iki kez çizildi
+    // ve raporda `repeatedScenePlans` olarak göründü. Onarım, düzeltmesi
+    // gereken şeyi ÜRETTİ.
+    //
+    // Doğru kapsam: sınıflandırma BAŞARISIZ olduğunda devreye girmek, yani
+    // sahne hikâyesiz (`atmosphere`/boş) kalmışsa. Sahnenin zaten bir hikâye
+    // şablonu varsa sorun sınıflandırmada değildir.
+    const current = scene.story_template || null;
+    if (current && current !== 'atmosphere') {
+      skipped.push({ scene: i, reason: `şablon zaten hikâye taşıyor (${current}) — sınıflandırma sorunu değil` });
+      return;
+    }
+
     const narration = scene.narration || '';
     const forced = activeTemplateFor(narration);
     if (!forced) {
@@ -75,6 +94,14 @@ export function repairSemanticActions(script = {}, semanticActions = null, opts 
       // Şablon doğru ama puan düşük: sorun sınıflandırmada değil, render
       // katmanında (aktör üretilememiş). Bu tur onu çözemez, dürüstçe söyler.
       skipped.push({ scene: i, reason: `şablon zaten ${forced} — eksik olan aktör/odak ölçümü` });
+      return;
+    }
+    // ARDIŞIK AYNI ŞABLON ÜRETME. İki komşu sahne aynı şablona çekilirse
+    // aynı overlay peş peşe iki kez çizilir ve izleyici tekrar görür.
+    const prev = scenes[i - 1]?.story_template;
+    const next = scenes[i + 1]?.story_template;
+    if (forced === prev || forced === next) {
+      skipped.push({ scene: i, reason: `komşu sahne zaten ${forced} — tekrar üretilmedi` });
       return;
     }
 

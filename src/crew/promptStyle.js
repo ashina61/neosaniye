@@ -137,13 +137,41 @@ export function applyPromptStyle(script = {}) {
     // 1) Negatif prompt: kategorinin yasakları eklenir, çelişenler atılır.
     const current = String(scene.negative_prompt || '').split(',').map((x) => x.trim()).filter(Boolean);
     const merged = [...new Set([...current, ...style.forbid])];
+    // 1a) Kategori izniyle çelişenler.
     const { kept, removed } = resolveContradictions(merged, style.allow);
-    for (const r of removed) removedAll.add(r);
-    scene.negative_prompt = kept.join(', ');
+    // 1b) SAHNENİN KENDİ POZİTİF PROMPTUYLA çelişenler.
+    //
+    // Canlı kanıt (fungal-networks, sahne 9): pozitif prompt "a thriving forest
+    // with ANIMALS moving freely" istiyor, negatif prompt aynı anda "animal
+    // anatomy, eyes, legs, face" yasaklıyordu. Üretici modele "hayvan çiz ama
+    // hayvan anatomisi çizme" deniyordu. Özne kimliği (phylum=plant) doğru bir
+    // kural üretmişti ama sahne gerçekten hayvan istiyordu; kimlik kilidi
+    // sahnenin kendi içeriğini görmüyordu.
+    const { kept: finalKept, removed: selfClash } =
+      resolveContradictions(kept, [scene.image_prompt]);
+    for (const r of [...removed, ...selfClash]) removedAll.add(r);
+    scene.negative_prompt = finalKept.join(', ');
 
     // 2) Pozitif tercihler prompt'un SONUNA eklenir (baş, kompozisyon
     // kısıtının yeri — storyPlanner orayı kullanıyor).
-    const prefer = style.prefer.filter((p) => !scene.image_prompt.toLowerCase().includes(p.toLowerCase()));
+    //
+    // SAHNE KENDİ IŞIĞINI/ORTAMINI TARİF ETMİŞSE DOKUNULMAZ. Canlı kanıt
+    // (fungal-networks): "golden hour light" ONE sahnenin hepsine eklendi —
+    // yeraltındaki kök/miselyum çekimine ve laboratuvar çekimine bile. Sonuç
+    // iki yönlü zarar: fiziksel olarak saçma bir istek, ve on sahnenin hepsi
+    // aynı altın saat tonuna çekildiği için görsel tekdüzelik.
+    const describesLight = /\b(light|lighting|lit|backlit|dusk|dawn|sunlight|sunlit|shadow|dark|glow|halo)\b/i
+      .test(scene.image_prompt);
+    const describesEnclosed = /\b(underground|below ground|indoor|interior|lab|laboratory|cave|tunnel|microscope|soil)\b/i
+      .test(scene.image_prompt);
+    const prefer = style.prefer.filter((p) => {
+      if (scene.image_prompt.toLowerCase().includes(p.toLowerCase())) return false;
+      // Işık tarifi olan sahneye ikinci bir ışık tarifi eklenmez.
+      if (describesLight && /\b(light|lighting|hour|daylight)\b/i.test(p)) return false;
+      // Kapalı/yeraltı sahnesine "doğal yaşam alanı / altın saat" eklenmez.
+      if (describesEnclosed && /\b(habitat|hour|daylight|golden)\b/i.test(p)) return false;
+      return true;
+    });
     if (prefer.length) scene.image_prompt = `${scene.image_prompt} ${prefer.join(', ')}.`;
     touched += 1;
   }
