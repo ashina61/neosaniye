@@ -294,7 +294,26 @@ export async function runPipeline(opts = {}) {
     const video = await renderVideo({
       audioPath: audio.audioPath,
       wordTimings: audio.wordTimings,
-      media: media.items.map((m) => ({ path: m.path, type: m.type, gfx: m.source === 'gfx', sequence: Boolean(m.sequence) })),
+      // BU EŞLEME DOĞRULAMANIN GÖRDÜĞÜ HER ŞEYİ BELİRLER. Daraltılmış nesne
+      // loopEcho/part/assetId/source alanlarını düşürüyordu ve sonuçlar
+      // sessizdi, çünkü hepsi "undefined" olarak makul görünüyor:
+      //   • loopEcho düştüğü için overlayWindows.loopEcho DAİMA boş kaldı —
+      //     kasıtlı döngü kapanışı muafiyeti üretimde hiç çalışmadı ve her
+      //     koşuda DUPLICATE_SHOT + HOOK_OUTSIDE_PLAN olarak raporlandı.
+      //   • part düştüğü için her klip part=0 aldı; kimlikler yalnızca sahneye
+      //     göre ayrışıyordu.
+      //   • assetId düştüğü için kopya tespiti plan kanıtına hiç bakamadı ve
+      //     her eşleşme "algısal" sayıldı.
+      media: media.items.map((m) => ({
+        path: m.path,
+        type: m.type,
+        gfx: m.source === 'gfx',
+        sequence: Boolean(m.sequence),
+        part: m.part ?? 0,
+        loopEcho: Boolean(m.loopEcho),
+        assetId: m.assetId || m.path || null,
+        source: m.source || null,
+      })),
       mediaScene: media.items.map((m) => m.scene),
       scenes,
       timeline: renderTimeline,

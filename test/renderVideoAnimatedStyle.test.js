@@ -90,6 +90,10 @@ test('döngü yankısı klibi BENZERSİZ kimlik alır ve timeline geçerli kalı
     const ids = clips.map((c) => c.id);
     assert.equal(new Set(ids).size, ids.length, `kimlik çakışması: ${ids.join(', ')}`);
     assert.ok(clips.some((c) => c.loopEcho === true), `loopEcho bayrağı taşınmadı: ${JSON.stringify(clips)}`);
+    // Muafiyet penceresi PLANA yazılmalı; boş kalırsa doğrulayıcı kasıtlı
+    // döngü kapanışını "kopya plan" sayar (üretimde tam olarak bu oldu).
+    const lw = result.renderPlan?.overlayWindows?.loopEcho || [];
+    assert.equal(lw.length, 1, `loopEcho penceresi plana yazılmadı: ${JSON.stringify(lw)}`);
     const order = verifyTimelineOrder(clips);
     assert.ok(!order.problems.includes('DUPLICATE_CLIP_ID'), JSON.stringify(order.problems));
     assert.ok(!order.problems.some((p) => p.startsWith('OUT_OF_ORDER')), JSON.stringify(order.problems));

@@ -107,7 +107,7 @@ test('bindirme planlanan pencerede ise "planlı", dışındaysa "plansız"', () 
 
 test('planlanan pencere yoksa referans kurulamaz (yanlış güven üretme)', () => {
   const r = findOccurrences([1n, 2n, 3n], [], 2, 8);
-  assert.deepEqual(r, { planned: [], unplanned: [], reference: null });
+  assert.deepEqual(r, { planned: [], unplanned: [], exempt: [], reference: null });
 });
 
 test('hamming mesafesi doğru', () => {
@@ -392,4 +392,26 @@ test('SIMILAR_SHOT sert engel değil, insan gözüne gider (needs_review)', asyn
   assert.ok(!r.failures.some((f) => f.includes('SIMILAR_SHOT')), JSON.stringify(r.failures));
   assert.ok(r.review.some((x) => x.includes('SIMILAR_SHOT')), JSON.stringify(r.review));
   assert.notEqual(r.status, 'fail');
+});
+
+// ---------------- DÖNGÜ YANKISINDA HOOK BÖLGESİ KÖRDÜR ----------------
+test('döngü penceresindeki hook eşleşmesi "plan dışı" sayılmaz', () => {
+  // GERÇEK REGRESYON (brain-vs-ai-memory, 26 Tem): 57sn'lik videonun son yarım
+  // saniyesi döngü yankısıydı — son plan İLK GÖRSELE dönüyordu. Hook bölgesinin
+  // pikselleri referansla aynı oldu (referans da o görselin üstünde alınmıştı)
+  // ve hiç hook yazısı çizilmemişken HOOK_OUTSIDE_PLAN:56-56.5s raporlandı.
+  const A = 0b1010101010101010101010101010101010101010101010101010101010101010n;
+  const B = 0b0101010101010101010101010101010101010101010101010101010101010101n;
+  const fps = 2;
+  const hashes = [];
+  for (let i = 0; i < 24; i += 1) {
+    const t = i / fps;
+    hashes.push((t < 2) || (t >= 11) ? A : B);   // 11-12s = döngü yankısı
+  }
+  const withoutExempt = findOccurrences(hashes, [[0, 2]], fps, 4);
+  assert.equal(withoutExempt.unplanned.length, 1, 'kurulum hatalı: eşleşme yok');
+
+  const r = findOccurrences(hashes, [[0, 2]], fps, 4, [[11, 12]]);
+  assert.deepEqual(r.unplanned, [], JSON.stringify(r));
+  assert.equal(r.exempt.length, 1, JSON.stringify(r));
 });

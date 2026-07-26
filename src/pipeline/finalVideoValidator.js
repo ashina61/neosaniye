@@ -136,18 +136,29 @@ function toRuns(indices) {
  * @param {Array<[number,number]>} plannedWindows saniye cinsinden planlanan pencereler
  * @param {number} fps
  * @param {number} threshold hamming eşiği
+ * @param {Array<[number,number]>} [exemptWindows] ölçütün KÖR olduğu aralıklar
  */
-export function findOccurrences(hashes, plannedWindows, fps, threshold = 12) {
-  if (!plannedWindows?.length) return { planned: [], unplanned: [], reference: null };
+export function findOccurrences(hashes, plannedWindows, fps, threshold = 12, exemptWindows = []) {
+  if (!plannedWindows?.length) return { planned: [], unplanned: [], exempt: [], reference: null };
   // Referans: ilk planlanan pencerenin ORTASI (giriş animasyonu bitmiş olur).
   const [ps, pe] = plannedWindows[0];
   const refIdx = Math.min(hashes.length - 1, Math.round(((ps + pe) / 2) * fps));
   const ref = hashes[refIdx];
-  if (ref === undefined) return { planned: [], unplanned: [], reference: null };
+  if (ref === undefined) return { planned: [], unplanned: [], exempt: [], reference: null };
 
   const inPlanned = (i) => plannedWindows.some(([a, b]) => {
     const t = i / fps;
     return t >= a - 0.5 && t <= b + 0.5;
+  });
+  // DÖNGÜ KAPANIŞINDA BU ÖLÇÜT YAPISAL OLARAK KÖRDÜR. Döngü yankısı son planı
+  // İLK GÖRSELE döndürür; hook bölgesinin PİKSELLERİ referansla aynı olur,
+  // çünkü referans da o görselin üstünde alınmıştı. Hiç hook yazısı
+  // çizilmemişken bile eşleşme çıkar. 26 Tem "brain-vs-ai-memory" koşusunda
+  // tam bu oldu: HOOK_OUTSIDE_PLAN:56-56.5s — 57 saniyelik videonun son yarım
+  // saniyesi, yani döngü yankısının kendisi. Bu aralıkta ölçüt iddia üretmez.
+  const inExempt = (i) => (exemptWindows || []).some(([a, b]) => {
+    const t = i / fps;
+    return t >= a - 0.6 && t <= b + 0.6;
   });
 
   const hits = [];
@@ -157,10 +168,12 @@ export function findOccurrences(hashes, plannedWindows, fps, threshold = 12) {
   const runs = toRuns(hits).map(([a, b]) => ({
     start: +(a / fps).toFixed(2), end: +((b + 1) / fps).toFixed(2),
     planned: inPlanned(a) || inPlanned(b),
+    exempt: inExempt(a) || inExempt(b),
   }));
   return {
-    planned: runs.filter((r) => r.planned),
-    unplanned: runs.filter((r) => !r.planned),
+    planned: runs.filter((r) => r.planned && !r.exempt),
+    unplanned: runs.filter((r) => !r.planned && !r.exempt),
+    exempt: runs.filter((r) => r.exempt),
     reference: { atSeconds: +(refIdx / fps).toFixed(2), threshold },
   };
 }
@@ -284,8 +297,8 @@ export async function validateFinalVideo(videoPath, plan = {}, opts = {}) {
   }
 
   // ---- 2) BİNDİRMELER: planlanan dışında görünüyor mu? ----
-  const hookOcc = findOccurrences(hookH, plan.hookWindows, fps, overlayThreshold);
-  const ctaOcc = findOccurrences(ctaH, plan.ctaWindows, fps, overlayThreshold);
+  const hookOcc = findOccurrences(hookH, plan.hookWindows, fps, overlayThreshold, loopWindows);
+  const ctaOcc = findOccurrences(ctaH, plan.ctaWindows, fps, overlayThreshold, loopWindows);
   // DİYAGRAM — REFERANS TABANLI, hook/CTA ile aynı yöntem.
   //
   // Eski ölçüt "medyanın %45'inden karanlık kare = diyagram kartı" idi. Bu bir
@@ -303,7 +316,7 @@ export async function validateFinalVideo(videoPath, plan = {}, opts = {}) {
   // ölçüt sessiz kalır (doğrulanmadı), uydurma bir bulgu üretmez. Bildirilmemiş
   // bir tam-kare varlığın plan dışı tekrarı zaten §1'de DUPLICATE_SHOT olarak
   // yakalanır; bu ölçüt onun üstüne semantik bir ad koymaya çalışmaz.
-  const diagramOcc = findOccurrences(frameHashes, plan.diagramWindows, fps, shotDuplicateThreshold);
+  const diagramOcc = findOccurrences(frameHashes, plan.diagramWindows, fps, shotDuplicateThreshold, loopWindows);
   const diagramRefLuma = diagramOcc.reference ? luma[Math.round(diagramOcc.reference.atSeconds * fps)] : null;
   const lumaClose = (r) => diagramRefLuma == null
     || Math.abs((luma[Math.round(((r.start + r.end) / 2) * fps)] ?? 0) - diagramRefLuma) <= 0.03;

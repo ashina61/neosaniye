@@ -178,3 +178,20 @@ test('bilinçli engelleme "hiçbir platforma yüklenemedi" hatası ÜRETMEZ', as
   assert.match(m[1], /\bcanUpload\b/,
     'kontrol canUpload ile korunmuyor: engellenen koşu "upload başarısız" sayılır');
 });
+
+// ---------------- MEDYA ALANLARI DOĞRULAMAYA ULAŞMALI ----------------
+test('run.js medya eşlemesi loopEcho/part/assetId alanlarını DÜŞÜRMEZ', async () => {
+  // SESSİZ KAYIP (brain-vs-ai-memory, 26 Tem): run.js, media öğelerini
+  // renderVideo'ya daraltılmış bir nesne olarak veriyordu ve loopEcho düşüyordu.
+  // Sonuç: overlayWindows.loopEcho DAİMA boş kaldı, kasıtlı döngü kapanışı
+  // muafiyeti üretimde HİÇ çalışmadı ve her koşu DUPLICATE_SHOT +
+  // HOOK_OUTSIDE_PLAN ile engellendi. Hata sessizdi çünkü eksik alanlar
+  // "undefined" olarak tamamen makul görünüyor.
+  const src = await readFile('src/pipeline/run.js', 'utf8');
+  const call = src.slice(src.indexOf('const video = await renderVideo({'));
+  const mapping = call.slice(0, call.indexOf('mediaScene:'));
+  for (const field of ['loopEcho', 'part', 'assetId', 'source']) {
+    assert.match(mapping, new RegExp(`\\b${field}\\b`),
+      `renderVideo'ya geçen medya eşlemesinde '${field}' yok — doğrulayıcı onu asla göremez`);
+  }
+});
