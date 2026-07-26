@@ -60,11 +60,14 @@ test('metin override\'ı beat sınıfını EZER', () => {
 });
 
 test('her şablonun kamera planı ve tanımı var', () => {
+  // audit §3.2'nin 14 şablonu + sayım (quantity) + dolgu (atmosphere).
+  const KNOWN = ['mechanism', 'flow', 'comparison', 'scale', 'search_reveal',
+    'construction', 'map', 'chain', 'quantity', 'communication', 'cause_effect',
+    'chain_reaction', 'timeline', 'navigation', 'problem_solution', 'atmosphere'];
   for (const t of STORY_TEMPLATES) {
-    const found = ['mechanism', 'flow', 'comparison', 'scale', 'search_reveal',
-      'construction', 'map', 'chain', 'quantity', 'atmosphere'].includes(t);
-    assert.ok(found, `bilinmeyen şablon: ${t}`);
+    assert.ok(KNOWN.includes(t), `bilinmeyen şablon: ${t}`);
   }
+  assert.equal(STORY_TEMPLATES.length, KNOWN.length, 'şablon kütüphanesi eksik');
   const p = planScene({ narration: 'Warm air rises through the chamber inside' });
   assert.ok(p.camera_plan?.motivation, 'kamera gerekçesi yok');
   assert.ok(p.camera_plan.start && p.camera_plan.end);

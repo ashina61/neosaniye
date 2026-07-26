@@ -49,14 +49,38 @@ const SHOT_VARIATIONS = [
  *
  * z = kırpma oranı (1 = tam kadraj), x/y = kırpma başlangıcı (0..1-z).
  */
-function shotLadder(template, seconds) {
+export function shotLadder(template, seconds) {
   const LONG = seconds >= 5.2;   // uzun sahne 2 ek kadraj taşır
   switch (template) {
     case 'flow':
+    case 'navigation':
+      // Rota anlatan sahne: kadraj yolun İKİ UCUNU ayrı ayrı gösterir.
       return LONG
         ? [{ tag: 'b', z: 0.62, x: 0.04, y: 0.20, motion: 'pan-left-to-right' },
           { tag: 'c', z: 0.58, x: 0.38, y: 0.24, motion: 'detail-zoom' }]
         : [{ tag: 'b', z: 0.62, x: 0.30, y: 0.22, motion: 'pan-left-to-right' }];
+    case 'communication':
+      // Kaynak → alıcı: önce kaynağa yaklaş, sonra karşı tarafa geç.
+      return LONG
+        ? [{ tag: 'b', z: 0.55, x: 0.08, y: 0.22, motion: 'detail-zoom' },
+          { tag: 'c', z: 0.55, x: 0.37, y: 0.26, motion: 'pan-right-to-left' }]
+        : [{ tag: 'b', z: 0.58, x: 0.22, y: 0.24, motion: 'detail-zoom' }];
+    case 'chain_reaction':
+      // Yayılım: dar başlangıçtan geniş kadraja — büyüme kadrajda da olsun.
+      return LONG
+        ? [{ tag: 'b', z: 0.42, x: 0.29, y: 0.30, motion: 'detail-zoom' },
+          { tag: 'c', z: 0.84, x: 0.08, y: 0.08, motion: 'slow-pull-out' }]
+        : [{ tag: 'b', z: 0.46, x: 0.27, y: 0.28, motion: 'detail-zoom' }];
+    case 'cause_effect':
+    case 'problem_solution':
+      // Tetik/engel sıkı, sonuç geniş.
+      return LONG
+        ? [{ tag: 'b', z: 0.44, x: 0.28, y: 0.26, motion: 'detail-zoom' },
+          { tag: 'c', z: 0.80, x: 0.10, y: 0.12, motion: 'slow-pull-out' }]
+        : [{ tag: 'b', z: 0.48, x: 0.26, y: 0.26, motion: 'detail-zoom' }];
+    case 'timeline':
+      // Eksen alt üçlükte yaşıyor: kadraj SABİT kalsın, yalnızca hafif yakınlaş.
+      return [{ tag: 'b', z: 0.78, x: 0.11, y: 0.08, motion: 'static-hold' }];
     case 'search_reveal':
       return LONG
         ? [{ tag: 'b', z: 0.70, x: 0.15, y: 0.15, motion: 'slow-push-in' },

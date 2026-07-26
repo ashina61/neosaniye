@@ -271,3 +271,66 @@ stok video olmaya devam ediyor.
 Ayrıca `storyPlanner` şu an DETERMİNİSTİK (LLM yok) — sağlayıcı zinciri
 defalarca düştüğü için bilinçli bir karar. Bir LLM zenginleştirme katmanı
 ileride EK olarak takılabilir, ama çekirdek ona bağımlı olmamalı.
+
+---
+
+## 7. FAZ 3'ÜN İKİNCİ YARISI (şablon kütüphanesi tamamlandı)
+
+Faz 3 ilk sevkiyatta yalnızca **kamera dili** tarafını kapatmıştı; §3.2'nin
+14 şablonundan 8'i eksikti. Bu, ölçülebilir bir soruna yol açıyordu:
+
+> Sınıflandırıcının 5 beat türü 14 hikâyeyi karşılamıyor. "The insect stays
+> **hidden**", "the alarm **spreads**", "a guard **signals**" gibi cümleler
+> hiçbir beat'e girmiyordu → `story_beat` null → sahnede aktör yok → geriye
+> yalnızca kamera hareketi, yani **dekorasyon** kalıyordu.
+
+### Eklenenler
+
+| Alan | Ne geldi |
+|---|---|
+| Şablon | communication, cause_effect, chain_reaction, timeline, navigation, problem_solution (→ 14 hikâye + quantity + atmosphere) |
+| Aktör | `signal_wave`, `spread`, `axis`, `build_up` (7 → 11 tip) |
+| Kamera | `trace-the-signal`, `tight-then-wide`, `tight-then-open`, `widen-with-the-spread`, `follow-the-route`, `hold-the-timeline` |
+| Köprü | `beatToActors` artık ÖNCE şablon koreografisini dener, sonra beat türüne düşer |
+| Merdiven | yeni şablonların kendi kadraj merdiveni (yayılım dar→geniş, eksen sabit) |
+
+### Kanıt render'ının bulduğu GERÇEK hata
+
+§5 tuzak 5 gereği yeni primitifler kodlanmadan önce ffmpeg ile render edildi.
+Render, tasarımda görünmeyen bir hatayı ortaya çıkardı:
+
+> **libass, bir çizimi `\fscx/\fscy` ile ölçeklerken şekli `\pos` noktası
+> etrafında büyütmüyor.** %400'lük bir dalga, kaynağının belirgin şekilde
+> soluna ve üstüne kayıyordu.
+
+Bu, kullanıcının daha önce bildirdiği **"daire nesnenin üstünde değil"**
+şikâyetinin kök nedeni: `ring` aktörü de aynı numarayı kullanıyordu. Çözüm,
+ölçekleme yerine her adımda **gerçek yarıçapla yeniden çizim** (`radialSteps`),
+mutlak koordinatlarda (`\an7\pos(0,0)`) — merkez matematiksel olarak kilitli.
+Regresyon testi hem `\fscx` yokluğunu hem de dairelerin merkez simetrisini
+doğruluyor.
+
+### Yol boyunca çıkan iki üretim hatası
+
+1. **QC paydası yanlıştı.** Faz 5 aktör oranını `motionPlan.length`'e (KLİP
+   sayısı) bölüyordu; Faz 4 ise bir sahneyi 2-3 klibe ayırıyor. Aktörler sahne
+   başına planlandığı için oran yapay olarak üçte birine düşüyor ve her video
+   yanlış uyarı üretiyordu. Payda artık **farklı sahne sayısı**.
+2. **Aynı koreografi üç kez çiziliyordu.** Mikro plan merdiveni bir sahneyi
+   böldüğünde her kadraja aynı beat veriliyordu; aynı iz/halka arka arkaya üç
+   kez çizilirdi (aksaklık gibi okunur). Beat artık sahnenin **ilk kadrajına**
+   bağlanır.
+
+Ayrıca ilk klip, hikâye gerekçesi "geriye çekil" dese bile zoom 1'den başlar —
+loop kapanışı kamera gerekçesinden önceliklidir.
+
+### Ölçüm (10 sahne / 44sn, gerçekçi anlatım, odak ölçümü %75 başarılı)
+
+| Ölçüt | Faz 1-5 sonrası | Şimdi |
+|---|---|---|
+| Aktör alan sahne | ~4/10 | **8/10** |
+| Ekranda çizilen aktör türü | 3-4 | **8** |
+| İzleyici görevi tanımlı sahne | 6/10 | **10/10** |
+| Kompozisyonu hikâyeye kısıtlanan sahne | 6/10 | **10/10** |
+| Mikro plan | ~21 | 21 |
+| Sessiz anlaşılırlık kapısı | uyarı üretiyordu (payda hatası) | **geçiyor, uyarı yok** |

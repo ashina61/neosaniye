@@ -22,6 +22,10 @@ test('her aktör tipi ASS üretir, çöp değer sızdırmaz', () => {
     fill_meter: { at: [0.5, 0.6], ratio: 0.8 },
     readout: { value: 30, unit: 'C' },
     chain: { nodes: [{ at: [0.3, 0.3], label: 'A' }, { at: [0.7, 0.6], label: 'B' }] },
+    signal_wave: { at: [0.4, 0.45], to: [0.7, 0.55] },
+    spread: { at: [0.5, 0.45] },
+    axis: { marks: [{ label: '1969' }, { label: '2024' }] },
+    build_up: { at: [0.5, 0.55] },
   };
   for (const type of ACTOR_TYPES) {
     const ev = actorEvents({ type, start: 0, end: 4, ...samples[type] });

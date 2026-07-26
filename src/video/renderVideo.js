@@ -12,7 +12,7 @@ import { selectMusic } from '../audio/musicSelect.js';
 import { selectSceneMotion, validateMotionPlan } from './motionPlan.js';
 import { directSemantics } from '../visual/semanticDirector.js';
 import { buildSemanticAss } from '../visual/semanticShots.js';
-import { planActors } from '../visual/beatToActors.js';
+import { planActors, FOCUS_TEMPLATES } from '../visual/beatToActors.js';
 import { buildActorAss } from '../visual/actors.js';
 import { detectFocus } from '../visual/focusDetect.js';
 import { planSemanticSfx, describeSfxPlan } from '../audio/semanticSfx.js';
@@ -1216,11 +1216,19 @@ export async function renderVideo(job, opts = {}) {
       // V3 Faz 2: hikâye planı ÖNCEDEN yapıldıysa (storyPlanner) onu kullan —
       // renderVideo cümleyi yeniden sınıflandırmasın. Plan yoksa (eski akış,
       // doğrudan renderVideo çağrısı) eskisi gibi burada çözümlenir.
+      // TEK SAHNE = TEK KOREOGRAFİ. Mikro plan merdiveni (Faz 4) bir sahneyi
+      // 2-3 kadraja bölüyor; her kadraja aynı beat'i vermek aynı izi/halkayı
+      // arka arkaya üç kez çizerdi (aksaklık gibi okunur). Beat sahnenin İLK
+      // kadrajına bağlanır, diğer kadrajlar saf kamera olarak kalır.
+      const seenScene = new Set();
       const planned = vtl
         .map((it, i) => {
-          const sc = job.scenes?.[canonicalItems[i]?.scene];
+          const sceneIdx = canonicalItems[i]?.scene;
+          const sc = job.scenes?.[sceneIdx];
           if (!sc?.story_beat) return null;
-          return { ...sc.story_beat, index: i, start: it.start, end: it.end };
+          if (seenScene.has(sceneIdx)) return null;
+          seenScene.add(sceneIdx);
+          return { ...sc.story_beat, index: i, scene: sceneIdx, start: it.start, end: it.end };
         })
         .filter(Boolean);
       let beats = planned.length
@@ -1247,13 +1255,30 @@ export async function renderVideo(job, opts = {}) {
       }
 
       // Kalabalık olmasın: en bilgilendirici tipleri koru, üst sınırı uygula.
+      // Aktöre çevrilebilen beat'ler kadrajın İÇİNDE yaşar; kart gibi ekranı
+      // kaplamazlar. Bu yüzden üst sınır aktörler için daha geniştir ve
+      // sıralamada önce onlar korunur (kesilen ilk şey kart olsun).
+      const actorable = (b) => b.kind === 'behavior' || b.kind === 'process'
+        || b.kind === 'number' || FOCUS_TEMPLATES.has(b.template) || b.template === 'timeline';
       const max = Math.max(1, semCfg.maxPerVideo || 6);
-      if (beats.length > max) {
+      const actorMax = Math.max(max, semCfg.maxActorsPerVideo || 9);
+      if (beats.length > actorMax) {
         const rank = { process: 0, number: 1, compare: 2, location: 3, behavior: 4 };
         beats = [...beats]
-          .sort((a, b) => (rank[a.kind] ?? 9) - (rank[b.kind] ?? 9) || a.start - b.start)
-          .slice(0, max)
+          .sort((a, b) => (actorable(b) ? 1 : 0) - (actorable(a) ? 1 : 0)
+            || (rank[a.kind] ?? 5) - (rank[b.kind] ?? 5) || a.start - b.start)
+          .slice(0, actorMax)
           .sort((a, b) => a.start - b.start);
+      }
+      // Kart katmanı ayrıca sınırlıdır: ekranın üstünde duran panel sayısı
+      // arttıkça video yine "kart gösterisi"ne döner.
+      {
+        let cards = 0;
+        beats = beats.filter((b) => {
+          if (actorable(b)) return true;
+          cards += 1;
+          return cards <= max;
+        });
       }
       // ODAK: "davranış" kompozisyonu görüntüdeki özneyi DAİRE İÇİNE alır.
       // Daireyi ancak konumu ÖLÇÜLDÜYSE çiziyoruz — focusDetect emin değilse
@@ -1261,8 +1286,10 @@ export async function renderVideo(job, opts = {}) {
       // Rastgele konuma daire çizmek düzeltilen asıl hataydı.
       if (semCfg.focusHighlight !== false) {
         for (const b of beats) {
-          // Aktöre çevrilebilen tipler konum ölçümünden faydalanır.
-          if (b.kind !== 'behavior') continue;
+          // Konum gerektiren HER şablon ölçülür (Faz 3d): davranışın yanı sıra
+          // sinyal/yayılma/rota/arama şablonları da gerçek bir konuma dayanmak
+          // zorunda. Ölçüm yoksa o sahnede aktör hiç üretilmez.
+          if (b.kind !== 'behavior' && !FOCUS_TEMPLATES.has(b.template)) continue;
           const src = media[b.index]?.path;
           if (!src) continue;
           const focus = await detectFocus(src).catch(() => null);
@@ -1285,8 +1312,8 @@ export async function renderVideo(job, opts = {}) {
         await writeFile(path.join(workDir, 'actors.ass'), actorAss);
         filters.push(existsSync(fontsDir) ? `ass=actors.ass:fontsdir=${fontsDir}` : 'ass=actors.ass');
         console.log(`[visual] AKTÖR koreografisi: ${actors.length} aktör / ` +
-          `${actorStats.actorScenes} sahne (${Object.entries(actorStats.byKind)
-            .map(([k, v]) => `${k}:${v}`).join(' ')})`);
+          `${actorStats.actorScenes} sahne — ${Object.entries(actorStats.byActor)
+            .map(([k, v]) => `${k}:${v}`).join(' ')}`);
       }
 
       const ass = buildSemanticAss(cardBeats, { width, height, cfg: semCfg });

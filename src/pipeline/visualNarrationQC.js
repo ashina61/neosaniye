@@ -136,9 +136,18 @@ export function assessVisualNarration({
 
   // Aktörlü sahne oranı: kadrajın İÇİNDE durum değiştiren eleman taşıyan
   // sahneler. Kart/panel bu sayıya girmez (onlar kadrajın üstünde durur).
+  //
+  // PAYDA SAHNE SAYISIDIR, KLİP SAYISI DEĞİL. Faz 4'ün mikro plan merdiveni
+  // bir sahneyi 2-3 klibe bölüyor; aktörler ise sahne başına bir kez
+  // planlanıyor. Klibe bölmek oranı yapay olarak üçte birine düşürüp her
+  // videoda yanlış uyarı üretiyordu.
+  const distinctScenes = new Set(
+    items.map((it) => it?.scene).filter((n) => Number.isFinite(n)),
+  ).size;
+  const actorDenom = distinctScenes || scenes.length || motionPlan.length;
   let actorRatio = null;
-  if (actorStats && motionPlan.length) {
-    actorRatio = +(actorStats.actorScenes / motionPlan.length).toFixed(2);
+  if (actorStats && actorDenom) {
+    actorRatio = +(actorStats.actorScenes / actorDenom).toFixed(2);
     if (actorRatio < th.minActorRatio) {
       warnings.push(`aktörlü sahne oranı %${Math.round(actorRatio * 100)} — hedef ≥%${Math.round(th.minActorRatio * 100)}`);
       fixes.push('Sahneler kart yerine aktör alsın: anlatımda hareket/süreç/sayım geçen cümleler yazdır.');
@@ -183,6 +192,8 @@ export function assessVisualNarration({
       // --- V3 sessiz anlaşılırlık ---
       microShots,
       actorRatio,
+      actorScenes: actorStats?.actorScenes ?? null,
+      actorDenom,
       viewerTasks,
       storyTemplates: templates.reduce((a, t) => ({ ...a, [t]: (a[t] || 0) + 1 }), {}),
       atmosphereOnly,

@@ -509,6 +509,10 @@ export const config = {
       enabled: process.env.SEMANTIC_VISUALS !== '0',
       // Bir videoda en fazla kaç semantik kompozisyon (kalabalık olmasın).
       maxPerVideo: Number(process.env.SEMANTIC_MAX_PER_VIDEO || 6),
+      // AKTÖR sınırı ayrıdır ve daha geniştir: aktör kadrajın İÇİNDE yaşar,
+      // kart gibi ekranı kaplamaz. Sessiz anlaşılırlık hedefi (sahnelerin
+      // ≥%60'ında olay) 6 kartlık sınırla matematiksel olarak tutturulamıyordu.
+      maxActorsPerVideo: Number(process.env.SEMANTIC_MAX_ACTORS || 9),
       // İlk 3 saniyede semantik bir olay ZORUNLU mu (hook gücü).
       requireHookEvent: process.env.SEMANTIC_HOOK_EVENT !== '0',
       // Davranış sahnelerinde özneyi daire içine al — SADECE konumu ölçülebildiyse.

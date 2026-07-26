@@ -24,9 +24,20 @@ const CAMERA_BY_MOTIVATION = {
   'zoom-to-place': { type: 'detail-zoom', maxZoom: 1.12 },
   // Tara, sonra kilitlen — hafif içeri girme "buldum" hissi verir.
   'scan-then-lock': { type: 'slow-push-in', maxZoom: 1.09 },
+  // Sinyali izle — kaynaktan alıcıya doğru yatay kayma.
+  'trace-the-signal': { type: 'pan-left-to-right', maxZoom: 1.05, alternate: 'pan-right-to-left' },
+  // Tetikte sıkı, sonuçta geniş — sebebin sonucu doğurduğunu kadraj söyler.
+  'tight-then-wide': { type: 'slow-pull-out', maxZoom: 1.12 },
+  'tight-then-open': { type: 'slow-pull-out', maxZoom: 1.10 },
+  // Yayılım büyüdükçe kadraj da genişler.
+  'widen-with-the-spread': { type: 'slow-pull-out', maxZoom: 1.12 },
+  // Rotayı takip et.
+  'follow-the-route': { type: 'pan-left-to-right', maxZoom: 1.06, alternate: 'pan-right-to-left' },
   // --- KAMERANIN DURDUĞU DURUMLAR (okuma > hareket) ---
   'hold-both-sides': { type: 'static-hold', maxZoom: 1 },   // karşılaştırma
   'step-to-step': { type: 'static-hold', maxZoom: 1 },      // adım zinciri
+  // Zaman ekseni okunacak: imleç zaten hareket ediyor, kamera de kaymasın.
+  'hold-the-timeline': { type: 'static-hold', maxZoom: 1 },
   'let-it-breathe': { type: 'slow-push-in', maxZoom: 1.05 }, // sakin, çok hafif
 };
 
@@ -57,8 +68,17 @@ export function selectSceneMotion(scene = {}, item = {}, { previous = [], index 
   const motivated = CAMERA_BY_MOTIVATION[scene.camera_plan?.motivation];
   if (motivated) {
     // Aynı şablon arka arkaya gelirse yönü çevir (gerekçe korunur, monotonluk kırılır).
-    const type = motivated.alternate && index % 2 === 1 ? motivated.alternate : motivated.type;
-    return { type, maxZoom: motivated.maxZoom, reason: `story:${scene.camera_plan.motivation}` };
+    let type = motivated.alternate && index % 2 === 1 ? motivated.alternate : motivated.type;
+    // LOOP KAPANIŞI hikâye gerekçesinden ÖNCE gelir: ilk klip zoom 1'den
+    // başlamak ZORUNDA, yoksa son karedeki sabit görselle dikiş tutmaz
+    // (kullanıcı iki kez "loop yok" dedi). Geriye çekilme yalnızca burada
+    // içeri girmeye çevrilir; gerekçe kaydı korunur.
+    if (index === 0 && type === 'slow-pull-out') type = 'slow-push-in';
+    return {
+      type,
+      maxZoom: type === 'slow-push-in' && motivated.type === 'slow-pull-out' ? 1.08 : motivated.maxZoom,
+      reason: `story:${scene.camera_plan.motivation}`,
+    };
   }
 
   let type = scene.motion_type;
