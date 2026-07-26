@@ -212,6 +212,12 @@ const OVERRIDES = [
   { template: 'chain_reaction', re: /\b(spreads?|spreading|chain reaction|cascade|ripples? (?:out|through)|domino|outbreak|multiply|multiplies)\b/i },
   { template: 'cause_effect', re: /\b(causes?|caused|triggers?|triggered|leads? to|led to|results? in|sets? off)\b/i },
   { template: 'communication', re: /\b(signals?|signall\w+|warns?|warning|alarm|alerts?|communicat\w+|calls? out|message)\b/i },
+  // KARŞILAŞTIRMA — canlı boşluk (26 Tem, kolibri): "Unlike humans with three,
+  // hummingbirds possess four distinct types" apaçık bir karşılaştırmaydı ama
+  // sınıflandırıcı sessiz kaldı, sahne 'atmosphere' oldu. Sahnelerin %70'i
+  // hikâyesiz kalınca kapı haklı olarak düştü. Karşıtlık belirteçleri açık bir
+  // yapısal sinyaldir.
+  { template: 'comparison', re: /\b(unlike|whereas|in contrast|compared with|instead of|while (?:humans|we|most)|but (?:humans|we|most))\b/i },
   { template: 'search_reveal', re: /\b(hidden|camouflage|disguise|spot|find|invisible|blend)\b/i },
   { template: 'construction', re: /\b(build|builds|built|construct|assembl\w+|stack|layer|tower)\b/i },
   { template: 'navigation', re: /\b(route|migrat\w+|journey|navigat\w+|finds? its way|homing|way back)\b/i },

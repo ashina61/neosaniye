@@ -127,8 +127,12 @@ export function declaredListCount(text = '') {
  * @param {Array} [renderedMarkers] ekranda GERÇEKTEN basılan numaralar
  */
 export function assessListStructure(script = {}, renderedMarkers = null) {
-  const declaredItemCount = declaredListCount(script.hook_text)
-    || declaredListCount(script.title);
+  // YALNIZCA HOOK. Başlık SEO metnidir; izleyici onu videoda görmez.
+  // 26 Tem 13:28 koşusu: hook "See colors we can't?" (liste vaadi YOK) ama
+  // başlıkta bir sayı vardı → ekrana 1..5 numaraları basıldı ve izleyici
+  // hiçbir listeyle karşılaşmadı. Bağlamsız numara, kaldırdığımız anlamsız
+  // etiketlerin aynısıdır.
+  const declaredItemCount = declaredListCount(script.hook_text);
   if (!declaredItemCount) {
     return { declared: false, valid: true, declaredItemCount: null, detectedItemCount: null,
       renderedMarkers: [] };
@@ -164,7 +168,7 @@ export function assessListStructure(script = {}, renderedMarkers = null) {
  * @returns {{declared:number|null, assigned:number, strippedClaim:boolean}}
  */
 export function assignListMarkers(script = {}) {
-  const declared = declaredListCount(script.hook_text) || declaredListCount(script.title);
+  const declared = declaredListCount(script.hook_text);
   if (!declared) return { declared: null, assigned: 0, strippedClaim: false };
   const scenes = script.scenes || [];
   // Hook sahnesi (0) madde değildir; maddeler sonrasında başlar.
@@ -189,7 +193,6 @@ export function assignListMarkers(script = {}) {
       .replace(/^\s*(two|three|four|five|six|seven|eight|nine|ten)\s+/i, '')
       .trim();
     if (script.hook_text) script.hook_text = strip(script.hook_text);
-    if (script.title) script.title = strip(script.title);
     return { declared, assigned: 0, strippedClaim: true };
   }
   starts.forEach((sceneIdx, k) => { scenes[sceneIdx].list_index = k + 1; });

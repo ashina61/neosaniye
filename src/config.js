@@ -350,7 +350,15 @@ export const config = {
     outroDuration: Number(process.env.VIDEO_OUTRO_SECONDS || 3),
 
     // Video-içi abone/beğen uyarısı: ortalarda kısa süre belirir (loop'u bozmaz).
-    subPrompt: process.env.VIDEO_SUBPROMPT !== '0',
+    // VİDEO İÇİ ABONE ROZETİ — varsayılan KAPALI.
+    //
+    // Bu, motion CTA'sından AYRI ve DAHA ESKİ bir yoldur. 26 Tem'de
+    // motion.cta.enabled varsayılanını kapattığımda beklenmeyen şey oldu:
+    // `subPromptWanted = subPrompt && !motionCtaOn` olduğu için motion CTA
+    // kapanınca ESKİ rozet açıldı. Yani CTA kapatılmadı, sadece uygulaması
+    // değişti — canlıda 0:29'da yine SUBSCRIBE göründü. İki yol artık aynı
+    // anahtara bakıyor: açmak için VIDEO_SUBPROMPT=1.
+    subPrompt: process.env.VIDEO_SUBPROMPT === '1',
     // İlk karede büyük hook yazısı (Shorts "kapağı").
     // LOOP KAPANIŞI: son plan ilk görsele döner → video başa sarınca dikiş
     // görünmez, izleyici tekrar izler. Kapatmak: VIDEO_LOOP_CLOSURE=0

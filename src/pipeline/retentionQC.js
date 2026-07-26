@@ -385,7 +385,12 @@ function reportMd(r, mode, minScore, qcExecStatus = null, extra = {}) {
   const lines = [
     `# Retention QC Raporu`,
     ``,
-    `**Skor: ${r.score}/100** — mod: ${mode}, eşik: ${minScore} → ${r.score >= minScore ? '✅ production-ready' : '⚠️ eşiğin altında'}`,
+    // BAŞLIK GERÇEĞİ SÖYLEMELİ. Eskiden skor eşiği geçince "✅ production-ready"
+    // yazıyordu — 26 Tem raporu 92/100 ile "production-ready" derken hemen
+    // altında yayın engelleri listeliyordu. Tek skor, kritik hatayı maskeler.
+    `**Skor: ${r.score}/100** — mod: ${mode}, eşik: ${minScore} → ${
+      (r.blockingReasons || []).length ? '⛔ yayın engelli (aşağıdaki engellere bakın)'
+        : r.score >= minScore ? '✅ eşiği geçti' : '⚠️ eşiğin altında'}`,
     ``,
     `| Kategori | Puan |`,
     `|---|---|`,

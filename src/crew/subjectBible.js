@@ -41,24 +41,74 @@ const UNIVERSAL_FORBIDDEN = [
   'incorrect anatomy', 'extra limbs', 'human face', 'text', 'watermark', 'logo',
 ];
 
-/** Konu metninden şube tahmini (deterministik, sözlük tabanlı). */
-const PHYLUM_HINTS = [
-  [/\b(sea cucumber|starfish|sea star|urchin|brittle star|echinoderm|sand dollar)\b/i, 'echinoderm'],
-  [/\b(octopus|squid|cuttlefish|snail|slug|clam|oyster|nautilus|mollusc|mollusk)\b/i, 'mollusc'],
-  [/\b(ant|bee|wasp|termite|beetle|butterfly|moth|dragonfly|cicada|insect)\b/i, 'insect'],
-  [/\b(spider|scorpion|crab|lobster|shrimp|crustacean|arachnid|centipede|millipede)\b/i, 'arthropod'],
-  [/\b(fish|shark|ray|eel|salmon|tuna|seahorse)\b/i, 'fish'],
-  [/\b(bird|eagle|owl|penguin|crow|raven|parrot|hummingbird)\b/i, 'bird'],
-  [/\b(whale|dolphin|bat|wolf|elephant|mouse|rat|primate|monkey|ape|mammal)\b/i, 'mammal'],
-  [/\b(snake|lizard|turtle|crocodile|gecko|reptile)\b/i, 'reptile'],
-  [/\b(frog|toad|salamander|newt|amphibian)\b/i, 'amphibian'],
-  [/\b(tree|flower|plant|moss|fern|orchid|seed|root)\b/i, 'plant'],
-  [/\b(fungus|fungi|mushroom|mycelium|mold)\b/i, 'fungus'],
+/**
+ * Konu metninden şube tahmini (deterministik, sözlük tabanlı).
+ * Kelime listeleri ÇOĞUL TOLERANSLI regex'e çevrilir: "Hummingbirds" yazan bir
+ * konu başlığı `\bhummingbird\b` ile eşleşmiyordu (sondaki "s" kelime
+ * karakteri olduğu için sınır tutmuyor) ve ad "hummingbirds colors" gibi
+ * saçmalıyordu.
+ */
+const PHYLUM_WORDS = [
+  [['sea cucumber', 'starfish', 'sea star', 'urchin', 'brittle star', 'echinoderm', 'sand dollar'], 'echinoderm'],
+  [['octopus', 'squid', 'cuttlefish', 'snail', 'slug', 'clam', 'oyster', 'nautilus', 'mollusc', 'mollusk'], 'mollusc'],
+  [['ant', 'bee', 'wasp', 'termite', 'beetle', 'butterfly', 'moth', 'dragonfly', 'cicada', 'insect'], 'insect'],
+  [['spider', 'scorpion', 'crab', 'lobster', 'shrimp', 'crustacean', 'arachnid', 'centipede', 'millipede'], 'arthropod'],
+  [['hummingbird', 'bird', 'eagle', 'owl', 'penguin', 'crow', 'raven', 'parrot'], 'bird'],
+  [['fish', 'shark', 'ray', 'eel', 'salmon', 'tuna', 'seahorse'], 'fish'],
+  [['whale', 'dolphin', 'bat', 'wolf', 'elephant', 'mouse', 'rat', 'primate', 'monkey', 'ape', 'mammal'], 'mammal'],
+  [['snake', 'lizard', 'turtle', 'crocodile', 'gecko', 'reptile'], 'reptile'],
+  [['frog', 'toad', 'salamander', 'newt', 'amphibian'], 'amphibian'],
+  [['tree', 'flower', 'plant', 'moss', 'fern', 'orchid', 'seed', 'root'], 'plant'],
+  [['fungus', 'fungi', 'mushroom', 'mycelium', 'mold'], 'fungus'],
 ];
+
+const PHYLUM_HINTS = PHYLUM_WORDS.map(([words, p]) => [
+  new RegExp(`\\b(${words.map((w) => w.replace(/\s/g, '\\s')).join('|')})(?:s|es)?\\b`, 'i'),
+  p,
+  new Set(words),
+]);
 
 function guessPhylum(text) {
   for (const [re, p] of PHYLUM_HINTS) if (re.test(text)) return p;
   return null;
+}
+
+/**
+ * KISA KANONİK AD — bu fonksiyon olmadan sistem kendi ayağına sıktı.
+ *
+ * 26 Tem 13:28 koşusu: `canonicalName` yedeği olarak `visual_anchor` alındı ve
+ * o alan bir AD değil, tam bir paragraftı:
+ *   "A vibrant ruby-throated hummingbird, metallic green and iridescent red,
+ *    hovers near a brightly colored flower in a lush garden. The lighting is..."
+ * Sonuç: 10 sahnenin 10'unun promptu bu 200 karakterlik AYNI metinle başladı,
+ * sahneyi ayıran cümle onun içinde boğuldu ve görsel çeşitlilik ÇÖKTÜ
+ * (9 benzersiz plan, 7 sahne neredeyse aynı, en uzun aynı-kaynak 18).
+ * Kimlik kilidi, tam da engellemesi gereken tekdüzeliği üretti.
+ *
+ * Ad artık kısa tutulur: tür sözlüğünde eşleşme varsa o (en güveniliri),
+ * yoksa konudan çıkarılan 1-3 kelimelik çekirdek.
+ */
+const STOP = new Set(['how', 'why', 'what', 'when', 'where', 'the', 'a', 'an', 'of',
+  'do', 'does', 'did', 'can', 'is', 'are', 'this', 'that', 'these', 'those',
+  'see', 'sees', 'invisible', 'incredible', 'amazing', 'secret', 'secrets',
+  'facts', 'fact', 'things', 'thing', 'about', 'inside', 'real', 'truth']);
+
+export function shortCanonicalName(text = '') {
+  const raw = String(text).trim();
+  if (!raw) return '';
+  // 1) Tür sözlüğünde eşleşme — en temiz ad. Çoğul tekile indirilir.
+  for (const [re, , words] of PHYLUM_HINTS) {
+    const m = raw.match(re);
+    if (!m) continue;
+    const hit = String(m[1] || m[0]).toLowerCase();
+    return words.has(hit) ? hit : hit.replace(/(?:es|s)$/, '');
+  }
+  // 2) Konudan çekirdek: dolgu kelimeler atılır, en fazla 3 kelime kalır.
+  const words = raw.replace(/[^\p{L}\p{N}\s-]/gu, ' ').split(/\s+/).filter(Boolean);
+  const core = words.filter((w) => !STOP.has(w.toLowerCase())).slice(0, 3);
+  const name = (core.length ? core : words.slice(0, 3)).join(' ').toLowerCase();
+  // 3) Hâlâ uzunsa ad değildir — kimlik ön eki hiç kurulmaz.
+  return name.length <= 40 ? name : '';
 }
 
 const clean = (v) => String(v || '').trim();
@@ -75,9 +125,10 @@ const list = (v) => (Array.isArray(v) ? v.map(clean).filter(Boolean) : []);
 export function buildSubjectBible(script = {}) {
   const raw = script.subject_bible || {};
   const topicText = `${script.topic || ''} ${script.visual_anchor || ''}`.trim();
+  // Ad KISA olmalı: uzun bir sahne tarifi ad değildir (yukarıdaki nota bakın).
   const canonicalName = clean(raw.canonical_name || raw.canonicalName)
-    || clean(script.visual_anchor)
-    || clean(script.topic);
+    || shortCanonicalName(script.topic)
+    || shortCanonicalName(script.visual_anchor);
   const phylum = clean(raw.phylum) || guessPhylum(`${canonicalName} ${topicText}`);
   const scientificCategory = clean(raw.scientific_category || raw.scientificCategory)
     || (phylum ? `${phylum}` : null);
