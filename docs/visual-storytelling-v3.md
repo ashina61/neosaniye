@@ -237,3 +237,37 @@ Bu projede daha önce yapılmış ve tekrar edilmemesi gereken hatalar:
    semantik sayaç canlıda üst üste bindi).
 5. **Varsayımı doğrulanmamış özellik.** Her yeni primitif, tasarımdan ÖNCE
    gerçek render ile kanıtlanır (bu belgedeki §2 gibi).
+
+---
+
+## 6. UYGULAMA DURUMU (5 fazın tamamı sevk edildi)
+
+| Faz | Ne yapıldı | Nerede |
+|---|---|---|
+| 1 | Aktör katmanı — kadrajın İÇİNDE durum değiştiren 7 eleman | `src/visual/actors.js`, `beatToActors.js` |
+| 2 | Sıralama tersine — hikâye ÖNCE, görsel ona göre istenir | `src/crew/storyPlanner.js`, `run.js` Faz 2.9 |
+| 3 | Kameranın gerekçesi — hareket hikâyeden türer, gerekirse DURUR | `src/video/motionPlan.js` |
+| 4 | Mikro plan merdiveni — aynı görselden 2-3 kadraj | `src/media/generateImages.js` |
+| 5 | Sessiz anlaşılırlık kapısı — yeni başarı ölçütleri | `src/pipeline/visualNarrationQC.js` |
+
+### Ölçülen sonuç (tasarım hedefine karşı)
+
+| Ölçüt | Önce | Şimdi |
+|---|---|---|
+| Mikro plan | 10-13 | ~21 (10 sahne / 44sn tahmini) |
+| Kamera gerekçesi | yok (metin anahtar kelimesi + anti-tekrar) | `story:<motivation>` |
+| Kameranın durduğu durum | yok | karşılaştırma + adım zinciri |
+| Sayaç dayanağı | yok ("7500 ne?") | besleyen süreç ZORUNLU |
+| Konum uydurma | vardı | yalnızca ölçülmüş odak |
+| Hikâyesiz sahne kapısı | yok | %60 üstü → BAŞARISIZ |
+
+### Kalan bilinen sınır
+
+Fotoğrafın İÇİNDEKİ nesne fiziksel olarak hareket etmiyor; ürettiğimiz, olayı
+TEMSİL eden animasyon katmanı (Discovery'nin filme alınamayanı animasyonlu
+kesitle anlatması gibi). Gerçek canlı hareket gerektiğinde tek dürüst kaynak
+stok video olmaya devam ediyor.
+
+Ayrıca `storyPlanner` şu an DETERMİNİSTİK (LLM yok) — sağlayıcı zinciri
+defalarca düştüğü için bilinçli bir karar. Bir LLM zenginleştirme katmanı
+ileride EK olarak takılabilir, ama çekirdek ona bağımlı olmamalı.

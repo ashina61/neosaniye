@@ -1205,6 +1205,7 @@ export async function renderVideo(job, opts = {}) {
   // girmez; hata olursa render eski davranışa döner (üretim kırılmaz).
   let effectsFilter = '';
   let semanticBeatsUsed = [];
+  let actorStatsUsed = null;
   const semCfg = config.motion?.semanticVisuals;
   if (semCfg?.enabled && canonicalItems && Array.isArray(job.scenes)) {
     try {
@@ -1299,6 +1300,7 @@ export async function renderVideo(job, opts = {}) {
       if (filters.length) {
         effectsFilter = filters.join(',');
         semanticBeatsUsed = beats.map((b) => ({ kind: b.kind, index: b.index, start: b.start }));
+        actorStatsUsed = actorStats;
       } else {
         console.log('[visual] gösterilecek yapı yok — ekran temiz bırakıldı.');
       }
@@ -1382,6 +1384,8 @@ export async function renderVideo(job, opts = {}) {
     timeline: job.timeline || null,
     // Ekranda GERÇEKTEN çizilen semantik kompozisyonlar (görsel anlatım QC'si bunu ölçer).
     semanticBeats: semanticBeatsUsed,
+    // V3: aktör/kart ayrımı (sessiz anlaşılırlık QC'si bunu ölçer).
+    actorStats: actorStatsUsed,
     renderPlan: {
       expectedSceneCount: N,
       sceneBoundaries: canonicalItems ? canonicalItems.slice(0, -1).map((x) => x.end) : [],

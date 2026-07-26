@@ -1,5 +1,35 @@
 const MOTIONS = ['slow-push-in', 'slow-pull-out', 'pan-left-to-right', 'pan-right-to-left', 'top-to-bottom-reveal', 'detail-zoom', 'slow-pan-up', 'slow-pan-down', 'zoom-to-detail'];
 
+/**
+ * KAMERA DİLİ — her hikâye şablonunun kendi hareketi (V3 Faz 3).
+ *
+ * storyPlanner'ın verdiği camera_plan.motivation, kameranın NEDEN hareket
+ * ettiğini söyler. Kritik olan yarısı: bazı şablonlarda kamera BİLİNÇLİ
+ * OLARAK DURUR. Okunması gereken bir şey varken (adım zinciri, iki tarafın
+ * karşılaştırılması, kalabalıkta hedef arama) kamera hareketi okumayla
+ * yarışır ve izleyici ikisini de kaçırır.
+ */
+const CAMERA_BY_MOTIVATION = {
+  // Mekanizmanın İÇİNE gir — kesitte akışı takip etmek yakınlaşmaktır.
+  'follow-the-flow': { type: 'slow-push-in', maxZoom: 1.08 },
+  // Özneyi takip et — yatay hareket izin yönünü destekler (yön indekse göre
+  // dönüşümlü, aynı şablon tekrarlandığında kamera monotonlaşmasın).
+  'follow-the-subject': { type: 'pan-left-to-right', maxZoom: 1.05, alternate: 'pan-right-to-left' },
+  // Boyutu ortaya çıkar — geri çekilmek büyüklüğü hissettirir.
+  'pull-back-to-reveal-size': { type: 'slow-pull-out', maxZoom: 1.12 },
+  'reveal-the-amount': { type: 'slow-pull-out', maxZoom: 1.10 },
+  // İnşayı takip et — yukarı doğru yükselen kadraj.
+  'rise-with-the-build': { type: 'slow-pan-up', maxZoom: 1.07 },
+  // Yere yakınlaş.
+  'zoom-to-place': { type: 'detail-zoom', maxZoom: 1.12 },
+  // Tara, sonra kilitlen — hafif içeri girme "buldum" hissi verir.
+  'scan-then-lock': { type: 'slow-push-in', maxZoom: 1.09 },
+  // --- KAMERANIN DURDUĞU DURUMLAR (okuma > hareket) ---
+  'hold-both-sides': { type: 'static-hold', maxZoom: 1 },   // karşılaştırma
+  'step-to-step': { type: 'static-hold', maxZoom: 1 },      // adım zinciri
+  'let-it-breathe': { type: 'slow-push-in', maxZoom: 1.05 }, // sakin, çok hafif
+};
+
 export function selectSceneMotion(scene = {}, item = {}, { previous = [], index = 0 } = {}) {
   if (item.type === 'video') return { type: 'native-motion', maxZoom: 1, reason: 'live-footage' };
   // HAREKET DİZİSİ kareleri SABİT durur: hareket ardışık karelerin arasındaki
@@ -18,6 +48,17 @@ export function selectSceneMotion(scene = {}, item = {}, { previous = [], index 
   // TEMPO alt-çekimi (punch-in): part1 gerçekten yakın kadraj → belirgin kesme.
   if (item.motionHint && MOTIONS.includes(item.motionHint)) {
     return { type: item.motionHint, maxZoom: item.motionHint === 'detail-zoom' ? 1.14 : 1.1, reason: 'sub-shot-framing' };
+  }
+
+  // KAMERANIN GEREKÇESİ (V3 Faz 3). Audit: "kamera hareket ediyor ama
+  // hareketin amacı yok — hareket olsun diye hareket." Artık hikâye planı
+  // varsa kamera ONDAN türer: ne anlatıldığına göre hareket eder ya da
+  // BİLİNÇLİ OLARAK DURUR. Discovery/BBC farkı tam olarak budur.
+  const motivated = CAMERA_BY_MOTIVATION[scene.camera_plan?.motivation];
+  if (motivated) {
+    // Aynı şablon arka arkaya gelirse yönü çevir (gerekçe korunur, monotonluk kırılır).
+    const type = motivated.alternate && index % 2 === 1 ? motivated.alternate : motivated.type;
+    return { type, maxZoom: motivated.maxZoom, reason: `story:${scene.camera_plan.motivation}` };
   }
 
   let type = scene.motion_type;

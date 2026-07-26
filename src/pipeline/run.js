@@ -275,12 +275,18 @@ export async function runPipeline(opts = {}) {
       beats: video.semanticBeats || [],
       motionPlan: video.renderPlan?.motion || [],
       duration: video.duration,
+      scenes: script.scenes || [],       // V3: story_template / viewer_task
+      actorStats: video.actorStats,      // V3: aktör vs kart ayrımı
     });
     const m = vnQC.metrics;
     console.log(
       `  görsel anlatım: ${m.uniqueVisuals} benzersiz plan / ${m.semanticBeats} semantik kompozisyon ` +
         `(${Object.entries(m.semanticKinds).map(([k, v]) => `${k}:${v}`).join(' ') || 'yok'}) ` +
-        `hook-olayı:${m.hookEvent ? 'var' : 'YOK'}`,
+        `hook-olayı:${m.hookEvent ? 'var' : 'YOK'}\n` +
+        `  sessiz anlaşılırlık: ${m.microShots} mikro plan / ` +
+        `aktörlü sahne %${m.actorRatio == null ? '?' : Math.round(m.actorRatio * 100)} / ` +
+        `${m.viewerTasks} izleyici görevi ` +
+        `(${Object.entries(m.storyTemplates).map(([k, v]) => `${k}:${v}`).join(' ') || 'şablon yok'})`,
     );
     for (const w of vnQC.warnings) console.warn(`  [görsel-anlatım] uyarı: ${w}`);
     for (const f of vnQC.failures) console.error(`  [görsel-anlatım] BAŞARISIZ: ${f}`);

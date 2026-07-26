@@ -36,6 +36,51 @@ const SHOT_VARIATIONS = [
 ];
 
 /**
+ * MİKRO PLAN MERDİVENİ — aynı görselden farklı kadrajlar (V3 Faz 4).
+ *
+ * "20-25 farklı görsel üretmek anlamına gelmiyor; aynı görsel yakın plan,
+ * detay planı, farklı crop ile tekrar kullanılabilir." (26 Tem audit)
+ *
+ * Kadrajın NEREDEN alınacağı hikâye şablonuna bağlıdır:
+ *   mechanism/chain → merkez detay (yapı okunmalı)
+ *   flow            → sağ ve sol yarım (özne yol boyunca ilerliyor)
+ *   scale/quantity  → geniş kalır, sadece hafif detay (miktar hissi kaybolmasın)
+ *   search_reveal   → sıkı detay (hedefe kilitlenme)
+ *
+ * z = kırpma oranı (1 = tam kadraj), x/y = kırpma başlangıcı (0..1-z).
+ */
+function shotLadder(template, seconds) {
+  const LONG = seconds >= 5.2;   // uzun sahne 2 ek kadraj taşır
+  switch (template) {
+    case 'flow':
+      return LONG
+        ? [{ tag: 'b', z: 0.62, x: 0.04, y: 0.20, motion: 'pan-left-to-right' },
+          { tag: 'c', z: 0.58, x: 0.38, y: 0.24, motion: 'detail-zoom' }]
+        : [{ tag: 'b', z: 0.62, x: 0.30, y: 0.22, motion: 'pan-left-to-right' }];
+    case 'search_reveal':
+      return LONG
+        ? [{ tag: 'b', z: 0.70, x: 0.15, y: 0.15, motion: 'slow-push-in' },
+          { tag: 'c', z: 0.45, x: 0.28, y: 0.28, motion: 'detail-zoom' }]
+        : [{ tag: 'b', z: 0.50, x: 0.25, y: 0.25, motion: 'detail-zoom' }];
+    case 'scale':
+    case 'quantity':
+      // Miktar/ölçek geniş kadrajda okunur → yalnızca hafif yakınlaşma.
+      return [{ tag: 'b', z: 0.80, x: 0.10, y: 0.10, motion: 'slow-pull-out' }];
+    case 'mechanism':
+    case 'chain':
+      return LONG
+        ? [{ tag: 'b', z: 0.66, x: 0.17, y: 0.17, motion: 'detail-zoom' },
+          { tag: 'c', z: 0.48, x: 0.26, y: 0.30, motion: 'static-hold' }]
+        : [{ tag: 'b', z: 0.66, x: 0.17, y: 0.17, motion: 'detail-zoom' }];
+    default:
+      return LONG
+        ? [{ tag: 'b', z: 0.66, x: 0.17, y: 0.17, motion: 'detail-zoom' },
+          { tag: 'c', z: 0.52, x: 0.30, y: 0.20, motion: 'slow-push-in' }]
+        : [{ tag: 'b', z: 0.66, x: 0.17, y: 0.17, motion: 'detail-zoom' }];
+  }
+}
+
+/**
  * Faz 3 (yeni) — Sahne başına AI görsel üretimi.
  *
  * Sağlayıcı (config.images.provider):
@@ -629,19 +674,31 @@ export async function generateImages(script, opts = {}) {
         && done.source !== 'gfx' && done.source !== 'placeholder'
         && (sceneSeconds[i] || 0) > SPLIT_SEC && existsSync(done.path)) {
       try {
-        const cropDest = path.join(mediaDir, `${idx}-b.jpg`);
-        // Merkezden ~%66 crop + tam boyuta ölçekle → belirgin daha yakın çekim.
-        await run('ffmpeg', ['-y', '-v', 'error', '-i', done.path,
-          '-vf', `crop=iw*0.66:ih*0.66,scale=${width}:${height}:flags=lanczos`, cropDest],
+        // MİKRO PLAN MERDİVENİ (V3 Faz 4). Eskiden tek bir "%66 merkez crop"
+        // vardı ve video 10-13 planda kalıyordu (hedef 20-25). Artık sahne
+        // süresine göre 1-2 EK kadraj üretilir; kadrajın NEREDEN alınacağını
+        // hikâye şablonu belirler. Ekstra API maliyeti YOK — aynı görselden
+        // farklı kesitler alınıyor.
+        const secs = sceneSeconds[i] || 0;
+        const ladder = shotLadder(scene.story_template, secs);
+        let made = 0;
+        for (const step of ladder) {
+          const cropDest = path.join(mediaDir, `${idx}-${step.tag}.jpg`);
+          await run('ffmpeg', ['-y', '-v', 'error', '-i', done.path,
+            '-vf', `crop=iw*${step.z}:ih*${step.z}:iw*${step.x}:ih*${step.y},`
+              + `scale=${width}:${height}:flags=lanczos`, cropDest],
           { maxBuffer: 20 * 1024 * 1024 });
-        if (existsSync(cropDest)) {
+          if (!existsSync(cropDest)) continue;
+          made += 1;
+          items.push({
+            ...done, path: cropDest, part: made, subShot: true,
+            motionHint: step.motion, assetId: `${done.assetId}#${step.tag}`,
+          });
+        }
+        if (made) {
           done.part = 0;
-          const partB = {
-            ...done, path: cropDest, part: 1, subShot: true,
-            motionHint: 'detail-zoom', assetId: `${done.assetId}#b`,
-          };
-          items.push(partB);
-          console.log(`[img] sahne ${idx}: tempo bölme → 2 alt-çekim (${sceneSeconds[i].toFixed(1)}s, punch-in)`);
+          console.log(`[img] sahne ${idx}: mikro plan merdiveni → ${made + 1} kadraj `
+            + `(${secs.toFixed(1)}s, ${scene.story_template || 'varsayılan'})`);
         }
       } catch { /* bölme best-effort — olmazsa tek çekim kalır */ }
     }

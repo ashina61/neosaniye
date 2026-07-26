@@ -28,6 +28,8 @@ export function assessVisualNarration({
   beats = [],
   motionPlan = [],
   duration = 0,
+  scenes = [],               // V3: story_template / viewer_task taşır
+  actorStats = null,         // V3: planActors çıktısı {actorScenes, cardScenes}
   thresholds = {},
 } = {}) {
   const th = {
@@ -36,6 +38,11 @@ export function assessVisualNarration({
     minHashDistance: 10,
     maxBlockSeconds: 3.0,      // her ~3sn'lik blok kendi kompozisyonunu almalı
     hookWindow: 3.0,
+    // --- V3 SESSİZ ANLAŞILIRLIK EŞİKLERİ ---
+    minMicroShots: 18,         // mikro plan merdiveni hedefi (20-25 bandı)
+    minActorRatio: 0.60,       // aktörlü (durum değiştiren) sahne oranı
+    maxDecorativeRatio: 0.25,  // sadece kamera hareketi olan sahne oranı
+    minViewerTasks: 4,         // izleyiciye verilen görev sayısı
     ...thresholds,
   };
   const failures = [];
@@ -118,6 +125,40 @@ export function assessVisualNarration({
     warnings.push(`${duration}sn için ${uniqueVisuals} plan — ~${expectedBlocks} blok beklenirken plan başına ${(duration / Math.max(1, uniqueVisuals)).toFixed(1)}sn düşüyor`);
   }
 
+  // ---------- 6) V3: SESSİZ ANLAŞILIRLIK ----------
+  // Audit'in yeni başarı kriteri: "Ses tamamen kapalıyken bile izleyici
+  // videonun ne anlattığını anlayabiliyor mu?" Bunun ölçüsü efekt SAYISI
+  // değil, ekranda GERÇEKLEŞEN olayın oranıdır.
+  const microShots = items.length;
+  if (microShots && microShots < th.minMicroShots) {
+    warnings.push(`${microShots} mikro plan — hedef ≥${th.minMicroShots} (aynı görselden farklı kadraj alınabilir)`);
+  }
+
+  // Aktörlü sahne oranı: kadrajın İÇİNDE durum değiştiren eleman taşıyan
+  // sahneler. Kart/panel bu sayıya girmez (onlar kadrajın üstünde durur).
+  let actorRatio = null;
+  if (actorStats && motionPlan.length) {
+    actorRatio = +(actorStats.actorScenes / motionPlan.length).toFixed(2);
+    if (actorRatio < th.minActorRatio) {
+      warnings.push(`aktörlü sahne oranı %${Math.round(actorRatio * 100)} — hedef ≥%${Math.round(th.minActorRatio * 100)}`);
+      fixes.push('Sahneler kart yerine aktör alsın: anlatımda hareket/süreç/sayım geçen cümleler yazdır.');
+    }
+  }
+
+  // İzleyiciye verilen görev sayısı (storyPlanner'ın viewer_task alanı).
+  const viewerTasks = scenes.filter((s) => s?.viewer_task).length;
+  if (scenes.length && viewerTasks < th.minViewerTasks) {
+    warnings.push(`${viewerTasks} sahnede izleyici görevi var — hedef ≥${th.minViewerTasks}`);
+  }
+
+  // Hikâye şablonu dağılımı: hepsi 'atmosphere' ise video hikâye anlatmıyor.
+  const templates = scenes.map((s) => s?.story_template).filter(Boolean);
+  const atmosphereOnly = templates.filter((t) => t === 'atmosphere').length;
+  if (templates.length >= 5 && atmosphereOnly / templates.length > 0.6) {
+    failures.push(`STORY_TEMPLATES_TOO_THIN: sahnelerin %${Math.round((atmosphereOnly / templates.length) * 100)}'i hikâyesiz (atmosphere)`);
+    fixes.push('Anlatım cümleleri gösterilebilir yapı taşımıyor: süreç/karşılaştırma/sayı/hareket içeren cümleler yazdır.');
+  }
+
   const passed = failures.length === 0;
   return {
     passed,
@@ -139,6 +180,12 @@ export function assessVisualNarration({
       decorativeRatio,
       expectedBlocks,
       compositionsPerBlock,
+      // --- V3 sessiz anlaşılırlık ---
+      microShots,
+      actorRatio,
+      viewerTasks,
+      storyTemplates: templates.reduce((a, t) => ({ ...a, [t]: (a[t] || 0) + 1 }), {}),
+      atmosphereOnly,
     },
   };
 }
