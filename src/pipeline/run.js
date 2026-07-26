@@ -940,7 +940,15 @@ export async function runPipeline(opts = {}) {
     await writeFile(path.join(workDir, 'report.json'), JSON.stringify(report, null, 2)).catch(() => {});
     const configuredPlatforms = [hasYouTube, instagramConfigured, facebookConfigured].filter(Boolean).length;
     const successfulPlatforms = [youtube, social.instagram, social.facebook].filter(Boolean).length;
-    if (willUpload && configuredPlatforms > 0 && successfulPlatforms === 0) {
+    // "Hiç yayınlanamadı" hatası, SESSİZ upload başarısızlıklarını yakalamak
+    // için var. BİLİNÇLİ engelleme onun kapsamına girmez: kapı çalıştıysa
+    // sistem doğru davranmıştır, koşu başarısız DEĞİLDİR.
+    //
+    // 26 Tem 17:01 koşusu tam bu yüzden düştü: kullanıcı --upload verdi, yayın
+    // kapıları videoyu haklı olarak engelledi ("QC geçilemedi"), sonra bu
+    // kontrol "hiçbir platforma yüklenemedi" diye exception attı ve iş
+    // kırmızıya döndü. Kapının çalışması bir arıza gibi raporlanıyordu.
+    if (willUpload && canUpload && configuredPlatforms > 0 && successfulPlatforms === 0) {
       throw new Error(`Hiçbir platforma upload yapılamadı: ${youtubeUploadError || 'Meta API upload başarısız veya belirsiz'}`);
     }
     for (const [name, t] of [['preview-hook.jpg', 0.5], ['preview-mid.jpg', video.duration * 0.5]]) {

@@ -244,8 +244,14 @@ export async function validateFinalVideo(videoPath, plan = {}, opts = {}) {
     const g = groups.find((gr) => sameFrame(gr.index, i));
     if (g) g.times.push(t); else groups.push({ index: i, hash: frameHashes[i], times: [t] });
   }
+  // PLAN KANITI: bir zaman noktasında hangi varlığın (assetId) olması
+  // gerektiği. İki blok AYNI varlığa düşüyorsa tekrar KANITLIDIR; farklı
+  // varlıklara düşüyorsa elimizde yalnızca algısal benzerlik vardır.
+  const assetAt = (t) => (plan.clips || []).find((c) => t >= c.start - 0.05 && t < c.end + 0.05)?.assetId ?? null;
+
   const duplicateFrameGroups = [];
   const duplicateShots = [];
+  const similarShots = [];
   for (const g of groups) {
     const runs = toRuns(g.times.map((t) => Math.round(t * fps)))
       .map(([a, b]) => [+(a / fps).toFixed(2), +((b + 1) / fps).toFixed(2)]);
@@ -253,28 +259,56 @@ export async function validateFinalVideo(videoPath, plan = {}, opts = {}) {
     duplicateFrameGroups.push({ runs, frames: g.times.length });
     // Kasıtlı döngü kapanışı muaf: ilk blok başta, ikinci blok loop penceresinde.
     const nonLoop = runs.filter(([a]) => !inLoop(a));
-    if (nonLoop.length >= 2) {
-      const gap = +(nonLoop[1][0] - nonLoop[0][1]).toFixed(2);
-      if (gap >= minDuplicateGapSeconds) duplicateShots.push({ runs: nonLoop, gapSeconds: gap });
-    }
+    if (nonLoop.length < 2) continue;
+    const gap = +(nonLoop[1][0] - nonLoop[0][1]).toFixed(2);
+    if (gap < minDuplicateGapSeconds) continue;
+    // KANIT AYRIMI. Algısal hash bir İDDİADIR, delil değildir: aynı konunun
+    // iki farklı arşiv fotoğrafı (aynı taş kemerler, aynı ton) 64 bitlik
+    // dHash'te 6 bit içinde kalabilir. Böyle bir eşleşmeyi "kopya plan" diye
+    // sert engele çevirmek, doğru kurgulanmış bir videoyu yanlışlıkla bloklar.
+    // Plan aynı assetId'yi iki kez kullanıyorsa tekrar KANITLIDIR → hata.
+    // Varlıklar farklıysa yalnızca benzerlik var → uyarı (insan bakışı).
+    const a0 = assetAt((nonLoop[0][0] + nonLoop[0][1]) / 2);
+    const a1 = assetAt((nonLoop[1][0] + nonLoop[1][1]) / 2);
+    const entry = { runs: nonLoop, gapSeconds: gap, assets: [a0, a1] };
+    if (a0 && a1 && a0 !== a1) similarShots.push(entry);
+    else duplicateShots.push({ ...entry, evidence: a0 && a0 === a1 ? 'same-asset' : 'perceptual' });
   }
   if (duplicateShots.length) {
     failures.push(`DUPLICATE_SHOT:${duplicateShots.length} ` +
       `(${duplicateShots.slice(0, 3).map((d) => d.runs.map((r) => r.join('-')).join(' ↔ ')).join(' | ')})`);
   }
+  if (similarShots.length) {
+    warnings.push(`SIMILAR_SHOT:${similarShots.length} — farklı varlıklar, görsel olarak yakın `
+      + `(${similarShots.slice(0, 3).map((d) => d.runs.map((r) => r.join('-')).join(' ↔ ')).join(' | ')})`);
+  }
 
   // ---- 2) BİNDİRMELER: planlanan dışında görünüyor mu? ----
   const hookOcc = findOccurrences(hookH, plan.hookWindows, fps, overlayThreshold);
   const ctaOcc = findOccurrences(ctaH, plan.ctaWindows, fps, overlayThreshold);
-  // Diyagram: koyu gfx kartı, videonun KENDİ parlaklık dağılımına göre.
-  const sorted = [...luma].sort((a, b) => a - b);
-  const median = sorted[Math.floor(sorted.length / 2)] || 0.3;
-  const darkIdx = [];
-  for (let i = 0; i < luma.length; i += 1) if (luma[i] < median * 0.45) darkIdx.push(i);
-  const diagramRuns = toRuns(darkIdx).map(([a, b]) => ({
-    start: +(a / fps).toFixed(2), end: +((b + 1) / fps).toFixed(2),
-    planned: (plan.diagramWindows || []).some(([s, e]) => (a / fps) >= s - 0.6 && (b / fps) <= e + 0.6),
-  }));
+  // DİYAGRAM — REFERANS TABANLI, hook/CTA ile aynı yöntem.
+  //
+  // Eski ölçüt "medyanın %45'inden karanlık kare = diyagram kartı" idi. Bu bir
+  // SEMANTİK iddiayı bir parlaklık eşiğiyle kuruyordu ve Roma su kemerleri
+  // koşusunda çöktü: kaynakların üçü arşiv fotoğrafıydı, arşiv fotoğrafları
+  // koyudur, denetim 8.5-14s ile 28-33s aralıklarını "plan dışı diyagram" ilan
+  // etti ve UNDECLARED_OVERLAY:diagram üretti. Ortada diyagram yoktu.
+  //
+  // Diyagram kartı TAM KARE bir varlıktır (bölgesel bir bindirme değil), bu
+  // yüzden referansı tam kare hash'inden alınır ve düz renk körlüğüne karşı
+  // parlaklıkla ikinci boyut eklenir — §1'deki imzanın aynısı.
+  //
+  // DÜRÜST SINIR: plan diyagram penceresi bildirmemişse referans yoktur ve
+  // "diyagram var mı" sorusu piksellerle GÜVENİLİR yanıtlanamaz. O durumda
+  // ölçüt sessiz kalır (doğrulanmadı), uydurma bir bulgu üretmez. Bildirilmemiş
+  // bir tam-kare varlığın plan dışı tekrarı zaten §1'de DUPLICATE_SHOT olarak
+  // yakalanır; bu ölçüt onun üstüne semantik bir ad koymaya çalışmaz.
+  const diagramOcc = findOccurrences(frameHashes, plan.diagramWindows, fps, shotDuplicateThreshold);
+  const diagramRefLuma = diagramOcc.reference ? luma[Math.round(diagramOcc.reference.atSeconds * fps)] : null;
+  const lumaClose = (r) => diagramRefLuma == null
+    || Math.abs((luma[Math.round(((r.start + r.end) / 2) * fps)] ?? 0) - diagramRefLuma) <= 0.03;
+  const diagramRuns = [...diagramOcc.planned, ...diagramOcc.unplanned].filter(lumaClose)
+    .sort((a, b) => a.start - b.start);
 
   const duplicateHooks = Math.max(0, hookOcc.planned.length + hookOcc.unplanned.length - 1);
   const duplicateCTA = Math.max(0, ctaOcc.planned.length + ctaOcc.unplanned.length - 1);
@@ -286,7 +320,7 @@ export async function validateFinalVideo(videoPath, plan = {}, opts = {}) {
   if (ctaOcc.unplanned.length) {
     failures.push(`CTA_OUTSIDE_PLAN:${ctaOcc.unplanned.map((r) => `${r.start}-${r.end}s`).join(',')}`);
   }
-  const unplannedDiagrams = diagramRuns.filter((r) => !r.planned);
+  const unplannedDiagrams = diagramRuns.filter((r) => !r.planned && lumaClose(r));
   if (unplannedDiagrams.length) {
     failures.push(`DIAGRAM_OUTSIDE_PLAN:${unplannedDiagrams.map((r) => `${r.start}-${r.end}s`).join(',')}`);
   }
@@ -299,6 +333,9 @@ export async function validateFinalVideo(videoPath, plan = {}, opts = {}) {
   const observed = [];
   if (hookOcc.planned.length || hookOcc.unplanned.length) observed.push('hook');
   if (ctaOcc.planned.length || ctaOcc.unplanned.length) observed.push('cta');
+  // diagram: yalnızca PLANLI pencere varken gözlemlenebilir (referans gerekir).
+  // Plan bildirmiyorsa "gözlenmedi" demek "yok" demek değildir — bu ölçüt o
+  // durumda bildirim tamlığı hakkında iddia üretmez.
   if (diagramRuns.length) observed.push('diagram');
   const undeclared = observed.filter((o) => !declared.has(o));
   if (undeclared.length) {
@@ -348,6 +385,7 @@ export async function validateFinalVideo(videoPath, plan = {}, opts = {}) {
     fps,
     duplicateFrameGroups,
     duplicateShots,
+    similarShots,
     duplicateHooks,
     duplicateDiagrams,
     duplicateCTA,
@@ -382,12 +420,18 @@ export function verifyTimelineOrder(clips = []) {
     if (c.end <= c.start) problems.push(`NON_POSITIVE_SPAN:${c.id || i}`);
     if (c.start < prevEnd - 0.02) problems.push(`OVERLAP:${c.id || i}`);
     prevEnd = c.end;
-    // Sahne+dizi sırası sözlüksel olarak artmalı.
-    const key = [Number(c.scene ?? 0), Number(c.sequence ?? 0)];
-    if (prevKey && (key[0] < prevKey[0] || (key[0] === prevKey[0] && key[1] < prevKey[1]))) {
-      problems.push(`OUT_OF_ORDER:${c.id || i}`);
+    // Sahne+dizi sırası sözlüksel olarak artmalı — DÖNGÜ KAPANIŞI HARİÇ.
+    // Döngü yankısı, izleyici videoyu baştan izlesin diye ilk görsele KASITLI
+    // olarak geri döner; sahne indeksi doğal olarak geriye gider. Bu bir sıra
+    // bozukluğu değil, editoryal bir karardır: ölçüt onu atlar ve karşılaştırma
+    // çıpasını da güncellemez (yoksa kendinden sonraki klipleri bozuk sayar).
+    if (!c.loopEcho) {
+      const key = [Number(c.scene ?? 0), Number(c.sequence ?? 0)];
+      if (prevKey && (key[0] < prevKey[0] || (key[0] === prevKey[0] && key[1] < prevKey[1]))) {
+        problems.push(`OUT_OF_ORDER:${c.id || i}`);
+      }
+      prevKey = key;
     }
-    prevKey = key;
     if (Number.isFinite(c.renderOrder) && c.renderOrder !== i) {
       problems.push(`RENDER_ORDER_MISMATCH:${c.id || i}`);
     }

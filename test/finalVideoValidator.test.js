@@ -122,8 +122,14 @@ test('ARDIŞIK benzer kareler kopya SAYILMAZ (yanlış pozitif regresyonu)',
     try {
       // Üç ayrı klip, hiçbiri tekrar etmiyor. Her klip 4sn → içinde onlarca
       // birbirinin aynısı kare var; bunlar kusur değildir.
+      //
+      // RENK SEÇİMİ TUZAĞI: ffmpeg renk ADLARI CSS'tir; 'green' #008000'dir ve
+      // parlaklığı (0.587·128 ≈ 75) 'red'inkine (0.299·255 ≈ 76) neredeyse
+      // eşittir. Düz alanlarda dHash zaten kör olduğu için bu iki blok TEK
+      // grup olur ve test iddia ettiği şeyi ölçmez. Bu yüzden bloklar
+      // parlaklık ekseninde gerçekten ayrık seçilir: red / white / blue.
       const v = await buildVideo(dir, 'clean.mp4', [
-        { color: 'red', seconds: 4 }, { color: 'green', seconds: 4 }, { color: 'blue', seconds: 4 },
+        { color: 'red', seconds: 4 }, { color: 'white', seconds: 4 }, { color: 'blue', seconds: 4 },
       ]);
       const r = await validateFinalVideo(v, { duration: 12, clips: [] }, { fps: 2 });
       assert.deepEqual(r.duplicateShots, [], JSON.stringify(r.duplicateShots));
@@ -137,11 +143,14 @@ test('ARADAN SONRA tekrar eden plan YAKALANIR',
     try {
       // 1. klip sonda AYNEN tekrar ediyor → gerçek kusur.
       const v = await buildVideo(dir, 'dup.mp4', [
-        { color: 'red', seconds: 3 }, { color: 'green', seconds: 3 },
+        { color: 'red', seconds: 3 }, { color: 'white', seconds: 3 },
         { color: 'blue', seconds: 3 }, { color: 'red', seconds: 3 },
       ]);
       const r = await validateFinalVideo(v, { duration: 12, clips: [] }, { fps: 2 });
       assert.ok(r.duplicateShots.length >= 1, 'tekrar eden plan bulunamadı');
+      // Tekrar GERÇEKTEN ilk kliple son klip arasında olmalı; araya giren
+      // bloklarla birleşmiş bir grup bu iddiayı karşılamaz.
+      assert.deepEqual(r.duplicateShots[0].runs, [[0, 3], [9, 12]], JSON.stringify(r.duplicateShots));
       assert.ok(r.failures.some((f) => f.startsWith('DUPLICATE_SHOT')), JSON.stringify(r.failures));
       assert.equal(r.ok, false);
     } finally { await rm(dir, { recursive: true, force: true }); }
@@ -152,7 +161,7 @@ test('KASITLI döngü kapanışı kopya sayılmaz (muafiyet çalışıyor)',
     const dir = await mkdtemp(path.join(os.tmpdir(), 'fvv-c-'));
     try {
       const v = await buildVideo(dir, 'loop.mp4', [
-        { color: 'red', seconds: 3 }, { color: 'green', seconds: 3 },
+        { color: 'red', seconds: 3 }, { color: 'white', seconds: 3 },
         { color: 'blue', seconds: 3 }, { color: 'red', seconds: 3 },
       ]);
       // Son 3 saniye BİLİNÇLİ loop kapanışı olarak bildirilir.
@@ -265,4 +274,122 @@ test('run integrity zinciri yoksa needs_review', async () => {
   });
   assert.ok(r.review.includes('RUN_INTEGRITY_UNVERIFIED'));
   assert.equal(r.passed, false);
+});
+
+// ---------------- DÖNGÜ KAPANIŞI SIRA MUAFİYETİ ----------------
+test('döngü yankısı sahne sırasını geriye alsa da OUT_OF_ORDER sayılmaz', () => {
+  // Son plan KASITLI olarak ilk görsele döner: scene 0, en sonda.
+  const r = verifyTimelineOrder([
+    { id: 'scene_00_clip_00', scene: 0, sequence: 0, renderOrder: 0, start: 0, end: 3 },
+    { id: 'scene_01_clip_00', scene: 1, sequence: 0, renderOrder: 1, start: 3, end: 6 },
+    { id: 'scene_00_loopecho_00', scene: 0, sequence: 0, renderOrder: 2, start: 6, end: 8, loopEcho: true },
+  ]);
+  assert.equal(r.valid, true, JSON.stringify(r.problems));
+});
+
+test('döngü yankısından SONRAKİ gerçek sıra bozukluğu hâlâ yakalanır', () => {
+  // Muafiyet çıpayı güncellemez; scene 1 -> scene 0 (loop) -> scene 0 normal
+  // klip yine de scene 1'in gerisindedir.
+  const r = verifyTimelineOrder([
+    { id: 'scene_01_clip_00', scene: 1, sequence: 0, renderOrder: 0, start: 0, end: 3 },
+    { id: 'scene_00_loopecho_00', scene: 0, sequence: 0, renderOrder: 1, start: 3, end: 5, loopEcho: true },
+    { id: 'scene_00_clip_00', scene: 0, sequence: 0, renderOrder: 2, start: 5, end: 7 },
+  ]);
+  assert.ok(r.problems.some((p) => p.startsWith('OUT_OF_ORDER')), JSON.stringify(r.problems));
+});
+
+// ---------------- KOYU ARŞİV FOTOĞRAFI ≠ DİYAGRAM ----------------
+test('koyu kareler, plan diyagram bildirmiyorsa diyagram sayılmaz', { skip: !hasFfmpeg }, async () => {
+  // GERÇEK REGRESYON: Roma su kemerleri koşusunda kaynakların üçü arşiv
+  // fotoğrafıydı. Eski ölçüt "medyanın %45'inden karanlık = diyagram kartı"
+  // diyordu; 8.5-14s ve 28-33s aralıkları "plan dışı diyagram" ilan edildi ve
+  // UNDECLARED_OVERLAY:diagram üretildi. Ortada hiç diyagram yoktu.
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'fvv-dark-'));
+  try {
+    const v = await buildVideo(dir, 'dark.mp4', [
+      { color: 'gray',   seconds: 4 },
+      { color: '0x101010', seconds: 4 },   // koyu arşiv fotoğrafı taklidi
+      { color: 'white',  seconds: 4 },
+      { color: '0x0c1418', seconds: 4 },   // ikinci koyu fotoğraf
+    ]);
+    const r = await validateFinalVideo(v, {
+      duration: 16,
+      clips: [
+        { id: 'c0', scene: 0, sequence: 0, renderOrder: 0, start: 0,  end: 4,  assetId: 'a0' },
+        { id: 'c1', scene: 1, sequence: 0, renderOrder: 1, start: 4,  end: 8,  assetId: 'a1' },
+        { id: 'c2', scene: 2, sequence: 0, renderOrder: 2, start: 8,  end: 12, assetId: 'a2' },
+        { id: 'c3', scene: 3, sequence: 0, renderOrder: 3, start: 12, end: 16, assetId: 'a3' },
+      ],
+      hookWindows: [], ctaWindows: [], diagramWindows: [], loopEchoWindows: [],
+      declaredOverlays: [],
+    }, { fps: 2 });
+    assert.ok(!r.failures.some((f) => f.startsWith('DIAGRAM_OUTSIDE_PLAN')),
+      `koyu fotoğraf diyagram sanıldı: ${JSON.stringify(r.failures)}`);
+    assert.ok(!r.failures.some((f) => f.includes('UNDECLARED_OVERLAY') && f.includes('diagram')),
+      `bildirilmemiş diyagram uyduruldu: ${JSON.stringify(r.failures)}`);
+    assert.deepEqual(r.diagramOccurrences, []);
+  } finally { await rm(dir, { recursive: true, force: true }); }
+});
+
+// ---------------- KOPYA: KANIT vs BENZERLİK ----------------
+test('aynı varlık aradan sonra tekrar ederse KANITLI kopya (hata)', { skip: !hasFfmpeg }, async () => {
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'fvv-dup-'));
+  try {
+    const v = await buildVideo(dir, 'dup.mp4', [
+      { color: 'red', seconds: 3 }, { color: 'white', seconds: 4 }, { color: 'red', seconds: 3 },
+    ]);
+    const r = await validateFinalVideo(v, {
+      duration: 10,
+      clips: [
+        { id: 'c0', scene: 0, sequence: 0, renderOrder: 0, start: 0, end: 3,  assetId: 'SAME' },
+        { id: 'c1', scene: 1, sequence: 0, renderOrder: 1, start: 3, end: 7,  assetId: 'other' },
+        { id: 'c2', scene: 2, sequence: 0, renderOrder: 2, start: 7, end: 10, assetId: 'SAME' },
+      ],
+      hookWindows: [], ctaWindows: [], diagramWindows: [], loopEchoWindows: [],
+      declaredOverlays: [],
+    }, { fps: 2 });
+    assert.ok(r.failures.some((f) => f.startsWith('DUPLICATE_SHOT')), JSON.stringify(r.failures));
+    assert.equal(r.duplicateShots[0].evidence, 'same-asset');
+  } finally { await rm(dir, { recursive: true, force: true }); }
+});
+
+test('farklı varlıklar görsel olarak yakınsa UYARI, sert engel değil', { skip: !hasFfmpeg }, async () => {
+  // Aynı konunun iki ayrı arşiv fotoğrafı (aynı taş, aynı ton) 64 bit dHash'te
+  // birbirine düşebilir. Bu bir İDDİADIR, delil değil: insan bakışına gider.
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'fvv-sim-'));
+  try {
+    const v = await buildVideo(dir, 'sim.mp4', [
+      { color: 'red', seconds: 3 }, { color: 'white', seconds: 4 }, { color: 'red', seconds: 3 },
+    ]);
+    const r = await validateFinalVideo(v, {
+      duration: 10,
+      clips: [
+        { id: 'c0', scene: 0, sequence: 0, renderOrder: 0, start: 0, end: 3,  assetId: 'photo-A' },
+        { id: 'c1', scene: 1, sequence: 0, renderOrder: 1, start: 3, end: 7,  assetId: 'photo-B' },
+        { id: 'c2', scene: 2, sequence: 0, renderOrder: 2, start: 7, end: 10, assetId: 'photo-C' },
+      ],
+      hookWindows: [], ctaWindows: [], diagramWindows: [], loopEchoWindows: [],
+      declaredOverlays: [],
+    }, { fps: 2 });
+    assert.ok(!r.failures.some((f) => f.startsWith('DUPLICATE_SHOT')), JSON.stringify(r.failures));
+    assert.ok(r.warnings.some((w) => w.startsWith('SIMILAR_SHOT')), JSON.stringify(r.warnings));
+  } finally { await rm(dir, { recursive: true, force: true }); }
+});
+
+test('SIMILAR_SHOT sert engel değil, insan gözüne gider (needs_review)', async () => {
+  const { evaluatePublishGates } = await import('../src/pipeline/publishGates.js');
+  const base = {
+    runIntegrity: { chainHash: 'x', parts: { finalVideo: 'y' } },
+    captionIntegrity: { tokenCoverage: 1, missingTokens: [], duplicateTokens: [],
+      grammarRiskBlocks: [], timelineOverlapCount: 0 },
+    subjectContinuity: { verified: true, score: 0.9, suspectedWrongSubjectScenes: [] },
+    semanticActions: { average: 0.9 },
+  };
+  const r = evaluatePublishGates({
+    ...base,
+    finalVideo: { ok: true, failures: [], warnings: ['SIMILAR_SHOT:1 — farklı varlıklar'] },
+  });
+  assert.ok(!r.failures.some((f) => f.includes('SIMILAR_SHOT')), JSON.stringify(r.failures));
+  assert.ok(r.review.some((x) => x.includes('SIMILAR_SHOT')), JSON.stringify(r.review));
+  assert.notEqual(r.status, 'fail');
 });

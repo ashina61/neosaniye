@@ -70,9 +70,17 @@ export function evaluatePublishGates({
       duplicateCaptions: finalVideo.duplicateCaptions,
       longestStaticStreakSeconds: finalVideo.longestStaticStreakSeconds,
       sceneOrderValid: finalVideo.sceneOrderValid,
+      similarShots: finalVideo.similarShots?.length ?? null,
     };
     // Doğrulayıcının kendi bulguları doğrudan yayın engelidir.
     for (const f of finalVideo.failures || []) failures.push(`FINAL_VIDEO/${f}`);
+    // SIMILAR_SHOT bir İDDİADIR, kanıt değil: farklı varlıklar algısal olarak
+    // yakın çıkmış. Sert engel yanlış olurdu (doğru kurgulanmış video bloklanır),
+    // sessizce geçmek de yanlış (gerçekten tekrar gibi görünüyor olabilir).
+    // Doğru yer insan gözü: needs_review.
+    for (const w of finalVideo.warnings || []) {
+      if (String(w).startsWith('SIMILAR_SHOT')) review.push(`FINAL_VIDEO/${w}`);
+    }
   }
 
   // ---- RUN INTEGRITY ----

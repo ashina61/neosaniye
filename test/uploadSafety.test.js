@@ -165,3 +165,16 @@ test('generate-and-publish: bayraksız çağrı upload İSTEMEZ', async () => {
   assert.match(src, /--upload'\) \? true/);
   assert.ok(!/\? false : undefined/.test(src), 'eski "bayrak yoksa undefined" mantığı duruyor');
 });
+
+// ---------------- KAPININ ÇALIŞMASI ARIZA DEĞİLDİR ----------------
+test('bilinçli engelleme "hiçbir platforma yüklenemedi" hatası ÜRETMEZ', async () => {
+  // 26 Tem 17:01 koşusu: kullanıcı --upload verdi, yayın kapıları videoyu
+  // HAKLI OLARAK engelledi ("QC geçilemedi"), sonra bu kontrol exception attı
+  // ve iş kırmızıya döndü. Kapının doğru çalışması arıza gibi raporlanıyordu.
+  // Kontrol yalnızca upload GERÇEKTEN denendiğinde (canUpload) anlamlıdır.
+  const src = await readFile('src/pipeline/run.js', 'utf8');
+  const m = src.match(/if \(([^)]*?)configuredPlatforms > 0 && successfulPlatforms === 0\)/);
+  assert.ok(m, 'sessiz upload başarısızlığı kontrolü bulunamadı');
+  assert.match(m[1], /\bcanUpload\b/,
+    'kontrol canUpload ile korunmuyor: engellenen koşu "upload başarısız" sayılır');
+});

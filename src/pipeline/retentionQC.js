@@ -681,11 +681,27 @@ export async function runRetentionQC(input, workDir, extras = {}) {
     for (const x of r.recommendedFixes) console.log(`[qc] 🔧 ${x}`);
   }
   if (blockUpload) {
+    // SEBEP LİSTESİ, blockUpload'ı GERÇEKTEN ne tetiklediyse onu yazar.
+    // Eskiden burada koşulsuz olarak "skor X < minScore veya kritik editoryal
+    // hata" basılıyordu; oysa editoryal skor artık bir yayın kapısı DEĞİL
+    // (blockUpload = !technicalReady || finalVideoOk === false). Roma su
+    // kemerleri koşusunda log "skor 98 < 75" dedi — 98, 75'ten küçük değil ve
+    // engelin sebebi de o değildi. Yanlış teşhis, hatayı aramayı zorlaştırdı.
     const causes = [];
-    if (execError) causes.push('QC kendisi hata verdi (fail-closed, her aktif modda)');
-    if (!execError && !editorialReady) causes.push(`skor ${r?.score} < ${cfg.minScore} veya kritik editoryal hata`);
-    for (const reason of externalBlockingReasons) causes.push(reason);
+    if (!technicalReady) causes.push('teknik preflight başarısız');
+    if (finalVideoOk === false) {
+      const ff = extras.finalVideo?.failures || [];
+      causes.push(`final MP4 doğrulaması başarısız${ff.length ? `: ${ff.slice(0, 4).join(', ')}` : ''}`);
+    }
+    if (execError) causes.push(`QC kendisi hata verdi: ${execError}`);
     console.error(`[qc] ${cfg.mode.toUpperCase()} mod: ${causes.join(' + ')} — upload ENGELLENDİ.`);
+    // Aşağıdakiler engelin sebebi değil ama karara EŞLİK eden bulgular;
+    // ayrı satırda, sebep gibi görünmeden raporlanır.
+    if (!execError && editorialReady === false) {
+      console.warn(`[qc] not: editoryal skor ${r?.score}/${cfg.minScore}`
+        + `${r?.failures?.length ? `, editoryal hata: ${r.failures.slice(0, 3).join(', ')}` : ''} (yayın kapısı değil)`);
+    }
+    for (const reason of externalBlockingReasons) console.warn(`[qc] not: ${reason}`);
   }
   return { score: r ? r.score : null, ok: productionReady, blockUpload, report, error: execError };
 }

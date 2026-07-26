@@ -1498,20 +1498,35 @@ export async function renderVideo(job, opts = {}) {
       },
       // TIMELINE BÜTÜNLÜĞÜ: her klibin kimliği + sırası. scene_03_clip_02,
       // scene_04_clip_00'dan önce gelmeli; doğrulayıcı bunu denetler.
-      clips: (canonicalItems || []).map((it, i) => {
-        const sceneIdx = it?.scene ?? job.mediaScene?.[i] ?? i;
-        const part = media?.[i]?.part ?? 0;
-        return {
-          id: `scene_${String(sceneIdx).padStart(2, '0')}_clip_${String(part).padStart(2, '0')}`,
-          scene: sceneIdx,
-          sequence: part,
-          renderOrder: i,
-          start: +Number(it.start).toFixed(3),
-          end: +Number(it.end).toFixed(3),
-          assetId: media?.[i]?.assetId || media?.[i]?.path || null,
-          source: media?.[i]?.source || null,
-        };
-      }),
+      // KİMLİK ÇAKIŞMASI: (sahne, parça) çifti tek başına BENZERSİZ DEĞİLDİR.
+      // Döngü kapanışı klibi ilk görseli KASITLI olarak yeniden kullanır, yani
+      // scene=0/part=0 ile gelir ve zaman çizelgesinin ilk klibiyle aynı
+      // kimliği alır. Roma su kemerleri koşusunda doğrulayıcı bunu haklı olarak
+      // TIMELINE_ORDER_INVALID:DUPLICATE_CLIP_ID diye bildirdi — kusur planda
+      // değil, kimlik şemasındaydı. Döngü yankısı kendi adını alır; kalan her
+      // çakışma da render sırasıyla ayrıştırılır ki kimlik daima tekil olsun.
+      clips: (() => {
+        const used = new Set();
+        return (canonicalItems || []).map((it, i) => {
+          const sceneIdx = it?.scene ?? job.mediaScene?.[i] ?? i;
+          const part = media?.[i]?.part ?? 0;
+          const kind = media?.[i]?.loopEcho ? 'loopecho' : 'clip';
+          let id = `scene_${String(sceneIdx).padStart(2, '0')}_${kind}_${String(part).padStart(2, '0')}`;
+          if (used.has(id)) id += `_r${String(i).padStart(2, '0')}`;
+          used.add(id);
+          return {
+            id,
+            scene: sceneIdx,
+            sequence: part,
+            renderOrder: i,
+            loopEcho: Boolean(media?.[i]?.loopEcho),
+            start: +Number(it.start).toFixed(3),
+            end: +Number(it.end).toFixed(3),
+            assetId: media?.[i]?.assetId || media?.[i]?.path || null,
+            source: media?.[i]?.source || null,
+          };
+        });
+      })(),
       expectedSceneCount: N,
       sceneBoundaries: canonicalItems ? canonicalItems.slice(0, -1).map((x) => x.end) : [],
       transitions: btName.slice(0, Math.max(0, N - 1)).map((type, i) => ({ type: planOk ? plan.boundaries[i]?.transition || 'cut' : type, atSeconds: canonicalItems?.[i]?.end ?? null })),
