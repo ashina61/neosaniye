@@ -12,6 +12,8 @@ import { selectMusic } from '../audio/musicSelect.js';
 import { selectSceneMotion, validateMotionPlan } from './motionPlan.js';
 import { directSemantics } from '../visual/semanticDirector.js';
 import { buildSemanticAss } from '../visual/semanticShots.js';
+import { planActors } from '../visual/beatToActors.js';
+import { buildActorAss } from '../visual/actors.js';
 import { detectFocus } from '../visual/focusDetect.js';
 import { planSemanticSfx, describeSfxPlan } from '../audio/semanticSfx.js';
 
@@ -1243,6 +1245,7 @@ export async function renderVideo(job, opts = {}) {
       // Rastgele konuma daire çizmek düzeltilen asıl hataydı.
       if (semCfg.focusHighlight !== false) {
         for (const b of beats) {
+          // Aktöre çevrilebilen tipler konum ölçümünden faydalanır.
           if (b.kind !== 'behavior') continue;
           const src = media[b.index]?.path;
           if (!src) continue;
@@ -1256,15 +1259,33 @@ export async function renderVideo(job, opts = {}) {
         }
       }
 
-      const ass = buildSemanticAss(beats, { width, height, cfg: semCfg });
+      // V3: önce AKTÖR koreografisi (kadrajın İÇİNDE durum değiştiren
+      // elemanlar), aktöre çevrilemeyen beat'ler eski kart yoluna düşer.
+      const { actors, cardBeats, stats: actorStats } = planActors(beats);
+      const filters = [];
+
+      const actorAss = buildActorAss(actors, { width, height });
+      if (actorAss) {
+        await writeFile(path.join(workDir, 'actors.ass'), actorAss);
+        filters.push(existsSync(fontsDir) ? `ass=actors.ass:fontsdir=${fontsDir}` : 'ass=actors.ass');
+        console.log(`[visual] AKTÖR koreografisi: ${actors.length} aktör / ` +
+          `${actorStats.actorScenes} sahne (${Object.entries(actorStats.byKind)
+            .map(([k, v]) => `${k}:${v}`).join(' ')})`);
+      }
+
+      const ass = buildSemanticAss(cardBeats, { width, height, cfg: semCfg });
       if (ass) {
         await writeFile(path.join(workDir, 'semantic.ass'), ass);
-        effectsFilter = existsSync(fontsDir) ? `ass=semantic.ass:fontsdir=${fontsDir}` : 'ass=semantic.ass';
-        const kinds = beats.map((b) => b.kind).join(', ');
-        console.log(`[visual] semantik anlatım: ${beats.length} kompozisyon (${kinds})`);
+        filters.push(existsSync(fontsDir) ? `ass=semantic.ass:fontsdir=${fontsDir}` : 'ass=semantic.ass');
+        console.log(`[visual] kart katmanı: ${cardBeats.length} kompozisyon (${
+          cardBeats.map((b) => b.kind).join(', ')})`);
+      }
+
+      if (filters.length) {
+        effectsFilter = filters.join(',');
         semanticBeatsUsed = beats.map((b) => ({ kind: b.kind, index: b.index, start: b.start }));
       } else {
-        console.log('[visual] semantik yapı bulunamadı — ekran temiz bırakıldı.');
+        console.log('[visual] gösterilecek yapı yok — ekran temiz bırakıldı.');
       }
     } catch (err) {
       console.warn(`[visual] semantik katman atlandı: ${String(err.message).slice(0, 90)}`);

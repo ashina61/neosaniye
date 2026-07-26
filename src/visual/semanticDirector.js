@@ -64,7 +64,13 @@ const LOCATION_RE = /\b(?:in|on|off|near|across|throughout|around|beneath|under|
 const PLACE_HINT = /\b(ocean|sea|reef|island|coast|desert|forest|mountain|river|lake|valley|cave|arctic|antarctic|pacific|atlantic|indian|amazon|sahara|himalaya|andes|africa|asia|europe|australia|america|antarctica)\b/i;
 
 /** Canlı davranışı — özne + eylem. */
-const BEHAVIOR_RE = /\b(swim|swims|swimming|fly|flies|flying|hunt|hunts|hunting|feed|feeds|feeding|migrate|migrates|migrating|hide|hides|hiding|attack|attacks|attacking|escape|escapes|escaping|dance|dances|dancing|build|builds|building|dig|digs|digging|climb|climbs|climbing|chase|chases|chasing|turn|turns|turning|move|moves|moving|gather|gathers|gathering|signal|signals|signaling|warn|warns|warning|call|calls|calling)\b/i;
+/**
+ * Canlı davranışı. LİSTE GENİŞ tutulur: ilk sürümde "walk" yoktu ve tam da
+ * amaçlanan örnek ("a termite WALKS out and MARKS the ground behind it")
+ * davranış sayılmıyor, dolayısıyla iz/yürüyen özne koreografisi hiç
+ * üretilmiyordu. Yürüme/işaretleme/iz bırakma fiilleri bu katmanın çekirdeği.
+ */
+const BEHAVIOR_RE = /\b(walk|walks|walking|crawl|crawls|crawling|march|marches|marching|wander|wanders|roam|roams|swim|swims|swimming|fly|flies|flying|hunt|hunts|hunting|feed|feeds|feeding|forage|forages|foraging|migrate|migrates|migrating|hide|hides|hiding|attack|attacks|attacking|escape|escapes|escaping|flee|flees|dance|dances|dancing|build|builds|building|dig|digs|digging|climb|climbs|climbing|chase|chases|chasing|follow|follows|following|lead|leads|leading|turn|turns|turning|move|moves|moving|gather|gathers|gathering|signal|signals|signaling|mark|marks|marking|leave|leaves|leaving|trail|trails|carry|carries|carrying|warn|warns|warning|call|calls|calling|nest|nests|nesting|guard|guards|guarding)\b/i;
 
 /** Anlamlı sayı + birim. */
 function extractNumber(text) {
