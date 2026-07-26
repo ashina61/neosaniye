@@ -65,6 +65,121 @@ async function fetchPollinations(prompt, dest, { width, height, seed }) {
   }
 }
 
+/** Bu koşuda tükenmiş görsel sağlayıcıları (kota/anahtar) — tekrar denenmez. */
+const deadImageProviders = new Set();
+
+/** Koşular arası durum sızmasın (test + uzun süreçler için). */
+export function resetImageProviders() { deadImageProviders.clear(); }
+
+/** Cloudflare Workers AI (FLUX) — metin tarafıyla AYNI kimlik bilgileri. */
+async function fetchCloudflareImage(prompt, dest, { width, height, seed }) {
+  const { apiKey, accountId } = config.cloudflareAi;
+  if (!apiKey || !accountId) throw new Error('cloudflare kimlik bilgisi yok');
+  const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${config.images.cloudflareModel}`;
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), config.images.timeoutMs);
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      signal: ctrl.signal,
+      headers: { authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
+      body: JSON.stringify({ prompt, width, height, seed }),
+    });
+    if (!res.ok) throw new Error(`cloudflare HTTP ${res.status}`);
+    const ct = res.headers.get('content-type') || '';
+    // Model ya doğrudan ikili görsel ya da {result:{image:base64}} döner.
+    let buf;
+    if (ct.includes('application/json')) {
+      const data = await res.json();
+      const b64 = data?.result?.image;
+      if (!b64) throw new Error('cloudflare görsel içermeyen yanıt');
+      buf = Buffer.from(b64, 'base64');
+    } else {
+      buf = Buffer.from(await res.arrayBuffer());
+    }
+    if (buf.length < 3000) throw new Error('cloudflare boş/geçersiz görsel');
+    await writeFile(dest, buf);
+    return dest;
+  } finally { clearTimeout(timer); }
+}
+
+/** Together AI — FLUX.1-schnell-Free (ücretsiz uç). */
+async function fetchTogetherImage(prompt, dest, { width, height, seed }) {
+  const { apiKey, model } = config.images.together;
+  if (!apiKey) throw new Error('together anahtarı yok');
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), config.images.timeoutMs);
+  try {
+    const res = await fetch('https://api.together.xyz/v1/images/generations', {
+      method: 'POST',
+      signal: ctrl.signal,
+      headers: { authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
+      body: JSON.stringify({ model, prompt, width, height, seed, n: 1, response_format: 'b64_json' }),
+    });
+    if (!res.ok) throw new Error(`together HTTP ${res.status}`);
+    const data = await res.json();
+    const b64 = data?.data?.[0]?.b64_json;
+    if (!b64) throw new Error('together görsel içermeyen yanıt');
+    const buf = Buffer.from(b64, 'base64');
+    if (buf.length < 3000) throw new Error('together boş/geçersiz görsel');
+    await writeFile(dest, buf);
+    return dest;
+  } finally { clearTimeout(timer); }
+}
+
+/** Hugging Face Inference API (ücretsiz katman) — ham görsel döner. */
+async function fetchHuggingFaceImage(prompt, dest) {
+  const { apiKey, model } = config.images.huggingface;
+  if (!apiKey) throw new Error('huggingface anahtarı yok');
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), config.images.timeoutMs);
+  try {
+    const res = await fetch(`https://api-inference.huggingface.co/models/${model}`, {
+      method: 'POST',
+      signal: ctrl.signal,
+      headers: { authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
+      body: JSON.stringify({ inputs: prompt }),
+    });
+    if (!res.ok) throw new Error(`huggingface HTTP ${res.status}`);
+    const buf = Buffer.from(await res.arrayBuffer());
+    if (buf.length < 3000) throw new Error('huggingface boş/geçersiz görsel');
+    await writeFile(dest, buf);
+    return dest;
+  } finally { clearTimeout(timer); }
+}
+
+/**
+ * BİRLEŞİK AI GÖRSEL ÜRETİCİ — sağlayıcı zincirini sırayla dener.
+ *
+ * Tek ücretsiz sağlayıcıya bağlı kalmak kırılgandı: Pollinations düşünce
+ * bütün sahneler stok görsele düşüyor ve slayt hissi geri geliyordu. Artık
+ * biri düşerse sıradaki denenir; hepsi düşerse çağıran yedek zincirine iner.
+ *
+ * @returns {Promise<{path:string, provider:string}>}
+ */
+export async function generateAiImage(prompt, dest, opts) {
+  const chain = config.images.fallbackChain;
+  const errors = [];
+  for (const name of chain) {
+    if (deadImageProviders.has(name)) continue;
+    try {
+      if (name === 'pollinations') await fetchPollinations(prompt, dest, opts);
+      else if (name === 'cloudflare') await fetchCloudflareImage(prompt, dest, opts);
+      else if (name === 'together') await fetchTogetherImage(prompt, dest, opts);
+      else if (name === 'huggingface') await fetchHuggingFaceImage(prompt, dest);
+      else continue;
+      if (name !== chain[0]) console.log(`[img] sağlayıcı yedeği: ${name}`);
+      return { path: dest, provider: name };
+    } catch (err) {
+      const msg = String(err?.message || err);
+      errors.push(`${name}: ${msg.slice(0, 60)}`);
+      // Anahtarsız/kota dolmuş sağlayıcıyı bu koşuda bir daha deneme.
+      if (/anahtar|kimlik|401|403|429|payment/i.test(msg)) deadImageProviders.add(name);
+    }
+  }
+  throw new Error(`tüm görsel sağlayıcıları düştü (${errors.join(' | ')})`);
+}
+
 /** Gemini yanıtından ilk gömülü (inline) görseli çıkarır. */
 function extractInlineImage(response) {
   const parts = response?.candidates?.[0]?.content?.parts || [];
@@ -268,7 +383,7 @@ export async function generateImages(script, opts = {}) {
           let statBg = null;
           try {
             const bgDest = path.join(mediaDir, `${idx}-statbg.jpg`);
-            await fetchPollinations(prompt, bgDest, { width, height, seed: sceneSeed });
+            await generateAiImage(prompt, bgDest, { width, height, seed: sceneSeed });
             if (existsSync(bgDest)) statBg = bgDest;
           } catch { /* düz karta düş */ }
           const clip = await renderStatCard(scene.stat, dest, { width, height, duration: 8, bgImage: statBg });
@@ -362,8 +477,8 @@ export async function generateImages(script, opts = {}) {
           try {
             if (provider === 'pollinations') {
               const dest = path.join(mediaDir, `${idx}-ai.jpg`);
-              await fetchPollinations(tryPrompt, dest, { width, height, seed: trySeed });
-              candidate = { path: dest, type: 'photo', scene: i, source: 'ai', provider: 'pollinations', assetId: `${script.normalizedTopic}:${i}:${trySeed}`, query: tryPrompt, model: config.images.pollinationsModel, generatedAt: new Date().toISOString(), rightsClass: 'ai-generated', license: null, licenseEvidence: null };
+              const made = await generateAiImage(tryPrompt, dest, { width, height, seed: trySeed });
+              candidate = { path: dest, type: 'photo', scene: i, source: 'ai', provider: made.provider, assetId: `${script.normalizedTopic}:${i}:${trySeed}`, query: tryPrompt, model: config.images.pollinationsModel, generatedAt: new Date().toISOString(), rightsClass: 'ai-generated', license: null, licenseEvidence: null };
             } else if (provider === 'gemini') {
               const dest = path.join(mediaDir, `${idx}-ai.png`);
               const buf = await generateOne(geminiAI, tryPrompt);
@@ -465,7 +580,7 @@ export async function generateImages(script, opts = {}) {
           const dest = path.join(mediaDir, `${idx}-seq${f}.jpg`);
           const seqPrompt = [scene.image_prompt, phases[f], framing, anchor, stylePrefix, styleSuffix]
             .filter(Boolean).join('. ');
-          await fetchPollinations(seqPrompt, dest, { width, height, seed: sceneSeed });
+          await generateAiImage(seqPrompt, dest, { width, height, seed: sceneSeed });
           if (!existsSync(dest)) break;
           const h = await perceptualHash(dest);
           const d = hammingDistance(baseHash, h);

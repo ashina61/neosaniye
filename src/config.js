@@ -132,6 +132,27 @@ export const config = {
         'harmonious cohesive color palette, historically accurate period details, ' +
         'no futuristic or sci-fi elements, vertical 9:16 composition, ' +
         'no text, no watermark, no speech bubbles, no distorted faces or hands',
+    // GÖRSEL SAĞLAYICI ZİNCİRİ. Script tarafındaki dersin aynısı: tek ücretsiz
+    // sağlayıcıya bağlı kalmak kırılgan. Pollinations düşerse/limitlerse TÜM
+    // sahneler stok görsele düşüyor ve "slayt" hissi başka kılıkta geri geliyor.
+    // Sırayla denenir; anahtarı olmayan SESSİZCE atlanır.
+    //   pollinations  — anahtarsız (varsayılan)
+    //   cloudflare    — Workers AI FLUX (günlük ücretsiz kota; metin tarafıyla
+    //                   AYNI kimlik bilgilerini kullanır, ek kayıt gerekmez)
+    //   together      — FLUX.1-schnell-Free (ücretsiz uç)
+    //   huggingface   — Inference API (ücretsiz katman)
+    fallbackChain: (process.env.IMAGE_PROVIDER_CHAIN
+      || 'pollinations,cloudflare,together,huggingface')
+      .split(',').map((s) => s.trim()).filter(Boolean),
+    together: {
+      apiKey: process.env.TOGETHER_API_KEY,
+      model: process.env.TOGETHER_IMAGE_MODEL || 'black-forest-labs/FLUX.1-schnell-Free',
+    },
+    huggingface: {
+      apiKey: process.env.HUGGINGFACE_API_KEY,
+      model: process.env.HF_IMAGE_MODEL || 'black-forest-labs/FLUX.1-schnell',
+    },
+    cloudflareModel: process.env.CLOUDFLARE_IMAGE_MODEL || '@cf/black-forest-labs/flux-1-schnell',
     retries: Number(process.env.IMAGE_RETRIES || 2),
     timeoutMs: Number(process.env.IMAGE_TIMEOUT_MS || 90000),
     // Görsel üretimi başarısızsa Pexels'ten stok görsele düş.
