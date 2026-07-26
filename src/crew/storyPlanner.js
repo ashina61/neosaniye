@@ -234,12 +234,22 @@ export function planScene(scene = {}, index = 0) {
   if (!template) template = 'atmosphere';
   const spec = TEMPLATES[template] || TEMPLATES.atmosphere;
 
+  // MEKANİZMA AKIŞI — belgedeki amiral örneğin dayanağı ("sıcak hava yükselir,
+  // soğuk hava iner"). Cümle gerçekten bir AKIŞTAN söz etmiyorsa ok çizilmez:
+  // "inside/chamber" geçen her cümleye hava akışı oku koymak, olmayan bir
+  // iddiada bulunmak olurdu (tuzak 2'nin akış hâli).
+  let flow = null;
+  if (template === 'mechanism') {
+    if (/\b(heat|hot|warm|cold|cool|temperature|thermal)\b/i.test(narration)) flow = 'thermal';
+    else if (/\b(air|flows?|flowing|moves? through|travels? through|carried|pumped|circulat\w+|ventilat\w+|drains?|rises?|sinks?)\b/i.test(narration)) flow = 'generic';
+  }
+
   // AKTÖR BEAT'İ: eskiden yalnızca classifyBeat bir şey döndürdüğünde vardı;
   // bu yüzden override ile seçilen şablonlar (search_reveal, communication…)
   // hiç aktör alamıyor, sahne dekoratif kalıyordu. Artık şablonun kendisi
   // aktör üretebiliyorsa beat taşınır — sınıflandırıcı sessiz kalsa bile.
   const actorable = Boolean(beat) || spec.actorFromFocus
-    || (spec.needsTimeMarks && marks.length >= 2);
+    || (spec.needsTimeMarks && marks.length >= 2) || Boolean(flow);
 
   return {
     story_template: template,
@@ -251,7 +261,11 @@ export function planScene(scene = {}, index = 0) {
     beat: actorable
       ? {
         kind: beat?.kind || 'story',
-        payload: { ...(beat?.payload || {}), ...(marks.length >= 2 ? { marks } : {}) },
+        payload: {
+          ...(beat?.payload || {}),
+          ...(marks.length >= 2 ? { marks } : {}),
+          ...(flow ? { flow } : {}),
+        },
         template,
       }
       : null,

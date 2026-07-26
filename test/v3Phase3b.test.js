@@ -84,6 +84,34 @@ test('her yeni şablon kendi aktörünü üretir', () => {
   assert.ok(tl.some((a) => a.type === 'axis'));
 });
 
+// ---------------- BELGENİN AMİRAL ÖRNEĞİ ----------------
+test('mekanizma sahnesi kesitte AKIŞ çizer (sıcak yukarı, soğuk aşağı)', () => {
+  const s = { narration: 'Warm air rises through the interior chambers and cool air sinks back',
+    image_prompt: 'a mound' };
+  planVisualStory({ scenes: [s] });
+  assert.equal(s.story_template, 'mechanism');
+  assert.equal(s.story_beat.payload.flow, 'thermal');
+  const made = beatToActors({ ...s.story_beat, start: 0, end: 5, focus: FOCUS });
+  const arrows = made.filter((a) => a.type === 'flow_arrow');
+  assert.equal(arrows.length, 2, JSON.stringify(made.map((a) => a.type)));
+  assert.equal(arrows[0].temp, 'hot');
+  assert.equal(arrows[1].temp, 'cold');
+  // Sıcak YUKARI gider (hedef y kaynaktan küçük), soğuk AŞAĞI.
+  assert.ok(arrows[0].to[1] < arrows[0].from[1], 'sıcak hava yukarı çıkmıyor');
+  assert.ok(arrows[1].to[1] > arrows[1].from[1], 'soğuk hava aşağı inmiyor');
+  // Sırayla belirirler: sahne içinde bir olay DİZİSİ yaşanır.
+  assert.ok(arrows[1].start > arrows[0].start, 'iki ok aynı anda beliriyor');
+});
+
+test('akıştan söz etmeyen "inside" cümlesine ok çizilmez', () => {
+  // "inside" geçen her cümleye hava akışı oku koymak, olmayan bir iddiada
+  // bulunmaktı — konum uydurmanın akış hâli.
+  const s = { narration: 'The chamber inside stays completely dry', image_prompt: 'x' };
+  planVisualStory({ scenes: [s] });
+  assert.equal(s.story_template, 'mechanism');
+  assert.equal(s.story_beat, null, 'dayanaksız akış oku üretildi');
+});
+
 test('konum ÖLÇÜLMEDİYSE aktör üretilmez (uydurma konum yasağı)', () => {
   for (const template of ['communication', 'chain_reaction', 'cause_effect',
     'navigation', 'problem_solution', 'search_reveal']) {

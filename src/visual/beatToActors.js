@@ -110,6 +110,29 @@ const TEMPLATE_ACTORS = {
       { type: 'trail', path, start: b.start + 0.5, end: b.end, width: 12 },
     ];
   },
+  // MEKANİZMA — belgenin amiral örneği: kesitte AKIŞ. Sıcak yukarı, soğuk
+  // aşağı; iki ok zamanlamayla SIRAYLA belirir, yani sahne içinde bir olay
+  // dizisi yaşanır (§3.1'in visual_story'si, ayrı bir veri yapısı olarak
+  // değil aktör zamanlaması olarak). Cümle akıştan söz etmiyorsa payload.flow
+  // boştur ve hiç ok çizilmez.
+  mechanism: (b, focus) => {
+    if (!focus || !b.payload?.flow) return [];
+    const c = safePoint([focus.x, focus.y]);
+    const clampX = (v) => Math.max(0.14, Math.min(0.86, v));
+    const up = Math.max(0.18, c[1] - 0.20);
+    const down = Math.min(0.72, c[1] + 0.16);
+    // Karşı taraf: dönüş kolu kadrajın diğer yarısında yaşar → döngü okunur.
+    const side = c[0] > 0.5 ? -1 : 1;
+    const back = clampX(c[0] + side * 0.22);
+    const span = Math.max(1, b.end - b.start);
+    const thermal = b.payload.flow === 'thermal';
+    return [
+      { type: 'flow_arrow', from: [c[0], down], to: [c[0], up],
+        temp: thermal ? 'hot' : undefined, start: b.start + 0.2, end: b.end },
+      { type: 'flow_arrow', from: [back, up], to: [back, down],
+        temp: thermal ? 'cold' : undefined, start: b.start + Math.min(1.4, span * 0.42), end: b.end },
+    ];
+  },
   // İnşa: katmanlar ölçülen tabandan yukarı doğru birikir.
   construction: (b, focus) => {
     if (!focus) return [];

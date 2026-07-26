@@ -324,6 +324,20 @@ doğruluyor.
 Ayrıca ilk klip, hikâye gerekçesi "geriye çekil" dese bile zoom 1'den başlar —
 loop kapanışı kamera gerekçesinden önceliklidir.
 
+### Belgenin amiral örneği artık gerçekten çiziliyor
+
+§3.1'deki örnek ("sıcak hava yükselir → soğuk hava iner → döngü kapanır") kodda
+**bağlanmamıştı**: `flow_arrow` aktörünün `temp: hot/cold` dalı hiçbir yerden
+çağrılmıyordu, HOT/COLD renkleri ölü koddu. `mechanism` şablonu artık kesitte
+iki okla akışı çiziyor — sıcak yukarı, soğuk karşı taraftan aşağı, **sırayla**
+belirerek. §3.1'in `visual_story` dizisi ayrı bir veri yapısı olarak değil,
+aktör zamanlaması olarak gerçekleşiyor (sahne içinde olay dizisi).
+
+Dayanak şartı burada da geçerli: cümle gerçekten bir akıştan söz etmiyorsa
+(`"The chamber inside stays dry"`) ok çizilmez. "inside" geçen her cümleye hava
+akışı oku koymak, olmayan bir iddiada bulunmak olurdu — konum uydurmanın akış
+hâli.
+
 ### Ölçüm (10 sahne / 44sn, gerçekçi anlatım, odak ölçümü %75 başarılı)
 
 | Ölçüt | Faz 1-5 sonrası | Şimdi |
