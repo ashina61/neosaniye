@@ -293,11 +293,13 @@ Rules for the whole script:
 
 const PROVIDER_BREAKER_STATUSES = new Set([402, 429, 503]);
 const providerRun = { openRouterUsed: false, openRouterRequestedModel: null, openRouterResolvedModel: null, openRouterAttempts: 0, openRouterFailures: 0 };
-const providerCircuit = { openrouter: false, gemini: false, groq: false };
+const providerCircuit = { openrouter: false, gemini: false, groq: false,
+  cerebras: false, 'github-models': false, mistral: false, cloudflare: false };
 
 export function resetProviderRun() {
   Object.assign(providerRun, { openRouterUsed: false, openRouterRequestedModel: null, openRouterResolvedModel: null, openRouterAttempts: 0, openRouterFailures: 0 });
-  Object.assign(providerCircuit, { openrouter: false, gemini: false, groq: false });
+  Object.assign(providerCircuit, { openrouter: false, gemini: false, groq: false,
+    cerebras: false, 'github-models': false, mistral: false, cloudflare: false });
 }
 
 export function getProviderRun() { return { ...providerRun }; }
@@ -314,6 +316,134 @@ function openAiRequest(req) {
   };
 }
 
+/**
+ * KESİK JSON ONARIMI. Ücretsiz modeller yanıtı sık sık token bütçesinde
+ * kesiyor ("Unterminated string in JSON at position 55" — 25 Tem koşusu).
+ * Yanıt gövdesi sağlamsa ama sonu kesikse, açık kalan string/parantezleri
+ * kapatarak kurtarmayı dener. Kurtarılamıyorsa null döner (uydurma yapmaz).
+ */
+export function repairTruncatedJson(raw) {
+  let text = String(raw || '').trim();
+  // Markdown çiti içindeyse çıkar.
+  text = text.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/,'').trim();
+  const start = text.indexOf('{');
+  if (start < 0) return null;
+  text = text.slice(start);
+  try { return JSON.parse(text); } catch { /* onarmayı dene */ }
+
+  // KONTROL NOKTALARI: metni tararken, string DIŞINDA bir değerin bittiği her
+  // yerde (bir '}' / ']' kapandığında ya da ',' görüldüğünde) o ANDAKİ açık
+  // parantez yığınının kopyasını sakla. Kesik yanıtta en sondan geriye doğru
+  // bu noktaları deneyip yığını oradaki haliyle kapatırız.
+  //
+  // (Yığını tüm metin için tek seferde hesaplamak yanlıştı: kesik son öğeye ait
+  // parantezler de yığına giriyor ve kapatma dizisi bozuk çıkıyordu — kesik
+  // dizi vakası bu yüzden kurtarılamıyordu.)
+  const checkpoints = [];
+  const stack = [];
+  let inString = false;
+  let escaped = false;
+  for (let i = 0; i < text.length; i += 1) {
+    const c = text[i];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (c === '\\') escaped = true;
+      else if (c === '"') inString = false;
+      continue;
+    }
+    if (c === '"') { inString = true; continue; }
+    if (c === '{' || c === '[') { stack.push(c === '{' ? '}' : ']'); continue; }
+    if (c === '}' || c === ']') {
+      stack.pop();
+      checkpoints.push({ end: i + 1, close: [...stack].reverse().join('') });
+      continue;
+    }
+    if (c === ',') checkpoints.push({ end: i, close: [...stack].reverse().join('') });
+  }
+
+  // En sondaki sağlam noktadan geriye doğru dene.
+  for (let i = checkpoints.length - 1; i >= 0; i -= 1) {
+    const { end, close } = checkpoints[i];
+    const candidate = text.slice(0, end).replace(/,\s*$/, '') + close;
+    try {
+      const parsed = JSON.parse(candidate);
+      if (parsed && typeof parsed === 'object') return parsed;
+    } catch { /* daha geriye sar */ }
+  }
+  return null;
+}
+
+/**
+ * OpenAI-UYUMLU ÜCRETSİZ SAĞLAYICI (Cerebras / GitHub Models / Mistral / CF).
+ * Hepsi aynı gövdeyi kabul ettiği için tek fonksiyon yeter; anahtarı olmayan
+ * sessizce atlanır. Tek bir sağlayıcının kota yemesi artık run'ı öldürmüyor.
+ */
+async function openAiCompatFallback(req, provider) {
+  const { key, url, model, label, headers = {} } = provider;
+  if (!key || providerCircuit[label]) return null;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), config.openrouter.timeoutMs);
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      signal: controller.signal,
+      headers: { authorization: `Bearer ${key}`, 'content-type': 'application/json', ...headers },
+      body: JSON.stringify({ model, ...openAiRequest(req) }),
+    });
+    if (!res.ok) {
+      if (PROVIDER_BREAKER_STATUSES.has(res.status)) providerCircuit[label] = true;
+      throw new Error(`${label} HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    const text = data?.choices?.[0]?.message?.content || '';
+    if (!text) throw new Error(`${label} boş yanıt`);
+    if (req.config?.responseSchema) {
+      // Bozuk/kesik JSON'u sağlayıcı başarısı saymadan önce onarmayı dene.
+      try {
+        const match = text.match(/\{[\s\S]*\}/);
+        JSON.parse(match ? match[0] : text);
+      } catch {
+        // Onarımı YALNIZCA anlamlıysa kabul et. 2 sahneye kadar kırpılmış bir
+        // script zaten kalite kapılarında elenecek; onu "başarı" sayıp zinciri
+        // durdurmaktansa SIRADAKİ sağlayıcıya geçmek daha iyi.
+        const repaired = repairTruncatedJson(text);
+        const needsScenes = Array.isArray(req.config?.responseSchema?.required)
+          && req.config.responseSchema.required.includes('scenes');
+        const usable = repaired && (!needsScenes || (Array.isArray(repaired.scenes) && repaired.scenes.length >= 5));
+        if (!usable) throw new Error(`${label} geçersiz JSON (onarılamadı/eksik)`);
+        console.warn(`[${label}] kesik JSON onarıldı (${repaired.scenes?.length ?? '?'} sahne).`);
+        return { text: JSON.stringify(repaired) };
+      }
+    }
+    return { text };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+/** Zincire girecek ücretsiz sağlayıcılar (sırayla denenir). */
+function freeProviderChain() {
+  return [
+    {
+      label: 'cerebras', key: config.cerebras.apiKey, model: config.cerebras.model,
+      url: `${config.cerebras.baseUrl}/chat/completions`,
+    },
+    {
+      label: 'github-models', key: config.githubModels.apiKey, model: config.githubModels.model,
+      url: `${config.githubModels.baseUrl}/chat/completions`,
+    },
+    {
+      label: 'mistral', key: config.mistral.apiKey, model: config.mistral.model,
+      url: `${config.mistral.baseUrl}/chat/completions`,
+    },
+    {
+      label: 'cloudflare', key: config.cloudflareAi.accountId ? config.cloudflareAi.apiKey : null,
+      model: config.cloudflareAi.model,
+      url: `https://api.cloudflare.com/client/v4/accounts/${config.cloudflareAi.accountId}/ai/v1/chat/completions`,
+    },
+  ].filter((p) => p.key);
+}
+
 async function openRouterFallback(req) {
   if (!config.openrouter.apiKey || providerCircuit.openrouter) return null;
   // DAYANIKLILIK: birden çok ücretsiz modeli SIRAYLA dene. Biri boş/geçersiz/404
@@ -322,6 +452,7 @@ async function openRouterFallback(req) {
     ? config.openrouter.models : [config.openrouter.model];
   const attempts = Math.max(1, config.openrouter.attempts);
   let lastErr;
+  let salvageText = null; // son çare onarımı için saklanan kesik yanıt
   for (const model of models) {
     providerRun.openRouterRequestedModel = model;
     console.log(`[openrouter] model=${model}`);
@@ -358,6 +489,11 @@ async function openRouterFallback(req) {
             const match = text.match(/\{[\s\S]*\}/);
             JSON.parse(match ? match[0] : text);
           } catch (cause) {
+            // Kesik yanıtı SAKLA ama HEMEN kullanma: yeniden deneme TAM bir
+            // script getirebilir; onarılmış kesik yanıt sahne kaybetmiş olur.
+            // Onarım yalnızca tüm model/deneme hakları bittiğinde son çare
+            // olarak devreye girer (aşağıda).
+            salvageText = text;
             const err = new Error(`openrouter geçersiz JSON: ${cause.message}`);
             err.name = 'OpenRouterInvalidJsonError';
             throw err;
@@ -390,6 +526,19 @@ async function openRouterFallback(req) {
         console.warn(`[openrouter] '${model}' başarısız (${String(err?.message || err).slice(0, 70)}) → sonraki model.`);
         break;
       } finally { clearTimeout(timeout); }
+    }
+  }
+  // SON ÇARE: tüm model/deneme hakları bitti. Elde kesik ama gövdesi sağlam bir
+  // yanıt kaldıysa onar. Yeniden denemeler ÖNCE tüketildiği için, tam bir script
+  // gelme şansı harcanmadan bu yola girilmez; buradaki tek alternatif zaten
+  // "hiç script yok". Kalite kapıları (sahne sayısı/kelime/viewer-first) bu
+  // onarılmış script'i de aynen denetler — eksik sahneli çıktı orada elenir.
+  if (salvageText) {
+    const repaired = repairTruncatedJson(salvageText);
+    if (repaired) {
+      console.warn('[openrouter] tüm denemeler bitti — kesik JSON son çare olarak onarıldı.');
+      providerRun.openRouterUsed = true;
+      return { text: JSON.stringify(repaired) };
     }
   }
   if (lastErr) throw lastErr;
@@ -458,6 +607,22 @@ export async function generateWithRetry(ai, req, tries = 5) {
     lastErr = gErr;
     console.warn(`[groq] yedek de düştü: ${String(gErr.message).slice(0, 90)}`);
   }
+  // EK ÜCRETSİZ BEYİNLER — OpenRouter'dan ÖNCE denenir (OpenRouter'ın ücretsiz
+  // arka uçları bozuk/kesik JSON döndürmeye en yatkın olanlar). Biri kota
+  // yerse sıradakine geçilir; hepsinin aynı anda düşme ihtimali çok düşük.
+  for (const provider of freeProviderChain()) {
+    try {
+      const alt = await openAiCompatFallback(req, provider);
+      if (alt) {
+        console.warn(`[${provider.label}] yedek beyin devrede (${provider.model}).`);
+        return alt;
+      }
+    } catch (err) {
+      lastErr = err;
+      console.warn(`[${provider.label}] düştü: ${String(err?.message || err).slice(0, 90)}`);
+    }
+  }
+
   try {
     const openRouter = await openRouterFallback(req);
     if (openRouter) return openRouter;

@@ -7,7 +7,12 @@ const moduleUrl = new URL('../src/script/generateScript.js', import.meta.url).hr
 function run(code, env = {}) {
   return spawnSync(process.execPath, ['--input-type=module', '--eval', code], {
     encoding: 'utf8',
-    env: { ...process.env, OPENROUTER_API_KEY: 'openrouter-test-secret', OPENROUTER_MODEL: 'openrouter/free', GEMINI_API_KEY: '', GROQ_API_KEY: '', ...env },
+    env: { ...process.env, OPENROUTER_API_KEY: 'openrouter-test-secret', OPENROUTER_MODEL: 'openrouter/free', GEMINI_API_KEY: '', GROQ_API_KEY: '',
+      // Bu dosya OpenRouter'ı İZOLE test eder; ek ücretsiz beyinler zinciri
+      // ele geçirip OpenRouter'a hiç sıra gelmemesine yol açmasın.
+      GITHUB_MODELS_TOKEN: '', GITHUB_TOKEN: '', CEREBRAS_API_KEY: '',
+      MISTRAL_API_KEY: '', CLOUDFLARE_API_TOKEN: '', CLOUDFLARE_ACCOUNT_ID: '',
+      ...env },
   });
 }
 

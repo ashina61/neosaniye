@@ -38,6 +38,36 @@ export const config = {
     apiKey: process.env.GROQ_API_KEY,
     model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
   },
+  // EK ÜCRETSİZ BEYİNLER. 25 Tem koşusunda Gemini düştü + Groq 429 + OpenRouter
+  // bozuk JSON döndü → tüm run çöpe gitti. Üç sağlayıcı yetmiyor; hepsi de aynı
+  // anda kota/limit yiyebiliyor. Aşağıdakiler OpenAI-uyumlu uçlar olduğu için
+  // aynı istek gövdesiyle çalışır. Anahtarı olmayan sessizce atlanır.
+  cerebras: {
+    // cloud.cerebras.ai — ücretsiz katman, çok hızlı çıkarım.
+    apiKey: process.env.CEREBRAS_API_KEY,
+    model: process.env.CEREBRAS_MODEL || 'llama-3.3-70b',
+    baseUrl: 'https://api.cerebras.ai/v1',
+  },
+  githubModels: {
+    // GitHub Models — ÜCRETSİZ ve Actions içinde ZATEN VAR OLAN token'la çalışır
+    // (ayrı kayıt/anahtar gerekmez). Workflow'da `permissions: models: read`
+    // ve GITHUB_TOKEN'ın aktarılması yeterli.
+    apiKey: process.env.GITHUB_MODELS_TOKEN || process.env.GITHUB_TOKEN,
+    model: process.env.GITHUB_MODELS_MODEL || 'openai/gpt-4o-mini',
+    baseUrl: 'https://models.github.ai/inference',
+  },
+  mistral: {
+    // console.mistral.ai — ücretsiz katman.
+    apiKey: process.env.MISTRAL_API_KEY,
+    model: process.env.MISTRAL_MODEL || 'mistral-small-latest',
+    baseUrl: 'https://api.mistral.ai/v1',
+  },
+  cloudflareAi: {
+    // Cloudflare Workers AI — günlük ücretsiz kota; OpenAI-uyumlu uç.
+    apiKey: process.env.CLOUDFLARE_API_TOKEN,
+    accountId: process.env.CLOUDFLARE_ACCOUNT_ID,
+    model: process.env.CLOUDFLARE_AI_MODEL || '@cf/meta/llama-3.3-70b-instruct-fp8-fast',
+  },
   niche: {
     language: process.env.CONTENT_LANGUAGE || 'en',
     // Genel konsept: tarih + bilim + doğa + uzay + gizem karışık "şaşırtıcı
