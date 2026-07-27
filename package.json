@@ -1,9 +1,9 @@
 {
   "name": "neosaniye",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Remotion tabanlı otomatik NeoSaniye Shorts üretim ve yayınlama sistemi",
+  "description": "Premium procedural Remotion tabanlı otomatik NeoSaniye Shorts fabrikası",
   "engines": {
     "node": ">=20"
   },
@@ -13,7 +13,6 @@
     "script": "node scripts/generate-script.js",
     "script:save": "node scripts/generate-script.js --save",
     "audio": "node scripts/generate-audio.js",
-    "media": "node scripts/fetch-media.js",
     "video": "node scripts/render-video.js",
     "test": "node --test",
     "test:remotion": "node --test test/remotionSpec.test.js test/remotionOnly.test.js",
