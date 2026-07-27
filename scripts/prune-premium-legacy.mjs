@@ -68,7 +68,9 @@ config = config.replace(/\nexport function assertPexels\([\s\S]*?\n}\n\n(?=expor
 for (const field of ['minCaptionPx', 'maxCaptionWords', 'captionMinPreviewPx', 'captionBottomSafePx', 'captionTopSafeRatio']) {
   config = config.replace(new RegExp(`^\\s*${field}:.*\\n`, 'm'), '');
 }
-if (/\bimages\s*:\s*\{|\bpexels\s*:\s*\{|\bpixabay\s*:\s*\{|\bfreesound\s*:\s*\{/.test(config)) throw new Error('legacy provider config remains');
+for (const name of ['images', 'pexels', 'pixabay', 'freesound']) {
+  if (propertyRange(config, name)) throw new Error(`legacy provider config remains: ${name}`);
+}
 await writeFile('src/config.js', config, 'utf8');
 
 let retention = await readFile('src/pipeline/retentionQC.js', 'utf8');
