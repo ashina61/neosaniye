@@ -1,6 +1,11 @@
 name: Premium Legacy Prune Audit
 
 on:
+  pull_request:
+    branches: [claude/youtube-shorts-automation-9dbrjx]
+    paths:
+      - scripts/plan-premium-prune.mjs
+      - .github/workflows/premium-prune-audit.yml
   push:
     branches: [agent/premium-procedural-factory]
     paths:
