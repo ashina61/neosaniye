@@ -10,10 +10,30 @@ export type SceneTemplate =
   | 'final-twist'
   | 'collage-generic';
 
-export type SceneAsset = {
-  path: string;
-  type?: 'image' | 'video';
-  role?: 'hero' | 'background' | 'evidence' | 'texture';
+export type VisualMotif =
+  | 'person'
+  | 'monument'
+  | 'machine'
+  | 'map'
+  | 'document'
+  | 'money'
+  | 'science'
+  | 'nature'
+  | 'ocean'
+  | 'eye'
+  | 'signal'
+  | 'mystery'
+  | 'generic';
+
+export type ProceduralVisual = {
+  motif: VisualMotif;
+  subject?: string | null;
+  secondary?: string | null;
+  date?: string | null;
+  location?: string | null;
+  symbols?: string[];
+  variant?: number;
+  intensity?: 'calm' | 'medium' | 'high';
 };
 
 export type SfxCue = {
@@ -37,12 +57,12 @@ export type ProductionScene = {
   emphasis?: string[];
   transition?: 'cut' | 'whip-flash' | 'shutter' | 'long-zoom' | 'paper-tear';
   dark?: boolean;
-  assets?: SceneAsset[];
+  visual: ProceduralVisual;
   sfx?: SfxCue[];
 };
 
 export type ProductionSpec = {
-  version: 1;
+  version: 2;
   meta: {
     topic: string;
     title: string;
@@ -51,16 +71,17 @@ export type ProductionSpec = {
     width: number;
     height: number;
     durationInFrames: number;
+    visualPolicy: 'procedural-only';
+    captionPolicy: 'none';
   };
   audio?: {
     voicePath?: string | null;
     musicPath?: string | null;
-    ambiencePath?: string | null;
     voiceVolume?: number;
     musicVolume?: number;
   };
   theme?: {
-    family?: 'neosaniye-collage';
+    family?: 'neosaniye-premium-collage';
     accent?: 'gold' | 'red' | 'teal';
     paper?: 'cream';
     dark?: 'navy';
@@ -70,45 +91,50 @@ export type ProductionSpec = {
 };
 
 export const DEFAULT_PRODUCTION: ProductionSpec = {
-  version: 1,
+  version: 2,
   meta: {
-    topic: 'NeoSaniye fixture',
-    title: 'A country that never existed',
+    topic: 'NeoSaniye premium fixture',
+    title: 'He sold the impossible',
     language: 'en',
     fps: 30,
     width: 1080,
     height: 1920,
     durationInFrames: 360,
+    visualPolicy: 'procedural-only',
+    captionPolicy: 'none',
   },
-  theme: {family: 'neosaniye-collage', accent: 'gold', paper: 'cream', dark: 'navy'},
+  theme: {family: 'neosaniye-premium-collage', accent: 'gold', paper: 'cream', dark: 'navy'},
   scenes: [
     {
       id: 'fixture-hook',
       template: 'hook-reveal',
       fromFrame: 0,
       durationInFrames: 120,
-      headline: 'HE SOLD A COUNTRY',
-      kicker: 'that did not exist',
+      headline: 'HE SOLD THE IMPOSSIBLE',
+      kicker: 'one perfect lie',
       transition: 'whip-flash',
+      visual: {motif: 'monument', subject: 'THE TARGET', symbols: ['SECRET', '1925'], variant: 1, intensity: 'high'},
     },
     {
       id: 'fixture-stat',
       template: 'stat-slot',
       fromFrame: 120,
       durationInFrames: 120,
-      headline: 'REAL PEOPLE BOARDED SHIPS',
-      stat: '250',
-      statLabel: 'SETTLERS',
+      headline: 'THE NUMBER THAT SOLD IT',
+      stat: '7,300',
+      statLabel: 'TONS',
       transition: 'shutter',
+      visual: {motif: 'money', subject: 'THE DEAL', symbols: ['IRON', 'CASH'], variant: 2, intensity: 'high'},
     },
     {
       id: 'fixture-final',
       template: 'final-twist',
       fromFrame: 240,
       durationInFrames: 120,
-      headline: 'THE NATION WAS FAKE',
-      kicker: 'the journey was real',
+      headline: 'HE DID IT TWICE',
+      kicker: 'the second attempt exposed him',
       dark: true,
+      visual: {motif: 'mystery', subject: 'TWICE', symbols: ['FAKE', 'SOLD'], variant: 3, intensity: 'high'},
     },
   ],
 };
