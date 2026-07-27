@@ -1,8 +1,14 @@
 name: Final Remotion Compatibility Prune
 
 on:
+  workflow_dispatch:
   push:
     branches: [agent/remotion-final-prune]
+    paths:
+      - scripts/prune-remotion-compat.mjs
+      - .github/workflows/remotion-final-prune.yml
+  pull_request:
+    branches: [claude/youtube-shorts-automation-9dbrjx]
     paths:
       - scripts/prune-remotion-compat.mjs
       - .github/workflows/remotion-final-prune.yml
@@ -16,6 +22,7 @@ concurrency:
 
 jobs:
   prune:
+    if: github.head_ref == 'agent/remotion-final-prune' || github.ref_name == 'agent/remotion-final-prune'
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
