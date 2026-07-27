@@ -128,7 +128,7 @@ export async function runPipeline(opts = {}) {
     console.log(`  kurgucu: ${editPlan ? `✓ (müzik:${editPlan.musicMood || script.category})` : '— (mekanik premium plan)'}`);
   }
 
-  try {  try {
+  try {
     // 2) Ses (edge-tts -> piper yedek)
     log('Faz 2: Seslendirme (TTS)...');
     const audio = await generateAudio(script, { outDir: workDir, basename: base });
@@ -157,7 +157,7 @@ export async function runPipeline(opts = {}) {
     const scenes = script.scenes || [];
     const sceneWeights = scenes.map((s) => Math.max(1, wordCount(s.narration)));
 
-    // 2.9) GÖRSEL HİKÂYE PLANI    // 2.9) GÖRSEL HİKÂYE PLANI — SIRALAMA BURADA TERSİNE DÖNER (V3 Faz 2).
+    // 2.9) GÖRSEL HİKÂYE PLANI — anlatım önce procedural sahne şablonuna bağlanır.
     // Eskiden görsel önce üretiliyor, anlam sonra üstüne yapıştırılıyordu;
     // dekorasyonun kök nedeni buydu. Artık her cümle ÖNCE bir görsel hikâye
     // şablonuna bağlanır ve image_prompt o şablonun gerektirdiği kompozisyonu
@@ -205,11 +205,9 @@ export async function runPipeline(opts = {}) {
     const itemWeights = sceneWeights;
     console.log(`  ${scenes.length} procedural sahne — dış görsel: 0, stok: 0, AI görsel: 0`);
 
-    // 4) Remotion motion-graphics renderı    // 4) Remotion motion-graphics renderı
+    // 4) Remotion motion-graphics renderı
     log('Faz 4: Remotion motion-graphics renderı...');
     const outPath = path.join(workDir, `${base}.mp4`);
-    // Son 5 videonun müziği tekrar seçilmesin (çeşitlilik; state yoksa boş).
-    const recentMusic = await getRecentMusic(5).catch(() => []);
     const video = await renderVideo({
       audioPath: audio.audioPath,
       scenes,
