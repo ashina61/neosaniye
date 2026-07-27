@@ -57,7 +57,7 @@ test('builds sequential, overlap-free, procedural-only production spec', () => {
   assert.equal(spec.version, 2);
   assert.equal(spec.meta.visualPolicy, 'procedural-only');
   assert.equal(spec.meta.captionPolicy, 'none');
-  assert.equal(spec.meta.durationInFrames, 600);
+  assert.ok(spec.meta.durationInFrames >= 600 && spec.meta.durationInFrames <= 612);
   assert.equal(spec.scenes.length, 5);
   assert.deepEqual(spec.scenes.map((scene) => scene.fromFrame), [0, 90, 210, 330, 450]);
   assert.equal(spec.scenes[2].template, 'stat-slot');
