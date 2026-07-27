@@ -1,11 +1,11 @@
 {
   "name": "neosaniye",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "description": "Remotion tabanlı otomatik NeoSaniye Shorts üretim ve yayınlama sistemi",
   "engines": {
-    "node": ">=22"
+    "node": ">=20"
   },
   "scripts": {
     "produce": "node scripts/generate-and-publish.js",
