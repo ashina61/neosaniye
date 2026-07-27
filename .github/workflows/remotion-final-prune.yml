@@ -39,7 +39,12 @@ jobs:
           cache: npm
 
       - name: Apply controlled source migration
-        run: node scripts/prune-remotion-compat.mjs
+        run: |
+          set +e
+          node scripts/prune-remotion-compat.mjs > prune-migration.log 2>&1
+          status=$?
+          cat prune-migration.log
+          exit $status
 
       - name: Install pipeline dependencies
         run: npm ci
@@ -53,6 +58,15 @@ jobs:
           npm run test:remotion
           npm test
           npm run remotion:typecheck
+
+      - name: Upload migration diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: remotion-final-prune-diagnostics
+          path: prune-migration.log
+          if-no-files-found: warn
+          retention-days: 2
 
       - name: Commit final prune
         run: |
