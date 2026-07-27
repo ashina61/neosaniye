@@ -67,6 +67,9 @@ if (r.duplicateShots?.length) {
     console.log(`   ↔ ${d.runs.map((x) => x.join('-') + 's').join('  ve  ')} (arada ${d.gapSeconds}s)`);
   }
 }
+line('değişim temposu', `${r.meanChangeIntervalSeconds}s ortalama (hedef 1.2-1.8s)`);
+line('en uzun donuk', `${r.longestNoChangeSeconds}s`);
+line('algılanan değişim', `${r.perceptibleChangeCount} kez`);
 line('kopya kare grubu', r.duplicateFrameGroups?.length ?? '—');
 line('kopya altyazı', r.duplicateCaptions ?? '—');
 line('en uzun durağan', `${r.longestStaticStreakSeconds}s`);
