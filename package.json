@@ -25,6 +25,8 @@
     "motion:preview": "node scripts/motion-preview.js",
     "motion:debug-safe-area": "node scripts/motion-preview.js --debug-safe-area",
     "motion:rollout-report": "node scripts/motion-rollout-report.js",
+    "remotion:typecheck": "npm --prefix remotion run typecheck",
+    "remotion:fixture": "npm --prefix remotion run render:fixture",
     "bee:regression": "node scripts/bee-regression.js"
   },
   "dependencies": {

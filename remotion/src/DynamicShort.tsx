@@ -1,0 +1,543 @@
+import React from 'react';
+import {
+  AbsoluteFill,
+  Audio,
+  Easing,
+  Img,
+  OffthreadVideo,
+  interpolate,
+  Sequence,
+  spring,
+  staticFile,
+  useCurrentFrame,
+  useVideoConfig,
+} from 'remotion';
+import type {ProductionScene, ProductionSpec, SceneAsset, SfxCue} from './schema';
+
+const palette = {
+  ink: '#171511',
+  paper: '#efe6d3',
+  paperLight: '#f8f1e4',
+  paperDark: '#d7c6a9',
+  gold: '#d5a52d',
+  goldDark: '#9b6d11',
+  teal: '#9fc8c6',
+  red: '#bc493f',
+  navy: '#172433',
+  white: '#fffdf7',
+};
+
+const clamp = {
+  extrapolateLeft: 'clamp' as const,
+  extrapolateRight: 'clamp' as const,
+};
+
+const sceneSfx = (scene: ProductionScene): SfxCue[] =>
+  (scene.sfx || []).map((cue) => ({...cue, atFrame: scene.fromFrame + cue.atFrame}));
+
+export const DynamicShort: React.FC<ProductionSpec> = (spec) => {
+  const cues = [...(spec.globalSfx || []), ...spec.scenes.flatMap(sceneSfx)];
+
+  return (
+    <AbsoluteFill style={{backgroundColor: palette.paper}}>
+      {spec.audio?.voicePath ? (
+        <Audio src={staticFile(spec.audio.voicePath)} volume={spec.audio.voiceVolume ?? 1} />
+      ) : null}
+      {spec.audio?.musicPath ? (
+        <Audio src={staticFile(spec.audio.musicPath)} volume={spec.audio.musicVolume ?? 0.14} />
+      ) : null}
+      {spec.audio?.ambiencePath ? (
+        <Audio src={staticFile(spec.audio.ambiencePath)} volume={0.08} />
+      ) : null}
+
+      {cues.map((cue, index) => (
+        <Sequence
+          key={`${cue.path}-${cue.atFrame}-${index}`}
+          from={Math.max(0, cue.atFrame)}
+          durationInFrames={cue.durationInFrames ?? 90}
+        >
+          <Audio src={staticFile(cue.path)} volume={cue.volume ?? 0.65} />
+        </Sequence>
+      ))}
+
+      {spec.scenes.map((scene, index) => (
+        <React.Fragment key={scene.id}>
+          <Sequence from={scene.fromFrame} durationInFrames={scene.durationInFrames}>
+            <Scene scene={scene} index={index} total={spec.scenes.length} />
+          </Sequence>
+          {index < spec.scenes.length - 1 ? (
+            <Sequence from={scene.fromFrame + scene.durationInFrames - 2} durationInFrames={9}>
+              <TransitionFlash type={scene.transition} />
+            </Sequence>
+          ) : null}
+        </React.Fragment>
+      ))}
+    </AbsoluteFill>
+  );
+};
+
+const Scene: React.FC<{scene: ProductionScene; index: number; total: number}> = ({scene, index, total}) => {
+  switch (scene.template) {
+    case 'hook-reveal':
+      return <HookReveal scene={scene} />;
+    case 'portrait-dossier':
+      return <PortraitDossier scene={scene} />;
+    case 'document':
+      return <DocumentScene scene={scene} />;
+    case 'map-route':
+      return <MapRoute scene={scene} />;
+    case 'stat-slot':
+      return <StatSlot scene={scene} />;
+    case 'explainer-diagram':
+      return <ExplainerDiagram scene={scene} />;
+    case 'transaction':
+      return <TransactionScene scene={scene} />;
+    case 'consequence':
+      return <ConsequenceScene scene={scene} />;
+    case 'final-twist':
+      return <FinalTwist scene={scene} />;
+    default:
+      return <GenericCollage scene={scene} index={index} total={total} />;
+  }
+};
+
+const FilmTreatment: React.FC<React.PropsWithChildren<{dark?: boolean}>> = ({children, dark = false}) => {
+  const frame = useCurrentFrame();
+  const stepped = Math.floor(frame / 2) * 2;
+  const weaveX = Math.sin(stepped * 0.43) * 1.4;
+  const weaveY = Math.cos(stepped * 0.37) * 1.1;
+  const grainX = ((stepped * 17) % 45) - 22;
+  const grainY = ((stepped * 29) % 37) - 18;
+
+  return (
+    <AbsoluteFill style={{backgroundColor: dark ? palette.navy : palette.paper, overflow: 'hidden'}}>
+      <AbsoluteFill
+        style={{
+          transform: `translate3d(${weaveX}px, ${weaveY}px, 0) scale(1.008)`,
+          filter: `saturate(${dark ? 0.8 : 0.94}) contrast(${dark ? 1.13 : 1.07}) sepia(${dark ? 0.04 : 0.1})`,
+        }}
+      >
+        {children}
+      </AbsoluteFill>
+      <AbsoluteFill
+        style={{
+          pointerEvents: 'none',
+          opacity: dark ? 0.08 : 0.15,
+          backgroundImage:
+            'repeating-linear-gradient(5deg, transparent 0 11px, rgba(76,52,25,0.18) 12px, transparent 13px 31px), repeating-linear-gradient(93deg, transparent 0 29px, rgba(255,255,255,0.3) 30px, transparent 31px 57px)',
+        }}
+      />
+      <AbsoluteFill
+        style={{
+          pointerEvents: 'none',
+          inset: -45,
+          opacity: 0.22,
+          mixBlendMode: 'overlay',
+          transform: `translate(${grainX}px, ${grainY}px)`,
+          backgroundImage:
+            'repeating-radial-gradient(circle at 30% 20%, rgba(255,255,255,0.34) 0 0.7px, rgba(0,0,0,0.3) 0.9px 1.5px, transparent 1.8px 4px)',
+          backgroundSize: '9px 11px',
+        }}
+      />
+      <AbsoluteFill
+        style={{
+          pointerEvents: 'none',
+          background:
+            'radial-gradient(ellipse 92% 82% at 50% 48%, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.48) 100%)',
+        }}
+      />
+    </AbsoluteFill>
+  );
+};
+
+const SceneShell: React.FC<React.PropsWithChildren<{scene: ProductionScene; focus?: boolean}>> = ({scene, focus = false, children}) => {
+  const frame = useCurrentFrame();
+  const opacity = interpolate(frame, [0, 4, scene.durationInFrames - 5, scene.durationInFrames], [0, 1, 1, 0], clamp);
+  const blur = focus ? interpolate(frame, [0, 9, 20, 34, 48], [10, 4, 0, 2.5, 0], clamp) : 0;
+  const scale = focus ? interpolate(frame, [0, 30, scene.durationInFrames], [0.94, 1, 1.045], clamp) : 1;
+
+  return (
+    <AbsoluteFill style={{opacity}}>
+      <div style={{position: 'absolute', inset: -30, filter: `blur(${blur}px)`, transform: `scale(${scale})`}}>
+        <FilmTreatment dark={Boolean(scene.dark)}>{children}</FilmTreatment>
+      </div>
+    </AbsoluteFill>
+  );
+};
+
+const entrance = (frame: number, fps: number, delay = 0) =>
+  spring({
+    frame: Math.max(0, frame - delay),
+    fps,
+    config: {damping: 15, stiffness: 125, mass: 0.8},
+    durationInFrames: Math.round(fps * 0.8),
+  });
+
+const TornPaper: React.FC<React.PropsWithChildren<{style?: React.CSSProperties; rotate?: number; fill?: string}>> = ({children, style, rotate = 0, fill = palette.paperLight}) => (
+  <div
+    style={{
+      position: 'absolute',
+      background: fill,
+      clipPath:
+        'polygon(1% 4%, 8% 1%, 16% 4%, 25% 1%, 36% 3%, 47% 0%, 58% 4%, 69% 1%, 80% 4%, 90% 1%, 99% 5%, 97% 17%, 100% 30%, 97% 44%, 100% 57%, 97% 72%, 100% 87%, 96% 98%, 84% 96%, 73% 100%, 61% 97%, 49% 100%, 37% 97%, 25% 100%, 14% 96%, 2% 99%, 4% 83%, 1% 68%, 4% 52%, 1% 35%, 4% 19%)',
+      transform: `rotate(${rotate}deg)`,
+      boxShadow: '0 18px 28px rgba(33,25,16,0.22)',
+      ...style,
+    }}
+  >
+    {children}
+  </div>
+);
+
+const Tape: React.FC<{style?: React.CSSProperties; rotate?: number}> = ({style, rotate = -4}) => (
+  <div
+    style={{
+      position: 'absolute',
+      width: 190,
+      height: 52,
+      background: 'rgba(218,182,89,0.55)',
+      border: '1px solid rgba(111,84,27,0.18)',
+      boxShadow: 'inset 0 0 16px rgba(255,255,255,0.22)',
+      transform: `rotate(${rotate}deg)`,
+      clipPath: 'polygon(2% 7%, 98% 0, 96% 94%, 3% 100%)',
+      ...style,
+    }}
+  />
+);
+
+const StickerText: React.FC<{text: string; top?: number; left?: number; width?: number; size?: number; rotate?: number; fill?: string; color?: string; delay?: number}> = ({
+  text,
+  top = 120,
+  left = 70,
+  width = 940,
+  size = 84,
+  rotate = -1,
+  fill = palette.gold,
+  color = palette.ink,
+  delay = 0,
+}) => {
+  const frame = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const p = entrance(frame, fps, delay);
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top,
+        left,
+        width,
+        padding: '15px 28px 20px',
+        textAlign: 'center',
+        background: fill,
+        color,
+        fontFamily: 'Arial Black, Impact, sans-serif',
+        fontSize: size,
+        fontWeight: 900,
+        lineHeight: 0.96,
+        letterSpacing: -2,
+        textTransform: 'uppercase',
+        clipPath: 'polygon(2% 10%, 98% 2%, 100% 88%, 4% 100%)',
+        boxShadow: '0 14px 0 rgba(35,29,20,0.13)',
+        transform: `translateY(${interpolate(p, [0, 1], [-70, 0])}px) rotate(${rotate}deg) scale(${0.84 + p * 0.16})`,
+        opacity: interpolate(p, [0, 0.2, 1], [0, 1, 1]),
+      }}
+    >
+      {text}
+    </div>
+  );
+};
+
+const KineticLine: React.FC<{text: string; style?: React.CSSProperties; delay?: number; color?: string; size?: number}> = ({text, style, delay = 0, color = palette.ink, size = 64}) => {
+  const frame = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const p = entrance(frame, fps, delay);
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        color,
+        fontFamily: 'Arial Black, Impact, sans-serif',
+        fontWeight: 900,
+        fontSize: size,
+        lineHeight: 0.98,
+        textTransform: 'uppercase',
+        letterSpacing: -1.5,
+        opacity: p,
+        transform: `translateY(${interpolate(p, [0, 1], [55, 0])}px) scale(${0.86 + p * 0.14})`,
+        ...style,
+      }}
+    >
+      {text}
+    </div>
+  );
+};
+
+const TransitionFlash: React.FC<{type?: ProductionScene['transition']}> = ({type = 'whip-flash'}) => {
+  const frame = useCurrentFrame();
+  const opacity = interpolate(frame, [0, 1, 3, 8], [0, 0.84, 0.34, 0], clamp);
+  const x = interpolate(frame, [0, 8], [-120, 115], clamp);
+  const color = type === 'shutter' ? palette.white : type === 'paper-tear' ? palette.red : palette.gold;
+  return (
+    <AbsoluteFill style={{pointerEvents: 'none'}}>
+      <AbsoluteFill style={{background: palette.paperLight, opacity, mixBlendMode: 'screen'}} />
+      <div style={{position: 'absolute', top: 0, bottom: 0, left: `${x}%`, width: type === 'shutter' ? 520 : 230, background: color, opacity: opacity * 0.72, transform: 'skewX(-18deg)'}} />
+    </AbsoluteFill>
+  );
+};
+
+const Sparkles: React.FC<{dark?: boolean; count?: number}> = ({dark = false, count = 15}) => {
+  const frame = useCurrentFrame();
+  const stepped = Math.floor(frame / 2) * 2;
+  return (
+    <AbsoluteFill style={{pointerEvents: 'none'}}>
+      {Array.from({length: count}).map((_, i) => {
+        const x = (i * 191 + 73) % 1000;
+        const y = (i * 307 + 127) % 1700;
+        const pulse = 0.55 + 0.45 * Math.sin(stepped * 0.09 + i * 1.7);
+        const size = 12 + ((i * 7) % 24);
+        return <div key={i} style={{position: 'absolute', left: x, top: y, width: size, height: size, opacity: pulse, transform: `rotate(${45 + i * 17}deg) scale(${pulse})`, background: i % 3 === 0 ? palette.gold : dark ? palette.white : palette.goldDark, clipPath: 'polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%)'}} />;
+      })}
+    </AbsoluteFill>
+  );
+};
+
+const AssetPanel: React.FC<{asset?: SceneAsset; style?: React.CSSProperties; rotate?: number}> = ({asset, style, rotate = 0}) => {
+  if (!asset?.path) return null;
+  const common: React.CSSProperties = {width: '100%', height: '100%', objectFit: 'cover'};
+  return (
+    <TornPaper rotate={rotate} style={{overflow: 'hidden', ...style}}>
+      {asset.type === 'video' ? <OffthreadVideo src={staticFile(asset.path)} style={common} muted /> : <Img src={staticFile(asset.path)} style={common} />}
+    </TornPaper>
+  );
+};
+
+const HookReveal: React.FC<{scene: ProductionScene}> = ({scene}) => {
+  const frame = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const portrait = entrance(frame, fps, 7);
+  const asset = scene.assets?.[0];
+  return (
+    <SceneShell scene={scene} focus>
+      <Sparkles />
+      <div style={{position: 'absolute', inset: 0, background: 'radial-gradient(circle at 75% 37%, rgba(213,165,45,0.25), transparent 34%)'}} />
+      <AssetPanel asset={asset} rotate={2} style={{left: 510, top: 520, width: 470, height: 720, transform: `translateX(${interpolate(portrait, [0, 1], [180, 0])}px) rotate(2deg)`}} />
+      {!asset ? <PortraitCutout style={{left: 545, top: 520, transform: `translateX(${interpolate(portrait, [0, 1], [180, 0])}px)`}} /> : null}
+      <StickerText text={scene.headline || 'IMPOSSIBLE STORY'} top={150} size={88} rotate={-1.5} />
+      <KineticLine text={scene.kicker || scene.narration || ''} delay={18} color={palette.red} size={52} style={{left: 95, top: 390, width: 760}} />
+      <Tape style={{left: 730, top: 1260}} rotate={7} />
+      <div style={{position: 'absolute', left: 90, bottom: 165, fontSize: 35, fontFamily: 'Georgia, serif', fontStyle: 'italic'}}>A true story selected by NeoSaniye</div>
+    </SceneShell>
+  );
+};
+
+const PortraitDossier: React.FC<{scene: ProductionScene}> = ({scene}) => {
+  const asset = scene.assets?.[0];
+  return (
+    <SceneShell scene={scene} focus>
+      <StickerText text={scene.headline || 'THE PERSON BEHIND IT'} top={125} size={76} />
+      <TornPaper rotate={-2} style={{left: 80, top: 390, width: 920, height: 1160, padding: 42}}>
+        <div style={{fontFamily: 'Georgia, serif', fontSize: 38, letterSpacing: 2}}>CONFIDENTIAL DOSSIER</div>
+        <div style={{position: 'absolute', left: 40, right: 40, top: 115, height: 5, background: palette.ink}} />
+        <AssetPanel asset={asset} style={{left: 80, top: 190, width: 420, height: 610}} />
+        {!asset ? <PortraitCutout style={{left: 75, top: 210}} /> : null}
+        <div style={{position: 'absolute', left: 545, top: 210, width: 310, fontFamily: 'Arial Black, sans-serif', fontSize: 46, lineHeight: 1.05}}>{(scene.kicker || 'NAME UNKNOWN').toUpperCase()}</div>
+        {(scene.emphasis || ['CHARM', 'STATUS', 'TRUST']).slice(0, 3).map((word, i) => (
+          <div key={word} style={{position: 'absolute', left: 545, top: 470 + i * 125, padding: '16px 22px', background: i === 1 ? palette.red : palette.gold, fontFamily: 'Arial Black, sans-serif', fontSize: 36, transform: `rotate(${i % 2 ? 2 : -2}deg)`}}>{word.toUpperCase()}</div>
+        ))}
+        <div style={{position: 'absolute', left: 70, right: 70, bottom: 95, fontFamily: 'Georgia, serif', fontSize: 43, lineHeight: 1.2}}>{scene.narration}</div>
+      </TornPaper>
+      <Tape style={{left: 430, top: 340}} />
+    </SceneShell>
+  );
+};
+
+const DocumentScene: React.FC<{scene: ProductionScene}> = ({scene}) => {
+  const frame = useCurrentFrame();
+  const stamp = interpolate(frame, [24, 31], [2.2, 1], {...clamp, easing: Easing.out(Easing.back(2))});
+  return (
+    <SceneShell scene={scene}>
+      <StickerText text={scene.headline || 'OFFICIAL DOCUMENTS'} top={120} size={75} rotate={1} />
+      <DocumentCard style={{left: 105, top: 410, transform: 'rotate(-5deg)'}} label={scene.kicker || 'RESTRICTED'} />
+      <DocumentCard style={{left: 405, top: 570, transform: 'rotate(4deg)'}} label={(scene.emphasis?.[0] || 'APPROVED').toUpperCase()} />
+      <DocumentCard style={{left: 185, top: 880, transform: 'rotate(-1deg)'}} label={(scene.emphasis?.[1] || 'SEALED').toUpperCase()} />
+      <div style={{position: 'absolute', left: 570, top: 1110, width: 340, height: 150, border: `12px solid ${palette.red}`, color: palette.red, fontFamily: 'Arial Black, sans-serif', fontSize: 56, display: 'flex', alignItems: 'center', justifyContent: 'center', transform: `rotate(-12deg) scale(${stamp})`, opacity: interpolate(frame, [21, 25], [0, 1], clamp)}}>OFFICIAL</div>
+      <KineticLine text={scene.narration || ''} delay={38} size={46} style={{left: 100, bottom: 180, width: 880, textAlign: 'center'}} />
+    </SceneShell>
+  );
+};
+
+const MapRoute: React.FC<{scene: ProductionScene}> = ({scene}) => {
+  const frame = useCurrentFrame();
+  const route = interpolate(frame, [15, scene.durationInFrames * 0.68], [0, 1], clamp);
+  return (
+    <SceneShell scene={scene} focus>
+      <StickerText text={scene.headline || 'THE ROUTE'} top={115} size={80} />
+      <TornPaper rotate={-1} style={{left: 75, top: 390, width: 930, height: 1110, background: palette.paperDark}}>
+        <MapGraphic progress={route} labels={scene.emphasis || []} />
+      </TornPaper>
+      <Tape style={{left: 435, top: 350}} />
+      <KineticLine text={scene.kicker || scene.narration || ''} delay={30} color={palette.red} size={48} style={{left: 110, bottom: 170, width: 860, textAlign: 'center'}} />
+    </SceneShell>
+  );
+};
+
+const StatSlot: React.FC<{scene: ProductionScene}> = ({scene}) => {
+  const frame = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const settled = entrance(frame, fps, 26);
+  const candidates = ['45', '900', '2,400', scene.stat || '7,300'];
+  const index = Math.min(candidates.length - 1, Math.floor(frame / 7));
+  return (
+    <SceneShell scene={scene} focus>
+      <StickerText text={scene.headline || 'THE NUMBER CHANGES EVERYTHING'} top={115} size={66} rotate={-1} />
+      <div style={{position: 'absolute', left: 90, right: 90, top: 560, height: 510, background: palette.navy, border: `10px solid ${palette.ink}`, boxShadow: `22px 25px 0 ${palette.goldDark}`, transform: `rotate(-1deg) scale(${0.94 + settled * 0.06})`, overflow: 'hidden'}}>
+        <div style={{position: 'absolute', inset: 0, background: 'repeating-linear-gradient(0deg, transparent 0 53px, rgba(255,255,255,0.07) 54px 56px)'}} />
+        <div style={{position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Arial Black, Impact, sans-serif', fontSize: 190, color: palette.gold, letterSpacing: -8, transform: `translateY(${index < candidates.length - 1 ? Math.sin(frame * 1.9) * 45 : 0}px)`, filter: index < candidates.length - 1 ? 'blur(2px)' : 'none'}}>{candidates[index]}</div>
+      </div>
+      <div style={{position: 'absolute', top: 1120, left: 130, width: 820, fontFamily: 'Arial Black, sans-serif', fontSize: 88, textAlign: 'center', color: palette.red, transform: `scale(${0.85 + settled * 0.15})`}}>{(scene.statLabel || scene.kicker || 'PEOPLE').toUpperCase()}</div>
+      <KineticLine text={scene.narration || ''} delay={48} size={44} style={{left: 130, bottom: 175, width: 820, textAlign: 'center'}} />
+    </SceneShell>
+  );
+};
+
+const ExplainerDiagram: React.FC<{scene: ProductionScene}> = ({scene}) => {
+  const frame = useCurrentFrame();
+  const progress = interpolate(frame, [18, scene.durationInFrames - 20], [0, 1], clamp);
+  return (
+    <SceneShell scene={scene}>
+      <StickerText text={scene.headline || 'HOW IT WORKED'} top={120} size={78} />
+      <div style={{position: 'absolute', left: 110, top: 480, width: 860, height: 820}}>
+        {[0, 1, 2].map((i) => <DiagramNode key={i} index={i} active={progress > i / 3} text={(scene.emphasis?.[i] || ['PLAN', 'TRUST', 'PAYOFF'][i]).toUpperCase()} />)}
+        <svg viewBox="0 0 860 820" style={{position: 'absolute', inset: 0}}>
+          <path d="M240 220 C390 120 470 120 620 220 M620 310 C510 420 350 420 240 525" fill="none" stroke={palette.red} strokeWidth="18" strokeLinecap="round" strokeDasharray="900" strokeDashoffset={900 * (1 - progress)} />
+          <path d="M598 198 L660 220 L615 265" fill="none" stroke={palette.red} strokeWidth="18" strokeLinecap="round" />
+          <path d="M260 500 L208 531 L267 562" fill="none" stroke={palette.red} strokeWidth="18" strokeLinecap="round" />
+        </svg>
+      </div>
+      <KineticLine text={scene.narration || ''} delay={35} size={45} style={{left: 100, bottom: 170, width: 880, textAlign: 'center'}} />
+    </SceneShell>
+  );
+};
+
+const TransactionScene: React.FC<{scene: ProductionScene}> = ({scene}) => {
+  const frame = useCurrentFrame();
+  const exchange = interpolate(frame, [20, 65], [0, 1], clamp);
+  return (
+    <SceneShell scene={scene} focus>
+      <StickerText text={scene.headline || 'THE DEAL'} top={115} size={82} rotate={1} />
+      <div style={{position: 'absolute', left: 60, top: 570, width: 430, height: 600, transform: `translateX(${interpolate(exchange, [0, 1], [-80, 90])}px)`}}><Hand direction="right" /></div>
+      <div style={{position: 'absolute', right: 60, top: 570, width: 430, height: 600, transform: `translateX(${interpolate(exchange, [0, 1], [80, -90])}px)`}}><Hand direction="left" /></div>
+      <MoneyStack style={{left: 405, top: 720, transform: `scale(${0.8 + exchange * 0.2}) rotate(${Math.sin(frame * 0.08)}deg)`}} />
+      <KineticLine text={(scene.stat || scene.kicker || 'CASH').toUpperCase()} delay={28} color={palette.red} size={92} style={{left: 110, top: 1230, width: 860, textAlign: 'center'}} />
+      <KineticLine text={scene.narration || ''} delay={45} size={43} style={{left: 110, bottom: 160, width: 860, textAlign: 'center'}} />
+    </SceneShell>
+  );
+};
+
+const ConsequenceScene: React.FC<{scene: ProductionScene}> = ({scene}) => {
+  const frame = useCurrentFrame();
+  const close = interpolate(frame, [0, scene.durationInFrames], [0, 0.58], clamp);
+  return (
+    <SceneShell scene={{...scene, dark: true}} focus>
+      <AbsoluteFill style={{background: `radial-gradient(circle at 50% 45%, transparent 0 ${42 - close * 30}%, rgba(0,0,0,${0.25 + close}) 75%)`}} />
+      <StickerText text={scene.headline || 'THEN EVERYTHING COLLAPSED'} top={130} size={67} fill={palette.red} color={palette.white} />
+      <WarningSymbols />
+      <KineticLine text={(scene.kicker || 'NO WAY OUT').toUpperCase()} delay={24} color={palette.gold} size={94} style={{left: 90, top: 860, width: 900, textAlign: 'center'}} />
+      <KineticLine text={scene.narration || ''} delay={43} color={palette.white} size={45} style={{left: 115, bottom: 180, width: 850, textAlign: 'center'}} />
+    </SceneShell>
+  );
+};
+
+const FinalTwist: React.FC<{scene: ProductionScene}> = ({scene}) => {
+  const frame = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const pop = entrance(frame, fps, 13);
+  const circle = interpolate(frame, [34, 88], [0, 1], clamp);
+  return (
+    <SceneShell scene={{...scene, dark: true}} focus>
+      <Sparkles dark count={20} />
+      <div style={{position: 'absolute', left: 90, right: 90, top: 310, bottom: 320, border: `8px solid ${palette.gold}`, transform: `rotate(-2deg) scale(${0.9 + pop * 0.1})`}} />
+      <KineticLine text={scene.headline || 'THE FINAL TWIST'} delay={9} color={palette.white} size={92} style={{left: 100, top: 540, width: 880, textAlign: 'center'}} />
+      <svg viewBox="0 0 900 260" style={{position: 'absolute', left: 90, top: 740, width: 900, height: 260}}>
+        <path d="M40 145 C110 16 782 10 850 132 C900 229 120 272 42 160" fill="none" stroke={palette.gold} strokeWidth="15" strokeLinecap="round" strokeDasharray="2200" strokeDashoffset={2200 * (1 - circle)} />
+      </svg>
+      <KineticLine text={(scene.kicker || 'AND IT REALLY HAPPENED').toUpperCase()} delay={27} color={palette.gold} size={60} style={{left: 130, top: 1020, width: 820, textAlign: 'center'}} />
+      <div style={{position: 'absolute', left: 0, right: 0, bottom: 160, textAlign: 'center', fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 40, color: palette.white}}>NEOSANIYE</div>
+    </SceneShell>
+  );
+};
+
+const GenericCollage: React.FC<{scene: ProductionScene; index: number; total: number}> = ({scene, index, total}) => {
+  const first = scene.assets?.[0];
+  const second = scene.assets?.[1];
+  return (
+    <SceneShell scene={scene}>
+      <StickerText text={scene.headline || `BEAT ${index + 1}`} top={115} size={76} rotate={index % 2 ? 1 : -1} />
+      <AssetPanel asset={first} rotate={-3} style={{left: 75, top: 430, width: 650, height: 760}} />
+      <AssetPanel asset={second} rotate={4} style={{right: 65, top: 760, width: 470, height: 520}} />
+      {!first ? <DocumentCard style={{left: 115, top: 520, transform: 'rotate(-4deg) scale(1.25)'}} label={(scene.emphasis?.[0] || 'EVIDENCE').toUpperCase()} /> : null}
+      <div style={{position: 'absolute', right: 70, top: 360, fontFamily: 'Arial Black, sans-serif', fontSize: 42, color: palette.red}}>{String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}</div>
+      <KineticLine text={scene.narration || scene.kicker || ''} delay={30} size={48} style={{left: 95, bottom: 170, width: 890, textAlign: 'center'}} />
+    </SceneShell>
+  );
+};
+
+const PortraitCutout: React.FC<{style?: React.CSSProperties}> = ({style}) => (
+  <div style={{position: 'absolute', width: 420, height: 610, filter: 'drop-shadow(20px 24px 0 rgba(24,18,13,0.22))', ...style}}>
+    <svg viewBox="0 0 440 610" width="100%" height="100%">
+      <path d="M77 598 C86 438 133 377 219 365 C309 377 358 443 368 598 Z" fill="#d8d2c5" stroke={palette.ink} strokeWidth="14" />
+      <path d="M151 377 L219 473 L289 377 L270 598 L166 598 Z" fill={palette.navy} stroke={palette.ink} strokeWidth="11" />
+      <ellipse cx="219" cy="239" rx="115" ry="142" fill="#d3c5ad" stroke={palette.ink} strokeWidth="14" />
+      <path d="M110 213 C114 82 330 66 337 223 C292 168 148 166 110 213 Z" fill={palette.ink} />
+      <ellipse cx="174" cy="242" rx="12" ry="9" fill={palette.ink} />
+      <ellipse cx="265" cy="242" rx="12" ry="9" fill={palette.ink} />
+      <path d="M170 320 C203 343 240 343 272 319" fill="none" stroke={palette.ink} strokeWidth="9" strokeLinecap="round" />
+      <path d="M147 116 C173 75 288 74 318 133" fill="none" stroke={palette.gold} strokeWidth="15" />
+    </svg>
+  </div>
+);
+
+const DocumentCard: React.FC<{style?: React.CSSProperties; label: string}> = ({style, label}) => (
+  <div style={{position: 'absolute', width: 520, height: 360, padding: 34, background: palette.paperLight, border: `5px solid ${palette.ink}`, boxShadow: '14px 18px 0 rgba(25,20,15,0.18)', ...style}}>
+    <div style={{fontFamily: 'Georgia, serif', fontWeight: 700, fontSize: 30, letterSpacing: 3}}>{label}</div>
+    <div style={{height: 5, background: palette.ink, margin: '20px 0 28px'}} />
+    {[92, 76, 84, 55].map((w, i) => <div key={i} style={{width: `${w}%`, height: 13, background: i === 2 ? palette.red : palette.ink, opacity: i === 2 ? 0.7 : 0.4, marginBottom: 18}} />)}
+    <div style={{position: 'absolute', right: 35, bottom: 30, width: 90, height: 90, borderRadius: '50%', border: `8px double ${palette.red}`}} />
+  </div>
+);
+
+const MapGraphic: React.FC<{progress: number; labels: string[]}> = ({progress, labels}) => (
+  <svg viewBox="0 0 930 1110" width="100%" height="100%">
+    <path d="M44 180 C152 75 274 108 324 220 C390 369 262 431 162 367 C72 309 34 259 44 180 Z" fill="#c9b998" stroke={palette.ink} strokeWidth="10" />
+    <path d="M566 315 C676 217 853 278 889 420 C916 527 823 603 748 662 C664 730 569 686 539 583 C510 484 485 392 566 315 Z" fill="#c9b998" stroke={palette.ink} strokeWidth="10" />
+    <path d="M255 660 C356 620 458 682 463 796 C469 922 344 1028 230 954 C139 894 142 705 255 660 Z" fill="#c9b998" stroke={palette.ink} strokeWidth="10" />
+    <path d="M227 262 C380 180 520 202 705 428" fill="none" stroke={palette.red} strokeWidth="18" strokeLinecap="round" strokeDasharray="900" strokeDashoffset={900 * (1 - progress)} />
+    <circle cx="225" cy="262" r="26" fill={palette.gold} stroke={palette.ink} strokeWidth="9" />
+    <circle cx="705" cy="428" r="26" fill={palette.red} stroke={palette.ink} strokeWidth="9" />
+    <text x="95" y="145" fontFamily="Arial Black" fontSize="42" fill={palette.ink}>{(labels[0] || 'ORIGIN').toUpperCase()}</text>
+    <text x="635" y="735" fontFamily="Arial Black" fontSize="42" fill={palette.ink}>{(labels[1] || 'DESTINATION').toUpperCase()}</text>
+  </svg>
+);
+
+const DiagramNode: React.FC<{index: number; active: boolean; text: string}> = ({index, active, text}) => {
+  const positions = [{left: 25, top: 65}, {left: 525, top: 65}, {left: 25, top: 490}];
+  return <div style={{position: 'absolute', ...positions[index], width: 300, height: 210, background: active ? palette.gold : palette.paperLight, border: `8px solid ${palette.ink}`, boxShadow: '12px 14px 0 rgba(24,18,14,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', fontFamily: 'Arial Black, sans-serif', fontSize: 44, transform: `rotate(${index === 1 ? 3 : -2}deg) scale(${active ? 1 : 0.88})`, opacity: active ? 1 : 0.35}}>{text}</div>;
+};
+
+const Hand: React.FC<{direction: 'left' | 'right'}> = ({direction}) => (
+  <svg viewBox="0 0 430 600" width="100%" height="100%" style={{transform: direction === 'left' ? 'scaleX(-1)' : undefined}}>
+    <path d="M26 305 C96 238 156 221 247 227 L355 169 C389 151 419 191 391 216 L322 279 L399 285 C430 291 428 335 397 342 L310 349 L380 386 C407 401 390 442 360 430 L270 394 L317 452 C339 477 307 509 283 486 L202 405 C153 359 91 365 26 401 Z" fill="#d3c5ad" stroke={palette.ink} strokeWidth="15" />
+  </svg>
+);
+
+const MoneyStack: React.FC<{style?: React.CSSProperties}> = ({style}) => (
+  <div style={{position: 'absolute', width: 270, height: 230, ...style}}>
+    {[0, 1, 2, 3].map((i) => <div key={i} style={{position: 'absolute', left: i * 8, top: 130 - i * 32, width: 250, height: 95, background: i % 2 ? '#b7c48d' : '#c8d29e', border: `7px solid ${palette.ink}`, transform: `rotate(${i % 2 ? 3 : -2}deg)`}}><div style={{position: 'absolute', inset: 14, border: `4px double ${palette.goldDark}`}} /><div style={{position: 'absolute', left: 95, top: 20, fontFamily: 'Georgia, serif', fontSize: 42, fontWeight: 900}}>$</div></div>)}
+  </div>
+);
+
+const WarningSymbols: React.FC = () => (
+  <AbsoluteFill>
+    {[{x: 120, y: 500, r: -8}, {x: 650, y: 470, r: 6}, {x: 360, y: 760, r: -3}].map((p, i) => <div key={i} style={{position: 'absolute', left: p.x, top: p.y, width: 310, height: 310, background: i === 1 ? palette.red : palette.paperLight, clipPath: 'polygon(50% 0, 100% 100%, 0 100%)', transform: `rotate(${p.r}deg)`, border: `8px solid ${palette.ink}`}}><div style={{position: 'absolute', left: 130, top: 80, color: palette.ink, fontFamily: 'Arial Black, sans-serif', fontSize: 135}}>!</div></div>)}
+  </AbsoluteFill>
+);
