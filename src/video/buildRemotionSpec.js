@@ -2,6 +2,7 @@ import path from 'node:path';
 import {mkdir, writeFile} from 'node:fs/promises';
 
 const FPS = 30;
+
 const TEMPLATE_SFX = {
   'hook-reveal': ['whoosh-entrance', 'camera-shutter'],
   'portrait-dossier': ['focus-hunt', 'paper'],
@@ -25,12 +26,42 @@ const TRANSITION_MAP = {
   tear: 'paper-tear',
 };
 
+/**
+ * Görsel hikâye planlayıcısının editoryal kararı Remotion tarafında kaybolmaz.
+ * Yalnız güçlü ve görsel olarak eşdeğer eşleşmeler burada tutulur; belirsiz
+ * şablonlar metin sınıflandırıcısına veya collage-generic'e bırakılır.
+ */
+const STORY_TEMPLATE_MAP = {
+  mechanism: 'explainer-diagram',
+  chain: 'explainer-diagram',
+  cause_effect: 'explainer-diagram',
+  chain_reaction: 'explainer-diagram',
+  problem_solution: 'explainer-diagram',
+  filtering: 'explainer-diagram',
+  reconstruct: 'explainer-diagram',
+  retrieval: 'explainer-diagram',
+  emotion_link: 'explainer-diagram',
+  comparison: 'explainer-diagram',
+  construction: 'explainer-diagram',
+  map: 'map-route',
+  navigation: 'map-route',
+  flow: 'map-route',
+  communication: 'map-route',
+  quantity: 'stat-slot',
+  scale: 'stat-slot',
+  timeline: 'document',
+  search_reveal: 'portrait-dossier',
+  atmosphere: 'collage-generic',
+};
+
 function normalizeText(value) {
   return String(value || '').replace(/\s+/g, ' ').trim();
 }
 
 function extractStat(text) {
-  const match = normalizeText(text).match(/(?:\$|£|€)?\d[\d,.]*(?:\s?(?:million|billion|trillion|thousand|tons?|people|years?|times?))?/i);
+  const match = normalizeText(text).match(
+    /(?:\$|£|€)?\d[\d,.]*(?:\s?(?:million|billion|trillion|thousand|tons?|people|years?|times?))?/i,
+  );
   if (!match) return null;
   const raw = match[0].trim();
   const label = raw.replace(/^(?:\$|£|€)?\d[\d,.]*\s*/i, '').trim();
@@ -48,18 +79,35 @@ function titleCaseWords(text, maxWords = 7) {
 
 export function classifyRemotionTemplate(scene, index, total) {
   const text = `${scene?.narration || ''} ${scene?.image_prompt || ''} ${(scene?.keywords || []).join(' ')}`.toLowerCase();
+
   if (index === 0) return 'hook-reveal';
   if (index === total - 1) return 'final-twist';
-  if (/\b(document|letter|passport|certificate|contract|newspaper|official|sealed|stamp|evidence|classified)\b/.test(text)) return 'document';
-  // Numbers get first refusal so a sentence such as "250 settlers crossed the
-  // Atlantic" becomes the Netflix-style statistic beat rather than a generic map.
+
+  const planned = STORY_TEMPLATE_MAP[normalizeText(scene?.story_template).toLowerCase()];
+  if (planned && planned !== 'collage-generic') return planned;
+
+  if (/\b(document|letter|passport|certificate|contract|newspaper|official|sealed|stamp|evidence|classified)\b/.test(text)) {
+    return 'document';
+  }
+  // Sayılar rota kelimelerinden önce değerlendirilir: "250 kişi okyanusu geçti"
+  // sahnesinin ana görsel olayı rota değil ölçektir.
   if (extractStat(text)) return 'stat-slot';
-  if (/\b(map|route|voyage|sailed|travelled|traveled|from .+ to|across the|crossed the|journey|border|ocean)\b/.test(text)) return 'map-route';
-  if (/\b(sold|bought|paid|payment|money|cash|deal|auction|price|bribe|profit|fortune|bank|bond)\b/.test(text)) return 'transaction';
-  if (/\b(how|inside|mechanism|works|because|caused|process|step|system|engine|diagram)\b/.test(text)) return 'explainer-diagram';
-  if (/\b(died|death|collapsed|failed|disaster|disease|starved|lost|destroyed|caught|exposed|panic|shame)\b/.test(text)) return 'consequence';
-  if (/\b(man|woman|leader|general|king|queen|scientist|inventor|conman|soldier|named|called)\b/.test(text)) return 'portrait-dossier';
-  return 'collage-generic';
+  if (/\b(map|route|voyage|sailed|travelled|traveled|from .+ to|across the|crossed the|journey|border|ocean)\b/.test(text)) {
+    return 'map-route';
+  }
+  if (/\b(sold|bought|paid|payment|money|cash|deal|auction|price|bribe|profit|fortune|bank|bond)\b/.test(text)) {
+    return 'transaction';
+  }
+  if (/\b(how|inside|mechanism|works|because|caused|process|step|system|engine|diagram)\b/.test(text)) {
+    return 'explainer-diagram';
+  }
+  if (/\b(died|death|collapsed|failed|disaster|disease|starved|lost|destroyed|caught|exposed|panic|shame)\b/.test(text)) {
+    return 'consequence';
+  }
+  if (/\b(man|woman|leader|general|king|queen|scientist|inventor|conman|soldier|named|called)\b/.test(text)) {
+    return 'portrait-dossier';
+  }
+  return planned || 'collage-generic';
 }
 
 function sceneStartSeconds(timelineScene, fallbackStart) {
@@ -74,8 +122,11 @@ function sceneDurationSeconds(timelineScene, fallbackDuration) {
 
 function chooseHeadline({script, scene, index, total, template}) {
   if (index === 0) return titleCaseWords(script.hook_text || scene.narration || script.title, 7);
-  if (index === total - 1) return titleCaseWords(script.finale_text || scene.narration || 'THE FINAL TWIST', 7);
-  const emph = (script.emphasis_words || []).find((word) => normalizeText(scene.narration).toLowerCase().includes(String(word).toLowerCase()));
+  if (index === total - 1) {
+    return titleCaseWords(script.finale_text || scene.narration || 'THE FINAL TWIST', 7);
+  }
+  const narration = normalizeText(scene.narration).toLowerCase();
+  const emph = (script.emphasis_words || []).find((word) => narration.includes(String(word).toLowerCase()));
   if (template === 'stat-slot') return titleCaseWords(scene.narration, 6);
   if (emph) return titleCaseWords(emph, 4);
   return titleCaseWords(scene.narration, 6);
@@ -91,7 +142,9 @@ function mediaForScene(mediaItems, sceneIndex, publicPathForAsset) {
     .filter((item) => Number(item.scene) === sceneIndex)
     .slice(0, 2)
     .map((item, assetIndex) => ({
-      path: publicPathForAsset ? publicPathForAsset(item.path, item, sceneIndex) : normalizeText(item.publicPath || item.path),
+      path: publicPathForAsset
+        ? publicPathForAsset(item.path, item, sceneIndex)
+        : normalizeText(item.publicPath || item.path),
       type: item.type === 'video' ? 'video' : 'image',
       role: assetIndex === 0 ? 'hero' : 'evidence',
     }))
@@ -100,13 +153,13 @@ function mediaForScene(mediaItems, sceneIndex, publicPathForAsset) {
 
 function sfxForTemplate(template, sfxLibrary) {
   return (TEMPLATE_SFX[template] || [])
-    .map((family, i) => {
+    .map((family, index) => {
       const asset = sfxLibrary?.[family];
       if (!asset) return null;
       return {
         path: typeof asset === 'string' ? asset : asset.path,
         family,
-        atFrame: i === 0 ? 0 : 18 + i * 8,
+        atFrame: index === 0 ? 0 : 18 + index * 8,
         durationInFrames: typeof asset === 'object' ? asset.durationInFrames : undefined,
         volume: typeof asset === 'object' ? asset.volume : undefined,
       };
@@ -142,8 +195,9 @@ export function buildRemotionSpec({
     fallbackStart = startSeconds + durationSeconds;
     const template = classifyRemotionTemplate(scene, index, script.scenes.length);
     const stat = extractStat(scene.narration);
+    const narration = normalizeText(scene.narration);
     const emphasis = (script.emphasis_words || [])
-      .filter((word) => normalizeText(scene.narration).toLowerCase().includes(String(word).toLowerCase()))
+      .filter((word) => narration.toLowerCase().includes(String(word).toLowerCase()))
       .slice(0, 4);
 
     return {
@@ -151,7 +205,7 @@ export function buildRemotionSpec({
       template,
       fromFrame: Math.max(0, Math.round(startSeconds * fps)),
       durationInFrames: Math.max(15, Math.round(durationSeconds * fps)),
-      narration: normalizeText(scene.narration),
+      narration,
       headline: chooseHeadline({script, scene, index, total: script.scenes.length, template}),
       kicker: index === script.scenes.length - 1
         ? titleCaseWords(script.finale_text || scene.narration, 7)

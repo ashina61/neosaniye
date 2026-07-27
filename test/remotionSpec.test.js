@@ -22,6 +22,21 @@ test('classifies reusable collage scene templates', () => {
   assert.equal(classifyRemotionTemplate(scenes[6], 6, scenes.length), 'final-twist');
 });
 
+test('visual story planner templates survive into Remotion compositions', () => {
+  const scenes = [
+    {narration: 'Opening beat'},
+    {narration: 'Air moves through hidden chambers', story_template: 'mechanism'},
+    {narration: 'The route bends around the coast', story_template: 'navigation'},
+    {narration: 'Thousands fill the structure', story_template: 'quantity'},
+    {narration: 'The record changed here', story_template: 'timeline'},
+    {narration: 'Closing beat'},
+  ];
+  assert.equal(classifyRemotionTemplate(scenes[1], 1, scenes.length), 'explainer-diagram');
+  assert.equal(classifyRemotionTemplate(scenes[2], 2, scenes.length), 'map-route');
+  assert.equal(classifyRemotionTemplate(scenes[3], 3, scenes.length), 'stat-slot');
+  assert.equal(classifyRemotionTemplate(scenes[4], 4, scenes.length), 'document');
+});
+
 test('builds deterministic frame-accurate production spec', () => {
   const script = {
     topic: 'The fake nation of Poyais',

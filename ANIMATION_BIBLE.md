@@ -1,65 +1,98 @@
-# NeoSaniye Animation Bible
+# NeoSaniye Remotion Design Bible
 
-Motion-graphics sahnelerinin marka kuralları. Makine karşılığı `src/config.js →
-video.styleBible` objesindedir; template'ler (ör. `src/media/renderTemplate.js`)
-onu okur. Bu dosya insan + LLM (Görüntü Yönetmeni promptu) için özettir.
+Bu dosya NeoSaniye'nin bütün Shorts videolarında korunacak motion-graphics dilini
+tanımlar. Makine karşılığı `remotion/src/` bileşenleri ve `ProductionSpec`tir.
 
-## Felsefe (audit kararı)
+## 1. Format
 
-- **AI runtime'da animasyon KODU YAZMAZ.** Görüntü Yönetmeni yalnızca doğrulanmış
-  bir **parametre** üretir (ör. `stat: {value, unit, label}`); önceden test edilmiş
-  bir ffmpeg template'i o parametreyle deterministik sahne render eder.
-- **Compile hatası / arbitrary code / nondeterminism YOK.** Template'ler saf ffmpeg,
-  yeni bağımlılık yok.
-- **Asla kırılma:** template başarısız olursa sahne normal görsel zincirine
-  (stok video → AI görsel → Pexels → placeholder) düşer.
+- 1080×1920, 9:16
+- 30 fps
+- H.264, `yuv420p`
+- ana hedef 30–58 saniye
+- telefon ekranında okunabilir tek odak
 
-## Canvas
+## 2. Marka paleti
 
-- 1080×1920, 9:16, 30 fps.
+- mürekkep: `#171511`
+- krem kâğıt: `#efe6d3`
+- açık kâğıt: `#f8f1e4`
+- altın vurgu: `#d5a52d`
+- koyu altın: `#9b6d11`
+- pale teal: `#9fc8c6`
+- koyu teal: `#4b7778`
+- vurgu kırmızısı: `#bc493f`
+- koyu lacivert: `#172433`
 
-## Görsel dil
+Bir sahnede ana vurgu rengi altın; teal yardımcı bilgi veya rota rengidir. Kırmızı
+yalnız tehlike, hata, darbe veya final twist için kullanılır.
 
-- Kömür-siyah zemin (dikey gradyan `bg0`→`bg1`) + hafif vignette + ince turkuaz çerçeve.
-- Temiz beyaz tipografi (`ink`).
-- Logo turkuazı (`accent`) vurgu; derin kırmızı (`red`) yedek.
-- Fontlar: Montserrat Black (sayı), Montserrat SemiBold (birim/etiket).
+## 3. Malzeme dili
 
-## Yasaklar
+- krem/yıpranmış kâğıt tabanı
+- siyah-beyaz veya düşük doygunluklu cutout özneler
+- beyaz kontur ve yumuşak sert gölge
+- yırtık kâğıt kartları
+- bant, damga, işaret kalemi ve çizim izleri
+- kontrollü film grain, vignette ve gate weave
 
-- Emoji, ucuz stok ikon, rastgele çizgi film, "AI gradyanı" hissi.
-- Jenerik PowerPoint geçişleri, gereksiz yazı, her elemanın zıplaması.
-- Ekrana **uydurma sayı** (anlatımda geçmeyen) basmak — kesinlikle yasak.
+Doku bilgiye hizmet eder. Ekrana aynı anda üçten fazla dekoratif parça konmaz.
 
-## Hareket
+## 4. Sahne şablonları
 
-- Sayı 0'dan hedefe ~1.8 sn'de sayılır, sonra sabit tutulur (izleyici okur).
-- Yumuşak fade-in; abartılı sürekli zoom/pan yok.
-- Büyük görsel olay anlatımın vuruş anına denk gelmeli.
+Her beat tam bir görsel göreve bağlanır:
 
-## Metin
+| Şablon | İzleyicinin gördüğü olay |
+| --- | --- |
+| `hook-reveal` | tek büyük çelişki veya imkânsız görüntü |
+| `portrait-dossier` | kişi/özne + kanıt kartları |
+| `document` | belge üzerinde gerçek bilgi vurgusu |
+| `map-route` | başlangıçtan hedefe ilerleyen rota |
+| `stat-slot` | büyük sayı + ölçek karşılaştırması |
+| `explainer-diagram` | neden-sonuç veya adım akışı |
+| `transaction` | değer/nesne iki taraf arasında değişir |
+| `consequence` | önceki olayın ölçülebilir sonucu |
+| `final-twist` | ilk hook'u cevaplayan son reveal |
+| `collage-generic` | yalnız özel şablon yoksa kullanılır |
 
-- Template altyazı ÜRETMEZ — altyazı ana caption pipeline'ında kalır.
-- Ekran etiketi yalnızca editoryal olarak gerektiğinde.
+## 5. Hareket kuralları
 
-## Mevcut template'ler
+- Girişler spring tabanlıdır; zıplama tek kez olur.
+- Kamera zoom'u bilgi taşımıyorsa kullanılmaz.
+- Yavaş drift/parallax arka planı canlı tutar, ana olayla yarışmaz.
+- Belge, sayı ve karşılaştırma sahnesinde kamera mümkün olduğunca sabittir.
+- Geçişler kısa cut, whip-flash, shutter veya paper-tear ailesindedir.
+- Aynı geçiş arka arkaya üç kez tekrarlanmaz.
+- İlk kare ve final kare loop için görsel akrabalık taşır.
 
-| Template | Ne zaman | Parametre |
-|---|---|---|
-| `statCard` | Sahnenin çekirdeği anlatımda geçen ÇARPICI bir sayı | `{value, unit, label}` |
+## 6. Tipografi
 
-### Routing kuralları (Görüntü Yönetmeni)
+- Hook: en fazla 3–7 kelime, tek bakışta okunur.
+- Kinetic text yalnız anlatının vurucu kelimesini taşır.
+- Tam konuşmayı ekranda sürekli altyazı şeridi olarak tekrarlama.
+- En önemli kelime boyut/renk değişimiyle ayrılır.
+- Shorts arayüzünün alt ve sağ güvenli alanları boş bırakılır.
 
-- `stat` yalnızca **video başına 1 sahne**, **sahne 1 asla**, ve sayı **anlatımda
-  gerçekten geçiyorsa** (anti-halüsinasyon guard: `isUsableStat`).
-- Aksi halde her sahnede `stat = null` → normal görsel akışı.
+## 7. Ses
 
-## Tutarlılık
+- Narration her zaman ana katmandır.
+- Müzik özgün/procedural veya lisans manifestli kaynaktır.
+- SFX yalnız olay başladığında kullanılır; kota doldurmak için kullanılmaz.
+- Aileler: whoosh, focus, paper, stamp, impact, cash, heartbeat, boom.
+- Aynı SFX ailesi art arda kullanılmaz.
+- Final boom konuşmayı örtmez.
 
-- Üretilen her sahne aynı NeoSaniye kanalının parçası gibi hissettirmeli:
-  aynı koyu zemin, aynı tipografi, aynı altın/kırmızı vurgu.
+## 8. Kalite kabulü
 
-## Yol haritası (henüz YOK — P1/P2)
+Bir video ancak şunları sağladığında üretim adayıdır:
 
-- `barCompare` / `percentage`, `timeline`, `map_route` (statik harita + ASS
-  vektör rota), `ranking`. Hepsi saf ffmpeg/SVG, aynı guard + fallback deseni.
+- her sahne `production.json` içinde tanımlı,
+- final dosya 1080×1920 ve sesli,
+- decode hatası yok,
+- uzun siyah/donma/sessizlik penceresi yok,
+- final MP4 hash'i analiz edilen dosyayla aynı,
+- kaynak/lisans manifesti mevcut,
+- hook ilk üç saniyede görsel olay başlatıyor,
+- final sahne hook'taki soruyu gerçekten kapatıyor.
+
+Eski FFmpeg montaj, ASS overlay, ayrı CTA post-pass veya outro kartı bu mimarinin
+parçası değildir.

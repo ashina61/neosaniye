@@ -1,4 +1,4 @@
-name: Remotion Production Engine Validation
+name: Remotion-Only Production Validation
 
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: remotion-fixture-${{ github.ref }}
+  group: remotion-only-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -31,40 +31,39 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install ffmpeg
+      - name: Install ffmpeg and ffprobe
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
 
-      - name: Install main pipeline dependencies
+      - name: Install pipeline dependencies
         run: npm ci
 
-      - name: Install isolated Remotion dependencies
+      - name: Install Remotion renderer
         run: npm install --prefix remotion --no-audit --no-fund
 
       - name: Install fixture TTS
         run: python -m pip install --disable-pip-version-check edge-tts==7.2.7
 
-      - name: Generate English fixture voice music and layered SFX
+      - name: Generate fixture audio
         run: |
           python scripts/generate-remotion-fixture-audio.py
           if [ -f remotion/public/runs/fixture/voice.mp3 ]; then
-            ffmpeg -y -v error -i remotion/public/runs/fixture/voice.mp3 \
-              -ar 22050 -ac 1 remotion/public/runs/fixture/voice.wav
+            ffmpeg -y -v error -i remotion/public/runs/fixture/voice.mp3 -ar 22050 -ac 1 remotion/public/runs/fixture/voice.wav
           fi
           test -s remotion/public/runs/fixture/voice.wav
           test -s remotion/public/runs/fixture/music.wav
           test -s remotion/public/runs/fixture/whoosh.wav
           test -s remotion/public/runs/fixture/boom.wav
 
-      - name: Test production compiler and renderer policy
-        run: node --test test/remotionSpec.test.js test/renderRouter.test.js
+      - name: Validate repository architecture
+        run: npm run test:remotion
 
-      - name: Verify reversible Phase 4 shadow patch
+      - name: Run complete Node test suite
         run: |
-          cp src/pipeline/run.js /tmp/run-before.js
-          node scripts/patch-remotion-shadow-run.mjs
-          grep -F "renderWithConfiguredEngine as renderVideo" src/pipeline/run.js
-          cp /tmp/run-before.js src/pipeline/run.js
-          git diff --exit-code -- src/pipeline/run.js
+          set +e
+          npm test > node-test.log 2>&1
+          status=$?
+          tail -n 250 node-test.log
+          exit $status
 
       - name: Typecheck Remotion engine
         run: npm run remotion:typecheck
@@ -107,13 +106,15 @@ jobs:
           fi
 
       - name: Upload validation artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: neosaniye-remotion-production-fixture
+          name: neosaniye-remotion-only-fixture
           path: |
+            node-test.log
             artifacts/remotion-fixture.mp4
             artifacts/remotion-fixture-ffprobe.json
             artifacts/remotion-fixture-scan.log
             fixtures/remotion/production.json
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 7

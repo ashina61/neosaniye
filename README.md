@@ -1,120 +1,201 @@
-# neosaniye — Otomatik Faceless YouTube Shorts Üretim Sistemi
+# NeoSaniye — Remotion Shorts Factory
 
-"İlginç bilgiler / nasıl çalışır / nasıl yapılır" temalı, tamamen otomatik
-çalışan bir YouTube Shorts üretim ve yayınlama pipeline'ı. GitHub Actions cron
-ile tetiklenir; script yazar, seslendirir, video oluşturur, altyazı ekler ve
-YouTube'a yükler.
+NeoSaniye; konu seçimi, İngilizce mini-belgesel senaryosu, TTS, kaynak görseller,
+özgün müzik/SFX, Remotion motion-graphics renderı, teknik kalite kapıları ve
+YouTube/Instagram/Facebook yayınını tek otomatik hatta birleştirir.
 
-## Süre sözleşmesi (önemli)
+## Tek render motoru
 
-Fabrika artık "Shorts = 15 saniye" varsayımıyla çalışmaz. Her üretim,
-seslendirilen sahne anlatımı için **105–135 kelime** ve ölçülmüş TTS için
-**35–58 saniye** hedefler. Script katmanı kısa veya uzun taslağı yeniden ister;
-TTS'den sonraki ikinci kapı da medya indirme ve render başlamadan gerçek süreyi
-doğrular. Final acil kalite kapısı aynı aralığın dışındaki MP4'ü yayınlamaz.
-Gerekirse `.env` içinde `CONTENT_MIN_WORDS`, `CONTENT_MAX_WORDS`,
-`CONTENT_MIN_SECONDS` ve `CONTENT_MAX_SECONDS` değerlerini birlikte ayarlayın.
+Görüntü montajı artık yalnızca **Remotion** ile yapılır. Eski FFmpeg montaj,
+ASS/libass overlay, post-render CTA, outro ve renderer-switch yolları kaldırılmıştır.
 
-## Ses ve abone CTA standardı
+FFmpeg ve ffprobe hâlâ şu yardımcı işler için kullanılır:
 
-Her uygun videoda, payoff sonrasında tek bir **Subscribe** CTA görünür; bunu
-kapatmak için `MOTION_CTA_MODE=off` kullanın. Ses tasarımı hook vuruşuna ek
-olarak kurulum, reveal ve payoff'a dağılmış **3–5** SFX hedefler; minimum aralık
-4 saniyedir. İnce ayar için `VIDEO_SFX_MIN`, `VIDEO_SFX_MAX` ve
-`VIDEO_SFX_MIN_GAP` kullanılabilir. Bu efektler yalnızca gerçek sahne
-sınırlarına yerleştirilir; aynı anda yığılmaz.
+- ses/görsel dosyalarını teknik olarak okumak,
+- süre ve akış bilgisini ölçmek,
+- final MP4'te siyah ekran, donma, sessizlik ve decode hatası taramak.
 
-## 14-Day US Audience Publishing Experiment (AKTİF)
+Bunlar kurgu motoru değildir; final görüntüyü Remotion üretir.
 
-**2026-07-19 → 2026-08-02 (UTC):** yayın saatleri 14 gün boyunca sabit 3 UTC
-slotuna kilitli — **15:00 / 20:00 / 02:00 UTC** (TR yaz: 18:00 / 23:00 / 05:00).
-Deney süresince saatler DEĞİŞTİRİLMEZ; sistem yalnızca slot etiketi + metrik
-verisi toplar. Karar medyanla verilir, tek viral video kazanan yapmaz.
-Ayrıntı: [docs/publishing-experiment.md](docs/publishing-experiment.md)
+## Üretim akışı
 
-## Faz Durumu
-
-| Faz | İçerik                          | Durum        |
-| --- | ------------------------------- | ------------ |
-| 1   | Script üretim motoru (Gemini)   | ✅ Hazır     |
-| 2   | Ses / TTS (edge-tts + Piper yedek, erkek ses) | 🧪 Kod hazır (yerel test) |
-| 3   | Görsel toplama (Pexels, 9:16)   | 🧪 Kod hazır (yerel test) |
-| 4   | Video montaj (ffmpeg, 1080x1920)| ✅ Çalışıyor (uçtan uca test edildi) |
-| 5   | Firestore loglama (+ yerel yedek)| ✅ Çalışıyor (yerel backend test edildi) |
-| 6   | YouTube upload (+ Gemini metadata)| 🧪 Kod hazır (metadata test edildi) |
-| 7   | Orkestrasyon + workflow         | ✅ Manuel tetikleme açık, cron kapalı |
-
-Sıralama kuralı: önce yerelde uçtan uca 1 video üretimi tamamen çalışır hale
-gelir, **cron EN SON açılır**.
-
-## Proje Yapısı
-
-```
-src/
-  config.js              # .env okuma
-  lib/firestore.js       # State katmanı: Firestore veya yerel JSON (used_topics + videos)
-  pipeline/
-    run.js               # Faz 7 orkestratör (tüm fazları sırayla)
-    recordProduction.js  # Faz 5 üretim kaydı (video + konu işaretleme)
-  script/generateScript.js  # Faz 1 çekirdek modül
-  tts/
-    generateAudio.js     # Faz 2 orkestratör (edge -> piper fallback + whisper)
-    edgeTts.js           # edge-tts motoru + SRT parse
-    piper.js             # Piper çevrimdışı yedek motor
-    align.js             # faster-whisper kelime zamanlaması (Piper yolu)
-  media/
-    fetchMedia.js        # Faz 3 Pexels dikey (9:16) klip/foto indirme
-  video/
-    renderVideo.js       # Faz 4 ffmpeg montaj + karaoke altyazı (1080x1920)
-  youtube/
-    buildMetadata.js     # Faz 6 Gemini ile başlık/açıklama/tag + #Shorts
-    uploadVideo.js       # Faz 6 YouTube Data API v3 upload (OAuth refresh token)
-scripts/
-  generate-and-publish.js # Faz 7 ANA script (tüm boru hattı)
-  generate-script.js     # Faz 1 test aracı (CLI)
-  generate-audio.js      # Faz 2 test aracı (CLI)
-  fetch-media.js         # Faz 3 test aracı (CLI)
-  render-video.js        # Faz 4 test aracı (CLI, job.json)
-  upload-youtube.js      # Faz 6 test aracı (CLI)
-  youtube-auth.js        # Faz 6 refresh token üretici (bir kerelik)
-  whisper_align.py       # faster-whisper yardımcı betiği
-examples/                # 3 örnek script çıktısı
-requirements.txt         # Faz 2 Python araçları (edge-tts, piper-tts, faster-whisper)
-docs/
-  firestore-schema.md
-  github-actions-preview.md
-  secrets-setup.md
+```text
+performans verisi / konu havuzu
+        ↓
+İngilizce script + hook + finale
+        ↓
+kanonik TTS zaman çizelgesi
+        ↓
+görsel hikâye planı + konu kimliği
+        ↓
+AI / stok / arşiv kaynak görselleri
+        ↓
+ProductionSpec (production.json)
+        ↓
+Remotion collage motion-graphics render
+        ↓
+preflight + final MP4 + yayın kapıları
+        ↓
+YouTube / Instagram / Facebook
 ```
 
-## Kurulum (Faz 1)
+## Görsel dil
+
+Motor konuya göre aynı sahneyi kopyalamaz. Senaryodaki her beat aşağıdaki genel
+şablonlardan uygun olana çevrilir:
+
+- hook reveal
+- portrait dossier
+- document highlight
+- map route
+- statistic slot
+- explainer diagram
+- transaction
+- consequence
+- final twist
+- generic collage
+
+Ortak marka dili: krem kâğıt dokusu, yüksek kontrastlı cutout'lar, altın vurgu,
+teal yardımcı renk, yırtık kartlar, analog film dokusu, kinetic typography,
+parallax ve kontrollü focus/whip geçişleri.
+
+## Süre sözleşmesi
+
+Script ve TTS katmanları kısa parça üretimine izin vermez. Varsayılan hedefler:
+
+- anlatım: `CONTENT_MIN_WORDS`–`CONTENT_MAX_WORDS`
+- final süre: `CONTENT_MIN_SECONDS`–`CONTENT_MAX_SECONDS`
+- ideal mini-belgesel bandı: `CONTENT_IDEAL_MIN_SECONDS`–`CONTENT_IDEAL_MAX_SECONDS`
+
+Ölçülmüş TTS süre dışındaysa medya ve render maliyetine girilmeden koşu durur.
+
+## Kurulum
 
 ```bash
-npm install
-cp .env.example .env      # GEMINI_API_KEY doldur (ücretsiz: aistudio.google.com/apikey)
-npm run script            # 1 script üret ve ekrana yaz
-npm run script 3          # 3 script üret
-npm run script -- 1 --save  # üret + used_topics'e işaretle (Firebase varsa)
-```
-
-Firebase anahtarı verilmezse konu tekrar kontrolü atlanır; script üretimi yine
-çalışır. Gerekli API anahtarları için `docs/secrets-setup.md`.
-
-## Tam boru hattı (Faz 7)
-
-```bash
-pip install -r requirements.txt        # edge-tts, piper-tts, faster-whisper
+npm ci
+npm run remotion:install
+pip install -r requirements.txt
 sudo apt-get install -y ffmpeg
-node scripts/generate-and-publish.js --no-upload   # üret, YouTube'a yükleme
-node scripts/generate-and-publish.js               # üret + YouTube upload
+cp .env.example .env
 ```
 
-Otomasyon: `.github/workflows/daily-short.yml` — şimdilik yalnızca **manuel**
-(Actions sekmesi → Run workflow). Hazır olunca dosyadaki `schedule` bloğunun
-yorumunu kaldırınca **cron** devreye girer. Gerekli GitHub Secrets:
-`GEMINI_API_KEY`, `PEXELS_API_KEY`, `FIREBASE_SERVICE_ACCOUNT`,
-`YOUTUBE_CLIENT_ID/SECRET/REFRESH_TOKEN`.
+Remotion Studio:
 
-## Modülerlik
+```bash
+npm run remotion:studio
+```
 
-Her adım (script / tts / görsel / montaj / upload) ayrı dosyada; ileride
-TikTok / Instagram gibi platformların eklenmesi kolay olacak şekilde tasarlandı.
+## Üretim
+
+Yayın yapmadan tam üretim:
+
+```bash
+npm run produce:dry
+```
+
+Yayın isteğiyle üretim:
+
+```bash
+npm run produce -- --upload
+```
+
+Yayın isteği tek başına yeterli değildir. Final MP4 teknik kapıları geçmezse hiçbir
+platforma gönderilmez.
+
+Bir `job.json` dosyasını doğrudan render etmek:
+
+```bash
+npm run video -- job.json
+```
+
+Zorunlu temel alanlar: `audioPath`, `scenes`, `media`, `mediaScene`, `timeline`,
+`outPath`.
+
+## Testler
+
+```bash
+npm run test:remotion
+npm test
+npm run remotion:typecheck
+npm run remotion:fixture
+```
+
+`test/remotionOnly.test.js`, eski renderer veya ASS/CTA katmanları tekrar eklenirse
+CI'yi düşürür. Fixture workflow'u ayrıca 1080×1920 H.264/AAC video üretir ve
+siyah/donma/sessizlik taraması yapar.
+
+## GitHub Actions
+
+### Günlük üretim
+
+`.github/workflows/daily-short.yml`
+
+- 13:02 UTC
+- 18:02 UTC
+- 23:02 UTC
+
+Cron koşuları yayın talebiyle çalışır. Manuel koşuda upload kutusu varsayılan olarak
+kapalıdır. Workflow Node 22, Python, FFmpeg/ffprobe ve izole Remotion paketini kurar;
+önce mimari testleri geçirir, sonra üretime başlar.
+
+### Renderer doğrulaması
+
+`.github/workflows/remotion-fixture.yml`
+
+Her pull request'te Remotion-only mimariyi, Node testlerini, TypeScript'i, fixture
+renderını ve final MP4 teknik taramasını doğrular.
+
+## Proje yapısı
+
+```text
+remotion/
+  src/
+    Root.tsx
+    DynamicShort.tsx
+    ProductionSpec.ts
+    components/
+    scenes/
+
+src/
+  script/             # konu ve senaryo
+  tts/                # TTS + kelime zamanlaması
+  media/              # AI / stok / arşiv kaynakları
+  video/
+    buildRemotionSpec.js
+    renderRemotion.js
+    renderVideo.js     # kararlı dış arayüz → Remotion
+  pipeline/            # QC, yayın kapıları, kayıt ve orkestrasyon
+  youtube/             # metadata, upload, captions
+  social/              # Meta cross-post
+
+scripts/
+  generate-and-publish.js
+  render-video.js
+  audit-final-video.js
+```
+
+## Temel artefaktlar
+
+Her üretim klasöründe mümkün olduğunda şunlar bulunur:
+
+- final `.mp4`
+- `production.json`
+- `script.json`
+- `scene-plan.json`
+- `production-report.json`
+- `production-report.md`
+- `publish-gates.json`
+- `asset-manifest.json`
+- `cover.jpg`
+
+`production.json`, renderın tek makine-okunur sahne planıdır; konuya özel React
+kodu yazılması gerekmez.
+
+## Güvenlik ilkeleri
+
+- Kimlik bilgisinin bulunması upload izni sayılmaz.
+- Public üretimde render hatası fail-closed davranır.
+- Teknik olarak bozuk MP4 yayınlanmaz.
+- Lisansı belirsiz müzik/SFX kullanılmaz.
+- Görsel kaynak ve lisans kanıtı asset manifestine yazılır.
+- Yayınlanacak dosya ile analiz edilen dosyanın hash'i eşleşmek zorundadır.

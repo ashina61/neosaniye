@@ -1,143 +1,109 @@
-name: Günlük Short Üret ve Yayınla
+name: NeoSaniye Remotion — Günlük Short
 
-# Manuel tetikleme her zaman açık; cron ile günlük otomatik üretim VE YAYIN AKTİF.
 on:
   workflow_dispatch:
     inputs:
       auto_upload:
-        # YAYIN VARSAYILAN KAPALI (26 Tem güvenlik yaması).
-        # Eski input `no_upload` idi ve TERS mantıkla çalışıyordu: bayrak
-        # yalnızca işaretlenirse `--no-upload` geçiliyordu. `schedule`
-        # tetiğinde input DİYE BİR ŞEY YOKTUR — ifade boş stringe düşüyor,
-        # bayrak hiç geçmiyor ve cron "upload açık" modda koşuyordu.
-        # Artık mantık DÜZ: yüklemek için bilinçli olarak işaretlemen gerek.
-        description: "YouTube'a yükle (manuel run varsayılanı HAYIR; cron her zaman yayınlar)"
+        description: "YouTube/Meta'ya yükle (manuel çalıştırmada varsayılan kapalı)"
         type: boolean
         default: false
       style:
-        description: "Görsel stil (auto = sistem karar verir)"
+        description: "Kaynak görsel stili"
         type: choice
         options: [auto, animated, photo]
         default: auto
       format:
-        description: "İçerik formatı (auto = rastgele; process = gerçek video + oklar)"
+        description: "İçerik formatı"
         type: choice
         options: [auto, process, story, howworks, facts3, whatif]
         default: auto
       slot:
-        description: "Deney slotu (manuel run'lar varsayılan 'manual' kaydedilir)"
+        description: "Deney slotu"
         type: choice
-        options: [manual, "15:00", "20:00", "02:00"]
+        options: [manual, "13:00", "18:00", "23:00"]
         default: manual
-      visual_fx:
-        description: "Görsel anlatım katmanı (V2: etiket/sayaç/spotlight) — test için aç"
-        type: boolean
-        default: false
   schedule:
-    # 14 GÜNLÜK ABD-İZLEYİCİ DENEYİ (us-audience-3-slots-v1): günde 3 sabit
-    # slot — 13:00 / 18:00 / 23:00 UTC. Karşılıkları scheduleExperiment.js'te:
-    # SABAH / ÖĞLEDEN SONRA / AKŞAM (ET).
-    #
-    # BURADAKİ SAATLER KODLA AYNI OLMAK ZORUNDA. Workflow 15/20/02'de
-    # koşarken kod 13/18/23 bekliyordu; detectSlot gecikme toleranslı olduğu
-    # için 15:02 koşusunu "2 saat gecikmiş 13:00 slotu" sayıyor ve sessizce
-    # kabul ediyordu. Sonuç: deney boyunca her koşu YANLIŞ slota kaydedildi,
-    # yani "hangi saat daha iyi tutuyor" sorusunun verisi bozuktu.
-    #
-    # Dakika +2 offset: GitHub tam saat (XX:00) tick'lerini iki kez yuttu.
-    - cron: "2 13 * * *" # slot 13:00 UTC — ET 08:00/09:00 → SABAH
-    - cron: "2 18 * * *" # slot 18:00 UTC — ET 13:00/14:00 → ÖĞLEDEN SONRA
-    - cron: "2 23 * * *" # slot 23:00 UTC — ET 18:00/19:00 → AKŞAM
+    - cron: "2 13 * * *"
+    - cron: "2 18 * * *"
+    - cron: "2 23 * * *"
 
 concurrency:
-  group: daily-short
+  group: neosaniye-remotion-production
   cancel-in-progress: false
 
 permissions:
-  contents: write # dedup state'ini (data/*.json) branch'e geri commit edebilmek için
-  models: read # GitHub Models (ÜCRETSİZ yedek beyin) — ek anahtar gerektirmez
+  contents: write
+  models: read
 
 jobs:
   produce:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 55
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
+          cache: npm
 
-      - name: ffmpeg kur
-        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
-
-      - uses: actions/setup-python@v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Python TTS araçları
-        run: pip install -r requirements.txt
+      - name: Install ffmpeg and ffprobe
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
 
-      - name: Node bağımlılıkları
+      - name: Install pipeline dependencies
         run: npm ci
 
-      - name: Telifsiz müzik indir (opsiyonel, best-effort)
-        run: node scripts/fetch-music.js || true
-        env:
-          MUSIC_URLS: ${{ vars.MUSIC_URLS }}
+      - name: Install Remotion renderer
+        run: npm install --prefix remotion --no-audit --no-fund
 
-      - name: Üret ve yayınla
+      - name: Install TTS tools
+        run: pip install -r requirements.txt
+
+      - name: Validate Remotion-only architecture
+        run: |
+          npm run test:remotion
+          npm run remotion:typecheck
+
+      - name: Produce and publish
         id: produce
-        # CRON OTOMATİK YAYINLAR. `schedule` tetiğinde `inputs` yoktur, bu yüzden
-        # tetik türü AÇIKÇA sorulur — eskiden ifade boş stringe düşüp `--no-upload`
-        # veriyordu ve cron hiçbir zaman yayınlayamıyordu.
-        # Manuel run'da karar kutuya aittir: işaretliysen `--upload`, değilse
-        # `--no-upload` (manuel kontrol elle test için korunuyor).
         run: node scripts/generate-and-publish.js ${{ (github.event_name == 'schedule' || inputs.auto_upload) && '--upload' || '--no-upload' }}
         env:
+          CONTENT_LANGUAGE: en
+          REMOTION_CONCURRENCY: ${{ vars.REMOTION_CONCURRENCY || '2' }}
+
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           OPENROUTER_MODEL: openrouter/free
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-          # EK ÜCRETSİZ BEYİNLER — hepsi opsiyonel, tanımlı olmayan sessizce atlanır.
-          # GitHub Models ayrı kayıt istemez: Actions'ın kendi token'ı yeter.
           GITHUB_MODELS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          # Ücretsiz GÖRSEL sağlayıcı yedekleri (Pollinations tek nokta olmasın).
-          # Cloudflare metin tarafıyla AYNI kimlik bilgilerini kullanır.
+
           TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
           HUGGINGFACE_API_KEY: ${{ secrets.HUGGINGFACE_API_KEY }}
-          # İKİNCİ EMNİYET: kod tarafındaki politika da bu değişkenleri okur.
-          # Workflow bayrağı ile env aynı yönü göstermezse en kısıtlayıcı kazanır.
-          AUTO_UPLOAD: ${{ (github.event_name == 'schedule' || inputs.auto_upload) && 'true' || 'false' }}
-          # Cron'un insan onayı veremeyeceği için bu bayrak açıkken zincir
-          # kilitleniyordu. Otomatik yayın AÇIK: onay artık zamanlanmış tetiğin
-          # kendisidir. Kod tarafındaki varsayılan hâlâ KAPALI — bayraksız,
-          # env'siz bir çağrı yine yayınlamaz.
-          REQUIRE_MANUAL_APPROVAL: "false"
-          RETENTION_QC_MODE: ${{ vars.RETENTION_QC_MODE }}
-          RETENTION_MIN_SCORE: ${{ vars.RETENTION_MIN_SCORE }}
-          # Teknik kapı retention'dan bağımsız (varsayılan strict — boş bırak).
-          TECHNICAL_PREFLIGHT_MODE: ${{ vars.TECHNICAL_PREFLIGHT_MODE }}
-          # 14 günlük yayın deneyi: manuel run'da slot elle seçilebilir;
-          # cron'da boş kalır ve UTC saatinden deterministik tespit edilir.
-          SCHEDULE_SLOT: ${{ inputs.slot }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
-          # İkinci stok kaynağı + ambiyans (opsiyonel; yoksa özellik atlanır).
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
           FREESOUND_API_KEY: ${{ secrets.FREESOUND_API_KEY }}
-          # Görsel anlatım katmanı (V2) — manuel run'da 'visual_fx' ile açılır; cron'da kapalı.
-          VISUAL_STORYTELLING: ${{ inputs.visual_fx && '1' || '0' }}
-          # Görsel stil zorlaması (manuel run'da seçilir; cron'da sistem karar verir).
+
+          AUTO_UPLOAD: ${{ (github.event_name == 'schedule' || inputs.auto_upload) && 'true' || 'false' }}
+          REQUIRE_MANUAL_APPROVAL: "false"
+          RETENTION_QC_MODE: ${{ vars.RETENTION_QC_MODE || 'warning' }}
+          RETENTION_MIN_SCORE: ${{ vars.RETENTION_MIN_SCORE || '75' }}
+          TECHNICAL_PREFLIGHT_MODE: ${{ vars.TECHNICAL_PREFLIGHT_MODE || 'strict' }}
+          SCHEDULE_SLOT: ${{ inputs.slot }}
           VIDEO_STYLE: ${{ inputs.style == 'auto' && '' || inputs.style }}
-          # İçerik formatı zorlaması (test için; auto = rastgele rotasyon).
           FORCE_FORMAT: ${{ inputs.format == 'auto' && '' || inputs.format }}
-          # Instagram + Facebook cross-post (opsiyonel; bkz. docs/meta-setup.md).
-          # Tek zorunlu secret: META_USER_TOKEN. Sayfa + IG otomatik keşfedilir.
+
           META_USER_TOKEN: ${{ secrets.META_USER_TOKEN }}
           META_IG_LOGIN_TOKEN: ${{ secrets.META_IG_LOGIN_TOKEN }}
           META_PAGE_TOKEN: ${{ secrets.META_PAGE_TOKEN }}
@@ -148,60 +114,34 @@ jobs:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-          # İlk çalıştırmalar için güvenli varsayılan: unlisted. Public için
-          # Actions → Variables sekmesinden YOUTUBE_PRIVACY=public ekle.
           YOUTUBE_PRIVACY: ${{ vars.YOUTUBE_PRIVACY || 'unlisted' }}
-          TTS_VOICE: ${{ vars.TTS_VOICE }}
-          # Bildirim (opsiyonel): Telegram botu ve/veya Discord webhook'u.
+          TTS_VOICE: ${{ vars.TTS_VOICE || 'en-US-AndrewNeural' }}
+
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ vars.TELEGRAM_CHAT_ID }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
-      # GÖZLEM (yalnızca okuma): kalıcı kayıtlar (videos.json + qc-history) yazıldıktan
-      # SONRA rollout raporu üret. Render/motion/upload'a DOKUNMAZ; hata toleranslı —
-      # rapor/log başarısızlığı job'ı ASLA düşürmez. Üretim adımı çalıştıysa çalışır
-      # (produce skip edilmediyse); iptal edildiyse çalışmaz.
-      # FINAL MP4 DENETİMİ — plana değil, çıkan videoya bakar. Boru hattı içinde
-      # de koşuyor (publish gate'in birincil girdisi); bu adım aynı denetimi
-      # artifact'ten bağımsız olarak log'a döker ki insan gözüyle okunabilsin.
-      - name: Final MP4 denetimi (kare taraması)
+      - name: Audit final MP4
         if: ${{ !cancelled() && steps.produce.conclusion != 'skipped' }}
         run: |
-          # Final video output/<konu>/<konu>.mp4'tür. media/ altındaki ara
-          # ürünler (07-motion.mp4 vb.) ve fullv.mp4 DENETLENMEZ — canlıda
-          # 19sn'lik bir ara klip denetlenip yanlış rapor üretmişti.
           V=$(find output -maxdepth 2 -name '*.mp4' -not -path '*/media/*' -not -name 'fullv.mp4' | head -1)
           G=$(find output -name 'publish-gates.json' | head -1)
           if [ -n "$V" ]; then
-            node scripts/audit-final-video.js "$V" ${G:+"$G"} --fps 2 || echo "[final-video] DENETİM BAŞARISIZ (yayın engelli)"
+            node scripts/audit-final-video.js "$V" ${G:+"$G"} --fps 2
+            ffprobe -v error -show_entries stream=codec_name,width,height,r_frame_rate,channels -show_entries format=duration -of json "$V"
           else
-            echo "[final-video] mp4 bulunamadı"
+            echo "Final MP4 bulunamadı"
+            exit 1
           fi
 
-      - name: Motion rollout raporu (gözlem)
-        if: ${{ !cancelled() && steps.produce.conclusion != 'skipped' }}
-        run: |
-          npm run motion:rollout-report || echo "[motion-rollout] report generation failed; production continues"
-          node scripts/motion-rollout-log.js || echo "[motion-rollout] log helper failed; production continues"
-
-      - name: Motion rollout raporunu artifact olarak sakla
+      - name: Upload production artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: motion-rollout-report-${{ github.run_number }}
-          path: |
-            artifacts/motion/rollout/rollout-report.json
-            artifacts/motion/rollout/rollout-report.md
-          if-no-files-found: ignore
-          retention-days: 14
-
-      - name: Üretilen videoyu artifact olarak sakla
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: short-video
+          name: neosaniye-remotion-short-${{ github.run_number }}
           path: |
             output/**/*.mp4
+            output/**/production.json
             output/**/cover.jpg
             output/**/preview-*.jpg
             output/**/publish-kit.txt
@@ -213,12 +153,10 @@ jobs:
             output/**/script.json
             output/**/scene-plan.json
             output/**/subs.srt
-          if-no-files-found: ignore
+          if-no-files-found: warn
           retention-days: 7
 
-      # Konu/yayın tekrarını önlemek için üretilen state'i branch'e geri yaz.
-      # Firebase yoksa yayın defteri de bu JSON state ile kalıcılaşır.
-      - name: Dedup state'ini kalıcı yap
+      - name: Persist dedup state
         if: always()
         run: |
           git config user.name "neosaniye-bot"
@@ -227,7 +165,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "state değişmedi, commit yok"
           else
-            git commit -m "chore(state): used_topics/videos güncelle [skip ci]"
+            git commit -m "chore(state): üretim durumunu güncelle [skip ci]"
             git pull --rebase origin ${{ github.ref_name }} || true
             git push origin HEAD:${{ github.ref_name }}
           fi
