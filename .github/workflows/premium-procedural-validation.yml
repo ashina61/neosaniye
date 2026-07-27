@@ -1,0 +1,91 @@
+name: Premium Procedural Factory Validation
+
+on:
+  pull_request:
+    branches: [claude/youtube-shorts-automation-9dbrjx]
+  push:
+    branches: [agent/premium-procedural-factory]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: premium-procedural-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout premium branch
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ffmpeg and ffprobe
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+
+      - name: Apply premium pipeline migration in workspace
+        run: node scripts/apply-premium-procedural-migration.mjs
+
+      - name: Install pipeline dependencies
+        run: npm ci
+
+      - name: Install Remotion renderer
+        run: npm install --prefix remotion --no-audit --no-fund
+
+      - name: Validate procedural-only architecture
+        run: npm run test:remotion
+
+      - name: Run complete Node test suite
+        id: node-tests
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          npm test 2>&1 | tee premium-node-tests.log
+
+      - name: Typecheck premium Remotion engine
+        run: npm run remotion:typecheck
+
+      - name: Render premium procedural fixture
+        run: npm run remotion:fixture
+
+      - name: Validate fixture MP4
+        run: |
+          V=remotion/out/neosaniye-fixture.mp4
+          test -s "$V"
+          ffprobe -v error -show_entries stream=codec_name,width,height,channels -show_entries format=duration -of json "$V"
+          node scripts/audit-final-video.js "$V" --fps 2
+
+      - name: Export migrated source and diagnostics
+        if: always()
+        run: |
+          mkdir -p premium-validation-export/src/pipeline
+          cp src/pipeline/run.js premium-validation-export/src/pipeline/run.js
+          cp src/pipeline/retentionQC.js premium-validation-export/src/pipeline/retentionQC.js
+          cp src/pipeline/emergencyQualityGate.js premium-validation-export/src/pipeline/emergencyQualityGate.js
+          cp premium-node-tests.log premium-validation-export/premium-node-tests.log 2>/dev/null || true
+          cp remotion/out/neosaniye-fixture.mp4 premium-validation-export/fixture.mp4 2>/dev/null || true
+
+      - name: Upload premium validation artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: premium-procedural-validation
+          path: premium-validation-export
+          if-no-files-found: error
+          retention-days: 3
+
+      - name: Fail when legacy Node tests remain broken
+        if: steps.node-tests.outcome != 'success'
+        run: exit 1
