@@ -87,3 +87,71 @@ okunmadan girilmemeli.
 ## KARAR NOKTASI
 
 Bu bir mimari tercih ve maliyeti/riski sahibinin kararı. Ölçümler yukarıda.
+
+---
+
+# EK: Referans video analizi — "Wayfinder" (27 Tem)
+
+Karşılaştırma için bir referans video incelendi.
+
+## Ölçülenler
+
+| | Referans | Bizim son çıktı |
+|---|---|---|
+| Format | **1280×720 YATAY** | 1080×1920 dikey |
+| Süre | **125 sn** | 31.6 sn |
+| Gerçek sahne kesmesi | **20** (≈6.3 sn/kesme) | 13 klip (≈2.4 sn/klip) |
+| Değişim temposu | **0.66 sn** | 0.74 sn |
+| Algılanan değişim | 188 / 250 örnek | 37 / 63 örnek |
+| En uzun donuk | 6.5 sn | 3.0 sn |
+| Bit hızı | 1.73 Mbps | ~5.2 Mbps |
+
+**En önemli satır burada:** referans 125 saniyede yalnızca **20 kez kesiyor** ama
+ekran **0.66 saniyede bir** değişiyor. Yani hareket KESMEDEN değil, sahnenin
+İÇİNDEN geliyor: öğeler sırayla giriyor, oklar çiziliyor, etiketler beliriyor.
+
+Bizde tempo sayısı benzer (0.74) ama kaynağı farklı: 13 statik fotoğrafı hızlı
+kesip üstlerine Ken Burns uyguluyoruz. Sayı aynı, izlenim değil.
+
+## Görsel dil
+
+Referansın tamamı **tasarlanmış kolaj**: krem kâğıt dokusu, siyah-beyaz halftone
+kesikler (beyaz kontur + altın gölge), altın vurgu, mat turkuaz su. Tek palet,
+tek çizgi kalınlığı, tek doku — 125 saniye boyunca hiç bozulmuyor.
+
+Gözlenen anlatım kalıpları:
+- **Etiketli özne**: figürün yanında altın hapta `MAU PIAILUG`.
+- **Alıntı tipografisi**: serif italik, anahtar ifadenin üstünde altın fosforlu
+  kalem vurgusu.
+- **Süreç şeridi**: raptiyeli üç polaroid (harita → grafik → ada), aralarında ok.
+- **Bölünmüş ekran**: dikey ayırıcı; üstelik o bölümde PALET DEĞİŞİYOR
+  (krem kolaj → lacivert + beyaz çizgi figür) — karşıtlık renkle de anlatılıyor.
+- **Yön okları**: suyun üstünde el çizimi oklar, hareket yönünü gösteriyor.
+
+**Tek bir fotogerçekçi AI görseli yok.** Her kare bileşenlerden KURULMUŞ.
+
+## Sonuç: fark render motoru değil
+
+Bizim yaklaşımımız "sahne başına bir AI fotoğrafı üret, üstüne overlay koy".
+Onlarınki "bir tasarım sistemi kur, her sahneyi o sistemin parçalarından
+KOMPOZE et". Premium hissi buradan geliyor.
+
+Remotion bu işi KOLAYLAŞTIRIR ama YARATMAZ. Aynı kolajı ffmpeg+ASS ile de,
+tarayıcı+HTML ile de kurabiliriz — eksik olan motor değil, **sanat yönetimi ve
+varlık stratejisi**:
+
+1. Sabit palet + doku (kâğıt zemin, halftone kesik, tek vurgu rengi).
+2. Yeniden kullanılabilir kesik kütüphanesi (özne, nesne, ok, yıldız, hap etiket)
+   — her sahnede sıfırdan fotoğraf üretmek yerine.
+3. Hareketin sahne İÇİNDE olması: öğeler sırayla girsin, kesmeye yaslanma.
+4. Karşıtlıkta palet değiştirme.
+
+Bunlar tarayıcı overlay katmanıyla çok daha kolay yapılır (yerleşim motoru,
+gerçek tipografi, SVG) — yani hibrit öneri bu bulguyla GÜÇLENİYOR, ama sıralama
+değişiyor: önce sanat yönetimi, sonra motor.
+
+## Bilinmeyen
+
+Videonun gerçekten Remotion ile yapılıp yapılmadığını doğrulayamam; dosyada
+böyle bir iz yok. Başlıkta "Made with AI" yazıyor ama bir tasarımcının AI
+varlıklarıyla elle kurgulamış olması da mümkün. Ölçtüğüm şey ÇIKTI, süreç değil.
