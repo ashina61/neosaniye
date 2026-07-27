@@ -1,36 +1,23 @@
 {
-  "name": "neosaniye",
-  "version": "0.1.0",
+  "name": "neosaniye-premium-motion-factory",
+  "version": "1.0.0",
   "private": true,
-  "type": "module",
-  "description": "Remotion tabanlı otomatik NeoSaniye Shorts üretim ve yayınlama sistemi",
-  "engines": {
-    "node": ">=20"
-  },
+  "description": "NeoSaniye procedural Remotion motion-graphics factory",
   "scripts": {
-    "produce": "node scripts/generate-and-publish.js",
-    "produce:dry": "node scripts/generate-and-publish.js --no-upload",
-    "script": "node scripts/generate-script.js",
-    "script:save": "node scripts/generate-script.js --save",
-    "audio": "node scripts/generate-audio.js",
-    "media": "node scripts/fetch-media.js",
-    "video": "node scripts/render-video.js",
-    "test": "node --test",
-    "test:remotion": "node --test test/remotionSpec.test.js test/remotionOnly.test.js",
-    "check": "npm test && npm run remotion:typecheck",
-    "upload": "node scripts/upload-youtube.js",
-    "youtube:auth": "node scripts/youtube-auth.js",
-    "audio:import": "node scripts/audio-import.js",
-    "audio:import:dry": "node scripts/audio-import.js --dry-run",
-    "remotion:install": "npm install --prefix remotion --no-audit --no-fund",
-    "remotion:studio": "npm --prefix remotion run studio",
-    "remotion:typecheck": "npm --prefix remotion run typecheck",
-    "remotion:fixture": "npm --prefix remotion run render:fixture"
+    "studio": "remotion studio src/index.ts",
+    "audio": "python scripts/generate-eiffel-audio.py",
+    "typecheck": "tsc --noEmit",
+    "render": "remotion render src/index.ts NeoSaniyeEiffelTower out/neosaniye-eiffel-tower.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p"
   },
   "dependencies": {
-    "@google/genai": "^1.0.0",
-    "dotenv": "^16.4.5",
-    "firebase-admin": "^12.7.0",
-    "googleapis": "^144.0.0"
+    "@remotion/cli": "4.0.499",
+    "remotion": "4.0.499",
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.10",
+    "@types/react-dom": "19.1.7",
+    "typescript": "5.9.2"
   }
 }
