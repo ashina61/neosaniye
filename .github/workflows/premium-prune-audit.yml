@@ -1,0 +1,30 @@
+name: Premium Legacy Prune Audit
+
+on:
+  push:
+    branches: [agent/premium-procedural-factory]
+    paths:
+      - scripts/plan-premium-prune.mjs
+      - .github/workflows/premium-prune-audit.yml
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/premium-procedural-factory
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: node scripts/plan-premium-prune.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: premium-prune-plan
+          path: premium-prune-plan.json
+          if-no-files-found: error
+          retention-days: 2
