@@ -1,1 +1,0 @@
-After fixture validation, wire `src/video/renderRouter.js` into Phase 4 with `RENDER_ENGINE=remotion` and keep the current FFmpeg renderer as shadow-only fallback. Do not enable scheduled publishing in this stage.
