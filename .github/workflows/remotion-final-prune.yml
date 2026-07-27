@@ -1,0 +1,56 @@
+name: Final Remotion Compatibility Prune
+
+on:
+  push:
+    branches: [agent/remotion-final-prune]
+    paths:
+      - scripts/prune-remotion-compat.mjs
+      - .github/workflows/remotion-final-prune.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: remotion-final-prune
+  cancel-in-progress: false
+
+jobs:
+  prune:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout migration branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/remotion-final-prune
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Apply controlled source migration
+        run: node scripts/prune-remotion-compat.mjs
+
+      - name: Install pipeline dependencies
+        run: npm ci
+
+      - name: Install Remotion renderer
+        run: npm install --prefix remotion --no-audit --no-fund
+
+      - name: Validate source and tests
+        run: |
+          git diff --check
+          npm run test:remotion
+          npm test
+          npm run remotion:typecheck
+
+      - name: Commit final prune
+        run: |
+          git config user.name "neosaniye-migration-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "refactor: remove final legacy CTA compatibility layer"
+          git push origin HEAD:agent/remotion-final-prune
