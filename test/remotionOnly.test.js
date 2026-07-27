@@ -51,7 +51,7 @@ test('günlük workflow doğrudan Remotion kurar ve eski seçim bayraklarını t
 test('package komutları yalnız yeni motion sistemini gösterir', async () => {
   const pkg = JSON.parse(await readFile('package.json', 'utf8'));
   const scripts = JSON.stringify(pkg.scripts);
-  assert.equal(pkg.engines.node, '>=22');
+  assert.equal(pkg.engines.node, '>=20');
   assert.match(scripts, /remotion:typecheck/);
   assert.doesNotMatch(scripts, /motion:preview|motion:sfx|motion:rollout|bee:regression/);
 });
