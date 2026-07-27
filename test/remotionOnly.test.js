@@ -6,6 +6,8 @@ async function exists(filePath) {
   return access(filePath).then(() => true).catch(() => false);
 }
 
+// Bu liste geçiş dönemindeki dosyaların yanlışlıkla yeniden üretim yoluna
+// eklenmesini engeller; yeni motion özellikleri yalnız remotion/ altında yaşar.
 const removedPaths = [
   'src/video/renderRouter.js',
   'src/video/outro.js',
