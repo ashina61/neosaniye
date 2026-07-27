@@ -17,6 +17,7 @@ const removedPaths = [
   'src/motion/ctaSelector.js',
   'src/motion/ctaSafeArea.js',
   'src/motion/ctaTemplates.js',
+  'src/motion/ctaEngine.js',
   'src/visual/semanticShots.js',
   'src/visual/beatToActors.js',
   'src/visual/fallbackLadder.js',
@@ -56,12 +57,12 @@ test('package komutları yalnız yeni motion sistemini gösterir', async () => {
   assert.doesNotMatch(scripts, /motion:preview|motion:sfx|motion:rollout|bee:regression/);
 });
 
-test('eski post-render CTA çağrısı videoyu değiştirmeyen uyumluluk katmanıdır', async () => {
-  const {applyCta} = await import('../src/motion/ctaEngine.js');
-  const result = await applyCta({videoPath: '/tmp/final.mp4', language: 'en'});
-  assert.equal(result.videoPath, '/tmp/final.mp4');
-  assert.equal(result.report.ctaApplied, false);
-  assert.equal(result.report.selectionReason, 'owned-by-remotion');
+test('orkestratör eski CTA motorunu ve config.motion ayarını taşımaz', async () => {
+  const runSource = await readFile('src/pipeline/run.js', 'utf8');
+  const configSource = await readFile('src/config.js', 'utf8');
+  assert.doesNotMatch(runSource, /applyCta|getRecentCtaTypes|config\.motion/);
+  assert.doesNotMatch(configSource, /\bmotion\s*:\s*\{/);
+  assert.match(runSource, /integrated-in-remotion/);
 });
 
 test('Remotion package bağımsız ve sürümleri sabitlenmiştir', async () => {

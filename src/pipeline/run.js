@@ -32,10 +32,8 @@ import { describeMusicTrack } from '../audio/musicSelect.js';
 import { detectSlot } from './scheduleExperiment.js';
 import { emptySlotMetrics } from '../analytics/experimentMetrics.js';
 import { semanticRelevanceScore, detectOffTopicVisual } from '../media/semanticRelevance.js';
-import { applyCta } from '../motion/ctaEngine.js';
 import { verifySfxInOutput } from './outputVerify.js';
 import { evaluateHardGate } from './hardGate.js';
-import { getRecentCtaTypes } from '../lib/firestore.js';
 import { recordProduction } from './recordProduction.js';
 import { notify } from '../lib/notify.js';
 import {
@@ -345,8 +343,8 @@ export async function runPipeline(opts = {}) {
       };
     }
 
-    // 4) Montaj (ffmpeg)
-    log('Faz 4: Video montajı (ffmpeg)...');
+    // 4) Remotion motion-graphics renderı
+    log('Faz 4: Remotion motion-graphics renderı...');
     const outPath = path.join(workDir, `${base}.mp4`);
     // Son 5 videonun müziği tekrar seçilmesin (çeşitlilik; state yoksa boş).
     const recentMusic = await getRecentMusic(5).catch(() => []);
@@ -435,38 +433,17 @@ export async function runPipeline(opts = {}) {
       musicMeta.selectedAt = new Date().toISOString();
     }
 
-    // 4.2) NEO MOTION ENGINE — özgün CTA animasyonu (editoryal seçim + safe-area).
-    // Preflight/QC ÖNCESİ uygulanır ki final MP4 CTA'lı olsun. CTA hatası ana
-    // videoyu ASLA çökertmez (fail-safe); uygulanırsa outPath yerine geçer.
-    let motionReport = { enabled: false, ctaApplied: false, selectionReason: 'disabled' };
-    if (config.motion.enabled && config.motion.cta.enabled) {
-      const recentCtaTypes = await getRecentCtaTypes().catch(() => []);
-      const outroOn = config.video.outro;
-      const m = await applyCta({
-        videoPath: outPath,
-        workDir,
-        duration: video.duration,
-        seed: script.normalizedTopic || base,
-        outroStartSec: outroOn ? video.duration - (config.video.outroDuration || 3) : null,
-        recentCtaTypes,
-        // İçerik dili → CTA yerelleştirme (İngilizce kanal = 'en'). Betikte
-        // dil belirtildiyse onu, yoksa global config'i kullan.
-        language: script.language || config.content?.language || 'en',
-      });
-      motionReport = m.report;
-      if (m.videoPath !== outPath) {
-        // CTA'lı sürümü ana çıktının üstüne al (downstream tek yol kullanır).
-        await execFileAsync('mv', ['-f', m.videoPath, outPath]).catch(async () => {
-          const { rename } = await import('node:fs/promises');
-          await rename(m.videoPath, outPath);
-        });
-      }
-      console.log(
-        m.report.ctaApplied
-          ? `  🎬 CTA: ${m.report.ctaId} (${m.report.ctaType}, ${m.report.startSec}s, ${m.report.position})`
-          : `  🎬 CTA yok: ${m.report.selectionReason}`,
-      );
-    }
+    // CTA ve kinetic typography artık ProductionSpec içinde Remotion tarafından
+    // üretilir; final MP4 üzerinde ikinci bir görsel post-pass yoktur.
+    const motionReport = {
+      enabled: true,
+      ctaRequested: false,
+      ctaApplied: false,
+      selectionReason: 'integrated-in-remotion',
+      ctaVerification: null,
+      languageMatch: true,
+      sfxId: null,
+    };
 
     // 4.5) Yayın öncesi TEKNİK kalite kontrolü — final MP4 üzerinde ffprobe/
     // ffmpeg taraması (decode, siyah/donma/sessizlik, loudness). Bozuk video
@@ -487,15 +464,6 @@ export async function runPipeline(opts = {}) {
     // kanal (stereo) gerçeği de burada. Sert ihlaller upload'u HER MODDA durdurur.
     log('Faz 4.55: Render sonrası çıktı doğrulaması...');
     const sfxCues = [...(video.sfxCues || [])];
-    // CTA 'pop' cue'su (ayrı pass'te bindirildi) — o da doğrulanır.
-    if (motionReport.ctaApplied && config.motion.cta.sfx && motionReport.sfxId) {
-      sfxCues.push({
-        atSeconds: motionReport.startSec,
-        sfxId: `cta:${motionReport.sfxId}`,
-        assetResolved: true,
-        mixedInGraph: true,
-      });
-    }
     // SFX kapalıyken doğrulanacak cue yoktur; kapıyı "başarısız" saymak
     // (26 Tem'de sesler bilinçli kapatıldı) her videoyu boş yere bloklardı.
     const sfxVerification = config.video.sfx === false
