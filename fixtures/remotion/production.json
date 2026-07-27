@@ -1,0 +1,132 @@
+{
+  "version": 1,
+  "meta": {
+    "topic": "Poyais fixture",
+    "title": "The country that never existed",
+    "language": "en",
+    "fps": 30,
+    "width": 1080,
+    "height": 1920,
+    "durationInFrames": 720
+  },
+  "audio": {
+    "voicePath": "runs/fixture/voice.wav",
+    "musicPath": "runs/fixture/music.wav",
+    "ambiencePath": null,
+    "voiceVolume": 1,
+    "musicVolume": 0.14
+  },
+  "theme": {
+    "family": "neosaniye-collage",
+    "accent": "gold",
+    "paper": "cream",
+    "dark": "navy"
+  },
+  "scenes": [
+    {
+      "id": "scene-01",
+      "template": "hook-reveal",
+      "fromFrame": 0,
+      "durationInFrames": 90,
+      "headline": "HE SOLD A COUNTRY",
+      "kicker": "that did not exist",
+      "transition": "whip-flash",
+      "sfx": [
+        {"path": "runs/fixture/whoosh.wav", "atFrame": 0, "durationInFrames": 45, "volume": 0.72},
+        {"path": "runs/fixture/shutter.wav", "atFrame": 9, "durationInFrames": 24, "volume": 0.82}
+      ]
+    },
+    {
+      "id": "scene-02",
+      "template": "portrait-dossier",
+      "fromFrame": 90,
+      "durationInFrames": 90,
+      "headline": "GREGOR MACGREGOR",
+      "kicker": "SELF-STYLED PRINCE",
+      "narration": "He looked like a decorated hero and spoke like a head of state.",
+      "emphasis": ["HERO", "PRINCE", "TRUST"],
+      "transition": "shutter",
+      "sfx": [{"path": "runs/fixture/focus.wav", "atFrame": 0, "durationInFrames": 48, "volume": 0.58}]
+    },
+    {
+      "id": "scene-03",
+      "template": "document",
+      "fromFrame": 180,
+      "durationInFrames": 90,
+      "headline": "THE PAPERS LOOKED REAL",
+      "kicker": "ROYAL LAND GRANT",
+      "narration": "Maps, bonds and official seals turned the lie into a government.",
+      "emphasis": ["BONDS", "SEALED"],
+      "transition": "paper-tear",
+      "sfx": [
+        {"path": "runs/fixture/paper.wav", "atFrame": 0, "durationInFrames": 54, "volume": 0.5},
+        {"path": "runs/fixture/stamp.wav", "atFrame": 27, "durationInFrames": 30, "volume": 0.78}
+      ]
+    },
+    {
+      "id": "scene-04",
+      "template": "map-route",
+      "fromFrame": 270,
+      "durationInFrames": 90,
+      "headline": "BRITAIN TO POYAIS",
+      "kicker": "ACROSS THE ATLANTIC",
+      "narration": "Families crossed the ocean to reach the promised tropical capital.",
+      "emphasis": ["BRITAIN", "POYAIS"],
+      "transition": "long-zoom",
+      "sfx": [{"path": "runs/fixture/whoosh-long.wav", "atFrame": 0, "durationInFrames": 66, "volume": 0.7}]
+    },
+    {
+      "id": "scene-05",
+      "template": "stat-slot",
+      "fromFrame": 360,
+      "durationInFrames": 90,
+      "headline": "REAL PEOPLE BOARDED",
+      "stat": "250",
+      "statLabel": "SETTLERS",
+      "narration": "Two hundred and fifty settlers boarded ships for the invented nation.",
+      "transition": "shutter",
+      "sfx": [
+        {"path": "runs/fixture/focus.wav", "atFrame": 0, "durationInFrames": 48, "volume": 0.62},
+        {"path": "runs/fixture/impact.wav", "atFrame": 27, "durationInFrames": 45, "volume": 0.7}
+      ]
+    },
+    {
+      "id": "scene-06",
+      "template": "transaction",
+      "fromFrame": 450,
+      "durationInFrames": 90,
+      "headline": "THEY PAID FOR A DREAM",
+      "stat": "£200,000",
+      "kicker": "LAND · BONDS · CASH",
+      "narration": "He exchanged real savings for land deeds and worthless Poyais money.",
+      "transition": "whip-flash",
+      "sfx": [{"path": "runs/fixture/cash.wav", "atFrame": 24, "durationInFrames": 54, "volume": 0.72}]
+    },
+    {
+      "id": "scene-07",
+      "template": "consequence",
+      "fromFrame": 540,
+      "durationInFrames": 90,
+      "headline": "THERE WAS NO CITY",
+      "kicker": "NO PORT · NO GOVERNMENT",
+      "narration": "The promised capital was jungle, rain, disease and empty coastline.",
+      "dark": true,
+      "transition": "paper-tear",
+      "sfx": [{"path": "runs/fixture/heartbeat.wav", "atFrame": 12, "durationInFrames": 78, "volume": 0.42}]
+    },
+    {
+      "id": "scene-08",
+      "template": "final-twist",
+      "fromFrame": 630,
+      "durationInFrames": 90,
+      "headline": "THE COUNTRY WAS FAKE",
+      "kicker": "THE JOURNEY WAS REAL",
+      "dark": true,
+      "sfx": [
+        {"path": "runs/fixture/whoosh-long.wav", "atFrame": 0, "durationInFrames": 66, "volume": 0.65},
+        {"path": "runs/fixture/boom.wav", "atFrame": 55, "durationInFrames": 35, "volume": 0.78}
+      ]
+    }
+  ],
+  "globalSfx": []
+}
