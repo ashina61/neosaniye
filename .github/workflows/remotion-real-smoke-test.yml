@@ -1,0 +1,121 @@
+name: NeoSaniye Real Remotion Smoke Test
+
+on:
+  pull_request:
+    branches: [claude/youtube-shorts-automation-9dbrjx]
+    paths:
+      - .github/workflows/remotion-real-smoke-test.yml
+
+permissions:
+  contents: read
+  models: read
+
+concurrency:
+  group: neosaniye-real-smoke-test-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  produce-test-short:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - name: Checkout smoke-test branch
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ffmpeg and ffprobe
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+
+      - name: Install pipeline dependencies
+        run: npm ci
+
+      - name: Install Remotion renderer
+        run: npm install --prefix remotion --no-audit --no-fund
+
+      - name: Install TTS tools
+        run: pip install -r requirements.txt
+
+      - name: Validate Remotion-only architecture
+        run: |
+          npm run test:remotion
+          npm run remotion:typecheck
+
+      - name: Produce real test Short without upload
+        id: produce
+        run: node scripts/generate-and-publish.js --no-upload
+        env:
+          CONTENT_LANGUAGE: en
+          AUTO_UPLOAD: "false"
+          REQUIRE_MANUAL_APPROVAL: "false"
+          SCHEDULE_SLOT: manual
+          VIDEO_STYLE: animated
+          FORCE_FORMAT: story
+          REMOTION_CONCURRENCY: "2"
+          RETENTION_QC_MODE: warning
+          RETENTION_MIN_SCORE: "75"
+          TECHNICAL_PREFLIGHT_MODE: strict
+          TTS_VOICE: en-US-AndrewNeural
+
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENROUTER_MODEL: openrouter/free
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GITHUB_MODELS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+          TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
+          HUGGINGFACE_API_KEY: ${{ secrets.HUGGINGFACE_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          FREESOUND_API_KEY: ${{ secrets.FREESOUND_API_KEY }}
+
+      - name: Audit final MP4
+        if: ${{ !cancelled() && steps.produce.conclusion != 'skipped' }}
+        run: |
+          mkdir -p smoke-test-report
+          V=$(find output -maxdepth 2 -name '*.mp4' -not -path '*/media/*' -not -name 'fullv.mp4' | head -1)
+          G=$(find output -name 'publish-gates.json' | head -1)
+          if [ -z "$V" ]; then
+            echo "Final MP4 bulunamadı"
+            exit 1
+          fi
+          echo "$V" > smoke-test-report/video-path.txt
+          node scripts/audit-final-video.js "$V" ${G:+"$G"} --fps 2 | tee smoke-test-report/audit.log
+          ffprobe -v error -show_entries stream=codec_name,width,height,r_frame_rate,channels -show_entries format=duration -of json "$V" | tee smoke-test-report/ffprobe.json
+
+      - name: Upload smoke-test artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: neosaniye-real-remotion-smoke-test
+          path: |
+            output/**/*.mp4
+            output/**/production.json
+            output/**/cover.jpg
+            output/**/preview-*.jpg
+            output/**/publish-kit.txt
+            output/**/report.json
+            output/**/production-report.json
+            output/**/production-report.md
+            output/**/publish-gates.json
+            output/**/asset-manifest.json
+            output/**/script.json
+            output/**/scene-plan.json
+            output/**/subs.srt
+            smoke-test-report/**
+          if-no-files-found: warn
+          retention-days: 7
