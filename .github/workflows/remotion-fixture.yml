@@ -58,7 +58,12 @@ jobs:
         run: npm run test:remotion
 
       - name: Run complete Node test suite
-        run: npm test
+        run: |
+          set +e
+          npm test > node-test.log 2>&1
+          status=$?
+          tail -n 250 node-test.log
+          exit $status
 
       - name: Typecheck Remotion engine
         run: npm run remotion:typecheck
@@ -101,13 +106,15 @@ jobs:
           fi
 
       - name: Upload validation artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: neosaniye-remotion-only-fixture
           path: |
+            node-test.log
             artifacts/remotion-fixture.mp4
             artifacts/remotion-fixture-ffprobe.json
             artifacts/remotion-fixture-scan.log
             fixtures/remotion/production.json
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 7
