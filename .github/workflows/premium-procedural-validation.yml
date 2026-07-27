@@ -38,11 +38,12 @@ jobs:
       - name: Install ffmpeg and ffprobe
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
 
-      - name: Apply pending premium migrations and cleanup
+      - name: Apply pending premium migrations and physical prune
         run: |
           if [ -f scripts/apply-premium-procedural-migration.mjs ]; then node scripts/apply-premium-procedural-migration.mjs; fi
           if [ -f scripts/apply-premium-test-migration.mjs ]; then node scripts/apply-premium-test-migration.mjs; fi
           if [ -f scripts/finalize-premium-source.mjs ]; then node scripts/finalize-premium-source.mjs; fi
+          if [ -f scripts/prune-premium-legacy.mjs ]; then node scripts/prune-premium-legacy.mjs; fi
 
       - name: Install pipeline dependencies
         run: npm ci
@@ -100,14 +101,13 @@ jobs:
           ffprobe -v error -show_entries stream=codec_name,width,height,channels -show_entries format=duration -of json "$V" | tee premium-ffprobe.json
           node scripts/audit-final-video.js "$V" --fps 2 2>&1 | tee premium-audit.log
 
-      - name: Export migrated source and diagnostics
+      - name: Export diagnostics
         if: always()
         run: |
           mkdir -p premium-validation-export/src/pipeline
           cp src/pipeline/run.js premium-validation-export/src/pipeline/run.js
           cp src/pipeline/retentionQC.js premium-validation-export/src/pipeline/retentionQC.js
           cp src/pipeline/emergencyQualityGate.js premium-validation-export/src/pipeline/emergencyQualityGate.js
-          cp premium-dead-code-report.json premium-validation-export/premium-dead-code-report.json 2>/dev/null || true
           cp premium-node-tests.log premium-validation-export/premium-node-tests.log 2>/dev/null || true
           cp premium-render.log premium-validation-export/premium-render.log 2>/dev/null || true
           cp premium-ffprobe.json premium-validation-export/premium-ffprobe.json 2>/dev/null || true
@@ -127,19 +127,16 @@ jobs:
         if: ${{ steps.node_tests.outcome != 'success' || steps.fixture.outcome != 'success' || steps.fixture_audit.outcome != 'success' }}
         run: exit 1
 
-      - name: Persist validated source cleanup
+      - name: Persist validated physical prune
         if: ${{ steps.node_tests.outcome == 'success' && steps.fixture.outcome == 'success' && steps.fixture_audit.outcome == 'success' }}
         run: |
-          pending=0
-          for file in scripts/apply-premium-procedural-migration.mjs scripts/apply-premium-test-migration.mjs scripts/finalize-premium-source.mjs; do
-            if [ -f "$file" ]; then rm -f "$file"; pending=1; fi
-          done
-          if [ "$pending" = "1" ] || ! git diff --quiet; then
+          rm -f scripts/apply-premium-procedural-migration.mjs scripts/apply-premium-test-migration.mjs scripts/finalize-premium-source.mjs scripts/prune-premium-legacy.mjs
+          if ! git diff --quiet || [ -n "$(git ls-files --deleted)" ]; then
             git config user.name "neosaniye-premium-migration"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add src/pipeline/run.js src/pipeline/retentionQC.js src/pipeline/emergencyQualityGate.js test/uploadSafety.test.js scripts
-            git commit -m "refactor: finalize premium procedural source"
+            git add -A
+            git commit -m "refactor: physically remove legacy media and caption systems"
             git push origin HEAD:agent/premium-procedural-factory
           else
-            echo "premium source already finalized"
+            echo "premium physical prune already persisted"
           fi
