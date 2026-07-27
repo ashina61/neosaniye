@@ -16,7 +16,12 @@ source = source.slice(0, start) + `// ---------------- PROCEDURAL STORYBOARD Kİ
 `test('procedural storyboard kimliği render planına ulaşır', async () => {\n` +
 `  const src = await readFile('src/pipeline/run.js', 'utf8');\n` +
 `  const render = await readFile('src/video/renderRemotion.js', 'utf8');\n` +
-`  assert.doesNotMatch(src, /media:\\s*media\\.items|mediaScene:|generateImages/);\n` +
+`  const renderStart = src.indexOf('const video = await renderVideo({');\n` +
+`  const renderEnd = src.indexOf('console.log(\\`  \\${video.width}', renderStart);\n` +
+`  const renderCall = src.slice(renderStart, renderEnd);\n` +
+`  assert.ok(renderStart >= 0 && renderEnd > renderStart, 'renderVideo çağrısı bulunamadı');\n` +
+`  assert.doesNotMatch(renderCall, /media|mediaScene|assets/);\n` +
+`  assert.doesNotMatch(src, /generateImages/);\n` +
 `  assert.match(src, /procedural-remotion/);\n` +
 `  assert.match(render, /procedural:/);\n` +
 `  assert.match(render, /visualPolicy:\\s*'procedural-only'/);\n` +
