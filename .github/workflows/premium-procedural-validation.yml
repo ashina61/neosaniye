@@ -47,19 +47,8 @@ jobs:
             if [ -f scripts/apply-premium-procedural-migration.mjs ]; then node scripts/apply-premium-procedural-migration.mjs; fi
             if [ -f scripts/apply-premium-test-migration.mjs ]; then node scripts/apply-premium-test-migration.mjs; fi
             if [ -f scripts/finalize-premium-source.mjs ]; then node scripts/finalize-premium-source.mjs; fi
-            if [ -f scripts/prune-premium-legacy.mjs ]; then
-              node - <<'NODE'
-              const fs = require('node:fs');
-              const file = 'scripts/prune-premium-legacy.mjs';
-              let src = fs.readFileSync(file, 'utf8');
-              src = src.replace(
-                "for (const name of ['images', 'pexels', 'pixabay', 'freesound']) config = removeProperty(config, name);",
-                "for (const name of ['images', 'pexels', 'pixabay', 'freesound']) { let guard = 0; while (propertyRange(config, name)) { config = removeProperty(config, name); if (++guard > 10) throw new Error(`provider removal loop: ${name}`); } }",
-              );
-              fs.writeFileSync(file, src);
-              NODE
-              node scripts/prune-premium-legacy.mjs
-            fi
+            if [ -f scripts/prepare-premium-prune.mjs ]; then node scripts/prepare-premium-prune.mjs; fi
+            if [ -f scripts/prune-premium-legacy.mjs ]; then node scripts/prune-premium-legacy.mjs; fi
           } 2>&1 | tee premium-prune.log
 
       - name: Install pipeline dependencies
@@ -153,7 +142,7 @@ jobs:
       - name: Persist validated physical prune
         if: ${{ steps.prune.outcome == 'success' && steps.node_tests.outcome == 'success' && steps.fixture.outcome == 'success' && steps.fixture_audit.outcome == 'success' }}
         run: |
-          rm -f scripts/apply-premium-procedural-migration.mjs scripts/apply-premium-test-migration.mjs scripts/finalize-premium-source.mjs scripts/prune-premium-legacy.mjs
+          rm -f scripts/apply-premium-procedural-migration.mjs scripts/apply-premium-test-migration.mjs scripts/finalize-premium-source.mjs scripts/prepare-premium-prune.mjs scripts/prune-premium-legacy.mjs
           if ! git diff --quiet || [ -n "$(git ls-files --deleted)" ]; then
             git config user.name "neosaniye-premium-migration"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
