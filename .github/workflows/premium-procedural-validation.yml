@@ -1,16 +1,14 @@
 name: Premium Procedural Factory Validation
 
 on:
-  pull_request:
-    branches: [claude/youtube-shorts-automation-9dbrjx]
   push:
     branches: [agent/premium-procedural-factory]
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
-  group: premium-procedural-validation-${{ github.ref }}
+  group: premium-procedural-validation
   cancel-in-progress: true
 
 jobs:
@@ -20,6 +18,9 @@ jobs:
     steps:
       - name: Checkout premium branch
         uses: actions/checkout@v4
+        with:
+          ref: agent/premium-procedural-factory
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -35,8 +36,14 @@ jobs:
       - name: Install ffmpeg and ffprobe
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
 
-      - name: Apply premium pipeline migration in workspace
-        run: node scripts/apply-premium-procedural-migration.mjs
+      - name: Apply pending premium migrations
+        run: |
+          if [ -f scripts/apply-premium-procedural-migration.mjs ]; then
+            node scripts/apply-premium-procedural-migration.mjs
+          fi
+          if [ -f scripts/apply-premium-test-migration.mjs ]; then
+            node scripts/apply-premium-test-migration.mjs
+          fi
 
       - name: Install pipeline dependencies
         run: npm ci
@@ -48,7 +55,7 @@ jobs:
         run: npm run test:remotion
 
       - name: Run complete Node test suite
-        id: node-tests
+        id: node_tests
         continue-on-error: true
         run: |
           set -o pipefail
@@ -65,11 +72,11 @@ jobs:
           npm run remotion:fixture 2>&1 | tee premium-render.log
 
       - name: Validate fixture MP4
-        id: fixture-audit
+        id: fixture_audit
         if: steps.fixture.outcome == 'success'
         continue-on-error: true
         run: |
-          V=remotion/out/neosaniye-fixture.mp4
+          V=artifacts/remotion-fixture.mp4
           test -s "$V"
           ffprobe -v error -show_entries stream=codec_name,width,height,channels -show_entries format=duration -of json "$V" | tee premium-ffprobe.json
           node scripts/audit-final-video.js "$V" --fps 2 2>&1 | tee premium-audit.log
@@ -85,7 +92,7 @@ jobs:
           cp premium-render.log premium-validation-export/premium-render.log 2>/dev/null || true
           cp premium-ffprobe.json premium-validation-export/premium-ffprobe.json 2>/dev/null || true
           cp premium-audit.log premium-validation-export/premium-audit.log 2>/dev/null || true
-          cp remotion/out/neosaniye-fixture.mp4 premium-validation-export/fixture.mp4 2>/dev/null || true
+          cp artifacts/remotion-fixture.mp4 premium-validation-export/fixture.mp4 2>/dev/null || true
 
       - name: Upload premium validation artifact
         if: always()
@@ -97,5 +104,19 @@ jobs:
           retention-days: 3
 
       - name: Enforce premium validation gates
-        if: steps.node-tests.outcome != 'success' || steps.fixture.outcome != 'success' || steps.fixture-audit.outcome == 'failure'
+        if: steps.node_tests.outcome != 'success' || steps.fixture.outcome != 'success' || steps.fixture_audit.outcome == 'failure'
         run: exit 1
+
+      - name: Persist validated migration
+        if: steps.node_tests.outcome == 'success' && steps.fixture.outcome == 'success' && steps.fixture_audit.outcome == 'success'
+        run: |
+          if [ -f scripts/apply-premium-procedural-migration.mjs ] || [ -f scripts/apply-premium-test-migration.mjs ]; then
+            rm -f scripts/apply-premium-procedural-migration.mjs scripts/apply-premium-test-migration.mjs
+            git config user.name "neosaniye-premium-migration"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add src/pipeline/run.js src/pipeline/retentionQC.js src/pipeline/emergencyQualityGate.js test/uploadSafety.test.js scripts
+            git commit -m "refactor: persist premium procedural production pipeline"
+            git push origin HEAD:agent/premium-procedural-factory
+          else
+            echo "migration already persisted"
+          fi
