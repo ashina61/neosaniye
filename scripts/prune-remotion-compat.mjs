@@ -23,9 +23,6 @@ function replaceBetween(source, startMarker, endMarker, replacement, label) {
 
 const runPath = 'src/pipeline/run.js';
 let run = await readFile(runPath, 'utf8');
-run = removeExact(run, "import { execFile } from 'node:child_process';\n", 'execFile import');
-run = removeExact(run, "import { promisify } from 'node:util';\n", 'promisify import');
-run = removeExact(run, "const execFileAsync = promisify(execFile);\n", 'execFileAsync declaration');
 run = removeExact(run, "import { applyCta } from '../motion/ctaEngine.js';\n", 'CTA import');
 run = removeExact(run, "import { getRecentCtaTypes } from '../lib/firestore.js';\n", 'CTA history import');
 run = replaceExact(run, '    // 4) Montaj (ffmpeg)\n', '    // 4) Remotion motion-graphics renderı\n', 'phase 4 comment');
@@ -59,7 +56,7 @@ run = replaceBetween(
   '',
   'legacy CTA SFX cue block',
 );
-for (const forbidden of ['applyCta', 'getRecentCtaTypes', 'execFileAsync', 'config.motion']) {
+for (const forbidden of ['applyCta', 'getRecentCtaTypes', 'config.motion']) {
   if (run.includes(forbidden)) throw new Error(`run.js still contains ${forbidden}`);
 }
 await writeFile(runPath, run, 'utf8');
@@ -90,7 +87,7 @@ if (start < 0 || next < 0) throw new Error('legacy CTA architecture test markers
 const newTest = `test('orkestratör eski CTA motorunu ve config.motion ayarını taşımaz', async () => {\n` +
   `  const runSource = await readFile('src/pipeline/run.js', 'utf8');\n` +
   `  const configSource = await readFile('src/config.js', 'utf8');\n` +
-  `  assert.doesNotMatch(runSource, /applyCta|getRecentCtaTypes|config\\.motion|execFileAsync/);\n` +
+  `  assert.doesNotMatch(runSource, /applyCta|getRecentCtaTypes|config\\.motion/);\n` +
   `  assert.doesNotMatch(configSource, /\\bmotion\\s*:\\s*\\{/);\n` +
   `  assert.match(runSource, /integrated-in-remotion/);\n` +
   `});\n\n`;
