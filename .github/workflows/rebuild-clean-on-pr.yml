@@ -27,4 +27,14 @@ jobs:
       - name: Install ffmpeg
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
       - name: Replace the entire repository and validate the approved engine
-        run: bash scripts/rebuild-clean-eiffel.sh
+        run: |
+          set -o pipefail
+          bash scripts/rebuild-clean-eiffel.sh 2>&1 | tee /tmp/clean-eiffel-rebuild.log
+      - name: Upload rebuild diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: clean-eiffel-rebuild-diagnostics
+          path: /tmp/clean-eiffel-rebuild.log
+          if-no-files-found: error
+          retention-days: 2
