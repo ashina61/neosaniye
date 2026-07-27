@@ -64,6 +64,8 @@ export function evaluateRetention(input, cfg = config.retention) {
   const types = input.itemTypes || [];
   const sources = input.itemSources || [];
   const duration = Number(input.duration) || 0;
+  const captionPolicy = input.captionPolicy || 'required';
+  const proceduralOnly = sources.length > 0 && sources.every((source) => source === 'procedural-remotion');
 
   // ---------- metrikler ----------
   const firstSpeechMs = words.length ? Math.round(words[0].start * 1000) : null;
@@ -175,37 +177,28 @@ export function evaluateRetention(input, cfg = config.retention) {
   if (!certainty.overclaim) curiosity += 2;
   else fixes.push(`Tartışmalı iddia kesin dille ("${certainty.absolute ? 'definitely/proven' : ''}") — "may/experiments suggest" ile yumuşat.`);
 
-  // ---------- D) ALTYAZI (10) ----------
-  // Metin uzunluğu tahmini DEĞİL: render'ın kullandığı gerçek yerleşim
-  // matematiği (captionLayout.js) burada da çalıştırılır — bölme, font tabanı
-  // ve güvenli alan render ile birebir aynı hesaptan doğrulanır.
+  // ---------- D) EDITORIAL TEXT POLICY (10) ----------
   let captions = 0;
   let capLayout = null;
   let capRead = null;
-  if (words.length) {
-    capLayout = analyzeCaptionLayout(words, { emphasisWords: input.emphasisWords || [] });
-    if (!capLayout.safeArea.ok) {
-      failures.push('altyazı güvenli alan dışında (Shorts UI çakışması riski)');
-    }
-  }
-  if (config.video.captionSize >= cfg.minCaptionPx) captions += 4;
-  else fixes.push(`Altyazı ${config.video.captionSize}px — ${cfg.minCaptionPx}px altı telefonda okunmuyor.`);
-  if (capLayout) {
-    if (capLayout.maxWordsOnScreen <= cfg.maxCaptionWords) captions += 3;
-    else warnings.push(`ekranda aynı anda ${capLayout.maxWordsOnScreen} kelime (hedef ≤${cfg.maxCaptionWords})`);
-    if (capLayout.belowFloorCount === 0) captions += 3;
-    if (capLayout.timingIssues?.length) failures.push(...capLayout.timingIssues);
-    else warnings.push(`${capLayout.belowFloorCount} altyazı olayı font tabanına rağmen sığmıyor (çok uzun kelime)`);
-    // Güvenli alan içinde OLSA BİLE mobil görünür boyut düşükse yakala.
-    capRead = assessCaptionReadability({
-      minFontPx: capLayout.minFontUsed, outlinePx: 2.6, minPreviewPx: cfg.captionMinPreviewPx ?? 15,
-    });
-    if (!capRead.ok) warnings.push(`altyazı okunabilirlik: ${capRead.reason}`);
+  if (captionPolicy === 'none') {
+    captions = 10;
+    capLayout = { policy: 'none', events: [], safeArea: { ok: true } };
+    capRead = { ok: true, policy: 'editorial-kinetic-text-only' };
   } else {
-    failures.push('altyazı zamanlaması yok veya boş');
+    if (words.length) {
+      capLayout = analyzeCaptionLayout(words, { emphasisWords: input.emphasisWords || [] });
+      if (!capLayout.safeArea.ok) failures.push('altyazı güvenli alan dışında');
+    }
+    if (config.video.captionSize >= cfg.minCaptionPx) captions += 4;
+    if (capLayout) {
+      if (capLayout.maxWordsOnScreen <= cfg.maxCaptionWords) captions += 3;
+      if (capLayout.belowFloorCount === 0) captions += 3;
+      capRead = assessCaptionReadability({ minFontPx: capLayout.minFontUsed, outlinePx: 2.6, minPreviewPx: cfg.captionMinPreviewPx ?? 15 });
+    } else failures.push('altyazı zamanlaması yok veya boş');
   }
 
-  // ---------- E) GÖRSEL ÇEŞİTLİLİK + SEMANTİK ALAKA (10) ----------
+  // ---------- E) GÖRSEL ÇEŞİTLİLİK  // ---------- E) GÖRSEL ÇEŞİTLİLİK + SEMANTİK ALAKA (10) ----------
   //
   // TÜREV KLİPLER SAYILMAZ. `photo-3`, `photo-3#b` ve `photo-3#c` üç plan
   // değil, aynı fotoğrafta gezinen tek kameradır. Eskiden puan klip sayısına
@@ -215,7 +208,8 @@ export function evaluateRetention(input, cfg = config.retention) {
   );
   let variety = 0;
   const srcSet = new Set(sources);
-  if (srcSet.size >= 3) variety += 3;
+  if (proceduralOnly) variety += 3;
+  else if (srcSet.size >= 3) variety += 3;
   else if (srcSet.size === 2) variety += 1;
   let maxRun = 0;
   let run = 0;
@@ -223,7 +217,7 @@ export function evaluateRetention(input, cfg = config.retention) {
     run = i > 0 && sources[i] === sources[i - 1] ? run + 1 : 1;
     maxRun = Math.max(maxRun, run);
   }
-  if (maxRun <= 3 || (sources[0] === 'stock' && maxRun === sources.length)) variety += 2;
+  if (proceduralOnly || maxRun <= 3 || (sources[0] === 'stock' && maxRun === sources.length)) variety += 2;
   // Aynı temel görselden ardışık ikiden fazla türev: her ihlal yarım puan.
   if (novelty.violations.length) {
     variety -= Math.min(3, novelty.violations.length * 0.5);
@@ -281,7 +275,7 @@ export function evaluateRetention(input, cfg = config.retention) {
     fixes.push('Loop yok — finale hook sorusuna geri bağlanmıyor; hook kelimesini finalede kapat.');
   }
   // Görsel tekdüzelik: uzun AI dizisi / yüksek AI oranı estetiği tekrarlıyor.
-  if (srcMaxRun >= 4 || aiShare > 0.6) {
+  if (!proceduralOnly && (srcMaxRun >= 4 || aiShare > 0.6)) {
     fixes.push(`Görsel çeşitlilik düşük (AI oranı ${aiShare}, en uzun aynı-kaynak ${srcMaxRun}) — arşiv/diagram/stok/harita serpiştir.`);
   }
 

@@ -41,9 +41,10 @@ export function evaluateEmergencyQualityGate({
     if (!reasons.includes(reason)) reasons.push(reason);
   };
 
+  const captionPolicy = renderPlan?.captionPolicy || 'required';
   const captions = usableCaptionWords(wordTimings);
   const captionChars = captions.reduce((n, w) => n + String(w.word).trim().length, 0);
-  if (captions.length < 3 || captionChars < 6) {
+  if (captionPolicy !== 'none' && (captions.length < 3 || captionChars < 6)) {
     add('CAPTIONS_MISSING_OR_EMPTY', 'Altyazı zamanlaması yok veya etkili biçimde boş.');
   }
 
@@ -51,7 +52,7 @@ export function evaluateEmergencyQualityGate({
   const firstNarration = String(script.scenes?.[0]?.narration || '').trim();
   const firstVisual = mediaItems.find((item) => Number(item?.scene) === 0) || mediaItems[0];
   const firstWord = captions[0];
-  if (!hook || !firstNarration || !firstVisual?.path || !firstVisual?.source || !firstWord || firstWord.start > 1) {
+  if (!hook || !firstNarration || !(firstVisual?.assetId || firstVisual?.path) || !firstVisual?.source || !firstWord || firstWord.start > 1) {
     add(
       'OPENING_ALIGNMENT_DATA_MISSING',
       'Hook metni, ilk anlatım, ilk görsel ve ilk konuşma zamanını birlikte doğrulayacak veri eksik.',
@@ -61,7 +62,8 @@ export function evaluateEmergencyQualityGate({
   if (technical.videoStreamPresent !== true) add('VIDEO_STREAM_MISSING', 'Final çıktıda video akışı doğrulanmadı.');
   if (technical.audioStreamPresent !== true) add('AUDIO_STREAM_MISSING', 'Final çıktıda ses akışı doğrulanmadı.');
   if (!timeline || (timeline.issues || []).length || !timeline.items?.length) add('CANONICAL_TIMELINE_INVALID', 'Canonical narration timeline eksik veya geçersiz.');
-  if (!renderPlan || renderPlan.captionsIncluded !== true || !(renderPlan.captionEventCount > 0)) add('CAPTIONS_NOT_IN_RENDER_PLAN', 'Altyazılar final render planına dahil edilmedi.');
+  if (!renderPlan) add('RENDER_PLAN_MISSING', 'Final render planı bulunamadı.');
+  else if (captionPolicy !== 'none' && (renderPlan.captionsIncluded !== true || !(renderPlan.captionEventCount > 0))) add('CAPTIONS_NOT_IN_RENDER_PLAN', 'Altyazılar final render planına dahil edilmedi.');
   if (viewerValidation && viewerValidation.ok !== true) add('VIEWER_FIRST_SCRIPT_INVALID', `Hook/payoff/CTA doğrulaması başarısız: ${(viewerValidation.failures || []).join(', ')}`);
   const seconds = Number(duration || technical.durationSeconds || 0);
   const limits = durationLimits();

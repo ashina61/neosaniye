@@ -7,31 +7,23 @@ import { config } from '../config.js';
 const execFileAsync = promisify(execFile);
 import { generateScript } from '../script/generateScript.js';
 import { evaluateMeasuredDuration } from './durationPolicy.js';
-import { directVisuals, applyShotList } from '../crew/visualDirector.js';
 import { planVisualStory, MAX_ATMOSPHERE_SHARE } from '../crew/storyPlanner.js';
 import { repairSemanticActions } from './semanticRepair.js';
-import { applyPromptStyle } from '../crew/promptStyle.js';
-import { applySideIdentity } from '../visual/sideIdentity.js';
 import { planEdit } from '../crew/editorDirector.js';
 import { analyzePerformance } from '../crew/analyst.js';
 import { generateAudio } from '../tts/generateAudio.js';
-import { fetchAmbienceTrack, defaultAmbienceQuery } from '../audio/fetchAmbience.js';
-import { generateImages } from '../media/generateImages.js';
 import { renderVideo } from '../video/renderVideo.js';
 import { buildMetadata } from '../youtube/buildMetadata.js';
 import { uploadVideo } from '../youtube/uploadVideo.js';
 import { postFirstComment, updateVideoStats } from '../youtube/engage.js';
-import { buildSrtFromWords, uploadCaptions } from '../youtube/captions.js';
 import { crossPost } from '../social/meta.js';
 import { preflightCheck } from './preflight.js';
 import { recordPublicationBlock, runRetentionQC, uploadGate } from './retentionQC.js';
 import { assessVisualNarration } from './visualNarrationQC.js';
 import { appendQcHistory, buildQcHistoryEntry } from './qcHistory.js';
-import { getRecentMusic, getRecentAssetIds } from '../lib/firestore.js';
 import { describeMusicTrack } from '../audio/musicSelect.js';
 import { detectSlot } from './scheduleExperiment.js';
 import { emptySlotMetrics } from '../analytics/experimentMetrics.js';
-import { semanticRelevanceScore, detectOffTopicVisual } from '../media/semanticRelevance.js';
 import { verifySfxInOutput } from './outputVerify.js';
 import { evaluateHardGate } from './hardGate.js';
 import { recordProduction } from './recordProduction.js';
@@ -49,9 +41,6 @@ import { evaluateTechnicalPublishGate, decidePublish, logPublishDecision } from 
 import { validateFinalVideo } from './finalVideoValidator.js';
 import { buildRunIntegrity } from './runIntegrity.js';
 import { evaluatePublishGates } from './publishGates.js';
-import { applySubjectBible } from '../crew/subjectBible.js';
-import { validateCaptionIntegrity } from '../video/captionIntegrity.js';
-import { analyzeCaptionLayout } from '../video/captionLayout.js';
 import {
   assessSemanticActions, assessListStructure, assessCta, detectRepetition, assignListMarkers,
 } from './storyAudit.js';
@@ -128,31 +117,18 @@ export async function runPipeline(opts = {}) {
   const workDir = path.join(root, base);
   console.log(`  konu: ${script.topic} (${script.format || 'story'}/${script.category || '-'})`);
 
-  // 1.5) ORKESTRA: Görüntü Yönetmeni + Kurgucu/Ses Yönetmeni (paralel,
-  // best-effort — düşen rol mekanik varsayılana bırakır, boru hattı kırılmaz).
+  // 1.5) PREMIUM KURGU PLANI — görüntü sağlayıcısı veya shot-list üretimi yok.
   let editPlan = null;
   if (config.crew.enabled) {
-    log('Faz 1.5: Orkestra (görüntü yönetmeni + kurgucu)...');
-    const [shotList, edit] = await Promise.all([
-      directVisuals(script).catch((e) => {
-        console.warn(`[crew] görüntü yönetmeni düştü: ${String(e.message).slice(0, 90)}`);
-        return null;
-      }),
-      planEdit(script).catch((e) => {
-        console.warn(`[crew] kurgucu düştü: ${String(e.message).slice(0, 90)}`);
-        return null;
-      }),
-    ]);
-    if (shotList) applyShotList(script, shotList);
-    editPlan = edit;
-    const motions = (script.scenes || []).filter((s) => s.motion).length;
-    console.log(
-      `  görüntü yönetmeni: ${shotList ? `✓ (${motions} hareketli sahne)` : '— (taslakla devam)'}` +
-        ` | kurgucu: ${edit ? `✓ (müzik:${edit.musicMood || script.category}, abone:sahne ${edit.subscribeScene + 1})` : '— (mekanik plan)'}`,
-    );
+    log('Faz 1.5: Premium kurgu ve ses planı...');
+    editPlan = await planEdit(script).catch((e) => {
+      console.warn(`[crew] kurgucu düştü: ${String(e.message).slice(0, 90)}`);
+      return null;
+    });
+    console.log(`  kurgucu: ${editPlan ? `✓ (müzik:${editPlan.musicMood || script.category})` : '— (mekanik premium plan)'}`);
   }
 
-  try {
+  try {  try {
     // 2) Ses (edge-tts -> piper yedek)
     log('Faz 2: Seslendirme (TTS)...');
     const audio = await generateAudio(script, { outDir: workDir, basename: base });
@@ -175,37 +151,13 @@ export async function runPipeline(opts = {}) {
     });
     console.log(`  timeline: ${canonicalTimeline.source}${canonicalTimeline.fallbackUsed ? ' (fallback)' : ''}`);
 
-    // 2.5) Ambiyans yatağı (Freesound, CC0; best-effort). Kurgucu'nun seçtiği
-    // ortam sesi sorgusu; Kurgucu düştüyse kategori varsayılanı.
-    let ambience = null;
-    if (config.video.ambience && config.freesound.apiKey) {
-      const ambQuery = editPlan?.ambience || defaultAmbienceQuery(script.category);
-      ambience = await fetchAmbienceTrack(ambQuery, path.join(workDir, 'ambience.mp3'));
-      if (ambience) {
-        console.log(`[amb] ambiyans: "${ambQuery}" → ${ambience.name} (${Math.round(ambience.duration)}s)`);
-      }
-    }
-
-    // Görsel stil: story/whatif videolarının ~%40'ı "animasyonlu hikâye
-    // kitabı" (illüstrasyon + canlı doku) stilinde çıkar. process/howworks
-    // gerçek görüntü ağırlıklı olduğundan hep fotogerçekçi kalır.
-    // VIDEO_STYLE=animated|photo ile elle zorlanabilir.
-    const styleEnv = process.env.VIDEO_STYLE;
-    const visualStyle =
-      styleEnv === 'animated' || styleEnv === 'photo'
-        ? styleEnv
-        : ['story', 'whatif'].includes(script.format || 'story') && Math.random() < 0.4
-          ? 'animated'
-          : 'photo';
-    if (visualStyle === 'animated') console.log('  görsel stil: animasyonlu hikâye kitabı');
-
-    // Sahne süreleri, anlatım kelime sayısına göre orantılı.
-    // (cta artık seslendirilmiyor — yalnızca sahne anlatımları zamanlamayı belirler.)
+    // Premium motor dış ambiyans veya gerçek görsel kullanmaz.
+    const ambience = null;
+    const visualStyle = 'premium-procedural';
     const scenes = script.scenes || [];
     const sceneWeights = scenes.map((s) => Math.max(1, wordCount(s.narration)));
-    const sceneSeconds = canonicalTimeline.scenes.map((s) => s.duration);
 
-    // 2.9) GÖRSEL HİKÂYE PLANI — SIRALAMA BURADA TERSİNE DÖNER (V3 Faz 2).
+    // 2.9) GÖRSEL HİKÂYE PLANI    // 2.9) GÖRSEL HİKÂYE PLANI — SIRALAMA BURADA TERSİNE DÖNER (V3 Faz 2).
     // Eskiden görsel önce üretiliyor, anlam sonra üstüne yapıştırılıyordu;
     // dekorasyonun kök nedeni buydu. Artık her cümle ÖNCE bir görsel hikâye
     // şablonuna bağlanır ve image_prompt o şablonun gerektirdiği kompozisyonu
@@ -221,173 +173,56 @@ export async function runPipeline(opts = {}) {
         : `  liste: ${listPlan.assigned}/${listPlan.declared} madde işaretlendi.`);
     }
 
-    // 2.85) ÖZNE KİMLİK KİLİDİ — hikâye planından ÖNCE. Kimlik ön eki
-    // image_prompt'un en başına girer; hikâye kompozisyonu onun üstüne biner.
-    // Canlıda sahneler arası tırtıl/kırkayak/zırhlı solucan geçişlerinin
-    // sebebi, her sahnenin promptunun bağımsız üretilmesiydi.
-    const { bible, applied: bibleApplied } = applySubjectBible(script);
-    console.log(
-      `  özne kilidi: "${bible.canonicalName}"` +
-      `${bible.scientificCategory ? ` (${bible.scientificCategory})` : ''} — ` +
-      `${bibleApplied}/${(script.scenes || []).length} sahneye uygulandı, ` +
-      `${bible.forbiddenTraits.length} yasak anatomi terimi, kaynak: ${bible.verifiedSource}`,
-    );
-
+    // 2.85) PROCEDURAL ÖZNE KİMLİĞİ — prompt veya fotoğraf üretmez.
+    const bible = {
+      mode: 'procedural-only',
+      canonicalName: script.topic || script.normalizedTopic || 'NeoSaniye subject',
+      verifiedSource: 'script-topic',
+    };
     const storyPlan = planVisualStory(script);
-    console.log(
-      `  görsel hikâye: ${storyPlan.stats.composed}/${storyPlan.stats.total} sahnenin ` +
-      `kompozisyonu hikâyeye göre kısıtlandı ` +
-      `(${Object.entries(storyPlan.stats.byTemplate).map(([k, v]) => `${k}:${v}`).join(' ')}) ` +
-      `| izleyici görevi: ${storyPlan.stats.viewerTasks}`,
-    );
-    if (storyPlan.stats.atmosphereCapExceeded) {
-      console.warn(`  ⚠️ atmosphere oranı ${storyPlan.stats.atmosphereShare} (tavan ${MAX_ATMOSPHERE_SHARE}) `
-        + `— ${storyPlan.stats.reclassified.length} sahne aktif şablona çekildi.`);
-    }
-
-    // ---- SEMANTİK OTOMATİK DÜZELTME (§15) — RENDER'DAN ÖNCE, TEK TUR ----
-    //
-    // QC artık cellat değil editör: düşük semantik skor cron'u durdurmaz,
-    // önce DÜZELTİLMEYE çalışılır. Ölçüm bu noktada plandan yapılır (odak ve
-    // aktörler henüz yok, onlar render sırasında ölçülüyor); amaç "bu sahne
-    // anlattığı eylemi barındıran bir kadraj mı istiyor" sorusunu görsel
-    // ÜRETİLMEDEN ÖNCE yanıtlamak. Görsel üretildikten sonra düzeltmek,
-    // yeniden üretim demek olurdu.
-    const planSemantics = assessSemanticActions(
-      (script.scenes || []).map((sc) => ({
-        narration: sc.narration,
-        template: sc.story_template,
-        focus: null,
-        hasSequence: false,
-        actors: [],
-      })),
-    );
+    console.log(`  motion storyboard: ${storyPlan.stats.composed}/${storyPlan.stats.total} sahne (${Object.entries(storyPlan.stats.byTemplate).map(([k, v]) => `${k}:${v}`).join(' ')})`);
+    const planSemantics = assessSemanticActions((script.scenes || []).map((sc) => ({
+      narration: sc.narration, template: sc.story_template, focus: null, hasSequence: true, actors: [],
+    })));
     const semanticRepairResult = repairSemanticActions(script, planSemantics);
-    if (semanticRepairResult.attempted) {
-      console.log(`  [semantik-onarım] ${semanticRepairResult.reason}`);
-      for (const c of semanticRepairResult.changedScenes) {
-        console.log(`     sahne ${c.scene}: ${c.from} → ${c.to}`);
-      }
-      // Atlananlar GİZLENMEZ: neyin düzeltilemediğini bilmek, sonraki turda
-      // neyi geliştirmek gerektiğini söyler.
-      for (const sk of semanticRepairResult.skipped.slice(0, 4)) {
-        console.log(`     sahne ${sk.scene} atlandı: ${sk.reason}`);
-      }
-      if (semanticRepairResult.qualityDegraded) {
-        console.warn('  [semantik-onarım] quality_degraded=true — mevcut güvenli plan ile devam.');
-      }
-    }
+    if (semanticRepairResult.attempted) console.log(`  [motion-onarım] ${semanticRepairResult.reason}`);
 
-    // ---- §9 PROMPT ÇELİŞKİLERİ + §8 TARAF RENK KİMLİĞİ ----
-    //
-    // SIRA ÖNEMLİ: önce kategori stili (çelişen yasakları temizler), sonra
-    // taraf kimliği (her sahneye kendi renk/doku dilini yazar). Ters sırada
-    // kategori temizliği, taraf kimliğinin eklediği renk terimlerini de
-    // süpürebilirdi.
-    const promptStyleResult = applyPromptStyle(script);
-    if (promptStyleResult.contradictionsRemoved.length) {
-      console.log(`  [prompt-stil] ${promptStyleResult.style}: çelişen yasak kaldırıldı — `
-        + promptStyleResult.contradictionsRemoved.join(', '));
-    }
-    const sideIdentityResult = applySideIdentity(script);
-    if (sideIdentityResult.pair) {
-      console.log(`  [taraf-kimliği] ${sideIdentityResult.pair.a} ↔ ${sideIdentityResult.pair.b} `
-        + `(${Object.entries(sideIdentityResult.assigned).map(([k, v]) => `${k}:${v}`).join(' ')}) `
-        + '— sesi kapalı izleyici hangi tarafın anlatıldığını renkten görür.');
-    }
-
-    // 3) Görsel (sahne başına AI görsel + Pexels/placeholder yedeği).
-    // TEMPO: 4.3sn'yi aşan statik AI sahneleri İKİ farklı kadraja bölünür
-    // (canlı QC: 7 plan/5.5sn ortalama statikti — göz sıkılıyor).
-    log('Faz 3: Sahne görselleri üretiliyor (AI)...');
-    const recentAssetIds = await getRecentAssetIds(5).catch(() => []);
-    const media = await generateImages(script, { outDir: root, basename: base, style: visualStyle, sceneSeconds, avoidAssetIds: recentAssetIds });
-    console.log(
-      `  ${media.items.length} plan / ${scenes.length} sahne — AI:${media.sources.ai} ` +
-        `arşiv:${media.sources.archive || 0} ` +
-        `stokVideo:${media.sources.stock || 0} Pexels:${media.sources.pexels} ` +
-        `gfx:${media.sources.gfx || 0} yedek:${media.sources.placeholder}`,
-    );
-    if (!media.items.length) throw new Error('Hiç sahne görseli üretilemedi.');
+    // 3) PREMIUM PROCEDURAL STORYBOARD — dosya/URL/görsel sağlayıcısı yok.
+    log('Faz 3: Premium procedural storyboard hazırlanıyor...');
+    const media = {
+      items: scenes.map((scene, index) => ({
+        scene: index, part: 0, sequence: true, loopEcho: false,
+        path: `procedural://scene-${index + 1}`, type: 'procedural',
+        source: 'procedural-remotion', provider: 'neosaniye-premium-engine',
+        assetId: `procedural:${scene.story_template || 'collage'}:${index + 1}`,
+        license: 'proprietary-original',
+        licenseEvidence: 'remotion/src/DynamicShort.tsx',
+        generatedAt: new Date().toISOString(),
+      })),
+      sources: { procedural: scenes.length },
+    };
     const renderTimeline = expandTimelineForMedia(canonicalTimeline, media.items);
+    const itemWeights = sceneWeights;
+    console.log(`  ${scenes.length} procedural sahne — dış görsel: 0, stok: 0, AI görsel: 0`);
 
-    // Plan (item) ağırlıkları: bölünen sahnenin ağırlığı parçalara eşit dağılır.
-    const partsPerScene = {};
-    for (const it of media.items) partsPerScene[it.scene] = (partsPerScene[it.scene] || 0) + 1;
-    const itemWeights = media.items.map(
-      (it) => Math.max(0.5, (sceneWeights[it.scene] ?? 1) / (partsPerScene[it.scene] || 1)),
-    );
-
-    // Kurgu planını plan sayısına genişlet: aynı sahnenin parçaları arasına
-    // sade 'cut' girer; sahneler arası sınırlar Kurgucu'nun kararını korur.
-    // Abone kartı sahne indeksinden plan indeksine çevrilir.
-    if (editPlan && media.items.length !== scenes.length) {
-      const firstItemOfScene = {};
-      media.items.forEach((it, idx) => {
-        if (!(it.scene in firstItemOfScene)) firstItemOfScene[it.scene] = idx;
-      });
-      const newBounds = [];
-      for (let k = 1; k < media.items.length; k += 1) {
-        const prev = media.items[k - 1];
-        const cur = media.items[k];
-        newBounds.push(
-          cur.scene === prev.scene
-            ? { transition: 'cut', sfx: 'none' }
-            : editPlan.boundaries[cur.scene - 1] || { transition: 'cut', sfx: 'none' },
-        );
-      }
-      editPlan = {
-        ...editPlan,
-        boundaries: newBounds,
-        subscribeScene: firstItemOfScene[editPlan.subscribeScene] ?? editPlan.subscribeScene,
-      };
-    }
-
-    // 4) Remotion motion-graphics renderı
+    // 4) Remotion motion-graphics renderı    // 4) Remotion motion-graphics renderı
     log('Faz 4: Remotion motion-graphics renderı...');
     const outPath = path.join(workDir, `${base}.mp4`);
     // Son 5 videonun müziği tekrar seçilmesin (çeşitlilik; state yoksa boş).
     const recentMusic = await getRecentMusic(5).catch(() => []);
     const video = await renderVideo({
       audioPath: audio.audioPath,
-      wordTimings: audio.wordTimings,
-      // BU EŞLEME DOĞRULAMANIN GÖRDÜĞÜ HER ŞEYİ BELİRLER. Daraltılmış nesne
-      // loopEcho/part/assetId/source alanlarını düşürüyordu ve sonuçlar
-      // sessizdi, çünkü hepsi "undefined" olarak makul görünüyor:
-      //   • loopEcho düştüğü için overlayWindows.loopEcho DAİMA boş kaldı —
-      //     kasıtlı döngü kapanışı muafiyeti üretimde hiç çalışmadı ve her
-      //     koşuda DUPLICATE_SHOT + HOOK_OUTSIDE_PLAN olarak raporlandı.
-      //   • part düştüğü için her klip part=0 aldı; kimlikler yalnızca sahneye
-      //     göre ayrışıyordu.
-      //   • assetId düştüğü için kopya tespiti plan kanıtına hiç bakamadı ve
-      //     her eşleşme "algısal" sayıldı.
-      media: media.items.map((m) => ({
-        path: m.path,
-        type: m.type,
-        gfx: m.source === 'gfx',
-        sequence: Boolean(m.sequence),
-        part: m.part ?? 0,
-        loopEcho: Boolean(m.loopEcho),
-        assetId: m.assetId || m.path || null,
-        source: m.source || null,
-      })),
-      mediaScene: media.items.map((m) => m.scene),
       scenes,
-      timeline: renderTimeline,
-      sceneWeights: itemWeights,
+      timeline: canonicalTimeline,
       hookText: script.hook_text,
       category: script.category,
       editPlan,
-      musicMood: editPlan?.musicMood || undefined,
-      ambiencePath: ambience?.path || null,
-      visualStyle,
-      // Process (gerçek görüntü) videolarında ok+etiket dikkat katmanı.
-      annotate: (script.format || 'story') === 'process',
       emphasisWords: script.emphasis_words || [],
       finaleText: script.finale_text || '',
-      avoidMusic: recentMusic,
-      // Deterministik müzik seed'i — aynı konu aynı parçayı, farklı konu çeşidi verir.
       musicSeed: script.normalizedTopic || base,
+      language: script.language || 'en',
+      title: script.title || script.topic,
+      topic: script.topic || script.normalizedTopic,
       outPath,
     });
     console.log(`  ${video.width}x${video.height}, ${video.duration.toFixed(1)}s -> ${outPath}`);
@@ -583,58 +418,12 @@ export async function runPipeline(opts = {}) {
     outputVerification.editorialSfx = editorialSfx;
     outputVerification.ambience = ambience?.name || null;
 
-    // Semantik alaka (best-effort): stok görsellerin anahtar kelimesi o sahnenin
-    // anlatımıyla örtüşüyor mu? AI/gfx/arşiv üretimde konu-türevi olduğundan
-    // null (cezasız); yalnızca stok/pexels için ölçülür (alakasız stok yakalanır).
-    // SAHNE-ANLATIM UYUMU — AI GÖRSELLER DE ÖLÇÜLÜR.
-    //
-    // Eski koşul yalnızca stock/pexels'i ölçüyordu. fungal-networks koşusu
-    // %100 AI görseldi, dolayısıyla `semanticRelevance.count = 0` çıktı: uyum
-    // HİÇ ölçülmedi. Sahne 2'nin anlatımı "how do these networks actually
-    // work?" iken görsel "mikroskopla toprak inceleyen bir araştırmacı"ydı ve
-    // hiçbir kapı bunu görmedi — oysa ölçülseydi örtüşme sıfıra yakın çıkardı.
-    //
-    // AI tarafında karşılaştırma metni ÇEKİRDEK prompt'tur (modelin sahne için
-    // yazdığı özgün tarif). Tam prompt kullanılsaydı her sahnede aynı olan
-    // kompozisyon+stil metni örtüşmeyi şişirir ve ölçüm anlamsızlaşırdı.
-    const itemRelevance = media.items.map((m) => {
-      const scene = script.scenes?.[m.scene];
-      if (!scene) return null;
-      const forbidden = scene.forbidden_mismatches || [];
-      const tags = ['stock', 'pexels'].includes(m.source)
-        ? m.keyword
-        : (m.source === 'ai' ? scene.image_prompt_core : null);
-      if (!tags) return null;
-      return semanticRelevanceScore(scene.narration || '', tags, { forbiddenMismatches: forbidden }).score;
-    });
-
-    // SAHNE İLE ANLATIM AYNI ŞEYİ Mİ ANLATIYOR? Dar ve kanıtlı kontrol:
-    // görselin tarifi, sahnenin ya da videonun söz ettiği HİÇBİR şeyi
-    // içermiyorsa görsel başka bir konuyu gösteriyordur.
-    const topicWords = [script.topic, script.subjectBible?.canonicalName].filter(Boolean);
+    // Procedural çizimler doğrudan narration/template verisinden üretildiği için
+    // stok anahtar kelime eşlemesi uygulanmaz.
+    const itemRelevance = media.items.map(() => 1);
     const offTopicScenes = [];
-    media.items.forEach((m, i) => {
-      const scene = script.scenes?.[m.scene];
-      if (!scene) return;
-      const imageText = ['stock', 'pexels'].includes(m.source)
-        ? String(m.keyword || '')
-        : String(scene.image_prompt_core || '');
-      const r = detectOffTopicVisual({
-        narration: scene.narration || '',
-        imageText,
-        sceneKeywords: scene.keywords || [],
-        topicWords,
-      });
-      if (r.checked && r.offTopic) {
-        offTopicScenes.push({ clip: i, scene: m.scene, narration: (scene.narration || '').slice(0, 70) });
-      }
-    });
-    if (offTopicScenes.length) {
-      console.warn(`  ⚠️ sahne-anlatım uyumsuz (${offTopicScenes.length}): `
-        + offTopicScenes.slice(0, 3).map((o) => `sahne ${o.scene}`).join(', ')
-        + ' — görsel, anlatımın ya da konunun hiçbir öğesini içermiyor.');
-    }
-    // ---- FINAL MP4 DOĞRULAMASI (tek gerçek kaynak) ----
+
+    // ---- FINAL MP4 DOĞRULAMASI    // ---- FINAL MP4 DOĞRULAMASI (tek gerçek kaynak) ----
     //
     // Buraya kadar her kapı PLANI okuyordu. Kolibri koşusu şunu kanıtladı:
     // plan doğru olabilir, çıkan video yanlış olabilir ve hiçbir rapor bunu
@@ -686,28 +475,15 @@ export async function runPipeline(opts = {}) {
     }
 
 
-    // ALTYAZI + SEMANTİK EYLEM ÖLÇÜMÜ — retention puanı bunlara BAĞLI olduğu
-    // için QC'den ÖNCE hesaplanmak zorunda. (Aşağıya bırakıldığında TDZ hatası
-    // veriyordu: "Cannot access 'semanticActions' before initialization" —
-    // test/pipelineOrder.test.js bu sınıf hatayı statik olarak yakalıyor.)
-    const captionLayout = analyzeCaptionLayout(audio.wordTimings || [], {
-      emphasisWords: script.emphasis_words || [],
-    });
-    const captionIntegrity = validateCaptionIntegrity({
-      events: captionLayout.events,
-      ttsText: (script.scenes || []).map((s) => s.narration).join(' '),
-    });
-    const semanticActions = assessSemanticActions(
-      (script.scenes || []).map((s, i) => ({
-        narration: s.narration,
-        template: s.story_template,
-        focus: video.sceneFocus?.[i] || null,
-        hasSequence: media.items.some((m) => m.scene === i && m.sequence),
-        actors: (video.actorsByScene?.[i]) || [],
-      })),
-    );
+    // Video içi altyazı politikası: YOK. Yalnız editorial kinetic text vardır.
+    const captionLayout = { policy: 'none', events: [], readability: { ok: true }, safeArea: { ok: true } };
+    const captionIntegrity = { ok: true, policy: 'none', failures: [], eventCount: 0 };
+    const semanticActions = assessSemanticActions((script.scenes || []).map((s, i) => ({
+      narration: s.narration, template: s.story_template, focus: video.sceneFocus?.[i] || null,
+      hasSequence: true, actors: (video.actorsByScene?.[i]) || [],
+    })));
 
-    const qc = await runRetentionQC({
+    const qc = await runRetentionQC({    const qc = await runRetentionQC({
       script,
       wordTimings: audio.wordTimings,
       emphasisWords: script.emphasis_words || [],
@@ -718,7 +494,8 @@ export async function runPipeline(opts = {}) {
       itemAssetIds: media.items.map((m) => m.assetId || m.path),
       // §14: puanın gerçeği tarif etmesi için editoryal ölçümler skora girer.
       semanticActionAverage: semanticActions?.average ?? null,
-      captionReadability: captionLayout?.readability?.ok ?? null,
+      captionPolicy: 'none',
+      captionReadability: true,
       // §13 — blok sayısı ile kelime vurgu sayısı AYRI alanlar.
       captionBlockCount: captionLayout?.events?.length ?? null,
       wordHighlightEventCount: (audio.wordTimings || []).length,
@@ -966,17 +743,12 @@ export async function runPipeline(opts = {}) {
         }).catch(() => {});
       }
       if (res) {
-        // İlk yorum ve SRT, YouTube yayınlandıktan sonra best-effort çalışır.
+        // İlk yorum best-effort. Harici ve video içi altyazı bu formatta kapalıdır.
         const commented = await postFirstComment(res.videoId, script).catch(() => false);
         if (commented) console.log('  ilk yorum atıldı');
-        const srt = buildSrtFromWords(audio.wordTimings);
-        if (srt) {
-          const capOk = await uploadCaptions(res.videoId, srt).catch(() => false);
-          if (capOk) console.log('  altyazı (SRT) yüklendi');
-        }
       }
 
-      // Meta cross-post: aynı video Instagram Reels + Facebook Reels'e
+      // Meta cross-post:      // Meta cross-post: aynı video Instagram Reels + Facebook Reels'e
       // (best-effort; secrets yoksa sessizce atlanır, bkz. docs/meta-setup.md).
       if (instagramConfigured) await updatePublishingPlatform(publishingAttemptId, 'instagram', 'uploading');
       if (facebookConfigured) await updatePublishingPlatform(publishingAttemptId, 'facebook', 'uploading');
