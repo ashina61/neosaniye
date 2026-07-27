@@ -1,0 +1,30 @@
+name: Execute Clean Eiffel Rebuild
+
+on:
+  pull_request:
+    branches: [claude/youtube-shorts-automation-9dbrjx]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild:
+    if: github.head_ref == 'agent/clean-eiffel-rebuild'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/clean-eiffel-rebuild
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+      - name: Replace the entire repository and validate the approved engine
+        run: bash scripts/rebuild-clean-eiffel.sh
