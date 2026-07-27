@@ -1,0 +1,71 @@
+name: Validate NeoSaniye Clean Eiffel Engine
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - agent/clean-eiffel-rebuild
+      - claude/youtube-shorts-automation-9dbrjx
+  pull_request:
+    branches:
+      - claude/youtube-shorts-automation-9dbrjx
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg
+          npm install --no-audit --no-fund
+          python -m pip install --disable-pip-version-check edge-tts==7.2.7 mutagen==1.47.0
+      - name: Enforce clean procedural source
+        run: |
+          test "$(find src -type f | wc -l)" -eq 6
+          if grep -RniE 'CaptionStrip|subtitle|karaoke|generateImages|Pexels|Pixabay|OffthreadVideo|<Img|<video' src package.json; then
+            echo "Legacy media or caption implementation found"
+            exit 1
+          fi
+      - name: Generate English narration music and layered SFX
+        run: npm run audio
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Render approved Eiffel composition
+        run: npm run render
+      - name: Validate final MP4
+        run: |
+          test -s out/neosaniye-eiffel-tower.mp4
+          ffprobe -v error -show_entries stream=codec_name,width,height,r_frame_rate,channels -show_entries format=duration -of json out/neosaniye-eiffel-tower.mp4 | tee out/ffprobe.json
+          python - <<'PY'
+          import json
+          data=json.load(open('out/ffprobe.json'))
+          streams=data['streams']
+          video=next(s for s in streams if s.get('width'))
+          audio=next(s for s in streams if s.get('channels'))
+          duration=float(data['format']['duration'])
+          assert video['codec_name']=='h264', video
+          assert (video['width'], video['height']) == (1080, 1920), video
+          assert video['r_frame_rate'] == '30/1', video
+          assert audio, 'audio stream missing'
+          assert 43.5 <= duration <= 44.5, duration
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: neosaniye-clean-eiffel-video
+          path: |
+            out/neosaniye-eiffel-tower.mp4
+            out/ffprobe.json
+          if-no-files-found: error
+          retention-days: 7
