@@ -51,8 +51,10 @@ export function classifyRemotionTemplate(scene, index, total) {
   if (index === 0) return 'hook-reveal';
   if (index === total - 1) return 'final-twist';
   if (/\b(document|letter|passport|certificate|contract|newspaper|official|sealed|stamp|evidence|classified)\b/.test(text)) return 'document';
-  if (/\b(map|route|voyage|sailed|travelled|traveled|from .+ to|across the|crossed the|journey|border|ocean)\b/.test(text)) return 'map-route';
+  // Numbers get first refusal so a sentence such as "250 settlers crossed the
+  // Atlantic" becomes the Netflix-style statistic beat rather than a generic map.
   if (extractStat(text)) return 'stat-slot';
+  if (/\b(map|route|voyage|sailed|travelled|traveled|from .+ to|across the|crossed the|journey|border|ocean)\b/.test(text)) return 'map-route';
   if (/\b(sold|bought|paid|payment|money|cash|deal|auction|price|bribe|profit|fortune|bank|bond)\b/.test(text)) return 'transaction';
   if (/\b(how|inside|mechanism|works|because|caused|process|step|system|engine|diagram)\b/.test(text)) return 'explainer-diagram';
   if (/\b(died|death|collapsed|failed|disaster|disease|starved|lost|destroyed|caught|exposed|panic|shame)\b/.test(text)) return 'consequence';
