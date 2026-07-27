@@ -58,14 +58,21 @@ jobs:
         run: npm run remotion:typecheck
 
       - name: Render premium procedural fixture
-        run: npm run remotion:fixture
+        id: fixture
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          npm run remotion:fixture 2>&1 | tee premium-render.log
 
       - name: Validate fixture MP4
+        id: fixture-audit
+        if: steps.fixture.outcome == 'success'
+        continue-on-error: true
         run: |
           V=remotion/out/neosaniye-fixture.mp4
           test -s "$V"
-          ffprobe -v error -show_entries stream=codec_name,width,height,channels -show_entries format=duration -of json "$V"
-          node scripts/audit-final-video.js "$V" --fps 2
+          ffprobe -v error -show_entries stream=codec_name,width,height,channels -show_entries format=duration -of json "$V" | tee premium-ffprobe.json
+          node scripts/audit-final-video.js "$V" --fps 2 2>&1 | tee premium-audit.log
 
       - name: Export migrated source and diagnostics
         if: always()
@@ -75,6 +82,9 @@ jobs:
           cp src/pipeline/retentionQC.js premium-validation-export/src/pipeline/retentionQC.js
           cp src/pipeline/emergencyQualityGate.js premium-validation-export/src/pipeline/emergencyQualityGate.js
           cp premium-node-tests.log premium-validation-export/premium-node-tests.log 2>/dev/null || true
+          cp premium-render.log premium-validation-export/premium-render.log 2>/dev/null || true
+          cp premium-ffprobe.json premium-validation-export/premium-ffprobe.json 2>/dev/null || true
+          cp premium-audit.log premium-validation-export/premium-audit.log 2>/dev/null || true
           cp remotion/out/neosaniye-fixture.mp4 premium-validation-export/fixture.mp4 2>/dev/null || true
 
       - name: Upload premium validation artifact
@@ -86,6 +96,6 @@ jobs:
           if-no-files-found: error
           retention-days: 3
 
-      - name: Fail when legacy Node tests remain broken
-        if: steps.node-tests.outcome != 'success'
+      - name: Enforce premium validation gates
+        if: steps.node-tests.outcome != 'success' || steps.fixture.outcome != 'success' || steps.fixture-audit.outcome == 'failure'
         run: exit 1
