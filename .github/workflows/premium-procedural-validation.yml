@@ -38,14 +38,11 @@ jobs:
       - name: Install ffmpeg and ffprobe
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
 
-      - name: Apply pending premium migrations
+      - name: Apply pending premium migrations and cleanup
         run: |
-          if [ -f scripts/apply-premium-procedural-migration.mjs ]; then
-            node scripts/apply-premium-procedural-migration.mjs
-          fi
-          if [ -f scripts/apply-premium-test-migration.mjs ]; then
-            node scripts/apply-premium-test-migration.mjs
-          fi
+          if [ -f scripts/apply-premium-procedural-migration.mjs ]; then node scripts/apply-premium-procedural-migration.mjs; fi
+          if [ -f scripts/apply-premium-test-migration.mjs ]; then node scripts/apply-premium-test-migration.mjs; fi
+          if [ -f scripts/finalize-premium-source.mjs ]; then node scripts/finalize-premium-source.mjs; fi
 
       - name: Install pipeline dependencies
         run: npm ci
@@ -110,6 +107,7 @@ jobs:
           cp src/pipeline/run.js premium-validation-export/src/pipeline/run.js
           cp src/pipeline/retentionQC.js premium-validation-export/src/pipeline/retentionQC.js
           cp src/pipeline/emergencyQualityGate.js premium-validation-export/src/pipeline/emergencyQualityGate.js
+          cp premium-dead-code-report.json premium-validation-export/premium-dead-code-report.json 2>/dev/null || true
           cp premium-node-tests.log premium-validation-export/premium-node-tests.log 2>/dev/null || true
           cp premium-render.log premium-validation-export/premium-render.log 2>/dev/null || true
           cp premium-ffprobe.json premium-validation-export/premium-ffprobe.json 2>/dev/null || true
@@ -129,16 +127,19 @@ jobs:
         if: ${{ steps.node_tests.outcome != 'success' || steps.fixture.outcome != 'success' || steps.fixture_audit.outcome != 'success' }}
         run: exit 1
 
-      - name: Persist validated migration
+      - name: Persist validated source cleanup
         if: ${{ steps.node_tests.outcome == 'success' && steps.fixture.outcome == 'success' && steps.fixture_audit.outcome == 'success' }}
         run: |
-          if [ -f scripts/apply-premium-procedural-migration.mjs ] || [ -f scripts/apply-premium-test-migration.mjs ]; then
-            rm -f scripts/apply-premium-procedural-migration.mjs scripts/apply-premium-test-migration.mjs
+          pending=0
+          for file in scripts/apply-premium-procedural-migration.mjs scripts/apply-premium-test-migration.mjs scripts/finalize-premium-source.mjs; do
+            if [ -f "$file" ]; then rm -f "$file"; pending=1; fi
+          done
+          if [ "$pending" = "1" ] || ! git diff --quiet; then
             git config user.name "neosaniye-premium-migration"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add src/pipeline/run.js src/pipeline/retentionQC.js src/pipeline/emergencyQualityGate.js test/uploadSafety.test.js scripts
-            git commit -m "refactor: persist premium procedural production pipeline"
+            git commit -m "refactor: finalize premium procedural source"
             git push origin HEAD:agent/premium-procedural-factory
           else
-            echo "migration already persisted"
+            echo "premium source already finalized"
           fi
