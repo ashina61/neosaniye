@@ -55,8 +55,16 @@ jobs:
           test -s remotion/public/runs/fixture/whoosh.wav
           test -s remotion/public/runs/fixture/boom.wav
 
-      - name: Test production spec compiler
-        run: node --test test/remotionSpec.test.js
+      - name: Test production compiler and renderer policy
+        run: node --test test/remotionSpec.test.js test/renderRouter.test.js
+
+      - name: Verify reversible Phase 4 shadow patch
+        run: |
+          cp src/pipeline/run.js /tmp/run-before.js
+          node scripts/patch-remotion-shadow-run.mjs
+          grep -F "renderWithConfiguredEngine as renderVideo" src/pipeline/run.js
+          cp /tmp/run-before.js src/pipeline/run.js
+          git diff --exit-code -- src/pipeline/run.js
 
       - name: Typecheck Remotion engine
         run: npm run remotion:typecheck
