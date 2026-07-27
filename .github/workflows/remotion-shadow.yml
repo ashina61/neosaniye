@@ -1,0 +1,133 @@
+name: Remotion Shadow Short
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/youtube-shorts-automation-9dbrjx]
+    paths:
+      - ".github/workflows/remotion-shadow.yml"
+  schedule:
+    # Existing public slots are 13:02 / 18:02 / 23:02 UTC. Shadow runs alone.
+    - cron: "17 16 * * *"
+
+permissions:
+  contents: read
+  models: read
+
+concurrency:
+  group: remotion-shadow
+  cancel-in-progress: false
+
+jobs:
+  produce-shadow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+
+      - name: Install main pipeline
+        run: npm ci
+
+      - name: Install Remotion renderer
+        run: npm install --prefix remotion --no-audit --no-fund
+
+      - name: Install TTS tools
+        run: pip install -r requirements.txt
+
+      - name: Validate renderer policy before production
+        run: |
+          node --test test/remotionSpec.test.js test/renderRouter.test.js
+          npm run remotion:typecheck
+
+      - name: Route this workspace to Remotion
+        run: |
+          node scripts/patch-remotion-shadow-run.mjs
+          grep -F "renderWithConfiguredEngine as renderVideo" src/pipeline/run.js
+
+      - name: Produce full English shadow Short
+        id: produce
+        run: node scripts/generate-and-publish.js --no-upload
+        env:
+          # New renderer: artifact only, no silent quality fallback.
+          RENDER_ENGINE: remotion
+          REMOTION_MODE: shadow
+          REMOTION_FALLBACK: none
+          CONTENT_LANGUAGE: en
+          FORCE_FORMAT: story
+          TREND_DISCOVERY: "0"
+          BURN_CAPTIONS: "0"
+          AUTO_UPLOAD: "false"
+          REQUIRE_MANUAL_APPROVAL: "true"
+          MOTION_ENABLED: "0"
+          VIDEO_SUBPROMPT: "0"
+          VIDEO_OUTRO: "0"
+          VIDEO_AMBIENCE: "0"
+          RETENTION_QC_MODE: warning
+          TECHNICAL_PREFLIGHT_MODE: strict
+
+          # Script provider pool. Missing optional secrets are skipped by the pipeline.
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENROUTER_MODEL: openrouter/free
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GITHUB_MODELS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+          # Visual provider pool.
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
+          HUGGINGFACE_API_KEY: ${{ secrets.HUGGINGFACE_API_KEY }}
+          TTS_VOICE: ${{ vars.TTS_VOICE || 'en-US-AndrewNeural' }}
+
+      - name: Audit rendered shadow MP4
+        if: ${{ !cancelled() && steps.produce.conclusion != 'skipped' }}
+        run: |
+          V=$(find output -maxdepth 2 -name '*.mp4' -not -path '*/media/*' -not -name 'fullv.mp4' | head -1)
+          G=$(find output -name 'publish-gates.json' | head -1)
+          test -n "$V"
+          node scripts/audit-final-video.js "$V" ${G:+"$G"} --fps 2
+          ffprobe -v error \
+            -show_entries stream=codec_name,width,height,r_frame_rate,channels \
+            -show_entries format=duration \
+            -of json "$V" | tee remotion-shadow-ffprobe.json
+
+      - name: Upload shadow production
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: remotion-shadow-short-${{ github.run_number }}
+          path: |
+            output/**/*.mp4
+            output/**/production.json
+            output/**/script.json
+            output/**/scene-plan.json
+            output/**/production-report.json
+            output/**/production-report.md
+            output/**/publish-gates.json
+            output/**/asset-manifest.json
+            output/**/report.json
+            output/**/cover.jpg
+            output/**/preview-*.jpg
+            remotion-shadow-ffprobe.json
+          if-no-files-found: warn
+          retention-days: 7
