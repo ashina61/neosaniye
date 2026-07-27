@@ -1,6 +1,8 @@
 name: Premium Procedural Factory Validation
 
 on:
+  pull_request:
+    branches: [claude/youtube-shorts-automation-9dbrjx]
   push:
     branches: [agent/premium-procedural-factory]
 
