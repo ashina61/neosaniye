@@ -1,22 +1,19 @@
 #!/usr/bin/env node
 /**
- * Faz 4 test aracı: bir "job" JSON'undan video render eder.
+ * Faz 4 test aracı: bir job JSON dosyasını NeoSaniye Remotion motoruyla işler.
  *
  * Kullanım:
+ *   npm run remotion:install
  *   node scripts/render-video.js job.json
  *
- * job.json şeması:
- *   {
- *     "audioPath": "output/foo/foo.mp3",
- *     "wordTimings": [{ "word": "Hi", "start": 0.1, "end": 0.4 }, ...],
- *     "media": [{ "path": "output/foo/media/01-video.mp4", "type": "video" }, ...],
- *     "outPath": "output/foo/foo.mp4"
- *   }
+ * Zorunlu job alanları:
+ *   audioPath, scenes, media, mediaScene, timeline, outPath
  *
- * Ön koşul: ffmpeg + ffprobe kurulu (apt-get install ffmpeg).
+ * ffmpeg/ffprobe yalnız ses süresi ve final teknik doğrulaması için gereklidir;
+ * görüntü montajını Remotion yapar.
  */
-import { readFile } from 'node:fs/promises';
-import { renderVideo } from '../src/video/renderVideo.js';
+import {readFile} from 'node:fs/promises';
+import {renderVideo} from '../src/video/renderVideo.js';
 
 const jobPath = process.argv[2];
 if (!jobPath) {
@@ -26,10 +23,9 @@ if (!jobPath) {
 
 const job = JSON.parse(await readFile(jobPath, 'utf8'));
 const result = await renderVideo(job);
-console.log('Video render edildi:');
+console.log('Remotion video render edildi:');
 console.log('  dosya :', result.outPath);
 console.log('  süre  :', result.duration.toFixed(2), 'sn');
 console.log('  boyut :', `${result.width}x${result.height}`);
-console.log('  klip  :', result.clips, 'parça');
-
-process.exit(0);
+console.log('  sahne :', result.clips);
+console.log('  plan  :', result.productionSpecPath);
