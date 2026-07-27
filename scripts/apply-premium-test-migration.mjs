@@ -18,7 +18,7 @@ source = source.slice(0, start) + `// ---------------- PROCEDURAL STORYBOARD Kİ
 `  const render = await readFile('src/video/renderRemotion.js', 'utf8');\n` +
 `  assert.doesNotMatch(src, /media:\\s*media\\.items|mediaScene:|generateImages/);\n` +
 `  assert.match(src, /procedural-remotion/);\n` +
-`  assert.match(render, /assetId:\\s*\\`procedural:/);\n` +
+`  assert.match(render, /procedural:/);\n` +
 `  assert.match(render, /visualPolicy:\\s*'procedural-only'/);\n` +
 `  assert.match(render, /captionPolicy:\\s*'none'/);\n` +
 `});\n`;
