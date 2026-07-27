@@ -1,0 +1,1 @@
+The validation workflow has `contents: read`, receives no YouTube or Meta credentials, runs no upload command, and writes only GitHub Actions artifacts. Live publication remains controlled by the existing upload policy and publish gates.
