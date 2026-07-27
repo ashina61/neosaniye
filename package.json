@@ -1,11 +1,11 @@
 {
   "name": "neosaniye",
-  "version": "0.1.0",
-  "description": "Otomatik faceless YouTube Shorts üretim ve yayınlama pipeline'ı",
-  "type": "module",
+  "version": "1.0.0",
   "private": true,
+  "type": "module",
+  "description": "Remotion tabanlı otomatik NeoSaniye Shorts üretim ve yayınlama sistemi",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
     "produce": "node scripts/generate-and-publish.js",
@@ -16,18 +16,16 @@
     "media": "node scripts/fetch-media.js",
     "video": "node scripts/render-video.js",
     "test": "node --test",
+    "test:remotion": "node --test test/remotionSpec.test.js test/remotionOnly.test.js",
+    "check": "npm test && npm run remotion:typecheck",
     "upload": "node scripts/upload-youtube.js",
     "youtube:auth": "node scripts/youtube-auth.js",
-    "music": "node scripts/fetch-music.js",
     "audio:import": "node scripts/audio-import.js",
     "audio:import:dry": "node scripts/audio-import.js --dry-run",
-    "motion:sfx": "node scripts/motion-sfx-gen.js",
-    "motion:preview": "node scripts/motion-preview.js",
-    "motion:debug-safe-area": "node scripts/motion-preview.js --debug-safe-area",
-    "motion:rollout-report": "node scripts/motion-rollout-report.js",
+    "remotion:install": "npm install --prefix remotion --no-audit --no-fund",
+    "remotion:studio": "npm --prefix remotion run studio",
     "remotion:typecheck": "npm --prefix remotion run typecheck",
-    "remotion:fixture": "npm --prefix remotion run render:fixture",
-    "bee:regression": "node scripts/bee-regression.js"
+    "remotion:fixture": "npm --prefix remotion run render:fixture"
   },
   "dependencies": {
     "@google/genai": "^1.0.0",
