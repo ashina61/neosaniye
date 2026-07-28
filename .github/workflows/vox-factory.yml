@@ -35,7 +35,7 @@ on:
       image_providers:
         description: Image provider fallback order
         required: true
-        default: gemini,pollinations,cloudflare,together,huggingface
+        default: gemini,openai,bfl,stability,pollinations,cloudflare,together
         type: string
 
 permissions:
@@ -65,16 +65,22 @@ jobs:
       MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
       GITHUB_MODELS_TOKEN: ${{ github.token }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      BFL_API_KEY: ${{ secrets.BFL_API_KEY }}
+      FLUX_API_KEY: ${{ secrets.FLUX_API_KEY }}
+      STABILITY_API_KEY: ${{ secrets.STABILITY_API_KEY }}
       POLLINATIONS_API_KEY: ${{ secrets.POLLINATIONS_API_KEY }}
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || vars.CLOUDFLARE_ACCOUNT_ID }}
       TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
-      HUGGINGFACE_API_KEY: ${{ secrets.HUGGINGFACE_API_KEY }}
-      HF_TOKEN: ${{ secrets.HF_TOKEN }}
       GEMINI_TEXT_MODEL: ${{ vars.GEMINI_TEXT_MODEL || 'gemini-3.5-flash-lite' }}
       GEMINI_IMAGE_MODEL: ${{ vars.GEMINI_IMAGE_MODEL || 'gemini-3.1-flash-image' }}
       GEMINI_IMAGE_SIZE: ${{ vars.GEMINI_IMAGE_SIZE || '1K' }}
       GITHUB_MODELS_MODEL: ${{ vars.GITHUB_MODELS_MODEL || 'openai/gpt-4o' }}
+      OPENAI_IMAGE_MODEL: ${{ vars.OPENAI_IMAGE_MODEL || 'gpt-image-1.5' }}
+      OPENAI_IMAGE_QUALITY: ${{ vars.OPENAI_IMAGE_QUALITY || 'medium' }}
+      BFL_IMAGE_MODEL: ${{ vars.BFL_IMAGE_MODEL || 'flux-2-pro' }}
+      STABILITY_IMAGE_MODEL: ${{ vars.STABILITY_IMAGE_MODEL || 'core' }}
 
     steps:
       - name: Checkout
