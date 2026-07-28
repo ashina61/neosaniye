@@ -39,7 +39,8 @@ async function request(url, options = {}, attempts = 2) {
       throw error;
     } catch (error) {
       lastError = error;
-      const status = Number(error?.status || String(error?.message || '').match(/HTTP\s+(\d{3})/)?[1] || 0);
+      const match = String(error?.message || '').match(/HTTP\s+(\d{3})/);
+      const status = Number(error?.status || (match ? match[1] : 0) || 0);
       const retryable = !status || status === 429 || status >= 500;
       if (!retryable || attempt >= attempts) throw error;
       await sleep(3000 * attempt);
@@ -52,7 +53,7 @@ async function request(url, options = {}, attempts = 2) {
 
 function jsonObject(text) {
   const source = String(text || '').replace(/```(?:json)?/gi, '').replace(/```/g, '').trim();
-  const start = source.indexOf('{');
+  const start = source.indexOf('{}');
   const end = source.lastIndexOf('}');
   if (start < 0 || end <= start) throw new Error(`Provider did not return JSON: ${source.slice(0, 500)}`);
   return JSON.parse(source.slice(start, end + 1));
@@ -198,7 +199,7 @@ const storyProviders = {
     apiKey: secret('OPENROUTER_API_KEY'),
     model: process.env.OPENROUTER_MODEL || 'openrouter/free',
     prompt,
-    headers: {'HTTP-Referer': 'https://github.com/ashina61/neosaniye', 'X-Title': 'NeoSaniye'},
+    headers: {'HTTP-Referer': 'https://github.com/ashina61/neosanie', 'X-Title': 'NeoSaniye'},
   }),
 };
 
