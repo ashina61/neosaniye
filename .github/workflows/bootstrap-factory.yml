@@ -1,0 +1,106 @@
+name: Bootstrap NeoSaniye Factory
+
+on:
+  push:
+    branches:
+      - claude/youtube-shorts-automation-9dbrjx
+    paths:
+      - '.bootstrap/**'
+      - '.github/workflows/bootstrap-factory.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: neosaniye-bootstrap
+  cancel-in-progress: false
+
+jobs:
+  install-test-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    env:
+      YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+      YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+      YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+      YOUTUBE_CATEGORY_ID: ${{ vars.YOUTUBE_CATEGORY_ID || '27' }}
+      YOUTUBE_PRIVACY: ${{ vars.YOUTUBE_PRIVACY || 'public' }}
+      META_PAGE_TOKEN: ${{ secrets.META_PAGE_TOKEN || secrets.META_ACCESS_TOKEN }}
+      META_PAGE_ID: ${{ secrets.META_PAGE_ID || vars.META_PAGE_ID }}
+      META_IG_USER_ID: ${{ secrets.META_IG_USER_ID || vars.META_IG_USER_ID }}
+      META_GRAPH_VERSION: ${{ vars.META_GRAPH_VERSION || 'v25.0' }}
+      SCHEDULE_SLOT: slot-1
+      UPLOAD_ENABLED: 'true'
+
+    steps:
+      - name: Checkout staged archive
+        uses: actions/checkout@v4
+        with:
+          ref: claude/youtube-shorts-automation-9dbrjx
+          fetch-depth: 1
+
+      - name: Install clean factory tree
+        run: |
+          cat .bootstrap/factory.part-* | base64 --decode > /tmp/neosaniye-factory.tar.gz
+          echo 'eb57cbb8312d2bd3f78c3d17ae66697a9eb8b125065d5447c2c525153223fde1  /tmp/neosaniye-factory.tar.gz' | sha256sum --check
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          tar -xzf /tmp/neosaniye-factory.tar.gz -C .
+          test -f .github/workflows/daily-shorts.yml
+          test -f scripts/upload.mjs
+          test -f src/NeoSaniyeShort.tsx
+
+      - name: Persist clean automated factory
+        run: |
+          git config user.name 'neosaniye-bot'
+          git config user.email 'neosaniye-bot@users.noreply.github.com'
+          git add -A
+          git commit -m 'Build three-slot automated Remotion publishing factory'
+          git push origin HEAD:claude/youtube-shorts-automation-9dbrjx
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install render dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg
+          npm install --no-audit --no-fund
+          python -m pip install --disable-pip-version-check edge-tts==7.2.7
+
+      - name: Build and verify real English Short
+        run: npm run build:short
+
+      - name: Upload to YouTube Facebook and Instagram
+        run: npm run upload
+
+      - name: Persist successful topic history
+        if: success()
+        run: |
+          if git diff --quiet -- data/published.json; then
+            exit 0
+          fi
+          git add data/published.json
+          git commit -m 'chore: record bootstrap publication [skip factory]'
+          git push origin HEAD:claude/youtube-shorts-automation-9dbrjx
+
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: neosaniye-bootstrap-test
+          path: |
+            out/neosaniye-short.mp4
+            out/manifest.json
+            out/verification.json
+            out/upload-report.json
+            public/audio/voice.srt
+            public/audio/narration.txt
+          if-no-files-found: warn
+          retention-days: 7
