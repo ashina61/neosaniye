@@ -104,3 +104,5 @@ jobs:
             public/audio/narration.txt
           if-no-files-found: warn
           retention-days: 7
+
+# Triggered after the workflow existed on the default branch.
