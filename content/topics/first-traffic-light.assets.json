@@ -1,0 +1,46 @@
+{
+  "topic": "first-traffic-light",
+  "artDirection": "Editorial historical-documentary collage, Victorian paper ephemera, halftone print shading, restrained mustard, muted cyan, warm paper and charcoal palette, clean silhouettes, no text, no logos, no watermark.",
+  "assets": [
+    {
+      "id": "westminster-street-1868",
+      "role": "background",
+      "aspectRatio": "9:16",
+      "transparent": false,
+      "layer": "background",
+      "prompt": "A wide vertical view of the street outside the Houses of Parliament in London in 1868, horse-drawn carriages crossing a busy Victorian road, foggy atmosphere, Parliament architecture readable but not photorealistic, editorial historical collage, empty central corridor for animation layering, no traffic signal, no text.",
+      "negativePrompt": "modern cars, electric traffic lights, contemporary clothing, readable text, watermark, logo, cinematic movie poster, neon colors",
+      "animationIntent": ["slow-camera-push", "background-parallax", "paper-reveal"]
+    },
+    {
+      "id": "victorian-police-officer",
+      "role": "hero-cutout",
+      "aspectRatio": "4:5",
+      "transparent": true,
+      "layer": "foreground",
+      "prompt": "Full-body Victorian London police officer from 1868 standing in a practical operating pose, one arm reaching toward a mechanical lever, black-and-white engraved newspaper cutout with halftone shading, bold clean outer silhouette, feet fully visible, isolated subject, no background, no text.",
+      "negativePrompt": "modern police uniform, firearm, cropped feet, extra fingers, background scenery, text, watermark, logo, realistic color photograph",
+      "animationIntent": ["anchored-parallax", "spring-entrance", "subtle-boil", "generated-shadow"]
+    },
+    {
+      "id": "gas-semaphore-signal",
+      "role": "hero-cutout",
+      "aspectRatio": "4:5",
+      "transparent": true,
+      "layer": "midground",
+      "prompt": "The first 1868 London street crossing signal as a tall Victorian railway-style semaphore mechanism, two movable arms and a gas lantern housing, historically plausible mechanical construction, editorial museum illustration, isolated object, strong clean silhouette, no background, no text.",
+      "negativePrompt": "modern three-light traffic signal, electronic display, cars, people, background, readable text, watermark, logo, steampunk fantasy excess",
+      "animationIntent": ["arm-rotation", "weld-detach-push-through", "lamp-sway", "match-object-transition"]
+    },
+    {
+      "id": "gas-smoke-plume",
+      "role": "effect-overlay",
+      "aspectRatio": "1:1",
+      "transparent": true,
+      "layer": "overlay",
+      "prompt": "A single stylized Victorian gas leak smoke plume, dark gray engraved ink and paper texture, narrow anchored base expanding into soft curling smoke, isolated effect element, transparent background, no flames, no text.",
+      "negativePrompt": "full explosion, fireball, scenery, person, object, black background, text, watermark, logo",
+      "animationIntent": ["anchor-to-lantern", "mask-reveal", "opacity-pulse", "distortion"]
+    }
+  ]
+}
