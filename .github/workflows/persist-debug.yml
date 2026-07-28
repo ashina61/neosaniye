@@ -29,6 +29,7 @@ jobs:
           echo 'eb57cbb8312d2bd3f78c3d17ae66697a9eb8b125065d5447c2c525153223fde1  /tmp/neosaniye-factory.tar.gz' | sha256sum --check
           find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
           tar -xzf /tmp/neosaniye-factory.tar.gz -C .
+          rm -rf .github
           git checkout HEAD -- .github .bootstrap-trigger .persist-trigger
 
       - name: Commit and diagnose push
