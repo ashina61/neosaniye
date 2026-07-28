@@ -2,11 +2,13 @@
   "name": "neosaniye-remotion",
   "version": "1.0.0",
   "private": true,
-  "description": "NeoSaniye için sıfırdan Remotion video projesi",
+  "description": "NeoSaniye Remotion Shorts factory",
   "scripts": {
     "start": "remotion studio src/index.ts",
+    "audio": "python scripts/generate-audio.py",
     "typecheck": "tsc --noEmit",
-    "render": "remotion render src/index.ts NeoSaniyeShort out/neosaniye-short.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p"
+    "render": "remotion render src/index.ts NeoSaniyeVenus out/neosaniye-venus.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p",
+    "build:short": "npm run audio && npm run typecheck && npm run render"
   },
   "dependencies": {
     "@remotion/cli": "4.0.500",
