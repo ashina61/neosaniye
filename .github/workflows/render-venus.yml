@@ -2,6 +2,9 @@ name: Render Venus Short
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - claude/youtube-shorts-automation-9dbrjx
 
 permissions:
   contents: read
