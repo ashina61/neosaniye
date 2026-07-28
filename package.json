@@ -1,14 +1,18 @@
 {
-  "name": "neosaniye-remotion",
+  "name": "neosaniye-remotion-factory",
   "version": "1.0.0",
   "private": true,
-  "description": "NeoSaniye Remotion Shorts factory",
+  "type": "module",
+  "description": "Three-slot automated English Shorts factory powered by Remotion",
   "scripts": {
     "start": "remotion studio src/index.ts",
-    "audio": "python scripts/generate-audio.py",
+    "audio": "python scripts/build-short.py",
     "typecheck": "tsc --noEmit",
-    "render": "remotion render src/index.ts NeoSaniyeVenus out/neosaniye-venus.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p",
-    "build:short": "npm run audio && npm run typecheck && npm run render"
+    "render": "remotion render src/index.ts NeoSaniyeShort out/neosaniye-short.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p",
+    "verify": "node scripts/verify.mjs",
+    "upload": "node scripts/upload.mjs",
+    "build:short": "npm run audio && npm run typecheck && npm run render && npm run verify",
+    "factory": "npm run build:short && npm run upload"
   },
   "dependencies": {
     "@remotion/cli": "4.0.500",

@@ -1,0 +1,667 @@
+[
+  {
+    "slug": "venus-day-longer-than-year",
+    "title": "A Day on Venus Is Longer Than Its Year",
+    "hook": "On Venus, the planet finishes a year before it finishes a day.",
+    "kicker": "VENUS / TIME",
+    "visual": "orbit",
+    "accent": "#ff9d36",
+    "secondary": "#68e7ff",
+    "stats": [
+      {
+        "value": "243",
+        "label": "EARTH DAYS / ROTATION"
+      },
+      {
+        "value": "225",
+        "label": "EARTH DAYS / YEAR"
+      }
+    ],
+    "narration": [
+      "A day on Venus is longer than a year on Venus.",
+      "Here, day means one full rotation on the planet's axis.",
+      "Venus needs 243 Earth days to complete that rotation.",
+      "But it circles the Sun in only 225 Earth days.",
+      "So its new year arrives before the planet finishes turning once.",
+      "Venus also spins backward, making the Sun appear to rise in the west.",
+      "From one sunrise to the next takes about 117 Earth days."
+    ],
+    "source": "NASA Science — Venus Facts",
+    "tags": [
+      "Venus",
+      "space facts",
+      "planet facts",
+      "astronomy"
+    ]
+  },
+  {
+    "slug": "moon-footprints",
+    "title": "Why Moon Footprints Can Last for Millions of Years",
+    "hook": "The Moon has no weather to erase the tracks left by Apollo astronauts.",
+    "kicker": "MOON / APOLLO",
+    "visual": "moon",
+    "accent": "#d8d7cf",
+    "secondary": "#ffd45c",
+    "stats": [
+      {
+        "value": "0",
+        "label": "WIND"
+      },
+      {
+        "value": "0",
+        "label": "RAIN"
+      }
+    ],
+    "narration": [
+      "The Apollo astronauts' tracks are still visible on the Moon.",
+      "Earth constantly reshapes its surface with wind, rain, plants, and flowing water.",
+      "The Moon has almost no atmosphere, so it has no normal weather.",
+      "That means there is no wind or rain to sweep the dust away.",
+      "Lunar Reconnaissance Orbiter images still show rover tracks decades later.",
+      "Impacts and solar particles will slowly disturb the surface over enormous timescales.",
+      "But without erosion, those marks can survive far longer than anything similar on Earth."
+    ],
+    "source": "NASA Science — Lunar Reconnaissance Orbiter",
+    "tags": [
+      "Moon",
+      "Apollo",
+      "NASA",
+      "space history"
+    ]
+  },
+  {
+    "slug": "sharks-before-dinosaurs",
+    "title": "Sharks Existed Before Dinosaurs",
+    "hook": "Sharks were already swimming in Earth's oceans hundreds of millions of years ago.",
+    "kicker": "OCEAN / EVOLUTION",
+    "visual": "ocean",
+    "accent": "#68e7ff",
+    "secondary": "#ff5b84",
+    "stats": [
+      {
+        "value": "400M+",
+        "label": "YEARS OF SHARKS"
+      },
+      {
+        "value": "230M",
+        "label": "FIRST DINOSAURS"
+      }
+    ],
+    "narration": [
+      "Sharks are older than dinosaurs by an astonishing margin.",
+      "The first shark ancestors appeared more than 400 million years ago.",
+      "Dinosaurs did not arrive until roughly 230 million years ago.",
+      "Sharks survived multiple mass extinctions that erased most species on Earth.",
+      "Their skeletons are made of cartilage, so complete fossils are rare.",
+      "Scientists reconstruct their history mostly from teeth, scales, and vertebrae.",
+      "Every modern shark carries the design of a lineage older than the dinosaurs."
+    ],
+    "source": "Smithsonian Ocean — Sharks",
+    "tags": [
+      "sharks",
+      "evolution",
+      "ocean facts",
+      "dinosaurs"
+    ]
+  },
+  {
+    "slug": "eiffel-tower-moves-in-sun",
+    "title": "The Eiffel Tower Moves in the Sun",
+    "hook": "Sunlight can make the top of the Eiffel Tower trace a circle about 15 centimeters wide.",
+    "kicker": "PARIS / ENGINEERING",
+    "visual": "tower",
+    "accent": "#ffd45c",
+    "secondary": "#ff9d36",
+    "stats": [
+      {
+        "value": "15 CM",
+        "label": "TOP MOVEMENT"
+      },
+      {
+        "value": "4",
+        "label": "IRON SIDES"
+      }
+    ],
+    "narration": [
+      "The Eiffel Tower quietly moves when the Sun heats it.",
+      "Iron expands as its temperature rises and contracts when it cools.",
+      "Because sunlight usually warms one side more than the others, the expansion becomes uneven.",
+      "The tower then leans slightly away from the Sun.",
+      "Across a clear day, its top can trace a small circular path.",
+      "That path can measure about 15 centimeters in diameter.",
+      "The movement is normal, tiny, and built into the structure's engineering behavior."
+    ],
+    "source": "Official Eiffel Tower website — Thermal expansion",
+    "tags": [
+      "Eiffel Tower",
+      "engineering",
+      "Paris",
+      "physics"
+    ]
+  },
+  {
+    "slug": "cleopatra-time-gap",
+    "title": "Cleopatra Lived Closer to the Moon Landing Than the Pyramids",
+    "hook": "Cleopatra is separated from Apollo 11 by less time than from the Great Pyramid.",
+    "kicker": "HISTORY / TIME",
+    "visual": "timeline",
+    "accent": "#ffd45c",
+    "secondary": "#68e7ff",
+    "stats": [
+      {
+        "value": "~2,500",
+        "label": "YEARS TO PYRAMID"
+      },
+      {
+        "value": "~2,000",
+        "label": "YEARS TO APOLLO 11"
+      }
+    ],
+    "narration": [
+      "Cleopatra lived closer to the Moon landing than to the building of the Great Pyramid.",
+      "The Great Pyramid of Giza was completed around 2560 BCE.",
+      "Cleopatra ruled Egypt in the first century BCE and died in 30 BCE.",
+      "Apollo 11 landed on the Moon in 1969.",
+      "That places Cleopatra roughly 2,500 years after the pyramid.",
+      "But only about 2,000 years before the Moon landing.",
+      "Ancient Egypt lasted so long that its own famous eras were separated by millennia."
+    ],
+    "source": "Historical chronology — Giza, Cleopatra VII, Apollo 11",
+    "tags": [
+      "Cleopatra",
+      "ancient Egypt",
+      "history facts",
+      "Apollo 11"
+    ]
+  },
+  {
+    "slug": "octopus-three-hearts",
+    "title": "An Octopus Has Three Hearts",
+    "hook": "An octopus runs three hearts and blue blood through one body.",
+    "kicker": "OCEAN / BIOLOGY",
+    "visual": "octopus",
+    "accent": "#ff5b84",
+    "secondary": "#68e7ff",
+    "stats": [
+      {
+        "value": "3",
+        "label": "HEARTS"
+      },
+      {
+        "value": "BLUE",
+        "label": "COPPER-BASED BLOOD"
+      }
+    ],
+    "narration": [
+      "An octopus has three hearts and blood that appears blue.",
+      "Two hearts pump blood through the gills, where oxygen is collected.",
+      "A third heart sends oxygenated blood around the rest of the body.",
+      "The blood uses a copper-rich protein called hemocyanin instead of iron-rich hemoglobin.",
+      "Hemocyanin works well in cold, low-oxygen seawater.",
+      "The main heart can even stop beating while the octopus swims.",
+      "That is one reason octopuses often prefer crawling to long-distance swimming."
+    ],
+    "source": "Smithsonian Ocean — Octopus biology",
+    "tags": [
+      "octopus",
+      "ocean biology",
+      "animal facts",
+      "science"
+    ]
+  },
+  {
+    "slug": "saturn-would-float",
+    "title": "Saturn Would Float in Water",
+    "hook": "Saturn is the only planet with an average density lower than water.",
+    "kicker": "SATURN / DENSITY",
+    "visual": "saturn",
+    "accent": "#ffd45c",
+    "secondary": "#68e7ff",
+    "stats": [
+      {
+        "value": "0.69",
+        "label": "G/CM³"
+      },
+      {
+        "value": "1.00",
+        "label": "WATER G/CM³"
+      }
+    ],
+    "narration": [
+      "Saturn would float if a bathtub large enough could somehow exist.",
+      "Floating depends on average density, not simply on size or mass.",
+      "Water has a density of about one gram per cubic centimeter.",
+      "Saturn's average density is only about 0.69.",
+      "The planet is enormous, but it is mostly hydrogen and helium.",
+      "It also has no solid surface where a spacecraft could stand.",
+      "So the solar system's second-largest planet is still less dense than water."
+    ],
+    "source": "NASA Science — Saturn Facts",
+    "tags": [
+      "Saturn",
+      "space facts",
+      "density",
+      "astronomy"
+    ]
+  },
+  {
+    "slug": "lightning-hotter-than-sun",
+    "title": "Lightning Is Hotter Than the Sun's Surface",
+    "hook": "A lightning channel can heat the air to around 30,000 degrees Celsius.",
+    "kicker": "STORM / PHYSICS",
+    "visual": "storm",
+    "accent": "#68e7ff",
+    "secondary": "#ffd45c",
+    "stats": [
+      {
+        "value": "30,000°C",
+        "label": "LIGHTNING AIR"
+      },
+      {
+        "value": "~5,500°C",
+        "label": "SUN SURFACE"
+      }
+    ],
+    "narration": [
+      "A lightning channel can become hotter than the surface of the Sun.",
+      "In a fraction of a second, it heats nearby air to around 30,000 degrees Celsius.",
+      "The visible surface of the Sun is roughly 5,500 degrees Celsius.",
+      "That extreme heating makes the air expand almost explosively.",
+      "The expansion launches a shock wave through the atmosphere.",
+      "As that wave reaches your ears, you hear thunder.",
+      "Lightning is brief, but for an instant its channel creates extraordinary heat."
+    ],
+    "source": "NOAA NESDIS — Lightning and Thunder",
+    "tags": [
+      "lightning",
+      "weather facts",
+      "physics",
+      "thunder"
+    ]
+  },
+  {
+    "slug": "space-is-silent",
+    "title": "Space Is Silent",
+    "hook": "Explosions in empty space do not make sound the way movies suggest.",
+    "kicker": "SPACE / SOUND",
+    "visual": "silence",
+    "accent": "#68e7ff",
+    "secondary": "#ff5b84",
+    "stats": [
+      {
+        "value": "0",
+        "label": "AIR IN VACUUM"
+      },
+      {
+        "value": "NO",
+        "label": "SOUND WAVES"
+      }
+    ],
+    "narration": [
+      "Space is silent because sound needs matter to travel through.",
+      "On Earth, sound moves by vibrating air molecules from one place to another.",
+      "A near-vacuum contains too few particles to carry those vibrations normally.",
+      "That means a distant explosion in space would not send a boom to your ears.",
+      "Light, radio waves, and other electromagnetic radiation can cross the vacuum.",
+      "Astronauts still hear sounds inside spacecraft because air and solid structures carry vibrations.",
+      "Outside the vehicle, the dramatic soundtrack belongs to the movie, not the physics."
+    ],
+    "source": "NASA Space Place — Sound in space",
+    "tags": [
+      "space",
+      "sound",
+      "vacuum",
+      "physics facts"
+    ]
+  },
+  {
+    "slug": "olympus-mons",
+    "title": "Mars Has the Solar System's Largest Volcano",
+    "hook": "Olympus Mons rises more than twice as high as Mount Everest.",
+    "kicker": "MARS / VOLCANO",
+    "visual": "volcano",
+    "accent": "#ff7043",
+    "secondary": "#ffd45c",
+    "stats": [
+      {
+        "value": "~22 KM",
+        "label": "HEIGHT"
+      },
+      {
+        "value": "~600 KM",
+        "label": "WIDTH"
+      }
+    ],
+    "narration": [
+      "Mars is home to the largest known volcano in the solar system.",
+      "Olympus Mons rises roughly 22 kilometers above the surrounding plains.",
+      "That is more than twice the height of Mount Everest above sea level.",
+      "Its base stretches about 600 kilometers across.",
+      "Lower Martian gravity allowed lava to build a much larger mountain than on Earth.",
+      "The planet also lacks moving tectonic plates like ours.",
+      "So the same volcanic region could keep piling up lava for an extremely long time."
+    ],
+    "source": "NASA Science — Mars and Olympus Mons",
+    "tags": [
+      "Mars",
+      "Olympus Mons",
+      "volcano",
+      "space facts"
+    ]
+  },
+  {
+    "slug": "iss-orbits-earth-fast",
+    "title": "The ISS Circles Earth About Every 90 Minutes",
+    "hook": "Astronauts aboard the ISS can see around sixteen sunrises every day.",
+    "kicker": "ISS / ORBIT",
+    "visual": "station",
+    "accent": "#68e7ff",
+    "secondary": "#ffd45c",
+    "stats": [
+      {
+        "value": "~90 MIN",
+        "label": "ONE ORBIT"
+      },
+      {
+        "value": "~16",
+        "label": "SUNRISES PER DAY"
+      }
+    ],
+    "narration": [
+      "The International Space Station circles Earth about once every 90 minutes.",
+      "It travels at roughly 28,000 kilometers per hour.",
+      "At that speed, the station completes around sixteen orbits each day.",
+      "Every orbit carries the crew from daylight into darkness and back again.",
+      "That means astronauts can witness about sixteen sunrises and sunsets in 24 hours.",
+      "The crew still follows a carefully planned schedule based on Coordinated Universal Time.",
+      "Without that schedule, the rapid day-night cycle would make ordinary timekeeping chaotic."
+    ],
+    "source": "NASA — International Space Station facts",
+    "tags": [
+      "ISS",
+      "astronauts",
+      "space station",
+      "orbit"
+    ]
+  },
+  {
+    "slug": "neutron-star-density",
+    "title": "A Teaspoon of Neutron-Star Matter Would Weigh Billions of Tons",
+    "hook": "Neutron stars compress more mass than the Sun into a city-sized sphere.",
+    "kicker": "COSMOS / DENSITY",
+    "visual": "neutron",
+    "accent": "#b388ff",
+    "secondary": "#68e7ff",
+    "stats": [
+      {
+        "value": "~20 KM",
+        "label": "DIAMETER"
+      },
+      {
+        "value": "BILLIONS",
+        "label": "TONS / TEASPOON"
+      }
+    ],
+    "narration": [
+      "A teaspoon of neutron-star material would weigh billions of tons on Earth.",
+      "A neutron star forms when a massive star collapses after a supernova.",
+      "The collapse crushes more mass than the Sun into a sphere about the size of a city.",
+      "Atoms are squeezed so hard that protons and electrons combine into neutrons.",
+      "The result is matter with almost unimaginable density.",
+      "Neutron stars can also spin hundreds of times each second.",
+      "They are small on a cosmic scale, but among the most extreme objects in the universe."
+    ],
+    "source": "NASA Science — Neutron Stars",
+    "tags": [
+      "neutron star",
+      "space facts",
+      "supernova",
+      "astronomy"
+    ]
+  },
+  {
+    "slug": "antarctica-largest-desert",
+    "title": "Antarctica Is the World's Largest Desert",
+    "hook": "A desert is defined by precipitation, not by heat.",
+    "kicker": "EARTH / CLIMATE",
+    "visual": "ice",
+    "accent": "#d9f5ff",
+    "secondary": "#68e7ff",
+    "stats": [
+      {
+        "value": "14M KM²",
+        "label": "AREA"
+      },
+      {
+        "value": "DESERT",
+        "label": "VERY LOW PRECIPITATION"
+      }
+    ],
+    "narration": [
+      "Antarctica is the largest desert on Earth.",
+      "Deserts are defined by how little precipitation they receive, not by temperature.",
+      "Most of Antarctica is extremely cold, but it is also extraordinarily dry.",
+      "The continent covers about 14 million square kilometers.",
+      "Some interior regions receive less precipitation than many hot deserts.",
+      "Snow that does fall can remain for centuries because melting is so limited.",
+      "So the planet's biggest desert is covered in ice rather than sand."
+    ],
+    "source": "National Snow and Ice Data Center — Antarctica",
+    "tags": [
+      "Antarctica",
+      "desert",
+      "climate facts",
+      "Earth"
+    ]
+  },
+  {
+    "slug": "great-wall-moon-myth",
+    "title": "The Great Wall Is Not Visible From the Moon",
+    "hook": "One of the world's most repeated space facts is wrong.",
+    "kicker": "EARTH / MYTH",
+    "visual": "wall",
+    "accent": "#ffd45c",
+    "secondary": "#68e7ff",
+    "stats": [
+      {
+        "value": "NO",
+        "label": "NAKED-EYE VIEW FROM MOON"
+      },
+      {
+        "value": "YES",
+        "label": "SOME CITIES FROM LOW ORBIT"
+      }
+    ],
+    "narration": [
+      "The Great Wall of China is not visible from the Moon with the naked eye.",
+      "It is long, but it is also narrow and blends into the surrounding landscape.",
+      "From low Earth orbit, astronauts may spot parts of it only under favorable conditions.",
+      "Roads, airports, cities, and illuminated coastlines are often easier to identify.",
+      "The Moon is hundreds of thousands of kilometers farther away than low orbit.",
+      "At that distance, individual human structures vanish into Earth's surface patterns.",
+      "The famous claim survives because length sounds impressive, but visibility depends on width and contrast."
+    ],
+    "source": "NASA — Great Wall visibility myth",
+    "tags": [
+      "Great Wall",
+      "space myths",
+      "Earth from space",
+      "facts"
+    ]
+  },
+  {
+    "slug": "bananas-radioactive",
+    "title": "Bananas Are Slightly Radioactive",
+    "hook": "The potassium inside a banana includes a tiny amount of a radioactive isotope.",
+    "kicker": "FOOD / RADIATION",
+    "visual": "radiation",
+    "accent": "#ffd54f",
+    "secondary": "#8bc34a",
+    "stats": [
+      {
+        "value": "K-40",
+        "label": "RADIOACTIVE ISOTOPE"
+      },
+      {
+        "value": "TINY",
+        "label": "DOSE"
+      }
+    ],
+    "narration": [
+      "Bananas are slightly radioactive, but they are completely safe to eat.",
+      "They contain potassium, an essential element used by cells throughout your body.",
+      "A tiny fraction of natural potassium is the radioactive isotope potassium-40.",
+      "That isotope decays slowly and produces a very small amount of radiation.",
+      "Your body carefully regulates its potassium level, removing excess through normal processes.",
+      "The dose from one banana is far below anything dangerous.",
+      "The fact is useful mainly because it makes invisible background radiation easier to imagine."
+    ],
+    "source": "U.S. Environmental Protection Agency — Natural radiation",
+    "tags": [
+      "banana",
+      "radiation",
+      "science facts",
+      "potassium"
+    ]
+  },
+  {
+    "slug": "mercury-solar-day",
+    "title": "One Day on Mercury Lasts Two Mercury Years",
+    "hook": "From sunrise to sunrise, Mercury waits 176 Earth days.",
+    "kicker": "MERCURY / TIME",
+    "visual": "mercury",
+    "accent": "#b0bec5",
+    "secondary": "#ffd45c",
+    "stats": [
+      {
+        "value": "176",
+        "label": "EARTH DAYS / SOLAR DAY"
+      },
+      {
+        "value": "88",
+        "label": "EARTH DAYS / YEAR"
+      }
+    ],
+    "narration": [
+      "One sunrise-to-sunrise day on Mercury lasts two Mercury years.",
+      "Mercury completes one orbit around the Sun in just 88 Earth days.",
+      "But the planet rotates slowly while racing around that orbit.",
+      "The combination makes its solar day last 176 Earth days.",
+      "That is exactly twice the length of its year.",
+      "Mercury also experiences enormous temperature swings between daylight and darkness.",
+      "On the closest planet to the Sun, the calendar moves faster than the sky."
+    ],
+    "source": "NASA Science — Mercury Facts",
+    "tags": [
+      "Mercury",
+      "space facts",
+      "planet time",
+      "astronomy"
+    ]
+  },
+  {
+    "slug": "earth-core-hot",
+    "title": "Earth's Inner Core Is About as Hot as the Sun's Surface",
+    "hook": "Thousands of kilometers below your feet, iron sits near solar-surface temperatures.",
+    "kicker": "EARTH / CORE",
+    "visual": "core",
+    "accent": "#ff7043",
+    "secondary": "#ffd45c",
+    "stats": [
+      {
+        "value": "~5,500°C",
+        "label": "INNER CORE"
+      },
+      {
+        "value": "~5,500°C",
+        "label": "SUN SURFACE"
+      }
+    ],
+    "narration": [
+      "Earth's inner core is roughly as hot as the visible surface of the Sun.",
+      "Scientists estimate temperatures near 5,500 degrees Celsius.",
+      "The core stays solid because the pressure is millions of times greater than at the surface.",
+      "It is made mostly of iron and nickel.",
+      "Heat escapes slowly through the liquid outer core and the rocky mantle.",
+      "Motion in the outer core helps generate Earth's magnetic field.",
+      "So the compass in your hand depends on a churning metal ocean deep beneath the planet."
+    ],
+    "source": "USGS and geophysics references — Earth's core",
+    "tags": [
+      "Earth core",
+      "geology",
+      "Sun",
+      "science facts"
+    ]
+  },
+  {
+    "slug": "blue-whale-heart",
+    "title": "A Blue Whale's Heart Can Weigh About 180 Kilograms",
+    "hook": "The largest animal alive carries a heart roughly the size of a small motorcycle.",
+    "kicker": "OCEAN / SCALE",
+    "visual": "whale",
+    "accent": "#68e7ff",
+    "secondary": "#ff5b84",
+    "stats": [
+      {
+        "value": "~180 KG",
+        "label": "HEART MASS"
+      },
+      {
+        "value": "30 M",
+        "label": "BODY LENGTH"
+      }
+    ],
+    "narration": [
+      "A blue whale's heart can weigh around 180 kilograms.",
+      "Blue whales are the largest animals known to have lived on Earth.",
+      "An adult can reach about 30 meters in length.",
+      "Its giant heart must push blood through an enormous body.",
+      "During a deep dive, the whale's heartbeat can slow dramatically.",
+      "Near the surface, it speeds up as the animal breathes and restores oxygen.",
+      "Even at this scale, the same basic rhythm keeps every tissue alive."
+    ],
+    "source": "Smithsonian and marine biology references — Blue whales",
+    "tags": [
+      "blue whale",
+      "animal facts",
+      "ocean",
+      "biology"
+    ]
+  },
+  {
+    "slug": "earth-not-perfect-sphere",
+    "title": "Earth Is Not a Perfect Sphere",
+    "hook": "Our planet is slightly wider around the equator than from pole to pole.",
+    "kicker": "EARTH / SHAPE",
+    "visual": "earth",
+    "accent": "#68e7ff",
+    "secondary": "#8bc34a",
+    "stats": [
+      {
+        "value": "43 KM",
+        "label": "DIAMETER DIFFERENCE"
+      },
+      {
+        "value": "OBLATE",
+        "label": "SPHEROID"
+      }
+    ],
+    "narration": [
+      "Earth is not a perfect sphere.",
+      "Its rotation creates a slight bulge around the equator.",
+      "That makes the equatorial diameter about 43 kilometers larger than the polar diameter.",
+      "The technical shape is called an oblate spheroid.",
+      "Mountains, ocean trenches, and uneven gravity make the real shape even more complicated.",
+      "Scientists use a model called the geoid to describe that irregular surface.",
+      "From space Earth looks round, but precision reveals a planet subtly reshaped by its spin."
+    ],
+    "source": "NASA Earth science — Shape of Earth",
+    "tags": [
+      "Earth",
+      "planet facts",
+      "geography",
+      "science"
+    ]
+  }
+]

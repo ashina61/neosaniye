@@ -1,8 +1,6 @@
 node_modules/
 out/
-public/audio/*.mp3
-public/audio/*.wav
-public/audio/*.srt
+public/audio/
 .env
 .env.*
 .DS_Store
