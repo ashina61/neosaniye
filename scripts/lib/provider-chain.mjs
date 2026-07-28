@@ -29,6 +29,7 @@ async function request(url, options = {}, attempts = 2) {
 
       const body = await response.text();
       const error = new Error(`HTTP ${response.status}: ${body.slice(0, 1400)}`);
+      error.status = response.status;
       const retryable = response.status === 429 || response.status >= 500;
       if (retryable && attempt < attempts) {
         await sleep(retryDelay(response, body));
@@ -94,26 +95,25 @@ function geminiText(payload) {
   throw new Error(`Gemini response contained no text: ${JSON.stringify(payload).slice(0, 600)}`);
 }
 
-function geminiImage(payload) {
+function imageBase64(payload) {
   if (typeof payload?.output_image?.data === 'string') return payload.output_image.data;
 
-  const imageBlock = walk(payload, (value) => Boolean(
+  const block = walk(payload, (value) => Boolean(
     value &&
     typeof value === 'object' &&
-    value.type === 'image' &&
-    typeof value.data === 'string',
+    (
+      typeof value?.b64_json === 'string' ||
+      typeof value?.inlineData?.data === 'string' ||
+      typeof value?.inline_data?.data === 'string' ||
+      (value.type === 'image' && typeof value.data === 'string')
+    ),
   ));
-  if (imageBlock?.data) return imageBlock.data;
+  if (block?.b64_json) return block.b64_json;
+  if (block?.inlineData?.data) return block.inlineData.data;
+  if (block?.inline_data?.data) return block.inline_data.data;
+  if (block?.data) return block.data;
 
-  const inlineBlock = walk(payload, (value) => Boolean(
-    value &&
-    typeof value === 'object' &&
-    (typeof value?.inlineData?.data === 'string' || typeof value?.inline_data?.data === 'string'),
-  ));
-  if (inlineBlock?.inlineData?.data) return inlineBlock.inlineData.data;
-  if (inlineBlock?.inline_data?.data) return inlineBlock.inline_data.data;
-
-  throw new Error(`Gemini response contained no image: ${JSON.stringify(payload).slice(0, 600)}`);
+  throw new Error(`Provider response contained no image data: ${JSON.stringify(payload).slice(0, 600)}`);
 }
 
 async function openAiText({url, apiKey, model, prompt, headers = {}}) {
@@ -228,7 +228,17 @@ export async function generateStoryJson(prompt, validate) {
 }
 
 function dimensions(aspectRatio) {
-  return ({'9:16': {width: 768, height: 1344}, '4:5': {width: 1024, height: 1280}, '1:1': {width: 1024, height: 1024}})[aspectRatio] || {width: 768, height: 1344};
+  return ({
+    '9:16': {width: 768, height: 1344},
+    '4:5': {width: 1024, height: 1280},
+    '1:1': {width: 1024, height: 1024},
+  })[aspectRatio] || {width: 768, height: 1344};
+}
+
+function openAiSize(aspectRatio) {
+  if (['9:16', '4:5'].includes(aspectRatio)) return '1024x1536';
+  if (aspectRatio === '3:2') return '1536x1024';
+  return '1024x1024';
 }
 
 const imageProviders = {
@@ -253,18 +263,106 @@ const imageProviders = {
         },
       }),
     }, 1);
-    return {buffer: Buffer.from(geminiImage(await response.json()), 'base64'), extension: 'jpg', model};
+    return {buffer: Buffer.from(imageBase64(await response.json()), 'base64'), extension: 'jpg', model};
   },
+
+  openai: async ({prompt, aspectRatio}) => {
+    const apiKey = secret('OPENAI_API_KEY');
+    if (!apiKey) throw new Error('secret-not-configured');
+    const model = process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1.5';
+    const response = await request('https://api.openai.com/v1/images/generations', {
+      method: 'POST',
+      headers: {authorization: `Bearer ${apiKey}`, 'content-type': 'application/json'},
+      body: JSON.stringify({
+        model,
+        prompt,
+        size: openAiSize(aspectRatio),
+        quality: process.env.OPENAI_IMAGE_QUALITY || 'medium',
+        background: 'opaque',
+        output_format: 'png',
+        n: 1,
+      }),
+    }, 1);
+    return {buffer: Buffer.from(imageBase64(await response.json()), 'base64'), extension: 'png', model};
+  },
+
+  bfl: async ({prompt, aspectRatio}) => {
+    const apiKey = secret('BFL_API_KEY', 'FLUX_API_KEY');
+    if (!apiKey) throw new Error('secret-not-configured');
+    const model = process.env.BFL_IMAGE_MODEL || 'flux-2-pro';
+    const {width, height} = dimensions(aspectRatio);
+    const response = await request(`https://api.bfl.ai/v1/${model}`, {
+      method: 'POST',
+      headers: {'x-key': apiKey, accept: 'application/json', 'content-type': 'application/json'},
+      body: JSON.stringify({
+        prompt,
+        width,
+        height,
+        output_format: 'png',
+        prompt_upsampling: false,
+        safety_tolerance: 2,
+      }),
+    }, 1);
+    const submitted = await response.json();
+    if (!submitted?.polling_url) throw new Error(`BFL returned no polling URL: ${JSON.stringify(submitted).slice(0, 500)}`);
+
+    for (let attempt = 0; attempt < 120; attempt += 1) {
+      await sleep(attempt < 10 ? 1000 : 2000);
+      const poll = await request(submitted.polling_url, {
+        headers: {'x-key': apiKey, accept: 'application/json'},
+      }, 1);
+      const result = await poll.json();
+      if (result.status === 'Ready' && result.result?.sample) {
+        const image = await request(result.result.sample, {}, 2);
+        return {buffer: Buffer.from(await image.arrayBuffer()), extension: 'png', model};
+      }
+      if (['Error', 'Failed', 'Request Moderated'].includes(result.status)) {
+        throw new Error(`BFL failed: ${JSON.stringify(result).slice(0, 800)}`);
+      }
+    }
+    throw new Error('BFL generation timed out.');
+  },
+
+  stability: async ({prompt, aspectRatio}) => {
+    const apiKey = secret('STABILITY_API_KEY');
+    if (!apiKey) throw new Error('secret-not-configured');
+    const model = process.env.STABILITY_IMAGE_MODEL || 'core';
+    const endpoint = model === 'ultra' ? 'ultra' : 'core';
+    const form = new FormData();
+    form.append('prompt', prompt);
+    form.append('aspect_ratio', aspectRatio);
+    form.append('negative_prompt', 'readable text, logo, watermark, modern UI, glossy 3D, neon, anime, childish cartoon');
+    form.append('output_format', 'png');
+    form.append('style_preset', 'digital-art');
+    const response = await request(`https://api.stability.ai/v2beta/stable-image/generate/${endpoint}`, {
+      method: 'POST',
+      headers: {authorization: `Bearer ${apiKey}`, accept: 'image/*'},
+      body: form,
+    }, 1);
+    return {buffer: Buffer.from(await response.arrayBuffer()), extension: 'png', model};
+  },
+
   pollinations: async ({prompt, aspectRatio, seed}) => {
     const apiKey = secret('POLLINATIONS_API_KEY');
     if (!apiKey) throw new Error('secret-not-configured');
     const {width, height} = dimensions(aspectRatio);
-    const params = new URLSearchParams({model: process.env.POLLINATIONS_IMAGE_MODEL || 'flux', width: String(width), height: String(height), seed: String(seed), nologo: 'true'});
+    const params = new URLSearchParams({
+      model: process.env.POLLINATIONS_IMAGE_MODEL || 'flux',
+      width: String(width),
+      height: String(height),
+      seed: String(seed),
+      nologo: 'true',
+    });
     const response = await request(`https://gen.pollinations.ai/image/${encodeURIComponent(prompt)}?${params}`, {
       headers: {authorization: `Bearer ${apiKey}`, accept: 'image/*'},
     }, 1);
-    return {buffer: Buffer.from(await response.arrayBuffer()), extension: (response.headers.get('content-type') || '').includes('png') ? 'png' : 'jpg', model: process.env.POLLINATIONS_IMAGE_MODEL || 'flux'};
+    return {
+      buffer: Buffer.from(await response.arrayBuffer()),
+      extension: (response.headers.get('content-type') || '').includes('png') ? 'png' : 'jpg',
+      model: process.env.POLLINATIONS_IMAGE_MODEL || 'flux',
+    };
   },
+
   cloudflare: async ({prompt, aspectRatio, seed}) => {
     const apiKey = secret('CLOUDFLARE_API_TOKEN');
     const accountId = secret('CLOUDFLARE_ACCOUNT_ID');
@@ -272,43 +370,34 @@ const imageProviders = {
     const {width, height} = dimensions(aspectRatio);
     const model = process.env.CLOUDFLARE_IMAGE_MODEL || '@cf/black-forest-labs/flux-1-schnell';
     const response = await request(`https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${model}`, {
-      method: 'POST', headers: {authorization: `Bearer ${apiKey}`, 'content-type': 'application/json'}, body: JSON.stringify({prompt, width, height, seed}),
+      method: 'POST',
+      headers: {authorization: `Bearer ${apiKey}`, 'content-type': 'application/json'},
+      body: JSON.stringify({prompt, width, height, seed}),
     }, 1);
     const type = response.headers.get('content-type') || '';
     if (type.includes('application/json')) {
       const data = await response.json();
-      if (!data?.result?.image) throw new Error('Cloudflare returned no image.');
-      return {buffer: Buffer.from(data.result.image, 'base64'), extension: 'png', model};
+      return {buffer: Buffer.from(imageBase64(data), 'base64'), extension: 'png', model};
     }
     return {buffer: Buffer.from(await response.arrayBuffer()), extension: type.includes('png') ? 'png' : 'jpg', model};
   },
+
   together: async ({prompt, aspectRatio, seed}) => {
     const apiKey = secret('TOGETHER_API_KEY');
     if (!apiKey) throw new Error('secret-not-configured');
     const {width, height} = dimensions(aspectRatio);
     const model = process.env.TOGETHER_IMAGE_MODEL || 'black-forest-labs/FLUX.1-schnell-Free';
     const response = await request('https://api.together.xyz/v1/images/generations', {
-      method: 'POST', headers: {authorization: `Bearer ${apiKey}`, 'content-type': 'application/json'}, body: JSON.stringify({model, prompt, width, height, seed, n: 1, response_format: 'b64_json'}),
+      method: 'POST',
+      headers: {authorization: `Bearer ${apiKey}`, 'content-type': 'application/json'},
+      body: JSON.stringify({model, prompt, width, height, seed, n: 1, response_format: 'b64_json'}),
     }, 1);
-    const data = await response.json();
-    if (!data?.data?.[0]?.b64_json) throw new Error('Together returned no image.');
-    return {buffer: Buffer.from(data.data[0].b64_json, 'base64'), extension: 'png', model};
-  },
-  huggingface: async ({prompt, aspectRatio, seed}) => {
-    const apiKey = secret('HUGGINGFACE_API_KEY', 'HF_TOKEN');
-    if (!apiKey) throw new Error('secret-not-configured');
-    const {width, height} = dimensions(aspectRatio);
-    const model = process.env.HF_IMAGE_MODEL || 'black-forest-labs/FLUX.1-schnell';
-    const response = await request(`https://router.huggingface.co/hf-inference/models/${model}`, {
-      method: 'POST', headers: {authorization: `Bearer ${apiKey}`, 'content-type': 'application/json', accept: 'image/*'}, body: JSON.stringify({inputs: prompt, parameters: {width, height, seed, num_inference_steps: 4}}),
-    }, 1);
-    const type = response.headers.get('content-type') || '';
-    return {buffer: Buffer.from(await response.arrayBuffer()), extension: type.includes('png') ? 'png' : 'jpg', model};
+    return {buffer: Buffer.from(imageBase64(await response.json()), 'base64'), extension: 'png', model};
   },
 };
 
 export async function generateImageWithFallback({prompt, styleReference, aspectRatio = '9:16', seed = 1868}) {
-  const chain = (process.env.IMAGE_PROVIDER_CHAIN || 'gemini,pollinations,cloudflare,together,huggingface')
+  const chain = (process.env.IMAGE_PROVIDER_CHAIN || 'gemini,openai,bfl,stability,pollinations,cloudflare,together')
     .split(',').map((item) => item.trim().toLowerCase()).filter(Boolean);
   const errors = [];
 
@@ -324,7 +413,7 @@ export async function generateImageWithFallback({prompt, styleReference, aspectR
       const message = error instanceof Error ? error.message : String(error);
       console.warn(`[image] provider failed: ${name}: ${message.slice(0, 500)}`);
       errors.push(`${name}: ${message.slice(0, 240)}`);
-      if (/secret-not-configured|401|403|429|quota|payment/i.test(message)) deadProviders.add(`image:${name}`);
+      if (/secret-not-configured|401|402|403|429|quota|payment/i.test(message)) deadProviders.add(`image:${name}`);
     }
   }
 
