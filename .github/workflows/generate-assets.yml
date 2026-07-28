@@ -11,7 +11,7 @@ on:
       providers:
         description: Comma-separated providers
         required: true
-        default: gemini,openai,bfl,stability
+        default: gemini,pollinations,cloudflare,together,huggingface
         type: string
       asset_ids:
         description: Optional comma-separated asset IDs; blank uses candidateTest from manifest
@@ -38,10 +38,16 @@ jobs:
     env:
       UPLOAD_ENABLED: 'false'
       ASSET_TOPIC: ${{ inputs.topic || 'first-traffic-light' }}
-      ASSET_PROVIDERS: ${{ inputs.providers || 'gemini,openai,bfl,stability' }}
+      ASSET_PROVIDERS: ${{ inputs.providers || 'gemini,pollinations,cloudflare,together,huggingface' }}
       ASSET_IDS: ${{ inputs.asset_ids || '' }}
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+      POLLINATIONS_API_KEY: ${{ secrets.POLLINATIONS_API_KEY }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
+      HUGGINGFACE_API_KEY: ${{ secrets.HUGGINGFACE_API_KEY }}
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       BFL_API_KEY: ${{ secrets.BFL_API_KEY }}
       FLUX_API_KEY: ${{ secrets.FLUX_API_KEY }}
@@ -71,8 +77,7 @@ jobs:
         run: |
           npm install --no-audit --no-fund
           python -m pip install --disable-pip-version-check pillow==11.3.0
-          sed -i "s/mime_type: 'image\/png'/mime_type: 'image\/jpeg'/" scripts/generate-assets.mjs
-          node --check scripts/generate-assets.mjs
+          node --check scripts/generate-assets-free.mjs
           python -m py_compile scripts/inspect-assets.py
 
       - name: Generate and inspect image candidates
