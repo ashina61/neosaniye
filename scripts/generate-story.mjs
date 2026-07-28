@@ -99,11 +99,17 @@ function normalize(raw, provider) {
 }
 
 async function main() {
-  const generated = await generateStoryJson(prompt());
-  const story = normalize(generated.value, generated.provider);
+  const generated = await generateStoryJson(prompt(), normalize);
+  const story = generated.value;
   await mkdir(path.dirname(output), {recursive: true});
   await writeFile(output, `${JSON.stringify(story, null, 2)}\n`, 'utf8');
-  console.log(JSON.stringify({output: path.relative(ROOT, output), provider: generated.provider, title: story.title, scenes: story.scenes.length, words: words(story.narration).length}, null, 2));
+  console.log(JSON.stringify({
+    output: path.relative(ROOT, output),
+    provider: generated.provider,
+    title: story.title,
+    scenes: story.scenes.length,
+    words: words(story.narration).length,
+  }, null, 2));
 }
 
 main().catch((error) => {
