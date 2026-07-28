@@ -1,22 +1,17 @@
+import {spawnSync} from 'node:child_process';
 import {mkdir, readFile, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
-import sharp from 'sharp';
 
 const ROOT = process.cwd();
 const topic = process.env.ASSET_TOPIC || 'first-traffic-light';
 const manifestPath = path.join(ROOT, 'content', 'assets', `${topic}.json`);
 const outputRoot = path.join(ROOT, 'out', 'asset-candidates', topic);
 const reportPath = path.join(outputRoot, 'report.json');
-const contactSheetPath = path.join(outputRoot, 'contact-sheet.png');
-const requestedProviders = (process.env.ASSET_PROVIDERS || 'gemini,openai,bfl,stability')
-  .split(',')
-  .map((value) => value.trim().toLowerCase())
-  .filter(Boolean);
-const requestedAssetIds = (process.env.ASSET_IDS || '')
-  .split(',')
-  .map((value) => value.trim())
-  .filter(Boolean);
+const providers = (process.env.ASSET_PROVIDERS || 'gemini,openai,bfl,stability')
+  .split(',').map((value) => value.trim().toLowerCase()).filter(Boolean);
+const explicitAssetIds = (process.env.ASSET_IDS || '')
+  .split(',').map((value) => value.trim()).filter(Boolean);
 const timeoutMs = Number(process.env.ASSET_REQUEST_TIMEOUT_MS || 180000);
 
 const secretAliases = {
@@ -26,14 +21,14 @@ const secretAliases = {
   stability: ['STABILITY_API_KEY'],
 };
 
-const providerModels = {
+const models = {
   gemini: process.env.GEMINI_IMAGE_MODEL || 'gemini-3.1-flash-image',
   openai: process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1.5',
   bfl: process.env.BFL_IMAGE_MODEL || 'flux-2-pro',
   stability: process.env.STABILITY_IMAGE_MODEL || 'core',
 };
 
-function getSecret(provider) {
+function secretFor(provider) {
   for (const name of secretAliases[provider] || []) {
     if (process.env[name]) return {name, value: process.env[name]};
   }
@@ -46,26 +41,20 @@ function dimensionsFor(aspectRatio, provider) {
     if (aspectRatio === '3:2') return {width: 1536, height: 1024, size: '1536x1024'};
     return {width: 1024, height: 1024, size: '1024x1024'};
   }
-  const map = {
+  return ({
     '9:16': {width: 768, height: 1344},
     '2:3': {width: 896, height: 1344},
     '3:2': {width: 1344, height: 896},
     '4:5': {width: 1024, height: 1280},
     '1:1': {width: 1024, height: 1024},
-  };
-  return map[aspectRatio] || map['1:1'];
+  })[aspectRatio] || {width: 1024, height: 1024};
 }
 
-function combinedPrompt(manifest, asset) {
-  const transparency = asset.transparent
-    ? 'Return one isolated subject on a genuinely transparent background when the model supports transparency. Keep all edges clean and do not crop any part of the subject.'
-    : 'Create a complete edge-to-edge environment image with clear foreground, middle ground and background separation for 2.5D parallax.';
-  return [
-    manifest.artDirection.prompt,
-    asset.prompt,
-    transparency,
-    `Avoid: ${manifest.artDirection.negativePrompt}.`,
-  ].join('\n\n');
+function buildPrompt(manifest, asset) {
+  const outputInstruction = asset.transparent
+    ? 'Create one isolated subject, fully visible with generous empty margin. Use a genuinely transparent background when supported. Keep edges clean and do not crop the subject.'
+    : 'Create a complete edge-to-edge environment with clearly separable foreground, middle ground and background for 2.5D parallax.';
+  return `${manifest.artDirection.prompt}\n\n${asset.prompt}\n\n${outputInstruction}\n\nAvoid: ${manifest.artDirection.negativePrompt}.`;
 }
 
 async function fetchWithTimeout(url, options = {}, attempts = 2) {
@@ -91,66 +80,52 @@ async function fetchWithTimeout(url, options = {}, attempts = 2) {
   throw lastError;
 }
 
-async function responseError(response) {
-  const text = await response.text();
-  return `HTTP ${response.status}: ${text.slice(0, 1200)}`;
+async function errorText(response) {
+  return `HTTP ${response.status}: ${(await response.text()).slice(0, 1200)}`;
 }
 
-function findBase64Image(value) {
+function locateBase64(value) {
   if (!value || typeof value !== 'object') return null;
-  if (typeof value.data === 'string' && value.data.length > 500 && (value.mime_type || value.mimeType || value.type === 'image')) {
-    return value.data;
-  }
   if (typeof value.b64_json === 'string' && value.b64_json.length > 500) return value.b64_json;
+  if (typeof value.data === 'string' && value.data.length > 500 && (value.mime_type || value.mimeType || value.type === 'image')) return value.data;
   for (const child of Object.values(value)) {
     if (Array.isArray(child)) {
       for (const item of child) {
-        const found = findBase64Image(item);
+        const found = locateBase64(item);
         if (found) return found;
       }
     } else if (child && typeof child === 'object') {
-      const found = findBase64Image(child);
+      const found = locateBase64(child);
       if (found) return found;
     }
   }
   return null;
 }
 
-async function generateGemini({prompt, aspectRatio, secret}) {
+async function gemini({prompt, aspectRatio, secret}) {
   const response = await fetchWithTimeout('https://generativelanguage.googleapis.com/v1beta/interactions', {
     method: 'POST',
-    headers: {
-      'x-goog-api-key': secret,
-      'content-type': 'application/json',
-    },
+    headers: {'x-goog-api-key': secret, 'content-type': 'application/json'},
     body: JSON.stringify({
-      model: providerModels.gemini,
+      model: models.gemini,
       input: [{type: 'text', text: prompt}],
-      response_format: {
-        type: 'image',
-        mime_type: 'image/png',
-        aspect_ratio: aspectRatio,
-        image_size: '1K',
-      },
+      response_format: {type: 'image', mime_type: 'image/png', aspect_ratio: aspectRatio, image_size: '1K'},
     }),
   });
-  if (!response.ok) throw new Error(await responseError(response));
-  const data = await response.json();
-  const encoded = data.output_image?.data || findBase64Image(data);
-  if (!encoded) throw new Error('Gemini response did not contain image data.');
+  if (!response.ok) throw new Error(await errorText(response));
+  const json = await response.json();
+  const encoded = json.output_image?.data || locateBase64(json);
+  if (!encoded) throw new Error('Gemini response did not include image data.');
   return Buffer.from(encoded, 'base64');
 }
 
-async function generateOpenAI({prompt, aspectRatio, transparent, secret}) {
+async function openai({prompt, aspectRatio, transparent, secret}) {
   const {size} = dimensionsFor(aspectRatio, 'openai');
   const response = await fetchWithTimeout('https://api.openai.com/v1/images/generations', {
     method: 'POST',
-    headers: {
-      authorization: `Bearer ${secret}`,
-      'content-type': 'application/json',
-    },
+    headers: {authorization: `Bearer ${secret}`, 'content-type': 'application/json'},
     body: JSON.stringify({
-      model: providerModels.openai,
+      model: models.openai,
       prompt,
       size,
       quality: process.env.OPENAI_IMAGE_QUALITY || 'medium',
@@ -159,55 +134,39 @@ async function generateOpenAI({prompt, aspectRatio, transparent, secret}) {
       n: 1,
     }),
   });
-  if (!response.ok) throw new Error(await responseError(response));
-  const data = await response.json();
-  const encoded = data.data?.[0]?.b64_json || findBase64Image(data);
-  if (!encoded) throw new Error('OpenAI response did not contain image data.');
+  if (!response.ok) throw new Error(await errorText(response));
+  const json = await response.json();
+  const encoded = json.data?.[0]?.b64_json || locateBase64(json);
+  if (!encoded) throw new Error('OpenAI response did not include image data.');
   return Buffer.from(encoded, 'base64');
 }
 
-async function generateBfl({prompt, aspectRatio, secret}) {
+async function bfl({prompt, aspectRatio, secret}) {
   const {width, height} = dimensionsFor(aspectRatio, 'bfl');
-  const submit = await fetchWithTimeout(`https://api.bfl.ai/v1/${providerModels.bfl}`, {
+  const response = await fetchWithTimeout(`https://api.bfl.ai/v1/${models.bfl}`, {
     method: 'POST',
-    headers: {
-      'x-key': secret,
-      accept: 'application/json',
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      prompt,
-      width,
-      height,
-      output_format: 'png',
-      prompt_upsampling: false,
-      safety_tolerance: 2,
-    }),
+    headers: {'x-key': secret, accept: 'application/json', 'content-type': 'application/json'},
+    body: JSON.stringify({prompt, width, height, output_format: 'png', prompt_upsampling: false, safety_tolerance: 2}),
   });
-  if (!submit.ok) throw new Error(await responseError(submit));
-  const submitted = await submit.json();
-  if (!submitted.polling_url) throw new Error('BFL response did not contain polling_url.');
-
-  for (let poll = 0; poll < 120; poll += 1) {
-    await new Promise((resolve) => setTimeout(resolve, poll < 10 ? 1000 : 2000));
-    const resultResponse = await fetchWithTimeout(submitted.polling_url, {
-      headers: {'x-key': secret, accept: 'application/json'},
-    }, 1);
-    if (!resultResponse.ok) throw new Error(await responseError(resultResponse));
-    const result = await resultResponse.json();
+  if (!response.ok) throw new Error(await errorText(response));
+  const submitted = await response.json();
+  if (!submitted.polling_url) throw new Error('BFL response did not include polling_url.');
+  for (let attempt = 0; attempt < 120; attempt += 1) {
+    await new Promise((resolve) => setTimeout(resolve, attempt < 10 ? 1000 : 2000));
+    const poll = await fetchWithTimeout(submitted.polling_url, {headers: {'x-key': secret, accept: 'application/json'}}, 1);
+    if (!poll.ok) throw new Error(await errorText(poll));
+    const result = await poll.json();
     if (result.status === 'Ready' && result.result?.sample) {
-      const imageResponse = await fetchWithTimeout(result.result.sample, {}, 2);
-      if (!imageResponse.ok) throw new Error(await responseError(imageResponse));
-      return Buffer.from(await imageResponse.arrayBuffer());
+      const image = await fetchWithTimeout(result.result.sample, {}, 2);
+      if (!image.ok) throw new Error(await errorText(image));
+      return Buffer.from(await image.arrayBuffer());
     }
-    if (['Error', 'Failed', 'Request Moderated'].includes(result.status)) {
-      throw new Error(`BFL generation failed: ${JSON.stringify(result).slice(0, 1000)}`);
-    }
+    if (['Error', 'Failed', 'Request Moderated'].includes(result.status)) throw new Error(`BFL failed: ${JSON.stringify(result).slice(0, 1000)}`);
   }
   throw new Error('BFL generation timed out.');
 }
 
-async function generateStability({prompt, aspectRatio, negativePrompt, secret}) {
+async function stability({prompt, aspectRatio, negativePrompt, secret}) {
   const form = new FormData();
   form.append('none', new Blob([''], {type: 'application/octet-stream'}), 'none');
   form.append('prompt', prompt);
@@ -215,171 +174,81 @@ async function generateStability({prompt, aspectRatio, negativePrompt, secret}) 
   form.append('negative_prompt', negativePrompt);
   form.append('output_format', 'png');
   form.append('style_preset', 'digital-art');
-  const endpoint = providerModels.stability === 'ultra' ? 'ultra' : 'core';
+  const endpoint = models.stability === 'ultra' ? 'ultra' : 'core';
   const response = await fetchWithTimeout(`https://api.stability.ai/v2beta/stable-image/generate/${endpoint}`, {
-    method: 'POST',
-    headers: {
-      authorization: `Bearer ${secret}`,
-      accept: 'image/*',
-    },
-    body: form,
+    method: 'POST', headers: {authorization: `Bearer ${secret}`, accept: 'image/*'}, body: form,
   });
-  if (!response.ok) throw new Error(await responseError(response));
+  if (!response.ok) throw new Error(await errorText(response));
   return Buffer.from(await response.arrayBuffer());
 }
 
-const generators = {
-  gemini: generateGemini,
-  openai: generateOpenAI,
-  bfl: generateBfl,
-  stability: generateStability,
-};
+const generators = {gemini, openai, bfl, stability};
 
-async function normalizePng(buffer) {
-  return sharp(buffer, {failOn: 'none'}).png().toBuffer();
-}
-
-async function inspectImage(file, asset) {
-  const metadata = await sharp(file).metadata();
-  const warnings = [];
-  if (!metadata.width || !metadata.height) warnings.push('missing-dimensions');
-  if ((metadata.width || 0) < 700 || (metadata.height || 0) < 700) warnings.push('low-resolution');
-  if (asset.transparent && !metadata.hasAlpha) warnings.push('alpha-missing-provider-output');
-  const ratio = (metadata.width || 1) / (metadata.height || 1);
-  return {
-    width: metadata.width,
-    height: metadata.height,
-    format: metadata.format,
-    hasAlpha: Boolean(metadata.hasAlpha),
-    channels: metadata.channels,
-    aspectRatio: Number(ratio.toFixed(4)),
-    warnings,
-  };
-}
-
-function safeXml(value) {
-  return String(value).replace(/[<>&'\"]/g, (character) => ({'<': '&lt;', '>': '&gt;', '&': '&amp;', "'": '&apos;', '"': '&quot;'}[character]));
-}
-
-async function createContactSheet(successes) {
-  if (!successes.length) return null;
-  const tileWidth = 420;
-  const tileHeight = 680;
-  const columns = Math.min(4, Math.max(1, successes.length));
-  const rows = Math.ceil(successes.length / columns);
-  const canvas = sharp({
-    create: {
-      width: columns * tileWidth,
-      height: rows * tileHeight,
-      channels: 4,
-      background: '#11151d',
-    },
-  });
-  const composites = [];
-  for (let index = 0; index < successes.length; index += 1) {
-    const item = successes[index];
-    const x = (index % columns) * tileWidth;
-    const y = Math.floor(index / columns) * tileHeight;
-    const checkerSvg = Buffer.from(`<svg width="400" height="570" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="c" width="32" height="32" patternUnits="userSpaceOnUse"><rect width="32" height="32" fill="#e8e3d8"/><rect width="16" height="16" fill="#d3cec3"/><rect x="16" y="16" width="16" height="16" fill="#d3cec3"/></pattern></defs><rect width="400" height="570" rx="14" fill="url(#c)"/></svg>`);
-    const image = await sharp(item.file)
-      .resize(390, 560, {fit: 'contain', background: {r: 0, g: 0, b: 0, alpha: 0}})
-      .png()
-      .toBuffer();
-    const labelSvg = Buffer.from(`<svg width="400" height="90" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="90" fill="#11151d"/><text x="18" y="34" fill="#efe7d4" font-size="22" font-family="Arial" font-weight="700">${safeXml(item.assetId)}</text><text x="18" y="66" fill="#70d3d7" font-size="20" font-family="Arial">${safeXml(item.provider)} · ${item.qc.width}×${item.qc.height}${item.qc.hasAlpha ? ' · alpha' : ''}</text></svg>`);
-    composites.push({input: checkerSvg, left: x + 10, top: y + 100});
-    composites.push({input: image, left: x + 15, top: y + 105});
-    composites.push({input: labelSvg, left: x + 10, top: y + 10});
-  }
-  await canvas.composite(composites).png().toFile(contactSheetPath);
-  return contactSheetPath;
+async function runInspection() {
+  const inspection = spawnSync('python', [
+    path.join(ROOT, 'scripts', 'inspect-assets.py'),
+    '--root', outputRoot,
+    '--manifest', manifestPath,
+    '--report', reportPath,
+  ], {stdio: 'inherit'});
+  if (inspection.error) throw inspection.error;
+  if (inspection.status !== 0) throw new Error(`Asset inspection exited with code ${inspection.status}.`);
 }
 
 async function main() {
   await mkdir(outputRoot, {recursive: true});
   const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
-  const assetIds = requestedAssetIds.length ? requestedAssetIds : manifest.candidateTest;
+  const assetIds = explicitAssetIds.length ? explicitAssetIds : manifest.candidateTest;
   const assets = manifest.assets.filter((asset) => assetIds.includes(asset.id));
-  const unknownAssets = assetIds.filter((id) => !assets.some((asset) => asset.id === id));
-  if (unknownAssets.length) throw new Error(`Unknown asset IDs: ${unknownAssets.join(', ')}`);
+  const missing = assetIds.filter((id) => !assets.some((asset) => asset.id === id));
+  if (missing.length) throw new Error(`Unknown asset IDs: ${missing.join(', ')}`);
   if (!assets.length) throw new Error('No assets selected.');
-
-  const providerStatus = Object.fromEntries(requestedProviders.map((provider) => {
-    const secret = getSecret(provider);
-    return [provider, {
-      configured: Boolean(secret),
-      secretName: secret?.name || null,
-      model: providerModels[provider] || null,
-    }];
-  }));
 
   const report = {
     version: 1,
     topic,
     startedAt: new Date().toISOString(),
-    requestedProviders,
+    requestedProviders: providers,
     requestedAssets: assets.map((asset) => asset.id),
-    providers: providerStatus,
+    providers: Object.fromEntries(providers.map((provider) => {
+      const secret = secretFor(provider);
+      return [provider, {configured: Boolean(secret), secretName: secret?.name || null, model: models[provider] || null}];
+    })),
     results: [],
     summary: {},
   };
   await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`);
 
-  const configuredProviders = requestedProviders.filter((provider) => providerStatus[provider]?.configured && generators[provider]);
-  if (!configuredProviders.length) {
-    report.finishedAt = new Date().toISOString();
-    report.summary = {successful: 0, failed: 0, skipped: requestedProviders.length, reason: 'no-configured-provider-secrets'};
-    await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`);
-    throw new Error('No configured image provider secret was found. Expected GEMINI_API_KEY/GOOGLE_API_KEY, OPENAI_API_KEY, BFL_API_KEY/FLUX_API_KEY or STABILITY_API_KEY.');
-  }
-
-  const successes = [];
   for (const asset of assets) {
-    for (const provider of requestedProviders) {
-      const secret = getSecret(provider);
+    for (const provider of providers) {
+      const secret = secretFor(provider);
+      const result = {assetId: asset.id, provider, model: models[provider] || null, status: 'pending', durationMs: 0, file: null, qc: null, error: null};
       const started = Date.now();
-      const result = {
-        assetId: asset.id,
-        provider,
-        model: providerModels[provider] || null,
-        status: 'pending',
-        durationMs: 0,
-        file: null,
-        qc: null,
-        error: null,
-      };
       if (!generators[provider]) {
         result.status = 'skipped';
         result.error = 'unsupported-provider';
-        report.results.push(result);
-        continue;
-      }
-      if (!secret) {
+      } else if (!secret) {
         result.status = 'skipped';
         result.error = 'secret-not-configured';
-        report.results.push(result);
-        continue;
-      }
-      try {
-        const prompt = combinedPrompt(manifest, asset);
-        const raw = await generators[provider]({
-          prompt,
-          aspectRatio: asset.aspectRatio,
-          transparent: asset.transparent,
-          negativePrompt: manifest.artDirection.negativePrompt,
-          secret: secret.value,
-        });
-        const providerDir = path.join(outputRoot, provider);
-        await mkdir(providerDir, {recursive: true});
-        const file = path.join(providerDir, `${asset.id}.png`);
-        await writeFile(file, await normalizePng(raw));
-        const qc = await inspectImage(file, asset);
-        result.status = 'success';
-        result.file = path.relative(ROOT, file);
-        result.qc = qc;
-        successes.push({assetId: asset.id, provider, file, qc});
-      } catch (error) {
-        result.status = 'failed';
-        result.error = error instanceof Error ? error.message : String(error);
+      } else {
+        try {
+          const image = await generators[provider]({
+            prompt: buildPrompt(manifest, asset),
+            aspectRatio: asset.aspectRatio,
+            transparent: asset.transparent,
+            negativePrompt: manifest.artDirection.negativePrompt,
+            secret: secret.value,
+          });
+          const directory = path.join(outputRoot, provider);
+          await mkdir(directory, {recursive: true});
+          const file = path.join(directory, `${asset.id}.png`);
+          await writeFile(file, image);
+          result.status = 'success';
+          result.file = path.relative(ROOT, file);
+        } catch (error) {
+          result.status = 'failed';
+          result.error = error instanceof Error ? error.message : String(error);
+        }
       }
       result.durationMs = Date.now() - started;
       report.results.push(result);
@@ -387,24 +256,19 @@ async function main() {
     }
   }
 
-  await createContactSheet(successes);
-  const counts = report.results.reduce((accumulator, result) => {
-    accumulator[result.status] = (accumulator[result.status] || 0) + 1;
-    return accumulator;
-  }, {});
+  const successful = report.results.filter((result) => result.status === 'success').length;
+  const failed = report.results.filter((result) => result.status === 'failed').length;
+  const skipped = report.results.filter((result) => result.status === 'skipped').length;
   report.finishedAt = new Date().toISOString();
-  report.summary = {
-    successful: counts.success || 0,
-    failed: counts.failed || 0,
-    skipped: counts.skipped || 0,
-    contactSheet: successes.length ? path.relative(ROOT, contactSheetPath) : null,
-  };
+  report.summary = {successful, failed, skipped};
   await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`);
-  console.log(JSON.stringify(report.summary, null, 2));
-  if (!successes.length) process.exitCode = 1;
+  if (!successful) throw new Error('No image provider produced a candidate. See report.json.');
+
+  await runInspection();
+  console.log(JSON.stringify({topic, successful, failed, skipped}, null, 2));
 }
 
-main().catch(async (error) => {
+main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
