@@ -1,1 +1,1 @@
-Generate the two pilot asset candidates with configured image providers. No render and no social upload.
+Retry the same two no-upload asset candidates after switching Gemini to its supported JPEG response format.
