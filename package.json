@@ -15,8 +15,7 @@
     "@remotion/cli": "4.0.500",
     "react": "19.1.1",
     "react-dom": "19.1.1",
-    "remotion": "4.0.500",
-    "sharp": "0.34.3"
+    "remotion": "4.0.500"
   },
   "devDependencies": {
     "@types/react": "19.1.10",
