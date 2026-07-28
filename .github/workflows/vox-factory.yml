@@ -1,0 +1,121 @@
+name: NeoSaniye Vox Factory — Manual Only
+
+on:
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: Documentary topic or central question
+        required: true
+        default: The world's first traffic signal exploded
+        type: string
+      language:
+        description: Narration language
+        required: true
+        default: en
+        type: choice
+        options:
+          - en
+          - tr
+      scene_count:
+        description: Number of generated collage scenes
+        required: true
+        default: '10'
+        type: choice
+        options: ['8', '9', '10', '11', '12']
+      facts:
+        description: Optional verified facts; blank lets the selected text provider write from established knowledge
+        required: false
+        default: ''
+        type: string
+      story_providers:
+        description: Text provider fallback order
+        required: true
+        default: gemini,groq,cerebras,github-models,mistral,cloudflare,openrouter
+        type: string
+      image_providers:
+        description: Image provider fallback order
+        required: true
+        default: gemini,pollinations,cloudflare,together,huggingface
+        type: string
+
+permissions:
+  contents: read
+  models: read
+
+concurrency:
+  group: neosaniye-vox-manual
+  cancel-in-progress: false
+
+jobs:
+  factory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      UPLOAD_ENABLED: 'false'
+      VIDEO_TOPIC: ${{ inputs.topic }}
+      VIDEO_LANGUAGE: ${{ inputs.language }}
+      VIDEO_SCENE_COUNT: ${{ inputs.scene_count }}
+      VIDEO_FACTS: ${{ inputs.facts }}
+      STORY_PROVIDER_CHAIN: ${{ inputs.story_providers }}
+      IMAGE_PROVIDER_CHAIN: ${{ inputs.image_providers }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+      MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      GITHUB_MODELS_TOKEN: ${{ github.token }}
+      POLLINATIONS_API_KEY: ${{ secrets.POLLINATIONS_API_KEY }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || vars.CLOUDFLARE_ACCOUNT_ID }}
+      TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
+      HUGGINGFACE_API_KEY: ${{ secrets.HUGGINGFACE_API_KEY }}
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      GEMINI_TEXT_MODEL: ${{ vars.GEMINI_TEXT_MODEL || 'gemini-3.5-flash-lite' }}
+      GEMINI_IMAGE_MODEL: ${{ vars.GEMINI_IMAGE_MODEL || 'gemini-3.1-flash-lite-image' }}
+      GEMINI_IMAGE_SIZE: ${{ vars.GEMINI_IMAGE_SIZE || '1K' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Safety lock
+        run: |
+          test "$UPLOAD_ENABLED" = "false"
+          test ! -f scripts/upload.mjs
+          echo "Manual render only. No upload or schedule trigger is present."
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg
+          npm install --no-audit --no-fund
+          python -m pip install --disable-pip-version-check edge-tts==7.2.7
+
+      - name: Generate story, collage scenes, voice and video
+        run: npm run factory
+
+      - name: Upload factory artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: neosaniye-vox-${{ github.run_number }}
+          path: |
+            out/neosaniye-vox.mp4
+            out/factory/image-report.json
+            content/generated/current-story.json
+            public/generated/**
+            public/audio/narration.txt
+            public/audio/voice.srt
+            public/audio/voice-selection.json
+          if-no-files-found: error
+          retention-days: 7
