@@ -1,0 +1,1 @@
+Read `AGENTS.md` before changing this repository. The only production renderer is the data-driven NeoSaniye editorial collage factory. Do not add alternate styles, automatic workflow triggers or upload logic. Do not run workflows without explicit user instruction.

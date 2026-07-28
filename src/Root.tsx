@@ -1,15 +1,15 @@
 import React from 'react';
 import {Composition} from 'remotion';
-import {TOTAL_FRAMES} from './generated/timing';
-import {TrafficLightShort} from './videos/traffic-light/TrafficLightShort';
+import {NeoSaniyeVox} from './vox/NeoSaniyeVox';
+import {VOX_FPS, VOX_HEIGHT, VOX_TOTAL_FRAMES, VOX_WIDTH} from './vox/story';
 
 export const RemotionRoot: React.FC = () => (
   <Composition
-    id="NeoSaniyeTrafficLight"
-    component={TrafficLightShort}
-    durationInFrames={TOTAL_FRAMES}
-    fps={30}
-    width={1080}
-    height={1920}
+    id="NeoSaniyeVox"
+    component={NeoSaniyeVox}
+    durationInFrames={VOX_TOTAL_FRAMES}
+    fps={VOX_FPS}
+    width={VOX_WIDTH}
+    height={VOX_HEIGHT}
   />
 );
