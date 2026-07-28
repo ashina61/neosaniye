@@ -18,6 +18,11 @@ on:
         required: false
         default: ''
         type: string
+  pull_request:
+    branches:
+      - claude/youtube-shorts-automation-9dbrjx
+    paths:
+      - '.asset-trigger'
 
 permissions:
   contents: read
@@ -32,9 +37,9 @@ jobs:
     timeout-minutes: 45
     env:
       UPLOAD_ENABLED: 'false'
-      ASSET_TOPIC: ${{ inputs.topic }}
-      ASSET_PROVIDERS: ${{ inputs.providers }}
-      ASSET_IDS: ${{ inputs.asset_ids }}
+      ASSET_TOPIC: ${{ inputs.topic || 'first-traffic-light' }}
+      ASSET_PROVIDERS: ${{ inputs.providers || 'gemini,openai,bfl,stability' }}
+      ASSET_IDS: ${{ inputs.asset_ids || '' }}
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -76,9 +81,9 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: neosaniye-${{ inputs.topic }}-asset-candidates
+          name: neosaniye-${{ inputs.topic || 'first-traffic-light' }}-asset-candidates
           path: |
-            out/asset-candidates/${{ inputs.topic }}/**
-            content/assets/${{ inputs.topic }}.json
+            out/asset-candidates/${{ inputs.topic || 'first-traffic-light' }}/**
+            content/assets/${{ inputs.topic || 'first-traffic-light' }}.json
           if-no-files-found: warn
           retention-days: 7
