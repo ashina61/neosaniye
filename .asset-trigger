@@ -1,1 +1,1 @@
-Run the two pilot asset candidates through Gemini, Pollinations, Cloudflare, Together and Hugging Face. No render and no social upload.
+Retry the two no-upload asset candidates with Cloudflare account ID loaded from either a secret or repository variable.
