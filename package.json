@@ -1,11 +1,11 @@
 {
   "name": "neosaniye-remotion",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "private": true,
   "description": "NeoSaniye reusable editorial motion-storytelling factory",
   "scripts": {
     "start": "remotion studio src/index.ts",
-    "assets:generate": "node scripts/generate-assets.mjs",
+    "assets:generate": "node scripts/generate-assets-free.mjs",
     "audio": "python scripts/generate-audio.py",
     "typecheck": "tsc --noEmit",
     "render": "remotion render src/index.ts NeoSaniyeTrafficLight out/neosaniye-first-traffic-light.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p",
