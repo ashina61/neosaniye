@@ -1,12 +1,27 @@
-# NeoSaniye Premium Motion Factory
+# NeoSaniye — Remotion
 
-Onaylanan Eyfel videosunun kaynak kodundan kurulmuş temiz Remotion deposu.
+NeoSaniye video sistemi sıfırdan kurulmuştur. Eski üretim sistemi, eski videolar, renderer dosyaları, otomasyonlar ve assetler bu başlangıçta bulunmaz.
 
-- Konuşmayı tekrar eden video içi altyazı yok.
-- Caption veya karaoke şeridi yok.
-- Stock, Pexels, Pixabay ve AI görsel üretimi yok.
-- Bütün görsel katmanlar React, CSS ve SVG ile çizilir.
-- İngilizce anlatım, müzik ve katmanlı SFX bulunur.
-- Çıktı: 1080x1920, 30 FPS, H.264/AAC.
+## Kurulum
 
-Eski sistem yalnız `backup/legacy-factory-before-eiffel-rebuild` dalında saklanır.
+```bash
+npm install
+npm start
+```
+
+## Kontrol
+
+```bash
+npm run typecheck
+npm run render
+```
+
+Render çıktısı: `out/neosaniye-short.mp4`
+
+## Başlangıç kuralları
+
+- Format: 1080 × 1920
+- FPS: 30
+- Video üretimi: Remotion
+- Otomatik platform yükleme: kapalı
+- Her yeni özellik sıfırdan ve kontrollü eklenecek

@@ -1,19 +1,18 @@
 {
-  "name": "neosaniye-premium-motion-factory",
+  "name": "neosaniye-remotion",
   "version": "1.0.0",
   "private": true,
-  "description": "NeoSaniye procedural Remotion motion-graphics factory",
+  "description": "NeoSaniye için sıfırdan Remotion video projesi",
   "scripts": {
-    "studio": "remotion studio src/index.ts",
-    "audio": "python scripts/generate-eiffel-audio.py",
+    "start": "remotion studio src/index.ts",
     "typecheck": "tsc --noEmit",
-    "render": "remotion render src/index.ts NeoSaniyeEiffelTower out/neosaniye-eiffel-tower.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p"
+    "render": "remotion render src/index.ts NeoSaniyeShort out/neosaniye-short.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p"
   },
   "dependencies": {
-    "@remotion/cli": "4.0.499",
-    "remotion": "4.0.499",
+    "@remotion/cli": "4.0.500",
     "react": "19.1.1",
-    "react-dom": "19.1.1"
+    "react-dom": "19.1.1",
+    "remotion": "4.0.500"
   },
   "devDependencies": {
     "@types/react": "19.1.10",
