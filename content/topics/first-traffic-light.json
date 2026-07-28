@@ -1,0 +1,15 @@
+{
+  "slug": "first-traffic-light",
+  "title": "The First Traffic Light Exploded",
+  "source": "Science Museum — Romans to raves: A history of roads and motorways",
+  "narration": "The world's first traffic light did not control cars. It stood outside Britain's Houses of Parliament in 1868, where horse-drawn traffic had become dangerous. The signal used two semaphore arms: one meant stop, the other caution. At night, a gas lamp displayed red and green. A police officer had to operate the whole machine by hand. Then gas leaked. The signal exploded, injuring the officer, and London's experiment was abandoned. The modern traffic light began as a Victorian machine that literally blew itself up.",
+  "beats": [
+    {"id":"hook","trigger":"world's first traffic light","label":"A Victorian invention","grammar":"push-through","transitionOut":"match-object"},
+    {"id":"setup","trigger":"Houses of Parliament","label":"London, 1868","grammar":"editorial-collage","transitionOut":"hard-cut"},
+    {"id":"semaphore","trigger":"two semaphore arms","label":"Stop / caution","grammar":"mechanism","transitionOut":"match-object"},
+    {"id":"night","trigger":"At night","label":"Gas-lit colors","grammar":"light-rig","transitionOut":"occlusion"},
+    {"id":"operator","trigger":"police officer","label":"Manually operated","grammar":"character-portrait","transitionOut":"hard-cut"},
+    {"id":"explosion","trigger":"Then gas leaked","label":"The failure","grammar":"impact","transitionOut":"paper-reveal"},
+    {"id":"payoff","trigger":"modern traffic light","label":"A failed beginning","grammar":"payoff","transitionOut":"hard-cut"}
+  ]
+}

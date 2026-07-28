@@ -15,6 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 AUDIO = ROOT / 'public' / 'audio'
 GENERATED = ROOT / 'src' / 'generated'
+TOPIC = ROOT / 'content' / 'topics' / 'first-traffic-light.json'
 AUDIO.mkdir(parents=True, exist_ok=True)
 GENERATED.mkdir(parents=True, exist_ok=True)
 
@@ -23,19 +24,8 @@ VOICE_OFFSET_FRAMES = 12
 SAMPLE_RATE = 22050
 random.seed(61)
 
-NARRATION = """A day on Venus is longer than a year on Venus.
-
-But there is a catch. Here, day means one full rotation on its axis, not sunrise to sunrise.
-
-Venus needs 243 Earth days to complete one rotation.
-
-But it circles the Sun in only 225 Earth days.
-
-So a Venusian year ends before the planet finishes turning once.
-
-It also spins backwards compared with most planets, so the Sun appears to rise in the west and set in the east.
-
-And the time from one sunrise to the next is about 117 Earth days. On Venus, even the calendar loses the argument."""
+story = json.loads(TOPIC.read_text(encoding='utf-8'))
+NARRATION = str(story['narration'])
 
 
 def clamp(value: float, lo: float = -1.0, hi: float = 1.0) -> float:
@@ -63,85 +53,49 @@ def write_wav(path: Path, duration: float, fn) -> None:
 def noise(seed: int):
     rng = random.Random(seed)
     values = [rng.uniform(-1, 1) for _ in range(16385)]
-
     def sample(t: float, speed: float) -> float:
         position = (t * speed) % 16384
         index = int(position)
         fraction = position - index
         smooth = fraction * fraction * (3 - 2 * fraction)
         return values[index] + (values[index + 1] - values[index]) * smooth
-
     return sample
 
 
 def generate_music() -> None:
-    n = noise(243)
-
+    n = noise(1868)
     def music(t: float, duration: float) -> float:
-        fade_in = min(1.0, t / 1.2)
-        fade_out = min(1.0, max(0.0, (duration - t) / 2.5))
-        section = 0 if t < 8 else 1 if t < 18 else 2 if t < 29 else 3
-        root = [55.0, 61.74, 49.0, 65.41][section]
-        bass = math.sin(2 * math.pi * root * t) * 0.14
-        bass += math.sin(2 * math.pi * root * 2 * t) * 0.045
-        pulse_phase = t % (0.72 if section != 2 else 0.9)
-        pulse = math.sin(2 * math.pi * 42 * t) * math.exp(-pulse_phase * 7.5) * 0.18
-        note = [220.0, 261.63, 329.63, 392.0][int(t * 2.5) % 4]
-        note_phase = (t * 2.5) % 1
-        shimmer = math.sin(2 * math.pi * note * t) * math.exp(-note_phase * 5) * 0.025
-        air = n(t, 1.1) * 0.018 + n(t, 35) * 0.006
-        return (bass + pulse + shimmer + air) * fade_in * fade_out * 0.85
-
+        fade_in = min(1.0, t / 1.0)
+        fade_out = min(1.0, max(0.0, (duration - t) / 2.2))
+        root = 55.0 if t < 12 else 61.74 if t < 24 else 49.0
+        bass = math.sin(2 * math.pi * root * t) * 0.1
+        pulse = math.sin(2 * math.pi * 45 * t) * math.exp(-(t % .74) * 7.8) * 0.13
+        hiss = n(t, 1.2) * .015 + n(t, 42) * .005
+        return (bass + pulse + hiss) * fade_in * fade_out
     write_wav(AUDIO / 'music.wav', 50.0, music)
 
 
 def generate_sfx() -> None:
-    n1 = noise(225)
-    n2 = noise(117)
-    n3 = noise(243)
-
-    write_wav(AUDIO / 'impact.wav', 1.4, lambda t, d: math.sin(2 * math.pi * (82 - 38 * t) * t) * math.exp(-5.2 * t) * 0.92 + n1(t, 180) * math.exp(-18 * t) * 0.28)
-    write_wav(AUDIO / 'whoosh-a.wav', 1.1, lambda t, d: n1(t, 170) * (math.sin(math.pi * t / d) ** 2.1) * 0.58 + math.sin(2 * math.pi * (130 + 650 * (t / d) ** 2) * t) * (math.sin(math.pi * t / d) ** 2) * 0.1)
-    write_wav(AUDIO / 'whoosh-b.wav', 0.75, lambda t, d: n2(t, 260) * (math.sin(math.pi * t / d) ** 2.5) * 0.68)
-    write_wav(AUDIO / 'reverse.wav', 1.5, lambda t, d: n1(t, 120) * ((t / d) ** 1.6) * 0.42 + math.sin(2 * math.pi * (900 - 650 * t / d) * t) * ((t / d) ** 1.8) * 0.12)
-    write_wav(AUDIO / 'tick.wav', 1.2, lambda t, d: (math.sin(2 * math.pi * 1450 * t) + 0.5 * math.sin(2 * math.pi * 2150 * t)) * math.exp(-28 * (t % 0.24)) * 0.2)
-    write_wav(AUDIO / 'chime.wav', 2.2, lambda t, d: (math.sin(2 * math.pi * 660 * t) + 0.62 * math.sin(2 * math.pi * 990 * t) + 0.35 * math.sin(2 * math.pi * 1320 * t)) * math.exp(-2.3 * t) * 0.24)
-    write_wav(AUDIO / 'rumble.wav', 8.0, lambda t, d: math.sin(2 * math.pi * 38 * t) * 0.12 + math.sin(2 * math.pi * 24 * t) * 0.07 + n2(t, 14) * 0.025)
-
-    write_wav(AUDIO / 'swipe.wav', 0.52, lambda t, d: n3(t, 330) * (math.sin(math.pi * t / d) ** 2.8) * 0.7)
-    write_wav(AUDIO / 'glitch.wav', 0.46, lambda t, d: (n1(t, 900) * 0.34 + math.sin(2 * math.pi * (320 + 1200 * t) * t) * 0.16) * (1 if int(t * 38) % 3 else 0.15))
-    write_wav(AUDIO / 'riser.wav', 1.65, lambda t, d: n2(t, 95) * ((t / d) ** 1.7) * 0.34 + math.sin(2 * math.pi * (110 + 720 * (t / d) ** 2) * t) * ((t / d) ** 2) * 0.14)
-    write_wav(AUDIO / 'snap.wav', 0.35, lambda t, d: n3(t, 1200) * math.exp(-34 * t) * 0.64 + math.sin(2 * math.pi * 180 * t) * math.exp(-24 * t) * 0.28)
-    write_wav(AUDIO / 'sub-hit.wav', 1.8, lambda t, d: math.sin(2 * math.pi * (54 - 12 * t) * t) * math.exp(-2.8 * t) * 0.86 + n1(t, 45) * math.exp(-5 * t) * 0.09)
+    n = noise(1868)
+    write_wav(AUDIO / 'impact.wav', 1.6, lambda t, d: math.sin(2 * math.pi * (86 - 42 * t) * t) * math.exp(-4.6 * t) * .9 + n(t, 200) * math.exp(-15 * t) * .25)
+    write_wav(AUDIO / 'snap.wav', .38, lambda t, d: n(t, 1200) * math.exp(-35 * t) * .62 + math.sin(2 * math.pi * 170 * t) * math.exp(-22 * t) * .26)
+    write_wav(AUDIO / 'chime.wav', 2.0, lambda t, d: (math.sin(2 * math.pi * 610 * t) + .55 * math.sin(2 * math.pi * 915 * t)) * math.exp(-2.5 * t) * .22)
 
 
 def generate_voice() -> None:
     edge = shutil.which('edge-tts')
     if edge is None:
         raise RuntimeError('edge-tts was not found.')
-
     text_path = AUDIO / 'narration.txt'
     text_path.write_text(NARRATION, encoding='utf-8')
-    last_error = None
-
     for voice in ['en-US-AndrewNeural', 'en-US-BrianNeural', 'en-US-GuyNeural']:
-        command = [
-            edge,
-            '--voice', voice,
-            '--rate=+18%',
-            '--pitch=-2Hz',
-            '--file', str(text_path),
-            '--write-media', str(AUDIO / 'voice.mp3'),
-            '--write-subtitles', str(AUDIO / 'voice.srt'),
-        ]
+        command = [edge, '--voice', voice, '--rate=+16%', '--pitch=-2Hz', '--file', str(text_path), '--write-media', str(AUDIO / 'voice.mp3'), '--write-subtitles', str(AUDIO / 'voice.srt')]
         try:
             subprocess.run(command, check=True)
-            print(f'Voice generated with {voice}')
             return
-        except subprocess.CalledProcessError as exc:
-            last_error = exc
-
-    raise RuntimeError(f'English voice generation failed: {last_error}')
+        except subprocess.CalledProcessError:
+            continue
+    raise RuntimeError('English voice generation failed.')
 
 
 def timestamp_to_seconds(value: str) -> float:
@@ -174,26 +128,13 @@ def cue_start(cues: list[dict[str, object]], fragment: str, fallback_ratio: floa
 
 def generate_timing() -> None:
     cues = parse_srt(AUDIO / 'voice.srt')
-    scenes = {
-        'hook': 0,
-        'explain': cue_start(cues, 'there is a catch', 0.15),
-        'rotation': cue_start(cues, '243', 0.32),
-        'orbit': cue_start(cues, '225', 0.48),
-        'compare': cue_start(cues, 'Venusian year', 0.62),
-        'reverse': cue_start(cues, 'spins backwards', 0.74),
-        'solar': cue_start(cues, '117', 0.87),
-    }
+    beats = story['beats']
+    scenes = {}
+    for index, beat in enumerate(beats):
+        scenes[str(beat['id'])] = 0 if index == 0 else cue_start(cues, str(beat['trigger']), index / len(beats))
     total_frames = int(cues[-1]['end']) + 24
-    output = f"""export type CaptionCue = {{start: number; end: number; text: string}};
-
-export const CUES: CaptionCue[] = {json.dumps(cues, ensure_ascii=False, indent=2)};
-
-export const SCENES = {json.dumps(scenes, ensure_ascii=False, indent=2)} as const;
-
-export const TOTAL_FRAMES = {total_frames};
-"""
+    output = f"""export type CaptionCue = {{start: number; end: number; text: string}};\n\nexport const CUES: CaptionCue[] = {json.dumps(cues, ensure_ascii=False, indent=2)};\n\nexport const SCENES = {json.dumps(scenes, ensure_ascii=False, indent=2)} as const;\n\nexport const TOTAL_FRAMES = {total_frames};\n"""
     (GENERATED / 'timing.ts').write_text(output, encoding='utf-8')
-    print(f'Total duration: {total_frames / FPS:.2f} seconds')
 
 
 def main() -> int:

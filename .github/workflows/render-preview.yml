@@ -2,17 +2,12 @@ name: Render Preview — No Upload
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches:
-      - claude/youtube-shorts-automation-9dbrjx
-    paths:
-      - '.preview-trigger'
 
 permissions:
   contents: read
 
 concurrency:
-  group: neosaniye-preview-${{ github.ref }}
+  group: neosaniye-preview
   cancel-in-progress: true
 
 jobs:
@@ -29,7 +24,8 @@ jobs:
       - name: Safety lock — uploads disabled
         run: |
           test "$UPLOAD_ENABLED" = "false"
-          echo "Preview mode: no YouTube, Facebook or Instagram upload step exists."
+          test ! -f scripts/upload.mjs
+          echo "Preview mode only. No platform upload code is present in this workflow."
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -54,10 +50,11 @@ jobs:
       - name: Upload preview artifact
         uses: actions/upload-artifact@v4
         with:
-          name: neosaniye-design-preview
+          name: neosaniye-first-traffic-light-preview
           path: |
-            out/neosaniye-venus.mp4
+            out/neosaniye-first-traffic-light.mp4
             public/audio/narration.txt
             public/audio/voice.srt
+            content/topics/first-traffic-light.json
           if-no-files-found: error
           retention-days: 7
