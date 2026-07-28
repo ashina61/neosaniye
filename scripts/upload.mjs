@@ -124,12 +124,51 @@ async function uploadYouTube(video, manifest) {
 }
 
 function metaToken() {
-  return process.env.META_PAGE_TOKEN || process.env.META_ACCESS_TOKEN || '';
+  return process.env.META_PAGE_TOKEN || '';
 }
 
-async function uploadInstagram(video, manifest) {
-  const token = metaToken();
-  const igUserId = process.env.META_IG_USER_ID;
+async function discoverMetaTargets() {
+  let pageToken = metaToken();
+  let pageId = process.env.META_PAGE_ID || '';
+  let igUserId = process.env.META_IG_USER_ID || '';
+  const userToken = process.env.META_USER_TOKEN || '';
+
+  if ((!pageToken || !pageId) && userToken) {
+    const params = new URLSearchParams({
+      fields: 'id,name,access_token',
+      access_token: userToken,
+    });
+    const {data} = await request(`${GRAPH}/me/accounts?${params}`);
+    const pages = Array.isArray(data.data) ? data.data : [];
+    if (!pages.length) {
+      throw new Error('META_USER_TOKEN did not expose an accessible Facebook Page.');
+    }
+    const page = pageId ? pages.find((item) => item.id === pageId) || pages[0] : pages[0];
+    pageId = page.id;
+    pageToken = page.access_token;
+    console.log(`[meta] discovered Facebook Page ${page.name || pageId} (${pageId})`);
+  }
+
+  if (pageToken && pageId && !igUserId) {
+    try {
+      const params = new URLSearchParams({
+        fields: 'instagram_business_account',
+        access_token: pageToken,
+      });
+      const {data} = await request(`${GRAPH}/${pageId}?${params}`);
+      igUserId = data.instagram_business_account?.id || '';
+      if (igUserId) console.log(`[meta] discovered Instagram account ${igUserId}`);
+    } catch (error) {
+      console.warn(`[meta] Instagram discovery failed: ${error.message}`);
+    }
+  }
+
+  return {pageToken, pageId, igUserId};
+}
+
+async function uploadInstagram(video, manifest, targets) {
+  const token = targets.pageToken;
+  const igUserId = targets.igUserId;
   const createBody = new URLSearchParams({
     media_type: 'REELS',
     upload_type: 'resumable',
@@ -186,9 +225,9 @@ async function uploadInstagram(video, manifest) {
   return {id: published.id};
 }
 
-async function uploadFacebook(video, manifest) {
-  const token = metaToken();
-  const pageId = process.env.META_PAGE_ID;
+async function uploadFacebook(video, manifest, targets) {
+  const token = targets.pageToken;
+  const pageId = targets.pageId;
   const startBody = new URLSearchParams({
     upload_phase: 'start',
     access_token: token,
@@ -265,10 +304,19 @@ async function main() {
     return;
   }
 
+  let metaTargets = {pageToken: metaToken(), pageId: process.env.META_PAGE_ID || '', igUserId: process.env.META_IG_USER_ID || ''};
+  if (metaTargets.pageToken || process.env.META_USER_TOKEN) {
+    try {
+      metaTargets = await discoverMetaTargets();
+    } catch (error) {
+      console.warn(`[meta] target discovery failed: ${error.message}`);
+    }
+  }
+
   const configured = {
     youtube: Boolean(process.env.YOUTUBE_CLIENT_ID && process.env.YOUTUBE_CLIENT_SECRET && process.env.YOUTUBE_REFRESH_TOKEN),
-    instagram: Boolean(metaToken() && process.env.META_IG_USER_ID),
-    facebook: Boolean(metaToken() && process.env.META_PAGE_ID),
+    instagram: Boolean(metaTargets.pageToken && metaTargets.igUserId),
+    facebook: Boolean(metaTargets.pageToken && metaTargets.pageId),
   };
 
   if (!Object.values(configured).some(Boolean)) {
@@ -277,8 +325,8 @@ async function main() {
 
   const jobs = {};
   if (configured.youtube) jobs.youtube = uploadYouTube(video, manifest);
-  if (configured.instagram) jobs.instagram = uploadInstagram(video, manifest);
-  if (configured.facebook) jobs.facebook = uploadFacebook(video, manifest);
+  if (configured.instagram) jobs.instagram = uploadInstagram(video, manifest, metaTargets);
+  if (configured.facebook) jobs.facebook = uploadFacebook(video, manifest, metaTargets);
 
   const names = Object.keys(jobs);
   const results = await Promise.allSettled(Object.values(jobs));
