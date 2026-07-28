@@ -22,17 +22,21 @@ concurrency:
 
 jobs:
   install-test-publish:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 50
     env:
+      TARGET_BRANCH: ${{ github.event_name == 'pull_request' && github.head_ref || 'claude/youtube-shorts-automation-9dbrjx' }}
       YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
       YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
       YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
       YOUTUBE_CATEGORY_ID: ${{ vars.YOUTUBE_CATEGORY_ID || '27' }}
       YOUTUBE_PRIVACY: ${{ vars.YOUTUBE_PRIVACY || 'public' }}
-      META_PAGE_TOKEN: ${{ secrets.META_PAGE_TOKEN || secrets.META_ACCESS_TOKEN }}
-      META_PAGE_ID: ${{ secrets.META_PAGE_ID || vars.META_PAGE_ID }}
-      META_IG_USER_ID: ${{ secrets.META_IG_USER_ID || vars.META_IG_USER_ID }}
+      META_USER_TOKEN: ${{ secrets.META_USER_TOKEN }}
+      META_IG_LOGIN_TOKEN: ${{ secrets.META_IG_LOGIN_TOKEN }}
+      META_PAGE_TOKEN: ${{ secrets.META_PAGE_TOKEN }}
+      META_PAGE_ID: ${{ vars.META_PAGE_ID }}
+      META_IG_USER_ID: ${{ vars.META_IG_USER_ID }}
       META_GRAPH_VERSION: ${{ vars.META_GRAPH_VERSION || 'v25.0' }}
       SCHEDULE_SLOT: slot-1
       UPLOAD_ENABLED: 'true'
@@ -41,7 +45,7 @@ jobs:
       - name: Checkout staged archive
         uses: actions/checkout@v4
         with:
-          ref: claude/youtube-shorts-automation-9dbrjx
+          ref: ${{ env.TARGET_BRANCH }}
           fetch-depth: 1
 
       - name: Install clean factory tree
@@ -53,14 +57,6 @@ jobs:
           test -f .github/workflows/daily-shorts.yml
           test -f scripts/upload.mjs
           test -f src/NeoSaniyeShort.tsx
-
-      - name: Persist clean automated factory
-        run: |
-          git config user.name 'neosaniye-bot'
-          git config user.email 'neosaniye-bot@users.noreply.github.com'
-          git add -A
-          git commit -m 'Build three-slot automated Remotion publishing factory'
-          git push origin HEAD:claude/youtube-shorts-automation-9dbrjx
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -85,15 +81,14 @@ jobs:
       - name: Upload to YouTube Facebook and Instagram
         run: npm run upload
 
-      - name: Persist successful topic history
+      - name: Persist tested clean automated factory
         if: success()
         run: |
-          if git diff --quiet -- data/published.json; then
-            exit 0
-          fi
-          git add data/published.json
-          git commit -m 'chore: record bootstrap publication [skip factory]'
-          git push origin HEAD:claude/youtube-shorts-automation-9dbrjx
+          git config user.name 'neosaniye-bot'
+          git config user.email 'neosaniye-bot@users.noreply.github.com'
+          git add -A
+          git commit -m 'Build tested three-slot automated Remotion publishing factory [skip factory]'
+          git push origin HEAD:${TARGET_BRANCH}
 
       - name: Upload test artifacts
         if: always()
