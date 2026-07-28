@@ -66,10 +66,8 @@ jobs:
 
           upload = Path('scripts/upload.mjs')
           text = upload.read_text(encoding='utf-8')
-          old = """function metaToken() {
-            return process.env.META_PAGE_TOKEN || process.env.META_ACCESS_TOKEN || '';
-          }
-          """
+
+          old = "function metaToken() {\n  return process.env.META_PAGE_TOKEN || process.env.META_ACCESS_TOKEN || '';\n}\n"
           new = """function metaToken() {
             return process.env.META_PAGE_TOKEN || '';
           }
@@ -110,20 +108,18 @@ jobs:
           if old not in text:
               raise SystemExit('metaToken patch anchor not found')
           text = text.replace(old, new)
-          text = text.replace(
-              "async function uploadInstagram(video, manifest) {\n  const token = metaToken();\n  const igUserId = process.env.META_IG_USER_ID;",
-              "async function uploadInstagram(video, manifest, targets) {\n  const token = targets.pageToken;\n  const igUserId = targets.igUserId;",
-          )
-          text = text.replace(
-              "async function uploadFacebook(video, manifest) {\n  const token = metaToken();\n  const pageId = process.env.META_PAGE_ID;",
-              "async function uploadFacebook(video, manifest, targets) {\n  const token = targets.pageToken;\n  const pageId = targets.pageId;",
-          )
-          old_config = """  const configured = {
-            youtube: Boolean(process.env.YOUTUBE_CLIENT_ID && process.env.YOUTUBE_CLIENT_SECRET && process.env.YOUTUBE_REFRESH_TOKEN),
-            instagram: Boolean(metaToken() && process.env.META_IG_USER_ID),
-            facebook: Boolean(metaToken() && process.env.META_PAGE_ID),
-          };"""
-          new_config = """  let metaTargets = {pageToken: metaToken(), pageId: process.env.META_PAGE_ID || '', igUserId: process.env.META_IG_USER_ID || ''};
+
+          old_instagram = "async function uploadInstagram(video, manifest) {\n  const token = metaToken();\n  const igUserId = process.env.META_IG_USER_ID;"
+          old_facebook = "async function uploadFacebook(video, manifest) {\n  const token = metaToken();\n  const pageId = process.env.META_PAGE_ID;"
+          old_config = "  const configured = {\n    youtube: Boolean(process.env.YOUTUBE_CLIENT_ID && process.env.YOUTUBE_CLIENT_SECRET && process.env.YOUTUBE_REFRESH_TOKEN),\n    instagram: Boolean(metaToken() && process.env.META_IG_USER_ID),\n    facebook: Boolean(metaToken() && process.env.META_PAGE_ID),\n  };"
+          old_jobs = "  if (configured.instagram) jobs.instagram = uploadInstagram(video, manifest);\n  if (configured.facebook) jobs.facebook = uploadFacebook(video, manifest);"
+          for anchor in (old_instagram, old_facebook, old_config, old_jobs):
+              if anchor not in text:
+                  raise SystemExit(f'upload patch anchor not found: {anchor[:42]}')
+
+          text = text.replace(old_instagram, "async function uploadInstagram(video, manifest, targets) {\n  const token = targets.pageToken;\n  const igUserId = targets.igUserId;")
+          text = text.replace(old_facebook, "async function uploadFacebook(video, manifest, targets) {\n  const token = targets.pageToken;\n  const pageId = targets.pageId;")
+          text = text.replace(old_config, """  let metaTargets = {pageToken: metaToken(), pageId: process.env.META_PAGE_ID || '', igUserId: process.env.META_IG_USER_ID || ''};
             if (metaTargets.pageToken || process.env.META_USER_TOKEN) {
               try {
                 metaTargets = await discoverMetaTargets();
@@ -136,23 +132,9 @@ jobs:
               youtube: !skipYouTube && Boolean(process.env.YOUTUBE_CLIENT_ID && process.env.YOUTUBE_CLIENT_SECRET && process.env.YOUTUBE_REFRESH_TOKEN),
               instagram: Boolean(metaTargets.pageToken && metaTargets.igUserId),
               facebook: Boolean(metaTargets.pageToken && metaTargets.pageId),
-            };"""
-          if old_config not in text:
-              raise SystemExit('configured patch anchor not found')
-          text = text.replace(old_config, new_config)
-          text = text.replace(
-              "  if (configured.instagram) jobs.instagram = uploadInstagram(video, manifest);\n  if (configured.facebook) jobs.facebook = uploadFacebook(video, manifest);",
-              "  if (configured.instagram) jobs.instagram = uploadInstagram(video, manifest, metaTargets);\n  if (configured.facebook) jobs.facebook = uploadFacebook(video, manifest, metaTargets);",
-          )
+            };""")
+          text = text.replace(old_jobs, "  if (configured.instagram) jobs.instagram = uploadInstagram(video, manifest, metaTargets);\n  if (configured.facebook) jobs.facebook = uploadFacebook(video, manifest, metaTargets);")
           upload.write_text(text, encoding='utf-8')
-
-          workflow = Path('.github/workflows/daily-shorts.yml')
-          daily = workflow.read_text(encoding='utf-8')
-          daily = daily.replace(
-              "      META_PAGE_TOKEN: ${{ secrets.META_PAGE_TOKEN || secrets.META_ACCESS_TOKEN }}\n",
-              "      META_USER_TOKEN: ${{ secrets.META_USER_TOKEN }}\n      META_IG_LOGIN_TOKEN: ${{ secrets.META_IG_LOGIN_TOKEN }}\n      META_PAGE_TOKEN: ${{ secrets.META_PAGE_TOKEN }}\n",
-          )
-          workflow.write_text(daily, encoding='utf-8')
           PY
           node --check scripts/upload.mjs
 
