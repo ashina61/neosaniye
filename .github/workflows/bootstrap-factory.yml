@@ -7,6 +7,11 @@ on:
     paths:
       - '.bootstrap/**'
       - '.github/workflows/bootstrap-factory.yml'
+  pull_request:
+    branches:
+      - claude/youtube-shorts-automation-9dbrjx
+    paths:
+      - '.bootstrap-trigger'
 
 permissions:
   contents: write
@@ -104,5 +109,3 @@ jobs:
             public/audio/narration.txt
           if-no-files-found: warn
           retention-days: 7
-
-# Triggered after the workflow existed on the default branch.
