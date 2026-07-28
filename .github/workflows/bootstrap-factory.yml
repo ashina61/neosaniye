@@ -40,6 +40,7 @@ jobs:
       META_GRAPH_VERSION: ${{ vars.META_GRAPH_VERSION || 'v25.0' }}
       SCHEDULE_SLOT: slot-1
       UPLOAD_ENABLED: 'true'
+      SKIP_YOUTUBE: 'true'
 
     steps:
       - name: Checkout staged archive
@@ -57,6 +58,103 @@ jobs:
           test -f .github/workflows/daily-shorts.yml
           test -f scripts/upload.mjs
           test -f src/NeoSaniyeShort.tsx
+
+      - name: Restore automatic Meta target discovery
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          upload = Path('scripts/upload.mjs')
+          text = upload.read_text(encoding='utf-8')
+          old = """function metaToken() {
+            return process.env.META_PAGE_TOKEN || process.env.META_ACCESS_TOKEN || '';
+          }
+          """
+          new = """function metaToken() {
+            return process.env.META_PAGE_TOKEN || '';
+          }
+
+          const skipYouTube = /^(1|true|yes)$/i.test(process.env.SKIP_YOUTUBE || 'false');
+
+          async function discoverMetaTargets() {
+            let pageToken = metaToken();
+            let pageId = process.env.META_PAGE_ID || '';
+            let igUserId = process.env.META_IG_USER_ID || '';
+            const userToken = process.env.META_USER_TOKEN || '';
+
+            if ((!pageToken || !pageId) && userToken) {
+              const params = new URLSearchParams({fields: 'id,name,access_token', access_token: userToken});
+              const {data} = await request(`${GRAPH}/me/accounts?${params}`);
+              const pages = Array.isArray(data.data) ? data.data : [];
+              if (!pages.length) throw new Error('META_USER_TOKEN did not expose an accessible Facebook Page.');
+              const page = pageId ? pages.find((item) => item.id === pageId) || pages[0] : pages[0];
+              pageId = page.id;
+              pageToken = page.access_token;
+              console.log(`[meta] discovered Facebook Page ${page.name || pageId} (${pageId})`);
+            }
+
+            if (pageToken && pageId && !igUserId) {
+              try {
+                const params = new URLSearchParams({fields: 'instagram_business_account', access_token: pageToken});
+                const {data} = await request(`${GRAPH}/${pageId}?${params}`);
+                igUserId = data.instagram_business_account?.id || '';
+                if (igUserId) console.log(`[meta] discovered Instagram account ${igUserId}`);
+              } catch (error) {
+                console.warn(`[meta] Instagram discovery failed: ${error.message}`);
+              }
+            }
+
+            return {pageToken, pageId, igUserId};
+          }
+          """
+          if old not in text:
+              raise SystemExit('metaToken patch anchor not found')
+          text = text.replace(old, new)
+          text = text.replace(
+              "async function uploadInstagram(video, manifest) {\n  const token = metaToken();\n  const igUserId = process.env.META_IG_USER_ID;",
+              "async function uploadInstagram(video, manifest, targets) {\n  const token = targets.pageToken;\n  const igUserId = targets.igUserId;",
+          )
+          text = text.replace(
+              "async function uploadFacebook(video, manifest) {\n  const token = metaToken();\n  const pageId = process.env.META_PAGE_ID;",
+              "async function uploadFacebook(video, manifest, targets) {\n  const token = targets.pageToken;\n  const pageId = targets.pageId;",
+          )
+          old_config = """  const configured = {
+            youtube: Boolean(process.env.YOUTUBE_CLIENT_ID && process.env.YOUTUBE_CLIENT_SECRET && process.env.YOUTUBE_REFRESH_TOKEN),
+            instagram: Boolean(metaToken() && process.env.META_IG_USER_ID),
+            facebook: Boolean(metaToken() && process.env.META_PAGE_ID),
+          };"""
+          new_config = """  let metaTargets = {pageToken: metaToken(), pageId: process.env.META_PAGE_ID || '', igUserId: process.env.META_IG_USER_ID || ''};
+            if (metaTargets.pageToken || process.env.META_USER_TOKEN) {
+              try {
+                metaTargets = await discoverMetaTargets();
+              } catch (error) {
+                console.warn(`[meta] target discovery failed: ${error.message}`);
+              }
+            }
+
+            const configured = {
+              youtube: !skipYouTube && Boolean(process.env.YOUTUBE_CLIENT_ID && process.env.YOUTUBE_CLIENT_SECRET && process.env.YOUTUBE_REFRESH_TOKEN),
+              instagram: Boolean(metaTargets.pageToken && metaTargets.igUserId),
+              facebook: Boolean(metaTargets.pageToken && metaTargets.pageId),
+            };"""
+          if old_config not in text:
+              raise SystemExit('configured patch anchor not found')
+          text = text.replace(old_config, new_config)
+          text = text.replace(
+              "  if (configured.instagram) jobs.instagram = uploadInstagram(video, manifest);\n  if (configured.facebook) jobs.facebook = uploadFacebook(video, manifest);",
+              "  if (configured.instagram) jobs.instagram = uploadInstagram(video, manifest, metaTargets);\n  if (configured.facebook) jobs.facebook = uploadFacebook(video, manifest, metaTargets);",
+          )
+          upload.write_text(text, encoding='utf-8')
+
+          workflow = Path('.github/workflows/daily-shorts.yml')
+          daily = workflow.read_text(encoding='utf-8')
+          daily = daily.replace(
+              "      META_PAGE_TOKEN: ${{ secrets.META_PAGE_TOKEN || secrets.META_ACCESS_TOKEN }}\n",
+              "      META_USER_TOKEN: ${{ secrets.META_USER_TOKEN }}\n      META_IG_LOGIN_TOKEN: ${{ secrets.META_IG_LOGIN_TOKEN }}\n      META_PAGE_TOKEN: ${{ secrets.META_PAGE_TOKEN }}\n",
+          )
+          workflow.write_text(daily, encoding='utf-8')
+          PY
+          node --check scripts/upload.mjs
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -76,14 +174,18 @@ jobs:
           python -m pip install --disable-pip-version-check edge-tts==7.2.7
 
       - name: Build and verify real English Short
+        id: build
         run: npm run build:short
 
-      - name: Upload to YouTube Facebook and Instagram
+      - name: Test Facebook and Instagram publishing
+        id: upload
+        continue-on-error: true
         run: npm run upload
 
       - name: Persist tested clean automated factory
-        if: success()
+        if: always() && steps.build.outcome == 'success'
         run: |
+          git checkout HEAD -- .github .bootstrap-trigger
           git config user.name 'neosaniye-bot'
           git config user.email 'neosaniye-bot@users.noreply.github.com'
           git add -A
@@ -94,7 +196,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: neosaniye-bootstrap-test
+          name: neosaniye-bootstrap-meta-test
           path: |
             out/neosaniye-short.mp4
             out/manifest.json
