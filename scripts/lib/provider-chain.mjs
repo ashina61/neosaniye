@@ -6,7 +6,7 @@ const deadProviders = new Set();
 function secret(...names) {
   for (const name of names) {
     const value = process.env[name];
-    if (value) return value;
+    if (typeof value === 'string' && value.trim()) return value.trim();
   }
   return null;
 }
@@ -26,9 +26,11 @@ async function request(url, options = {}, attempts = 2) {
     try {
       const response = await fetch(url, {...options, signal: controller.signal});
       if (response.ok) return response;
+
       const body = await response.text();
       const error = new Error(`HTTP ${response.status}: ${body.slice(0, 1400)}`);
-      if ((response.status === 429 || response.status >= 500) && attempt < attempts) {
+      const retryable = response.status === 429 || response.status >= 500;
+      if (retryable && attempt < attempts) {
         await sleep(retryDelay(response, body));
         lastError = error;
         continue;
@@ -36,7 +38,9 @@ async function request(url, options = {}, attempts = 2) {
       throw error;
     } catch (error) {
       lastError = error;
-      if (attempt >= attempts) throw error;
+      const status = Number(error?.status || String(error?.message || '').match(/HTTP\s+(\d{3})/)?.[1] || 0);
+      const retryable = !status || status === 429 || status >= 500;
+      if (!retryable || attempt >= attempts) throw error;
       await sleep(3000 * attempt);
     } finally {
       clearTimeout(timer);
@@ -70,17 +74,46 @@ function walk(value, predicate) {
 }
 
 function geminiText(payload) {
-  if (typeof payload?.output_text === 'string') return payload.output_text;
-  const block = walk(payload, (value) => Boolean(value && typeof value === 'object' && value.type === 'text' && typeof value.text === 'string'));
-  if (block?.text) return block.text;
-  throw new Error('Gemini response contained no text.');
+  if (typeof payload?.output_text === 'string' && payload.output_text.trim()) return payload.output_text;
+
+  const textBlock = walk(payload, (value) => Boolean(
+    value &&
+    typeof value === 'object' &&
+    (value.type === 'text' || value.type === 'output_text') &&
+    typeof value.text === 'string' &&
+    value.text.trim(),
+  ));
+  if (textBlock?.text) return textBlock.text;
+
+  const candidateText = payload?.candidates?.[0]?.content?.parts
+    ?.map((part) => part?.text)
+    .filter(Boolean)
+    .join('');
+  if (candidateText) return candidateText;
+
+  throw new Error(`Gemini response contained no text: ${JSON.stringify(payload).slice(0, 600)}`);
 }
 
 function geminiImage(payload) {
   if (typeof payload?.output_image?.data === 'string') return payload.output_image.data;
-  const block = walk(payload, (value) => Boolean(value && typeof value === 'object' && value.type === 'image' && typeof value.data === 'string'));
-  if (block?.data) return block.data;
-  throw new Error('Gemini response contained no image.');
+
+  const imageBlock = walk(payload, (value) => Boolean(
+    value &&
+    typeof value === 'object' &&
+    value.type === 'image' &&
+    typeof value.data === 'string',
+  ));
+  if (imageBlock?.data) return imageBlock.data;
+
+  const inlineBlock = walk(payload, (value) => Boolean(
+    value &&
+    typeof value === 'object' &&
+    (typeof value?.inlineData?.data === 'string' || typeof value?.inline_data?.data === 'string'),
+  ));
+  if (inlineBlock?.inlineData?.data) return inlineBlock.inlineData.data;
+  if (inlineBlock?.inline_data?.data) return inlineBlock.inline_data.data;
+
+  throw new Error(`Gemini response contained no image: ${JSON.stringify(payload).slice(0, 600)}`);
 }
 
 async function openAiText({url, apiKey, model, prompt, headers = {}}) {
@@ -91,6 +124,8 @@ async function openAiText({url, apiKey, model, prompt, headers = {}}) {
     body: JSON.stringify({
       model,
       temperature: 0.45,
+      max_tokens: 2200,
+      response_format: {type: 'json_object'},
       messages: [
         {role: 'system', content: 'Return only valid JSON. Do not use Markdown.'},
         {role: 'user', content: prompt},
@@ -98,7 +133,9 @@ async function openAiText({url, apiKey, model, prompt, headers = {}}) {
     }),
   });
   const data = await response.json();
-  return data?.choices?.[0]?.message?.content || data?.choices?.[0]?.text || '';
+  const text = data?.choices?.[0]?.message?.content || data?.choices?.[0]?.text || '';
+  if (!text) throw new Error(`Provider returned no text: ${JSON.stringify(data).slice(0, 500)}`);
+  return text;
 }
 
 const storyProviders = {
@@ -126,10 +163,14 @@ const storyProviders = {
     prompt,
   }),
   'github-models': (prompt) => openAiText({
-    url: 'https://models.inference.ai.azure.com/chat/completions',
+    url: 'https://models.github.ai/inference/chat/completions',
     apiKey: secret('GITHUB_MODELS_TOKEN', 'GITHUB_TOKEN'),
-    model: process.env.GITHUB_MODELS_MODEL || 'gpt-4o-mini',
+    model: process.env.GITHUB_MODELS_MODEL || 'openai/gpt-4o',
     prompt,
+    headers: {
+      accept: 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2026-03-10',
+    },
   }),
   mistral: (prompt) => openAiText({
     url: 'https://api.mistral.ai/v1/chat/completions',
@@ -148,7 +189,9 @@ const storyProviders = {
       body: JSON.stringify({prompt, max_tokens: 4000}),
     });
     const data = await response.json();
-    return data?.result?.response || data?.result?.text || '';
+    const text = data?.result?.response || data?.result?.text || '';
+    if (!text) throw new Error(`Cloudflare returned no text: ${JSON.stringify(data).slice(0, 500)}`);
+    return text;
   },
   openrouter: (prompt) => openAiText({
     url: 'https://openrouter.ai/api/v1/chat/completions',
@@ -159,22 +202,28 @@ const storyProviders = {
   }),
 };
 
-export async function generateStoryJson(prompt) {
+export async function generateStoryJson(prompt, validate) {
   const chain = (process.env.STORY_PROVIDER_CHAIN || 'gemini,groq,cerebras,github-models,mistral,cloudflare,openrouter')
     .split(',').map((item) => item.trim().toLowerCase()).filter(Boolean);
   const errors = [];
+
   for (const name of chain) {
     if (deadProviders.has(`story:${name}`) || !storyProviders[name]) continue;
     try {
+      console.log(`[story] trying provider: ${name}`);
       const text = await storyProviders[name](prompt);
-      const value = jsonObject(text);
+      const raw = jsonObject(text);
+      const value = typeof validate === 'function' ? validate(raw, name) : raw;
+      console.log(`[story] provider succeeded: ${name}`);
       return {value, provider: name};
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      errors.push(`${name}: ${message.slice(0, 180)}`);
+      console.warn(`[story] provider failed: ${name}: ${message.slice(0, 500)}`);
+      errors.push(`${name}: ${message.slice(0, 240)}`);
       if (/secret-not-configured|401|403|429|quota|payment/i.test(message)) deadProviders.add(`story:${name}`);
     }
   }
+
   throw new Error(`Story providers exhausted: ${errors.join(' | ')}`);
 }
 
@@ -186,14 +235,23 @@ const imageProviders = {
   gemini: async ({prompt, styleReference, aspectRatio}) => {
     const apiKey = secret('GEMINI_API_KEY', 'GOOGLE_API_KEY');
     if (!apiKey) throw new Error('secret-not-configured');
-    const model = process.env.GEMINI_IMAGE_MODEL || 'gemini-3.1-flash-lite-image';
+    const model = process.env.GEMINI_IMAGE_MODEL || 'gemini-3.1-flash-image';
     const input = [];
     if (styleReference) input.push({type: 'image', mime_type: 'image/jpeg', data: styleReference});
     input.push({type: 'text', text: prompt});
     const response = await request('https://generativelanguage.googleapis.com/v1beta/interactions', {
       method: 'POST',
       headers: {'x-goog-api-key': apiKey, 'content-type': 'application/json', 'Api-Revision': '2026-05-20'},
-      body: JSON.stringify({model, input, response_format: {type: 'image', mime_type: 'image/jpeg', aspect_ratio: aspectRatio, image_size: process.env.GEMINI_IMAGE_SIZE || '1K'}}),
+      body: JSON.stringify({
+        model,
+        input,
+        response_format: {
+          type: 'image',
+          mime_type: 'image/jpeg',
+          aspect_ratio: aspectRatio,
+          image_size: process.env.GEMINI_IMAGE_SIZE || '1K',
+        },
+      }),
     }, 1);
     return {buffer: Buffer.from(geminiImage(await response.json()), 'base64'), extension: 'jpg', model};
   },
@@ -202,7 +260,9 @@ const imageProviders = {
     if (!apiKey) throw new Error('secret-not-configured');
     const {width, height} = dimensions(aspectRatio);
     const params = new URLSearchParams({model: process.env.POLLINATIONS_IMAGE_MODEL || 'flux', width: String(width), height: String(height), seed: String(seed), nologo: 'true'});
-    const response = await request(`https://gen.pollinations.ai/image/${encodeURIComponent(prompt)}?${params}`, {headers: {authorization: `Bearer ${apiKey}`, accept: 'image/*'}}, 1);
+    const response = await request(`https://gen.pollinations.ai/image/${encodeURIComponent(prompt)}?${params}`, {
+      headers: {authorization: `Bearer ${apiKey}`, accept: 'image/*'},
+    }, 1);
     return {buffer: Buffer.from(await response.arrayBuffer()), extension: (response.headers.get('content-type') || '').includes('png') ? 'png' : 'jpg', model: process.env.POLLINATIONS_IMAGE_MODEL || 'flux'};
   },
   cloudflare: async ({prompt, aspectRatio, seed}) => {
@@ -251,17 +311,22 @@ export async function generateImageWithFallback({prompt, styleReference, aspectR
   const chain = (process.env.IMAGE_PROVIDER_CHAIN || 'gemini,pollinations,cloudflare,together,huggingface')
     .split(',').map((item) => item.trim().toLowerCase()).filter(Boolean);
   const errors = [];
+
   for (const name of chain) {
     if (deadProviders.has(`image:${name}`) || !imageProviders[name]) continue;
     try {
+      console.log(`[image] trying provider: ${name}`);
       const result = await imageProviders[name]({prompt, styleReference, aspectRatio, seed});
       if (!result.buffer || result.buffer.length < 3000) throw new Error('invalid-image-bytes');
+      console.log(`[image] provider succeeded: ${name}`);
       return {...result, provider: name};
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      errors.push(`${name}: ${message.slice(0, 180)}`);
+      console.warn(`[image] provider failed: ${name}: ${message.slice(0, 500)}`);
+      errors.push(`${name}: ${message.slice(0, 240)}`);
       if (/secret-not-configured|401|403|429|quota|payment/i.test(message)) deadProviders.add(`image:${name}`);
     }
   }
+
   throw new Error(`Image providers exhausted: ${errors.join(' | ')}`);
 }
