@@ -1,1 +1,1 @@
-Retry the same two no-upload asset candidates after switching Gemini to its supported JPEG response format.
+Run the two pilot asset candidates through Gemini, Pollinations, Cloudflare, Together and Hugging Face. No render and no social upload.
