@@ -1,0 +1,84 @@
+name: Generate Story Assets — No Upload
+
+on:
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: Topic asset manifest name
+        required: true
+        default: first-traffic-light
+        type: string
+      providers:
+        description: Comma-separated providers
+        required: true
+        default: gemini,openai,bfl,stability
+        type: string
+      asset_ids:
+        description: Optional comma-separated asset IDs; blank uses candidateTest from manifest
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: neosaniye-asset-candidates-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  generate-candidates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      UPLOAD_ENABLED: 'false'
+      ASSET_TOPIC: ${{ inputs.topic }}
+      ASSET_PROVIDERS: ${{ inputs.providers }}
+      ASSET_IDS: ${{ inputs.asset_ids }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      BFL_API_KEY: ${{ secrets.BFL_API_KEY }}
+      FLUX_API_KEY: ${{ secrets.FLUX_API_KEY }}
+      STABILITY_API_KEY: ${{ secrets.STABILITY_API_KEY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Safety lock — generation only
+        run: |
+          test "$UPLOAD_ENABLED" = "false"
+          test ! -f scripts/upload.mjs
+          echo "Asset candidate mode only. No video render or social publishing step exists in this workflow."
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install lightweight dependencies
+        run: |
+          npm install --no-audit --no-fund
+          python -m pip install --disable-pip-version-check pillow==11.3.0
+          node --check scripts/generate-assets.mjs
+          python -m py_compile scripts/inspect-assets.py
+
+      - name: Generate and inspect image candidates
+        run: npm run assets:generate
+
+      - name: Upload candidate comparison artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: neosaniye-${{ inputs.topic }}-asset-candidates
+          path: |
+            out/asset-candidates/${{ inputs.topic }}/**
+            content/assets/${{ inputs.topic }}.json
+          if-no-files-found: warn
+          retention-days: 7

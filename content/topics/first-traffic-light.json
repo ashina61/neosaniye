@@ -2,14 +2,17 @@
   "slug": "first-traffic-light",
   "title": "The First Traffic Light Exploded",
   "source": "Science Museum — Romans to raves: A history of roads and motorways",
-  "narration": "The world's first traffic light did not control cars. It stood outside Britain's Houses of Parliament in 1868, where horse-drawn traffic had become dangerous. The signal used two semaphore arms: one meant stop, the other caution. At night, a gas lamp displayed red and green. A police officer had to operate the whole machine by hand. Then gas leaked. The signal exploded, injuring the officer, and London's experiment was abandoned. The modern traffic light began as a Victorian machine that literally blew itself up.",
+  "targetDurationSeconds": 42,
+  "minimumDurationSeconds": 40,
+  "maximumDurationSeconds": 45,
+  "narration": "The world's first traffic light appeared before cars existed. In 1868, horse-drawn carriages jammed the streets outside Britain's Houses of Parliament, so railway engineer John Peake Knight adapted a semaphore signal for the road. Two mechanical arms told drivers to stop or move with caution. After dark, a gas lamp rotated red and green lenses into view. A police officer stood beside the machine and worked its lever by hand. But gas began leaking beneath the lamp. Less than a month after installation, the signal exploded, injuring the officer. London abandoned the experiment. Decades later, electric signals returned—and today's traffic lights grew from a Victorian machine that failed spectacularly.",
   "beats": [
-    {"id":"hook","trigger":"world's first traffic light","label":"A Victorian invention","grammar":"push-through","transitionOut":"match-object"},
-    {"id":"setup","trigger":"Houses of Parliament","label":"London, 1868","grammar":"editorial-collage","transitionOut":"hard-cut"},
-    {"id":"semaphore","trigger":"two semaphore arms","label":"Stop / caution","grammar":"mechanism","transitionOut":"match-object"},
-    {"id":"night","trigger":"At night","label":"Gas-lit colors","grammar":"light-rig","transitionOut":"occlusion"},
-    {"id":"operator","trigger":"police officer","label":"Manually operated","grammar":"character-portrait","transitionOut":"hard-cut"},
-    {"id":"explosion","trigger":"Then gas leaked","label":"The failure","grammar":"impact","transitionOut":"paper-reveal"},
-    {"id":"payoff","trigger":"modern traffic light","label":"A failed beginning","grammar":"payoff","transitionOut":"hard-cut"}
+    {"id":"hook","trigger":"world's first traffic light","label":"Before cars existed","grammar":"push-through","transitionOut":"match-object"},
+    {"id":"setup","trigger":"In 1868","label":"London, 1868","grammar":"editorial-collage","transitionOut":"hard-cut"},
+    {"id":"semaphore","trigger":"Two mechanical arms","label":"Stop / caution","grammar":"mechanism","transitionOut":"match-object"},
+    {"id":"night","trigger":"After dark","label":"Gas-lit colors","grammar":"light-rig","transitionOut":"match-object"},
+    {"id":"operator","trigger":"A police officer","label":"Manual control","grammar":"character-portrait","transitionOut":"hard-cut"},
+    {"id":"explosion","trigger":"gas began leaking","label":"Leak / ignition","grammar":"tension-impact","transitionOut":"occlusion"},
+    {"id":"payoff","trigger":"Decades later","label":"From gas to electric","grammar":"payoff","transitionOut":"hard-cut"}
   ]
 }
