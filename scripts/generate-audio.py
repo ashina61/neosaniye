@@ -23,19 +23,19 @@ VOICE_OFFSET_FRAMES = 12
 SAMPLE_RATE = 22050
 random.seed(61)
 
-NARRATION = """Venüs'te bir gün, bir yıldan daha uzun.
+NARRATION = """A day on Venus is longer than a year on Venus.
 
-Ama burada küçük bir ayrıntı var. Bu, Güneş'in gökyüzündeki turu değil; gezegenin kendi eksenindeki tam dönüşü.
+But there is a catch. Here, day means one full rotation on its axis, not sunrise to sunrise.
 
-Venüs bir kez dönmek için 243 Dünya günü harcıyor.
+Venus needs 243 Earth days to complete one rotation.
 
-Güneş'in çevresindeki bir yılıysa yalnızca 225 Dünya günü sürüyor.
+But it circles the Sun in only 225 Earth days.
 
-Yani Venüs, kendi etrafındaki dönüşünü tamamlayamadan yeni yılı geliyor.
+So a Venusian year ends before the planet finishes turning once.
 
-Üstelik ters yönde döndüğü için Güneş batıdan doğup doğuda batıyor gibi görünür.
+It also spins backwards compared with most planets, so the Sun appears to rise in the west and set in the east.
 
-Gün doğumundan gün doğumuna geçen güneş günü ise yaklaşık 117 Dünya günü. Venüs'te zaman gerçekten ters köşe."""
+And the time from one sunrise to the next is about 117 Earth days. On Venus, even the calendar loses the argument."""
 
 
 def clamp(value: float, lo: float = -1.0, hi: float = 1.0) -> float:
@@ -98,6 +98,8 @@ def generate_music() -> None:
 def generate_sfx() -> None:
     n1 = noise(225)
     n2 = noise(117)
+    n3 = noise(243)
+
     write_wav(AUDIO / 'impact.wav', 1.4, lambda t, d: math.sin(2 * math.pi * (82 - 38 * t) * t) * math.exp(-5.2 * t) * 0.92 + n1(t, 180) * math.exp(-18 * t) * 0.28)
     write_wav(AUDIO / 'whoosh-a.wav', 1.1, lambda t, d: n1(t, 170) * (math.sin(math.pi * t / d) ** 2.1) * 0.58 + math.sin(2 * math.pi * (130 + 650 * (t / d) ** 2) * t) * (math.sin(math.pi * t / d) ** 2) * 0.1)
     write_wav(AUDIO / 'whoosh-b.wav', 0.75, lambda t, d: n2(t, 260) * (math.sin(math.pi * t / d) ** 2.5) * 0.68)
@@ -106,23 +108,40 @@ def generate_sfx() -> None:
     write_wav(AUDIO / 'chime.wav', 2.2, lambda t, d: (math.sin(2 * math.pi * 660 * t) + 0.62 * math.sin(2 * math.pi * 990 * t) + 0.35 * math.sin(2 * math.pi * 1320 * t)) * math.exp(-2.3 * t) * 0.24)
     write_wav(AUDIO / 'rumble.wav', 8.0, lambda t, d: math.sin(2 * math.pi * 38 * t) * 0.12 + math.sin(2 * math.pi * 24 * t) * 0.07 + n2(t, 14) * 0.025)
 
+    write_wav(AUDIO / 'swipe.wav', 0.52, lambda t, d: n3(t, 330) * (math.sin(math.pi * t / d) ** 2.8) * 0.7)
+    write_wav(AUDIO / 'glitch.wav', 0.46, lambda t, d: (n1(t, 900) * 0.34 + math.sin(2 * math.pi * (320 + 1200 * t) * t) * 0.16) * (1 if int(t * 38) % 3 else 0.15))
+    write_wav(AUDIO / 'riser.wav', 1.65, lambda t, d: n2(t, 95) * ((t / d) ** 1.7) * 0.34 + math.sin(2 * math.pi * (110 + 720 * (t / d) ** 2) * t) * ((t / d) ** 2) * 0.14)
+    write_wav(AUDIO / 'snap.wav', 0.35, lambda t, d: n3(t, 1200) * math.exp(-34 * t) * 0.64 + math.sin(2 * math.pi * 180 * t) * math.exp(-24 * t) * 0.28)
+    write_wav(AUDIO / 'sub-hit.wav', 1.8, lambda t, d: math.sin(2 * math.pi * (54 - 12 * t) * t) * math.exp(-2.8 * t) * 0.86 + n1(t, 45) * math.exp(-5 * t) * 0.09)
+
 
 def generate_voice() -> None:
     edge = shutil.which('edge-tts')
     if edge is None:
-        raise RuntimeError('edge-tts bulunamadı.')
+        raise RuntimeError('edge-tts was not found.')
+
     text_path = AUDIO / 'narration.txt'
     text_path.write_text(NARRATION, encoding='utf-8')
     last_error = None
-    for voice in ['tr-TR-AhmetNeural', 'tr-TR-EmelNeural']:
-        command = [edge, '--voice', voice, '--rate=+12%', '--pitch=-2Hz', '--file', str(text_path), '--write-media', str(AUDIO / 'voice.mp3'), '--write-subtitles', str(AUDIO / 'voice.srt')]
+
+    for voice in ['en-US-AndrewNeural', 'en-US-BrianNeural', 'en-US-GuyNeural']:
+        command = [
+            edge,
+            '--voice', voice,
+            '--rate=+18%',
+            '--pitch=-2Hz',
+            '--file', str(text_path),
+            '--write-media', str(AUDIO / 'voice.mp3'),
+            '--write-subtitles', str(AUDIO / 'voice.srt'),
+        ]
         try:
             subprocess.run(command, check=True)
-            print(f'Ses oluşturuldu: {voice}')
+            print(f'Voice generated with {voice}')
             return
         except subprocess.CalledProcessError as exc:
             last_error = exc
-    raise RuntimeError(f'Türkçe ses üretilemedi: {last_error}')
+
+    raise RuntimeError(f'English voice generation failed: {last_error}')
 
 
 def timestamp_to_seconds(value: str) -> float:
@@ -142,7 +161,7 @@ def parse_srt(path: Path) -> list[dict[str, object]]:
         end = round(timestamp_to_seconds(end_raw) * FPS) + VOICE_OFFSET_FRAMES
         cues.append({'start': start, 'end': max(end, start + 1), 'text': ' '.join(lines[2:])})
     if not cues:
-        raise RuntimeError('SRT zamanlaması çıkarılamadı.')
+        raise RuntimeError('SRT timing could not be parsed.')
     return cues
 
 
@@ -157,11 +176,11 @@ def generate_timing() -> None:
     cues = parse_srt(AUDIO / 'voice.srt')
     scenes = {
         'hook': 0,
-        'explain': cue_start(cues, 'küçük bir ayrıntı', 0.15),
+        'explain': cue_start(cues, 'there is a catch', 0.15),
         'rotation': cue_start(cues, '243', 0.32),
         'orbit': cue_start(cues, '225', 0.48),
-        'compare': cue_start(cues, 'Yani Venüs', 0.62),
-        'reverse': cue_start(cues, 'ters yönde', 0.74),
+        'compare': cue_start(cues, 'Venusian year', 0.62),
+        'reverse': cue_start(cues, 'spins backwards', 0.74),
         'solar': cue_start(cues, '117', 0.87),
     }
     total_frames = int(cues[-1]['end']) + 24
@@ -174,7 +193,7 @@ export const SCENES = {json.dumps(scenes, ensure_ascii=False, indent=2)} as cons
 export const TOTAL_FRAMES = {total_frames};
 """
     (GENERATED / 'timing.ts').write_text(output, encoding='utf-8')
-    print(f'Toplam süre: {total_frames / FPS:.2f} saniye')
+    print(f'Total duration: {total_frames / FPS:.2f} seconds')
 
 
 def main() -> int:
