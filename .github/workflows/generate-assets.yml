@@ -71,6 +71,7 @@ jobs:
         run: |
           npm install --no-audit --no-fund
           python -m pip install --disable-pip-version-check pillow==11.3.0
+          sed -i "s/mime_type: 'image\/png'/mime_type: 'image\/jpeg'/" scripts/generate-assets.mjs
           node --check scripts/generate-assets.mjs
           python -m py_compile scripts/inspect-assets.py
 
