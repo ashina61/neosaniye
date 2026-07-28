@@ -51,8 +51,8 @@ async function request(url, options = {}, attempts = 2) {
 }
 
 function jsonObject(text) {
-  const source = String(text || '').replace(/````(?:json)?/gi, '').replace(/```/g, '').trim();
-  const start = source.indexOf('{});
+  const source = String(text || '').replace(/```(?:json)?/gi, '').replace(/```/g, '').trim();
+  const start = source.indexOf('{');
   const end = source.lastIndexOf('}');
   if (start < 0 || end <= start) throw new Error(`Provider did not return JSON: ${source.slice(0, 500)}`);
   return JSON.parse(source.slice(start, end + 1));
@@ -92,7 +92,7 @@ function geminiText(payload) {
     .join('');
   if (candidateText) return candidateText;
 
-  throw new Error(`Gemini response contained no text: ${JSON.stringify(payload)}.slice(0, 600)`);
+  throw new Error(`Gemini response contained no text: ${JSON.stringify(payload).slice(0, 600)}`);
 }
 
 function imageBase64(payload) {
@@ -113,7 +113,7 @@ function imageBase64(payload) {
   if (block?.inline_data?.data) return block.inline_data.data;
   if (block?.data) return block.data;
 
-  throw new Error(`Provider response contained no image data: ${JSON.stringify(payload)}.slice(0, 600)`);
+  throw new Error(`Provider response contained no image data: ${JSON.stringify(payload).slice(0, 600)}`);
 }
 
 async function openAiText({url, apiKey, model, prompt, headers = {}}) {
@@ -134,7 +134,7 @@ async function openAiText({url, apiKey, model, prompt, headers = {}}) {
   });
   const data = await response.json();
   const text = data?.choices?.[0]?.message?.content || data?.choices?.[0]?.text || '';
-  if (!text) throw new Error(`Provider returned no text: ${JSON.stringify(data)}.slice(0, 500)`);
+  if (!text) throw new Error(`Provider returned no text: ${JSON.stringify(data).slice(0, 500)}`);
   return text;
 }
 
@@ -190,7 +190,7 @@ const storyProviders = {
     });
     const data = await response.json();
     const text = data?.result?.response || data?.result?.text || '';
-    if (!text) throw new Error(`Cloudflare returned no text: ${JSON.stringify(data)}.slice(0, 500)`);
+    if (!text) throw new Error(`Cloudflare returned no text: ${JSON.stringify(data).slice(0, 500)}`);
     return text;
   },
   openrouter: (prompt) => openAiText({
@@ -304,7 +304,7 @@ const imageProviders = {
       }),
     }, 1);
     const submitted = await response.json();
-    if (!submitted?.polling_url) throw new Error(`BFL returned no polling URL: ${JSON.stringify(submitted)}.slice(0, 500)`);
+    if (!submitted?.polling_url) throw new Error(`BFL returned no polling URL: ${JSON.stringify(submitted).slice(0, 500)}`);
 
     for (let attempt = 0; attempt < 120; attempt += 1) {
       await sleep(attempt < 10 ? 1000 : 2000);
@@ -317,7 +317,7 @@ const imageProviders = {
         return {buffer: Buffer.from(await image.arrayBuffer()), extension: 'png', model};
       }
       if (['Error', 'Failed', 'Request Moderated'].includes(result.status)) {
-        throw new Error(`BFL failed: ${JSON.stringify(result)}.slice(0, 800)`);
+        throw new Error(`BFL failed: ${JSON.stringify(result).slice(0, 800)}`);
       }
     }
     throw new Error('BFL generation timed out.');
