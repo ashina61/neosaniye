@@ -1,13 +1,20 @@
-name: Render Venus Short
+name: Render English Venus Short
 
 on:
   workflow_dispatch:
+  schedule:
+    # GitHub cron uses UTC. 15:00 UTC = 18:00 Europe/Istanbul.
+    - cron: '0 15 * * *'
   push:
     branches:
       - claude/youtube-shorts-automation-9dbrjx
 
 permissions:
   contents: read
+
+concurrency:
+  group: neosaniye-daily-render
+  cancel-in-progress: false
 
 jobs:
   render:
@@ -33,7 +40,7 @@ jobs:
           npm install --no-audit --no-fund
           python -m pip install --disable-pip-version-check edge-tts==7.2.7
 
-      - name: Generate Turkish voice, timing, music and SFX
+      - name: Generate English voice, timing, music and SFX
         run: npm run audio
 
       - name: Typecheck
@@ -45,7 +52,7 @@ jobs:
       - name: Upload video and timing report
         uses: actions/upload-artifact@v4
         with:
-          name: neosaniye-venus-short
+          name: neosaniye-venus-english-${{ github.run_number }}
           path: |
             out/neosaniye-venus.mp4
             public/audio/voice.srt
