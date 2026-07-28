@@ -1,15 +1,19 @@
 {
   "name": "neosaniye-remotion",
-  "version": "2.2.0",
+  "version": "4.0.0",
   "private": true,
-  "description": "NeoSaniye reusable editorial motion-storytelling factory",
+  "description": "NeoSaniye provider-fallback editorial collage Shorts factory",
   "scripts": {
     "start": "remotion studio src/index.ts",
+    "story:generate": "node scripts/generate-story.mjs",
+    "images:generate": "node scripts/generate-vox-images.mjs",
+    "story:compile": "node scripts/compile-vox-story.mjs",
+    "audio": "node scripts/generate-voice-and-timing.mjs",
     "assets:generate": "node scripts/generate-assets-free.mjs",
-    "audio": "python scripts/generate-audio.py",
     "typecheck": "tsc --noEmit",
-    "render": "remotion render src/index.ts NeoSaniyeTrafficLight out/neosaniye-first-traffic-light.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p",
-    "build:short": "npm run audio && npm run typecheck && npm run render"
+    "render": "remotion render src/index.ts NeoSaniyeVox out/neosaniye-vox.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p",
+    "factory": "npm run story:generate && npm run images:generate && npm run story:compile && npm run audio && npm run typecheck && npm run render",
+    "build:short": "npm run factory"
   },
   "dependencies": {
     "@remotion/cli": "4.0.500",
