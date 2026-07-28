@@ -39,7 +39,7 @@ async function request(url, options = {}, attempts = 2) {
       throw error;
     } catch (error) {
       lastError = error;
-      const status = Number(error?.status || String(error?.message || '').match(/HTTP\s+(\d{3})/)?.[1] || 0);
+      const status = Number(error?.status || String(error?.message || '').match(/HTTP\s+(\d{3})/)?[1] || 0);
       const retryable = !status || status === 429 || status >= 500;
       if (!retryable || attempt >= attempts) throw error;
       await sleep(3000 * attempt);
@@ -51,8 +51,8 @@ async function request(url, options = {}, attempts = 2) {
 }
 
 function jsonObject(text) {
-  const source = String(text || '').replace(/```(?:json)?/gi, '').replace(/```/g, '').trim();
-  const start = source.indexOf('{');
+  const source = String(text || '').replace(/````(?:json)?/gi, '').replace(/```/g, '').trim();
+  const start = source.indexOf('{});
   const end = source.lastIndexOf('}');
   if (start < 0 || end <= start) throw new Error(`Provider did not return JSON: ${source.slice(0, 500)}`);
   return JSON.parse(source.slice(start, end + 1));
@@ -92,7 +92,7 @@ function geminiText(payload) {
     .join('');
   if (candidateText) return candidateText;
 
-  throw new Error(`Gemini response contained no text: ${JSON.stringify(payload).slice(0, 600)}`);
+  throw new Error(`Gemini response contained no text: ${JSON.stringify(payload)}.slice(0, 600)`);
 }
 
 function imageBase64(payload) {
@@ -113,7 +113,7 @@ function imageBase64(payload) {
   if (block?.inline_data?.data) return block.inline_data.data;
   if (block?.data) return block.data;
 
-  throw new Error(`Provider response contained no image data: ${JSON.stringify(payload).slice(0, 600)}`);
+  throw new Error(`Provider response contained no image data: ${JSON.stringify(payload)}.slice(0, 600)`);
 }
 
 async function openAiText({url, apiKey, model, prompt, headers = {}}) {
@@ -134,7 +134,7 @@ async function openAiText({url, apiKey, model, prompt, headers = {}}) {
   });
   const data = await response.json();
   const text = data?.choices?.[0]?.message?.content || data?.choices?.[0]?.text || '';
-  if (!text) throw new Error(`Provider returned no text: ${JSON.stringify(data).slice(0, 500)}`);
+  if (!text) throw new Error(`Provider returned no text: ${JSON.stringify(data)}.slice(0, 500)`);
   return text;
 }
 
@@ -190,7 +190,7 @@ const storyProviders = {
     });
     const data = await response.json();
     const text = data?.result?.response || data?.result?.text || '';
-    if (!text) throw new Error(`Cloudflare returned no text: ${JSON.stringify(data).slice(0, 500)}`);
+    if (!text) throw new Error(`Cloudflare returned no text: ${JSON.stringify(data)}.slice(0, 500)`);
     return text;
   },
   openrouter: (prompt) => openAiText({
@@ -304,7 +304,7 @@ const imageProviders = {
       }),
     }, 1);
     const submitted = await response.json();
-    if (!submitted?.polling_url) throw new Error(`BFL returned no polling URL: ${JSON.stringify(submitted).slice(0, 500)}`);
+    if (!submitted?.polling_url) throw new Error(`BFL returned no polling URL: ${JSON.stringify(submitted)}.slice(0, 500)`);
 
     for (let attempt = 0; attempt < 120; attempt += 1) {
       await sleep(attempt < 10 ? 1000 : 2000);
@@ -317,7 +317,7 @@ const imageProviders = {
         return {buffer: Buffer.from(await image.arrayBuffer()), extension: 'png', model};
       }
       if (['Error', 'Failed', 'Request Moderated'].includes(result.status)) {
-        throw new Error(`BFL failed: ${JSON.stringify(result).slice(0, 800)}`);
+        throw new Error(`BFL failed: ${JSON.stringify(result)}.slice(0, 800)`);
       }
     }
     throw new Error('BFL generation timed out.');
@@ -343,8 +343,7 @@ const imageProviders = {
   },
 
   pollinations: async ({prompt, aspectRatio, seed}) => {
-    const apiKey = secret('POLLINATIONS_API_KEY');
-    if (!apiKey) throw new Error('secret-not-configured');
+    // Pollinations.ai works WITHOUT an API key — fully free & unlimited
     const {width, height} = dimensions(aspectRatio);
     const params = new URLSearchParams({
       model: process.env.POLLINATIONS_IMAGE_MODEL || 'flux',
@@ -352,10 +351,11 @@ const imageProviders = {
       height: String(height),
       seed: String(seed),
       nologo: 'true',
+      private: 'true',
     });
-    const response = await request(`https://gen.pollinations.ai/image/${encodeURIComponent(prompt)}?${params}`, {
-      headers: {authorization: `Bearer ${apiKey}`, accept: 'image/*'},
-    }, 1);
+    const response = await request(`https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?${params}`, {
+      headers: {accept: 'image/*'},
+    }, 2);
     return {
       buffer: Buffer.from(await response.arrayBuffer()),
       extension: (response.headers.get('content-type') || '').includes('png') ? 'png' : 'jpg',
@@ -397,7 +397,7 @@ const imageProviders = {
 };
 
 export async function generateImageWithFallback({prompt, styleReference, aspectRatio = '9:16', seed = 1868}) {
-  const chain = (process.env.IMAGE_PROVIDER_CHAIN || 'gemini,openai,bfl,stability,pollinations,cloudflare,together')
+  const chain = (process.env.IMAGE_PROVIDER_CHAIN || 'pollinations,together,gemini,cloudflare,openai,bfl,stability')
     .split(',').map((item) => item.trim().toLowerCase()).filter(Boolean);
   const errors = [];
 
@@ -414,6 +414,8 @@ export async function generateImageWithFallback({prompt, styleReference, aspectR
       console.warn(`[image] provider failed: ${name}: ${message.slice(0, 500)}`);
       errors.push(`${name}: ${message.slice(0, 240)}`);
       if (/secret-not-configured|401|402|403|429|quota|payment/i.test(message)) deadProviders.add(`image:${name}`);
+      // Cooldown between providers to avoid rate-limit cascades
+      await sleep(1500);
     }
   }
 
