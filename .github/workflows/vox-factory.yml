@@ -46,6 +46,11 @@ on:
       - claude/youtube-shorts-automation-9dbrjx
     paths:
       - .github/workflows/vox-factory.yml
+      - scripts/generate-story.mjs
+      - scripts/generate-vox-images.mjs
+      - scripts/compile-vox-story.mjs
+      - scripts/lib/story-schema.mjs
+      - src/vox/**
       - scripts/upload-youtube.mjs
 
 permissions:
@@ -59,9 +64,10 @@ concurrency:
 jobs:
   factory:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 120
     env:
       UPLOAD_ENABLED: 'true'
+      VOX_LAYER_MODE: 'true'
       VIDEO_TOPIC: ${{ inputs.topic || vars.DAILY_TOPIC || 'The world''s first traffic signal exploded' }}
       VIDEO_LANGUAGE: ${{ inputs.language || 'en' }}
       VIDEO_SCENE_COUNT: ${{ inputs.scene_count || '10' }}
@@ -103,10 +109,11 @@ jobs:
       - name: Upload configuration check
         run: |
           test "$UPLOAD_ENABLED" = "true"
+          test "$VOX_LAYER_MODE" = "true"
           test -n "$YOUTUBE_CLIENT_ID"
           test -n "$YOUTUBE_CLIENT_SECRET"
           test -n "$YOUTUBE_REFRESH_TOKEN"
-          echo "VOX render and YouTube upload enabled."
+          echo "Layered VOX render and YouTube upload enabled."
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -125,12 +132,12 @@ jobs:
           npm install --no-audit --no-fund
           python -m pip install --disable-pip-version-check edge-tts==7.2.7
 
-      - name: Generate story
+      - name: Generate PDF-grounded story and layer plans
         run: |
           npm run factory:preflight
           npm run story:generate
 
-      - name: Generate editorial collage images
+      - name: Generate four aligned collage layers per beat
         run: npm run images:generate
 
       - name: Compile story for Remotion
@@ -144,7 +151,7 @@ jobs:
           npm test
           npm run typecheck
 
-      - name: Render MP4
+      - name: Render layered MP4
         run: npm run render
 
       - name: Upload YouTube Short
@@ -154,7 +161,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: neosaniye-vox-${{ github.run_number }}
+          name: neosaniye-vox-layered-${{ github.run_number }}
           path: |
             out/neosaniye-vox.mp4
             out/factory/**
