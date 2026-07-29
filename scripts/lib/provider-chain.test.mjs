@@ -1,6 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {jsonObject} from './json-object.mjs';
+import {generateStoryJson} from './provider-chain.mjs';
+
+test('üretim sağlayıcı zinciri bağımlılıklarıyla birlikte yüklenir', () => {
+  assert.equal(typeof generateStoryJson, 'function');
+});
 
 // Bu, sahadaki gerçek regresyon: `indexOf('{}')` (BOŞ nesne) aranıyordu, bu
 // yüzden kusursuz JSON döndüren yedi sağlayıcının HEPSİ "Provider did not
