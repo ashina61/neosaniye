@@ -7,3 +7,26 @@ public/audio/*.srt
 .env.*
 .DS_Store
 *.log
+
+# Üretim çıktıları — build sonucu, kaynak değil. Bu satırlar eski .gitignore'da
+# vardı ve Remotion yeniden yazımında silindiler; sonuç olarak yerel çalışma
+# ağacında 2.4 GB render çıktısı takipsiz birikti.
+tmp/
+output/
+artifacts/
+*.mp4
+*.mp3
+*.wav
+
+# İstisna: repoya konan telifsiz ses varlıkları İZLENİR.
+!assets/music/**
+!assets/audio/**/*.mp3
+!assets/sfx/**/*.wav
+!assets/sfx/**/*.mp3
+!assets/sfx/**/*.ogg
+!assets/sfx/**/*.m4a
+!assets/motion/sfx/*.wav
+
+# Kimlik bilgileri asla commit edilmez.
+serviceAccount*.json
+firebase-*.json
