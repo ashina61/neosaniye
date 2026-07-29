@@ -12,7 +12,6 @@
     "audio:bed": "node scripts/generate-audio-bed.mjs",
     "audio": "npm run audio:bed && node scripts/generate-voice-and-timing.mjs",
     "assets:generate": "node scripts/generate-assets.mjs",
-    "test": "node --test tests/*.test.mjs",
     "typecheck": "tsc --noEmit",
     "test": "node --test \"scripts/**/*.test.mjs\"",
     "render": "remotion render src/index.ts NeoSaniyeVox out/neosaniye-vox.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p",
