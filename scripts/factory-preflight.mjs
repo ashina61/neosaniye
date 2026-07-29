@@ -2,12 +2,12 @@ import {spawnSync} from 'node:child_process';
 import {mkdir, readFile, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
-import {evaluatePreflight} from './lib/preflight.mjs';
+import {commandVersionArguments, evaluatePreflight} from './lib/preflight.mjs';
 
 const ROOT = process.cwd();
 
 function commandAvailable(command) {
-  const result = spawnSync(command, ['--version'], {encoding: 'utf8', timeout: 15000});
+  const result = spawnSync(command, commandVersionArguments(command), {encoding: 'utf8', timeout: 15000});
   return !result.error && result.status === 0;
 }
 

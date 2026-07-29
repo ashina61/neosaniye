@@ -20,6 +20,10 @@ const IMAGE_REQUIREMENTS = {
 
 const configured = (env, alternatives) => alternatives.some((name) => typeof env[name] === 'string' && env[name].trim());
 
+export function commandVersionArguments(command) {
+  return command === 'ffmpeg' || command === 'ffprobe' ? ['-version'] : ['--version'];
+}
+
 function providerStatus(chain, requirements, env) {
   return chain.map((name) => {
     const groups = requirements[name];
