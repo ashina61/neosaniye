@@ -1,10 +1,27 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {mkdtemp, readFile, rm, writeFile} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import path from 'node:path';
+import {pathToFileURL} from 'node:url';
 import {jsonObject} from './json-object.mjs';
 import {generateStoryJson} from './provider-chain.mjs';
 
 test('üretim sağlayıcı zinciri bağımlılıklarıyla birlikte yüklenir', () => {
   assert.equal(typeof generateStoryJson, 'function');
+});
+
+test('sağlayıcı zinciri geçici tanı kopyasından da yüklenir', async (context) => {
+  const directory = await mkdtemp(path.join(tmpdir(), 'provider-chain-'));
+  context.after(async () => {
+    await rm(directory, {recursive: true, force: true});
+  });
+  const source = await readFile(new URL('./provider-chain.mjs', import.meta.url), 'utf8');
+  const copy = path.join(directory, 'provider-chain.mjs');
+  await writeFile(copy, source);
+
+  const diagnosticModule = await import(`${pathToFileURL(copy).href}?test=${Date.now()}`);
+  assert.equal(typeof diagnosticModule.generateStoryJson, 'function');
 });
 
 // Bu, sahadaki gerçek regresyon: `indexOf('{}')` (BOŞ nesne) aranıyordu, bu
