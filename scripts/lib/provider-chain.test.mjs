@@ -1,17 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFile, writeFile, mkdtemp} from 'node:fs/promises';
-import {tmpdir} from 'node:os';
-import path from 'node:path';
-
-// provider-chain.mjs `jsonObject`'i dışa aktarmıyor (iç yardımcı). Test etmek
-// için modülü geçici bir kopyaya yazıp export ekliyoruz — böylece üretim
-// dosyasının yüzeyini test uğruna genişletmiyoruz.
-const source = await readFile(new URL('./provider-chain.mjs', import.meta.url), 'utf8');
-const dir = await mkdtemp(path.join(tmpdir(), 'pc-'));
-const copy = path.join(dir, 'pc.mjs');
-await writeFile(copy, `${source}\nexport {jsonObject};\n`);
-const {jsonObject} = await import(`file://${copy}`);
+import {jsonObject} from './json-object.mjs';
 
 // Bu, sahadaki gerçek regresyon: `indexOf('{}')` (BOŞ nesne) aranıyordu, bu
 // yüzden kusursuz JSON döndüren yedi sağlayıcının HEPSİ "Provider did not

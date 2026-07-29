@@ -52,52 +52,6 @@ async function request(url, options = {}, attempts = 2) {
   throw lastError || new Error('Provider request failed.');
 }
 
-function jsonObject(text) {
-  const source = String(text || '').replace(/```(?:json)?/gi, '').replace(/```/g, '').trim();
-
-  // NOT: burada uzun süre `indexOf('{}')` yazıyordu — yani BOŞ nesne aranıyordu.
-  // Sağlayıcı kusursuz JSON döndürse bile start=-1 olup "Provider did not return
-  // JSON" hatası atılıyordu; zincirdeki yedi sağlayıcının hepsi bu yüzden düştü.
-  const start = source.indexOf('{');
-  const end = source.lastIndexOf('}');
-  if (start < 0) throw new Error(`Provider returned no JSON object: ${source.slice(0, 500)}`);
-  if (end <= start) {
-    // Açılış süslü parantez var, kapanış yok => yanıt kesilmiş (finish_reason: length).
-    throw new Error(`Provider returned truncated JSON (no closing brace): ${source.slice(0, 500)}`);
-  }
-
-  const candidate = source.slice(start, end + 1);
-  try {
-    return JSON.parse(candidate);
-  } catch (error) {
-    // Son çare: ilk `{`den başlayıp dengeli biten nesneyi tara. Modelin JSON'dan
-    // sonra açıklama yazdığı ya da art arda iki nesne döndürdüğü durumları kurtarır.
-    const balanced = firstBalancedObject(source, start);
-    if (balanced) return JSON.parse(balanced);
-    throw new Error(`Provider returned unparsable JSON (${error.message}): ${candidate.slice(0, 500)}`);
-  }
-}
-
-/** `start` konumundaki `{` ile eşleşen kapanışa kadar olan dilimi döndür (string/escape farkında). */
-function firstBalancedObject(source, start) {
-  let depth = 0;
-  let inString = false;
-  let escaped = false;
-  for (let i = start; i < source.length; i += 1) {
-    const ch = source[i];
-    if (escaped) { escaped = false; continue; }
-    if (ch === '\\') { escaped = true; continue; }
-    if (ch === '"') { inString = !inString; continue; }
-    if (inString) continue;
-    if (ch === '{') depth += 1;
-    else if (ch === '}') {
-      depth -= 1;
-      if (depth === 0) return source.slice(start, i + 1);
-    }
-  }
-  return null;
-}
-
 function walk(value, predicate) {
   if (predicate(value)) return value;
   if (Array.isArray(value)) {
