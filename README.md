@@ -100,3 +100,5 @@ npm run vox:generate -- --topic "Dünyanın ilk trafik ışığı" --duration 40
 ```
 
 Ücretli servis çağrısı yapmadan bütün planlama zincirini denetlemek için `--dry-run` kullanın. `--resume`, checksum'u değişmeyen başarılı aşamaları atlar; `--force` yeniden üretir. `--from images`, `--only qc`, `--provider`, `--seed`, `--language` ve `--project output/first-traffic-light` desteklenir. Yerel sessiz ses ve SVG görseller yalnızca geliştirme fallback'idir; QC bunları production-ready saymaz. Upload kodu yoktur ve manuel onay zorunludur.
+
+Şu an doğrulanmış offline araştırma yalnızca ilk trafik ışığı acceptance fixture'ı için sağlanır. Diğer konular, bir live research provider eklenene kadar doğrulanmış iddia üretmeden açık ve eyleme dönük bir hata ile durur. `VOX_ENABLE_SCENE_HEADLINES` varsayılan olarak kapalıdır; narration caption ve yalnızca visual plan tarafından açıkça belirtilen tarih, yer, ad veya sayı label'ları ayrı katmanlardır.

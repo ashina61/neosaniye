@@ -1,0 +1,52 @@
+name: VOX Documentary Acceptance - Manual Only
+on:
+  workflow_dispatch:
+    inputs:
+      topic: {description: Verified fixture topic, required: true, default: "Dünyanın ilk trafik ışığı", type: string}
+      duration: {description: Duration in seconds, required: true, default: "40", type: string}
+      language: {description: Language, required: true, default: tr, type: choice, options: [tr]}
+      seed: {description: Deterministic seed, required: true, default: "1868", type: string}
+permissions:
+  contents: read
+jobs:
+  acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      AUTO_UPLOAD: "false"
+      REQUIRE_MANUAL_APPROVAL: "true"
+      ALLOW_PAID_GENERATION: "false"
+      ENABLE_AI_VIDEO: "false"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: 22, cache: npm}
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+      - run: npm ci --no-audit --no-fund
+      - name: Safety lock and validation
+        run: |
+          test "$AUTO_UPLOAD" = false
+          test "$ALLOW_PAID_GENERATION" = false
+          test "$ENABLE_AI_VIDEO" = false
+          npm test
+          npm run typecheck
+          npm run lint
+      - name: Render verified fixture
+        run: npm run vox:generate -- --topic "${{ inputs.topic }}" --duration "${{ inputs.duration }}" --language "${{ inputs.language }}" --seed "${{ inputs.seed }}" --no-upload --force
+      - name: Upload acceptance evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: vox-acceptance-${{ github.run_number }}
+          path: |
+            output/**/final.mp4
+            output/**/research.json
+            output/**/script.json
+            output/**/beats.json
+            output/**/visual-plan.json
+            output/**/image-prompts.txt
+            output/**/captions.json
+            output/**/video-data.json
+            output/**/production-report.json
+            output/**/qc-report.json
+          if-no-files-found: error
+          retention-days: 7

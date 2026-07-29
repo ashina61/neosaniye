@@ -18,7 +18,8 @@
     "factory": "npm run factory:preflight && npm run story:generate && npm run images:generate && npm run story:compile && npm run audio && npm test && npm run typecheck && npm run render",
     "build:short": "npm run factory",
     "vox:generate": "node scripts/generate-vox-video.mjs",
-    "vox:test": "node --test \"scripts/vox/**/*.test.mjs\""
+    "vox:test": "node --test \"scripts/vox/**/*.test.mjs\"",
+    "lint": "node --check scripts/generate-vox-video.mjs && node --check scripts/vox/orchestrator.mjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.500",

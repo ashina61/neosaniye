@@ -10,3 +10,9 @@ export function researchTopic(topic){
   if(/trafik.*(ış|is)|traffic light/iu.test(topic)) return {...TRAFFIC,topic};
   return {topic,verifiedFacts:[],uncertainClaims:[{claim:'Bu konu için yapılandırılmış araştırma sağlayıcısı veya editör kaynağı yok.',reason:'no-provider'}],conflictingClaims:[],forbiddenClaims:[],visualObjects:[],warning:'Araştırma sağlayıcısı yok. Kritik iddialar doğrulanmadan render durdurulur.'};
 }
+
+export class ResearchProvider {
+  constructor(name, lookup) { this.name=name; this.lookup=lookup; }
+  async research(topic) { return this.lookup(topic); }
+}
+export const fixtureResearchProvider = new ResearchProvider('verified-fixture', researchTopic);
