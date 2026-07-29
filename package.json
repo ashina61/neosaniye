@@ -11,6 +11,7 @@
     "audio": "node scripts/generate-voice-and-timing.mjs",
     "assets:generate": "node scripts/generate-assets.mjs",
     "typecheck": "tsc --noEmit",
+    "test": "node --test \"scripts/**/*.test.mjs\"",
     "render": "remotion render src/index.ts NeoSaniyeVox out/neosaniye-vox.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p",
     "factory": "npm run story:generate && npm run images:generate && npm run story:compile && npm run audio && npm run typecheck && npm run render",
     "build:short": "npm run factory"
