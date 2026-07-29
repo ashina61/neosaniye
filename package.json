@@ -14,6 +14,7 @@
     "assets:generate": "node scripts/generate-assets.mjs",
     "test": "node --test tests/*.test.mjs",
     "typecheck": "tsc --noEmit",
+    "test": "node --test \"scripts/**/*.test.mjs\"",
     "render": "remotion render src/index.ts NeoSaniyeVox out/neosaniye-vox.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p",
     "factory": "npm run factory:preflight && npm run story:generate && npm run images:generate && npm run story:compile && npm run audio && npm test && npm run typecheck && npm run render",
     "build:short": "npm run factory"
