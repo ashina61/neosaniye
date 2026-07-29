@@ -80,3 +80,4 @@ const result = await upload.json();
 if (!result.id) throw new Error(`YouTube returned no video id: ${JSON.stringify(result)}`);
 console.log(`YOUTUBE_VIDEO_ID=${result.id}`);
 console.log(`YOUTUBE_VIDEO_URL=https://youtube.com/shorts/${result.id}`);
+// VOX upload pipeline trigger: 2026-07-29
