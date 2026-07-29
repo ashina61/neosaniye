@@ -16,7 +16,9 @@
     "test": "node --test \"scripts/**/*.test.mjs\"",
     "render": "remotion render src/index.ts NeoSaniyeVox out/neosaniye-vox.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p",
     "factory": "npm run factory:preflight && npm run story:generate && npm run images:generate && npm run story:compile && npm run audio && npm test && npm run typecheck && npm run render",
-    "build:short": "npm run factory"
+    "build:short": "npm run factory",
+    "vox:generate": "node scripts/generate-vox-video.mjs",
+    "vox:test": "node --test \"scripts/vox/**/*.test.mjs\""
   },
   "dependencies": {
     "@remotion/cli": "4.0.500",

@@ -1,0 +1,7 @@
+{
+  "research": ["editorial-fixture"],
+  "tts": ["edge-tts", "local-silence"],
+  "images": ["configured-provider", "local-placeholder"],
+  "imageRetries": 2,
+  "uploadEnabled": false
+}

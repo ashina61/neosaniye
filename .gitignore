@@ -5,6 +5,7 @@ public/audio/*.wav
 public/audio/*.srt
 .env
 .env.*
+!.env.example
 .DS_Store
 *.log
 
