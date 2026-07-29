@@ -30,3 +30,6 @@ artifacts/
 # Kimlik bilgileri asla commit edilmez.
 serviceAccount*.json
 firebase-*.json
+
+# Cutout ara dosyaları (ham indirmeler) sürümlenmez; üretilen alfa PNG sürümlenir.
+public/cutouts/.raw-*
