@@ -2,6 +2,7 @@ import {mkdir, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import {generateStoryJson} from './lib/provider-chain.mjs';
+import {validateStory} from './lib/story-schema.mjs';
 
 const ROOT = process.cwd();
 const output = path.join(ROOT, 'content', 'generated', 'current-story.json');
@@ -79,7 +80,7 @@ function normalize(raw, provider) {
   const narration = scenes.map((scene) => scene.voiceover).join(' ');
   const count = words(narration).length;
   if (count < 90 || count > 132) throw new Error(`Narration must be 90-132 words; received ${count}.`);
-  return {
+  return validateStory({
     version: 1,
     slug,
     topic,
@@ -95,7 +96,7 @@ function normalize(raw, provider) {
     scenes,
     generator: {provider},
     generatedAt: new Date().toISOString(),
-  };
+  });
 }
 
 async function main() {

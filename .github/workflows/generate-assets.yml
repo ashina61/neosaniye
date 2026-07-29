@@ -18,12 +18,6 @@ on:
         required: false
         default: ''
         type: string
-  pull_request:
-    branches:
-      - claude/youtube-shorts-automation-9dbrjx
-    paths:
-      - '.asset-trigger'
-
 permissions:
   contents: read
 
@@ -76,6 +70,7 @@ jobs:
         run: |
           npm install --no-audit --no-fund
           python -m pip install --disable-pip-version-check pillow==11.3.0
+          npm test
           node --check scripts/generate-assets.mjs
           python -m py_compile scripts/inspect-assets.py
 

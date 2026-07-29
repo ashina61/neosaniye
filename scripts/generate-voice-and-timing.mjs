@@ -2,6 +2,7 @@ import {mkdir, readFile, rm, writeFile} from 'node:fs/promises';
 import {spawnSync} from 'node:child_process';
 import path from 'node:path';
 import process from 'node:process';
+import {validateStory} from './lib/story-schema.mjs';
 
 const ROOT = process.cwd();
 const STORY = path.join(ROOT, 'content', 'generated', 'current-story.json');
@@ -52,11 +53,11 @@ function normalize(value) {
 function cueStart(cues, fragment, ratio) {
   const needle = normalize(fragment);
   const match = cues.find((cue) => normalize(cue.text).includes(needle));
-  return match ? match.start : Math.round((cues.at(-1)?.end || 0) * ratio);
+  return match ? match.startSeconds : (cues.at(-1)?.endSeconds || 0) * ratio;
 }
 
 async function main() {
-  const story = JSON.parse(await readFile(STORY, 'utf8'));
+  const story = validateStory(JSON.parse(await readFile(STORY, 'utf8')));
   await mkdir(AUDIO, {recursive: true});
   await mkdir(GENERATED, {recursive: true});
   const narration = String(story.narration || '').trim();
@@ -107,7 +108,10 @@ async function main() {
     text: cue.text,
   }));
   const beats = Array.isArray(story.beats) ? story.beats : story.scenes.map((scene) => ({id: scene.id, trigger: scene.voiceover}));
-  const starts = Object.fromEntries(beats.map((beat, index) => [String(beat.id), index === 0 ? 0 : cueStart(cues, beat.trigger, index / beats.length)]));
+  const starts = Object.fromEntries(beats.map((beat, index) => [
+    String(beat.id),
+    index === 0 ? 0 : Math.round(cueStart(scaled, beat.trigger, index / beats.length) * FPS) + VOICE_OFFSET_FRAMES,
+  ]));
   const totalFrames = Math.round(targetVideoSeconds * FPS);
   const timingModule = `export type CaptionCue = {start: number; end: number; text: string};\nexport const VOICE_OFFSET_FRAMES = ${VOICE_OFFSET_FRAMES};\nexport const CUES: CaptionCue[] = ${JSON.stringify(cues, null, 2)};\nexport const SCENES = ${JSON.stringify(starts, null, 2)} as const;\nexport const TOTAL_FRAMES = ${totalFrames};\nexport const VIDEO_SECONDS = ${(totalFrames / FPS).toFixed(3)};\n`;
   await writeFile(path.join(GENERATED, 'timing.ts'), timingModule, 'utf8');
