@@ -1,22 +1,16 @@
 {
-  "name": "neosaniye-remotion",
-  "version": "4.0.0",
+  "name": "neosaniye",
+  "version": "5.0.0",
   "private": true,
-  "description": "NeoSaniye provider-fallback editorial collage Shorts factory",
+  "type": "module",
+  "description": "NeoSaniye: editorial cut-paper collage Shorts factory (Remotion render engine)",
   "scripts": {
-    "start": "remotion studio src/index.ts",
-    "factory:preflight": "node scripts/factory-preflight.mjs",
-    "story:generate": "node scripts/generate-story.mjs",
-    "images:generate": "node scripts/generate-vox-images.mjs",
-    "story:compile": "node scripts/compile-vox-story.mjs",
-    "audio:bed": "node scripts/generate-audio-bed.mjs",
-    "audio": "npm run audio:bed && node scripts/generate-voice-and-timing.mjs",
-    "assets:generate": "node scripts/generate-assets.mjs",
+    "studio": "remotion studio src/index.ts",
+    "beats": "node pipeline/build-storyboard.mjs",
+    "render": "remotion render src/index.ts Short out/neosaniye.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p",
+    "render:still": "remotion still src/index.ts Short out/still.png",
     "typecheck": "tsc --noEmit",
-    "test": "node --test \"scripts/**/*.test.mjs\"",
-    "render": "remotion render src/index.ts NeoSaniyeVox out/neosaniye-vox.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p",
-    "factory": "npm run factory:preflight && npm run story:generate && npm run images:generate && npm run story:compile && npm run audio && npm test && npm run typecheck && npm run render",
-    "build:short": "npm run factory"
+    "test": "node --test \"test/**/*.test.mjs\""
   },
   "dependencies": {
     "@remotion/cli": "4.0.500",

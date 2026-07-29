@@ -1,0 +1,426 @@
+/**
+ * BEAT MOTORU
+ *
+ * Referans PDF'in beat matematiği: 2.5 kelime/saniye. Bir beat 2-3 saniye,
+ * yani 5-8 kelime. Kısa cümle bir beat; uzun cümle doğal virgülünden ikiye
+ * bölünür. Beat başına TEK görsel fikir.
+ *
+ * Burada API çağrısı yok: girdi düz metin, çıktı zamanlanmış beat listesi.
+ * Tamamen deterministik, bu yüzden test edilebilir.
+ */
+
+export const WORDS_PER_SECOND = 2.5;
+
+/** PDF'in beat sayısı sağlaması: süreye göre beklenen aralık. */
+export const BEAT_COUNT_RANGE = [
+  {seconds: 30, min: 12, max: 15},
+  {seconds: 60, min: 22, max: 30},
+  {seconds: 120, min: 45, max: 60},
+  {seconds: 180, min: 70, max: 90},
+  {seconds: 300, min: 115, max: 150},
+];
+
+export function wordCount(text) {
+  return String(text || '').trim().split(/\s+/).filter(Boolean).length;
+}
+
+/** Kelime sayısından saniye. PDF: 2.5 wps. */
+export function secondsForWords(words) {
+  return words / WORDS_PER_SECOND;
+}
+
+/**
+ * Cümle bitirmeyen kısaltmalar. İlk sürüm yalnızca tek harfli baş harfleri
+ * (U.S.) kolluyordu, o yüzden "He met Mr. Cooper in Seattle." iki cümleye
+ * bölünüyordu.
+ */
+const ABBREVIATIONS = new Set([
+  'mr', 'mrs', 'ms', 'dr', 'prof', 'sr', 'jr', 'st', 'mt', 'lt', 'col', 'gen', 'sgt', 'capt',
+  'rev', 'hon', 'pres', 'gov', 'sen', 'rep', 'vs', 'etc', 'inc', 'ltd', 'co', 'no', 'fig',
+  'jan', 'feb', 'mar', 'apr', 'jun', 'jul', 'aug', 'sep', 'sept', 'oct', 'nov', 'dec',
+  'approx', 'est', 'dept', 'univ',
+]);
+
+/** Sonlandırıcıdan hemen sonra gelebilen kapanış işaretleri. */
+const CLOSERS = new Set(['"', '”', "'", '’', ')', ']', '»']);
+
+/**
+ * Metni cümlelere böl.
+ *
+ * İki tuzak var, ikisi de testle kilitli:
+ *   1. Kısaltmadaki nokta ("Mr. Cooper") cümle bitirmez.
+ *   2. Kapanış tırnağı noktadan SONRA gelir ('… gone." Nobody …'), yani
+ *      sonlandırıcının ardından boşluk beklemek yetmez; kapanış işaretleri
+ *      önce yutulmalı.
+ */
+export function splitSentences(text) {
+  const t = String(text || '').replace(/\s+/g, ' ').trim();
+  if (!t) return [];
+
+  const out = [];
+  let buf = '';
+  const chars = [...t];
+
+  for (let i = 0; i < chars.length; i += 1) {
+    buf += chars[i];
+    if (!/[.!?]/.test(chars[i])) continue;
+
+    // Sonlandırıcıdan sonraki kapanış işaretlerini bu cümleye dahil et.
+    let j = i;
+    while (CLOSERS.has(chars[j + 1] ?? '')) {
+      j += 1;
+      buf += chars[j];
+    }
+
+    const next = chars[j + 1];
+    const after = chars[j + 2];
+    // Cümle sonu: metin bittiyse, ya da boşluk + (büyük harf/tırnak/rakam).
+    const ends = next === undefined || (next === ' ' && (after === undefined || /["“'‘A-Z0-9]/.test(after)));
+
+    // Sondaki token kısaltma mı, ya da tek harfli baş harf mi (U.S., J. Smith)?
+    const lastToken = buf.trim().split(/\s+/).pop() ?? '';
+    const stem = lastToken.replace(/[^A-Za-z]/g, '').toLowerCase();
+    const isAbbrev = /\.$/.test(lastToken) && (ABBREVIATIONS.has(stem) || /^[A-Za-z]$/.test(stem));
+
+    if (ends && !isAbbrev) {
+      out.push(buf.trim());
+      buf = '';
+      i = j;
+    } else {
+      i = j;
+    }
+  }
+
+  if (buf.trim()) out.push(buf.trim());
+  return out;
+}
+
+/**
+ * Uzun cümleyi doğal virgül/bağlaç noktasından ikiye böl.
+ * PDF: "uzun cümle doğal virgülünden ya da yan cümlesinden ayrılır".
+ */
+/**
+ * Bir beat'in altına düşmemesi gereken kelime sayısı.
+ *
+ * NEDEN VAR: ilk sürüm yalnızca "ortaya en yakın virgül"e bakıyordu. "In 1976,
+ * a man named Mau Piailug stepped onto a double-hulled canoe in Hawai'i."
+ * cümlesindeki tek virgül 1. konumdaydı, sonuç "In 1976," diye iki kelimelik
+ * bir beat oldu. İki kelime ne bir görsel fikir taşır ne de 0.8 saniyede
+ * okunur — sadece kesme gürültüsü üretir.
+ */
+export const MIN_WORDS_PER_BEAT = 4;
+
+/** Beat sonunda asılı kalmaması gereken işlev kelimeleri. */
+const DANGLING = new Set([
+  'of', 'and', 'or', 'the', 'a', 'an', 'to', 'in', 'on', 'at', 'for', 'with', 'from', 'by', 'as',
+  'his', 'her', 'their', 'its', 'that', 'which', 'but', 'into', 'onto', 'over', 'under',
+]);
+
+/** Sayı sözcüğü mü? "two hundred and twenty" ortadan bölünmemeli. */
+const IS_NUMBER_WORD =
+  /^(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion|dozen|\d[\d,.]*)$/i;
+
+const bare = (w) => String(w).toLowerCase().replace(/[^a-z0-9’'-]/g, '');
+
+/** `i` konumundan sonra bölmek sarkan kelime ya da kesik sayı bırakır mı? */
+function danglesAt(words, i) {
+  const endWord = bare(words[i]);
+  const nextWord = bare(words[i + 1] ?? '');
+  if (DANGLING.has(endWord)) return true;
+  // Sayı zincirinin ortası: "two hundred | and twenty"
+  if (IS_NUMBER_WORD.test(endWord) && (nextWord === 'and' || IS_NUMBER_WORD.test(nextWord))) return true;
+  if (endWord === 'and' && IS_NUMBER_WORD.test(nextWord)) return true;
+  return false;
+}
+
+/**
+ * Cümleyi maxWords'ü aşmayacak beat'lere böl.
+ *
+ * Kırılma noktası seçimi üç kuralı BİRLİKTE sağlamak zorunda:
+ *   1. iki taraf da MIN_WORDS_PER_BEAT tutacak
+ *   2. beat sarkan işlev kelimesiyle bitmeyecek ("…navigators of")
+ *   3. sayı zinciri ortadan kesilmeyecek ("two hundred | and twenty")
+ *
+ * Üçünü sağlayan nokta yoksa cümle BÖLÜNMEZ. Bir kelime uzun bir beat, anlamı
+ * kopmuş iki beat'ten iyidir. İlk sürüm bunu yapmıyordu: doğal aday sarkınca
+ * sarkan adaya geri dönüyor, aday hiç yokken de zorla bölüyordu.
+ */
+export function splitLongSentence(sentence, maxWords) {
+  const words = sentence.trim().split(/\s+/);
+  if (words.length <= maxWords) return [sentence.trim()];
+
+  const lo = MIN_WORDS_PER_BEAT - 1;
+  const hi = words.length - MIN_WORDS_PER_BEAT - 1;
+  if (hi < lo) return [sentence.trim()]; // bölmeye yer yok
+
+  // Aday kırılma noktaları: noktalama, sonra bağlaçlar.
+  const candidates = new Set();
+  words.forEach((w, i) => {
+    if (/[,;:]$/.test(w)) candidates.add(i);
+  });
+  const conj = new Set(['and', 'but', 'because', 'which', 'while', 'when', 'then', 'so', 'yet', 'that']);
+  words.forEach((w, i) => {
+    if (i > 0 && conj.has(bare(w))) candidates.add(i - 1);
+  });
+
+  const valid = (i) => i >= lo && i <= hi && !danglesAt(words, i);
+  const mid = words.length / 2;
+  const nearest = (list) => list.reduce((best, i) => (Math.abs(i - mid) < Math.abs(best - mid) ? i : best), list[0]);
+
+  // 1) Doğal ve temiz aday.
+  const natural = [...candidates].filter(valid);
+  let cut = natural.length ? nearest(natural) : -1;
+
+  // 2) Doğal aday yok: ortadan dışa doğru tarayıp temiz nokta ara.
+  if (cut < 0) {
+    const span = Math.max(hi - lo, 1);
+    for (let d = 0; d <= span && cut < 0; d += 1) {
+      const start = Math.round(mid) - 1;
+      for (const i of [start + d, start - d]) if (valid(i)) { cut = i; break; }
+    }
+  }
+
+  // 3) Temiz nokta hiç yok: bölme. Cümle olduğu gibi tek beat kalır.
+  if (cut < 0) return [sentence.trim()];
+
+  const first = words.slice(0, cut + 1).join(' ').trim();
+  const rest = words.slice(cut + 1).join(' ').trim();
+  if (!first || !rest) return [sentence.trim()];
+  return [first, ...splitLongSentence(rest, maxWords)];
+}
+
+/**
+ * BEAT TÜRÜ SINIFLANDIRMA
+ *
+ * Anlatının bu cümlede ne YAPTIĞINI belirler; şablon seçimi buna dayanır.
+ * Sıra önemli: daha özgül desenler önce denenir.
+ *
+ * Not: bu sınıflandırıcı yalnızca metne bakar. Görsel model tarafından yazılmış
+ * anahtar kelimelere değil — eski repoda o hata vardı: sahne anahtar kelimeleri
+ * ile görsel prompt'u aynı model yazdığı için her zaman birbirini onaylıyordu.
+ */
+/**
+ * YAZIYLA YAZILMIŞ SAYILAR
+ *
+ * Fern stili sayıları yazıyla yazar: "four thousand kilometres", "two hundred
+ * and twenty star positions", "Only five navigators". İlk sürüm `\d` arıyordu,
+ * dolayısıyla ölçek taşıyan bütün beat'ler jenerik `fact`'e düşüyordu ve tek
+ * bir grid_scale sahnesi bile üretilmiyordu.
+ */
+const NUMBER_WORD =
+  '(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion|dozen)';
+const NUM = `(?:\\d[\\d,.]*|${NUMBER_WORD}(?:[\\s-]+(?:and[\\s-]+)?${NUMBER_WORD})*)`;
+
+/** SAYILABİLİR birimler — ikon ızgarası (grid_scale) bunlarda meşru. */
+const COUNTABLE =
+  '(?:people|men|women|children|navigators|survivors|witnesses|passengers|crew|villages|ships|canoes|positions|cases|families|workers)';
+
+/** ÖLÇÜLEBİLİR ama sayılamaz birimler — ikon ızgarası bunlarda yanlış. */
+const MEASURE =
+  '(?:kilometres|kilometers|miles|metres|meters|feet|tonnes|tons|litres|liters|dollars|years|months|weeks|days|hours|minutes|degrees)';
+
+const RULES = [
+  // Alıntı: tırnak içinde geçen cümle.
+  {kind: 'quote', test: (t) => /["“].+["”]/.test(t)},
+  // DÖNÜŞ: anlatının yön değiştirdiği an. Fern DNA'sının imza cihazı ve
+  // görsel olarak kendi sahnesini hak eder — jenerik olgu değil.
+  {
+    kind: 'turn',
+    test: (t) =>
+      /\b(here is the strange part|what nobody knew|but nobody|except|and yet|the problem was|then everything changed)\b/i.test(
+        t,
+      ),
+  },
+  // Karşılaştırma: iki şeyi karşı karşıya koyan diller.
+  {
+    kind: 'compare',
+    test: (t) =>
+      /\b(instead of|rather than|unlike|whereas|but not|versus|vs\.?)\b/i.test(t) || /\bnot\b[^.]*\bbut\b/i.test(t),
+  },
+  // Veri: yüzde, oran, eğilim.
+  {
+    kind: 'data',
+    test: (t) =>
+      new RegExp(`\\b${NUM}\\s?(?:percent|%)\\b`, 'i').test(t) ||
+      /\b(doubled|tripled|halved|rose|fell|grew|dropped|collapsed)\b/i.test(t),
+  },
+  // ZAMAN: süre ve zaman atlaması. `scale`'DEN ÖNCE gelmeli — "Thirty-three
+  // days later" hem sayı+birim hem zaman deseni; ölçek olarak sınıflanırsa
+  // grid_scale sahnesi çıkıyor ve 33 tane insan ikonu çiziliyor, ki anlatının
+  // söylediği şey bu değil.
+  {
+    kind: 'time',
+    test: (t) =>
+      new RegExp(`\\b${NUM}[\\s-]+(?:days|years|months|weeks|hours)\\s+later\\b`, 'i').test(t) ||
+      /\b(by morning|by nightfall|within the hour|that night|every night|every day|for \w+ years)\b/i.test(t),
+  },
+  /**
+   * ÖLÇEK — SAYILABİLİR küme. grid_scale tekrarlı insan/nesne ikonu çizer, o
+   * yüzden yalnızca gerçekten sayılabilen birimlerde meşru: "beş seyir
+   * ustası", "on kişiden biri".
+   */
+  {
+    kind: 'scale',
+    test: (t) =>
+      new RegExp(`\\bone in\\s+${NUM}\\b`, 'i').test(t) ||
+      new RegExp(`\\b(?:only|just)\\s+${NUM}\\s+${COUNTABLE}\\b`, 'i').test(t) ||
+      new RegExp(`\\b${NUM}\\s+(?:\\w+\\s+)?${COUNTABLE}\\b`, 'i').test(t),
+  },
+  /**
+   * BÜYÜKLÜK — mesafe/süre/hacim. Sayılamaz, o yüzden ikon ızgarası YANLIŞ
+   * görsel: "dört bin kilometre" 4000 tane şey değil, tek bir uzunluktur.
+   * Geniş kuruluş ya da grafik ister.
+   */
+  {
+    kind: 'magnitude',
+    test: (t) => new RegExp(`\\b${NUM}\\s+(?:\\w+\\s+)?${MEASURE}\\b`, 'i').test(t),
+  },
+  // Sıra/rota: iki yer arası hareket.
+  {
+    kind: 'sequence',
+    test: (t) => /\bfrom\b[^.]*\bto\b/i.test(t) || /\b(sailed|travelled|traveled|flew|crossed|marched|drove)\b/i.test(t),
+  },
+  // Yokluk: "hiçbir şeyi yoktu" — görsel olarak boşluk/eksik anlatır.
+  {kind: 'absence', test: (t) => /\b(no|without|never|nothing|none)\b/i.test(t) && !/\bnot\b[^.]*\bbut\b/i.test(t)},
+  // Kişi: özel isim + tanıtım.
+  {
+    kind: 'person',
+    test: (t) => /\b(a man|a woman|named|called)\b/i.test(t) && /[A-Z][a-z]+\s[A-Z][a-z]+/.test(t),
+  },
+  // Yer: coğrafi tanıtım.
+  {kind: 'place', test: (t) => /\b(in|at|near|off the coast of|across)\s+[A-Z][A-Za-z’'-]+/.test(t)},
+  // Soyut: izleyiciye dönük, ikinci tekil şahıs, soru.
+  {kind: 'abstract', test: (t) => /\b(you|your|imagine|everyone|we)\b/i.test(t) || /\?\s*$/.test(t)},
+];
+
+export function classifyBeat(text, position) {
+  const t = String(text || '');
+  // İlk beat her zaman cold open: PDF'in en katı kuralı.
+  if (position === 0) return 'cold_open';
+  for (const r of RULES) if (r.test(t)) return r.kind;
+  return 'fact';
+}
+
+/**
+ * BEAT TÜRÜ → SAHNE ŞABLONU
+ *
+ * İki kayıt ayrımı burada uygulanıyor: soyut beat çöp adam alır, olgusal beat
+ * halftone cutout alır. Referans videoda ölçülen kural bu.
+ *
+ * `used` seti: aynı şablon üst üste iki kez seçilmez. Şablon tekrarı
+ * "şablondan çıkmış" hissinin birinci sebebi.
+ */
+const PRIMARY = {
+  cold_open: ['wide_establish', 'headline_card'],
+  fact: ['hero_cutout', 'headline_card', 'labeled_diagram', 'wide_establish'],
+  place: ['map_route', 'wide_establish'],
+  person: ['headline_card', 'hero_cutout'],
+  compare: ['split_compare'],
+  sequence: ['map_route', 'archival_timeline'],
+  scale: ['grid_scale', 'data_annotate'],
+  // Büyüklük sayılamaz: ikon ızgarası değil, geniş kuruluş ya da grafik.
+  magnitude: ['wide_establish', 'data_annotate', 'map_route'],
+  data: ['data_annotate', 'grid_scale'],
+  time: ['archival_timeline', 'star_field', 'wide_establish'],
+  absence: ['hero_cutout', 'stick_beat', 'headline_card'],
+  turn: ['pull_quote', 'star_field'],
+  abstract: ['stick_beat'],
+  quote: ['pull_quote'],
+  cliffhanger: ['star_field', 'headline_card'],
+};
+
+/**
+ * Şablon seç.
+ *
+ * `recent` son seçilen şablonlar (en yenisi başta). Bir geriye değil İKİ geriye
+ * bakılır: tek adım geriye bakmak A,B,A,B,A,B salınımını engellemiyor — ilk
+ * sürümde 22 sahnenin 16'sı iki şablon arasında gidip geliyordu ve "ardışık
+ * tekrar: 0" raporu bunu yakalamıyordu, çünkü teknik olarak tekrar yoktu.
+ */
+export function templateForBeat(kind, recent = []) {
+  const options = PRIMARY[kind] ?? PRIMARY.fact;
+  const look = recent.slice(0, 2);
+  const fresh = options.find((o) => !look.includes(o));
+  if (fresh) return fresh;
+  const notLast = options.find((o) => o !== look[0]);
+  return notLast ?? options[0];
+}
+
+/**
+ * Anlatıyı zamanlanmış beat listesine çevir.
+ *
+ * @param {string} narration  tek blok sürekli anlatı (Fern stili)
+ * @param {object} [opts]
+ * @param {number} [opts.maxWordsPerBeat]  PDF: 5-8 kelime, tavan 8
+ * @returns {{beats: Array, totalSeconds: number, words: number}}
+ */
+export function buildBeats(narration, {maxWordsPerBeat = 8} = {}) {
+  const sentences = splitSentences(narration);
+  const chunks = [];
+  sentences.forEach((s, si) => {
+    // SON CÜMLE BÖLÜNMEZ. PDF: cliffhanger 12 kelimeden kısa, tek parça iner
+    // ve isim/tarih/kısa bildirimle biter. Bölmek vuruşu öldürür — ilk sürüm
+    // "Nobody had made that" / "crossing for six hundred years." diye ikiye
+    // ayırıp cümleyi anlamsızlaştırıyordu.
+    const isFinal = si === sentences.length - 1;
+    if (isFinal && wordCount(s) <= 14) chunks.push(s.trim());
+    else chunks.push(...splitLongSentence(s, maxWordsPerBeat));
+  });
+
+  let t = 0;
+  /** Son seçilen şablonlar, en yenisi başta. */
+  const recent = [];
+  const beats = chunks.map((text, i) => {
+    const words = wordCount(text);
+    const seconds = secondsForWords(words);
+    const isLast = i === chunks.length - 1;
+    const kind = isLast && i > 0 ? 'cliffhanger' : classifyBeat(text, i);
+    const template = templateForBeat(kind, recent);
+    recent.unshift(template);
+    const beat = {
+      index: i,
+      text,
+      words,
+      start: Number(t.toFixed(2)),
+      seconds: Number(seconds.toFixed(2)),
+      kind,
+      template,
+    };
+    t += seconds;
+    return beat;
+  });
+
+  return {beats, totalSeconds: Number(t.toFixed(2)), words: wordCount(narration)};
+}
+
+/**
+ * ŞABLON ÇEŞİTLİLİĞİ ÖLÇÜSÜ
+ *
+ * "Ardışık tekrar: 0" yanıltıcı bir metrikti: A,B,A,B,A,B dizisi bu testi
+ * geçiyor ama izleyiciye iki şablon gibi görünüyor. Gerçek ölçü, en sık
+ * şablonun toplam içindeki payı.
+ */
+export function templateVariety(beats) {
+  const counts = {};
+  for (const b of beats) counts[b.template] = (counts[b.template] ?? 0) + 1;
+  const n = beats.length || 1;
+  const top = Math.max(0, ...Object.values(counts));
+  const pairs = beats.filter((b, i) => i > 1 && b.template === beats[i - 2].template).length;
+  return {
+    distinct: Object.keys(counts).length,
+    topShare: Number((top / n).toFixed(3)),
+    alternating: pairs,
+    counts,
+  };
+}
+
+/** Beat sayısı PDF'in aralığında mı? Uyarı üretir, hata atmaz. */
+export function checkBeatCount(beats, totalSeconds) {
+  const row = BEAT_COUNT_RANGE.reduce((best, r) =>
+    Math.abs(r.seconds - totalSeconds) < Math.abs(best.seconds - totalSeconds) ? r : best,
+  );
+  const n = beats.length;
+  if (n < row.min) return {ok: false, message: `beat sayısı az: ${n} < ${row.min} (${row.seconds}s referansı)`};
+  if (n > row.max) return {ok: false, message: `beat sayısı fazla: ${n} > ${row.max} (${row.seconds}s referansı)`};
+  return {ok: true, message: `beat sayısı uygun: ${n} ∈ [${row.min},${row.max}]`};
+}

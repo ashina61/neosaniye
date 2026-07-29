@@ -1,0 +1,90 @@
+name: Render Short — Manual Only, No Upload
+
+# MANUEL. Cron yok, push tetikleyicisi yok, upload yok.
+#
+# Neden: AGENTS.md kuralı "workflow'lar kullanıcı açıkça istemedikçe yalnızca
+# manuel olacak" ve "yayınlama/upload mantığı eklenmeyecek" diyor. Ayrıca eski
+# repoda her push'ta 30 dakikalık render başlatan bir tetikleyici vardı ve
+# arka arkaya 12 başarısız çalıştırmaya sebep olmuştu.
+
+on:
+  workflow_dispatch:
+    inputs:
+      composition:
+        description: Which composition to render
+        required: true
+        default: Short
+        type: choice
+        options:
+          - Short
+          - StyleSheet
+
+permissions:
+  contents: read
+
+concurrency:
+  group: neosaniye-render-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      # Remotion normalde Chromium'u remotion.media'dan indirir. Runner'da
+      # indirme serbest, ama Chrome zaten kurulu; REMOTION_BROWSER ile onu
+      # göstermek indirmeyi ve ~150 MB'ı atlatır.
+      - name: Locate Chrome
+        id: chrome
+        run: |
+          for p in /usr/bin/google-chrome /usr/bin/chromium-browser /usr/bin/chromium; do
+            if [ -x "$p" ]; then echo "path=$p" >> "$GITHUB_OUTPUT"; exit 0; fi
+          done
+          echo "path=" >> "$GITHUB_OUTPUT"
+
+      - name: Build storyboard from story.json
+        run: npm run beats
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Render
+        env:
+          REMOTION_BROWSER: ${{ steps.chrome.outputs.path }}
+        run: |
+          npx remotion render src/index.ts "${{ inputs.composition }}" \
+            "out/${{ inputs.composition }}.mp4" \
+            --codec=h264 --crf=18 --pixel-format=yuv420p
+
+      - name: Verify render against reference measurements
+        if: inputs.composition == 'Short'
+        run: |
+          python -m pip install --disable-pip-version-check --quiet pillow numpy
+          python3 pipeline/verify-render.py "out/Short.mp4" content/storyboard.json
+
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: neosaniye-${{ inputs.composition }}-${{ github.run_number }}
+          path: |
+            out/*.mp4
+            content/storyboard.json
+          if-no-files-found: warn
+          retention-days: 7
