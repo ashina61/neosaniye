@@ -1,0 +1,5 @@
+export type MotionPreset = 'paper-slide'|'paper-drop'|'stamp-hit'|'tape-press'|'document-pull'|'torn-reveal'|'red-string-draw'|'pin-drop'|'typewriter-strip'|'halftone-flicker'|'shadow-breathe'|'paper-corner-lift'|'mechanical-reveal';
+export type TransitionPreset = 'paper-wipe'|'torn-edge-reveal'|'masked-slide'|'stamp-cut'|'document-pull'|'red-string-continuation'|'hard-documentary-cut';
+type AudioAsset={src:string;volume:number};
+type ScheduledAudio=AudioAsset&{frame:number};
+export type VoxVideoData={projectId:string;width:number;height:number;fps:number;durationInFrames:number;voiceover:string;music:(AudioAsset&{duckedVolume:number})|null;paperSfx:ScheduledAudio[];eventSfx:ScheduledAudio[];ambience:AudioAsset|null;captions:Array<{id:string;startFrame:number;endFrame:number;text:string;lines:string[];kind:'narration-caption'}>;sceneHeadlines:string[];beats:Array<{id:string;startFrame:number;durationInFrames:number;image:string;motionPreset:MotionPreset;transitionPreset:TransitionPreset;editorialLabel?:string}>};
