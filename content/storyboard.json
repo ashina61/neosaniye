@@ -16,23 +16,10 @@
       }
     },
     {
-      "template": "map_route",
+      "template": "hero_cutout",
       "payload": {
-        "route": [
-          {
-            "x": 0.14,
-            "y": 0.74
-          },
-          {
-            "x": 0.52,
-            "y": 0.46
-          },
-          {
-            "x": 0.86,
-            "y": 0.22
-          }
-        ],
-        "headline": "stepped onto a double-hulled canoe in Hawai'i"
+        "headline": "stepped onto a *double-hulled* canoe in Hawai'i",
+        "label": "HAWAI'I"
       },
       "durationInFrames": 84,
       "seed": 10,
@@ -43,7 +30,7 @@
       }
     },
     {
-      "template": "hero_cutout",
+      "template": "stick_beat",
       "payload": {
         "headline": "He *carried* no compass,"
       },
@@ -56,7 +43,7 @@
       }
     },
     {
-      "template": "stick_beat",
+      "template": "headline_card",
       "payload": {
         "headline": "no *charts,* and no radio"
       },
@@ -112,9 +99,9 @@
       }
     },
     {
-      "template": "split_compare",
+      "template": "hero_cutout",
       "payload": {
-        "headline": "Instead of instruments, he used the stars,"
+        "headline": "Instead of *instruments,* he used the stars,"
       },
       "durationInFrames": 84,
       "seed": 45,
@@ -125,7 +112,7 @@
       }
     },
     {
-      "template": "hero_cutout",
+      "template": "headline_card",
       "payload": {
         "headline": "the swell, and the *flight* of birds"
       },
@@ -138,9 +125,9 @@
       }
     },
     {
-      "template": "archival_timeline",
+      "template": "star_field",
       "payload": {
-        "headline": "Every night he read the sky"
+        "headline": "*Every* night he read the sky"
       },
       "durationInFrames": 72,
       "seed": 59,
@@ -151,9 +138,10 @@
       }
     },
     {
-      "template": "star_field",
+      "template": "wide_establish",
       "payload": {
-        "headline": "*Every* day he read the water"
+        "headline": "*Every* day he read the water",
+        "caption": "Hawai'i to Tahiti, 1976"
       },
       "durationInFrames": 72,
       "seed": 66,
@@ -196,7 +184,7 @@
           "total": 20,
           "highlighted": 5
         },
-        "headline": "Only five navigators of his tradition were still"
+        "headline": "Only five navigators of his tradition"
       },
       "durationInFrames": 108,
       "seed": 87,
@@ -207,9 +195,10 @@
       }
     },
     {
-      "template": "archival_timeline",
+      "template": "star_field",
       "payload": {
-        "headline": "Thirty-three days later, the canoe reached Tahiti"
+        "headline": "*Thirty-three* days later, the canoe reached Tahiti",
+        "label": "TAHITI"
       },
       "durationInFrames": 84,
       "seed": 94,
@@ -261,7 +250,7 @@
     {
       "template": "labeled_diagram",
       "payload": {
-        "headline": "and let the islands come to"
+        "headline": "and let the islands come"
       },
       "durationInFrames": 84,
       "seed": 122,

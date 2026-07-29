@@ -15,17 +15,23 @@ import {readFile, writeFile} from 'node:fs/promises';
 import {existsSync} from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
-import {buildBeats, checkBeatCount, templateVariety, wordCount} from './beats.mjs';
+import {buildBeats, canRender, checkBeatCount, resolveTemplate, templateVariety, wordCount} from './beats.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const FPS = 30;
 
-/** Beat metninden şablonun okuyacağı payload'ı çıkar. */
-function payloadForBeat(beat, story) {
+/**
+ * Beat metninden, VERİLEN ŞABLON için payload çıkar.
+ *
+ * `template` beat'ten değil parametreden gelir: `resolveTemplate` birkaç
+ * şablonu deneyip hangisinin gerçekten render edilebileceğine bakıyor, o yüzden
+ * aynı beat için birden fazla kez farklı şablonla çağrılabilir.
+ */
+function payloadForBeat(beat, story, template = beat.template) {
   const text = beat.text.replace(/\s+/g, ' ').trim();
   const p = {};
 
-  switch (beat.template) {
+  switch (template) {
     case 'pull_quote':
       p.quote = text;
       break;
@@ -46,28 +52,34 @@ function payloadForBeat(beat, story) {
     }
 
     case 'map_route': {
+      // Rota en az iki yer adı istiyor; yoksa şablon "boş harita" çizer ve
+      // sözleşme (canRender) bunu reddeder, başka şablona geçilir.
       const places = extractPlaces(text);
-      p.route = [
-        {x: 0.14, y: 0.74, label: places[0]},
-        {x: 0.52, y: 0.46},
-        {x: 0.86, y: 0.22, label: places[1]},
-      ].filter((s, i) => i !== 0 || s.label || true);
+      if (places.length >= 2) {
+        p.route = [
+          {x: 0.14, y: 0.74, label: places[0]},
+          {x: 0.52, y: 0.46},
+          {x: 0.86, y: 0.22, label: places[1]},
+        ];
+      }
       p.headline = shorten(text, 8);
       break;
     }
 
     case 'grid_scale': {
-      const nums = (text.match(/\b\d[\d,]*\b/g) ?? []).map((n) => Number(n.replace(/,/g, '')));
-      const total = nums.find((n) => n > 1 && n <= 60);
-      p.ratio = {total: total ?? 20, highlighted: Math.max(1, Math.round((total ?? 20) * 0.25))};
+      // Vurgulanacak sayı metinden gelir: "Only five navigators" → 5 / 20.
+      const hi = spelledNumber(text);
+      const total = hi ? Math.max(hi * 4, hi + 4) : null;
+      if (hi && total <= 60) p.ratio = {total, highlighted: hi};
       p.headline = shorten(text, 8);
       break;
     }
 
     case 'data_annotate':
+      // Grafik gerçek bir seri istiyor. Anlatıdan seri çıkarılamıyorsa uydurma
+      // eğri çizmek YALAN GÖRSEL olur; sözleşme reddeder, başka şablona geçer.
       p.headline = shorten(text, 8);
       p.label = firstYear(text) ?? undefined;
-      p.caption = text.length > 70 ? text : undefined;
       break;
 
     case 'stick_beat':
@@ -102,9 +114,32 @@ function payloadForBeat(beat, story) {
   return p;
 }
 
+/**
+ * Başlık için metni kırp.
+ *
+ * DİKKAT — burada bir kez hata yapıldı: sarkan kelime kuralı yalnızca beat
+ * BÖLÜCÜSÜNE konmuştu, bu kırpıcıya konmamıştı. Sonuç render'da göründü:
+ * "HE SAILED FROM HAWAI'I TO TAHITI ACROSS", "AND LET THE ISLANDS COME TO",
+ * ve "ONLY FIVE NAVIGATORS OF HIS TRADITION WERE STILL" (living düştü).
+ * Doğru kural, yanlış katman. Kırpma da geri sarıp temiz kelimede durmalı.
+ */
+const TRAILING_STOP = new Set([
+  'of', 'and', 'or', 'the', 'a', 'an', 'to', 'in', 'on', 'at', 'for', 'with', 'from', 'by', 'as',
+  'his', 'her', 'their', 'its', 'that', 'which', 'but', 'into', 'onto', 'over', 'under',
+  'was', 'were', 'is', 'are', 'had', 'has', 'have', 'still', 'never', 'not',
+]);
+
 function shorten(text, maxWords) {
-  const w = text.replace(/[."“”]+$/g, '').split(/\s+/);
-  return w.slice(0, maxWords).join(' ');
+  const w = text.replace(/[."“”]+$/g, '').trim().split(/\s+/);
+  if (w.length <= maxWords) return w.join(' ');
+  let cut = maxWords;
+  // Sarkan kelimede bitmeyecek en yakın kısa noktaya geri sar.
+  while (cut > 2) {
+    const last = w[cut - 1].toLowerCase().replace(/[^a-z0-9’'-]/g, '');
+    if (!TRAILING_STOP.has(last)) break;
+    cut -= 1;
+  }
+  return w.slice(0, cut).join(' ').replace(/[,;:]$/, '');
 }
 
 /**
@@ -134,6 +169,19 @@ function emphasise(text) {
   if (best < 0 || bestLen < 4) return text;
   words[best] = `*${words[best]}*`;
   return words.join(' ');
+}
+
+/** Metindeki ilk sayıyı (rakam ya da yazı) tamsayıya çevir. */
+const WORD_NUM = {
+  one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10,
+  eleven: 11, twelve: 12, twenty: 20, thirty: 30, forty: 40, fifty: 50,
+};
+
+function spelledNumber(text) {
+  const d = text.match(/\b(\d{1,2})\b/);
+  if (d) return Number(d[1]);
+  const w = text.toLowerCase().match(/\b(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|twenty|thirty|forty|fifty)\b/);
+  return w ? WORD_NUM[w[1]] : null;
 }
 
 function firstYear(text) {
@@ -205,14 +253,30 @@ async function main() {
   // Sahne süresi = beat süresi, ama asgari eşik var: 1.2 saniyeden kısa sahne
   // göz tarafından okunmuyor, kesme gürültüsü gibi durur.
   const MIN_SECONDS = 1.2;
-  const scenes = beats.map((b, i) => ({
-    template: b.template,
-    payload: payloadForBeat(b, story),
-    durationInFrames: Math.round(Math.max(b.seconds, MIN_SECONDS) * FPS),
-    seed: i * 7 + 3,
-    // İzlenebilirlik: hangi cümleden hangi sahnenin çıktığı çıktıda kalsın.
-    _beat: {text: b.text, kind: b.kind, start: b.start},
-  }));
+
+  // Şablon seçimi burada KESİNLEŞİR: beats.mjs tür bazlı öneriyi verir, ama
+  // hangi şablonun gerçekten çizebileceğini payload belirler. `resolveTemplate`
+  // öneri listesinde ilerleyip sözleşmeyi geçen ilkini seçer.
+  const recent = [];
+  const scenes = beats.map((b, i) => {
+    const {template, payload} = resolveTemplate(b.kind, recent, (t) => payloadForBeat(b, story, t));
+    recent.unshift(template);
+    return {
+      template,
+      payload,
+      durationInFrames: Math.round(Math.max(b.seconds, MIN_SECONDS) * FPS),
+      seed: i * 7 + 3,
+      // İzlenebilirlik: hangi cümleden hangi sahnenin çıktığı çıktıda kalsın.
+      _beat: {text: b.text, kind: b.kind, start: b.start},
+    };
+  });
+
+  // Hiçbir sahne boş çıkmasın: sözleşme sonrası son bir denetim.
+  const empty = scenes.filter((s) => !canRender(s.template, s.payload));
+  if (empty.length) {
+    console.error(`HATA: ${empty.length} sahne boş render edilirdi: ${empty.map((s) => s.template).join(', ')}`);
+    process.exit(1);
+  }
 
   const totalFrames = scenes.reduce((s, x) => s + x.durationInFrames, 0);
   const storyboard = {
@@ -228,7 +292,11 @@ async function main() {
 
   const check = checkBeatCount(beats, totalSeconds);
   const kinds = beats.reduce((m, b) => ({...m, [b.kind]: (m[b.kind] ?? 0) + 1}), {});
-  const tpls = beats.reduce((m, b) => ({...m, [b.template]: (m[b.template] ?? 0) + 1}), {});
+  // DİKKAT: istatistik ÇÖZÜLMÜŞ sahnelerden hesaplanır, beats.mjs'in ilk
+  // önerisinden değil. Önce beats'ten hesaplanıyordu ve rapor gerçekte render
+  // edilmeyen şablonları listeliyordu (sözleşme onları çoktan reddetmişti).
+  const resolved = scenes.map((s) => ({template: s.template}));
+  const tpls = resolved.reduce((m, b) => ({...m, [b.template]: (m[b.template] ?? 0) + 1}), {});
 
   console.log(`storyboard yazıldı: content/storyboard.json`);
   console.log(`  kelime          : ${words}`);
@@ -242,7 +310,7 @@ async function main() {
   const shortest = beats.reduce((m, b) => (b.words < m.words ? b : m), beats[0]);
   console.log(`  en kısa beat    : ${shortest.words} kelime — ${JSON.stringify(shortest.text)}`);
 
-  const v = templateVariety(beats);
+  const v = templateVariety(resolved);
   const repeats = scenes.filter((s, i) => i > 0 && s.template === scenes[i - 1].template).length;
   console.log(`  ardışık tekrar  : ${repeats}${repeats ? '  ← BEKLENMİYOR' : ''}`);
   console.log(

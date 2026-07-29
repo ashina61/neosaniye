@@ -568,7 +568,9 @@ const ArchivalTimeline: React.FC<SceneProps> = ({payload, seed}) => {
         <Headline
           text={payload.headline}
           size={TYPE.subhead}
-          style={{position: 'absolute', left: SAFE.left, top: CANVAS.height - SAFE.bottom + 20, width: SAFE_BOX.width}}
+          // ÖLÇÜLDÜ: burada `CANVAS.height - SAFE.bottom + 20` yazıyordu, yani
+          // başlık tam olarak Shorts arayüzünün yediği alt banda düşüyordu.
+          style={{position: 'absolute', left: SAFE.left, top: B.bottom.y + 150, width: SAFE_BOX.width}}
           seed={seed}
         />
       )}

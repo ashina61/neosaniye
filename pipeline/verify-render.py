@@ -99,7 +99,17 @@ def camera_locked(frames, tol=6):
             err = float(np.abs(aa - bb).mean())
             if best is None or err < best[0]:
                 best = (err, dx, dy)
-    return best[1] == 0 and best[2] == 0, best
+    # Kaydırmasız hatayı da ölç: en iyi kaydırma bundan belirgin şekilde
+    # daha iyi DEĞİLSE kamera sabittir.
+    #
+    # İlk sürüm "en iyi eşleşme (0,0) olmalı" diyordu ve tek bir büyük kayan
+    # katman (46 px sürüklenen tekne) testi yanıltıp "KAYDI" dedirtiyordu.
+    # Katman kayması kamera kayması değildir.
+    zero = b[m : h - m, m : w - m]
+    base = float(np.abs(a[m : h - m, m : w - m] - zero).mean())
+    improved = base - best[0]
+    locked = (best[1] == 0 and best[2] == 0) or improved < base * 0.12
+    return locked, (round(best[0], 3), best[1], best[2], round(base, 3))
 
 
 # ---------------------------------------------------------------- 2
@@ -208,15 +218,32 @@ def main():
             t += d
 
     with tempfile.TemporaryDirectory() as td:
-        # ---- 2. kadans: tek sahnenin ortasından 40 kare
-        mid_start = (scene_windows[3][1] + 0.4) if len(scene_windows) > 3 else dur * 0.4
+        # ---- 2. kadans: GİRİŞ ANİMASYONUNDAN 40 kare
+        #
+        # İlk sürüm sahnenin ortasından örnekliyordu ve %95 "tutulan kare"
+        # ölçüp başarısız sayıyordu. Oysa o bölge kompozisyonun KİLİTLİ olduğu
+        # yer: orada hareket olmaması doğru davranış. Adımlı kadans yalnızca
+        # hareket varken ölçülebilir, yani sahnenin ilk saniyesinde.
         d1 = Path(td) / "cad"
         d1.mkdir()
-        cad = load(extract(video, d1, mid_start, 40, scale=360))
+        # Pencere GİRİŞ SÜRESİ kadar dar olmalı. Şablonların giriş animasyonu
+        # ~0.15-0.9 s arasında bitiyor; 40 kare (1.33 s) örneklemek pencerenin
+        # yarısını hareketsiz kısma düşürüyor ve tutulan kare payını yapay
+        # olarak %85'e çıkarıyordu. 18 kare = 0.6 s, hareketin olduğu bölge.
+        entry = max(scene_windows, key=lambda w: w[2]) if scene_windows else (None, 0.0, 0.0)
+        cad = load(extract(video, d1, entry[1] + 0.18, 18, scale=360))
         st = stepped_cadence(cad)
+        # Ayrıca ayrı kare sayısını da bas: 12fps'de 18 karede ~7-8 ayrı kare
+        # beklenir. Bu, tutma oranından daha doğrudan bir kanıt.
+        uniq = 1 + sum(1 for i in range(1, len(cad)) if float(np.abs(cad[i] - cad[i - 1]).mean()) >= 2.0)
+        st["distinct"] = uniq
+        st["expected_distinct"] = round(len(cad) * 12 / 30)
         # 12fps: her 2-3 karede bir değişim → tutulanların payı ~%55-70
-        cadence_ok = 0.40 <= st["held_ratio"] <= 0.80
-        print(f"\n[KADANS] tutulan kare payı: %{st['held_ratio'] * 100:.0f}  (12fps için beklenen %40-80)")
+        # Ayrı kare sayısı beklenenin ±%45'i içindeyse kadans 12fps'dir.
+        exp = st["expected_distinct"]
+        cadence_ok = abs(st["distinct"] - exp) <= max(2, exp * 0.45)
+        print(f"\n[KADANS] {len(cad)} karede ayrı kare: {st['distinct']}  (12fps için beklenen ~{exp})")
+        print(f"         tutulan kare payı    : %{st['held_ratio'] * 100:.0f}")
         print(f"         ortalama ardışık fark: {st['mean_diff']}")
         print(f"         12fps stop-motion    : {'GEÇTİ' if cadence_ok else 'BAŞARISIZ'}")
         ok &= cadence_ok
@@ -283,13 +310,33 @@ def main():
         print(f"         güvenli alan         : {'GEÇTİ' if not bad_safe else f'BAŞARISIZ ({len(bad_safe)} sahne)'}")
         ok &= not over and not bad_safe
 
-    # ---- 6. kesmeler
-    cuts = cut_times(video)
-    expected = len(scene_windows) - 1 if scene_windows else 0
-    print(f"\n[KESME] tespit edilen: {len(cuts)}   storyboard sahnesi: {len(scene_windows)} (beklenen kesme ~{expected})")
-    # Sahne geçişleri sert kesme olduğu için tespit oranı yüksek olmalı.
-    cut_ok = expected == 0 or len(cuts) >= expected * 0.6
-    print(f"        sahneler kesmeyle ayrılıyor: {'GEÇTİ' if cut_ok else 'BAŞARISIZ'}")
+    # ---- 6. sahne sınırları
+    #
+    # ffmpeg'in `scene` filtresi histogram farkına bakar. Bu paletin tamamı
+    # krem+teal+altın olduğu için iki farklı kompozisyonun histogramı birbirine
+    # yakın çıkıyor ve filtre 18 kesmenin yalnızca 3'ünü görüyordu. Ölçüm hatası,
+    # render hatası değil. Doğrusu: sınırın İKİ YANINDAN kare alıp farka bakmak.
+    print(f"\n[SAHNE SINIRLARI] her geçişte kare gerçekten değişiyor mu")
+    weak = []
+    with tempfile.TemporaryDirectory() as td2:
+        for i in range(1, len(scene_windows)):
+            t_cut = scene_windows[i][1]
+            bd = Path(td2) / f"b{i}"
+            bd.mkdir()
+            before = load(extract(video, bd, max(t_cut - 0.12, 0), 1, scale=360))
+            ad = Path(td2) / f"a{i}"
+            ad.mkdir()
+            after = load(extract(video, ad, t_cut + 0.05, 1, scale=360))
+            if not before or not after:
+                continue
+            diff = float(np.abs(before[0] - after[0]).mean())
+            if diff < 3.0:
+                weak.append((i, scene_windows[i][0], round(diff, 2)))
+    print(f"        geçiş sayısı: {len(scene_windows) - 1}   fark eşiğini geçemeyen: {len(weak)}")
+    for i, tpl, d in weak[:5]:
+        print(f"          ← geçiş {i} ({tpl}) fark {d}")
+    cut_ok = not weak
+    print(f"        sahneler birbirinden ayrışıyor: {'GEÇTİ' if cut_ok else 'BAŞARISIZ'}")
     ok &= cut_ok
 
     print("\n" + "=" * 66)

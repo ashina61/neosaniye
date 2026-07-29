@@ -400,6 +400,81 @@ export function buildBeats(narration, {maxWordsPerBeat = 8} = {}) {
  * geçiyor ama izleyiciye iki şablon gibi görünüyor. Gerçek ölçü, en sık
  * şablonun toplam içindeki payı.
  */
+/**
+ * ŞABLON–PAYLOAD SÖZLEŞMESİ
+ *
+ * Bir şablon, ihtiyacı olan veri gelmediğinde BOŞ çizer. Ölçümde tam bu oldu:
+ * `archival_timeline` iki sahnede seçildi, ama anlatıda tek yıl geçtiği için
+ * (`1976`) zaman çizelgesi satırları hiç dolmadı ve iki sahne yalnızca alt
+ * başlıktan ibaret kaldı. 19 sahnenin 2'si boştu.
+ *
+ * Bu yüzden şablon seçimi artık iki aşamalı: tür şablonu ÖNERİR, sözleşme
+ * onaylar. Onaylamazsa öneri listesinde ilerlenir.
+ */
+export const TEMPLATE_REQUIREMENTS = {
+  archival_timeline: (p) => Array.isArray(p.timeline) && p.timeline.length >= 2,
+  split_compare: (p) => Array.isArray(p.sides) && p.sides.length === 2,
+  grid_scale: (p) => !!p.ratio && p.ratio.total >= 2,
+  data_annotate: (p) => Array.isArray(p.series) && p.series.length >= 3,
+  map_route: (p) => Array.isArray(p.route) && p.route.length >= 2,
+  pull_quote: (p) => typeof p.quote === 'string' && p.quote.trim().length > 0,
+  labeled_diagram: (p) => typeof p.headline === 'string' && p.headline.trim().length > 0,
+  // Kalanlar yalnızca başlık ister; başlıksız sahne de boş sayılır.
+};
+
+export function canRender(template, payload) {
+  const req = TEMPLATE_REQUIREMENTS[template];
+  if (req) return Boolean(req(payload));
+  return Boolean(
+    (payload.headline && String(payload.headline).trim()) ||
+      (payload.quote && String(payload.quote).trim()) ||
+      (payload.label && String(payload.label).trim()),
+  );
+}
+
+/**
+ * Türün öneri listesini sözleşmeye göre süz.
+ * `build` bir şablon adı alıp o şablon için payload üretir (derleyici verir).
+ */
+/** Tür listesi tükendiğinde başvurulacak genel havuz (başlıkla çizebilenler). */
+const GENERAL_POOL = ['hero_cutout', 'headline_card', 'wide_establish', 'stick_beat', 'star_field'];
+
+export function resolveTemplate(kind, recent, build) {
+  const options = PRIMARY[kind] ?? PRIMARY.fact;
+  const look = recent.slice(0, 2);
+
+  /** Sırayla dene, sözleşmeyi geçen ilkini döndür. */
+  const tryAll = (list) => {
+    for (const t of list) {
+      const payload = build(t);
+      if (canRender(t, payload)) return {template: t, payload};
+    }
+    return null;
+  };
+
+  // 1) Türün önerileri, son iki sahnede kullanılmayanlar önce.
+  const fresh = options.filter((o) => !look.includes(o));
+  let hit = tryAll(fresh);
+  if (hit) return hit;
+
+  /**
+   * 2) Türün listesi tükendi. Burada doğrudan tekrara düşmek yerine GENEL
+   * havuzdan taze bir şablon denenir.
+   *
+   * NEDEN: ölçümde 1. ve 2. sahne ikisi de `wide_establish` çıktı. 2. sahnenin
+   * türü `place`, önerisi `map_route`; ama cümlede tek yer adı geçtiği için
+   * rota sözleşmesi reddetti ve liste `wide_establish`e, yani bir önceki
+   * sahnenin şablonuna düştü. Genel havuz bu çıkmazı açar.
+   */
+  hit = tryAll(GENERAL_POOL.filter((o) => !look.includes(o)));
+  if (hit) return hit;
+
+  // 3) Son çare: türün listesi (tekrar pahasına), sonra hero_cutout.
+  hit = tryAll(options);
+  if (hit) return hit;
+  return {template: 'hero_cutout', payload: build('hero_cutout')};
+}
+
 export function templateVariety(beats) {
   const counts = {};
   for (const b of beats) counts[b.template] = (counts[b.template] ?? 0) + 1;
