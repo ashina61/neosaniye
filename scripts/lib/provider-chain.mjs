@@ -1,4 +1,5 @@
 import process from 'node:process';
+import {jsonObject as parseJsonObject} from './json-object.mjs';
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const deadProviders = new Set();
@@ -251,7 +252,7 @@ export async function generateStoryJson(prompt, validate) {
     try {
       console.log(`[story] trying provider: ${name}`);
       const text = await storyProviders[name](prompt);
-      const raw = jsonObject(text);
+      const raw = parseJsonObject(text);
       const value = typeof validate === 'function' ? validate(raw, name) : raw;
       console.log(`[story] provider succeeded: ${name}`);
       return {value, provider: name};

@@ -1,114 +1,17 @@
-name: Daily Short — Render
-
-# Bu dosya "Render English Venus Short" adıyla duruyordu ama Venus diye bir
-# kompozisyon yok: Root.tsx yalnızca NeoSaniyeVox'u kaydediyor. Ad, adımlar ve
-# artifact yolu birbirinden kopmuştu; her çalıştırma başarısız oluyordu.
+name: Deprecated Venus Workflow — Manual Only
 
 on:
   workflow_dispatch:
-  schedule:
-    # GitHub cron UTC kullanır. 15:00 UTC = 18:00 Europe/Istanbul.
-    - cron: '0 15 * * *'
 
 permissions:
   contents: read
   models: read
 
-concurrency:
-  group: neosaniye-daily-render
-  cancel-in-progress: false
-
 jobs:
-  render:
+  migration-notice:
     runs-on: ubuntu-latest
-    timeout-minutes: 75
-    env:
-      VIDEO_TOPIC: ${{ vars.DAILY_TOPIC || 'The world''s first traffic signal exploded' }}
-      VIDEO_LANGUAGE: en
-      VIDEO_SCENE_COUNT: '10'
-      VIDEO_FACTS: ''
-      STORY_PROVIDER_CHAIN: ${{ vars.STORY_PROVIDER_CHAIN || 'gemini,groq,github-models,mistral,openrouter' }}
-      IMAGE_PROVIDER_CHAIN: ${{ vars.IMAGE_PROVIDER_CHAIN || 'gemini,pollinations,together,cloudflare' }}
-      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-      CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
-      MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
-      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-      GITHUB_MODELS_TOKEN: ${{ github.token }}
-      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      BFL_API_KEY: ${{ secrets.BFL_API_KEY }}
-      FLUX_API_KEY: ${{ secrets.FLUX_API_KEY }}
-      STABILITY_API_KEY: ${{ secrets.STABILITY_API_KEY }}
-      POLLINATIONS_API_KEY: ${{ secrets.POLLINATIONS_API_KEY }}
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || vars.CLOUDFLARE_ACCOUNT_ID }}
-      TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
-      GEMINI_TEXT_MODEL: ${{ vars.GEMINI_TEXT_MODEL || 'gemini-3.5-flash-lite' }}
-      GEMINI_IMAGE_MODEL: ${{ vars.GEMINI_IMAGE_MODEL || 'gemini-3.1-flash-image' }}
-      GEMINI_IMAGE_SIZE: ${{ vars.GEMINI_IMAGE_SIZE || '1K' }}
-      GITHUB_MODELS_MODEL: ${{ vars.GITHUB_MODELS_MODEL || 'openai/gpt-4o' }}
-      OPENAI_IMAGE_MODEL: ${{ vars.OPENAI_IMAGE_MODEL || 'gpt-image-1.5' }}
-      OPENAI_IMAGE_QUALITY: ${{ vars.OPENAI_IMAGE_QUALITY || 'medium' }}
-      BFL_IMAGE_MODEL: ${{ vars.BFL_IMAGE_MODEL || 'flux-2-pro' }}
-      STABILITY_IMAGE_MODEL: ${{ vars.STABILITY_IMAGE_MODEL || 'core' }}
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install dependencies
+      - name: Use the data-driven factory
         run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends ffmpeg
-          npm install --no-audit --no-fund
-          python -m pip install --disable-pip-version-check edge-tts==7.2.7
-
-      # Aşağıdaki dört adım eksikti: iş doğrudan `npm run audio` ile başlıyor,
-      # o da henüz üretilmemiş content/generated/current-story.json'ı okumaya
-      # çalışıp ENOENT ile patlıyordu.
-      - name: Generate story
-        run: npm run story:generate
-
-      - name: Generate collage images
-        run: npm run images:generate
-
-      - name: Compile story for Remotion
-        run: npm run story:compile
-
-      - name: Generate voice and timing
-        run: npm run audio
-
-      - name: Typecheck
-        run: npm run typecheck
-
-      - name: Render vertical short
-        run: npm run render
-
-      - name: Upload video and timing report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: neosaniye-daily-${{ github.run_number }}
-          # `out/neosaniye-venus.mp4` yazıyordu; package.json ise
-          # `out/neosaniye-vox.mp4` üretiyor. if-no-files-found: error ile
-          # birleşince her çalıştırma garanti başarısız oluyordu.
-          path: |
-            out/neosaniye-vox.mp4
-            content/generated/current-story.json
-            public/generated/**
-            public/audio/voice.srt
-            public/audio/narration.txt
-            src/generated/timing.ts
-          if-no-files-found: warn
-          retention-days: 7
+          echo "This legacy workflow no longer renders a topic-specific video."
+          echo "Run 'NeoSaniye Vox Factory — Manual Only' and enter the topic there."

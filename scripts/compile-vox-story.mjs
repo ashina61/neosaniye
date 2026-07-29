@@ -1,15 +1,14 @@
 import {mkdir, readFile, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
+import {validateStory} from './lib/story-schema.mjs';
 
 const ROOT = process.cwd();
 const input = path.join(ROOT, 'content', 'generated', 'current-story.json');
 const output = path.join(ROOT, 'src', 'generated', 'vox-content.ts');
 
 async function main() {
-  const story = JSON.parse(await readFile(input, 'utf8'));
-  if (!Array.isArray(story.scenes) || !story.scenes.length) throw new Error('Generated story has no scenes.');
-  if (story.scenes.some((scene) => !scene.image)) throw new Error('Story contains scenes without generated image paths.');
+  const story = validateStory(JSON.parse(await readFile(input, 'utf8')), {requireImages: true});
   const module = `export type GeneratedVoxCamera = 'slow-push-in' | 'slow-push-out' | 'pan-left' | 'pan-right' | 'drift-up' | 'drift-down' | 'impact-push';
 export type GeneratedVoxSfx = 'none' | 'snap' | 'chime' | 'impact';
 export type GeneratedVoxScene = {id: string; voiceover: string; headline: string; label?: string; visualPrompt: string; camera: GeneratedVoxCamera; sfx: GeneratedVoxSfx; image: string};
