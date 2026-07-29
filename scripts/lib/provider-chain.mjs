@@ -199,7 +199,7 @@ const storyProviders = {
     apiKey: secret('OPENROUTER_API_KEY'),
     model: process.env.OPENROUTER_MODEL || 'openrouter/free',
     prompt,
-    headers: {'HTTP-Referer': 'https://github.com/ashina61/neosanie', 'X-Title': 'NeoSaniye'},
+    headers: {'HTTP-Referer': 'https://github.com/ashina61/neosaniey', 'X-Title': 'NeoSaniye'},
   }),
 };
 
