@@ -1,5 +1,5 @@
 import {SCENES, TOTAL_FRAMES} from '../generated/timing';
-import {VOX_CONTENT, type GeneratedVoxCamera, type GeneratedVoxSfx} from '../generated/vox-content';
+import {VOX_CONTENT, type GeneratedVoxCamera, type GeneratedVoxLayerImages, type GeneratedVoxLayers, type GeneratedVoxSfx} from '../generated/vox-content';
 
 export const VOX_FPS = 30;
 export const VOX_WIDTH = 1080;
@@ -12,6 +12,8 @@ export type VoxScene = {
   headline: string;
   label?: string;
   visualPrompt: string;
+  layers?: GeneratedVoxLayers;
+  layerImages?: GeneratedVoxLayerImages;
   camera: GeneratedVoxCamera;
   sfx: GeneratedVoxSfx;
   image: string;
@@ -30,8 +32,6 @@ export const voxStory = {
   slug: VOX_CONTENT.slug,
   title: VOX_CONTENT.title,
   language: VOX_CONTENT.language,
-  scenes: VOX_CONTENT.scenes.map<VoxScene>((scene, index) => ({
-    ...scene,
-    durationInFrames: Math.max(1, VOX_SCENE_STARTS[index + 1] - VOX_SCENE_STARTS[index]),
-  })),
+  subjectBible: VOX_CONTENT.subjectBible ?? [],
+  scenes: VOX_CONTENT.scenes.map<VoxScene>((scene, index) => ({...scene, durationInFrames: Math.max(1, VOX_SCENE_STARTS[index + 1] - VOX_SCENE_STARTS[index])})),
 };
