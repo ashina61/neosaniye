@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {jsonObject} from '../scripts/lib/provider-chain.mjs';
+import {jsonObject} from '../scripts/lib/json-object.mjs';
 
 test('jsonObject parses fenced provider output', () => {
   assert.deepEqual(jsonObject('```json\n{"title":"ok","scenes":[]}\n```'), {title: 'ok', scenes: []});
