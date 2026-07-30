@@ -30,13 +30,14 @@ test('kelime/saniye OKUMA hızına ayarlı ve zamanlama ondan türüyor', () => 
    * o zaman kısıt okuma değil konuşma hızı olur.
    */
   assert.ok(
-    WORDS_PER_SECOND >= 1.8 && WORDS_PER_SECOND <= 2.2,
+    WORDS_PER_SECOND >= 1.5 && WORDS_PER_SECOND <= 2.2,
     `okuma hızı aralığının dışında: ${WORDS_PER_SECOND}`,
   );
   assert.equal(secondsForWords(WORDS_PER_SECOND * 30), 30);
   assert.equal(secondsForWords(WORDS_PER_SECOND * 60), 60);
-  // 8 kelimelik bir başlık, okunacak kadar ekranda kalmalı: en az 3.5 saniye.
-  assert.ok(secondsForWords(8) >= 3.5, `8 kelime çok kısa gösteriliyor: ${secondsForWords(8)} sn`);
+  // 8 kelimelik bir başlık, okunacak kadar ekranda kalmalı: en az 4 saniye.
+  // Eşik 3.5'ten 4'e çıkarıldı — kullanıcı 2.0 kelime/sn'de de okuyamadı.
+  assert.ok(secondsForWords(8) >= 4, `8 kelime çok kısa gösteriliyor: ${secondsForWords(8)} sn`);
 });
 
 /* ---------------- cümle bölme ---------------- */

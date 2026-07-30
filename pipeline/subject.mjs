@@ -107,6 +107,8 @@ const FAMILIES = [
       'file', 'record', 'report', 'passport', 'ticket', 'contract', 'telegram', 'book', 'page',
       'diary', 'ledger', 'fingerprint', 'photograph', 'poster', 'stamp', 'licence', 'license',
       'envelope', 'warrant', 'sketch', 'receipt', 'cheque', 'check', 'will', 'testimony', 'confession',
+      // 'bundle' burada: banknot destesi jenerik bir kutu değil, PARA.
+      'bundle',
     ],
   },
   {
@@ -153,15 +155,50 @@ const FAMILIES = [
     style: 'a single animal, side view, documentary photograph',
     words: ['bird', 'seabird', 'gull', 'eagle', 'crow', 'tern', 'horse', 'dog', 'cat', 'whale', 'fish', 'insect', 'rat'],
   },
+  /**
+   * `object` PARÇALANDI — "aynı şekiller sürekli çıkıyor".
+   *
+   * Tek bir `object` ailesi vardı ve içinde bomba, paraşüt, çanta, silah,
+   * anahtar, eldiven, bayrak… hepsi geçiyordu. Hepsinin çizimi AYNI yuvarlak
+   * kutuydu. Yani sözlük cümleyi doğru anlıyor, çizim onu ele veriyordu:
+   * "there was a bomb in his briefcase" cümlesine kutu, "four parachutes"
+   * cümlesine yine aynı kutu.
+   *
+   * Anlatının TAŞIYICI nesneleri kendi siluetini hak ediyor. Ölçüt: nesne
+   * cümlenin konusuysa ve siluet olarak tanınabiliyorsa ayrı aile.
+   */
+  {
+    shape: 'bomb',
+    style: 'a single explosive device, isolated on its own, documentary photograph',
+    words: ['bomb', 'explosive', 'dynamite', 'grenade', 'charge', 'detonator', 'fuse'],
+  },
+  {
+    shape: 'parachute',
+    style: 'a parachute canopy in the air, documentary photograph',
+    words: ['parachute', 'canopy', 'chute', 'harness'],
+  },
+  {
+    shape: 'case',
+    style: 'a closed case or bag, three-quarter view, documentary photograph',
+    words: ['briefcase', 'suitcase', 'case', 'bag', 'sack', 'crate', 'box', 'trunk', 'satchel', 'parcel'],
+  },
+  {
+    shape: 'weapon',
+    style: 'a single firearm or blade, side profile, documentary photograph',
+    words: ['gun', 'pistol', 'revolver', 'rifle', 'shotgun', 'knife', 'blade', 'weapon'],
+  },
+  {
+    shape: 'key',
+    style: 'a single key or lock, photographed flat, high contrast',
+    words: ['key', 'lock', 'padlock', 'handcuff', 'chain', 'safe', 'vault'],
+  },
   {
     shape: 'object',
     style: 'a single object isolated on its own, documentary photograph',
     words: [
-      'box', 'crate', 'bag', 'sack', 'case', 'suitcase', 'barrel', 'bottle', 'glove', 'key', 'coin',
-      'rope', 'chain', 'door', 'window', 'table', 'chair', 'gun', 'rifle', 'knife', 'bomb', 'helmet',
+      'barrel', 'bottle', 'glove', 'coin', 'rope', 'door', 'window', 'table', 'chair', 'helmet',
       'uniform', 'coat', 'boot', 'map', 'chart', 'flag', 'bell', 'ring', 'bone', 'skull', 'seed',
-      'parachute', 'briefcase', 'handcuff', 'safe', 'vault', 'ladder', 'torch', 'mask', 'suit', 'tie',
-      'diamond', 'jewel', 'bundle', 'lock', 'stair', 'shovel',
+      'ladder', 'torch', 'mask', 'suit', 'tie', 'diamond', 'jewel', 'stair', 'shovel',
     ],
   },
 ];
@@ -192,6 +229,11 @@ export const SHAPES = [
   'document',
   'machine',
   'object',
+  'bomb',
+  'parachute',
+  'case',
+  'weapon',
+  'key',
   'terrain',
   'instrument',
   'bird',

@@ -382,7 +382,7 @@ async function main() {
    * Seslendirme eklendiğinde bu taban düşürülebilir — o zaman okuma yükü ortadan
    * kalkar ve kesme temposu sesin temposuna bağlanır.
    */
-  const MIN_SECONDS = 3.0;
+  const MIN_SECONDS = 3.6;
 
   // Şablon seçimi burada KESİNLEŞİR: beats.mjs tür bazlı öneriyi verir, ama
   // hangi şablonun gerçekten çizebileceğini payload belirler. `resolveTemplate`

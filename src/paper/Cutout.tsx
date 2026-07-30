@@ -77,7 +77,12 @@ export type PlaceholderShape =
   | 'aircraft'
   | 'rail'
   | 'document'
-  | 'machine';
+  | 'machine'
+  | 'bomb'
+  | 'parachute'
+  | 'case'
+  | 'weapon'
+  | 'key';
 
 /**
  * PROSEDÜREL YER TUTUCU
@@ -314,6 +319,98 @@ const Placeholder: React.FC<{shape: PlaceholderShape; seed: number}> = ({shape, 
           {/* Üstte bobin/çark */}
           <circle cx="104" cy="18" r="14" {...common} />
           <circle cx="104" cy="18" r="5" fill={PALETTE.paper} />
+        </svg>
+      );
+
+    /**
+     * BOMBA — "there was a bomb in his briefcase".
+     *
+     * Bu beş şekil (bomb/parachute/case/weapon/key) `object` ailesi
+     * PARÇALANIRKEN eklendi. Öncesinde hepsi AYNI yuvarlak kutuyu çiziyordu:
+     * sözlük cümleyi doğru anlıyor, çizim onu ele veriyordu. Kullanıcının
+     * "aynı şekiller sürekli çıkıyor" dediği kusur buydu.
+     */
+    case 'bomb':
+      return (
+        <svg viewBox="0 0 130 140" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+          <circle cx="62" cy="88" r="46" {...common} />
+          {/* Boyun ve kapak: küreyi "bomba" yapan parça. */}
+          <rect x="50" y="30" width="24" height="20" {...common} />
+          <rect x="44" y="24" width="36" height="10" rx="3" {...common} />
+          {/* Fitil: kıvrımlı, ucunda kıvılcım. */}
+          <path
+            d="M74 28 C96 14 104 30 118 18"
+            fill="none"
+            stroke={ink}
+            strokeWidth={7}
+            strokeLinecap="round"
+          />
+          <path d="M118 18 L126 6 L124 20 L134 16 L122 26 Z" fill={PALETTE.accent} />
+          {/* Parlama noktası: küre dolu siyah kalmasın, hacim okunsun. */}
+          <circle cx="44" cy="70" r="10" fill={PALETTE.paper} opacity={0.5} />
+        </svg>
+      );
+
+    /** PARAŞÜT — kubbe + askı ipleri + yük. */
+    case 'parachute':
+      return (
+        <svg viewBox="0 0 180 160" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+          {/* Kubbe: üç dilimli, kenarları festonlu — düz yarım daire "şemsiye". */}
+          <path d="M8 74 C8 20 172 20 172 74 C150 60 142 78 120 66 C104 78 96 78 90 66 C78 78 66 60 46 70 C34 62 24 66 8 74 Z" {...common} />
+          {/* Dilim çizgileri zeminden oyulur. */}
+          <path d="M62 26 L74 70" stroke={PALETTE.paper} strokeWidth={3} fill="none" />
+          <path d="M118 26 L106 70" stroke={PALETTE.paper} strokeWidth={3} fill="none" />
+          {/* Askı ipleri */}
+          {[18, 56, 90, 124, 162].map((x) => (
+            <path key={x} d={`M${x} 70 L90 126`} stroke={ink} strokeWidth={3} fill="none" />
+          ))}
+          {/* Yük: küçük figür. */}
+          <circle cx="90" cy="134" r="10" {...common} />
+          <path d="M90 144 L80 158 L100 158 Z" {...common} />
+        </svg>
+      );
+
+    /** ÇANTA — evrak çantası / valiz. Sap + iki kilit. */
+    case 'case':
+      return (
+        <svg viewBox="0 0 160 120" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+          {/* Sap: gövdeden önce çizilir, üstte kalmasın. */}
+          <path
+            d="M62 26 C62 8 98 8 98 26"
+            fill="none"
+            stroke={ink}
+            strokeWidth={9}
+            strokeLinecap="round"
+          />
+          <rect x="10" y="26" width="140" height="84" rx="6" {...common} />
+          {/* Orta dikiş ve iki kilit: kutudan ayıran işaretler. */}
+          <rect x="10" y="62" width="140" height="5" fill={PALETTE.paper} />
+          <rect x="44" y="54" width="18" height="20" rx="2" fill={PALETTE.paper} />
+          <rect x="98" y="54" width="18" height="20" rx="2" fill={PALETTE.paper} />
+        </svg>
+      );
+
+    /** SİLAH — tabanca silueti: kabza, namlu, tetik korkuluğu. */
+    case 'weapon':
+      return (
+        <svg viewBox="0 0 180 120" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+          <path d="M14 30 L162 30 L162 52 L120 52 L112 66 L74 66 L66 96 L30 112 L34 70 L14 62 Z" {...common} />
+          {/* Tetik korkuluğu: zeminden oyulmuş halka. */}
+          <path d="M78 70 C78 88 100 88 100 70 Z" fill={PALETTE.paper} />
+          {/* Namlu ağzı */}
+          <rect x="150" y="36" width="12" height="10" fill={PALETTE.paper} />
+        </svg>
+      );
+
+    /** ANAHTAR — halka + gövde + dişler. Kilit/kelepçe de buraya düşer. */
+    case 'key':
+      return (
+        <svg viewBox="0 0 190 90" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+          <path d="M44 45 A34 34 0 1 1 44.1 45 Z M44 45 A16 16 0 1 0 44.2 45 Z" fill={ink} fillRule="evenodd" />
+          <rect x="66" y="37" width="112" height="16" {...common} />
+          {/* Dişler */}
+          <rect x="140" y="53" width="12" height="20" {...common} />
+          <rect x="162" y="53" width="12" height="28" {...common} />
         </svg>
       );
 

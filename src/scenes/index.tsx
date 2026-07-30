@@ -49,6 +49,21 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurr
    * (0.15/0.35/1.0/1.15/1.35) 2.8 saniyelik bir sahnenin son 1.4 saniyesinde
    * hiç olay yoktu; ölçümde bu sahnenin kuyruğunda üç donmuş aralık çıktı.
    */
+  /**
+   * BAŞLIK HER ŞEYDEN ÖNCE GİRER — kullanıcı raporu: "ekran takip edilemiyor
+   * okunamıyor."
+   *
+   * ÖLÇÜLEN SEBEP süre değildi. Başlığın opaklığı `label` girişine bağlıydı,
+   * yani cue(seconds, 2, 5): 3 saniyelik bir sahnede 1.36. saniye. Okumaya
+   * 1.64 saniye kalıyordu ve 6 kelimelik büyük harf bir başlık ~1.5 saniye
+   * okuma ister — yani izleyici cümleyi ancak bitirirken sahne kesiliyordu.
+   *
+   * Aynı hata dört şablonda vardı (hero_cutout, wide_establish, star_field,
+   * stick_beat): başlık, kendisiyle ilgisi olmayan bir öğenin girişine
+   * bağlanmıştı. Metin OKUNACAK şey; ilk giren o olmalı ve sahne boyunca
+   * kalmalı.
+   */
+  const title = enter(f, {at: 0.1, duration: 0.35, kind: 'fade'});
   const card = enter(f, {at: cue(seconds, 0, 5), duration: 0.4, kind: 'fade'});
   const hero = enter(f, {at: cue(seconds, 1, 5), duration: 0.55, kind: 'slide', from: {x: -180}});
   const label = enter(f, {at: cue(seconds, 2, 5), duration: 0.3, kind: 'drop', from: {y: -90}});
@@ -190,7 +205,7 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurr
             left: SAFE.left,
             top: B.bottom.y + 130,
             width: SAFE_BOX.width,
-            opacity: label.opacity,
+            opacity: title.opacity,
           }}
           seed={seed}
         />
@@ -254,6 +269,8 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurr
  */
 const WideEstablish: React.FC<SceneProps> = ({seconds, payload, seed, occurrence}) => {
   const f = useCurrentFrame();
+  // Başlık ilk girer ve sahne boyunca kalır — bkz. hero_cutout'taki gerekçe.
+  const title = enter(f, {at: 0.1, duration: 0.35, kind: 'fade'});
   const band = enter(f, {at: cue(seconds, 0, 3), duration: 0.6, kind: 'draw'});
   const subject = enter(f, {at: cue(seconds, 1, 3), duration: 0.7, kind: 'slide', from: {x: -260}});
   const cap = enter(f, {at: cue(seconds, 2, 3), duration: 0.35, kind: 'fade'});
@@ -317,7 +334,7 @@ const WideEstablish: React.FC<SceneProps> = ({seconds, payload, seed, occurrence
             left: SAFE.left,
             top: variant === 1 ? B.bottom.y + 40 : B.top.y,
             width: SAFE_BOX.width,
-            opacity: cap.opacity,
+            opacity: title.opacity,
           }}
           seed={seed}
         />
@@ -1235,6 +1252,8 @@ const StickBeat: React.FC<SceneProps> = ({seconds, payload, seed}) => {
   const f = useCurrentFrame();
   // Girişler sahne süresine yayılıyor (cue), sabit saniyeye çakılı değil.
   const fig = enter(f, {at: cue(seconds, 1, 4), duration: 0.5, kind: 'drop', from: {y: -120}});
+  // Başlık ilk girer — bkz. hero_cutout'taki gerekçe.
+  const title = enter(f, {at: 0.1, duration: 0.35, kind: 'fade'});
   const head = enter(f, {at: cue(seconds, 2, 4), duration: 0.4, kind: 'fade'});
   const hl = enter(f, {at: cue(seconds, 3, 4), duration: 0.5, kind: 'draw'});
 
@@ -1324,7 +1343,7 @@ const StickBeat: React.FC<SceneProps> = ({seconds, payload, seed}) => {
             left: SAFE.left,
             top: B.top.y,
             width: SAFE_BOX.width,
-            opacity: head.opacity,
+            opacity: title.opacity,
           }}
           seed={seed}
         />
@@ -1359,6 +1378,8 @@ const StickBeat: React.FC<SceneProps> = ({seconds, payload, seed}) => {
 /* ------------------------------------------------------------------ */
 const StarField: React.FC<SceneProps> = ({seconds, payload, seed}) => {
   const f = useCurrentFrame();
+  // Başlık ilk girer — bkz. hero_cutout'taki gerekçe.
+  const title = enter(f, {at: 0.1, duration: 0.35, kind: 'fade'});
   const rings = enter(f, {at: cue(seconds, 0, 3), duration: Math.max(0.9, seconds * 0.4), kind: 'draw'});
   const port = enter(f, {at: cue(seconds, 1, 3), duration: 0.55, kind: 'fade'});
   const lab = enter(f, {at: cue(seconds, 2, 3), duration: 0.35, kind: 'stamp'});
@@ -1428,7 +1449,7 @@ const StarField: React.FC<SceneProps> = ({seconds, payload, seed}) => {
           size={TYPE.subhead}
           align="center"
           color={PALETTE.paper}
-          style={{position: 'absolute', left: SAFE.left, top: B.top.y, width: SAFE_BOX.width, opacity: port.opacity}}
+          style={{position: 'absolute', left: SAFE.left, top: B.top.y, width: SAFE_BOX.width, opacity: title.opacity}}
           seed={seed}
         />
       )}

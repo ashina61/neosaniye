@@ -21,14 +21,16 @@
  * hâlâ giriş yapıyor. Yani izleyici ya okuyor ya bakıyor, ikisini birlikte
  * yapamıyor.
  *
- * 2.0'a düşürmek beat'i %25 uzatıyor: 8 kelime 4.0 saniyede. Okuma 2 saniye,
- * görsele 2 saniye kalıyor.
+ * İKİNCİ DÜŞÜŞ (2.0 → 1.7): kullanıcı 2.0'da da "ekran takip edilemiyor
+ * okunamıyor" dedi. Asıl sebep başlığın GEÇ girmesiydi (dört şablonda sahnenin
+ * yarısından sonra) ve o ayrıca düzeltildi; ama okuma payı da dardı. 1.7'de 8
+ * kelime 4.7 saniyede: okuma ~2 sn, görsele ~2.7 sn.
  *
  * Seslendirme eklendiğinde bu değer 2.5'e GERİ ÇIKMALI ve beat süreleri
  * gerçek ses dosyasından ölçülmeli — o zaman kısıt okuma hızı değil, konuşma
  * hızı olur.
  */
-export const WORDS_PER_SECOND = 2.0;
+export const WORDS_PER_SECOND = 1.7;
 
 /** PDF'in beat sayısı sağlaması: süreye göre beklenen aralık. */
 export const BEAT_COUNT_RANGE = [

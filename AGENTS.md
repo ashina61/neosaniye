@@ -62,6 +62,24 @@ eşiğini denetliyor.
   olumsuzlanan hareket, kano değil.
 - Vurgu (altın bar) cümlenin somut nesnesine gider; "en uzun kelime" kuralı
   yalnızca yedektir.
+- **Bir aile ancak SİLUETİ AYNI OKUNAN nesneleri toplayabilir.** Tek bir
+  `vehicle` ailesi "aircraft" cümlesine kamyon çizdirdi; tek bir `object`
+  ailesi bomba/paraşüt/çanta/silah/anahtarın hepsine aynı yuvarlak kutuyu
+  çizdirdi. Aileyi fazla geniş tutmak, aileyi kurma sebebini yok eder.
+- **Anlatı, çizilecek nesnenin ADINI geçirmeli.** Şekil somut isimden türüyor,
+  fiilden değil: "he jumped" çizilemez, "he jumped with a parachute" çizilir.
+  Harita da iki yer adı ister: "a ticket to Seattle" değil, "a ticket from
+  Portland to Seattle". İkisi de anlatıyı bozmuyor, netleştiriyor.
+
+## Okunabilirlik
+
+- **Başlık HER ŞEYDEN ÖNCE girer ve sahne boyunca kalır.** Dört şablonda
+  başlığın opaklığı ilgisiz bir öğenin girişine bağlıydı (`hero_cutout`'ta
+  cue 2/5 = 3 saniyelik sahnede 1.36. saniye); okumaya 1.6 saniye kalıyordu ve
+  6 kelimelik büyük harf başlık ~1.5 saniye okuma ister. Metin OKUNACAK şeydir;
+  ilk giren o olmalı.
+- Kelime/saniye **1.7**, sahne tabanı **3.6 sn**. İkisi de kullanıcı raporuyla
+  düşürüldü ("ekran takip edilemiyor okunamıyor") — 2.5 → 2.0 → 1.7.
 - **Image-to-video modeli kullanılmaz.** Build-on assembly (öğelerin boş kağıt
   zeminden tek tek girmesi) `src/motion/stepped.ts` içinde kodla yapılır.
   Referans prompt'un istediği "kamera kilitli, yerleşen öğe bir daha oynamaz"
