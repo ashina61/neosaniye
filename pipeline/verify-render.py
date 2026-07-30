@@ -305,7 +305,32 @@ def main():
         # ~0.15-0.9 s arasında bitiyor; 40 kare (1.33 s) örneklemek pencerenin
         # yarısını hareketsiz kısma düşürüyor ve tutulan kare payını yapay
         # olarak %85'e çıkarıyordu. 18 kare = 0.6 s, hareketin olduğu bölge.
-        entry = max(scene_windows, key=lambda w: w[2]) if scene_windows else (None, 0.0, 0.0)
+        # PENCERE, EN UZUN SAHNEDEN DEĞİL, EN ÇOK HAREKET EDEN SAHNEDEN SEÇİLİR.
+        #
+        # İlk sürüm `max(..., key=süre)` diyordu ve ÖLÇÜMDE YANLIŞ ÇIKTI:
+        # şablonlar değişince en uzun sahne `grid_scale` oldu. O sahnenin giriş
+        # animasyonu yirmi küçük ikonun tek tek belirmesi; her ikon 360 px'lik
+        # örnekte ~57 px, yani kare ortalaması eşiğin altında kalıyor. Ölçüm
+        # "18 karede 1 ayrı kare" dedi ve kadansı BAŞARISIZ saydı — oysa video
+        # tam da tasarlandığı gibi 12fps adımında oynuyordu.
+        #
+        # Bu, bu betikte daha önce de yapılan hatanın aynısı: ÖLÇÜMÜN YANLIŞ
+        # YERDEN ÖRNEKLENMESİ. O sefer sahnenin durgun ortasından örnekleniyordu;
+        # bu sefer hareketi görünmeyen bir sahneden. Kadans yalnızca GÖRÜNÜR
+        # hareketin olduğu yerde ölçülebilir, o yüzden pencere ölçülerek seçilir.
+        cands = [w for w in scene_windows if w[2] >= 1.5] or scene_windows
+        best_w, best_motion = None, -1.0
+        for k, w in enumerate(cands):
+            probe_dir = Path(td) / f"cad-probe{k}"
+            probe_dir.mkdir()
+            fr = load(extract(video, probe_dir, w[1] + 0.18, 6, scale=240))
+            if len(fr) < 2:
+                continue
+            motion = float(np.mean([np.abs(fr[i] - fr[i - 1]).mean() for i in range(1, len(fr))]))
+            if motion > best_motion:
+                best_motion, best_w = motion, w
+        entry = best_w or (scene_windows[0] if scene_windows else (None, 0.0, 0.0))
+        print(f"\n[KADANS] örnek sahne: {entry[0]} (t={entry[1]:.1f}s, ölçülen hareket {best_motion:.2f})")
         cad = load(extract(video, d1, entry[1] + 0.18, 18, scale=360))
         st = stepped_cadence(cad)
         # Ayrıca ayrı kare sayısını da bas: 12fps'de 18 karede ~7-8 ayrı kare

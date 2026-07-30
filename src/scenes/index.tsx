@@ -465,10 +465,17 @@ const PullQuoteScene: React.FC<SceneProps> = ({seconds, payload, seed}) => {
    * En büyük nesne METNİN KENDİSİ, o yüzden sürüklenen o: çok yavaş, çok az —
    * alıntı sakin durmalı, ama ölü durmamalı.
    */
-  const quoteDrift = drift(f, {seconds, dy: -26, scale: 0.03});
+  /**
+   * GENLİK ÖLÇÜLEREK ARTIRILDI. İlk denemede dy -26 / ölçek %3 verdim ve
+   * doğrulayıcı sahneyi hâlâ %99.0 sabit ölçtü — yani düzeltme sayısal olarak
+   * neredeyse hiçbir şey değiştirmemişti. Ölçüm penceresi sahnenin %55'i ile
+   * %92'si arası, orada kosinüs yumuşatması hareketin en yavaş kısmına denk
+   * geliyor ve 26 pikselin ancak bir kısmı gerçekleşiyor.
+   */
+  const quoteDrift = drift(f, {seconds, dy: -52, scale: 0.06});
   // Arkada duran büyük tırnak işareti: ikinci hareketli katman ve tipografik
   // olarak alıntının imzası. Metnin arkasında, ondan bağımsız kayar.
-  const markDrift = drift(f, {seconds, dx: 34, dy: 18, phase: 0.25});
+  const markDrift = drift(f, {seconds, dx: 64, dy: 38, scale: 0.09, phase: 0.25});
 
   return (
     <PaperBase seed={seed} ground="warm">
@@ -481,7 +488,7 @@ const PullQuoteScene: React.FC<SceneProps> = ({seconds, payload, seed}) => {
           fontSize: 520,
           lineHeight: 0.7,
           color: PALETTE.accent,
-          opacity: 0.16 * q.opacity,
+          opacity: 0.22 * q.opacity,
           transform: markDrift,
           pointerEvents: 'none',
           userSelect: 'none',
