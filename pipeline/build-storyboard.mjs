@@ -16,7 +16,7 @@ import {existsSync} from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import {buildBeats, canRender, checkBeatCount, resolveTemplate, templateVariety, wordCount} from './beats.mjs';
-import {isNegated, nounFor, shapeFor, shapesFor} from './subject.mjs';
+import {isNegated, nounFor, searchFor, shapeFor, shapesFor} from './subject.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const FPS = 30;
@@ -290,14 +290,26 @@ function collectYears(narration) {
 }
 
 async function main() {
-  const storyPath = path.join(ROOT, 'content', 'story.json');
+  /**
+   * KONU DOSYASI ARGÜMANLA VERİLEBİLİR.
+   *
+   *   npm run beats                          → content/story.json
+   *   npm run beats -- content/story-x.json  → o dosya
+   *
+   * Neden: kullanıcı "başka bir konu için run almak istiyorum" dedi ve tek yol
+   * content/story.json'ı ELLE ÜZERİNE YAZMAKTI. Üzerine yazmak eski konuyu
+   * siler, yani her yeni konu bir öncekini yok eder ve karşılaştırma imkânı
+   * kalmaz. Konular yan yana durabilmeli.
+   */
+  const argPath = process.argv.slice(2).find((a) => !a.startsWith('-'));
+  const storyPath = argPath ? path.resolve(ROOT, argPath) : path.join(ROOT, 'content', 'story.json');
   if (!existsSync(storyPath)) {
-    console.error(`content/story.json bulunamadı: ${storyPath}`);
+    console.error(`konu dosyası bulunamadı: ${storyPath}`);
     process.exit(1);
   }
   const story = JSON.parse(await readFile(storyPath, 'utf8'));
   if (!story.narration || !String(story.narration).trim()) {
-    console.error('story.json içinde `narration` yok ya da boş.');
+    console.error(`${path.basename(storyPath)} içinde \`narration\` yok ya da boş.`);
     process.exit(1);
   }
 
@@ -305,7 +317,21 @@ async function main() {
 
   // Sahne süresi = beat süresi, ama asgari eşik var: 1.2 saniyeden kısa sahne
   // göz tarafından okunmuyor, kesme gürültüsü gibi durur.
-  const MIN_SECONDS = 1.2;
+  /**
+   * SAHNE TABANI — kullanıcı iki kez "değişim çok hızlı" dedi.
+   *
+   * 1.2 saniye, kesmenin göz tarafından "gürültü" olarak okunmadığı ALT SINIRDI;
+   * yani teknik bir taban, editoryal bir tercih değil. Ölçülen storyboard'da
+   * sahnelerin dörtte biri 2.0-2.5 saniyeydi ve hızlı gelen kesmeler onlardı.
+   *
+   * Seslendirme yokken izleyici hem OKUYOR hem bakıyor: 6 kelimelik bir başlık
+   * ~1.5 saniye okuma demek, üstüne görsele bakacak zaman gerekiyor. 3.0 saniye
+   * ikisine birden yer bırakan taban.
+   *
+   * Seslendirme eklendiğinde bu taban düşürülebilir — o zaman okuma yükü ortadan
+   * kalkar ve kesme temposu sesin temposuna bağlanır.
+   */
+  const MIN_SECONDS = 3.0;
 
   // Şablon seçimi burada KESİNLEŞİR: beats.mjs tür bazlı öneriyi verir, ama
   // hangi şablonun gerçekten çizebileceğini payload belirler. `resolveTemplate`
@@ -415,6 +441,33 @@ async function main() {
   // Tek şablon sahnelerin üçte birinden fazlasını kaplıyorsa video şablondan
   // çıkmış gibi görünür — "ardışık tekrar 0" bunu yakalamaz.
   if (v.topShare > 0.34) console.log('  ← UYARI: bir şablon fazla baskın');
+
+  /**
+   * SEMANTİK KAPSAMA — SESSİZ BOZULMAYA KARŞI TEK SAVUNMA
+   *
+   * NEDEN BU RAPOR VAR
+   * Sözlük bir kez tek bir konuya (Pasifik seyrüseferi) göre yazılmıştı. Farklı
+   * bir konu verildiğinde ÖLÇÜLDÜ Kİ 19 sahnenin 19'unda şekil bulunamıyor —
+   * ve hiçbir hata çıkmıyor, hiçbir uyarı verilmiyordu. Video render ediliyor,
+   * testler geçiyor, doğrulayıcı "TÜM ÖLÇÜMLER GEÇTİ" diyor; tek fark ekrandaki
+   * her şeyin anlatımla ilgisiz jenerik siluete dönmesi.
+   *
+   * Bu, bu projede daha önce de görülen en tehlikeli hata sınıfı: ölçüm, ölçtüğü
+   * şeyin YOKLUĞUNU başarı sanıyor. Kapsama artık her derlemede yazılıyor ve
+   * düşükse yüksek sesle uyarıyor.
+   */
+  const shaped = scenes.filter((s) => s.payload.shape).length;
+  const searchable = scenes.filter((s) => searchFor(s._beat.text)).length;
+  const coverage = shaped / Math.max(scenes.length, 1);
+  console.log(
+    `  semantik kapsama: ${shaped}/${scenes.length} sahnede çizilecek nesne bulundu ` +
+      `(%${(coverage * 100).toFixed(0)}), ${searchable} sahne için arşiv sorgusu var`,
+  );
+  if (coverage < 0.4) {
+    console.log('  ← UYARI: kapsama DÜŞÜK. Sahnelerin çoğu şablonun jenerik siluetine düşecek,');
+    console.log('    yani çizimler anlatımla ilgisiz olacak. Anlatıda somut nesne adı geçmiyor');
+    console.log('    ya da bu konunun nesneleri pipeline/subject.mjs sözlüğünde yok.');
+  }
 }
 
 main().catch((e) => {

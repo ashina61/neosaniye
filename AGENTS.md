@@ -28,6 +28,25 @@ Bu ayrım mimarinin merkezinde:
   kullanılamaz). Atıf `content/credits.json`e yazılır ve CC BY/BY-SA için
   yayın açıklamasına konması ZORUNLUDUR.
 
+## Yeni konu nasıl çalıştırılır
+
+```
+cp content/story.json content/story-<ad>.json     # başlığı ve narration'ı değiştir
+npm run beats -- content/story-<ad>.json          # storyboard üret + raporu OKU
+npx remotion render src/index.ts Short out/x.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p
+```
+
+`npm run beats` çıktısındaki **semantik kapsama** satırı yeni konuda ilk
+bakılacak yer. %40'ın altındaysa yüksek sesle uyarır: o durumda sahnelerin çoğu
+şablonun jenerik siluetine düşer ve çizimler anlatımla ilgisiz olur. Çözüm ya
+anlatıda somut nesne adı geçirmek ya da `pipeline/subject.mjs` sözlüğüne o
+konunun nesne ailesini eklemek — TEK bir nesne değil, AİLE.
+
+Konuya özgü kod ya da konuya özgü bileşen yazılmaz; bu kural sözlüğü de kapsar.
+Sözlük bir kez tek konuya göre yazıldı ve farklı bir konuda kapsama 0/19 ölçüldü
+— hiçbir hata vermeden. `test/beats.test.mjs` artık dört alakasız konuda kapsama
+eşiğini denetliyor.
+
 ## Çizilen şey cümleden gelir, şablondan gelmez
 
 - Şablon **beat türünü** cevaplar (olgu mu, yer mi, ölçek mi). Hangi NESNENİN
@@ -57,6 +76,10 @@ Bu ayrım mimarinin merkezinde:
   davranış arka planın/metnin/okun tamamen sabit kalmasıydı.
 - Kamera hareketi yok: zoom, pan, tilt, dolly hiçbiri.
 - Sahneler arasında **sert kesme**. Çapraz geçiş, fade, wipe kullanılmaz.
+- **Sahne tabanı 3.0 saniye** (`MIN_SECONDS`). Eski taban 1.2 idi ve o teknik
+  bir alt sınırdı (kesmenin gürültü olarak okunmadığı nokta), editoryal bir
+  tercih değil. Seslendirme yokken izleyici hem okuyor hem bakıyor; kullanıcı
+  iki kez "değişim çok hızlı" dedi. Seslendirme eklenirse bu taban düşürülebilir.
 - **Girişler sabit saniyeye yazılmaz, `cue(seconds, i, n)` ile sahne süresine
   yayılır.** Sabit takvim ölçülerek yanlış çıktı: 2.8 saniyelik `map_route`
   sahnesinin son 2.25 saniyesinde değişim %0.00, ve videonun 20 donmuş

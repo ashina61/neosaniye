@@ -127,7 +127,17 @@ export function splitSentences(text) {
  * bir beat oldu. İki kelime ne bir görsel fikir taşır ne de 0.8 saniyede
  * okunur — sadece kesme gürültüsü üretir.
  */
-export const MIN_WORDS_PER_BEAT = 4;
+/**
+ * Beat başına en az kelime.
+ *
+ * 4'ten 5'e çıkarıldı. Ölçülen storyboard'da 4 kelimelik parçalar üretiliyordu
+ * ve bunlar cümle değil, kırıntıydı: "with a glove", "money while they waited".
+ * Bir kırıntı ekranda tek başına durunca izleyici cümleyi zihninde tamamlamak
+ * zorunda kalıyor ve bu, tempoyu hızlı hissettiren şeylerden biri.
+ *
+ * Yan etkisi istenen yönde: daha az bölme → daha az, daha uzun sahne.
+ */
+export const MIN_WORDS_PER_BEAT = 5;
 
 /** Beat sonunda asılı kalmaması gereken işlev kelimeleri. */
 const DANGLING = new Set([

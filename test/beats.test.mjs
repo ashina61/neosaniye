@@ -195,3 +195,85 @@ test('deterministik: aynı anlatı iki kez aynı storyboard verir', () => {
   const b = JSON.stringify(buildBeats(NARRATION));
   assert.equal(a, b);
 });
+
+/* ---------------- konudan bağımsızlık ---------------- */
+
+/**
+ * SİSTEM FARKLI KONULARDA ÇUVALLAMIYOR MU?
+ *
+ * NEDEN BU TEST VAR — ÖLÇÜLMÜŞ ÇÖKÜŞ
+ * Somut nesne sözlüğü bir kez tek konuya (Pasifik seyrüseferi) göre yazılmıştı.
+ * Farklı bir konu — 1963 tren soygunu — verilince ÖLÇÜLDÜ ki 19 sahnenin
+ * 19'unda şekil bulunamıyor. Ve hiçbir hata çıkmıyordu: video render ediliyor,
+ * testler geçiyor, doğrulayıcı "TÜM ÖLÇÜMLER GEÇTİ" diyordu. Tek fark ekrandaki
+ * her şeyin anlatımla ilgisiz jenerik siluete dönmesiydi.
+ *
+ * Bu, deponun kendi kuralının ihlaliydi: "konu başına kod yazılmaz". Test o
+ * kuralı ölçülebilir hâle getirir: BİRBİRİYLE ALAKASIZ dört anlatıda kapsama
+ * eşiğin altına düşerse başarısız olur.
+ */
+test('sözlük konudan bağımsız: alakasız konularda da nesne buluyor', async () => {
+  const {shapeFor, searchFor} = await import('../pipeline/subject.mjs');
+
+  const topics = {
+    'tren soygunu': [
+      'In 1963, fifteen men in army uniforms waited beside a railway bridge.',
+      'They had rewired the signal lamp with a glove and a battery.',
+      'The mail train slowed, then stopped in the dark.',
+      'Two and a half million pounds left the station in a lorry.',
+      'A fingerprint on the board sent most of them to prison.',
+    ],
+    'uzay': [
+      'The rocket lifted off from a concrete pad in Florida.',
+      'A single switch failed eleven minutes into the flight.',
+      'The capsule fell back through the clouds into the ocean.',
+      'Engineers read the telegram twice before they believed it.',
+    ],
+    'salgın': [
+      'A doctor in London marked every death on a map of the city.',
+      'The water pump on Broad Street was the centre of the pattern.',
+      'He removed the handle and the deaths stopped.',
+      'The report sat in a file for thirty years.',
+    ],
+    'madencilik': [
+      'The mine collapsed at four in the afternoon.',
+      'Thirty-three men were trapped below the desert floor.',
+      'A drill the width of a dinner plate reached them on day seventeen.',
+      'The capsule that lifted them out was painted white.',
+    ],
+  };
+
+  for (const [name, sentences] of Object.entries(topics)) {
+    const shaped = sentences.filter((s) => shapeFor(s)).length;
+    const searchable = sentences.filter((s) => searchFor(s)).length;
+    const ratio = shaped / sentences.length;
+    assert.ok(
+      ratio >= 0.6,
+      `"${name}" konusunda kapsama %${(ratio * 100).toFixed(0)} — sözlük bu konuya kör, ` +
+        'sahneler jenerik siluete düşer ve çizimler anlatımla ilgisiz olur',
+    );
+    assert.equal(searchable, shaped, `"${name}": şekli olan her cümlenin arşiv sorgusu da olmalı`);
+  }
+});
+
+test('arşiv sorgusu eşleşen kelimeden kurulur, hazır cümleden değil', async () => {
+  const {searchFor} = await import('../pipeline/subject.mjs');
+  // Sorgu, sözlükteki hazır bir cümleden değil EŞLEŞEN KELİMEDEN kurulur.
+  assert.match(searchFor('They drove away in a lorry.'), /\blorry\b/i);
+  // Cümlede iki nesne varsa CÜMLEDE ÖNCE GEÇEN kazanır — sözlük sırası değil.
+  // ("money" belge ailesinde ve cümlede önce geçiyor, "lorry" araç ailesinde.)
+  assert.match(searchFor('The money left in a lorry.'), /\bmoney\b/i);
+  // Yıl geçiyorsa sorgu döneme sabitlenir.
+  assert.match(searchFor('In 1963 the mail train stopped.'), /\btrain\b.*\b1963\b/i);
+  // Somut nesne yoksa sorgu YOK — uydurma görsel istemektense hiç istememek.
+  assert.equal(searchFor('Here is the strange part.'), null);
+});
+
+test('dar çekim toleransı yanlış eşleşme üretmiyor', async () => {
+  const {shapeFor} = await import('../pipeline/subject.mjs');
+  // "training" içinde "train" geçiyor ama ortada tren yok: geniş bir kök
+  // bulucu burada araç çizdirirdi. Yanlış görsel, görsel olmamasından kötü.
+  assert.notEqual(shapeFor('The training lasted six weeks.'), 'vehicle');
+  // "manner" içinde "man" var.
+  assert.notEqual(shapeFor('He answered in a strange manner.'), 'figure');
+});

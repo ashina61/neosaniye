@@ -72,7 +72,10 @@ export type PlaceholderShape =
   | 'instrument'
   | 'bird'
   | 'star'
-  | 'wave';
+  | 'wave'
+  | 'vehicle'
+  | 'document'
+  | 'machine';
 
 /**
  * PROSEDÜREL YER TUTUCU
@@ -199,6 +202,71 @@ const Placeholder: React.FC<{shape: PlaceholderShape; seed: number}> = ({shape, 
               />
             );
           })}
+        </svg>
+      );
+
+    /**
+     * ARAÇ — tren, kamyon, otobüs, uçak.
+     *
+     * Bu üç şekil (vehicle/document/machine) sözlük GENELLEŞTİRİLİRKEN eklendi.
+     * Ölçüm şunu göstermişti: farklı bir konu (1963 tren soygunu) verildiğinde
+     * 19 sahnenin 19'unda şekil bulunamıyordu, çünkü hem sözlük hem şekil
+     * kümesi tek bir konuya (Pasifik seyrüseferi) göre yazılmıştı. Tren, para,
+     * sinyal lambası gibi belgesel anlatılarının en sık nesnelerinin karşılığı
+     * yoktu.
+     *
+     * Siluet KATEGORİYİ anlatır, tek bir modeli değil: gövde + tekerlek + kabin.
+     * "Hangi marka kamyon" sorusu bir siluetin cevaplayacağı şey değil.
+     */
+    case 'vehicle':
+      return (
+        <svg viewBox="0 0 200 110" width="100%" height="100%" preserveAspectRatio="xMidYMax meet">
+          {/* Gövde ve kabin tek parça: kesilmiş kağıt tek parçadır. */}
+          <path d="M8 34 L118 34 L150 52 L192 52 L192 82 L8 82 Z" {...common} />
+          {/* Pencereler zeminin rengiyle oyulur — ayrı katman değil, delik. */}
+          <rect x="20" y="42" width="30" height="22" fill={PALETTE.paper} />
+          <rect x="58" y="42" width="30" height="22" fill={PALETTE.paper} />
+          <rect x="126" y="56" width="20" height="16" fill={PALETTE.paper} />
+          <circle cx="48" cy="88" r="17" {...common} />
+          <circle cx="48" cy="88" r="7" fill={PALETTE.paper} />
+          <circle cx="156" cy="88" r="17" {...common} />
+          <circle cx="156" cy="88" r="7" fill={PALETTE.paper} />
+        </svg>
+      );
+
+    /** BELGE — mektup, banknot, dosya, gazete. Üst üste iki yaprak + kıvrık köşe. */
+    case 'document': {
+      const skew = (rand(seed * 4.4) - 0.5) * 5;
+      return (
+        <svg viewBox="0 0 120 150" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+          {/* Arkadaki ikinci yaprak: tek yaprak "kart" okunur, yığın "belge". */}
+          <rect x="16" y="10" width="86" height="122" {...common} transform={`rotate(${skew.toFixed(1)} 60 70)`} opacity={0.45} />
+          <path d="M10 4 L86 4 L104 24 L104 140 L10 140 Z" {...common} />
+          {/* Kıvrık köşe zeminden oyulur. */}
+          <path d="M86 4 L104 24 L86 24 Z" fill={PALETTE.paper} />
+          {/* Satırlar */}
+          {[0, 1, 2, 3, 4].map((i) => (
+            <rect key={i} x="24" y={48 + i * 18} width={i === 4 ? 40 : 66} height="6" fill={PALETTE.paper} />
+          ))}
+        </svg>
+      );
+    }
+
+    /** MAKİNE — motor, telsiz, jeneratör, sinyal. Kutu gövde + kadran + çark. */
+    case 'machine':
+      return (
+        <svg viewBox="0 0 140 130" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+          <rect x="10" y="26" width="120" height="88" rx="4" {...common} />
+          <circle cx="44" cy="64" r="20" fill={PALETTE.paper} />
+          <circle cx="44" cy="64" r="5" {...common} />
+          {/* İbre: makinenin "çalıştığını" söyleyen tek işaret. */}
+          <rect x="42" y="48" width="4" height="18" {...common} />
+          {[0, 1, 2].map((i) => (
+            <rect key={i} x="78" y={46 + i * 16} width="38" height="8" fill={PALETTE.paper} />
+          ))}
+          {/* Üstte bobin/çark */}
+          <circle cx="104" cy="18" r="14" {...common} />
+          <circle cx="104" cy="18" r="5" fill={PALETTE.paper} />
         </svg>
       );
 

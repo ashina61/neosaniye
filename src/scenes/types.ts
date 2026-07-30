@@ -85,7 +85,10 @@ export interface ScenePayload {
     | 'instrument'
     | 'bird'
     | 'star'
-    | 'wave';
+    | 'wave'
+    | 'vehicle'
+    | 'document'
+    | 'machine';
   /**
    * İKİNCİ nesne — yalnızca iki nesne çizen şablonlar okur (labeled_diagram,
    * split_compare). Cümlede ikinci somut nesne varsa o çizilir; yoksa şablon

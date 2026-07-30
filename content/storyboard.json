@@ -4,7 +4,7 @@
     {
       "template": "wide_establish",
       "payload": {
-        "headline": "In 1976, a man *named*",
+        "headline": "In 1976, a *man* named",
         "caption": "Hawai'i to Tahiti, 1976",
         "shape": "figure"
       },
@@ -36,34 +36,18 @@
     {
       "template": "headline_card",
       "payload": {
-        "headline": "He carried no *compass,*",
+        "headline": "He carried no *compass,* no charts",
         "shape": "instrument",
+        "shape2": "object",
         "negated": true
       },
       "occurrence": 0,
-      "durationInFrames": 60,
+      "durationInFrames": 135,
       "seed": 17,
       "_beat": {
-        "text": "He carried no compass,",
+        "text": "He carried no compass, no charts, and no radio.",
         "kind": "absence",
         "start": 7
-      }
-    },
-    {
-      "template": "wide_establish",
-      "payload": {
-        "headline": "no *charts,* and no radio",
-        "caption": "Hawai'i to Tahiti, 1976",
-        "shape": "object",
-        "negated": true
-      },
-      "occurrence": 1,
-      "durationInFrames": 75,
-      "seed": 24,
-      "_beat": {
-        "text": "no charts, and no radio.",
-        "kind": "absence",
-        "start": 9
       }
     },
     {
@@ -89,7 +73,7 @@
       },
       "occurrence": 0,
       "durationInFrames": 105,
-      "seed": 31,
+      "seed": 24,
       "_beat": {
         "text": "He sailed from Hawai'i to Tahiti across",
         "kind": "sequence",
@@ -97,14 +81,15 @@
       }
     },
     {
-      "template": "hero_cutout",
+      "template": "wide_establish",
       "payload": {
-        "headline": "four thousand kilometres of open *water*",
+        "headline": "four thousand *kilometres* of open",
+        "caption": "Hawai'i to Tahiti, 1976",
         "shape": "wave"
       },
       "occurrence": 1,
       "durationInFrames": 90,
-      "seed": 38,
+      "seed": 31,
       "_beat": {
         "text": "four thousand kilometres of open water.",
         "kind": "magnitude",
@@ -112,7 +97,7 @@
       }
     },
     {
-      "template": "headline_card",
+      "template": "hero_cutout",
       "payload": {
         "headline": "Instead of *instruments,* he used",
         "shape": "instrument",
@@ -120,7 +105,7 @@
       },
       "occurrence": 1,
       "durationInFrames": 105,
-      "seed": 45,
+      "seed": 38,
       "_beat": {
         "text": "Instead of instruments, he used the stars,",
         "kind": "compare",
@@ -128,15 +113,15 @@
       }
     },
     {
-      "template": "labeled_diagram",
+      "template": "headline_card",
       "payload": {
-        "headline": "the swell, and the flight",
+        "headline": "the *swell,* and the flight",
         "shape": "wave",
         "shape2": "bird"
       },
-      "occurrence": 0,
+      "occurrence": 1,
       "durationInFrames": 105,
-      "seed": 52,
+      "seed": 45,
       "_beat": {
         "text": "the swell, and the flight of birds.",
         "kind": "fact",
@@ -151,7 +136,7 @@
       },
       "occurrence": 0,
       "durationInFrames": 90,
-      "seed": 59,
+      "seed": 52,
       "_beat": {
         "text": "Every night he read the sky.",
         "kind": "time",
@@ -167,7 +152,7 @@
       },
       "occurrence": 2,
       "durationInFrames": 90,
-      "seed": 66,
+      "seed": 59,
       "_beat": {
         "text": "Every day he read the water.",
         "kind": "time",
@@ -181,7 +166,7 @@
       },
       "occurrence": 2,
       "durationInFrames": 105,
-      "seed": 73,
+      "seed": 66,
       "_beat": {
         "text": "He had memorized two hundred and twenty",
         "kind": "fact",
@@ -192,11 +177,12 @@
       "template": "headline_card",
       "payload": {
         "headline": "*star* positions as a boy",
-        "shape": "star"
+        "shape": "star",
+        "shape2": "figure"
       },
       "occurrence": 2,
-      "durationInFrames": 75,
-      "seed": 80,
+      "durationInFrames": 90,
+      "seed": 73,
       "_beat": {
         "text": "star positions as a boy.",
         "kind": "fact",
@@ -210,11 +196,12 @@
           "total": 20,
           "highlighted": 5
         },
-        "headline": "Only five navigators of his tradition"
+        "headline": "Only five navigators of his tradition",
+        "shape": "figure"
       },
       "occurrence": 0,
       "durationInFrames": 135,
-      "seed": 87,
+      "seed": 80,
       "_beat": {
         "text": "Only five navigators of his tradition were still living.",
         "kind": "scale",
@@ -230,7 +217,7 @@
       },
       "occurrence": 1,
       "durationInFrames": 105,
-      "seed": 94,
+      "seed": 87,
       "_beat": {
         "text": "Thirty-three days later, the canoe reached Tahiti.",
         "kind": "time",
@@ -243,8 +230,8 @@
         "quote": "Here is the strange part."
       },
       "occurrence": 0,
-      "durationInFrames": 75,
-      "seed": 101,
+      "durationInFrames": 90,
+      "seed": 94,
       "_beat": {
         "text": "Here is the strange part.",
         "kind": "turn",
@@ -259,7 +246,7 @@
       },
       "occurrence": 3,
       "durationInFrames": 120,
-      "seed": 108,
+      "seed": 101,
       "_beat": {
         "text": "In his mind, the canoe was never moving.",
         "kind": "absence",
@@ -269,13 +256,13 @@
     {
       "template": "headline_card",
       "payload": {
-        "headline": "He held it *still,*"
+        "headline": "He held it *still,* and let"
       },
       "occurrence": 3,
-      "durationInFrames": 60,
-      "seed": 115,
+      "durationInFrames": 90,
+      "seed": 108,
       "_beat": {
-        "text": "He held it still,",
+        "text": "He held it still, and let",
         "kind": "fact",
         "start": 51.5
       }
@@ -283,16 +270,16 @@
     {
       "template": "labeled_diagram",
       "payload": {
-        "headline": "and let the islands come",
+        "headline": "the islands come to him",
         "shape": "terrain"
       },
-      "occurrence": 1,
-      "durationInFrames": 105,
-      "seed": 122,
+      "occurrence": 0,
+      "durationInFrames": 90,
+      "seed": 115,
       "_beat": {
-        "text": "and let the islands come to him.",
+        "text": "the islands come to him.",
         "kind": "fact",
-        "start": 53.5
+        "start": 54.5
       }
     },
     {
@@ -302,7 +289,7 @@
       },
       "occurrence": 2,
       "durationInFrames": 135,
-      "seed": 129,
+      "seed": 122,
       "_beat": {
         "text": "Nobody had made that crossing for six hundred years.",
         "kind": "cliffhanger",
@@ -310,5 +297,5 @@
       }
     }
   ],
-  "totalFrames": 1845
+  "totalFrames": 1890
 }
