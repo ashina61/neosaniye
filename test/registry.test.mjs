@@ -209,3 +209,39 @@ test('somut nesne sözlüğü yalnızca subject.mjs içinde', async () => {
     );
   }
 });
+
+/**
+ * UÇTAN UCA: hiçbir başlık bozuk bir noktada bitmiyor.
+ *
+ * Yukarıdaki birim testler kuralın kendisini denetliyor; bu test kuralın
+ * GERÇEKTEN UYGULANDIĞINI denetliyor. Aradaki fark bu depoda dört kez fark
+ * yarattı: kural doğruydu, yanlış katmandaydı ve üretimde hiç etkisi yoktu.
+ */
+test('storyboard başlıkları bozuk noktada bitmiyor', async () => {
+  const {danglesBetween} = await import('../pipeline/beats.mjs');
+  const sb = JSON.parse(await read('content/storyboard.json'));
+  for (const [i, s] of sb.scenes.entries()) {
+    const headline = s.payload?.headline;
+    if (!headline) continue;
+    const words = headline.replace(/\*/g, '').split(/\s+/);
+    const last = words[words.length - 1];
+
+    // 1. Sarkan işlev kelimesiyle bitmiyor.
+    assert.equal(
+      danglesBetween(last, 'x'),
+      false,
+      `sahne ${i + 1}: başlık sarkan kelimeyle bitiyor — ${JSON.stringify(headline)}`,
+    );
+
+    // 2. Kaynak cümledeki sayı/tarih zincirini ortadan kesmiyor.
+    const src = (s._beat?.text ?? '').replace(/\s+/g, ' ').split(/\s+/);
+    const at = src.findIndex((w, k) => k >= words.length - 1 && w.replace(/[^A-Za-z0-9]/g, '') === last.replace(/[^A-Za-z0-9]/g, ''));
+    if (at >= 0 && at + 1 < src.length) {
+      assert.equal(
+        danglesBetween(src[at], src[at + 1]),
+        false,
+        `sahne ${i + 1}: başlık zinciri kesiyor — ${JSON.stringify(headline)} (devamı: ${src[at + 1]})`,
+      );
+    }
+  }
+});

@@ -139,27 +139,129 @@ export function splitSentences(text) {
  */
 export const MIN_WORDS_PER_BEAT = 5;
 
-/** Beat sonunda asılı kalmaması gereken işlev kelimeleri. */
-const DANGLING = new Set([
+/**
+ * Beat ya da başlık sonunda asılı kalmaması gereken işlev kelimeleri.
+ *
+ * TEK LİSTE — daha önce İKİ liste vardı: burada ve build-storyboard'ın
+ * kırpıcısında. İkisi ayrışmıştı ve fark render'da göründü: `has` yalnızca
+ * kırpıcının listesindeydi, o yüzden BEAT BÖLÜCÜSÜ "The rest of the money has"
+ * diye bir beat üretebiliyordu ve kırpıcının onu düzeltme şansı yoktu — metin
+ * zaten öyle gelmişti.
+ *
+ * Aynı kuralın iki kopyası, bu depoda tekrar tekrar aynı sonucu verdi.
+ */
+export const DANGLING = new Set([
   'of', 'and', 'or', 'the', 'a', 'an', 'to', 'in', 'on', 'at', 'for', 'with', 'from', 'by', 'as',
   'his', 'her', 'their', 'its', 'that', 'which', 'but', 'into', 'onto', 'over', 'under',
+  'was', 'were', 'is', 'are', 'had', 'has', 'have', 'been', 'still', 'never', 'not', 'than', 'then',
+  // Özne zamirleri: "…southern Washington he" diye biten bir beat ÖLÇÜLDÜ.
+  // Belirteç kuralını eklerken bölme noktası kaydı ve bu sefer zamir asılı
+  // kaldı — bir kuralı düzeltirken açılan yeni delik.
+  'he', 'she', 'it', 'they', 'we', 'i', 'you', 'who', 'there',
 ]);
 
-/** Sayı sözcüğü mü? "two hundred and twenty" ortadan bölünmemeli. */
-const IS_NUMBER_WORD =
+/**
+ * Belirteçler. Bir beat/başlık bunlardan HEMEN ÖNCE bitmemeli.
+ *
+ * ÖLÇÜLEN KUSUR: "Somewhere over southern Washington he lowered" — geçişli fiil
+ * nesnesinden koparılmış. Fiili sözlükle yakalamak POS etiketleyici ister ama
+ * ucuz ve sağlam bir gösterge var: İngilizcede bir cümle, çıplak bir belirtecin
+ * hemen öncesinde nadiren biter. "…he lowered | the rear stair" bölünmemeli.
+ *
+ * NOKTALAMA MUAF: "He carried no compass, | the crew watched" gerçek bir cümle
+ * sınırıdır. Kural yalnızca noktalamasız kelimeden sonra işler.
+ */
+const DETERMINER = new Set(['the', 'a', 'an', 'his', 'her', 'their', 'its', 'this', 'these', 'those', 'my', 'our']);
+
+/**
+ * Sayı sözcüğü mü? "two hundred and twenty" ortadan bölünmemeli.
+ *
+ * DIŞA AÇIK, çünkü aynı kural İKİ yerde gerekiyor: burada beat bölücüsünde ve
+ * build-storyboard'ın başlık kırpıcısında. Bir yerde tutulup ötekinde
+ * unutulduğunda ne olduğu ÖLÇÜLDÜ — render'da şu başlıklar çıktı:
+ *   "He asked for two hundred"      (thousand dollars kayıp)
+ *   "On the night of 24"            (November 1971 kayıp)
+ * Doğru kural, yanlış katman: bu depoda daha önce sarkan kelime kuralında da
+ * aynısı olmuştu.
+ */
+export const IS_NUMBER_WORD =
   /^(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion|dozen|\d[\d,.]*)$/i;
+
+/** Ay adı — tarih zinciri de sayı zinciri gibi bölünmemeli. */
+export const IS_MONTH =
+  /^(january|february|march|april|may|june|july|august|september|october|november|december)$/i;
+
+/** Dört haneli yıl. */
+export const IS_YEAR = /^(1[0-9]{3}|20[0-4][0-9])$/;
 
 const bare = (w) => String(w).toLowerCase().replace(/[^a-z0-9’'-]/g, '');
 
-/** `i` konumundan sonra bölmek sarkan kelime ya da kesik sayı bırakır mı? */
-function danglesAt(words, i) {
-  const endWord = bare(words[i]);
-  const nextWord = bare(words[i + 1] ?? '');
-  if (DANGLING.has(endWord)) return true;
-  // Sayı zincirinin ortası: "two hundred | and twenty"
-  if (IS_NUMBER_WORD.test(endWord) && (nextWord === 'and' || IS_NUMBER_WORD.test(nextWord))) return true;
-  if (endWord === 'and' && IS_NUMBER_WORD.test(nextWord)) return true;
+/**
+ * `end` ile `next` arasında kesmek bir SAYI ya da TARİH zincirini kırar mı?
+ *
+ * Tarih ayrı ele alınıyor çünkü "24 | November 1971" sayı kuralına takılmıyor:
+ * "November" bir sayı sözcüğü değil. Oysa kesik tarih, kesik sayı kadar bozuk.
+ */
+export function breaksChain(end, next) {
+  const e = bare(end);
+  const n = bare(next ?? '');
+  if (!n) return false;
+  if (IS_NUMBER_WORD.test(e) && (n === 'and' || IS_NUMBER_WORD.test(n))) return true;
+  if (e === 'and' && IS_NUMBER_WORD.test(n)) return true;
+  // "24 | November", "November | 1971"
+  if (IS_NUMBER_WORD.test(e) && IS_MONTH.test(n)) return true;
+  if (IS_MONTH.test(e) && IS_YEAR.test(n)) return true;
   return false;
+}
+
+/**
+ * İKİ KELİME ARASINDA KESMEK METNİ BOZAR MI? — TEK YÜKLEM
+ *
+ * NEDEN TEK YERDE: bu kural üç parçadan oluşuyor (sarkan işlev kelimesi,
+ * yarılan isim öbeği, kırılan sayı/tarih zinciri) ve İKİ tüketicisi var — beat
+ * bölücüsü ve başlık kırpıcısı. Parçaları tek tek iki yere yazdım ve HER
+ * SEFERİNDE biri eksik kaldı:
+ *
+ *   · sarkan kelime kuralı yalnızca bölücüdeydi  → "…TO TAHITI ACROSS"
+ *   · `has` yalnızca kırpıcının listesindeydi     → "The rest of the money has"
+ *   · sayı/tarih zinciri yalnızca bölücüdeydi     → "He asked for two hundred"
+ *   · belirteç kuralı yalnızca bölücüdeydi        → "…Washington he lowered"
+ *
+ * Dördü de aynı hata: doğru kural, yanlış katman. Kuralı yüklem hâline getirmek
+ * o hatanın beşinci kez yapılmasını imkânsız kılıyor.
+ *
+ * Ham token alır (kırpılmamış), çünkü noktalama kararın parçası: "compass,"
+ * gerçek bir cümle sınırıdır, "compass" değil.
+ */
+export function danglesBetween(endToken, nextToken, {splitPoint = false} = {}) {
+  const endWord = bare(endToken);
+  const nextWord = bare(nextToken ?? '');
+  if (DANGLING.has(endWord)) return true;
+  if (breaksChain(endWord, nextWord)) return true;
+
+  /**
+   * BELİRTEÇ KURALI YALNIZCA BÖLMEDE GEÇERLİ — ölçülerek öğrenildi.
+   *
+   * Bölme ve kırpma FARKLI SORULAR sorar:
+   *   · BÖLME: iki parça da kendi başına okunabilmeli. "…he lowered | the rear
+   *     stair" bölünemez, çünkü sol parça nesnesiz bir geçişli fiille biter.
+   *   · KIRPMA: metin öylece kesilir, kalanı gösterilmez. "He handed the
+   *     attendant" tamamen düzgün bir kırpmadır.
+   *
+   * Kuralı ikisine birden uygulayınca kırpıcı belirteçlerden kaçmak için geri
+   * geri sardı ve başlıklar ikiye indi: "He handed", "In Seattle the passengers
+   * walked". Ortak yüklem doğru fikirdi ama iki soruyu bir sanmak yanlıştı.
+   */
+  if (splitPoint) {
+    const punctuated = /[,;:.!?]$/.test(String(endToken ?? ''));
+    if (!punctuated && DETERMINER.has(nextWord)) return true;
+  }
+  return false;
+}
+
+/** `i` konumundan sonra bölmek metni bozar mı? */
+function danglesAt(words, i) {
+  return danglesBetween(words[i], words[i + 1], {splitPoint: true});
 }
 
 /**

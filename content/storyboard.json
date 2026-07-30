@@ -1,18 +1,18 @@
 {
-  "title": "The Man Who Crossed the Ocean Without a Compass",
+  "title": "The Man Who Jumped Into the Rain",
   "scenes": [
     {
       "template": "wide_establish",
       "payload": {
-        "headline": "In 1976, a *man* named",
-        "caption": "Hawai'i to Tahiti, 1976",
-        "shape": "figure"
+        "headline": "On the *night* of 24 November 1971",
+        "caption": "Northwest Orient Flight 305, 1971",
+        "shape": "star"
       },
       "occurrence": 0,
       "durationInFrames": 105,
       "seed": 3,
       "_beat": {
-        "text": "In 1976, a man named Mau Piailug",
+        "text": "On the night of 24 November 1971,",
         "kind": "cold_open",
         "start": 0
       }
@@ -20,282 +20,268 @@
     {
       "template": "hero_cutout",
       "payload": {
-        "headline": "stepped onto a double-hulled *canoe*",
-        "label": "HAWAI'I",
-        "shape": "vessel"
+        "headline": "a *man* in a dark suit",
+        "shape": "figure",
+        "shape2": "object"
       },
       "occurrence": 0,
-      "durationInFrames": 105,
+      "durationInFrames": 90,
       "seed": 10,
       "_beat": {
-        "text": "stepped onto a double-hulled canoe in Hawai'i.",
-        "kind": "place",
+        "text": "a man in a dark suit",
+        "kind": "fact",
         "start": 3.5
       }
     },
     {
       "template": "headline_card",
       "payload": {
-        "headline": "He carried no *compass,* no charts",
-        "shape": "instrument",
-        "shape2": "object",
-        "negated": true
+        "headline": "bought a one-way *ticket* to Seattle",
+        "label": "SEATTLE",
+        "shape": "document"
       },
       "occurrence": 0,
-      "durationInFrames": 135,
+      "durationInFrames": 90,
       "seed": 17,
       "_beat": {
-        "text": "He carried no compass, no charts, and no radio.",
-        "kind": "absence",
-        "start": 7
-      }
-    },
-    {
-      "template": "map_route",
-      "payload": {
-        "route": [
-          {
-            "x": 0.14,
-            "y": 0.74,
-            "label": "HAWAI'I"
-          },
-          {
-            "x": 0.52,
-            "y": 0.46
-          },
-          {
-            "x": 0.86,
-            "y": 0.22,
-            "label": "TAHITI"
-          }
-        ],
-        "headline": "He sailed from Hawai'i to Tahiti"
-      },
-      "occurrence": 0,
-      "durationInFrames": 105,
-      "seed": 24,
-      "_beat": {
-        "text": "He sailed from Hawai'i to Tahiti across",
-        "kind": "sequence",
-        "start": 11.5
-      }
-    },
-    {
-      "template": "wide_establish",
-      "payload": {
-        "headline": "four thousand *kilometres* of open",
-        "caption": "Hawai'i to Tahiti, 1976",
-        "shape": "wave"
-      },
-      "occurrence": 1,
-      "durationInFrames": 90,
-      "seed": 31,
-      "_beat": {
-        "text": "four thousand kilometres of open water.",
-        "kind": "magnitude",
-        "start": 15
-      }
-    },
-    {
-      "template": "hero_cutout",
-      "payload": {
-        "headline": "Instead of *instruments,* he used",
-        "shape": "instrument",
-        "shape2": "star"
-      },
-      "occurrence": 1,
-      "durationInFrames": 105,
-      "seed": 38,
-      "_beat": {
-        "text": "Instead of instruments, he used the stars,",
-        "kind": "compare",
-        "start": 18
-      }
-    },
-    {
-      "template": "headline_card",
-      "payload": {
-        "headline": "the *swell,* and the flight",
-        "shape": "wave",
-        "shape2": "bird"
-      },
-      "occurrence": 1,
-      "durationInFrames": 105,
-      "seed": 45,
-      "_beat": {
-        "text": "the swell, and the flight of birds.",
+        "text": "bought a one-way ticket to Seattle.",
         "kind": "fact",
-        "start": 21.5
-      }
-    },
-    {
-      "template": "star_field",
-      "payload": {
-        "headline": "Every *night* he read the sky",
-        "shape": "star"
-      },
-      "occurrence": 0,
-      "durationInFrames": 90,
-      "seed": 52,
-      "_beat": {
-        "text": "Every night he read the sky.",
-        "kind": "time",
-        "start": 25
-      }
-    },
-    {
-      "template": "wide_establish",
-      "payload": {
-        "headline": "*Every* day he read",
-        "caption": "Hawai'i to Tahiti, 1976",
-        "shape": "wave"
-      },
-      "occurrence": 2,
-      "durationInFrames": 90,
-      "seed": 59,
-      "_beat": {
-        "text": "Every day he read the water.",
-        "kind": "time",
-        "start": 28
-      }
-    },
-    {
-      "template": "hero_cutout",
-      "payload": {
-        "headline": "He had *memorized* two hundred"
-      },
-      "occurrence": 2,
-      "durationInFrames": 105,
-      "seed": 66,
-      "_beat": {
-        "text": "He had memorized two hundred and twenty",
-        "kind": "fact",
-        "start": 31
-      }
-    },
-    {
-      "template": "headline_card",
-      "payload": {
-        "headline": "*star* positions as a boy",
-        "shape": "star",
-        "shape2": "figure"
-      },
-      "occurrence": 2,
-      "durationInFrames": 90,
-      "seed": 73,
-      "_beat": {
-        "text": "star positions as a boy.",
-        "kind": "fact",
-        "start": 34.5
-      }
-    },
-    {
-      "template": "grid_scale",
-      "payload": {
-        "ratio": {
-          "total": 20,
-          "highlighted": 5
-        },
-        "headline": "Only five navigators of his tradition",
-        "shape": "figure"
-      },
-      "occurrence": 0,
-      "durationInFrames": 135,
-      "seed": 80,
-      "_beat": {
-        "text": "Only five navigators of his tradition were still living.",
-        "kind": "scale",
-        "start": 37
-      }
-    },
-    {
-      "template": "star_field",
-      "payload": {
-        "headline": "Thirty-three days later, the *canoe* reached",
-        "label": "TAHITI",
-        "shape": "vessel"
-      },
-      "occurrence": 1,
-      "durationInFrames": 105,
-      "seed": 87,
-      "_beat": {
-        "text": "Thirty-three days later, the canoe reached Tahiti.",
-        "kind": "time",
-        "start": 41.5
-      }
-    },
-    {
-      "template": "pull_quote",
-      "payload": {
-        "quote": "Here is the strange part."
-      },
-      "occurrence": 0,
-      "durationInFrames": 90,
-      "seed": 94,
-      "_beat": {
-        "text": "Here is the strange part.",
-        "kind": "turn",
-        "start": 45
-      }
-    },
-    {
-      "template": "hero_cutout",
-      "payload": {
-        "headline": "In his mind, the *canoe*",
-        "shape": "vessel"
-      },
-      "occurrence": 3,
-      "durationInFrames": 120,
-      "seed": 101,
-      "_beat": {
-        "text": "In his mind, the canoe was never moving.",
-        "kind": "absence",
-        "start": 47.5
-      }
-    },
-    {
-      "template": "headline_card",
-      "payload": {
-        "headline": "He held it *still,* and let"
-      },
-      "occurrence": 3,
-      "durationInFrames": 90,
-      "seed": 108,
-      "_beat": {
-        "text": "He held it still, and let",
-        "kind": "fact",
-        "start": 51.5
+        "start": 6.5
       }
     },
     {
       "template": "labeled_diagram",
       "payload": {
-        "headline": "the islands come to him",
-        "shape": "terrain"
+        "headline": "He handed the attendant",
+        "shape": "figure",
+        "shape2": "document"
       },
       "occurrence": 0,
       "durationInFrames": 90,
+      "seed": 24,
+      "_beat": {
+        "text": "He handed the attendant a note",
+        "kind": "fact",
+        "start": 9.5
+      }
+    },
+    {
+      "template": "hero_cutout",
+      "payload": {
+        "headline": "that said there was a *bomb*",
+        "shape": "object"
+      },
+      "occurrence": 1,
+      "durationInFrames": 135,
+      "seed": 31,
+      "_beat": {
+        "text": "that said there was a bomb in his briefcase.",
+        "kind": "fact",
+        "start": 12.5
+      }
+    },
+    {
+      "template": "wide_establish",
+      "payload": {
+        "headline": "He asked for two hundred *thousand* dollars",
+        "caption": "Northwest Orient Flight 305, 1971",
+        "shape": "document",
+        "shape2": "object"
+      },
+      "occurrence": 1,
+      "durationInFrames": 150,
+      "seed": 38,
+      "_beat": {
+        "text": "He asked for two hundred thousand dollars and four parachutes.",
+        "kind": "magnitude",
+        "start": 17
+      }
+    },
+    {
+      "template": "headline_card",
+      "payload": {
+        "headline": "In Seattle the *passengers* walked",
+        "label": "SEATTLE",
+        "shape": "figure",
+        "shape2": "vehicle"
+      },
+      "occurrence": 1,
+      "durationInFrames": 120,
+      "seed": 45,
+      "_beat": {
+        "text": "In Seattle the passengers walked off the plane",
+        "kind": "fact",
+        "start": 22
+      }
+    },
+    {
+      "template": "hero_cutout",
+      "payload": {
+        "headline": "and the *money* came aboard",
+        "shape": "document"
+      },
+      "occurrence": 2,
+      "durationInFrames": 90,
+      "seed": 52,
+      "_beat": {
+        "text": "and the money came aboard.",
+        "kind": "fact",
+        "start": 26
+      }
+    },
+    {
+      "template": "labeled_diagram",
+      "payload": {
+        "headline": "The aircraft took off again",
+        "shape": "vehicle"
+      },
+      "occurrence": 1,
+      "durationInFrames": 90,
+      "seed": 59,
+      "_beat": {
+        "text": "The aircraft took off again",
+        "kind": "fact",
+        "start": 28.5
+      }
+    },
+    {
+      "template": "headline_card",
+      "payload": {
+        "headline": "into *rain* and low cloud",
+        "shape": "wave"
+      },
+      "occurrence": 2,
+      "durationInFrames": 90,
+      "seed": 66,
+      "_beat": {
+        "text": "into rain and low cloud.",
+        "kind": "fact",
+        "start": 31
+      }
+    },
+    {
+      "template": "hero_cutout",
+      "payload": {
+        "headline": "Somewhere over southern *Washington*",
+        "label": "WASHINGTON",
+        "shape": "object"
+      },
+      "occurrence": 3,
+      "durationInFrames": 165,
+      "seed": 73,
+      "_beat": {
+        "text": "Somewhere over southern Washington he lowered the rear stair and jumped.",
+        "kind": "fact",
+        "start": 33.5
+      }
+    },
+    {
+      "template": "labeled_diagram",
+      "payload": {
+        "headline": "The FBI searched the woods",
+        "shape": "terrain"
+      },
+      "occurrence": 2,
+      "durationInFrames": 90,
+      "seed": 80,
+      "_beat": {
+        "text": "The FBI searched the woods",
+        "kind": "fact",
+        "start": 39
+      }
+    },
+    {
+      "template": "stick_beat",
+      "payload": {
+        "headline": "for *eighteen* days and found nothing"
+      },
+      "occurrence": 0,
+      "durationInFrames": 90,
+      "seed": 87,
+      "_beat": {
+        "text": "for eighteen days and found nothing.",
+        "kind": "absence",
+        "start": 41.5
+      }
+    },
+    {
+      "template": "star_field",
+      "payload": {
+        "headline": "Nine years later a *boy* digging",
+        "shape": "figure",
+        "shape2": "terrain"
+      },
+      "occurrence": 0,
+      "durationInFrames": 135,
+      "seed": 94,
+      "_beat": {
+        "text": "Nine years later a boy digging on a riverbank",
+        "kind": "time",
+        "start": 44.5
+      }
+    },
+    {
+      "template": "hero_cutout",
+      "payload": {
+        "headline": "found three bundles of the *banknotes*",
+        "shape": "object",
+        "shape2": "document"
+      },
+      "occurrence": 4,
+      "durationInFrames": 90,
+      "seed": 101,
+      "_beat": {
+        "text": "found three bundles of the banknotes.",
+        "kind": "fact",
+        "start": 49
+      }
+    },
+    {
+      "template": "headline_card",
+      "payload": {
+        "headline": "The rest of the *money*",
+        "shape": "document"
+      },
+      "occurrence": 3,
+      "durationInFrames": 90,
+      "seed": 108,
+      "_beat": {
+        "text": "The rest of the money",
+        "kind": "fact",
+        "start": 52
+      }
+    },
+    {
+      "template": "stick_beat",
+      "payload": {
+        "headline": "has never appeared in a *bank*",
+        "shape": "building"
+      },
+      "occurrence": 1,
+      "durationInFrames": 90,
       "seed": 115,
       "_beat": {
-        "text": "the islands come to him.",
-        "kind": "fact",
+        "text": "has never appeared in a bank.",
+        "kind": "absence",
         "start": 54.5
       }
     },
     {
       "template": "star_field",
       "payload": {
-        "headline": "Nobody had made that *crossing*"
+        "headline": "Nobody ever found the *man*",
+        "shape": "figure",
+        "shape2": "object"
       },
-      "occurrence": 2,
-      "durationInFrames": 135,
+      "occurrence": 1,
+      "durationInFrames": 120,
       "seed": 122,
       "_beat": {
-        "text": "Nobody had made that crossing for six hundred years.",
+        "text": "Nobody ever found the man or the parachute.",
         "kind": "cliffhanger",
-        "start": 57
+        "start": 57.5
       }
     }
   ],
-  "totalFrames": 1890
+  "totalFrames": 1920
 }

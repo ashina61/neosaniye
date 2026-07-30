@@ -277,3 +277,40 @@ test('dar çekim toleransı yanlış eşleşme üretmiyor', async () => {
   // "manner" içinde "man" var.
   assert.notEqual(shapeFor('He answered in a strange manner.'), 'figure');
 });
+
+/* ---------------- kesme kuralı: tek yüklem, iki soru ---------------- */
+
+/**
+ * Bu testler DÖRT AYRI KAÇAĞIN kapandığını doğruluyor. Kural üç parçadan
+ * oluşuyor ve iki tüketicisi var (beat bölücüsü, başlık kırpıcısı); parçaları
+ * tek tek iki yere yazdığımda her seferinde biri eksik kaldı ve render'da
+ * göründü:
+ *   "…TO TAHITI ACROSS"            sarkan kelime yalnızca bölücüde
+ *   "The rest of the money has"    `has` yalnızca kırpıcıda
+ *   "He asked for two hundred"     sayı zinciri yalnızca bölücüde
+ *   "…Washington he lowered"       belirteç kuralı yalnızca bölücüde
+ */
+test('sayı ve tarih zinciri ortadan kesilemez', async () => {
+  const {breaksChain} = await import('../pipeline/beats.mjs');
+  assert.equal(breaksChain('two', 'hundred'), true);
+  assert.equal(breaksChain('hundred', 'and'), true);
+  assert.equal(breaksChain('24', 'November'), true);
+  assert.equal(breaksChain('November', '1971'), true);
+  // Zincirin SONU kesilebilir: "two hundred thousand | dollars"
+  assert.equal(breaksChain('thousand', 'dollars'), false);
+  assert.equal(breaksChain('compass', 'and'), false);
+});
+
+test('bölme ve kırpma farklı sorular sorar', async () => {
+  const {danglesBetween} = await import('../pipeline/beats.mjs');
+  // Geçişli fiil + belirteç: BÖLMEK yasak (sol parça nesnesiz kalır),
+  // KIRPMAK serbest (kalan zaten gösterilmiyor).
+  assert.equal(danglesBetween('lowered', 'the', {splitPoint: true}), true);
+  assert.equal(danglesBetween('lowered', 'the'), false);
+  // Noktalama gerçek cümle sınırıdır, belirteç kuralı orada işlemez.
+  assert.equal(danglesBetween('compass,', 'the', {splitPoint: true}), false);
+  // Sarkan işlev kelimesi her iki soruda da yasak.
+  for (const w of ['of', 'has', 'never', 'he', 'their']) {
+    assert.equal(danglesBetween(w, 'x'), true, `${w} sarkan sayılmalı`);
+  }
+});

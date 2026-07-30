@@ -15,7 +15,7 @@ import {readFile, writeFile} from 'node:fs/promises';
 import {existsSync} from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
-import {buildBeats, canRender, checkBeatCount, resolveTemplate, templateVariety, wordCount} from './beats.mjs';
+import {breaksChain, buildBeats, canRender, checkBeatCount, danglesBetween, resolveTemplate, templateVariety, wordCount} from './beats.mjs';
 import {isNegated, nounFor, searchFor, shapeFor, shapesFor} from './subject.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
@@ -160,22 +160,65 @@ function payloadForBeat(beat, story, template = beat.template) {
  * ve "ONLY FIVE NAVIGATORS OF HIS TRADITION WERE STILL" (living düştü).
  * Doğru kural, yanlış katman. Kırpma da geri sarıp temiz kelimede durmalı.
  */
-const TRAILING_STOP = new Set([
-  'of', 'and', 'or', 'the', 'a', 'an', 'to', 'in', 'on', 'at', 'for', 'with', 'from', 'by', 'as',
-  'his', 'her', 'their', 'its', 'that', 'which', 'but', 'into', 'onto', 'over', 'under',
-  'was', 'were', 'is', 'are', 'had', 'has', 'have', 'still', 'never', 'not',
-]);
+/**
+ * Kırpıcının kendi sarkan kelime listesi YOK. Kural `beats.mjs`'teki
+ * `danglesBetween` yükleminde ve iki taraf da onu çağırıyor — bkz. oradaki
+ * yorumda sayılan dört ayrı kaçak.
+ */
 
 function shorten(text, maxWords) {
   const w = text.replace(/[."“”]+$/g, '').trim().split(/\s+/);
   if (w.length <= maxWords) return w.join(' ');
   let cut = maxWords;
-  // Sarkan kelimede bitmeyecek en yakın kısa noktaya geri sar.
-  while (cut > 2) {
-    const last = w[cut - 1].toLowerCase().replace(/[^a-z0-9’'-]/g, '');
-    if (!TRAILING_STOP.has(last)) break;
-    cut -= 1;
+
+  /**
+   * ZİNCİR KIRILIYORSA ÖNCE İLERİ UZAT, SONRA GERİ SAR.
+   *
+   * ÖLÇÜLEN KUSUR: kırpıcı sayı ve tarih zincirlerini ortadan kesiyordu —
+   *   "He asked for two hundred"   (thousand dollars kayıp)
+   *   "On the night of 24"         (November 1971 kayıp)
+   * Kural beat bölücüsünde vardı, burada yoktu. Doğru kural, yanlış katman;
+   * bu dosyada sarkan kelime kuralında da aynısı olmuştu.
+   *
+   * NEDEN GERİ SARMAK TEK BAŞINA YETMİYOR: "On the night of 24 November 1971"
+   * cümlesinde geri sarmak sırayla 24'ü, sonra "of"u atar ve elde "On the
+   * night" kalır — tarih tamamen kaybolur. Oysa cold open'ın TAŞIDIĞI bilgi
+   * tarihtir. Doğru hamle zinciri tamamlayacak kadar İLERİ gitmek.
+   *
+   * Uzatma sınırlı (+3 kelime): sınırsız uzatma "kısa başlık" kuralını yok eder.
+   */
+  const MAX_EXTEND = 3;
+  let extended = 0;
+  while (extended < MAX_EXTEND && cut < w.length && breaksChain(w[cut - 1], w[cut])) {
+    cut += 1;
+    extended += 1;
   }
+  // Zincir bittikten sonra ölçü birimi geliyorsa onu da al: "two hundred
+  // thousand" tek başına eksik bir nicelik, "…dollars" ile tamam olur.
+  if (extended > 0 && extended < MAX_EXTEND && cut < w.length && !danglesBetween(w[cut], w[cut + 1])) {
+    cut += 1;
+  }
+
+  // Metni bozacak bir noktada bitmeyecek en yakın yere geri sar.
+  while (cut > 2 && danglesBetween(w[cut - 1], w[cut])) cut -= 1;
+
+  /**
+   * BELİRTEÇ KURALI KIRPMADA DA UYGULANIR — AMA BÜTÇELİ.
+   *
+   * "Somewhere over southern Washington he lowered" bir kırpma olarak bile kötü:
+   * nesnesiz geçişli fiil. Ama kuralı sınırsız uygulamak başlıkları ikiye
+   * indirmişti ("He handed"). İkisinin ortası: en fazla iki kelime geri sar ve
+   * dört kelimenin altına düşme.
+   *
+   *   "…Washington he lowered"        → "Somewhere over southern Washington" ✓
+   *   "He handed the attendant a"     → "He handed the attendant"            ✓
+   */
+  let budget = 2;
+  while (budget > 0 && cut > 4 && danglesBetween(w[cut - 1], w[cut], {splitPoint: true})) {
+    cut -= 1;
+    budget -= 1;
+  }
+  while (cut > 2 && danglesBetween(w[cut - 1], w[cut])) cut -= 1;
   return w.slice(0, cut).join(' ').replace(/[,;:]$/, '');
 }
 

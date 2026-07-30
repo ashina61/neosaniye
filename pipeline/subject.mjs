@@ -52,6 +52,7 @@ const FAMILIES = [
       'worker', 'soldier', 'officer', 'driver', 'guard', 'prisoner', 'robber', 'thief', 'witness',
       'doctor', 'nurse', 'pilot', 'sailor', 'navigator', 'farmer', 'miner', 'engineer', 'scientist',
       'king', 'queen', 'president', 'crowd', 'family', 'passenger', 'survivor', 'inspector', 'detective',
+      'agent', 'judge', 'lawyer', 'sheriff', 'hijacker', 'suspect', 'victim', 'attendant', 'captain', 'crew',
     ],
   },
   {
@@ -75,6 +76,7 @@ const FAMILIES = [
       'house', 'farmhouse', 'building', 'factory', 'mill', 'prison', 'jail', 'church', 'temple',
       'mosque', 'station', 'hotel', 'tower', 'castle', 'hut', 'cabin', 'village', 'town', 'city',
       'school', 'hospital', 'warehouse', 'bunker', 'palace', 'bridge',
+      'airport', 'bank', 'courthouse', 'museum', 'embassy', 'barracks',
     ],
   },
   {
@@ -84,6 +86,7 @@ const FAMILIES = [
       'letter', 'note', 'banknote', 'money', 'cash', 'pound', 'dollar', 'newspaper', 'headline',
       'file', 'record', 'report', 'passport', 'ticket', 'contract', 'telegram', 'book', 'page',
       'diary', 'ledger', 'fingerprint', 'photograph', 'poster', 'stamp', 'licence', 'license',
+      'envelope', 'warrant', 'sketch', 'receipt', 'cheque', 'check', 'will', 'testimony', 'confession',
     ],
   },
   {
@@ -109,7 +112,7 @@ const FAMILIES = [
     words: [
       'island', 'atoll', 'reef', 'mountain', 'hill', 'valley', 'field', 'forest', 'jungle', 'desert',
       'coast', 'shore', 'cliff', 'canyon', 'glacier', 'volcano', 'plain', 'border', 'railway', 'road',
-      'track', 'tunnel', 'mine', 'crater',
+      'track', 'tunnel', 'mine', 'crater', 'sandbar', 'riverbank', 'swamp', 'ridge', 'woods',
     ],
   },
   {
@@ -137,6 +140,8 @@ const FAMILIES = [
       'box', 'crate', 'bag', 'sack', 'case', 'suitcase', 'barrel', 'bottle', 'glove', 'key', 'coin',
       'rope', 'chain', 'door', 'window', 'table', 'chair', 'gun', 'rifle', 'knife', 'bomb', 'helmet',
       'uniform', 'coat', 'boot', 'map', 'chart', 'flag', 'bell', 'ring', 'bone', 'skull', 'seed',
+      'parachute', 'briefcase', 'handcuff', 'safe', 'vault', 'ladder', 'torch', 'mask', 'suit', 'tie',
+      'diamond', 'jewel', 'bundle', 'lock', 'stair', 'shovel',
     ],
   },
 ];
