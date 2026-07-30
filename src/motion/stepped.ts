@@ -157,7 +157,10 @@ export function drift(frame: number, spec: DriftSpec): string {
  */
 export function breathe(frame: number, seed = 0): number {
   const s = stepped(frame) / CANVAS.fps;
-  return Math.sin(s * 1.7 + seed * 2.1) * 0.6 + Math.sin(s * 0.9 + seed) * 0.4;
+  // Genlik ÖLÇÜLEREK artırıldı: 0.6+0.4 ile nefes hiç fark edilmiyordu ve
+  // videonun üçte biri donmuş ölçüldü (97 aralığın 32'sinde <%1 değişim).
+  // Referans videoda tutuş bölgesi bile canlıydı.
+  return Math.sin(s * 1.7 + seed * 2.1) * 1.6 + Math.sin(s * 0.9 + seed) * 1.1;
 }
 
 /** Deterministik sözde-rastgele: aynı seed → aynı değer. Math.random YASAK. */

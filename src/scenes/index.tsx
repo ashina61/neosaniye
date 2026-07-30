@@ -41,11 +41,11 @@ const B = VERTICAL_BANDS;
  */
 const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurrence}) => {
   const f = useCurrentFrame();
-  const card = enter(f, {at: 0.15, duration: 0.4, kind: 'fade'});
-  const hero = enter(f, {at: 0.35, duration: 0.55, kind: 'slide', from: {x: -180}});
-  const label = enter(f, {at: 1.0, duration: 0.3, kind: 'drop', from: {y: -90}});
-  const ring = enter(f, {at: 1.35, duration: 0.7, kind: 'draw'});
-  const mark = enter(f, {at: 1.15, duration: 0.35, kind: 'stamp'});
+  const card = enter(f, {at: 0.08, duration: 0.24, kind: 'fade'});
+  const hero = enter(f, {at: 0.19, duration: 0.33, kind: 'slide', from: {x: -180}});
+  const label = enter(f, {at: 0.55, duration: 0.22, kind: 'drop', from: {y: -90}});
+  const ring = enter(f, {at: 0.85, duration: 0.6, kind: 'draw'});
+  const mark = enter(f, {at: 0.63, duration: 0.22, kind: 'stamp'});
 
   /**
    * Varyant SIRAYA bağlı, saf seed hash'ine değil.
@@ -95,7 +95,7 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurr
         rotate={tilt}
         opacity={hero.opacity}
         // Tek sürüklenen katman: hero. Yavaş, birkaç on piksel.
-        transform={`${hero.transform} ${drift(f, {seconds, dx: 14, dy: -10, scale: 0.03})}`}
+        transform={`${hero.transform} ${drift(f, {seconds, dx: 38, dy: -26, scale: 0.075})}`}
       />
 
       {/* Varyant 1: solda dikey daktilo şeridi — boşluğu bilgiyle doldurur. */}
@@ -165,9 +165,9 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurr
 /* ------------------------------------------------------------------ */
 const WideEstablish: React.FC<SceneProps> = ({seconds, payload, seed}) => {
   const f = useCurrentFrame();
-  const band = enter(f, {at: 0.1, duration: 0.6, kind: 'draw'});
-  const subject = enter(f, {at: 0.6, duration: 0.7, kind: 'slide', from: {x: -260}});
-  const cap = enter(f, {at: 1.4, duration: 0.35, kind: 'fade'});
+  const band = enter(f, {at: 0.06, duration: 0.36, kind: 'draw'});
+  const subject = enter(f, {at: 0.33, duration: 0.42, kind: 'slide', from: {x: -260}});
+  const cap = enter(f, {at: 0.77, duration: 0.22, kind: 'fade'});
 
   const bandY = Math.round(CANVAS.height * 0.56);
   const w = Math.round(SAFE_BOX.width * 0.42);
@@ -184,7 +184,7 @@ const WideEstablish: React.FC<SceneProps> = ({seconds, payload, seed}) => {
         height={Math.round(w * 0.7)}
         seed={seed}
         opacity={subject.opacity}
-        transform={`${subject.transform} ${drift(f, {seconds, dx: 46, dy: 0})}`}
+        transform={`${subject.transform} ${drift(f, {seconds, dx: 96, dy: -8})}`}
       />
       {payload.headline && (
         <Headline
@@ -213,10 +213,10 @@ const WideEstablish: React.FC<SceneProps> = ({seconds, payload, seed}) => {
 /* ------------------------------------------------------------------ */
 const HeadlineCard: React.FC<SceneProps> = ({seconds, payload, seed, occurrence}) => {
   const f = useCurrentFrame();
-  const head = enter(f, {at: 0.12, duration: 0.4, kind: 'drop', from: {y: -70}});
-  const bar = enter(f, {at: 0.55, duration: 0.45, kind: 'draw'});
-  const port = enter(f, {at: 0.75, duration: 0.55, kind: 'slide', from: {y: 120}});
-  const name = enter(f, {at: 1.5, duration: 0.3, kind: 'stamp'});
+  const head = enter(f, {at: 0.07, duration: 0.24, kind: 'drop', from: {y: -70}});
+  const bar = enter(f, {at: 0.3, duration: 0.27, kind: 'draw'});
+  const port = enter(f, {at: 0.41, duration: 0.33, kind: 'slide', from: {y: 120}});
+  const name = enter(f, {at: 0.96, duration: 0.22, kind: 'stamp'});
 
   /**
    * İki yerleşim: 0 = portre ortada (klasik isim kartı), 1 = portre yana
@@ -278,7 +278,7 @@ const HeadlineCard: React.FC<SceneProps> = ({seconds, payload, seed, occurrence}
         height={ph}
         seed={seed}
         opacity={port.opacity}
-        transform={`${port.transform} ${drift(f, {seconds, dy: -12, scale: 0.025})}`}
+        transform={`${port.transform} ${drift(f, {seconds, dy: -34, scale: 0.06})}`}
       />
       {payload.label && (
         <LabelCard
@@ -302,9 +302,9 @@ const HeadlineCard: React.FC<SceneProps> = ({seconds, payload, seed, occurrence}
 /* ------------------------------------------------------------------ */
 const PullQuoteScene: React.FC<SceneProps> = ({seconds, payload, seed}) => {
   const f = useCurrentFrame();
-  const q = enter(f, {at: 0.15, duration: 0.5, kind: 'fade'});
-  const hl = enter(f, {at: 0.9, duration: 0.5, kind: 'draw'});
-  const side = enter(f, {at: 1.3, duration: 0.5, kind: 'slide', from: {x: 140}});
+  const q = enter(f, {at: 0.08, duration: 0.3, kind: 'fade'});
+  const hl = enter(f, {at: 0.5, duration: 0.3, kind: 'draw'});
+  const side = enter(f, {at: 0.72, duration: 0.3, kind: 'slide', from: {x: 140}});
 
   const cw = Math.round(SAFE_BOX.width * 0.46);
 
@@ -334,7 +334,7 @@ const PullQuoteScene: React.FC<SceneProps> = ({seconds, payload, seed}) => {
             height={Math.round(cw * 1.25)}
             seed={seed}
             opacity={side.opacity}
-            transform={`${side.transform} ${drift(f, {seconds, dx: -10, scale: 0.02})}`}
+            transform={`${side.transform} ${drift(f, {seconds, dx: -30, scale: 0.055})}`}
           />
           {payload.label && (
             <LabelCard
@@ -357,9 +357,9 @@ const PullQuoteScene: React.FC<SceneProps> = ({seconds, payload, seed}) => {
 /* ------------------------------------------------------------------ */
 const SplitCompare: React.FC<SceneProps> = ({payload, seed}) => {
   const f = useCurrentFrame();
-  const top = enter(f, {at: 0.15, duration: 0.45, kind: 'slide', from: {x: -240}});
-  const bot = enter(f, {at: 0.65, duration: 0.45, kind: 'slide', from: {x: 240}});
-  const rule = enter(f, {at: 1.15, duration: 0.4, kind: 'draw'});
+  const top = enter(f, {at: 0.08, duration: 0.27, kind: 'slide', from: {x: -240}});
+  const bot = enter(f, {at: 0.36, duration: 0.27, kind: 'slide', from: {x: 240}});
+  const rule = enter(f, {at: 0.63, duration: 0.24, kind: 'draw'});
 
   const sides = payload.sides;
   // Taraf etiketi yoksa karşılaştırma sahnesi kurulamaz: sessizce boş panel
@@ -480,10 +480,10 @@ const SplitCompare: React.FC<SceneProps> = ({payload, seed}) => {
 /* ------------------------------------------------------------------ */
 const LabeledDiagram: React.FC<SceneProps> = ({seconds, payload, seed}) => {
   const f = useCurrentFrame();
-  const a = enter(f, {at: 0.15, duration: 0.45, kind: 'drop', from: {y: -140}});
-  const b = enter(f, {at: 0.7, duration: 0.45, kind: 'drop', from: {y: -140}});
-  const arrow = enter(f, {at: 1.2, duration: 0.6, kind: 'draw'});
-  const cap = enter(f, {at: 1.9, duration: 0.35, kind: 'stamp'});
+  const a = enter(f, {at: 0.08, duration: 0.27, kind: 'drop', from: {y: -140}});
+  const b = enter(f, {at: 0.39, duration: 0.27, kind: 'drop', from: {y: -140}});
+  const arrow = enter(f, {at: 0.66, duration: 0.36, kind: 'draw'});
+  const cap = enter(f, {at: 1.13, duration: 0.22, kind: 'stamp'});
 
   const boxW = Math.round(SAFE_BOX.width * 0.46);
   const boxH = Math.round(boxW * 1.1);
@@ -522,7 +522,7 @@ const LabeledDiagram: React.FC<SceneProps> = ({seconds, payload, seed}) => {
         height={Math.round(boxW * 0.72)}
         seed={seed + 3}
         opacity={b.opacity}
-        transform={`${b.transform} ${drift(f, {seconds, dx: 12, dy: 6})}`}
+        transform={`${b.transform} ${drift(f, {seconds, dx: 34, dy: 18})}`}
         rotate={1.4}
       />
       <DrawnArrow
@@ -563,7 +563,7 @@ const LabeledDiagram: React.FC<SceneProps> = ({seconds, payload, seed}) => {
 /* ------------------------------------------------------------------ */
 const ArchivalTimeline: React.FC<SceneProps> = ({payload, seed}) => {
   const f = useCurrentFrame();
-  const line = enter(f, {at: 0.2, duration: 0.9, kind: 'draw'});
+  const line = enter(f, {at: 0.11, duration: 0.54, kind: 'draw'});
   const items = payload.timeline ?? [];
 
   const cx = SAFE.left + 130;
@@ -661,8 +661,8 @@ const ArchivalTimeline: React.FC<SceneProps> = ({payload, seed}) => {
 /* ------------------------------------------------------------------ */
 const MapRoute: React.FC<SceneProps> = ({payload, seed}) => {
   const f = useCurrentFrame();
-  const base = enter(f, {at: 0.1, duration: 0.4, kind: 'fade'});
-  const path = enter(f, {at: 0.7, duration: 1.1, kind: 'draw'});
+  const base = enter(f, {at: 0.06, duration: 0.24, kind: 'fade'});
+  const path = enter(f, {at: 0.39, duration: 0.66, kind: 'draw'});
 
   const mapX = SAFE.left;
   const mapY = B.hero.y - 120;
@@ -858,10 +858,10 @@ const GridScale: React.FC<SceneProps> = ({payload, seed}) => {
 /* ------------------------------------------------------------------ */
 const DataAnnotate: React.FC<SceneProps> = ({payload, seed}) => {
   const f = useCurrentFrame();
-  const axes = enter(f, {at: 0.1, duration: 0.4, kind: 'draw'});
-  const line = enter(f, {at: 0.55, duration: 1.0, kind: 'draw'});
-  const ring = enter(f, {at: 1.7, duration: 0.6, kind: 'draw'});
-  const note = enter(f, {at: 2.1, duration: 0.3, kind: 'fade'});
+  const axes = enter(f, {at: 0.06, duration: 0.24, kind: 'draw'});
+  const line = enter(f, {at: 0.3, duration: 0.6, kind: 'draw'});
+  const ring = enter(f, {at: 0.94, duration: 0.36, kind: 'draw'});
+  const note = enter(f, {at: 1.26, duration: 0.24, kind: 'fade'});
 
   const series = payload.series?.length ? payload.series : [0.12, 0.2, 0.18, 0.34, 0.46, 0.62, 0.94];
   const cw = SAFE_BOX.width - 80;
@@ -938,9 +938,9 @@ const POSE_BY_SEED: Pose[] = ['stand', 'point', 'slump', 'overwhelmed', 'sit-des
 
 const StickBeat: React.FC<SceneProps> = ({seconds, payload, seed}) => {
   const f = useCurrentFrame();
-  const fig = enter(f, {at: 0.2, duration: 0.5, kind: 'drop', from: {y: -120}});
-  const head = enter(f, {at: 0.75, duration: 0.4, kind: 'fade'});
-  const hl = enter(f, {at: 1.2, duration: 0.5, kind: 'draw'});
+  const fig = enter(f, {at: 0.11, duration: 0.3, kind: 'drop', from: {y: -120}});
+  const head = enter(f, {at: 0.41, duration: 0.24, kind: 'fade'});
+  const hl = enter(f, {at: 0.66, duration: 0.3, kind: 'draw'});
 
   const pose = POSE_BY_SEED[Math.floor(rand(seed) * POSE_BY_SEED.length)];
   const h = Math.round(B.hero.height * 0.82);
@@ -1013,9 +1013,9 @@ const StickBeat: React.FC<SceneProps> = ({seconds, payload, seed}) => {
 /* ------------------------------------------------------------------ */
 const StarField: React.FC<SceneProps> = ({seconds, payload, seed}) => {
   const f = useCurrentFrame();
-  const rings = enter(f, {at: 0.1, duration: 1.0, kind: 'draw'});
-  const port = enter(f, {at: 0.7, duration: 0.55, kind: 'fade'});
-  const lab = enter(f, {at: 1.5, duration: 0.35, kind: 'stamp'});
+  const rings = enter(f, {at: 0.06, duration: 0.6, kind: 'draw'});
+  const port = enter(f, {at: 0.39, duration: 0.33, kind: 'fade'});
+  const lab = enter(f, {at: 0.83, duration: 0.22, kind: 'stamp'});
 
   const cx = CANVAS.width / 2;
   const cy = B.hero.y + Math.round(B.hero.height * 0.42);
@@ -1070,7 +1070,7 @@ const StarField: React.FC<SceneProps> = ({seconds, payload, seed}) => {
         height={Math.round(pw * 1.24)}
         seed={seed}
         opacity={port.opacity}
-        transform={drift(f, {seconds, scale: 0.03, dy: -8})}
+        transform={drift(f, {seconds, scale: 0.07, dy: -24})}
         outlineColor={PALETTE.paper}
       />
       {payload.headline && (
