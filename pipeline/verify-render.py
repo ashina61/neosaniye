@@ -19,13 +19,33 @@ Kullanım: python3 pipeline/verify-render.py out/test.mp4 [content/storyboard.js
 """
 
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
 
-import numpy as np
-from PIL import Image
+# ÖNKONTROL — bağımlılık eksikse ANLAŞILIR mesaj ver.
+#
+# NEDEN: CI'da bu betik 1 saniyede çöktü ve sebebi loglarda kaybolmuştu.
+# Workflow `python -m pip install` ile kuruyor, `python3` ile çalıştırıyordu;
+# ikisi farklı yorumlayıcıya çözülünce import anında patlıyor. Ölçüm hatası ile
+# ortam hatası birbirine karıştığında yanlış yerde hata aranıyor.
+try:
+    import numpy as np
+    from PIL import Image
+except ImportError as exc:  # pragma: no cover - ortam hatası
+    print(f"ORTAM HATASI: gerekli Python paketi yok ({exc.name}).")
+    print(f"  çalışan yorumlayıcı: {sys.executable}")
+    print("  çözüm: bu betiği çağıran yorumlayıcıyla kur —")
+    print(f"    {sys.executable} -m pip install pillow numpy")
+    sys.exit(3)
+
+for _tool in ("ffprobe", "ffmpeg"):
+    if shutil.which(_tool) is None:
+        print(f"ORTAM HATASI: {_tool} bulunamadı. Doğrulama kare çıkarmak için buna muhtaç.")
+        print("  çözüm: apt-get install -y ffmpeg")
+        sys.exit(3)
 
 FPS = 30
 ACCENT = (0xD2, 0xA0, 0x3C)

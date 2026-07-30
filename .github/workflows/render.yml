@@ -41,8 +41,23 @@ jobs:
           node-version: 22
           cache: npm
 
+      # Python ve ffmpeg AÇIKÇA kurulur. Doğrulayıcı ikisini de kullanıyor
+      # (numpy/PIL ile ölçüm, ffprobe/ffmpeg ile kare çıkarma) ve runner
+      # imajının bunları taşıdığına güvenmek sessiz çökmeye yol açtı.
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
       - name: Install dependencies
-        run: npm ci --no-audit --no-fund
+        run: |
+          npm ci --no-audit --no-fund
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends ffmpeg
+          # DİKKAT: `python -m pip` ile kurup `python3` ile çalıştırmak,
+          # ikisi farklı yorumlayıcıya çözülürse import hatası verir ve iş
+          # 1 saniyede çöker. Aynı yorumlayıcı kullanılmak zorunda.
+          python3 -m pip install --disable-pip-version-check --quiet pillow numpy
 
       # Remotion normalde Chromium'u remotion.media'dan indirir. Runner'da
       # indirme serbest, ama Chrome zaten kurulu; REMOTION_BROWSER ile onu
@@ -73,9 +88,7 @@ jobs:
           TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
           IMAGE_PROVIDER_CHAIN: ${{ vars.IMAGE_PROVIDER_CHAIN || 'pollinations,together,gemini' }}
           GEMINI_IMAGE_MODEL: ${{ vars.GEMINI_IMAGE_MODEL || 'gemini-3.1-flash-image' }}
-        run: |
-          python -m pip install --disable-pip-version-check --quiet pillow numpy
-          npm run cutouts -- --live
+        run: npm run cutouts -- --live
 
       - name: Typecheck
         run: npm run typecheck
@@ -93,9 +106,7 @@ jobs:
 
       - name: Verify render against reference measurements
         if: inputs.composition == 'Short'
-        run: |
-          python -m pip install --disable-pip-version-check --quiet pillow numpy
-          python3 pipeline/verify-render.py "out/Short.mp4" content/storyboard.json
+        run: python3 pipeline/verify-render.py "out/Short.mp4" content/storyboard.json
 
       - name: Upload artifact
         if: always()
