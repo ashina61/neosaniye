@@ -24,18 +24,37 @@ const B = VERTICAL_BANDS;
  */
 
 /* ------------------------------------------------------------------ */
-/* 1. HERO CUTOUT — tek özne, gerekirse marker dairesi                */
+/* 1. HERO CUTOUT — tek özne, seed'e bağlı üç yerleşim varyantı        */
 /* ------------------------------------------------------------------ */
+/**
+ * NEDEN VARYANT VAR
+ *
+ * İlk sürümde bu şablonun tek bir yerleşimi vardı: ortada yırtık kart, üstünde
+ * cutout, altta etiket ve başlık. Render'ın kontakt sayfasında 19 sahnenin
+ * 9'unda birebir aynı kompozisyon göründü — çeşitlilik metriği "9 ayrı şablon"
+ * diyordu ama izleyici aynı kareyi tekrar tekrar görüyordu, çünkü ŞABLON
+ * çeşitliliği KOMPOZİSYON çeşitliliği demek değil.
+ *
+ * Üç varyant, seed'den deterministik seçiliyor. Aynı şablon ikinci kez
+ * kullanıldığında farklı bir kare veriyor.
+ */
 const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index}) => {
   const f = useCurrentFrame();
   const card = enter(f, {at: 0.15, duration: 0.4, kind: 'fade'});
   const hero = enter(f, {at: 0.35, duration: 0.55, kind: 'slide', from: {x: -180}});
   const label = enter(f, {at: 1.0, duration: 0.3, kind: 'drop', from: {y: -90}});
   const ring = enter(f, {at: 1.35, duration: 0.7, kind: 'draw'});
+  const mark = enter(f, {at: 1.15, duration: 0.35, kind: 'stamp'});
 
-  const heroW = Math.round(SAFE_BOX.width * 0.78);
-  const heroH = Math.round(B.hero.height * 0.94);
-  const heroX = SAFE.left + Math.round((SAFE_BOX.width - heroW) / 2);
+  const variant = Math.floor(rand(seed * 3.7) * 3); // 0, 1, 2
+
+  // 0: ortada büyük · 1: sağa kaçık, solda şerit · 2: küçük, damgalı
+  const scale = variant === 2 ? 0.58 : variant === 1 ? 0.68 : 0.78;
+  const heroW = Math.round(SAFE_BOX.width * scale);
+  const heroH = Math.round(B.hero.height * (variant === 2 ? 0.78 : 0.94));
+  const offset = variant === 1 ? Math.round(SAFE_BOX.width * 0.16) : 0;
+  const heroX = SAFE.left + Math.round((SAFE_BOX.width - heroW) / 2) + offset;
+  const tilt = (rand(seed * 5.1) - 0.5) * 2.4;
 
   return (
     <PaperBase seed={seed}>
@@ -44,8 +63,8 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index}) => {
         y={B.hero.y - 30}
         width={heroW + 80}
         height={heroH + 60}
-        color={PALETTE.groundWarm}
-        rotate={-0.7}
+        color={variant === 1 ? PALETTE.sea : PALETTE.groundWarm}
+        rotate={-0.7 + tilt * 0.3}
         opacity={card.opacity}
         seed={seed + 1}
       />
@@ -57,14 +76,32 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index}) => {
         width={heroW}
         height={heroH}
         seed={seed}
+        rotate={tilt}
         opacity={hero.opacity}
         // Tek sürüklenen katman: hero. Yavaş, birkaç on piksel.
         transform={`${hero.transform} ${drift(f, {seconds, dx: 14, dy: -10, scale: 0.03})}`}
       />
-      {payload.label && (
+
+      {/* Varyant 1: solda dikey daktilo şeridi — boşluğu bilgiyle doldurur. */}
+      {variant === 1 && payload.caption && (
+        <TypewriterStrip
+          text={payload.caption}
+          x={SAFE.left - 10}
+          y={B.hero.y + Math.round(heroH * 0.2)}
+          width={Math.round(SAFE_BOX.width * 0.2)}
+          opacity={label.opacity}
+        />
+      )}
+
+      {/* Varyant 2: tarih damgası — kağıt üstünde arşiv izi. */}
+      {variant === 2 && payload.label && /^\d{4}$/.test(payload.label) && (
+        <Stamp text={payload.label} x={heroX + heroW - 60} y={B.hero.y - 40} opacity={mark.opacity} transform={mark.transform} />
+      )}
+
+      {payload.label && !(variant === 2 && /^\d{4}$/.test(payload.label)) && (
         <LabelCard
           text={payload.label}
-          x={SAFE.left + 20}
+          x={SAFE.left + (variant === 1 ? Math.round(SAFE_BOX.width * 0.30) : 20)}
           y={B.bottom.y + 30}
           rotate={-1.4}
           opacity={label.opacity}
@@ -75,6 +112,7 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index}) => {
         <Headline
           text={payload.headline}
           size={TYPE.subhead}
+          align={variant === 1 ? 'center' : 'left'}
           style={{
             position: 'absolute',
             left: SAFE.left,
@@ -85,17 +123,23 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index}) => {
           seed={seed}
         />
       )}
-      {/* Marker dairesi yalnızca vurgulanacak bir şey varsa çizilir. */}
-      {payload.label && index > 0 && (
+
+      {/*
+        Marker dairesi: ÖNCE `payload.label` şartına bağlıydı ve etiketi olmayan
+        sahnelerde hiç çizilmiyordu — render'da tek bir daire göremedim. Oysa
+        işaretlemenin sebebi etiket değil, gösterilecek bir özne olması.
+        Varyant 0'da hero'yu işaretler.
+      */}
+      {variant === 0 && index > 0 && (
         <MarkerCircle
           cx={heroX + heroW * 0.5}
           cy={B.hero.y + heroH * 0.34}
-          rx={heroW * 0.30}
+          rx={heroW * 0.3}
           progress={ring.progress}
           seed={seed}
         />
       )}
-      <SparkleField count={3} seed={seed} progress={ring.progress} />
+      <SparkleField count={variant === 2 ? 4 : 2} seed={seed} progress={ring.progress} />
     </PaperBase>
   );
 };
@@ -158,9 +202,16 @@ const HeadlineCard: React.FC<SceneProps> = ({seconds, payload, seed}) => {
   const port = enter(f, {at: 0.75, duration: 0.55, kind: 'slide', from: {y: 120}});
   const name = enter(f, {at: 1.5, duration: 0.3, kind: 'stamp'});
 
-  const pw = Math.round(SAFE_BOX.width * 0.66);
+  /**
+   * İki yerleşim: 0 = portre ortada (klasik isim kartı), 1 = portre yana
+   * kaçık ve yanında dikey daktilo şeridi. Aynı sebeple: bu şablon dört kez
+   * kullanılınca dört kez aynı kare olmasın.
+   */
+  const variant = rand(seed * 2.3) < 0.5 ? 0 : 1;
+  const pw = Math.round(SAFE_BOX.width * (variant === 1 ? 0.52 : 0.66));
   const ph = Math.round(B.hero.height * 0.9);
-  const px = SAFE.left + Math.round((SAFE_BOX.width - pw) / 2);
+  const px =
+    variant === 1 ? SAFE.left + Math.round(SAFE_BOX.width * 0.40) : SAFE.left + Math.round((SAFE_BOX.width - pw) / 2);
 
   return (
     <PaperBase seed={seed}>
@@ -168,7 +219,7 @@ const HeadlineCard: React.FC<SceneProps> = ({seconds, payload, seed}) => {
         <Headline
           text={payload.headline}
           size={TYPE.headline}
-          align="center"
+          align={variant === 1 ? 'left' : 'center'}
           reveal={bar.progress}
           style={{
             position: 'absolute',
@@ -186,11 +237,21 @@ const HeadlineCard: React.FC<SceneProps> = ({seconds, payload, seed}) => {
         y={B.hero.y + 10}
         width={pw + 52}
         height={ph}
-        color={PALETTE.sea}
-        rotate={0.6}
+        color={variant === 1 ? PALETTE.groundWarm : PALETTE.sea}
+        rotate={variant === 1 ? -1.1 : 0.6}
         opacity={port.opacity}
         seed={seed + 2}
       />
+      {/* Varyant 1: portrenin solundaki boşlukta dikey künye şeridi. */}
+      {variant === 1 && (
+        <TypewriterStrip
+          text={payload.caption ?? payload.label ?? ''}
+          x={SAFE.left}
+          y={B.hero.y + Math.round(ph * 0.34)}
+          width={Math.round(SAFE_BOX.width * 0.34)}
+          opacity={name.opacity}
+        />
+      )}
       <Cutout
         shape="figure"
         src={payload.images?.[0]}
