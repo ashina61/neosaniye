@@ -187,3 +187,50 @@ test('compose boş ve "none" parçaları atar', () => {
   assert.equal(compose(undefined, false, 'none'), undefined);
   assert.equal(compose('translate(1px, 2px)', 'none', 'scale(2)'), 'translate(1px, 2px) scale(2)');
 });
+
+/* ------------------------------------------------------------------ */
+/* Arşiv kolu — lisans süzgeci                                         */
+/* ------------------------------------------------------------------ */
+/**
+ * NEDEN BU TESTİN OLMASI ŞART
+ *
+ * Lisans süzgeci bu hattaki tek HUKUKİ kapı. Yanlış tarafa açılırsa telif
+ * ihlali üretir ve hata sessizdir: video render edilir, yayınlanır, sorun
+ * aylar sonra çıkar. En sık yapılan yanlış "CC yazıyorsa serbesttir" varsayımı,
+ * oysa:
+ *   · ND (NoDerivatives) türev yasaklar — biz fotoğrafı KESİP kolaja koyuyoruz
+ *   · NC (NonCommercial) para kazanan bir kanalda kullanılamaz
+ */
+test('lisans süzgeci ND ve NC lisansları REDDEDİYOR', async () => {
+  const {licenceOk} = await import('../pipeline/fetch-archive.mjs');
+
+  for (const good of [
+    'Public domain',
+    'PD-US',
+    'CC0',
+    'CC BY 4.0',
+    'CC BY-SA 3.0',
+    'cc-by-sa-4.0',
+  ]) {
+    assert.equal(licenceOk(good), true, `serbest lisans reddedildi: ${good}`);
+  }
+
+  for (const bad of [
+    'CC BY-ND 4.0',
+    'CC BY-NC 2.0',
+    'CC BY-NC-SA 4.0',
+    'All rights reserved',
+    'Fair use',
+    '',
+    undefined,
+  ]) {
+    assert.equal(licenceOk(bad), false, `kullanılamaz lisans kabul edildi: ${bad}`);
+  }
+});
+
+test('extmetadata HTML parçaları düz metne iniyor', async () => {
+  const {plain} = await import('../pipeline/fetch-archive.mjs');
+  assert.equal(plain('<a href="/wiki/User:X" title="t">Jane&nbsp;Doe</a>'), 'Jane Doe');
+  assert.equal(plain(''), '');
+  assert.equal(plain(undefined), '');
+});

@@ -18,6 +18,11 @@ on:
         options:
           - Short
           - StyleSheet
+      fetch_archive:
+        description: "Arşiv fotoğrafı indir (Wikimedia Commons + LoC, anahtarsız)"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -90,6 +95,25 @@ jobs:
           GEMINI_IMAGE_MODEL: ${{ vars.GEMINI_IMAGE_MODEL || 'gemini-3.1-flash-image' }}
         run: npm run cutouts -- --live
 
+      # ARŞİV FOTOĞRAFI — OPT-IN, varsayılan KAPALI.
+      #
+      # Neden girdiye bağlı: bu adım ağa çıkıp üçüncü taraf kataloglardan dosya
+      # indiriyor. AGENTS.md "ağ/ücretli çağrı açık istek olmadan yapılmaz"
+      # diyor; bir kutucuk işaretlemek o açık istektir. Anahtar gerekmiyor,
+      # kota harcanmıyor.
+      #
+      # Başarısız olursa iş DURMAZ: fotoğrafı olmayan sahneler prosedürel
+      # siluetle render edilir.
+      #
+      # LİSANS: betik yalnızca kamu malı / CC BY / CC BY-SA kabul eder, ND ve NC
+      # olanları reddeder, ve indirdiği her dosyanın atfını
+      # content/credits.json'a yazar. O dosya artefakta dahil — CC BY/BY-SA
+      # atfı yayın açıklamasına konmak ZORUNDA.
+      - name: Fetch public-domain archive photographs
+        if: inputs.fetch_archive
+        continue-on-error: true
+        run: npm run archive -- --live
+
       - name: Typecheck
         run: npm run typecheck
 
@@ -114,6 +138,8 @@ jobs:
           path: |
             out/*.mp4
             content/storyboard.json
+            content/credits.json
             public/cutouts/*.png
+            public/archive/*.png
           if-no-files-found: warn
           retention-days: 7

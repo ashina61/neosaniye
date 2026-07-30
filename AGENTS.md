@@ -21,6 +21,28 @@ Bu ayrım mimarinin merkezinde:
   Bir görsel modeli doğru bir ok ya da okunur bir harita çizemez; kod çizer.
 - **Görsel modeli üretir**: yalnızca halftone fotoğraf cutout'ları (kişi, yer,
   nesne), alfa kanallı.
+- **Arşiv kataloğu getirir**: `pipeline/fetch-archive.mjs` — Wikimedia Commons
+  ve Library of Congress, anahtarsız ve kotasız. Gerçek fotoğraf, uydurma değil.
+  Yalnızca kamu malı / CC BY / CC BY-SA kabul edilir; **ND ve NC reddedilir**
+  (ND türev yasaklar ve biz kesip kolaja koyuyoruz; NC para kazanan kanalda
+  kullanılamaz). Atıf `content/credits.json`e yazılır ve CC BY/BY-SA için
+  yayın açıklamasına konması ZORUNLUDUR.
+
+## Çizilen şey cümleden gelir, şablondan gelmez
+
+- Şablon **beat türünü** cevaplar (olgu mu, yer mi, ölçek mi). Hangi NESNENİN
+  çizileceği AYRI bir karardır ve `pipeline/subject.mjs` verir.
+- Şekil listesi üç dosyada: `subject.mjs` (üretici), `Cutout.tsx` (çizen),
+  `types.ts` (sözleşme). Üçü birebir aynı olmak zorunda ve test denetler —
+  ayrışırsa bilinmeyen şekil sessizce **kutu** olarak çizilir.
+- Eşleşme **cümledeki sıraya** göre, sözlüğün yazılış sırasına göre değil.
+- Cümlede somut nesne yoksa şekil verilmez ve şablon varsayılanına düşer.
+  Uydurma nesne çizmek yalan görseldir.
+- **Olumsuzlama**: nesne çizilir ve üstü çizilir (`MarkerCross`). Olumsuzlama
+  fiile bağlıysa çarpı ATILMAZ — "the canoe was never moving" cümlesinde
+  olumsuzlanan hareket, kano değil.
+- Vurgu (altın bar) cümlenin somut nesnesine gider; "en uzun kelime" kuralı
+  yalnızca yedektir.
 - **Image-to-video modeli kullanılmaz.** Build-on assembly (öğelerin boş kağıt
   zeminden tek tek girmesi) `src/motion/stepped.ts` içinde kodla yapılır.
   Referans prompt'un istediği "kamera kilitli, yerleşen öğe bir daha oynamaz"

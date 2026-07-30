@@ -39,61 +39,73 @@ export const CONCRETE = [
     re: /\b(canoe|canoes|boat|boats|vessel|ship|ships|raft)\b/i,
     shape: 'vessel',
     prompt: 'a traditional double-hulled sailing canoe, full side profile',
+    search: 'outrigger sailing canoe historic photograph',
   },
   {
     re: /\b(compass|sextant|instrument|instruments)\b/i,
     shape: 'instrument',
     prompt: 'an antique navigational instrument, isolated on its own',
+    search: 'antique mariner compass instrument',
   },
   {
     re: /\b(star|stars|constellation|constellations)\b/i,
     shape: 'star',
     prompt: 'an antique celestial star chart fragment',
+    search: 'antique celestial star chart engraving',
   },
   {
     re: /\b(bird|birds|seabird|frigatebird|tern)\b/i,
     shape: 'bird',
     prompt: 'a single seabird in flight, wings extended',
+    search: 'seabird in flight photograph',
   },
   {
     re: /\b(wave|waves|swell|swells|current|currents)\b/i,
     shape: 'wave',
     prompt: 'a study of ocean swell, water surface texture only',
+    search: 'ocean swell waves photograph',
   },
   {
     re: /\b(island|islands|shore|coast|atoll|reef)\b/i,
     shape: 'terrain',
     prompt: 'a low volcanic island seen from the sea, silhouette',
+    search: 'volcanic island seen from sea photograph',
   },
   {
     re: /\b(map|maps|chart|charts)\b/i,
     shape: 'object',
     prompt: 'a folded antique nautical map',
+    search: 'antique nautical chart map',
   },
   {
     re: /\b(radio|telegraph|engine|motor)\b/i,
     shape: 'object',
     prompt: 'a vintage radio set, three-quarter view',
+    search: 'vintage radio receiver set',
   },
   {
     re: /\b(wind|winds|breeze|storm|storms)\b/i,
     shape: 'wave',
     prompt: 'a study of wind-driven cloud and spray, no horizon line',
+    search: 'storm clouds sea spray photograph',
   },
   {
     re: /\b(house|houses|village|city|temple|hut)\b/i,
     shape: 'building',
     prompt: 'a single low building seen straight on, documentary photograph',
+    search: 'historic village house photograph',
   },
   {
     re: /\b(ocean|sea|water|pacific|atlantic)\b/i,
     shape: 'wave',
     prompt: 'a study of open ocean surface, water texture only',
+    search: 'open ocean surface photograph',
   },
   {
     re: /\b(sky|night|dusk|dawn|moon)\b/i,
     shape: 'star',
     prompt: 'a night sky study, stars only',
+    search: 'night sky stars photograph',
   },
 ];
 
@@ -187,6 +199,20 @@ export function shapeFor(text) {
   if (namedPerson(text)) return 'figure';
   const m = match(text);
   return m ? m.shape : null;
+}
+
+/**
+ * ARŞİV ARAMA TERİMİ.
+ *
+ * `prompt`ten ayrı bir alan, çünkü ikisi farklı iş yapıyor: prompt bir üretim
+ * modeline verilen tarif (uzun, stil talimatlı), `search` bir arşiv kataloğuna
+ * verilen sorgu (kısa, isim tabanlı). Uzun prompt'u arama motoruna vermek sıfır
+ * sonuç döndürür.
+ */
+export function searchFor(text) {
+  if (namedPerson(text)) return `${namedPerson(text)} portrait photograph`;
+  const m = match(text);
+  return m ? m.search : null;
 }
 
 /**
