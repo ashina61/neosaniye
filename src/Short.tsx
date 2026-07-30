@@ -22,6 +22,8 @@ export interface StoryboardScene {
   /** Sahne uzunluğu, kare. */
   durationInFrames: number;
   seed: number;
+  /** Bu şablonun kaçıncı kullanımı; derleyici hesaplar. */
+  occurrence?: number;
 }
 
 export interface Storyboard {
@@ -48,6 +50,7 @@ export const Short: React.FC<{storyboard: Storyboard}> = ({storyboard}) => {
               payload={scene.payload}
               seed={scene.seed}
               index={i}
+              occurrence={scene.occurrence ?? 0}
             />
           </Sequence>
         );

@@ -7,6 +7,7 @@
         "headline": "In 1976, a man named Mau *Piailug*",
         "caption": "Hawai'i to Tahiti, 1976"
       },
+      "occurrence": 0,
       "durationInFrames": 84,
       "seed": 3,
       "_beat": {
@@ -21,6 +22,7 @@
         "headline": "stepped onto a *double-hulled* canoe in Hawai'i",
         "label": "HAWAI'I"
       },
+      "occurrence": 0,
       "durationInFrames": 84,
       "seed": 10,
       "_beat": {
@@ -34,6 +36,7 @@
       "payload": {
         "headline": "He *carried* no compass,"
       },
+      "occurrence": 0,
       "durationInFrames": 48,
       "seed": 17,
       "_beat": {
@@ -47,6 +50,7 @@
       "payload": {
         "headline": "no *charts,* and no radio"
       },
+      "occurrence": 0,
       "durationInFrames": 60,
       "seed": 24,
       "_beat": {
@@ -76,6 +80,7 @@
         ],
         "headline": "He sailed from Hawai'i to Tahiti across"
       },
+      "occurrence": 0,
       "durationInFrames": 84,
       "seed": 31,
       "_beat": {
@@ -90,6 +95,7 @@
         "headline": "four thousand *kilometres* of open water",
         "caption": "Hawai'i to Tahiti, 1976"
       },
+      "occurrence": 1,
       "durationInFrames": 72,
       "seed": 38,
       "_beat": {
@@ -103,6 +109,7 @@
       "payload": {
         "headline": "Instead of *instruments,* he used the stars,"
       },
+      "occurrence": 1,
       "durationInFrames": 84,
       "seed": 45,
       "_beat": {
@@ -116,6 +123,7 @@
       "payload": {
         "headline": "the swell, and the *flight* of birds"
       },
+      "occurrence": 1,
       "durationInFrames": 84,
       "seed": 52,
       "_beat": {
@@ -129,6 +137,7 @@
       "payload": {
         "headline": "*Every* night he read the sky"
       },
+      "occurrence": 0,
       "durationInFrames": 72,
       "seed": 59,
       "_beat": {
@@ -143,6 +152,7 @@
         "headline": "*Every* day he read the water",
         "caption": "Hawai'i to Tahiti, 1976"
       },
+      "occurrence": 2,
       "durationInFrames": 72,
       "seed": 66,
       "_beat": {
@@ -156,6 +166,7 @@
       "payload": {
         "headline": "He had *memorized* two hundred and twenty"
       },
+      "occurrence": 2,
       "durationInFrames": 84,
       "seed": 73,
       "_beat": {
@@ -169,6 +180,7 @@
       "payload": {
         "headline": "star *positions* as a boy"
       },
+      "occurrence": 2,
       "durationInFrames": 60,
       "seed": 80,
       "_beat": {
@@ -186,6 +198,7 @@
         },
         "headline": "Only five navigators of his tradition"
       },
+      "occurrence": 0,
       "durationInFrames": 108,
       "seed": 87,
       "_beat": {
@@ -200,6 +213,7 @@
         "headline": "*Thirty-three* days later, the canoe reached Tahiti",
         "label": "TAHITI"
       },
+      "occurrence": 1,
       "durationInFrames": 84,
       "seed": 94,
       "_beat": {
@@ -213,6 +227,7 @@
       "payload": {
         "quote": "Here is the strange part."
       },
+      "occurrence": 0,
       "durationInFrames": 60,
       "seed": 101,
       "_beat": {
@@ -226,6 +241,7 @@
       "payload": {
         "headline": "In his mind, the canoe was never *moving*"
       },
+      "occurrence": 3,
       "durationInFrames": 96,
       "seed": 108,
       "_beat": {
@@ -239,6 +255,7 @@
       "payload": {
         "headline": "He held it *still,*"
       },
+      "occurrence": 3,
       "durationInFrames": 48,
       "seed": 115,
       "_beat": {
@@ -252,6 +269,7 @@
       "payload": {
         "headline": "and let the islands come"
       },
+      "occurrence": 0,
       "durationInFrames": 84,
       "seed": 122,
       "_beat": {
@@ -265,6 +283,7 @@
       "payload": {
         "headline": "Nobody had made that *crossing* for six hundred"
       },
+      "occurrence": 2,
       "durationInFrames": 108,
       "seed": 129,
       "_beat": {

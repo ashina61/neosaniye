@@ -66,7 +66,7 @@ export const StyleSheet: React.FC = () => {
         const Component = SCENES[name];
         return (
           <Sequence key={name} from={i * per} durationInFrames={per} name={name}>
-            <Component seconds={3} payload={DEMO[name] ?? {}} seed={i * 7 + 3} index={i} />
+            <Component seconds={3} payload={DEMO[name] ?? {}} seed={i * 7 + 3} index={i} occurrence={0} />
             <div
               style={{
                 position: 'absolute',

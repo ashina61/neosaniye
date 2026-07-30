@@ -73,4 +73,9 @@ export interface SceneProps {
   seed: number;
   /** Sahne sırası — 0 ise hook, farklı davranır. */
   index: number;
+  /**
+   * Bu şablonun kaçıncı kullanımı (0 tabanlı). Yerleşim varyantı buna göre
+   * döner; sahne sırasına göre dönmek aynı pariteli sıraları çakıştırıyordu.
+   */
+  occurrence: number;
 }

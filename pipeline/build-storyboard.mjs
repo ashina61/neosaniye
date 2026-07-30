@@ -258,12 +258,25 @@ async function main() {
   // hangi şablonun gerçekten çizebileceğini payload belirler. `resolveTemplate`
   // öneri listesinde ilerleyip sözleşmeyi geçen ilkini seçer.
   const recent = [];
+  /**
+   * Şablon başına kullanım sayacı.
+   *
+   * NEDEN: sahne şablonlarının yerleşim varyantı, o şablonun KAÇINCI kullanımı
+   * olduğuna göre dönmeli. Bileşen içinde sahne SIRASINI (`index`) kullanmak
+   * yetmiyor: headline_card sahneleri 3, 7, 11, 16. sıralarda çıkınca `% 2`
+   * aynı pariteli sıraları aynı varyanta düşürdü ve dört kullanımdan üçü aynı
+   * kompozisyonu aldı. Kullanım sırasını burada saymak rotasyonu garanti eder.
+   */
+  const useCount = {};
   const scenes = beats.map((b, i) => {
     const {template, payload} = resolveTemplate(b.kind, recent, (t) => payloadForBeat(b, story, t));
     recent.unshift(template);
+    const occurrence = useCount[template] ?? 0;
+    useCount[template] = occurrence + 1;
     return {
       template,
       payload,
+      occurrence,
       durationInFrames: Math.round(Math.max(b.seconds, MIN_SECONDS) * FPS),
       seed: i * 7 + 3,
       // İzlenebilirlik: hangi cümleden hangi sahnenin çıktığı çıktıda kalsın.

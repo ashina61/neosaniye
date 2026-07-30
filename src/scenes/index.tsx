@@ -38,7 +38,7 @@ const B = VERTICAL_BANDS;
  * Üç varyant, seed'den deterministik seçiliyor. Aynı şablon ikinci kez
  * kullanıldığında farklı bir kare veriyor.
  */
-const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index}) => {
+const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurrence}) => {
   const f = useCurrentFrame();
   const card = enter(f, {at: 0.15, duration: 0.4, kind: 'fade'});
   const hero = enter(f, {at: 0.35, duration: 0.55, kind: 'slide', from: {x: -180}});
@@ -46,7 +46,22 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index}) => {
   const ring = enter(f, {at: 1.35, duration: 0.7, kind: 'draw'});
   const mark = enter(f, {at: 1.15, duration: 0.35, kind: 'stamp'});
 
-  const variant = Math.floor(rand(seed * 3.7) * 3); // 0, 1, 2
+  /**
+   * Varyant SIRAYA bağlı, saf seed hash'ine değil.
+   *
+   * NEDEN: ilk sürüm `rand(seed)` kullanıyordu, dağılım şansa kalıyordu ve
+   * headline_card'ın dört kullanımından üçü aynı varyantı çekti. Sahne
+   * SIRASINA (`index`) bağlamak da yetmedi: o sahneler 3, 7, 11, 16. sıralarda
+   * ve `% 2` aynı pariteli sıraları çakıştırıyor.
+   *
+   * Üçüncü deneme `(occurrence + rand(seed))` idi ve o da bozuktu: her sahnenin
+   * seed'i farklı olduğu için "sabit kaydırma" diye eklediğim şey sahne başına
+   * değişiyor, yani rotasyon yine rastgeleye dönüyordu.
+   *
+   * Doğrusu en yalını: saf `occurrence % N`. Şablonun birinci kullanımı 0.
+   * varyant, ikincisi 1., üçüncüsü 2. — çakışma matematiksel olarak imkânsız.
+   */
+  const variant = occurrence % 3;
 
   // 0: ortada büyük · 1: sağa kaçık, solda şerit · 2: küçük, damgalı
   const scale = variant === 2 ? 0.58 : variant === 1 ? 0.68 : 0.78;
@@ -195,7 +210,7 @@ const WideEstablish: React.FC<SceneProps> = ({seconds, payload, seed}) => {
 /* ------------------------------------------------------------------ */
 /* 3. HEADLINE CARD — büyük condensed başlık + portre + isim kartı     */
 /* ------------------------------------------------------------------ */
-const HeadlineCard: React.FC<SceneProps> = ({seconds, payload, seed}) => {
+const HeadlineCard: React.FC<SceneProps> = ({seconds, payload, seed, occurrence}) => {
   const f = useCurrentFrame();
   const head = enter(f, {at: 0.12, duration: 0.4, kind: 'drop', from: {y: -70}});
   const bar = enter(f, {at: 0.55, duration: 0.45, kind: 'draw'});
@@ -207,7 +222,8 @@ const HeadlineCard: React.FC<SceneProps> = ({seconds, payload, seed}) => {
    * kaçık ve yanında dikey daktilo şeridi. Aynı sebeple: bu şablon dört kez
    * kullanılınca dört kez aynı kare olmasın.
    */
-  const variant = rand(seed * 2.3) < 0.5 ? 0 : 1;
+  // Aynı gerekçe: rotasyon garanti, başlangıç noktası seed'den.
+  const variant = occurrence % 2;
   const pw = Math.round(SAFE_BOX.width * (variant === 1 ? 0.52 : 0.66));
   const ph = Math.round(B.hero.height * 0.9);
   const px =
@@ -347,7 +363,7 @@ const SplitCompare: React.FC<SceneProps> = ({payload, seed}) => {
   const sides = payload.sides;
   // Taraf etiketi yoksa karşılaştırma sahnesi kurulamaz: sessizce boş panel
   // çizmek yerine hero_cutout'a düşülür (kayıt registry'de yapılır).
-  if (!sides) return <HeroCutout seconds={4} payload={payload} seed={seed} index={1} />;
+  if (!sides) return <HeroCutout seconds={4} payload={payload} seed={seed} index={1} occurrence={0} />;
 
   const panelH = Math.round(SAFE_BOX.height * 0.40);
   const mid = SAFE.top + Math.round(SAFE_BOX.height * 0.5);
