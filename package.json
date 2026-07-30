@@ -8,6 +8,7 @@
     "studio": "remotion studio src/index.ts",
     "beats": "node pipeline/build-storyboard.mjs",
     "cutouts": "node pipeline/generate-cutouts.mjs",
+    "flow:pack": "node pipeline/build-flow-pack.mjs",
     "render": "remotion render src/index.ts Short out/neosaniye.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p",
     "render:still": "remotion still src/index.ts Short out/still.png",
     "typecheck": "tsc --noEmit",
