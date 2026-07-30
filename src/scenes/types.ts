@@ -87,6 +87,8 @@ export interface ScenePayload {
     | 'star'
     | 'wave'
     | 'vehicle'
+    | 'aircraft'
+    | 'rail'
     | 'document'
     | 'machine';
   /**

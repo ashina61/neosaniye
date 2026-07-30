@@ -74,6 +74,8 @@ export type PlaceholderShape =
   | 'star'
   | 'wave'
   | 'vehicle'
+  | 'aircraft'
+  | 'rail'
   | 'document'
   | 'machine';
 
@@ -231,6 +233,51 @@ const Placeholder: React.FC<{shape: PlaceholderShape; seed: number}> = ({shape, 
           <circle cx="48" cy="88" r="7" fill={PALETTE.paper} />
           <circle cx="156" cy="88" r="17" {...common} />
           <circle cx="156" cy="88" r="7" fill={PALETTE.paper} />
+        </svg>
+      );
+
+    /**
+     * UÇAK — "the aircraft took off".
+     *
+     * Ayrı bir şekil, çünkü tek `vehicle` ailesi bu cümleye KAMYON çiziyordu ve
+     * render'a bakınca görüldü. Gövde + süpürgeli kanat + kuyruk: uzaktan da
+     * "uçak" okunan üç parça.
+     */
+    case 'aircraft':
+      return (
+        <svg viewBox="0 0 220 120" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+          {/* Gövde: burun sivri, kuyruk incelen. */}
+          <path d="M6 62 C40 50 120 46 186 50 L212 56 L186 62 C120 66 40 74 6 62 Z" {...common} />
+          {/* Kanat: geriye süpürgeli, tek parça. */}
+          <path d="M96 58 L150 6 L172 8 L134 58 Z" {...common} />
+          <path d="M96 60 L150 112 L172 110 L134 60 Z" {...common} />
+          {/* Dikey stabilizatör */}
+          <path d="M178 52 L206 18 L214 20 L196 52 Z" {...common} />
+          {/* Pencere sırası: zeminden oyulur. */}
+          {[0, 1, 2, 3, 4, 5].map((i) => (
+            <rect key={i} x={44 + i * 16} y="54" width="7" height="7" fill={PALETTE.paper} />
+          ))}
+        </svg>
+      );
+
+    /** TREN — lokomotif/vagon. Kutu gövde, bacaşız (dizel), boji tekerlekler. */
+    case 'rail':
+      return (
+        <svg viewBox="0 0 220 110" width="100%" height="100%" preserveAspectRatio="xMidYMax meet">
+          <path d="M8 26 L150 26 L176 44 L212 44 L212 80 L8 80 Z" {...common} />
+          {[0, 1, 2].map((i) => (
+            <rect key={i} x={24 + i * 34} y="36" width="24" height="20" fill={PALETTE.paper} />
+          ))}
+          <rect x="182" y="52" width="22" height="16" fill={PALETTE.paper} />
+          {/* Boji: iki grup, üçer tekerlek — trenin imzası. */}
+          {[30, 58, 86, 140, 168, 196].map((x) => (
+            <circle key={x} cx={x} cy="88" r="12" {...common} />
+          ))}
+          {[30, 58, 86, 140, 168, 196].map((x) => (
+            <circle key={`h${x}`} cx={x} cy="88" r="4" fill={PALETTE.paper} />
+          ))}
+          {/* Ray */}
+          <rect x="0" y="100" width="220" height="6" {...common} />
         </svg>
       );
 

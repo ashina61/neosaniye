@@ -113,7 +113,15 @@ function payloadForBeat(beat, story, template = beat.template) {
       if (places.length >= 2) p.sides = [{label: places[0]}, {label: places[1]}];
       p.headline = shorten(text, 5);
       p.label = firstYear(text) ?? undefined;
-      p.caption = text.length > 60 ? text : undefined;
+      /**
+       * Alt şerit yalnızca BAŞLIK KIRPILMIŞSA konur.
+       *
+       * Render'da şerit başlığın birebir aynısını yazıyordu: üstte
+       * "THE AIRCRAFT TOOK OFF AGAIN", altta "The aircraft took off again".
+       * Karakter uzunluğuna bakan eski koşul (>60) kırpılıp kırpılmadığını
+       * ölçmüyordu. Şeridin işi tamamlamak; tekrar etmek değil.
+       */
+      p.caption = wordCount(text) > wordCount(p.headline) ? text : undefined;
       break;
     }
 

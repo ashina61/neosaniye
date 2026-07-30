@@ -55,13 +55,33 @@ const FAMILIES = [
       'agent', 'judge', 'lawyer', 'sheriff', 'hijacker', 'suspect', 'victim', 'attendant', 'captain', 'crew',
     ],
   },
+  /**
+   * ARAÇ ÜÇE AYRILDI — RENDER'A BAKARAK.
+   *
+   * Tek bir `vehicle` ailesi vardı ve içinde hem "lorry" hem "aircraft" geçiyordu.
+   * Sonuç render'da göründü: "THE AIRCRAFT TOOK OFF AGAIN" cümlesinin altına
+   * KAMYON silueti çizildi. Aile yaklaşımı doğru fikirdi ama aileyi fazla geniş
+   * tutmak, düzeltmek için kurulan kusuru geri getiriyor — izleyici için uçak ve
+   * kamyon "araç" diye tek şey değil.
+   *
+   * Ölçü: bir aile, ancak SİLUETİ AYNI OKUNAN nesneleri toplayabilir.
+   */
+  {
+    shape: 'aircraft',
+    style: 'side profile of the aircraft, documentary photograph, plain background',
+    words: ['plane', 'aircraft', 'airplane', 'airliner', 'jet', 'helicopter', 'glider', 'bomber', 'fighter'],
+  },
+  {
+    shape: 'rail',
+    style: 'side profile of the locomotive or carriage, documentary photograph',
+    words: ['train', 'locomotive', 'carriage', 'wagon', 'tram', 'railcar', 'freight'],
+  },
   {
     shape: 'vehicle',
-    style: 'side profile of the vehicle, documentary photograph, plain background',
+    style: 'side profile of the road vehicle, documentary photograph, plain background',
     words: [
-      'train', 'locomotive', 'carriage', 'wagon', 'car', 'lorry', 'truck', 'van', 'bus', 'tram',
-      'plane', 'aircraft', 'airplane', 'jet', 'helicopter', 'motorcycle', 'bicycle', 'cart',
-      'ambulance', 'tank', 'rocket', 'spacecraft', 'capsule',
+      'car', 'lorry', 'truck', 'van', 'bus', 'motorcycle', 'bicycle', 'cart', 'ambulance', 'jeep',
+      'tank', 'rocket', 'spacecraft', 'capsule',
     ],
   },
   {
@@ -166,6 +186,8 @@ export const SHAPES = [
   'figure',
   'vessel',
   'vehicle',
+  'aircraft',
+  'rail',
   'building',
   'document',
   'machine',

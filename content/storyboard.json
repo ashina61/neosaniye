@@ -53,6 +53,7 @@
       "template": "labeled_diagram",
       "payload": {
         "headline": "He handed the attendant",
+        "caption": "He handed the attendant a note",
         "shape": "figure",
         "shape2": "document"
       },
@@ -103,7 +104,7 @@
         "headline": "In Seattle the *passengers* walked",
         "label": "SEATTLE",
         "shape": "figure",
-        "shape2": "vehicle"
+        "shape2": "aircraft"
       },
       "occurrence": 1,
       "durationInFrames": 120,
@@ -133,7 +134,7 @@
       "template": "labeled_diagram",
       "payload": {
         "headline": "The aircraft took off again",
-        "shape": "vehicle"
+        "shape": "aircraft"
       },
       "occurrence": 1,
       "durationInFrames": 90,

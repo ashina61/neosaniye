@@ -682,11 +682,30 @@ const LabeledDiagram: React.FC<SceneProps> = ({seconds, payload, seed}) => {
   const arrow = enter(f, {at: cue(seconds, 2, 4), duration: 0.6, kind: 'draw'});
   const cap = enter(f, {at: cue(seconds, 3, 4), duration: 0.35, kind: 'stamp'});
 
-  const boxW = Math.round(SAFE_BOX.width * 0.46);
-  const boxH = Math.round(boxW * 1.1);
+  /**
+   * KOMPOZİSYON ÖLÇÜLEREK BÜYÜTÜLDÜ.
+   *
+   * Render'da bu şablonun ALT %55'i tamamen boş krem kağıt çıkıyordu: iki kutu
+   * hero bandının üst kenarına yapışmış, alt bant hiç kullanılmamış. 9:16
+   * kompozisyon yasası üst %18 / hero %52 / alt %30 diyor ve alt bandın işi
+   * caption/etiket taşımak; bu beat'lerde ikisi de olmayınca bant boş kalıyordu.
+   *
+   * İki düzeltme: kutular büyütüldü ve hero bandının OPTİK MERKEZİNE oturtuldu;
+   * caption yoksa alt banda cümlenin tamamı daktilo şeridi olarak konuyor —
+   * başlık zaten kırpılmış hâli, şerit tam hâli veriyor.
+   */
+  /**
+   * GENİŞLİK 0.52'DEN 0.47'YE — İKİ KUTU ÇAKIŞIYORDU.
+   *
+   * 0.52 × 2 = güvenli alanın %104'ü. Render'da uçak kutusu ile hedef kutusu
+   * üst üste bindi. Boşluğu doldurmak isterken kompozisyonu bozmak; ölçü
+   * basitti ve bakmadan yazdım.
+   */
+  const boxW = Math.round(SAFE_BOX.width * 0.47);
+  const boxH = Math.round(boxW * 1.05);
   const leftX = SAFE.left;
   const rightX = SAFE.left + SAFE_BOX.width - boxW;
-  const rowY = B.hero.y + 40;
+  const rowY = B.hero.y + Math.round((B.hero.height - boxH) * 0.34);
 
   return (
     <PaperBase seed={seed}>
@@ -696,6 +715,17 @@ const LabeledDiagram: React.FC<SceneProps> = ({seconds, payload, seed}) => {
           size={TYPE.subhead}
           style={{position: 'absolute', left: SAFE.left, top: B.top.y, width: SAFE_BOX.width, opacity: a.opacity}}
           seed={seed}
+        />
+      )}
+      {/* Alt bant: caption varsa o, yoksa cümlenin tam hâli. Boş bırakmak
+          kompozisyonu yarım gösteriyordu. */}
+      {(payload.caption ?? payload.headline) && (
+        <TypewriterStrip
+          text={(payload.caption ?? payload.headline ?? '').replace(/\*/g, '')}
+          x={SAFE.left}
+          y={B.bottom.y + 40}
+          width={SAFE_BOX.width - 40}
+          opacity={cap.opacity}
         />
       )}
       <Cutout
