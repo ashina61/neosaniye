@@ -33,3 +33,6 @@ firebase-*.json
 
 # Cutout ara dosyaları (ham indirmeler) sürümlenmez; üretilen alfa PNG sürümlenir.
 public/cutouts/.raw-*
+
+# Flow klipleri sürümlenmez (büyük, elle üretiliyor); klasör yapısı kalır.
+public/clips/*.mp4

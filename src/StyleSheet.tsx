@@ -62,7 +62,9 @@ export const StyleSheet: React.FC = () => {
   const per = CANVAS.fps * 3;
   return (
     <AbsoluteFill>
-      {SCENE_NAMES.map((name, i) => {
+      {/* archive_clip stil sayfasında YOK: gerçek bir klip dosyası istiyor,
+          prosedürel demo içeriğiyle gösterilemez. */}
+      {SCENE_NAMES.filter((n) => n !== 'archive_clip').map((name, i) => {
         const Component = SCENES[name];
         return (
           <Sequence key={name} from={i * per} durationInFrames={per} name={name}>

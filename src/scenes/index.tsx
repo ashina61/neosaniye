@@ -7,6 +7,7 @@ import {Cutout, TornCard} from '../paper/Cutout';
 import {Headline, PullQuote, LabelCard, Stamp, TypewriterStrip} from '../paper/Type';
 import {DrawnArrow, DottedPath, MarkerCircle, SparkleField, SeaBand, Sparkle} from '../paper/Marks';
 import {StickFigure, ThoughtBubble, type Pose} from '../paper/StickFigure';
+import {ArchiveClip} from './ArchiveClip';
 import type {SceneProps, SceneTemplate} from './types';
 
 const B = VERTICAL_BANDS;
@@ -1112,6 +1113,7 @@ export const SCENES: Record<SceneTemplate, React.FC<SceneProps>> = {
   data_annotate: DataAnnotate,
   stick_beat: StickBeat,
   star_field: StarField,
+  archive_clip: ArchiveClip,
 };
 
 export const SCENE_NAMES = Object.keys(SCENES) as SceneTemplate[];

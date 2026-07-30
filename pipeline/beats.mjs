@@ -412,6 +412,10 @@ export function buildBeats(narration, {maxWordsPerBeat = 8} = {}) {
  * onaylar. Onaylamazsa öneri listesinde ilerlenir.
  */
 export const TEMPLATE_REQUIREMENTS = {
+  // archive_clip beat türünden SEÇİLMEZ; ingest-clips.mjs klip bulduğu sahnenin
+  // şablonunu buna çevirir. Sözleşmesi burada, çünkü registry testi her şablonun
+  // kayıtta olmasını istiyor.
+  archive_clip: (p) => Boolean(p.clip && p.clip.src),
   archival_timeline: (p) => Array.isArray(p.timeline) && p.timeline.length >= 2,
   split_compare: (p) => Array.isArray(p.sides) && p.sides.length === 2,
   grid_scale: (p) => !!p.ratio && p.ratio.total >= 2,

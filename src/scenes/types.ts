@@ -20,7 +20,8 @@ export type SceneTemplate =
   | 'grid_scale'        // 16 tekrarlı ikon ızgarası, birkaçı vurgulu
   | 'data_annotate'     // 4  minimal grafik + tek kırmızı çizgi + elle daire
   | 'stick_beat'        // soyut/duygusal beat: çöp adam
-  | 'star_field';       // gece zemin, eş merkezli halkalar, portre
+  | 'star_field'        // gece zemin, eş merkezli halkalar, portre
+  | 'archive_clip';     // Google Flow'dan dönen kompoze kolaj klibi
 
 /** Anlatının bu beat'te ne YAPTIĞI. Şablon seçimi buna dayanır. */
 export type BeatKind =
@@ -63,6 +64,18 @@ export interface ScenePayload {
   series?: number[];
   /** Alfa kanallı cutout yolları (varsa). */
   images?: string[];
+  /**
+   * Flow'dan dönen klip. `ingest-clips.mjs` yazar; şablonu da `archive_clip`'e
+   * çevirir. `trimBefore` klibin SONUNU beat'in sonuna hizalar.
+   */
+  clip?: {
+    src: string;
+    trimBefore: number;
+    clipFrames: number;
+    width: number;
+    height: number;
+    audio: boolean;
+  };
 }
 
 export interface SceneProps {
