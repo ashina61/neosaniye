@@ -14,7 +14,9 @@
     "render:still": "remotion still src/index.ts Short out/still.png",
     "typecheck": "tsc --noEmit",
     "test": "node --test \"test/**/*.test.mjs\"",
-    "archive": "node pipeline/fetch-archive.mjs"
+    "archive": "node pipeline/fetch-archive.mjs",
+    "sheet": "node pipeline/contact-sheet.mjs",
+    "preview": "remotion render src/index.ts Short out/preview.mp4 --codec=h264 --crf=30 --pixel-format=yuv420p --scale=0.3"
   },
   "dependencies": {
     "@remotion/cli": "4.0.500",
