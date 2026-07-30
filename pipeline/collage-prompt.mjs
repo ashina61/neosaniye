@@ -33,6 +33,8 @@
  */
 
 /** Referans PDF'in stil bloğu — her prompt'ta birebir geçer. */
+import {subjectFor} from './subject.mjs';
+
 const STYLE_BLOCK = [
   'hand-cut documentary paper collage on aged newsprint and archival map surfaces,',
   'black and white halftone photograph cutouts with rough scissor-cut edges and offset accent strokes,',
@@ -162,13 +164,21 @@ function firstDate(text) {
   return null;
 }
 
+/**
+ * Ay adları özel isim SAYILMAZ: tarih zaten ayrı çıkarılıyor ve ikisi birden
+ * geçince prompt "the date 24 NOV 1971 and the name NOVEMBER" diyordu — aynı
+ * bilgiyi iki kez, biri yanlış kategoride.
+ */
+const MONTH_NAME =
+  /^(january|february|march|april|may|june|july|august|september|october|november|december)$/i;
+
 function properNouns(text, limit = 2) {
   const words = String(text).split(/\s+/).slice(1);
   const out = [];
   let run = [];
   for (const w of words) {
     const bare = w.replace(/[^A-Za-z’'-]/g, '');
-    if (/^[A-Z][a-z’'-]{2,}$/.test(bare)) run.push(bare);
+    if (/^[A-Z][a-z’'-]{2,}$/.test(bare) && !MONTH_NAME.test(bare)) run.push(bare);
     else if (run.length) {
       out.push(run.join(' '));
       run = [];
@@ -185,9 +195,43 @@ function properNouns(text, limit = 2) {
  * @param {{title?: string, subtitle?: string}} story
  * @returns {string}
  */
+/**
+ * 9:16 ÇERÇEVE VE GÜVENLİ ALAN ÖN EKİ — kullanıcının doğrulanmış prompt setinden.
+ *
+ * BENDE OLMAYAN VE KRİTİK OLAN PARÇA BUYDU. Benim prompt'um görselin nereye
+ * ne koyacağını söylemiyordu; oysa Remotion tarafı başlığı ÜST banda, etiketi
+ * ALT banda çiziyor. Üretilen görselde o bantlar doluysa iki katman üst üste
+ * biner ve metin okunmaz — kontakt sayfasında kod tarafında aynı çakışmayı
+ * zaten ölçtüm.
+ *
+ * Yani bu cümleler süs değil, İKİ HATTIN SÖZLEŞMESİ: model üst %20 ile alt
+ * %20'yi boş bırakacak, kod oraya yazacak.
+ */
+const FRAME_PREFIX =
+  'Vertical 9:16 editorial documentary paper collage composition for YouTube Shorts, ' +
+  'one dominant hero element centered in the middle safe zone, ' +
+  'upper 20 percent kept visually clean for hook text, ' +
+  'lower 20 percent kept visually clean for subtitles, generous side margins, ' +
+  'no important subject touching the frame edges.';
+
 export function composedCollagePrompt(beat, story = {}) {
   const text = String(beat.text || '').replace(/[*"]/g, '').trim();
   const recipe = RECIPES[beat.kind] ?? FALLBACK;
+
+  /**
+   * HERO CÜMLENİN NESNESİNDEN GELİR, BEAT TÜRÜNDEN DEĞİL.
+   *
+   * Bu, render tarafında düzelttiğim hatanın prompt tarafındaki ikizi: reçete
+   * beat TÜRÜNE (fact/place/scale) bağlıydı, cümlenin ne dediğine değil.
+   * Sonuç paket çıktısında göründü — "and jumped with a parachute" beat'i için
+   * istenen kare "A newspaper clipping with a legible headline" idi. Paraşüt
+   * promtta hiç geçmiyordu.
+   *
+   * Cümlede somut nesne varsa hero O olur; yoksa tür reçetesi devreye girer.
+   * Aynı `subjectFor` iki hattı da besliyor: kodla çizilen siluet ile modele
+   * tarif edilen nesne artık AYNI kaynaktan geliyor.
+   */
+  const concrete = subjectFor(text);
 
   // Görselin içine girecek metin: yalnızca tarih ve özel isim. Anlatı cümlesi
   // ASLA görsele yazdırılmaz — model uzun metni bozar ve zaten anlatımı ses
@@ -204,12 +248,15 @@ export function composedCollagePrompt(beat, story = {}) {
       'No other words, no sentences, no paragraphs.'
     : 'No text anywhere in the image.';
 
+  const hero = concrete
+    ? `A halftone paper cutout of ${concrete}, pinned to the archival ground as the dominant element`
+    : recipe.hero;
+
   return [
-    `A single finished editorial paper-collage frame, photographed flat from directly above.`,
-    `HERO ELEMENT (about 70 percent of visual weight): ${recipe.hero}.`,
+    FRAME_PREFIX,
+    `${hero.charAt(0).toUpperCase()}${hero.slice(1)}.`,
     recipe.heroText === 'no text' ? '' : `On the hero element: ${recipe.heroText}.`,
-    `SUPPORTING ELEMENTS (no more than three): ${recipe.support.join('; ')}.`,
-    `Everything rests on an aged cream paper ground with visible fiber, stains and generous empty margin.`,
+    `Supporting elements, no more than three: ${recipe.support.join('; ')}.`,
     `The subject matter is drawn from this documentary line: "${text}".`,
     textClause,
     STYLE_BLOCK,
@@ -234,18 +281,48 @@ export function composedCollagePrompt(beat, story = {}) {
  * elde tutuluyor çünkü sapmayı azaltıyor; ama çıktıdaki TARİH ve SAYILAR elle
  * kontrol edilmeli.
  */
-export const UNIVERSAL_VIDEO_PROMPT = `Transform the provided image into a 5-second premium editorial documentary paper-collage animation. Preserve the composition of the provided image exactly. Do not redesign, reposition, resize or replace any element, and do not rewrite any text, date or number that appears in it. The provided image is the FINISHED frame that the animation builds toward.
+/**
+ * UNIVERSAL VIDEO PROMPT — kullanıcının doğrulanmış 10 saniyelik sürümü,
+ * SÜRESİ PARAMETRELİ.
+ *
+ * NEDEN PARAMETRELİ: kullanıcının metni 10 saniye ve 0-7 sn kurulum, 7-10 sn
+ * tutuş diyor. Bizim beat'ler 3.6-6.5 saniye. 10 saniyelik klibi 4 saniyeye
+ * kırpmak iki kötü seçenekten birini dayatıyor: ya KURULUMU (asıl seyredilecek
+ * şey) ya da OTURMUŞ KAREYİ kaybediyorsun.
+ *
+ * Çözüm oranı korumak: kurulum sürenin %70'i, tutuş %30'u — kullanıcının
+ * 7/10 bölünmesinin aynısı. Yapı, dil ve katı kamera kilidi birebir onun
+ * metninden; yalnızca sayılar beat'e oturuyor.
+ *
+ * Klip başına tek sahne varsayımı: `ingest-clips.mjs` klibin SONUNU beat'in
+ * sonuna hizalıyor, yani oturmuş kare kesmeye denk geliyor.
+ */
+export function universalVideoPrompt(seconds = 10) {
+  const total = Math.max(3, Math.round(seconds * 10) / 10);
+  const build = Math.round(total * 0.7 * 10) / 10;
+  return `Transform the provided image into a ${total}-second premium editorial documentary paper-collage animation. Preserve the final composition of the provided image exactly. Do not redesign, reposition, resize, or replace any element, and do not rewrite any text, date or number that appears in it. The provided image is the FINISHED frame that the animation builds toward.
 
 Style: hand-cut documentary paper collage in motion. Aged newsprint and archival surfaces, halftone photo cutouts, torn edges, tape, stamps, red string, typewriter strips. Every element moves as a rigid physical paper piece. Visible cutout thickness, print grain, soft layered shadows. Stop-motion cadence, stepped easing, 2-3 frame holds, the hand-made "cutting on twos" feel. Never smooth CGI motion.
 
 CAMERA, STRICT: the camera stays completely locked for the entire clip. No zoom, no pan, no tilt, no rotation, no orbit, no dolly, no tracking, no handheld shake, no focus pulls, no reframing, no cuts, no transitions, no morphing, no object replacement, no time skips. One continuous static shot.
 
-0 TO 3.5 SECONDS, BUILD-ON ASSEMBLY: the frame opens on the EMPTY background plate only, the bare aged-paper surface with its stains and grain, every story element absent. Elements then enter one by one, back to front, in narrative order: background scraps settle first, then the hero element slides in with paper drag and a small settle, supporting cutouts drop or pin on with a 2-frame stamp settle, tape presses down, typewriter strips slide in, stamps slap on, red string draws itself from pin to pin, marker underlines draw themselves last. Each entrance lands with a tiny handcrafted bounce and casts a real layered shadow. No element moves again after it lands. By 3.5 seconds the frame exactly matches the provided image.
+0 TO ${build} SECONDS, BUILD-ON ASSEMBLY: the frame opens on the EMPTY background plate only: the bare aged-newsprint or archival surface with its stains, grain, and any fixed scaffolding (a map base, a timeline line, a corkboard), with every story element absent. Elements then enter one by one, back to front, in narrative order: background scraps settle first, then the hero cutout slides in with paper drag and a small settle, supporting cutouts drop or pin on with a 2-frame stamp settle, tape presses down, typewriter strips slide in, stamps slap on, red string draws itself from pin to pin, marker underlines and arrows draw themselves last. Each entrance lands with a tiny handcrafted bounce and casts a real layered shadow. No element moves again after it lands. By ${build} seconds the frame exactly matches the provided image.
 
-3.5 TO 5 SECONDS, LIVING PAPER POSTER: everything holds position. Only subtle life remains: paper corners lift a millimetre in a draft, halftone dots shimmer faintly, string tension quivers once, shadows breathe. Nothing changes location, nothing scales, nothing rotates, nothing enters or exits.
+${build} TO ${total} SECONDS, LIVING PAPER POSTER: everything holds position. Only subtle life remains: paper corners lift a millimeter in a draft, halftone dots shimmer faintly, string tension quivers once, shadows breathe, stamp ink glistens subtly. Nothing changes location, nothing scales, nothing rotates significantly, nothing enters or exits.
 
-AUDIO: no music, no narration, no voices. Only close-up paper ASMR: paper sliding, cardstock taps, tape press, stamp thud, string zip, pin click, soft room tone. All subtle.
+AUDIO: no music, no narration, no voices. Only close-up paper ASMR and faint scene-appropriate ambience: paper sliding, cardstock taps, tape press, stamp thud, string zip, pin click, soft room tone. All subtle.
 
-FINAL RULE: the finished clip must feel like a real editorial paper collage assembling itself on a table, then holding as a living poster, matching the provided image exactly from 3.5 seconds to the end.`;
+FINAL RULE: the finished clip must feel like a real editorial paper collage assembling itself on a table, then holding as a living poster, matching the provided image exactly from ${build} seconds to the end.`;
+}
+
+/**
+ * ÖLÇÜM NOTU — kullanıcının Flow çıktısı ölçüldü ve "verilen görseli birebir
+ * koru" talimatını TUTMUYOR: gravür harita renkli bir haritayla değişti,
+ * tarife içeriği yeniden yazıldı, orijinalde olmayan sayfa kıvrımı eklendi,
+ * ilk kareye göre fark %14'ün altına hiç inmedi. Talimat yine de elde
+ * tutuluyor çünkü sapmayı azaltıyor; ama çıktıdaki TARİH ve SAYILAR elle
+ * kontrol edilmeli.
+ */
+export const UNIVERSAL_VIDEO_PROMPT = universalVideoPrompt(10);
 
 export const RECIPE_KINDS = Object.keys(RECIPES);

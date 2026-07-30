@@ -24,7 +24,7 @@ import {readFile, writeFile, mkdir, rm} from 'node:fs/promises';
 import {existsSync} from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
-import {composedCollagePrompt, UNIVERSAL_VIDEO_PROMPT} from './collage-prompt.mjs';
+import {composedCollagePrompt, universalVideoPrompt, UNIVERSAL_VIDEO_PROMPT} from './collage-prompt.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const PACK = path.join(ROOT, 'out', 'flow-pack');
@@ -80,9 +80,18 @@ async function main() {
     }
   }
 
-  // Beat başına ayrı dosya
+  /**
+   * Beat başına İKİ dosya: kare prompt'u ve o beat'in SÜRESİNE göre hareket
+   * prompt'u.
+   *
+   * NEDEN SÜRE BEAT'TEN: kullanıcının doğrulanmış hareket metni 10 saniye ve
+   * 0-7 kurulum / 7-10 tutuş diyor. Bizim beat'ler 3.6-6.5 saniye. 10 saniyelik
+   * klibi 4 saniyeye kırpmak ya KURULUMU (asıl seyredilecek şey) ya da OTURMUŞ
+   * KAREYİ öldürüyor. Oran korunuyor: kurulum %70, tutuş %30.
+   */
   for (const r of flow) {
     await writeFile(path.join(PACK, `${r.file}.txt`), `${r.prompt}\n`);
+    await writeFile(path.join(PACK, `${r.file}-MOTION.txt`), `${universalVideoPrompt(r.seconds)}\n`);
   }
 
   // Toplu üretim beslemesi: numaralandırma YOK, bloklar boş satırla ayrılmış.
@@ -99,8 +108,13 @@ async function main() {
     `1. ALL-PROMPTS.txt içindeki blokları görsel modeline ver (her blok bir kare).`,
     `   Sıra korunmalı: birinci blok = ${flow[0]?.file}, ikinci = ${flow[1]?.file}, …`,
     `2. Dönen görselleri şu adlarla kaydet: ${flow.slice(0, 3).map((r) => r.file + '.png').join(', ')} …`,
-    `3. Her görseli Google Flow'a ver, hareket talimatı olarak`,
-    `   UNIVERSAL-VIDEO-PROMPT.txt içeriğini kullan.`,
+    `3. Her görseli Google Flow'a ver. Hareket talimatı olarak O BEAT'İN`,
+    `   kendi dosyasını kullan: 01-cold_open-MOTION.txt gibi.`,
+    `   Neden beat başına ayrı: her beat farklı uzunlukta ve hareket metni`,
+    `   "kurulum %70 / tutuş %30" oranını o süreye göre yazıyor. Tek bir`,
+    `   10 saniyelik metin kullanıp 4 saniyeye kırpmak ya kurulumu ya da`,
+    `   oturmuş kareyi öldürüyor. UNIVERSAL-VIDEO-PROMPT.txt 10 saniyelik`,
+    `   referans sürüm; tek başına klip üretmek istersen o.`,
     `4. Flow'dan dönen klipleri AYNI ADLA public/clips/ altına .mp4 olarak koy.`,
     `5. npm run beats && npm run render`,
     ``,
