@@ -90,23 +90,62 @@ export const Headline: React.FC<{
   upper?: boolean;
   seed?: number;
   style?: React.CSSProperties;
-}> = ({text, size = TYPE.headline, align = 'left', color = PALETTE.ink, reveal = 1, upper = true, seed = 2, style}) => (
-  <div
-    style={{
-      fontFamily: FONTS.display,
-      fontWeight: 700,
-      fontSize: size,
-      lineHeight: 0.98,
-      letterSpacing: '-0.012em',
-      textTransform: upper ? 'uppercase' : 'none',
-      color,
-      textAlign: align,
-      ...style,
-    }}
-  >
-    <EmphasisText text={text} reveal={reveal} seed={seed} />
-  </div>
-);
+  /** Başlığın sığması gereken kutu. Verilirse punto ona göre küçültülür. */
+  fit?: {width: number; height: number};
+}> = ({
+  text,
+  size = TYPE.headline,
+  align = 'left',
+  color = PALETTE.ink,
+  reveal = 1,
+  upper = true,
+  seed = 2,
+  style,
+  fit,
+}) => {
+  /**
+   * BAŞLIK KENDİNE AYRILAN BANDA SIĞAR — kontakt sayfasında ölçüldü.
+   *
+   * `headline_card` başlığı 104 px ile çiziyordu ve uzun cümleler ÜÇ SATIR
+   * oluyordu: 150 + 3×102 = 456 px, oysa hero bandı 409'da başlıyor. Sonuç
+   * render'da net göründü — metin cutout kartının ALTINDA kalıyor ve
+   * okunmuyordu. Üç sahnede aynı çakışma vardı.
+   *
+   * Kullanıcının birinci şikâyeti "okunamıyor" idi; sebebin bir kısmı buydu.
+   *
+   * Çözüm ölçüye dayanıyor, tahmine değil: condensed büyük harfte karakter
+   * genişliği ≈ 0.52 × punto. Buradan satır başına karakter, oradan satır
+   * sayısı çıkıyor; sığmıyorsa punto kademeli düşürülüyor. Metni kırpmak
+   * çözüm değil — cümle zaten kırpılmış hâli.
+   */
+  let px = size;
+  if (fit && fit.width > 0 && fit.height > 0) {
+    for (let i = 0; i < 12; i += 1) {
+      const perLine = Math.max(1, Math.floor(fit.width / (px * 0.52)));
+      const lines = Math.ceil(text.replace(/\*/g, '').length / perLine);
+      if (lines * px * 0.98 <= fit.height) break;
+      px = Math.round(px * 0.92);
+      if (px < size * 0.55) break; // taban: okunmaz küçüklüğe inme
+    }
+  }
+  return (
+    <div
+      style={{
+        fontFamily: FONTS.display,
+        fontWeight: 700,
+        fontSize: px,
+        lineHeight: 0.98,
+        letterSpacing: '-0.012em',
+        textTransform: upper ? 'uppercase' : 'none',
+        color,
+        textAlign: align,
+        ...style,
+      }}
+    >
+      <EmphasisText text={text} reveal={reveal} seed={seed} />
+    </div>
+  );
+};
 
 /** İtalik serif alıntı. Referansta anlatının en duygusal cümlesi burada durur. */
 export const PullQuote: React.FC<{

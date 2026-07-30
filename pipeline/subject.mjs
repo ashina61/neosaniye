@@ -198,7 +198,7 @@ const FAMILIES = [
     words: [
       'barrel', 'bottle', 'glove', 'coin', 'rope', 'door', 'window', 'table', 'chair', 'helmet',
       'uniform', 'coat', 'boot', 'map', 'chart', 'flag', 'bell', 'ring', 'bone', 'skull', 'seed',
-      'ladder', 'torch', 'mask', 'suit', 'tie', 'diamond', 'jewel', 'stair', 'shovel',
+      'ladder', 'torch', 'mask', 'suit', 'tie', 'diamond', 'jewel', 'shovel',
     ],
   },
 ];

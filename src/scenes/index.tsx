@@ -106,6 +106,19 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurr
    *   · peel       — alttaki kart perspektifte oturur
    *   · holdJitter — yerleşmiş katman ölü durmaz
    */
+  /**
+   * NESNE YOKSA KART DA YOK — kontakt sayfasında ölçüldü.
+   *
+   * Cümlede somut nesne bulunamayan sahnelerde şablon yine de kartı ve
+   * cutout'u çiziyordu; sonuç ya ANLAMSIZ SİYAH KUTU (jenerik `object`
+   * silueti) ya da BOŞ BEYAZ KART oluyordu. Üç sahnede bu göründü.
+   *
+   * Deponun kendi kuralı zaten şunu diyor: "uydurma nesne çizmek yalan
+   * görseldir". Kural bir adım daha gidiyor — nesne yoksa nesnenin YERİ de
+   * çizilmez. O sahne tipografiyle anlatılır ve bu, insan siluetinin beşinci
+   * kez çıkmasını da engelliyor.
+   */
+  const hasSubject = Boolean(payload.shape || payload.images?.[0]);
   const focus = focusHunt(f, {at: cue(seconds, 1, 5) + 0.1, duration: 0.7, from: 11});
   const cardPeel = peel(f, {seconds, at: cue(seconds, 0, 5), duration: 0.8, deg: 11, edge: variant === 1 ? 'right' : 'left'});
 
@@ -117,6 +130,7 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurr
         döndürür ve kart yüzlerce piksel savrulur — perspektif öğeye değil
         ekrana uygulanmış olur.
       */}
+      {hasSubject && (
       <div
         style={{
           position: 'absolute',
@@ -139,6 +153,8 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurr
           seed={seed + 1}
         />
       </div>
+      )}
+      {hasSubject && (
       <Cutout
         /*
           ŞEKİL CÜMLEDEN GELİYOR, şablonun sabiti değil. Burada sabit "figure"
@@ -168,6 +184,28 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurr
         // Tek sürüklenen katman: hero. Yavaş, birkaç on piksel.
         transform={`${hero.transform} ${drift(f, {seconds, dx: 38, dy: -26, scale: 0.075})}`}
       />
+      )}
+
+      {/*
+        Özne yoksa sahne TİPOGRAFİK olur: cümle hero bandına büyük punto ile
+        yazılır. Boş kart çizmektense cümleyi göstermek hem dürüst hem okunur.
+      */}
+      {!hasSubject && payload.headline && (
+        <Headline
+          text={payload.headline}
+          size={TYPE.hook}
+          align="left"
+          fit={{width: SAFE_BOX.width, height: Math.round(B.hero.height * 0.9)}}
+          style={{
+            position: 'absolute',
+            left: SAFE.left,
+            top: B.hero.y + 20,
+            width: SAFE_BOX.width,
+            opacity: hero.opacity,
+          }}
+          seed={seed}
+        />
+      )}
 
       {/* Varyant 1: solda dikey daktilo şeridi — boşluğu bilgiyle doldurur. */}
       {variant === 1 && payload.caption && (
@@ -195,7 +233,7 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurr
           transform={label.transform}
         />
       )}
-      {payload.headline && (
+      {hasSubject && payload.headline && (
         <Headline
           text={payload.headline}
           size={TYPE.subhead}
@@ -329,6 +367,8 @@ const WideEstablish: React.FC<SceneProps> = ({seconds, payload, seed, occurrence
         <Headline
           text={payload.headline}
           size={TYPE.headline}
+          // Üst banda sığmayan başlık cutout kartının altında kalıyordu.
+          fit={{width: SAFE_BOX.width, height: B.hero.y - B.top.y - 24}}
           style={{
             position: 'absolute',
             left: SAFE.left,
@@ -382,6 +422,8 @@ const HeadlineCard: React.FC<SceneProps> = ({seconds, payload, seed, occurrence}
         <Headline
           text={payload.headline}
           size={TYPE.headline}
+          // Üst banda sığmayan başlık cutout kartının altında kalıyordu.
+          fit={{width: SAFE_BOX.width, height: B.hero.y - B.top.y - 24}}
           align={variant === 1 ? 'left' : 'center'}
           reveal={bar.progress}
           style={{
@@ -730,6 +772,7 @@ const LabeledDiagram: React.FC<SceneProps> = ({seconds, payload, seed}) => {
         <Headline
           text={payload.headline}
           size={TYPE.subhead}
+          fit={{width: SAFE_BOX.width, height: B.hero.y - B.top.y - 24}}
           style={{position: 'absolute', left: SAFE.left, top: B.top.y, width: SAFE_BOX.width, opacity: a.opacity}}
           seed={seed}
         />
@@ -1336,6 +1379,8 @@ const StickBeat: React.FC<SceneProps> = ({seconds, payload, seed}) => {
         <Headline
           text={payload.headline}
           size={TYPE.headline}
+          // Üst banda sığmayan başlık cutout kartının altında kalıyordu.
+          fit={{width: SAFE_BOX.width, height: B.hero.y - B.top.y - 24}}
           align="center"
           reveal={hl.progress}
           style={{
@@ -1449,6 +1494,7 @@ const StarField: React.FC<SceneProps> = ({seconds, payload, seed}) => {
           size={TYPE.subhead}
           align="center"
           color={PALETTE.paper}
+          fit={{width: SAFE_BOX.width, height: B.hero.y - B.top.y - 24}}
           style={{position: 'absolute', left: SAFE.left, top: B.top.y, width: SAFE_BOX.width, opacity: title.opacity}}
           seed={seed}
         />

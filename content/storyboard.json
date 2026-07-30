@@ -179,8 +179,7 @@
       "template": "hero_cutout",
       "payload": {
         "headline": "Somewhere over southern *Washington*",
-        "label": "WASHINGTON",
-        "shape": "object"
+        "label": "WASHINGTON"
       },
       "occurrence": 3,
       "durationInFrames": 159,
