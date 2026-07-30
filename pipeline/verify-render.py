@@ -171,6 +171,33 @@ def stepped_cadence(frames, tol=2.0):
     }
 
 
+# ---------------------------------------------------------------- 1b
+def scene_has_content(frame, min_unique=60, min_ink=0.004):
+    """
+    Sahnede gerçekten ÖYKÜ ÖĞESİ var mı?
+
+    NEDEN VAR — DOĞRULAYICININ KÖR NOKTASI:
+    CI bir video üretti ve bu betik 6 ölçümden 5'ini GEÇİRDİ. Oysa 19 sahnenin
+    14'ü tamamen boştu: yalnızca krem zemin ve kağıt dokusu. Sebep basit ve
+    utanç verici — BOŞ KARE MÜKEMMEL "KİLİTLİ" GÖRÜNÜR. Kompozisyon kilidi
+    ölçümü %100 veriyordu, çünkü değişecek hiçbir şey yoktu.
+
+    Aynı sınıf hata bu projede daha önce de görüldü: düz renk alanlarında
+    algısal hash kör kalıyordu. Ölçüm, ölçtüğü şeyin YOKLUĞUNU başarı sanmamalı.
+
+    İki bağımsız gösterge:
+      · benzersiz renk sayısı — zemin + doku ~1-30 renk verir; gerçek içerik
+        yüzlerce
+      · mürekkep oranı — zeminden çok koyu sapan piksellerin payı
+    """
+    small = frame[::3, ::3].reshape(-1, 3)
+    uniq = len(np.unique(small, axis=0))
+    g = frame.mean(axis=2)
+    ground = float(np.median(g))
+    ink = float((g < ground - 60).mean())
+    return {"unique": int(uniq), "ink": round(ink, 5), "ok": uniq >= min_unique or ink >= min_ink}
+
+
 # ---------------------------------------------------------------- 4
 def accent_share(frame):
     """Altın aksanın kapladığı piksel oranı."""
@@ -336,6 +363,7 @@ def main():
         print(f"\n[AKSAN + GÜVENLİ ALAN]")
         acc = []
         bad_safe = []
+        content = []
         for i, (tpl, start, d) in enumerate(scene_windows):
             sd = Path(td) / f"a{i}"
             sd.mkdir()
@@ -344,6 +372,7 @@ def main():
                 continue
             a = accent_share(fr[0])
             acc.append((i, tpl, a))
+            content.append((i, tpl, scene_has_content(fr[0])))
             sa = safe_area_clean(fr[0])
             worst = max(sa.values())
             if worst > 0.06:
@@ -360,10 +389,22 @@ def main():
                 worst_k = max(sa, key=sa.get)
                 print(f"           ← sahne {i + 1} ({t}) {worst_k} bandında %{sa[worst_k] * 100:.1f} içerik")
         print(f"         güvenli alan         : {'GEÇTİ' if not bad_safe else f'BAŞARISIZ ({len(bad_safe)} sahne)'}")
+
+        empty = [(i, t, c) for i, t, c in content if not c["ok"]]
+        print(f"\n[İÇERİK] sahnede öykü öğesi var mı (boş kare avı)")
+        for i, t, c in content:
+            mark = "" if c["ok"] else "   ← BOŞ"
+            print(f"  {i + 1:>3} {t:<18} {c['unique']:>5} renk  mürekkep %{c['ink'] * 100:5.2f}{mark}")
+        print(f"         içerik           : {'GEÇTİ' if not empty else f'BAŞARISIZ ({len(empty)}/{len(content)} sahne BOŞ)'}")
         if over:
             warnings.append(f"aksan taşması: {len(over)} sahne")
         if bad_safe:
             warnings.append(f"güvenli alan taşması: {len(bad_safe)} sahne")
+        if empty:
+            # SERT: boş sahne render'ın çalışmadığı anlamına gelir. Video
+            # teknik olarak oynuyor ama içeriği yok; yayınlanamaz.
+            hard_fail = True
+            print(f"\n  SERT BULGU: {len(empty)} sahne boş — render katmanları düşmüş.")
 
     # ---- 6. sahne sınırları
     #

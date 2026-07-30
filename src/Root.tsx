@@ -4,6 +4,7 @@ import {CANVAS} from './design/tokens';
 import {Short, type Storyboard} from './Short';
 import {SCENES, SCENE_NAMES} from './scenes';
 import {StyleSheet} from './StyleSheet';
+import {Probe} from './probe/Probe';
 import storyboardJson from '../content/storyboard.json';
 
 const storyboard = storyboardJson as Storyboard;
@@ -37,5 +38,6 @@ export const RemotionRoot: React.FC = () => (
       width={CANVAS.width}
       height={CANVAS.height}
     />
+    <Composition id="Probe" component={Probe} durationInFrames={30} fps={CANVAS.fps} width={CANVAS.width} height={CANVAS.height} />
   </>
 );

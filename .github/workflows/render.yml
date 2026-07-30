@@ -59,17 +59,17 @@ jobs:
           # 1 saniyede çöker. Aynı yorumlayıcı kullanılmak zorunda.
           python3 -m pip install --disable-pip-version-check --quiet pillow numpy
 
-      # Remotion normalde Chromium'u remotion.media'dan indirir. Runner'da
-      # indirme serbest, ama Chrome zaten kurulu; REMOTION_BROWSER ile onu
-      # göstermek indirmeyi ve ~150 MB'ı atlatır.
-      - name: Locate Chrome
-        id: chrome
-        run: |
-          for p in /usr/bin/google-chrome /usr/bin/chromium-browser /usr/bin/chromium; do
-            if [ -x "$p" ]; then echo "path=$p" >> "$GITHUB_OUTPUT"; exit 0; fi
-          done
-          echo "path=" >> "$GITHUB_OUTPUT"
-
+      # TARAYICI: Remotion KENDİ Chrome Headless Shell'ini indirir ve kullanır.
+      #
+      # Burada önce `/usr/bin/google-chrome`u bulup REMOTION_BROWSER ile
+      # gösteren bir adım vardı; ~150 MB indirmeyi atlatmak içindi. ÖLÇÜLDÜ ki
+      # o tarayıcı filtreli katmanların HEPSİNİ sessizce düşürüyor: 19 sahnenin
+      # 14'ü boş çıktı (yalnızca zemin + doku), dosya 25 MB yerine 7 MB oldu,
+      # ve render adımı "başarılı" dedi.
+      #
+      # Yerelde aynı kompozisyon headless_shell ile kusursuz render ediliyor.
+      # Remotion'ın desteklediği yapılandırma bu; indirmeyi atlamak uğruna
+      # test edilmemiş bir tarayıcıya geçmek yanlıştı.
       - name: Build storyboard from story.json
         run: npm run beats
 
@@ -97,8 +97,6 @@ jobs:
         run: npm test
 
       - name: Render
-        env:
-          REMOTION_BROWSER: ${{ steps.chrome.outputs.path }}
         run: |
           npx remotion render src/index.ts "${{ inputs.composition }}" \
             "out/${{ inputs.composition }}.mp4" \
