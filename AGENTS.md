@@ -78,8 +78,12 @@ eşiğini denetliyor.
   cue 2/5 = 3 saniyelik sahnede 1.36. saniye); okumaya 1.6 saniye kalıyordu ve
   6 kelimelik büyük harf başlık ~1.5 saniye okuma ister. Metin OKUNACAK şeydir;
   ilk giren o olmalı.
-- Kelime/saniye **1.7**, sahne tabanı **3.6 sn**. İkisi de kullanıcı raporuyla
-  düşürüldü ("ekran takip edilemiyor okunamıyor") — 2.5 → 2.0 → 1.7.
+- Kelime/saniye **1.7**, sahne tabanı **3.6 sn** (`MIN_SECONDS`). İkisi de
+  kullanıcı raporuyla düşürüldü ("ekran takip edilemiyor okunamıyor"):
+  2.5 → 2.0 → 1.7 ve 1.2 → 3.0 → 3.6. Eski 1.2 tabanı teknik bir alt sınırdı
+  (kesmenin gürültü olarak okunmadığı nokta), editoryal bir tercih değil.
+  Seslendirme eklenirse ikisi de gevşetilebilir — o zaman kısıt okuma değil
+  konuşma hızı olur.
 - **Image-to-video modeli kullanılmaz.** Build-on assembly (öğelerin boş kağıt
   zeminden tek tek girmesi) `src/motion/stepped.ts` içinde kodla yapılır.
   Referans prompt'un istediği "kamera kilitli, yerleşen öğe bir daha oynamaz"
@@ -94,10 +98,9 @@ eşiğini denetliyor.
   davranış arka planın/metnin/okun tamamen sabit kalmasıydı.
 - Kamera hareketi yok: zoom, pan, tilt, dolly hiçbiri.
 - Sahneler arasında **sert kesme**. Çapraz geçiş, fade, wipe kullanılmaz.
-- **Sahne tabanı 3.0 saniye** (`MIN_SECONDS`). Eski taban 1.2 idi ve o teknik
-  bir alt sınırdı (kesmenin gürültü olarak okunmadığı nokta), editoryal bir
-  tercih değil. Seslendirme yokken izleyici hem okuyor hem bakıyor; kullanıcı
-  iki kez "değişim çok hızlı" dedi. Seslendirme eklenirse bu taban düşürülebilir.
+- Sahne tabanı için bkz. **Okunabilirlik** bölümü. (Burada ayrı bir sayı
+  yazıyordu — 3.0 — ve Okunabilirlik bölümü 3.6 diyordu. Aynı kuralı iki yerde
+  tutmanın bu depodaki bilinen bedeli; belge de koddan muaf değil.)
 - **Girişler sabit saniyeye yazılmaz, `cue(seconds, i, n)` ile sahne süresine
   yayılır.** Sabit takvim ölçülerek yanlış çıktı: 2.8 saniyelik `map_route`
   sahnesinin son 2.25 saniyesinde değişim %0.00, ve videonun 20 donmuş
