@@ -149,3 +149,63 @@ test('etiket kelime sınırı tek yerde tanımlı ve 4', async () => {
   assert.ok(m, 'LABEL_MAX_WORDS bulunamadı');
   assert.equal(Number(m[1]), 4, 'referans metin yasası: etiket en fazla 4 kelime');
 });
+
+/**
+ * ŞEKİL KAYDI — ÜÇ DOSYA, İKİ DİL, TEK LİSTE
+ *
+ * Çizilecek nesnenin kimliği üç yerde geçiyor:
+ *   · pipeline/subject.mjs      → SHAPES (üretici)
+ *   · src/paper/Cutout.tsx      → PlaceholderShape (çizen)
+ *   · src/scenes/types.ts       → ScenePayload.shape (sözleşme)
+ *
+ * Biri değişip ötekiler değişmezse TypeScript bunu YAKALAMAZ, çünkü değer
+ * .mjs tarafından JSON olarak geliyor. Sonuç sessiz: `Placeholder` bilinmeyen
+ * şekle `default` dalıyla yanıt verir ve cümlede kano geçerken ekrana KUTU
+ * çizilir. Tam olarak "çizilen şekiller yanlış" kusurunun geri gelme yolu.
+ */
+test('şekil listesi üç dosyada birebir aynı', async () => {
+  const shapesOf = (src, re, msg) => {
+    const m = src.match(re);
+    assert.ok(m, msg);
+    return [...m[1].matchAll(/'([a-z]+)'/g)].map((x) => x[1]).sort();
+  };
+
+  const producer = shapesOf(
+    await read('pipeline/subject.mjs'),
+    /export const SHAPES = \[([\s\S]*?)\];/,
+    'subject.mjs SHAPES bulunamadı',
+  );
+  const drawer = shapesOf(
+    await read('src/paper/Cutout.tsx'),
+    /export type PlaceholderShape =([\s\S]*?);/,
+    'PlaceholderShape bulunamadı',
+  );
+  const contract = shapesOf(
+    await read('src/scenes/types.ts'),
+    /shape\?:([\s\S]*?);/,
+    'ScenePayload.shape bulunamadı',
+  );
+
+  assert.ok(producer.length >= 8, `şekil listesi beklenenden kısa: ${producer.length}`);
+  assert.deepEqual(drawer, producer, 'Cutout.tsx ile subject.mjs şekil listesi ayrışmış');
+  assert.deepEqual(contract, producer, 'types.ts ile subject.mjs şekil listesi ayrışmış');
+});
+
+/**
+ * Somut nesne sözlüğünün TEK kaynağı olduğunu denetler.
+ *
+ * Bu liste bir kez iki yerde vardı: generate-cutouts.mjs görsel modeline "kano"
+ * tarif ediyordu, render tarafı aynı sahneye insan silueti çiziyordu. İki taraf
+ * aynı cümleden farklı sonuç çıkarıyordu ve kimse fark etmiyordu.
+ */
+test('somut nesne sözlüğü yalnızca subject.mjs içinde', async () => {
+  const files = (await sourceFiles()).filter((f) => f !== 'pipeline/subject.mjs');
+  for (const f of files) {
+    const code = stripCommentsAndStrings(await read(f));
+    assert.doesNotMatch(
+      code,
+      /\bconst CONCRETE\b/,
+      `${f} ikinci bir somut nesne sözlüğü tanımlıyor — tek kaynak pipeline/subject.mjs`,
+    );
+  }
+});

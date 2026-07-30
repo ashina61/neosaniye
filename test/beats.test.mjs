@@ -15,12 +15,28 @@ import {
 
 /* ---------------- Fern beat matematiği ---------------- */
 
-test('2.5 kelime/saniye: PDF referans değerleri tutuyor', () => {
-  assert.equal(WORDS_PER_SECOND, 2.5);
-  // PDF: 30s ≈ 75 kelime, 1 dk ≈ 150, 2 dk ≈ 300
-  assert.equal(secondsForWords(75), 30);
-  assert.equal(secondsForWords(150), 60);
-  assert.equal(secondsForWords(300), 120);
+test('kelime/saniye OKUMA hızına ayarlı ve zamanlama ondan türüyor', () => {
+  /**
+   * PDF'in değeri 2.5 ve o değer SESLENDİRİLMİŞ anlatı için doğru: dinleyicinin
+   * gözü serbesttir, görsele bakabilir. Bizim videoda seslendirme henüz yok,
+   * yani aynı metni GÖZ okuyor — kullanıcının raporu "konu anlatımı hızlı
+   * devam ediyor" idi.
+   *
+   * Bu test sabiti 2.5'e çivilemek yerine iki gerçek şeyi denetler:
+   *   · değer okuma hızı aralığında (1.8-2.2)
+   *   · süre hesabı sabitle TUTARLI — asıl regresyon riski burada
+   *
+   * Seslendirme eklendiğinde değer 2.5'e geri çıkacak ve aralık güncellenecek;
+   * o zaman kısıt okuma değil konuşma hızı olur.
+   */
+  assert.ok(
+    WORDS_PER_SECOND >= 1.8 && WORDS_PER_SECOND <= 2.2,
+    `okuma hızı aralığının dışında: ${WORDS_PER_SECOND}`,
+  );
+  assert.equal(secondsForWords(WORDS_PER_SECOND * 30), 30);
+  assert.equal(secondsForWords(WORDS_PER_SECOND * 60), 60);
+  // 8 kelimelik bir başlık, okunacak kadar ekranda kalmalı: en az 3.5 saniye.
+  assert.ok(secondsForWords(8) >= 3.5, `8 kelime çok kısa gösteriliyor: ${secondsForWords(8)} sn`);
 });
 
 /* ---------------- cümle bölme ---------------- */

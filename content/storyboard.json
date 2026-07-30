@@ -4,11 +4,12 @@
     {
       "template": "wide_establish",
       "payload": {
-        "headline": "In 1976, a man named Mau *Piailug*",
-        "caption": "Hawai'i to Tahiti, 1976"
+        "headline": "In 1976, a man *named*",
+        "caption": "Hawai'i to Tahiti, 1976",
+        "shape": "figure"
       },
       "occurrence": 0,
-      "durationInFrames": 84,
+      "durationInFrames": 105,
       "seed": 3,
       "_beat": {
         "text": "In 1976, a man named Mau Piailug",
@@ -19,44 +20,50 @@
     {
       "template": "hero_cutout",
       "payload": {
-        "headline": "stepped onto a *double-hulled* canoe in Hawai'i",
-        "label": "HAWAI'I"
+        "headline": "stepped onto a double-hulled *canoe*",
+        "label": "HAWAI'I",
+        "shape": "vessel"
       },
       "occurrence": 0,
-      "durationInFrames": 84,
+      "durationInFrames": 105,
       "seed": 10,
       "_beat": {
         "text": "stepped onto a double-hulled canoe in Hawai'i.",
         "kind": "place",
-        "start": 2.8
-      }
-    },
-    {
-      "template": "stick_beat",
-      "payload": {
-        "headline": "He *carried* no compass,"
-      },
-      "occurrence": 0,
-      "durationInFrames": 48,
-      "seed": 17,
-      "_beat": {
-        "text": "He carried no compass,",
-        "kind": "absence",
-        "start": 5.6
+        "start": 3.5
       }
     },
     {
       "template": "headline_card",
       "payload": {
-        "headline": "no *charts,* and no radio"
+        "headline": "He carried no *compass,*",
+        "shape": "instrument",
+        "negated": true
       },
       "occurrence": 0,
       "durationInFrames": 60,
+      "seed": 17,
+      "_beat": {
+        "text": "He carried no compass,",
+        "kind": "absence",
+        "start": 7
+      }
+    },
+    {
+      "template": "wide_establish",
+      "payload": {
+        "headline": "no *charts,* and no radio",
+        "caption": "Hawai'i to Tahiti, 1976",
+        "shape": "object",
+        "negated": true
+      },
+      "occurrence": 1,
+      "durationInFrames": 75,
       "seed": 24,
       "_beat": {
         "text": "no charts, and no radio.",
         "kind": "absence",
-        "start": 7.2
+        "start": 9
       }
     },
     {
@@ -78,115 +85,122 @@
             "label": "TAHITI"
           }
         ],
-        "headline": "He sailed from Hawai'i to Tahiti across"
+        "headline": "He sailed from Hawai'i to Tahiti"
       },
       "occurrence": 0,
-      "durationInFrames": 84,
+      "durationInFrames": 105,
       "seed": 31,
       "_beat": {
         "text": "He sailed from Hawai'i to Tahiti across",
         "kind": "sequence",
-        "start": 9.2
-      }
-    },
-    {
-      "template": "wide_establish",
-      "payload": {
-        "headline": "four thousand *kilometres* of open water",
-        "caption": "Hawai'i to Tahiti, 1976"
-      },
-      "occurrence": 1,
-      "durationInFrames": 72,
-      "seed": 38,
-      "_beat": {
-        "text": "four thousand kilometres of open water.",
-        "kind": "magnitude",
-        "start": 12
+        "start": 11.5
       }
     },
     {
       "template": "hero_cutout",
       "payload": {
-        "headline": "Instead of *instruments,* he used the stars,"
+        "headline": "four thousand kilometres of open *water*",
+        "shape": "wave"
       },
       "occurrence": 1,
-      "durationInFrames": 84,
-      "seed": 45,
+      "durationInFrames": 90,
+      "seed": 38,
       "_beat": {
-        "text": "Instead of instruments, he used the stars,",
-        "kind": "compare",
-        "start": 14.4
+        "text": "four thousand kilometres of open water.",
+        "kind": "magnitude",
+        "start": 15
       }
     },
     {
       "template": "headline_card",
       "payload": {
-        "headline": "the swell, and the *flight* of birds"
+        "headline": "Instead of *instruments,* he used",
+        "shape": "instrument",
+        "shape2": "star"
       },
       "occurrence": 1,
-      "durationInFrames": 84,
+      "durationInFrames": 105,
+      "seed": 45,
+      "_beat": {
+        "text": "Instead of instruments, he used the stars,",
+        "kind": "compare",
+        "start": 18
+      }
+    },
+    {
+      "template": "labeled_diagram",
+      "payload": {
+        "headline": "the swell, and the flight",
+        "shape": "wave",
+        "shape2": "bird"
+      },
+      "occurrence": 0,
+      "durationInFrames": 105,
       "seed": 52,
       "_beat": {
         "text": "the swell, and the flight of birds.",
         "kind": "fact",
-        "start": 17.2
+        "start": 21.5
       }
     },
     {
       "template": "star_field",
       "payload": {
-        "headline": "*Every* night he read the sky"
+        "headline": "Every *night* he read the sky",
+        "shape": "star"
       },
       "occurrence": 0,
-      "durationInFrames": 72,
+      "durationInFrames": 90,
       "seed": 59,
       "_beat": {
         "text": "Every night he read the sky.",
         "kind": "time",
-        "start": 20
+        "start": 25
       }
     },
     {
       "template": "wide_establish",
       "payload": {
-        "headline": "*Every* day he read the water",
-        "caption": "Hawai'i to Tahiti, 1976"
+        "headline": "*Every* day he read",
+        "caption": "Hawai'i to Tahiti, 1976",
+        "shape": "wave"
       },
       "occurrence": 2,
-      "durationInFrames": 72,
+      "durationInFrames": 90,
       "seed": 66,
       "_beat": {
         "text": "Every day he read the water.",
         "kind": "time",
-        "start": 22.4
+        "start": 28
       }
     },
     {
       "template": "hero_cutout",
       "payload": {
-        "headline": "He had *memorized* two hundred and twenty"
+        "headline": "He had *memorized* two hundred"
       },
       "occurrence": 2,
-      "durationInFrames": 84,
+      "durationInFrames": 105,
       "seed": 73,
       "_beat": {
         "text": "He had memorized two hundred and twenty",
         "kind": "fact",
-        "start": 24.8
+        "start": 31
       }
     },
     {
       "template": "headline_card",
       "payload": {
-        "headline": "star *positions* as a boy"
+        "headline": "*star* positions as a boy",
+        "shape": "star"
       },
       "occurrence": 2,
-      "durationInFrames": 60,
+      "durationInFrames": 75,
       "seed": 80,
       "_beat": {
         "text": "star positions as a boy.",
         "kind": "fact",
-        "start": 27.6
+        "start": 34.5
       }
     },
     {
@@ -199,27 +213,28 @@
         "headline": "Only five navigators of his tradition"
       },
       "occurrence": 0,
-      "durationInFrames": 108,
+      "durationInFrames": 135,
       "seed": 87,
       "_beat": {
         "text": "Only five navigators of his tradition were still living.",
         "kind": "scale",
-        "start": 29.6
+        "start": 37
       }
     },
     {
       "template": "star_field",
       "payload": {
-        "headline": "*Thirty-three* days later, the canoe reached Tahiti",
-        "label": "TAHITI"
+        "headline": "Thirty-three days later, the *canoe* reached",
+        "label": "TAHITI",
+        "shape": "vessel"
       },
       "occurrence": 1,
-      "durationInFrames": 84,
+      "durationInFrames": 105,
       "seed": 94,
       "_beat": {
         "text": "Thirty-three days later, the canoe reached Tahiti.",
         "kind": "time",
-        "start": 33.2
+        "start": 41.5
       }
     },
     {
@@ -228,26 +243,27 @@
         "quote": "Here is the strange part."
       },
       "occurrence": 0,
-      "durationInFrames": 60,
+      "durationInFrames": 75,
       "seed": 101,
       "_beat": {
         "text": "Here is the strange part.",
         "kind": "turn",
-        "start": 36
+        "start": 45
       }
     },
     {
       "template": "hero_cutout",
       "payload": {
-        "headline": "In his mind, the canoe was never *moving*"
+        "headline": "In his mind, the *canoe*",
+        "shape": "vessel"
       },
       "occurrence": 3,
-      "durationInFrames": 96,
+      "durationInFrames": 120,
       "seed": 108,
       "_beat": {
         "text": "In his mind, the canoe was never moving.",
         "kind": "absence",
-        "start": 38
+        "start": 47.5
       }
     },
     {
@@ -256,42 +272,43 @@
         "headline": "He held it *still,*"
       },
       "occurrence": 3,
-      "durationInFrames": 48,
+      "durationInFrames": 60,
       "seed": 115,
       "_beat": {
         "text": "He held it still,",
         "kind": "fact",
-        "start": 41.2
+        "start": 51.5
       }
     },
     {
       "template": "labeled_diagram",
       "payload": {
-        "headline": "and let the islands come"
+        "headline": "and let the islands come",
+        "shape": "terrain"
       },
-      "occurrence": 0,
-      "durationInFrames": 84,
+      "occurrence": 1,
+      "durationInFrames": 105,
       "seed": 122,
       "_beat": {
         "text": "and let the islands come to him.",
         "kind": "fact",
-        "start": 42.8
+        "start": 53.5
       }
     },
     {
       "template": "star_field",
       "payload": {
-        "headline": "Nobody had made that *crossing* for six hundred"
+        "headline": "Nobody had made that *crossing*"
       },
       "occurrence": 2,
-      "durationInFrames": 108,
+      "durationInFrames": 135,
       "seed": 129,
       "_beat": {
         "text": "Nobody had made that crossing for six hundred years.",
         "kind": "cliffhanger",
-        "start": 45.6
+        "start": 57
       }
     }
   ],
-  "totalFrames": 1476
+  "totalFrames": 1845
 }

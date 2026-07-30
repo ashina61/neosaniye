@@ -65,6 +65,42 @@ export interface ScenePayload {
   /** Alfa kanallı cutout yolları (varsa). */
   images?: string[];
   /**
+   * CÜMLENİN ÇİZİLECEK NESNESİ.
+   *
+   * `pipeline/subject.mjs` cümleden çıkarır; `pipeline/build-storyboard.mjs`
+   * buraya yazar. Şablon bunu KENDİ VARSAYILANININ ÖNÜNDE kullanır.
+   *
+   * Bu alan olmadan şekil şablonun sabitiydi: `hero_cutout` her zaman insan
+   * silueti, `wide_establish` her zaman tekne. Yani "He carried no compass"
+   * cümlesine çöp adam, "stepped onto a canoe" cümlesine insan çiziliyordu.
+   * Şablon beat TÜRÜNÜ doğru seçiyordu; içine hangi nesnenin çizileceği kararı
+   * hiç verilmemişti.
+   */
+  shape?:
+    | 'figure'
+    | 'vessel'
+    | 'building'
+    | 'object'
+    | 'terrain'
+    | 'instrument'
+    | 'bird'
+    | 'star'
+    | 'wave';
+  /**
+   * İKİNCİ nesne — yalnızca iki nesne çizen şablonlar okur (labeled_diagram,
+   * split_compare). Cümlede ikinci somut nesne varsa o çizilir; yoksa şablon
+   * kendi varsayılanına döner. Bu alan olmadan iki kutulu şablonlar SABİT bir
+   * insan + yelkenli çiziyordu ve render'da "the swell, and the flight of
+   * birds" cümlesine tam olarak o ikili çizildi.
+   */
+  shape2?: ScenePayload['shape'];
+  /**
+   * Cümle nesnenin YOKLUĞUNU söylüyor mu ("no compass", "without charts").
+   * Doğruysa şablon nesneyi çizer ve ÜSTÜNÜ ÇİZER (`MarkerCross`). Nesneyi
+   * olduğu gibi çizmek cümlenin tersini söylerdi.
+   */
+  negated?: boolean;
+  /**
    * Flow'dan dönen klip. `ingest-clips.mjs` yazar; şablonu da `archive_clip`'e
    * çevirir. `trimBefore` klibin SONUNU beat'in sonuna hizalar.
    */

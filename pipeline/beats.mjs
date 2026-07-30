@@ -9,7 +9,26 @@
  * Tamamen deterministik, bu yüzden test edilebilir.
  */
 
-export const WORDS_PER_SECOND = 2.5;
+/**
+ * PDF'İN 2.5 DEĞERİ NEDEN DÜŞÜRÜLDÜ
+ *
+ * O sayı SESLENDİRİLMİŞ anlatı için yazılmış: izleyici dinlerken gözü serbest,
+ * görsele bakabilir. Bizim videoda henüz seslendirme YOK, yani aynı metni göz
+ * OKUYOR. Kullanıcının raporu buydu: "konu anlatımı hızlı devam ediyor."
+ *
+ * Hesap: 8 kelimelik bir başlık okumak yaklaşık 2 saniye alıyor. Beat 2.8
+ * saniyeyse görsele bakmaya 0.8 saniye kalıyor — ve o 0.8 saniyede öğeler
+ * hâlâ giriş yapıyor. Yani izleyici ya okuyor ya bakıyor, ikisini birlikte
+ * yapamıyor.
+ *
+ * 2.0'a düşürmek beat'i %25 uzatıyor: 8 kelime 4.0 saniyede. Okuma 2 saniye,
+ * görsele 2 saniye kalıyor.
+ *
+ * Seslendirme eklendiğinde bu değer 2.5'e GERİ ÇIKMALI ve beat süreleri
+ * gerçek ses dosyasından ölçülmeli — o zaman kısıt okuma hızı değil, konuşma
+ * hızı olur.
+ */
+export const WORDS_PER_SECOND = 2.0;
 
 /** PDF'in beat sayısı sağlaması: süreye göre beklenen aralık. */
 export const BEAT_COUNT_RANGE = [

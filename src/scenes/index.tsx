@@ -2,16 +2,16 @@ import React from 'react';
 import {useCurrentFrame} from 'remotion';
 import {CANVAS, PALETTE, SAFE, SAFE_BOX, TYPE, VERTICAL_BANDS, FONTS} from '../design/tokens';
 import {enter, drift, breathe, rand} from '../motion/stepped';
-import {cue, focusHunt, holdJitter, parallax, peel, zoomThrough, compose} from '../film/choreography';
+import {cue, focusHunt, holdJitter, negationCue, parallax, peel, zoomThrough, compose} from '../film/choreography';
 import {LightLeak} from '../film/Plate';
 import {PaperBase} from '../paper/PaperBase';
 import {Cutout, TornCard} from '../paper/Cutout';
 import {Headline, PullQuote, LabelCard, Stamp, TypewriterStrip} from '../paper/Type';
-import {DrawnArrow, DottedPath, MarkerCircle, SparkleField, SeaBand, Sparkle} from '../paper/Marks';
+import {DrawnArrow, DottedPath, MarkerCircle, MarkerCross, SparkleField, SeaBand, Sparkle} from '../paper/Marks';
 import {StickFigure, ThoughtBubble, type Pose} from '../paper/StickFigure';
 import {CastShadow, ContactShadow} from '../film/CastShadow';
 import {ArchiveClip} from './ArchiveClip';
-import type {SceneProps, SceneTemplate} from './types';
+import type {ScenePayload, SceneProps, SceneTemplate} from './types';
 
 const B = VERTICAL_BANDS;
 
@@ -125,7 +125,12 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurr
         />
       </div>
       <Cutout
-        shape="figure"
+        /*
+          ŞEKİL CÜMLEDEN GELİYOR, şablonun sabiti değil. Burada sabit "figure"
+          yazıyordu ve "stepped onto a double-hulled canoe" cümlesine insan
+          silueti çiziliyordu.
+        */
+        shape={payload.shape ?? 'figure'}
         src={payload.images?.[0]}
         x={heroX}
         y={B.hero.y}
@@ -197,14 +202,34 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurr
         işaretlemenin sebebi etiket değil, gösterilecek bir özne olması.
         Varyant 0'da hero'yu işaretler.
       */}
-      {variant === 0 && index > 0 && (
-        <MarkerCircle
+      {/*
+        OLUMSUZLAMA: nesne çizilir ve ÜSTÜ ÇİZİLİR.
+        "He carried no compass" cümlesinde pusulayı öylece çizmek cümlenin
+        tersini söyler. Çarpı, nesneyi tanınır bırakıp reddedildiğini gösterir —
+        Vox dilinin olumsuzlama cihazı.
+      */}
+      {payload.negated ? (
+        <MarkerCross
           cx={heroX + heroW * 0.5}
-          cy={B.hero.y + heroH * 0.34}
-          rx={heroW * 0.3}
-          progress={ring.progress}
+          cy={B.hero.y + heroH * 0.45}
+          size={Math.min(heroW, heroH) * 0.82}
+          // Zamanlama negationCue()'dan: aynı sayıyı iki şablonda elle tutmak
+          // ikisinde de aynı hatayı üretti (bkz. choreography.ts yorumu).
+          progress={enter(f, {...negationCue(seconds), kind: 'draw'}).progress}
           seed={seed}
+          width={16}
         />
+      ) : (
+        variant === 0 &&
+        index > 0 && (
+          <MarkerCircle
+            cx={heroX + heroW * 0.5}
+            cy={B.hero.y + heroH * 0.34}
+            rx={heroW * 0.3}
+            progress={ring.progress}
+            seed={seed}
+          />
+        )
       )}
       <SparkleField count={variant === 2 ? 4 : 2} seed={seed} progress={ring.progress} />
     </PaperBase>
@@ -261,7 +286,7 @@ const WideEstablish: React.FC<SceneProps> = ({seconds, payload, seed, occurrence
     <PaperBase seed={seed}>
       <SeaBand y={bandY} height={CANVAS.height - bandY} progress={band.progress} seed={seed} />
       <Cutout
-        shape="vessel"
+        shape={payload.shape ?? 'vessel'}
         src={payload.images?.[0]}
         x={sx}
         y={bandY - Math.round(w * 0.42)}
@@ -374,7 +399,7 @@ const HeadlineCard: React.FC<SceneProps> = ({seconds, payload, seed, occurrence}
         />
       )}
       <Cutout
-        shape="figure"
+        shape={payload.shape ?? 'figure'}
         src={payload.images?.[0]}
         x={px}
         y={B.hero.y}
@@ -389,6 +414,16 @@ const HeadlineCard: React.FC<SceneProps> = ({seconds, payload, seed, occurrence}
         jitter={holdJitter(f, seed + 5)}
         transform={`${port.transform} ${drift(f, {seconds, dy: -34, scale: 0.06})}`}
       />
+      {payload.negated && (
+        <MarkerCross
+          cx={px + pw * 0.5}
+          cy={B.hero.y + ph * 0.5}
+          size={Math.min(pw, ph) * 0.78}
+          progress={enter(f, {...negationCue(seconds), kind: 'draw'}).progress}
+          seed={seed + 3}
+          width={16}
+        />
+      )}
       {payload.label && (
         <LabelCard
           text={payload.label}
@@ -417,8 +452,43 @@ const PullQuoteScene: React.FC<SceneProps> = ({seconds, payload, seed}) => {
 
   const cw = Math.round(SAFE_BOX.width * 0.46);
 
+  /**
+   * DOĞRULAYICI BU SAHNEYİ %100.0 SABİT ÖLÇTÜ.
+   *
+   * Tam video doğrulamasında 19 sahnenin sabit piksel oranları %74-95
+   * arasındaydı; bu sahne birebir 100.0 çıktı — yani ölçüm penceresinde
+   * TEK PİKSEL bile değişmiyor. Sebebi: alıntı metni girip duruyor, sürüklenen
+   * hiçbir katman yok, cutout ise yalnızca `payload.images` ya da `label`
+   * varsa çiziliyor ve bu beat'te ikisi de yok.
+   *
+   * "Her sahnede büyük bir katman hareket eder" kuralı buraya uygulanmamıştı.
+   * En büyük nesne METNİN KENDİSİ, o yüzden sürüklenen o: çok yavaş, çok az —
+   * alıntı sakin durmalı, ama ölü durmamalı.
+   */
+  const quoteDrift = drift(f, {seconds, dy: -26, scale: 0.03});
+  // Arkada duran büyük tırnak işareti: ikinci hareketli katman ve tipografik
+  // olarak alıntının imzası. Metnin arkasında, ondan bağımsız kayar.
+  const markDrift = drift(f, {seconds, dx: 34, dy: 18, phase: 0.25});
+
   return (
     <PaperBase seed={seed} ground="warm">
+      <div
+        style={{
+          position: 'absolute',
+          left: SAFE.left - 30,
+          top: B.top.y - 40,
+          fontFamily: FONTS.quote,
+          fontSize: 520,
+          lineHeight: 0.7,
+          color: PALETTE.accent,
+          opacity: 0.16 * q.opacity,
+          transform: markDrift,
+          pointerEvents: 'none',
+          userSelect: 'none',
+        }}
+      >
+        {'\u201C'}
+      </div>
       <PullQuote
         text={payload.quote ?? payload.headline ?? ''}
         size={TYPE.quote}
@@ -429,13 +499,14 @@ const PullQuoteScene: React.FC<SceneProps> = ({seconds, payload, seed}) => {
           top: B.top.y + 60,
           width: SAFE_BOX.width,
           opacity: q.opacity,
+          transform: quoteDrift,
         }}
         seed={seed}
       />
       {payload.images?.[0] || payload.label ? (
         <>
           <Cutout
-            shape="figure"
+            shape={payload.shape ?? 'figure'}
             src={payload.images?.[0]}
             x={SAFE.left + Math.round((SAFE_BOX.width - cw) / 2)}
             y={B.hero.y + 120}
@@ -489,7 +560,7 @@ const SplitCompare: React.FC<SceneProps> = ({seconds, payload, seed}) => {
     op: number;
     tr: string;
     ground: string;
-    shape: 'figure' | 'object';
+    shape: NonNullable<ScenePayload['shape']>;
     s: number;
   }> = ({y, side, op, tr, ground, shape, s}) => (
     <>
@@ -565,7 +636,7 @@ const SplitCompare: React.FC<SceneProps> = ({seconds, payload, seed}) => {
         op={top.opacity}
         tr={top.transform}
         ground={PALETTE.paper}
-        shape="figure"
+        shape={payload.shape ?? 'figure'}
         s={seed + 1}
       />
       <Panel
@@ -574,7 +645,9 @@ const SplitCompare: React.FC<SceneProps> = ({seconds, payload, seed}) => {
         op={bot.opacity}
         tr={bot.transform}
         ground={PALETTE.sea}
-        shape="object"
+        // Karşılaştırmanın ikinci tarafı: cümlenin ikinci nesnesi. Birincil
+        // şekille AYNI olamaz, yoksa "karşılaştırma" iki aynı resim olur.
+        shape={payload.shape2 && payload.shape2 !== payload.shape ? payload.shape2 : 'object'}
         s={seed + 2}
       />
       {/* Ayırıcı: iki panel arasına çizilen tek çizgi. */}
@@ -619,7 +692,7 @@ const LabeledDiagram: React.FC<SceneProps> = ({seconds, payload, seed}) => {
         />
       )}
       <Cutout
-        shape="figure"
+        shape={payload.shape ?? 'figure'}
         src={payload.images?.[0]}
         x={leftX}
         y={rowY}
@@ -631,7 +704,13 @@ const LabeledDiagram: React.FC<SceneProps> = ({seconds, payload, seed}) => {
         rotate={-1.2}
       />
       <Cutout
-        shape="vessel"
+        /*
+          İkinci kutu cümlenin İKİNCİ somut nesnesi. Sabit "vessel" yazdığında
+          "the swell, and the flight of birds" cümlesine yelkenli çiziliyordu.
+          İkinci nesne yoksa terrain'e düşer: ok "bir yere doğru" anlamı taşır,
+          hedefin bir yer olması en az yanıltıcı varsayım.
+        */
+        shape={payload.shape2 ?? (payload.shape === 'terrain' ? 'figure' : 'terrain')}
         src={payload.images?.[1]}
         x={rightX}
         y={rowY + 90}
@@ -954,6 +1033,21 @@ const GridScale: React.FC<SceneProps> = ({seconds, payload, seed}) => {
 
   const bar = enter(f, {at: cue(seconds, 1, 2), duration: 0.5, kind: 'draw'});
 
+  /**
+   * DOĞRULAYICI BU SAHNEYİ %99.8 SABİT ÖLÇTÜ — pratikte donmuş.
+   *
+   * Izgara ilk yarım saniyede tamamen beliriyor (ikon başına 0.028 sn) ve
+   * sonrasında hiçbir şey olmuyor. İki düzeltme:
+   *
+   * 1. Izgaranın DOLMASI sahne süresine yayılıyor. Sayının büyüklüğü zamanla
+   *    hissedilmeli; bu şablonun bütün işi bu. 60 ikonu yarım saniyede basmak
+   *    "çok" hissi vermiyor, tek bir doku olarak okunuyor.
+   * 2. Izgara plakası bir bütün olarak ağır ağır sürükleniyor — sahnenin en
+   *    büyük nesnesi o.
+   */
+  const fillSpan = Math.max(0.9, seconds * 0.62);
+  const gridDrift = drift(f, {seconds, dy: -22, scale: 0.05});
+
   return (
     <PaperBase seed={seed}>
       {payload.headline && (
@@ -967,7 +1061,8 @@ const GridScale: React.FC<SceneProps> = ({seconds, payload, seed}) => {
       )}
       {Array.from({length: total}, (_, i) => {
         // İkonlar sırayla belirir — sayının büyüklüğü ZAMANLA hissedilir.
-        const st = enter(f, {at: 0.25 + i * 0.028, duration: 0.22, kind: 'stamp'});
+        // Yayılma sahne süresinden geliyor, sabit 0.028 sn'den değil.
+        const st = enter(f, {at: cue(seconds, 0, 2) + (i / total) * fillSpan, duration: 0.22, kind: 'stamp'});
         const on = i < hi;
         const c = i % cols;
         const r = Math.floor(i / cols);
@@ -981,7 +1076,7 @@ const GridScale: React.FC<SceneProps> = ({seconds, payload, seed}) => {
               width: cellW,
               height: cellH,
               opacity: st.opacity,
-              transform: st.transform,
+              transform: compose(gridDrift, st.transform),
             }}
           >
             <svg viewBox="0 0 100 140" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
@@ -1276,7 +1371,7 @@ const StarField: React.FC<SceneProps> = ({seconds, payload, seed}) => {
         );
       })}
       <Cutout
-        shape="figure"
+        shape={payload.shape ?? 'figure'}
         src={payload.images?.[0]}
         x={cx - pw / 2}
         y={cy - Math.round(pw * 0.62)}

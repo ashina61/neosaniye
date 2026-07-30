@@ -55,7 +55,24 @@ const DotScreen: React.FC<{size?: number; opacity?: number}> = ({size = 5, opaci
   />
 );
 
-export type PlaceholderShape = 'figure' | 'vessel' | 'building' | 'object' | 'terrain';
+/**
+ * Prosedürel siluet kimlikleri.
+ *
+ * `pipeline/subject.mjs` içindeki `SHAPES` ile AYNI olmak zorunda ve
+ * `test/registry.test.mjs` bunu denetler: liste iki dilde iki dosyada duruyor,
+ * biri değişip öteki değişmezse şablon bilinmeyen bir şekil isteyip sessizce
+ * kutu çizer. Bu depoda aynı sınıf kayıt uyumsuzluğu daha önce görüldü.
+ */
+export type PlaceholderShape =
+  | 'figure'
+  | 'vessel'
+  | 'building'
+  | 'object'
+  | 'terrain'
+  | 'instrument'
+  | 'bird'
+  | 'star'
+  | 'wave';
 
 /**
  * PROSEDÜREL YER TUTUCU
@@ -97,6 +114,94 @@ const Placeholder: React.FC<{shape: PlaceholderShape; seed: number}> = ({shape, 
           <path d="M0 90 L44 34 L78 62 L112 20 L156 66 L200 44 L200 90 Z" {...common} />
         </svg>
       );
+    /**
+     * PUSULA / SEKSTANT — "He carried no compass" cümlesinin çizimi.
+     *
+     * Bu şekil ÖNCEDEN YOKTU ve o cümleye çöp adam çiziliyordu. Kullanıcının
+     * "çizilen şekiller yanlış" dediği somut örnek buydu.
+     */
+    case 'instrument':
+      return (
+        <svg viewBox="0 0 120 120" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+          {/* Gövde: kalın halka. İçi boş, çünkü dolu daire "nokta" okunur. */}
+          <path
+            d="M60 6 A54 54 0 1 1 59.9 6 Z M60 22 A38 38 0 1 0 60.1 22 Z"
+            fill={ink}
+            fillRule="evenodd"
+          />
+          {/* İbre: iki uçlu, biri dolu biri boş — pusula ibresinin imzası. */}
+          <path d="M60 30 L70 60 L60 90 L50 60 Z" {...common} />
+          <circle cx="60" cy="60" r="6" fill={PALETTE.paper} />
+          {/* Dört ana yön çentiği */}
+          {[0, 90, 180, 270].map((a) => (
+            <rect key={a} x="58" y="8" width="4" height="12" {...common} transform={`rotate(${a} 60 60)`} />
+          ))}
+        </svg>
+      );
+
+    /** KUŞ — "the flight of birds" için. Uçan siluet, tek parça. */
+    case 'bird':
+      return (
+        <svg viewBox="0 0 180 100" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+          <path
+            d="M6 46 C40 18 66 20 86 44 C104 20 132 16 172 40 C140 44 116 56 92 78 C70 56 42 44 6 46 Z"
+            {...common}
+          />
+          <circle cx="89" cy="50" r="7" {...common} />
+        </svg>
+      );
+
+    /** YILDIZ / TAKIMYILDIZ — gece göğü beat'i. Tek yıldız değil, KÜME. */
+    case 'star': {
+      const pts = Array.from({length: 7}, (_, i) => ({
+        x: 12 + rand(seed * 3.3 + i) * 96,
+        y: 12 + rand(seed * 7.7 + i * 2) * 96,
+        r: 4 + rand(seed * 11.1 + i) * 7,
+      }));
+      return (
+        <svg viewBox="0 0 120 120" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+          {/* Takımyıldız çizgileri: sırayla bağlanmış, elle çizilmiş kalınlıkta. */}
+          <polyline
+            points={pts.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')}
+            fill="none"
+            stroke={ink}
+            strokeWidth={2}
+            strokeLinejoin="round"
+          />
+          {pts.map((p, i) => (
+            <path
+              key={i}
+              d={`M${p.x} ${p.y - p.r} L${p.x + p.r * 0.28} ${p.y - p.r * 0.28} L${p.x + p.r} ${p.y} L${p.x + p.r * 0.28} ${p.y + p.r * 0.28} L${p.x} ${p.y + p.r} L${p.x - p.r * 0.28} ${p.y + p.r * 0.28} L${p.x - p.r} ${p.y} L${p.x - p.r * 0.28} ${p.y - p.r * 0.28} Z`}
+              {...common}
+            />
+          ))}
+        </svg>
+      );
+    }
+
+    /**
+     * DALGA / KABARMA — "the swell", "open water", "the wind".
+     *
+     * Zemin bandı (`SeaBand`) DEĞİL: bu bir cutout, yani kağıttan kesilmiş bir
+     * su etüdü. Üst üste üç kabarma çizgisi; deniz "doku" olarak okunur.
+     */
+    case 'wave':
+      return (
+        <svg viewBox="0 0 180 110" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+          {[0, 1, 2].map((row) => {
+            const y = 34 + row * 26;
+            const amp = 12 - row * 2;
+            return (
+              <path
+                key={row}
+                d={`M0 ${y} C30 ${y - amp} 50 ${y + amp} 80 ${y} C110 ${y - amp} 130 ${y + amp} 180 ${y} L180 ${y + 9} C130 ${y + amp + 9} 110 ${y - amp + 9} 80 ${y + 9} C50 ${y + amp + 9} 30 ${y - amp + 9} 0 ${y + 9} Z`}
+                {...common}
+              />
+            );
+          })}
+        </svg>
+      );
+
     case 'object':
     default: {
       const r = rand(seed) * 8;

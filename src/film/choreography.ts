@@ -65,6 +65,29 @@ export function cue(seconds: number, i: number, n: number): number {
   return Math.round((first + ((last - first) * k) / (n - 1)) * 100) / 100;
 }
 
+/**
+ * OLUMSUZLAMA ZAMANLAMASI — nesnenin üstünü çizme anı.
+ *
+ * NEDEN AYRI BİR FONKSİYON: bu zamanlamayı iki şablona (hero_cutout,
+ * headline_card) ELLE yazdım ve İKİSİNDE DE aynı hatayı yaptım — çarpıyı
+ * sahnenin son giriş yuvasına koydum. Ölçüm: 2 saniyelik "no compass"
+ * sahnesinde çarpı 1.52 saniyede başlıyor, 0.55 saniye sürüyor, yani sahne
+ * bittikten SONRA tamamlanıyor. Ekranda çarpısız bir pusula duruyordu; görsel
+ * cümlenin TERSİNİ söylüyordu.
+ *
+ * Aynı sayıyı iki yerde tutmanın bedeli bu depoda daha önce de ödendi. Artık
+ * tek yer.
+ *
+ * Kural: olumsuzlama sahnenin ANA BİLGİSİ. Nesne girdikten hemen sonra başlar
+ * ve sahnenin %75'inden önce biter.
+ */
+export function negationCue(seconds: number): {at: number; duration: number} {
+  const duration = Math.min(0.6, Math.max(0.28, seconds * 0.26));
+  // Nesnenin girişi cue(seconds, 1, n) civarında; ondan hemen sonra.
+  const at = Math.max(0.3, Math.min(seconds * 0.75 - duration, seconds * 0.34));
+  return {at: Math.round(at * 100) / 100, duration: Math.round(duration * 100) / 100};
+}
+
 /* ------------------------------------------------------------------ */
 /* PARALLAX — derinliğe göre ölçeklenmiş sürüklenme                    */
 /* ------------------------------------------------------------------ */

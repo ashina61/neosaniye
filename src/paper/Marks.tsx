@@ -180,6 +180,64 @@ export const MarkerCircle: React.FC<{
   );
 };
 
+/**
+ * ÜSTÜ ÇİZİLMİŞ NESNE — olumsuzlamanın görsel dili.
+ *
+ * NEDEN VAR
+ *
+ * "He carried no compass" cümlesinin öznesi pusuladır ama söylediği şey pusula
+ * YOK'tur. Pusulayı öylece çizmek cümlenin TERSİNİ söyler ve izleyici görsele
+ * güvenmeyi bırakır. Vox dilinde karşılığı nesneyi çizip üstüne kalemle çarpı
+ * atmaktır: nesne tanınır, reddedildiği de anlaşılır.
+ *
+ * İki darbe SIRAYLA çizilir, aynı anda değil — elle çizim tek hareketle iki
+ * çizgi atmaz. `progress` 0..0.5 birinci darbe, 0.5..1 ikinci.
+ */
+export const MarkerCross: React.FC<{
+  cx: number;
+  cy: number;
+  size: number;
+  progress?: number;
+  color?: string;
+  width?: number;
+  seed?: number;
+  zIndex?: number;
+}> = ({cx, cy, size, progress = 1, color = PALETTE.accent, width = 14, seed = 9, zIndex}) => {
+  const r = size / 2;
+  // Darbeler tam simetrik değil: her uç seed'e bağlı birkaç piksel kaçık.
+  const j = (k: number) => (rand(seed * 3.7 + k) - 0.5) * size * 0.09;
+  const strokes: Array<[string, number]> = [
+    [
+      `M ${(cx - r + j(1)).toFixed(1)} ${(cy - r + j(2)).toFixed(1)} L ${(cx + r + j(3)).toFixed(1)} ${(cy + r + j(4)).toFixed(1)}`,
+      Math.max(0, Math.min(1, progress / 0.5)),
+    ],
+    [
+      `M ${(cx + r + j(5)).toFixed(1)} ${(cy - r + j(6)).toFixed(1)} L ${(cx - r + j(7)).toFixed(1)} ${(cy + r + j(8)).toFixed(1)}`,
+      Math.max(0, Math.min(1, (progress - 0.5) / 0.5)),
+    ],
+  ];
+  const len = size * 1.45;
+  return (
+    <svg
+      width={CANVAS.width}
+      height={CANVAS.height}
+      style={{position: 'absolute', left: 0, top: 0, overflow: 'visible', zIndex, pointerEvents: 'none'}}
+    >
+      {strokes.map(([d, p], i) => (
+        <path
+          key={i}
+          d={d}
+          fill="none"
+          stroke={color}
+          strokeWidth={width}
+          strokeLinecap="round"
+          style={drawStyle(len, p)}
+        />
+      ))}
+    </svg>
+  );
+};
+
 /** Altın dört köşeli parıltı — referansın her yerde kullandığı dolgu öğesi. */
 export const Sparkle: React.FC<{
   x: number;

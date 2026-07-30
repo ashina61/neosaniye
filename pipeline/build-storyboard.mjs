@@ -16,9 +16,26 @@ import {existsSync} from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import {buildBeats, canRender, checkBeatCount, resolveTemplate, templateVariety, wordCount} from './beats.mjs';
+import {isNegated, nounFor, shapeFor, shapesFor} from './subject.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const FPS = 30;
+
+/**
+ * Tek bir nesne cutout'u çizen şablonlar.
+ *
+ * `payload.shape` ve `payload.negated` yalnızca bunlarda görünür. Listede
+ * olmayanlar (stick_beat, map_route, archival_timeline, data_annotate,
+ * grid_scale) kendi grafiklerini çiziyor ve verilen nesneyi göstermiyor.
+ */
+const DRAWS_OBJECT = new Set([
+  'hero_cutout',
+  'wide_establish',
+  'headline_card',
+  'star_field',
+  'labeled_diagram',
+  'pull_quote',
+]);
 
 /**
  * Beat metninden, VERİLEN ŞABLON için payload çıkar.
@@ -39,7 +56,7 @@ function payloadForBeat(beat, story, template = beat.template) {
     case 'split_compare': {
       const sides = extractSides(text);
       if (sides) p.sides = sides;
-      else p.headline = shorten(text, 8);
+      else p.headline = shorten(text, 6);
       break;
     }
 
@@ -47,7 +64,7 @@ function payloadForBeat(beat, story, template = beat.template) {
       // Anlatının tamamından yıl geçen cümleleri topla.
       const rows = collectYears(story.narration);
       if (rows.length >= 2) p.timeline = rows.slice(0, 4);
-      else p.headline = shorten(text, 8);
+      else p.headline = shorten(text, 6);
       break;
     }
 
@@ -62,7 +79,7 @@ function payloadForBeat(beat, story, template = beat.template) {
           {x: 0.86, y: 0.22, label: places[1]},
         ];
       }
-      p.headline = shorten(text, 8);
+      p.headline = shorten(text, 6);
       break;
     }
 
@@ -71,30 +88,30 @@ function payloadForBeat(beat, story, template = beat.template) {
       const hi = spelledNumber(text);
       const total = hi ? Math.max(hi * 4, hi + 4) : null;
       if (hi && total <= 60) p.ratio = {total, highlighted: hi};
-      p.headline = shorten(text, 8);
+      p.headline = shorten(text, 6);
       break;
     }
 
     case 'data_annotate':
       // Grafik gerçek bir seri istiyor. Anlatıdan seri çıkarılamıyorsa uydurma
       // eğri çizmek YALAN GÖRSEL olur; sözleşme reddeder, başka şablona geçer.
-      p.headline = shorten(text, 8);
+      p.headline = shorten(text, 6);
       p.label = firstYear(text) ?? undefined;
       break;
 
     case 'stick_beat':
-      p.headline = emphasise(shorten(text, 9));
+      p.headline = emphasise(shorten(text, 7), nounFor(text));
       break;
 
     case 'wide_establish':
-      p.headline = emphasise(shorten(text, 7));
+      p.headline = emphasise(shorten(text, 5), nounFor(text));
       p.caption = story.subtitle ?? undefined;
       break;
 
     case 'labeled_diagram': {
       const places = extractPlaces(text);
       if (places.length >= 2) p.sides = [{label: places[0]}, {label: places[1]}];
-      p.headline = shorten(text, 6);
+      p.headline = shorten(text, 5);
       p.label = firstYear(text) ?? undefined;
       p.caption = text.length > 60 ? text : undefined;
       break;
@@ -104,10 +121,30 @@ function payloadForBeat(beat, story, template = beat.template) {
     case 'headline_card':
     case 'hero_cutout':
     default:
-      p.headline = emphasise(shorten(text, 8));
+      p.headline = emphasise(shorten(text, 6), nounFor(text));
       p.label = properNoun(text) ?? firstYear(text) ?? undefined;
       break;
   }
+
+  /**
+   * ÇİZİLECEK NESNE — şablondan BAĞIMSIZ karar.
+   *
+   * Şablon "bu beat ne TÜR" sorusunu cevaplıyor (olgu mu, yer mi, ölçek mi).
+   * Bu satır "içine ne çizilecek" sorusunu cevaplıyor. İkinci soru daha önce
+   * hiç sorulmamıştı, o yüzden her şablon kendi sabit şeklini çiziyordu ve
+   * cümleyle ilgisi yoktu.
+   *
+   * Cümlede somut nesne yoksa `undefined` kalır ve şablon varsayılanına düşer;
+   * uydurma bir nesne çizmek yalan görsel olur.
+   */
+  const shape = shapeFor(text);
+  if (shape) p.shape = shape;
+  // İki nesne çizen şablonlar (labeled_diagram, split_compare) için ikincil
+  // şekil. Yoksa şablon ikinci kutusunu birincil şekle göre seçer.
+  const second = shapesFor(text, 2)[1];
+  if (second) p.shape2 = second;
+  // Nesne çizilecekse ve cümle onun yokluğunu söylüyorsa üstü çizilir.
+  if (shape && isNegated(text)) p.negated = true;
 
   // Boş anahtarları at: şablonlar undefined'ı tolere ediyor, boş dizeyi etmiyor.
   for (const k of Object.keys(p)) if (p[k] === undefined || p[k] === '') delete p[k];
@@ -153,9 +190,25 @@ const STOP = new Set([
   'he', 'she', 'they', 'it', 'by', 'as', 'not', 'no',
 ]);
 
-function emphasise(text) {
+function emphasise(text, prefer) {
   if (/\*/.test(text)) return text;
   const words = text.split(/\s+/);
+
+  /**
+   * ÖNCE ANLAM, SONRA UZUNLUK.
+   *
+   * `prefer` cümlenin somut nesnesi (subject.mjs'in bulduğu kelime). Varsa
+   * vurgu ona gider. Yoksa eski kural (en uzun dolgu olmayan kelime) devreye
+   * girer — o kural bir yedek, birincil ölçüt değil.
+   */
+  if (prefer) {
+    const i = words.findIndex((w) => w.replace(/[^A-Za-z0-9’'-]/g, '').toLowerCase() === prefer.toLowerCase());
+    if (i >= 0) {
+      words[i] = `*${words[i]}*`;
+      return words.join(' ');
+    }
+  }
+
   let best = -1;
   let bestLen = 0;
   words.forEach((w, i) => {
@@ -269,7 +322,36 @@ async function main() {
    */
   const useCount = {};
   const scenes = beats.map((b, i) => {
-    const {template, payload} = resolveTemplate(b.kind, recent, (t) => payloadForBeat(b, story, t));
+    let {template, payload} = resolveTemplate(b.kind, recent, (t) => payloadForBeat(b, story, t));
+
+    /**
+     * ÜSTÜ ÇİZİLECEK NESNE, ONU ÇİZEN BİR ŞABLONA DÜŞMEK ZORUNDA.
+     *
+     * "He carried no compass" beat'i `absence` sınıfına giriyor ve o sınıfın
+     * şablon listesinde `stick_beat` var. Ama stick_beat tek bir çöp adam
+     * çiziyor — pusulayı hiç çizmiyor, dolayısıyla üstünü de çizemiyor ve
+     * cümlenin görsel karşılığı kayboluyor.
+     *
+     * Beat SINIFI doğru ("yokluk"), yanlış olan şablonun o yokluğu
+     * gösterememesi. Nesneyi çizen bir şablona geçiyoruz.
+     */
+    if (payload.negated && !DRAWS_OBJECT.has(template)) {
+      /**
+       * TEKRAR TUZAĞI — ilk sürümde buraya doğrudan 'hero_cutout' yazdım ve
+       * ölçüm anında yakaladı: 2., 3. ve 4. sahne üst üste hero_cutout oldu,
+       * "ardışık tekrar: 2 ← BEKLENMİYOR" uyarısı çıktı ve çeşitlilik 9
+       * şablondan 8'e düştü.
+       *
+       * Bir kusuru düzeltirken başka bir kuralı ezmek; bu depoda daha önce de
+       * yaptığım hata. Değişim `recent`e saygı duymak zorunda.
+       */
+      const swap = ['hero_cutout', 'headline_card', 'wide_establish', 'star_field'].find(
+        (t) => !recent.slice(0, 2).includes(t),
+      );
+      template = swap ?? 'hero_cutout';
+      payload = payloadForBeat(b, story, template);
+    }
+
     recent.unshift(template);
     const occurrence = useCount[template] ?? 0;
     useCount[template] = occurrence + 1;

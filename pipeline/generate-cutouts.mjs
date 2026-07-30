@@ -28,6 +28,7 @@ import {existsSync} from 'node:fs';
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 import path from 'node:path';
+import {subjectFor as subjectOf} from './subject.mjs';
 import process from 'node:process';
 
 const run = promisify(execFile);
@@ -63,42 +64,18 @@ const WANTS_IMAGE = new Set(['hero_cutout', 'headline_card', 'star_field', 'wide
  * yalnızca kodla çizilir. Uydurmaktan iyidir.
  */
 
-/** Cümlede geçebilecek somut özneler → görsel tarifi. */
-const CONCRETE = [
-  [/\b(canoe|boat|vessel|ship|raft)\b/i, 'a traditional double-hulled sailing canoe, full side profile'],
-  [/\b(compass|sextant|chart|instrument)\b/i, 'an antique navigational instrument, isolated on its own'],
-  [/\b(star|stars|constellation)\b/i, 'an antique celestial star chart fragment'],
-  [/\b(bird|birds)\b/i, 'a single seabird in flight, wings extended'],
-  [/\b(wave|waves|swell|ocean|sea|water)\b/i, 'a study of ocean swell, water surface texture only'],
-  [/\b(island|islands|shore|coast)\b/i, 'a low volcanic island seen from the sea, silhouette'],
-  [/\b(radio|telegraph)\b/i, 'a vintage radio set, three-quarter view'],
-  [/\b(map|charts?)\b/i, 'a folded antique nautical map'],
-  [/\b(sky|night|dusk)\b/i, 'a night sky study, stars only'],
-];
-
 /**
- * Cümlede özel isimle anılan bir kişi var mı?
- * "a man named Mau Piailug" → portre meşru. Yoksa portre istenmez.
+ * Somut özne sözlüğü ARTIK BURADA DEĞİL: `pipeline/subject.mjs`.
+ *
+ * NEDEN TAŞINDI: liste yalnızca burada duruyordu, yani görsel modeline "kano"
+ * tarif ediliyordu ama render tarafı o sahneye insan silueti çiziyordu. İki
+ * taraf aynı cümleden farklı sonuç çıkarıyordu. Kullanıcının "çizilen şekiller
+ * yanlış" dediği kusurun kökü buydu.
  */
-function namedPerson(text) {
-  const m = text.match(/\b(?:named|called)\s+([A-Z][A-Za-z’'-]+(?:\s+[A-Z][A-Za-z’'-]+)?)/);
-  return m ? m[1] : null;
-}
 
-/**
- * Sahnenin cutout öznesi. `null` dönerse o sahne için görsel istenmez.
- */
+/** Sahnenin cutout öznesi. `null` dönerse o sahne için görsel istenmez. */
 export function subjectFor(scene) {
-  const text = (scene._beat?.text ?? scene.payload?.headline ?? '').replace(/[*"]/g, '');
-
-  const person = namedPerson(text);
-  if (person) {
-    return `a head-and-shoulders documentary portrait of a Pacific Islander man, calm expression, three-quarter view`;
-  }
-  for (const [re, desc] of CONCRETE) {
-    if (re.test(text)) return desc;
-  }
-  return null;
+  return subjectOf((scene._beat?.text ?? scene.payload?.headline ?? '').replace(/[*"]/g, ''));
 }
 
 /**
