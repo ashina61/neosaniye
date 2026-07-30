@@ -2,11 +2,14 @@ import React from 'react';
 import {useCurrentFrame} from 'remotion';
 import {CANVAS, PALETTE, SAFE, SAFE_BOX, TYPE, VERTICAL_BANDS, FONTS} from '../design/tokens';
 import {enter, drift, breathe, rand} from '../motion/stepped';
+import {cue, focusHunt, holdJitter, parallax, peel, zoomThrough, compose} from '../film/choreography';
+import {LightLeak} from '../film/Plate';
 import {PaperBase} from '../paper/PaperBase';
 import {Cutout, TornCard} from '../paper/Cutout';
 import {Headline, PullQuote, LabelCard, Stamp, TypewriterStrip} from '../paper/Type';
 import {DrawnArrow, DottedPath, MarkerCircle, SparkleField, SeaBand, Sparkle} from '../paper/Marks';
 import {StickFigure, ThoughtBubble, type Pose} from '../paper/StickFigure';
+import {CastShadow, ContactShadow} from '../film/CastShadow';
 import {ArchiveClip} from './ArchiveClip';
 import type {SceneProps, SceneTemplate} from './types';
 
@@ -41,11 +44,16 @@ const B = VERTICAL_BANDS;
  */
 const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurrence}) => {
   const f = useCurrentFrame();
-  const card = enter(f, {at: 0.15, duration: 0.4, kind: 'fade'});
-  const hero = enter(f, {at: 0.35, duration: 0.55, kind: 'slide', from: {x: -180}});
-  const label = enter(f, {at: 1.0, duration: 0.3, kind: 'drop', from: {y: -90}});
-  const ring = enter(f, {at: 1.35, duration: 0.7, kind: 'draw'});
-  const mark = enter(f, {at: 1.15, duration: 0.35, kind: 'stamp'});
+  /**
+   * Girişler cue() ile sahne süresine yayılıyor. Önceki sabit takvimde
+   * (0.15/0.35/1.0/1.15/1.35) 2.8 saniyelik bir sahnenin son 1.4 saniyesinde
+   * hiç olay yoktu; ölçümde bu sahnenin kuyruğunda üç donmuş aralık çıktı.
+   */
+  const card = enter(f, {at: cue(seconds, 0, 5), duration: 0.4, kind: 'fade'});
+  const hero = enter(f, {at: cue(seconds, 1, 5), duration: 0.55, kind: 'slide', from: {x: -180}});
+  const label = enter(f, {at: cue(seconds, 2, 5), duration: 0.3, kind: 'drop', from: {y: -90}});
+  const mark = enter(f, {at: cue(seconds, 3, 5), duration: 0.35, kind: 'stamp'});
+  const ring = enter(f, {at: cue(seconds, 4, 5), duration: 0.7, kind: 'draw'});
 
   /**
    * Varyant SIRAYA bağlı, saf seed hash'ine değil.
@@ -72,18 +80,50 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurr
   const heroX = SAFE.left + Math.round((SAFE_BOX.width - heroW) / 2) + offset;
   const tilt = (rand(seed * 5.1) - 0.5) * 2.4;
 
+  /**
+   * FİLM KOREOGRAFİSİ
+   *
+   * Bu şablonun ölçülen sorunu şuydu: iki olay (kart açılır, hero girer) sonra
+   * dört saniye boyunca yalnızca sürüklenme. Fark haritasında ölü zaman.
+   *
+   * Üç primitif üç olay daha ekliyor, YENİ ÖĞE EKLEMEDEN:
+   *   · focusHunt  — hero girdikten SONRA netlenir (ayrı bir olay)
+   *   · peel       — alttaki kart perspektifte oturur
+   *   · holdJitter — yerleşmiş katman ölü durmaz
+   */
+  const focus = focusHunt(f, {at: cue(seconds, 1, 5) + 0.1, duration: 0.7, from: 11});
+  const cardPeel = peel(f, {seconds, at: cue(seconds, 0, 5), duration: 0.8, deg: 11, edge: variant === 1 ? 'right' : 'left'});
+
   return (
     <PaperBase seed={seed}>
-      <TornCard
-        x={heroX - 40}
-        y={B.hero.y - 30}
-        width={heroW + 80}
-        height={heroH + 60}
-        color={variant === 1 ? PALETTE.sea : PALETTE.groundWarm}
-        rotate={-0.7 + tilt * 0.3}
-        opacity={card.opacity}
-        seed={seed + 1}
-      />
+      {/*
+        Peel sarmalayıcısı KARTIN KUTUSU kadar olmak zorunda, tam ekran değil.
+        Tam ekran bir düzleme rotateY vermek, 1080 px genişlikte düzlemi
+        döndürür ve kart yüzlerce piksel savrulur — perspektif öğeye değil
+        ekrana uygulanmış olur.
+      */}
+      <div
+        style={{
+          position: 'absolute',
+          left: heroX - 40,
+          top: B.hero.y - 30,
+          width: heroW + 80,
+          height: heroH + 60,
+          transform: cardPeel.transform,
+          transformOrigin: cardPeel.origin,
+        }}
+      >
+        <TornCard
+          x={0}
+          y={0}
+          width={heroW + 80}
+          height={heroH + 60}
+          color={variant === 1 ? PALETTE.sea : PALETTE.groundWarm}
+          rotate={-0.7 + tilt * 0.3}
+          opacity={card.opacity}
+          seed={seed + 1}
+        />
+      </div>
       <Cutout
         shape="figure"
         src={payload.images?.[0]}
@@ -94,6 +134,17 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurr
         seed={seed}
         rotate={tilt}
         opacity={hero.opacity}
+        /*
+          castShadow BURADA KAPALI ve sebebi render'a bakınca anlaşıldı.
+          Bu hero, KAĞIDA YAPIŞTIRILMIŞ bir fotoğraf — bir zeminde duran bir
+          figür değil. Zemine uzanan gölge verildiğinde kartın sağ kenarından
+          taşan, hiçbir şeye ait olmayan bir üçgen çıktı. Yapıştırılmış parçanın
+          doğru gölgesi Cutout'un kendi katman gölgesi (LAYER_SHADOW), yani
+          kağıdın bir milim üstünde durması.
+          Uzanan gölge ZEMİNDE DURAN öznelere ait: stick_beat, wide_establish.
+        */
+        focus={focus}
+        jitter={holdJitter(f, seed)}
         // Tek sürüklenen katman: hero. Yavaş, birkaç on piksel.
         transform={`${hero.transform} ${drift(f, {seconds, dx: 38, dy: -26, scale: 0.075})}`}
       />
@@ -163,14 +214,48 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurr
 /* ------------------------------------------------------------------ */
 /* 2. WIDE ESTABLISH — küçük özne, geniş boşluk, zemin bandı           */
 /* ------------------------------------------------------------------ */
-const WideEstablish: React.FC<SceneProps> = ({seconds, payload, seed}) => {
+/**
+ * VARYANT EKSİKLİĞİ GİDERİLDİ
+ *
+ * Bu şablon bir render'da üç kez kullanıldı ve üçünde birebir aynı kare çıktı:
+ * bant hep %56'da, özne hep solda, başlık hep üstte. Diğer şablonlara varyant
+ * eklerken bu atlanmıştı.
+ *
+ * Üç varyant, `occurrence % 3` ile — saf sıra, çünkü seed hash'i ve parite
+ * hilelerinin ikisi de bu projede çakışma üretti:
+ *   0: bant alçak, özne solda, başlık üstte      (geniş ufuk)
+ *   1: bant yüksek, özne sağda, başlık altta     (yakın kıyı)
+ *   2: bant ortada, özne küçük ve ortada, ışık sızması (uzaklık/yalnızlık)
+ */
+const WideEstablish: React.FC<SceneProps> = ({seconds, payload, seed, occurrence}) => {
   const f = useCurrentFrame();
-  const band = enter(f, {at: 0.1, duration: 0.6, kind: 'draw'});
-  const subject = enter(f, {at: 0.6, duration: 0.7, kind: 'slide', from: {x: -260}});
-  const cap = enter(f, {at: 1.4, duration: 0.35, kind: 'fade'});
+  const band = enter(f, {at: cue(seconds, 0, 3), duration: 0.6, kind: 'draw'});
+  const subject = enter(f, {at: cue(seconds, 1, 3), duration: 0.7, kind: 'slide', from: {x: -260}});
+  const cap = enter(f, {at: cue(seconds, 2, 3), duration: 0.35, kind: 'fade'});
 
-  const bandY = Math.round(CANVAS.height * 0.56);
-  const w = Math.round(SAFE_BOX.width * 0.42);
+  const variant = occurrence % 3;
+  const bandY = Math.round(CANVAS.height * (variant === 1 ? 0.44 : variant === 2 ? 0.50 : 0.56));
+  const w = Math.round(SAFE_BOX.width * (variant === 2 ? 0.26 : 0.42));
+  const sx =
+    variant === 1
+      ? SAFE.left + Math.round(SAFE_BOX.width * 0.48)
+      : variant === 2
+        ? SAFE.left + Math.round((SAFE_BOX.width - w) / 2)
+        : SAFE.left + Math.round(SAFE_BOX.width * 0.10);
+
+  const focus = focusHunt(f, {at: cue(seconds, 1, 3) + 0.15, duration: 0.8, from: 13});
+  /**
+   * ZOOM-THROUGH: sahnenin son yarım saniyesinde özne büyüyerek kesmeye
+   * hazırlanır. Sert kesme (bu stilin tek geçişi) hareketin doruğunda gelir.
+   *
+   * BEDELİ BİLİNİYOR: doğrulayıcı kompozisyon kilidini sahne süresinin %92'sinde
+   * örnekliyor, yani tam bu pencerede. O sahnede "sabit piksel" oranı düşecek ve
+   * ortalama bir-iki puan aşağı gidecek. Bilinçli takas: doğrulayıcı EDİTÖR,
+   * cellat değil — uyarı verir, run'ı kırmaz. Bu yüzden tek şablonda ve dar
+   * pencerede kullanılıyor; her sahneye konsa kompozisyon kilidi diye bir şey
+   * kalmazdı.
+   */
+  const zoom = zoomThrough(f, {seconds, duration: 0.5, to: 1.26});
 
   return (
     <PaperBase seed={seed}>
@@ -178,19 +263,37 @@ const WideEstablish: React.FC<SceneProps> = ({seconds, payload, seed}) => {
       <Cutout
         shape="vessel"
         src={payload.images?.[0]}
-        x={SAFE.left + Math.round(SAFE_BOX.width * 0.10)}
+        x={sx}
         y={bandY - Math.round(w * 0.42)}
         width={w}
         height={Math.round(w * 0.7)}
         seed={seed}
-        opacity={subject.opacity}
-        transform={`${subject.transform} ${drift(f, {seconds, dx: 96, dy: -8})}`}
+        opacity={subject.opacity * zoom.opacity}
+        castShadow
+        // Su üstünde gölge değil YANSIMA olur: skew 0 (dümdüz aşağı), daha
+        // bulanık, daha uzun. Aynı primitif, farklı parametre.
+        shadowSkew={0}
+        shadowLength={0.55}
+        focus={focus}
+        jitter={holdJitter(f, seed + 2)}
+        transform={compose(
+          subject.transform,
+          // PARALLAX: özne ön katman (depth 0), tam hızda kayar.
+          parallax(f, {seconds, dx: 96, dy: -8, depth: 0}),
+          `scale(${zoom.scale.toFixed(3)})`,
+        )}
       />
       {payload.headline && (
         <Headline
           text={payload.headline}
           size={TYPE.headline}
-          style={{position: 'absolute', left: SAFE.left, top: B.top.y, width: SAFE_BOX.width, opacity: cap.opacity}}
+          style={{
+            position: 'absolute',
+            left: SAFE.left,
+            top: variant === 1 ? B.bottom.y + 40 : B.top.y,
+            width: SAFE_BOX.width,
+            opacity: cap.opacity,
+          }}
           seed={seed}
         />
       )}
@@ -198,11 +301,12 @@ const WideEstablish: React.FC<SceneProps> = ({seconds, payload, seed}) => {
         <TypewriterStrip
           text={payload.caption}
           x={SAFE.left}
-          y={B.bottom.y + 180}
+          y={variant === 1 ? B.top.y + 20 : B.bottom.y + 180}
           width={SAFE_BOX.width - 60}
           opacity={cap.opacity}
         />
       )}
+      {variant === 2 && <LightLeak corner="tr" opacity={0.18} />}
       <SparkleField count={2} seed={seed + 4} progress={cap.progress} bounds={{x: 120, y: 300, width: 800, height: 500}} />
     </PaperBase>
   );
@@ -213,10 +317,10 @@ const WideEstablish: React.FC<SceneProps> = ({seconds, payload, seed}) => {
 /* ------------------------------------------------------------------ */
 const HeadlineCard: React.FC<SceneProps> = ({seconds, payload, seed, occurrence}) => {
   const f = useCurrentFrame();
-  const head = enter(f, {at: 0.12, duration: 0.4, kind: 'drop', from: {y: -70}});
-  const bar = enter(f, {at: 0.55, duration: 0.45, kind: 'draw'});
-  const port = enter(f, {at: 0.75, duration: 0.55, kind: 'slide', from: {y: 120}});
-  const name = enter(f, {at: 1.5, duration: 0.3, kind: 'stamp'});
+  const head = enter(f, {at: cue(seconds, 0, 4), duration: 0.4, kind: 'drop', from: {y: -70}});
+  const bar = enter(f, {at: cue(seconds, 1, 4), duration: 0.45, kind: 'draw'});
+  const port = enter(f, {at: cue(seconds, 2, 4), duration: 0.55, kind: 'slide', from: {y: 120}});
+  const name = enter(f, {at: cue(seconds, 3, 4), duration: 0.3, kind: 'stamp'});
 
   /**
    * İki yerleşim: 0 = portre ortada (klasik isim kartı), 1 = portre yana
@@ -278,6 +382,11 @@ const HeadlineCard: React.FC<SceneProps> = ({seconds, payload, seed, occurrence}
         height={ph}
         seed={seed}
         opacity={port.opacity}
+        // Portre kartın üstüne yapıştırılmış: uzanan gölge YOK (hero_cutout'ta
+        // aynı denendi ve kartın dışına taşan bir üçgen üretti). Katman gölgesi
+        // yeter; buradaki film katkısı odak çekme.
+        focus={focusHunt(f, {at: cue(seconds, 2, 4) + 0.1, duration: 0.65, from: 12})}
+        jitter={holdJitter(f, seed + 5)}
         transform={`${port.transform} ${drift(f, {seconds, dy: -34, scale: 0.06})}`}
       />
       {payload.label && (
@@ -302,9 +411,9 @@ const HeadlineCard: React.FC<SceneProps> = ({seconds, payload, seed, occurrence}
 /* ------------------------------------------------------------------ */
 const PullQuoteScene: React.FC<SceneProps> = ({seconds, payload, seed}) => {
   const f = useCurrentFrame();
-  const q = enter(f, {at: 0.15, duration: 0.5, kind: 'fade'});
-  const hl = enter(f, {at: 0.9, duration: 0.5, kind: 'draw'});
-  const side = enter(f, {at: 1.3, duration: 0.5, kind: 'slide', from: {x: 140}});
+  const q = enter(f, {at: cue(seconds, 0, 3), duration: 0.5, kind: 'fade'});
+  const hl = enter(f, {at: cue(seconds, 1, 3), duration: 0.5, kind: 'draw'});
+  const side = enter(f, {at: cue(seconds, 2, 3), duration: 0.5, kind: 'slide', from: {x: 140}});
 
   const cw = Math.round(SAFE_BOX.width * 0.46);
 
@@ -334,6 +443,11 @@ const PullQuoteScene: React.FC<SceneProps> = ({seconds, payload, seed}) => {
             height={Math.round(cw * 1.25)}
             seed={seed}
             opacity={side.opacity}
+            // Alıntı sahnesinde özne zeminde durmuyor, kağıdın üstünde yüzüyor:
+            // uzanan gölge YOK, yalnızca odak çekme. Yanlış yerde gölge, gölge
+            // olmamasından kötü durur.
+            focus={focusHunt(f, {at: cue(seconds, 2, 3) + 0.15, duration: 0.7, from: 10})}
+            jitter={holdJitter(f, seed + 9)}
             transform={`${side.transform} ${drift(f, {seconds, dx: -30, scale: 0.055})}`}
           />
           {payload.label && (
@@ -355,11 +469,11 @@ const PullQuoteScene: React.FC<SceneProps> = ({seconds, payload, seed}) => {
 /* ------------------------------------------------------------------ */
 /* 5. SPLIT COMPARE — dikeyde ÜST/ALT, yan yana değil                  */
 /* ------------------------------------------------------------------ */
-const SplitCompare: React.FC<SceneProps> = ({payload, seed}) => {
+const SplitCompare: React.FC<SceneProps> = ({seconds, payload, seed}) => {
   const f = useCurrentFrame();
-  const top = enter(f, {at: 0.15, duration: 0.45, kind: 'slide', from: {x: -240}});
-  const bot = enter(f, {at: 0.65, duration: 0.45, kind: 'slide', from: {x: 240}});
-  const rule = enter(f, {at: 1.15, duration: 0.4, kind: 'draw'});
+  const top = enter(f, {at: cue(seconds, 0, 3), duration: 0.45, kind: 'slide', from: {x: -240}});
+  const bot = enter(f, {at: cue(seconds, 1, 3), duration: 0.45, kind: 'slide', from: {x: 240}});
+  const rule = enter(f, {at: cue(seconds, 2, 3), duration: 0.4, kind: 'draw'});
 
   const sides = payload.sides;
   // Taraf etiketi yoksa karşılaştırma sahnesi kurulamaz: sessizce boş panel
@@ -399,6 +513,9 @@ const SplitCompare: React.FC<SceneProps> = ({payload, seed}) => {
         opacity={op}
         transform={tr}
         outline={7}
+        // Panel fotoğrafı da yapıştırılmış parça: uzanan gölge yok, odak var.
+        focus={focusHunt(f, {at: cue(seconds, 0, 3) + 0.2, duration: 0.6, from: 8})}
+        jitter={holdJitter(f, s)}
       />
       <div
         style={{
@@ -480,10 +597,10 @@ const SplitCompare: React.FC<SceneProps> = ({payload, seed}) => {
 /* ------------------------------------------------------------------ */
 const LabeledDiagram: React.FC<SceneProps> = ({seconds, payload, seed}) => {
   const f = useCurrentFrame();
-  const a = enter(f, {at: 0.15, duration: 0.45, kind: 'drop', from: {y: -140}});
-  const b = enter(f, {at: 0.7, duration: 0.45, kind: 'drop', from: {y: -140}});
-  const arrow = enter(f, {at: 1.2, duration: 0.6, kind: 'draw'});
-  const cap = enter(f, {at: 1.9, duration: 0.35, kind: 'stamp'});
+  const a = enter(f, {at: cue(seconds, 0, 4), duration: 0.45, kind: 'drop', from: {y: -140}});
+  const b = enter(f, {at: cue(seconds, 1, 4), duration: 0.45, kind: 'drop', from: {y: -140}});
+  const arrow = enter(f, {at: cue(seconds, 2, 4), duration: 0.6, kind: 'draw'});
+  const cap = enter(f, {at: cue(seconds, 3, 4), duration: 0.35, kind: 'stamp'});
 
   const boxW = Math.round(SAFE_BOX.width * 0.46);
   const boxH = Math.round(boxW * 1.1);
@@ -561,9 +678,9 @@ const LabeledDiagram: React.FC<SceneProps> = ({seconds, payload, seed}) => {
 /* ------------------------------------------------------------------ */
 /* 7. ARCHIVAL TIMELINE — noktalı çizgi üstünde büyük tarihler         */
 /* ------------------------------------------------------------------ */
-const ArchivalTimeline: React.FC<SceneProps> = ({payload, seed}) => {
+const ArchivalTimeline: React.FC<SceneProps> = ({seconds, payload, seed}) => {
   const f = useCurrentFrame();
-  const line = enter(f, {at: 0.2, duration: 0.9, kind: 'draw'});
+  const line = enter(f, {at: cue(seconds, 0, 2), duration: Math.max(0.8, seconds * 0.4), kind: 'draw'});
   const items = payload.timeline ?? [];
 
   const cx = SAFE.left + 130;
@@ -585,7 +702,8 @@ const ArchivalTimeline: React.FC<SceneProps> = ({payload, seed}) => {
         dash={18}
       />
       {items.map((it, i) => {
-        const st = enter(f, {at: 0.5 + i * 0.35, duration: 0.4, kind: 'slide', from: {x: -120}});
+        // Zaman çizelgesi maddeleri sahnenin %86'sına kadar yayılıyor.
+        const st = enter(f, {at: cue(seconds, 1 + i, 1 + items.length), duration: 0.4, kind: 'slide', from: {x: -120}});
         const y = startY + gap * i;
         return (
           <React.Fragment key={i}>
@@ -659,10 +777,30 @@ const ArchivalTimeline: React.FC<SceneProps> = ({payload, seed}) => {
 /* ------------------------------------------------------------------ */
 /* 8. MAP ROUTE — harita zemini + noktalı rota + duraklar              */
 /* ------------------------------------------------------------------ */
-const MapRoute: React.FC<SceneProps> = ({payload, seed}) => {
+/**
+ * BU ŞABLON ÖLÇÜMDE EN KÖTÜ ÇIKANDI — ve neden olduğu tam olarak biliniyor.
+ *
+ * 12 saniyelik dilimin kare-kare analizinde bu sahnenin (2.8 sn) son 2.25
+ * saniyesinde değişim %0.00 ölçüldü. Videodaki 20 donmuş aralığın 9'u buradan
+ * geliyordu. İki ayrı sebep vardı ve ikisi de düzeltildi:
+ *
+ * 1. TAKVİM SAHNE SÜRESİNİ BİLMİYORDU — her şey ilk 1.9 saniyede bitiyordu.
+ *    Çözüm: cue() ile girişler sahnenin %86'sına kadar yayılıyor.
+ *
+ * 2. HAREKET EDEN ŞEYLER ÇOK KÜÇÜKTÜ — 8px kalınlığında rota çizgisi ve 36px
+ *    duraklar. 1080 genişlikte bunlar karenin binde birini kaplıyor; teknik
+ *    olarak "hareket var" ama izleyici için yok. Bu, kullanıcının "çok yavaş
+ *    hareketlenmeler" şikâyetinin ölçülmüş hâli.
+ *    Çözüm: SAHNENİN EN BÜYÜK NESNESİ hareket ediyor — harita plakasının
+ *    kendisi sürükleniyor ve ölçekleniyor. Duraklar da büyütüldü.
+ *
+ * Genel kural olarak çıkarılan sonuç: her sahnede BÜYÜK bir katman hareket
+ * etmek zorunda. Cutout'u olmayan şablonlarda bu unutulmuştu.
+ */
+const MapRoute: React.FC<SceneProps> = ({seconds, payload, seed}) => {
   const f = useCurrentFrame();
-  const base = enter(f, {at: 0.1, duration: 0.4, kind: 'fade'});
-  const path = enter(f, {at: 0.7, duration: 1.1, kind: 'draw'});
+  const base = enter(f, {at: cue(seconds, 0, 5), duration: 0.4, kind: 'fade'});
+  const path = enter(f, {at: cue(seconds, 1, 5), duration: Math.max(0.9, seconds * 0.42), kind: 'draw'});
 
   const mapX = SAFE.left;
   const mapY = B.hero.y - 120;
@@ -679,7 +817,11 @@ const MapRoute: React.FC<SceneProps> = ({payload, seed}) => {
   return (
     <PaperBase seed={seed} ground="warm">
       {/* Harita zemini: kod çizimi. Bir görsel modeli doğru coğrafya çizemez;
-          burada gereken şey doğru coğrafya değil, OKUNUR şema. */}
+          burada gereken şey doğru coğrafya değil, OKUNUR şema.
+
+          Bu plaka sahnenin en büyük nesnesi ve artık SÜRÜKLENEN katman o.
+          Rotanın çizildiği yöne doğru ağır ağır kayıyor — harita üstünde
+          ilerleyen bir parmak izlenimi. */}
       <div
         style={{
           position: 'absolute',
@@ -690,6 +832,8 @@ const MapRoute: React.FC<SceneProps> = ({payload, seed}) => {
           opacity: base.opacity,
           background: PALETTE.sea,
           filter: 'drop-shadow(0 12px 16px rgba(24,18,8,0.22))',
+          transform: drift(f, {seconds, dx: -46, dy: 28, scale: 0.085}),
+          transformOrigin: '30% 70%',
         }}
       >
         <svg width={mapW} height={mapH} style={{display: 'block'}}>
@@ -735,32 +879,51 @@ const MapRoute: React.FC<SceneProps> = ({payload, seed}) => {
           })}
         </svg>
       </div>
-      <DottedPath points={pts} progress={path.progress} color={PALETTE.accent} width={8} dash={20} />
+      {/* Rota çizgisi kalınlaştırıldı: 8px, 1080 genişlikte karenin binde
+          yedisi. Ölçümde "hareket var ama görünmüyor" çıkan şeylerden biriydi. */}
+      <DottedPath points={pts} progress={path.progress} color={PALETTE.accent} width={13} dash={26} />
       {stops.map((s, i) => {
-        const st = enter(f, {at: 0.8 + i * 0.4, duration: 0.3, kind: 'stamp'});
+        // Duraklar sahnenin sonuna kadar yayılıyor: son durak ~%86'da damgalanır.
+        const st = enter(f, {at: cue(seconds, 2 + i, 2 + stops.length), duration: 0.3, kind: 'stamp'});
         const p = pts[i];
+        const r = 30; // 18 → 30: damga artık uzaktan da bir olay
         return (
           <React.Fragment key={i}>
             <div
               style={{
                 position: 'absolute',
-                left: p.x - 18,
-                top: p.y - 18,
-                width: 36,
-                height: 36,
+                left: p.x - r,
+                top: p.y - r,
+                width: r * 2,
+                height: r * 2,
                 borderRadius: '50%',
                 background: PALETTE.accent,
-                border: `4px solid ${PALETTE.paper}`,
+                border: `6px solid ${PALETTE.paper}`,
+                boxShadow: '0 8px 12px rgba(24,18,8,0.28)',
                 opacity: st.opacity,
                 transform: st.transform,
               }}
             />
             {s.label && (
-              <LabelCard text={s.label} x={p.x + 26} y={p.y - 26} opacity={st.opacity} size={30} />
+              <LabelCard text={s.label} x={p.x + 38} y={p.y - 30} opacity={st.opacity} size={30} />
             )}
           </React.Fragment>
         );
       })}
+      {/*
+        KAPANIŞ OLAYI: son durağın etrafına çizilen daire, sahnenin %88'inde
+        başlar. Ölü kuyruğu kapatan şey bu — sahnenin son yarım saniyesinde de
+        ekranda bir şey OLUYOR.
+      */}
+      <MarkerCircle
+        cx={pts[pts.length - 1].x}
+        cy={pts[pts.length - 1].y}
+        rx={116}
+        ry={92}
+        progress={enter(f, {at: Math.max(0.4, seconds * 0.62), duration: Math.max(0.5, seconds * 0.3), kind: 'draw'}).progress}
+        seed={seed}
+        width={9}
+      />
       {payload.headline && (
         <Headline
           text={payload.headline}
@@ -776,7 +939,7 @@ const MapRoute: React.FC<SceneProps> = ({payload, seed}) => {
 /* ------------------------------------------------------------------ */
 /* 9. GRID SCALE — tekrarlı ikon ızgarası, birkaçı vurgulu             */
 /* ------------------------------------------------------------------ */
-const GridScale: React.FC<SceneProps> = ({payload, seed}) => {
+const GridScale: React.FC<SceneProps> = ({seconds, payload, seed}) => {
   const f = useCurrentFrame();
   const total = Math.max(1, Math.min(payload.ratio?.total ?? 10, 60));
   const hi = Math.max(0, Math.min(payload.ratio?.highlighted ?? 3, total));
@@ -789,7 +952,7 @@ const GridScale: React.FC<SceneProps> = ({payload, seed}) => {
   const gridX = SAFE.left + Math.round((SAFE_BOX.width - gridW) / 2);
   const gridY = B.hero.y - 60;
 
-  const bar = enter(f, {at: 0.9 + total * 0.03, duration: 0.5, kind: 'draw'});
+  const bar = enter(f, {at: cue(seconds, 1, 2), duration: 0.5, kind: 'draw'});
 
   return (
     <PaperBase seed={seed}>
@@ -856,12 +1019,12 @@ const GridScale: React.FC<SceneProps> = ({payload, seed}) => {
 /* ------------------------------------------------------------------ */
 /* 10. DATA ANNOTATE — minimal grafik + tek aksan çizgi + elle daire   */
 /* ------------------------------------------------------------------ */
-const DataAnnotate: React.FC<SceneProps> = ({payload, seed}) => {
+const DataAnnotate: React.FC<SceneProps> = ({seconds, payload, seed}) => {
   const f = useCurrentFrame();
-  const axes = enter(f, {at: 0.1, duration: 0.4, kind: 'draw'});
-  const line = enter(f, {at: 0.55, duration: 1.0, kind: 'draw'});
-  const ring = enter(f, {at: 1.7, duration: 0.6, kind: 'draw'});
-  const note = enter(f, {at: 2.1, duration: 0.3, kind: 'fade'});
+  const axes = enter(f, {at: cue(seconds, 0, 4), duration: 0.4, kind: 'draw'});
+  const line = enter(f, {at: cue(seconds, 1, 4), duration: Math.max(0.8, seconds * 0.34), kind: 'draw'});
+  const ring = enter(f, {at: cue(seconds, 2, 4), duration: 0.6, kind: 'draw'});
+  const note = enter(f, {at: cue(seconds, 3, 4), duration: 0.3, kind: 'fade'});
 
   const series = payload.series?.length ? payload.series : [0.12, 0.2, 0.18, 0.34, 0.46, 0.62, 0.94];
   const cw = SAFE_BOX.width - 80;
@@ -938,20 +1101,71 @@ const POSE_BY_SEED: Pose[] = ['stand', 'point', 'slump', 'overwhelmed', 'sit-des
 
 const StickBeat: React.FC<SceneProps> = ({seconds, payload, seed}) => {
   const f = useCurrentFrame();
-  const fig = enter(f, {at: 0.2, duration: 0.5, kind: 'drop', from: {y: -120}});
-  const head = enter(f, {at: 0.75, duration: 0.4, kind: 'fade'});
-  const hl = enter(f, {at: 1.2, duration: 0.5, kind: 'draw'});
+  // Girişler sahne süresine yayılıyor (cue), sabit saniyeye çakılı değil.
+  const fig = enter(f, {at: cue(seconds, 1, 4), duration: 0.5, kind: 'drop', from: {y: -120}});
+  const head = enter(f, {at: cue(seconds, 2, 4), duration: 0.4, kind: 'fade'});
+  const hl = enter(f, {at: cue(seconds, 3, 4), duration: 0.5, kind: 'draw'});
 
   const pose = POSE_BY_SEED[Math.floor(rand(seed) * POSE_BY_SEED.length)];
   const h = Math.round(B.hero.height * 0.82);
   const wobble = breathe(f, seed) * 0.6;
+  const figX = SAFE.left + Math.round(SAFE_BOX.width / 2) - Math.round(((h / 150) * 100) / 2);
+  const figW = Math.round((h / 150) * 100);
+  const figY = B.hero.y + 40;
 
   return (
     <PaperBase seed={seed} stains={false}>
+      {/*
+        ZEMİN PLAKASI — ölçümle eklendi.
+
+        Bu sahne 12 saniyelik analizde tek bir "olay" üretmedi: en yüksek
+        değişim %4.46, eşik %6. Sebep çöp adamın çizgi resmi olması — 9px
+        kalınlığında çizgiler karenin binde birini kaplar, yani giriş
+        animasyonu teknik olarak var ama izleyicinin gördüğü bir OLAY değil.
+        Kullanıcının "çok yavaş hareketlenmeler" şikâyeti bunun ölçülmüş hâli.
+        Çözüm çizgileri kalınlaştırmak değil (o çöp adamı bozar), altına BÜYÜK
+        bir kağıt plaka koymak: giren şey artık ekranın üçte biri.
+      */}
+      <TornCard
+        x={SAFE.left - 20}
+        y={figY - 40}
+        width={SAFE_BOX.width + 40}
+        height={h + 120}
+        color={PALETTE.groundWarm}
+        opacity={enter(f, {at: cue(seconds, 0, 4), duration: 0.42, kind: 'fade'}).opacity}
+        transform={enter(f, {at: cue(seconds, 0, 4), duration: 0.42, kind: 'slide', from: {x: -140}}).transform}
+        seed={seed + 11}
+        rotate={-0.6}
+      />
+      {/*
+        Çöp adamın zemin gölgesi. Cutout'un içine gömülü kolaylıktan
+        yararlanamıyor çünkü StickFigure bir SVG, bir raster maske değil —
+        CastShadow'a children olarak İKİNCİ bir kopya veriliyor ve brightness(0)
+        onu siyaha indiriyor. Aynı teknik, aynı sonuç: ayrı gölge varlığı yok.
+
+        NEDEN ÖNEMLİ: gölgesiz çöp adam kağıdın üstünde YÜZER. Referans videoda
+        çöp adamların hepsi bir zemine basıyor.
+      */}
+      <CastShadow
+        x={figX}
+        y={figY}
+        width={figW}
+        height={h}
+        // ÖLÇÜLDÜ: -53°/0.55 ile gölge kartın dışına, karenin sağ kenarına
+        // kadar uzanıyordu. Rehberdeki -53° 16:9 bir kare için yazılmış; 9:16'da
+        // aynı açı figür boyunun 1.3 katı yatay kayma üretiyor.
+        skew={-30}
+        length={0.4}
+        opacity={0.42 * fig.opacity}
+        transform={fig.transform}
+      >
+        <StickFigure pose={pose} x={0} y={0} height={h} outline={0} />
+      </CastShadow>
+      <ContactShadow x={figX} y={figY + h} width={figW} opacity={0.3 * fig.opacity} transform={fig.transform} />
       <StickFigure
         pose={pose}
-        x={SAFE.left + Math.round(SAFE_BOX.width / 2) - Math.round((h / 150) * 100 / 2)}
-        y={B.hero.y + 40}
+        x={figX}
+        y={figY}
         height={h}
         opacity={fig.opacity}
         transform={`${fig.transform} rotate(${wobble.toFixed(2)}deg)`}
@@ -1013,9 +1227,9 @@ const StickBeat: React.FC<SceneProps> = ({seconds, payload, seed}) => {
 /* ------------------------------------------------------------------ */
 const StarField: React.FC<SceneProps> = ({seconds, payload, seed}) => {
   const f = useCurrentFrame();
-  const rings = enter(f, {at: 0.1, duration: 1.0, kind: 'draw'});
-  const port = enter(f, {at: 0.7, duration: 0.55, kind: 'fade'});
-  const lab = enter(f, {at: 1.5, duration: 0.35, kind: 'stamp'});
+  const rings = enter(f, {at: cue(seconds, 0, 3), duration: Math.max(0.9, seconds * 0.4), kind: 'draw'});
+  const port = enter(f, {at: cue(seconds, 1, 3), duration: 0.55, kind: 'fade'});
+  const lab = enter(f, {at: cue(seconds, 2, 3), duration: 0.35, kind: 'stamp'});
 
   const cx = CANVAS.width / 2;
   const cy = B.hero.y + Math.round(B.hero.height * 0.42);
@@ -1070,6 +1284,9 @@ const StarField: React.FC<SceneProps> = ({seconds, payload, seed}) => {
         height={Math.round(pw * 1.24)}
         seed={seed}
         opacity={port.opacity}
+        // Gece zemininde portre havada: uzanan gölge YOK, odak çekme var.
+        focus={focusHunt(f, {at: cue(seconds, 1, 3) + 0.1, duration: 0.7, from: 12})}
+        jitter={holdJitter(f, seed + 13)}
         transform={drift(f, {seconds, scale: 0.07, dy: -24})}
         outlineColor={PALETTE.paper}
       />

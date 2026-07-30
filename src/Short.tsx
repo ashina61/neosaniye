@@ -1,6 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Sequence, Audio, staticFile} from 'remotion';
 import {CANVAS} from './design/tokens';
+import {FilmTreatment} from './film/treatment';
 import {SCENES} from './scenes';
 import type {SceneTemplate, ScenePayload} from './scenes/types';
 
@@ -55,6 +56,18 @@ export const Short: React.FC<{storyboard: Storyboard}> = ({storyboard}) => {
           </Sequence>
         );
       })}
+      {/*
+        FİLM KATMANI — TÜM SAHNELERİN ÜSTÜNDE, TEK YERDE.
+
+        Rehberin kuralı: "build the film-look engine once". Sahne içine
+        konulursa 19 sahnede 19 farklı film çıkar; kolajı tek yapıma bağlayan
+        şey tam olarak hepsinin AYNI filmden geçmesi.
+
+        Sequence'lerin DIŞINDA duruyor, yani kesmelerden etkilenmez: gren,
+        çizik ve vinyet sahne değişince yerinden oynamaz — gerçek bir filmde de
+        oynamaz, çünkü onlar sahneye değil şeride ait.
+      */}
+      <FilmTreatment />
       {storyboard.audio && <Audio src={staticFile(storyboard.audio)} />}
     </AbsoluteFill>
   );

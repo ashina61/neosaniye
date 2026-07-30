@@ -35,6 +35,44 @@ Bu ayrım mimarinin merkezinde:
   davranış arka planın/metnin/okun tamamen sabit kalmasıydı.
 - Kamera hareketi yok: zoom, pan, tilt, dolly hiçbiri.
 - Sahneler arasında **sert kesme**. Çapraz geçiş, fade, wipe kullanılmaz.
+- **Girişler sabit saniyeye yazılmaz, `cue(seconds, i, n)` ile sahne süresine
+  yayılır.** Sabit takvim ölçülerek yanlış çıktı: 2.8 saniyelik `map_route`
+  sahnesinin son 2.25 saniyesinde değişim %0.00, ve videonun 20 donmuş
+  aralığının 9'u tek o sahnedendi.
+- **Her sahnede BÜYÜK bir katman hareket eder.** 8px'lik rota çizgisi ya da 9px
+  çizgiden çizilmiş çöp adam teknik olarak hareket eder ama izleyici için olay
+  değildir — 1080 genişlikte karenin binde birini kaplar. Cutout'u olmayan
+  şablonlarda sürüklenen şey en büyük nesne olmak zorunda (harita plakası,
+  zemin kartı).
+
+## Film katmanı
+
+`src/film/` rehberin "build the film-look engine once" kuralının karşılığı.
+Kolajı tek yapıma bağlayan şey öğelerin benzemesi değil, hepsinin AYNI filmden
+geçmesi.
+
+- `treatment.tsx` → `<FilmTreatment />`. **Short.tsx'te tek bir yerde**, tüm
+  `Sequence`lerin dışında. Sahne içine taşınmaz: 19 sahne 19 farklı film olur.
+- Katmanların **tamamı statiktir**, tek istisna pozlama titremesi. Sebebi
+  doğrulayıcı: kompozisyon kilidi tol=6 ile ölçülüyor, animasyonlu tam kare
+  efekti onu doğrudan düşürür. Titreme genliği bu yüzden 0.018 (krem zeminde
+  4.1 seviye) ve 12fps adımına oturuyor.
+- **Gate weave (kare geneli sallanma) kasıtlı olarak YOK**: o gerçek bir kamera
+  kaymasıdır ve "kamera hareketi yok" kuralı ölçümle konuldu.
+- `CastShadow` = cutout'un kendisinden gölge (kopyala, `brightness(0)`, ayak
+  hattından yatır, blur, %45). Ayrı gölge varlığı üretilmez.
+  - Dönüşüm sırası `skewX(...) scaleY(-length)`; TERSİ yazılırsa kayma tam
+    yükseklikle hesaplanır ve gölge 850 px'lik bir çubuk olur (render'da görüldü).
+  - Yalnızca **zeminde duran** özneye uygulanır. Kağıda yapıştırılmış fotoğrafın
+    gölgesi `LAYER_SHADOW`'dur; ona uzanan gölge verilince kartın dışına taşan,
+    hiçbir şeye ait olmayan bir üçgen çıkıyor.
+- `Plate.tsx` → `OnBlackPlate`: siyah zeminli malzemeyi alfa OLMADAN
+  kompozitler (`screen` + kontrast kırma + kenar tüyleme). Üçünden biri
+  atlanırsa teknik çalışmaz. Sağlayıcıların döndürdüğü opak JPEG'ler için tek
+  yol bu.
+- `choreography.ts`: `cue`, `parallax` (0.6× derinlik), `zoomThrough`,
+  `focusHunt`, `peel`, `holdJitter`. Hepsi saf fonksiyon ve `test/film.test.mjs`
+  bunları tsc ile derleyip DAVRANIŞINI ölçer — metin araması değil.
 
 ## Metin
 

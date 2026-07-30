@@ -110,20 +110,33 @@ function stripCommentsAndStrings(src) {
     .replace(/`(?:[^`\\]|\\.)*`/g, '``');
 }
 
+/**
+ * Kaynak dosyalarını TARAYARAK bulur, elle yazılmış listeden değil.
+ *
+ * NEDEN: liste elle tutuluyordu ve `src/film/` altına eklenen dört yeni dosya
+ * kapsam dışında kaldı — yani kural, korumasını en çok gerektiren yeni koda
+ * uygulanmıyordu. Elle tutulan kapsam listesi, sessizce eskiyen bir listedir.
+ */
+async function sourceFiles() {
+  const {readdir} = await import('node:fs/promises');
+  const out = [];
+  for (const dir of ['src', 'pipeline']) {
+    const entries = await readdir(path.join(ROOT, dir), {recursive: true, withFileTypes: true});
+    for (const e of entries) {
+      if (!e.isFile()) continue;
+      if (!/\.(ts|tsx|mjs)$/.test(e.name)) continue;
+      out.push(path.relative(ROOT, path.join(e.parentPath ?? e.path, e.name)));
+    }
+  }
+  return out.sort();
+}
+
 test('Math.random hiçbir kaynakta ÇAĞRILMIYOR (determinizm)', async () => {
-  const files = [
-    'src/motion/stepped.ts',
-    'src/scenes/index.tsx',
-    'src/paper/PaperBase.tsx',
-    'src/paper/Cutout.tsx',
-    'src/paper/Marks.tsx',
-    'src/paper/Type.tsx',
-    'src/paper/StickFigure.tsx',
-    'src/Short.tsx',
-    'src/StyleSheet.tsx',
-    'pipeline/beats.mjs',
-    'pipeline/build-storyboard.mjs',
-  ];
+  const files = await sourceFiles();
+  // Tarama gerçekten çalışıyor mu: dosya sayısı beklenenin altına düşerse
+  // test sessizce "hiçbir şeyi kontrol etmedim" durumuna geçer.
+  assert.ok(files.length >= 15, `kaynak taraması az dosya buldu: ${files.length}`);
+  assert.ok(files.some((f) => f.startsWith('src/film/')), 'src/film taranmıyor');
   for (const f of files) {
     const code = stripCommentsAndStrings(await read(f));
     assert.doesNotMatch(code, /Math\s*\.\s*random\s*\(/, `${f} Math.random() çağırıyor — render deterministik olmaz`);

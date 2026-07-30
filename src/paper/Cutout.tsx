@@ -1,6 +1,8 @@
 import React from 'react';
 import {PALETTE} from '../design/tokens';
 import {rand} from '../motion/stepped';
+import {CastShadow, ContactShadow} from '../film/CastShadow';
+import {focusFilter} from '../film/choreography';
 
 /**
  * KESİLMİŞ KAĞIT PARÇASI (cutout)
@@ -126,6 +128,26 @@ export interface CutoutProps {
   opacity?: number;
   seed?: number;
   zIndex?: number;
+  /**
+   * ZEMİNE UZANAN GÖLGE — rehberin adıyla verdiği teknik, film/CastShadow.tsx.
+   *
+   * NEDEN BURADA, ŞABLONDA DEĞİL: gölge öznenin giriş ve sürüklenme hareketini
+   * BİREBİR takip etmek zorunda. Şablonda ayrı bir bileşen olarak çağrılsaydı
+   * aynı transform iki yerde tutulurdu; bu projede iki yerde tutulan sayı daha
+   * önce uyumsuzluğa yol açtı (varyant rotasyonu üç kez bu yüzden bozuldu).
+   * Cutout'un kendi sarmalayıcısının içinde durduğu için hareketi miras alır.
+   *
+   * Varsayılan KAPALI: her cutout zeminde duran bir özne değil (harita
+   * parçası, veri kartı, gökyüzü öğesi). Yanlış yerde gölge, gölge olmamasından
+   * daha kötü durur.
+   */
+  castShadow?: boolean;
+  shadowSkew?: number;
+  shadowLength?: number;
+  /** focusHunt()'ten gelen bulanıklık, px. Odak çekme efekti. */
+  focus?: number;
+  /** holdJitter()'dan gelen ek transform: tutulan karede yaşayan kağıt. */
+  jitter?: string;
 }
 
 export const Cutout: React.FC<CutoutProps> = ({
@@ -143,10 +165,16 @@ export const Cutout: React.FC<CutoutProps> = ({
   opacity = 1,
   seed = 1,
   zIndex,
+  castShadow = false,
+  shadowSkew,
+  shadowLength,
+  focus = 0,
+  jitter,
 }) => {
   // Kontur + gölge tek filter zincirinde: sıra önemli, gölge konturun DIŞINA
   // düşmeli, yoksa kontur gölgenin üstünde yüzer gibi durur.
   const filter = `${outline > 0 ? outlineFilter(outline, outlineColor) : ''} ${LAYER_SHADOW}`.trim();
+  const blur = focusFilter(focus);
 
   return (
     <div
@@ -158,10 +186,31 @@ export const Cutout: React.FC<CutoutProps> = ({
         height,
         opacity,
         zIndex,
-        transform: [transform, rotate ? `rotate(${rotate}deg)` : ''].filter(Boolean).join(' ') || undefined,
+        transform:
+          [transform, jitter, rotate ? `rotate(${rotate}deg)` : ''].filter(Boolean).join(' ') || undefined,
         transformOrigin: 'center center',
       }}
     >
+      {/*
+        Gölge ÖNCE geliyor, yani DOM'da öznenin altında. Sonra gelseydi
+        özneyi karartırdı — multiply harmanı kendisinden önce çizilmiş her şeye
+        uygulanır.
+      */}
+      {castShadow && (
+        <>
+          <CastShadow
+            src={src}
+            skew={shadowSkew}
+            length={shadowLength}
+            // Odak bulanıksa gölge de bulanık olmalı; ayrı netlikte gölge
+            // "yapıştırılmış" durur.
+            blur={7 + focus * 0.6}
+          >
+            {!src && <Placeholder shape={shape} seed={seed} />}
+          </CastShadow>
+          <ContactShadow />
+        </>
+      )}
       <div style={{position: 'relative', width: '100%', height: '100%', filter}}>
         {src ? (
           <img
@@ -173,11 +222,13 @@ export const Cutout: React.FC<CutoutProps> = ({
               width: '100%',
               height: '100%',
               objectFit: 'contain',
-              ...(halftone ? HALFTONE_CSS : {}),
+              // Halftone ve odak bulanıklığı AYNI filter zincirinde olmak
+              // zorunda: iki ayrı `filter` ataması birbirini ezer.
+              filter: [halftone ? HALFTONE_CSS.filter : undefined, blur].filter(Boolean).join(' ') || undefined,
             }}
           />
         ) : (
-          <div style={{width: '100%', height: '100%'}}>
+          <div style={{width: '100%', height: '100%', filter: blur}}>
             <Placeholder shape={shape} seed={seed} />
           </div>
         )}
