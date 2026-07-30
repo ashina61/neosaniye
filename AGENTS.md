@@ -132,7 +132,10 @@ geçmesi.
 
 - Fern DNA'sı: sürekli anlatı, tek blok. Cold open tarih + yer + tek somut
   eylemle açar. Her cümle tek fikir taşır, çünkü her cümle bir görsel beat olur.
-- 2.5 kelime/saniye. Beat 2-3 saniye, 4-8 kelime.
+- **2.0 kelime/saniye** ve beat başına en az 5 kelime. PDF'in değeri 2.5 ve o
+  değer SESLENDİRİLMİŞ anlatı için doğru — dinleyicinin gözü serbesttir. Bizde
+  seslendirme yok, aynı metni GÖZ okuyor. Seslendirme eklendiğinde 2.5'e geri
+  çıkmalı ve beat süreleri gerçek ses dosyasından ölçülmeli.
 - Son satır cliffhanger: 12 kelimeden kısa ve **bölünmez**.
 - Beat türü → sahne şablonu eşlemesi `pipeline/beats.mjs` içinde. Soyut beat
   çöp adam alır, olgusal beat halftone cutout alır.
