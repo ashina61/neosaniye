@@ -111,6 +111,37 @@ eşiğini denetliyor.
   şablonlarda sürüklenen şey en büyük nesne olmak zorunda (harita plakası,
   zemin kartı).
 
+## Görsel bütçesi: bir Short kaç görsel ister
+
+Sayıldı, çünkü ölçek sistemin şeklini belirliyor.
+
+74 saniyelik bir Short = **19 beat**. Eski hâl her beat için görsel istiyordu:
+B yolunda 21 parça, A yolunda 17 kare. Günde 1 Short = **ayda 630 görsel**.
+Ölçülen başarı oranı: 7. turda 0/5 kullanılabilir, 6. turda kesim 5/5 temiz ama
+ÖZNE 0/5 doğru. O ölçekte elle ayıklama imkânsız.
+
+**Ama 15 şablonun 13'ü fotoğrafsız da tam çiziyor** — ya tamamen kod
+(`map_route`, `grid_scale`, `data_annotate`, `archival_timeline`,
+`split_compare`), ya prosedürel siluete düşüyor. Yalnızca `collage_build` ve
+`archive_clip` malzemeye MUHTAÇ. Yani sistem bugün **sıfır görselle** eksiksiz
+bir Short üretebiliyor; fotoğraf bir bağımlılık değil, bir **yükseltme**.
+
+Bütçe referansın kendi oranından geliyor (bu belgede zaten ölçülüydü):
+*"referans videonun çekimlerinin yaklaşık üçte ikisinde hiç fotoğraf yok."*
+
+    PHOTO_BUDGET_RATIO = 1/3      → 19 beat için 7 görsel
+    ayda 630 değil, ayda ~180
+
+`build-flow-pack.mjs` bütçeyi UYGULUYOR: bütçe dışı beat için promt dosyası
+**yazılmıyor**, yoksa üretim adımı onu da kuyruğa alır ve bütçe kağıt üstünde
+kalır. Sıralama: önce malzemeye muhtaç sahneler, sonra `PHOTO_WORTH` şekilleri
+(figure, building, vehicle, aircraft, rail, vessel, terrain).
+
+`PHOTO_WORTH` dışında kalanlar bilinçli: belge, damga, harita, tablo, yıldız —
+bunları kod daha iyi çiziyor ve ölçüldü (`evidence_board`: tarih, damga, tarife,
+gravür harita, hepsi kodda ve kusursuz). Onlar için fotoğraf istemek kotayı
+modelin **en kötü olduğu yere** harcamak olurdu.
+
 ## Kompoze kare promtu: motorun sahne kalıbı
 
 Kullanıcının verdiği üç örnek promt aynı kalıbı kullanıyor ve kalıp **TEK AKAN

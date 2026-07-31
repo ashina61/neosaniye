@@ -59,6 +59,39 @@ const FPS = 30;
  */
 const CODE_DRAWN = new Set(['map_route', 'grid_scale', 'data_annotate', 'archival_timeline', 'split_compare', 'stick_beat']);
 
+/**
+ * ============ GÖRSEL BÜTÇESİ ============
+ *
+ * Kullanıcının sorusu doğru soruydu: "kaç tane görsel üreteceğiz biliyorsun
+ * dimi". Sayıldı ve hat yanlış ölçekte çalışıyordu.
+ *
+ * 74 saniyelik bir Short = 19 beat. Eski hâl her beat için görsel istiyordu:
+ * B yolunda 21 parça, A yolunda 17 kare. Günde 1 Short = ayda 630 görsel.
+ * Ölçülen başarı oranı: 7. turda 0/5, 6. turda kesim 5/5 ama ÖZNE 0/5.
+ * O ölçekte elle ayıklama imkânsız.
+ *
+ * Oysa ölçüm başka bir şey daha gösterdi: 15 şablonun 13'ü fotoğrafsız da tam
+ * çiziyor (ya tamamen kod, ya prosedürel siluete düşüyor). Yalnızca
+ * `collage_build` ve `archive_clip` malzemeye MUHTAÇ. Yani sistem BUGÜN sıfır
+ * görselle eksiksiz bir Short üretebiliyor; fotoğraf bir bağımlılık değil,
+ * bir YÜKSELTME.
+ *
+ * Bütçe referansın kendi oranından geliyor (AGENTS.md, ölçülmüş):
+ * "referans videonun çekimlerinin yaklaşık ÜÇTE İKİSİNDE hiç fotoğraf yok".
+ * 19 beat x 1/3 ≈ 6 fotoğraf/Short — ayda 630 değil, 180.
+ */
+const PHOTO_BUDGET_RATIO = 1 / 3;
+
+/**
+ * Gerçek bir fotoğrafın KODUN ÇİZEMEYECEĞİ şey kattığı şekiller.
+ *
+ * Dışarıda kalanlar bilinçli: belge, damga, harita, tablo, yıldız — bunları
+ * kod daha iyi çiziyor ve ölçüldü (`evidence_board`: tarih, damga, tarife,
+ * gravür harita, hepsi kodda ve kusursuz). Onlar için fotoğraf istemek kotayı
+ * modelin en kötü olduğu yere harcamak olurdu.
+ */
+const PHOTO_WORTH = new Set(['figure', 'building', 'vehicle', 'aircraft', 'rail', 'vessel', 'terrain']);
+
 function pad(n) {
   return String(n).padStart(2, '0');
 }
@@ -102,15 +135,35 @@ async function main() {
       code.push(row);
     } else {
       row.file = `${pad(row.n)}-${row.kind}`;
-      const beat = {text: row.text, kind: row.kind};
-      // A yolu (yedek): tek bitmiş kare.
-      row.fallbackPrompt = composedCollagePrompt(beat, story);
-      // B yolu (varsayılan): plaka + parçalar.
-      row.platePrompt = platePrompt(beat);
-      row.pieces = piecePrompts(beat, {era});
+      row.shape = scene.payload?.shape ?? null;
+      row.needsMaterial = scene.template === 'collage_build' || scene.template === 'archive_clip';
       flow.push(row);
     }
   }
+
+  /**
+   * BÜTÇEYİ UYGULA — promt yalnızca seçilen beat'lere yazılır.
+   *
+   * Sıra: önce malzemeye MUHTAÇ sahneler (onlarsız kare boş kalır), sonra
+   * fotoğrafın gerçekten fark yarattığı şekiller. Bütçe dolunca kalanlar
+   * prosedürel siluetle çiziliyor — bu bir kayıp değil, referansın kendi oranı.
+   */
+  const budget = Math.max(1, Math.ceil((flow.length + code.length) * PHOTO_BUDGET_RATIO));
+  const ranked = [...flow].sort((a, b) => {
+    const score = (r) => (r.needsMaterial ? 2 : PHOTO_WORTH.has(r.shape) ? 1 : 0);
+    return score(b) - score(a) || a.n - b.n;
+  });
+  const chosen = new Set(ranked.slice(0, budget).filter((r) => r.needsMaterial || PHOTO_WORTH.has(r.shape)).map((r) => r.n));
+
+  for (const row of flow) {
+    if (!chosen.has(row.n)) continue;
+    const beat = {text: row.text, kind: row.kind};
+    row.fallbackPrompt = composedCollagePrompt(beat, story);
+    row.platePrompt = platePrompt(beat);
+    row.pieces = piecePrompts(beat, {era});
+  }
+
+  const skipped = flow.filter((r) => !chosen.has(r.n));
 
   /**
    * DOSYALAR BEAT BAŞINA
@@ -130,7 +183,9 @@ async function main() {
    * N'inci satırı. Sıra kayarsa montaj sessizce bozulur.
    */
   const assets = [];
-  for (const r of flow) {
+  // Bütçe dışında kalan beat için promt dosyası YAZILMAZ: yazılırsa üretim
+  // adımı onu da kuyruğa alır ve bütçe kağıt üstünde kalır.
+  for (const r of flow.filter((x) => x.pieces)) {
     await writeFile(path.join(PACK, `${r.file}-plate.txt`), `${r.platePrompt}\n`);
     assets.push({file: `${r.file}-plate`, n: r.n, role: 'plate', prompt: r.platePrompt});
     for (const p of r.pieces) {
@@ -192,7 +247,7 @@ async function main() {
     ``,
     `═══ B YOLU — PARÇA PARÇA (VARSAYILAN, BUNU KULLAN) ═══`,
     ``,
-    `Beat başına 1 PLAKA (boş kağıt zemin) + ${flow[0]?.pieces.length ?? 3} kadar PARÇA`,
+    `Beat başına 1 PLAKA (boş kağıt zemin) + ${flow.find((r) => r.pieces)?.pieces.length ?? 3} kadar PARÇA`,
     `(düz BEYAZ zeminde tek nesne). Remotion parçaları tek tek, arkadan öne,`,
     `anlatı sırasıyla diziyor — yani kolajın kendi kendini kurması KODDA oluyor.`,
     `Flow'a hiç gerek yok.`,
@@ -226,11 +281,19 @@ async function main() {
     `SAYILARI gözle kontrol et; anlatımla çelişen bir tarih yanlış bilgi demektir.`,
     `B yolunda bu risk yok, çünkü metni Remotion çiziyor.`,
     ``,
-    `GÖRSEL ÜRETİLECEK BEAT'LER (${flow.length})`,
-    ...flow.map(
-      (r) =>
-        `  ${pad(r.n)}  ${r.start.toFixed(1)}s +${r.seconds.toFixed(1)}s  ${r.kind.padEnd(11)}` +
-        ` ${r.pieces.length} parça  ${JSON.stringify(r.text)}`,
+    `GÖRSEL ÜRETİLECEK BEAT'LER (${chosen.size} / ${flow.length + code.length}) — BÜTÇE`,
+    `Bütçe referansın kendi oranından: çekimlerin üçte ikisinde hiç fotoğraf yok.`,
+    ...flow
+      .filter((r) => r.pieces)
+      .map(
+        (r) =>
+          `  ${pad(r.n)}  ${r.start.toFixed(1)}s +${r.seconds.toFixed(1)}s  ${r.kind.padEnd(11)}` +
+          ` ${r.pieces.length} parça  ${JSON.stringify(r.text)}`,
+      ),
+    ``,
+    `BÜTÇE DIŞI (${skipped.length}) — prosedürel siluetle çizilecek`,
+    ...skipped.map(
+      (r) => `  ${pad(r.n)}  ${r.kind.padEnd(11)} şekil=${r.shape ?? '-'}  ${JSON.stringify(r.text)}`,
     ),
     ``,
     `KODLA ÇİZİLEN BEAT'LER (${code.length}) — görsel üretilmez`,
@@ -246,17 +309,24 @@ async function main() {
     `${JSON.stringify({title: sb.title, fps: FPS, flow, code, assets}, null, 2)}\n`,
   );
 
-  const pieceCount = flow.reduce((s, r) => s + r.pieces.length, 0);
+  const budgeted = flow.filter((r) => r.pieces);
+  const pieceCount = budgeted.reduce((s, r) => s + r.pieces.length, 0);
+  const total = flow.length + code.length;
   console.log(`paket yazıldı: out/flow-pack/`);
-  console.log(`  görsel üretilecek   : ${flow.length} beat`);
+  console.log(`  beat                : ${total}`);
+  console.log(`  GÖRSEL BÜTÇESİ      : ${budgeted.length} beat (${Math.round((budgeted.length / total) * 100)}%) — hedef ~%33`);
+  console.log(`  bütçe dışı          : ${skipped.length} beat, prosedürel siluetle çizilecek`);
   console.log(`  kodla çizilen       : ${code.length} beat (${[...new Set(code.map((c) => c.template))].join(', ')})`);
-  console.log(`  B yolu varlıkları   : ${flow.length} plaka + ${pieceCount} parça = ${assets.length} görsel`);
-  console.log(`  ENGINE beslemesi    : ${slug}-prompts.txt — ${flow.length} bitmiş kare, blok blok`);
-  console.log(`  A yolu hareket metni: ${flow.length} adet (+ UNIVERSAL-VIDEO-PROMPT)`);
-  console.log(`\nÖrnek plaka (${flow[0]?.file}-plate):\n`);
-  console.log(flow[0]?.platePrompt);
-  console.log(`\nÖrnek hero parçası (${flow[0]?.file}-a):\n`);
-  console.log(flow[0]?.pieces[0]?.prompt);
+  console.log(`  B yolu varlıkları   : ${budgeted.length} plaka + ${pieceCount} parça = ${assets.length} görsel`);
+  console.log(`  A yolu kareleri     : ${budgeted.length}`);
+  // Örnekler BÜTÇEDEKİ ilk beat'ten: bütçe dışı beat'in promtu yok.
+  const sample = budgeted[0];
+  if (sample) {
+    console.log(`\nÖrnek plaka (${sample.file}-plate):\n`);
+    console.log(sample.platePrompt);
+    console.log(`\nÖrnek hero parçası (${sample.file}-a):\n`);
+    console.log(sample.pieces[0]?.prompt);
+  }
 }
 
 main().catch((e) => {
