@@ -128,10 +128,12 @@ kapısı → storyboard'a bağlama → render → **sessizlik ölçümü** → d
 tek cutout): segmentasyon yok, bütçe yok, `flow:pack` hiç çağrılmıyor. Yani bu
 oturumda ölçülerek düzeltilen hiçbir şey render hattına girmiyordu.
 
-**SES VE ALTYAZI YOK, VE BU ÖLÇÜLÜYOR.** `storyboard.audio` yazılmadığı sürece
-`<Audio>` hiç render edilmiyor, altyazı zaten hiç yoktu. Ama "eklemedik" demekle
-"yok" demek aynı şey değil: workflow `ffprobe` ile ses akışı sayıyor ve sıfır
-değilse iş DURUYOR.
+**SES VE ALTYAZI YOK, VE BU ÖLÇÜLÜYOR — kapı ilk denemede kendi render'ımızı
+düşürdü.** `storyboard.audio` yazılmadığı sürece `<Audio>` hiç render edilmiyor,
+altyazı zaten hiç yoktu. Ama "eklemedik" demekle "yok" demek aynı şey değil:
+yerelde ölçüldü ve Remotion `<Audio>` olmadan da **boş bir AAC izi** ekliyordu
+(ses akışı sayısı 1). Render artık `--muted` ile koşuyor; aynı ölçüm 0 veriyor.
+`ffprobe` kapısı duruyor, çünkü kapı olmasaydı bu hata sessizce yayına giderdi.
 
 **Sağlayıcı çökerse video YİNE ÇIKAR.** Üretim, arşiv ve kesim adımlarının üçü
 de `continue-on-error`; bütçedeki sahneler prosedürel siluete düşer. Ölçüldü:
