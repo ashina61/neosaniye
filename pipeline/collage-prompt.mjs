@@ -317,9 +317,7 @@ export function composedCollagePrompt(beat, story = {}) {
    * gerçek bir kişi ima ediliyorsa gözlerin üstüne siyah bar. Hem stilin
    * imzası hem de gerçek kişiyi teşhis edilebilir çizmemenin yolu.
    */
-  const isPerson = /\b(a man|a woman|a person|figure|portrait|attendant|boy|passenger)\b/i.test(
-    concrete ?? '',
-  );
+  const isPerson = PERSON_RE.test(usableHero(concrete) ?? '');
 
   /**
    * DESTEK ÖĞELER: en fazla 2-3 (PDF "Composition law"). Reçeteden geliyor ama
@@ -327,8 +325,9 @@ export function composedCollagePrompt(beat, story = {}) {
    */
   const supports = recipe.support.slice(0, 2).map(stripArticle);
 
-  const heroSentence = concrete
-    ? `A commanding black and white halftone cutout of ${heroNoun(concrete)} dominates the frame` +
+  const usable = usableHero(concrete);
+  const heroSentence = usable
+    ? `A commanding black and white halftone cutout of ${heroNoun(usable)} dominates the frame` +
       (isPerson ? ', with a black censor bar across the eyes' : '') +
       '.'
     : `${recipe.hero.charAt(0).toUpperCase()}${recipe.hero.slice(1)} dominates the frame.`;
@@ -544,6 +543,28 @@ const PIECE_BACKGROUND = [
  * varsa build-on bozulur, çünkü sahne "boş kağıttan başlar" kuralı ihlal edilir
  * ve o öğe hiç girmemiş gibi orada durur.
  */
+/**
+ * PLAKA STİL BLOĞU — harf daveti ÇIKARILMIŞ hâli.
+ *
+ * ============ PLAKA İKİ KEZ METİNLE KİRLENDİ ============
+ *
+ * 4. turda iki plakanın ikisinde de uydurma yazı çıktı ("YOOLNI IIILNIIRIGLLLID")
+ * ve birinde ayrıca bir YÜZ vardı. Oysa prompt "ABSOLUTELY NO story elements:
+ * ... no labels, no text" diyor.
+ *
+ * Sebep promtun kendi içinde: stil bloğu "condensed bold headline lettering
+ * only where a label is specified" diyor. Modele önce "hiç yazı olmasın" deyip
+ * sonra "manşet harfleri" demek — magenta hatasının birebir aynısı, ve o hata
+ * bu depoda iki tur kaybettirdi.
+ *
+ * Plaka için o cümle çıkarılıyor. Stil bloğunun geri kalanı (yaşlanmış
+ * newsprint, arşiv harita yüzeyi, baskı greni, kağıt lifi) plakanın ta kendisi.
+ */
+const PLATE_STYLE = STYLE_BLOCK.replace(
+  'condensed bold headline lettering only where a label is specified, ',
+  '',
+);
+
 export function platePrompt(beat) {
   const kind = String(beat.kind || 'fact');
   const scaffold =
@@ -556,9 +577,11 @@ export function platePrompt(beat) {
     FRAME_PREFIX.replace('one dominant hero element centered in the middle safe zone, ', ''),
     'An EMPTY background plate: aged newsprint and archival paper surface with stains, foxing, fibre and print grain,',
     `${scaffold}.`,
-    'ABSOLUTELY NO story elements: no photographs, no cutouts, no people, no objects, no labels, no text,',
-    'no tape, no stamps, no string, no pins. Only the bare aged surface.',
-    STYLE_BLOCK,
+    'ABSOLUTELY NO story elements: no photographs, no cutouts, no people, no faces, no objects,',
+    'no labels, no tape, no stamps, no string, no pins. Only the bare aged surface.',
+    'ABSOLUTELY NO WRITING OF ANY KIND: no words, no letters, no headlines, no printed lines of type,',
+    'no handwriting, no numbers. The surface is blank, weathered paper.',
+    PLATE_STYLE,
     'NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no watermark, no logos.',
     'Premium documentary collage aesthetic, vertical 9:16, ultra-detailed, 8K.',
   ].join(' ');
@@ -586,6 +609,28 @@ export function platePrompt(beat) {
  *
  * Kural: modelden yalnızca FOTOĞRAFLANABİLİR bir nesne istenir.
  */
+/**
+ * FOTOĞRAFLANAMAYAN ÖZNELER.
+ *
+ * `subjectFor` cümledeki İLK somut ismi seçiyor ve "On the night of 24 November
+ * 1971" cümlesinde o isim "night" oluyor → "a night sky or star chart study".
+ * 4. turda çıkan görsel yıldızlı bir ovalin içinde alakasız bir kadın portresi
+ * oldu; beat'in anlattığı şeyle hiçbir ilgisi yok.
+ *
+ * Zaman sözcükleri bir ANI adlandırır, bir NESNEYİ değil. Onlar hero olamaz;
+ * o beat'te reçetenin hero'su devreye girmeli — cold_open için "a torn calendar
+ * page", ki cümlenin taşıdığı bilgi (tarih) tam olarak orada duruyor.
+ */
+const NOT_PHOTOGRAPHABLE = /^(a |an |the )?(night|morning|evening|afternoon|day|year|hour|minute|moment|time|week|month)\b/i;
+
+/** Hero olarak kullanılabilir mi? Yoksa reçeteye düşülür. */
+/** Öznenin bir kişi olup olmadığı — sansür barı kararı buna bağlı. */
+const PERSON_RE = /\b(a man|a woman|a person|figure|portrait|attendant|boy|girl|passenger|crew)\b/i;
+
+function usableHero(subject) {
+  return subject && !NOT_PHOTOGRAPHABLE.test(subject) ? subject : null;
+}
+
 const CODE_DRAWS = /stamp|tape|string|\bpin\b|brass pin|underline|marker|paper clip|clipped|coffee ring|rule line|wax seal|fingerprint/i;
 
 /**
@@ -617,7 +662,7 @@ export function piecePrompts(beat, opts = {}) {
   const recipe = RECIPES[beat.kind] ?? FALLBACK;
   const concrete = subjectFor(text);
 
-  const subjects = [concrete ?? recipe.hero, ...recipe.support.filter((x) => !CODE_DRAWS.test(x))].slice(0, 3);
+  const subjects = [usableHero(concrete) ?? recipe.hero, ...recipe.support.filter((x) => !CODE_DRAWS.test(x))].slice(0, 3);
 
   return subjects.map((subject, i) => ({
     slot: String.fromCharCode(97 + i), // a, b, c, d
@@ -630,6 +675,14 @@ export function piecePrompts(beat, opts = {}) {
      */
     prompt: [
       `${subject.charAt(0).toUpperCase()}${subject.slice(1)}, cut out and isolated.`,
+      /**
+       * SANSÜR BARI — engine yasası. Kaynak PDF'in demo promtunda ve
+       * kullanıcının Mehmed örneğinde var: gerçek bir kişi ima ediliyorsa
+       * gözlerin üstüne siyah bar. Hem stilin imzası hem de gerçek kişiyi
+       * teşhis edilebilir çizmemenin yolu. Kompoze kare promtunda vardı, PARÇA
+       * promtunda yoktu — 4. turdaki iki portrenin ikisi de barsız geldi.
+       */
+      PERSON_RE.test(subject) ? 'A black censor bar runs across the eyes.' : '',
       eraClause(opts.era),
       PIECE_MATERIAL,
       'The subject fills most of the frame.',
