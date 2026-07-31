@@ -45,25 +45,44 @@ import {subjectFor} from './subject.mjs';
  */
 export const KEY_COLOUR = 'pure saturated magenta (#FF00FF)';
 
+/**
+ * STİL BLOĞU — KAYNAK PDF'TEN BİREBİR (SECTION 5).
+ *
+ * Belge "this is the style block that appears verbatim inside every image
+ * prompt" diyor. Karşılaştırıldı ve bir sapma bulundu: "tan, ink black, and
+ * halftone gray" yerine "tan, ink black and halftone gray" yazıyordu (Oxford
+ * virgülü eksik). Küçük görünüyor ama "verbatim" denen bir blokta sapma,
+ * sapmadır — ve bu depoda aynı sınıf sessiz ayrışma dört kez ölçüldü.
+ */
 const STYLE_BLOCK = [
   'hand-cut documentary paper collage on aged newsprint and archival map surfaces,',
   'black and white halftone photograph cutouts with rough scissor-cut edges and offset accent strokes,',
   'torn paper edges, masking tape fragments, typewriter caption strips, rubber stamp marks,',
   'red string and brass pins where the story calls for connections,',
-  'desaturated archival palette of tan, ink black and halftone gray with ONE hot red signal accent',
+  'desaturated archival palette of tan, ink black, and halftone gray with ONE hot red signal accent',
   'and a restrained mustard yellow secondary, condensed bold headline lettering only where a label is specified,',
   'visible print grain and paper fiber, matte, flat even documentary lighting with soft cutout drop shadows.',
 ].join(' ');
 
 /**
- * Kapanış bloğu. Referans PDF'te `16:9` yazıyor; biz Shorts kanalıyız, 9:16
- * bağlayıcı — kullanıcı bunu açıkça onayladı.
+ * CLOSER — KAYNAK PDF'TEN BİREBİR (SECTION 5, "The closer").
+ *
+ * Karşılaştırıldı ve KOCA BİR CÜMLE eksikti: "The composition stays clean,
+ * minimal, and editorial with generous negative space." Ayrıca "no clutter" ve
+ * "no text beyond the specified label" da yoktu. Üçü de kompozisyon
+ * disiplinini taşıyan ifadeler; eksik olmaları promtun kalabalık kare
+ * üretmesine açık kapı bırakıyordu.
+ *
+ * TEK KASITLI SAPMA: PDF "16:9" diyor, biz "9:16". Kullanıcı bunu açıkça
+ * onayladı (Shorts kanalı) ve kendi engine çıktısı örneği de 9:16 yazıyor.
  */
 const CLOSER = [
   'Every element must appear physically hand-cut and layered from real paper, with visible cutout edges,',
   'halftone print texture, and soft shadow separation between layers.',
-  'NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no watermark, no logos.',
-  'Premium documentary collage aesthetic, vertical 9:16, ultra-detailed, 8K.',
+  'The composition stays clean, minimal, and editorial with generous negative space.',
+  'NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no clutter,',
+  'no watermark, no logos, no text beyond the specified label.',
+  'Premium documentary collage aesthetic, 9:16, ultra-detailed, 8K.',
 ].join(' ');
 
 /**
@@ -152,6 +171,31 @@ const RECIPES = {
 };
 
 const FALLBACK = RECIPES.fact;
+
+/**
+ * Destek öğesinin başındaki belirteci at: cümle "One a coffee ring stain"
+ * değil "One coffee ring stain" olmalı. Küçük ama promt akan NESİR olmak
+ * zorunda (PDF: "woven as natural prose in one block").
+ */
+function stripArticle(s) {
+  return String(s).replace(/^(a|an|one|two)\s+/i, '');
+}
+
+/**
+ * `subjectFor` makine biçimi döndürüyor: "a man: documentary photograph of a
+ * person, three-quarter view, plain background". O biçim CUTOUT hattı için
+ * yazıldı (izole özne, düz zemin) ve kompoze karede İKİ AYRI sorun çıkarıyor:
+ * iki nokta üst üste nesri bozuyor, "plain background" ise kolaj zeminiyle
+ * doğrudan çelişiyor.
+ *
+ * Kompoze kare için iki noktadan ÖNCEKİ isim yeterli — kullanıcının Mehmed
+ * örneğinde de hero kısa bir isim ("Mehmed II on horseback"), uzun bir
+ * fotoğraf tarifi değil. Nasıl render edileceğini zaten stil bloğu söylüyor.
+ */
+function heroNoun(subject) {
+  const i = String(subject).indexOf(':');
+  return i > 0 ? String(subject).slice(0, i).trim() : String(subject).trim();
+}
 
 /** 4 kelime kuralı: uzun etiketi görsel modeli bozar. */
 function shortLabel(text, maxWords = 4) {
@@ -252,23 +296,67 @@ export function composedCollagePrompt(beat, story = {}) {
   if (date) labels.push(`the date ${date}`);
   for (const n of names) labels.push(`the name ${n.toUpperCase()}`);
 
-  const textClause = labels.length
-    ? `Text in the image is limited to: ${labels.slice(0, 2).join(' and ')}. ` +
-      'Set it in condensed bold type on a paper strip, a stamp, or as a large numeral. ' +
-      'No other words, no sentences, no paragraphs.'
+  /**
+   * METİN-GÖRSELDE YASASI (PDF Section 5).
+   *
+   * "Default is NO text. When a beat carries a date, a name, or a number that
+   * matters, ONE label of 1-4 words may appear on a paper strip, a stamp, or a
+   * torn headline. Image models mangle longer text, so never exceed 4 words."
+   *
+   * Önceki sürüm İKİ etiket birden verebiliyordu ("the date X and the name Y").
+   * Belge TEK diyor; ikisi varsa tarih kazanıyor çünkü cold_open'ın taşıdığı
+   * bilgi o.
+   */
+  const label = date ? date : names[0] ? names[0].toUpperCase() : null;
+  const labelClause = label
+    ? `A short stamp label reads "${shortLabel(label, 4)}".`
     : 'No text anywhere in the image.';
 
-  const hero = concrete
-    ? `A halftone paper cutout of ${concrete}, pinned to the archival ground as the dominant element`
-    : recipe.hero;
+  /**
+   * SANSÜR BARI — PDF'in demo promtunda ve kullanıcının Mehmed örneğinde var:
+   * gerçek bir kişi ima ediliyorsa gözlerin üstüne siyah bar. Hem stilin
+   * imzası hem de gerçek kişiyi teşhis edilebilir çizmemenin yolu.
+   */
+  const isPerson = /\b(a man|a woman|a person|figure|portrait|attendant|boy|passenger)\b/i.test(
+    concrete ?? '',
+  );
 
+  /**
+   * DESTEK ÖĞELER: en fazla 2-3 (PDF "Composition law"). Reçeteden geliyor ama
+   * hero ile aynı şeyi tekrarlamamalı.
+   */
+  const supports = recipe.support.slice(0, 2).map(stripArticle);
+
+  const heroSentence = concrete
+    ? `A commanding black and white halftone cutout of ${heroNoun(concrete)} dominates the frame` +
+      (isPerson ? ', with a black censor bar across the eyes' : '') +
+      '.'
+    : `${recipe.hero.charAt(0).toUpperCase()}${recipe.hero.slice(1)} dominates the frame.`;
+
+  /**
+   * ENGINE'İN SCENE YAPISI (PDF Section 7 + kullanıcının Mehmed örneği):
+   *   1. "Vertical 9:16 editorial documentary paper collage."
+   *   2. hero cümlesi — "… dominates the frame"
+   *   3. destek cümlesi — "One A and one B support the composition."
+   *   4. etiket cümlesi (varsa)
+   *   5. negatif alan cümlesi
+   *   6. STİL BLOĞU birebir
+   *   7. CLOSER birebir
+   *
+   * Önceki sürüm bu yapıda DEĞİLDİ: güvenli-alan ön eki ile açılıyor,
+   * "Supporting elements, no more than three:" gibi talimat dili kullanıyor ve
+   * anlatı cümlesini tırnak içinde promta gömüyordu. Belge bunların hiçbirini
+   * istemiyor — prompt AKAN NESİR olmalı ve kareyi TARİF etmeli, kurallarını
+   * saymamalı.
+   */
   return [
-    FRAME_PREFIX,
-    `${hero.charAt(0).toUpperCase()}${hero.slice(1)}.`,
-    recipe.heroText === 'no text' ? '' : `On the hero element: ${recipe.heroText}.`,
-    `Supporting elements, no more than three: ${recipe.support.join('; ')}.`,
-    `The subject matter is drawn from this documentary line: "${text}".`,
-    textClause,
+    'Vertical 9:16 editorial documentary paper collage.',
+    heroSentence,
+    supports.length
+      ? `One ${supports.join(' and one ')} ${supports.length === 1 ? 'supports' : 'support'} the composition.`
+      : '',
+    labelClause,
+    'Wide negative space keeps the image formal and restrained.',
     STYLE_BLOCK,
     CLOSER,
   ]

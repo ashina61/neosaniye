@@ -149,8 +149,25 @@ async function main() {
     path.join(PACK, 'ASSET-LIST.txt'),
     `${assets.map((a, i) => `${String(i + 1).padStart(3)}. ${a.file}.png   (${a.role})`).join('\n')}\n`,
   );
+  /**
+   * ENGINE BESLEMESİ — kaynak PDF Section 7'nin dosya biçimi.
+   *
+   * "Each image prompt is one block. Blocks separated by a single blank line.
+   * NO numbering, NO headers, NO labels, NO commentary between blocks. Every
+   * block fully self-contained." Dosya adı da belgede: [topic-slug]-prompts.txt
+   *
+   * Bu, beat başına TEK BİTMİŞ KARE üreten akış — engine'in asıl yolu.
+   * `ALL-PROMPTS.txt` (parça parça B yolu) yanında duruyor, silinmedi: ikisi
+   * farklı sorulara cevap veriyor ve hangisinin kullanılacağı kullanıcının
+   * kararı.
+   */
+  const slug = String(sb.title || 'topic')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 48);
   await writeFile(
-    path.join(PACK, 'ALL-FALLBACK-PROMPTS.txt'),
+    path.join(PACK, `${slug}-prompts.txt`),
     `${flow.map((r) => r.fallbackPrompt).join('\n\n')}\n`,
   );
   await writeFile(path.join(PACK, 'UNIVERSAL-VIDEO-PROMPT.txt'), `${UNIVERSAL_VIDEO_PROMPT}\n`);
@@ -221,7 +238,8 @@ async function main() {
   console.log(`  görsel üretilecek   : ${flow.length} beat`);
   console.log(`  kodla çizilen       : ${code.length} beat (${[...new Set(code.map((c) => c.template))].join(', ')})`);
   console.log(`  B yolu varlıkları   : ${flow.length} plaka + ${pieceCount} parça = ${assets.length} görsel`);
-  console.log(`  A yolu yedeği       : ${flow.length} tek-kare + ${flow.length} hareket metni`);
+  console.log(`  ENGINE beslemesi    : ${slug}-prompts.txt — ${flow.length} bitmiş kare, blok blok`);
+  console.log(`  A yolu hareket metni: ${flow.length} adet (+ UNIVERSAL-VIDEO-PROMPT)`);
   console.log(`\nÖrnek plaka (${flow[0]?.file}-plate):\n`);
   console.log(flow[0]?.platePrompt);
   console.log(`\nÖrnek hero parçası (${flow[0]?.file}-a):\n`);
