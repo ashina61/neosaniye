@@ -92,6 +92,20 @@ jobs:
           # yorumlayıcıya çözülürse import hatası verir. Aynısı kullanılıyor.
           python3 -m pip install --disable-pip-version-check --quiet pillow numpy
 
+      # TESTLER BURADA, SONDA DEĞİL — ve sebebi ölçüldü.
+      #
+      # İlk sürümde testler en sonda çalışıyordu ve 62 testin TAP çıktısı
+      # (~250 satır) logun kuyruğunu tamamen dolduruyordu. Log okuma aracı
+      # kuyruktan ~330 satır veriyor, yani ASIL SORULACAK ŞEY — hangi
+      # sağlayıcı üretti, alfa geçti mi — erişilemez hâle geliyordu.
+      #
+      # Testler girdiye bağlı değil; önce çalışmaları hiçbir şey kaybettirmiyor
+      # ve bozuk bir depoyla üretim kotası harcamayı da engelliyor.
+      - name: Typecheck + test
+        run: |
+          npm run typecheck
+          npm test
+
       - name: Storyboard üret
         run: node pipeline/build-storyboard.mjs "${{ inputs.topic }}"
 
@@ -173,11 +187,48 @@ jobs:
           echo "kare: $FRAME"
           npx remotion still src/index.ts Short out/composed-frame.png --frame=$FRAME
 
-      - name: Typecheck + test
+      # TEŞHİS ÖZETİ — LOGUN EN SONUNDA.
+      #
+      # Bu adım varlığını bir başarısızlığa borçlu: ilk çalıştırmada 5 görsel
+      # üretildi ama hiçbiri storyboard'a bağlanmadı, ve sebebi logdan
+      # OKUNAMADI çünkü test çıktısı kuyruğu doldurmuştu. Teşhis ancak
+      # "13 dosya yüklendi" satırından geri sayarak tahmin edilebildi.
+      #
+      # Bir ölçümü tahmin ederek elde etmek zorunda kalmak, ölçümün eksik
+      # olduğu anlamına gelir. Aşağıdaki blok kısa ve en sonda: her koşuda
+      # cevabı doğrudan veriyor.
+      - name: ÖZET — ne geldi, ne bağlandı, neden
         if: always()
         run: |
-          npm run typecheck
-          npm test
+          echo "==================== TEŞHİS ===================="
+          echo "ham görsel (collage-raw/): $(ls collage-raw/*.png 2>/dev/null | wc -l)"
+          echo "kesilmiş  (public/collage/): $(ls public/collage/*.png 2>/dev/null | wc -l)"
+          echo
+          echo "--- her ham görselin ZEMİNİ gerçekten magenta mı? ---"
+          python3 - <<'PY'
+          import glob
+          import numpy as np
+          from PIL import Image
+          for f in sorted(glob.glob('collage-raw/*.png')):
+              a = np.asarray(Image.open(f).convert('RGB')).astype(int)
+              r, g, b = a[:, :, 0], a[:, :, 1], a[:, :, 2]
+              mag = (np.minimum(r, b) - g) > 87          # chroma_alpha ile AYNI ölçüt
+              # Kenar şeridi zemin olmak ZORUNDA: özne kenara değmiyor deniyor.
+              edge = np.concatenate([mag[:8].ravel(), mag[-8:].ravel(),
+                                     mag[:, :8].ravel(), mag[:, -8:].ravel()])
+              print(f"  {f:34s} magenta %{100*mag.mean():5.1f}  kenar %{100*edge.mean():5.1f}"
+                    f"  {'ZEMİN VAR' if edge.mean() > 0.8 else '>>> ZEMİN YOK <<<'}")
+          PY
+          echo
+          echo "--- storyboard'a kaç sahne bağlandı? ---"
+          node -e "
+            const sb=require('./content/storyboard.json');
+            const w=sb.scenes.filter(s=>s.payload.layers);
+            console.log('  collage_build sahnesi:', sb.scenes.filter(s=>s.template==='collage_build').length, '/', sb.scenes.length);
+            for(const s of w) console.log('   ', s._beat?.text?.slice(0,44), '→', s.payload.layers.pieces.length, 'parça');
+            if(!w.length) console.log('  HİÇBİRİ. Parçalar alfa doğrulamasından düştü ya da hiç üretilemedi.');
+          "
+          echo "================================================"
 
       - name: Artefaktları yükle
         if: always()
