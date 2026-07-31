@@ -111,6 +111,22 @@ eşiğini denetliyor.
   şablonlarda sürüklenen şey en büyük nesne olmak zorunda (harita plakası,
   zemin kartı).
 
+## Render bu konteynerde ALINMAZ
+
+Kullanıcı kuralı. Sebebi ölçüldü: 4 çekirdek, Remotion her kareyi ayrı Chrome
+sekmesinde çiziyor.
+
+    tam çözünürlük   ~2.3 sn/kare → 80 sn'lik video ≈ 90 dakika
+    yarım çözünürlük ~1.2 sn/kare → 12 sn'lik parça ≈ 7 dakika
+
+Video **Actions'ta** alınır (`render.yml`). Burada yalnızca TEK KARE (`remotion
+still`) alınabilir ve o da bir ölçüm gerektiğinde — kompozisyon doğrulaması,
+kapı raporu. Tam video render'ı başlatmak, ölçüm başına 90 dakika harcamak
+demek.
+
+`npm run gate:templates` 13 kare render ediyor (~2 dk) ve bu yüzden burada
+DEĞİL, workflow'da koşuyor.
+
 ## Şablon kapıları — üç turda üç kez aynı sınıf hata çıktı
 
 Bu oturumda beş şablon elle düzeltildi ve her turda aynı sınıf hata çıktı: alt
