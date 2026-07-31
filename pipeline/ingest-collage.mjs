@@ -2,16 +2,15 @@
 /**
  * PARÇA YUTUCU — B YOLU
  *
- * `collage-raw/` altına atılan ham görselleri alır, parçaların magenta zeminini
- * silip alfa PNG'ye çevirir, `public/collage/` altına yazar ve storyboard'a
- * bağlar. Malzemesi tamamlanan sahnenin şablonu `collage_build`'e döner.
+ * `collage-raw/` altına atılan ham görselleri alır, zemini silip alfa PNG'ye
+ * çevirir, `public/collage/` altına yazar ve storyboard'a bağlar. Malzemesi tamamlanan sahnenin şablonu `collage_build`'e döner.
  *
  * ==================== NEDEN İKİ AYRI KLASÖR ====================
  *
- * HAM görsel (`collage-raw/`) magenta zeminli ve OPAK. İŞLENMİŞ görsel
+ * HAM görsel (`collage-raw/`) zeminli ve OPAK. İŞLENMİŞ görsel
  * (`public/collage/`) alfa kanallı. İkisi aynı klasörde dursaydı Remotion
- * bundle'ı ham magenta kareleri de paketlerdi ve yanlış dosyayı sahneye
- * bağlamak tek harflik bir hata olurdu — ekranda mor bir dikdörtgen.
+ * bundle'ı ham kareleri de paketlerdi ve yanlış dosyayı sahneye bağlamak tek
+ * harflik bir hata olurdu — ekranda zeminiyle birlikte bir dikdörtgen.
  *
  * `collage-raw/` .gitignore'da: ham görseller büyük ve türetilmiş veri.
  *
@@ -61,17 +60,6 @@ function findRaw(base) {
 }
 
 /**
- * Parçayı alfa PNG'ye çevir.
- *
- * `chroma` modu: girdiyi BİZ sipariş ettiğimiz için en dayanıklı olan bu —
- * prompt düz magenta zemin istiyor, burada o renk siliniyor. `ink` modu
- * parlaklıktan alfa türetir ve öznenin açık tonlarını da deler.
- *
- * `--no-halftone`: parça zaten halftone olarak üretildi. İkinci kez uygulamak
- * nokta üstüne nokta bindirip gri bir bulanıklık yapıyor. Aynı gerekçe
- * `CollageBuild`'in `halftone={false}` tercihinde de yazılı.
- */
-/**
  * MOD ZİNCİRİ — ÖLÇÜLEREK KONDU.
  *
  * İlk sürüm yalnızca `chroma` deniyordu. Canlı çalıştırmada 5 görselin beşi de
@@ -84,16 +72,27 @@ function findRaw(base) {
  *   matte  → 5/5 geçti   (kenardan taşma-doldurma; zemin ne renk olursa olsun)
  *   ink    → 3/5 geçti   (parlaklıktan alfa; koyu zeminli görselde çöküyor)
  *
- * Sıra buna göre: chroma ÖNCE kalıyor çünkü prompt onu istiyor ve doğru
- * geldiğinde en temiz kenarı o veriyor. Tutmazsa matte, o da tutmazsa ink.
+ * İKİNCİ tur magenta'yı tamamen bitirdi: model bu sefer magenta'yı ZEMİNE
+ * değil ÖZNENİN İÇİNE koydu (kenar medyanı 0/-5, MERKEZ medyanı 16/42) ve
+ * kesilen parçalarda opak piksellerin %82'si pembeydi. Prompt artık düz BEYAZ
+ * stüdyo zemini istiyor, sıra da ona göre: matte önce.
  *
- * DİKKAT — YEDEK MOD BEDAVA DEĞİL. Aynı ölçümde matte'in geçtiği 5 görselin
- * yalnızca 2'si GÖRSEL OLARAK kullanılabilirdi: pembe zeminli olanlarda pembe
- * "özne" sanılıp korunmuştu. Yani sayısal kapıyı geçmek, kesiğin doğru olduğu
- * anlamına gelmiyor. Bu yüzden hangi modun kazandığı raporlanıyor: `chroma`
- * dışında bir mod kazanıyorsa prompt tutmamış demektir ve bakılması gerekir.
+ * DİKKAT — YEDEK MOD BEDAVA DEĞİL. Sayısal kapıyı geçmek kesiğin DOĞRU olduğu
+ * anlamına gelmiyor: 1. turda matte'in geçirdiği 5 parçanın yalnızca 2'si
+ * görsel olarak kullanılabilirdi. Bu yüzden beklenen mod dışında bir mod
+ * kazandığında adım yüksek sesle uyarıyor.
  */
-const MODES = ['chroma', 'matte', 'ink'];
+const MODES = ['matte', 'chroma', 'ink'];
+
+/**
+ * BEKLENEN MOD. Prompt artık düz BEYAZ stüdyo zemini istiyor (magenta iki
+ * canlı çalıştırmada da tutmadı ve ikincisinde model magenta'yı öznenin İÇİNE
+ * koydu). `matte` kenardan taşma-doldurma yapıyor, zeminin rengini bilmesi
+ * gerekmiyor — sadece tekdüze olması yeter.
+ *
+ * Bundan başka bir mod kazanırsa zemin beklendiği gibi gelmemiş demektir.
+ */
+const EXPECTED_MODE = 'matte';
 
 async function cutout(src, dst) {
   const problems = [];
@@ -163,12 +162,12 @@ async function main() {
       try {
         const {line, mode} = await cutout(raw, dst);
         pieces.push({src: `collage/${row.file}-${p.slot}.png`, role: p.role});
-        // `chroma` dışında bir mod kazandıysa prompt tutmamış: yüksek sesle söyle.
-        console.log(`  ${line}${mode === 'chroma' ? '' : `   << YEDEK MOD (${mode}) — zemin magenta değildi`}`);
-        if (mode !== 'chroma') fallbacks.push(`${row.file}-${p.slot} → ${mode}`);
+        // Beklenen mod dışında biri kazandıysa prompt tutmamış: yüksek sesle söyle.
+        console.log(`  ${line}${mode === EXPECTED_MODE ? '' : `   << YEDEK MOD (${mode}) — zemin düz beyaz değildi`}`);
+        if (mode !== EXPECTED_MODE) fallbacks.push(`${row.file}-${p.slot} → ${mode}`);
       } catch (e) {
-        // Alfa doğrulaması düştü: parça BAĞLANMAZ. Bağlamak, ekranda mor bir
-        // dikdörtgen ya da görünmez bir katman demek olurdu.
+        // Üç mod da düştü: parça BAĞLANMAZ. Bağlamak, ekranda zeminiyle
+        // birlikte bir dikdörtgen ya da görünmez bir katman demek olurdu.
         problems.push(`${row.file}-${p.slot}: ${String(e.stderr || e.message).trim().split('\n').pop()}`);
       }
     }
@@ -197,7 +196,7 @@ async function main() {
     for (const e of empty) console.log(`  ${e.file}`);
   }
   if (fallbacks.length) {
-    console.log(`\nYEDEK MOD KULLANILDI (${fallbacks.length}) — bu parçalarda zemin magenta DEĞİLDİ:`);
+    console.log(`\nYEDEK MOD KULLANILDI (${fallbacks.length}) — bu parçalarda zemin düz BEYAZ değildi:`);
     for (const f of fallbacks) console.log(`  ${f}`);
     console.log(`  Sayısal kapıyı geçmek kesiğin DOĞRU olduğu anlamına gelmiyor: ölçümde`);
     console.log(`  matte'in geçtiği 5 parçanın yalnızca 2'si görsel olarak kullanılabilirdi.`);

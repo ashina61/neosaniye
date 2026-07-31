@@ -160,9 +160,21 @@ npm run sheet                      # tek kareye bak (render'a girmeden)
   devreye giriyor: kamera gerçekten kilitli, tarih ve sayı değişmiyor (metni
   Remotion çiziyor), çıktı deterministik. A yolunda (Flow i2v) üçü de ÖLÇÜMLE
   elde edilemedi.
-- **Parça prompt'undaki magenta zemin cümlesi süs değil**, alfa çıkarımının tek
-  dayanağı. `KEY_COLOUR` tek kaynak (`collage-prompt.mjs`) ve hem prompt'a hem
-  `cutout.py` çağrısına oradan gidiyor.
+- **MAGENTA ZEMİN TERK EDİLDİ — iki canlı çalıştırmada da tutmadı.** 1. turda
+  5 görselin beşinde zemin magenta değildi (köşe skorları 0-37, eşik 87).
+  Prompt düzeltildi (çelişkili "no colour" kaldırıldı, özne başa alındı,
+  "chroma-key screen" dendi) ve 2. tur yine %0.0 verdi — ama bu sefer ölçüm
+  asıl sorunu gösterdi: **magenta ZEMİNDE değil ÖZNENİN İÇİNDEYDİ** (kenar
+  medyanı 0/-5, MERKEZ medyanı 16/42; kesilen parçalarda opak piksellerin
+  %82'si pembe). Yani "magenta" kelimesini duymak özneyi kirletiyor.
+  Prompt artık **düz beyaz stüdyo zemini** istiyor ve beklenen mod `matte`.
+  Gerekçe ölçülmüş: aynı turda tek temiz parça beyaz zeminli portreydi
+  (pembe %0.0, kroma 5.8) ve matte onu kusursuz kesti.
+- **Modelden yalnızca FOTOĞRAFLANABİLİR nesne istenir.** Reçetelerin destek
+  listeleri bant/damga/ip/iğne/altı-çizme istiyordu; beşini de kod çiziyor
+  (`paper/Fixings.tsx`, `paper/Marks.tsx`). Bunlar sadece israf değil zararlı:
+  başarısız olan parçalar tam olarak bunlardı, çünkü model soyut bir kağıt
+  tarifini SAHNE olarak yorumluyor. `CODE_DRAWS` süzgeci onları eliyor.
 - **Eksik parça hata değil**: `npm run collage` ne bulursa onu bağlar, malzemesi
   olmayan sahne mevcut kod-çizimli şablonuyla kalır. Tek sahneyle deneme yapmak
   bu yüzden mümkün.

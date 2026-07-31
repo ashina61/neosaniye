@@ -366,40 +366,45 @@ export const RECIPE_KINDS = Object.keys(RECIPES);
  */
 
 /**
- * Parçanın magenta zemin şartı — alfa çıkarımının tek dayanağı.
+ * Parçanın zemin şartı — alfa çıkarımının tek dayanağı.
  *
- * ================== CANLI ÇALIŞTIRMADAN ÖLÇÜLDÜ ==================
+ * ============ MAGENTA İKİ CANLI ÇALIŞTIRMADA DA BAŞARISIZ ============
  *
- * İlk sürüm 5 görselin BEŞİNDE de zemin üretemedi. Ölçüm (köşe medyanı,
- * `min(R,B)-G`, eşik 87):
- *   01-a (216,216,216) skor   0     01-b (207,103,140) skor  37
- *   01-c ( 59, 59, 57) skor  -2     01-d (188,154,170) skor  16
- *   02-a (235,235,235) skor   0
- * Yani model ya hiç denemedi ya da SOLUK PEMBE yaptı; hiçbiri eşiğin yarısına
- * bile gelmedi ve beşi de alfa doğrulamasından düştü.
+ * 1. TUR: 5 görselin beşinde de zemin magenta değildi (köşe skorları 0-37,
+ *    eşik 87). Sebep prompt'taki çelişkiydi ("no colour" + neon magenta) ve
+ *    gömülü özneydi. İkisi de düzeltildi.
  *
- * İKİ SEBEP, İKİSİ DE BU PROMPT'TA:
+ * 2. TUR: yine %0.0. Ama bu sefer ölçüm asıl sorunu gösterdi — magenta
+ *    ZEMİNDE değil, ÖZNENİN İÇİNDEYDİ:
+ *      01-a  kenar  0  MERKEZ 16      01-c  kenar -5  MERKEZ 42
+ *    Yani model "magenta" kelimesini duyunca ÖZNEYİ pembe boyadı. Kesilen
+ *    parçalarda opak piksellerin %82'si (01-b) ve %47'si (01-c) pembeydi;
+ *    kompoze karede ekranda pembe lekeler duruyordu.
  *
- * 1. ÇELİŞKİ. Zemin cümlesinden hemen önce "Desaturated ink black and halftone
- *    gray only. No colour in the subject." yazıyordu. Modele "hiç renk olmasın"
- *    deyip iki cümle sonra "zemini neon magenta yap" demek. Model global
- *    talimatı uyguladı ve doygunluğu kıstı. O cümle kaldırıldı — `despill()`
- *    zaten kalıntı magenta'yı temizliyor ve referans kolaj RENK İSTİYOR
- *    (kırmızı mühür, hardal bant).
+ * SONUÇ: magenta'dan söz etmek özneyi kirletiyor. İki tur prompt mühendisliği
+ * bunu değiştirmedi, üçüncüsü de değiştirmezdi.
  *
- * 2. YANLIŞ ZİHİNSEL MODEL. "hand-cut paper collage element" ifadesi modele
- *    "bir yüzeyin üstünde duran kağıt parçasının FOTOĞRAFI" çizdiriyordu —
- *    yani bir SAHNE, bir kesik değil. Ölçülen çıktılar tam olarak buydu:
- *    pembe duvara yapıştırılmış yırtık kağıtlar. O yüzden artık "chroma-key
- *    screen" deniyor (modeller yeşil perdeyi bilir) ve o başarısızlık biçimi
- *    ADIYLA reddediliyor.
+ * ============ NEDEN BEYAZ ÇALIŞIR ============
+ *
+ * Aynı 2. turda TEK temiz parça portreydi: `02-fact-a`, pembe %0.0, ortalama
+ * kroma 5.8, düz beyaz zeminde siyah-beyaz fotoğraf — ve `matte` modu onu
+ * kusursuz kesti. 1. turda da matte 5/5 geçmişti.
+ *
+ * Yani modelin ZATEN vermek istediği şey bu: beyaz zeminde koyu özne. Ona
+ * karşı kürek çekmek yerine istediğimiz o. `matte` modu (kenardan
+ * taşma-doldurma) zeminin rengini bilmek zorunda değil, tekdüze olması yeter;
+ * ve `keep_largest_blob` öznenin içindeki açık bölgeleri geri kapatıyor, yani
+ * beyaz gömlek delik olmuyor.
+ *
+ * `KEY_COLOUR` yine de duruyor: kroma modu ve A yolu için geçerli, ve biri
+ * elle magenta zeminli parça üretirse zincir onu hâlâ tanıyor.
  */
 const PIECE_BACKGROUND = [
-  `BACKGROUND: a flat chroma-key screen behind the subject — one uniform fill of ${KEY_COLOUR},`,
-  'exactly like a green-screen backdrop but magenta.',
-  'The background is NOT a wall, NOT paper, NOT a table, NOT a surface of any kind:',
-  'it has no texture, no grain, no gradient, no vignette and no shadow cast on it.',
-  'The subject must not touch the frame edges; leave a clear margin of flat magenta on all sides.',
+  'BACKGROUND: a plain seamless pure white studio backdrop, evenly lit, completely empty.',
+  'The background is NOT a wall, NOT paper, NOT a table, NOT a surface with texture:',
+  'it is blank white with no grain, no gradient, no vignette and no shadow cast on it.',
+  'The subject is clearly DARKER than the background so its outline reads cleanly.',
+  'The subject must not touch the frame edges; leave a clear white margin on all sides.',
   'ONE single object only, isolated, nothing else in the frame.',
 ].join(' ');
 
@@ -437,12 +442,29 @@ export function platePrompt(beat) {
  * reçetesinden. En fazla dört parça: referans kolajlarda ölçülen yoğunluk
  * hero + 2-3 destek.
  */
+/**
+ * KODUN ZATEN ÇİZDİĞİ DESTEKLER MODELDEN İSTENMEZ.
+ *
+ * Reçetelerin destek listeleri bu deponun tutturucuları yazılmadan önce
+ * kurulmuştu ve hâlâ bant, damga, ip, iğne, altı çizme, ataç istiyordu —
+ * beşini de `paper/Fixings.tsx` ve `paper/Marks.tsx` çiziyor, hem daha temiz
+ * hem deterministik hem bedava.
+ *
+ * İkinci canlı çalıştırma bunun sadece israf değil ZARARLI olduğunu gösterdi:
+ * başarısız olan parçalar tam olarak bunlardı ("a coffee ring stain",
+ * "a torn calendar page"), çünkü model soyut bir kağıt tarifini SAHNE olarak
+ * yorumluyor. Temiz çıkan tek parça somut bir nesneydi (portre).
+ *
+ * Kural: modelden yalnızca FOTOĞRAFLANABİLİR bir nesne istenir.
+ */
+const CODE_DRAWS = /stamp|tape|string|\bpin\b|brass pin|underline|marker|paper clip|clipped|coffee ring|rule line|wax seal|fingerprint/i;
+
 export function piecePrompts(beat) {
   const text = String(beat.text || '').replace(/[*"]/g, '').trim();
   const recipe = RECIPES[beat.kind] ?? FALLBACK;
   const concrete = subjectFor(text);
 
-  const subjects = [concrete ?? recipe.hero, ...recipe.support].slice(0, 4);
+  const subjects = [concrete ?? recipe.hero, ...recipe.support.filter((x) => !CODE_DRAWS.test(x))].slice(0, 3);
 
   return subjects.map((subject, i) => ({
     slot: String.fromCharCode(97 + i), // a, b, c, d
@@ -462,7 +484,7 @@ export function piecePrompts(beat) {
       'NO text, NO letters, NO numbers, NO watermark, NO logo, NO border, NO frame,',
       'NO sheet of paper behind the subject, NO drop shadow, NO vignette.',
       'This is NOT a photograph of paper lying on a surface and NOT a scene:',
-      'it is one object cut out against a flat magenta screen.',
+      'it is one object photographed against an empty white backdrop.',
       'NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy.',
       'Vertical 9:16 framing, ultra-detailed.',
     ].join(' '),
