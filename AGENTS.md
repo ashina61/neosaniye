@@ -175,6 +175,23 @@ npm run sheet                      # tek kareye bak (render'a girmeden)
   o parçanın opak piksellerinin %62'si magenta ölçüldü). Yerine `drop_speckles`
   (küçük lekeyi at, kalan HER bileşeni tut, boşluğa dokunma) + `despill`.
   `test/cutout.test.mjs` üçünü de denetliyor.
+- **Anahtar renk MAGENTA'dır, "doygunluk" değil.** `chroma_alpha` önce
+  `max-min > eşik` olan HER pikseli arka plan sayıyordu; yani kırmızı bir mühür
+  (kroma 0.67) da silinirdi. Ölçüt magenta'nın tanımı olmalı: `min(R,B) - G`.
+  Aynı hata `despill`'de de vardı (her opak pikseli griye çeviriyordu).
+  Kullanıcının referans kolajında renkli harita, kırmızı mühür ve hardal bant
+  var — kesik-kağıt dilinin aksanları tam olarak onlar. **Parça renkli olabilir;
+  yalnızca magenta olamaz.**
+- **Tasarlanmış bir kareden ayrıştırılan parçalar kendi yerini taşır**
+  (`layers.pieces[].box`, kanvasa göre 0..1). Yuvalara dağıtmak kompozisyonu yok
+  eder. `box` varsa kontur da kapatılır: orijinaldeki kesim kenarının üstüne
+  ikinci bir kenar binmesin.
+- **Düz bir kareyi geri katmanlara ayırmak GÜVENİLİR DEĞİL** ve denendi: bir
+  referans kolajda hero maskesi ancak elle kutu vererek çıkarılabildi, sancak
+  direği hero'ya bağlandığı için otomatik taşma-doldurma sızdı, plakadaki delik
+  difüzyonla doldurulunca yumuşak bir leke bıraktı. Sonuç izlenebilir ama her
+  yeni kare yeni elle ayar ister — yani konuya özgü kod. **Parçalar baştan ayrı
+  üretilmeli;** B yolunun varlık sebebi bu.
 
 ## Metin
 

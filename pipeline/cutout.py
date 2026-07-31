@@ -135,34 +135,46 @@ def border_flood_alpha(rgb: np.ndarray, tolerance: int = 26, feather: int = 2) -
 # --------------------------------------------------------------------------
 def chroma_alpha(rgb: np.ndarray, sat_min: float = 0.34, feather: int = 2) -> np.ndarray:
     """
-    Doygun anahtar rengi sil.
+    ANAHTAR RENGİ sil — her doygun rengi değil.
 
     NEDEN BU MOD VAR: `matte` modu kendi test fikstüründe bir zayıflık gösterdi.
     Öznenin gradyanı arka plan tonuna yaklaştığı yerde taşma-doldurma özneye
     girip bir parça yedi. Tolerans daralttıkça arka plandaki sıkıştırma
     gürültüsü kaldı, gevşettikçe özne yendi; ikisinin arası yok.
 
-    Çözüm mimari: prompt'u BİZ yazıyoruz. Arka planı doygun magenta istersek,
-    siyah-beyaz halftone bir öznede o doygunlukta piksel HİÇ olamaz — ayrım
-    tonda değil, doygunlukta yapılır ve kesin olur.
+    Çözüm mimari: prompt'u BİZ yazıyoruz. Arka planı magenta istersek ayrım
+    tonda değil, RENKTE yapılır ve kesin olur.
 
-    Kural: doygunluğu eşiği geçen piksel arka plandır. Griler (özne) kalır.
+    ============ AYRIM DOYGUNLUKTA DEĞİL, MAGENTA'DA ============
+
+    İlk sürüm `chroma = max-min` ölçüp "doygunluğu eşiği geçen piksel arka
+    plandır" diyordu. Yani her doygun renk siliniyordu, magenta olsun olmasın.
+
+    Kullanıcının referans kolajı bunun neyi kırdığını gösterdi: o karede renkli
+    bir Boğaz haritası, kırmızı bir mühür ve hardal bant var — kesik-kağıt
+    dilinin aksanları tam olarak bunlar. Eski ölçütle üçü de "arka plan" sayılıp
+    silinirdi. Test fikstüründe ölçüldü: kırmızı kare (200,30,35) kroma 0.667
+    veriyor, eşik 0.34 — silinir.
+
+    Doğru ölçüt magenta'nın TANIMI: R ve B'nin İKİSİ birden G'den yüksek.
+    Miktarı `min(R,B) - G`.
+
+      · saf magenta (255,0,255) → 255 → arka plan
+      · kırmızı     (200,30,35) → min(200,35)=35, G=30 → 5   → ÖZNE
+      · hardal      (210,165,70) → min=70, G=165        → <0 → ÖZNE
+      · teal        (110,160,160) → min=110, G=160      → <0 → ÖZNE
+      · mürekkep    (40,40,40)  → 0                      → ÖZNE
+      · kağıt       (250,250,248) → -2                   → ÖZNE
+
+    MUTLAK ölçü, göreli DEĞİL. Göreli doygunluk karanlıkta kararsızdır: siyaha
+    yakın bir pikselde sıkıştırma gürültüsü mx=10, mn=4 yaparsa göreli doygunluk
+    %60 çıkar ve piksel "arka plan" sayılır. Kendi kanıt görüntümde bu, öznenin
+    koyu kenarını tırtıklı bir gürültüye çevirmişti.
     """
     f = rgb.astype(np.float32) / 255.0
-    mx = f.max(axis=2)
-    mn = f.min(axis=2)
-
-    # MUTLAK kroma (mx - mn), göreli doygunluk (mx-mn)/mx DEĞİL.
-    #
-    # NEDEN: göreli doygunluk karanlıkta kararsızdır. Siyaha yakın bir pikselde
-    # sıkıştırma gürültüsü mx=10, mn=4 yaparsa göreli doygunluk %60 çıkar ve
-    # piksel "arka plan" sayılır. Kendi kanıt görüntümde bu, öznenin koyu
-    # kenarını tırtıklı bir gürültüye çevirdi.
-    #
-    # Mutlak kromada aynı gürültü 0.024 eder; tam doygun magenta ise 1.0.
-    # Ayrım kesindir ve parlaklıktan bağımsızdır.
-    chroma = mx - mn
-    alpha = (chroma < sat_min).astype(np.float32)
+    r, g, b = f[:, :, 0], f[:, :, 1], f[:, :, 2]
+    magenta = np.minimum(r, b) - g
+    alpha = (magenta < sat_min).astype(np.float32)
     if feather > 0:
         alpha = _box_blur(alpha, feather)
     return np.clip(alpha, 0.0, 1.0)
@@ -318,19 +330,40 @@ def keep_largest_blob(alpha: np.ndarray, threshold: float = 0.5) -> np.ndarray:
 
 def despill(rgb: np.ndarray) -> np.ndarray:
     """
-    Anahtar rengin özneye bulaşan kalıntısını nötrle: renkli piksel griye döner.
+    Magenta kalıntısını nötrle — ama ÖZNENİN RENGİNE DOKUNMA.
 
     NEDEN GEREKLİ: yumuşatma (feather) sınırda yarı saydam bir bant bırakıyor ve
     o bandın RGB'si magenta. Alfa 0.5 olduğu için ekranda görünüyor — kesiğin
     çevresinde ince mor bir hâle. Alfa doğru olsa bile RENK yanlış kalıyor.
 
-    Tam desatürasyon burada güvenli, çünkü parça prompt'u zaten "black and white
-    halftone, desaturated ink black and halftone gray only, no colour in the
-    subject" diyor. Yani bu adım sözleşmeyi ZORLUYOR: modelden renk sızarsa da
-    kolaj paletine dönüyor.
+    ================== NEDEN TAM DESATÜRASYON DEĞİL ==================
+
+    İlk sürüm her opak pikseli griye çeviriyordu. Gerekçesi "parça prompt'u zaten
+    siyah-beyaz istiyor, bu adım sözleşmeyi zorlar" idi. Kullanıcının referans
+    karesi bunun YANLIŞ olduğunu gösterdi: o kolajda renkli bir Boğaz haritası,
+    kırmızı bir mühür, kırmızı ip ve hardal bant var — kesik-kağıt dilinin
+    aksanları tam olarak bunlar. Tam desatürasyon hepsini öldürüyordu.
+
+    Doğrusu KANAL BAZLI bastırma: magenta demek R ve B'nin İKİSİNİN birden
+    G'den yüksek olması. Taşma miktarı `min(R,B) - G`, pozitifse.
+
+      · saf magenta (255,0,255) → taşma 255 → (0,0,0), zaten alfası sıfır
+      · magenta bulaşmış gri kenar (180,120,180) → taşma 60 → (120,120,120)
+      · saf kırmızı (255,0,0) → min(255,0)=0, taşma yok → DOKUNULMAZ
+      · hardal (210,160,60) → min=60 < G=160, taşma yok → DOKUNULMAZ
+      · haritanın soluk yeşili/mavisi → taşma yok → DOKUNULMAZ
+
+    Yani yalnızca anahtar renk ölüyor, palet yaşıyor.
     """
-    luma = (0.299 * rgb[:, :, 0] + 0.587 * rgb[:, :, 1] + 0.114 * rgb[:, :, 2]).astype(np.uint8)
-    return np.dstack([luma, luma, luma])
+    r = rgb[:, :, 0].astype(np.int16)
+    g = rgb[:, :, 1].astype(np.int16)
+    b = rgb[:, :, 2].astype(np.int16)
+    spill = np.clip(np.minimum(r, b) - g, 0, 255)
+    return np.dstack([
+        np.clip(r - spill, 0, 255).astype(np.uint8),
+        g.astype(np.uint8),
+        np.clip(b - spill, 0, 255).astype(np.uint8),
+    ])
 
 
 def _box_blur(a: np.ndarray, r: int) -> np.ndarray:

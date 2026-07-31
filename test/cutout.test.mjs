@@ -251,9 +251,57 @@ test('chroma modu çıktısında anahtar renk HİÇ hayatta kalmaz', async () =>
     const {dst} = await cut(src, `o_key_${src}`, 'chroma');
     const c = await opaqueColourStats(dst);
     assert.equal(c.keyish_share, 0, `${src}: opak piksellerde magenta kaldı (%${c.keyish_share * 100})`);
-    // Despill her opak pikseli nötrler: kolaj paleti zaten siyah-beyaz halftone.
-    assert.equal(c.max_chroma, 0, `${src}: opak pikselde renk kalıntısı var (kroma ${c.max_chroma})`);
   }
+});
+
+/**
+ * Despill YALNIZCA magenta'yı öldürür. İlk sürüm her opak pikseli griye
+ * çeviriyordu ve kullanıcının referans kolajındaki renkli harita, kırmızı mühür
+ * ve hardal bant bu yüzden kayboluyordu — oysa kesik-kağıt dilinin aksanları
+ * tam olarak onlar.
+ */
+test('despill özneye ait rengi ÖLDÜRMEZ (kırmızı, hardal, teal kalır)', async () => {
+  const gen = path.join(dir, 'colourgen.py');
+  await writeFile(
+    gen,
+    `
+import numpy as np, sys
+from PIL import Image
+D = sys.argv[1]
+h, w = 300, 300
+a = np.zeros((h, w, 3), np.uint8); a[:, :] = [255, 0, 255]      # magenta zemin
+a[60:140,  60:140] = [200,  30,  35]   # kırmızı aksan
+a[60:140, 160:240] = [210, 165,  70]   # hardal
+a[160:240, 60:140] = [110, 160, 160]   # teal
+a[160:240, 160:240] = [ 40,  40,  40]  # mürekkep
+Image.fromarray(a).save(f"{D}/palette.png")
+`,
+  );
+  await run('python3', [gen, dir]);
+  // `--no-halftone`: `ingest-collage.mjs` da böyle çağırıyor, çünkü parça zaten
+  // halftone üretiliyor. Halftone AÇIK olsaydı renk zaten kasten düzleşirdi;
+  // bu test despill'i ölçüyor, halftone'u değil.
+  const {dst} = await cut('palette.png', 'o_palette.png', 'chroma', ['--no-halftone']);
+  const probe = path.join(dir, 'sample.py');
+  await writeFile(
+    probe,
+    `
+import sys, json
+import numpy as np
+from PIL import Image
+a = np.asarray(Image.open(sys.argv[1]).convert("RGBA")).astype(int)
+# kırpma sonrası koordinat kaymasını atlatmak için: her rengin ortalama kromasını
+# tüm opak pikseller üzerinde ölç.
+m = a[:, :, 3] > 200
+rgb = a[:, :, :3][m]
+ch = rgb.max(1) - rgb.min(1)
+print(json.dumps({"max_chroma": int(ch.max()), "colourful_share": float((ch > 40).mean())}))
+`,
+  );
+  const {stdout} = await run('python3', [probe, dst]);
+  const s = JSON.parse(stdout);
+  assert.ok(s.max_chroma > 100, `renk düzleştirilmiş: en yüksek kroma ${s.max_chroma}`);
+  assert.ok(s.colourful_share > 0.4, `renkli piksellerin çoğu kaybolmuş: ${s.colourful_share}`);
 });
 
 test('deterministik: aynı girdi iki kez aynı çıktıyı verir', async () => {

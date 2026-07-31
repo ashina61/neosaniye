@@ -138,7 +138,23 @@ export const CollageBuild: React.FC<SceneProps> = ({seconds, payload, seed, occu
       {/* 2. DESTEKLER — arkadan öne, hero'dan ÖNCE girerler. */}
       {pieces.slice(1).map((piece, i) => {
         const slot = slots[i % slots.length];
-        const w = Math.round(SAFE_BOX.width * slot.w);
+        // Parça kendi yerini biliyorsa o kullanılır; bilmiyorsa yuvaya düşer.
+        // Gerekçe `types.ts`'te `box` alanının belgesinde.
+        const placed = piece.box
+          ? {
+              x: Math.round(CANVAS.width * piece.box.x),
+              y: Math.round(CANVAS.height * piece.box.y),
+              w: Math.round(CANVAS.width * piece.box.w),
+              h: Math.round(CANVAS.height * piece.box.h),
+              rot: 0,
+            }
+          : {
+              x: SAFE.left + Math.round(SAFE_BOX.width * slot.x),
+              y: SAFE.top + Math.round(SAFE_BOX.height * slot.y),
+              w: Math.round(SAFE_BOX.width * slot.w),
+              h: Math.round(SAFE_BOX.width * slot.w * 0.82),
+              rot: slot.rot,
+            };
         const e = enter(f, {
           at: cue(seconds, 2 + i, n),
           duration: 0.4,
@@ -149,16 +165,18 @@ export const CollageBuild: React.FC<SceneProps> = ({seconds, payload, seed, occu
           <Cutout
             key={piece.src}
             src={staticFile(piece.src)}
-            x={SAFE.left + Math.round(SAFE_BOX.width * slot.x)}
-            y={SAFE.top + Math.round(SAFE_BOX.height * slot.y)}
-            width={w}
-            height={Math.round(w * 0.82)}
-            rotate={slot.rot}
+            x={placed.x}
+            y={placed.y}
+            width={placed.w}
+            height={placed.h}
+            rotate={placed.rot}
             seed={seed + i * 3}
             opacity={e.opacity}
             transform={e.transform}
             jitter={holdJitter(f, seed + i)}
-            outline={7}
+            // Yerleşimi kareden gelen parçanın konturu İNCE: kalın kontur
+            // orijinaldeki kesim kenarının üstüne ikinci bir kenar bindirir.
+            outline={piece.box ? 0 : 7}
             // Halftone KAPALI: parça zaten halftone olarak üretildi. İkinci kez
             // uygulamak nokta üstüne nokta bindirir ve gri bir bulanıklık yapar.
             halftone={false}
@@ -170,18 +188,18 @@ export const CollageBuild: React.FC<SceneProps> = ({seconds, payload, seed, occu
       {pieces[0] && (
         <Cutout
           src={staticFile(pieces[0].src)}
-          x={heroX}
-          y={B.hero.y}
-          width={heroW}
-          height={heroH}
-          rotate={tilt}
+          x={pieces[0].box ? Math.round(CANVAS.width * pieces[0].box.x) : heroX}
+          y={pieces[0].box ? Math.round(CANVAS.height * pieces[0].box.y) : B.hero.y}
+          width={pieces[0].box ? Math.round(CANVAS.width * pieces[0].box.w) : heroW}
+          height={pieces[0].box ? Math.round(CANVAS.height * pieces[0].box.h) : heroH}
+          rotate={pieces[0].box ? 0 : tilt}
           seed={seed}
           opacity={enter(f, {at: cue(seconds, 1, n), duration: 0.55, kind: 'slide', from: {x: -170}}).opacity}
           transform={`${enter(f, {at: cue(seconds, 1, n), duration: 0.55, kind: 'slide', from: {x: -170}}).transform} ${drift(f, {seconds, dx: 26, dy: -18, scale: 0.05})}`}
           focus={focusHunt(f, {at: cue(seconds, 1, n) + 0.1, duration: 0.7, from: 11})}
           jitter={holdJitter(f, seed)}
           halftone={false}
-          outline={9}
+          outline={pieces[0].box ? 0 : 9}
         />
       )}
 

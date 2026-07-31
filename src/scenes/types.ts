@@ -140,7 +140,24 @@ export interface ScenePayload {
    */
   layers?: {
     plate?: string;
-    pieces: Array<{src: string; role: 'hero' | 'support'}>;
+    pieces: Array<{
+      src: string;
+      role: 'hero' | 'support';
+      /**
+       * PARÇANIN KENDİ YERİ — kanvasa göre normalize (0..1).
+       *
+       * Yoksa şablon kendi yuvalarına dağıtır; bu, parçaların TEK TEK
+       * üretildiği normal akış (her parça ayrı bir görsel, aralarında
+       * kompozisyon ilişkisi yok, yerleşimi kod kurmalı).
+       *
+       * Varsa AYNEN KULLANILIR. Sebep: parçalar TASARLANMIŞ bir kareden
+       * ayrıştırıldığında konum bilginin kendisidir — atın altına sıkışmış
+       * harita, sol kenardan taşan sancak, sağ alta çakılı etiket. Bunları
+       * yuvalara dağıtmak kompozisyonu yok eder ve hareket promtunun
+       * "preserve the final composition exactly" şartını çiğner.
+       */
+      box?: {x: number; y: number; w: number; h: number};
+    }>;
   };
 }
 
