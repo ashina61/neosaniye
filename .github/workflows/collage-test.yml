@@ -55,6 +55,33 @@ on:
         required: false
         default: false
         type: boolean
+      # ============ MALZEME KAYNAĞI ============
+      #
+      # 6. turda kesim sorunu çözüldü (5/5 temiz alfa) ama ÖZNELER yanlış geldi:
+      # "a man in a dark suit, period-accurate for 1971" → modern, uzun saçlı,
+      # beyaz ceketli bir manken portresi. "A torn calendar page" → yuvarlak
+      # köşeli siyah çerçeve içinde genç bir kızın fotoğrafı. Beş görselin
+      # beşinde de 2020'lerin güzellik önyargısı, 1971 arşivi değil.
+      #
+      # Dönem çıpası promtta VAR ve tutmuyor — plaka yazı yasağı, sansür barı
+      # ve beyaz zemin talimatlarıyla aynı sınıf. Bedava uçtaki schnell FLUX
+      # talimat takip etmiyor; promta bir cümle daha eklemek yedinci kez aynı
+      # duvar olurdu.
+      #
+      # `archive` kolu bu sorunun tam karşılığı: Wikimedia Commons + Library of
+      # Congress, anahtarsız ve kotasız, ve 1971 D.B. Cooper GERÇEKTEN kamu malı
+      # fotoğrafı olan bir olay. Uydurulmuş bir 1971 yerine 1971'in kendisi.
+      # (Bu konteynerden ikisi de proxy'de 403 veriyor; Actions egress'i farklı,
+      # nitekim pollinations da burada 403 ama Actions'ta çalışıyor. Ölçülecek.)
+      source:
+        description: "Malzeme nereden gelsin"
+        required: true
+        default: "archive"
+        type: choice
+        options:
+          - archive          # Wikimedia + LoC — gerçek dönem fotoğrafı
+          - generate         # görsel modeli (pollinations/gemini)
+          - archive+generate # önce arşiv, boş kalan sahneler için üretim
 
 permissions:
   contents: read
@@ -129,11 +156,26 @@ jobs:
       - name: Prompt paketini üret
         run: npm run flow:pack
 
-      # ASIL DENEME. Başarısız olursa iş DURUR (continue-on-error YOK) —
+      # ARŞİV KOLU — gerçek dönem fotoğrafı, anahtarsız, kotasız.
+      #
+      # `fetch-archive.mjs` bulduğu her fotoğrafın lisansını, yazarını ve
+      # kaynak sayfasını `content/credits.json`e yazar; lisansı tanınamayan
+      # sonucu ATLAR. CC BY / BY-SA atıf ZORUNLU (AGENTS.md).
+      #
+      # `continue-on-error`: arşivde her beat için fotoğraf bulunmaz ve bu
+      # normaldir — bulunmayan sahne kodla çizilmeye devam eder. Asıl ölçüm
+      # sondaki teşhis bloğunda: kaç sahneye malzeme bağlandı.
+      - name: Arşivden getir (Wikimedia + LoC)
+        if: contains(inputs.source, 'archive')
+        continue-on-error: true
+        run: node pipeline/fetch-archive.mjs --live
+
+      # ÜRETİM KOLU. Başarısız olursa iş DURUR (continue-on-error YOK) —
       # sebebi şu: bu workflow'un TEK işi malzemenin gelip gelmediğini
       # ölçmek. Sessizce geçip "malzeme yok, siluetle devam" demek sorunun
       # kendisini gizlerdi.
       - name: Parçaları üret (sağlayıcı zinciri)
+        if: contains(inputs.source, 'generate')
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
@@ -196,10 +238,13 @@ jobs:
             const sb=require('./content/storyboard.json');
             let t=0;
             for(const s of sb.scenes){
-              if(s.template==='collage_build'){console.log(t+Math.round(s.durationInFrames*0.8));process.exit(0);}
+              // Malzemesi olan İLK sahne: B yolunda \`layers\`, arşiv kolunda
+              // \`images\`. İkisini de kabul et — yoksa arşiv-only koşuda
+              // 'sahne yok' deyip kare basmadan geçerdi.
+              if(s.payload.layers||s.payload.images?.length){console.log(t+Math.round(s.durationInFrames*0.8));process.exit(0);}
               t+=s.durationInFrames;
             }
-            console.error('collage_build sahnesi yok'); process.exit(1);
+            console.error('malzemesi olan sahne yok'); process.exit(1);
           ")
           echo "kare: $FRAME"
           npx remotion still src/index.ts Short out/composed-frame.png --frame=$FRAME
@@ -258,9 +303,12 @@ jobs:
           node -e "
             const sb=require('./content/storyboard.json');
             const w=sb.scenes.filter(s=>s.payload.layers);
-            console.log('  collage_build sahnesi:', sb.scenes.filter(s=>s.template==='collage_build').length, '/', sb.scenes.length);
+            const arch=sb.scenes.filter(s=>s.payload.images?.length);
+            console.log('  B yolu (parça katmanı):', w.length, '/', sb.scenes.length);
             for(const s of w) console.log('   ', s._beat?.text?.slice(0,44), '→', s.payload.layers.pieces.length, 'parça');
-            if(!w.length) console.log('  HİÇBİRİ. Parçalar alfa doğrulamasından düştü ya da hiç üretilemedi.');
+            console.log('  arşiv fotoğrafı:', arch.length, '/', sb.scenes.length);
+            for(const s of arch) console.log('   ', s._beat?.text?.slice(0,44), '→', s.payload.images[0]);
+            if(!w.length && !arch.length) console.log('  HİÇBİRİ. Malzeme gelmedi ya da alfa doğrulamasından düştü.');
           "
           echo "================================================"
 
@@ -274,6 +322,8 @@ jobs:
             out/composed-frame.png
             collage-raw/*.png
             public/collage/*.png
+            public/archive/*.png
+            content/credits.json
             content/storyboard.json
             out/flow-pack/ASSET-LIST.txt
           if-no-files-found: warn

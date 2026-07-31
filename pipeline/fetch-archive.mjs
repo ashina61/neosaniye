@@ -177,10 +177,17 @@ async function searchLoc(query) {
 /**
  * İndirilen fotoğrafı kolaj parçasına çevir.
  *
- * MOD SEÇİMİ ÖNEMLİ: üretilen görsellerde arka plan tek düze anahtar rengiydi,
- * o yüzden `chroma` çalışıyordu. Arşiv fotoğrafında öyle bir şey yok — arka
- * plan gerçek bir sahne. `matte` kenardan taşma dolgusuyla çalışır ve yalnızca
- * gerçekten düz bir zemin varsa başarılı olur.
+ * MOD SEÇİMİ ÖNEMLİ ve burası ARŞİV için en kritik yer.
+ *
+ * Eski hâli `matte` kullanıyordu: kenardan taşma-doldurma, yani ancak zemin
+ * gerçekten düzse çalışır. Arşiv fotoğrafında zemin ASLA düz değildir — gerçek
+ * bir sahne, bir oda, bir pist, bir kalabalık. Yani bu yol pratikte hep
+ * "dikdörtgen baskı"ya düşüyordu.
+ *
+ * `seg` (rembg / isnet-general-use) tam bu iş için doğru araç: zemin ne olursa
+ * olsun özneyi bulur. 5. turun görsellerinde ölçüldü — üç parçada da dış çeper
+ * %0.0, kaplama %17.7 / %36.6 / %62.6. Zincir seg → matte, çünkü segmentasyon
+ * kurulu değilse eski davranış aynen sürsün.
  *
  * `--strict` KULLANILMIYOR ve bu bilinçli: alfa çıkmazsa fotoğraf DİKDÖRTGEN
  * kalır ve bu bir kusur değil. Referans kolajlarda arşiv baskıları zaten krem
@@ -188,16 +195,23 @@ async function searchLoc(query) {
  * konturunu ve katman gölgesini o dikdörtgene de uyguluyor.
  */
 async function toCollagePiece(rawPath, outPath) {
-  try {
-    const {stdout} = await run('python3', [
-      path.join(ROOT, 'pipeline', 'cutout.py'),
-      rawPath,
-      outPath,
-      '--mode',
-      'matte',
-    ]);
-    return `kesildi: ${stdout.trim()}`;
-  } catch (e) {
+  const problems = [];
+  for (const mode of ['seg', 'matte']) {
+    try {
+      const {stdout} = await run('python3', [
+        path.join(ROOT, 'pipeline', 'cutout.py'),
+        rawPath,
+        outPath,
+        '--mode',
+        mode,
+      ]);
+      return `kesildi (${mode}): ${stdout.trim()}`;
+    } catch (e) {
+      problems.push(e);
+    }
+  }
+  {
+    const e = problems[problems.length - 1];
     // Kesilemedi → dikdörtgen baskı olarak kullan. cutout.py yine PNG yazmış
     // olabilir; yazmadıysa ham dosyayı kopyala.
     if (!existsSync(outPath)) {
