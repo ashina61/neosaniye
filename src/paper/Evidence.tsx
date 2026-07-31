@@ -32,6 +32,45 @@ import {rand} from '../motion/stepped';
  * zaman çizelgesi, tipografi". Eksik olan kural değil, bu üç bileşendi.
  */
 
+
+/**
+ * KAĞIT TONU — her parça AYRI bir sayfadan gelir.
+ *
+ * İlk sürümde takvim, tarife ve harita üçü de `PALETTE.paper` idi ve render'da
+ * tek bir düz yüzey gibi okunuyorlardı. Referans karede üç kağıt üç ayrı ton:
+ * harita en sıcak/koyu (en eski), tarife en beyaz (en yeni baskı), takvim
+ * ortada. Parçaları ayıran şey doku değil, TON.
+ */
+export const PAPER_TONES = {
+  calendar: '#EFEADC',
+  record: '#F3F1E8',
+  map: '#E8DFCB',
+} as const;
+
+/**
+ * BASKI DOKUSU — tipografi vektör temizliğinde durmasın.
+ *
+ * Referanstaki rakamlar letterpress: mürekkep düzgün oturmuyor, kenarlarda
+ * mikro kopmalar var. Düz `color` ile basılan rakam onun yanında dijital
+ * duruyor. `background-clip: text` dokuyu harfin İÇİNE basar.
+ */
+const INK_TEXTURE: React.CSSProperties = {
+  backgroundImage:
+    'repeating-linear-gradient(94deg, rgba(255,255,255,0.13) 0px, rgba(255,255,255,0) 2px, rgba(255,255,255,0) 5px)',
+  backgroundClip: 'text',
+  WebkitBackgroundClip: 'text',
+};
+
+/**
+ * İKİ KADEMELİ GÖLGE.
+ *
+ * Tek `drop-shadow` her parçayı aynı yükseklikte gösteriyor. Gerçek bir kağıt
+ * yığınında iki gölge var: oturduğu yerdeki KESKİN temas gölgesi ve kalkık
+ * kenarın attığı YUMUŞAK gölge.
+ */
+export const LIFT = (a = 1) =>
+  `drop-shadow(0 ${2 * a}px ${3 * a}px rgba(24,18,8,0.30)) drop-shadow(0 ${14 * a}px ${20 * a}px rgba(24,18,8,0.20))`;
+
 /** Zımba deliği sırası — takvim yaprağının üst kenarı. */
 const PunchHoles: React.FC<{count: number; width: number}> = ({count, width}) => (
   <>
@@ -100,14 +139,14 @@ export const DateTear: React.FC<{
         zIndex,
         transform: [transform, rotate ? `rotate(${rotate}deg)` : ''].filter(Boolean).join(' ') || undefined,
         transformOrigin: 'center center',
-        filter: 'drop-shadow(0 14px 20px rgba(24,18,8,0.28))',
+        filter: LIFT(1.1),
       }}
     >
       <div
         style={{
           position: 'absolute',
           inset: 0,
-          background: PALETTE.paper,
+          background: PAPER_TONES.calendar,
           clipPath: `polygon(${pts.join(', ')})`,
         }}
       />
@@ -125,13 +164,33 @@ export const DateTear: React.FC<{
           color: PALETTE.ink,
         }}
       >
-        <div style={{fontSize: height * 0.42, fontWeight: 700, lineHeight: 0.86, letterSpacing: '-0.02em'}}>
+        <div
+          style={{
+            fontSize: height * 0.42,
+            fontWeight: 700,
+            lineHeight: 0.86,
+            letterSpacing: '-0.02em',
+            ...INK_TEXTURE,
+          }}
+        >
           {day}
         </div>
-        <div style={{width: width * 0.52, height: 5, background: PALETTE.ink, margin: `${height * 0.05}px 0`}} />
-        <div style={{fontSize: height * 0.11, fontWeight: 700, letterSpacing: '0.22em'}}>{month}</div>
-        <div style={{width: width * 0.52, height: 5, background: PALETTE.ink, margin: `${height * 0.04}px 0`}} />
-        <div style={{fontSize: height * 0.11, fontWeight: 700, letterSpacing: '0.14em'}}>{year}</div>
+        {/* Kural çizgisi kalın+ince ÇİFT: tek kalın çubuk dijital duruyordu,
+            eski takvim baskısında kural her zaman çifttir. */}
+        <div style={{width: width * 0.56, margin: `${height * 0.045}px 0`}}>
+          <div style={{height: 4, background: PALETTE.ink}} />
+          <div style={{height: 1.5, background: PALETTE.ink, marginTop: 4, opacity: 0.7}} />
+        </div>
+        <div style={{fontSize: height * 0.11, fontWeight: 700, letterSpacing: '0.22em', ...INK_TEXTURE}}>
+          {month}
+        </div>
+        <div style={{width: width * 0.56, margin: `${height * 0.04}px 0`}}>
+          <div style={{height: 1.5, background: PALETTE.ink, opacity: 0.7}} />
+          <div style={{height: 4, background: PALETTE.ink, marginTop: 4}} />
+        </div>
+        <div style={{fontSize: height * 0.11, fontWeight: 700, letterSpacing: '0.14em', ...INK_TEXTURE}}>
+          {year}
+        </div>
       </div>
     </div>
   );
@@ -247,12 +306,12 @@ export const RecordClip: React.FC<{
         zIndex,
         transform: [transform, rotate ? `rotate(${rotate}deg)` : ''].filter(Boolean).join(' ') || undefined,
         transformOrigin: 'center center',
-        background: PALETTE.paper,
+        background: PAPER_TONES.record,
         clipPath: `polygon(${pts.join(', ')})`,
         padding: `${width * 0.05}px ${width * 0.07}px ${width * 0.09}px`,
         fontFamily: FONTS.display,
         color: 'rgba(24,32,44,0.88)',
-        filter: 'drop-shadow(0 10px 15px rgba(24,18,8,0.22))',
+        filter: LIFT(0.8),
       }}
     >
       <div

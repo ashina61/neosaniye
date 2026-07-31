@@ -9,8 +9,8 @@ import {Cutout, TornCard, HALFTONE_CSS} from '../paper/Cutout';
 import {Headline, PullQuote, LabelCard, Stamp, TypewriterStrip} from '../paper/Type';
 import {DrawnArrow, DottedPath, MarkerCircle, MarkerCross, SparkleField, SeaBand, Sparkle} from '../paper/Marks';
 import {StickFigure, ThoughtBubble, type Pose} from '../paper/StickFigure';
-import {DateTear, PostmarkRing, RecordClip} from '../paper/Evidence';
-import {Tape, BrassPin} from '../paper/Fixings';
+import {DateTear, PostmarkRing, RecordClip, PAPER_TONES, LIFT} from '../paper/Evidence';
+import {Tape, BrassPin, RedString} from '../paper/Fixings';
 import {CastShadow, ContactShadow} from '../film/CastShadow';
 import {ArchiveClip} from './ArchiveClip';
 import {CollageBuild} from './CollageBuild';
@@ -1553,6 +1553,8 @@ const EvidenceBoard: React.FC<SceneProps> = ({seconds, payload, seed}) => {
   const mark = enter(f, {at: cue(seconds, 3, 6), duration: 0.3, kind: 'stamp'});
   const tag = enter(f, {at: cue(seconds, 4, 6), duration: 0.3, kind: 'drop', from: {y: -70}});
   const rec = enter(f, {at: cue(seconds, 5, 6), duration: 0.4, kind: 'fade'});
+  // İp çizilerek girer; son olay o, çünkü bağlantı kurmak son adımdır.
+  const string = enter(f, {at: cue(seconds, 4, 6), duration: Math.max(0.7, seconds * 0.25), kind: 'draw'});
 
   /**
    * YERLEŞİM REFERANSTAN ÖLÇÜLDÜ, göz kararı değil.
@@ -1581,10 +1583,12 @@ const EvidenceBoard: React.FC<SceneProps> = ({seconds, payload, seed}) => {
   const dateX = Math.round(W * 0.20);
   const dateY = Math.round(H * 0.30);
 
-  const photoW = Math.round(W * 0.42);
-  const photoH = Math.round(photoW * 0.82);
+  // Alt bant ölçüldü: ilk sürümde karenin son %25'i boştu. Fotoğraf ve kupür
+  // büyütülüp aşağı alındı; altyazı bandı (SAFE.bottom) yine korunuyor.
+  const photoW = Math.round(W * 0.46);
+  const photoH = Math.round(photoW * 0.88);
   const photoX = Math.round(W * 0.04);
-  const photoY = Math.round(H * 0.55);
+  const photoY = Math.round(H * 0.58);
 
   const src = payload.layers?.pieces?.[0]?.src ?? payload.images?.[0];
 
@@ -1623,7 +1627,7 @@ const EvidenceBoard: React.FC<SceneProps> = ({seconds, payload, seed}) => {
           opacity: map.opacity * 0.92,
           transform: drift(f, {seconds, dx: -22, dy: 14, scale: 0.05}),
           transformOrigin: '40% 60%',
-          filter: 'drop-shadow(0 12px 16px rgba(24,18,8,0.20))',
+          filter: LIFT(0.9),
         }}
       >
         <svg width={mapW} height={mapH} style={{display: 'block'}}>
@@ -1642,7 +1646,51 @@ const EvidenceBoard: React.FC<SceneProps> = ({seconds, payload, seed}) => {
             </clipPath>
           </defs>
           <g clipPath={`url(#ev-map-${seed})`}>
-            <rect width={mapW} height={mapH} fill={PALETTE.paper} />
+            <rect width={mapW} height={mapH} fill={PAPER_TONES.map} />
+            {/* GRAVÜR TARAMA — harita ortası boş kalıyordu.
+                Referansta harita yoğun: kontur, tarama, ikincil isimler.
+                Yatay ince tarama arazi hissini tek başına kuruyor. */}
+            {Array.from({length: 46}, (_, i) => (
+              <line
+                key={`h${i}`}
+                x1={0}
+                y1={(i * mapH) / 45}
+                x2={mapW}
+                y2={(i * mapH) / 45}
+                stroke="rgba(60,54,40,0.055)"
+                strokeWidth={1}
+              />
+            ))}
+            {/*
+              KONTUR EĞRİLERİ — düzgün elips DEĞİL.
+              İlk sürüm `<ellipse>` kullanıyordu ve render'da mekanik, iç içe
+              daireler gibi çıktı; yükselti eğrisi öyle görünmez. Her halka
+              artık 14 noktadan geçen kapalı bir eğri ve her nokta yarıçapı
+              deterministik olarak sapıyor.
+            */}
+            {Array.from({length: 4}, (_, i) => {
+              const cx = mapW * (0.30 + rand(seed * 3 + i) * 0.5);
+              const cy = mapH * (0.18 + rand(seed * 9 + i) * 0.62);
+              return Array.from({length: 3}, (_, k) => {
+                const rx = mapW * (0.05 + k * 0.032);
+                const ry = mapH * (0.028 + k * 0.02);
+                const n = 14;
+                const d = Array.from({length: n + 1}, (_, j) => {
+                  const a = ((j % n) / n) * Math.PI * 2;
+                  const w = 0.78 + rand(seed * 7 + i * 13 + (j % n)) * 0.44;
+                  return `${(cx + Math.cos(a) * rx * w).toFixed(1)},${(cy + Math.sin(a) * ry * w).toFixed(1)}`;
+                }).join(' L ');
+                return (
+                  <path
+                    key={`c${i}-${k}`}
+                    d={`M ${d} Z`}
+                    fill="none"
+                    stroke="rgba(60,54,40,0.15)"
+                    strokeWidth={1}
+                  />
+                );
+              });
+            })}
             {/*
               GRAVÜR YOL AĞI — rastgele eğri DEĞİL.
 
@@ -1710,15 +1758,27 @@ const EvidenceBoard: React.FC<SceneProps> = ({seconds, payload, seed}) => {
           </g>
         </svg>
         {/* Yer adları — rota duraklarından. Uydurma yer adı yazılmaz. */}
+        {/*
+          Etiketler haritanın SOL şeridine düşerse tarih kartının altında kalır
+          ve kesilir — render'da "PORTLAND" yerine "ND" göründü. Kart haritanın
+          soldan yaklaşık %38'ini örtüyor; etiket o şeride düşerse sağa itilir.
+          Yolun kendisi yerinde kalır, taşınan yalnızca YAZI.
+        */}
         {(payload.route ?? []).map((s, i) =>
           s.label ? (
             <div
               key={i}
               style={{
                 position: 'absolute',
-                left: s.x * mapW,
+                left: Math.max(s.x, 0.34) * mapW,
                 top: s.y * mapH,
-                transform: 'translate(-50%,-50%)',
+                /**
+                 * Etiket ORTALANDIĞI için genişliğinin yarısı kadar sola
+                 * taşıyor: 0.42'ye itilen "PORTLAND" yine kartın altında
+                 * kaldı ve "RTLAND" göründü. Sol bölgedeki etiket artık
+                 * ortalanmıyor, SOLA yaslanıyor — böylece taşma yok.
+                 */
+                transform: s.x < 0.42 ? 'translate(0,-50%)' : 'translate(-50%,-50%)',
                 fontFamily: FONTS.display,
                 fontSize: TYPE.stamp * 0.8,
                 letterSpacing: '0.06em',
@@ -1798,13 +1858,31 @@ const EvidenceBoard: React.FC<SceneProps> = ({seconds, payload, seed}) => {
           heading={ev.record.heading}
           subheading={ev.record.subheading}
           rows={ev.record.rows}
-          x={Math.round(W * 0.42)}
-          y={Math.round(H * 0.665)}
-          width={Math.round(W * 0.36)}
+          x={Math.round(W * 0.46)}
+          y={Math.round(H * 0.695)}
+          width={Math.round(W * 0.40)}
           opacity={rec.opacity}
           seed={seed}
         />
       )}
+
+      {/*
+        KIRMIZI İP — karenin TEK sinyal aksanı.
+        Referansta ip tarih yaprağını haritadaki iğneye bağlıyor ve karedeki
+        tek sıcak renk o. Bizim karede hiç yoktu; altın raptiye tek başına
+        aksan yükünü taşıyamıyordu.
+        İp bir ŞEYİ bir ŞEYE bağlar: tarihi olayın geçtiği yere.
+      */}
+      <RedString
+        from={{x: dateX + Math.round(dateW * 0.5), y: dateY + dateH - 12}}
+        to={{x: mapX + Math.round(mapW * 0.34), y: mapY + Math.round(mapH * 0.62)}}
+        progress={string.progress ?? 1}
+        sag={0.16}
+        width={6}
+        // İki uçta da iğne: ilk sürümde ipin takvim ucu boşlukta bitiyordu.
+        // İp bir yere ÇAKILI olmadan asılamaz.
+        pins
+      />
 
       {/* Bant ve raptiye: kağıdı masaya tutturan şey. */}
       <Tape x={dateX - 24} y={dateY - 26} width={210} rotate={-18} opacity={date.opacity} />
@@ -1814,7 +1892,7 @@ const EvidenceBoard: React.FC<SceneProps> = ({seconds, payload, seed}) => {
         <TypewriterStrip
           text={payload.caption}
           x={SAFE.left}
-          y={CANVAS.height - SAFE.bottom - 70}
+          y={CANVAS.height - SAFE.bottom - 20}
           opacity={rec.opacity}
         />
       )}
