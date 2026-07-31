@@ -1,28 +1,70 @@
-name: Render Short — Manual Only, No Upload
+name: Video üret — Konu seç, çalıştır, MP4 al
 
-# MANUEL. Cron yok, push tetikleyicisi yok, upload yok.
+# ============ NE YAPAR ============
 #
-# Neden: AGENTS.md kuralı "workflow'lar kullanıcı açıkça istemedikçe yalnızca
-# manuel olacak" ve "yayınlama/upload mantığı eklenmeyecek" diyor. Ayrıca eski
-# repoda her push'ta 30 dakikalık render başlatan bir tetikleyici vardı ve
-# arka arkaya 12 başarısız çalıştırmaya sebep olmuştu.
+# Konu dosyasını seç, çalıştır, videoyu artefakt olarak al. Tek tıkta uçtan uca:
+#
+#   anlatı → beat'ler → storyboard → görsel bütçesi → görsel üretimi
+#   → segmentasyon (alfa) → storyboard'a bağlama → render → doğrulama
+#
+# ============ NEDEN YENİDEN YAZILDI ============
+#
+# Eski hâl ESKİ HATTI çalıştırıyordu: `npm run cutouts --live` (sahne başına tek
+# cutout), segmentasyon yok, görsel bütçesi yok, `flow:pack` hiç çağrılmıyor.
+# Yani bu oturumda ölçülerek düzeltilen her şey — bütçe, `seg` modu,
+# sıkılaştırılmış alfa kapısı, kanıt masası — render hattına hiç girmiyordu.
+#
+# ============ SES VE ALTYAZI YOK ============
+#
+# Kullanıcı kararı. Ses zaten opsiyoneldi (`storyboard.audio` yoksa `<Audio>`
+# hiç render edilmiyor) ve konu dosyaları ses alanı taşımıyor; altyazı hiç
+# yoktu. Bu workflow ikisini de istemiyor ve bir adım sessizliği ÖLÇÜYOR —
+# "eklemedik" demekle "yok" demek arasındaki farkı ancak ölçüm kapatır.
+#
+# ============ BEDAVA KALIYOR ============
+#
+# Sağlayıcı zinciri gemini → pollinations. Gemini kotası varsa o üretir; 429
+# dönerse pollinations devralır (anahtarsız, kotasız). Hiçbiri çalışmazsa iş
+# DURMAZ: bütçedeki sahneler prosedürel siluete düşer ve video yine çıkar —
+# ölçüldü, 15 şablonun 13'ü fotoğrafsız da tam çiziyor.
+#
+# MANUEL. Cron yok, push tetikleyicisi yok, upload yok — AGENTS.md kuralı.
 
 on:
   workflow_dispatch:
     inputs:
-      composition:
-        description: Which composition to render
+      topic:
+        description: "Konu dosyası (content/story-*.json)"
         required: true
-        default: Short
+        default: "content/story-db-cooper.json"
+        type: string
+      provider_chain:
+        description: "Görsel sağlayıcı sırası — ilki hata verirse sıradakine düşer"
+        required: true
+        default: "gemini,pollinations"
         type: choice
         options:
-          - Short
-          - StyleSheet
-      fetch_archive:
-        description: "Arşiv fotoğrafı indir (Wikimedia Commons + LoC, anahtarsız)"
+          - gemini,pollinations
+          - pollinations
+          - pollinations,gemini
+      images:
+        description: "Görsel üretilsin mi (HAYIR = tamamen prosedürel)"
+        required: false
+        default: true
+        type: boolean
+      archive:
+        description: "Arşiv fotoğrafı da denensin mi (Wikimedia + LoC, anahtarsız)"
         required: false
         default: false
         type: boolean
+      quality:
+        description: "Render kalitesi"
+        required: true
+        default: "final"
+        type: choice
+        options:
+          - final
+          - preview
 
 permissions:
   contents: read
@@ -34,7 +76,7 @@ concurrency:
 jobs:
   render:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 90
 
     steps:
       - name: Checkout
@@ -46,100 +88,153 @@ jobs:
           node-version: 22
           cache: npm
 
-      # Python ve ffmpeg AÇIKÇA kurulur. Doğrulayıcı ikisini de kullanıyor
-      # (numpy/PIL ile ölçüm, ffprobe/ffmpeg ile kare çıkarma) ve runner
-      # imajının bunları taşıdığına güvenmek sessiz çökmeye yol açtı.
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
+      - name: Bağımlılıklar
         run: |
           npm ci --no-audit --no-fund
           sudo apt-get update -qq
           sudo apt-get install -y -qq --no-install-recommends ffmpeg
-          # DİKKAT: `python -m pip` ile kurup `python3` ile çalıştırmak,
-          # ikisi farklı yorumlayıcıya çözülürse import hatası verir ve iş
-          # 1 saniyede çöker. Aynı yorumlayıcı kullanılmak zorunda.
+          # `python -m pip` ile kurup `python3` ile çalıştırmak, ikisi farklı
+          # yorumlayıcıya çözülürse import hatası verir. Aynısı kullanılıyor.
           python3 -m pip install --disable-pip-version-check --quiet pillow numpy
+          # SEGMENTASYON — zemini modelden istemeyi bıraktık, özneyi biz
+          # kesiyoruz. Gerekçe ve ölçüm: pipeline/segment.py.
+          python3 -m pip install --disable-pip-version-check --quiet rembg onnxruntime || \
+            echo "UYARI: rembg kurulamadı — kesim yedek modlara düşecek"
 
-      # TARAYICI: Remotion KENDİ Chrome Headless Shell'ini indirir ve kullanır.
-      #
-      # Burada önce `/usr/bin/google-chrome`u bulup REMOTION_BROWSER ile
-      # gösteren bir adım vardı; ~150 MB indirmeyi atlatmak içindi. ÖLÇÜLDÜ ki
-      # o tarayıcı filtreli katmanların HEPSİNİ sessizce düşürüyor: 19 sahnenin
-      # 14'ü boş çıktı (yalnızca zemin + doku), dosya 25 MB yerine 7 MB oldu,
-      # ve render adımı "başarılı" dedi.
-      #
-      # Yerelde aynı kompozisyon headless_shell ile kusursuz render ediliyor.
-      # Remotion'ın desteklediği yapılandırma bu; indirmeyi atlamak uğruna
-      # test edilmemiş bir tarayıcıya geçmek yanlıştı.
-      - name: Build storyboard from story.json
-        run: npm run beats
+      # Testler ÖNCE: bozuk bir depoyla uzun render başlatmak ve üretim kotası
+      # harcamak anlamsız.
+      - name: Typecheck + test
+        run: |
+          npm run typecheck
+          npm test
 
-      # Cutout üretimi BURADA çalışır, yerel geliştirme ortamında değil:
-      # sağlayıcı anahtarları repo secret'ı ve geliştirme konteynerinin ağ
-      # politikası image.pollinations.ai / api.together.xyz /
-      # generativelanguage.googleapis.com hostlarını 403'lüyor.
+      # 179 MB, GitHub releases'ten. Üretimden ÖNCE indiriliyor ki görseller
+      # geldikten sonra indirme patlamasın.
+      - name: Segmentasyon modelini önceden indir
+        if: inputs.images
+        continue-on-error: true
+        run: |
+          python3 - <<'PY'
+          from rembg import new_session
+          new_session("isnet-general-use")
+          print("segmentasyon modeli hazır")
+          PY
+
+      # ---------------------------------------------------------------- #
+      # 1. ANLATI → STORYBOARD                                            #
+      # ---------------------------------------------------------------- #
+      # Çıktıdaki "semantik kapsama" satırı yeni konuda ilk bakılacak yer:
+      # %40'ın altındaysa sahnelerin çoğu jenerik siluete düşer.
+      - name: Storyboard üret
+        run: node pipeline/build-storyboard.mjs "${{ inputs.topic }}"
+
+      # ---------------------------------------------------------------- #
+      # 2. GÖRSEL BÜTÇESİ                                                 #
+      # ---------------------------------------------------------------- #
+      # Bütçe dışı beat için promt dosyası YAZILMAZ, yani üretim adımı zaten
+      # yalnızca bütçedeki görselleri ister. 19 beat için ~7 görsel.
+      - name: Promt paketi + görsel bütçesi
+        run: npm run flow:pack
+
+      # ---------------------------------------------------------------- #
+      # 3. MALZEME                                                        #
+      # ---------------------------------------------------------------- #
+      # Arşiv ÖNCE: gerçek dönem fotoğrafı üretilenden her zaman iyi. Ölçüldü —
+      # üretim kolu 6. ve 7. turda 1971 yerine modern manken çizdi.
       #
-      # Başarısız olursa iş DURMAZ: cutout üretilemeyen sahneler prosedürel
-      # siluetle render edilir ve video yine çıkar.
-      - name: Generate halftone cutouts (alpha PNG)
+      # LİSANS: betik yalnızca kamu malı / CC BY / CC BY-SA kabul eder, ND ve NC
+      # reddeder, ve her dosyanın atfını content/credits.json'a yazar. O dosya
+      # artefakta dahil — CC BY/BY-SA atfı yayın açıklamasına konmak ZORUNDA.
+      - name: Arşivden getir (Wikimedia + LoC)
+        if: inputs.archive
+        continue-on-error: true
+        run: node pipeline/fetch-archive.mjs --live
+
+      # `continue-on-error`: sağlayıcı çökerse video YİNE ÇIKMALI.
+      - name: Görselleri üret (gemini → pollinations)
+        if: inputs.images
         continue-on-error: true
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-          TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
-          IMAGE_PROVIDER_CHAIN: ${{ vars.IMAGE_PROVIDER_CHAIN || 'pollinations,together,gemini' }}
-          GEMINI_IMAGE_MODEL: ${{ vars.GEMINI_IMAGE_MODEL || 'gemini-3.1-flash-image' }}
-        run: npm run cutouts -- --live
+          IMAGE_PROVIDER_CHAIN: ${{ inputs.provider_chain }}
+          GEMINI_IMAGE_MODEL: ${{ vars.GEMINI_IMAGE_MODEL || 'gemini-3-pro-image' }}
+        run: node pipeline/generate-cutouts.mjs --pack
 
-      # ARŞİV FOTOĞRAFI — OPT-IN, varsayılan KAPALI.
-      #
-      # Neden girdiye bağlı: bu adım ağa çıkıp üçüncü taraf kataloglardan dosya
-      # indiriyor. AGENTS.md "ağ/ücretli çağrı açık istek olmadan yapılmaz"
-      # diyor; bir kutucuk işaretlemek o açık istektir. Anahtar gerekmiyor,
-      # kota harcanmıyor.
-      #
-      # Başarısız olursa iş DURMAZ: fotoğrafı olmayan sahneler prosedürel
-      # siluetle render edilir.
-      #
-      # LİSANS: betik yalnızca kamu malı / CC BY / CC BY-SA kabul eder, ND ve NC
-      # olanları reddeder, ve indirdiği her dosyanın atfını
-      # content/credits.json'a yazar. O dosya artefakta dahil — CC BY/BY-SA
-      # atfı yayın açıklamasına konmak ZORUNDA.
-      - name: Fetch public-domain archive photographs
-        if: inputs.fetch_archive
+      # Segmentasyon → alfa → storyboard'a bağlama. Alfa kapısı sıkı: opak
+      # ≤ %78 VE dış çeper ≤ %15, yoksa parça BAĞLANMAZ (kesilmemiş dikdörtgen
+      # 5. turda kapıyı geçip kareyi çerçeve içinde çerçeve yapmıştı).
+      - name: Kes ve storyboard'a bağla
+        if: inputs.images
         continue-on-error: true
-        run: npm run archive -- --live
+        run: npm run collage
 
-      - name: Typecheck
-        run: npm run typecheck
-
-      - name: Test
-        run: npm test
-
+      # ---------------------------------------------------------------- #
+      # 4. RENDER                                                         #
+      # ---------------------------------------------------------------- #
       - name: Render
         run: |
-          npx remotion render src/index.ts "${{ inputs.composition }}" \
-            "out/${{ inputs.composition }}.mp4" \
-            --codec=h264 --crf=18 --pixel-format=yuv420p
+          mkdir -p out
+          if [ "${{ inputs.quality }}" = "preview" ]; then
+            npx remotion render src/index.ts Short out/neosaniye.mp4 \
+              --codec=h264 --crf=28 --pixel-format=yuv420p --scale=0.5
+          else
+            npx remotion render src/index.ts Short out/neosaniye.mp4 \
+              --codec=h264 --crf=17 --pixel-format=yuv420p
+          fi
 
-      - name: Verify render against reference measurements
-        if: inputs.composition == 'Short'
-        run: python3 pipeline/verify-render.py "out/Short.mp4" content/storyboard.json
+      # ---------------------------------------------------------------- #
+      # 5. DOĞRULAMA                                                      #
+      # ---------------------------------------------------------------- #
+      - name: Sessizlik ÖLÇÜLÜYOR
+        run: |
+          # "Ses eklemedik" demekle "seste hiçbir şey yok" demek aynı şey değil.
+          # ffprobe ses akışı sayıyor; sıfır değilse iş DURUR.
+          n=$(ffprobe -v error -select_streams a -show_entries stream=index -of csv=p=0 out/neosaniye.mp4 | wc -l)
+          echo "ses akışı sayısı: $n"
+          if [ "$n" -ne 0 ]; then echo "HATA: videoda ses akışı var, oysa ses istenmedi"; exit 1; fi
 
-      - name: Upload artifact
+      - name: Referans ölçümlerine karşı doğrula
+        continue-on-error: true
+        run: python3 pipeline/verify-render.py "out/neosaniye.mp4" content/storyboard.json
+
+      - name: ÖZET
+        if: always()
+        run: |
+          echo "==================== ÖZET ===================="
+          ls -la out/*.mp4 2>/dev/null || echo "video YOK"
+          ffprobe -v error -show_entries format=duration \
+            -show_entries stream=width,height,codec_name \
+            -of default=nw=1 out/neosaniye.mp4 2>/dev/null || true
+          echo
+          echo "--- malzeme ---"
+          echo "üretilen ham görsel : $(ls collage-raw/*.png 2>/dev/null | wc -l)"
+          echo "kesilip bağlanan    : $(ls public/collage/*.png 2>/dev/null | wc -l)"
+          echo "arşiv fotoğrafı     : $(ls public/archive/*.png 2>/dev/null | wc -l)"
+          node -e "
+            const sb=require('./content/storyboard.json');
+            const withMat=sb.scenes.filter(s=>s.payload.layers||s.payload.images?.length);
+            console.log('  malzemesi olan sahne:', withMat.length, '/', sb.scenes.length);
+            console.log('  ses alanı           :', sb.audio ? 'VAR (beklenmiyor)' : 'yok');
+          " 2>/dev/null || true
+          echo "=============================================="
+
+      - name: Videoyu yükle
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: neosaniye-${{ inputs.composition }}-${{ github.run_number }}
+          name: neosaniye-video-${{ github.run_number }}
           path: |
-            out/*.mp4
+            out/neosaniye.mp4
             content/storyboard.json
             content/credits.json
-            public/cutouts/*.png
+            collage-raw/*.png
+            public/collage/*.png
             public/archive/*.png
           if-no-files-found: warn
-          retention-days: 7
+          retention-days: 14

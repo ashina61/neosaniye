@@ -111,6 +111,35 @@ eşiğini denetliyor.
   şablonlarda sürüklenen şey en büyük nesne olmak zorunda (harita plakası,
   zemin kartı).
 
+## Tek tıkta video: konu seç → Actions → MP4
+
+`.github/workflows/render.yml` — **manuel**, cron yok, upload yok.
+
+    topic          content/story-*.json
+    provider_chain gemini,pollinations   (429 → pollinations devralır)
+    images         evet/hayır            (hayır = tamamen prosedürel)
+    archive        evet/hayır            (Wikimedia + LoC, anahtarsız)
+    quality        final | preview
+
+Sıra: storyboard → **görsel bütçesi** → arşiv → üretim → segmentasyon → alfa
+kapısı → storyboard'a bağlama → render → **sessizlik ölçümü** → doğrulama.
+
+**Eski hâli ESKİ HATTI çalıştırıyordu** (`npm run cutouts --live`, sahne başına
+tek cutout): segmentasyon yok, bütçe yok, `flow:pack` hiç çağrılmıyor. Yani bu
+oturumda ölçülerek düzeltilen hiçbir şey render hattına girmiyordu.
+
+**SES VE ALTYAZI YOK, VE BU ÖLÇÜLÜYOR.** `storyboard.audio` yazılmadığı sürece
+`<Audio>` hiç render edilmiyor, altyazı zaten hiç yoktu. Ama "eklemedik" demekle
+"yok" demek aynı şey değil: workflow `ffprobe` ile ses akışı sayıyor ve sıfır
+değilse iş DURUYOR.
+
+**Sağlayıcı çökerse video YİNE ÇIKAR.** Üretim, arşiv ve kesim adımlarının üçü
+de `continue-on-error`; bütçedeki sahneler prosedürel siluete düşer. Ölçüldü:
+15 şablonun 13'ü fotoğrafsız da tam çiziyor.
+
+Cooper anlatısında ölçülen gerçek sayı: **video başına 8 görsel** (19 beat,
+7'si bütçede, plakalar kapalı).
+
 ## Görsel bütçesi: bir Short kaç görsel ister
 
 Sayıldı, çünkü ölçek sistemin şeklini belirliyor.
