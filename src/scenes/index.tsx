@@ -11,6 +11,7 @@ import {DrawnArrow, DottedPath, MarkerCircle, MarkerCross, SparkleField, SeaBand
 import {StickFigure, ThoughtBubble, type Pose} from '../paper/StickFigure';
 import {DateTear, PostmarkRing, RecordClip, PAPER_TONES, LIFT} from '../paper/Evidence';
 import {LowerRegister} from '../paper/LowerRegister';
+import {PaperStrata, OffsetStroke} from '../paper/Strata';
 import {Tape, BrassPin, RedString, CornerCurl} from '../paper/Fixings';
 import {CastShadow, ContactShadow} from '../film/CastShadow';
 import {ArchiveClip} from './ArchiveClip';
@@ -128,6 +129,16 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurr
 
   return (
     <PaperBase seed={seed}>
+      {/* KAĞIT KATMANLARI — kareyi malzemeyle dolduruyor, uydurma bilgiyle
+          değil. Ölçüm ve gerekçe: src/paper/Strata.tsx. */}
+      <PaperStrata seed={seed} opacity={card.opacity} />
+      <OffsetStroke
+        x={heroX - 40}
+        y={B.hero.y - 30}
+        width={heroW + 80}
+        height={heroH + 60}
+        opacity={card.opacity}
+      />
       {/*
         Peel sarmalayıcısı KARTIN KUTUSU kadar olmak zorunda, tam ekran değil.
         Tam ekran bir düzleme rotateY vermek, 1080 px genişlikte düzlemi
@@ -289,8 +300,6 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurr
         )
       )}
       <SparkleField count={variant === 2 ? 4 : 2} seed={seed} progress={ring.progress} />
-      {/* ALT KAYIT — alt bant ölçümde %0.0 doluydu. Gerekçe LowerRegister. */}
-      <LowerRegister payload={payload} seed={seed} opacity={label.opacity} />
     </PaperBase>
   );
 };
@@ -345,6 +354,9 @@ const WideEstablish: React.FC<SceneProps> = ({seconds, payload, seed, occurrence
 
   return (
     <PaperBase seed={seed}>
+      {/* KAĞIT KATMANLARI — kare ölçümde alt dilimlerde boştu.
+          Malzeme ekliyor, uydurma bilgi değil: gerekçe src/paper/Strata.tsx. */}
+      <PaperStrata seed={seed} opacity={title.opacity} />
       <SeaBand y={bandY} height={CANVAS.height - bandY} progress={band.progress} seed={seed} />
       <Cutout
         shape={payload.shape ?? 'vessel'}
@@ -424,6 +436,9 @@ const HeadlineCard: React.FC<SceneProps> = ({seconds, payload, seed, occurrence}
 
   return (
     <PaperBase seed={seed}>
+      {/* KAĞIT KATMANLARI — kare ölçümde alt dilimlerde boştu.
+          Malzeme ekliyor, uydurma bilgi değil: gerekçe src/paper/Strata.tsx. */}
+      <PaperStrata seed={seed} opacity={head.opacity} />
       {payload.headline && (
         <Headline
           text={payload.headline}
@@ -547,6 +562,9 @@ const PullQuoteScene: React.FC<SceneProps> = ({seconds, payload, seed}) => {
 
   return (
     <PaperBase seed={seed} ground="warm">
+      {/* KAĞIT KATMANLARI — kare ölçümde alt dilimlerde boştu.
+          Malzeme ekliyor, uydurma bilgi değil: gerekçe src/paper/Strata.tsx. */}
+      <PaperStrata seed={seed} opacity={q.opacity} />
       <div
         style={{
           position: 'absolute',
@@ -777,6 +795,9 @@ const LabeledDiagram: React.FC<SceneProps> = ({seconds, payload, seed}) => {
 
   return (
     <PaperBase seed={seed}>
+      {/* KAĞIT KATMANLARI — kare ölçümde alt dilimlerde boştu.
+          Malzeme ekliyor, uydurma bilgi değil: gerekçe src/paper/Strata.tsx. */}
+      <PaperStrata seed={seed} opacity={a.opacity} />
       {payload.headline && (
         <Headline
           text={payload.headline}

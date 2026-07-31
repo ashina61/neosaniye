@@ -111,6 +111,46 @@ eşiğini denetliyor.
   şablonlarda sürüklenen şey en büyük nesne olmak zorunda (harita plakası,
   zemin kartı).
 
+## Kareyi dolduran şey BİLGİ değil, MALZEME
+
+Kullanıcı "tüm sayfaları yapmamışsınız ki, sadece hook çizilmiş" dedi ve haklıydı.
+Kare beş yatay dilime bölünüp doluluk ölçüldü:
+
+    headline_card ("found three bundles")  15.7  39.7  29.9   0.0  13.7
+    hero_cutout   ("there was a bomb")      1.6  26.0  33.8   5.3  15.4
+    evidence_board (kanıt masası)          12.6  17.4  32.0  42.3  50.4
+
+Dördüncü dilim eski şablonlarda **%0.0**. Sebep iki katmanlı:
+
+1. `VERTICAL_BANDS.bottom` güvenli alanın %30'uydu ve hiçbir şablon
+   kullanmıyordu → hero %52'den %66'ya, bottom %30'dan %16'ya.
+2. Kanıt masası **altı öğe** diziyor, ötekiler tek kartı ortaya koyuyordu.
+
+**Boşluğu uydurma bilgiyle doldurmak yasak** ("dekoratif vs semantik"). Ama
+referans karede boşluğu dolduran şey zaten bilgi değil: **üst üste binmiş
+kağıtlar**. Stil bloğu da tam bunu istiyor — *"torn paper edges … offset accent
+strokes … soft cutout drop shadows"*. Yani katman ve vuruş uydurma değil,
+stilin kendisi.
+
+`src/paper/Strata.tsx` ikisini de kodda çiziyor: `PaperStrata` (yırtık kenarlı,
+kadrajı taşan, deterministik sayfalar) ve `OffsetStroke` (hero'nun arkasından
+taşan kırmızı vuruş). Sıfır kota.
+
+`OffsetStroke` KÜÇÜK tutuluyor: aksan tavanı %8, referansta ölçülen %3.6.
+7. turda aynı vuruş modelden istendiğinde dev kırmızı blok geldi ve %11.2
+ölçüldü; kodda çizilince oran garanti.
+
+Ölçülen sonuç (ortalama doluluk):
+
+    hero_cutout    16.4 → 21.1
+    headline_card  19.8 → 23.6
+    hedef (kanıt masası)      31.0
+
+**Yazarken iki hatamı ölçüm yakaladı:** ilk katman tonları (#E6DFCE/#EFEADC/
+#F3F1E8) zeminin kendi lekelerini örtüp kareyi SOLDURDU — katman zeminden ayırt
+edilebilmeli, yoksa dolduruyor gibi görünüp siliyor. Ve `LowerRegister`
+`hero_cutout`'ta başlığın üstüne bindi, çünkü o şablon başlığı alt banda koyuyor.
+
 ## Tek tıkta video: konu seç → Actions → MP4
 
 `.github/workflows/render.yml` — **manuel**, cron yok, upload yok.
