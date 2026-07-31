@@ -1360,6 +1360,35 @@ const DataAnnotate: React.FC<SceneProps> = ({seconds, payload, seed}) => {
 
   return (
     <PaperBase seed={seed}>
+      {/*
+        GRAFİK KAĞIDI — kareyi dolduran ve SÜRÜKLENEN katman.
+
+        Görsel kapı bu şablona 9.0 doluluk verdi ve orta dilimler 4 / 2 / 1
+        çıktı: minimal grafik iki eksen ve bir çizgiden ibaret, kare boş kalıyor.
+
+        Sürüklenme de yanlış yerdeydi. Otomatik düzeltmem drift'i tüm SVG'ye
+        koymuştu; SVG tam kanvas ama İÇİ ince çizgi, yani izleyici için hareket
+        eden büyük bir nesne yok. AGENTS.md: "8px'lik bir çizgi teknik olarak
+        hareket eder ama izleyici için olay değildir."
+
+        Kağıt hem boşluğu dolduruyor hem sürükleniyor; grafik ÇAKILI kalıyor,
+        çünkü okunacak şey o.
+      */}
+      <PaperStrata seed={seed} opacity={axes.opacity} />
+      <div
+        style={{
+          position: 'absolute',
+          left: cx0 - 50,
+          top: cy0 - 60,
+          width: cw + 100,
+          height: ch + 190,
+          background: PALETTE.paper,
+          opacity: axes.opacity * 0.92,
+          transform: drift(f, {seconds, dx: -20, dy: 12, scale: 0.04}),
+          transformOrigin: '40% 60%',
+          filter: 'drop-shadow(0 3px 4px rgba(24,18,8,0.20)) drop-shadow(0 16px 22px rgba(24,18,8,0.16))',
+        }}
+      />
       {payload.headline && (
         <Headline
           text={payload.headline}
@@ -1376,11 +1405,6 @@ const DataAnnotate: React.FC<SceneProps> = ({seconds, payload, seed}) => {
           left: 0,
           top: 0,
           pointerEvents: 'none',
-          // BÜYÜK KATMAN HAREKETİ — bu şablonda hiç yoktu. AGENTS.md: "her
-          // sahnede BÜYÜK bir katman hareket eder"; 8px'lik bir grafik çizgisi
-          // teknik olarak hareket eder ama izleyici için olay değildir.
-          transform: drift(f, {seconds, dx: -24, dy: 12, scale: 0.045}),
-          transformOrigin: '40% 60%',
         }}
       >
         {/* Eksenler: iki çizgi, ızgara yok. Referans stil "minimal chart". */}

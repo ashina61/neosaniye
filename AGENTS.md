@@ -111,6 +111,36 @@ eşiğini denetliyor.
   şablonlarda sürüklenen şey en büyük nesne olmak zorunda (harita plakası,
   zemin kartı).
 
+### En zayıf üç şablon: bir tur denendi, İKİSİ BAŞARISIZ
+
+Kapı raporu `archival_timeline` 8.5, `data_annotate` 9.0, `map_route` 9.9
+vermişti. Üçüne de kağıt katmanı eklendi ve ölçüldü:
+
+    map_route          9.9 → 9.9   HİÇ DEĞİŞMEDİ  → geri alındı
+    archival_timeline  8.5 → 7.6   KÖTÜLEŞTİ      → geri alındı
+    data_annotate      9.0 → 9.4   gürültü kadar  → tutuldu (sebebi aşağıda)
+
+`archival_timeline`de üç şey denendi ve üçü de tutmadı:
+- karenin %82'sini kaplayan düz plaka → kareyi SOLDURDU (katman tonlarında
+  yapılan hatanın aynısı: dolduruyor gibi görünüp zeminin dokusunu siliyor)
+- maddeleri bandın tamamına yaymak → 8.5'ten **5.3'e düşürdü**; sezgi yanlıştı,
+  az maddeli bir çizelgede öğeleri ayırmak kareyi doldurmuyor, seyreltiyor
+- her maddeyi kayıt kartına çevirmek → 6.3, hâlâ tabanın altında
+
+Şablon commit hâline döndürüldü. **Ders: bu iki şablon veriden çiziyor ve az
+veriyle doğası gereği seyrek. Doluluğu artıracak şey daha çok kağıt değil, daha
+çok VERİ** — üç maddeli bir çizelge ya da altı noktalı bir seri.
+
+`data_annotate`te tutulan tek şey doluluk değil HAREKET HEDEFİ: sürüklenme tüm
+SVG'deydi, yani ince çizgiler oynuyordu. AGENTS.md "8px'lik bir çizgi teknik
+olarak hareket eder ama izleyici için olay değildir" diyor; sürüklenme artık
+grafiğin arkasındaki kağıtta.
+
+**Ölçüm karşılaştırması payload'a bağlıdır.** Bu turda bir kez kendi ad-hoc
+storyboard'umla ölçüp kapının 8.5'iyle karşılaştırdım — geçersiz, çünkü kapı
+sabit bir `PAYLOAD` kullanıyor. Karşılaştırma yapılacaksa `template-gate.mjs`
+içindeki payload kullanılmalı.
+
 ## Render bu konteynerde ALINMAZ
 
 Kullanıcı kuralı. Sebebi ölçüldü: 4 çekirdek, Remotion her kareyi ayrı Chrome
