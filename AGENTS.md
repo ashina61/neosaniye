@@ -111,6 +111,30 @@ eşiğini denetliyor.
   şablonlarda sürüklenen şey en büyük nesne olmak zorunda (harita plakası,
   zemin kartı).
 
+## Ne söylüyorsak o nesne gelecek — ve hareket edecek
+
+Şablonlar denetlendi ve iki boşluk ölçüldü:
+
+| boşluk | şablon | Cooper'da etkilenen sahne |
+|---|---|---|
+| `payload.shape`i HİÇ çizmiyor | `map_route`, `stick_beat` | 2 |
+| BÜYÜK katman hareketi yok | `stick_beat` | 1 |
+
+`evidence_board` da `shape` çizmiyor ama bu DOĞRU: o beat'in şekli `star`
+("night"), oysa cümlenin gerçek nesnesi tarih ve onu takvim yaprağı taşıyor.
+`NOT_PHOTOGRAPHABLE` zaten aynı sebeple hero olarak reddediyor.
+
+Düzeltildi:
+- `map_route` → rotanın üstüne cümlenin nesnesi iğneleniyor ("bought a one-way
+  ticket" beat'inde harita rotayı anlatıyordu, bileti anlatmıyordu).
+- `stick_beat` → nesne çöp adamın yanına giriyor **ve** `drift` alıyor; bu
+  şablonda hiç büyük hareket yoktu, oysa deponun kendi kuralı "her sahnede
+  BÜYÜK bir katman hareket eder".
+
+**Yazarken bir katman sırası hatası ölçümle yakalandı:** nesneyi `PaperBase`in
+İLK çocuğu olarak koymuştum ve `TornCard` üstünü tamamen örttü — render'da
+nesne hiç görünmedi (doluluk 8.4). Kompozisyonun en üstüne taşınınca 12.1.
+
 ## Kareyi dolduran şey BİLGİ değil, MALZEME
 
 Kullanıcı "tüm sayfaları yapmamışsınız ki, sadece hook çizilmiş" dedi ve haklıydı.

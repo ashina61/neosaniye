@@ -1206,6 +1206,25 @@ const MapRoute: React.FC<SceneProps> = ({seconds, payload, seed}) => {
           seed={seed}
         />
       )}
+      {/*
+        CÜMLENİN NESNESİ — bu şablon da `payload.shape`i çizmiyordu.
+        "bought a one-way ticket from Portland to Seattle" beat'inde şekil
+        `document` ama ekranda bilet yoktu; harita rotayı anlatıyor, bileti
+        anlatmıyor. Nesne haritanın üstüne iğnelenmiş bir parça olarak giriyor.
+      */}
+      {payload.shape && (
+        <Cutout
+          shape={payload.shape}
+          width={Math.round(SAFE_BOX.width * 0.30)}
+          height={Math.round(SAFE_BOX.height * 0.20)}
+          x={SAFE.left + Math.round(SAFE_BOX.width * 0.62)}
+          y={SAFE.top + Math.round(SAFE_BOX.height * 0.60)}
+          rotate={-4}
+          seed={seed * 3}
+          opacity={path.opacity}
+          transform={path.transform}
+        />
+      )}
     </PaperBase>
   );
 };
@@ -1407,6 +1426,7 @@ const StickBeat: React.FC<SceneProps> = ({seconds, payload, seed}) => {
 
   return (
     <PaperBase seed={seed} stains={false}>
+
       {/*
         ZEMİN PLAKASI — ölçümle eklendi.
 
@@ -1512,6 +1532,34 @@ const StickBeat: React.FC<SceneProps> = ({seconds, payload, seed}) => {
         </div>
       )}
       <SparkleField count={3} seed={seed + 11} progress={hl.progress} />
+      {/*
+        CÜMLENİN NESNESİ — bu şablon `payload.shape`i HİÇ çizmiyordu.
+        Ölçüldü: "has never appeared in a bank" beat'i `stick_beat`e düşüyor ve
+        şekil `building` olduğu hâlde ekranda banka yok. Kullanıcının kuralı
+        açık: ne söylüyorsak o nesne gelecek.
+
+        Çöp adamın YANINDA duruyor, yerine değil: bu şablonun işi soyut beat'i
+        bir figürle anlatmak, nesne o figürün baktığı şey.
+
+        KATMAN SIRASI: ilk sürümde bunu `PaperBase`in İLK çocuğu olarak
+        koymuştum ve `TornCard` üstünü örttü — render'da nesne hiç görünmedi.
+        Kompozisyonun EN ÜSTÜNDE durmalı.
+      */}
+      {payload.shape && (
+        <Cutout
+          shape={payload.shape}
+          width={Math.round(SAFE_BOX.width * 0.34)}
+          height={Math.round(B.hero.height * 0.38)}
+          x={SAFE.left + Math.round(SAFE_BOX.width * 0.60)}
+          y={B.hero.y + Math.round(B.hero.height * 0.10)}
+          rotate={3}
+          seed={seed * 5}
+          opacity={fig.opacity}
+          // BÜYÜK KATMAN HAREKETİ: bu şablonda hiç yoktu ve deponun kendi
+          // kuralı "her sahnede BÜYÜK bir katman hareket eder" diyor.
+          transform={drift(f, {seconds, dx: -26, dy: 14, scale: 0.05})}
+        />
+      )}
     </PaperBase>
   );
 };
