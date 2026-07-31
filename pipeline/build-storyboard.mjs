@@ -205,6 +205,17 @@ function payloadForBeat(beat, story, template = beat.template) {
   // Nesne çizilecekse ve cümle onun yokluğunu söylüyorsa üstü çizilir.
   if (shape && isNegated(text)) p.negated = true;
 
+  /**
+   * DEV RAKAM — kanıt masasındaki tarih yaprağının öteki şablonlardaki
+   * karşılığı. Cümlede sayı ya da özel isim yoksa yazılmaz ve çizilmez.
+   * `evidence_board` hariç: o zaten tarihi taşıyor, ikinci bir dev rakam
+   * kompozisyonu tekrara düşürürdü.
+   */
+  if (template !== 'evidence_board') {
+    const fig = bigFigure(text);
+    if (fig) p.figure = fig;
+  }
+
   // Boş anahtarları at: şablonlar undefined'ı tolere ediyor, boş dizeyi etmiyor.
   for (const k of Object.keys(p)) if (p[k] === undefined || p[k] === '') delete p[k];
   return p;
@@ -329,13 +340,64 @@ function emphasise(text, prefer) {
 /** Metindeki ilk sayıyı (rakam ya da yazı) tamsayıya çevir. */
 const WORD_NUM = {
   one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10,
-  eleven: 11, twelve: 12, twenty: 20, thirty: 30, forty: 40, fifty: 50,
+  // 13-19 EKSİKTİ ve ölçümde yakalandı: "for eighteen days and found nothing"
+  // cümlesi `null` döndürüyordu, oysa 18 anlatının taşıdığı sayının ta kendisi.
+  eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16,
+  seventeen: 17, eighteen: 18, nineteen: 19,
+  twenty: 20, thirty: 30, forty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90,
 };
+
+
+/**
+ * BEAT'İN TAŞIDIĞI DEV RAKAM — kanıt masasındaki "24 / NOV / 1971"in karşılığı.
+ *
+ * ============ NEDEN ============
+ *
+ * Ölçüldü: kanıt masasının doluluğu 31.0, öteki şablonların 21.6. Kalan farkın
+ * sebebi tek bir öğe — kanıt masasında karenin üçte birini kaplayan DEV
+ * TİPOGRAFİ var, ötekilerde yok.
+ *
+ * Bu fonksiyon o öğeyi anlatının KENDİ verisinden çıkarıyor:
+ *
+ *   "He asked for two hundred thousand dollars"  → 200,000
+ *   "for eighteen days and found nothing"        → 18
+ *   "Nine years later a boy digging"             → 9
+ *   "In Seattle the passengers walked off"       → SEATTLE
+ *
+ * UYDURMA YOK: sayı ya da özel isim cümlede geçmiyorsa `null` döner ve şablon
+ * o öğeyi çizmez. Uydurma bir rakam basmak, uydurma nesne çizmekle aynı sınıf
+ * yalan olurdu.
+ *
+ * SIRA ÖNEMLİ: büyük ölçek ifadeleri ("two hundred thousand") tek başına
+ * `spelledNumber`la yakalanmıyor — o "two"yu görüp 2 döndürürdü. Ölçek çarpanı
+ * ÖNCE aranıyor.
+ */
+const SCALE_WORDS = [
+  [/\b(two|three|four|five|six|seven|eight|nine|ten)\s+hundred\s+thousand\b/i, (m) => WORD_NUM[m[1].toLowerCase()] * 100000],
+  [/\b(one|a)\s+hundred\s+thousand\b/i, () => 100000],
+  [/\b(\d+)\s+thousand\b/i, (m) => Number(m[1]) * 1000],
+  [/\b(two|three|four|five|six|seven|eight|nine|ten)\s+thousand\b/i, (m) => WORD_NUM[m[1].toLowerCase()] * 1000],
+  [/\b(two|three|four|five|six|seven|eight|nine|ten)\s+million\b/i, (m) => WORD_NUM[m[1].toLowerCase()] * 1000000],
+];
+
+export function bigFigure(text) {
+  const t = String(text);
+  for (const [re, fn] of SCALE_WORDS) {
+    const m = t.match(re);
+    if (m) return fn(m).toLocaleString('en-US');
+  }
+  // Yıl DEV RAKAM OLMAZ: `evidence_board` zaten tarihi taşıyor ve iki yerde
+  // aynı sayıyı basmak kompozisyonu tekrara düşürür.
+  const n = spelledNumber(t.replace(/\b(1[0-9]{3}|20[0-9]{2})\b/g, ''));
+  if (n && n > 1) return String(n);
+  const name = properNoun(t);
+  return name ? name.toUpperCase() : null;
+}
 
 function spelledNumber(text) {
   const d = text.match(/\b(\d{1,2})\b/);
   if (d) return Number(d[1]);
-  const w = text.toLowerCase().match(/\b(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|twenty|thirty|forty|fifty)\b/);
+  const w = text.toLowerCase().match(new RegExp(`\\b(${Object.keys(WORD_NUM).join('|')})\\b`));
   return w ? WORD_NUM[w[1]] : null;
 }
 

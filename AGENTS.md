@@ -156,12 +156,44 @@ uydurmadan kapatıyor — iki öğe, ikisi de gerçek veriden:
 Referansta ikisinin de karşılığı var: posta damgası tarihi, BUCKINGHAMSHIRE
 etiketi bölgeyi taşıyor.
 
-Ölçülen ortalama doluluk:
+### Dev rakam — beat'in KENDİ sayısı
 
-    başlangıç             16.4
-    + kağıt katmanları    21.1
-    + arşiv işaretleri    21.6
-    hedef (kanıt masası)  31.0
+Kanıt masasının doluluğunu taşıyan asıl öğe dev tipografi ("24 / NOV / 1971",
+karenin üçte biri). `bigFigure` (build-storyboard.mjs) o öğeyi anlatının kendi
+verisinden çıkarıyor ve `payload.figure`a yazıyor:
+
+    "two hundred thousand dollars"  → 200,000
+    "for eighteen days"             → 18
+    "In Seattle the passengers"     → SEATTLE
+
+Cümlede sayı ya da özel isim yoksa alan YAZILMAZ ve `FigureCard` çizilmez.
+`evidence_board` hariç tutuluyor: o zaten tarihi taşıyor.
+
+Cooper anlatısında 7/19 sahnede gerçek veri çıktı.
+
+### AKSAN TAVANI: kodda çizmek oranı garanti ETMİYOR
+
+`OffsetStroke`un ilk sürümü hero kartının TAM BOYUTUNDA bir blok çiziyordu ve
+hero bandı %66'ya çıkınca kareyi yuttu. Ölçüm: **kırmızı payı %25.9**, tavan %8,
+referansta %3.6.
+
+Bu, 7. turda modeli eleştirdiğim hatanın birebir aynısı — orada "ONE hot red
+signal accent" cümlesi dev kırmızı blok olarak çizilmiş ve %11.2 ölçülmüştü.
+**Kodda çizmek oranı garanti etmiyor; oranı garanti eden şey ölçüm.**
+
+Vuruş artık şerit (kalınlık sabit, kenar boyunca): %25.9 → %0.83.
+
+### Ölçülen doluluk (aksan düzeltildikten SONRA)
+
+    bomba başlangıç        16.4   (kırmızı %0.00)
+    bomba şimdi            20.9   (kırmızı %1.19)
+    "200,000" sahnesi      31.1   (kırmızı %0.00)
+    "18" sahnesi           10.5   (kırmızı %0.83)
+    hedef (kanıt masası)   31.0   (kırmızı %0.10)
+
+**DÜRÜST NOT:** ara ölçümde "18" sahnesi 34.5 görünüyordu ve o rakam SAHTEYDİ —
+dolduran şey dev kırmızı bloğun kendisiydi. Aksan düzeltilince 10.5'e indi.
+Dev rakamı olan sahneler hedefe ulaşıyor (31.1), olmayanlar hâlâ yarı yolda.
 
 **Yazarken iki hatamı ölçüm yakaladı:** ilk katman tonları (#E6DFCE/#EFEADC/
 #F3F1E8) zeminin kendi lekelerini örtüp kareyi SOLDURDU — katman zeminden ayırt

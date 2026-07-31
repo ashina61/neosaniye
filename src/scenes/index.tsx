@@ -9,7 +9,7 @@ import {Cutout, TornCard, HALFTONE_CSS} from '../paper/Cutout';
 import {Headline, PullQuote, LabelCard, Stamp, TypewriterStrip} from '../paper/Type';
 import {DrawnArrow, DottedPath, MarkerCircle, MarkerCross, SparkleField, SeaBand, Sparkle} from '../paper/Marks';
 import {StickFigure, ThoughtBubble, type Pose} from '../paper/StickFigure';
-import {DateTear, PostmarkRing, RecordClip, PAPER_TONES, LIFT} from '../paper/Evidence';
+import {DateTear, PostmarkRing, RecordClip, FigureCard, PAPER_TONES, LIFT} from '../paper/Evidence';
 import {LowerRegister} from '../paper/LowerRegister';
 import {PaperStrata, OffsetStroke} from '../paper/Strata';
 import {ArchiveMarks} from '../paper/ArchiveMarks';
@@ -136,6 +136,19 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurr
       {/* ARŞİV İŞARETLERİ — dönem damgası + dosya sekmesi. İkisi de gerçek
           veriden: yıl anlatıdan, numara sahne sırasından. Gerekçe ArchiveMarks. */}
       <ArchiveMarks era={era} index={index} seed={seed} opacity={card.opacity} />
+      {/* DEV RAKAM — beat'in kendi sayısı. Kanıt masasındaki tarih yaprağının
+          karşılığı; cümlede sayı/ad yoksa `figure` hiç yazılmaz. */}
+      {payload.figure && (
+        <FigureCard
+          figure={payload.figure}
+          x={Math.round(CANVAS.width * 0.05)}
+          y={Math.round(CANVAS.height * 0.60)}
+          width={Math.round(CANVAS.width * 0.42)}
+          height={Math.round(CANVAS.height * 0.17)}
+          opacity={card.opacity}
+          seed={seed}
+        />
+      )}
       <OffsetStroke
         x={heroX - 40}
         y={B.hero.y - 30}
@@ -364,6 +377,19 @@ const WideEstablish: React.FC<SceneProps> = ({seconds, payload, seed, occurrence
       {/* ARŞİV İŞARETLERİ — dönem damgası + dosya sekmesi. İkisi de gerçek
           veriden: yıl anlatıdan, numara sahne sırasından. Gerekçe ArchiveMarks. */}
       <ArchiveMarks era={era} index={index} seed={seed} opacity={title.opacity} />
+      {/* DEV RAKAM — beat'in kendi sayısı. Kanıt masasındaki tarih yaprağının
+          karşılığı; cümlede sayı/ad yoksa `figure` hiç yazılmaz. */}
+      {payload.figure && (
+        <FigureCard
+          figure={payload.figure}
+          x={Math.round(CANVAS.width * 0.05)}
+          y={Math.round(CANVAS.height * 0.60)}
+          width={Math.round(CANVAS.width * 0.42)}
+          height={Math.round(CANVAS.height * 0.17)}
+          opacity={title.opacity}
+          seed={seed}
+        />
+      )}
       <SeaBand y={bandY} height={CANVAS.height - bandY} progress={band.progress} seed={seed} />
       <Cutout
         shape={payload.shape ?? 'vessel'}
@@ -449,6 +475,19 @@ const HeadlineCard: React.FC<SceneProps> = ({seconds, payload, seed, occurrence,
       {/* ARŞİV İŞARETLERİ — dönem damgası + dosya sekmesi. İkisi de gerçek
           veriden: yıl anlatıdan, numara sahne sırasından. Gerekçe ArchiveMarks. */}
       <ArchiveMarks era={era} index={index} seed={seed} opacity={head.opacity} />
+      {/* DEV RAKAM — beat'in kendi sayısı. Kanıt masasındaki tarih yaprağının
+          karşılığı; cümlede sayı/ad yoksa `figure` hiç yazılmaz. */}
+      {payload.figure && (
+        <FigureCard
+          figure={payload.figure}
+          x={Math.round(CANVAS.width * 0.05)}
+          y={Math.round(CANVAS.height * 0.60)}
+          width={Math.round(CANVAS.width * 0.42)}
+          height={Math.round(CANVAS.height * 0.17)}
+          opacity={head.opacity}
+          seed={seed}
+        />
+      )}
       {payload.headline && (
         <Headline
           text={payload.headline}
@@ -814,6 +853,19 @@ const LabeledDiagram: React.FC<SceneProps> = ({seconds, payload, seed, era, inde
       {/* ARŞİV İŞARETLERİ — dönem damgası + dosya sekmesi. İkisi de gerçek
           veriden: yıl anlatıdan, numara sahne sırasından. Gerekçe ArchiveMarks. */}
       <ArchiveMarks era={era} index={index} seed={seed} opacity={a.opacity} />
+      {/* DEV RAKAM — beat'in kendi sayısı. Kanıt masasındaki tarih yaprağının
+          karşılığı; cümlede sayı/ad yoksa `figure` hiç yazılmaz. */}
+      {payload.figure && (
+        <FigureCard
+          figure={payload.figure}
+          x={Math.round(CANVAS.width * 0.05)}
+          y={Math.round(CANVAS.height * 0.60)}
+          width={Math.round(CANVAS.width * 0.42)}
+          height={Math.round(CANVAS.height * 0.17)}
+          opacity={a.opacity}
+          seed={seed}
+        />
+      )}
       {payload.headline && (
         <Headline
           text={payload.headline}

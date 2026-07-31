@@ -96,15 +96,24 @@ export const PaperStrata: React.FC<{
 );
 
 /**
- * OFSET AKSAN VURUŞU — hero'nun arkasından taşan renk bloğu.
+ * OFSET AKSAN VURUŞU — hero'nun kenarından taşan İNCE şerit.
  *
  * Stil bloğunun "offset accent strokes" ve "ONE hot red signal accent"
- * maddesi. Referansta kırmızı ipin yaptığı işi burada vuruş yapıyor:
- * karenin tek sıcak noktası ve gözü hero'ya çakıyor.
+ * maddesi: karenin tek sıcak noktası.
  *
- * Boyut kasıtlı olarak KÜÇÜK: aksan tavanı karenin %8'i (AGENTS.md,
- * referansta ölçülen %3.6). 7. turda modelden istendiğinde dev kırmızı blok
- * geldi ve %11.2 ölçüldü; kodda çizilince oran garanti.
+ * ============ İLK SÜRÜM TAVANI ÜÇ KAT AŞTI ============
+ *
+ * İlk hâli hero kartının TAM BOYUTUNDA bir blok çiziyordu ve `hero_cutout`ta
+ * hero bandı %66'ya çıkınca blok kareyi yuttu. Ölçüm: kırmızı payı **%25.9**,
+ * oysa AGENTS.md tavanı %8 ve referansta ölçülen %3.6.
+ *
+ * Bu, 7. turda modeli eleştirdiğim hatanın birebir aynısı — orada "ONE hot red
+ * signal accent" cümlesi dev kırmızı blok olarak çizilmişti ve %11.2 ölçmüştüm.
+ * Kodda çizmek oranı garanti ETMİYOR; oranı garanti eden şey ÖLÇÜM.
+ *
+ * Vuruş artık ŞERİT: hero'nun bir kenarı boyunca uzanan, kalınlığı sabit bir
+ * bant. Ofset vuruşun tanımı da bu — arkadan taşan bir kaydırma, ikinci bir
+ * dolu blok değil.
  */
 export const OffsetStroke: React.FC<{
   x: number;
@@ -113,22 +122,40 @@ export const OffsetStroke: React.FC<{
   height: number;
   opacity?: number;
   color?: string;
-  /** Kaydırma yönü — hero'nun hangi kenarından taşacak. */
+  /** Şerit kalınlığı, piksel. Kareye oranla küçük kalmalı. */
+  thickness?: number;
+  /** Hangi kenardan taşacak. */
+  edge?: 'left' | 'right' | 'bottom';
   dx?: number;
   dy?: number;
   zIndex?: number;
-}> = ({x, y, width, height, opacity = 1, color = PALETTE.signal, dx = -18, dy = 16, zIndex}) => (
-  <div
-    style={{
-      position: 'absolute',
-      left: x + dx,
-      top: y + dy,
-      width,
-      height,
-      opacity: opacity * 0.9,
-      background: color,
-      zIndex,
-      pointerEvents: 'none',
-    }}
-  />
-);
+}> = ({
+  x,
+  y,
+  width,
+  height,
+  opacity = 1,
+  color = PALETTE.signal,
+  thickness = 26,
+  edge = 'left',
+  dx = -16,
+  dy = 14,
+  zIndex,
+}) => {
+  const vertical = edge !== 'bottom';
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left: edge === 'right' ? x + width + dx : x + dx,
+        top: y + dy,
+        width: vertical ? thickness : width,
+        height: vertical ? height : thickness,
+        opacity: opacity * 0.9,
+        background: color,
+        zIndex,
+        pointerEvents: 'none',
+      }}
+    />
+  );
+};

@@ -361,3 +361,86 @@ export const RecordClip: React.FC<{
     </div>
   );
 };
+
+/**
+ * DEV RAKAM KARTI — kanıt masasındaki tarih yaprağının öteki şablonlardaki
+ * karşılığı.
+ *
+ * ============ NEDEN ============
+ *
+ * Ölçüldü: kanıt masasının doluluğu 31.0, öteki şablonlar katman ve arşiv
+ * işaretlerinden sonra 21.6. Kalan farkın sebebi tek öğe — kanıt masasında
+ * karenin üçte birini kaplayan DEV TİPOGRAFİ var ("24 / NOV / 1971").
+ *
+ * `payload.figure` beat'in KENDİ sayısını taşıyor ("200,000", "18",
+ * "SEATTLE"); cümlede sayı ya da özel isim yoksa alan hiç yazılmıyor ve bu
+ * bileşen çağrılmıyor. `DateTear`den ayrı, çünkü o üç satırlı bir takvim
+ * yaprağı; bu tek satır ve uzunluğa göre punto ayarlıyor.
+ */
+export const FigureCard: React.FC<{
+  figure: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rotate?: number;
+  opacity?: number;
+  transform?: string;
+  seed?: number;
+  zIndex?: number;
+}> = ({figure, x, y, width, height, rotate = -2, opacity = 1, transform, seed = 6, zIndex}) => {
+  const teeth = 16;
+  const pts: string[] = ['0% 0%', '100% 0%'];
+  for (let i = teeth; i >= 0; i -= 1) {
+    pts.push(`${((i / teeth) * 100).toFixed(1)}% ${(100 - 3 * rand(seed * 19 + i)).toFixed(2)}%`);
+  }
+  /**
+   * PUNTO UZUNLUĞA GÖRE. "9" ile "WASHINGTON" aynı puntoda çizilirse ikincisi
+   * karttan taşar. Condensed büyük harfte karakter genişliği ≈ 0.56 × punto.
+   */
+  const px = Math.min(height * 0.62, (width * 0.86) / Math.max(1, figure.length * 0.56));
+
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left: x,
+        top: y,
+        width,
+        height,
+        opacity,
+        zIndex,
+        transform: [transform, rotate ? `rotate(${rotate}deg)` : ''].filter(Boolean).join(' ') || undefined,
+        transformOrigin: 'center center',
+        filter: LIFT(1),
+      }}
+    >
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: PAPER_TONES.calendar,
+          clipPath: `polygon(${pts.join(', ')})`,
+        }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontFamily: FONTS.display,
+          fontWeight: 700,
+          fontSize: px,
+          lineHeight: 1,
+          letterSpacing: '-0.01em',
+          color: PALETTE.ink,
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {figure}
+      </div>
+    </div>
+  );
+};

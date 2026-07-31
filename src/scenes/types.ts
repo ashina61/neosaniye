@@ -113,6 +113,15 @@ export interface ScenePayload {
    */
   negated?: boolean;
   /**
+   * BEAT'İN TAŞIDIĞI DEV SAYI YA DA AD — kanıt masasındaki tarih yaprağının
+   * öteki şablonlardaki karşılığı ("200,000", "18", "SEATTLE").
+   *
+   * `build-storyboard.mjs` içindeki `bigFigure` cümleden çıkarır; cümlede
+   * sayı ya da özel isim yoksa alan YAZILMAZ. Uydurma rakam basmak, uydurma
+   * nesne çizmekle aynı sınıf yalan olurdu.
+   */
+  figure?: string;
+  /**
    * KANIT MASASI VERİSİ — `evidence_board` şablonu okur.
    *
    * Hepsi ANLATIDAN türer, uydurulmaz. Tarih cümlenin kendi tarihidir, yer
