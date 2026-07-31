@@ -329,7 +329,7 @@ test('bölme ve kırpma farklı sorular sorar', async () => {
  */
 test('kompoze kare promtu motorun sahne kalıbını taşır', async () => {
   const {composedCollagePrompt} = await import('../pipeline/collage-prompt.mjs');
-  const p = composedCollagePrompt({text: 'On the night of 24 November 1971,', kind: 'cold_open'}, {});
+  const p = composedCollagePrompt({text: 'On the night of 24 November 1971,', kind: 'cold_open'}, {}, {withText: true});
 
   assert.ok(p.includes('as the hero element'), 'hero işareti yok');
   assert.ok(p.includes('as the only supporting elements'), 'destek işareti yok — kalabalığı kesen ifade');
@@ -351,4 +351,27 @@ test('artikel SESE göre seçilir, harfe göre değil', async () => {
   // "one-way" sesli harfle başlar ama /w/ okunur: "an one-way" yanlıştı.
   assert.match(subjectFor('bought a one-way ticket from Portland'), /^a one-way/);
   assert.match(subjectFor('He handed the attendant a note'), /^an attendant/);
+});
+
+/**
+ * HARFSİZ KİP VARSAYILAN.
+ *
+ * ÖLÇÜLDÜ: bedava uçtaki model okunur harf basamıyor — 4. ve 5. turda 4
+ * plakanın 4'ü uydurma manşetle geldi ("YOOLNI IIILNIIRIGLLLID") ve 5. tur
+ * "ABSOLUTELY NO WRITING OF ANY KIND" yasağıyla koştu. Bu modelde harften SÖZ
+ * ETMEK harf çizmeye davettir; o yüzden harfsiz kipte yalnızca etiket değil,
+ * stil bloğundaki harf daveti ve daktilo şeridi de çıkıyor.
+ */
+test('kompoze kare promtu VARSAYILAN olarak harfsiz', async () => {
+  const {composedCollagePrompt} = await import('../pipeline/collage-prompt.mjs');
+  const p = composedCollagePrompt({text: 'On the night of 24 November 1971,', kind: 'cold_open'}, {});
+
+  assert.ok(!/headline lettering/.test(p), 'stil bloğunda harf daveti kalmış');
+  assert.ok(!/typewriter caption/.test(p), 'daktilo şeridi bir METİN öğesi, çıkmalı');
+  assert.ok(!/stamp-printed label/.test(p), 'etiket cümlesi kalmış');
+  assert.ok(/no text, no letters, no numbers/.test(p), 'yasak koşullu kalmış');
+
+  // Harfli kip talep üzerine hâlâ çalışmalı (harf basabilen model için).
+  const q = composedCollagePrompt({text: 'On the night of 24 November 1971,', kind: 'cold_open'}, {}, {withText: true});
+  assert.match(q, /stamp-printed label 24 NOV 1971/);
 });

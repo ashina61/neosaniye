@@ -86,6 +86,39 @@ const CLOSER = [
 ].join(' ');
 
 /**
+ * HARFSİZ STİL BLOĞU — harf daveti ÇIKARILMIŞ hâli.
+ *
+ * ============ NEDEN GEREKLİ: ÖLÇÜLDÜ ============
+ *
+ * Stil bloğu "condensed bold headline lettering only where a label is
+ * specified" diyor. Etiket İSTENMEDİĞİNDE bu cümle teknik olarak ihlal
+ * edilmiyor ama ölçüm başka şey gösterdi: 4. ve 5. turda plaka promtu
+ * "ABSOLUTELY NO WRITING OF ANY KIND" derken bile bu cümleyi taşıyordu ve
+ * 4 plakanın 4'ü uydurma manşetle geldi ("YOOLNI IIILNIIRIGLLLID").
+ *
+ * Yani bu modelde harften SÖZ ETMEK, harf çizmeye davettir. `PLATE_STYLE`
+ * aynı sebeple aynı cümleyi çıkarıyor; burası onun kompoze kare karşılığı.
+ */
+const STYLE_BLOCK_NO_TEXT = STYLE_BLOCK
+  .replace('condensed bold headline lettering only where a label is specified, ', '')
+  // "typewriter caption strips" bir KAĞIT değil, bir METİN öğesi: daktilo
+  // şeridinin tanımı üstündeki yazıdır. Harfsiz kipte o da çıkıyor, yoksa
+  // model şeridi çizip üstünü uydurma harfle dolduruyor — plaka hatasının
+  // birebir aynısı.
+  .replace('typewriter caption strips, ', '');
+
+/**
+ * CLOSER'IN HARFSİZ HÂLİ. Orijinali "no text beyond the specified label" diyor
+ * ve etiket yokken bu ifade zaten hiçbir şeye izin vermiyor — ama koşullu
+ * yazılmış bir yasak, koşulsuz yazılmış bir yasaktan zayıftır. Bu modelde
+ * ölçülen davranış tam olarak bu.
+ */
+const CLOSER_NO_TEXT = CLOSER.replace(
+  'no text beyond the specified label.',
+  'no text, no letters, no numbers, no lettering of any kind anywhere in the image.',
+);
+
+/**
  * Beat türüne göre kompozisyon reçetesi.
  *
  * Her reçete TEK hero öğe (görsel ağırlığın ~%70'i) ve en fazla 2-3 destek
@@ -268,7 +301,16 @@ const FRAME_PREFIX =
   'lower 20 percent kept visually clean for subtitles, generous side margins, ' +
   'no important subject touching the frame edges.';
 
-export function composedCollagePrompt(beat, story = {}) {
+/**
+ * @param {{text: string, kind: string}} beat
+ * @param {object} [story]
+ * @param {{withText?: boolean}} [opts] — `withText` VARSAYILAN OLARAK KAPALI.
+ *   Gerekçe `STYLE_BLOCK_NO_TEXT` başında: bedava uçtaki model okunur harf
+ *   basamıyor ve harften söz etmek uydurma harf çizdiriyor. Harfi Remotion
+ *   çiziyor — üstelik gerçek tarihle ve deterministik.
+ */
+export function composedCollagePrompt(beat, story = {}, opts = {}) {
+  const withText = opts.withText === true;
   const text = String(beat.text || '').replace(/[*"]/g, '').trim();
   const recipe = RECIPES[beat.kind] ?? FALLBACK;
 
@@ -365,9 +407,10 @@ export function composedCollagePrompt(beat, story = {}) {
    *    black type inside a red rubber-stamp box". Model etiketi nereye
    *    koyacağını böyle biliyor.
    */
-  const labelClause = label
-    ? `carrying the stamp-printed label ${shortLabel(label, 4)} in condensed black type inside a red rubber-stamp box`
-    : null;
+  const labelClause =
+    withText && label
+      ? `carrying the stamp-printed label ${shortLabel(label, 4)} in condensed black type inside a red rubber-stamp box`
+      : null;
 
   /**
    * ZEMİN CÜMLESİ. Örneklerin üçünde de hero bir YÜZEYE konuyor:
@@ -403,7 +446,11 @@ export function composedCollagePrompt(beat, story = {}) {
     .filter(Boolean)
     .join(', ');
 
-  return [`${scene}.`, STYLE_BLOCK, CLOSER].join(' ');
+  return [
+    `${scene}.`,
+    withText ? STYLE_BLOCK : STYLE_BLOCK_NO_TEXT,
+    withText ? CLOSER : CLOSER_NO_TEXT,
+  ].join(' ');
 }
 
 /** İlk harfi büyüt — sahne cümlesi özneyle açılıyor. */
