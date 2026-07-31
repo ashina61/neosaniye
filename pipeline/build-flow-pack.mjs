@@ -43,6 +43,7 @@ import {
   UNIVERSAL_VIDEO_PROMPT,
   platePrompt,
   piecePrompts,
+  eraOf,
 } from './collage-prompt.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
@@ -70,6 +71,13 @@ async function main() {
   }
   const sb = JSON.parse(await readFile(sbPath, 'utf8'));
   const story = JSON.parse(await readFile(path.join(ROOT, 'content', 'story.json'), 'utf8'));
+  /**
+   * Dönem çıpası STORYBOARD'dan çıkarılır, `story.json`'dan değil: yıl genelde
+   * yalnızca cold_open'da geçiyor ama her parçanın dönem-doğru olması gerekiyor,
+   * ve storyboard hangi konu render ediliyorsa onu taşıyor. Ölçüldü — çıpa
+   * olmayınca 1971 anlatısına tişörtlü modern portre geliyor.
+   */
+  const era = eraOf(sb);
 
   await rm(PACK, {recursive: true, force: true});
   await mkdir(PACK, {recursive: true});
@@ -99,7 +107,7 @@ async function main() {
       row.fallbackPrompt = composedCollagePrompt(beat, story);
       // B yolu (varsayılan): plaka + parçalar.
       row.platePrompt = platePrompt(beat);
-      row.pieces = piecePrompts(beat);
+      row.pieces = piecePrompts(beat, {era});
       flow.push(row);
     }
   }
@@ -155,7 +163,7 @@ async function main() {
     `═══ B YOLU — PARÇA PARÇA (VARSAYILAN, BUNU KULLAN) ═══`,
     ``,
     `Beat başına 1 PLAKA (boş kağıt zemin) + ${flow[0]?.pieces.length ?? 3} kadar PARÇA`,
-    `(düz magenta zeminde tek nesne). Remotion parçaları tek tek, arkadan öne,`,
+    `(düz BEYAZ zeminde tek nesne). Remotion parçaları tek tek, arkadan öne,`,
     `anlatı sırasıyla diziyor — yani kolajın kendi kendini kurması KODDA oluyor.`,
     `Flow'a hiç gerek yok.`,
     ``,
@@ -164,15 +172,16 @@ async function main() {
     `2. Dönen görselleri ASSET-LIST.txt'deki adlarla collage-raw/ altına kaydet.`,
     `   N'inci blok = listenin N'inci satırı. Sıra kayarsa montaj sessizce bozulur.`,
     `3. npm run collage`,
-    `   Bu adım parçaların magenta zeminini silip alfa PNG üretiyor (cutout.py,`,
-    `   chroma modu), plakayı olduğu gibi alıyor ve storyboard'a bağlıyor.`,
+    `   Bu adım parçaların zeminini silip alfa PNG üretiyor (cutout.py, matte`,
+    `   modu), plakayı olduğu gibi alıyor ve storyboard'a bağlıyor.`,
     `   Eksik parça sorun değil: o sahne mevcut şablonuyla kodla çizilmeye devam eder.`,
     `4. npm run sheet   (tek kareye bak, 93 dakikalık render'a girmeden)`,
     `5. npm run render`,
     ``,
-    `PARÇA PROMT'UNDA DEĞİŞTİRME: "fill the entire background with pure saturated`,
-    `magenta" cümlesi süs değil, alfa çıkarımının TEK dayanağı. Zemin magenta`,
-    `değilse cutout adımı boş maske üretir ve adım hata verir.`,
+    `PARÇA PROMT'UNDA DEĞİŞTİRME: "BACKGROUND: blank flat white" cümlesi süs`,
+    `değil, alfa çıkarımının TEK dayanağı. Magenta iki canlı çalıştırmada da`,
+    `tutmadı — model magenta'yı zemine değil öznenin İÇİNE koydu — ve beyaz`,
+    `ölçümle daha güvenilir çıktı.`,
     ``,
     `═══ A YOLU — TEK KARE + GOOGLE FLOW (YEDEK) ═══`,
     ``,

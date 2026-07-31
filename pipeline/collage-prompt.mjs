@@ -399,11 +399,38 @@ export const RECIPE_KINDS = Object.keys(RECIPES);
  * `KEY_COLOUR` yine de duruyor: kroma modu ve A yolu için geçerli, ve biri
  * elle magenta zeminli parça üretirse zincir onu hâlâ tanıyor.
  */
+/**
+ * PARÇANIN MALZEME STİLİ — kullanıcının doğrulanmış STYLE_BLOCK'undan.
+ *
+ * ============ BU BLOK PARÇA PROMT'UNDA HİÇ YOKTU ============
+ *
+ * `STYLE_BLOCK` depoda duruyor ve `composedCollagePrompt` (A yolu) ile
+ * `platePrompt` onu kullanıyor. Ama MALZEMEYİ ASIL ÜRETEN parça promtuna hiç
+ * girmemişti. Ölçüldü: üçüncü turda parça promtunda "aged newsprint" yok,
+ * "archival" yok, "torn paper" yok, dönem bilgisi yok.
+ *
+ * Sonuç 3. turun alfa sayfasında görüldü: teknik olarak kusursuz kesilmiş
+ * ama TAMAMEN YANLIŞ malzeme — 2020'lerin tişörtlü stüdyo portreleri, 1971
+ * arşiv fotoğrafı değil. Üstelik bunu ben azdırdım: magenta'dan kaçarken
+ * "plain seamless white studio backdrop, evenly lit" + "flat even documentary
+ * lighting" yazdım, ki bu birebir modern ürün/portre fotoğrafı brief'i.
+ *
+ * Zemin TEMİZ kalmalı (ölçüldü: matte onu kusursuz kesiyor) ama "stüdyo"
+ * denmemeli. Doğrusu: arşiv kontakt sayfasından kesilmiş bir baskı.
+ */
+const PIECE_MATERIAL = [
+  'A black and white halftone newspaper/archive print: coarse visible print dots,',
+  'ink black and halftone gray, desaturated archival tone, visible print grain and paper fibre,',
+  'rough scissor-cut edges as if cut out of a printed page with scissors,',
+  'matte, aged, slightly worn. Looks like it was clipped from an old newspaper or a case file.',
+  'NOT a modern digital photograph, NOT a glossy studio portrait, NOT clean contemporary product photography.',
+].join(' ');
+
 const PIECE_BACKGROUND = [
-  'BACKGROUND: a plain seamless pure white studio backdrop, evenly lit, completely empty.',
-  'The background is NOT a wall, NOT paper, NOT a table, NOT a surface with texture:',
-  'it is blank white with no grain, no gradient, no vignette and no shadow cast on it.',
-  'The subject is clearly DARKER than the background so its outline reads cleanly.',
+  'BACKGROUND: blank flat white, completely empty — the piece is a cut-out lifted off the page,',
+  'so there is nothing behind it: no wall, no table, no paper sheet, no texture,',
+  'no grain, no gradient, no vignette, no cast shadow.',
+  'The subject is clearly DARKER than the white so its outline reads cleanly.',
   'The subject must not touch the frame edges; leave a clear white margin on all sides.',
   'ONE single object only, isolated, nothing else in the frame.',
 ].join(' ');
@@ -459,7 +486,31 @@ export function platePrompt(beat) {
  */
 const CODE_DRAWS = /stamp|tape|string|\bpin\b|brass pin|underline|marker|paper clip|clipped|coffee ring|rule line|wax seal|fingerprint/i;
 
-export function piecePrompts(beat) {
+/**
+ * DÖNEM ÇIPASI — anlatının yılından türer.
+ *
+ * ÖLÇÜLDÜ: dönem söylenmeyince model BUGÜNÜ çiziyor. Üçüncü turun alfa
+ * sayfasında 1971 D.B. Cooper anlatısı için gelen iki "adam" da tişörtlü,
+ * modern saç kesimli, 2020'ler stüdyo portresiydi. Teknik olarak kusursuz
+ * kesilmişlerdi ve tamamen kullanılamazdılar.
+ *
+ * Yıl anlatıda zaten var (cold_open "24 November 1971" diyor); `firstDate`
+ * onu çıkarıyor. Yoksa çıpa atlanır — uydurma bir dönem dayatmak, uydurma
+ * nesne çizmekle aynı sınıf hata olurdu.
+ */
+function eraClause(era) {
+  if (!era) return '';
+  return (
+    `Period-accurate for ${era}: clothing, hairstyle, equipment and printing style all from that era. ` +
+    'Absolutely nothing modern in the frame.'
+  );
+}
+
+/**
+ * @param {{text: string, kind: string}} beat
+ * @param {{era?: string}} [opts] — `era` anlatının yılı, örn. "1971".
+ */
+export function piecePrompts(beat, opts = {}) {
   const text = String(beat.text || '').replace(/[*"]/g, '').trim();
   const recipe = RECIPES[beat.kind] ?? FALLBACK;
   const concrete = subjectFor(text);
@@ -473,20 +524,41 @@ export function piecePrompts(beat) {
      * ÖZNE EN BAŞTA. Önceki sürüm "A single hand-cut paper collage element:
      * a man" diye başlıyordu ve ölçülen çıktı ADAM DEĞİL, yırtık kağıttı —
      * baştaki uzun tanım özneyi eziyordu. Artık cümle özneyle açılıyor,
-     * halftone işlemi ondan SONRA geliyor.
+     * MALZEME ve DÖNEM ondan sonra geliyor.
      */
     prompt: [
       `${subject.charAt(0).toUpperCase()}${subject.slice(1)}, cut out and isolated.`,
-      'Rendered as a coarse black-and-white halftone print with rough scissor-cut edges,',
-      'visible print dots and paper fibre, matte, flat even documentary lighting.',
+      eraClause(opts.era),
+      PIECE_MATERIAL,
       'The subject fills most of the frame.',
       PIECE_BACKGROUND,
       'NO text, NO letters, NO numbers, NO watermark, NO logo, NO border, NO frame,',
       'NO sheet of paper behind the subject, NO drop shadow, NO vignette.',
       'This is NOT a photograph of paper lying on a surface and NOT a scene:',
-      'it is one object photographed against an empty white backdrop.',
+      'it is one clipped element on blank white.',
       'NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy.',
       'Vertical 9:16 framing, ultra-detailed.',
-    ].join(' '),
+    ]
+      .filter(Boolean)
+      .join(' '),
   }));
+}
+
+/**
+ * Anlatının yılı — `piecePrompts`'a dönem çıpası olarak verilir.
+ *
+ * GİRDİ STORYBOARD'UN KENDİSİ, `story.json` DEĞİL. Sebep ölçüldü: workflow
+ * `build-storyboard.mjs content/story-db-cooper.json` çalıştırıyor ama
+ * `build-flow-pack` `content/story.json`'u sabit okuyordu — yani render edilen
+ * konu Cooper'ken dönem başka bir hikâyeden (pusula/okyanus) geliyordu.
+ * Storyboard hangi konu render ediliyorsa ONUN beat'lerini taşıyor, dolayısıyla
+ * tek doğru kaynak o.
+ *
+ * Yıl bulunamazsa null döner ve çıpa atlanır: uydurma bir dönem dayatmak,
+ * uydurma nesne çizmekle aynı sınıf hata olurdu.
+ */
+export function eraOf(storyboard) {
+  const text = (storyboard?.scenes ?? []).map((s) => s?._beat?.text ?? '').join(' ');
+  const y = text.match(/\b(1[0-9]{3}|20[0-9]{2})\b/);
+  return y ? y[1] : null;
 }
