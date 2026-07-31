@@ -502,12 +502,24 @@ async function main() {
   }
 
   const totalFrames = scenes.reduce((s, x) => s + x.durationInFrames, 0);
+  /**
+   * DÖNEM — anlatının kendi yılı.
+   *
+   * Sahneler bunu bir kauçuk damga olarak taşıyor (`ArchiveMarks`). Uydurma
+   * değil: anlatı "24 November 1971" diyor, yıl oradan çıkıyor. Anlatıda yıl
+   * geçmiyorsa alan yazılmıyor ve damga hiç çizilmiyor — dönem uydurmak,
+   * uydurma nesne çizmekle aynı sınıf yalan olurdu.
+   */
+  const era = beats.map((b) => b.text).join(' ').match(/\b(1[0-9]{3}|20[0-9]{2})\b/)?.[1];
+
   const storyboard = {
     title: story.title ?? 'Untitled',
     scenes,
     totalFrames,
+    era,
     audio: story.audio ?? undefined,
   };
+  if (!storyboard.era) delete storyboard.era;
   if (!storyboard.audio) delete storyboard.audio;
 
   const outPath = path.join(ROOT, 'content', 'storyboard.json');

@@ -211,4 +211,9 @@ export interface SceneProps {
    * döner; sahne sırasına göre dönmek aynı pariteli sıraları çakıştırıyordu.
    */
   occurrence: number;
+  /**
+   * Anlatının yılı, varsa. `ArchiveMarks` dönem damgasını buradan çiziyor.
+   * Opsiyonel: anlatıda yıl geçmeyen konularda damga hiç çıkmaz.
+   */
+  era?: string;
 }

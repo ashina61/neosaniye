@@ -140,11 +140,28 @@ taşan kırmızı vuruş). Sıfır kota.
 7. turda aynı vuruş modelden istendiğinde dev kırmızı blok geldi ve %11.2
 ölçüldü; kodda çizilince oran garanti.
 
-Ölçülen sonuç (ortalama doluluk):
+### Arşiv işaretleri — malzemeden sonra BİLGİ
 
-    hero_cutout    16.4 → 21.1
-    headline_card  19.8 → 23.6
-    hedef (kanıt masası)      31.0
+Katmanlar 16.4'ü 21.1'e çıkardı ama kanıt masasının 31.0'ı uzaktaydı. Aradaki
+fark malzeme değil, **öğe çeşitliliği**. `src/paper/ArchiveMarks.tsx` bunu
+uydurmadan kapatıyor — iki öğe, ikisi de gerçek veriden:
+
+- **dönem damgası**: anlatının kendi yılı. `build-storyboard.mjs` beat
+  metinlerinden çıkarıp `storyboard.era`ya yazıyor; **anlatıda yıl geçmiyorsa
+  alan yazılmıyor ve damga hiç çizilmiyor**. Dönem uydurmak, uydurma nesne
+  çizmekle aynı sınıf yalan olurdu.
+- **dosya sekmesi**: sahnenin sırası. Arşiv kolajının en yaygın öğesi ve
+  uydurma değil — sahne gerçekten o sırada.
+
+Referansta ikisinin de karşılığı var: posta damgası tarihi, BUCKINGHAMSHIRE
+etiketi bölgeyi taşıyor.
+
+Ölçülen ortalama doluluk:
+
+    başlangıç             16.4
+    + kağıt katmanları    21.1
+    + arşiv işaretleri    21.6
+    hedef (kanıt masası)  31.0
 
 **Yazarken iki hatamı ölçüm yakaladı:** ilk katman tonları (#E6DFCE/#EFEADC/
 #F3F1E8) zeminin kendi lekelerini örtüp kareyi SOLDURDU — katman zeminden ayırt

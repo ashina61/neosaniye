@@ -32,6 +32,12 @@ export interface Storyboard {
   scenes: StoryboardScene[];
   /** public/ içindeki seslendirme dosyası, varsa. */
   audio?: string;
+  /**
+   * Anlatının yılı — `build-storyboard.mjs` cümlelerden çıkarır. Sahneler bunu
+   * dönem damgası olarak taşıyor. Anlatıda yıl geçmiyorsa alan YOK ve damga
+   * çizilmiyor; dönem uydurmak uydurma nesne çizmekle aynı sınıf yalan olurdu.
+   */
+  era?: string;
   totalFrames: number;
 }
 
@@ -52,6 +58,7 @@ export const Short: React.FC<{storyboard: Storyboard}> = ({storyboard}) => {
               seed={scene.seed}
               index={i}
               occurrence={scene.occurrence ?? 0}
+              era={storyboard.era}
             />
           </Sequence>
         );

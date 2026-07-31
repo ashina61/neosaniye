@@ -12,6 +12,7 @@ import {StickFigure, ThoughtBubble, type Pose} from '../paper/StickFigure';
 import {DateTear, PostmarkRing, RecordClip, PAPER_TONES, LIFT} from '../paper/Evidence';
 import {LowerRegister} from '../paper/LowerRegister';
 import {PaperStrata, OffsetStroke} from '../paper/Strata';
+import {ArchiveMarks} from '../paper/ArchiveMarks';
 import {Tape, BrassPin, RedString, CornerCurl} from '../paper/Fixings';
 import {CastShadow, ContactShadow} from '../film/CastShadow';
 import {ArchiveClip} from './ArchiveClip';
@@ -47,7 +48,7 @@ const B = VERTICAL_BANDS;
  * Üç varyant, seed'den deterministik seçiliyor. Aynı şablon ikinci kez
  * kullanıldığında farklı bir kare veriyor.
  */
-const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurrence}) => {
+const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurrence, era}) => {
   const f = useCurrentFrame();
   /**
    * Girişler cue() ile sahne süresine yayılıyor. Önceki sabit takvimde
@@ -132,6 +133,9 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurr
       {/* KAĞIT KATMANLARI — kareyi malzemeyle dolduruyor, uydurma bilgiyle
           değil. Ölçüm ve gerekçe: src/paper/Strata.tsx. */}
       <PaperStrata seed={seed} opacity={card.opacity} />
+      {/* ARŞİV İŞARETLERİ — dönem damgası + dosya sekmesi. İkisi de gerçek
+          veriden: yıl anlatıdan, numara sahne sırasından. Gerekçe ArchiveMarks. */}
+      <ArchiveMarks era={era} index={index} seed={seed} opacity={card.opacity} />
       <OffsetStroke
         x={heroX - 40}
         y={B.hero.y - 30}
@@ -320,7 +324,7 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurr
  *   1: bant yüksek, özne sağda, başlık altta     (yakın kıyı)
  *   2: bant ortada, özne küçük ve ortada, ışık sızması (uzaklık/yalnızlık)
  */
-const WideEstablish: React.FC<SceneProps> = ({seconds, payload, seed, occurrence}) => {
+const WideEstablish: React.FC<SceneProps> = ({seconds, payload, seed, occurrence, era, index}) => {
   const f = useCurrentFrame();
   // Başlık ilk girer ve sahne boyunca kalır — bkz. hero_cutout'taki gerekçe.
   const title = enter(f, {at: 0.1, duration: 0.35, kind: 'fade'});
@@ -357,6 +361,9 @@ const WideEstablish: React.FC<SceneProps> = ({seconds, payload, seed, occurrence
       {/* KAĞIT KATMANLARI — kare ölçümde alt dilimlerde boştu.
           Malzeme ekliyor, uydurma bilgi değil: gerekçe src/paper/Strata.tsx. */}
       <PaperStrata seed={seed} opacity={title.opacity} />
+      {/* ARŞİV İŞARETLERİ — dönem damgası + dosya sekmesi. İkisi de gerçek
+          veriden: yıl anlatıdan, numara sahne sırasından. Gerekçe ArchiveMarks. */}
+      <ArchiveMarks era={era} index={index} seed={seed} opacity={title.opacity} />
       <SeaBand y={bandY} height={CANVAS.height - bandY} progress={band.progress} seed={seed} />
       <Cutout
         shape={payload.shape ?? 'vessel'}
@@ -415,7 +422,7 @@ const WideEstablish: React.FC<SceneProps> = ({seconds, payload, seed, occurrence
 /* ------------------------------------------------------------------ */
 /* 3. HEADLINE CARD — büyük condensed başlık + portre + isim kartı     */
 /* ------------------------------------------------------------------ */
-const HeadlineCard: React.FC<SceneProps> = ({seconds, payload, seed, occurrence}) => {
+const HeadlineCard: React.FC<SceneProps> = ({seconds, payload, seed, occurrence, era, index}) => {
   const f = useCurrentFrame();
   const head = enter(f, {at: cue(seconds, 0, 4), duration: 0.4, kind: 'drop', from: {y: -70}});
   const bar = enter(f, {at: cue(seconds, 1, 4), duration: 0.45, kind: 'draw'});
@@ -439,6 +446,9 @@ const HeadlineCard: React.FC<SceneProps> = ({seconds, payload, seed, occurrence}
       {/* KAĞIT KATMANLARI — kare ölçümde alt dilimlerde boştu.
           Malzeme ekliyor, uydurma bilgi değil: gerekçe src/paper/Strata.tsx. */}
       <PaperStrata seed={seed} opacity={head.opacity} />
+      {/* ARŞİV İŞARETLERİ — dönem damgası + dosya sekmesi. İkisi de gerçek
+          veriden: yıl anlatıdan, numara sahne sırasından. Gerekçe ArchiveMarks. */}
+      <ArchiveMarks era={era} index={index} seed={seed} opacity={head.opacity} />
       {payload.headline && (
         <Headline
           text={payload.headline}
@@ -527,7 +537,7 @@ const HeadlineCard: React.FC<SceneProps> = ({seconds, payload, seed, occurrence}
 /* ------------------------------------------------------------------ */
 /* 4. PULL QUOTE — italik serif, en duygusal cümle                     */
 /* ------------------------------------------------------------------ */
-const PullQuoteScene: React.FC<SceneProps> = ({seconds, payload, seed}) => {
+const PullQuoteScene: React.FC<SceneProps> = ({seconds, payload, seed, era, index}) => {
   const f = useCurrentFrame();
   const q = enter(f, {at: cue(seconds, 0, 3), duration: 0.5, kind: 'fade'});
   const hl = enter(f, {at: cue(seconds, 1, 3), duration: 0.5, kind: 'draw'});
@@ -565,6 +575,9 @@ const PullQuoteScene: React.FC<SceneProps> = ({seconds, payload, seed}) => {
       {/* KAĞIT KATMANLARI — kare ölçümde alt dilimlerde boştu.
           Malzeme ekliyor, uydurma bilgi değil: gerekçe src/paper/Strata.tsx. */}
       <PaperStrata seed={seed} opacity={q.opacity} />
+      {/* ARŞİV İŞARETLERİ — dönem damgası + dosya sekmesi. İkisi de gerçek
+          veriden: yıl anlatıdan, numara sahne sırasından. Gerekçe ArchiveMarks. */}
+      <ArchiveMarks era={era} index={index} seed={seed} opacity={q.opacity} />
       <div
         style={{
           position: 'absolute',
@@ -761,7 +774,7 @@ const SplitCompare: React.FC<SceneProps> = ({seconds, payload, seed}) => {
 /* ------------------------------------------------------------------ */
 /* 6. LABELED DIAGRAM — özne + ok + hedef + caption kartı              */
 /* ------------------------------------------------------------------ */
-const LabeledDiagram: React.FC<SceneProps> = ({seconds, payload, seed}) => {
+const LabeledDiagram: React.FC<SceneProps> = ({seconds, payload, seed, era, index}) => {
   const f = useCurrentFrame();
   const a = enter(f, {at: cue(seconds, 0, 4), duration: 0.45, kind: 'drop', from: {y: -140}});
   const b = enter(f, {at: cue(seconds, 1, 4), duration: 0.45, kind: 'drop', from: {y: -140}});
@@ -798,6 +811,9 @@ const LabeledDiagram: React.FC<SceneProps> = ({seconds, payload, seed}) => {
       {/* KAĞIT KATMANLARI — kare ölçümde alt dilimlerde boştu.
           Malzeme ekliyor, uydurma bilgi değil: gerekçe src/paper/Strata.tsx. */}
       <PaperStrata seed={seed} opacity={a.opacity} />
+      {/* ARŞİV İŞARETLERİ — dönem damgası + dosya sekmesi. İkisi de gerçek
+          veriden: yıl anlatıdan, numara sahne sırasından. Gerekçe ArchiveMarks. */}
+      <ArchiveMarks era={era} index={index} seed={seed} opacity={a.opacity} />
       {payload.headline && (
         <Headline
           text={payload.headline}
