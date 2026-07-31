@@ -49,6 +49,7 @@ for _tool in ("ffprobe", "ffmpeg"):
 
 FPS = 30
 ACCENT = (0xD2, 0xA0, 0x3C)
+SIGNAL = (0xC0, 0x39, 0x2B)
 ACCENT_MAX_SHARE = 0.08
 SAFE = {"top": 150, "bottom": 330, "left": 70, "right": 150}
 
@@ -200,9 +201,18 @@ def scene_has_content(frame, min_unique=60, min_ink=0.004):
 
 # ---------------------------------------------------------------- 4
 def accent_share(frame):
-    """Altın aksanın kapladığı piksel oranı."""
-    d = np.abs(frame - np.array(ACCENT)).sum(axis=2)
-    return float((d < 90).mean())
+    """
+    Aksanların kapladığı toplam piksel oranı.
+
+    İKİ AKSAN BİRDEN SAYILIR: hardal (`accent`, malzeme) ve kırmızı (`signal`,
+    işaret). Yalnızca hardalı saymak tavanı kaçak yapardı — kırmızı sınırsız
+    kullanılabilir hâle gelir ve "aksan cimri kullanılır" disiplini kırmızı
+    üstünden delinirdi. Bu depoda aynı sınıf kaçak daha önce `atmosphere`
+    kategorisinde ölçüldü.
+    """
+    gold = np.abs(frame - np.array(ACCENT)).sum(axis=2) < 90
+    red = np.abs(frame - np.array(SIGNAL)).sum(axis=2) < 90
+    return float((gold | red).mean())
 
 
 # ---------------------------------------------------------------- 5

@@ -158,6 +158,15 @@ export interface ScenePayload {
        */
       box?: {x: number; y: number; w: number; h: number};
     }>;
+    /**
+     * KIRMIZI İPİN İKİ UCU — kanvasa göre normalize (0..1).
+     *
+     * İp bir şeyi BİR ŞEYE bağlar: etiketten haritadaki noktaya, iğneden
+     * iğneye. Nereye bağladığı kompozisyonun kararıdır, şablonun değil —
+     * `box` ile aynı gerekçe. Verilmezse şablon etiket kartından hero'ya
+     * çeker; o da makul bir varsayılan çünkü etiket zaten hero'yu adlandırıyor.
+     */
+    string?: {from: {x: number; y: number}; to: {x: number; y: number}};
   };
 }
 

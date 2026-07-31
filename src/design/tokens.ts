@@ -36,6 +36,26 @@ export const PALETTE = {
   accent: '#D2A03C',
   /** Aksanın soluk hâli (highlight barı, gölge). */
   accentSoft: '#E8C77A',
+  /**
+   * KIRMIZI SİNYAL — ikinci aksan, ÇOK cimri.
+   *
+   * NEDEN İKİNCİ BİR AKSAN VAR: bu deponun kuralı "tek aksan" idi ve o kural
+   * ölçümden geliyordu. Ama ölçüm bir Vox videosundan yapılmıştı; NeoSaniye'nin
+   * hedef dili arşiv-kolaj ve kullanıcının doğrulanmış prompt bloğu baştan beri
+   * "ONE hot red signal accent and a restrained mustard yellow secondary"
+   * diyordu. İki referans malzemesi de bunu doğruladı: kırmızı ip, kırmızı
+   * mühür, hardal bant.
+   *
+   * BÖLÜŞÜM NET, yoksa iki aksan birbirini yer:
+   *   · `accent` (hardal/altın) = MALZEME. Bant, etiket kartı, damga, zaman
+   *     çizelgesi noktası. Karede yüzde birkaç yer kaplar.
+   *   · `signal` (kırmızı) = İŞARET. İp, marker dairesi, çarpı, altı çizme.
+   *     Yalnızca "buraya bak" diyen şey. Referans videoda TEK kırmızı öğe ip.
+   *
+   * Kırmızıyı malzemeye vermek (bant kırmızı, etiket kırmızı) dili bozar:
+   * her şey bağırınca hiçbir şey bağırmıyor demektir.
+   */
+  signal: '#C0392B',
   /** Halftone fotoğrafların mürekkebi. */
   inkBlack: '#111111',
 } as const;

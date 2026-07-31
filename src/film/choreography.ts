@@ -262,3 +262,26 @@ export function compose(...parts: Array<string | undefined | false>): string | u
   const out = parts.filter((p): p is string => Boolean(p) && p !== 'none');
   return out.length ? out.join(' ') : undefined;
 }
+
+/**
+ * KÖŞE KALKMASI SALINIMI — "yaşayan poster" fazının tek olayı.
+ *
+ * `CornerCurl` (paper/Fixings.tsx) çizer, zamanlamayı burası verir. Ayrım bu
+ * dosyanın kuralı: koreografi ZAMANI hesaplar, kağıt katmanı ÇİZER. Pratik
+ * sonucu şu — burası saf .ts olduğu için `test/film.test.mjs` davranışı
+ * ölçebiliyor; .tsx dosyaları JSX yüzünden o test hattından geçmiyor.
+ *
+ * Kalkma
+ * TUTUŞ FAZINDA başlar (varsayılan %70), çünkü kurulum sırasında köşe kalkarsa
+ * "yerleşen bir daha oynamaz" kuralı çiğnenmiş olur.
+ */
+export function curlAmount(frame: number, seconds: number, fps = 30, holdFrom = 0.7, phase = 0): number {
+  const t = frame / fps;
+  const start = seconds * holdFrom;
+  if (t < start) return 0;
+  const into = (t - start) / Math.max(0.001, seconds - start);
+  // Yumuşak giriş × yavaş nefes. Tek bir yükseliş değil: hava akımı gelir gider.
+  const ease = Math.min(1, into / 0.35);
+  const breath = 0.55 + 0.45 * Math.sin((into + phase) * Math.PI * 1.6);
+  return ease * breath;
+}

@@ -234,3 +234,47 @@ test('extmetadata HTML parçaları düz metne iniyor', async () => {
   assert.equal(plain(''), '');
   assert.equal(plain(undefined), '');
 });
+
+/* ------------------------------------------------------------------ */
+/* curlAmount — "yaşayan poster" fazının tek olayı                     */
+/* ------------------------------------------------------------------ */
+
+test('curlAmount kurulum sırasında SIFIR, tutuş fazında canlanır', () => {
+  const {curlAmount} = mod;
+  const secs = 10;
+  // Kurulum fazı: köşe kalkarsa "yerleşen bir daha oynamaz" kuralı çiğnenir.
+  for (const t of [0, 2, 5, 6.9]) {
+    assert.equal(curlAmount(t * 30, secs, 30, 0.7), 0, `${t}s'de kalkma olmamalı`);
+  }
+  // Tutuş fazı: ölü değil.
+  const hold = [7.2, 8, 9, 9.8].map((t) => curlAmount(t * 30, secs, 30, 0.7));
+  assert.ok(Math.max(...hold) > 0.3, `tutuş fazı ölü: ${hold.map((v) => v.toFixed(2))}`);
+});
+
+test('curlAmount NEFES ALIR — tek yönlü rampa değil', () => {
+  const {curlAmount} = mod;
+  const vals = [];
+  for (let f = 210; f <= 300; f += 3) vals.push(curlAmount(f, 10, 30, 0.7));
+  // Hava akımı gelir gider: dizide hem artış hem azalış olmalı. Tek yönlü
+  // rampa "köşe kalktı ve öyle kaldı" demek olurdu, o da yeni bir donma.
+  let up = 0;
+  let down = 0;
+  for (let i = 1; i < vals.length; i += 1) {
+    if (vals[i] > vals[i - 1] + 1e-6) up += 1;
+    if (vals[i] < vals[i - 1] - 1e-6) down += 1;
+  }
+  assert.ok(up > 2 && down > 2, `salınım yok: ${up} artış, ${down} azalış`);
+  assert.ok(Math.max(...vals) <= 1.0001, 'kalkma 1 üstüne çıkmamalı');
+});
+
+test('curlAmount her sahne süresinde ORANI korur (sabit saniye değil)', () => {
+  const {curlAmount} = mod;
+  // 3.6 sn'lik kısa bir beat'te de kalkma sahnenin %70'inde başlamalı.
+  // Sabit saniye yazılsaydı kısa sahnede hiç görünmezdi — `negationCue`'da
+  // ölçülen hatanın aynısı.
+  for (const secs of [3.6, 6, 10]) {
+    assert.equal(curlAmount(secs * 0.6 * 30, secs, 30, 0.7), 0, `${secs}s: erken kalkma`);
+    const late = curlAmount(secs * 0.9 * 30, secs, 30, 0.7);
+    assert.ok(late > 0.2, `${secs}s: geç fazda kalkma yok (${late})`);
+  }
+});

@@ -2,10 +2,11 @@ import React from 'react';
 import {useCurrentFrame, Img, staticFile} from 'remotion';
 import {CANVAS, PALETTE, SAFE, SAFE_BOX, TYPE, VERTICAL_BANDS} from '../design/tokens';
 import {enter, drift, rand} from '../motion/stepped';
-import {cue, focusHunt, holdJitter} from '../film/choreography';
+import {cue, curlAmount, focusHunt, holdJitter} from '../film/choreography';
 import {PaperBase} from '../paper/PaperBase';
 import {Cutout} from '../paper/Cutout';
 import {Headline, LabelCard, TypewriterStrip} from '../paper/Type';
+import {Tape, RedString, CornerCurl} from '../paper/Fixings';
 import type {SceneProps} from './types';
 
 const B = VERTICAL_BANDS;
@@ -114,6 +115,38 @@ export const CollageBuild: React.FC<SceneProps> = ({seconds, payload, seed, occu
   // Girişler: 0 plaka, 1 hero, 2.. destekler, son etiket.
   const n = Math.max(3, pieces.length + 2);
 
+  /**
+   * HERO'NUN KUTUSU — tutturucular buna göre yerleşir.
+   *
+   * Bant hero'nun köşesine, köşe kalkması hero'nun kenarına, ip hero'nun
+   * gövdesine bağlanıyor. Üçü de aynı kutuyu okumak zorunda; ayrı ayrı
+   * hesaplanırsa `box` varyantında biri kayar. Bu depoda aynı sınıf ayrışma
+   * (aynı sayının iki yerde elle tutulması) dört kez ölçüldü.
+   */
+  const hero = pieces[0]
+    ? pieces[0].box
+      ? {
+          x: Math.round(CANVAS.width * pieces[0].box.x),
+          y: Math.round(CANVAS.height * pieces[0].box.y),
+          w: Math.round(CANVAS.width * pieces[0].box.w),
+          h: Math.round(CANVAS.height * pieces[0].box.h),
+        }
+      : {x: heroX, y: B.hero.y, w: heroW, h: heroH}
+    : null;
+
+  /**
+   * TUTTURUCU TAKVİMİ — referans videodan ölçülen oranlar.
+   *
+   * 10 saniyelik referansta bant %35'te, ip %50'de basılıyor; ikisi de
+   * kurulumun SON üçte birinde ve hero yerleştikten sonra. Oranı sahne
+   * süresine bağlamak zorunlu: sabit saniye yazmak 3.6 saniyelik bir beat'te
+   * bandı sahne bittikten sonra bastırırdı. Bu hatanın aynısı `MarkerCross`'ta
+   * ölçüldü ve `negationCue()` o yüzden var.
+   */
+  const tapeA = enter(f, {at: seconds * 0.34, duration: 0.26, kind: 'stamp'});
+  const tapeB = enter(f, {at: seconds * 0.41, duration: 0.26, kind: 'stamp'});
+  const string = enter(f, {at: seconds * 0.5, duration: Math.max(0.6, seconds * 0.22), kind: 'draw'});
+
   return (
     <PaperBase seed={seed} stains={!layers?.plate}>
       {/* 1. PLAKA — opak zemin görseli. Yoksa PaperBase'in kağıdı kalır. */}
@@ -188,10 +221,10 @@ export const CollageBuild: React.FC<SceneProps> = ({seconds, payload, seed, occu
       {pieces[0] && (
         <Cutout
           src={staticFile(pieces[0].src)}
-          x={pieces[0].box ? Math.round(CANVAS.width * pieces[0].box.x) : heroX}
-          y={pieces[0].box ? Math.round(CANVAS.height * pieces[0].box.y) : B.hero.y}
-          width={pieces[0].box ? Math.round(CANVAS.width * pieces[0].box.w) : heroW}
-          height={pieces[0].box ? Math.round(CANVAS.height * pieces[0].box.h) : heroH}
+          x={hero!.x}
+          y={hero!.y}
+          width={hero!.w}
+          height={hero!.h}
           rotate={pieces[0].box ? 0 : tilt}
           seed={seed}
           opacity={enter(f, {at: cue(seconds, 1, n), duration: 0.55, kind: 'slide', from: {x: -170}}).opacity}
@@ -203,7 +236,102 @@ export const CollageBuild: React.FC<SceneProps> = ({seconds, payload, seed, occu
         />
       )}
 
-      {/* 4. METİN — kod çiziyor, model değil: tarih ve sayı bozulmaz. */}
+      {/*
+        4. TUTTURUCULAR — referans videodan ölçülen sıranın son üçte biri.
+
+        Kurulum bittikten SONRA gelirler ve sebebi fiziksel: bant, önce yerine
+        konmuş bir kağıdı tutturur. Bandı önce yapıştırmak "tutacak bir şey
+        olmadan bant basmak" demek olurdu.
+      */}
+      {hero && (
+        <>
+          {/*
+            Bant ÇAPRAZ iki köşede: sol üst ve sağ alt.
+
+            İlk denemede ikisi de ÜST köşelerdeydi ve kanıt karesinde iki sorun
+            çıktı: köşe kalkmasıyla aynı yere denk geldiler (kalkan köşe bandın
+            altında kayboldu), ve genişlik hero'nun %30'u olduğu için bant bir
+            şerit değil bir yama gibi durdu. Referansta bant hero genişliğinin
+            ~%17'si.
+
+            Çapraz yerleşim ayrıca kompozisyonu dengeliyor: iki bant aynı kenarda
+            olunca kağıt oradan asılı duruyormuş gibi okunuyordu.
+          */}
+          <Tape
+            x={hero.x - 30}
+            y={hero.y - 18}
+            width={Math.round(hero.w * 0.17)}
+            height={38}
+            rotate={-42}
+            seed={seed + 21}
+            opacity={tapeA.opacity}
+            transform={tapeA.transform}
+          />
+          <Tape
+            x={hero.x + hero.w - Math.round(hero.w * 0.17) + 30}
+            y={hero.y + hero.h - 26}
+            width={Math.round(hero.w * 0.17)}
+            height={38}
+            rotate={-42}
+            seed={seed + 22}
+            opacity={tapeB.opacity}
+            transform={tapeB.transform}
+          />
+
+          {/*
+            KÖŞE KALKMASI — tutuş fazının TEK olayı.
+
+            Referansta 7.5. saniyeden sonra kompozisyon kilitli ama kare ölü
+            değil: fotoğrafın üst köşeleri birkaç milimetre kalkıp iniyor.
+            Bende bu faz `holdJitter` (bir-iki piksel) ve film titremesinden
+            ibaretti; ölçümde sahnenin son üçte biri "%99 sabit" çıkıyordu.
+            İki köşe farklı fazda: ikisi birlikte kalkarsa nefes değil nabız olur.
+          */}
+          <CornerCurl
+            x={hero.x}
+            y={hero.y}
+            width={hero.w}
+            height={hero.h}
+            corner="tr"
+            amount={curlAmount(f, seconds, CANVAS.fps, 0.7, 0)}
+            size={Math.round(Math.min(hero.w, hero.h) * 0.16)}
+          />
+          <CornerCurl
+            x={hero.x}
+            y={hero.y}
+            width={hero.w}
+            height={hero.h}
+            corner="bl"
+            amount={curlAmount(f, seconds, CANVAS.fps, 0.76, 0.4)}
+            size={Math.round(Math.min(hero.w, hero.h) * 0.12)}
+          />
+        </>
+      )}
+
+      {/*
+        KIRMIZI İP — etiket kartından hero'ya. İşaret rengi budur ve TEK
+        kırmızı öğedir; referans videoda da öyle. Yalnızca etiket varsa
+        çizilir, çünkü ip bir şeyi BİR ŞEYE bağlar; tek ucu boşta duran ip
+        anlamsız bir kırmızı çizgidir.
+      */}
+      {hero && (layers?.string || payload.label) && (
+        <RedString
+          from={
+            layers?.string
+              ? {x: CANVAS.width * layers.string.from.x, y: CANVAS.height * layers.string.from.y}
+              : {x: SAFE.left + 150, y: B.bottom.y + 42}
+          }
+          to={
+            layers?.string
+              ? {x: CANVAS.width * layers.string.to.x, y: CANVAS.height * layers.string.to.y}
+              : {x: hero.x + Math.round(hero.w * 0.62), y: hero.y + hero.h - 30}
+          }
+          progress={string.progress}
+          sag={0.16}
+        />
+      )}
+
+      {/* 5. METİN — kod çiziyor, model değil: tarih ve sayı bozulmaz. */}
       {payload.headline && (
         <Headline
           text={payload.headline}
