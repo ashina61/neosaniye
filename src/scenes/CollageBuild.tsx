@@ -62,21 +62,35 @@ const B = VERTICAL_BANDS;
  */
 type Slot = {x: number; y: number; w: number; rot: number; low?: boolean};
 
+/**
+ * DESTEK BOYUTLARI ENGINE'İN KOMPOZİSYON YASASINA GÖRE ÖLÇÜLDÜ.
+ *
+ * Kaynak PDF Section 5: "One hero element per beat at about 70 percent of
+ * visual weight. Maximum 2-3 supporting elements. Generous negative space."
+ *
+ * Önceki genişlikler (0.28-0.42) hesaplandı ve hero payını %62'ye düşürüyordu
+ * — yani destekler yasanın izin verdiğinden büyüktü ve kare "kalabalık" tarafa
+ * kayıyordu. 0.26 çevresine çekilince hero payı %73 oluyor.
+ *
+ *   destek ~0.34 ort → hero %62   (yasadan sapma)
+ *   destek ~0.26 ort → hero %73   ✓
+ *   destek ~0.22 ort → hero %79   (bu sefer destekler görünmez kalıyor)
+ */
 const SUPPORT_SLOTS: Slot[][] = [
   [
-    {x: 0.00, y: 0.14, w: 0.34, rot: -4.5},
-    {x: 0.58, y: 0.72, w: 0.40, rot: 3.2, low: true},
-    {x: 0.68, y: 0.20, w: 0.28, rot: -2.0},
+    {x: 0.02, y: 0.14, w: 0.26, rot: -4.5},
+    {x: 0.66, y: 0.72, w: 0.30, rot: 3.2, low: true},
+    {x: 0.70, y: 0.20, w: 0.22, rot: -2.0},
   ],
   [
-    {x: 0.62, y: 0.16, w: 0.34, rot: 4.0},
-    {x: 0.02, y: 0.70, w: 0.42, rot: -3.0, low: true},
-    {x: 0.10, y: 0.24, w: 0.26, rot: 2.4},
+    {x: 0.68, y: 0.16, w: 0.26, rot: 4.0},
+    {x: 0.04, y: 0.70, w: 0.30, rot: -3.0, low: true},
+    {x: 0.12, y: 0.24, w: 0.22, rot: 2.4},
   ],
   [
-    {x: 0.54, y: 0.74, w: 0.38, rot: -3.6, low: true},
-    {x: 0.01, y: 0.18, w: 0.32, rot: 2.8},
-    {x: 0.64, y: 0.26, w: 0.30, rot: -1.6},
+    {x: 0.62, y: 0.74, w: 0.30, rot: -3.6, low: true},
+    {x: 0.03, y: 0.18, w: 0.26, rot: 2.8},
+    {x: 0.70, y: 0.26, w: 0.22, rot: -1.6},
   ],
 ];
 
@@ -107,8 +121,16 @@ export const CollageBuild: React.FC<SceneProps> = ({seconds, payload, seed, occu
   const bottomTaken = Boolean(payload.caption || payload.label);
   const all = SUPPORT_SLOTS[occurrence % SUPPORT_SLOTS.length];
   const slots = bottomTaken ? all.filter((s) => !s.low) : all;
-  const heroW = Math.round(SAFE_BOX.width * 0.62);
-  const heroH = Math.round(B.hero.height * 0.86);
+  /**
+   * HERO ÇERÇEVEYE HÂKİM OLMALI — engine yasası "dominates the frame".
+   *
+   * 0.62 genişlikle alınan kanıt karesinde hero yalnızca orta bandı kaplıyordu
+   * ve karenin alt %45'i boş krem kağıt kalıyordu. Kaynak PDF hero'yu görsel
+   * ağırlığın ~%70'i olarak tanımlıyor; kullanıcının Mehmed örneğinde de atlı
+   * figür kareyi baştan aşağı dolduruyor.
+   */
+  const heroW = Math.round(SAFE_BOX.width * 0.80);
+  const heroH = Math.round(B.hero.height * 1.18);
   const heroX = SAFE.left + Math.round((SAFE_BOX.width - heroW) / 2);
   const tilt = (rand(seed * 5.1) - 0.5) * 2.6;
 

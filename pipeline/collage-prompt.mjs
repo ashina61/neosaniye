@@ -506,12 +506,26 @@ export const RECIPE_KINDS = Object.keys(RECIPES);
  * Zemin TEMİZ kalmalı (ölçüldü: matte onu kusursuz kesiyor) ama "stüdyo"
  * denmemeli. Doğrusu: arşiv kontakt sayfasından kesilmiş bir baskı.
  */
+/**
+ * PARÇANIN MALZEME BLOĞU.
+ *
+ * ============ STİL BLOĞU BİREBİR, PARAFRAZ DEĞİL ============
+ *
+ * Kaynak PDF Section 7 açık: "STYLE BLOCK, include verbatim in every prompt".
+ * Önceki sürümde buraya benim ELDEN YAZDIĞIM bir özet konuyordu — belgenin
+ * dilini taşıyordu ama birebir değildi. Bir kolajın 17 karesi aynı filmden
+ * çıkacaksa hepsinin AYNI stil metnini görmesi gerekiyor; parafraz, sapmanın
+ * sessiz hâli.
+ *
+ * Stil bloğu tek kare için yazılmış ("collage on aged newsprint...") ama tek
+ * PARÇA için de doğru okunuyor: parça o kolajdan makasla kesilmiş bir öğe.
+ * Altına eklenen tek cümle o bağlamı kuruyor.
+ */
 const PIECE_MATERIAL = [
-  'A black and white halftone newspaper/archive print: coarse visible print dots,',
-  'ink black and halftone gray, desaturated archival tone, visible print grain and paper fibre,',
-  'rough scissor-cut edges as if cut out of a printed page with scissors,',
-  'matte, aged, slightly worn. Looks like it was clipped from an old newspaper or a case file.',
-  'NOT a modern digital photograph, NOT a glossy studio portrait, NOT clean contemporary product photography.',
+  STYLE_BLOCK,
+  'This image is ONE single element clipped out of that collage, shown on its own.',
+  'NOT a modern digital photograph, NOT a glossy studio portrait,',
+  'NOT clean contemporary product photography.',
 ].join(' ');
 
 const PIECE_BACKGROUND = [

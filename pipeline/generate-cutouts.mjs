@@ -250,12 +250,21 @@ async function packMode(args) {
     process.exit(1);
   }
   const man = JSON.parse(await readFile(manPath, 'utf8'));
-  const includePlates = args.includes('--include-plates');
+  const includePlates = !args.includes('--no-plates');
   const limit = Number(args.find((a) => a.startsWith('--limit='))?.split('=')[1] ?? 0) || Infinity;
 
-  // Plakalar varsayılan olarak ATLANIR: plaka yalnızca yaşlanmış kağıt ve
-  // `PaperBase` onu zaten çiziyor. Sahne başına bir plaka üretmek paketin
-  // dörtte birini boşa harcıyordu.
+  /**
+   * PLAKA VARSAYILAN OLARAK ÜRETİLİR — önceki karar ölçümle yanlış çıktı.
+   *
+   * "Plaka yalnızca yaşlanmış kağıt, `PaperBase` onu zaten çiziyor" diye
+   * atlanıyordu. Kanıt karesinde sonucu görüldü: zemin DÜZ KREM kaldı ve kare
+   * engine'in arşiv dünyasına hiç benzemedi. `PaperBase` temiz bir kağıt
+   * çiziyor; engine ise "aged newsprint and archival map surfaces" istiyor —
+   * lekeli, foxing'li, harita zeminli. O doku karenin %100'ünü kaplıyor ve
+   * stilin yarısı o.
+   *
+   * `--no-plates` ile kapatılabilir (hızlı deneme için).
+   */
   const assets = man.assets.filter((a) => includePlates || a.role !== 'plate').slice(0, limit);
 
   const chain = (process.env.IMAGE_PROVIDER_CHAIN || DEFAULT_CHAIN.join(','))
