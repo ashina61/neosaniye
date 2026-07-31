@@ -278,7 +278,29 @@ async function packMode(args) {
   const includePlates = args.includes('--include-plates') && !args.includes('--no-plates');
   const limit = Number(args.find((a) => a.startsWith('--limit='))?.split('=')[1] ?? 0) || Infinity;
 
-  const assets = man.assets.filter((a) => includePlates || a.role !== 'plate').slice(0, limit);
+  /**
+   * ============ A YOLU: BEAT BAŞINA TEK BİTMİŞ KARE ============
+   *
+   * `--frames` manifest'in `flow[].fallbackPrompt` alanını kullanır — motorun
+   * kompoze kare promtu, yani kullanıcının verdiği örneklerin kalıbı.
+   *
+   * NEDEN AYRI BİR KOL: varsayılan paket modu B yolunu üretiyor (plaka + N
+   * alfa parça) ve o promtlar bunun TERSİNİ istiyor — tek özne, izole, metin
+   * yok. İkisini aynı çağrıda üretmek promtları karıştırmak olurdu.
+   *
+   * Kompoze kare KESİLMEZ: alfa çıkarımı A yolunda anlamsız, çünkü kare zaten
+   * bütün bir kompozisyon. Dosyalar `collage-raw/NN-kind-frame.png` olarak
+   * durur ve `ingest-collage.mjs` onları görmezden gelir (adı `-frame`, oysa
+   * ingest `-a`/`-b`/`-plate` arıyor).
+   */
+  const framesMode = args.includes('--frames');
+
+  const assets = framesMode
+    ? man.flow
+        .filter((r) => r.fallbackPrompt)
+        .map((r) => ({file: `${r.file}-frame`, n: r.n, role: 'frame', prompt: r.fallbackPrompt}))
+        .slice(0, limit)
+    : man.assets.filter((a) => includePlates || a.role !== 'plate').slice(0, limit);
 
   const chain = (process.env.IMAGE_PROVIDER_CHAIN || DEFAULT_CHAIN.join(','))
     .split(',')
@@ -288,7 +310,11 @@ async function packMode(args) {
   const rawDir = path.join(ROOT, 'collage-raw');
   await mkdir(rawDir, {recursive: true});
 
-  console.log(`paket modu: ${assets.length} görsel üretilecek (plakalar ${includePlates ? 'dahil' : 'atlandı'})`);
+  console.log(
+    framesMode
+      ? `KARE modu (A yolu): ${assets.length} kompoze kare üretilecek`
+      : `paket modu (B yolu): ${assets.length} görsel üretilecek (plakalar ${includePlates ? 'dahil' : 'atlandı'})`,
+  );
   console.log(`zincir: ${chain.join(' → ')}\n`);
 
   let ok = 0;

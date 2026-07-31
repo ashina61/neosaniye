@@ -73,6 +73,23 @@ on:
       # fotoğrafı olan bir olay. Uydurulmuş bir 1971 yerine 1971'in kendisi.
       # (Bu konteynerden ikisi de proxy'de 403 veriyor; Actions egress'i farklı,
       # nitekim pollinations da burada 403 ama Actions'ta çalışıyor. Ölçülecek.)
+      # ============ HANGİ YOL ============
+      #
+      # frames (A yolu): beat başına TEK BİTMİŞ KARE — motorun kompoze kare
+      #   promtu, kullanıcının verdiği üç örneğin kalıbı. Harfsiz kip
+      #   varsayılan, çünkü bedava uçtaki model okunur harf basamıyor.
+      # pieces (B yolu): plaka + N alfa parça, Remotion katman katman diziyor.
+      #
+      # İkisi aynı anda üretilmez: promtları birbirinin TERSİNİ istiyor (biri
+      # bütün kompozisyon, öteki tek izole özne).
+      path:
+        description: "A yolu (bitmiş kare) mı, B yolu (parçalar) mı"
+        required: true
+        default: "frames"
+        type: choice
+        options:
+          - frames
+          - pieces
       source:
         description: "Malzeme nereden gelsin"
         required: true
@@ -185,11 +202,17 @@ jobs:
         run: |
           node pipeline/generate-cutouts.mjs --pack \
             --limit=${{ inputs.count }} \
+            ${{ inputs.path == 'frames' && '--frames' || '' }} \
             ${{ inputs.include_plates && '--include-plates' || '' }}
 
       # Magenta → alfa. `--strict` ile alfa ÖLÇÜLÜR; tamamen opak ya da
       # tamamen şeffaf çıktı reddedilir ve o parça bağlanmaz.
+      # A YOLUNDA ATLANIR: kompoze kare bütün bir kompozisyon, ondan alfa
+      # çıkarmak anlamsız. `ingest-collage.mjs` zaten `-frame` dosyalarını
+      # aramıyor (o `-a`/`-b`/`-plate` bekliyor), ama adımı hiç çalıştırmamak
+      # logu da temiz tutuyor.
       - name: Alfa çıkar ve storyboard'a bağla
+        if: inputs.path == 'pieces'
         run: npm run collage
 
       # Parçaların alfası GÖZLE görülebilsin diye dama zeminine dizilir.
@@ -275,6 +298,25 @@ jobs:
           # kesilmiş PNG'nin alfasında: opak oranı ve DIŞ ÇEPERİN doluluğu.
           # Kesilmemiş bir dikdörtgen çeperi doldurur (5. tur matte: %40'a
           # kadar); gerçek bir kesikte çeper boştur (5. tur seg: %0.0).
+          if [ "${{ inputs.path }}" = "frames" ]; then
+            echo "--- kompoze kareler: metin sızmış mı, kare dolu mu? ---"
+            python3 - <<'PY'
+          import glob
+          import numpy as np
+          from PIL import Image
+          files = sorted(glob.glob('collage-raw/*-frame.png'))
+          if not files:
+              print("  kare YOK — üretim hiç dönmemiş")
+          for f in files:
+              a = np.asarray(Image.open(f).convert('L')).astype(float)
+              h, w = a.shape
+              # Metin sızıntısının kaba göstergesi: küçük ölçekte yüksek yerel
+              # kontrast. Harf yoğun bölge, düz kağıttan çok daha oynak olur.
+              d = np.abs(np.diff(a, axis=1))
+              print(f"  {f:34s} {w}x{h}  ort={a.mean():5.1f}  yerel-kontrast={d.mean():5.2f}")
+          PY
+            echo
+          fi
           echo "--- kesilmiş parçaların alfası: gerçekten kesilmiş mi? ---"
           python3 - <<'PY'
           import glob
@@ -321,6 +363,7 @@ jobs:
             out/alpha-sheet.png
             out/composed-frame.png
             collage-raw/*.png
+            out/flow-pack/ALL-PROMPTS.txt
             public/collage/*.png
             public/archive/*.png
             content/credits.json
