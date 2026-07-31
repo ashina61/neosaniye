@@ -118,13 +118,17 @@ function secret(...names) {
 }
 
 const PROVIDERS = {
-  /** Anahtarsız, ücretsiz. İlk sırada olması bilinçli. */
+  /** Anahtarsız, ücretsiz. */
   pollinations: {
     needs: () => true,
     async generate(prompt, seed) {
+      // 9:16 — ÖNCEDEN 768x1024 (3:4) İSTENİYORDU ve bu sessiz bir hataydı:
+      // kanal 1080x1920 ve parça kanvasa oturtulurken ya kırpılıyor ya
+      // eziliyordu. Kompozisyon sözleşmesi (üst %20 / alt %20 boş) da 9:16
+      // varsayıyor; başka en-boyda üretilen kare o sözleşmeyi tutamaz.
       const url =
         `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}` +
-        `?width=768&height=1024&seed=${seed}&nologo=true&model=flux`;
+        `?width=864&height=1536&seed=${seed}&nologo=true&model=flux`;
       const r = await fetch(url, {headers: {accept: 'image/png,image/jpeg'}});
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       return Buffer.from(await r.arrayBuffer());
@@ -134,16 +138,41 @@ const PROVIDERS = {
     needs: () => secret('GEMINI_API_KEY', 'GOOGLE_API_KEY'),
     async generate(prompt) {
       const key = secret('GEMINI_API_KEY', 'GOOGLE_API_KEY');
-      const model = process.env.GEMINI_IMAGE_MODEL || 'gemini-3.1-flash-image';
+      const model = process.env.GEMINI_IMAGE_MODEL || 'gemini-3-pro-image';
       const r = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
         {
           method: 'POST',
           headers: {'content-type': 'application/json'},
-          body: JSON.stringify({contents: [{parts: [{text: prompt}]}]}),
+          body: JSON.stringify({
+            contents: [{parts: [{text: prompt}]}],
+            /**
+             * `responseModalities` ZORUNLU — ÖLÇÜLDÜ.
+             *
+             * Bu alan olmadan model görsel değil METİN döndürüyor ve kod
+             * "yanıtta görsel yok" diyerek sağlayıcıyı başarısız sayıyordu.
+             * Yani Gemini kolu hiç çalışmamıştı; hata mesajı da sanki model
+             * beceremiyormuş gibi okunuyordu.
+             *
+             * `aspectRatio` aynı sebeple burada: kanal 9:16 ve prompt'un
+             * güvenli alan sözleşmesi o en-boya göre yazılmış.
+             */
+            generationConfig: {
+              responseModalities: ['IMAGE'],
+              imageConfig: {aspectRatio: '9:16'},
+            },
+          }),
         },
       );
-      if (!r.ok) throw new Error(`HTTP ${r.status}: ${(await r.text()).slice(0, 300)}`);
+      if (!r.ok) {
+        const body = (await r.text()).slice(0, 300);
+        // 429'u AYRI raporla: bu "model beceremedi" değil, "kota yok" demek ve
+        // çözümü kodda değil faturalandırmada. Ölçüldü: anahtar metin
+        // üretiyordu ama bütün görsel modelleri 429 veriyordu.
+        if (r.status === 429) throw new Error(`KOTA YOK (429) — projede faturalandırma açık mı? ${body}`);
+        if (r.status === 404) throw new Error(`MODEL YOK (404) — ${model} kapatılmış olabilir. ${body}`);
+        throw new Error(`HTTP ${r.status}: ${body}`);
+      }
       const j = await r.json();
       const parts = j?.candidates?.[0]?.content?.parts ?? [];
       // PNG istenir; alfa gelmese de kroma anahtarı işi çözer, ama JPEG
@@ -197,9 +226,86 @@ async function makeCutout(rawPath, outPath) {
   return stdout.trim();
 }
 
+/**
+ * PAKET MODU — B yolunun parçalarını üret.
+ *
+ * NEDEN AYRI BİR MOD: bu dosyanın asıl işi "sahne başına tek cutout" üretmek
+ * (A yolu). B yolu farklı bir şey istiyor — sahne başına 2-4 PARÇA, ve
+ * prompt'ları `out/flow-pack/` altında zaten yazılı duruyor. Aynı sağlayıcı
+ * zincirini kullanmak için ikinci bir betik yazmak yerine bu mod eklendi.
+ *
+ * ÇIKTI `collage-raw/`, `public/collage/` DEĞİL. Yani bu adım yalnızca ham
+ * magenta görselleri indiriyor; alfa çıkarımı ve storyboard'a bağlama
+ * `npm run collage` işi. Bölüşüm bilinçli: cutout mantığı tek yerde kalsın,
+ * iki hatta ayrışmasın. Bu depoda aynı sınıf ayrışma (aynı işin iki dosyada
+ * elle tutulması) dört kez ölçüldü.
+ *
+ * `--limit=N` deneme içindir: 34 görsel üretip promtun kötü olduğunu görmek
+ * yerine 5 görselde öğrenmek.
+ */
+async function packMode(args) {
+  const manPath = path.join(ROOT, 'out', 'flow-pack', 'manifest.json');
+  if (!existsSync(manPath)) {
+    console.error('out/flow-pack/manifest.json yok — önce `npm run flow:pack`.');
+    process.exit(1);
+  }
+  const man = JSON.parse(await readFile(manPath, 'utf8'));
+  const includePlates = args.includes('--include-plates');
+  const limit = Number(args.find((a) => a.startsWith('--limit='))?.split('=')[1] ?? 0) || Infinity;
+
+  // Plakalar varsayılan olarak ATLANIR: plaka yalnızca yaşlanmış kağıt ve
+  // `PaperBase` onu zaten çiziyor. Sahne başına bir plaka üretmek paketin
+  // dörtte birini boşa harcıyordu.
+  const assets = man.assets.filter((a) => includePlates || a.role !== 'plate').slice(0, limit);
+
+  const chain = (process.env.IMAGE_PROVIDER_CHAIN || DEFAULT_CHAIN.join(','))
+    .split(',')
+    .map((x) => x.trim())
+    .filter((x) => PROVIDERS[x]);
+
+  const rawDir = path.join(ROOT, 'collage-raw');
+  await mkdir(rawDir, {recursive: true});
+
+  console.log(`paket modu: ${assets.length} görsel üretilecek (plakalar ${includePlates ? 'dahil' : 'atlandı'})`);
+  console.log(`zincir: ${chain.join(' → ')}\n`);
+
+  let ok = 0;
+  const failures = [];
+  for (const [i, a] of assets.entries()) {
+    const dst = path.join(rawDir, `${a.file}.png`);
+    let done = false;
+    for (const name of chain) {
+      const p = PROVIDERS[name];
+      if (!p.needs()) {
+        console.log(`  ${a.file}: ${name} atlandı (anahtar yok)`);
+        continue;
+      }
+      try {
+        const buf = await p.generate(a.prompt, a.n * 31 + i);
+        await writeFile(dst, buf);
+        console.log(`  ${a.file.padEnd(24)} ${name} → ${(buf.length / 1024).toFixed(0)} KB`);
+        ok += 1;
+        done = true;
+        break;
+      } catch (e) {
+        console.log(`  ${a.file.padEnd(24)} ${name} başarısız — ${String(e.message).split('\n')[0].slice(0, 170)}`);
+      }
+    }
+    if (!done) failures.push(a.file);
+  }
+
+  console.log(`\n${ok}/${assets.length} ham görsel üretildi → collage-raw/`);
+  if (failures.length) console.log(`üretilemeyen: ${failures.join(', ')}`);
+  console.log('sıradaki adım: npm run collage   (magenta → alfa, storyboard\'a bağla)');
+  // Hiçbiri gelmediyse bu bir BAŞARISIZLIK: sessizce 0 dosyayla devam etmek
+  // sonraki adımı "malzeme yok" diye normal göstermek olurdu.
+  if (!ok) process.exit(2);
+}
+
 async function main() {
   const args = process.argv.slice(2);
   const live = args.includes('--live');
+  if (args.includes('--pack')) return packMode(args);
   const only = (args.find((a) => a.startsWith('--only='))?.split('=')[1] ?? '')
     .split(',')
     .filter(Boolean)

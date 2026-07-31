@@ -1,0 +1,195 @@
+name: Kolaj parça denemesi — Manuel, 4-5 görsel
+
+# NE YAPAR
+#
+# B yolunun MALZEME kolunu uçtan uca dener: prompt üret → görsel üret →
+# magenta zemini sil → alfa doğrula → storyboard'a bağla → tek kare render et.
+# Sonuçları artefakt olarak yükler.
+#
+# NEDEN AYRI BİR WORKFLOW (render.yml'e eklenmedi)
+#
+# render.yml 45 dakikalık tam video render'ı yapıyor. Buradaki soru başka:
+# "üretilen parçalar işe yarıyor mu". O soruyu cevaplamak için tam video
+# gerekmiyor ve ölçüldü ki tam render bu makinede 93 dakika — bir prompt
+# denemesi için o döngü kullanılamaz. Bu iş birkaç dakika sürer.
+#
+# NEDEN ACTIONS'TA, YEREL DEĞİL
+#
+# Geliştirme konteynerinin egress politikası görsel sağlayıcılarını
+# engelliyor. Proxy kayıtlarıyla ÖLÇÜLDÜ: image.pollinations.ai, api.openai.com,
+# api.stability.ai, fal.run, huggingface.co hepsi "gateway answered 403 to
+# CONNECT". Açık olan tek host generativelanguage.googleapis.com ve orada da
+# anahtarın görsel kotası 0 (metin çağrısı çalışıyor, bütün görsel modelleri
+# 429 veriyor — faturalandırma kapalı).
+#
+# Actions runner'ında o politika yok. Pollinations anahtarsız ve ücretsiz,
+# yani bu iş SECRET OLMADAN da çalışır.
+#
+# MANUEL. Cron yok, push tetikleyicisi yok, upload yok — AGENTS.md kuralı.
+
+on:
+  workflow_dispatch:
+    inputs:
+      count:
+        description: "Kaç görsel üretilsin (deneme için 4-5 yeterli)"
+        required: true
+        default: "5"
+        type: string
+      provider_chain:
+        description: "Sağlayıcı sırası — ilki hata verirse sıradakine düşer"
+        required: true
+        default: "gemini,pollinations"
+        type: choice
+        options:
+          - gemini,pollinations
+          - pollinations
+          - pollinations,gemini
+          - gemini
+      topic:
+        description: "Konu dosyası"
+        required: true
+        default: "content/story-db-cooper.json"
+        type: string
+      include_plates:
+        description: "Zemin plakalarını da üret (varsayılan HAYIR — PaperBase zaten çiziyor)"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: neosaniye-collage-test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          npm ci --no-audit --no-fund
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends ffmpeg
+          # `python -m pip` ile kurup `python3` ile çalıştırmak, ikisi farklı
+          # yorumlayıcıya çözülürse import hatası verir. Aynısı kullanılıyor.
+          python3 -m pip install --disable-pip-version-check --quiet pillow numpy
+
+      - name: Storyboard üret
+        run: node pipeline/build-storyboard.mjs "${{ inputs.topic }}"
+
+      - name: Prompt paketini üret
+        run: npm run flow:pack
+
+      # ASIL DENEME. Başarısız olursa iş DURUR (continue-on-error YOK) —
+      # sebebi şu: bu workflow'un TEK işi malzemenin gelip gelmediğini
+      # ölçmek. Sessizce geçip "malzeme yok, siluetle devam" demek sorunun
+      # kendisini gizlerdi.
+      - name: Parçaları üret (sağlayıcı zinciri)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
+          IMAGE_PROVIDER_CHAIN: ${{ inputs.provider_chain }}
+          GEMINI_IMAGE_MODEL: ${{ vars.GEMINI_IMAGE_MODEL || 'gemini-3-pro-image' }}
+        run: |
+          node pipeline/generate-cutouts.mjs --pack \
+            --limit=${{ inputs.count }} \
+            ${{ inputs.include_plates && '--include-plates' || '' }}
+
+      # Magenta → alfa. `--strict` ile alfa ÖLÇÜLÜR; tamamen opak ya da
+      # tamamen şeffaf çıktı reddedilir ve o parça bağlanmaz.
+      - name: Alfa çıkar ve storyboard'a bağla
+        run: npm run collage
+
+      # Parçaların alfası GÖZLE görülebilsin diye dama zeminine dizilir.
+      # Sadece PNG'lere bakmak yetmiyor: şeffaf bölge çoğu görüntüleyicide
+      # beyaz görünüyor ve "kesilmiş mi kesilmemiş mi" ayırt edilemiyor.
+      - name: Alfa kontakt sayfası
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import os, glob
+          from PIL import Image
+          files = sorted(glob.glob('public/collage/*.png'))
+          if not files:
+              print('parça yok'); raise SystemExit
+          CELL = 420
+          def checker(w, h, s=24):
+              im = Image.new('RGB', (w, h), (200, 200, 200))
+              px = im.load()
+              for y in range(h):
+                  for x in range(w):
+                      if ((x // s) + (y // s)) % 2: px[x, y] = (160, 160, 160)
+              return im
+          tiles = []
+          for f in files:
+              im = Image.open(f).convert('RGBA')
+              im.thumbnail((CELL, CELL), Image.LANCZOS)
+              bg = checker(CELL, CELL)
+              bg.paste(im, ((CELL - im.width) // 2, (CELL - im.height) // 2), im)
+              tiles.append(bg)
+          cols = min(5, len(tiles)); rows = (len(tiles) + cols - 1) // cols
+          sheet = Image.new('RGB', (cols * CELL, rows * CELL), (40, 40, 40))
+          for i, t in enumerate(tiles):
+              sheet.paste(t, ((i % cols) * CELL, (i // cols) * CELL))
+          os.makedirs('out', exist_ok=True)
+          sheet.save('out/alpha-sheet.png')
+          print(f'{len(tiles)} parça → out/alpha-sheet.png')
+          PY
+
+      # Malzemesi gelen İLK sahnenin ortasından tek kare. Tam render değil:
+      # soru "parçalar kompozisyonda nasıl duruyor", o tek kareden görülür.
+      - name: Kompoze kareyi render et
+        if: always()
+        continue-on-error: true
+        run: |
+          FRAME=$(node -e "
+            const sb=require('./content/storyboard.json');
+            let t=0;
+            for(const s of sb.scenes){
+              if(s.template==='collage_build'){console.log(t+Math.round(s.durationInFrames*0.8));process.exit(0);}
+              t+=s.durationInFrames;
+            }
+            console.error('collage_build sahnesi yok'); process.exit(1);
+          ")
+          echo "kare: $FRAME"
+          npx remotion still src/index.ts Short out/composed-frame.png --frame=$FRAME
+
+      - name: Typecheck + test
+        if: always()
+        run: |
+          npm run typecheck
+          npm test
+
+      - name: Artefaktları yükle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kolaj-denemesi-${{ github.run_number }}
+          path: |
+            out/alpha-sheet.png
+            out/composed-frame.png
+            collage-raw/*.png
+            public/collage/*.png
+            content/storyboard.json
+            out/flow-pack/ASSET-LIST.txt
+          if-no-files-found: warn
+          retention-days: 7
