@@ -1,14 +1,16 @@
 import React from 'react';
-import {useCurrentFrame} from 'remotion';
+import {Img, staticFile, useCurrentFrame} from 'remotion';
 import {CANVAS, PALETTE, SAFE, SAFE_BOX, TYPE, VERTICAL_BANDS, FONTS} from '../design/tokens';
 import {enter, drift, breathe, rand} from '../motion/stepped';
 import {cue, focusHunt, holdJitter, negationCue, parallax, peel, zoomThrough, compose} from '../film/choreography';
 import {LightLeak} from '../film/Plate';
 import {PaperBase} from '../paper/PaperBase';
-import {Cutout, TornCard} from '../paper/Cutout';
+import {Cutout, TornCard, HALFTONE_CSS} from '../paper/Cutout';
 import {Headline, PullQuote, LabelCard, Stamp, TypewriterStrip} from '../paper/Type';
 import {DrawnArrow, DottedPath, MarkerCircle, MarkerCross, SparkleField, SeaBand, Sparkle} from '../paper/Marks';
 import {StickFigure, ThoughtBubble, type Pose} from '../paper/StickFigure';
+import {DateTear, PostmarkRing, RecordClip} from '../paper/Evidence';
+import {Tape, BrassPin} from '../paper/Fixings';
 import {CastShadow, ContactShadow} from '../film/CastShadow';
 import {ArchiveClip} from './ArchiveClip';
 import {CollageBuild} from './CollageBuild';
@@ -1514,6 +1516,312 @@ const StarField: React.FC<SceneProps> = ({seconds, payload, seed}) => {
   );
 };
 
+
+/* ------------------------------------------------------------------ */
+/* 15. EVIDENCE BOARD — kanıt masası                                  */
+/* ------------------------------------------------------------------ */
+/**
+ * REFERANS KAREYE EN YAKIN ŞABLON — ve neden görsel modeliyle yapılamadığı.
+ *
+ * Kullanıcının kalite çıtası olarak verdiği Aylesbury karesi (8 AUG 1963)
+ * öğelerine ayrıldığında karede TEK fotoğraf var (istasyon peronu) ve kabaca
+ * alanın onda birini kaplıyor. Geri kalanı yazı, çizgi ve kağıt: dev tarih
+ * yaprağı, posta damgası, altın etiket, gravür harita, tarife kupürü, bant,
+ * raptiye, ip.
+ *
+ * Hattımız o karenin TAMAMINI görsel modelinden istiyordu ve iki kere
+ * kaybediyordu: model takvim yerine manken çiziyor (6. tur, 5/5), ve okunur
+ * harf hiç basamıyor (4 plakanın 4'ünde "YOOLNI IIILNIIRIGLLLID").
+ *
+ * Bu şablon o öğeleri koda alıyor. Fotoğraf yine dışarıdan gelir (`images` /
+ * `layers`) ama artık karenin TAMAMI değil, referanstaki gibi bir köşesi.
+ *
+ * VERİ ANLATIDAN GELİR. `payload.evidence` yoksa ilgili öğe ÇİZİLMEZ —
+ * uydurma tarih ya da uydurma tarife satırı yazmak, uydurma nesne çizmekle
+ * aynı sınıf yalan olurdu.
+ */
+const EvidenceBoard: React.FC<SceneProps> = ({seconds, payload, seed}) => {
+  const f = useCurrentFrame();
+  const ev = payload.evidence ?? {};
+
+  // Sıra referanstaki okuma sırası: önce harita (bağlam), sonra tarih (olay),
+  // sonra fotoğraf, damga, etiket, kayıt. Build-on: boş kağıttan tek tek.
+  const title = enter(f, {at: 0.1, duration: 0.35, kind: 'fade'});
+  const map = enter(f, {at: cue(seconds, 0, 6), duration: 0.5, kind: 'fade'});
+  const date = enter(f, {at: cue(seconds, 1, 6), duration: 0.45, kind: 'drop', from: {y: -140}});
+  const photo = enter(f, {at: cue(seconds, 2, 6), duration: 0.45, kind: 'slide', from: {x: -160}});
+  const mark = enter(f, {at: cue(seconds, 3, 6), duration: 0.3, kind: 'stamp'});
+  const tag = enter(f, {at: cue(seconds, 4, 6), duration: 0.3, kind: 'drop', from: {y: -70}});
+  const rec = enter(f, {at: cue(seconds, 5, 6), duration: 0.4, kind: 'fade'});
+
+  /**
+   * YERLEŞİM REFERANSTAN ÖLÇÜLDÜ, göz kararı değil.
+   *
+   * Aylesbury karesinde kutuların kanvasa oranı (943x1650 üstünden okundu):
+   *   harita   x 0.53-0.95   y 0.16-0.73     — sağ üstten sağ ortaya
+   *   tarih    x 0.24-0.72   y 0.28-0.66     — solda, haritanın üstüne biner
+   *   fotoğraf x 0.03-0.48   y 0.48-0.71     — sol alt
+   *   kupür    x 0.24-0.58   y 0.69-0.87     — alt orta
+   *   etiket   x 0.71-0.96   y 0.22-0.25     — sağ üst
+   *
+   * İlk sürümüm bunları SAFE_BOX'ın üst yarısına sıkıştırmıştı ve render'da
+   * karenin alt %40'ı bomboş kaldı. Oranlar artık doğrudan kanvasa uygulanıyor;
+   * güvenli alan yalnızca başlık ve altyazı bandını koruyor.
+   */
+  const W = CANVAS.width;
+  const H = CANVAS.height;
+
+  const mapX = Math.round(W * 0.50);
+  const mapY = Math.round(H * 0.22);
+  const mapW = Math.round(W * 0.47);
+  const mapH = Math.round(H * 0.44);
+
+  const dateW = Math.round(W * 0.44);
+  const dateH = Math.round(H * 0.30);
+  const dateX = Math.round(W * 0.20);
+  const dateY = Math.round(H * 0.30);
+
+  const photoW = Math.round(W * 0.42);
+  const photoH = Math.round(photoW * 0.82);
+  const photoX = Math.round(W * 0.04);
+  const photoY = Math.round(H * 0.55);
+
+  const src = payload.layers?.pieces?.[0]?.src ?? payload.images?.[0];
+
+  return (
+    <PaperBase seed={seed} ground="warm" aged>
+      {/*
+        BAŞLIK KENDİ BANDINDA. `Headline` konumlandırmıyor — saran kutu
+        konumlandırır. İlk sürümde `PaperBase` içine çıplak konmuştu ve
+        0,0'a oturup karenin üstünden taşıyordu ("ON THE" kesiliyordu).
+      */}
+      <div
+        style={{
+          position: 'absolute',
+          left: SAFE.left,
+          top: SAFE.top,
+          width: SAFE_BOX.width,
+          opacity: title.opacity,
+        }}
+      >
+        <Headline
+          text={payload.headline ?? ''}
+          size={TYPE.subhead}
+          fit={{width: SAFE_BOX.width, height: Math.round(H * 0.11)}}
+        />
+      </div>
+
+      {/* HARİTA — gravür ilçe haritası. Sahnenin en büyük nesnesi, o yüzden
+          sürüklenen katman bu (kural: her sahnede BÜYÜK bir katman oynar). */}
+      <div
+        style={{
+          position: 'absolute',
+          left: mapX,
+          top: mapY,
+          width: mapW,
+          height: mapH,
+          opacity: map.opacity * 0.92,
+          transform: drift(f, {seconds, dx: -22, dy: 14, scale: 0.05}),
+          transformOrigin: '40% 60%',
+          filter: 'drop-shadow(0 12px 16px rgba(24,18,8,0.20))',
+        }}
+      >
+        <svg width={mapW} height={mapH} style={{display: 'block'}}>
+          {/* Yırtık kenarlı kağıt: gravür harita bir SAYFADAN koparılmış. */}
+          <defs>
+            <clipPath id={`ev-map-${seed}`}>
+              <polygon
+                points={Array.from({length: 26}, (_, i) => {
+                  const t = i / 25;
+                  const edge = 0.04 * rand(seed * 7 + i);
+                  return t <= 0.5
+                    ? `${(t * 2 * mapW).toFixed(1)},${(edge * mapH).toFixed(1)}`
+                    : `${((2 - t * 2) * mapW).toFixed(1)},${((1 - edge) * mapH).toFixed(1)}`;
+                }).join(' ')}
+              />
+            </clipPath>
+          </defs>
+          <g clipPath={`url(#ev-map-${seed})`}>
+            <rect width={mapW} height={mapH} fill={PALETTE.paper} />
+            {/*
+              GRAVÜR YOL AĞI — rastgele eğri DEĞİL.
+
+              İlk sürüm 22 rastgele Bézier çiziyordu ve render'da sonuç
+              karalama gibi çıktı, harita gibi değil. Gerçek bir ilçe
+              haritasının okunma sebebi düzensizliği değil YAPISI: yollar
+              kasabalardan RADYAL çıkar, kasabalar birbirine bağlanır.
+
+              Burada önce kasaba düğümleri konuluyor (rota durakları varsa
+              onların yerinde), sonra her düğümden komşularına birer yol
+              çekiliyor ve kenarlardan çıkan kısa kollar ekleniyor.
+            */}
+            {(() => {
+              const towns = (payload.route?.length ? payload.route : [
+                {x: 0.28, y: 0.66},
+                {x: 0.62, y: 0.30},
+                {x: 0.46, y: 0.52},
+              ]).map((t) => ({x: t.x * mapW, y: t.y * mapH}));
+              const roads: React.ReactNode[] = [];
+              for (let i = 0; i < towns.length; i += 1) {
+                for (let k = i + 1; k < towns.length; k += 1) {
+                  const a = towns[i];
+                  const b = towns[k];
+                  // Hafif kavis: gerçek yollar düz gitmez.
+                  const bend = (rand(seed * 5 + i * 7 + k) - 0.5) * 0.22;
+                  const mx = (a.x + b.x) / 2 + (b.y - a.y) * bend;
+                  const my = (a.y + b.y) / 2 - (b.x - a.x) * bend;
+                  roads.push(
+                    <path
+                      key={`r${i}-${k}`}
+                      d={`M ${a.x.toFixed(1)},${a.y.toFixed(1)} Q ${mx.toFixed(1)},${my.toFixed(1)} ${b.x.toFixed(1)},${b.y.toFixed(1)}`}
+                      fill="none"
+                      stroke="rgba(40,44,54,0.42)"
+                      strokeWidth={2.1}
+                    />,
+                  );
+                }
+              }
+              // Kasabadan dışarı giden kollar: haritayı kenara kadar doldurur.
+              towns.forEach((t, i) => {
+                for (let k = 0; k < 4; k += 1) {
+                  const ang = (rand(seed * 13 + i * 11 + k) * 2 - 0.4) * Math.PI;
+                  const len = mapW * (0.18 + rand(seed * 23 + i + k) * 0.3);
+                  roads.push(
+                    <line
+                      key={`s${i}-${k}`}
+                      x1={t.x}
+                      y1={t.y}
+                      x2={t.x + Math.cos(ang) * len}
+                      y2={t.y + Math.sin(ang) * len}
+                      stroke="rgba(40,44,54,0.24)"
+                      strokeWidth={1.2}
+                    />,
+                  );
+                }
+              });
+              // Kasaba noktaları
+              towns.forEach((t, i) =>
+                roads.push(
+                  <circle key={`t${i}`} cx={t.x} cy={t.y} r={4.5} fill="rgba(30,34,44,0.72)" />,
+                ),
+              );
+              return roads;
+            })()}
+          </g>
+        </svg>
+        {/* Yer adları — rota duraklarından. Uydurma yer adı yazılmaz. */}
+        {(payload.route ?? []).map((s, i) =>
+          s.label ? (
+            <div
+              key={i}
+              style={{
+                position: 'absolute',
+                left: s.x * mapW,
+                top: s.y * mapH,
+                transform: 'translate(-50%,-50%)',
+                fontFamily: FONTS.display,
+                fontSize: TYPE.stamp * 0.8,
+                letterSpacing: '0.06em',
+                color: 'rgba(24,32,44,0.9)',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {s.label}
+            </div>
+          ) : null,
+        )}
+      </div>
+
+      {/* FOTOĞRAF — referanstaki gibi karenin bir köşesi, tamamı değil. */}
+      {src && (
+        <div
+          style={{
+            position: 'absolute',
+            left: photoX,
+            top: photoY,
+            width: photoW,
+            height: photoH,
+            opacity: photo.opacity,
+            transform: `${photo.transform ?? ''} rotate(-2deg)`,
+            background: PALETTE.paper,
+            padding: 14,
+            filter: 'drop-shadow(0 12px 16px rgba(24,18,8,0.26))',
+          }}
+        >
+          <Img
+            src={staticFile(src)}
+            style={{width: '100%', height: '100%', objectFit: 'cover', ...HALFTONE_CSS}}
+          />
+        </div>
+      )}
+
+      {/* DEV TARİH YAPRAĞI — kompozisyonun omurgası. */}
+      {ev.date && (
+        <DateTear
+          day={ev.date.day}
+          month={ev.date.month}
+          year={ev.date.year}
+          x={dateX}
+          y={dateY}
+          width={dateW}
+          height={dateH}
+          opacity={date.opacity}
+          transform={date.transform}
+          seed={seed}
+        />
+      )}
+
+      {ev.postmark && (
+        <PostmarkRing
+          place={ev.postmark.place}
+          lines={ev.postmark.lines}
+          x={dateX + Math.round(dateW * 0.72)}
+          y={dateY - Math.round(H * 0.045)}
+          size={Math.round(W * 0.17)}
+          opacity={mark.opacity}
+          transform={mark.transform}
+        />
+      )}
+
+      {payload.label && (
+        <LabelCard
+          text={payload.label}
+          x={Math.round(W * 0.66)}
+          y={Math.round(H * 0.175)}
+          opacity={tag.opacity}
+          transform={tag.transform}
+        />
+      )}
+
+      {ev.record && ev.record.rows.length > 0 && (
+        <RecordClip
+          heading={ev.record.heading}
+          subheading={ev.record.subheading}
+          rows={ev.record.rows}
+          x={Math.round(W * 0.42)}
+          y={Math.round(H * 0.665)}
+          width={Math.round(W * 0.36)}
+          opacity={rec.opacity}
+          seed={seed}
+        />
+      )}
+
+      {/* Bant ve raptiye: kağıdı masaya tutturan şey. */}
+      <Tape x={dateX - 24} y={dateY - 26} width={210} rotate={-18} opacity={date.opacity} />
+      <BrassPin cx={mapX + Math.round(mapW * 0.34)} cy={mapY + Math.round(mapH * 0.62)} opacity={mark.opacity} />
+
+      {payload.caption && (
+        <TypewriterStrip
+          text={payload.caption}
+          x={SAFE.left}
+          y={CANVAS.height - SAFE.bottom - 70}
+          opacity={rec.opacity}
+        />
+      )}
+    </PaperBase>
+  );
+};
+
 /* ------------------------------------------------------------------ */
 /* KAYIT                                                              */
 /* ------------------------------------------------------------------ */
@@ -1532,6 +1840,7 @@ export const SCENES: Record<SceneTemplate, React.FC<SceneProps>> = {
   star_field: StarField,
   archive_clip: ArchiveClip,
   collage_build: CollageBuild,
+  evidence_board: EvidenceBoard,
 };
 
 export const SCENE_NAMES = Object.keys(SCENES) as SceneTemplate[];

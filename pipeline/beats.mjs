@@ -444,7 +444,15 @@ export function classifyBeat(text, position) {
  * "şablondan çıkmış" hissinin birinci sebebi.
  */
 const PRIMARY = {
-  cold_open: ['wide_establish', 'headline_card'],
+  /**
+   * cold_open: ÖNCE kanıt masası.
+   *
+   * Bu beat türü tanımı gereği "tarih + yer + tek somut eylem" ve referans
+   * karenin (Aylesbury 8 AUG 1963) yaptığı işin ta kendisi bu. Cümlede tam
+   * tarih varsa `evidence_board` seçilir; yoksa sözleşme reddeder ve eski
+   * iki şablona düşülür.
+   */
+  cold_open: ['evidence_board', 'wide_establish', 'headline_card'],
   fact: ['hero_cutout', 'headline_card', 'labeled_diagram', 'wide_establish'],
   place: ['map_route', 'wide_establish'],
   person: ['headline_card', 'hero_cutout'],
@@ -554,6 +562,12 @@ export const TEMPLATE_REQUIREMENTS = {
   grid_scale: (p) => !!p.ratio && p.ratio.total >= 2,
   data_annotate: (p) => Array.isArray(p.series) && p.series.length >= 3,
   map_route: (p) => Array.isArray(p.route) && p.route.length >= 2,
+  /**
+   * Kanıt masasının omurgası dev tarih yaprağı. Tarih yoksa şablon yalnızca
+   * harita + başlıktan ibaret kalır ve `map_route`un zayıf bir kopyası olur;
+   * o yüzden sözleşme tam tarih İSTİYOR.
+   */
+  evidence_board: (p) => Boolean(p.evidence?.date?.day && p.evidence.date.month && p.evidence.date.year),
   pull_quote: (p) => typeof p.quote === 'string' && p.quote.trim().length > 0,
   labeled_diagram: (p) => typeof p.headline === 'string' && p.headline.trim().length > 0,
   // Kalanlar yalnızca başlık ister; başlıksız sahne de boş sayılır.

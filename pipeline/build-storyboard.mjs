@@ -37,6 +37,32 @@ const DRAWS_OBJECT = new Set([
   'pull_quote',
 ]);
 
+
+/**
+ * Cümledeki TAM tarih: gün + ay + yıl. Üçü de yoksa `null`.
+ *
+ * "On the night of 24 November 1971," → {day:"24", month:"NOV", year:"1971"}
+ *
+ * Kısmi tarih kabul edilmiyor: yalnızca yıl varsa takvim yaprağının gün ve ay
+ * satırları uydurulmak zorunda kalırdı.
+ */
+const MONTHS = {
+  january: 'JAN', february: 'FEB', march: 'MAR', april: 'APR',
+  may: 'MAY', june: 'JUN', july: 'JUL', august: 'AUG',
+  september: 'SEP', october: 'OCT', november: 'NOV', december: 'DEC',
+};
+
+export function extractFullDate(text) {
+  const t = String(text);
+  const names = Object.keys(MONTHS).join('|');
+  // "24 November 1971" ve "November 24, 1971" — iki yazım da geçiyor.
+  let m = t.match(new RegExp(`\\b(\\d{1,2})\\s+(${names})\\w*\\s+(\\d{4})\\b`, 'i'));
+  if (m) return {day: m[1], month: MONTHS[m[2].toLowerCase()], year: m[3]};
+  m = t.match(new RegExp(`\\b(${names})\\w*\\s+(\\d{1,2}),?\\s+(\\d{4})\\b`, 'i'));
+  if (m) return {day: m[2], month: MONTHS[m[1].toLowerCase()], year: m[3]};
+  return null;
+}
+
 /**
  * Beat metninden, VERİLEN ŞABLON için payload çıkar.
  *
@@ -65,6 +91,31 @@ function payloadForBeat(beat, story, template = beat.template) {
       const rows = collectYears(story.narration);
       if (rows.length >= 2) p.timeline = rows.slice(0, 4);
       else p.headline = shorten(text, 6);
+      break;
+    }
+
+    /**
+     * KANIT MASASI — tarih anlatının KENDİ tarihinden gelir.
+     *
+     * Sözleşme sıkı: dev takvim yaprağı için gün/ay/yıl ÜÇÜ birden cümlede
+     * geçmeli. Geçmiyorsa şablon reddedilir ve `resolveTemplate` sıradakine
+     * geçer — uydurma bir tarih basmak, uydurma nesne çizmekle aynı yalan.
+     *
+     * `postmark` ve `record` burada DOLDURULMUYOR. Posta damgası saati,
+     * tarife satırları gibi veriler anlatıda yoksa uydurulamaz; bu alanlar
+     * elle yazılmış storyboard'lar ve ileride yapılandırılmış veri için duruyor.
+     */
+    case 'evidence_board': {
+      const d = extractFullDate(text);
+      if (d) p.evidence = {date: d};
+      const places = extractPlaces(text);
+      if (places.length >= 2) {
+        p.route = [
+          {x: 0.30, y: 0.78, label: places[0]},
+          {x: 0.72, y: 0.22, label: places[1]},
+        ];
+      }
+      p.headline = shorten(text, 7);
       break;
     }
 

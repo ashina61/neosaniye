@@ -140,6 +140,37 @@ geçmesi.
   `focusHunt`, `peel`, `holdJitter`. Hepsi saf fonksiyon ve `test/film.test.mjs`
   bunları tsc ile derleyip DAVRANIŞINI ölçer — metin araması değil.
 
+## Referans kare söküldü: karede TEK fotoğraf var
+
+Kullanıcının kalite çıtası olarak verdiği Aylesbury karesi (8 AUG 1963)
+öğelerine ayrıldığında şu çıkıyor:
+
+| öğe | ne o | kim çizer |
+|---|---|---|
+| dev yırtık takvim "8 / AUG / 1963" | tipografi | `DateTear` |
+| "8 AUG 1963 9-AM BUCKS" posta damgası | tipografi | `PostmarkRing` |
+| BUCKINGHAMSHIRE altın etiket | tipografi | `LabelCard` |
+| gravür ilçe haritası + yer adları | çizgi + tipografi | `evidence_board` |
+| L.N.W.R. tarife kupürü | tipografi (tablo) | `RecordClip` |
+| bant, pirinç raptiye, kırmızı ip | çizim | `Fixings` |
+| Aylesbury istasyonu | **tek fotoğraf** | model / arşiv |
+
+Karede fotoğraf BİR TANE ve kabaca alanın onda biri; geri kalanı yazı, çizgi
+ve kağıt. **Hat o karenin TAMAMINI görsel modelinden istiyordu ve iki kere
+kaybediyordu**: model takvim yerine manken çiziyor (6. tur, 5/5) ve okunur harf
+hiç basamıyor (4 plakanın 4'ünde uydurma manşet). Bu depo zaten "kod çizer:
+harita, rota, zaman çizelgesi, tipografi" diyordu — eksik olan kural değil,
+`src/paper/Evidence.tsx`teki üç bileşendi.
+
+`evidence_board` şablonunun yerleşimi referanstan ÖLÇÜLDÜ (kutu oranları
+`src/scenes/index.tsx` içinde yazılı). İlk sürüm oranları SAFE_BOX'a
+uygulamıştı ve karenin alt %40'ı boş kaldı; oranlar artık kanvasa uygulanıyor.
+
+**VERİ UYDURULMAZ.** `evidence_board` sözleşmesi TAM tarih istiyor (gün + ay +
+yıl, üçü de cümlede geçmeli); yoksa şablon reddedilir ve `cold_open` eski
+şablonlarına düşer. `postmark` ve `record` alanları derleyici tarafından
+DOLDURULMUYOR — damga saati ya da tarife satırı anlatıda yoksa uydurulamaz.
+
 ## Görsel malzeme: parça parça, tek kare değil
 
 Varsayılan yol **B**: sahne başına 2-4 **parça** (kare başına tek baskın nesne;

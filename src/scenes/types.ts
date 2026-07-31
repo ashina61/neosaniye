@@ -22,7 +22,8 @@ export type SceneTemplate =
   | 'stick_beat'        // soyut/duygusal beat: çöp adam
   | 'star_field'        // gece zemin, eş merkezli halkalar, portre
   | 'archive_clip'      // Google Flow'dan dönen kompoze kolaj klibi
-  | 'collage_build';    // parça parça üretilmiş kolaj: plaka + N alfa parça
+  | 'collage_build'     // parça parça üretilmiş kolaj: plaka + N alfa parça
+  | 'evidence_board';   // kanıt masası: dev tarih + damga + harita + kayıt kupürü
 
 /** Anlatının bu beat'te ne YAPTIĞI. Şablon seçimi buna dayanır. */
 export type BeatKind =
@@ -111,6 +112,33 @@ export interface ScenePayload {
    * olduğu gibi çizmek cümlenin tersini söylerdi.
    */
   negated?: boolean;
+  /**
+   * KANIT MASASI VERİSİ — `evidence_board` şablonu okur.
+   *
+   * Hepsi ANLATIDAN türer, uydurulmaz. Tarih cümlenin kendi tarihidir, yer
+   * cümlenin kendi yer adıdır, kayıt satırları anlatının verdiği verilerdir.
+   * Alan yoksa şablon o öğeyi ÇİZMEZ — boş bir tarife uydurmak, uydurma nesne
+   * çizmekle aynı sınıf yalan olurdu.
+   */
+  evidence?: {
+    /** Dev takvim yaprağı: ["8", "AUG", "1963"]. */
+    date?: {day: string; month: string; year: string};
+    /** Posta damgası: yer adı + içindeki satırlar. */
+    postmark?: {place: string; lines: string[]};
+    /**
+     * Kayıt/tarife kupürü. `rows` boşsa kupür çizilmez.
+     *
+     * Satır tipi `string[]`, tuple DEĞİL: bu veri `storyboard.json`dan geliyor
+     * ve TypeScript JSON dizilerini tuple'a daraltmıyor. Tuple yazmak
+     * `Root.tsx`teki dönüşümü kırıyordu. Sütun sayısını bileşen ilk satırdan
+     * okuyor (2 ya da 3).
+     */
+    record?: {
+      heading: string;
+      subheading?: string;
+      rows: string[][];
+    };
+  };
   /**
    * Flow'dan dönen klip. `ingest-clips.mjs` yazar; şablonu da `archive_clip`'e
    * çevirir. `trimBefore` klibin SONUNU beat'in sonuna hizalar.
