@@ -168,6 +168,80 @@ def chroma_alpha(rgb: np.ndarray, sat_min: float = 0.34, feather: int = 2) -> np
     return np.clip(alpha, 0.0, 1.0)
 
 
+def _label_components(solid: np.ndarray) -> tuple[np.ndarray, list[int]]:
+    """4-komşuluk bağlı bileşen etiketleme. `sizes[0]` kullanılmaz (arka plan)."""
+    h, w = solid.shape
+    labels = np.zeros((h, w), dtype=np.int32)
+    sizes: list[int] = [0]
+    cur = 0
+    for sy in range(h):
+        for sx in range(w):
+            if not solid[sy, sx] or labels[sy, sx]:
+                continue
+            cur += 1
+            n = 0
+            q: deque[tuple[int, int]] = deque([(sy, sx)])
+            labels[sy, sx] = cur
+            while q:
+                y, x = q.popleft()
+                n += 1
+                for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    ny, nx = y + dy, x + dx
+                    if 0 <= ny < h and 0 <= nx < w and solid[ny, nx] and not labels[ny, nx]:
+                        labels[ny, nx] = cur
+                        q.append((ny, nx))
+            sizes.append(n)
+    return labels, sizes
+
+
+def drop_speckles(alpha: np.ndarray, threshold: float = 0.5, min_share: float = 0.0015) -> np.ndarray:
+    """
+    Küçük lekeleri at, KALAN HER BİLEŞENİ TUT. İç boşluklara DOKUNMA.
+
+    ================== NEDEN `keep_largest_blob` DEĞİL ==================
+
+    `chroma` modu önce `keep_largest_blob` çağırıyordu ve bu ÖLÇÜLDÜ: sentetik
+    parçalarla uçtan uca denemede iki ayrı bozulma çıktı, ikisi de o çağrıdan.
+
+    1. "EN BÜYÜK BİLEŞENİ TUT" ÖZNENİN PARÇASINI SİLİYOR. Test figürünün başı
+       gövdeden birkaç piksel ayrıydı; çıktı 435x689 geldi, yani yalnızca gövde
+       — baş tamamen düştü. Bu istisna değil, kural: halftone bir kesikte baş
+       ile omuz arasında beyaz bir boşluk olması olağan; damganın iç halkası,
+       etiketin üstündeki iğne, "i" harfinin noktası hep ayrı bileşen.
+       Doğru ölçüt "en büyük" değil, "çöp sayılacak kadar küçük".
+
+    2. "İÇ BOŞLUKLARI DOLDUR" ANAHTAR RENGİ EKRANA KOYUYOR. Halkanın içi dıştan
+       erişilemediği için "öznenin içi" sayılıp opaklaştırılıyordu — ama oradaki
+       RGB magenta'nın ta kendisi. Kanıt karesinde ekranın ortasında parlak mor
+       bir disk çıktı; ölçümde o parçanın opak piksellerinin %62'si magenta idi.
+       Kroma anahtarlamanın tek şartı anahtar rengin ASLA hayatta kalmaması.
+
+    `keep_largest_blob` `matte` modunda kalıyor: orada taşma-doldurma özneden
+    parça yiyor ve boşluk doldurma o hasarı onarıyor. Girdiyi biz sipariş
+    etmediğimiz mod o; burada ise zemin bizim istediğimiz düz magenta.
+
+    min_share: karenin bu oranından küçük bileşenler atılır. %0.15, 1080x1920'de
+    ~3100 piksel — 56x56'lık bir kare. Sıkıştırma gürültüsü ve tek tük leke bunun
+    çok altında; anlamlı bir öğe (bir baş, bir iğne, bir nokta) çok üstünde.
+    """
+    solid = alpha >= threshold
+    if not solid.any():
+        return alpha
+    labels, sizes = _label_components(solid)
+    if len(sizes) <= 1:
+        return alpha
+    min_area = max(16, int(solid.size * min_share))
+    keep = np.zeros(len(sizes), dtype=bool)
+    for i in range(1, len(sizes)):
+        keep[i] = sizes[i] >= min_area
+    if not keep.any():
+        # Hiçbir bileşen eşiği geçmiyorsa özne gerçekten küçük demektir; en
+        # büyüğünü tut ki çıktı tamamen boşalmasın (verify_alpha zaten yakalar).
+        keep[int(np.argmax(sizes))] = True
+    kept = keep[labels]
+    return np.where(kept, alpha, 0.0)
+
+
 def keep_largest_blob(alpha: np.ndarray, threshold: float = 0.5) -> np.ndarray:
     """
     En büyük opak bileşeni tut, iç boşlukları doldur.
@@ -175,6 +249,9 @@ def keep_largest_blob(alpha: np.ndarray, threshold: float = 0.5) -> np.ndarray:
     İki işi birden yapar: arka planda kalan tek tük lekeleri atar, ve öznenin
     içinde yanlışlıkla şeffaflaşmış bölgeleri geri kapatır. `matte` modunun
     özneden parça yeme sorununu büyük ölçüde onarır.
+
+    YALNIZCA `matte` MODU İÇİN. `chroma` modunda iki bozulma birden üretiyor;
+    gerekçe `drop_speckles`'ın belgesinde ölçümüyle yazılı.
     """
     solid = alpha >= threshold
     h, w = solid.shape
@@ -237,6 +314,23 @@ def keep_largest_blob(alpha: np.ndarray, threshold: float = 0.5) -> np.ndarray:
     # sınırında kesik kağıt kenarı için gereken yarı saydam bandı bırakır.
     body = _box_blur(filled.astype(np.float32), 1)
     return np.clip(body, 0.0, 1.0)
+
+
+def despill(rgb: np.ndarray) -> np.ndarray:
+    """
+    Anahtar rengin özneye bulaşan kalıntısını nötrle: renkli piksel griye döner.
+
+    NEDEN GEREKLİ: yumuşatma (feather) sınırda yarı saydam bir bant bırakıyor ve
+    o bandın RGB'si magenta. Alfa 0.5 olduğu için ekranda görünüyor — kesiğin
+    çevresinde ince mor bir hâle. Alfa doğru olsa bile RENK yanlış kalıyor.
+
+    Tam desatürasyon burada güvenli, çünkü parça prompt'u zaten "black and white
+    halftone, desaturated ink black and halftone gray only, no colour in the
+    subject" diyor. Yani bu adım sözleşmeyi ZORLUYOR: modelden renk sızarsa da
+    kolaj paletine dönüyor.
+    """
+    luma = (0.299 * rgb[:, :, 0] + 0.587 * rgb[:, :, 1] + 0.114 * rgb[:, :, 2]).astype(np.uint8)
+    return np.dstack([luma, luma, luma])
 
 
 def _box_blur(a: np.ndarray, r: int) -> np.ndarray:
@@ -330,13 +424,19 @@ def make_cutout(
         alpha = keep_largest_blob(alpha)
     elif mode == "chroma":
         alpha = chroma_alpha(rgb, feather=feather)
-        alpha = keep_largest_blob(alpha)
+        # `keep_largest_blob` DEĞİL: bu modda özneden parça siliyor ve iç
+        # boşlukları anahtar rengiyle dolduruyor. Ölçümü drop_speckles'ta.
+        alpha = drop_speckles(alpha)
     else:
         raise CutoutError(f"bilinmeyen mod: {mode}")
 
     stats = verify_alpha(alpha)
 
     body = to_halftone(rgb) if halftone else rgb
+    if mode == "chroma":
+        # Kenardaki yarı saydam bandın rengi hâlâ magenta; nötrlenmezse kesiğin
+        # çevresinde mor bir hâle kalıyor.
+        body = despill(body)
     rgba = np.dstack([body, (alpha * 255).astype(np.uint8)])
     if trim:
         rgba = trim_to_content(rgba)

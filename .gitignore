@@ -38,3 +38,7 @@ public/archive/.raw-*
 
 # Flow klipleri sürümlenmez (büyük, elle üretiliyor); klasör yapısı kalır.
 public/clips/*.mp4
+
+# Kolaj ham görselleri: magenta zeminli, opak, türetilmiş veri. Alfa'ya
+# çevrilmiş hâlleri public/collage/ altında ve ONLAR sürümlenir.
+collage-raw/

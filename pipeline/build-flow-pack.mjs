@@ -1,21 +1,34 @@
 #!/usr/bin/env node
 /**
- * GOOGLE FLOW DEVİR PAKETİ
+ * GÖRSEL ÜRETİM DEVİR PAKETİ
  *
- * storyboard.json → out/flow-pack/ altında elle Flow'a atılacak her şey:
+ * storyboard.json → out/flow-pack/ altında elle görsel modeline atılacak her şey.
  *
- *   01-cold_open.txt … NN-kind.txt   beat başına kompoze kolaj prompt'u
- *   ALL-PROMPTS.txt                  hepsi tek dosyada, boş satırla ayrılmış
- *                                    (toplu görsel üretimi için)
- *   UNIVERSAL-VIDEO-PROMPT.txt       her görsele uygulanacak hareket talimatı
- *   README.txt                       hangi görselin hangi beat'e ait olduğu ve
- *                                    klipleri geri koyma talimatı
- *   manifest.json                    makine tarafı: beat ↔ dosya eşlemesi
+ * İKİ YOL, AYNI PAKETTE
  *
- * NEDEN VAR: kullanıcı i2v adımını elle Google Flow'da yapıyor. O adım
- * mekanik olmalı — hangi görselin hangi beat'e ait olduğu karışırsa montaj
- * sırası bozulur ve hata sessiz kalır. Bu yüzden dosya adları beat sırasını
- * taşıyor ve manifest geri okunabilir.
+ *   B YOLU (VARSAYILAN) — parça parça. Beat başına bir PLAKA (boş zemin) ve
+ *   2-4 PARÇA (magenta zeminde tek nesne). Remotion parçaları katman katman
+ *   dizer, yani "build-on assembly" KODDA olur.
+ *       NN-kind-plate.txt · NN-kind-a.txt … NN-kind-d.txt
+ *
+ *   A YOLU (YEDEK) — tek bitmiş kare + Google Flow'da i2v. Bir beat için parça
+ *   üretmek zahmetliyse bu kullanılır; o sahne build-on yapmaz.
+ *       NN-kind-FALLBACK-single-frame.txt · NN-kind-MOTION.txt
+ *
+ * NEDEN B VARSAYILAN: Flow çıktısı ÖLÇÜLDÜ ve "görseli birebir koru" talimatını
+ * tutmuyor — gravür harita renkli haritayla değişti, tarife metni yeniden
+ * yazıldı. Parçalar ayrı gelince kamera gerçekten kilitli, tarih ve sayı
+ * Remotion'ın çizdiği metinde kalıyor, çıktı deterministik.
+ *
+ * ORTAK DOSYALAR
+ *   ALL-PROMPTS.txt   B yolunun bütün blokları, boş satırla ayrılmış (temiz besleme)
+ *   ASSET-LIST.txt    o blokların sırası ↔ kaydedilecek dosya adı
+ *   README.txt        adım adım talimat
+ *   manifest.json     makine tarafı: beat ↔ dosya eşlemesi (`ingest-collage.mjs` okur)
+ *
+ * Hangi görselin hangi beat'e ait olduğu karışırsa montaj sırası sessizce
+ * bozulur; bu yüzden dosya adları beat sırasını taşıyor ve manifest geri
+ * okunabilir.
  *
  * AĞA ÇIKMAZ, ÜCRETLİ ÇAĞRI YAPMAZ. Yalnızca metin üretir.
  */
@@ -24,7 +37,13 @@ import {readFile, writeFile, mkdir, rm} from 'node:fs/promises';
 import {existsSync} from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
-import {composedCollagePrompt, universalVideoPrompt, UNIVERSAL_VIDEO_PROMPT} from './collage-prompt.mjs';
+import {
+  composedCollagePrompt,
+  universalVideoPrompt,
+  UNIVERSAL_VIDEO_PROMPT,
+  platePrompt,
+  piecePrompts,
+} from './collage-prompt.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const PACK = path.join(ROOT, 'out', 'flow-pack');
@@ -75,60 +94,107 @@ async function main() {
       code.push(row);
     } else {
       row.file = `${pad(row.n)}-${row.kind}`;
-      row.prompt = composedCollagePrompt({text: row.text, kind: row.kind}, story);
+      const beat = {text: row.text, kind: row.kind};
+      // A yolu (yedek): tek bitmiş kare.
+      row.fallbackPrompt = composedCollagePrompt(beat, story);
+      // B yolu (varsayılan): plaka + parçalar.
+      row.platePrompt = platePrompt(beat);
+      row.pieces = piecePrompts(beat);
       flow.push(row);
     }
   }
 
   /**
-   * Beat başına İKİ dosya: kare prompt'u ve o beat'in SÜRESİNE göre hareket
-   * prompt'u.
+   * DOSYALAR BEAT BAŞINA
    *
-   * NEDEN SÜRE BEAT'TEN: kullanıcının doğrulanmış hareket metni 10 saniye ve
-   * 0-7 kurulum / 7-10 tutuş diyor. Bizim beat'ler 3.6-6.5 saniye. 10 saniyelik
-   * klibi 4 saniyeye kırpmak ya KURULUMU (asıl seyredilecek şey) ya da OTURMUŞ
-   * KAREYİ öldürüyor. Oran korunuyor: kurulum %70, tutuş %30.
+   *   NN-kind-plate.txt              boş zemin plakası (B yolu)
+   *   NN-kind-a.txt … -d.txt         parçalar, ilki hero (B yolu)
+   *   NN-kind-FALLBACK-single-frame  tek bitmiş kare (A yolu)
+   *   NN-kind-MOTION.txt             yalnızca A yolunda anlamlı: o beat'in
+   *                                  SÜRESİNE göre yazılmış Flow hareket metni.
+   *                                  Süre beat'ten geliyor çünkü metin
+   *                                  "kurulum %70 / tutuş %30" diyor ve 10
+   *                                  saniyelik klibi 4 saniyeye kırpmak ya
+   *                                  kurulumu ya da oturmuş kareyi öldürüyor.
+   *
+   * `assets` listesi ALL-PROMPTS.txt'nin blok sırasıyla BİREBİR aynı sırada
+   * tutuluyor — kullanıcının kaydettiği N'inci görselin adı bu listenin
+   * N'inci satırı. Sıra kayarsa montaj sessizce bozulur.
    */
+  const assets = [];
   for (const r of flow) {
-    await writeFile(path.join(PACK, `${r.file}.txt`), `${r.prompt}\n`);
+    await writeFile(path.join(PACK, `${r.file}-plate.txt`), `${r.platePrompt}\n`);
+    assets.push({file: `${r.file}-plate`, n: r.n, role: 'plate', prompt: r.platePrompt});
+    for (const p of r.pieces) {
+      await writeFile(path.join(PACK, `${r.file}-${p.slot}.txt`), `${p.prompt}\n`);
+      assets.push({file: `${r.file}-${p.slot}`, n: r.n, role: p.role, slot: p.slot, prompt: p.prompt});
+    }
+    await writeFile(path.join(PACK, `${r.file}-FALLBACK-single-frame.txt`), `${r.fallbackPrompt}\n`);
     await writeFile(path.join(PACK, `${r.file}-MOTION.txt`), `${universalVideoPrompt(r.seconds)}\n`);
   }
 
   // Toplu üretim beslemesi: numaralandırma YOK, bloklar boş satırla ayrılmış.
   // Referans PDF'in "Textify feed" biçimi bu; her blok tek başına çalışır.
-  await writeFile(path.join(PACK, 'ALL-PROMPTS.txt'), `${flow.map((r) => r.prompt).join('\n\n')}\n`);
+  // Adları AYRI dosyada duruyor ki besleme metni kirlenmesin.
+  await writeFile(path.join(PACK, 'ALL-PROMPTS.txt'), `${assets.map((a) => a.prompt).join('\n\n')}\n`);
+  await writeFile(
+    path.join(PACK, 'ASSET-LIST.txt'),
+    `${assets.map((a, i) => `${String(i + 1).padStart(3)}. ${a.file}.png   (${a.role})`).join('\n')}\n`,
+  );
+  await writeFile(
+    path.join(PACK, 'ALL-FALLBACK-PROMPTS.txt'),
+    `${flow.map((r) => r.fallbackPrompt).join('\n\n')}\n`,
+  );
   await writeFile(path.join(PACK, 'UNIVERSAL-VIDEO-PROMPT.txt'), `${UNIVERSAL_VIDEO_PROMPT}\n`);
 
   const readme = [
-    `NEOSANIYE — GOOGLE FLOW DEVİR PAKETİ`,
+    `NEOSANIYE — GÖRSEL ÜRETİM DEVİR PAKETİ`,
     `konu: ${sb.title}`,
     `video süresi: ${(sb.totalFrames / FPS).toFixed(1)} s · ${sb.scenes.length} sahne`,
     ``,
-    `ADIMLAR`,
-    `1. ALL-PROMPTS.txt içindeki blokları görsel modeline ver (her blok bir kare).`,
-    `   Sıra korunmalı: birinci blok = ${flow[0]?.file}, ikinci = ${flow[1]?.file}, …`,
-    `2. Dönen görselleri şu adlarla kaydet: ${flow.slice(0, 3).map((r) => r.file + '.png').join(', ')} …`,
-    `3. Her görseli Google Flow'a ver. Hareket talimatı olarak O BEAT'İN`,
-    `   kendi dosyasını kullan: 01-cold_open-MOTION.txt gibi.`,
-    `   Neden beat başına ayrı: her beat farklı uzunlukta ve hareket metni`,
-    `   "kurulum %70 / tutuş %30" oranını o süreye göre yazıyor. Tek bir`,
-    `   10 saniyelik metin kullanıp 4 saniyeye kırpmak ya kurulumu ya da`,
-    `   oturmuş kareyi öldürüyor. UNIVERSAL-VIDEO-PROMPT.txt 10 saniyelik`,
-    `   referans sürüm; tek başına klip üretmek istersen o.`,
-    `4. Flow'dan dönen klipleri AYNI ADLA public/clips/ altına .mp4 olarak koy.`,
-    `5. npm run beats && npm run render`,
+    `═══ B YOLU — PARÇA PARÇA (VARSAYILAN, BUNU KULLAN) ═══`,
     ``,
-    `DİKKAT — ÖLÇÜLDÜ`,
-    `Flow, "görseli birebir koru" talimatını tam tutmuyor. Bir denemede gravür`,
-    `harita renkli bir haritayla değişti, tarife içeriği yeniden yazıldı ve`,
-    `orijinalde olmayan sayfa kıvrımı eklendi. Bu estetikte genelde sorun değil,`,
-    `AMA çıktıdaki TARİH ve SAYILARI gözle kontrol et; anlatımla çelişen bir`,
-    `tarih yanlış bilgi demektir.`,
+    `Beat başına 1 PLAKA (boş kağıt zemin) + ${flow[0]?.pieces.length ?? 3} kadar PARÇA`,
+    `(düz magenta zeminde tek nesne). Remotion parçaları tek tek, arkadan öne,`,
+    `anlatı sırasıyla diziyor — yani kolajın kendi kendini kurması KODDA oluyor.`,
+    `Flow'a hiç gerek yok.`,
     ``,
-    `FLOW'A GİDEN BEAT'LER (${flow.length})`,
-    ...flow.map((r) => `  ${pad(r.n)}  ${r.start.toFixed(1)}s +${r.seconds.toFixed(1)}s  ${r.kind.padEnd(11)} ${JSON.stringify(r.text)}`),
+    `1. ALL-PROMPTS.txt içindeki ${assets.length} bloğu görsel modeline ver.`,
+    `   Her blok bir görsel. Sıra korunmalı.`,
+    `2. Dönen görselleri ASSET-LIST.txt'deki adlarla collage-raw/ altına kaydet.`,
+    `   N'inci blok = listenin N'inci satırı. Sıra kayarsa montaj sessizce bozulur.`,
+    `3. npm run collage`,
+    `   Bu adım parçaların magenta zeminini silip alfa PNG üretiyor (cutout.py,`,
+    `   chroma modu), plakayı olduğu gibi alıyor ve storyboard'a bağlıyor.`,
+    `   Eksik parça sorun değil: o sahne mevcut şablonuyla kodla çizilmeye devam eder.`,
+    `4. npm run sheet   (tek kareye bak, 93 dakikalık render'a girmeden)`,
+    `5. npm run render`,
     ``,
-    `KODLA ÇİZİLEN BEAT'LER (${code.length}) — Flow'a GİTMEZ`,
+    `PARÇA PROMT'UNDA DEĞİŞTİRME: "fill the entire background with pure saturated`,
+    `magenta" cümlesi süs değil, alfa çıkarımının TEK dayanağı. Zemin magenta`,
+    `değilse cutout adımı boş maske üretir ve adım hata verir.`,
+    ``,
+    `═══ A YOLU — TEK KARE + GOOGLE FLOW (YEDEK) ═══`,
+    ``,
+    `Bir beat için parça üretmek zahmetliyse: NN-kind-FALLBACK-single-frame.txt`,
+    `tek bitmiş kareyi ister; NN-kind-MOTION.txt o beat'in SÜRESİNE göre yazılmış`,
+    `Flow hareket metnidir. Klipleri AYNI ADLA public/clips/ altına .mp4 koy ve`,
+    `npm run clips. O sahne build-on yapmaz, yalnızca film katmanı ve sürüklenme alır.`,
+    ``,
+    `DİKKAT — ÖLÇÜLDÜ: Flow "görseli birebir koru" talimatını tutmuyor. Bir`,
+    `denemede gravür harita renkli bir haritayla değişti, tarife içeriği yeniden`,
+    `yazıldı ve orijinalde olmayan sayfa kıvrımı eklendi. Çıktıdaki TARİH ve`,
+    `SAYILARI gözle kontrol et; anlatımla çelişen bir tarih yanlış bilgi demektir.`,
+    `B yolunda bu risk yok, çünkü metni Remotion çiziyor.`,
+    ``,
+    `GÖRSEL ÜRETİLECEK BEAT'LER (${flow.length})`,
+    ...flow.map(
+      (r) =>
+        `  ${pad(r.n)}  ${r.start.toFixed(1)}s +${r.seconds.toFixed(1)}s  ${r.kind.padEnd(11)}` +
+        ` ${r.pieces.length} parça  ${JSON.stringify(r.text)}`,
+    ),
+    ``,
+    `KODLA ÇİZİLEN BEAT'LER (${code.length}) — görsel üretilmez`,
     `Bu sahnelerde görsel modeli doğru olamıyor: rota oku, sayılabilir ızgara,`,
     `grafik, zaman çizelgesi. Remotion çiziyor.`,
     ...code.map((r) => `  ${pad(r.n)}  ${r.start.toFixed(1)}s +${r.seconds.toFixed(1)}s  ${r.template.padEnd(17)} ${JSON.stringify(r.text)}`),
@@ -138,15 +204,19 @@ async function main() {
 
   await writeFile(
     path.join(PACK, 'manifest.json'),
-    `${JSON.stringify({title: sb.title, fps: FPS, flow, code}, null, 2)}\n`,
+    `${JSON.stringify({title: sb.title, fps: FPS, flow, code, assets}, null, 2)}\n`,
   );
 
-  console.log(`Flow paketi yazıldı: out/flow-pack/`);
-  console.log(`  Flow'a giden        : ${flow.length} beat`);
+  const pieceCount = flow.reduce((s, r) => s + r.pieces.length, 0);
+  console.log(`paket yazıldı: out/flow-pack/`);
+  console.log(`  görsel üretilecek   : ${flow.length} beat`);
   console.log(`  kodla çizilen       : ${code.length} beat (${[...new Set(code.map((c) => c.template))].join(', ')})`);
-  console.log(`  dosyalar            : ${flow.length} prompt + ALL-PROMPTS + UNIVERSAL-VIDEO-PROMPT + README + manifest`);
-  console.log(`\nÖrnek prompt (${flow[0]?.file}):\n`);
-  console.log(flow[0]?.prompt);
+  console.log(`  B yolu varlıkları   : ${flow.length} plaka + ${pieceCount} parça = ${assets.length} görsel`);
+  console.log(`  A yolu yedeği       : ${flow.length} tek-kare + ${flow.length} hareket metni`);
+  console.log(`\nÖrnek plaka (${flow[0]?.file}-plate):\n`);
+  console.log(flow[0]?.platePrompt);
+  console.log(`\nÖrnek hero parçası (${flow[0]?.file}-a):\n`);
+  console.log(flow[0]?.pieces[0]?.prompt);
 }
 
 main().catch((e) => {

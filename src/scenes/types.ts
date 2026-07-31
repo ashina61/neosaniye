@@ -21,7 +21,8 @@ export type SceneTemplate =
   | 'data_annotate'     // 4  minimal grafik + tek kırmızı çizgi + elle daire
   | 'stick_beat'        // soyut/duygusal beat: çöp adam
   | 'star_field'        // gece zemin, eş merkezli halkalar, portre
-  | 'archive_clip';     // Google Flow'dan dönen kompoze kolaj klibi
+  | 'archive_clip'      // Google Flow'dan dönen kompoze kolaj klibi
+  | 'collage_build';    // parça parça üretilmiş kolaj: plaka + N alfa parça
 
 /** Anlatının bu beat'te ne YAPTIĞI. Şablon seçimi buna dayanır. */
 export type BeatKind =
@@ -121,6 +122,25 @@ export interface ScenePayload {
     width: number;
     height: number;
     audio: boolean;
+  };
+  /**
+   * PARÇA BAZLI KOLAJ MALZEMESİ — B yolu.
+   *
+   * `ingest-collage.mjs` yazar, şablonu da `collage_build`'e çevirir.
+   *
+   * NEDEN AYRI BİR ALAN, `images` YETMİYOR MU: yetmiyor, çünkü burada
+   * parçaların ROLÜ var. `images` sırasız bir liste ve şablonlar ondan
+   * yalnızca [0] ve [1]'i okuyor; hangisinin sahnenin kahramanı hangisinin
+   * köşede duran leke olduğu bilgisi yok. Bu şablonun bütün işi katman
+   * sırası kurmak, o yüzden rol veriyi taşımak zorunda.
+   *
+   * `plate` OPAK bir zemin görseli (alfa yok, tam kare); `pieces` alfa
+   * kanallı kesikler ve İLKİ hero'dur — sıra `piecePrompts()`'un ürettiği
+   * a/b/c/d sırasıdır, orada da ilk sıra hero.
+   */
+  layers?: {
+    plate?: string;
+    pieces: Array<{src: string; role: 'hero' | 'support'}>;
   };
 }
 

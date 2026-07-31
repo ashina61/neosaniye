@@ -11,6 +11,7 @@ import {DrawnArrow, DottedPath, MarkerCircle, MarkerCross, SparkleField, SeaBand
 import {StickFigure, ThoughtBubble, type Pose} from '../paper/StickFigure';
 import {CastShadow, ContactShadow} from '../film/CastShadow';
 import {ArchiveClip} from './ArchiveClip';
+import {CollageBuild} from './CollageBuild';
 import type {ScenePayload, SceneProps, SceneTemplate} from './types';
 
 const B = VERTICAL_BANDS;
@@ -1530,6 +1531,7 @@ export const SCENES: Record<SceneTemplate, React.FC<SceneProps>> = {
   stick_beat: StickBeat,
   star_field: StarField,
   archive_clip: ArchiveClip,
+  collage_build: CollageBuild,
 };
 
 export const SCENE_NAMES = Object.keys(SCENES) as SceneTemplate[];

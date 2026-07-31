@@ -35,6 +35,16 @@
 /** Referans PDF'in stil bloğu — her prompt'ta birebir geçer. */
 import {subjectFor} from './subject.mjs';
 
+/**
+ * KROMA ANAHTAR RENGİ — TEK KAYNAK.
+ *
+ * Bu değer İKİ yerde birden gerekiyor: parça prompt'unda (modele "zemini bu
+ * renkle doldur" demek için) ve `cutout.py` çağrısında (o rengi silmek için).
+ * Ayrı ayrı yazılırsa biri değiştiğinde alfa çıkarımı sessizce boş maske
+ * üretir. Bu depoda aynı sınıf ayrışma dört kez ölçüldü.
+ */
+export const KEY_COLOUR = 'pure saturated magenta (#FF00FF)';
+
 const STYLE_BLOCK = [
   'hand-cut documentary paper collage on aged newsprint and archival map surfaces,',
   'black and white halftone photograph cutouts with rough scissor-cut edges and offset accent strokes,',
@@ -326,3 +336,97 @@ FINAL RULE: the finished clip must feel like a real editorial paper collage asse
 export const UNIVERSAL_VIDEO_PROMPT = universalVideoPrompt(10);
 
 export const RECIPE_KINDS = Object.keys(RECIPES);
+
+/* ================================================================== */
+/* B YOLU — PARÇA BAZLI KOLAJ                                          */
+/* ================================================================== */
+/**
+ * NEDEN PARÇA BAZLI
+ *
+ * Tek bitmiş kolaj karesi alırsak Remotion onu AYIRAMAZ: öğeler piksele
+ * gömülüdür, yapılabilecek tek şey kareyi bütün olarak kaydırmak. Oysa bu
+ * deponun hareket motoru (`enter`, `cue`, `CastShadow`) tam da öğeleri TEK TEK
+ * girdirmek için yazıldı — kullanıcının hareket promtunun 0-7 saniyede istediği
+ * "build-on assembly" davranışı.
+ *
+ * Yani parçalar ayrı gelirse o davranış koda geçiyor ve bedava oluyor: kamera
+ * gerçekten kilitli, tarih ve sayı değişmiyor, çıktı deterministik. Flow'dan
+ * beklenip ÖLÇÜMLE alınamayan üç şey de bunlardı.
+ *
+ * ÜÇ TÜR DOSYA
+ *   PLAKA  — zemin. Opak, tam kare, HİÇBİR öykü öğesi yok. Yalnızca yaşlanmış
+ *            kağıt/harita/pano yüzeyi ve sabit iskele (zaman çizgisi çizgisi,
+ *            ızgara). Sahne bununla AÇILIR.
+ *   PARÇA  — düz magenta zeminde TEK nesne. `cutout.py` kroma anahtarıyla
+ *            zemini siler, alfa PNG kalır. Konumlandırmayı KOD yapar; prompt'a
+ *            yer tarif edilmez, çünkü güvenli alanı kod biliyor.
+ *   YEDEK  — tek bitmiş kare (A yolu). Bir sahne için parça üretmek zahmetliyse
+ *            bu kullanılır; o sahne build-on yapmaz, yalnızca film katmanı ve
+ *            sürüklenme alır.
+ */
+
+/** Parçanın magenta zemin şartı — alfa çıkarımının tek dayanağı. */
+const PIECE_BACKGROUND = [
+  `BACKGROUND: fill the entire background with ${KEY_COLOUR}, a single flat uniform field,`,
+  'edge to edge, with no vignette, no gradient, no texture and no shadow on the background itself.',
+  'The subject must not touch the frame edges; leave a clear margin of background on all sides.',
+  'The subject must be ONE single object, cut out and isolated, nothing else in the frame.',
+].join(' ');
+
+/**
+ * ZEMİN PLAKASI PROMT'U — sahnenin açıldığı boş yüzey.
+ *
+ * Öykü öğesi İSTENMEZ ve bu kritik: plaka üstünde bir fotoğraf ya da etiket
+ * varsa build-on bozulur, çünkü sahne "boş kağıttan başlar" kuralı ihlal edilir
+ * ve o öğe hiç girmemiş gibi orada durur.
+ */
+export function platePrompt(beat) {
+  const kind = String(beat.kind || 'fact');
+  const scaffold =
+    kind === 'sequence' || kind === 'place'
+      ? 'a faint engraved map base covering the surface'
+      : kind === 'time'
+        ? 'one faint horizontal rule running across the middle as a timeline base'
+        : 'no scaffolding, just the bare surface';
+  return [
+    FRAME_PREFIX.replace('one dominant hero element centered in the middle safe zone, ', ''),
+    'An EMPTY background plate: aged newsprint and archival paper surface with stains, foxing, fibre and print grain,',
+    `${scaffold}.`,
+    'ABSOLUTELY NO story elements: no photographs, no cutouts, no people, no objects, no labels, no text,',
+    'no tape, no stamps, no string, no pins. Only the bare aged surface.',
+    STYLE_BLOCK,
+    'NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no watermark, no logos.',
+    'Premium documentary collage aesthetic, vertical 9:16, ultra-detailed, 8K.',
+  ].join(' ');
+}
+
+/**
+ * PARÇA PROMT'LARI — sahnenin tek tek girecek öğeleri.
+ *
+ * Birinci parça HERO ve cümlenin somut nesnesinden gelir; gerisi beat türünün
+ * reçetesinden. En fazla dört parça: referans kolajlarda ölçülen yoğunluk
+ * hero + 2-3 destek.
+ */
+export function piecePrompts(beat) {
+  const text = String(beat.text || '').replace(/[*"]/g, '').trim();
+  const recipe = RECIPES[beat.kind] ?? FALLBACK;
+  const concrete = subjectFor(text);
+
+  const subjects = [concrete ?? recipe.hero, ...recipe.support].slice(0, 4);
+
+  return subjects.map((subject, i) => ({
+    slot: String.fromCharCode(97 + i), // a, b, c, d
+    role: i === 0 ? 'hero' : 'support',
+    prompt: [
+      `A single hand-cut paper collage element: ${subject}.`,
+      'Rendered as a black and white halftone photograph cutout with rough scissor-cut edges,',
+      'coarse print dots, visible paper fibre and grain, matte, flat even documentary lighting.',
+      'Desaturated ink black and halftone gray only. No colour in the subject.',
+      PIECE_BACKGROUND,
+      'NO text, NO letters, NO numbers, NO watermark, NO logo, NO border, NO paper sheet behind the subject,',
+      'NO drop shadow, NO vignette.',
+      'NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy.',
+      'Vertical 9:16 framing, ultra-detailed.',
+    ].join(' '),
+  }));
+}

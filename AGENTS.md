@@ -140,6 +140,42 @@ geçmesi.
   `focusHunt`, `peel`, `holdJitter`. Hepsi saf fonksiyon ve `test/film.test.mjs`
   bunları tsc ile derleyip DAVRANIŞINI ölçer — metin araması değil.
 
+## Görsel malzeme: parça parça, tek kare değil
+
+Varsayılan yol **B**: sahne başına bir **plaka** (boş kağıt zemin) ve 2-4 **parça**
+(düz magenta zeminde tek nesne). `CollageBuild` şablonu bunları katman katman,
+anlatı sırasıyla diziyor.
+
+```
+npm run beats -- content/story-<ad>.json
+npm run flow:pack                  # out/flow-pack/ — prompt'lar + ASSET-LIST.txt
+# üretilen görselleri collage-raw/ altına ASSET-LIST'teki adlarla koy
+npm run collage                    # magenta → alfa, storyboard'a bağla
+npm run sheet                      # tek kareye bak (render'a girmeden)
+```
+
+- **Neden tek bitmiş kare değil**: bitmiş kolajı Remotion AYIRAMAZ, öğeler
+  piksele gömülüdür. Yapılabilecek tek şey kareyi bütün olarak kaydırmak, ki o
+  da düz animasyon demek. Parçalar ayrı gelince bu deponun hareket motoru
+  devreye giriyor: kamera gerçekten kilitli, tarih ve sayı değişmiyor (metni
+  Remotion çiziyor), çıktı deterministik. A yolunda (Flow i2v) üçü de ÖLÇÜMLE
+  elde edilemedi.
+- **Parça prompt'undaki magenta zemin cümlesi süs değil**, alfa çıkarımının tek
+  dayanağı. `KEY_COLOUR` tek kaynak (`collage-prompt.mjs`) ve hem prompt'a hem
+  `cutout.py` çağrısına oradan gidiyor.
+- **Eksik parça hata değil**: `npm run collage` ne bulursa onu bağlar, malzemesi
+  olmayan sahne mevcut kod-çizimli şablonuyla kalır. Tek sahneyle deneme yapmak
+  bu yüzden mümkün.
+- **A yolu yedek olarak duruyor**: `NN-kind-FALLBACK-single-frame.txt` +
+  `NN-kind-MOTION.txt` + `npm run clips`. O sahne build-on yapmaz.
+- `chroma` modu `keep_largest_blob` ÇAĞIRMAZ. O fonksiyon `matte` modu için
+  yazıldı ve burada iki bozulma birden üretti (ikisi de kanıt karesinde
+  görüldü): öznenin kopuk parçasını siliyor (test figüründe baş düştü) ve kapalı
+  boşlukları anahtar rengiyle dolduruyor (ekranın ortasına mor disk;
+  o parçanın opak piksellerinin %62'si magenta ölçüldü). Yerine `drop_speckles`
+  (küçük lekeyi at, kalan HER bileşeni tut, boşluğa dokunma) + `despill`.
+  `test/cutout.test.mjs` üçünü de denetliyor.
+
 ## Metin
 
 - Etiket en fazla 4 kelime (`LABEL_MAX_WORDS`). Uzun etiket hem görsel
@@ -153,10 +189,16 @@ geçmesi.
 
 - Fern DNA'sı: sürekli anlatı, tek blok. Cold open tarih + yer + tek somut
   eylemle açar. Her cümle tek fikir taşır, çünkü her cümle bir görsel beat olur.
-- **2.0 kelime/saniye** ve beat başına en az 5 kelime. PDF'in değeri 2.5 ve o
-  değer SESLENDİRİLMİŞ anlatı için doğru — dinleyicinin gözü serbesttir. Bizde
-  seslendirme yok, aynı metni GÖZ okuyor. Seslendirme eklendiğinde 2.5'e geri
-  çıkmalı ve beat süreleri gerçek ses dosyasından ölçülmeli.
+- **1.7 kelime/saniye** (`WORDS_PER_SECOND`), beat başına en az 5 kelime
+  (`MIN_WORDS_PER_BEAT`) ve sahne başına en az **3.6 saniye** (`MIN_SECONDS`,
+  `build-storyboard.mjs`). PDF'in değeri 2.5 ve o değer SESLENDİRİLMİŞ anlatı
+  için doğru — dinleyicinin gözü serbesttir. Bizde seslendirme yok, aynı metni
+  GÖZ okuyor. Kullanıcı iki kez "değişim çok hızlı" dedi ve değer 2.5 → 2.0 →
+  1.7 diye indi. Seslendirme eklendiğinde 2.5'e geri çıkmalı ve beat süreleri
+  gerçek ses dosyasından ölçülmeli.
+- Okunabilirliğin ölçülen kök sebebi SÜRE DEĞİLDİ: başlık, ilgisiz bir öğenin
+  girişine bağlıydı ve 3 saniyelik sahnede 1.36. saniyede beliriyordu. Başlık
+  her şablonda İLK girer (`at: 0.1`) ve sahne boyunca kalır.
 - Son satır cliffhanger: 12 kelimeden kısa ve **bölünmez**.
 - Beat türü → sahne şablonu eşlemesi `pipeline/beats.mjs` içinde. Soyut beat
   çöp adam alır, olgusal beat halftone cutout alır.

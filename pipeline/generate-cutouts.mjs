@@ -29,6 +29,7 @@ import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 import path from 'node:path';
 import {subjectFor as subjectOf} from './subject.mjs';
+import {KEY_COLOUR} from './collage-prompt.mjs';
 import process from 'node:process';
 
 const run = promisify(execFile);
@@ -36,7 +37,7 @@ const ROOT = path.resolve(import.meta.dirname, '..');
 const OUT_DIR = path.join(ROOT, 'public', 'cutouts');
 
 /** Anahtar renk. Halftone bir öznede asla görünmez. */
-const KEY_COLOUR = 'pure saturated magenta (#FF00FF)';
+// KEY_COLOUR artık collage-prompt.mjs'te (tek kaynak).
 
 /**
  * Hangi şablonlar fotoğraf cutout'undan fayda görür?

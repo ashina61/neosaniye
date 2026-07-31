@@ -52,6 +52,23 @@ Image.fromarray(np.full((160, 160, 3), 88, np.uint8)).save(f"{D}/solid.png")
 
 # 4) tuzak: her yeri doygun magenta — her şey silinir, reddedilmeli
 Image.fromarray(np.tile(np.array([255,0,255],np.uint8),(160,160,1))).save(f"{D}/allkey.png")
+
+# 5) KOPUK PARÇA: baş gövdeden ayrı. Halftone bir kesikte baş ile omuz arasında
+#    beyaz boşluk olması olağan; damganın iç halkası, iğne, "i" noktası da ayrı
+#    bileşen. "En büyük bileşeni tut" bunları siliyordu.
+c = np.zeros((h, w, 3), np.uint8); c[:, :] = [255, 0, 255]
+head = ((xx-160)**2/44**2 + (yy-90)**2/44**2) < 1     # y 46..134
+body = (np.abs(xx-160) < 90) & (yy > 180) & (yy < 360)  # 46 px boşluk
+for ch in range(3): c[:, :, ch] = np.where(head | body, 30, c[:, :, ch])
+Image.fromarray(c).save(f"{D}/detached.png")
+
+# 6) KAPALI BOŞLUK: halka. İçi dıştan erişilemez ve anahtar renktedir.
+#    "İç boşlukları doldur" burada magenta'yı OPAKLAŞTIRIYORDU.
+e = np.zeros((h, w, 3), np.uint8); e[:, :] = [255, 0, 255]
+rr = np.sqrt((xx-160)**2 + (yy-200)**2)
+ring = (rr > 70) & (rr < 130)
+for ch in range(3): e[:, :, ch] = np.where(ring, 30, e[:, :, ch])
+Image.fromarray(e).save(f"{D}/ring.png")
 `,
   );
   await run('python3', [gen, dir]);
@@ -168,6 +185,75 @@ test('şeffaf kenar boşluğu kırpılır', async () => {
   const {dst} = await cut('chroma.png', 'o_trim.png', 'chroma');
   const s = await alphaStats(dst);
   assert.ok(s.width < 320 && s.height < 400, `kırpılmamış: ${s.width}x${s.height}`);
+});
+
+/**
+ * Opak piksellerin RENGİNİ ölç.
+ *
+ * Alfa doğru olup RENK yanlış kalabiliyor: kroma anahtarlamada kalıntı magenta
+ * hem kesiğin çevresinde mor bir hâle bırakıyor hem de kapalı boşluk
+ * doldurulduğunda ekrana bir mor disk koyuyor. İkisi de ölçüldü.
+ */
+async function opaqueColourStats(file) {
+  const probe = path.join(dir, 'colour.py');
+  await writeFile(
+    probe,
+    `
+import sys, json
+import numpy as np
+from PIL import Image
+a = np.asarray(Image.open(sys.argv[1]).convert("RGBA")).astype(int)
+m = a[:, :, 3] > 150
+rgb = a[:, :, :3][m]
+print(json.dumps({
+  "opaque_px": int(m.sum()),
+  "max_chroma": int((rgb.max(1) - rgb.min(1)).max()) if len(rgb) else 0,
+  "keyish_share": float(((rgb[:,0]-rgb[:,1] > 60) & (rgb[:,2]-rgb[:,1] > 60)).mean()) if len(rgb) else 0.0,
+}))
+`,
+  );
+  const {stdout} = await run('python3', [probe, file]);
+  return JSON.parse(stdout);
+}
+
+/**
+ * REGRESYON: `chroma` modu `keep_largest_blob` çağırıyordu ve öznenin kopuk
+ * parçasını siliyordu. Sentetik figürde baş tamamen düştü — çıktı 435x689
+ * geldi, gövdenin sınır kutusu. Doğru ölçüt "en büyük" değil, "çöp sayılacak
+ * kadar küçük".
+ */
+test('chroma modu öznenin KOPUK parçasını silmez (baş + gövde)', async () => {
+  const {dst} = await cut('detached.png', 'o_detached.png', 'chroma', ['--strict']);
+  const s = await alphaStats(dst);
+  // Baş y 46'da başlıyor, gövde y 360'ta bitiyor: birlikte ~314 px yükseklik.
+  // Yalnızca gövde kalsaydı ~180 px olurdu.
+  assert.ok(s.height > 280, `kopuk parça silinmiş: yükseklik ${s.height}, ikisi birden ~314 olmalı`);
+  assert.ok(s.width > 170, `gövde genişliği kaybolmuş: ${s.width}`);
+});
+
+/**
+ * REGRESYON: `keep_largest_blob`'un "iç boşlukları doldur" adımı halkanın içini
+ * opaklaştırıyordu ve oradaki RGB anahtar rengin ta kendisiydi. Kanıt karesinde
+ * ekranın ortasına parlak mor bir disk çıktı; o parçanın opak piksellerinin
+ * %62'si magenta ölçüldü. Kroma anahtarlamanın tek şartı anahtar rengin ASLA
+ * hayatta kalmaması.
+ */
+test('chroma modu KAPALI boşluğu doldurmaz (halkanın içi şeffaf kalır)', async () => {
+  const {dst} = await cut('ring.png', 'o_ring.png', 'chroma', ['--strict']);
+  const s = await alphaStats(dst);
+  // Halka kendi sınır kutusunun ~%56'sını kaplar; içi dolsaydı ~%78 olurdu.
+  assert.ok(s.opaque < 0.70, `halkanın içi doldurulmuş: opak ${s.opaque}`);
+  assert.ok(s.transparent > 0.25, `içerideki boşluk şeffaf değil: ${s.transparent}`);
+});
+
+test('chroma modu çıktısında anahtar renk HİÇ hayatta kalmaz', async () => {
+  for (const src of ['ring.png', 'detached.png', 'chroma.png']) {
+    const {dst} = await cut(src, `o_key_${src}`, 'chroma');
+    const c = await opaqueColourStats(dst);
+    assert.equal(c.keyish_share, 0, `${src}: opak piksellerde magenta kaldı (%${c.keyish_share * 100})`);
+    // Despill her opak pikseli nötrler: kolaj paleti zaten siyah-beyaz halftone.
+    assert.equal(c.max_chroma, 0, `${src}: opak pikselde renk kalıntısı var (kroma ${c.max_chroma})`);
+  }
 });
 
 test('deterministik: aynı girdi iki kez aynı çıktıyı verir', async () => {
