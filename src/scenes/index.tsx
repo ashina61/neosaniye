@@ -10,6 +10,7 @@ import {Headline, PullQuote, LabelCard, Stamp, TypewriterStrip} from '../paper/T
 import {DrawnArrow, DottedPath, MarkerCircle, MarkerCross, SparkleField, SeaBand, Sparkle} from '../paper/Marks';
 import {StickFigure, ThoughtBubble, type Pose} from '../paper/StickFigure';
 import {DateTear, PostmarkRing, RecordClip, PAPER_TONES, LIFT} from '../paper/Evidence';
+import {LowerRegister} from '../paper/LowerRegister';
 import {Tape, BrassPin, RedString, CornerCurl} from '../paper/Fixings';
 import {CastShadow, ContactShadow} from '../film/CastShadow';
 import {ArchiveClip} from './ArchiveClip';
@@ -288,6 +289,8 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurr
         )
       )}
       <SparkleField count={variant === 2 ? 4 : 2} seed={seed} progress={ring.progress} />
+      {/* ALT KAYIT — alt bant ölçümde %0.0 doluydu. Gerekçe LowerRegister. */}
+      <LowerRegister payload={payload} seed={seed} opacity={label.opacity} />
     </PaperBase>
   );
 };
@@ -499,6 +502,9 @@ const HeadlineCard: React.FC<SceneProps> = ({seconds, payload, seed, occurrence}
       {payload.caption && (
         <TypewriterStrip text={payload.caption} x={SAFE.left} y={B.bottom.y + 150} opacity={name.opacity} />
       )}
+      {/* ALT KAYIT — alt bant ölçümde %0.0 doluydu. Gerekçe LowerRegister.
+          `showCaption` kapalı: şerit yukarıda zaten çiziliyor. */}
+      <LowerRegister payload={payload} seed={seed} opacity={name.opacity} showCaption={false} />
     </PaperBase>
   );
 };

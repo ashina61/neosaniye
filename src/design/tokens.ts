@@ -129,8 +129,26 @@ export const SAFE_BOX = {
  * Bu yüzden şablonlar hero'yu tam ortaya değil, optik merkeze (biraz yukarı)
  * oturtur; altta metin için yer kalsın.
  */
+/**
+ * ============ ALT BANT BOŞ KALIYORDU — ÖLÇÜLDÜ ============
+ *
+ * Eski oranlar top %18 / hero %52 / bottom %30 idi ve alt bandı hiçbir şablon
+ * kullanmıyordu. Kare beş yatay dilime bölünüp doluluk ölçüldü:
+ *
+ *   headline_card ("found three bundles")  15.7  39.7  29.9   0.0  13.7
+ *   hero_cutout   ("there was a bomb")      1.6  26.0  33.8   5.3  15.4
+ *   evidence_board (kanıt masası)          12.6  17.4  32.0  42.3  50.4
+ *
+ * Dördüncü dilim eski şablonlarda %0.0 ve %5.3. Kullanıcının "sadece hook
+ * çizilmiş" demesinin sebebi bu: hero orta banda sıkışıyor, altı bare kağıt
+ * kalıyor.
+ *
+ * hero %52 → %66, bottom %30 → %16. Hero bandına yerleşen her şablon otomatik
+ * olarak daha çok yer kaplıyor; alt bant `LowerRegister` için yeterli kalıyor
+ * (bir nesne + şerit). Üst bant başlığa ait, dokunulmadı.
+ */
 export const VERTICAL_BANDS = {
   top: {y: SAFE.top, height: Math.round(SAFE_BOX.height * 0.18)},
-  hero: {y: SAFE.top + Math.round(SAFE_BOX.height * 0.18), height: Math.round(SAFE_BOX.height * 0.52)},
-  bottom: {y: SAFE.top + Math.round(SAFE_BOX.height * 0.70), height: Math.round(SAFE_BOX.height * 0.30)},
+  hero: {y: SAFE.top + Math.round(SAFE_BOX.height * 0.18), height: Math.round(SAFE_BOX.height * 0.66)},
+  bottom: {y: SAFE.top + Math.round(SAFE_BOX.height * 0.84), height: Math.round(SAFE_BOX.height * 0.16)},
 } as const;
