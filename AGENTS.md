@@ -111,6 +111,35 @@ eşiğini denetliyor.
   şablonlarda sürüklenen şey en büyük nesne olmak zorunda (harita plakası,
   zemin kartı).
 
+## Evrensel hareket promtu bir ŞARTNAME — motor ona göre ölçülür
+
+`out/flow-pack/UNIVERSAL-VIDEO-PROMPT.txt` yalnızca i2v modeline verilen metin
+değil; **bu deponun hareket motorunun sözleşmesi**. İki maddesi kesin ve artık
+`test/film.test.mjs` ikisini de ölçüyor:
+
+- *"No element moves again after it lands."*
+- *"By 7 seconds the frame exactly matches the provided image"*, ardından
+  7-10. saniyede *"everything holds position, nothing changes location"*.
+
+**İKİSİ DE İHLAL EDİLİYORDU, ölçüldü:**
+
+1. `drift` sürüklenmeyi sahnenin TAMAMINA yayıyordu; 6 saniyelik bir sahnede
+   son %25'te katman hâlâ 3.2 px kayıyordu. Artık `HOLD_FROM` (0.70) oranında
+   tamamlanıp KİLİTLENİYOR. `curlAmount` zaten aynı eşiği kullanıyordu; ikisinin
+   aynı sayıyı kullanması şart, yoksa köşe kalkarken katman hâlâ kayar.
+2. `cue` girişleri sahnenin %86'sına yayıyor ve 10 saniyelik bir
+   `evidence_board` sahnesinde son öğe 7.29'da girip 7.69'da yerleşiyordu —
+   kurulum tutuş fazına taşıyordu. `cue` artık `span` parametresi alıyor;
+   promtu izleyen şablon `HOLD_FROM` geçiyor, son öğe 7.20'de yerleşiyor.
+
+**%86 GLOBAL OLARAK DÜŞÜRÜLMEDİ** ve bu bilinçli: o değer "ölü kuyruk" ölçümüyle
+kondu (map_route 2.8 sn sahnesinin son 2.25 saniyesinde değişim %0.00). Kuyruğu
+dolduran şey artık geç giren bir öğe değil, TUTUŞ FAZININ KENDİSİ — köşe
+kalkması ve nefes. O fazı olmayan 14 şablon eski davranışta kalıyor.
+
+Promtun kilit maddeleri de teste bağlandı (`evrensel hareket promtu kilit
+maddelerini taşır`), çünkü bu depoda stil bloğu iki kez sessizce kaydı.
+
 ## Film katmanı
 
 `src/film/` rehberin "build the film-look engine once" kuralının karşılığı.

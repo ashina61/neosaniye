@@ -1,8 +1,8 @@
 import React from 'react';
 import {Img, staticFile, useCurrentFrame} from 'remotion';
 import {CANVAS, PALETTE, SAFE, SAFE_BOX, TYPE, VERTICAL_BANDS, FONTS} from '../design/tokens';
-import {enter, drift, breathe, rand} from '../motion/stepped';
-import {cue, focusHunt, holdJitter, negationCue, parallax, peel, zoomThrough, compose} from '../film/choreography';
+import {enter, drift, breathe, rand, HOLD_FROM} from '../motion/stepped';
+import {cue, curlAmount, focusHunt, holdJitter, negationCue, parallax, peel, zoomThrough, compose} from '../film/choreography';
 import {LightLeak} from '../film/Plate';
 import {PaperBase} from '../paper/PaperBase';
 import {Cutout, TornCard, HALFTONE_CSS} from '../paper/Cutout';
@@ -10,7 +10,7 @@ import {Headline, PullQuote, LabelCard, Stamp, TypewriterStrip} from '../paper/T
 import {DrawnArrow, DottedPath, MarkerCircle, MarkerCross, SparkleField, SeaBand, Sparkle} from '../paper/Marks';
 import {StickFigure, ThoughtBubble, type Pose} from '../paper/StickFigure';
 import {DateTear, PostmarkRing, RecordClip, PAPER_TONES, LIFT} from '../paper/Evidence';
-import {Tape, BrassPin, RedString} from '../paper/Fixings';
+import {Tape, BrassPin, RedString, CornerCurl} from '../paper/Fixings';
 import {CastShadow, ContactShadow} from '../film/CastShadow';
 import {ArchiveClip} from './ArchiveClip';
 import {CollageBuild} from './CollageBuild';
@@ -1547,14 +1547,14 @@ const EvidenceBoard: React.FC<SceneProps> = ({seconds, payload, seed}) => {
   // Sıra referanstaki okuma sırası: önce harita (bağlam), sonra tarih (olay),
   // sonra fotoğraf, damga, etiket, kayıt. Build-on: boş kağıttan tek tek.
   const title = enter(f, {at: 0.1, duration: 0.35, kind: 'fade'});
-  const map = enter(f, {at: cue(seconds, 0, 6), duration: 0.5, kind: 'fade'});
-  const date = enter(f, {at: cue(seconds, 1, 6), duration: 0.45, kind: 'drop', from: {y: -140}});
-  const photo = enter(f, {at: cue(seconds, 2, 6), duration: 0.45, kind: 'slide', from: {x: -160}});
-  const mark = enter(f, {at: cue(seconds, 3, 6), duration: 0.3, kind: 'stamp'});
-  const tag = enter(f, {at: cue(seconds, 4, 6), duration: 0.3, kind: 'drop', from: {y: -70}});
-  const rec = enter(f, {at: cue(seconds, 5, 6), duration: 0.4, kind: 'fade'});
+  const map = enter(f, {at: cue(seconds, 0, 6, HOLD_FROM), duration: 0.5, kind: 'fade'});
+  const date = enter(f, {at: cue(seconds, 1, 6, HOLD_FROM), duration: 0.45, kind: 'drop', from: {y: -140}});
+  const photo = enter(f, {at: cue(seconds, 2, 6, HOLD_FROM), duration: 0.45, kind: 'slide', from: {x: -160}});
+  const mark = enter(f, {at: cue(seconds, 3, 6, HOLD_FROM), duration: 0.3, kind: 'stamp'});
+  const tag = enter(f, {at: cue(seconds, 4, 6, HOLD_FROM), duration: 0.3, kind: 'drop', from: {y: -70}});
+  const rec = enter(f, {at: cue(seconds, 5, 6, HOLD_FROM), duration: 0.4, kind: 'fade'});
   // İp çizilerek girer; son olay o, çünkü bağlantı kurmak son adımdır.
-  const string = enter(f, {at: cue(seconds, 4, 6), duration: Math.max(0.7, seconds * 0.25), kind: 'draw'});
+  const string = enter(f, {at: cue(seconds, 4, 6, HOLD_FROM), duration: Math.max(0.7, seconds * 0.25), kind: 'draw'});
 
   /**
    * YERLEŞİM REFERANSTAN ÖLÇÜLDÜ, göz kararı değil.
@@ -1896,6 +1896,40 @@ const EvidenceBoard: React.FC<SceneProps> = ({seconds, payload, seed}) => {
           opacity={rec.opacity}
         />
       )}
+
+      {/*
+        YAŞAYAN POSTER FAZI — evrensel hareket promtunun 7-10. saniyesi.
+
+        "everything holds position. Only subtle life remains: paper corners
+        lift a millimeter in a draft ... shadows breathe."
+
+        Bu faz sahnede HİÇ YOKTU: kurulum bitince kare tamamen donuyordu.
+        `curlAmount` zaten tutuş fazında (%70) başlıyor ve `drift` de artık
+        aynı oranda kilitleniyor — ikisinin AYNI eşiği kullanması şart, yoksa
+        köşe kalkarken katman hâlâ kayıyor olur.
+
+        İki köşe, ters fazda: hava akımı gelir gider, ikisi aynı anda kalkmaz.
+      */}
+      {ev.date && (
+        <CornerCurl
+          x={dateX}
+          y={dateY}
+          width={dateW}
+          height={dateH}
+          corner="br"
+          amount={curlAmount(f, seconds, CANVAS.fps)}
+          size={58}
+        />
+      )}
+      <CornerCurl
+        x={mapX}
+        y={mapY}
+        width={mapW}
+        height={mapH}
+        corner="tr"
+        amount={curlAmount(f, seconds, CANVAS.fps, undefined, 0.5)}
+        size={64}
+      />
     </PaperBase>
   );
 };

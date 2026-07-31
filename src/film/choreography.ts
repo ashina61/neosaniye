@@ -57,9 +57,23 @@ const smooth = (t: number): number => {
  * üst üste binen girişler fark haritasında tek olay sayılıyor. Buradaki hareket
  * ters yönde — girişleri AYIRMAK ve sahnenin sonuna kadar dağıtmak.
  */
-export function cue(seconds: number, i: number, n: number): number {
+/**
+ * `span` — girişlerin yayıldığı ORAN. Varsayılan 0.86 ve ÖLÇÜLEREK kondu
+ * (yukarıdaki not); bu değeri global olarak düşürmek ölü kuyruğu geri getirir.
+ *
+ * Ama evrensel hareket promtu 10 saniyelik klipte 70/30 bölüyor: "By 7 seconds
+ * the frame exactly matches the provided image", sonrası tutuş. ÖLÇÜLDÜ — 10
+ * saniyelik bir `evidence_board` sahnesinde 0.86 ile son öğe 7.29'da giriyor
+ * ve 7.69'da yerleşiyor, yani kurulum tutuş fazına 0.69 saniye taşıyor.
+ *
+ * Bu yüzden `span` parametre oldu, sabit değil. Kuyruğu boş bırakmayan şey
+ * artık geç giren bir öğe değil, TUTUŞ FAZININ KENDİSİ: köşe kalkması ve
+ * nefes (`curlAmount`, `breathe`). Promtu izleyen şablon `HOLD_FROM` geçer;
+ * öteki 14 şablon eski davranışta kalır, çünkü onların ölçümü buna dayanıyor.
+ */
+export function cue(seconds: number, i: number, n: number, span = 0.86): number {
   const first = 0.12;
-  const last = Math.max(first + 0.3, seconds * 0.86 - 0.2);
+  const last = Math.max(first + 0.3, seconds * span - 0.2);
   if (n <= 1) return first;
   const k = Math.max(0, Math.min(n - 1, i));
   return Math.round((first + ((last - first) * k) / (n - 1)) * 100) / 100;

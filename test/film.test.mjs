@@ -29,6 +29,7 @@ const ROOT = path.resolve(import.meta.dirname, '..');
  */
 
 let mod;
+let motion;
 let tmp;
 
 test.before(async () => {
@@ -60,6 +61,10 @@ test.before(async () => {
     {cwd: ROOT},
   );
   mod = createRequire(import.meta.url)(path.join(tmp, 'film/choreography.js'));
+  // `stepped.ts` zaten derleniyor (choreography onu import ediyor). `drift` ve
+  // `HOLD_FROM` oradan geliyor ve evrensel hareket promtunun "yerleşen bir daha
+  // oynamaz" şartı ancak ikisi birlikte ölçülünce doğrulanabiliyor.
+  motion = createRequire(import.meta.url)(path.join(tmp, 'motion/stepped.js'));
 });
 
 test.after(async () => {
@@ -276,5 +281,63 @@ test('curlAmount her sahne süresinde ORANI korur (sabit saniye değil)', () => 
     assert.equal(curlAmount(secs * 0.6 * 30, secs, 30, 0.7), 0, `${secs}s: erken kalkma`);
     const late = curlAmount(secs * 0.9 * 30, secs, 30, 0.7);
     assert.ok(late > 0.2, `${secs}s: geç fazda kalkma yok (${late})`);
+  }
+});
+
+/**
+ * EVRENSEL HAREKET PROMTUNUN ŞARTLARI — motorun uyduğu ÖLÇÜLÜR.
+ *
+ * Promt (out/flow-pack/UNIVERSAL-VIDEO-PROMPT.txt) iki kesin şey söylüyor:
+ *   · "No element moves again after it lands."
+ *   · "By 7 seconds the frame exactly matches the provided image", ardından
+ *     "everything holds position, nothing changes location".
+ *
+ * ÖLÇÜLDÜ ve İHLAL EDİLİYORDU: `drift` sürüklenmeyi sahnenin TAMAMINA
+ * yayıyordu ve 6 saniyelik bir sahnede son %25'te katman hâlâ 3.2 px
+ * kayıyordu. Yani kurulum bittikten sonra kompozisyon donmuyordu.
+ *
+ * Bu testler o şartı sabitliyor. Promt bir belge değil, ölçülebilir bir
+ * sözleşme — bu deponun stil bloğu iki kez sessizce kaydığı için burada
+ * ölçüm var.
+ */
+test('drift tutuş fazında KİLİTLENİR (yerleşen bir daha oynamaz)', () => {
+  const {drift, HOLD_FROM} = motion;
+  const seconds = 6;
+  const fps = 30;
+  const total = seconds * fps;
+  const at = (f) => drift(f, {seconds, dx: -40, dy: 24});
+
+  // Kurulum fazında hareket VAR.
+  assert.notEqual(at(0), at(Math.round(total * 0.5)), 'sürüklenme kurulumda durmuş');
+
+  // HOLD_FROM'dan sonra hiç değişmez.
+  const locked = at(Math.round(total * HOLD_FROM));
+  for (const p of [0.75, 0.85, 0.95, 1]) {
+    assert.equal(at(Math.round(total * p)), locked, `sahnenin %${p * 100}'inde katman hâlâ oynuyor`);
+  }
+});
+
+test('drift ve curlAmount AYNI tutuş eşiğini kullanır', () => {
+  const {HOLD_FROM} = motion;
+  const {curlAmount} = mod;
+  const seconds = 6;
+  const fps = 30;
+  // Köşe kalkması tam olarak sürüklenmenin kilitlendiği yerde başlamalı;
+  // ayrışırlarsa köşe kalkarken katman hâlâ kayıyor olur.
+  assert.equal(curlAmount(Math.round(seconds * HOLD_FROM * fps) - 1, seconds, fps), 0);
+  assert.ok(curlAmount(Math.round(seconds * 0.9 * fps), seconds, fps) > 0);
+});
+
+test('evrensel hareket promtu kilit maddelerini taşır', async () => {
+  const {universalVideoPrompt} = await import('../pipeline/collage-prompt.mjs');
+  const t = universalVideoPrompt();
+  for (const clause of [
+    'camera stays completely locked',
+    'No element moves again after it lands',
+    'By 7 seconds the frame exactly matches',
+    'LIVING PAPER POSTER',
+    'cutting on twos',
+  ]) {
+    assert.ok(t.includes(clause), `promttan düşmüş madde: "${clause}"`);
   }
 });

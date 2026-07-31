@@ -26,6 +26,15 @@ const STEP = CANVAS.fps / CANVAS.posterizeFps; // 30/12 = 2.5
  */
 export const stepped = (frame: number): number => Math.floor(frame / STEP) * STEP;
 
+/**
+ * TUTUŞ FAZININ BAŞLANGICI — sahnenin hangi oranında kompozisyon kilitlenir.
+ *
+ * Evrensel hareket promtu 10 saniyelik klipte 7. saniyeyi işaret ediyor
+ * (0.70). `curlAmount` de aynı varsayılanı kullanıyor; ikisinin AYNI sayıyı
+ * kullanması şart, yoksa köşe kalkarken katman hâlâ kayıyor olur.
+ */
+export const HOLD_FROM = 0.7;
+
 /** 0..1 aralığını kırp. */
 const clamp01 = (v: number): number => (v < 0 ? 0 : v > 1 ? 1 : v);
 
@@ -127,6 +136,8 @@ export interface DriftSpec {
   scale?: number;
   /** Faz kaydırması; komşu katmanlar aynı anda aynı yöne gitmesin. */
   phase?: number;
+  /** Sürüklenmenin tamamlanıp KİLİTLENDİĞİ oran. Varsayılan `HOLD_FROM`. */
+  holdFrom?: number;
 }
 
 /**
@@ -140,11 +151,26 @@ export interface DriftSpec {
  * sahne başına en fazla iki katmana verir.
  */
 export function drift(frame: number, spec: DriftSpec): string {
-  const {seconds, dx = 0, dy = 0, scale = 0, phase = 0} = spec;
+  const {seconds, dx = 0, dy = 0, scale = 0, phase = 0, holdFrom = HOLD_FROM} = spec;
   const total = Math.max(seconds, 0.001) * CANVAS.fps;
-  // Sürüklenme YUMUŞAK olmalı: stepped() burada kasıtlı olarak uygulanmıyor.
-  // Adımlı sürüklenme titreme gibi okunur; adım GİRİŞ hareketine aittir.
-  const t = clamp01(frame / total);
+  /**
+   * SÜRÜKLENME TUTUŞ FAZINDA DURUR — evrensel hareket promtunun kuralı.
+   *
+   * Promt açık: "No element moves again after it lands ... By 7 seconds the
+   * frame exactly matches the provided image", ve 7-10. saniyede "everything
+   * holds position, nothing changes location".
+   *
+   * ÖLÇÜLDÜ: eski sürüm sürüklenmeyi sahnenin TAMAMINA yayıyordu ve 6 saniyelik
+   * bir sahnede son %25'te katman hâlâ 3.2 px kayıyordu. Yani kurulum bittikten
+   * sonra kompozisyon donmuyordu; promtun "yerleşen bir daha oynamaz" şartı
+   * ihlal ediliyordu.
+   *
+   * Sürüklenme artık `holdFrom` oranında tamamlanır ve orada KİLİTLENİR.
+   * Tutuş fazının canlılığı yerinden oynatan bir kayma değil, `curlAmount` ve
+   * `breathe` ile gelen köşe kalkması / nefes olmalı — promt da tam olarak
+   * onları sayıyor ("paper corners lift a millimeter, shadows breathe").
+   */
+  const t = clamp01(frame / (total * clamp01(holdFrom) || 1));
   const eased = 0.5 - 0.5 * Math.cos(Math.PI * clamp01(t + phase));
   const sc = 1 + scale * eased;
   return `translate(${(dx * eased).toFixed(2)}px, ${(dy * eased).toFixed(2)}px) scale(${sc.toFixed(4)})`;
