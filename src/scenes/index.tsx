@@ -710,6 +710,10 @@ const SplitCompare: React.FC<SceneProps> = ({seconds, payload, seed}) => {
   }> = ({y, side, op, tr, ground, shape, s}) => (
     <>
       <TornCard
+          // BÜYÜK KATMAN HAREKETİ — bu şablonda hiç yoktu. AGENTS.md: "her
+          // sahnede BÜYÜK bir katman hareket eder"; 8px'lik bir çizgi teknik
+          // olarak hareket eder ama izleyici için olay değildir.
+          transform={drift(f, {seconds, dx: -20, dy: 12, scale: 0.04})}
         x={SAFE.left}
         y={y}
         width={SAFE_BOX.width}
@@ -983,6 +987,10 @@ const ArchivalTimeline: React.FC<SceneProps> = ({seconds, payload, seed}) => {
           <React.Fragment key={i}>
             <div
               style={{
+            // BÜYÜK KATMAN HAREKETİ — bu şablonda hiç yoktu. AGENTS.md: "her
+            // sahnede BÜYÜK bir katman hareket eder"; 8px'lik bir rota çizgisi
+            // teknik olarak hareket eder ama izleyici için olay değildir.
+            transform: drift(f, {seconds, dx: -24, dy: 12, scale: 0.045}),
                 position: 'absolute',
                 left: cx - 22,
                 top: y - 22,
@@ -1363,7 +1371,17 @@ const DataAnnotate: React.FC<SceneProps> = ({seconds, payload, seed}) => {
       <svg
         width={CANVAS.width}
         height={CANVAS.height}
-        style={{position: 'absolute', left: 0, top: 0, pointerEvents: 'none'}}
+        style={{
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          pointerEvents: 'none',
+          // BÜYÜK KATMAN HAREKETİ — bu şablonda hiç yoktu. AGENTS.md: "her
+          // sahnede BÜYÜK bir katman hareket eder"; 8px'lik bir grafik çizgisi
+          // teknik olarak hareket eder ama izleyici için olay değildir.
+          transform: drift(f, {seconds, dx: -24, dy: 12, scale: 0.045}),
+          transformOrigin: '40% 60%',
+        }}
       >
         {/* Eksenler: iki çizgi, ızgara yok. Referans stil "minimal chart". */}
         <path

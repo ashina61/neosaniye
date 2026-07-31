@@ -111,6 +111,51 @@ eşiğini denetliyor.
   şablonlarda sürüklenen şey en büyük nesne olmak zorunda (harita plakası,
   zemin kartı).
 
+## Şablon kapıları — üç turda üç kez aynı sınıf hata çıktı
+
+Bu oturumda beş şablon elle düzeltildi ve her turda aynı sınıf hata çıktı: alt
+bant boş kaldı, aksan tavanı aştı, nesne kartın altında kalıp görünmedi, kağıt
+katmanları zemini örttü. Dördü de tiplerden görünmüyor. İki kapı kuruldu.
+
+### 1. Statik kapı — `npm test`, bedava
+
+`test/registry.test.mjs`:
+
+- **her şablon cümlenin NESNESİNİ çiziyor** (`payload.shape`). Beyaz liste
+  gerekçeli: `evidence_board` hariç tutuluyor çünkü o beat'in şekli genelde
+  zaman sözcüğünden geliyor ("night" → star) ve cümlenin gerçek nesnesi TARİH.
+- **her şablonda BÜYÜK bir katman hareket ediyor** (`drift`/`parallax`/`zoomThrough`).
+- **nesne büyük kartın ALTINDA kalmıyor** — JSX'te `<Cutout … shape={payload.shape}`
+  konumu `<TornCard`tan sonra olmalı.
+
+Kapı ilk koşuda **üç gerçek boşluk** buldu: `split_compare`, `archival_timeline`
+ve `data_annotate`'te hiç büyük hareket yoktu. Üçü de düzeltildi.
+
+**İlk sürüm iki YANLIŞ alarm da verdi ve ikisi de testin kendi hatasıydı:**
+`collage_build` kendi dosyasında olduğu için gövdesi bulunamıyordu, ve
+`hero_cutout`ta `const hasSubject = Boolean(payload.shape || …)` satırı JSX'ten
+önce geldiği için "kartın altında" sanıldı. Test hassaslaştırıldı.
+
+### 2. Görsel kapı — `npm run gate:templates`, ~20 sn
+
+`pipeline/template-gate.mjs` her şablonu AYNI sentetik payload'la tek kare
+render edip ölçüyor. Eşikler: doluluk ≥ %8, aksan ≤ %8 (AGENTS.md tavanı).
+
+Eşik HEDEFE değil, "kabul edilemez"e konuyor: bir kapı ulaşılmamış hedefe göre
+kurulursa her koşuda kırmızı yanar ve okunmaz hâle gelir. Hedef (%31) rapor
+satırında gösteriliyor.
+
+İlk tam ölçüm:
+
+    hero_cutout       31.6   hedefte      archival_timeline   8.5
+    wide_establish    30.2                data_annotate       9.0
+    headline_card     27.3                map_route           9.9
+    split_compare     25.5                pull_quote         12.2
+    evidence_board    24.7                star_field         12.2
+
+Render workflow'unda render'dan ÖNCE koşuyor ve `continue-on-error` — kapı bir
+ÖLÇÜM, yayın engeli değil.
+
 ## Ne söylüyorsak o nesne gelecek — ve hareket edecek
 
 Şablonlar denetlendi ve iki boşluk ölçüldü:

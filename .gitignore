@@ -48,3 +48,4 @@ collage-raw/
 # üretiyor. Klasör yapısı kalır.
 public/collage/*.png
 __pycache__/
+out/

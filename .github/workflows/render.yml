@@ -175,6 +175,22 @@ jobs:
         run: npm run collage
 
       # ---------------------------------------------------------------- #
+      # 3b. ŞABLON GÖRSEL KAPISI                                          #
+      # ---------------------------------------------------------------- #
+      # Her şablonu tek kare render edip ÖLÇER: doluluk >= %8, aksan <= %8.
+      # Statik kapı (`npm test`) YAPIYI denetliyor, bu SONUCU.
+      #
+      # Neden render'dan ÖNCE: 80 saniyelik bir videoyu üretip sonunda bir
+      # şablonun boş çizdiğini görmek, 20 saniyelik kapıyı atlamanın bedeli.
+      #
+      # `continue-on-error`: kapı bir ÖLÇÜM, bir yayın engeli değil. Rapor
+      # logda durur, video yine çıkar — hangi şablonun zayıf olduğunu görüp
+      # karar vermek kullanıcının işi.
+      - name: Şablon görsel kapısı
+        continue-on-error: true
+        run: npm run gate:templates
+
+      # ---------------------------------------------------------------- #
       # 4. RENDER                                                         #
       # ---------------------------------------------------------------- #
       # `--muted` ŞART, ve bu ÖLÇÜLEREK öğrenildi.
@@ -246,5 +262,6 @@ jobs:
             collage-raw/*.png
             public/collage/*.png
             public/archive/*.png
+            out/template-gate/*.png
           if-no-files-found: warn
           retention-days: 14

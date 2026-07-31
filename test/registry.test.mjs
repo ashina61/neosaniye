@@ -245,3 +245,122 @@ test('storyboard başlıkları bozuk noktada bitmiyor', async () => {
     }
   }
 });
+
+/* ------------------------------------------------------------------ */
+/* ŞABLON KAPILARI — üç turda üç kez aynı sınıf hata çıktı              */
+/* ------------------------------------------------------------------ */
+/**
+ * Bu bölüm, elle düzeltilen üç hatanın bir daha sessizce girmemesi için var:
+ *
+ *   1. `map_route` ve `stick_beat` `payload.shape`i HİÇ çizmiyordu — anlatı
+ *      "bought a one-way ticket" derken ekranda bilet yoktu.
+ *   2. `stick_beat`te BÜYÜK katman hareketi yoktu, oysa AGENTS.md "her sahnede
+ *      BÜYÜK bir katman hareket eder" diyor.
+ *   3. Nesne `PaperBase`in İLK çocuğu olarak konunca `TornCard` üstünü örttü ve
+ *      render'da hiç görünmedi.
+ *
+ * Üçü de tiplerden görünmüyor ve render'a bakmadan fark edilmiyor. Statik
+ * denetim ikisini bedavaya yakalıyor; üçüncüsü için görsel kapı var
+ * (`npm run gate:templates`).
+ */
+
+/**
+ * Bir şablon bileşeninin gövdesini kaynak metinden ayır.
+ *
+ * DIŞ DOSYADAKİ şablonlar (`ArchiveClip`, `CollageBuild`) burada bulunmaz;
+ * çağıran onları ayrı okumak zorunda. İlk sürüm bunu atlamıştı ve
+ * `collage_build` "hareketi yok" diye yanlış raporlandı — oysa `drift`i
+ * kendi dosyasında.
+ */
+function componentBodies(src) {
+  const marks = [...src.matchAll(/^const (\w+): React\.FC<SceneProps>/gm)].map((m) => [m.index, m[1]]);
+  marks.push([src.length, '__end']);
+  const out = {};
+  for (let i = 0; i < marks.length - 1; i += 1) out[marks[i][1]] = src.slice(marks[i][0], marks[i + 1][0]);
+  return out;
+}
+
+function registryPairs(src) {
+  const block = src.match(/export const SCENES[^{]*\{([\s\S]*?)\n\};/)[1];
+  return [...block.matchAll(/(\w+):\s*(\w+),/g)].map((m) => [m[1], m[2]]);
+}
+
+/**
+ * `shape` ÇİZMEYEN ŞABLONLAR — beyaz liste GEREKÇELİ.
+ *
+ * `evidence_board`: o beat'in şekli genelde zaman sözcüğünden geliyor ("night"
+ * → star) ve cümlenin gerçek nesnesi TARİH; onu takvim yaprağı taşıyor.
+ * `NOT_PHOTOGRAPHABLE` de aynı sebeple o özneyi hero olarak reddediyor.
+ *
+ * Kalanlar veriden çizen şablonlar: rota, ızgara, grafik, zaman çizelgesi.
+ * Onların "nesnesi" verinin kendisi.
+ */
+const SHAPE_EXEMPT = new Set(['evidence_board', 'archive_clip', 'collage_build', 'grid_scale', 'data_annotate', 'archival_timeline', 'split_compare']);
+
+/** Hareketi dışarıdan gelen şablonlar: malzemeyi kendileri sürüklemiyor. */
+const MOTION_EXEMPT = new Set(['archive_clip']);
+
+/** Kendi dosyasında duran şablonlar — gövdeleri `index.tsx`te değil. */
+const EXTERNAL = {collage_build: 'src/scenes/CollageBuild.tsx', archive_clip: 'src/scenes/ArchiveClip.tsx'};
+
+async function bodyOf(tmpl, comp, bodies) {
+  if (EXTERNAL[tmpl]) return read(EXTERNAL[tmpl]);
+  return bodies[comp] ?? '';
+}
+
+test('her şablon cümlenin NESNESİNİ çiziyor (payload.shape)', async () => {
+  const src = await read('src/scenes/index.tsx');
+  const bodies = componentBodies(src);
+  const missing = [];
+  for (const [tmpl, comp] of registryPairs(src)) {
+    if (SHAPE_EXEMPT.has(tmpl)) continue;
+    const b = await bodyOf(tmpl, comp, bodies);
+    if (!/payload\.shape\b/.test(b)) missing.push(tmpl);
+  }
+  assert.deepEqual(
+    missing,
+    [],
+    `bu şablonlar cümlenin nesnesini HİÇ çizmiyor — anlatı "X" derken ekranda X yok: ${missing.join(', ')}`,
+  );
+});
+
+test('her şablonda BÜYÜK bir katman hareket ediyor', async () => {
+  const src = await read('src/scenes/index.tsx');
+  const bodies = componentBodies(src);
+  const still = [];
+  for (const [tmpl, comp] of registryPairs(src)) {
+    if (MOTION_EXEMPT.has(tmpl)) continue;
+    const b = await bodyOf(tmpl, comp, bodies);
+    if (!/\b(drift|parallax|zoomThrough)\(/.test(b)) still.push(tmpl);
+  }
+  assert.deepEqual(still, [], `bu şablonlarda büyük katman hareketi YOK: ${still.join(', ')}`);
+});
+
+/**
+ * KATMAN SIRASI: cümlenin nesnesi kompozisyonun ALTINDA kalmamalı.
+ *
+ * Ölçüldü: `stick_beat`te nesneyi `PaperBase`in ilk çocuğu olarak koydum ve
+ * `TornCard` üstünü tamamen örttü — doluluk 8.4, nesne görünmüyor. En üste
+ * taşınınca 12.1.
+ *
+ * Kural: `payload.shape` çizen blok, o bileşendeki BÜYÜK kart öğelerinden
+ * (`TornCard`) SONRA gelmeli.
+ */
+test('cümlenin nesnesi büyük kartların ALTINDA kalmıyor', async () => {
+  const src = await read('src/scenes/index.tsx');
+  const bodies = componentBodies(src);
+  const buried = [];
+  for (const [tmpl, comp] of registryPairs(src)) {
+    const b = await bodyOf(tmpl, comp, bodies);
+    const card = b.indexOf('<TornCard');
+    /**
+     * JSX'teki ÇİZİM konumu aranıyor, `payload.shape`in herhangi bir geçişi
+     * değil. İlk sürüm `const hasSubject = Boolean(payload.shape || ...)`
+     * satırını yakalayıp `hero_cutout`u yanlış raporladı — o satır JSX'ten
+     * ÖNCE geliyor ama çizimle ilgisi yok.
+     */
+    const draw = b.search(/<Cutout[\s\S]{0,400}?shape=\{[^}]*payload\.shape/);
+    if (card >= 0 && draw >= 0 && draw < card) buried.push(tmpl);
+  }
+  assert.deepEqual(buried, [], `nesne büyük kartın ALTINDA kalıyor (render'da görünmez): ${buried.join(', ')}`);
+});

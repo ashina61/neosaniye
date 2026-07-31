@@ -17,7 +17,8 @@
     "archive": "node pipeline/fetch-archive.mjs",
     "sheet": "node pipeline/contact-sheet.mjs",
     "preview": "remotion render src/index.ts Short out/preview.mp4 --codec=h264 --crf=30 --pixel-format=yuv420p --scale=0.3",
-    "collage": "node pipeline/ingest-collage.mjs"
+    "collage": "node pipeline/ingest-collage.mjs",
+    "gate:templates": "node pipeline/template-gate.mjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.500",
