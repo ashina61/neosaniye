@@ -421,12 +421,23 @@ function nounPhrase(text, m) {
   return withArticle(phrase);
 }
 
-/** Artikel uyumu: "a attendant" → "an attendant", "a money" → "money". */
+/**
+ * Artikel uyumu: "a attendant" → "an attendant", "a money" → "money".
+ *
+ * Kural HARFE değil SESE bakar. Harf kuralı ölçülen çıktıda bozuldu:
+ * "one-way ticket" sesli harfle başlıyor ama /w/ sesiyle okunuyor, yani
+ * "an one-way ticket" yanlış. Aynı sınıf: "a European", "a university",
+ * "a used ticket". Ters yönde de istisna var: "an hour", "an honest".
+ */
+const AN_EXCEPTIONS = /^(one|once|eu|ewe|uni|use|used|user|usual|ubiqu|ura|uti)/i;
+const AN_NEEDED = /^(hour|honest|honou?r|heir)/i;
+
 function withArticle(phrase) {
   const head = phrase.split(/\s+/)[0] ?? '';
   if (DET.test(head)) return phrase;
   if (UNCOUNTABLE.test(head)) return phrase;
-  return `${/^[aeiou]/i.test(phrase) ? 'an' : 'a'} ${phrase}`;
+  const vowelSound = AN_NEEDED.test(phrase) || (/^[aeiou]/i.test(phrase) && !AN_EXCEPTIONS.test(phrase));
+  return `${vowelSound ? 'an' : 'a'} ${phrase}`;
 }
 
 /**

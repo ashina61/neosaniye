@@ -315,3 +315,40 @@ test('bölme ve kırpma farklı sorular sorar', async () => {
     assert.equal(danglesBetween(w, 'x'), true, `${w} sarkan sayılmalı`);
   }
 });
+
+/**
+ * KOMPOZE KARE PROMTU MOTORUN KALIBINA UYAR.
+ *
+ * Kullanıcının verdiği üç örnek promt aynı kalıbı kullanıyor ve kalıbın üç
+ * işareti var. ÖLÇÜLDÜ: stil bloğu ve closer birebirdi (closer'da yalnızca
+ * izin verilen 16:9 → 9:16) ama sahne cümlesi sapmıştı — "Vertical 9:16
+ * editorial documentary paper collage." ön ekiyle açılıyor, dört ayrı cümleye
+ * bölünüyor ve iki hiyerarşi işaretini de taşımıyordu.
+ *
+ * Bu depoda stil bloğu iki kez sessizce kaydığı için kalıp artık ölçülüyor.
+ */
+test('kompoze kare promtu motorun sahne kalıbını taşır', async () => {
+  const {composedCollagePrompt} = await import('../pipeline/collage-prompt.mjs');
+  const p = composedCollagePrompt({text: 'On the night of 24 November 1971,', kind: 'cold_open'}, {});
+
+  assert.ok(p.includes('as the hero element'), 'hero işareti yok');
+  assert.ok(p.includes('as the only supporting elements'), 'destek işareti yok — kalabalığı kesen ifade');
+  assert.ok(!p.startsWith('Vertical'), 'kategori ön eki özneyi geriye itiyor');
+  assert.ok(/^[A-Z]/.test(p) && p.indexOf('.') > 120, 'sahne cümlesi tek akan cümle olmalı');
+
+  // Stil bloğu ve closer birebir — sapma bu depoda iki kez ölçüldü.
+  assert.ok(p.includes('desaturated archival palette of tan, ink black, and halftone gray'), 'stil bloğu sapmış');
+  assert.ok(
+    p.includes('The composition stays clean, minimal, and editorial with generous negative space.'),
+    'closer cümlesi düşmüş',
+  );
+  assert.ok(p.includes('9:16'), 'en-boy sapması: Shorts 9:16 olmalı');
+  assert.ok(!p.includes('16:9'), '16:9 kalmış');
+});
+
+test('artikel SESE göre seçilir, harfe göre değil', async () => {
+  const {subjectFor} = await import('../pipeline/subject.mjs');
+  // "one-way" sesli harfle başlar ama /w/ okunur: "an one-way" yanlıştı.
+  assert.match(subjectFor('bought a one-way ticket from Portland'), /^a one-way/);
+  assert.match(subjectFor('He handed the attendant a note'), /^an attendant/);
+});

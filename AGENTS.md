@@ -111,6 +111,37 @@ eşiğini denetliyor.
   şablonlarda sürüklenen şey en büyük nesne olmak zorunda (harita plakası,
   zemin kartı).
 
+## Kompoze kare promtu: motorun sahne kalıbı
+
+Kullanıcının verdiği üç örnek promt aynı kalıbı kullanıyor ve kalıp **TEK AKAN
+CÜMLE**, virgülle bağlı:
+
+> "A single torn calendar page dominates the frame **as the hero element**,
+> hand-torn from aged newsprint, **carrying the stamp-printed label NOV 24 1971
+> in condensed black type inside a red rubber-stamp box**, pinned at a slight
+> angle to a bare archival paper surface, one strip of masking tape at its
+> corner and a faint coffee-ring stain nearby **as the only supporting
+> elements**, wide empty margins around it."
+
+ÖLÇÜLDÜ: stil bloğu **birebir**, closer da yalnızca izin verilen 16:9 → 9:16
+farkıyla **birebir**. Sapan tek yer sahne cümlesiydi ve dört sapması vardı:
+
+1. **"Vertical 9:16 editorial documentary paper collage." ön eki.** Örneklerin
+   hiçbirinde yok. Kategori adını en başa koymak özneyi geriye itiyor — bu
+   deponun parça promtunda birebir aynı hata ölçüldü ("A single hand-cut paper
+   collage element: a man" → çıkan şey adam değil yırtık kağıttı). En-boy zaten
+   closer'da.
+2. **Dört ayrı cümle.** Nokta ağırlığı böler; virgül öğeleri aynı sahnenin
+   parçası olarak bağlar.
+3. **"as the hero element" ve "as the only supporting elements" işaretleri
+   yoktu.** İkincisi kalabalığı kesen ifade — "no clutter" kuralının olumlu
+   hâli.
+4. **Etiket ayrı cümledeydi** (`A short stamp label reads "…"`). Örnekler
+   etiketi hero'nun İÇİNE gömüyor ve NASIL göründüğünü de söylüyor.
+
+Kalıp artık `test/beats.test.mjs` ile ölçülüyor, çünkü bu depoda stil bloğu iki
+kez sessizce kaydı.
+
 ## Evrensel hareket promtu bir ŞARTNAME — motor ona göre ölçülür
 
 `out/flow-pack/UNIVERSAL-VIDEO-PROMPT.txt` yalnızca i2v modeline verilen metin

@@ -308,59 +308,116 @@ export function composedCollagePrompt(beat, story = {}) {
    * bilgi o.
    */
   const label = date ? date : names[0] ? names[0].toUpperCase() : null;
-  const labelClause = label
-    ? `A short stamp label reads "${shortLabel(label, 4)}".`
-    : 'No text anywhere in the image.';
 
   /**
-   * SANSÜR BARI — PDF'in demo promtunda ve kullanıcının Mehmed örneğinde var:
-   * gerçek bir kişi ima ediliyorsa gözlerin üstüne siyah bar. Hem stilin
-   * imzası hem de gerçek kişiyi teşhis edilebilir çizmemenin yolu.
+   * SANSÜR BARI — gerçek bir kişi ima ediliyorsa gözlerin üstüne siyah bar.
+   * Hem stilin imzası hem de gerçek kişiyi teşhis edilebilir çizmemenin yolu.
    */
   const isPerson = PERSON_RE.test(usableHero(concrete) ?? '');
 
   /**
-   * DESTEK ÖĞELER: en fazla 2-3 (PDF "Composition law"). Reçeteden geliyor ama
-   * hero ile aynı şeyi tekrarlamamalı.
+   * DESTEK ÖĞELER: en fazla iki (PDF "Composition law").
+   *
+   * ARTİKEL KORUNUYOR. Önce `stripArticle` uygulanıyordu ve çıktı
+   * "round postmark rubber stamp overlapping the calendar edge and torn
+   * fragment of an engraved county map" oluyordu — bozuk İngilizce. Örnek
+   * promtlar artikeli koruyor: "one strip of masking tape at its corner and
+   * a faint coffee-ring stain nearby".
    */
-  const supports = recipe.support.slice(0, 2).map(stripArticle);
+  const supports = recipe.support.slice(0, 2).map((x) => String(x).trim());
 
   const usable = usableHero(concrete);
-  const heroSentence = usable
-    ? `A commanding black and white halftone cutout of ${heroNoun(usable)} dominates the frame` +
-      (isPerson ? ', with a black censor bar across the eyes' : '') +
-      '.'
-    : `${recipe.hero.charAt(0).toUpperCase()}${recipe.hero.slice(1)} dominates the frame.`;
+  const hero = usable
+    ? `a halftone black and white photograph cutout of ${heroNoun(usable)}`
+    : stripArticleKeepText(recipe.hero);
 
   /**
-   * ENGINE'İN SCENE YAPISI (PDF Section 7 + kullanıcının Mehmed örneği):
-   *   1. "Vertical 9:16 editorial documentary paper collage."
-   *   2. hero cümlesi — "… dominates the frame"
-   *   3. destek cümlesi — "One A and one B support the composition."
-   *   4. etiket cümlesi (varsa)
-   *   5. negatif alan cümlesi
-   *   6. STİL BLOĞU birebir
-   *   7. CLOSER birebir
+   * ============ SAHNE CÜMLESİ: MOTORUN ŞEKLİ, BİREBİR ============
    *
-   * Önceki sürüm bu yapıda DEĞİLDİ: güvenli-alan ön eki ile açılıyor,
-   * "Supporting elements, no more than three:" gibi talimat dili kullanıyor ve
-   * anlatı cümlesini tırnak içinde promta gömüyordu. Belge bunların hiçbirini
-   * istemiyor — prompt AKAN NESİR olmalı ve kareyi TARİF etmeli, kurallarını
-   * saymamalı.
+   * Kullanıcının verdiği üç örnek promt aynı kalıbı kullanıyor ve kalıp
+   * TEK AKAN CÜMLE, virgülle bağlı:
+   *
+   *   "A single torn calendar page dominates the frame AS THE HERO ELEMENT,
+   *    hand-torn from aged newsprint, carrying the stamp-printed label
+   *    NOV 24 1971 in condensed black type inside a red rubber-stamp box,
+   *    pinned at a slight angle to a bare archival paper surface, one strip of
+   *    masking tape at its corner and a faint coffee-ring stain nearby
+   *    AS THE ONLY SUPPORTING ELEMENTS, wide empty margins around it."
+   *
+   * ============ ÖNCEKİ SÜRÜMÜN DÖRT SAPMASI ============
+   *
+   * Bunlar ÖLÇÜLDÜ: stil bloğu ve closer birebir çıktı (closer'da yalnızca
+   * izin verilen 16:9 → 9:16), ama sahne cümlesi yapı olarak sapmıştı.
+   *
+   * 1. "Vertical 9:16 editorial documentary paper collage." ÖN EKİ.
+   *    Örneklerin hiçbirinde yok. Kategori adını en başa koymak özneyi
+   *    geriye itiyor — bu deponun parça promtunda birebir aynı hata ölçüldü
+   *    ("A single hand-cut paper collage element: a man" → çıkan şey adam
+   *    değil yırtık kağıttı). En-boy zaten closer'da yazıyor.
+   * 2. DÖRT AYRI CÜMLE. Örnekler tek cümle; nokta ağırlığı böler, virgül
+   *    öğeleri aynı sahnenin parçası olarak bağlar.
+   * 3. "as the hero element" ve "as the only supporting elements" İŞARETLERİ
+   *    YOKTU. İkincisi kalabalığı kesen ifade — "no clutter" kuralının
+   *    olumlu hâli.
+   * 4. ETİKET AYRI CÜMLEDEYDİ: 'A short stamp label reads "24 NOV 1971".'
+   *    Örnekler etiketi HERO'NUN İÇİNE gömüyor ve NASIL göründüğünü de
+   *    söylüyor: "carrying the stamp-printed label NOV 24 1971 in condensed
+   *    black type inside a red rubber-stamp box". Model etiketi nereye
+   *    koyacağını böyle biliyor.
    */
-  return [
-    'Vertical 9:16 editorial documentary paper collage.',
-    heroSentence,
-    supports.length
-      ? `One ${supports.join(' and one ')} ${supports.length === 1 ? 'supports' : 'support'} the composition.`
-      : '',
+  const labelClause = label
+    ? `carrying the stamp-printed label ${shortLabel(label, 4)} in condensed black type inside a red rubber-stamp box`
+    : null;
+
+  /**
+   * ZEMİN CÜMLESİ. Örneklerin üçünde de hero bir YÜZEYE konuyor:
+   * "pinned at a slight angle to a bare archival paper surface",
+   * "placed on an aged archival map of the Pacific Northwest",
+   * "aged newsprint background with wide clean margins".
+   */
+  /**
+   * TEKRARI ÖNLE: reçetelerin bazı hero'ları zaten "pinned at a slight angle"
+   * diyor ve zemin cümlesi aynı ifadeyi ikinci kez ekliyordu — ölçülen çıktıda
+   * cümle içinde iki kez geçti. Hero zaten iğneliyse zemin sade söylenir.
+   */
+  const pinned = /\bpin(ned)?\b/i.test(hero);
+  const surface = story.place
+    ? `placed on an aged archival map of ${story.place}`
+    : pinned
+      ? 'on a bare archival paper surface'
+      : 'pinned at a slight angle to a bare archival paper surface';
+
+  const scene = [
+    `${capitalise(hero)} dominates the frame as the hero element`,
+    // Fotoğraf cutout'unda kırmızı ofset vuruş: örneklerin ikisinde de var ve
+    // karenin TEK sıcak rengini oraya yerleştiriyor.
+    usable ? 'rough scissor-cut edges with an offset red accent stroke behind it' : null,
+    isPerson ? 'a black censor bar across the eyes' : null,
     labelClause,
-    'Wide negative space keeps the image formal and restrained.',
-    STYLE_BLOCK,
-    CLOSER,
+    surface,
+    supports.length
+      ? `${supports.join(' and ')} as the only supporting elements`
+      : 'everything else empty aged paper',
+    'wide empty margins around it',
   ]
     .filter(Boolean)
-    .join(' ');
+    .join(', ');
+
+  return [`${scene}.`, STYLE_BLOCK, CLOSER].join(' ');
+}
+
+/** İlk harfi büyüt — sahne cümlesi özneyle açılıyor. */
+function capitalise(t) {
+  return `${t.charAt(0).toUpperCase()}${t.slice(1)}`;
+}
+
+/**
+ * Reçetenin hero'sunu olduğu gibi bırakır (artikeli DE korur).
+ * `stripArticle` destek öğeler için; hero cümlenin öznesi ve "A single torn
+ * calendar page" gibi artikelli okunmalı.
+ */
+function stripArticleKeepText(t) {
+  return String(t).trim();
 }
 
 /**
