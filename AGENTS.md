@@ -142,15 +142,16 @@ geçmesi.
 
 ## Görsel malzeme: parça parça, tek kare değil
 
-Varsayılan yol **B**: sahne başına bir **plaka** (boş kağıt zemin) ve 2-4 **parça**
-(düz magenta zeminde tek nesne). `CollageBuild` şablonu bunları katman katman,
-anlatı sırasıyla diziyor.
+Varsayılan yol **B**: sahne başına 2-4 **parça** (kare başına tek baskın nesne;
+zemini ne olursa olsun, kesme işini `segment.py` yapıyor). Kağıt zemini kod
+çiziyor (`PaperAged`); modelden plaka istemek varsayılan olarak KAPALI.
+`CollageBuild` şablonu parçaları katman katman, anlatı sırasıyla diziyor.
 
 ```
 npm run beats -- content/story-<ad>.json
 npm run flow:pack                  # out/flow-pack/ — prompt'lar + ASSET-LIST.txt
 # üretilen görselleri collage-raw/ altına ASSET-LIST'teki adlarla koy
-npm run collage                    # magenta → alfa, storyboard'a bağla
+npm run collage                    # segmentasyon → alfa, storyboard'a bağla
 npm run sheet                      # tek kareye bak (render'a girmeden)
 ```
 
@@ -160,6 +161,49 @@ npm run sheet                      # tek kareye bak (render'a girmeden)
   devreye giriyor: kamera gerçekten kilitli, tarih ve sayı değişmiyor (metni
   Remotion çiziyor), çıktı deterministik. A yolunda (Flow i2v) üçü de ÖLÇÜMLE
   elde edilemedi.
+- **ZEMİNİ MODELDEN İSTEMEK BÜSBÜTÜN TERK EDİLDİ — kesme işi bize geçti (5. tur).**
+  Beş tur boyunca parça promtu modelden temiz bir zemin istedi (önce magenta,
+  sonra düz beyaz). 5. turun ölçümü (a83d56d ile koşan run, sağlayıcı
+  Pollinations/FLUX): **beş görselin beşinde de dış %4 şeridinde beyaz piksel
+  oranı %0.0.** Aynı turda büyük harfle yazılmış iki talimat daha tutmadı —
+  plaka "ABSOLUTELY NO WRITING OF ANY KIND" yasağına rağmen uydurma manşetle
+  geldi, portre "black censor bar" talimatına rağmen barsız geldi.
+  Üç açık talimat, tek tur, üçü de boşa. Bu bir promt kusuru değil: bedava
+  uçtaki schnell sınıfı FLUX guidance-damıtılmış, o sınıfta "no X" biçimindeki
+  talimatın yönlendirme gücü pratikte sıfır. Altıncı turda promta daha çok
+  büyük harf eklemek altıncı kez aynı duvara çarpmaktı.
+  **Çözüm modelle kavga etmek değil, işi ondan almak:** `pipeline/segment.py`
+  (rembg / `isnet-general-use`) özneyi zeminden BAĞIMSIZ kesiyor. Aynı beş
+  görselde ölçüldü — 5. turun kendi çıktılarında:
+  `02-fact-a` %36.6, `01-cold_open-a` %17.7, `01-cold_open-b` %62.6 kaplama,
+  üçünde de dış çeper %0.0. Model yaşlanmış arşiv sayfası çizmeyi seviyor ve o
+  sayfa malzeme olarak zaten istediğimiz şey; bırak çizsin, özneyi biz kaldır.
+  Mod zinciri artık `seg → matte → chroma → ink`, beklenen mod `seg`.
+- **ALFA KAPISI SIKILDI — "geçti" demek "kesildi" demek değildi.** Eski tavan
+  %94'tü ve 5. turda matte beş görselin beşinde de geçti: `02-fact-a` %90.9
+  opak, yani neredeyse tam dikdörtgen, ve öylece storyboard'a bağlandı.
+  Yeni kapı: opak ≤ %78 **ve** dış çeper ≤ %15. Çeper ölçüsü ayrı duruyor
+  çünkü kesilmemiş bir dikdörtgen çeperi doldurur (ölçülen: %40'a kadar),
+  gerçek bir kesikte çeper boştur (ölçülen: %0.0). Test:
+  `test/cutout.test.mjs` → "kesilmemiş dikdörtgen alfa doğrulamasından geçmez".
+- **PLAKA ARTIK MODELDEN İSTENMİYOR (varsayılan kapalı).** 4. ve 5. turda
+  üretilen 4 plakanın 4'ü de uydurma manşet metniyle geldi
+  ("YOOLNI IIILNIIRIGLLLID"), birinde ayrıca bir yüz vardı — 5. tur o metni
+  yasaklayan promtla koştu. Ayrıca bayrak hiç okunmuyordu: workflow
+  `--include-plates` geçiyor, `generate-cutouts.mjs` yalnızca `--no-plates`
+  arıyordu, yani girdi ne olursa olsun plaka üretiliyor ve kotanın yarısı
+  oraya gidiyordu. Yaşlanmış yüzeyi artık **kod** çiziyor: `PaperAged`
+  (`src/paper/PaperBase.tsx`). Ölçüldü — zemin bölgesinin geniş ölçek leke
+  std'si 11.70 → 16.81. İlk sürüm `feTurbulence` ile kurulmuştu ve ölçümde
+  hiçbir şey yapmadığı görüldü (11.70 → 11.72, ikinci denemede 11.33: yalnızca
+  düz koyulaşma), o yüzden leke alanı DOM'da, `rand(seed)` ile deterministik.
+- **ÖZNE, BEAT'İN KENDİ SÖZCÜKLERİNİ TAŞIR.** `subjectFor` eşleşen isim
+  dışında her şeyi atıyordu: "a man in a dark suit" → "a man: documentary
+  photograph of a person". 5. turda o promtun çizdiği şey genç bir kadın
+  portresiydi — cümle adamı tarif ediyordu, hat tarifi çöpe atıyordu.
+  Artık öndeki sıfatlar ve arkadaki ilk niteleyici öbek cümleden birebir
+  alınıyor, öbek üç sözcük ve daha uzunsa sözlüğün genel tarifi hiç eklenmiyor.
+  Artikel uyumu da düzeldi ("a attendant" → "an attendant", "a money" → "money").
 - **MAGENTA ZEMİN TERK EDİLDİ — iki canlı çalıştırmada da tutmadı.** 1. turda
   5 görselin beşinde zemin magenta değildi (köşe skorları 0-37, eşik 87).
   Prompt düzeltildi (çelişkili "no colour" kaldırıldı, özne başa alındı,

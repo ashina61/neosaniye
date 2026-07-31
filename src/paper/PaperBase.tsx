@@ -96,6 +96,83 @@ export const PaperStains: React.FC<{seed?: number; count?: number}> = ({seed = 3
   </>
 );
 
+/**
+ * YAŞLANMIŞ ARŞİV YÜZEYİ — BULUTLU FOXING.
+ *
+ * ============ NEDEN KODA ALINDI ============
+ *
+ * Bu doku beş turdur görsel modelinden isteniyordu ("zemin plakası"). Ölçüm:
+ * 4. ve 5. turda üretilen 4 plakanın 4'ü de UYDURMA MANŞET METNİYLE geldi ve
+ * biri yüz taşıyordu; 5. tur, metni büyük harfle yasaklayan promtla koştu.
+ * Serbest uçtaki schnell sınıfı FLUX'ta olumsuz talimat tutmuyor.
+ *
+ * Ama plakayı büsbütün kapatmak da ölçüldü ve bedeli görüldü: `PaperStains`in
+ * alfası 0.05-0.10 aralığında ve kompoze kare DÜZ KREM kalıyor — engine'in
+ * "aged newsprint and archival map surfaces" dünyasına hiç benzemiyor.
+ *
+ * Bu bileşen ikisinin arasını kapatıyor: dokuyu deterministik olarak KOD
+ * çiziyor. `feTurbulence` düşük frekansta bulutlu bir maske veriyor, sepya
+ * tonlanıp multiply ile basılıyor — kağıdın yaş lekeleri (foxing) böyle
+ * görünür. Harf üretme riski sıfır, çünkü ortada dil modeli yok.
+ */
+/**
+ * ============ feTurbulence DENENDİ VE ÖLÇÜLDÜ: İŞE YARAMADI ============
+ *
+ * İlk sürüm bu dokuyu `feTurbulence` + `feColorMatrix` ile kuruyordu. Ölçüm
+ * (zemin bölgesi 32'ye indirgenip geniş ölçek std'si alınarak):
+ *
+ *   plakasız (dokusuz)   geniş ölçek std = 11.70
+ *   feTurbulence v1      geniş ölçek std = 11.72   → hiçbir şey
+ *   feTurbulence v2      geniş ölçek std = 11.33   → yalnızca düz koyulaşma
+ *
+ * Yani filtre lekeyi değil, sabit bir ton kaymasını basıyordu. Kağıdın yaş
+ * lekesi GENİŞ ÖLÇEKLİ ve DÜZENSİZ; fractalNoise'un ortalaması ise düz.
+ *
+ * Bu yüzden leke alanı DOM'da kuruluyor: her leke ayrı bir radial-gradient
+ * ve konumu `rand(seed)` ile deterministik. Ölçülebilir, ayarlanabilir ve
+ * render motorunun filtre davranışına bağlı değil.
+ */
+export const PaperAged: React.FC<{seed?: number; count?: number}> = ({seed = 11, count = 22}) => (
+  <>
+    {Array.from({length: count}, (_, i) => {
+      const r1 = rand(seed * 13 + i * 5);
+      const r2 = rand(seed * 29 + i * 11);
+      const r3 = rand(seed * 47 + i * 17);
+      const r4 = rand(seed * 61 + i * 23);
+      // Geniş bulutlardan küçük foxing benegine kadar: boyut dağılımı kareli,
+      // yani çoğu leke küçük, birkaçı büyük — gerçek yaşlanmanın dağılımı.
+      const size = 120 + r3 * r3 * 900;
+      // Koyuluk boyutla TERS: büyük bulutlar soluk, küçük benekler keskin.
+      const alpha = 0.05 + (1 - r3) * 0.13;
+      return (
+        <div
+          key={i}
+          style={{
+            position: 'absolute',
+            left: r1 * CANVAS.width - size / 2,
+            top: r2 * CANVAS.height - size / 2,
+            width: size,
+            height: size * (0.55 + r4 * 0.75),
+            borderRadius: '50%',
+            background:
+              `radial-gradient(circle, rgba(126,96,52,${alpha.toFixed(3)}) 0%, ` +
+              `rgba(126,96,52,${(alpha * 0.45).toFixed(3)}) 45%, rgba(126,96,52,0) 72%)`,
+            pointerEvents: 'none',
+          }}
+        />
+      );
+    })}
+    {/* Kenar kararması: arşiv kağıdı en çok kenarından sararır. */}
+    <AbsoluteFill
+      style={{
+        background:
+          'radial-gradient(115% 75% at 50% 46%, rgba(0,0,0,0) 46%, rgba(112,84,44,0.10) 78%, rgba(96,70,34,0.22) 100%)',
+        pointerEvents: 'none',
+      }}
+    />
+  </>
+);
+
 export type Ground = 'cream' | 'warm' | 'ink' | 'night';
 
 const GROUND_COLOR: Record<Ground, string> = {
@@ -113,15 +190,21 @@ const GROUND_COLOR: Record<Ground, string> = {
 export const PaperBase: React.FC<{
   ground?: Ground;
   stains?: boolean;
+  /**
+   * Yaşlanmış arşiv yüzeyi. Varsayılan KAPALI, çünkü her sahne arşiv sayfası
+   * değil; `collage_build` plakasız çalıştığında açılıyor (gerekçe `PaperAged`).
+   */
+  aged?: boolean;
   grain?: boolean;
   vignette?: boolean;
   seed?: number;
   children?: React.ReactNode;
-}> = ({ground = 'cream', stains = true, grain = true, vignette = true, seed = 3, children}) => {
+}> = ({ground = 'cream', stains = true, aged = false, grain = true, vignette = true, seed = 3, children}) => {
   const dark = ground === 'ink' || ground === 'night';
   return (
     <AbsoluteFill style={{backgroundColor: GROUND_COLOR[ground], fontFamily: FONTS.display}}>
       <FontFaces />
+      {aged && !dark && <PaperAged seed={seed} />}
       {stains && !dark && <PaperStains seed={seed} />}
       {children}
       {grain && <PaperTexture opacity={dark ? 0.22 : 0.42} />}

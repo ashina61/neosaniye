@@ -81,18 +81,31 @@ function findRaw(base) {
  * anlamına gelmiyor: 1. turda matte'in geçirdiği 5 parçanın yalnızca 2'si
  * görsel olarak kullanılabilirdi. Bu yüzden beklenen mod dışında bir mod
  * kazandığında adım yüksek sesle uyarıyor.
+ *
+ * ============ 5. TUR: ZEMİN VARSAYIMININ TAMAMI ÇÖKTÜ ============
+ *
+ * matte, chroma ve ink'in ÜÇÜ DE aynı şeye bel bağlıyor: modelin tekdüze bir
+ * zemin ürettiğine. 5. turda o varsayım ölçülüp yıkıldı — beş görselin beşinde
+ * dış %4 şeridinde kenar-beyaz oranı %0.0, kenar ortalaması yaşlanmış kağıt
+ * (RGB 213/193/160 gibi) ve görüntünün TAMAMI dolu bir arşiv sayfası. Zemin
+ * yoksa kenardan taşma-doldurmanın sileceği bir şey de yok: `matte` sayısal
+ * kapıyı geçip DİKDÖRTGENİN TAMAMINI bağladı ve kompoze kare çerçeve içinde
+ * çerçeve içinde çerçeve olarak çıktı.
+ *
+ * Bu yüzden zincirin başına `seg` geldi: zeminden bağımsız çalışır, çünkü
+ * zemini silmez — ÖZNEYİ bulur. Gerekçesi ve ölçümü `pipeline/segment.py`.
  */
-const MODES = ['matte', 'chroma', 'ink'];
+const MODES = ['seg', 'matte', 'chroma', 'ink'];
 
 /**
- * BEKLENEN MOD. Prompt artık düz BEYAZ stüdyo zemini istiyor (magenta iki
- * canlı çalıştırmada da tutmadı ve ikincisinde model magenta'yı öznenin İÇİNE
- * koydu). `matte` kenardan taşma-doldurma yapıyor, zeminin rengini bilmesi
- * gerekmiyor — sadece tekdüze olması yeter.
+ * BEKLENEN MOD `seg`.
  *
- * Bundan başka bir mod kazanırsa zemin beklendiği gibi gelmemiş demektir.
+ * Diğer üçü artık YEDEK: yalnızca rembg/onnxruntime kurulu değilse ya da model
+ * inemediyse devreye girerler. O durumda uyarı yüksek sesle basılır, çünkü
+ * 5. turda ölçüldü ki bu görsellerde matte'in "geçmesi" kesildiğini değil,
+ * hiçbir şeyin silinmediğini gösteriyor.
  */
-const EXPECTED_MODE = 'matte';
+const EXPECTED_MODE = 'seg';
 
 async function cutout(src, dst) {
   const problems = [];
@@ -163,7 +176,7 @@ async function main() {
         const {line, mode} = await cutout(raw, dst);
         pieces.push({src: `collage/${row.file}-${p.slot}.png`, role: p.role});
         // Beklenen mod dışında biri kazandıysa prompt tutmamış: yüksek sesle söyle.
-        console.log(`  ${line}${mode === EXPECTED_MODE ? '' : `   << YEDEK MOD (${mode}) — zemin düz beyaz değildi`}`);
+        console.log(`  ${line}${mode === EXPECTED_MODE ? '' : `   << YEDEK MOD (${mode}) — segmentasyon çalışmadı`}`);
         if (mode !== EXPECTED_MODE) fallbacks.push(`${row.file}-${p.slot} → ${mode}`);
       } catch (e) {
         // Üç mod da düştü: parça BAĞLANMAZ. Bağlamak, ekranda zeminiyle

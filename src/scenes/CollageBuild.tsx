@@ -170,7 +170,9 @@ export const CollageBuild: React.FC<SceneProps> = ({seconds, payload, seed, occu
   const string = enter(f, {at: seconds * 0.5, duration: Math.max(0.6, seconds * 0.22), kind: 'draw'});
 
   return (
-    <PaperBase seed={seed} stains={!layers?.plate}>
+    // `aged`: plaka yoksa yaşlanmış yüzeyi KOD çiziyor. Modelden istendiğinde
+    // 4 plakanın 4'ü uydurma manşetle geldi; gerekçe `PaperAged` başında.
+    <PaperBase seed={seed} stains={!layers?.plate} aged={!layers?.plate}>
       {/* 1. PLAKA — opak zemin görseli. Yoksa PaperBase'in kağıdı kalır. */}
       {layers?.plate && (
         <Img

@@ -46,7 +46,7 @@
 const FAMILIES = [
   {
     shape: 'figure',
-    style: 'documentary photograph of a person, three-quarter view, plain background',
+    style: 'documentary photograph of a person, three-quarter view',
     words: [
       'man', 'men', 'woman', 'women', 'person', 'people', 'boy', 'girl', 'child', 'children',
       'worker', 'soldier', 'officer', 'driver', 'guard', 'prisoner', 'robber', 'thief', 'witness',
@@ -344,7 +344,89 @@ export function subjectFor(text) {
     return 'a head-and-shoulders documentary portrait of a person, calm expression, three-quarter view';
   }
   const m = match(text);
-  return m ? `a ${m.word}: ${m.entry.style}` : null;
+  if (!m) return null;
+  const phrase = nounPhrase(text, m);
+  /**
+   * CÜMLE ZATEN TARİF EDİYORSA SÖZLÜĞÜ EKLEME.
+   *
+   * Sözlüğün `style` alanı, cümle tek kelimelik bir isim verdiğinde ("a bomb")
+   * modele ne çizeceğini anlatmak için var. Ama cümlenin kendisi tarif
+   * ediyorsa ("a man in a dark suit") sözlük onun ÜSTÜNE yazıyor ve
+   * genelleştiriyor — 5. turda promt "a man in a dark suit" yerine
+   * "documentary photograph of a person" diyordu ve model genç bir kadın çizdi.
+   *
+   * Kural: öbek üç sözcük ya da daha uzunsa yazarın sözcükleri kalır.
+   */
+  if (phrase.split(/\s+/).length >= 3) return phrase;
+  return `${phrase}: ${m.entry.style}`;
+}
+
+/**
+ * ÖZNEYİ CÜMLENİN KENDİ SÖZCÜKLERİYLE YAZ.
+ *
+ * ============ BEAT'İN TARİFİ ÇÖPE GİDİYORDU ============
+ *
+ * Eski hâli `a ${m.word}` üretiyordu, yani cümledeki tek eşleşen isim dışında
+ * HER ŞEY atılıyordu:
+ *
+ *   "a man in a dark suit"        → "a man: documentary photograph of a person"
+ *   "He handed the attendant..."  → "a attendant: ..."      (artel hatası)
+ *   "and the money came aboard"   → "a money: ..."          (sayılamayan isme artikel)
+ *
+ * Birincisi 5. turun asıl utancı: promtta "dark suit" yok, "1971 hijacker" yok,
+ * geriye "a person" kalıyor ve model genç bir kadın portresi çizdi. Cümle
+ * adamı tarif ediyordu, hat tarifi atıyordu.
+ *
+ * Burada eşleşen ismin ÖNÜNDEKİ sıfatlar ve ARDINDAKİ ilk niteleyici öbek
+ * cümleden birebir alınıyor. Uydurma yok: yalnızca yazarın yazdığı sözcükler.
+ */
+const DET = /^(a|an|the|his|her|its|their|our|my|your|this|that|these|those|one|two|three|four|five|\d+)$/i;
+const MODIFIER_TAIL = /^(in|with|of|on|from|wearing|marked|labelled|labeled|holding|carrying)$/i;
+const UNCOUNTABLE = /^(money|water|rain|snow|fog|smoke|fire|wind|cash|gold|silver|evidence|luggage|cargo|mail)$/i;
+
+function nounPhrase(text, m) {
+  const words = String(text).replace(/[*"]/g, '').split(/\s+/);
+  const clean = (w) => w.replace(/[^A-Za-z0-9’'-]/g, '');
+  const at = words.findIndex((w) => clean(w).toLowerCase() === m.word.toLowerCase());
+  if (at < 0) return withArticle(m.word);
+
+  // Öndeki sıfatlar: belirteç görene ya da en fazla iki sözcük geriye kadar.
+  let start = at;
+  for (let k = at - 1; k >= 0 && at - k <= 2; k -= 1) {
+    const w = clean(words[k]);
+    if (!w) break;
+    if (DET.test(w)) break;
+    // Yalnızca sıfat gibi duran sözcükler; noktalama varsa öbek orada biter.
+    if (/[,.;:]$/.test(words[k])) break;
+    start = k;
+  }
+
+  // Arkadaki tek niteleyici öbek: "in a dark suit", "with a red seal".
+  let end = at + 1;
+  if (MODIFIER_TAIL.test(clean(words[at + 1] ?? ''))) {
+    end = Math.min(at + 5, words.length);
+    for (let k = at + 1; k < end; k += 1) {
+      if (/[,.;:]$/.test(words[k])) {
+        end = k + 1;
+        break;
+      }
+    }
+  }
+
+  const phrase = words
+    .slice(start, end)
+    .map((w) => w.replace(/[,.;:]+$/, ''))
+    .join(' ')
+    .trim();
+  return withArticle(phrase);
+}
+
+/** Artikel uyumu: "a attendant" → "an attendant", "a money" → "money". */
+function withArticle(phrase) {
+  const head = phrase.split(/\s+/)[0] ?? '';
+  if (DET.test(head)) return phrase;
+  if (UNCOUNTABLE.test(head)) return phrase;
+  return `${/^[aeiou]/i.test(phrase) ? 'an' : 'a'} ${phrase}`;
 }
 
 /**

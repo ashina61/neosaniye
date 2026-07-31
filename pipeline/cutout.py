@@ -50,7 +50,18 @@ from PIL import Image
 
 # Kabul edilebilir alfa aralığı: bu sınırların dışı "cutout olmamış" demektir.
 MIN_OPAQUE_SHARE = 0.02   # görselin en az %2'si opak olmalı, yoksa boş
-MAX_OPAQUE_SHARE = 0.94   # en fazla %94, yoksa hiç kesilmemiş
+# ============ %94 KAPIYI AÇIK BIRAKIYORDU ============
+# 5. turda `matte`, beş görselin beşinde de "GEÇTİ" dedi ama hiçbir şey
+# kesmemişti; 02-fact-a %90.9 opak çıktı, yani neredeyse tam dikdörtgen, ve
+# %94 sınırının altında kaldığı için storyboard'a bağlandı. Kompoze karede
+# sonuç çerçeve içinde çerçeve oldu.
+# Aynı beş görselde `seg`in ölçülen opaklığı: %17.7 / %36.6 / %62.6. Sınır o
+# aralığın üstüne, matte'in ürettiği en düşük değerin (%59.3 plaka, %80.0
+# parça) altına kondu.
+MAX_OPAQUE_SHARE = 0.78
+# DIŞ HALKA. Gerçek bir kesikte karenin dış çeperi boş olur. 5. turda seg
+# üçünde de %0.0 verdi; kesmeyen matte aynı görselde %40.6'ya çıktı.
+MAX_BORDER_SHARE = 0.15
 
 
 class CutoutError(RuntimeError):
@@ -408,13 +419,36 @@ def verify_alpha(alpha: np.ndarray) -> dict:
     transparent = float((alpha < 0.1).mean())
     # Yarı saydam kenar bandı: gerçek bir kesikte küçük ama sıfır olmayan olur.
     edge = float(((alpha >= 0.1) & (alpha <= 0.6)).mean())
-    ok = MIN_OPAQUE_SHARE <= opaque <= MAX_OPAQUE_SHARE and transparent > 0.02
+    border = _border_opaque_share(alpha)
+    ok = (
+        MIN_OPAQUE_SHARE <= opaque <= MAX_OPAQUE_SHARE
+        and transparent > 0.02
+        and border <= MAX_BORDER_SHARE
+    )
     return {
         "opaque_share": round(opaque, 4),
         "transparent_share": round(transparent, 4),
         "edge_share": round(edge, 4),
+        "border_share": round(border, 4),
         "ok": ok,
     }
+
+
+def _border_opaque_share(alpha: np.ndarray, frac: float = 0.02) -> float:
+    """
+    Karenin dış çeperinin ne kadarı opak?
+
+    Kesilmiş bir öğe çeperi boş bırakır. Kesilmemiş bir dikdörtgen çeperi
+    doldurur. Bu, "opak oranı" kapısının kaçırdığı durumu yakalar: 5. turda
+    matte'in ürettiği maskeler sayısal olarak makul opaklıktaydı ama çeperi
+    doluydu, yani aslında hiç kesilmemişlerdi.
+    """
+    h, w = alpha.shape
+    k = max(2, int(min(h, w) * frac))
+    ring = np.zeros((h, w), dtype=bool)
+    ring[:k, :] = ring[-k:, :] = True
+    ring[:, :k] = ring[:, -k:] = True
+    return float((alpha[ring] > 0.6).mean())
 
 
 def trim_to_content(rgba: np.ndarray, pad: int = 6) -> np.ndarray:
@@ -449,7 +483,20 @@ def make_cutout(
     im = Image.open(src).convert("RGB")
     rgb = np.asarray(im)
 
-    if mode == "ink":
+    if mode == "seg":
+        # Segmentasyon zeminden BAĞIMSIZ çalışır — beyaz zemin şartı yok.
+        # Ölçüm gerekçesi ve düşme kuralı `pipeline/segment.py` başında.
+        # `cutout.py` script olarak koşuyor (paket değil), o yüzden komşu dosya
+        # sys.path üzerinden alınıyor.
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import segment as _seg  # type: ignore[import-not-found]
+
+        alpha = _seg.segment_alpha(rgb)
+        alpha = _seg.drop_halo(rgb, alpha)
+        # Segment nadiren kopuk kırıntı bırakır; `drop_speckles` onları atar ve
+        # `keep_largest_blob`ın aksine iç boşlukları DOLDURMAZ.
+        alpha = drop_speckles(alpha)
+    elif mode == "ink":
         alpha = ink_alpha(rgb)
     elif mode == "matte":
         alpha = border_flood_alpha(rgb, tolerance=tolerance, feather=feather)
@@ -487,7 +534,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="Alfa kanallı kolaj cutout üret")
     ap.add_argument("src")
     ap.add_argument("dst")
-    ap.add_argument("--mode", choices=["ink", "matte", "chroma"], default="ink")
+    ap.add_argument("--mode", choices=["seg", "ink", "matte", "chroma"], default="ink")
     ap.add_argument("--no-halftone", action="store_true")
     ap.add_argument("--tolerance", type=int, default=26)
     ap.add_argument("--feather", type=int, default=2)
@@ -506,7 +553,7 @@ def main() -> int:
     print(
         f"{stats['path']}  {stats['size'][0]}x{stats['size'][1]}  mod={stats['mode']}  "
         f"opak %{stats['opaque_share'] * 100:.1f}  şeffaf %{stats['transparent_share'] * 100:.1f}  "
-        f"kenar %{stats['edge_share'] * 100:.2f}  alfa: {flag}"
+        f"kenar %{stats['edge_share'] * 100:.2f}  çeper %{stats['border_share'] * 100:.1f}  alfa: {flag}"
     )
     if a.strict and not stats["ok"]:
         return 2

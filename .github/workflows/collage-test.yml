@@ -91,6 +91,23 @@ jobs:
           # `python -m pip` ile kurup `python3` ile çalıştırmak, ikisi farklı
           # yorumlayıcıya çözülürse import hatası verir. Aynısı kullanılıyor.
           python3 -m pip install --disable-pip-version-check --quiet pillow numpy
+          # SEGMENTASYON. Zemini modelden istemeyi bıraktık; özneyi biz
+          # kesiyoruz (gerekçe ve ölçüm: pipeline/segment.py). Kurulum
+          # başarısız olursa iş DURMAZ — cutout.py matte/ink'e düşer ve
+          # ingest adımı bunu "YEDEK MOD" diye yüksek sesle raporlar.
+          python3 -m pip install --disable-pip-version-check --quiet rembg onnxruntime || \
+            echo "UYARI: rembg kurulamadı — segmentasyon yok, yedek modlara düşülecek"
+
+      # Model ağırlığı 179 MB ve GitHub releases'ten iniyor. Üretim adımından
+      # ÖNCE indiriliyor ki 8 görsel üretildikten sonra indirme patlamasın.
+      - name: Segmentasyon modelini önceden indir
+        continue-on-error: true
+        run: |
+          python3 - <<'PY'
+          from rembg import new_session
+          new_session("isnet-general-use")
+          print("segmentasyon modeli hazır")
+          PY
 
       # TESTLER BURADA, SONDA DEĞİL — ve sebebi ölçüldü.
       #
@@ -204,20 +221,37 @@ jobs:
           echo "ham görsel (collage-raw/): $(ls collage-raw/*.png 2>/dev/null | wc -l)"
           echo "kesilmiş  (public/collage/): $(ls public/collage/*.png 2>/dev/null | wc -l)"
           echo
-          echo "--- her ham görselin ZEMİNİ gerçekten magenta mı? ---"
+          # ESKİ ÖLÇÜM ATILDI. Burada "zemin magenta mı" soruluyordu; sonra da
+          # "zemin beyaz mı" sorulacaktı. İkisi de yanlış soru: 5. turda beş
+          # görselin beşinde de zemin YOKTU (kenar-beyaz %0.0) ve hat yine de
+          # devam etti, çünkü zeminin varlığına bel bağlıyordu.
+          #
+          # Doğru soru artık zeminle ilgili değil: KESİLDİ Mİ? Bunun ölçüsü
+          # kesilmiş PNG'nin alfasında: opak oranı ve DIŞ ÇEPERİN doluluğu.
+          # Kesilmemiş bir dikdörtgen çeperi doldurur (5. tur matte: %40'a
+          # kadar); gerçek bir kesikte çeper boştur (5. tur seg: %0.0).
+          echo "--- kesilmiş parçaların alfası: gerçekten kesilmiş mi? ---"
           python3 - <<'PY'
           import glob
           import numpy as np
           from PIL import Image
-          for f in sorted(glob.glob('collage-raw/*.png')):
-              a = np.asarray(Image.open(f).convert('RGB')).astype(int)
-              r, g, b = a[:, :, 0], a[:, :, 1], a[:, :, 2]
-              mag = (np.minimum(r, b) - g) > 87          # chroma_alpha ile AYNI ölçüt
-              # Kenar şeridi zemin olmak ZORUNDA: özne kenara değmiyor deniyor.
-              edge = np.concatenate([mag[:8].ravel(), mag[-8:].ravel(),
-                                     mag[:, :8].ravel(), mag[:, -8:].ravel()])
-              print(f"  {f:34s} magenta %{100*mag.mean():5.1f}  kenar %{100*edge.mean():5.1f}"
-                    f"  {'ZEMİN VAR' if edge.mean() > 0.8 else '>>> ZEMİN YOK <<<'}")
+          files = [f for f in sorted(glob.glob('public/collage/*.png')) if '-plate' not in f]
+          if not files:
+              print("  parça YOK — hiçbiri alfa kapısını geçmemiş")
+          for f in files:
+              im = Image.open(f)
+              if im.mode != 'RGBA':
+                  print(f"  {f:36s} ALFA KANALI YOK — kesilmemiş"); continue
+              a = np.asarray(im)[:, :, 3] / 255.0
+              h, w = a.shape
+              k = max(2, int(min(h, w) * 0.02))
+              ring = np.zeros((h, w), bool)
+              ring[:k, :] = ring[-k:, :] = True
+              ring[:, :k] = ring[:, -k:] = True
+              opak, ceper = (a > 0.6).mean(), (a[ring] > 0.6).mean()
+              iyi = opak <= 0.78 and ceper <= 0.15
+              print(f"  {f:36s} opak %{100*opak:5.1f}  çeper %{100*ceper:5.1f}"
+                    f"  {'kesilmiş' if iyi else '>>> DİKDÖRTGEN, KESİLMEMİŞ <<<'}")
           PY
           echo
           echo "--- storyboard'a kaç sahne bağlandı? ---"

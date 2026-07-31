@@ -250,21 +250,34 @@ async function packMode(args) {
     process.exit(1);
   }
   const man = JSON.parse(await readFile(manPath, 'utf8'));
-  const includePlates = !args.includes('--no-plates');
+  /**
+   * ============ BAYRAK HİÇ OKUNMUYORDU ============
+   *
+   * Workflow `--include-plates` geçiyordu, burada ise yalnızca `--no-plates`
+   * aranıyordu. Yani workflow'un `include_plates` girdisi NE OLURSA OLSUN
+   * plaka üretiliyordu ve 4. ile 5. turda kotanın yarısı plakalara gitti.
+   * Artık iki bayrak da okunuyor.
+   *
+   * ============ PLAKA ARTIK VARSAYILAN OLARAK KAPALI ============
+   *
+   * Önceki not "plaka üretilsin, çünkü PaperBase düz krem kalıyor" diyordu ve
+   * o gözlem doğruydu. Ama iki tur ölçüldü ve maliyeti ortaya çıktı: 4. turda
+   * 2 plakanın 2'si, 5. turda yine 2'sinin 2'si UYDURMA MANŞET METNİYLE geldi
+   * ("YOOLNI IIILNIIRIGLLLID"), birinde ayrıca bir yüz vardı. Promt bunu
+   * a83d56d'de büyük harfle yasaklamıştı ("ABSOLUTELY NO WRITING OF ANY KIND")
+   * ve 5. tur o yasakla koştu — tutmadı.
+   *
+   * Sebebi promt değil model: bedava uçtaki schnell sınıfı FLUX'ta olumsuz
+   * talimatın yönlendirme gücü yok. Sahte harfle dolu bir plaka, kompoze karede
+   * altyazının ve manşetin altında duran okunmaz bir gürültü katmanı demek.
+   *
+   * `PaperBase`in çizdiği kağıt daha sade ama TEMİZ ve deterministik. Kotayı
+   * hikâyeyi anlatan parçalara harcamak, riski ölçülmüş bir dokuya harcamaktan
+   * iyi. `--include-plates` ile açılabilir.
+   */
+  const includePlates = args.includes('--include-plates') && !args.includes('--no-plates');
   const limit = Number(args.find((a) => a.startsWith('--limit='))?.split('=')[1] ?? 0) || Infinity;
 
-  /**
-   * PLAKA VARSAYILAN OLARAK ÜRETİLİR — önceki karar ölçümle yanlış çıktı.
-   *
-   * "Plaka yalnızca yaşlanmış kağıt, `PaperBase` onu zaten çiziyor" diye
-   * atlanıyordu. Kanıt karesinde sonucu görüldü: zemin DÜZ KREM kaldı ve kare
-   * engine'in arşiv dünyasına hiç benzemedi. `PaperBase` temiz bir kağıt
-   * çiziyor; engine ise "aged newsprint and archival map surfaces" istiyor —
-   * lekeli, foxing'li, harita zeminli. O doku karenin %100'ünü kaplıyor ve
-   * stilin yarısı o.
-   *
-   * `--no-plates` ile kapatılabilir (hızlı deneme için).
-   */
   const assets = man.assets.filter((a) => includePlates || a.role !== 'plate').slice(0, limit);
 
   const chain = (process.env.IMAGE_PROVIDER_CHAIN || DEFAULT_CHAIN.join(','))

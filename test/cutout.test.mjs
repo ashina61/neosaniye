@@ -310,3 +310,61 @@ test('deterministik: aynı girdi iki kez aynı çıktıyı verir', async () => {
   const [x, y] = await Promise.all([readFile(a.dst), readFile(b.dst)]);
   assert.ok(x.equals(y), 'aynı girdi farklı çıktı verdi');
 });
+
+/**
+ * ÇEPER KAPISI — 5. TURUN ÜRETTİĞİ TEST.
+ *
+ * O turda `matte`, beş görselin beşinde de "GEÇTİ" dedi ama hiçbir şey
+ * kesmemişti: modelin ürettiği görsellerin zemini yoktu (kenar-beyaz %0.0),
+ * dolayısıyla kenardan taşma-doldurmanın sileceği bir şey de yoktu ve
+ * dikdörtgenin tamamı storyboard'a bağlandı. Kompoze kare çerçeve içinde
+ * çerçeve olarak çıktı.
+ *
+ * Bu test o kusuru sabitliyor: alfası neredeyse tamamen opak bir maske,
+ * "opak oranı makul" görünse bile alfa doğrulamasından GEÇMEMELİ.
+ */
+test('kesilmemiş dikdörtgen alfa doğrulamasından geçmez', async () => {
+  const gen = path.join(dir, 'gen_solid.py');
+  await writeFile(
+    gen,
+    `
+import numpy as np, sys
+from PIL import Image
+D = sys.argv[1]
+# Kenardan kenara dolu, tek tonlu ama hafif gürültülü bir kare: hiçbir modun
+# silecek tekdüze zemin bulamayacağı, 5. turda gelen görsellerin özeti.
+rng = np.random.default_rng(4)
+a = (rng.normal(150, 6, (300, 200, 3))).clip(0, 255).astype(np.uint8)
+Image.fromarray(a).save(f"{D}/solid.png")
+`,
+  );
+  await run('python3', [gen, dir]);
+  for (const mode of ['matte', 'ink', 'chroma']) {
+    let passed = true;
+    try {
+      await cut('solid.png', `solid_${mode}.png`, mode, ['--no-halftone', '--strict']);
+    } catch {
+      passed = false;
+    }
+    assert.equal(passed, false, `${mode}: kesilmemiş dikdörtgen GEÇTİ`);
+  }
+});
+
+/**
+ * `seg` modu ortama bağlı (rembg + 179 MB model). Kurulu değilse test ATLANIR
+ * ama SESSİZCE geçmez: `cutout.py` o durumda anlaşılır bir hata vermeli, ki
+ * `ingest-collage.mjs` yedek moda düşebilsin.
+ */
+test('seg modu yoksa temiz hata verir, sessizce dikdörtgen döndürmez', async () => {
+  let out = null;
+  try {
+    out = await cut('ring.png', 'seg_ring.png', 'seg', ['--no-halftone', '--strict']);
+  } catch (e) {
+    const msg = String(e.stderr || e.stdout || e.message);
+    assert.ok(/rembg|segment|onnx|Error|Traceback/i.test(msg), `anlaşılmaz hata: ${msg.slice(0, 200)}`);
+    return;
+  }
+  // Kuruluysa: gerçekten kesmiş olmalı — çeper boş, alfa kısmen saydam.
+  const s = await alphaStats(out.dst);
+  assert.ok(s.transparent > 0.02, `seg hiçbir şey silmemiş: ${JSON.stringify(s)}`);
+});

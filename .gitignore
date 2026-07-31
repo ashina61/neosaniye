@@ -47,3 +47,4 @@ collage-raw/
 # konuda hiçbir işe yaramıyor. `npm run collage` collage-raw/'dan yeniden
 # üretiyor. Klasör yapısı kalır.
 public/collage/*.png
+__pycache__/

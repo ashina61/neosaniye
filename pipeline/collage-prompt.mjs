@@ -520,20 +520,41 @@ export const RECIPE_KINDS = Object.keys(RECIPES);
  * PARÇA için de doğru okunuyor: parça o kolajdan makasla kesilmiş bir öğe.
  * Altına eklenen tek cümle o bağlamı kuruyor.
  */
+/**
+ * ============ ZEMİNİ ARTIK MODELDEN İSTEMİYORUZ ============
+ *
+ * Bu blok beş tur boyunca modele "BACKGROUND: blank flat white, completely
+ * empty" dedi ve 5. turun ölçümü şu: beş görselin BEŞİNDE de dış %4 şeridinde
+ * beyaz piksel oranı %0.0. Aynı turda "ABSOLUTELY NO WRITING OF ANY KIND" ve
+ * "A black censor bar runs across the eyes" talimatları da tutmadı.
+ *
+ * Üç talimat, tek tur, üçü de boşa gitti. Sebep promtun kelimeleri değil:
+ * Pollinations'ın bedava ucu schnell sınıfı, guidance damıtılmış bir FLUX ve o
+ * sınıfta "no X" biçimindeki talimatın yönlendirme gücü pratikte sıfır.
+ *
+ * Kesme işi `pipeline/segment.py`e taşındı. Dolayısıyla promtun tek işi kaldı:
+ * SEGMENTASYONUN AYIRABİLECEĞİ bir kare üretmek — yani karede tartışmasız TEK
+ * bir baskın özne olsun. Zeminin ne olduğu artık önemsiz; model yaşlanmış
+ * arşiv sayfası çizmek istiyorsa çizsin, özneyi biz kaldırıyoruz.
+ *
+ * STYLE_BLOCK buradan ÇIKARILDI. O blok bir KOMPOZİSYONU tarif ediyor
+ * ("masking tape fragments, typewriter caption strips, rubber stamp marks,
+ * red string and brass pins", "condensed bold headline lettering") ve tek
+ * parça promtuna konduğunda modelin çizdiği şey tam olarak o oldu: parça
+ * değil, üstünde parça olan bir sayfa. Parçaya gereken yalnızca MALZEME.
+ */
 const PIECE_MATERIAL = [
-  STYLE_BLOCK,
-  'This image is ONE single element clipped out of that collage, shown on its own.',
-  'NOT a modern digital photograph, NOT a glossy studio portrait,',
-  'NOT clean contemporary product photography.',
+  'Black and white archival halftone photograph, visible print grain and paper fibre,',
+  'desaturated tan and ink-black tones, matte, flat documentary lighting.',
 ].join(' ');
 
+/**
+ * Segmentasyonun işini kolaylaştıran tek cümle: kare TEK özneli olsun.
+ * Olumsuzlama yok — ölçüldü ki bu modelde olumsuzlama çalışmıyor. Bunun
+ * yerine olumlu ve somut: özne büyük, ortada, tek.
+ */
 const PIECE_BACKGROUND = [
-  'BACKGROUND: blank flat white, completely empty — the piece is a cut-out lifted off the page,',
-  'so there is nothing behind it: no wall, no table, no paper sheet, no texture,',
-  'no grain, no gradient, no vignette, no cast shadow.',
-  'The subject is clearly DARKER than the white so its outline reads cleanly.',
-  'The subject must not touch the frame edges; leave a clear white margin on all sides.',
-  'ONE single object only, isolated, nothing else in the frame.',
+  'ONE subject, centred, large in the frame, clearly separated from whatever is behind it.',
 ].join(' ');
 
 /**
@@ -674,25 +695,27 @@ export function piecePrompts(beat, opts = {}) {
      * MALZEME ve DÖNEM ondan sonra geliyor.
      */
     prompt: [
-      `${subject.charAt(0).toUpperCase()}${subject.slice(1)}, cut out and isolated.`,
       /**
-       * SANSÜR BARI — engine yasası. Kaynak PDF'in demo promtunda ve
-       * kullanıcının Mehmed örneğinde var: gerçek bir kişi ima ediliyorsa
-       * gözlerin üstüne siyah bar. Hem stilin imzası hem de gerçek kişiyi
-       * teşhis edilebilir çizmemenin yolu. Kompoze kare promtunda vardı, PARÇA
-       * promtunda yoktu — 4. turdaki iki portrenin ikisi de barsız geldi.
+       * "cut out and isolated" KALDIRILDI. Modele kesilmiş bir öğe istediğimizi
+       * söylemek, onun çizdiği şeyi kesilmiş öğeye çevirmedi — 5. turda ÇERÇEVE
+       * İÇİNDE monte edilmiş bir baskı çizdi, yani "kesilmiş öğe" tarifini
+       * sahne olarak resmetti. Kesme işi artık `pipeline/segment.py`de.
        */
-      PERSON_RE.test(subject) ? 'A black censor bar runs across the eyes.' : '',
+      `${subject.charAt(0).toUpperCase()}${subject.slice(1)}.`,
+      /**
+       * SANSÜR BARI — engine yasası: gerçek bir kişi ima ediliyorsa gözlerin
+       * üstüne siyah bar.
+       *
+       * DİKKAT: 5. turda bu cümle promtta VARDI ve model uygulamadı (portrede
+       * bar yok). Yani bu satır bir GARANTİ değil, yalnızca bir talep; kişinin
+       * teşhis edilebilirliğine karşı asıl koruma kaynak seçiminde ve
+       * `PERSON_RE`nin gerçek kişi adı vermemesinde.
+       */
+      PERSON_RE.test(subject) ? 'A black censor bar across the eyes.' : '',
       eraClause(opts.era),
       PIECE_MATERIAL,
-      'The subject fills most of the frame.',
       PIECE_BACKGROUND,
-      'NO text, NO letters, NO numbers, NO watermark, NO logo, NO border, NO frame,',
-      'NO sheet of paper behind the subject, NO drop shadow, NO vignette.',
-      'This is NOT a photograph of paper lying on a surface and NOT a scene:',
-      'it is one clipped element on blank white.',
-      'NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy.',
-      'Vertical 9:16 framing, ultra-detailed.',
+      'Vertical 9:16.',
     ]
       .filter(Boolean)
       .join(' '),
