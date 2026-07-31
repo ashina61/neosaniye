@@ -313,7 +313,17 @@ jobs:
               # Metin sızıntısının kaba göstergesi: küçük ölçekte yüksek yerel
               # kontrast. Harf yoğun bölge, düz kağıttan çok daha oynak olur.
               d = np.abs(np.diff(a, axis=1))
-              print(f"  {f:34s} {w}x{h}  ort={a.mean():5.1f}  yerel-kontrast={d.mean():5.2f}")
+              c = np.asarray(Image.open(f).convert('RGB')).astype(float)
+              r, g, b = c[:, :, 0], c[:, :, 1], c[:, :, 2]
+              # AKSAN KAPISI. AGENTS.md: tek aksan rengi, karenin en fazla %8'i;
+              # referansta ölçülen %3.6. 7. turda kompoze kareler %5.2-%11.2
+              # verdi — "ONE hot red signal accent" cümlesindeki "red" kelimesi
+              # kırmızı NESNE olarak çizildi (dev kırmızı blok, kırmızı kalem).
+              red = ((r - np.maximum(g, b)) > 45).mean() * 100
+              sat = (c.max(2) - c.min(2)).mean()
+              flag = '' if red <= 8 else '   >>> AKSAN TAŞMIŞ <<<'
+              print(f"  {f:30s} {w}x{h} ort={a.mean():5.1f} yerel-kontrast={d.mean():5.2f}"
+                    f" kırmızı%{red:5.2f} doygunluk={sat:5.1f}{flag}")
           PY
             echo
           fi
@@ -364,6 +374,7 @@ jobs:
             out/composed-frame.png
             collage-raw/*.png
             out/flow-pack/ALL-PROMPTS.txt
+            out/flow-pack/FRAME-PROMPTS.txt
             public/collage/*.png
             public/archive/*.png
             content/credits.json

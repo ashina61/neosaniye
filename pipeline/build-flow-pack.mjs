@@ -145,6 +145,19 @@ async function main() {
   // Referans PDF'in "Textify feed" biçimi bu; her blok tek başına çalışır.
   // Adları AYRI dosyada duruyor ki besleme metni kirlenmesin.
   await writeFile(path.join(PACK, 'ALL-PROMPTS.txt'), `${assets.map((a) => a.prompt).join('\n\n')}\n`);
+
+  /**
+   * A YOLUNUN PROMTLARI AYRI DOSYADA.
+   *
+   * ALL-PROMPTS.txt yalnızca B yolunu (plaka + parçalar) taşıyor. 7. turda
+   * bu eksik somut bir zarar verdi: artefakta ALL-PROMPTS.txt konmuştu ve
+   * A yolu koşmasına rağmen ÜRETİLEN karelerin promtu artefaktta yoktu —
+   * "hangi promt bunu üretti" sorusu artefakttan cevaplanamadı.
+   */
+  await writeFile(
+    path.join(PACK, 'FRAME-PROMPTS.txt'),
+    `${flow.filter((r) => r.fallbackPrompt).map((r) => r.fallbackPrompt).join('\n\n')}\n`,
+  );
   await writeFile(
     path.join(PACK, 'ASSET-LIST.txt'),
     `${assets.map((a, i) => `${String(i + 1).padStart(3)}. ${a.file}.png   (${a.role})`).join('\n')}\n`,
