@@ -39,6 +39,11 @@ public/archive/.raw-*
 # Flow klipleri sürümlenmez (büyük, elle üretiliyor); klasör yapısı kalır.
 public/clips/*.mp4
 
-# Kolaj ham görselleri: magenta zeminli, opak, türetilmiş veri. Alfa'ya
-# çevrilmiş hâlleri public/collage/ altında ve ONLAR sürümlenir.
+# Kolaj ham görselleri: magenta zeminli, opak, türetilmiş veri.
 collage-raw/
+
+# Kolaj parçaları sürümlenmez. `public/clips/*.mp4` ile aynı sınıf: büyük,
+# elle üretilen, KOŞU BAŞINA değişen malzeme — bir konunun parçaları başka bir
+# konuda hiçbir işe yaramıyor. `npm run collage` collage-raw/'dan yeniden
+# üretiyor. Klasör yapısı kalır.
+public/collage/*.png
