@@ -71,13 +71,45 @@ function findRaw(base) {
  * nokta üstüne nokta bindirip gri bir bulanıklık yapıyor. Aynı gerekçe
  * `CollageBuild`'in `halftone={false}` tercihinde de yazılı.
  */
+/**
+ * MOD ZİNCİRİ — ÖLÇÜLEREK KONDU.
+ *
+ * İlk sürüm yalnızca `chroma` deniyordu. Canlı çalıştırmada 5 görselin beşi de
+ * düştü: model magenta zemin üretmemişti (köşe medyanları gri/beyaz ya da
+ * soluk pembe, anahtar skoru 0-37, eşik 87). Sonuç: hiçbir parça bağlanmadı ve
+ * video eski siluetlerle render edilecekti.
+ *
+ * Aynı beş görselde üç mod ölçüldü:
+ *   chroma → 0/5 geçti   (zemin magenta değil, silinecek bir şey yok)
+ *   matte  → 5/5 geçti   (kenardan taşma-doldurma; zemin ne renk olursa olsun)
+ *   ink    → 3/5 geçti   (parlaklıktan alfa; koyu zeminli görselde çöküyor)
+ *
+ * Sıra buna göre: chroma ÖNCE kalıyor çünkü prompt onu istiyor ve doğru
+ * geldiğinde en temiz kenarı o veriyor. Tutmazsa matte, o da tutmazsa ink.
+ *
+ * DİKKAT — YEDEK MOD BEDAVA DEĞİL. Aynı ölçümde matte'in geçtiği 5 görselin
+ * yalnızca 2'si GÖRSEL OLARAK kullanılabilirdi: pembe zeminli olanlarda pembe
+ * "özne" sanılıp korunmuştu. Yani sayısal kapıyı geçmek, kesiğin doğru olduğu
+ * anlamına gelmiyor. Bu yüzden hangi modun kazandığı raporlanıyor: `chroma`
+ * dışında bir mod kazanıyorsa prompt tutmamış demektir ve bakılması gerekir.
+ */
+const MODES = ['chroma', 'matte', 'ink'];
+
 async function cutout(src, dst) {
-  const {stdout} = await run(
-    'python3',
-    [path.join(ROOT, 'pipeline', 'cutout.py'), src, dst, '--mode', 'chroma', '--no-halftone', '--strict'],
-    {cwd: ROOT},
-  );
-  return stdout.trim();
+  const problems = [];
+  for (const mode of MODES) {
+    try {
+      const {stdout} = await run(
+        'python3',
+        [path.join(ROOT, 'pipeline', 'cutout.py'), src, dst, '--mode', mode, '--no-halftone', '--strict'],
+        {cwd: ROOT},
+      );
+      return {line: stdout.trim(), mode};
+    } catch (e) {
+      problems.push(`${mode}: ${String(e.stdout || e.stderr || e.message).trim().split('\n').pop()}`);
+    }
+  }
+  throw new Error(problems.join(' | '));
 }
 
 async function main() {
@@ -105,6 +137,7 @@ async function main() {
   const wired = [];
   const empty = [];
   const problems = [];
+  const fallbacks = [];
 
   for (const row of man.flow) {
     const scene = sb.scenes[row.n - 1];
@@ -128,9 +161,11 @@ async function main() {
       if (!raw) continue;
       const dst = path.join(OUT, `${row.file}-${p.slot}.png`);
       try {
-        const line = await cutout(raw, dst);
+        const {line, mode} = await cutout(raw, dst);
         pieces.push({src: `collage/${row.file}-${p.slot}.png`, role: p.role});
-        console.log(`  ${line}`);
+        // `chroma` dışında bir mod kazandıysa prompt tutmamış: yüksek sesle söyle.
+        console.log(`  ${line}${mode === 'chroma' ? '' : `   << YEDEK MOD (${mode}) — zemin magenta değildi`}`);
+        if (mode !== 'chroma') fallbacks.push(`${row.file}-${p.slot} → ${mode}`);
       } catch (e) {
         // Alfa doğrulaması düştü: parça BAĞLANMAZ. Bağlamak, ekranda mor bir
         // dikdörtgen ya da görünmez bir katman demek olurdu.
@@ -160,6 +195,13 @@ async function main() {
   if (empty.length) {
     console.log(`\nmalzemesi olmayan sahne (${empty.length}) — kodla çizilmeye devam edecek:`);
     for (const e of empty) console.log(`  ${e.file}`);
+  }
+  if (fallbacks.length) {
+    console.log(`\nYEDEK MOD KULLANILDI (${fallbacks.length}) — bu parçalarda zemin magenta DEĞİLDİ:`);
+    for (const f of fallbacks) console.log(`  ${f}`);
+    console.log(`  Sayısal kapıyı geçmek kesiğin DOĞRU olduğu anlamına gelmiyor: ölçümde`);
+    console.log(`  matte'in geçtiği 5 parçanın yalnızca 2'si görsel olarak kullanılabilirdi.`);
+    console.log(`  Bu parçalara GÖZLE bak; çoğu böyleyse düzeltilecek yer prompt.`);
   }
   if (problems.length) {
     console.log(`\nALFA REDDEDİLDİ (${problems.length}) — bu parçalar bağlanmadı:`);

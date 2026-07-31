@@ -186,6 +186,22 @@ npm run sheet                      # tek kareye bak (render'a girmeden)
   (`layers.pieces[].box`, kanvasa göre 0..1). Yuvalara dağıtmak kompozisyonu yok
   eder. `box` varsa kontur da kapatılır: orijinaldeki kesim kenarının üstüne
   ikinci bir kenar binmesin.
+- **PROMPT KENDİ KENDİNİ YİYEBİLİR — ölçüldü.** İlk canlı çalıştırmada 5
+  görselin BEŞİ de magenta zemin üretmedi (köşe medyanı skorları 0-37, eşik 87)
+  ve hepsi alfa doğrulamasından düştü. İki sebep, ikisi de prompt'ta:
+  zemin cümlesinden hemen önce *"Desaturated… **No colour**"* yazıyordu
+  (modele önce "renk olmasın" deyip sonra neon magenta istemek), ve cümle
+  *"A single hand-cut paper collage element: a man"* diye başlıyordu — model
+  ADAM değil, bir yüzeyde duran YIRTIK KAĞIT çizdi. **Özne cümlenin başında
+  olmalı**, zemin talimatı da modelin bildiği bir şeye benzetilmeli
+  ("chroma-key screen, like a green screen but magenta") ve başarısızlık biçimi
+  adıyla reddedilmeli ("NOT a photograph of paper lying on a surface").
+- **Yedek mod zinciri var ama bedava değil.** `ingest-collage.mjs` sırayla
+  chroma → matte → ink deniyor. Aynı 5 görselde ölçüm: chroma 0/5, matte 5/5,
+  ink 3/5. AMA matte'in geçtiği 5 parçanın yalnızca 2'si GÖRSEL OLARAK
+  kullanılabilirdi — pembe zeminli olanlarda pembe "özne" sanılıp korundu.
+  Sayısal kapıyı geçmek kesiğin doğru olduğu anlamına gelmiyor; bu yüzden
+  chroma dışında bir mod kazandığında adım yüksek sesle uyarıyor.
 - **Düz bir kareyi geri katmanlara ayırmak GÜVENİLİR DEĞİL** ve denendi: bir
   referans kolajda hero maskesi ancak elle kutu vererek çıkarılabildi, sancak
   direği hero'ya bağlandığı için otomatik taşma-doldurma sızdı, plakadaki delik

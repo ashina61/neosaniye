@@ -365,12 +365,42 @@ export const RECIPE_KINDS = Object.keys(RECIPES);
  *            sürüklenme alır.
  */
 
-/** Parçanın magenta zemin şartı — alfa çıkarımının tek dayanağı. */
+/**
+ * Parçanın magenta zemin şartı — alfa çıkarımının tek dayanağı.
+ *
+ * ================== CANLI ÇALIŞTIRMADAN ÖLÇÜLDÜ ==================
+ *
+ * İlk sürüm 5 görselin BEŞİNDE de zemin üretemedi. Ölçüm (köşe medyanı,
+ * `min(R,B)-G`, eşik 87):
+ *   01-a (216,216,216) skor   0     01-b (207,103,140) skor  37
+ *   01-c ( 59, 59, 57) skor  -2     01-d (188,154,170) skor  16
+ *   02-a (235,235,235) skor   0
+ * Yani model ya hiç denemedi ya da SOLUK PEMBE yaptı; hiçbiri eşiğin yarısına
+ * bile gelmedi ve beşi de alfa doğrulamasından düştü.
+ *
+ * İKİ SEBEP, İKİSİ DE BU PROMPT'TA:
+ *
+ * 1. ÇELİŞKİ. Zemin cümlesinden hemen önce "Desaturated ink black and halftone
+ *    gray only. No colour in the subject." yazıyordu. Modele "hiç renk olmasın"
+ *    deyip iki cümle sonra "zemini neon magenta yap" demek. Model global
+ *    talimatı uyguladı ve doygunluğu kıstı. O cümle kaldırıldı — `despill()`
+ *    zaten kalıntı magenta'yı temizliyor ve referans kolaj RENK İSTİYOR
+ *    (kırmızı mühür, hardal bant).
+ *
+ * 2. YANLIŞ ZİHİNSEL MODEL. "hand-cut paper collage element" ifadesi modele
+ *    "bir yüzeyin üstünde duran kağıt parçasının FOTOĞRAFI" çizdiriyordu —
+ *    yani bir SAHNE, bir kesik değil. Ölçülen çıktılar tam olarak buydu:
+ *    pembe duvara yapıştırılmış yırtık kağıtlar. O yüzden artık "chroma-key
+ *    screen" deniyor (modeller yeşil perdeyi bilir) ve o başarısızlık biçimi
+ *    ADIYLA reddediliyor.
+ */
 const PIECE_BACKGROUND = [
-  `BACKGROUND: fill the entire background with ${KEY_COLOUR}, a single flat uniform field,`,
-  'edge to edge, with no vignette, no gradient, no texture and no shadow on the background itself.',
-  'The subject must not touch the frame edges; leave a clear margin of background on all sides.',
-  'The subject must be ONE single object, cut out and isolated, nothing else in the frame.',
+  `BACKGROUND: a flat chroma-key screen behind the subject — one uniform fill of ${KEY_COLOUR},`,
+  'exactly like a green-screen backdrop but magenta.',
+  'The background is NOT a wall, NOT paper, NOT a table, NOT a surface of any kind:',
+  'it has no texture, no grain, no gradient, no vignette and no shadow cast on it.',
+  'The subject must not touch the frame edges; leave a clear margin of flat magenta on all sides.',
+  'ONE single object only, isolated, nothing else in the frame.',
 ].join(' ');
 
 /**
@@ -417,14 +447,22 @@ export function piecePrompts(beat) {
   return subjects.map((subject, i) => ({
     slot: String.fromCharCode(97 + i), // a, b, c, d
     role: i === 0 ? 'hero' : 'support',
+    /**
+     * ÖZNE EN BAŞTA. Önceki sürüm "A single hand-cut paper collage element:
+     * a man" diye başlıyordu ve ölçülen çıktı ADAM DEĞİL, yırtık kağıttı —
+     * baştaki uzun tanım özneyi eziyordu. Artık cümle özneyle açılıyor,
+     * halftone işlemi ondan SONRA geliyor.
+     */
     prompt: [
-      `A single hand-cut paper collage element: ${subject}.`,
-      'Rendered as a black and white halftone photograph cutout with rough scissor-cut edges,',
-      'coarse print dots, visible paper fibre and grain, matte, flat even documentary lighting.',
-      'Desaturated ink black and halftone gray only. No colour in the subject.',
+      `${subject.charAt(0).toUpperCase()}${subject.slice(1)}, cut out and isolated.`,
+      'Rendered as a coarse black-and-white halftone print with rough scissor-cut edges,',
+      'visible print dots and paper fibre, matte, flat even documentary lighting.',
+      'The subject fills most of the frame.',
       PIECE_BACKGROUND,
-      'NO text, NO letters, NO numbers, NO watermark, NO logo, NO border, NO paper sheet behind the subject,',
-      'NO drop shadow, NO vignette.',
+      'NO text, NO letters, NO numbers, NO watermark, NO logo, NO border, NO frame,',
+      'NO sheet of paper behind the subject, NO drop shadow, NO vignette.',
+      'This is NOT a photograph of paper lying on a surface and NOT a scene:',
+      'it is one object cut out against a flat magenta screen.',
       'NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy.',
       'Vertical 9:16 framing, ultra-detailed.',
     ].join(' '),
