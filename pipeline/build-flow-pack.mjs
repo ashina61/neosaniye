@@ -203,6 +203,18 @@ async function main() {
      * Bedava uç hâlâ B yolundan (parçalar) besleniyor ve orada metin YOK.
      */
     row.fallbackPrompt = composedCollagePrompt(beat, story, {era, withText: true});
+    /**
+     * ============ AYNI KARE, BEDAVA UÇ İÇİN METİNSİZ ============
+     *
+     * `fallbackPrompt` Flow'a gidiyor ve metni AÇIK (Flow'un okunur harf
+     * ürettiği kanıtlı). Ama `collage-test.yml` `path: frames` ile koştuğunda
+     * AYNI dosyayı BEDAVA modele veriyordu ve sonuç ölçüldü: beş karenin
+     * üçünde bozuk harf ("D DILDDDNIDI DDI A EDIIIDA").
+     *
+     * Bu benim bu oturumda açtığım bir gerileme: metni pakete ben açtım,
+     * bedava ucun aynı dosyayı okuduğunu hesaba katmadan. İki uç, iki dosya.
+     */
+    row.freePrompt = composedCollagePrompt(beat, story, {era, withText: false});
     row.platePrompt = platePrompt(beat);
     row.pieces = piecePrompts(beat, {era});
   }

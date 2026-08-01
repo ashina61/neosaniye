@@ -32,6 +32,45 @@
  * öğeler.
  */
 
+/**
+ * ============ İKİ KUSUR, BEŞ GÖRSELDE ÖLÇÜLDÜ ============
+ *
+ * Bedava uç (pollinations/FLUX) kompoze promtla koşturuldu ve beş kare geldi.
+ * Beşi de teknik olarak düzgün görsellerdi ama YANLIŞ ŞEYİN resmiydi:
+ *
+ *   · kırmızı masa üstünde açık bir DEFTER, sayfasında uçak
+ *   · duvara asılı ÇERÇEVELİ bir baskı, kırmızı zeminde portre
+ *   · koyu masa üstünde duran bir KİTAPÇIK
+ *   · kırmızı-siyah kenarlıklı bir PUL/KART
+ *
+ * KUSUR 1 — TARİF SAHNE OLARAK RESMEDİLDİ. Promt bir kağıt kolajı tarif ediyor,
+ * model de "kağıt kolajın FOTOĞRAFINI" üretti: perspektifte duran, masaya
+ * konmuş, alan derinliği olan bir nesne. Promtta karenin KENDİSİNİN o kolaj
+ * sayfası olduğu, düz ve kenardan kenara dolduğu hiç yazmıyordu.
+ *
+ * Bu hata bu depoda DAHA ÖNCE ÖLÇÜLDÜ — parça promtunda: "5. turda ÇERÇEVE
+ * İÇİNDE monte edilmiş bir baskı çizdi, yani 'kesilmiş öğe' tarifini sahne
+ * olarak resmetti." Aynı hata, bu kez kompoze kare seviyesinde.
+ *
+ * KUSUR 2 — KIRMIZI KAREYİ ELE GEÇİRDİ. Stil bloğu "ONE hot red signal accent"
+ * diyor. Beş karenin BEŞİNDE de kırmızı bir ALAN var: masa, zemin, kenarlık.
+ * Model "aksan" kelimesini renk şeması diye okudu. Deponun kendi aksan
+ * disiplini (`ACCENT_MAX_SHARE`, karenin en fazla %8'i) tam bunu önlemek için
+ * var ve promt onun tersini yapıyordu.
+ *
+ * İkisi de OLUMLU cümleyle düzeltiliyor, olumsuzlamayla değil: bu uçta
+ * olumsuzlamanın yönlendirme gücü olmadığı ölçüldü. Zemini ADLANDIRMAK
+ * ("aged cream newsprint fills the frame") "kırmızı yapma" demekten güçlü.
+ */
+const FLAT_FRAME = [
+  'THE IMAGE IS THE COLLAGE PAGE ITSELF, scanned perfectly flat and straight on,',
+  'the aged cream newsprint sheet filling the entire frame from edge to edge,',
+  'seen square from directly above with no perspective and everything in equal sharp focus.',
+  'A flat scan of a single sheet.',
+  'The paper ground is aged cream and tan newsprint; red appears only as one thin',
+  'printed stroke or a small stamp mark covering a few percent of the sheet.',
+].join(' ');
+
 /** Referans PDF'in stil bloğu — her prompt'ta birebir geçer. */
 import {subjectFor} from './subject.mjs';
 
@@ -525,6 +564,9 @@ export function composedCollagePrompt(beat, story = {}, opts = {}) {
     eraClause(opts.era ?? story.era),
     pieceMaterial(opts.era ?? story.era),
     eraStyle(withText ? STYLE_BLOCK : STYLE_BLOCK_NO_TEXT, opts.era ?? story.era),
+    // Düzlük ve kırmızı disiplini closer'dan ÖNCE: closer genel bir kapanış,
+    // bunlar beş karede ölçülmüş iki somut kusurun panzehiri.
+    FLAT_FRAME,
     withText ? CLOSER : CLOSER_NO_TEXT,
   ]
     .filter(Boolean)

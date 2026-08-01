@@ -297,8 +297,15 @@ async function packMode(args) {
 
   const assets = framesMode
     ? man.flow
-        .filter((r) => r.fallbackPrompt)
-        .map((r) => ({file: `${r.file}-frame`, n: r.n, role: 'frame', prompt: r.fallbackPrompt}))
+        /**
+         * `freePrompt` ÖNCE, `fallbackPrompt` YEDEK.
+         *
+         * `fallbackPrompt` Flow için yazıldı ve metni AÇIK. Bu betik BEDAVA
+         * sağlayıcıya gidiyor ve o uçta okunur harf çıkmadığı ölçüldü — beş
+         * karenin üçü bozuk yazıyla geldi. Aynı kare, iki uç, iki promt.
+         */
+        .filter((r) => r.freePrompt || r.fallbackPrompt)
+        .map((r) => ({file: `${r.file}-frame`, n: r.n, role: 'frame', prompt: r.freePrompt ?? r.fallbackPrompt}))
         .slice(0, limit)
     : man.assets.filter((a) => includePlates || a.role !== 'plate').slice(0, limit);
 
