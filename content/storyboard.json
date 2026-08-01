@@ -15,28 +15,12 @@
         "shape": "star"
       },
       "occurrence": 0,
-      "durationInFrames": 124,
+      "durationInFrames": 180,
       "seed": 3,
       "_beat": {
         "text": "On the night of 24 November 1971,",
         "kind": "cold_open",
         "start": 0
-      }
-    },
-    {
-      "template": "hero_cutout",
-      "payload": {
-        "headline": "a *man* in a dark suit",
-        "shape": "figure",
-        "shape2": "object"
-      },
-      "occurrence": 0,
-      "durationInFrames": 108,
-      "seed": 10,
-      "_beat": {
-        "text": "a man in a dark suit",
-        "kind": "fact",
-        "start": 4.12
       }
     },
     {
@@ -58,29 +42,30 @@
             "label": "SEATTLE"
           }
         ],
-        "headline": "bought a one-way ticket from Portland",
-        "shape": "document",
+        "headline": "a man in a dark suit",
+        "shape": "figure",
+        "shape2": "object",
         "figure": "PORTLAND"
       },
       "occurrence": 0,
-      "durationInFrames": 141,
-      "seed": 17,
+      "durationInFrames": 247,
+      "seed": 10,
       "_beat": {
-        "text": "bought a one-way ticket from Portland to Seattle.",
+        "text": "a man in a dark suit bought a one-way ticket from Portland to Seattle.",
         "kind": "sequence",
-        "start": 7.65
+        "start": 4.12
       }
     },
     {
-      "template": "headline_card",
+      "template": "hero_cutout",
       "payload": {
         "headline": "He handed the *attendant* a note",
         "shape": "figure",
         "shape2": "document"
       },
       "occurrence": 0,
-      "durationInFrames": 108,
-      "seed": 24,
+      "durationInFrames": 180,
+      "seed": 17,
       "_beat": {
         "text": "He handed the attendant a note",
         "kind": "fact",
@@ -88,15 +73,15 @@
       }
     },
     {
-      "template": "hero_cutout",
+      "template": "headline_card",
       "payload": {
         "headline": "that said there was a *bomb*",
         "shape": "bomb",
         "shape2": "case"
       },
-      "occurrence": 1,
-      "durationInFrames": 159,
-      "seed": 31,
+      "occurrence": 0,
+      "durationInFrames": 180,
+      "seed": 24,
       "_beat": {
         "text": "that said there was a bomb in his briefcase.",
         "kind": "fact",
@@ -113,8 +98,8 @@
         "figure": "200,000"
       },
       "occurrence": 0,
-      "durationInFrames": 176,
-      "seed": 38,
+      "durationInFrames": 180,
+      "seed": 31,
       "_beat": {
         "text": "He asked for two hundred thousand dollars and four parachutes.",
         "kind": "magnitude",
@@ -122,7 +107,7 @@
       }
     },
     {
-      "template": "headline_card",
+      "template": "hero_cutout",
       "payload": {
         "headline": "In Seattle the *passengers* walked",
         "label": "SEATTLE",
@@ -131,119 +116,62 @@
         "figure": "SEATTLE"
       },
       "occurrence": 1,
-      "durationInFrames": 141,
-      "seed": 45,
+      "durationInFrames": 230,
+      "seed": 38,
       "_beat": {
-        "text": "In Seattle the passengers walked off the plane",
+        "text": "In Seattle the passengers walked off the plane and the money came aboard.",
         "kind": "fact",
         "start": 27.06
       }
     },
     {
-      "template": "hero_cutout",
+      "template": "headline_card",
       "payload": {
-        "headline": "and the *money* came aboard",
-        "shape": "document"
+        "headline": "The *aircraft* took off again",
+        "shape": "aircraft",
+        "shape2": "wave"
       },
-      "occurrence": 2,
-      "durationInFrames": 108,
-      "seed": 52,
+      "occurrence": 1,
+      "durationInFrames": 180,
+      "seed": 45,
       "_beat": {
-        "text": "and the money came aboard.",
-        "kind": "fact",
-        "start": 31.76
-      }
-    },
-    {
-      "template": "labeled_diagram",
-      "payload": {
-        "headline": "The aircraft took off again",
-        "shape": "aircraft"
-      },
-      "occurrence": 0,
-      "durationInFrames": 108,
-      "seed": 59,
-      "_beat": {
-        "text": "The aircraft took off again",
+        "text": "The aircraft took off again into rain and low cloud.",
         "kind": "fact",
         "start": 34.71
       }
     },
     {
-      "template": "headline_card",
+      "template": "labeled_diagram",
       "payload": {
-        "headline": "into *rain* and low cloud",
-        "shape": "wave"
-      },
-      "occurrence": 2,
-      "durationInFrames": 108,
-      "seed": 66,
-      "_beat": {
-        "text": "into rain and low cloud.",
-        "kind": "fact",
-        "start": 37.65
-      }
-    },
-    {
-      "template": "hero_cutout",
-      "payload": {
-        "headline": "Somewhere over southern *Washington*",
-        "label": "WASHINGTON",
+        "headline": "Somewhere over southern Washington",
+        "caption": "Somewhere over southern Washington he opened the rear stair and jumped with a parachute.",
         "shape": "building",
+        "shape2": "parachute",
         "figure": "WASHINGTON"
       },
-      "occurrence": 3,
-      "durationInFrames": 159,
-      "seed": 73,
+      "occurrence": 0,
+      "durationInFrames": 247,
+      "seed": 52,
       "_beat": {
-        "text": "Somewhere over southern Washington he opened the rear stair",
+        "text": "Somewhere over southern Washington he opened the rear stair and jumped with a parachute.",
         "kind": "fact",
         "start": 40.59
       }
     },
     {
-      "template": "labeled_diagram",
-      "payload": {
-        "headline": "and jumped with a parachute",
-        "shape": "parachute"
-      },
-      "occurrence": 1,
-      "durationInFrames": 108,
-      "seed": 80,
-      "_beat": {
-        "text": "and jumped with a parachute.",
-        "kind": "fact",
-        "start": 45.88
-      }
-    },
-    {
-      "template": "headline_card",
-      "payload": {
-        "headline": "The FBI searched the *woods*",
-        "shape": "terrain"
-      },
-      "occurrence": 3,
-      "durationInFrames": 108,
-      "seed": 87,
-      "_beat": {
-        "text": "The FBI searched the woods",
-        "kind": "fact",
-        "start": 48.82
-      }
-    },
-    {
       "template": "hero_cutout",
       "payload": {
-        "headline": "for *eighteen* days and found nothing",
+        "headline": "The FBI searched the *woods*",
+        "shape": "terrain",
         "figure": "18"
       },
-      "occurrence": 4,
-      "durationInFrames": 108,
-      "seed": 94,
+      "occurrence": 2,
+      "durationInFrames": 194,
+      "seed": 59,
       "_beat": {
-        "text": "for eighteen days and found nothing.",
+        "text": "The FBI searched the woods for eighteen days and found nothing.",
         "kind": "absence",
-        "start": 51.76
+        "start": 48.82
       }
     },
     {
@@ -255,8 +183,8 @@
         "figure": "9"
       },
       "occurrence": 0,
-      "durationInFrames": 159,
-      "seed": 101,
+      "durationInFrames": 180,
+      "seed": 66,
       "_beat": {
         "text": "Nine years later a boy digging on a riverbank",
         "kind": "time",
@@ -270,9 +198,9 @@
         "shape": "document",
         "figure": "3"
       },
-      "occurrence": 4,
-      "durationInFrames": 108,
-      "seed": 108,
+      "occurrence": 2,
+      "durationInFrames": 180,
+      "seed": 73,
       "_beat": {
         "text": "found three bundles of the banknotes.",
         "kind": "fact",
@@ -283,30 +211,16 @@
       "template": "hero_cutout",
       "payload": {
         "headline": "The rest of the *money*",
-        "shape": "document"
+        "shape": "document",
+        "shape2": "building"
       },
-      "occurrence": 5,
-      "durationInFrames": 108,
-      "seed": 115,
+      "occurrence": 3,
+      "durationInFrames": 194,
+      "seed": 80,
       "_beat": {
-        "text": "The rest of the money",
-        "kind": "fact",
-        "start": 64.12
-      }
-    },
-    {
-      "template": "stick_beat",
-      "payload": {
-        "headline": "has never appeared in a *bank*",
-        "shape": "building"
-      },
-      "occurrence": 0,
-      "durationInFrames": 108,
-      "seed": 122,
-      "_beat": {
-        "text": "has never appeared in a bank.",
+        "text": "The rest of the money has never appeared in a bank.",
         "kind": "absence",
-        "start": 67.06
+        "start": 64.12
       }
     },
     {
@@ -317,8 +231,8 @@
         "shape2": "parachute"
       },
       "occurrence": 1,
-      "durationInFrames": 141,
-      "seed": 129,
+      "durationInFrames": 180,
+      "seed": 87,
       "_beat": {
         "text": "Nobody ever found the man or the parachute.",
         "kind": "cliffhanger",
@@ -326,6 +240,6 @@
       }
     }
   ],
-  "totalFrames": 2388,
+  "totalFrames": 2552,
   "era": "1971"
 }

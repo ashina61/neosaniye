@@ -32,13 +32,26 @@
  */
 export const WORDS_PER_SECOND = 1.7;
 
-/** PDF'in beat sayısı sağlaması: süreye göre beklenen aralık. */
+/**
+ * BEAT SAYISI ARALIĞI — SESSİZ OKUMAYA GÖRE, PDF'e göre DEĞİL.
+ *
+ * Eskisi doğrudan referans PDF'inden alınmıştı: 60 saniyede 22-30 beat. O
+ * rakam SESLENDİRİLMİŞ video-essay içindir; izleyici dinler, ekranda yalnızca
+ * vurgu okur. Bizim kanalda ses yok — izleyici her kelimeyi OKUYOR.
+ *
+ * Kullanıcı ölçtü ve bu farkı gösterdi: 1 dakika 9 saniyelik videoda 19 sahne
+ * çıktı, sahne başına 4.2 saniye, ve "sahneler çok hızlı geçiyor çoğu yazı
+ * felan okunmuyor". PDF'in aralığı bizim için bir hedef değil, bir tuzaktı —
+ * üstelik eski aralık bu videoyu "beat sayısı AZ" diye uyarıyordu.
+ *
+ * Yeni aralık kullanıcının verdiği sayıdan: ~14 sahne, sahne başına ~6 saniye.
+ */
 export const BEAT_COUNT_RANGE = [
-  {seconds: 30, min: 12, max: 15},
-  {seconds: 60, min: 22, max: 30},
-  {seconds: 120, min: 45, max: 60},
-  {seconds: 180, min: 70, max: 90},
-  {seconds: 300, min: 115, max: 150},
+  {seconds: 30, min: 4, max: 6},
+  {seconds: 60, min: 8, max: 12},
+  {seconds: 120, min: 16, max: 22},
+  {seconds: 180, min: 24, max: 34},
+  {seconds: 300, min: 40, max: 56},
 ];
 
 export function wordCount(text) {
@@ -492,10 +505,10 @@ export function templateForBeat(kind, recent = []) {
  *
  * @param {string} narration  tek blok sürekli anlatı (Fern stili)
  * @param {object} [opts]
- * @param {number} [opts.maxWordsPerBeat]  PDF: 5-8 kelime, tavan 8
+ * @param {number} [opts.maxWordsPerBeat]  tavan 14 — aşağıdaki gerekçeye bak
  * @returns {{beats: Array, totalSeconds: number, words: number}}
  */
-export function buildBeats(narration, {maxWordsPerBeat = 8} = {}) {
+export function buildBeats(narration, {maxWordsPerBeat = 14} = {}) {
   const sentences = splitSentences(narration);
   const chunks = [];
   sentences.forEach((s, si) => {

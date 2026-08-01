@@ -352,6 +352,39 @@ export function composedCollagePrompt(beat, story = {}, opts = {}) {
   const label = date ? date : names[0] ? names[0].toUpperCase() : null;
 
   /**
+   * ŞERİDİN YAZISI — sahneyi ADLANDIRAN 2-4 kelime.
+   *
+   * Referanstaki "FEDERAL POLICE BRIEFING" bir cümle değil, bir AD. Anlatı
+   * cümlesini olduğu gibi yazdırmak iki sebeple yanlış: görsel modeli uzun
+   * metni bozuyor, ve cümle zaten ekranda altyazı olarak duruyor — kareye
+   * ikinci kez basmak tekrar olur.
+   *
+   * Kaynak sırası bilgi değerine göre: özel isim (SEATTLE) sahneyi en iyi
+   * adlandıran şey, yoksa cümlenin somut nesnesi (PARACHUTE). İkisi de yoksa
+   * şerit HİÇ ÇİZİLMEZ — uydurma bir başlık atmak, uydurma nesne çizmekle
+   * aynı sınıf hata.
+   */
+  /**
+   * ŞERİT DAMGAYLA AYNI ŞEYİ YAZAMAZ — ÖLÇÜLDÜ.
+   *
+   * İlk sürüm ikisini de aynı kaynaktan besledi ve çıktı şu oldu:
+   *
+   *   "…carrying the stamp-printed label SEATTLE … a cream letterpress
+   *    caption strip … reading SEATTLE …"
+   *
+   * Aynı kelime karede iki kez, iki farklı öğede. Referansta böyle bir şey
+   * yok: kürsüdeki mühür ile alttaki "FEDERAL POLICE BRIEFING" AYRI şeyler
+   * söylüyor. Damga zaten özel ismi aldıysa şerit somut nesneye düşer.
+   */
+  const heroForCaption = usableHero(concrete) ? stripArticle(heroNoun(usableHero(concrete))) : null;
+  // Karşılaştırma BÜYÜK HARFLE: `label` zaten `.toUpperCase()` görmüş, `names[0]`
+  // görmemiş. Küçük harf farkı yüzünden ilk sürümde eşitlik hiç tutmadı ve
+  // önlemek için yazdığım tekrar önlemi çalışmadan durdu — çıktıda SEATTLE
+  // hem damgada hem şeritte kaldı.
+  const captionSource = label === names[0]?.toUpperCase() ? (heroForCaption ?? null) : (names[0] ?? heroForCaption);
+  const caption = captionSource ? shortLabel(captionSource, 4).toUpperCase() : null;
+
+  /**
    * SANSÜR BARI — gerçek bir kişi ima ediliyorsa gözlerin üstüne siyah bar.
    * Hem stilin imzası hem de gerçek kişiyi teşhis edilebilir çizmemenin yolu.
    */
@@ -366,11 +399,22 @@ export function composedCollagePrompt(beat, story = {}, opts = {}) {
    * promtlar artikeli koruyor: "one strip of masking tape at its corner and
    * a faint coffee-ring stain nearby".
    */
-  const supports = recipe.support.slice(0, 2).map((x) => String(x).trim());
+  // Destek öğeleri de döneme uyarlanıyor: `place` reçetesi "a small halftone
+  // photograph of a street or station" diyor ve 1628 karesinde hero gravür
+  // olurken destek fotoğraf kalıyordu — aynı karede iki malzeme.
+  const supports = recipe.support.slice(0, 2).map((x) => eraStyle(String(x).trim(), opts.era ?? story.era));
 
+  /**
+   * HERO'NUN MALZEMESİ DE DÖNEME BAĞLI — B yolundaki sızıntının ikizi.
+   *
+   * Bu satır koşulsuz "a halftone black and white photograph cutout" diyordu.
+   * Aile `style` metinlerinde bulunan hatanın aynısı: promtun sonundaki malzeme
+   * cümlesi 1628 için gravür derken, hero cümlesi aynı karede fotoğraf istiyor.
+   * Model hangisini dinlerse dinlesin biri yanlış.
+   */
   const usable = usableHero(concrete);
   const hero = usable
-    ? `a halftone black and white photograph cutout of ${heroNoun(usable)}`
+    ? `${mediumPhrase(opts.era ?? story.era)} cutout of ${heroNoun(usable)}`
     : stripArticleKeepText(recipe.hero);
 
   /**
@@ -441,6 +485,29 @@ export function composedCollagePrompt(beat, story = {}, opts = {}) {
     supports.length
       ? `${supports.join(' and ')} as the only supporting elements`
       : 'everything else empty aged paper',
+    /**
+     * ============ ALT BAŞLIK ŞERİDİ — REFERANSIN İMZASI ============
+     *
+     * Kullanıcı Flow'da ürettiği kareyi gönderdi ve "şu görsel kaliteyi
+     * yakalasak bitti gitti" dedi. Karede bu promtun ürettiği her şey vardı:
+     * yaşlanmış gazete zemini, kırmızı ofset konturlu halftone cutout, bant
+     * parçaları, kırmızı ip, pirinç raptiye. Promtta OLMAYAN tek öğe, karenin
+     * en alttaki ve en okunur parçasıydı:
+     *
+     *     ┌──────────────────────────┐
+     *     │ FEDERAL POLICE BRIEFING  │  krem şerit, siyah sıkışık kalın
+     *     └──────────────────────────┘  büyük harf, hafif eğik yapıştırılmış
+     *
+     * Kolajı EDİTORYAL yapan şey bu şerit: kareye bir başlık veriyor. Onsuz
+     * kompozisyon güzel bir sayfa, onunla bir belge.
+     *
+     * `labelClause`TAN FARKI: o, tarihi hero'nun İÇİNE damga olarak gömüyor
+     * (referansta o da var — kürsüdeki mühür). Şerit AYRI bir öğe ve sahneyi
+     * ADLANDIRIYOR. İkisi birbirinin yerine geçmez.
+     */
+    withText && caption
+      ? `a cream letterpress caption strip pasted along the bottom margin at a slight angle reading ${caption} in condensed bold black capitals`
+      : null,
     'wide empty margins around it',
   ]
     .filter(Boolean)
@@ -448,9 +515,20 @@ export function composedCollagePrompt(beat, story = {}, opts = {}) {
 
   return [
     `${scene}.`,
-    withText ? STYLE_BLOCK : STYLE_BLOCK_NO_TEXT,
+    /**
+     * DÖNEM — B yoluna konmuştu, buraya KONMAMIŞTI.
+     *
+     * Gözden kaçmaydı ve A yolu üretim koluna dönerken daha pahalı hâle
+     * geliyor: `STYLE_BLOCK` koşulsuz "halftone photograph cutouts" diyor ve
+     * 1628 konusunda bunun karşılığı yok — fotoğraf 1839'da icat edildi.
+     */
+    eraClause(opts.era ?? story.era),
+    pieceMaterial(opts.era ?? story.era),
+    eraStyle(withText ? STYLE_BLOCK : STYLE_BLOCK_NO_TEXT, opts.era ?? story.era),
     withText ? CLOSER : CLOSER_NO_TEXT,
-  ].join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 }
 
 /** İlk harfi büyüt — sahne cümlesi özneyle açılıyor. */
@@ -685,6 +763,8 @@ export const RECIPE_KINDS = Object.keys(RECIPES);
 const MATERIAL_BY_ERA = [
   {
     from: 1885,
+    phrase: 'a halftone black and white photograph',
+    cutoutNoun: 'halftone photograph',
     text: [
       'Black and white archival halftone photograph, visible print grain and paper fibre,',
       'desaturated tan and ink-black tones, matte, flat documentary lighting.',
@@ -692,6 +772,8 @@ const MATERIAL_BY_ERA = [
   },
   {
     from: 1839,
+    phrase: 'an early collodion-era photographic print',
+    cutoutNoun: 'early photographic print',
     text: [
       'An early photographic print from the collodion and albumen era: warm sepia and grey tones,',
       'slightly soft edges, the frozen stillness of a long exposure, visible plate blemishes,',
@@ -700,6 +782,8 @@ const MATERIAL_BY_ERA = [
   },
   {
     from: -Infinity,
+    phrase: 'a hand-cut copperplate engraving',
+    cutoutNoun: 'engraved plate',
     text: [
       'A printed copperplate engraving on aged rag paper: the image is built from fine parallel',
       'hatching and cross-hatching lines rather than continuous tone, ink black on warm cream paper,',
@@ -710,9 +794,42 @@ const MATERIAL_BY_ERA = [
 
 /** Dönem yılı → malzeme cümlesi. Yıl yoksa halftone (kanalın varsayılanı). */
 export function pieceMaterial(era) {
+  return byEra(era).text;
+}
+
+function byEra(era) {
   const y = Number.parseInt(String(era ?? '').replace(/\D+/g, ''), 10);
-  if (!Number.isFinite(y)) return MATERIAL_BY_ERA[0].text;
-  return MATERIAL_BY_ERA.find((m) => y >= m.from).text;
+  if (!Number.isFinite(y)) return MATERIAL_BY_ERA[0];
+  return MATERIAL_BY_ERA.find((m) => y >= m.from);
+}
+
+/**
+ * Aynı sınırın KISA hâli — kompoze karenin hero cümlesinde ve stil bloğunda
+ * kullanılıyor. `pieceMaterial` bir paragraf; burada bir isim tamlaması gerek:
+ * "a halftone black and white photograph cutout of a warship".
+ */
+export function mediumPhrase(era) {
+  return byEra(era).phrase;
+}
+
+/**
+ * STİL BLOĞUNU DÖNEME UYARLA.
+ *
+ * `STYLE_BLOCK` kaynak PDF'ten birebir alınmış ve içinde "black and white
+ * halftone photograph cutouts" geçiyor. Blok kolajın MALZEME dilini tarif
+ * ediyor; fotoğraf öncesi bir konuda o dil yanlış ve promtun geri kalanıyla
+ * çelişiyor. Birebirlik önemli ama tutarlılık daha önemli — sapma burada
+ * kasıtlı ve tek cümlelik.
+ */
+function eraStyle(block, era) {
+  const m = byEra(era);
+  if (m.from >= 1885) return block;
+  return block
+    .replace('black and white halftone photograph cutouts', `black and white ${m.cutoutNoun} cutouts`)
+    // Reçetelerin destek öğelerinde geçen tekil biçim: "a small halftone
+    // photograph of a street or station".
+    .replace(/halftone photograph\b/g, m.cutoutNoun)
+    .replace(/halftone black and white portrait photograph/g, `${m.cutoutNoun} portrait`);
 }
 
 /**

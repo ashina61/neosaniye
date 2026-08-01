@@ -495,7 +495,23 @@ async function main() {
    * Seslendirme eklendiğinde bu taban düşürülebilir — o zaman okuma yükü ortadan
    * kalkar ve kesme temposu sesin temposuna bağlanır.
    */
-  const MIN_SECONDS = 3.6;
+  /**
+   * ============ 3.6 → 6.0, KULLANICININ ÖLÇÜMÜYLE ============
+   *
+   * Tam render alındı ve kullanıcı saydı: 1 dakika 9 saniyede 19 sahne, yani
+   * sahne başına 4.2 saniye. Hükmü net: "sahneler çok hızlı geçiyor çoğu yazı
+   * felan okunmuyor. kanka 14 çizim olsa bunlar 6 snden cut out olsa bitti."
+   *
+   * 3.6 zaten iki kez yükseltilmişti (1.2 → 3.0 → 3.6) ve hâlâ yetmiyordu,
+   * çünkü taban tek başına çalışmıyor: 19 beat varsa 19 sahne olur ve toplam
+   * süre uzamasın diye her sahne sıkışır. Bu yüzden bu değişiklik `beats.mjs`
+   * içindeki kelime tavanıyla BİRLİKTE yapıldı (8 → 14 kelime): daha az, daha
+   * uzun beat. db-cooper 19 sahneden 13 sahneye indi.
+   *
+   * Taban bir ALT sınır, sabit süre değil: 15 kelimelik bir beat 1.7 kelime/sn
+   * ile 8.8 saniye alır ve o beat 8.8 saniye kalır.
+   */
+  const MIN_SECONDS = 6.0;
 
   // Şablon seçimi burada KESİNLEŞİR: beats.mjs tür bazlı öneriyi verir, ama
   // hangi şablonun gerçekten çizebileceğini payload belirler. `resolveTemplate`

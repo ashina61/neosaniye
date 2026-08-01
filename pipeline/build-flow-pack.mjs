@@ -158,7 +158,22 @@ async function main() {
   for (const row of flow) {
     if (!chosen.has(row.n)) continue;
     const beat = {text: row.text, kind: row.kind};
-    row.fallbackPrompt = composedCollagePrompt(beat, story);
+    /**
+     * `withText: true` — BU DOSYA FLOW'A GİDİYOR.
+     *
+     * Metin varsayılan olarak kapalıydı ve gerekçesi ölçülmüştü: bedava uçtaki
+     * model okunur harf üretemiyor, şerit çizip üstünü uydurma harfle
+     * dolduruyor ("YOOLNI IIILNIIRIGLLLID").
+     *
+     * Ama o ölçüm BEDAVA UÇ için geçerli. Bu dosya (`NN-kind-FALLBACK-single-
+     * frame`) kullanıcının Flow'a elle verdiği promt ve Flow'un okunur harf
+     * ürettiği KANITLI: gönderdiği referans karede alt şeritte "FEDERAL POLICE
+     * BRIEFING" tertemiz diziliydi. Kapalı tutmak, kanıtlanmış bir yeteneği
+     * kullanmamak olurdu — üstelik şerit karenin en editoryal öğesi.
+     *
+     * Bedava uç hâlâ B yolundan (parçalar) besleniyor ve orada metin YOK.
+     */
+    row.fallbackPrompt = composedCollagePrompt(beat, story, {era, withText: true});
     row.platePrompt = platePrompt(beat);
     row.pieces = piecePrompts(beat, {era});
   }
