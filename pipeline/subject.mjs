@@ -46,7 +46,7 @@
 const FAMILIES = [
   {
     shape: 'figure',
-    style: 'documentary photograph of a person, three-quarter view',
+    style: 'a person seen three-quarter view',
     words: [
       'man', 'men', 'woman', 'women', 'person', 'people', 'boy', 'girl', 'child', 'children',
       'worker', 'soldier', 'officer', 'driver', 'guard', 'prisoner', 'robber', 'thief', 'witness',
@@ -84,17 +84,17 @@ const FAMILIES = [
    */
   {
     shape: 'aircraft',
-    style: 'side profile of the aircraft, documentary photograph, plain background',
+    style: 'side profile of the aircraft, plain background',
     words: ['plane', 'aircraft', 'airplane', 'airliner', 'jet', 'helicopter', 'glider', 'bomber', 'fighter'],
   },
   {
     shape: 'rail',
-    style: 'side profile of the locomotive or carriage, documentary photograph',
+    style: 'side profile of the locomotive or carriage',
     words: ['train', 'locomotive', 'carriage', 'wagon', 'tram', 'railcar', 'freight'],
   },
   {
     shape: 'vehicle',
-    style: 'side profile of the road vehicle, documentary photograph, plain background',
+    style: 'side profile of the road vehicle, plain background',
     words: [
       'car', 'lorry', 'truck', 'van', 'bus', 'motorcycle', 'bicycle', 'cart', 'ambulance', 'jeep',
       'tank', 'rocket', 'spacecraft', 'capsule',
@@ -102,7 +102,7 @@ const FAMILIES = [
   },
   {
     shape: 'vessel',
-    style: 'full side profile of the vessel on water, documentary photograph',
+    style: 'full side profile of the vessel on water',
     words: [
       'canoe', 'boat', 'ship', 'vessel', 'raft', 'ferry', 'submarine', 'yacht', 'barge', 'tanker',
       // Geminin PARÇASI da gemi silueti çizdirir: "water poured in through the
@@ -112,7 +112,7 @@ const FAMILIES = [
   },
   {
     shape: 'building',
-    style: 'a single building seen straight on, documentary photograph',
+    style: 'a single building seen straight on',
     words: [
       'house', 'farmhouse', 'building', 'factory', 'mill', 'prison', 'jail', 'church', 'temple',
       'mosque', 'station', 'hotel', 'tower', 'castle', 'hut', 'cabin', 'village', 'town', 'city',
@@ -133,7 +133,7 @@ const FAMILIES = [
   },
   {
     shape: 'document',
-    style: 'a single archival document photographed flat, high contrast',
+    style: 'a single archival document seen flat, high contrast',
     words: [
       'letter', 'note', 'banknote', 'money', 'cash', 'pound', 'dollar', 'newspaper', 'headline',
       'file', 'record', 'report', 'passport', 'ticket', 'contract', 'telegram', 'book', 'page',
@@ -151,7 +151,7 @@ const FAMILIES = [
   },
   {
     shape: 'machine',
-    style: 'a single machine or device, three-quarter view, documentary photograph',
+    style: 'a single machine or device, three-quarter view',
     words: [
       'engine', 'motor', 'radio', 'telegraph', 'telephone', 'camera', 'clock', 'machine', 'computer',
       'pump', 'generator', 'signal', 'lamp', 'lantern', 'projector', 'typewriter',
@@ -170,7 +170,7 @@ const FAMILIES = [
   },
   {
     shape: 'terrain',
-    style: 'a wide landscape silhouette, documentary photograph',
+    style: 'a wide landscape silhouette',
     words: [
       'island', 'atoll', 'reef', 'mountain', 'hill', 'valley', 'field', 'forest', 'jungle', 'desert',
       'coast', 'shore', 'cliff', 'canyon', 'glacier', 'volcano', 'plain', 'border', 'railway', 'road',
@@ -197,7 +197,7 @@ const FAMILIES = [
   },
   {
     shape: 'bird',
-    style: 'a single animal, side view, documentary photograph',
+    style: 'a single animal, side view',
     words: ['bird', 'seabird', 'gull', 'eagle', 'crow', 'tern', 'horse', 'dog', 'cat', 'whale', 'fish', 'insect', 'rat'],
   },
   /**
@@ -214,27 +214,27 @@ const FAMILIES = [
    */
   {
     shape: 'bomb',
-    style: 'a single explosive device, isolated on its own, documentary photograph',
+    style: 'a single explosive device, isolated on its own',
     words: ['bomb', 'explosive', 'dynamite', 'grenade', 'charge', 'detonator', 'fuse'],
   },
   {
     shape: 'parachute',
-    style: 'a parachute canopy in the air, documentary photograph',
+    style: 'a parachute canopy in the air',
     words: ['parachute', 'canopy', 'chute', 'harness'],
   },
   {
     shape: 'case',
-    style: 'a closed case or bag, three-quarter view, documentary photograph',
+    style: 'a closed case or bag, three-quarter view',
     words: ['briefcase', 'suitcase', 'case', 'bag', 'sack', 'crate', 'box', 'trunk', 'satchel', 'parcel'],
   },
   {
     shape: 'weapon',
-    style: 'a single firearm or blade, side profile, documentary photograph',
+    style: 'a single firearm or blade, side profile',
     words: ['gun', 'pistol', 'revolver', 'rifle', 'shotgun', 'knife', 'blade', 'weapon'],
   },
   {
     shape: 'key',
-    style: 'a single key or lock, photographed flat, high contrast',
+    style: 'a single key or lock, seen flat, high contrast',
     words: ['key', 'lock', 'padlock', 'handcuff', 'chain', 'safe', 'vault'],
   },
   /**
@@ -260,7 +260,7 @@ const FAMILIES = [
    */
   {
     shape: 'tool',
-    style: 'a single hand tool, side view, documentary photograph',
+    style: 'a single hand tool, side view',
     words: [
       'tool', 'hammer', 'brush', 'ruler', 'saw', 'spanner', 'wrench', 'drill', 'chisel', 'needle',
       'pliers', 'screwdriver', 'trowel', 'axe', 'pickaxe', 'scissors', 'syringe', 'scalpel', 'pen',
@@ -269,7 +269,7 @@ const FAMILIES = [
   },
   {
     shape: 'rock',
-    style: 'a single rough stone or block of debris, documentary photograph',
+    style: 'a single rough stone or block of debris',
     words: [
       'stone', 'rock', 'boulder', 'rubble', 'debris', 'gravel', 'pebble', 'ore', 'coal', 'brick',
       'concrete', 'plaster', 'cement', 'ash', 'mud', 'clay', 'sand', 'slab', 'block', 'meteorite',
@@ -278,7 +278,7 @@ const FAMILIES = [
   },
   {
     shape: 'gear',
-    style: 'a single toothed gear or mechanical part, photographed flat, high contrast',
+    style: 'a single toothed gear or mechanical part, seen flat, high contrast',
     words: [
       'gear', 'cog', 'sprocket', 'piston', 'valve', 'bolt', 'screw', 'bearing', 'rod',
       'shaft', 'crank', 'wheel', 'axle', 'gearwheel', 'flywheel', 'ratchet', 'bracket', 'hinge',
@@ -286,7 +286,7 @@ const FAMILIES = [
   },
   {
     shape: 'tree',
-    style: 'a single tree seen whole, documentary photograph',
+    style: 'a single tree seen whole',
     words: [
       // `trunk` YOK: `case` ailesinde zaten var (sandık). Kelime iki yerde
       // durursa kazananı cümle değil dosya sırası belirler.
@@ -296,7 +296,7 @@ const FAMILIES = [
   },
   {
     shape: 'bone',
-    style: 'a single bone or skull, photographed flat against a plain ground',
+    style: 'a single bone or skull, seen flat against a plain ground',
     words: [
       'bone', 'skull', 'skeleton', 'corpse', 'remains', 'grave', 'tomb', 'coffin', 'burial',
       'cemetery', 'mummy', 'jaw', 'rib',
@@ -304,7 +304,7 @@ const FAMILIES = [
   },
   {
     shape: 'flask',
-    style: 'a single laboratory flask or glass vessel, documentary photograph',
+    style: 'a single laboratory flask or glass vessel',
     words: [
       'flask', 'vial', 'beaker', 'jar', 'bottle', 'canister', 'ampoule', 'phial',
       'sample', 'specimen', 'serum', 'poison', 'acid', 'compound', 'solution', 'dose', 'medicine',
@@ -312,7 +312,7 @@ const FAMILIES = [
   },
   {
     shape: 'object',
-    style: 'a single object isolated on its own, documentary photograph',
+    style: 'a single object isolated on its own',
     words: [
       // `bottle` → flask, `bone`/`skull` → bone, `shovel` → tool.
       // Bir kelime tek ailede durur; iki yerde durursa hangisinin kazandığını
@@ -454,13 +454,33 @@ function yearIn(text) {
  * lorry için ayrı satır yazmak gerekmez. Kapsamanın konudan bağımsız büyümesini
  * sağlayan şey bu.
  */
-export function searchFor(text) {
+/**
+ * KATALOGDAN NE İSTENECEĞİ DÖNEME BAĞLI.
+ *
+ * Sorgu her konuda "historical photograph" diyordu. Konu havuzu tek döneme
+ * bağlıyken sorun çıkmadı; havuz Pompeii'ye (79), Roanoke'a (1587) ve Vasa'ya
+ * (1628) genişleyince sorgu var olmayan bir şeyi aramaya başladı — fotoğraf
+ * 1839'da icat edildi. Wikimedia ve LoC o dönemler için gravür, ağaç baskı ve
+ * litografi tutuyor; "photograph" diyen sorgu ya boş döner ya da konuyla
+ * ilgisiz modern bir müze fotoğrafı getirir.
+ *
+ * Yıl önce CÜMLEDEN aranır, yoksa anlatının dönemine düşülür: cümlede yıl
+ * geçmesi daha kesin bir bilgi.
+ */
+function mediumFor(year) {
+  const y = Number.parseInt(String(year ?? '').replace(/\D+/g, ''), 10);
+  if (!Number.isFinite(y)) return 'historical photograph';
+  return y >= 1839 ? 'historical photograph' : 'engraving';
+}
+
+export function searchFor(text, era) {
+  const year = yearIn(text) ?? (era ? String(era) : null);
+  const medium = mediumFor(year);
   const person = namedPerson(text);
-  if (person) return `${person} portrait photograph`;
+  if (person) return `${person} portrait ${medium === 'engraving' ? 'engraving' : 'photograph'}`;
   const m = match(text);
   if (!m) return null;
-  const year = yearIn(text);
-  return `${m.word} ${year ? `${year} ` : ''}historical photograph`;
+  return `${m.word} ${year ? `${year} ` : ''}${medium}`;
 }
 
 /**

@@ -647,10 +647,73 @@ export const RECIPE_KINDS = Object.keys(RECIPES);
  * parça promtuna konduğunda modelin çizdiği şey tam olarak o oldu: parça
  * değil, üstünde parça olan bir sayfa. Parçaya gereken yalnızca MALZEME.
  */
-const PIECE_MATERIAL = [
-  'Black and white archival halftone photograph, visible print grain and paper fibre,',
-  'desaturated tan and ink-black tones, matte, flat documentary lighting.',
-].join(' ');
+/**
+ * PARÇANIN MALZEMESİ — DÖNEME GÖRE.
+ *
+ * ============ NEDEN SABİT DEĞİL ============
+ *
+ * Sabitti ve her konuya "Black and white archival halftone photograph" diyordu.
+ * Konu havuzu tek döneme (1971, 1963) bağlıyken bu görünmüyordu. Havuz on
+ * konuya çıkınca ölçüldü ve promt şunu yazdı:
+ *
+ *   "A warship: full side profile of the vessel on water, documentary
+ *    photograph. Period-accurate for 1628 … Black and white archival halftone
+ *    photograph"
+ *
+ * 1628'de fotoğraf YOK. Fotoğraf 1839, gazetede halftone tramı 1880'ler.
+ * Yani promt modelden var olmayan bir nesneyi istiyor ve model ne yaparsa
+ * yapsın sonuç yanlış: ya bir replikanın modern fotoğrafı, ya "eskitilmiş"
+ * sahte bir kare. İkisi de belgesel iddiasıyla bağdaşmıyor.
+ *
+ * Bu, otomatik üretimi SESSİZCE bozan sınıftan bir hata: koşu başarılı biter,
+ * MP4 çıkar, görseller yanlıştır.
+ *
+ * ============ SINIRLAR ============
+ *
+ *   1885 →     gazete halftone'u; referans kolajın kendi malzemesi
+ *   1839-1884  fotoğraf var, halftone tramı YOK — kolodyum/albümin baskı
+ *   -1838      fotoğraf YOK — gravür, ağaç baskı, litografi
+ *
+ * Üçüncüsü kaçamak değil, belgesel kolajın gerçek çözümü: fotoğraf öncesi
+ * dönemi anlatan her arşiv gravürle çalışır.
+ *
+ * OLUMSUZLAMAYA GÜVENİLMİYOR. Bu deponun ölçümü net: bedava uçtaki schnell
+ * sınıfı FLUX guidance damıtılmış ve olumsuzlamanın yönlendirme gücü yok.
+ * O yüzden ağırlık OLUMLU tarifte — tarama çizgisi, çapraz tarama, plaka izi.
+ * Sondaki tek olumsuz cümle bedava bir ek, taşıyıcı değil.
+ */
+const MATERIAL_BY_ERA = [
+  {
+    from: 1885,
+    text: [
+      'Black and white archival halftone photograph, visible print grain and paper fibre,',
+      'desaturated tan and ink-black tones, matte, flat documentary lighting.',
+    ].join(' '),
+  },
+  {
+    from: 1839,
+    text: [
+      'An early photographic print from the collodion and albumen era: warm sepia and grey tones,',
+      'slightly soft edges, the frozen stillness of a long exposure, visible plate blemishes,',
+      'mounted on card with paper fibre showing, matte, flat documentary lighting.',
+    ].join(' '),
+  },
+  {
+    from: -Infinity,
+    text: [
+      'A printed copperplate engraving on aged rag paper: the image is built from fine parallel',
+      'hatching and cross-hatching lines rather than continuous tone, ink black on warm cream paper,',
+      'the plate mark pressed into the sheet, paper fibre and foxing visible, matte.',
+    ].join(' '),
+  },
+];
+
+/** Dönem yılı → malzeme cümlesi. Yıl yoksa halftone (kanalın varsayılanı). */
+export function pieceMaterial(era) {
+  const y = Number.parseInt(String(era ?? '').replace(/\D+/g, ''), 10);
+  if (!Number.isFinite(y)) return MATERIAL_BY_ERA[0].text;
+  return MATERIAL_BY_ERA.find((m) => y >= m.from).text;
+}
 
 /**
  * Segmentasyonun işini kolaylaştıran tek cümle: kare TEK özneli olsun.
@@ -817,7 +880,7 @@ export function piecePrompts(beat, opts = {}) {
        */
       PERSON_RE.test(subject) ? 'A black censor bar across the eyes.' : '',
       eraClause(opts.era),
-      PIECE_MATERIAL,
+      pieceMaterial(opts.era),
       PIECE_BACKGROUND,
       'Vertical 9:16.',
     ]

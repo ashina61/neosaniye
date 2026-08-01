@@ -70,6 +70,69 @@ test('--any taslakları da adaya alır', async () => {
 });
 
 /**
+ * FOTOĞRAF ÖNCESİ DÖNEME FOTOĞRAF İSTENMEZ.
+ *
+ * Konu havuzu tek döneme (1971, 1963) bağlıyken malzeme cümlesi sabitti ve
+ * kimse fark etmiyordu. Havuz ona çıkınca promt şunu yazmaya başladı:
+ *
+ *   "A warship … Period-accurate for 1628 … Black and white archival
+ *    halftone photograph"
+ *
+ * 1628'de fotoğraf yok (1839), gazetede halftone tramı yok (1880'ler). Model
+ * ne üretirse üretsin sonuç yanlış ve koşu BAŞARILI biter — otomatik üretimi
+ * sessizce bozan sınıftan bir hata, tam da bu kapının varlık sebebi.
+ *
+ * Kapı havuzun KENDİSİNİ tarıyor, örnek yılları değil: yarın 1600'lerden yeni
+ * bir konu eklendiğinde de tutar.
+ */
+test('fotoğraf öncesi konular fotoğraf istemiyor', async () => {
+  const {pieceMaterial} = await import('../pipeline/collage-prompt.mjs');
+  const {searchFor} = await import('../pipeline/subject.mjs');
+
+  // Sınırlar tek tek: kayarlarsa aşağıdaki havuz taraması bunu göstermez.
+  assert.match(pieceMaterial('1885'), /halftone photograph/);
+  assert.doesNotMatch(pieceMaterial('1884'), /halftone/);
+  assert.match(pieceMaterial('1884'), /collodion/);
+  assert.match(pieceMaterial('1838'), /engraving/);
+  assert.match(pieceMaterial(undefined), /halftone photograph/, 'dönem yoksa kanalın varsayılanı');
+
+  for (const f of await topicFiles()) {
+    const raw = JSON.parse(await readFile(path.join(ROOT, 'content', f), 'utf8'));
+    const year = Number.parseInt(String(raw.era ?? '').replace(/\D+/g, ''), 10);
+    if (!Number.isFinite(year) || year >= 1839) continue;
+
+    assert.doesNotMatch(
+      pieceMaterial(raw.era),
+      /photograph/,
+      `${f} (${raw.era}): fotoğraf öncesi döneme fotoğraf malzemesi isteniyor`,
+    );
+    const q = searchFor(raw.narration, raw.era);
+    if (q) {
+      assert.doesNotMatch(q, /photograph/, `${f} (${raw.era}): arşiv sorgusu fotoğraf arıyor — "${q}"`);
+    }
+  }
+
+  /**
+   * SÖZLÜĞÜN `style` METNİ MALZEME ADI VERMEZ.
+   *
+   * Asıl sızıntı buradaydı ve üstteki kapı onu ortaya çıkardı: malzeme cümlesi
+   * döneme göre gravür derken, ailenin kendi `style`ı hâlâ "documentary
+   * photograph" diyordu. Aynı promtta iki farklı malzeme — model hangisini
+   * dinlerse dinlesin biri yanlış.
+   *
+   * Ayrım: `style` BAKIŞI söyler (yandan, dörtte üç, düz), `pieceMaterial`
+   * MALZEMEYİ. 25 ailenin 22'sinde ikisi karışmıştı.
+   */
+  const {CONCRETE} = await import('../pipeline/subject.mjs');
+  const leaky = CONCRETE.filter((c) => /photograph|halftone|engraving|painting|print\b/i.test(c.style));
+  assert.deepEqual(
+    leaky.map((c) => `${c.shape}: ${c.style}`),
+    [],
+    'aile `style` metni malzeme adı veriyor — malzeme yalnızca pieceMaterial()in işi',
+  );
+});
+
+/**
  * ROTASYON GERÇEKTEN DÖNMELİ.
  *
  * Actions'ta tekrarı önleyen tek mekanizma bu (defter commit edilemiyor).

@@ -239,7 +239,10 @@ async function main() {
   const sb = JSON.parse(await readFile(sbPath, 'utf8'));
 
   const targets = sb.scenes
-    .map((s, i) => ({s, i, q: searchFor((s._beat?.text ?? s.payload?.headline ?? '').replace(/[*"]/g, ''))}))
+    // `sb.era` İKİNCİ ARGÜMAN: cümlede yıl yoksa sorgunun aracı (fotoğraf mı
+    // gravür mü) anlatının dönemine göre seçilsin. Bu olmadan 1628 konusu
+    // katalogdan "warship 1628 historical photograph" istiyordu.
+    .map((s, i) => ({s, i, q: searchFor((s._beat?.text ?? s.payload?.headline ?? '').replace(/[*"]/g, ''), sb.era)}))
     .filter(({s, i, q}) => WANTS_IMAGE.has(s.template) && q && (!only.length || only.includes(i + 1)));
 
   console.log(`${sb.scenes.length} sahne · ${targets.length} tanesi için arşiv sorgusu var`);
@@ -250,7 +253,7 @@ async function main() {
       console.log(`sahne ${String(i + 1).padStart(2)} (${s.template.padEnd(16)}) → "${q}"`);
     }
     const skipped = sb.scenes
-      .map((s, i) => ({s, i, q: searchFor(s._beat?.text ?? '')}))
+      .map((s, i) => ({s, i, q: searchFor(s._beat?.text ?? '', sb.era)}))
       .filter(({s, q}) => WANTS_IMAGE.has(s.template) && !q);
     if (skipped.length) {
       console.log(`\nsomut nesnesi olmayan ${skipped.length} sahne atlanıyor (uydurma görsel yerine kod çizimi):`);

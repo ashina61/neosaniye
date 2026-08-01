@@ -82,6 +82,49 @@ Sözlük bir kez tek konuya göre yazıldı ve farklı bir konuda kapsama 0/19 �
 — hiçbir hata vermeden. `test/beats.test.mjs` artık dört alakasız konuda kapsama
 eşiğini denetliyor.
 
+## Malzeme DÖNEME bağlı: fotoğraf 1839'da icat edildi
+
+Konu havuzu tek döneme (1971, 1963) bağlıyken malzeme cümlesi sabitti ve kimse
+fark etmiyordu. Havuz ona çıkınca promt şunu yazmaya başladı:
+
+> "A warship … **Period-accurate for 1628** … Black and white archival
+> **halftone photograph**"
+
+1628'de fotoğraf yok. Model ne üretirse üretsin sonuç yanlış: ya bir replikanın
+modern fotoğrafı, ya "eskitilmiş" sahte bir kare. İkisi de belgesel iddiasıyla
+bağdaşmıyor — ve koşu **başarılı biter**, MP4 çıkar, görseller yanlıştır.
+Otomatik üretimi sessizce bozan sınıftan bir hata.
+
+`pieceMaterial(era)` — `pipeline/collage-prompt.mjs`:
+
+    1885 →      gazete halftone'u (referans kolajın kendi malzemesi)
+    1839-1884   fotoğraf var, halftone tramı YOK — kolodyum/albümin baskı
+    -1838       fotoğraf YOK — bakır gravür, tarama ve çapraz tarama
+
+Üçüncüsü kaçamak değil, belgesel kolajın gerçek çözümü: fotoğraf öncesi dönemi
+anlatan her arşiv gravürle çalışır. Arşiv sorgusu da aynı sınırı kullanıyor —
+`searchFor(text, era)` 1839 öncesi için "engraving" arıyor, çünkü Wikimedia ve
+LoC o dönemler için gravür tutuyor ve "photograph" diyen sorgu ya boş döner ya
+da ilgisiz bir müze fotoğrafı getirir.
+
+**ASIL SIZINTI SÖZLÜKTEYDİ.** Kapıyı yazınca çıktı: malzeme cümlesi döneme göre
+gravür derken ailenin kendi `style`ı hâlâ "documentary photograph" diyordu —
+aynı promtta iki malzeme, biri kesin yanlış. 25 ailenin **22'sinde** karışmıştı.
+Ayrım netleşti ve test denetliyor:
+
+- `style` → **BAKIŞ** (yandan, dörtte üç, düz, düz zemin)
+- `pieceMaterial()` → **MALZEME** (halftone / kolodyum / gravür)
+
+Olumsuzlamaya güvenilmiyor: bu deponun ölçümü net, bedava uçtaki schnell sınıfı
+FLUX guidance damıtılmış ve olumsuzlamanın yönlendirme gücü yok. İlk yazdığım
+"An engraved plate, **not a photograph**" cümlesi hem işe yaramaz hem kapıyı
+tetikliyordu; silindi. Ağırlık olumlu tarifte: tarama çizgisi, çapraz tarama,
+plaka izi.
+
+**A yolu (`composedCollagePrompt`) bu düzeltmeyi ALMADI.** Dönem argümanı
+almıyor ve `STYLE_BLOCK`u hâlâ halftone diyor. Üretim kolu B yolu (parçalar) ve
+7. turda A yolu bedava modelde B'den kötü ölçülmüştü; oraya dokunulmadı.
+
 ## Çizilen şey cümleden gelir, şablondan gelmez
 
 - Şablon **beat türünü** cevaplar (olgu mu, yer mi, ölçek mi). Hangi NESNENİN
