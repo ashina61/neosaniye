@@ -76,7 +76,20 @@ concurrency:
 jobs:
   render:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    # ============ 90 DEĞİL, ÖLÇÜMDEN ============
+    #
+    # 90'dı ve tam render'ı ASLA bitiremezdi. Yerelde ölçülen hız tam
+    # çözünürlükte 2.3 sn/kare (4 çekirdek); db-cooper 2388 kare, yani render
+    # TEK BAŞINA ~91 dakika. Üstüne kurulum, bağımlılıklar, testler, görsel
+    # üretimi ve şablon kapısı (~4 dk) biniyor.
+    #
+    # ubuntu-latest de 4 çekirdek, yani aynı hız. İş 90. dakikada kesilir ve
+    # elde hiçbir şey kalmaz — ne video, ne artefakt. Sınır bir bütçe değil,
+    # sessiz bir kayıp noktasıydı.
+    #
+    # 240: ~2 saatlik gerçekçi tam koşuya rahat pay. `preview` kalitesi
+    # (yarı çözünürlük) yaklaşık dörtte bir sürer ve bu sınırı hiç görmez.
+    timeout-minutes: 240
 
     steps:
       - name: Checkout
