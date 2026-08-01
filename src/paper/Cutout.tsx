@@ -82,7 +82,13 @@ export type PlaceholderShape =
   | 'parachute'
   | 'case'
   | 'weapon'
-  | 'key';
+  | 'key'
+  | 'tool'
+  | 'rock'
+  | 'gear'
+  | 'tree'
+  | 'bone'
+  | 'flask';
 
 /**
  * PROSEDÜREL YER TUTUCU
@@ -411,6 +417,162 @@ const Placeholder: React.FC<{shape: PlaceholderShape; seed: number}> = ({shape, 
           {/* Dişler */}
           <rect x="140" y="53" width="12" height="20" {...common} />
           <rect x="162" y="53" width="12" height="28" {...common} />
+        </svg>
+      );
+
+    /**
+     * ============ ALTI YENİ SİLUET ============
+     *
+     * `pipeline/subject.mjs` sözlüğü dokuz görülmemiş konuda ölçüldü ve
+     * kapsama %66.3 çıktı. Kaçan cümlelerin çoğu kelime eksiğiydi; ama beş
+     * küme kelime eklemekle çözülmüyordu, çünkü çizecek siluet yoktu:
+     * dişli, taş, el aleti, ağaç, kemik, deney şişesi.
+     *
+     * Hepsi aynı dili konuşuyor: dolu siyah mürekkep gövde, ayırt edici
+     * çentikler `PALETTE.paper` ile OYULUYOR. Bu, `machine` ve `key`
+     * şekillerinde zaten kurulmuş olan yöntem — dolu siyah bir kütle küçük
+     * boyda "leke" okunuyor, oyuk onu nesneye çeviriyor.
+     */
+
+    /**
+     * EL ALETİ — çekiç: DİK sap + ÜSTTE enine baş.
+     *
+     * İlk sürüm sapı ve başı tek bir çapraz kütle olarak çiziyordu ve render'da
+     * çekiç okunmuyordu, tanımsız bir kama çıkıyordu. Ölçüt basit: bir aletin
+     * silueti, SAP ile İŞ GÖREN UÇ arasındaki açıyla tanınır. Açı yoksa alet
+     * yok.
+     */
+    case 'tool':
+      return (
+        <svg viewBox="0 0 140 165" width="100%" height="100%" preserveAspectRatio="xMidYMax meet">
+          {/* Sap: aşağı doğru hafif incelir — düz dikdörtgen "çubuk" okunur. */}
+          <path d="M60 34 L82 34 L78 160 L64 160 Z" {...common} />
+          {/* Vurma yüzü: sağda, düz ve ağır. */}
+          <path d="M56 8 L120 8 L124 22 L120 48 L56 48 Z" {...common} />
+          {/* Tırnak: solda, çatallı ve kıvrık — çekici baltadan ayıran tek işaret. */}
+          <path d="M60 10 C32 10 14 26 8 50 C22 42 32 46 38 54 C44 38 50 30 60 28 Z" {...common} />
+          <path d="M18 44 C24 38 30 38 34 42 L30 50 C26 44 22 44 18 48 Z" fill={PALETTE.paper} />
+          {/* Sap sarımı: iki bant, alet "tutulan" şey okunsun. */}
+          <rect x="62" y="118" width="18" height="7" fill={PALETTE.paper} />
+          <rect x="62" y="134" width="18" height="7" fill={PALETTE.paper} />
+        </svg>
+      );
+
+    /**
+     * TAŞ / MOLOZ — "poured plaster into the cavities", "graphite blocks".
+     *
+     * Kenarlar seed'den türüyor: aynı sahnede iki taş aynı taş olmasın. Fasetler
+     * oyuk değil, açık gri — taş "delik" değil, hacim.
+     */
+    case 'rock': {
+      const jag = (i: number) => 0.82 + rand(seed * 5.5 + i) * 0.36;
+      const pts = [
+        [12 * jag(1), 96],
+        [26 * jag(2), 44],
+        [58 * jag(3), 16],
+        [96 * jag(4), 22],
+        [128, 56 * jag(5)],
+        [134 * jag(6), 92],
+        [104, 116],
+        [44, 118 * jag(7)],
+      ];
+      return (
+        <svg viewBox="0 0 150 130" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+          <path d={`M${pts.map((p) => p.map((n) => n.toFixed(1)).join(' ')).join(' L')} Z`} {...common} />
+          {/* Kırık yüzeyler: taşı düz bir lekeden ayıran tek işaret. */}
+          <path d="M58 18 L74 62 L44 116" fill="none" stroke={PALETTE.paper} strokeWidth={4} />
+          <path d="M74 62 L130 58" fill="none" stroke={PALETTE.paper} strokeWidth={4} />
+        </svg>
+      );
+    }
+
+    /** DİŞLİ — "showed the teeth of a gear". Dişler DIŞ hatta, göbek oyuk. */
+    case 'gear': {
+      const teeth = 12;
+      const R = 58;
+      const inner = 46;
+      return (
+        <svg viewBox="0 0 140 140" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+          {Array.from({length: teeth}, (_, i) => (
+            <rect
+              key={i}
+              x="63"
+              y={70 - R - 12}
+              width="14"
+              height="20"
+              rx="2"
+              {...common}
+              transform={`rotate(${(360 / teeth) * i} 70 70)`}
+            />
+          ))}
+          <circle cx="70" cy="70" r={inner} {...common} />
+          <circle cx="70" cy="70" r="18" fill={PALETTE.paper} />
+          {/* Göbek kaması: dişliyi "delikli daire"den ayıran ayrıntı. */}
+          <rect x="64" y="44" width="12" height="12" fill={PALETTE.paper} />
+        </svg>
+      );
+    }
+
+    /** AĞAÇ — tek ağaç. `terrain` orman/manzara, bu TEK gövde. */
+    case 'tree':
+      return (
+        <svg viewBox="0 0 130 160" width="100%" height="100%" preserveAspectRatio="xMidYMax meet">
+          {/* Taç: üç kabarma, düz daire "lolipop" okunur. */}
+          <path
+            d="M65 6 C96 6 116 28 112 52 C130 62 128 92 104 98 C92 112 74 112 65 102 C56 112 38 112 26 98 C2 92 0 62 18 52 C14 28 34 6 65 6 Z"
+            {...common}
+          />
+          <path d="M57 96 L57 154 L73 154 L73 96 Z" {...common} />
+          {/* Kökler / dallanma */}
+          <path d="M57 128 L34 112 M73 128 L96 112" stroke={ink} strokeWidth={7} fill="none" strokeLinecap="round" />
+          <path d="M65 56 L65 92" stroke={PALETTE.paper} strokeWidth={3} fill="none" />
+        </svg>
+      );
+
+    /** KEMİK / KAFATASI — "a jaw bone came away in his hand". */
+    case 'bone':
+      return (
+        <svg viewBox="0 0 130 140" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+          <path d="M20 54 C20 14 110 14 110 54 C110 74 100 86 96 96 L34 96 C30 86 20 74 20 54 Z" {...common} />
+          {/* Göz çukurları ve burun: oyuk, çünkü kafatasını kafatası yapan boşluk. */}
+          <ellipse cx="46" cy="56" rx="13" ry="16" fill={PALETTE.paper} />
+          <ellipse cx="84" cy="56" rx="13" ry="16" fill={PALETTE.paper} />
+          <path d="M65 70 L58 86 L72 86 Z" fill={PALETTE.paper} />
+          {/* Çene: ayrı parça, aralık bırakılıyor. */}
+          <path d="M36 104 L94 104 C94 126 78 134 65 134 C52 134 36 126 36 104 Z" {...common} />
+          {[46, 60, 74, 86].map((x) => (
+            <rect key={x} x={x - 3} y="104" width="6" height="12" fill={PALETTE.paper} />
+          ))}
+        </svg>
+      );
+
+    /**
+     * DENEY ŞİŞESİ — konik erlen.
+     *
+     * Gövde DOLU değil ÇİZGİ: cam saydamdır, dolu siyah bir koni şişe değil
+     * huni okunur. Sıvı ALTTA duruyor — ilk sürümde dolgu üstteydi ve şişe
+     * baş aşağı görünüyordu.
+     */
+    case 'flask':
+      return (
+        <svg viewBox="0 0 130 155" width="100%" height="100%" preserveAspectRatio="xMidYMax meet">
+          <path
+            d="M50 18 L50 54 L12 134 C8 142 14 148 22 148 L108 148 C116 148 122 142 118 134 L80 54 L80 18"
+            fill="none"
+            stroke={ink}
+            strokeWidth={10}
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          />
+          {/* Ağız halkası */}
+          <rect x="40" y="6" width="50" height="14" rx="4" {...common} />
+          {/* Sıvı: tabanda. Şişeyi "kap"tan "numune"ye çeviren tek işaret. */}
+          <path d="M33 102 L97 102 L113 136 C115 140 112 142 108 142 L22 142 C18 142 15 140 17 136 Z" {...common} />
+          {/* Ölçek çentikleri: koninin İÇİNDE, sıvının üstünde. Dışarı taşarsa
+              siluetten kopuk lekeler gibi okunuyor — render'da öyle çıktı. */}
+          {[0, 1].map((i) => (
+            <rect key={i} x="42" y={78 + i * 12} width="15" height="4" {...common} />
+          ))}
         </svg>
       );
 

@@ -34,9 +34,9 @@ on:
   workflow_dispatch:
     inputs:
       topic:
-        description: "Konu dosyası (content/story-*.json)"
+        description: "Konu dosyası, ya da `auto` — sıradakini kendi seçsin"
         required: true
-        default: "content/story-db-cooper.json"
+        default: "auto"
         type: string
       provider_chain:
         description: "Görsel sağlayıcı sırası — ilki hata verirse sıradakine düşer"
@@ -130,8 +130,22 @@ jobs:
       # ---------------------------------------------------------------- #
       # Çıktıdaki "semantik kapsama" satırı yeni konuda ilk bakılacak yer:
       # %40'ın altındaysa sahnelerin çoğu jenerik siluete düşer.
+      # `auto` verilirse konuyu seçici belirler. Rotasyon `run_number` ile
+      # yapılıyor: defter (`data/used-topics.json`) Actions'ta yazılamaz
+      # (`permissions: contents: read`), o yüzden durum tutmayan tek yol bu.
+      # Gerekçenin tamamı: pipeline/pick-topic.mjs başlığı.
+      - name: Konu seç
+        id: topic
+        run: |
+          if [ "${{ inputs.topic }}" = "auto" ]; then
+            node pipeline/pick-topic.mjs --rotate=${{ github.run_number }}
+          else
+            echo "topic=${{ inputs.topic }}" >> "$GITHUB_OUTPUT"
+            echo "elle verilen konu: ${{ inputs.topic }}"
+          fi
+
       - name: Storyboard üret
-        run: node pipeline/build-storyboard.mjs "${{ inputs.topic }}"
+        run: node pipeline/build-storyboard.mjs "${{ steps.topic.outputs.topic }}"
 
       # ---------------------------------------------------------------- #
       # 2. GÖRSEL BÜTÇESİ                                                 #
@@ -233,6 +247,7 @@ jobs:
         if: always()
         run: |
           echo "==================== ÖZET ===================="
+          echo "konu: ${{ steps.topic.outputs.topic }}"
           ls -la out/*.mp4 2>/dev/null || echo "video YOK"
           ffprobe -v error -show_entries format=duration \
             -show_entries stream=width,height,codec_name \

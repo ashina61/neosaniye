@@ -2,10 +2,16 @@
   "title": "The Man Who Jumped Into the Rain",
   "scenes": [
     {
-      "template": "wide_establish",
+      "template": "evidence_board",
       "payload": {
-        "headline": "On the *night* of 24 November 1971",
-        "caption": "Northwest Orient Flight 305, 1971",
+        "evidence": {
+          "date": {
+            "day": "24",
+            "month": "NOV",
+            "year": "1971"
+          }
+        },
+        "headline": "On the night of 24 November 1971,",
         "shape": "star"
       },
       "occurrence": 0,
@@ -53,7 +59,8 @@
           }
         ],
         "headline": "bought a one-way ticket from Portland",
-        "shape": "document"
+        "shape": "document",
+        "figure": "PORTLAND"
       },
       "occurrence": 0,
       "durationInFrames": 141,
@@ -102,9 +109,10 @@
         "headline": "He asked for two hundred *thousand* dollars",
         "caption": "Northwest Orient Flight 305, 1971",
         "shape": "document",
-        "shape2": "parachute"
+        "shape2": "parachute",
+        "figure": "200,000"
       },
-      "occurrence": 1,
+      "occurrence": 0,
       "durationInFrames": 176,
       "seed": 38,
       "_beat": {
@@ -119,7 +127,8 @@
         "headline": "In Seattle the *passengers* walked",
         "label": "SEATTLE",
         "shape": "figure",
-        "shape2": "aircraft"
+        "shape2": "aircraft",
+        "figure": "SEATTLE"
       },
       "occurrence": 1,
       "durationInFrames": 141,
@@ -179,7 +188,9 @@
       "template": "hero_cutout",
       "payload": {
         "headline": "Somewhere over southern *Washington*",
-        "label": "WASHINGTON"
+        "label": "WASHINGTON",
+        "shape": "building",
+        "figure": "WASHINGTON"
       },
       "occurrence": 3,
       "durationInFrames": 159,
@@ -223,7 +234,8 @@
     {
       "template": "hero_cutout",
       "payload": {
-        "headline": "for *eighteen* days and found nothing"
+        "headline": "for *eighteen* days and found nothing",
+        "figure": "18"
       },
       "occurrence": 4,
       "durationInFrames": 108,
@@ -239,7 +251,8 @@
       "payload": {
         "headline": "Nine years later a *boy* digging",
         "shape": "figure",
-        "shape2": "terrain"
+        "shape2": "terrain",
+        "figure": "9"
       },
       "occurrence": 0,
       "durationInFrames": 159,
@@ -254,7 +267,8 @@
       "template": "headline_card",
       "payload": {
         "headline": "found three bundles of the *banknotes*",
-        "shape": "document"
+        "shape": "document",
+        "figure": "3"
       },
       "occurrence": 4,
       "durationInFrames": 108,
@@ -312,5 +326,6 @@
       }
     }
   ],
-  "totalFrames": 2388
+  "totalFrames": 2388,
+  "era": "1971"
 }

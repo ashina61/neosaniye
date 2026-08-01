@@ -53,6 +53,22 @@ const FAMILIES = [
       'doctor', 'nurse', 'pilot', 'sailor', 'navigator', 'farmer', 'miner', 'engineer', 'scientist',
       'king', 'queen', 'president', 'crowd', 'family', 'passenger', 'survivor', 'inspector', 'detective',
       'agent', 'judge', 'lawyer', 'sheriff', 'hijacker', 'suspect', 'victim', 'attendant', 'captain', 'crew',
+      // ÖLÇÜMDEN EKLENENLER — dokuz görülmemiş konuda 27 cümle eşleşmedi ve en
+      // büyük küme MESLEKTİ: "the governor sailed", "an archaeologist poured",
+      // "the shipwright measured", "a sponge diver found". Hepsinde cümlenin
+      // öznesi bir insan; sözlükte o mesleğin adı yoktu diye şekil çıkmıyordu.
+      'governor', 'supervisor', 'archaeologist', 'shipwright', 'diver', 'fireman', 'firefighter',
+      'operator', 'admiral', 'colonist', 'settler', 'commander', 'professor', 'dentist', 'priest',
+      'teacher', 'mayor', 'clerk', 'spy', 'explorer', 'climber', 'astronaut', 'cosmonaut',
+      'gunman', 'killer', 'murderer', 'hostage', 'refugee', 'monk', 'nun', 'servant', 'slave',
+      'chief', 'colonel', 'sergeant', 'hunter', 'fisherman', 'mechanic', 'technician',
+      'journalist', 'reporter', 'photographer', 'historian', 'student', 'apprentice', 'foreman',
+      'widow', 'mother', 'father', 'son', 'daughter', 'brother', 'sister', 'wife', 'husband',
+      'veteran', 'pioneer', 'trader', 'merchant', 'smuggler', 'pirate', 'rebel', 'interpreter',
+      // Topluluklar: siluet yine insan. "a nearby tribe", "the regiment marched".
+      'tribe', 'army', 'regiment', 'battalion', 'gang', 'jury', 'council', 'congregation',
+      // Heykel bir insan silueti olarak okunur; taş olduğu için `rock` değil.
+      'statue',
     ],
   },
   /**
@@ -87,7 +103,12 @@ const FAMILIES = [
   {
     shape: 'vessel',
     style: 'full side profile of the vessel on water, documentary photograph',
-    words: ['canoe', 'boat', 'ship', 'vessel', 'raft', 'ferry', 'submarine', 'yacht', 'barge', 'tanker'],
+    words: [
+      'canoe', 'boat', 'ship', 'vessel', 'raft', 'ferry', 'submarine', 'yacht', 'barge', 'tanker',
+      // Geminin PARÇASI da gemi silueti çizdirir: "water poured in through the
+      // gun ports on the lower deck" cümlesinin resmi güverte değil, gemidir.
+      'warship', 'wreck', 'hull', 'deck', 'keel', 'mast', 'sail', 'rudder', 'anchor', 'lifeboat', 'fleet',
+    ],
   },
   {
     shape: 'building',
@@ -97,6 +118,17 @@ const FAMILIES = [
       'mosque', 'station', 'hotel', 'tower', 'castle', 'hut', 'cabin', 'village', 'town', 'city',
       'school', 'hospital', 'warehouse', 'bunker', 'palace', 'bridge',
       'airport', 'bank', 'courthouse', 'museum', 'embassy', 'barracks',
+      // YAPININ PARÇASI da yapı çizdirir. Ölçümde dört cümle buradan kaçtı:
+      // "roof tiles broke", "carved into a post at the gate", "the roadway
+      // began to twist", "found the settlement empty". Hiçbirinde ayrı bir
+      // siluet gerekmiyor — anlatılan şey binanın kendisi.
+      'roof', 'tile', 'wall', 'gate', 'post', 'fence', 'chimney', 'pillar', 'column', 'arch',
+      'stair', 'staircase', 'floor', 'ceiling', 'roadway', 'span', 'girder', 'beam', 'railing',
+      'settlement', 'camp', 'ruin', 'monument', 'harbour', 'harbor', 'dock', 'pier', 'dam',
+      // `reactor` MAKİNEDEN buraya taşındı: bir kelime tek aileye yazılır,
+      // yoksa iki aile aynı konumda eşleşir ve kazananı sözlüğün yazılış
+      // sırası belirler — yani şekil, cümleden değil dosya düzeninden çıkar.
+      'lighthouse', 'silo', 'shed', 'garage', 'terminal', 'refinery', 'reactor', 'observatory',
     ],
   },
   {
@@ -109,6 +141,12 @@ const FAMILIES = [
       'envelope', 'warrant', 'sketch', 'receipt', 'cheque', 'check', 'will', 'testimony', 'confession',
       // 'bundle' burada: banknot destesi jenerik bir kutu değil, PARA.
       'bundle',
+      // DÜZ, OKUNAN ŞEYLER. Ölçümde "the inscription on the plate names the
+      // months" ve "an X ray revealed thirty gears" eşleşmedi; ikisinin de
+      // resmi elde tutulan düz bir levha — belge silueti tam olarak bu.
+      'inscription', 'carving', 'engraving', 'plaque', 'plate', 'tablet', 'scroll', 'manuscript',
+      'radiograph', 'blueprint', 'plan', 'schedule', 'list', 'log', 'logbook',
+      'transcript', 'affidavit', 'petition', 'treaty', 'certificate', 'invoice', 'manifest',
     ],
   },
   {
@@ -116,8 +154,10 @@ const FAMILIES = [
     style: 'a single machine or device, three-quarter view, documentary photograph',
     words: [
       'engine', 'motor', 'radio', 'telegraph', 'telephone', 'camera', 'clock', 'machine', 'computer',
-      'pump', 'generator', 'signal', 'lamp', 'lantern', 'projector', 'typewriter', 'reactor',
+      'pump', 'generator', 'signal', 'lamp', 'lantern', 'projector', 'typewriter',
       'turbine', 'antenna', 'radar', 'battery', 'switch', 'lever',
+      'cable', 'wire', 'transmitter', 'receiver', 'recorder', 'furnace', 'boiler', 'compressor',
+      'conveyor', 'crane', 'elevator', 'winch', 'periscope', 'siren', 'alarm', 'detector',
     ],
   },
   {
@@ -143,6 +183,11 @@ const FAMILIES = [
     words: [
       'ocean', 'sea', 'water', 'wave', 'swell', 'current', 'tide', 'river', 'lake', 'flood',
       'storm', 'rain', 'snow', 'fog', 'wind', 'breeze', 'smoke', 'fire', 'cloud',
+      // GAZ VE BUHAR da bu ailenin dokusu. Ölçümde "steam pressure lifted the
+      // lid" ve "a surge of hot gas ran down the slope" eşleşmedi; ikisi de
+      // görüntü olarak akışkan — yeni siluete gerek yok, kelimeye gerek vardı.
+      'steam', 'gas', 'vapour', 'vapor', 'fume', 'mist', 'haze', 'draught', 'gust', 'blizzard',
+      'hail', 'ice', 'frost', 'lightning', 'thunder', 'surge', 'stream', 'spray', 'foam', 'whirlpool',
     ],
   },
   {
@@ -192,13 +237,90 @@ const FAMILIES = [
     style: 'a single key or lock, photographed flat, high contrast',
     words: ['key', 'lock', 'padlock', 'handcuff', 'chain', 'safe', 'vault'],
   },
+  /**
+   * ============ ALTI YENİ AİLE — ÖLÇÜMDEN ÇIKTI ============
+   *
+   * Dokuz GÖRÜLMEMİŞ konuda (Çernobil, Apollo 13, Vasa, Pompeii, Antikythera,
+   * Roanoke, Tacoma köprüsü, radyum kızları) 80 cümle tarandı ve kapsama
+   * %66.3 çıktı: 27 cümlenin çizilecek nesnesi yoktu.
+   *
+   * Kaçanların ÇOĞU kelime eksiğiydi ve yukarıdaki ailelere yazıldı. Ama beş
+   * küme kelime eklenerek çözülmüyordu, çünkü mevcut hiçbir siluet onları
+   * anlatmıyor:
+   *
+   *   "poured plaster into the cavities"      → taş/kütle, kutu değil
+   *   "showed the teeth of a gear"            → dişli, jenerik makine değil
+   *   "point the brush with their lips"       → el aleti
+   *   "the forest turned red and was buried"  → tek ağaç
+   *   "a jaw bone came away in his hand"      → kemik
+   *
+   * Ölçüt bu dosyanın kendi kuralı: bir aile, ancak SİLUETİ AYNI OKUNAN
+   * nesneleri toplayabilir. Dişliyi `machine` içine koymak, uçağı `vehicle`
+   * içine koymakla aynı hata olurdu.
+   */
+  {
+    shape: 'tool',
+    style: 'a single hand tool, side view, documentary photograph',
+    words: [
+      'tool', 'hammer', 'brush', 'ruler', 'saw', 'spanner', 'wrench', 'drill', 'chisel', 'needle',
+      'pliers', 'screwdriver', 'trowel', 'axe', 'pickaxe', 'scissors', 'syringe', 'scalpel', 'pen',
+      'pencil', 'spade', 'shovel', 'rake', 'hoe', 'sickle', 'clamp', 'tongs',
+    ],
+  },
+  {
+    shape: 'rock',
+    style: 'a single rough stone or block of debris, documentary photograph',
+    words: [
+      'stone', 'rock', 'boulder', 'rubble', 'debris', 'gravel', 'pebble', 'ore', 'coal', 'brick',
+      'concrete', 'plaster', 'cement', 'ash', 'mud', 'clay', 'sand', 'slab', 'block', 'meteorite',
+      'fossil', 'crystal', 'granite', 'marble', 'lava', 'pumice', 'graphite', 'dust',
+    ],
+  },
+  {
+    shape: 'gear',
+    style: 'a single toothed gear or mechanical part, photographed flat, high contrast',
+    words: [
+      'gear', 'cog', 'sprocket', 'piston', 'valve', 'bolt', 'screw', 'bearing', 'rod',
+      'shaft', 'crank', 'wheel', 'axle', 'gearwheel', 'flywheel', 'ratchet', 'bracket', 'hinge',
+    ],
+  },
+  {
+    shape: 'tree',
+    style: 'a single tree seen whole, documentary photograph',
+    words: [
+      // `trunk` YOK: `case` ailesinde zaten var (sandık). Kelime iki yerde
+      // durursa kazananı cümle değil dosya sırası belirler.
+      'tree', 'oak', 'pine', 'palm', 'branch', 'timber', 'leaf', 'vine', 'crop', 'grain',
+      'wheat', 'harvest', 'root', 'bush', 'hedge', 'orchard', 'flower', 'grass', 'moss', 'fern',
+    ],
+  },
+  {
+    shape: 'bone',
+    style: 'a single bone or skull, photographed flat against a plain ground',
+    words: [
+      'bone', 'skull', 'skeleton', 'corpse', 'remains', 'grave', 'tomb', 'coffin', 'burial',
+      'cemetery', 'mummy', 'jaw', 'rib',
+    ],
+  },
+  {
+    shape: 'flask',
+    style: 'a single laboratory flask or glass vessel, documentary photograph',
+    words: [
+      'flask', 'vial', 'beaker', 'jar', 'bottle', 'canister', 'ampoule', 'phial',
+      'sample', 'specimen', 'serum', 'poison', 'acid', 'compound', 'solution', 'dose', 'medicine',
+    ],
+  },
   {
     shape: 'object',
     style: 'a single object isolated on its own, documentary photograph',
     words: [
-      'barrel', 'bottle', 'glove', 'coin', 'rope', 'door', 'window', 'table', 'chair', 'helmet',
-      'uniform', 'coat', 'boot', 'map', 'chart', 'flag', 'bell', 'ring', 'bone', 'skull', 'seed',
-      'ladder', 'torch', 'mask', 'suit', 'tie', 'diamond', 'jewel', 'shovel',
+      // `bottle` → flask, `bone`/`skull` → bone, `shovel` → tool.
+      // Bir kelime tek ailede durur; iki yerde durursa hangisinin kazandığını
+      // cümle değil dosyanın satır sırası belirler.
+      'barrel', 'glove', 'coin', 'rope', 'door', 'window', 'table', 'chair', 'helmet',
+      'uniform', 'coat', 'boot', 'map', 'chart', 'flag', 'bell', 'ring', 'seed',
+      'ladder', 'torch', 'mask', 'suit', 'tie', 'diamond', 'jewel',
+      'bread', 'loaf', 'basket', 'blanket', 'cup', 'lid', 'wheelbarrow',
     ],
   },
 ];
@@ -239,6 +361,12 @@ export const SHAPES = [
   'bird',
   'star',
   'wave',
+  'tool',
+  'rock',
+  'gear',
+  'tree',
+  'bone',
+  'flask',
 ];
 
 /**

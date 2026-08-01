@@ -189,6 +189,63 @@ test('şekil listesi üç dosyada birebir aynı', async () => {
   assert.ok(producer.length >= 8, `şekil listesi beklenenden kısa: ${producer.length}`);
   assert.deepEqual(drawer, producer, 'Cutout.tsx ile subject.mjs şekil listesi ayrışmış');
   assert.deepEqual(contract, producer, 'types.ts ile subject.mjs şekil listesi ayrışmış');
+
+  /**
+   * DÖRDÜNCÜ LİSTE — `Placeholder` switch'i. Üç liste birbiriyle uyuşup da
+   * çizim dalı yazılmamışsa şekil yine sessizce KUTU olur; üstteki üç
+   * karşılaştırma bunu göremez, çünkü hepsi ADI kontrol ediyor, ÇİZİMİ değil.
+   */
+  const cut = await read('src/paper/Cutout.tsx');
+  const drawn = new Set([...cut.matchAll(/case '([a-z]+)':/g)].map((m) => m[1]));
+  const undrawn = producer.filter((s) => s !== 'object' && !drawn.has(s));
+  assert.deepEqual(undrawn, [], `şekil listede var ama çizim dalı yok: ${undrawn.join(', ')}`);
+});
+
+/**
+ * SÖZLÜKTEKİ HER AİLE ÇİZİLEBİLİR OLMALI.
+ *
+ * `FAMILIES` ile `SHAPES` aynı dosyada ama AYRI yazılıyor. Yeni bir aile
+ * eklenip `SHAPES`e yazılmazsa yukarıdaki üçlü karşılaştırma temiz kalır —
+ * üç liste hâlâ birbirinin aynısıdır — ama `shapeFor` o aileyi döndürdüğünde
+ * çizim `default` dalına düşer. Sessiz kutu, ikinci kapıdan geri gelir.
+ */
+test('sözlükteki her aile şekil listesinde var', async () => {
+  const {SHAPES} = await import('../pipeline/subject.mjs');
+  const src = await read('pipeline/subject.mjs');
+  const fams = [...src.matchAll(/^\s{4}shape: '([a-z]+)',$/gm)].map((m) => m[1]);
+  assert.ok(fams.length >= 19, `aile sayısı beklenenden az: ${fams.length}`);
+  const orphan = fams.filter((f) => !SHAPES.includes(f));
+  assert.deepEqual(orphan, [], `aile var ama SHAPES'te yok: ${orphan.join(', ')}`);
+});
+
+/**
+ * BİR KELİME TEK AİLEDE DURUR.
+ *
+ * `matches()` cümledeki KONUMA göre sıralıyor. Aynı kelime iki ailede geçerse
+ * ikisi de aynı konumda eşleşir ve kazananı sözlüğün YAZILIŞ SIRASI belirler —
+ * yani şekil cümleden değil dosya düzeninden çıkar. Sözlük büyüdükçe bu hatayı
+ * gözle yakalamak imkânsızlaşıyor: bu tur `reactor` iki ailede birdenydi.
+ */
+test('somut sözlükte aynı kelime iki ailede yok', async () => {
+  /**
+   * Kelimeler DERLENMİŞ regex'ten okunuyor, kaynak metinden değil: ilk sürüm
+   * `words: [...]` bloğunu ayrıştırıyordu ve blok içindeki AÇIKLAMA satırında
+   * tırnak içinde geçen bir örnek kelimeyi ("'bundle' burada: …") gerçek giriş
+   * sanıp uydurma bir çakışma bildirdi. `CONCRETE` derleyicinin gördüğü şey.
+   */
+  const {CONCRETE} = await import('../pipeline/subject.mjs');
+  const owner = new Map();
+  const dupes = [];
+  for (const entry of CONCRETE) {
+    const alts = entry.re.source.match(/\\b\((.*)\)\(\?:es\|s\)\?/);
+    assert.ok(alts, `${entry.shape} regex'i beklenen kalıpta değil`);
+    for (const w of alts[1].split('|')) {
+      if (owner.has(w)) dupes.push(`${w}: ${owner.get(w)} + ${entry.shape}`);
+      else owner.set(w, entry.shape);
+    }
+  }
+  assert.ok(owner.size >= 300, `sözlük beklenenden küçük: ${owner.size} kelime`);
+  assert.deepEqual(dupes, [], `aynı kelime birden fazla ailede: ${dupes.join(' | ')}`);
 });
 
 /**

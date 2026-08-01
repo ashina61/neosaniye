@@ -97,7 +97,13 @@ export interface ScenePayload {
     | 'parachute'
     | 'case'
     | 'weapon'
-    | 'key';
+    | 'key'
+    | 'tool'
+    | 'rock'
+    | 'gear'
+    | 'tree'
+    | 'bone'
+    | 'flask';
   /**
    * İKİNCİ nesne — yalnızca iki nesne çizen şablonlar okur (labeled_diagram,
    * split_compare). Cümlede ikinci somut nesne varsa o çizilir; yoksa şablon

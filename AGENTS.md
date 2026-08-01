@@ -36,6 +36,41 @@ npm run beats -- content/story-<ad>.json          # storyboard üret + raporu OK
 npx remotion render src/index.ts Short out/x.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p
 ```
 
+## Konu SEÇİMİ otomatik, konu YAZIMI değil
+
+`pipeline/pick-topic.mjs` — `npm run topic`. `content/story-*.json` dosyalarını
+tarar ve sıradakini seçer; `render.yml` `topic: auto` girdisiyle bunu çağırır.
+Yani Actions'ı çalıştırmak için artık dosya adı yazmak gerekmiyor.
+
+**Konu ÜRETMİYOR.** Cazip yorum, anlatıyı bir dil modeline yazdırmaktı; bu depo
+bunu yapamaz ve gerekçe konu dosyalarının kendi başlığında yazılı: *"OLGU KAYDI
+— bu kanal belgesel iddiasıyla yayın yapıyor"*. Doğrulanmamış bir anlatıyı
+otomatik olarak yayına sokmak, kanalın tek iddiasını çürütür.
+
+Sıraya girme koşulu insan denetimi:
+
+    "status": "ready"   sıraya girer
+    "status": "draft"   ATLANIR — listede "beklemede" görünür
+    status yok          ready sayılır (elle yazılmış eski dosyalar)
+
+Depoya **sekiz taslak konu** kondu: Çernobil, Apollo 13, Vasa, Pompeii,
+Antikythera, Roanoke, Tacoma köprüsü, radyum kızları. Hepsi `draft`. Olguları
+doğrulayıp `ready` yapmak insanın işi. `--any` taslakları da aday sayar; bu
+denemelik koşu içindir, yayın için değil.
+
+**Tekrarı iki mekanizma önlüyor, çünkü ikisinin de tek başına deliği var.**
+Defter (`data/used-topics.json`) tam çözüm ama Actions'ta ÇALIŞMAZ: workflow'un
+izni `contents: read`, commit atmıyor, koşu bitince defter kayboluyor.
+`--rotate=<n>` durum tutmadan döner ve workflow buraya `github.run_number`
+veriyor — Actions'ta gerçekten çalışan yol bu. Defteri yerelde
+`npm run topic -- --mark <slug>` ile güncelleyip commit'lemek gerekiyor.
+
+Kapı: `test/topics.test.mjs`. Dört şeyi denetliyor — her konu dosyası
+derlenebilir alanları taşıyor, seçici kendiliğinden TASLAK seçmiyor, `--any`
+gerçekten hepsini aday alıyor, ve **rotasyon gerçekten dönüyor**. Sonuncusu
+gözle görünmez: hep aynı konuyu döndürse bile çıktı her koşuda geçerli bir
+MP4'tür.
+
 `npm run beats` çıktısındaki **semantik kapsama** satırı yeni konuda ilk
 bakılacak yer. %40'ın altındaysa yüksek sesle uyarır: o durumda sahnelerin çoğu
 şablonun jenerik siluetine düşer ve çizimler anlatımla ilgisiz olur. Çözüm ya
@@ -70,6 +105,33 @@ eşiğini denetliyor.
   fiilden değil: "he jumped" çizilemez, "he jumped with a parachute" çizilir.
   Harita da iki yer adı ister: "a ticket to Seattle" değil, "a ticket from
   Portland to Seattle". İkisi de anlatıyı bozmuyor, netleştiriyor.
+- **Bir kelime TEK ailede durur.** İki ailede geçerse ikisi de aynı konumda
+  eşleşir ve kazananı cümle değil dosyanın satır sırası belirler. Sözlük
+  büyüdükçe bunu gözle yakalamak imkânsız — `test/registry.test.mjs` denetliyor
+  ve ilk koşuşunda `reactor`ı iki ailede birden buldu.
+
+### Kapsama ölçüldü: %66.3 → %92.5
+
+Sözlük dokuz **görülmemiş** konuda (Çernobil, Apollo 13, Vasa, Pompeii,
+Antikythera, Roanoke, Tacoma, radyum kızları) 80 cümleyle sınandı: 27 cümlenin
+çizilecek nesnesi yoktu.
+
+Kaçanların çoğu **kelime eksiğiydi, siluet eksiği değil** — en büyük küme
+meslekti ("the governor sailed", "an archaeologist poured", "the shipwright
+measured"), sonra yapı parçaları ("roof tiles", "a post at the gate"), sonra
+gaz/buhar ("steam pressure lifted the lid"). Hiçbiri yeni bir çizim istemiyordu.
+
+Beş küme kelimeyle çözülmüyordu, çünkü onları anlatan siluet yoktu. Altı yeni
+aile eklendi: **`tool` `rock` `gear` `tree` `bone` `flask`** (19 → 25).
+
+Kalan 6 eşleşmeyen cümlenin gerçekten çizilecek nesnesi yok ("The government
+said nothing for two days") — `shapeFor` orada `null` DÖNMELİ.
+
+Yeni siluetler tek tek still olarak render edilip **gözle bakıldı**; ilk turda
+`tool` çekiç okunmuyordu (sap ve baş tek çapraz kütle olmuştu) ve `flask`
+baş aşağı görünüyordu (sıvı üstte). İkisi de yeniden çizildi. Ölçüt: bir aletin
+silueti, SAP ile İŞ GÖREN UÇ arasındaki açıyla tanınır; cam gövde DOLU değil
+ÇİZGİ olmalı, yoksa huni okunur.
 
 ## Okunabilirlik
 
@@ -319,7 +381,7 @@ edilebilmeli, yoksa dolduruyor gibi görünüp siliyor. Ve `LowerRegister`
 
 `.github/workflows/render.yml` — **manuel**, cron yok, upload yok.
 
-    topic          content/story-*.json
+    topic          content/story-*.json  ya da `auto` (sıradakini seçer)
     provider_chain gemini,pollinations   (429 → pollinations devralır)
     images         evet/hayır            (hayır = tamamen prosedürel)
     archive        evet/hayır            (Wikimedia + LoC, anahtarsız)

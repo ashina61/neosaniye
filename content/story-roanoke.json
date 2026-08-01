@@ -1,0 +1,8 @@
+{
+  "title": "The Word Carved on the Post",
+  "subtitle": "Roanoke Island, 1587",
+  "era": "1587",
+  "status": "draft",
+  "note": "OLGU KAYDI — bu kanal belgesel iddiasıyla yayın yapıyor, o yüzden her cümlenin dayanağı burada duruyor. Uydurma ya da \"muhtemelen böyleydi\" cümlesi YOK.\n· 1587, John White önderliğinde 115 kolonist Roanoke Adası'na yerleşti.\n· White aynı yıl erzak için İngiltere'ye döndü.\n· İspanyol Armadası savaşı İngiliz gemilerini alıkoydu; dönüş üç yıl gecikti.\n· White 1590 Ağustos'unda geldiğinde yerleşim boştu.\n· Evler yakılmamış, sökülmüştü.\n· Bir direğe \"CROATOAN\" kazınmıştı; bir ağaca \"CRO\".\n· Anlaşma gereği tehlike hâlinde işaretin yanına haç kazınacaktı; haç yoktu.\n· Fırtına gemiyi uzaklaştırdı; White Croatoan'a (bugünkü Hatteras) hiç gidemedi.\n· Adada mezar bulunmadı; kolonistlerin akıbeti bilinmiyor.\n\nDURUM: taslak. `status: \"draft\"` olduğu sürece otomatik seçici bu konuyu ATLAR. Olguları kendin doğrulayıp `\"status\": \"ready\"` yaptığında sıraya girer — bu alan, doğrulanmamış bir anlatının sessizce yayına gitmesini engellemek için var.",
+  "narration": "In 1587 a hundred and fifteen colonists landed on Roanoke Island. Their governor sailed back to England for supplies that same summer. A war with Spain held every English ship in the channel for three years. He returned in 1590 and found the settlement empty. The houses had been taken down rather than burned. A single word was carved into a post at the gate. There was no cross beside it, which was the agreed sign of distress. A storm drove his ship off the coast before he could search. No grave was ever found on the island. The word on the post was the name of an island fifty miles south."
+}
