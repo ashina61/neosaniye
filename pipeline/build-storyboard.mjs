@@ -17,6 +17,7 @@ import path from 'node:path';
 import process from 'node:process';
 import {breaksChain, buildBeats, canRender, checkBeatCount, danglesBetween, resolveTemplate, templateVariety, wordCount} from './beats.mjs';
 import {isNegated, nounFor, searchFor, shapeFor, shapesFor} from './subject.mjs';
+import {projectRoute} from './gazetteer.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const FPS = 30;
@@ -108,26 +109,48 @@ function payloadForBeat(beat, story, template = beat.template) {
     case 'evidence_board': {
       const d = extractFullDate(text);
       if (d) p.evidence = {date: d};
+      // Kanıt masasındaki rota da aynı sabit koordinat hatasını taşıyordu.
       const places = extractPlaces(text);
-      if (places.length >= 2) {
-        p.route = [
-          {x: 0.30, y: 0.78, label: places[0]},
-          {x: 0.72, y: 0.22, label: places[1]},
-        ];
+      const pins = places.length >= 2 ? projectRoute(places.slice(0, 2), {pad: 0.22}) : null;
+      if (pins) {
+        p.route = pins.map((q) => ({x: q.x, y: q.y, label: q.name}));
       }
       p.headline = shorten(text, 7);
       break;
     }
 
     case 'map_route': {
-      // Rota en az iki yer adı istiyor; yoksa şablon "boş harita" çizer ve
-      // sözleşme (canRender) bunu reddeder, başka şablona geçilir.
+      /**
+       * ============ KOORDİNAT SABİTTİ ============
+       *
+       * Buradaki x/y değerleri elle yazılmış sabitlerdi:
+       *
+       *     {x: 0.14, y: 0.74, label: places[0]}
+       *     {x: 0.52, y: 0.46}
+       *     {x: 0.86, y: 0.22, label: places[1]}
+       *
+       * Yani Portland → Seattle ile Londra → Tokyo BİREBİR aynı çizgiyi
+       * çiziyordu. Etiket doğru, geometri uydurma. Haritanın tek işi geometriyi
+       * taşımak olduğu için bu, boş bir harita çizmekten daha kötü: doğru
+       * etiket yanlış konumu meşrulaştırıyor.
+       *
+       * Artık konum `gazetteer.mjs`ten geliyor ve gerçek: enlem/boylam,
+       * enlem düzeltmeli eşdikdörtgen izdüşümle kareye oturtuluyor.
+       *
+       * İKİ YER DE SÖZLÜKTE YOKSA ROTA YAZILMAZ. Bilinmeyen yeri ortaya koymak
+       * tam olarak düzeltilen hatanın kendisi olurdu; rota yoksa `canRender`
+       * şablonu reddediyor ve beat başka şablona düşüyor.
+       */
       const places = extractPlaces(text);
-      if (places.length >= 2) {
+      const fixed = places.length >= 2 ? projectRoute(places.slice(0, 2)) : null;
+      if (fixed) {
+        const [a, b] = fixed;
         p.route = [
-          {x: 0.14, y: 0.74, label: places[0]},
-          {x: 0.52, y: 0.46},
-          {x: 0.86, y: 0.22, label: places[1]},
+          {x: a.x, y: a.y, label: a.name},
+          // Ara nokta artık uçlardan TÜRETİLİYOR; sabit bir orta nokta rotayı
+          // gerçek yönünden saptırıyordu.
+          {x: (a.x + b.x) / 2, y: (a.y + b.y) / 2},
+          {x: b.x, y: b.y, label: b.name},
         ];
       }
       p.headline = shorten(text, 6);
