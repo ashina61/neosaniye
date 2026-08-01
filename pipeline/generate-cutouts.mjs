@@ -29,7 +29,7 @@ import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 import path from 'node:path';
 import {subjectFor as subjectOf} from './subject.mjs';
-import {KEY_COLOUR} from './collage-prompt.mjs';
+import {KEY_COLOUR, composedCollagePrompt, eraOf} from './collage-prompt.mjs';
 import process from 'node:process';
 
 const run = promisify(execFile);
@@ -354,6 +354,30 @@ async function main() {
   const args = process.argv.slice(2);
   const live = args.includes('--live');
   if (args.includes('--pack')) return packMode(args);
+  /**
+   * ============ --composed: BİTMİŞ KAREYİ ÜRET ============
+   *
+   * Kullanıcı referans karesini ikinci kez gönderip şunu yazdı: "yapay zeka bu
+   * şekilde üretip cut out yapılmalı, kalite bu seviyede olmak zorunda."
+   *
+   * O tarif A YOLU: modelden TEK BİTMİŞ KOLAJ KARESİ istemek. Bu depoda A
+   * yolunun promtu VARDI (`composedCollagePrompt`, pakete yazılıyor) ama
+   * hiçbir sağlayıcıya verilmiyordu — yalnızca Flow'a elle taşınıyordu. Yani
+   * bedava kol referans kaliteyi denemiyordu bile; "bedava model beceremiyor"
+   * hükmü 6. ve 7. turdan kalmaydı ve o turlar ESKİ promtla ölçülmüştü.
+   *
+   * Bu bayrak o ölçümü mümkün kılıyor: aynı sağlayıcı zinciri, aynı kaydetme
+   * yolu, yalnızca promt değişiyor.
+   *
+   * SEGMENTASYON YOK ve bu kasıtlı: kompoze kare BÜTÜN olarak değerlidir.
+   * Özneyi kesip almak, kolajın kompozisyonunu — yani referansı referans yapan
+   * her şeyi — çöpe atmak olurdu. Kesim B yolunun işi.
+   *
+   * METİN KAPALI: depo bedava uçta okunur harf çıkmadığını ölçtü
+   * ("YOOLNI IIILNIIRIGLLLID"). Flow'a giden pakette metin AÇIK, çünkü orada
+   * ürettiği kanıtlı. Aynı promt, iki farklı uç, iki farklı ayar.
+   */
+  const composed = args.includes('--composed');
   const only = (args.find((a) => a.startsWith('--only='))?.split('=')[1] ?? '')
     .split(',')
     .filter(Boolean)
@@ -378,14 +402,30 @@ async function main() {
   for (const {s, i} of skipped) console.log(`      sahne ${i + 1} (${s.template}) — ${JSON.stringify(s._beat?.text ?? '')}`);
   console.log(`mod: ${live ? 'CANLI (ağa çıkar, kota harcar)' : 'PROVA (ağa çıkmaz)'}`);
 
+  const era = eraOf(sb);
+  /**
+   * Promt seçimi TEK yerde. Önce prova bloğu `cutoutPrompt`i, canlı döngü
+   * başka bir şeyi yazdırıyordu — yani prova, gerçekten gönderilecek metni
+   * göstermiyordu. Prova modunun tek işi bu; yanlış metin göstermesi onu
+   * işe yaramaz kılar.
+   */
+  const promptFor = (s) =>
+    composed
+      ? composedCollagePrompt(
+          {text: s._beat?.text ?? '', kind: s._beat?.kind ?? 'fact'},
+          {era},
+          {era, withText: false},
+        )
+      : cutoutPrompt(s);
+
   if (!live) {
-    console.log('\nÜretilecek prompt\'lar:\n');
+    console.log(`\nÜretilecek prompt'lar${composed ? ' (KOMPOZE KARE)' : ''}:\n`);
     for (const {s, i} of targets) {
       console.log(`--- sahne ${i + 1} (${s.template})`);
-      console.log(cutoutPrompt(s));
+      console.log(promptFor(s));
       console.log();
     }
-    console.log('Gerçekten üretmek için: node pipeline/generate-cutouts.mjs --live');
+    console.log(`Gerçekten üretmek için: node pipeline/generate-cutouts.mjs --live${composed ? ' --composed' : ''}`);
     return;
   }
 
@@ -399,9 +439,12 @@ async function main() {
   const failures = [];
 
   for (const {s, i} of targets) {
-    const prompt = cutoutPrompt(s);
+    const prompt = promptFor(s);
     const raw = path.join(OUT_DIR, `.raw-${String(i + 1).padStart(2, '0')}.png`);
-    const out = path.join(OUT_DIR, `scene-${String(i + 1).padStart(2, '0')}.png`);
+    const out = path.join(
+      OUT_DIR,
+      `${composed ? 'frame' : 'scene'}-${String(i + 1).padStart(2, '0')}.png`,
+    );
     let done = false;
 
     for (const name of chain) {
@@ -413,10 +456,18 @@ async function main() {
       try {
         const buf = await p.generate(prompt, s.seed);
         await writeFile(raw, buf);
-        // Alfa doğrulaması burada: geçmezse bu sağlayıcının çıktısı işe yaramaz
-        // ve sıradakine düşülür. Sessizce opak katman yazmak yasak.
-        const line = await makeCutout(raw, out);
-        console.log(`  sahne ${i + 1}: ${name} → ${line}`);
+        if (composed) {
+          // Kompoze kare BÜTÜN kaydedilir: kesim yok, alfa kapısı yok. Alfa
+          // kapısı "özne zeminden ayrıldı mı" diye sorar ve burada zemin
+          // ayrılacak bir şey değil, işin kendisi.
+          await writeFile(out, buf);
+          console.log(`  sahne ${i + 1}: ${name} → ${path.basename(out)} (kompoze kare, kesilmedi)`);
+        } else {
+          // Alfa doğrulaması burada: geçmezse bu sağlayıcının çıktısı işe yaramaz
+          // ve sıradakine düşülür. Sessizce opak katman yazmak yasak.
+          const line = await makeCutout(raw, out);
+          console.log(`  sahne ${i + 1}: ${name} → ${line}`);
+        }
         // Remotion staticFile() public/ köküne göre çözer.
         s.payload.images = [`cutouts/${path.basename(out)}`];
         ok += 1;
