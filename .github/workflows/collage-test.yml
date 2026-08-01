@@ -98,6 +98,10 @@ on:
         options:
           - archive          # Wikimedia + LoC — gerçek dönem fotoğrafı
           - generate         # görsel modeli (pollinations/gemini)
+          # SONDA — "promt gerçekten kullanılıyor mu?" sorusunu deneyle kapatır.
+          # Aynı seed, birbirinden uzak iki kısa promt: kareler aynıysa promt
+          # okunmuyor, farklıysa okunuyor. 3 görsel, birkaç saniye.
+          - probe
           - archive+generate # önce arşiv, boş kalan sahneler için üretim
 
 permissions:
@@ -144,6 +148,20 @@ jobs:
 
       # Model ağırlığı 179 MB ve GitHub releases'ten iniyor. Üretim adımından
       # ÖNCE indiriliyor ki 8 görsel üretildikten sonra indirme patlamasın.
+      # ---------------------------------------------------------------- #
+      # SONDA — tahmini deneyle değiştirir                                 #
+      # ---------------------------------------------------------------- #
+      - name: Sağlayıcı sondası
+        if: inputs.mode == 'probe'
+        run: node pipeline/probe-provider.mjs
+
+      - name: Sonda çıktısını yükle
+        if: inputs.mode == 'probe'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonda
+          path: out/probe/
+
       - name: Segmentasyon modelini önceden indir
         continue-on-error: true
         run: |
