@@ -91,6 +91,57 @@ export type PlaceholderShape =
   | 'flask';
 
 /**
+ * ŞEKİL EN-BOY ORANLARI — kartı özneye göre boyutlandırmak için.
+ *
+ * ============ NEDEN GEREKLİ: ÖLÇÜLDÜ ============
+ *
+ * Kullanıcı "çizimlerde boş geçilen alanlar var" dedi. Render alınıp bakıldı ve
+ * sebep net: kart SABİT oranlıydı (`SAFE_BOX.width * 0.78` genişlik, ayrı bir
+ * yükseklik), siluet ise kendi oranında ve `preserveAspectRatio="… meet"` ile
+ * sığdırılıyordu. `meet` sınırlayıcı eksene göre oturtur, öteki eksende BOŞLUK
+ * bırakır.
+ *
+ * `figure` oranı 0.595 (uzun ve dar). Kart ondan geniş olduğu için siluet
+ * yüksekliğe göre sığıyor, sağda ve solda geniş beyaz alan kalıyordu. Karenin
+ * en büyük öğesi boş kağıttı.
+ *
+ * Referansta böyle bir şey yok: fotoğraf bloğunun şekli İÇERİĞİNDEN geliyor,
+ * etrafındaki kağıt zemin — kocaman boş bir kart değil.
+ *
+ * Değerler viewBox'lardan TÜRETİLDİ, elle yazılmadı: her `case`in kendi
+ * `viewBox="0 0 W H"` değeri okunup W/H alındı. Bir şeklin çizimi değişirse
+ * buradaki sayı da değişmeli ve `test/registry.test.mjs` liste bütünlüğünü
+ * zaten denetliyor.
+ */
+export const SHAPE_ASPECT: Record<PlaceholderShape, number> = {
+  figure: 0.595,
+  vessel: 1.455,
+  building: 0.857,
+  terrain: 2.222,
+  instrument: 1.0,
+  bird: 1.8,
+  star: 1.0,
+  wave: 1.636,
+  vehicle: 1.818,
+  aircraft: 1.833,
+  rail: 2.0,
+  document: 0.8,
+  machine: 1.077,
+  bomb: 0.929,
+  parachute: 1.125,
+  case: 1.333,
+  weapon: 1.5,
+  key: 2.111,
+  tool: 0.848,
+  rock: 1.154,
+  gear: 1.0,
+  tree: 0.812,
+  bone: 0.929,
+  flask: 0.839,
+  object: 1.0,
+};
+
+/**
  * PROSEDÜREL YER TUTUCU
  *
  * Test videoları ücretli görsel API'si çağırmadan render edilebilsin diye var.

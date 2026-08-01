@@ -5,7 +5,8 @@ import {enter, drift, breathe, rand, HOLD_FROM} from '../motion/stepped';
 import {cue, curlAmount, focusHunt, holdJitter, negationCue, parallax, peel, zoomThrough, compose} from '../film/choreography';
 import {LightLeak} from '../film/Plate';
 import {PaperBase} from '../paper/PaperBase';
-import {Cutout, TornCard, HALFTONE_CSS} from '../paper/Cutout';
+import {Cutout, TornCard, HALFTONE_CSS, SHAPE_ASPECT} from '../paper/Cutout';
+import type {PlaceholderShape} from '../paper/Cutout';
 import {Headline, PullQuote, LabelCard, Stamp, TypewriterStrip} from '../paper/Type';
 import {DrawnArrow, DottedPath, MarkerCircle, MarkerCross, SparkleField, SeaBand, Sparkle} from '../paper/Marks';
 import {StickFigure, ThoughtBubble, type Pose} from '../paper/StickFigure';
@@ -95,8 +96,28 @@ const HeroCutout: React.FC<SceneProps> = ({seconds, payload, seed, index, occurr
 
   // 0: ortada büyük · 1: sağa kaçık, solda şerit · 2: küçük, damgalı
   const scale = variant === 2 ? 0.58 : variant === 1 ? 0.68 : 0.78;
-  const heroW = Math.round(SAFE_BOX.width * scale);
+  /**
+   * ============ KART ÖZNEYE GÖRE, SABİT ORANLA DEĞİL ============
+   *
+   * Kullanıcı "çizimlerde boş geçilen alanlar var" dedi ve render bunu
+   * doğruladı: kart sabit oranlıydı, siluet kendi oranındaydı ve `meet`
+   * sığdırması sınırlayıcı eksene oturup ötekinde boşluk bırakıyordu.
+   * `figure` oranı 0.595 — uzun ve dar — kart ondan çok daha geniş olduğu için
+   * sağda ve solda karenin en büyük öğesi BOŞ KAĞIT oluyordu.
+   *
+   * Artık genişlik yükseklikten ve şeklin kendi oranından türetiliyor, sonra
+   * güvenli kutuya kırpılıyor. Kart özneyi sarıyor, özne kartın içinde
+   * yüzmüyor.
+   *
+   * Fotoğraf varsa (`images`) oran bilinmiyor — o zaman eski davranış korunuyor:
+   * gerçek fotoğrafın çerçevesi zaten kendi içeriğiyle dolu, sorun prosedürel
+   * siluete özgüydü.
+   */
   const heroH = Math.round(B.hero.height * (variant === 2 ? 0.78 : 0.94));
+  const aspect = payload.shape ? SHAPE_ASPECT[payload.shape as PlaceholderShape] : undefined;
+  const maxW = Math.round(SAFE_BOX.width * scale);
+  const hasPhoto = Boolean(payload.images?.length);
+  const heroW = aspect && !hasPhoto ? Math.min(maxW, Math.round(heroH * aspect * 1.18)) : maxW;
   const offset = variant === 1 ? Math.round(SAFE_BOX.width * 0.16) : 0;
   const heroX = SAFE.left + Math.round((SAFE_BOX.width - heroW) / 2) + offset;
   const tilt = (rand(seed * 5.1) - 0.5) * 2.4;
