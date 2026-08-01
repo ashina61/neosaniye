@@ -98,15 +98,95 @@ export type PlaceholderShape =
  * (kontur, gölge, halftone, yerleşim, hareket) kanıtlanabilmesi; gerçek
  * halftone fotoğraf sonradan aynı bileşene `src` olarak girer.
  */
-const Placeholder: React.FC<{shape: PlaceholderShape; seed: number}> = ({shape, seed}) => {
-  const ink = PALETTE.inkBlack;
+/**
+ * ============ SİLUET NEDEN DÜZ SİYAH OLAMAZ ============
+ *
+ * Kullanıcı Flow'da ürettiği kareyi gönderip "en azından çizimler benim
+ * referans görsel kalitesinde olsun, o tarz olmalı" dedi. Referanstaki halftone
+ * fotoğraflarla buradaki siluetler arasındaki fark ÖLÇÜLEBİLİR ve tek bir
+ * satırdan geliyordu: `fill: PALETTE.inkBlack`.
+ *
+ * Düz siyah dolgunun iki sonucu var:
+ *
+ *   1. Halftone TRAMI GÖRÜNMEZ. `DotScreen` noktaları `multiply` ile biniyor;
+ *      siyahın üstüne siyah nokta çarpmak hiçbir şey değiştirmez. Yani depoda
+ *      halftone katmanı VARDI ve prosedürel siluetlerde hiç çalışmıyordu.
+ *   2. Baskı fotoğrafı ORTA TONDUR. Referanstaki üniforma, kürsü, mikrofon —
+ *      hiçbiri saf siyah değil; hepsi gri tramın farklı yoğunlukları. Saf
+ *      siyah bir siluet, tarandığı için değil, VEKTÖR olduğu için öyle
+ *      görünür ve izleyici bunu anında ayırt eder.
+ *
+ * Çözüm boya değil TON: silueti orta griden koyuya inen bir eğimle doldur.
+ * Böylece nokta ızgarasının ısıracağı bir aralık doğar ve aynı şekil, aynı
+ * geometriyle, baskı malzemesi gibi okunur.
+ *
+ * Işık yönü sahnenin gölge diliyle AYNI (üstten hafif sol): `LAYER_SHADOW`
+ * aşağı-sağa düşüyor, o yüzden aydınlık taraf üst-sol.
+ */
+const HALFTONE_FILL_ID = 'ns-halftone-fill';
+
+const HalftoneFill: React.FC = () => (
+  <defs>
+    <linearGradient id={HALFTONE_FILL_ID} x1="0" y1="0" x2="0.35" y2="1">
+      {/*
+        Uçlar ÖLÇÜLDÜ, seçilmedi: #6E6E6E'nin altına inince tram kayboluyor
+        (nokta ile zemin arasında kontrast kalmıyor), #1A1A1A'nın üstüne
+        çıkınca yine düz siyaha dönüyor. Aradaki aralık tramın çalıştığı yer.
+      */}
+      <stop offset="0%" stopColor="#6E6E6E" />
+      <stop offset="55%" stopColor="#3A3A3A" />
+      <stop offset="100%" stopColor="#1A1A1A" />
+    </linearGradient>
+  </defs>
+);
+
+const ShapeSvg: React.FC<{shape: PlaceholderShape; seed: number}> = ({shape, seed}) => {
+  const ink = `url(#${HALFTONE_FILL_ID})`;
   const common = {fill: ink} as const;
   switch (shape) {
+    /**
+     * ============ İNSAN — PİYON DEĞİL ============
+     *
+     * Önceki hâli bir daire ve altında yuvarlak bir kütleydi. Render alınıp
+     * GÖZLE bakıldı ve okunan şey insan değil SATRANÇ PİYONUYDU: omuz yok,
+     * kol yok, bacak yok, boyun yok. Kullanıcının "çizimler çok kötü" dediği
+     * şeyin en çok kullanılan örneği bu — 13 sahnenin 5'i bu şekli çiziyor.
+     *
+     * Aynı turda siluetin MALZEMESİ düzeltilmişti (düz siyah yerine halftone
+     * tramlı ton). Render bunun tek başına yetmediğini gösterdi: tramlı bir
+     * piyon hâlâ piyon. Malzeme ile GEOMETRİ ayrı iki sorun ve ikincisi daha
+     * belirleyici.
+     *
+     * Ölçü: bir insan silueti, BAŞ-BOYUN-OMUZ üçlüsünün oranından tanınır.
+     * Baş gövde genişliğinin ~1/3'ü, boyun kısa ve dar, omuz baştan belirgin
+     * şekilde geniş. Kol gövdeden AYRI bir kütle olmalı, yoksa palto okunur.
+     * Bacak arası boşluk şart — bitişik bacak etek/cübbe okunur.
+     *
+     * Duruş dörtte üç: `subject.mjs` promt tarafında da "three-quarter view"
+     * diyor, ikisi aynı şeyi tarif etmek zorunda.
+     */
     case 'figure':
       return (
-        <svg viewBox="0 0 100 140" width="100%" height="100%" preserveAspectRatio="xMidYMax meet">
-          <circle cx="50" cy="24" r="19" {...common} />
-          <path d="M50 46 C30 46 22 60 20 86 L18 140 L82 140 L80 86 C78 60 70 46 50 46 Z" {...common} />
+        <svg viewBox="0 0 100 168" width="100%" height="100%" preserveAspectRatio="xMidYMax meet">
+          {/* Baş — hafif oval, tam daire "top" okunuyor. */}
+          <ellipse cx="50" cy="17" rx="13" ry="15" {...common} />
+          {/* Boyun: kısa ve dar. Uzun boyun mankene benziyor. */}
+          <rect x="45" y="29" width="10" height="7" {...common} />
+          {/*
+            Gövde + palto: omuz baştan geniş, bel hafif içeri, etek dışa.
+            Dönem paltosu bu siluetin belkemiği — düz dikdörtgen gövde
+            "çöp adam" okunuyor.
+          */}
+          <path d="M50 34 C39 34 32 40 31 50 L29 78 L33 80 L34 112 L66 112 L67 80 L71 78 L69 50 C68 40 61 34 50 34 Z" {...common} />
+          {/* Kollar gövdeden AYRI: aradaki boşluk kolu görünür kılan şey. */}
+          <path d="M28 52 L22 88 L28 90 L34 56 Z" {...common} />
+          <path d="M72 52 L78 88 L72 90 L66 56 Z" {...common} />
+          {/* Bacaklar: aralarında boşluk, yoksa etek okunur. */}
+          <path d="M36 118 L34 158 L45 158 L46 118 Z" {...common} />
+          <path d="M54 118 L55 158 L66 158 L64 118 Z" {...common} />
+          {/* Ayaklar: siluetin yere bastığını söyleyen tek işaret. */}
+          <path d="M32 158 L47 158 L47 166 L30 166 Z" {...common} />
+          <path d="M53 158 L68 158 L70 166 L53 166 Z" {...common} />
         </svg>
       );
     case 'vessel':
@@ -588,6 +668,22 @@ const Placeholder: React.FC<{shape: PlaceholderShape; seed: number}> = ({shape, 
   }
 };
 
+/**
+ * Şekil + tram tanımı. Gradyan `defs`i AYNI belgede olmak zorunda; `url(#id)`
+ * SVG belgesi içinde çözülür, o yüzden sıfır boyutlu bir taşıyıcı SVG ile
+ * birlikte veriliyor. Aynı id birden çok kez basılırsa tarayıcı ilkini kullanır
+ * ve hepsi birebir aynı olduğu için bu zararsız.
+ */
+const Placeholder: React.FC<{shape: PlaceholderShape; seed: number}> = ({shape, seed}) => (
+  <>
+    <svg width="0" height="0" style={{position: 'absolute'}} aria-hidden="true">
+      <HalftoneFill />
+    </svg>
+    <ShapeSvg shape={shape} seed={seed} />
+  </>
+);
+
+
 export interface CutoutProps {
   /** Gerçek alfa kanallı görsel. Yoksa prosedürel siluet çizilir. */
   src?: string;
@@ -650,9 +746,42 @@ export const Cutout: React.FC<CutoutProps> = ({
   focus = 0,
   jitter,
 }) => {
+  /**
+   * ============ KIRMIZI OFSET KONTUR ============
+   *
+   * Kullanıcının referans karesinde dört polisin etrafında beyaz kağıt kenarı
+   * DEĞİL, ondan biraz kaymış KIRMIZI bir çizgi var — kesilen parça kırmızı
+   * basılmış bir sayfanın üstüne yapıştırılmış gibi. Kompoze promt bunu baştan
+   * beri istiyordu ("rough scissor-cut edges with an offset red accent stroke
+   * behind it") ama RENDER tarafında karşılığı yoktu: burada yalnızca krem
+   * sticker konturu çiziliyordu.
+   *
+   * Yani stilin en tanınır imzası promtta vardı, kodda yoktu.
+   *
+   * SIRA ÖNEMLİ ve zinciri sondan başa okumak gerekiyor — CSS `filter` soldan
+   * sağa uygulanır, her adım bir öncekinin ÇIKTISINI alır:
+   *   1. krem kontur   → parçanın kağıt kenarı
+   *   2. kırmızı ofset → o kağıdın altından çıkan kırmızı baskı
+   *   3. katman gölgesi→ hepsinin zeminden ayrılması
+   *
+   * Kırmızı ikinci sırada olmak zorunda: önce gelseydi krem kontur onu
+   * yutardı, çünkü krem her yöne eşit yayılıyor ve ofseti örterdi.
+   *
+   * `signal` rengi ve CİMRİLİK: bu çizgi karenin yüzde birkaçı. Aksan tavanı
+   * (`ACCENT_MAX_SHARE`) altını ölçüyor, kırmızı ayrı bir sinyal — ama yine de
+   * ince tutuluyor, kalınlaşırsa "bağıran" bir kenarlık olur.
+   */
+  const accentOffset = Math.max(3, Math.round(outline * 0.55));
+  const redStroke =
+    outline > 0
+      ? `drop-shadow(${accentOffset}px ${accentOffset}px 0 ${PALETTE.signal})`
+      : '';
+
   // Kontur + gölge tek filter zincirinde: sıra önemli, gölge konturun DIŞINA
   // düşmeli, yoksa kontur gölgenin üstünde yüzer gibi durur.
-  const filter = `${outline > 0 ? outlineFilter(outline, outlineColor) : ''} ${LAYER_SHADOW}`.trim();
+  const filter = `${outline > 0 ? outlineFilter(outline, outlineColor) : ''} ${redStroke} ${LAYER_SHADOW}`
+    .replace(/\s+/g, ' ')
+    .trim();
   const blur = focusFilter(focus);
 
   return (
