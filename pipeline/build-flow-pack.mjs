@@ -43,6 +43,7 @@ import {
   UNIVERSAL_VIDEO_PROMPT,
   platePrompt,
   piecePrompts,
+  freeCollagePrompt,
   eraOf,
 } from './collage-prompt.mjs';
 
@@ -204,6 +205,19 @@ async function main() {
      */
     row.fallbackPrompt = composedCollagePrompt(beat, story, {era, withText: true});
     /**
+     * BEDAVA UCUN KENDİ PROMTU — kesilme ölçüldü.
+     *
+     * İki tur art arda koşturuldu; ikinci turda promt DEĞİŞTİ ama gelen görsel
+     * BİREBİR AYNIYDI. Ölçüm: promt 2373 karakter, eklediğim düzlük cümlesi
+     * 1480. karakterde. FLUX'un T5 kodlayıcısı bedava uçta 256-512 token'da
+     * kesiyor — yani promtun son üçte biri modele hiç ulaşmıyor ve bu depoda
+     * closer'a yazılmış her disiplin cümlesi o uçta hiç okunmamış.
+     *
+     * `freeCollagePrompt` 499 karakter ve en pahalı talimatı EN BAŞA koyuyor.
+     * Uzun promt Flow'da kalıyor; orada pencere geniş ve çalıştığı kanıtlı.
+     */
+    row.freePrompt = freeCollagePrompt(beat, story, {era});
+    /**
      * ============ AYNI KARE, BEDAVA UÇ İÇİN METİNSİZ ============
      *
      * `fallbackPrompt` Flow'a gidiyor ve metni AÇIK (Flow'un okunur harf
@@ -214,7 +228,6 @@ async function main() {
      * Bu benim bu oturumda açtığım bir gerileme: metni pakete ben açtım,
      * bedava ucun aynı dosyayı okuduğunu hesaba katmadan. İki uç, iki dosya.
      */
-    row.freePrompt = composedCollagePrompt(beat, story, {era, withText: false});
     row.platePrompt = platePrompt(beat);
     row.pieces = piecePrompts(beat, {era});
   }

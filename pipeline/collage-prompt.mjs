@@ -1066,3 +1066,56 @@ export function eraOf(storyboard) {
   const y = text.match(/\b(1[0-9]{3}|20[0-9]{2})\b/);
   return y ? y[1] : null;
 }
+
+/**
+ * ============ BEDAVA UÇ İÇİN KISA PROMT — KESİLME ÖLÇÜLDÜ ============
+ *
+ * İki tur art arda koşturuldu. İkinci turda promt DEĞİŞTİ (düzlük cümlesi ve
+ * kırmızı disiplini eklendi) ama gelen görsel BİREBİR AYNIYDI. Bu tek başına
+ * kanıt: değiştirdiğim yer modele hiç ulaşmıyor.
+ *
+ * Ölçüm:
+ *   promt uzunluğu            2373 karakter
+ *   düzlük cümlesinin yeri    1480. karakter
+ *
+ * FLUX'un metin kodlayıcısı T5 ve bedava/schnell uçta pencere 256-512 token.
+ * 2373 karakter kabaca 500+ token, yani promtun SON ÜÇTE BİRİ kesiliyor —
+ * stil bloğunun kuyruğu, düzlük cümlesi ve closer'ın tamamı. Bu depoda closer'a
+ * ve stil bloğuna yazılan her disiplin cümlesi o uçta hiç okunmamış.
+ *
+ * Çözüm daha çok kelime değil, DAHA AZ. Ve sıra kritik: modelin gördüğü ilk
+ * cümleler en belirleyici olanlar olmalı.
+ *
+ * SIRA GEREKÇELİ:
+ *   1. DÜZLÜK önce — beş karenin beşinde kaybedilen şey buydu (masa fotoğrafı,
+ *      çerçeveli baskı, açık defter). En pahalı hata en başa yazılır.
+ *   2. ZEMİN ikinci — kırmızının kareyi ele geçirmesini engelleyen şey, kırmızıyı
+ *      yasaklamak değil zemini ADLANDIRMAK.
+ *   3. ÖZNE üçüncü.
+ *   4. Malzeme ve dönem sonda; bunlar kesilse bile kare yapısal olarak doğru
+ *      kalır.
+ *
+ * Uzun promt Flow'da kalıyor: orada pencere geniş ve orada çalıştığı kanıtlı.
+ */
+export function freeCollagePrompt(beat, story = {}, opts = {}) {
+  const era = opts.era ?? story.era;
+  const text = String(beat.text || '').replace(/[*"]/g, '').trim();
+  const concrete = subjectFor(text);
+  const usable = usableHero(concrete);
+  const subject = usable ? heroNoun(usable) : 'a single archival document';
+  const year = Number.parseInt(String(era ?? '').replace(/\D+/g, ''), 10);
+  const photoEra = !Number.isFinite(year) || year >= 1839;
+
+  return [
+    'A flat overhead scan of one sheet of aged cream newsprint, the paper filling the whole frame, no perspective, no desk, no table, no book, no frame.',
+    // Malzeme döneme göre, ama KISA: uzun malzeme paragrafı bu uçta zaten
+    // kesiliyordu. Fotoğraf 1839'da icat edildi.
+    `Pasted on it, ${subject} as ${photoEra ? 'a black and white halftone photograph' : 'a hand-cut engraving'} cutout with rough scissor-cut edges and a soft drop shadow.`,
+    'Torn paper edges, a strip of masking tape, wide empty margins.',
+    era ? `Period-accurate for ${era}, nothing modern.` : '',
+    'Ink black and warm grey on cream paper, visible print grain, matte.',
+    'No writing, no letters, no numbers. Vertical 9:16.',
+  ]
+    .filter(Boolean)
+    .join(' ');
+}
