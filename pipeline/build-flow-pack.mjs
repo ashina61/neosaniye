@@ -83,14 +83,43 @@ const CODE_DRAWN = new Set(['map_route', 'grid_scale', 'data_annotate', 'archiva
 const PHOTO_BUDGET_RATIO = 1 / 3;
 
 /**
- * Gerçek bir fotoğrafın KODUN ÇİZEMEYECEĞİ şey kattığı şekiller.
+ * ============ İZİN LİSTESİ → YASAK LİSTESİ ============
  *
- * Dışarıda kalanlar bilinçli: belge, damga, harita, tablo, yıldız — bunları
- * kod daha iyi çiziyor ve ölçüldü (`evidence_board`: tarih, damga, tarife,
- * gravür harita, hepsi kodda ve kusursuz). Onlar için fotoğraf istemek kotayı
- * modelin en kötü olduğu yere harcamak olurdu.
+ * Önceki hâli izin listesiydi ve 25 şeklin yalnızca 7'sini fotoğrafa değer
+ * sayıyordu. Gerekçesi doğruydu ama kapsamı yanlıştı: bomba, paraşüt, çanta,
+ * silah, anahtar, alet, şişe, makine, kuş, ağaç, kemik — hepsi GERÇEK FİZİKSEL
+ * NESNE ve hepsi listenin dışındaydı, yani hepsi prosedürel siluete düşüyordu.
+ *
+ * O siluetlerin ne kadar kötü olduğu bu turda ÖLÇÜLDÜ. `figure` render edilip
+ * gözle bakıldı: bir daire ve altında yuvarlak kütle, yani satranç piyonu.
+ * Yeniden çizildi, iki tur denendi ve çıkan şey hâlâ tabela piktogramıydı —
+ * kesilmiş arşiv fotoğrafı değil. Fark malzeme değil MEDYA farkı; vektör
+ * siluet ile halftone fotoğrafın arası kodla kapanmıyor. Aynı sınır listedeki
+ * ÖTEKİ 18 nesne için de geçerli ve onların hiçbiri denenmemişti bile.
+ *
+ * Kullanıcı kararı: "fotoğrafı olabilecek her şeyde arşiv birinci sırada
+ * olsun, prosedürel siluet sadece fotoğrafı olmayan şeylerde kalsın."
+ *
+ * Yani varsayılan tersine döndü. Dışarıda kalan üç şey, kodun fotoğraftan
+ * GERÇEKTEN iyi çizdikleri:
+ *
+ *   document  belge, damga, manşet, tarife — tipografi ve kağıt; kod kusursuz
+ *             çiziyor, görsel modeli okunmaz harf üretiyor
+ *   star      yıldız alanı — nokta yerleşimi, fotoğrafın katacağı bir şey yok
+ *   wave      su/hava dokusu — somut bir nesne değil, doku; siluet dürüst seçim
+ *   object    cümlede somut isim BULUNAMADIĞINDA düşülen jenerik kutu. Buna
+ *             fotoğraf istemek, neyin fotoğrafını istediğini bilmeden istemek
+ *             olur — uydurma görselin tanımı.
+ *
+ * MALİYET SORULMUYOR ÇÜNKÜ ARŞİV BEDAVA. Eski liste kota harcamamak için
+ * dardı; `fetch-archive.mjs` Wikimedia ve LoC'ye anahtarsız ve kotasız
+ * gidiyor. Kotayı koruyan kısıt aşağıdaki BÜTÇE, bu liste değil.
  */
-const PHOTO_WORTH = new Set(['figure', 'building', 'vehicle', 'aircraft', 'rail', 'vessel', 'terrain']);
+const CODE_DRAWS_BETTER = new Set(['document', 'star', 'wave', 'object']);
+
+function photoWorth(shape) {
+  return Boolean(shape) && !CODE_DRAWS_BETTER.has(shape);
+}
 
 function pad(n) {
   return String(n).padStart(2, '0');
@@ -150,10 +179,10 @@ async function main() {
    */
   const budget = Math.max(1, Math.ceil((flow.length + code.length) * PHOTO_BUDGET_RATIO));
   const ranked = [...flow].sort((a, b) => {
-    const score = (r) => (r.needsMaterial ? 2 : PHOTO_WORTH.has(r.shape) ? 1 : 0);
+    const score = (r) => (r.needsMaterial ? 2 : photoWorth(r.shape) ? 1 : 0);
     return score(b) - score(a) || a.n - b.n;
   });
-  const chosen = new Set(ranked.slice(0, budget).filter((r) => r.needsMaterial || PHOTO_WORTH.has(r.shape)).map((r) => r.n));
+  const chosen = new Set(ranked.slice(0, budget).filter((r) => r.needsMaterial || photoWorth(r.shape)).map((r) => r.n));
 
   for (const row of flow) {
     if (!chosen.has(row.n)) continue;
