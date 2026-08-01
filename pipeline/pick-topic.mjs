@@ -51,6 +51,8 @@
  *   node pipeline/pick-topic.mjs               → sıradakini seç, yolunu bas
  *   node pipeline/pick-topic.mjs --rotate=17   → 17. koşunun konusu
  *   node pipeline/pick-topic.mjs --mark vasa   → deftere "üretildi" yaz
+ *   node pipeline/pick-topic.mjs --ready vasa  → taslağı sıraya sok (İNSAN ONAYI)
+ *   node pipeline/pick-topic.mjs --hold vasa   → sıradan çıkar, taslağa geri al
  *   node pipeline/pick-topic.mjs --any         → taslakları da aday say
  */
 
@@ -147,6 +149,31 @@ function report(topics, list) {
   console.log(`\n  ${list.length} konu üretilebilir, ${topics.length - list.length} tanesi değil.`);
 }
 
+/**
+ * TASLAĞI SIRAYA SOK.
+ *
+ * Elle JSON düzenlemek yerine tek komut, çünkü sürtünme burada otomasyonu
+ * durduruyordu: havuzda on konu var, ikisi hazır, sekizi elle açılmayı
+ * bekliyor. Yaptığı iş yalnızca `status` alanını çevirmek — OLGULARI
+ * DOĞRULAMAZ ve doğrulayamaz. Onay insanın imzasıdır; bu komut o imzayı
+ * atmayı kolaylaştırır, yerine geçmez.
+ */
+async function setStatus(slug, status) {
+  const file = path.join(CONTENT, `story-${slug}.json`);
+  if (!existsSync(file)) {
+    console.error(`böyle bir konu yok: ${slug}`);
+    process.exit(2);
+  }
+  const raw = JSON.parse(await readFile(file, 'utf8'));
+  const before = raw.status ?? 'ready';
+  raw.status = status;
+  await writeFile(file, `${JSON.stringify(raw, null, 2)}\n`);
+  console.log(`${slug}: ${before} → ${status}`);
+  if (status === 'ready') {
+    console.log('  Olguları senin doğruladığını varsayıyor. Bu komut doğrulama YAPMAZ.');
+  }
+}
+
 async function mark(slug) {
   const topics = await loadTopics();
   if (!topics.some((t) => t.slug === slug)) {
@@ -166,6 +193,10 @@ async function main() {
   const args = process.argv.slice(2);
   const markAt = args.indexOf('--mark');
   if (markAt >= 0) return mark(args[markAt + 1]);
+  const readyAt = args.indexOf('--ready');
+  if (readyAt >= 0) return setStatus(args[readyAt + 1], 'ready');
+  const holdAt = args.indexOf('--hold');
+  if (holdAt >= 0) return setStatus(args[holdAt + 1], 'draft');
 
   const any = args.includes('--any');
   const rotArg = args.find((a) => a.startsWith('--rotate='));

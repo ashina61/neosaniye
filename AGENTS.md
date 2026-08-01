@@ -58,6 +58,14 @@ Antikythera, Roanoke, Tacoma köprüsü, radyum kızları. Hepsi `draft`. Olgula
 doğrulayıp `ready` yapmak insanın işi. `--any` taslakları da aday sayar; bu
 denemelik koşu içindir, yayın için değil.
 
+    npm run topic -- --list          sırayı gör
+    npm run topic -- --ready vasa    taslağı sıraya sok  ← İNSAN ONAYI
+    npm run topic -- --hold vasa     sıradan geri çek
+
+`--ready` yalnızca `status` alanını çevirir; **olguları DOĞRULAMAZ**. Onay
+insanın imzasıdır, bu komut o imzayı atmayı kolaylaştırır, yerine geçmez.
+Değişikliği commit'lemek gerekiyor, yoksa Actions eski hâli görür.
+
 **Tekrarı iki mekanizma önlüyor, çünkü ikisinin de tek başına deliği var.**
 Defter (`data/used-topics.json`) tam çözüm ama Actions'ta ÇALIŞMAZ: workflow'un
 izni `contents: read`, commit atmıyor, koşu bitince defter kayboluyor.
