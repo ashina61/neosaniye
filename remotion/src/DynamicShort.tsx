@@ -491,13 +491,112 @@ const Sparkles: React.FC<{dark?: boolean; count?: number}> = ({dark = false, cou
   );
 };
 
+/**
+ * ============ GÖRÜNTÜ KUTUDA ÖLÜ DURUYORDU ============
+ *
+ * Kullanıcı: "resimler falan öyle sabit kutuların içine girmesin, remotion
+ * kullanıyoruz, efektler falan olsun."
+ *
+ * Haklıydı ve sebep tek satırdaydı: panel `objectFit: cover` ile görüntüyü
+ * kutuya oturtuyor ve HİÇBİR ŞEY YAPMIYORDU. Ne zoom, ne kaydırma. Remotion'ın
+ * altında bir video motoru var ve bu bileşen onu statik bir `<img>` gibi
+ * kullanıyordu; fotoğraf sahneleri kelimenin tam anlamıyla donuk kareydi.
+ *
+ * KEN BURNS — yön varlığın kendi yolundan, deterministik. Dört yön var ki iki
+ * komşu panel aynı yöne kaymasın; aynı yöne kayan iki panel "tek hareket"
+ * okunur ve çeşitlilik hissi doğmaz.
+ *
+ * Genlik kasıtlı olarak küçük (1.0 → 1.12 ölçek, ±14 px kayma): stok klip zaten
+ * kendi içinde hareket ediyor, üstüne büyük bir kamera hareketi binerse görüntü
+ * sallanıyor gibi durur. Fotoğrafta ise bu kadarı bile kareyi diriltiyor.
+ *
+ * Hook'lar erken `return`ten ÖNCE çağrılıyor — React kuralı, aksi hâlde
+ * varlık olmayan sahnede hook sırası kayar ve render çöker.
+ */
 const AssetPanel: React.FC<{asset?: SceneAsset; style?: React.CSSProperties; rotate?: number}> = ({asset, style, rotate = 0}) => {
+  const frame = useCurrentFrame();
+  const {durationInFrames} = useVideoConfig();
+
+  const dir = idHash(asset?.path ?? 'none') % 4;
+  const t = interpolate(frame, [0, Math.max(1, durationInFrames)], [0, 1], clamp);
+  const zoom = 1 + t * 0.12;
+  const panX = [1, -1, 1, -1][dir] * t * 14;
+  const panY = [-1, -1, 1, 1][dir] * t * 10;
+
   if (!asset?.path) return null;
-  const common: React.CSSProperties = {width: '100%', height: '100%', objectFit: 'cover'};
+
+  const common: React.CSSProperties = {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    transform: `scale(${zoom.toFixed(4)}) translate(${panX.toFixed(2)}px, ${panY.toFixed(2)}px)`,
+    transformOrigin: 'center center',
+  };
+
   return (
     <TornPaper rotate={rotate} style={{overflow: 'hidden', ...style}}>
       {asset.type === 'video' ? <OffthreadVideo src={staticFile(asset.path)} style={common} muted /> : <Img src={staticFile(asset.path)} style={common} />}
     </TornPaper>
+  );
+};
+
+/**
+ * İŞARET KATMANI — "oklar bilmem neler".
+ *
+ * Editoryal video-essay dilinin belkemiği: kare bir şey gösterir, ÜSTÜNE bir
+ * işaret o şeyin neresine bakılacağını söyler. Bu depoda hiç yoktu; paneller
+ * çiziliyor ama hiçbir şey işaret edilmiyordu.
+ *
+ * İşaret TÜRÜ sahnenin içeriğinden geliyor, süslemeden değil:
+ *   arrow   yer/yön/hareket anlatan sahne — "buraya gitti"
+ *   circle  bir şeyin BULUNDUĞUNU söyleyen sahne — "işte burada"
+ *   under   sayı/iddia taşıyan sahne — altını çizer
+ *   yok     hiçbiri tutmazsa çizilmez; her kareye işaret koymak onu
+ *           dekorasyona çevirir ve hiçbir şey işaret etmemekle aynı kapıya çıkar
+ *
+ * Çizim gecikmeli başlıyor (delay): işaret, gösterdiği şeyden SONRA gelmeli.
+ * Aynı anda girerse izleyici neye baktığını anlamadan ok belirir.
+ */
+const MARK_WORDS: Array<{kind: 'arrow' | 'circle' | 'under'; words: RegExp}> = [
+  {kind: 'arrow', words: /\b(went|flew|sailed|escap|route|toward|across|north|south|east|west|journey|moved|travel|led to|into)/i},
+  {kind: 'circle', words: /\b(found|discover|spotted|here|located|hidden|buried|remains|trace|evidence|body|wreck)/i},
+  {kind: 'under', words: /\b(\d|million|billion|percent|only|never|first|last|most|record|exactly)/i},
+];
+
+const Marker: React.FC<{scene: ProductionScene; at: {left: number; top: number}; delay?: number}> = ({scene, at, delay = 18}) => {
+  const frame = useCurrentFrame();
+  const text = [scene.headline, scene.narration, scene.kicker].filter(Boolean).join(' ');
+  const hit = MARK_WORDS.find((m) => m.words.test(text));
+  const draw = interpolate(frame, [delay, delay + 14], [0, 1], clamp);
+  if (!hit || draw <= 0) return null;
+
+  return (
+    <svg
+      viewBox="0 0 300 300"
+      width={300}
+      height={300}
+      style={{position: 'absolute', left: at.left, top: at.top, pointerEvents: 'none', overflow: 'visible'}}
+    >
+      {hit.kind === 'arrow' ? (
+        <g stroke={palette.red} strokeWidth="11" fill="none" strokeLinecap="round">
+          <path d="M20 250 C90 250 150 200 205 120" strokeDasharray="320" strokeDashoffset={320 * (1 - draw)} />
+          {draw > 0.85 ? <path d="M172 122 L208 112 L200 150" strokeLinejoin="round" /> : null}
+        </g>
+      ) : hit.kind === 'circle' ? (
+        <ellipse
+          cx="150" cy="150" rx="120" ry="92"
+          fill="none" stroke={palette.red} strokeWidth="11"
+          strokeDasharray="670" strokeDashoffset={670 * (1 - draw)}
+          transform="rotate(-8 150 150)"
+        />
+      ) : (
+        <path
+          d="M12 200 C90 214 210 208 288 196"
+          fill="none" stroke={palette.gold} strokeWidth="14" strokeLinecap="round"
+          strokeDasharray="290" strokeDashoffset={290 * (1 - draw)}
+        />
+      )}
+    </svg>
   );
 };
 
@@ -724,6 +823,12 @@ const GenericCollage: React.FC<{scene: ProductionScene; index: number; total: nu
       <AssetPanel asset={second} rotate={L.br} style={{...L.b}} />
       {!first ? <ContentShape scene={scene} style={{left: 115, top: 520, transform: `rotate(${L.ar}deg) scale(1.25)`}} /> : null}
       <div style={{position: 'absolute', ...L.count, fontFamily: 'Arial Black, sans-serif', fontSize: 42, color: palette.red}}>{String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}</div>
+      {/*
+        İşaret, BİRİNCİ panelin üstüne düşüyor: sahnenin ağırlık merkezi orası.
+        Konum düzenle birlikte kayıyor, yoksa dört düzenin üçünde boşluğu
+        işaret ederdi.
+      */}
+      <Marker scene={scene} at={{left: (L.a.left ?? 120) + 60, top: L.a.top + 80}} />
       <KineticLine text={scene.narration || scene.kicker || ''} delay={30} size={48} style={{...L.cap, textAlign: 'center'}} />
     </SceneShell>
   );
