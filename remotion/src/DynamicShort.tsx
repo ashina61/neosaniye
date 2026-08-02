@@ -66,7 +66,7 @@ const LOOKS: Array<{when: RegExp | null; name: string; look: Look}> = [
   },
   {
     name: 'bilim / uzay — mürekkep mavisi',
-    when: /\b(space|nasa|rocket|orbit|planet|star|physic|chemis|science|experiment|laborator|atom|quantum|telescope|mission|brain|cell|dna|gene|blood|nerve|muscle|bone|organ|protein|bacteria|virus|enzyme|hormone|taste|smell|vision|sleep|memory)/i,
+    when: /\b(space|nasa|rocket|orbit|planet|star|physic|chemis|science|experiment|laborator|atom|quantum|telescope|mission)/i,
     look: {ink: '#0f1621', paper: '#e2e7ee', paperLight: '#f0f4f9', paperDark: '#b6c0ce',
       gold: '#c8b061', goldDark: '#8a7326', teal: '#5f9ea6', red: '#c0453a', navy: '#0d2138', white: '#fbfdff', grain: 0.28},
   },
@@ -87,37 +87,8 @@ const LOOKS: Array<{when: RegExp | null; name: string; look: Look}> = [
 ];
 
 /** Konuya göre görünüm seç ve paleti bir kez yaz. */
-/**
- * ============ VARSAYILAN, DÜZELTMEYİ GÖRÜNMEZ KILIYORDU ============
- *
- * İlk sürüm eşleşme yoksa listenin SONUNCUSUNA düşüyordu ve o da eski paletin
- * BİREBİR aynısıydı. Kağıt üzerinde "geri dönüş davranışı" diye savunulabilir
- * görünüyordu; pratikte düzeltmeyi tamamen etkisiz bıraktı.
- *
- * Çünkü anahtar kelimeleri YANLIŞ KANALA göre yazmışım: suç, felaket, uzay —
- * yani o sırada uğraştığım kolaj konularına göre. Bu kanalın gerçek konuları
- * ise tuhaf doğa/bilim olguları. ÖLÇÜLDÜ, dördü de eşleşmedi:
- *
- *   butterfly foot tasting   → eşleşme yok
- *   barnacle adhesion        → eşleşme yok
- *   octopus arms             → eşleşme yok
- *   why sharks dont sink     → eşleşme yok
- *
- * Yani run 118, 119 ve 120 yeni kodla koştu ve yine eski paleti kullandı.
- * Kullanıcı "hiçbir bok değişmemiş" derken birebir haklıydı.
- *
- * İKİ DÜZELTME:
- *
- * 1. Kelime listeleri bu kanalın diline göre genişletildi (canlı adları,
- *    vücut/biyoloji, mühendislik, gündelik olgular).
- * 2. Eşleşme yoksa artık VARSAYILANA DÜŞÜLMÜYOR: konu hash'inden bir görünüm
- *    seçiliyor. Kelime listesi hiçbir zaman tam olamaz; kapsanmayan konu da
- *    kendi rengini almalı. Anahtar kelime ANLAMLI eşleşme sağlar, hash ise
- *    ÇEŞİTLİLİĞİ garanti eder — ikisi birbirinin yedeği değil, tamamlayıcısı.
- */
 function applyLook(topic: string): string {
-  const matched = LOOKS.find((l) => l.when && l.when.test(topic));
-  const hit = matched ?? LOOKS[idHash(topic) % LOOKS.length];
+  const hit = LOOKS.find((l) => l.when && l.when.test(topic)) ?? LOOKS[LOOKS.length - 1];
   Object.assign(palette, hit.look);
   return hit.name;
 }
