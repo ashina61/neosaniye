@@ -14,7 +14,86 @@ import {
 } from 'remotion';
 import type {ProductionScene, ProductionSpec, SceneAsset, SfxCue} from './schema';
 
-const palette = {
+/**
+ * ============ GÖRÜNÜM VİDEO BAŞINA, SAHNE BAŞINA DEĞİL ============
+ *
+ * Kullanıcı beş tur boyunca aynı şeyi söyledi ve ben beş tur boyunca yanlış
+ * katmanı yamadım: "aynı arkaplan, aynı zemin, aynı sesler."
+ *
+ * Sebep buradaydı ve tahmin değil, tek bir satırdı: `palette` MODÜL SEVİYESİNDE
+ * SABİTTİ. Yani bu deponun ürettiği HER video, sonsuza kadar, aynı krem kağıt
+ * zemini, aynı mürekkep siyahı, aynı altını ve aynı kırmızıyı kullanıyordu.
+ *
+ * Önceki turlarda eklediğim çeşitlilik — kadans varyantı, sayfa düzeni, yüz
+ * kimliği, içerik-odaklı siluet — HEPSİ bu çerçevenin içindeydi. Çerçeveye hiç
+ * dokunmamıştım. İzleyici çerçeveyi görüyor.
+ *
+ * ============ NEDEN SAHNE BAŞINA DEĞİL ============
+ *
+ * Renk dünyası bir videonun KİMLİĞİ. Sahne başına değiştirmek çeşitlilik değil
+ * tutarsızlık üretir; kolaj dili dağılır ve otuz sahne otuz ayrı videodan
+ * kesilmiş gibi durur. Değişmesi gereken şey videodan videoya.
+ *
+ * ============ NEDEN MUTASYON ============
+ *
+ * `palette` dosyada 62 yerde okunuyor. Prop ya da context'e çevirmek 62 çağrı
+ * yerini ve aradaki her bileşenin imzasını değiştirmek demekti — bu boyutta bir
+ * dokunuş, düzelttiğinden çok kırar.
+ *
+ * Bunun yerine nesne AYNI KALIYOR, içeriği render başında bir kez yazılıyor.
+ * Deterministik: seçim `spec.meta.topic`tan geliyor, aynı üretim her koşuda aynı
+ * görünümü alır. Remotion kareleri paralel işçilerde render eder ama her işçi
+ * aynı spec'i alıp aynı yazımı yapar, yani işçiler arasında fark oluşamaz.
+ */
+type Look = {
+  ink: string; paper: string; paperLight: string; paperDark: string;
+  gold: string; goldDark: string; teal: string; red: string; navy: string; white: string;
+  grain: number;
+};
+
+const LOOKS: Array<{when: RegExp | null; name: string; look: Look}> = [
+  {
+    name: 'suç / soruşturma — soğuk kanıt masası',
+    when: /\b(crime|heist|robber|murder|steal|stolen|police|detective|hijack|fraud|smuggl|prison|escape|missing|vanish)/i,
+    look: {ink: '#141519', paper: '#dfe0da', paperLight: '#eceee7', paperDark: '#b9bcb2',
+      gold: '#c9a227', goldDark: '#8a6c10', teal: '#7fa8ad', red: '#b3352c', navy: '#141c28', white: '#fbfcf8', grain: 0.34},
+  },
+  {
+    name: 'felaket / kaza — kavrulmuş turuncu',
+    when: /\b(disaster|crash|explos|collaps|burn|fire|meltdown|earthquake|eruption|flood|toxic|radiation|sink|wreck)/i,
+    look: {ink: '#1c1410', paper: '#efe0cd', paperLight: '#f7ecdb', paperDark: '#d3b795',
+      gold: '#d98324', goldDark: '#9c5510', teal: '#a3b5a0', red: '#a8321f', navy: '#26170f', white: '#fffaf1', grain: 0.42},
+  },
+  {
+    name: 'bilim / uzay — mürekkep mavisi',
+    when: /\b(space|nasa|rocket|orbit|planet|star|physic|chemis|science|experiment|laborator|atom|quantum|telescope|mission)/i,
+    look: {ink: '#0f1621', paper: '#e2e7ee', paperLight: '#f0f4f9', paperDark: '#b6c0ce',
+      gold: '#c8b061', goldDark: '#8a7326', teal: '#5f9ea6', red: '#c0453a', navy: '#0d2138', white: '#fbfdff', grain: 0.28},
+  },
+  {
+    name: 'doğa / hayvan — yosun yeşili',
+    when: /\b(animal|bird|fish|insect|whale|forest|jungle|ocean|reef|plant|tree|species|evolution|nature|desert|arctic)/i,
+    look: {ink: '#15190f', paper: '#e6e6d2', paperLight: '#f2f2e2', paperDark: '#c2c4a6',
+      gold: '#c8a83a', goldDark: '#856f14', teal: '#7fa88a', red: '#b0503a', navy: '#1b2a20', white: '#fcfdf4', grain: 0.36},
+  },
+  {
+    // Yedek: hiçbiri tutmazsa. Eski palet birebir korunuyor — geri dönüş
+    // davranışı, yeni bir görünüm değil.
+    name: 'genel / tarih — krem arşiv (özgün)',
+    when: null,
+    look: {ink: '#171511', paper: '#efe6d3', paperLight: '#f8f1e4', paperDark: '#d7c6a9',
+      gold: '#d5a52d', goldDark: '#9b6d11', teal: '#9fc8c6', red: '#bc493f', navy: '#172433', white: '#fffdf7', grain: 0.38},
+  },
+];
+
+/** Konuya göre görünüm seç ve paleti bir kez yaz. */
+function applyLook(topic: string): string {
+  const hit = LOOKS.find((l) => l.when && l.when.test(topic)) ?? LOOKS[LOOKS.length - 1];
+  Object.assign(palette, hit.look);
+  return hit.name;
+}
+
+const palette: Look = {
   ink: '#171511',
   paper: '#efe6d3',
   paperLight: '#f8f1e4',
@@ -25,6 +104,7 @@ const palette = {
   red: '#bc493f',
   navy: '#172433',
   white: '#fffdf7',
+  grain: 0.38,
 };
 
 const clamp = {
@@ -36,6 +116,9 @@ const sceneSfx = (scene: ProductionScene): SfxCue[] =>
   (scene.sfx || []).map((cue) => ({...cue, atFrame: scene.fromFrame + cue.atFrame}));
 
 export const DynamicShort: React.FC<ProductionSpec> = (spec) => {
+  // Görünüm SEÇİMİ burada, çizimden önce: alt bileşenler `palette`i okuduğunda
+  // yazılmış olmak zorunda. React ebeveyni çocuklarından önce çalıştırır.
+  applyLook(`${spec.meta?.topic ?? ''} ${spec.meta?.title ?? ''}`);
   const cues = [...(spec.globalSfx || []), ...spec.scenes.flatMap(sceneSfx)];
 
   return (
@@ -161,7 +244,11 @@ const FilmTreatment: React.FC<React.PropsWithChildren<{dark?: boolean}>> = ({chi
         style={{
           pointerEvents: 'none',
           inset: -45,
-          opacity: 0.22,
+          // Gren yoğunluğu da GÖRÜNÜMDEN geliyor. Sabit 0.22 iken her videonun
+          // dokusu birebir aynıydı; renk değişse bile "aynı efekt" hissi
+          // buradan sürüyordu. Bilim görünümü temiz (0.28x), felaket görünümü
+          // kaba (0.42x).
+          opacity: 0.22 * (palette.grain / 0.38),
           mixBlendMode: 'overlay',
           transform: `translate(${grainX}px, ${grainY}px)`,
           backgroundImage:
