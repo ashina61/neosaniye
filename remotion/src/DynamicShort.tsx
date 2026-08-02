@@ -180,15 +180,88 @@ const FilmTreatment: React.FC<React.PropsWithChildren<{dark?: boolean}>> = ({chi
   );
 };
 
+/**
+ * SAHNE KİMLİĞİNDEN DETERMİNİSTİK SAYI.
+ *
+ * Sahne sırası (`index`) SceneShell'e kadar taşınmıyor ve taşımak on şablonun
+ * imzasını değiştirmek demekti. `scene.id` zaten benzersiz ve storyboard'dan
+ * geliyor, yani aynı üretim iki kez render edilirse aynı hareketi alır —
+ * render'ın deterministik kalması şart.
+ */
+function idHash(id: string): number {
+  let h = 0;
+  for (let i = 0; i < id.length; i += 1) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  return h;
+}
+
+/**
+ * ============ HER SAHNE AYNI HAREKETİ ALIYORDU ============
+ *
+ * Kullanıcı render'a bakıp söyledi: "aynı hareketleri, aynı şekilleri, aynı
+ * sayfa yapısını kullanıyor". Şablon çeşitliliği VARDI (dokuz şablon + jenerik)
+ * ama hepsi bu kabuktan geçiyordu ve kabuk tek bir hareket biliyordu:
+ *
+ *   · giriş  : sadece opacity 0→1, dört karede
+ *   · çıkış  : sadece opacity 1→0
+ *   · kadraj : sabit, `focus` açıkken tek bir zoom
+ *
+ * Yani on farklı şablon on farklı ŞEY çiziyor ama hepsi AYNI ŞEKİLDE giriyor.
+ * İzleyicinin "aynı" dediği şey içerik değil, KADANS.
+ *
+ * Ayrıca run 117'nin denetimi bunu sayıyla da gösterdi: "kopya kare grubu: 4",
+ * "değişim temposu 0.74s". Aynı kadans, kopya kare üretiyor.
+ *
+ * Dört varyant, sahne kimliğinden seçiliyor. Hepsi AYNI SÜREDE bitiyor —
+ * çeşitlilik tempoyu bozmamalı, yalnızca yönü değiştirmeli:
+ *
+ *   0  aşağıdan yükselir      (klasik, en sık kullanılan)
+ *   1  soldan kayar + hafif ters yönde sürüklenir
+ *   2  sağdan kayar
+ *   3  ölçekten açılır, hafif döner  (kağıt yerine oturuyormuş gibi)
+ *
+ * Sürüklenme (drift) giriş bittikten SONRA da sürüyor: sahnenin ortasında
+ * kare ölü kalmasın. Genlik kasıtlı olarak küçük — büyük hareket kolajı
+ * "PowerPoint geçişi"ne çevirir.
+ */
 const SceneShell: React.FC<React.PropsWithChildren<{scene: ProductionScene; focus?: boolean}>> = ({scene, focus = false, children}) => {
   const frame = useCurrentFrame();
-  const opacity = interpolate(frame, [0, 4, scene.durationInFrames - 5, scene.durationInFrames], [0, 1, 1, 0], clamp);
+  const dur = scene.durationInFrames;
+  const variant = idHash(scene.id) % 4;
+
+  const opacity = interpolate(frame, [0, 4, dur - 5, dur], [0, 1, 1, 0], clamp);
   const blur = focus ? interpolate(frame, [0, 9, 20, 34, 48], [10, 4, 0, 2.5, 0], clamp) : 0;
-  const scale = focus ? interpolate(frame, [0, 30, scene.durationInFrames], [0.94, 1, 1.045], clamp) : 1;
+
+  // Giriş 12 karede biter, sonra yavaş sürüklenme. `in` 0→1 giriş ilerlemesi.
+  const enter = interpolate(frame, [0, 12], [0, 1], clamp);
+  const drift = interpolate(frame, [0, dur], [0, 1], clamp);
+
+  let x = 0;
+  let y = 0;
+  let rot = 0;
+  let scale = focus ? interpolate(frame, [0, 30, dur], [0.94, 1, 1.045], clamp) : 1;
+
+  if (variant === 0) {
+    y = (1 - enter) * 46 - drift * 14;
+  } else if (variant === 1) {
+    x = (1 - enter) * -52 + drift * 16;
+  } else if (variant === 2) {
+    x = (1 - enter) * 52 - drift * 16;
+  } else {
+    rot = (1 - enter) * -1.6 + drift * 0.5;
+    scale *= 0.965 + enter * 0.035 + drift * 0.02;
+  }
 
   return (
     <AbsoluteFill style={{opacity}}>
-      <div style={{position: 'absolute', inset: -30, filter: `blur(${blur}px)`, transform: `scale(${scale})`}}>
+      <div
+        style={{
+          position: 'absolute',
+          inset: -30,
+          filter: `blur(${blur}px)`,
+          transform: `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px) rotate(${rot.toFixed(3)}deg) scale(${scale.toFixed(4)})`,
+          transformOrigin: 'center center',
+        }}
+      >
         <FilmTreatment dark={Boolean(scene.dark)}>{children}</FilmTreatment>
       </div>
     </AbsoluteFill>
