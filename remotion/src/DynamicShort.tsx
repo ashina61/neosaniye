@@ -424,7 +424,7 @@ const HookReveal: React.FC<{scene: ProductionScene}> = ({scene}) => {
       <Sparkles />
       <div style={{position: 'absolute', inset: 0, background: 'radial-gradient(circle at 75% 37%, rgba(213,165,45,0.25), transparent 34%)'}} />
       <AssetPanel asset={asset} rotate={2} style={{left: 510, top: 520, width: 470, height: 720, transform: `translateX(${interpolate(portrait, [0, 1], [180, 0])}px) rotate(2deg)`}} />
-      {!asset ? <PortraitCutout style={{left: 545, top: 520, transform: `translateX(${interpolate(portrait, [0, 1], [180, 0])}px)`}} /> : null}
+      {!asset ? <PortraitCutout seed={scene.id} style={{left: 545, top: 520, transform: `translateX(${interpolate(portrait, [0, 1], [180, 0])}px)`}} /> : null}
       <StickerText text={scene.headline || 'IMPOSSIBLE STORY'} top={150} size={88} rotate={-1.5} />
       <KineticLine text={scene.kicker || scene.narration || ''} delay={18} color={palette.red} size={52} style={{left: 95, top: 390, width: 760}} />
       <Tape style={{left: 730, top: 1260}} rotate={7} />
@@ -442,7 +442,7 @@ const PortraitDossier: React.FC<{scene: ProductionScene}> = ({scene}) => {
         <div style={{fontFamily: 'Georgia, serif', fontSize: 38, letterSpacing: 2}}>CONFIDENTIAL DOSSIER</div>
         <div style={{position: 'absolute', left: 40, right: 40, top: 115, height: 5, background: palette.ink}} />
         <AssetPanel asset={asset} style={{left: 80, top: 190, width: 420, height: 610}} />
-        {!asset ? <PortraitCutout style={{left: 75, top: 210}} /> : null}
+        {!asset ? <PortraitCutout seed={scene.id} style={{left: 75, top: 210}} /> : null}
         <div style={{position: 'absolute', left: 545, top: 210, width: 310, fontFamily: 'Arial Black, sans-serif', fontSize: 46, lineHeight: 1.05}}>{(scene.kicker || 'NAME UNKNOWN').toUpperCase()}</div>
         {(scene.emphasis || ['CHARM', 'STATUS', 'TRUST']).slice(0, 3).map((word, i) => (
           <div key={word} style={{position: 'absolute', left: 545, top: 470 + i * 125, padding: '16px 22px', background: i === 1 ? palette.red : palette.gold, fontFamily: 'Arial Black, sans-serif', fontSize: 36, transform: `rotate(${i % 2 ? 2 : -2}deg)`}}>{word.toUpperCase()}</div>
@@ -642,20 +642,84 @@ const GenericCollage: React.FC<{scene: ProductionScene; index: number; total: nu
   );
 };
 
-const PortraitCutout: React.FC<{style?: React.CSSProperties}> = ({style}) => (
-  <div style={{position: 'absolute', width: 420, height: 610, filter: 'drop-shadow(20px 24px 0 rgba(24,18,13,0.22))', ...style}}>
-    <svg viewBox="0 0 440 610" width="100%" height="100%">
-      <path d="M77 598 C86 438 133 377 219 365 C309 377 358 443 368 598 Z" fill="#d8d2c5" stroke={palette.ink} strokeWidth="14" />
-      <path d="M151 377 L219 473 L289 377 L270 598 L166 598 Z" fill={palette.navy} stroke={palette.ink} strokeWidth="11" />
-      <ellipse cx="219" cy="239" rx="115" ry="142" fill="#d3c5ad" stroke={palette.ink} strokeWidth="14" />
-      <path d="M110 213 C114 82 330 66 337 223 C292 168 148 166 110 213 Z" fill={palette.ink} />
-      <ellipse cx="174" cy="242" rx="12" ry="9" fill={palette.ink} />
-      <ellipse cx="265" cy="242" rx="12" ry="9" fill={palette.ink} />
-      <path d="M170 320 C203 343 240 343 272 319" fill="none" stroke={palette.ink} strokeWidth="9" strokeLinecap="round" />
-      <path d="M147 116 C173 75 288 74 318 133" fill="none" stroke={palette.gold} strokeWidth="15" />
-    </svg>
-  </div>
-);
+/**
+ * ============ EN SIK GÖRÜNEN YÜZ HEP AYNI YÜZDÜ ============
+ *
+ * Kullanıcı: "şekilleri, svgleri değiştirsin, hepsi aynı şeyler olmasın."
+ *
+ * `PortraitCutout` fotoğraf BULUNAMADIĞINDA çizilen yedek — yani en sık
+ * görünen siluet. Ve tek bir yol verisiydi: aynı saç, aynı kravat, aynı göz
+ * aralığı, aynı altın şapka kavisi. Bir videoda üç kez düşerse izleyici üç kez
+ * AYNI ADAMI görüyor, üstelik farklı üç kişiyi anlatan sahnelerde.
+ *
+ * Üç kimlik. Değişenler tanınırlığı taşıyan yerler — saç hattı, yüz genişliği,
+ * yaka, aksesuar. Gövde silueti ve omuz genişliği SABİT kalıyor: onlar stilin
+ * imzası, değişirse farklı kişi değil farklı ÇİZİM dili olur.
+ *
+ *   0  düz saç + kravat + şapka kavisi   (özgün)
+ *   1  dalgalı/hacimli saç + açık yaka, aksesuar yok, dar yüz
+ *   2  kısa saç + gözlük + fular, geniş yüz
+ *
+ * `seed` sahne kimliğinden geliyor: aynı sahne her render'da aynı yüzü alır.
+ */
+const PortraitCutout: React.FC<{style?: React.CSSProperties; seed?: string}> = ({style, seed = ''}) => {
+  const v = idHash(`${seed}:face`) % 3;
+  const rx = [115, 104, 122][v];
+  const eye = [{l: 174, r: 265}, {l: 180, r: 259}, {l: 170, r: 269}][v];
+
+  return (
+    <div style={{position: 'absolute', width: 420, height: 610, filter: 'drop-shadow(20px 24px 0 rgba(24,18,13,0.22))', ...style}}>
+      <svg viewBox="0 0 440 610" width="100%" height="100%">
+        {/* Gövde ve omuz: stilin imzası, varyanta göre DEĞİŞMİYOR. */}
+        <path d="M77 598 C86 438 133 377 219 365 C309 377 358 443 368 598 Z" fill="#d8d2c5" stroke={palette.ink} strokeWidth="14" />
+
+        {/* Yaka: kravat / açık yaka / fular */}
+        {v === 0 ? (
+          <path d="M151 377 L219 473 L289 377 L270 598 L166 598 Z" fill={palette.navy} stroke={palette.ink} strokeWidth="11" />
+        ) : v === 1 ? (
+          <path d="M158 377 L219 486 L282 377 L262 598 L178 598 Z" fill="#c9c2b2" stroke={palette.ink} strokeWidth="11" />
+        ) : (
+          <path d="M150 380 C186 430 254 430 290 380 L300 470 C254 500 186 500 140 470 Z" fill={palette.red} stroke={palette.ink} strokeWidth="11" />
+        )}
+
+        <ellipse cx="219" cy="239" rx={rx} ry="142" fill="#d3c5ad" stroke={palette.ink} strokeWidth="14" />
+
+        {/* Saç hattı — kimliği en çok taşıyan öğe. */}
+        {v === 0 ? (
+          <path d="M110 213 C114 82 330 66 337 223 C292 168 148 166 110 213 Z" fill={palette.ink} />
+        ) : v === 1 ? (
+          <path d="M104 250 C96 96 344 84 340 258 C336 150 300 122 262 150 C224 108 150 128 132 186 C122 210 116 232 104 250 Z" fill={palette.ink} />
+        ) : (
+          <path d="M114 196 C126 96 322 92 332 200 C300 158 268 142 219 142 C170 142 140 160 114 196 Z" fill={palette.ink} />
+        )}
+
+        <ellipse cx={eye.l} cy="242" rx="12" ry="9" fill={palette.ink} />
+        <ellipse cx={eye.r} cy="242" rx="12" ry="9" fill={palette.ink} />
+
+        {/* Gözlük yalnızca 2. kimlikte. */}
+        {v === 2 ? (
+          <g fill="none" stroke={palette.ink} strokeWidth="8">
+            <circle cx={eye.l} cy="242" r="30" />
+            <circle cx={eye.r} cy="242" r="30" />
+            <path d={`M${eye.l + 30} 242 L${eye.r - 30} 242`} />
+          </g>
+        ) : null}
+
+        {/* Ağız: gülümseme / düz / hafif açık */}
+        {v === 0 ? (
+          <path d="M170 320 C203 343 240 343 272 319" fill="none" stroke={palette.ink} strokeWidth="9" strokeLinecap="round" />
+        ) : v === 1 ? (
+          <path d="M180 328 L262 328" fill="none" stroke={palette.ink} strokeWidth="9" strokeLinecap="round" />
+        ) : (
+          <ellipse cx="221" cy="326" rx="26" ry="14" fill="none" stroke={palette.ink} strokeWidth="9" />
+        )}
+
+        {/* Şapka kavisi yalnızca özgün kimlikte — altın cimri kullanılır. */}
+        {v === 0 ? <path d="M147 116 C173 75 288 74 318 133" fill="none" stroke={palette.gold} strokeWidth="15" /> : null}
+      </svg>
+    </div>
+  );
+};
 
 const DocumentCard: React.FC<{style?: React.CSSProperties; label: string}> = ({style, label}) => (
   <div style={{position: 'absolute', width: 520, height: 360, padding: 34, background: palette.paperLight, border: `5px solid ${palette.ink}`, boxShadow: '14px 18px 0 rgba(25,20,15,0.18)', ...style}}>
