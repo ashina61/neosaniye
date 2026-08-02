@@ -169,14 +169,32 @@ async function pixabaySearchPhoto(keyword) {
 }
 
 /** Tek bir kelime için medya bulur: Pexels (tercih sırası) -> Pixabay yedeği. */
-async function findForKeyword(keyword) {
+/**
+ * ============ AYNI KLİP İKİ SAHNEDE ============
+ *
+ * Run 117'nin yayın kapısı videoyu düşürdü: DUPLICATE_SHOT, 4.5-5. saniye ile
+ * 7-8. saniye arası AYNI çekim. Denetim ayrıca "kopya kare grubu: 4" saydı.
+ *
+ * Sebep buradaydı: `findForKeyword` hiçbir dışlama kümesi almıyordu. Alt
+ * aramalar (`searchVideo`, `pixabaySearchVideo`) `exclude` parametresini ZATEN
+ * destekliyor ve `fetchStockVideoForKeywords` onu kullanıyor — ama `fetchMedia`
+ * ana döngüsü boş geçiyordu. Yani iki farklı anahtar kelime aynı klibe
+ * çıkabiliyordu ve hiçbir şey bunu engellemiyordu.
+ *
+ * Kelimeler zaten benzer olduğu için ("hijack", "aircraft") aynı klibe çıkmak
+ * istisna değil KURAL.
+ */
+async function findForKeyword(keyword, exclude = new Set()) {
   const order =
     config.pexels.preferType === 'photo'
       ? [searchPhoto, searchVideo]
       : [searchVideo, searchPhoto];
   for (const fn of order) {
     try {
-      const hit = await fn(keyword);
+      const hit = await fn(keyword, exclude);
+      // Fotoğraf arama kolu `exclude`u okumuyor olabilir; kararı BURADA da
+      // veriyoruz ki kol eklendiğinde/değiştiğinde tekrar sızmasın.
+      if (hit && exclude.has(hit.downloadUrl)) continue;
       if (hit) return hit;
     } catch (err) {
       console.warn(`[pexels] "${keyword}" arama hatası: ${err.message}`);
@@ -279,15 +297,20 @@ export async function fetchMedia(script, opts = {}) {
 
   const items = [];
   let index = 0;
+  // Bu videoda kullanılan klip URL'leri. Kelime döngüsünün DIŞINDA duruyor:
+  // içeride tanımlansaydı her kelime kendi boş kümesiyle başlar ve tekrar
+  // engeli hiçbir şey yapmazdı.
+  const used = new Set();
 
   for (const keyword of keywords) {
     // perKeyword>1 için per_page'i artırabiliriz; şimdilik 1 medya/kelime yeterli.
     for (let n = 0; n < perKeyword; n += 1) {
-      const hit = await findForKeyword(keyword);
+      const hit = await findForKeyword(keyword, used);
       if (!hit) {
         console.warn(`[pexels] "${keyword}" için dikey medya bulunamadı, atlandı.`);
         continue;
       }
+      used.add(hit.downloadUrl);
       index += 1;
       const filename = `${String(index).padStart(2, '0')}-${hit.type}.${hit.ext}`;
       const filePath = path.join(mediaDir, filename);
