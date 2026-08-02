@@ -72,9 +72,39 @@ export const DynamicShort: React.FC<ProductionSpec> = (spec) => {
           ) : null}
         </React.Fragment>
       ))}
+
+      <Watermark />
     </AbsoluteFill>
   );
 };
+
+/**
+ * KANAL FİLİGRANI — ESKİ KONUMU BİREBİR.
+ *
+ * Remotion'a geçişte (`3c645f2`) düşmüştü: `assets/logo.png` ve
+ * `assets/logo-mark.png` depoda duruyordu ama hiçbir bileşen çizmiyordu, yani
+ * videolarda logo YOKTU.
+ *
+ * Ölçüler eski ffmpeg süzgecinden alındı, tahmin değil — `renderVideo.js`
+ * `ae274f7^` sürümü:
+ *
+ *     [logo]scale=-1:72[lg]        yükseklik 72 px, genişlik oranla
+ *     [v][lg]overlay=72:64         sol üst köşe, x=72  y=64
+ *
+ * MONOGRAM ÖNCE: eski kod `logoMarkPath` varsa onu, yoksa tam logoyu
+ * kullanıyordu. Köşe filigranı için kompakt işaret doğru olan; tam logo o
+ * boyutta okunmaz.
+ *
+ * En son katman: sahnelerin ve geçiş parlamalarının ÜSTÜNDE durmalı, yoksa
+ * sahne değişiminde kayboluyor.
+ */
+const Watermark: React.FC = () => (
+  <img
+    src={staticFile('logo-mark.png')}
+    alt=""
+    style={{position: 'absolute', left: 72, top: 64, height: 72, width: 'auto', opacity: 0.92}}
+  />
+);
 
 const Scene: React.FC<{scene: ProductionScene; index: number; total: number}> = ({scene, index, total}) => {
   switch (scene.template) {
