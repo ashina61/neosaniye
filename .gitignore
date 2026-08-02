@@ -52,3 +52,6 @@ artifacts/motion/*
 !artifacts/motion/acceptance/
 artifacts/motion/acceptance/videos/
 artifacts/motion/acceptance/screenshots/
+
+# Render çıktıları — üretim artefaktı, depoya girmez.
+out/
