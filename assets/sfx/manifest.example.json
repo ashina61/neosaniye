@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "id": "example-whoosh-01",
+      "family": "entrance-whoosh",
+      "path": "assets/sfx/whoosh/example-whoosh-01.wav",
+      "source": "original-or-licensed",
+      "license": "replace-before-publishing",
+      "sha256": "",
+      "allowedForPublishing": false
+    }
+  ]
+}

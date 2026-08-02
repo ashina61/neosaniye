@@ -1,98 +1,201 @@
-# NeoSaniye
+# NeoSaniye — Remotion Shorts Factory
 
-Editoryal kesik-kağıt kolaj tarzında dikey belgesel Shorts üreten fabrika.
-Render motoru **Remotion**; kompozisyonların büyük kısmı **kodla çizilir**.
+NeoSaniye; konu seçimi, İngilizce mini-belgesel senaryosu, TTS, kaynak görseller,
+özgün müzik/SFX, Remotion motion-graphics renderı, teknik kalite kapıları ve
+YouTube/Instagram/Facebook yayınını tek otomatik hatta birleştirir.
 
-Yayınlama yok: bu repoda upload mantığı bulunmaz, workflow'lar yalnızca manuel.
+## Tek render motoru
 
-## Neden bu mimari
+Görüntü montajı artık yalnızca **Remotion** ile yapılır. Eski FFmpeg montaj,
+ASS/libass overlay, post-render CTA, outro ve renderer-switch yolları kaldırılmıştır.
 
-Referans malzeme (bir "paper collage documentary" iş akışı) her beat için bir
-görsel ürettirip sonra bir **image-to-video** modeliyle canlandırıyor. O modelin
-istediği davranış şöyle tarif ediliyor:
+FFmpeg ve ffprobe hâlâ şu yardımcı işler için kullanılır:
 
-> kamera tamamen kilitli · zoom yok, pan yok · hiçbir öğe yerleştikten sonra
-> bir daha hareket etmez · 7. saniyede kare verilen görselle birebir eşleşir
+- ses/görsel dosyalarını teknik olarak okumak,
+- süre ve akış bilgisini ölçmek,
+- final MP4'te siyah ekran, donma, sessizlik ve decode hatası taramak.
 
-Bu bir yaratıcılık talebi değil, **determinizm** talebi — ve i2v modelleri bu üç
-kuralı düzenli olarak ihlal eder. Remotion'da kamera zaten senin: kaymayı
-yazmazsan kaymaz. O yüzden build-on assembly kodda yapılıyor
-(`src/motion/stepped.ts`), bir video modelinden dilenmiyor.
+Bunlar kurgu motoru değildir; final görüntüyü Remotion üretir.
 
-Referans video ölçüldüğünde bu tercih doğrulandı: çekimlerinin yaklaşık üçte
-ikisinde hiç fotoğraf yok (çöp adam, tipografi, ok, halka, harita, ızgara), ve
-çekim içi hareket "kompozisyon çakılı + bir iki katman ağır ağır kayıyor"dan
-ibaret. İkisi de kod işi.
+## Üretim akışı
 
-## Akış
-
-```
-content/story.json          Fern stili sürekli anlatı (tek blok)
-        │
-        │  npm run beats      pipeline/build-storyboard.mjs
-        │                     2.5 kelime/sn → beat → beat türü → sahne şablonu
-        ▼
-content/storyboard.json     sahne listesi, süreler, payload
-        │
-        │  npm run render     Remotion
-        ▼
-out/neosaniye.mp4           1080x1920, 30 fps
-        │
-        │  python3 pipeline/verify-render.py out/neosaniye.mp4
-        ▼
-ölçüm raporu                kompozisyon kilidi, 12fps kadans, aksan payı,
-                            güvenli alan, kamera sabitliği
+```text
+performans verisi / konu havuzu
+        ↓
+İngilizce script + hook + finale
+        ↓
+kanonik TTS zaman çizelgesi
+        ↓
+görsel hikâye planı + konu kimliği
+        ↓
+AI / stok / arşiv kaynak görselleri
+        ↓
+ProductionSpec (production.json)
+        ↓
+Remotion collage motion-graphics render
+        ↓
+preflight + final MP4 + yayın kapıları
+        ↓
+YouTube / Instagram / Facebook
 ```
 
-Render sırasında hiçbir karar verilmez. Bütün kararlar storyboard'da,
-derleyici tarafından önceden alınır — çıktının deterministik olması için.
+## Görsel dil
 
-## Komutlar
+Motor konuya göre aynı sahneyi kopyalamaz. Senaryodaki her beat aşağıdaki genel
+şablonlardan uygun olana çevrilir:
 
-| komut | ne yapar |
-|---|---|
-| `npm run beats` | `story.json` → `storyboard.json` (ağa çıkmaz) |
-| `npm run studio` | Remotion stüdyosu, canlı önizleme |
-| `npm run render` | `Short` kompozisyonunu render eder |
-| `npm run typecheck` | TypeScript denetimi |
-| `npm test` | beat matematiği ve sınıflandırma testleri |
-| `npx remotion render src/index.ts StyleSheet out/sheet.mp4` | stil sayfası |
+- hook reveal
+- portrait dossier
+- document highlight
+- map route
+- statistic slot
+- explainer diagram
+- transaction
+- consequence
+- final twist
+- generic collage
 
-`StyleSheet` kompozisyonu her şablondan 3 saniye gösterir. Tasarım sistemi bir
-yerde bozulduğunda hangi şablonda bozulduğunu tek videoda görmek için var.
+Ortak marka dili: krem kâğıt dokusu, yüksek kontrastlı cutout'lar, altın vurgu,
+teal yardımcı renk, yırtık kartlar, analog film dokusu, kinetic typography,
+parallax ve kontrollü focus/whip geçişleri.
 
-## Dizinler
+## Süre sözleşmesi
 
+Script ve TTS katmanları kısa parça üretimine izin vermez. Varsayılan hedefler:
+
+- anlatım: `CONTENT_MIN_WORDS`–`CONTENT_MAX_WORDS`
+- final süre: `CONTENT_MIN_SECONDS`–`CONTENT_MAX_SECONDS`
+- ideal mini-belgesel bandı: `CONTENT_IDEAL_MIN_SECONDS`–`CONTENT_IDEAL_MAX_SECONDS`
+
+Ölçülmüş TTS süre dışındaysa medya ve render maliyetine girilmeden koşu durur.
+
+## Kurulum
+
+```bash
+npm ci
+npm run remotion:install
+pip install -r requirements.txt
+sudo apt-get install -y ffmpeg
+cp .env.example .env
 ```
-src/design/tokens.ts      palet, tip ölçeği, güvenli alan, dikey bantlar
-src/motion/stepped.ts     12fps adım, build-on giriş, katman kayması
-src/paper/                kağıt primitifleri (zemin, cutout, tip, işaretler, çöp adam)
-src/scenes/               12 sahne şablonu + beat türü sözleşmesi
-src/Short.tsx             sıralayıcı (konu bilgisi içermez)
-pipeline/beats.mjs        Fern beat matematiği + sınıflandırma + şablon eşlemesi
-pipeline/verify-render.py çıktıyı referans ölçümlerine karşı denetler
-public/fonts/             Roboto Condensed (Apache-2.0), EB Garamond (OFL)
+
+Remotion Studio:
+
+```bash
+npm run remotion:studio
 ```
 
-## Render motoru notu
+## Üretim
 
-Remotion normalde Chromium'unu `remotion.media`'dan indirir. Bu ortamın ağ
-politikası o hostu engelliyor; `remotion.config.ts` makinede kurulu bir
-Chromium'u arıyor ve bulursa onu kullanıyor. `REMOTION_BROWSER` ile elle de
-verilebilir.
+Yayın yapmadan tam üretim:
 
-Ölçülen hız: ~0.27 sn/kare (1080x1920), yani 50 saniyelik video ≈ 7 dakika.
+```bash
+npm run produce:dry
+```
 
-## Görseller
+Yayın isteğiyle üretim:
 
-Şablonlar `payload.images` yoksa **prosedürel siluetle** çalışır, yani tasarım
-sistemi ve hareket ücretli API çağrılmadan doğrulanabilir. Gerçek halftone
-fotoğraf cutout'ları (alfa kanallı PNG) aynı bileşene `src` olarak girer.
+```bash
+npm run produce -- --upload
+```
 
-Alfa kanallı cutout üretmek hâlâ çözülmesi gereken adım: görsel modellerinin
-çoğu şeffaf arka plan vermiyor, arka plan silme adımı gerekiyor.
+Yayın isteği tek başına yeterli değildir. Final MP4 teknik kapıları geçmezse hiçbir
+platforma gönderilmez.
 
-## Kurallar
+Bir `job.json` dosyasını doğrudan render etmek:
 
-`AGENTS.md` bağlayıcıdır. Özeti: tek görsel yön, tek aksan rengi, konu başına
-kod yazılmaz, `Math.random` yasak, upload eklenmez, workflow manuel.
+```bash
+npm run video -- job.json
+```
+
+Zorunlu temel alanlar: `audioPath`, `scenes`, `media`, `mediaScene`, `timeline`,
+`outPath`.
+
+## Testler
+
+```bash
+npm run test:remotion
+npm test
+npm run remotion:typecheck
+npm run remotion:fixture
+```
+
+`test/remotionOnly.test.js`, eski renderer veya ASS/CTA katmanları tekrar eklenirse
+CI'yi düşürür. Fixture workflow'u ayrıca 1080×1920 H.264/AAC video üretir ve
+siyah/donma/sessizlik taraması yapar.
+
+## GitHub Actions
+
+### Günlük üretim
+
+`.github/workflows/daily-short.yml`
+
+- 13:02 UTC
+- 18:02 UTC
+- 23:02 UTC
+
+Cron koşuları yayın talebiyle çalışır. Manuel koşuda upload kutusu varsayılan olarak
+kapalıdır. Workflow Node 22, Python, FFmpeg/ffprobe ve izole Remotion paketini kurar;
+önce mimari testleri geçirir, sonra üretime başlar.
+
+### Renderer doğrulaması
+
+`.github/workflows/remotion-fixture.yml`
+
+Her pull request'te Remotion-only mimariyi, Node testlerini, TypeScript'i, fixture
+renderını ve final MP4 teknik taramasını doğrular.
+
+## Proje yapısı
+
+```text
+remotion/
+  src/
+    Root.tsx
+    DynamicShort.tsx
+    ProductionSpec.ts
+    components/
+    scenes/
+
+src/
+  script/             # konu ve senaryo
+  tts/                # TTS + kelime zamanlaması
+  media/              # AI / stok / arşiv kaynakları
+  video/
+    buildRemotionSpec.js
+    renderRemotion.js
+    renderVideo.js     # kararlı dış arayüz → Remotion
+  pipeline/            # QC, yayın kapıları, kayıt ve orkestrasyon
+  youtube/             # metadata, upload, captions
+  social/              # Meta cross-post
+
+scripts/
+  generate-and-publish.js
+  render-video.js
+  audit-final-video.js
+```
+
+## Temel artefaktlar
+
+Her üretim klasöründe mümkün olduğunda şunlar bulunur:
+
+- final `.mp4`
+- `production.json`
+- `script.json`
+- `scene-plan.json`
+- `production-report.json`
+- `production-report.md`
+- `publish-gates.json`
+- `asset-manifest.json`
+- `cover.jpg`
+
+`production.json`, renderın tek makine-okunur sahne planıdır; konuya özel React
+kodu yazılması gerekmez.
+
+## Güvenlik ilkeleri
+
+- Kimlik bilgisinin bulunması upload izni sayılmaz.
+- Public üretimde render hatası fail-closed davranır.
+- Teknik olarak bozuk MP4 yayınlanmaz.
+- Lisansı belirsiz müzik/SFX kullanılmaz.
+- Görsel kaynak ve lisans kanıtı asset manifestine yazılır.
+- Yayınlanacak dosya ile analiz edilen dosyanın hash'i eşleşmek zorundadır.

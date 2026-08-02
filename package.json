@@ -1,36 +1,36 @@
 {
   "name": "neosaniye",
-  "version": "5.0.0",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "NeoSaniye: editorial cut-paper collage Shorts factory (Remotion render engine)",
+  "description": "Remotion tabanlı otomatik NeoSaniye Shorts üretim ve yayınlama sistemi",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
-    "studio": "remotion studio src/index.ts",
-    "beats": "node pipeline/build-storyboard.mjs",
-    "cutouts": "node pipeline/generate-cutouts.mjs",
-    "flow:pack": "node pipeline/build-flow-pack.mjs",
-    "clips": "node pipeline/ingest-clips.mjs",
-    "render": "remotion render src/index.ts Short out/neosaniye.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p",
-    "render:still": "remotion still src/index.ts Short out/still.png",
-    "typecheck": "tsc --noEmit",
-    "test": "node --test \"test/**/*.test.mjs\"",
-    "archive": "node pipeline/fetch-archive.mjs",
-    "sheet": "node pipeline/contact-sheet.mjs",
-    "preview": "remotion render src/index.ts Short out/preview.mp4 --codec=h264 --crf=30 --pixel-format=yuv420p --scale=0.3",
-    "collage": "node pipeline/ingest-collage.mjs",
-    "gate:templates": "node pipeline/template-gate.mjs",
-    "topic": "node pipeline/pick-topic.mjs",
-    "narrate": "node pipeline/narrate.mjs"
+    "produce": "node scripts/generate-and-publish.js",
+    "produce:dry": "node scripts/generate-and-publish.js --no-upload",
+    "script": "node scripts/generate-script.js",
+    "script:save": "node scripts/generate-script.js --save",
+    "audio": "node scripts/generate-audio.js",
+    "media": "node scripts/fetch-media.js",
+    "video": "node scripts/render-video.js",
+    "test": "node --test",
+    "test:remotion": "node --test test/remotionSpec.test.js test/remotionOnly.test.js",
+    "check": "npm test && npm run remotion:typecheck",
+    "upload": "node scripts/upload-youtube.js",
+    "youtube:auth": "node scripts/youtube-auth.js",
+    "audio:import": "node scripts/audio-import.js",
+    "audio:import:dry": "node scripts/audio-import.js --dry-run",
+    "remotion:install": "npm install --prefix remotion --no-audit --no-fund",
+    "remotion:studio": "npm --prefix remotion run studio",
+    "remotion:typecheck": "npm --prefix remotion run typecheck",
+    "remotion:fixture": "npm --prefix remotion run render:fixture"
   },
   "dependencies": {
-    "@remotion/cli": "4.0.500",
-    "react": "19.1.1",
-    "react-dom": "19.1.1",
-    "remotion": "4.0.500"
-  },
-  "devDependencies": {
-    "@types/react": "19.1.10",
-    "@types/react-dom": "19.1.7",
-    "typescript": "5.9.2"
+    "@google/genai": "^1.0.0",
+    "dotenv": "^16.4.5",
+    "firebase-admin": "^12.7.0",
+    "googleapis": "^144.0.0"
   }
 }

@@ -1,0 +1,602 @@
+{
+  "dancing-plague-of-1518": {
+    "topic": "Dancing Plague of 1518",
+    "normalizedTopic": "dancing-plague-of-1518",
+    "createdAt": "2026-07-08T09:53:12.000Z",
+    "note": "seed: ilk AI-görsel test videosu, tekrar seçilmesin"
+  },
+  "great-emu-war": {
+    "topic": "Great Emu War",
+    "normalizedTopic": "great-emu-war",
+    "createdAt": "2026-07-08T17:20:06.149Z",
+    "videoId": "great-emu-war-1783531206148"
+  },
+  "voynich-manuscript": {
+    "topic": "Voynich Manuscript",
+    "normalizedTopic": "voynich-manuscript",
+    "createdAt": "2026-07-09T00:21:00.187Z",
+    "videoId": "voynich-manuscript-1783556460186"
+  },
+  "cicada-3301": {
+    "topic": "Cicada 3301",
+    "normalizedTopic": "cicada-3301",
+    "createdAt": "2026-07-09T01:22:35.154Z",
+    "videoId": "cicada-3301-1783560155152"
+  },
+  "the-great-stink-of-london": {
+    "topic": "The Great Stink of London",
+    "normalizedTopic": "the-great-stink-of-london",
+    "createdAt": "2026-07-09T05:04:00.674Z",
+    "videoId": "the-great-stink-of-london-1783573440673"
+  },
+  "mary-toft-rabbits": {
+    "topic": "Mary Toft Rabbits",
+    "normalizedTopic": "mary-toft-rabbits",
+    "createdAt": "2026-07-09T06:32:22.402Z",
+    "videoId": "mary-toft-rabbits-1783578742401"
+  },
+  "coop-s-satellite": {
+    "topic": "Coop's Satellite",
+    "normalizedTopic": "coop-s-satellite",
+    "createdAt": "2026-07-09T13:54:15.743Z",
+    "videoId": "coop-s-satellite-1783605255742"
+  },
+  "the-man-who-bought-the-eiffel-tower-twice": {
+    "topic": "The Man Who Bought the Eiffel Tower Twice",
+    "normalizedTopic": "the-man-who-bought-the-eiffel-tower-twice",
+    "createdAt": "2026-07-09T14:59:06.642Z",
+    "videoId": "the-man-who-bought-the-eiffel-tower-twice-1783609146641"
+  },
+  "rasputin-s-death": {
+    "topic": "Rasputin's Death",
+    "normalizedTopic": "rasputin-s-death",
+    "createdAt": "2026-07-10T07:01:13.362Z",
+    "videoId": "rasputin-s-death-1783666873361"
+  },
+  "lobster-thermidor-on-titanic": {
+    "topic": "Lobster Thermidor on Titanic",
+    "normalizedTopic": "lobster-thermidor-on-titanic",
+    "createdAt": "2026-07-10T15:31:48.974Z",
+    "videoId": "lobster-thermidor-on-titanic-1783697508973"
+  },
+  "the-green-children-of-woolpit": {
+    "topic": "The Green Children of Woolpit",
+    "normalizedTopic": "the-green-children-of-woolpit",
+    "createdAt": "2026-07-10T17:05:21.992Z",
+    "videoId": "the-green-children-of-woolpit-1783703121990"
+  },
+  "the-mary-celeste-ghost-ship": {
+    "topic": "The Mary Celeste Ghost Ship",
+    "normalizedTopic": "the-mary-celeste-ghost-ship",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "dyatlov-pass-incident": {
+    "topic": "Dyatlov Pass Incident",
+    "normalizedTopic": "dyatlov-pass-incident",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "the-lost-army-of-cambyses": {
+    "topic": "The Lost Army of Cambyses",
+    "normalizedTopic": "the-lost-army-of-cambyses",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "the-whisky-war-between-canada-and-denmark": {
+    "topic": "The Whisky War Between Canada and Denmark",
+    "normalizedTopic": "the-whisky-war-between-canada-and-denmark",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "the-first-vending-machine-in-ancient-greece": {
+    "topic": "The First Vending Machine in Ancient Greece",
+    "normalizedTopic": "the-first-vending-machine-in-ancient-greece",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "the-invention-of-zero-in-india": {
+    "topic": "The Invention of Zero in India",
+    "normalizedTopic": "the-invention-of-zero-in-india",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "why-quarantine-means-40-days": {
+    "topic": "Why Quarantine Means 40 Days",
+    "normalizedTopic": "why-quarantine-means-40-days",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "salary-comes-from-salt": {
+    "topic": "Salary Comes From Salt",
+    "normalizedTopic": "salary-comes-from-salt",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "the-dark-history-of-chocolate": {
+    "topic": "The Dark History of Chocolate",
+    "normalizedTopic": "the-dark-history-of-chocolate",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "top-breakfasts-around-the-world": {
+    "topic": "Top Breakfasts Around the World",
+    "normalizedTopic": "top-breakfasts-around-the-world",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "how-a-car-engine-works": {
+    "topic": "How a Car Engine Works",
+    "normalizedTopic": "how-a-car-engine-works",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "why-models-eat-chia-seeds": {
+    "topic": "Why Models Eat Chia Seeds",
+    "normalizedTopic": "why-models-eat-chia-seeds",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "why-we-have-moles-on-our-body": {
+    "topic": "Why We Have Moles on Our Body",
+    "normalizedTopic": "why-we-have-moles-on-our-body",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "what-fast-food-does-to-your-body": {
+    "topic": "What Fast Food Does to Your Body",
+    "normalizedTopic": "what-fast-food-does-to-your-body",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "what-coffee-does-to-your-brain": {
+    "topic": "What Coffee Does to Your Brain",
+    "normalizedTopic": "what-coffee-does-to-your-brain",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "what-sugar-does-to-your-body": {
+    "topic": "What Sugar Does to Your Body",
+    "normalizedTopic": "what-sugar-does-to-your-body",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "when-tomatoes-were-thought-to-be-poison": {
+    "topic": "When Tomatoes Were Thought to Be Poison",
+    "normalizedTopic": "when-tomatoes-were-thought-to-be-poison",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "why-purple-was-worth-more-than-gold": {
+    "topic": "Why Purple Was Worth More Than Gold",
+    "normalizedTopic": "why-purple-was-worth-more-than-gold",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "cologne-cathedral-took-600-years-to-build": {
+    "topic": "Cologne Cathedral Took 600 Years to Build",
+    "normalizedTopic": "cologne-cathedral-took-600-years-to-build",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "the-5000-year-history-of-soap": {
+    "topic": "The 5000 Year History of Soap",
+    "normalizedTopic": "the-5000-year-history-of-soap",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "the-9000-year-history-of-alcohol": {
+    "topic": "The 9000 Year History of Alcohol",
+    "normalizedTopic": "the-9000-year-history-of-alcohol",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "the-history-of-pizza": {
+    "topic": "The History of Pizza",
+    "normalizedTopic": "the-history-of-pizza",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "why-planes-avoid-flying-over-the-himalayas": {
+    "topic": "Why Planes Avoid Flying Over the Himalayas",
+    "normalizedTopic": "why-planes-avoid-flying-over-the-himalayas",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "the-history-of-youtube": {
+    "topic": "The History of YouTube",
+    "normalizedTopic": "the-history-of-youtube",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "cleopatra-lived-closer-to-the-moon-landing-than-the-pyramids": {
+    "topic": "Cleopatra Lived Closer to the Moon Landing Than the Pyramids",
+    "normalizedTopic": "cleopatra-lived-closer-to-the-moon-landing-than-the-pyramids",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "big-ben-is-not-the-tower": {
+    "topic": "Big Ben Is Not the Tower",
+    "normalizedTopic": "big-ben-is-not-the-tower",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "the-mystery-of-the-nazca-lines": {
+    "topic": "The Mystery of the Nazca Lines",
+    "normalizedTopic": "the-mystery-of-the-nazca-lines",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "why-the-taj-mahal-changes-colors": {
+    "topic": "Why the Taj Mahal Changes Colors",
+    "normalizedTopic": "why-the-taj-mahal-changes-colors",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "the-history-of-the-hamburger": {
+    "topic": "The History of the Hamburger",
+    "normalizedTopic": "the-history-of-the-hamburger",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "what-happens-if-you-drink-coca-cola-every-day": {
+    "topic": "What Happens If You Drink Coca Cola Every Day",
+    "normalizedTopic": "what-happens-if-you-drink-coca-cola-every-day",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "the-eiffel-tower-grows-in-summer": {
+    "topic": "The Eiffel Tower Grows in Summer",
+    "normalizedTopic": "the-eiffel-tower-grows-in-summer",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "why-fingerprints-are-unique": {
+    "topic": "Why Fingerprints Are Unique",
+    "normalizedTopic": "why-fingerprints-are-unique",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "the-world-quietest-room": {
+    "topic": "The World Quietest Room",
+    "normalizedTopic": "the-world-quietest-room",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "the-world-first-university-al-qarawiyyin": {
+    "topic": "The World First University Al-Qarawiyyin",
+    "normalizedTopic": "the-world-first-university-al-qarawiyyin",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "the-great-fire-of-london-1666": {
+    "topic": "The Great Fire of London 1666",
+    "normalizedTopic": "the-great-fire-of-london-1666",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "the-world-oldest-door": {
+    "topic": "The World Oldest Door",
+    "normalizedTopic": "the-world-oldest-door",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "why-spicy-food-feels-like-fire": {
+    "topic": "Why Spicy Food Feels Like Fire",
+    "normalizedTopic": "why-spicy-food-feels-like-fire",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "why-birds-eat-stones": {
+    "topic": "Why Birds Eat Stones",
+    "normalizedTopic": "why-birds-eat-stones",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "how-water-travels-from-dams-to-homes": {
+    "topic": "How Water Travels From Dams to Homes",
+    "normalizedTopic": "how-water-travels-from-dams-to-homes",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "how-shoe-soles-are-made": {
+    "topic": "How Shoe Soles Are Made",
+    "normalizedTopic": "how-shoe-soles-are-made",
+    "createdAt": "2025-09-15T00:00:00.000Z",
+    "note": "seed: eski kanal videosu (elle yüklenen dönem) — tekrar üretilmesin"
+  },
+  "the-great-molasses-flood": {
+    "topic": "The Great Molasses Flood",
+    "normalizedTopic": "the-great-molasses-flood",
+    "createdAt": "2026-07-10T21:13:35.620Z",
+    "videoId": "the-great-molasses-flood-1783718015617"
+  },
+  "the-unsinkable-aircraft-carrier-made-of-ice": {
+    "topic": "The 'Unsinkable' Aircraft Carrier Made of Ice",
+    "normalizedTopic": "the-unsinkable-aircraft-carrier-made-of-ice",
+    "createdAt": "2026-07-10T22:47:21.811Z",
+    "videoId": "the-unsinkable-aircraft-carrier-made-of-ice-1783723641809"
+  },
+  "the-great-serpent-mound": {
+    "topic": "The Great Serpent Mound",
+    "normalizedTopic": "the-great-serpent-mound",
+    "createdAt": "2026-07-11T10:25:41.064Z",
+    "videoId": "the-great-serpent-mound-1783765541063"
+  },
+  "roman-concrete": {
+    "topic": "Roman Concrete",
+    "normalizedTopic": "roman-concrete",
+    "createdAt": "2026-07-11T12:10:52.019Z",
+    "videoId": "roman-concrete-1783771852017"
+  },
+  "the-exploding-lake-of-cameroon": {
+    "topic": "The Exploding Lake of Cameroon",
+    "normalizedTopic": "the-exploding-lake-of-cameroon",
+    "createdAt": "2026-07-11T16:01:25.904Z",
+    "videoId": "the-exploding-lake-of-cameroon-1783785685902"
+  },
+  "how-hummingbirds-hover": {
+    "topic": "How Hummingbirds Hover",
+    "normalizedTopic": "how-hummingbirds-hover",
+    "createdAt": "2026-07-12T00:05:52.084Z",
+    "videoId": "how-hummingbirds-hover-1783814752082"
+  },
+  "how-spiders-spin-webs": {
+    "topic": "How Spiders Spin Webs",
+    "normalizedTopic": "how-spiders-spin-webs",
+    "createdAt": "2026-07-12T15:24:39.554Z",
+    "videoId": "how-spiders-spin-webs-1783869879551"
+  },
+  "how-trees-communicate": {
+    "topic": "How trees communicate",
+    "normalizedTopic": "how-trees-communicate",
+    "createdAt": "2026-07-12T18:04:35.211Z",
+    "videoId": "how-trees-communicate-1783879475208"
+  },
+  "how-sponges-filter-ocean-water": {
+    "topic": "How Sponges Filter Ocean Water",
+    "normalizedTopic": "how-sponges-filter-ocean-water",
+    "createdAt": "2026-07-12T21:46:34.895Z",
+    "videoId": "how-sponges-filter-ocean-water-1783892794893"
+  },
+  "the-great-moon-hoax-of-1835": {
+    "topic": "The Great Moon Hoax of 1835",
+    "normalizedTopic": "the-great-moon-hoax-of-1835",
+    "createdAt": "2026-07-13T18:44:54.120Z",
+    "videoId": "the-great-moon-hoax-of-1835-1783968294118"
+  },
+  "immortal-jellyfish": {
+    "topic": "Immortal Jellyfish",
+    "normalizedTopic": "immortal-jellyfish",
+    "createdAt": "2026-07-13T21:55:31.631Z",
+    "videoId": "immortal-jellyfish-1783979731629"
+  },
+  "glass-flower-creation": {
+    "topic": "Glass Flower Creation",
+    "normalizedTopic": "glass-flower-creation",
+    "createdAt": "2026-07-14T13:15:55.947Z",
+    "videoId": "glass-flower-creation-1784034955945"
+  },
+  "roman-roads-construction": {
+    "topic": "Roman Roads Construction",
+    "normalizedTopic": "roman-roads-construction",
+    "createdAt": "2026-07-14T20:17:07.978Z",
+    "videoId": "roman-roads-construction-1784060227975"
+  },
+  "how-a-venus-flytrap-catches-prey": {
+    "topic": "How a Venus Flytrap Catches Prey",
+    "normalizedTopic": "how-a-venus-flytrap-catches-prey",
+    "createdAt": "2026-07-14T23:48:23.885Z",
+    "videoId": "how-a-venus-flytrap-catches-prey-1784072903882"
+  },
+  "how-pearls-form-in-oysters": {
+    "topic": "How pearls form in oysters",
+    "normalizedTopic": "how-pearls-form-in-oysters",
+    "createdAt": "2026-07-15T14:38:38.807Z",
+    "videoId": "how-pearls-form-in-oysters-1784126318805"
+  },
+  "antikythera-mechanism": {
+    "topic": "Antikythera Mechanism",
+    "normalizedTopic": "antikythera-mechanism",
+    "createdAt": "2026-07-15T20:16:30.324Z",
+    "videoId": "antikythera-mechanism-1784146590321"
+  },
+  "leafcutter-ant-ecosystems": {
+    "topic": "Leafcutter Ant Ecosystems",
+    "normalizedTopic": "leafcutter-ant-ecosystems",
+    "createdAt": "2026-07-15T23:21:06.921Z",
+    "videoId": "leafcutter-ant-ecosystems-1784157666918"
+  },
+  "how-geysers-erupt": {
+    "topic": "how geysers erupt",
+    "normalizedTopic": "how-geysers-erupt",
+    "createdAt": "2026-07-15T23:55:20.534Z",
+    "videoId": "how-geysers-erupt-1784159720531"
+  },
+  "how-jellyfish-create-light-bioluminescence": {
+    "topic": "How Jellyfish Create Light (Bioluminescence)",
+    "normalizedTopic": "how-jellyfish-create-light-bioluminescence",
+    "createdAt": "2026-07-16T19:53:48.894Z",
+    "videoId": "how-jellyfish-create-light-bioluminescence-1784231628891"
+  },
+  "how-ancient-egyptians-made-mummies": {
+    "topic": "How Ancient Egyptians Made Mummies",
+    "normalizedTopic": "how-ancient-egyptians-made-mummies",
+    "createdAt": "2026-07-16T23:12:49.862Z",
+    "videoId": "how-ancient-egyptians-made-mummies-1784243569860"
+  },
+  "electric-eel-power-generation": {
+    "topic": "Electric Eel Power Generation",
+    "normalizedTopic": "electric-eel-power-generation",
+    "createdAt": "2026-07-16T23:38:27.065Z",
+    "videoId": "electric-eel-power-generation-1784245107063"
+  },
+  "how-cuttlefish-hypnotize-prey": {
+    "topic": "How Cuttlefish Hypnotize Prey",
+    "normalizedTopic": "how-cuttlefish-hypnotize-prey",
+    "createdAt": "2026-07-17T19:45:56.634Z",
+    "videoId": "how-cuttlefish-hypnotize-prey-1784317556630"
+  },
+  "the-great-serpent-mound-ohio": {
+    "topic": "The Great Serpent Mound, Ohio",
+    "normalizedTopic": "the-great-serpent-mound-ohio",
+    "createdAt": "2026-07-17T23:37:08.496Z",
+    "videoId": "the-great-serpent-mound-ohio-1784331428494"
+  },
+  "viking-sunstone-navigation": {
+    "topic": "Viking Sunstone Navigation",
+    "normalizedTopic": "viking-sunstone-navigation",
+    "createdAt": "2026-07-18T19:43:52.140Z",
+    "videoId": "viking-sunstone-navigation-1784403832137"
+  },
+  "animal-migration-sleep": {
+    "topic": "Animal Migration Sleep",
+    "normalizedTopic": "animal-migration-sleep",
+    "createdAt": "2026-07-18T21:13:03.409Z",
+    "videoId": "animal-migration-sleep-1784409183406"
+  },
+  "how-pigeons-find-their-way-home": {
+    "topic": "How Pigeons Find Their Way Home",
+    "normalizedTopic": "how-pigeons-find-their-way-home",
+    "createdAt": "2026-07-19T05:46:10.625Z",
+    "videoId": "how-pigeons-find-their-way-home-1784439970622"
+  },
+  "the-real-story-of-guy-fawkes-and-the-gunpowder-plot": {
+    "topic": "The Real Story of Guy Fawkes and the Gunpowder Plot",
+    "normalizedTopic": "the-real-story-of-guy-fawkes-and-the-gunpowder-plot",
+    "createdAt": "2026-07-19T16:02:40.027Z",
+    "videoId": "the-real-story-of-guy-fawkes-and-the-gunpowder-plot-1784476960024"
+  },
+  "how-animals-see-earth-s-magnetic-field": {
+    "topic": "How Animals See Earth's Magnetic Field",
+    "normalizedTopic": "how-animals-see-earth-s-magnetic-field",
+    "createdAt": "2026-07-19T21:13:50.390Z",
+    "videoId": "how-animals-see-earth-s-magnetic-field-1784495630386"
+  },
+  "bee-honeycomb-hexagons": {
+    "topic": "Bee Honeycomb Hexagons",
+    "normalizedTopic": "bee-honeycomb-hexagons",
+    "createdAt": "2026-07-20T05:58:12.254Z",
+    "videoId": "bee-honeycomb-hexagons-1784527092251"
+  },
+  "the-great-lisbon-earthquake": {
+    "topic": "The Great Lisbon Earthquake",
+    "normalizedTopic": "the-great-lisbon-earthquake",
+    "createdAt": "2026-07-20T16:33:20.324Z",
+    "videoId": "the-great-lisbon-earthquake-1784565200321"
+  },
+  "leap-year": {
+    "topic": "Leap Year",
+    "normalizedTopic": "leap-year",
+    "createdAt": "2026-07-20T21:25:08.696Z",
+    "videoId": "leap-year-1784582708699"
+  },
+  "medieval-trebuchet-mechanics": {
+    "topic": "Medieval Trebuchet Mechanics",
+    "normalizedTopic": "medieval-trebuchet-mechanics",
+    "createdAt": "2026-07-21T05:37:31.180Z",
+    "videoId": "medieval-trebuchet-mechanics-1784612251176"
+  },
+  "the-invention-of-the-first-computer-bug": {
+    "topic": "The Invention of the First Computer Bug",
+    "normalizedTopic": "the-invention-of-the-first-computer-bug",
+    "createdAt": "2026-07-21T15:12:20.175Z",
+    "videoId": "the-invention-of-the-first-computer-bug-1784646740170"
+  },
+  "the-secret-of-the-pantheon-s-enduring-dome": {
+    "topic": "The Secret of the Pantheon's Enduring Dome",
+    "normalizedTopic": "the-secret-of-the-pantheon-s-enduring-dome",
+    "createdAt": "2026-07-21T16:27:15.984Z",
+    "videoId": "the-secret-of-the-pantheon-s-enduring-dome-1784651235980"
+  },
+  "how-honeybees-navigate-home": {
+    "topic": "How Honeybees Navigate Home",
+    "normalizedTopic": "how-honeybees-navigate-home",
+    "createdAt": "2026-07-22T03:16:39.345Z",
+    "videoId": "how-honeybees-navigate-home-1784727478272"
+  },
+  "medieval-clockwork-mechanism": {
+    "topic": "Medieval Clockwork Mechanism",
+    "normalizedTopic": "medieval-clockwork-mechanism",
+    "createdAt": "2026-07-22T07:36:08.331Z",
+    "videoId": "medieval-clockwork-mechanism-1784705768327"
+  },
+  "roman-glassmaking-secrets": {
+    "topic": "Roman Glassmaking Secrets",
+    "normalizedTopic": "roman-glassmaking-secrets",
+    "createdAt": "2026-07-22T21:30:33.119Z",
+    "videoId": "roman-glassmaking-secrets-1784755833114"
+  },
+  "how-ancient-egyptians-moved-massive-stones": {
+    "topic": "How Ancient Egyptians Moved Massive Stones",
+    "normalizedTopic": "how-ancient-egyptians-moved-massive-stones",
+    "createdAt": "2026-07-23T15:16:17.352Z",
+    "videoId": "how-ancient-egyptians-moved-massive-stones-1784819777347"
+  },
+  "how-electric-eels-generate-power": {
+    "topic": "How Electric Eels Generate Power",
+    "normalizedTopic": "how-electric-eels-generate-power",
+    "createdAt": "2026-07-23T16:34:19.878Z",
+    "videoId": "how-electric-eels-generate-power-1784824459874"
+  },
+  "basilisk-lizard-walking-on-water": {
+    "topic": "Basilisk Lizard Walking on Water",
+    "normalizedTopic": "basilisk-lizard-walking-on-water",
+    "createdAt": "2026-07-23T21:50:25.278Z",
+    "videoId": "basilisk-lizard-walking-on-water-1784843425273"
+  },
+  "ancient-city-power-grids": {
+    "topic": "Ancient City Power Grids",
+    "normalizedTopic": "ancient-city-power-grids",
+    "createdAt": "2026-07-24T05:39:17.912Z",
+    "videoId": "ancient-city-power-grids-1784871557906"
+  },
+  "how-the-moon-got-its-craters": {
+    "topic": "How the Moon Got its Craters",
+    "normalizedTopic": "how-the-moon-got-its-craters",
+    "createdAt": "2026-07-24T17:10:49.057Z",
+    "videoId": "how-the-moon-got-its-craters-1784913049051"
+  },
+  "bat-echolocation-vs-owl-silent-flight": {
+    "topic": "Bat Echolocation vs Owl Silent Flight",
+    "normalizedTopic": "bat-echolocation-vs-owl-silent-flight",
+    "createdAt": "2026-07-24T21:28:04.424Z",
+    "videoId": "bat-echolocation-vs-owl-silent-flight-1784928484419"
+  },
+  "spider-silk-strength": {
+    "topic": "Spider Silk Strength",
+    "normalizedTopic": "spider-silk-strength",
+    "createdAt": "2026-07-25T05:35:30.834Z",
+    "videoId": "spider-silk-strength-1784957730827"
+  },
+  "medieval-vs-modern-siege-weapons": {
+    "topic": "Medieval vs. Modern Siege Weapons",
+    "normalizedTopic": "medieval-vs-modern-siege-weapons",
+    "createdAt": "2026-07-25T16:14:04.465Z",
+    "videoId": "medieval-vs-modern-siege-weapons-1784996044458"
+  },
+  "ancient-roman-concrete-s-endurance": {
+    "topic": "Ancient Roman Concrete's Endurance",
+    "normalizedTopic": "ancient-roman-concrete-s-endurance",
+    "createdAt": "2026-07-26T01:35:44.603Z",
+    "videoId": "ancient-roman-concrete-s-endurance-1785029744597"
+  },
+  "sea-cucumbers": {
+    "topic": "Sea Cucumbers",
+    "normalizedTopic": "sea-cucumbers",
+    "createdAt": "2026-07-26T05:55:01.998Z",
+    "videoId": "sea-cucumbers-1785045301990"
+  },
+  "chameleons-color-change-mechanism": {
+    "topic": "Chameleons Color Change Mechanism",
+    "normalizedTopic": "chameleons-color-change-mechanism",
+    "createdAt": "2026-07-26T22:53:29.655Z",
+    "videoId": "chameleons-color-change-mechanism-1785106409648"
+  },
+  "the-secret-of-the-voynich-manuscript": {
+    "topic": "The Secret of the Voynich Manuscript",
+    "normalizedTopic": "the-secret-of-the-voynich-manuscript",
+    "createdAt": "2026-07-27T06:53:26.557Z",
+    "videoId": "the-secret-of-the-voynich-manuscript-1785135206549"
+  }
+}

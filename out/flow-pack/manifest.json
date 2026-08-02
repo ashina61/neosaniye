@@ -1,0 +1,379 @@
+{
+  "title": "The Man Who Jumped Into the Rain",
+  "fps": 30,
+  "flow": [
+    {
+      "n": 1,
+      "template": "evidence_board",
+      "kind": "cold_open",
+      "text": "On the night of 24 November 1971,",
+      "start": 0,
+      "seconds": 4.13,
+      "file": "01-cold_open",
+      "shape": "star",
+      "needsMaterial": false
+    },
+    {
+      "n": 2,
+      "template": "hero_cutout",
+      "kind": "fact",
+      "text": "a man in a dark suit",
+      "start": 4.13,
+      "seconds": 3.6,
+      "file": "02-fact",
+      "shape": "figure",
+      "needsMaterial": false,
+      "fallbackPrompt": "A halftone black and white photograph cutout of a man in a dark suit dominates the frame as the hero element, rough scissor-cut edges with an offset red accent stroke behind it, a black censor bar across the eyes, pinned at a slight angle to a bare archival paper surface, a coffee ring stain on the paper and one red marker underline beneath a key line as the only supporting elements, wide empty margins around it. hand-cut documentary paper collage on aged newsprint and archival map surfaces, black and white halftone photograph cutouts with rough scissor-cut edges and offset accent strokes, torn paper edges, masking tape fragments, rubber stamp marks, red string and brass pins where the story calls for connections, desaturated archival palette of tan, ink black, and halftone gray with ONE hot red signal accent and a restrained mustard yellow secondary, visible print grain and paper fiber, matte, flat even documentary lighting with soft cutout drop shadows. Every element must appear physically hand-cut and layered from real paper, with visible cutout edges, halftone print texture, and soft shadow separation between layers. The composition stays clean, minimal, and editorial with generous negative space. NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no clutter, no watermark, no logos, no text, no letters, no numbers, no lettering of any kind anywhere in the image. Premium documentary collage aesthetic, 9:16, ultra-detailed, 8K.",
+      "platePrompt": "Vertical 9:16 editorial documentary paper collage composition for YouTube Shorts, upper 20 percent kept visually clean for hook text, lower 20 percent kept visually clean for subtitles, generous side margins, no important subject touching the frame edges. An EMPTY background plate: aged newsprint and archival paper surface with stains, foxing, fibre and print grain, no scaffolding, just the bare surface. ABSOLUTELY NO story elements: no photographs, no cutouts, no people, no faces, no objects, no labels, no tape, no stamps, no string, no pins. Only the bare aged surface. ABSOLUTELY NO WRITING OF ANY KIND: no words, no letters, no headlines, no printed lines of type, no handwriting, no numbers. The surface is blank, weathered paper. hand-cut documentary paper collage on aged newsprint and archival map surfaces, black and white halftone photograph cutouts with rough scissor-cut edges and offset accent strokes, torn paper edges, masking tape fragments, typewriter caption strips, rubber stamp marks, red string and brass pins where the story calls for connections, desaturated archival palette of tan, ink black, and halftone gray with ONE hot red signal accent and a restrained mustard yellow secondary, visible print grain and paper fiber, matte, flat even documentary lighting with soft cutout drop shadows. NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no watermark, no logos. Premium documentary collage aesthetic, vertical 9:16, ultra-detailed, 8K.",
+      "pieces": [
+        {
+          "slot": "a",
+          "role": "hero",
+          "prompt": "A man in a dark suit. A black censor bar across the eyes. Period-accurate for 1971: clothing, hairstyle, equipment and printing style all from that era. Absolutely nothing modern in the frame. Black and white archival halftone photograph, visible print grain and paper fibre, desaturated tan and ink-black tones, matte, flat documentary lighting. ONE subject, centred, large in the frame, clearly separated from whatever is behind it. Vertical 9:16."
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "template": "headline_card",
+      "kind": "fact",
+      "text": "He handed the attendant a note",
+      "start": 12.43,
+      "seconds": 3.6,
+      "file": "04-fact",
+      "shape": "figure",
+      "needsMaterial": false,
+      "fallbackPrompt": "A halftone black and white photograph cutout of an attendant dominates the frame as the hero element, rough scissor-cut edges with an offset red accent stroke behind it, a black censor bar across the eyes, pinned at a slight angle to a bare archival paper surface, a coffee ring stain on the paper and one red marker underline beneath a key line as the only supporting elements, wide empty margins around it. hand-cut documentary paper collage on aged newsprint and archival map surfaces, black and white halftone photograph cutouts with rough scissor-cut edges and offset accent strokes, torn paper edges, masking tape fragments, rubber stamp marks, red string and brass pins where the story calls for connections, desaturated archival palette of tan, ink black, and halftone gray with ONE hot red signal accent and a restrained mustard yellow secondary, visible print grain and paper fiber, matte, flat even documentary lighting with soft cutout drop shadows. Every element must appear physically hand-cut and layered from real paper, with visible cutout edges, halftone print texture, and soft shadow separation between layers. The composition stays clean, minimal, and editorial with generous negative space. NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no clutter, no watermark, no logos, no text, no letters, no numbers, no lettering of any kind anywhere in the image. Premium documentary collage aesthetic, 9:16, ultra-detailed, 8K.",
+      "platePrompt": "Vertical 9:16 editorial documentary paper collage composition for YouTube Shorts, upper 20 percent kept visually clean for hook text, lower 20 percent kept visually clean for subtitles, generous side margins, no important subject touching the frame edges. An EMPTY background plate: aged newsprint and archival paper surface with stains, foxing, fibre and print grain, no scaffolding, just the bare surface. ABSOLUTELY NO story elements: no photographs, no cutouts, no people, no faces, no objects, no labels, no tape, no stamps, no string, no pins. Only the bare aged surface. ABSOLUTELY NO WRITING OF ANY KIND: no words, no letters, no headlines, no printed lines of type, no handwriting, no numbers. The surface is blank, weathered paper. hand-cut documentary paper collage on aged newsprint and archival map surfaces, black and white halftone photograph cutouts with rough scissor-cut edges and offset accent strokes, torn paper edges, masking tape fragments, typewriter caption strips, rubber stamp marks, red string and brass pins where the story calls for connections, desaturated archival palette of tan, ink black, and halftone gray with ONE hot red signal accent and a restrained mustard yellow secondary, visible print grain and paper fiber, matte, flat even documentary lighting with soft cutout drop shadows. NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no watermark, no logos. Premium documentary collage aesthetic, vertical 9:16, ultra-detailed, 8K.",
+      "pieces": [
+        {
+          "slot": "a",
+          "role": "hero",
+          "prompt": "An attendant: documentary photograph of a person, three-quarter view. A black censor bar across the eyes. Period-accurate for 1971: clothing, hairstyle, equipment and printing style all from that era. Absolutely nothing modern in the frame. Black and white archival halftone photograph, visible print grain and paper fibre, desaturated tan and ink-black tones, matte, flat documentary lighting. ONE subject, centred, large in the frame, clearly separated from whatever is behind it. Vertical 9:16."
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "template": "hero_cutout",
+      "kind": "fact",
+      "text": "that said there was a bomb in his briefcase.",
+      "start": 16.03,
+      "seconds": 5.3,
+      "file": "05-fact",
+      "shape": "bomb",
+      "needsMaterial": false
+    },
+    {
+      "n": 6,
+      "template": "wide_establish",
+      "kind": "magnitude",
+      "text": "He asked for two hundred thousand dollars and four parachutes.",
+      "start": 21.33,
+      "seconds": 5.87,
+      "file": "06-magnitude",
+      "shape": "document",
+      "needsMaterial": false
+    },
+    {
+      "n": 7,
+      "template": "headline_card",
+      "kind": "fact",
+      "text": "In Seattle the passengers walked off the plane",
+      "start": 27.2,
+      "seconds": 4.7,
+      "file": "07-fact",
+      "shape": "figure",
+      "needsMaterial": false,
+      "fallbackPrompt": "A halftone black and white photograph cutout of a passenger dominates the frame as the hero element, rough scissor-cut edges with an offset red accent stroke behind it, a black censor bar across the eyes, pinned at a slight angle to a bare archival paper surface, a coffee ring stain on the paper and one red marker underline beneath a key line as the only supporting elements, wide empty margins around it. hand-cut documentary paper collage on aged newsprint and archival map surfaces, black and white halftone photograph cutouts with rough scissor-cut edges and offset accent strokes, torn paper edges, masking tape fragments, rubber stamp marks, red string and brass pins where the story calls for connections, desaturated archival palette of tan, ink black, and halftone gray with ONE hot red signal accent and a restrained mustard yellow secondary, visible print grain and paper fiber, matte, flat even documentary lighting with soft cutout drop shadows. Every element must appear physically hand-cut and layered from real paper, with visible cutout edges, halftone print texture, and soft shadow separation between layers. The composition stays clean, minimal, and editorial with generous negative space. NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no clutter, no watermark, no logos, no text, no letters, no numbers, no lettering of any kind anywhere in the image. Premium documentary collage aesthetic, 9:16, ultra-detailed, 8K.",
+      "platePrompt": "Vertical 9:16 editorial documentary paper collage composition for YouTube Shorts, upper 20 percent kept visually clean for hook text, lower 20 percent kept visually clean for subtitles, generous side margins, no important subject touching the frame edges. An EMPTY background plate: aged newsprint and archival paper surface with stains, foxing, fibre and print grain, no scaffolding, just the bare surface. ABSOLUTELY NO story elements: no photographs, no cutouts, no people, no faces, no objects, no labels, no tape, no stamps, no string, no pins. Only the bare aged surface. ABSOLUTELY NO WRITING OF ANY KIND: no words, no letters, no headlines, no printed lines of type, no handwriting, no numbers. The surface is blank, weathered paper. hand-cut documentary paper collage on aged newsprint and archival map surfaces, black and white halftone photograph cutouts with rough scissor-cut edges and offset accent strokes, torn paper edges, masking tape fragments, typewriter caption strips, rubber stamp marks, red string and brass pins where the story calls for connections, desaturated archival palette of tan, ink black, and halftone gray with ONE hot red signal accent and a restrained mustard yellow secondary, visible print grain and paper fiber, matte, flat even documentary lighting with soft cutout drop shadows. NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no watermark, no logos. Premium documentary collage aesthetic, vertical 9:16, ultra-detailed, 8K.",
+      "pieces": [
+        {
+          "slot": "a",
+          "role": "hero",
+          "prompt": "A passenger: documentary photograph of a person, three-quarter view. A black censor bar across the eyes. Period-accurate for 1971: clothing, hairstyle, equipment and printing style all from that era. Absolutely nothing modern in the frame. Black and white archival halftone photograph, visible print grain and paper fibre, desaturated tan and ink-black tones, matte, flat documentary lighting. ONE subject, centred, large in the frame, clearly separated from whatever is behind it. Vertical 9:16."
+        }
+      ]
+    },
+    {
+      "n": 8,
+      "template": "hero_cutout",
+      "kind": "fact",
+      "text": "and the money came aboard.",
+      "start": 31.9,
+      "seconds": 3.6,
+      "file": "08-fact",
+      "shape": "document",
+      "needsMaterial": false
+    },
+    {
+      "n": 9,
+      "template": "labeled_diagram",
+      "kind": "fact",
+      "text": "The aircraft took off again",
+      "start": 35.5,
+      "seconds": 3.6,
+      "file": "09-fact",
+      "shape": "aircraft",
+      "needsMaterial": false,
+      "fallbackPrompt": "A halftone black and white photograph cutout of an aircraft dominates the frame as the hero element, rough scissor-cut edges with an offset red accent stroke behind it, pinned at a slight angle to a bare archival paper surface, a coffee ring stain on the paper and one red marker underline beneath a key line as the only supporting elements, wide empty margins around it. hand-cut documentary paper collage on aged newsprint and archival map surfaces, black and white halftone photograph cutouts with rough scissor-cut edges and offset accent strokes, torn paper edges, masking tape fragments, rubber stamp marks, red string and brass pins where the story calls for connections, desaturated archival palette of tan, ink black, and halftone gray with ONE hot red signal accent and a restrained mustard yellow secondary, visible print grain and paper fiber, matte, flat even documentary lighting with soft cutout drop shadows. Every element must appear physically hand-cut and layered from real paper, with visible cutout edges, halftone print texture, and soft shadow separation between layers. The composition stays clean, minimal, and editorial with generous negative space. NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no clutter, no watermark, no logos, no text, no letters, no numbers, no lettering of any kind anywhere in the image. Premium documentary collage aesthetic, 9:16, ultra-detailed, 8K.",
+      "platePrompt": "Vertical 9:16 editorial documentary paper collage composition for YouTube Shorts, upper 20 percent kept visually clean for hook text, lower 20 percent kept visually clean for subtitles, generous side margins, no important subject touching the frame edges. An EMPTY background plate: aged newsprint and archival paper surface with stains, foxing, fibre and print grain, no scaffolding, just the bare surface. ABSOLUTELY NO story elements: no photographs, no cutouts, no people, no faces, no objects, no labels, no tape, no stamps, no string, no pins. Only the bare aged surface. ABSOLUTELY NO WRITING OF ANY KIND: no words, no letters, no headlines, no printed lines of type, no handwriting, no numbers. The surface is blank, weathered paper. hand-cut documentary paper collage on aged newsprint and archival map surfaces, black and white halftone photograph cutouts with rough scissor-cut edges and offset accent strokes, torn paper edges, masking tape fragments, typewriter caption strips, rubber stamp marks, red string and brass pins where the story calls for connections, desaturated archival palette of tan, ink black, and halftone gray with ONE hot red signal accent and a restrained mustard yellow secondary, visible print grain and paper fiber, matte, flat even documentary lighting with soft cutout drop shadows. NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no watermark, no logos. Premium documentary collage aesthetic, vertical 9:16, ultra-detailed, 8K.",
+      "pieces": [
+        {
+          "slot": "a",
+          "role": "hero",
+          "prompt": "An aircraft: side profile of the aircraft, documentary photograph, plain background. Period-accurate for 1971: clothing, hairstyle, equipment and printing style all from that era. Absolutely nothing modern in the frame. Black and white archival halftone photograph, visible print grain and paper fibre, desaturated tan and ink-black tones, matte, flat documentary lighting. ONE subject, centred, large in the frame, clearly separated from whatever is behind it. Vertical 9:16."
+        }
+      ]
+    },
+    {
+      "n": 10,
+      "template": "headline_card",
+      "kind": "fact",
+      "text": "into rain and low cloud.",
+      "start": 39.1,
+      "seconds": 3.6,
+      "file": "10-fact",
+      "shape": "wave",
+      "needsMaterial": false
+    },
+    {
+      "n": 11,
+      "template": "hero_cutout",
+      "kind": "fact",
+      "text": "Somewhere over southern Washington he opened the rear stair",
+      "start": 42.7,
+      "seconds": 5.3,
+      "file": "11-fact",
+      "shape": null,
+      "needsMaterial": false
+    },
+    {
+      "n": 12,
+      "template": "labeled_diagram",
+      "kind": "fact",
+      "text": "and jumped with a parachute.",
+      "start": 48,
+      "seconds": 3.6,
+      "file": "12-fact",
+      "shape": "parachute",
+      "needsMaterial": false
+    },
+    {
+      "n": 13,
+      "template": "headline_card",
+      "kind": "fact",
+      "text": "The FBI searched the woods",
+      "start": 51.6,
+      "seconds": 3.6,
+      "file": "13-fact",
+      "shape": "terrain",
+      "needsMaterial": false,
+      "fallbackPrompt": "A halftone black and white photograph cutout of a woods dominates the frame as the hero element, rough scissor-cut edges with an offset red accent stroke behind it, pinned at a slight angle to a bare archival paper surface, a coffee ring stain on the paper and one red marker underline beneath a key line as the only supporting elements, wide empty margins around it. hand-cut documentary paper collage on aged newsprint and archival map surfaces, black and white halftone photograph cutouts with rough scissor-cut edges and offset accent strokes, torn paper edges, masking tape fragments, rubber stamp marks, red string and brass pins where the story calls for connections, desaturated archival palette of tan, ink black, and halftone gray with ONE hot red signal accent and a restrained mustard yellow secondary, visible print grain and paper fiber, matte, flat even documentary lighting with soft cutout drop shadows. Every element must appear physically hand-cut and layered from real paper, with visible cutout edges, halftone print texture, and soft shadow separation between layers. The composition stays clean, minimal, and editorial with generous negative space. NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no clutter, no watermark, no logos, no text, no letters, no numbers, no lettering of any kind anywhere in the image. Premium documentary collage aesthetic, 9:16, ultra-detailed, 8K.",
+      "platePrompt": "Vertical 9:16 editorial documentary paper collage composition for YouTube Shorts, upper 20 percent kept visually clean for hook text, lower 20 percent kept visually clean for subtitles, generous side margins, no important subject touching the frame edges. An EMPTY background plate: aged newsprint and archival paper surface with stains, foxing, fibre and print grain, no scaffolding, just the bare surface. ABSOLUTELY NO story elements: no photographs, no cutouts, no people, no faces, no objects, no labels, no tape, no stamps, no string, no pins. Only the bare aged surface. ABSOLUTELY NO WRITING OF ANY KIND: no words, no letters, no headlines, no printed lines of type, no handwriting, no numbers. The surface is blank, weathered paper. hand-cut documentary paper collage on aged newsprint and archival map surfaces, black and white halftone photograph cutouts with rough scissor-cut edges and offset accent strokes, torn paper edges, masking tape fragments, typewriter caption strips, rubber stamp marks, red string and brass pins where the story calls for connections, desaturated archival palette of tan, ink black, and halftone gray with ONE hot red signal accent and a restrained mustard yellow secondary, visible print grain and paper fiber, matte, flat even documentary lighting with soft cutout drop shadows. NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no watermark, no logos. Premium documentary collage aesthetic, vertical 9:16, ultra-detailed, 8K.",
+      "pieces": [
+        {
+          "slot": "a",
+          "role": "hero",
+          "prompt": "A woods: a wide landscape silhouette, documentary photograph. Period-accurate for 1971: clothing, hairstyle, equipment and printing style all from that era. Absolutely nothing modern in the frame. Black and white archival halftone photograph, visible print grain and paper fibre, desaturated tan and ink-black tones, matte, flat documentary lighting. ONE subject, centred, large in the frame, clearly separated from whatever is behind it. Vertical 9:16."
+        }
+      ]
+    },
+    {
+      "n": 14,
+      "template": "hero_cutout",
+      "kind": "absence",
+      "text": "for eighteen days and found nothing.",
+      "start": 55.2,
+      "seconds": 3.6,
+      "file": "14-absence",
+      "shape": null,
+      "needsMaterial": false
+    },
+    {
+      "n": 15,
+      "template": "star_field",
+      "kind": "time",
+      "text": "Nine years later a boy digging on a riverbank",
+      "start": 58.8,
+      "seconds": 5.3,
+      "file": "15-time",
+      "shape": "figure",
+      "needsMaterial": false,
+      "fallbackPrompt": "A halftone black and white photograph cutout of a boy dominates the frame as the hero element, rough scissor-cut edges with an offset red accent stroke behind it, a black censor bar across the eyes, pinned at a slight angle to a bare archival paper surface, a red string stretched between the two pages and a small pocket watch photograph, halftone as the only supporting elements, wide empty margins around it. hand-cut documentary paper collage on aged newsprint and archival map surfaces, black and white halftone photograph cutouts with rough scissor-cut edges and offset accent strokes, torn paper edges, masking tape fragments, rubber stamp marks, red string and brass pins where the story calls for connections, desaturated archival palette of tan, ink black, and halftone gray with ONE hot red signal accent and a restrained mustard yellow secondary, visible print grain and paper fiber, matte, flat even documentary lighting with soft cutout drop shadows. Every element must appear physically hand-cut and layered from real paper, with visible cutout edges, halftone print texture, and soft shadow separation between layers. The composition stays clean, minimal, and editorial with generous negative space. NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no clutter, no watermark, no logos, no text, no letters, no numbers, no lettering of any kind anywhere in the image. Premium documentary collage aesthetic, 9:16, ultra-detailed, 8K.",
+      "platePrompt": "Vertical 9:16 editorial documentary paper collage composition for YouTube Shorts, upper 20 percent kept visually clean for hook text, lower 20 percent kept visually clean for subtitles, generous side margins, no important subject touching the frame edges. An EMPTY background plate: aged newsprint and archival paper surface with stains, foxing, fibre and print grain, one faint horizontal rule running across the middle as a timeline base. ABSOLUTELY NO story elements: no photographs, no cutouts, no people, no faces, no objects, no labels, no tape, no stamps, no string, no pins. Only the bare aged surface. ABSOLUTELY NO WRITING OF ANY KIND: no words, no letters, no headlines, no printed lines of type, no handwriting, no numbers. The surface is blank, weathered paper. hand-cut documentary paper collage on aged newsprint and archival map surfaces, black and white halftone photograph cutouts with rough scissor-cut edges and offset accent strokes, torn paper edges, masking tape fragments, typewriter caption strips, rubber stamp marks, red string and brass pins where the story calls for connections, desaturated archival palette of tan, ink black, and halftone gray with ONE hot red signal accent and a restrained mustard yellow secondary, visible print grain and paper fiber, matte, flat even documentary lighting with soft cutout drop shadows. NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no watermark, no logos. Premium documentary collage aesthetic, vertical 9:16, ultra-detailed, 8K.",
+      "pieces": [
+        {
+          "slot": "a",
+          "role": "hero",
+          "prompt": "A boy: documentary photograph of a person, three-quarter view. A black censor bar across the eyes. Period-accurate for 1971: clothing, hairstyle, equipment and printing style all from that era. Absolutely nothing modern in the frame. Black and white archival halftone photograph, visible print grain and paper fibre, desaturated tan and ink-black tones, matte, flat documentary lighting. ONE subject, centred, large in the frame, clearly separated from whatever is behind it. Vertical 9:16."
+        },
+        {
+          "slot": "b",
+          "role": "support",
+          "prompt": "A small pocket watch photograph, halftone. Period-accurate for 1971: clothing, hairstyle, equipment and printing style all from that era. Absolutely nothing modern in the frame. Black and white archival halftone photograph, visible print grain and paper fibre, desaturated tan and ink-black tones, matte, flat documentary lighting. ONE subject, centred, large in the frame, clearly separated from whatever is behind it. Vertical 9:16."
+        }
+      ]
+    },
+    {
+      "n": 16,
+      "template": "headline_card",
+      "kind": "fact",
+      "text": "found three bundles of the banknotes.",
+      "start": 64.1,
+      "seconds": 3.6,
+      "file": "16-fact",
+      "shape": "document",
+      "needsMaterial": false
+    },
+    {
+      "n": 17,
+      "template": "hero_cutout",
+      "kind": "fact",
+      "text": "The rest of the money",
+      "start": 67.7,
+      "seconds": 3.6,
+      "file": "17-fact",
+      "shape": "document",
+      "needsMaterial": false
+    },
+    {
+      "n": 19,
+      "template": "star_field",
+      "kind": "cliffhanger",
+      "text": "Nobody ever found the man or the parachute.",
+      "start": 74.9,
+      "seconds": 4.7,
+      "file": "19-cliffhanger",
+      "shape": "figure",
+      "needsMaterial": false,
+      "fallbackPrompt": "A halftone black and white photograph cutout of a man dominates the frame as the hero element, rough scissor-cut edges with an offset red accent stroke behind it, a black censor bar across the eyes, pinned at a slight angle to a bare archival paper surface, a red string leading off the edge of the frame and a rubber stamp across the corner as the only supporting elements, wide empty margins around it. hand-cut documentary paper collage on aged newsprint and archival map surfaces, black and white halftone photograph cutouts with rough scissor-cut edges and offset accent strokes, torn paper edges, masking tape fragments, rubber stamp marks, red string and brass pins where the story calls for connections, desaturated archival palette of tan, ink black, and halftone gray with ONE hot red signal accent and a restrained mustard yellow secondary, visible print grain and paper fiber, matte, flat even documentary lighting with soft cutout drop shadows. Every element must appear physically hand-cut and layered from real paper, with visible cutout edges, halftone print texture, and soft shadow separation between layers. The composition stays clean, minimal, and editorial with generous negative space. NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no clutter, no watermark, no logos, no text, no letters, no numbers, no lettering of any kind anywhere in the image. Premium documentary collage aesthetic, 9:16, ultra-detailed, 8K.",
+      "platePrompt": "Vertical 9:16 editorial documentary paper collage composition for YouTube Shorts, upper 20 percent kept visually clean for hook text, lower 20 percent kept visually clean for subtitles, generous side margins, no important subject touching the frame edges. An EMPTY background plate: aged newsprint and archival paper surface with stains, foxing, fibre and print grain, no scaffolding, just the bare surface. ABSOLUTELY NO story elements: no photographs, no cutouts, no people, no faces, no objects, no labels, no tape, no stamps, no string, no pins. Only the bare aged surface. ABSOLUTELY NO WRITING OF ANY KIND: no words, no letters, no headlines, no printed lines of type, no handwriting, no numbers. The surface is blank, weathered paper. hand-cut documentary paper collage on aged newsprint and archival map surfaces, black and white halftone photograph cutouts with rough scissor-cut edges and offset accent strokes, torn paper edges, masking tape fragments, typewriter caption strips, rubber stamp marks, red string and brass pins where the story calls for connections, desaturated archival palette of tan, ink black, and halftone gray with ONE hot red signal accent and a restrained mustard yellow secondary, visible print grain and paper fiber, matte, flat even documentary lighting with soft cutout drop shadows. NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no watermark, no logos. Premium documentary collage aesthetic, vertical 9:16, ultra-detailed, 8K.",
+      "pieces": [
+        {
+          "slot": "a",
+          "role": "hero",
+          "prompt": "A man: documentary photograph of a person, three-quarter view. A black censor bar across the eyes. Period-accurate for 1971: clothing, hairstyle, equipment and printing style all from that era. Absolutely nothing modern in the frame. Black and white archival halftone photograph, visible print grain and paper fibre, desaturated tan and ink-black tones, matte, flat documentary lighting. ONE subject, centred, large in the frame, clearly separated from whatever is behind it. Vertical 9:16."
+        }
+      ]
+    }
+  ],
+  "code": [
+    {
+      "n": 3,
+      "template": "map_route",
+      "kind": "sequence",
+      "text": "bought a one-way ticket from Portland to Seattle.",
+      "start": 7.73,
+      "seconds": 4.7
+    },
+    {
+      "n": 18,
+      "template": "stick_beat",
+      "kind": "absence",
+      "text": "has never appeared in a bank.",
+      "start": 71.3,
+      "seconds": 3.6
+    }
+  ],
+  "assets": [
+    {
+      "file": "02-fact-plate",
+      "n": 2,
+      "role": "plate",
+      "prompt": "Vertical 9:16 editorial documentary paper collage composition for YouTube Shorts, upper 20 percent kept visually clean for hook text, lower 20 percent kept visually clean for subtitles, generous side margins, no important subject touching the frame edges. An EMPTY background plate: aged newsprint and archival paper surface with stains, foxing, fibre and print grain, no scaffolding, just the bare surface. ABSOLUTELY NO story elements: no photographs, no cutouts, no people, no faces, no objects, no labels, no tape, no stamps, no string, no pins. Only the bare aged surface. ABSOLUTELY NO WRITING OF ANY KIND: no words, no letters, no headlines, no printed lines of type, no handwriting, no numbers. The surface is blank, weathered paper. hand-cut documentary paper collage on aged newsprint and archival map surfaces, black and white halftone photograph cutouts with rough scissor-cut edges and offset accent strokes, torn paper edges, masking tape fragments, typewriter caption strips, rubber stamp marks, red string and brass pins where the story calls for connections, desaturated archival palette of tan, ink black, and halftone gray with ONE hot red signal accent and a restrained mustard yellow secondary, visible print grain and paper fiber, matte, flat even documentary lighting with soft cutout drop shadows. NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no watermark, no logos. Premium documentary collage aesthetic, vertical 9:16, ultra-detailed, 8K."
+    },
+    {
+      "file": "02-fact-a",
+      "n": 2,
+      "role": "hero",
+      "slot": "a",
+      "prompt": "A man in a dark suit. A black censor bar across the eyes. Period-accurate for 1971: clothing, hairstyle, equipment and printing style all from that era. Absolutely nothing modern in the frame. Black and white archival halftone photograph, visible print grain and paper fibre, desaturated tan and ink-black tones, matte, flat documentary lighting. ONE subject, centred, large in the frame, clearly separated from whatever is behind it. Vertical 9:16."
+    },
+    {
+      "file": "04-fact-plate",
+      "n": 4,
+      "role": "plate",
+      "prompt": "Vertical 9:16 editorial documentary paper collage composition for YouTube Shorts, upper 20 percent kept visually clean for hook text, lower 20 percent kept visually clean for subtitles, generous side margins, no important subject touching the frame edges. An EMPTY background plate: aged newsprint and archival paper surface with stains, foxing, fibre and print grain, no scaffolding, just the bare surface. ABSOLUTELY NO story elements: no photographs, no cutouts, no people, no faces, no objects, no labels, no tape, no stamps, no string, no pins. Only the bare aged surface. ABSOLUTELY NO WRITING OF ANY KIND: no words, no letters, no headlines, no printed lines of type, no handwriting, no numbers. The surface is blank, weathered paper. hand-cut documentary paper collage on aged newsprint and archival map surfaces, black and white halftone photograph cutouts with rough scissor-cut edges and offset accent strokes, torn paper edges, masking tape fragments, typewriter caption strips, rubber stamp marks, red string and brass pins where the story calls for connections, desaturated archival palette of tan, ink black, and halftone gray with ONE hot red signal accent and a restrained mustard yellow secondary, visible print grain and paper fiber, matte, flat even documentary lighting with soft cutout drop shadows. NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no watermark, no logos. Premium documentary collage aesthetic, vertical 9:16, ultra-detailed, 8K."
+    },
+    {
+      "file": "04-fact-a",
+      "n": 4,
+      "role": "hero",
+      "slot": "a",
+      "prompt": "An attendant: documentary photograph of a person, three-quarter view. A black censor bar across the eyes. Period-accurate for 1971: clothing, hairstyle, equipment and printing style all from that era. Absolutely nothing modern in the frame. Black and white archival halftone photograph, visible print grain and paper fibre, desaturated tan and ink-black tones, matte, flat documentary lighting. ONE subject, centred, large in the frame, clearly separated from whatever is behind it. Vertical 9:16."
+    },
+    {
+      "file": "07-fact-plate",
+      "n": 7,
+      "role": "plate",
+      "prompt": "Vertical 9:16 editorial documentary paper collage composition for YouTube Shorts, upper 20 percent kept visually clean for hook text, lower 20 percent kept visually clean for subtitles, generous side margins, no important subject touching the frame edges. An EMPTY background plate: aged newsprint and archival paper surface with stains, foxing, fibre and print grain, no scaffolding, just the bare surface. ABSOLUTELY NO story elements: no photographs, no cutouts, no people, no faces, no objects, no labels, no tape, no stamps, no string, no pins. Only the bare aged surface. ABSOLUTELY NO WRITING OF ANY KIND: no words, no letters, no headlines, no printed lines of type, no handwriting, no numbers. The surface is blank, weathered paper. hand-cut documentary paper collage on aged newsprint and archival map surfaces, black and white halftone photograph cutouts with rough scissor-cut edges and offset accent strokes, torn paper edges, masking tape fragments, typewriter caption strips, rubber stamp marks, red string and brass pins where the story calls for connections, desaturated archival palette of tan, ink black, and halftone gray with ONE hot red signal accent and a restrained mustard yellow secondary, visible print grain and paper fiber, matte, flat even documentary lighting with soft cutout drop shadows. NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no watermark, no logos. Premium documentary collage aesthetic, vertical 9:16, ultra-detailed, 8K."
+    },
+    {
+      "file": "07-fact-a",
+      "n": 7,
+      "role": "hero",
+      "slot": "a",
+      "prompt": "A passenger: documentary photograph of a person, three-quarter view. A black censor bar across the eyes. Period-accurate for 1971: clothing, hairstyle, equipment and printing style all from that era. Absolutely nothing modern in the frame. Black and white archival halftone photograph, visible print grain and paper fibre, desaturated tan and ink-black tones, matte, flat documentary lighting. ONE subject, centred, large in the frame, clearly separated from whatever is behind it. Vertical 9:16."
+    },
+    {
+      "file": "09-fact-plate",
+      "n": 9,
+      "role": "plate",
+      "prompt": "Vertical 9:16 editorial documentary paper collage composition for YouTube Shorts, upper 20 percent kept visually clean for hook text, lower 20 percent kept visually clean for subtitles, generous side margins, no important subject touching the frame edges. An EMPTY background plate: aged newsprint and archival paper surface with stains, foxing, fibre and print grain, no scaffolding, just the bare surface. ABSOLUTELY NO story elements: no photographs, no cutouts, no people, no faces, no objects, no labels, no tape, no stamps, no string, no pins. Only the bare aged surface. ABSOLUTELY NO WRITING OF ANY KIND: no words, no letters, no headlines, no printed lines of type, no handwriting, no numbers. The surface is blank, weathered paper. hand-cut documentary paper collage on aged newsprint and archival map surfaces, black and white halftone photograph cutouts with rough scissor-cut edges and offset accent strokes, torn paper edges, masking tape fragments, typewriter caption strips, rubber stamp marks, red string and brass pins where the story calls for connections, desaturated archival palette of tan, ink black, and halftone gray with ONE hot red signal accent and a restrained mustard yellow secondary, visible print grain and paper fiber, matte, flat even documentary lighting with soft cutout drop shadows. NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no watermark, no logos. Premium documentary collage aesthetic, vertical 9:16, ultra-detailed, 8K."
+    },
+    {
+      "file": "09-fact-a",
+      "n": 9,
+      "role": "hero",
+      "slot": "a",
+      "prompt": "An aircraft: side profile of the aircraft, documentary photograph, plain background. Period-accurate for 1971: clothing, hairstyle, equipment and printing style all from that era. Absolutely nothing modern in the frame. Black and white archival halftone photograph, visible print grain and paper fibre, desaturated tan and ink-black tones, matte, flat documentary lighting. ONE subject, centred, large in the frame, clearly separated from whatever is behind it. Vertical 9:16."
+    },
+    {
+      "file": "13-fact-plate",
+      "n": 13,
+      "role": "plate",
+      "prompt": "Vertical 9:16 editorial documentary paper collage composition for YouTube Shorts, upper 20 percent kept visually clean for hook text, lower 20 percent kept visually clean for subtitles, generous side margins, no important subject touching the frame edges. An EMPTY background plate: aged newsprint and archival paper surface with stains, foxing, fibre and print grain, no scaffolding, just the bare surface. ABSOLUTELY NO story elements: no photographs, no cutouts, no people, no faces, no objects, no labels, no tape, no stamps, no string, no pins. Only the bare aged surface. ABSOLUTELY NO WRITING OF ANY KIND: no words, no letters, no headlines, no printed lines of type, no handwriting, no numbers. The surface is blank, weathered paper. hand-cut documentary paper collage on aged newsprint and archival map surfaces, black and white halftone photograph cutouts with rough scissor-cut edges and offset accent strokes, torn paper edges, masking tape fragments, typewriter caption strips, rubber stamp marks, red string and brass pins where the story calls for connections, desaturated archival palette of tan, ink black, and halftone gray with ONE hot red signal accent and a restrained mustard yellow secondary, visible print grain and paper fiber, matte, flat even documentary lighting with soft cutout drop shadows. NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no watermark, no logos. Premium documentary collage aesthetic, vertical 9:16, ultra-detailed, 8K."
+    },
+    {
+      "file": "13-fact-a",
+      "n": 13,
+      "role": "hero",
+      "slot": "a",
+      "prompt": "A woods: a wide landscape silhouette, documentary photograph. Period-accurate for 1971: clothing, hairstyle, equipment and printing style all from that era. Absolutely nothing modern in the frame. Black and white archival halftone photograph, visible print grain and paper fibre, desaturated tan and ink-black tones, matte, flat documentary lighting. ONE subject, centred, large in the frame, clearly separated from whatever is behind it. Vertical 9:16."
+    },
+    {
+      "file": "15-time-plate",
+      "n": 15,
+      "role": "plate",
+      "prompt": "Vertical 9:16 editorial documentary paper collage composition for YouTube Shorts, upper 20 percent kept visually clean for hook text, lower 20 percent kept visually clean for subtitles, generous side margins, no important subject touching the frame edges. An EMPTY background plate: aged newsprint and archival paper surface with stains, foxing, fibre and print grain, one faint horizontal rule running across the middle as a timeline base. ABSOLUTELY NO story elements: no photographs, no cutouts, no people, no faces, no objects, no labels, no tape, no stamps, no string, no pins. Only the bare aged surface. ABSOLUTELY NO WRITING OF ANY KIND: no words, no letters, no headlines, no printed lines of type, no handwriting, no numbers. The surface is blank, weathered paper. hand-cut documentary paper collage on aged newsprint and archival map surfaces, black and white halftone photograph cutouts with rough scissor-cut edges and offset accent strokes, torn paper edges, masking tape fragments, typewriter caption strips, rubber stamp marks, red string and brass pins where the story calls for connections, desaturated archival palette of tan, ink black, and halftone gray with ONE hot red signal accent and a restrained mustard yellow secondary, visible print grain and paper fiber, matte, flat even documentary lighting with soft cutout drop shadows. NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no watermark, no logos. Premium documentary collage aesthetic, vertical 9:16, ultra-detailed, 8K."
+    },
+    {
+      "file": "15-time-a",
+      "n": 15,
+      "role": "hero",
+      "slot": "a",
+      "prompt": "A boy: documentary photograph of a person, three-quarter view. A black censor bar across the eyes. Period-accurate for 1971: clothing, hairstyle, equipment and printing style all from that era. Absolutely nothing modern in the frame. Black and white archival halftone photograph, visible print grain and paper fibre, desaturated tan and ink-black tones, matte, flat documentary lighting. ONE subject, centred, large in the frame, clearly separated from whatever is behind it. Vertical 9:16."
+    },
+    {
+      "file": "15-time-b",
+      "n": 15,
+      "role": "support",
+      "slot": "b",
+      "prompt": "A small pocket watch photograph, halftone. Period-accurate for 1971: clothing, hairstyle, equipment and printing style all from that era. Absolutely nothing modern in the frame. Black and white archival halftone photograph, visible print grain and paper fibre, desaturated tan and ink-black tones, matte, flat documentary lighting. ONE subject, centred, large in the frame, clearly separated from whatever is behind it. Vertical 9:16."
+    },
+    {
+      "file": "19-cliffhanger-plate",
+      "n": 19,
+      "role": "plate",
+      "prompt": "Vertical 9:16 editorial documentary paper collage composition for YouTube Shorts, upper 20 percent kept visually clean for hook text, lower 20 percent kept visually clean for subtitles, generous side margins, no important subject touching the frame edges. An EMPTY background plate: aged newsprint and archival paper surface with stains, foxing, fibre and print grain, no scaffolding, just the bare surface. ABSOLUTELY NO story elements: no photographs, no cutouts, no people, no faces, no objects, no labels, no tape, no stamps, no string, no pins. Only the bare aged surface. ABSOLUTELY NO WRITING OF ANY KIND: no words, no letters, no headlines, no printed lines of type, no handwriting, no numbers. The surface is blank, weathered paper. hand-cut documentary paper collage on aged newsprint and archival map surfaces, black and white halftone photograph cutouts with rough scissor-cut edges and offset accent strokes, torn paper edges, masking tape fragments, typewriter caption strips, rubber stamp marks, red string and brass pins where the story calls for connections, desaturated archival palette of tan, ink black, and halftone gray with ONE hot red signal accent and a restrained mustard yellow secondary, visible print grain and paper fiber, matte, flat even documentary lighting with soft cutout drop shadows. NOT digital illustration, NOT cartoon, NOT 3D render, NOT glossy, no gradients, no watermark, no logos. Premium documentary collage aesthetic, vertical 9:16, ultra-detailed, 8K."
+    },
+    {
+      "file": "19-cliffhanger-a",
+      "n": 19,
+      "role": "hero",
+      "slot": "a",
+      "prompt": "A man: documentary photograph of a person, three-quarter view. A black censor bar across the eyes. Period-accurate for 1971: clothing, hairstyle, equipment and printing style all from that era. Absolutely nothing modern in the frame. Black and white archival halftone photograph, visible print grain and paper fibre, desaturated tan and ink-black tones, matte, flat documentary lighting. ONE subject, centred, large in the frame, clearly separated from whatever is behind it. Vertical 9:16."
+    }
+  ]
+}

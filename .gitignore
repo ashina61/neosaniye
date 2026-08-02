@@ -1,51 +1,54 @@
 node_modules/
-out/
-public/audio/*.mp3
-public/audio/*.wav
-public/audio/*.srt
 .env
-.env.*
-.DS_Store
+.env.local
 *.log
 
-# Üretim çıktıları — build sonucu, kaynak değil. Bu satırlar eski .gitignore'da
-# vardı ve Remotion yeniden yazımında silindiler; sonuç olarak yerel çalışma
-# ağacında 2.4 GB render çıktısı takipsiz birikti.
+# Geçici üretim çıktıları (ses, video, indirilen klipler)
 tmp/
 output/
-artifacts/
-*.mp4
 *.mp3
+*.mp4
 *.wav
 
-# İstisna: repoya konan telifsiz ses varlıkları İZLENİR.
+# İstisna: repoya konan telifsiz müzik parçaları İZLENİR
 !assets/music/**
+
+# Firebase servis hesabı anahtarı asla commit edilmez
+serviceAccount*.json
+firebase-*.json
+
+# Faz 5 yerel state (Firebase yoksa) — dedup için state dosyaları İZLENİR,
+# gerisi (indirilen geçici veriler vb.) yok sayılır.
+data/*
+!data/used_topics.json
+!data/videos.json
+!data/qc-history.jsonl
+
+# CC0 ses kütüphanesi (assets/audio) sürümlenir — global *.mp3 kuralının istisnası.
 !assets/audio/**/*.mp3
+# Manuel inceleme önizlemeleri (production seçicisi bu klasörü görmez).
+!artifacts/audio-review/*.mp3
+
+# Gerçek üretim doğrulaması: yerel/dev koşularının çıktısı commit'lenmez;
+# GERÇEK artifact'lar CI workflow'unda (real-production-validation) üretilir.
+artifacts/real-production-validation/
+
+# Bee regresyon kanıtı (gerçek ffmpeg proof seti) — küçük ve sürümlenir.
+!artifacts/regression/*.mp4
+!artifacts/regression/*.png
+!artifacts/regression/*.json
+!artifacts/regression/*.md
+
+# Neo Motion: SFX wav + manifest + showcase görselleri sürümlenir; ara render'lar değil.
+!assets/motion/sfx/*.wav
+# SFX havuzu (kullanıcı-sağlanan telifsiz geçiş sesleri) sürümlenir.
 !assets/sfx/**/*.wav
 !assets/sfx/**/*.mp3
 !assets/sfx/**/*.ogg
 !assets/sfx/**/*.m4a
-!assets/motion/sfx/*.wav
-
-# Kimlik bilgileri asla commit edilmez.
-serviceAccount*.json
-firebase-*.json
-
-# Cutout ara dosyaları (ham indirmeler) sürümlenmez; üretilen alfa PNG sürümlenir.
-public/cutouts/.raw-*
-# Arşivden indirilen ham dosyalar: kesilmiş PNG'ler kalır, hamlar commit'lenmez.
-public/archive/.raw-*
-
-# Flow klipleri sürümlenmez (büyük, elle üretiliyor); klasör yapısı kalır.
-public/clips/*.mp4
-
-# Kolaj ham görselleri: magenta zeminli, opak, türetilmiş veri.
-collage-raw/
-
-# Kolaj parçaları sürümlenmez. `public/clips/*.mp4` ile aynı sınıf: büyük,
-# elle üretilen, KOŞU BAŞINA değişen malzeme — bir konunun parçaları başka bir
-# konuda hiçbir işe yaramıyor. `npm run collage` collage-raw/'dan yeniden
-# üretiyor. Klasör yapısı kalır.
-public/collage/*.png
-__pycache__/
-out/
+artifacts/motion/*
+!artifacts/motion/cta-contact-sheet.png
+!artifacts/motion/safe-area-debug.png
+!artifacts/motion/acceptance/
+artifacts/motion/acceptance/videos/
+artifacts/motion/acceptance/screenshots/

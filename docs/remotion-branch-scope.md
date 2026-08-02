@@ -1,0 +1,1 @@
+Branch scope is limited to the isolated renderer, fixture compiler/tests, and validation workflow. It does not modify `.github/workflows/daily-short.yml`, `src/pipeline/run.js`, upload policy, YouTube code, Meta code, or persistent state files.

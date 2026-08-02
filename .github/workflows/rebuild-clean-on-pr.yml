@@ -1,0 +1,50 @@
+name: Execute Clean Eiffel Rebuild
+
+on:
+  pull_request:
+    branches: [claude/youtube-shorts-automation-9dbrjx]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild:
+    if: github.head_ref == 'agent/clean-eiffel-rebuild'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/clean-eiffel-rebuild
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+      - name: Remove workflow creation from the action-authored commit
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path=Path('scripts/rebuild-clean-eiffel.sh')
+          text=path.read_text()
+          start=text.index('mkdir -p .github/workflows')
+          end=text.index('# Hard policy:', start)
+          path.write_text(text[:start] + text[end:])
+          PY
+      - name: Replace the entire repository and validate the approved engine
+        run: |
+          set -o pipefail
+          bash scripts/rebuild-clean-eiffel.sh 2>&1 | tee /tmp/clean-eiffel-rebuild.log
+      - name: Upload rebuild diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: clean-eiffel-rebuild-diagnostics
+          path: /tmp/clean-eiffel-rebuild.log
+          if-no-files-found: error
+          retention-days: 2

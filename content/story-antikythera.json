@@ -1,9 +1,0 @@
-{
-  "title": "The Gears That Should Not Exist",
-  "subtitle": "The Antikythera wreck, 1901",
-  "era": "1901",
-  "status": "draft",
-  "note": "OLGU KAYDI — bu kanal belgesel iddiasıyla yayın yapıyor, o yüzden her cümlenin dayanağı burada duruyor. Uydurma ya da \"muhtemelen böyleydi\" cümlesi YOK.\n· 1900-1901, sünger dalgıçları Antikythera adası açıklarında bir Roma dönemi batığı buldu.\n· Bronz ve mermer heykellerin arasında korozyona uğramış bir metal parçası vardı.\n· Parça çatlayınca içinde dişli çarklar göründü.\n· Derek de Solla Price 1971'de X-ışını ve gama radyografi kullanarak iç yapıyı çıkardı.\n· Mekanizma en az 30 bronz dişli içeriyor; tutulmaları öngörüyor, Ay'ın düzensiz hareketini modelliyor.\n· Arka kadranlarda dört yıllık atletizm oyunları döngüsü sayılıyor.\n· Benzer karmaşıklıkta bir mekanizma yüzyıllar boyunca bir daha görünmüyor.\n· Yapımcısı bilinmiyor; kaç tane üretildiği bilinmiyor.\n\nDURUM: taslak. `status: \"draft\"` olduğu sürece otomatik seçici bu konuyu ATLAR. Olguları kendin doğrulayıp `\"status\": \"ready\"` yaptığında sıraya girer — bu alan, doğrulanmamış bir anlatının sessizce yayına gitmesini engellemek için var.",
-  "narration": "In 1901 a sponge diver found a wreck off the island of Antikythera. Among the bronze statues lay a lump of corroded metal the size of a book. It split open and showed the teeth of a gear. The museum kept the lump in a case for fifty years. An X ray in 1971 revealed thirty interlocking bronze gears inside it. The device predicted eclipses and tracked the moon through its uneven orbit. A dial on the back counted down the four year cycle of the games. The inscription on the plate names the months of a Greek calendar. Nothing of this complexity appears again for fourteen hundred years. Nobody knows who built the machine or how many were made.",
-  "subject": "Antikythera mechanism shipwreck"
-}
