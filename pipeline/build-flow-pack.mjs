@@ -81,7 +81,29 @@ const CODE_DRAWN = new Set(['map_route', 'grid_scale', 'data_annotate', 'archiva
  * "referans videonun çekimlerinin yaklaşık ÜÇTE İKİSİNDE hiç fotoğraf yok".
  * 19 beat x 1/3 ≈ 6 fotoğraf/Short — ayda 630 değil, 180.
  */
-const PHOTO_BUDGET_RATIO = 1 / 3;
+/**
+ * ============ 1/3 ARTIK BİR VARSAYILAN, KİLİT DEĞİL ============
+ *
+ * Oran referansın kendi ölçümünden geliyordu ve gerekçesi ikiliydi: hem
+ * referansta çekimlerin üçte ikisinde fotoğraf yok, hem de üretim KOTA
+ * harcıyordu (ayda 630 → 180 görsel).
+ *
+ * İkinci gerekçe artık geçersiz. Üretim kolu da arşiv kolu da anahtarsız ve
+ * kotasız: Wikimedia, LoC ve Pollinations hiçbir şey saymıyor. Kalan tek
+ * gerekçe estetik oran ve o bir TERCİH, kilit değil.
+ *
+ * Kullanıcı ölçtü: "promt max 5 görsel üretiyor". 13 sahnede 5 görsel demek
+ * 8 sahnenin prosedürel siluete düşmesi demek — ve bu oturumda o siluetlerin
+ * tabela piktogramı gibi okunduğu render alınıp GÖZLE doğrulandı. Yani tavan,
+ * kalitesi en düşük kolun payını büyütüyordu.
+ *
+ * `PHOTO_BUDGET` ortam değişkeniyle geçilebilir (0..1). Workflow'a girdi olarak
+ * bağlı; 1 vermek "her uygun sahneye görsel iste" demek.
+ */
+const PHOTO_BUDGET_RATIO = (() => {
+  const v = Number.parseFloat(process.env.PHOTO_BUDGET ?? '');
+  return Number.isFinite(v) && v > 0 && v <= 1 ? v : 1 / 3;
+})();
 
 /**
  * ============ İZİN LİSTESİ → YASAK LİSTESİ ============

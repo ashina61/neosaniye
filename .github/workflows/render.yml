@@ -57,6 +57,11 @@ on:
         required: false
         default: false
         type: boolean
+      photo_budget:
+        description: "Görsel bütçesi — sahnelerin kaçta kaçı görsel istesin (0.33 = referans oranı, 1 = hepsi)"
+        required: false
+        default: "0.33"
+        type: string
       narrate:
         description: "Seslendirme (Piper, offline ve bedava). Süreler ses ölçümünden yazılır."
         required: false
@@ -199,6 +204,8 @@ jobs:
         run: node pipeline/narrate.mjs
 
       - name: Promt paketi + görsel bütçesi
+        env:
+          PHOTO_BUDGET: ${{ inputs.photo_budget }}
         run: npm run flow:pack
 
       # ---------------------------------------------------------------- #
