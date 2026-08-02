@@ -19,7 +19,8 @@
     "preview": "remotion render src/index.ts Short out/preview.mp4 --codec=h264 --crf=30 --pixel-format=yuv420p --scale=0.3",
     "collage": "node pipeline/ingest-collage.mjs",
     "gate:templates": "node pipeline/template-gate.mjs",
-    "topic": "node pipeline/pick-topic.mjs"
+    "topic": "node pipeline/pick-topic.mjs",
+    "narrate": "node pipeline/narrate.mjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.500",

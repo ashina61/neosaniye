@@ -57,6 +57,11 @@ on:
         required: false
         default: false
         type: boolean
+      narrate:
+        description: "Seslendirme (Piper, offline ve bedava). Süreler ses ölçümünden yazılır."
+        required: false
+        default: true
+        type: boolean
       quality:
         description: "Render kalitesi"
         required: true
@@ -118,6 +123,11 @@ jobs:
           # kesiyoruz. Gerekçe ve ölçüm: pipeline/segment.py.
           python3 -m pip install --disable-pip-version-check --quiet rembg onnxruntime || \
             echo "UYARI: rembg kurulamadı — kesim yedek modlara düşecek"
+          # SESLENDİRME — Piper offline çalışır: model bir kez iner, sonra ağ
+          # yok, kota yok, anahtar yok. Kurulamazsa iş DURMAZ, video sessiz
+          # çıkar (bu deponun her sağlayıcı kolunda aynı kural).
+          python3 -m pip install --disable-pip-version-check --quiet piper-tts || \
+            echo "UYARI: piper kurulamadı — video sessiz çıkacak"
 
       # Testler ÖNCE: bozuk bir depoyla uzun render başlatmak ve üretim kotası
       # harcamak anlamsız.
@@ -165,6 +175,29 @@ jobs:
       # ---------------------------------------------------------------- #
       # Bütçe dışı beat için promt dosyası YAZILMAZ, yani üretim adımı zaten
       # yalnızca bütçedeki görselleri ister. 19 beat için ~7 görsel.
+      # ---------------------------------------------------------------- #
+      # 1b. SESLENDİRME — süreleri GERÇEK konuşmadan yeniden yazar          #
+      # ---------------------------------------------------------------- #
+      # Storyboard'dan SONRA, paketten ÖNCE: sahne süreleri burada değişiyor ve
+      # `flow:pack` beat sürelerine göre hareket metni yazıyor. Ters sırada
+      # paket eski sürelere göre yazılırdı.
+      #
+      # Ses CC0 (Lessac, LibriVox türevi). Model 63 MB, bir kez iniyor.
+      - name: Ses modeli
+        if: inputs.narrate
+        continue-on-error: true
+        run: |
+          mkdir -p out/voices
+          base=https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium
+          curl -fsSL -o out/voices/en_US-lessac-medium.onnx "$base/en_US-lessac-medium.onnx"
+          curl -fsSL -o out/voices/en_US-lessac-medium.onnx.json "$base/en_US-lessac-medium.onnx.json"
+          ls -la out/voices/
+
+      - name: Seslendir (Piper, offline)
+        if: inputs.narrate
+        continue-on-error: true
+        run: node pipeline/narrate.mjs
+
       - name: Promt paketi + görsel bütçesi
         run: npm run flow:pack
 
@@ -231,12 +264,22 @@ jobs:
       - name: Render
         run: |
           mkdir -p out
+          # `--muted` YALNIZCA ses yokken. Seslendirme varsa bayrak sesi
+          # tamamen düşürürdü — ölçülen sessizlik kapısı da onu yakalardı ama
+          # o zaman "neden sessiz" sorusu render'a kadar gelmezdi.
+          MUTED=--muted
+          if node -e "process.exit(require('./content/storyboard.json').audio?0:1)"; then
+            MUTED=
+            echo "storyboard sesli — --muted KAPALI"
+          else
+            echo "storyboard sessiz — --muted açık"
+          fi
           if [ "${{ inputs.quality }}" = "preview" ]; then
             npx remotion render src/index.ts Short out/neosaniye.mp4 \
-              --codec=h264 --crf=28 --pixel-format=yuv420p --scale=0.5 --muted
+              --codec=h264 --crf=28 --pixel-format=yuv420p --scale=0.5 $MUTED
           else
             npx remotion render src/index.ts Short out/neosaniye.mp4 \
-              --codec=h264 --crf=17 --pixel-format=yuv420p --muted
+              --codec=h264 --crf=17 --pixel-format=yuv420p $MUTED
           fi
 
       # ---------------------------------------------------------------- #
@@ -250,7 +293,22 @@ jobs:
           # Render artık `--muted` ile koşuyor ve aynı ölçüm 0 veriyor.
           n=$(ffprobe -v error -select_streams a -show_entries stream=index -of csv=p=0 out/neosaniye.mp4 | wc -l)
           echo "ses akışı sayısı: $n"
-          if [ "$n" -ne 0 ]; then echo "HATA: videoda ses akışı var, oysa ses istenmedi"; exit 1; fi
+          # Kapı ARTIK İKİ YÖNLÜ. Eskiden koşulsuz "ses OLMAMALI" diyordu ve
+          # seslendirme eklenince kendi videomuzu düşürürdü. Asıl soru
+          # "ses var mı" değil, "İSTENEN ses var mı".
+          if node -e "process.exit(require('./content/storyboard.json').audio?0:1)"; then
+            if [ "$n" -eq 0 ]; then
+              echo "HATA: seslendirme istendi ama videoda ses akışı YOK"; exit 1
+            fi
+            # Sessiz bir ses izi de başarısızlıktır: akış var ama içi boş olabilir.
+            mean=$(ffmpeg -hide_banner -nostats -i out/neosaniye.mp4 -af volumedetect -f null - 2>&1 | grep mean_volume | sed 's/.*: //;s/ dB//')
+            echo "ortalama seviye: ${mean:-yok} dB"
+            case "$mean" in
+              ''|-9[0-9]*|-inf) echo "HATA: ses izi var ama içi boş"; exit 1 ;;
+            esac
+          else
+            if [ "$n" -ne 0 ]; then echo "HATA: videoda ses akışı var, oysa ses istenmedi"; exit 1; fi
+          fi
 
       - name: Referans ölçümlerine karşı doğrula
         continue-on-error: true
