@@ -570,17 +570,74 @@ const FinalTwist: React.FC<{scene: ProductionScene}> = ({scene}) => {
   );
 };
 
+/**
+ * ============ SAYFA YAPISI TEK BİR KALIPTAN İBARETTİ ============
+ *
+ * Kullanıcı: "şekilleri, svgleri, sayfa yapısını değiştirsin, hepsi aynı şeyler
+ * aynı efektler olmasın."
+ *
+ * `GenericCollage` beat'lerin ÇOĞUNUN düştüğü yer — dokuz özel şablonun hiçbiri
+ * eşleşmezse buraya geliyor. Ve buradaki her koordinat SABİTTİ:
+ *
+ *   başlık    top: 115, size: 76
+ *   panel 1   left: 75,  top: 430,  650x760,  rotate -3
+ *   panel 2   right: 65, top: 760,  470x520,  rotate  4
+ *   sayaç     right: 70, top: 360
+ *   altyazı   left: 95,  bottom: 170
+ *
+ * Yani jenerik sahnelerin HEPSİ birebir aynı sayfaydı; değişen tek şey
+ * içindeki fotoğraf. Sahne kadansını bir önceki turda çeşitlendirmiştik ama
+ * kadans yerleşimi kurtarmıyor — izleyici aynı iskeleti görüyor.
+ *
+ * Dört düzen, `scene.id`den deterministik (SceneShell ile aynı yöntem, aynı
+ * gerekçe: sıra bilgisi burada var ama `id` render'ı tekrar edilebilir tutuyor
+ * ve iki bileşen aynı sahnede AYNI varyantı seçmesin diye hash farklı
+ * tuzlanıyor).
+ *
+ *   0  büyük sol panel + küçük sağ alt   (eski düzen, en dengeli)
+ *   1  AYNA: büyük sağda, küçük sol altta
+ *   2  ÜST-ALT yığın: iki panel geniş, üst üste
+ *   3  TEK HÂKİM panel, ortada büyük; ikincisi köşede küçük vinyet
+ *
+ * Başlık, sayaç ve altyazı da düzenle birlikte kayıyor — sabit kalsalardı
+ * paneller değişse bile sayfa aynı okunurdu.
+ */
 const GenericCollage: React.FC<{scene: ProductionScene; index: number; total: number}> = ({scene, index, total}) => {
   const first = scene.assets?.[0];
   const second = scene.assets?.[1];
+  const v = idHash(`${scene.id}:layout`) % 4;
+
+  const L = [
+    {
+      head: 115, a: {left: 75, top: 430, width: 650, height: 760}, ar: -3,
+      b: {right: 65, top: 760, width: 470, height: 520}, br: 4,
+      count: {right: 70, top: 360}, cap: {left: 95, bottom: 170, width: 890},
+    },
+    {
+      head: 150, a: {right: 70, top: 400, width: 660, height: 780}, ar: 3,
+      b: {left: 70, top: 800, width: 450, height: 500}, br: -5,
+      count: {left: 80, top: 330}, cap: {left: 95, bottom: 200, width: 890},
+    },
+    {
+      head: 105, a: {left: 90, top: 380, width: 900, height: 520}, ar: -2,
+      b: {left: 90, top: 940, width: 900, height: 430}, br: 2,
+      count: {right: 80, top: 300}, cap: {left: 95, bottom: 150, width: 890},
+    },
+    {
+      head: 135, a: {left: 130, top: 420, width: 820, height: 880}, ar: 1.5,
+      b: {right: 80, top: 1330, width: 330, height: 360}, br: -6,
+      count: {left: 90, top: 350}, cap: {left: 95, bottom: 130, width: 890},
+    },
+  ][v];
+
   return (
     <SceneShell scene={scene}>
-      <StickerText text={scene.headline || `BEAT ${index + 1}`} top={115} size={76} rotate={index % 2 ? 1 : -1} />
-      <AssetPanel asset={first} rotate={-3} style={{left: 75, top: 430, width: 650, height: 760}} />
-      <AssetPanel asset={second} rotate={4} style={{right: 65, top: 760, width: 470, height: 520}} />
-      {!first ? <DocumentCard style={{left: 115, top: 520, transform: 'rotate(-4deg) scale(1.25)'}} label={(scene.emphasis?.[0] || 'EVIDENCE').toUpperCase()} /> : null}
-      <div style={{position: 'absolute', right: 70, top: 360, fontFamily: 'Arial Black, sans-serif', fontSize: 42, color: palette.red}}>{String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}</div>
-      <KineticLine text={scene.narration || scene.kicker || ''} delay={30} size={48} style={{left: 95, bottom: 170, width: 890, textAlign: 'center'}} />
+      <StickerText text={scene.headline || `BEAT ${index + 1}`} top={L.head} size={v === 2 ? 68 : 76} rotate={v % 2 ? 1 : -1} />
+      <AssetPanel asset={first} rotate={L.ar} style={{...L.a}} />
+      <AssetPanel asset={second} rotate={L.br} style={{...L.b}} />
+      {!first ? <DocumentCard style={{left: 115, top: 520, transform: `rotate(${L.ar}deg) scale(1.25)`}} label={(scene.emphasis?.[0] || 'EVIDENCE').toUpperCase()} /> : null}
+      <div style={{position: 'absolute', ...L.count, fontFamily: 'Arial Black, sans-serif', fontSize: 42, color: palette.red}}>{String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}</div>
+      <KineticLine text={scene.narration || scene.kicker || ''} delay={30} size={48} style={{...L.cap, textAlign: 'center'}} />
     </SceneShell>
   );
 };
