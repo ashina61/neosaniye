@@ -424,7 +424,7 @@ const HookReveal: React.FC<{scene: ProductionScene}> = ({scene}) => {
       <Sparkles />
       <div style={{position: 'absolute', inset: 0, background: 'radial-gradient(circle at 75% 37%, rgba(213,165,45,0.25), transparent 34%)'}} />
       <AssetPanel asset={asset} rotate={2} style={{left: 510, top: 520, width: 470, height: 720, transform: `translateX(${interpolate(portrait, [0, 1], [180, 0])}px) rotate(2deg)`}} />
-      {!asset ? <PortraitCutout seed={scene.id} style={{left: 545, top: 520, transform: `translateX(${interpolate(portrait, [0, 1], [180, 0])}px)`}} /> : null}
+      {!asset ? <ContentShape scene={scene} style={{left: 545, top: 520, transform: `translateX(${interpolate(portrait, [0, 1], [180, 0])}px)`}} /> : null}
       <StickerText text={scene.headline || 'IMPOSSIBLE STORY'} top={150} size={88} rotate={-1.5} />
       <KineticLine text={scene.kicker || scene.narration || ''} delay={18} color={palette.red} size={52} style={{left: 95, top: 390, width: 760}} />
       <Tape style={{left: 730, top: 1260}} rotate={7} />
@@ -442,7 +442,7 @@ const PortraitDossier: React.FC<{scene: ProductionScene}> = ({scene}) => {
         <div style={{fontFamily: 'Georgia, serif', fontSize: 38, letterSpacing: 2}}>CONFIDENTIAL DOSSIER</div>
         <div style={{position: 'absolute', left: 40, right: 40, top: 115, height: 5, background: palette.ink}} />
         <AssetPanel asset={asset} style={{left: 80, top: 190, width: 420, height: 610}} />
-        {!asset ? <PortraitCutout seed={scene.id} style={{left: 75, top: 210}} /> : null}
+        {!asset ? <ContentShape scene={scene} style={{left: 75, top: 210}} /> : null}
         <div style={{position: 'absolute', left: 545, top: 210, width: 310, fontFamily: 'Arial Black, sans-serif', fontSize: 46, lineHeight: 1.05}}>{(scene.kicker || 'NAME UNKNOWN').toUpperCase()}</div>
         {(scene.emphasis || ['CHARM', 'STATUS', 'TRUST']).slice(0, 3).map((word, i) => (
           <div key={word} style={{position: 'absolute', left: 545, top: 470 + i * 125, padding: '16px 22px', background: i === 1 ? palette.red : palette.gold, fontFamily: 'Arial Black, sans-serif', fontSize: 36, transform: `rotate(${i % 2 ? 2 : -2}deg)`}}>{word.toUpperCase()}</div>
@@ -635,7 +635,7 @@ const GenericCollage: React.FC<{scene: ProductionScene; index: number; total: nu
       <StickerText text={scene.headline || `BEAT ${index + 1}`} top={L.head} size={v === 2 ? 68 : 76} rotate={v % 2 ? 1 : -1} />
       <AssetPanel asset={first} rotate={L.ar} style={{...L.a}} />
       <AssetPanel asset={second} rotate={L.br} style={{...L.b}} />
-      {!first ? <DocumentCard style={{left: 115, top: 520, transform: `rotate(${L.ar}deg) scale(1.25)`}} label={(scene.emphasis?.[0] || 'EVIDENCE').toUpperCase()} /> : null}
+      {!first ? <ContentShape scene={scene} style={{left: 115, top: 520, transform: `rotate(${L.ar}deg) scale(1.25)`}} /> : null}
       <div style={{position: 'absolute', ...L.count, fontFamily: 'Arial Black, sans-serif', fontSize: 42, color: palette.red}}>{String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}</div>
       <KineticLine text={scene.narration || scene.kicker || ''} delay={30} size={48} style={{...L.cap, textAlign: 'center'}} />
     </SceneShell>
@@ -662,6 +662,77 @@ const GenericCollage: React.FC<{scene: ProductionScene; index: number; total: nu
  *
  * `seed` sahne kimliğinden geliyor: aynı sahne her render'da aynı yüzü alır.
  */
+
+/**
+ * ============ ÇİZİM CÜMLEDEN GELİR, HASH'TEN DEĞİL ============
+ *
+ * Kullanıcı: "svg çizimleri direk konuya göre çeşitlensin, öyle aynı şeyler
+ * aynı efektler yapılmasın."
+ *
+ * Önceki tur siluetlere VARYANT eklemişti (üç farklı yüz, `scene.id` hash'inden)
+ * ve bu yarım bir çözümdü: çeşitlilik geldi ama ANLAM gelmedi. Para anlatan bir
+ * sahne de, uçak anlatan bir sahne de yüz çiziyordu — sadece farklı yüzler.
+ * Rastgele çeşitlilik, yanlış çizimi daha az sıkıcı yapar; doğru yapmaz.
+ *
+ * Karar artık cümlenin SOMUT NESNESİNDEN çıkıyor. Sahnenin taşıdığı bütün metin
+ * taranıyor (başlık, vurgu, anlatı, kicker) ve ilk eşleşen aile kazanıyor.
+ *
+ * SIRA GEREKÇELİ — spesifik olan önce:
+ *   uyarı/felaket  en güçlü sinyal; "crash", "died" geçen sahnede para da
+ *                  geçebilir ama sahnenin konusu felakettir
+ *   para           somut ve ayırt edici
+ *   harita/yer     iki yer adı ya da yolculuk fiili
+ *   belge          kayıt, mektup, rapor
+ *   kişi           en genel; hiçbiri tutmazsa da buraya düşülür
+ *
+ * EŞLEŞME YOKSA YİNE KİŞİ ÇİZİLİYOR ve bu bilinçli: bu şablonlar bir ANLATI
+ * anlatıyor, anlatının öznesi genelde birisidir. Boş kare bırakmak ya da
+ * rastgele bir nesne çizmek daha kötü.
+ */
+const SHAPE_WORDS: Array<{kind: 'warning' | 'money' | 'map' | 'document'; words: RegExp}> = [
+  {kind: 'warning', words: /\b(crash|died|death|kill|explos|disaster|danger|fail|collaps|burn|fire|toxic|poison|warning|attack|destroy|wreck)/i},
+  {kind: 'money', words: /\b(money|cash|dollar|ransom|paid|payment|price|cost|million|billion|fortune|wealth|bank|gold|profit|sold)/i},
+  {kind: 'map', words: /\b(map|route|journey|travel|flight|sail|border|island|city|country|north|south|east|west|coast|ocean|mile|km)/i},
+  {kind: 'document', words: /\b(letter|note|document|record|report|file|law|contract|newspaper|headline|diary|book|evidence|signature|archive)/i},
+];
+
+function shapeKindFor(scene: ProductionScene): 'warning' | 'money' | 'map' | 'document' | 'person' {
+  const text = [scene.headline, scene.kicker, scene.narration, ...(scene.emphasis || [])]
+    .filter(Boolean)
+    .join(' ');
+  for (const entry of SHAPE_WORDS) {
+    if (entry.words.test(text)) return entry.kind;
+  }
+  return 'person';
+}
+
+/**
+ * Sahnenin konusuna göre siluet. Fotoğraf bulunamadığında çizilen şey.
+ * `PortraitCutout`un üç kimliği KORUNUYOR — özne gerçekten bir kişiyse farklı
+ * kişilerin farklı görünmesi doğru; oradaki hash anlamı değil KİMLİĞİ seçiyor.
+ */
+const ContentShape: React.FC<{scene: ProductionScene; style?: React.CSSProperties}> = ({scene, style}) => {
+  switch (shapeKindFor(scene)) {
+    case 'warning':
+      return <WarningSymbols />;
+    case 'money':
+      return <MoneyStack style={{...style}} />;
+    case 'map':
+      // MapGraphic gerçek etiket ve ilerleme istiyor. Etiketler sahnenin
+      // vurgularından geliyor; yoksa harita çizilmez ve kişiye düşülür —
+      // etiketsiz harita, boş bir dünya haritası demek.
+      return (scene.emphasis?.length ?? 0) >= 2 ? (
+        <MapGraphic progress={1} labels={(scene.emphasis || []).slice(0, 2)} />
+      ) : (
+        <PortraitCutout seed={scene.id} style={style} />
+      );
+    case 'document':
+      return <DocumentCard style={{...style}} label={(scene.emphasis?.[0] || 'RECORD').toUpperCase()} />;
+    default:
+      return <PortraitCutout seed={scene.id} style={style} />;
+  }
+};
+
 const PortraitCutout: React.FC<{style?: React.CSSProperties; seed?: string}> = ({style, seed = ''}) => {
   const v = idHash(`${seed}:face`) % 3;
   const rx = [115, 104, 122][v];
