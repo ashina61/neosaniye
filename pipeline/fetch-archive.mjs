@@ -93,6 +93,58 @@ function plain(html) {
 /* KAYNAK 1 — Wikimedia Commons                                        */
 /* ------------------------------------------------------------------ */
 
+
+/**
+ * ============ SORGUDA KONUNUN ADI HİÇ GEÇMİYORDU ============
+ *
+ * Kullanıcı tam render aldı ve "fotoğraflar alakasız geliyor" dedi. Sebep iki
+ * eksikti ve ikisi birlikte çalışıyor:
+ *
+ * 1. SORGU KONUYU TAŞIMIYORDU. `searchFor` yalnızca cümlenin nesnesini veriyor:
+ *    "attendant 1971 historical photograph". Bu sorgunun D.B. Cooper ile hiçbir
+ *    bağı yok. Wikimedia tam metin araması o kelimeleri üstünkörü içeren her
+ *    şeyi döndürür — yani 1971 anlatısına rastgele 1971 fotoğrafları geliyordu.
+ *
+ * 2. ALAKA DENETİMİ YOKTU. Dönen ne olursa olsun `hits[seed % 3]` alınıyordu.
+ *    Kod hiçbir yerde "bu görsel gerçekten aradığım şey mi" diye sormuyordu.
+ *
+ * Çıpa konu dosyasının `subject` alanından gelir; yoksa dosya adının
+ * slug'ından türetilir ("story-db-cooper.json" → "db cooper"). Slug bir yedek,
+ * tercih değil: `subject` insanın yazdığı arama terimidir ("D. B. Cooper
+ * hijacking") ve katalogda slug'dan belirgin şekilde iyi çalışır.
+ */
+function anchorOf(sb) {
+  if (sb.subject) return String(sb.subject).trim();
+  const src = String(sb.source ?? sb.topic ?? sb.title ?? '');
+  const m = src.match(/story-([a-z0-9-]+)\.json/i);
+  return m ? m[1].replace(/-/g, ' ') : '';
+}
+
+function anchored(q, anchor) {
+  if (!q) return q;
+  return anchor ? `${anchor} ${q}` : q;
+}
+
+/**
+ * Sorgunun HER sonucunda geçen, dolayısıyla hiçbir şey ayırt etmeyen kelimeler.
+ * Yıl da burada sayılmıyor: "1971" araması yapılınca dönen her sonuçta var.
+ */
+const GENERIC = new Set(['historical', 'photograph', 'photo', 'engraving', 'portrait', 'archival', 'the', 'and', 'of']);
+
+function keyWords(t) {
+  return String(t)
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .split(/\s+/)
+    .filter((w) => w.length > 2 && !GENERIC.has(w) && !/^\d{1,4}$/.test(w));
+}
+
+/** Dönen başlık sorgunun AYIRT EDİCİ kelimelerinden en az birini taşıyor mu? */
+function overlaps(title, query) {
+  const q = new Set(keyWords(query));
+  return keyWords(title).some((w) => q.has(w));
+}
+
 async function searchCommons(query) {
   const url =
     'https://commons.wikimedia.org/w/api.php?' +
@@ -242,7 +294,7 @@ async function main() {
     // `sb.era` İKİNCİ ARGÜMAN: cümlede yıl yoksa sorgunun aracı (fotoğraf mı
     // gravür mü) anlatının dönemine göre seçilsin. Bu olmadan 1628 konusu
     // katalogdan "warship 1628 historical photograph" istiyordu.
-    .map((s, i) => ({s, i, q: searchFor((s._beat?.text ?? s.payload?.headline ?? '').replace(/[*"]/g, ''), sb.era)}))
+    .map((s, i) => ({s, i, q: anchored(searchFor((s._beat?.text ?? s.payload?.headline ?? '').replace(/[*"]/g, ''), sb.era), anchorOf(sb))}))
     .filter(({s, i, q}) => WANTS_IMAGE.has(s.template) && q && (!only.length || only.includes(i + 1)));
 
   console.log(`${sb.scenes.length} sahne · ${targets.length} tanesi için arşiv sorgusu var`);
@@ -253,7 +305,7 @@ async function main() {
       console.log(`sahne ${String(i + 1).padStart(2)} (${s.template.padEnd(16)}) → "${q}"`);
     }
     const skipped = sb.scenes
-      .map((s, i) => ({s, i, q: searchFor(s._beat?.text ?? '', sb.era)}))
+      .map((s, i) => ({s, i, q: anchored(searchFor(s._beat?.text ?? '', sb.era), anchorOf(sb))}))
       .filter(({s, q}) => WANTS_IMAGE.has(s.template) && !q);
     if (skipped.length) {
       console.log(`\nsomut nesnesi olmayan ${skipped.length} sahne atlanıyor (uydurma görsel yerine kod çizimi):`);
@@ -279,7 +331,15 @@ async function main() {
           // Deterministik seçim: sahne seed'i ilk üç sonuç arasından seçer.
           // Hep ilkini almak aynı fotoğrafın birden çok sahnede çıkmasına yol
           // açıyor; rastgele seçim ise render'ı deterministik olmaktan çıkarır.
-          picked = hits[s.seed % Math.min(3, hits.length)];
+          // ALAKA KAPISI: dönen başlık sorgunun ayırt edici kelimelerinden
+          // hiçbirini taşımıyorsa o sonuç bu sahneye ait değildir. Eskiden
+          // böyle bir denetim YOKTU ve "alakasız fotoğraf" tam buradan geldi.
+          const relevant = hits.filter((h) => overlaps(h.title, q));
+          if (!relevant.length) {
+            console.log(`  sahne ${i + 1}: ${name} — ${hits.length} sonuç, hiçbiri alakalı değil, REDDEDİLDİ`);
+            continue;
+          }
+          picked = relevant[s.seed % Math.min(3, relevant.length)];
           console.log(`  sahne ${i + 1}: ${name} → ${picked.title} [${picked.licence}]`);
           break;
         }

@@ -619,6 +619,19 @@ async function main() {
     totalFrames,
     era,
     audio: story.audio ?? undefined,
+    /**
+     * KONU KİMLİĞİ — arşiv sorgusunun çıpası.
+     *
+     * Storyboard konunun ne olduğunu hiç taşımıyordu ve bu, arşiv kolunda
+     * ölçülen "fotoğraflar alakasız geliyor" hatasının kökeniydi: sorgu
+     * yalnızca cümlenin nesnesini soruyor, konunun adını hiç geçirmiyordu.
+     *
+     * `subject` insanın yazdığı arama terimi ("D. B. Cooper hijacking") ve
+     * tercih edilen alan. Yoksa `source` dosya adından slug türetilebilsin
+     * diye yazılıyor — yedek, tercih değil.
+     */
+    subject: story.subject ?? undefined,
+    source: path.basename(storyPath),
   };
   if (!storyboard.era) delete storyboard.era;
   if (!storyboard.audio) delete storyboard.audio;
