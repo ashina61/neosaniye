@@ -68,7 +68,7 @@ jobs:
       - name: Typecheck Remotion engine
         run: npm run remotion:typecheck
 
-      - name: Render dynamic collage fixture
+      - name: Render reel fixture
         run: |
           mkdir -p artifacts
           npm run remotion:fixture

@@ -96,6 +96,8 @@ def generate_sfx() -> None:
 
     write_wav(OUT / 'heartbeat.wav', 3.0, heartbeat)
     write_wav(OUT / 'boom.wav', 1.8, lambda t, d: math.sin(2 * math.pi * (48 - 9 * t) * t) * math.exp(-1.9 * t) * 0.92 + math.sin(2 * math.pi * 24 * t) * math.exp(-2.6 * t) * 0.38)
+    # Money-room rig'inin altında duran elektrik uğultusu.
+    write_wav(OUT / 'neon-buzz.wav', 2.4, lambda t, d: (math.sin(2 * math.pi * 120 * t) * 0.18 + math.sin(2 * math.pi * 240 * t) * 0.07 + n2(t, 400) * 0.05) * (0.35 if t < 0.35 and math.sin(2 * math.pi * 31 * t) < 0 else 1.0))
 
 
 def fallback_voice() -> None:

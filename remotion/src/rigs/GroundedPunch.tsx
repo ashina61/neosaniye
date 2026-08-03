@@ -1,0 +1,132 @@
+import React from 'react';
+import {AbsoluteFill, Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
+import type {Beat} from '../schema';
+import {CLAMP, blurBurst, dampedWag, posterizeTime} from '../engine/motion';
+import {Plate, pickAsset} from '../engine/Plate';
+import {FoamFinger} from '../engine/props';
+
+/**
+ * GROUNDED PUNCH — the workhorse.
+ *
+ * Two flat plates, one camera move, and depth that isn't in either picture. The
+ * character punches in harder than the wall behind them, so they peel forward
+ * off it in fake 3D — and both zooms are anchored to the SAME point on the
+ * floor (the feet), not the centre of the frame. Miss that shared anchor and
+ * the character slides off the pavement and the illusion dies.
+ *
+ * The shadow is not a third asset. It is the character plate again: painted
+ * pure black, flipped down from the feet, skewed onto the ground plane,
+ * blurred and dropped to half opacity.
+ *
+ * `gesture: 'wag'` turns this same rig into the finale — a prop swings up and
+ * wags "no" on a decaying pendulum. Once one reveal works, the rest are
+ * reskins.
+ */
+export const GroundedPunch: React.FC<{beat: Beat}> = ({beat}) => {
+  const frame = useCurrentFrame();
+  const {fps, width, height} = useVideoConfig();
+  const stepped = posterizeTime(frame, fps, 12);
+
+  const groundY = beat.props.groundY ?? Math.round(height * 0.88);
+  const groundX = Math.round(width * 0.52);
+  const platePunch = beat.props.platePunch ?? 1.12;
+  const characterPunch = beat.props.characterPunch ?? 1.7;
+  const shadowSkew = beat.props.shadowSkew ?? -53;
+  const shadowOpacity = beat.props.shadowOpacity ?? 0.55;
+  const shiftFrame = beat.props.shiftFrame ?? 0;
+  const shiftPx = beat.props.shiftPx ?? 0;
+
+  const plate = pickAsset(beat.assets, 'plate');
+  const character = pickAsset(beat.assets, 'character') ?? plate;
+
+  // The wall creeps; the character punches. The difference is the depth.
+  const wallScale = interpolate(stepped, [8, 80], [1, platePunch], {
+    ...CLAMP,
+    easing: Easing.out(Easing.cubic),
+  });
+  const charScale = interpolate(stepped, [0, 58], [1, characterPunch], {
+    ...CLAMP,
+    easing: Easing.out(Easing.cubic),
+  });
+
+  // The shift clears one side of the frame for the closing line.
+  const shift = shiftFrame
+    ? interpolate(stepped, [shiftFrame, shiftFrame + 14], [0, -Math.abs(shiftPx)], {
+        ...CLAMP,
+        easing: Easing.inOut(Easing.cubic),
+      })
+    : 0;
+  const shiftBlur = shiftFrame ? blurBurst(stepped, [shiftFrame, shiftFrame + 7, shiftFrame + 14], 7) : 0;
+
+  const wag = beat.props.gesture === 'wag';
+  const gestureAt = beat.props.gestureFrame ?? 24;
+  const gestureIn = interpolate(stepped, [gestureAt, gestureAt + 12], [0, 1], {
+    ...CLAMP,
+    easing: Easing.out(Easing.cubic),
+  });
+  const gestureAngle = dampedWag(stepped, {amplitude: 28, speed: 0.52, decay: 0.042, delay: gestureAt});
+
+  return (
+    <AbsoluteFill style={{backgroundColor: '#0c0906'}}>
+      {/* The background must stay a lit stage even when nothing was found —
+          a beat that renders as a black rectangle fails the technical gates
+          before anyone judges whether it was any good. */}
+      <Plate asset={plate} scale={wallScale} originX={groundX} originY={groundY} fallbackSeed={13} />
+
+      {/* THE SHADOW IS THE CHARACTER — same plate, blackened, flipped, skewed */}
+      <AbsoluteFill
+        style={{
+          transformOrigin: `${(groundX / width) * 100}% ${(groundY / height) * 100}%`,
+          transform: `translateX(${shift}px) scale(${charScale}) scaleY(-0.55) skewX(${shadowSkew}deg)`,
+          filter: `brightness(0) blur(7px)`,
+          opacity: shadowOpacity,
+        }}
+      >
+        <Plate asset={character} scale={1} cutout />
+      </AbsoluteFill>
+
+      {/* the character, punching in harder than the wall, off the same anchor */}
+      <Plate
+        asset={character}
+        scale={charScale}
+        originX={groundX}
+        originY={groundY}
+        translateX={shift}
+        blur={shiftBlur}
+        cutout
+        boilPhase={70}
+        fallbackSeed={31}
+        fallbackDark
+      />
+
+      {/* the gesture: a prop swings up and wags on a decaying pendulum */}
+      {wag && stepped >= gestureAt ? (
+        <div
+          style={{
+            position: 'absolute',
+            right: Math.round(width * 0.16),
+            bottom: Math.round(height * 0.3),
+            transformOrigin: '50% 92%',
+            transform: `translate(${(1 - gestureIn) * 180}px, ${(1 - gestureIn) * 220}px) scale(${interpolate(
+              gestureIn,
+              [0, 1],
+              [0.72, 1],
+            )}) rotate(${gestureAngle}deg)`,
+            filter: 'drop-shadow(-10px 14px 22px rgba(0,0,0,0.55))',
+          }}
+        >
+          <FoamFinger height={250} />
+        </div>
+      ) : null}
+
+      {/* focus vignette tightens so the eye lands where the verdict will be */}
+      <AbsoluteFill
+        style={{
+          pointerEvents: 'none',
+          opacity: interpolate(stepped, [40, 78], [0.2, 1], CLAMP),
+          background: 'radial-gradient(ellipse 66% 52% at 50% 46%, rgba(0,0,0,0) 34%, rgba(0,0,0,0.66) 100%)',
+        }}
+      />
+    </AbsoluteFill>
+  );
+};

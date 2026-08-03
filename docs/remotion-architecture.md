@@ -14,22 +14,22 @@ Bu belge üretim sisteminin tek güncel teknik kaynağıdır.
 
 ```text
 script
-  ├─ hook_text
-  ├─ finale_text
   ├─ emphasis_words
-  └─ scenes[]
+  └─ scenes[].narration      # seslendirme satırları = kaynak kod
         ↓
 TTS + wordTimings
         ↓
-CanonicalTimeline
+CanonicalTimeline           # ölçülmüş beat pencereleri
         ↓
-media items + edit plan
+buildBeatSheet()            # satır → rig + birebir kelimeler + proplar
         ↓
-buildRemotionSpec()
+media items                 # bulunan fotoğraflar rig rollerine bağlanır
         ↓
-production.json
+buildReelSpec()
         ↓
-NeoSaniyeDynamicShort
+production.json + beat-sheet.md
+        ↓
+NeoSaniyeReel
         ↓
 final MP4
         ↓
@@ -56,55 +56,63 @@ Sorumlulukları:
 3. ses/görsel/ambiyansı Remotion public alanına kopyalamak,
 4. sağlanan müziği kullanmak veya özgün procedural müzik üretmek,
 5. özgün SFX paketini üretmek,
-6. `ProductionSpec` yazmak,
+6. `ReelSpec` (`production.json`) ve okunabilir `beat-sheet.md` yazmak,
 7. Remotion CLI ile final MP4 oluşturmak,
 8. QC için render metadata döndürmek,
 9. geçici public asset klasörünü temizlemek.
 
-### `buildRemotionSpec(input)`
+### `buildBeatSheet(input)`
 
-Dosya: `src/video/buildRemotionSpec.js`
+Dosya: `src/story/beatSheet.js`
 
-Mevcut script, timeline, medya ve edit planını konuya bağımlı olmayan sahne
-şablonlarına çevirir. Çıktı, renderın tek makine-okunur planı olan
-`production.json` dosyasıdır.
+Seslendirme satırlarını beat'lere çevirir. Her satır için: rigi seçer, ekrana
+çıkacak birebir fragmanları çeker, bunları ölçülmüş kelime zamanlarına oturtur,
+rig proplarını beatin kendi uzunluğundan türetir.
 
-## 4. ProductionSpec
+Prop bir metni gösteriyorsa (plaket, slot makinesi, gazete manşeti) o metin
+altyazı katmanından düşülür; aynı kelime kadrajda iki kez yazmaz.
+
+### `buildReelSpec(input)`
+
+Dosya: `src/video/buildReelSpec.js`
+
+Beat sheet'i, medya bağlamalarını ve SFX kütüphanesini renderın tek
+makine-okunur planı olan `production.json` dosyasına çevirir; yanına insan
+okuması için `beat-sheet.md` yazar.
+
+## 4. ReelSpec
 
 Temel alanlar:
 
 ```text
-version
+version: 2
 meta
-  topic
-  title
-  language
-  fps
-  width
-  height
-  durationInFrames
+  topic, title, language, fps, width, height, durationInFrames
+engine
+  posterizeFps        # 12 — stop-motion adımı
+  gateWeavePx, weaveScale
+  grade               # saturate, contrast, sepia, brightness
+  film                # scanlines, grain, grunge, vignette, weave
 audio
-  voicePath
-  musicPath
-  ambiencePath
-theme
-scenes[]
+  voicePath, musicPath, ambiencePath
+  musicVolume, musicDuckVolume, duckWindows[]
+beats[]
   id
-  template
-  fromFrame
-  durationInFrames
-  narration
-  headline
-  kicker
-  stat
-  emphasis
-  assets[]
-  sfx[]
-  transition
-  dark
+  rig                 # imza hareketi
+  role                # setup | rejection | turn | fall | payoff | button
+  line                # seslendirme satırı — kaynak kod
+  fromFrame, durationInFrames
+  captions[]          # birebir fragmanlar + söylendiği kare
+  assets[]            # role: plate | character | prop | texture
+  sfx[]               # rigin olayına yerleşmiş cue'lar
+  props               # rigin bütün ayarlanabilir değerleri
+  grade
+  clonedFrom          # reskin ise kaynak rig
+timing
+  source, measuredCaptions, estimatedCaptions
 ```
 
-Yeni bir konu için React dosyası yazılmaz. Konu yalnız veri üretir; şablonlar
+Yeni bir konu için React dosyası yazılmaz. Konu yalnız veri üretir; rigler
 paylaşılan bileşenlerdir.
 
 ## 5. Remotion paketi
@@ -115,28 +123,29 @@ React bağımlılığı yoktur; render bağımlılıkları bu klasörde yaşar.
 Ana composition:
 
 ```text
-NeoSaniyeDynamicShort
+NeoSaniyeReel
 ```
 
 Composition metadata'sı `production.json` içinden süre, çözünürlük ve fps okur.
 
-## 6. Sahne seçimi
+## 6. Rig seçimi
 
-Sınıflandırıcı aşağıdaki sırayla karar verir:
+`src/story/rigs.js` aşağıdaki sırayla karar verir:
 
-1. ilk beat → `hook-reveal`
-2. son beat → `final-twist`
-3. belge/kanıt → `document`
-4. büyük sayı/ölçek → `stat-slot`
-5. rota/coğrafya → `map-route`
-6. para/değer değişimi → `transaction`
-7. mekanizma/adımlar → `explainer-diagram`
-8. sonuç/felaket → `consequence`
-9. kişi/özne dosyası → `portrait-dossier`
-10. kanıt yetersizse → `collage-generic`
+1. ilk satır → `portal-zoom`
+2. son satır → `finale-clone`
+3. ret/alay/dayatma sinyali → `villain-punch`
+4. para/sayı/zafer sinyali → `money-room`
+5. düşüş/kapanış/çöküş sinyali → `grounded-punch`
+6. liste okuyan satır → `paper-drop`
+7. sinyal yoksa konuma göre `grounded-punch` / `money-room`
 
-Sınıflandırma geliştirilirken belirsiz bir sahneyi zorla özel şablona atamak yerine
-`collage-generic` kullanılır.
+Üstüne tek koruma: aynı mekanik üst üste üç beat çalışamaz. İkinci tekrar motif,
+üçüncüsü hatadır — tekrarda sıradaki alternatif rig seçilir.
+
+Rig ekleme sırası: önce mevcut bir rigi klonlayıp yeniden giydirmeyi dene
+(`finale-clone` bunun örneğidir); yeni mekanik yalnız gerçekten yeni bir görsel
+olay gerekiyorsa yazılır.
 
 ## 7. Ses
 

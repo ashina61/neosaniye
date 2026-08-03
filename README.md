@@ -1,8 +1,11 @@
-# NeoSaniye — Remotion Shorts Factory
+# NeoSaniye — Voiceover-First Reel Factory
 
-NeoSaniye; konu seçimi, İngilizce mini-belgesel senaryosu, TTS, kaynak görseller,
-özgün müzik/SFX, Remotion motion-graphics renderı, teknik kalite kapıları ve
-YouTube/Instagram/Facebook yayınını tek otomatik hatta birleştirir.
+NeoSaniye; konu seçimi, İngilizce mini-belgesel seslendirmesi, TTS, beat sheet,
+kaynak görseller, özgün müzik/SFX, Remotion reel renderı, teknik kalite kapıları
+ve YouTube/Instagram/Facebook yayınını tek otomatik hatta birleştirir.
+
+**Seslendirme kaynak koddur.** Metin kilitlendikten sonra her satır kendi
+sahnesini, ekrandaki kelimelerini, süresini ve ses efektlerini dikte eder.
 
 ## Tek render motoru
 
@@ -22,17 +25,17 @@ Bunlar kurgu motoru değildir; final görüntüyü Remotion üretir.
 ```text
 performans verisi / konu havuzu
         ↓
-İngilizce script + hook + finale
+İngilizce seslendirme satırları (script)
         ↓
-kanonik TTS zaman çizelgesi
+TTS + ölçülmüş kelime zamanları
         ↓
-görsel hikâye planı + konu kimliği
+BEAT SHEET  (satır → rig → ekrandaki kelimeler → varlıklar → SFX)
         ↓
-AI / stok / arşiv kaynak görselleri
+stok / arşiv / AI kaynak görselleri
         ↓
-ProductionSpec (production.json)
+ReelSpec (production.json + beat-sheet.md)
         ↓
-Remotion collage motion-graphics render
+Remotion reel renderı (engine + rigs)
         ↓
 preflight + final MP4 + yayın kapıları
         ↓
@@ -41,23 +44,25 @@ YouTube / Instagram / Facebook
 
 ## Görsel dil
 
-Motor konuya göre aynı sahneyi kopyalamaz. Senaryodaki her beat aşağıdaki genel
-şablonlardan uygun olana çevrilir:
+Sahne türü şablon değil **rig**tir: her seslendirme satırı bir imza hareketi
+kazanır. Rigi satırın kelimeleri seçer; ilk satır her zaman portal, son satır
+her zaman finale olur.
 
-- hook reveal
-- portrait dossier
-- document highlight
-- map route
-- statistic slot
-- explainer diagram
-- transaction
-- consequence
-- final twist
-- generic collage
+| Rig | Ne zaman | İmza hareketi |
+| --- | --- | --- |
+| `portal-zoom` | açılış | çerçeveli fotoğrafın içine uçmak (weld → detach) |
+| `villain-punch` | ret, alay, dayatma | yükselen figür + slot makinesi + negatif flicker |
+| `paper-drop` | satır liste taşıyor | üç yönden düşen manşet kartları |
+| `grounded-punch` | düşüş, kapanış | ayakta çapalanmış punch + karakterin kendi gölgesi |
+| `money-room` | ödeme, sayı, zafer | kodla çizilen lamba ışığı + hold-keyframe parlama |
+| `finale-clone` | kapanış | `grounded-punch` klonu + sönümlenen jest |
 
-Ortak marka dili: krem kâğıt dokusu, yüksek kontrastlı cutout'lar, altın vurgu,
-teal yardımcı renk, yırtık kartlar, analog film dokusu, kinetic typography,
-parallax ve kontrollü focus/whip geçişleri.
+Ortak dil hepsinin üstünde tek yerden gelir: 12fps posterize adımı (stop-motion
+sekmesi), film işlemesi (scan çizgileri, grain, grunge, vignette, gate weave) ve
+dört değerli grade. Ayrıntı: `ANIMATION_BIBLE.md`.
+
+Fotoğraf BULUNUR, grafik ÇİZİLİR: çerçeve, plaket, gazete, lamba ışığı, gölge ve
+köpük el `remotion/src/engine/props.tsx` içinde kodla çizilir.
 
 ## Süre sözleşmesi
 
@@ -120,8 +125,10 @@ npm run remotion:typecheck
 npm run remotion:fixture
 ```
 
-`test/remotionOnly.test.js`, eski renderer veya ASS/CTA katmanları tekrar eklenirse
-CI'yi düşürür. Fixture workflow'u ayrıca 1080×1920 H.264/AAC video üretir ve
+`test/remotionOnly.test.js`, eski renderer/ASS/CTA katmanları veya kolaj şablon
+hattı tekrar eklenirse CI'yi düşürür. `test/beatSheet.test.js` ise uydurulmuş
+altyazıyı düşürür: ekrandaki her kelime kendi seslendirme satırında birebir
+geçmek zorundadır. Fixture workflow'u ayrıca 1080×1920 H.264/AAC video üretir ve
 siyah/donma/sessizlik taraması yapar.
 
 ## GitHub Actions
@@ -150,18 +157,26 @@ renderını ve final MP4 teknik taramasını doğrular.
 ```text
 remotion/
   src/
-    Root.tsx
-    DynamicShort.tsx
-    ProductionSpec.ts
-    components/
-    scenes/
+    Root.tsx           # master reel + rig başına solo kompozisyon
+    Reel.tsx           # beat'leri zaman çizgisine dizer, sesi mikser
+    schema.ts          # ReelSpec / Beat tipleri
+    engine/
+      motion.ts        # posterize, boil, drift, pingpong, entrance, wag
+      FilmLook.tsx     # scan/grain/grunge/vignette/weave + grade
+      Plate.tsx        # düz fotoğraf plakaları
+      Captions.tsx     # söylenen kelimelerin ekran hâli
+      props.tsx        # kodla çizilen grafikler
+    rigs/              # altı imza hareketi, her biri tek dosya
 
 src/
   script/             # konu ve senaryo
+  story/
+    beatSheet.js      # satır → beat (rig, kelimeler, ölçülmüş yerleşim)
+    rigs.js           # rig kataloğu ve seçim kuralları
   tts/                # TTS + kelime zamanlaması
   media/              # AI / stok / arşiv kaynakları
   video/
-    buildRemotionSpec.js
+    buildReelSpec.js   # beat sheet → production.json + beat-sheet.md
     renderRemotion.js
     renderVideo.js     # kararlı dış arayüz → Remotion
   pipeline/            # QC, yayın kapıları, kayıt ve orkestrasyon
@@ -180,6 +195,7 @@ Her üretim klasöründe mümkün olduğunda şunlar bulunur:
 
 - final `.mp4`
 - `production.json`
+- `beat-sheet.md`
 - `script.json`
 - `scene-plan.json`
 - `production-report.json`
@@ -188,8 +204,11 @@ Her üretim klasöründe mümkün olduğunda şunlar bulunur:
 - `asset-manifest.json`
 - `cover.jpg`
 
-`production.json`, renderın tek makine-okunur sahne planıdır; konuya özel React
-kodu yazılması gerekmez.
+`production.json`, renderın tek makine-okunur beat planıdır; konuya özel React
+kodu yazılması gerekmez. `beat-sheet.md` aynı planın insan okuması içindir:
+hangi satır hangi rige döndü, ekrana hangi kelimeler çıktı ve bunlar ölçülmüş
+konuşmaya mı oturdu. Bir satırın ekrandaki kelimeleri kendi seslendirmesinde
+geçmiyorsa video daha ilk kareye bakmadan yanlıştır.
 
 ## Güvenlik ilkeleri
 

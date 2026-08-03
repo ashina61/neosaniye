@@ -1,98 +1,102 @@
-# NeoSaniye Remotion Design Bible
+# NeoSaniye Reel Bible
 
-Bu dosya NeoSaniye'nin bütün Shorts videolarında korunacak motion-graphics dilini
-tanımlar. Makine karşılığı `remotion/src/` bileşenleri ve `ProductionSpec`tir.
+Bu dosya bütün NeoSaniye reel'lerinde korunacak hareket dilini tanımlar. Makine
+karşılığı `remotion/src/engine/`, `remotion/src/rigs/` ve `ReelSpec`tir.
 
 ## 1. Format
 
 - 1080×1920, 9:16
-- 30 fps
+- 30 fps render, **12 fps posterize adımı** (hareket kayar değil zıplar)
 - H.264, `yuv420p`
 - ana hedef 30–58 saniye
-- telefon ekranında okunabilir tek odak
+- telefon ekranında tek odak
 
-## 2. Marka paleti
+## 2. Seslendirme kaynak koddur
 
-- mürekkep: `#171511`
-- krem kâğıt: `#efe6d3`
-- açık kâğıt: `#f8f1e4`
-- altın vurgu: `#d5a52d`
-- koyu altın: `#9b6d11`
-- pale teal: `#9fc8c6`
-- koyu teal: `#4b7778`
-- vurgu kırmızısı: `#bc493f`
-- koyu lacivert: `#172433`
+Her satır bir beat, her beat bir rig. Bir satır yazılmadan sahne düşünülmez.
+Beat sheet (`beat-sheet.md`) her koşuda üretilir ve şunu taşır: satır → rig →
+ekrandaki kelimeler → varlıklar → SFX → pencere.
 
-Bir sahnede ana vurgu rengi altın; teal yardımcı bilgi veya rota rengidir. Kırmızı
-yalnız tehlike, hata, darbe veya final twist için kullanılır.
+Ekrandaki kelimeler satırın **birebir parçasıdır**. Anlatıcının söylemediği bir
+altyazı, birinciyle yarışan ikinci bir sestir.
 
-## 3. Malzeme dili
+## 3. Rig kütüphanesi
 
-- krem/yıpranmış kâğıt tabanı
-- siyah-beyaz veya düşük doygunluklu cutout özneler
-- beyaz kontur ve yumuşak sert gölge
-- yırtık kâğıt kartları
-- bant, damga, işaret kalemi ve çizim izleri
-- kontrollü film grain, vignette ve gate weave
+| Rig | İzleyicinin gördüğü olay | İmza hareketi |
+| --- | --- | --- |
+| `portal-zoom` | hikâye açılır | çerçeveli fotoğrafın İÇİNE uçmak (weld → detach) |
+| `villain-punch` | biri reddeder, alay eder, dayatır | yükselen figür, slot makinesi, negatif flicker |
+| `paper-drop` | satır bir LİSTE taşır | üç yönden düşen manşet kartları |
+| `grounded-punch` | düşüş, kapanış, çöküş | ayakta çapalanmış parallax punch + karakterin kendi gölgesi |
+| `money-room` | ödeme, sayı, zafer | kodla çizilen lamba ışığı + hold-keyframe parlama |
+| `finale-clone` | kapanış cümlesi | `grounded-punch` klonu + sönümlenen jest |
 
-Doku bilgiye hizmet eder. Ekrana aynı anda üçten fazla dekoratif parça konmaz.
+Kurallar:
 
-## 4. Sahne şablonları
+- İlk satır her zaman `portal-zoom`, son satır her zaman `finale-clone`.
+- Aradaki rigi satırın kelimeleri seçer; sıra değil.
+- Aynı mekanik üst üste üç beat çalışamaz (ikinci kez motif, üçüncü kez hata).
+- Yeni mekanik eklemek yerine mevcut rigi klonla ve yeniden giydir.
 
-Her beat tam bir görsel göreve bağlanır:
+## 4. Hareket motoru
 
-| Şablon | İzleyicinin gördüğü olay |
-| --- | --- |
-| `hook-reveal` | tek büyük çelişki veya imkânsız görüntü |
-| `portrait-dossier` | kişi/özne + kanıt kartları |
-| `document` | belge üzerinde gerçek bilgi vurgusu |
-| `map-route` | başlangıçtan hedefe ilerleyen rota |
-| `stat-slot` | büyük sayı + ölçek karşılaştırması |
-| `explainer-diagram` | neden-sonuç veya adım akışı |
-| `transaction` | değer/nesne iki taraf arasında değişir |
-| `consequence` | önceki olayın ölçülebilir sonucu |
-| `final-twist` | ilk hook'u cevaplayan son reveal |
-| `collage-generic` | yalnız özel şablon yoksa kullanılır |
+`remotion/src/engine/motion.ts` — her rigin kullandığı tek kaynak:
 
-## 5. Hareket kuralları
+- `posterizeTime` — 12 fps adımı; bütün hareket bunun üstünde çalışır
+- `boil` — cutout'un nefesi (±%0.5 ölçek, ±0.5° salınım)
+- `drift` / `pingpong` — parallax ve sarkaç
+- `entrance` — düşük sertlik + biraz kütle: eller gibi bırakır, çarpmaz
+- `dampedWag` — sönümlenen sallanma (jest)
+- `holdKeyframes` — anlık aç/kapa; flicker'da geçiş YOK
 
-- Girişler spring tabanlıdır; zıplama tek kez olur.
-- Kamera zoom'u bilgi taşımıyorsa kullanılmaz.
-- Yavaş drift/parallax arka planı canlı tutar, ana olayla yarışmaz.
-- Belge, sayı ve karşılaştırma sahnesinde kamera mümkün olduğunca sabittir.
-- Geçişler kısa cut, whip-flash, shutter veya paper-tear ailesindedir.
-- Aynı geçiş arka arkaya üç kez tekrarlanmaz.
-- İlk kare ve final kare loop için görsel akrabalık taşır.
+## 5. Film görünümü
 
-## 6. Tipografi
+`remotion/src/engine/FilmLook.tsx`, sırayla: scan çizgileri → grain (multiply,
+ters çevrilmiş) → grunge (color-burn) → vignette; üstüne gate weave ve grade.
+Dokular kodla çizilir; koşu sırasında kaybolacak doku dosyası yoktur.
 
-- Hook: en fazla 3–7 kelime, tek bakışta okunur.
-- Kinetic text yalnız anlatının vurucu kelimesini taşır.
-- Tam konuşmayı ekranda sürekli altyazı şeridi olarak tekrarlama.
-- En önemli kelime boyut/renk değişimiyle ayrılır.
+Grade dört değerdir (`saturate`, `contrast`, `sepia`, `brightness`) ve beat
+başına açıktır: düşüş beat'i diğerlerinden daha çok doygunluk kaybeder.
+
+## 6. Malzeme dili
+
+- Fotoğraf BULUNUR, grafik ÇİZİLİR.
+- Sahne başına 3–4 varlık yeter: arka plan, karakter, bir-iki prop.
+- Cutout gelmezse rig kodla çizdiği parçalarla ayakta kalır; kara kare vermez.
+- Gölge ayrı varlık değildir: karakterin kopyası siyaha boyanır, ayaktan
+  aşağı çevrilir, zemine yatırılır.
+- Işık fotoğrafta yoktur: screen blend gradyanlarla çizilir ve odak kaçarken
+  büyür (gerçek defocus parlaması büyür).
+
+## 7. Tipografi
+
+- Aynı anda tek fragman kadrajı sahiplenir; altyazılar üst üste yığılmaz.
+- Serif italik anlatı sesi, sticker/slot sayı sesidir.
+- Bir propun gösterdiği metni altyazı tekrar etmez.
+- Kelimeler kendi karanlık halesini taşır; altyazı kutusu kullanılmaz.
 - Shorts arayüzünün alt ve sağ güvenli alanları boş bırakılır.
 
-## 7. Ses
+## 8. Ses
 
-- Narration her zaman ana katmandır.
-- Müzik özgün/procedural veya lisans manifestli kaynaktır.
-- SFX yalnız olay başladığında kullanılır; kota doldurmak için kullanılmaz.
-- Aileler: whoosh, focus, paper, stamp, impact, cash, heartbeat, boom.
-- Aynı SFX ailesi art arda kullanılmaz.
-- Final boom konuşmayı örtmez.
+- Narration en üstte, tam seviyede.
+- Müzik konuşma penceresinde kısılır, boşluklarda yükselir.
+- SFX yalnız rigin olayında vurur: deklanşör fotoğraf anında, kâğıt kart
+  yere değdiğinde, cha-ching sayı okunduğunda.
+- Aynı aile art arda kullanılmaz; final boom konuşmayı örtmez.
 
-## 8. Kalite kabulü
+## 9. Kalite kabulü
 
 Bir video ancak şunları sağladığında üretim adayıdır:
 
-- her sahne `production.json` içinde tanımlı,
+- her beat `production.json` içinde tanımlı,
+- her altyazı kendi satırında birebir geçiyor,
+- yerleşimlerin çoğu ölçülmüş konuşmadan geliyor (`timing` alanı),
 - final dosya 1080×1920 ve sesli,
-- decode hatası yok,
-- uzun siyah/donma/sessizlik penceresi yok,
+- decode hatası yok, uzun siyah/donma/sessizlik penceresi yok,
 - final MP4 hash'i analiz edilen dosyayla aynı,
 - kaynak/lisans manifesti mevcut,
 - hook ilk üç saniyede görsel olay başlatıyor,
-- final sahne hook'taki soruyu gerçekten kapatıyor.
+- final beat hook'taki soruyu gerçekten kapatıyor.
 
-Eski FFmpeg montaj, ASS overlay, ayrı CTA post-pass veya outro kartı bu mimarinin
-parçası değildir.
+Eski FFmpeg montaj, ASS overlay, ayrı CTA post-pass, outro kartı ve kolaj
+şablon hattı bu mimarinin parçası değildir.

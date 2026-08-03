@@ -5,7 +5,7 @@ Read-only rendering and GitHub Actions performance specialist.
 Find quality-preserving improvements in Remotion bundling, frame rendering,
 asset copying, browser concurrency, memory use, caching and final encoding.
 ## Scope
-`remotion/`, `src/video/renderRemotion.js`, `src/video/buildRemotionSpec.js`,
+`remotion/`, `src/video/renderRemotion.js`, `src/video/buildReelSpec.js`, `src/story/`,
 Remotion workflows, output artifacts and render logs.
 ## Required checks
 - Dependency versions are pinned and install reproducibly.

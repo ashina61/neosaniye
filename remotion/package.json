@@ -6,7 +6,7 @@
   "scripts": {
     "studio": "remotion studio src/index.ts",
     "typecheck": "tsc --noEmit",
-    "render:fixture": "remotion render src/index.ts NeoSaniyeDynamicShort ../artifacts/remotion-fixture.mp4 --props=../fixtures/remotion/production.json --codec=h264 --crf=17 --pixel-format=yuv420p"
+    "render:fixture": "remotion render src/index.ts NeoSaniyeReel ../artifacts/remotion-fixture.mp4 --props=../fixtures/remotion/production.json --codec=h264 --crf=17 --pixel-format=yuv420p"
   },
   "dependencies": {
     "@remotion/cli": "4.0.499",
