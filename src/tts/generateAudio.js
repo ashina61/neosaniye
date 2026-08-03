@@ -1,4 +1,4 @@
-import { mkdir } from 'node:fs/promises';
+import { mkdir, rm } from 'node:fs/promises';
 import { config } from '../config.js';
 import { synthesizeEdge } from './edgeTts.js';
 import { synthesizePiper } from './piper.js';
@@ -65,9 +65,74 @@ export function ttsRateForTopic(script, baseRate = config.tts.rate) {
   return `${total >= 0 ? '+' : ''}${total}%`;
 }
 
-async function probeDuration(file) {
-  const { stdout } = await run('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'default=nw=1:nk=1', file]);
+function timingDuration(wordTimings = []) {
+  return wordTimings.reduce((max, item) => Math.max(max, Number(item?.end) || 0), 0);
+}
+
+function parseFfmpegDuration(stderr = '') {
+  const matches = [...String(stderr).matchAll(/time=(\d+):(\d+):(\d+(?:\.\d+)?)/g)];
+  if (!matches.length) return 0;
+  const [, hours, minutes, seconds] = matches[matches.length - 1];
+  return Number(hours) * 3600 + Number(minutes) * 60 + Number(seconds);
+}
+
+/**
+ * FFmpeg'in gerçekten çözdüğü süre varsa onu kullanır. MP3 metadata süresi,
+ * Edge TTS'in parça parça yazdığı dosyalarda yalnız ilk parçayı (ör. 8.1s)
+ * gösterebilir. Decode ölçümü yoksa metadata ve SRT zamanının büyüğüne düşer.
+ */
+export function selectAuthoritativeDuration({ decoded = 0, metadata = 0, timing = 0 } = {}) {
+  const decodedSeconds = Number(decoded) || 0;
+  if (decodedSeconds > 0) return decodedSeconds;
+  return Math.max(Number(metadata) || 0, Number(timing) || 0);
+}
+
+async function probeMetadataDuration(file) {
+  const { stdout } = await run('ffprobe', [
+    '-v', 'error',
+    '-show_entries', 'format=duration',
+    '-of', 'default=nw=1:nk=1',
+    file,
+  ]);
   return Number.parseFloat(stdout) || 0;
+}
+
+async function probeDecodedDuration(file) {
+  let stderr = '';
+  try {
+    ({ stderr = '' } = await run('ffmpeg', [
+      '-hide_banner',
+      '-i', file,
+      '-map', '0:a:0',
+      '-f', 'null',
+      '-',
+    ], { maxBuffer: 10 * 1024 * 1024 }));
+  } catch (error) {
+    stderr = error?.stderr || '';
+  }
+  return parseFfmpegDuration(stderr);
+}
+
+async function probeDuration(file, wordTimings = []) {
+  const [metadata, decoded] = await Promise.all([
+    probeMetadataDuration(file).catch(() => 0),
+    probeDecodedDuration(file).catch(() => 0),
+  ]);
+  const timing = timingDuration(wordTimings);
+  const selected = selectAuthoritativeDuration({ decoded, metadata, timing });
+
+  if (selected > 0 && metadata > 0 && Math.abs(selected - metadata) > 2) {
+    console.warn(
+      `[tts] MP3 metadata süresi güvenilmez (${metadata.toFixed(1)}s); ` +
+      `decode ölçümü ${selected.toFixed(1)}s kullanılıyor.`,
+    );
+  }
+  return selected;
+}
+
+async function removeGeneratedFiles(result) {
+  const files = [result?.audioPath, result?.subtitlePath].filter(Boolean);
+  await Promise.all(files.map((file) => rm(file, { force: true }).catch(() => {})));
 }
 
 /**
@@ -126,31 +191,60 @@ export async function generateAudio(script, opts = {}) {
     }
   }
 
-  // SÜRE KURTARMA: Kısa script (bozuk-sağlayıcı günü; generateScript hedefin
-  // altında gerçek bir script'i graceful kabul etti) + hızlı tempo (+8%/+18%)
-  // birleşince ölçülen ses 35s AUDIO_TOO_SHORT kapısının ALTINA düşüp tüm run'ı
-  // çöpe atabiliyordu. Ölçüp gerekirse BİR KEZ daha yavaş hızla yeniden sentezle:
-  // kelimeyi değiştirmeden süreyi hedefe çek. Lineer hız modeli (süre ∝ 1/faktör):
-  // yeni_faktör = mevcut_faktör × (ölçülen / hedef). Sadece edge-tts'te ve sadece
-  // yavaşlatarak; başarısızsa mevcut sesi koru (asla sert-fail etme).
-  let firstProbe = await probeDuration(result.audioPath).catch(() => 0);
-  const minSec = config.content?.minDurationSeconds || 35;
-  if (result.engine === 'edge-tts' && firstProbe > 0 && firstProbe < minSec + 2) {
-    const targetSec = minSec + 4; // 35s kapısının rahat üstü
+  // SÜRE KURTARMA: yalnız gerçekten kısa olduğu decode edilerek doğrulanan
+  // edge-tts sesinde, doğal konuşma sınırları içinde tek yeniden sentez yapılır.
+  // Kurtarma adayı ayrı dosyaya yazılır; geçerli aralığa girmiyorsa asıl ses
+  // yanlışlıkla ezilmez.
+  let firstProbe = await probeDuration(result.audioPath, result.wordTimings).catch(() => 0);
+  const minSec = config.content?.minDurationSeconds ?? 35;
+  const maxSec = config.content?.maxDurationSeconds ?? 58;
+  if (result.engine === 'edge-tts' && firstProbe > 0 && firstProbe < minSec) {
+    const targetSec = Math.min(maxSec - 2, minSec + 4);
     const curPct = Number.parseInt(String(topicRate).replace('%', ''), 10) || 0;
     const curFactor = 1 + curPct / 100;
-    let newFactor = curFactor * (firstProbe / targetSec);
-    newFactor = Math.max(0.7, Math.min(curFactor, newFactor)); // yalnız yavaşlat, dibe vurma
-    const newPct = Math.round((newFactor - 1) * 100);
-    const slowRate = `${newPct >= 0 ? '+' : ''}${newPct}%`;
-    if (slowRate !== topicRate) {
-      console.warn(`[tts] ölçülen ${firstProbe.toFixed(1)}s < ${minSec}s eşiği — ${topicRate}→${slowRate} ile yeniden sentez (süre kurtarma).`);
-      try {
-        const slow = await synthesizeEdge(text, { ...base, rate: slowRate });
-        const slowDur = await probeDuration(slow.audioPath).catch(() => 0);
-        if (slowDur > firstProbe) { result = slow; firstProbe = slowDur; }
-      } catch (e) {
-        console.warn(`[tts] yavaş yeniden sentez başarısız, mevcut ses korunuyor: ${String(e.stderr || e.message || '').split('\n')[0]}`);
+    const requestedFactor = curFactor * (firstProbe / targetSec);
+    const naturalFloor = 0.82;
+
+    if (requestedFactor < naturalFloor) {
+      console.warn(
+        `[tts] ölçülen ${firstProbe.toFixed(1)}s; doğal hızla ${targetSec.toFixed(1)}s hedeflenemez. ` +
+        'Yapay biçimde aşırı yavaşlatma yapılmayacak.',
+      );
+    } else {
+      const newFactor = Math.min(curFactor, requestedFactor);
+      const newPct = Math.round((newFactor - 1) * 100);
+      const slowRate = `${newPct >= 0 ? '+' : ''}${newPct}%`;
+
+      if (slowRate !== topicRate) {
+        console.warn(
+          `[tts] ölçülen ${firstProbe.toFixed(1)}s < ${minSec}s eşiği — ` +
+          `${topicRate}→${slowRate} ile kontrollü yeniden sentez.`,
+        );
+        let slow;
+        try {
+          slow = await synthesizeEdge(text, {
+            ...base,
+            basename: `${basename}-duration-rescue`,
+            rate: slowRate,
+          });
+          const slowDur = await probeDuration(slow.audioPath, slow.wordTimings).catch(() => 0);
+          if (slowDur >= minSec && slowDur <= maxSec) {
+            result = slow;
+            firstProbe = slowDur;
+          } else {
+            console.warn(
+              `[tts] kurtarma adayı reddedildi: ${slowDur.toFixed(1)}s; ` +
+              `geçerli aralık ${minSec}-${maxSec}s. Asıl ses korunuyor.`,
+            );
+            await removeGeneratedFiles(slow);
+          }
+        } catch (e) {
+          if (slow) await removeGeneratedFiles(slow);
+          console.warn(
+            `[tts] yavaş yeniden sentez başarısız, mevcut ses korunuyor: ` +
+            `${String(e.stderr || e.message || '').split('\n')[0]}`,
+          );
+        }
       }
     }
   }
@@ -165,7 +259,7 @@ export async function generateAudio(script, opts = {}) {
     });
   }
 
-  const measuredDuration = firstProbe || await probeDuration(result.audioPath).catch(() => 0);
+  const measuredDuration = firstProbe || await probeDuration(result.audioPath, result.wordTimings).catch(() => 0);
   const durationEstimate = measuredDuration || (result.wordTimings.length
     ? result.wordTimings[result.wordTimings.length - 1].end
     : 0);
