@@ -59,7 +59,13 @@ her zaman finale olur.
 
 Ortak dil hepsinin üstünde tek yerden gelir: 12fps posterize adımı (stop-motion
 sekmesi), film işlemesi (scan çizgileri, grain, grunge, vignette, gate weave) ve
-dört değerli grade. Ayrıntı: `ANIMATION_BIBLE.md`.
+dört değerli grade.
+
+**Görünüm video başına seçilir.** `src/story/look.js` konudan deterministik
+olarak renk dünyasını, film işlemesinin şiddetini, propların çizimini (çerçeve,
+gazete başlığı, jest) ve koreografinin yönünü belirler. Aynı rig iki farklı
+videoda aynı kareyi vermez; aynı konu ise her koşuda birebir aynı kareyi verir.
+Ayrıntı: `ANIMATION_BIBLE.md`.
 
 Fotoğraf BULUNUR, grafik ÇİZİLİR: çerçeve, plaket, gazete, lamba ışığı, gölge ve
 köpük el `remotion/src/engine/props.tsx` içinde kodla çizilir.

@@ -4,6 +4,7 @@ import type {Beat} from '../schema';
 import {CLAMP, entrance, posterizeTime} from '../engine/motion';
 import {Plate, pickAsset} from '../engine/Plate';
 import {NewspaperCard} from '../engine/props';
+import {useLook} from '../engine/look';
 
 /**
  * PAPER DROP — the beat that carries a list.
@@ -27,6 +28,7 @@ const ENTRIES = [
 export const PaperDrop: React.FC<{beat: Beat}> = ({beat}) => {
   const frame = useCurrentFrame();
   const {fps, width} = useVideoConfig();
+  const {motion, palette} = useLook();
   const stepped = posterizeTime(frame, fps, 12);
 
   const desk = pickAsset(beat.assets, 'plate');
@@ -43,12 +45,14 @@ export const PaperDrop: React.FC<{beat: Beat}> = ({beat}) => {
   const cardWidth = Math.round(width * 0.5);
 
   return (
-    <AbsoluteFill style={{backgroundColor: '#120d08'}}>
+    <AbsoluteFill style={{backgroundColor: palette.ink}}>
       <Plate asset={desk} scale={ken} blur={focus} fallbackSeed={5} />
 
       <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center'}}>
         {texts.map((text, index) => {
-          const entry = ENTRIES[index % ENTRIES.length];
+          // Same three directions, dealt in this video's order — the stack
+          // builds differently without the mechanic changing.
+          const entry = ENTRIES[(motion.cardOrder[index] ?? index) % ENTRIES.length];
           const at = frames[index] ?? 20 + index * 40;
           const land = entrance(stepped, fps, {delay: at, stiffness: 42, mass: 1.1, damping: 13});
           if (stepped < at) return null;

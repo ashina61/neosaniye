@@ -4,6 +4,7 @@ import type {Beat} from '../schema';
 import {CLAMP, holdKeyframes, pingpong, posterizeTime} from '../engine/motion';
 import {Plate, pickAsset} from '../engine/Plate';
 import {LampLight} from '../engine/props';
+import {useLook} from '../engine/look';
 
 /**
  * MONEY ROOM — the payoff.
@@ -20,13 +21,16 @@ import {LampLight} from '../engine/props';
 export const MoneyRoom: React.FC<{beat: Beat}> = ({beat}) => {
   const frame = useCurrentFrame();
   const {fps, width, height} = useVideoConfig();
+  const {motion, palette} = useLook();
   const stepped = posterizeTime(frame, fps, 12);
 
   const plate = pickAsset(beat.assets, 'plate');
   const character = pickAsset(beat.assets, 'character');
   const prop = pickAsset(beat.assets, 'prop');
 
-  const lampX = beat.props.lampX ?? Math.round(width * 0.55);
+  // The lamp hangs on the video's side, so the room is lit from a different
+  // corner story to story even though the rig is the same.
+  const lampX = beat.props.lampX ?? Math.round(width * motion.lampSide);
   const lampY = beat.props.lampY ?? Math.round(height * 0.18);
   const dip = beat.props.focusDipFrame ?? 43;
 
@@ -36,14 +40,14 @@ export const MoneyRoom: React.FC<{beat: Beat}> = ({beat}) => {
     easing: Easing.inOut(Easing.quad),
   });
   const defocus = interpolate(stepped, [0, 21, dip, dip + 20], [1, 0, 0.75, 0], CLAMP);
-  const sway = pingpong(stepped, 60, 3);
+  const sway = pingpong(stepped, 60, 3 * motion.polarity);
 
   // the highlight: the payoff object again, recoloured, on hold-keyframes
   const flicker = beat.props.flickerFrames ?? [23, 29, 32, 62, 64, 72];
   const lit = holdKeyframes(frame, flicker);
 
   return (
-    <AbsoluteFill style={{backgroundColor: '#070503'}}>
+    <AbsoluteFill style={{backgroundColor: palette.ink}}>
       <AbsoluteFill style={{transform: `scale(${camScale})`, filter: defocus > 0.02 ? `blur(${defocus * 9}px)` : undefined}}>
         <Plate asset={plate} scale={1.04} fallbackSeed={17} />
         {character ? <Plate asset={character} scale={0.98} translateY={height * 0.05} cutout boilPhase={20} /> : null}
@@ -68,7 +72,7 @@ export const MoneyRoom: React.FC<{beat: Beat}> = ({beat}) => {
               opacity: lit ? 0.55 : 0,
               mixBlendMode: 'screen',
               background:
-                'radial-gradient(ellipse 34% 16% at 50% 74%, rgba(214,255,80,0.9) 0%, rgba(120,180,20,0.35) 48%, rgba(0,0,0,0) 78%)',
+                `radial-gradient(ellipse 34% 16% at 50% 74%, ${palette.accent}e6 0%, ${palette.accentDark}59 48%, rgba(0,0,0,0) 78%)`,
             }}
           />
         )}

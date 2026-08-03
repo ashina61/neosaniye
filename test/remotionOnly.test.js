@@ -94,6 +94,45 @@ test('motor tek yerde yaşar: posterize, film görünümü ve rig kütüphanesi'
   }
 });
 
+test('hiçbir rig veya prop kendi rengini yazmaz — palet videodan gelir', async () => {
+  // Bu kapı, deponun daha önce ödediği bedeli tutuyor: palet modül seviyesinde
+  // sabit olduğu için üretilen HER video aynı renk dünyasını kullanmıştı.
+  // Kodla çizilen prop bunu daha da kolay kırar; tek bir sabit hex yeter.
+  const files = [
+    'remotion/src/engine/props.tsx',
+    'remotion/src/engine/Captions.tsx',
+    'remotion/src/engine/Plate.tsx',
+    'remotion/src/rigs/PortalZoom.tsx',
+    'remotion/src/rigs/VillainPunch.tsx',
+    'remotion/src/rigs/PaperDrop.tsx',
+    'remotion/src/rigs/GroundedPunch.tsx',
+    'remotion/src/rigs/MoneyRoom.tsx',
+    'remotion/src/rigs/FinaleClone.tsx',
+  ];
+  const offenders = [];
+  for (const file of files) {
+    const source = await readFile(file, 'utf8');
+    for (const [match] of source.matchAll(/#[0-9a-fA-F]{3,8}\b/g)) {
+      // Saf siyah/beyaz yalnızca maske durağı olarak serbest: renk taşımaz.
+      if (['#000', '#fff', '#000000', '#ffffff'].includes(match.toLowerCase())) continue;
+      offenders.push(`${file}: ${match}`);
+    }
+  }
+  assert.deepEqual(offenders, [], `sabit renk bulundu:\n${offenders.join('\n')}`);
+});
+
+test('görünüm ve varyantlar spec üzerinden akar', async () => {
+  const look = await readFile('src/story/look.js', 'utf8');
+  assert.match(look, /export function chooseLook/);
+  assert.doesNotMatch(look, /seed >> \d/, 'işaretli kaydırma negatif seed üretir');
+
+  const reel = await readFile('remotion/src/Reel.tsx', 'utf8');
+  assert.match(reel, /LookContext\.Provider/);
+
+  const builder = await readFile('src/video/buildReelSpec.js', 'utf8');
+  assert.match(builder, /chooseLook/);
+});
+
 test('render giriş noktası reel kompozisyonunu ve beat sheet artefaktını üretir', async () => {
   const source = await readFile('src/video/renderRemotion.js', 'utf8');
   assert.match(source, /NeoSaniyeReel/);

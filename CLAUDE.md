@@ -14,6 +14,8 @@ seslendirme satırları (script.scenes[].narration)
         ↓  ölçülmüş TTS kelime zamanları
 src/pipeline/canonicalTimeline.js           → beat pencereleri
         ↓
+src/story/look.js                           → VİDEONUN KİMLİĞİ (konudan)
+        ↓
 src/story/beatSheet.js + src/story/rigs.js  → BEAT SHEET
         ↓
 src/video/buildReelSpec.js                  → production.json + beat-sheet.md
@@ -43,6 +45,13 @@ remotion/src/Reel.tsx → engine/ + rigs/     → final MP4
    + yeni kelimeler + jest. Yedinci mekanik gerçekten gerekmedikçe eklenmez.
 7. **Kelimeler her zaman kazanır.** Müzik konuşma penceresinde kısılır, SFX
    yalnız rigin olayında vurur, kota doldurmak için efekt eklenmez.
+8. **GÖRÜNÜM VİDEO BAŞINA SEÇİLİR, SAHNE BAŞINA DEĞİL.** `src/story/look.js`
+   konudan deterministik olarak seçer: renk dünyası, film işlemesinin şiddeti,
+   propların hangi çizimi kullanacağı ve koreografinin yönü. Bir rig kendi
+   rengini YAZAMAZ (`test/remotionOnly.test.js` sabit hex'i düşürür) ve rig
+   gradesi videonun gradesini çarpar, yerine geçmez. Bu kural olmadan altı
+   kodlanmış rig her videoda birebir aynı kareyi çizer — kolaj hattının
+   öldüğü hata tam olarak buydu.
 
 ## GÖRSEL MALZEME SINIRI — bu deponun en pahalı dersi
 

@@ -30,43 +30,45 @@ export const RIG_CATALOG = {
     assets: ['plate', 'character', 'texture'],
     sfx: ['camera-shutter', 'whoosh-long'],
     captionSide: 'center',
-    grade: {saturate: 0.86, contrast: 1.08, sepia: 0.16, brightness: 0.95},
+    gradeDelta: {},
   },
   'villain-punch': {
     role: 'rejection',
     assets: ['character', 'prop'],
     sfx: ['whoosh-entrance', 'impact'],
     captionSide: 'center',
-    grade: {saturate: 0.8, contrast: 1.16, sepia: 0.1, brightness: 0.92},
+    // Sert beat: daha yüksek kontrast, biraz daha karanlık.
+    gradeDelta: {saturate: 0.93, contrast: 1.07, sepia: 0.62, brightness: 0.97},
   },
   'paper-drop': {
     role: 'turn',
     assets: ['plate'],
     sfx: ['paper', 'paper', 'paper'],
     captionSide: 'center',
-    grade: {saturate: 0.84, contrast: 1.08, sepia: 0.18, brightness: 0.95},
+    gradeDelta: {sepia: 1.12},
   },
   'grounded-punch': {
     role: 'fall',
     assets: ['plate', 'character'],
     sfx: ['focus-hunt', 'heartbeat'],
     captionSide: 'left',
-    // The sombre beat is desaturated further than the rest of the reel.
-    grade: {saturate: 0.62, contrast: 1.12, sepia: 0.06, brightness: 0.94},
+    // Kasvetli beat, videonun KENDİ gradesinden daha çok doygunluk kaybeder —
+    // sabit bir sayıya inmez, yoksa her videodaki düşüş sahnesi aynı karedir.
+    gradeDelta: {saturate: 0.72, contrast: 1.04, sepia: 0.38, brightness: 0.99},
   },
   'money-room': {
     role: 'payoff',
     assets: ['plate', 'character', 'prop'],
     sfx: ['cash', 'neon-buzz'],
     captionSide: 'center',
-    grade: {saturate: 0.82, contrast: 1.06, sepia: 0.14, brightness: 0.93},
+    gradeDelta: {saturate: 0.95, brightness: 0.98},
   },
   'finale-clone': {
     role: 'button',
     assets: ['plate', 'character'],
     sfx: ['whoosh-long', 'final-boom'],
     captionSide: 'left',
-    grade: {saturate: 0.62, contrast: 1.12, sepia: 0.06, brightness: 0.94},
+    gradeDelta: {saturate: 0.72, contrast: 1.04, sepia: 0.38, brightness: 0.99},
     clonedFrom: 'grounded-punch',
   },
 };
@@ -139,8 +141,13 @@ export function rigAssets(rig) {
   return RIG_CATALOG[rig]?.assets || ['plate'];
 }
 
-export function rigGrade(rig) {
-  return RIG_CATALOG[rig]?.grade || {saturate: 0.86, contrast: 1.08, sepia: 0.16, brightness: 0.95};
+/**
+ * Bir rig videonun gradesini KOYULAŞTIRIR veya AÇAR; onun yerine geçmez.
+ * Mutlak sayı verseydi altı rig altı sabit görünüm demek olurdu ve videodan
+ * videoya değişen tek şey fotoğraflar kalırdı.
+ */
+export function rigGradeDelta(rig) {
+  return RIG_CATALOG[rig]?.gradeDelta || {};
 }
 
 export function rigSfx(rig) {

@@ -9,17 +9,17 @@
 import path from 'node:path';
 import {mkdir, writeFile} from 'node:fs/promises';
 import {buildBeatSheet} from '../story/beatSheet.js';
+import {chooseLook} from '../story/look.js';
 
 const FPS = 30;
 
-const ENGINE_DEFAULTS = {
-  // 12fps steps: motion stutters like stop-motion instead of gliding.
-  posterizeFps: 12,
-  gateWeavePx: 5,
-  weaveScale: 1.012,
-  grade: {saturate: 0.86, contrast: 1.08, sepia: 0.16, brightness: 0.95},
-  film: {scanlines: true, grain: true, grunge: true, vignette: true, weave: true},
-};
+/**
+ * What is the same in every video: the stop-motion step and the fact that the
+ * film treatment exists. Everything else about the look — colours, how hard the
+ * treatment bites, which drawing each prop uses, which way the choreography
+ * runs — is chosen per video from the topic. See `src/story/look.js`.
+ */
+const POSTERIZE_FPS = 12;
 
 /**
  * Where each effect lands inside its beat. An effect is placed on an EVENT of
@@ -125,7 +125,9 @@ export function buildReelSpec({
     throw new Error('REEL_SPEC_LINES_REQUIRED');
   }
 
-  const sheet = buildBeatSheet({script, timeline, fps});
+  const topic = String(script.topic || script.normalizedTopic || script.title || 'NeoSaniye story').trim();
+  const look = chooseLook(topic);
+  const sheet = buildBeatSheet({script, timeline, look, fps});
 
   const beats = sheet.beats.map((beat, index) => ({
     id: beat.id,
@@ -151,7 +153,7 @@ export function buildReelSpec({
   return {
     version: 2,
     meta: {
-      topic: String(script.topic || script.normalizedTopic || 'NeoSaniye story').trim(),
+      topic,
       title: String(script.title || script.topic || 'NeoSaniye story').trim(),
       language: String(script.language || process.env.CONTENT_LANGUAGE || 'en').trim(),
       fps,
@@ -159,7 +161,14 @@ export function buildReelSpec({
       height,
       durationInFrames,
     },
-    engine: ENGINE_DEFAULTS,
+    engine: {
+      posterizeFps: POSTERIZE_FPS,
+      gateWeavePx: look.film.weavePx,
+      weaveScale: look.film.weaveScale,
+      grade: look.grade,
+      film: look.film,
+      look,
+    },
     audio: {
       voicePath,
       musicPath,
@@ -173,6 +182,7 @@ export function buildReelSpec({
     globalSfx: [],
     // Kept for the QC layer: how much of the beat sheet was measured against
     // real speech versus guessed. A run that had to guess is a warning.
+    look: {name: look.name, seed: look.seed},
     timing: {
       source: sheet.timingSource,
       measuredCaptions: sheet.measuredCaptions,

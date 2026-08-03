@@ -58,13 +58,68 @@ export type Grade = {
   brightness: number;
 };
 
-/** Every layer of the film treatment can be switched off independently. */
+/**
+ * Every layer of the film treatment can be switched off independently, and
+ * every layer's strength is a number rather than a constant — the treatment is
+ * part of a video's identity, not a house style stamped on all of them.
+ */
 export type FilmLayers = {
   scanlines: boolean;
   grain: boolean;
   grunge: boolean;
   vignette: boolean;
   weave: boolean;
+  scanlineOpacity?: number;
+  scanlinePeriod?: number;
+  grainOpacity?: number;
+  grungeOpacity?: number;
+  vignetteStrength?: number;
+  weavePx?: number;
+  weaveScale?: number;
+};
+
+/** The video's colour world. Chosen once per production, never per scene. */
+export type Palette = {
+  ink: string;
+  paper: string;
+  paperLight: string;
+  paperDark: string;
+  accent: string;
+  accentDark: string;
+  cool: string;
+  danger: string;
+  white: string;
+};
+
+/** Which drawing each coded prop uses in THIS video. */
+export type PropVariants = {
+  frame: 'ornate' | 'museum' | 'brass';
+  masthead: string;
+  gesture: 'foam-finger' | 'flat-palm' | 'stamp';
+  rayCount: number;
+};
+
+/**
+ * Choreography polarity. The same mechanic, mirrored and re-biased, so two
+ * videos are not the same storyboard with different photographs in it.
+ */
+export type MotionVariants = {
+  polarity: 1 | -1;
+  cardOrder: number[];
+  lampSide: number;
+  punchBias: number;
+  pushBias: number;
+  portalScale: number;
+};
+
+export type Look = {
+  name: string;
+  seed: number;
+  palette: Palette;
+  grade: Grade;
+  film: FilmLayers;
+  props: PropVariants;
+  motion: MotionVariants;
 };
 
 /**
@@ -143,6 +198,8 @@ export type ReelSpec = {
     weaveScale: number;
     grade: Grade;
     film: FilmLayers;
+    /** This video's identity: colours, treatment strength, prop and motion variants. */
+    look: Look;
   };
   audio?: {
     voicePath?: string | null;
@@ -172,6 +229,38 @@ export const DEFAULT_FILM: FilmLayers = {
   grunge: true,
   vignette: true,
   weave: true,
+  scanlineOpacity: 0.16,
+  scanlinePeriod: 8,
+  grainOpacity: 0.55,
+  grungeOpacity: 0.16,
+  vignetteStrength: 0.5,
+  weavePx: 5,
+  weaveScale: 1.012,
+};
+
+/**
+ * The fallback identity. A real production always carries its own look, chosen
+ * from its topic — this exists so a hand-written spec or a Studio preview still
+ * renders, not so that videos share a house palette.
+ */
+export const DEFAULT_LOOK: Look = {
+  name: 'genel / tarih — krem arşiv',
+  seed: 0,
+  palette: {
+    ink: '#171511',
+    paper: '#efe6d3',
+    paperLight: '#f8f1e4',
+    paperDark: '#d7c6a9',
+    accent: '#d5a52d',
+    accentDark: '#9b6d11',
+    cool: '#9fc8c6',
+    danger: '#bc493f',
+    white: '#fffdf7',
+  },
+  grade: DEFAULT_GRADE,
+  film: DEFAULT_FILM,
+  props: {frame: 'ornate', masthead: 'THE DAILY RECORD', gesture: 'foam-finger', rayCount: 30},
+  motion: {polarity: 1, cardOrder: [0, 1, 2], lampSide: 0.55, punchBias: 1.7, pushBias: 1.12, portalScale: 6.8},
 };
 
 export const DEFAULT_REEL: ReelSpec = {
@@ -191,6 +280,7 @@ export const DEFAULT_REEL: ReelSpec = {
     weaveScale: 1.012,
     grade: DEFAULT_GRADE,
     film: DEFAULT_FILM,
+    look: DEFAULT_LOOK,
   },
   beats: [
     {

@@ -20,7 +20,8 @@
  *    were the failure the collage line never recovered from.
  */
 
-import {assignRig, rigAssets, rigGrade, rigRole, rigSfx, RIG_CATALOG} from './rigs.js';
+import {assignRig, rigAssets, rigGradeDelta, rigRole, rigSfx, RIG_CATALOG} from './rigs.js';
+import {applyGradeDelta, chooseLook} from './look.js';
 
 const WORD_RE = /[\p{L}\p{N}]+(?:['’][\p{L}\p{N}]+)*/gu;
 
@@ -290,15 +291,19 @@ function buildProps({rig, durationInFrames, cards, cardFrames, numberText, plaqu
  * @param {object} input
  * @param {object} input.script      the locked script — its scenes ARE the VO lines
  * @param {object} input.timeline    the canonical timeline (measured TTS timings)
+ * @param {object} [input.look]      the video's identity (default: chosen from topic)
  * @param {number} input.fps
  * @returns {{beats: Array, timingSource: string, measuredCaptions: number, estimatedCaptions: number}}
  */
-export function buildBeatSheet({script, timeline, fps = 30} = {}) {
+export function buildBeatSheet({script, timeline, look = null, fps = 30} = {}) {
   const lines = (script?.scenes || []).map((scene) => normalize(scene?.narration));
   if (!lines.length) throw new Error('BEAT_SHEET_LINES_REQUIRED');
 
   const words = timeline?.words || timeline?.captions || [];
   const emphasisWords = script?.emphasis_words || [];
+  // The video's identity. Every beat grades relative to it, so the reel reads
+  // as one film and two reels do not read as the same film.
+  const identity = look || chooseLook(script?.topic || script?.normalizedTopic || script?.title);
   const chosen = [];
   let measuredCaptions = 0;
   let estimatedCaptions = 0;
@@ -373,7 +378,7 @@ export function buildBeatSheet({script, timeline, fps = 30} = {}) {
       assetRequests: rigAssets(rig).map((role) => ({role, line})),
       sfxFamilies: rigSfx(rig),
       props,
-      grade: rigGrade(rig),
+      grade: applyGradeDelta(identity.grade, rigGradeDelta(rig)),
       clonedFrom: RIG_CATALOG[rig]?.clonedFrom,
       spokenWindow: [startSeconds, endSeconds],
     };
@@ -381,6 +386,7 @@ export function buildBeatSheet({script, timeline, fps = 30} = {}) {
 
   return {
     beats,
+    look: identity,
     timingSource: timeline?.source || 'unknown',
     measuredCaptions,
     estimatedCaptions,

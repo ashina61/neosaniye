@@ -4,6 +4,7 @@ import type {Beat} from '../schema';
 import {CLAMP, boil, entrance, holdKeyframes, pingpong, posterizeTime} from '../engine/motion';
 import {Plate, pickAsset} from '../engine/Plate';
 import {Diamond, SlotReel, Sunburst} from '../engine/props';
+import {useLook} from '../engine/look';
 
 /**
  * VILLAIN PUNCH — the rejection beat.
@@ -19,6 +20,7 @@ import {Diamond, SlotReel, Sunburst} from '../engine/props';
 export const VillainPunch: React.FC<{beat: Beat}> = ({beat}) => {
   const frame = useCurrentFrame();
   const {fps, width} = useVideoConfig();
+  const {motion} = useLook();
   const stepped = posterizeTime(frame, fps, 12);
 
   const rise = beat.props.riseFrame ?? 8;
@@ -49,12 +51,13 @@ export const VillainPunch: React.FC<{beat: Beat}> = ({beat}) => {
   const burnEyes = frame >= negativeAt + 9;
 
   const diamondProgress = (delay: number) => interpolate(stepped, [delay, delay + 14], [0, 1], CLAMP);
-  const leftIn = interpolate(stepped, [17, 33], [-width * 0.5, 0], {...CLAMP, easing: Easing.out(Easing.cubic)});
-  const rightIn = interpolate(stepped, [47, 63], [width * 0.5, 0], {...CLAMP, easing: Easing.out(Easing.cubic)});
+  // Opposite edges, but WHICH edge is first flips with the video.
+  const leftIn = interpolate(stepped, [17, 33], [motion.polarity * -width * 0.5, 0], {...CLAMP, easing: Easing.out(Easing.cubic)});
+  const rightIn = interpolate(stepped, [47, 63], [motion.polarity * width * 0.5, 0], {...CLAMP, easing: Easing.out(Easing.cubic)});
 
   return (
     <AbsoluteFill style={{filter: negative ? 'invert(1) hue-rotate(90deg)' : undefined}}>
-      <Sunburst rotate={stepped * 0.12} />
+      <Sunburst rotate={stepped * 0.12 * motion.polarity} />
 
       {/* the antagonist rises, punches in, then holds with a sway */}
       <AbsoluteFill

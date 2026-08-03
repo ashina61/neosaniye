@@ -58,6 +58,27 @@ Dokular kodla çizilir; koşu sırasında kaybolacak doku dosyası yoktur.
 Grade dört değerdir (`saturate`, `contrast`, `sepia`, `brightness`) ve beat
 başına açıktır: düşüş beat'i diğerlerinden daha çok doygunluk kaybeder.
 
+## 5b. Kimlik — video başına, sahne başına değil
+
+`src/story/look.js` konudan deterministik olarak seçer:
+
+- **renk dünyası** — altı aile (suç, felaket, bilim, doğa, para, arşiv), her
+  ailede birden çok vurgu rengi
+- **film işlemesinin şiddeti** — grain, scan aralığı, vignette, weave miktarı
+- **prop çizimleri** — çerçeve (ornate/museum/brass), gazete başlığı, jest
+  (köpük el / açık avuç / damga), ışın sayısı
+- **koreografi yönü** — hangi kenardan giriş, lamba hangi tarafta, kartlar
+  hangi sırayla, punch ne kadar sert
+
+Değişmezler:
+
+- Bir rig kendi rengini yazamaz; palet context'ten gelir ve testle korunur.
+- Rig grade'i videonun grade'ini ÇARPAR (`gradeDelta`), yerine geçmez.
+- Görünüm video içinde tektir: sahne başına renk değiştirmek çeşitlilik değil,
+  altı ayrı videodan kesilmiş hissi üretir.
+- Seçim konudan gelir, rastgele değildir: aynı üretim her koşuda ve her
+  paralel Remotion işçisinde aynı kareyi verir.
+
 ## 6. Malzeme dili
 
 - Fotoğraf BULUNUR, grafik ÇİZİLİR.

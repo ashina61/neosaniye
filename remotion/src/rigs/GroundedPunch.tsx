@@ -3,7 +3,8 @@ import {AbsoluteFill, Easing, interpolate, useCurrentFrame, useVideoConfig} from
 import type {Beat} from '../schema';
 import {CLAMP, blurBurst, dampedWag, posterizeTime} from '../engine/motion';
 import {Plate, pickAsset} from '../engine/Plate';
-import {FoamFinger} from '../engine/props';
+import {Gesture} from '../engine/props';
+import {useLook} from '../engine/look';
 
 /**
  * GROUNDED PUNCH — the workhorse.
@@ -25,12 +26,16 @@ import {FoamFinger} from '../engine/props';
 export const GroundedPunch: React.FC<{beat: Beat}> = ({beat}) => {
   const frame = useCurrentFrame();
   const {fps, width, height} = useVideoConfig();
+  const {motion, palette} = useLook();
   const stepped = posterizeTime(frame, fps, 12);
 
+  // How hard the punch bites and which way the character clears the frame are
+  // part of the video's identity, not of the mechanic. Same rig, different
+  // camera — otherwise every fall beat this repo ships is the same shot.
   const groundY = beat.props.groundY ?? Math.round(height * 0.88);
-  const groundX = Math.round(width * 0.52);
-  const platePunch = beat.props.platePunch ?? 1.12;
-  const characterPunch = beat.props.characterPunch ?? 1.7;
+  const groundX = Math.round(width * (motion.polarity > 0 ? 0.52 : 0.48));
+  const platePunch = beat.props.platePunch ?? motion.pushBias;
+  const characterPunch = beat.props.characterPunch ?? motion.punchBias;
   const shadowSkew = beat.props.shadowSkew ?? -53;
   const shadowOpacity = beat.props.shadowOpacity ?? 0.55;
   const shiftFrame = beat.props.shiftFrame ?? 0;
@@ -51,7 +56,7 @@ export const GroundedPunch: React.FC<{beat: Beat}> = ({beat}) => {
 
   // The shift clears one side of the frame for the closing line.
   const shift = shiftFrame
-    ? interpolate(stepped, [shiftFrame, shiftFrame + 14], [0, -Math.abs(shiftPx)], {
+    ? interpolate(stepped, [shiftFrame, shiftFrame + 14], [0, motion.polarity * -Math.abs(shiftPx)], {
         ...CLAMP,
         easing: Easing.inOut(Easing.cubic),
       })
@@ -67,7 +72,7 @@ export const GroundedPunch: React.FC<{beat: Beat}> = ({beat}) => {
   const gestureAngle = dampedWag(stepped, {amplitude: 28, speed: 0.52, decay: 0.042, delay: gestureAt});
 
   return (
-    <AbsoluteFill style={{backgroundColor: '#0c0906'}}>
+    <AbsoluteFill style={{backgroundColor: palette.ink}}>
       {/* The background must stay a lit stage even when nothing was found —
           a beat that renders as a black rectangle fails the technical gates
           before anyone judges whether it was any good. */}
@@ -104,10 +109,11 @@ export const GroundedPunch: React.FC<{beat: Beat}> = ({beat}) => {
         <div
           style={{
             position: 'absolute',
-            right: Math.round(width * 0.16),
+            right: motion.polarity > 0 ? Math.round(width * 0.16) : undefined,
+            left: motion.polarity > 0 ? undefined : Math.round(width * 0.16),
             bottom: Math.round(height * 0.3),
             transformOrigin: '50% 92%',
-            transform: `translate(${(1 - gestureIn) * 180}px, ${(1 - gestureIn) * 220}px) scale(${interpolate(
+            transform: `translate(${motion.polarity * (1 - gestureIn) * 180}px, ${(1 - gestureIn) * 220}px) scale(${interpolate(
               gestureIn,
               [0, 1],
               [0.72, 1],
@@ -115,7 +121,7 @@ export const GroundedPunch: React.FC<{beat: Beat}> = ({beat}) => {
             filter: 'drop-shadow(-10px 14px 22px rgba(0,0,0,0.55))',
           }}
         >
-          <FoamFinger height={250} />
+          <Gesture height={250} />
         </div>
       ) : null}
 

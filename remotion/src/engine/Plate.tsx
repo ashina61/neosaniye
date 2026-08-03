@@ -2,6 +2,7 @@ import React from 'react';
 import {AbsoluteFill, Img, OffthreadVideo, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import type {BeatAsset, AssetRole} from '../schema';
 import {anchorOrigin, boil, posterizeTime} from './motion';
+import {useLook} from './look';
 
 /**
  * PLATES.
@@ -19,16 +20,31 @@ export function pickAsset(assets: BeatAsset[] | undefined, role: AssetRole): Bea
   return (assets || []).find((asset) => asset.role === role);
 }
 
-/** The plate a rig falls back to when the media layer returned nothing. */
-export const ProceduralPlate: React.FC<{seed?: number; dark?: boolean}> = ({seed = 0, dark = false}) => (
-  <AbsoluteFill
-    style={{
-      background: dark
-        ? `radial-gradient(ellipse 120% 90% at ${40 + (seed % 20)}% 38%, #2b2118 0%, #17110c 62%, #0b0805 100%)`
-        : `radial-gradient(ellipse 120% 90% at ${40 + (seed % 20)}% 38%, #d8c9a6 0%, #b39c72 58%, #6f5c3c 100%)`,
-    }}
-  />
-);
+/**
+ * The plate a rig falls back to when the media layer returned nothing. It is
+ * built from the video's own paper and ink, so even an empty stage belongs to
+ * this story rather than to a house default.
+ */
+export const ProceduralPlate: React.FC<{seed?: number; dark?: boolean}> = ({seed = 0, dark = false}) => {
+  const {palette} = useLook();
+  const centre = 40 + (seed % 20);
+  return (
+    <AbsoluteFill
+      style={{
+        // A LIT STAGE, NOT A LIGHTBOX.
+        //
+        // Two failures live one step apart here. Painting the fallback in ink
+        // gives a near-black beat that trips the black-frame gate; painting it
+        // in the video's paper gives a milky frame that blows out the moment a
+        // rig screen-blends light onto it. So the paper only ever tints an ink
+        // ground: the video's colour is visible, the exposure stays cinematic.
+        background: dark
+          ? `radial-gradient(ellipse 120% 90% at ${centre}% 38%, ${palette.paperDark}33 0%, ${palette.ink} 58%, ${palette.ink} 100%)`
+          : `radial-gradient(ellipse 120% 90% at ${centre}% 38%, ${palette.paperDark}80 0%, ${palette.accentDark}4d 46%, ${palette.ink} 92%)`,
+      }}
+    />
+  );
+};
 
 export const Plate: React.FC<{
   asset?: BeatAsset;

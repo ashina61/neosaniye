@@ -1,8 +1,9 @@
 import React from 'react';
 import {AbsoluteFill, Audio, Sequence, staticFile, useVideoConfig} from 'remotion';
 import type {Beat, ReelSpec, SfxCue} from './schema';
-import {DEFAULT_GRADE} from './schema';
+import {DEFAULT_GRADE, DEFAULT_LOOK} from './schema';
 import {FilmLook} from './engine/FilmLook';
+import {LookContext} from './engine/look';
 import {Captions} from './engine/Captions';
 import {RIGS} from './rigs';
 
@@ -72,8 +73,17 @@ export const Reel: React.FC<ReelSpec> = (spec) => {
     ...beats.flatMap((beat) => (beat.sfx ?? []).map((cue) => ({...cue, atFrame: beat.fromFrame + cue.atFrame}))),
   ];
 
+  // THE LOOK IS PUT UP ONCE, HERE.
+  //
+  // Everything below reads its colours, treatment strengths, prop shapes and
+  // choreography polarity from this one value, chosen from the topic. Without
+  // it, six coded rigs would draw byte-identical frames in every video this
+  // repo ever ships — the exact failure the template line died of.
+  const look = spec.engine?.look ?? DEFAULT_LOOK;
+
   return (
-    <AbsoluteFill style={{backgroundColor: '#0b0906'}}>
+    <LookContext.Provider value={look}>
+    <AbsoluteFill style={{backgroundColor: look.palette.ink}}>
       {spec.audio?.voicePath ? (
         <Audio src={staticFile(spec.audio.voicePath)} volume={spec.audio.voiceVolume ?? 1} />
       ) : null}
@@ -98,12 +108,18 @@ export const Reel: React.FC<ReelSpec> = (spec) => {
 
       <Watermark />
     </AbsoluteFill>
+    </LookContext.Provider>
   );
 };
 
 /** A single beat on its own timeline — how each scene is previewed in Studio. */
-export const SoloBeat: React.FC<{beat: Beat; engine: ReelSpec['engine']}> = ({beat, engine}) => (
-  <AbsoluteFill style={{backgroundColor: '#0b0906'}}>
-    <BeatScene beat={{...beat, fromFrame: 0}} engine={engine} />
-  </AbsoluteFill>
-);
+export const SoloBeat: React.FC<{beat: Beat; engine: ReelSpec['engine']}> = ({beat, engine}) => {
+  const look = engine?.look ?? DEFAULT_LOOK;
+  return (
+    <LookContext.Provider value={look}>
+      <AbsoluteFill style={{backgroundColor: look.palette.ink}}>
+        <BeatScene beat={{...beat, fromFrame: 0}} engine={engine} />
+      </AbsoluteFill>
+    </LookContext.Provider>
+  );
+};

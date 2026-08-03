@@ -1,6 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate} from 'remotion';
 import {CLAMP} from './motion';
+import {useLook} from './look';
 
 /**
  * CODED PROPS.
@@ -11,96 +12,135 @@ import {CLAMP} from './motion';
  * and broken type), so every prop here is drawn: SVG and gradients, sized in
  * scene pixels, deterministic, and always available at render time.
  *
- * That is the trade this whole conversion rests on: *find* photographs, *draw*
- * graphics, and put the effort into choreography.
+ * ============ AND EVERY ONE OF THEM VARIES PER VIDEO ============
+ *
+ * A drawn prop is the easiest thing in this system to get wrong, because code
+ * repeats perfectly: without the look, every video ships the identical gold
+ * frame, the identical masthead, the identical red hand — and six rigs of
+ * byte-identical drawings is exactly the "same scenes again" failure the
+ * template line died of. So each prop reads the video's palette and its
+ * variant: a frame is ornate here and brass there, the newspaper carries a
+ * different masthead, the rays are a different count, the gesture is a
+ * different object entirely.
  */
 
-const INK = '#16110d';
-const MARIGOLD = '#ffbe2e';
-const CREAM = '#f6ead0';
-const RED = '#c8302a';
-
 /** An ornate museum frame — the window the portal-zoom flies through. */
-export const GoldFrame: React.FC<{width: number; height: number}> = ({width, height}) => (
-  <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{display: 'block'}}>
-    <defs>
-      <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stopColor="#f3d284" />
-        <stop offset="38%" stopColor="#c39329" />
-        <stop offset="62%" stopColor="#8a6410" />
-        <stop offset="100%" stopColor="#e6c473" />
-      </linearGradient>
-    </defs>
-    <rect x={0} y={0} width={width} height={height} fill="none" stroke="url(#gold)" strokeWidth={44} />
-    <rect x={26} y={26} width={width - 52} height={height - 52} fill="none" stroke="#6b4d0c" strokeWidth={4} opacity={0.6} />
-    <rect x={46} y={46} width={width - 92} height={height - 92} fill="none" stroke="#f7e2ab" strokeWidth={3} opacity={0.7} />
-  </svg>
-);
+export const GoldFrame: React.FC<{width: number; height: number}> = ({width, height}) => {
+  const {palette, props} = useLook();
+  const style = props.frame;
+
+  const outer = style === 'museum' ? 30 : style === 'brass' ? 22 : 44;
+  const stops =
+    style === 'museum'
+      ? [palette.paperDark, palette.ink, palette.ink, palette.paperDark]
+      : style === 'brass'
+        ? [palette.accent, palette.accentDark, palette.accentDark, palette.accent]
+        : [palette.paperLight, palette.accent, palette.accentDark, palette.accent];
+
+  return (
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{display: 'block'}}>
+      <defs>
+        <linearGradient id="frame-metal" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor={stops[0]} />
+          <stop offset="38%" stopColor={stops[1]} />
+          <stop offset="62%" stopColor={stops[2]} />
+          <stop offset="100%" stopColor={stops[3]} />
+        </linearGradient>
+      </defs>
+      <rect x={0} y={0} width={width} height={height} fill="none" stroke="url(#frame-metal)" strokeWidth={outer} />
+      {style !== 'brass' ? (
+        <rect
+          x={outer * 0.6}
+          y={outer * 0.6}
+          width={width - outer * 1.2}
+          height={height - outer * 1.2}
+          fill="none"
+          stroke={palette.accentDark}
+          strokeWidth={4}
+          opacity={0.6}
+        />
+      ) : null}
+      {style === 'ornate' ? (
+        <rect x={46} y={46} width={width - 92} height={height - 92} fill="none" stroke={palette.paperLight} strokeWidth={3} opacity={0.7} />
+      ) : null}
+    </svg>
+  );
+};
 
 /** The museum plaque under the frame — where the date lands. */
-export const Plaque: React.FC<{text: string; width?: number}> = ({text, width = 420}) => (
-  <div
-    style={{
-      width,
-      background: 'linear-gradient(180deg,#c9a343,#a98a3c)',
-      border: '3px solid #6b4d0c',
-      borderRadius: 6,
-      padding: '14px 10px',
-      textAlign: 'center',
-      fontFamily: '"Playfair Display", Georgia, serif',
-      fontSize: 40,
-      letterSpacing: '0.06em',
-      color: '#2a1d05',
-      boxShadow: '0 10px 22px -12px rgba(0,0,0,0.8)',
-    }}
-  >
-    {text}
-  </div>
-);
+export const Plaque: React.FC<{text: string; width?: number}> = ({text, width = 420}) => {
+  const {palette} = useLook();
+  return (
+    <div
+      style={{
+        width,
+        background: `linear-gradient(180deg, ${palette.accent}, ${palette.accentDark})`,
+        border: `3px solid ${palette.accentDark}`,
+        borderRadius: 6,
+        padding: '14px 10px',
+        textAlign: 'center',
+        fontFamily: '"Playfair Display", Georgia, serif',
+        fontSize: 40,
+        letterSpacing: '0.06em',
+        color: palette.ink,
+        boxShadow: '0 10px 22px -12px rgba(0,0,0,0.8)',
+      }}
+    >
+      {text}
+    </div>
+  );
+};
 
-/** A blood-red sunburst — the villain's backdrop. */
-export const Sunburst: React.FC<{rotate?: number}> = ({rotate = 0}) => (
-  <AbsoluteFill
-    style={{
-      background: 'radial-gradient(ellipse 120% 92% at 50% 26%, #a01218 0%, #7c0d12 55%, #58080c 100%)',
-    }}
-  >
+/** A sunburst in the video's danger colour — the villain's backdrop. */
+export const Sunburst: React.FC<{rotate?: number}> = ({rotate = 0}) => {
+  const {palette, props} = useLook();
+  const rays = Math.max(10, props.rayCount);
+  const step = 360 / rays;
+  return (
     <AbsoluteFill
       style={{
-        opacity: 0.22,
-        transform: `rotate(${rotate}deg)`,
-        background:
-          'repeating-conic-gradient(from 0deg at 50% 30%, rgba(255,190,46,0.5) 0deg 4deg, rgba(0,0,0,0) 4deg 12deg)',
+        background: `radial-gradient(ellipse 120% 92% at 50% 26%, ${palette.danger} 0%, ${palette.ink} 78%, ${palette.ink} 100%)`,
       }}
-    />
-  </AbsoluteFill>
-);
+    >
+      <AbsoluteFill
+        style={{
+          opacity: 0.22,
+          transform: `rotate(${rotate}deg)`,
+          background: `repeating-conic-gradient(from 0deg at 50% 30%, ${palette.accent} 0deg ${(step / 3).toFixed(2)}deg, rgba(0,0,0,0) ${(step / 3).toFixed(2)}deg ${step.toFixed(2)}deg)`,
+        }}
+      />
+    </AbsoluteFill>
+  );
+};
 
 /** A hand-drawn wireframe diamond that draws on around a prop. */
-export const Diamond: React.FC<{size: number; progress: number; wobble?: number}> = ({size, progress, wobble = 0}) => (
-  <svg width={size} height={size} viewBox="0 0 100 100" style={{transform: `rotate(${wobble}deg)`}}>
-    <path
-      d="M50 4 L96 50 L50 96 L4 50 Z"
-      fill="none"
-      stroke={CREAM}
-      strokeWidth={2.4}
-      strokeDasharray="6 5"
-      pathLength={1}
-      strokeDashoffset={1 - progress}
-      style={{strokeDasharray: `${progress} 1`}}
-    />
-  </svg>
-);
+export const Diamond: React.FC<{size: number; progress: number; wobble?: number}> = ({size, progress, wobble = 0}) => {
+  const {palette} = useLook();
+  return (
+    <svg width={size} height={size} viewBox="0 0 100 100" style={{transform: `rotate(${wobble}deg)`}}>
+      <path
+        d="M50 4 L96 50 L50 96 L4 50 Z"
+        fill="none"
+        stroke={palette.paperLight}
+        strokeWidth={2.4}
+        pathLength={1}
+        style={{strokeDasharray: `${progress} 1`}}
+      />
+    </svg>
+  );
+};
 
 /**
  * A vintage newspaper front page with the promise as its headline. The text is
- * a fragment of the spoken line, so the paper says exactly what is being said.
+ * a fragment of the spoken line, so the paper says exactly what is being said;
+ * the masthead and paper tone come from the video's look.
  */
 export const NewspaperCard: React.FC<{headline: string; width: number; seed?: number}> = ({
   headline,
   width,
   seed = 0,
 }) => {
+  const {palette, props} = useLook();
   const height = Math.round(width * 1.34);
   const rules = Array.from({length: 9}, (_, i) => i);
   return (
@@ -108,8 +148,8 @@ export const NewspaperCard: React.FC<{headline: string; width: number; seed?: nu
       style={{
         width,
         height,
-        background: CREAM,
-        border: '2px solid #cbb98f',
+        background: palette.paperLight,
+        border: `2px solid ${palette.paperDark}`,
         boxShadow: '0 26px 46px -22px rgba(0,0,0,0.85)',
         padding: '26px 24px',
         display: 'flex',
@@ -123,12 +163,12 @@ export const NewspaperCard: React.FC<{headline: string; width: number; seed?: nu
           fontSize: 22,
           letterSpacing: '0.28em',
           textAlign: 'center',
-          color: '#6d5c39',
-          borderBottom: `3px double ${INK}`,
+          color: palette.accentDark,
+          borderBottom: `3px double ${palette.ink}`,
           paddingBottom: 10,
         }}
       >
-        THE DAILY RECORD
+        {props.masthead}
       </div>
       <div
         style={{
@@ -136,7 +176,7 @@ export const NewspaperCard: React.FC<{headline: string; width: number; seed?: nu
           fontWeight: 900,
           fontSize: Math.max(34, Math.round(width / (headline.length > 14 ? 8.5 : 6.4))),
           lineHeight: 1.02,
-          color: INK,
+          color: palette.ink,
           textTransform: 'uppercase',
           letterSpacing: '-0.02em',
         }}
@@ -150,28 +190,61 @@ export const NewspaperCard: React.FC<{headline: string; width: number; seed?: nu
               key={i}
               style={{
                 height: 7,
-                background: '#b9a887',
+                background: palette.paperDark,
                 opacity: 0.55,
                 width: `${72 + ((seed + i * 13) % 26)}%`,
               }}
             />
           ))}
         </div>
-        <div style={{flex: 1, background: '#cbbb95', border: '1px solid #a89268'}} />
+        <div style={{flex: 1, background: palette.paperDark, border: `1px solid ${palette.accentDark}`}} />
       </div>
     </div>
   );
 };
 
-/** The red foam finger that wags "no". */
-export const FoamFinger: React.FC<{height: number}> = ({height}) => (
-  <svg width={height * 0.52} height={height} viewBox="0 0 52 100" style={{display: 'block'}}>
-    <g fill={RED} stroke="#7d1712" strokeWidth={2} strokeLinejoin="round">
-      <path d="M20 6 q6 -5 12 0 l0 40 8 -6 q7 -4 9 4 l0 34 q0 16 -18 16 l-10 0 q-14 0 -14 -16 l0 -30 q0 -8 7 -6 l6 3 z" />
-    </g>
-    <path d="M20 60 l16 0" stroke="#7d1712" strokeWidth={2} opacity={0.6} />
-  </svg>
-);
+/**
+ * THE GESTURE — the finale's answer, given as an object rather than a word.
+ *
+ * Three drawings, one per video: a foam finger that wags "no", a flat palm that
+ * refuses, a stamp that comes down. All swing about the same wrist pivot, so
+ * the rig's choreography does not care which one it got.
+ */
+export const Gesture: React.FC<{height: number}> = ({height}) => {
+  const {palette, props} = useLook();
+  const width = height * 0.52;
+
+  if (props.gesture === 'flat-palm') {
+    return (
+      <svg width={width} height={height} viewBox="0 0 52 100" style={{display: 'block'}}>
+        <g fill={palette.danger} stroke={palette.ink} strokeWidth={2} strokeLinejoin="round">
+          <path d="M14 34 q0 -8 6 -8 t6 8 l0 -12 q0 -8 6 -8 t6 8 l0 12 q0 -6 5 -6 t5 6 l0 30 q0 22 -18 22 q-16 0 -20 -14 l-6 -20 q-2 -7 5 -9 q5 -1 7 5 z" />
+        </g>
+      </svg>
+    );
+  }
+
+  if (props.gesture === 'stamp') {
+    return (
+      <svg width={width} height={height} viewBox="0 0 52 100" style={{display: 'block'}}>
+        <g stroke={palette.ink} strokeWidth={2} strokeLinejoin="round">
+          <rect x={20} y={6} width={12} height={38} rx={5} fill={palette.paperDark} />
+          <rect x={6} y={44} width={40} height={22} rx={4} fill={palette.ink} />
+          <rect x={9} y={66} width={34} height={12} rx={2} fill={palette.danger} />
+        </g>
+      </svg>
+    );
+  }
+
+  return (
+    <svg width={width} height={height} viewBox="0 0 52 100" style={{display: 'block'}}>
+      <g fill={palette.danger} stroke={palette.ink} strokeWidth={2} strokeLinejoin="round">
+        <path d="M20 6 q6 -5 12 0 l0 40 8 -6 q7 -4 9 4 l0 34 q0 16 -18 16 l-10 0 q-14 0 -14 -16 l0 -30 q0 -8 7 -6 l6 3 z" />
+      </g>
+      <path d="M20 60 l16 0" stroke={palette.ink} strokeWidth={2} opacity={0.6} />
+    </svg>
+  );
+};
 
 /**
  * LAMP LIGHT, DRAWN.
@@ -181,6 +254,9 @@ export const FoamFinger: React.FC<{height: number}> = ({height}) => (
  * spill — plus a blurred funnel beam. When the lens defocuses, the core blooms
  * into a bokeh disc, because real defocused highlights grow; a gradient that
  * stays the same size through a blur reads as pasted on.
+ *
+ * The bloom takes its warmth from the video's accent, so a cold investigation
+ * and a gilded money room are not lit by the same bulb.
  */
 export const LampLight: React.FC<{x: number; y: number; defocus?: number; sway?: number}> = ({
   x,
@@ -188,6 +264,7 @@ export const LampLight: React.FC<{x: number; y: number; defocus?: number; sway?:
   defocus = 0,
   sway = 0,
 }) => {
+  const {palette} = useLook();
   const bloom = interpolate(defocus, [0, 1], [1, 2.4], CLAMP);
   const halo = interpolate(defocus, [0, 1], [1, 1.55], CLAMP);
   return (
@@ -206,7 +283,7 @@ export const LampLight: React.FC<{x: number; y: number; defocus?: number; sway?:
           top: y - 700,
           width: 1400,
           height: 1400,
-          background: 'radial-gradient(circle, rgba(255,236,190,0.30) 0%, rgba(255,214,140,0.12) 42%, rgba(0,0,0,0) 70%)',
+          background: `radial-gradient(circle, ${palette.accent}44 0%, ${palette.accentDark}22 42%, rgba(0,0,0,0) 70%)`,
           transform: `scale(${halo})`,
         }}
       />
@@ -217,7 +294,7 @@ export const LampLight: React.FC<{x: number; y: number; defocus?: number; sway?:
           top: y - 240,
           width: 480,
           height: 480,
-          background: 'radial-gradient(circle, rgba(255,240,205,0.85) 0%, rgba(255,206,120,0.45) 38%, rgba(0,0,0,0) 72%)',
+          background: `radial-gradient(circle, ${palette.paperLight}d0 0%, ${palette.accent}70 38%, rgba(0,0,0,0) 72%)`,
           transform: `scale(${halo})`,
         }}
       />
@@ -229,7 +306,7 @@ export const LampLight: React.FC<{x: number; y: number; defocus?: number; sway?:
           width: 180,
           height: 180,
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(255,255,248,0.98) 0%, rgba(255,236,180,0.6) 55%, rgba(0,0,0,0) 78%)',
+          background: `radial-gradient(circle, ${palette.white}fa 0%, ${palette.accent}99 55%, rgba(0,0,0,0) 78%)`,
           transform: `scale(${bloom})`,
           filter: `blur(${interpolate(defocus, [0, 1], [0, 14], CLAMP)}px)`,
         }}
@@ -242,7 +319,7 @@ export const LampLight: React.FC<{x: number; y: number; defocus?: number; sway?:
           top: y,
           width: 660,
           height: 1250,
-          background: 'linear-gradient(180deg, rgba(255,225,160,0.42) 0%, rgba(255,214,140,0.16) 46%, rgba(0,0,0,0) 92%)',
+          background: `linear-gradient(180deg, ${palette.accent}6b 0%, ${palette.accentDark}29 46%, rgba(0,0,0,0) 92%)`,
           clipPath: 'polygon(38% 0%, 62% 0%, 100% 100%, 0% 100%)',
           filter: 'blur(26px)',
         }}
@@ -257,6 +334,7 @@ export const SlotReel: React.FC<{word: string; spin: number; candidates: string[
   spin,
   candidates,
 }) => {
+  const {palette} = useLook();
   const list = [...candidates, word];
   const index = spin >= 1 ? list.length - 1 : Math.floor(spin * list.length * 3) % list.length;
   const settled = spin >= 1;
@@ -264,13 +342,13 @@ export const SlotReel: React.FC<{word: string; spin: number; candidates: string[
     <div
       style={{
         display: 'inline-block',
-        background: INK,
-        border: `4px solid ${MARIGOLD}`,
+        background: palette.ink,
+        border: `4px solid ${palette.accent}`,
         borderRadius: 12,
         padding: '12px 30px',
         overflow: 'hidden',
         transform: settled ? 'scale(1.06)' : 'scale(1)',
-        boxShadow: settled ? `0 0 44px ${MARIGOLD}` : 'none',
+        boxShadow: settled ? `0 0 44px ${palette.accent}` : 'none',
       }}
     >
       <span
@@ -278,7 +356,7 @@ export const SlotReel: React.FC<{word: string; spin: number; candidates: string[
           fontFamily: '"Archivo", Helvetica, sans-serif',
           fontWeight: 900,
           fontSize: 92,
-          color: MARIGOLD,
+          color: palette.accent,
           letterSpacing: '-0.03em',
           textTransform: 'uppercase',
         }}

@@ -2,6 +2,7 @@ import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 import type {Caption} from '../schema';
 import {CLAMP, entrance, posterizeTime} from './motion';
+import {useLook} from './look';
 
 /**
  * THE WORDS.
@@ -18,28 +19,28 @@ import {CLAMP, entrance, posterizeTime} from './motion';
 const SERIF = '"Playfair Display", "Iowan Old Style", Georgia, serif';
 const SANS = '"Archivo", "Helvetica Neue", Arial, sans-serif';
 
-const INK = '#16110d';
-const CREAM = '#ffeecc';
-const MARIGOLD = '#ffbe2e';
-
-/** A yellow pencil line that scribbles on under the words. */
-const Underline: React.FC<{progress: number; width: number}> = ({progress, width}) => (
+/** A pencil line, in the video's accent, that scribbles on under the words. */
+const Underline: React.FC<{progress: number; width: number}> = ({progress, width}) => {
+  const {palette} = useLook();
+  return (
   <svg width={width} height={26} viewBox={`0 0 ${width} 26`} style={{display: 'block', marginTop: 4}}>
     <path
       d={`M6 17 C ${width * 0.25} 6, ${width * 0.55} 25, ${width - 8} 12`}
       fill="none"
-      stroke={MARIGOLD}
+      stroke={palette.accent}
       strokeWidth={9}
       strokeLinecap="round"
       pathLength={1}
-      strokeDasharray={1}
-      strokeDashoffset={1 - progress}
+      style={{strokeDasharray: `${progress} 1`}}
     />
   </svg>
-);
+  );
+};
 
 /** A hand-drawn oval that circles the one word that carries the beat. */
-const Oval: React.FC<{progress: number; width: number; height: number}> = ({progress, width, height}) => (
+const Oval: React.FC<{progress: number; width: number; height: number}> = ({progress, width, height}) => {
+  const {palette} = useLook();
+  return (
   <svg
     width={width}
     height={height}
@@ -52,20 +53,21 @@ const Oval: React.FC<{progress: number; width: number; height: number}> = ({prog
       rx={width / 2 - 8}
       ry={height / 2 - 6}
       fill="none"
-      stroke={MARIGOLD}
+      stroke={palette.accent}
       strokeWidth={7}
       strokeLinecap="round"
       transform={`rotate(-3 ${width / 2} ${height / 2})`}
       pathLength={1}
-      strokeDasharray={1}
-      strokeDashoffset={1 - progress}
+      style={{strokeDasharray: `${progress} 1`}}
     />
   </svg>
-);
+  );
+};
 
 const CaptionLine: React.FC<{caption: Caption}> = ({caption}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
+  const {palette} = useLook();
   const local = frame - caption.atFrame;
   const life = caption.durationInFrames ?? 60;
   if (local < -1 || local > life) return null;
@@ -93,15 +95,15 @@ const CaptionLine: React.FC<{caption: Caption}> = ({caption}) => {
         <span
           style={{
             display: 'inline-block',
-            background: style === 'slot' ? INK : MARIGOLD,
-            color: style === 'slot' ? MARIGOLD : INK,
+            background: style === 'slot' ? palette.ink : palette.accent,
+            color: style === 'slot' ? palette.accent : palette.ink,
             fontFamily: SANS,
             fontWeight: 900,
             fontSize: style === 'slot' ? 96 : 74,
             letterSpacing: '-0.02em',
             padding: '10px 26px',
             borderRadius: 10,
-            border: `3px solid ${INK}`,
+            border: `3px solid ${palette.ink}`,
             boxShadow: '0 16px 30px -16px rgba(0,0,0,0.7)',
             textTransform: 'uppercase',
           }}
@@ -122,7 +124,7 @@ const CaptionLine: React.FC<{caption: Caption}> = ({caption}) => {
           fontWeight: isHeadline ? 900 : 700,
           fontSize: isHeadline ? 86 : 72,
           lineHeight: 1.08,
-          color: CREAM,
+          color: palette.paperLight,
           letterSpacing: isHeadline ? '-0.02em' : '-0.01em',
           // A DARK HALO, NOT A SUBTITLE BOX.
           //
@@ -130,7 +132,7 @@ const CaptionLine: React.FC<{caption: Caption}> = ({caption}) => {
           // beat, a bright newspaper the next — and cream on cream disappears.
           // A box would read as burnt-in subtitles and fight the editorial look,
           // so the words carry their own shadow instead.
-          WebkitTextStroke: '1.5px rgba(12,9,6,0.55)',
+          WebkitTextStroke: `1.5px ${palette.ink}8c`,
           textShadow:
             '0 0 22px rgba(0,0,0,0.95), 0 0 9px rgba(0,0,0,0.9), 0 6px 22px rgba(0,0,0,0.75), 0 2px 3px rgba(0,0,0,0.95)',
           display: 'inline-block',

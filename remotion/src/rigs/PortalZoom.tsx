@@ -4,6 +4,7 @@ import type {Beat} from '../schema';
 import {CLAMP, blurBurst, drift, posterizeTime} from '../engine/motion';
 import {Plate, pickAsset} from '../engine/Plate';
 import {GoldFrame, Plaque} from '../engine/props';
+import {useLook} from '../engine/look';
 
 /**
  * PORTAL ZOOM — the opener.
@@ -27,12 +28,13 @@ import {GoldFrame, Plaque} from '../engine/props';
 export const PortalZoom: React.FC<{beat: Beat}> = ({beat}) => {
   const frame = useCurrentFrame();
   const {fps, width, height} = useVideoConfig();
+  const {motion, palette} = useLook();
   const stepped = posterizeTime(frame, fps, 12);
 
   const pushEnd = beat.props.pushEndFrame ?? 46;
   const throughEnd = beat.props.throughEndFrame ?? 76;
   const detach = beat.props.detachFrame ?? 62;
-  const wallEnd = beat.props.wallScaleEnd ?? 6.8;
+  const wallEnd = beat.props.wallScaleEnd ?? motion.portalScale;
   const weld = beat.props.weldRatio ?? 0.369;
 
   const plate = pickAsset(beat.assets, 'plate');
@@ -73,14 +75,14 @@ export const PortalZoom: React.FC<{beat: Beat}> = ({beat}) => {
   const wallOpacity = interpolate(stepped, [pushEnd + 6, throughEnd - 6], [1, 0], CLAMP);
 
   // Parallax behind the subject: two layers, the second at 0.6× the speed.
-  const cloud1 = drift(stepped, -525, beat.durationInFrames);
+  const cloud1 = drift(stepped, motion.polarity * -525, beat.durationInFrames);
   const cloud2 = cloud1 * 0.6;
 
   const frameW = Math.round(width * 0.62);
   const frameH = Math.round(frameW * 1.24);
 
   return (
-    <AbsoluteFill style={{backgroundColor: '#0d0a07', filter: burst > 0.05 ? `blur(${burst}px)` : undefined}}>
+    <AbsoluteFill style={{backgroundColor: palette.ink, filter: burst > 0.05 ? `blur(${burst}px)` : undefined}}>
       {/* the museum wall the picture hangs on */}
       <AbsoluteFill style={{opacity: wallOpacity}}>
         <Plate

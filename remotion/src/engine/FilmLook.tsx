@@ -3,6 +3,7 @@ import {AbsoluteFill, useCurrentFrame, useVideoConfig} from 'remotion';
 import type {FilmLayers, Grade} from '../schema';
 import {DEFAULT_FILM, DEFAULT_GRADE} from '../schema';
 import {posterizeTime} from './motion';
+import {useLook} from './look';
 
 /**
  * THE FILM LOOK — written once, wrapped around every beat.
@@ -46,36 +47,42 @@ export const FilmLook: React.FC<
 }) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const on: FilmLayers = {...DEFAULT_FILM, ...layers};
+  const look = useLook();
+  // The video's own treatment strengths win; the arguments are only the floor.
+  const on: FilmLayers = {...DEFAULT_FILM, ...look.film, ...layers};
+  const travel = on.weavePx ?? weavePx;
+  const lift = on.weaveScale ?? weaveScale;
 
   // GATE WEAVE — the whole frame jitters like film sliding through a gate.
   // Stepped at the posterize rate so the weave stutters with everything else,
   // and the frame is scaled up slightly so the jitter never reveals an edge.
   const stepped = posterizeTime(frame, fps, posterizeFps);
-  const weaveX = on.weave ? Math.sin(stepped * 0.43) * weavePx : 0;
-  const weaveY = on.weave ? Math.cos(stepped * 0.37) * weavePx * 0.8 : 0;
+  const weaveX = on.weave ? Math.sin(stepped * 0.43) * travel : 0;
+  const weaveY = on.weave ? Math.cos(stepped * 0.37) * travel * 0.8 : 0;
   const grainX = ((stepped * 17) % 61) - 30;
   const grainY = ((stepped * 29) % 47) - 23;
 
   return (
-    <AbsoluteFill style={{backgroundColor: '#0b0906', overflow: 'hidden'}}>
+    <AbsoluteFill style={{backgroundColor: look.palette.ink, overflow: 'hidden'}}>
       <AbsoluteFill
         style={{
-          transform: `translate3d(${weaveX}px, ${weaveY}px, 0) scale(${on.weave ? weaveScale : 1})`,
+          transform: `translate3d(${weaveX}px, ${weaveY}px, 0) scale(${on.weave ? lift : 1})`,
           filter: gradeFilter(grade),
         }}
       >
         {children}
       </AbsoluteFill>
 
-      {/* Scan lines: a 1.6px line at 16% every 8px, softened just off-sharp. */}
+      {/* Scan lines: a 1.6px line, softened just off-sharp. Opacity and pitch
+          come from the video's look — a coarse gate reads as a different stock
+          than a fine one, and that difference is free identity. */}
       {on.scanlines ? (
         <AbsoluteFill
           style={{
             pointerEvents: 'none',
             filter: 'blur(0.7px)',
             backgroundImage:
-              'repeating-linear-gradient(90deg, rgba(0,0,0,0.16) 0 1.6px, rgba(0,0,0,0) 1.6px 8px)',
+              `repeating-linear-gradient(90deg, rgba(0,0,0,${on.scanlineOpacity ?? 0.16}) 0 1.6px, rgba(0,0,0,0) 1.6px ${on.scanlinePeriod ?? 8}px)`,
           }}
         />
       ) : null}
@@ -86,7 +93,7 @@ export const FilmLook: React.FC<
           style={{
             pointerEvents: 'none',
             inset: -60,
-            opacity: 0.55,
+            opacity: on.grainOpacity ?? 0.55,
             mixBlendMode: 'multiply',
             filter: 'invert(1) brightness(1.35) contrast(1.02)',
             transform: `translate(${grainX}px, ${grainY}px)`,
@@ -101,7 +108,7 @@ export const FilmLook: React.FC<
         <AbsoluteFill
           style={{
             pointerEvents: 'none',
-            opacity: 0.16,
+            opacity: on.grungeOpacity ?? 0.16,
             mixBlendMode: 'color-burn',
             backgroundImage: GRUNGE,
             backgroundSize: '900px 1500px',
@@ -114,7 +121,7 @@ export const FilmLook: React.FC<
           style={{
             pointerEvents: 'none',
             background:
-              'radial-gradient(ellipse 92% 82% at 50% 48%, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.5) 100%)',
+              `radial-gradient(ellipse 92% 82% at 50% 48%, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 55%, rgba(0,0,0,${on.vignetteStrength ?? 0.5}) 100%)`,
           }}
         />
       ) : null}
