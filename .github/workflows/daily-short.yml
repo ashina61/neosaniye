@@ -122,7 +122,7 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
       - name: Audit final MP4
-        if: ${{ !cancelled() && steps.produce.conclusion != 'skipped' }}
+        if: ${{ success() }}
         run: |
           V=$(find output -maxdepth 2 -name '*.mp4' -not -path '*/media/*' -not -name 'fullv.mp4' | head -1)
           G=$(find output -name 'publish-gates.json' | head -1)
