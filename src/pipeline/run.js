@@ -391,6 +391,15 @@ export async function runPipeline(opts = {}) {
       outPath,
     });
     console.log(`  ${video.width}x${video.height}, ${video.duration.toFixed(1)}s -> ${outPath}`);
+    // BEAT SHEET GÖRÜNÜR OLMALI: hangi satır hangi rig'e döndü, ekrandaki
+    // kelimeler ölçülmüş konuşmaya mı oturdu yoksa tahmin mi edildi. Bu iki
+    // soru yanlışsa video zaten yanlıştır; render loglarında saklı kalmamalı.
+    const beatTiming = video.renderPlan?.timing;
+    console.log(
+      `  beat sheet: ${(video.semanticBeats || []).map((b) => b.kind).join(' → ') || 'yok'}\n` +
+        `  yerleşim: ${beatTiming?.measuredCaptions ?? 0} ölçülen / ${beatTiming?.estimatedCaptions ?? 0} tahmin ` +
+        `(${beatTiming?.source || 'bilinmiyor'}) -> ${video.beatSheetPath || 'beat-sheet.md yok'}`,
+    );
 
     // GÖRSEL ANLATIM KAPISI: "slayt mı, anlatım mı?" Aynı görselin tekrarını ve
     // semantik anlatım yokluğunu yakalar — mevcut kapıların hiçbiri görmüyordu

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {planScene, planVisualStory, STORY_TEMPLATES} from '../src/crew/storyPlanner.js';
-import {classifyRemotionTemplate} from '../src/video/buildRemotionSpec.js';
+import {assignRig} from '../src/story/rigs.js';
 
 const scene = (narration, image_prompt = 'a beautiful cinematic shot') => ({narration, image_prompt});
 
@@ -65,7 +65,7 @@ test('her şablonun kamera planı ve tanımı vardır', () => {
   assert.ok(plan.camera_plan.start && plan.camera_plan.end);
 });
 
-test('planlanan story beat Remotion şablonuna taşınır', () => {
+test('planlanan story beat, rig seçimiyle birlikte yaşar', () => {
   const scenes = [
     scene('Opening surprise'),
     scene('A single termite walks out and marks the ground behind it'),
@@ -74,7 +74,13 @@ test('planlanan story beat Remotion şablonuna taşınır', () => {
   planVisualStory({scenes});
   assert.ok(scenes[1].story_beat, 'story beat taşınmadı');
   assert.equal(scenes[1].story_template, 'flow');
-  assert.equal(classifyRemotionTemplate(scenes[1], 1, scenes.length), 'map-route');
+  // Rig'i satırın KELİMELERİ seçer; hikâye planlayıcının şablonu görsel
+  // üretimi yönlendirir ama sahne mekaniğini artık o belirlemez.
+  const rig = assignRig(scenes[1].narration, 1, scenes.length, ['portal-zoom']);
+  assert.ok(
+    ['grounded-punch', 'money-room', 'paper-drop', 'villain-punch'].includes(rig),
+    `beklenmeyen rig: ${rig}`,
+  );
 });
 
 test('AI olmadan çalışır ve bozuk girdide çökmez', () => {

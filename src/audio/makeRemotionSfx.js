@@ -101,6 +101,12 @@ export async function makeRemotionSfxPack({outDir, publicPrefix, seed = 'neosani
       return first * 0.62 + second * 0.38;
     }],
     'final-boom': [1.7, (t) => Math.sin(2 * Math.PI * (47 - 9 * t) * t) * Math.exp(-1.85 * t) * 0.9 + Math.sin(2 * Math.PI * 23 * t) * Math.exp(-2.6 * t) * 0.4],
+    // Elektrik uğultusu: para odasındaki sallanan lambanın altında durur;
+    // ışığın kodla çizildiğini kulakla da doğrular.
+    'neon-buzz': [2.4, (t) => {
+      const flicker = t < 0.35 && Math.sin(2 * Math.PI * 31 * t) < 0 ? 0.35 : 1;
+      return (Math.sin(2 * Math.PI * 120 * t) * 0.18 + Math.sin(2 * Math.PI * 240 * t) * 0.07 + n2(t, 400) * 0.05) * flicker;
+    }],
   };
 
   const library = {};
@@ -109,7 +115,9 @@ export async function makeRemotionSfxPack({outDir, publicPrefix, seed = 'neosani
     library[family] = {
       path: `${publicPrefix}/${family}.wav`,
       durationInFrames: Math.ceil(seconds * 30),
-      volume: family === 'heartbeat' ? 0.42 : family === 'paper' ? 0.48 : 0.68,
+      // Karışım kuralı: kelimeler her zaman kazanır. Uğultu ve kalp atışı gibi
+      // altta duran aileler kısık, olay vuruşları (whoosh, impact) tam gelir.
+      volume: family === 'neon-buzz' ? 0.3 : family === 'heartbeat' ? 0.42 : family === 'paper' ? 0.48 : 0.68,
       license: 'proprietary-original',
       licenseEvidence: 'src/audio/makeRemotionSfx.js',
     };

@@ -2,7 +2,7 @@ import path from 'node:path';
 import {copyFile, mkdir, rm, stat} from 'node:fs/promises';
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
-import {buildRemotionSpec, writeRemotionSpec} from './buildRemotionSpec.js';
+import {buildReelSpec, writeBeatSheet, writeReelSpec} from './buildReelSpec.js';
 import {makeMusicBed} from '../audio/makeMusic.js';
 import {makeRemotionSfxPack} from '../audio/makeRemotionSfx.js';
 
@@ -50,17 +50,28 @@ async function copyIntoPublic(sourcePath, runDir, fileName) {
   return destination;
 }
 
-const ACTORS_BY_TEMPLATE = {
-  'hook-reveal': ['hero-cutout', 'kinetic-headline'],
-  'portrait-dossier': ['portrait-cutout', 'evidence-card'],
-  document: ['document-sheet', 'highlight-marker'],
-  'map-route': ['route-line', 'location-pins'],
-  'stat-slot': ['stat-counter', 'scale-marker'],
-  'explainer-diagram': ['process-nodes', 'flow-arrows'],
-  transaction: ['value-counter', 'exchange-arrows'],
-  consequence: ['cause-marker', 'impact-rings'],
-  'final-twist': ['final-reveal', 'loop-anchor'],
-  'collage-generic': ['collage-cutout'],
+/**
+ * What is actually moving in each rig. The QC layer downstream asks "did this
+ * scene stage a visual event, or is it a still with words on it?" — these are
+ * the answers, per mechanic.
+ */
+const ACTORS_BY_RIG = {
+  'portal-zoom': ['framed-photo', 'portal-frame', 'parallax-layer'],
+  'villain-punch': ['antagonist-cutout', 'prop-diamond', 'slot-reel'],
+  'paper-drop': ['headline-card', 'headline-card', 'headline-card'],
+  'grounded-punch': ['character-cutout', 'cast-shadow'],
+  'money-room': ['character-cutout', 'coded-light', 'highlight-flicker'],
+  'finale-clone': ['character-cutout', 'cast-shadow', 'gesture-prop'],
+};
+
+/** Where the eye is meant to be — the anchor each rig scales around. */
+const FOCUS_BY_RIG = {
+  'portal-zoom': {x: 0.5, y: 0.44},
+  'villain-punch': {x: 0.5, y: 0.4},
+  'paper-drop': {x: 0.5, y: 0.5},
+  'grounded-punch': {x: 0.52, y: 0.62},
+  'money-room': {x: 0.5, y: 0.52},
+  'finale-clone': {x: 0.52, y: 0.62},
 };
 
 function buildSceneMetadata(spec) {
@@ -68,16 +79,14 @@ function buildSceneMetadata(spec) {
   const sceneFocus = {};
   let actorScenes = 0;
 
-  spec.scenes.forEach((scene, index) => {
-    const actors = (ACTORS_BY_TEMPLATE[scene.template] || ACTORS_BY_TEMPLATE['collage-generic'])
-      .map((type) => ({type, source: 'remotion-template'}));
+  spec.beats.forEach((beat, index) => {
+    const actors = (ACTORS_BY_RIG[beat.rig] || ['character-cutout']).map((type) => ({
+      type,
+      source: 'remotion-rig',
+    }));
     actorsByScene[index] = actors;
-    sceneFocus[index] = {
-      x: scene.template === 'map-route' ? 0.5 : index % 2 ? 0.58 : 0.42,
-      y: scene.template === 'document' ? 0.47 : 0.44,
-      confidence: 1,
-      source: 'remotion-layout',
-    };
+    const focus = FOCUS_BY_RIG[beat.rig] || {x: 0.5, y: 0.46};
+    sceneFocus[index] = {...focus, confidence: 1, source: 'remotion-rig'};
     if (actors.length) actorScenes += 1;
   });
 
@@ -86,7 +95,7 @@ function buildSceneMetadata(spec) {
     sceneFocus,
     actorStats: {
       actorScenes,
-      cardScenes: spec.scenes.filter((scene) => ['document', 'portrait-dossier'].includes(scene.template)).length,
+      cardScenes: spec.beats.filter((beat) => beat.rig === 'paper-drop').length,
     },
   };
 }
@@ -124,6 +133,7 @@ export async function renderRemotion(job = {}) {
   const runDir = path.join(publicRoot, 'runs', runId);
   const workDir = path.dirname(path.resolve(outPath));
   const specPath = path.join(workDir, 'production.json');
+  const beatSheetPath = path.join(workDir, 'beat-sheet.md');
   const duration = await ffprobeDuration(audioPath);
   const keepPublicRun = process.env.REMOTION_KEEP_PUBLIC_RUNS === '1';
 
@@ -211,18 +221,18 @@ export async function renderRemotion(job = {}) {
       scenes,
     };
 
-    const spec = buildRemotionSpec({
+    const spec = buildReelSpec({
       script,
       audio: {duration},
       timeline,
       mediaItems,
-      editPlan,
       voicePath: `${publicPrefix}/${voiceName}`,
       musicPath: musicPublic,
       ambiencePath: ambiencePublic,
       sfxLibrary,
     });
-    await writeRemotionSpec(spec, specPath);
+    await writeReelSpec(spec, specPath);
+    await writeBeatSheet(spec, beatSheetPath);
 
     const remotionBin = path.join(
       remotionRoot,
@@ -238,7 +248,7 @@ export async function renderRemotion(job = {}) {
     await run(remotionBin, [
       'render',
       'src/index.ts',
-      'NeoSaniyeDynamicShort',
+      'NeoSaniyeReel',
       path.resolve(outPath),
       `--props=${path.resolve(specPath)}`,
       '--codec=h264',
@@ -252,17 +262,18 @@ export async function renderRemotion(job = {}) {
     });
 
     const outDuration = await ffprobeDuration(outPath);
-    const sfxCues = spec.scenes.flatMap((scene) => (scene.sfx || []).map((cue) => ({
-      atSeconds: (scene.fromFrame + cue.atFrame) / spec.meta.fps,
+    const sfxCues = spec.beats.flatMap((beat) => (beat.sfx || []).map((cue) => ({
+      atSeconds: (beat.fromFrame + cue.atFrame) / spec.meta.fps,
       sfxId: cue.family || path.basename(cue.path, path.extname(cue.path)),
       assetResolved: true,
       mixedInGraph: true,
     })));
-    const semanticBeats = spec.scenes.map((scene, index) => ({
+    const semanticBeats = spec.beats.map((beat, index) => ({
       index,
-      kind: scene.template,
-      start: scene.fromFrame / spec.meta.fps,
-      end: (scene.fromFrame + scene.durationInFrames) / spec.meta.fps,
+      kind: beat.rig,
+      role: beat.role,
+      start: beat.fromFrame / spec.meta.fps,
+      end: (beat.fromFrame + beat.durationInFrames) / spec.meta.fps,
     }));
     const sceneMeta = buildSceneMetadata(spec);
 
@@ -271,7 +282,7 @@ export async function renderRemotion(job = {}) {
       duration: outDuration,
       width: spec.meta.width,
       height: spec.meta.height,
-      clips: spec.scenes.length,
+      clips: spec.beats.length,
       outro: false,
       ctaCue: null,
       musicTrack,
@@ -282,56 +293,59 @@ export async function renderRemotion(job = {}) {
       ...sceneMeta,
       renderPlan: {
         engine: 'remotion',
-        overlayLayers: ['hook', 'kineticText', 'collage'],
+        overlayLayers: ['rig', 'spokenCaption', 'filmLook'],
         overlayWindows: {
-          hook: spec.scenes.length
-            ? [[0, Math.min(3.2, spec.scenes[0].durationInFrames / spec.meta.fps)]]
+          hook: spec.beats.length
+            ? [[0, Math.min(3.2, spec.beats[0].durationInFrames / spec.meta.fps)]]
             : [],
           cta: [],
-          diagram: spec.scenes
-            .filter((scene) => scene.template === 'explainer-diagram')
-            .map((scene) => [
-              scene.fromFrame / spec.meta.fps,
-              (scene.fromFrame + scene.durationInFrames) / spec.meta.fps,
+          diagram: spec.beats
+            .filter((beat) => beat.rig === 'paper-drop')
+            .map((beat) => [
+              beat.fromFrame / spec.meta.fps,
+              (beat.fromFrame + beat.durationInFrames) / spec.meta.fps,
             ]),
           loopEcho: [],
           listMarker: [],
         },
-        clips: spec.scenes.map((scene, index) => ({
-          id: scene.id,
+        clips: spec.beats.map((beat, index) => ({
+          id: beat.id,
           scene: index,
           sequence: 0,
           renderOrder: index,
           loopEcho: false,
-          start: +(scene.fromFrame / spec.meta.fps).toFixed(3),
-          end: +((scene.fromFrame + scene.durationInFrames) / spec.meta.fps).toFixed(3),
-          assetId: scene.assets?.[0]?.path || `${scene.template}:${scene.id}`,
-          source: scene.assets?.[0] ? 'pipeline-media' : 'procedural-collage',
+          start: +(beat.fromFrame / spec.meta.fps).toFixed(3),
+          end: +((beat.fromFrame + beat.durationInFrames) / spec.meta.fps).toFixed(3),
+          assetId: beat.assets?.[0]?.path || `${beat.rig}:${beat.id}`,
+          source: beat.assets?.[0] ? 'pipeline-media' : 'coded-rig',
         })),
-        expectedSceneCount: spec.scenes.length,
-        sceneBoundaries: spec.scenes.slice(0, -1)
-          .map((scene) => (scene.fromFrame + scene.durationInFrames) / spec.meta.fps),
-        transitions: spec.scenes.slice(0, -1).map((scene) => ({
-          type: scene.transition || 'cut',
-          atSeconds: (scene.fromFrame + scene.durationInFrames) / spec.meta.fps,
+        expectedSceneCount: spec.beats.length,
+        sceneBoundaries: spec.beats.slice(0, -1)
+          .map((beat) => (beat.fromFrame + beat.durationInFrames) / spec.meta.fps),
+        transitions: spec.beats.slice(0, -1).map((beat) => ({
+          type: 'cut',
+          atSeconds: (beat.fromFrame + beat.durationInFrames) / spec.meta.fps,
         })),
         captionsIncluded: false,
-        captionEventCount: 0,
+        captionEventCount: spec.beats.reduce((total, beat) => total + (beat.captions?.length || 0), 0),
         wordHighlightEventCount: 0,
         fallbackLadder: {
           engine: 'remotion',
-          proceduralFallbacks: spec.scenes.filter((scene) => !scene.assets?.length).length,
+          proceduralFallbacks: spec.beats.filter((beat) => !beat.assets?.length).length,
         },
         expectedSfxCount: sfxCues.length,
-        motion: spec.scenes.map((scene, index) => ({
+        motion: spec.beats.map((beat, index) => ({
           index,
-          type: scene.template,
+          type: beat.rig,
           semantic: true,
         })),
         motionIssues: [],
+        // How much of this reel was cut to real speech rather than guessed.
+        timing: spec.timing,
       },
       productionSpec: spec,
       productionSpecPath: specPath,
+      beatSheetPath,
     };
   } finally {
     if (!keepPublicRun) await rm(runDir, {recursive: true, force: true}).catch(() => {});

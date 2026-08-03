@@ -8,7 +8,12 @@ async function exists(filePath) {
 
 // Bu liste geçiş dönemindeki dosyaların yanlışlıkla yeniden üretim yoluna
 // eklenmesini engeller; yeni motion özellikleri yalnız remotion/ altında yaşar.
+//
+// Kolaj şablon hattı (DynamicShort + buildRemotionSpec) da bu listeye eklendi:
+// artık sahne türü "şablon" değil RIG'tir ve sahneyi seslendirme satırı seçer.
 const removedPaths = [
+  'remotion/src/DynamicShort.tsx',
+  'src/video/buildRemotionSpec.js',
   'src/video/renderRouter.js',
   'src/video/outro.js',
   'src/video/motionPlan.js',
@@ -65,6 +70,53 @@ test('orkestratör eski CTA motorunu ve config.motion ayarını taşımaz', asyn
   assert.doesNotMatch(runSource, /applyCta|getRecentCtaTypes|config\.motion/);
   assert.doesNotMatch(configSource, /\bmotion\s*:\s*\{/);
   assert.match(runSource, /integrated-in-remotion/);
+});
+
+test('motor tek yerde yaşar: posterize, film görünümü ve rig kütüphanesi', async () => {
+  const motion = await readFile('remotion/src/engine/motion.ts', 'utf8');
+  for (const helper of ['posterizeTime', 'boil', 'drift', 'pingpong', 'entrance', 'dampedWag', 'holdKeyframes']) {
+    assert.match(motion, new RegExp(`export function ${helper}`), `motion motorunda ${helper} yok`);
+  }
+
+  const filmLook = await readFile('remotion/src/engine/FilmLook.tsx', 'utf8');
+  for (const layer of ['scanlines', 'grain', 'grunge', 'vignette', 'weave']) {
+    assert.match(filmLook, new RegExp(layer), `film görünümünde ${layer} katmanı yok`);
+  }
+
+  // Her rig kendi dosyasında; hiçbiri kendi film işlemesini yapmaz — görünüm
+  // tek sarmalayıcıdan gelir, yoksa altı sahne altı ayrı videoya benzer.
+  const rigFiles = [
+    'PortalZoom', 'VillainPunch', 'PaperDrop', 'GroundedPunch', 'MoneyRoom', 'FinaleClone',
+  ];
+  for (const rig of rigFiles) {
+    const source = await readFile(`remotion/src/rigs/${rig}.tsx`, 'utf8');
+    assert.doesNotMatch(source, /FilmLook/, `${rig} kendi film işlemesini yapıyor`);
+  }
+});
+
+test('render giriş noktası reel kompozisyonunu ve beat sheet artefaktını üretir', async () => {
+  const source = await readFile('src/video/renderRemotion.js', 'utf8');
+  assert.match(source, /NeoSaniyeReel/);
+  assert.match(source, /buildReelSpec/);
+  assert.match(source, /writeBeatSheet/);
+  assert.doesNotMatch(source, /buildRemotionSpec|NeoSaniyeDynamicShort/);
+});
+
+test('fixture spec yeni beat şemasını taşır', async () => {
+  const fixture = JSON.parse(await readFile('fixtures/remotion/production.json', 'utf8'));
+  assert.equal(fixture.version, 2);
+  assert.ok(Array.isArray(fixture.beats) && fixture.beats.length > 0);
+  assert.equal(fixture.scenes, undefined, 'eski scenes alanı hâlâ duruyor');
+  assert.equal(fixture.engine.posterizeFps, 12);
+  for (const beat of fixture.beats) {
+    assert.ok(beat.rig && beat.line, `${beat.id} rig veya seslendirme satırı taşımıyor`);
+    for (const caption of beat.captions || []) {
+      assert.ok(
+        beat.line.toLowerCase().includes(caption.text.toLowerCase()),
+        `fixture ${beat.id}: "${caption.text}" seslendirme satırında geçmiyor`,
+      );
+    }
+  }
 });
 
 test('Remotion package bağımsız ve sürümleri sabitlenmiştir', async () => {
