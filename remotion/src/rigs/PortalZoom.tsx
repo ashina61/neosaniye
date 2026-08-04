@@ -5,7 +5,9 @@ import {CLAMP, blurBurst, drift, posterizeTime} from '../engine/motion';
 import {Plate, pickAsset} from '../engine/Plate';
 import {GoldFrame, Plaque} from '../engine/props';
 import {useLook} from '../engine/look';
-import {GalleryWall, StreetStage} from '../engine/stage';
+import {GalleryWall, Stage} from '../engine/stage';
+import {Motif} from '../engine/motifs';
+import {Atmosphere} from '../engine/atmosphere';
 
 /**
  * PORTAL ZOOM — the opener.
@@ -120,7 +122,12 @@ export const PortalZoom: React.FC<{beat: Beat}> = ({beat}) => {
                 // No photograph found: the frame still has to hold a PICTURE,
                 // not more wall, or the fly-through lands on nothing.
                 <AbsoluteFill style={{filter: `grayscale(${colour})`}}>
-                  <StreetStage seed={`${beat.id}-in`} />
+                  <Stage id={beat.props.set} seed={`${beat.id}-in`} />
+                  {beat.props.motif ? (
+                    <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center'}}>
+                      <Motif id={beat.props.motif} size={Math.round(frameW * 0.62)} seed={beat.id} />
+                    </AbsoluteFill>
+                  ) : null}
                 </AbsoluteFill>
               )}
             </div>
@@ -149,6 +156,8 @@ export const PortalZoom: React.FC<{beat: Beat}> = ({beat}) => {
       >
         <GoldFrame width={frameW} height={frameH} />
       </AbsoluteFill>
+
+      <Atmosphere id={beat.props.atmosphere ?? 'none'} seed={beat.id} intensity={0.8} />
 
       {/* the plaque reads the date, then leaves with the wall */}
       {beat.props.slotWord ? (

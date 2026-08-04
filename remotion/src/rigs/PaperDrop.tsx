@@ -5,7 +5,8 @@ import {CLAMP, entrance, posterizeTime} from '../engine/motion';
 import {Plate, pickAsset} from '../engine/Plate';
 import {NewspaperCard} from '../engine/props';
 import {useLook} from '../engine/look';
-import {DeskStage} from '../engine/stage';
+import {Stage} from '../engine/stage';
+import {Atmosphere} from '../engine/atmosphere';
 
 /**
  * PAPER DROP — the beat that carries a list.
@@ -49,7 +50,7 @@ export const PaperDrop: React.FC<{beat: Beat}> = ({beat}) => {
     <AbsoluteFill style={{backgroundColor: palette.ink}}>
       {/* the desk is drawn; a found photograph of one lies over it */}
       <AbsoluteFill style={{transform: `scale(${ken})`, filter: focus > 0 ? `blur(${focus}px)` : undefined}}>
-        <DeskStage seed={beat.id} />
+        <Stage id={beat.props.set ?? 'desk'} seed={beat.id} />
         {desk ? <Plate asset={desk} scale={1} opacity={0.72} /> : null}
       </AbsoluteFill>
 
@@ -81,6 +82,8 @@ export const PaperDrop: React.FC<{beat: Beat}> = ({beat}) => {
           );
         })}
       </AbsoluteFill>
+
+      <Atmosphere id={beat.props.atmosphere ?? 'none'} seed={beat.id} intensity={0.7} />
 
       {/* a tight vignette so the stack, not the desk, owns the frame */}
       <AbsoluteFill

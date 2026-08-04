@@ -22,6 +22,7 @@
 
 import {assignRig, rigAssets, rigGradeDelta, rigRole, rigSfx, RIG_CATALOG} from './rigs.js';
 import {applyGradeDelta, chooseLook} from './look.js';
+import {readSubject} from './subject.js';
 
 const WORD_RE = /[\p{L}\p{N}]+(?:['’][\p{L}\p{N}]+)*/gu;
 
@@ -365,7 +366,21 @@ export function buildBeatSheet({script, timeline, look = null, fps = 30} = {}) {
 
     // Each card lands ON its promise — measured, so the paper hits the word.
     const cardFrames = cards.map((card, order) => frameFor(card, 0.16 + order * 0.28));
-    const props = buildProps({rig, durationInFrames, line, cards, cardFrames, numberText, plaqueText});
+    // WHAT THIS LINE IS ABOUT — the set it is staged in, the object it draws
+    // and what is in the air. Read from the line itself, so two topics never
+    // share a drawing, and scenes inside one video differ from each other.
+    const subject = readSubject({
+      line,
+      topic: script?.topic || script?.normalizedTopic || '',
+      rig,
+      seed: identity.seed,
+      index,
+    });
+
+    const props = {
+      ...buildProps({rig, durationInFrames, cards, cardFrames, numberText, plaqueText}),
+      ...subject,
+    };
 
     return {
       id: `beat-${String(index + 1).padStart(2, '0')}`,

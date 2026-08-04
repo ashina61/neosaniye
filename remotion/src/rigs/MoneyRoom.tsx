@@ -5,7 +5,9 @@ import {CLAMP, holdKeyframes, pingpong, posterizeTime} from '../engine/motion';
 import {Plate, pickAsset} from '../engine/Plate';
 import {LampLight} from '../engine/props';
 import {useLook} from '../engine/look';
-import {StudyStage} from '../engine/stage';
+import {Stage} from '../engine/stage';
+import {Motif} from '../engine/motifs';
+import {Atmosphere} from '../engine/atmosphere';
 
 /**
  * MONEY ROOM — the payoff.
@@ -51,10 +53,17 @@ export const MoneyRoom: React.FC<{beat: Beat}> = ({beat}) => {
     <AbsoluteFill style={{backgroundColor: palette.ink}}>
       <AbsoluteFill style={{transform: `scale(${camScale})`, filter: defocus > 0.02 ? `blur(${defocus * 9}px)` : undefined}}>
         <AbsoluteFill style={{transform: 'scale(1.04)'}}>
-          <StudyStage seed={beat.id} />
+          <Stage id={beat.props.set ?? 'study'} seed={beat.id} />
         </AbsoluteFill>
         {plate ? <Plate asset={plate} scale={1.04} opacity={0.85} /> : null}
-        {character ? <Plate asset={character} scale={0.98} translateY={height * 0.05} cutout boilPhase={20} /> : null}
+        {character ? (
+          <Plate asset={character} scale={0.98} translateY={height * 0.05} cutout boilPhase={20} />
+        ) : beat.props.motif ? (
+          <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center', paddingTop: height * 0.1}}>
+            <Motif id={beat.props.motif} size={Math.round(width * 0.4)} seed={beat.id} />
+          </AbsoluteFill>
+        ) : null}
+        <Atmosphere id={beat.props.atmosphere ?? 'none'} seed={beat.id} />
 
         {/* the light — none of it is in the photograph */}
         <LampLight x={lampX} y={lampY} defocus={defocus} sway={sway} />

@@ -416,3 +416,371 @@ export const StudyStage: React.FC<{seed?: string}> = ({seed = 'study'}) => {
     </AbsoluteFill>
   );
 };
+
+
+/* ============================================================================
+ * MORE PLACES.
+ *
+ * Five sets meant a whale documentary and a bank robbery were staged in the
+ * same room with different paint. A set is not decoration — it is the answer
+ * to "where am I", and that answer has to come from the line, not from the rig.
+ * ==========================================================================*/
+
+/** OCEAN — surface line, depth falloff, light shafts from above. */
+export const OceanSet: React.FC<{seed?: string}> = ({seed = 'ocean'}) => {
+  const {palette, motion} = useLook();
+  return (
+    <AbsoluteFill style={{overflow: 'hidden'}}>
+      <AbsoluteFill
+        style={{
+          background: `linear-gradient(180deg, ${alpha(palette.cool, 0.55)} 0%, ${alpha(palette.cool, 0.28)} 26%, ${alpha(palette.ink, 0.9)} 74%, ${palette.ink} 100%)`,
+        }}
+      />
+      {/* the surface, seen from just underneath */}
+      <div
+        style={{
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          top: '16%',
+          height: 6,
+          background: alpha(palette.paperLight, 0.5),
+          filter: 'blur(3px)',
+        }}
+      />
+      {/* shafts coming through the surface */}
+      <AbsoluteFill
+        style={{
+          mixBlendMode: 'screen',
+          opacity: 0.35,
+          transform: `rotate(${6 * motion.polarity}deg) scale(1.5)`,
+          background: `repeating-linear-gradient(90deg, ${alpha(palette.paperLight, 0.2)} 0 22px, rgba(0,0,0,0) 22px 110px)`,
+          filter: 'blur(16px)',
+        }}
+      />
+      {/* seabed */}
+      <div
+        style={{
+          position: 'absolute',
+          left: '-10%',
+          right: '-10%',
+          bottom: '-6%',
+          height: '26%',
+          borderRadius: '50% 50% 0 0',
+          background: `linear-gradient(180deg, ${alpha(palette.paperDark, 0.28)} 0%, ${palette.ink} 70%)`,
+          filter: 'blur(2px)',
+          opacity: 0.6 + hash01(seed, 4) * 0.2,
+        }}
+      />
+    </AbsoluteFill>
+  );
+};
+
+/** SPACE — a planet limb, a starfield and the black. */
+export const SpaceSet: React.FC<{seed?: string}> = ({seed = 'space'}) => {
+  const {palette, motion} = useLook();
+  const side = motion.polarity > 0 ? '58%' : '42%';
+  return (
+    <AbsoluteFill style={{overflow: 'hidden'}}>
+      <AbsoluteFill style={{background: `radial-gradient(ellipse 90% 70% at 50% 20%, ${alpha(palette.cool, 0.18)} 0%, ${palette.ink} 68%)`}} />
+      {/* planet limb across the lower frame, lit on one side */}
+      <div
+        style={{
+          position: 'absolute',
+          left: '-40%',
+          right: '-40%',
+          top: '62%',
+          height: '90%',
+          borderRadius: '50%',
+          background: `radial-gradient(ellipse 60% 50% at ${side} 12%, ${alpha(palette.paperDark, 0.55)} 0%, ${alpha(palette.accentDark, 0.35)} 34%, ${palette.ink} 72%)`,
+          boxShadow: `inset 0 12px 60px ${alpha(palette.accent, 0.3)}`,
+        }}
+      />
+      {/* atmosphere rim */}
+      <div
+        style={{
+          position: 'absolute',
+          left: '-40%',
+          right: '-40%',
+          top: '61%',
+          height: 10,
+          borderRadius: '50%',
+          background: alpha(palette.cool, 0.5),
+          filter: 'blur(6px)',
+          opacity: 0.8 - hash01(seed, 6) * 0.2,
+        }}
+      />
+    </AbsoluteFill>
+  );
+};
+
+/** VAULT — a bank's back room: a steel door, a tiled floor, a hard light. */
+export const VaultSet: React.FC<{seed?: string}> = ({seed = 'vault'}) => {
+  const {palette} = useLook();
+  return (
+    <AbsoluteFill style={{overflow: 'hidden'}}>
+      <AbsoluteFill style={{background: `linear-gradient(180deg, ${alpha(palette.paperDark, 0.3)} 0%, ${palette.ink} 76%)`}} />
+      {/* the door: a huge disc with bolt rings */}
+      <div
+        style={{
+          position: 'absolute',
+          left: '50%',
+          top: '38%',
+          width: '78%',
+          aspectRatio: '1',
+          transform: 'translate(-50%, -50%)',
+          borderRadius: '50%',
+          background: `radial-gradient(circle at 38% 32%, ${alpha(palette.paperDark, 0.5)} 0%, ${alpha(palette.ink, 0.96)} 62%)`,
+          border: `10px solid ${alpha(palette.accentDark, 0.55)}`,
+          boxShadow: `inset 0 0 80px ${alpha(palette.ink, 0.95)}, 0 30px 70px ${alpha(palette.ink, 0.9)}`,
+        }}
+      >
+        {Array.from({length: 12}, (_, i) => (
+          <div
+            key={i}
+            style={{
+              position: 'absolute',
+              left: '50%',
+              top: '50%',
+              width: 14,
+              height: 14,
+              borderRadius: '50%',
+              background: alpha(palette.accent, 0.4),
+              transform: `rotate(${i * 30}deg) translateY(-42%) translateX(-50%)`,
+            }}
+          />
+        ))}
+        <div
+          style={{
+            position: 'absolute',
+            inset: '30%',
+            borderRadius: '50%',
+            border: `6px solid ${alpha(palette.accent, 0.4)}`,
+          }}
+        />
+      </div>
+      <Floor horizon={78} lightX={50} />
+    </AbsoluteFill>
+  );
+};
+
+/** COURT — panelled wall, a bench, the light of a hearing. */
+export const CourtSet: React.FC<{seed?: string}> = ({seed = 'court'}) => {
+  const {palette} = useLook();
+  const panels = 6 + Math.floor(hash01(seed, 3) * 3);
+  return (
+    <AbsoluteFill style={{overflow: 'hidden'}}>
+      <AbsoluteFill style={{background: `linear-gradient(180deg, ${alpha(palette.accentDark, 0.34)} 0%, ${palette.ink} 82%)`}} />
+      <div style={{position: 'absolute', left: 0, right: 0, top: '10%', height: '52%', display: 'flex', gap: 8, paddingInline: 10}}>
+        {Array.from({length: panels}, (_, i) => (
+          <div
+            key={i}
+            style={{
+              flex: 1,
+              border: `3px solid ${alpha(palette.ink, 0.7)}`,
+              background: alpha(palette.paperDark, 0.14 + hash01(seed, i) * 0.1),
+              boxShadow: `inset 0 0 30px ${alpha(palette.ink, 0.7)}`,
+            }}
+          />
+        ))}
+      </div>
+      {/* the bench, heavy and dark, across the middle */}
+      <div
+        style={{
+          position: 'absolute',
+          left: '-6%',
+          right: '-6%',
+          top: '60%',
+          height: '16%',
+          background: `linear-gradient(180deg, ${alpha(palette.paperDark, 0.4)} 0%, ${palette.ink} 60%)`,
+          borderTop: `4px solid ${alpha(palette.accent, 0.3)}`,
+          boxShadow: `0 24px 50px ${alpha(palette.ink, 0.95)}`,
+        }}
+      />
+      <Floor horizon={76} lightX={50} />
+    </AbsoluteFill>
+  );
+};
+
+/** LAB — tiled wall, a bench of glassware silhouettes, cold light. */
+export const LabSet: React.FC<{seed?: string}> = ({seed = 'lab'}) => {
+  const {palette} = useLook();
+  return (
+    <AbsoluteFill style={{overflow: 'hidden'}}>
+      <AbsoluteFill style={{background: `linear-gradient(180deg, ${alpha(palette.cool, 0.26)} 0%, ${palette.ink} 78%)`}} />
+      {/* tiles */}
+      <AbsoluteFill
+        style={{
+          opacity: 0.4,
+          backgroundImage: `linear-gradient(${alpha(palette.ink, 0.6)} 2px, transparent 2px), linear-gradient(90deg, ${alpha(palette.ink, 0.6)} 2px, transparent 2px)`,
+          backgroundSize: '92px 92px',
+          maskImage: 'linear-gradient(180deg, #000 0%, rgba(0,0,0,0) 72%)',
+          WebkitMaskImage: 'linear-gradient(180deg, #000 0%, rgba(0,0,0,0) 72%)',
+        }}
+      />
+      {/* bench with glassware shapes */}
+      <div style={{position: 'absolute', left: 0, right: 0, top: '58%', height: '14%', display: 'flex', alignItems: 'flex-end', gap: 22, paddingInline: 40}}>
+        {Array.from({length: 5}, (_, i) => (
+          <div
+            key={i}
+            style={{
+              width: 40 + hash01(seed, i * 5) * 40,
+              height: `${50 + hash01(seed, i * 7) * 50}%`,
+              borderRadius: '40% 40% 12% 12%',
+              background: alpha(palette.cool, 0.16),
+              border: `2px solid ${alpha(palette.paperLight, 0.24)}`,
+            }}
+          />
+        ))}
+      </div>
+      <div style={{position: 'absolute', left: '-6%', right: '-6%', top: '72%', height: 12, background: alpha(palette.paperDark, 0.34)}} />
+      <Floor horizon={74} lightX={50} />
+    </AbsoluteFill>
+  );
+};
+
+/** FACTORY — girders, a gantry and a floor that goes back a long way. */
+export const FactorySet: React.FC<{seed?: string}> = ({seed = 'factory'}) => {
+  const {palette, motion} = useLook();
+  const bays = 5 + Math.floor(hash01(seed, 7) * 3);
+  return (
+    <AbsoluteFill style={{overflow: 'hidden'}}>
+      <AbsoluteFill style={{background: `linear-gradient(180deg, ${alpha(palette.ink, 0.9)} 0%, ${alpha(palette.accentDark, 0.26)} 46%, ${palette.ink} 88%)`}} />
+      {/* roof girders in perspective */}
+      {Array.from({length: bays}, (_, i) => {
+        const depth = i / bays;
+        return (
+          <div
+            key={i}
+            style={{
+              position: 'absolute',
+              left: `${8 + depth * 26}%`,
+              right: `${8 + depth * 26}%`,
+              top: `${6 + depth * 16}%`,
+              height: 10,
+              background: alpha(palette.ink, 0.9 - depth * 0.3),
+              borderTop: `2px solid ${alpha(palette.accent, 0.22)}`,
+            }}
+          />
+        );
+      })}
+      {/* the hanging lamp row that lights the hall */}
+      <AbsoluteFill
+        style={{
+          mixBlendMode: 'screen',
+          background: `radial-gradient(ellipse 40% 26% at ${motion.polarity > 0 ? 44 : 56}% 40%, ${alpha(palette.accent, 0.34)} 0%, rgba(0,0,0,0) 70%)`,
+        }}
+      />
+      <Floor horizon={70} lightX={motion.polarity > 0 ? 44 : 56} />
+    </AbsoluteFill>
+  );
+};
+
+/** FOREST — trunks in depth, canopy light, undergrowth dark. */
+export const ForestSet: React.FC<{seed?: string}> = ({seed = 'forest'}) => {
+  const {palette} = useLook();
+  const trunks = 7 + Math.floor(hash01(seed, 9) * 4);
+  return (
+    <AbsoluteFill style={{overflow: 'hidden'}}>
+      <AbsoluteFill style={{background: `linear-gradient(180deg, ${alpha(palette.cool, 0.34)} 0%, ${alpha(palette.accentDark, 0.2)} 44%, ${palette.ink} 86%)`}} />
+      {Array.from({length: trunks}, (_, i) => {
+        const depth = hash01(seed, i * 13);
+        const w = 20 + depth * 60;
+        return (
+          <div
+            key={i}
+            style={{
+              position: 'absolute',
+              left: `${hash01(seed, i * 3) * 100}%`,
+              top: `${-6 + depth * 12}%`,
+              width: w,
+              height: `${72 + depth * 22}%`,
+              background: alpha(palette.ink, 0.55 + depth * 0.4),
+              filter: `blur(${(1 - depth) * 3}px)`,
+              transform: `rotate(${(hash01(seed, i * 17) - 0.5) * 4}deg)`,
+            }}
+          />
+        );
+      })}
+      <AbsoluteFill
+        style={{
+          mixBlendMode: 'screen',
+          opacity: 0.4,
+          background: `radial-gradient(ellipse 50% 30% at 50% 4%, ${alpha(palette.accent, 0.4)} 0%, rgba(0,0,0,0) 72%)`,
+        }}
+      />
+      <Floor horizon={82} lightX={50} />
+    </AbsoluteFill>
+  );
+};
+
+/** RUINS — a broken arcade, rubble, a sky where a roof used to be. */
+export const RuinsSet: React.FC<{seed?: string}> = ({seed = 'ruins'}) => {
+  const {palette} = useLook();
+  const arches = 4 + Math.floor(hash01(seed, 11) * 3);
+  return (
+    <AbsoluteFill style={{overflow: 'hidden'}}>
+      <AbsoluteFill style={{background: `linear-gradient(180deg, ${alpha(palette.paperDark, 0.34)} 0%, ${alpha(palette.ink, 0.92)} 62%, ${palette.ink} 100%)`}} />
+      <div style={{position: 'absolute', left: 0, right: 0, top: '22%', height: '46%', display: 'flex', alignItems: 'flex-end', gap: 14, paddingInline: 20}}>
+        {Array.from({length: arches}, (_, i) => (
+          <div
+            key={i}
+            style={{
+              flex: 1,
+              height: `${52 + hash01(seed, i * 5) * 48}%`,
+              borderRadius: '50% 50% 0 0 / 26% 26% 0 0',
+              border: `14px solid ${palette.ink}`,
+              borderBottom: 'none',
+              // a broken top edge: the arch is chewed away at one corner
+              clipPath: hash01(seed, i * 7) > 0.5 ? 'polygon(0 12%, 62% 0, 100% 18%, 100% 100%, 0 100%)' : undefined,
+              opacity: 0.9,
+            }}
+          />
+        ))}
+      </div>
+      <Floor horizon={68} lightX={50} />
+      {/* rubble along the ground line */}
+      {Array.from({length: 10}, (_, i) => (
+        <div
+          key={i}
+          style={{
+            position: 'absolute',
+            left: `${hash01(seed, i * 19) * 96}%`,
+            top: `${67 + hash01(seed, i * 23) * 6}%`,
+            width: 16 + hash01(seed, i * 29) * 34,
+            height: 10 + hash01(seed, i * 31) * 16,
+            background: palette.ink,
+            transform: `rotate(${(hash01(seed, i * 37) - 0.5) * 40}deg)`,
+          }}
+        />
+      ))}
+    </AbsoluteFill>
+  );
+};
+
+export type SetId =
+  | 'gallery' | 'villain' | 'desk' | 'street' | 'study'
+  | 'ocean' | 'space' | 'vault' | 'court' | 'lab' | 'factory' | 'forest' | 'ruins';
+
+/**
+ * The set dispatcher. A rig asks for a place by name and gets it — the mechanic
+ * does not care whether the punch happens on a street, in a vault or under
+ * water, which is the whole reason a rig can be reused at all.
+ */
+export const Stage: React.FC<{id?: SetId; seed?: string}> = ({id = 'street', seed = 'set'}) => {
+  switch (id) {
+    case 'gallery': return <GalleryWall seed={seed} />;
+    case 'villain': return <VillainStage />;
+    case 'desk': return <DeskStage seed={seed} />;
+    case 'study': return <StudyStage seed={seed} />;
+    case 'ocean': return <OceanSet seed={seed} />;
+    case 'space': return <SpaceSet seed={seed} />;
+    case 'vault': return <VaultSet seed={seed} />;
+    case 'court': return <CourtSet seed={seed} />;
+    case 'lab': return <LabSet seed={seed} />;
+    case 'factory': return <FactorySet seed={seed} />;
+    case 'forest': return <ForestSet seed={seed} />;
+    case 'ruins': return <RuinsSet seed={seed} />;
+    default: return <StreetStage seed={seed} />;
+  }
+};

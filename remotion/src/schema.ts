@@ -6,6 +6,10 @@
  * re-cast without touching a component.
  */
 
+import type {SetId} from './engine/stage';
+import type {MotifId} from './engine/motifs';
+import type {AtmosphereId} from './engine/atmosphere';
+
 /** The signature animation a beat runs on. */
 export type RigId =
   | 'portal-zoom'
@@ -160,6 +164,14 @@ export type RigProps = {
   focusDipFrame?: number;
   /** shared */
   kenBurns?: number;
+  /**
+   * What the line is about — read from the line itself, not from the rig.
+   * `set` is the place, `motif` the drawn object, `atmosphere` the effect in
+   * the air. Without these, every rig draws the same room forever.
+   */
+  set?: SetId;
+  motif?: MotifId | null;
+  atmosphere?: AtmosphereId;
 };
 
 export type Beat = {

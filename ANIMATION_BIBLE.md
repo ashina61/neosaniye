@@ -79,6 +79,31 @@ Değişmezler:
 - Seçim konudan gelir, rastgele değildir: aynı üretim her koşuda ve her
   paralel Remotion işçisinde aynı kareyi verir.
 
+## 5c. Çizim konudan gelir
+
+Renk videodan videoya değişiyordu ama ÇİZİM değişmiyordu: balina da roket de
+banka kasası da aynı gökdelen siluetiyle, aynı boş koltukla çiziliyordu. Palet
+oynatmak bunu düzeltmez — izleyici paleti değil çizimi görüyor.
+
+`src/story/subject.js` her beat için KENDİ satırından üç şey seçer:
+
+| Katman | Ne | Örnek |
+| --- | --- | --- |
+| `set` | nerede geçiyor | ocean, space, vault, court, lab, factory, forest, ruins, gallery, villain, desk, street, study |
+| `motif` | ne çiziliyor | gemi, roket, balina, kasa, tokmak, dişli, şişe, ampul, taç, kurukafa, saat… |
+| `atmosphere` | havada ne var | yağmur, kar, kül, kor, kabarcık, yıldız, ışık huzmesi, parazit, dalga, sıcak |
+
+Kurallar:
+
+- Satır en güçlü sinyaldir; konu yalnız beraberlik bozar. Konu "şirket" diye
+  HER sahne toplantı odasında geçmez.
+- Sinyal yoksa rigin kendi mekânı kullanılır ve nesne ÇİZİLMEZ. Yanlış nesneyi
+  kendinden emin yerleştirmektense boş sahne dürüsttür.
+- Motif silüettir, illüstrasyon değil: tek yönden ışık alan bir kütle + arkasında
+  ışık havuzu. Telefon ekranında yarım saniyede okunur.
+- Bir video içinde sahneler birbirinden de farklı çizilir — renk sabit kalır,
+  çizim değişir.
+
 ## 6. Malzeme dili
 
 - Fotoğraf BULUNUR, grafik ÇİZİLİR.

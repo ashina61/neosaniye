@@ -5,7 +5,9 @@ import {CLAMP, boil, entrance, holdKeyframes, pingpong, posterizeTime} from '../
 import {Plate, pickAsset} from '../engine/Plate';
 import {Diamond, SlotReel, Sunburst} from '../engine/props';
 import {useLook} from '../engine/look';
-import {EmptyChair, VillainStage} from '../engine/stage';
+import {EmptyChair, Stage} from '../engine/stage';
+import {Motif} from '../engine/motifs';
+import {Atmosphere} from '../engine/atmosphere';
 
 /**
  * VILLAIN PUNCH — the rejection beat.
@@ -59,7 +61,7 @@ export const VillainPunch: React.FC<{beat: Beat}> = ({beat}) => {
   return (
     <AbsoluteFill style={{filter: negative ? 'invert(1) hue-rotate(90deg)' : undefined}}>
       <Sunburst rotate={stepped * 0.12 * motion.polarity} />
-      <VillainStage />
+      <Stage id={beat.props.set ?? 'villain'} seed={beat.id} />
 
       {/* the antagonist rises, punches in, then holds with a sway */}
       <AbsoluteFill
@@ -72,7 +74,16 @@ export const VillainPunch: React.FC<{beat: Beat}> = ({beat}) => {
         {character ? (
           <Plate asset={character} scale={1} cutout />
         ) : (
-          <EmptyChair seed={beat.id} smoke={interpolate(stepped, [rise, rise + 20], [0, 1], CLAMP)} />
+          // No photograph of the antagonist: the object the line names takes
+          // the frame, and only when the line names none do we fall back to
+          // the chair they just left.
+          beat.props.motif ? (
+            <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center'}}>
+              <Motif id={beat.props.motif} size={Math.round(width * 0.46)} seed={beat.id} />
+            </AbsoluteFill>
+          ) : (
+            <EmptyChair seed={beat.id} smoke={interpolate(stepped, [rise, rise + 20], [0, 1], CLAMP)} />
+          )
         )}
       </AbsoluteFill>
 
@@ -123,6 +134,8 @@ export const VillainPunch: React.FC<{beat: Beat}> = ({beat}) => {
           </div>
         </AbsoluteFill>
       ) : null}
+
+      <Atmosphere id={beat.props.atmosphere ?? 'none'} seed={beat.id} />
 
       {burnEyes ? (
         <AbsoluteFill

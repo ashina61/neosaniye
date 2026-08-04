@@ -5,7 +5,9 @@ import {CLAMP, blurBurst, dampedWag, posterizeTime} from '../engine/motion';
 import {Plate, pickAsset} from '../engine/Plate';
 import {Gesture} from '../engine/props';
 import {useLook} from '../engine/look';
-import {StreetStage} from '../engine/stage';
+import {Stage} from '../engine/stage';
+import {Motif} from '../engine/motifs';
+import {Atmosphere} from '../engine/atmosphere';
 
 /**
  * GROUNDED PUNCH — the workhorse.
@@ -83,7 +85,7 @@ export const GroundedPunch: React.FC<{beat: Beat}> = ({beat}) => {
           transform: `scale(${wallScale})`,
         }}
       >
-        <StreetStage seed={beat.id} />
+        <Stage id={beat.props.set} seed={beat.id} />
       </AbsoluteFill>
       {plate ? <Plate asset={plate} scale={wallScale} originX={groundX} originY={groundY} opacity={0.9} /> : null}
 
@@ -96,22 +98,46 @@ export const GroundedPunch: React.FC<{beat: Beat}> = ({beat}) => {
           opacity: shadowOpacity,
         }}
       >
-        <Plate asset={character} scale={1} cutout />
+        {character ? (
+          <Plate asset={character} scale={1} cutout />
+        ) : beat.props.motif ? (
+          <AbsoluteFill style={{alignItems: 'center', justifyContent: 'flex-end', paddingBottom: `${100 - (groundY / height) * 100}%`}}>
+            <Motif id={beat.props.motif} size={Math.round(width * 0.42)} seed={beat.id} rim={0} />
+          </AbsoluteFill>
+        ) : null}
       </AbsoluteFill>
 
-      {/* the character, punching in harder than the wall, off the same anchor */}
-      <Plate
-        asset={character}
-        scale={charScale}
-        originX={groundX}
-        originY={groundY}
-        translateX={shift}
-        blur={shiftBlur}
-        cutout
-        boilPhase={70}
-        fallbackSeed={31}
-        fallbackDark
-      />
+      {/* the character, punching in harder than the wall, off the same anchor.
+          With no photograph, the line's own object takes the punch instead —
+          a ship, a vault, a rocket: whatever the sentence is about. */}
+      {character ? (
+        <Plate
+          asset={character}
+          scale={charScale}
+          originX={groundX}
+          originY={groundY}
+          translateX={shift}
+          blur={shiftBlur}
+          cutout
+          boilPhase={70}
+        />
+      ) : beat.props.motif ? (
+        <AbsoluteFill
+          style={{
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            paddingBottom: `${100 - (groundY / height) * 100}%`,
+            transformOrigin: `${(groundX / width) * 100}% ${(groundY / height) * 100}%`,
+            transform: `translateX(${shift}px) scale(${charScale})`,
+            filter: shiftBlur > 0 ? `blur(${shiftBlur}px)` : undefined,
+          }}
+        >
+          <Motif id={beat.props.motif} size={Math.round(width * 0.42)} seed={beat.id} />
+        </AbsoluteFill>
+      ) : null}
+
+      {/* what is in the air on this line */}
+      <Atmosphere id={beat.props.atmosphere ?? 'none'} seed={beat.id} />
 
       {/* the gesture: a prop swings up and wags on a decaying pendulum */}
       {wag && stepped >= gestureAt ? (
