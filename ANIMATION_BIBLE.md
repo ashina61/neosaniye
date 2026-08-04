@@ -132,6 +132,35 @@ Kurallar:
 - Bir video içinde sahneler birbirinden de farklı çizilir — renk sabit kalır,
   çizim değişir.
 
+## 5e. Kurgu — kadraj tasarımı
+
+Her beat aynı çerçeveleniyordu: özne ortada, kadrajı doldurmuş, aynı yükseklik,
+aynı yavaş push. Altı tanesi arka arkaya kurgu değil, içeriği değişen TEK plan.
+
+`src/story/shotPlan.js` bütün reel için plan yapar (tek satır için değil — bir
+plan ancak kendinden öncekiyle ilişkide anlam taşır):
+
+- **plan ölçeği** — geniş / tam / orta / yakın / detay
+- **objektif** — 24mm mekânı büker, 85mm düzleştirir (CSS perspective'e gider)
+- **alan derinliği** — ne keskinse göz oraya gider; sıkı planlar daha sığ
+- **kamera** — sabit / push / pull / kayma / elde
+- **yerleşim** — üçler kuralı; tam merkez yalnız kapanış beat'ine ayrılmıştır
+- **ön plan** — kapı kenarı, korkuluk, yaprak, omuz: kamerayı mekânın İÇİNE koyar
+
+Kurgu kuralları: geniş aç, sıkılaştır, aynı ölçek üst üste iki kez gelmesin,
+kapanışta yakın plana in ve kamerayı durdur.
+
+## 5f. Lens — "çizim gibi" ile "çekilmiş gibi" arasındaki fark
+
+`remotion/src/engine/Lens.tsx`: highlight taşması (halation/bloom), köşelerde
+renk saçaklanması, cam üstünde toz ve kıl, poz nefesi. Grain ve scan çizgileri
+"bu film stoğu" der; bunlar "bu CAMDAN çekildi" der.
+
+Motifler artık dış çizgisiz: hacim gradyanı (ışık tarafı açık, gölge tarafı
+mürekkebe düşer), tek kenarda rim ışığı, gölge tarafında bounce, altında sert
+temas gölgesi + uzun yumuşak gölge. Düz dolgu + 1.6px kontur ikon dilidir;
+fotoğrafta hiçbir şeyin üniform dış çizgisi yoktur.
+
 ## 6. Malzeme dili
 
 - Fotoğraf BULUNUR, grafik ÇİZİLİR.

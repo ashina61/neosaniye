@@ -11,6 +11,22 @@ import type {MotifId} from './engine/motifs';
 import type {AtmosphereId} from './engine/atmosphere';
 import type {SetPlan} from './engine/GeneratedSet';
 
+/** Shot design for one beat — see src/story/shotPlan.js. */
+export type Shot = {
+  scale: 'wide' | 'full' | 'medium' | 'close' | 'insert';
+  label: string;
+  subject: number;
+  lens: number;
+  dof: number;
+  move: 'locked' | 'push' | 'pull' | 'drift' | 'handheld';
+  placement: 'left-third' | 'right-third' | 'centre';
+  travel: number;
+  shake: number;
+  height: number;
+  foreground: 'none' | 'doorway' | 'railing' | 'leaves' | 'shoulder';
+  foregroundSide: 1 | -1;
+};
+
 /** The signature animation a beat runs on. */
 export type RigId =
   | 'portal-zoom'
@@ -179,6 +195,12 @@ export type RigProps = {
    * render.
    */
   setPlan?: SetPlan;
+  /**
+   * How this beat is SHOT: scale, lens, depth of field, camera move, where the
+   * subject sits, what the camera shoots past. Planned across the whole reel so
+   * consecutive beats cut against each other instead of repeating one framing.
+   */
+  shot?: Shot;
 };
 
 export type Beat = {

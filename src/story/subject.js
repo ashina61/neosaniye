@@ -113,14 +113,24 @@ function firstMatch(rules, text) {
  * @param {number} input.seed   the video's look seed, for neutral fallbacks
  * @param {number} input.index  beat index, so neutral choices still vary
  */
-export function readSubject({line = '', topic = '', rig = 'grounded-punch', seed = 0, index = 0} = {}) {
+export function readSubject({line = '', topic = '', rig = 'grounded-punch', seed = 0, index = 0, avoidMotif = null} = {}) {
   const text = String(line);
   // The topic is a weaker signal on purpose: a video about Netflix should not
   // stage EVERY line in a boardroom just because the topic says "company".
   const context = `${text} ${topic}`;
 
   const set = firstMatch(SETS, text) || firstMatch(SETS, context) || RIG_HOME_SET[rig] || 'street';
-  const motif = firstMatch(MOTIFS, text) || firstMatch(MOTIFS, context);
+
+  // NEVER THE SAME OBJECT TWICE RUNNING.
+  //
+  // A word like "light" or "money" recurs across a script, so the strongest
+  // match kept coming back and one video drew the same bulb in four beats. The
+  // second-best match in the line wins instead; if the line only names one
+  // thing, the beat draws nothing rather than repeating itself.
+  const candidates = MOTIFS.filter((rule) => rule.when.test(text)).map((rule) => rule.id);
+  const contextCandidates = MOTIFS.filter((rule) => rule.when.test(context)).map((rule) => rule.id);
+  const ordered = [...candidates, ...contextCandidates];
+  const motif = ordered.find((id) => id !== avoidMotif) ?? null;
   const atmosphere =
     firstMatch(ATMOSPHERES, text) ||
     NEUTRAL_ATMOSPHERES[(Math.abs(Math.trunc(seed)) + index * 3) % NEUTRAL_ATMOSPHERES.length];

@@ -24,6 +24,7 @@ import {assignRig, rigAssets, rigGradeDelta, rigRole, rigSfx, RIG_CATALOG} from 
 import {applyGradeDelta, chooseLook} from './look.js';
 import {readSubject} from './subject.js';
 import {planSet} from './setPlan.js';
+import {planShots} from './shotPlan.js';
 
 const WORD_RE = /[\p{L}\p{N}]+(?:['’][\p{L}\p{N}]+)*/gu;
 
@@ -307,6 +308,7 @@ export function buildBeatSheet({script, timeline, look = null, fps = 30} = {}) {
   // as one film and two reels do not read as the same film.
   const identity = look || chooseLook(script?.topic || script?.normalizedTopic || script?.title);
   const chosen = [];
+  let lastMotif = null;
   let measuredCaptions = 0;
   let estimatedCaptions = 0;
 
@@ -376,7 +378,9 @@ export function buildBeatSheet({script, timeline, look = null, fps = 30} = {}) {
       rig,
       seed: identity.seed,
       index,
+      avoidMotif: lastMotif,
     });
+    lastMotif = subject.motif ?? lastMotif;
 
     const props = {
       ...buildProps({rig, durationInFrames, cards, cardFrames, numberText, plaqueText}),
@@ -406,6 +410,14 @@ export function buildBeatSheet({script, timeline, look = null, fps = 30} = {}) {
       clonedFrom: RIG_CATALOG[rig]?.clonedFrom,
       spokenWindow: [startSeconds, endSeconds],
     };
+  });
+
+  // THE CUT IS PLANNED OVER THE WHOLE REEL, NOT PER LINE.
+  // A shot only means something next to the shot before it: open wide, tighten,
+  // never repeat a scale twice running, land close. See src/story/shotPlan.js.
+  const shots = planShots(beats, identity.seed);
+  beats.forEach((beat, index) => {
+    beat.props.shot = shots[index];
   });
 
   return {

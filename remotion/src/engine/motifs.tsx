@@ -55,77 +55,147 @@ const PATHS: Record<MotifId, string> = {
 export const MOTIF_IDS = Object.keys(PATHS) as MotifId[];
 
 /**
- * A motif is drawn twice: a solid mass in ink, and a rim of accent down the
- * lit edge. One shape reads as a sticker; a shape with a light direction reads
- * as an object standing in the set's light.
+ * HOW A MOTIF IS DRAWN, AND WHY IT USED TO LOOK LIKE CLIP ART.
+ *
+ * The first version stroked every shape with a 1.6px accent outline and filled
+ * it flat. That is the visual grammar of an icon set, and it is exactly why the
+ * frames read as a nursery video: nothing in a photograph has a uniform outline
+ * around it.
+ *
+ * What replaces it is how a real object separates from a real background:
+ *
+ *   FORM      a soft vertical gradient — lit from the light side, falling into
+ *             shadow away from it. No stroke anywhere.
+ *   RIM       a thin bright edge on the lit side only, drawn as a clipped,
+ *             offset copy rather than as a border.
+ *   BOUNCE    a faint fill from the shadow side, because rooms bounce light.
+ *   CONTACT   a hard, tight shadow directly under the object plus a long soft
+ *             one away from the light. Objects that do not touch the ground
+ *             float, and floating is the other half of "cartoon".
+ *   DEFOCUS   optional blur, so a motif can sit off the focal plane like
+ *             everything else in a real frame.
  */
-export const Motif: React.FC<{id: MotifId; size: number; seed?: string; rim?: number}> = ({
-  id,
-  size,
-  seed = 'motif',
-  rim = 1,
-}) => {
+export const Motif: React.FC<{
+  id: MotifId;
+  size: number;
+  seed?: string;
+  /** 0 turns off all lighting — used when the rig draws this as a shadow. */
+  rim?: number;
+  /** Blur in pixels: this object is not on the focal plane. */
+  defocus?: number;
+}> = ({id, size, seed = 'motif', rim = 1, defocus = 0}) => {
   const {palette, motion} = useLook();
   const path = PATHS[id] ?? PATHS.tower;
   const tilt = (hash01(seed, 5) - 0.5) * 5 * motion.polarity;
-  // THE ID MUST INCLUDE `rim`.
-  //
-  // A rig draws the same motif twice: once blackened as the cast shadow (rim 0)
-  // and once lit (rim 1). With one id for both, the two <defs> collide and the
-  // browser resolves `url(#id)` to whichever came FIRST in the document — the
-  // shadow's fully transparent gradient. The lit object then rendered as a bare
-  // outline, which is exactly how it looked on screen.
-  const rimId = `rim-${id}-${rim > 0 ? 'lit' : 'dark'}-${Math.round(hash01(seed, 9) * 1e6)}`;
+  const lit = motion.polarity > 0;
+  // Ids must differ between the lit and shadow copies of the same motif, or the
+  // browser resolves url(#id) to whichever <defs> came first in the document
+  // and both draw with the same paint. That bug shipped once; the suffix is it.
+  const key = `${id}-${rim > 0 ? 'lit' : 'dark'}-${Math.round(hash01(seed, 9) * 1e6)}`;
+
+  if (rim <= 0) {
+    // The shadow copy: a solid mass, no shading, no rim. The rig blackens and
+    // skews it, so any modelling here would only fight that.
+    return (
+      <svg width={size} height={size} viewBox="0 0 100 100" style={{display: 'block'}}>
+        <path d={path} fill={palette.ink} />
+      </svg>
+    );
+  }
 
   return (
-    <div style={{position: 'relative', width: size, height: size, display: 'grid', placeItems: 'center'}}>
-      {/* BACKLIGHT.
-          A dark silhouette on a dark set is an outline, not an object — the
-          first render of these motifs came out as thin gold wireframes because
-          the fill and the room were the same value. A pool of light behind the
-          shape gives it something to be a silhouette AGAINST, which is how the
-          eye reads a subject in a photograph too. */}
+    <div
+      style={{
+        position: 'relative',
+        width: size,
+        height: size * 1.16,
+        display: 'grid',
+        placeItems: 'end center',
+        filter: defocus > 0 ? `blur(${defocus}px)` : undefined,
+      }}
+    >
+      {/* the light the object stands in — a pool behind and under it */}
       <div
         style={{
           position: 'absolute',
-          width: size * 1.45,
-          height: size * 1.45,
-          borderRadius: '50%',
-          background: `radial-gradient(circle, ${palette.accent}40 0%, ${palette.accentDark}22 42%, rgba(0,0,0,0) 72%)`,
-          filter: 'blur(6px)',
+          left: '-24%',
+          right: '-24%',
+          top: '-10%',
+          bottom: '-6%',
+          background: `radial-gradient(ellipse 52% 48% at ${lit ? 34 : 66}% 44%, ${palette.accent}33 0%, ${palette.accentDark}1a 44%, rgba(0,0,0,0) 74%)`,
+          filter: 'blur(10px)',
         }}
       />
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 100 100"
-      style={{display: 'block', position: 'relative', transform: `rotate(${tilt}deg)`, filter: `drop-shadow(${-12 * motion.polarity}px 16px 22px rgba(0,0,0,0.6))`}}
-    >
-      <defs>
-        {/* A LIT MASS, NOT A WIREFRAME.
-            The first version faded the body to ink, which on an ink-dark set
-            left only the 1.6px outline visible — the objects read as clip-art
-            line drawings. The body now runs from the paper tone through the
-            accent to ink, so the shape is a solid volume with a lit side and a
-            shadow side. */}
-        <linearGradient id={rimId} x1={motion.polarity > 0 ? '0' : '1'} y1="0" x2={motion.polarity > 0 ? '1' : '0'} y2="1">
-          <stop offset="0%" stopColor={palette.paperLight} stopOpacity={0.92 * rim} />
-          <stop offset="26%" stopColor={palette.accent} stopOpacity={0.82 * rim} />
-          <stop offset="62%" stopColor={palette.accentDark} stopOpacity={0.68 * rim} />
-          <stop offset="100%" stopColor={palette.ink} stopOpacity={0.95} />
-        </linearGradient>
-      </defs>
-      <path d={path} fill={palette.ink} stroke={palette.ink} strokeWidth={3} strokeLinejoin="round" />
-      <path d={path} fill={`url(#${rimId})`} stroke="none" opacity={0.95} />
-      <path
-        d={path}
-        fill="none"
-        stroke={palette.accent}
-        strokeOpacity={0.5 * rim}
-        strokeWidth={1.6}
-        strokeLinejoin="round"
+
+      {/* the long cast shadow, thrown away from the light and fading out */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: lit ? '18%' : '-30%',
+          width: '112%',
+          height: '13%',
+          background: `linear-gradient(${lit ? 90 : 270}deg, ${palette.ink}e6 0%, ${palette.ink}66 46%, rgba(0,0,0,0) 100%)`,
+          filter: 'blur(9px)',
+          transform: 'scaleY(0.7)',
+        }}
       />
-    </svg>
+
+      {/* the contact shadow: small, dark, tight under the object */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '1%',
+          left: '26%',
+          width: '48%',
+          height: '5%',
+          borderRadius: '50%',
+          background: `${palette.ink}f2`,
+          filter: 'blur(5px)',
+        }}
+      />
+
+      <svg
+        width={size}
+        height={size}
+        viewBox="0 0 100 100"
+        style={{display: 'block', position: 'relative', transform: `rotate(${tilt}deg)`}}
+      >
+        <defs>
+          {/* FORM: lit side bright, shadow side sinking to ink. */}
+          <linearGradient id={`form-${key}`} x1={lit ? '0' : '1'} y1="0.1" x2={lit ? '0.9' : '0.1'} y2="1">
+            <stop offset="0%" stopColor={palette.paperLight} stopOpacity={0.96} />
+            <stop offset="22%" stopColor={palette.paperDark} stopOpacity={0.9} />
+            <stop offset="58%" stopColor={palette.accentDark} stopOpacity={0.72} />
+            <stop offset="100%" stopColor={palette.ink} stopOpacity={0.98} />
+          </linearGradient>
+          {/* BOUNCE: the shadow side is never truly black in a room. */}
+          <linearGradient id={`bounce-${key}`} x1={lit ? '1' : '0'} y1="1" x2={lit ? '0.2' : '0.8'} y2="0.2">
+            <stop offset="0%" stopColor={palette.cool} stopOpacity={0.34} />
+            <stop offset="46%" stopColor={palette.cool} stopOpacity={0.06} />
+            <stop offset="100%" stopColor={palette.cool} stopOpacity={0} />
+          </linearGradient>
+          <clipPath id={`clip-${key}`}>
+            <path d={path} />
+          </clipPath>
+        </defs>
+
+        <path d={path} fill={`url(#form-${key})`} />
+        <path d={path} fill={`url(#bounce-${key})`} />
+
+        {/* RIM: the same shape, nudged toward the light and clipped to itself,
+            leaves a bright sliver on exactly one edge. */}
+        <g clipPath={`url(#clip-${key})`}>
+          <path
+            d={path}
+            fill="none"
+            stroke={palette.white}
+            strokeOpacity={0.5}
+            strokeWidth={3}
+            transform={`translate(${lit ? -1.6 : 1.6}, -1.6)`}
+          />
+        </g>
+      </svg>
     </div>
   );
 };

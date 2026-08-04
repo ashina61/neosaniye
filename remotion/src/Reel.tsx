@@ -3,6 +3,8 @@ import {AbsoluteFill, Audio, Sequence, staticFile, useVideoConfig} from 'remotio
 import type {Beat, ReelSpec, SfxCue} from './schema';
 import {DEFAULT_GRADE, DEFAULT_LOOK} from './schema';
 import {FilmLook} from './engine/FilmLook';
+import {Foreground, Lens} from './engine/Lens';
+import {Camera} from './engine/Camera';
 import {LookContext} from './engine/look';
 import {Captions} from './engine/Captions';
 import {RIGS} from './rigs';
@@ -26,8 +28,23 @@ const Watermark: React.FC = () => (
   />
 );
 
+/**
+ * ONE BEAT, SHOT AND FINISHED.
+ *
+ * The order of these wrappers is the order a real frame is made, and it is not
+ * interchangeable:
+ *
+ *   CAMERA    frames the rig — scale, lens, height, move, depth of field
+ *   FOREGROUND  puts something unlit and close between the lens and the scene
+ *   LENS      bloom, fringing, dust — the glass the whole thing passes through
+ *   FILM      grade, grain, gate weave — the stock it is exposed onto
+ *   CAPTIONS  sit ON the finished image, outside the glass, so the words stay
+ *             sharp and legible however soft the picture behind them is
+ */
 const BeatScene: React.FC<{beat: Beat; engine: ReelSpec['engine']}> = ({beat, engine}) => {
   const Rig = RIGS[beat.rig] ?? RIGS['grounded-punch'];
+  const shot = beat.props?.shot;
+
   return (
     <FilmLook
       grade={beat.grade ?? engine.grade ?? DEFAULT_GRADE}
@@ -36,7 +53,12 @@ const BeatScene: React.FC<{beat: Beat; engine: ReelSpec['engine']}> = ({beat, en
       weavePx={engine.gateWeavePx}
       weaveScale={engine.weaveScale}
     >
-      <Rig beat={beat} />
+      <Lens seed={beat.id} bloom={0.55} fringe={1.6} dust={0.5}>
+        <Camera shot={shot} durationInFrames={beat.durationInFrames}>
+          <Rig beat={beat} />
+        </Camera>
+        {shot ? <Foreground kind={shot.foreground} side={shot.foregroundSide} seed={beat.id} /> : null}
+      </Lens>
       <Captions captions={beat.captions ?? []} />
     </FilmLook>
   );
