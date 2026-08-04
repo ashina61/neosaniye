@@ -191,57 +191,80 @@ export async function generateAudio(script, opts = {}) {
     }
   }
 
-  // SÜRE KURTARMA: yalnız gerçekten kısa olduğu decode edilerek doğrulanan
-  // edge-tts sesinde, doğal konuşma sınırları içinde tek yeniden sentez yapılır.
-  // Kurtarma adayı ayrı dosyaya yazılır; geçerli aralığa girmiyorsa asıl ses
-  // yanlışlıkla ezilmez.
+  // ============ SÜRE KURTARMA — İKİ YÖNLÜ ============
+  //
+  // Bu blok bir tek yönü biliyordu: ses ÇOK KISA ise yavaşlatıp kurtarıyordu.
+  // Uzun tarafta karşılığı yoktu, yani 58s tavanını aşan her koşu boru hattını
+  // düşürüyordu — canlı örnek: 61.0s ölçüldü, üretim medya ve render'a hiç
+  // gelmeden AUDIO_TOO_LONG ile öldü.
+  //
+  // Asimetri kendi başına bir hataydı, çünkü uzun tarafın çözümü daha da kolay:
+  // konu hızı zaten anlaşılırlık için YAVAŞLATILMIŞTI (-7%), yani geri almak
+  // için bolca doğal alan var. Kısa tarafta yavaşlatmanın doğal bir tabanı
+  // (0.82) olduğu gibi uzun tarafta da hızlanmanın doğal bir tavanı (1.22)
+  // vardır; ötesi anlatıcıyı sıkıştırılmış sese çevirir ve retention'ı yer.
+  //
+  // Kurtarma adayı ayrı dosyaya yazılır; bandın içine girmiyorsa asıl ses
+  // korunur — yanlış bir kurtarma, dürüst bir hatadan kötüdür.
   let firstProbe = await probeDuration(result.audioPath, result.wordTimings).catch(() => 0);
   const minSec = config.content?.minDurationSeconds ?? 35;
   const maxSec = config.content?.maxDurationSeconds ?? 58;
-  if (result.engine === 'edge-tts' && firstProbe > 0 && firstProbe < minSec) {
-    const targetSec = Math.min(maxSec - 2, minSec + 4);
+  const tooShort = firstProbe > 0 && firstProbe < minSec;
+  const tooLong = firstProbe > 0 && firstProbe > maxSec;
+
+  if (result.engine === 'edge-tts' && (tooShort || tooLong)) {
+    // Hedef bandın ucuna değil, İÇİNE nişan alınır: tam sınıra oynamak ölçüm
+    // gürültüsünde tekrar dışarı düşer.
+    const targetSec = tooShort
+      ? Math.min(maxSec - 2, minSec + 4)
+      : Math.max(minSec + 4, maxSec - 3);
     const curPct = Number.parseInt(String(topicRate).replace('%', ''), 10) || 0;
     const curFactor = 1 + curPct / 100;
     const requestedFactor = curFactor * (firstProbe / targetSec);
     const naturalFloor = 0.82;
+    const naturalCeiling = 1.22;
 
-    if (requestedFactor < naturalFloor) {
+    if (requestedFactor < naturalFloor || requestedFactor > naturalCeiling) {
       console.warn(
-        `[tts] ölçülen ${firstProbe.toFixed(1)}s; doğal hızla ${targetSec.toFixed(1)}s hedeflenemez. ` +
-        'Yapay biçimde aşırı yavaşlatma yapılmayacak.',
+        `[tts] ölçülen ${firstProbe.toFixed(1)}s; doğal konuşma hızıyla ${targetSec.toFixed(1)}s ` +
+        `hedeflenemez (gereken çarpan ${requestedFactor.toFixed(2)}). Yapay hız değişimi yapılmayacak — ` +
+        `çözüm script uzunluğunda.`,
       );
     } else {
-      const newFactor = Math.min(curFactor, requestedFactor);
+      // Kısa tarafta yalnız yavaşlatılır, uzun tarafta yalnız hızlandırılır;
+      // yanlış yöne kayan bir "kurtarma" sesi bandın öbür ucundan çıkarırdı.
+      const newFactor = tooShort ? Math.min(curFactor, requestedFactor) : Math.max(curFactor, requestedFactor);
       const newPct = Math.round((newFactor - 1) * 100);
-      const slowRate = `${newPct >= 0 ? '+' : ''}${newPct}%`;
+      const newRate = `${newPct >= 0 ? '+' : ''}${newPct}%`;
 
-      if (slowRate !== topicRate) {
+      if (newRate !== topicRate) {
         console.warn(
-          `[tts] ölçülen ${firstProbe.toFixed(1)}s < ${minSec}s eşiği — ` +
-          `${topicRate}→${slowRate} ile kontrollü yeniden sentez.`,
+          `[tts] ölçülen ${firstProbe.toFixed(1)}s ${tooShort ? `< ${minSec}s` : `> ${maxSec}s`} — ` +
+          `${topicRate}→${newRate} ile kontrollü yeniden sentez.`,
         );
-        let slow;
+        let rescue;
         try {
-          slow = await synthesizeEdge(text, {
+          rescue = await synthesizeEdge(text, {
             ...base,
             basename: `${basename}-duration-rescue`,
-            rate: slowRate,
+            rate: newRate,
           });
-          const slowDur = await probeDuration(slow.audioPath, slow.wordTimings).catch(() => 0);
-          if (slowDur >= minSec && slowDur <= maxSec) {
-            result = slow;
-            firstProbe = slowDur;
+          const rescueDur = await probeDuration(rescue.audioPath, rescue.wordTimings).catch(() => 0);
+          if (rescueDur >= minSec && rescueDur <= maxSec) {
+            console.log(`[tts] kurtarma kabul edildi: ${rescueDur.toFixed(1)}s (${newRate}).`);
+            result = rescue;
+            firstProbe = rescueDur;
           } else {
             console.warn(
-              `[tts] kurtarma adayı reddedildi: ${slowDur.toFixed(1)}s; ` +
+              `[tts] kurtarma adayı reddedildi: ${rescueDur.toFixed(1)}s; ` +
               `geçerli aralık ${minSec}-${maxSec}s. Asıl ses korunuyor.`,
             );
-            await removeGeneratedFiles(slow);
+            await removeGeneratedFiles(rescue);
           }
         } catch (e) {
-          if (slow) await removeGeneratedFiles(slow);
+          if (rescue) await removeGeneratedFiles(rescue);
           console.warn(
-            `[tts] yavaş yeniden sentez başarısız, mevcut ses korunuyor: ` +
+            `[tts] yeniden sentez başarısız, mevcut ses korunuyor: ` +
             `${String(e.stderr || e.message || '').split('\n')[0]}`,
           );
         }

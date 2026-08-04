@@ -10,7 +10,8 @@ import {
 } from '../lib/firestore.js';
 import { softenAdText } from '../lib/adSafe.js';
 import { validateViewerFirstScript } from '../pipeline/viewerFirstValidation.js';
-import { evaluateNarrationLength } from '../pipeline/durationPolicy.js';
+import { evaluateNarrationLength, rateToFactor } from '../pipeline/durationPolicy.js';
+import { ttsRateForTopic } from '../tts/generateAudio.js';
 import { pickViralTemplate, findViralTemplate } from './viral-templates.js';
 
 /**
@@ -825,6 +826,7 @@ export async function generateScript({ maxRetries = 5, avoidTopics: extraAvoid =
         ? evaluateNarrationLength(lastScript.scenes, {
           minWords: config.content.minNarrationWords,
           maxWords: config.content.maxNarrationWords,
+          rateFactor: rateToFactor(ttsRateForTopic(lastScript)),
         })
         : null;
       if (salvage && salvage.words >= floor) {
@@ -898,7 +900,14 @@ export async function generateScript({ maxRetries = 5, avoidTopics: extraAvoid =
     // NOT: evaluateNarrationLength {minWords,maxWords} bekler; config.content
     // {minNarrationWords,maxNarrationWords} tutar → doğru ANAHTARLARLA geçir,
     // yoksa fonksiyon 135 default'unu kullanıp config'i (150) yok sayar.
-    const lengthOpts = { minWords: config.content.minNarrationWords, maxWords: config.content.maxNarrationWords };
+    // The word window is measured against the rate this topic will be READ at,
+    // not against a nominal one — a slowed-down explainer needs fewer words to
+    // land in the same runtime band.
+    const lengthOpts = {
+      minWords: config.content.minNarrationWords,
+      maxWords: config.content.maxNarrationWords,
+      rateFactor: rateToFactor(ttsRateForTopic(script)),
+    };
     const length = evaluateNarrationLength(script.scenes, lengthOpts);
     // SÜRE KURTARMA (25 Tem dersi): Gemini kota + Groq 429 olunca zayıf yedek
     // sağlayıcı hedefin (120) biraz altında GERÇEK bir script verebiliyor (o run:
@@ -925,8 +934,12 @@ export async function generateScript({ maxRetries = 5, avoidTopics: extraAvoid =
       // atarak (finale + ilk 4 sahne korunur) bütçeye in. ÇOK KISA (taban-altı)
       // salvageable değildir (gerçek içerik gerekir) → yalnızca o durumda fail.
       if (length.code === 'NARRATION_TOO_LONG' && Array.isArray(script.scenes) && script.scenes.length > 5) {
+        // Kırpma hedefi, konuşma hızına göre AYARLANMIŞ tavandır — ham config
+        // değeri değil; yoksa yavaş okunan bir konu kırpıldıktan sonra bile
+        // süre bandını aşardı.
         while (script.scenes.length > 5 &&
-          evaluateNarrationLength(script.scenes, lengthOpts).words > config.content.maxNarrationWords) {
+          evaluateNarrationLength(script.scenes, lengthOpts).words >
+            evaluateNarrationLength(script.scenes, lengthOpts).maxWords) {
           script.scenes.splice(script.scenes.length - 2, 1); // finale'den önceki son sahneyi at
         }
         const trimmed = evaluateNarrationLength(script.scenes, lengthOpts);

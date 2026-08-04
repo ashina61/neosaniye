@@ -5,12 +5,44 @@ export function narrationWordCount(scenes = []) {
   return scenes.reduce((total, scene) => total + (String(scene?.narration || '').match(WORD_RE) || []).length, 0);
 }
 
-/** Editorial runtime policy. Measured TTS duration remains the final authority. */
-export function evaluateNarrationLength(scenes = [], { minWords = 105, maxWords = 135 } = {}) {
+/**
+ * Editorial runtime policy. Measured TTS duration remains the final authority.
+ *
+ * ============ THE WORD WINDOW MOVES WITH THE SPEAKING RATE ============
+ *
+ * The window (105–135 words) silently assumed a normal delivery. It is not:
+ * `ttsRateForTopic` deliberately SLOWS explainer topics down for clarity, and a
+ * script that is 130 words at 0% is the same script at −7% — only six seconds
+ * longer. A live run hit exactly that: the word gate passed, the measured audio
+ * came back at 61.0s against a 58s ceiling, and the whole production died in
+ * phase two having produced nothing.
+ *
+ * So the window scales with the rate the topic will actually be read at. Slower
+ * delivery means fewer words are allowed, which is the same runtime.
+ *
+ * @param {Array} scenes
+ * @param {object} [options]
+ * @param {number} [options.rateFactor] 1 = normal, 0.93 = 7% slower, 1.1 = faster
+ */
+export function evaluateNarrationLength(scenes = [], { minWords = 105, maxWords = 135, rateFactor = 1 } = {}) {
+  const factor = Number.isFinite(Number(rateFactor)) && Number(rateFactor) > 0 ? Number(rateFactor) : 1;
+  const adjustedMin = Math.round(minWords * factor);
+  const adjustedMax = Math.round(maxWords * factor);
   const words = narrationWordCount(scenes);
-  if (words < minWords) return { ok: false, words, code: 'NARRATION_TOO_SHORT', direction: 'expand' };
-  if (words > maxWords) return { ok: false, words, code: 'NARRATION_TOO_LONG', direction: 'shorten' };
-  return { ok: true, words, code: null, direction: null };
+  if (words < adjustedMin) {
+    return {ok: false, words, code: 'NARRATION_TOO_SHORT', direction: 'expand', minWords: adjustedMin, maxWords: adjustedMax};
+  }
+  if (words > adjustedMax) {
+    return {ok: false, words, code: 'NARRATION_TOO_LONG', direction: 'shorten', minWords: adjustedMin, maxWords: adjustedMax};
+  }
+  return {ok: true, words, code: null, direction: null, minWords: adjustedMin, maxWords: adjustedMax};
+}
+
+/** "+18%" / "-7%" → 1.18 / 0.93. The rate the topic will actually be read at. */
+export function rateToFactor(rate) {
+  const pct = Number.parseInt(String(rate ?? '').replace('%', ''), 10);
+  if (!Number.isFinite(pct)) return 1;
+  return 1 + pct / 100;
 }
 
 /**
