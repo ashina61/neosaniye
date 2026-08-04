@@ -5,6 +5,7 @@ import {CLAMP, holdKeyframes, pingpong, posterizeTime} from '../engine/motion';
 import {Plate, pickAsset} from '../engine/Plate';
 import {LampLight} from '../engine/props';
 import {useLook} from '../engine/look';
+import {StudyStage} from '../engine/stage';
 
 /**
  * MONEY ROOM — the payoff.
@@ -49,7 +50,10 @@ export const MoneyRoom: React.FC<{beat: Beat}> = ({beat}) => {
   return (
     <AbsoluteFill style={{backgroundColor: palette.ink}}>
       <AbsoluteFill style={{transform: `scale(${camScale})`, filter: defocus > 0.02 ? `blur(${defocus * 9}px)` : undefined}}>
-        <Plate asset={plate} scale={1.04} fallbackSeed={17} />
+        <AbsoluteFill style={{transform: 'scale(1.04)'}}>
+          <StudyStage seed={beat.id} />
+        </AbsoluteFill>
+        {plate ? <Plate asset={plate} scale={1.04} opacity={0.85} /> : null}
         {character ? <Plate asset={character} scale={0.98} translateY={height * 0.05} cutout boilPhase={20} /> : null}
 
         {/* the light — none of it is in the photograph */}

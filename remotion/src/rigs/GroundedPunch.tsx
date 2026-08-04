@@ -5,6 +5,7 @@ import {CLAMP, blurBurst, dampedWag, posterizeTime} from '../engine/motion';
 import {Plate, pickAsset} from '../engine/Plate';
 import {Gesture} from '../engine/props';
 import {useLook} from '../engine/look';
+import {StreetStage} from '../engine/stage';
 
 /**
  * GROUNDED PUNCH — the workhorse.
@@ -73,10 +74,18 @@ export const GroundedPunch: React.FC<{beat: Beat}> = ({beat}) => {
 
   return (
     <AbsoluteFill style={{backgroundColor: palette.ink}}>
-      {/* The background must stay a lit stage even when nothing was found —
-          a beat that renders as a black rectangle fails the technical gates
-          before anyone judges whether it was any good. */}
-      <Plate asset={plate} scale={wallScale} originX={groundX} originY={groundY} fallbackSeed={13} />
+      {/* The set is drawn — skyline, horizon, pavement — and the found
+          photograph lies on top of it. A beat with no photograph is still a
+          place, not a black rectangle. */}
+      <AbsoluteFill
+        style={{
+          transformOrigin: `${(groundX / width) * 100}% ${(groundY / height) * 100}%`,
+          transform: `scale(${wallScale})`,
+        }}
+      >
+        <StreetStage seed={beat.id} />
+      </AbsoluteFill>
+      {plate ? <Plate asset={plate} scale={wallScale} originX={groundX} originY={groundY} opacity={0.9} /> : null}
 
       {/* THE SHADOW IS THE CHARACTER — same plate, blackened, flipped, skewed */}
       <AbsoluteFill

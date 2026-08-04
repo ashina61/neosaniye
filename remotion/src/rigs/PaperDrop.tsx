@@ -5,6 +5,7 @@ import {CLAMP, entrance, posterizeTime} from '../engine/motion';
 import {Plate, pickAsset} from '../engine/Plate';
 import {NewspaperCard} from '../engine/props';
 import {useLook} from '../engine/look';
+import {DeskStage} from '../engine/stage';
 
 /**
  * PAPER DROP — the beat that carries a list.
@@ -46,7 +47,11 @@ export const PaperDrop: React.FC<{beat: Beat}> = ({beat}) => {
 
   return (
     <AbsoluteFill style={{backgroundColor: palette.ink}}>
-      <Plate asset={desk} scale={ken} blur={focus} fallbackSeed={5} />
+      {/* the desk is drawn; a found photograph of one lies over it */}
+      <AbsoluteFill style={{transform: `scale(${ken})`, filter: focus > 0 ? `blur(${focus}px)` : undefined}}>
+        <DeskStage seed={beat.id} />
+        {desk ? <Plate asset={desk} scale={1} opacity={0.72} /> : null}
+      </AbsoluteFill>
 
       <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center'}}>
         {texts.map((text, index) => {

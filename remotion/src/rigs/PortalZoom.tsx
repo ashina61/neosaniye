@@ -5,6 +5,7 @@ import {CLAMP, blurBurst, drift, posterizeTime} from '../engine/motion';
 import {Plate, pickAsset} from '../engine/Plate';
 import {GoldFrame, Plaque} from '../engine/props';
 import {useLook} from '../engine/look';
+import {GalleryWall, StreetStage} from '../engine/stage';
 
 /**
  * PORTAL ZOOM — the opener.
@@ -83,15 +84,17 @@ export const PortalZoom: React.FC<{beat: Beat}> = ({beat}) => {
 
   return (
     <AbsoluteFill style={{backgroundColor: palette.ink, filter: burst > 0.05 ? `blur(${burst}px)` : undefined}}>
-      {/* the museum wall the picture hangs on */}
-      <AbsoluteFill style={{opacity: wallOpacity}}>
-        <Plate
-          asset={texture}
-          scale={wallScale}
-          blur={wallBlur}
-          fallbackSeed={7}
-          style={{filter: 'brightness(0.72)'}}
-        />
+      {/* the museum wall the picture hangs on — drawn, then a found texture
+          laid over it when the media layer has one */}
+      <AbsoluteFill
+        style={{
+          opacity: wallOpacity,
+          transform: `scale(${wallScale})`,
+          filter: wallBlur > 0 ? `blur(${wallBlur}px)` : undefined,
+        }}
+      >
+        <GalleryWall seed={beat.id} />
+        {texture ? <Plate asset={texture} scale={1} opacity={0.55} style={{mixBlendMode: 'overlay'}} /> : null}
       </AbsoluteFill>
 
       {/* the photograph inside the frame — welded, then detached */}
@@ -105,11 +108,21 @@ export const PortalZoom: React.FC<{beat: Beat}> = ({beat}) => {
           }}
         >
           <AbsoluteFill style={{overflow: 'hidden'}}>
+            {/* inside the frame: the sky the subject stands against */}
+            <AbsoluteFill style={{background: `linear-gradient(180deg, ${palette.cool}55 0%, ${palette.paperDark}66 58%, ${palette.ink} 100%)`}} />
             <div style={{position: 'absolute', inset: 0, transform: `translateX(${cloud2}px)`, opacity: 0.5}}>
-              <Plate asset={texture} scale={1.3} fallbackSeed={21} />
+              {texture ? <Plate asset={texture} scale={1.3} /> : null}
             </div>
             <div style={{position: 'absolute', inset: 0, transform: `translateX(${cloud1}px)`}}>
-              <Plate asset={plate} scale={1.08} desaturate={colour} fallbackSeed={3} />
+              {plate ? (
+                <Plate asset={plate} scale={1.08} desaturate={colour} />
+              ) : (
+                // No photograph found: the frame still has to hold a PICTURE,
+                // not more wall, or the fly-through lands on nothing.
+                <AbsoluteFill style={{filter: `grayscale(${colour})`}}>
+                  <StreetStage seed={`${beat.id}-in`} />
+                </AbsoluteFill>
+              )}
             </div>
             {character ? (
               <Plate

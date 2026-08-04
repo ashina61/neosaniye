@@ -83,7 +83,14 @@ Değişmezler:
 
 - Fotoğraf BULUNUR, grafik ÇİZİLİR.
 - Sahne başına 3–4 varlık yeter: arka plan, karakter, bir-iki prop.
-- Cutout gelmezse rig kodla çizdiği parçalarla ayakta kalır; kara kare vermez.
+- **Her rigin çizilmiş bir DEKORU vardır** (`remotion/src/engine/stage.tsx`):
+  galeri duvarı, patron odası, masa, sokak, çalışma odası. Bulunan fotoğraf bu
+  dekorun ÜSTÜNE biner; fotoğraf yoksa kadraj yine kurulmuş bir mekândır.
+- Dekoru mekân yapan üç şey: ufuk çizgisi (perspektifli zemin), TEK ışık
+  kaynağı (gerisi karanlığa düşer) ve derinlik sırası (fon → mimari → ön
+  karanlık).
+- Karakter fotoğrafı yoksa figür ÇİZİLMEZ; mobilya çizilir (boş koltuk, hâlâ
+  tüten duman). Prosedürel siluet her denemede tabela piktogramı oldu.
 - Gölge ayrı varlık değildir: karakterin kopyası siyaha boyanır, ayaktan
   aşağı çevrilir, zemine yatırılır.
 - Işık fotoğrafta yoktur: screen blend gradyanlarla çizilir ve odak kaçarken
