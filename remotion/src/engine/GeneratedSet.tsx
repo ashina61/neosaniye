@@ -270,7 +270,7 @@ const Ground: React.FC<{plan: SetPlan; seedKey: string}> = ({plan, seedKey}) => 
 
   return (
     <div style={{position: 'absolute', left: 0, right: 0, top, bottom: 0}}>
-      <AbsoluteFill style={{background: `linear-gradient(180deg, ${alpha(palette.paperDark, 0.34)} 0%, ${alpha(palette.ink, 0.9)} 58%, ${palette.ink} 100%)`}} />
+      <AbsoluteFill style={{background: `linear-gradient(180deg, ${alpha(palette.paperDark, 0.52)} 0%, ${alpha(palette.ink, 0.82)} 58%, ${palette.ink} 100%)`}} />
     </div>
   );
 };
@@ -344,7 +344,7 @@ export const GeneratedSet: React.FC<{plan: SetPlan; seed?: string}> = ({plan, se
         style={{
           background: skyOpen
             ? `linear-gradient(180deg, ${alpha(palette.ink, 0.96)} 0%, ${alpha(palette.cool, 0.3)} ${plan.horizon * 62}%, ${alpha(tone, 0.3)} ${plan.horizon * 96}%, ${alpha(palette.ink, 0.86)} 100%)`
-            : `linear-gradient(180deg, ${alpha(palette.paperDark, 0.34)} 0%, ${alpha(palette.paperDark, 0.2)} 46%, ${alpha(palette.ink, 0.9)} 100%)`,
+            : `linear-gradient(180deg, ${alpha(palette.paperDark, 0.62)} 0%, ${alpha(palette.paperDark, 0.42)} 46%, ${alpha(palette.ink, 0.82)} 100%)`,
         }}
       />
 
@@ -357,7 +357,14 @@ export const GeneratedSet: React.FC<{plan: SetPlan; seed?: string}> = ({plan, se
       <AbsoluteFill
         style={{
           mixBlendMode: 'screen',
-          background: `radial-gradient(ellipse ${plan.light.size * 100}% ${plan.light.size * 70}% at ${plan.light.x * 100}% ${plan.light.y * 100}%, ${alpha(tone, plan.light.strength)} 0%, rgba(0,0,0,0) 74%)`,
+          // KEY LIGHT.
+          //
+          // This used to top out around 0.5 and the finished frames measured
+          // 0.10–0.26 mean luma — dark enough that the publish gate could not
+          // tell two different scenes apart on brightness, and dark enough that
+          // the drawn sets read as murk. A key light is meant to be the
+          // brightest thing in the room by a wide margin.
+          background: `radial-gradient(ellipse ${plan.light.size * 120}% ${plan.light.size * 88}% at ${plan.light.x * 100}% ${plan.light.y * 100}%, ${alpha(tone, Math.min(0.95, plan.light.strength * 1.9))} 0%, ${alpha(tone, plan.light.strength * 0.5)} 38%, rgba(0,0,0,0) 78%)`,
         }}
       />
 
@@ -373,7 +380,7 @@ export const GeneratedSet: React.FC<{plan: SetPlan; seed?: string}> = ({plan, se
       {/* the frame's own falloff, tightened around the light */}
       <AbsoluteFill
         style={{
-          background: `radial-gradient(ellipse 78% 64% at ${plan.light.x * 100}% 50%, rgba(0,0,0,0) 24%, ${alpha(palette.ink, 0.84)} 100%)`,
+          background: `radial-gradient(ellipse 92% 78% at ${plan.light.x * 100}% 50%, rgba(0,0,0,0) 34%, ${alpha(palette.ink, 0.62)} 100%)`,
         }}
       />
     </AbsoluteFill>

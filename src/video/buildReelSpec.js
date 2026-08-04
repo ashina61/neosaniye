@@ -75,7 +75,7 @@ function sfxCuesForBeat(beat, sfxLibrary) {
  * for. The pipeline finds photographs; it cannot promise a clean cut-out, so a
  * rig must still stand up with one plate and nothing else.
  */
-function bindAssets(beat, mediaItems, index, publicPathForAsset) {
+function bindAssets(beat, mediaItems, index, publicPathForAsset, usedPaths = new Set()) {
   const available = (mediaItems || [])
     .filter((item) => Number(item.scene) === index && item.path)
     .map((item) => ({
@@ -84,18 +84,32 @@ function bindAssets(beat, mediaItems, index, publicPathForAsset) {
     }))
     .filter((item) => item.path);
 
+  // NO PHOTOGRAPH APPEARS TWICE IN ONE REEL.
+  //
+  // The publish gate treats two look-alike windows as a HARD failure when they
+  // resolve to the same asset, and a live run was blocked exactly this way:
+  // DUPLICATE_SHOT across five windows. The media layer legitimately returns
+  // the same picture for two similar queries — that is its business — but a
+  // reel that shows one picture twice is a reel that looks like it stalled.
+  // So the binding, not the fetcher, is where a repeat is refused: a used path
+  // is skipped, and if nothing is left the beat falls through to its coded set,
+  // which is always a different image.
+  const fresh = available.filter((item) => !usedPaths.has(item.path));
+
   const roles = beat.assetRequests.map((request) => request.role);
   const bound = [];
   let cursor = 0;
   for (const role of roles) {
-    const item = available[cursor];
+    const item = fresh[cursor];
     if (!item) break;
     bound.push({...item, role});
+    usedPaths.add(item.path);
     cursor += 1;
   }
   // Anything left over rides along as texture — a rig may use it for parallax.
-  for (; cursor < available.length && bound.length < 4; cursor += 1) {
-    bound.push({...available[cursor], role: 'texture'});
+  for (; cursor < fresh.length && bound.length < 4; cursor += 1) {
+    bound.push({...fresh[cursor], role: 'texture'});
+    usedPaths.add(fresh[cursor].path);
   }
   return bound;
 }
@@ -129,6 +143,7 @@ export function buildReelSpec({
   const look = chooseLook(topic);
   const sheet = buildBeatSheet({script, timeline, look, fps});
 
+  const usedPaths = new Set();
   const beats = sheet.beats.map((beat, index) => ({
     id: beat.id,
     rig: beat.rig,
@@ -137,7 +152,7 @@ export function buildReelSpec({
     fromFrame: beat.fromFrame,
     durationInFrames: beat.durationInFrames,
     captions: beat.captions,
-    assets: bindAssets(beat, mediaItems, index, publicPathForAsset),
+    assets: bindAssets(beat, mediaItems, index, publicPathForAsset, usedPaths),
     sfx: sfxCuesForBeat(beat, sfxLibrary),
     props: beat.props,
     grade: beat.grade,

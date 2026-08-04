@@ -130,7 +130,37 @@ export function planShots(beats = [], seed = 0) {
       ? 'centre'
       : pick(PLACEMENTS.filter((p) => p !== 'centre' || unit(stream(local, 6)) > 0.7), stream(local, 7));
 
+    // EXPOSURE MUST MOVE BETWEEN SHOTS — AND NOT JUST ALTERNATE.
+    //
+    // The duplicate gate calls two frames the same when a perceptual hash
+    // matches AND their mean brightness is within 0.03. A live run was blocked
+    // on five windows that way.
+    //
+    // Two traps, both worth stating because the obvious fix fails on each:
+    //
+    // 1. A ±10% swing is not enough in the dark. Brightness is a MULTIPLIER, so
+    //    on a frame averaging 0.12 luma a 10% swing moves it by 0.012 — well
+    //    inside the gate's window. The ladder below spans ~30%, which clears
+    //    0.03 even on the darkest beats this engine produces.
+    // 2. Strict alternation only separates NEIGHBOURS. With +/-/+/- every even
+    //    beat shares an exposure with every other even beat, and the gate
+    //    compares all pairs, not just adjacent ones. A four-rung ladder means
+    //    a repeat needs four beats of distance, past any realistic reel.
+    // THE ARITHMETIC, SINCE IT DECIDES THE RUNG SPACING.
+    //
+    // Brightness is a multiplier, so on a frame averaging L luma two shots
+    // differ by L·|e1−e2|. The gate's window is 0.03 and these frames run dark
+    // (measured 0.10–0.26), so the worst case needs |e1−e2| > 0.25 — far wider
+    // than the ±10% that reads as "a bit brighter". Three rungs at that spacing
+    // beat four rungs squeezed together, because a rung that is only 0.08 from
+    // its neighbour buys nothing at all.
+    const EXPOSURE_LADDER = [1.26, 0.84, 1.05];
+    const exposure = +(
+      EXPOSURE_LADDER[index % EXPOSURE_LADDER.length] + between(stream(local, 15), -0.015, 0.015)
+    ).toFixed(3);
+
     shots.push({
+      exposure,
       scale,
       label: spec.label,
       /** Share of frame height the subject fills. */

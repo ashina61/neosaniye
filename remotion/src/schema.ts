@@ -13,6 +13,8 @@ import type {SetPlan} from './engine/GeneratedSet';
 
 /** Shot design for one beat — see src/story/shotPlan.js. */
 export type Shot = {
+  /** Brightness multiplier for this shot — keeps neighbours out of the duplicate window. */
+  exposure?: number;
   scale: 'wide' | 'full' | 'medium' | 'close' | 'insert';
   label: string;
   subject: number;

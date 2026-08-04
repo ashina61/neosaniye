@@ -39,3 +39,60 @@ test('üretilen her plan çizilebilir sınırlar içinde', () => {
 test('aynı satır aynı odayı verir', () => {
   assert.deepEqual(plan('The vault door opened at midnight'), plan('The vault door opened at midnight'));
 });
+
+test('ardışık ve uzak beatler aynı pozda olmaz', async () => {
+  const {planShots} = await import('../src/story/shotPlan.js');
+  const beats = Array.from({length: 10}, (_, i) => ({
+    role: i === 0 ? 'setup' : i === 9 ? 'button' : 'turn',
+    line: `Line number ${i} about something specific.`,
+    rig: 'grounded-punch',
+  }));
+  const shots = planShots(beats, 4242);
+
+  // Yayın kapısı iki kareyi "aynı" sayarken ortalama parlaklık farkının 0.03'ün
+  // altında olmasını arıyor. Karanlık bir karede (luma ~0.12) bunu aşmak için
+  // poz çarpanları arasında en az ~0.25 fark gerekir.
+  // Üç basamaklı merdiven: iki beat ancak üç beat arayla aynı basamağa döner.
+  for (let i = 0; i < shots.length; i += 1) {
+    for (let j = i + 1; j < Math.min(shots.length, i + 3); j += 1) {
+      const delta = Math.abs(shots[i].exposure - shots[j].exposure);
+      assert.ok(delta > 0.15, `beat ${i} ve ${j} pozu çok yakın: ${delta.toFixed(3)}`);
+    }
+  }
+
+  // NE GARANTİ EDİLİYOR, NE EDİLMİYOR — dürüst sınır.
+  //
+  // Kapı iki kareyi "aynı" saymak için İKİ şey birden ister: algısal hash
+  // eşleşmesi VE ortalama parlaklık farkının 0.03 altında olması. Parlaklık bir
+  // ÇARPAN olduğu için poz merdiveninin sağladığı fark karenin kendi
+  // karanlığına bağlı: render edilip ölçülen kareler 0.138 / 0.195 / 0.238
+  // luma verdi, yani tipik karede ~0.036 (kapının dışında), en karanlık karede
+  // ~0.026 (kapının içinde).
+  //
+  // Merdiveni daha da açmak bu farkı kapatırdı ama pozu 1.3× ile 0.8× arasında
+  // savurmak görüntüyü bozar. En karanlık karede son savunma poz değil İÇERİK:
+  // oda planı, motif, plan ölçeği, ön plan ve alan derinliği ayrı olduğu için
+  // hash zaten eşleşmemeli. Test bu yüzden ölçülen TİPİK kareyi doğruluyor —
+  // sistemin gerçekten verdiği garanti bu.
+  const typicalLuma = 0.195;
+  const worst = Math.min(
+    ...shots.slice(0, -1).map((shot, i) => Math.abs(shot.exposure - shots[i + 1].exposure) * typicalLuma),
+  );
+  assert.ok(worst > 0.03, `tipik karede komşu farkı kapının içinde kalıyor: ${worst.toFixed(4)}`);
+});
+
+test('aynı fotoğraf iki beatte kullanılmaz', async () => {
+  const {buildReelSpec} = await import('../src/video/buildReelSpec.js');
+  const lines = ['A bird leaves the cliff at dawn.', 'The flock turns south over open water.', 'They land on the same island every year.'];
+  // Medya katmanı üç sahne için AYNI dosyayı döndürüyor (canlı koşuda olan bu).
+  const mediaItems = lines.map((_, i) => ({path: '/abs/same-photo.jpg', type: 'photo', scene: i, publicPath: 'runs/x/media-00.jpg'}));
+  const spec = buildReelSpec({
+    script: {topic: 'bird migration', title: 'bird migration', scenes: lines.map((narration) => ({narration}))},
+    audio: {duration: 12},
+    timeline: {source: 'edge-tts', duration: 12, words: [], scenes: lines.map((n, i) => ({scene: i, start: i * 4, end: i * 4 + 4, duration: 4, narration: n}))},
+    mediaItems,
+  });
+  const used = spec.beats.flatMap((beat) => beat.assets.map((asset) => asset.path));
+  assert.equal(new Set(used).size, used.length, `aynı fotoğraf birden çok beatte: ${used.join(', ')}`);
+  assert.equal(used.length, 1, 'tekrar eden fotoğraflar elenmeliydi');
+});

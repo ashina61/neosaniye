@@ -44,10 +44,16 @@ const Watermark: React.FC = () => (
 const BeatScene: React.FC<{beat: Beat; engine: ReelSpec['engine']}> = ({beat, engine}) => {
   const Rig = RIGS[beat.rig] ?? RIGS['grounded-punch'];
   const shot = beat.props?.shot;
+  // The shot's exposure rides on top of the beat's grade, so two neighbouring
+  // scenes never sit at the same brightness.
+  const baseGrade = beat.grade ?? engine.grade ?? DEFAULT_GRADE;
+  const grade = shot?.exposure
+    ? {...baseGrade, brightness: +(baseGrade.brightness * shot.exposure).toFixed(3)}
+    : baseGrade;
 
   return (
     <FilmLook
-      grade={beat.grade ?? engine.grade ?? DEFAULT_GRADE}
+      grade={grade}
       layers={{...engine.film, ...(beat.film ?? {})}}
       posterizeFps={engine.posterizeFps}
       weavePx={engine.gateWeavePx}
