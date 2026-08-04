@@ -6,6 +6,7 @@ import {Plate, pickAsset} from '../engine/Plate';
 import {LampLight} from '../engine/props';
 import {useLook} from '../engine/look';
 import {Stage} from '../engine/stage';
+import {GeneratedSet} from '../engine/GeneratedSet';
 import {Motif} from '../engine/motifs';
 import {Atmosphere} from '../engine/atmosphere';
 
@@ -53,7 +54,7 @@ export const MoneyRoom: React.FC<{beat: Beat}> = ({beat}) => {
     <AbsoluteFill style={{backgroundColor: palette.ink}}>
       <AbsoluteFill style={{transform: `scale(${camScale})`, filter: defocus > 0.02 ? `blur(${defocus * 9}px)` : undefined}}>
         <AbsoluteFill style={{transform: 'scale(1.04)'}}>
-          <Stage id={beat.props.set ?? 'study'} seed={beat.id} />
+          {beat.props.setPlan ? <GeneratedSet plan={beat.props.setPlan} seed={beat.id} /> : <Stage id={beat.props.set ?? 'study'} seed={beat.id} />}
         </AbsoluteFill>
         {plate ? <Plate asset={plate} scale={1.04} opacity={0.85} /> : null}
         {character ? (

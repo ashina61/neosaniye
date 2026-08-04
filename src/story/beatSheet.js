@@ -23,6 +23,7 @@
 import {assignRig, rigAssets, rigGradeDelta, rigRole, rigSfx, RIG_CATALOG} from './rigs.js';
 import {applyGradeDelta, chooseLook} from './look.js';
 import {readSubject} from './subject.js';
+import {planSet} from './setPlan.js';
 
 const WORD_RE = /[\p{L}\p{N}]+(?:['’][\p{L}\p{N}]+)*/gu;
 
@@ -380,6 +381,14 @@ export function buildBeatSheet({script, timeline, look = null, fps = 30} = {}) {
     const props = {
       ...buildProps({rig, durationInFrames, cards, cardFrames, numberText, plaqueText}),
       ...subject,
+      // The room itself is generated per line rather than picked from a list —
+      // horizon, structure, rhythm, aperture, ground, light and haze.
+      setPlan: planSet({
+        line,
+        topic: script?.topic || script?.normalizedTopic || '',
+        seed: identity.seed,
+        index,
+      }),
     };
 
     return {

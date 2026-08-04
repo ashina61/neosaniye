@@ -9,6 +9,7 @@
 import type {SetId} from './engine/stage';
 import type {MotifId} from './engine/motifs';
 import type {AtmosphereId} from './engine/atmosphere';
+import type {SetPlan} from './engine/GeneratedSet';
 
 /** The signature animation a beat runs on. */
 export type RigId =
@@ -172,6 +173,12 @@ export type RigProps = {
   set?: SetId;
   motif?: MotifId | null;
   atmosphere?: AtmosphereId;
+  /**
+   * The generated room. Present on every beat a modern spec produces; `set`
+   * stays as the named fallback so older specs and hand-written fixtures still
+   * render.
+   */
+  setPlan?: SetPlan;
 };
 
 export type Beat = {

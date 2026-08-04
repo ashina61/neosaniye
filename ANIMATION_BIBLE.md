@@ -60,7 +60,18 @@ başına açıktır: düşüş beat'i diğerlerinden daha çok doygunluk kaybede
 
 ## 5b. Kimlik — video başına, sahne başına değil
 
-`src/story/look.js` konudan deterministik olarak seçer:
+**Renk seçilmez, ÜRETİLİR.** `src/story/palette.js` konudan bir ton (hue) türetir;
+anlam bu tonu çeker (buz maviye, ateş turuncuya, para altına), sonra dokuz rol
+HSL'de kontrast kurallarıyla hesaplanır. Uzay süreklidir: iki konu aynı renk
+dünyasına ancak tesadüfen düşer. Sabit olan yalnız YAPI — mürekkep tipografiyi
+taşıyacak kadar koyu, kâğıt okunacak kadar açık, vurgu film gradesinden sağ
+çıkacak kadar doygun. Bunlar estetik değil okunabilirlik sınırlarıdır.
+
+Kroma bilerek kısıtlıdır: serbest bırakıldığında jeneratör neon pembe ve neon
+yeşil dünyalar üretti — çeşitli ama "bilgisayar renk seçmiş" gibi. Kimlik
+TONDAN ve roller arası ilişkiden gelir, doygunluktan değil.
+
+`src/story/look.js` ayrıca deterministik olarak seçer:
 
 - **renk dünyası** — altı aile (suç, felaket, bilim, doğa, para, arşiv), her
   ailede birden çok vurgu rengi
@@ -79,7 +90,24 @@ Değişmezler:
 - Seçim konudan gelir, rastgele değildir: aynı üretim her koşuda ve her
   paralel Remotion işçisinde aynı kareyi verir.
 
-## 5c. Çizim konudan gelir
+## 5c. Oda kurulur, listeden seçilmez
+
+On üç isimli dekor da bir menüydü: rastgele konu on üç odadan birine düşüyordu.
+`src/story/setPlan.js` artık her satır için bir PLAN üretir:
+
+- `horizon` — zemin nerede başlıyor (anıtsal mı, samimi mi)
+- `structure` + `count` + `rhythm` — bloklar / sütunlar / raflar / kemerler /
+  gövdeler / paneller / kirişler / zirveler, kaç tane, hangi düzende
+- `aperture` — pencere / kemer / kasa diski / gökyüzü / su yüzeyi / yok
+- `ground` — düzlem / tahta / karo / moloz / su / gezegen kavisi
+- `light` — konum, genişlik, ton, şiddet (TEK ışık)
+- `haze` — odadaki hava
+
+Anlam yalnız ANLAM TAŞIYAN parçayı sabitler: deniz satırı her zaman suyun
+üstünde geçer, kasa satırı her zaman disk taşır. Gerisi üretilir — bu yüzden
+iki deniz hikâyesi aynı denizi paylaşmaz.
+
+## 5d. Çizim konudan gelir
 
 Renk videodan videoya değişiyordu ama ÇİZİM değişmiyordu: balina da roket de
 banka kasası da aynı gökdelen siluetiyle, aynı boş koltukla çiziliyordu. Palet

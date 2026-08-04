@@ -6,6 +6,7 @@ import {Plate, pickAsset} from '../engine/Plate';
 import {Diamond, SlotReel, Sunburst} from '../engine/props';
 import {useLook} from '../engine/look';
 import {EmptyChair, Stage} from '../engine/stage';
+import {GeneratedSet} from '../engine/GeneratedSet';
 import {Motif} from '../engine/motifs';
 import {Atmosphere} from '../engine/atmosphere';
 
@@ -61,7 +62,7 @@ export const VillainPunch: React.FC<{beat: Beat}> = ({beat}) => {
   return (
     <AbsoluteFill style={{filter: negative ? 'invert(1) hue-rotate(90deg)' : undefined}}>
       <Sunburst rotate={stepped * 0.12 * motion.polarity} />
-      <Stage id={beat.props.set ?? 'villain'} seed={beat.id} />
+      {beat.props.setPlan ? <GeneratedSet plan={beat.props.setPlan} seed={beat.id} /> : <Stage id={beat.props.set ?? 'villain'} seed={beat.id} />}
 
       {/* the antagonist rises, punches in, then holds with a sway */}
       <AbsoluteFill

@@ -14,7 +14,8 @@ seslendirme satırları (script.scenes[].narration)
         ↓  ölçülmüş TTS kelime zamanları
 src/pipeline/canonicalTimeline.js           → beat pencereleri
         ↓
-src/story/look.js                           → VİDEONUN KİMLİĞİ (konudan)
+src/story/palette.js + look.js              → VİDEONUN KİMLİĞİ (üretilir)
+src/story/setPlan.js + subject.js           → HER SATIRIN ODASI VE NESNESİ
         ↓
 src/story/beatSheet.js + src/story/rigs.js  → BEAT SHEET
         ↓
@@ -45,7 +46,12 @@ remotion/src/Reel.tsx → engine/ + rigs/     → final MP4
    + yeni kelimeler + jest. Yedinci mekanik gerçekten gerekmedikçe eklenmez.
 7. **Kelimeler her zaman kazanır.** Müzik konuşma penceresinde kısılır, SFX
    yalnız rigin olayında vurur, kota doldurmak için efekt eklenmez.
-8. **GÖRÜNÜM VİDEO BAŞINA SEÇİLİR, SAHNE BAŞINA DEĞİL.** `src/story/look.js`
+8. **RENK VE ODA ÜRETİLİR, LİSTEDEN SEÇİLMEZ.** `src/story/palette.js` konudan
+   ton türetir ve dokuz rolü kontrast kurallarıyla hesaplar;
+   `src/story/setPlan.js` her satır için oda planı (ufuk, yapı, ritim, açıklık,
+   zemin, ışık, pus) üretir. Menü ne kadar uzun olursa olsun konu sayısı
+   menüyü aşınca tekrar başlar — bu yüzden menü değil jeneratör.
+9. **GÖRÜNÜM VİDEO BAŞINA SEÇİLİR, SAHNE BAŞINA DEĞİL.** `src/story/look.js`
    konudan deterministik olarak seçer: renk dünyası, film işlemesinin şiddeti,
    propların hangi çizimi kullanacağı ve koreografinin yönü. Bir rig kendi
    rengini YAZAMAZ (`test/remotionOnly.test.js` sabit hex'i düşürür) ve rig

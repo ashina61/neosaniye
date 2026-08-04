@@ -6,6 +6,7 @@ import {Plate, pickAsset} from '../engine/Plate';
 import {GoldFrame, Plaque} from '../engine/props';
 import {useLook} from '../engine/look';
 import {GalleryWall, Stage} from '../engine/stage';
+import {GeneratedSet} from '../engine/GeneratedSet';
 import {Motif} from '../engine/motifs';
 import {Atmosphere} from '../engine/atmosphere';
 
@@ -122,7 +123,7 @@ export const PortalZoom: React.FC<{beat: Beat}> = ({beat}) => {
                 // No photograph found: the frame still has to hold a PICTURE,
                 // not more wall, or the fly-through lands on nothing.
                 <AbsoluteFill style={{filter: `grayscale(${colour})`}}>
-                  <Stage id={beat.props.set} seed={`${beat.id}-in`} />
+                  {beat.props.setPlan ? <GeneratedSet plan={beat.props.setPlan} seed={`${beat.id}-in`} /> : <Stage id={beat.props.set} seed={`${beat.id}-in`} />}
                   {beat.props.motif ? (
                     <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center'}}>
                       <Motif id={beat.props.motif} size={Math.round(frameW * 0.62)} seed={beat.id} />

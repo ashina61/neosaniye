@@ -6,6 +6,7 @@ import {Plate, pickAsset} from '../engine/Plate';
 import {Gesture} from '../engine/props';
 import {useLook} from '../engine/look';
 import {Stage} from '../engine/stage';
+import {GeneratedSet} from '../engine/GeneratedSet';
 import {Motif} from '../engine/motifs';
 import {Atmosphere} from '../engine/atmosphere';
 
@@ -85,7 +86,7 @@ export const GroundedPunch: React.FC<{beat: Beat}> = ({beat}) => {
           transform: `scale(${wallScale})`,
         }}
       >
-        <Stage id={beat.props.set} seed={beat.id} />
+        {beat.props.setPlan ? <GeneratedSet plan={beat.props.setPlan} seed={beat.id} /> : <Stage id={beat.props.set} seed={beat.id} />}
       </AbsoluteFill>
       {plate ? <Plate asset={plate} scale={wallScale} originX={groundX} originY={groundY} opacity={0.9} /> : null}
 

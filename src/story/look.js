@@ -31,6 +31,8 @@
  * renders of one job disagree — and it would make a bad look unreproducible.
  */
 
+import {buildGrade, buildPalette} from './palette.js';
+
 /** FNV-1a over the topic — stable across processes and Node versions. */
 function hash(value, salt = 0) {
   let h = (2166136261 ^ salt) >>> 0;
@@ -74,10 +76,12 @@ const pick = (list, value) => list[value % list.length];
 const band = (value, low, high, steps = 16) => low + ((value % steps) / (steps - 1)) * (high - low);
 
 /**
- * Colour worlds. Each family owns a mood; the accents inside a family are what
- * keeps two crime stories from looking like the same crime story.
+ * KEPT FOR REFERENCE ONLY — the palette is generated now (src/story/palette.js).
+ * These were the six hand-authored worlds this file used to choose between, and
+ * they are exactly what "bound to one colour" meant: eighteen possible looks,
+ * then reruns. Left here as the record of what was replaced and why.
  */
-const FAMILIES = [
+const RETIRED_FAMILIES = [
   {
     name: 'suç / soruşturma — soğuk kanıt masası',
     when: /\b(crime|heist|robber|murder|steal|stolen|police|detective|hijack|fraud|smuggl|prison|escape|missing|vanish|forger|con(?:man)?)/i,
@@ -165,22 +169,17 @@ const MASTHEADS = [
  */
 export function chooseLook(topic) {
   const seed = hash(topic);
-  const family = FAMILIES.find((entry) => entry.when && entry.when.test(String(topic || ''))) || FAMILIES.at(-1);
-  const accent = pick(family.accents, stream(seed, 3));
   const polarity = stream(seed, 7) % 2 === 0 ? 1 : -1;
+  // THE COLOUR IS BUILT FROM THE TOPIC, NOT CHOSEN FROM A LIST.
+  // A menu of families repeats as soon as you have more topics than entries;
+  // a generator does not. See src/story/palette.js.
+  const {palette, mood, hue} = buildPalette(topic);
 
   return {
-    name: family.name,
+    name: `${mood} · ${hue}°`,
     seed,
-    palette: {...family.palette, ...accent},
-    grade: {
-      // The family sets the mood; the seed nudges it so two videos in the same
-      // family are not the same photograph twice.
-      saturate: +band(stream(seed, 2), family.grade.saturate - 0.06, family.grade.saturate + 0.06).toFixed(3),
-      contrast: +band(stream(seed, 5), family.grade.contrast - 0.04, family.grade.contrast + 0.05).toFixed(3),
-      sepia: +band(stream(seed, 9), Math.max(0, family.grade.sepia - 0.05), family.grade.sepia + 0.06).toFixed(3),
-      brightness: +band(stream(seed, 11), family.grade.brightness - 0.03, family.grade.brightness + 0.03).toFixed(3),
-    },
+    palette,
+    grade: buildGrade(topic),
     film: {
       scanlines: true,
       grain: true,

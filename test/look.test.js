@@ -80,11 +80,38 @@ test('seçilen değerler kendi bandının içinde kalır', () => {
   }
 });
 
-test('konu ailesi tonu belirler', () => {
-  assert.match(chooseLook('The Chernobyl meltdown').name, /felaket/);
-  assert.match(chooseLook('A telescope on the far side of the moon').name, /bilim/);
-  assert.match(chooseLook('The detective who faked the evidence').name, /suç/);
-  assert.match(chooseLook('A story with no signal words at all').name, /genel/);
+test('konunun anlamı tonu büker, ama seçenek listesi yoktur', () => {
+  // Anlam rengi ÇEKER: ateş sıcak, uzay soğuk, su mavi-yeşil tarafta.
+  assert.match(chooseLook('The reactor fire that burned for days').name, /ateş/);
+  assert.match(chooseLook('A telescope in orbit around the moon').name, /uzay/);
+  assert.match(chooseLook('The diver who found the wreck under the sea').name, /su/);
+  // Sinyal yoksa renk yine de üretilir — "varsayılan görünüm" diye bir şey yok.
+  assert.match(chooseLook('A story with no signal words at all').name, /serbest/);
+});
+
+test('renk seçilmiyor, üretiliyor: yüz konu yüze yakın ayrı dünya verir', () => {
+  const topics = Array.from({length: 100}, (_, i) => `random topic number ${i}`);
+  const looks = topics.map((topic) => chooseLook(topic));
+
+  const accents = new Set(looks.map((look) => look.palette.accent));
+  const inks = new Set(looks.map((look) => look.palette.ink));
+  assert.ok(accents.size >= 90, `vurgu rengi tekrar ediyor: ${accents.size}/100`);
+  assert.ok(inks.size >= 85, `mürekkep tekrar ediyor: ${inks.size}/100`);
+
+  // Üretilen her renk okunabilirlik sınırları içinde kalmalı: mürekkep koyu,
+  // kâğıt açık. Sınır estetik değil, tipografinin okunması meselesi.
+  const luma = (hex) => {
+    const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+  for (const look of looks) {
+    assert.ok(luma(look.palette.ink) < 0.16, `mürekkep fazla açık: ${look.palette.ink}`);
+    assert.ok(luma(look.palette.paperLight) > 0.7, `kâğıt fazla koyu: ${look.palette.paperLight}`);
+    assert.ok(
+      luma(look.palette.paperLight) - luma(look.palette.ink) > 0.6,
+      `kontrast yetersiz: ${look.palette.ink} / ${look.palette.paperLight}`,
+    );
+  }
 });
 
 test('rig, videonun gradesini değiştirir; yerine geçmez', () => {

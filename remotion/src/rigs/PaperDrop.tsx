@@ -6,6 +6,7 @@ import {Plate, pickAsset} from '../engine/Plate';
 import {NewspaperCard} from '../engine/props';
 import {useLook} from '../engine/look';
 import {Stage} from '../engine/stage';
+import {GeneratedSet} from '../engine/GeneratedSet';
 import {Atmosphere} from '../engine/atmosphere';
 
 /**
@@ -50,7 +51,7 @@ export const PaperDrop: React.FC<{beat: Beat}> = ({beat}) => {
     <AbsoluteFill style={{backgroundColor: palette.ink}}>
       {/* the desk is drawn; a found photograph of one lies over it */}
       <AbsoluteFill style={{transform: `scale(${ken})`, filter: focus > 0 ? `blur(${focus}px)` : undefined}}>
-        <Stage id={beat.props.set ?? 'desk'} seed={beat.id} />
+        {beat.props.setPlan ? <GeneratedSet plan={beat.props.setPlan} seed={beat.id} /> : <Stage id={beat.props.set ?? 'desk'} seed={beat.id} />}
         {desk ? <Plate asset={desk} scale={1} opacity={0.72} /> : null}
       </AbsoluteFill>
 
