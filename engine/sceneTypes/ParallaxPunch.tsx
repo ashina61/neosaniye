@@ -38,7 +38,9 @@ export const ParallaxPunch: React.FC<SceneProps> = ({scene, assets, durationInFr
   const groundY = num('groundY', Math.round(height * 0.88));
   const bgScale = num('bgScale', 1.12);
   const charScale = num('charScale', 1.7);
-  const charWidth = num('charWidth', Math.round(width * 0.62));
+  // Height wins when both are given: a person is placed by how tall they stand.
+  const charHeight = num('charHeight', 0);
+  const charWidth = charHeight > 0 ? 0 : num('charWidth', Math.round(width * 0.62));
   const shadowSkew = num('shadowSkew', -53);
   const shadowOpacity = num('shadowOpacity', 0.55);
   const shadowBlur = num('shadowBlur', 7);
@@ -70,7 +72,8 @@ export const ParallaxPunch: React.FC<SceneProps> = ({scene, assets, durationInFr
           >
             <Plate
               src={assets.character}
-              plateWidth={charWidth}
+              plateWidth={charWidth || undefined}
+              plateHeight={charHeight || undefined}
               footX={groundX}
               footY={groundY}
               blacken
@@ -81,7 +84,8 @@ export const ParallaxPunch: React.FC<SceneProps> = ({scene, assets, durationInFr
           <Plate
             src={assets.character}
             scale={character}
-            plateWidth={charWidth}
+            plateWidth={charWidth || undefined}
+            plateHeight={charHeight || undefined}
             footX={groundX}
             footY={groundY}
             cutout

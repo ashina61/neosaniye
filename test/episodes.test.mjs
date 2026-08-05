@@ -41,6 +41,32 @@ for (const id of episodeIds) {
     }
   });
 
+  test(`${id}: the generation recipe covers every asset the config names`, async () => {
+    const recipes = await readFile(path.join(EPISODES, id, 'assets.json'), 'utf8')
+      .then(JSON.parse)
+      .catch(() => null);
+    if (!recipes) return; // An episode whose artwork is supplied by hand.
+
+    const config = JSON.parse(await readFile(path.join(EPISODES, id, 'scene-config.json'), 'utf8'));
+    const kinds = recipes.kinds ?? {};
+    const referenced = new Set();
+    for (const scene of config.scenes) {
+      for (const file of Object.values(scene.assets ?? {})) referenced.add(path.basename(file));
+    }
+
+    for (const name of referenced) {
+      const recipe = recipes.assets?.[name];
+      assert.ok(recipe, `no recipe in assets.json for "${name}" — the generator would never draw it`);
+      assert.ok(recipe.prompt?.trim(), `recipe for "${name}" has no prompt`);
+      assert.ok(kinds[recipe.kind], `recipe for "${name}" has unknown kind "${recipe.kind}"`);
+    }
+
+    // The reverse leak: a recipe nobody uses costs a draw every run.
+    for (const name of Object.keys(recipes.assets ?? {})) {
+      assert.ok(referenced.has(name), `assets.json draws "${name}" but no scene references it`);
+    }
+  });
+
   test(`${id}: every scene type can be rendered by something`, async () => {
     const config = JSON.parse(await readFile(path.join(EPISODES, id, 'scene-config.json'), 'utf8'));
     const custom = await readFile(path.join(EPISODES, id, 'scenes', 'index.tsx'), 'utf8').catch(() => '');

@@ -37,8 +37,57 @@ npm run studio                          # Remotion Studio, live knobs
 npm test && npm run typecheck
 ```
 
-`npm run assets:placeholder -- --episode=<id>` writes flat colour-box stand-ins
-so a new episode can be timed before its real artwork exists.
+`npm run assets:placeholder -- --episode=<id>` writes labelled stand-ins — one
+per file the config references, at the size its recipe asks for — so an episode
+can be cut and timed before its artwork exists.
+
+## Where the artwork comes from
+
+Assets are **files in the episode folder**. The render opens them; it never
+calls a generator. Drawing them is a separate step that writes into
+`episodes/<id>/assets/` and commits the result:
+
+```bash
+node scripts/generate-assets.mjs --episode=zodiac-1969            # only what is missing
+node scripts/generate-assets.mjs --episode=zodiac-1969 --force    # redraw everything
+node scripts/generate-assets.mjs --episode=zodiac-1969 --only=editor.png,detective.png
+```
+
+Prompts live in `episodes/<id>/assets.json`, next to the config — a prompt is
+the episode's business in exactly the way a file name is. Each asset declares a
+`kind`, and the kind decides the size and whether it gets an alpha channel:
+
+| kind | size | alpha | for |
+|---|---|---|---|
+| `backdrop` | 1080×1920 | — | walls, streets, rooms |
+| `photo` | 900×1170 | — | what a portal flies into |
+| `subject` | 820×1400 | yes | people |
+| `object` | 820×1060 | yes | papers, evidence, frames |
+
+`subject` and `object` are drawn on a chroma-green backdrop and keyed out, so
+they arrive with **real transparency** and are then trimmed to their own edges —
+the trimmed bottom is the subject's feet, which is what `footY` anchors to. A
+soft threshold band keeps hair and cloth from becoming a scissor-cut outline,
+and a despill pass pulls the green reflection back out of those edge pixels.
+
+Two guards make the step safe to automate: the file name seeds the generator, so
+the same name draws the same picture on every run; and a keyed image that comes
+back either fully opaque or fully transparent is **rejected rather than
+written**, because a subject that keyed away to nothing renders as an empty
+scene rather than as an error.
+
+Filling in artwork never touches the config. The files are replaced by name.
+
+A stand-in and a finished drawing are both just a PNG, so nothing downstream can
+tell them apart on its own — which is how an episode of labelled grey boxes
+renders and uploads without anyone noticing. `assets/.placeholders.json` is the
+difference: the placeholder script adds names to it, the generator removes each
+one as it draws it for real, and `npm run validate` prints how many are left.
+
+```
+✓ zodiac-1969 — 10 scene(s), 1620 frames (54.00s @ 30fps, 1080x1920)
+  ⚠ 25 of these assets are still stand-ins: boot-print.png, car-exterior.png, …
+```
 
 ## The four templates
 
@@ -117,9 +166,21 @@ not catch those.
 - **`validate-episode.yml`** — on every push and PR: schema, scene types, asset
   existence, engine guards, typecheck. No bundle, no browser, seconds not
   minutes.
+- **`generate-assets.yml`** — `workflow_dispatch` with `episode_id`, optional
+  `only` and `force`: draws the episode's artwork, validates that every file the
+  config names is now on disk, and commits the PNGs to the branch. It goes red
+  *before* committing if a draw failed, so a half-drawn episode is never left
+  looking finished.
 - **`render-episode.yml`** — `workflow_dispatch` with an `episode_id` input:
   installs Chromium, renders, uploads `out/<episode_id>.mp4` as an artifact. The
   episode is a runtime input, so the same commit renders any of them.
+
+## Episodes
+
+| id | scenes | length |
+|---|---|---|
+| `zodiac-1969` | 10 | 54.0s |
+| `test-episode` | 2 | 8.0s — engine smoke test |
 
 ## Audio
 

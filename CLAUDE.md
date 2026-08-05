@@ -74,9 +74,15 @@ verdi; prosedürel siluetler tabela piktogramı olmaktan çıkmadı.
 
 Bu hat aynı duvara çarpmaz çünkü malzeme koda sokulmaz:
 
-- **GÖRSEL BÖLÜMÜN İÇİNDEDİR** — `episodes/<id>/assets/`. Ne indirilir, ne
-  koşu sırasında üretilir, ne de kaybolur. Doğrulayıcı hepsinin diskte ve boş
+- **GÖRSEL BÖLÜMÜN İÇİNDEDİR** — `episodes/<id>/assets/`. Render bir üreticiyi
+  ÇAĞIRMAZ; diskteki dosyayı okur. Doğrulayıcı hepsinin diskte ve boş
   olmadığını render'dan önce kontrol eder.
+- **ÜRETİM AYRI BİR ADIMDIR.** `scripts/generate-assets.mjs` +
+  `.github/workflows/generate-assets.yml` görselleri çizer ve **commit eder**;
+  o andan sonra sıradan bir dosyadırlar. Reçeteler `episodes/<id>/assets.json`
+  içindedir — istem de dosya adı gibi bölümün işidir. Bu ayrım şart: üretici
+  bozulursa üretim adımı patlar, bitmiş bir bölüm sessizce değişmez. Aynı
+  isim aynı seed'i verir, yani tekrar çalıştırmak aynı resmi getirir.
 - **HAREKET MOTORUN İÇİNDEDİR** — `engine/motion.ts` sayı alır, sayı döndürür;
   ne çizdiğini bilmez. Bu yüzden ikinci bölüm bedavadır.
 - **DERİNLİK OYNATILIR** — 3D yok, plugin yok: ortak çapaya oturtulmuş iki

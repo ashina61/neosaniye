@@ -1,0 +1,271 @@
+{
+  "id": "zodiac-1969",
+  "title": "Zodiac 1969 — the letters that had to be printed",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "look": {
+    "posterizeFps": 12,
+    "grade": {"saturate": 0.62, "contrast": 1.18, "sepia": 0.22, "brightness": 0.92},
+    "film": {
+      "grain": true,
+      "grunge": true,
+      "scanlines": true,
+      "vignette": true,
+      "gateWeave": true,
+      "grainOpacity": 0.58,
+      "grungeOpacity": 0.2,
+      "scanlineOpacity": 0.12,
+      "scanlinePeriod": 9,
+      "vignetteStrength": 0.6,
+      "weavePx": 5,
+      "weaveScale": 1.014
+    }
+  },
+  "scenes": [
+    {
+      "id": "s01-envelope",
+      "sceneType": "portal-zoom-reveal",
+      "voText": "July thirty-first, nineteen sixty-nine. Three California newspapers open the same envelope on the same morning.",
+      "durationInFrames": 155,
+      "assets": {
+        "wall": "assets/newsroom-wall.png",
+        "photo": "assets/cipher-408.png",
+        "frame": "assets/frame-clip.png"
+      },
+      "params": {
+        "frameWidth": 700,
+        "frameRatio": 1.3,
+        "pushEndFrame": 58,
+        "detachFrame": 82,
+        "throughEndFrame": 100,
+        "weldRatio": 0.369,
+        "wallScaleEnd": 6.4
+      },
+      "onScreenText": [
+        {"text": "JULY 31, 1969", "atFrame": 8, "durationInFrames": 44, "style": "headline", "position": "top"}
+      ]
+    },
+    {
+      "id": "s02-condition",
+      "sceneType": "split-shift",
+      "voText": "Each holds a third of a cipher, and one condition. Print it, or I start killing.",
+      "durationInFrames": 150,
+      "assets": {
+        "background": "assets/newsroom-desk.png",
+        "character": "assets/editor.png"
+      },
+      "params": {
+        "groundX": 470,
+        "groundY": 1720,
+        "charHeight": 1000,
+        "bgScale": 1.07,
+        "shiftFrame": 62,
+        "shiftPx": 300,
+        "shiftLength": 13,
+        "blurPeak": 9
+      },
+      "onScreenText": [
+        {
+          "text": "“or I will go on a kill rampage”",
+          "atFrame": 84,
+          "durationInFrames": 58,
+          "style": "serif-italic",
+          "position": "bottom"
+        }
+      ]
+    },
+    {
+      "id": "s03-printed",
+      "sceneType": "stacked-reveal",
+      "voText": "All three printed it. A schoolteacher and his wife broke the code in six days.",
+      "durationInFrames": 170,
+      "assets": {
+        "background": "assets/desk-wood.png",
+        "item1": "assets/paper-chronicle.png",
+        "item2": "assets/paper-examiner.png",
+        "item3": "assets/paper-times-herald.png"
+      },
+      "params": {
+        "itemFrames": [10, 44, 78],
+        "itemWidth": 560,
+        "stiffness": 40,
+        "mass": 1.15
+      },
+      "onScreenText": [
+        {"text": "BROKEN IN 6 DAYS", "atFrame": 116, "durationInFrames": 46, "style": "sticker", "position": "bottom"}
+      ]
+    },
+    {
+      "id": "s04-berryessa",
+      "sceneType": "parallax-punch",
+      "voText": "Eight weeks later a man walks up to two students at Lake Berryessa wearing a black hood.",
+      "durationInFrames": 160,
+      "assets": {
+        "background": "assets/lake-dusk.png",
+        "character": "assets/hooded-figure.png"
+      },
+      "params": {
+        "groundX": 600,
+        "groundY": 1660,
+        "bgScale": 1.1,
+        "charHeight": 900,
+        "charScale": 1.62,
+        "shadowSkew": -48,
+        "shadowOpacity": 0.5,
+        "shadowBlur": 9,
+        "punchEndFrame": 120
+      },
+      "gradeOverride": {"saturate": 0.42, "brightness": 0.82, "contrast": 1.24},
+      "onScreenText": [
+        {"text": "LAKE BERRYESSA", "atFrame": 18, "durationInFrames": 50, "style": "sticker", "position": "top"}
+      ]
+    },
+    {
+      "id": "s05-cardoor",
+      "sceneType": "portal-zoom-reveal",
+      "voText": "He leaves the dates of his earlier attacks written on their car door in felt pen.",
+      "durationInFrames": 150,
+      "assets": {
+        "wall": "assets/car-exterior.png",
+        "photo": "assets/car-door-writing.png"
+      },
+      "params": {
+        "frameWidth": 800,
+        "frameRatio": 0.9,
+        "pushEndFrame": 54,
+        "detachFrame": 76,
+        "throughEndFrame": 94,
+        "weldRatio": 0.42,
+        "wallScaleEnd": 5.4
+      },
+      "gradeOverride": {"saturate": 0.5, "brightness": 0.86},
+      "onScreenText": [
+        {
+          "text": "written on the car door",
+          "atFrame": 100,
+          "durationInFrames": 44,
+          "style": "serif-italic",
+          "position": "bottom"
+        }
+      ]
+    },
+    {
+      "id": "s06-stine",
+      "sceneType": "parallax-punch",
+      "voText": "Two weeks after that he shoots a cab driver ten blocks from a police station.",
+      "durationInFrames": 155,
+      "assets": {
+        "background": "assets/sf-fog-corner.png",
+        "character": "assets/man-walking.png"
+      },
+      "params": {
+        "groundX": 520,
+        "groundY": 1700,
+        "bgScale": 1.14,
+        "charHeight": 820,
+        "charScale": 1.48,
+        "shadowSkew": -58,
+        "shadowOpacity": 0.42,
+        "shadowBlur": 12,
+        "punchEndFrame": 112
+      },
+      "gradeOverride": {"saturate": 0.38, "brightness": 0.8, "contrast": 1.28},
+      "onScreenText": [
+        {"text": "10 BLOCKS AWAY", "atFrame": 96, "durationInFrames": 44, "style": "sticker", "position": "bottom"}
+      ]
+    },
+    {
+      "id": "s07-evidence",
+      "sceneType": "stacked-reveal",
+      "voText": "A witness description. A piece of the driver's shirt, mailed in. One boot print, size ten and a half.",
+      "durationInFrames": 180,
+      "assets": {
+        "background": "assets/evidence-table.png",
+        "item1": "assets/police-sketch.png",
+        "item2": "assets/shirt-scrap.png",
+        "item3": "assets/boot-print.png"
+      },
+      "params": {
+        "itemFrames": [12, 52, 92],
+        "itemWidth": 520,
+        "stiffness": 44,
+        "mass": 1.1
+      },
+      "onScreenText": [
+        {"text": "SIZE 10½", "atFrame": 130, "durationInFrames": 42, "style": "sticker", "position": "bottom"}
+      ]
+    },
+    {
+      "id": "s08-suspects",
+      "sceneType": "split-shift",
+      "voText": "Two thousand five hundred suspects were investigated. Not one of them could be held.",
+      "durationInFrames": 150,
+      "assets": {
+        "background": "assets/detective-office.png",
+        "character": "assets/detective.png"
+      },
+      "params": {
+        "groundX": 640,
+        "groundY": 1730,
+        "charHeight": 980,
+        "bgScale": 1.05,
+        "shiftFrame": 58,
+        "shiftPx": 330,
+        "shiftLength": 12,
+        "blurPeak": 8
+      },
+      "onScreenText": [
+        {"text": "2,500 SUSPECTS", "atFrame": 80, "durationInFrames": 56, "style": "headline", "position": "center"}
+      ]
+    },
+    {
+      "id": "s09-cipher340",
+      "sceneType": "portal-zoom-reveal",
+      "voText": "His longest cipher stayed unread for fifty-one years. Three amateurs cracked it in twenty twenty. It named nobody.",
+      "durationInFrames": 180,
+      "assets": {
+        "wall": "assets/cork-board.png",
+        "photo": "assets/cipher-340.png",
+        "frame": "assets/frame-clip.png"
+      },
+      "params": {
+        "frameWidth": 720,
+        "frameRatio": 1.18,
+        "pushEndFrame": 66,
+        "detachFrame": 96,
+        "throughEndFrame": 118,
+        "weldRatio": 0.38,
+        "wallScaleEnd": 6.8
+      },
+      "onScreenText": [
+        {"text": "51 YEARS", "atFrame": 128, "durationInFrames": 46, "style": "sticker", "position": "top"}
+      ]
+    },
+    {
+      "id": "s10-open",
+      "sceneType": "parallax-punch",
+      "voText": "The file is still open. He stopped writing, and no one ever answered for it.",
+      "durationInFrames": 170,
+      "assets": {
+        "background": "assets/night-road.png",
+        "character": "assets/figure-away.png"
+      },
+      "params": {
+        "groundX": 540,
+        "groundY": 1640,
+        "bgScale": 1.08,
+        "charHeight": 520,
+        "charScale": 1.24,
+        "shadowSkew": -64,
+        "shadowOpacity": 0.36,
+        "shadowBlur": 14,
+        "punchEndFrame": 130
+      },
+      "gradeOverride": {"saturate": 0.3, "brightness": 0.76, "contrast": 1.3},
+      "onScreenText": [
+        {"text": "STILL OPEN", "atFrame": 110, "durationInFrames": 58, "style": "headline", "position": "center"}
+      ]
+    }
+  ]
+}

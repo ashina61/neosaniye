@@ -26,14 +26,22 @@ export const Plate: React.FC<{
    * stretched to 1080x1920 fills the shot, so nothing can move in front of
    * anything and the depth is gone.
    *
-   * Give a width in scene pixels and the plate becomes an object: drawn at that
-   * width, height from the file's own ratio, standing with its bottom centre on
-   * (footX, footY). Scaling then happens about the feet, so a subject grows
-   * INTO the room instead of sliding out of it.
+   * Give a size in scene pixels and the plate becomes an object: drawn at that
+   * size, the other dimension from the file's own ratio, standing with its
+   * bottom centre on (footX, footY). Scaling then happens about the feet, so a
+   * subject grows INTO the room instead of sliding out of it.
+   *
+   * Size a STANDING FIGURE by plateHeight. What places a person in a frame is
+   * how tall they are in it, and a cut-out is trimmed to its own edges — so a
+   * wide-stanced pose and a narrow one come back as files of different ratios,
+   * and a fixed width would silently make one of them short.
    */
   plateWidth?: number;
+  plateHeight?: number;
   footX?: number;
   footY?: number;
+  /** 'cover' crops to fill its box; 'contain' fits the whole file inside it. */
+  fit?: 'cover' | 'contain';
   translateX?: number;
   translateY?: number;
   rotate?: number;
@@ -56,8 +64,10 @@ export const Plate: React.FC<{
   originX,
   originY,
   plateWidth,
+  plateHeight,
   footX,
   footY,
+  fit = 'cover',
   translateX = 0,
   translateY = 0,
   rotate = 0,
@@ -77,7 +87,7 @@ export const Plate: React.FC<{
   const stepped = posterizeTime(frame, fps, 12);
   const life = alive ? boil(stepped, {phase: boilPhase}) : {scale: 1, rotate: 0};
 
-  const sized = plateWidth !== undefined && plateWidth > 0;
+  const sized = (plateWidth ?? 0) > 0 || (plateHeight ?? 0) > 0;
 
   // A sized subject turns about its own feet; a full-bleed plate turns about
   // the shared anchor the scene handed it.
@@ -109,21 +119,35 @@ export const Plate: React.FC<{
   if (sized) {
     const standX = footX ?? width / 2;
     const standY = footY ?? height;
+    const byHeight = !plateWidth && (plateHeight ?? 0) > 0;
     return (
       <AbsoluteFill style={style}>
         <div
           style={{
             position: 'absolute',
             width: plateWidth,
-            left: standX - plateWidth / 2,
+            height: plateHeight,
+            left: standX,
             bottom: height - standY,
             transformOrigin: origin,
-            transform,
+            // The half-width shift is what stands the plate ON the point rather
+            // than beside it. It sits outside the scale, so it stays a constant
+            // centring offset while the subject grows about its feet.
+            transform: `translateX(-50%) ${transform}`,
             filter,
             opacity,
           }}
         >
-          {src ? <Img src={staticFile(src)} style={{width: '100%', display: 'block'}} /> : null}
+          {src ? (
+            <Img
+              src={staticFile(src)}
+              style={
+                byHeight
+                  ? {height: '100%', width: 'auto', display: 'block', objectFit: fit}
+                  : {width: '100%', display: 'block', objectFit: fit}
+              }
+            />
+          ) : null}
           {children}
         </div>
       </AbsoluteFill>
@@ -142,7 +166,7 @@ export const Plate: React.FC<{
         ...style,
       }}
     >
-      {src ? <Img src={staticFile(src)} style={{width: '100%', height: '100%', objectFit: 'cover'}} /> : null}
+      {src ? <Img src={staticFile(src)} style={{width: '100%', height: '100%', objectFit: fit}} /> : null}
       {children}
     </AbsoluteFill>
   );

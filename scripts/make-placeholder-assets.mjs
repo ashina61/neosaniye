@@ -1,83 +1,117 @@
 #!/usr/bin/env node
 /**
- * Placeholder art for the test episode: flat colour boxes with a label.
+ * STAND-INS, so an episode can be cut before its artwork exists.
  *
- * Written as real PNG files rather than generated at render time so the
- * validator has something to find — a test episode whose assets only exist in
- * memory would pass validation for the wrong reason.
+ * The files are derived from the episode's own scene-config.json rather than
+ * from a list in here — a list in a script is the same leak as a file name in
+ * the engine, just one directory further out. Whatever the config references is
+ * what gets written, at the size its recipe asks for.
+ *
+ * Real artwork later overwrites these by name. Nothing in the config changes.
+ *
+ *   node scripts/make-placeholder-assets.mjs --episode=<id> [--force]
  */
-import {mkdir, writeFile} from 'node:fs/promises';
+import {mkdir, readFile, writeFile} from 'node:fs/promises';
 import path from 'node:path';
-import zlib from 'node:zlib';
-import {ROOT, parseArgs} from './lib/episode.mjs';
+import sharp from 'sharp';
+import {ROOT, episodeDir, exists, loadConfig, parseArgs} from './lib/episode.mjs';
+import {markPlaceholders} from './lib/placeholders.mjs';
 
-function png(width, height, rgb) {
-  const raw = Buffer.alloc((width * 3 + 1) * height);
-  let offset = 0;
-  for (let y = 0; y < height; y += 1) {
-    raw[offset++] = 0;
-    for (let x = 0; x < width; x += 1) {
-      // A soft diagonal so a placeholder still shows movement and scale.
-      const shade = 0.75 + 0.25 * Math.sin((x / width + y / height) * Math.PI);
-      raw[offset++] = Math.round(rgb[0] * shade);
-      raw[offset++] = Math.round(rgb[1] * shade);
-      raw[offset++] = Math.round(rgb[2] * shade);
-    }
+/** Roles that fill the frame; everything else is an object standing in space. */
+const FULL_FRAME = new Set(['background', 'wall']);
+
+function hue(name) {
+  let h = 2166136261 >>> 0;
+  for (let i = 0; i < name.length; i += 1) {
+    h ^= name.charCodeAt(i);
+    h = Math.imul(h, 16777619) >>> 0;
   }
-  const chunk = (type, data) => {
-    const length = Buffer.alloc(4);
-    length.writeUInt32BE(data.length);
-    const body = Buffer.concat([Buffer.from(type), data]);
-    const crc = Buffer.alloc(4);
-    crc.writeUInt32BE(zlib.crc32 ? zlib.crc32(body) : crc32(body));
-    return Buffer.concat([length, body, crc]);
-  };
-  const ihdr = Buffer.alloc(13);
-  ihdr.writeUInt32BE(width, 0);
-  ihdr.writeUInt32BE(height, 4);
-  ihdr[8] = 8;
-  ihdr[9] = 2;
-  return Buffer.concat([
-    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
-    chunk('IHDR', ihdr),
-    chunk('IDAT', zlib.deflateSync(raw)),
-    chunk('IEND', Buffer.alloc(0)),
-  ]);
+  return h % 360;
 }
 
-function crc32(buffer) {
-  let crc = ~0;
-  for (const byte of buffer) {
-    crc ^= byte;
-    for (let i = 0; i < 8; i += 1) crc = (crc >>> 1) ^ (0xedb88320 & -(crc & 1));
-  }
-  return ~crc >>> 0;
-}
+function card(name, width, height, alpha) {
+  const h = hue(name);
+  const label = name.replace(/\.[a-z]+$/i, '');
+  const fontSize = Math.round(Math.min(width, height) * 0.075);
+  const body = alpha
+    ? `<rect x="${width * 0.06}" y="${height * 0.06}" width="${width * 0.88}" height="${height * 0.88}"
+         rx="${width * 0.04}" fill="hsl(${h} 24% 62%)"/>`
+    : `<rect width="${width}" height="${height}" fill="hsl(${h} 18% 34%)"/>
+       <rect width="${width}" height="${height}" fill="url(#g)"/>`;
 
-const FILES = [
-  ['background-1.png', 1080, 1920, [46, 58, 72]],
-  ['background-2.png', 1080, 1920, [72, 52, 44]],
-  ['character-1.png', 700, 1200, [206, 178, 128]],
-  ['photo-1.png', 900, 1120, [128, 146, 160]],
-  ['frame-1.png', 900, 1120, [196, 158, 74]],
-  ['item-1.png', 620, 830, [214, 206, 182]],
-  ['item-2.png', 620, 830, [198, 190, 166]],
-  ['item-3.png', 620, 830, [182, 174, 150]],
-];
+  return Buffer.from(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
+       <defs>
+         <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+           <stop offset="0" stop-color="hsl(${h} 22% 52%)" stop-opacity="0.9"/>
+           <stop offset="1" stop-color="hsl(${(h + 40) % 360} 20% 16%)" stop-opacity="0.9"/>
+         </linearGradient>
+       </defs>
+       ${body}
+       <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
+             font-family="monospace" font-size="${fontSize}" fill="rgba(0,0,0,0.72)">${label}</text>
+       <text x="50%" y="${height * 0.5 + fontSize * 1.4}" text-anchor="middle" dominant-baseline="middle"
+             font-family="monospace" font-size="${Math.round(fontSize * 0.62)}" fill="rgba(0,0,0,0.5)">${width}x${height}</text>
+     </svg>`,
+  );
+}
 
 async function main() {
   const args = parseArgs();
-  const episodeId = typeof args.episode === 'string' ? args.episode : 'test-episode';
-  const dir = path.join(ROOT, 'episodes', episodeId, 'assets');
-  await mkdir(dir, {recursive: true});
-  for (const [name, width, height, rgb] of FILES) {
-    await writeFile(path.join(dir, name), png(width, height, rgb));
-    console.log(`  ${name} ${width}x${height}`);
+  const episodeId = typeof args.episode === 'string' ? args.episode : null;
+  if (!episodeId) {
+    console.error('Usage: node scripts/make-placeholder-assets.mjs --episode=<episode-id> [--force]');
+    process.exit(1);
   }
-  console.log(`✓ ${FILES.length} placeholder assets in episodes/${episodeId}/assets`);
+
+  const dir = episodeDir(episodeId);
+  const {config} = await loadConfig(episodeId);
+
+  // Sizes come from the generation recipe when the episode has one, so a
+  // placeholder frames the shot the way the real artwork will.
+  const recipes = await readFile(path.join(dir, 'assets.json'), 'utf8')
+    .then(JSON.parse)
+    .catch(() => null);
+
+  /** file -> {width, height, alpha}, first reference wins. */
+  const wanted = new Map();
+  for (const scene of config.scenes ?? []) {
+    for (const [role, file] of Object.entries(scene.assets ?? {})) {
+      if (typeof file !== 'string' || wanted.has(file)) continue;
+      const name = path.basename(file);
+      const recipe = recipes?.assets?.[name];
+      const kind = recipe ? recipes?.kinds?.[recipe.kind] : null;
+      wanted.set(file, {
+        width: recipe?.width ?? kind?.width ?? (FULL_FRAME.has(role) ? config.width : Math.round(config.width * 0.76)),
+        height: recipe?.height ?? kind?.height ?? (FULL_FRAME.has(role) ? config.height : Math.round(config.height * 0.6)),
+        alpha: kind ? Boolean(kind.alpha) : !FULL_FRAME.has(role),
+      });
+    }
+  }
+
+  const written = [];
+  for (const [file, spec] of wanted) {
+    const target = path.join(dir, file);
+    if (!args.force && (await exists(target))) continue;
+    await mkdir(path.dirname(target), {recursive: true});
+    const png = await sharp(card(path.basename(file), spec.width, spec.height, spec.alpha)).png().toBuffer();
+    await writeFile(target, png);
+    written.push(path.basename(file));
+    console.log(`  ${file} ${spec.width}x${spec.height}${spec.alpha ? ' (alpha)' : ''}`);
+  }
+
+  // Leave a note saying which files are stand-ins. Without it a failed draw
+  // looks exactly like a finished episode: the placeholder is still on disk,
+  // so the validator passes and a reel of grey boxes renders happily.
+  await markPlaceholders(dir, written);
+
+  console.log(
+    `✓ ${written.length} placeholder(s) written, ${wanted.size - written.length} already present ` +
+      `→ ${path.relative(ROOT, dir)}/assets`,
+  );
 }
 
 main().catch((error) => {
-  console.error(error.message);
+  console.error(error?.stack || error?.message || error);
   process.exit(1);
 });

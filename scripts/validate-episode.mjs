@@ -12,6 +12,7 @@
 import {readFile, readdir, stat} from 'node:fs/promises';
 import path from 'node:path';
 import {ROOT, episodeDir, exists, loadConfig, parseArgs} from './lib/episode.mjs';
+import {readPlaceholders} from './lib/placeholders.mjs';
 
 import {BUILT_IN_SCENE_TYPES, validateEpisodeConfig} from '../engine/schema.mjs';
 
@@ -96,6 +97,12 @@ async function main() {
         `✓ ${episodeId} — ${config.scenes.length} scene(s), ${frames} frames ` +
           `(${(frames / config.fps).toFixed(2)}s @ ${config.fps}fps, ${config.width}x${config.height})`,
       );
+      // Valid, but not necessarily finished. A stand-in renders as happily as
+      // real artwork, so the count has to be said rather than discovered.
+      const stubs = await readPlaceholders(episodeDir(episodeId));
+      if (stubs.length) {
+        console.log(`  ⚠ ${stubs.length} of these assets are still stand-ins: ${stubs.join(', ')}`);
+      }
     }
   }
 

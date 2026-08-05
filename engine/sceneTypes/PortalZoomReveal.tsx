@@ -67,8 +67,10 @@ export const PortalZoomReveal: React.FC<SceneProps> = ({scene, assets, durationI
   const wallBlur = interpolate(stepped, [pushEnd + 6, throughEnd - 4], [0, 8], CLAMP);
   const wallOpacity = interpolate(stepped, [pushEnd + 6, throughEnd - 6], [1, 0], CLAMP);
 
-  const frameW = Math.round(width * 0.62);
-  const frameH = Math.round(frameW * 1.24);
+  // The window we fly through. A portrait photo and a newspaper clipping want
+  // different windows, so both are the episode's to set.
+  const frameW = num('frameWidth', Math.round(width * 0.62));
+  const frameH = Math.round(frameW * num('frameRatio', 1.24));
 
   return (
     <AbsoluteFill style={{filter: burst > 0.05 ? `blur(${burst}px)` : undefined}}>
@@ -100,7 +102,7 @@ export const PortalZoomReveal: React.FC<SceneProps> = ({scene, assets, durationI
           }}
         >
           <div style={{width: frameW, height: frameH, position: 'relative'}}>
-            <Plate src={assets.frame} alive={false} style={{objectFit: 'contain'}} />
+            <Plate src={assets.frame} alive={false} fit="contain" />
           </div>
         </AbsoluteFill>
       ) : null}

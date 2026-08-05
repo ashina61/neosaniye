@@ -32,7 +32,8 @@ export const SplitShift: React.FC<SceneProps> = ({scene, assets, durationInFrame
   const groundX = num('groundX', Math.round(width * 0.52));
   const groundY = num('groundY', Math.round(height * 0.88));
   const bgScale = num('bgScale', 1.06);
-  const charWidth = num('charWidth', Math.round(width * 0.6));
+  const charHeight = num('charHeight', 0);
+  const charWidth = charHeight > 0 ? 0 : num('charWidth', Math.round(width * 0.6));
 
   const shift = interpolate(stepped, [shiftFrame, shiftFrame + shiftLength], [0, -Math.abs(shiftPx)], {
     ...CLAMP,
@@ -56,7 +57,8 @@ export const SplitShift: React.FC<SceneProps> = ({scene, assets, durationInFrame
           src={assets.character}
           translateX={shift}
           blur={streak}
-          plateWidth={charWidth}
+          plateWidth={charWidth || undefined}
+          plateHeight={charHeight || undefined}
           footX={groundX}
           footY={groundY}
           cutout
