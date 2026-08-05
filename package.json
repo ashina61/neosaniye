@@ -1,36 +1,29 @@
 {
-  "name": "neosaniye",
-  "version": "0.1.0",
+  "name": "crime-reels",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Remotion tabanlı otomatik NeoSaniye Shorts üretim ve yayınlama sistemi",
-  "engines": {
-    "node": ">=20"
-  },
+  "description": "Vertical crime documentary reels — one shared engine, many episodes",
+  "engines": {"node": ">=20"},
   "scripts": {
-    "produce": "node scripts/generate-and-publish.js",
-    "produce:dry": "node scripts/generate-and-publish.js --no-upload",
-    "script": "node scripts/generate-script.js",
-    "script:save": "node scripts/generate-script.js --save",
-    "audio": "node scripts/generate-audio.js",
-    "media": "node scripts/fetch-media.js",
-    "video": "node scripts/render-video.js",
-    "test": "node --test",
-    "test:remotion": "node --test test/remotionSpec.test.js test/remotionOnly.test.js",
-    "check": "npm test && npm run remotion:typecheck",
-    "upload": "node scripts/upload-youtube.js",
-    "youtube:auth": "node scripts/youtube-auth.js",
-    "audio:import": "node scripts/audio-import.js",
-    "audio:import:dry": "node scripts/audio-import.js --dry-run",
-    "remotion:install": "npm install --prefix remotion --no-audit --no-fund",
-    "remotion:studio": "npm --prefix remotion run studio",
-    "remotion:typecheck": "npm --prefix remotion run typecheck",
-    "remotion:fixture": "npm --prefix remotion run render:fixture"
+    "render": "node scripts/render-episode.mjs",
+    "validate": "node scripts/validate-episode.mjs",
+    "studio": "remotion studio engine/index.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test \"test/*.test.mjs\"",
+    "assets:placeholder": "node scripts/make-placeholder-assets.mjs"
   },
   "dependencies": {
-    "@google/genai": "^1.0.0",
-    "dotenv": "^16.4.5",
-    "firebase-admin": "^12.7.0",
-    "googleapis": "^144.0.0"
+    "@remotion/bundler": "4.0.499",
+    "@remotion/cli": "4.0.499",
+    "@remotion/renderer": "4.0.499",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "remotion": "4.0.499"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.10",
+    "@types/react-dom": "19.1.7",
+    "typescript": "5.9.2"
   }
 }
