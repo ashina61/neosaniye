@@ -27,6 +27,22 @@ test('the TypeScript union lists exactly the built-in scene types', async () => 
   assert.deepEqual(listed.sort(), [...BUILT_IN_SCENE_TYPES].sort());
 });
 
+test('typecheck and studio cannot be run without the generated override module', async () => {
+  // registry.ts statically imports a git-ignored file that is written just
+  // before a bundle. A fresh checkout has never rendered, so the import target
+  // does not exist and tsc fails — invisible locally, where an old render has
+  // always left one behind, and red in CI every time. The pre-scripts are what
+  // stand between those two, so removing one has to break a test.
+  const pkg = JSON.parse(await readFile(path.join(ROOT, 'package.json'), 'utf8'));
+  for (const hook of ['pretypecheck', 'prestudio']) {
+    assert.match(
+      pkg.scripts?.[hook] ?? '',
+      /ensure-scene-overrides/,
+      `package.json needs a "${hook}" that ensures engine/episodeScenes.generated.ts exists`,
+    );
+  }
+});
+
 test('every built-in template has a file of its own', async () => {
   const source = await readFile(path.join(ROOT, 'engine/sceneTypes/registry.ts'), 'utf8');
   // Templates are the PascalCase siblings; './types' is the shared prop type.

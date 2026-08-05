@@ -10,7 +10,9 @@
   "scripts": {
     "render": "node scripts/render-episode.mjs",
     "validate": "node scripts/validate-episode.mjs",
+    "prestudio": "node scripts/ensure-scene-overrides.mjs",
     "studio": "remotion studio engine/index.ts",
+    "pretypecheck": "node scripts/ensure-scene-overrides.mjs",
     "typecheck": "tsc --noEmit",
     "test": "node --test \"test/*.test.mjs\"",
     "assets:generate": "node scripts/generate-assets.mjs",
