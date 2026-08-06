@@ -2,8 +2,8 @@
   "$comment": "Generation recipe for this episode's artwork. The ENGINE never reads this file — only scripts/generate-assets.mjs does, and only when someone runs it. The render reads the PNGs it produced, on disk, like any other episode's.",
   "style": "1969 documentary photograph, shot on 35mm film, muted desaturated colour, heavy film grain, natural available light, period-accurate Northern California, no text, no captions, no watermark, no modern objects",
   "$styleAlpha": "For cut-outs only. No film grain and no 1969 available light here: those describe a ROOM, and a room has no backdrop to key away. The period treatment is applied to the whole frame at render time by FilmLook. What this needs is a clean studio shot with an empty backdrop.",
-  "styleAlpha": "clean sharp studio photograph, even soft frontal lighting, subject sharply separated from the backdrop, no shadow falling on the backdrop, period-accurate 1969 clothing and objects, no text, no watermark",
-  "negative": "text, letters, words, watermark, signature, logo, room, wall, floor, furniture, window, sky, horizon, landscape, second object, modern car, smartphone, digital screen, cartoon, cgi",
+  "styleAlpha": "sharp studio photograph, even soft frontal lighting, period-accurate 1969 clothing",
+  "negative": "text, letters, words, watermark, logo, cartoon, cgi, extra people, duplicate",
   "kinds": {
     "backdrop": {
       "width": 1080,
@@ -24,6 +24,11 @@
       "width": 820,
       "height": 1060,
       "alpha": true
+    },
+    "overlay": {
+      "width": 1080,
+      "height": 1080,
+      "alpha": false
     }
   },
   "assets": {
@@ -78,6 +83,18 @@
     "night-road.png": {
       "kind": "backdrop",
       "prompt": "an empty two-lane country road at night disappearing into darkness, dry grass verges, no streetlights, faint cold moonlight on the asphalt, Northern California, nobody present"
+    },
+    "hooded-figure.png": {
+      "kind": "subject",
+      "prompt": "a man standing still, wearing a plain black square hood covering his head and shoulders and a dark zipped jacket, arms hanging at his sides, seen from the front, full body from head to boots"
+    },
+    "man-walking.png": {
+      "kind": "subject",
+      "prompt": "a man in a long dark overcoat walking away from the camera, seen from directly behind, hands in pockets, collar turned up, full body from head to shoes"
+    },
+    "haze.png": {
+      "kind": "overlay",
+      "prompt": "thick pale fog and drifting smoke against a pure black background, soft wispy plumes, nothing else"
     }
   }
 }

@@ -72,6 +72,10 @@ export type SceneSpec = {
    * "background"); the file names are the episode's business. No template ever
    * writes a file name, which is the whole reason a second episode is a folder
    * rather than a code change.
+   *
+   * A role written "?character" is OPTIONAL: used when the file exists, quietly
+   * dropped when it does not, so a scene that wants a figure still renders on
+   * the day the artwork for it is not there.
    */
   assets?: Record<string, string>;
   /** Template knobs. Frame values are relative to this scene's own start. */
@@ -97,6 +101,8 @@ export {
   DEFAULT_LOOK,
   BUILT_IN_SCENE_TYPES as BUILT_IN_SCENE_TYPE_LIST,
   sceneOffsets,
+  resolveAssets,
+  OPTIONAL_ROLE,
   totalDurationInFrames,
   validateEpisodeConfig,
 } from './schema.mjs';

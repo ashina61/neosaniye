@@ -2,6 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {
   DEFAULT_LOOK,
+  resolveAssets,
   sceneOffsets,
   totalDurationInFrames,
   validateEpisodeConfig,
@@ -78,4 +79,22 @@ test('every problem is reported, not just the first', () => {
 test('a zero-length scene cannot slip through', () => {
   const problems = validateEpisodeConfig(config({scenes: [scene({durationInFrames: 0})]}));
   assert.ok(problems.some((p) => p.includes('durationInFrames')));
+});
+
+test('an optional role is used when present and dropped when absent', () => {
+  // The reason this exists: a scene that wants a figure is worthless without
+  // one, but making the figure required means the day the generator hands back
+  // an empty room the whole reel stops rendering. Optional roles make that not
+  // a choice — the scene degrades and the episode still renders.
+  const assets = {background: 'bg.png', '?character': 'man.png'};
+  assert.deepEqual(resolveAssets(assets), {background: 'bg.png', character: 'man.png'});
+  assert.deepEqual(resolveAssets(assets, (f) => f === 'man.png'), {background: 'bg.png'});
+});
+
+test('a required role is never dropped, however missing it is', () => {
+  assert.deepEqual(resolveAssets({background: 'bg.png'}, () => true), {background: 'bg.png'});
+});
+
+test('the ? is stripped so templates never see it', () => {
+  assert.deepEqual(Object.keys(resolveAssets({'?haze': 'h.png'})), ['haze']);
 });

@@ -6,6 +6,7 @@ import {Plate} from '../Plate';
 import {Glow} from '../draw/Glow';
 import {WordStack} from '../draw/Type';
 import {Annotation, type MarkKind} from '../draw/Annotation';
+import {Overlay} from '../draw/Overlay';
 
 /**
  * PARALLAX PUNCH — fake depth from two flat layers.
@@ -136,6 +137,20 @@ export const ParallaxPunch: React.FC<SceneProps> = ({scene, assets, durationInFr
             boilPhase={70}
           />
         </>
+      ) : null}
+
+      {/* Atmosphere in FRONT of the subject, so it sits in the air between
+          camera and figure rather than behind them like wallpaper. */}
+      {assets.haze ? (
+        <Overlay
+          src={assets.haze}
+          opacity={num('hazeOpacity', 0.5)}
+          crush={num('hazeCrush', 1.7)}
+          feather={num('hazeFeather', 24)}
+          scale={num('hazeScale', 1.4)}
+          drift={num('hazeDrift', 0.35)}
+          from={num('hazeFrame', 0)}
+        />
       ) : null}
 
       {caption.length ? (

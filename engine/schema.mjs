@@ -53,6 +53,40 @@ export const BUILT_IN_SCENE_TYPES = [
   'evidence-board',
 ];
 
+/**
+ * OPTIONAL ASSET ROLES.
+ *
+ * A role written `?character` means "use this if it is on disk". The validator
+ * does not fail on it and the template simply never receives it.
+ *
+ * This exists because of one specific and repeated failure: a scene that wants
+ * a figure in it is worthless without one, but making the figure REQUIRED means
+ * that the day the generator hands back an empty room instead, the whole reel
+ * stops rendering. The choice was between a shot that could be great and a reel
+ * that always works — and it turns out not to be a choice. The scene degrades:
+ * with the cut-out it is a parallax punch, without it a slow push on a plate,
+ * and either way the episode renders.
+ */
+export const OPTIONAL_ROLE = '?';
+
+/**
+ * role -> file, with `?` stripped and absent optionals left out.
+ *
+ * @param {Record<string, string>} [assets]
+ * @param {(file: string) => boolean} [isMissing]
+ * @returns {Record<string, string>}
+ */
+export function resolveAssets(assets, isMissing) {
+  const out = {};
+  for (const [role, file] of Object.entries(assets ?? {})) {
+    const optional = role.startsWith(OPTIONAL_ROLE);
+    const name = optional ? role.slice(1) : role;
+    if (optional && isMissing?.(file)) continue;
+    out[name] = file;
+  }
+  return out;
+}
+
 /** Scene start frames, by accumulation. The config never states them twice. */
 export function sceneOffsets(config) {
   const offsets = [];
