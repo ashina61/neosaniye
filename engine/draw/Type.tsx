@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 import {CLAMP, holdKeyframes, posterizeTime, springEntrance} from '../motion';
 
 const SERIF = '"Playfair Display", "Iowan Old Style", Georgia, serif';
@@ -112,7 +112,13 @@ export const Slate: React.FC<{
   colour?: string;
   accent?: string;
   size?: number;
-}> = ({kicker, title, footer, from = 0, colour = '#f6ead0', accent = '#ffcf3d', size = 118}) => {
+  /**
+   * Fixed-width digits. Only for a title that CHANGES — a number counting up
+   * shifts sideways on every frame as glyph widths change, and a title that
+   * wanders while it counts reads as a bug rather than as a total.
+   */
+  tabular?: boolean;
+}> = ({kicker, title, footer, from = 0, colour = '#f6ead0', accent = '#ffcf3d', size = 118, tabular = false}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const stepped = posterizeTime(frame, fps, 12);
@@ -144,6 +150,7 @@ export const Slate: React.FC<{
             fontSize: size,
             lineHeight: 0.98,
             letterSpacing: '-0.035em',
+            fontVariantNumeric: tabular ? 'tabular-nums' : undefined,
             color: colour,
             textTransform: 'uppercase',
             transform: `translateY(${(1 - land) * 22}px)`,

@@ -11,6 +11,7 @@
     "plan": "node scripts/plan-episode.mjs",
     "render": "node scripts/render-episode.mjs",
     "validate": "node scripts/validate-episode.mjs",
+    "frames": "node scripts/review-frames.mjs",
     "prestudio": "node scripts/ensure-scene-overrides.mjs",
     "studio": "remotion studio engine/index.ts",
     "pretypecheck": "node scripts/ensure-scene-overrides.mjs",

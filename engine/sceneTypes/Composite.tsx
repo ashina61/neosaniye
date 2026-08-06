@@ -6,6 +6,7 @@ import {CLAMP, boil, focusHunt, posterizeTime, springEntrance} from '../motion';
 import {Fog, Glow} from '../draw/Glow';
 import {WordStack} from '../draw/Type';
 import {Annotation, type MarkKind} from '../draw/Annotation';
+import {SceneMotif} from '../draw/Motif';
 
 /**
  * A COMPOSED SHOT — as many layers as the scene declares.
@@ -169,6 +170,18 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
         colour={str('fogColour', '#cfd6dc')}
         speed={num('fogSpeed', 1)}
         height={num('fogHeight', 0.62)}
+      />
+
+      {/* IN FRONT OF THE ROOM, BEHIND THE WORDS. The motif is the graphic
+          layer: it takes no part in the camera push, because a thing that is
+          anchored to the room and drawn on top of it is not a graphic, it is a
+          prop that is sliding. */}
+      <SceneMotif
+        params={scene.params}
+        seed={scene.id}
+        durationInFrames={durationInFrames}
+        accent={str('accent', '#f2b53a')}
+        defaultY={Math.round(height * 0.82)}
       />
 
       {caption.length ? (
