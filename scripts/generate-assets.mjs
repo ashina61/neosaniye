@@ -258,6 +258,12 @@ async function buildAsset(name, recipe, kinds, recipes) {
       continue;
     }
 
+    const islands = await islandCount(keyed);
+    if (islands > 6) {
+      refusal = `keyed into ${islands} unrelated pieces — the model drew a scene, not a cut-out`;
+      continue;
+    }
+
     // Trim the transparent margin so the file's bottom edge IS the subject's
     // feet — that is what footY in the config is anchoring to.
     const trimmed = await sharp(keyed)
@@ -286,6 +292,58 @@ export function shouldDraw({onDisk, isStandIn, force}) {
   if (force) return true;
   if (!onDisk) return true;
   return isStandIn;
+}
+
+/**
+ * How many separate islands the kept pixels form.
+ *
+ * The measurement that would have caught the worst run this repo has had. Asked
+ * for a subject on an empty backdrop, the model drew an empty white studio
+ * ROOM; the key dutifully found a backdrop and carved the rest into a scatter
+ * of unrelated white blobs. Every one of those passed the opacity check — a
+ * hooded figure came back 52% opaque and was pure noise — because opacity only
+ * asks HOW MUCH survived, never whether what survived is one thing.
+ *
+ * A cut-out is one object. Two or three islands is a person holding something;
+ * thirty is a failed key wearing the right statistics.
+ */
+export async function islandCount(buffer, limit = 40) {
+  const {data, info} = await sharp(buffer).ensureAlpha().resize(180, null, {fit: 'inside'}).raw().toBuffer({
+    resolveWithObject: true,
+  });
+  const {width, height, channels} = info;
+  const seen = new Uint8Array(width * height);
+  const queue = new Int32Array(width * height);
+  let islands = 0;
+
+  for (let start = 0; start < width * height; start += 1) {
+    if (seen[start] || data[start * channels + 3] < 128) continue;
+    islands += 1;
+    if (islands > limit) return islands;
+    let head = 0;
+    let tail = 0;
+    seen[start] = 1;
+    queue[tail++] = start;
+    let size = 0;
+    while (head < tail) {
+      const id = queue[head++];
+      size += 1;
+      const x = id % width;
+      const y = (id / width) | 0;
+      const step = (nx, ny) => {
+        if (nx < 0 || ny < 0 || nx >= width || ny >= height) return;
+        const nid = ny * width + nx;
+        if (seen[nid] || data[nid * channels + 3] < 128) return;
+        seen[nid] = 1;
+        queue[tail++] = nid;
+      };
+      step(x + 1, y), step(x - 1, y), step(x, y + 1), step(x, y - 1);
+    }
+    // Specks are not islands; they are also what defeats the trim, which is how
+    // a subject ends up anchored to a mostly-empty canvas.
+    if (size < 12) islands -= 1;
+  }
+  return islands;
 }
 
 /** How much of the picture survived the key — a fully keyed frame is a failure. */
