@@ -18,9 +18,10 @@
  */
 import {mkdir, readFile, writeFile} from 'node:fs/promises';
 import path from 'node:path';
+import {pathToFileURL} from 'node:url';
 import sharp from 'sharp';
 import {ROOT, episodeDir, exists, parseArgs} from './lib/episode.mjs';
-import {clearPlaceholders} from './lib/placeholders.mjs';
+import {clearPlaceholders, readPlaceholders} from './lib/placeholders.mjs';
 
 /** Keyless by default. Point elsewhere with IMAGE_BASE_URL if you have a key. */
 const BASE_URL = process.env.IMAGE_BASE_URL || 'https://image.pollinations.ai/prompt/';
@@ -148,6 +149,23 @@ async function buildAsset(name, recipe, kinds, style, negative) {
     .toBuffer();
 }
 
+/**
+ * Should this asset be drawn?
+ *
+ * "The file is already there" is NOT enough to skip, and getting that wrong
+ * makes the whole step a no-op: an episode is scaffolded with stand-ins, the
+ * stand-ins are committed, and then every single asset looks present. The run
+ * goes green having drawn nothing, and the reel is still grey boxes.
+ *
+ * A stand-in is a hole with a PNG in it. The ledger is what tells them apart,
+ * so the ledger — not the file system — decides.
+ */
+export function shouldDraw({onDisk, isStandIn, force}) {
+  if (force) return true;
+  if (!onDisk) return true;
+  return isStandIn;
+}
+
 /** How much of the picture survived the key — a fully keyed frame is a failure. */
 async function opaqueFraction(buffer) {
   const {data, info} = await sharp(buffer).ensureAlpha().raw().toBuffer({resolveWithObject: true});
@@ -183,17 +201,31 @@ async function main() {
 
   const only = typeof args.only === 'string' ? new Set(args.only.split(',').map((s) => s.trim())) : null;
   const entries = Object.entries(recipes.assets ?? {}).filter(([name]) => !only || only.has(name));
+  const standIns = new Set(await readPlaceholders(dir));
 
   const made = [];
   const skipped = [];
   const failed = [];
 
+  const plan = [];
   for (const [name, recipe] of entries) {
+    const draw = shouldDraw({
+      onDisk: await exists(path.join(outDir, name)),
+      isStandIn: standIns.has(name),
+      force: Boolean(args.force),
+    });
+    if (draw) plan.push([name, recipe]);
+    else skipped.push(name);
+  }
+
+  if (args['dry-run']) {
+    console.log(`Would draw ${plan.length}, skip ${skipped.length} (already real artwork).`);
+    for (const [name] of plan) console.log(`  + ${name}${standIns.has(name) ? ' (replacing a stand-in)' : ''}`);
+    return;
+  }
+
+  for (const [name, recipe] of plan) {
     const target = path.join(outDir, name);
-    if (!args.force && (await exists(target))) {
-      skipped.push(name);
-      continue;
-    }
     process.stdout.write(`  ${name} … `);
     try {
       const png = await buildAsset(name, recipe, recipes.kinds ?? {}, recipes.style ?? '', recipes.negative ?? '');
@@ -218,12 +250,22 @@ async function main() {
   // Whatever really got drawn is no longer a stand-in.
   await clearPlaceholders(dir, made);
 
+  const remaining = await readPlaceholders(dir);
   console.log(
-    `\n${made.length} generated, ${skipped.length} already present, ${failed.length} failed ` +
+    `\n${made.length} generated, ${skipped.length} already real, ${failed.length} failed ` +
       `→ ${path.relative(ROOT, outDir)}`,
   );
+  if (remaining.length) console.log(`${remaining.length} asset(s) are still stand-ins: ${remaining.join(', ')}`);
 
-  if (!made.length && !failed.length) return; // Nothing asked for, nothing wrong.
+  // A run that draws nothing while stand-ins remain has not succeeded, it has
+  // failed silently — which is precisely how a reel of grey boxes gets built,
+  // committed and rendered with a green tick on every step.
+  if (!made.length && !failed.length && remaining.length) {
+    console.error(`\nDrew nothing, yet ${remaining.length} asset(s) are still stand-ins.`);
+    process.exit(1);
+  }
+
+  if (!made.length && !failed.length) return; // Everything is already real artwork.
 
   if (failed.length) {
     console.error('\nFailed assets (re-run to retry just these — existing files are skipped):');
@@ -235,7 +277,11 @@ async function main() {
   }
 }
 
-main().catch((error) => {
-  console.error(error?.stack || error?.message || error);
-  process.exit(1);
-});
+// Only when run as a command. Tests import shouldDraw from here, and an
+// unguarded main() would start drawing the moment they do.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((error) => {
+    console.error(error?.stack || error?.message || error);
+    process.exit(1);
+  });
+}
