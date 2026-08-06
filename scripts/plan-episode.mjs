@@ -276,6 +276,58 @@ const SCENE_FOR = {
   place: 'composite',
 };
 
+/**
+ * ONE SENTENCE IS NOT ONE SHOT.
+ *
+ * This is the thing that made every reel out of this repo feel dead, and the
+ * numbers say it plainly: nine scenes, and all nine came out at 215 frames —
+ * the ceiling — because every line was long enough to hit it. Nine identical
+ * seven-second shots in a row. Nothing to cut TO, so nothing lands.
+ *
+ * The reference reel is thirty-two seconds and about fifteen shots: a couple of
+ * seconds each, and the same picture is often held across two or three of them
+ * while the words move on. That is the whole trick, and it costs no extra
+ * artwork — the backdrop stays, the framing and the caption change, and the CUT
+ * is what carries the pace.
+ *
+ * So a sentence is split at its clauses, each fragment gets a shot, and every
+ * fragment after the first reuses the line's own picture. A shot now lasts as
+ * long as its FRAGMENT takes to say instead of as long as the sentence does,
+ * which is also what makes the durations differ from one another at last.
+ */
+const SPLIT_AT = /(?<=,)\s+|\s+(?=and\s|but\s|because\s|so\s|then\s|while\s)|(?<=\.)\s+/i;
+/** Seconds of speech beyond which a shot stops being a shot and becomes a wait. */
+const MAX_SPOKEN = 3.6;
+
+export function fragmentsOf(vo, max = MAX_SPOKEN) {
+  const words = (s) => s.trim().split(/\s+/).filter(Boolean).length;
+  const budget = Math.round(max * RATE);
+  const pieces = String(vo).split(SPLIT_AT).map((s) => s.trim()).filter(Boolean);
+
+  // Re-join what is too short to stand on its own. A three-word shot is a
+  // flash, and a clause like "and kept paying" is not a sentence — the split
+  // exists to break up a wall of speech, not to shred it.
+  const out = [];
+  for (const piece of pieces) {
+    const last = out[out.length - 1];
+    if (last && (words(last) < 4 || words(last) + words(piece) <= budget * 0.55)) {
+      out[out.length - 1] = `${last} ${piece}`;
+    } else {
+      out.push(piece);
+    }
+  }
+  return out.length ? out : [String(vo).trim()];
+}
+
+/** Frames a fragment needs, spoken at a documentary rate, plus a breath. */
+export function framesFor(text, {min = 45, max = 118} = {}) {
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  // Eight frames of breath, not twenty-six. Twenty-six was set when a scene was
+  // a whole sentence and there were nine of them; at twenty-odd shots the same
+  // padding quietly adds ten seconds of nothing to the reel.
+  return Math.max(min, Math.min(max, Math.round((words / RATE) * FPS) + 8));
+}
+
 /** The number a slate should set large, pulled straight out of the sentence. */
 function bigNumber(vo) {
   const digits = vo.match(/\b\d[\d,.]*\b/);
@@ -284,25 +336,117 @@ function bigNumber(vo) {
   return words ? words[0].toUpperCase() : '';
 }
 
-function planScene({line, index, total, rand, look, previousTransition, recentMotifs, recentTypes}) {
+/**
+ * Break a fragment into the beats a WordStack lands one at a time.
+ *
+ * EVERY WORD SURVIVES. The first version filled three lines of three words and
+ * stopped, so "and the road ran four thousand miles across the Sahara" arrived
+ * on screen as "and the road ran four thousand miles across the" — the sentence
+ * cut off mid-preposition, with nothing anywhere saying a word had been
+ * dropped. If a fragment is long the lines get longer; the caption size comes
+ * down to match, and that is the trade to make. Silently losing half a sentence
+ * is not.
+ */
+export const CAPTION_LINES = 4;
+
+export function captionLines(text) {
+  const words = text.replace(/[.,]\s*$/, '').trim().split(/\s+/).filter(Boolean);
+  if (!words.length) return [];
+  const perLine = Math.ceil(words.length / Math.min(CAPTION_LINES, Math.ceil(words.length / 2)));
+  const lines = [];
+  for (let i = 0; i < words.length; i += perLine) lines.push(words.slice(i, i + perLine).join(' '));
+  return lines;
+}
+
+/** Caption type shrinks as the fragment grows, so four lines still fit the frame. */
+function captionSize(lines, rand) {
+  const longest = lines.reduce((n, line) => Math.max(n, line.length), 0);
+  const base = longest > 22 ? 62 : longest > 16 ? 74 : 88;
+  return base + Math.round(rand() * 10);
+}
+
+/**
+ * A CONTINUATION SHOT — the same picture, seen differently, saying the next
+ * thing.
+ *
+ * The cheapest shot in the reel and the one that fixes its pace: no new
+ * artwork, a hard cut, a different corner of the same plate and the next
+ * fragment of the sentence landing over it. The reference reel lives on these —
+ * one photograph of a man outside a building carries three cuts while the
+ * narration moves from "a small startup" to "called Netflix" to "pitched
+ * Blockbuster".
+ *
+ * It always pushes from a DIFFERENT anchor than the shot before it. Cutting
+ * from a plate to the same plate on the same move is not a cut, it is a jump.
+ */
+function planContinuation({line, index, part, fragment, rand, look, previousTransition, plate}) {
+  const assetBase = `s${String(index + 1).padStart(2, '0')}-${line.slug ?? 'shot'}`;
+  const choices = look.transitions.filter((k) => k !== previousTransition);
+  const corner = part % 4;
+  const frames = framesFor(fragment);
+  const lines = captionLines(fragment);
+  // Alternate the direction of travel. Two pushes on one plate look like the
+  // same shot played twice; a push followed by a pull-back looks like an edit.
+  const pullBack = part % 2 === 1;
+
+  return {
+    id: `${assetBase}-${String.fromCharCode(97 + part)}`,
+    sceneType: 'composite',
+    voText: fragment,
+    durationInFrames: frames,
+    transition: {kind: pick(rand, choices), frames: 7 + Math.round(rand() * 5)},
+    assets: {ground: plate ?? `assets/${assetBase}-bg.png`},
+    layers: [{role: 'ground', depth: round(between(rand, [0.7, 0.95]), 2), anchor: 'fill'}],
+    params: {
+      // The anchor walks the corners, so consecutive shots on one plate never
+      // move into the same part of it.
+      anchorX: Math.round(WIDTH * (corner === 0 || corner === 3 ? 0.26 : 0.74)),
+      anchorY: Math.round(HEIGHT * (corner < 2 ? 0.3 : 0.78)),
+      // A wider throw than the old 1.14→1.3, which was too small to register as
+      // a new framing at all — four shots of one gate, all the same size.
+      pushFrom: pullBack ? round(between(rand, [1.34, 1.5]), 2) : 1,
+      pushTo: pullBack ? round(between(rand, [1.02, 1.1]), 2) : round(between(rand, [1.3, 1.48]), 2),
+      pushEndFrame: Math.round(frames * 0.94),
+      accent: look.accent,
+      caption: lines,
+      captionX: 84,
+      captionY: Math.round(between(rand, [300, 1080])),
+      captionFrame: 4,
+      captionEvery: 6 + Math.round(rand() * 4),
+      captionSize: captionSize(lines, rand),
+    },
+  };
+}
+
+function planScene({line, index, total, fragment, rand, look, previousTransition, recentMotifs, recentTypes}) {
   const beat = beatOf(line, index, total);
   let sceneType = SCENE_FOR[beat];
-  // RHYTHM. Two of a kind running is a pair; three is a pattern, and a reel
-  // that falls into one stops being edited and starts being a list.
-  if (recentTypes.length >= 2 && recentTypes.every((t) => t === sceneType) && index !== total - 1) {
+  // RHYTHM. Never the same template as the shot before it. The old rule waited
+  // for THREE in a row, which let the reel run portal, portal back to back —
+  // and two seven-second flights into a picture, one after the other, is the
+  // single most tiring thing this pipeline has produced.
+  // …unless the line's CONTENT decides the template. Pieces to stand in a frame
+  // and places to join up both need a composite; swapping one out for a title
+  // card in the name of rhythm drops the artwork the line was written around,
+  // and the recipe for it is then drawn for nothing.
+  const contentBound = Boolean(line.pieces?.length || line.stops?.length >= 2);
+  if (!contentBound && recentTypes.length && recentTypes[recentTypes.length - 1] === sceneType) {
     sceneType = sceneType === 'composite' ? 'title-slate' : 'composite';
   }
-  const words = line.vo.trim().split(/\s+/).length;
-  // The scene lasts as long as the line takes to say, plus a breath either side.
-  const durationInFrames = Math.max(105, Math.min(215, Math.round(((words / RATE) * FPS) + 26)));
+  // The shot lasts as long as ITS FRAGMENT takes to say — not as long as the
+  // whole sentence does. That one change is what stopped every scene coming out
+  // at the ceiling.
+  const durationInFrames = framesFor(fragment ?? line.vo);
 
   // Never the same arrival twice running: a repeated transition stops being a
-  // choice and becomes a tic.
+  // choice and becomes a tic. Short, too — a cut that takes half a second is a
+  // dissolve, and this reel is meant to CUT.
   const choices = look.transitions.filter((k) => k !== previousTransition);
-  const transition = index === 0 ? null : {kind: pick(rand, choices), frames: 10 + Math.round(rand() * 8)};
+  const transition = index === 0 ? null : {kind: pick(rand, choices), frames: 7 + Math.round(rand() * 5)};
 
-  const id = `s${String(index + 1).padStart(2, '0')}-${(line.slug ?? beat)}`;
-  const scene = {id, sceneType, voText: line.vo, durationInFrames};
+  const assetBase = `s${String(index + 1).padStart(2, '0')}-${(line.slug ?? beat)}`;
+  const id = assetBase;
+  const scene = {id, sceneType, voText: fragment ?? line.vo, durationInFrames};
   if (transition) scene.transition = transition;
 
   const backdrop = `assets/${id}-bg.png`;
@@ -493,9 +637,12 @@ async function main() {
     mark: pick(rand, MARKS),
     textStyle: pick(rand, ['serif-italic', 'sticker', 'typed']),
     fog: mood.fog,
-    // Three of the five arrivals, so one reel favours slam and blinds while the
-    // next lives on flares and rack focus.
-    transitions: [...TRANSITIONS].sort(() => rand() - 0.5).slice(0, 3),
+    // FOUR of the five arrivals, in an order this episode picks for itself. The
+    // old draft took three, and across nine scenes that meant each one came
+    // round three times — which is what "the same transitions over and over"
+    // actually was. With more shots per reel now, three was never going to be
+    // enough vocabulary.
+    transitions: [...TRANSITIONS].sort(() => rand() - 0.5).slice(0, 4),
   };
 
   const grade = {
@@ -508,10 +655,15 @@ async function main() {
   const planned = [];
   let previousTransition = null;
   brief.lines.forEach((line, index) => {
+    // ONE SENTENCE, SEVERAL SHOTS. The first fragment gets the beat's template
+    // and the line's artwork; the rest reuse that same picture from a different
+    // corner. Nine long lines used to be nine identical seven-second scenes.
+    const fragments = fragmentsOf(line.vo);
     const result = planScene({
       line,
       index,
       total: brief.lines.length,
+      fragment: fragments[0],
       rand,
       look,
       previousTransition,
@@ -520,6 +672,26 @@ async function main() {
     });
     previousTransition = result.scene.transition?.kind ?? null;
     planned.push(result);
+
+    // A portal shot lands INSIDE the picture, so its continuations stay there
+    // rather than cutting back out to the wall it hung on.
+    const plate =
+      result.scene.sceneType === 'portal-zoom-reveal' ? result.scene.assets?.photo : undefined;
+
+    fragments.slice(1).forEach((fragment, i) => {
+      const scene = planContinuation({
+        line,
+        index,
+        part: i + 1,
+        fragment,
+        rand,
+        look,
+        previousTransition,
+        plate,
+      });
+      previousTransition = scene.transition.kind;
+      planned.push({scene, motif: '', pieces: []});
+    });
   });
 
   const config = {

@@ -53,10 +53,16 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
 
   // ONE camera move for the whole stack. Each layer takes the fraction of it
   // its depth allows, which is what keeps them in the same space.
-  const push = interpolate(stepped, [0, num('pushEndFrame', durationInFrames)], [1, num('pushTo', 1.55)], {
-    ...CLAMP,
-    easing: Easing.out(Easing.cubic),
-  });
+  // A shot may also PULL BACK — start close and open out. Two pushes in a row
+  // on the same plate read as one continuous move with a stutter in the middle;
+  // a push then a pull reads as two shots, which is what they are. Both ends
+  // stay at or above 1 so a fill layer never shrinks inside the frame.
+  const push = interpolate(
+    stepped,
+    [0, num('pushEndFrame', durationInFrames)],
+    [num('pushFrom', 1), num('pushTo', 1.55)],
+    {...CLAMP, easing: Easing.out(Easing.cubic)},
+  );
   const blur = focusHunt(stepped, durationInFrames, {maxPx: num('focusPx', 0), dipAt: 0.34, dipBack: 0.46});
 
   const layers = (scene.layers ?? []).filter((layer) => !layer.role || assets[layer.role]);

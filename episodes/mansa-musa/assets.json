@@ -30,8 +30,9 @@
     "s01-mali-bg.png": {
       "kind": "backdrop",
       "commons": [
-        "Niger River Mali landscape",
-        "Niger River bend"
+        "Bandiagara Escarpment Mali",
+        "Niger River pirogue Mali",
+        "Sahel landscape Mali"
       ],
       "prompt": "a wide river bend in the West African sahel at low sun, flat banks, no people"
     },
@@ -98,8 +99,9 @@
     "s05-cairo-bg.png": {
       "kind": "backdrop",
       "commons": [
-        "Islamic Cairo medieval street",
-        "Cairo old city street"
+        "Khan el-Khalili alley",
+        "Islamic Cairo alley",
+        "Cairo mashrabiya window street"
       ],
       "prompt": "an empty medieval Cairo market street of pale stone at noon, deep shadow under arches"
     },
@@ -143,8 +145,9 @@
     "s09-close-bg.png": {
       "kind": "backdrop",
       "commons": [
-        "footprints Sahara sand",
-        "Sahara desert footprints"
+        "Erg Chebbi dunes",
+        "Sahara dune ripples",
+        "sand dune footprints"
       ],
       "prompt": "a single set of footprints crossing an empty dune, wind erasing them"
     }

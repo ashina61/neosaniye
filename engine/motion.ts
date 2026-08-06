@@ -137,13 +137,23 @@ export function drawOn(frame: number, [start, end]: number[]): number {
 export function focusHunt(
   frame: number,
   durationInFrames: number,
-  {open = 14, clearBy = 21, dipAt = 0.3, dipBack = 0.42, maxPx = 16} = {},
+  {clearBy = 21, dipAt = 0.3, dipBack = 0.42, maxPx = 16} = {},
 ): number {
-  const dipStart = Math.round(durationInFrames * dipAt);
-  const dipEnd = Math.round(durationInFrames * dipBack);
+  // EVERY KEY IS RELATIVE TO THE SHOT, INCLUDING THE FIRST ONE.
+  //
+  // `clearBy` used to be a flat 21 frames, which is fine while every scene is
+  // seven seconds and wrong the moment one is a second and a half: the lens was
+  // still finding focus a third of the way past the point it was supposed to
+  // drift off again, the keys arrived out of order, and interpolate threw —
+  // taking the whole render with it. A shot cannot spend most of itself
+  // arriving, so the opening is capped at a fifth of the scene.
+  const span = Math.max(2, durationInFrames);
+  const clear = Math.max(1, Math.min(clearBy, Math.round(span * 0.2)));
+  const dipStart = Math.max(clear + 1, Math.round(span * dipAt));
+  const dipEnd = Math.max(dipStart + 2, Math.round(span * dipBack));
   return interpolate(
     frame,
-    [0, clearBy, dipStart, (dipStart + dipEnd) / 2, dipEnd, durationInFrames],
+    [0, clear, dipStart, (dipStart + dipEnd) / 2, dipEnd, Math.max(dipEnd + 1, span)],
     [maxPx, 0, 0, maxPx * 0.45, 0, 0],
     {...CLAMP, easing: Easing.inOut(Easing.quad)},
   );

@@ -9,7 +9,11 @@
       "slug": "mali",
       "vo": "He ruled Mali, on the great bend of the Niger, in an empire built on salt and gold.",
       "image": "a wide river bend in the West African sahel at low sun, flat banks, no people",
-      "imageCommons": ["Niger River Mali landscape", "Niger River bend"],
+      "imageCommons": [
+        "Bandiagara Escarpment Mali",
+        "Niger River pirogue Mali",
+        "Sahel landscape Mali"
+      ],
       "kicker": "Mali · 1324",
       "title": "SALT AND GOLD",
       "footer": "an empire on the bend of the Niger"
@@ -18,43 +22,75 @@
       "slug": "route",
       "vo": "In thirteen twenty-four he set out for Mecca, and the road ran four thousand miles across the Sahara.",
       "image": "an old hand-drawn chart of north and west Africa on vellum, faded ink",
-      "imageCommons": ["Catalan Atlas 1375 Africa", "Mali Empire map", "Catalan Atlas"],
-      "stops": ["Niani", "Taghaza", "Tuat", "Cairo", "Mecca"],
-      "caption": ["Four thousand", "miles."]
+      "imageCommons": [
+        "Catalan Atlas 1375 Africa",
+        "Mali Empire map",
+        "Catalan Atlas"
+      ],
+      "stops": [
+        "Niani",
+        "Taghaza",
+        "Tuat",
+        "Cairo",
+        "Mecca"
+      ],
+      "caption": [
+        "Four thousand",
+        "miles."
+      ]
     },
     {
       "slug": "caravan",
       "vo": "Accounts describe tens of thousands of people on the road, and camels carrying gold by the hundredweight.",
       "image": "a wide desert horizon at midday, heat haze over flat sand, empty",
-      "imageCommons": ["Sahara desert dunes caravan", "Sahara sand dunes"],
+      "imageCommons": [
+        "Sahara desert dunes caravan",
+        "Sahara sand dunes"
+      ],
       "pieces": [
         "camel standing in profile",
         "date palm tree",
         "traveller in a long desert robe"
       ],
-      "caption": ["Tens of thousands", "on the road."],
+      "caption": [
+        "Tens of thousands",
+        "on the road."
+      ],
       "onScreen": "ACCOUNTS DIFFER"
     },
     {
       "slug": "mecca",
       "vo": "He reached the holy city with the treasury of an empire still on the backs of his camels.",
       "image": "a great stone courtyard under a hard white sun, colonnades in deep shadow",
-      "imageCommons": ["Masjid al-Haram Mecca", "Great Mosque of Mecca"],
+      "imageCommons": [
+        "Masjid al-Haram Mecca",
+        "Great Mosque of Mecca"
+      ],
       "artefact": "a black draped cube in the centre of a vast stone court, seen from above",
-      "artefactCommons": ["Kaaba", "Kaaba Masjid al-Haram"],
+      "artefactCommons": [
+        "Kaaba",
+        "Kaaba Masjid al-Haram"
+      ],
       "onScreen": "MECCA · 1324"
     },
     {
       "slug": "cairo",
       "vo": "In Cairo he did not trade the gold. He gave it away, to officials, to merchants, to the poor.",
       "image": "an empty medieval Cairo market street of pale stone at noon, deep shadow under arches",
-      "imageCommons": ["Islamic Cairo medieval street", "Cairo old city street"],
+      "imageCommons": [
+        "Khan el-Khalili alley",
+        "Islamic Cairo alley",
+        "Cairo mashrabiya window street"
+      ],
       "items": [
         "card|TO THE COURT|robes and gifts to the sultan's officials",
         "card|TO THE MARKET|paid above price, and kept paying",
         "card|TO THE POOR|handed out in the street, every district"
       ],
-      "caption": ["He did not", "trade it."]
+      "caption": [
+        "He did not",
+        "trade it."
+      ]
     },
     {
       "slug": "price",
@@ -68,26 +104,47 @@
       "slug": "atlas",
       "vo": "Fifty years later a mapmaker in Europe drew him on a chart, seated on a throne, holding a nugget of gold.",
       "image": "an old vellum chart on a wooden table, dividers and an inkpot beside it",
-      "imageCommons": ["Catalan Atlas", "Catalan Atlas 1375"],
+      "imageCommons": [
+        "Catalan Atlas",
+        "Catalan Atlas 1375"
+      ],
       "artefact": "a detail of a medieval illuminated map on vellum, gold leaf and faded ink, cracked surface",
-      "artefactCommons": ["Catalan Atlas Mansa Musa", "Mansa Musa Catalan Atlas detail", "Mansa Musa"],
-      "caption": ["Drawn by", "someone who", "never met him."],
+      "artefactCommons": [
+        "Catalan Atlas Mansa Musa",
+        "Mansa Musa Catalan Atlas detail",
+        "Mansa Musa"
+      ],
+      "caption": [
+        "Drawn by",
+        "someone who",
+        "never met him."
+      ],
       "motif": "rays"
     },
     {
       "slug": "timbuktu",
       "vo": "On the road home he brought back an architect, and Timbuktu got a mosque of mud brick and timber.",
       "image": "a tall mud-brick mosque wall with projecting wooden beams, hard desert sun",
-      "imageCommons": ["Djinguereber Mosque Timbuktu", "Djinguereber Mosque"],
+      "imageCommons": [
+        "Djinguereber Mosque Timbuktu",
+        "Djinguereber Mosque"
+      ],
       "artefact": "a close view of a mud-brick wall studded with protruding palm timbers, warm raking light",
-      "artefactCommons": ["Djinguereber Mosque wall", "Sankore Madrasah Timbuktu"],
+      "artefactCommons": [
+        "Djinguereber Mosque wall",
+        "Sankore Madrasah Timbuktu"
+      ],
       "onScreen": "it is still standing"
     },
     {
       "slug": "close",
       "vo": "He is often called the richest man who ever lived. What can be measured is the damage — one pilgrimage, and a city's currency took a decade to come back.",
       "image": "a single set of footprints crossing an empty dune, wind erasing them",
-      "imageCommons": ["footprints Sahara sand", "Sahara desert footprints"],
+      "imageCommons": [
+        "Erg Chebbi dunes",
+        "Sahara dune ripples",
+        "sand dune footprints"
+      ],
       "kicker": "Mali · 1337",
       "title": "ONE PILGRIMAGE",
       "footer": "a decade to come back"
