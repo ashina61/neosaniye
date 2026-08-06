@@ -154,6 +154,12 @@ export type SceneSpec = {
 export type EpisodeConfig = {
   id: string;
   title?: string;
+  /**
+   * The narration, episode-relative. THE CLOCK, not a layer: every scene's
+   * duration is measured from this file's line boundaries, so it plays across
+   * the whole reel rather than inside any one scene.
+   */
+  audio?: string;
   fps: number;
   width: number;
   height: number;

@@ -320,6 +320,38 @@ export function fragmentsOf(vo, max = MAX_SPOKEN) {
 }
 
 /** Frames a fragment needs, spoken at a documentary rate, plus a breath. */
+/**
+ * SPLIT A MEASURED WINDOW ACROSS THE FRAGMENTS INSIDE IT.
+ *
+ * When the voiceover has been spoken, a line's length is not a guess any more —
+ * it is a start and an end in the file, silences included. The fragments inside
+ * that line still have to divide it, and they divide it by the only thing that
+ * tracks how long a phrase takes to say: how many words are in it.
+ *
+ * The remainder goes to the LAST fragment, so the sum is exactly the window and
+ * the reel never drifts out of sync with its own narration. Rounding each
+ * fragment independently loses a frame here and there, and over a reel that is
+ * how the last line ends up cut off.
+ */
+export function splitWindow(fragments, startSeconds, endSeconds, fps = FPS) {
+  const from = Math.round(startSeconds * fps);
+  const to = Math.round(endSeconds * fps);
+  const total = Math.max(fragments.length, to - from);
+  const weights = fragments.map((f) => Math.max(1, f.trim().split(/\s+/).filter(Boolean).length));
+  const sum = weights.reduce((a, b) => a + b, 0);
+
+  const out = [];
+  let used = 0;
+  for (let i = 0; i < fragments.length - 1; i += 1) {
+    const frames = Math.max(1, Math.round((weights[i] / sum) * total));
+    out.push(frames);
+    used += frames;
+  }
+  out.push(Math.max(1, total - used));
+  return out;
+}
+
+/** The ESTIMATE — used only when nothing has been spoken yet. */
 export function framesFor(text, {min = 45, max = 118} = {}) {
   const words = text.trim().split(/\s+/).filter(Boolean).length;
   // Eight frames of breath, not twenty-six. Twenty-six was set when a scene was
@@ -379,11 +411,11 @@ function captionSize(lines, rand) {
  * It always pushes from a DIFFERENT anchor than the shot before it. Cutting
  * from a plate to the same plate on the same move is not a cut, it is a jump.
  */
-function planContinuation({line, index, part, fragment, rand, look, previousTransition, plate}) {
+function planContinuation({line, index, part, fragment, frames: measured, rand, look, previousTransition, plate}) {
   const assetBase = `s${String(index + 1).padStart(2, '0')}-${line.slug ?? 'shot'}`;
   const choices = look.transitions.filter((k) => k !== previousTransition);
   const corner = part % 4;
-  const frames = framesFor(fragment);
+  const frames = measured ?? framesFor(fragment);
   const lines = captionLines(fragment);
   // Alternate the direction of travel. Two pushes on one plate look like the
   // same shot played twice; a push followed by a pull-back looks like an edit.
@@ -418,7 +450,7 @@ function planContinuation({line, index, part, fragment, rand, look, previousTran
   };
 }
 
-function planScene({line, index, total, fragment, rand, look, previousTransition, recentMotifs, recentTypes}) {
+function planScene({line, index, total, fragment, frames, rand, look, previousTransition, recentMotifs, recentTypes}) {
   const beat = beatOf(line, index, total);
   let sceneType = SCENE_FOR[beat];
   // RHYTHM. Never the same template as the shot before it. The old rule waited
@@ -436,7 +468,7 @@ function planScene({line, index, total, fragment, rand, look, previousTransition
   // The shot lasts as long as ITS FRAGMENT takes to say — not as long as the
   // whole sentence does. That one change is what stopped every scene coming out
   // at the ceiling.
-  const durationInFrames = framesFor(fragment ?? line.vo);
+  const durationInFrames = frames ?? framesFor(fragment ?? line.vo);
 
   // Never the same arrival twice running: a repeated transition stops being a
   // choice and becomes a tic. Short, too — a cut that takes half a second is a
@@ -626,6 +658,18 @@ async function main() {
 
   const dir = episodeDir(episodeId);
   const brief = JSON.parse(await readFile(path.join(dir, 'brief.json'), 'utf8'));
+
+  /**
+   * THE MEASUREMENT, IF IT EXISTS.
+   *
+   * Written by scripts/voice-episode.mjs from the narration itself. When it is
+   * here every duration in the reel comes from the audio; when it is not, they
+   * come from a word count, and the run says so out loud — because a reel cut
+   * to an estimate is a draft, and it should never quietly look finished.
+   */
+  const voice = await readFile(path.join(dir, 'audio', 'vo.json'), 'utf8')
+    .then(JSON.parse)
+    .catch(() => null);
   const rand = seeded(`${episodeId}::${brief.mood ?? 'cold-noir'}`);
   const mood = MOODS[brief.mood] ?? MOODS['cold-noir'];
 
@@ -659,11 +703,18 @@ async function main() {
     // and the line's artwork; the rest reuse that same picture from a different
     // corner. Nine long lines used to be nine identical seven-second scenes.
     const fragments = fragmentsOf(line.vo);
+    // THE SPOKEN WINDOW WINS. If the narration has been recorded, this line
+    // starts and ends at measured times and the fragments divide that; only an
+    // episode with no voiceover yet falls back to counting words.
+    const spoken = voice?.lines?.[index];
+    const cuts = spoken ? splitWindow(fragments, spoken.start, spoken.end) : null;
+
     const result = planScene({
       line,
       index,
       total: brief.lines.length,
       fragment: fragments[0],
+      frames: cuts?.[0],
       rand,
       look,
       previousTransition,
@@ -684,6 +735,7 @@ async function main() {
         index,
         part: i + 1,
         fragment,
+        frames: cuts?.[i + 1],
         rand,
         look,
         previousTransition,
@@ -697,6 +749,9 @@ async function main() {
   const config = {
     id: episodeId,
     title: brief.title,
+    // The narration rides the whole reel, so it belongs to the episode, not to
+    // any one scene. Absent until the voice script has run.
+    ...(voice ? {audio: 'audio/vo.mp3'} : {}),
     fps: FPS,
     width: WIDTH,
     height: HEIGHT,
@@ -788,6 +843,11 @@ async function main() {
   console.log(`  types  ${config.scenes.map((s) => s.sceneType).join(' → ')}`);
   console.log(`  drawn  ${planned.map((p) => p.motif || '·').join(' ')}`);
   console.log(`  assets ${Object.keys(assets).length} recipes`);
+  console.log(
+    voice
+      ? `  clock  CUT TO audio/vo.mp3 — ${voice.duration.toFixed(1)}s of measured narration`
+      : `  clock  ESTIMATED from word counts — no voiceover yet. Run: npm run voice -- --episode=${episodeId}`,
+  );
 }
 
 // Only when run as a command; the tests import the rhythm rules from here.

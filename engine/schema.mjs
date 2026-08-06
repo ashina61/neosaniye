@@ -162,6 +162,15 @@ export function validateEpisodeConfig(config) {
     }
   }
 
+  if (c.audio !== undefined) {
+    if (typeof c.audio !== 'string' || !c.audio.trim()) push('audio: must be a non-empty path when present');
+    // Same isolation rule as every asset: the public directory IS the episode
+    // folder, so a climbing path resolves outside it.
+    else if (c.audio.startsWith('/') || c.audio.includes('..')) {
+      push(`audio: must be episode-relative (got "${c.audio}")`);
+    }
+  }
+
   if (!Array.isArray(c.scenes) || c.scenes.length === 0) {
     push('scenes: required, at least one scene');
     return problems;
