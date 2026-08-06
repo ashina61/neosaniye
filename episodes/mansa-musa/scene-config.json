@@ -18,29 +18,29 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.35,
-      "grungeOpacity": 0.13,
-      "scanlineOpacity": 0.12,
-      "scanlinePeriod": 8,
-      "vignetteStrength": 0.37,
-      "weavePx": 5,
-      "weaveScale": 1.015
+      "grainOpacity": 0.44,
+      "grungeOpacity": 0.17,
+      "scanlineOpacity": 0.09,
+      "scanlinePeriod": 9,
+      "vignetteStrength": 0.43,
+      "weavePx": 4,
+      "weaveScale": 1.012
     }
   },
   "scenes": [
     {
-      "id": "s01-leave",
+      "id": "s01-mali",
       "sceneType": "title-slate",
-      "voText": "In thirteen twenty-four the ruler of Mali left home for Mecca, and took his treasury with him.",
+      "voText": "He ruled Mali, on the great bend of the Niger, in an empire built on salt and gold.",
       "durationInFrames": 215,
       "assets": {
-        "background": "assets/s01-leave-bg.png"
+        "background": "assets/s01-mali-bg.png"
       },
       "params": {
         "scrim": 0.43,
         "kicker": "Mali · 1324",
-        "title": "HE TOOK IT ALL",
-        "footer": "the treasury went with him",
+        "title": "SALT AND GOLD",
+        "footer": "an empire on the bend of the Niger",
         "titleFrame": 8,
         "titleSize": 124,
         "creep": 1.058,
@@ -62,16 +62,65 @@
       }
     },
     {
-      "id": "s02-caravan",
+      "id": "s02-route",
       "sceneType": "composite",
-      "voText": "Accounts describe tens of thousands of people on the road, and camels carrying gold by the hundredweight.",
+      "voText": "In thirteen twenty-four he set out for Mecca, and the road ran four thousand miles across the Sahara.",
       "durationInFrames": 215,
       "transition": {
         "kind": "slam",
         "frames": 13
       },
       "assets": {
-        "ground": "assets/s02-caravan-bg.png",
+        "ground": "assets/s02-route-bg.png"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.09,
+          "anchor": "fill"
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushTo": 1.46,
+        "pushEndFrame": 185,
+        "focusPx": 13,
+        "fog": 0.08,
+        "caption": [
+          "Four thousand",
+          "miles."
+        ],
+        "captionX": 84,
+        "captionY": 348,
+        "captionFrame": 10,
+        "captionEvery": 16,
+        "captionSize": 88,
+        "captionRecedeAt": 155,
+        "accent": "#f2b53a",
+        "motif": "route",
+        "motifStops": [
+          "Niani",
+          "Taghaza",
+          "Tuat",
+          "Cairo",
+          "Mecca"
+        ],
+        "motifFrame": 23,
+        "motifColour": "#f2b53a"
+      }
+    },
+    {
+      "id": "s03-caravan",
+      "sceneType": "composite",
+      "voText": "Accounts describe tens of thousands of people on the road, and camels carrying gold by the hundredweight.",
+      "durationInFrames": 215,
+      "transition": {
+        "kind": "flare",
+        "frames": 15
+      },
+      "assets": {
+        "ground": "assets/s03-caravan-bg.png",
         "?camel-standing-in-profile": "assets/camel-standing-in-profile.png",
         "?date-palm-tree": "assets/date-palm-tree.png",
         "?traveller-in-a-long-desert-robe": "assets/traveller-in-a-long-desert-robe.png"
@@ -79,7 +128,7 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.09,
+          "depth": 0.08,
           "anchor": "fill"
         },
         {
@@ -87,17 +136,17 @@
           "depth": 0.26,
           "anchor": "bottom",
           "x": 313,
-          "y": 1314,
-          "height": 531,
+          "y": 1295,
+          "height": 511,
           "opacity": 0.63
         },
         {
           "role": "date-palm-tree",
           "depth": 0.55,
           "anchor": "bottom",
-          "x": 908,
-          "y": 1468,
-          "height": 703,
+          "x": 930,
+          "y": 1478,
+          "height": 710,
           "opacity": 0.78
         },
         {
@@ -105,40 +154,32 @@
           "depth": 0.84,
           "anchor": "bottom",
           "x": 150,
-          "y": 1665,
-          "height": 954,
+          "y": 1680,
+          "height": 937,
           "opacity": 0.92,
           "shadow": true,
-          "shadowSkew": -61,
+          "shadowSkew": -46,
           "shadowOpacity": 0.34
         }
       ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushTo": 1.35,
+        "pushTo": 1.39,
         "pushEndFrame": 185,
-        "focusPx": 9,
-        "fog": 0.07,
+        "focusPx": 0,
+        "fog": 0.09,
         "caption": [
           "Tens of thousands",
           "on the road."
         ],
         "captionX": 84,
-        "captionY": 1074,
+        "captionY": 394,
         "captionFrame": 10,
-        "captionEvery": 18,
-        "captionSize": 83,
+        "captionEvery": 21,
+        "captionSize": 86,
         "captionRecedeAt": 155,
-        "accent": "#f2b53a",
-        "motif": "route",
-        "motifX": 193,
-        "motifY": 1190,
-        "motifSize": 197,
-        "motifCount": 1,
-        "motifFrame": 21,
-        "motifColour": "#f2b53a",
-        "motifOpacity": 0.92
+        "accent": "#f2b53a"
       },
       "onScreenText": [
         {
@@ -151,26 +192,67 @@
       ]
     },
     {
-      "id": "s03-cairo",
+      "id": "s04-mecca",
+      "sceneType": "portal-zoom-reveal",
+      "voText": "He reached the holy city with the treasury of an empire still on the backs of his camels.",
+      "durationInFrames": 215,
+      "transition": {
+        "kind": "rack",
+        "frames": 10
+      },
+      "assets": {
+        "wall": "assets/s04-mecca-bg.png",
+        "photo": "assets/s04-mecca-photo.png"
+      },
+      "params": {
+        "frameWidth": 759,
+        "frameRatio": 1.06,
+        "pushEndFrame": 77,
+        "detachFrame": 99,
+        "throughEndFrame": 121,
+        "weldRatio": 0.415,
+        "wallScaleEnd": 6.5,
+        "accent": "#f2b53a",
+        "motif": "coins",
+        "motifX": 527,
+        "motifY": 1651,
+        "motifSize": 43,
+        "motifCount": 26,
+        "motifFrame": 127,
+        "motifColour": "#f2b53a",
+        "motifOpacity": 0.87
+      },
+      "onScreenText": [
+        {
+          "text": "MECCA · 1324",
+          "atFrame": 129,
+          "durationInFrames": 69,
+          "style": "typed",
+          "position": "bottom"
+        }
+      ]
+    },
+    {
+      "id": "s05-cairo",
       "sceneType": "evidence-board",
       "voText": "In Cairo he did not trade the gold. He gave it away, to officials, to merchants, to the poor.",
       "durationInFrames": 215,
       "transition": {
         "kind": "flare",
-        "frames": 14
+        "frames": 12
       },
       "assets": {
-        "background": "assets/s03-cairo-bg.png"
+        "background": "assets/s05-cairo-bg.png"
       },
       "params": {
-        "bgScale": 1.057,
-        "scrim": 0.25,
-        "focusPx": 8,
-        "itemWidth": 550,
+        "bgScale": 1.087,
+        "scrim": 0.31,
+        "focusPx": 10,
+        "itemWidth": 522,
         "itemFrames": [
           10,
-          46,
-          94
+          55,
+          84
         ],
         "items": [
           "card|TO THE COURT|robes and gifts to the sultan's officials",
@@ -182,32 +264,32 @@
           "trade it."
         ],
         "captionX": 84,
-        "captionY": 215,
+        "captionY": 222,
         "captionFrame": 6,
-        "captionSize": 89,
+        "captionSize": 83,
         "captionRecedeAt": 97
       }
     },
     {
-      "id": "s04-price",
+      "id": "s06-price",
       "sceneType": "title-slate",
-      "voText": "He spent so freely that the price of gold in Cairo fell, and one contemporary writer found it still had not recovered twelve years later.",
+      "voText": "He spent so freely that the price of gold in Cairo fell, and one writer found it still had not recovered twelve years later.",
       "durationInFrames": 215,
       "transition": {
-        "kind": "rack",
+        "kind": "slam",
         "frames": 11
       },
       "assets": {
-        "background": "assets/s04-price-bg.png"
+        "background": "assets/s06-price-bg.png"
       },
       "params": {
-        "scrim": 0.49,
+        "scrim": 0.4,
         "kicker": "Gold in Cairo",
         "title": "TWELVE YEARS",
         "footer": "and by one account it had still not recovered",
         "titleFrame": 5,
         "titleSize": 230,
-        "creep": 1.061,
+        "creep": 1.088,
         "accent": "#f2b53a",
         "field": "sunburst",
         "fieldColours": [
@@ -216,13 +298,13 @@
           "#2c1a06"
         ],
         "motif": "coins",
-        "motifX": 599,
+        "motifX": 594,
         "motifY": 1651,
-        "motifSize": 44,
-        "motifCount": 23,
+        "motifSize": 50,
+        "motifCount": 22,
         "motifFrame": 13,
         "motifColour": "#f2b53a",
-        "motifOpacity": 0.99,
+        "motifOpacity": 0.86,
         "mark": "underline",
         "markX": 260,
         "markY": 820,
@@ -232,7 +314,39 @@
       }
     },
     {
-      "id": "s05-architect",
+      "id": "s07-atlas",
+      "sceneType": "portal-zoom-reveal",
+      "voText": "Fifty years later a mapmaker in Europe drew him on a chart, seated on a throne, holding a nugget of gold.",
+      "durationInFrames": 215,
+      "transition": {
+        "kind": "rack",
+        "frames": 14
+      },
+      "assets": {
+        "wall": "assets/s07-atlas-bg.png",
+        "photo": "assets/s07-atlas-photo.png"
+      },
+      "params": {
+        "frameWidth": 740,
+        "frameRatio": 0.95,
+        "pushEndFrame": 77,
+        "detachFrame": 99,
+        "throughEndFrame": 121,
+        "weldRatio": 0.413,
+        "wallScaleEnd": 5,
+        "accent": "#f2b53a",
+        "motif": "rays",
+        "motifX": 535,
+        "motifY": 768,
+        "motifSize": 335,
+        "motifCount": 23,
+        "motifFrame": 127,
+        "motifColour": "#f2b53a",
+        "motifOpacity": 0.81
+      }
+    },
+    {
+      "id": "s08-timbuktu",
       "sceneType": "portal-zoom-reveal",
       "voText": "On the road home he brought back an architect, and Timbuktu got a mosque of mud brick and timber.",
       "durationInFrames": 215,
@@ -241,26 +355,18 @@
         "frames": 16
       },
       "assets": {
-        "wall": "assets/s05-architect-bg.png",
-        "photo": "assets/s05-architect-photo.png"
+        "wall": "assets/s08-timbuktu-bg.png",
+        "photo": "assets/s08-timbuktu-photo.png"
       },
       "params": {
-        "frameWidth": 790,
-        "frameRatio": 0.94,
+        "frameWidth": 807,
+        "frameRatio": 1.16,
         "pushEndFrame": 77,
         "detachFrame": 99,
         "throughEndFrame": 121,
-        "weldRatio": 0.394,
-        "wallScaleEnd": 5.3,
-        "accent": "#f2b53a",
-        "motif": "route",
-        "motifX": 126,
-        "motifY": 1190,
-        "motifSize": 192,
-        "motifCount": 1,
-        "motifFrame": 127,
-        "motifColour": "#f2b53a",
-        "motifOpacity": 0.85
+        "weldRatio": 0.412,
+        "wallScaleEnd": 5.2,
+        "accent": "#f2b53a"
       },
       "onScreenText": [
         {
@@ -273,126 +379,32 @@
       ]
     },
     {
-      "id": "s06-atlas",
-      "sceneType": "portal-zoom-reveal",
-      "voText": "Fifty years later a mapmaker in Europe drew him on a chart, seated, holding a nugget of gold.",
+      "id": "s09-close",
+      "sceneType": "title-slate",
+      "voText": "He is often called the richest man who ever lived. What can be measured is the damage — one pilgrimage, and a city's currency took a decade to come back.",
       "durationInFrames": 215,
-      "transition": {
-        "kind": "rack",
-        "frames": 16
-      },
-      "assets": {
-        "wall": "assets/s06-atlas-bg.png",
-        "photo": "assets/s06-atlas-photo.png"
-      },
-      "params": {
-        "frameWidth": 801,
-        "frameRatio": 1.05,
-        "pushEndFrame": 77,
-        "detachFrame": 99,
-        "throughEndFrame": 121,
-        "weldRatio": 0.371,
-        "wallScaleEnd": 6.9,
-        "accent": "#f2b53a"
-      }
-    },
-    {
-      "id": "s07-claim",
-      "sceneType": "composite",
-      "voText": "He is often called the richest man who ever lived. Nobody can actually measure that.",
-      "durationInFrames": 193,
       "transition": {
         "kind": "flare",
-        "frames": 14
+        "frames": 18
       },
       "assets": {
-        "ground": "assets/s07-claim-bg.png",
-        "?lone-acacia-tree": "assets/lone-acacia-tree.png",
-        "?camel-resting-on-folded-legs": "assets/camel-resting-on-folded-legs.png"
-      },
-      "layers": [
-        {
-          "role": "ground",
-          "depth": 0.06,
-          "anchor": "fill"
-        },
-        {
-          "role": "lone-acacia-tree",
-          "depth": 0.26,
-          "anchor": "bottom",
-          "x": 269,
-          "y": 1323,
-          "height": 483,
-          "opacity": 0.63
-        },
-        {
-          "role": "camel-resting-on-folded-legs",
-          "depth": 0.84,
-          "anchor": "bottom",
-          "x": 930,
-          "y": 1668,
-          "height": 955,
-          "opacity": 0.92,
-          "shadow": true,
-          "shadowSkew": -46,
-          "shadowOpacity": 0.34
-        }
-      ],
-      "params": {
-        "anchorX": 540,
-        "anchorY": 1700,
-        "pushTo": 1.25,
-        "pushEndFrame": 166,
-        "focusPx": 14,
-        "fog": 0.12,
-        "caption": [
-          "Often called",
-          "the richest",
-          "who ever lived."
-        ],
-        "captionX": 84,
-        "captionY": 884,
-        "captionFrame": 10,
-        "captionEvery": 17,
-        "captionSize": 82,
-        "captionRecedeAt": 139,
-        "accent": "#f2b53a",
-        "captionAccent": 1
-      }
-    },
-    {
-      "id": "s08-close",
-      "sceneType": "title-slate",
-      "voText": "What can be measured is the damage. One pilgrimage, and a city's currency took a decade to come back.",
-      "durationInFrames": 215,
-      "transition": {
-        "kind": "slam",
-        "frames": 12
-      },
-      "assets": {
-        "background": "assets/s08-close-bg.png"
+        "background": "assets/s09-close-bg.png"
       },
       "params": {
-        "scrim": 0.39,
+        "scrim": 0.41,
         "kicker": "Mali · 1337",
         "title": "ONE PILGRIMAGE",
         "footer": "a decade to come back",
-        "titleFrame": 4,
+        "titleFrame": 6,
         "titleSize": 124,
-        "creep": 1.055,
+        "creep": 1.044,
         "accent": "#f2b53a",
         "field": "sunburst",
         "fieldColours": [
           "#c98a2a",
           "#7d4d12",
           "#2c1a06"
-        ],
-        "mark": "underline",
-        "markX": 260,
-        "markY": 1160,
-        "markWidth": 560,
-        "markHeight": 96,
-        "markFrame": 73
+        ]
       }
     }
   ]

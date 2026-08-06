@@ -43,6 +43,8 @@ type Common = {
   width: number;
   height: number;
   opacity: number;
+  /** Named places, for a route that is an itinerary rather than a swoosh. */
+  labels: string[];
 };
 
 /** Ids leak across scenes if they are not scoped — two gradients, one name. */
@@ -211,13 +213,148 @@ const Rise: React.FC<Common> = ({from, count, x, y, size, colour, frame, duratio
 };
 
 /**
- * ROUTE — a journey drawing itself.
+ * ROUTE — a journey drawing itself, STOP BY NAMED STOP.
  *
- * The line that makes a map a story. It draws on rather than fading in, and a
- * marker rides the head of it: a finished dotted arc says a trip was taken, a
- * drawing one says it is being taken now, while the narrator is describing it.
+ * An arc over a photograph of a desert says a trip was taken by somebody, from
+ * somewhere, to somewhere. It is decoration. The same line drawn over a map,
+ * stopping at NIANI, then TAGHAZA, then CAIRO, then MECCA, with each name
+ * arriving as the line reaches it — that is the journey, and it is most of what
+ * an episode about a journey has to say.
+ *
+ * So the stops are the content and the curve is only how they are joined. They
+ * are spread along a spine and each pushed off it by its own seeded amount, so
+ * the result reads as a route between places rather than as a graph. Labels
+ * alternate above and below the line, which is the only reason four of them fit
+ * across a vertical frame without colliding.
+ *
+ * With no stops it degrades to the plain arc — a shot that wants a sense of
+ * travel and has no itinerary to give.
  */
-const Route: React.FC<Common> = ({from, x, y, colour, seed, frame, duration, width, height, opacity}) => {
+const Route: React.FC<Common> = ({from, x, y, colour, seed, frame, duration, width, height, opacity, labels}) => {
+  if (labels.length >= 2) {
+    return (
+      <Itinerary
+        stops={labels}
+        from={from}
+        colour={colour}
+        seed={seed}
+        frame={frame}
+        duration={duration}
+        width={width}
+        height={height}
+        opacity={opacity}
+      />
+    );
+  }
+  return <Arc from={from} x={x} y={y} colour={colour} seed={seed} frame={frame} duration={duration} width={width} height={height} opacity={opacity} />;
+};
+
+const Itinerary: React.FC<{
+  stops: string[];
+  from: number;
+  colour: string;
+  seed: string;
+  frame: number;
+  duration: number;
+  width: number;
+  height: number;
+  opacity: number;
+}> = ({stops, from, colour, seed, frame, duration, width, height, opacity}) => {
+  const n = stops.length;
+  /**
+   * THE FRAME IS TALL, SO THE ROUTE CLIMBS IT.
+   *
+   * The first version spread the stops mostly sideways across a 1080-wide
+   * frame: five of them left about 180px between neighbours, and a name like
+   * TAGHAZA set in mono is wider than that on its own — so the labels ran into
+   * each other and the route became unreadable at exactly the moment it was
+   * supposed to be saying where he went. In 1920 of height there is room to
+   * separate them properly, so the journey runs UP the frame and the names get
+   * a clear band each.
+   */
+  const points = stops.map((_, i) => {
+    const t = i / (n - 1);
+    const sx = width * (0.3 + t * 0.4);
+    const sy = height * (0.82 - t * 0.64) - Math.sin(t * Math.PI) * height * 0.03;
+    const off = (hash01(seed, i * 9 + 61) - 0.5) * width * 0.1;
+    return {x: sx + off, y: sy, label: stops[i]};
+  });
+
+  // One stop per beat, with the walking between them taking most of the time.
+  const progress = drawOn(frame, [from, from + duration * 0.72]) * (n - 1);
+  const arrive = interpolate(frame, [from, from + 8], [0, 1], CLAMP);
+
+  const legs = [];
+  for (let i = 0; i < n - 1; i += 1) {
+    const a = points[i];
+    const b = points[i + 1];
+    const walked = Math.min(1, Math.max(0, progress - i));
+    if (walked <= 0) continue;
+    legs.push(
+      <g key={`leg-${i}`}>
+        <line x1={a.x} y1={a.y} x2={a.x + (b.x - a.x) * walked} y2={a.y + (b.y - a.y) * walked} stroke="rgba(12,8,3,0.85)" strokeWidth={13} strokeLinecap="round" />
+        <line x1={a.x} y1={a.y} x2={a.x + (b.x - a.x) * walked} y2={a.y + (b.y - a.y) * walked} stroke={colour} strokeWidth={7} strokeLinecap="round" />
+      </g>,
+    );
+  }
+
+  const head = Math.min(n - 1, progress);
+  const leg = Math.min(n - 2, Math.floor(head));
+  const local = head - leg;
+  const mx = points[leg].x + (points[leg + 1].x - points[leg].x) * local;
+  const my = points[leg].y + (points[leg + 1].y - points[leg].y) * local;
+
+  return (
+    <svg width="100%" height="100%" style={{position: 'absolute', inset: 0, opacity: opacity * arrive}}>
+      {/* The whole road, faint, before any of it is walked. Without it the
+          journey has no destination until the last second of the shot. */}
+      <polyline
+        points={points.map((p) => `${p.x},${p.y}`).join(' ')}
+        fill="none"
+        stroke={colour}
+        strokeWidth={4}
+        strokeDasharray="8 16"
+        opacity={0.4}
+      />
+      {legs}
+      {points.map((p, i) => {
+        const reached = progress >= i - 0.02;
+        const land = interpolate(progress, [i - 0.02, i + 0.3], [0, 1], CLAMP);
+        if (!reached) {
+          return <circle key={`dot-${i}`} cx={p.x} cy={p.y} r={9} fill="none" stroke={colour} strokeWidth={4} opacity={0.45} />;
+        }
+        // Names sit BESIDE the dot, alternating sides. Above and below put them
+        // on the line itself wherever it is steep, which is everywhere here.
+        const left = i % 2 === 0;
+        return (
+          <g key={`stop-${i}`} opacity={land}>
+            <circle cx={p.x} cy={p.y} r={15} fill="rgba(12,8,3,0.85)" stroke={colour} strokeWidth={6} />
+            <text
+              x={p.x + (left ? -34 : 34)}
+              y={p.y + 13}
+              textAnchor={left ? 'end' : 'start'}
+              fontFamily='"Courier New", monospace'
+              fontSize={40}
+              fontWeight={700}
+              letterSpacing="0.1em"
+              fill="#f6ead0"
+              stroke="rgba(10,7,3,0.92)"
+              strokeWidth={8}
+              paintOrder="stroke"
+            >
+              {p.label.toUpperCase()}
+            </text>
+          </g>
+        );
+      })}
+      {progress > 0.05 && progress < n - 1.02 ? (
+        <circle cx={mx} cy={my} r={15} fill={colour} stroke="rgba(12,8,3,0.85)" strokeWidth={4} />
+      ) : null}
+    </svg>
+  );
+};
+
+const Arc: React.FC<Omit<Common, 'count' | 'size' | 'labels'>> = ({from, x, y, colour, seed, frame, duration, width, height, opacity}) => {
   /**
    * The ends are derived from the FRAME, not from the motif's size. Scaling an
    * arc off an element size is how the first version threw its far end off the
@@ -459,6 +596,7 @@ export const SceneMotif: React.FC<{
       size={num('motifSize', 46) as number}
       opacity={num('motifOpacity', 1) as number}
       colour={typeof params?.motifColour === 'string' ? params.motifColour : accent}
+      labels={Array.isArray(params?.motifStops) ? (params.motifStops as string[]).map(String) : undefined}
       seed={seed}
       durationInFrames={durationInFrames}
     />
@@ -474,9 +612,23 @@ export const Motif: React.FC<{
   size?: number;
   colour?: string;
   opacity?: number;
+  /** Named stops. Turns `route` from a swoosh into an itinerary. */
+  labels?: string[];
   seed?: string;
   durationInFrames: number;
-}> = ({kind, from = 0, count, x, y, size = 46, colour = '#f2b53a', opacity = 1, seed = 'motif', durationInFrames}) => {
+}> = ({
+  kind,
+  from = 0,
+  count,
+  x,
+  y,
+  size = 46,
+  colour = '#f2b53a',
+  opacity = 1,
+  labels,
+  seed = 'motif',
+  durationInFrames,
+}) => {
   const frame = useCurrentFrame();
   const {fps, width, height} = useVideoConfig();
   const Drawn = DRAWN[kind];
@@ -492,6 +644,7 @@ export const Motif: React.FC<{
         size={size}
         colour={colour}
         opacity={opacity}
+        labels={labels ?? []}
         seed={seed}
         frame={posterizeTime(frame, fps, 12)}
         duration={durationInFrames}

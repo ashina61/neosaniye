@@ -27,13 +27,29 @@
     }
   },
   "assets": {
-    "s01-leave-bg.png": {
+    "s01-mali-bg.png": {
       "kind": "backdrop",
-      "commons": "Sahara sand dunes sunrise",
-      "prompt": "a vast empty Sahara dune field at dawn, long shadows, nobody present"
+      "commons": [
+        "Niger River Mali landscape",
+        "Niger River bend"
+      ],
+      "prompt": "a wide river bend in the West African sahel at low sun, flat banks, no people"
     },
-    "s02-caravan-bg.png": {
+    "s02-route-bg.png": {
       "kind": "backdrop",
+      "commons": [
+        "Catalan Atlas 1375 Africa",
+        "Mali Empire map",
+        "Catalan Atlas"
+      ],
+      "prompt": "an old hand-drawn chart of north and west Africa on vellum, faded ink"
+    },
+    "s03-caravan-bg.png": {
+      "kind": "backdrop",
+      "commons": [
+        "Sahara desert dunes caravan",
+        "Sahara sand dunes"
+      ],
       "prompt": "a wide desert horizon at midday, heat haze over flat sand, empty"
     },
     "camel-standing-in-profile.png": {
@@ -48,50 +64,73 @@
       "kind": "piece",
       "prompt": "one single traveller in a long desert robe, whole object in frame, dark silhouette, on a plain white background"
     },
-    "s03-cairo-bg.png": {
+    "s04-mecca-bg.png": {
       "kind": "backdrop",
-      "commons": "Islamic Cairo medieval street",
+      "commons": [
+        "Masjid al-Haram Mecca",
+        "Great Mosque of Mecca"
+      ],
+      "prompt": "a great stone courtyard under a hard white sun, colonnades in deep shadow"
+    },
+    "s04-mecca-photo.png": {
+      "kind": "photo",
+      "commons": [
+        "Kaaba",
+        "Kaaba Masjid al-Haram"
+      ],
+      "prompt": "a black draped cube in the centre of a vast stone court, seen from above"
+    },
+    "s05-cairo-bg.png": {
+      "kind": "backdrop",
+      "commons": [
+        "Islamic Cairo medieval street",
+        "Cairo old city street"
+      ],
       "prompt": "an empty medieval Cairo market street of pale stone at noon, deep shadow under arches"
     },
-    "s04-price-bg.png": {
+    "s06-price-bg.png": {
       "kind": "backdrop",
       "prompt": "a dim stone counting room with scales and scattered coins, one shaft of daylight"
     },
-    "s05-architect-bg.png": {
+    "s07-atlas-bg.png": {
       "kind": "backdrop",
-      "commons": "Djinguereber Mosque",
-      "prompt": "a tall mud-brick mosque wall with projecting wooden beams, hard desert sun"
-    },
-    "s05-architect-photo.png": {
-      "kind": "photo",
-      "commons": "Djinguereber Mosque Timbuktu",
-      "prompt": "a close view of a mud-brick wall studded with protruding palm timbers, warm raking light"
-    },
-    "s06-atlas-bg.png": {
-      "kind": "backdrop",
-      "commons": "Catalan Atlas 1375",
+      "commons": [
+        "Catalan Atlas",
+        "Catalan Atlas 1375"
+      ],
       "prompt": "an old vellum chart on a wooden table, dividers and an inkpot beside it"
     },
-    "s06-atlas-photo.png": {
+    "s07-atlas-photo.png": {
       "kind": "photo",
-      "commons": "Catalan Atlas Mansa Musa",
+      "commons": [
+        "Catalan Atlas Mansa Musa",
+        "Mansa Musa Catalan Atlas detail",
+        "Mansa Musa"
+      ],
       "prompt": "a detail of a medieval illuminated map on vellum, gold leaf and faded ink, cracked surface"
     },
-    "s07-claim-bg.png": {
+    "s08-timbuktu-bg.png": {
       "kind": "backdrop",
-      "prompt": "an empty desert night under heavy stars, cold blue sand"
+      "commons": [
+        "Djinguereber Mosque Timbuktu",
+        "Djinguereber Mosque"
+      ],
+      "prompt": "a tall mud-brick mosque wall with projecting wooden beams, hard desert sun"
     },
-    "lone-acacia-tree.png": {
-      "kind": "piece",
-      "prompt": "one single lone acacia tree, whole object in frame, dark silhouette, on a plain white background"
+    "s08-timbuktu-photo.png": {
+      "kind": "photo",
+      "commons": [
+        "Djinguereber Mosque wall",
+        "Sankore Madrasah Timbuktu"
+      ],
+      "prompt": "a close view of a mud-brick wall studded with protruding palm timbers, warm raking light"
     },
-    "camel-resting-on-folded-legs.png": {
-      "kind": "piece",
-      "prompt": "one single camel resting on folded legs, whole object in frame, dark silhouette, on a plain white background"
-    },
-    "s08-close-bg.png": {
+    "s09-close-bg.png": {
       "kind": "backdrop",
-      "commons": "footprints Sahara sand",
+      "commons": [
+        "footprints Sahara sand",
+        "Sahara desert footprints"
+      ],
       "prompt": "a single set of footprints crossing an empty dune, wind erasing them"
     }
   }

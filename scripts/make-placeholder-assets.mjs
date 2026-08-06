@@ -14,6 +14,7 @@
 import {mkdir, readFile, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
+import {OPTIONAL_ROLE} from '../engine/schema.mjs';
 import {ROOT, episodeDir, exists, loadConfig, parseArgs} from './lib/episode.mjs';
 import {markPlaceholders} from './lib/placeholders.mjs';
 
@@ -78,6 +79,12 @@ async function main() {
   for (const scene of config.scenes ?? []) {
     for (const [role, file] of Object.entries(scene.assets ?? {})) {
       if (typeof file !== 'string' || wanted.has(file)) continue;
+      // NEVER STAND IN FOR AN OPTIONAL ROLE. A "?role" exists precisely so the
+      // scene can do without it, and it does that WELL — the composite drops
+      // the layer and loses some depth. A labelled grey card in the middle of
+      // the shot is strictly worse than the thing that was designed to happen,
+      // and it also hides the fact that the artwork was never drawn.
+      if (role.startsWith(OPTIONAL_ROLE)) continue;
       const name = path.basename(file);
       const recipe = recipes?.assets?.[name];
       const kind = recipe ? recipes?.kinds?.[recipe.kind] : null;

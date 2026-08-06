@@ -183,6 +183,10 @@ const MOTIF_PLACE = {
 export function motifFor(line, recentMotifs, sceneType) {
   if (line.motif === 'none') return '';
   if (typeof line.motif === 'string' && line.motif) return line.motif;
+  // A line that lists the places he actually passed through IS a route, and no
+  // rhythm rule outranks that — the itinerary is the content of such a shot,
+  // not decoration laid over it.
+  if (line.stops?.length >= 2) return 'route';
   if (recentMotifs.length >= 2 && recentMotifs.every(Boolean)) return '';
   const previous = recentMotifs[recentMotifs.length - 1];
   for (const [kind, pattern] of MOTIF_WORDS) {
@@ -209,9 +213,14 @@ export function fitsScene(kind, sceneType) {
 }
 
 /** The knobs for a chosen motif, in scene pixels. */
-function motifParams(kind, {rand, from, accent}) {
+function motifParams(kind, {rand, from, accent, stops}) {
   if (!kind) return {};
   const place = MOTIF_PLACE[kind];
+  // An itinerary lays itself out across the whole frame from its stops, so the
+  // anchor and the element count below are not its business.
+  if (kind === 'route' && stops?.length >= 2) {
+    return {motif: kind, motifStops: stops, motifFrame: from, motifColour: accent};
+  }
   return {
     motif: kind,
     motifX: Math.round(WIDTH * place.x + (rand() - 0.5) * WIDTH * 0.1),
@@ -241,6 +250,11 @@ function beatOf(line, index, total) {
   // exactly that shot.
   if (line.items) return 'list';
   if (line.artefact) return 'artefact';
+  // A line that names the places he passed through is a MAP shot: the itinerary
+  // needs the whole frame and the backdrop under it has to be the chart. Left
+  // to the number-word rule below, "four thousand miles" would make it a title
+  // card and the route would be drawn straight through the title.
+  if (line.stops?.length >= 2) return 'place';
   // A line that names things to put in the frame wants a frame to put them in,
   // whatever numbers happen to be in the sentence.
   if (line.pieces?.length) return 'place';
@@ -309,7 +323,7 @@ function planScene({line, index, total, rand, look, previousTransition, recentMo
       accent: look.accent,
       field: look.field,
       fieldColours: look.fieldColours,
-      ...motifParams(motif, {rand, from: titleFrame + 8, accent: look.accent}),
+      ...motifParams(motif, {rand, from: titleFrame + 8, accent: look.accent, stops: line.stops}),
     };
     /**
      * A FIGURE WORTH SAYING IS WORTH COUNTING TO.
@@ -367,7 +381,7 @@ function planScene({line, index, total, rand, look, previousTransition, recentMo
       // AFTER the arrival. The first half of this shot is the flight into the
       // picture; the second half is a photograph sitting still, and that is the
       // half a portrait wants gold falling past it.
-      ...motifParams(motif, {rand, from: push + 50, accent: look.accent}),
+      ...motifParams(motif, {rand, from: push + 50, accent: look.accent, stops: line.stops}),
     };
   } else {
     // COMPOSITE — the stack. Pieces are optional, so a piece that fails to draw
@@ -430,7 +444,7 @@ function planScene({line, index, total, rand, look, previousTransition, recentMo
       captionSize: 82 + Math.round(rand() * 12),
       captionRecedeAt: Math.round(durationInFrames * 0.72),
       accent: look.accent,
-      ...motifParams(motif, {rand, from: 18 + Math.round(rand() * 14), accent: look.accent}),
+      ...motifParams(motif, {rand, from: 18 + Math.round(rand() * 14), accent: look.accent, stops: line.stops}),
     };
     if (line.accentLine !== undefined) scene.params.captionAccent = line.accentLine;
   }
