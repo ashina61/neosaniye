@@ -9,7 +9,7 @@
  */
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {best, isFree} from '../scripts/fetch-commons.mjs';
+import {best, isFree, queriesFor} from '../scripts/fetch-commons.mjs';
 
 const meta = (short, terms = '') => ({LicenseShortName: {value: short}, UsageTerms: {value: terms}});
 
@@ -43,6 +43,20 @@ const page = (id, width, height, short) => ({
   imageinfo: [{width, height, mime: 'image/jpeg', url: `u/${id}`, extmetadata: meta(short)}],
 });
 
+test('flags, logos and wiki furniture are not pictures of anything', () => {
+  // They pass every numeric check and score BETTER than the photograph, because
+  // a flag is a clean rectangle. Only the title gives them away.
+  const chosen = best(
+    [
+      page('Flag of Mali', 3000, 2000, 'CC0'),
+      page('Commons-logo', 2000, 2000, 'CC BY-SA 4.0'),
+      page('Djinguereber mosque at dusk', 1600, 2400, 'CC BY-SA 4.0'),
+    ],
+    1080 / 1920,
+  );
+  assert.match(chosen.page.title, /mosque/);
+});
+
 test('a non-free candidate is never chosen, however good it is', () => {
   const chosen = best([page('huge', 4000, 6000, 'CC BY-NC 4.0'), page('ok', 1200, 1800, 'CC0')], 1080 / 1920);
   assert.match(chosen.page.title, /ok/);
@@ -50,6 +64,26 @@ test('a non-free candidate is never chosen, however good it is', () => {
 
 test('anything too small to fill the frame is skipped', () => {
   assert.equal(best([page('tiny', 400, 600, 'CC0')], 1080 / 1920), null);
+});
+
+test('a long search is followed by a shorter one, never replaced by it', () => {
+  // The commonest way this comes back empty-handed is a search that is TOO
+  // precise: four words joined by AND, one of them missing from the file's
+  // description, and the whole result sinks.
+  assert.deepEqual(queriesFor('Catalan Atlas Mansa Musa'), ['Catalan Atlas Mansa Musa', 'Catalan Atlas']);
+  // Precision is never given away for free — the narrow search is still first.
+  assert.equal(queriesFor('Sahara sand dunes sunrise')[0], 'Sahara sand dunes sunrise');
+  // Two words are specific enough already; halving them finds anything at all.
+  assert.deepEqual(queriesFor('Djinguereber Mosque'), ['Djinguereber Mosque']);
+});
+
+test('a recipe may give the fallbacks itself', () => {
+  // For when the second choice is a different thing, not a broader one.
+  assert.deepEqual(queriesFor(['Catalan Atlas Mansa Musa', 'medieval portolan chart']), [
+    'Catalan Atlas Mansa Musa',
+    'medieval portolan chart',
+  ]);
+  assert.deepEqual(queriesFor(''), [], 'no search is not an empty search');
 });
 
 test('shape closest to the slot wins over raw size', () => {
