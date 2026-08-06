@@ -4,6 +4,8 @@ import {PortalZoomReveal} from './PortalZoomReveal';
 import {ParallaxPunch} from './ParallaxPunch';
 import {StackedReveal} from './StackedReveal';
 import {SplitShift} from './SplitShift';
+import {TitleSlate} from './TitleSlate';
+import {EvidenceBoard} from './EvidenceBoard';
 import {EPISODE_SCENE_OVERRIDES} from '../episodeScenes.generated';
 
 /**
@@ -22,6 +24,10 @@ export const SHARED_SCENE_TYPES: Record<string, React.FC<SceneProps>> = {
   'parallax-punch': ParallaxPunch,
   'stacked-reveal': StackedReveal,
   'split-shift': SplitShift,
+  // Graphics-first. These two need no photograph at all, which is what lets a
+  // reel state something instead of only showing it.
+  'title-slate': TitleSlate,
+  'evidence-board': EvidenceBoard,
 };
 
 export function resolveSceneType(sceneType: string): React.FC<SceneProps> | null {

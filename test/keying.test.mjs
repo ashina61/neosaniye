@@ -11,7 +11,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import sharp from 'sharp';
-import {keyBackdrop} from '../scripts/generate-assets.mjs';
+import {keyBackdrop, islandCount} from '../scripts/generate-assets.mjs';
 
 const W = 160;
 const H = 160;
@@ -119,4 +119,23 @@ test('a picture with no backdrop at all keeps everything', async () => {
   }
   const png = await keyBackdrop(await sharp(data, {raw: {width: W, height: H, channels: 3}}).png().toBuffer());
   assert.ok((await opaqueFraction(png)) > 0.9);
+});
+
+test('a key that shatters the picture is refused, however opaque it is', async () => {
+  // The worst run this repo has had, reproduced: asked for a subject on an
+  // empty backdrop the model drew an empty studio ROOM, the key found a
+  // backdrop and carved the rest into unrelated blobs. Every one passed the
+  // opacity check — one was 52% opaque and pure noise — because opacity asks
+  // how much survived, never whether it is one thing.
+  const blobs = [];
+  for (let i = 0; i < 14; i += 1) {
+    const x = 12 + (i % 5) * 28;
+    const y = 12 + Math.floor(i / 5) * 44;
+    blobs.push([x, y, x + 18, y + 30, RED]);
+  }
+  const shattered = await keyBackdrop(await picture(GREY, blobs));
+  assert.ok((await islandCount(shattered)) > 6, 'expected many islands');
+
+  const oneObject = await keyBackdrop(await picture(GREY, [[50, 40, 110, 130, RED]]));
+  assert.ok((await islandCount(oneObject)) <= 2, 'a single cut-out is one island');
 });

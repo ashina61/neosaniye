@@ -1,20 +1,31 @@
 {
   "$comment": "Generation recipe for this episode's artwork. The ENGINE never reads this file — only scripts/generate-assets.mjs does, and only when someone runs it. The render reads the PNGs it produced, on disk, like any other episode's.",
-
   "style": "1969 documentary photograph, shot on 35mm film, muted desaturated colour, heavy film grain, natural available light, period-accurate Northern California, no text, no captions, no watermark, no modern objects",
-
   "$styleAlpha": "For cut-outs only. No film grain and no 1969 available light here: those describe a ROOM, and a room has no backdrop to key away. The period treatment is applied to the whole frame at render time by FilmLook. What this needs is a clean studio shot with an empty backdrop.",
   "styleAlpha": "clean sharp studio photograph, even soft frontal lighting, subject sharply separated from the backdrop, no shadow falling on the backdrop, period-accurate 1969 clothing and objects, no text, no watermark",
-
   "negative": "text, letters, words, watermark, signature, logo, room, wall, floor, furniture, window, sky, horizon, landscape, second object, modern car, smartphone, digital screen, cartoon, cgi",
-
   "kinds": {
-    "backdrop": {"width": 1080, "height": 1920, "alpha": false},
-    "photo": {"width": 900, "height": 1170, "alpha": false},
-    "subject": {"width": 820, "height": 1400, "alpha": true},
-    "object": {"width": 820, "height": 1060, "alpha": true}
+    "backdrop": {
+      "width": 1080,
+      "height": 1920,
+      "alpha": false
+    },
+    "photo": {
+      "width": 900,
+      "height": 1170,
+      "alpha": false
+    },
+    "subject": {
+      "width": 820,
+      "height": 1400,
+      "alpha": true
+    },
+    "object": {
+      "width": 820,
+      "height": 1060,
+      "alpha": true
+    }
   },
-
   "assets": {
     "newsroom-wall.png": {
       "kind": "backdrop",
@@ -24,43 +35,17 @@
       "kind": "photo",
       "prompt": "a single sheet of typewriter paper covered edge to edge in a hand-drawn cipher of small strange geometric symbols in blue ballpoint, slightly creased, photographed flat from directly above"
     },
-    "frame-clip.png": {
-      "kind": "object",
-      "prompt": "an empty rectangular tarnished brass picture frame, straight on, completely empty in the middle, worn corners",
-      "keyHoles": true,
-      "height": 1060
-    },
     "newsroom-desk.png": {
       "kind": "backdrop",
       "prompt": "a 1969 newspaper editor's desk at night seen from across the room, manual typewriter, stacked galley proofs, overflowing ashtray, one warm lamp, the rest of the room falling into darkness"
-    },
-    "editor.png": {
-      "kind": "subject",
-      "prompt": "an anonymous middle-aged newspaper editor in a white shirt and loosened dark tie standing and reading a sheet of paper, seen from the side, full body, head to shoes, 1969"
     },
     "desk-wood.png": {
       "kind": "backdrop",
       "prompt": "an empty scratched dark wooden desktop photographed from straight above, warm lamp light falling across it from one side, deep shadow in the corners"
     },
-    "paper-chronicle.png": {
-      "kind": "object",
-      "prompt": "a folded 1969 broadsheet newspaper front page seen flat and straight on, yellowed newsprint, dense grey columns of type too small to read, a large blurred photograph in the upper half"
-    },
-    "paper-examiner.png": {
-      "kind": "object",
-      "prompt": "a 1969 broadsheet newspaper front page seen flat at a slight angle, creased down the middle, yellowed newsprint, dense unreadable grey columns, a brown ring stain in one corner"
-    },
-    "paper-times-herald.png": {
-      "kind": "object",
-      "prompt": "a small-town 1969 newspaper front page seen flat and straight on, thinner and greyer newsprint, torn along the bottom edge, dense unreadable columns of type"
-    },
     "lake-dusk.png": {
       "kind": "backdrop",
       "prompt": "the empty shore of a Northern California reservoir at dusk in late September, dry golden grass, dark still water, oak trees in silhouette on the far bank, low overcast light, nobody present"
-    },
-    "hooded-figure.png": {
-      "kind": "subject",
-      "prompt": "a menacing anonymous man standing still in a black square executioner-style hood that covers his head and shoulders and a dark pleated jacket, arms at his sides, full body from head to boots, faceless, 1969"
     },
     "car-exterior.png": {
       "kind": "backdrop",
@@ -74,33 +59,13 @@
       "kind": "backdrop",
       "prompt": "a residential San Francisco street corner at night in heavy fog, October 1969, bay-window houses, a single streetlamp haloed in the mist, wet asphalt, parked period cars, nobody on the street"
     },
-    "man-walking.png": {
-      "kind": "subject",
-      "prompt": "an anonymous man in a dark heavy overcoat mid-stride walking away from the camera, seen from directly behind, hands in pockets, collar turned up, full body from head to shoes"
-    },
     "evidence-table.png": {
       "kind": "backdrop",
       "prompt": "an empty grey metal police evidence table under a bare overhead bulb, scuffed steel surface, cold hard light from directly above, dark room beyond, 1969"
     },
-    "police-sketch.png": {
-      "kind": "object",
-      "prompt": "a 1960s police composite sketch on off-white card, pencil and charcoal drawing of an anonymous man's face with generic unremarkable features, short hair and heavy-framed glasses, drawn flat and frontal, no text on the card"
-    },
-    "shirt-scrap.png": {
-      "kind": "object",
-      "prompt": "a single small torn ragged scrap of grey striped cotton shirt fabric seen flat and straight on, frayed threads along every edge, a dark stain across one corner"
-    },
-    "boot-print.png": {
-      "kind": "object",
-      "prompt": "a single square black and white photographic print with a thick white paper border, the picture on it showing one deep boot print in dust with a heavy military tread pattern, the print seen flat and straight on"
-    },
     "detective-office.png": {
       "kind": "backdrop",
       "prompt": "a 1969 homicide detective's office, wall of grey filing cabinets and a cork board thick with overlapping paperwork, venetian blind shadows striping the far wall, no people"
-    },
-    "detective.png": {
-      "kind": "subject",
-      "prompt": "an anonymous 1969 plainclothes detective in a rumpled grey suit standing with his back half turned, one hand on his hip, tired posture, full body from head to shoes"
     },
     "cork-board.png": {
       "kind": "backdrop",
@@ -113,10 +78,6 @@
     "night-road.png": {
       "kind": "backdrop",
       "prompt": "an empty two-lane country road at night disappearing into darkness, dry grass verges, no streetlights, faint cold moonlight on the asphalt, Northern California, nobody present"
-    },
-    "figure-away.png": {
-      "kind": "subject",
-      "prompt": "a lone man in a long dark coat walking away from the camera, seen from directly behind, unlit and almost a silhouette, indistinct featureless dark shape, full body from head to shoes"
     }
   }
 }

@@ -86,6 +86,69 @@ export function anchorOrigin(x: number, y: number, width: number, height: number
   return `${(x / width) * 100}% ${(y / height) * 100}%`;
 }
 
+/**
+ * HOLD KEYFRAMES — instant on, instant off, never a fade.
+ *
+ * A fluorescent tube warming up, a bulb striking, a frame flicking to negative.
+ * The whole character of the effect is that there is NO ramp: cross-fade it and
+ * it stops being electrical and becomes a dissolve.
+ *
+ * `spans` are [on, off] pairs in scene frames.
+ */
+export function holdKeyframes(frame: number, spans: number[][]): boolean {
+  return spans.some(([on, off]) => frame >= on && frame < off);
+}
+
+/**
+ * DAMPED SWING — a pendulum that swings hard and settles.
+ *
+ * A finger wagging no, a hanging lamp knocked, a sign rocking. Amplitude times
+ * a cosine times a decaying exponential; the decay is what stops it reading as
+ * a loop.
+ */
+export function dampedSwing(
+  frame: number,
+  {amplitude = 28, rate = 0.52, decay = 0.042, delay = 0} = {},
+): number {
+  const t = Math.max(0, frame - delay);
+  return amplitude * Math.cos(t * rate) * Math.exp(-decay * t);
+}
+
+/**
+ * DRAW ON — 0..1 along a stroke, for anything that should look hand-drawn.
+ *
+ * Fed to stroke-dashoffset it makes a line draw itself. An annotation that
+ * simply fades in reads as a graphic overlay; one that draws on reads as
+ * someone marking the frame, which is the entire point of it.
+ */
+export function drawOn(frame: number, [start, end]: number[]): number {
+  return interpolate(frame, [start, end], [0, 1], {...CLAMP, easing: Easing.out(Easing.quad)});
+}
+
+/**
+ * FOCUS HUNT — an old lens finding its subject.
+ *
+ * Returns blur in pixels. Opens soft, snaps clear, drifts off once more, then
+ * settles: the shot arrives rather than cutting in. Drawn light must be told
+ * about this number, because soft gradients are blur-invariant — run a lens
+ * blur over one and you get the same glow back, so it looks untreated while
+ * everything around it goes soft.
+ */
+export function focusHunt(
+  frame: number,
+  durationInFrames: number,
+  {open = 14, clearBy = 21, dipAt = 0.3, dipBack = 0.42, maxPx = 16} = {},
+): number {
+  const dipStart = Math.round(durationInFrames * dipAt);
+  const dipEnd = Math.round(durationInFrames * dipBack);
+  return interpolate(
+    frame,
+    [0, clearBy, dipStart, (dipStart + dipEnd) / 2, dipEnd, durationInFrames],
+    [maxPx, 0, 0, maxPx * 0.45, 0, 0],
+    {...CLAMP, easing: Easing.inOut(Easing.quad)},
+  );
+}
+
 /** Deterministic 0..1 from a string — same input, same frame, every run. */
 export function hash01(seed: string, salt = 0): number {
   let h = (2166136261 ^ salt) >>> 0;
