@@ -1,0 +1,109 @@
+import React from 'react';
+import {AbsoluteFill, Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
+import type {SceneProps} from './types';
+import {CLAMP, posterizeTime} from '../motion';
+import {Plate} from '../Plate';
+import {Field, type FieldKind} from '../draw/Field';
+import {Slate} from '../draw/Type';
+import {Annotation, type MarkKind} from '../draw/Annotation';
+import {Glow} from '../draw/Glow';
+
+/**
+ * TITLE SLATE — a scene made of type and drawn light, with no photograph
+ * required.
+ *
+ * Every reel needs frames that state something rather than show it: the date,
+ * the count, the verdict. Handing those to a photograph wastes them — a stock
+ * picture of a courthouse says less than the words CASE STILL OPEN set large on
+ * a drawn field.
+ *
+ * A backdrop plate is optional. With one it is a title over a photograph; with
+ * none it is drawn end to end and cannot fail on a missing asset.
+ *
+ * Roles: background (optional).
+ */
+export const TitleSlate: React.FC<SceneProps> = ({scene, assets, durationInFrames}) => {
+  const frame = useCurrentFrame();
+  const {fps, width, height} = useVideoConfig();
+  const stepped = posterizeTime(frame, fps, 12);
+
+  const num = (key: string, fallback: number): number => {
+    const value = scene.params?.[key];
+    return typeof value === 'number' ? value : fallback;
+  };
+  const str = (key: string, fallback: string): string => {
+    const value = scene.params?.[key];
+    return typeof value === 'string' ? value : fallback;
+  };
+  const list = (key: string): string[] => {
+    const value = scene.params?.[key];
+    return Array.isArray(value) ? (value as string[]).map(String) : [];
+  };
+
+  const colours = list('fieldColours');
+  const kicker = str('kicker', '');
+  const title = str('title', '');
+  const footer = str('footer', '');
+  const mark = str('mark', '') as MarkKind | '';
+
+  // The frame closes in a little the whole time it is up, so a card made of
+  // type is never actually still.
+  const creep = interpolate(stepped, [0, durationInFrames], [1, num('creep', 1.06)], {
+    ...CLAMP,
+    easing: Easing.out(Easing.quad),
+  });
+
+  return (
+    <AbsoluteFill>
+      {/* The CREEP moves the picture, never the type. Scaling a title card
+          whole makes the words themselves grow, which softens them and gives
+          away that the frame is a still being zoomed rather than a shot. */}
+      <AbsoluteFill style={{transform: `scale(${creep})`}}>
+        {assets.background ? (
+          <>
+            <Plate src={assets.background} alive={false} />
+            <AbsoluteFill style={{background: `rgba(8,6,4,${num('scrim', 0.45)})`}} />
+          </>
+        ) : (
+          <Field
+            kind={str('field', 'spotlight') as FieldKind}
+            colours={colours.length === 3 ? colours : undefined}
+            seed={scene.id}
+          />
+        )}
+
+        {num('glowSize', 0) > 0 ? (
+          <Glow
+            x={num('glowX', Math.round(width * 0.5))}
+            y={num('glowY', Math.round(height * 0.36))}
+            size={num('glowSize', 0)}
+            intensity={num('glowIntensity', 0.7)}
+          />
+        ) : null}
+      </AbsoluteFill>
+
+      <Slate
+        kicker={kicker || undefined}
+        title={title}
+        footer={footer || undefined}
+        from={num('titleFrame', 6)}
+        size={num('titleSize', 118)}
+        accent={str('accent', '#ffcf3d')}
+      />
+
+      {mark ? (
+        <Annotation
+          kind={mark}
+          x={num('markX', Math.round(width * 0.18))}
+          y={num('markY', Math.round(height * 0.56))}
+          width={num('markWidth', Math.round(width * 0.64))}
+          height={num('markHeight', 96)}
+          from={num('markFrame', 40)}
+          over={num('markOver', 14)}
+          colour={str('accent', '#ffcf3d')}
+          seed={scene.id}
+        />
+      ) : null}
+    </AbsoluteFill>
+  );
+};

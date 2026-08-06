@@ -55,7 +55,9 @@ export type BuiltInSceneType =
   | 'portal-zoom-reveal'
   | 'parallax-punch'
   | 'stacked-reveal'
-  | 'split-shift';
+  | 'split-shift'
+  | 'title-slate'
+  | 'evidence-board';
 /** A string, not a union: an episode can register a custom type of its own. */
 export type SceneType = string;
 

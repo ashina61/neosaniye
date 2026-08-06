@@ -49,6 +49,8 @@ export const BUILT_IN_SCENE_TYPES = [
   'parallax-punch',
   'stacked-reveal',
   'split-shift',
+  'title-slate',
+  'evidence-board',
 ];
 
 /** Scene start frames, by accumulation. The config never states them twice. */

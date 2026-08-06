@@ -21,7 +21,8 @@ engine/Episode.tsx                  → <Sequence> zinciri, sahne başına FilmL
         ↓
 engine/sceneTypes/registry.ts       → sceneType → şablon
         ↓
-engine/sceneTypes/*.tsx + Plate     → plakalar, hareket, gölge
+engine/sceneTypes/*.tsx             → plakalar, hareket, gölge
+engine/draw/*.tsx                   → ışık, kâğıt, işaretleme, tipografi
         ↓
 out/<id>.mp4
 ```
@@ -32,38 +33,54 @@ out/<id>.mp4
    ROL okur; o rolün hangi dosya olduğu bölümün işidir.
    `test/enginePurity.test.mjs` motorun içinde geçen her dosya uzantısını,
    her `episodes/` yolunu ve her bölüm kimliğini düşürür.
-2. **DÖRT PAYLAŞILAN ŞABLON.** `portal-zoom-reveal`, `parallax-punch`,
-   `stacked-reveal`, `split-shift`. Bir bölüm kendi şablonunu
-   `episodes/<id>/scenes/index.tsx` içinde kaydedebilir; paylaşılan dörde
-   bölüme özel bir şey eklenmez.
-3. **DERİNLİK DOSYADA DEĞİL, İKİ PLAKANIN BİRBİRİNE GÖRE HAREKETİNDEDİR.**
+2. **İNSAN VE MEKÂN FOTOĞRAFTIR, GERİ KALAN HER ŞEY ÇİZİLİR.** Bu deponun en
+   pahalı ikinci dersi. Işık, gölge, kâğıt, gazete, kart, plaket, altı çizgi,
+   oval, tel-kafes, tipografi ve noktalama `engine/draw/` içinde KODLA çizilir.
+   Üreticiye yalnız insan, mekân ve doku sorulur. Prosedürel bir insan tabela
+   piktogramıdır; prosedürel bir gazete ise sadece tipografidir ve belgesel
+   grafiği zaten odur. Gazeteyi, eskizi, bot izini üreticiye yıkmayı denedik —
+   patlayanlar tam onlar oldu.
+3. **PREMIUM GÖRÜNTÜ FOTOĞRAFTA DEĞİL, ÜSTÜNE ÇİZİLEN KATMANDADIR.** Fotoğrafta
+   lamba vardır, ışığı yoktur: `Glow` ampule screen blend'li dört radyal
+   gradyan koyar ve plaka zoom'lanırken ONUNLA BİRLİKTE ölçeklenir — sahne
+   koordinatına çakılı bir ışık lambadan kayar ve lens parlamasına döner.
+   `Annotation` kendini çizer (fade değil), `WordStack` satırları tek tek
+   indirir, `focusHunt` çekimi kesmez buldurur ve çizilen ışığa defokusu
+   söyler; yumuşak gradyan bulanıklıktan etkilenmediği için aksi halde
+   yumuşamış karede keskin durur.
+4. **ALTI PAYLAŞILAN ŞABLON.** `portal-zoom-reveal`, `parallax-punch`,
+   `stacked-reveal`, `split-shift`, `title-slate`, `evidence-board`. Son ikisi
+   grafik önceliklidir: hiç fotoğraf istemeden çalışır, yani eksik bir asset'te
+   ölmezler. Bir bölüm kendi şablonunu `episodes/<id>/scenes/index.tsx` içinde
+   kaydedebilir; paylaşılan altıya bölüme özel bir şey eklenmez.
+5. **DERİNLİK DOSYADA DEĞİL, İKİ PLAKANIN BİRBİRİNE GÖRE HAREKETİNDEDİR.**
    Karakter arka plandan DAHA SERT yaklaşır (eşit ölçek zoom'dur, farklı ölçek
    derinliktir) ve ikisi de YERDEKİ AYNI NOKTA etrafında ölçeklenir
    (`groundX`/`groundY`). Ortak çapa kaçarsa özne zeminden kayar — bu efektin
    bozulmasının bir numaralı yolu.
-4. **GÖLGE AYRI BİR ASSET DEĞİLDİR.** Karakterin kendi dosyası siyaha boyanır,
+6. **GÖLGE AYRI BİR ASSET DEĞİLDİR.** Karakterin kendi dosyası siyaha boyanır,
    ayaklarından aşağı çevrilir ve zemine yatırılır. Karakter gönderen bölüm
    gölgesini bedava gönderir.
-5. **ÖZNE PLAKASI ÇERÇEVEYİ KAPLAMAZ.** Tam kadraj plaka duvar içindir;
+7. **ÖZNE PLAKASI ÇERÇEVEYİ KAPLAMAZ.** Tam kadraj plaka duvar içindir;
    bir insan `plateWidth` + `footX`/`footY` ile boyutlanır ve ayakları
    üzerinde durur. 1080x1920'e esnetilen bir cutout tüm kareyi doldurur ve
    önünde hiçbir şey hareket edemez — derinlik ölür.
-6. **FİLM İŞLEMESİ TEK YERDEN GELİR.** Grain, grunge, tarama çizgileri,
+8. **FİLM İŞLEMESİ TEK YERDEN GELİR.** Grain, grunge, tarama çizgileri,
    vignette, gate weave ve grade `engine/FilmLook.tsx` içindedir. Hiçbir şablon
    kendi grain'ini yazmaz; sahne yalnız `gradeOverride` ile bölümün grade'ini
    ezer.
-7. **HER DEĞER PROPTUR.** Şablonun içinde gizli sabit bırakılmaz; sayılar
+9. **HER DEĞER PROPTUR.** Şablonun içinde gizli sabit bırakılmaz; sayılar
    `params` üzerinden gelir ve `num('key', fallback)` ile okunur. Fallback
    çerçeve boyutuna göre hesaplanır, bölüme göre değil.
-8. **KARE SAYILARI SAHNENİN KENDİ BAŞLANGICINA GÖREDİR.** `onScreenText.atFrame`
+10. **KARE SAYILARI SAHNENİN KENDİ BAŞLANGICINA GÖREDİR.** `onScreenText.atFrame`
    ve `params` içindeki bütün kare değerleri sahne sıfırından sayılır — reel
    sıfırından değil. Sahne başlangıçları `sceneOffsets` ile toplanır, config'te
    iki kez yazılmaz.
-9. **ŞEMA TEK UYGULAMADIR.** `engine/schema.mjs` düz JavaScript'tir çünkü hem
+11. **ŞEMA TEK UYGULAMADIR.** `engine/schema.mjs` düz JavaScript'tir çünkü hem
    doğrulayıcı script hem render bundle AYNI doğrulamayı çalıştırmak
    zorundadır. Tipler `engine/schema.ts` içindedir. İkiye ayrılırsa config
    doğrulamayı geçer ve render'ı çökertir.
-10. **BİLİNMEYEN SAHNE TİPİ SESSİZCE ATLANMAZ.** Kırmızı bir MISSING TEMPLATE
+12. **BİLİNMEYEN SAHNE TİPİ SESSİZCE ATLANMAZ.** Kırmızı bir MISSING TEMPLATE
     kartı çizilir ve doğrulayıcı zaten render'dan önce düşürür.
 
 ## İş bölümü — bu deponun en pahalı dersi

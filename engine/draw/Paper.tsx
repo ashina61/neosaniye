@@ -1,0 +1,288 @@
+import React from 'react';
+import {hash01} from '../motion';
+
+/**
+ * PAPER, DRAWN.
+ *
+ * Newspapers, index cards, photographic prints, plaques. Every one of these was
+ * being asked of an image generator, and every one of them came back either
+ * refused or mediocre — because they are the hardest thing to generate (small
+ * legible type, straight edges, clean rectangles) and the easiest thing to
+ * draw.
+ *
+ * The division that makes this work, and that the reference reel follows
+ * exactly: PEOPLE AND PLACES ARE PHOTOGRAPHED, EVERYTHING ELSE IS DRAWN. A
+ * procedural human is a pictogram and always looks it. A procedural newspaper
+ * is just typography, and typography is what a documentary graphic IS.
+ *
+ * Nothing here knows an episode. It takes words and numbers.
+ */
+
+const SERIF = '"Playfair Display", "Iowan Old Style", Georgia, serif';
+const SANS = '"Archivo", "Helvetica Neue", Arial, sans-serif';
+const MONO = '"Courier New", ui-monospace, monospace';
+
+/** Rows of grey bars that read as columns of type too small to resolve. */
+const TypeBlock: React.FC<{seed: string; lines: number; columns?: number; colour?: string}> = ({
+  seed,
+  lines,
+  columns = 3,
+  colour = '#2b2620',
+}) => (
+  <div style={{display: 'flex', gap: '4%', width: '100%'}}>
+    {Array.from({length: columns}, (_, col) => (
+      <div key={col} style={{flex: 1, display: 'flex', flexDirection: 'column', gap: 4}}>
+        {Array.from({length: lines}, (_, row) => (
+          <div
+            key={row}
+            style={{
+              height: 4,
+              width: `${72 + hash01(seed, col * 100 + row) * 28}%`,
+              background: colour,
+              opacity: 0.36,
+            }}
+          />
+        ))}
+      </div>
+    ))}
+  </div>
+);
+
+/**
+ * A NEWSPAPER FRONT PAGE.
+ *
+ * Masthead, rules, a headline, a halftone photo block and columns of unreadable
+ * type. The headline is the only thing anyone reads, so it is the only thing
+ * set large — everything else is texture whose job is to say "newspaper".
+ */
+export const Newspaper: React.FC<{
+  masthead: string;
+  headline: string;
+  date?: string;
+  width: number;
+  seed?: string;
+  tint?: string;
+  ink?: string;
+}> = ({masthead, headline, date, width, seed = 'paper', tint = '#e8dcc0', ink = '#241f18'}) => {
+  const height = Math.round(width * 1.32);
+  return (
+    <div
+      style={{
+        width,
+        height,
+        background: tint,
+        backgroundImage:
+          `radial-gradient(ellipse at 18% 12%, rgba(120,96,52,0.16) 0%, transparent 44%),` +
+          `radial-gradient(ellipse at 84% 82%, rgba(120,96,52,0.14) 0%, transparent 48%)`,
+        padding: `${width * 0.055}px ${width * 0.06}px`,
+        boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: width * 0.028,
+        color: ink,
+        boxShadow: '0 26px 52px rgba(0,0,0,0.6)',
+      }}
+    >
+      <div
+        style={{
+          fontFamily: SERIF,
+          fontWeight: 900,
+          fontSize: width * 0.092,
+          letterSpacing: '-0.015em',
+          textAlign: 'center',
+          lineHeight: 1,
+          borderBottom: `2px solid ${ink}`,
+          paddingBottom: width * 0.018,
+        }}
+      >
+        {masthead}
+      </div>
+      {date ? (
+        <div style={{fontFamily: MONO, fontSize: width * 0.026, letterSpacing: '0.14em', textAlign: 'center', opacity: 0.7}}>
+          {date}
+        </div>
+      ) : null}
+      <div
+        style={{
+          fontFamily: SANS,
+          fontWeight: 900,
+          fontSize: width * 0.088,
+          lineHeight: 0.98,
+          textTransform: 'uppercase',
+          letterSpacing: '-0.02em',
+          borderTop: `4px solid ${ink}`,
+          borderBottom: `1px solid ${ink}`,
+          padding: `${width * 0.022}px 0`,
+        }}
+      >
+        {headline}
+      </div>
+      <div
+        style={{
+          height: height * 0.24,
+          background: `repeating-linear-gradient(0deg, ${ink}22 0 2px, transparent 2px 4px), linear-gradient(150deg, ${ink}66, ${ink}22)`,
+        }}
+      />
+      <TypeBlock seed={seed} lines={Math.round(height * 0.026)} colour={ink} />
+    </div>
+  );
+};
+
+/**
+ * AN INDEX CARD or evidence label — the small typed rectangle pinned to a
+ * board. Whatever is typed on it is the whole point, so it is set in mono.
+ */
+export const Card: React.FC<{
+  title?: string;
+  lines?: string[];
+  width: number;
+  tint?: string;
+  ink?: string;
+  stamp?: string;
+}> = ({title, lines = [], width, tint = '#efe6d2', ink = '#22201c', stamp}) => (
+  <div
+    style={{
+      width,
+      background: tint,
+      padding: width * 0.075,
+      // A stamp lands in the margin, never across the typing it is stamping.
+      paddingBottom: stamp ? width * 0.24 : width * 0.075,
+      boxSizing: 'border-box',
+      fontFamily: MONO,
+      color: ink,
+      boxShadow: '0 20px 44px rgba(0,0,0,0.62)',
+      position: 'relative',
+    }}
+  >
+    {title ? (
+      <div
+        style={{
+          fontFamily: SANS,
+          fontWeight: 900,
+          fontSize: width * 0.085,
+          letterSpacing: '0.04em',
+          textTransform: 'uppercase',
+          borderBottom: `2px solid ${ink}`,
+          paddingBottom: width * 0.03,
+          marginBottom: width * 0.045,
+        }}
+      >
+        {title}
+      </div>
+    ) : null}
+    {/* REDACTION. Wrap anything in ~tildes~ and it is struck out under a black
+        bar sized to the words it hides. The most economical documentary device
+        there is: it says a record exists and that you are not being shown it,
+        which is more interesting than any sentence that could have been there. */}
+    {lines.map((line, i) => (
+      <div key={i} style={{fontSize: width * 0.058, lineHeight: 1.55, letterSpacing: '0.02em'}}>
+        {line.split('~').map((part, j) =>
+          j % 2 === 1 ? (
+            <span
+              key={j}
+              style={{
+                display: 'inline-block',
+                background: '#14120f',
+                color: 'transparent',
+                borderRadius: 1,
+                transform: `rotate(${j % 3 === 1 ? -0.4 : 0.3}deg)`,
+              }}
+            >
+              {part}
+            </span>
+          ) : (
+            <span key={j}>{part}</span>
+          ),
+        )}
+      </div>
+    ))}
+    {stamp ? (
+      <div
+        style={{
+          position: 'absolute',
+          right: -width * 0.03,
+          bottom: width * 0.05,
+          border: `4px solid #9c2b21`,
+          color: '#9c2b21',
+          fontFamily: SANS,
+          fontWeight: 900,
+          fontSize: width * 0.07,
+          letterSpacing: '0.1em',
+          padding: `${width * 0.018}px ${width * 0.05}px`,
+          transform: 'rotate(-8deg)',
+          opacity: 0.82,
+        }}
+      >
+        {stamp}
+      </div>
+    ) : null}
+  </div>
+);
+
+/**
+ * A PHOTOGRAPHIC PRINT — a white-bordered rectangle with something inside it.
+ * The border is what makes an image read as a physical object on a table
+ * rather than as the shot itself.
+ */
+export const Print: React.FC<{
+  width: number;
+  caption?: string;
+  children?: React.ReactNode;
+  border?: string;
+  ratio?: number;
+}> = ({width, caption, children, border = '#f2ece0', ratio = 1}) => (
+  <div
+    style={{
+      width,
+      background: border,
+      padding: width * 0.05,
+      paddingBottom: caption ? width * 0.16 : width * 0.05,
+      boxSizing: 'border-box',
+      boxShadow: '0 22px 46px rgba(0,0,0,0.66)',
+      position: 'relative',
+    }}
+  >
+    <div style={{width: '100%', height: width * ratio * 0.9, overflow: 'hidden', background: '#15120e'}}>{children}</div>
+    {caption ? (
+      <div
+        style={{
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          bottom: width * 0.045,
+          textAlign: 'center',
+          fontFamily: MONO,
+          fontSize: width * 0.052,
+          letterSpacing: '0.1em',
+          color: '#3a332a',
+        }}
+      >
+        {caption}
+      </div>
+    ) : null}
+  </div>
+);
+
+/**
+ * A MUSEUM PLAQUE — small engraved serif on brass, under a hanging picture.
+ * One of the reference reel's opening beats, and pure typography.
+ */
+export const Plaque: React.FC<{text: string; width: number}> = ({text, width}) => (
+  <div
+    style={{
+      width,
+      background: 'linear-gradient(168deg, #c9a75a 0%, #8d7238 48%, #b2924b 100%)',
+      padding: `${width * 0.05}px ${width * 0.06}px`,
+      boxSizing: 'border-box',
+      textAlign: 'center',
+      fontFamily: SERIF,
+      fontStyle: 'italic',
+      fontSize: width * 0.115,
+      color: '#2a2113',
+      letterSpacing: '0.04em',
+      boxShadow: '0 10px 22px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.35)',
+    }}
+  >
+    {text}
+  </div>
+);
