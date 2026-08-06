@@ -252,20 +252,44 @@ function planScene({line, index, total, rand, look, previousTransition, recentTy
     scene.assets = {ground: backdrop};
     const pieces = (line.pieces ?? []).slice(0, 3);
     scene.layers = [{role: 'ground', depth: round(between(rand, [0.04, 0.12]), 2), anchor: 'fill'}];
+    /**
+     * PLACEMENT FOLLOWS DEPTH. It is not random.
+     *
+     * The first version scattered pieces with rand(): a near piece could come
+     * out small and high in the frame while a far one loomed large, so every
+     * layer contradicted the depth it had been given and the shot read as
+     * accidental — things standing about, rather than a place seen from
+     * somewhere. Three rules fix it, and they are just what perspective and air
+     * already do:
+     *
+     *   NEARER IS BIGGER   size rises with depth
+     *   NEARER IS LOWER    its feet sit further down the frame, because the
+     *                      ground plane falls away toward the horizon
+     *   FURTHER IS FAINTER aerial perspective — distance washes contrast out
+     *
+     * And they alternate outward from the centre, so near pieces frame the
+     * edges and nothing parks itself where the caption goes.
+     */
     pieces.forEach((piece, i) => {
       const role = piece.replace(/[^a-z0-9]+/gi, '-').toLowerCase();
       scene.assets[`?${role}`] = `assets/${role}.png`;
-      // Spread the pieces through the depth field so no two ride together.
-      const depth = round(0.24 + (i / Math.max(1, pieces.length)) * 0.62 + rand() * 0.08, 2);
+      const depth = round(0.26 + (i / Math.max(1, pieces.length - 1 || 1)) * 0.58, 2);
+      const jitter = (span) => Math.round((rand() - 0.5) * span);
+      const side = i % 2 === 0 ? -1 : 1;
+
       scene.layers.push({
         role,
         depth,
         anchor: 'bottom',
-        x: Math.round(between(rand, [180, WIDTH - 180])),
-        y: Math.round(between(rand, [1200, 1780])),
-        height: Math.round(between(rand, [460, 1000])),
-        opacity: round(between(rand, [0.6, 1]), 2),
-        ...(depth > 0.7 ? {shadow: true, shadowSkew: -(44 + Math.round(rand() * 26)), shadowOpacity: 0.34} : {}),
+        // Clamped: a near piece cropped by the frame edge is good framing, a
+        // near piece whose CENTRE is off-frame is just a sliver.
+        x: Math.min(WIDTH - 150, Math.max(150, Math.round(WIDTH / 2 + side * (140 + depth * 420) + jitter(60)))),
+        y: Math.round(1150 + depth * 620 + jitter(50)),
+        height: Math.round(320 + depth * 760 + jitter(70)),
+        opacity: round(0.5 + depth * 0.5, 2),
+        ...(depth > 0.7
+          ? {shadow: true, shadowSkew: -(44 + Math.round(rand() * 26)), shadowOpacity: 0.34}
+          : {}),
       });
     });
     scene.params = {
