@@ -6,6 +6,7 @@ import {StackedReveal} from './StackedReveal';
 import {SplitShift} from './SplitShift';
 import {TitleSlate} from './TitleSlate';
 import {EvidenceBoard} from './EvidenceBoard';
+import {Composite} from './Composite';
 import {EPISODE_SCENE_OVERRIDES} from '../episodeScenes.generated';
 
 /**
@@ -28,6 +29,9 @@ export const SHARED_SCENE_TYPES: Record<string, React.FC<SceneProps>> = {
   // reel state something instead of only showing it.
   'title-slate': TitleSlate,
   'evidence-board': EvidenceBoard,
+  // The general case the others are special cases of: any number of layers,
+  // each taking the share of the camera push its depth allows.
+  'composite': Composite,
 };
 
 export function resolveSceneType(sceneType: string): React.FC<SceneProps> | null {

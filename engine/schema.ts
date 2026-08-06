@@ -57,9 +57,55 @@ export type BuiltInSceneType =
   | 'stacked-reveal'
   | 'split-shift'
   | 'title-slate'
-  | 'evidence-board';
+  | 'evidence-board'
+  | 'composite';
 /** A string, not a union: an episode can register a custom type of its own. */
 export type SceneType = string;
+
+/**
+ * ONE LAYER OF A COMPOSED SHOT.
+ *
+ * The reference kit settles the argument: a shot is not a photograph, it is a
+ * stack. Its opening frame is seven pieces — a sky, two cut-out clouds drifting
+ * at different speeds, a cut-out building, a figure, a frame, a paper texture.
+ * Not one of them is a whole picture, and the depth in the shot comes from them
+ * moving at different rates rather than from anything inside a file.
+ *
+ * DEPTH is the only idea here. One number per layer says how much of the
+ * camera's push that layer takes: 0 is the far sky and barely moves, 1 is the
+ * subject at the anchor and takes all of it. Everything else — parallax, the
+ * sense of a real space, the reason a flat plate stops looking flat — falls out
+ * of that one number.
+ */
+export type LayerSpec = {
+  /** Asset role to draw. A layer with no role and no fill draws nothing. */
+  role?: string;
+  /** 0 = infinitely far, 1 = at the anchor. Drives the parallax. */
+  depth?: number;
+  /** Placement in scene pixels. */
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  /** `fill` covers the frame; `bottom` stands on (x, y); `center` centres on it. */
+  anchor?: 'fill' | 'bottom' | 'center';
+  /** Sideways travel across the whole scene, in pixels. Clouds live on this. */
+  drift?: number;
+  driftY?: number;
+  rotate?: number;
+  opacity?: number;
+  blur?: number;
+  /** A cast shadow made from this layer's own artwork, never a second file. */
+  shadow?: boolean;
+  shadowSkew?: number;
+  shadowOpacity?: number;
+  /** `screen` for anything shot on black — smoke, haze, light. */
+  blend?: 'normal' | 'screen';
+  /** The stop-motion breath. Off for anything that should sit still. */
+  alive?: boolean;
+  /** Frames, scene-relative, over which this layer springs in. */
+  from?: number;
+};
 
 export type SceneSpec = {
   id: string;
@@ -80,6 +126,8 @@ export type SceneSpec = {
   assets?: Record<string, string>;
   /** Template knobs. Frame values are relative to this scene's own start. */
   params?: Record<string, number | string | boolean | number[] | string[]>;
+  /** The layer stack, for scene types that compose one. */
+  layers?: LayerSpec[];
   /** Partial grade for this scene only, merged over the episode's grade. */
   gradeOverride?: Partial<Grade>;
   onScreenText?: OnScreenTextSpec[];

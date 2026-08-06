@@ -15,7 +15,8 @@ engine/                     shared code — knows roles and numbers, never asset
   Episode.tsx               the timeline
   Root.tsx                  the composition (size and duration come from config)
   schema.mjs / schema.ts    the contract: one runtime, one set of types
-  sceneTypes/               the four shared templates + registry
+  draw/                     drawn graphics: light, paper, marks, type, overlays
+  sceneTypes/               the seven shared templates + registry
 
 episodes/<episode-id>/
   scene-config.json         the episode's only source of truth
@@ -116,7 +117,7 @@ one as it draws it for real, and `npm run validate` prints how many are left.
   ⚠ 25 of these assets are still stand-ins: boot-print.png, car-exterior.png, …
 ```
 
-## The four templates
+## The seven templates
 
 Each takes **roles**, not files. The episode decides which image fills a role.
 
@@ -126,8 +127,55 @@ Each takes **roles**, not files. The episode decides which image fills a role.
 | `parallax-punch` | `background`, `character` | two flat layers, unequal scale about a **shared floor anchor** — fake depth. The cast shadow is the character's own file, blackened, flipped and skewed |
 | `stacked-reveal` | `item1…itemN`, `background?` | items arrive on their own beats from **different directions** and pile up, each on a soft spring |
 | `split-shift` | `background`, `character` | the subject slides aside with a motion-blur streak and the space it clears is used for text |
+| `title-slate` | `background?` | a statement carried by type on a drawn field — needs no photograph, so it cannot fail on a missing asset |
+| `evidence-board` | `background?` | drawn newspapers, index cards and prints landing one at a time |
+| `composite` | any | **the general case the others are special cases of** — an arbitrary layer stack, see below |
 
-An episode that needs a fifth mechanic exports it from
+## A shot is a stack, not a photograph
+
+The reference kit settles it: the opening frame of a reel like this is a sky,
+two cut-out clouds drifting at different speeds, a cut-out building, a figure, a
+frame and a paper texture. Seven files, and not one of them is a whole picture —
+even the background is assembled from pieces.
+
+`composite` takes as many layers as a scene declares, and everything follows
+from **one number per layer**:
+
+```jsonc
+"layers": [
+  {"role": "wall",     "depth": 0.00, "anchor": "fill"},
+  {"role": "cloud2",   "depth": 0.08, "anchor": "center", "x": 760, "y": 560, "width": 640, "drift": -320},
+  {"role": "cloud1",   "depth": 0.14, "anchor": "center", "x": 300, "y": 430, "width": 860, "drift": -540},
+  {"role": "building", "depth": 0.42, "anchor": "bottom", "x": 560, "y": 1290, "width": 1000},
+  {"role": "man",      "depth": 1.00, "anchor": "bottom", "x": 540, "y": 1560, "height": 760, "shadow": true}
+]
+```
+
+**`depth`** is how much of the camera's push a layer takes. The sky at 0 does not
+move; the subject at 1 takes all of it; the building at 0.5 takes half. Parallax,
+the sense of a real space, the reason a flat plate stops looking flat — all of it
+falls out of that. Every layer scales about the **same anchor**; give each its own
+centre and they slide against one another instead of holding together as a room.
+
+`anchor` is `fill` (covers the frame), `bottom` (stands on x, y) or `center`.
+`drift` is sideways travel across the whole scene — what clouds live on.
+`shadow: true` casts a shadow made from that layer's own artwork.
+
+## Optional roles
+
+A role written **`?character`** means *use this if it is on disk*: the validator
+does not fail on it and the template never receives it. This exists because of
+one repeated dead end — a scene that wants a figure is worthless without one, but
+making the figure required means the day the generator returns an empty room the
+whole reel stops rendering. The scene degrades instead: with the cut-out it is a
+parallax punch, without it a slow push on a plate.
+
+```
+✓ zodiac-1969 — 10 scene(s), 1640 frames (54.67s @ 30fps, 1080x1920)
+  · 3 optional asset(s) absent: s04-berryessa.character, s06-stine.character, s06-stine.haze
+```
+
+An episode that needs a further mechanic exports it from
 `episodes/<id>/scenes/index.tsx`; the renderer wires it in without touching the
 shared set.
 
