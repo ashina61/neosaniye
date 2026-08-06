@@ -3,7 +3,10 @@
 
   "style": "1969 documentary photograph, shot on 35mm film, muted desaturated colour, heavy film grain, natural available light, period-accurate Northern California, no text, no captions, no watermark, no modern objects",
 
-  "negative": "text, letters, words, watermark, signature, logo, modern car, smartphone, digital screen, cartoon, illustration, cgi",
+  "$styleAlpha": "For cut-outs only. No film grain and no 1969 available light here: those describe a ROOM, and a room has no backdrop to key away. The period treatment is applied to the whole frame at render time by FilmLook. What this needs is a clean studio shot with an empty backdrop.",
+  "styleAlpha": "clean sharp studio photograph, even soft frontal lighting, subject sharply separated from the backdrop, no shadow falling on the backdrop, period-accurate 1969 clothing and objects, no text, no watermark",
+
+  "negative": "text, letters, words, watermark, signature, logo, room, wall, floor, furniture, window, sky, horizon, landscape, second object, modern car, smartphone, digital screen, cartoon, cgi",
 
   "kinds": {
     "backdrop": {"width": 1080, "height": 1920, "alpha": false},
@@ -23,7 +26,8 @@
     },
     "frame-clip.png": {
       "kind": "object",
-      "prompt": "an empty rectangular tarnished brass picture frame, front on, nothing inside it, worn corners",
+      "prompt": "an empty rectangular tarnished brass picture frame, straight on, completely empty in the middle, worn corners",
+      "keyHoles": true,
       "height": 1060
     },
     "newsroom-desk.png": {
@@ -40,15 +44,15 @@
     },
     "paper-chronicle.png": {
       "kind": "object",
-      "prompt": "a folded 1969 broadsheet newspaper front page lying flat, yellowed newsprint, dense grey columns of type too small to read, a large blurred photograph in the upper half"
+      "prompt": "a folded 1969 broadsheet newspaper front page seen flat and straight on, yellowed newsprint, dense grey columns of type too small to read, a large blurred photograph in the upper half"
     },
     "paper-examiner.png": {
       "kind": "object",
-      "prompt": "a 1969 broadsheet newspaper front page lying flat at a slight angle, creased down the middle, yellowed newsprint, dense unreadable grey columns, coffee ring stain in one corner"
+      "prompt": "a 1969 broadsheet newspaper front page seen flat at a slight angle, creased down the middle, yellowed newsprint, dense unreadable grey columns, a brown ring stain in one corner"
     },
     "paper-times-herald.png": {
       "kind": "object",
-      "prompt": "a small-town 1969 newspaper front page lying flat, thinner and greyer newsprint, torn along the bottom edge, dense unreadable columns of type"
+      "prompt": "a small-town 1969 newspaper front page seen flat and straight on, thinner and greyer newsprint, torn along the bottom edge, dense unreadable columns of type"
     },
     "lake-dusk.png": {
       "kind": "backdrop",
@@ -72,7 +76,7 @@
     },
     "man-walking.png": {
       "kind": "subject",
-      "prompt": "an anonymous man in a dark heavy overcoat walking away at night, seen from behind, hands in pockets, collar up, full body from head to shoes, 1969"
+      "prompt": "an anonymous man in a dark heavy overcoat mid-stride walking away from the camera, seen from directly behind, hands in pockets, collar turned up, full body from head to shoes"
     },
     "evidence-table.png": {
       "kind": "backdrop",
@@ -84,11 +88,11 @@
     },
     "shirt-scrap.png": {
       "kind": "object",
-      "prompt": "a small torn ragged scrap of grey striped cotton shirt fabric lying flat, frayed threads along every edge, dark stain across one corner, photographed from above as evidence"
+      "prompt": "a single small torn ragged scrap of grey striped cotton shirt fabric seen flat and straight on, frayed threads along every edge, a dark stain across one corner"
     },
     "boot-print.png": {
       "kind": "object",
-      "prompt": "a single deep boot print pressed into dry pale dust, heavy military-style tread pattern, photographed from directly above with hard raking side light"
+      "prompt": "a single square black and white photographic print with a thick white paper border, the picture on it showing one deep boot print in dust with a heavy military tread pattern, the print seen flat and straight on"
     },
     "detective-office.png": {
       "kind": "backdrop",
@@ -112,7 +116,7 @@
     },
     "figure-away.png": {
       "kind": "subject",
-      "prompt": "the distant small silhouette of a lone man in a dark coat walking away down a road at night, seen from behind, full body from head to shoes, unlit and indistinct"
+      "prompt": "a lone man in a long dark coat walking away from the camera, seen from directly behind, unlit and almost a silhouette, indistinct featureless dark shape, full body from head to shoes"
     }
   }
 }

@@ -72,17 +72,36 @@ the episode's business in exactly the way a file name is. Each asset declares a
 | `subject` | 820×1400 | yes | people |
 | `object` | 820×1060 | yes | papers, evidence, frames |
 
-`subject` and `object` are drawn on a chroma-green backdrop and keyed out, so
-they arrive with **real transparency** and are then trimmed to their own edges —
-the trimmed bottom is the subject's feet, which is what `footY` anchors to. A
-soft threshold band keeps hair and cloth from becoming a scissor-cut outline,
-and a despill pass pulls the green reflection back out of those edge pixels.
+`subject` and `object` get their backdrop keyed out, so they arrive with **real
+transparency** and are then trimmed to their own edges — the trimmed bottom is
+the subject's feet, which is what `footY` anchors to.
 
-Two guards make the step safe to automate: the file name seeds the generator, so
-the same name draws the same picture on every run; and a keyed image that comes
-back either fully opaque or fully transparent is **rejected rather than
-written**, because a subject that keyed away to nothing renders as an empty
-scene rather than as an error.
+The keying **assumes nothing about the backdrop's colour.** An earlier version
+measured greenness, which quietly made the whole step depend on a diffusion
+model obeying an instruction to paint a chroma screen. It does not: asked for a
+1969 documentary photograph of a man it draws a room, because that is the
+stronger instruction — and every keyed asset came back fully opaque. So instead
+a region is grown inward from the **frame edges**, which is the one thing that
+is reliably backdrop, under two tolerances: a pixel must resemble the neighbour
+it spread from (so a soft studio gradient is followed all the way in) and still
+resemble the border it started from (so the region cannot creep through that
+gradient into the subject). Spreading only from the edges is also what keeps a
+white shirt on a white backdrop: a colour **enclosed** by the subject is never
+reached. `"keyHoles": true` opts an asset out of that, for the one shape that
+needs it — an empty picture frame, whose window is backdrop walled off by the
+frame, and which would otherwise cover whatever it is framing.
+
+Cut-outs deliberately do **not** get the episode's film-look `style`. Grain and
+1969 available light describe a room, and a room has no backdrop to key; the
+period treatment is applied to the whole frame at render time by `FilmLook`
+anyway. They get `styleAlpha` instead.
+
+Three guards make the step safe to automate: the file name seeds the generator,
+so the same name draws the same picture on every run; a keyed image that comes
+back fully opaque or fully transparent is **rejected rather than written**,
+because a subject that keyed away to nothing renders as an empty scene rather
+than as an error; and a rejected draw is re-rolled twice on derived seeds, since
+that outcome is a roll of the dice rather than a broken prompt.
 
 Filling in artwork never touches the config. The files are replaced by name.
 
