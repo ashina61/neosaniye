@@ -18,13 +18,13 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.42,
-      "grungeOpacity": 0.11,
-      "scanlineOpacity": 0.06,
-      "scanlinePeriod": 11,
-      "vignetteStrength": 0.38,
-      "weavePx": 5,
-      "weaveScale": 1.011
+      "grainOpacity": 0.3,
+      "grungeOpacity": 0.15,
+      "scanlineOpacity": 0.1,
+      "scanlinePeriod": 9,
+      "vignetteStrength": 0.35,
+      "weavePx": 4,
+      "weaveScale": 1.016
     }
   },
   "scenes": [
@@ -82,48 +82,51 @@
         },
         {
           "role": "camel-standing-in-profile",
-          "depth": 0.28,
+          "depth": 0.26,
           "anchor": "bottom",
-          "x": 280,
-          "y": 1385,
-          "height": 819,
-          "opacity": 0.95
+          "x": 287,
+          "y": 1293,
+          "height": 505,
+          "opacity": 0.63
         },
         {
           "role": "date-palm-tree",
-          "depth": 0.49,
+          "depth": 0.55,
           "anchor": "bottom",
-          "x": 673,
-          "y": 1457,
-          "height": 479,
-          "opacity": 0.6
+          "x": 921,
+          "y": 1510,
+          "height": 742,
+          "opacity": 0.78
         },
         {
           "role": "traveller-in-a-long-desert-robe",
-          "depth": 0.69,
+          "depth": 0.84,
           "anchor": "bottom",
-          "x": 453,
-          "y": 1455,
-          "height": 806,
-          "opacity": 0.79
+          "x": 150,
+          "y": 1668,
+          "height": 926,
+          "opacity": 0.92,
+          "shadow": true,
+          "shadowSkew": -44,
+          "shadowOpacity": 0.34
         }
       ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushTo": 1.46,
+        "pushTo": 1.37,
         "pushEndFrame": 185,
         "focusPx": 0,
-        "fog": 0.07,
+        "fog": 0.08,
         "caption": [
           "Tens of thousands",
           "on the road."
         ],
         "captionX": 84,
-        "captionY": 1074,
+        "captionY": 819,
         "captionFrame": 10,
-        "captionEvery": 18,
-        "captionSize": 83,
+        "captionEvery": 21,
+        "captionSize": 92,
         "captionRecedeAt": 155
       },
       "onScreenText": [
@@ -143,20 +146,20 @@
       "durationInFrames": 215,
       "transition": {
         "kind": "slam",
-        "frames": 15
+        "frames": 13
       },
       "assets": {
         "background": "assets/s03-cairo-bg.png"
       },
       "params": {
-        "bgScale": 1.064,
-        "scrim": 0.19,
-        "focusPx": 9,
-        "itemWidth": 521,
+        "bgScale": 1.118,
+        "scrim": 0.21,
+        "focusPx": 7,
+        "itemWidth": 533,
         "itemFrames": [
           10,
-          47,
-          96
+          49,
+          84
         ],
         "items": [
           "card|TO THE COURT|robes and gifts to the sultan's officials",
@@ -168,9 +171,9 @@
           "trade it."
         ],
         "captionX": 84,
-        "captionY": 211,
+        "captionY": 226,
         "captionFrame": 6,
-        "captionSize": 87,
+        "captionSize": 82,
         "captionRecedeAt": 97
       }
     },
@@ -181,7 +184,7 @@
       "durationInFrames": 215,
       "transition": {
         "kind": "rack",
-        "frames": 10
+        "frames": 11
       },
       "assets": {
         "background": "assets/s04-price-bg.png"
@@ -193,7 +196,7 @@
         "footer": "and by one account it had still not recovered",
         "titleFrame": 6,
         "titleSize": 230,
-        "creep": 1.085,
+        "creep": 1.07,
         "accent": "#f2b53a",
         "field": "sunburst",
         "fieldColours": [
@@ -216,20 +219,20 @@
       "durationInFrames": 215,
       "transition": {
         "kind": "slam",
-        "frames": 11
+        "frames": 13
       },
       "assets": {
         "wall": "assets/s05-architect-bg.png",
         "photo": "assets/s05-architect-photo.png"
       },
       "params": {
-        "frameWidth": 802,
-        "frameRatio": 1.04,
+        "frameWidth": 758,
+        "frameRatio": 1.2,
         "pushEndFrame": 77,
         "detachFrame": 99,
         "throughEndFrame": 121,
-        "weldRatio": 0.425,
-        "wallScaleEnd": 5.5
+        "weldRatio": 0.417,
+        "wallScaleEnd": 5.4
       },
       "onScreenText": [
         {
@@ -247,21 +250,21 @@
       "voText": "Fifty years later a mapmaker in Europe drew him on a chart, seated, holding a nugget of gold.",
       "durationInFrames": 215,
       "transition": {
-        "kind": "rack",
-        "frames": 18
+        "kind": "flare",
+        "frames": 16
       },
       "assets": {
         "wall": "assets/s06-atlas-bg.png",
         "photo": "assets/s06-atlas-photo.png"
       },
       "params": {
-        "frameWidth": 824,
-        "frameRatio": 0.91,
+        "frameWidth": 750,
+        "frameRatio": 1.24,
         "pushEndFrame": 77,
         "detachFrame": 99,
         "throughEndFrame": 121,
-        "weldRatio": 0.41,
-        "wallScaleEnd": 6.3
+        "weldRatio": 0.363,
+        "wallScaleEnd": 6.1
       }
     },
     {
@@ -270,8 +273,8 @@
       "voText": "He is often called the richest man who ever lived. Nobody can actually measure that.",
       "durationInFrames": 193,
       "transition": {
-        "kind": "slam",
-        "frames": 14
+        "kind": "rack",
+        "frames": 17
       },
       "assets": {
         "ground": "assets/s07-claim-bg.png",
@@ -281,45 +284,48 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.05,
+          "depth": 0.04,
           "anchor": "fill"
         },
         {
           "role": "lone-acacia-tree",
-          "depth": 0.25,
+          "depth": 0.26,
           "anchor": "bottom",
-          "x": 257,
-          "y": 1266,
-          "height": 593,
-          "opacity": 0.92
+          "x": 303,
+          "y": 1318,
+          "height": 490,
+          "opacity": 0.63
         },
         {
           "role": "camel-resting-on-folded-legs",
-          "depth": 0.61,
+          "depth": 0.84,
           "anchor": "bottom",
-          "x": 699,
-          "y": 1413,
-          "height": 626,
-          "opacity": 0.99
+          "x": 930,
+          "y": 1653,
+          "height": 928,
+          "opacity": 0.92,
+          "shadow": true,
+          "shadowSkew": -47,
+          "shadowOpacity": 0.34
         }
       ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushTo": 1.5,
+        "pushTo": 1.25,
         "pushEndFrame": 166,
-        "focusPx": 10,
-        "fog": 0.02,
+        "focusPx": 0,
+        "fog": 0.14,
         "caption": [
           "Often called",
           "the richest",
           "who ever lived."
         ],
         "captionX": 84,
-        "captionY": 891,
+        "captionY": 941,
         "captionFrame": 10,
-        "captionEvery": 16,
-        "captionSize": 87,
+        "captionEvery": 23,
+        "captionSize": 86,
         "captionRecedeAt": 139,
         "captionAccent": 1
       }
@@ -330,33 +336,27 @@
       "voText": "What can be measured is the damage. One pilgrimage, and a city's currency took a decade to come back.",
       "durationInFrames": 215,
       "transition": {
-        "kind": "flare",
-        "frames": 14
+        "kind": "slam",
+        "frames": 18
       },
       "assets": {
         "background": "assets/s08-close-bg.png"
       },
       "params": {
-        "scrim": 0.37,
+        "scrim": 0.54,
         "kicker": "Mali · 1337",
         "title": "ONE PILGRIMAGE",
         "footer": "a decade to come back",
-        "titleFrame": 5,
+        "titleFrame": 7,
         "titleSize": 124,
-        "creep": 1.084,
+        "creep": 1.057,
         "accent": "#f2b53a",
         "field": "sunburst",
         "fieldColours": [
           "#c98a2a",
           "#7d4d12",
           "#2c1a06"
-        ],
-        "mark": "underline",
-        "markX": 260,
-        "markY": 1160,
-        "markWidth": 560,
-        "markHeight": 96,
-        "markFrame": 73
+        ]
       }
     }
   ]
