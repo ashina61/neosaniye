@@ -21,6 +21,11 @@
  * suitable comes back. Generation stays for scenery that has no name — an empty
  * dune, a foggy corner — which is exactly what it is good at.
  *
+ * `commons` may also be a LIST, tried in order, for when the second choice is a
+ * different thing rather than a broader one:
+ *
+ *   "commons": ["Catalan Atlas Mansa Musa", "medieval portolan chart"]
+ *
  * LICENSING IS NOT OPTIONAL. Commons hosts free files, not public ones: much of
  * it is CC BY or CC BY-SA, which REQUIRE credit wherever the work is published.
  * So anything that is not clearly free is refused rather than downloaded, and
@@ -89,6 +94,16 @@ async function search(query, limit = 20) {
 }
 
 /**
+ * Files that are on Commons but are not pictures of anything.
+ *
+ * A search for "Djinguereber Mosque" also returns the Mali flag, a wiki
+ * barnstar, a locator map's legend, somebody's user page banner. They pass every
+ * numeric check — big, free, well-shaped — and score better than the photograph,
+ * because a flag is a clean rectangle. Only the title gives them away.
+ */
+const JUNK = /(logo|icon|barnstar|coat of arms|flag of|user:|user talk|wikimedia|wikipedia|template|screenshot|placeholder|blank|watermark)/i;
+
+/**
  * Which candidate to take.
  *
  * Big enough to fill a 1080-wide frame without softening, and closest in shape
@@ -103,6 +118,7 @@ export function best(pages, targetRatio) {
     if (!info) continue;
     if (!/^image\/(jpeg|png|webp)$/.test(info.mime ?? '')) continue;
     if ((info.width ?? 0) < 900) continue;
+    if (JUNK.test(page.title ?? '')) continue;
     if (!isFree(info.extmetadata)) continue;
 
     const ratio = info.width / info.height;
@@ -112,6 +128,28 @@ export function best(pages, targetRatio) {
   }
   scored.sort((a, b) => b.score - a.score);
   return scored[0] ?? null;
+}
+
+/**
+ * Searches to try, narrowest first.
+ *
+ * The commonest way this fetcher comes back empty-handed is a search that is
+ * TOO precise: "Catalan Atlas Mansa Musa" is four words joined by AND, and one
+ * of them missing from a file's description sinks the whole result. So a single
+ * long search is followed by a shorter one — "Catalan Atlas" still finds the
+ * right object, just not the exact panel. A recipe may also give the list
+ * itself, when the fallback is a different thing rather than a broader one.
+ *
+ * The first search that yields a usable file wins; broadening only happens when
+ * the narrow one found nothing, so precision is never given away for free.
+ */
+export function queriesFor(commons) {
+  if (Array.isArray(commons)) return commons.filter(Boolean).map(String);
+  const query = String(commons ?? '').trim();
+  if (!query) return [];
+  const words = query.split(/\s+/);
+  if (words.length < 3) return [query];
+  return [query, words.slice(0, Math.ceil(words.length / 2)).join(' ')];
 }
 
 async function main() {
@@ -150,11 +188,19 @@ async function main() {
     const kind = recipes.kinds?.[recipe.kind] ?? {width: 1080, height: 1920};
     const width = recipe.width ?? kind.width;
     const height = recipe.height ?? kind.height;
-    process.stdout.write(`  ${name} ← "${recipe.commons}" … `);
+    const queries = queriesFor(recipe.commons);
+    process.stdout.write(`  ${name} ← "${queries[0]}" … `);
 
     try {
-      const pages = await search(recipe.commons);
-      const choice = best(pages, width / height);
+      let choice = null;
+      let used = queries[0];
+      for (const query of queries) {
+        choice = best(await search(query), width / height);
+        if (choice) {
+          used = query;
+          break;
+        }
+      }
       if (!choice) {
         // Not an error: it means nothing free and large enough exists for that
         // search, and the recipe's prompt will draw it instead.
@@ -162,6 +208,7 @@ async function main() {
         missed.push(name);
         continue;
       }
+      if (used !== queries[0]) process.stdout.write(`(broadened to "${used}") `);
 
       const source = choice.info.thumburl ?? choice.info.url;
       const response = await fetch(source, {headers: {'User-Agent': UA}, signal: AbortSignal.timeout(120_000)});
