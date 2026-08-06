@@ -4,6 +4,7 @@ import type {EpisodeConfig, SceneSpec} from './schema';
 import {DEFAULT_LOOK, resolveAssets, sceneOffsets} from './schema';
 import {FilmLook} from './FilmLook';
 import {OnScreenText} from './OnScreenText';
+import {Transition} from './Transition';
 import {resolveSceneType} from './sceneTypes/registry';
 
 /**
@@ -47,11 +48,13 @@ const Scene: React.FC<{scene: SceneSpec; look: EpisodeConfig['look']}> = ({scene
 
   return (
     <FilmLook grade={grade} film={look.film} posterizeFps={look.posterizeFps}>
+      <Transition kind={scene.transition?.kind} frames={scene.transition?.frames}>
       {Template ? (
         <Template scene={scene} assets={assets} durationInFrames={scene.durationInFrames} />
       ) : (
         <MissingTemplate scene={scene} />
       )}
+      </Transition>
       <OnScreenText specs={scene.onScreenText} />
     </FilmLook>
   );

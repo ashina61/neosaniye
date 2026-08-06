@@ -50,6 +50,38 @@ const Line: React.FC<{spec: OnScreenTextSpec}> = ({spec}) => {
     textAlign: 'center',
   };
 
+  // TYPED — a line coming off a case-file typewriter, one character at a time,
+  // with the carriage still sitting at the end of it. Ours, and the reason it is
+  // worth having over a fade: a typed line reads as a RECORD being made, which
+  // is what a documentary caption is pretending to be anyway.
+  if (style === 'typed') {
+    const chars = Math.floor(interpolate(local, [0, Math.min(life * 0.55, spec.text.length * 1.7)], [0, spec.text.length], CLAMP));
+    const caret = Math.floor(local / 5) % 2 === 0;
+    return (
+      <AbsoluteFill style={{...positionStyle(spec.position), pointerEvents: 'none'}}>
+        <div style={{...shared, transform: 'none'}}>
+          <span
+            style={{
+              fontFamily: '"Courier New", ui-monospace, monospace',
+              fontWeight: 700,
+              fontSize: 54,
+              letterSpacing: '0.02em',
+              lineHeight: 1.4,
+              color: '#f2e6cc',
+              background: 'rgba(8,6,4,0.62)',
+              padding: '14px 22px',
+              boxDecorationBreak: 'clone',
+              WebkitBoxDecorationBreak: 'clone',
+            }}
+          >
+            {spec.text.slice(0, chars)}
+            <span style={{opacity: caret && chars < spec.text.length ? 1 : 0}}>▌</span>
+          </span>
+        </div>
+      </AbsoluteFill>
+    );
+  }
+
   if (style === 'sticker') {
     return (
       <AbsoluteFill style={{...positionStyle(spec.position), pointerEvents: 'none'}}>

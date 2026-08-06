@@ -38,6 +38,44 @@ export async function loadConfig(episodeId) {
 export const exists = (file) => access(file).then(() => true).catch(() => false);
 
 /**
+ * Strip `?` from optional roles, dropping the ones whose file is not on disk.
+ *
+ * MUST run before any bundle. Remotion pre-loads every image it is handed, and
+ * a 404 does not degrade to a blank layer — it raises an EncodingError that
+ * cancels the whole render. So an absent optional asset that reaches the
+ * browser is fatal, not cosmetic.
+ *
+ * It lives here rather than in the render script because it is needed by every
+ * entry point that bundles — render, stills, previews. Putting it in one of
+ * them is how you get a feature that works down a single path and 404s down all
+ * the others.
+ *
+ * The validator deliberately does NOT use this: it reports absent optionals
+ * rather than quietly removing them.
+ */
+export async function pruneOptionalAssets(config, episodeId) {
+  const dir = episodeDir(episodeId);
+  const dropped = [];
+  for (const scene of config.scenes ?? []) {
+    for (const [role, file] of Object.entries(scene.assets ?? {})) {
+      if (!role.startsWith('?')) continue;
+      delete scene.assets[role];
+      if (typeof file === 'string' && (await exists(path.join(dir, file)))) {
+        scene.assets[role.slice(1)] = file;
+      } else {
+        dropped.push(`${scene.id}.${role.slice(1)}`);
+      }
+    }
+    // A layer pointing at a role that is no longer there would render nothing
+    // and, worse, still take its turn in the stacking order.
+    if (Array.isArray(scene.layers)) {
+      scene.layers = scene.layers.filter((layer) => !layer.role || scene.assets?.[layer.role]);
+    }
+  }
+  return dropped;
+}
+
+/**
  * Writes the generated override module the registry imports.
  *
  * An episode may ship `scenes/index.tsx` exporting extra scene templates. The
