@@ -61,6 +61,19 @@ jobs:
         id: draw
         env:
           # Optional. Without it the default provider is used, which needs no key.
+          #
+          # WHETHER THE PIECES COME OUT AS PIECES IS DECIDED HERE. The keyless
+          # default cannot return transparency, so every cut-out has to be
+          # rescued by keying a photograph — hard edges, nothing wispy, two
+          # draws in three thrown away. A provider that speaks the
+          # images/generations protocol is asked for transparency directly and
+          # the keyer never runs:
+          #
+          #   IMAGE_PROVIDER = openai
+          #   IMAGE_BASE_URL = https://api.openai.com/v1
+          #   IMAGE_MODEL    = gpt-image-1
+          #   IMAGE_API_KEY  = (repository secret)
+          IMAGE_PROVIDER: ${{ vars.IMAGE_PROVIDER }}
           IMAGE_API_KEY: ${{ secrets.IMAGE_API_KEY }}
           IMAGE_BASE_URL: ${{ vars.IMAGE_BASE_URL }}
           IMAGE_MODEL: ${{ vars.IMAGE_MODEL }}
