@@ -93,6 +93,16 @@ out/<id>.mp4
    doğrulamayı geçer ve render'ı çökertir.
 13. **BİLİNMEYEN SAHNE TİPİ SESSİZCE ATLANMAZ.** Kırmızı bir MISSING TEMPLATE
     kartı çizilir ve doğrulayıcı zaten render'dan önce düşürür.
+14. **FOTOĞRAF KİM VE NEREDE'Yİ SÖYLER; NE OLDU'YU MOTİF SÖYLER.** Bir plaka
+    "sonra para geldi" diyemez. `engine/draw/Motif.tsx` cümlenin FİİLİNİ oynar:
+    `coins` düşer ve YIĞILIR (yığın tabanda geniştir ve büyümesi cümlenin
+    kendisidir), `route` kendini çizer, `rise` sayar, `tally` çentik atar,
+    `rays` ve `embers` atmosfer verir. Karede bilerek değişen tek şey odur, o
+    yüzden göz onu izler. Üç kural: satır bunu SÖYLEMİŞ olacak, aynı çizim
+    peş peşe iki kez gelmez, üst üste üç sahne süslenmez — çıplak sahne
+    diğerlerini var eden şeydir. Motif kareye çakılıdır, kamera itişinden pay
+    almaz; odaya bağlanırsa grafik olmaktan çıkar, kayan bir aksesuar olur. Ve
+    tip kartının ortası yazınındır: `route` ile `tally` slate'e girmez.
 
 ## İş bölümü — bu deponun en pahalı dersi
 
@@ -127,3 +137,15 @@ her asset'in diskte olup olmadığı. Eksik bir PNG'de ölen render bundle'ı,
 tarayıcıyı ve kuyruk slotunu çoktan ödemiştir.
 `npm test` motor saflığını, şemayı, registry tutarlılığını ve depodaki her
 bölümü kapıda tutar.
+
+Ama bu deponun gördüğü her görsel kusur — kareyi dört kez karartmak, tipografiyi
+yumuşatana kadar zoom'lamak, lambadan kayan ışık, birbirini gömen kartlar, tam
+kadraj portalın üstüne çizilen harita yayı — doğrulamayı da testleri de geçti ve
+tek bir karede belliydi. O yüzden BAKMAK ucuzdur:
+
+- `npm run frames -- --episode=<id> [--per=2]` reel'den birkaç kare alır ve
+  ızgara yapar. Sahneye göre örnekler: iki saniyelik bir slate ile yedi
+  saniyelik bir composite aynı ilgiyi hak eder. `--per=2` şart olan yerdir —
+  yığılan bir motif, kendini çizen bir yol ve tırmanan bir sayı tek karede
+  hiçbir şey göstermez.
+- `npm run assets:review -- --episode=<id>` cutout'ları dama tahtasına dizer.

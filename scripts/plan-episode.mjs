@@ -34,6 +34,7 @@
  */
 import {readFile, writeFile} from 'node:fs/promises';
 import path from 'node:path';
+import {pathToFileURL} from 'node:url';
 import {episodeDir, parseArgs} from './lib/episode.mjs';
 
 const FPS = 30;
@@ -124,6 +125,106 @@ const MARKS = ['underline', 'oval', 'bracket', 'box', 'strike'];
 const TRANSITIONS = ['slam', 'slip', 'flare', 'rack', 'blinds'];
 
 /**
+ * WHAT THE LINE IS DOING — and therefore what gets DRAWN over it.
+ *
+ * This is the difference between a picture with words on it and a documentary.
+ * A photograph says who and where; it cannot say "and then the money arrived".
+ * So the sentence is read for its VERB, not just its subject, and the motif
+ * acts the verb out: gold falling and piling up while the line is about
+ * spending, a route drawing itself while it is about a journey, a count
+ * climbing while it is about years. It is the only thing in the frame changing
+ * on purpose, which is why the eye follows it.
+ *
+ * Order matters — the first match wins, so the most specific claims come first.
+ * "He spent a fortune" is about money before it is about a king.
+ */
+const MOTIF_WORDS = [
+  ['coins', /\b(gold|golden|money|wealth|wealthy|rich|riches|fortune|coins?|treasur\w*|dinars?|bullion|spent|spend|spending|paid|price|cost|gave|gift\w*|alms|crashed?)\b/i],
+  ['rise', /\b(rose|rise|risen|rising|grew|grow\w*|doubl\w*|tripl\w*|soar\w*|surg\w*|increas\w*|boom\w*|climb\w*|multipl\w*|swell\w*)\b/i],
+  ['route', /\b(journey|travel\w*|caravan|pilgrimage|pilgrim|road|route|marched?|crossed?|across|set out|departed|returned|miles?)\b/i],
+  ['embers', /\b(fire|burn\w*|ash|ashes|collaps\w*|ruin\w*|destroy\w*|sacked?|war|siege|died|death|end\w*)\b/i],
+  ['rays', /\b(king|emperor|empire|throne|crown|glory|legend\w*|holy|sacred|greatest|famous|power\w*|remembered)\b/i],
+  ['tally', /\b(years?|days?|months?|centur\w*|counted?|thousands?|hundreds?|men|camels?|scholars?|people)\b/i],
+];
+
+/**
+ * WHERE EACH MOTIF SITS, and how big.
+ *
+ * Not scattered: a pile of coins belongs on the floor of the frame, a bar
+ * climbs from the lower third, rays sit behind the head, a tally goes high
+ * where a caption is not. Frame-relative so the same numbers hold at any size.
+ */
+const MOTIF_PLACE = {
+  coins: {x: 0.52, y: 0.86, size: 46, count: 22},
+  rise: {x: 0.16, y: 0.82, size: 62, count: 7},
+  route: {x: 0.16, y: 0.62, size: 210, count: 1},
+  embers: {x: 0.5, y: 0.5, size: 40, count: 28},
+  rays: {x: 0.5, y: 0.4, size: 330, count: 22},
+  tally: {x: 0.12, y: 0.26, size: 92, count: 12},
+};
+
+/**
+ * A motif is EARNED, not decorated on.
+ *
+ * Three rules, and all three exist because the first draft put one on every
+ * shot and the reel turned into a screensaver:
+ *
+ *   THE LINE HAS TO SAY IT.   Inference off the verb, not off the topic.
+ *   NEVER TWICE RUNNING.      A repeated drawing stops reading as meaning and
+ *                             starts reading as a template.
+ *   NEVER THREE IN A ROW.     Two decorated shots then a plain one. The plain
+ *                             shot is what makes the decorated ones land — a
+ *                             reel where every frame has something drawn on it
+ *                             has nothing drawn on it.
+ *
+ * A brief overrules all three, in either direction: a named motif is used, and
+ * "none" means the line is meant to be left alone.
+ */
+export function motifFor(line, recentMotifs, sceneType) {
+  if (line.motif === 'none') return '';
+  if (typeof line.motif === 'string' && line.motif) return line.motif;
+  if (recentMotifs.length >= 2 && recentMotifs.every(Boolean)) return '';
+  const previous = recentMotifs[recentMotifs.length - 1];
+  for (const [kind, pattern] of MOTIF_WORDS) {
+    if (kind === previous) continue;
+    if (!fitsScene(kind, sceneType)) continue;
+    if (pattern.test(line.vo)) return kind;
+  }
+  return '';
+}
+
+/**
+ * A TYPE CARD'S MIDDLE BELONGS TO THE WORDS.
+ *
+ * A route arcs across the centre of the frame and a tally sits high on the
+ * left; on a photograph that is composition, on a title slate it is a line
+ * drawn through the title. So a slate only takes the motifs that live on the
+ * floor or behind the type — and it takes a DIFFERENT one rather than none,
+ * because the search simply carries on down the list.
+ */
+const SLATE_MOTIFS = new Set(['coins', 'rise', 'embers', 'rays']);
+
+export function fitsScene(kind, sceneType) {
+  return sceneType === 'title-slate' ? SLATE_MOTIFS.has(kind) : true;
+}
+
+/** The knobs for a chosen motif, in scene pixels. */
+function motifParams(kind, {rand, from, accent}) {
+  if (!kind) return {};
+  const place = MOTIF_PLACE[kind];
+  return {
+    motif: kind,
+    motifX: Math.round(WIDTH * place.x + (rand() - 0.5) * WIDTH * 0.1),
+    motifY: Math.round(HEIGHT * place.y),
+    motifSize: Math.round(place.size * (0.88 + rand() * 0.3)),
+    motifCount: Math.max(1, Math.round(place.count * (0.8 + rand() * 0.5))),
+    motifFrame: from,
+    motifColour: accent,
+    motifOpacity: round(between(rand, [0.8, 1]), 2),
+  };
+}
+
+/**
  * WHAT KIND OF SHOT A LINE WANTS.
  *
  * Read off the words themselves. Not clever, and it does not need to be — the
@@ -169,7 +270,7 @@ function bigNumber(vo) {
   return words ? words[0].toUpperCase() : '';
 }
 
-function planScene({line, index, total, rand, look, previousTransition, recentTypes}) {
+function planScene({line, index, total, rand, look, previousTransition, recentMotifs, recentTypes}) {
   const beat = beatOf(line, index, total);
   let sceneType = SCENE_FOR[beat];
   // RHYTHM. Two of a kind running is a pair; three is a pattern, and a reel
@@ -191,22 +292,39 @@ function planScene({line, index, total, rand, look, previousTransition, recentTy
   if (transition) scene.transition = transition;
 
   const backdrop = `assets/${id}-bg.png`;
+  const motif = motifFor(line, recentMotifs, sceneType);
 
   if (sceneType === 'title-slate') {
     scene.assets = {background: backdrop};
     const number = beat === 'number' ? bigNumber(line.vo) : '';
+    const titleFrame = 4 + Math.round(rand() * 6);
     scene.params = {
       scrim: round(between(rand, [0.36, 0.54])),
       kicker: line.kicker ?? '',
       title: (line.title ?? number ?? '').toString().toUpperCase(),
       footer: line.footer ?? '',
-      titleFrame: 4 + Math.round(rand() * 6),
+      titleFrame,
       titleSize: number ? 230 : 124,
       creep: round(between(rand, [1.04, 1.1]), 3),
       accent: look.accent,
       field: look.field,
       fieldColours: look.fieldColours,
+      ...motifParams(motif, {rand, from: titleFrame + 8, accent: look.accent}),
     };
+    /**
+     * A FIGURE WORTH SAYING IS WORTH COUNTING TO.
+     *
+     * Only above ten: counting to three is a stutter, not a sum. And only when
+     * the number is the point of the card — a date counting up from zero would
+     * be nonsense, so a four-digit year is left where it is.
+     */
+    const digits = Number(String(number).replace(/[^\d]/g, ''));
+    const isYear = /^(1[0-9]{3}|20[0-9]{2})$/.test(String(number).replace(/[^\d]/g, ''));
+    if (number && digits >= 10 && !isYear) {
+      scene.params.countTo = digits;
+      scene.params.countOver = Math.round(durationInFrames * 0.55);
+      if (line.countSuffix) scene.params.countSuffix = line.countSuffix;
+    }
     if (rand() > 0.45) {
       Object.assign(scene.params, {
         mark: look.mark,
@@ -245,6 +363,11 @@ function planScene({line, index, total, rand, look, previousTransition, recentTy
       throughEndFrame: push + 44,
       weldRatio: round(between(rand, [0.34, 0.44]), 3),
       wallScaleEnd: round(between(rand, [5, 7]), 1),
+      accent: look.accent,
+      // AFTER the arrival. The first half of this shot is the flight into the
+      // picture; the second half is a photograph sitting still, and that is the
+      // half a portrait wants gold falling past it.
+      ...motifParams(motif, {rand, from: push + 50, accent: look.accent}),
     };
   } else {
     // COMPOSITE — the stack. Pieces are optional, so a piece that fails to draw
@@ -306,6 +429,8 @@ function planScene({line, index, total, rand, look, previousTransition, recentTy
       captionEvery: 16 + Math.round(rand() * 10),
       captionSize: 82 + Math.round(rand() * 12),
       captionRecedeAt: Math.round(durationInFrames * 0.72),
+      accent: look.accent,
+      ...motifParams(motif, {rand, from: 18 + Math.round(rand() * 14), accent: look.accent}),
     };
     if (line.accentLine !== undefined) scene.params.captionAccent = line.accentLine;
   }
@@ -324,6 +449,7 @@ function planScene({line, index, total, rand, look, previousTransition, recentTy
 
   return {
     scene,
+    motif,
     backdropPrompt: line.image,
     photoPrompt: line.artefact,
     backdropCommons: line.imageCommons,
@@ -375,6 +501,7 @@ async function main() {
       rand,
       look,
       previousTransition,
+      recentMotifs: planned.slice(-2).map((p) => p.motif),
       recentTypes: planned.slice(-2).map((p) => p.scene.sceneType),
     });
     previousTransition = result.scene.transition?.kind ?? null;
@@ -465,10 +592,14 @@ async function main() {
   console.log(`  grade  ${JSON.stringify(grade)}`);
   console.log(`  cuts   ${look.transitions.join(', ')}`);
   console.log(`  types  ${config.scenes.map((s) => s.sceneType).join(' → ')}`);
+  console.log(`  drawn  ${planned.map((p) => p.motif || '·').join(' ')}`);
   console.log(`  assets ${Object.keys(assets).length} recipes`);
 }
 
-main().catch((error) => {
-  console.error(error?.stack || error?.message || error);
-  process.exit(1);
-});
+// Only when run as a command; the tests import the rhythm rules from here.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((error) => {
+    console.error(error?.stack || error?.message || error);
+    process.exit(1);
+  });
+}

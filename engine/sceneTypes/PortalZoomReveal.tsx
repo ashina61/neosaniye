@@ -3,6 +3,7 @@ import {AbsoluteFill, Easing, interpolate, useCurrentFrame, useVideoConfig} from
 import type {SceneProps} from './types';
 import {CLAMP, blurBurst, posterizeTime} from '../motion';
 import {Plate} from '../Plate';
+import {SceneMotif} from '../draw/Motif';
 
 /**
  * PORTAL ZOOM REVEAL — fly INTO a framed photograph.
@@ -32,6 +33,10 @@ export const PortalZoomReveal: React.FC<SceneProps> = ({scene, assets, durationI
   const num = (key: string, fallback: number): number => {
     const value = scene.params?.[key];
     return typeof value === 'number' ? value : fallback;
+  };
+  const str = (key: string, fallback: string): string => {
+    const value = scene.params?.[key];
+    return typeof value === 'string' ? value : fallback;
   };
 
   const pushEnd = num('pushEndFrame', Math.round(durationInFrames * 0.38));
@@ -106,6 +111,18 @@ export const PortalZoomReveal: React.FC<SceneProps> = ({scene, assets, durationI
           </div>
         </AbsoluteFill>
       ) : null}
+
+      {/* ONLY ONCE WE ARE THROUGH. The whole first half of this shot is travel
+          toward a picture; anything drawn over it during the flight competes
+          with the one move the shot exists for. The motif belongs to the half
+          AFTER arrival, where the photograph is otherwise just sitting there —
+          which is exactly where a portrait needs gold falling past it. */}
+      <SceneMotif
+        params={scene.params}
+        seed={scene.id}
+        durationInFrames={durationInFrames}
+        accent={str('accent', '#f2b53a')}
+      />
     </AbsoluteFill>
   );
 };

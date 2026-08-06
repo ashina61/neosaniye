@@ -55,6 +55,16 @@ export const BUILT_IN_SCENE_TYPES = [
 ];
 
 /**
+ * THE DRAWN MOTIFS.
+ *
+ * The layer that acts out the sentence — gold arriving, a route being walked, a
+ * count going up. A scene asks for one by name in `params.motif`, and a name
+ * that is not on this list is a typo that would otherwise draw NOTHING and say
+ * nothing about it, which is the same failure as an unknown scene type.
+ */
+export const MOTIF_KINDS = ['coins', 'rise', 'route', 'embers', 'rays', 'tally'];
+
+/**
  * OPTIONAL ASSET ROLES.
  *
  * A role written `?character` means "use this if it is on disk". The validator
@@ -191,6 +201,12 @@ export function validateEpisodeConfig(config) {
           }
         }
       }
+    }
+    // A motif that does not exist draws nothing and reports nothing, which is
+    // exactly how a shot ends up being a still picture with a caption on it.
+    const motif = scene.params?.motif;
+    if (motif !== undefined && motif !== '' && !MOTIF_KINDS.includes(motif)) {
+      push(`${where}.params.motif: "${motif}" is not one of ${MOTIF_KINDS.join(', ')}`);
     }
     if (scene.transition !== undefined) {
       const kinds = ['cut', 'slam', 'slip', 'flare', 'rack', 'blinds'];

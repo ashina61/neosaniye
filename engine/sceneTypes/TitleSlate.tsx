@@ -7,6 +7,7 @@ import {Field, type FieldKind} from '../draw/Field';
 import {Slate} from '../draw/Type';
 import {Annotation, type MarkKind} from '../draw/Annotation';
 import {Glow} from '../draw/Glow';
+import {SceneMotif} from '../draw/Motif';
 
 /**
  * TITLE SLATE — a scene made of type and drawn light, with no photograph
@@ -46,6 +47,26 @@ export const TitleSlate: React.FC<SceneProps> = ({scene, assets, durationInFrame
   const footer = str('footer', '');
   const mark = str('mark', '') as MarkKind | '';
 
+  /**
+   * A NUMBER THAT ARRIVES INSTEAD OF BEING STATED.
+   *
+   * A slate reading 400 TONNES lands once and is over. The same number climbing
+   * to 400 while the narrator says it holds the whole line, and it makes the
+   * size of the figure FELT rather than read — which is the only reason a number
+   * is in a script at all. It eases out, so most of the distance goes early and
+   * the last stretch crawls: a linear count arrives and stops dead, and the eye
+   * reads that as a clock rather than as a sum.
+   */
+  const countTo = num('countTo', 0);
+  const counted = countTo
+    ? `${str('countPrefix', '')}${Math.round(
+        interpolate(stepped, [num('titleFrame', 6), num('titleFrame', 6) + num('countOver', 46)], [0, countTo], {
+          ...CLAMP,
+          easing: Easing.out(Easing.cubic),
+        }),
+      ).toLocaleString('en-US')}${str('countSuffix', '')}`
+    : '';
+
   // The frame closes in a little the whole time it is up, so a card made of
   // type is never actually still.
   const creep = interpolate(stepped, [0, durationInFrames], [1, num('creep', 1.06)], {
@@ -82,13 +103,24 @@ export const TitleSlate: React.FC<SceneProps> = ({scene, assets, durationInFrame
         ) : null}
       </AbsoluteFill>
 
+      {/* Frame-locked, outside the creep, and UNDER the type: a motif that
+          scales with the card would make the words grow with it. */}
+      <SceneMotif
+        params={scene.params}
+        seed={scene.id}
+        durationInFrames={durationInFrames}
+        accent={str('accent', '#ffcf3d')}
+        defaultY={Math.round(height * 0.86)}
+      />
+
       <Slate
         kicker={kicker || undefined}
-        title={title}
+        title={counted || title}
         footer={footer || undefined}
         from={num('titleFrame', 6)}
         size={num('titleSize', 118)}
         accent={str('accent', '#ffcf3d')}
+        tabular={Boolean(counted)}
       />
 
       {mark ? (

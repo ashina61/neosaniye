@@ -107,6 +107,16 @@ export type LayerSpec = {
   from?: number;
 };
 
+/**
+ * THE DRAWN LAYER THAT ACTS OUT THE SENTENCE.
+ *
+ * A photograph says who and where; a motif says what happened. Gold falling and
+ * piling up while the line is about money, a route drawing itself while it is
+ * about a journey, a tally counting while it is about years. It is the only
+ * thing in the frame changing on purpose, so it is the thing the eye follows.
+ */
+export type MotifKind = 'coins' | 'rise' | 'route' | 'embers' | 'rays' | 'tally';
+
 /** How a scene arrives. Only ever affects the incoming shot — see Transition. */
 export type TransitionSpec = {
   kind?: 'cut' | 'slam' | 'slip' | 'flare' | 'rack' | 'blinds';
@@ -156,6 +166,7 @@ export {
   DEFAULT_FILM,
   DEFAULT_LOOK,
   BUILT_IN_SCENE_TYPES as BUILT_IN_SCENE_TYPE_LIST,
+  MOTIF_KINDS,
   sceneOffsets,
   resolveAssets,
   OPTIONAL_ROLE,
