@@ -29,6 +29,7 @@
   "assets": {
     "s01-leave-bg.png": {
       "kind": "backdrop",
+      "commons": "Sahara sand dunes sunrise",
       "prompt": "a vast empty Sahara dune field at dawn, long shadows, nobody present"
     },
     "s02-caravan-bg.png": {
@@ -49,6 +50,7 @@
     },
     "s03-cairo-bg.png": {
       "kind": "backdrop",
+      "commons": "Islamic Cairo medieval street",
       "prompt": "an empty medieval Cairo market street of pale stone at noon, deep shadow under arches"
     },
     "s04-price-bg.png": {
@@ -57,18 +59,22 @@
     },
     "s05-architect-bg.png": {
       "kind": "backdrop",
+      "commons": "Djinguereber Mosque",
       "prompt": "a tall mud-brick mosque wall with projecting wooden beams, hard desert sun"
     },
     "s05-architect-photo.png": {
       "kind": "photo",
+      "commons": "Djinguereber Mosque Timbuktu",
       "prompt": "a close view of a mud-brick wall studded with protruding palm timbers, warm raking light"
     },
     "s06-atlas-bg.png": {
       "kind": "backdrop",
+      "commons": "Catalan Atlas 1375",
       "prompt": "an old vellum chart on a wooden table, dividers and an inkpot beside it"
     },
     "s06-atlas-photo.png": {
       "kind": "photo",
+      "commons": "Catalan Atlas Mansa Musa",
       "prompt": "a detail of a medieval illuminated map on vellum, gold leaf and faded ink, cracked surface"
     },
     "s07-claim-bg.png": {
@@ -85,6 +91,7 @@
     },
     "s08-close-bg.png": {
       "kind": "backdrop",
+      "commons": "footprints Sahara sand",
       "prompt": "a single set of footprints crossing an empty dune, wind erasing them"
     }
   }

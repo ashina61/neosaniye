@@ -1,0 +1,12 @@
+{
+  "$comment": "These assets are stand-ins, not finished artwork.",
+  "placeholders": [
+    "s01-leave-bg.png",
+    "s03-cairo-bg.png",
+    "s05-architect-bg.png",
+    "s05-architect-photo.png",
+    "s06-atlas-bg.png",
+    "s06-atlas-photo.png",
+    "s08-close-bg.png"
+  ]
+}
