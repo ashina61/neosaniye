@@ -1,6 +1,6 @@
 import React from 'react';
 import {AbsoluteFill, Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
-import {CLAMP, holdKeyframes, posterizeTime, springEntrance} from '../motion';
+import {CLAMP, dampedSwing, holdKeyframes, posterizeTime, springEntrance} from '../motion';
 
 const SERIF = '"Playfair Display", "Iowan Old Style", Georgia, serif';
 const SANS = '"Archivo", "Helvetica Neue", Arial, sans-serif';
@@ -118,7 +118,26 @@ export const Slate: React.FC<{
    * wanders while it counts reads as a bug rather than as a total.
    */
   tabular?: boolean;
-}> = ({kicker, title, footer, from = 0, colour = '#f6ead0', accent = '#ffcf3d', size = 118, tabular = false}) => {
+  /**
+   * Something to put WHERE THE TITLE GOES — a slot reel, usually.
+   *
+   * It has to be here rather than layered over the card, because a slate is a
+   * layout: rules above and below, a kicker over, a footer under. Draw a second
+   * centred thing on top of it and the number lands straight through the kicker
+   * and the footer, which is exactly what the first version did.
+   */
+  titleNode?: React.ReactNode;
+}> = ({
+  kicker,
+  title,
+  footer,
+  from = 0,
+  colour = '#f6ead0',
+  accent = '#ffcf3d',
+  size = 118,
+  tabular = false,
+  titleNode,
+}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const stepped = posterizeTime(frame, fps, 12);
@@ -143,6 +162,7 @@ export const Slate: React.FC<{
           </div>
         ) : null}
         <div style={{height: 3, background: accent, width: `${rule * 100}%`, margin: '0 auto 40px'}} />
+        {titleNode ?? (
         <div
           style={{
             fontFamily: SANS,
@@ -159,6 +179,7 @@ export const Slate: React.FC<{
         >
           {title}
         </div>
+        )}
         <div style={{height: 3, background: accent, width: `${rule * 100}%`, margin: '40px auto 0'}} />
         {footer ? (
           <div
@@ -176,6 +197,77 @@ export const Slate: React.FC<{
         ) : null}
       </div>
     </AbsoluteFill>
+  );
+};
+
+/**
+ * A SLOT REEL — the number spins past and SLAMS to a stop.
+ *
+ * The other way a figure can arrive, and the sharper one. A counter climbing to
+ * four hundred makes the size of it felt; a reel rattling through THOUSAND,
+ * MILLION, BILLION and slamming onto the right one makes the CHOICE felt — it
+ * says the number could have been anything and it turned out to be this. The
+ * reference build uses it on "50 MILLION" for exactly that reason.
+ *
+ * The whole thing is one eased scroll: the column decelerates through the
+ * decoy values and comes to rest on the real one, then takes one small bounce.
+ * A reel that fades to its answer is not a slot machine, it is a dissolve — the
+ * stop has to be a stop.
+ */
+export const Slot: React.FC<{
+  value: string;
+  reel?: string[];
+  from?: number;
+  spin?: number;
+  size?: number;
+  colour?: string;
+}> = ({
+  value,
+  reel = ['THOUSAND', 'HUNDRED', 'MILLION', 'BILLION'],
+  from = 0,
+  spin = 26,
+  size = 210,
+  colour = '#ffcf3d',
+}) => {
+  const frame = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const stepped = posterizeTime(frame, fps, 12);
+
+  // The decoys, then the answer. Landing is just scrolling to the last row.
+  const rows = [...reel.filter((r) => r !== value), value];
+  const line = size * 1.12;
+  const travel = interpolate(stepped, [from, from + spin], [0, rows.length - 1], {
+    ...CLAMP,
+    easing: Easing.out(Easing.cubic),
+  });
+  // One bounce on the stop — the mechanism settling, not the type animating.
+  const settle = stepped <= from + spin ? 0 : dampedSwing(stepped, {amplitude: size * 0.06, rate: 0.9, decay: 0.24, delay: from + spin});
+
+  return (
+    <div style={{height: line, overflow: 'hidden', position: 'relative'}}>
+      <div style={{transform: `translateY(${-travel * line + settle}px)`}}>
+        {rows.map((row, i) => (
+          <div
+            key={`${row}-${i}`}
+            style={{
+              height: line,
+              lineHeight: `${line}px`,
+              fontFamily: SANS,
+              fontWeight: 900,
+              fontSize: size,
+              letterSpacing: '-0.045em',
+              fontVariantNumeric: 'tabular-nums',
+              color: colour,
+              textAlign: 'center',
+              opacity: i === rows.length - 1 ? 1 : 0.5,
+              textShadow: '0 0 40px rgba(0,0,0,0.92)',
+            }}
+          >
+            {row}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
 

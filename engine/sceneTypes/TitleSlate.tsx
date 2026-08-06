@@ -4,7 +4,7 @@ import type {SceneProps} from './types';
 import {CLAMP, posterizeTime} from '../motion';
 import {Plate} from '../Plate';
 import {Field, type FieldKind} from '../draw/Field';
-import {Slate} from '../draw/Type';
+import {Slate, Slot} from '../draw/Type';
 import {Annotation, type MarkKind} from '../draw/Annotation';
 import {Glow} from '../draw/Glow';
 import {SceneMotif} from '../draw/Motif';
@@ -46,6 +46,7 @@ export const TitleSlate: React.FC<SceneProps> = ({scene, assets, durationInFrame
   const title = str('title', '');
   const footer = str('footer', '');
   const mark = str('mark', '') as MarkKind | '';
+  const spin = str('spinTo', '');
 
   /**
    * A NUMBER THAT ARRIVES INSTEAD OF BEING STATED.
@@ -113,6 +114,13 @@ export const TitleSlate: React.FC<SceneProps> = ({scene, assets, durationInFrame
         defaultY={Math.round(height * 0.86)}
       />
 
+      {/* TWO WAYS A FIGURE CAN ARRIVE, and an episode picks one. A counter
+          climbing makes the SIZE of it felt; a reel slamming to a stop makes
+          the CHOICE felt — it could have been anything and it turned out to be
+          this. Using both in one reel would make neither mean anything.
+
+          The reel goes INSIDE the slate, in the title's own place, so the card
+          stays a layout: kicker over, rules around, footer under. */}
       <Slate
         kicker={kicker || undefined}
         title={counted || title}
@@ -121,6 +129,18 @@ export const TitleSlate: React.FC<SceneProps> = ({scene, assets, durationInFrame
         size={num('titleSize', 118)}
         accent={str('accent', '#ffcf3d')}
         tabular={Boolean(counted)}
+        titleNode={
+          spin ? (
+            <Slot
+              value={spin}
+              reel={list('spinReel')}
+              from={num('titleFrame', 6)}
+              spin={num('spinFrames', 26)}
+              size={num('titleSize', 210)}
+              colour={str('accent', '#ffcf3d')}
+            />
+          ) : undefined
+        }
       />
 
       {mark ? (
