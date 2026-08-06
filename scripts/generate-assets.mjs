@@ -29,6 +29,31 @@ const MODEL = process.env.IMAGE_MODEL || 'flux';
 const ATTEMPTS = 4;
 
 /**
+ * WHO DRAWS, AND WHETHER IT CAN DRAW TRANSPARENCY.
+ *
+ * This is the difference between the reference reel and everything this repo
+ * has produced, and it took taking that reel apart to see it. Every piece in it
+ * is a NATIVE transparent PNG: the lamp is 4% opaque, the cloud is 58% SOFT
+ * edge. A cloud with a soft alpha edge cannot be made by keying a photograph —
+ * there is no photograph of a cloud on a background that keys to that. It was
+ * asked for with transparency and came back with transparency.
+ *
+ * Keying is the fallback for a provider that cannot do it, and it is a poor
+ * one: it hands back hard edges, it fails on anything wispy, and it throws away
+ * two draws in three. So when a provider CAN return alpha, it is asked to, and
+ * the keyer never runs.
+ *
+ *   IMAGE_PROVIDER=openai  IMAGE_BASE_URL=https://api.openai.com/v1
+ *   IMAGE_MODEL=gpt-image-1  IMAGE_API_KEY=…
+ *
+ * "openai" here means the images/generations protocol, not the company — any
+ * endpoint that speaks it works, which is the point of keeping it in an env
+ * var rather than in code.
+ */
+const PROVIDER = process.env.IMAGE_PROVIDER || (process.env.IMAGE_BASE_URL?.includes('/v1') ? 'openai' : 'pollinations');
+export const DRAWS_ALPHA = PROVIDER === 'openai';
+
+/**
  * What a cut-out is asked for, on top of the episode's own `styleAlpha`.
  *
  * SHORT, AND ENTIRELY POSITIVE. The version this replaces was a pile of
@@ -47,9 +72,15 @@ const ATTEMPTS = 4;
  * grain and available light describe a room too. FilmLook adds the period
  * treatment to the whole frame at render time.
  */
-const CUTOUT_INSTRUCTION =
-  'catalogue product photograph on a pure white seamless background, ' +
-  'centred, full subject visible with margin around it, even studio lighting, sharp focus';
+const CUTOUT_INSTRUCTION = DRAWS_ALPHA
+  ? // Nothing is said about a backdrop, because there is not going to be one:
+    // the request carries `background: transparent` and the model returns the
+    // object cut out. Describing a white sweep here would make it draw one, and
+    // then the piece arrives with a white rectangle behind it.
+    'isolated cut-out of the subject alone, full subject visible with margin around it, ' +
+    'even studio lighting, sharp focus, clean edges'
+  : 'catalogue product photograph on a pure white seamless background, ' +
+    'centred, full subject visible with margin around it, even studio lighting, sharp focus';
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -63,7 +94,60 @@ function seedFor(name) {
   return h % 1_000_000;
 }
 
-async function fetchImage(prompt, width, height, seed) {
+/**
+ * The images/generations protocol, asked for transparency when the piece wants
+ * it. `background: transparent` is the whole reason this branch exists.
+ */
+async function fetchViaGenerations(prompt, width, height, alpha) {
+  // The endpoint takes a size from a short list, not arbitrary pixels; pick the
+  // one with the right orientation and let sharp do the final resize.
+  const size = width === height ? '1024x1024' : width > height ? '1536x1024' : '1024x1536';
+  const response = await fetch(`${BASE_URL.replace(/\/$/, '')}/images/generations`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(process.env.IMAGE_API_KEY ? {Authorization: `Bearer ${process.env.IMAGE_API_KEY}`} : {}),
+    },
+    body: JSON.stringify({
+      model: MODEL,
+      prompt,
+      size,
+      n: 1,
+      output_format: 'png',
+      ...(alpha ? {background: 'transparent'} : {}),
+    }),
+    signal: AbortSignal.timeout(180_000),
+  });
+  if (!response.ok) throw new Error(`HTTP ${response.status} — ${(await response.text()).slice(0, 200)}`);
+  const body = await response.json();
+  const b64 = body?.data?.[0]?.b64_json;
+  if (!b64) {
+    const url = body?.data?.[0]?.url;
+    if (!url) throw new Error('no image in response');
+    const image = await fetch(url, {signal: AbortSignal.timeout(180_000)});
+    if (!image.ok) throw new Error(`image download HTTP ${image.status}`);
+    return Buffer.from(await image.arrayBuffer());
+  }
+  return Buffer.from(b64, 'base64');
+}
+
+async function fetchImage(prompt, width, height, seed, alpha = false) {
+  if (PROVIDER === 'openai') {
+    let lastError;
+    for (let attempt = 1; attempt <= ATTEMPTS; attempt += 1) {
+      try {
+        return await fetchViaGenerations(prompt, width, height, alpha);
+      } catch (error) {
+        lastError = error;
+        if (attempt < ATTEMPTS) await sleep(2000 * 2 ** (attempt - 1));
+      }
+    }
+    throw new Error(`${ATTEMPTS} attempts failed — ${lastError?.message ?? lastError}`);
+  }
+  return fetchViaPrompt(prompt, width, height, seed);
+}
+
+async function fetchViaPrompt(prompt, width, height, seed) {
   // Diffusion models want dimensions on a multiple of 64, and asking for the
   // final size directly costs quality on tall frames — request a sane box and
   // let sharp do the last resize.
@@ -264,8 +348,15 @@ async function buildAsset(name, recipe, kinds, recipes) {
   // dice rather than a broken prompt, so a rejected draw is re-rolled on a
   // derived seed — still deterministic, just a different one.
   for (let attempt = 0; attempt < 3; attempt += 1) {
-    const raw = await fetchImage(prompt, width, height, seed + attempt * 7919);
-    const keyed = await keyBackdrop(raw, {holes: Boolean(recipe.keyHoles)});
+    const raw = await fetchImage(prompt, width, height, seed + attempt * 7919, true);
+    // ASKED FOR TRANSPARENCY, GOT TRANSPARENCY — leave it alone. Running the
+    // keyer over a native cut-out can only take something away: it works from
+    // the frame edges inward on COLOUR, and a soft alpha edge (a cloud, smoke,
+    // hair) is exactly what it cannot see. This is the branch that produces a
+    // piece rather than a rescued photograph.
+    const keyed = DRAWS_ALPHA && (await hasAlpha(raw))
+      ? raw
+      : await keyBackdrop(raw, {holes: Boolean(recipe.keyHoles)});
 
     // A cut-out that keyed away to nothing, or that kept everything, renders as
     // an empty scene or as a rectangle with visible corners. Neither is worth
@@ -374,6 +465,21 @@ export async function islandCount(buffer, limit = 40) {
 }
 
 /** How much of the picture survived the key — a fully keyed frame is a failure. */
+/**
+ * Does this file actually carry transparency?
+ *
+ * An alpha CHANNEL is not the same as a cut-out: a PNG can be RGBA and fully
+ * opaque, which is what a provider returns when it ignored the request. So the
+ * question has to be about the pixels, and the threshold is generous — a piece
+ * with margin around it is mostly transparent, and anything under a twentieth
+ * was not a cut-out by intent.
+ */
+export async function hasAlpha(buffer) {
+  const meta = await sharp(buffer).metadata();
+  if (!meta.hasAlpha) return false;
+  return (await opaqueFraction(buffer)) < 0.95;
+}
+
 export async function opaqueFraction(buffer) {
   const {data, info} = await sharp(buffer).ensureAlpha().raw().toBuffer({resolveWithObject: true});
   let solid = 0;
