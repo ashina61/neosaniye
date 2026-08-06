@@ -27,6 +27,46 @@ scripts/                    render + validate CLIs
 test/                       engine-purity guard, schema, registry, episodes
 ```
 
+## The planner
+
+A reel laid out by hand is ten shots that each work and do not add up, because
+nothing decided the rhythm — and every episode inherits whatever the last one
+looked like, so "a different look every video" never happens while a person is
+picking each knob.
+
+So write only the storyboard — `episodes/<id>/brief.json`: the voiceover, and
+one phrase per line saying what we are looking at. Then:
+
+```bash
+npm run plan -- --episode=mansa-musa
+```
+
+which writes `scene-config.json` and `assets.json`. Three things are derived:
+
+**The words decide the shot.** A line with a number becomes a slate with that
+number set large; a line listing three things becomes three pieces of paper
+landing; a line naming an object becomes a push into it. What the brief states
+outright (`title`, `items`, `artefact`, `pieces`) always beats what the planner
+would have guessed.
+
+**The words decide the length.** A scene runs as long as its line takes to speak
+at a documentary rate. Nothing is padded to a round number.
+
+**The episode decides its own look.** Grade, accent, drawn field, mark style,
+caption face and a three-of-five transition vocabulary are drawn from a seed
+made of the episode id, inside the bounds of its declared `mood`. Moods are
+BOUNDS, never finished palettes — a menu would give ten episodes that are one of
+five things; bounds give a family. Same brief, two moods:
+
+```
+gold-heat  accent #f2b53a · field sunburst · typed   · cuts slam, flare, rack
+ash-grey   accent #e8e2d4 · field wash     · sticker · cuts flare, slip, rack
+```
+
+Rhythm is guarded: no two adjacent scenes arrive the same way, and a run of
+three identical shot types is broken — two of a kind is a pair, three is a
+pattern, and a reel that falls into one stops being edited and becomes a list.
+
 ## Run it
 
 ```bash

@@ -1,0 +1,20 @@
+{
+  "$comment": "These assets are stand-ins, not finished artwork. scripts/generate-assets.mjs removes each name as it draws it for real.",
+  "placeholders": [
+    "camel-resting-on-folded-legs.png",
+    "camel-standing-in-profile.png",
+    "date-palm-tree.png",
+    "lone-acacia-tree.png",
+    "s01-leave-bg.png",
+    "s02-caravan-bg.png",
+    "s03-cairo-bg.png",
+    "s04-price-bg.png",
+    "s05-architect-bg.png",
+    "s05-architect-photo.png",
+    "s06-atlas-bg.png",
+    "s06-atlas-photo.png",
+    "s07-claim-bg.png",
+    "s08-close-bg.png",
+    "traveller-in-a-long-desert-robe.png"
+  ]
+}

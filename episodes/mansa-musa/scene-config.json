@@ -1,0 +1,363 @@
+{
+  "id": "mansa-musa",
+  "title": "Mansa Musa — the pilgrimage that broke a currency",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "look": {
+    "posterizeFps": 12,
+    "grade": {
+      "saturate": 0.78,
+      "contrast": 1.11,
+      "sepia": 0.28,
+      "brightness": 1.11
+    },
+    "film": {
+      "grain": true,
+      "grunge": true,
+      "scanlines": true,
+      "vignette": true,
+      "gateWeave": true,
+      "grainOpacity": 0.42,
+      "grungeOpacity": 0.11,
+      "scanlineOpacity": 0.06,
+      "scanlinePeriod": 11,
+      "vignetteStrength": 0.38,
+      "weavePx": 5,
+      "weaveScale": 1.011
+    }
+  },
+  "scenes": [
+    {
+      "id": "s01-leave",
+      "sceneType": "title-slate",
+      "voText": "In thirteen twenty-four the ruler of Mali left home for Mecca, and took his treasury with him.",
+      "durationInFrames": 215,
+      "assets": {
+        "background": "assets/s01-leave-bg.png"
+      },
+      "params": {
+        "scrim": 0.47,
+        "kicker": "Mali · 1324",
+        "title": "HE TOOK IT ALL",
+        "footer": "the treasury went with him",
+        "titleFrame": 6,
+        "titleSize": 124,
+        "creep": 1.058,
+        "accent": "#f2b53a",
+        "field": "sunburst",
+        "fieldColours": [
+          "#c98a2a",
+          "#7d4d12",
+          "#2c1a06"
+        ],
+        "mark": "underline",
+        "markX": 260,
+        "markY": 1160,
+        "markWidth": 560,
+        "markHeight": 96,
+        "markFrame": 73
+      }
+    },
+    {
+      "id": "s02-caravan",
+      "sceneType": "composite",
+      "voText": "Accounts describe tens of thousands of people on the road, and camels carrying gold by the hundredweight.",
+      "durationInFrames": 215,
+      "transition": {
+        "kind": "flare",
+        "frames": 15
+      },
+      "assets": {
+        "ground": "assets/s02-caravan-bg.png",
+        "?camel-standing-in-profile": "assets/camel-standing-in-profile.png",
+        "?date-palm-tree": "assets/date-palm-tree.png",
+        "?traveller-in-a-long-desert-robe": "assets/traveller-in-a-long-desert-robe.png"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.05,
+          "anchor": "fill"
+        },
+        {
+          "role": "camel-standing-in-profile",
+          "depth": 0.28,
+          "anchor": "bottom",
+          "x": 280,
+          "y": 1385,
+          "height": 819,
+          "opacity": 0.95
+        },
+        {
+          "role": "date-palm-tree",
+          "depth": 0.49,
+          "anchor": "bottom",
+          "x": 673,
+          "y": 1457,
+          "height": 479,
+          "opacity": 0.6
+        },
+        {
+          "role": "traveller-in-a-long-desert-robe",
+          "depth": 0.69,
+          "anchor": "bottom",
+          "x": 453,
+          "y": 1455,
+          "height": 806,
+          "opacity": 0.79
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushTo": 1.46,
+        "pushEndFrame": 185,
+        "focusPx": 0,
+        "fog": 0.07,
+        "caption": [
+          "Tens of thousands",
+          "on the road."
+        ],
+        "captionX": 84,
+        "captionY": 1074,
+        "captionFrame": 10,
+        "captionEvery": 18,
+        "captionSize": 83,
+        "captionRecedeAt": 155
+      },
+      "onScreenText": [
+        {
+          "text": "ACCOUNTS DIFFER",
+          "atFrame": 129,
+          "durationInFrames": 69,
+          "style": "typed",
+          "position": "bottom"
+        }
+      ]
+    },
+    {
+      "id": "s03-cairo",
+      "sceneType": "evidence-board",
+      "voText": "In Cairo he did not trade the gold. He gave it away, to officials, to merchants, to the poor.",
+      "durationInFrames": 215,
+      "transition": {
+        "kind": "slam",
+        "frames": 15
+      },
+      "assets": {
+        "background": "assets/s03-cairo-bg.png"
+      },
+      "params": {
+        "bgScale": 1.064,
+        "scrim": 0.19,
+        "focusPx": 9,
+        "itemWidth": 521,
+        "itemFrames": [
+          10,
+          47,
+          96
+        ],
+        "items": [
+          "card|TO THE COURT|robes and gifts to the sultan's officials",
+          "card|TO THE MARKET|paid above price, and kept paying",
+          "card|TO THE POOR|handed out in the street, every district"
+        ],
+        "caption": [
+          "He did not",
+          "trade it."
+        ],
+        "captionX": 84,
+        "captionY": 211,
+        "captionFrame": 6,
+        "captionSize": 87,
+        "captionRecedeAt": 97
+      }
+    },
+    {
+      "id": "s04-price",
+      "sceneType": "title-slate",
+      "voText": "He spent so freely that the price of gold in Cairo fell, and one contemporary writer found it still had not recovered twelve years later.",
+      "durationInFrames": 215,
+      "transition": {
+        "kind": "rack",
+        "frames": 10
+      },
+      "assets": {
+        "background": "assets/s04-price-bg.png"
+      },
+      "params": {
+        "scrim": 0.44,
+        "kicker": "Gold in Cairo",
+        "title": "TWELVE YEARS",
+        "footer": "and by one account it had still not recovered",
+        "titleFrame": 6,
+        "titleSize": 230,
+        "creep": 1.085,
+        "accent": "#f2b53a",
+        "field": "sunburst",
+        "fieldColours": [
+          "#c98a2a",
+          "#7d4d12",
+          "#2c1a06"
+        ],
+        "mark": "underline",
+        "markX": 260,
+        "markY": 820,
+        "markWidth": 560,
+        "markHeight": 300,
+        "markFrame": 73
+      }
+    },
+    {
+      "id": "s05-architect",
+      "sceneType": "portal-zoom-reveal",
+      "voText": "On the road home he brought back an architect, and Timbuktu got a mosque of mud brick and timber.",
+      "durationInFrames": 215,
+      "transition": {
+        "kind": "slam",
+        "frames": 11
+      },
+      "assets": {
+        "wall": "assets/s05-architect-bg.png",
+        "photo": "assets/s05-architect-photo.png"
+      },
+      "params": {
+        "frameWidth": 802,
+        "frameRatio": 1.04,
+        "pushEndFrame": 77,
+        "detachFrame": 99,
+        "throughEndFrame": 121,
+        "weldRatio": 0.425,
+        "wallScaleEnd": 5.5
+      },
+      "onScreenText": [
+        {
+          "text": "it is still standing",
+          "atFrame": 129,
+          "durationInFrames": 69,
+          "style": "typed",
+          "position": "bottom"
+        }
+      ]
+    },
+    {
+      "id": "s06-atlas",
+      "sceneType": "portal-zoom-reveal",
+      "voText": "Fifty years later a mapmaker in Europe drew him on a chart, seated, holding a nugget of gold.",
+      "durationInFrames": 215,
+      "transition": {
+        "kind": "rack",
+        "frames": 18
+      },
+      "assets": {
+        "wall": "assets/s06-atlas-bg.png",
+        "photo": "assets/s06-atlas-photo.png"
+      },
+      "params": {
+        "frameWidth": 824,
+        "frameRatio": 0.91,
+        "pushEndFrame": 77,
+        "detachFrame": 99,
+        "throughEndFrame": 121,
+        "weldRatio": 0.41,
+        "wallScaleEnd": 6.3
+      }
+    },
+    {
+      "id": "s07-claim",
+      "sceneType": "composite",
+      "voText": "He is often called the richest man who ever lived. Nobody can actually measure that.",
+      "durationInFrames": 193,
+      "transition": {
+        "kind": "slam",
+        "frames": 14
+      },
+      "assets": {
+        "ground": "assets/s07-claim-bg.png",
+        "?lone-acacia-tree": "assets/lone-acacia-tree.png",
+        "?camel-resting-on-folded-legs": "assets/camel-resting-on-folded-legs.png"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.05,
+          "anchor": "fill"
+        },
+        {
+          "role": "lone-acacia-tree",
+          "depth": 0.25,
+          "anchor": "bottom",
+          "x": 257,
+          "y": 1266,
+          "height": 593,
+          "opacity": 0.92
+        },
+        {
+          "role": "camel-resting-on-folded-legs",
+          "depth": 0.61,
+          "anchor": "bottom",
+          "x": 699,
+          "y": 1413,
+          "height": 626,
+          "opacity": 0.99
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushTo": 1.5,
+        "pushEndFrame": 166,
+        "focusPx": 10,
+        "fog": 0.02,
+        "caption": [
+          "Often called",
+          "the richest",
+          "who ever lived."
+        ],
+        "captionX": 84,
+        "captionY": 891,
+        "captionFrame": 10,
+        "captionEvery": 16,
+        "captionSize": 87,
+        "captionRecedeAt": 139,
+        "captionAccent": 1
+      }
+    },
+    {
+      "id": "s08-close",
+      "sceneType": "title-slate",
+      "voText": "What can be measured is the damage. One pilgrimage, and a city's currency took a decade to come back.",
+      "durationInFrames": 215,
+      "transition": {
+        "kind": "flare",
+        "frames": 14
+      },
+      "assets": {
+        "background": "assets/s08-close-bg.png"
+      },
+      "params": {
+        "scrim": 0.37,
+        "kicker": "Mali · 1337",
+        "title": "ONE PILGRIMAGE",
+        "footer": "a decade to come back",
+        "titleFrame": 5,
+        "titleSize": 124,
+        "creep": 1.084,
+        "accent": "#f2b53a",
+        "field": "sunburst",
+        "fieldColours": [
+          "#c98a2a",
+          "#7d4d12",
+          "#2c1a06"
+        ],
+        "mark": "underline",
+        "markX": 260,
+        "markY": 1160,
+        "markWidth": 560,
+        "markHeight": 96,
+        "markFrame": 73
+      }
+    }
+  ]
+}
