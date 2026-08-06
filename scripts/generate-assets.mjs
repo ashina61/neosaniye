@@ -290,6 +290,7 @@ async function buildAsset(name, recipe, kinds, recipes) {
       continue;
     }
 
+
     // Trim the transparent margin so the file's bottom edge IS the subject's
     // feet — that is what footY in the config is anchoring to.
     const trimmed = await sharp(keyed)
