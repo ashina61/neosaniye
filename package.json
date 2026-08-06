@@ -9,6 +9,7 @@
   },
   "scripts": {
     "plan": "node scripts/plan-episode.mjs",
+    "voice": "node scripts/voice-episode.mjs",
     "render": "node scripts/render-episode.mjs",
     "validate": "node scripts/validate-episode.mjs",
     "frames": "node scripts/review-frames.mjs",

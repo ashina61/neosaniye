@@ -8,9 +8,31 @@ açmaktır, motora dokunmak değil.
 Giriş noktası `npm run render -- --episode=<id>`. Otomatik koşu
 `.github/workflows/render-episode.yml` (workflow_dispatch, `episode_id` girdisi).
 
+## Sıfırıncı yasa: SES SAATTİR
+
+Seslendirme bir katman değil, ZAMAN ÇİZELGESİDİR. Sahne süreleri MP3'ün
+içindeki satır sınırlarından ÖLÇÜLÜR — tahmin edilmez.
+
+`npm run voice -- --episode=<id>` bütün metni TEK seferde okutur (satır satır
+okutmak, kenarlarında farklı miktarda hava olan altı klip verir; oysa ölçülen
+şey satırlar ARASINDAKİ boşluktur), karakter hizalamasından her satırın
+penceresini çıkarır ve `audio/vo.json` yazar. Planlayıcı o pencereleri keser;
+satır içindeki parçalar pencereyi kelime ağırlığına göre böler ve artık kalan
+kare SON parçaya gider — böylece toplam tam olarak pencereye eşittir ve reel
+kendi anlatısından kaymaz.
+
+`vo.json` yoksa süreler `kelime / 2.7 * 30` ile TAHMİN edilir ve koşu bunu
+ekrana yazar. Tahminle kesilmiş bir reel taslaktır; sessizce bitmiş görünmemeli.
+`vo.json` commit edilir (config'teki her süre ona göre kesildi), `vo.mp3`
+edilmez.
+
 ## Zincir
 
 ```
+episodes/<id>/brief.json            → altı satır, ~80 kelime, otuz saniye
+        ↓
+scripts/voice-episode.mjs           → vo.mp3 + vo.json (ÖLÇÜM)
+        ↓
 episodes/<id>/scene-config.json     → bölümün tek gerçeği (sahneler, süreler, look)
         ↓
 scripts/render-episode.mjs          → doğrula → publicDir = episodes/<id> → bundle

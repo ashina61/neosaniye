@@ -5,3 +5,8 @@ out/
 # Written by the render script before bundling: it imports whatever scene
 # overrides the episode ships. Generated, never edited by hand.
 engine/episodeScenes.generated.ts
+
+# The narration is generated, not authored — and an mp3 per episode in git
+# is a binary nobody diffs. vo.json IS committed: it is the measurement
+# every duration in the config was cut to, and it has to travel with them.
+episodes/*/audio/vo.mp3

@@ -49,6 +49,16 @@ async function validateEpisode(episodeId) {
     );
   }
 
+  // THE NARRATION IS NOT OPTIONAL ONCE THE CONFIG NAMES IT. A missing audio
+  // file 404s inside the bundle and Remotion CANCELS the render — the same way
+  // a missing PNG does, and just as silently until the very end.
+  if (typeof config?.audio === 'string') {
+    const resolved = path.join(dir, config.audio);
+    if (!(await exists(resolved))) {
+      problems.push(`audio: file not found — ${path.relative(ROOT, resolved)}`);
+    }
+  }
+
   // ASSET EXISTENCE — the whole reason this script is worth having.
   for (const [index, scene] of (config?.scenes ?? []).entries()) {
     for (const [role, file] of Object.entries(scene?.assets ?? {})) {

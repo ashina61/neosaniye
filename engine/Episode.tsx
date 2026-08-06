@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, Sequence} from 'remotion';
+import {AbsoluteFill, Audio, Sequence, staticFile} from 'remotion';
 import type {EpisodeConfig, SceneSpec} from './schema';
 import {DEFAULT_LOOK, resolveAssets, sceneOffsets} from './schema';
 import {FilmLook} from './FilmLook';
@@ -66,6 +66,12 @@ export const Episode: React.FC<{config: EpisodeConfig}> = ({config}) => {
 
   return (
     <AbsoluteFill style={{backgroundColor: '#0b0906'}}>
+      {/* THE NARRATION RUNS THE WHOLE REEL, unsequenced, because it is not a
+          thing that happens during a scene — it is the clock every scene was
+          cut to. Sequencing it per scene would let a rounding error at one cut
+          push the rest of the words out of step with their own pictures. */}
+      {config.audio ? <Audio src={staticFile(config.audio)} /> : null}
+
       {config.scenes.map((scene, index) => (
         <Sequence
           key={scene.id}
