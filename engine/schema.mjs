@@ -51,6 +51,7 @@ export const BUILT_IN_SCENE_TYPES = [
   'split-shift',
   'title-slate',
   'evidence-board',
+  'composite',
 ];
 
 /**
@@ -189,6 +190,25 @@ export function validateEpisodeConfig(config) {
             push(`${where}.assets.${role}: must be episode-relative (got "${file}")`);
           }
         }
+      }
+    }
+    if (scene.layers !== undefined) {
+      if (!Array.isArray(scene.layers)) push(`${where}.layers: must be an array`);
+      else {
+        scene.layers.forEach((layer, i) => {
+          const at = `${where}.layers[${i}]`;
+          if (typeof layer !== 'object' || layer === null) return push(`${at}: must be an object`);
+          if (layer.role !== undefined && typeof layer.role !== 'string') push(`${at}.role: must be a string`);
+          // Depth is the whole parallax law; a value outside 0..1 is a layer
+          // that moves the wrong way relative to everything around it.
+          if (layer.depth !== undefined && (typeof layer.depth !== 'number' || layer.depth < 0 || layer.depth > 1)) {
+            push(`${at}.depth: must be a number between 0 and 1`);
+          }
+          if (layer.role !== undefined && !(scene.assets ?? {})[layer.role] &&
+              !(scene.assets ?? {})[`?${layer.role}`]) {
+            push(`${at}.role: "${layer.role}" is not a role in this scene's assets`);
+          }
+        });
       }
     }
     for (const [order, text] of (scene.onScreenText ?? []).entries()) {
