@@ -11,7 +11,8 @@
       "image": "a vast empty Sahara dune field at dawn, long shadows, nobody present",
       "kicker": "Mali · 1324",
       "title": "HE TOOK IT ALL",
-      "footer": "the treasury went with him"
+      "footer": "the treasury went with him",
+      "imageCommons": "Sahara sand dunes sunrise"
     },
     {
       "slug": "caravan",
@@ -40,7 +41,8 @@
       "caption": [
         "He did not",
         "trade it."
-      ]
+      ],
+      "imageCommons": "Islamic Cairo medieval street"
     },
     {
       "slug": "price",
@@ -55,7 +57,9 @@
       "vo": "On the road home he brought back an architect, and Timbuktu got a mosque of mud brick and timber.",
       "image": "a tall mud-brick mosque wall with projecting wooden beams, hard desert sun",
       "artefact": "a close view of a mud-brick wall studded with protruding palm timbers, warm raking light",
-      "onScreen": "it is still standing"
+      "onScreen": "it is still standing",
+      "artefactCommons": "Djinguereber Mosque Timbuktu",
+      "imageCommons": "Djinguereber Mosque"
     },
     {
       "slug": "atlas",
@@ -66,7 +70,9 @@
         "Drawn by",
         "someone who",
         "never met him."
-      ]
+      ],
+      "artefactCommons": "Catalan Atlas Mansa Musa",
+      "imageCommons": "Catalan Atlas 1375"
     },
     {
       "slug": "claim",
@@ -89,7 +95,8 @@
       "image": "a single set of footprints crossing an empty dune, wind erasing them",
       "kicker": "Mali · 1337",
       "title": "ONE PILGRIMAGE",
-      "footer": "a decade to come back"
+      "footer": "a decade to come back",
+      "imageCommons": "footprints Sahara sand"
     }
   ]
 }

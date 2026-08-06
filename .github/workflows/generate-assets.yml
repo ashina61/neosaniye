@@ -47,6 +47,13 @@ jobs:
 
       - run: npm ci
 
+      # FETCH BEFORE DRAW. Anything with a name — the Catalan Atlas, a mosque
+      # that is still standing — is more accurate fetched than invented, and it
+      # is the same picture every run. Whatever Commons has no free file for
+      # falls through to the generator below.
+      - name: Fetch real pictures from Wikimedia Commons
+        run: node scripts/fetch-commons.mjs --episode="${{ inputs.episode_id }}"
+
       # Exit 2 means "some drawn, some failed". That is worth committing — the
       # drawings that worked are real work, and a re-run only retries the rest —
       # so the failure is carried past the commit and raised at the end instead.

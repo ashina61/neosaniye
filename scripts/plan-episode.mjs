@@ -322,7 +322,14 @@ function planScene({line, index, total, rand, look, previousTransition, recentTy
     ];
   }
 
-  return {scene, backdropPrompt: line.image, photoPrompt: line.artefact, pieces: line.pieces ?? []};
+  return {
+    scene,
+    backdropPrompt: line.image,
+    photoPrompt: line.artefact,
+    backdropCommons: line.imageCommons,
+    photoCommons: line.artefactCommons,
+    pieces: line.pieces ?? [],
+  };
 }
 
 async function main() {
@@ -404,9 +411,24 @@ async function main() {
   // RECIPES. Backdrops and artefacts are photographs; pieces are cut-outs and
   // therefore optional in the config above.
   const assets = {};
-  for (const {scene, backdropPrompt, photoPrompt, pieces} of planned) {
-    if (backdropPrompt) assets[`${scene.id}-bg.png`] = {kind: 'backdrop', prompt: backdropPrompt};
-    if (photoPrompt) assets[`${scene.id}-photo.png`] = {kind: 'photo', prompt: photoPrompt};
+  for (const {scene, backdropPrompt, photoPrompt, backdropCommons, photoCommons, pieces} of planned) {
+    // `commons` names a REAL thing and is tried first; `prompt` is what draws it
+    // when nothing free and large enough exists. A named artefact is always
+    // better fetched than invented.
+    if (backdropPrompt || backdropCommons) {
+      assets[`${scene.id}-bg.png`] = {
+        kind: 'backdrop',
+        ...(backdropCommons ? {commons: backdropCommons} : {}),
+        ...(backdropPrompt ? {prompt: backdropPrompt} : {}),
+      };
+    }
+    if (photoPrompt || photoCommons) {
+      assets[`${scene.id}-photo.png`] = {
+        kind: 'photo',
+        ...(photoCommons ? {commons: photoCommons} : {}),
+        ...(photoPrompt ? {prompt: photoPrompt} : {}),
+      };
+    }
     for (const piece of pieces) {
       const name = `${piece.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}.png`;
       if (!assets[name]) {
