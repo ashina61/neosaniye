@@ -33,6 +33,11 @@
       "sceneType": "portal-zoom-reveal",
       "voText": "This is the only picture anyone drew of him,",
       "durationInFrames": 108,
+      "gradeOverride": {
+        "saturate": 0.98,
+        "sepia": 0.3,
+        "brightness": 1.08
+      },
       "assets": {
         "wall": "assets/s01-atlas-bg.png",
         "photo": "assets/s01-atlas-photo.png"
@@ -62,7 +67,7 @@
       "voText": "and they never met.",
       "durationInFrames": 52,
       "transition": {
-        "kind": "slam",
+        "kind": "flare",
         "frames": 9
       },
       "assets": {
@@ -99,7 +104,7 @@
       "voText": "In thirteen twenty-four the king of Mali set out for Mecca with his treasury.",
       "durationInFrames": 118,
       "transition": {
-        "kind": "flare",
+        "kind": "slip",
         "frames": 10
       },
       "assets": {
@@ -145,7 +150,7 @@
       "voText": "The caravan was so long that accounts still argue about the number.",
       "durationInFrames": 118,
       "transition": {
-        "kind": "slam",
+        "kind": "flare",
         "frames": 8
       },
       "assets": {
@@ -222,8 +227,13 @@
       "sceneType": "portal-zoom-reveal",
       "voText": "He reached the holy city with an empire of gold still on his camels.",
       "durationInFrames": 118,
+      "gradeOverride": {
+        "saturate": 0.96,
+        "sepia": 0.34,
+        "brightness": 1.06
+      },
       "transition": {
-        "kind": "slip",
+        "kind": "slam",
         "frames": 9
       },
       "assets": {
@@ -263,8 +273,13 @@
       "sceneType": "composite",
       "voText": "In Cairo he did not sell it.",
       "durationInFrames": 86,
+      "gradeOverride": {
+        "saturate": 0.96,
+        "sepia": 0.34,
+        "brightness": 1.06
+      },
       "transition": {
-        "kind": "slam",
+        "kind": "flare",
         "frames": 10
       },
       "assets": {
@@ -345,7 +360,7 @@
       "voText": "and the price of gold collapsed.",
       "durationInFrames": 75,
       "transition": {
-        "kind": "slam",
+        "kind": "flare",
         "frames": 7
       },
       "assets": {
@@ -382,8 +397,13 @@
       "sceneType": "title-slate",
       "voText": "It had not recovered twelve years later.",
       "durationInFrames": 86,
+      "gradeOverride": {
+        "saturate": 0.5,
+        "contrast": 1.16,
+        "brightness": 0.94
+      },
       "transition": {
-        "kind": "flare",
+        "kind": "slip",
         "frames": 12
       },
       "assets": {
@@ -395,7 +415,7 @@
         "title": "TWELVE YEARS",
         "footer": "the most expensive journey in history",
         "titleFrame": 6,
-        "titleSize": 124,
+        "titleSize": 230,
         "creep": 1.044,
         "accent": "#f2b53a",
         "field": "sunburst",
@@ -403,7 +423,17 @@
           "#c98a2a",
           "#7d4d12",
           "#2c1a06"
-        ]
+        ],
+        "spinTo": "TWELVE",
+        "spinReel": [
+          "THOUSAND",
+          "HUNDRED",
+          "MILLION",
+          "BILLION",
+          "FIFTY",
+          "TWENTY"
+        ],
+        "spinFrames": 34
       }
     },
     {
@@ -412,7 +442,7 @@
       "voText": "The most expensive journey in history.",
       "durationInFrames": 75,
       "transition": {
-        "kind": "slam",
+        "kind": "flare",
         "frames": 11
       },
       "assets": {

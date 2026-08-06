@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import type {SceneProps} from './types';
 import type {LayerSpec} from '../schema';
-import {CLAMP, boil, focusHunt, posterizeTime, springEntrance} from '../motion';
+import {CLAMP, boil, focusHunt, holdKeyframes, posterizeTime, springEntrance} from '../motion';
 import {Fog, Glow} from '../draw/Glow';
 import {WordStack} from '../draw/Type';
 import {Annotation, type MarkKind} from '../draw/Annotation';
@@ -82,10 +82,19 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
       layer.from === undefined ? 1 : springEntrance(stepped, fps, {delay: layer.from, stiffness: 48, mass: 1});
     if (enter <= 0.001) return null;
 
+    // THE HIGHLIGHT IS THE LAYER AGAIN. Same artwork, recoloured, switched on
+    // and off on HOLD keyframes — instant, never a fade, because the whole
+    // character of it is that there is no ramp. A layer that asks to flicker
+    // and is currently off is not drawn at all; leaving it up at zero opacity
+    // would still cost a composite pass on every frame of the shot.
+    const lit = layer.flicker ? holdKeyframes(stepped, layer.flicker) : true;
+    if (layer.recolour && !lit) return null;
+
     const anchor = layer.anchor ?? (layer.width || layer.height ? 'bottom' : 'fill');
     const common: React.CSSProperties = {
       filter: [
         asShadow ? 'brightness(0)' : '',
+        !asShadow && layer.recolour ? layer.recolour : '',
         (layer.blur ?? 0) > 0 ? `blur(${layer.blur}px)` : '',
         asShadow ? `blur(${layer.shadowSkew !== undefined ? 8 : 8}px)` : '',
       ]

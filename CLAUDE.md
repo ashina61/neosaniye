@@ -126,6 +126,21 @@ out/<id>.mp4
     almaz; odaya bağlanırsa grafik olmaktan çıkar, kayan bir aksesuar olur. Ve
     tip kartının ortası yazınındır: `route` ile `tally` slate'e girmez.
 
+15. **BİR SAYI YA TIRMANIR YA DURUR; İKİSİ BİRDEN OLMAZ.** `countTo` sayının
+    BÜYÜKLÜĞÜNÜ hissettirir, `spinTo` SEÇİLMİŞ olduğunu — başka bir şey de
+    olabilirdi, bu çıktı. Hangisi olduğu bölümün seed'inden bir kez seçilir;
+    aynı reel'de ikisi de kullanılırsa hiçbiri anlam taşımaz. Slot, slate'in
+    ÜSTÜNE değil, başlığın kendi yerine çizilir — üstüne çizilirse sayı
+    kicker'ın ve footer'ın içinden geçer.
+16. **VURGU, GÖLGE NUMARASININ RENKLİ HÂLİDİR.** Aynı dosyanın ikinci kopyası,
+    üstüne tam oturur, `recolour` ile boyanır ve `flicker` ile HOLD
+    keyframe'lerde yanıp söner — asla fade değil; rampa koyarsan floresan
+    çakması dissolve'a döner. Yeni asset yok. Cümle altından/ateşten
+    bahsetmiyorsa vurgu da yok: her sahnede olan bir vurgu filtredir.
+17. **GRADE CÜMLENİN PARÇASIDIR.** Kapanış ve kül sahnelerinde renk çekilir,
+    kontrast artar; altın ve ihtişamda ısınır. Üç kayıt, dokuz değil — her
+    sahnesi ayrı derecelenmiş bir reel'in grade'i yoktur, titremesi vardır.
+
 ## İş bölümü — bu deponun en pahalı dersi
 
 Önceki hat (`collage-factory-son`) **görsel malzemeyi üretemediği için**

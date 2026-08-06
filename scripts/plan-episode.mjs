@@ -121,6 +121,36 @@ const MOODS = {
   },
 };
 
+/**
+ * How a beat bends the episode's own grade. Multipliers would drift with the
+ * mood; these are absolute, and deliberately few — three registers, not nine.
+ */
+const GRADE_SHIFT = {
+  // Ruin, and the last word. Colour drains out and contrast comes up.
+  close: {saturate: 0.5, contrast: 1.16, brightness: 0.94},
+  embers: {saturate: 0.58, contrast: 1.14, brightness: 0.95},
+  // Money and glory run hot.
+  coins: {saturate: 0.96, sepia: 0.34, brightness: 1.06},
+  rays: {saturate: 0.98, sepia: 0.3, brightness: 1.08},
+};
+
+/** What a slot reel rattles through before it stops. */
+const SPIN_DECOYS = ['THOUSAND', 'HUNDRED', 'MILLION', 'BILLION', 'FIFTY', 'TWENTY'];
+
+/** A sentence that puts light on something. Nothing else earns a highlight. */
+const LIT_WORDS = /\b(gold|golden|coins?|treasur\w*|fire|burn\w*|lamp|lit|glow\w*|shining|bright)\b/i;
+
+/**
+ * Does this line earn the highlight?
+ *
+ * Same law as the motifs: on every shot it is a filter; on the one line about
+ * treasure it IS the line. And it needs something to light — the trick is a
+ * recoloured copy of a PIECE, so a shot with no pieces has nothing to copy.
+ */
+export function earnsHighlight(line) {
+  return Boolean(line?.pieces?.length) && LIT_WORDS.test(line?.vo ?? '');
+}
+
 const MARKS = ['underline', 'oval', 'bracket', 'box', 'strike'];
 const TRANSITIONS = ['slam', 'slip', 'flare', 'rack', 'blinds'];
 
@@ -479,6 +509,17 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
   const assetBase = `s${String(index + 1).padStart(2, '0')}-${(line.slug ?? beat)}`;
   const id = assetBase;
   const scene = {id, sceneType, voText: fragment ?? line.vo, durationInFrames};
+
+  /**
+   * THE GRADE IS PART OF THE SENTENCE.
+   *
+   * The reference build pulls the sombre beat down on its own — saturate 0.62
+   * against the reel's 0.86 — and it is the cheapest way a shot says how to
+   * feel about what it is showing. Only where the line earns it: a reel where
+   * every scene is graded differently has no grade at all, it has a wobble.
+   */
+  const shift = GRADE_SHIFT[beat === 'close' ? 'close' : motifFor(line, recentMotifs, sceneType)];
+  if (shift) scene.gradeOverride = shift;
   if (transition) scene.transition = transition;
 
   const backdrop = `assets/${id}-bg.png`;
@@ -486,7 +527,10 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
 
   if (sceneType === 'title-slate') {
     scene.assets = {background: backdrop};
-    const number = beat === 'number' ? bigNumber(line.vo) : '';
+    // A hand-written title can BE the number — "TWELVE YEARS" — and the old
+    // rule only looked at the voiceover on the `number` beat, so a slate whose
+    // whole point was a figure got neither the count nor the spin.
+    const number = bigNumber(line.title ?? '') || (beat === 'number' ? bigNumber(line.vo) : '');
     const titleFrame = 4 + Math.round(rand() * 6);
     scene.params = {
       scrim: round(between(rand, [0.36, 0.54])),
@@ -511,9 +555,23 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
     const digits = Number(String(number).replace(/[^\d]/g, ''));
     const isYear = /^(1[0-9]{3}|20[0-9]{2})$/.test(String(number).replace(/[^\d]/g, ''));
     if (number && digits >= 10 && !isYear) {
-      scene.params.countTo = digits;
-      scene.params.countOver = Math.round(durationInFrames * 0.55);
-      if (line.countSuffix) scene.params.countSuffix = line.countSuffix;
+      if (look.numbers === 'slot') {
+        // The reel needs something to rattle through. Its decoys are the same
+        // ORDER of magnitude either side, so the stop lands on a choice rather
+        // than on the only legible option.
+        scene.params.spinTo = String(number).toUpperCase();
+        scene.params.spinReel = SPIN_DECOYS;
+        scene.params.spinFrames = Math.max(14, Math.round(durationInFrames * 0.4));
+      } else {
+        scene.params.countTo = digits;
+        scene.params.countOver = Math.round(durationInFrames * 0.55);
+        if (line.countSuffix) scene.params.countSuffix = line.countSuffix;
+      }
+    } else if (number && look.numbers === 'slot') {
+      // A word-number — TWELVE, FIFTY — has nothing to count to, but it spins.
+      scene.params.spinTo = String(number).toUpperCase();
+      scene.params.spinReel = SPIN_DECOYS;
+      scene.params.spinFrames = Math.max(14, Math.round(durationInFrames * 0.4));
     }
     if (rand() > 0.45) {
       Object.assign(scene.params, {
@@ -565,6 +623,7 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
     scene.assets = {ground: backdrop};
     const pieces = (line.pieces ?? []).slice(0, 3);
     scene.layers = [{role: 'ground', depth: round(between(rand, [0.04, 0.12]), 2), anchor: 'fill'}];
+    const highlights = [];
     /**
      * PLACEMENT FOLLOWS DEPTH. It is not random.
      *
@@ -590,6 +649,18 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
       const jitter = (span) => Math.round((rand() - 0.5) * span);
       const side = i % 2 === 0 ? -1 : 1;
 
+      /**
+       * THE NEAREST PIECE CATCHES THE LIGHT.
+       *
+       * Only when the sentence is about gold or fire — the same law as the
+       * motifs. A highlight on every shot is a filter; a highlight on the one
+       * line about treasure is the line.
+       */
+      const catchesLight = i === pieces.length - 1 && earnsHighlight(line);
+      if (catchesLight) {
+        highlights.push({role, depth, index: scene.layers.length});
+      }
+
       scene.layers.push({
         role,
         depth,
@@ -605,6 +676,28 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
           : {}),
       });
     });
+    /**
+     * THE HIGHLIGHT IS THE PIECE AGAIN — the shadow trick with colour instead
+     * of black. A second copy of the SAME file, laid exactly over the first,
+     * recoloured and switched on and off on hold keyframes. No new asset, and
+     * it goes LAST so it sits over everything it is a copy of.
+     */
+    for (const hit of highlights) {
+      const base = scene.layers[hit.index];
+      scene.layers.push({
+        ...base,
+        recolour: 'sepia(1) saturate(5) hue-rotate(18deg) brightness(1.15)',
+        // Instant on, instant off. A ramp turns a fluorescent strike into a
+        // dissolve, which is the one thing it must not be.
+        flicker: [
+          [23, 29],
+          [32, 62],
+          [64, 72],
+        ],
+        shadow: false,
+      });
+    }
+
     scene.params = {
       anchorX: Math.round(WIDTH * 0.5),
       anchorY: 1700,
@@ -680,6 +773,10 @@ async function main() {
     fieldColours: pick(rand, mood.fieldColours),
     mark: pick(rand, MARKS),
     textStyle: pick(rand, ['serif-italic', 'sticker', 'typed']),
+    // HOW A FIGURE ARRIVES, chosen once per reel. A counter climbing makes the
+    // SIZE of it felt; a slot reel slamming to a stop makes the CHOICE felt.
+    // Using both in one reel would make neither of them mean anything.
+    numbers: pick(rand, ['count', 'slot']),
     fog: mood.fog,
     // FOUR of the five arrivals, in an order this episode picks for itself. The
     // old draft took three, and across nine scenes that meant each one came

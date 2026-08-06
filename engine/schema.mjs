@@ -238,6 +238,17 @@ export function validateEpisodeConfig(config) {
           if (layer.depth !== undefined && (typeof layer.depth !== 'number' || layer.depth < 0 || layer.depth > 1)) {
             push(`${at}.depth: must be a number between 0 and 1`);
           }
+          if (layer.flicker !== undefined) {
+            // Hold keyframes are [on, off] pairs. A bare list of numbers reads
+            // as valid, draws nothing, and says nothing about it.
+            const bad =
+              !Array.isArray(layer.flicker) ||
+              layer.flicker.some(
+                (span) =>
+                  !Array.isArray(span) || span.length !== 2 || span.some((n) => typeof n !== 'number') || span[1] <= span[0],
+              );
+            if (bad) push(`${at}.flicker: must be [on, off] frame pairs with off greater than on`);
+          }
           if (layer.role !== undefined && !(scene.assets ?? {})[layer.role] &&
               !(scene.assets ?? {})[`?${layer.role}`]) {
             push(`${at}.role: "${layer.role}" is not a role in this scene's assets`);

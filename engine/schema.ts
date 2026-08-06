@@ -105,6 +105,20 @@ export type LayerSpec = {
   alive?: boolean;
   /** Frames, scene-relative, over which this layer springs in. */
   from?: number;
+  /**
+   * THE HIGHLIGHT TRICK — the shadow trick again, with colour instead of black.
+   *
+   * A second copy of the SAME artwork, recoloured, laid exactly over the first
+   * and switched on and off. It costs no asset and it is how the reference reel
+   * makes stacked cash glow: `sepia(1) saturate(5) hue-rotate(18deg)`.
+   *
+   * `flicker` are [on, off] pairs in scene frames, and they are HOLD keyframes —
+   * instant on, instant off, never a fade. The whole character of it is that
+   * there is no ramp: cross-fade it and it stops being electrical and becomes a
+   * dissolve.
+   */
+  recolour?: string;
+  flicker?: number[][];
 };
 
 /**
