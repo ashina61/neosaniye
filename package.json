@@ -17,6 +17,7 @@
     "typecheck": "tsc --noEmit",
     "test": "node --test \"test/*.test.mjs\"",
     "assets:generate": "node scripts/generate-assets.mjs",
+    "assets:review": "node scripts/review-assets.mjs",
     "assets:placeholder": "node scripts/make-placeholder-assets.mjs"
   },
   "dependencies": {

@@ -139,3 +139,4 @@ test('a key that shatters the picture is refused, however opaque it is', async (
   const oneObject = await keyBackdrop(await picture(GREY, [[50, 40, 110, 130, RED]]));
   assert.ok((await islandCount(oneObject)) <= 2, 'a single cut-out is one island');
 });
+
