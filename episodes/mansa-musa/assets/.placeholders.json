@@ -1,12 +1,15 @@
 {
-  "$comment": "These assets are stand-ins, not finished artwork.",
+  "$comment": "These assets are stand-ins, not finished artwork. scripts/generate-assets.mjs removes each name as it draws it for real.",
   "placeholders": [
-    "s01-leave-bg.png",
-    "s03-cairo-bg.png",
-    "s05-architect-bg.png",
-    "s05-architect-photo.png",
-    "s06-atlas-bg.png",
-    "s06-atlas-photo.png",
-    "s08-close-bg.png"
+    "s01-mali-bg.png",
+    "s02-route-bg.png",
+    "s04-mecca-bg.png",
+    "s04-mecca-photo.png",
+    "s05-cairo-bg.png",
+    "s07-atlas-bg.png",
+    "s07-atlas-photo.png",
+    "s08-timbuktu-bg.png",
+    "s08-timbuktu-photo.png",
+    "s09-close-bg.png"
   ]
 }

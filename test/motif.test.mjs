@@ -68,6 +68,15 @@ test('a type card keeps its middle', () => {
   assert.equal(motifFor({vo: 'The pilgrimage cost him everything he had.'}, [], 'title-slate'), 'coins');
 });
 
+test('an itinerary outranks every rhythm rule', () => {
+  // A line that lists the places he passed through IS a route: the stops are
+  // the content of that shot, not decoration laid over it. So neither the
+  // never-twice rule nor the never-three-in-a-row rule may take it away.
+  const line = {vo: 'The road ran four thousand miles.', stops: ['Niani', 'Cairo', 'Mecca']};
+  assert.equal(motifFor(line, ['route', 'coins'], 'composite'), 'route');
+  assert.equal(motifFor(line, ['coins', 'tally'], 'composite'), 'route');
+});
+
 test('the brief overrules the inference, in both directions', () => {
   assert.equal(motifFor({vo: 'Nothing here suggests anything.', motif: 'embers'}, [], 'composite'), 'embers');
   assert.equal(motifFor({vo: 'He spent a fortune.', motif: 'none'}, [], 'composite'), '');
