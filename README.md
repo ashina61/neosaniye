@@ -48,10 +48,18 @@ calls a generator. Drawing them is a separate step that writes into
 `episodes/<id>/assets/` and commits the result:
 
 ```bash
-node scripts/generate-assets.mjs --episode=zodiac-1969            # only what is missing
+node scripts/generate-assets.mjs --episode=zodiac-1969 --dry-run  # what would be drawn
+node scripts/generate-assets.mjs --episode=zodiac-1969            # holes and stand-ins
 node scripts/generate-assets.mjs --episode=zodiac-1969 --force    # redraw everything
 node scripts/generate-assets.mjs --episode=zodiac-1969 --only=editor.png,detective.png
 ```
+
+**The ledger decides what to draw, not the file system.** An episode is
+scaffolded with stand-ins and those stand-ins are committed, so by the time the
+generator first runs, every asset already exists as a file. Skipping on
+existence alone would draw nothing, exit green, commit nothing, and leave a reel
+of grey boxes behind a row of green ticks. A name in `.placeholders.json` is a
+hole with a PNG in it, and gets drawn over.
 
 Prompts live in `episodes/<id>/assets.json`, next to the config — a prompt is
 the episode's business in exactly the way a file name is. Each asset declares a
