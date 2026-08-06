@@ -575,6 +575,14 @@ async function main() {
       if (!assets[name]) {
         assets[name] = {
           kind: 'piece',
+          // TRY THE REAL THING FIRST, even for a cut-out. Commons is full of
+          // catalogue photography — an object on a plain sweep, because that is
+          // how a museum photographs a coin and how a contributor photographs a
+          // camel — and a plain sweep is exactly what the keyer wants. A real
+          // camel keyed out beats a drawn one every time; when the key comes
+          // back a rectangle or a handful of confetti the prompt still gets its
+          // turn.
+          commons: [`${piece} white background`, `${piece} isolated`, piece],
           // Singular, because "a row of X" makes the model draw a SCENE, and a
           // scene has no backdrop to key away.
           prompt: `one single ${piece}, whole object in frame, dark silhouette, on a plain white background`,

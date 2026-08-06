@@ -39,6 +39,7 @@ import {mkdir, readFile, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import sharp from 'sharp';
+import {islandCount, keyBackdrop, opaqueFraction} from './generate-assets.mjs';
 import {ROOT, episodeDir, exists, parseArgs} from './lib/episode.mjs';
 import {clearPlaceholders} from './lib/placeholders.mjs';
 
@@ -215,10 +216,45 @@ async function main() {
       if (!response.ok) throw new Error(`download HTTP ${response.status}`);
       const raw = Buffer.from(await response.arrayBuffer());
 
-      await writeFile(
-        target,
-        await sharp(raw).resize(width, height, {fit: 'cover', position: 'attention'}).png().toBuffer(),
-      );
+      /**
+       * A CUT-OUT KIND GETS CUT OUT.
+       *
+       * Everything in the reference reel is a PIECE — a cut-out building, a
+       * cut-out figure, a newspaper, a bundle of notes on a gloved hand. Not one
+       * shot in it is a whole photograph, and pieces are the material this
+       * pipeline has never been able to make: four prompt strategies, and the
+       * generator still hands back a room with something in it.
+       *
+       * But Commons is full of catalogue photography — an object, lit evenly,
+       * on a plain sweep, because that is how a museum photographs a coin and
+       * how a contributor photographs a camel. That is exactly what the keyer
+       * wants. So a recipe whose kind carries alpha is keyed after download and
+       * fitted INSIDE its box rather than cropped to fill it: cropping a cut-out
+       * to a frame cuts the object in half, which is the one thing a piece may
+       * never be.
+       */
+      const piece = Boolean(kind.alpha);
+      const fitted = await sharp(raw)
+        .resize(width, height, piece ? {fit: 'inside'} : {fit: 'cover', position: 'attention'})
+        .png()
+        .toBuffer();
+      const finished = piece ? await keyBackdrop(fitted) : fitted;
+
+      if (piece) {
+        // The same two measurements the generator is held to. A fetched picture
+        // is not exempt: a keyed photograph that came back fully opaque is a
+        // rectangle, and one shattered into islands is confetti. Either way the
+        // prompt should get its turn instead.
+        const solid = await opaqueFraction(finished);
+        const islands = await islandCount(finished);
+        if (solid > 0.88 || islands > 6) {
+          console.log(`keyed badly (${(solid * 100).toFixed(0)}% opaque, ${islands} islands) — leaving it to the generator`);
+          missed.push(name);
+          continue;
+        }
+      }
+
+      await writeFile(target, finished);
 
       const meta = choice.info.extmetadata ?? {};
       credits.push({

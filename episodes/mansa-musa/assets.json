@@ -54,14 +54,29 @@
     },
     "camel-standing-in-profile.png": {
       "kind": "piece",
+      "commons": [
+        "camel standing in profile white background",
+        "camel standing in profile isolated",
+        "camel standing in profile"
+      ],
       "prompt": "one single camel standing in profile, whole object in frame, dark silhouette, on a plain white background"
     },
     "date-palm-tree.png": {
       "kind": "piece",
+      "commons": [
+        "date palm tree white background",
+        "date palm tree isolated",
+        "date palm tree"
+      ],
       "prompt": "one single date palm tree, whole object in frame, dark silhouette, on a plain white background"
     },
     "traveller-in-a-long-desert-robe.png": {
       "kind": "piece",
+      "commons": [
+        "traveller in a long desert robe white background",
+        "traveller in a long desert robe isolated",
+        "traveller in a long desert robe"
+      ],
       "prompt": "one single traveller in a long desert robe, whole object in frame, dark silhouette, on a plain white background"
     },
     "s04-mecca-bg.png": {
