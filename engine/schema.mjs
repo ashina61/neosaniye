@@ -192,6 +192,15 @@ export function validateEpisodeConfig(config) {
         }
       }
     }
+    if (scene.transition !== undefined) {
+      const kinds = ['cut', 'slam', 'slip', 'flare', 'rack', 'blinds'];
+      const kind = scene.transition?.kind;
+      if (typeof scene.transition !== 'object' || scene.transition === null) {
+        push(`${where}.transition: must be an object`);
+      } else if (kind !== undefined && !kinds.includes(kind)) {
+        push(`${where}.transition.kind: "${kind}" is not one of ${kinds.join(', ')}`);
+      }
+    }
     if (scene.layers !== undefined) {
       if (!Array.isArray(scene.layers)) push(`${where}.layers: must be an array`);
       else {

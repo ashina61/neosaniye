@@ -13,7 +13,7 @@ import path from 'node:path';
 import {bundle} from '@remotion/bundler';
 import {renderMedia, selectComposition} from '@remotion/renderer';
 import {validateEpisodeConfig} from '../engine/schema.mjs';
-import {ROOT, episodeDir, exists, loadConfig, parseArgs, writeSceneOverrides} from './lib/episode.mjs';
+import {ROOT, episodeDir, loadConfig, parseArgs, pruneOptionalAssets, writeSceneOverrides} from './lib/episode.mjs';
 
 async function main() {
   const args = parseArgs();
@@ -33,22 +33,7 @@ async function main() {
     process.exit(1);
   }
 
-  // An optional role whose file is not on disk is dropped here, before the
-  // bundle. The engine runs in a browser and cannot look at the file system, so
-  // this is the only place that can tell the difference.
-  const dir = episodeDir(episodeId);
-  const dropped = [];
-  for (const scene of config.scenes) {
-    for (const [role, file] of Object.entries(scene.assets ?? {})) {
-      if (!role.startsWith('?')) continue;
-      delete scene.assets[role];
-      if (typeof file === 'string' && (await exists(path.join(dir, file)))) {
-        scene.assets[role.slice(1)] = file;
-      } else {
-        dropped.push(`${scene.id}.${role.slice(1)}`);
-      }
-    }
-  }
+  const dropped = await pruneOptionalAssets(config, episodeId);
   if (dropped.length) console.log(`optional assets absent, scenes will do without: ${dropped.join(', ')}`);
 
   const overrides = await writeSceneOverrides(episodeId);

@@ -72,7 +72,11 @@
           "style": "serif-italic",
           "position": "bottom"
         }
-      ]
+      ],
+      "transition": {
+        "kind": "blinds",
+        "frames": 16
+      }
     },
     {
       "id": "s03-printed",
@@ -115,23 +119,31 @@
           "style": "sticker",
           "position": "bottom"
         }
-      ]
+      ],
+      "transition": {
+        "kind": "slam",
+        "frames": 12
+      }
     },
     {
       "id": "s04-berryessa",
-      "sceneType": "parallax-punch",
+      "sceneType": "composite",
       "voText": "Eight weeks later a man in a black hood walked out of the trees at Lake Berryessa.",
       "durationInFrames": 165,
       "assets": {
-        "background": "assets/lake-dusk.png",
+        "shore": "assets/lake-dusk.png",
+        "?ridge": "assets/hill-ridge.png",
+        "?trees": "assets/treeline.png",
+        "?pines": "assets/pines.png",
+        "?haze": "assets/haze.png",
         "?character": "assets/hooded-figure.png"
       },
       "params": {
-        "groundX": 600,
-        "groundY": 1640,
-        "bgScale": 1.16,
-        "punchEndFrame": 130,
-        "focusPx": 14,
+        "anchorX": 600,
+        "anchorY": 1640,
+        "pushTo": 1.5,
+        "pushEndFrame": 140,
+        "focusPx": 0,
         "caption": [
           "Eight weeks later,",
           "a man in a hood",
@@ -147,17 +159,70 @@
         "markX": 84,
         "markY": 620,
         "markWidth": 560,
-        "markFrame": 84,
-        "charHeight": 880,
-        "charScale": 1.62,
-        "shadowSkew": -48,
-        "shadowOpacity": 0.5,
-        "shadowBlur": 9
+        "markFrame": 84
       },
       "gradeOverride": {
         "saturate": 0.5,
         "brightness": 0.98,
         "contrast": 1.14
+      },
+      "layers": [
+        {
+          "role": "shore",
+          "depth": 0.06,
+          "anchor": "fill"
+        },
+        {
+          "role": "ridge",
+          "depth": 0.16,
+          "anchor": "bottom",
+          "x": 540,
+          "y": 1060,
+          "width": 1500,
+          "opacity": 0.55
+        },
+        {
+          "role": "pines",
+          "depth": 0.3,
+          "anchor": "bottom",
+          "x": 190,
+          "y": 1120,
+          "width": 760,
+          "opacity": 0.8
+        },
+        {
+          "role": "trees",
+          "depth": 0.44,
+          "anchor": "bottom",
+          "x": 830,
+          "y": 1180,
+          "width": 900,
+          "opacity": 0.9
+        },
+        {
+          "role": "character",
+          "depth": 1.0,
+          "anchor": "bottom",
+          "x": 600,
+          "y": 1640,
+          "height": 880,
+          "shadow": true,
+          "shadowSkew": -48,
+          "shadowOpacity": 0.45,
+          "alive": true,
+          "from": 8
+        },
+        {
+          "role": "haze",
+          "depth": 0.7,
+          "anchor": "fill",
+          "blend": "screen",
+          "opacity": 0.34
+        }
+      ],
+      "transition": {
+        "kind": "rack",
+        "frames": 16
       }
     },
     {
@@ -190,28 +255,36 @@
           "style": "serif-italic",
           "position": "bottom"
         }
-      ]
+      ],
+      "transition": {
+        "kind": "flare",
+        "frames": 10
+      }
     },
     {
       "id": "s06-stine",
-      "sceneType": "parallax-punch",
+      "sceneType": "composite",
       "voText": "Two weeks later he shot a cab driver ten blocks from a police station.",
       "durationInFrames": 165,
       "assets": {
-        "background": "assets/sf-fog-corner.png",
-        "?character": "assets/man-walking.png",
-        "?haze": "assets/haze.png"
+        "street": "assets/sf-fog-corner.png",
+        "?houses": "assets/houses-row.png",
+        "?lamp": "assets/lamp-post.png",
+        "?car": "assets/sedan.png",
+        "?haze": "assets/haze.png",
+        "?character": "assets/man-walking.png"
       },
       "params": {
-        "groundX": 540,
-        "groundY": 1700,
-        "bgScale": 1.2,
-        "punchEndFrame": 135,
-        "focusPx": 16,
-        "glowX": 741,
-        "glowY": 1004,
-        "glowSize": 78,
-        "glowIntensity": 1.15,
+        "anchorX": 620,
+        "anchorY": 1700,
+        "pushTo": 1.4,
+        "pushEndFrame": 140,
+        "focusPx": 12,
+        "glowX": 830,
+        "glowY": 560,
+        "glowSize": 80,
+        "glowIntensity": 1.1,
+        "glowDepth": 0.5,
         "glowWarm": "#ffc06a",
         "caption": [
           "Ten blocks",
@@ -224,19 +297,70 @@
         "captionEvery": 20,
         "captionSize": 90,
         "captionAccent": 0,
-        "captionRecedeAt": 126,
-        "charHeight": 760,
-        "charScale": 1.42,
-        "shadowSkew": -58,
-        "shadowOpacity": 0.4,
-        "shadowBlur": 12,
-        "hazeOpacity": 0.42,
-        "hazeDrift": 0.3
+        "captionRecedeAt": 126
       },
       "gradeOverride": {
         "saturate": 0.46,
         "brightness": 0.96,
         "contrast": 1.16
+      },
+      "layers": [
+        {
+          "role": "street",
+          "depth": 0.08,
+          "anchor": "fill"
+        },
+        {
+          "role": "houses",
+          "depth": 0.26,
+          "anchor": "bottom",
+          "x": 250,
+          "y": 1300,
+          "width": 1050,
+          "opacity": 0.75
+        },
+        {
+          "role": "lamp",
+          "depth": 0.5,
+          "anchor": "bottom",
+          "x": 830,
+          "y": 1420,
+          "height": 900,
+          "opacity": 0.9
+        },
+        {
+          "role": "car",
+          "depth": 0.72,
+          "anchor": "bottom",
+          "x": 320,
+          "y": 1660,
+          "width": 720,
+          "opacity": 0.92
+        },
+        {
+          "role": "character",
+          "depth": 1.0,
+          "anchor": "bottom",
+          "x": 620,
+          "y": 1700,
+          "height": 760,
+          "shadow": true,
+          "shadowSkew": -58,
+          "shadowOpacity": 0.36,
+          "alive": true,
+          "from": 10
+        },
+        {
+          "role": "haze",
+          "depth": 0.85,
+          "anchor": "fill",
+          "blend": "screen",
+          "opacity": 0.44
+        }
+      ],
+      "transition": {
+        "kind": "slip",
+        "frames": 14
       }
     },
     {
@@ -272,7 +396,20 @@
         "captionFrame": 6,
         "captionSize": 86,
         "captionRecedeAt": 80
-      }
+      },
+      "transition": {
+        "kind": "slam",
+        "frames": 12
+      },
+      "onScreenText": [
+        {
+          "text": "SUSPECT UNIDENTIFIED",
+          "atFrame": 140,
+          "durationInFrames": 46,
+          "style": "typed",
+          "position": "bottom"
+        }
+      ]
     },
     {
       "id": "s08-suspects",
@@ -297,6 +434,10 @@
         "markHeight": 300,
         "markFrame": 52,
         "markOver": 18
+      },
+      "transition": {
+        "kind": "blinds",
+        "frames": 18
       }
     },
     {
@@ -332,7 +473,11 @@
           "style": "serif-italic",
           "position": "bottom"
         }
-      ]
+      ],
+      "transition": {
+        "kind": "rack",
+        "frames": 14
+      }
     },
     {
       "id": "s10-open-case",
@@ -359,6 +504,10 @@
         "saturate": 0.34,
         "brightness": 0.92,
         "contrast": 1.18
+      },
+      "transition": {
+        "kind": "flare",
+        "frames": 12
       }
     }
   ]

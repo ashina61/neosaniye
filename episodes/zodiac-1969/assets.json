@@ -29,6 +29,11 @@
       "width": 1080,
       "height": 1080,
       "alpha": false
+    },
+    "piece": {
+      "width": 1400,
+      "height": 900,
+      "alpha": true
     }
   },
   "assets": {
@@ -94,7 +99,32 @@
     },
     "haze.png": {
       "kind": "overlay",
-      "prompt": "thick pale fog and drifting smoke against a pure black background, soft wispy plumes, nothing else"
+      "prompt": "thick pale fog and drifting smoke on a pure black background, soft wispy plumes"
+    },
+    "treeline.png": {
+      "kind": "piece",
+      "prompt": "a wide row of bare oak trees in flat black silhouette, only the trees, on a plain white background"
+    },
+    "hill-ridge.png": {
+      "kind": "piece",
+      "prompt": "a low rolling hill ridge in flat dark silhouette, a single long horizontal shape, on a plain white background"
+    },
+    "houses-row.png": {
+      "kind": "piece",
+      "prompt": "a row of tall narrow Victorian bay-window houses in flat dark silhouette, rooftops and chimneys, on a plain white background"
+    },
+    "lamp-post.png": {
+      "kind": "piece",
+      "prompt": "a single tall cast-iron street lamp post with a lantern head, dark silhouette, on a plain white background"
+    },
+    "sedan.png": {
+      "kind": "piece",
+      "prompt": "a 1960s American sedan seen from the side, dark silhouette, on a plain white background"
+    },
+    "pines.png": {
+      "kind": "piece",
+      "prompt": "a row of tall thin pine trees in flat black silhouette, on a plain white background"
     }
-  }
+  },
+  "$pieces": "Method A: scenes are composed from pieces rather than from one full-frame photograph. Every piece below is OPTIONAL in the config (?role), so a piece that fails to draw costs depth in one shot and never costs the reel."
 }

@@ -38,7 +38,7 @@ export type EpisodeLook = {
   film: FilmLayers;
 };
 
-export type TextStyle = 'serif-italic' | 'sticker' | 'headline';
+export type TextStyle = 'serif-italic' | 'sticker' | 'headline' | 'typed';
 export type TextPosition = 'top' | 'center' | 'bottom' | 'left' | 'right';
 
 export type OnScreenTextSpec = {
@@ -107,6 +107,12 @@ export type LayerSpec = {
   from?: number;
 };
 
+/** How a scene arrives. Only ever affects the incoming shot — see Transition. */
+export type TransitionSpec = {
+  kind?: 'cut' | 'slam' | 'slip' | 'flare' | 'rack' | 'blinds';
+  frames?: number;
+};
+
 export type SceneSpec = {
   id: string;
   sceneType: SceneType;
@@ -126,6 +132,8 @@ export type SceneSpec = {
   assets?: Record<string, string>;
   /** Template knobs. Frame values are relative to this scene's own start. */
   params?: Record<string, number | string | boolean | number[] | string[]>;
+  /** How this shot arrives. Absent means a hard cut. */
+  transition?: TransitionSpec;
   /** The layer stack, for scene types that compose one. */
   layers?: LayerSpec[];
   /** Partial grade for this scene only, merged over the episode's grade. */
