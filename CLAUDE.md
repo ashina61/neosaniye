@@ -1,74 +1,97 @@
-Bu depo **seslendirme-önce kodlanmış reel fabrikası**dır.
+Bu depo **dikey suç belgeseli reel fabrikası**dır: bir motor, çok bölüm.
 
-Tek cümlelik yasa: **SESLENDİRME KAYNAK KODUDUR.** Önce metin kilitlenir; sonra
-her satır kendi sahnesini, ekrandaki kelimelerini, süresini ve ses efektlerini
-dikte eder. Sahne yazılmaz, satırdan TÜRETİLİR.
+Tek cümlelik yasa: **MOTOR BÖLÜMÜ TANIMAZ.** `engine/` içindeki hiçbir satır bir
+dosya adı, bir bölüm kimliği veya bir hikâye bilmez. Bölüm bir klasördür —
+kod değişikliği değil. İkinci bölüm eklemek `episodes/` altına bir klasör
+açmaktır, motora dokunmak değil.
 
-Giriş noktası `npm run produce` — script → TTS → beat sheet → medya → Remotion
-render → yayın. Otomatik koşu `.github/workflows/daily-short.yml`.
+Giriş noktası `npm run render -- --episode=<id>`. Otomatik koşu
+`.github/workflows/render-episode.yml` (workflow_dispatch, `episode_id` girdisi).
 
 ## Zincir
 
 ```
-seslendirme satırları (script.scenes[].narration)
-        ↓  ölçülmüş TTS kelime zamanları
-src/pipeline/canonicalTimeline.js           → beat pencereleri
+episodes/<id>/scene-config.json     → bölümün tek gerçeği (sahneler, süreler, look)
         ↓
-src/story/beatSheet.js + src/story/rigs.js  → BEAT SHEET
+scripts/render-episode.mjs          → doğrula → publicDir = episodes/<id> → bundle
         ↓
-src/video/buildReelSpec.js                  → production.json + beat-sheet.md
+engine/Root.tsx (calculateMetadata) → fps/en/boy/süre config'ten gelir
         ↓
-remotion/src/Reel.tsx → engine/ + rigs/     → final MP4
+engine/Episode.tsx                  → <Sequence> zinciri, sahne başına FilmLook
+        ↓
+engine/sceneTypes/registry.ts       → sceneType → şablon
+        ↓
+engine/sceneTypes/*.tsx + Plate     → plakalar, hareket, gölge
+        ↓
+out/<id>.mp4
 ```
 
 ## Değişmez kurallar
 
-1. **Ekrandaki her kelime, o an söylenen satırın birebir parçasıdır.**
-   Yazılmış, uydurulmuş, özetlenmiş altyazı yoktur. `test/beatSheet.test.js`
-   bunu kapı olarak tutar.
-2. **Yerleşim ölçülür, tahmin edilmez.** Altyazı, kart ve SFX; kelimenin
-   gerçekten söylendiği kareye oturur. Tahmine düşen yerleşim sayısı
-   `production.json` içindeki `timing` alanında raporlanır.
-3. **Sahneyi rig seçer, şablon değil.** Altı mekanik: `portal-zoom`,
-   `villain-punch`, `paper-drop`, `grounded-punch`, `money-room`,
-   `finale-clone`. İlk satır her zaman portal, son satır her zaman finale;
-   arası satırın KELİMELERİNE bakar, sırasına değil.
-4. **Görünüm tek yerden gelir.** Stop-motion adımı (12fps posterize) ve film
-   işlemesi `remotion/src/engine/` içindedir. Hiçbir rig kendi grain'ini,
-   vignette'ini veya grade'ini yazmaz.
-5. **Her değer proptur.** Rig içinde gizli sabit bırakılmaz; değerler
-   `production.json` üzerinden değişir ve Remotion Studio'daki rig
-   kompozisyonunda canlı ayarlanır.
-6. **Klonla, yeniden yazma.** `finale-clone` = `grounded-punch` + yeni karakter
-   + yeni kelimeler + jest. Yedinci mekanik gerçekten gerekmedikçe eklenmez.
-7. **Kelimeler her zaman kazanır.** Müzik konuşma penceresinde kısılır, SFX
-   yalnız rigin olayında vurur, kota doldurmak için efekt eklenmez.
+1. **DOSYA ADI CONFIG'TEDİR, KODDA DEĞİL.** Şablon `assets.character` gibi bir
+   ROL okur; o rolün hangi dosya olduğu bölümün işidir.
+   `test/enginePurity.test.mjs` motorun içinde geçen her dosya uzantısını,
+   her `episodes/` yolunu ve her bölüm kimliğini düşürür.
+2. **DÖRT PAYLAŞILAN ŞABLON.** `portal-zoom-reveal`, `parallax-punch`,
+   `stacked-reveal`, `split-shift`. Bir bölüm kendi şablonunu
+   `episodes/<id>/scenes/index.tsx` içinde kaydedebilir; paylaşılan dörde
+   bölüme özel bir şey eklenmez.
+3. **DERİNLİK DOSYADA DEĞİL, İKİ PLAKANIN BİRBİRİNE GÖRE HAREKETİNDEDİR.**
+   Karakter arka plandan DAHA SERT yaklaşır (eşit ölçek zoom'dur, farklı ölçek
+   derinliktir) ve ikisi de YERDEKİ AYNI NOKTA etrafında ölçeklenir
+   (`groundX`/`groundY`). Ortak çapa kaçarsa özne zeminden kayar — bu efektin
+   bozulmasının bir numaralı yolu.
+4. **GÖLGE AYRI BİR ASSET DEĞİLDİR.** Karakterin kendi dosyası siyaha boyanır,
+   ayaklarından aşağı çevrilir ve zemine yatırılır. Karakter gönderen bölüm
+   gölgesini bedava gönderir.
+5. **ÖZNE PLAKASI ÇERÇEVEYİ KAPLAMAZ.** Tam kadraj plaka duvar içindir;
+   bir insan `plateWidth` + `footX`/`footY` ile boyutlanır ve ayakları
+   üzerinde durur. 1080x1920'e esnetilen bir cutout tüm kareyi doldurur ve
+   önünde hiçbir şey hareket edemez — derinlik ölür.
+6. **FİLM İŞLEMESİ TEK YERDEN GELİR.** Grain, grunge, tarama çizgileri,
+   vignette, gate weave ve grade `engine/FilmLook.tsx` içindedir. Hiçbir şablon
+   kendi grain'ini yazmaz; sahne yalnız `gradeOverride` ile bölümün grade'ini
+   ezer.
+7. **HER DEĞER PROPTUR.** Şablonun içinde gizli sabit bırakılmaz; sayılar
+   `params` üzerinden gelir ve `num('key', fallback)` ile okunur. Fallback
+   çerçeve boyutuna göre hesaplanır, bölüme göre değil.
+8. **KARE SAYILARI SAHNENİN KENDİ BAŞLANGICINA GÖREDİR.** `onScreenText.atFrame`
+   ve `params` içindeki bütün kare değerleri sahne sıfırından sayılır — reel
+   sıfırından değil. Sahne başlangıçları `sceneOffsets` ile toplanır, config'te
+   iki kez yazılmaz.
+9. **ŞEMA TEK UYGULAMADIR.** `engine/schema.mjs` düz JavaScript'tir çünkü hem
+   doğrulayıcı script hem render bundle AYNI doğrulamayı çalıştırmak
+   zorundadır. Tipler `engine/schema.ts` içindedir. İkiye ayrılırsa config
+   doğrulamayı geçer ve render'ı çökertir.
+10. **BİLİNMEYEN SAHNE TİPİ SESSİZCE ATLANMAZ.** Kırmızı bir MISSING TEMPLATE
+    kartı çizilir ve doğrulayıcı zaten render'dan önce düşürür.
 
-## GÖRSEL MALZEME SINIRI — bu deponun en pahalı dersi
+## İş bölümü — bu deponun en pahalı dersi
 
-Kolaj hattı (`collage-factory-son`, commit 51ae3cf) **görsel malzemeyi
-üretemediği için** terk edildi: bedava üreticiler dört ayrı turda masaya konmuş
-kitap fotoğrafı, çerçeveli baskı ve bozuk yazı verdi; prosedürel siluetler
-tabela piktogramı olmaktan çıkmadı.
+Önceki hat (`collage-factory-son`) **görsel malzemeyi üretemediği için**
+terk edildi: bedava üreticiler masaya konmuş kitap fotoğrafı ve bozuk yazı
+verdi; prosedürel siluetler tabela piktogramı olmaktan çıkmadı.
 
-Bu hat aynı duvara çarpmaz çünkü iş bölümü nettir:
+Bu hat aynı duvara çarpmaz çünkü malzeme koda sokulmaz:
 
-- **FOTOĞRAF BULUNUR** — arka planlar ve özneler stok/arşiv kaynaklardan gelir
-  (`src/media/`). Rig onları düz plaka olarak kullanır, temiz cutout beklemez.
-- **GRAFİK ÇİZİLİR** — çerçeve, plaket, gazete, lamba ışığı, gölge, köpük el,
-  slot makinesi: hepsi `remotion/src/engine/props.tsx` içinde kodla çizilir.
-  Hiçbiri üretilmez, indirilmez, koşu sırasında kaybolmaz.
-- **DERİNLİK OYNATILIR** — 3D yok, plugin yok: ayakta çapalanmış parallax
-  punch, karakterin kendisinden yapılan gölge, screen-blend ile çizilen ışık.
+- **GÖRSEL BÖLÜMÜN İÇİNDEDİR** — `episodes/<id>/assets/`. Render bir üreticiyi
+  ÇAĞIRMAZ; diskteki dosyayı okur. Doğrulayıcı hepsinin diskte ve boş
+  olmadığını render'dan önce kontrol eder.
+- **ÜRETİM AYRI BİR ADIMDIR.** `scripts/generate-assets.mjs` +
+  `.github/workflows/generate-assets.yml` görselleri çizer ve **commit eder**;
+  o andan sonra sıradan bir dosyadırlar. Reçeteler `episodes/<id>/assets.json`
+  içindedir — istem de dosya adı gibi bölümün işidir. Bu ayrım şart: üretici
+  bozulursa üretim adımı patlar, bitmiş bir bölüm sessizce değişmez. Aynı
+  isim aynı seed'i verir, yani tekrar çalıştırmak aynı resmi getirir.
+- **HAREKET MOTORUN İÇİNDEDİR** — `engine/motion.ts` sayı alır, sayı döndürür;
+  ne çizdiğini bilmez. Bu yüzden ikinci bölüm bedavadır.
+- **DERİNLİK OYNATILIR** — 3D yok, plugin yok: ortak çapaya oturtulmuş iki
+  plaka, öznenin kendisinden yapılan gölge, ayaklarda dönen ölçek.
 
-Bir sahne tek plakayla da ayakta kalmak zorundadır: medya katmanı boş dönerse
-rig kodla çizdiği parçalarla devam eder, kara kare vermez.
+## Doğrulama
 
-Kolaj turlarında ölçülen ve bu hatta taşınan iki ders:
-· beat süreleri gerçek konuşma süresinden ölçülür (tahminle senkron tutmaz)
-· arşiv sorgusu konunun adını taşır ve dönen sonuç alaka kapısından geçer
-
-## Süre sözleşmesi
-
-Ölçülmüş TTS süresi hedef bandın dışındaysa medya ve render maliyetine
-girilmeden koşu durur (`src/pipeline/durationPolicy.js`).
+`npm run validate` render yapmadan üç saniyede cevap verir: şema, sahne tipi ve
+her asset'in diskte olup olmadığı. Eksik bir PNG'de ölen render bundle'ı,
+tarayıcıyı ve kuyruk slotunu çoktan ödemiştir.
+`npm test` motor saflığını, şemayı, registry tutarlılığını ve depodaki her
+bölümü kapıda tutar.

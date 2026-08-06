@@ -1,0 +1,118 @@
+{
+  "$comment": "Generation recipe for this episode's artwork. The ENGINE never reads this file — only scripts/generate-assets.mjs does, and only when someone runs it. The render reads the PNGs it produced, on disk, like any other episode's.",
+
+  "style": "1969 documentary photograph, shot on 35mm film, muted desaturated colour, heavy film grain, natural available light, period-accurate Northern California, no text, no captions, no watermark, no modern objects",
+
+  "negative": "text, letters, words, watermark, signature, logo, modern car, smartphone, digital screen, cartoon, illustration, cgi",
+
+  "kinds": {
+    "backdrop": {"width": 1080, "height": 1920, "alpha": false},
+    "photo": {"width": 900, "height": 1170, "alpha": false},
+    "subject": {"width": 820, "height": 1400, "alpha": true},
+    "object": {"width": 820, "height": 1060, "alpha": true}
+  },
+
+  "assets": {
+    "newsroom-wall.png": {
+      "kind": "backdrop",
+      "prompt": "the wall of a 1969 American newspaper office, pinned paper and clippings, tobacco-stained plaster, a single desk lamp throwing hard light from the left, deep shadow at the edges"
+    },
+    "cipher-408.png": {
+      "kind": "photo",
+      "prompt": "a single sheet of typewriter paper covered edge to edge in a hand-drawn cipher of small strange geometric symbols in blue ballpoint, slightly creased, photographed flat from directly above"
+    },
+    "frame-clip.png": {
+      "kind": "object",
+      "prompt": "an empty rectangular tarnished brass picture frame, front on, nothing inside it, worn corners",
+      "height": 1060
+    },
+    "newsroom-desk.png": {
+      "kind": "backdrop",
+      "prompt": "a 1969 newspaper editor's desk at night seen from across the room, manual typewriter, stacked galley proofs, overflowing ashtray, one warm lamp, the rest of the room falling into darkness"
+    },
+    "editor.png": {
+      "kind": "subject",
+      "prompt": "an anonymous middle-aged newspaper editor in a white shirt and loosened dark tie standing and reading a sheet of paper, seen from the side, full body, head to shoes, 1969"
+    },
+    "desk-wood.png": {
+      "kind": "backdrop",
+      "prompt": "an empty scratched dark wooden desktop photographed from straight above, warm lamp light falling across it from one side, deep shadow in the corners"
+    },
+    "paper-chronicle.png": {
+      "kind": "object",
+      "prompt": "a folded 1969 broadsheet newspaper front page lying flat, yellowed newsprint, dense grey columns of type too small to read, a large blurred photograph in the upper half"
+    },
+    "paper-examiner.png": {
+      "kind": "object",
+      "prompt": "a 1969 broadsheet newspaper front page lying flat at a slight angle, creased down the middle, yellowed newsprint, dense unreadable grey columns, coffee ring stain in one corner"
+    },
+    "paper-times-herald.png": {
+      "kind": "object",
+      "prompt": "a small-town 1969 newspaper front page lying flat, thinner and greyer newsprint, torn along the bottom edge, dense unreadable columns of type"
+    },
+    "lake-dusk.png": {
+      "kind": "backdrop",
+      "prompt": "the empty shore of a Northern California reservoir at dusk in late September, dry golden grass, dark still water, oak trees in silhouette on the far bank, low overcast light, nobody present"
+    },
+    "hooded-figure.png": {
+      "kind": "subject",
+      "prompt": "a menacing anonymous man standing still in a black square executioner-style hood that covers his head and shoulders and a dark pleated jacket, arms at his sides, full body from head to boots, faceless, 1969"
+    },
+    "car-exterior.png": {
+      "kind": "backdrop",
+      "prompt": "the side of a pale 1960s American sedan parked on a dirt turnout at dusk, dusty paintwork, door closed, shot from a few steps away, dry grass and dark trees behind"
+    },
+    "car-door-writing.png": {
+      "kind": "photo",
+      "prompt": "extreme close-up of the dusty painted door panel of a 1960s car, scratched paint and road dust, hard raking light across the surface, shallow depth of field"
+    },
+    "sf-fog-corner.png": {
+      "kind": "backdrop",
+      "prompt": "a residential San Francisco street corner at night in heavy fog, October 1969, bay-window houses, a single streetlamp haloed in the mist, wet asphalt, parked period cars, nobody on the street"
+    },
+    "man-walking.png": {
+      "kind": "subject",
+      "prompt": "an anonymous man in a dark heavy overcoat walking away at night, seen from behind, hands in pockets, collar up, full body from head to shoes, 1969"
+    },
+    "evidence-table.png": {
+      "kind": "backdrop",
+      "prompt": "an empty grey metal police evidence table under a bare overhead bulb, scuffed steel surface, cold hard light from directly above, dark room beyond, 1969"
+    },
+    "police-sketch.png": {
+      "kind": "object",
+      "prompt": "a 1960s police composite sketch on off-white card, pencil and charcoal drawing of an anonymous man's face with generic unremarkable features, short hair and heavy-framed glasses, drawn flat and frontal, no text on the card"
+    },
+    "shirt-scrap.png": {
+      "kind": "object",
+      "prompt": "a small torn ragged scrap of grey striped cotton shirt fabric lying flat, frayed threads along every edge, dark stain across one corner, photographed from above as evidence"
+    },
+    "boot-print.png": {
+      "kind": "object",
+      "prompt": "a single deep boot print pressed into dry pale dust, heavy military-style tread pattern, photographed from directly above with hard raking side light"
+    },
+    "detective-office.png": {
+      "kind": "backdrop",
+      "prompt": "a 1969 homicide detective's office, wall of grey filing cabinets and a cork board thick with overlapping paperwork, venetian blind shadows striping the far wall, no people"
+    },
+    "detective.png": {
+      "kind": "subject",
+      "prompt": "an anonymous 1969 plainclothes detective in a rumpled grey suit standing with his back half turned, one hand on his hip, tired posture, full body from head to shoes"
+    },
+    "cork-board.png": {
+      "kind": "backdrop",
+      "prompt": "a police case cork board densely layered with overlapping pinned paperwork and blank index cards, pins and faded string, hard flat light from one side, no readable text"
+    },
+    "cipher-340.png": {
+      "kind": "photo",
+      "prompt": "a single sheet of paper filled corner to corner with a dense grid of small hand-drawn cipher symbols in dark ink, seventeen columns, slightly yellowed and creased, photographed flat from directly above"
+    },
+    "night-road.png": {
+      "kind": "backdrop",
+      "prompt": "an empty two-lane country road at night disappearing into darkness, dry grass verges, no streetlights, faint cold moonlight on the asphalt, Northern California, nobody present"
+    },
+    "figure-away.png": {
+      "kind": "subject",
+      "prompt": "the distant small silhouette of a lone man in a dark coat walking away down a road at night, seen from behind, full body from head to shoes, unlit and indistinct"
+    }
+  }
+}

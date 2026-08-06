@@ -1,0 +1,103 @@
+name: Generate episode assets
+
+# Draws one episode's artwork and COMMITS it into episodes/<id>/assets/.
+#
+# This is deliberately a separate workflow from the render. The render reads
+# PNGs off disk and never calls a generator, so a provider having a bad day
+# breaks this job — which produces nothing and blocks its own commit — instead
+# of breaking a render, or worse, quietly changing what a finished episode
+# looks like on a re-run.
+#
+# Re-runs skip files that already exist, so a partial run is fixed by running
+# it again, not by starting over.
+
+on:
+  workflow_dispatch:
+    inputs:
+      episode_id:
+        description: 'Episode folder under episodes/ (must contain assets.json)'
+        required: true
+        type: string
+      only:
+        description: 'Comma-separated file names to (re)draw — blank means all missing ones'
+        required: false
+        type: string
+      force:
+        description: 'Redraw assets that already exist'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      # Exit 2 means "some drawn, some failed". That is worth committing — the
+      # drawings that worked are real work, and a re-run only retries the rest —
+      # so the failure is carried past the commit and raised at the end instead.
+      - name: Draw the artwork
+        id: draw
+        env:
+          # Optional. Without it the default provider is used, which needs no key.
+          IMAGE_API_KEY: ${{ secrets.IMAGE_API_KEY }}
+          IMAGE_BASE_URL: ${{ vars.IMAGE_BASE_URL }}
+          IMAGE_MODEL: ${{ vars.IMAGE_MODEL }}
+        run: |
+          set +e
+          node scripts/generate-assets.mjs \
+            --episode="${{ inputs.episode_id }}" \
+            ${{ inputs.force && '--force' || '' }} \
+            ${{ inputs.only && format('--only={0}', inputs.only) || '' }}
+          code=$?
+          set -e
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          # 1 = nothing came out at all; there is nothing to commit.
+          if [ "$code" = "1" ]; then exit 1; fi
+
+      # Every asset the config names must be on disk, and it says how many of
+      # them are still stand-ins rather than finished drawings.
+      - name: Validate the episode
+        run: npm run validate -- --episode="${{ inputs.episode_id }}"
+
+      - name: Show what was drawn
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.episode_id }}-assets
+          path: episodes/${{ inputs.episode_id }}/assets/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Commit the artwork
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "episodes/${{ inputs.episode_id }}/assets"
+          if git diff --cached --quiet; then
+            echo "No asset changes to commit."
+            exit 0
+          fi
+          git commit -m "${{ inputs.episode_id }}: bölümün görselleri çizildi"
+          git push origin HEAD:"${{ github.ref_name }}"
+
+      # The good drawings are committed by now; this is where a partial run is
+      # allowed to be a failure. Silence here would mean shipping stand-ins.
+      - name: Report assets that could not be drawn
+        if: steps.draw.outputs.code != '0'
+        run: |
+          echo "::error::Some assets could not be drawn — see the 'Draw the artwork' step. Re-run this workflow to retry only the missing ones."
+          exit 1

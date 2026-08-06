@@ -1,220 +1,189 @@
-# NeoSaniye — Voiceover-First Reel Factory
+# crime-reels
 
-NeoSaniye; konu seçimi, İngilizce mini-belgesel seslendirmesi, TTS, beat sheet,
-kaynak görseller, özgün müzik/SFX, Remotion reel renderı, teknik kalite kapıları
-ve YouTube/Instagram/Facebook yayınını tek otomatik hatta birleştirir.
+Vertical crime-documentary reels — **one shared engine, many episodes**.
+1080×1920, 30fps, rendered headlessly with Remotion.
 
-**Seslendirme kaynak koddur.** Metin kilitlendikten sonra her satır kendi
-sahnesini, ekrandaki kelimelerini, süresini ve ses efektlerini dikte eder.
+Adding an episode is adding a folder. Nothing in `engine/` ever learns a file
+name, an episode id, or a story.
 
-## Tek render motoru
+```
+engine/                     shared code — knows roles and numbers, never assets
+  motion.ts                 posterize, boil, drift, pingpong, spring, blur
+  FilmLook.tsx              grain · grunge · scanlines · vignette · gate weave · grade
+  Plate.tsx                 one flat image layer (full-bleed, or a sized subject)
+  OnScreenText.tsx          scene-relative text
+  Episode.tsx               the timeline
+  Root.tsx                  the composition (size and duration come from config)
+  schema.mjs / schema.ts    the contract: one runtime, one set of types
+  sceneTypes/               the four shared templates + registry
 
-Görüntü montajı artık yalnızca **Remotion** ile yapılır. Eski FFmpeg montaj,
-ASS/libass overlay, post-render CTA, outro ve renderer-switch yolları kaldırılmıştır.
+episodes/<episode-id>/
+  scene-config.json         the episode's only source of truth
+  assets/                   its images
+  scenes/index.tsx          OPTIONAL — templates only this episode uses
 
-FFmpeg ve ffprobe hâlâ şu yardımcı işler için kullanılır:
-
-- ses/görsel dosyalarını teknik olarak okumak,
-- süre ve akış bilgisini ölçmek,
-- final MP4'te siyah ekran, donma, sessizlik ve decode hatası taramak.
-
-Bunlar kurgu motoru değildir; final görüntüyü Remotion üretir.
-
-## Üretim akışı
-
-```text
-performans verisi / konu havuzu
-        ↓
-İngilizce seslendirme satırları (script)
-        ↓
-TTS + ölçülmüş kelime zamanları
-        ↓
-BEAT SHEET  (satır → rig → ekrandaki kelimeler → varlıklar → SFX)
-        ↓
-stok / arşiv / AI kaynak görselleri
-        ↓
-ReelSpec (production.json + beat-sheet.md)
-        ↓
-Remotion reel renderı (engine + rigs)
-        ↓
-preflight + final MP4 + yayın kapıları
-        ↓
-YouTube / Instagram / Facebook
+scripts/                    render + validate CLIs
+test/                       engine-purity guard, schema, registry, episodes
 ```
 
-## Görsel dil
-
-Sahne türü şablon değil **rig**tir: her seslendirme satırı bir imza hareketi
-kazanır. Rigi satırın kelimeleri seçer; ilk satır her zaman portal, son satır
-her zaman finale olur.
-
-| Rig | Ne zaman | İmza hareketi |
-| --- | --- | --- |
-| `portal-zoom` | açılış | çerçeveli fotoğrafın içine uçmak (weld → detach) |
-| `villain-punch` | ret, alay, dayatma | yükselen figür + slot makinesi + negatif flicker |
-| `paper-drop` | satır liste taşıyor | üç yönden düşen manşet kartları |
-| `grounded-punch` | düşüş, kapanış | ayakta çapalanmış punch + karakterin kendi gölgesi |
-| `money-room` | ödeme, sayı, zafer | kodla çizilen lamba ışığı + hold-keyframe parlama |
-| `finale-clone` | kapanış | `grounded-punch` klonu + sönümlenen jest |
-
-Ortak dil hepsinin üstünde tek yerden gelir: 12fps posterize adımı (stop-motion
-sekmesi), film işlemesi (scan çizgileri, grain, grunge, vignette, gate weave) ve
-dört değerli grade. Ayrıntı: `ANIMATION_BIBLE.md`.
-
-Fotoğraf BULUNUR, grafik ÇİZİLİR: çerçeve, plaket, gazete, lamba ışığı, gölge ve
-köpük el `remotion/src/engine/props.tsx` içinde kodla çizilir.
-
-## Süre sözleşmesi
-
-Script ve TTS katmanları kısa parça üretimine izin vermez. Varsayılan hedefler:
-
-- anlatım: `CONTENT_MIN_WORDS`–`CONTENT_MAX_WORDS`
-- final süre: `CONTENT_MIN_SECONDS`–`CONTENT_MAX_SECONDS`
-- ideal mini-belgesel bandı: `CONTENT_IDEAL_MIN_SECONDS`–`CONTENT_IDEAL_MAX_SECONDS`
-
-Ölçülmüş TTS süre dışındaysa medya ve render maliyetine girilmeden koşu durur.
-
-## Kurulum
+## Run it
 
 ```bash
 npm ci
-npm run remotion:install
-pip install -r requirements.txt
-sudo apt-get install -y ffmpeg
-cp .env.example .env
+npm run validate                        # every episode: schema + assets, no render
+npm run validate -- --episode=test-episode
+npm run render   -- --episode=test-episode      # → out/test-episode.mp4
+npm run studio                          # Remotion Studio, live knobs
+npm test && npm run typecheck
 ```
 
-Remotion Studio:
+`npm run assets:placeholder -- --episode=<id>` writes labelled stand-ins — one
+per file the config references, at the size its recipe asks for — so an episode
+can be cut and timed before its artwork exists.
+
+## Where the artwork comes from
+
+Assets are **files in the episode folder**. The render opens them; it never
+calls a generator. Drawing them is a separate step that writes into
+`episodes/<id>/assets/` and commits the result:
 
 ```bash
-npm run remotion:studio
+node scripts/generate-assets.mjs --episode=zodiac-1969            # only what is missing
+node scripts/generate-assets.mjs --episode=zodiac-1969 --force    # redraw everything
+node scripts/generate-assets.mjs --episode=zodiac-1969 --only=editor.png,detective.png
 ```
 
-## Üretim
+Prompts live in `episodes/<id>/assets.json`, next to the config — a prompt is
+the episode's business in exactly the way a file name is. Each asset declares a
+`kind`, and the kind decides the size and whether it gets an alpha channel:
 
-Yayın yapmadan tam üretim:
+| kind | size | alpha | for |
+|---|---|---|---|
+| `backdrop` | 1080×1920 | — | walls, streets, rooms |
+| `photo` | 900×1170 | — | what a portal flies into |
+| `subject` | 820×1400 | yes | people |
+| `object` | 820×1060 | yes | papers, evidence, frames |
 
-```bash
-npm run produce:dry
+`subject` and `object` are drawn on a chroma-green backdrop and keyed out, so
+they arrive with **real transparency** and are then trimmed to their own edges —
+the trimmed bottom is the subject's feet, which is what `footY` anchors to. A
+soft threshold band keeps hair and cloth from becoming a scissor-cut outline,
+and a despill pass pulls the green reflection back out of those edge pixels.
+
+Two guards make the step safe to automate: the file name seeds the generator, so
+the same name draws the same picture on every run; and a keyed image that comes
+back either fully opaque or fully transparent is **rejected rather than
+written**, because a subject that keyed away to nothing renders as an empty
+scene rather than as an error.
+
+Filling in artwork never touches the config. The files are replaced by name.
+
+A stand-in and a finished drawing are both just a PNG, so nothing downstream can
+tell them apart on its own — which is how an episode of labelled grey boxes
+renders and uploads without anyone noticing. `assets/.placeholders.json` is the
+difference: the placeholder script adds names to it, the generator removes each
+one as it draws it for real, and `npm run validate` prints how many are left.
+
+```
+✓ zodiac-1969 — 10 scene(s), 1620 frames (54.00s @ 30fps, 1080x1920)
+  ⚠ 25 of these assets are still stand-ins: boot-print.png, car-exterior.png, …
 ```
 
-Yayın isteğiyle üretim:
+## The four templates
 
-```bash
-npm run produce -- --upload
+Each takes **roles**, not files. The episode decides which image fills a role.
+
+| sceneType | roles | what it does |
+|---|---|---|
+| `portal-zoom-reveal` | `photo`, `frame?`, `wall?` | pushes into a photograph on a wall; the frame stays **welded** to the photo until `detachFrame`, then flies past camera while the photo settles and blooms into colour |
+| `parallax-punch` | `background`, `character` | two flat layers, unequal scale about a **shared floor anchor** — fake depth. The cast shadow is the character's own file, blackened, flipped and skewed |
+| `stacked-reveal` | `item1…itemN`, `background?` | items arrive on their own beats from **different directions** and pile up, each on a soft spring |
+| `split-shift` | `background`, `character` | the subject slides aside with a motion-blur streak and the space it clears is used for text |
+
+An episode that needs a fifth mechanic exports it from
+`episodes/<id>/scenes/index.tsx`; the renderer wires it in without touching the
+shared set.
+
+## scene-config.json
+
+```jsonc
+{
+  "id": "test-episode",          // must match the folder name
+  "fps": 30, "width": 1080, "height": 1920,
+  "look": {
+    "posterizeFps": 12,          // 12 reads stop-motion, 30 reads digital
+    "grade": {"saturate": 0.78, "contrast": 1.12, "sepia": 0.1, "brightness": 0.95},
+    "film": {
+      "grain": true, "grunge": true, "scanlines": true,
+      "vignette": true, "gateWeave": true,
+      "grainOpacity": 0.5, "vignetteStrength": 0.52, "weavePx": 4
+    }
+  },
+  "scenes": [
+    {
+      "id": "s2-punch",
+      "sceneType": "parallax-punch",
+      "voText": "The man in the frame was never questioned.",  // data only — v1 renders silent
+      "durationInFrames": 120,
+      "assets": {                                   // ROLE → episode-relative file
+        "background": "assets/background-2.png",
+        "character": "assets/character-1.png"
+      },
+      "params": {                                   // template knobs, all frames scene-relative
+        "groundX": 560, "groundY": 1690,
+        "bgScale": 1.12, "charWidth": 660, "charScale": 1.7,
+        "shadowSkew": -53, "punchEndFrame": 86
+      },
+      "gradeOverride": {"saturate": 0.6},           // merged over the episode grade
+      "onScreenText": [
+        {"text": "never questioned", "atFrame": 14, "durationInFrames": 56,
+         "style": "sticker", "position": "top"}
+      ]
+    }
+  ]
+}
 ```
 
-Yayın isteği tek başına yeterli değildir. Final MP4 teknik kapıları geçmezse hiçbir
-platforma gönderilmez.
+Scene start frames are **accumulated**, never written down: scene two begins
+where scene one ends. Every frame number inside a scene — `atFrame`, every
+`params` frame — counts from **that scene's own zero**.
 
-Bir `job.json` dosyasını doğrudan render etmek:
+Asset paths are episode-relative on purpose. The renderer points Remotion's
+public directory at `episodes/<id>/`, so `"assets/character-1.png"` means *that
+episode's* file. Nothing is copied, and an absolute or `..` path is rejected by
+the validator rather than allowed to break the isolation.
 
-```bash
-npm run video -- job.json
-```
+## Isolation is enforced, not documented
 
-Zorunlu temel alanlar: `audioPath`, `scenes`, `media`, `mediaScene`, `timeline`,
-`outPath`.
+`test/enginePurity.test.mjs` fails CI if any file under `engine/` contains an
+asset file name, an `episodes/` path, or a shipped episode id. That guard is the
+reason a second episode stays a folder — the leak that turns it back into a code
+change is always a one-line "just for now" default, and a rule in a README does
+not catch those.
 
-## Testler
+## CI
 
-```bash
-npm run test:remotion
-npm test
-npm run remotion:typecheck
-npm run remotion:fixture
-```
+- **`validate-episode.yml`** — on every push and PR: schema, scene types, asset
+  existence, engine guards, typecheck. No bundle, no browser, seconds not
+  minutes.
+- **`generate-assets.yml`** — `workflow_dispatch` with `episode_id`, optional
+  `only` and `force`: draws the episode's artwork, validates that every file the
+  config names is now on disk, and commits the PNGs to the branch. It goes red
+  *before* committing if a draw failed, so a half-drawn episode is never left
+  looking finished.
+- **`render-episode.yml`** — `workflow_dispatch` with an `episode_id` input:
+  installs Chromium, renders, uploads `out/<episode_id>.mp4` as an artifact. The
+  episode is a runtime input, so the same commit renders any of them.
 
-`test/remotionOnly.test.js`, eski renderer/ASS/CTA katmanları veya kolaj şablon
-hattı tekrar eklenirse CI'yi düşürür. `test/beatSheet.test.js` ise uydurulmuş
-altyazıyı düşürür: ekrandaki her kelime kendi seslendirme satırında birebir
-geçmek zorundadır. Fixture workflow'u ayrıca 1080×1920 H.264/AAC video üretir ve
-siyah/donma/sessizlik taraması yapar.
+## Episodes
 
-## GitHub Actions
+| id | scenes | length |
+|---|---|---|
+| `zodiac-1969` | 10 | 54.0s |
+| `test-episode` | 2 | 8.0s — engine smoke test |
 
-### Günlük üretim
+## Audio
 
-`.github/workflows/daily-short.yml`
-
-- 13:02 UTC
-- 18:02 UTC
-- 23:02 UTC
-
-Cron koşuları yayın talebiyle çalışır. Manuel koşuda upload kutusu varsayılan olarak
-kapalıdır. Workflow Node 22, Python, FFmpeg/ffprobe ve izole Remotion paketini kurar;
-önce mimari testleri geçirir, sonra üretime başlar.
-
-### Renderer doğrulaması
-
-`.github/workflows/remotion-fixture.yml`
-
-Her pull request'te Remotion-only mimariyi, Node testlerini, TypeScript'i, fixture
-renderını ve final MP4 teknik taramasını doğrular.
-
-## Proje yapısı
-
-```text
-remotion/
-  src/
-    Root.tsx           # master reel + rig başına solo kompozisyon
-    Reel.tsx           # beat'leri zaman çizgisine dizer, sesi mikser
-    schema.ts          # ReelSpec / Beat tipleri
-    engine/
-      motion.ts        # posterize, boil, drift, pingpong, entrance, wag
-      FilmLook.tsx     # scan/grain/grunge/vignette/weave + grade
-      Plate.tsx        # düz fotoğraf plakaları
-      Captions.tsx     # söylenen kelimelerin ekran hâli
-      props.tsx        # kodla çizilen grafikler
-    rigs/              # altı imza hareketi, her biri tek dosya
-
-src/
-  script/             # konu ve senaryo
-  story/
-    beatSheet.js      # satır → beat (rig, kelimeler, ölçülmüş yerleşim)
-    rigs.js           # rig kataloğu ve seçim kuralları
-  tts/                # TTS + kelime zamanlaması
-  media/              # AI / stok / arşiv kaynakları
-  video/
-    buildReelSpec.js   # beat sheet → production.json + beat-sheet.md
-    renderRemotion.js
-    renderVideo.js     # kararlı dış arayüz → Remotion
-  pipeline/            # QC, yayın kapıları, kayıt ve orkestrasyon
-  youtube/             # metadata, upload, captions
-  social/              # Meta cross-post
-
-scripts/
-  generate-and-publish.js
-  render-video.js
-  audit-final-video.js
-```
-
-## Temel artefaktlar
-
-Her üretim klasöründe mümkün olduğunda şunlar bulunur:
-
-- final `.mp4`
-- `production.json`
-- `beat-sheet.md`
-- `script.json`
-- `scene-plan.json`
-- `production-report.json`
-- `production-report.md`
-- `publish-gates.json`
-- `asset-manifest.json`
-- `cover.jpg`
-
-`production.json`, renderın tek makine-okunur beat planıdır; konuya özel React
-kodu yazılması gerekmez. `beat-sheet.md` aynı planın insan okuması içindir:
-hangi satır hangi rige döndü, ekrana hangi kelimeler çıktı ve bunlar ölçülmüş
-konuşmaya mı oturdu. Bir satırın ekrandaki kelimeleri kendi seslendirmesinde
-geçmiyorsa video daha ilk kareye bakmadan yanlıştır.
-
-## Güvenlik ilkeleri
-
-- Kimlik bilgisinin bulunması upload izni sayılmaz.
-- Public üretimde render hatası fail-closed davranır.
-- Teknik olarak bozuk MP4 yayınlanmaz.
-- Lisansı belirsiz müzik/SFX kullanılmaz.
-- Görsel kaynak ve lisans kanıtı asset manifestine yazılır.
-- Yayınlanacak dosya ile analiz edilen dosyanın hash'i eşleşmek zorundadır.
+v1 renders **silent**. `voText` is carried in the config as data so the timing
+and the words live together; wiring narration to it later does not change the
+schema.
