@@ -1,0 +1,95 @@
+{
+  "id": "mansa-musa",
+  "title": "Mansa Musa — the pilgrimage that broke a currency",
+  "mood": "gold-heat",
+  "style": "documentary photograph, 14th century West Africa and Egypt, warm desert light, muted earth and gold, fine grain, period-accurate, no text, no watermark, no modern objects",
+  "$note": "Written by hand: the voiceover, and one phrase per line saying what we are looking at. The planner derives everything else — shot type, length, look, cuts.",
+  "lines": [
+    {
+      "slug": "leave",
+      "vo": "In thirteen twenty-four the ruler of Mali left home for Mecca, and took his treasury with him.",
+      "image": "a vast empty Sahara dune field at dawn, long shadows, nobody present",
+      "kicker": "Mali · 1324",
+      "title": "HE TOOK IT ALL",
+      "footer": "the treasury went with him"
+    },
+    {
+      "slug": "caravan",
+      "vo": "Accounts describe tens of thousands of people on the road, and camels carrying gold by the hundredweight.",
+      "image": "a wide desert horizon at midday, heat haze over flat sand, empty",
+      "pieces": [
+        "camel standing in profile",
+        "date palm tree",
+        "traveller in a long desert robe"
+      ],
+      "caption": [
+        "Tens of thousands",
+        "on the road."
+      ],
+      "onScreen": "ACCOUNTS DIFFER"
+    },
+    {
+      "slug": "cairo",
+      "vo": "In Cairo he did not trade the gold. He gave it away, to officials, to merchants, to the poor.",
+      "image": "an empty medieval Cairo market street of pale stone at noon, deep shadow under arches",
+      "items": [
+        "card|TO THE COURT|robes and gifts to the sultan's officials",
+        "card|TO THE MARKET|paid above price, and kept paying",
+        "card|TO THE POOR|handed out in the street, every district"
+      ],
+      "caption": [
+        "He did not",
+        "trade it."
+      ]
+    },
+    {
+      "slug": "price",
+      "vo": "He spent so freely that the price of gold in Cairo fell, and one contemporary writer found it still had not recovered twelve years later.",
+      "image": "a dim stone counting room with scales and scattered coins, one shaft of daylight",
+      "kicker": "Gold in Cairo",
+      "title": "TWELVE YEARS",
+      "footer": "and by one account it had still not recovered"
+    },
+    {
+      "slug": "architect",
+      "vo": "On the road home he brought back an architect, and Timbuktu got a mosque of mud brick and timber.",
+      "image": "a tall mud-brick mosque wall with projecting wooden beams, hard desert sun",
+      "artefact": "a close view of a mud-brick wall studded with protruding palm timbers, warm raking light",
+      "onScreen": "it is still standing"
+    },
+    {
+      "slug": "atlas",
+      "vo": "Fifty years later a mapmaker in Europe drew him on a chart, seated, holding a nugget of gold.",
+      "image": "an old vellum chart on a wooden table, dividers and an inkpot beside it",
+      "artefact": "a detail of a medieval illuminated map on vellum, gold leaf and faded ink, cracked surface",
+      "caption": [
+        "Drawn by",
+        "someone who",
+        "never met him."
+      ]
+    },
+    {
+      "slug": "claim",
+      "vo": "He is often called the richest man who ever lived. Nobody can actually measure that.",
+      "image": "an empty desert night under heavy stars, cold blue sand",
+      "pieces": [
+        "lone acacia tree",
+        "camel resting on folded legs"
+      ],
+      "caption": [
+        "Often called",
+        "the richest",
+        "who ever lived."
+      ],
+      "accentLine": 1
+    },
+    {
+      "slug": "close",
+      "vo": "What can be measured is the damage. One pilgrimage, and a city's currency took a decade to come back.",
+      "image": "a single set of footprints crossing an empty dune, wind erasing them",
+      "kicker": "Mali · 1337",
+      "title": "ONE PILGRIMAGE",
+      "footer": "a decade to come back"
+    }
+  ]
+}

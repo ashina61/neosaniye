@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Vertical crime documentary reels — one shared engine, many episodes",
+  "description": "Vertical crime documentary reels \u2014 one shared engine, many episodes",
   "engines": {
     "node": ">=20"
   },
   "scripts": {
+    "plan": "node scripts/plan-episode.mjs",
     "render": "node scripts/render-episode.mjs",
     "validate": "node scripts/validate-episode.mjs",
     "prestudio": "node scripts/ensure-scene-overrides.mjs",
