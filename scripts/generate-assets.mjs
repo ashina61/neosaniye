@@ -239,17 +239,30 @@ async function buildAsset(name, recipe, kinds, recipes) {
 
   const prompt = parts.filter(Boolean).join('. ');
   const seed = seedFor(name);
+  let refusal;
 
   if (!kind.alpha) {
-    const raw = await fetchImage(prompt, width, height, seed);
-    return sharp(raw).resize(width, height, {fit: 'cover', position: 'attention'}).png().toBuffer();
+    // An OVERLAY is screen-blended, and screen only drops what is black. A
+    // plate that is not mostly black does not add smoke to a shot, it washes
+    // the whole frame out — and nothing downstream can tell, because it is a
+    // perfectly valid opaque image. Asked for smoke on black, the model handed
+    // back a grey landscape; this is the check that would have caught it.
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const raw = await fetchImage(prompt, width, height, seed + attempt * 7919);
+      const png = await sharp(raw).resize(width, height, {fit: 'cover', position: 'attention'}).png().toBuffer();
+      if (!kind.overlay) return png;
+      const {channels} = await sharp(png).stats();
+      const luma = (channels[0].mean * 0.299 + channels[1].mean * 0.587 + channels[2].mean * 0.114) / 255;
+      if (luma <= 0.34) return png;
+      refusal = `too bright to screen-blend (mean luma ${luma.toFixed(2)}) — needs to be mostly black`;
+    }
+    throw new Error(`${refusal} — 3 draws refused`);
   }
 
   // A diffusion model asked for an object on an empty backdrop sometimes draws
   // the room anyway, and that picture has nothing to key. It is a roll of the
   // dice rather than a broken prompt, so a rejected draw is re-rolled on a
   // derived seed — still deterministic, just a different one.
-  let refusal;
   for (let attempt = 0; attempt < 3; attempt += 1) {
     const raw = await fetchImage(prompt, width, height, seed + attempt * 7919);
     const keyed = await keyBackdrop(raw, {holes: Boolean(recipe.keyHoles)});
@@ -258,11 +271,16 @@ async function buildAsset(name, recipe, kinds, recipes) {
     // an empty scene or as a rectangle with visible corners. Neither is worth
     // writing, and both look fine until the reel is watched.
     const solid = await opaqueFraction(keyed);
-    if (solid < 0.04 || solid > 0.97) {
+    // 0.88, not 0.97. A silhouette that keeps nearly the whole frame did not
+    // get keyed — the model drew a SCENE instead of an object, and the file is
+    // a rectangle with hard edges that will show as a box the moment it sits on
+    // anything. One came back at 91% as a single island, passed both guards,
+    // and was a photograph of a forest.
+    if (solid < 0.04 || solid > 0.88) {
       refusal =
         solid < 0.04
           ? `keyed away to nothing (${(solid * 100).toFixed(1)}% opaque)`
-          : `nothing keyed out (${(solid * 100).toFixed(1)}% opaque)`;
+          : `barely keyed — the model drew a scene, not an object (${(solid * 100).toFixed(1)}% opaque)`;
       continue;
     }
 

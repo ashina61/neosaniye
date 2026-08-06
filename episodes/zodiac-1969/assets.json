@@ -28,7 +28,8 @@
     "overlay": {
       "width": 1080,
       "height": 1080,
-      "alpha": false
+      "alpha": false,
+      "overlay": true
     },
     "piece": {
       "width": 1400,
@@ -89,29 +90,9 @@
       "kind": "backdrop",
       "prompt": "an empty two-lane country road at night disappearing into darkness, dry grass verges, no streetlights, faint cold moonlight on the asphalt, Northern California, nobody present"
     },
-    "hooded-figure.png": {
-      "kind": "subject",
-      "prompt": "a man standing still, wearing a plain black square hood covering his head and shoulders and a dark zipped jacket, arms hanging at his sides, seen from the front, full body from head to boots"
-    },
-    "man-walking.png": {
-      "kind": "subject",
-      "prompt": "a man in a long dark overcoat walking away from the camera, seen from directly behind, hands in pockets, collar turned up, full body from head to shoes"
-    },
-    "haze.png": {
-      "kind": "overlay",
-      "prompt": "thick pale fog and drifting smoke on a pure black background, soft wispy plumes"
-    },
     "treeline.png": {
       "kind": "piece",
       "prompt": "a wide row of bare oak trees in flat black silhouette, only the trees, on a plain white background"
-    },
-    "hill-ridge.png": {
-      "kind": "piece",
-      "prompt": "a low rolling hill ridge in flat dark silhouette, a single long horizontal shape, on a plain white background"
-    },
-    "houses-row.png": {
-      "kind": "piece",
-      "prompt": "a row of tall narrow Victorian bay-window houses in flat dark silhouette, rooftops and chimneys, on a plain white background"
     },
     "lamp-post.png": {
       "kind": "piece",
@@ -121,9 +102,13 @@
       "kind": "piece",
       "prompt": "a 1960s American sedan seen from the side, dark silhouette, on a plain white background"
     },
-    "pines.png": {
+    "pine-tree.png": {
       "kind": "piece",
-      "prompt": "a row of tall thin pine trees in flat black silhouette, on a plain white background"
+      "prompt": "one single tall thin pine tree, whole tree from tip to trunk base, dark silhouette, on a plain white background"
+    },
+    "house-bay.png": {
+      "kind": "piece",
+      "prompt": "one single tall narrow Victorian bay-window house, whole building, dark silhouette, on a plain white background"
     }
   },
   "$pieces": "Method A: scenes are composed from pieces rather than from one full-frame photograph. Every piece below is OPTIONAL in the config (?role), so a piece that fails to draw costs depth in one shot and never costs the reel."

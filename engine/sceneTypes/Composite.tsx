@@ -3,7 +3,7 @@ import {AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame, use
 import type {SceneProps} from './types';
 import type {LayerSpec} from '../schema';
 import {CLAMP, boil, focusHunt, posterizeTime, springEntrance} from '../motion';
-import {Glow} from '../draw/Glow';
+import {Fog, Glow} from '../draw/Glow';
 import {WordStack} from '../draw/Type';
 import {Annotation, type MarkKind} from '../draw/Annotation';
 
@@ -159,6 +159,17 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
           />
         </AbsoluteFill>
       ) : null}
+
+      {/* Atmosphere is drawn, in front of the stack. A generated haze plate
+          came back as a grey landscape, and screen-blending that does not add
+          fog to a shot — it washes the frame out. */}
+      <Fog
+        frame={stepped}
+        amount={num('fog', 0)}
+        colour={str('fogColour', '#cfd6dc')}
+        speed={num('fogSpeed', 1)}
+        height={num('fogHeight', 0.62)}
+      />
 
       {caption.length ? (
         <WordStack

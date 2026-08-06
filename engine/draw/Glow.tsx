@@ -61,6 +61,55 @@ export const Glow: React.FC<{
 };
 
 /**
+ * FOG, DRAWN.
+ *
+ * Asked for smoke on black, the generator handed back a grey landscape — which
+ * screen-blended does not add haze to a shot, it washes the whole frame out.
+ * Atmosphere is soft gradients, and soft gradients are the one thing code does
+ * better than a diffusion model every single time.
+ *
+ * Three bands at different depths and speeds, so it never reads as one moving
+ * sheet. Sits between the camera and the subject, which is the point of it:
+ * fog behind everything is wallpaper.
+ */
+export const Fog: React.FC<{
+  frame: number;
+  amount?: number;
+  colour?: string;
+  speed?: number;
+  height?: number;
+}> = ({frame, amount = 0.4, colour = '#cfd6dc', speed = 1, height = 0.62}) => {
+  if (amount <= 0) return null;
+  const band = (i: number, opacity: number, scale: number, rate: number) => {
+    const x = ((frame * rate * speed) % 260) - 130;
+    return (
+      <div
+        key={i}
+        style={{
+          position: 'absolute',
+          left: `${-40 + x * 0.4}%`,
+          top: `${(1 - height) * 100 + i * 9}%`,
+          width: '190%',
+          height: `${height * 100}%`,
+          background:
+            `radial-gradient(ellipse ${58 * scale}% ${34 * scale}% at 30% 50%, ${colour}44 0%, transparent 68%),` +
+            `radial-gradient(ellipse ${44 * scale}% ${28 * scale}% at 68% 42%, ${colour}3a 0%, transparent 70%)`,
+          opacity: opacity * amount,
+          filter: 'blur(18px)',
+        }}
+      />
+    );
+  };
+  return (
+    <AbsoluteFill style={{mixBlendMode: 'screen', pointerEvents: 'none'}}>
+      {band(0, 1, 1, 0.22)}
+      {band(1, 0.75, 1.4, 0.13)}
+      {band(2, 0.5, 0.8, 0.34)}
+    </AbsoluteFill>
+  );
+};
+
+/**
  * A BEAM — the cone of light leaving a shade and landing on something.
  *
  * Drawn as a blurred trapezoid rather than a gradient, because a cone has

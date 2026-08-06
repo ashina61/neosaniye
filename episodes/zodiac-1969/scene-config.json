@@ -132,16 +132,13 @@
       "durationInFrames": 165,
       "assets": {
         "shore": "assets/lake-dusk.png",
-        "?ridge": "assets/hill-ridge.png",
-        "?trees": "assets/treeline.png",
-        "?pines": "assets/pines.png",
-        "?haze": "assets/haze.png",
-        "?character": "assets/hooded-figure.png"
+        "trees": "assets/treeline.png",
+        "?pine": "assets/pine-tree.png"
       },
       "params": {
         "anchorX": 600,
         "anchorY": 1640,
-        "pushTo": 1.5,
+        "pushTo": 1.3,
         "pushEndFrame": 140,
         "focusPx": 0,
         "caption": [
@@ -150,7 +147,7 @@
           "walked out of the trees."
         ],
         "captionX": 84,
-        "captionY": 380,
+        "captionY": 300,
         "captionFrame": 12,
         "captionEvery": 22,
         "captionSize": 84,
@@ -159,7 +156,11 @@
         "markX": 84,
         "markY": 620,
         "markWidth": 560,
-        "markFrame": 84
+        "markFrame": 84,
+        "fog": 0.34,
+        "fogColour": "#b9c4cc",
+        "fogSpeed": 0.8,
+        "fogHeight": 0.5
       },
       "gradeOverride": {
         "saturate": 0.5,
@@ -173,51 +174,22 @@
           "anchor": "fill"
         },
         {
-          "role": "ridge",
-          "depth": 0.16,
+          "role": "pine",
+          "depth": 0.3,
           "anchor": "bottom",
-          "x": 540,
-          "y": 1060,
-          "width": 1500,
+          "x": 120,
+          "y": 1180,
+          "height": 520,
           "opacity": 0.55
         },
         {
-          "role": "pines",
-          "depth": 0.3,
-          "anchor": "bottom",
-          "x": 190,
-          "y": 1120,
-          "width": 760,
-          "opacity": 0.8
-        },
-        {
           "role": "trees",
-          "depth": 0.44,
+          "depth": 0.88,
           "anchor": "bottom",
-          "x": 830,
-          "y": 1180,
-          "width": 900,
-          "opacity": 0.9
-        },
-        {
-          "role": "character",
-          "depth": 1.0,
-          "anchor": "bottom",
-          "x": 600,
-          "y": 1640,
-          "height": 880,
-          "shadow": true,
-          "shadowSkew": -48,
-          "shadowOpacity": 0.45,
-          "alive": true,
-          "from": 8
-        },
-        {
-          "role": "haze",
-          "depth": 0.7,
-          "anchor": "fill",
-          "blend": "screen",
-          "opacity": 0.34
+          "x": 560,
+          "y": 2260,
+          "width": 2100,
+          "opacity": 0.95
         }
       ],
       "transition": {
@@ -268,23 +240,21 @@
       "durationInFrames": 165,
       "assets": {
         "street": "assets/sf-fog-corner.png",
-        "?houses": "assets/houses-row.png",
-        "?lamp": "assets/lamp-post.png",
-        "?car": "assets/sedan.png",
-        "?haze": "assets/haze.png",
-        "?character": "assets/man-walking.png"
+        "lamp": "assets/lamp-post.png",
+        "car": "assets/sedan.png",
+        "?house": "assets/house-bay.png"
       },
       "params": {
         "anchorX": 620,
         "anchorY": 1700,
-        "pushTo": 1.4,
+        "pushTo": 1.34,
         "pushEndFrame": 140,
         "focusPx": 12,
-        "glowX": 830,
-        "glowY": 560,
-        "glowSize": 80,
-        "glowIntensity": 1.1,
-        "glowDepth": 0.5,
+        "glowX": 880,
+        "glowY": 520,
+        "glowSize": 86,
+        "glowIntensity": 1.2,
+        "glowDepth": 0.52,
         "glowWarm": "#ffc06a",
         "caption": [
           "Ten blocks",
@@ -297,7 +267,11 @@
         "captionEvery": 20,
         "captionSize": 90,
         "captionAccent": 0,
-        "captionRecedeAt": 126
+        "captionRecedeAt": 126,
+        "fog": 0.62,
+        "fogColour": "#c9d2d8",
+        "fogSpeed": 1.1,
+        "fogHeight": 0.68
       },
       "gradeOverride": {
         "saturate": 0.46,
@@ -311,51 +285,32 @@
           "anchor": "fill"
         },
         {
-          "role": "houses",
+          "role": "house",
           "depth": 0.26,
           "anchor": "bottom",
-          "x": 250,
-          "y": 1300,
-          "width": 1050,
-          "opacity": 0.75
+          "x": 170,
+          "y": 1330,
+          "height": 940,
+          "opacity": 0.7
         },
         {
           "role": "lamp",
-          "depth": 0.5,
+          "depth": 0.52,
           "anchor": "bottom",
-          "x": 830,
-          "y": 1420,
-          "height": 900,
-          "opacity": 0.9
+          "x": 880,
+          "y": 1500,
+          "height": 1020
         },
         {
           "role": "car",
-          "depth": 0.72,
+          "depth": 0.8,
           "anchor": "bottom",
-          "x": 320,
-          "y": 1660,
-          "width": 720,
-          "opacity": 0.92
-        },
-        {
-          "role": "character",
-          "depth": 1.0,
-          "anchor": "bottom",
-          "x": 620,
-          "y": 1700,
-          "height": 760,
+          "x": 330,
+          "y": 1720,
+          "width": 760,
           "shadow": true,
-          "shadowSkew": -58,
-          "shadowOpacity": 0.36,
-          "alive": true,
-          "from": 10
-        },
-        {
-          "role": "haze",
-          "depth": 0.85,
-          "anchor": "fill",
-          "blend": "screen",
-          "opacity": 0.44
+          "shadowSkew": -62,
+          "shadowOpacity": 0.3
         }
       ],
       "transition": {
