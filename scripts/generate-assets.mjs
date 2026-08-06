@@ -374,7 +374,7 @@ export async function islandCount(buffer, limit = 40) {
 }
 
 /** How much of the picture survived the key — a fully keyed frame is a failure. */
-async function opaqueFraction(buffer) {
+export async function opaqueFraction(buffer) {
   const {data, info} = await sharp(buffer).ensureAlpha().raw().toBuffer({resolveWithObject: true});
   let solid = 0;
   let total = 0;
