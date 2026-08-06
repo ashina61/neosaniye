@@ -18,13 +18,14 @@ import {BUILT_IN_SCENE_TYPES, validateEpisodeConfig} from '../engine/schema.mjs'
 
 async function validateEpisode(episodeId) {
   const problems = [];
+  const absentOptional = [];
   const dir = episodeDir(episodeId);
 
   let config;
   try {
     ({config} = await loadConfig(episodeId));
   } catch (error) {
-    return [error.message];
+    return {problems: [error.message], absentOptional: []};
   }
 
   problems.push(...validateEpisodeConfig(config));
@@ -54,6 +55,11 @@ async function validateEpisode(episodeId) {
       if (typeof file !== 'string') continue;
       const resolved = path.join(dir, file);
       if (!(await exists(resolved))) {
+        // `?role` means the scene is built to do without it. Say so, do not fail.
+        if (role.startsWith('?')) {
+          absentOptional.push(`${scene.id}.${role.slice(1)} (${file})`);
+          continue;
+        }
         problems.push(`scenes[${index}].assets.${role}: file not found — ${path.relative(ROOT, resolved)}`);
         continue;
       }
@@ -64,7 +70,7 @@ async function validateEpisode(episodeId) {
     }
   }
 
-  return problems;
+  return {problems, absentOptional};
 }
 
 async function main() {
@@ -85,7 +91,7 @@ async function main() {
 
   let failed = 0;
   for (const episodeId of episodes) {
-    const problems = await validateEpisode(episodeId);
+    const {problems, absentOptional} = await validateEpisode(episodeId);
     if (problems.length) {
       failed += 1;
       console.error(`\n✗ ${episodeId} — ${problems.length} problem(s):`);
@@ -102,6 +108,11 @@ async function main() {
       const stubs = await readPlaceholders(episodeDir(episodeId));
       if (stubs.length) {
         console.log(`  ⚠ ${stubs.length} of these assets are still stand-ins: ${stubs.join(', ')}`);
+      }
+      // Not a failure, but the scene is playing without something it was
+      // written to use, and that is worth saying out loud every single time.
+      if (absentOptional.length) {
+        console.log(`  · ${absentOptional.length} optional asset(s) absent: ${absentOptional.join(', ')}`);
       }
     }
   }

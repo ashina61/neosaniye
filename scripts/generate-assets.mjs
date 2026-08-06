@@ -31,17 +31,25 @@ const ATTEMPTS = 4;
 /**
  * What a cut-out is asked for, on top of the episode's own `styleAlpha`.
  *
- * Kept short and put FIRST, ahead of the subject description, because the
- * instruction that loses is the one that arrives last. The episode's film-look
- * style is deliberately NOT applied to these: asking for grain and 1969
- * available light is asking for a room, and a room has no backdrop to key.
- * The period treatment is added to the whole frame at render time by FilmLook,
- * so baking it into a cut-out was never buying anything anyway.
+ * SHORT, AND ENTIRELY POSITIVE. The version this replaces was a pile of
+ * negations — "nothing else in the picture at all, no room, no floor, no
+ * horizon, no scenery, no props" — and every single cut-out came back as an
+ * empty white studio ROOM. Diffusion models do not subtract: naming a thing
+ * summons it, so a prompt made mostly of the words room, floor and horizon
+ * reliably produces a room with a floor and a horizon.
+ *
+ * What is left is the phrasing that actually works, because it describes a
+ * picture that exists in the training data by the million: a catalogue shot.
+ * Anything to be avoided belongs in the episode's `negative`, where a provider
+ * can use it as a negative prompt instead of as more description.
+ *
+ * The episode's film-look style is deliberately not applied here either —
+ * grain and available light describe a room too. FilmLook adds the period
+ * treatment to the whole frame at render time.
  */
 const CUTOUT_INSTRUCTION =
-  'a single object photographed alone against a completely plain empty seamless studio backdrop of one flat solid colour, ' +
-  'nothing else in the picture at all, no room, no floor, no horizon, no scenery, no props, ' +
-  'the whole subject well inside the frame with a clear empty margin on all four sides';
+  'catalogue product photograph on a pure white seamless background, ' +
+  'centred, full subject visible with margin around it, even studio lighting, sharp focus';
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 

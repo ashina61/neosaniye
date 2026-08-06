@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Sequence} from 'remotion';
 import type {EpisodeConfig, SceneSpec} from './schema';
-import {DEFAULT_LOOK, sceneOffsets} from './schema';
+import {DEFAULT_LOOK, resolveAssets, sceneOffsets} from './schema';
 import {FilmLook} from './FilmLook';
 import {OnScreenText} from './OnScreenText';
 import {resolveSceneType} from './sceneTypes/registry';
@@ -43,11 +43,12 @@ const MissingTemplate: React.FC<{scene: SceneSpec}> = ({scene}) => (
 const Scene: React.FC<{scene: SceneSpec; look: EpisodeConfig['look']}> = ({scene, look}) => {
   const Template = resolveSceneType(scene.sceneType);
   const grade = {...look.grade, ...(scene.gradeOverride ?? {})};
+  const assets = resolveAssets(scene.assets);
 
   return (
     <FilmLook grade={grade} film={look.film} posterizeFps={look.posterizeFps}>
       {Template ? (
-        <Template scene={scene} assets={scene.assets ?? {}} durationInFrames={scene.durationInFrames} />
+        <Template scene={scene} assets={assets} durationInFrames={scene.durationInFrames} />
       ) : (
         <MissingTemplate scene={scene} />
       )}

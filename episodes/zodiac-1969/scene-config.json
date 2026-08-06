@@ -123,11 +123,12 @@
       "voText": "Eight weeks later a man in a black hood walked out of the trees at Lake Berryessa.",
       "durationInFrames": 165,
       "assets": {
-        "background": "assets/lake-dusk.png"
+        "background": "assets/lake-dusk.png",
+        "?character": "assets/hooded-figure.png"
       },
       "params": {
         "groundX": 600,
-        "groundY": 1660,
+        "groundY": 1640,
         "bgScale": 1.16,
         "punchEndFrame": 130,
         "focusPx": 14,
@@ -146,7 +147,12 @@
         "markX": 84,
         "markY": 620,
         "markWidth": 560,
-        "markFrame": 84
+        "markFrame": 84,
+        "charHeight": 880,
+        "charScale": 1.62,
+        "shadowSkew": -48,
+        "shadowOpacity": 0.5,
+        "shadowBlur": 9
       },
       "gradeOverride": {
         "saturate": 0.5,
@@ -192,7 +198,9 @@
       "voText": "Two weeks later he shot a cab driver ten blocks from a police station.",
       "durationInFrames": 165,
       "assets": {
-        "background": "assets/sf-fog-corner.png"
+        "background": "assets/sf-fog-corner.png",
+        "?character": "assets/man-walking.png",
+        "?haze": "assets/haze.png"
       },
       "params": {
         "groundX": 540,
@@ -216,7 +224,14 @@
         "captionEvery": 20,
         "captionSize": 90,
         "captionAccent": 0,
-        "captionRecedeAt": 126
+        "captionRecedeAt": 126,
+        "charHeight": 760,
+        "charScale": 1.42,
+        "shadowSkew": -58,
+        "shadowOpacity": 0.4,
+        "shadowBlur": 12,
+        "hazeOpacity": 0.42,
+        "hazeDrift": 0.3
       },
       "gradeOverride": {
         "saturate": 0.46,

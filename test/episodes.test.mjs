@@ -35,6 +35,8 @@ for (const id of episodeIds) {
       for (const [role, file] of Object.entries(scene.assets ?? {})) {
         const full = path.join(EPISODES, id, file);
         const info = await stat(full).catch(() => null);
+        // `?role` is used when present and done without when absent.
+        if (!info && role.startsWith('?')) continue;
         assert.ok(info, `${scene.id}.${role} -> ${file} is missing`);
         assert.ok(info.size > 0, `${scene.id}.${role} -> ${file} is empty`);
       }
