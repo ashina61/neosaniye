@@ -1,0 +1,96 @@
+name: Voice the episode
+
+# SPEAKS THE SCRIPT, MEASURES IT, AND CUTS THE REEL TO IT.
+#
+# This is the step that turns a draft into a cut. Until it runs, every duration
+# in scene-config.json comes from `words / 2.7 * 30` — a guess standing in for a
+# measurement — and the planner says so on every run. After it, the reel is cut
+# to the pauses in the narrator's own reading.
+#
+# It commits three things, and all three have to travel together:
+#
+#   audio/vo.mp3          the render plays it, so it has to be on disk in a
+#                         fresh checkout — this is why it is not gitignored
+#   audio/vo.json         the measurement every duration was cut to
+#   scene-config.json     those durations
+#
+# Re-running it re-speaks and re-cuts. That is the point: change the brief, run
+# this, and the reel's whole rhythm follows the new reading.
+
+on:
+  workflow_dispatch:
+    inputs:
+      episode_id:
+        description: 'Episode folder under episodes/ (must contain brief.json)'
+        required: true
+        type: string
+      provider:
+        description: 'Who reads it'
+        required: false
+        default: elevenlabs
+        type: choice
+        options:
+          - elevenlabs
+          - openai
+          - measure-only
+      voice:
+        description: 'Voice id or name — blank uses the provider default'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  voice:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      # SPEAKING BELONGS TO A PROVIDER; MEASURING DOES NOT. ElevenLabs returns a
+      # character alignment and that is used when it is there — but nothing
+      # depends on it, because the pauses are in the audio either way.
+      #
+      # "measure-only" skips synthesis and reads an mp3 already committed to the
+      # episode: a voiceover recorded on a phone, or one somebody sent over.
+      - name: Speak and measure
+        env:
+          VOICE_PROVIDER: ${{ inputs.provider == 'measure-only' && 'elevenlabs' || inputs.provider }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          ELEVENLABS_VOICE_ID: ${{ inputs.voice || vars.ELEVENLABS_VOICE_ID }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          VOICE_NAME: ${{ inputs.voice || vars.VOICE_NAME }}
+        run: |
+          npm run voice -- --episode="${{ inputs.episode_id }}" \
+            ${{ inputs.provider == 'measure-only' && '--measure' || '' }}
+
+      # THE CUT. Durations now come from the file instead of a word count, so
+      # the config has to be rebuilt before anything renders against it.
+      - name: Cut the reel to the narration
+        run: npm run plan -- --episode="${{ inputs.episode_id }}"
+
+      - name: Validate the episode
+        run: npm run validate -- --episode="${{ inputs.episode_id }}"
+
+      - name: Commit the narration and the cut
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "episodes/${{ inputs.episode_id }}/audio" \
+                  "episodes/${{ inputs.episode_id }}/scene-config.json"
+          if git diff --cached --quiet; then
+            echo "Nothing changed."
+            exit 0
+          fi
+          git commit -m "${{ inputs.episode_id }}: seslendirme ölçüldü, reel ona kesildi"
+          git push origin HEAD:"${{ github.ref_name }}"

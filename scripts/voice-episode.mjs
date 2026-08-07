@@ -115,9 +115,27 @@ export function windowsFor(lines, alignment) {
  */
 const PROVIDER = process.env.VOICE_PROVIDER || (process.env.ELEVENLABS_API_KEY ? 'elevenlabs' : 'openai');
 
+/**
+ * A missing key is the commonest way this script stops, and "not set" is not an
+ * answer to "where do I put it". Say where the key comes from, where it goes,
+ * and what the third option is when there is no key at all.
+ */
+function missing(name, where) {
+  return (
+    `${name} is not set — nothing was generated and nothing was changed.\n` +
+    `   Get one at: ${where}\n` +
+    `   Put it in:  repository Settings → Secrets and variables → Actions → New repository secret\n` +
+    `   Then run:   Actions → "Voice the episode"\n` +
+    '\n' +
+    '   Or skip synthesis entirely: record the six lines yourself, save them as\n' +
+    '   episodes/<id>/audio/vo.mp3, and run this again with --measure. The pauses\n' +
+    '   are measured off the file, so any recording works.'
+  );
+}
+
 async function speakElevenLabs(text) {
   const key = process.env.ELEVENLABS_API_KEY;
-  if (!key) throw new Error('ELEVENLABS_API_KEY is not set');
+  if (!key) throw new Error(missing('ELEVENLABS_API_KEY', 'elevenlabs.io → Profile → API key (free tier is enough for a thirty-second script)'));
 
   const response = await fetch(`${API}/text-to-speech/${VOICE}/with-timestamps`, {
     method: 'POST',
@@ -141,7 +159,7 @@ async function speakElevenLabs(text) {
  */
 async function speakOpenAI(text) {
   const key = process.env.OPENAI_API_KEY || process.env.IMAGE_API_KEY;
-  if (!key) throw new Error('OPENAI_API_KEY is not set');
+  if (!key) throw new Error(missing('OPENAI_API_KEY', 'platform.openai.com → API keys'));
   const base = process.env.VOICE_BASE_URL || process.env.IMAGE_BASE_URL || 'https://api.openai.com/v1';
 
   const response = await fetch(`${base.replace(/\/$/, '')}/audio/speech`, {
