@@ -11,7 +11,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import sharp from 'sharp';
-import {keyBackdrop, islandCount} from '../scripts/generate-assets.mjs';
+import {CUTOUT_CEILING, keyBackdrop, islandCount} from '../scripts/generate-assets.mjs';
 
 const W = 160;
 const H = 160;
@@ -140,3 +140,32 @@ test('a key that shatters the picture is refused, however opaque it is', async (
   assert.ok((await islandCount(oneObject)) <= 2, 'a single cut-out is one island');
 });
 
+
+test('a keyed photograph that kept half the frame is a rectangle, not a cut-out', async () => {
+  /**
+   * THE GUARD THAT WAS SET FOR THE WRONG FAILURE.
+   *
+   * The ceiling was 0.88, chosen for the GENERATOR: a model asked for "one
+   * object on a plain white background" either complies or draws a whole scene
+   * at 90%+. A FETCHED photograph fails much closer in — the keyer works
+   * inward from the frame edges on colour, so a park bench photographed in a
+   * park loses the sky and keeps seventy per cent, as one big island with hard
+   * edges, and 0.88 waved it through.
+   *
+   * Measured on a real episode the two populations do not overlap: chess king
+   * 9.6%, chair 9.7%, phone 17.3%, magnifying glass 22.4% — against bench
+   * 70.0%, cable coil 68.9%, chalkboard 65.3%. Every one of the second group
+   * reached a rendered frame and sat on the shot as a smear with corners.
+   */
+  assert.ok(CUTOUT_CEILING <= 0.5, `ceiling is ${CUTOUT_CEILING} — a half-frame blob is not a cut-out`);
+  assert.ok(CUTOUT_CEILING > 0.28, `ceiling is ${CUTOUT_CEILING} — real cut-outs measured up to 27.9% and must survive`);
+
+  // A tall object on a sweep keys down to a slim silhouette and is fine; the
+  // same picture with the object filling the frame is the rectangle.
+  const sweep = [255, 255, 255];
+  const object = [59, 42, 24];
+  const slim = await picture(sweep, [[66, 20, 94, 140, object]]);
+  const wide = await picture(sweep, [[8, 8, 152, 152, object]]);
+  assert.ok(await opaqueFraction(await keyBackdrop(slim)) < CUTOUT_CEILING);
+  assert.ok(await opaqueFraction(await keyBackdrop(wide)) > CUTOUT_CEILING);
+});
