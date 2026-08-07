@@ -33,7 +33,7 @@
       "id": "s01-name",
       "sceneType": "composite",
       "voText": "In 1956, ten men spent a summer inventing a name for it.",
-      "durationInFrames": 134,
+      "durationInFrames": 142,
       "assets": {
         "ground": "assets/s01-name-bg.png"
       },
@@ -53,7 +53,7 @@
           "y": 1536,
           "depth": 0.55,
           "rotate": 0,
-          "from": 56
+          "from": 60
         }
       ],
       "params": {
@@ -61,7 +61,7 @@
         "anchorY": 1700,
         "pushFrom": 1.42,
         "pushTo": 1,
-        "pushEndFrame": 115,
+        "pushEndFrame": 122,
         "glowX": 1587,
         "glowY": 147,
         "glowSize": 515,
@@ -76,7 +76,7 @@
         "captionFrame": 10,
         "captionEvery": 25,
         "captionSize": 93,
-        "captionRecedeAt": 96,
+        "captionRecedeAt": 102,
         "accent": "#c9a94b"
       }
     },
@@ -84,7 +84,7 @@
       "id": "s02-kasparov",
       "sceneType": "portal-zoom-reveal",
       "voText": "For forty years it mostly lost.",
-      "durationInFrames": 76,
+      "durationInFrames": 80,
       "transition": {
         "kind": "slip",
         "frames": 11
@@ -96,9 +96,9 @@
       "params": {
         "frameWidth": 703,
         "frameRatio": 1.27,
-        "pushEndFrame": 27,
-        "detachFrame": 49,
-        "throughEndFrame": 71,
+        "pushEndFrame": 29,
+        "detachFrame": 51,
+        "throughEndFrame": 73,
         "weldRatio": 0.401,
         "wallScaleEnd": 6.3,
         "accent": "#c9a94b",
@@ -108,16 +108,16 @@
         ],
         "captionX": 84,
         "captionY": 1442,
-        "captionFrame": 75,
+        "captionFrame": 77,
         "captionEvery": 10,
         "captionSize": 93,
-        "captionRecedeAt": 58,
+        "captionRecedeAt": 62,
         "motif": "tally",
         "motifX": 142,
         "motifY": 499,
         "motifSize": 102,
         "motifCount": 14,
-        "motifFrame": 77,
+        "motifFrame": 79,
         "motifColour": "#c9a94b",
         "motifOpacity": 0.91
       },
@@ -132,7 +132,7 @@
           "y": 845,
           "depth": 0.9,
           "rotate": 0,
-          "from": 55
+          "from": 58
         }
       ]
     },
@@ -140,7 +140,7 @@
       "id": "s02-kasparov-b",
       "sceneType": "composite",
       "voText": "Then it beat Kasparov.",
-      "durationInFrames": 51,
+      "durationInFrames": 53,
       "transition": {
         "kind": "slam",
         "frames": 8
@@ -174,7 +174,7 @@
         "anchorY": 576,
         "pushFrom": 1.4,
         "pushTo": 1.04,
-        "pushEndFrame": 48,
+        "pushEndFrame": 50,
         "accent": "#c9a94b",
         "caption": [
           "Then it",
@@ -199,7 +199,7 @@
       "id": "s03-seeing",
       "sceneType": "composite",
       "voText": "In 2012 it learned to see,",
-      "durationInFrames": 76,
+      "durationInFrames": 78,
       "transition": {
         "kind": "flare",
         "frames": 12
@@ -220,7 +220,7 @@
         "anchorY": 1700,
         "pushFrom": 1,
         "pushTo": 1.38,
-        "pushEndFrame": 65,
+        "pushEndFrame": 67,
         "glowX": 1401,
         "glowY": 178,
         "glowSize": 329,
@@ -235,14 +235,14 @@
         "captionFrame": 10,
         "captionEvery": 25,
         "captionSize": 85,
-        "captionRecedeAt": 55,
+        "captionRecedeAt": 56,
         "accent": "#c9a94b"
       },
       "onScreenText": [
         {
           "text": "NOBODY NOTICED",
-          "atFrame": 46,
-          "durationInFrames": 24,
+          "atFrame": 47,
+          "durationInFrames": 25,
           "style": "sticker",
           "position": "bottom"
         }
@@ -252,7 +252,7 @@
       "id": "s03-seeing-b",
       "sceneType": "composite",
       "voText": "and nobody outside the labs noticed.",
-      "durationInFrames": 75,
+      "durationInFrames": 77,
       "transition": {
         "kind": "slip",
         "frames": 7
@@ -273,7 +273,7 @@
         "anchorY": 576,
         "pushFrom": 1.49,
         "pushTo": 1.1,
-        "pushEndFrame": 71,
+        "pushEndFrame": 72,
         "accent": "#c9a94b",
         "caption": [
           "and nobody",
@@ -299,7 +299,7 @@
       "id": "s04-move",
       "sceneType": "portal-zoom-reveal",
       "voText": "In 2016 it played a move no human would have played.",
-      "durationInFrames": 124,
+      "durationInFrames": 126,
       "transition": {
         "kind": "slam",
         "frames": 7
@@ -326,7 +326,7 @@
         "captionFrame": 93,
         "captionEvery": 9,
         "captionSize": 93,
-        "captionRecedeAt": 106
+        "captionRecedeAt": 108
       },
       "props": [
         {
@@ -339,7 +339,7 @@
           "y": 883,
           "depth": 0.9,
           "rotate": 0,
-          "from": 92
+          "from": 93
         }
       ]
     },
@@ -347,7 +347,7 @@
       "id": "s05-talk",
       "sceneType": "composite",
       "voText": "Then it learned to talk,",
-      "durationInFrames": 53,
+      "durationInFrames": 51,
       "transition": {
         "kind": "flare",
         "frames": 10
@@ -373,7 +373,7 @@
           "y": 960,
           "depth": 0.86,
           "rotate": -3,
-          "from": 13
+          "from": 12
         }
       ],
       "params": {
@@ -381,7 +381,7 @@
         "anchorY": 1700,
         "pushFrom": 1,
         "pushTo": 1.3,
-        "pushEndFrame": 46,
+        "pushEndFrame": 44,
         "glowX": 1589,
         "glowY": 373,
         "glowSize": 515,
@@ -396,7 +396,7 @@
         "captionFrame": 10,
         "captionEvery": 20,
         "captionSize": 85,
-        "captionRecedeAt": 38,
+        "captionRecedeAt": 37,
         "accent": "#c9a94b",
         "motif": "rise",
         "motifX": 134,
@@ -412,7 +412,7 @@
       "id": "s05-talk-b",
       "sceneType": "composite",
       "voText": "and a hundred million people arrived.",
-      "durationInFrames": 63,
+      "durationInFrames": 62,
       "transition": {
         "kind": "rack",
         "frames": 10
@@ -446,7 +446,7 @@
         "anchorY": 576,
         "pushFrom": 1.45,
         "pushTo": 1.04,
-        "pushEndFrame": 59,
+        "pushEndFrame": 58,
         "accent": "#c9a94b",
         "caption": [
           "and a",
@@ -472,7 +472,7 @@
       "id": "s06-close",
       "sceneType": "title-slate",
       "voText": "Seventy years to arrive.",
-      "durationInFrames": 55,
+      "durationInFrames": 53,
       "transition": {
         "kind": "flare",
         "frames": 11
@@ -504,13 +504,13 @@
           "FIFTY",
           "TWENTY"
         ],
-        "spinFrames": 22,
+        "spinFrames": 21,
         "mark": "oval",
         "markX": 260,
         "markY": 820,
         "markWidth": 560,
         "markHeight": 300,
-        "markFrame": 19
+        "markFrame": 18
       },
       "props": [
         {
@@ -521,7 +521,7 @@
           "y": 1574,
           "depth": 0.5,
           "rotate": 0,
-          "from": 30
+          "from": 29
         }
       ]
     },
@@ -529,7 +529,7 @@
       "id": "s06-close-b",
       "sceneType": "composite",
       "voText": "Two months to be everywhere.",
-      "durationInFrames": 68,
+      "durationInFrames": 66,
       "transition": {
         "kind": "slam",
         "frames": 9
@@ -561,7 +561,7 @@
         "anchorY": 576,
         "pushFrom": 1.35,
         "pushTo": 1.08,
-        "pushEndFrame": 64,
+        "pushEndFrame": 62,
         "accent": "#c9a94b",
         "caption": [
           "Two months",
