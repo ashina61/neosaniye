@@ -5,6 +5,10 @@ dosya adı, bir bölüm kimliği veya bir hikâye bilmez. Bölüm bir klasördü
 kod değişikliği değil. İkinci bölüm eklemek `episodes/` altına bir klasör
 açmaktır, motora dokunmak değil.
 
+Klasörü `npm run new -- --id=<id> --title="…" --mood=<mood>` açar: brief
+şablonu, kesim ve yer tutucular. İlk saniyeden geçerli bir bölüm çıkar —
+sonra ALTI SATIRI yazarsın, gerisi türetilir.
+
 Giriş noktası `npm run render -- --episode=<id>`. Otomatik koşu TEK
 workflow: `.github/workflows/reel.yml`. Push/PR'da ucuz kapı (`check`);
 "Run workflow" ile fabrika (`make`): **seslendir → görsel → render**, her adım
