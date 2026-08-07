@@ -1,4 +1,5 @@
 import React from 'react';
+import {fitSize} from './Type';
 import {hash01} from '../motion';
 
 /**
@@ -87,7 +88,10 @@ export const Newspaper: React.FC<{
         style={{
           fontFamily: SERIF,
           fontWeight: 900,
-          fontSize: width * 0.092,
+          // THE ENGINE GUARANTEES IT FITS. A masthead set at a fixed size is
+          // fine until the words are long and then it simply runs off the
+          // sheet — the same failure the slot cards had, in a different file.
+          fontSize: fitSize(masthead, width * 0.092, width * 0.88, 0),
           letterSpacing: '-0.015em',
           textAlign: 'center',
           lineHeight: 1,
@@ -106,7 +110,7 @@ export const Newspaper: React.FC<{
         style={{
           fontFamily: SANS,
           fontWeight: 900,
-          fontSize: width * 0.088,
+          fontSize: fitSize(headline, width * 0.088, width * 0.88, 0),
           lineHeight: 0.98,
           textTransform: 'uppercase',
           letterSpacing: '-0.02em',
@@ -277,7 +281,7 @@ export const Plaque: React.FC<{text: string; width: number}> = ({text, width}) =
       textAlign: 'center',
       fontFamily: SERIF,
       fontStyle: 'italic',
-      fontSize: width * 0.115,
+      fontSize: fitSize(text, width * 0.115, width * 0.88, 0),
       color: '#2a2113',
       letterSpacing: '0.04em',
       boxShadow: '0 10px 22px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.35)',

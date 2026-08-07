@@ -77,6 +77,40 @@ export type SceneType = string;
  * sense of a real space, the reason a flat plate stops looking flat — falls out
  * of that one number.
  */
+/**
+ * A PROP — an object in the room that is DRAWN, not photographed.
+ *
+ * Law 2: people and places are photographs, everything else is drawn. A prop
+ * takes a depth and stands on a point exactly as a plate does, because it is a
+ * thing inside the same space; that is what separates it from a motif, which
+ * is pinned to the frame because it is a graphic about the sentence rather
+ * than an object in the shot.
+ */
+export type PropSpec = {
+  kind: 'plaque' | 'newspaper' | 'card' | 'print' | 'wire' | 'beam';
+  /** 0 = infinitely far, 1 = at the anchor. Same law as a layer's depth. */
+  depth?: number;
+  x?: number;
+  y?: number;
+  /** How wide the drawn object is. `wire` and `beam` read it as their size. */
+  width?: number;
+  rotate?: number;
+  opacity?: number;
+  /** Frames, scene-relative, at which it springs or draws itself on. */
+  from?: number;
+  /** plaque, card, newspaper: the words on it. */
+  text?: string;
+  heading?: string;
+  lines?: string[];
+  masthead?: string;
+  date?: string;
+  stamp?: string;
+  caption?: string;
+  /** wire: which outline is drawn. */
+  shape?: 'diamond' | 'rect' | 'circle';
+  colour?: string;
+};
+
 export type LayerSpec = {
   /** Asset role to draw. A layer with no role and no fill draws nothing. */
   role?: string;
@@ -160,6 +194,7 @@ export type SceneSpec = {
   transition?: TransitionSpec;
   /** The layer stack, for scene types that compose one. */
   layers?: LayerSpec[];
+  props?: PropSpec[];
   /** Partial grade for this scene only, merged over the episode's grade. */
   gradeOverride?: Partial<Grade>;
   onScreenText?: OnScreenTextSpec[];

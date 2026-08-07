@@ -78,6 +78,22 @@ export const MOTIF_KINDS = ['coins', 'rise', 'route', 'embers', 'rays', 'tally']
  * with the cut-out it is a parallax punch, without it a slow push on a plate,
  * and either way the episode renders.
  */
+/**
+ * WHAT A PROP CAN BE — objects the engine draws instead of fetching.
+ *
+ *   plaque     a museum caption in engraved brass. The reference kit opens on
+ *              one, under the framed photograph.
+ *   newspaper  a front page: masthead, headline, rules, columns. Three of them
+ *              landing one at a time is the reference's third scene.
+ *   card       an index card with a heading and a line or two, optionally
+ *              rubber-stamped.
+ *   print      a photographic print's white border, with a caption below it.
+ *   wire       a hand-drawn wireframe that draws itself on — the diamonds the
+ *              reference frames its props inside.
+ *   beam       a shaft of light with a soft edge, for a window or a lamp.
+ */
+export const PROP_KINDS = ['plaque', 'newspaper', 'card', 'print', 'wire', 'beam'];
+
 export const OPTIONAL_ROLE = '?';
 
 /**
@@ -256,6 +272,40 @@ export function validateEpisodeConfig(config) {
         });
       }
     }
+    /**
+     * PROPS — the things in the room that are DRAWN rather than photographed.
+     *
+     * Law 2 of this repo: people and places are photographs, everything else is
+     * drawn. The reference reel's twenty assets are about four backdrops and
+     * sixteen other things, and most of those sixteen are graphics — a museum
+     * plaque, three newspaper front pages, hand-drawn wireframe diamonds, a
+     * frame, a beam of light. This pipeline spent a fortnight searching a photo
+     * library for them while the code to draw every one already sat in
+     * `engine/draw/`, wired into nothing.
+     *
+     * A prop is a layer that needs no file. It takes the same depth and the
+     * same anchor as a plate, because it is an object standing in the same
+     * room — unlike a motif, which is pinned to the frame because it is a
+     * graphic ABOUT the sentence rather than a thing inside it.
+     */
+    if (scene.props !== undefined) {
+      if (!Array.isArray(scene.props)) push(`${where}.props: must be an array`);
+      else {
+        scene.props.forEach((prop, i) => {
+          const at = `${where}.props[${i}]`;
+          if (typeof prop !== 'object' || prop === null) return push(`${at}: must be an object`);
+          // A kind nobody draws is the same failure as an unknown scene type,
+          // and law 13 says it is never skipped in silence.
+          if (!PROP_KINDS.includes(prop.kind)) {
+            push(`${at}.kind: "${prop.kind}" is not one of ${PROP_KINDS.join(', ')}`);
+          }
+          if (prop.depth !== undefined && (typeof prop.depth !== 'number' || prop.depth < 0 || prop.depth > 1)) {
+            push(`${at}.depth: must be a number between 0 and 1`);
+          }
+        });
+      }
+    }
+
     for (const [order, text] of (scene.onScreenText ?? []).entries()) {
       const at = `${where}.onScreenText[${order}]`;
       if (typeof text?.text !== 'string' || !text.text.trim()) push(`${at}.text: required, non-empty string`);

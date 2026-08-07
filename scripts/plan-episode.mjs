@@ -534,6 +534,205 @@ function drawnLayer({rand, look, side, groundDepth, durationInFrames}) {
   };
 }
 
+/**
+ * THE DRAWN OBJECTS THAT STAND IN THE SHOT.
+ *
+ * The reference reel runs on about twenty assets and only four of them are
+ * backdrops. This pipeline made SIX backdrops and called it an episode, and
+ * spent a fortnight trying to buy the other fourteen from a photo search that
+ * cannot sell them — while `Plaque`, `WireFrame` and `Beam` sat finished in
+ * `engine/draw/`, wired into zero templates.
+ *
+ * So the other fourteen are DRAWN, which is law 2 of this repo and always was:
+ * people and places are photographs, everything else is drawn. A plaque, a
+ * front page, an index card, a print's white border, a wireframe, a shaft of
+ * light. No file, no search, no keyer, and they cannot come back as a
+ * washing-machine door.
+ *
+ * TWO RULES, and they are the same two the motifs are held to, because a
+ * graphic that appears on every shot is not a device, it is a filter:
+ *
+ *   IT MUST HAVE SOMETHING TO SAY   a plaque needs the line's own label, a card
+ *       its own heading. Nothing is invented to fill a slot — only `wire` and
+ *       `beam` are pure graphics, and they are the ones held back hardest.
+ *   NEVER THE SAME THING TWICE RUNNING   the kind that opened the last shot
+ *       cannot open this one.
+ */
+function planProps({line, rand, look, side, durationInFrames, recentProps, beat}) {
+  const props = [];
+  const banned = new Set(recentProps);
+  const use = (kind) => !banned.has(kind);
+
+  /**
+   * WHERE THINGS STAND — and it is not free choice.
+   *
+   * Two rules, both learned from a contact sheet. Props alternate across the
+   * frame so they do not pile up; and whatever x comes out, the whole object
+   * has to be INSIDE the frame. The first version put a plaque at the left lane
+   * and let its own width run off the edge, so a caption reading "Hanover ·
+   * 1956" was delivered as "Hanover · 19".
+   */
+  const lane = (i, w) => {
+    const wanted = WIDTH * (i % 2 === 0 ? between(rand, [0.3, 0.42]) : between(rand, [0.58, 0.72]));
+    const margin = w / 2 + 40;
+    return Math.round(Math.min(WIDTH - margin, Math.max(margin, wanted)));
+  };
+  const stagger = () => Math.round(durationInFrames * between(rand, [0.06, 0.3]));
+
+  // A MUSEUM PLAQUE, under the picture — the reference kit's opening shot.
+  // It carries the line's own label: a date, a place. Never a summary.
+  if (line.kicker && use('plaque')) {
+    const plaqueWidth = Math.round(between(rand, [360, 470]));
+    props.push({
+      kind: 'plaque',
+      text: String(line.kicker),
+      depth: round(between(rand, [0.5, 0.72]), 2),
+      x: lane(props.length, plaqueWidth),
+      // LOW. A museum caption hangs under the thing it captions, and keeping it
+      // in its own band is what stops the front page landing on top of it —
+      // which is how a plaque and a newspaper shared a shot and only one of
+      // them could be read.
+      y: Math.round(HEIGHT * between(rand, [0.7, 0.8])),
+      width: plaqueWidth,
+      rotate: round(between(rand, [-2.5, 2.5]), 1),
+      from: stagger(),
+    });
+  }
+
+  // A FRONT PAGE. Only where the line STATES something — a title is a headline
+  // and a headline is what a newspaper is for.
+  if (line.title && use('newspaper')) {
+    /**
+     * A MASTHEAD IS A PAPER'S NAME, NOT A SENTENCE.
+     *
+     * The first version put the line's `footer` up there and cut it to
+     * twenty-two characters, so the front page read "THERE WAS NO MACHINE Y".
+     * The masthead is set at the largest size on the sheet — whatever goes
+     * there has to be two or three words that were always going to be two or
+     * three words. The line's own statement is the HEADLINE, which is what a
+     * headline is; the label goes in the dateline, and only when a plaque is
+     * not already carrying it in the same frame.
+     */
+    const carried = props.some((p) => p.kind === 'plaque');
+    const paperWidth = Math.round(between(rand, [360, 470]));
+    props.push({
+      kind: 'newspaper',
+      masthead: pick(rand, ['THE RECORD', 'THE DAILY', 'THE GAZETTE', 'THE CHRONICLE', 'THE HERALD']),
+      text: String(line.title),
+      date: !carried && line.kicker ? String(line.kicker) : undefined,
+      depth: round(between(rand, [0.62, 0.86]), 2),
+      x: lane(props.length, paperWidth),
+      y: Math.round(HEIGHT * between(rand, [0.4, 0.54])),
+      width: paperWidth,
+      rotate: round(between(rand, [-7, 7]), 1),
+      from: stagger(),
+    });
+  }
+
+  // INDEX CARDS, one per thing listed. The reference lands three of them from
+  // three directions about a second apart; the stagger is the whole effect.
+  for (const [i, item] of (line.items ?? []).slice(0, 3).entries()) {
+    const [, heading, body] = String(item).split('|');
+    if (!heading) continue;
+    props.push({
+      kind: 'card',
+      heading,
+      lines: body ? [body] : [],
+      depth: round(0.5 + i * 0.16, 2),
+      x: lane(i, 430),
+      y: Math.round(HEIGHT * (0.46 + i * 0.11)),
+      width: Math.round(between(rand, [380, 470])),
+      rotate: round(between(rand, [-8, 8]), 1),
+      from: Math.round(durationInFrames * 0.1) + i * Math.round(durationInFrames * 0.16),
+    });
+  }
+
+  /**
+   * A SHAFT OF LIGHT, from the side the room is lit from.
+   *
+   * The one prop that is pure atmosphere, so it is the one held to the light's
+   * own rule: it comes from the same side all episode. A beam that swaps sides
+   * between cuts is not a window, it is a mistake.
+   */
+  if (use('beam') && rand() > 0.45) {
+    props.push({
+      kind: 'beam',
+      depth: round(between(rand, [0.15, 0.4]), 2),
+      x: side > 0 ? Math.round(WIDTH * between(rand, [0.74, 0.94])) : Math.round(WIDTH * between(rand, [0.06, 0.26])),
+      y: Math.round(HEIGHT * between(rand, [-0.05, 0.08])),
+      width: Math.round(between(rand, [220, 380])),
+      rotate: side > 0 ? -Math.round(between(rand, [8, 22])) : Math.round(between(rand, [8, 22])),
+      opacity: round(between(rand, [0.5, 0.85]), 2),
+      colour: look.accent,
+      from: 0,
+    });
+  }
+
+  /**
+   * A HAND-DRAWN OUTLINE around something in the frame.
+   *
+   * The reference frames its props inside wireframe diamonds that draw
+   * themselves on. It carries no words, so it is the easiest thing here to
+   * overuse and the fastest to become wallpaper — it is allowed only where the
+   * shot is otherwise bare, and never on the closing beat, where the frame
+   * belongs to the verdict.
+   */
+  if (use('wire') && props.length < 2 && beat !== 'close') {
+    props.push({
+      kind: 'wire',
+      shape: pick(rand, ['diamond', 'circle', 'rect']),
+      depth: round(between(rand, [0.55, 0.85]), 2),
+      x: lane(props.length, 380),
+      y: Math.round(HEIGHT * between(rand, [0.4, 0.62])),
+      width: Math.round(between(rand, [260, 420])),
+      colour: look.accent,
+      from: stagger(),
+    });
+  }
+
+  /**
+   * NO SHOT LEAVES EMPTY-HANDED.
+   *
+   * The no-repeat rule and the coin flip can agree at the wrong moment: a line
+   * with no label, no title and nothing listed, following a shot that used the
+   * one graphic it had left, comes out carrying nothing — a photograph and a
+   * slow push, which is the exact thing all of this exists to stop. So the two
+   * pure graphics take turns rather than competing: whichever of them did NOT
+   * appear last is allowed through here.
+   *
+   * This is the fallback, not the rule. Every prop above still has to have
+   * something of the line's own to say.
+   */
+  if (!props.length) {
+    props.push(
+      banned.has('wire')
+        ? {
+            kind: 'beam',
+            depth: round(between(rand, [0.15, 0.4]), 2),
+            x: side > 0 ? Math.round(WIDTH * 0.86) : Math.round(WIDTH * 0.14),
+            y: Math.round(HEIGHT * between(rand, [-0.05, 0.06])),
+            width: Math.round(between(rand, [240, 380])),
+            rotate: side > 0 ? -16 : 16,
+            opacity: round(between(rand, [0.5, 0.8]), 2),
+            colour: look.accent,
+            from: 0,
+          }
+        : {
+            kind: 'wire',
+            shape: pick(rand, ['diamond', 'circle', 'rect']),
+            depth: round(between(rand, [0.55, 0.85]), 2),
+            x: lane(0, 380),
+            y: Math.round(HEIGHT * between(rand, [0.4, 0.62])),
+            width: Math.round(between(rand, [260, 420])),
+            colour: look.accent,
+            from: stagger(),
+          },
+    );
+  }
+
+  return props;
+}
+
 function buildStack({line, ground, rand, groundDepth, spread = 0, cutouts = false}) {
   /**
    * PIECES ARE ONLY PLACED WHERE THERE IS A SUPPLY OF THEM.
@@ -656,7 +855,7 @@ function buildStack({line, ground, rand, groundDepth, spread = 0, cutouts = fals
  * It always pushes from a DIFFERENT anchor than the shot before it. Cutting
  * from a plate to the same plate on the same move is not a cut, it is a jump.
  */
-function planContinuation({line, index, part, fragment, frames: measured, rand, look, previousTransition, plate, side, cutouts}) {
+function planContinuation({line, index, part, fragment, frames: measured, rand, look, previousTransition, plate, side, cutouts, recentProps}) {
   const assetBase = `s${String(index + 1).padStart(2, '0')}-${line.slug ?? 'shot'}`;
   const choices = look.transitions.filter((k) => k !== previousTransition);
   const corner = part % 4;
@@ -695,6 +894,10 @@ function planContinuation({line, index, part, fragment, frames: measured, rand, 
     transition: {kind: pick(rand, choices), frames: 7 + Math.round(rand() * 5)},
     assets,
     layers,
+    // A continuation is the same room seen from another corner, so the drawn
+    // objects are still standing in it — and it is the shot that used to carry
+    // nothing at all.
+    props: planProps({line, rand, look, side, durationInFrames: frames, recentProps, beat: 'middle'}),
     params: {
       // The anchor walks the corners, so consecutive shots on one plate never
       // move into the same part of it.
@@ -720,7 +923,7 @@ function planContinuation({line, index, part, fragment, frames: measured, rand, 
   };
 }
 
-function planScene({line, index, total, fragment, frames, rand, look, previousTransition, recentMotifs, recentTypes, side, cutouts}) {
+function planScene({line, index, total, fragment, frames, rand, look, previousTransition, recentMotifs, recentTypes, side, cutouts, recentProps}) {
   const beat = beatOf(line, index, total);
   let sceneType = SCENE_FOR[beat];
   // RHYTHM. Never the same template as the shot before it. The old rule waited
@@ -886,6 +1089,10 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
     });
     scene.assets = stack.assets;
     scene.layers = stack.layers;
+    // THE OTHER FOURTEEN ASSETS, DRAWN. See planProps: the reference reel is
+    // four backdrops and sixteen graphics, and this pipeline was making six
+    // backdrops and nothing else.
+    scene.props = planProps({line, rand, look, side, durationInFrames, recentProps, beat});
 
     scene.params = {
       anchorX: Math.round(WIDTH * 0.5),
@@ -904,6 +1111,18 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
       ...motifParams(motif, {rand, from: 18 + Math.round(rand() * 14), accent: look.accent, stops: line.stops}),
     };
     if (line.accentLine !== undefined) scene.params.captionAccent = line.accentLine;
+  }
+
+  /**
+   * A PORTAL LANDS IN A ROOM, and a room has objects in it.
+   *
+   * The composite branch sets these; the portal did not, so two of ten shots
+   * carried nothing drawn at all. Its template holds them back until the flight
+   * is over — a plaque the camera flies past is not a plaque — so they cost the
+   * arrival nothing and give the second half of the shot something to be.
+   */
+  if (sceneType === 'portal-zoom-reveal') {
+    scene.props = planProps({line, rand, look, side, durationInFrames, recentProps, beat});
   }
 
   if (line.onScreen) {
@@ -1019,6 +1238,10 @@ async function main() {
       recentTypes: planned.slice(-2).map((p) => p.scene.sceneType),
       side,
       cutouts,
+      // Never open two shots running with the same drawn object. A device that
+      // repeats stops being a device and becomes wallpaper — the same law the
+      // motifs and the transitions are already held to.
+      recentProps: planned.slice(-1).flatMap((p) => (p.scene.props ?? []).map((q) => q.kind)),
     });
     previousTransition = result.scene.transition?.kind ?? null;
     planned.push(result);
@@ -1041,6 +1264,7 @@ async function main() {
         plate,
         side,
         cutouts,
+        recentProps: planned.slice(-1).flatMap((p) => (p.scene.props ?? []).map((q) => q.kind)),
       });
       previousTransition = scene.transition.kind;
       // The continuation stands the SAME pieces in the same room, so it carries

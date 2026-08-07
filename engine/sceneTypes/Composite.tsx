@@ -7,6 +7,7 @@ import {Fog, Glow} from '../draw/Glow';
 import {WordStack} from '../draw/Type';
 import {Annotation, type MarkKind} from '../draw/Annotation';
 import {SceneMotif} from '../draw/Motif';
+import {DrawnProps} from '../draw/Props';
 
 /**
  * A COMPOSED SHOT — as many layers as the scene declares.
@@ -199,6 +200,12 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
           />
         </AbsoluteFill>
       ) : null}
+
+      {/* THE DRAWN OBJECTS IN THE ROOM. In front of the photographic plates and
+          behind the atmosphere, because a plaque on a wall has air in front of
+          it like everything else does. They take the push their depth allows
+          and scale about the same floor point the plates do. */}
+      <DrawnProps props={scene.props} push={push} origin={origin} accent={str('accent', '#f2b53a')} />
 
       {/* Atmosphere is drawn, in front of the stack. A generated haze plate
           came back as a grey landscape, and screen-blending that does not add

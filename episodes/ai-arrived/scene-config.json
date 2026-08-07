@@ -19,12 +19,12 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.44,
-      "grungeOpacity": 0.11,
-      "scanlineOpacity": 0.06,
-      "scanlinePeriod": 9,
-      "vignetteStrength": 0.47,
-      "weavePx": 5,
+      "grainOpacity": 0.45,
+      "grungeOpacity": 0.19,
+      "scanlineOpacity": 0.14,
+      "scanlinePeriod": 11,
+      "vignetteStrength": 0.44,
+      "weavePx": 6,
       "weaveScale": 1.012
     }
   },
@@ -44,25 +44,59 @@
           "anchor": "fill"
         }
       ],
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "Hanover · 1956",
+          "depth": 0.71,
+          "x": 332,
+          "y": 1492,
+          "width": 451,
+          "rotate": 2.3,
+          "from": 29
+        },
+        {
+          "kind": "newspaper",
+          "masthead": "THE HERALD",
+          "text": "A NAME FOR IT",
+          "depth": 0.83,
+          "x": 746,
+          "y": 902,
+          "width": 457,
+          "rotate": 4.9,
+          "from": 9
+        },
+        {
+          "kind": "beam",
+          "depth": 0.3,
+          "x": 938,
+          "y": 96,
+          "width": 338,
+          "rotate": -20,
+          "opacity": 0.71,
+          "colour": "#c9a94b",
+          "from": 0
+        }
+      ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushTo": 1.45,
+        "pushTo": 1.44,
         "pushEndFrame": 115,
-        "glowX": 1424,
-        "glowY": 500,
-        "glowSize": 550,
-        "glowIntensity": 0.69,
+        "glowX": 1473,
+        "glowY": 600,
+        "glowSize": 484,
+        "glowIntensity": 0.48,
         "glowWarm": "#c9a94b",
         "glowDepth": 0.73,
-        "focusPx": 12,
-        "fog": 0.55,
+        "focusPx": 13,
+        "fog": 0.58,
         "caption": [],
         "captionX": 84,
-        "captionY": 1015,
+        "captionY": 427,
         "captionFrame": 10,
-        "captionEvery": 25,
-        "captionSize": 91,
+        "captionEvery": 17,
+        "captionSize": 86,
         "captionRecedeAt": 96,
         "accent": "#c9a94b"
       }
@@ -73,7 +107,7 @@
       "voText": "For forty years it mostly lost.",
       "durationInFrames": 76,
       "transition": {
-        "kind": "rack",
+        "kind": "slam",
         "frames": 7
       },
       "assets": {
@@ -81,33 +115,45 @@
         "photo": "assets/s02-kasparov-photo.png"
       },
       "params": {
-        "frameWidth": 830,
-        "frameRatio": 1.14,
+        "frameWidth": 712,
+        "frameRatio": 1.25,
         "pushEndFrame": 27,
         "detachFrame": 49,
         "throughEndFrame": 71,
-        "weldRatio": 0.404,
-        "wallScaleEnd": 6.5,
+        "weldRatio": 0.397,
+        "wallScaleEnd": 5.8,
         "accent": "#c9a94b",
         "caption": [
           "Forty years",
           "of losing."
         ],
         "captionX": 84,
-        "captionY": 1430,
+        "captionY": 1446,
         "captionFrame": 75,
         "captionEvery": 10,
         "captionSize": 90,
         "captionRecedeAt": 58,
         "motif": "tally",
-        "motifX": 160,
+        "motifX": 122,
         "motifY": 499,
-        "motifSize": 101,
+        "motifSize": 107,
         "motifCount": 13,
         "motifFrame": 77,
         "motifColour": "#c9a94b",
-        "motifOpacity": 0.99
-      }
+        "motifOpacity": 0.84
+      },
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.58,
+          "x": 446,
+          "y": 821,
+          "width": 294,
+          "colour": "#c9a94b",
+          "from": 21
+        }
+      ]
     },
     {
       "id": "s02-kasparov-b",
@@ -115,8 +161,8 @@
       "voText": "Then it beat Kasparov.",
       "durationInFrames": 51,
       "transition": {
-        "kind": "slam",
-        "frames": 9
+        "kind": "rack",
+        "frames": 8
       },
       "assets": {
         "ground": "assets/s02-kasparov-photo.png"
@@ -124,15 +170,28 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.94,
+          "depth": 0.93,
           "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.21,
+          "x": 929,
+          "y": 44,
+          "width": 311,
+          "rotate": -16,
+          "opacity": 0.51,
+          "colour": "#c9a94b",
+          "from": 0
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.39,
-        "pushTo": 1.04,
+        "pushFrom": 1.49,
+        "pushTo": 1.1,
         "pushEndFrame": 48,
         "accent": "#c9a94b",
         "caption": [
@@ -140,18 +199,18 @@
           "beat Kasparov"
         ],
         "captionX": 84,
-        "captionY": 350,
+        "captionY": 381,
         "captionFrame": 4,
-        "captionEvery": 6,
-        "captionSize": 97,
-        "glowX": 1422,
-        "glowY": 506,
-        "glowSize": 448,
-        "glowIntensity": 0.59,
+        "captionEvery": 7,
+        "captionSize": 90,
+        "glowX": 1303,
+        "glowY": 527,
+        "glowSize": 309,
+        "glowIntensity": 0.53,
         "glowWarm": "#c9a94b",
-        "glowDepth": 0.94,
-        "focusPx": 12,
-        "fog": 0.37
+        "glowDepth": 0.93,
+        "focusPx": 14,
+        "fog": 0.59
       }
     },
     {
@@ -160,8 +219,8 @@
       "voText": "In 2012 it learned to see,",
       "durationInFrames": 76,
       "transition": {
-        "kind": "rack",
-        "frames": 10
+        "kind": "slam",
+        "frames": 7
       },
       "assets": {
         "ground": "assets/s03-seeing-bg.png"
@@ -169,28 +228,40 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.83,
+          "depth": 0.79,
           "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "rect",
+          "depth": 0.71,
+          "x": 391,
+          "y": 1163,
+          "width": 339,
+          "colour": "#c9a94b",
+          "from": 15
         }
       ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushTo": 1.48,
+        "pushTo": 1.45,
         "pushEndFrame": 65,
-        "glowX": 1308,
-        "glowY": 563,
-        "glowSize": 333,
-        "glowIntensity": 0.51,
+        "glowX": 1468,
+        "glowY": 527,
+        "glowSize": 395,
+        "glowIntensity": 0.69,
         "glowWarm": "#c9a94b",
-        "glowDepth": 0.83,
-        "focusPx": 14,
-        "fog": 0.56,
+        "glowDepth": 0.79,
+        "focusPx": 11,
+        "fog": 0.29,
         "caption": [],
         "captionX": 84,
-        "captionY": 525,
+        "captionY": 358,
         "captionFrame": 10,
-        "captionEvery": 23,
+        "captionEvery": 25,
         "captionSize": 85,
         "captionRecedeAt": 55,
         "accent": "#c9a94b"
@@ -212,7 +283,7 @@
       "durationInFrames": 75,
       "transition": {
         "kind": "flare",
-        "frames": 12
+        "frames": 8
       },
       "assets": {
         "ground": "assets/s03-seeing-bg.png"
@@ -220,15 +291,28 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.84,
+          "depth": 0.75,
           "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.37,
+          "x": 952,
+          "y": 104,
+          "width": 335,
+          "rotate": -15,
+          "opacity": 0.74,
+          "colour": "#c9a94b",
+          "from": 0
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.36,
-        "pushTo": 1.04,
+        "pushFrom": 1.38,
+        "pushTo": 1.06,
         "pushEndFrame": 71,
         "accent": "#c9a94b",
         "caption": [
@@ -237,18 +321,18 @@
           "labs noticed"
         ],
         "captionX": 84,
-        "captionY": 457,
+        "captionY": 702,
         "captionFrame": 4,
-        "captionEvery": 6,
-        "captionSize": 91,
-        "glowX": 1478,
-        "glowY": 568,
-        "glowSize": 515,
-        "glowIntensity": 0.69,
+        "captionEvery": 9,
+        "captionSize": 92,
+        "glowX": 1398,
+        "glowY": 596,
+        "glowSize": 322,
+        "glowIntensity": 0.42,
         "glowWarm": "#c9a94b",
-        "glowDepth": 0.84,
+        "glowDepth": 0.75,
         "focusPx": 9,
-        "fog": 0.21
+        "fog": 0.5
       }
     },
     {
@@ -257,33 +341,45 @@
       "voText": "In 2016 it played a move no human would have played.",
       "durationInFrames": 124,
       "transition": {
-        "kind": "slam",
-        "frames": 8
+        "kind": "rack",
+        "frames": 10
       },
       "assets": {
         "wall": "assets/s04-move-bg.png",
         "photo": "assets/s04-move-photo.png"
       },
       "params": {
-        "frameWidth": 748,
-        "frameRatio": 1.22,
+        "frameWidth": 710,
+        "frameRatio": 1.09,
         "pushEndFrame": 45,
         "detachFrame": 67,
         "throughEndFrame": 89,
-        "weldRatio": 0.392,
-        "wallScaleEnd": 6,
+        "weldRatio": 0.395,
+        "wallScaleEnd": 5.4,
         "accent": "#c9a94b",
         "caption": [
           "Move",
           "thirty-seven."
         ],
         "captionX": 84,
-        "captionY": 1498,
+        "captionY": 1509,
         "captionFrame": 93,
-        "captionEvery": 9,
-        "captionSize": 90,
+        "captionEvery": 7,
+        "captionSize": 84,
         "captionRecedeAt": 106
-      }
+      },
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.64,
+          "x": 334,
+          "y": 1064,
+          "width": 291,
+          "colour": "#c9a94b",
+          "from": 11
+        }
+      ]
     },
     {
       "id": "s05-talk",
@@ -291,8 +387,8 @@
       "voText": "Then it learned to talk,",
       "durationInFrames": 53,
       "transition": {
-        "kind": "rack",
-        "frames": 9
+        "kind": "slip",
+        "frames": 11
       },
       "assets": {
         "ground": "assets/s05-talk-bg.png"
@@ -300,39 +396,62 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.91,
+          "depth": 0.93,
           "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "Two months",
+          "depth": 0.51,
+          "x": 438,
+          "y": 1435,
+          "width": 397,
+          "rotate": -2,
+          "from": 15
+        },
+        {
+          "kind": "newspaper",
+          "masthead": "THE RECORD",
+          "text": "100 MILLION",
+          "depth": 0.76,
+          "x": 753,
+          "y": 1011,
+          "width": 406,
+          "rotate": -1,
+          "from": 12
         }
       ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushTo": 1.36,
+        "pushTo": 1.43,
         "pushEndFrame": 46,
-        "glowX": 1300,
-        "glowY": 574,
-        "glowSize": 355,
-        "glowIntensity": 0.48,
+        "glowX": 1412,
+        "glowY": 502,
+        "glowSize": 454,
+        "glowIntensity": 0.43,
         "glowWarm": "#c9a94b",
-        "glowDepth": 0.91,
+        "glowDepth": 0.93,
         "focusPx": 10,
-        "fog": 0.31,
+        "fog": 0.45,
         "caption": [],
         "captionX": 84,
-        "captionY": 563,
+        "captionY": 423,
         "captionFrame": 10,
-        "captionEvery": 17,
-        "captionSize": 87,
+        "captionEvery": 16,
+        "captionSize": 85,
         "captionRecedeAt": 38,
         "accent": "#c9a94b",
         "motif": "rise",
-        "motifX": 134,
+        "motifX": 148,
         "motifY": 1574,
-        "motifSize": 70,
-        "motifCount": 9,
-        "motifFrame": 24,
+        "motifSize": 60,
+        "motifCount": 8,
+        "motifFrame": 23,
         "motifColour": "#c9a94b",
-        "motifOpacity": 0.94
+        "motifOpacity": 0.96
       }
     },
     {
@@ -341,7 +460,7 @@
       "voText": "and a hundred million people arrived.",
       "durationInFrames": 63,
       "transition": {
-        "kind": "slam",
+        "kind": "rack",
         "frames": 10
       },
       "assets": {
@@ -350,15 +469,27 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.84,
+          "depth": 0.94,
           "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "rect",
+          "depth": 0.82,
+          "x": 378,
+          "y": 803,
+          "width": 324,
+          "colour": "#c9a94b",
+          "from": 10
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.42,
-        "pushTo": 1.09,
+        "pushFrom": 1.43,
+        "pushTo": 1.06,
         "pushEndFrame": 59,
         "accent": "#c9a94b",
         "caption": [
@@ -367,18 +498,18 @@
           "people arrived"
         ],
         "captionX": 84,
-        "captionY": 629,
+        "captionY": 835,
         "captionFrame": 4,
-        "captionEvery": 6,
-        "captionSize": 98,
-        "glowX": 1423,
-        "glowY": 255,
-        "glowSize": 551,
-        "glowIntensity": 0.62,
+        "captionEvery": 7,
+        "captionSize": 90,
+        "glowX": 1570,
+        "glowY": 533,
+        "glowSize": 509,
+        "glowIntensity": 0.55,
         "glowWarm": "#c9a94b",
-        "glowDepth": 0.84,
-        "focusPx": 14,
-        "fog": 0.4
+        "glowDepth": 0.94,
+        "focusPx": 8,
+        "fog": 0.37
       }
     },
     {
@@ -386,6 +517,79 @@
       "sceneType": "composite",
       "voText": "Seventy years to arrive.",
       "durationInFrames": 55,
+      "transition": {
+        "kind": "slam",
+        "frames": 9
+      },
+      "assets": {
+        "ground": "assets/s06-close-bg.png"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.93,
+          "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "1956 · 2022",
+          "depth": 0.63,
+          "x": 332,
+          "y": 1487,
+          "width": 378,
+          "rotate": 0,
+          "from": 15
+        },
+        {
+          "kind": "newspaper",
+          "masthead": "THE HERALD",
+          "text": "SEVENTY YEARS",
+          "depth": 0.82,
+          "x": 732,
+          "y": 963,
+          "width": 375,
+          "rotate": 0.7,
+          "from": 3
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushTo": 1.49,
+        "pushEndFrame": 47,
+        "glowX": 1454,
+        "glowY": 341,
+        "glowSize": 440,
+        "glowIntensity": 0.67,
+        "glowWarm": "#c9a94b",
+        "glowDepth": 0.93,
+        "focusPx": 14,
+        "fog": 0.39,
+        "caption": [],
+        "captionX": 84,
+        "captionY": 626,
+        "captionFrame": 10,
+        "captionEvery": 21,
+        "captionSize": 84,
+        "captionRecedeAt": 40,
+        "accent": "#c9a94b",
+        "motif": "tally",
+        "motifX": 166,
+        "motifY": 499,
+        "motifSize": 89,
+        "motifCount": 10,
+        "motifFrame": 30,
+        "motifColour": "#c9a94b",
+        "motifOpacity": 0.97
+      }
+    },
+    {
+      "id": "s06-close-b",
+      "sceneType": "composite",
+      "voText": "Two months to be everywhere.",
+      "durationInFrames": 68,
       "transition": {
         "kind": "slip",
         "frames": 9
@@ -396,65 +600,27 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.77,
+          "depth": 0.88,
           "anchor": "fill"
         }
       ],
-      "params": {
-        "anchorX": 540,
-        "anchorY": 1700,
-        "pushTo": 1.24,
-        "pushEndFrame": 47,
-        "glowX": 1272,
-        "glowY": 267,
-        "glowSize": 313,
-        "glowIntensity": 0.42,
-        "glowWarm": "#c9a94b",
-        "glowDepth": 0.77,
-        "focusPx": 13,
-        "fog": 0.28,
-        "caption": [],
-        "captionX": 84,
-        "captionY": 411,
-        "captionFrame": 10,
-        "captionEvery": 21,
-        "captionSize": 92,
-        "captionRecedeAt": 40,
-        "accent": "#c9a94b",
-        "motif": "tally",
-        "motifX": 173,
-        "motifY": 499,
-        "motifSize": 93,
-        "motifCount": 12,
-        "motifFrame": 26,
-        "motifColour": "#c9a94b",
-        "motifOpacity": 0.81
-      }
-    },
-    {
-      "id": "s06-close-b",
-      "sceneType": "composite",
-      "voText": "Two months to be everywhere.",
-      "durationInFrames": 68,
-      "transition": {
-        "kind": "flare",
-        "frames": 8
-      },
-      "assets": {
-        "ground": "assets/s06-close-bg.png"
-      },
-      "layers": [
+      "props": [
         {
-          "role": "ground",
-          "depth": 0.74,
-          "anchor": "fill"
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.57,
+          "x": 414,
+          "y": 920,
+          "width": 415,
+          "colour": "#c9a94b",
+          "from": 19
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.43,
-        "pushTo": 1.09,
+        "pushFrom": 1.5,
+        "pushTo": 1.07,
         "pushEndFrame": 64,
         "accent": "#c9a94b",
         "caption": [
@@ -463,18 +629,18 @@
           "everywhere"
         ],
         "captionX": 84,
-        "captionY": 1004,
+        "captionY": 1012,
         "captionFrame": 4,
         "captionEvery": 8,
-        "captionSize": 95,
-        "glowX": 1411,
-        "glowY": 412,
-        "glowSize": 369,
-        "glowIntensity": 0.5,
+        "captionSize": 92,
+        "glowX": 1378,
+        "glowY": 257,
+        "glowSize": 364,
+        "glowIntensity": 0.65,
         "glowWarm": "#c9a94b",
-        "glowDepth": 0.74,
+        "glowDepth": 0.88,
         "focusPx": 13,
-        "fog": 0.25
+        "fog": 0.22
       }
     }
   ]
