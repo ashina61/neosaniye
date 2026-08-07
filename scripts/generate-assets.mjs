@@ -206,6 +206,30 @@ async function fetchViaPrompt(prompt, width, height, seed) {
  * safe: a white shirt on a white backdrop keeps its shirt. That is the case a
  * threshold on colour alone always gets wrong.
  */
+/**
+ * HOW MUCH OF THE FRAME A CUT-OUT MAY KEEP.
+ *
+ * 0.5, and it used to be 0.88 — which let through every rectangle this
+ * pipeline has ever pasted onto a shot. The ceiling was set for the GENERATOR,
+ * where a model asked for "one object on a plain white background" either
+ * complies or draws a whole scene at 90%+. A FETCHED photograph fails
+ * differently and much closer in: the keyer works inward from the frame edges
+ * on colour, so a photograph of a bench in a park loses the sky and keeps
+ * seventy per cent of the frame — one big island, hard edges, and a guard that
+ * says fine.
+ *
+ * Measured on a real episode the two populations do not overlap and are not
+ * close. Actual cut-outs: a chess king 9.6%, a chair 9.7%, a phone 17.3%, a
+ * magnifying glass 22.4%. Rectangles: a park bench 70.0%, a cable coil 68.9%,
+ * a chalkboard 65.3%. Every one of the rectangles reached a rendered frame and
+ * sat on the picture as a smear with corners.
+ *
+ * Both the generator and the Commons fetcher are held to it. They produce
+ * pieces the same way and fail the same way, and two numbers drifting apart is
+ * how one of them quietly stops being checked.
+ */
+export const CUTOUT_CEILING = 0.5;
+
 export async function keyBackdrop(buffer, {local = 26, global: globalTol = 96, holes = false} = {}) {
   const {data, info} = await sharp(buffer).ensureAlpha().raw().toBuffer({resolveWithObject: true});
   const {width, height, channels} = info;
@@ -362,12 +386,7 @@ async function buildAsset(name, recipe, kinds, recipes) {
     // an empty scene or as a rectangle with visible corners. Neither is worth
     // writing, and both look fine until the reel is watched.
     const solid = await opaqueFraction(keyed);
-    // 0.88, not 0.97. A silhouette that keeps nearly the whole frame did not
-    // get keyed — the model drew a SCENE instead of an object, and the file is
-    // a rectangle with hard edges that will show as a box the moment it sits on
-    // anything. One came back at 91% as a single island, passed both guards,
-    // and was a photograph of a forest.
-    if (solid < 0.04 || solid > 0.88) {
+    if (solid < 0.04 || solid > CUTOUT_CEILING) {
       refusal =
         solid < 0.04
           ? `keyed away to nothing (${(solid * 100).toFixed(1)}% opaque)`

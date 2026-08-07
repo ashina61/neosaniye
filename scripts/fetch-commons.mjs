@@ -39,7 +39,7 @@ import {mkdir, readFile, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import sharp from 'sharp';
-import {hasAlpha, islandCount, keyBackdrop, opaqueFraction} from './generate-assets.mjs';
+import {CUTOUT_CEILING, hasAlpha, islandCount, keyBackdrop, opaqueFraction} from './generate-assets.mjs';
 import {ROOT, episodeDir, exists, parseArgs} from './lib/episode.mjs';
 import {clearPlaceholders} from './lib/placeholders.mjs';
 
@@ -278,7 +278,7 @@ async function main() {
         // prompt should get its turn instead.
         const solid = await opaqueFraction(finished);
         const islands = await islandCount(finished);
-        if (solid > 0.88 || islands > 6) {
+        if (solid > CUTOUT_CEILING || islands > 6) {
           console.log(`keyed badly (${(solid * 100).toFixed(0)}% opaque, ${islands} islands) — leaving it to the generator`);
           missed.push(name);
           continue;
