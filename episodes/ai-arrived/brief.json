@@ -8,7 +8,10 @@
       "slug": "name",
       "vo": "In 1956, ten men spent a summer inventing a name for it.",
       "image": "an empty lecture room with a blackboard and wooden chairs",
-      "imageCommons": ["Dartmouth Hall Dartmouth College", "Dartmouth College Hanover"],
+      "imageCommons": [
+        "Dartmouth Hall Dartmouth College",
+        "Dartmouth College Hanover"
+      ],
       "kicker": "Hanover · 1956",
       "title": "A NAME FOR IT",
       "footer": "there was no machine yet",
@@ -18,32 +21,59 @@
       "slug": "kasparov",
       "vo": "For forty years it mostly lost. Then it beat Kasparov.",
       "image": "a tall black computer cabinet in a museum hall",
-      "imageCommons": ["Deep Blue chess computer", "Deep Blue IBM"],
+      "imageCommons": [
+        "Deep Blue chess computer",
+        "Deep Blue IBM"
+      ],
       "artefact": "a close view of a black server cabinet, cable ports and vents",
-      "artefactCommons": ["Deep Blue computer Computer History Museum", "IBM Deep Blue"],
-      "caption": ["Forty years", "of losing."]
+      "artefactCommons": [
+        "Deep Blue computer Computer History Museum",
+        "IBM Deep Blue"
+      ],
+      "caption": [
+        "Forty years",
+        "of losing."
+      ]
     },
     {
       "slug": "seeing",
       "vo": "In 2012 it learned to see, and nobody outside the labs noticed.",
       "image": "shelves of archive boxes holding thousands of photographs",
-      "imageCommons": ["photographic archive shelves", "photo archive boxes"],
+      "imageCommons": [
+        "photographic archive shelves",
+        "photo archive boxes"
+      ],
       "onScreen": "NOBODY NOTICED"
     },
     {
       "slug": "move",
       "vo": "In 2016 it played a move no human would have played.",
       "image": "a wooden board covered in black and white stones",
-      "imageCommons": ["Go board game stones", "Baduk goban"],
+      "imageCommons": [
+        "Weiqi goban",
+        "Baduk board game",
+        "Go equipment goban"
+      ],
       "artefact": "a close overhead view of a Go board mid-game, black and white stones",
-      "artefactCommons": ["Go game board close up", "Weiqi board stones"],
-      "caption": ["Move", "thirty-seven."]
+      "artefactCommons": [
+        "Weiqi board stones",
+        "Baduk goban close",
+        "Igo goban"
+      ],
+      "caption": [
+        "Move",
+        "thirty-seven."
+      ]
     },
     {
       "slug": "talk",
       "vo": "Then it learned to talk, and a hundred million people arrived.",
       "image": "a dark room lit only by a screen",
-      "imageCommons": ["server room data centre", "data center servers"],
+      "imageCommons": [
+        "data center server racks",
+        "server rack rows datacenter",
+        "supercomputer room"
+      ],
       "motif": "rise",
       "kicker": "Two months",
       "title": "100 MILLION",
@@ -53,7 +83,10 @@
       "slug": "close",
       "vo": "Seventy years to arrive. Two months to be everywhere.",
       "image": "a crowded street where everyone is looking down at a phone",
-      "imageCommons": ["crowd smartphones street", "people using smartphones crowd"],
+      "imageCommons": [
+        "crowd smartphones street",
+        "people using smartphones crowd"
+      ],
       "kicker": "1956 · 2022",
       "title": "SEVENTY YEARS",
       "footer": "then two months"

@@ -6,6 +6,25 @@ const SERIF = '"Playfair Display", "Iowan Old Style", Georgia, serif';
 const SANS = '"Archivo", "Helvetica Neue", Arial, sans-serif';
 
 /**
+ * A SIZE THAT FITS THE FRAME.
+ *
+ * Type set at a fixed size is fine until the word is long, and then it is
+ * simply CUT OFF — "SEVENTY YEARS" rendered as "SEVENT", "100 MILLION" as
+ * "100". Nothing anywhere reports it: the render succeeds, the tests pass, and
+ * the reel ships with half a word on its closing card.
+ *
+ * The estimate is per glyph — heavy sans runs about 0.64 em — and it is
+ * deliberately PESSIMISTIC. The web font may not have loaded, in which case the
+ * fallback is wider; and being a little small is invisible, while being a
+ * little large puts the last letter through the edge of the frame. The first
+ * pass used 0.56 and "SEVENTY YEARS" came out with its final S on the border.
+ */
+export function fitSize(text: string, wanted: number, width: number, padding = 210): number {
+  const chars = Math.max(1, text.length);
+  return Math.max(28, Math.min(wanted, (width - padding) / (chars * 0.64)));
+}
+
+/**
  * A WORD STACK — the reference reel's real caption device.
  *
  * Not a subtitle. The line is broken into two or three fragments and they land
@@ -139,7 +158,7 @@ export const Slate: React.FC<{
   titleNode,
 }) => {
   const frame = useCurrentFrame();
-  const {fps} = useVideoConfig();
+  const {fps, width} = useVideoConfig();
   const stepped = posterizeTime(frame, fps, 12);
   const land = springEntrance(stepped, fps, {delay: from, stiffness: 46, mass: 1.05});
   const rule = interpolate(stepped, [from + 4, from + 20], [0, 1], CLAMP);
@@ -167,7 +186,7 @@ export const Slate: React.FC<{
           style={{
             fontFamily: SANS,
             fontWeight: 900,
-            fontSize: size,
+            fontSize: fitSize(title, size, width),
             lineHeight: 0.98,
             letterSpacing: '-0.035em',
             fontVariantNumeric: tabular ? 'tabular-nums' : undefined,
@@ -230,18 +249,22 @@ export const Slot: React.FC<{
   colour = '#ffcf3d',
 }) => {
   const frame = useCurrentFrame();
-  const {fps} = useVideoConfig();
+  const {fps, width} = useVideoConfig();
   const stepped = posterizeTime(frame, fps, 12);
 
   // The decoys, then the answer. Landing is just scrolling to the last row.
   const rows = [...reel.filter((r) => r !== value), value];
-  const line = size * 1.12;
+  // Fit the LONGEST row, not each one. A reel whose type resizes as it scrolls
+  // is a reel that wobbles; and the row that decides the size is whichever
+  // decoy is widest, not the answer.
+  const fitted = rows.reduce((smallest, row) => Math.min(smallest, fitSize(row, size, width)), size);
+  const line = fitted * 1.12;
   const travel = interpolate(stepped, [from, from + spin], [0, rows.length - 1], {
     ...CLAMP,
     easing: Easing.out(Easing.cubic),
   });
   // One bounce on the stop — the mechanism settling, not the type animating.
-  const settle = stepped <= from + spin ? 0 : dampedSwing(stepped, {amplitude: size * 0.06, rate: 0.9, decay: 0.24, delay: from + spin});
+  const settle = stepped <= from + spin ? 0 : dampedSwing(stepped, {amplitude: fitted * 0.06, rate: 0.9, decay: 0.24, delay: from + spin});
 
   return (
     <div style={{height: line, overflow: 'hidden', position: 'relative'}}>
@@ -252,9 +275,14 @@ export const Slot: React.FC<{
             style={{
               height: line,
               lineHeight: `${line}px`,
+              // A REEL ROW IS ONE LINE. The window is one line tall and clips
+              // what leaves it, so "SEVENTY YEARS" wrapped at the space and the
+              // second word was cut away entirely — the card read "SEVENTY".
+              // Shrinking the type was only half the fix; it also must not wrap.
+              whiteSpace: 'nowrap',
               fontFamily: SANS,
               fontWeight: 900,
-              fontSize: size,
+              fontSize: fitted,
               letterSpacing: '-0.045em',
               fontVariantNumeric: 'tabular-nums',
               color: colour,

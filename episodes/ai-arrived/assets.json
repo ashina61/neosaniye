@@ -62,24 +62,27 @@
     "s04-move-bg.png": {
       "kind": "backdrop",
       "commons": [
-        "Go board game stones",
-        "Baduk goban"
+        "Weiqi goban",
+        "Baduk board game",
+        "Go equipment goban"
       ],
       "prompt": "a wooden board covered in black and white stones"
     },
     "s04-move-photo.png": {
       "kind": "photo",
       "commons": [
-        "Go game board close up",
-        "Weiqi board stones"
+        "Weiqi board stones",
+        "Baduk goban close",
+        "Igo goban"
       ],
       "prompt": "a close overhead view of a Go board mid-game, black and white stones"
     },
     "s05-talk-bg.png": {
       "kind": "backdrop",
       "commons": [
-        "server room data centre",
-        "data center servers"
+        "data center server racks",
+        "server rack rows datacenter",
+        "supercomputer room"
       ],
       "prompt": "a dark room lit only by a screen"
     },

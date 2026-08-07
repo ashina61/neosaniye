@@ -166,16 +166,6 @@
           "#1b2024",
           "#0a0c0e"
         ],
-        "spinTo": "2012",
-        "spinReel": [
-          "THOUSAND",
-          "HUNDRED",
-          "MILLION",
-          "BILLION",
-          "FIFTY",
-          "TWENTY"
-        ],
-        "spinFrames": 31,
         "mark": "oval",
         "markX": 260,
         "markY": 820,
