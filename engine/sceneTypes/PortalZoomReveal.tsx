@@ -5,6 +5,7 @@ import {CLAMP, blurBurst, posterizeTime} from '../motion';
 import {Plate} from '../Plate';
 import {WordStack} from '../draw/Type';
 import {SceneMotif} from '../draw/Motif';
+import {DrawnProps} from '../draw/Props';
 
 /**
  * PORTAL ZOOM REVEAL — fly INTO a framed photograph.
@@ -131,6 +132,20 @@ export const PortalZoomReveal: React.FC<SceneProps> = ({scene, assets, durationI
           every={num('captionEvery', 8)}
           size={num('captionSize', 88)}
           recedeAt={num('captionRecedeAt', durationInFrames - 20)}
+        />
+      ) : null}
+
+      {/* THE DRAWN OBJECTS, AND ONLY AFTER WE LAND. The first half of this shot
+          is a flight toward a picture; a plaque hanging in mid-air during it is
+          a thing the camera is flying past, which is not what a plaque is. Once
+          the photograph settles it is a room again, and a room has objects in
+          it. They take the whole push because by then there is none left. */}
+      {stepped >= throughEnd ? (
+        <DrawnProps
+          props={scene.props}
+          push={1}
+          origin="50% 88%"
+          accent={str('accent', '#f2b53a')}
         />
       ) : null}
 

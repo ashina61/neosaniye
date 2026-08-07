@@ -87,6 +87,28 @@ out/<id>.mp4
    piktogramıdır; prosedürel bir gazete ise sadece tipografidir ve belgesel
    grafiği zaten odur. Gazeteyi, eskizi, bot izini üreticiye yıkmayı denedik —
    patlayanlar tam onlar oldu.
+
+   **VE BU KANUN `props` İLE UYGULANIR.** Referans reel ~20 asset üstünde
+   duruyor ve yalnız DÖRDÜ arka plan; kalan on altısı plaket, gazete, kart,
+   tel-kafes, ışık huzmesi — hepsi grafik. Bu hat altı arka plan yapıp bölüm
+   sanıyordu ve kalan on dördünü satamayacak bir fotoğraf aramasından satın
+   almaya çalışıyordu; oysa `Plaque`, `WireFrame` ve `Beam` `engine/draw/`
+   içinde bitmiş hâlde duruyordu, SIFIR şablona bağlı. Artık sahne `props`
+   dizisi taşır: dosyasız katman, aynı derinlik, aynı çapa. Motiften farkı şu —
+   motif kareye çakılıdır çünkü cümle HAKKINDA bir grafiktir; prop odanın
+   içindeki bir nesnedir, o yüzden itişten payını alır.
+
+   İki kural, motiflerinkiyle aynı: **söyleyecek bir şeyi olacak** (plaket
+   satırın kendi etiketini, kart kendi başlığını taşır; yalnız `wire` ve `beam`
+   saf grafiktir ve en çok onlar kısılır), ve **peş peşe aynısı gelmez**. Ama
+   hiçbir çekim eli boş kalmaz: kural ile zar aynı anda ters düşerse iki saf
+   grafik sırayla girer — eli boş çekim zaten bu işin bitirmeye çalıştığı şey.
+
+   Masthead bir gazetenin ADIDIR, cümle değil: satırın `footer`'ını oraya koyup
+   yirmi iki karakterde kesince manşet "THERE WAS NO MACHINE Y" diye çıktı.
+   Cümle MANŞETTİR. Ve çizilen her nesne kareye SIĞAR — punto `fitSize` ile
+   kısılır, x ise kendi genişliğini içeride tutacak şekilde kenetlenir, yoksa
+   "Hanover · 1956" plaketi "Hanover · 19" olarak teslim edilir.
 3. **PREMIUM GÖRÜNTÜ FOTOĞRAFTA DEĞİL, ÜSTÜNE ÇİZİLEN KATMANDADIR.** Fotoğrafta
    lamba vardır, ışığı yoktur: `Glow` ampule screen blend'li dört radyal
    gradyan koyar ve plaka zoom'lanırken ONUNLA BİRLİKTE ölçeklenir — sahne
