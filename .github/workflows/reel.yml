@@ -201,6 +201,11 @@ jobs:
           echo "code=$code" >> "$GITHUB_OUTPUT"
           # 1 = nothing came out at all; there is nothing to commit.
           if [ "$code" = "1" ]; then exit 1; fi
+          # 3 = only OPTIONAL pieces failed. Say it on the run, do not fail it:
+          # those layers are dropped by design and the reel is finished.
+          if [ "$code" = "3" ]; then
+            echo "::warning::Some optional cut-outs could not be drawn — those layers are dropped and the reel is still finished. Re-run to retry just them."
+          fi
 
       # THE CONTACT SHEET, because looking is the only check that works. Every
       # guard here catches a MEASURABLE failure; the ones that keep getting
@@ -290,8 +295,15 @@ jobs:
       # The good work is committed and uploaded by now; this is where a partial
       # draw is allowed to be a failure. Silence here would mean shipping
       # stand-ins and calling the run green.
+      #
+      # Code 3 is deliberately NOT here. It means only optional cut-outs failed,
+      # which the scenes are built to survive — a run that rendered, uploaded
+      # and finished a correct reel must not be marked broken because two of
+      # twenty-one pieces were not on Commons. A red tick that means nothing is
+      # worse than no tick, because the next real failure is the one nobody
+      # looks at.
       - name: Report artwork that could not be drawn
-        if: inputs.assets && steps.draw.outputs.code != '0'
+        if: inputs.assets && steps.draw.outputs.code != '0' && steps.draw.outputs.code != '3'
         run: |
           echo "::error::Some artwork could not be drawn — see the 'Draw the artwork' step. Re-run to retry only the missing ones."
           exit 1
