@@ -1,0 +1,435 @@
+{
+  "id": "ai-arrived",
+  "title": "AI — seventy years to arrive, two months to be everywhere",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "look": {
+    "posterizeFps": 12,
+    "grade": {
+      "saturate": 0.52,
+      "contrast": 1.15,
+      "sepia": 0.13,
+      "brightness": 1.02
+    },
+    "film": {
+      "grain": true,
+      "grunge": true,
+      "scanlines": true,
+      "vignette": true,
+      "gateWeave": true,
+      "grainOpacity": 0.47,
+      "grungeOpacity": 0.15,
+      "scanlineOpacity": 0.11,
+      "scanlinePeriod": 11,
+      "vignetteStrength": 0.49,
+      "weavePx": 6,
+      "weaveScale": 1.017
+    }
+  },
+  "scenes": [
+    {
+      "id": "s01-name",
+      "sceneType": "title-slate",
+      "voText": "In 1956, ten men spent a summer inventing a name for it.",
+      "durationInFrames": 118,
+      "assets": {
+        "background": "assets/s01-name-bg.png"
+      },
+      "params": {
+        "scrim": 0.44,
+        "kicker": "Hanover · 1956",
+        "title": "A NAME FOR IT",
+        "footer": "there was no machine yet",
+        "titleFrame": 8,
+        "titleSize": 124,
+        "creep": 1.043,
+        "accent": "#c9a94b",
+        "field": "grid",
+        "fieldColours": [
+          "#333a3e",
+          "#1b2024",
+          "#0a0c0e"
+        ],
+        "mark": "oval",
+        "markX": 260,
+        "markY": 1160,
+        "markWidth": 560,
+        "markHeight": 96,
+        "markFrame": 40
+      }
+    },
+    {
+      "id": "s02-kasparov",
+      "sceneType": "portal-zoom-reveal",
+      "voText": "For forty years it mostly lost.",
+      "durationInFrames": 75,
+      "transition": {
+        "kind": "rack",
+        "frames": 12
+      },
+      "assets": {
+        "wall": "assets/s02-kasparov-bg.png",
+        "photo": "assets/s02-kasparov-photo.png"
+      },
+      "params": {
+        "frameWidth": 709,
+        "frameRatio": 1.21,
+        "pushEndFrame": 27,
+        "detachFrame": 49,
+        "throughEndFrame": 71,
+        "weldRatio": 0.437,
+        "wallScaleEnd": 6.3,
+        "accent": "#c9a94b",
+        "caption": [
+          "Forty years",
+          "of losing."
+        ],
+        "captionX": 84,
+        "captionY": 1479,
+        "captionFrame": 75,
+        "captionEvery": 11,
+        "captionSize": 93,
+        "captionRecedeAt": 57,
+        "motif": "tally",
+        "motifX": 161,
+        "motifY": 499,
+        "motifSize": 95,
+        "motifCount": 15,
+        "motifFrame": 77,
+        "motifColour": "#c9a94b",
+        "motifOpacity": 0.8
+      }
+    },
+    {
+      "id": "s02-kasparov-b",
+      "sceneType": "composite",
+      "voText": "Then it beat Kasparov.",
+      "durationInFrames": 52,
+      "transition": {
+        "kind": "flare",
+        "frames": 10
+      },
+      "assets": {
+        "ground": "assets/s02-kasparov-photo.png"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.86,
+          "anchor": "fill"
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.46,
+        "pushTo": 1.08,
+        "pushEndFrame": 49,
+        "accent": "#c9a94b",
+        "caption": [
+          "Then it",
+          "beat Kasparov"
+        ],
+        "captionX": 84,
+        "captionY": 967,
+        "captionFrame": 4,
+        "captionEvery": 8,
+        "captionSize": 96
+      }
+    },
+    {
+      "id": "s03-seeing",
+      "sceneType": "title-slate",
+      "voText": "In 2012 it learned to see,",
+      "durationInFrames": 75,
+      "transition": {
+        "kind": "rack",
+        "frames": 10
+      },
+      "assets": {
+        "background": "assets/s03-seeing-bg.png"
+      },
+      "params": {
+        "scrim": 0.41,
+        "kicker": "",
+        "title": "2012",
+        "footer": "",
+        "titleFrame": 10,
+        "titleSize": 230,
+        "creep": 1.087,
+        "accent": "#c9a94b",
+        "field": "grid",
+        "fieldColours": [
+          "#333a3e",
+          "#1b2024",
+          "#0a0c0e"
+        ],
+        "spinTo": "2012",
+        "spinReel": [
+          "THOUSAND",
+          "HUNDRED",
+          "MILLION",
+          "BILLION",
+          "FIFTY",
+          "TWENTY"
+        ],
+        "spinFrames": 30,
+        "mark": "oval",
+        "markX": 260,
+        "markY": 820,
+        "markWidth": 560,
+        "markHeight": 300,
+        "markFrame": 26
+      },
+      "onScreenText": [
+        {
+          "text": "NOBODY NOTICED",
+          "atFrame": 45,
+          "durationInFrames": 24,
+          "style": "sticker",
+          "position": "bottom"
+        }
+      ]
+    },
+    {
+      "id": "s03-seeing-b",
+      "sceneType": "composite",
+      "voText": "and nobody outside the labs noticed.",
+      "durationInFrames": 75,
+      "transition": {
+        "kind": "slam",
+        "frames": 8
+      },
+      "assets": {
+        "ground": "assets/s03-seeing-bg.png"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.79,
+          "anchor": "fill"
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.39,
+        "pushTo": 1.04,
+        "pushEndFrame": 71,
+        "accent": "#c9a94b",
+        "caption": [
+          "and nobody",
+          "outside the",
+          "labs noticed"
+        ],
+        "captionX": 84,
+        "captionY": 350,
+        "captionFrame": 4,
+        "captionEvery": 6,
+        "captionSize": 97
+      }
+    },
+    {
+      "id": "s04-move",
+      "sceneType": "portal-zoom-reveal",
+      "voText": "In 2016 it played a move no human would have played.",
+      "durationInFrames": 118,
+      "transition": {
+        "kind": "flare",
+        "frames": 9
+      },
+      "assets": {
+        "wall": "assets/s04-move-bg.png",
+        "photo": "assets/s04-move-photo.png"
+      },
+      "params": {
+        "frameWidth": 810,
+        "frameRatio": 1.16,
+        "pushEndFrame": 42,
+        "detachFrame": 64,
+        "throughEndFrame": 86,
+        "weldRatio": 0.401,
+        "wallScaleEnd": 5.9,
+        "accent": "#c9a94b",
+        "caption": [
+          "Move",
+          "thirty-seven."
+        ],
+        "captionX": 84,
+        "captionY": 1497,
+        "captionFrame": 90,
+        "captionEvery": 10,
+        "captionSize": 86,
+        "captionRecedeAt": 100
+      }
+    },
+    {
+      "id": "s05-talk",
+      "sceneType": "title-slate",
+      "voText": "Then it learned to talk,",
+      "durationInFrames": 64,
+      "transition": {
+        "kind": "slip",
+        "frames": 8
+      },
+      "assets": {
+        "background": "assets/s05-talk-bg.png"
+      },
+      "params": {
+        "scrim": 0.38,
+        "kicker": "Two months",
+        "title": "100 MILLION",
+        "footer": "the fastest anything has ever spread",
+        "titleFrame": 10,
+        "titleSize": 230,
+        "creep": 1.053,
+        "accent": "#c9a94b",
+        "field": "grid",
+        "fieldColours": [
+          "#333a3e",
+          "#1b2024",
+          "#0a0c0e"
+        ],
+        "motif": "rise",
+        "motifX": 216,
+        "motifY": 1574,
+        "motifSize": 61,
+        "motifCount": 9,
+        "motifFrame": 18,
+        "motifColour": "#c9a94b",
+        "motifOpacity": 0.98,
+        "spinTo": "100 MILLION",
+        "spinReel": [
+          "THOUSAND",
+          "HUNDRED",
+          "MILLION",
+          "BILLION",
+          "FIFTY",
+          "TWENTY"
+        ],
+        "spinFrames": 26
+      }
+    },
+    {
+      "id": "s05-talk-b",
+      "sceneType": "composite",
+      "voText": "and a hundred million people arrived.",
+      "durationInFrames": 75,
+      "transition": {
+        "kind": "rack",
+        "frames": 8
+      },
+      "assets": {
+        "ground": "assets/s05-talk-bg.png"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.81,
+          "anchor": "fill"
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.38,
+        "pushTo": 1.07,
+        "pushEndFrame": 71,
+        "accent": "#c9a94b",
+        "caption": [
+          "and a",
+          "hundred million",
+          "people arrived"
+        ],
+        "captionX": 84,
+        "captionY": 696,
+        "captionFrame": 4,
+        "captionEvery": 6,
+        "captionSize": 97
+      }
+    },
+    {
+      "id": "s06-close",
+      "sceneType": "title-slate",
+      "voText": "Seventy years to arrive.",
+      "durationInFrames": 52,
+      "gradeOverride": {
+        "saturate": 0.5,
+        "contrast": 1.16,
+        "brightness": 0.94
+      },
+      "transition": {
+        "kind": "flare",
+        "frames": 8
+      },
+      "assets": {
+        "background": "assets/s06-close-bg.png"
+      },
+      "params": {
+        "scrim": 0.4,
+        "kicker": "1956 · 2022",
+        "title": "SEVENTY YEARS",
+        "footer": "then two months",
+        "titleFrame": 6,
+        "titleSize": 230,
+        "creep": 1.042,
+        "accent": "#c9a94b",
+        "field": "grid",
+        "fieldColours": [
+          "#333a3e",
+          "#1b2024",
+          "#0a0c0e"
+        ],
+        "spinTo": "SEVENTY YEARS",
+        "spinReel": [
+          "THOUSAND",
+          "HUNDRED",
+          "MILLION",
+          "BILLION",
+          "FIFTY",
+          "TWENTY"
+        ],
+        "spinFrames": 21
+      }
+    },
+    {
+      "id": "s06-close-b",
+      "sceneType": "composite",
+      "voText": "Two months to be everywhere.",
+      "durationInFrames": 64,
+      "transition": {
+        "kind": "rack",
+        "frames": 9
+      },
+      "assets": {
+        "ground": "assets/s06-close-bg.png"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.93,
+          "anchor": "fill"
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.5,
+        "pushTo": 1.04,
+        "pushEndFrame": 60,
+        "accent": "#c9a94b",
+        "caption": [
+          "Two months",
+          "to be",
+          "everywhere"
+        ],
+        "captionX": 84,
+        "captionY": 320,
+        "captionFrame": 4,
+        "captionEvery": 7,
+        "captionSize": 91
+      }
+    }
+  ]
+}
