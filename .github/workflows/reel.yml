@@ -1,0 +1,297 @@
+name: Reel
+
+# THE WHOLE FACTORY, IN ONE FILE.
+#
+# There were four workflows and they were four views of one chain — voice, then
+# artwork, then render, with the same checkout and the same validate step copied
+# into each. Splitting them meant running three things in order by hand and
+# re-paying for a checkout and an npm install every time.
+#
+# So: one workflow, two jobs, and which job runs depends on why it was started.
+#
+#   push / pull request   →  CHECK.  Schema, assets on disk, engine guards,
+#                            types. No bundle, no browser. Seconds.
+#   Run workflow          →  MAKE.   Voice → assets → render, in that order,
+#                            each stage switchable. This is the factory.
+#
+# The stages are toggles rather than separate workflows because they are one
+# chain with real dependencies: the voiceover sets every duration, so re-voicing
+# means re-cutting, and re-cutting means the artwork has to match the new scene
+# ids. Running them out of order is the mistake this layout makes impossible.
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      episode_id:
+        description: 'Episode folder under episodes/'
+        required: true
+        type: string
+      voice:
+        description: '1 · Speak the script, measure it, cut the reel to it'
+        required: false
+        default: true
+        type: boolean
+      voice_provider:
+        description: 'Who reads it — piper needs no key at all'
+        required: false
+        default: piper
+        type: choice
+        options:
+          - piper
+          - elevenlabs
+          - openai
+          - measure-only
+      voice_name:
+        description: 'Voice id or model name — blank uses the provider default'
+        required: false
+        type: string
+      assets:
+        description: '2 · Fetch real pictures, draw the rest'
+        required: false
+        default: true
+        type: boolean
+      force_assets:
+        description: 'Redraw artwork that already exists'
+        required: false
+        default: false
+        type: boolean
+      render:
+        description: '3 · Render the mp4'
+        required: false
+        default: true
+        type: boolean
+      crf:
+        description: 'H.264 quality — lower is better, 18 is visually lossless'
+        required: false
+        default: '18'
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  # THE CHEAP GATE. Answers "would this render at all?" without paying for a
+  # bundle, a browser or a queue slot. A typo in a file name is caught here.
+  check:
+    if: github.event_name != 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+
+      - name: Config, scene types, and every asset on disk
+        run: npm run validate
+
+      - name: Engine guards, schema and planner tests
+        run: npm test
+
+      - name: Typecheck
+        run: npm run typecheck
+
+  make:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      # ── 1 · VOICE ───────────────────────────────────────────────────────
+      # The narration is the CLOCK, not a layer: every scene's length is
+      # measured from the pauses in the reading. Until this has run, durations
+      # come from a word count and the planner says so on every line.
+
+      # Free, offline, no account, no key. A binary and a small ONNX voice.
+      - name: Fetch piper
+        if: inputs.voice && inputs.voice_provider == 'piper'
+        run: |
+          set -euo pipefail
+          mkdir -p .piper && cd .piper
+          curl -sSL -o piper.tar.gz \
+            https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_linux_x86_64.tar.gz
+          tar xzf piper.tar.gz
+          VOICE="${{ inputs.voice_name || vars.PIPER_VOICE || 'en_US-lessac-medium' }}"
+          LANG_DIR=$(echo "$VOICE" | cut -d- -f1)
+          NAME=$(echo "$VOICE" | cut -d- -f2)
+          QUALITY=$(echo "$VOICE" | cut -d- -f3)
+          BASE="https://huggingface.co/rhasspy/piper-voices/resolve/main/en/${LANG_DIR}/${NAME}/${QUALITY}/${VOICE}"
+          curl -sSL -o voice.onnx "${BASE}.onnx"
+          curl -sSL -o voice.onnx.json "${BASE}.onnx.json"
+
+      # SPEAKING BELONGS TO A PROVIDER; MEASURING DOES NOT. ElevenLabs returns
+      # a character alignment and it is used when it is there, but nothing
+      # depends on it — the pauses are in the audio either way. "measure-only"
+      # skips synthesis and reads a file already committed to the episode: a
+      # voiceover recorded on a phone, or one somebody sent over.
+      - name: Speak and measure
+        if: inputs.voice
+        env:
+          VOICE_PROVIDER: ${{ inputs.voice_provider == 'measure-only' && 'piper' || inputs.voice_provider }}
+          PIPER_BIN: ${{ github.workspace }}/.piper/piper/piper
+          PIPER_VOICE: ${{ github.workspace }}/.piper/voice.onnx
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          ELEVENLABS_VOICE_ID: ${{ inputs.voice_name || vars.ELEVENLABS_VOICE_ID }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          VOICE_NAME: ${{ inputs.voice_name || vars.VOICE_NAME }}
+        run: |
+          npm run voice -- --episode="${{ inputs.episode_id }}" \
+            ${{ inputs.voice_provider == 'measure-only' && '--measure' || '' }}
+
+      # Durations now come from the file instead of a word count, so the config
+      # has to be rebuilt before anything is drawn against it or rendered from it.
+      - name: Cut the reel to the narration
+        if: inputs.voice
+        run: npm run plan -- --episode="${{ inputs.episode_id }}"
+
+      # ── 2 · ARTWORK ─────────────────────────────────────────────────────
+
+      # FETCH BEFORE DRAW. Anything with a name — the Catalan Atlas, a mosque
+      # still standing — is more accurate fetched than invented, and it is the
+      # same picture every run. Whatever Commons has no free file for falls
+      # through to the generator below.
+      - name: Fetch real pictures from Wikimedia Commons
+        if: inputs.assets
+        run: node scripts/fetch-commons.mjs --episode="${{ inputs.episode_id }}"
+
+      # Exit 2 means "some drawn, some failed". That is worth committing — the
+      # drawings that worked are real work and a re-run retries only the rest —
+      # so the failure is carried to the end of the job instead.
+      - name: Draw the artwork
+        id: draw
+        if: inputs.assets
+        env:
+          # WHETHER THE PIECES COME OUT AS PIECES IS DECIDED HERE. The keyless
+          # default cannot return transparency, so every cut-out has to be
+          # rescued by keying a photograph — hard edges, nothing wispy, two
+          # draws in three thrown away. A provider that speaks the
+          # images/generations protocol is asked for transparency directly and
+          # the keyer never runs:
+          #
+          #   IMAGE_PROVIDER = openai
+          #   IMAGE_BASE_URL = https://api.openai.com/v1
+          #   IMAGE_MODEL    = gpt-image-1
+          #   IMAGE_API_KEY  = (repository secret)
+          IMAGE_PROVIDER: ${{ vars.IMAGE_PROVIDER }}
+          IMAGE_API_KEY: ${{ secrets.IMAGE_API_KEY }}
+          IMAGE_BASE_URL: ${{ vars.IMAGE_BASE_URL }}
+          IMAGE_MODEL: ${{ vars.IMAGE_MODEL }}
+        run: |
+          set +e
+          node scripts/generate-assets.mjs \
+            --episode="${{ inputs.episode_id }}" \
+            ${{ inputs.force_assets && '--force' || '' }}
+          code=$?
+          set -e
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          # 1 = nothing came out at all; there is nothing to commit.
+          if [ "$code" = "1" ]; then exit 1; fi
+
+      # THE CONTACT SHEET, because looking is the only check that works. Every
+      # guard here catches a MEASURABLE failure; the ones that keep getting
+      # through are not measurable at that price — a tonal step leaves a slab
+      # around the subject and survives precisely because it differs from the
+      # border colour. Obvious in one glance at a checkerboard, invisible in a
+      # folder of thirty files nobody opens.
+      - name: Lay the cut-outs on a checkerboard
+        if: inputs.assets
+        continue-on-error: true
+        run: npm run assets:review -- --episode="${{ inputs.episode_id }}"
+
+      # ── 3 · KEEP IT ─────────────────────────────────────────────────────
+      # One commit for the whole chain. The narration, the measurement, the cut
+      # and the artwork are one state — committing them separately leaves a
+      # window where the config is cut to a voiceover that is not in the repo.
+      - name: Commit the narration, the cut and the artwork
+        if: inputs.voice || inputs.assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "episodes/${{ inputs.episode_id }}" || true
+          if git diff --cached --quiet; then
+            echo "Nothing changed."
+            exit 0
+          fi
+          git commit -m "${{ inputs.episode_id }}: seslendirme, kesim ve görseller"
+          git push origin HEAD:"${{ github.ref_name }}"
+
+      # ── 4 · RENDER ──────────────────────────────────────────────────────
+
+      # Fail on a missing asset before paying for a browser and a bundle.
+      - name: Validate the episode
+        run: npm run validate -- --episode="${{ inputs.episode_id }}"
+
+      # Headless Chromium needs these on a bare runner. The sound library was
+      # renamed in Ubuntu 24.04, so try both names.
+      - name: Install Chromium system libraries
+        if: inputs.render
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libnss3 libdbus-1-3 libatk1.0-0t64 libgbm1 libxrandr2 libxfixes3 \
+            libxcomposite1 libxdamage1 libatk-bridge2.0-0t64 libpango-1.0-0 \
+            libcairo2 libcups2t64 libxkbcommon0 \
+            || sudo apt-get install -y \
+            libnss3 libdbus-1-3 libatk1.0-0 libgbm1 libxrandr2 libxfixes3 \
+            libxcomposite1 libxdamage1 libatk-bridge2.0-0 libpango-1.0-0 \
+            libcairo2 libcups2 libxkbcommon0
+          sudo apt-get install -y libasound2t64 || sudo apt-get install -y libasound2
+
+      - name: Download the Remotion browser
+        if: inputs.render
+        run: npx remotion browser ensure
+
+      - name: Render
+        if: inputs.render
+        env:
+          # Two runners' worth of cores; more tabs than that on a hosted runner
+          # thrash rather than help.
+          REMOTION_CONCURRENCY: '2'
+        run: npm run render -- --episode="${{ inputs.episode_id }}" --crf="${{ inputs.crf }}"
+
+      # A few stills across the reel, sampled per scene. Every visual defect
+      # this repo has shipped passed validation, passed the tests, and was
+      # obvious in one frame — so the grid ships with the mp4.
+      - name: Contact sheet of the reel
+        if: inputs.render
+        continue-on-error: true
+        env:
+          REMOTION_CONCURRENCY: '2'
+        run: npm run frames -- --episode="${{ inputs.episode_id }}" --per=2
+
+      - name: Upload the reel and what it was made of
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.episode_id }}
+          path: |
+            out/${{ inputs.episode_id }}.mp4
+            out/${{ inputs.episode_id }}-frames.png
+            out/${{ inputs.episode_id }}-cutouts.png
+            episodes/${{ inputs.episode_id }}/audio/
+            episodes/${{ inputs.episode_id }}/assets/
+          if-no-files-found: warn
+          retention-days: 14
+
+      # The good work is committed and uploaded by now; this is where a partial
+      # draw is allowed to be a failure. Silence here would mean shipping
+      # stand-ins and calling the run green.
+      - name: Report artwork that could not be drawn
+        if: inputs.assets && steps.draw.outputs.code != '0'
+        run: |
+          echo "::error::Some artwork could not be drawn — see the 'Draw the artwork' step. Re-run to retry only the missing ones."
+          exit 1
