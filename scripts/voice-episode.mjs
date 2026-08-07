@@ -35,10 +35,14 @@
  * changes nothing — a reel with estimated timings is a legitimate draft, and it
  * is the state every episode in this repo is in today.
  */
-import {mkdir, readFile, writeFile} from 'node:fs/promises';
+import {spawn} from 'node:child_process';
+import {mkdir, readFile, rm, writeFile} from 'node:fs/promises';
+import os from 'node:os';
 import path from 'node:path';
+import {createRequire} from 'node:module';
 import {pathToFileURL} from 'node:url';
-import {ROOT, episodeDir, parseArgs} from './lib/episode.mjs';
+import {ROOT, episodeDir, exists, parseArgs} from './lib/episode.mjs';
+import {findBoundaries, loudness, windowsFromBoundaries} from './lib/measure.mjs';
 
 const API = process.env.ELEVENLABS_BASE_URL || 'https://api.elevenlabs.io/v1';
 /** "Clear narrator for documentary" — overridable, because a voice is a look. */
@@ -96,14 +100,24 @@ export function windowsFor(lines, alignment) {
   }));
 }
 
-async function speak(text) {
+/**
+ * SPEAKING AND MEASURING ARE TWO STEPS.
+ *
+ * The clock used to depend on one vendor's timestamps endpoint, which means the
+ * day that vendor errors the clock is gone. It does not have to: the pauses are
+ * IN THE FILE, and finding them needs samples, not an API. So a provider only
+ * has to return audio. If it also returns an alignment, that is used, because
+ * exact beats measured — but nothing depends on it any more.
+ *
+ *   elevenlabs   audio + character alignment (exact)
+ *   openai       audio only, measured off the samples
+ *   file         no synthesis at all — measure an mp3 already on disk
+ */
+const PROVIDER = process.env.VOICE_PROVIDER || (process.env.ELEVENLABS_API_KEY ? 'elevenlabs' : 'openai');
+
+async function speakElevenLabs(text) {
   const key = process.env.ELEVENLABS_API_KEY;
-  if (!key) {
-    throw new Error(
-      'ELEVENLABS_API_KEY is not set — no voiceover was generated and nothing was changed.\n' +
-        '   The planner will keep estimating durations from word counts, which is a draft, not a cut.',
-    );
-  }
+  if (!key) throw new Error('ELEVENLABS_API_KEY is not set');
 
   const response = await fetch(`${API}/text-to-speech/${VOICE}/with-timestamps`, {
     method: 'POST',
@@ -115,15 +129,88 @@ async function speak(text) {
     }),
     signal: AbortSignal.timeout(180_000),
   });
-  if (!response.ok) throw new Error(`HTTP ${response.status} — ${(await response.text()).slice(0, 200)}`);
+  if (!response.ok) throw new Error(`ElevenLabs HTTP ${response.status} — ${(await response.text()).slice(0, 200)}`);
   const body = await response.json();
   if (!body?.audio_base64) throw new Error('no audio in response');
-  if (!body?.alignment?.character_end_times_seconds?.length) {
-    // Without the alignment there is no clock, only a sound file — and a sound
-    // file the planner cannot read is worse than none, because it looks done.
-    throw new Error('no character alignment in response — cannot cut to it');
+  return {audio: Buffer.from(body.audio_base64, 'base64'), alignment: body.alignment ?? null};
+}
+
+/**
+ * The audio/speech protocol. No timestamps come back, and that is fine now —
+ * the pauses get measured off the samples like any other recording.
+ */
+async function speakOpenAI(text) {
+  const key = process.env.OPENAI_API_KEY || process.env.IMAGE_API_KEY;
+  if (!key) throw new Error('OPENAI_API_KEY is not set');
+  const base = process.env.VOICE_BASE_URL || process.env.IMAGE_BASE_URL || 'https://api.openai.com/v1';
+
+  const response = await fetch(`${base.replace(/\/$/, '')}/audio/speech`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json', Authorization: `Bearer ${key}`},
+    body: JSON.stringify({
+      model: process.env.VOICE_MODEL || 'gpt-4o-mini-tts',
+      voice: process.env.VOICE_NAME || 'onyx',
+      input: text,
+      response_format: 'mp3',
+      // The blank lines between paragraphs are what gets measured, so the
+      // reading has to honour them rather than run the lines together.
+      instructions: 'Read as a calm documentary narrator. Even pace, warm, unhurried. Pause clearly between paragraphs.',
+    }),
+    signal: AbortSignal.timeout(180_000),
+  });
+  if (!response.ok) throw new Error(`OpenAI HTTP ${response.status} — ${(await response.text()).slice(0, 200)}`);
+  return {audio: Buffer.from(await response.arrayBuffer()), alignment: null};
+}
+
+async function speak(text) {
+  if (PROVIDER === 'elevenlabs') return speakElevenLabs(text);
+  if (PROVIDER === 'openai') return speakOpenAI(text);
+  throw new Error(`unknown VOICE_PROVIDER "${PROVIDER}" — use elevenlabs, openai, or --measure on a file`);
+}
+
+/**
+ * Decode to raw mono PCM with the ffmpeg that already ships inside Remotion's
+ * renderer, so measurement adds no dependency of its own. A plain decode and
+ * resample — no filtergraph, because that build carries a trimmed filter set.
+ */
+async function decode(file) {
+  const require = createRequire(import.meta.url);
+  const compositor = path.dirname(require.resolve('@remotion/compositor-linux-x64-gnu/package.json'));
+  const binary = path.join(compositor, 'ffmpeg');
+
+  const RATE = 16_000;
+  // A wav file rather than a raw pipe: this build carries only the wav muxer,
+  // and a header that says where the samples start beats guessing at an offset.
+  const scratch = path.join(os.tmpdir(), `vo-${process.pid}-${Date.now()}.wav`);
+  try {
+    await new Promise((resolve, reject) => {
+      const child = spawn(
+        binary,
+        ['-hide_banner', '-loglevel', 'error', '-y', '-i', file, '-ac', '1', '-ar', String(RATE), '-c:a', 'pcm_s16le', scratch],
+        {env: {...process.env, LD_LIBRARY_PATH: compositor}},
+      );
+      let stderr = '';
+      child.stderr.on('data', (chunk) => (stderr += chunk));
+      child.on('error', reject);
+      child.on('close', (code) => (code === 0 ? resolve() : reject(new Error(`ffmpeg exited ${code} — ${stderr.slice(0, 200)}`))));
+    });
+
+    const wav = await readFile(scratch);
+    // Walk the chunks to `data`. The header is not always 44 bytes — ffmpeg
+    // writes a LIST/INFO chunk of its own, and assuming 44 shifts every sample.
+    let offset = 12;
+    while (offset + 8 <= wav.length && wav.toString('ascii', offset, offset + 4) !== 'data') {
+      offset += 8 + wav.readUInt32LE(offset + 4);
+    }
+    if (offset + 8 > wav.length) throw new Error('no data chunk in the decoded audio');
+    const start = offset + 8;
+    const length = Math.min(wav.readUInt32LE(offset + 4), wav.length - start);
+    const samples = new Int16Array(length >> 1);
+    for (let i = 0; i < samples.length; i += 1) samples[i] = wav.readInt16LE(start + i * 2);
+    return {samples, sampleRate: RATE, duration: samples.length / RATE};
+  } finally {
+    await rm(scratch, {force: true});
   }
-  return body;
 }
 
 async function main() {
@@ -140,13 +227,48 @@ async function main() {
   const script = scriptOf(brief.lines);
   const words = script.split(/\s+/).filter(Boolean).length;
 
-  console.log(`${episodeId}: ${lines.length} line(s), ${words} words — speaking in one pass…`);
-  const spoken = await speak(script);
-  const windows = windowsFor(lines, spoken.alignment);
-
   const outDir = path.join(dir, 'audio');
+  const file = path.join(outDir, 'vo.mp3');
   await mkdir(outDir, {recursive: true});
-  await writeFile(path.join(outDir, 'vo.mp3'), Buffer.from(spoken.audio_base64, 'base64'));
+
+  // --measure skips synthesis entirely and reads an mp3 that is already there:
+  // a hand-recorded voiceover, or one somebody sent over, or the output of a
+  // provider this script has never heard of.
+  let how;
+  let alignment = null;
+  if (args.measure) {
+    if (!(await exists(file))) throw new Error(`--measure needs ${path.relative(ROOT, file)} to exist already`);
+    how = 'measured';
+    console.log(`${episodeId}: measuring the narration already on disk…`);
+  } else {
+    console.log(`${episodeId}: ${lines.length} line(s), ${words} words — speaking in one pass via ${PROVIDER}…`);
+    const spoken = await speak(script);
+    await writeFile(file, spoken.audio);
+    alignment = spoken.alignment;
+    how = alignment?.character_end_times_seconds?.length ? 'aligned' : 'measured';
+  }
+
+  let windows;
+  if (how === 'aligned') {
+    windows = windowsFor(lines, alignment);
+  } else {
+    /**
+     * NO ALIGNMENT, SO MEASURE IT. The pauses are in the file: find every quiet
+     * run, take the longest (lines - 1) of them, and those are the cuts. Asking
+     * for the longest N rather than everything past a threshold is what makes
+     * this survive a narrator who breathes in the middle of a sentence.
+     */
+    const {samples, sampleRate, duration: seconds} = await decode(file);
+    const WINDOW_MS = 20;
+    const boundaries = findBoundaries(loudness(samples, sampleRate, WINDOW_MS), WINDOW_MS, lines.length - 1);
+    if (boundaries.length < lines.length - 1) {
+      throw new Error(
+        `found ${boundaries.length} pause(s) in ${seconds.toFixed(1)}s but the script has ${lines.length} lines.\n` +
+          '   The reading ran the lines together — ask for clearer pauses between paragraphs, or record it again.',
+      );
+    }
+    windows = windowsFromBoundaries(lines, boundaries, seconds);
+  }
 
   const duration = windows[windows.length - 1].end;
   await writeFile(
@@ -154,8 +276,8 @@ async function main() {
     `${JSON.stringify(
       {
         $comment: 'MEASURED from vo.mp3, not estimated. The planner cuts every scene to these windows.',
-        voice: VOICE,
-        model: MODEL,
+        how,
+        provider: args.measure ? 'file' : PROVIDER,
         duration,
         lines: brief.lines.map((line, i) => ({
           slug: line.slug ?? `line-${i + 1}`,
