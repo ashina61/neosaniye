@@ -104,6 +104,23 @@ out/<id>.mp4
    yarısını alır. Parallax, mekân hissi, düz plakanın düz görünmekten çıkması —
    hepsi o tek sayıdan doğar. Her katman AYNI çapa etrafında ölçeklenir; ayrı
    merkez verilirse katmanlar bir oda gibi tutunmaz, birbirinin üstünde kayar.
+
+   **YIĞIN BRIEF'TE BAŞLAR.** Bu kanun uzun süre yalnız motorda yazılıydı ve
+   motor onu uyguluyordu — ama kimse yığın vermiyordu. `write-episode.mjs`
+   yazardan tek bir `image` cümlesi istiyor, `pieces` ise "opsiyonel, kullanmasan
+   daha iyi" diye geçiyordu; sonuç, altı satırlık bir bölümün ALTI PNG olmasıydı
+   ve devam çekimleri aynı plakayı tekrar gösteriyordu. On bir sahne, sekiz
+   dosya, dördü bir öncekinin aynısı. O yüzden `pieces` artık ZORUNLU: her satır
+   arka planı ve önünde duran 2-4 TEK NESNEYİ söyler, ve bir satır hariç hepsi
+   yığın vermezse brief REDDEDİLİR. Bir parça kesilip kendi derinliğine
+   konacaktır, o yüzden zaten resim olan bir şey ("masadaki adamlar") parça
+   olamaz: çoğul özne dikdörtgene, "şu kadar X" konfetiye keser.
+
+   Parça plakası kareyi KAPLAYAMAZ (bkz. kanun 8) ve bunu motor garanti eder,
+   config söz vermez: katman yalnız `height` ister, genişlik asset'in en-boyunu
+   izler, ve yatay bir tuval üzerine çizilmiş 970px'lik bir parça 1080px'lik
+   karede 1500px genişliğe çıkar. Tavan DERİNLİĞE göredir — düz bir tavan uzak
+   ve yakın parçayı aynı boya indirir, yani yığını görünmez yapar.
 5. **YEDİ PAYLAŞILAN ŞABLON.** `portal-zoom-reveal`, `parallax-punch`,
    `stacked-reveal`, `split-shift`, `title-slate`, `evidence-board`, artı
    `composite` — diğerlerinin özel hâli olduğu genel şablon. `title-slate` ve

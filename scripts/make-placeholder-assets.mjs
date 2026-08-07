@@ -79,12 +79,24 @@ async function main() {
   for (const scene of config.scenes ?? []) {
     for (const [role, file] of Object.entries(scene.assets ?? {})) {
       if (typeof file !== 'string' || wanted.has(file)) continue;
-      // NEVER STAND IN FOR AN OPTIONAL ROLE. A "?role" exists precisely so the
-      // scene can do without it, and it does that WELL — the composite drops
-      // the layer and loses some depth. A labelled grey card in the middle of
-      // the shot is strictly worse than the thing that was designed to happen,
-      // and it also hides the fact that the artwork was never drawn.
-      if (role.startsWith(OPTIONAL_ROLE)) continue;
+      /**
+       * OPTIONAL ROLES ARE SKIPPED BY DEFAULT, and that default is not laziness.
+       *
+       * A "?role" exists precisely so the scene can do without it, and it does
+       * that WELL — the composite drops the layer and loses some depth. A
+       * labelled grey card standing in the middle of the shot is strictly worse
+       * than the thing that was designed to happen, and it hides the fact that
+       * the artwork was never drawn. That must stay true of the workflow, which
+       * writes stand-ins before it draws for real: if the generator fails on a
+       * piece, the reel should lose a layer, not gain a grey box.
+       *
+       * `--pieces` is for LOOKING, and only for looking. Pieces used to be a
+       * garnish; they are now three of a composite's four layers, so without
+       * this every local preview is the flat slideshow this whole change
+       * exists to end, and there is no way to check a composition until the
+       * artwork lands. Never pass it in CI.
+       */
+      if (role.startsWith(OPTIONAL_ROLE) && !args.pieces) continue;
       const name = path.basename(file);
       const recipe = recipes?.assets?.[name];
       const kind = recipe ? recipes?.kinds?.[recipe.kind] : null;

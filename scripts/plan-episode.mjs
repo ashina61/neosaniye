@@ -449,6 +449,116 @@ function captionSize(lines, rand) {
 }
 
 /**
+ * THE STACK — a backdrop, and the things standing in front of it.
+ *
+ * ONE implementation, because both kinds of shot need it and only one of them
+ * used to have it. A reel planned before this was six photographs and their
+ * continuations were the SAME six photographs from a different corner: eleven
+ * scenes, eight files, four of them the previous shot again. The stack was
+ * built in the composite branch and nowhere else, so every other template threw
+ * the line's pieces away.
+ *
+ * PLACEMENT FOLLOWS DEPTH. It is not random.
+ *
+ * The first version scattered pieces with rand(): a near piece could come out
+ * small and high in the frame while a far one loomed large, so every layer
+ * contradicted the depth it had been given and the shot read as accidental —
+ * things standing about, rather than a place seen from somewhere. Three rules
+ * fix it, and they are just what perspective and air already do:
+ *
+ *   NEARER IS BIGGER   size rises with depth
+ *   NEARER IS LOWER    its feet sit further down the frame, because the ground
+ *                      plane falls away toward the horizon
+ *   FURTHER IS FAINTER aerial perspective — distance washes contrast out
+ *
+ * And they alternate outward from the centre, so near pieces frame the edges
+ * and nothing parks itself where the caption goes.
+ *
+ * `spread` shifts every piece sideways. A continuation is the same room from a
+ * different corner, so its pieces must not sit where they sat in the shot
+ * before — same stack, new framing, which is a cut rather than a jump.
+ */
+function buildStack({line, ground, rand, groundDepth, spread = 0}) {
+  const pieces = (line.pieces ?? []).slice(0, 4);
+  const assets = {ground};
+  const layers = [{role: 'ground', depth: groundDepth, anchor: 'fill'}];
+  const highlights = [];
+
+  // WHICH SIDE THE STACK OPENS ON is the episode's, not the index's. Alternating
+  // strictly from i=0 meant the near piece went left in every scene of every
+  // reel ever planned — and since the lateral offset grew with depth until it
+  // ran past the frame, it did not merely go left, it CLAMPED to x=150. The
+  // nearest, largest, shadow-casting piece was pinned to the same pixel of the
+  // same edge in every shot of every episode.
+  const flip = rand() > 0.5 ? 1 : -1;
+
+  pieces.forEach((piece, i) => {
+    const role = piece.replace(/[^a-z0-9]+/gi, '-').toLowerCase();
+    assets[`?${role}`] = `assets/${role}.png`;
+    const depth = round(0.26 + (i / Math.max(1, pieces.length - 1 || 1)) * 0.58, 2);
+    const jitter = (span) => Math.round((rand() - 0.5) * span);
+    const side = (i % 2 === 0 ? -1 : 1) * flip;
+
+    /**
+     * THE NEAREST PIECE CATCHES THE LIGHT.
+     *
+     * Only when the sentence is about gold or fire — the same law as the
+     * motifs. A highlight on every shot is a filter; a highlight on the one
+     * line about treasure is the line.
+     */
+    if (i === pieces.length - 1 && earnsHighlight(line)) {
+      highlights.push({index: layers.length});
+    }
+
+    // A near piece cropped by the frame edge is good framing; a near piece
+    // whose CENTRE is off-frame is a sliver. The old guard was a clamp, which
+    // turned every overflow into the same pixel — so overflow now MIRRORS to
+    // the other side of the frame instead, which is a different composition
+    // rather than a wall. The clamp stays underneath as a last resort only.
+    const offset = 120 + depth * 300;
+    const wanted = Math.round(WIDTH / 2 + side * offset + spread + jitter(60));
+    const mirrored =
+      wanted < 150 || wanted > WIDTH - 150
+        ? Math.round(WIDTH / 2 - side * offset + spread + jitter(40))
+        : wanted;
+
+    layers.push({
+      role,
+      depth,
+      anchor: 'bottom',
+      x: Math.min(WIDTH - 150, Math.max(150, mirrored)),
+      y: Math.round(1150 + depth * 620 + jitter(50)),
+      height: Math.round(320 + depth * 760 + jitter(70)),
+      opacity: round(0.5 + depth * 0.5, 2),
+      ...(depth > 0.7 ? {shadow: true, shadowSkew: -(44 + Math.round(rand() * 26)), shadowOpacity: 0.34} : {}),
+    });
+  });
+
+  /**
+   * THE HIGHLIGHT IS THE PIECE AGAIN — the shadow trick with colour instead of
+   * black. A second copy of the SAME file, laid exactly over the first,
+   * recoloured and switched on and off on hold keyframes. No new asset, and it
+   * goes LAST so it sits over everything it is a copy of.
+   */
+  for (const hit of highlights) {
+    layers.push({
+      ...layers[hit.index],
+      recolour: 'sepia(1) saturate(5) hue-rotate(18deg) brightness(1.15)',
+      // Instant on, instant off. A ramp turns a fluorescent strike into a
+      // dissolve, which is the one thing it must not be.
+      flicker: [
+        [23, 29],
+        [32, 62],
+        [64, 72],
+      ],
+      shadow: false,
+    });
+  }
+
+  return {assets, layers};
+}
+
+/**
  * A CONTINUATION SHOT — the same picture, seen differently, saying the next
  * thing.
  *
@@ -472,14 +582,34 @@ function planContinuation({line, index, part, fragment, frames: measured, rand, 
   // same shot played twice; a push followed by a pull-back looks like an edit.
   const pullBack = part % 2 === 1;
 
+  // THE SAME ROOM, NOT THE SAME SLIDE. The stack is rebuilt rather than
+  // dropped: the pieces that gave the first shot its depth are still standing
+  // there when we cut, and the whole reason to cut is to see them from
+  // somewhere else. Without this the continuation was one flat plate, which is
+  // how a six-scene reel came out as eleven scenes and eight files.
+  //
+  // The ground sits SHALLOW here, not at 0.7-0.95 as it did when it was the
+  // only layer: a backdrop that takes nearly the whole push leaves no room for
+  // anything in front of it to move faster, and moving faster is the only thing
+  // that puts a piece in front.
+  const {assets, layers} = buildStack({
+    line,
+    ground: plate ?? `assets/${assetBase}-bg.png`,
+    rand,
+    groundDepth: round(between(rand, [0.06, 0.16]), 2),
+    // Walk the pieces the opposite way to the anchor, so the corner we push
+    // into is the corner they are NOT standing in.
+    spread: (corner === 0 || corner === 3 ? 1 : -1) * (90 + Math.round(rand() * 120)),
+  });
+
   return {
     id: `${assetBase}-${String.fromCharCode(97 + part)}`,
     sceneType: 'composite',
     voText: fragment,
     durationInFrames: frames,
     transition: {kind: pick(rand, choices), frames: 7 + Math.round(rand() * 5)},
-    assets: {ground: plate ?? `assets/${assetBase}-bg.png`},
-    layers: [{role: 'ground', depth: round(between(rand, [0.7, 0.95]), 2), anchor: 'fill'}],
+    assets,
+    layers,
     params: {
       // The anchor walks the corners, so consecutive shots on one plate never
       // move into the same part of it.
@@ -654,85 +784,18 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
       ...motifParams(motif, {rand, from: push + 50, accent: look.accent, stops: line.stops}),
     };
   } else {
-    // COMPOSITE — the stack. Pieces are optional, so a piece that fails to draw
-    // costs this shot some depth and never costs the reel.
-    scene.assets = {ground: backdrop};
-    const pieces = (line.pieces ?? []).slice(0, 3);
-    scene.layers = [{role: 'ground', depth: round(between(rand, [0.04, 0.12]), 2), anchor: 'fill'}];
-    const highlights = [];
-    /**
-     * PLACEMENT FOLLOWS DEPTH. It is not random.
-     *
-     * The first version scattered pieces with rand(): a near piece could come
-     * out small and high in the frame while a far one loomed large, so every
-     * layer contradicted the depth it had been given and the shot read as
-     * accidental — things standing about, rather than a place seen from
-     * somewhere. Three rules fix it, and they are just what perspective and air
-     * already do:
-     *
-     *   NEARER IS BIGGER   size rises with depth
-     *   NEARER IS LOWER    its feet sit further down the frame, because the
-     *                      ground plane falls away toward the horizon
-     *   FURTHER IS FAINTER aerial perspective — distance washes contrast out
-     *
-     * And they alternate outward from the centre, so near pieces frame the
-     * edges and nothing parks itself where the caption goes.
-     */
-    pieces.forEach((piece, i) => {
-      const role = piece.replace(/[^a-z0-9]+/gi, '-').toLowerCase();
-      scene.assets[`?${role}`] = `assets/${role}.png`;
-      const depth = round(0.26 + (i / Math.max(1, pieces.length - 1 || 1)) * 0.58, 2);
-      const jitter = (span) => Math.round((rand() - 0.5) * span);
-      const side = i % 2 === 0 ? -1 : 1;
-
-      /**
-       * THE NEAREST PIECE CATCHES THE LIGHT.
-       *
-       * Only when the sentence is about gold or fire — the same law as the
-       * motifs. A highlight on every shot is a filter; a highlight on the one
-       * line about treasure is the line.
-       */
-      const catchesLight = i === pieces.length - 1 && earnsHighlight(line);
-      if (catchesLight) {
-        highlights.push({role, depth, index: scene.layers.length});
-      }
-
-      scene.layers.push({
-        role,
-        depth,
-        anchor: 'bottom',
-        // Clamped: a near piece cropped by the frame edge is good framing, a
-        // near piece whose CENTRE is off-frame is just a sliver.
-        x: Math.min(WIDTH - 150, Math.max(150, Math.round(WIDTH / 2 + side * (140 + depth * 420) + jitter(60)))),
-        y: Math.round(1150 + depth * 620 + jitter(50)),
-        height: Math.round(320 + depth * 760 + jitter(70)),
-        opacity: round(0.5 + depth * 0.5, 2),
-        ...(depth > 0.7
-          ? {shadow: true, shadowSkew: -(44 + Math.round(rand() * 26)), shadowOpacity: 0.34}
-          : {}),
-      });
+    // COMPOSITE — the stack. Pieces are optional at RENDER time, so a piece
+    // that fails to draw costs this shot some depth and never costs the reel;
+    // they are not optional at WRITING time, which is where the brief is
+    // refused for handing over six photographs.
+    const stack = buildStack({
+      line,
+      ground: backdrop,
+      rand,
+      groundDepth: round(between(rand, [0.04, 0.12]), 2),
     });
-    /**
-     * THE HIGHLIGHT IS THE PIECE AGAIN — the shadow trick with colour instead
-     * of black. A second copy of the SAME file, laid exactly over the first,
-     * recoloured and switched on and off on hold keyframes. No new asset, and
-     * it goes LAST so it sits over everything it is a copy of.
-     */
-    for (const hit of highlights) {
-      const base = scene.layers[hit.index];
-      scene.layers.push({
-        ...base,
-        recolour: 'sepia(1) saturate(5) hue-rotate(18deg) brightness(1.15)',
-        // Instant on, instant off. A ramp turns a fluorescent strike into a
-        // dissolve, which is the one thing it must not be.
-        flicker: [
-          [23, 29],
-          [32, 62],
-          [64, 72],
-        ],
-        shadow: false,
-      });
-    }
+    scene.assets = stack.assets;
+    scene.layers = stack.layers;
 
     scene.params = {
       anchorX: Math.round(WIDTH * 0.5),
@@ -875,7 +938,10 @@ async function main() {
         plate,
       });
       previousTransition = scene.transition.kind;
-      planned.push({scene, motif: '', pieces: []});
+      // The continuation stands the SAME pieces in the same room, so it carries
+      // the line's list too — otherwise the recipe builder, which now only
+      // draws what a layer asks for, would find nothing asking for them.
+      planned.push({scene, motif: '', pieces: line.pieces ?? []});
     });
   });
 
@@ -930,8 +996,19 @@ async function main() {
         ...(photoPrompt ? {prompt: photoPrompt} : {}),
       };
     }
+    // ONLY WHAT A LAYER ASKS FOR. A piece is needed if and only if some scene
+    // actually places it: a line whose first shot is a title card still carries
+    // its pieces in the brief, and drawing files nothing references costs the
+    // generator its time and the repo its disk for a picture no frame contains.
+    const placed = new Set(
+      Object.keys(scene.assets ?? {})
+        .filter((role) => role.startsWith('?'))
+        .map((role) => role.slice(1)),
+    );
     for (const piece of pieces) {
-      const name = `${piece.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}.png`;
+      const slug = piece.replace(/[^a-z0-9]+/gi, '-').toLowerCase();
+      if (!placed.has(slug)) continue;
+      const name = `${slug}.png`;
       if (!assets[name]) {
         assets[name] = {
           kind: 'piece',
@@ -1011,7 +1088,13 @@ async function main() {
     ]
       .filter(Boolean)
       .join(' / ');
-    const needs = Object.values(first.assets ?? {}).map((f) => String(f).replace(/^assets\//, ''));
+    // EVERY SHOT OF THE LINE, not just the first. A line whose opener is a
+    // portal and whose continuation is a four-layer composite was reported as
+    // needing two files, which made the reel look flatter on paper than it is
+    // and hid the change that fixed it.
+    const needs = [
+      ...new Set(own.flatMap((p) => Object.values(p.scene.assets ?? {}).map((f) => String(f).replace(/^assets\//, '')))),
+    ];
 
     console.log(`\n  ${index + 1}. "${line.vo}"`);
     console.log(
@@ -1020,6 +1103,18 @@ async function main() {
     );
     if (onScreen) console.log(`     on screen  ${onScreen}`);
     if (needs.length) console.log(`     needs      ${needs.join(', ')}`);
+
+    // PIECES WRITTEN AND NEVER STOOD UP. A portal shot is a flight into a
+    // photograph and holds nothing in front of it, so a line that becomes one
+    // drops its whole stack. That is a fair outcome and a silent one, and
+    // silence is the problem: the author wrote three objects, the reel shows
+    // none of them, and nothing anywhere said so.
+    const dropped = (line.pieces ?? []).filter(
+      (piece) => !needs.includes(`${piece.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}.png`),
+    );
+    if (dropped.length) {
+      console.log(`     dropped    ${dropped.join(', ')} — no shot on this line can stand a piece up`);
+    }
   }
   console.log(
     voice

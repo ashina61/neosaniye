@@ -140,14 +140,38 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
     if (anchor === 'bottom') box.bottom = height - standY;
     else box.top = standY;
 
+    /**
+     * A PIECE NEVER COVERS THE FRAME — and it is the ENGINE that guarantees it,
+     * not the config that promises it.
+     *
+     * A layer asks for a HEIGHT and the width used to follow the artwork's
+     * aspect with nothing stopping it. Piece artwork is drawn on a landscape
+     * canvas, so a piece standing 970px tall came out 1500px WIDE in a 1080px
+     * frame: one object covering the shot, with the backdrop and every other
+     * layer behind it and nothing able to move in front. Depth dies, and the
+     * stack that was just built is invisible underneath it.
+     *
+     * Capping both sides on the IMG rather than the box keeps the aspect — the
+     * artwork scales down to fit whichever limit it hits first — and lets the
+     * box shrink-wrap, which is what the translate(-50%) centring is measured
+     * against.
+     *
+     * THE CAP RIDES DEPTH, because a flat cap silently flattens the stack. On
+     * landscape artwork the width limit binds before the height one, so a
+     * single number capped the far piece and the near piece to exactly the same
+     * size — three layers at three depths rendering identically, which looks
+     * like the bug it replaced. A near piece is allowed to be big; that is what
+     * near means.
+     */
+    const cap = num('pieceMaxWidth', Math.round(width * (0.3 + (layer.depth ?? 1) * 0.38)));
     return (
       <div key={key} style={box}>
         <Img
           src={staticFile(src)}
           style={
             layer.height && !layer.width
-              ? {height: '100%', width: 'auto', display: 'block'}
-              : {width: '100%', display: 'block'}
+              ? {maxHeight: '100%', maxWidth: cap, width: 'auto', height: 'auto', display: 'block'}
+              : {width: '100%', maxWidth: cap, display: 'block'}
           }
         />
       </div>

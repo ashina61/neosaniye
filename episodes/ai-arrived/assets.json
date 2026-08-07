@@ -35,6 +35,36 @@
       ],
       "prompt": "an empty lecture room with a blackboard and wooden chairs"
     },
+    "chalkboard-on-a-wooden-easel.png": {
+      "kind": "piece",
+      "commons": [
+        "chalkboard on a wooden easel transparent png",
+        "chalkboard on a wooden easel white background",
+        "chalkboard on a wooden easel isolated",
+        "chalkboard on a wooden easel"
+      ],
+      "prompt": "one single chalkboard on a wooden easel, whole object in frame, dark silhouette, on a plain white background"
+    },
+    "empty-wooden-chair.png": {
+      "kind": "piece",
+      "commons": [
+        "empty wooden chair transparent png",
+        "empty wooden chair white background",
+        "empty wooden chair isolated",
+        "empty wooden chair"
+      ],
+      "prompt": "one single empty wooden chair, whole object in frame, dark silhouette, on a plain white background"
+    },
+    "brass-desk-lamp.png": {
+      "kind": "piece",
+      "commons": [
+        "brass desk lamp transparent png",
+        "brass desk lamp white background",
+        "brass desk lamp isolated",
+        "brass desk lamp"
+      ],
+      "prompt": "one single brass desk lamp, whole object in frame, dark silhouette, on a plain white background"
+    },
     "s02-kasparov-bg.png": {
       "kind": "backdrop",
       "commons": [
@@ -51,6 +81,36 @@
       ],
       "prompt": "a close view of a black server cabinet, cable ports and vents"
     },
+    "black-computer-cabinet.png": {
+      "kind": "piece",
+      "commons": [
+        "black computer cabinet transparent png",
+        "black computer cabinet white background",
+        "black computer cabinet isolated",
+        "black computer cabinet"
+      ],
+      "prompt": "one single black computer cabinet, whole object in frame, dark silhouette, on a plain white background"
+    },
+    "wooden-chess-clock.png": {
+      "kind": "piece",
+      "commons": [
+        "wooden chess clock transparent png",
+        "wooden chess clock white background",
+        "wooden chess clock isolated",
+        "wooden chess clock"
+      ],
+      "prompt": "one single wooden chess clock, whole object in frame, dark silhouette, on a plain white background"
+    },
+    "carved-chess-king-piece.png": {
+      "kind": "piece",
+      "commons": [
+        "carved chess king piece transparent png",
+        "carved chess king piece white background",
+        "carved chess king piece isolated",
+        "carved chess king piece"
+      ],
+      "prompt": "one single carved chess king piece, whole object in frame, dark silhouette, on a plain white background"
+    },
     "s03-seeing-bg.png": {
       "kind": "backdrop",
       "commons": [
@@ -58,6 +118,36 @@
         "photo archive boxes"
       ],
       "prompt": "shelves of archive boxes holding thousands of photographs"
+    },
+    "cardboard-archive-box.png": {
+      "kind": "piece",
+      "commons": [
+        "cardboard archive box transparent png",
+        "cardboard archive box white background",
+        "cardboard archive box isolated",
+        "cardboard archive box"
+      ],
+      "prompt": "one single cardboard archive box, whole object in frame, dark silhouette, on a plain white background"
+    },
+    "brass-magnifying-glass.png": {
+      "kind": "piece",
+      "commons": [
+        "brass magnifying glass transparent png",
+        "brass magnifying glass white background",
+        "brass magnifying glass isolated",
+        "brass magnifying glass"
+      ],
+      "prompt": "one single brass magnifying glass, whole object in frame, dark silhouette, on a plain white background"
+    },
+    "framed-photographic-print.png": {
+      "kind": "piece",
+      "commons": [
+        "framed photographic print transparent png",
+        "framed photographic print white background",
+        "framed photographic print isolated",
+        "framed photographic print"
+      ],
+      "prompt": "one single framed photographic print, whole object in frame, dark silhouette, on a plain white background"
     },
     "s04-move-bg.png": {
       "kind": "backdrop",
@@ -86,6 +176,36 @@
       ],
       "prompt": "a dark room lit only by a screen"
     },
+    "server-rack-cabinet.png": {
+      "kind": "piece",
+      "commons": [
+        "server rack cabinet transparent png",
+        "server rack cabinet white background",
+        "server rack cabinet isolated",
+        "server rack cabinet"
+      ],
+      "prompt": "one single server rack cabinet, whole object in frame, dark silhouette, on a plain white background"
+    },
+    "coiled-network-cable.png": {
+      "kind": "piece",
+      "commons": [
+        "coiled network cable transparent png",
+        "coiled network cable white background",
+        "coiled network cable isolated",
+        "coiled network cable"
+      ],
+      "prompt": "one single coiled network cable, whole object in frame, dark silhouette, on a plain white background"
+    },
+    "office-swivel-chair.png": {
+      "kind": "piece",
+      "commons": [
+        "office swivel chair transparent png",
+        "office swivel chair white background",
+        "office swivel chair isolated",
+        "office swivel chair"
+      ],
+      "prompt": "one single office swivel chair, whole object in frame, dark silhouette, on a plain white background"
+    },
     "s06-close-bg.png": {
       "kind": "backdrop",
       "commons": [
@@ -93,6 +213,36 @@
         "people using smartphones crowd"
       ],
       "prompt": "a crowded street where everyone is looking down at a phone"
+    },
+    "smartphone-held-upright.png": {
+      "kind": "piece",
+      "commons": [
+        "smartphone held upright transparent png",
+        "smartphone held upright white background",
+        "smartphone held upright isolated",
+        "smartphone held upright"
+      ],
+      "prompt": "one single smartphone held upright, whole object in frame, dark silhouette, on a plain white background"
+    },
+    "cast-iron-street-lamp.png": {
+      "kind": "piece",
+      "commons": [
+        "cast iron street lamp transparent png",
+        "cast iron street lamp white background",
+        "cast iron street lamp isolated",
+        "cast iron street lamp"
+      ],
+      "prompt": "one single cast iron street lamp, whole object in frame, dark silhouette, on a plain white background"
+    },
+    "wooden-park-bench.png": {
+      "kind": "piece",
+      "commons": [
+        "wooden park bench transparent png",
+        "wooden park bench white background",
+        "wooden park bench isolated",
+        "wooden park bench"
+      ],
+      "prompt": "one single wooden park bench, whole object in frame, dark silhouette, on a plain white background"
     }
   }
 }

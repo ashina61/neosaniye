@@ -15,7 +15,12 @@
       "kicker": "Hanover · 1956",
       "title": "A NAME FOR IT",
       "footer": "there was no machine yet",
-      "motif": "none"
+      "motif": "none",
+      "pieces": [
+        "chalkboard on a wooden easel",
+        "empty wooden chair",
+        "brass desk lamp"
+      ]
     },
     {
       "slug": "kasparov",
@@ -33,6 +38,11 @@
       "caption": [
         "Forty years",
         "of losing."
+      ],
+      "pieces": [
+        "black computer cabinet",
+        "wooden chess clock",
+        "carved chess king piece"
       ]
     },
     {
@@ -43,7 +53,12 @@
         "photographic archive shelves",
         "photo archive boxes"
       ],
-      "onScreen": "NOBODY NOTICED"
+      "onScreen": "NOBODY NOTICED",
+      "pieces": [
+        "cardboard archive box",
+        "brass magnifying glass",
+        "framed photographic print"
+      ]
     },
     {
       "slug": "move",
@@ -63,6 +78,11 @@
       "caption": [
         "Move",
         "thirty-seven."
+      ],
+      "pieces": [
+        "wooden go bowl",
+        "black go stone",
+        "folded paper fan"
       ]
     },
     {
@@ -77,7 +97,12 @@
       "motif": "rise",
       "kicker": "Two months",
       "title": "100 MILLION",
-      "footer": "the fastest anything has ever spread"
+      "footer": "the fastest anything has ever spread",
+      "pieces": [
+        "server rack cabinet",
+        "coiled network cable",
+        "office swivel chair"
+      ]
     },
     {
       "slug": "close",
@@ -89,7 +114,12 @@
       ],
       "kicker": "1956 · 2022",
       "title": "SEVENTY YEARS",
-      "footer": "then two months"
+      "footer": "then two months",
+      "pieces": [
+        "smartphone held upright",
+        "cast iron street lamp",
+        "wooden park bench"
+      ]
     }
   ]
 }

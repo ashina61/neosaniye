@@ -14,7 +14,16 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {jsonFrom, problemsWith, promptFor} from '../scripts/write-episode.mjs';
 
-const line = (slug, vo) => ({slug, vo, image: 'a wide empty landscape'});
+// A SHOT IS A STACK, so the fixture is one too. This used to be six lines with
+// one landscape each and it passed every check in the file — which is exactly
+// how the pipeline shipped a reel of six photographs and called it a
+// storyboard.
+const line = (slug, vo, pieces = ['camel standing in profile', 'man in robes standing']) => ({
+  slug,
+  vo,
+  image: 'a wide empty landscape',
+  pieces,
+});
 const good = {
   lines: [
     line('open', 'In thirteen twenty-four a king walked out of Mali for Mecca.'),
@@ -80,6 +89,41 @@ test('JSON is dug out of whatever the model wrapped it in', () => {
   assert.throws(() => jsonFrom('no object here'), /no JSON object/);
 });
 
+test('a reel of flat photographs is refused — a shot is a stack', () => {
+  // The failure this check exists for: six lines, one photograph each, every
+  // other rule satisfied. It renders, it validates, and it is a slideshow.
+  const flat = {lines: good.lines.map((l) => ({slug: l.slug, vo: l.vo, image: l.image}))};
+  assert.ok(problemsWith(flat).some((p) => /6 lines have no pieces/.test(p)), problemsWith(flat).join(' | '));
+
+  // ONE bare line is a rest, not a pattern — a reel that never lets a frame be
+  // still is as tiring as one that is never anything else.
+  const oneBare = {lines: good.lines.map((l, i) => (i === 3 ? {slug: l.slug, vo: l.vo, image: l.image} : l))};
+  assert.deepEqual(problemsWith(oneBare), []);
+});
+
+test('a piece has to be ONE object, because it gets cut out', () => {
+  // Both of these key badly and in different ways: a scene keys to a rectangle,
+  // a plural keys to confetti. Neither can be given a depth and stood in front
+  // of anything.
+  const scene = {lines: good.lines.map((l, i) => (i === 0 ? {...l, pieces: ['men around a table']} : l))};
+  assert.ok(problemsWith(scene).some((p) => /is two things|is a scene/.test(p)), problemsWith(scene).join(' | '));
+
+  const plural = {lines: good.lines.map((l, i) => (i === 0 ? {...l, pieces: ['a row of chairs']} : l))};
+  assert.ok(problemsWith(plural).some((p) => /is a scene/.test(p)), problemsWith(plural).join(' | '));
+
+  const joined = {lines: good.lines.map((l, i) => (i === 0 ? {...l, pieces: ['a camel and its driver']} : l))};
+  assert.ok(problemsWith(joined).some((p) => /is two things/.test(p)), problemsWith(joined).join(' | '));
+});
+
+test('five pieces is a crowded frame', () => {
+  const many = {
+    lines: good.lines.map((l, i) =>
+      i === 0 ? {...l, pieces: ['camel', 'drum', 'staff', 'sack', 'lantern']} : l,
+    ),
+  };
+  assert.ok(problemsWith(many).some((p) => /5 pieces/.test(p)), problemsWith(many).join(' | '));
+});
+
 test('the prompt carries the rules, not just the topic', () => {
   // If these fall out of the prompt, the model stops being told the things
   // that cost this repo the most to learn — and nothing else would notice.
@@ -91,4 +135,9 @@ test('the prompt carries the rules, not just the topic', () => {
   assert.match(prompt, /REALLY\n\s*EXISTS/);
   assert.match(prompt, /Write VERBS/);
   assert.match(prompt, /pause after it/);
+  // The lesson that cost the most to learn and was the last to reach the
+  // prompt: the writer was told pieces were optional, so it never sent any,
+  // so every scene was one photograph.
+  assert.match(prompt, /A SHOT IS NOT A PHOTOGRAPH/);
+  assert.match(prompt, /REQUIRED on every line but one/);
 });
