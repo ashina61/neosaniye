@@ -13,7 +13,20 @@ Giriş noktası `npm run render -- --episode=<id>`. Otomatik koşu
 Seslendirme bir katman değil, ZAMAN ÇİZELGESİDİR. Sahne süreleri MP3'ün
 içindeki satır sınırlarından ÖLÇÜLÜR — tahmin edilmez.
 
-`npm run voice -- --episode=<id>` bütün metni TEK seferde okutur (satır satır
+**Konuşmak ve ÖLÇMEK iki ayrı adımdır.** Konuşmak bir sağlayıcıya aittir
+(ElevenLabs, OpenAI, mikrofon, biri); ölçmek `scripts/lib/measure.mjs`'e aittir
+ve HER ŞEYDE çalışır. Duraklar dosyanın içindedir; onları bulmak API değil örnek
+ister. Tek bir sağlayıcının zaman damgasına bağlanırsan, o sağlayıcı hata
+verdiği gün saat de gider.
+
+Ölçüm sessiz koşuları bulur ve en uzun (satır − 1) tanesini alır. "Eşiği geçen
+her sessizlik" değil: anlatıcı cümlenin ortasında da nefes alır, ve yanlış
+sınırı almak ondan sonraki HER satırı yanlış resmin üstüne koyar — üstelik reel
+yine render olur. Kaç sınır olduğu bilinir, o yüzden sayı sorulur, eşik değil.
+Dosyanın başındaki sessizlik sınır sayılmaz. Hiç durak bulunamazsa iş
+UYDURULMAZ, reddedilir.
+
+`npm run voice -- --episode=<id> [--measure]` bütün metni TEK seferde okutur (satır satır
 okutmak, kenarlarında farklı miktarda hava olan altı klip verir; oysa ölçülen
 şey satırlar ARASINDAKİ boşluktur), karakter hizalamasından her satırın
 penceresini çıkarır ve `audio/vo.json` yazar. Planlayıcı o pencereleri keser;
