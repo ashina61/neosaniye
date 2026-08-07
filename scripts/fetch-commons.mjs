@@ -111,6 +111,23 @@ const JUNK = /(logo|icon|barnstar|coat of arms|flag of|user:|user talk|wikimedia
  * to the slot it has to fill — a panorama dropped into a portrait plate is
  * cropped to a stripe of its own middle, which is usually the least interesting
  * part of it.
+ *
+ * AND STILL ABOUT THE THING THAT WAS ASKED FOR. This used to score on size and
+ * shape ALONE, which quietly threw away the one signal that knows what the
+ * picture is OF: Commons returns its results in relevance order, and re-sorting
+ * them by pixel count destroys that ranking completely. The result is not
+ * subtle — a search for "Go board game stones" came back with a photograph of
+ * SCRABBLE TILES, and the corrected search for "Weiqi goban" came back with a
+ * Christmas sign, both because prolific uploaders post enormous files and a
+ * 6000px irrelevant photograph outscores a 1200px correct one every time.
+ *
+ * So rank LEADS and the measurements break ties. Half a point per position is
+ * steeper than the whole range of the size term on purpose: no amount of
+ * megapixels may buy a lower-ranked result its way up, which is the exact
+ * transaction that put Scrabble tiles on a Go board. Shape can still overcome
+ * rank, and should — a panorama cropped into a portrait plate is a stripe of
+ * its own middle whatever the search thought of it — because that penalty is
+ * unbounded while the size term is capped at one.
  */
 export function best(pages, targetRatio) {
   const scored = [];
@@ -125,7 +142,12 @@ export function best(pages, targetRatio) {
     const ratio = info.width / info.height;
     const shape = Math.abs(Math.log(ratio / targetRatio));
     const size = Math.min(1, info.width / 2400);
-    scored.push({page, info, score: size - shape * 1.4});
+    // `index` is the search rank the generator assigned, 1 being the best
+    // match. A page without one is treated as last rather than as first: an
+    // unranked result is not a top hit, and guessing that it is reintroduces
+    // exactly the failure this ordering exists to stop.
+    const rank = typeof page.index === 'number' ? page.index : pages.length + 1;
+    scored.push({page, info, score: size - shape * 1.4 - (rank - 1) * 0.5});
   }
   scored.sort((a, b) => b.score - a.score);
   return scored[0] ?? null;

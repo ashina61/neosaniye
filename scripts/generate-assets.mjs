@@ -546,7 +546,11 @@ async function main() {
       made.push(name);
       console.log(`ok (${Math.round(png.length / 1024)} kB)`);
     } catch (error) {
-      failed.push(`${name}: ${error.message}`);
+      // A PIECE IS ALLOWED TO FAIL. It is placed as an optional role precisely
+      // so the scene can do without it — the composite drops the layer and
+      // loses some depth, which is a designed outcome, not a broken reel. A
+      // backdrop or an artefact is not: without it the shot is a grey card.
+      failed.push({name, kind: recipe.kind, optional: recipe.kind === 'piece', message: error.message});
       console.log(`FAILED — ${error.message}`);
     }
   }
@@ -573,10 +577,34 @@ async function main() {
 
   if (failed.length) {
     console.error('\nFailed assets (re-run to retry just these — existing files are skipped):');
-    for (const line of failed) console.error(`   · ${line}`);
-    // EXIT CODES, so the workflow can commit the good ones AND still go red:
-    //   2  some drawn, some failed — keep what worked, report the rest
-    //   1  nothing came out at all — there is nothing to commit
+    for (const f of failed) console.error(`   · ${f.name}${f.optional ? ' (optional)' : ''}: ${f.message}`);
+
+    /**
+     * ONLY A REQUIRED ASSET TURNS THE RUN RED.
+     *
+     * This used to go red on ANY failure, and that was right when nearly every
+     * asset was required. It stopped being right the moment a shot became a
+     * stack: an episode now asks for fifteen cut-outs on top of its six
+     * backdrops, every one of them optional by design, and free image sources
+     * do not have all fifteen. Failing the whole run over two of them marks a
+     * finished reel — rendered, uploaded, correct — as broken, and a red tick
+     * that means nothing is worse than no tick at all, because the next real
+     * failure is the one nobody looks at.
+     *
+     * EXIT CODES:
+     *   3  only optional pieces failed — the scenes drop those layers, as
+     *      designed, and the reel is finished. Worth SAYING, not worth failing.
+     *   2  a REQUIRED asset failed — the reel would show a stand-in
+     *   1  nothing came out at all — there is nothing to commit
+     */
+    const required = failed.filter((f) => !f.optional);
+    if (!required.length) {
+      console.error(
+        `\n${failed.length} optional piece(s) could not be drawn. Those layers are dropped and the reel is\n` +
+          `still finished — re-run to retry just them.`,
+      );
+      process.exit(3);
+    }
     process.exit(made.length ? 2 : 1);
   }
 }

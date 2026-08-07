@@ -1,0 +1,9 @@
+{
+  "$comment": "These assets are stand-ins, not finished artwork. scripts/generate-assets.mjs removes each name as it draws it for real.",
+  "placeholders": [
+    "cast-iron-street-lamp.png",
+    "framed-photographic-print.png",
+    "s04-move-photo.png",
+    "server-rack-cabinet.png"
+  ]
+}

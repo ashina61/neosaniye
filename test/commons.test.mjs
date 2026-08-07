@@ -86,6 +86,46 @@ test('a recipe may give the fallbacks itself', () => {
   assert.deepEqual(queriesFor(''), [], 'no search is not an empty search');
 });
 
+test('a huge irrelevant photograph never outranks the thing that was asked for', () => {
+  /**
+   * The real failure, twice over. A search for "Go board game stones" came back
+   * with SCRABBLE TILES; the corrected search for "Weiqi goban" came back with a
+   * Christmas sign. Both were enormous files from prolific uploaders, and
+   * scoring on size and shape alone threw away the only signal that knows what
+   * a picture is OF — Commons' own relevance ranking, which we were re-sorting
+   * into oblivion.
+   */
+  const ranked = (id, index, width, height) => ({
+    ...page(id, width, height, 'CC BY-SA 4.0'),
+    index,
+  });
+
+  const chosen = best(
+    [
+      ranked('Go 13x13 board', 1, 1600, 2400),
+      ranked('Weihnachten Schriftzug MERRY XMAS', 2, 6000, 9000),
+    ],
+    1080 / 1920,
+  );
+  assert.match(chosen.page.title, /Go 13x13/, 'the top hit must win, not the biggest file');
+
+  // Relevance leads, it does not tyrannise: between two comparably ranked
+  // results the bigger, better-shaped one is still the right pick.
+  const tie = best([ranked('small but first', 1, 1000, 1500), ranked('big and second', 1, 2400, 3600)], 1080 / 1920);
+  assert.match(tie.page.title, /big and second/);
+
+  // An unranked page is treated as LAST, never as first — guessing that a
+  // result with no rank is a top hit is the same bug wearing a different hat.
+  const unranked = best([ranked('ranked first', 1, 1200, 1800), page('no rank at all', 6000, 9000, 'CC0')], 1080 / 1920);
+  assert.match(unranked.page.title, /ranked first/);
+
+  // Rank leads; it does not tyrannise. A top-ranked PANORAMA in a portrait
+  // plate is a stripe of its own middle, and the shape penalty is unbounded
+  // where the size term is capped — so a well-shaped runner-up still takes it.
+  const shaped = best([ranked('top hit panorama', 1, 4000, 1000), ranked('second but upright', 2, 1400, 2400)], 1080 / 1920);
+  assert.match(shaped.page.title, /upright/);
+});
+
 test('shape closest to the slot wins over raw size', () => {
   // A panorama dropped into a portrait plate is cropped to a stripe of its own
   // middle, which is usually the least interesting part of it.
