@@ -3,43 +3,43 @@
   "how": "exact",
   "provider": "piper",
   "audio": "audio/vo.wav",
-  "duration": 26.060770975056688,
+  "duration": 25.84018140589569,
   "lines": [
     {
       "slug": "name",
       "text": "In 1956, ten men spent a summer inventing a name for it.",
       "start": 0,
-      "end": 4.496
+      "end": 4.472
     },
     {
       "slug": "kasparov",
       "text": "For forty years it mostly lost. Then it beat Kasparov.",
-      "start": 4.496,
-      "end": 8.917
+      "start": 4.472,
+      "end": 8.697
     },
     {
       "slug": "seeing",
       "text": "In 2012 it learned to see, and nobody outside the labs noticed.",
-      "start": 8.917,
-      "end": 14.044
+      "start": 8.697,
+      "end": 13.719
     },
     {
       "slug": "move",
       "text": "In 2016 it played a move no human would have played.",
-      "start": 14.044,
-      "end": 18.149
+      "start": 13.719,
+      "end": 17.859
     },
     {
       "slug": "talk",
       "text": "Then it learned to talk, and a hundred million people arrived.",
-      "start": 18.149,
-      "end": 22.104
+      "start": 17.859,
+      "end": 21.721
     },
     {
       "slug": "close",
       "text": "Seventy years to arrive. Two months to be everywhere.",
-      "start": 22.104,
-      "end": 26.061
+      "start": 21.721,
+      "end": 25.84
     }
   ]
 }

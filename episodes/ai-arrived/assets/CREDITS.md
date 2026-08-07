@@ -50,3 +50,33 @@ credit wherever the reel is published — in the description, not only here.
 - Author: Vauia Rex
 - Licence: CC0
 - Source: https://commons.wikimedia.org/wiki/File:Budapest_20260412_223533.jpg
+
+## carved-chess-king-piece.png
+- **File:Chess Piece, King MET 40.170.151(2).jpg**
+- Author: Unknown
+- Licence: CC0
+- Source: https://commons.wikimedia.org/wiki/File:Chess_Piece,_King_MET_40.170.151(2).jpg
+
+## framed-photographic-print.png
+- **File:Sony Cybershot DSC W210.jpg**
+- Author: Joydeep
+- Licence: CC BY-SA 3.0
+- Source: https://commons.wikimedia.org/wiki/File:Sony_Cybershot_DSC_W210.jpg
+
+## server-rack-cabinet.png
+- **File:Colorful metal bicycle parking rack in Lysekil 2.jpg**
+- Author: W.carter
+- Licence: CC BY-SA 4.0
+- Source: https://commons.wikimedia.org/wiki/File:Colorful_metal_bicycle_parking_rack_in_Lysekil_2.jpg
+
+## coiled-network-cable.png
+- **File:Cable de red amarillo enrollado acercamiento.jpg**
+- Author: ProtoplasmaKid
+- Licence: CC BY-SA 4.0
+- Source: https://commons.wikimedia.org/wiki/File:Cable_de_red_amarillo_enrollado_acercamiento.jpg
+
+## cast-iron-street-lamp.png
+- **File:Sign-1230806, Dublin, Ireland.jpg**
+- Author: Leimanbhradain
+- Licence: CC BY-SA 4.0
+- Source: https://commons.wikimedia.org/wiki/File:Sign-1230806,_Dublin,_Ireland.jpg
