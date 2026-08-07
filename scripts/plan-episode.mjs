@@ -169,7 +169,10 @@ const TRANSITIONS = ['slam', 'slip', 'flare', 'rack', 'blinds'];
  * "He spent a fortune" is about money before it is about a king.
  */
 const MOTIF_WORDS = [
-  ['coins', /\b(gold|golden|money|wealth|wealthy|rich|riches|fortune|coins?|treasur\w*|dinars?|bullion|spent|spend|spending|paid|price|cost|gave|gift\w*|alms|crashed?)\b/i],
+  // `gave` on its own is not money — "the roofs gave" is a collapse, and it was
+  // getting gold coins rained over it. Only the phrase that means giving away
+  // counts, which is also the only one a script about money actually uses.
+  ['coins', /\b(gold|golden|money|wealth|wealthy|rich|riches|fortune|coins?|treasur\w*|dinars?|bullion|spent|spend|spending|paid|price|cost|gift\w*|alms|crashed?)\b|\bgave\s+(it\s+|them\s+)?away\b|\bgiv(es|ing)\s+away\b/i],
   ['rise', /\b(rose|rise|risen|rising|grew|grow\w*|doubl\w*|tripl\w*|soar\w*|surg\w*|increas\w*|boom\w*|climb\w*|multipl\w*|swell\w*)\b/i],
   ['route', /\b(journey|travel\w*|caravan|pilgrimage|pilgrim|road|route|marched?|crossed?|across|set out|departed|returned|miles?)\b/i],
   ['embers', /\b(fire|burn\w*|ash|ashes|collaps\w*|ruin\w*|destroy\w*|sacked?|war|siege|died|death|end\w*)\b/i],
@@ -390,12 +393,28 @@ export function framesFor(text, {min = 45, max = 118} = {}) {
   return Math.max(min, Math.min(max, Math.round((words / RATE) * FPS) + 8));
 }
 
-/** The number a slate should set large, pulled straight out of the sentence. */
+/**
+ * The number a slate should set large — WITH WHAT IT COUNTS.
+ *
+ * "TWENTY" on its own is not a statement, it is a fragment: the line said the
+ * ash went twenty MILES up, and the slate threw the miles away. A number needs
+ * its noun or it says nothing, so the word that follows it comes too when it is
+ * a unit rather than grammar.
+ */
+const NOT_A_UNIT = /^(and|or|of|the|a|an|in|on|to|for|from|by|with|at|was|were|is|are|had|has|that|this|it|he|she|they)$/i;
+
 function bigNumber(vo) {
-  const digits = vo.match(/\b\d[\d,.]*\b/);
-  if (digits) return digits[0].replace(/[.,]$/, '');
-  const words = vo.match(/\b(one|two|three|four|five|six|seven|eight|nine|ten|twelve|twenty|fifty|hundred|thousand|million|billion)(\s+(hundred|thousand|million|billion))?\b/i);
-  return words ? words[0].toUpperCase() : '';
+  const numeric = /\b\d[\d,.]*\b/;
+  const spelled =
+    /\b(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion)(\s+(hundred|thousand|million|billion))?\b/i;
+
+  const match = vo.match(numeric) ?? vo.match(spelled);
+  if (!match) return '';
+
+  const number = match[0].replace(/[.,]$/, '');
+  const after = vo.slice(match.index + match[0].length).trim().split(/\s+/)[0] ?? '';
+  const unit = after.replace(/[^a-z]/gi, '');
+  return (NOT_A_UNIT.test(unit) || !unit ? number : `${number} ${unit}`).toUpperCase();
 }
 
 /**
@@ -943,6 +962,48 @@ async function main() {
   console.log(`  types  ${config.scenes.map((s) => s.sceneType).join(' → ')}`);
   console.log(`  drawn  ${planned.map((p) => p.motif || '·').join(' ')}`);
   console.log(`  assets ${Object.keys(assets).length} recipes`);
+
+  /**
+   * THE STORYBOARD, PRINTED.
+   *
+   * The reference build gets this by pasting a prompt and reading prose back:
+   * for every line, the scene it becomes, the words that go on screen pulled
+   * straight from the line, and the assets needed to make it. That is exactly
+   * what everything above just DERIVED — it was simply never shown, so the one
+   * artefact a person actually reads before building was the only one the tool
+   * did not produce.
+   *
+   * Printing it costs nothing and it is better than the prose version in one
+   * way that matters: it is what will actually be rendered, not a description
+   * of what someone intends to render.
+   */
+  console.log('\n  STORYBOARD');
+  for (const [index, line] of brief.lines.entries()) {
+    const own = planned.filter((p) => p.scene.id.startsWith(`s${String(index + 1).padStart(2, '0')}-`));
+    const first = own[0]?.scene;
+    if (!first) continue;
+
+    const seconds = own.reduce((total, p) => total + p.scene.durationInFrames, 0) / FPS;
+    const onScreen = [
+      first.params?.kicker,
+      first.params?.title || first.params?.spinTo,
+      first.params?.footer,
+      ...(Array.isArray(first.params?.caption) ? first.params.caption : []),
+      ...(first.onScreenText ?? []).map((t) => t.text),
+      ...(Array.isArray(first.params?.motifStops) ? [first.params.motifStops.join(' → ')] : []),
+    ]
+      .filter(Boolean)
+      .join(' / ');
+    const needs = Object.values(first.assets ?? {}).map((f) => String(f).replace(/^assets\//, ''));
+
+    console.log(`\n  ${index + 1}. "${line.vo}"`);
+    console.log(
+      `     ${own.length > 1 ? `${own.length} shots` : '1 shot'} · ${own.map((p) => p.scene.sceneType).join(' + ')} · ${seconds.toFixed(1)}s` +
+        (own[0].motif ? ` · motif ${own[0].motif}` : ''),
+    );
+    if (onScreen) console.log(`     on screen  ${onScreen}`);
+    if (needs.length) console.log(`     needs      ${needs.join(', ')}`);
+  }
   console.log(
     voice
       ? `  clock  CUT TO ${voice.audio ?? 'audio/vo.mp3'} — ${voice.duration.toFixed(1)}s, ${voice.how ?? 'measured'}`
