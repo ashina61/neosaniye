@@ -94,11 +94,26 @@ jobs:
       - name: Validate the episode
         run: npm run validate -- --episode="${{ inputs.episode_id }}"
 
+      # THE CONTACT SHEET, because looking is the only check that works.
+      #
+      # Every guard this repo has catches a measurable failure — nothing keyed,
+      # everything keyed, a picture shattered into pieces. The ones that keep
+      # getting through are not measurable at that price: a tonal step leaves a
+      # SLAB around the subject and survives precisely because it differs from
+      # the border; the model draws a lion when it was asked for a camel. Both
+      # are obvious in one glance at a checkerboard, and invisible in a folder
+      # of thirty files nobody opens.
+      - name: Lay the cut-outs on a checkerboard
+        continue-on-error: true
+        run: npm run assets:review -- --episode="${{ inputs.episode_id }}"
+
       - name: Show what was drawn
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.episode_id }}-assets
-          path: episodes/${{ inputs.episode_id }}/assets/
+          path: |
+            episodes/${{ inputs.episode_id }}/assets/
+            out/${{ inputs.episode_id }}-cutouts.png
           if-no-files-found: error
           retention-days: 14
 
