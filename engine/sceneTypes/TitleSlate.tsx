@@ -1,6 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 import type {SceneProps} from './types';
+import {DrawnProps} from '../draw/Props';
 import {CLAMP, posterizeTime} from '../motion';
 import {Plate} from '../Plate';
 import {Field, type FieldKind} from '../draw/Field';
@@ -103,6 +104,11 @@ export const TitleSlate: React.FC<SceneProps> = ({scene, assets, durationInFrame
           />
         ) : null}
       </AbsoluteFill>
+
+      {/* A CARD CAN CARRY AN OBJECT TOO — a brass caption under the verdict is
+          the reference kit's closing move. Frame-locked like the motif, because
+          a slate has no room to push into: the card IS the shot. */}
+      <DrawnProps props={scene.props} push={1} origin="50% 50%" accent={str('accent', '#ffcf3d')} />
 
       {/* Frame-locked, outside the creep, and UNDER the type: a motif that
           scales with the card would make the words grow with it. */}

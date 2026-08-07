@@ -302,6 +302,8 @@ function beatOf(line, index, total) {
   return 'place';
 }
 
+const DIRECTED_TEMPLATES = new Set(['composite', 'portal-zoom-reveal', 'title-slate', 'evidence-board', 'stacked-reveal', 'split-shift', 'parallax-punch']);
+
 const SCENE_FOR = {
   open: 'title-slate',
   close: 'title-slate',
@@ -559,6 +561,57 @@ function drawnLayer({rand, look, side, groundDepth, durationInFrames}) {
  *       cannot open this one.
  */
 function planProps({line, rand, look, side, durationInFrames, recentProps, beat}) {
+  /**
+   * A DIRECTED SHOT WINS OVER A DERIVED ONE — always, and without argument.
+   *
+   * Everything below this line is the fallback: rules and a seeded die, which
+   * is what the planner had instead of a director. It produces the same reel
+   * every time with different photographs in it, and it composes nonsense —
+   * a front page hanging in mid-air in front of a university portico, because
+   * nothing decided to put it there. A die did.
+   *
+   * When the brief carries a `shot`, somebody THOUGHT about this frame: what
+   * the one move is, what stands in it, how big, where, and when it lands. That
+   * is the whole method the reference build uses and the one thing this
+   * pipeline never had. It is compiled, not second-guessed.
+   *
+   * Fractions in, pixels out. A director says "eight tenths of the frame, just
+   * left of centre, a third of the way in"; only the compiler should care that
+   * the frame is 1080 by 1920.
+   */
+  // AN EMPTY LIST IS A DECISION. A director who leaves a shot bare has said
+  // something — the reference reel's power comes partly from the shots that
+  // carry nothing, and falling through to the die on `props: []` overrules the
+  // one instruction that is hardest to give and easiest to lose.
+  const directed = line?.shot?.props;
+  if (Array.isArray(directed)) {
+    return directed.map((prop) => {
+      const width = Math.round(WIDTH * Math.min(0.98, Math.max(0.15, Number(prop.size) || 0.4)));
+      const margin = width / 2 + 24;
+      return {
+        kind: prop.kind,
+        text: prop.text,
+        heading: prop.heading,
+        lines: prop.lines,
+        masthead: prop.masthead,
+        date: prop.date,
+        stamp: prop.stamp,
+        caption: prop.caption,
+        shape: prop.shape,
+        colour: prop.colour ?? (prop.kind === 'wire' || prop.kind === 'beam' ? look.accent : undefined),
+        width,
+        // Clamped even here. A director gives an intention, not a guarantee that
+        // the object's own width keeps it on screen, and "Hanover · 1956"
+        // delivered as "Hanover · 19" is nobody's intention.
+        x: Math.round(Math.min(WIDTH - margin, Math.max(margin, WIDTH * (Number(prop.x) ?? 0.5)))),
+        y: Math.round(HEIGHT * (Number(prop.y) ?? 0.55)),
+        depth: round(Math.min(1, Math.max(0, Number(prop.depth) ?? 0.6)), 2),
+        rotate: Number(prop.tilt) || 0,
+        from: Math.round(durationInFrames * Math.min(0.8, Math.max(0, Number(prop.at) || 0))),
+      };
+    });
+  }
+
   const props = [];
   const banned = new Set(recentProps);
   const use = (kind) => !banned.has(kind);
@@ -897,7 +950,13 @@ function planContinuation({line, index, part, fragment, frames: measured, rand, 
     // A continuation is the same room seen from another corner, so the drawn
     // objects are still standing in it — and it is the shot that used to carry
     // nothing at all.
-    props: planProps({line, rand, look, side, durationInFrames: frames, recentProps, beat: 'middle'}),
+    // ALREADY STANDING. A prop that springs in again on every cut is a prop
+    // being placed over and over; by the continuation the hand has gone and the
+    // thing is simply in the room.
+    props: planProps({line, rand, look, side, durationInFrames: frames, recentProps, beat: 'middle'}).map((p) => ({
+      ...p,
+      from: 0,
+    })),
     params: {
       // The anchor walks the corners, so consecutive shots on one plate never
       // move into the same part of it.
@@ -925,7 +984,14 @@ function planContinuation({line, index, part, fragment, frames: measured, rand, 
 
 function planScene({line, index, total, fragment, frames, rand, look, previousTransition, recentMotifs, recentTypes, side, cutouts, recentProps}) {
   const beat = beatOf(line, index, total);
-  let sceneType = SCENE_FOR[beat];
+  /**
+   * THE DIRECTOR PICKS THE TEMPLATE. The rotation below is the fallback.
+   *
+   * A beat rotation gives every episode the same skeleton — hook, number,
+   * list, close, in that order, forever — which is precisely why every reel
+   * this pipeline made felt like the last one with new photographs in it.
+   */
+  let sceneType = DIRECTED_TEMPLATES.has(line?.shot?.template) ? line.shot.template : SCENE_FOR[beat];
   // RHYTHM. Never the same template as the shot before it. The old rule waited
   // for THREE in a row, which let the reel run portal, portal back to back —
   // and two seven-second flights into a picture, one after the other, is the
@@ -1097,9 +1163,13 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
     scene.params = {
       anchorX: Math.round(WIDTH * 0.5),
       anchorY: 1700,
-      pushTo: round(between(rand, [1.22, 1.5]), 2),
+      // THE CAMERA IS THE DIRECTOR'S. A push and a pull-back are two different
+      // shots, and which one this line wants is not a thing a die should decide.
+      pushFrom: round(Number(line?.shot?.camera?.from) || 1, 2),
+      pushTo: round(Number(line?.shot?.camera?.to) || between(rand, [1.22, 1.5]), 2),
       pushEndFrame: Math.round(durationInFrames * 0.86),
       ...drawnLayer({rand, look, side, groundDepth: stack.groundDepth, durationInFrames}),
+      ...(line?.shot?.camera?.focus === 'sharp' ? {focusPx: 0} : {}),
       caption: line.caption ?? [],
       captionX: 84,
       captionY: Math.round(between(rand, [320, 1100])),
@@ -1121,7 +1191,7 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
    * is over — a plaque the camera flies past is not a plaque — so they cost the
    * arrival nothing and give the second half of the shot something to be.
    */
-  if (sceneType === 'portal-zoom-reveal') {
+  if (sceneType !== 'composite') {
     scene.props = planProps({line, rand, look, side, durationInFrames, recentProps, beat});
   }
 
