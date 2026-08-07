@@ -19,13 +19,13 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.4,
-      "grungeOpacity": 0.19,
-      "scanlineOpacity": 0.11,
-      "scanlinePeriod": 8,
-      "vignetteStrength": 0.51,
-      "weavePx": 4,
-      "weaveScale": 1.016
+      "grainOpacity": 0.44,
+      "grungeOpacity": 0.11,
+      "scanlineOpacity": 0.06,
+      "scanlinePeriod": 9,
+      "vignetteStrength": 0.47,
+      "weavePx": 5,
+      "weaveScale": 1.012
     }
   },
   "scenes": [
@@ -35,61 +35,34 @@
       "voText": "In 1956, ten men spent a summer inventing a name for it.",
       "durationInFrames": 134,
       "assets": {
-        "ground": "assets/s01-name-bg.png",
-        "?chalkboard-on-a-wooden-easel": "assets/chalkboard-on-a-wooden-easel.png",
-        "?empty-wooden-chair": "assets/empty-wooden-chair.png",
-        "?brass-desk-lamp": "assets/brass-desk-lamp.png"
+        "ground": "assets/s01-name-bg.png"
       },
       "layers": [
         {
           "role": "ground",
-          "depth": 0.09,
+          "depth": 0.73,
           "anchor": "fill"
-        },
-        {
-          "role": "chalkboard-on-a-wooden-easel",
-          "depth": 0.26,
-          "anchor": "bottom",
-          "x": 711,
-          "y": 1331,
-          "height": 541,
-          "opacity": 0.63
-        },
-        {
-          "role": "empty-wooden-chair",
-          "depth": 0.55,
-          "anchor": "bottom",
-          "x": 283,
-          "y": 1469,
-          "height": 757,
-          "opacity": 0.78
-        },
-        {
-          "role": "brass-desk-lamp",
-          "depth": 0.84,
-          "anchor": "bottom",
-          "x": 174,
-          "y": 1690,
-          "height": 985,
-          "opacity": 0.92,
-          "shadow": true,
-          "shadowSkew": -67,
-          "shadowOpacity": 0.34
         }
       ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushTo": 1.44,
+        "pushTo": 1.45,
         "pushEndFrame": 115,
-        "focusPx": 0,
-        "fog": 0.54,
+        "glowX": 1424,
+        "glowY": 500,
+        "glowSize": 550,
+        "glowIntensity": 0.69,
+        "glowWarm": "#c9a94b",
+        "glowDepth": 0.73,
+        "focusPx": 12,
+        "fog": 0.55,
         "caption": [],
         "captionX": 84,
-        "captionY": 335,
+        "captionY": 1015,
         "captionFrame": 10,
         "captionEvery": 25,
-        "captionSize": 89,
+        "captionSize": 91,
         "captionRecedeAt": 96,
         "accent": "#c9a94b"
       }
@@ -101,39 +74,39 @@
       "durationInFrames": 76,
       "transition": {
         "kind": "rack",
-        "frames": 11
+        "frames": 7
       },
       "assets": {
         "wall": "assets/s02-kasparov-bg.png",
         "photo": "assets/s02-kasparov-photo.png"
       },
       "params": {
-        "frameWidth": 820,
-        "frameRatio": 1.15,
+        "frameWidth": 830,
+        "frameRatio": 1.14,
         "pushEndFrame": 27,
         "detachFrame": 49,
         "throughEndFrame": 71,
-        "weldRatio": 0.418,
-        "wallScaleEnd": 6.4,
+        "weldRatio": 0.404,
+        "wallScaleEnd": 6.5,
         "accent": "#c9a94b",
         "caption": [
           "Forty years",
           "of losing."
         ],
         "captionX": 84,
-        "captionY": 1360,
+        "captionY": 1430,
         "captionFrame": 75,
-        "captionEvery": 11,
-        "captionSize": 87,
+        "captionEvery": 10,
+        "captionSize": 90,
         "captionRecedeAt": 58,
         "motif": "tally",
         "motifX": 160,
         "motifY": 499,
-        "motifSize": 107,
-        "motifCount": 10,
+        "motifSize": 101,
+        "motifCount": 13,
         "motifFrame": 77,
         "motifColour": "#c9a94b",
-        "motifOpacity": 0.82
+        "motifOpacity": 0.99
       }
     },
     {
@@ -146,53 +119,20 @@
         "frames": 9
       },
       "assets": {
-        "ground": "assets/s02-kasparov-photo.png",
-        "?black-computer-cabinet": "assets/black-computer-cabinet.png",
-        "?wooden-chess-clock": "assets/wooden-chess-clock.png",
-        "?carved-chess-king-piece": "assets/carved-chess-king-piece.png"
+        "ground": "assets/s02-kasparov-photo.png"
       },
       "layers": [
         {
           "role": "ground",
-          "depth": 0.1,
+          "depth": 0.94,
           "anchor": "fill"
-        },
-        {
-          "role": "black-computer-cabinet",
-          "depth": 0.26,
-          "anchor": "bottom",
-          "x": 586,
-          "y": 1290,
-          "height": 545,
-          "opacity": 0.63
-        },
-        {
-          "role": "wooden-chess-clock",
-          "depth": 0.55,
-          "anchor": "bottom",
-          "x": 695,
-          "y": 1505,
-          "height": 748,
-          "opacity": 0.78
-        },
-        {
-          "role": "carved-chess-king-piece",
-          "depth": 0.84,
-          "anchor": "bottom",
-          "x": 793,
-          "y": 1668,
-          "height": 988,
-          "opacity": 0.92,
-          "shadow": true,
-          "shadowSkew": -61,
-          "shadowOpacity": 0.34
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.36,
-        "pushTo": 1.1,
+        "pushFrom": 1.39,
+        "pushTo": 1.04,
         "pushEndFrame": 48,
         "accent": "#c9a94b",
         "caption": [
@@ -200,10 +140,18 @@
           "beat Kasparov"
         ],
         "captionX": 84,
-        "captionY": 399,
+        "captionY": 350,
         "captionFrame": 4,
-        "captionEvery": 7,
-        "captionSize": 97
+        "captionEvery": 6,
+        "captionSize": 97,
+        "glowX": 1422,
+        "glowY": 506,
+        "glowSize": 448,
+        "glowIntensity": 0.59,
+        "glowWarm": "#c9a94b",
+        "glowDepth": 0.94,
+        "focusPx": 12,
+        "fog": 0.37
       }
     },
     {
@@ -212,65 +160,38 @@
       "voText": "In 2012 it learned to see,",
       "durationInFrames": 76,
       "transition": {
-        "kind": "flare",
-        "frames": 11
+        "kind": "rack",
+        "frames": 10
       },
       "assets": {
-        "ground": "assets/s03-seeing-bg.png",
-        "?cardboard-archive-box": "assets/cardboard-archive-box.png",
-        "?brass-magnifying-glass": "assets/brass-magnifying-glass.png",
-        "?framed-photographic-print": "assets/framed-photographic-print.png"
+        "ground": "assets/s03-seeing-bg.png"
       },
       "layers": [
         {
           "role": "ground",
-          "depth": 0.11,
+          "depth": 0.83,
           "anchor": "fill"
-        },
-        {
-          "role": "cardboard-archive-box",
-          "depth": 0.26,
-          "anchor": "bottom",
-          "x": 750,
-          "y": 1300,
-          "height": 514,
-          "opacity": 0.63
-        },
-        {
-          "role": "brass-magnifying-glass",
-          "depth": 0.55,
-          "anchor": "bottom",
-          "x": 240,
-          "y": 1499,
-          "height": 739,
-          "opacity": 0.78
-        },
-        {
-          "role": "framed-photographic-print",
-          "depth": 0.84,
-          "anchor": "bottom",
-          "x": 884,
-          "y": 1693,
-          "height": 989,
-          "opacity": 0.92,
-          "shadow": true,
-          "shadowSkew": -47,
-          "shadowOpacity": 0.34
         }
       ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushTo": 1.3,
+        "pushTo": 1.48,
         "pushEndFrame": 65,
-        "focusPx": 0,
-        "fog": 0.21,
+        "glowX": 1308,
+        "glowY": 563,
+        "glowSize": 333,
+        "glowIntensity": 0.51,
+        "glowWarm": "#c9a94b",
+        "glowDepth": 0.83,
+        "focusPx": 14,
+        "fog": 0.56,
         "caption": [],
         "captionX": 84,
-        "captionY": 556,
+        "captionY": 525,
         "captionFrame": 10,
-        "captionEvery": 24,
-        "captionSize": 87,
+        "captionEvery": 23,
+        "captionSize": 85,
         "captionRecedeAt": 55,
         "accent": "#c9a94b"
       },
@@ -290,57 +211,24 @@
       "voText": "and nobody outside the labs noticed.",
       "durationInFrames": 75,
       "transition": {
-        "kind": "slip",
+        "kind": "flare",
         "frames": 12
       },
       "assets": {
-        "ground": "assets/s03-seeing-bg.png",
-        "?cardboard-archive-box": "assets/cardboard-archive-box.png",
-        "?brass-magnifying-glass": "assets/brass-magnifying-glass.png",
-        "?framed-photographic-print": "assets/framed-photographic-print.png"
+        "ground": "assets/s03-seeing-bg.png"
       },
       "layers": [
         {
           "role": "ground",
-          "depth": 0.16,
-          "anchor": "fill"
-        },
-        {
-          "role": "cardboard-archive-box",
-          "depth": 0.26,
-          "anchor": "bottom",
-          "x": 600,
-          "y": 1301,
-          "height": 507,
-          "opacity": 0.63
-        },
-        {
-          "role": "brass-magnifying-glass",
-          "depth": 0.55,
-          "anchor": "bottom",
-          "x": 158,
-          "y": 1492,
-          "height": 739,
-          "opacity": 0.78
-        },
-        {
-          "role": "framed-photographic-print",
           "depth": 0.84,
-          "anchor": "bottom",
-          "x": 822,
-          "y": 1671,
-          "height": 962,
-          "opacity": 0.92,
-          "shadow": true,
-          "shadowSkew": -66,
-          "shadowOpacity": 0.34
+          "anchor": "fill"
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.47,
-        "pushTo": 1.1,
+        "pushFrom": 1.36,
+        "pushTo": 1.04,
         "pushEndFrame": 71,
         "accent": "#c9a94b",
         "caption": [
@@ -349,10 +237,18 @@
           "labs noticed"
         ],
         "captionX": 84,
-        "captionY": 702,
+        "captionY": 457,
         "captionFrame": 4,
-        "captionEvery": 7,
-        "captionSize": 88
+        "captionEvery": 6,
+        "captionSize": 91,
+        "glowX": 1478,
+        "glowY": 568,
+        "glowSize": 515,
+        "glowIntensity": 0.69,
+        "glowWarm": "#c9a94b",
+        "glowDepth": 0.84,
+        "focusPx": 9,
+        "fog": 0.21
       }
     },
     {
@@ -361,7 +257,7 @@
       "voText": "In 2016 it played a move no human would have played.",
       "durationInFrames": 124,
       "transition": {
-        "kind": "rack",
+        "kind": "slam",
         "frames": 8
       },
       "assets": {
@@ -369,23 +265,23 @@
         "photo": "assets/s04-move-photo.png"
       },
       "params": {
-        "frameWidth": 755,
-        "frameRatio": 1.01,
+        "frameWidth": 748,
+        "frameRatio": 1.22,
         "pushEndFrame": 45,
         "detachFrame": 67,
         "throughEndFrame": 89,
-        "weldRatio": 0.371,
-        "wallScaleEnd": 5.3,
+        "weldRatio": 0.392,
+        "wallScaleEnd": 6,
         "accent": "#c9a94b",
         "caption": [
           "Move",
           "thirty-seven."
         ],
         "captionX": 84,
-        "captionY": 1319,
+        "captionY": 1498,
         "captionFrame": 93,
         "captionEvery": 9,
-        "captionSize": 85,
+        "captionSize": 90,
         "captionRecedeAt": 106
       }
     },
@@ -395,75 +291,48 @@
       "voText": "Then it learned to talk,",
       "durationInFrames": 53,
       "transition": {
-        "kind": "flare",
-        "frames": 11
+        "kind": "rack",
+        "frames": 9
       },
       "assets": {
-        "ground": "assets/s05-talk-bg.png",
-        "?server-rack-cabinet": "assets/server-rack-cabinet.png",
-        "?coiled-network-cable": "assets/coiled-network-cable.png",
-        "?office-swivel-chair": "assets/office-swivel-chair.png"
+        "ground": "assets/s05-talk-bg.png"
       },
       "layers": [
         {
           "role": "ground",
-          "depth": 0.1,
+          "depth": 0.91,
           "anchor": "fill"
-        },
-        {
-          "role": "server-rack-cabinet",
-          "depth": 0.26,
-          "anchor": "bottom",
-          "x": 355,
-          "y": 1313,
-          "height": 531,
-          "opacity": 0.63
-        },
-        {
-          "role": "coiled-network-cable",
-          "depth": 0.55,
-          "anchor": "bottom",
-          "x": 809,
-          "y": 1493,
-          "height": 739,
-          "opacity": 0.78
-        },
-        {
-          "role": "office-swivel-chair",
-          "depth": 0.84,
-          "anchor": "bottom",
-          "x": 187,
-          "y": 1667,
-          "height": 929,
-          "opacity": 0.92,
-          "shadow": true,
-          "shadowSkew": -69,
-          "shadowOpacity": 0.34
         }
       ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushTo": 1.49,
+        "pushTo": 1.36,
         "pushEndFrame": 46,
-        "focusPx": 0,
+        "glowX": 1300,
+        "glowY": 574,
+        "glowSize": 355,
+        "glowIntensity": 0.48,
+        "glowWarm": "#c9a94b",
+        "glowDepth": 0.91,
+        "focusPx": 10,
         "fog": 0.31,
         "caption": [],
         "captionX": 84,
-        "captionY": 903,
+        "captionY": 563,
         "captionFrame": 10,
-        "captionEvery": 24,
-        "captionSize": 88,
+        "captionEvery": 17,
+        "captionSize": 87,
         "captionRecedeAt": 38,
         "accent": "#c9a94b",
         "motif": "rise",
-        "motifX": 171,
+        "motifX": 134,
         "motifY": 1574,
-        "motifSize": 65,
-        "motifCount": 6,
-        "motifFrame": 19,
+        "motifSize": 70,
+        "motifCount": 9,
+        "motifFrame": 24,
         "motifColour": "#c9a94b",
-        "motifOpacity": 0.99
+        "motifOpacity": 0.94
       }
     },
     {
@@ -473,56 +342,23 @@
       "durationInFrames": 63,
       "transition": {
         "kind": "slam",
-        "frames": 11
+        "frames": 10
       },
       "assets": {
-        "ground": "assets/s05-talk-bg.png",
-        "?server-rack-cabinet": "assets/server-rack-cabinet.png",
-        "?coiled-network-cable": "assets/coiled-network-cable.png",
-        "?office-swivel-chair": "assets/office-swivel-chair.png"
+        "ground": "assets/s05-talk-bg.png"
       },
       "layers": [
         {
           "role": "ground",
-          "depth": 0.07,
-          "anchor": "fill"
-        },
-        {
-          "role": "server-rack-cabinet",
-          "depth": 0.26,
-          "anchor": "bottom",
-          "x": 630,
-          "y": 1290,
-          "height": 532,
-          "opacity": 0.63
-        },
-        {
-          "role": "coiled-network-cable",
-          "depth": 0.55,
-          "anchor": "bottom",
-          "x": 714,
-          "y": 1492,
-          "height": 762,
-          "opacity": 0.78
-        },
-        {
-          "role": "office-swivel-chair",
           "depth": 0.84,
-          "anchor": "bottom",
-          "x": 820,
-          "y": 1691,
-          "height": 953,
-          "opacity": 0.92,
-          "shadow": true,
-          "shadowSkew": -53,
-          "shadowOpacity": 0.34
+          "anchor": "fill"
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
         "pushFrom": 1.42,
-        "pushTo": 1.03,
+        "pushTo": 1.09,
         "pushEndFrame": 59,
         "accent": "#c9a94b",
         "caption": [
@@ -531,10 +367,18 @@
           "people arrived"
         ],
         "captionX": 84,
-        "captionY": 1004,
+        "captionY": 629,
         "captionFrame": 4,
-        "captionEvery": 8,
-        "captionSize": 89
+        "captionEvery": 6,
+        "captionSize": 98,
+        "glowX": 1423,
+        "glowY": 255,
+        "glowSize": 551,
+        "glowIntensity": 0.62,
+        "glowWarm": "#c9a94b",
+        "glowDepth": 0.84,
+        "focusPx": 14,
+        "fog": 0.4
       }
     },
     {
@@ -543,75 +387,48 @@
       "voText": "Seventy years to arrive.",
       "durationInFrames": 55,
       "transition": {
-        "kind": "flare",
-        "frames": 11
+        "kind": "slip",
+        "frames": 9
       },
       "assets": {
-        "ground": "assets/s06-close-bg.png",
-        "?smartphone-held-upright": "assets/smartphone-held-upright.png",
-        "?cast-iron-street-lamp": "assets/cast-iron-street-lamp.png",
-        "?wooden-park-bench": "assets/wooden-park-bench.png"
+        "ground": "assets/s06-close-bg.png"
       },
       "layers": [
         {
           "role": "ground",
-          "depth": 0.11,
+          "depth": 0.77,
           "anchor": "fill"
-        },
-        {
-          "role": "smartphone-held-upright",
-          "depth": 0.26,
-          "anchor": "bottom",
-          "x": 748,
-          "y": 1299,
-          "height": 535,
-          "opacity": 0.63
-        },
-        {
-          "role": "cast-iron-street-lamp",
-          "depth": 0.55,
-          "anchor": "bottom",
-          "x": 261,
-          "y": 1483,
-          "height": 757,
-          "opacity": 0.78
-        },
-        {
-          "role": "wooden-park-bench",
-          "depth": 0.84,
-          "anchor": "bottom",
-          "x": 889,
-          "y": 1667,
-          "height": 967,
-          "opacity": 0.92,
-          "shadow": true,
-          "shadowSkew": -47,
-          "shadowOpacity": 0.34
         }
       ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushTo": 1.22,
+        "pushTo": 1.24,
         "pushEndFrame": 47,
-        "focusPx": 0,
-        "fog": 0.35,
+        "glowX": 1272,
+        "glowY": 267,
+        "glowSize": 313,
+        "glowIntensity": 0.42,
+        "glowWarm": "#c9a94b",
+        "glowDepth": 0.77,
+        "focusPx": 13,
+        "fog": 0.28,
         "caption": [],
         "captionX": 84,
-        "captionY": 528,
+        "captionY": 411,
         "captionFrame": 10,
-        "captionEvery": 19,
+        "captionEvery": 21,
         "captionSize": 92,
         "captionRecedeAt": 40,
         "accent": "#c9a94b",
         "motif": "tally",
-        "motifX": 150,
+        "motifX": 173,
         "motifY": 499,
-        "motifSize": 95,
-        "motifCount": 15,
-        "motifFrame": 29,
+        "motifSize": 93,
+        "motifCount": 12,
+        "motifFrame": 26,
         "motifColour": "#c9a94b",
-        "motifOpacity": 0.82
+        "motifOpacity": 0.81
       }
     },
     {
@@ -620,57 +437,24 @@
       "voText": "Two months to be everywhere.",
       "durationInFrames": 68,
       "transition": {
-        "kind": "rack",
-        "frames": 12
+        "kind": "flare",
+        "frames": 8
       },
       "assets": {
-        "ground": "assets/s06-close-bg.png",
-        "?smartphone-held-upright": "assets/smartphone-held-upright.png",
-        "?cast-iron-street-lamp": "assets/cast-iron-street-lamp.png",
-        "?wooden-park-bench": "assets/wooden-park-bench.png"
+        "ground": "assets/s06-close-bg.png"
       },
       "layers": [
         {
           "role": "ground",
-          "depth": 0.14,
+          "depth": 0.74,
           "anchor": "fill"
-        },
-        {
-          "role": "smartphone-held-upright",
-          "depth": 0.26,
-          "anchor": "bottom",
-          "x": 585,
-          "y": 1331,
-          "height": 512,
-          "opacity": 0.63
-        },
-        {
-          "role": "cast-iron-street-lamp",
-          "depth": 0.55,
-          "anchor": "bottom",
-          "x": 657,
-          "y": 1486,
-          "height": 744,
-          "opacity": 0.78
-        },
-        {
-          "role": "wooden-park-bench",
-          "depth": 0.84,
-          "anchor": "bottom",
-          "x": 750,
-          "y": 1680,
-          "height": 945,
-          "opacity": 0.92,
-          "shadow": true,
-          "shadowSkew": -49,
-          "shadowOpacity": 0.34
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.47,
-        "pushTo": 1.06,
+        "pushFrom": 1.43,
+        "pushTo": 1.09,
         "pushEndFrame": 64,
         "accent": "#c9a94b",
         "caption": [
@@ -679,10 +463,18 @@
           "everywhere"
         ],
         "captionX": 84,
-        "captionY": 434,
+        "captionY": 1004,
         "captionFrame": 4,
         "captionEvery": 8,
-        "captionSize": 90
+        "captionSize": 95,
+        "glowX": 1411,
+        "glowY": 412,
+        "glowSize": 369,
+        "glowIntensity": 0.5,
+        "glowWarm": "#c9a94b",
+        "glowDepth": 0.74,
+        "focusPx": 13,
+        "fog": 0.25
       }
     }
   ]

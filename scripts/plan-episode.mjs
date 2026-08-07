@@ -478,10 +478,94 @@ function captionSize(lines, rand) {
  * different corner, so its pieces must not sit where they sat in the shot
  * before — same stack, new framing, which is a cut rather than a jump.
  */
-function buildStack({line, ground, rand, groundDepth, spread = 0}) {
-  const pieces = (line.pieces ?? []).slice(0, 4);
+/**
+ * THE DRAWN LAYER — what makes a photograph into a shot.
+ *
+ * Law 3 of this repo says the premium look is not in the photograph, it is in
+ * what gets drawn ON it: the lamp is in the plate, its LIGHT never is. The
+ * engine has had that light all along — `Glow` stacks screen-blended radial
+ * gradients and scales them with the plate so they cannot slide off it, and it
+ * blooms into a bokeh disc when the lens defocuses.
+ *
+ * The planner asked for it ZERO times. Every shot this pipeline has ever made
+ * was a photograph, a slow push and some fog, and the continuation shots did
+ * not even get the fog — an empty params object, which is exactly what "bomboş
+ * video" means when somebody says it about a finished render.
+ *
+ * The light comes from ONE side for the whole episode. Real light in a room has
+ * a source; a reel whose key light jumps sides every cut has no source, it has
+ * a flicker. Height and reach still vary per shot, because the same lamp seen
+ * from two places is not the same shape on the frame.
+ *
+ * It travels with the plate it belongs to (`glowDepth` = the ground's depth).
+ * Pinned to the frame instead, it slides off the lamp as the camera pushes and
+ * turns into a lens flare — the exact failure law 3 was written about.
+ */
+function drawnLayer({rand, look, side, groundDepth, durationInFrames}) {
+  /**
+   * THE SOURCE IS OFF-CAMERA. Only its falloff is in the shot.
+   *
+   * `Glow` builds four gradients and the innermost is a white-hot BULB core.
+   * That core belongs on a bulb: law 3 is about a plate that contains a lamp
+   * and no light, and the core goes where the lamp is. Put it in open frame
+   * with no lamp under it and it is not light, it is a white ball hanging in
+   * the room — which is exactly what the first version rendered over a crowd
+   * and over the Deep Blue cabinet.
+   *
+   * So the centre sits far enough past the frame edge that the core never
+   * reaches it, and what enters is the wide warm spill. That is how a room is
+   * lit: you see the light, not the lamp.
+   */
+  const size = Math.round(between(rand, [300, 560]));
+  const off = Math.round(size * between(rand, [0.6, 1.0]));
+  return {
+    glowX: side > 0 ? WIDTH + off : -off,
+    glowY: Math.round(HEIGHT * between(rand, [0.06, 0.32])),
+    glowSize: size,
+    glowIntensity: round(between(rand, [0.4, 0.7]), 2),
+    glowWarm: look.accent,
+    glowDepth: groundDepth,
+    // THE LENS HUNTS. A vintage focus-hunt is the reference kit's signature
+    // camera move and the thing that makes a still plate feel photographed
+    // rather than pasted; it also gives the drawn light something to bloom
+    // for. It used to be a coin flip, so half the reel opened dead sharp.
+    focusPx: Math.round(between(rand, [7, 15])),
+    fog: round(between(rand, look.fog), 2),
+  };
+}
+
+function buildStack({line, ground, rand, groundDepth, spread = 0, cutouts = false}) {
+  /**
+   * PIECES ARE ONLY PLACED WHERE THERE IS A SUPPLY OF THEM.
+   *
+   * The brief still names them and the writer is still held to naming them —
+   * that authorship is right and costs nothing the day a supply exists. But
+   * placing one requires a CLEAN CUT-OUT, and this pipeline has no source of
+   * those. Commons is full of photographs of objects in rooms; keyed, a bench
+   * photographed in a park comes back as a rectangle, and a search for a
+   * magnifying glass comes back as a washing-machine door that keys perfectly
+   * and is still a washing-machine door. No threshold reaches that: it is a
+   * supply problem wearing a quality problem's clothes.
+   *
+   * The reference kit did not have this problem because it did not use a photo
+   * search — everything that had to be INVENTED was generated to spec and
+   * background-removed. Turn `"cutouts": true` on in the brief the day that
+   * generator is wired, and every piece below is placed again unchanged.
+   */
+  const pieces = cutouts ? (line.pieces ?? []).slice(0, 4) : [];
+
+  /**
+   * A BACKDROP WITH NOTHING IN FRONT OF IT TAKES THE PUSH ITSELF.
+   *
+   * The shallow depth is there so the pieces can out-run the wall — that
+   * difference IS the depth. With no pieces the same number means nothing
+   * moves at all: a shot that sits at 4% of a camera push is a still frame
+   * with grain on it.
+   */
+  const depth = pieces.length ? groundDepth : round(between(rand, [0.72, 0.95]), 2);
+
   const assets = {ground};
-  const layers = [{role: 'ground', depth: groundDepth, anchor: 'fill'}];
+  const layers = [{role: 'ground', depth, anchor: 'fill'}];
   const highlights = [];
 
   // WHICH SIDE THE STACK OPENS ON is the episode's, not the index's. Alternating
@@ -555,7 +639,7 @@ function buildStack({line, ground, rand, groundDepth, spread = 0}) {
     });
   }
 
-  return {assets, layers};
+  return {assets, layers, groundDepth: depth};
 }
 
 /**
@@ -572,7 +656,7 @@ function buildStack({line, ground, rand, groundDepth, spread = 0}) {
  * It always pushes from a DIFFERENT anchor than the shot before it. Cutting
  * from a plate to the same plate on the same move is not a cut, it is a jump.
  */
-function planContinuation({line, index, part, fragment, frames: measured, rand, look, previousTransition, plate}) {
+function planContinuation({line, index, part, fragment, frames: measured, rand, look, previousTransition, plate, side, cutouts}) {
   const assetBase = `s${String(index + 1).padStart(2, '0')}-${line.slug ?? 'shot'}`;
   const choices = look.transitions.filter((k) => k !== previousTransition);
   const corner = part % 4;
@@ -592,10 +676,11 @@ function planContinuation({line, index, part, fragment, frames: measured, rand, 
   // only layer: a backdrop that takes nearly the whole push leaves no room for
   // anything in front of it to move faster, and moving faster is the only thing
   // that puts a piece in front.
-  const {assets, layers} = buildStack({
+  const {assets, layers, groundDepth} = buildStack({
     line,
     ground: plate ?? `assets/${assetBase}-bg.png`,
     rand,
+    cutouts,
     groundDepth: round(between(rand, [0.06, 0.16]), 2),
     // Walk the pieces the opposite way to the anchor, so the corner we push
     // into is the corner they are NOT standing in.
@@ -627,11 +712,15 @@ function planContinuation({line, index, part, fragment, frames: measured, rand, 
       captionFrame: 4,
       captionEvery: 6 + Math.round(rand() * 4),
       captionSize: captionSize(lines, rand),
+      // A CONTINUATION IS A SHOT, NOT A SLIDE. Its params used to carry the
+      // push and the caption and nothing else — no light, no fog, no focus —
+      // so half the reel was a photograph moving slowly with grain on it.
+      ...drawnLayer({rand, look, side, groundDepth, durationInFrames: frames}),
     },
   };
 }
 
-function planScene({line, index, total, fragment, frames, rand, look, previousTransition, recentMotifs, recentTypes}) {
+function planScene({line, index, total, fragment, frames, rand, look, previousTransition, recentMotifs, recentTypes, side, cutouts}) {
   const beat = beatOf(line, index, total);
   let sceneType = SCENE_FOR[beat];
   // RHYTHM. Never the same template as the shot before it. The old rule waited
@@ -792,6 +881,7 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
       line,
       ground: backdrop,
       rand,
+      cutouts,
       groundDepth: round(between(rand, [0.04, 0.12]), 2),
     });
     scene.assets = stack.assets;
@@ -802,8 +892,7 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
       anchorY: 1700,
       pushTo: round(between(rand, [1.22, 1.5]), 2),
       pushEndFrame: Math.round(durationInFrames * 0.86),
-      focusPx: rand() > 0.5 ? Math.round(between(rand, [8, 16])) : 0,
-      fog: round(between(rand, look.fog), 2),
+      ...drawnLayer({rand, look, side, groundDepth: stack.groundDepth, durationInFrames}),
       caption: line.caption ?? [],
       captionX: 84,
       captionY: Math.round(between(rand, [320, 1100])),
@@ -892,6 +981,18 @@ async function main() {
     brightness: round(between(rand, mood.grade.brightness)),
   };
 
+  /**
+   * WHICH SIDE THE LIGHT COMES FROM — chosen once, for the whole episode.
+   *
+   * Real light in a room has a source. A reel whose key light jumps sides every
+   * cut has no source, it has a flicker; and picking it per scene is how a
+   * pipeline generates ten shots that cannot possibly be the same afternoon.
+   */
+  const side = rand() > 0.5 ? 1 : -1;
+  // Pieces are placed only where there is a supply of clean cut-outs. See
+  // buildStack: the brief still names them, nothing places them until this is on.
+  const cutouts = brief.cutouts === true;
+
   const planned = [];
   let previousTransition = null;
   brief.lines.forEach((line, index) => {
@@ -916,6 +1017,8 @@ async function main() {
       previousTransition,
       recentMotifs: planned.slice(-2).map((p) => p.motif),
       recentTypes: planned.slice(-2).map((p) => p.scene.sceneType),
+      side,
+      cutouts,
     });
     previousTransition = result.scene.transition?.kind ?? null;
     planned.push(result);
@@ -936,6 +1039,8 @@ async function main() {
         look,
         previousTransition,
         plate,
+        side,
+        cutouts,
       });
       previousTransition = scene.transition.kind;
       // The continuation stands the SAME pieces in the same room, so it carries

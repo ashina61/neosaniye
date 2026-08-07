@@ -95,6 +95,17 @@ out/<id>.mp4
    indirir, `focusHunt` çekimi kesmez buldurur ve çizilen ışığa defokusu
    söyler; yumuşak gradyan bulanıklıktan etkilenmediği için aksi halde
    yumuşamış karede keskin durur.
+
+   **VE PLANLAYICI BUNU İSTEMEK ZORUNDA.** Kanun motorda eksiksiz duruyordu ve
+   planlayıcı `glowSize`'ı SIFIR kez set ediyordu: bu hattın çıkardığı her
+   çekim bir fotoğraf, yavaş bir itiş ve biraz sisti; devam çekimleri sisi bile
+   almıyordu — boş bir `params`, ki bitmiş bir render için "bomboş video"
+   denince kastedilen tam olarak budur. Işık bütün bölüm boyunca TEK yandan
+   gelir: odadaki ışığın kaynağı vardır, her kesimde yan değiştiren bir ana
+   ışığın kaynağı değil titremesi vardır. Ve kaynak KADRAJIN DIŞINDADIR —
+   `Glow`'un en içteki katmanı beyaz sıcak ÇEKİRDEKTİR ve ampulün üstüne
+   gider; altında lamba olmayan açık karede o çekirdek ışık değil, odada asılı
+   duran beyaz bir toptur.
 4. **BİR ÇEKİM FOTOĞRAF DEĞİL, KATMAN YIĞINIDIR.** Referans kit bunu bitiriyor:
    açılış karesi gökyüzü + farklı hızda kayan iki KESİLMİŞ bulut + KESİLMİŞ bina
    + figür + çerçeve + kâğıt dokusu. Yedi parça, hiçbiri bütün bir resim değil.
@@ -115,6 +126,22 @@ out/<id>.mp4
    yığın vermezse brief REDDEDİLİR. Bir parça kesilip kendi derinliğine
    konacaktır, o yüzden zaten resim olan bir şey ("masadaki adamlar") parça
    olamaz: çoğul özne dikdörtgene, "şu kadar X" konfetiye keser.
+
+   **AMA PARÇA ANCAK TEDARİK VARSA KONUR.** `"cutouts": true` demeyen bir
+   brief'te hiçbir parça yerleştirilmez, ve varsayılan kapalıdır. Sebebi kalite
+   değil TEDARİK: temiz bir kesim gerekir ve bu hattın kaynağı yoktur.
+   Commons'ta nesnelerin kesimi değil, odaların içindeki nesnelerin fotoğrafı
+   vardır — parkta çekilmiş bir bank keylendiğinde dikdörtgen döner, "büyüteç"
+   araması ise kusursuz keylenmiş bir çamaşır makinesi kapağı döner. Hiçbir
+   eşik ikincisine yetişemez; o bir tedarik sorununun kalite sorunu kılığıdır.
+   Referans kit bu duvara çarpmadı çünkü fotoğraf araması kullanmadı: icat
+   edilmesi gereken her şey ısmarlama ÜRETİLDİ ve arka planı temizlendi.
+   Üretici bağlandığı gün tek kelime açılır, aşağıdaki her şey aynen çalışır.
+
+   Parça yokken zemin itişi KENDİ alır (0.72-0.95). Sığ derinlik parçalar
+   duvarı geçebilsin diyedir; parça yokken aynı sayı hiçbir şeyin kıpırdamaması
+   demektir — kamera itişinin %4'ünde duran bir çekim, üstünde grain olan bir
+   fotoğraftır.
 
    Parça plakası kareyi KAPLAYAMAZ (bkz. kanun 8) ve bunu motor garanti eder,
    config söz vermez: katman yalnız `height` ister, genişlik asset'in en-boyunu
