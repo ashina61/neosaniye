@@ -1,0 +1,45 @@
+{
+  "$comment": "MEASURED from vo.mp3, not estimated. The planner cuts every scene to these windows.",
+  "how": "exact",
+  "provider": "piper",
+  "audio": "audio/vo.wav",
+  "duration": 26.060770975056688,
+  "lines": [
+    {
+      "slug": "name",
+      "text": "In 1956, ten men spent a summer inventing a name for it.",
+      "start": 0,
+      "end": 4.496
+    },
+    {
+      "slug": "kasparov",
+      "text": "For forty years it mostly lost. Then it beat Kasparov.",
+      "start": 4.496,
+      "end": 8.917
+    },
+    {
+      "slug": "seeing",
+      "text": "In 2012 it learned to see, and nobody outside the labs noticed.",
+      "start": 8.917,
+      "end": 14.044
+    },
+    {
+      "slug": "move",
+      "text": "In 2016 it played a move no human would have played.",
+      "start": 14.044,
+      "end": 18.149
+    },
+    {
+      "slug": "talk",
+      "text": "Then it learned to talk, and a hundred million people arrived.",
+      "start": 18.149,
+      "end": 22.104
+    },
+    {
+      "slug": "close",
+      "text": "Seventy years to arrive. Two months to be everywhere.",
+      "start": 22.104,
+      "end": 26.061
+    }
+  ]
+}
