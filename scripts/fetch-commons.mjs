@@ -39,7 +39,7 @@ import {mkdir, readFile, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import sharp from 'sharp';
-import {islandCount, keyBackdrop, opaqueFraction} from './generate-assets.mjs';
+import {hasAlpha, islandCount, keyBackdrop, opaqueFraction} from './generate-assets.mjs';
 import {ROOT, episodeDir, exists, parseArgs} from './lib/episode.mjs';
 import {clearPlaceholders} from './lib/placeholders.mjs';
 
@@ -238,7 +238,16 @@ async function main() {
         .resize(width, height, piece ? {fit: 'inside'} : {fit: 'cover', position: 'attention'})
         .png()
         .toBuffer();
-      const finished = piece ? await keyBackdrop(fitted) : fitted;
+      /**
+       * A FILE THAT IS ALREADY CUT OUT IS NOT KEYED AGAIN.
+       *
+       * Commons carries a lot of transparent PNGs, and they are the best piece
+       * this pipeline can get — somebody already did the cutting, by hand, and
+       * did it better than any threshold will. Running the keyer over one can
+       * only take something away: it works inward from the frame edges on
+       * COLOUR, and a soft alpha edge is exactly what it cannot see.
+       */
+      const finished = piece && !(await hasAlpha(fitted)) ? await keyBackdrop(fitted) : fitted;
 
       if (piece) {
         // The same two measurements the generator is held to. A fetched picture

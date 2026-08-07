@@ -906,7 +906,10 @@ async function main() {
           // camel keyed out beats a drawn one every time; when the key comes
           // back a rectangle or a handful of confetti the prompt still gets its
           // turn.
-          commons: [`${piece} white background`, `${piece} isolated`, piece],
+          // TRANSPARENT FIRST. A PNG somebody already cut out by hand beats any
+          // threshold this repo will ever write; a plain sweep is second best,
+          // because the keyer can handle that; the bare name is the last resort.
+          commons: [`${piece} transparent png`, `${piece} white background`, `${piece} isolated`, piece],
           // Singular, because "a row of X" makes the model draw a SCENE, and a
           // scene has no backdrop to key away.
           prompt: `one single ${piece}, whole object in frame, dark silhouette, on a plain white background`,
