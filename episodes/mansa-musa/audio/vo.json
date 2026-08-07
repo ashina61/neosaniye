@@ -1,0 +1,45 @@
+{
+  "$comment": "MEASURED from vo.mp3, not estimated. The planner cuts every scene to these windows.",
+  "how": "exact",
+  "provider": "piper",
+  "audio": "audio/vo.wav",
+  "duration": 27.038,
+  "lines": [
+    {
+      "slug": "atlas",
+      "text": "This is the only picture anyone drew of him, and they never met.",
+      "start": 0,
+      "end": 3.448
+    },
+    {
+      "slug": "route",
+      "text": "In thirteen twenty-four the king of Mali set out for Mecca with his treasury.",
+      "start": 3.448,
+      "end": 7.75
+    },
+    {
+      "slug": "caravan",
+      "text": "The caravan was so long that accounts still argue about the number.",
+      "start": 7.75,
+      "end": 11.956
+    },
+    {
+      "slug": "mecca",
+      "text": "He reached the holy city with an empire of gold still on his camels.",
+      "start": 11.956,
+      "end": 16.178
+    },
+    {
+      "slug": "cairo",
+      "text": "In Cairo he did not sell it. He gave it away, and the price of gold collapsed.",
+      "start": 16.178,
+      "end": 21.64
+    },
+    {
+      "slug": "close",
+      "text": "It had not recovered twelve years later. The most expensive journey in history.",
+      "start": 21.64,
+      "end": 27.038
+    }
+  ]
+}

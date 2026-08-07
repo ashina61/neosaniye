@@ -1,6 +1,7 @@
 {
   "id": "mansa-musa",
   "title": "Mansa Musa — the pilgrimage that broke a currency",
+  "audio": "audio/vo.wav",
   "fps": 30,
   "width": 1080,
   "height": 1920,
@@ -32,7 +33,7 @@
       "id": "s01-atlas",
       "sceneType": "portal-zoom-reveal",
       "voText": "This is the only picture anyone drew of him,",
-      "durationInFrames": 108,
+      "durationInFrames": 71,
       "gradeOverride": {
         "saturate": 0.98,
         "sepia": 0.3,
@@ -45,9 +46,9 @@
       "params": {
         "frameWidth": 786,
         "frameRatio": 1.06,
-        "pushEndFrame": 39,
-        "detachFrame": 61,
-        "throughEndFrame": 83,
+        "pushEndFrame": 26,
+        "detachFrame": 48,
+        "throughEndFrame": 70,
         "weldRatio": 0.369,
         "wallScaleEnd": 6.7,
         "accent": "#f2b53a",
@@ -56,7 +57,7 @@
         "motifY": 768,
         "motifSize": 355,
         "motifCount": 20,
-        "motifFrame": 89,
+        "motifFrame": 76,
         "motifColour": "#f2b53a",
         "motifOpacity": 0.89
       }
@@ -65,7 +66,7 @@
       "id": "s01-atlas-b",
       "sceneType": "composite",
       "voText": "and they never met.",
-      "durationInFrames": 52,
+      "durationInFrames": 32,
       "transition": {
         "kind": "flare",
         "frames": 9
@@ -85,7 +86,7 @@
         "anchorY": 576,
         "pushFrom": 1.48,
         "pushTo": 1.06,
-        "pushEndFrame": 49,
+        "pushEndFrame": 30,
         "accent": "#f2b53a",
         "caption": [
           "and they",
@@ -102,7 +103,7 @@
       "id": "s02-route",
       "sceneType": "composite",
       "voText": "In thirteen twenty-four the king of Mali set out for Mecca with his treasury.",
-      "durationInFrames": 118,
+      "durationInFrames": 130,
       "transition": {
         "kind": "slip",
         "frames": 10
@@ -121,7 +122,7 @@
         "anchorX": 540,
         "anchorY": 1700,
         "pushTo": 1.34,
-        "pushEndFrame": 101,
+        "pushEndFrame": 112,
         "focusPx": 12,
         "fog": 0.16,
         "caption": [],
@@ -130,7 +131,7 @@
         "captionFrame": 10,
         "captionEvery": 20,
         "captionSize": 94,
-        "captionRecedeAt": 85,
+        "captionRecedeAt": 94,
         "accent": "#f2b53a",
         "motif": "route",
         "motifStops": [
@@ -148,7 +149,7 @@
       "id": "s03-caravan",
       "sceneType": "composite",
       "voText": "The caravan was so long that accounts still argue about the number.",
-      "durationInFrames": 118,
+      "durationInFrames": 126,
       "transition": {
         "kind": "flare",
         "frames": 8
@@ -200,7 +201,7 @@
         "anchorX": 540,
         "anchorY": 1700,
         "pushTo": 1.22,
-        "pushEndFrame": 101,
+        "pushEndFrame": 108,
         "focusPx": 0,
         "fog": 0.07,
         "caption": [],
@@ -209,14 +210,14 @@
         "captionFrame": 10,
         "captionEvery": 24,
         "captionSize": 84,
-        "captionRecedeAt": 85,
+        "captionRecedeAt": 91,
         "accent": "#f2b53a"
       },
       "onScreenText": [
         {
           "text": "ACCOUNTS DIFFER",
-          "atFrame": 71,
-          "durationInFrames": 38,
+          "atFrame": 76,
+          "durationInFrames": 40,
           "style": "typed",
           "position": "bottom"
         }
@@ -226,7 +227,7 @@
       "id": "s04-mecca",
       "sceneType": "portal-zoom-reveal",
       "voText": "He reached the holy city with an empire of gold still on his camels.",
-      "durationInFrames": 118,
+      "durationInFrames": 126,
       "gradeOverride": {
         "saturate": 0.96,
         "sepia": 0.34,
@@ -243,9 +244,9 @@
       "params": {
         "frameWidth": 819,
         "frameRatio": 0.99,
-        "pushEndFrame": 42,
-        "detachFrame": 64,
-        "throughEndFrame": 86,
+        "pushEndFrame": 45,
+        "detachFrame": 67,
+        "throughEndFrame": 89,
         "weldRatio": 0.393,
         "wallScaleEnd": 6.9,
         "accent": "#f2b53a",
@@ -254,15 +255,15 @@
         "motifY": 1651,
         "motifSize": 41,
         "motifCount": 25,
-        "motifFrame": 92,
+        "motifFrame": 95,
         "motifColour": "#f2b53a",
         "motifOpacity": 0.93
       },
       "onScreenText": [
         {
           "text": "MECCA · 1324",
-          "atFrame": 71,
-          "durationInFrames": 38,
+          "atFrame": 76,
+          "durationInFrames": 40,
           "style": "typed",
           "position": "bottom"
         }
@@ -272,7 +273,7 @@
       "id": "s05-cairo",
       "sceneType": "composite",
       "voText": "In Cairo he did not sell it.",
-      "durationInFrames": 86,
+      "durationInFrames": 68,
       "gradeOverride": {
         "saturate": 0.96,
         "sepia": 0.34,
@@ -296,7 +297,7 @@
         "anchorX": 540,
         "anchorY": 1700,
         "pushTo": 1.24,
-        "pushEndFrame": 74,
+        "pushEndFrame": 58,
         "focusPx": 0,
         "fog": 0.02,
         "caption": [],
@@ -305,7 +306,7 @@
         "captionFrame": 10,
         "captionEvery": 24,
         "captionSize": 92,
-        "captionRecedeAt": 62,
+        "captionRecedeAt": 49,
         "accent": "#f2b53a",
         "motif": "coins",
         "motifX": 547,
@@ -321,7 +322,7 @@
       "id": "s05-cairo-b",
       "sceneType": "composite",
       "voText": "He gave it away,",
-      "durationInFrames": 52,
+      "durationInFrames": 39,
       "transition": {
         "kind": "rack",
         "frames": 8
@@ -341,7 +342,7 @@
         "anchorY": 576,
         "pushFrom": 1.46,
         "pushTo": 1.02,
-        "pushEndFrame": 49,
+        "pushEndFrame": 37,
         "accent": "#f2b53a",
         "caption": [
           "He gave",
@@ -358,7 +359,7 @@
       "id": "s05-cairo-c",
       "sceneType": "composite",
       "voText": "and the price of gold collapsed.",
-      "durationInFrames": 75,
+      "durationInFrames": 57,
       "transition": {
         "kind": "flare",
         "frames": 7
@@ -378,7 +379,7 @@
         "anchorY": 1498,
         "pushFrom": 1,
         "pushTo": 1.44,
-        "pushEndFrame": 71,
+        "pushEndFrame": 54,
         "accent": "#f2b53a",
         "caption": [
           "and the",
@@ -396,7 +397,7 @@
       "id": "s06-close",
       "sceneType": "title-slate",
       "voText": "It had not recovered twelve years later.",
-      "durationInFrames": 86,
+      "durationInFrames": 87,
       "gradeOverride": {
         "saturate": 0.5,
         "contrast": 1.16,
@@ -433,7 +434,7 @@
           "FIFTY",
           "TWENTY"
         ],
-        "spinFrames": 34
+        "spinFrames": 35
       }
     },
     {
