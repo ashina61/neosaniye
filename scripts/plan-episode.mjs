@@ -32,7 +32,7 @@
  *
  *   node scripts/plan-episode.mjs --episode=mansa-musa
  */
-import {readFile, writeFile} from 'node:fs/promises';
+import {readFile, rm, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {episodeDir, parseArgs} from './lib/episode.mjs';
@@ -786,6 +786,50 @@ function planProps({line, rand, look, side, durationInFrames, recentProps, beat}
   return props;
 }
 
+/**
+ * A DIRECTED STACK — the photographic plates, placed by hand.
+ *
+ * `planProps` let a director place the DRAWN objects and the die kept placing
+ * the photographed ones, which is half a law. A kit of real cut-outs makes that
+ * gap obvious immediately: a figure has to stand at a particular point with his
+ * feet on a particular pavement, and no rule derives that from a sentence.
+ *
+ * Fractions in, pixels out, same as everywhere else. `height` is a fraction of
+ * the FRAME HEIGHT because a standing figure is measured by how tall he is;
+ * props take `size` as a fraction of the width because a sheet of paper is
+ * measured across. Two names, so the two can never be confused for each other.
+ */
+function directedStack({shot, rand}) {
+  const assets = {};
+  const layers = [];
+  for (const [i, layer] of (shot.layers ?? []).entries()) {
+    const role = String(layer.role ?? `plate${i}`).replace(/[^a-z0-9]+/gi, '-').toLowerCase();
+    // The file is named by the EPISODE, which is where file names belong. The
+    // engine still never sees it: the template reads a role.
+    assets[layer.optional ? `?${role}` : role] = `assets/${layer.asset}`;
+    if (layer.fill !== false && !layer.height) {
+      layers.push({role, depth: round(Number(layer.depth) ?? 0.2, 2), anchor: 'fill',
+        ...(layer.drift ? {drift: Math.round(Number(layer.drift))} : {}),
+        ...(layer.alive ? {alive: true} : {})});
+      continue;
+    }
+    layers.push({
+      role,
+      depth: round(Number(layer.depth) ?? 1, 2),
+      anchor: 'bottom',
+      height: Math.round(HEIGHT * Number(layer.height)),
+      x: Math.round(WIDTH * (Number(layer.x) ?? 0.5)),
+      y: Math.round(HEIGHT * (Number(layer.y) ?? 0.94)),
+      ...(layer.alive ? {alive: true} : {}),
+      ...(layer.shadow
+        ? {shadow: true, shadowSkew: Number(layer.shadowSkew) || -53, shadowOpacity: Number(layer.shadowOpacity) || 0.55}
+        : {}),
+      ...(layer.opacity !== undefined ? {opacity: round(Number(layer.opacity), 2)} : {}),
+    });
+  }
+  return {assets, layers, groundDepth: layers[0]?.depth ?? 0.2};
+}
+
 function buildStack({line, ground, rand, groundDepth, spread = 0, cutouts = false}) {
   /**
    * PIECES ARE ONLY PLACED WHERE THERE IS A SUPPLY OF THEM.
@@ -928,7 +972,13 @@ function planContinuation({line, index, part, fragment, frames: measured, rand, 
   // only layer: a backdrop that takes nearly the whole push leaves no room for
   // anything in front of it to move faster, and moving faster is the only thing
   // that puts a piece in front.
-  const {assets, layers, groundDepth} = buildStack({
+  // THE SAME DIRECTED ROOM. A continuation is another angle on the shot before
+  // it, so when that shot was placed by hand this one stands in the same set —
+  // falling back to a derived backdrop here asks for a file the episode never
+  // had and loses every plate the director put in the frame.
+  const {assets, layers, groundDepth} = line?.shot?.layers?.length
+    ? directedStack({shot: line.shot, rand})
+    : buildStack({
     line,
     ground: plate ?? `assets/${assetBase}-bg.png`,
     rand,
@@ -958,10 +1008,25 @@ function planContinuation({line, index, part, fragment, frames: measured, rand, 
       from: 0,
     })),
     params: {
-      // The anchor walks the corners, so consecutive shots on one plate never
-      // move into the same part of it.
-      anchorX: Math.round(WIDTH * (corner === 0 || corner === 3 ? 0.26 : 0.74)),
-      anchorY: Math.round(HEIGHT * (corner < 2 ? 0.3 : 0.78)),
+      /**
+       * THE GROUND POINT SURVIVES THE CUT.
+       *
+       * Walking the anchor round the corners is right for a plate: it stops two
+       * shots of one photograph being the same framing twice. It is WRONG for a
+       * directed set, where the anchor is a place on the floor that a figure is
+       * standing on — move it and he scales about somebody else's feet. A man
+       * outside a dying storefront came back standing on its ROOF in the
+       * continuation, and only in the continuation.
+       */
+      ...(Array.isArray(line?.shot?.anchor)
+        ? {
+            anchorX: Math.round(WIDTH * line.shot.anchor[0]),
+            anchorY: Math.round(HEIGHT * line.shot.anchor[1]),
+          }
+        : {
+            anchorX: Math.round(WIDTH * (corner === 0 || corner === 3 ? 0.26 : 0.74)),
+            anchorY: Math.round(HEIGHT * (corner < 2 ? 0.3 : 0.78)),
+          }),
       // A wider throw than the old 1.14→1.3, which was too small to register as
       // a new framing at all — four shots of one gate, all the same size.
       pushFrom: pullBack ? round(between(rand, [1.34, 1.5]), 2) : 1,
@@ -1000,7 +1065,12 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
   // and places to join up both need a composite; swapping one out for a title
   // card in the name of rhythm drops the artwork the line was written around,
   // and the recipe for it is then drawn for nothing.
-  const contentBound = Boolean(line.pieces?.length || line.stops?.length >= 2);
+  // A DIRECTED TEMPLATE IS FINAL. The rhythm rule below exists to stop a
+  // DERIVED rotation repeating itself; turning a director's choice into its
+  // opposite for rhythm throws away the shot that was designed and silently
+  // substitutes one that was not — three consecutive scenes of a hand-built
+  // reel came out as title cards that way.
+  const contentBound = Boolean(line.pieces?.length || line.stops?.length >= 2 || line.shot?.template);
   if (!contentBound && recentTypes.length && recentTypes[recentTypes.length - 1] === sceneType) {
     sceneType = sceneType === 'composite' ? 'title-slate' : 'composite';
   }
@@ -1115,7 +1185,12 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
       captionRecedeAt: Math.round(durationInFrames * 0.45),
     };
   } else if (sceneType === 'portal-zoom-reveal') {
-    scene.assets = {wall: backdrop, photo: `assets/${id}-photo.png`};
+    // A DIRECTED PORTAL NAMES ITS OWN THREE PLATES. The wall it hangs on, the
+    // photograph we fly into and the frame that flies past are three different
+    // files with three different jobs, and deriving two of them from one
+    // backdrop is how a flight into a picture became a zoom on a wall.
+    const directedPortal = line?.shot?.layers?.length ? directedStack({shot: line.shot, rand}) : null;
+    scene.assets = directedPortal ? directedPortal.assets : {wall: backdrop, photo: `assets/${id}-photo.png`};
     const push = Math.round(durationInFrames * 0.36);
     scene.params = {
       frameWidth: 700 + Math.round(rand() * 140),
@@ -1146,13 +1221,17 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
     // that fails to draw costs this shot some depth and never costs the reel;
     // they are not optional at WRITING time, which is where the brief is
     // refused for handing over six photographs.
-    const stack = buildStack({
-      line,
-      ground: backdrop,
-      rand,
-      cutouts,
-      groundDepth: round(between(rand, [0.04, 0.12]), 2),
-    });
+    // A DIRECTED SHOT WINS. Same law as the props: what somebody thought about
+    // beats what a rule derived, and the rule is only the fallback.
+    const stack = line?.shot?.layers?.length
+      ? directedStack({shot: line.shot, rand})
+      : buildStack({
+          line,
+          ground: backdrop,
+          rand,
+          cutouts,
+          groundDepth: round(between(rand, [0.04, 0.12]), 2),
+        });
     scene.assets = stack.assets;
     scene.layers = stack.layers;
     // THE OTHER FOURTEEN ASSETS, DRAWN. See planProps: the reference reel is
@@ -1160,9 +1239,12 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
     // backdrops and nothing else.
     scene.props = planProps({line, rand, look, side, durationInFrames, recentProps, beat});
 
+    const anchor = line?.shot?.anchor;
     scene.params = {
-      anchorX: Math.round(WIDTH * 0.5),
-      anchorY: 1700,
+      // THE GROUND POINT IS THE DIRECTOR'S. Every plate scales about it, so it
+      // is the man's feet or it is nothing — a derived centre puts him on air.
+      anchorX: Math.round(WIDTH * (Array.isArray(anchor) ? anchor[0] : 0.5)),
+      anchorY: Math.round(Array.isArray(anchor) ? HEIGHT * anchor[1] : 1700),
       // THE CAMERA IS THE DIRECTOR'S. A push and a pull-back are two different
       // shots, and which one this line wants is not a thing a die should decide.
       pushFrom: round(Number(line?.shot?.camera?.from) || 1, 2),
@@ -1377,18 +1459,31 @@ async function main() {
   // RECIPES. Backdrops and artefacts are photographs; pieces are cut-outs and
   // therefore optional in the config above.
   const assets = {};
+  /**
+   * ONLY WHAT A SCENE ACTUALLY NAMES.
+   *
+   * A recipe is an instruction for MAKING a missing file. An episode whose
+   * plates were supplied — a real kit, handed over — names those files directly
+   * and never touches the derived `sNN-bg.png` the beat rules would have
+   * invented, so writing a recipe for one is an instruction to draw a picture
+   * no frame contains. It also fails the repo's own guard, which is right: a
+   * recipe nobody uses costs a draw on every run.
+   */
+  const named = new Set(
+    planned.flatMap(({scene}) => Object.values(scene.assets ?? {}).map((f) => path.basename(String(f)))),
+  );
   for (const {scene, backdropPrompt, photoPrompt, backdropCommons, photoCommons, pieces} of planned) {
     // `commons` names a REAL thing and is tried first; `prompt` is what draws it
     // when nothing free and large enough exists. A named artefact is always
     // better fetched than invented.
-    if (backdropPrompt || backdropCommons) {
+    if ((backdropPrompt || backdropCommons) && named.has(`${scene.id}-bg.png`)) {
       assets[`${scene.id}-bg.png`] = {
         kind: 'backdrop',
         ...(backdropCommons ? {commons: backdropCommons} : {}),
         ...(backdropPrompt ? {prompt: backdropPrompt} : {}),
       };
     }
-    if (photoPrompt || photoCommons) {
+    if ((photoPrompt || photoCommons) && named.has(`${scene.id}-photo.png`)) {
       assets[`${scene.id}-photo.png`] = {
         kind: 'photo',
         ...(photoCommons ? {commons: photoCommons} : {}),
@@ -1445,7 +1540,20 @@ async function main() {
   };
 
   await writeFile(path.join(dir, 'scene-config.json'), `${JSON.stringify(config, null, 2)}\n`, 'utf8');
-  await writeFile(path.join(dir, 'assets.json'), `${JSON.stringify(recipes, null, 2)}\n`, 'utf8');
+  /**
+   * NO RECIPES, NO RECIPE FILE.
+   *
+   * An episode built from artwork that was HANDED OVER has nothing to draw, and
+   * an empty `assets.json` is not the same statement as no `assets.json` — the
+   * first says "draw these zero things", which the repo's own guard reads as a
+   * config naming files the generator will never make. The second says the
+   * artwork is supplied, which is the truth.
+   */
+  if (Object.keys(assets).length) {
+    await writeFile(path.join(dir, 'assets.json'), `${JSON.stringify(recipes, null, 2)}\n`, 'utf8');
+  } else {
+    await rm(path.join(dir, 'assets.json'), {force: true});
+  }
 
   const frames = config.scenes.reduce((total, s) => total + s.durationInFrames, 0);
   console.log(`✓ planned ${episodeId}: ${config.scenes.length} scenes, ${frames} frames (${(frames / FPS).toFixed(1)}s)`);
