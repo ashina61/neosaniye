@@ -103,3 +103,45 @@ test('windows cover the file end to end with no gaps', () => {
     assert.equal(windows[i].start, windows[i - 1].end, 'a window must start where the last one ended');
   }
 });
+
+/**
+ * THE OTHER PATH: clips we joined ourselves.
+ *
+ * Measuring recovers where a narrator paused. But when the pauses are OURS —
+ * per-line synthesis, joined here — the boundaries are arithmetic, and knowing
+ * beats recovering. Both paths have to agree on the one rule that matters: the
+ * silence belongs to the line that follows it.
+ */
+import {joinWithGaps, readWav, writeWav} from '../scripts/lib/wav.mjs';
+
+const clip = (seconds, rate = 22050) => {
+  const samples = new Int16Array(Math.round(seconds * rate));
+  for (let i = 0; i < samples.length; i += 1) samples[i] = Math.round(Math.sin(i / 40) * 9000);
+  return samples;
+};
+
+test('joined clips put every boundary at the end of a clip', () => {
+  const rate = 22050;
+  const {boundaries, duration} = joinWithGaps([clip(2), clip(1.5), clip(3)], rate, 0.5);
+
+  assert.equal(boundaries.length, 2, 'three clips, two seams');
+  assert.equal(boundaries[0], 2, 'the first seam is where the first clip stopped');
+  assert.equal(boundaries[1], 4, '2 + 0.5 gap + 1.5');
+  assert.equal(duration, 7.5, '2 + 1.5 + 3 + two 0.5 gaps');
+});
+
+test('one clip has no seams and no gap', () => {
+  const {boundaries, duration} = joinWithGaps([clip(4)], 22050, 0.5);
+  assert.deepEqual(boundaries, []);
+  assert.equal(duration, 4);
+});
+
+test('a wav survives a round trip, header chunks and all', () => {
+  // Reading back at a fixed 44-byte offset works until an encoder writes a
+  // LIST chunk, and then metadata is read as audio — every sample shifted, and
+  // downstream of that, every cut in the reel.
+  const samples = clip(0.25);
+  const back = readWav(writeWav(samples, 22050));
+  assert.equal(back.length, samples.length);
+  for (let i = 0; i < samples.length; i += 977) assert.equal(back[i], samples[i], `sample ${i}`);
+});

@@ -848,7 +848,7 @@ async function main() {
     title: brief.title,
     // The narration rides the whole reel, so it belongs to the episode, not to
     // any one scene. Absent until the voice script has run.
-    ...(voice ? {audio: 'audio/vo.mp3'} : {}),
+    ...(voice ? {audio: voice.audio ?? 'audio/vo.mp3'} : {}),
     fps: FPS,
     width: WIDTH,
     height: HEIGHT,
@@ -942,7 +942,7 @@ async function main() {
   console.log(`  assets ${Object.keys(assets).length} recipes`);
   console.log(
     voice
-      ? `  clock  CUT TO audio/vo.mp3 — ${voice.duration.toFixed(1)}s of measured narration`
+      ? `  clock  CUT TO ${voice.audio ?? 'audio/vo.mp3'} — ${voice.duration.toFixed(1)}s, ${voice.how ?? 'measured'}`
       : `  clock  ESTIMATED from word counts — no voiceover yet. Run: npm run voice -- --episode=${episodeId}`,
   );
 }

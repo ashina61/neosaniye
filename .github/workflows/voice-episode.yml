@@ -27,9 +27,10 @@ on:
       provider:
         description: 'Who reads it'
         required: false
-        default: elevenlabs
+        default: piper
         type: choice
         options:
+          - piper
           - elevenlabs
           - openai
           - measure-only
@@ -57,6 +58,27 @@ jobs:
 
       - run: npm ci
 
+      # PIPER — free, offline, no account, no key, no bill. A binary and a small
+      # ONNX voice, both fetched here, so the default path needs nothing
+      # configured at all. The other providers stay for when a better voice is
+      # worth an API key.
+      - name: Fetch piper
+        if: inputs.provider == 'piper'
+        run: |
+          set -euo pipefail
+          mkdir -p .piper && cd .piper
+          curl -sSL -o piper.tar.gz \
+            https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_linux_x86_64.tar.gz
+          tar xzf piper.tar.gz
+          VOICE="${{ inputs.voice || vars.PIPER_VOICE || 'en_US-lessac-medium' }}"
+          LANG_DIR=$(echo "$VOICE" | cut -d- -f1)
+          NAME=$(echo "$VOICE" | cut -d- -f2)
+          QUALITY=$(echo "$VOICE" | cut -d- -f3)
+          BASE="https://huggingface.co/rhasspy/piper-voices/resolve/main/en/${LANG_DIR}/${NAME}/${QUALITY}/${VOICE}"
+          curl -sSL -o voice.onnx "${BASE}.onnx"
+          curl -sSL -o voice.onnx.json "${BASE}.onnx.json"
+          ls -la
+
       # SPEAKING BELONGS TO A PROVIDER; MEASURING DOES NOT. ElevenLabs returns a
       # character alignment and that is used when it is there — but nothing
       # depends on it, because the pauses are in the audio either way.
@@ -65,7 +87,9 @@ jobs:
       # episode: a voiceover recorded on a phone, or one somebody sent over.
       - name: Speak and measure
         env:
-          VOICE_PROVIDER: ${{ inputs.provider == 'measure-only' && 'elevenlabs' || inputs.provider }}
+          VOICE_PROVIDER: ${{ inputs.provider == 'measure-only' && 'piper' || inputs.provider }}
+          PIPER_BIN: ${{ github.workspace }}/.piper/piper/piper
+          PIPER_VOICE: ${{ github.workspace }}/.piper/voice.onnx
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
           ELEVENLABS_VOICE_ID: ${{ inputs.voice || vars.ELEVENLABS_VOICE_ID }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

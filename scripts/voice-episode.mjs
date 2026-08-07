@@ -43,6 +43,7 @@ import {createRequire} from 'node:module';
 import {pathToFileURL} from 'node:url';
 import {ROOT, episodeDir, exists, parseArgs} from './lib/episode.mjs';
 import {findBoundaries, loudness, windowsFromBoundaries} from './lib/measure.mjs';
+import {joinWithGaps, writeWav} from './lib/wav.mjs';
 
 const API = process.env.ELEVENLABS_BASE_URL || 'https://api.elevenlabs.io/v1';
 /** "Clear narrator for documentary" — overridable, because a voice is a look. */
@@ -191,10 +192,68 @@ async function speakOpenAI(text) {
   return {audio: Buffer.from(await response.arrayBuffer()), alignment: null};
 }
 
-async function speak(text) {
+/**
+ * PIPER — free, offline, no account, no key, no bill.
+ *
+ * The answer to "the paid one errors and the other one costs money". It is a
+ * small ONNX model and a binary; it runs on the Actions runner with nothing
+ * configured, and the reel stops depending on anybody's service staying up.
+ *
+ * And it is the one provider that gets EXACT boundaries rather than measured
+ * ones, because it is read a line at a time and WE join the clips. The rule
+ * against per-line synthesis exists for a real reason — six clips with six
+ * different amounts of air at their edges, when the thing being measured is the
+ * gap between them. That reason disappears when the gap is ours: we put the
+ * silence there, so we know to the sample where it starts.
+ */
+async function speakPiper(lines) {
+  const binary = process.env.PIPER_BIN;
+  const model = process.env.PIPER_VOICE;
+  if (!binary || !model) {
+    throw new Error(
+      'PIPER_BIN and PIPER_VOICE are not set — piper needs a binary and a voice model.\n' +
+        '   The "Voice the episode" workflow downloads both when provider is "piper"; nothing to configure.\n' +
+        '   Locally: grab piper_linux_x86_64.tar.gz from rhasspy/piper releases and a voice from\n' +
+        '   huggingface.co/rhasspy/piper-voices, then point these two at them.',
+    );
+  }
+
+  // The model's own config says what rate it speaks at. Guessing 22050 works
+  // until someone picks a voice that does not, and then everything is pitched.
+  const config = JSON.parse(await readFile(`${model}.json`, 'utf8'));
+  const sampleRate = config?.audio?.sample_rate ?? 22050;
+
+  const clips = [];
+  for (const line of lines) {
+    const chunks = [];
+    await new Promise((resolve, reject) => {
+      const child = spawn(binary, ['-m', model, '--output_raw', '-q'], {
+        env: {...process.env, LD_LIBRARY_PATH: path.dirname(binary)},
+      });
+      child.stdout.on('data', (chunk) => chunks.push(chunk));
+      let stderr = '';
+      child.stderr.on('data', (chunk) => (stderr += chunk));
+      child.on('error', reject);
+      child.on('close', (code) => (code === 0 ? resolve() : reject(new Error(`piper exited ${code} — ${stderr.slice(0, 200)}`))));
+      child.stdin.end(`${line}\n`);
+    });
+    const raw = Buffer.concat(chunks);
+    if (!raw.length) throw new Error(`piper returned no audio for: "${line.slice(0, 40)}…"`);
+    const samples = new Int16Array(raw.length >> 1);
+    for (let i = 0; i < samples.length; i += 1) samples[i] = raw.readInt16LE(i * 2);
+    clips.push(samples);
+  }
+
+  const gap = Number(process.env.PIPER_GAP_SECONDS ?? 0.55);
+  const {samples, boundaries, duration} = joinWithGaps(clips, sampleRate, gap);
+  return {audio: writeWav(samples, sampleRate), alignment: null, boundaries, duration, extension: 'wav'};
+}
+
+async function speak(text, lines) {
   if (PROVIDER === 'elevenlabs') return speakElevenLabs(text);
   if (PROVIDER === 'openai') return speakOpenAI(text);
-  throw new Error(`unknown VOICE_PROVIDER "${PROVIDER}" — use elevenlabs, openai, or --measure on a file`);
+  if (PROVIDER === 'piper') return speakPiper(lines);
+  throw new Error(`unknown VOICE_PROVIDER "${PROVIDER}" — use piper, elevenlabs, openai, or --measure on a file`);
 }
 
 /**
@@ -257,28 +316,44 @@ async function main() {
   const words = script.split(/\s+/).filter(Boolean).length;
 
   const outDir = path.join(dir, 'audio');
-  const file = path.join(outDir, 'vo.mp3');
   await mkdir(outDir, {recursive: true});
 
-  // --measure skips synthesis entirely and reads an mp3 that is already there:
-  // a hand-recorded voiceover, or one somebody sent over, or the output of a
+  // --measure skips synthesis entirely and reads whatever is already there: a
+  // voiceover recorded on a phone, one somebody sent over, or the output of a
   // provider this script has never heard of.
   let how;
   let alignment = null;
+  let known = null;
+  let file = path.join(outDir, 'vo.mp3');
+
   if (args.measure) {
-    if (!(await exists(file))) throw new Error(`--measure needs ${path.relative(ROOT, file)} to exist already`);
-    how = 'measured';
-    console.log(`${episodeId}: measuring the narration already on disk…`);
+    const wav = path.join(outDir, 'vo.wav');
+    if (await exists(file)) how = 'measured';
+    else if (await exists(wav)) (file = wav), (how = 'measured');
+    else throw new Error(`--measure needs audio/vo.mp3 or audio/vo.wav in ${path.relative(ROOT, dir)}`);
+    console.log(`${episodeId}: measuring ${path.basename(file)}…`);
   } else {
-    console.log(`${episodeId}: ${lines.length} line(s), ${words} words — speaking in one pass via ${PROVIDER}…`);
-    const spoken = await speak(script);
+    console.log(`${episodeId}: ${lines.length} line(s), ${words} words — via ${PROVIDER}…`);
+    const spoken = await speak(script, lines);
+    if (spoken.extension === 'wav') {
+      file = path.join(outDir, 'vo.wav');
+      await rm(path.join(outDir, 'vo.mp3'), {force: true});
+    } else {
+      await rm(path.join(outDir, 'vo.wav'), {force: true});
+    }
     await writeFile(file, spoken.audio);
     alignment = spoken.alignment;
-    how = alignment?.character_end_times_seconds?.length ? 'aligned' : 'measured';
+    // A provider that JOINED the clips itself knows where the seams are. That
+    // beats measuring, because measuring can only ever recover what is already
+    // known here exactly.
+    known = spoken.boundaries ? {boundaries: spoken.boundaries, duration: spoken.duration} : null;
+    how = known ? 'exact' : alignment?.character_end_times_seconds?.length ? 'aligned' : 'measured';
   }
 
   let windows;
-  if (how === 'aligned') {
+  if (how === 'exact') {
+    windows = windowsFromBoundaries(lines, known.boundaries, known.duration);
+  } else if (how === 'aligned') {
     windows = windowsFor(lines, alignment);
   } else {
     /**
@@ -307,6 +382,7 @@ async function main() {
         $comment: 'MEASURED from vo.mp3, not estimated. The planner cuts every scene to these windows.',
         how,
         provider: args.measure ? 'file' : PROVIDER,
+        audio: `audio/${path.basename(file)}`,
         duration,
         lines: brief.lines.map((line, i) => ({
           slug: line.slug ?? `line-${i + 1}`,
@@ -325,7 +401,7 @@ async function main() {
   for (const [i, w] of windows.entries()) {
     console.log(`  ${String(i + 1).padStart(2)}  ${w.start.toFixed(2)}–${w.end.toFixed(2)}s  (${(w.end - w.start).toFixed(2)}s)  ${w.text.slice(0, 52)}`);
   }
-  console.log(`\n→ ${path.relative(ROOT, outDir)}/vo.mp3 + vo.json — re-run the planner to cut to it.`);
+  console.log(`\n→ ${path.relative(ROOT, file)} + vo.json — re-run the planner to cut to it.`);
 }
 
 // Only when run as a command; the tests import the window maths from here.
