@@ -169,10 +169,12 @@ const TRANSITIONS = ['slam', 'slip', 'flare', 'rack', 'blinds'];
  * "He spent a fortune" is about money before it is about a king.
  */
 const MOTIF_WORDS = [
-  // `gave` on its own is not money — "the roofs gave" is a collapse, and it was
-  // getting gold coins rained over it. Only the phrase that means giving away
-  // counts, which is also the only one a script about money actually uses.
-  ['coins', /\b(gold|golden|money|wealth|wealthy|rich|riches|fortune|coins?|treasur\w*|dinars?|bullion|spent|spend|spending|paid|price|cost|gift\w*|alms|crashed?)\b|\bgave\s+(it\s+|them\s+)?away\b|\bgiv(es|ing)\s+away\b/i],
+  // COMMON VERBS ARE WEAK EVIDENCE. Two of these shipped and both were wrong on
+  // the first script that used them innocently: "the roofs gave" is a collapse,
+  // "ten men spent a summer" is a season. Both got gold rained over them. So
+  // `gave` counts only as "gave it away", and `spent` only when what follows is
+  // not a stretch of time — which is exactly how a script about money says it.
+  ['coins', /\b(gold|golden|money|wealth|wealthy|rich|riches|fortune|coins?|treasur\w*|dinars?|bullion|paid|price|cost|gift\w*|alms|crashed?)\b|\bgave\s+(it\s+|them\s+)?away\b|\bgiv(es|ing)\s+away\b|\bspen[dt]\w*\b(?!\s+(\w+\s+){0,2}(second|minute|hour|day|night|week|month|year|decade|summer|winter|spring|autumn|life|time)s?\b)/i],
   ['rise', /\b(rose|rise|risen|rising|grew|grow\w*|doubl\w*|tripl\w*|soar\w*|surg\w*|increas\w*|boom\w*|climb\w*|multipl\w*|swell\w*)\b/i],
   ['route', /\b(journey|travel\w*|caravan|pilgrimage|pilgrim|road|route|marched?|crossed?|across|set out|departed|returned|miles?)\b/i],
   ['embers', /\b(fire|burn\w*|ash|ashes|collaps\w*|ruin\w*|destroy\w*|sacked?|war|siege|died|death|end\w*)\b/i],
@@ -631,6 +633,16 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
       weldRatio: round(between(rand, [0.34, 0.44]), 3),
       wallScaleEnd: round(between(rand, [5, 7]), 1),
       accent: look.accent,
+      // Words land once the picture has, not during the flight — a caption
+      // competing with the one move the shot exists for is a caption nobody
+      // reads and a move nobody watches.
+      caption: line.caption ?? [],
+      captionX: 84,
+      captionY: Math.round(between(rand, [1180, 1520])),
+      captionFrame: push + 48,
+      captionEvery: 7 + Math.round(rand() * 4),
+      captionSize: 84 + Math.round(rand() * 10),
+      captionRecedeAt: Math.max(1, durationInFrames - 18),
       // AFTER the arrival. The first half of this shot is the flight into the
       // picture; the second half is a photograph sitting still, and that is the
       // half a portrait wants gold falling past it.

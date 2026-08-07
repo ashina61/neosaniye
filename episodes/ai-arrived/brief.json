@@ -1,0 +1,62 @@
+{
+  "id": "ai-arrived",
+  "title": "AI — seventy years to arrive, two months to be everywhere",
+  "mood": "cold-noir",
+  "style": "documentary photograph, twentieth century laboratory and press archive, hard directional light, cold grey and steel, fine grain, no text, no watermark",
+  "lines": [
+    {
+      "slug": "name",
+      "vo": "In 1956, ten men spent a summer inventing a name for it.",
+      "image": "an empty lecture room with a blackboard and wooden chairs",
+      "imageCommons": ["Dartmouth Hall Dartmouth College", "Dartmouth College Hanover"],
+      "kicker": "Hanover · 1956",
+      "title": "A NAME FOR IT",
+      "footer": "there was no machine yet",
+      "motif": "none"
+    },
+    {
+      "slug": "kasparov",
+      "vo": "For forty years it mostly lost. Then it beat Kasparov.",
+      "image": "a tall black computer cabinet in a museum hall",
+      "imageCommons": ["Deep Blue chess computer", "Deep Blue IBM"],
+      "artefact": "a close view of a black server cabinet, cable ports and vents",
+      "artefactCommons": ["Deep Blue computer Computer History Museum", "IBM Deep Blue"],
+      "caption": ["Forty years", "of losing."]
+    },
+    {
+      "slug": "seeing",
+      "vo": "In 2012 it learned to see, and nobody outside the labs noticed.",
+      "image": "shelves of archive boxes holding thousands of photographs",
+      "imageCommons": ["photographic archive shelves", "photo archive boxes"],
+      "onScreen": "NOBODY NOTICED"
+    },
+    {
+      "slug": "move",
+      "vo": "In 2016 it played a move no human would have played.",
+      "image": "a wooden board covered in black and white stones",
+      "imageCommons": ["Go board game stones", "Baduk goban"],
+      "artefact": "a close overhead view of a Go board mid-game, black and white stones",
+      "artefactCommons": ["Go game board close up", "Weiqi board stones"],
+      "caption": ["Move", "thirty-seven."]
+    },
+    {
+      "slug": "talk",
+      "vo": "Then it learned to talk, and a hundred million people arrived.",
+      "image": "a dark room lit only by a screen",
+      "imageCommons": ["server room data centre", "data center servers"],
+      "motif": "rise",
+      "kicker": "Two months",
+      "title": "100 MILLION",
+      "footer": "the fastest anything has ever spread"
+    },
+    {
+      "slug": "close",
+      "vo": "Seventy years to arrive. Two months to be everywhere.",
+      "image": "a crowded street where everyone is looking down at a phone",
+      "imageCommons": ["crowd smartphones street", "people using smartphones crowd"],
+      "kicker": "1956 · 2022",
+      "title": "SEVENTY YEARS",
+      "footer": "then two months"
+    }
+  ]
+}

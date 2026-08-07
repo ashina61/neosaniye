@@ -19,13 +19,13 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.39,
-      "grungeOpacity": 0.16,
+      "grainOpacity": 0.38,
+      "grungeOpacity": 0.11,
       "scanlineOpacity": 0.12,
       "scanlinePeriod": 10,
-      "vignetteStrength": 0.4,
-      "weavePx": 6,
-      "weaveScale": 1.014
+      "vignetteStrength": 0.42,
+      "weavePx": 5,
+      "weaveScale": 1.012
     }
   },
   "scenes": [
@@ -52,14 +52,25 @@
         "weldRatio": 0.369,
         "wallScaleEnd": 6.7,
         "accent": "#f2b53a",
+        "caption": [
+          "Drawn by",
+          "someone who",
+          "never met him."
+        ],
+        "captionX": 84,
+        "captionY": 1388,
+        "captionFrame": 74,
+        "captionEvery": 10,
+        "captionSize": 86,
+        "captionRecedeAt": 53,
         "motif": "rays",
-        "motifX": 552,
+        "motifX": 533,
         "motifY": 768,
-        "motifSize": 355,
-        "motifCount": 20,
+        "motifSize": 304,
+        "motifCount": 21,
         "motifFrame": 76,
         "motifColour": "#f2b53a",
-        "motifOpacity": 0.89
+        "motifOpacity": 0.93
       }
     },
     {
@@ -68,8 +79,8 @@
       "voText": "and they never met.",
       "durationInFrames": 32,
       "transition": {
-        "kind": "flare",
-        "frames": 9
+        "kind": "slam",
+        "frames": 10
       },
       "assets": {
         "ground": "assets/s01-atlas-photo.png"
@@ -84,8 +95,8 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.48,
-        "pushTo": 1.06,
+        "pushFrom": 1.41,
+        "pushTo": 1.02,
         "pushEndFrame": 30,
         "accent": "#f2b53a",
         "caption": [
@@ -93,10 +104,10 @@
           "never met"
         ],
         "captionX": 84,
-        "captionY": 834,
+        "captionY": 301,
         "captionFrame": 4,
         "captionEvery": 8,
-        "captionSize": 88
+        "captionSize": 92
       }
     },
     {
@@ -114,23 +125,23 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.07,
+          "depth": 0.08,
           "anchor": "fill"
         }
       ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushTo": 1.34,
+        "pushTo": 1.46,
         "pushEndFrame": 112,
-        "focusPx": 12,
-        "fog": 0.16,
+        "focusPx": 0,
+        "fog": 0.07,
         "caption": [],
         "captionX": 84,
-        "captionY": 458,
+        "captionY": 1074,
         "captionFrame": 10,
-        "captionEvery": 20,
-        "captionSize": 94,
+        "captionEvery": 18,
+        "captionSize": 83,
         "captionRecedeAt": 94,
         "accent": "#f2b53a",
         "motif": "route",
@@ -151,7 +162,7 @@
       "voText": "The caravan was so long that accounts still argue about the number.",
       "durationInFrames": 126,
       "transition": {
-        "kind": "flare",
+        "kind": "slam",
         "frames": 8
       },
       "assets": {
@@ -163,25 +174,25 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.09,
+          "depth": 0.05,
           "anchor": "fill"
         },
         {
           "role": "camel-standing-in-profile",
           "depth": 0.26,
           "anchor": "bottom",
-          "x": 273,
-          "y": 1291,
-          "height": 525,
+          "x": 297,
+          "y": 1287,
+          "height": 518,
           "opacity": 0.63
         },
         {
           "role": "date-palm-tree",
           "depth": 0.55,
           "anchor": "bottom",
-          "x": 882,
-          "y": 1491,
-          "height": 710,
+          "x": 887,
+          "y": 1489,
+          "height": 727,
           "opacity": 0.78
         },
         {
@@ -189,27 +200,27 @@
           "depth": 0.84,
           "anchor": "bottom",
           "x": 150,
-          "y": 1663,
-          "height": 958,
+          "y": 1689,
+          "height": 924,
           "opacity": 0.92,
           "shadow": true,
-          "shadowSkew": -67,
+          "shadowSkew": -55,
           "shadowOpacity": 0.34
         }
       ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushTo": 1.22,
+        "pushTo": 1.34,
         "pushEndFrame": 108,
-        "focusPx": 0,
-        "fog": 0.07,
+        "focusPx": 14,
+        "fog": 0.03,
         "caption": [],
         "captionX": 84,
-        "captionY": 904,
+        "captionY": 442,
         "captionFrame": 10,
-        "captionEvery": 24,
-        "captionSize": 84,
+        "captionEvery": 23,
+        "captionSize": 86,
         "captionRecedeAt": 91,
         "accent": "#f2b53a"
       },
@@ -234,30 +245,37 @@
         "brightness": 1.06
       },
       "transition": {
-        "kind": "slam",
-        "frames": 9
+        "kind": "flare",
+        "frames": 10
       },
       "assets": {
         "wall": "assets/s04-mecca-bg.png",
         "photo": "assets/s04-mecca-photo.png"
       },
       "params": {
-        "frameWidth": 819,
-        "frameRatio": 0.99,
+        "frameWidth": 833,
+        "frameRatio": 1.25,
         "pushEndFrame": 45,
         "detachFrame": 67,
         "throughEndFrame": 89,
-        "weldRatio": 0.393,
-        "wallScaleEnd": 6.9,
+        "weldRatio": 0.344,
+        "wallScaleEnd": 6.4,
         "accent": "#f2b53a",
+        "caption": [],
+        "captionX": 84,
+        "captionY": 1399,
+        "captionFrame": 93,
+        "captionEvery": 7,
+        "captionSize": 89,
+        "captionRecedeAt": 108,
         "motif": "coins",
-        "motifX": 603,
+        "motifX": 522,
         "motifY": 1651,
         "motifSize": 41,
-        "motifCount": 25,
+        "motifCount": 19,
         "motifFrame": 95,
         "motifColour": "#f2b53a",
-        "motifOpacity": 0.93
+        "motifOpacity": 0.82
       },
       "onScreenText": [
         {
@@ -280,8 +298,8 @@
         "brightness": 1.06
       },
       "transition": {
-        "kind": "flare",
-        "frames": 10
+        "kind": "slip",
+        "frames": 11
       },
       "assets": {
         "ground": "assets/s05-cairo-bg.png"
@@ -289,33 +307,33 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.05,
+          "depth": 0.1,
           "anchor": "fill"
         }
       ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushTo": 1.24,
+        "pushTo": 1.42,
         "pushEndFrame": 58,
         "focusPx": 0,
-        "fog": 0.02,
+        "fog": 0.06,
         "caption": [],
         "captionX": 84,
-        "captionY": 512,
+        "captionY": 1073,
         "captionFrame": 10,
-        "captionEvery": 24,
-        "captionSize": 92,
+        "captionEvery": 26,
+        "captionSize": 88,
         "captionRecedeAt": 49,
         "accent": "#f2b53a",
         "motif": "coins",
-        "motifX": 547,
+        "motifX": 522,
         "motifY": 1651,
-        "motifSize": 45,
-        "motifCount": 28,
-        "motifFrame": 28,
+        "motifSize": 51,
+        "motifCount": 18,
+        "motifFrame": 22,
         "motifColour": "#f2b53a",
-        "motifOpacity": 1
+        "motifOpacity": 0.89
       }
     },
     {
@@ -325,7 +343,7 @@
       "durationInFrames": 39,
       "transition": {
         "kind": "rack",
-        "frames": 8
+        "frames": 9
       },
       "assets": {
         "ground": "assets/s05-cairo-bg.png"
@@ -333,15 +351,15 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.73,
+          "depth": 0.72,
           "anchor": "fill"
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.46,
-        "pushTo": 1.02,
+        "pushFrom": 1.35,
+        "pushTo": 1.08,
         "pushEndFrame": 37,
         "accent": "#f2b53a",
         "caption": [
@@ -349,10 +367,10 @@
           "it away"
         ],
         "captionX": 84,
-        "captionY": 656,
+        "captionY": 894,
         "captionFrame": 4,
-        "captionEvery": 8,
-        "captionSize": 93
+        "captionEvery": 9,
+        "captionSize": 95
       }
     },
     {
@@ -370,7 +388,7 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.88,
+          "depth": 0.94,
           "anchor": "fill"
         }
       ],
@@ -378,7 +396,7 @@
         "anchorX": 799,
         "anchorY": 1498,
         "pushFrom": 1,
-        "pushTo": 1.44,
+        "pushTo": 1.35,
         "pushEndFrame": 54,
         "accent": "#f2b53a",
         "caption": [
@@ -387,9 +405,9 @@
           "gold collapsed"
         ],
         "captionX": 84,
-        "captionY": 802,
+        "captionY": 537,
         "captionFrame": 4,
-        "captionEvery": 9,
+        "captionEvery": 6,
         "captionSize": 89
       }
     },
@@ -405,19 +423,19 @@
       },
       "transition": {
         "kind": "slip",
-        "frames": 12
+        "frames": 11
       },
       "assets": {
         "background": "assets/s06-close-bg.png"
       },
       "params": {
-        "scrim": 0.41,
+        "scrim": 0.42,
         "kicker": "Gold in Cairo",
         "title": "TWELVE YEARS",
         "footer": "the most expensive journey in history",
-        "titleFrame": 6,
+        "titleFrame": 8,
         "titleSize": 230,
-        "creep": 1.044,
+        "creep": 1.058,
         "accent": "#f2b53a",
         "field": "sunburst",
         "fieldColours": [
@@ -434,7 +452,13 @@
           "FIFTY",
           "TWENTY"
         ],
-        "spinFrames": 35
+        "spinFrames": 35,
+        "mark": "underline",
+        "markX": 260,
+        "markY": 820,
+        "markWidth": 560,
+        "markHeight": 300,
+        "markFrame": 30
       }
     },
     {
@@ -444,7 +468,7 @@
       "durationInFrames": 75,
       "transition": {
         "kind": "flare",
-        "frames": 11
+        "frames": 8
       },
       "assets": {
         "ground": "assets/s06-close-bg.png"
@@ -452,15 +476,15 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.88,
+          "depth": 0.82,
           "anchor": "fill"
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.39,
-        "pushTo": 1.04,
+        "pushFrom": 1.43,
+        "pushTo": 1.07,
         "pushEndFrame": 71,
         "accent": "#f2b53a",
         "caption": [
@@ -469,10 +493,10 @@
           "in history"
         ],
         "captionX": 84,
-        "captionY": 759,
+        "captionY": 787,
         "captionFrame": 4,
-        "captionEvery": 6,
-        "captionSize": 76
+        "captionEvery": 8,
+        "captionSize": 78
       }
     }
   ]

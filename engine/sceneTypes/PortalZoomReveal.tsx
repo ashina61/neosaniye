@@ -3,6 +3,7 @@ import {AbsoluteFill, Easing, interpolate, useCurrentFrame, useVideoConfig} from
 import type {SceneProps} from './types';
 import {CLAMP, blurBurst, posterizeTime} from '../motion';
 import {Plate} from '../Plate';
+import {WordStack} from '../draw/Type';
 import {SceneMotif} from '../draw/Motif';
 
 /**
@@ -34,11 +35,16 @@ export const PortalZoomReveal: React.FC<SceneProps> = ({scene, assets, durationI
     const value = scene.params?.[key];
     return typeof value === 'number' ? value : fallback;
   };
+  const list = (key: string): string[] => {
+    const value = scene.params?.[key];
+    return Array.isArray(value) ? (value as string[]).map(String) : [];
+  };
   const str = (key: string, fallback: string): string => {
     const value = scene.params?.[key];
     return typeof value === 'string' ? value : fallback;
   };
 
+  const caption = list('caption');
   const pushEnd = num('pushEndFrame', Math.round(durationInFrames * 0.38));
   const detach = num('detachFrame', Math.round(durationInFrames * 0.52));
   const throughEnd = num('throughEndFrame', Math.round(durationInFrames * 0.63));
@@ -110,6 +116,22 @@ export const PortalZoomReveal: React.FC<SceneProps> = ({scene, assets, durationI
             <Plate src={assets.frame} alive={false} fit="contain" />
           </div>
         </AbsoluteFill>
+      ) : null}
+
+      {/* THE WORDS ARRIVE WITH THE PICTURE, not during the flight into it.
+          A caption written for one of these shots used to be dropped on the
+          floor — the template simply never read it — so a line whose whole
+          point was "Move thirty-seven" played as a silent push on a photograph. */}
+      {caption.length ? (
+        <WordStack
+          lines={caption}
+          x={num('captionX', 84)}
+          y={num('captionY', Math.round(width * 1.1))}
+          from={num('captionFrame', throughEnd + 4)}
+          every={num('captionEvery', 8)}
+          size={num('captionSize', 88)}
+          recedeAt={num('captionRecedeAt', durationInFrames - 20)}
+        />
       ) : null}
 
       {/* ONLY ONCE WE ARE THROUGH. The whole first half of this shot is travel
