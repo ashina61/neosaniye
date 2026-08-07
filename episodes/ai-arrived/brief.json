@@ -20,7 +20,28 @@
         "chalkboard on a wooden easel",
         "empty wooden chair",
         "brass desk lamp"
-      ]
+      ],
+      "shot": {
+        "template": "composite",
+        "signature": "we start tight on an empty room and the camera falls back to reveal how little was there — a brass caption is all that marks it",
+        "camera": {
+          "from": 1.42,
+          "to": 1.0,
+          "focus": "hunt"
+        },
+        "props": [
+          {
+            "kind": "plaque",
+            "text": "Hanover · 1956",
+            "size": 0.42,
+            "x": 0.5,
+            "y": 0.8,
+            "depth": 0.55,
+            "at": 0.42,
+            "tilt": 0
+          }
+        ]
+      }
     },
     {
       "slug": "kasparov",
@@ -43,7 +64,28 @@
         "black computer cabinet",
         "wooden chess clock",
         "carved chess king piece"
-      ]
+      ],
+      "shot": {
+        "template": "portal-zoom-reveal",
+        "signature": "we fly into the photograph of the machine and a hand-drawn outline closes around it as we land",
+        "camera": {
+          "from": 1.0,
+          "to": 1.5,
+          "focus": "sharp"
+        },
+        "props": [
+          {
+            "kind": "wire",
+            "text": "Deep Blue",
+            "shape": "rect",
+            "size": 0.6,
+            "x": 0.5,
+            "y": 0.44,
+            "depth": 0.9,
+            "at": 0.72
+          }
+        ]
+      }
     },
     {
       "slug": "seeing",
@@ -58,7 +100,17 @@
         "cardboard archive box",
         "brass magnifying glass",
         "framed photographic print"
-      ]
+      ],
+      "shot": {
+        "template": "composite",
+        "signature": "one slow push down an endless aisle with nothing drawn on it at all — the shot that lets the others land",
+        "camera": {
+          "from": 1.0,
+          "to": 1.38,
+          "focus": "hunt"
+        },
+        "props": []
+      }
     },
     {
       "slug": "move",
@@ -83,7 +135,28 @@
         "wooden go bowl",
         "black go stone",
         "folded paper fan"
-      ]
+      ],
+      "shot": {
+        "template": "portal-zoom-reveal",
+        "signature": "we land inside the board and a diamond draws itself around one stone",
+        "camera": {
+          "from": 1.0,
+          "to": 1.46,
+          "focus": "sharp"
+        },
+        "props": [
+          {
+            "kind": "wire",
+            "text": "move 37",
+            "shape": "diamond",
+            "size": 0.34,
+            "x": 0.62,
+            "y": 0.46,
+            "depth": 0.9,
+            "at": 0.74
+          }
+        ]
+      }
     },
     {
       "slug": "talk",
@@ -102,7 +175,30 @@
         "server rack cabinet",
         "coiled network cable",
         "office swivel chair"
-      ]
+      ],
+      "shot": {
+        "template": "composite",
+        "signature": "the front page lands over the whole frame and the room keeps pushing past it — the number is the shot",
+        "camera": {
+          "from": 1.0,
+          "to": 1.3,
+          "focus": "sharp"
+        },
+        "props": [
+          {
+            "kind": "newspaper",
+            "masthead": "THE RECORD",
+            "text": "100 MILLION",
+            "date": "two months",
+            "size": 0.88,
+            "x": 0.5,
+            "y": 0.5,
+            "depth": 0.86,
+            "at": 0.24,
+            "tilt": -3
+          }
+        ]
+      }
     },
     {
       "slug": "close",
@@ -119,7 +215,27 @@
         "smartphone held upright",
         "cast iron street lamp",
         "wooden park bench"
-      ]
+      ],
+      "shot": {
+        "template": "title-slate",
+        "signature": "the verdict on a hard card, the crowd pulled back and dimmed behind it",
+        "camera": {
+          "from": 1.24,
+          "to": 1.02,
+          "focus": "sharp"
+        },
+        "props": [
+          {
+            "kind": "plaque",
+            "text": "1956 · 2022",
+            "size": 0.4,
+            "x": 0.5,
+            "y": 0.82,
+            "depth": 0.5,
+            "at": 0.55
+          }
+        ]
+      }
     }
   ]
 }

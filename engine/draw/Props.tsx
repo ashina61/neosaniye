@@ -87,6 +87,9 @@ export const DrawnProps: React.FC<{
               date={prop.date}
               width={w}
               seed={key}
+              // Big enough to be the shot? Then it is a close-up on the page,
+              // not a small sheet scaled up into a wireframe of one.
+              crop={w > width * 0.6}
             />
           ) : prop.kind === 'card' ? (
             <Card title={prop.heading} lines={prop.lines} width={w} stamp={prop.stamp} />

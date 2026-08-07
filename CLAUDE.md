@@ -54,7 +54,7 @@ SONUDUR.
 ## Zincir
 
 ```
-episodes/<id>/brief.json            → altı satır, ~80 kelime, otuz saniye
+episodes/<id>/brief.json            → altı satır + HER SATIRIN KOREOGRAFİSİ
         ↓
 scripts/voice-episode.mjs           → vo.mp3|wav + vo.json (ÖLÇÜM)
         ↓
@@ -73,6 +73,41 @@ engine/draw/*.tsx                   → ışık, kâğıt, işaretleme, tipograf
         ↓
 out/<id>.mp4
 ```
+
+## Sıfırıncı yasa, ikinci hâli: KOREOGRAFİYİ YAZAN DÜŞÜNÜR
+
+Referansın yöntemi bir düşünme adımı içerir: modele "her satır için sahneyi,
+ekrandaki kelimeleri, duygusal vuruşu, BİR İMZA ANİMASYONU ve gereken assetleri
+söyle" denir; sonra sahne başına ayrı bir istem gelir ve kareleri tek tek verir
+— "0-46'da 1.0'dan 1.16'ya, 62'ye kadar kaynak, sonra ayrış". Koreografiyi
+model kurar.
+
+Bu depo iki hafta boyunca onun yerine `rand()` kullandı. Plaketin nereye
+gideceğine, kameranın itip itmeyeceğine, hangi şablonun geleceğine zar karar
+verdi. Sonuç iki türlü bozuktu: her bölüm bir öncekinin fotoğrafları
+değiştirilmiş hâliydi, VE kompozisyon saçmalıyordu — bir üniversite
+portikosunun önünde havada duran bir gazete, çünkü onu oraya kimse koymadı.
+
+O yüzden brief artık her satır için `shot` taşır: `template`, tek cümlelik
+`signature` (bu çekimin var olma sebebi olan TEK hareket), `camera`
+(`from`→`to`; itiş ile geri çekilme iki ayrı çekimdir), ve `props` — çizilen
+nesneler, kesirlerle: `size` karenin genişliğinin oranı, `x`/`y` merkezi,
+`at` çekimin neresinde indiği, `depth` itişten aldığı pay. Kesir girer, piksel
+çıkar: yönetmen "karenin onda sekizi" der, karenin 1080 olduğunu yalnız
+derleyici bilir.
+
+Planlayıcı bunu DERLER, ikinci kez düşünmez. Yazılmış olan kazanır; kurallar ve
+zar yalnız yazılmamış olanın yedeğidir. Ve **boş bir `props` dizisi bir
+karardır** — çıplak çekim diğerlerini var eden şeydir, ona zar atılmaz.
+
+İki ölçü, ikisi de kontak sayfasından öğrenildi: bir nesne **ait olduğu yerde**
+durur (gazetenin altında bir yüzey vardır, plaket kaptığı şeyin altında asılır,
+havada duran her şey resmin üstüne yapıştırılmış bir grafiktir ve öyle görünür),
+ve **öznesi ise kareyi doldurur** — karenin %40'ındaki bir ön sayfa, telefonda
+otuz altı piksellik manşetiyle bir çıkartmadır. Ama tam kadraj bir gazete de
+bütün bir gazete OLAMAZ: sahte tram bloğu gri bir levhaya, sahte sütunlar gri
+çizgilere döner. Yakın çekim sayfanın ÜSTÜNÜ gösterir — logo, çizgi, manşet —
+ve sütunlar karenin altından taşar.
 
 ## Değişmez kurallar
 

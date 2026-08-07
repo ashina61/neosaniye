@@ -18,11 +18,22 @@ import {jsonFrom, problemsWith, promptFor} from '../scripts/write-episode.mjs';
 // one landscape each and it passed every check in the file — which is exactly
 // how the pipeline shipped a reel of six photographs and called it a
 // storyboard.
+// And a DIRECTED one. A brief that says what the shot is but not how it moves
+// leaves the camera and the composition to a seeded die, which is how six
+// different topics came out as six versions of the same reel.
+const shot = (signature = 'the caravan crests the dune and the camera falls back off it') => ({
+  template: 'composite',
+  signature,
+  camera: {from: 1.0, to: 1.34, focus: 'hunt'},
+  props: [{kind: 'plaque', text: 'Mali · 1324', size: 0.34, x: 0.3, y: 0.78, depth: 0.6, at: 0.2}],
+});
+
 const line = (slug, vo, pieces = ['camel standing in profile', 'man in robes standing']) => ({
   slug,
   vo,
   image: 'a wide empty landscape',
   pieces,
+  shot: shot(),
 });
 const good = {
   lines: [
@@ -67,7 +78,7 @@ test('a script that runs long overall is refused even if every line is short', (
 });
 
 test('every line has to say what we are looking at, and own its own slug', () => {
-  const noImage = {lines: good.lines.map((l, i) => (i === 2 ? {slug: l.slug, vo: l.vo} : l))};
+  const noImage = {lines: good.lines.map((l, i) => (i === 2 ? {slug: l.slug, vo: l.vo, shot: l.shot} : l))};
   assert.ok(problemsWith(noImage).some((p) => /no image/.test(p)));
 
   const duplicate = {lines: good.lines.map((l, i) => (i === 3 ? {...l, slug: 'open'} : l))};
@@ -92,12 +103,12 @@ test('JSON is dug out of whatever the model wrapped it in', () => {
 test('a reel of flat photographs is refused — a shot is a stack', () => {
   // The failure this check exists for: six lines, one photograph each, every
   // other rule satisfied. It renders, it validates, and it is a slideshow.
-  const flat = {lines: good.lines.map((l) => ({slug: l.slug, vo: l.vo, image: l.image}))};
+  const flat = {lines: good.lines.map((l) => ({slug: l.slug, vo: l.vo, image: l.image, shot: l.shot}))};
   assert.ok(problemsWith(flat).some((p) => /6 lines have no pieces/.test(p)), problemsWith(flat).join(' | '));
 
   // ONE bare line is a rest, not a pattern — a reel that never lets a frame be
   // still is as tiring as one that is never anything else.
-  const oneBare = {lines: good.lines.map((l, i) => (i === 3 ? {slug: l.slug, vo: l.vo, image: l.image} : l))};
+  const oneBare = {lines: good.lines.map((l, i) => (i === 3 ? {slug: l.slug, vo: l.vo, image: l.image, shot: l.shot} : l))};
   assert.deepEqual(problemsWith(oneBare), []);
 });
 

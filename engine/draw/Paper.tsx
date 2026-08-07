@@ -64,8 +64,19 @@ export const Newspaper: React.FC<{
   seed?: string;
   tint?: string;
   ink?: string;
-}> = ({masthead, headline, date, width, seed = 'paper', tint = '#e8dcc0', ink = '#241f18'}) => {
-  const height = Math.round(width * 1.32);
+  /**
+   * A CLOSE-UP ON THE TOP OF THE PAGE, rather than the whole sheet.
+   *
+   * A front page that IS the shot cannot be the whole front page. Drawn at full
+   * frame, the fake halftone block becomes a grey slab and the fake columns
+   * become grey lines — the sheet stops reading as a newspaper and starts
+   * reading as a wireframe of one, which is exactly what a contact sheet showed.
+   * A camera close on a paper sees the masthead, the rule and the headline, and
+   * the columns run off the bottom of the frame. So at that size we draw that.
+   */
+  crop?: boolean;
+}> = ({masthead, headline, date, width, seed = 'paper', tint = '#e8dcc0', ink = '#241f18', crop = false}) => {
+  const height = Math.round(width * (crop ? 1.9 : 1.32));
   return (
     <div
       style={{
@@ -121,13 +132,18 @@ export const Newspaper: React.FC<{
       >
         {headline}
       </div>
-      <div
-        style={{
-          height: height * 0.24,
-          background: `repeating-linear-gradient(0deg, ${ink}22 0 2px, transparent 2px 4px), linear-gradient(150deg, ${ink}66, ${ink}22)`,
-        }}
-      />
-      <TypeBlock seed={seed} lines={Math.round(height * 0.026)} colour={ink} />
+      {/* The halftone photo band is what a small sheet needs to read as a
+          newspaper at a glance. Blown up to fill a frame it is just a grey
+          rectangle, so the close-up drops it and gives the columns the room. */}
+      {crop ? null : (
+        <div
+          style={{
+            height: height * 0.24,
+            background: `repeating-linear-gradient(0deg, ${ink}22 0 2px, transparent 2px 4px), linear-gradient(150deg, ${ink}66, ${ink}22)`,
+          }}
+        />
+      )}
+      <TypeBlock seed={seed} lines={Math.round(height * (crop ? 0.05 : 0.026))} colour={ink} />
     </div>
   );
 };

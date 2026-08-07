@@ -27,6 +27,11 @@ import {ROOT, episodeDir, exists, parseArgs} from './lib/episode.mjs';
 
 const MOODS = ['gold-heat', 'cold-noir', 'green-rot', 'ash-grey'];
 
+/** Templates a brief may direct a shot into. Kept in step with the registry. */
+const TEMPLATES = ['composite', 'portal-zoom-reveal', 'title-slate', 'evidence-board', 'stacked-reveal', 'split-shift', 'parallax-punch'];
+/** Drawn objects a shot may stand in the frame. Mirrors engine/schema.mjs. */
+const PROP_KINDS = ['plaque', 'newspaper', 'card', 'print', 'wire', 'beam'];
+
 /**
  * THE BRIEF-WRITING PROMPT.
  *
@@ -108,6 +113,64 @@ EACH LINE OBJECT:
                   chairs"), NOT two things joined by "and". Each one is cut out
                   and placed at its own depth, so anything that is already a
                   picture cannot be used.
+
+  "shot"          THE CHOREOGRAPHY. Required. This is the part that decides
+                  whether the reel is directed or merely assembled — see below.
+
+THE SHOT — you are the director here, not a labeller.
+
+A pipeline that picks the camera move from a rotation and the prop positions
+from a random number produces the same reel every time with different
+photographs in it, and it composes nonsense: a newspaper hanging in mid-air in
+front of a building, because nothing decided to put it there. YOU decide. One
+shot at a time, and say why in the signature.
+
+  "shot": {
+    "template":  "composite" for a room with things in it (the default),
+                 "portal-zoom-reveal" to fly INTO a framed photograph,
+                 "title-slate" for a hard typographic card with no photo,
+                 "evidence-board" for pinned cards on a surface.
+    "signature": ONE sentence naming the single move this shot exists for.
+                 "the front page lands on the desk and the room pushes past it".
+                 If you cannot name it, the shot has no reason to be a shot.
+    "camera":    {"from": 1.0, "to": 1.35, "focus": "hunt" | "sharp"}
+                 Scale at the start and end of the shot. Push IN (to > from) or
+                 PULL BACK (to < from) — two pushes in a row read as one move
+                 with a stutter. "hunt" makes the lens find focus like an old
+                 camera; use it where the shot opens on something.
+    "props":     the drawn objects standing in this shot. THIS IS THE SHOT'S
+                 CONTENT, not decoration:
+                   "kind"  plaque | newspaper | card | print | wire | beam
+                   "text"  what it says. A plaque carries a label ("Hanover ·
+                           1956"); a newspaper's text is its HEADLINE.
+                   "size"  fraction of the frame WIDTH, 0.2 to 0.95. A front
+                           page that is the point of the shot is 0.8+; a
+                           caption plaque is 0.3. A newspaper at 0.4 floating
+                           over a photograph reads as a sticker — if it is
+                           worth showing, it is worth filling the frame.
+                   "x","y" fractions of the frame, 0 to 1, where its CENTRE
+                           sits. Put it where it belongs in the picture: a
+                           paper lies on a desk, a plaque hangs under a
+                           picture, a beam comes in from a window.
+                   "at"    fraction of the shot, 0 to 1, when it arrives.
+                           Stagger them — things landing together read as one
+                           event, not three.
+                   "depth" 0 to 1, its share of the camera push. Near things
+                           take more. Nothing else gives a flat plate depth.
+                   "tilt"  degrees, for paper that was put down by a hand.
+  }
+
+Rules for the shot, and they are the ones that cost the most to learn:
+
+* A SHOT DOES ONE THING. Three props competing is no props at all. Two is
+  usually right, one is often better, and the signature says which one wins.
+* IF A PROP IS THE SUBJECT, IT FILLS THE FRAME. Three newspapers landing one
+  after another on a desk is a whole scene and needs no photograph behind it.
+* PUT THINGS WHERE THEY WOULD BE. A newspaper needs a surface under it. A
+  plaque hangs on a wall below what it captions. Anything floating in open air
+  is a graphic pasted on a picture and it looks like one.
+* VARY THE MOVE. If the last shot pushed in, this one pulls back or cuts to a
+  card. Six slow pushes is a slideshow whatever is drawn on top.
 
 OPTIONAL, and only where the line earns it — an unused one is better than a
 wrong one:
@@ -240,6 +303,62 @@ export function problemsWith(brief) {
         /\b(row|group|crowd|pile|stack|set|pair|bunch|line)\s+of\b|\bseveral\b|\bmany\b|\bsome\b/i.test(piece)
       ) {
         problems.push(`line ${i + 1}: piece "${piece}" is a scene, not an object — it cannot be cut out`);
+      }
+    }
+
+    /**
+     * A SHOT HAS TO BE DIRECTED, and this is where that is enforced.
+     *
+     * Everything else in this file checks the WRITING. This checks the
+     * DIRECTING, and it is the check that was missing for the whole life of the
+     * pipeline: without it the planner picked the camera move from a rotation
+     * and the prop positions from a random number, which produces the same reel
+     * every time with different photographs in it — and composes nonsense,
+     * because nothing decided anything. A newspaper ended up hanging in mid-air
+     * in front of a university portico. Nobody put it there; a die did.
+     */
+    const shot = line?.shot;
+    if (typeof shot !== 'object' || shot === null) {
+      problems.push(`line ${i + 1}: no shot — say how this one is directed, not just what it says`);
+    } else {
+      if (!String(shot.signature ?? '').trim()) {
+        problems.push(`line ${i + 1}: shot has no signature — name the ONE move it exists for`);
+      }
+      if (shot.template !== undefined && !TEMPLATES.includes(shot.template)) {
+        problems.push(`line ${i + 1}: shot.template "${shot.template}" is not one of ${TEMPLATES.join(', ')}`);
+      }
+      const from = shot.camera?.from ?? 1;
+      const to = shot.camera?.to ?? 1.3;
+      // A shot that neither pushes nor pulls is a still frame with grain on it.
+      if (Math.abs(to - from) < 0.06) {
+        problems.push(`line ${i + 1}: camera goes ${from}→${to} — that is a still frame, push in or pull back`);
+      }
+
+      const props = Array.isArray(shot.props) ? shot.props : [];
+      if (props.length > 3) {
+        problems.push(`line ${i + 1}: ${props.length} props — a shot does one thing, three compete and none wins`);
+      }
+      for (const prop of props) {
+        if (!PROP_KINDS.includes(prop?.kind)) {
+          problems.push(`line ${i + 1}: prop kind "${prop?.kind}" is not one of ${PROP_KINDS.join(', ')}`);
+          continue;
+        }
+        const size = Number(prop.size);
+        // THE LESSON FROM THE CONTACT SHEET. A front page rendered at 0.4 of
+        // the frame is a cream rectangle with unreadable type floating over an
+        // unrelated photograph — it reads as a placeholder, because at reel
+        // size that is exactly what it looks like. Either it is the subject and
+        // it fills the frame, or it is a caption and it is small on purpose.
+        if (!(size > 0.15 && size <= 0.98)) {
+          problems.push(`line ${i + 1}: prop "${prop.kind}" has size ${prop.size} — give it 0.2 to 0.95 of the frame`);
+        } else if (prop.kind === 'newspaper' && size < 0.6) {
+          problems.push(
+            `line ${i + 1}: a newspaper at ${size} of the frame is a sticker — 0.6+ if it is worth showing at all`,
+          );
+        }
+        if (prop.kind !== 'beam' && !String(prop.text ?? '').trim()) {
+          problems.push(`line ${i + 1}: prop "${prop.kind}" carries no text — say what it says`);
+        }
       }
     }
   }
