@@ -136,6 +136,17 @@ function missing(name, where) {
 async function speakElevenLabs(text) {
   const key = process.env.ELEVENLABS_API_KEY;
   if (!key) throw new Error(missing('ELEVENLABS_API_KEY', 'elevenlabs.io → Profile → API key (free tier is enough for a thirty-second script)'));
+  // An ElevenLabs key starts with `sk_`. OpenAI's starts with `sk-`, and the two
+  // are one character apart — so the commonest way this fails is the right kind
+  // of secret in the wrong box. Say that here rather than spending a request to
+  // be told "API key must start with 'sk_'" by the other end.
+  if (!key.startsWith('sk_')) {
+    throw new Error(
+      `ELEVENLABS_API_KEY does not look like an ElevenLabs key — they start with "sk_", this one starts with "${key.slice(0, 3)}".\n` +
+        '   An OpenAI key starts with "sk-" (a hyphen, not an underscore) and belongs in OPENAI_API_KEY.\n' +
+        '   The ElevenLabs one is at elevenlabs.io → Profile → API key.',
+    );
+  }
 
   const response = await fetch(`${API}/text-to-speech/${VOICE}/with-timestamps`, {
     method: 'POST',
