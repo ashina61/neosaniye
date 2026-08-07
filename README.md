@@ -278,17 +278,29 @@ not catch those.
 
 ## CI
 
-- **`validate-episode.yml`** — on every push and PR: schema, scene types, asset
-  existence, engine guards, typecheck. No bundle, no browser, seconds not
-  minutes.
-- **`generate-assets.yml`** — `workflow_dispatch` with `episode_id`, optional
-  `only` and `force`: draws the episode's artwork, validates that every file the
-  config names is now on disk, and commits the PNGs to the branch. It goes red
-  *before* committing if a draw failed, so a half-drawn episode is never left
-  looking finished.
-- **`render-episode.yml`** — `workflow_dispatch` with an `episode_id` input:
-  installs Chromium, renders, uploads `out/<episode_id>.mp4` as an artifact. The
-  episode is a runtime input, so the same commit renders any of them.
+One workflow, `reel.yml`, and which job runs depends on why it started.
+
+- **push / pull request → `check`**: schema, scene types, asset existence,
+  engine guards, typecheck. No bundle, no browser — seconds, not minutes.
+- **Run workflow → `make`**: the factory, in order.
+
+  1. **Voice** — speaks the script, measures the pauses, re-cuts every scene to
+     them. `piper` is the default and needs no key at all; `elevenlabs` and
+     `openai` are there for a better voice, and `measure-only` reads a file you
+     recorded yourself.
+  2. **Artwork** — fetches what has a name from Wikimedia Commons, draws the
+     rest, and lays the cut-outs on a checkerboard so a bad key is one glance
+     rather than thirty files.
+  3. **Render** — Chromium, mp4, plus a contact sheet of stills.
+
+  The narration, the cut and the artwork are committed as ONE state: the config
+  is cut to a voiceover, so committing them apart leaves a window where the
+  reel's timings refer to a file that is not in the repo.
+
+  Each stage is a toggle rather than its own workflow because they are one chain
+  with real dependencies — re-voicing means re-cutting, and re-cutting means the
+  artwork has to match the new scene ids. Running them out of order is the
+  mistake this layout makes impossible.
 
 ## Episodes
 

@@ -5,8 +5,11 @@ dosya adı, bir bölüm kimliği veya bir hikâye bilmez. Bölüm bir klasördü
 kod değişikliği değil. İkinci bölüm eklemek `episodes/` altına bir klasör
 açmaktır, motora dokunmak değil.
 
-Giriş noktası `npm run render -- --episode=<id>`. Otomatik koşu
-`.github/workflows/render-episode.yml` (workflow_dispatch, `episode_id` girdisi).
+Giriş noktası `npm run render -- --episode=<id>`. Otomatik koşu TEK
+workflow: `.github/workflows/reel.yml`. Push/PR'da ucuz kapı (`check`);
+"Run workflow" ile fabrika (`make`): **seslendir → görsel → render**, her adım
+açılıp kapanabilir. Ayrı workflow değiller çünkü tek bir zincir: seslendirmeyi
+yenilemek kesimi, kesim de görsellerin sahne kimliklerini değiştirir.
 
 ## Sıfırıncı yasa: SES SAATTİR
 
@@ -36,15 +39,20 @@ kendi anlatısından kaymaz.
 
 `vo.json` yoksa süreler `kelime / 2.7 * 30` ile TAHMİN edilir ve koşu bunu
 ekrana yazar. Tahminle kesilmiş bir reel taslaktır; sessizce bitmiş görünmemeli.
-`vo.json` commit edilir (config'teki her süre ona göre kesildi), `vo.mp3`
-edilmez.
+Ses dosyası da `vo.json` da COMMIT EDİLİR. Render taze checkout yapıyor ve
+config `audio:` diyor — dosya orada olmazsa doğrulama düşer. `vo.json` da
+gitmek zorunda: config'teki her süre ona göre kesildi.
+
+Piper satır satır okur ve klipleri BİZ birleştiririz; orada sınırlar ölçüm
+değil aritmetiktir, çünkü sessizliği koyan biziz. Kural aynı: sınır klibin
+SONUDUR.
 
 ## Zincir
 
 ```
 episodes/<id>/brief.json            → altı satır, ~80 kelime, otuz saniye
         ↓
-scripts/voice-episode.mjs           → vo.mp3 + vo.json (ÖLÇÜM)
+scripts/voice-episode.mjs           → vo.mp3|wav + vo.json (ÖLÇÜM)
         ↓
 episodes/<id>/scene-config.json     → bölümün tek gerçeği (sahneler, süreler, look)
         ↓
@@ -166,7 +174,7 @@ Bu hat aynı duvara çarpmaz çünkü malzeme koda sokulmaz:
   ÇAĞIRMAZ; diskteki dosyayı okur. Doğrulayıcı hepsinin diskte ve boş
   olmadığını render'dan önce kontrol eder.
 - **ÜRETİM AYRI BİR ADIMDIR.** `scripts/generate-assets.mjs` +
-  `.github/workflows/generate-assets.yml` görselleri çizer ve **commit eder**;
+  `reel.yml`'ın görsel adımı çizer ve **commit eder**;
   o andan sonra sıradan bir dosyadırlar. Reçeteler `episodes/<id>/assets.json`
   içindedir — istem de dosya adı gibi bölümün işidir. Bu ayrım şart: üretici
   bozulursa üretim adımı patlar, bitmiş bir bölüm sessizce değişmez. Aynı
