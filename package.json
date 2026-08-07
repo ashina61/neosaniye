@@ -8,6 +8,7 @@
     "node": ">=20"
   },
   "scripts": {
+    "write": "node scripts/write-episode.mjs",
     "new": "node scripts/new-episode.mjs",
     "plan": "node scripts/plan-episode.mjs",
     "voice": "node scripts/voice-episode.mjs",
