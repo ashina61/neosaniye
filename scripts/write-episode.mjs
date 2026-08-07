@@ -74,15 +74,40 @@ THE SCRIPT — this is the hard part, and the constraints are not style notes:
 * You do not need an original story. Take one that already works and tell it
   sharper than everyone else did.
 
+A SHOT IS NOT A PHOTOGRAPH. IT IS A STACK OF PIECES.
+
+This is the part that decides whether the reel is any good, so it is not
+optional. One photograph per scene, pushed into slowly, is a slideshow — six
+pictures and some text, which is what this pipeline produced until somebody
+watched it. The reference reel's opening frame is a SKY, two cut-out CLOUDS
+drifting at different speeds, a cut-out BUILDING, a FIGURE, a FRAME and a paper
+TEXTURE: seven files, not one of them a whole picture.
+
+So for every line you name the BACKDROP and then the things that stand in front
+of it. They are separate files on purpose — separate files can move at different
+speeds, and that difference is the only reason a flat plate reads as a space.
+
 EACH LINE OBJECT:
 
   "slug"          one lowercase word, unique, used in file names
   "vo"            the spoken line
-  "image"         one phrase: what we are LOOKING at. Scenery, no people named.
+  "image"         the BACKDROP — what is BEHIND everything. One phrase, a place
+                  or a surface, with nothing standing in it. "an empty lecture
+                  room", not "ten men in a lecture room".
   "imageCommons"  1-3 Wikimedia Commons searches for something that REALLY
                   EXISTS and is photographed — a named place, building, map or
                   artefact. Most specific first, broader as fallback. Omit only
                   if the shot is genuinely nameless scenery.
+  "pieces"        2-4 SINGLE OBJECTS that stand in front of that backdrop, and
+                  the reason the shot has depth. REQUIRED on every line but one.
+                  Each is ONE thing, phrased singular, photographable on its own:
+                      "chalkboard on a wooden easel"
+                      "man in a suit standing in profile"
+                      "wooden chair, empty"
+                  NOT a scene ("men around a table"), NOT a plural ("a row of
+                  chairs"), NOT two things joined by "and". Each one is cut out
+                  and placed at its own depth, so anything that is already a
+                  picture cannot be used.
 
 OPTIONAL, and only where the line earns it — an unused one is better than a
 wrong one:
@@ -94,8 +119,6 @@ wrong one:
                               a photograph of it.
   "stops"                     3-5 real place names, for a line about a journey.
                               Draws an itinerary, stop by named stop.
-  "pieces"                    2-3 single objects to stand in the frame, each
-                              phrased as one thing: "camel standing in profile".
   "items"                     up to 3 cards as "card|HEADING|one short line",
                               for a line that lists three things.
   "caption"                   2-3 short fragments that land one at a time.
@@ -178,6 +201,7 @@ export function problemsWith(brief) {
   if (words > 92) problems.push(`${words} words — thirty seconds of narration is about 80`);
 
   const slugs = new Set();
+  let flat = 0;
   for (const [i, line] of brief.lines.entries()) {
     const vo = String(line?.vo ?? '').trim();
     const n = vo.split(/\s+/).filter(Boolean).length;
@@ -187,6 +211,40 @@ export function problemsWith(brief) {
     else if (slugs.has(line.slug)) problems.push(`line ${i + 1}: slug "${line.slug}" is used twice`);
     else slugs.add(line.slug);
     if (!line?.image) problems.push(`line ${i + 1}: no image — say what we are looking at`);
+
+    // A SHOT IS A STACK. A line with no pieces is one photograph pushed into
+    // slowly, and six of those is a slideshow — the exact failure that made a
+    // finished reel worth throwing away. One bare line is a rest; two is a
+    // pattern.
+    const pieces = Array.isArray(line?.pieces) ? line.pieces.map((p) => String(p ?? '').trim()).filter(Boolean) : [];
+    if (!pieces.length) flat += 1;
+    else if (pieces.length > 4) problems.push(`line ${i + 1}: ${pieces.length} pieces — four is already a crowded frame`);
+
+    for (const piece of pieces) {
+      // Each piece is CUT OUT and given its own depth, so anything that is
+      // already a picture cannot be one. "men around a table" keys to a
+      // rectangle; "a row of chairs" keys to confetti. Both pass every other
+      // check in this file and both cost the shot its depth.
+      // The SUBJECT is the first noun, and if it is plural the phrase is a
+      // scene however singular the rest of it reads. "men around a table"
+      // trips none of the word checks below and is a picture, not a piece.
+      const subject = piece.toLowerCase().replace(/^(a|an|the|one)\s+/, '').split(/\s+/)[0] ?? '';
+      const plural =
+        /^(men|women|people|children|feet|teeth|geese|mice|crowds?|troops)$/.test(subject) ||
+        /[^s]s$/.test(subject);
+
+      if (/\band\b|\bwith\b|,/.test(piece)) {
+        problems.push(`line ${i + 1}: piece "${piece}" is two things — one object per piece`);
+      } else if (
+        plural ||
+        /\b(row|group|crowd|pile|stack|set|pair|bunch|line)\s+of\b|\bseveral\b|\bmany\b|\bsome\b/i.test(piece)
+      ) {
+        problems.push(`line ${i + 1}: piece "${piece}" is a scene, not an object — it cannot be cut out`);
+      }
+    }
+  }
+  if (flat > 1) {
+    problems.push(`${flat} lines have no pieces — a shot is a stack, and this is ${flat} slides`);
   }
   return problems;
 }
