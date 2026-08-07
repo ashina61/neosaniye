@@ -1,0 +1,8 @@
+{
+  "$comment": "These assets are stand-ins, not finished artwork. scripts/generate-assets.mjs removes each name as it draws it for real.",
+  "placeholders": [
+    "s04-move-bg.png",
+    "s04-move-photo.png",
+    "s05-talk-bg.png"
+  ]
+}

@@ -580,6 +580,11 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
         // The reel needs something to rattle through. Its decoys are the same
         // ORDER of magnitude either side, so the stop lands on a choice rather
         // than on the only legible option.
+        //
+        // A YEAR NEVER SPINS. "2012" rattling through THOUSAND and FIFTY says
+        // the date could have been any of them, which is not what a date means
+        // — and it is why a slate about the year it learned to see came up
+        // reading TWENTY.
         scene.params.spinTo = String(number).toUpperCase();
         scene.params.spinReel = SPIN_DECOYS;
         scene.params.spinFrames = Math.max(14, Math.round(durationInFrames * 0.4));
@@ -588,7 +593,7 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
         scene.params.countOver = Math.round(durationInFrames * 0.55);
         if (line.countSuffix) scene.params.countSuffix = line.countSuffix;
       }
-    } else if (number && look.numbers === 'slot') {
+    } else if (number && !isYear && look.numbers === 'slot') {
       // A word-number — TWELVE, FIFTY — has nothing to count to, but it spins.
       scene.params.spinTo = String(number).toUpperCase();
       scene.params.spinReel = SPIN_DECOYS;
