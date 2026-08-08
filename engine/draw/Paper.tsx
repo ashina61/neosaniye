@@ -23,29 +23,70 @@ const SERIF = '"Playfair Display", "Iowan Old Style", Georgia, serif';
 const SANS = '"Archivo", "Helvetica Neue", Arial, sans-serif';
 const MONO = '"Courier New", ui-monospace, monospace';
 
-/** Rows of grey bars that read as columns of type too small to resolve. */
-const TypeBlock: React.FC<{seed: string; lines: number; columns?: number; colour?: string}> = ({
-  seed,
-  lines,
-  columns = 3,
-  colour = '#2b2620',
-}) => (
-  <div style={{display: 'flex', gap: '4%', width: '100%'}}>
-    {Array.from({length: columns}, (_, col) => (
-      <div key={col} style={{flex: 1, display: 'flex', flexDirection: 'column', gap: 4}}>
-        {Array.from({length: lines}, (_, row) => (
-          <div
-            key={row}
-            style={{
-              height: 4,
-              width: `${72 + hash01(seed, col * 100 + row) * 28}%`,
-              background: colour,
-              opacity: 0.36,
-            }}
-          />
-        ))}
-      </div>
-    ))}
+/**
+ * COLUMNS OF TYPE TOO SMALL TO RESOLVE — and a front page is mostly this.
+ *
+ * The first version drew three equal columns of identical bars and stopped
+ * partway down, so the sheet read as a wireframe with a third of it blank. A
+ * real page has PARAGRAPHS: a short indented first line, a ragged last one, a
+ * gap, and then another. It also has a sub-head partway down a column and a
+ * halftone block sitting in the middle of the text rather than above it.
+ *
+ * None of it is legible at reel size and none of it needs to be. What the eye
+ * reads is the RHYTHM — and a rhythm is exactly what a grid of equal bars has
+ * none of.
+ */
+const TypeBlock: React.FC<{
+  seed: string;
+  lines: number;
+  columns?: number;
+  colour?: string;
+  /** A halftone block dropped into one column, as a fraction of its width. */
+  cut?: number;
+}> = ({seed, lines, columns = 3, colour = '#2b2620', cut = 0}) => (
+  <div style={{display: 'flex', gap: '4.5%', width: '100%', flex: 1, alignItems: 'stretch'}}>
+    {Array.from({length: columns}, (_, col) => {
+      // Where this column's paragraphs break, and where its picture sits.
+      const cutRow = cut > 0 && col === 1 ? Math.round(lines * 0.34) : -1;
+      return (
+        <div key={col} style={{flex: 1, display: 'flex', flexDirection: 'column', gap: 3}}>
+          {Array.from({length: lines}, (_, row) => {
+            if (row === cutRow) {
+              return (
+                <div
+                  key={`cut${row}`}
+                  style={{
+                    height: `${cut * 100}%`,
+                    margin: '4px 0 6px',
+                    background:
+                      `repeating-linear-gradient(0deg, ${colour}30 0 2px, transparent 2px 4px),` +
+                      `linear-gradient(158deg, ${colour}88, ${colour}22)`,
+                  }}
+                />
+              );
+            }
+            const r = hash01(seed, col * 211 + row);
+            // A paragraph is a short indent, some full lines, a ragged last one.
+            const para = (row + Math.round(hash01(seed, col) * 4)) % 9;
+            const indent = para === 0 ? 12 : 0;
+            const width = para === 8 ? 34 + r * 30 : 88 + r * 12;
+            return (
+              <div
+                key={row}
+                style={{
+                  height: 3,
+                  marginLeft: `${indent}%`,
+                  width: `${Math.min(100 - indent, width)}%`,
+                  background: colour,
+                  opacity: para === 8 ? 0.26 : 0.34,
+                  marginBottom: para === 8 ? 7 : 0,
+                }}
+              />
+            );
+          })}
+        </div>
+      );
+    })}
   </div>
 );
 
@@ -143,7 +184,14 @@ export const Newspaper: React.FC<{
           }}
         />
       )}
-      <TypeBlock seed={seed} lines={Math.round(height * (crop ? 0.05 : 0.026))} colour={ink} />
+      {/* The columns take whatever height is left, so the sheet is never a
+          third empty — which is what a page of type actually looks like. */}
+      <TypeBlock
+        seed={seed}
+        lines={Math.round(height * (crop ? 0.055 : 0.03))}
+        colour={ink}
+        cut={crop ? 0.26 : 0}
+      />
     </div>
   );
 };
@@ -262,7 +310,37 @@ export const Print: React.FC<{
       position: 'relative',
     }}
   >
-    <div style={{width: '100%', height: width * ratio * 0.9, overflow: 'hidden', background: '#15120e'}}>{children}</div>
+    {/* A PRINT WITH NOTHING IN IT IS A BLACK HOLE. Handed no picture, this drew
+        a white border round pure black — and that is what a contact sheet
+        showed: a hole with a caption under it. So the empty case draws what an
+        old print looks like from across a room instead: a soft duotone field,
+        a corner of light, a vignette and the grain of the paper. It reads as a
+        photograph whose subject you cannot quite make out, which is a
+        documentary graphic; a black rectangle is a mistake. */}
+    <div
+      style={{
+        width: '100%',
+        height: width * ratio * 0.9,
+        overflow: 'hidden',
+        position: 'relative',
+        background: children
+          ? '#15120e'
+          : `radial-gradient(ellipse at 26% 18%, #6b6154 0%, #3a342c 38%, #1b1813 78%),` +
+            `linear-gradient(168deg, rgba(255,255,255,0.1), transparent 46%)`,
+      }}
+    >
+      {children ?? (
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background:
+              `repeating-linear-gradient(0deg, rgba(0,0,0,0.16) 0 2px, transparent 2px 4px),` +
+              `radial-gradient(ellipse at 50% 50%, transparent 46%, rgba(0,0,0,0.55) 100%)`,
+          }}
+        />
+      )}
+    </div>
     {caption ? (
       <div
         style={{

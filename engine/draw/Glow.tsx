@@ -125,7 +125,7 @@ export const Beam: React.FC<{
   colour?: string;
   intensity?: number;
   rotate?: number;
-}> = ({x, y, width = 180, spread = 2.6, length = 900, colour = '#ffb457', intensity = 0.5, rotate = 0}) => (
+}> = ({x, y, width = 180, spread = 2.6, length = 1500, colour = '#ffb457', intensity = 0.9, rotate = 0}) => (
   <AbsoluteFill style={{mixBlendMode: 'screen', pointerEvents: 'none'}}>
     <div
       style={{
@@ -144,9 +144,15 @@ export const Beam: React.FC<{
           top: 0,
           width,
           height: length,
-          background: `linear-gradient(to bottom, ${colour}55 0%, ${colour}22 45%, transparent 92%)`,
+          // A SHAFT YOU CAN SEE. At 0x55 fading to 0x22 this was a rumour: on a
+          // contact sheet of every drawn object, the beam was the one nobody
+          // could find. Light through a window is the brightest thing in the
+          // room near its source, and the reason it reads as a shaft at all is
+          // that the near end is nearly white.
+          background:
+            `linear-gradient(to bottom, ${colour}cc 0%, ${colour}77 26%, ${colour}33 58%, transparent 94%)`,
           clipPath: `polygon(50% 0%, ${50 - 50 * spread}% 100%, ${50 + 50 * spread}% 100%)`,
-          filter: 'blur(26px)',
+          filter: 'blur(22px)',
           opacity: intensity,
           // Feather the sides so the cone does not arrive as two hard edges.
           WebkitMaskImage: 'linear-gradient(to right, transparent, #000 22%, #000 78%, transparent)',

@@ -215,3 +215,41 @@ test('an episode id is a name, not a path', async () => {
   }
   assert.ok(episodeDir('ww2').endsWith('/ww2'));
 });
+
+test('the sentence chooses the cut, and beats the anti-repeat rule doing it', async () => {
+  /**
+   * A cut is punctuation, and it was the last editorial decision nothing was
+   * making: templates, motifs and grade all read the line, and the transition
+   * was drawn from a hat. That put a slam on a quiet line and a soft focus-hunt
+   * on the hardest beat in the reel.
+   *
+   * The anti-repeat rule is right about a DERIVED cut and wrong about an earned
+   * one. It won at first, and the closing line of an episode — "sixty million
+   * people were dead" — matched `flare`, was denied it because the shot before
+   * had flared, and the verdict of the whole reel arrived on venetian blinds.
+   */
+  const {cutFor} = await import('../scripts/plan-episode.mjs');
+  const all = ['slam', 'slip', 'flare', 'rack', 'blinds'];
+  const die = () => 0.5;
+
+  const kind = (vo, previous = null) => cutFor({vo}, previous, all, die).kind;
+  assert.equal(kind('German tanks crossed the Polish border.'), 'slam');
+  assert.equal(kind('Britain and France gave Berlin two days.'), 'slip');
+  assert.equal(kind('By that evening two empires were at war.'), 'flare');
+  assert.equal(kind('Nobody outside the labs noticed.'), 'rack');
+
+  // Earned, and taken even when the shot before took it too.
+  assert.equal(kind('Six years later sixty million people were dead.', 'flare'), 'flare');
+  // But a line that earns SEVERAL takes the one that is not a repeat.
+  assert.equal(kind('They crossed the border and nobody noticed.', 'slam'), 'rack');
+
+  // A hard arrival cuts short; a noticing takes longer.
+  assert.ok(cutFor({vo: 'The tanks crossed.'}, null, all, die).frames <= 8);
+  assert.ok(cutFor({vo: 'Nobody noticed it.'}, null, all, die).frames >= 9);
+
+  // And a directed cut is simply obeyed.
+  assert.deepEqual(cutFor({vo: 'anything', shot: {cut: 'blinds', cutFrames: 20}}, 'blinds', all, die), {
+    kind: 'blinds',
+    frames: 20,
+  });
+});

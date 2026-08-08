@@ -6,7 +6,7 @@
   "width": 1080,
   "height": 1920,
   "look": {
-    "posterizeFps": 15,
+    "posterizeFps": 12,
     "grade": {
       "saturate": 0.26,
       "contrast": 1.15,
@@ -19,13 +19,13 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.46,
-      "grungeOpacity": 0.2,
-      "scanlineOpacity": 0.09,
-      "scanlinePeriod": 11,
-      "vignetteStrength": 0.4,
-      "weavePx": 4,
-      "weaveScale": 1.015
+      "grainOpacity": 0.4,
+      "grungeOpacity": 0.18,
+      "scanlineOpacity": 0.07,
+      "scanlinePeriod": 9,
+      "vignetteStrength": 0.55,
+      "weavePx": 6,
+      "weaveScale": 1.018
     }
   },
   "scenes": [
@@ -96,8 +96,8 @@
       "voText": "On the first of September,",
       "durationInFrames": 68,
       "transition": {
-        "kind": "blinds",
-        "frames": 12
+        "kind": "slam",
+        "frames": 8
       },
       "assets": {
         "road": "assets/border-road.jpg",
@@ -139,14 +139,14 @@
         "pushFrom": 1,
         "pushTo": 1.42,
         "pushEndFrame": 58,
-        "glowX": -307,
-        "glowY": 189,
-        "glowSize": 438,
-        "glowIntensity": 0.61,
+        "glowX": -445,
+        "glowY": 241,
+        "glowSize": 548,
+        "glowIntensity": 0.44,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.2,
         "focusPx": 0,
-        "fog": 0.4,
+        "fog": 0.3,
         "caption": [
           "German tanks",
           "crossed the",
@@ -162,13 +162,13 @@
         "captionRecedeAt": 49,
         "accent": "#e8e2d4",
         "motif": "route",
-        "motifX": 167,
+        "motifX": 214,
         "motifY": 1190,
         "motifSize": 213,
         "motifCount": 1,
-        "motifFrame": 30,
+        "motifFrame": 24,
         "motifColour": "#e8e2d4",
-        "motifOpacity": 0.9
+        "motifOpacity": 0.82
       }
     },
     {
@@ -177,7 +177,7 @@
       "voText": "German tanks crossed the Polish border.",
       "durationInFrames": 81,
       "transition": {
-        "kind": "rack",
+        "kind": "slam",
         "frames": 7
       },
       "assets": {
@@ -217,8 +217,8 @@
       "params": {
         "anchorX": 454,
         "anchorY": 1690,
-        "pushFrom": 1.42,
-        "pushTo": 1.08,
+        "pushFrom": 1.49,
+        "pushTo": 1.02,
         "pushEndFrame": 76,
         "accent": "#e8e2d4",
         "caption": [
@@ -233,14 +233,14 @@
         "captionFrame": 15,
         "captionEvery": 7,
         "captionScrim": 0.62,
-        "glowX": -260,
-        "glowY": 178,
-        "glowSize": 307,
-        "glowIntensity": 0.48,
+        "glowX": -379,
+        "glowY": 129,
+        "glowSize": 429,
+        "glowIntensity": 0.59,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.2,
-        "focusPx": 10,
-        "fog": 0.56
+        "focusPx": 8,
+        "fog": 0.34
       }
     },
     {
@@ -249,8 +249,8 @@
       "voText": "Britain and France gave Berlin two days to pull them back.",
       "durationInFrames": 113,
       "transition": {
-        "kind": "flare",
-        "frames": 8
+        "kind": "slip",
+        "frames": 11
       },
       "assets": {
         "desk": "assets/desk-surface.jpg"
@@ -298,14 +298,14 @@
         "pushFrom": 1.16,
         "pushTo": 1,
         "pushEndFrame": 97,
-        "glowX": -314,
-        "glowY": 126,
-        "glowSize": 332,
-        "glowIntensity": 0.68,
+        "glowX": -322,
+        "glowY": 264,
+        "glowSize": 528,
+        "glowIntensity": 0.44,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.12,
-        "focusPx": 10,
-        "fog": 0.39,
+        "focusPx": 14,
+        "fog": 0.26,
         "caption": [],
         "captionX": 76,
         "captionY": 192,
@@ -317,13 +317,13 @@
         "captionRecedeAt": 81,
         "accent": "#e8e2d4",
         "motif": "tally",
-        "motifX": 121,
+        "motifX": 110,
         "motifY": 499,
-        "motifSize": 106,
-        "motifCount": 15,
-        "motifFrame": 22,
+        "motifSize": 92,
+        "motifCount": 11,
+        "motifFrame": 31,
         "motifColour": "#e8e2d4",
-        "motifOpacity": 0.96
+        "motifOpacity": 0.88
       }
     },
     {
@@ -332,28 +332,28 @@
       "voText": "No answer came. The ultimatum ran out at eleven in the morning.",
       "durationInFrames": 139,
       "transition": {
-        "kind": "slam",
-        "frames": 10
+        "kind": "blinds",
+        "frames": 13
       },
       "assets": {
         "wall": "assets/station-wall.jpg",
         "photo": "assets/clock-face.jpg"
       },
       "params": {
-        "frameWidth": 774,
-        "frameRatio": 1.27,
+        "frameWidth": 814,
+        "frameRatio": 1,
         "pushEndFrame": 50,
         "detachFrame": 72,
         "throughEndFrame": 94,
-        "weldRatio": 0.419,
-        "wallScaleEnd": 6.3,
+        "weldRatio": 0.39,
+        "wallScaleEnd": 6.1,
         "accent": "#e8e2d4",
         "caption": [],
         "captionX": 84,
-        "captionY": 1299,
+        "captionY": 1492,
         "captionFrame": 98,
-        "captionEvery": 8,
-        "captionSize": 93,
+        "captionEvery": 10,
+        "captionSize": 91,
         "captionRecedeAt": 121
       },
       "props": [
@@ -382,8 +382,8 @@
         "brightness": 0.95
       },
       "transition": {
-        "kind": "rack",
-        "frames": 10
+        "kind": "flare",
+        "frames": 6
       },
       "assets": {
         "street": "assets/dusk-street.jpg"
@@ -415,14 +415,14 @@
         "pushFrom": 1,
         "pushTo": 1.24,
         "pushEndFrame": 89,
-        "glowX": -280,
-        "glowY": 417,
-        "glowSize": 428,
-        "glowIntensity": 0.64,
+        "glowX": -348,
+        "glowY": 360,
+        "glowSize": 369,
+        "glowIntensity": 0.59,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.18,
         "focusPx": 0,
-        "fog": 0.31,
+        "fog": 0.3,
         "caption": [],
         "captionX": 76,
         "captionY": 154,
@@ -434,13 +434,13 @@
         "captionRecedeAt": 74,
         "accent": "#e8e2d4",
         "motif": "embers",
-        "motifX": 520,
+        "motifX": 573,
         "motifY": 960,
-        "motifSize": 46,
-        "motifCount": 32,
-        "motifFrame": 31,
+        "motifSize": 41,
+        "motifCount": 25,
+        "motifFrame": 26,
         "motifColour": "#e8e2d4",
-        "motifOpacity": 0.83
+        "motifOpacity": 0.99
       }
     },
     {
@@ -454,20 +454,20 @@
         "brightness": 0.94
       },
       "transition": {
-        "kind": "slam",
-        "frames": 7
+        "kind": "flare",
+        "frames": 6
       },
       "assets": {
         "background": "assets/grey-sky.jpg"
       },
       "params": {
-        "scrim": 0.51,
+        "scrim": 0.48,
         "kicker": "1939 · 1945",
         "title": "SIXTY MILLION",
         "footer": "six years later",
-        "titleFrame": 5,
+        "titleFrame": 10,
         "titleSize": 230,
-        "creep": 1.044,
+        "creep": 1.05,
         "accent": "#e8e2d4",
         "field": "wash",
         "fieldColours": [
