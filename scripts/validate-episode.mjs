@@ -90,7 +90,7 @@ async function main() {
   if (typeof args.episode === 'string') {
     episodes = [args.episode];
   } else {
-    const entries = await readdir(path.join(ROOT, 'episodes'), {withFileTypes: true});
+    const entries = await readdir(process.env.EPISODES_DIR || path.join(ROOT, 'episodes'), {withFileTypes: true});
     episodes = entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name);
   }
 
