@@ -24,25 +24,26 @@
       "height": 1080,
       "alpha": false,
       "overlay": true
+    },
+    "surface": {
+      "width": 1080,
+      "height": 1920,
+      "alpha": false,
+      "draw": "surface"
     }
   },
   "assets": {
     "seabed.jpg": {
-      "kind": "backdrop",
-      "commons": [
-        "underwater rocky seabed Mediterranean",
-        "Aegean sea underwater rocks",
-        "seabed green water"
-      ],
-      "prompt": "dark green water over a rocky seabed, shafts of light from above"
+      "kind": "surface",
+      "prompt": "dark green water over rock, light falling from above, no objects",
+      "surface": "water",
+      "colour": "#1c4a3d"
     },
     "museum-dark.jpg": {
-      "kind": "backdrop",
-      "commons": [
-        "museum display case dark background",
-        "black museum wall exhibit"
-      ],
-      "prompt": "a dark museum interior wall, low even lighting, nothing on it"
+      "kind": "surface",
+      "prompt": "a plain dark museum wall, low even light, nothing on it",
+      "surface": "dark",
+      "colour": "#202422"
     },
     "mechanism-fragment.jpg": {
       "kind": "piece",
@@ -54,21 +55,16 @@
       "prompt": "a corroded bronze fragment the size of a book, museum lighting, plain dark background"
     },
     "storage-drawers.jpg": {
-      "kind": "backdrop",
-      "commons": [
-        "museum storage drawers wooden",
-        "archive cabinet drawers",
-        "specimen cabinet drawers"
-      ],
-      "prompt": "rows of wooden museum storage drawers, dim even light"
+      "kind": "surface",
+      "prompt": "a plain wall of dim wooden storage drawers, nothing on it",
+      "surface": "drawers",
+      "colour": "#4a3421"
     },
     "lab-wall.jpg": {
-      "kind": "backdrop",
-      "commons": [
-        "plain grey laboratory wall",
-        "grey concrete wall texture"
-      ],
-      "prompt": "a plain grey wall, even light, nothing on it"
+      "kind": "surface",
+      "prompt": "a plain grey wall, even light, nothing on it",
+      "surface": "plaster",
+      "colour": "#6e6f6a"
     },
     "mechanism-xray.jpg": {
       "kind": "backdrop",
@@ -88,12 +84,10 @@
       "prompt": "the moon in a dark clear sky, photographed, no landscape"
     },
     "deep-green.jpg": {
-      "kind": "backdrop",
-      "commons": [
-        "dark green water surface photograph",
-        "deep water dark green"
-      ],
-      "prompt": "a dark green water surface, no horizon, no objects"
+      "kind": "surface",
+      "prompt": "a plain dark green water surface, no horizon, no objects",
+      "surface": "water",
+      "colour": "#1a4034"
     }
   }
 }

@@ -31,6 +31,18 @@ const MOODS = ['gold-heat', 'cold-noir', 'green-rot', 'ash-grey'];
 const TEMPLATES = ['composite', 'portal-zoom-reveal', 'title-slate', 'evidence-board', 'stacked-reveal', 'split-shift', 'parallax-punch'];
 /** Drawn objects a shot may stand in the frame. Mirrors engine/schema.mjs. */
 const PROP_KINDS = ['plaque', 'newspaper', 'card', 'print', 'wire', 'beam'];
+/** How a layer is made. Mirrors the `kinds` block scripts/plan-episode.mjs writes. */
+const LAYER_KINDS = ['backdrop', 'piece', 'photo', 'surface'];
+/**
+ * The sentence shape of a request no photo archive can answer.
+ *
+ * Deliberately narrow: it fires on the words that mean "there is nothing to
+ * photograph here" — plain, blank, bare, empty, nothing on it — and not on a
+ * dark ROOM or a green FIELD, which are places somebody has stood in and taken
+ * a picture of.
+ */
+const BLANK =
+  /\b(plain|blank|bare|featureless|uniform|seamless)\b|\bnothing (on|in) it\b|\bno objects?\b|\bempty (dark |black |grey |gray |white )?(wall|surface|background|backdrop|field|frame)\b/i;
 
 /**
  * THE BRIEF-WRITING PROMPT.
@@ -145,10 +157,26 @@ shot at a time, and say why in the signature.
                    "role"    a short name: map, road, tank, man, wall
                    "asset"   the file name it will be saved as, e.g. "tank.png".
                              A NAME, never a path.
-                   "kind"    "backdrop" fills the frame; "piece" is cut out to
-                             transparency and stood in front of it
-                   "commons" 1-3 Wikimedia searches for it, most specific first
-                   "prompt"  what to draw if nothing free exists
+                   "kind"    "backdrop" fills the frame with a PHOTOGRAPH of a
+                             real place; "piece" is cut out to transparency and
+                             stood in front of it; "surface" is a blank ground —
+                             a wall, water, sky, a floor, the dark behind a
+                             museum case — which is DRAWN here and never
+                             searched for. Use "surface" for anything you would
+                             have described as "a plain X": no archive indexes a
+                             blank wall, so a search for one returns some other
+                             photograph every single time.
+                   "surface" a "surface" only, and optional: water | sky | wood |
+                             metal | rust | paper | cloth | stone | concrete |
+                             wall | plaster | dark | green. Left out, it is read
+                             from the prompt.
+                   "colour"  a "surface" only, and optional: "#0d1a14" to force
+                             the palette.
+                   "commons" 1-3 Wikimedia searches for it, most specific first.
+                             A "backdrop" or a "piece" ONLY — a surface has
+                             nothing to search for.
+                   "prompt"  what to draw if nothing free exists; for a
+                             "surface", what it is made of
                    "depth"   0 to 1, its share of the camera push. The backdrop
                              is low, the thing at the front is 1.
                    "height"  a PIECE only: how tall it stands, as a fraction of
@@ -390,6 +418,39 @@ export function problemsWith(brief) {
       // A shot that neither pushes nor pulls is a still frame with grain on it.
       if (Math.abs(to - from) < 0.06) {
         problems.push(`line ${i + 1}: camera goes ${from}→${to} — that is a still frame, push in or pull back`);
+      }
+
+      /**
+       * A BLANK GROUND IS DRAWN, NOT SEARCHED FOR.
+       *
+       * The most expensive failure of the last three episodes, and it never
+       * failed loudly: "a plain grey laboratory wall" came back white, "dark
+       * green water" came back an aerial photograph of a lake, "museum storage
+       * drawers" came back an antique console cabinet. Every one of them is the
+       * same class of request — a SURFACE — and no archive holds those, because
+       * nobody uploads a photograph of a blank wall and captions it. So the
+       * brief is refused here rather than corrected later: the search would have
+       * returned something, and something is what put a rock behind the reel's
+       * closing line.
+       */
+      for (const layer of Array.isArray(shot.layers) ? shot.layers : []) {
+        const kind = layer?.kind ?? (layer?.height !== undefined ? 'piece' : 'backdrop');
+        if (!LAYER_KINDS.includes(kind)) {
+          problems.push(`line ${i + 1}: layer kind "${kind}" is not one of ${LAYER_KINDS.join(', ')}`);
+          continue;
+        }
+        if (kind === 'surface') {
+          if (layer.commons) {
+            problems.push(`line ${i + 1}: layer "${layer.role ?? layer.asset}" is a surface AND has commons searches — a surface is drawn, drop them`);
+          }
+          continue;
+        }
+        if (kind === 'backdrop' && BLANK.test(String(layer.prompt ?? ''))) {
+          problems.push(
+            `line ${i + 1}: layer "${layer.role ?? layer.asset}" asks for "${String(layer.prompt).slice(0, 48)}" ` +
+              `as a photograph — that is a surface, use "kind": "surface"`,
+          );
+        }
       }
 
       const props = Array.isArray(shot.props) ? shot.props : [];

@@ -15,7 +15,7 @@
         "signature": "the camera sinks — we start tight on black water and open out until the seabed is under us, the only shot in the reel that goes down",
         "camera": {
           "from": 1.5,
-          "to": 1.0,
+          "to": 1,
           "focus": "hunt"
         },
         "anchor": [
@@ -27,13 +27,10 @@
             "role": "sea",
             "asset": "seabed.jpg",
             "depth": 0.16,
-            "kind": "backdrop",
-            "commons": [
-              "underwater rocky seabed Mediterranean",
-              "Aegean sea underwater rocks",
-              "seabed green water"
-            ],
-            "prompt": "dark green water over a rocky seabed, shafts of light from above"
+            "kind": "surface",
+            "prompt": "dark green water over rock, light falling from above, no objects",
+            "surface": "water",
+            "colour": "#1c4a3d"
           }
         ],
         "props": [
@@ -41,7 +38,7 @@
             "kind": "beam",
             "size": 0.34,
             "x": 0.62,
-            "y": 0.0,
+            "y": 0,
             "depth": 0.3,
             "at": 0.1,
             "opacity": 0.7
@@ -79,7 +76,7 @@
         "template": "composite",
         "signature": "one hard push straight onto the lump, nothing else in the frame moving — the shot exists to say LOOK AT THIS",
         "camera": {
-          "from": 1.0,
+          "from": 1,
           "to": 1.46,
           "focus": "sharp"
         },
@@ -92,12 +89,10 @@
             "role": "case",
             "asset": "museum-dark.jpg",
             "depth": 0.1,
-            "kind": "backdrop",
-            "commons": [
-              "museum display case dark background",
-              "black museum wall exhibit"
-            ],
-            "prompt": "a dark museum interior wall, low even lighting, nothing on it"
+            "kind": "surface",
+            "prompt": "a plain dark museum wall, low even light, nothing on it",
+            "surface": "dark",
+            "colour": "#202422"
           },
           {
             "role": "fragment",
@@ -149,13 +144,10 @@
             "role": "drawers",
             "asset": "storage-drawers.jpg",
             "depth": 0.14,
-            "kind": "backdrop",
-            "commons": [
-              "museum storage drawers wooden",
-              "archive cabinet drawers",
-              "specimen cabinet drawers"
-            ],
-            "prompt": "rows of wooden museum storage drawers, dim even light"
+            "kind": "surface",
+            "prompt": "a plain wall of dim wooden storage drawers, nothing on it",
+            "surface": "drawers",
+            "colour": "#4a3421"
           }
         ],
         "props": [
@@ -199,7 +191,7 @@
         "template": "portal-zoom-reveal",
         "signature": "we fly INTO the x-ray and a circle draws itself around one gear as we land — the reveal the whole reel has been walking toward",
         "camera": {
-          "from": 1.0,
+          "from": 1,
           "to": 6.4,
           "focus": "sharp"
         },
@@ -209,17 +201,15 @@
             "role": "wall",
             "asset": "lab-wall.jpg",
             "depth": 0.06,
-            "kind": "backdrop",
-            "commons": [
-              "plain grey laboratory wall",
-              "grey concrete wall texture"
-            ],
-            "prompt": "a plain grey wall, even light, nothing on it"
+            "kind": "surface",
+            "prompt": "a plain grey wall, even light, nothing on it",
+            "surface": "plaster",
+            "colour": "#6e6f6a"
           },
           {
             "role": "photo",
             "asset": "mechanism-xray.jpg",
-            "depth": 1.0,
+            "depth": 1,
             "kind": "backdrop",
             "commons": [
               "Antikythera mechanism radiograph gears",
@@ -260,7 +250,7 @@
         "template": "composite",
         "signature": "the moon creeps up the frame while a hand-drawn circle closes on it — the machine's own answer, drawn on the sky",
         "camera": {
-          "from": 1.0,
+          "from": 1,
           "to": 1.22,
           "focus": "sharp"
         },
@@ -316,7 +306,7 @@
         "signature": "the verdict on a hard card, the sea pulled back and dimmed behind it, and the reel stops",
         "camera": {
           "from": 1.16,
-          "to": 1.0,
+          "to": 1,
           "focus": "sharp"
         },
         "cut": "flare",
@@ -325,12 +315,10 @@
             "role": "background",
             "asset": "deep-green.jpg",
             "depth": 0.08,
-            "kind": "backdrop",
-            "commons": [
-              "dark green water surface photograph",
-              "deep water dark green"
-            ],
-            "prompt": "a dark green water surface, no horizon, no objects"
+            "kind": "surface",
+            "prompt": "a plain dark green water surface, no horizon, no objects",
+            "surface": "water",
+            "colour": "#1a4034"
           }
         ],
         "props": []

@@ -22,6 +22,7 @@ import {pathToFileURL} from 'node:url';
 import sharp from 'sharp';
 import {ROOT, episodeDir, exists, parseArgs} from './lib/episode.mjs';
 import {clearPlaceholders, readPlaceholders} from './lib/placeholders.mjs';
+import {drawSurface, textureFor} from './lib/surface.mjs';
 
 /** Keyless by default. Point elsewhere with IMAGE_BASE_URL if you have a key. */
 const BASE_URL = process.env.IMAGE_BASE_URL || 'https://image.pollinations.ai/prompt/';
@@ -337,6 +338,28 @@ async function buildAsset(name, recipe, kinds, recipes) {
 
   const width = recipe.width ?? kind.width;
   const height = recipe.height ?? kind.height;
+
+  /**
+   * DRAWN HERE, WITH NO NETWORK AT ALL.
+   *
+   * A surface is the one kind that never asks anybody for a picture: a wall, a
+   * sheet of water, a strip of sky. See scripts/lib/surface.mjs for why — in
+   * short, no archive indexes a blank wall, so every attempt to fetch one comes
+   * back as some OTHER photograph, and that is a supply problem no threshold
+   * can fix. The format follows the file name, because a PNG written into a
+   * .jpg is a bomb with a long fuse.
+   */
+  if (kind.draw === 'surface') {
+    return drawSurface({
+      name,
+      width,
+      height,
+      texture: recipe.surface ?? textureFor(recipe.prompt),
+      colour: recipe.colour,
+      light: recipe.light,
+      format: /\.jpe?g$/i.test(name) ? 'jpeg' : 'png',
+    });
+  }
 
   // A cut-out and a backdrop want opposite pictures, so they do not share a
   // style. The framing instruction leads; the description follows.

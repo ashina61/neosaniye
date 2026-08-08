@@ -1692,10 +1692,22 @@ async function main() {
     for (const layer of line?.shot?.layers ?? []) {
       const name = String(layer.asset ?? '').trim();
       if (!name || assets[name] || !(layer.prompt || layer.commons)) continue;
+      const kind = layer.kind ?? (layer.height ? 'piece' : 'backdrop');
+      /**
+       * A SURFACE IS NEVER SEARCHED FOR, even when the brief listed searches.
+       *
+       * Writing `commons` next to `kind: "surface"` is the easy mistake to make
+       * — the author has the searches in their hand from the layer above — and
+       * one query is all it takes to put an antique cabinet where a blank wall
+       * belongs. The kind is the decision; anything else on the layer is noise
+       * and is dropped here rather than obeyed downstream.
+       */
       assets[name] = {
-        kind: layer.kind ?? (layer.height ? 'piece' : 'backdrop'),
-        ...(layer.commons ? {commons: [].concat(layer.commons)} : {}),
+        kind,
+        ...(layer.commons && kind !== 'surface' ? {commons: [].concat(layer.commons)} : {}),
         ...(layer.prompt ? {prompt: layer.prompt} : {}),
+        ...(kind === 'surface' && layer.surface ? {surface: layer.surface} : {}),
+        ...(kind === 'surface' && layer.colour ? {colour: layer.colour} : {}),
       };
     }
   }
@@ -1763,6 +1775,9 @@ async function main() {
       photo: {width: 900, height: 1170, alpha: false},
       piece: {width: 1400, height: 900, alpha: true},
       overlay: {width: 1080, height: 1080, alpha: false, overlay: true},
+      // Drawn on this machine, from the file name, with no provider and no
+      // archive. `draw` is what says so — nothing else about the kind differs.
+      surface: {width: 1080, height: 1920, alpha: false, draw: 'surface'},
     },
     assets,
   };

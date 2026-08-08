@@ -123,6 +123,23 @@ ve sütunlar karenin altından taşar.
    grafiği zaten odur. Gazeteyi, eskizi, bot izini üreticiye yıkmayı denedik —
    patlayanlar tam onlar oldu.
 
+   **YÜZEY DE ÇİZİLİR — MEKÂN DEĞİLDİR.** Duvar bir mekân değildir. Su, gökyüzü,
+   zemin, kâğıt, bir müze vitrininin arkasındaki karanlık da değil: bunlar
+   çekimin üstüne kurulduğu ZEMİNDİR ve hiçbir fotoğraf arşivi onları
+   indekslemez. Commons'a "düz gri laboratuvar duvarı" dersen beyaz bir oda,
+   "koyu yeşil su" dersen bir gölün hava fotoğrafı, "müze deposu çekmeceleri"
+   dersen antika bir konsol gelir. Üç bölüm boyunca arama terimlerini elle
+   düzelttik ve her seferinde BAŞKA bir yanlış resim geldi — çünkü sorun arama
+   değil: kimse boş bir duvarın fotoğrafını çekip yüklemiyor. Artık `layers`
+   içinde `"kind": "surface"` var: `scripts/lib/surface.mjs` onu bu makinede,
+   dosya adından, AĞSIZ çizer — leke, malzemenin yaptığı tek şey (suyun bandı,
+   ahşabın damarı, çekmece duvarının dikişi ve kulbu), tek yandan gelen ışık,
+   grain. Aynı isim aynı yüzeyi verir ve başka bir şey OLARAK geri gelemez.
+   Yazar "düz bir X" diye tarif ettiği her şeyi böyle ister; `write-episode.mjs`
+   fotoğraf olarak istenen boş zemini reddeder. Ve yüzey karenin en arkasındaki
+   şeydir: ışığı 1.2'yi geçmez, çünkü öndeki plakayı yutan bir arka plan zaten
+   arka plan değildir.
+
    **VE BU KANUN `props` İLE UYGULANIR.** Referans reel ~20 asset üstünde
    duruyor ve yalnız DÖRDÜ arka plan; kalan on altısı plaket, gazete, kart,
    tel-kafes, ışık huzmesi — hepsi grafik. Bu hat altı arka plan yapıp bölüm
