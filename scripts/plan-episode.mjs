@@ -170,6 +170,72 @@ export function earnsHighlight(line) {
   return Boolean(line?.pieces?.length) && LIT_WORDS.test(line?.vo ?? '');
 }
 
+/**
+ * HOW A SHOT ARRIVES — and the sentence decides, not the die.
+ *
+ * The templates are chosen by the line, the motifs are chosen by the line, the
+ * grade is chosen by the line. The CUT was still being drawn from a hat, which
+ * put a slam on a quiet line and a soft focus-hunt on the hardest beat in the
+ * reel — backwards, and the one editorial decision nothing was making.
+ *
+ * A cut is a piece of punctuation. Five of them, and each answers a different
+ * kind of sentence:
+ *
+ *   slam    something LANDED. A crossing, a declaration, a door.
+ *   rack    something was NOTICED. The lens had not found it yet.
+ *   slip    something was PUT DOWN or laid out — a paper, a list, an offer.
+ *   flare   a splice in the print, for the beat that breaks the story in half.
+ *   blinds  a room being opened on. Surveillance, interiors, the found thing.
+ *
+ * First match wins, so the sharpest claims come first.
+ */
+const CUT_WORDS = [
+  ['slam', /\b(cross\w*|invad\w*|struck?|hit|slam\w*|declar\w*|seiz\w*|smash\w*|broke|burst|fell|collaps\w*|crash\w*|arriv\w*|land\w*)\b/i],
+  ['flare', /\b(kill\w*|died?|dead|burn\w*|explo\w*|war|shot|end\w*|last|final|never)\b/i],
+  ['rack', /\b(saw|seen|notic\w*|found|discover\w*|realis\w*|realiz\w*|watch\w*|look\w*|appear\w*|learn\w*)\b/i],
+  ['slip', /\b(gave|offer\w*|sent|wrote|signed?|paid|handed|ask\w*|demand\w*|list\w*|pass\w*)\b/i],
+  ['blinds', /\b(room|office|house|inside|behind|door|window|hidden|secret|quiet\w*)\b/i],
+];
+
+/**
+ * A cut chosen by the sentence, then by the rules, then by the die — and its
+ * LENGTH from the same reading. A hard arrival cuts short and lands; a noticing
+ * takes longer because the whole point of it is the lens catching up.
+ */
+export function cutFor(line, previous, allowed, rand) {
+  const named = line?.shot?.cut;
+  if (typeof named === 'string' && TRANSITIONS.includes(named)) {
+    return {kind: named, frames: Number(line?.shot?.cutFrames) || (named === 'slam' || named === 'flare' ? 6 : 11)};
+  }
+
+  /**
+   * WHAT THE SENTENCE SAYS BEATS WHAT THE RULE PREFERS.
+   *
+   * The anti-repeat rule is right about a DERIVED cut: pulled from a hat twice
+   * running it stops being a choice and becomes a tic. It is wrong about a cut
+   * the sentence asked for, and the first version let it win — the closing line
+   * of a reel, "sixty million people were dead", matched `flare` and was denied
+   * it because the shot before had flared, so the verdict of the whole episode
+   * arrived on venetian blinds.
+   *
+   * So the sentence is read for EVERY cut it earns, in order of sharpness, and
+   * the first one that is not a repeat is taken. Only when the sentence has
+   * nothing to say does the die get a turn — and there the rule still holds.
+   */
+  const earned = CUT_WORDS.filter(([, re]) => re.test(line?.vo ?? '')).map(([kind]) => kind);
+  const fresh = earned.find((kind) => kind !== previous);
+  const choices = allowed.filter((k) => k !== previous);
+  const chosen = fresh ?? earned[0] ?? pick(rand, choices.length ? choices : allowed);
+
+  // A hard arrival cuts SHORT and lands; a noticing takes longer, because the
+  // whole point of it is the lens catching up.
+  const hard = chosen === 'slam' || chosen === 'flare';
+  return {
+    kind: chosen,
+    frames: Number(line?.shot?.cutFrames) || (hard ? 5 + Math.round(rand() * 3) : 9 + Math.round(rand() * 5)),
+  };
+}
+
 const MARKS = ['underline', 'oval', 'bracket', 'box', 'strike'];
 const TRANSITIONS = ['slam', 'slip', 'flare', 'rack', 'blinds'];
 
@@ -1059,7 +1125,6 @@ function buildStack({line, ground, rand, groundDepth, spread = 0, cutouts = fals
  */
 function planContinuation({line, index, part, fragment, frames: measured, rand, look, previousTransition, plate, side, cutouts, recentProps}) {
   const assetBase = `s${String(index + 1).padStart(2, '0')}-${line.slug ?? 'shot'}`;
-  const choices = look.transitions.filter((k) => k !== previousTransition);
   const corner = part % 4;
   const frames = measured ?? framesFor(fragment);
   const lines = captionLines(fragment);
@@ -1099,7 +1164,9 @@ function planContinuation({line, index, part, fragment, frames: measured, rand, 
     sceneType: 'composite',
     voText: fragment,
     durationInFrames: frames,
-    transition: {kind: pick(rand, choices), frames: 7 + Math.round(rand() * 5)},
+    // A continuation cuts on the FRAGMENT it is about to speak, not on the whole
+    // line — that is the half of the sentence this shot exists for.
+    transition: cutFor({...line, vo: fragment}, previousTransition, look.transitions, rand),
     assets,
     layers,
     // A continuation is the same room seen from another corner, so the drawn
@@ -1183,8 +1250,7 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
   // Never the same arrival twice running: a repeated transition stops being a
   // choice and becomes a tic. Short, too — a cut that takes half a second is a
   // dissolve, and this reel is meant to CUT.
-  const choices = look.transitions.filter((k) => k !== previousTransition);
-  const transition = index === 0 ? null : {kind: pick(rand, choices), frames: 7 + Math.round(rand() * 5)};
+  const transition = index === 0 ? null : cutFor(line, previousTransition, look.transitions, rand);
 
   const assetBase = `s${String(index + 1).padStart(2, '0')}-${(line.slug ?? beat)}`;
   const id = assetBase;

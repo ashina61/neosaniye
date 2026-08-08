@@ -158,7 +158,7 @@ export const WireFrame: React.FC<{
   from?: number;
   over?: number;
   dash?: number;
-}> = ({x, y, size, shape = 'diamond', colour = '#f6ead0', thickness = 3, from = 0, over = 14, dash = 14}) => {
+}> = ({x, y, size, shape = 'diamond', colour = '#f6ead0', thickness = 5, from = 0, over = 14, dash = 18}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const stepped = posterizeTime(frame, fps, 12);
@@ -192,7 +192,23 @@ export const WireFrame: React.FC<{
           strokeWidth={thickness}
           strokeDasharray={`${dash} ${dash * 0.8}`}
           strokeDashoffset={LENGTH * (1 - progress)}
-          opacity={0.85}
+          strokeLinecap="round"
+          opacity={0.92}
+        />
+        {/* A SECOND PASS, OFFSET. Nobody draws a shape round something once and
+            gets it right: the line doubles back, thicker in places, slightly
+            out of register. One stroke is a vector; two is a hand. It draws a
+            beat behind the first so you see it happen. */}
+        <path
+          d={path}
+          fill="none"
+          stroke={colour}
+          strokeWidth={thickness * 0.6}
+          strokeDasharray={`${dash * 1.7} ${dash * 0.6}`}
+          strokeDashoffset={LENGTH * (1 - drawOn(stepped, [from + 3, from + over + 5]))}
+          strokeLinecap="round"
+          opacity={0.5}
+          transform={`translate(${1.5 + shiver * 0.6} ${-1.5 - shiver * 0.4})`}
         />
       </svg>
     </AbsoluteFill>
