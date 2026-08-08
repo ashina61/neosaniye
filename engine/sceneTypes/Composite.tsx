@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import type {SceneProps} from './types';
 import type {LayerSpec} from '../schema';
-import {CLAMP, boil, focusHunt, holdKeyframes, posterizeTime, springEntrance} from '../motion';
+import {CLAMP, boil, dampedSwing, focusHunt, holdKeyframes, posterizeTime, springEntrance} from '../motion';
 import {Fog, Glow} from '../draw/Glow';
 import {WordStack} from '../draw/Type';
 import {Annotation, type MarkKind} from '../draw/Annotation';
@@ -83,6 +83,24 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
       layer.from === undefined ? 1 : springEntrance(stepped, fps, {delay: layer.from, stiffness: 48, mass: 1});
     if (enter <= 0.001) return null;
 
+    /**
+     * THE LAYER'S OWN MOVE. The camera push is shared; this is not.
+     *
+     * A plate that only rides the push can do one thing, and six of them doing
+     * that one thing together is a photograph with extra files behind it. The
+     * reference's offer scene is two hands entering from OPPOSITE edges a
+     * second apart — same backdrop, same push, and it reads as an event purely
+     * because each plate travels on its own from its own side.
+     */
+    const travel = layer.enter ? (1 - enter) * (layer.enterDistance ?? width * 0.9) : 0;
+    const enterX = layer.enter === 'left' ? -travel : layer.enter === 'right' ? travel : 0;
+    const enterY = layer.enter === 'top' ? -travel : layer.enter === 'bottom' ? travel : 0;
+    // A decaying swing about its own base — it swings hard, then settles. A
+    // constant wobble is a loop; the decay is what makes it an arrival.
+    const swing = layer.swing
+      ? dampedSwing(stepped, {amplitude: layer.swing, rate: 0.5, decay: 0.05, delay: layer.from ?? 0})
+      : 0;
+
     // THE HIGHLIGHT IS THE LAYER AGAIN. Same artwork, recoloured, switched on
     // and off on HOLD keyframes — instant, never a fade, because the whole
     // character of it is that there is no ramp. A layer that asks to flicker
@@ -112,7 +130,9 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
           style={{
             ...common,
             transformOrigin: origin,
-            transform: `translate(${drift}px, ${driftY}px) scale(${scale * life.scale})`,
+            transform:
+              `translate(${drift + enterX}px, ${driftY + enterY}px) ` +
+              `scale(${scale * life.scale}) rotate(${swing}deg)`,
           }}
         >
           <Img src={staticFile(src)} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
@@ -132,10 +152,10 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
       transformOrigin: anchor === 'bottom' ? '50% 100%' : '50% 50%',
       transform:
         `translate(-50%, ${anchor === 'bottom' ? '0' : '-50%'}) ` +
-        `translate(${drift}px, ${driftY}px) ` +
+        `translate(${drift + enterX}px, ${driftY + enterY}px) ` +
         `scale(${scale * life.scale}) ` +
         (asShadow ? `scaleY(-0.55) skewX(${layer.shadowSkew ?? -53}deg) ` : '') +
-        `rotate(${(layer.rotate ?? 0) + life.rotate}deg)`,
+        `rotate(${(layer.rotate ?? 0) + life.rotate + swing}deg)`,
       ...common,
     };
     if (anchor === 'bottom') box.bottom = height - standY;

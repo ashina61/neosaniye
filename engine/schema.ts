@@ -140,6 +140,27 @@ export type LayerSpec = {
   /** Frames, scene-relative, over which this layer springs in. */
   from?: number;
   /**
+   * WHICH EDGE IT COMES IN FROM — the move this layer owns, as opposed to the
+   * camera move the whole shot shares.
+   *
+   * The reference reel's offer scene is the argument for this and it is not
+   * subtle: one hand slides in from the LEFT, the other from the RIGHT, a
+   * second apart. Both are flat cut-outs on one backdrop; the only thing that
+   * makes it a scene rather than a picture is that each plate travels on its
+   * own, from its own side, on its own beat. Without this every layer could do
+   * exactly one thing — sit still and ride the push — which is a slideshow with
+   * extra files in it.
+   */
+  enter?: 'left' | 'right' | 'top' | 'bottom';
+  /** How far it travels in, in pixels. Defaults to most of the frame. */
+  enterDistance?: number;
+  /**
+   * A DECAYING SWING about its own base, in degrees. The foam finger wagging
+   * "no", a plate settling after it lands, a sign swaying. Zero for anything
+   * that should arrive dead still.
+   */
+  swing?: number;
+  /**
    * THE HIGHLIGHT TRICK — the shadow trick again, with colour instead of black.
    *
    * A second copy of the SAME artwork, recoloured, laid exactly over the first
