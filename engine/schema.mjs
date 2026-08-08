@@ -288,6 +288,23 @@ export function validateEpisodeConfig(config) {
      * room — unlike a motif, which is pinned to the frame because it is a
      * graphic ABOUT the sentence rather than a thing inside it.
      */
+    /**
+     * AN ASSET PATH STAYS INSIDE THE EPISODE.
+     *
+     * The episode folder is the render's public directory. A path that climbs
+     * out of it does not fail, it RESOLVES — and pulls whatever it lands on
+     * into the bundle. `audio` has been guarded against this since the
+     * beginning and the asset roles never were, which is the kind of gap that
+     * only shows up when somebody writes a brief by hand.
+     */
+    for (const [role, file] of Object.entries(scene.assets ?? {})) {
+      if (typeof file !== 'string' || !file.trim()) {
+        push(`${where}.assets["${role}"]: must be a non-empty path`);
+      } else if (file.startsWith('/') || file.includes('..')) {
+        push(`${where}.assets["${role}"]: must stay inside the episode (got "${file}")`);
+      }
+    }
+
     if (scene.props !== undefined) {
       if (!Array.isArray(scene.props)) push(`${where}.props: must be an array`);
       else {

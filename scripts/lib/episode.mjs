@@ -4,8 +4,23 @@ import {fileURLToPath} from 'node:url';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
+/**
+ * WHERE AN EPISODE LIVES.
+ *
+ * Normally `episodes/<id>`, and an id is a name — never a path. A hand-written
+ * `--episode=../secrets` would otherwise resolve wherever it liked, and every
+ * script here reads and WRITES inside whatever comes back.
+ *
+ * `EPISODES_DIR` moves the whole shelf somewhere else, which is what lets the
+ * robustness tests plan hostile briefs in a temp directory instead of dropping
+ * scratch folders into the repo for the other tests to trip over.
+ */
 export function episodeDir(episodeId) {
-  return path.join(ROOT, 'episodes', episodeId);
+  const id = String(episodeId ?? '');
+  if (!/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(id)) {
+    throw new Error(`"${id}" is not an episode id — a name, not a path`);
+  }
+  return path.join(process.env.EPISODES_DIR || path.join(ROOT, 'episodes'), id);
 }
 
 /** `--episode=id` or `--episode id`. */

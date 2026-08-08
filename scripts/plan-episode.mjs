@@ -36,6 +36,7 @@ import {readFile, rm, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {episodeDir, parseArgs} from './lib/episode.mjs';
+import {PROP_KINDS} from '../engine/schema.mjs';
 
 const FPS = 30;
 const WIDTH = 1080;
@@ -56,6 +57,24 @@ function seeded(seed) {
     return ((h ^ (h >>> 14)) >>> 0) / 4294967296;
   };
 }
+
+/**
+ * A NUMBER, OR THE FALLBACK — and `??` cannot do this job.
+ *
+ * `Number(undefined) ?? 0.2` is NaN, because `??` catches null and undefined
+ * and NaN is neither. Seven placements in this file were written that way, so
+ * every optional coordinate a brief left out became NaN, travelled through
+ * Math.round untouched, and landed in the config as `"depth": null` — which the
+ * schema then refused with a message about the CONFIG rather than about the
+ * brief that caused it. A layer written `{"role": "x"}` was enough.
+ *
+ * Fractions are also CLAMPED here rather than at each call site, because a
+ * brief is written by hand and a hand types 1.5 where it meant 0.15.
+ */
+const num = (value, fallback, lo = -Infinity, hi = Infinity) => {
+  const n = Number(value);
+  return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : fallback;
+};
 
 const pick = (rand, list) => list[Math.floor(rand() * list.length) % list.length];
 const between = (rand, [lo, hi]) => lo + rand() * (hi - lo);
@@ -619,6 +638,18 @@ function planProps({line, rand, look, side, durationInFrames, recentProps, beat}
   const directed = line?.shot?.props;
   if (Array.isArray(directed)) {
     return directed.map((prop) => {
+      /**
+       * SAY IT HERE, WHERE THE BRIEF IS. An unknown kind used to travel all the
+       * way into scene-config.json and fail at `npm run validate`, which then
+       * blamed the CONFIG — a generated file nobody wrote — for something a
+       * hand-typed line got wrong two steps earlier. The brief is the thing
+       * that needs changing, so the brief is what the message names.
+       */
+      if (!PROP_KINDS.includes(prop?.kind)) {
+        throw new BriefError(
+          `line "${line.slug ?? '?'}": prop kind "${prop?.kind}" is not one of ${PROP_KINDS.join(', ')}`,
+        );
+      }
       const width = Math.round(WIDTH * Math.min(0.98, Math.max(0.15, Number(prop.size) || 0.4)));
       const margin = width / 2 + 24;
       return {
@@ -636,11 +667,11 @@ function planProps({line, rand, look, side, durationInFrames, recentProps, beat}
         // Clamped even here. A director gives an intention, not a guarantee that
         // the object's own width keeps it on screen, and "Hanover · 1956"
         // delivered as "Hanover · 19" is nobody's intention.
-        x: Math.round(Math.min(WIDTH - margin, Math.max(margin, WIDTH * (Number(prop.x) ?? 0.5)))),
-        y: Math.round(HEIGHT * (Number(prop.y) ?? 0.55)),
-        depth: round(Math.min(1, Math.max(0, Number(prop.depth) ?? 0.6)), 2),
-        rotate: Number(prop.tilt) || 0,
-        from: Math.round(durationInFrames * Math.min(0.8, Math.max(0, Number(prop.at) || 0))),
+        x: Math.round(Math.min(WIDTH - margin, Math.max(margin, WIDTH * num(prop.x, 0.5, 0, 1)))),
+        y: Math.round(HEIGHT * num(prop.y, 0.55, 0, 1)),
+        depth: round(num(prop.depth, 0.6, 0, 1), 2),
+        rotate: num(prop.tilt, 0, -45, 45),
+        from: Math.round(durationInFrames * num(prop.at, 0, 0, 0.8)),
       };
     });
   }
@@ -832,6 +863,32 @@ function planProps({line, rand, look, side, durationInFrames, recentProps, beat}
  * props take `size` as a fraction of the width because a sheet of paper is
  * measured across. Two names, so the two can never be confused for each other.
  */
+/**
+ * A FILE NAME, AND NOTHING ELSE.
+ *
+ * The episode folder IS the render's public directory, so a path that climbs
+ * out of it does not fail — it resolves, and pulls whatever it lands on into
+ * the bundle. A brief naming `../../../../etc/passwd` produced exactly that,
+ * because asset paths were interpolated straight into `assets/${...}` while
+ * `audio` had been guarded against the same thing since the beginning.
+ *
+ * A brief has no legitimate reason to name a directory: its artwork lives in
+ * its own assets folder. So the name is reduced to a base name and anything
+ * left that is not a file name is refused rather than quietly rewritten —
+ * silently loading a different file than the one asked for is worse than
+ * stopping.
+ */
+class BriefError extends Error {}
+
+function assetFile(name, where) {
+  const raw = String(name ?? '').trim();
+  const base = raw.split(/[\\/]/).pop() ?? '';
+  if (!base || base === '.' || base === '..' || base !== raw) {
+    throw new BriefError(`${where}: "${raw}" is not a file name — an asset lives in the episode's own assets folder`);
+  }
+  return base;
+}
+
 function directedStack({shot, rand, durationInFrames = 90}) {
   const assets = {};
   const layers = [];
@@ -847,11 +904,11 @@ function directedStack({shot, rand, durationInFrames = 90}) {
     const role = String(layer.role ?? `plate${i}`).replace(/[^a-z0-9]+/gi, '-').toLowerCase();
     // The file is named by the EPISODE, which is where file names belong. The
     // engine still never sees it: the template reads a role.
-    assets[layer.optional ? `?${role}` : role] = `assets/${layer.asset}`;
+    assets[layer.optional ? `?${role}` : role] = `assets/${assetFile(layer.asset, `layer "${role}"`)}`;
     if (layer.fill !== false && !layer.height) {
       layers.push({
         role,
-        depth: round(Number(layer.depth) ?? 0.2, 2),
+        depth: round(num(layer.depth, 0.2, 0, 1), 2),
         anchor: 'fill',
         ...(layer.alive ? {alive: true} : {}),
         ...beat(layer),
@@ -861,11 +918,11 @@ function directedStack({shot, rand, durationInFrames = 90}) {
     }
     layers.push({
       role,
-      depth: round(Number(layer.depth) ?? 1, 2),
+      depth: round(num(layer.depth, 1, 0, 1), 2),
       anchor: 'bottom',
-      height: Math.round(HEIGHT * Number(layer.height)),
-      x: Math.round(WIDTH * (Number(layer.x) ?? 0.5)),
-      y: Math.round(HEIGHT * (Number(layer.y) ?? 0.94)),
+      height: Math.round(HEIGHT * num(layer.height, 0.5, 0.02, 1.6)),
+      x: Math.round(WIDTH * num(layer.x, 0.5, 0, 1)),
+      y: Math.round(HEIGHT * num(layer.y, 0.94, 0, 1)),
       ...(layer.alive ? {alive: true} : {}),
       ...(layer.shadow
         ? {shadow: true, shadowSkew: Number(layer.shadowSkew) || -53, shadowOpacity: Number(layer.shadowOpacity) || 0.55}
@@ -1657,6 +1714,28 @@ async function main() {
    * way that matters: it is what will actually be rendered, not a description
    * of what someone intends to render.
    */
+  /**
+   * WHAT THE BRIEF GETS WRONG, SAID BEFORE A RENDER IS PAID FOR.
+   *
+   * `npm run write` holds a brief to every rule in this repo — six lines, a
+   * stack, a directed shot, words that come out of the line. A brief EDITED BY
+   * HAND skips that step entirely, and this planner used to compile whatever it
+   * was handed: fifteen lines planned into a sixty-second reel without a word,
+   * which is the exact failure the six-line rule exists to prevent.
+   *
+   * Warnings, not refusals. Every episode in this repo predates half these
+   * rules and all of them still render; turning the checks into a gate here
+   * would break work that is finished. The job is to make sure nobody finds out
+   * from the finished mp4.
+   */
+  const {problemsWith} = await import('./write-episode.mjs');
+  const notes = problemsWith(brief);
+  if (notes.length) {
+    console.log(`\n  ${notes.length} thing(s) the brief gets wrong — it still planned, but:`);
+    for (const note of notes.slice(0, 8)) console.log(`   · ${note}`);
+    if (notes.length > 8) console.log(`   · …and ${notes.length - 8} more`);
+  }
+
   console.log('\n  STORYBOARD');
   for (const [index, line] of brief.lines.entries()) {
     const own = planned.filter((p) => p.scene.id.startsWith(`s${String(index + 1).padStart(2, '0')}-`));
@@ -1712,7 +1791,22 @@ async function main() {
 // Only when run as a command; the tests import the rhythm rules from here.
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main().catch((error) => {
-    console.error(error?.stack || error?.message || error);
+    /**
+     * A BAD BRIEF IS NOT A CRASH.
+     *
+     * Everything upstream of this script is written by hand or by a model, so
+     * "the brief said something impossible" is an ordinary Tuesday and it
+     * deserves a sentence, not a stack trace. A stack points at the planner,
+     * which is never the thing that needs changing — the line is.
+     *
+     * A real bug still gets its stack, because that IS the thing that needs
+     * changing and hiding it would cost an afternoon.
+     */
+    if (error instanceof BriefError) {
+      console.error(`✗ the brief cannot be compiled\n\n   ${error.message}\n`);
+    } else {
+      console.error(error?.stack || error?.message || error);
+    }
     process.exit(1);
   });
 }
