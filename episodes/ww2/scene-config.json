@@ -1,6 +1,7 @@
 {
   "id": "ww2",
   "title": "The two days that started the war",
+  "audio": "audio/vo.wav",
   "fps": 30,
   "width": 1080,
   "height": 1920,
@@ -32,7 +33,7 @@
       "id": "s01-peace",
       "sceneType": "composite",
       "voText": "In the summer of 1939 Europe had been at peace for twenty years.",
-      "durationInFrames": 118,
+      "durationInFrames": 134,
       "assets": {
         "map": "assets/europe-1939.jpg"
       },
@@ -52,7 +53,7 @@
           "y": 1613,
           "depth": 0.1,
           "rotate": 0,
-          "from": 41
+          "from": 47
         }
       ],
       "params": {
@@ -60,7 +61,7 @@
         "anchorY": 883,
         "pushFrom": 1.45,
         "pushTo": 1,
-        "pushEndFrame": 101,
+        "pushEndFrame": 115,
         "glowX": -438,
         "glowY": 461,
         "glowSize": 464,
@@ -75,7 +76,7 @@
         "captionFrame": 10,
         "captionEvery": 19,
         "captionSize": 82,
-        "captionRecedeAt": 85,
+        "captionRecedeAt": 96,
         "accent": "#e8e2d4",
         "motif": "tally",
         "motifX": 84,
@@ -91,7 +92,7 @@
       "id": "s02-border",
       "sceneType": "composite",
       "voText": "On the first of September,",
-      "durationInFrames": 64,
+      "durationInFrames": 68,
       "transition": {
         "kind": "slam",
         "frames": 8
@@ -127,7 +128,7 @@
           "y": 384,
           "depth": 0.1,
           "rotate": 0,
-          "from": 32
+          "from": 34
         }
       ],
       "params": {
@@ -135,7 +136,7 @@
         "anchorY": 1690,
         "pushFrom": 1,
         "pushTo": 1.42,
-        "pushEndFrame": 55,
+        "pushEndFrame": 58,
         "glowX": -312,
         "glowY": 329,
         "glowSize": 478,
@@ -150,7 +151,7 @@
         "captionFrame": 10,
         "captionEvery": 21,
         "captionSize": 93,
-        "captionRecedeAt": 46,
+        "captionRecedeAt": 49,
         "accent": "#e8e2d4",
         "motif": "route",
         "motifX": 172,
@@ -166,7 +167,7 @@
       "id": "s02-border-b",
       "sceneType": "composite",
       "voText": "German tanks crossed the Polish border.",
-      "durationInFrames": 75,
+      "durationInFrames": 81,
       "transition": {
         "kind": "flare",
         "frames": 8
@@ -210,7 +211,7 @@
         "anchorY": 1690,
         "pushFrom": 1.4,
         "pushTo": 1.09,
-        "pushEndFrame": 71,
+        "pushEndFrame": 76,
         "accent": "#e8e2d4",
         "caption": [
           "German tanks",
@@ -236,7 +237,7 @@
       "id": "s03-ultimatum",
       "sceneType": "composite",
       "voText": "Britain and France gave Berlin two days to pull them back.",
-      "durationInFrames": 118,
+      "durationInFrames": 113,
       "transition": {
         "kind": "rack",
         "frames": 12
@@ -278,7 +279,7 @@
           "y": 1190,
           "depth": 0.86,
           "rotate": 5,
-          "from": 54
+          "from": 52
         }
       ],
       "params": {
@@ -286,7 +287,7 @@
         "anchorY": 1152,
         "pushFrom": 1.16,
         "pushTo": 1,
-        "pushEndFrame": 101,
+        "pushEndFrame": 97,
         "glowX": -482,
         "glowY": 238,
         "glowSize": 521,
@@ -301,7 +302,7 @@
         "captionFrame": 10,
         "captionEvery": 23,
         "captionSize": 86,
-        "captionRecedeAt": 85,
+        "captionRecedeAt": 81,
         "accent": "#e8e2d4",
         "motif": "tally",
         "motifX": 168,
@@ -317,7 +318,7 @@
       "id": "s04-eleven",
       "sceneType": "portal-zoom-reveal",
       "voText": "No answer came. The ultimatum ran out at eleven in the morning.",
-      "durationInFrames": 118,
+      "durationInFrames": 139,
       "transition": {
         "kind": "flare",
         "frames": 10
@@ -329,19 +330,19 @@
       "params": {
         "frameWidth": 812,
         "frameRatio": 1.09,
-        "pushEndFrame": 42,
-        "detachFrame": 64,
-        "throughEndFrame": 86,
+        "pushEndFrame": 50,
+        "detachFrame": 72,
+        "throughEndFrame": 94,
         "weldRatio": 0.358,
         "wallScaleEnd": 6.9,
         "accent": "#e8e2d4",
         "caption": [],
         "captionX": 84,
         "captionY": 1288,
-        "captionFrame": 90,
+        "captionFrame": 98,
         "captionEvery": 11,
         "captionSize": 91,
-        "captionRecedeAt": 100
+        "captionRecedeAt": 121
       },
       "props": [
         {
@@ -354,7 +355,7 @@
           "y": 845,
           "depth": 0.95,
           "rotate": 0,
-          "from": 85
+          "from": 100
         }
       ]
     },
@@ -362,7 +363,7 @@
       "id": "s05-war",
       "sceneType": "composite",
       "voText": "By that evening two empires were at war with Germany.",
-      "durationInFrames": 118,
+      "durationInFrames": 103,
       "gradeOverride": {
         "saturate": 0.58,
         "contrast": 1.14,
@@ -393,7 +394,7 @@
           "y": 922,
           "depth": 0.85,
           "rotate": -3,
-          "from": 24
+          "from": 21
         }
       ],
       "params": {
@@ -401,7 +402,7 @@
         "anchorY": 1344,
         "pushFrom": 1,
         "pushTo": 1.24,
-        "pushEndFrame": 101,
+        "pushEndFrame": 89,
         "glowX": -219,
         "glowY": 522,
         "glowSize": 317,
@@ -416,7 +417,7 @@
         "captionFrame": 10,
         "captionEvery": 26,
         "captionSize": 85,
-        "captionRecedeAt": 85,
+        "captionRecedeAt": 74,
         "accent": "#e8e2d4",
         "motif": "embers",
         "motifX": 489,
@@ -432,7 +433,7 @@
       "id": "s06-cost",
       "sceneType": "title-slate",
       "voText": "Six years later, sixty million people were dead.",
-      "durationInFrames": 97,
+      "durationInFrames": 108,
       "gradeOverride": {
         "saturate": 0.5,
         "contrast": 1.16,
@@ -465,7 +466,7 @@
         "markY": 820,
         "markWidth": 560,
         "markHeight": 300,
-        "markFrame": 33
+        "markFrame": 37
       },
       "props": []
     }
