@@ -141,8 +141,13 @@ shot at a time, and say why in the signature.
     "props":     the drawn objects standing in this shot. THIS IS THE SHOT'S
                  CONTENT, not decoration:
                    "kind"  plaque | newspaper | card | print | wire | beam
-                   "text"  what it says. A plaque carries a label ("Hanover ·
-                           1956"); a newspaper's text is its HEADLINE.
+                   "text"  what it says, AND IT COMES OUT OF THE LINE. The
+                           reference's three front pages read NO LATE FEES, NO
+                           STORES, CUSTOMER FIRST while the narrator says "No
+                           late fees. No stores. Customer first." — same words,
+                           same moment. A headline that paraphrases the line is
+                           a second, quieter voice arguing with the first. Use
+                           the line's own words or leave the prop out.
                    "size"  fraction of the frame WIDTH, 0.2 to 0.95. A front
                            page that is the point of the shot is 0.8+; a
                            caption plaque is 0.3. A newspaper at 0.4 floating
@@ -280,7 +285,20 @@ export function problemsWith(brief) {
     // finished reel worth throwing away. One bare line is a rest; two is a
     // pattern.
     const pieces = Array.isArray(line?.pieces) ? line.pieces.map((p) => String(p ?? '').trim()).filter(Boolean) : [];
-    if (!pieces.length) flat += 1;
+
+    /**
+     * A STACK IS A STACK HOWEVER IT WAS DECLARED.
+     *
+     * `pieces` was the first way to say "these things stand in front of the
+     * backdrop" and it is the weaker one: a bare phrase, placed by rule. A
+     * directed `shot.layers` says the same thing and more — the file, the size,
+     * the point it stands on, the edge it enters from and what to draw or fetch
+     * for it. Counting only the old form told a brief that had done the work
+     * properly that it was six slides.
+     */
+    const standing = (line?.shot?.layers ?? []).filter((l) => l?.height !== undefined).length;
+    const drawn = (line?.shot?.props ?? []).length;
+    if (!pieces.length && !standing && !drawn) flat += 1;
     else if (pieces.length > 4) problems.push(`line ${i + 1}: ${pieces.length} pieces — four is already a crowded frame`);
 
     for (const piece of pieces) {
@@ -358,12 +376,39 @@ export function problemsWith(brief) {
         }
         if (prop.kind !== 'beam' && !String(prop.text ?? '').trim()) {
           problems.push(`line ${i + 1}: prop "${prop.kind}" carries no text — say what it says`);
+        } else if (prop.kind !== 'beam') {
+          /**
+           * WHAT IT SAYS IS WHAT IS BEING SAID.
+           *
+           * The reference reel's three front pages read NO LATE FEES, NO STORES,
+           * CUSTOMER FIRST while the narrator says "No late fees. No stores.
+           * Customer first." — the same words, at the same moment. That is why
+           * they land; a headline that paraphrases the line is a second, quieter
+           * voice arguing with the first one.
+           *
+           * So the words on a drawn object have to come OUT of the line. Not a
+           * summary of it, not a title for it: a fragment of it.
+           */
+          const words = (text) =>
+            String(text)
+              .toLowerCase()
+              .replace(/[^a-z0-9\s·]/g, ' ')
+              .split(/\s+/)
+              .filter((w) => w.length > 2);
+          const said = new Set(words(`${vo} ${line.title ?? ''} ${(line.caption ?? []).join(' ')}`));
+          const missing = words(prop.text).filter((w) => !said.has(w) && !/^\d+$/.test(w));
+          if (missing.length) {
+            problems.push(
+              `line ${i + 1}: prop says "${prop.text}" but the line never says ${missing.map((w) => `"${w}"`).join(', ')}` +
+                ` — put the line's own words on it`,
+            );
+          }
         }
       }
     }
   }
   if (flat > 1) {
-    problems.push(`${flat} lines have no pieces — a shot is a stack, and this is ${flat} slides`);
+    problems.push(`${flat} lines have nothing in front of the backdrop — a shot is a stack, and this is ${flat} slides`);
   }
   return problems;
 }

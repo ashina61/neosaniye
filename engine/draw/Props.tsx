@@ -52,6 +52,12 @@ export const DrawnProps: React.FC<{
 
         const depth = prop.depth ?? 0.6;
         const scale = 1 + (push - 1) * depth;
+        // ITS OWN ARRIVAL, from its own edge. Two papers landing from the same
+        // side are one event with a stutter; from opposite sides a beat apart
+        // they are two things happening.
+        const travel = prop.enter ? (1 - land) * (prop.enterDistance ?? width * 0.8) : 0;
+        const enterX = prop.enter === 'left' ? -travel : prop.enter === 'right' ? travel : 0;
+        const enterY = prop.enter === 'top' ? -travel : prop.enter === 'bottom' ? travel : 0;
         const w = prop.width ?? Math.round(width * 0.42);
         const x = prop.x ?? Math.round(width * 0.5);
         const y = prop.y ?? Math.round(height * 0.55);
@@ -66,7 +72,11 @@ export const DrawnProps: React.FC<{
           return (
             <AbsoluteFill
               key={key}
-              style={{transformOrigin: origin, transform: `scale(${scale})`, opacity: (prop.opacity ?? 1) * land}}
+              style={{
+                transformOrigin: origin,
+                transform: `translate(${enterX}px, ${enterY}px) scale(${scale})`,
+                opacity: (prop.opacity ?? 1) * land,
+              }}
             >
               {prop.kind === 'wire' ? (
                 <WireFrame x={x} y={y} size={w} shape={prop.shape ?? 'diamond'} colour={colour} from={from} />
@@ -111,7 +121,9 @@ export const DrawnProps: React.FC<{
                 // It arrives at an angle and settles level, so the rotation is
                 // scaled by the landing rather than held: a paper that lands
                 // already square was placed by a layout engine, not by a hand.
-                transform: `translate(-50%, -50%) rotate(${(prop.rotate ?? 0) * (2 - land)}deg)`,
+                transform:
+                  `translate(-50%, -50%) translate(${enterX}px, ${enterY}px) ` +
+                  `rotate(${(prop.rotate ?? 0) * (2 - land)}deg)`,
                 opacity: (prop.opacity ?? 1) * land,
               }}
             >

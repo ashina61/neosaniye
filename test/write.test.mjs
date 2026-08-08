@@ -21,11 +21,15 @@ import {jsonFrom, problemsWith, promptFor} from '../scripts/write-episode.mjs';
 // And a DIRECTED one. A brief that says what the shot is but not how it moves
 // leaves the camera and the composition to a seeded die, which is how six
 // different topics came out as six versions of the same reel.
-const shot = (signature = 'the caravan crests the dune and the camera falls back off it') => ({
+// WHAT THE PROP SAYS COMES OUT OF THE LINE, so the fixture takes it from there
+// too. The first version put one plaque reading "Mali · 1324" on all six lines
+// and the check caught it on the line about the Sahara — correctly, because a
+// caption that names something the narrator never says is a second voice.
+const shot = (label, signature = 'the caravan crests the dune and the camera falls back off it') => ({
   template: 'composite',
   signature,
   camera: {from: 1.0, to: 1.34, focus: 'hunt'},
-  props: [{kind: 'plaque', text: 'Mali · 1324', size: 0.34, x: 0.3, y: 0.78, depth: 0.6, at: 0.2}],
+  props: [{kind: 'plaque', text: label, size: 0.34, x: 0.3, y: 0.78, depth: 0.6, at: 0.2}],
 });
 
 const line = (slug, vo, pieces = ['camel standing in profile', 'man in robes standing']) => ({
@@ -33,7 +37,8 @@ const line = (slug, vo, pieces = ['camel standing in profile', 'man in robes sta
   vo,
   image: 'a wide empty landscape',
   pieces,
-  shot: shot(),
+  // The first long word of the line, which is by construction one of its own.
+  shot: shot(vo.split(/\s+/).find((w) => w.replace(/[^a-zA-Z]/g, '').length > 4) ?? 'road'),
 });
 const good = {
   lines: [
@@ -103,12 +108,15 @@ test('JSON is dug out of whatever the model wrapped it in', () => {
 test('a reel of flat photographs is refused — a shot is a stack', () => {
   // The failure this check exists for: six lines, one photograph each, every
   // other rule satisfied. It renders, it validates, and it is a slideshow.
-  const flat = {lines: good.lines.map((l) => ({slug: l.slug, vo: l.vo, image: l.image, shot: l.shot}))};
-  assert.ok(problemsWith(flat).some((p) => /6 lines have no pieces/.test(p)), problemsWith(flat).join(' | '));
+  // Nothing in front of the backdrop AT ALL — no pieces, no standing layers,
+  // no drawn props. However the stack is declared, this brief declares none.
+  const bare = (l) => ({slug: l.slug, vo: l.vo, image: l.image, shot: {...l.shot, props: []}});
+  const flat = {lines: good.lines.map(bare)};
+  assert.ok(problemsWith(flat).some((p) => /6 lines have nothing in front/.test(p)), problemsWith(flat).join(' | '));
 
   // ONE bare line is a rest, not a pattern — a reel that never lets a frame be
   // still is as tiring as one that is never anything else.
-  const oneBare = {lines: good.lines.map((l, i) => (i === 3 ? {slug: l.slug, vo: l.vo, image: l.image, shot: l.shot} : l))};
+  const oneBare = {lines: good.lines.map((l, i) => (i === 3 ? bare(l) : l))};
   assert.deepEqual(problemsWith(oneBare), []);
 });
 
@@ -133,6 +141,31 @@ test('five pieces is a crowded frame', () => {
     ),
   };
   assert.ok(problemsWith(many).some((p) => /5 pieces/.test(p)), problemsWith(many).join(' | '));
+});
+
+test('what a drawn object SAYS comes out of the line', () => {
+  /**
+   * The reference reel's three front pages read NO LATE FEES, NO STORES,
+   * CUSTOMER FIRST while the narrator says "No late fees. No stores. Customer
+   * first." — the same words at the same moment, which is why they land. A
+   * headline that paraphrases the line is a second, quieter voice arguing with
+   * the first one, and nothing else in this repo would ever notice.
+   */
+  const stray = {
+    lines: good.lines.map((l, i) =>
+      i === 0 ? {...l, shot: {...l.shot, props: [{kind: 'plaque', text: 'AN EMPIRE OF SALT', size: 0.3}]}} : l,
+    ),
+  };
+  assert.ok(problemsWith(stray).some((p) => /never says .*"salt"/.test(p)), problemsWith(stray).join(' | '));
+
+  // Numbers are exempt: a line saying "thirteen twenty-four" earns a plaque
+  // reading 1324, and spelling it out on brass would be absurd.
+  const figures = {
+    lines: good.lines.map((l, i) =>
+      i === 0 ? {...l, shot: {...l.shot, props: [{kind: 'plaque', text: 'Mali · 1324', size: 0.3}]}} : l,
+    ),
+  };
+  assert.deepEqual(problemsWith(figures), []);
 });
 
 test('the prompt carries the rules, not just the topic', () => {
