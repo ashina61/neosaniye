@@ -1,0 +1,218 @@
+{
+  "id": "ww2",
+  "title": "The two days that started the war",
+  "mood": "ash-grey",
+  "style": "documentary photograph, period-accurate 1939, available light, muted colour, fine grain, no text, no watermark, no modern objects",
+  "negative": "text, letters, words, watermark, logo, cartoon, cgi, modern clothing, colour film",
+  "lines": [
+    {
+      "slug": "peace",
+      "vo": "In the summer of 1939 Europe had been at peace for twenty years.",
+      "image": "a political map of Europe, edge to edge",
+      "pieces": [],
+      "shot": {
+        "template": "composite",
+        "signature": "the camera opens OUT off the map — we start close on one country and pull back until the whole continent is in frame, which is the only shot in the reel that gets wider",
+        "camera": {"from": 1.45, "to": 1.0, "focus": "hunt"},
+        "anchor": [0.52, 0.46],
+        "layers": [
+          {
+            "role": "map",
+            "asset": "europe-1939.jpg",
+            "depth": 0.14,
+            "kind": "backdrop",
+            "commons": ["Europe political map 1939", "map of Europe 1938", "Europe map interwar"],
+            "prompt": "a printed political map of Europe in 1939, muted paper, no text overlay"
+          }
+        ],
+        "props": [
+          {"kind": "plaque", "text": "Europe · 1939", "size": 0.34, "x": 0.5, "y": 0.84, "depth": 0.1, "at": 0.35}
+        ]
+      }
+    },
+    {
+      "slug": "border",
+      "vo": "On the first of September, German tanks crossed the Polish border.",
+      "image": "a raised wooden border barrier on an empty road",
+      "pieces": [],
+      "shot": {
+        "template": "composite",
+        "signature": "a tank enters from the LEFT and keeps coming while the camera pushes the other way — the one shot where something moves across the frame rather than into it",
+        "camera": {"from": 1.0, "to": 1.42, "focus": "sharp"},
+        "anchor": [0.42, 0.88],
+        "layers": [
+          {
+            "role": "road",
+            "asset": "border-road.jpg",
+            "depth": 0.2,
+            "kind": "backdrop",
+            "commons": ["Polish border post 1939", "border barrier 1939", "empty country road 1930s"],
+            "prompt": "an empty country road at a raised border barrier, 1939, overcast"
+          },
+          {
+            "role": "tank",
+            "asset": "tank-profile.png",
+            "kind": "piece",
+            "height": 0.26,
+            "x": 0.4,
+            "y": 0.9,
+            "depth": 0.9,
+            "at": 0.08,
+            "enter": "left",
+            "enterDistance": 1.1,
+            "commons": ["Panzer I side view", "German tank 1939 profile", "tank side view museum"],
+            "prompt": "one single 1939 German light tank in strict side profile, whole vehicle in frame, plain white background"
+          }
+        ],
+        "props": [
+          {"kind": "plaque", "text": "September", "size": 0.3, "x": 0.74, "y": 0.2, "depth": 0.1, "at": 0.5}
+        ]
+      }
+    },
+    {
+      "slug": "ultimatum",
+      "vo": "Britain and France gave Berlin two days to pull them back.",
+      "image": "a bare desk under a window",
+      "pieces": [],
+      "shot": {
+        "template": "composite",
+        "signature": "two documents land on the desk from OPPOSITE edges a second apart — one capital, then the other, answering",
+        "camera": {"from": 1.16, "to": 1.0, "focus": "hunt"},
+        "anchor": [0.5, 0.6],
+        "layers": [
+          {
+            "role": "desk",
+            "asset": "desk-surface.jpg",
+            "depth": 0.12,
+            "kind": "backdrop",
+            "commons": ["dark wood desk surface", "wooden table top texture"],
+            "prompt": "a dark wooden desk surface seen straight down, even light, no objects"
+          }
+        ],
+        "props": [
+          {
+            "kind": "card",
+            "text": "Britain",
+            "heading": "BRITAIN",
+            "lines": ["two days"],
+            "size": 0.44,
+            "x": 0.34,
+            "y": 0.42,
+            "depth": 0.78,
+            "at": 0.12,
+            "tilt": -6,
+            "enter": "left"
+          },
+          {
+            "kind": "card",
+            "text": "France",
+            "heading": "FRANCE",
+            "lines": ["two days"],
+            "size": 0.44,
+            "x": 0.64,
+            "y": 0.62,
+            "depth": 0.86,
+            "at": 0.46,
+            "tilt": 5,
+            "enter": "right"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "eleven",
+      "vo": "No answer came. The ultimatum ran out at eleven in the morning.",
+      "image": "a public clock face",
+      "pieces": [],
+      "shot": {
+        "template": "portal-zoom-reveal",
+        "signature": "we fly into the clock and a circle draws itself round the hands as we land on eleven",
+        "camera": {"from": 1.0, "to": 6.2, "focus": "sharp"},
+        "layers": [
+          {
+            "role": "wall",
+            "asset": "station-wall.jpg",
+            "depth": 0.06,
+            "kind": "backdrop",
+            "commons": ["railway station wall clock", "plaster wall texture"],
+            "prompt": "a plain plaster wall, even overcast light, nothing on it"
+          },
+          {
+            "role": "photo",
+            "asset": "clock-face.jpg",
+            "depth": 1.0,
+            "kind": "backdrop",
+            "commons": ["public clock face 1930s", "station clock face", "clock dial roman numerals"],
+            "prompt": "a public clock face reading eleven o'clock, 1930s, plain dial"
+          }
+        ],
+        "props": [
+          {"kind": "wire", "text": "eleven", "shape": "circle", "size": 0.46, "x": 0.5, "y": 0.44, "depth": 0.95, "at": 0.72}
+        ]
+      }
+    },
+    {
+      "slug": "war",
+      "vo": "By that evening two empires were at war with Germany.",
+      "image": "a newspaper seller's stand at dusk",
+      "pieces": [],
+      "title": "AT WAR",
+      "shot": {
+        "template": "composite",
+        "signature": "the front page fills the whole frame and lands hard — the headline IS the shot, and the street behind it never gets a look in",
+        "camera": {"from": 1.0, "to": 1.24, "focus": "sharp"},
+        "anchor": [0.5, 0.7],
+        "layers": [
+          {
+            "role": "street",
+            "asset": "dusk-street.jpg",
+            "depth": 0.18,
+            "kind": "backdrop",
+            "commons": ["London street 1939 evening", "city street dusk 1930s"],
+            "prompt": "a city street at dusk in 1939, wet pavement, low light, empty"
+          }
+        ],
+        "props": [
+          {
+            "kind": "newspaper",
+            "masthead": "THE EVENING",
+            "text": "AT WAR",
+            "date": "that evening",
+            "size": 0.84,
+            "x": 0.5,
+            "y": 0.48,
+            "depth": 0.85,
+            "at": 0.2,
+            "tilt": -3,
+            "enter": "bottom"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "cost",
+      "vo": "Six years later, sixty million people were dead.",
+      "image": "an empty grey sky",
+      "pieces": [],
+      "kicker": "1939 · 1945",
+      "title": "SIXTY MILLION",
+      "footer": "six years later",
+      "shot": {
+        "template": "title-slate",
+        "signature": "the verdict on a hard card with nothing behind it — the number arrives and the reel stops",
+        "camera": {"from": 1.18, "to": 1.0, "focus": "sharp"},
+        "layers": [
+          {
+            "role": "background",
+            "asset": "grey-sky.jpg",
+            "depth": 0.08,
+            "kind": "backdrop",
+            "commons": ["overcast grey sky", "empty sky clouds grey"],
+            "prompt": "a flat overcast grey sky, no horizon, no objects"
+          }
+        ],
+        "props": []
+      }
+    }
+  ]
+}

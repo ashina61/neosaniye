@@ -1120,7 +1120,12 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
   const motif = motifFor(line, recentMotifs, sceneType);
 
   if (sceneType === 'title-slate') {
-    scene.assets = {background: backdrop};
+    // A DIRECTED BACKGROUND, here too. These two templates are graphics-first
+    // and derive their own plate, which quietly ignored an episode that had
+    // named its own — the closing card asked for a file the brief never had.
+    scene.assets = line?.shot?.layers?.length
+      ? directedStack({shot: line.shot, rand, durationInFrames}).assets
+      : {background: backdrop};
     // A hand-written title can BE the number — "TWELVE YEARS" — and the old
     // rule only looked at the voiceover on the `number` beat, so a slate whose
     // whole point was a figure got neither the count nor the spin.
@@ -1183,7 +1188,12 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
       });
     }
   } else if (sceneType === 'evidence-board') {
-    scene.assets = {background: backdrop};
+    // A DIRECTED BACKGROUND, here too. These two templates are graphics-first
+    // and derive their own plate, which quietly ignored an episode that had
+    // named its own — the closing card asked for a file the brief never had.
+    scene.assets = line?.shot?.layers?.length
+      ? directedStack({shot: line.shot, rand, durationInFrames}).assets
+      : {background: backdrop};
     const items = (line.items ?? []).slice(0, 3);
     scene.params = {
       bgScale: round(between(rand, [1.05, 1.12]), 3),

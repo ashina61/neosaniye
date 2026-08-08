@@ -1,0 +1,473 @@
+{
+  "id": "ww2",
+  "title": "The two days that started the war",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "look": {
+    "posterizeFps": 12,
+    "grade": {
+      "saturate": 0.26,
+      "contrast": 1.15,
+      "sepia": 0.15,
+      "brightness": 1.07
+    },
+    "film": {
+      "grain": true,
+      "grunge": true,
+      "scanlines": true,
+      "vignette": true,
+      "gateWeave": true,
+      "grainOpacity": 0.4,
+      "grungeOpacity": 0.18,
+      "scanlineOpacity": 0.15,
+      "scanlinePeriod": 9,
+      "vignetteStrength": 0.42,
+      "weavePx": 7,
+      "weaveScale": 1.015
+    }
+  },
+  "scenes": [
+    {
+      "id": "s01-peace",
+      "sceneType": "composite",
+      "voText": "In the summer of 1939 Europe had been at peace for twenty years.",
+      "durationInFrames": 118,
+      "assets": {
+        "map": "assets/europe-1939.jpg"
+      },
+      "layers": [
+        {
+          "role": "map",
+          "depth": 0.14,
+          "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "Europe · 1939",
+          "width": 367,
+          "x": 540,
+          "y": 1613,
+          "depth": 0.1,
+          "rotate": 0,
+          "from": 41
+        }
+      ],
+      "params": {
+        "anchorX": 562,
+        "anchorY": 883,
+        "pushFrom": 1.45,
+        "pushTo": 1,
+        "pushEndFrame": 101,
+        "glowX": -438,
+        "glowY": 461,
+        "glowSize": 464,
+        "glowIntensity": 0.52,
+        "glowWarm": "#e8e2d4",
+        "glowDepth": 0.14,
+        "focusPx": 9,
+        "fog": 0.52,
+        "caption": [],
+        "captionX": 84,
+        "captionY": 902,
+        "captionFrame": 10,
+        "captionEvery": 19,
+        "captionSize": 82,
+        "captionRecedeAt": 85,
+        "accent": "#e8e2d4",
+        "motif": "tally",
+        "motifX": 84,
+        "motifY": 499,
+        "motifSize": 107,
+        "motifCount": 15,
+        "motifFrame": 26,
+        "motifColour": "#e8e2d4",
+        "motifOpacity": 0.91
+      }
+    },
+    {
+      "id": "s02-border",
+      "sceneType": "composite",
+      "voText": "On the first of September,",
+      "durationInFrames": 64,
+      "transition": {
+        "kind": "slam",
+        "frames": 8
+      },
+      "assets": {
+        "road": "assets/border-road.jpg",
+        "tank": "assets/tank-profile.png"
+      },
+      "layers": [
+        {
+          "role": "road",
+          "depth": 0.2,
+          "anchor": "fill"
+        },
+        {
+          "role": "tank",
+          "depth": 0.9,
+          "anchor": "bottom",
+          "height": 499,
+          "x": 432,
+          "y": 1728,
+          "from": 5,
+          "enter": "left",
+          "enterDistance": 1188
+        }
+      ],
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "September",
+          "width": 324,
+          "x": 799,
+          "y": 384,
+          "depth": 0.1,
+          "rotate": 0,
+          "from": 32
+        }
+      ],
+      "params": {
+        "anchorX": 454,
+        "anchorY": 1690,
+        "pushFrom": 1,
+        "pushTo": 1.42,
+        "pushEndFrame": 55,
+        "glowX": -312,
+        "glowY": 329,
+        "glowSize": 478,
+        "glowIntensity": 0.67,
+        "glowWarm": "#e8e2d4",
+        "glowDepth": 0.2,
+        "focusPx": 0,
+        "fog": 0.4,
+        "caption": [],
+        "captionX": 84,
+        "captionY": 385,
+        "captionFrame": 10,
+        "captionEvery": 21,
+        "captionSize": 93,
+        "captionRecedeAt": 46,
+        "accent": "#e8e2d4",
+        "motif": "route",
+        "motifX": 172,
+        "motifY": 1190,
+        "motifSize": 229,
+        "motifCount": 1,
+        "motifFrame": 18,
+        "motifColour": "#e8e2d4",
+        "motifOpacity": 0.92
+      }
+    },
+    {
+      "id": "s02-border-b",
+      "sceneType": "composite",
+      "voText": "German tanks crossed the Polish border.",
+      "durationInFrames": 75,
+      "transition": {
+        "kind": "flare",
+        "frames": 8
+      },
+      "assets": {
+        "road": "assets/border-road.jpg",
+        "tank": "assets/tank-profile.png"
+      },
+      "layers": [
+        {
+          "role": "road",
+          "depth": 0.2,
+          "anchor": "fill"
+        },
+        {
+          "role": "tank",
+          "depth": 0.9,
+          "anchor": "bottom",
+          "height": 499,
+          "x": 432,
+          "y": 1728,
+          "from": 6,
+          "enter": "left",
+          "enterDistance": 1188
+        }
+      ],
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "September",
+          "width": 324,
+          "x": 799,
+          "y": 384,
+          "depth": 0.1,
+          "rotate": 0,
+          "from": 0
+        }
+      ],
+      "params": {
+        "anchorX": 454,
+        "anchorY": 1690,
+        "pushFrom": 1.4,
+        "pushTo": 1.09,
+        "pushEndFrame": 71,
+        "accent": "#e8e2d4",
+        "caption": [
+          "German tanks",
+          "crossed the",
+          "Polish border"
+        ],
+        "captionX": 84,
+        "captionY": 318,
+        "captionFrame": 4,
+        "captionEvery": 7,
+        "captionSize": 89,
+        "glowX": -320,
+        "glowY": 580,
+        "glowSize": 526,
+        "glowIntensity": 0.5,
+        "glowWarm": "#e8e2d4",
+        "glowDepth": 0.2,
+        "focusPx": 10,
+        "fog": 0.34
+      }
+    },
+    {
+      "id": "s03-ultimatum",
+      "sceneType": "composite",
+      "voText": "Britain and France gave Berlin two days to pull them back.",
+      "durationInFrames": 118,
+      "transition": {
+        "kind": "rack",
+        "frames": 12
+      },
+      "assets": {
+        "desk": "assets/desk-surface.jpg"
+      },
+      "layers": [
+        {
+          "role": "desk",
+          "depth": 0.12,
+          "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "card",
+          "text": "Britain",
+          "heading": "BRITAIN",
+          "lines": [
+            "two days"
+          ],
+          "width": 475,
+          "x": 367,
+          "y": 806,
+          "depth": 0.78,
+          "rotate": -6,
+          "from": 14
+        },
+        {
+          "kind": "card",
+          "text": "France",
+          "heading": "FRANCE",
+          "lines": [
+            "two days"
+          ],
+          "width": 475,
+          "x": 691,
+          "y": 1190,
+          "depth": 0.86,
+          "rotate": 5,
+          "from": 54
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1152,
+        "pushFrom": 1.16,
+        "pushTo": 1,
+        "pushEndFrame": 101,
+        "glowX": -482,
+        "glowY": 238,
+        "glowSize": 521,
+        "glowIntensity": 0.55,
+        "glowWarm": "#e8e2d4",
+        "glowDepth": 0.12,
+        "focusPx": 11,
+        "fog": 0.57,
+        "caption": [],
+        "captionX": 84,
+        "captionY": 933,
+        "captionFrame": 10,
+        "captionEvery": 23,
+        "captionSize": 86,
+        "captionRecedeAt": 85,
+        "accent": "#e8e2d4",
+        "motif": "tally",
+        "motifX": 168,
+        "motifY": 499,
+        "motifSize": 95,
+        "motifCount": 13,
+        "motifFrame": 22,
+        "motifColour": "#e8e2d4",
+        "motifOpacity": 0.9
+      }
+    },
+    {
+      "id": "s04-eleven",
+      "sceneType": "portal-zoom-reveal",
+      "voText": "No answer came. The ultimatum ran out at eleven in the morning.",
+      "durationInFrames": 118,
+      "transition": {
+        "kind": "flare",
+        "frames": 10
+      },
+      "assets": {
+        "wall": "assets/station-wall.jpg",
+        "photo": "assets/clock-face.jpg"
+      },
+      "params": {
+        "frameWidth": 812,
+        "frameRatio": 1.09,
+        "pushEndFrame": 42,
+        "detachFrame": 64,
+        "throughEndFrame": 86,
+        "weldRatio": 0.358,
+        "wallScaleEnd": 6.9,
+        "accent": "#e8e2d4",
+        "caption": [],
+        "captionX": 84,
+        "captionY": 1288,
+        "captionFrame": 90,
+        "captionEvery": 11,
+        "captionSize": 91,
+        "captionRecedeAt": 100
+      },
+      "props": [
+        {
+          "kind": "wire",
+          "text": "eleven",
+          "shape": "circle",
+          "colour": "#e8e2d4",
+          "width": 497,
+          "x": 540,
+          "y": 845,
+          "depth": 0.95,
+          "rotate": 0,
+          "from": 85
+        }
+      ]
+    },
+    {
+      "id": "s05-war",
+      "sceneType": "composite",
+      "voText": "By that evening two empires were at war with Germany.",
+      "durationInFrames": 118,
+      "gradeOverride": {
+        "saturate": 0.58,
+        "contrast": 1.14,
+        "brightness": 0.95
+      },
+      "transition": {
+        "kind": "slam",
+        "frames": 9
+      },
+      "assets": {
+        "street": "assets/dusk-street.jpg"
+      },
+      "layers": [
+        {
+          "role": "street",
+          "depth": 0.18,
+          "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "newspaper",
+          "text": "AT WAR",
+          "masthead": "THE EVENING",
+          "date": "that evening",
+          "width": 907,
+          "x": 540,
+          "y": 922,
+          "depth": 0.85,
+          "rotate": -3,
+          "from": 24
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1344,
+        "pushFrom": 1,
+        "pushTo": 1.24,
+        "pushEndFrame": 101,
+        "glowX": -219,
+        "glowY": 522,
+        "glowSize": 317,
+        "glowIntensity": 0.42,
+        "glowWarm": "#e8e2d4",
+        "glowDepth": 0.18,
+        "focusPx": 0,
+        "fog": 0.58,
+        "caption": [],
+        "captionX": 84,
+        "captionY": 787,
+        "captionFrame": 10,
+        "captionEvery": 26,
+        "captionSize": 85,
+        "captionRecedeAt": 85,
+        "accent": "#e8e2d4",
+        "motif": "embers",
+        "motifX": 489,
+        "motifY": 960,
+        "motifSize": 37,
+        "motifCount": 31,
+        "motifFrame": 30,
+        "motifColour": "#e8e2d4",
+        "motifOpacity": 0.86
+      }
+    },
+    {
+      "id": "s06-cost",
+      "sceneType": "title-slate",
+      "voText": "Six years later, sixty million people were dead.",
+      "durationInFrames": 97,
+      "gradeOverride": {
+        "saturate": 0.5,
+        "contrast": 1.16,
+        "brightness": 0.94
+      },
+      "transition": {
+        "kind": "blinds",
+        "frames": 7
+      },
+      "assets": {
+        "background": "assets/grey-sky.jpg"
+      },
+      "params": {
+        "scrim": 0.45,
+        "kicker": "1939 · 1945",
+        "title": "SIXTY MILLION",
+        "footer": "six years later",
+        "titleFrame": 9,
+        "titleSize": 230,
+        "creep": 1.076,
+        "accent": "#e8e2d4",
+        "field": "wash",
+        "fieldColours": [
+          "#3d4144",
+          "#212426",
+          "#0c0d0e"
+        ],
+        "mark": "underline",
+        "markX": 260,
+        "markY": 820,
+        "markWidth": 560,
+        "markHeight": 300,
+        "markFrame": 33
+      },
+      "props": []
+    }
+  ]
+}

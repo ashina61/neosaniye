@@ -109,6 +109,16 @@ export type PropSpec = {
   /** wire: which outline is drawn. */
   shape?: 'diamond' | 'rect' | 'circle';
   colour?: string;
+  /**
+   * WHICH EDGE IT ARRIVES FROM — the same law the plates are held to.
+   *
+   * Two documents landing on a desk from the same direction read as one event
+   * with a stutter; from opposite edges, a beat apart, they read as two capitals
+   * answering. It is the whole character of the reference's third scene and it
+   * costs a word.
+   */
+  enter?: 'left' | 'right' | 'top' | 'bottom';
+  enterDistance?: number;
 };
 
 export type LayerSpec = {

@@ -302,6 +302,9 @@ export function validateEpisodeConfig(config) {
           if (prop.depth !== undefined && (typeof prop.depth !== 'number' || prop.depth < 0 || prop.depth > 1)) {
             push(`${at}.depth: must be a number between 0 and 1`);
           }
+          if (prop.enter !== undefined && !['left', 'right', 'top', 'bottom'].includes(prop.enter)) {
+            push(`${at}.enter: must be left, right, top or bottom`);
+          }
         });
       }
     }
