@@ -218,9 +218,29 @@ async function speakPiper(lines) {
     );
   }
 
-  // The model's own config says what rate it speaks at. Guessing 22050 works
-  // until someone picks a voice that does not, and then everything is pitched.
-  const config = JSON.parse(await readFile(`${model}.json`, 'utf8'));
+  /**
+   * The model's own config says what rate it speaks at. Guessing 22050 works
+   * until someone picks a voice that does not, and then everything is pitched.
+   *
+   * AND IF IT IS NOT JSON, SAY WHAT IT IS. A download that failed politely —
+   * a rate limit, a moved file, a host answering with its own web page — leaves
+   * an HTML file sitting where the model config should be, and the bare parser
+   * error for that is `Unexpected token '<'`, which names neither the file nor
+   * the reason. A run died on exactly that, and the fix took longer to find
+   * than it should have because the message pointed nowhere.
+   */
+  const raw = await readFile(`${model}.json`, 'utf8');
+  let config;
+  try {
+    config = JSON.parse(raw);
+  } catch {
+    const looksLikeAPage = /^\s*</.test(raw);
+    throw new Error(
+      `${model}.json is not a piper voice config` +
+        (looksLikeAPage ? ' — it is an HTML page, so the download failed and wrote the error instead.' : '.') +
+        `\n   First bytes: ${JSON.stringify(raw.slice(0, 80))}`,
+    );
+  }
   const sampleRate = config?.audio?.sample_rate ?? 22050;
 
   const clips = [];
