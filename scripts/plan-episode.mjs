@@ -799,18 +799,31 @@ function planProps({line, rand, look, side, durationInFrames, recentProps, beat}
  * props take `size` as a fraction of the width because a sheet of paper is
  * measured across. Two names, so the two can never be confused for each other.
  */
-function directedStack({shot, rand}) {
+function directedStack({shot, rand, durationInFrames = 90}) {
   const assets = {};
   const layers = [];
+  /** Its own beat and its own move, both fractions of the shot. */
+  const beat = (layer) =>
+    layer.at === undefined ? {} : {from: Math.round(durationInFrames * Math.min(0.85, Math.max(0, Number(layer.at))))};
+  const move = (layer) => ({
+    ...(layer.enter ? {enter: layer.enter, enterDistance: Math.round(WIDTH * Number(layer.enterDistance ?? 0.9))} : {}),
+    ...(layer.swing ? {swing: Number(layer.swing)} : {}),
+    ...(layer.drift ? {drift: Math.round(WIDTH * Number(layer.drift))} : {}),
+  });
   for (const [i, layer] of (shot.layers ?? []).entries()) {
     const role = String(layer.role ?? `plate${i}`).replace(/[^a-z0-9]+/gi, '-').toLowerCase();
     // The file is named by the EPISODE, which is where file names belong. The
     // engine still never sees it: the template reads a role.
     assets[layer.optional ? `?${role}` : role] = `assets/${layer.asset}`;
     if (layer.fill !== false && !layer.height) {
-      layers.push({role, depth: round(Number(layer.depth) ?? 0.2, 2), anchor: 'fill',
-        ...(layer.drift ? {drift: Math.round(Number(layer.drift))} : {}),
-        ...(layer.alive ? {alive: true} : {})});
+      layers.push({
+        role,
+        depth: round(Number(layer.depth) ?? 0.2, 2),
+        anchor: 'fill',
+        ...(layer.alive ? {alive: true} : {}),
+        ...beat(layer),
+        ...move(layer),
+      });
       continue;
     }
     layers.push({
@@ -825,6 +838,8 @@ function directedStack({shot, rand}) {
         ? {shadow: true, shadowSkew: Number(layer.shadowSkew) || -53, shadowOpacity: Number(layer.shadowOpacity) || 0.55}
         : {}),
       ...(layer.opacity !== undefined ? {opacity: round(Number(layer.opacity), 2)} : {}),
+      ...beat(layer),
+      ...move(layer),
     });
   }
   return {assets, layers, groundDepth: layers[0]?.depth ?? 0.2};
@@ -977,7 +992,7 @@ function planContinuation({line, index, part, fragment, frames: measured, rand, 
   // falling back to a derived backdrop here asks for a file the episode never
   // had and loses every plate the director put in the frame.
   const {assets, layers, groundDepth} = line?.shot?.layers?.length
-    ? directedStack({shot: line.shot, rand})
+    ? directedStack({shot: line.shot, rand, durationInFrames: frames})
     : buildStack({
     line,
     ground: plate ?? `assets/${assetBase}-bg.png`,
@@ -1189,7 +1204,7 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
     // photograph we fly into and the frame that flies past are three different
     // files with three different jobs, and deriving two of them from one
     // backdrop is how a flight into a picture became a zoom on a wall.
-    const directedPortal = line?.shot?.layers?.length ? directedStack({shot: line.shot, rand}) : null;
+    const directedPortal = line?.shot?.layers?.length ? directedStack({shot: line.shot, rand, durationInFrames}) : null;
     scene.assets = directedPortal ? directedPortal.assets : {wall: backdrop, photo: `assets/${id}-photo.png`};
     const push = Math.round(durationInFrames * 0.36);
     scene.params = {
@@ -1224,7 +1239,7 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
     // A DIRECTED SHOT WINS. Same law as the props: what somebody thought about
     // beats what a rule derived, and the rule is only the fallback.
     const stack = line?.shot?.layers?.length
-      ? directedStack({shot: line.shot, rand})
+      ? directedStack({shot: line.shot, rand, durationInFrames})
       : buildStack({
           line,
           ground: backdrop,
@@ -1297,6 +1312,9 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
     backdropCommons: line.imageCommons,
     photoCommons: line.artefactCommons,
     pieces: line.pieces ?? [],
+    // The line travels with its plan so the recipe builder can read the
+    // scene's own material list off it.
+    line,
   };
 }
 
@@ -1422,7 +1440,7 @@ async function main() {
       // The continuation stands the SAME pieces in the same room, so it carries
       // the line's list too — otherwise the recipe builder, which now only
       // draws what a layer asks for, would find nothing asking for them.
-      planned.push({scene, motif: '', pieces: line.pieces ?? []});
+      planned.push({scene, line, motif: '', pieces: line.pieces ?? []});
     });
   });
 
@@ -1472,6 +1490,32 @@ async function main() {
   const named = new Set(
     planned.flatMap(({scene}) => Object.values(scene.assets ?? {}).map((f) => path.basename(String(f)))),
   );
+  /**
+   * EVERY SCENE'S OWN MATERIAL LIST.
+   *
+   * A directed shot names its plates one by one, and each of them says what it
+   * IS — a search for something real, or a prompt for something that has to be
+   * invented. That list is the fifth step of the method and the one this
+   * pipeline never had: it derived a single backdrop per scene from a single
+   * sentence, so a scene could never ask for "the map behind everything, the
+   * figure in front of it, the flag coming in from the left". Now it can, and
+   * each of those is drawn or fetched on its own terms.
+   *
+   * `kind` decides how: a `backdrop` fills the frame, a `piece` is keyed to
+   * transparency and stood in front of it.
+   */
+  for (const {line} of planned) {
+    for (const layer of line?.shot?.layers ?? []) {
+      const name = String(layer.asset ?? '').trim();
+      if (!name || assets[name] || !(layer.prompt || layer.commons)) continue;
+      assets[name] = {
+        kind: layer.kind ?? (layer.height ? 'piece' : 'backdrop'),
+        ...(layer.commons ? {commons: [].concat(layer.commons)} : {}),
+        ...(layer.prompt ? {prompt: layer.prompt} : {}),
+      };
+    }
+  }
+
   for (const {scene, backdropPrompt, photoPrompt, backdropCommons, photoCommons, pieces} of planned) {
     // `commons` names a REAL thing and is tried first; `prompt` is what draws it
     // when nothing free and large enough exists. A named artefact is always
