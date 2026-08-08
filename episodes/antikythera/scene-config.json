@@ -1,6 +1,7 @@
 {
   "id": "antikythera",
   "title": "The thing in the drawer",
+  "audio": "audio/vo.wav",
   "fps": 30,
   "width": 1080,
   "height": 1920,
@@ -32,7 +33,7 @@
       "id": "s01-wreck",
       "sceneType": "composite",
       "voText": "In 1901 sponge divers off Antikythera found a wreck full of bronze.",
-      "durationInFrames": 118,
+      "durationInFrames": 137,
       "assets": {
         "sea": "assets/seabed.jpg"
       },
@@ -52,7 +53,7 @@
           "y": 0,
           "depth": 0.3,
           "rotate": 0,
-          "from": 12
+          "from": 14
         },
         {
           "kind": "plaque",
@@ -62,7 +63,7 @@
           "y": 1574,
           "depth": 0.12,
           "rotate": 0,
-          "from": 53
+          "from": 62
         }
       ],
       "params": {
@@ -70,7 +71,7 @@
         "anchorY": 768,
         "pushFrom": 1.5,
         "pushTo": 1,
-        "pushEndFrame": 101,
+        "pushEndFrame": 118,
         "glowX": -286,
         "glowY": 417,
         "glowSize": 371,
@@ -84,10 +85,10 @@
         "captionY": 192,
         "captionSize": 78,
         "captionAlign": "left",
-        "captionFrame": 24,
+        "captionFrame": 27,
         "captionEvery": 8,
         "captionScrim": 0.4,
-        "captionRecedeAt": 85,
+        "captionRecedeAt": 99,
         "accent": "#c8d94a"
       }
     },
@@ -95,7 +96,7 @@
       "id": "s02-lump",
       "sceneType": "composite",
       "voText": "Among the statues lay a lump of corroded metal the size of a book.",
-      "durationInFrames": 118,
+      "durationInFrames": 127,
       "transition": {
         "kind": "flare",
         "frames": 7
@@ -126,7 +127,7 @@
         "anchorY": 1152,
         "pushFrom": 1,
         "pushTo": 1.46,
-        "pushEndFrame": 101,
+        "pushEndFrame": 109,
         "glowX": -392,
         "glowY": 263,
         "glowSize": 454,
@@ -143,10 +144,10 @@
         "captionY": 269,
         "captionSize": 82,
         "captionAlign": "left",
-        "captionFrame": 35,
+        "captionFrame": 38,
         "captionEvery": 8,
         "captionScrim": 0.35,
-        "captionRecedeAt": 85,
+        "captionRecedeAt": 91,
         "accent": "#c8d94a"
       }
     },
@@ -154,7 +155,7 @@
       "id": "s03-drawer",
       "sceneType": "composite",
       "voText": "It sat in a museum drawer for fifty years before anyone looked inside.",
-      "durationInFrames": 118,
+      "durationInFrames": 138,
       "transition": {
         "kind": "blinds",
         "frames": 11
@@ -182,7 +183,7 @@
           "y": 1075,
           "depth": 0.85,
           "rotate": -5,
-          "from": 26
+          "from": 30
         }
       ],
       "params": {
@@ -190,7 +191,7 @@
         "anchorY": 1056,
         "pushFrom": 1.2,
         "pushTo": 1.02,
-        "pushEndFrame": 101,
+        "pushEndFrame": 119,
         "glowX": -295,
         "glowY": 524,
         "glowSize": 410,
@@ -204,10 +205,10 @@
         "captionY": 230,
         "captionSize": 76,
         "captionAlign": "left",
-        "captionFrame": 59,
+        "captionFrame": 69,
         "captionEvery": 8,
         "captionScrim": 0.5,
-        "captionRecedeAt": 85,
+        "captionRecedeAt": 99,
         "accent": "#c8d94a",
         "motif": "tally",
         "motifX": 154,
@@ -223,7 +224,7 @@
       "id": "s04-gears",
       "sceneType": "portal-zoom-reveal",
       "voText": "X-rays found thirty gears,",
-      "durationInFrames": 52,
+      "durationInFrames": 58,
       "transition": {
         "kind": "rack",
         "frames": 11
@@ -235,9 +236,9 @@
       "params": {
         "frameWidth": 732,
         "frameRatio": 1.06,
-        "pushEndFrame": 19,
-        "detachFrame": 41,
-        "throughEndFrame": 63,
+        "pushEndFrame": 21,
+        "detachFrame": 43,
+        "throughEndFrame": 65,
         "weldRatio": 0.367,
         "wallScaleEnd": 6.7,
         "accent": "#c8d94a",
@@ -247,10 +248,10 @@
         ],
         "captionX": 84,
         "captionY": 1417,
-        "captionFrame": 67,
+        "captionFrame": 69,
         "captionEvery": 11,
         "captionSize": 85,
-        "captionRecedeAt": 34
+        "captionRecedeAt": 40
       },
       "props": [
         {
@@ -263,7 +264,7 @@
           "y": 883,
           "depth": 0.95,
           "rotate": 0,
-          "from": 38
+          "from": 43
         }
       ]
     },
@@ -271,7 +272,7 @@
       "id": "s04-gears-b",
       "sceneType": "composite",
       "voText": "cut by hand, meshing.",
-      "durationInFrames": 52,
+      "durationInFrames": 57,
       "transition": {
         "kind": "flare",
         "frames": 7
@@ -311,7 +312,7 @@
         "anchorY": 576,
         "pushFrom": 1.39,
         "pushTo": 1.07,
-        "pushEndFrame": 49,
+        "pushEndFrame": 54,
         "accent": "#c8d94a",
         "caption": [
           "cut by",
@@ -321,7 +322,7 @@
         "captionY": 192,
         "captionSize": 84,
         "captionAlign": "left",
-        "captionFrame": 29,
+        "captionFrame": 31,
         "captionEvery": 7,
         "captionScrim": 0.3,
         "glowX": -509,
@@ -338,7 +339,7 @@
       "id": "s05-moon",
       "sceneType": "composite",
       "voText": "It predicted eclipses, and it tracked the moon's changing speed.",
-      "durationInFrames": 118,
+      "durationInFrames": 136,
       "transition": {
         "kind": "rack",
         "frames": 10
@@ -364,7 +365,7 @@
           "y": 845,
           "depth": 0.5,
           "rotate": 0,
-          "from": 41
+          "from": 48
         }
       ],
       "params": {
@@ -372,7 +373,7 @@
         "anchorY": 960,
         "pushFrom": 1,
         "pushTo": 1.22,
-        "pushEndFrame": 101,
+        "pushEndFrame": 117,
         "glowX": -273,
         "glowY": 474,
         "glowSize": 322,
@@ -386,10 +387,10 @@
         "captionY": 1459,
         "captionSize": 78,
         "captionAlign": "left",
-        "captionFrame": 18,
+        "captionFrame": 20,
         "captionEvery": 8,
         "captionScrim": 0.42,
-        "captionRecedeAt": 85,
+        "captionRecedeAt": 98,
         "accent": "#c8d94a"
       }
     },
@@ -397,7 +398,7 @@
       "id": "s06-verdict",
       "sceneType": "title-slate",
       "voText": "Nothing this complex was built again for fourteen hundred years.",
-      "durationInFrames": 118,
+      "durationInFrames": 130,
       "gradeOverride": {
         "saturate": 0.5,
         "contrast": 1.16,
@@ -434,7 +435,7 @@
           "FIFTY",
           "TWENTY"
         ],
-        "spinFrames": 47
+        "spinFrames": 52
       },
       "props": []
     }

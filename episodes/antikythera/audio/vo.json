@@ -1,0 +1,45 @@
+{
+  "$comment": "MEASURED from vo.mp3, not estimated. The planner cuts every scene to these windows.",
+  "how": "exact",
+  "provider": "piper",
+  "audio": "audio/vo.wav",
+  "duration": 26.101950113378685,
+  "lines": [
+    {
+      "slug": "wreck",
+      "text": "In 1901 sponge divers off Antikythera found a wreck full of bronze.",
+      "start": 0,
+      "end": 4.565
+    },
+    {
+      "slug": "lump",
+      "text": "Among the statues lay a lump of corroded metal the size of a book.",
+      "start": 4.565,
+      "end": 8.81
+    },
+    {
+      "slug": "drawer",
+      "text": "It sat in a museum drawer for fifty years before anyone looked inside.",
+      "start": 8.81,
+      "end": 13.391
+    },
+    {
+      "slug": "gears",
+      "text": "X-rays found thirty gears, cut by hand, meshing.",
+      "start": 13.391,
+      "end": 17.241
+    },
+    {
+      "slug": "moon",
+      "text": "It predicted eclipses, and it tracked the moon's changing speed.",
+      "start": 17.241,
+      "end": 21.753
+    },
+    {
+      "slug": "verdict",
+      "text": "Nothing this complex was built again for fourteen hundred years.",
+      "start": 21.753,
+      "end": 26.102
+    }
+  ]
+}
