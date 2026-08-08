@@ -261,6 +261,7 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
           align={str('captionAlign', 'left') as 'left' | 'right' | 'center'}
           recedeAt={num('captionRecedeAt', 70)}
           accent={num('captionAccent', -1) >= 0 ? num('captionAccent', -1) : undefined}
+          scrim={num('captionScrim', 0)}
         />
       ) : null}
 

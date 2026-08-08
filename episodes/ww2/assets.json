@@ -30,27 +30,27 @@
     "europe-1939.jpg": {
       "kind": "backdrop",
       "commons": [
-        "Europe political map 1939",
-        "map of Europe 1938",
-        "Europe map interwar"
+        "Europe physical map 1930s",
+        "political map Europe 1930s atlas",
+        "atlas map Europe interwar"
       ],
-      "prompt": "a printed political map of Europe in 1939, muted paper, no text overlay"
+      "prompt": "a printed atlas map of Europe, muted paper, no flags, no symbols"
     },
     "border-road.jpg": {
       "kind": "backdrop",
       "commons": [
-        "Polish border post 1939",
-        "border barrier 1939",
-        "empty country road 1930s"
+        "country road Poland 1930s",
+        "rural road Europe 1939 photograph",
+        "dirt road countryside 1930s"
       ],
       "prompt": "an empty country road at a raised border barrier, 1939, overcast"
     },
     "tank-profile.png": {
       "kind": "piece",
       "commons": [
-        "Panzer I side view",
-        "German tank 1939 profile",
-        "tank side view museum"
+        "Panzer I 1939 side view",
+        "German light tank 1939",
+        "Panzer II museum side"
       ],
       "prompt": "one single 1939 German light tank in strict side profile, whole vehicle in frame, plain white background"
     },
@@ -82,16 +82,17 @@
     "dusk-street.jpg": {
       "kind": "backdrop",
       "commons": [
-        "London street 1939 evening",
-        "city street dusk 1930s"
+        "London street night 1939 photograph",
+        "blackout street London 1939",
+        "city street night 1930s photograph"
       ],
       "prompt": "a city street at dusk in 1939, wet pavement, low light, empty"
     },
     "grey-sky.jpg": {
       "kind": "backdrop",
       "commons": [
-        "overcast grey sky",
-        "empty sky clouds grey"
+        "overcast sky photograph",
+        "grey clouds sky photograph"
       ],
       "prompt": "a flat overcast grey sky, no horizon, no objects"
     }

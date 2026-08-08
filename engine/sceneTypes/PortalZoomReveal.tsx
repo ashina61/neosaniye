@@ -132,6 +132,7 @@ export const PortalZoomReveal: React.FC<SceneProps> = ({scene, assets, durationI
           every={num('captionEvery', 8)}
           size={num('captionSize', 88)}
           recedeAt={num('captionRecedeAt', durationInFrames - 20)}
+          scrim={num('captionScrim', 0)}
         />
       ) : null}
 
