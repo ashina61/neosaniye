@@ -123,16 +123,45 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p .piper && cd .piper
-          curl -sSL -o piper.tar.gz \
-            https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_linux_x86_64.tar.gz
+
+          # -f, AND IT IS THE WHOLE POINT. Without it curl writes the server's
+          # error PAGE into the file and exits 0, so a voice model that never
+          # downloaded becomes an HTML file named voice.onnx.json — and the run
+          # dies three steps later on `Unexpected token '<'`, which names
+          # neither the file nor the host. --retry because a public model host
+          # rate-limits a CI runner and the second attempt usually lands.
+          get() {
+            curl -fsSL --retry 4 --retry-delay 3 --retry-all-errors -o "$1" "$2" || {
+              echo "::error::Could not download $1 from $2"
+              exit 1
+            }
+          }
+
+          get piper.tar.gz https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_linux_x86_64.tar.gz
           tar xzf piper.tar.gz
+          test -x piper/piper || { echo "::error::the piper archive held no binary"; exit 1; }
+
           VOICE="${{ inputs.voice_name || vars.PIPER_VOICE || 'en_US-lessac-medium' }}"
           LANG_DIR=$(echo "$VOICE" | cut -d- -f1)
           NAME=$(echo "$VOICE" | cut -d- -f2)
           QUALITY=$(echo "$VOICE" | cut -d- -f3)
           BASE="https://huggingface.co/rhasspy/piper-voices/resolve/main/en/${LANG_DIR}/${NAME}/${QUALITY}/${VOICE}"
-          curl -sSL -o voice.onnx "${BASE}.onnx"
-          curl -sSL -o voice.onnx.json "${BASE}.onnx.json"
+          # ?download=true asks for the FILE. Without it the host is entitled to
+          # answer a browser-shaped request with its own web page, which is
+          # exactly what came back: a 200, an HTML body, and a corrupt model.
+          get voice.onnx "${BASE}.onnx?download=true"
+          get voice.onnx.json "${BASE}.onnx.json?download=true"
+
+          # SAY IT HERE, where the file and the host are still in hand. A model
+          # is tens of megabytes and its config is JSON; anything else is the
+          # download having failed politely.
+          node -e '
+            const {statSync, readFileSync} = require("node:fs");
+            const size = statSync("voice.onnx").size;
+            if (size < 1e6) throw new Error(`voice.onnx is ${size} bytes — that is not a voice model`);
+            JSON.parse(readFileSync("voice.onnx.json", "utf8"));
+          ' || { echo "::error::The piper voice downloaded but is not a voice — the host answered with something else."; exit 1; }
+          echo "piper ready: $VOICE ($(du -h voice.onnx | cut -f1))"
 
       # SPEAKING BELONGS TO A PROVIDER; MEASURING DOES NOT. ElevenLabs returns
       # a character alignment and it is used when it is there, but nothing
