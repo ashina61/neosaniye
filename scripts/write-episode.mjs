@@ -138,6 +138,46 @@ shot at a time, and say why in the signature.
                  PULL BACK (to < from) — two pushes in a row read as one move
                  with a stutter. "hunt" makes the lens find focus like an old
                  camera; use it where the shot opens on something.
+    "layers":    THE SHOT'S MATERIAL LIST — the photographs, back to front. Each
+                 one is a separate file on purpose, because separate files move
+                 at different speeds and that difference is the only reason a
+                 flat plate reads as a space.
+                   "role"    a short name: map, road, tank, man, wall
+                   "asset"   the file name it will be saved as, e.g. "tank.png".
+                             A NAME, never a path.
+                   "kind"    "backdrop" fills the frame; "piece" is cut out to
+                             transparency and stood in front of it
+                   "commons" 1-3 Wikimedia searches for it, most specific first
+                   "prompt"  what to draw if nothing free exists
+                   "depth"   0 to 1, its share of the camera push. The backdrop
+                             is low, the thing at the front is 1.
+                   "height"  a PIECE only: how tall it stands, as a fraction of
+                             the frame height. Leave it out for a backdrop.
+                   "x","y"   a PIECE only: fractions, where its FEET stand
+                   "at"      fraction of the shot when it arrives
+                   "enter"   "left" | "right" | "top" | "bottom" — the edge it
+                             travels in from. The reference reel's offer scene
+                             is one hand from the LEFT and one from the RIGHT a
+                             second apart; that is the whole scene.
+                   "swing"   degrees of decaying sway as it lands
+                   "shadow"  true for a figure standing on the ground
+    "anchor":    [x, y] fractions — the point on the FLOOR that every plate
+                 scales about. If a figure is standing, this is his feet. Get it
+                 wrong and he scales off the pavement into the air.
+    "text":      where the caption goes and how it arrives. It is the last thing
+                 a viewer needs to read, so it is placed, never scattered:
+                   "x","y"   fractions of the frame
+                   "size"    fraction of the frame WIDTH, about 0.07
+                   "at"      fraction of the shot when the first line lands
+                   "every"   frames between lines — they land one at a time
+                   "scrim"   0 to 1, how much ground the words carry under them.
+                             Over a dark empty corner 0.2; over a printed map
+                             0.6; over a shot that should speak for itself, 0.
+    "cut":       how this shot ARRIVES, if you want to choose: "slam" (something
+                 landed), "rack" (something was noticed), "slip" (something was
+                 put down), "flare" (the beat that breaks the story), "blinds"
+                 (a room being opened on). Leave it out and it is read from the
+                 line's own verb.
     "props":     the drawn objects standing in this shot. THIS IS THE SHOT'S
                  CONTENT, not decoration:
                    "kind"  plaque | newspaper | card | print | wire | beam
@@ -439,11 +479,15 @@ async function main() {
     // pasting the answer back. Put the prompt where it can be picked up.
     const file = path.join(dir, 'PROMPT.md');
     await writeFile(file, `${prompt}\n`, 'utf8');
-    console.log(`No ANTHROPIC_API_KEY or OPENAI_API_KEY — the prompt is written instead.\n`);
-    console.log(`  ${path.relative(ROOT, file)}\n`);
-    console.log('Paste it to any assistant, save the JSON it returns as:');
-    console.log(`  ${path.relative(ROOT, path.join(dir, 'brief.json'))}\n`);
-    console.log(`Then: npm run plan -- --episode=${id}`);
+    // An absolute path when the episode shelf has been moved, a repo-relative
+    // one when it has not — `../../../tmp/...` helps nobody.
+    const show = (p) => (p.startsWith(ROOT) ? path.relative(ROOT, p) : p);
+    console.log(`No ANTHROPIC_API_KEY or OPENAI_API_KEY — so the prompt is written instead.\n`);
+    console.log(`  1. Open   ${show(file)}`);
+    console.log(`  2. Paste the whole thing to any assistant — this one included.`);
+    console.log(`  3. Save the JSON it answers with as:\n               ${show(path.join(dir, 'brief.json'))}`);
+    console.log(`  4. Run     npm run plan -- --episode=${id}\n`);
+    console.log(`The plan step will tell you anything the brief got wrong before a frame is rendered.`);
     return;
   }
 
