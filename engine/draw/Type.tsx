@@ -52,6 +52,21 @@ export const WordStack: React.FC<{
   /** Index of a line to set in the accent colour — the number, usually. */
   accent?: number;
   accentColour?: string;
+  /**
+   * A SOFT GROUND UNDER THE WORDS, 0 to 1.
+   *
+   * A stroke and a drop shadow are enough over a dark plate and nowhere near
+   * enough over a busy one: "German tanks crossed the Polish border" set over a
+   * printed map of Poland is two kinds of small type fighting, and the caption
+   * loses. So the words carry their own ground — a gradient panel behind the
+   * block, densest at the text and gone by its edge, which reads as light
+   * falling on the picture rather than as a box drawn on it.
+   *
+   * It is a fraction, not a switch: a shot with a dark empty corner wants 0.2,
+   * a shot over a map wants 0.6, and the shot that lets the picture speak wants
+   * none of it.
+   */
+  scrim?: number;
 }> = ({
   lines,
   x = 84,
@@ -66,6 +81,7 @@ export const WordStack: React.FC<{
   restOpacity = 0.32,
   accent,
   accentColour = '#ffcf3d',
+  scrim = 0,
 }) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
@@ -73,8 +89,32 @@ export const WordStack: React.FC<{
 
   const recede = recedeAt === undefined ? 1 : interpolate(stepped, [recedeAt, recedeAt + 14], [1, restOpacity], CLAMP);
 
+  // How tall the block will be, so the ground under it covers the words and
+  // not the whole frame.
+  const block = lines.length * size * 1.02;
+
   return (
     <AbsoluteFill style={{pointerEvents: 'none'}}>
+      {scrim > 0 ? (
+        <div
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            top: Math.max(0, y - size * 0.7),
+            height: block + size * 1.4,
+            background:
+              align === 'right'
+                ? `linear-gradient(270deg, rgba(0,0,0,${scrim}) 0%, rgba(0,0,0,${scrim * 0.82}) 42%, transparent 88%)`
+                : `linear-gradient(90deg, rgba(0,0,0,${scrim}) 0%, rgba(0,0,0,${scrim * 0.82}) 42%, transparent 88%)`,
+            opacity: recede,
+            // Feathered top and bottom, so it is light on the picture and not a
+            // panel with two hard edges across it.
+            WebkitMaskImage: 'linear-gradient(180deg, transparent, #000 22%, #000 78%, transparent)',
+            maskImage: 'linear-gradient(180deg, transparent, #000 22%, #000 78%, transparent)',
+          }}
+        />
+      ) : null}
       <div
         style={{
           position: 'absolute',

@@ -503,6 +503,39 @@ function captionSize(lines, rand) {
  * Pinned to the frame instead, it slides off the lamp as the camera pushes and
  * turns into a lens flare — the exact failure law 3 was written about.
  */
+/**
+ * WHERE THE WORDS GO, AND HOW THEY ARRIVE.
+ *
+ * The last thing in the frame still being placed by a die. A caption landed at
+ * x=84 and a y picked at random between a third and half way down, which is
+ * fine over an empty corner and unreadable over a printed map — and "German
+ * tanks crossed the Polish border" was set over a printed map of Poland, two
+ * kinds of small type fighting, with the caption losing.
+ *
+ * So the director places it, in fractions, and says how loud its ground is. The
+ * derived values below are the fallback for a line that says nothing.
+ */
+function captionPlacement({shot, rand, durationInFrames, lines}) {
+  const text = shot?.text ?? {};
+  const at = (v, d) => (v === undefined ? d : Math.round(durationInFrames * Math.min(0.9, Math.max(0, Number(v)))));
+  return {
+    captionX: text.x === undefined ? 84 : Math.round(WIDTH * Number(text.x)),
+    captionY:
+      text.y === undefined ? Math.round(between(rand, [300, 1080])) : Math.round(HEIGHT * Number(text.y)),
+    captionSize: text.size === undefined ? captionSize(lines, rand) : Math.round(WIDTH * Number(text.size)),
+    captionAlign: text.align ?? 'left',
+    captionFrame: at(text.at, 4),
+    captionEvery: text.every === undefined ? 6 + Math.round(rand() * 4) : Math.round(Number(text.every)),
+    /**
+     * THE GROUND UNDER THE WORDS. Zero where the picture is dark and empty,
+     * heavier where it is busy — a caption over a map needs it and a caption
+     * over a night street does not. Derived shots get a little by default,
+     * because unreadable is a worse failure than slightly veiled.
+     */
+    captionScrim: text.scrim === undefined ? 0.34 : round(Number(text.scrim), 2),
+  };
+}
+
 function drawnLayer({rand, look, side, groundDepth, durationInFrames}) {
   /**
    * THE SOURCE IS OFF-CAMERA. Only its falloff is in the shot.
@@ -1049,11 +1082,7 @@ function planContinuation({line, index, part, fragment, frames: measured, rand, 
       pushEndFrame: Math.round(frames * 0.94),
       accent: look.accent,
       caption: lines,
-      captionX: 84,
-      captionY: Math.round(between(rand, [300, 1080])),
-      captionFrame: 4,
-      captionEvery: 6 + Math.round(rand() * 4),
-      captionSize: captionSize(lines, rand),
+      ...captionPlacement({shot: line.shot, rand, durationInFrames: frames, lines}),
       // A CONTINUATION IS A SHOT, NOT A SLIDE. Its params used to carry the
       // push and the caption and nothing else — no light, no fog, no focus —
       // so half the reel was a photograph moving slowly with grain on it.
@@ -1278,11 +1307,7 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
       ...drawnLayer({rand, look, side, groundDepth: stack.groundDepth, durationInFrames}),
       ...(line?.shot?.camera?.focus === 'sharp' ? {focusPx: 0} : {}),
       caption: line.caption ?? [],
-      captionX: 84,
-      captionY: Math.round(between(rand, [320, 1100])),
-      captionFrame: 10,
-      captionEvery: 16 + Math.round(rand() * 10),
-      captionSize: 82 + Math.round(rand() * 12),
+      ...captionPlacement({shot: line.shot, rand, durationInFrames, lines: line.caption ?? []}),
       captionRecedeAt: Math.round(durationInFrames * 0.72),
       accent: look.accent,
       ...motifParams(motif, {rand, from: 18 + Math.round(rand() * 14), accent: look.accent, stops: line.stops}),

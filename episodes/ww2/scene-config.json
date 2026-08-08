@@ -6,7 +6,7 @@
   "width": 1080,
   "height": 1920,
   "look": {
-    "posterizeFps": 12,
+    "posterizeFps": 15,
     "grade": {
       "saturate": 0.26,
       "contrast": 1.15,
@@ -19,12 +19,12 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.4,
-      "grungeOpacity": 0.18,
-      "scanlineOpacity": 0.15,
-      "scanlinePeriod": 9,
-      "vignetteStrength": 0.42,
-      "weavePx": 7,
+      "grainOpacity": 0.46,
+      "grungeOpacity": 0.2,
+      "scanlineOpacity": 0.09,
+      "scanlinePeriod": 11,
+      "vignetteStrength": 0.4,
+      "weavePx": 4,
       "weaveScale": 1.015
     }
   },
@@ -71,21 +71,23 @@
         "focusPx": 9,
         "fog": 0.52,
         "caption": [],
-        "captionX": 84,
-        "captionY": 902,
-        "captionFrame": 10,
-        "captionEvery": 19,
-        "captionSize": 82,
+        "captionX": 76,
+        "captionY": 1382,
+        "captionSize": 78,
+        "captionAlign": "left",
+        "captionFrame": 40,
+        "captionEvery": 8,
+        "captionScrim": 0.5,
         "captionRecedeAt": 96,
         "accent": "#e8e2d4",
         "motif": "tally",
-        "motifX": 84,
+        "motifX": 107,
         "motifY": 499,
-        "motifSize": 107,
-        "motifCount": 15,
-        "motifFrame": 26,
+        "motifSize": 81,
+        "motifCount": 13,
+        "motifFrame": 28,
         "motifColour": "#e8e2d4",
-        "motifOpacity": 0.91
+        "motifOpacity": 0.82
       }
     },
     {
@@ -94,8 +96,8 @@
       "voText": "On the first of September,",
       "durationInFrames": 68,
       "transition": {
-        "kind": "slam",
-        "frames": 8
+        "kind": "blinds",
+        "frames": 12
       },
       "assets": {
         "road": "assets/border-road.jpg",
@@ -137,30 +139,36 @@
         "pushFrom": 1,
         "pushTo": 1.42,
         "pushEndFrame": 58,
-        "glowX": -312,
-        "glowY": 329,
-        "glowSize": 478,
-        "glowIntensity": 0.67,
+        "glowX": -307,
+        "glowY": 189,
+        "glowSize": 438,
+        "glowIntensity": 0.61,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.2,
         "focusPx": 0,
         "fog": 0.4,
-        "caption": [],
-        "captionX": 84,
-        "captionY": 385,
-        "captionFrame": 10,
-        "captionEvery": 21,
-        "captionSize": 93,
+        "caption": [
+          "German tanks",
+          "crossed the",
+          "Polish border"
+        ],
+        "captionX": 76,
+        "captionY": 269,
+        "captionSize": 89,
+        "captionAlign": "left",
+        "captionFrame": 12,
+        "captionEvery": 7,
+        "captionScrim": 0.62,
         "captionRecedeAt": 49,
         "accent": "#e8e2d4",
         "motif": "route",
-        "motifX": 172,
+        "motifX": 167,
         "motifY": 1190,
-        "motifSize": 229,
+        "motifSize": 213,
         "motifCount": 1,
-        "motifFrame": 18,
+        "motifFrame": 30,
         "motifColour": "#e8e2d4",
-        "motifOpacity": 0.92
+        "motifOpacity": 0.9
       }
     },
     {
@@ -169,8 +177,8 @@
       "voText": "German tanks crossed the Polish border.",
       "durationInFrames": 81,
       "transition": {
-        "kind": "flare",
-        "frames": 8
+        "kind": "rack",
+        "frames": 7
       },
       "assets": {
         "road": "assets/border-road.jpg",
@@ -209,8 +217,8 @@
       "params": {
         "anchorX": 454,
         "anchorY": 1690,
-        "pushFrom": 1.4,
-        "pushTo": 1.09,
+        "pushFrom": 1.42,
+        "pushTo": 1.08,
         "pushEndFrame": 76,
         "accent": "#e8e2d4",
         "caption": [
@@ -218,19 +226,21 @@
           "crossed the",
           "Polish border"
         ],
-        "captionX": 84,
-        "captionY": 318,
-        "captionFrame": 4,
-        "captionEvery": 7,
+        "captionX": 76,
+        "captionY": 269,
         "captionSize": 89,
-        "glowX": -320,
-        "glowY": 580,
-        "glowSize": 526,
-        "glowIntensity": 0.5,
+        "captionAlign": "left",
+        "captionFrame": 15,
+        "captionEvery": 7,
+        "captionScrim": 0.62,
+        "glowX": -260,
+        "glowY": 178,
+        "glowSize": 307,
+        "glowIntensity": 0.48,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.2,
         "focusPx": 10,
-        "fog": 0.34
+        "fog": 0.56
       }
     },
     {
@@ -239,8 +249,8 @@
       "voText": "Britain and France gave Berlin two days to pull them back.",
       "durationInFrames": 113,
       "transition": {
-        "kind": "rack",
-        "frames": 12
+        "kind": "flare",
+        "frames": 8
       },
       "assets": {
         "desk": "assets/desk-surface.jpg"
@@ -288,30 +298,32 @@
         "pushFrom": 1.16,
         "pushTo": 1,
         "pushEndFrame": 97,
-        "glowX": -482,
-        "glowY": 238,
-        "glowSize": 521,
-        "glowIntensity": 0.55,
+        "glowX": -314,
+        "glowY": 126,
+        "glowSize": 332,
+        "glowIntensity": 0.68,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.12,
-        "focusPx": 11,
-        "fog": 0.57,
+        "focusPx": 10,
+        "fog": 0.39,
         "caption": [],
-        "captionX": 84,
-        "captionY": 933,
-        "captionFrame": 10,
-        "captionEvery": 23,
-        "captionSize": 86,
+        "captionX": 76,
+        "captionY": 192,
+        "captionSize": 81,
+        "captionAlign": "left",
+        "captionFrame": 17,
+        "captionEvery": 8,
+        "captionScrim": 0.55,
         "captionRecedeAt": 81,
         "accent": "#e8e2d4",
         "motif": "tally",
-        "motifX": 168,
+        "motifX": 121,
         "motifY": 499,
-        "motifSize": 95,
-        "motifCount": 13,
+        "motifSize": 106,
+        "motifCount": 15,
         "motifFrame": 22,
         "motifColour": "#e8e2d4",
-        "motifOpacity": 0.9
+        "motifOpacity": 0.96
       }
     },
     {
@@ -320,7 +332,7 @@
       "voText": "No answer came. The ultimatum ran out at eleven in the morning.",
       "durationInFrames": 139,
       "transition": {
-        "kind": "flare",
+        "kind": "slam",
         "frames": 10
       },
       "assets": {
@@ -328,20 +340,20 @@
         "photo": "assets/clock-face.jpg"
       },
       "params": {
-        "frameWidth": 812,
-        "frameRatio": 1.09,
+        "frameWidth": 774,
+        "frameRatio": 1.27,
         "pushEndFrame": 50,
         "detachFrame": 72,
         "throughEndFrame": 94,
-        "weldRatio": 0.358,
-        "wallScaleEnd": 6.9,
+        "weldRatio": 0.419,
+        "wallScaleEnd": 6.3,
         "accent": "#e8e2d4",
         "caption": [],
         "captionX": 84,
-        "captionY": 1288,
+        "captionY": 1299,
         "captionFrame": 98,
-        "captionEvery": 11,
-        "captionSize": 91,
+        "captionEvery": 8,
+        "captionSize": 93,
         "captionRecedeAt": 121
       },
       "props": [
@@ -370,8 +382,8 @@
         "brightness": 0.95
       },
       "transition": {
-        "kind": "slam",
-        "frames": 9
+        "kind": "rack",
+        "frames": 10
       },
       "assets": {
         "street": "assets/dusk-street.jpg"
@@ -403,30 +415,32 @@
         "pushFrom": 1,
         "pushTo": 1.24,
         "pushEndFrame": 89,
-        "glowX": -219,
-        "glowY": 522,
-        "glowSize": 317,
-        "glowIntensity": 0.42,
+        "glowX": -280,
+        "glowY": 417,
+        "glowSize": 428,
+        "glowIntensity": 0.64,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.18,
         "focusPx": 0,
-        "fog": 0.58,
+        "fog": 0.31,
         "caption": [],
-        "captionX": 84,
-        "captionY": 787,
-        "captionFrame": 10,
-        "captionEvery": 26,
-        "captionSize": 85,
+        "captionX": 76,
+        "captionY": 154,
+        "captionSize": 78,
+        "captionAlign": "left",
+        "captionFrame": 64,
+        "captionEvery": 7,
+        "captionScrim": 0,
         "captionRecedeAt": 74,
         "accent": "#e8e2d4",
         "motif": "embers",
-        "motifX": 489,
+        "motifX": 520,
         "motifY": 960,
-        "motifSize": 37,
-        "motifCount": 31,
-        "motifFrame": 30,
+        "motifSize": 46,
+        "motifCount": 32,
+        "motifFrame": 31,
         "motifColour": "#e8e2d4",
-        "motifOpacity": 0.86
+        "motifOpacity": 0.83
       }
     },
     {
@@ -440,33 +454,27 @@
         "brightness": 0.94
       },
       "transition": {
-        "kind": "blinds",
+        "kind": "slam",
         "frames": 7
       },
       "assets": {
         "background": "assets/grey-sky.jpg"
       },
       "params": {
-        "scrim": 0.45,
+        "scrim": 0.51,
         "kicker": "1939 · 1945",
         "title": "SIXTY MILLION",
         "footer": "six years later",
-        "titleFrame": 9,
+        "titleFrame": 5,
         "titleSize": 230,
-        "creep": 1.076,
+        "creep": 1.044,
         "accent": "#e8e2d4",
         "field": "wash",
         "fieldColours": [
           "#3d4144",
           "#212426",
           "#0c0d0e"
-        ],
-        "mark": "underline",
-        "markX": 260,
-        "markY": 820,
-        "markWidth": 560,
-        "markHeight": 300,
-        "markFrame": 37
+        ]
       },
       "props": []
     }

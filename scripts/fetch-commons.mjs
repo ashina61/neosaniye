@@ -105,6 +105,22 @@ async function search(query, limit = 20) {
 const JUNK = /(logo|icon|barnstar|coat of arms|flag of|user:|user talk|wikimedia|wikipedia|template|screenshot|placeholder|blank|watermark)/i;
 
 /**
+ * PAINTINGS, WHEN A PHOTOGRAPH WAS ASKED FOR.
+ *
+ * Commons is one of the world's great art archives, and its art outranks its
+ * photography on almost any historical search: "city street 1939 evening" came
+ * back with an Imperial War Museum OIL PAINTING, and "overcast grey sky" with a
+ * Pissarro. Both are magnificent and neither is a documentary photograph, which
+ * is what the episode's style line asks for on every recipe.
+ *
+ * The tell is in the title, because Commons names its art properly — a painter
+ * and a date, or the word itself. A recipe that genuinely wants a painting says
+ * so in its prompt and this filter stands down.
+ */
+const ARTWORK =
+  /(painting|oil on|watercolou?r|engraving|lithograph|etching|woodcut|illustration|drawing|sketch|artwork|art\.iwm|fresco|mural|portrait of|still life)/i;
+
+/**
  * Which candidate to take.
  *
  * Big enough to fill a 1080-wide frame without softening, and closest in shape
@@ -129,7 +145,7 @@ const JUNK = /(logo|icon|barnstar|coat of arms|flag of|user:|user talk|wikimedia
  * its own middle whatever the search thought of it — because that penalty is
  * unbounded while the size term is capped at one.
  */
-export function best(pages, targetRatio) {
+export function best(pages, targetRatio, {allowArt = false} = {}) {
   const scored = [];
   for (const page of pages) {
     const info = page?.imageinfo?.[0];
@@ -137,6 +153,7 @@ export function best(pages, targetRatio) {
     if (!/^image\/(jpeg|png|webp)$/.test(info.mime ?? '')) continue;
     if ((info.width ?? 0) < 900) continue;
     if (JUNK.test(page.title ?? '')) continue;
+    if (!allowArt && ARTWORK.test(page.title ?? '')) continue;
     if (!isFree(info.extmetadata)) continue;
 
     const ratio = info.width / info.height;
@@ -218,7 +235,12 @@ async function main() {
       let choice = null;
       let used = queries[0];
       for (const query of queries) {
-        choice = best(await search(query), width / height);
+        // A recipe that genuinely wants a painting says so; everything else
+        // asked for a documentary photograph and should not be handed a
+        // Pissarro because Commons ranks its art higher.
+        choice = best(await search(query), width / height, {
+          allowArt: /paint|artwork|illustration|engraving|drawing|poster/i.test(recipe.prompt ?? ''),
+        });
         if (choice) {
           used = query;
           break;

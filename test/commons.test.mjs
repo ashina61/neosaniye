@@ -126,6 +126,26 @@ test('a huge irrelevant photograph never outranks the thing that was asked for',
   assert.match(shaped.page.title, /upright/);
 });
 
+test('a painting is not a documentary photograph', () => {
+  // Commons is one of the world's great ART archives, and its art outranks its
+  // photography on almost any historical search: "city street 1939 evening"
+  // came back with an Imperial War Museum oil painting, "overcast grey sky"
+  // with a Pissarro. Both magnificent, neither a photograph — and every recipe
+  // in this repo asks for a documentary photograph.
+  const chosen = best(
+    [page('An Evening in the City painting Art.IWMARTLD1354', 3000, 4000, 'Public domain'),
+     page('Fleet Street at dusk 1939', 1400, 1900, 'CC BY-SA 4.0')],
+    1080 / 1920,
+  );
+  assert.match(chosen.page.title, /Fleet Street/);
+
+  // Unless the recipe wanted one, in which case the filter stands down.
+  const art = best([page('Pissarro The Oise in Grey Weather', 3000, 2200, 'Public domain')], 1080 / 1920, {
+    allowArt: true,
+  });
+  assert.match(art.page.title, /Pissarro/);
+});
+
 test('shape closest to the slot wins over raw size', () => {
   // A panorama dropped into a portrait plate is cropped to a stripe of its own
   // middle, which is usually the least interesting part of it.
