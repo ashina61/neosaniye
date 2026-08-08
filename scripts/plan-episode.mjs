@@ -495,7 +495,7 @@ const NOT_A_UNIT = /^(and|or|of|the|a|an|in|on|to|for|from|by|with|at|was|were|i
 function bigNumber(vo) {
   const numeric = /\b\d[\d,.]*\b/;
   const spelled =
-    /\b(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion)(\s+(hundred|thousand|million|billion))?\b/i;
+    /\b(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion)(\s+(hundred|thousand|million|billion))?\b/i;
 
   const match = vo.match(numeric) ?? vo.match(spelled);
   if (!match) return '';
@@ -1166,7 +1166,16 @@ function planContinuation({line, index, part, fragment, frames: measured, rand, 
     durationInFrames: frames,
     // A continuation cuts on the FRAGMENT it is about to speak, not on the whole
     // line — that is the half of the sentence this shot exists for.
-    transition: cutFor({...line, vo: fragment}, previousTransition, look.transitions, rand),
+    // A CONTINUATION DOES NOT INHERIT THE DIRECTION. `shot.cut` names how THIS
+    // shot arrives, and a continuation is a different shot — spreading the line
+    // whole handed it the same instruction and produced three identical cuts in
+    // a row, which is the tic the anti-repeat rule exists to prevent.
+    transition: cutFor(
+      {...line, vo: fragment, shot: {...line.shot, cut: undefined, cutFrames: undefined}},
+      previousTransition,
+      look.transitions,
+      rand,
+    ),
     assets,
     layers,
     // A continuation is the same room seen from another corner, so the drawn
@@ -1281,7 +1290,24 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
     // A hand-written title can BE the number — "TWELVE YEARS" — and the old
     // rule only looked at the voiceover on the `number` beat, so a slate whose
     // whole point was a figure got neither the count nor the spin.
-    const number = bigNumber(line.title ?? '') || (beat === 'number' ? bigNumber(line.vo) : '');
+    /**
+     * A TITLE THE AUTHOR WROTE IS THE CARD, WHOLE.
+     *
+     * The number is EXTRACTED so a line can earn a slate without one being
+     * typed; extracting it from a title that was typed is a different thing,
+     * and it loses whatever the extractor does not recognise. An episode
+     * closing on "FOURTEEN HUNDRED" delivered a card reading HUNDRED, because
+     * the spelled-number list had no teens in it — and even with them, taking a
+     * piece of a hand-written title is not a decision anything should make.
+     *
+     * So a written title spins or counts AS ITSELF. The extractor is only for
+     * the line that never had one.
+     */
+    const number = line.title
+      ? String(line.title).toUpperCase()
+      : beat === 'number'
+        ? bigNumber(line.vo)
+        : '';
     const titleFrame = 4 + Math.round(rand() * 6);
     scene.params = {
       scrim: round(between(rand, [0.36, 0.54])),

@@ -253,3 +253,30 @@ test('the sentence chooses the cut, and beats the anti-repeat rule doing it', as
     frames: 20,
   });
 });
+
+test('a title the author wrote is the card, whole', async () => {
+  /**
+   * The number is EXTRACTED so a line can earn a slate without one being typed.
+   * Extracting it from a title that WAS typed is a different thing, and it
+   * loses whatever the extractor does not recognise: an episode closing on
+   * "FOURTEEN HUNDRED" delivered a card reading HUNDRED, because the spelled
+   * number list ran ten, eleven, twelve, twenty — no teens at all.
+   */
+  const {config} = await plan([
+    line('open', 'A thing happened here today.'),
+    {
+      slug: 'verdict',
+      vo: 'Nothing this complex was built again for fourteen hundred years.',
+      image: 'a dark field',
+      pieces: [],
+      kicker: '1901 · 1951',
+      title: 'FOURTEEN HUNDRED',
+      footer: 'years before anything like it',
+      shot: {template: 'title-slate', signature: 'the verdict', camera: {from: 1.16, to: 1}},
+    },
+  ]);
+  const slate = config.scenes.find((s) => s.id.includes('verdict'));
+  assert.equal(slate.params.title, 'FOURTEEN HUNDRED');
+  // Whatever device the figure arrives on, it arrives entire.
+  assert.equal(slate.params.spinTo ?? slate.params.countTo ?? slate.params.title, 'FOURTEEN HUNDRED');
+});
