@@ -1,16 +1,7 @@
-node_modules/
-out/
+node_modules
+dist
+.DS_Store
 .env
 
-# Written by the render script before bundling: it imports whatever scene
-# overrides the episode ships. Generated, never edited by hand.
-engine/episodeScenes.generated.ts
-
-# THE REFERENCE KIT IS NOT OURS TO REDISTRIBUTE.
-# episodes/netflix/ is built from the build-along's own artwork — generated
-# likenesses, brand marks, a storefront — supplied for a local test of the
-# engine and nothing else. It proved what it needed to prove: handed that
-# material, this engine produces that reel. Publishing somebody else's kit
-# from a public repository is a separate decision and not one a build makes
-# on its own. Drop the kit into episodes/netflix/assets/ and re-plan.
-episodes/netflix/
+# Ignore the output video from Git but not videos you import into src/.
+out

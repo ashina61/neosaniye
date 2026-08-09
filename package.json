@@ -1,42 +1,31 @@
 {
-  "name": "crime-reels",
+  "name": "neosaniye",
   "version": "1.0.0",
+  "description": "My Remotion video",
+  "repository": {},
+  "license": "UNLICENSED",
   "private": true,
-  "type": "module",
-  "description": "Vertical crime documentary reels \u2014 one shared engine, many episodes",
-  "engines": {
-    "node": ">=20"
-  },
-  "scripts": {
-    "write": "node scripts/write-episode.mjs",
-    "new": "node scripts/new-episode.mjs",
-    "plan": "node scripts/plan-episode.mjs",
-    "voice": "node scripts/voice-episode.mjs",
-    "render": "node scripts/render-episode.mjs",
-    "validate": "node scripts/validate-episode.mjs",
-    "frames": "node scripts/review-frames.mjs",
-    "prestudio": "node scripts/ensure-scene-overrides.mjs",
-    "studio": "remotion studio engine/index.ts",
-    "pretypecheck": "node scripts/ensure-scene-overrides.mjs",
-    "typecheck": "tsc --noEmit",
-    "test": "node --test \"test/*.test.mjs\"",
-    "assets:generate": "node scripts/generate-assets.mjs",
-    "assets:commons": "node scripts/fetch-commons.mjs",
-    "assets:review": "node scripts/review-assets.mjs",
-    "assets:placeholder": "node scripts/make-placeholder-assets.mjs"
-  },
   "dependencies": {
-    "@remotion/bundler": "4.0.499",
-    "@remotion/cli": "4.0.499",
-    "@remotion/renderer": "4.0.499",
-    "react": "19.1.1",
-    "react-dom": "19.1.1",
-    "remotion": "4.0.499",
-    "sharp": "^0.35.3"
+    "@remotion/cli": "4.0.457",
+    "@remotion/google-fonts": "^4.0.457",
+    "@remotion/motion-blur": "^4.0.457",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.457",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@types/react": "19.1.10",
-    "@types/react-dom": "19.1.7",
-    "typescript": "5.9.2"
+    "@remotion/eslint-config-flat": "4.0.457",
+    "@types/react": "19.2.7",
+    "@types/web": "0.0.166",
+    "eslint": "9.19.0",
+    "prettier": "3.8.1",
+    "typescript": "5.9.3"
+  },
+  "scripts": {
+    "dev": "remotion studio",
+    "build": "remotion bundle",
+    "upgrade": "remotion upgrade",
+    "lint": "eslint src && tsc"
   }
 }

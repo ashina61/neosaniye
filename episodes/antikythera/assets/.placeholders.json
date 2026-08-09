@@ -1,8 +1,0 @@
-{
-  "$comment": "These assets are stand-ins, not finished artwork. scripts/generate-assets.mjs removes each name as it draws it for real.",
-  "placeholders": [
-    "mechanism-fragment.jpg",
-    "mechanism-xray.jpg",
-    "moon-sky.jpg"
-  ]
-}

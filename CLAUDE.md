@@ -1,331 +1,508 @@
-Bu depo **dikey suç belgeseli reel fabrikası**dır: bir motor, çok bölüm.
+# remotion-studio — Claude Code Instructions
 
-Tek cümlelik yasa: **MOTOR BÖLÜMÜ TANIMAZ.** `engine/` içindeki hiçbir satır bir
-dosya adı, bir bölüm kimliği veya bir hikâye bilmez. Bölüm bir klasördür —
-kod değişikliği değil. İkinci bölüm eklemek `episodes/` altına bir klasör
-açmaktır, motora dokunmak değil.
+## What This Project Is
+A flexible, component-driven video studio built on Remotion and React.
+Every video is a React component. Content lives in data files. Claude Code writes both.
+No external APIs. No hardcoded content in templates. Renders to MP4.
 
-Klasörü `npm run new -- --id=<id> --title="…" --mood=<mood>` açar: brief
-şablonu, kesim ve yer tutucular. İlk saniyeden geçerli bir bölüm çıkar —
-sonra ALTI SATIRI yazarsın, gerisi türetilir.
+---
 
-Giriş noktası `npm run render -- --episode=<id>`. Otomatik koşu TEK
-workflow: `.github/workflows/reel.yml`. Push/PR'da ucuz kapı (`check`);
-"Run workflow" ile fabrika (`make`): **seslendir → görsel → render**, her adım
-açılıp kapanabilir. Ayrı workflow değiller çünkü tek bir zincir: seslendirmeyi
-yenilemek kesimi, kesim de görsellerin sahne kimliklerini değiştirir.
+## Tech Stack
+- **Remotion** — video rendering engine
+- **React + TypeScript** — all video content is components
+- **@remotion/google-fonts** — typography
+- **@remotion/motion-blur** — motion effects
+- **Zod** — prop validation on templates
+- **Local assets only** — /public for images, audio, video clips
 
-## Sıfırıncı yasa: SES SAATTİR
+---
 
-Seslendirme bir katman değil, ZAMAN ÇİZELGESİDİR. Sahne süreleri MP3'ün
-içindeki satır sınırlarından ÖLÇÜLÜR — tahmin edilmez.
-
-**Konuşmak ve ÖLÇMEK iki ayrı adımdır.** Konuşmak bir sağlayıcıya aittir
-(ElevenLabs, OpenAI, mikrofon, biri); ölçmek `scripts/lib/measure.mjs`'e aittir
-ve HER ŞEYDE çalışır. Duraklar dosyanın içindedir; onları bulmak API değil örnek
-ister. Tek bir sağlayıcının zaman damgasına bağlanırsan, o sağlayıcı hata
-verdiği gün saat de gider.
-
-Ölçüm sessiz koşuları bulur ve en uzun (satır − 1) tanesini alır. "Eşiği geçen
-her sessizlik" değil: anlatıcı cümlenin ortasında da nefes alır, ve yanlış
-sınırı almak ondan sonraki HER satırı yanlış resmin üstüne koyar — üstelik reel
-yine render olur. Kaç sınır olduğu bilinir, o yüzden sayı sorulur, eşik değil.
-Dosyanın başındaki sessizlik sınır sayılmaz. Hiç durak bulunamazsa iş
-UYDURULMAZ, reddedilir.
-
-`npm run voice -- --episode=<id> [--measure]` bütün metni TEK seferde okutur (satır satır
-okutmak, kenarlarında farklı miktarda hava olan altı klip verir; oysa ölçülen
-şey satırlar ARASINDAKİ boşluktur), karakter hizalamasından her satırın
-penceresini çıkarır ve `audio/vo.json` yazar. Planlayıcı o pencereleri keser;
-satır içindeki parçalar pencereyi kelime ağırlığına göre böler ve artık kalan
-kare SON parçaya gider — böylece toplam tam olarak pencereye eşittir ve reel
-kendi anlatısından kaymaz.
-
-`vo.json` yoksa süreler `kelime / 2.7 * 30` ile TAHMİN edilir ve koşu bunu
-ekrana yazar. Tahminle kesilmiş bir reel taslaktır; sessizce bitmiş görünmemeli.
-Ses dosyası da `vo.json` da COMMIT EDİLİR. Render taze checkout yapıyor ve
-config `audio:` diyor — dosya orada olmazsa doğrulama düşer. `vo.json` da
-gitmek zorunda: config'teki her süre ona göre kesildi.
-
-Piper satır satır okur ve klipleri BİZ birleştiririz; orada sınırlar ölçüm
-değil aritmetiktir, çünkü sessizliği koyan biziz. Kural aynı: sınır klibin
-SONUDUR.
-
-## Zincir
+## Project Structure
 
 ```
-episodes/<id>/brief.json            → altı satır + HER SATIRIN KOREOGRAFİSİ
-        ↓
-scripts/voice-episode.mjs           → vo.mp3|wav + vo.json (ÖLÇÜM)
-        ↓
-episodes/<id>/scene-config.json     → bölümün tek gerçeği (sahneler, süreler, look)
-        ↓
-scripts/render-episode.mjs          → doğrula → publicDir = episodes/<id> → bundle
-        ↓
-engine/Root.tsx (calculateMetadata) → fps/en/boy/süre config'ten gelir
-        ↓
-engine/Episode.tsx                  → <Sequence> zinciri, sahne başına FilmLook
-        ↓
-engine/sceneTypes/registry.ts       → sceneType → şablon
-        ↓
-engine/sceneTypes/*.tsx             → plakalar, hareket, gölge
-engine/draw/*.tsx                   → ışık, kâğıt, işaretleme, tipografi
-        ↓
-out/<id>.mp4
+remotion-studio/
+├── CLAUDE.md
+├── package.json
+├── tsconfig.json
+├── remotion.config.ts
+├── public/
+│   ├── fonts/
+│   ├── audio/
+│   └── images/
+├── src/
+│   ├── Root.tsx                        ← registers ALL compositions
+│   ├── index.ts                        ← remotion entry point
+│   ├── tokens.ts                       ← ALL design tokens
+│   ├── lib/
+│   │   └── utils.ts                    ← shared helpers (easing, math, etc.)
+│   ├── hooks/
+│   │   ├── useTextReveal.ts
+│   │   ├── useCountUp.ts
+│   │   ├── useStagger.ts
+│   │   └── useSlideIn.ts
+│   ├── components/
+│   │   ├── AnimatedText.tsx            ← reusable word/char animator
+│   │   ├── ProgressBar.tsx             ← animated progress bar
+│   │   ├── GradientBg.tsx             ← animated gradient background
+│   │   ├── Noise.tsx                   ← film grain / noise overlay
+│   │   └── AudioTrack.tsx             ← wraps <Audio> with fade in/out
+│   ├── templates/
+│   │   ├── TitleCard/
+│   │   │   ├── index.tsx
+│   │   │   └── schema.ts              ← zod schema for props
+│   │   ├── TextSlide/
+│   │   │   ├── index.tsx
+│   │   │   └── schema.ts
+│   │   ├── BulletReveal/
+│   │   │   ├── index.tsx
+│   │   │   └── schema.ts
+│   │   ├── StatCard/
+│   │   │   ├── index.tsx
+│   │   │   └── schema.ts
+│   │   ├── QuoteCard/
+│   │   │   ├── index.tsx
+│   │   │   └── schema.ts
+│   │   ├── ImageReveal/
+│   │   │   ├── index.tsx
+│   │   │   └── schema.ts
+│   │   ├── ListRace/
+│   │   │   ├── index.tsx
+│   │   │   └── schema.ts
+│   │   └── OutroCard/
+│   │       ├── index.tsx
+│   │       └── schema.ts
+│   └── videos/
+│       └── Video001/
+│           ├── data.ts
+│           └── index.tsx
 ```
 
-## Sıfırıncı yasa, ikinci hâli: KOREOGRAFİYİ YAZAN DÜŞÜNÜR
+---
 
-Referansın yöntemi bir düşünme adımı içerir: modele "her satır için sahneyi,
-ekrandaki kelimeleri, duygusal vuruşu, BİR İMZA ANİMASYONU ve gereken assetleri
-söyle" denir; sonra sahne başına ayrı bir istem gelir ve kareleri tek tek verir
-— "0-46'da 1.0'dan 1.16'ya, 62'ye kadar kaynak, sonra ayrış". Koreografiyi
-model kurar.
+## Core Rules — Non-Negotiable
 
-Bu depo iki hafta boyunca onun yerine `rand()` kullandı. Plaketin nereye
-gideceğine, kameranın itip itmeyeceğine, hangi şablonun geleceğine zar karar
-verdi. Sonuç iki türlü bozuktu: her bölüm bir öncekinin fotoğrafları
-değiştirilmiş hâliydi, VE kompozisyon saçmalıyordu — bir üniversite
-portikosunun önünde havada duran bir gazete, çünkü onu oraya kimse koymadı.
+### Rule 1: Templates Are Dumb Display Components
+Zero hardcoded strings, colors, or durations inside any template.
+All content, styling, and timing comes from props validated by a Zod schema.
 
-O yüzden brief artık her satır için `shot` taşır: `template`, tek cümlelik
-`signature` (bu çekimin var olma sebebi olan TEK hareket), `camera`
-(`from`→`to`; itiş ile geri çekilme iki ayrı çekimdir), ve `props` — çizilen
-nesneler, kesirlerle: `size` karenin genişliğinin oranı, `x`/`y` merkezi,
-`at` çekimin neresinde indiği, `depth` itişten aldığı pay. Kesir girer, piksel
-çıkar: yönetmen "karenin onda sekizi" der, karenin 1080 olduğunu yalnız
-derleyici bilir.
+```tsx
+// schema.ts
+import { z } from 'zod'
+export const titleCardSchema = z.object({
+  title: z.string(),
+  subtitle: z.string().optional(),
+  theme: z.enum(['dark', 'light', 'neon', 'paper', 'brutal']),
+  durationInFrames: z.number(),
+  enterDuration: z.number().default(20),
+})
+export type TitleCardProps = z.infer<typeof titleCardSchema>
 
-Planlayıcı bunu DERLER, ikinci kez düşünmez. Yazılmış olan kazanır; kurallar ve
-zar yalnız yazılmamış olanın yedeğidir. Ve **boş bir `props` dizisi bir
-karardır** — çıplak çekim diğerlerini var eden şeydir, ona zar atılmaz.
+// index.tsx
+export const TitleCard: React.FC<TitleCardProps> = (props) => { ... }
+```
 
-İki ölçü, ikisi de kontak sayfasından öğrenildi: bir nesne **ait olduğu yerde**
-durur (gazetenin altında bir yüzey vardır, plaket kaptığı şeyin altında asılır,
-havada duran her şey resmin üstüne yapıştırılmış bir grafiktir ve öyle görünür),
-ve **öznesi ise kareyi doldurur** — karenin %40'ındaki bir ön sayfa, telefonda
-otuz altı piksellik manşetiyle bir çıkartmadır. Ama tam kadraj bir gazete de
-bütün bir gazete OLAMAZ: sahte tram bloğu gri bir levhaya, sahte sütunlar gri
-çizgilere döner. Yakın çekim sayfanın ÜSTÜNÜ gösterir — logo, çizgi, manşet —
-ve sütunlar karenin altından taşar.
+### Rule 2: data.ts Is the Entire Video
+One file per video. Contains all text, timing, theme, asset paths, and sequence order.
+Claude Code writes this file when creating a new video. Never touch template files for content.
 
-## Değişmez kurallar
+```ts
+// src/videos/Video001/data.ts
+import { fps } from '../../tokens'
 
-1. **DOSYA ADI CONFIG'TEDİR, KODDA DEĞİL.** Şablon `assets.character` gibi bir
-   ROL okur; o rolün hangi dosya olduğu bölümün işidir.
-   `test/enginePurity.test.mjs` motorun içinde geçen her dosya uzantısını,
-   her `episodes/` yolunu ve her bölüm kimliğini düşürür.
-2. **İNSAN VE MEKÂN FOTOĞRAFTIR, GERİ KALAN HER ŞEY ÇİZİLİR.** Bu deponun en
-   pahalı ikinci dersi. Işık, gölge, kâğıt, gazete, kart, plaket, altı çizgi,
-   oval, tel-kafes, tipografi ve noktalama `engine/draw/` içinde KODLA çizilir.
-   Üreticiye yalnız insan, mekân ve doku sorulur. Prosedürel bir insan tabela
-   piktogramıdır; prosedürel bir gazete ise sadece tipografidir ve belgesel
-   grafiği zaten odur. Gazeteyi, eskizi, bot izini üreticiye yıkmayı denedik —
-   patlayanlar tam onlar oldu.
+export const meta = {
+  id: 'Video001',
+  title: 'My First Video',
+  format: 'portrait' as const,   // 'portrait' | 'landscape'
+  fps,
+  durationInFrames: fps * 60,
+}
 
-   **YÜZEY DE ÇİZİLİR — MEKÂN DEĞİLDİR.** Duvar bir mekân değildir. Su, gökyüzü,
-   zemin, kâğıt, bir müze vitrininin arkasındaki karanlık da değil: bunlar
-   çekimin üstüne kurulduğu ZEMİNDİR ve hiçbir fotoğraf arşivi onları
-   indekslemez. Commons'a "düz gri laboratuvar duvarı" dersen beyaz bir oda,
-   "koyu yeşil su" dersen bir gölün hava fotoğrafı, "müze deposu çekmeceleri"
-   dersen antika bir konsol gelir. Üç bölüm boyunca arama terimlerini elle
-   düzelttik ve her seferinde BAŞKA bir yanlış resim geldi — çünkü sorun arama
-   değil: kimse boş bir duvarın fotoğrafını çekip yüklemiyor. Artık `layers`
-   içinde `"kind": "surface"` var: `scripts/lib/surface.mjs` onu bu makinede,
-   dosya adından, AĞSIZ çizer — leke, malzemenin yaptığı tek şey (suyun bandı,
-   ahşabın damarı, çekmece duvarının dikişi ve kulbu), tek yandan gelen ışık,
-   grain. Aynı isim aynı yüzeyi verir ve başka bir şey OLARAK geri gelemez.
-   Yazar "düz bir X" diye tarif ettiği her şeyi böyle ister; `write-episode.mjs`
-   fotoğraf olarak istenen boş zemini reddeder. Ve yüzey karenin en arkasındaki
-   şeydir: ışığı 1.2'yi geçmez, çünkü öndeki plakayı yutan bir arka plan zaten
-   arka plan değildir.
+export const sequence = [
+  {
+    template: 'TitleCard',
+    from: 0,
+    durationInFrames: fps * 4,
+    props: {
+      title: 'Hook goes here',
+      subtitle: 'Secondary line',
+      theme: 'dark',
+      enterDuration: 15,
+    }
+  },
+  {
+    template: 'BulletReveal',
+    from: fps * 4,
+    durationInFrames: fps * 25,
+    props: {
+      heading: 'Section title',
+      bullets: ['First point', 'Second point', 'Third point'],
+      theme: 'dark',
+      staggerFrames: 18,
+    }
+  },
+  {
+    template: 'OutroCard',
+    from: fps * 55,
+    durationInFrames: fps * 5,
+    props: {
+      cta: 'Follow for more',
+      handle: '@handle',
+      theme: 'dark',
+    }
+  }
+]
+```
 
-   **VE BU KANUN `props` İLE UYGULANIR.** Referans reel ~20 asset üstünde
-   duruyor ve yalnız DÖRDÜ arka plan; kalan on altısı plaket, gazete, kart,
-   tel-kafes, ışık huzmesi — hepsi grafik. Bu hat altı arka plan yapıp bölüm
-   sanıyordu ve kalan on dördünü satamayacak bir fotoğraf aramasından satın
-   almaya çalışıyordu; oysa `Plaque`, `WireFrame` ve `Beam` `engine/draw/`
-   içinde bitmiş hâlde duruyordu, SIFIR şablona bağlı. Artık sahne `props`
-   dizisi taşır: dosyasız katman, aynı derinlik, aynı çapa. Motiften farkı şu —
-   motif kareye çakılıdır çünkü cümle HAKKINDA bir grafiktir; prop odanın
-   içindeki bir nesnedir, o yüzden itişten payını alır.
+### Rule 3: tokens.ts Is the Design System
+No raw hex codes, pixel values, or numbers in template files. Import everything from tokens.
 
-   İki kural, motiflerinkiyle aynı: **söyleyecek bir şeyi olacak** (plaket
-   satırın kendi etiketini, kart kendi başlığını taşır; yalnız `wire` ve `beam`
-   saf grafiktir ve en çok onlar kısılır), ve **peş peşe aynısı gelmez**. Ama
-   hiçbir çekim eli boş kalmaz: kural ile zar aynı anda ters düşerse iki saf
-   grafik sırayla girer — eli boş çekim zaten bu işin bitirmeye çalıştığı şey.
+```ts
+// src/tokens.ts
+export const fps = 30
 
-   Masthead bir gazetenin ADIDIR, cümle değil: satırın `footer`'ını oraya koyup
-   yirmi iki karakterde kesince manşet "THERE WAS NO MACHINE Y" diye çıktı.
-   Cümle MANŞETTİR. Ve çizilen her nesne kareye SIĞAR — punto `fitSize` ile
-   kısılır, x ise kendi genişliğini içeride tutacak şekilde kenetlenir, yoksa
-   "Hanover · 1956" plaketi "Hanover · 19" olarak teslim edilir.
-3. **PREMIUM GÖRÜNTÜ FOTOĞRAFTA DEĞİL, ÜSTÜNE ÇİZİLEN KATMANDADIR.** Fotoğrafta
-   lamba vardır, ışığı yoktur: `Glow` ampule screen blend'li dört radyal
-   gradyan koyar ve plaka zoom'lanırken ONUNLA BİRLİKTE ölçeklenir — sahne
-   koordinatına çakılı bir ışık lambadan kayar ve lens parlamasına döner.
-   `Annotation` kendini çizer (fade değil), `WordStack` satırları tek tek
-   indirir, `focusHunt` çekimi kesmez buldurur ve çizilen ışığa defokusu
-   söyler; yumuşak gradyan bulanıklıktan etkilenmediği için aksi halde
-   yumuşamış karede keskin durur.
+export const formats = {
+  portrait:  { width: 1080, height: 1920 },   // TikTok / Shorts
+  landscape: { width: 1920, height: 1080 },   // YouTube
+  square:    { width: 1080, height: 1080 },   // Instagram
+}
 
-   **VE PLANLAYICI BUNU İSTEMEK ZORUNDA.** Kanun motorda eksiksiz duruyordu ve
-   planlayıcı `glowSize`'ı SIFIR kez set ediyordu: bu hattın çıkardığı her
-   çekim bir fotoğraf, yavaş bir itiş ve biraz sisti; devam çekimleri sisi bile
-   almıyordu — boş bir `params`, ki bitmiş bir render için "bomboş video"
-   denince kastedilen tam olarak budur. Işık bütün bölüm boyunca TEK yandan
-   gelir: odadaki ışığın kaynağı vardır, her kesimde yan değiştiren bir ana
-   ışığın kaynağı değil titremesi vardır. Ve kaynak KADRAJIN DIŞINDADIR —
-   `Glow`'un en içteki katmanı beyaz sıcak ÇEKİRDEKTİR ve ampulün üstüne
-   gider; altında lamba olmayan açık karede o çekirdek ışık değil, odada asılı
-   duran beyaz bir toptur.
-4. **BİR ÇEKİM FOTOĞRAF DEĞİL, KATMAN YIĞINIDIR.** Referans kit bunu bitiriyor:
-   açılış karesi gökyüzü + farklı hızda kayan iki KESİLMİŞ bulut + KESİLMİŞ bina
-   + figür + çerçeve + kâğıt dokusu. Yedi parça, hiçbiri bütün bir resim değil.
-   Arka plan bile parçalardan kurulur. `composite` şablonu istenen kadar katman
-   alır ve hepsi TEK bir sayıya bağlıdır: **depth**. 0 gökyüzüdür, kamera
-   itişinden pay almaz; 1 çapadaki öznedir, itişin tamamını alır; 0.5 bina
-   yarısını alır. Parallax, mekân hissi, düz plakanın düz görünmekten çıkması —
-   hepsi o tek sayıdan doğar. Her katman AYNI çapa etrafında ölçeklenir; ayrı
-   merkez verilirse katmanlar bir oda gibi tutunmaz, birbirinin üstünde kayar.
+export const themes = {
+  dark: {
+    bg: '#0a0a0a',
+    text: '#ffffff',
+    accent: '#f5c518',
+    muted: '#666666',
+    surface: '#1a1a1a',
+  },
+  light: {
+    bg: '#f8f8f8',
+    text: '#0a0a0a',
+    accent: '#e63946',
+    muted: '#999999',
+    surface: '#eeeeee',
+  },
+  neon: {
+    bg: '#04040f',
+    text: '#ffffff',
+    accent: '#00ffcc',
+    muted: '#7b61ff',
+    surface: '#0d0d2b',
+  },
+  paper: {
+    bg: '#f5f0e8',
+    text: '#1a1008',
+    accent: '#c9541a',
+    muted: '#8a7560',
+    surface: '#ede8df',
+  },
+  brutal: {
+    bg: '#ffffff',
+    text: '#000000',
+    accent: '#ff0000',
+    muted: '#555555',
+    surface: '#f0f0f0',
+  },
+}
 
-   **YIĞIN BRIEF'TE BAŞLAR.** Bu kanun uzun süre yalnız motorda yazılıydı ve
-   motor onu uyguluyordu — ama kimse yığın vermiyordu. `write-episode.mjs`
-   yazardan tek bir `image` cümlesi istiyor, `pieces` ise "opsiyonel, kullanmasan
-   daha iyi" diye geçiyordu; sonuç, altı satırlık bir bölümün ALTI PNG olmasıydı
-   ve devam çekimleri aynı plakayı tekrar gösteriyordu. On bir sahne, sekiz
-   dosya, dördü bir öncekinin aynısı. O yüzden `pieces` artık ZORUNLU: her satır
-   arka planı ve önünde duran 2-4 TEK NESNEYİ söyler, ve bir satır hariç hepsi
-   yığın vermezse brief REDDEDİLİR. Bir parça kesilip kendi derinliğine
-   konacaktır, o yüzden zaten resim olan bir şey ("masadaki adamlar") parça
-   olamaz: çoğul özne dikdörtgene, "şu kadar X" konfetiye keser.
+export const fontSizes = {
+  hero:    120,
+  title:   80,
+  heading: 56,
+  body:    38,
+  caption: 26,
+}
 
-   **AMA PARÇA ANCAK TEDARİK VARSA KONUR.** `"cutouts": true` demeyen bir
-   brief'te hiçbir parça yerleştirilmez, ve varsayılan kapalıdır. Sebebi kalite
-   değil TEDARİK: temiz bir kesim gerekir ve bu hattın kaynağı yoktur.
-   Commons'ta nesnelerin kesimi değil, odaların içindeki nesnelerin fotoğrafı
-   vardır — parkta çekilmiş bir bank keylendiğinde dikdörtgen döner, "büyüteç"
-   araması ise kusursuz keylenmiş bir çamaşır makinesi kapağı döner. Hiçbir
-   eşik ikincisine yetişemez; o bir tedarik sorununun kalite sorunu kılığıdır.
-   Referans kit bu duvara çarpmadı çünkü fotoğraf araması kullanmadı: icat
-   edilmesi gereken her şey ısmarlama ÜRETİLDİ ve arka planı temizlendi.
-   Üretici bağlandığı gün tek kelime açılır, aşağıdaki her şey aynen çalışır.
+export const fontFamilies = {
+  display: 'Bebas Neue',
+  body:    'DM Sans',
+  mono:    'JetBrains Mono',
+}
 
-   Parça yokken zemin itişi KENDİ alır (0.72-0.95). Sığ derinlik parçalar
-   duvarı geçebilsin diyedir; parça yokken aynı sayı hiçbir şeyin kıpırdamaması
-   demektir — kamera itişinin %4'ünde duran bir çekim, üstünde grain olan bir
-   fotoğraftır.
+export const easings = {
+  snap:    [0.19, 1, 0.22, 1] as const,
+  bounce:  [0.34, 1.56, 0.64, 1] as const,
+  smooth:  [0.4, 0, 0.2, 1] as const,
+}
+```
 
-   Parça plakası kareyi KAPLAYAMAZ (bkz. kanun 8) ve bunu motor garanti eder,
-   config söz vermez: katman yalnız `height` ister, genişlik asset'in en-boyunu
-   izler, ve yatay bir tuval üzerine çizilmiş 970px'lik bir parça 1080px'lik
-   karede 1500px genişliğe çıkar. Tavan DERİNLİĞE göredir — düz bir tavan uzak
-   ve yakın parçayı aynı boya indirir, yani yığını görünmez yapar.
-5. **YEDİ PAYLAŞILAN ŞABLON.** `portal-zoom-reveal`, `parallax-punch`,
-   `stacked-reveal`, `split-shift`, `title-slate`, `evidence-board`, artı
-   `composite` — diğerlerinin özel hâli olduğu genel şablon. `title-slate` ve
-   `evidence-board`
-   grafik önceliklidir: hiç fotoğraf istemeden çalışır, yani eksik bir asset'te
-   ölmezler. Bir bölüm kendi şablonunu `episodes/<id>/scenes/index.tsx` içinde
-   kaydedebilir; paylaşılan altıya bölüme özel bir şey eklenmez.
-6. **DERİNLİK DOSYADA DEĞİL, İKİ PLAKANIN BİRBİRİNE GÖRE HAREKETİNDEDİR.**
-   Karakter arka plandan DAHA SERT yaklaşır (eşit ölçek zoom'dur, farklı ölçek
-   derinliktir) ve ikisi de YERDEKİ AYNI NOKTA etrafında ölçeklenir
-   (`groundX`/`groundY`). Ortak çapa kaçarsa özne zeminden kayar — bu efektin
-   bozulmasının bir numaralı yolu.
-7. **GÖLGE AYRI BİR ASSET DEĞİLDİR.** Karakterin kendi dosyası siyaha boyanır,
-   ayaklarından aşağı çevrilir ve zemine yatırılır. Karakter gönderen bölüm
-   gölgesini bedava gönderir.
-8. **ÖZNE PLAKASI ÇERÇEVEYİ KAPLAMAZ.** Tam kadraj plaka duvar içindir;
-   bir insan `plateWidth` + `footX`/`footY` ile boyutlanır ve ayakları
-   üzerinde durur. 1080x1920'e esnetilen bir cutout tüm kareyi doldurur ve
-   önünde hiçbir şey hareket edemez — derinlik ölür.
-9. **FİLM İŞLEMESİ TEK YERDEN GELİR.** Grain, grunge, tarama çizgileri,
-   vignette, gate weave ve grade `engine/FilmLook.tsx` içindedir. Hiçbir şablon
-   kendi grain'ini yazmaz; sahne yalnız `gradeOverride` ile bölümün grade'ini
-   ezer.
-10. **HER DEĞER PROPTUR.** Şablonun içinde gizli sabit bırakılmaz; sayılar
-   `params` üzerinden gelir ve `num('key', fallback)` ile okunur. Fallback
-   çerçeve boyutuna göre hesaplanır, bölüme göre değil.
-11. **KARE SAYILARI SAHNENİN KENDİ BAŞLANGICINA GÖREDİR.** `onScreenText.atFrame`
-   ve `params` içindeki bütün kare değerleri sahne sıfırından sayılır — reel
-   sıfırından değil. Sahne başlangıçları `sceneOffsets` ile toplanır, config'te
-   iki kez yazılmaz.
-12. **ŞEMA TEK UYGULAMADIR.** `engine/schema.mjs` düz JavaScript'tir çünkü hem
-   doğrulayıcı script hem render bundle AYNI doğrulamayı çalıştırmak
-   zorundadır. Tipler `engine/schema.ts` içindedir. İkiye ayrılırsa config
-   doğrulamayı geçer ve render'ı çökertir.
-13. **BİLİNMEYEN SAHNE TİPİ SESSİZCE ATLANMAZ.** Kırmızı bir MISSING TEMPLATE
-    kartı çizilir ve doğrulayıcı zaten render'dan önce düşürür.
-14. **FOTOĞRAF KİM VE NEREDE'Yİ SÖYLER; NE OLDU'YU MOTİF SÖYLER.** Bir plaka
-    "sonra para geldi" diyemez. `engine/draw/Motif.tsx` cümlenin FİİLİNİ oynar:
-    `coins` düşer ve YIĞILIR (yığın tabanda geniştir ve büyümesi cümlenin
-    kendisidir), `route` kendini çizer, `rise` sayar, `tally` çentik atar,
-    `rays` ve `embers` atmosfer verir. Karede bilerek değişen tek şey odur, o
-    yüzden göz onu izler. Üç kural: satır bunu SÖYLEMİŞ olacak, aynı çizim
-    peş peşe iki kez gelmez, üst üste üç sahne süslenmez — çıplak sahne
-    diğerlerini var eden şeydir. Motif kareye çakılıdır, kamera itişinden pay
-    almaz; odaya bağlanırsa grafik olmaktan çıkar, kayan bir aksesuar olur. Ve
-    tip kartının ortası yazınındır: `route` ile `tally` slate'e girmez.
+### Rule 4: Timing Always in Frames
+```ts
+// CORRECT
+durationInFrames: fps * 5    // 5 seconds at 30fps = 150 frames
 
-15. **BİR SAYI YA TIRMANIR YA DURUR; İKİSİ BİRDEN OLMAZ.** `countTo` sayının
-    BÜYÜKLÜĞÜNÜ hissettirir, `spinTo` SEÇİLMİŞ olduğunu — başka bir şey de
-    olabilirdi, bu çıktı. Hangisi olduğu bölümün seed'inden bir kez seçilir;
-    aynı reel'de ikisi de kullanılırsa hiçbiri anlam taşımaz. Slot, slate'in
-    ÜSTÜNE değil, başlığın kendi yerine çizilir — üstüne çizilirse sayı
-    kicker'ın ve footer'ın içinden geçer.
-16. **VURGU, GÖLGE NUMARASININ RENKLİ HÂLİDİR.** Aynı dosyanın ikinci kopyası,
-    üstüne tam oturur, `recolour` ile boyanır ve `flicker` ile HOLD
-    keyframe'lerde yanıp söner — asla fade değil; rampa koyarsan floresan
-    çakması dissolve'a döner. Yeni asset yok. Cümle altından/ateşten
-    bahsetmiyorsa vurgu da yok: her sahnede olan bir vurgu filtredir.
-17. **GRADE CÜMLENİN PARÇASIDIR.** Kapanış ve kül sahnelerinde renk çekilir,
-    kontrast artar; altın ve ihtişamda ısınır. Üç kayıt, dokuz değil — her
-    sahnesi ayrı derecelenmiş bir reel'in grade'i yoktur, titremesi vardır.
+// WRONG
+durationInFrames: 150
+```
 
-## İş bölümü — bu deponun en pahalı dersi
+### Rule 5: Animation Uses Remotion Primitives Only
+`spring()`, `interpolate()`, `useCurrentFrame()`, `useVideoConfig()`
+No framer-motion, no gsap, no CSS keyframe animations.
 
-Önceki hat (`collage-factory-son`) **görsel malzemeyi üretemediği için**
-terk edildi: bedava üreticiler masaya konmuş kitap fotoğrafı ve bozuk yazı
-verdi; prosedürel siluetler tabela piktogramı olmaktan çıkmadı.
+### Rule 6: Sequences Must Not Overlap or Gap
+In data.ts, every sequence item's `from + durationInFrames` must equal the next item's `from`.
+Total must equal `meta.durationInFrames`.
 
-Bu hat aynı duvara çarpmaz çünkü malzeme koda sokulmaz:
+---
 
-- **GÖRSEL BÖLÜMÜN İÇİNDEDİR** — `episodes/<id>/assets/`. Render bir üreticiyi
-  ÇAĞIRMAZ; diskteki dosyayı okur. Doğrulayıcı hepsinin diskte ve boş
-  olmadığını render'dan önce kontrol eder.
-- **ÜRETİM AYRI BİR ADIMDIR.** `scripts/generate-assets.mjs` +
-  `reel.yml`'ın görsel adımı çizer ve **commit eder**;
-  o andan sonra sıradan bir dosyadırlar. Reçeteler `episodes/<id>/assets.json`
-  içindedir — istem de dosya adı gibi bölümün işidir. Bu ayrım şart: üretici
-  bozulursa üretim adımı patlar, bitmiş bir bölüm sessizce değişmez. Aynı
-  isim aynı seed'i verir, yani tekrar çalıştırmak aynı resmi getirir.
-- **HAREKET MOTORUN İÇİNDEDİR** — `engine/motion.ts` sayı alır, sayı döndürür;
-  ne çizdiğini bilmez. Bu yüzden ikinci bölüm bedavadır.
-- **DERİNLİK OYNATILIR** — 3D yok, plugin yok: ortak çapaya oturtulmuş katmanlar,
-  öznenin kendisinden yapılan gölge, ayaklarda dönen ölçek.
-- **EKSİK ASSET REEL'İ DURDURMAZ** — `"?character"` diye yazılan rol diskteyse
-  kullanılır, yoksa sahne onsuz çalışır. Figür isteyen bir sahne figürsüz
-  değersizdir ama figürü zorunlu yapmak, üreticinin kötü gün geçirdiği gün
-  bütün reel'i durdurur; sahne kendini indirir.
+## Hooks to Build
 
-## Doğrulama
+### useTextReveal.ts
+Staggers opacity + translateY per word or character.
+```ts
+useTextReveal(
+  text: string,
+  mode: 'words' | 'chars',
+  startFrame: number,
+  staggerFrames?: number   // default 4
+) → Array<{ opacity: number, y: number }>
+```
 
-`npm run validate` render yapmadan üç saniyede cevap verir: şema, sahne tipi ve
-her asset'in diskte olup olmadığı. Eksik bir PNG'de ölen render bundle'ı,
-tarayıcıyı ve kuyruk slotunu çoktan ödemiştir.
-`npm test` motor saflığını, şemayı, registry tutarlılığını ve depodaki her
-bölümü kapıda tutar.
+### useCountUp.ts
+Animates a number from 0 to target using interpolate().
+```ts
+useCountUp(
+  target: number,
+  startFrame: number,
+  durationFrames: number,
+  format?: 'integer' | 'decimal' | 'currency' | 'percent'
+) → string   // formatted display value
+```
 
-Ama bu deponun gördüğü her görsel kusur — kareyi dört kez karartmak, tipografiyi
-yumuşatana kadar zoom'lamak, lambadan kayan ışık, birbirini gömen kartlar, tam
-kadraj portalın üstüne çizilen harita yayı — doğrulamayı da testleri de geçti ve
-tek bir karede belliydi. O yüzden BAKMAK ucuzdur:
+### useStagger.ts
+Generic stagger — returns a delay-adjusted progress value per index.
+```ts
+useStagger(
+  index: number,
+  total: number,
+  startFrame: number,
+  staggerFrames: number,
+  durationFrames: number
+) → number   // 0 to 1 progress
+```
 
-- `npm run frames -- --episode=<id> [--per=2]` reel'den birkaç kare alır ve
-  ızgara yapar. Sahneye göre örnekler: iki saniyelik bir slate ile yedi
-  saniyelik bir composite aynı ilgiyi hak eder. `--per=2` şart olan yerdir —
-  yığılan bir motif, kendini çizen bir yol ve tırmanan bir sayı tek karede
-  hiçbir şey göstermez.
-- `npm run assets:review -- --episode=<id>` cutout'ları dama tahtasına dizer.
+### useSlideIn.ts
+Returns x/y/opacity for directional slide-in animations.
+```ts
+useSlideIn(
+  direction: 'up' | 'down' | 'left' | 'right',
+  startFrame: number,
+  durationFrames?: number,   // default 20
+  distance?: number          // default 60px
+) → { x: number, y: number, opacity: number }
+```
+
+---
+
+## Template Specs
+
+### TitleCard
+- Full-screen themed background (use GradientBg component for animated bg option)
+- Hero title: fontSizes.hero, centered, useTextReveal word mode
+- Optional subtitle: fontSizes.body, delayed fade
+- Noise overlay for texture
+- Exit: fade last 8 frames
+
+### TextSlide
+- Single bold statement filling ~75% screen width
+- Word-by-word reveal via useTextReveal
+- `highlightWord` prop: applies accent color to one specific word
+- Optional icon or emoji prop displayed above text
+
+### BulletReveal
+- Heading at top (useSlideIn from left)
+- Bullets reveal sequentially via useStagger
+- Each bullet: index number in accent color + text
+- Revealed bullets dim to 0.45 opacity when next appears
+- Last bullet stays full opacity
+
+### StatCard
+- Context label above (caption size, muted color)
+- Massive stat number (useCountUp, hero size, accent color)
+- Unit label beside or below number
+- Background: themed surface color with subtle border
+
+### QuoteCard
+- Large quote text (heading size, italic)
+- Left accent border bar (4px, accent color)
+- Attribution below: name bold, title muted
+- Entry: useSlideIn from right
+
+### ImageReveal
+- Full-screen or contained image
+- Props: `src`, `fit: 'cover' | 'contain'`, `caption?`
+- Entry: scale from 1.08 → 1.0 (Ken Burns style) + fade
+- Optional caption overlay at bottom
+
+### ListRace
+- Animated ranking list (think: top 5, top 10)
+- Items slide in from bottom, staggered
+- Each item: rank number + label + optional value bar
+- Value bar animates width using useCountUp logic
+
+### OutroCard
+- Bold CTA text (title size)
+- Handle / channel name (body size, accent)
+- Subtle pulse animation on CTA (scale 1.0 → 1.03 loop)
+- Optional: progress bar counting down to end
+
+---
+
+## Reusable Components
+
+### GradientBg
+Animated gradient background. Props: `colors[]`, `animated?: boolean`, `speed?: number`
+Uses CSS hue-rotate or interpolated stops per frame.
+
+### AnimatedText
+Wraps useTextReveal into a drop-in component.
+Props: `text`, `mode`, `startFrame`, `staggerFrames`, `style`
+
+### ProgressBar
+Thin bar (top or bottom of screen). Animates from 0% → 100% over composition duration.
+Props: `color`, `height`, `position: 'top' | 'bottom'`
+
+### Noise
+SVG-based film grain overlay. Props: `opacity` (default 0.04), `animate?: boolean`
+
+### AudioTrack
+Wraps Remotion `<Audio>` with auto fade-in and fade-out.
+Props: `src`, `volume`, `fadeInFrames`, `fadeOutFrames`
+
+---
+
+## Creating a New Video
+
+When told "create a video about [TOPIC]":
+
+1. Decide format based on topic (portrait for TikTok/Shorts, landscape for YouTube)
+2. Choose theme that fits the tone
+3. Write `src/videos/Video00N/data.ts`:
+   - Strong hook (TitleCard, 3–5 sec)
+   - 3–6 content beats using the best-fit templates
+   - OutroCard (4–5 sec)
+   - Portrait target: 30–60 sec total
+   - Landscape target: 60–180 sec total
+4. Write `src/videos/Video00N/index.tsx` mapping sequence → `<Series.Sequence>` blocks
+5. Register in `Root.tsx`
+6. Output the render command
+
+---
+
+## Render Commands
+
+```bash
+# Preview in browser (hot reload)
+npx remotion preview src/index.ts
+
+# Render specific video
+npx remotion render src/index.ts Video001 --output=out/video001.mp4
+
+# Render with specific props override
+npx remotion render src/index.ts Video001 --props='{"theme":"neon"}' --output=out/video001.mp4
+
+# Render landscape version
+npx remotion render src/index.ts Video001Landscape --output=out/video001-landscape.mp4
+```
+
+---
+
+## Setup Commands (Run First)
+
+```bash
+mkdir remotion-studio && cd remotion-studio
+npm create video@latest . -- --template=blank
+npm install @remotion/google-fonts @remotion/motion-blur zod
+```
+
+Build order:
+1. `src/tokens.ts`
+2. `src/lib/utils.ts`
+3. All 4 hooks
+4. All 5 reusable components
+5. All 8 templates (schema.ts + index.tsx each)
+6. `src/Root.tsx`
+7. `src/index.ts`
+8. `src/videos/Video001/` — test video
+
+---
+
+## Quality Checklist (Run Before Every Render)
+
+- [ ] No hardcoded strings in any template
+- [ ] No raw hex/pixel values in templates — all from tokens
+- [ ] All timing uses `fps * N`
+- [ ] Sequence `from` values are contiguous (no gaps, no overlaps)
+- [ ] Sum of sequence durations === `meta.durationInFrames`
+- [ ] Every template prop validated by Zod schema
+- [ ] Composition registered in Root.tsx with correct width/height/fps
+- [ ] Video index.tsx wraps `<Series>` in `<AbsoluteFill style={{ background: bg }}>` (prevents checkered frames)
+- [ ] TypeScript reports zero errors (`npx tsc --noEmit`)
+
+---
+
+## Do Not
+
+- Do not install framer-motion, gsap, anime.js, or any animation library
+- Do not call any external API inside components or hooks
+- Do not use `setTimeout`, `setInterval`, or `Date.now()` inside components
+- Do not hardcode ANY content in template files
+- Do not use raw hex codes or pixel values in templates — tokens only
+- Do not use CSS `@keyframes` — use Remotion's frame-based interpolation
+- Do not use `<img>` tags — use Remotion's `<Img>` component
+- Do not use `<video>` tags — use Remotion's `<Video>` component
+
+---
+
+## Gotchas
+
+### Checkered / transparent background between scenes
+**Cause:** Templates apply `opacity` to their entire root div. When a scene fades out to `opacity: 0`, the div becomes transparent and Remotion shows the canvas background (checkered in the preview, black in renders — but visually wrong either way).
+
+**Fix:** Always wrap `<Series>` in `<AbsoluteFill>` with the theme background color in the video's `index.tsx`. The persistent background div is never affected by template opacity:
+
+```tsx
+import { AbsoluteFill, Series } from 'remotion'
+import { themes } from '../../tokens'
+import { sequence } from './data'
+
+const bg = themes[sequence[0].props.theme].bg
+
+export const VideoXXX: React.FC = () => (
+  <AbsoluteFill style={{ background: bg }}>
+    <Series>...</Series>
+  </AbsoluteFill>
+)
+```
+
+### Do not call hooks inside `.map()` loops
+Hooks like `useTextReveal`, `useSlideIn`, `useCountUp` call `useCurrentFrame()` internally. React forbids calling hooks inside loops, conditionals, or nested functions.
+
+**Wrong:**
+```tsx
+{bullets.map((b, i) => {
+  const progress = useStagger(i, ...)  // ❌ hook inside .map()
+})}
+```
+
+**Right:** Call `useCurrentFrame()` once at the top of the component, then use `interpolate()` directly inside the map:
+```tsx
+const frame = useCurrentFrame()
+{bullets.map((b, i) => {
+  const start = 20 + i * staggerFrames
+  const progress = interpolate(frame, [start, start + 15], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })
+})}
+```
+
+### Google Fonts — correct import paths
+The `@remotion/google-fonts` subpackage names do not always match the display name exactly:
+- `@remotion/google-fonts/BebasNeue` ← Bebas Neue
+- `@remotion/google-fonts/DMSans` ← DM Sans (not `DmSans`)
+- `@remotion/google-fonts/JetBrainsMono` ← JetBrains Mono
+
+Load all fonts at module level in `src/lib/fonts.ts` and import that file from `Root.tsx` (`import './lib/fonts'`).
+
+### tsconfig `lib` must be `es2022` or later
+The default Remotion starter sets `"lib": ["es2015"]`. This breaks methods like `String.padStart()` and `Array.at()`. Update tsconfig.json:
+```json
+"lib": ["es2022"]
+```
