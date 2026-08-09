@@ -1,6 +1,7 @@
 import React from 'react'
 import { interpolate, useCurrentFrame, useVideoConfig } from 'remotion'
-import { fontFamilies, fontSizes, themes } from '../../tokens'
+import { fontFamilies, themes } from '../../tokens'
+import { useType } from '../../hooks/useType'
 import { useSlideIn } from '../../hooks/useSlideIn'
 import { type BulletRevealProps } from './schema'
 
@@ -11,6 +12,7 @@ export const BulletReveal: React.FC<BulletRevealProps> = ({
   durationInFrames,
   staggerFrames,
 }) => {
+  const type = useType()
   const frame = useCurrentFrame()
   const { width, height } = useVideoConfig()
   const t = themes[theme]
@@ -36,16 +38,16 @@ export const BulletReveal: React.FC<BulletRevealProps> = ({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        padding: '0 80px',
+        padding: `0 ${type.space(80)}px`,
         overflow: 'hidden',
       }}
     >
       <h2
         style={{
           fontFamily: fontFamilies.display,
-          fontSize: fontSizes.title,
+          fontSize: type.title,
           color: t.text,
-          margin: '0 0 60px',
+          margin: `0 0 ${type.space(60)}px`,
           opacity: headingSlide.opacity,
           transform: `translateX(${headingSlide.x}px)`,
           letterSpacing: '0.02em',
@@ -53,7 +55,7 @@ export const BulletReveal: React.FC<BulletRevealProps> = ({
       >
         {heading}
       </h2>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: type.space(32) }}>
         {bullets.map((bullet, i) => {
           const itemStart = 20 + i * staggerFrames
           const progress = interpolate(frame, [itemStart, itemStart + 15], [0, 1], {
@@ -70,7 +72,7 @@ export const BulletReveal: React.FC<BulletRevealProps> = ({
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 24,
+                gap: type.space(24),
                 opacity: bulletOpacity,
                 transform: `translateY(${interpolate(progress, [0, 1], [30, 0])}px)`,
               }}
@@ -78,7 +80,7 @@ export const BulletReveal: React.FC<BulletRevealProps> = ({
               <span
                 style={{
                   fontFamily: fontFamilies.display,
-                  fontSize: fontSizes.heading,
+                  fontSize: type.heading,
                   color: t.accent,
                   minWidth: 48,
                   lineHeight: 1,
@@ -89,7 +91,7 @@ export const BulletReveal: React.FC<BulletRevealProps> = ({
               <span
                 style={{
                   fontFamily: fontFamilies.body,
-                  fontSize: fontSizes.body,
+                  fontSize: type.body,
                   color: t.text,
                   lineHeight: 1.3,
                 }}

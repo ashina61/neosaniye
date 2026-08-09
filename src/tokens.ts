@@ -44,12 +44,41 @@ export const themes = {
   },
 }
 
+/**
+ * Type sizes AS DRAWN IN A 1920×1080 FRAME. Never used raw by a template —
+ * see `typeScaleFor` below and the `useType` hook.
+ */
 export const fontSizes = {
   hero:    120,
   title:   80,
   heading: 56,
   body:    38,
   caption: 26,
+}
+
+/**
+ * TYPE IS SIZED BY THE FRAME IT LIVES IN.
+ *
+ * A pixel size is only meaningful next to the frame around it. 56px of body
+ * copy fills a comfortable measure across 1920; the same 56px in a 1080-wide
+ * vertical reel is a caption floating in the middle of the screen with two
+ * thirds of the frame empty above and below it — which is exactly what the
+ * first portrait render came out as.
+ *
+ * Vertical is not just "narrower". It is watched at arm's length on a phone,
+ * one line at a time, so its type is proportionally MUCH larger than the same
+ * design in landscape. That is a format decision, not a per-template one, so it
+ * lives here and every template asks for it the same way.
+ *
+ * The scale is derived from the frame's own aspect ratio rather than a format
+ * NAME, so a composition registered at any size gets the right answer without
+ * the template ever learning what "portrait" means.
+ */
+export const typeScaleFor = (width: number, height: number) => {
+  const ratio = width / height
+  if (ratio < 0.85) return 1.55
+  if (ratio > 1.25) return 1
+  return 1.28
 }
 
 export const fontFamilies = {

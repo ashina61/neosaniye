@@ -1,6 +1,7 @@
 import React from 'react'
 import { interpolate, useCurrentFrame, useVideoConfig } from 'remotion'
-import { fontFamilies, fontSizes, themes } from '../../tokens'
+import { fontFamilies, themes } from '../../tokens'
+import { useType } from '../../hooks/useType'
 import { GradientBg } from '../../components/GradientBg'
 import { Noise } from '../../components/Noise'
 import { useTextReveal } from '../../hooks/useTextReveal'
@@ -13,6 +14,7 @@ export const TitleCard: React.FC<TitleCardProps> = ({
   durationInFrames,
   enterDuration,
 }) => {
+  const type = useType()
   const frame = useCurrentFrame()
   const { width, height } = useVideoConfig()
   const t = themes[theme]
@@ -52,7 +54,7 @@ export const TitleCard: React.FC<TitleCardProps> = ({
       <div
         style={{
           textAlign: 'center',
-          padding: '0 60px',
+          padding: `0 ${type.space(60)}px`,
           position: 'relative',
           zIndex: 1,
         }}
@@ -60,7 +62,7 @@ export const TitleCard: React.FC<TitleCardProps> = ({
         <h1
           style={{
             fontFamily: fontFamilies.display,
-            fontSize: fontSizes.hero,
+            fontSize: type.hero,
             color: t.text,
             margin: 0,
             lineHeight: 1.05,
@@ -85,9 +87,9 @@ export const TitleCard: React.FC<TitleCardProps> = ({
           <p
             style={{
               fontFamily: fontFamilies.body,
-              fontSize: fontSizes.body,
+              fontSize: type.body,
               color: t.muted,
-              marginTop: 24,
+              marginTop: type.space(24),
               marginBottom: 0,
               opacity: subtitleOpacity,
             }}

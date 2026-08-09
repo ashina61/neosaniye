@@ -1,6 +1,7 @@
 import React from 'react'
 import { Img, interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion'
-import { fontFamilies, fontSizes, themes } from '../../tokens'
+import { fontFamilies, themes } from '../../tokens'
+import { useType } from '../../hooks/useType'
 import { type ImageRevealProps } from './schema'
 
 export const ImageReveal: React.FC<ImageRevealProps> = ({
@@ -10,6 +11,7 @@ export const ImageReveal: React.FC<ImageRevealProps> = ({
   theme,
   durationInFrames,
 }) => {
+  const type = useType()
   const frame = useCurrentFrame()
   const { width, height, fps } = useVideoConfig()
   const t = themes[theme]
@@ -73,7 +75,7 @@ export const ImageReveal: React.FC<ImageRevealProps> = ({
             bottom: 0,
             left: 0,
             right: 0,
-            padding: '60px 60px 48px',
+            padding: `${type.space(60)}px ${type.space(60)}px ${type.space(48)}px`,
             background: 'linear-gradient(transparent, rgba(0,0,0,0.7))',
             opacity: captionOpacity,
           }}
@@ -81,7 +83,7 @@ export const ImageReveal: React.FC<ImageRevealProps> = ({
           <p
             style={{
               fontFamily: fontFamilies.body,
-              fontSize: fontSizes.caption,
+              fontSize: type.caption,
               color: '#ffffff',
               margin: 0,
               textAlign: 'center',

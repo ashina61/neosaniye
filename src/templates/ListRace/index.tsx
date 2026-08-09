@@ -1,6 +1,7 @@
 import React from 'react'
 import { interpolate, useCurrentFrame, useVideoConfig } from 'remotion'
-import { fontFamilies, fontSizes, themes } from '../../tokens'
+import { fontFamilies, themes } from '../../tokens'
+import { useType } from '../../hooks/useType'
 import { type ListRaceProps } from './schema'
 
 export const ListRace: React.FC<ListRaceProps> = ({
@@ -9,6 +10,7 @@ export const ListRace: React.FC<ListRaceProps> = ({
   durationInFrames,
   title,
 }) => {
+  const type = useType()
   const frame = useCurrentFrame()
   const { width, height } = useVideoConfig()
   const t = themes[theme]
@@ -37,7 +39,7 @@ export const ListRace: React.FC<ListRaceProps> = ({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        padding: '0 80px',
+        padding: `0 ${type.space(80)}px`,
         overflow: 'hidden',
       }}
     >
@@ -45,9 +47,9 @@ export const ListRace: React.FC<ListRaceProps> = ({
         <h2
           style={{
             fontFamily: fontFamilies.display,
-            fontSize: fontSizes.title,
+            fontSize: type.title,
             color: t.text,
-            margin: '0 0 48px',
+            margin: `0 0 ${type.space(48)}px`,
             opacity: titleOpacity,
             letterSpacing: '0.02em',
           }}
@@ -55,7 +57,7 @@ export const ListRace: React.FC<ListRaceProps> = ({
           {title}
         </h2>
       )}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: type.space(24) }}>
         {items.map((item, i) => {
           const slideStart = 10 + i * 12
           const slideProgress = interpolate(frame, [slideStart, slideStart + 20], [0, 1], {
@@ -82,13 +84,13 @@ export const ListRace: React.FC<ListRaceProps> = ({
                 transform: `translateY(${interpolate(slideProgress, [0, 1], [40, 0])}px)`,
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 8 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: type.space(20), marginBottom: type.space(8) }}>
                 <span
                   style={{
                     fontFamily: fontFamilies.display,
-                    fontSize: fontSizes.body,
+                    fontSize: type.body,
                     color: t.accent,
-                    minWidth: 40,
+                    minWidth: type.space(40),
                     lineHeight: 1,
                   }}
                 >
@@ -97,7 +99,7 @@ export const ListRace: React.FC<ListRaceProps> = ({
                 <span
                   style={{
                     fontFamily: fontFamilies.body,
-                    fontSize: fontSizes.body,
+                    fontSize: type.body,
                     color: t.text,
                     fontWeight: 600,
                   }}
@@ -108,7 +110,7 @@ export const ListRace: React.FC<ListRaceProps> = ({
                   <span
                     style={{
                       fontFamily: fontFamilies.mono,
-                      fontSize: fontSizes.caption,
+                      fontSize: type.caption,
                       color: t.muted,
                       marginLeft: 'auto',
                     }}
@@ -120,7 +122,7 @@ export const ListRace: React.FC<ListRaceProps> = ({
               {item.value !== undefined && (
                 <div
                   style={{
-                    height: 6,
+                    height: type.space(6),
                     background: t.surface,
                     borderRadius: 3,
                     overflow: 'hidden',

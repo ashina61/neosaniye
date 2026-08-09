@@ -125,7 +125,31 @@ const style = document.createElement("style")
 style.textContent = css
 document.head.appendChild(style)
 
-const handle = delayRender("Loading local fonts")
+/**
+ * THE WAIT IS BOUNDED, IN BOTH DIRECTIONS.
+ *
+ * A render opens several browser pages and restarts a worker when one dies; on
+ * a restarted, throttled page `document.fonts.load` can take longer than
+ * Remotion's default 28s delayRender budget, and then the whole render fails at
+ * whatever frame that worker happened to be on — frame 437 of 1650, with no
+ * indication that fonts were the cause.
+ *
+ * So two changes: a longer budget, and a hard floor. The faces are local files
+ * a few kilobytes each; if they are not ready in ten seconds they are not
+ * coming, and rendering the frame in the fallback face is a far better outcome
+ * than failing the render. `settle` is idempotent, because calling
+ * continueRender twice on one handle is itself an error.
+ */
+const handle = delayRender("Loading local fonts", { timeoutInMilliseconds: 120000 })
+
+let settled = false
+const settle = () => {
+  if (settled) return
+  settled = true
+  continueRender(handle)
+}
+
+setTimeout(settle, 10000)
 
 Promise.all(
   [
@@ -137,5 +161,5 @@ Promise.all(
     "700 100px \"JetBrains Mono\""
   ].map((font) => document.fonts.load(font)),
 )
-  .then(() => continueRender(handle))
-  .catch(() => continueRender(handle))
+  .then(settle)
+  .catch(settle)

@@ -1,6 +1,7 @@
 import React from 'react'
 import { interpolate, useCurrentFrame, useVideoConfig } from 'remotion'
-import { fontFamilies, fontSizes, themes } from '../../tokens'
+import { fontFamilies, themes } from '../../tokens'
+import { useType } from '../../hooks/useType'
 import { Noise } from '../../components/Noise'
 import { useTextReveal } from '../../hooks/useTextReveal'
 import { type TextSlideProps } from './schema'
@@ -12,6 +13,7 @@ export const TextSlide: React.FC<TextSlideProps> = ({
   highlightWord,
   icon,
 }) => {
+  const type = useType()
   const frame = useCurrentFrame()
   const { width, height } = useVideoConfig()
   const t = themes[theme]
@@ -56,8 +58,8 @@ export const TextSlide: React.FC<TextSlideProps> = ({
         {icon && (
           <div
             style={{
-              fontSize: fontSizes.heading,
-              marginBottom: 32,
+              fontSize: type.heading,
+              marginBottom: type.space(32),
               opacity: iconOpacity,
             }}
           >
@@ -68,7 +70,7 @@ export const TextSlide: React.FC<TextSlideProps> = ({
           style={{
             fontFamily: fontFamilies.body,
             fontWeight: 700,
-            fontSize: fontSizes.heading,
+            fontSize: type.heading,
             color: t.text,
             margin: 0,
             lineHeight: 1.2,

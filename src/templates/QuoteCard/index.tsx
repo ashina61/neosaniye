@@ -1,6 +1,7 @@
 import React from 'react'
 import { interpolate, useCurrentFrame, useVideoConfig } from 'remotion'
-import { fontFamilies, fontSizes, themes } from '../../tokens'
+import { fontFamilies, themes } from '../../tokens'
+import { useType } from '../../hooks/useType'
 import { useSlideIn } from '../../hooks/useSlideIn'
 import { type QuoteCardProps } from './schema'
 
@@ -11,6 +12,7 @@ export const QuoteCard: React.FC<QuoteCardProps> = ({
   theme,
   durationInFrames,
 }) => {
+  const type = useType()
   const frame = useCurrentFrame()
   const { width, height } = useVideoConfig()
   const t = themes[theme]
@@ -40,14 +42,14 @@ export const QuoteCard: React.FC<QuoteCardProps> = ({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '0 80px',
+        padding: `0 ${type.space(80)}px`,
         overflow: 'hidden',
       }}
     >
       <div
         style={{
           display: 'flex',
-          gap: 40,
+          gap: type.space(40),
           opacity: slide.opacity,
           transform: `translateX(${slide.x}px)`,
         }}
@@ -64,11 +66,11 @@ export const QuoteCard: React.FC<QuoteCardProps> = ({
           <p
             style={{
               fontFamily: fontFamilies.body,
-              fontSize: fontSizes.heading,
+              fontSize: type.heading,
               fontStyle: 'italic',
               color: t.text,
               lineHeight: 1.4,
-              margin: '0 0 40px',
+              margin: `0 0 ${type.space(40)}px`,
             }}
           >
             &ldquo;{quote}&rdquo;
@@ -78,7 +80,7 @@ export const QuoteCard: React.FC<QuoteCardProps> = ({
               style={{
                 fontFamily: fontFamilies.body,
                 fontWeight: 700,
-                fontSize: fontSizes.body,
+                fontSize: type.body,
                 color: t.text,
                 display: 'block',
               }}
@@ -89,10 +91,10 @@ export const QuoteCard: React.FC<QuoteCardProps> = ({
               <span
                 style={{
                   fontFamily: fontFamilies.body,
-                  fontSize: fontSizes.caption,
+                  fontSize: type.caption,
                   color: t.muted,
                   display: 'block',
-                  marginTop: 8,
+                  marginTop: type.space(8),
                 }}
               >
                 {title}

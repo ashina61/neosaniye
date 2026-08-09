@@ -1,6 +1,7 @@
 import React from 'react'
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion'
-import { fontFamilies, fontSizes, themes } from '../../tokens'
+import { fontFamilies, themes } from '../../tokens'
+import { useType } from '../../hooks/useType'
 import { GradientBg } from '../../components/GradientBg'
 import { ProgressBar } from '../../components/ProgressBar'
 import { Noise } from '../../components/Noise'
@@ -13,6 +14,7 @@ export const OutroCard: React.FC<OutroCardProps> = ({
   durationInFrames,
   showProgressBar,
 }) => {
+  const type = useType()
   const frame = useCurrentFrame()
   const { width, height, fps } = useVideoConfig()
   const t = themes[theme]
@@ -40,12 +42,22 @@ export const OutroCard: React.FC<OutroCardProps> = ({
   })
   const pulseScale = interpolate(pulse, [0, 1], [1.0, 1.03])
 
+  // The reel's last frame. Every other template fades out over its final 8
+  // frames; without the same fade here the video ends on a hard cut to black,
+  // which on a loop reads as a glitch rather than an ending.
+  const exitStart = durationInFrames - 12
+  const exitOpacity = interpolate(frame, [exitStart, durationInFrames], [1, 0], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  })
+
   return (
     <div
       style={{
         width,
         height,
         background: t.bg,
+        opacity: exitOpacity,
         position: 'relative',
         display: 'flex',
         flexDirection: 'column',
@@ -65,9 +77,9 @@ export const OutroCard: React.FC<OutroCardProps> = ({
         <h2
           style={{
             fontFamily: fontFamilies.display,
-            fontSize: fontSizes.title,
+            fontSize: type.title,
             color: t.text,
-            margin: '0 0 24px',
+            margin: `0 0 ${type.space(24)}px`,
             letterSpacing: '0.03em',
             opacity: ctaOpacity,
             transform: `translateY(${ctaY}px) scale(${pulseScale})`,
@@ -78,7 +90,7 @@ export const OutroCard: React.FC<OutroCardProps> = ({
         <p
           style={{
             fontFamily: fontFamilies.body,
-            fontSize: fontSizes.body,
+            fontSize: type.body,
             color: t.accent,
             margin: 0,
             fontWeight: 700,
@@ -89,7 +101,7 @@ export const OutroCard: React.FC<OutroCardProps> = ({
         </p>
       </div>
       {showProgressBar && (
-        <ProgressBar color={t.accent} height={6} position="bottom" />
+        <ProgressBar color={t.accent} height={type.space(6)} position="bottom" />
       )}
       <Noise opacity={0.04} />
     </div>

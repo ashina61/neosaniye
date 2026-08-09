@@ -1,6 +1,7 @@
 import React from 'react'
 import { interpolate, useCurrentFrame, useVideoConfig } from 'remotion'
-import { fontFamilies, fontSizes, themes } from '../../tokens'
+import { fontFamilies, themes } from '../../tokens'
+import { useType } from '../../hooks/useType'
 import { useCountUp } from '../../hooks/useCountUp'
 import { useSlideIn } from '../../hooks/useSlideIn'
 import { type StatCardProps } from './schema'
@@ -13,6 +14,7 @@ export const StatCard: React.FC<StatCardProps> = ({
   durationInFrames,
   format,
 }) => {
+  const type = useType()
   const frame = useCurrentFrame()
   const { width, height } = useVideoConfig()
   const t = themes[theme]
@@ -50,31 +52,31 @@ export const StatCard: React.FC<StatCardProps> = ({
         style={{
           background: t.surface,
           border: `2px solid ${t.muted}`,
-          borderRadius: 24,
-          padding: '80px 100px',
+          borderRadius: type.space(24),
+          padding: `${type.space(80)}px ${type.space(100)}px`,
           textAlign: 'center',
-          minWidth: 600,
+          minWidth: type.space(600),
         }}
       >
         <p
           style={{
             fontFamily: fontFamilies.body,
-            fontSize: fontSizes.caption,
+            fontSize: type.caption,
             color: t.muted,
             textTransform: 'uppercase',
             letterSpacing: '0.15em',
-            margin: '0 0 24px',
+            margin: `0 0 ${type.space(24)}px`,
             opacity: labelSlide.opacity,
             transform: `translateY(${labelSlide.y}px)`,
           }}
         >
           {label}
         </p>
-        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: type.space(16) }}>
           <span
             style={{
               fontFamily: fontFamilies.display,
-              fontSize: fontSizes.hero,
+              fontSize: type.hero,
               color: t.accent,
               lineHeight: 1,
             }}
@@ -85,7 +87,7 @@ export const StatCard: React.FC<StatCardProps> = ({
             <span
               style={{
                 fontFamily: fontFamilies.body,
-                fontSize: fontSizes.heading,
+                fontSize: type.heading,
                 color: t.text,
                 opacity: unitOpacity,
               }}
