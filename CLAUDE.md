@@ -15,6 +15,17 @@ workflow: `.github/workflows/reel.yml`. Push/PR'da ucuz kapı (`check`);
 açılıp kapanabilir. Ayrı workflow değiller çünkü tek bir zincir: seslendirmeyi
 yenilemek kesimi, kesim de görsellerin sahne kimliklerini değiştirir.
 
+## İKİ HAT VAR
+
+Bu dosya **v1**'in kanunudur: çizilen kolaj motoru — katman yığını, derinlik,
+motif, prop, çizilen ışık. `npm run render` onu çalıştırır.
+
+**v2 ayrı bir hattır ve kendi beyni vardır: `engine/v2/BRAIN.md`.** Kareyi
+dolduran fotoğraf, Ken Burns, kelime kelime altyazı; `node scripts/reel2.mjs`
+onu çalıştırır. İkisi aynı bölüm klasörünü ve aynı `vo.json` saatini okur ama
+kanunları karışmaz — v2'de çizilen zemin yoktur, v1'de tam kadraj fotoğraf
+yoktur, ve bir hattın kuralını diğerine taşımak ikisini de bozar.
+
 ## Sıfırıncı yasa: SES SAATTİR
 
 Seslendirme bir katman değil, ZAMAN ÇİZELGESİDİR. Sahne süreleri MP3'ün
