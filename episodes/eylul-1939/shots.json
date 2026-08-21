@@ -14,7 +14,7 @@
           "name": "ribbentrop",
           "prompt": "High-contrast black and white halftone cut-out portrait of a 1930s German diplomat in a dark suit, chest-up, stern expression, bold newsprint dot texture",
           "x": 0.3,
-          "y": 0.42,
+          "y": 0.4,
           "width": 0.44,
           "at": 8,
           "file": "s01-mid-ribbentrop.png"
@@ -23,7 +23,7 @@
           "name": "molotov",
           "prompt": "High-contrast black and white halftone cut-out portrait of a 1930s Soviet official with round glasses and moustache, chest-up, bold newsprint dot texture",
           "x": 0.7,
-          "y": 0.42,
+          "y": 0.4,
           "width": 0.44,
           "at": 22,
           "strokeX": 0.016,
@@ -47,7 +47,10 @@
         "at": 0.45,
         "y": 0.14
       },
-      "camera": null
+      "camera": {
+        "from": 1,
+        "to": 1.18
+      }
     },
     {
       "slug": "map-split",
@@ -70,7 +73,11 @@
         "at": 0.5,
         "y": 0.82
       },
-      "camera": null
+      "camera": {
+        "from": 1.22,
+        "to": 1.02,
+        "panX": 0.03
+      }
     },
     {
       "slug": "dawn",
@@ -80,9 +87,9 @@
         {
           "name": "tank-column",
           "prompt": "Side-profile flat editorial illustration of a 1939 German light tank column, three tanks in a row, muted olive and grey, isolated",
-          "x": 0.46,
-          "y": 0.5,
-          "width": 0.92,
+          "x": 0.5,
+          "y": 0.47,
+          "width": 1.25,
           "at": 4,
           "file": "s03-mid-tank-column.png"
         }
@@ -91,9 +98,9 @@
         {
           "name": "border-post",
           "prompt": "Flat illustration of a striped wooden border barrier pole, broken and tilted, front-on, warm soft shadow, isolated",
-          "x": 0.52,
-          "y": 0.8,
-          "width": 0.7,
+          "x": 0.27,
+          "y": 0.84,
+          "width": 0.42,
           "at": 16,
           "file": "s03-fore-border-post.png"
         }
@@ -104,7 +111,11 @@
         "at": 0.25,
         "y": 0.15
       },
-      "camera": null
+      "camera": {
+        "from": 1,
+        "to": 1.2,
+        "panY": -0.02
+      }
     },
     {
       "slug": "stuka",
@@ -114,9 +125,9 @@
         {
           "name": "stuka",
           "prompt": "Flat editorial illustration of a 1939 dive bomber aircraft seen from below at a steep diving angle, gull wings, muted grey, isolated",
-          "x": 0.52,
-          "y": 0.38,
-          "width": 0.72,
+          "x": 0.57,
+          "y": 0.36,
+          "width": 0.3,
           "at": 2,
           "file": "s04-mid-stuka.png"
         }
@@ -135,9 +146,12 @@
       "text": {
         "big": "STUKA",
         "at": 0.4,
-        "y": 0.72
+        "y": 0.6
       },
-      "camera": null
+      "camera": {
+        "from": 1.3,
+        "to": 1
+      }
     },
     {
       "slug": "declare",
@@ -166,12 +180,17 @@
         }
       ],
       "text": {
-        "big": "SAVAŞ İLAN EDİLDİ",
-        "small": "3 eylül 1939",
-        "at": 0.42,
-        "y": 0.14
+        "big": "SAVAŞ\nİLAN EDİLDİ",
+        "small": "3 eylül 1939 · londra",
+        "at": 0.28,
+        "y": 0.4,
+        "plate": false,
+        "size": 0.095
       },
-      "camera": null
+      "camera": {
+        "from": 1,
+        "to": 1.15
+      }
     },
     {
       "slug": "east",
@@ -181,9 +200,9 @@
         {
           "name": "soviet-column",
           "prompt": "Side-profile flat editorial illustration of a 1939 Soviet cavalry and truck column moving right to left, muted brown and olive, isolated",
-          "x": 0.52,
+          "x": 0.5,
           "y": 0.52,
-          "width": 0.95,
+          "width": 1.2,
           "at": 4,
           "file": "s06-mid-soviet-column.png"
         }
@@ -192,9 +211,9 @@
         {
           "name": "signpost",
           "prompt": "Flat illustration of an old wooden signpost with two arrow boards pointing opposite ways, weathered, front-on, isolated",
-          "x": 0.24,
-          "y": 0.78,
-          "width": 0.4,
+          "x": 0.22,
+          "y": 0.74,
+          "width": 0.46,
           "at": 12,
           "file": "s06-fore-signpost.png"
         }
@@ -205,7 +224,11 @@
         "at": 0.35,
         "y": 0.16
       },
-      "camera": null
+      "camera": {
+        "from": 1.05,
+        "to": 1.22,
+        "panX": -0.05
+      }
     },
     {
       "slug": "fall",
@@ -228,7 +251,10 @@
         "at": 0.45,
         "y": 0.78
       },
-      "camera": null
+      "camera": {
+        "from": 1.24,
+        "to": 1.02
+      }
     },
     {
       "slug": "close",
@@ -252,7 +278,10 @@
         "at": 0.4,
         "y": 0.78
       },
-      "camera": null
+      "camera": {
+        "from": 1,
+        "to": 1.16
+      }
     }
   ],
   "wanted": [

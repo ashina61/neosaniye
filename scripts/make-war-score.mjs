@@ -21,9 +21,9 @@
  *           people heard, and it is mixed low enough to be recognised rather
  *           than announced.
  *
- *   node scripts/make-war-score.mjs --episode=<id> [--seconds=49]
+ *   node scripts/make-war-score.mjs --episode=<id> [--marks=3,4,5,6,7,8]
  */
-import {mkdir, writeFile} from 'node:fs/promises';
+import {mkdir, readFile, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {ROOT, episodeDir, parseArgs} from './lib/episode.mjs';
 import {writeWav} from './lib/wav.mjs';
@@ -93,13 +93,50 @@ async function main() {
     console.error('Usage: node scripts/make-war-score.mjs --episode=<episode-id> [--seconds=49]');
     process.exit(1);
   }
-  const seconds = Number(args.seconds ?? 49);
+  /**
+   * THE MARKS COME OUT OF THE NARRATION, NOT OUT OF THIS FILE.
+   *
+   * Written as constants they were the timings of ONE cut of one reel, and the
+   * moment a line was re-recorded the hit at 04:45 landed somewhere in the
+   * middle of the previous sentence — a score that is a second and a half out
+   * is worse than no score, because the ear hears it as a mistake rather than
+   * as music. Same law as the picture: the voice is the clock.
+   *
+   * `--marks` names which spoken LINE each event sits on, 1-based, in the order
+   * invade, blitz, silence, east, toll, close. The defaults are the shape of a
+   * declaration reel: the clock ticks alone until the border is crossed, the
+   * march hardens under the attack, stops dead at the declaration, starts again
+   * for the second invasion and thins out over the toll.
+   */
+  const lines = JSON.parse(
+    await readFile(path.join(episodeDir(id), 'audio', 'vo.json'), 'utf8').catch(() => 'null'),
+  )?.lines;
+  const marks = String(args.marks ?? '3,4,5,6,7,8')
+    .split(',')
+    .map((v) => Number(v.trim()));
+  const startOf = (mark, fallback) => {
+    const line = lines?.[marks[mark] - 1];
+    return line ? line.start : fallback;
+  };
+
+  const T = lines
+    ? {
+        invade: startOf(0, 4.4),
+        // The siren comes up between the crossing and the attack, so it is
+        // placed inside the line rather than on its edge.
+        border: (startOf(0, 12.4) + startOf(1, 19.6)) / 2,
+        blitz: startOf(1, 19.6),
+        wire: startOf(2, 25.4),
+        east: startOf(3, 31.6),
+        toll: startOf(4, 38.4),
+        close: startOf(5, 43.6),
+      }
+    : {invade: 4.4, border: 12.4, blitz: 19.6, wire: 25.4, east: 31.6, toll: 38.4, close: 43.6};
+
+  const spoken = lines ? lines[lines.length - 1].end : 49;
+  const seconds = Number(args.seconds ?? (lines ? spoken + 1.2 : 49));
   const total = Math.round(seconds * RATE);
   const mix = new Float32Array(total);
-
-  /** The film's own beats, in seconds. The score is written to them rather than
-   *  laid over them. */
-  const T = {invade: 4.4, border: 12.4, blitz: 19.6, wire: 25.4, east: 31.6, toll: 38.4, close: 43.6};
 
   // TICK — alone, then gone. Its absence after 04:45 is the point.
   for (let t = 0.55; t < T.invade - 0.1; t += 0.5) tick(mix, t, 0.5);
@@ -170,7 +207,10 @@ async function main() {
   await mkdir(dir, {recursive: true});
   const file = path.join(dir, 'score.wav');
   await writeFile(file, writeWav(out, RATE));
-  console.log(`✓ ${path.relative(ROOT, file)} — ${seconds}s`);
+  console.log(
+    `✓ ${path.relative(ROOT, file)} — ${seconds.toFixed(1)}s, ` +
+      (lines ? `vuruşlar seslendirmeden: ${Object.entries(T).map(([k, v]) => `${k} ${v.toFixed(1)}`).join(', ')}` : 'seslendirme yok — sabit vuruşlar'),
+  );
 }
 
 main().catch((error) => {

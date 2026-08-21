@@ -2,7 +2,8 @@
 /**
  * KEY EVERYTHING IN `raw/` INTO `assets/`.
  *
- *   node scripts/broll-key.mjs --episode=<id> [--tolerance=55] [--only=file.png]
+ *   node scripts/broll-key.mjs --episode=<id> [--tolerance=55] [--seal=2]
+ *                               [--only=file.png] [--holes=frame.png] [--bg-zoom=1]
  *
  * Backgrounds are copied through untouched — a backdrop is meant to be a full
  * rectangle. Midground and foreground layers are keyed and trimmed to their
@@ -34,6 +35,15 @@ async function main() {
   const plan = JSON.parse(await readFile(path.join(dir, 'shots.json'), 'utf8'));
   const only = typeof args.only === 'string' ? new Set(args.only.split(',')) : null;
   const tolerance = Number(args.tolerance ?? 55);
+  const seal = Number(args.seal ?? 2);
+  /**
+   * `--holes=frame.png,window.png` — punch the enclosed backdrop-coloured
+   * regions out of these, and ONLY these. It is per file and never a default
+   * because the machine cannot tell a window from a white shirt: turned on for
+   * everything it took the white stripes off a border barrier and the sky out
+   * of a print. An empty picture frame needs it; almost nothing else does.
+   */
+  const holes = typeof args.holes === 'string' ? new Set(args.holes.split(',')) : new Set();
 
   const present = new Set((await readdir(raw).catch(() => [])).filter((f) => /\.(png|jpe?g|webp)$/i.test(f)));
   const missing = [];
@@ -51,9 +61,26 @@ async function main() {
 
     const buffer = await readFile(path.join(raw, source));
     if (item.kind === 'bg') {
-      // A backdrop is a rectangle. Fit it to the frame and leave it alone.
+      /**
+       * A backdrop is a rectangle. Fit it to the frame — and `--bg-zoom` when
+       * the generator framed the SUBJECT instead of the surface. Asked for an
+       * aged paper texture it returned a photograph OF a sheet of paper, on a
+       * desk, next to books: at 1.0 the plate is a still life, and every
+       * cut-out stands on a table in the middle of it. Pushed in past the
+       * edges of the sheet it is what was asked for, a surface.
+       */
+      const zoom = Math.max(1, Number(args['bg-zoom'] ?? 1));
       await sharp(buffer)
-        .resize(item.size[0], item.size[1], {fit: 'cover', position: 'attention'})
+        .resize(Math.round(item.size[0] * zoom), Math.round(item.size[1] * zoom), {
+          fit: 'cover',
+          position: 'attention',
+        })
+        .extract({
+          left: Math.round((item.size[0] * zoom - item.size[0]) / 2),
+          top: Math.round((item.size[1] * zoom - item.size[1]) / 2),
+          width: item.size[0],
+          height: item.size[1],
+        })
         .png({compressionLevel: 9})
         .toFile(path.join(out, item.file));
       console.log(`  ${item.file.padEnd(34)} arka plan → ${item.size[0]}x${item.size[1]}`);
@@ -62,7 +89,7 @@ async function main() {
     }
 
     try {
-      const {png, kept} = await keyOut(buffer, {tolerance});
+      const {png, kept} = await keyOut(buffer, {tolerance, seal, holes: holes.has(item.file)});
       const trimmed = await trimToSubject(png);
       await writeFile(path.join(out, item.file), trimmed);
       const meta = await sharp(trimmed).metadata();

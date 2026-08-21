@@ -16,17 +16,31 @@ import sharp from 'sharp';
  *   there walks straight into the subject and eats it. Corners are the only
  *   part of a generated image that is reliably background.
  *
+ *   SEAL THE FILL BEFORE BELIEVING IT. A flood walks through any gap it can
+ *   find, and on printed material the gaps are everywhere: a halftone face is
+ *   WHITE PAPER with black dots on it, so the light half of a forehead is a
+ *   connected network of background-coloured pixels reaching the edge of the
+ *   head. Asked for a newsprint portrait, the plain fill ate the man's face
+ *   and handed back his suit. So the background mask is eroded before the
+ *   pieces are counted and the survivor is eroded back afterwards: a leak
+ *   through anything thinner than the brush is closed, the silhouette is
+ *   unchanged, and a halftone reads as a solid shape, which is what it is
+ *   when you step back from it.
+ *
  *   THEN KEEP ONLY THE LARGEST CONNECTED PIECE. That is what removes the stray
  *   specks a generator leaves lying in the corners: they are opaque, they are
  *   not the subject, and the fill has no reason to touch them.
  *
- * And then the part that does NOT follow from either of those: the gap under an
+ * And then the part that does NOT follow from any of those: the gap under an
  * arm, a window, the hole in a handle. Those are background the fill can never
  * reach, and keeping the largest blob does not drop them either — a hole is
- * four-connected to the shape around it, so it IS the largest blob. They have
- * to be punched out on purpose, and carefully: an enclosed off-white region is
- * a window, and it is also a white shirt, so the pass below only punches a
- * region that is sealed inside the subject AND small next to it.
+ * four-connected to the shape around it, so it IS the largest blob.
+ *
+ * They are punched only when ASKED for (`holes: true`), and the default is off
+ * because the machine cannot tell a window from a white shirt. Turned on by
+ * default it ate the white stripes off a border barrier, the paper out of the
+ * middle of a newspaper and the sky out of a print — every one of them an
+ * enclosed backdrop-coloured region, every one of them the subject.
  *
  * Nothing here is model-based. It works because the input is an ASKED-FOR
  * cut-out on a plain background, which is what the prompt sheet demands.
@@ -37,13 +51,18 @@ const dist2 = (r1, g1, b1, r2, g2, b2) => (r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 
 
 /**
  * @param {Buffer} input  any image
- * @param {{tolerance?: number, feather?: number, minShare?: number}} [options]
+ * @param {{tolerance?: number, feather?: number, minShare?: number, seal?: number, holes?: boolean}} [options]
  *   tolerance  0..255-ish; how far a pixel may drift from the corner colour
  *   feather    px of alpha blur, so the edge is not a staircase
  *   minShare   refuse to return a cut-out smaller than this share of the frame
+ *   seal       px the background mask is closed by, against leaks through halftone
+ *   holes      punch enclosed backdrop-coloured regions — a window, NOT a shirt
  * @returns {Promise<{png: Buffer, kept: number, width: number, height: number}>}
  */
-export async function keyOut(input, {tolerance = 55, feather = 0.9, minShare = 0.01} = {}) {
+export async function keyOut(
+  input,
+  {tolerance = 55, feather = 0.9, minShare = 0.01, seal = 2, holes = false} = {},
+) {
   const image = sharp(input).ensureAlpha();
   const {data, info} = await image.raw().toBuffer({resolveWithObject: true});
   const {width, height} = info;
@@ -110,18 +129,143 @@ export async function keyOut(input, {tolerance = 55, feather = 0.9, minShare = 0
   }
 
   /**
+   * SEAL IT.
+   *
+   * `erode` is a min filter: a pixel keeps its 1 only if everything within the
+   * brush is also 1. Run over the background mask it pulls the mask back from
+   * the subject by `seal` pixels, and a tendril thinner than the brush — the
+   * one that let the fill through the side of a man's head — disappears
+   * entirely. The isolated white specks between halftone dots go with it,
+   * which is the whole reason a printed portrait keys as a face instead of as
+   * a collar.
+   *
+   * The subject grows by the same amount, so it is eroded back at the end. Out
+   * and back by the same brush leaves the silhouette where it was; what does
+   * not come back is the leak.
+   */
+  const erode = (mask, radius) => {
+    if (radius <= 0) return mask;
+    const mid = new Uint8Array(n);
+    for (let y = 0; y < height; y += 1) {
+      const row = y * width;
+      for (let x = 0; x < width; x += 1) {
+        let keep = 1;
+        for (let d = -radius; d <= radius && keep; d += 1) {
+          // Outside the picture is background. Treating it as unknown would
+          // erode the mask along the frame edge, the border ring would join the
+          // subject, and the "cut-out" would be the whole rectangle.
+          const xx = Math.min(width - 1, Math.max(0, x + d));
+          if (!mask[row + xx]) keep = 0;
+        }
+        mid[row + x] = keep;
+      }
+    }
+    const out = new Uint8Array(n);
+    for (let y = 0; y < height; y += 1) {
+      const row = y * width;
+      for (let x = 0; x < width; x += 1) {
+        let keep = 1;
+        for (let d = -radius; d <= radius && keep; d += 1) {
+          const yy = Math.min(height - 1, Math.max(0, y + d));
+          if (!mid[yy * width + x]) keep = 0;
+        }
+        out[row + x] = keep;
+      }
+    }
+    return out;
+  };
+
+  const sealed = erode(bg, seal);
+
+  /**
+   * A POCKET SEALED INSIDE THE SUBJECT BELONGS TO THE SUBJECT.
+   *
+   * Once the mask is sealed, the light patch on a man's forehead is no longer
+   * connected to anything outside him — the hairline bridge it leaked through
+   * is gone. It is background by COLOUR and subject by POSITION, and position
+   * is the one that is right: a halftone face is white paper with black dots
+   * on it, so half of any bright feature matches the backdrop exactly. Judged
+   * on colour, this portrait came back with holes punched through his
+   * forehead, his cheek and his collar, at every brush size.
+   *
+   * So the only background that stays background is the part that can still
+   * REACH THE FRAME EDGE. Everything walled off inside the shape is filled
+   * back in.
+   *
+   * `holes: true` asks for the opposite and judges the whole picture on colour,
+   * for the one shape that needs it: an empty picture frame, whose window is
+   * genuinely backdrop and which would otherwise cover whatever it is framing.
+   */
+  if (holes) {
+    for (let i = 0; i < n; i += 1) {
+      if (sealed[i]) continue;
+      const at = i * 4;
+      if (data[at + 3] < 12 || isBackgroundColour(at)) sealed[i] = 1;
+    }
+  } else {
+    const seen = new Uint8Array(n);
+    for (let start = 0; start < n; start += 1) {
+      if (seen[start] || !sealed[start]) continue;
+      head = 0;
+      tail = 0;
+      seen[start] = 1;
+      queue[tail++] = start;
+      let size = 0;
+      let touchesEdge = false;
+      while (head < tail) {
+        const index = queue[head++];
+        size += 1;
+        const x = index % width;
+        const y = (index - x) / width;
+        if (x === 0 || y === 0 || x === width - 1 || y === height - 1) touchesEdge = true;
+        const visit = (nb) => {
+          if (seen[nb] || !sealed[nb]) return;
+          seen[nb] = 1;
+          queue[tail++] = nb;
+        };
+        if (x > 0) visit(index - 1);
+        if (x < width - 1) visit(index + 1);
+        if (y > 0) visit(index - width);
+        if (y < height - 1) visit(index + width);
+      }
+      if (touchesEdge) continue;
+      // Walled in. Fill it — and do it by re-walking the region, which is
+      // cheaper than remembering every index of a region that is usually the
+      // whole backdrop.
+      head = 0;
+      tail = 0;
+      sealed[start] = 0;
+      queue[tail++] = start;
+      while (head < tail) {
+        const index = queue[head++];
+        const x = index % width;
+        const y = (index - x) / width;
+        const visit = (nb) => {
+          if (!sealed[nb]) return;
+          sealed[nb] = 0;
+          queue[tail++] = nb;
+        };
+        if (x > 0) visit(index - 1);
+        if (x < width - 1) visit(index + 1);
+        if (y > 0) visit(index - width);
+        if (y < height - 1) visit(index + width);
+      }
+    }
+  }
+
+  /**
    * THEN THE LARGEST SURVIVING BLOB.
    *
-   * Everything the fill could not reach is still opaque: the subject, and also
-   * every hole inside it and every speck the generator left lying around. One
-   * pass of connected components, keep the biggest, drop the rest.
+   * What is left opaque is the subject and every speck the generator left
+   * lying around the edges of the picture. One pass of connected components,
+   * keep the biggest, drop the rest.
    */
   const label = new Int32Array(n).fill(-1);
   let best = -1;
   let bestSize = 0;
   let next = 0;
   for (let start = 0; start < n; start += 1) {
-    if (bg[start] || label[start] !== -1) continue;
+    if (sealed[start] || label[start] !== -1) continue;
     const id = next++;
     let size = 0;
     head = 0;
@@ -134,7 +278,7 @@ export async function keyOut(input, {tolerance = 55, feather = 0.9, minShare = 0
       const x = index % width;
       const y = (index - x) / width;
       const visit = (nb) => {
-        if (bg[nb] || label[nb] !== -1) return;
+        if (sealed[nb] || label[nb] !== -1) return;
         label[nb] = id;
         queue[tail++] = nb;
       };
@@ -157,60 +301,6 @@ export async function keyOut(input, {tolerance = 55, feather = 0.9, minShare = 0
   }
 
   /**
-   * PUNCH THE ENCLOSED HOLES.
-   *
-   * A region that is backdrop-coloured, sealed inside the subject and small
-   * next to it is a hole: the triangle between an arm and a torso, the sky
-   * through a window, the gap in a handle. Left opaque it fills with the
-   * backdrop colour, and the cut-out lands on the scene with a pale patch in
-   * the middle of it — the single most obvious way a composite announces that
-   * it was cut out.
-   *
-   * The size limit is the whole safety margin. A man in a white shirt on an
-   * off-white backdrop has a colour-matching region too, and it is a large
-   * share of him; punching it would delete his chest. A window is small.
-   * Anything at all close to the subject's own size is left alone, because
-   * getting this wrong quietly is worse than leaving a patch a human can see.
-   */
-  const HOLE_MAX_SHARE = 0.22;
-  const hole = new Uint8Array(n);
-  const seen = new Uint8Array(n);
-  for (let start = 0; start < n; start += 1) {
-    if (seen[start] || label[start] !== best) continue;
-    const at = start * 4;
-    if (!(data[at + 3] < 12 || isBackgroundColour(at))) continue;
-    head = 0;
-    tail = 0;
-    seen[start] = 1;
-    queue[tail++] = start;
-    let size = 0;
-    let touchesEdge = false;
-    const region = [];
-    while (head < tail) {
-      const index = queue[head++];
-      region.push(index);
-      size += 1;
-      const x = index % width;
-      const y = (index - x) / width;
-      if (x === 0 || y === 0 || x === width - 1 || y === height - 1) touchesEdge = true;
-      const visit = (nb) => {
-        if (seen[nb] || label[nb] !== best) return;
-        const a = nb * 4;
-        if (!(data[a + 3] < 12 || isBackgroundColour(a))) return;
-        seen[nb] = 1;
-        queue[tail++] = nb;
-      };
-      if (x > 0) visit(index - 1);
-      if (x < width - 1) visit(index + 1);
-      if (y > 0) visit(index - width);
-      if (y < height - 1) visit(index + width);
-    }
-    if (!touchesEdge && size < bestSize * HOLE_MAX_SHARE) {
-      for (const index of region) hole[index] = 1;
-    }
-  }
-
-  /**
    * Alpha from the label map, then a light feather so the edge is not a
    * staircase.
    *
@@ -221,8 +311,13 @@ export async function keyOut(input, {tolerance = 55, feather = 0.9, minShare = 0
    * every one of them is the hole instead of the shape. A separable three-tap
    * box blur is four lines and cannot be misread.
    */
+  const solid = new Uint8Array(n);
+  for (let i = 0; i < n; i += 1) solid[i] = label[i] === best ? 1 : 0;
+  // Back in by the same brush the background came out by.
+  const shape = erode(solid, seal);
+
   const alpha = Buffer.alloc(n);
-  for (let i = 0; i < n; i += 1) alpha[i] = label[i] === best && !hole[i] ? 255 : 0;
+  for (let i = 0; i < n; i += 1) alpha[i] = shape[i] ? 255 : 0;
 
   let softened = alpha;
   if (feather > 0) {

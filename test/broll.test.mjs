@@ -109,7 +109,7 @@ test('a wide subject touching the edge survives — the fill starts at the CORNE
   assert.equal(await alphaAt(keyed, 100, 10), 0, 'the backdrop above it is gone');
 });
 
-test('a hole inside the subject is background too', async () => {
+test('a pocket sealed inside the subject is kept, unless asked for', async () => {
   const png = await picture(
     [245, 244, 240],
     [
@@ -117,9 +117,32 @@ test('a hole inside the subject is background too', async () => {
       [80, 80, 120, 120, [245, 244, 240]],
     ],
   );
+  // BY DEFAULT it belongs to the subject. Judged on colour it is backdrop, and
+  // that is exactly how a halftone forehead gets punched out of a portrait:
+  // white paper with black dots on it matches the backdrop precisely.
+  const {png: filled} = await keyOut(png);
+  assert.equal(await alphaAt(filled, 100, 100), 255, 'walled in, so it is his forehead');
+  assert.equal(await alphaAt(filled, 60, 60), 255);
+
+  // ASKED FOR, it is punched — the window in an empty picture frame.
+  const {png: punched} = await keyOut(png, {holes: true});
+  assert.equal(await alphaAt(punched, 100, 100), 0);
+  assert.equal(await alphaAt(punched, 60, 60), 255);
+});
+
+test('the fill cannot leak through a hairline bridge', async () => {
+  // The failure this seal exists for: a bright region joined to the outside by
+  // a thin light path. Unsealed, the fill walks in and eats the forehead.
+  const png = await picture(
+    [245, 244, 240],
+    [
+      [50, 50, 150, 150, [30, 30, 30]],
+      [80, 80, 120, 120, [245, 244, 240]],
+      [98, 50, 101, 82, [245, 244, 240]],
+    ],
+  );
   const {png: keyed} = await keyOut(png);
-  assert.equal(await alphaAt(keyed, 100, 100), 0, 'the fill can never reach it; the hole pass punches it');
-  assert.equal(await alphaAt(keyed, 60, 60), 255);
+  assert.equal(await alphaAt(keyed, 100, 105), 255, 'the bridge is narrower than the brush');
 });
 
 test('specks in the corners do not come back as a cut-out', async () => {

@@ -34,6 +34,13 @@ export type Layer = {
   /** Marker-stroke offset in fractions of frame width. 0 turns it off. */
   strokeX?: number;
   strokeY?: number;
+  /**
+   * How much of the camera move this layer takes. 0 is the far wall, 1 is the
+   * thing the lens is on. Defaults by role: the plate barely moves, the subject
+   * moves, the foreground moves most — which is the whole of the depth effect
+   * and costs one number.
+   */
+  depth?: number;
 };
 
 export type Beat = {
@@ -42,8 +49,29 @@ export type Beat = {
   bg: Layer | null;
   mid: Layer[];
   fore: Layer[];
-  text?: {big?: string; small?: string; at?: number; x?: number; y?: number} | null;
-  camera?: {from?: number; to?: number} | null;
+  text?: {
+    big?: string;
+    small?: string;
+    at?: number;
+    x?: number;
+    y?: number;
+    /**
+     * False prints the words as INK, with no slab under them — for the shot
+     * where the words are the thing in the picture rather than a caption over
+     * it: a headline on a newspaper, a line on a document.
+     */
+    plate?: boolean;
+    /** Type size as a fraction of frame width. */
+    size?: number;
+  } | null;
+  /**
+   * `from`→`to` is the push. `panX`/`panY` slide the whole room sideways over
+   * the beat, in fractions of the frame — a push and a pull-back are two
+   * different shots, and so are a push and a drift.
+   */
+  camera?: {from?: number; to?: number; panX?: number; panY?: number} | null;
+  /** The point everything scales about, as a fraction of the frame. */
+  anchor?: {x?: number; y?: number} | null;
   from: number;
   to: number;
 };
@@ -140,12 +168,38 @@ const Scene: React.FC<{beat: Beat; data: BrollData; length: number}> = ({beat, d
   const frame = useCurrentFrame();
   const {width, height} = useVideoConfig();
 
-  // ONE slow move per beat, so a still composite is never actually still.
-  const push = interpolate(frame, [0, length], [beat.camera?.from ?? 1, beat.camera?.to ?? 1.05], {
+  /**
+   * ONE MOVE PER BEAT, AND IT HAS TO BE A MOVE.
+   *
+   * The first cut ran 1.00→1.05 across a four-second beat, which between any
+   * two frames a viewer actually compares is about two percent — a photograph
+   * with grain on it. Eased rather than linear, because a camera that starts
+   * and stops at constant speed is a slide transition.
+   */
+  const t = interpolate(frame, [0, Math.max(1, length)], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
+  const eased = t * t * (3 - 2 * t);
+  const push = interpolate(eased, [0, 1], [beat.camera?.from ?? 1, beat.camera?.to ?? 1.14]);
+  const panX = eased * (beat.camera?.panX ?? 0) * width;
+  const panY = eased * (beat.camera?.panY ?? 0) * height;
+
+  /**
+   * EVERY LAYER SCALES ABOUT THE SAME POINT.
+   *
+   * Give each its own centre and they slide over one another instead of
+   * holding together as a room. The anchor sits low by default: that is where
+   * the floor is, and a push about the floor keeps the subject standing on it.
+   */
+  const anchor = `${(beat.anchor?.x ?? 0.5) * 100}% ${(beat.anchor?.y ?? 0.84) * 100}%`;
+  const move = (depth: number): React.CSSProperties => ({
+    transform: `translate(${panX * depth}px, ${panY * depth}px) scale(${1 + (push - 1) * depth})`,
+    transformOrigin: anchor,
+  });
+
   const plate = beat.bg?.file ?? data.background;
+  const textPlate = beat.text?.plate !== false;
   const textAt = beat.text?.at ?? 0.3;
   const textIn = interpolate(frame, [length * textAt, length * textAt + 12], [0, 1], {
     extrapolateLeft: 'clamp',
@@ -154,21 +208,25 @@ const Scene: React.FC<{beat: Beat; data: BrollData; length: number}> = ({beat, d
 
   return (
     <AbsoluteFill style={{backgroundColor: '#DAD9D5', overflow: 'hidden'}}>
-      <AbsoluteFill style={{transform: `scale(${push})`}}>
+      <AbsoluteFill style={move(beat.bg?.depth ?? 0.28)}>
         {plate ? (
           <Img src={staticFile(plate)} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
         ) : null}
         {/* A soft-light wash, so every scene sits in the same light no matter
             what the generator returned. */}
         <AbsoluteFill style={{background: 'rgba(218,217,213,0.34)', mixBlendMode: 'soft-light'}} />
-
-        {beat.mid.map((layer, i) => (
-          <Cutout key={`m${i}`} layer={layer} accent={data.accent} index={i} />
-        ))}
-        {beat.fore.map((layer, i) => (
-          <Cutout key={`f${i}`} layer={{strokeX: 0.012, ...layer}} accent={data.accent} index={i} />
-        ))}
       </AbsoluteFill>
+
+      {beat.mid.map((layer, i) => (
+        <AbsoluteFill key={`m${i}`} style={move(layer.depth ?? 0.85)}>
+          <Cutout layer={layer} accent={data.accent} index={i} />
+        </AbsoluteFill>
+      ))}
+      {beat.fore.map((layer, i) => (
+        <AbsoluteFill key={`f${i}`} style={move(layer.depth ?? 1.3)}>
+          <Cutout layer={{strokeX: 0.012, ...layer}} accent={data.accent} index={i} />
+        </AbsoluteFill>
+      ))}
 
       {/**
        * THE TEXT SITS ON A PLATE, NOT ON THE PICTURE.
@@ -185,6 +243,12 @@ const Scene: React.FC<{beat: Beat; data: BrollData; length: number}> = ({beat, d
        * wiped in from the left rather than faded. It also fixes the overlap —
        * a plate ON TOP of a cut-out reads as a title card laid over the shot,
        * which is what it is; bare letters crossing a subject read as a mistake.
+       *
+       * `plate: false` is the exception, and it earns it: asked for a front
+       * page with a huge headline the generator returned BLANK PAPER, because
+       * one half of that prompt fights the other. That is the right outcome —
+       * a headline is type, so it gets set here and printed onto the page. A
+       * black slab on a blank newspaper is a sticker; ink on it is the paper.
        */}
       {beat.text?.big ? (
         <div
@@ -202,8 +266,8 @@ const Scene: React.FC<{beat: Beat; data: BrollData; length: number}> = ({beat, d
             <div
               style={{
                 display: 'inline-block',
-                backgroundColor: data.accent,
-                color: '#F4F1E8',
+                backgroundColor: textPlate ? data.accent : 'transparent',
+                color: textPlate ? '#F4F1E8' : data.accent,
                 fontFamily: '"Archivo", Arial, sans-serif',
                 fontWeight: 800,
                 fontSize: width * 0.03,
@@ -220,15 +284,18 @@ const Scene: React.FC<{beat: Beat; data: BrollData; length: number}> = ({beat, d
             <div
               style={{
                 display: 'inline-block',
-                backgroundColor: data.ink,
-                color: '#F4F1E8',
+                backgroundColor: textPlate ? data.ink : 'transparent',
+                color: textPlate ? '#F4F1E8' : data.ink,
                 fontFamily: '"Archivo Black", "Arial Black", Arial, sans-serif',
                 fontWeight: 900,
-                fontSize: width * 0.082,
+                fontSize: width * (beat.text.size ?? 0.082),
                 lineHeight: 1.08,
                 letterSpacing: '-0.02em',
-                padding: `${height * 0.008}px ${width * 0.03}px ${height * 0.012}px`,
-                boxShadow: `${width * 0.008}px ${height * 0.006}px 0 ${data.accent}`,
+                padding: textPlate
+                  ? `${height * 0.008}px ${width * 0.03}px ${height * 0.012}px`
+                  : `0 ${width * 0.02}px`,
+                borderBottom: textPlate ? undefined : `${height * 0.004}px solid ${data.accent}`,
+                boxShadow: textPlate ? `${width * 0.008}px ${height * 0.006}px 0 ${data.accent}` : undefined,
               }}
             >
               {beat.text.big}

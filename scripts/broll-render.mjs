@@ -9,13 +9,37 @@
  * stops — a reel rendered with half its cut-outs missing looks finished and is
  * not, which is the single most expensive way for this pipeline to fail.
  */
-import {mkdir, readFile, writeFile} from 'node:fs/promises';
+import {mkdir, readFile, readdir, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {bundle} from '@remotion/bundler';
 import {renderMedia, selectComposition} from '@remotion/renderer';
 import {ROOT, episodeDir, exists, parseArgs} from './lib/episode.mjs';
 
 const FPS = 30;
+
+/** A Chromium already installed on this machine, or undefined to let Remotion
+ *  fetch its own. */
+async function findBrowser() {
+  const roots = ['/opt/pw-browsers'];
+  // headless_shell FIRST, across every install, before falling back to a full
+  // Chrome: the full binary dropped old headless mode and refuses to launch
+  // this way, so finding it first is finding the one that does not work.
+  for (const leaf of ['chrome-linux/headless_shell', 'chrome-linux/chrome']) {
+    for (const root of roots) {
+      for (const entry of await readdir(root).catch(() => [])) {
+        const candidate = path.join(root, entry, leaf);
+        if (await exists(candidate)) return candidate;
+      }
+    }
+  }
+  return undefined;
+}
+
+/** The first of these that is actually on disk, as an episode-relative path. */
+async function first(dir, candidates) {
+  for (const rel of candidates) if (await exists(path.join(dir, rel))) return rel;
+  return null;
+}
 
 async function main() {
   const args = parseArgs();
@@ -73,8 +97,12 @@ async function main() {
     accent: brief.look?.accent ?? '#E04329',
     ink: brief.look?.ink ?? '#1A1A1A',
     audio: voice?.audio,
-    music: (await exists(path.join(dir, 'audio', 'music.mp3'))) ? 'audio/music.mp3' : undefined,
-    musicGain: 0.2,
+    // A score if the episode has one, a room tone if it has only that. Either
+    // way SOMETHING is under the voice: a reel carrying narration alone drops
+    // into absolute digital silence between sentences, and the ear reads that
+    // as the sound cutting out, not as a pause.
+    music: (await first(dir, ['audio/music.mp3', 'audio/score.wav', 'audio/bed.wav'])) ?? undefined,
+    musicGain: Number(args.musicGain ?? 0.26),
     beats,
     end: windows[windows.length - 1][1],
   };
@@ -103,7 +131,17 @@ async function main() {
     publicDir: dir,
     onProgress: () => undefined,
   });
-  const browserExecutable = process.env.REMOTION_BROWSER_EXECUTABLE || undefined;
+  /**
+   * THE BROWSER IS ALREADY HERE.
+   *
+   * Left to itself Remotion downloads its own headless shell on first render,
+   * and on a machine whose egress policy does not list that host the whole run
+   * dies at 403 — after the bundle, after the plan, at the last step. There is
+   * a Chromium on this image; use it.
+   */
+  const browserExecutable =
+    process.env.REMOTION_BROWSER_EXECUTABLE ||
+    (await findBrowser());
   const composition = await selectComposition({serveUrl, id: 'Broll', inputProps: {data}, browserExecutable});
 
   await mkdir(path.join(ROOT, 'out'), {recursive: true});
