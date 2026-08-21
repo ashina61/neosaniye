@@ -20,6 +20,9 @@ yenilemek kesimi, kesim de görsellerin sahne kimliklerini değiştirir.
 Bu dosya **v1**'in kanunudur: çizilen kolaj motoru — katman yığını, derinlik,
 motif, prop, çizilen ışık. `npm run render` onu çalıştırır.
 
+**Üç hat var. v2'nin beyni `engine/v2/BRAIN.md`, çizilen belgeselin beyni
+`engine/war/BRAIN.md` (harita, nitrat işlemesi, ritim).**
+
 **v2 ayrı bir hattır ve kendi beyni vardır: `engine/v2/BRAIN.md`.** Kareyi
 dolduran fotoğraf, Ken Burns, kelime kelime altyazı; `node scripts/reel2.mjs`
 onu çalıştırır. İkisi aynı bölüm klasörünü ve aynı `vo.json` saatini okur ama
