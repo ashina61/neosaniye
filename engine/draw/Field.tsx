@@ -53,8 +53,33 @@ export const Field: React.FC<{
   centreY?: number;
   rays?: number;
   seed?: string;
-}> = ({kind = 'wash', colours, centreX = 50, centreY = 46, rays = 26, seed = 'field'}) => {
-  const [a, b, c] = colours ?? ['#a01218', '#7c0d12', '#58080c'];
+  /**
+   * HOW MUCH OF THE FRAME THIS FIELD HAS TO CARRY, 0..1.
+   *
+   * A field behind a photograph only has to not be white — it is under a plate
+   * and a scrim, and the darker it is the better. A field standing IN PLACE of
+   * a photograph is the whole picture, and the same palette then delivers a
+   * frame measuring 0.03 luma: the type floats in black and there is nothing
+   * else to look at. The audit caught four shots of one reel like that.
+   *
+   * So the stops are lifted toward light in proportion to how alone the field
+   * is. Lifting rather than swapping keeps the episode's palette — a drawn
+   * shot has to belong to the same reel as the photographed ones.
+   */
+  lift?: number;
+}> = ({kind = 'wash', colours, centreX = 50, centreY = 46, rays = 26, seed = 'field', lift = 0}) => {
+  const raise = (hex: string): string => {
+    if (!lift) return hex;
+    const match = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+    if (!match) return hex;
+    const value = parseInt(match[1], 16);
+    const mix = (channel: number) => Math.round(channel + (255 - channel) * lift * 0.17);
+    const r = mix((value >> 16) & 255);
+    const g = mix((value >> 8) & 255);
+    const b2 = mix(value & 255);
+    return `#${((r << 16) | (g << 8) | b2).toString(16).padStart(6, '0')}`;
+  };
+  const [a, b, c] = (colours ?? ['#a01218', '#7c0d12', '#58080c']).map(raise);
 
   if (kind === 'sunburst') {
     return (

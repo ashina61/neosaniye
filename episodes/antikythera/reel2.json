@@ -1,0 +1,374 @@
+{
+  "title": "The thing in the drawer",
+  "audio": "audio/vo.wav",
+  "bedGain": 0.14,
+  "shots": [
+    {
+      "image": "assets/seabed.jpg",
+      "from": 0,
+      "to": 137
+    },
+    {
+      "image": "assets/mechanism-fragment.jpg",
+      "from": 137,
+      "to": 264
+    },
+    {
+      "image": "assets/storage-drawers.jpg",
+      "from": 264,
+      "to": 402
+    },
+    {
+      "image": "assets/mechanism-xray.jpg",
+      "from": 402,
+      "to": 517
+    },
+    {
+      "image": "assets/moon-sky.jpg",
+      "from": 517,
+      "to": 653
+    },
+    {
+      "image": "assets/deep-green.jpg",
+      "from": 653,
+      "to": 783
+    }
+  ],
+  "words": [
+    {
+      "text": "In",
+      "from": 0,
+      "to": 6
+    },
+    {
+      "text": "1901",
+      "from": 6,
+      "to": 16
+    },
+    {
+      "text": "sponge",
+      "from": 16,
+      "to": 30
+    },
+    {
+      "text": "divers",
+      "from": 30,
+      "to": 44
+    },
+    {
+      "text": "off",
+      "from": 44,
+      "to": 52
+    },
+    {
+      "text": "Antikythera",
+      "from": 52,
+      "to": 77
+    },
+    {
+      "text": "found",
+      "from": 77,
+      "to": 89
+    },
+    {
+      "text": "a",
+      "from": 89,
+      "to": 93
+    },
+    {
+      "text": "wreck",
+      "from": 93,
+      "to": 105
+    },
+    {
+      "text": "full",
+      "from": 105,
+      "to": 115
+    },
+    {
+      "text": "of",
+      "from": 115,
+      "to": 121
+    },
+    {
+      "text": "bronze",
+      "from": 121,
+      "to": 137
+    },
+    {
+      "text": "Among",
+      "from": 137,
+      "to": 148
+    },
+    {
+      "text": "the",
+      "from": 148,
+      "to": 156
+    },
+    {
+      "text": "statues",
+      "from": 156,
+      "to": 171
+    },
+    {
+      "text": "lay",
+      "from": 171,
+      "to": 179
+    },
+    {
+      "text": "a",
+      "from": 179,
+      "to": 183
+    },
+    {
+      "text": "lump",
+      "from": 183,
+      "to": 192
+    },
+    {
+      "text": "of",
+      "from": 192,
+      "to": 198
+    },
+    {
+      "text": "corroded",
+      "from": 198,
+      "to": 215
+    },
+    {
+      "text": "metal",
+      "from": 215,
+      "to": 226
+    },
+    {
+      "text": "the",
+      "from": 226,
+      "to": 234
+    },
+    {
+      "text": "size",
+      "from": 234,
+      "to": 243
+    },
+    {
+      "text": "of",
+      "from": 243,
+      "to": 249
+    },
+    {
+      "text": "a",
+      "from": 249,
+      "to": 253
+    },
+    {
+      "text": "book",
+      "from": 253,
+      "to": 264
+    },
+    {
+      "text": "It",
+      "from": 264,
+      "to": 270
+    },
+    {
+      "text": "sat",
+      "from": 270,
+      "to": 278
+    },
+    {
+      "text": "in",
+      "from": 278,
+      "to": 284
+    },
+    {
+      "text": "a",
+      "from": 284,
+      "to": 288
+    },
+    {
+      "text": "museum",
+      "from": 288,
+      "to": 301
+    },
+    {
+      "text": "drawer",
+      "from": 301,
+      "to": 315
+    },
+    {
+      "text": "for",
+      "from": 315,
+      "to": 322
+    },
+    {
+      "text": "fifty",
+      "from": 322,
+      "to": 334
+    },
+    {
+      "text": "years",
+      "from": 334,
+      "to": 346
+    },
+    {
+      "text": "before",
+      "from": 346,
+      "to": 359
+    },
+    {
+      "text": "anyone",
+      "from": 359,
+      "to": 373
+    },
+    {
+      "text": "looked",
+      "from": 373,
+      "to": 386
+    },
+    {
+      "text": "inside",
+      "from": 386,
+      "to": 402
+    },
+    {
+      "text": "X-rays",
+      "from": 402,
+      "to": 418
+    },
+    {
+      "text": "found",
+      "from": 418,
+      "to": 432
+    },
+    {
+      "text": "thirty",
+      "from": 432,
+      "to": 449
+    },
+    {
+      "text": "gears",
+      "from": 449,
+      "to": 465
+    },
+    {
+      "text": "cut",
+      "from": 465,
+      "to": 475
+    },
+    {
+      "text": "by",
+      "from": 475,
+      "to": 482
+    },
+    {
+      "text": "hand",
+      "from": 482,
+      "to": 496
+    },
+    {
+      "text": "meshing",
+      "from": 496,
+      "to": 517
+    },
+    {
+      "text": "It",
+      "from": 517,
+      "to": 523
+    },
+    {
+      "text": "predicted",
+      "from": 523,
+      "to": 544
+    },
+    {
+      "text": "eclipses",
+      "from": 544,
+      "to": 565
+    },
+    {
+      "text": "and",
+      "from": 565,
+      "to": 573
+    },
+    {
+      "text": "it",
+      "from": 573,
+      "to": 580
+    },
+    {
+      "text": "tracked",
+      "from": 580,
+      "to": 596
+    },
+    {
+      "text": "the",
+      "from": 596,
+      "to": 605
+    },
+    {
+      "text": "moon's",
+      "from": 605,
+      "to": 619
+    },
+    {
+      "text": "changing",
+      "from": 619,
+      "to": 638
+    },
+    {
+      "text": "speed",
+      "from": 638,
+      "to": 653
+    },
+    {
+      "text": "Nothing",
+      "from": 653,
+      "to": 669
+    },
+    {
+      "text": "this",
+      "from": 669,
+      "to": 679
+    },
+    {
+      "text": "complex",
+      "from": 679,
+      "to": 695
+    },
+    {
+      "text": "was",
+      "from": 695,
+      "to": 703
+    },
+    {
+      "text": "built",
+      "from": 703,
+      "to": 715
+    },
+    {
+      "text": "again",
+      "from": 715,
+      "to": 727
+    },
+    {
+      "text": "for",
+      "from": 727,
+      "to": 735
+    },
+    {
+      "text": "fourteen",
+      "from": 735,
+      "to": 753
+    },
+    {
+      "text": "hundred",
+      "from": 753,
+      "to": 769
+    },
+    {
+      "text": "years",
+      "from": 769,
+      "to": 783
+    }
+  ]
+}

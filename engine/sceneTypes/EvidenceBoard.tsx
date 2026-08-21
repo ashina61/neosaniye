@@ -80,7 +80,12 @@ export const EvidenceBoard: React.FC<SceneProps> = ({scene, assets, durationInFr
       {assets.background ? (
         <Plate src={assets.background} scale={num('bgScale', 1.07)} alive={false} />
       ) : (
-        <Field kind={str('field', 'paper') as FieldKind} seed={scene.id} />
+        <Field
+          kind={str('field', 'paper') as FieldKind}
+          colours={list('fieldColours').length === 3 ? list('fieldColours') : undefined}
+          seed={scene.id}
+          lift={num('fieldLift', 1)}
+        />
       )}
       <AbsoluteFill style={{background: `rgba(6,5,3,${num('scrim', 0.34)})`}} />
 

@@ -8,7 +8,7 @@
   "lines": [
     {
       "slug": "look-up",
-      "vo": "Yukarı bak. Gökyüzünde mavi bir şey yok — ne boya, ne cam, ne su.",
+      "vo": "Yukarı bak. Gökyüzünde mavi bir madde yok.",
       "kicker": "IŞIK · ATMOSFER",
       "title": "MAVİ NEREDE?",
       "footer": "gökyüzünde mavi bir madde yok",
@@ -138,9 +138,9 @@
             "lines": [
               "ışığın yolu uzar"
             ],
-            "size": 0.46,
-            "x": 0.54,
-            "y": 0.6,
+            "size": 0.42,
+            "x": 0.62,
+            "y": 0.4,
             "depth": 0.8,
             "at": 0.25,
             "tilt": -4,

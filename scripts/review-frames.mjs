@@ -73,6 +73,7 @@ async function main() {
       const at = (i + 1) / (per + 1);
       shots.push({
         scene: scene.id,
+        sceneType: scene.sceneType,
         label: `${scene.id} ${Math.round(at * 100)}%`,
         frame: Math.min(composition.durationInFrames - 1, offsets[index] + Math.round(scene.durationInFrames * at)),
       });
@@ -117,7 +118,7 @@ async function main() {
   const byScene = new Map();
   for (const [index, tile] of tiles.entries()) {
     const image = sharp(tile.file);
-    measured.push({label: tile.label, scene: tile.scene, stats: await measureFrame(image), file: tile.file});
+    measured.push({label: tile.label, scene: tile.scene, sceneType: tile.sceneType, stats: await measureFrame(image), file: tile.file});
     const seen = byScene.get(tile.scene);
     if (seen) seen.push(tile.file);
     else byScene.set(tile.scene, [tile.file]);

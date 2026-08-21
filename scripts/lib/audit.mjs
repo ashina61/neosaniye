@@ -125,7 +125,14 @@ export function auditTiles(tiles) {
     else if (luma > LIMITS.bright) notes.push(`${tile.label}: blown out (luma ${luma.toFixed(3)})`);
     if (spread < LIMITS.spread) notes.push(`${tile.label}: no contrast (spread ${spread.toFixed(3)}) — flat fill, not a shot`);
     if (flat > LIMITS.flat) notes.push(`${tile.label}: ${Math.round(flat * 100)}% of the frame is one tone — a plate is missing or misplaced`);
-    if (tile.distance !== undefined && tile.distance < LIMITS.motion) {
+    /**
+     * A SLATE IS ALLOWED TO BE STILL. The law is explicit about it — the creep
+     * moves the picture and never the type, because scaling a card made of
+     * words softens the words and gives away that the frame is a still being
+     * zoomed. The card IS the shot. Flagging that would teach everyone to stop
+     * reading this list, which costs more than the check is worth.
+     */
+    if (tile.distance !== undefined && tile.distance < LIMITS.motion && tile.sceneType !== 'title-slate') {
       notes.push(`${tile.scene}: two samples are ${(tile.distance * 100).toFixed(1)}% apart — the shot does not move`);
     }
   }

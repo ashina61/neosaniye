@@ -211,11 +211,19 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
           photograph underneath to be worth cutting to, and an episode written
           with no images at all is a legitimate episode rather than a fault. */}
       {layers.length === 0 ? (
-        <AbsoluteFill style={{transformOrigin: origin, transform: `scale(${1 + (push - 1) * 0.12})`}}>
+        // AND IT TAKES THE PUSH LIKE A LONE BACKDROP DOES, not a token twelve
+        // percent of it. `buildStack` already knows this rule — a ground layer
+        // with nothing in front of it sits at 0.72-0.95, because the shallow
+        // depth exists so pieces can out-run the wall and there are no pieces.
+        // At 0.12 the audit measured two samples of one shot 0.5% apart: a
+        // still frame with grain on it, which is the exact thing the depth
+        // system was built to stop shipping.
+        <AbsoluteFill style={{transformOrigin: origin, transform: `scale(${1 + (push - 1) * num('fieldDepth', 0.82)})`}}>
           <Field
             kind={str('field', 'wash') as FieldKind}
             colours={list('fieldColours').length === 3 ? (list('fieldColours') as [string, string, string]) : undefined}
             seed={scene.id}
+            lift={num('fieldLift', 1)}
           />
         </AbsoluteFill>
       ) : null}

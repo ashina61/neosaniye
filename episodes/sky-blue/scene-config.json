@@ -10,302 +10,272 @@
     },
     {
       "from": 4,
-      "to": 8,
+      "to": 21,
       "text": "bak."
     },
     {
-      "from": 8,
-      "to": 21,
-      "text": "Gökyüzünde"
-    },
-    {
       "from": 21,
-      "to": 37,
-      "text": "mavi"
-    },
-    {
-      "from": 37,
-      "to": 53,
-      "text": "bir"
-    },
-    {
-      "from": 53,
       "to": 58,
-      "text": "şey"
+      "text": "Gökyüzünde"
     },
     {
       "from": 58,
       "to": 68,
-      "text": "yok"
+      "text": "mavi"
     },
     {
-      "from": 86,
-      "to": 113,
-      "text": "ne"
+      "from": 68,
+      "to": 75,
+      "text": "bir"
     },
     {
-      "from": 113,
-      "to": 123,
-      "text": "boya,"
+      "from": 75,
+      "to": 89,
+      "text": "madde"
     },
     {
-      "from": 123,
-      "to": 133,
-      "text": "ne"
+      "from": 89,
+      "to": 101,
+      "text": "yok."
     },
     {
-      "from": 133,
-      "to": 144,
-      "text": "cam,"
-    },
-    {
-      "from": 144,
-      "to": 153,
-      "text": "ne"
-    },
-    {
-      "from": 153,
-      "to": 163,
-      "text": "su."
-    },
-    {
-      "from": 178,
-      "to": 213,
+      "from": 116,
+      "to": 152,
       "text": "Güneşin"
     },
     {
-      "from": 213,
-      "to": 221,
+      "from": 152,
+      "to": 160,
       "text": "ışığı"
     },
     {
-      "from": 221,
-      "to": 241,
+      "from": 160,
+      "to": 179,
       "text": "beyazdır."
     },
     {
-      "from": 241,
-      "to": 247,
+      "from": 179,
+      "to": 186,
       "text": "Beyaz"
     },
     {
-      "from": 247,
-      "to": 258,
+      "from": 186,
+      "to": 197,
       "text": "dediğimiz"
     },
     {
-      "from": 258,
-      "to": 275,
+      "from": 197,
+      "to": 213,
       "text": "şey"
+    },
+    {
+      "from": 213,
+      "to": 225,
+      "text": "bütün"
+    },
+    {
+      "from": 225,
+      "to": 260,
+      "text": "renklerin"
+    },
+    {
+      "from": 260,
+      "to": 270,
+      "text": "aynı"
+    },
+    {
+      "from": 270,
+      "to": 275,
+      "text": "anda"
     },
     {
       "from": 275,
       "to": 287,
-      "text": "bütün"
-    },
-    {
-      "from": 287,
-      "to": 321,
-      "text": "renklerin"
-    },
-    {
-      "from": 321,
-      "to": 331,
-      "text": "aynı"
-    },
-    {
-      "from": 331,
-      "to": 337,
-      "text": "anda"
-    },
-    {
-      "from": 337,
-      "to": 349,
       "text": "gelmesidir."
     },
     {
-      "from": 364,
-      "to": 369,
+      "from": 302,
+      "to": 307,
       "text": "Havadaki"
     },
     {
-      "from": 369,
-      "to": 390,
+      "from": 307,
+      "to": 329,
       "text": "moleküller"
     },
     {
-      "from": 390,
-      "to": 403,
+      "from": 329,
+      "to": 341,
       "text": "mavi"
     },
     {
-      "from": 403,
-      "to": 409,
+      "from": 341,
+      "to": 347,
       "text": "ışığı"
     },
     {
-      "from": 409,
-      "to": 427,
+      "from": 347,
+      "to": 365,
       "text": "kırmızıdan"
     },
     {
-      "from": 427,
-      "to": 432,
+      "from": 365,
+      "to": 370,
       "text": "on"
     },
     {
-      "from": 432,
-      "to": 460,
+      "from": 370,
+      "to": 399,
       "text": "altı"
     },
     {
-      "from": 460,
-      "to": 466,
+      "from": 399,
+      "to": 405,
       "text": "kat"
     },
     {
-      "from": 466,
-      "to": 496,
+      "from": 405,
+      "to": 434,
       "text": "fazla"
     },
     {
-      "from": 496,
-      "to": 508,
+      "from": 434,
+      "to": 446,
       "text": "saçar."
     },
     {
-      "from": 523,
-      "to": 544,
+      "from": 461,
+      "to": 483,
       "text": "Saçılan"
     },
     {
-      "from": 544,
-      "to": 554,
+      "from": 483,
+      "to": 492,
       "text": "mavi,"
     },
     {
-      "from": 554,
-      "to": 590,
+      "from": 492,
+      "to": 528,
       "text": "gökyüzünün"
     },
     {
-      "from": 590,
-      "to": 614,
+      "from": 528,
+      "to": 553,
       "text": "her"
     },
     {
-      "from": 614,
-      "to": 623,
+      "from": 553,
+      "to": 561,
       "text": "noktasından"
     },
     {
-      "from": 623,
-      "to": 629,
+      "from": 561,
+      "to": 568,
       "text": "tekrar"
     },
     {
-      "from": 629,
-      "to": 637,
+      "from": 568,
+      "to": 576,
       "text": "tekrar"
     },
     {
-      "from": 637,
-      "to": 668,
+      "from": 576,
+      "to": 606,
       "text": "gözüne"
     },
     {
-      "from": 668,
-      "to": 679,
+      "from": 606,
+      "to": 618,
       "text": "ulaşır."
     },
     {
-      "from": 694,
-      "to": 697,
+      "from": 633,
+      "to": 635,
       "text": "Akşam"
     },
     {
-      "from": 697,
-      "to": 715,
+      "from": 635,
+      "to": 653,
       "text": "ışık"
     },
     {
-      "from": 715,
-      "to": 727,
+      "from": 653,
+      "to": 666,
       "text": "daha"
     },
     {
-      "from": 727,
-      "to": 740,
+      "from": 666,
+      "to": 678,
       "text": "kalın"
     },
     {
-      "from": 740,
-      "to": 745,
+      "from": 678,
+      "to": 683,
       "text": "havadan"
     },
     {
-      "from": 745,
-      "to": 771,
+      "from": 683,
+      "to": 709,
       "text": "geçer;"
     },
     {
-      "from": 771,
-      "to": 804,
+      "from": 709,
+      "to": 742,
       "text": "mavi"
     },
     {
-      "from": 804,
-      "to": 816,
+      "from": 742,
+      "to": 754,
       "text": "yolda"
     },
     {
-      "from": 816,
-      "to": 838,
+      "from": 754,
+      "to": 777,
       "text": "tükenir,"
     },
     {
-      "from": 838,
-      "to": 851,
+      "from": 777,
+      "to": 790,
       "text": "kırmızı"
     },
     {
-      "from": 851,
-      "to": 863,
+      "from": 790,
+      "to": 802,
       "text": "kalır."
     },
     {
-      "from": 878,
-      "to": 893,
+      "from": 817,
+      "to": 831,
       "text": "Gökyüzü"
     },
     {
-      "from": 893,
-      "to": 897,
+      "from": 831,
+      "to": 835,
       "text": "mavi"
     },
     {
-      "from": 897,
-      "to": 914,
+      "from": 835,
+      "to": 852,
       "text": "değil."
     },
     {
-      "from": 914,
-      "to": 943,
+      "from": 852,
+      "to": 881,
       "text": "Sadece"
     },
     {
-      "from": 943,
-      "to": 970,
+      "from": 881,
+      "to": 908,
       "text": "maviyi"
     },
     {
-      "from": 970,
-      "to": 990,
+      "from": 908,
+      "to": 928,
       "text": "senden"
     },
     {
-      "from": 990,
-      "to": 1001,
+      "from": 928,
+      "to": 940,
       "text": "saklayamıyor."
     }
   ],
@@ -328,21 +298,21 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.39,
-      "grungeOpacity": 0.18,
-      "scanlineOpacity": 0.08,
-      "scanlinePeriod": 9,
-      "vignetteStrength": 0.4,
-      "weavePx": 5,
-      "weaveScale": 1.011
+      "grainOpacity": 0.36,
+      "grungeOpacity": 0.12,
+      "scanlineOpacity": 0.11,
+      "scanlinePeriod": 8,
+      "vignetteStrength": 0.47,
+      "weavePx": 6,
+      "weaveScale": 1.013
     }
   },
   "scenes": [
     {
       "id": "s01-look-up",
       "sceneType": "title-slate",
-      "voText": "Yukarı bak. Gökyüzünde mavi bir şey yok — ne boya,",
-      "durationInFrames": 116,
+      "voText": "Yukarı bak. Gökyüzünde mavi bir madde yok.",
+      "durationInFrames": 101,
       "assets": {
         "?background": "assets/s01-look-up-bg.png"
       },
@@ -355,74 +325,20 @@
         "titleSize": 124,
         "creep": 1.093,
         "accent": "#ffcf3d",
-        "field": "spotlight",
+        "field": "grid",
         "fieldColours": [
           "#2a3138",
           "#161b20",
           "#080a0c"
         ],
-        "mark": "box",
+        "mark": "underline",
         "markX": 260,
         "markY": 1160,
         "markWidth": 560,
         "markHeight": 96,
-        "markFrame": 39
+        "markFrame": 34
       },
       "props": []
-    },
-    {
-      "id": "s01-look-up-b",
-      "sceneType": "composite",
-      "voText": "ne cam, ne su.",
-      "durationInFrames": 47,
-      "transition": {
-        "kind": "slip",
-        "frames": 11
-      },
-      "assets": {
-        "?ground": "assets/s01-look-up-bg.png"
-      },
-      "layers": [
-        {
-          "role": "ground",
-          "depth": 0.82,
-          "anchor": "fill"
-        }
-      ],
-      "props": [],
-      "params": {
-        "anchorX": 799,
-        "anchorY": 576,
-        "pushFrom": 1.38,
-        "pushTo": 1.03,
-        "pushEndFrame": 44,
-        "accent": "#ffcf3d",
-        "field": "spotlight",
-        "fieldColours": [
-          "#2a3138",
-          "#161b20",
-          "#080a0c"
-        ],
-        "caption": [
-          "ne cam,",
-          "ne su"
-        ],
-        "captionX": 84,
-        "captionY": 822,
-        "captionSize": 89,
-        "captionAlign": "left",
-        "captionFrame": 4,
-        "captionEvery": 9,
-        "captionScrim": 0.34,
-        "glowX": 1532,
-        "glowY": 267,
-        "glowSize": 480,
-        "glowIntensity": 0.54,
-        "glowWarm": "#ffcf3d",
-        "glowDepth": 0.82,
-        "focusPx": 7,
-        "fog": 0.43
-      }
     },
     {
       "id": "s02-white-light",
@@ -430,20 +346,26 @@
       "voText": "Güneşin ışığı beyazdır. Beyaz dediğimiz şey bütün renklerin aynı anda gelmesidir.",
       "durationInFrames": 186,
       "transition": {
-        "kind": "slam",
-        "frames": 5
+        "kind": "rack",
+        "frames": 10
       },
       "assets": {
         "?background": "assets/s02-white-light-bg.png"
       },
       "params": {
-        "bgScale": 1.117,
-        "scrim": 0.2,
+        "bgScale": 1.081,
+        "scrim": 0.21,
         "focusPx": 8,
-        "itemWidth": 568,
+        "field": "grid",
+        "fieldColours": [
+          "#2a3138",
+          "#161b20",
+          "#080a0c"
+        ],
+        "itemWidth": 545,
         "itemFrames": [
           10,
-          49,
+          48,
           100
         ],
         "items": [
@@ -453,9 +375,9 @@
         ],
         "caption": [],
         "captionX": 84,
-        "captionY": 205,
+        "captionY": 199,
         "captionFrame": 6,
-        "captionSize": 83,
+        "captionSize": 89,
         "captionRecedeAt": 84
       },
       "props": []
@@ -466,22 +388,22 @@
       "voText": "Havadaki moleküller mavi ışığı kırmızıdan on altı kat fazla saçar.",
       "durationInFrames": 159,
       "transition": {
-        "kind": "rack",
+        "kind": "blinds",
         "frames": 13
       },
       "assets": {
         "?background": "assets/s03-scatter-bg.png"
       },
       "params": {
-        "scrim": 0.49,
+        "scrim": 0.45,
         "kicker": "RAYLEIGH SAÇILMASI",
         "title": "16 KAT",
         "footer": "mavi, kırmızıdan bu kadar fazla saçılır",
-        "titleFrame": 8,
+        "titleFrame": 6,
         "titleSize": 230,
-        "creep": 1.042,
+        "creep": 1.043,
         "accent": "#ffcf3d",
-        "field": "spotlight",
+        "field": "grid",
         "fieldColours": [
           "#2a3138",
           "#161b20",
@@ -496,7 +418,13 @@
           "FIFTY",
           "TWENTY"
         ],
-        "spinFrames": 64
+        "spinFrames": 64,
+        "mark": "box",
+        "markX": 260,
+        "markY": 820,
+        "markWidth": 560,
+        "markHeight": 300,
+        "markFrame": 54
       },
       "props": [
         {
@@ -515,7 +443,7 @@
       "id": "s04-everywhere",
       "sceneType": "composite",
       "voText": "Saçılan mavi, gökyüzünün her noktasından tekrar tekrar gözüne ulaşır.",
-      "durationInFrames": 171,
+      "durationInFrames": 172,
       "gradeOverride": {
         "saturate": 0.98,
         "sepia": 0.3,
@@ -523,7 +451,7 @@
       },
       "transition": {
         "kind": "slam",
-        "frames": 7
+        "frames": 5
       },
       "assets": {
         "?ground": "assets/s04-everywhere-bg.png"
@@ -531,7 +459,7 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.77,
+          "depth": 0.76,
           "anchor": "fill"
         }
       ],
@@ -546,7 +474,7 @@
           "y": 845,
           "depth": 0.6,
           "rotate": 0,
-          "from": 51
+          "from": 52
         },
         {
           "kind": "beam",
@@ -564,39 +492,39 @@
         "anchorY": 960,
         "pushFrom": 1,
         "pushTo": 1.18,
-        "pushEndFrame": 147,
-        "glowX": 1530,
-        "glowY": 585,
-        "glowSize": 533,
-        "glowIntensity": 0.66,
+        "pushEndFrame": 148,
+        "glowX": 1490,
+        "glowY": 216,
+        "glowSize": 507,
+        "glowIntensity": 0.59,
         "glowWarm": "#ffcf3d",
-        "glowDepth": 0.77,
+        "glowDepth": 0.76,
         "focusPx": 0,
-        "fog": 0.23,
+        "fog": 0.24,
         "caption": [],
         "captionX": 84,
-        "captionY": 659,
-        "captionSize": 94,
+        "captionY": 916,
+        "captionSize": 97,
         "captionAlign": "left",
         "captionFrame": 4,
-        "captionEvery": 10,
+        "captionEvery": 9,
         "captionScrim": 0.34,
-        "captionRecedeAt": 123,
+        "captionRecedeAt": 124,
         "accent": "#ffcf3d",
-        "field": "spotlight",
+        "field": "grid",
         "fieldColours": [
           "#2a3138",
           "#161b20",
           "#080a0c"
         ],
         "motif": "rays",
-        "motifX": 524,
+        "motifX": 489,
         "motifY": 768,
-        "motifSize": 315,
-        "motifCount": 24,
-        "motifFrame": 31,
+        "motifSize": 298,
+        "motifCount": 18,
+        "motifFrame": 28,
         "motifColour": "#ffcf3d",
-        "motifOpacity": 0.86
+        "motifOpacity": 0.96
       }
     },
     {
@@ -610,7 +538,7 @@
         "brightness": 0.95
       },
       "transition": {
-        "kind": "slip",
+        "kind": "rack",
         "frames": 10
       },
       "assets": {
@@ -619,7 +547,7 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.81,
+          "depth": 0.93,
           "anchor": "fill"
         }
       ],
@@ -630,9 +558,9 @@
           "lines": [
             "ışığın yolu uzar"
           ],
-          "width": 497,
-          "x": 583,
-          "y": 1152,
+          "width": 454,
+          "x": 670,
+          "y": 768,
           "depth": 0.8,
           "rotate": -4,
           "from": 38
@@ -644,20 +572,20 @@
         "pushFrom": 1.12,
         "pushTo": 1,
         "pushEndFrame": 130,
-        "glowX": 1490,
-        "glowY": 373,
-        "glowSize": 490,
-        "glowIntensity": 0.59,
+        "glowX": 1595,
+        "glowY": 595,
+        "glowSize": 545,
+        "glowIntensity": 0.42,
         "glowWarm": "#ffcf3d",
-        "glowDepth": 0.81,
+        "glowDepth": 0.93,
         "focusPx": 0,
-        "fog": 0.39,
+        "fog": 0.46,
         "caption": [
           "mavi yolda tükenir",
           "kırmızı kalır"
         ],
         "captionX": 84,
-        "captionY": 545,
+        "captionY": 984,
         "captionSize": 83,
         "captionAlign": "left",
         "captionFrame": 4,
@@ -665,20 +593,20 @@
         "captionScrim": 0.34,
         "captionRecedeAt": 109,
         "accent": "#ffcf3d",
-        "field": "spotlight",
+        "field": "grid",
         "fieldColours": [
           "#2a3138",
           "#161b20",
           "#080a0c"
         ],
         "motif": "embers",
-        "motifX": 590,
+        "motifX": 549,
         "motifY": 960,
-        "motifSize": 46,
-        "motifCount": 33,
-        "motifFrame": 24,
+        "motifSize": 39,
+        "motifCount": 23,
+        "motifFrame": 21,
         "motifColour": "#ffcf3d",
-        "motifOpacity": 0.8
+        "motifOpacity": 0.84
       }
     },
     {
@@ -687,8 +615,8 @@
       "voText": "kırmızı kalır.",
       "durationInFrames": 33,
       "transition": {
-        "kind": "rack",
-        "frames": 10
+        "kind": "slip",
+        "frames": 12
       },
       "assets": {
         "?ground": "assets/s05-sunset-bg.png"
@@ -696,7 +624,7 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.84,
+          "depth": 0.73,
           "anchor": "fill"
         }
       ],
@@ -707,9 +635,9 @@
           "lines": [
             "ışığın yolu uzar"
           ],
-          "width": 497,
-          "x": 583,
-          "y": 1152,
+          "width": 454,
+          "x": 670,
+          "y": 768,
           "depth": 0.8,
           "rotate": -4,
           "from": 0
@@ -718,11 +646,11 @@
       "params": {
         "anchorX": 540,
         "anchorY": 1152,
-        "pushFrom": 1.38,
-        "pushTo": 1.06,
+        "pushFrom": 1.44,
+        "pushTo": 1.08,
         "pushEndFrame": 31,
         "accent": "#ffcf3d",
-        "field": "spotlight",
+        "field": "grid",
         "fieldColours": [
           "#2a3138",
           "#161b20",
@@ -732,20 +660,20 @@
           "kırmızı kalır"
         ],
         "captionX": 84,
-        "captionY": 385,
-        "captionSize": 92,
+        "captionY": 669,
+        "captionSize": 91,
         "captionAlign": "left",
         "captionFrame": 4,
-        "captionEvery": 8,
+        "captionEvery": 10,
         "captionScrim": 0.34,
-        "glowX": 1401,
-        "glowY": 565,
-        "glowSize": 390,
-        "glowIntensity": 0.47,
+        "glowX": 1375,
+        "glowY": 597,
+        "glowSize": 379,
+        "glowIntensity": 0.67,
         "glowWarm": "#ffcf3d",
-        "glowDepth": 0.84,
-        "focusPx": 9,
-        "fog": 0.56
+        "glowDepth": 0.73,
+        "focusPx": 13,
+        "fog": 0.2
       }
     },
     {
@@ -766,21 +694,21 @@
         "?background": "assets/s06-close-bg.png"
       },
       "params": {
-        "scrim": 0.43,
+        "scrim": 0.5,
         "kicker": "IŞIK · ATMOSFER",
         "title": "SAKLAYAMIYOR",
         "footer": "gökyüzü mavi değil",
         "titleFrame": 8,
         "titleSize": 124,
-        "creep": 1.048,
+        "creep": 1.07,
         "accent": "#ffcf3d",
-        "field": "spotlight",
+        "field": "grid",
         "fieldColours": [
           "#2a3138",
           "#161b20",
           "#080a0c"
         ],
-        "mark": "box",
+        "mark": "underline",
         "markX": 260,
         "markY": 1160,
         "markWidth": 560,

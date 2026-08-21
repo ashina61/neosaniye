@@ -92,6 +92,7 @@ export const TitleSlate: React.FC<SceneProps> = ({scene, assets, durationInFrame
             kind={str('field', 'spotlight') as FieldKind}
             colours={colours.length === 3 ? colours : undefined}
             seed={scene.id}
+            lift={num('fieldLift', 1)}
           />
         )}
 

@@ -416,6 +416,27 @@ export function normaliseItem(raw) {
   return `card|${text}|`;
 }
 
+/**
+ * A FIELD THAT IS THE WHOLE PICTURE NEEDS SOMETHING IN IT TO MOVE.
+ *
+ * `spotlight` and `wash` are smooth radial gradients. Behind a photograph that
+ * is exactly right — they are a floor, and a floor should not compete. Standing
+ * IN PLACE of a photograph they cannot carry a camera move at all: scale a
+ * smooth gradient by thirty percent and it is the same gradient. The audit put
+ * a number on it — two samples of one shot 0.6% apart, on a push that was
+ * working perfectly. Nothing was broken; there was simply nothing in the frame
+ * with an edge on it for the push to move.
+ *
+ * So a drawn shot gets a field with STRUCTURE. Same palette, same mood, same
+ * seed — the reel does not change register, it just gains something the camera
+ * can travel over.
+ */
+const STRUCTURED = {spotlight: 'grid', wash: 'paper'};
+
+function fieldFor(line, look) {
+  return wantsPlate(line) ? look.field : (STRUCTURED[look.field] ?? look.field);
+}
+
 function wantsPlate(line) {
   return Boolean(line?.image || line?.imageCommons?.length || line?.shot?.layers?.length);
 }
@@ -1261,7 +1282,7 @@ function planContinuation({line, index, part, fragment, frames: measured, rand, 
       // than photographed, leaving these off sent the template to its built-in
       // default — so a cut inside one scene changed the colour of the world.
       // Two shots of the same moment came back one blue and one red.
-      field: look.field,
+      field: fieldFor(line, look),
       fieldColours: look.fieldColours,
       caption: lines,
       ...captionPlacement({shot: line.shot, rand, durationInFrames: frames, lines}),
@@ -1393,7 +1414,7 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
       titleSize: number ? 230 : 124,
       creep: round(between(rand, [1.04, 1.1]), 3),
       accent: look.accent,
-      field: look.field,
+      field: fieldFor(line, look),
       fieldColours: look.fieldColours,
       ...motifParams(motif, {rand, from: titleFrame + 8, accent: look.accent, stops: line.stops}),
     };
@@ -1447,7 +1468,11 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
     const hasSlot = scene.params.countTo !== undefined || scene.params.spinTo !== undefined;
     if (rand() > 0.45) {
       Object.assign(scene.params, {
-        mark: look.mark,
+        // A BOX AROUND NOTHING IS NOT AN ANNOTATION. The tall box frames a
+        // number slot; with no slot to frame, an empty rectangle under the
+        // footer reads as a stray form field somebody forgot to fill in. What
+        // belongs under a block of type is a rule.
+        mark: hasSlot ? look.mark : 'underline',
         markX: 260,
         markY: hasSlot ? 820 : 1160,
         markWidth: 560,
@@ -1492,6 +1517,8 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
       bgScale: round(between(rand, [1.05, 1.12]), 3),
       scrim: round(between(rand, [0.18, 0.32])),
       focusPx: Math.round(between(rand, [6, 11])),
+      field: fieldFor(line, look),
+      fieldColours: look.fieldColours,
       itemWidth: 520 + Math.round(rand() * 60),
       itemFrames: items.map((_, i) => 10 + i * (36 + Math.round(rand() * 14))),
       items,
@@ -1579,7 +1606,7 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
       // these when its layers came back empty — and it is the difference
       // between a drawn shot that belongs to this reel and a default one that
       // belongs to no reel at all.
-      field: look.field,
+      field: fieldFor(line, look),
       fieldColours: look.fieldColours,
       ...motifParams(motif, {rand, from: 18 + Math.round(rand() * 14), accent: look.accent, stops: line.stops}),
     };
