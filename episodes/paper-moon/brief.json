@@ -1,0 +1,15 @@
+{
+  "id": "paper-moon",
+  "title": "Kağıdı 42 kez katla",
+  "mood": "cold-noir",
+  "$note": "SHORTS — tamamen kod. Tek fotoğraf yok. Her kare Remotion'da çizilir.",
+  "lines": [
+    {"slug": "hook",  "vo": "Bir kağıdı kırk iki kez katlayabilseydin, Ay'a ulaşırdın."},
+    {"slug": "why",   "vo": "Saçma geliyor, çünkü beynin toplar. Katlamak ise çarpar."},
+    {"slug": "start", "vo": "Kağıt, bir milimetrenin onda biri. Katla: iki katı."},
+    {"slug": "ten",   "vo": "On katlamada on santim. Yirmide yüz metre."},
+    {"slug": "space", "vo": "Otuz katlamada yüz yedi kilometre. Uzaydasın."},
+    {"slug": "moon",  "vo": "Kırk ikide dört yüz kırk bin kilometre. Ay orada."},
+    {"slug": "twist", "vo": "Ama katlayamazsın. Dünya rekoru on iki kat."}
+  ]
+}

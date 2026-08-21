@@ -1,0 +1,331 @@
+{
+  "$comment": "MEASURED from vo.mp3, not estimated. The planner cuts every scene to these windows.",
+  "how": "exact",
+  "provider": "espeak",
+  "audio": "audio/vo.wav",
+  "duration": 30.155555555555555,
+  "wordsHow": "measured",
+  "lines": [
+    {
+      "slug": "hook",
+      "text": "Bir kağıdı kırk iki kez katlayabilseydin, Ay'a ulaşırdın.",
+      "start": 0,
+      "end": 4.373,
+      "words": [
+        {
+          "text": "Bir",
+          "start": 0,
+          "end": 0.13
+        },
+        {
+          "text": "kağıdı",
+          "start": 0.13,
+          "end": 0.66
+        },
+        {
+          "text": "kırk",
+          "start": 0.66,
+          "end": 0.87
+        },
+        {
+          "text": "iki",
+          "start": 0.87,
+          "end": 1.32
+        },
+        {
+          "text": "kez",
+          "start": 1.32,
+          "end": 1.52
+        },
+        {
+          "text": "katlayabilseydin,",
+          "start": 1.52,
+          "end": 2.83
+        },
+        {
+          "text": "Ay'a",
+          "start": 2.83,
+          "end": 3.99
+        },
+        {
+          "text": "ulaşırdın.",
+          "start": 3.99,
+          "end": 4.373
+        }
+      ]
+    },
+    {
+      "slug": "why",
+      "text": "Saçma geliyor, çünkü beynin toplar. Katlamak ise çarpar.",
+      "start": 4.373,
+      "end": 9.357,
+      "words": [
+        {
+          "text": "Saçma",
+          "start": 4.753,
+          "end": 4.953
+        },
+        {
+          "text": "geliyor,",
+          "start": 4.953,
+          "end": 5.213
+        },
+        {
+          "text": "çünkü",
+          "start": 5.213,
+          "end": 5.693
+        },
+        {
+          "text": "beynin",
+          "start": 5.693,
+          "end": 6.123
+        },
+        {
+          "text": "toplar.",
+          "start": 6.123,
+          "end": 7.203
+        },
+        {
+          "text": "Katlamak",
+          "start": 7.203,
+          "end": 8.643
+        },
+        {
+          "text": "ise",
+          "start": 8.643,
+          "end": 8.973
+        },
+        {
+          "text": "çarpar.",
+          "start": 8.973,
+          "end": 9.357
+        }
+      ]
+    },
+    {
+      "slug": "start",
+      "text": "Kağıt, bir milimetrenin onda biri. Katla: iki katı.",
+      "start": 9.357,
+      "end": 13.976,
+      "words": [
+        {
+          "text": "Kağıt,",
+          "start": 9.737,
+          "end": 10.107
+        },
+        {
+          "text": "bir",
+          "start": 10.107,
+          "end": 10.467
+        },
+        {
+          "text": "milimetrenin",
+          "start": 10.467,
+          "end": 10.897
+        },
+        {
+          "text": "onda",
+          "start": 10.897,
+          "end": 11.947
+        },
+        {
+          "text": "biri.",
+          "start": 11.947,
+          "end": 12.727
+        },
+        {
+          "text": "Katla:",
+          "start": 12.727,
+          "end": 13.237
+        },
+        {
+          "text": "iki",
+          "start": 13.237,
+          "end": 13.657
+        },
+        {
+          "text": "katı.",
+          "start": 13.657,
+          "end": 13.976
+        }
+      ]
+    },
+    {
+      "slug": "ten",
+      "text": "On katlamada on santim. Yirmide yüz metre.",
+      "start": 13.976,
+      "end": 17.774,
+      "words": [
+        {
+          "text": "On",
+          "start": 14.356,
+          "end": 14.546
+        },
+        {
+          "text": "katlamada",
+          "start": 14.546,
+          "end": 15.626
+        },
+        {
+          "text": "on",
+          "start": 15.626,
+          "end": 15.816
+        },
+        {
+          "text": "santim.",
+          "start": 15.816,
+          "end": 16.356
+        },
+        {
+          "text": "Yirmide",
+          "start": 16.356,
+          "end": 17.046
+        },
+        {
+          "text": "yüz",
+          "start": 17.046,
+          "end": 17.416
+        },
+        {
+          "text": "metre.",
+          "start": 17.416,
+          "end": 17.774
+        }
+      ]
+    },
+    {
+      "slug": "space",
+      "text": "Otuz katlamada yüz yedi kilometre. Uzaydasın.",
+      "start": 17.774,
+      "end": 21.82,
+      "words": [
+        {
+          "text": "Otuz",
+          "start": 18.154,
+          "end": 18.404
+        },
+        {
+          "text": "katlamada",
+          "start": 18.404,
+          "end": 19.284
+        },
+        {
+          "text": "yüz",
+          "start": 19.284,
+          "end": 20.064
+        },
+        {
+          "text": "yedi",
+          "start": 20.064,
+          "end": 20.464
+        },
+        {
+          "text": "kilometre.",
+          "start": 20.464,
+          "end": 21.504
+        },
+        {
+          "text": "Uzaydasın.",
+          "start": 21.504,
+          "end": 21.82
+        }
+      ]
+    },
+    {
+      "slug": "moon",
+      "text": "Kırk ikide dört yüz kırk bin kilometre. Ay orada.",
+      "start": 21.82,
+      "end": 26.32,
+      "words": [
+        {
+          "text": "Kırk",
+          "start": 22.2,
+          "end": 22.42
+        },
+        {
+          "text": "ikide",
+          "start": 22.42,
+          "end": 22.64
+        },
+        {
+          "text": "dört",
+          "start": 22.64,
+          "end": 23.21
+        },
+        {
+          "text": "yüz",
+          "start": 23.21,
+          "end": 23.5
+        },
+        {
+          "text": "kırk",
+          "start": 23.5,
+          "end": 23.81
+        },
+        {
+          "text": "bin",
+          "start": 23.81,
+          "end": 24.65
+        },
+        {
+          "text": "kilometre.",
+          "start": 24.65,
+          "end": 25.02
+        },
+        {
+          "text": "Ay",
+          "start": 25.02,
+          "end": 26
+        },
+        {
+          "text": "orada.",
+          "start": 26,
+          "end": 26.32
+        }
+      ]
+    },
+    {
+      "slug": "twist",
+      "text": "Ama katlayamazsın. Dünya rekoru on iki kat.",
+      "start": 26.32,
+      "end": 30.156,
+      "words": [
+        {
+          "text": "Ama",
+          "start": 26.7,
+          "end": 26.94
+        },
+        {
+          "text": "katlayamazsın.",
+          "start": 26.94,
+          "end": 27.54
+        },
+        {
+          "text": "Dünya",
+          "start": 27.54,
+          "end": 27.96
+        },
+        {
+          "text": "rekoru",
+          "start": 27.96,
+          "end": 28.75
+        },
+        {
+          "text": "on",
+          "start": 28.75,
+          "end": 29.5
+        },
+        {
+          "text": "iki",
+          "start": 29.5,
+          "end": 29.74
+        },
+        {
+          "text": "kat.",
+          "start": 29.74,
+          "end": 30.156
+        }
+      ]
+    }
+  ]
+}

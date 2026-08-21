@@ -243,3 +243,39 @@ fark etmez.
 - her altyazı ipucu tabandan %22'nin üstünde
 - üç ardışık sahnenin üçü birden grafik taşımaz
 - en uzun çekim / en kısa çekim ≤ 2.5
+
+
+---
+
+## 10. TAMAMEN ÇİZİLEN SHORT — ikinci şekil [CANLI]
+
+`engine/shorts/` — konusu bir SAYI olan reel için. Fotoğraf yok, tedarik sorunu
+yok: her kare render anında çizilir. Üstel büyümenin fotoğrafı yoktur, ve
+kağıt fotoğrafı önünde ikiye katlanan bir bardan daha az şey söyler.
+
+`node scripts/render-short.mjs --episode=<id>`
+
+### Bu şeklin kendi kanunları
+
+1. **HOOK'TA ALTYAZI KAPALI.** Açılış aynı cümleyi zaten display tipografiyle
+   kuruyor; ikisi birden aynı kareyi iki farklı puntoda okutmaya çalışır ve
+   kimse bitirmez.
+2. **SAYAÇ, ANLATICI SAYIYI SÖYLERKEN ORAYA VARIR.** Sahne boyunca tırmanan bir
+   sayaç, "on katlamada" denirken 18'i gösteriyordu. Tırmanış sahnenin %70'inde
+   biter ve TUTAR; son üçte bir, adı geçen rakamın üstünde konuşulur. Konusu
+   aritmetik olan bir videoda, altındaki cümleyle çelişen bir sayı, bedeli olan
+   tek hatadır.
+3. **ETİKET NE DİYORSA KALINLIK ONUN.** `thickness(shown)`, `thickness(folds)`
+   değil: kesirli kat sayısından okunan kalınlık "30 KAT" başlığının altına
+   29,6 katın rakamını koyuyordu.
+4. **KİLOMETRE TAŞI GEÇİLDİĞİNDE KALIR.** Yalnız sayaç tam o rakamı gösterirken
+   çizilen bir rozet, yavaşlayan bir tırmanışta iki kare görünür ve okunmadan
+   gider.
+5. **MESAFENİN İKİ UCU DA KADRAJDA OLACAK.** Dünya kareden çıkınca 440.000 bir
+   ölçüm değil, bir altyazı olur.
+6. **ALTYAZI `<Sequence>` İÇİNE ALINMAZ.** Sequence içinde `useCurrentFrame()`
+   sıfırdan sayar; ipuçları reel karesindeyken onları okuyan bileşen de reel
+   karesinde olmak zorundadır. Hook'u atlamak için kare numarası kullanılır.
+7. **SATIR SINIRI TAŞINIR, TAHMİN EDİLMEZ.** Anlatıcı satır arasında 11 kare
+   boşluk bırakıyor; hızlı okumaya dayanacak kadar gevşek her eşik, iki cümleyi
+   birleştirecek kadar da gevşektir. `line` indeksi kelimeyle birlikte gider.
