@@ -1,0 +1,17 @@
+{
+  "score": "audio/score.wav",
+  "base": 0.1,
+  "ratio": 2,
+  "folds": 42,
+  "end": 900,
+  "title": {
+    "pre": "bir kağıdı",
+    "big": "42",
+    "post": "kez katlarsan"
+  },
+  "close": {
+    "pre": "ama katlayamazsın",
+    "big": "12",
+    "post": "dünya rekoru"
+  }
+}
