@@ -279,3 +279,50 @@ kağıt fotoğrafı önünde ikiye katlanan bir bardan daha az şey söyler.
 7. **SATIR SINIRI TAŞINIR, TAHMİN EDİLMEZ.** Anlatıcı satır arasında 11 kare
    boşluk bırakıyor; hızlı okumaya dayanacak kadar gevşek her eşik, iki cümleyi
    birleştirecek kadar da gevşektir. `line` indeksi kelimeyle birlikte gider.
+
+
+### Şablonun kendisi
+
+Motor **altı şekil** bilir, bölüm **konuyu** verir. İlk sürümde "42" ve
+"440.000" bileşenlerin içine yazılıydı — bu onu bir hat değil, bir video yapar:
+ikinci konu ikinci bileşen seti demektir ve her setin içinde henüz bulunmamış
+hatanın kendi kopyası olur.
+
+| şekil | ne yapar | parametreleri |
+|---|---|---|
+| `hook` | iddia, sert giriş, fade yok | `pre`, `big`, `post`, `punch` |
+| `curves` | iki eğri kendini çizer, yavaş vs hızlı | `slow`, `fast` |
+| `fold` | 3B nesne ikiye katlanır | `base`, `ratio`, `steps` |
+| `climb` | sayaç + bar, söylenen rakama iner | `from`, `to`, `base`, `ratio`, `marks[]` |
+| `scale` | geri çekilme; sayıya yanında duracak bir şey verir | `big`, `unit` |
+| `stamp` | yorumlara gönderen düzeltme | `pre`, `big`, `post` |
+
+`base` ve `ratio` bunu katlanan kağıttan çıkarır: `ratio: 2` ikiye katlanma,
+`ratio: 1.01` günde %1, `ratio: 1.07` bileşik faiz. Değer her zaman
+`base × ratio^n`.
+
+**Bilinmeyen bir şekil sessizce atlanmaz** — kırmızı bir kart çizilir. v1'in
+on üçüncü kanunu, aynı sebeple: sessizce düşen bir sahne otuz saniyelik reel'i
+yirmi altıya indirir ve ses tutmayana kadar kimse fark etmez.
+
+---
+
+## 11. SES TASARIMI [CANLI]
+
+1. **KESİM DUYULUR.** Her kesimin altına alçak bir vuruş. Bir kesim ile bir
+   sıçrama arasındaki fark budur: kulak, gözün gördüğünü onaylar. Vuruşlar
+   kurgunun ZATEN sahip olduğu sınırlara oturur; kendi ızgarasına konan bir
+   vuruş, resmin uymadığı bir metronomdur.
+2. **RISER KESİMDE BİTER, SONRASINDA DEĞİL.** Payoff'tan 1.5 saniye önce başlar
+   ve tam kesimde biter: beklentiyi o kurar, kesim onu karşılar. İnişini aşan
+   bir riser, kurgu parçası değil ses efektidir.
+3. **YATAK KONUŞMANIN ALTINDAN ÇEKİLİR.** Sabit seviyede tutulan oda tonu,
+   anlatımla KAVGA eder; herkesin bulduğu çözüm onu duyulmaz hâle gelene kadar
+   kısmaktır, ki o zaman da işini yapmıyordur. Konuşurken %45'e iner, boşlukta
+   geri çıkar — kulağın bir şey istediği yer tam orasıdır.
+4. **REEL SESSİZLİKLE BİTER.** Son 24 karede yatak söner. Yatağı hâlâ çalarken
+   duran bir short kesilmiş gibi gelir; sessizliğe inen biten gibi.
+5. **HİÇBİR SES DOSYASI İNDİRİLMEZ.** `make-sfx.mjs` vuruşu ve riser'ı üretir:
+   grain neden çiziliyorsa aynı sebeple. Bedava örnek kütüphanesi bir atıf
+   dizesi, değişen bir lisans ve videonun susturulma riskidir — izleyicinin
+   fark etmemesi gereken bir ses için.

@@ -2,14 +2,96 @@
   "id": "paper-moon",
   "title": "Kağıdı 42 kez katla",
   "mood": "cold-noir",
-  "$note": "SHORTS — tamamen kod. Tek fotoğraf yok. Her kare Remotion'da çizilir.",
+  "$note": "SHORTS — tamamen kod. Konu motorda DEĞİL, burada: shots[i] i. satırın hangi şekli aldığını söyler.",
   "lines": [
-    {"slug": "hook",  "vo": "Bir kağıdı kırk iki kez katlayabilseydin, Ay'a ulaşırdın."},
-    {"slug": "why",   "vo": "Saçma geliyor, çünkü beynin toplar. Katlamak ise çarpar."},
-    {"slug": "start", "vo": "Kağıt, bir milimetrenin onda biri. Katla: iki katı."},
-    {"slug": "ten",   "vo": "On katlamada on santim. Yirmide yüz metre."},
-    {"slug": "space", "vo": "Otuz katlamada yüz yedi kilometre. Uzaydasın."},
-    {"slug": "moon",  "vo": "Kırk ikide dört yüz kırk bin kilometre. Ay orada."},
-    {"slug": "twist", "vo": "Ama katlayamazsın. Dünya rekoru on iki kat."}
+    {
+      "slug": "hook",
+      "vo": "Bir kağıdı kırk iki kez katlayabilseydin, Ay'a ulaşırdın."
+    },
+    {
+      "slug": "why",
+      "vo": "Saçma geliyor, çünkü beynin toplar. Katlamak ise çarpar."
+    },
+    {
+      "slug": "start",
+      "vo": "Kağıt, bir milimetrenin onda biri. Katla: iki katı."
+    },
+    {
+      "slug": "ten",
+      "vo": "On katlamada on santim. Yirmide yüz metre."
+    },
+    {
+      "slug": "space",
+      "vo": "Otuz katlamada yüz yedi kilometre. Uzaydasın."
+    },
+    {
+      "slug": "moon",
+      "vo": "Kırk ikide dört yüz kırk bin kilometre. Ay orada."
+    },
+    {
+      "slug": "twist",
+      "vo": "Ama katlayamazsın. Dünya rekoru on iki kat."
+    }
+  ],
+  "shots": [
+    {
+      "kind": "hook",
+      "pre": "bir kağıdı",
+      "big": "42",
+      "post": "kez katla",
+      "punch": "ay'a çıkarsın"
+    },
+    {
+      "kind": "curves",
+      "slow": "beynin toplar",
+      "fast": "katlamak çarpar"
+    },
+    {
+      "kind": "fold",
+      "base": 0.1,
+      "ratio": 2,
+      "steps": 3
+    },
+    {
+      "kind": "climb",
+      "from": 3,
+      "to": 20,
+      "base": 0.1,
+      "ratio": 2,
+      "marks": [
+        {
+          "at": 10,
+          "label": "10 kat · bir el"
+        },
+        {
+          "at": 20,
+          "label": "20 kat · gökdelen"
+        }
+      ]
+    },
+    {
+      "kind": "climb",
+      "from": 20,
+      "to": 30,
+      "base": 0.1,
+      "ratio": 2,
+      "marks": [
+        {
+          "at": 30,
+          "label": "30 kat · uzay sınırı"
+        }
+      ]
+    },
+    {
+      "kind": "scale",
+      "big": "440.000",
+      "unit": "kilometre"
+    },
+    {
+      "kind": "stamp",
+      "pre": "ama katlayamazsın",
+      "big": "12",
+      "post": "dünya rekoru"
+    }
   ]
 }

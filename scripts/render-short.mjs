@@ -22,7 +22,38 @@ async function main() {
   const dir = episodeDir(id);
   const voice = JSON.parse(await readFile(path.join(dir, 'audio', 'vo.json'), 'utf8'));
 
-  const marks = [0, ...voice.lines.map((line) => Math.round(line.end * FPS))];
+  /**
+   * THE BRIEF SAYS WHAT EACH LINE IS; THE VOICE SAYS HOW LONG IT LASTS.
+   *
+   * One shot per spoken line, and the SHAPE of that shot is written by the
+   * author rather than derived. This is v1's law two, one hat along: the engine
+   * knows six shapes, the episode knows its own subject, and nothing in
+   * `engine/shorts/` has ever heard of paper or the Moon.
+   */
+  const brief = JSON.parse(await readFile(path.join(dir, 'brief.json'), 'utf8'));
+  const shots = brief.shots ?? [];
+  const bounds = [0, ...voice.lines.map((line) => Math.round(line.end * FPS))];
+  const scenes = voice.lines.map((line, index) => ({
+    spec: shots[index] ?? {kind: 'missing'},
+    from: bounds[index],
+    to: bounds[index + 1],
+  }));
+
+  /**
+   * THE BEATS SIT ON THE CUTS THE EDIT ALREADY HAS.
+   *
+   * A thump on a grid of its own is a metronome the picture does not follow.
+   * These land on scene boundaries, and the riser is placed to FINISH on the
+   * one boundary worth anticipating — the payoff — so it creates the
+   * expectation that cut then satisfies.
+   */
+  const payoff = scenes.findIndex((scene) => scene.spec.kind === 'scale');
+  const beats = [];
+  for (const [index, scene] of scenes.entries()) {
+    if (index === 0) continue;
+    beats.push({at: scene.from - 1, kind: 'thump'});
+  }
+  if (payoff > 0) beats.push({at: Math.max(0, scenes[payoff].from - Math.round(1.5 * FPS)), kind: 'riser'});
   /**
    * EVERY WORD CARRIES THE LINE IT CAME FROM.
    *
@@ -44,11 +75,26 @@ async function main() {
       })),
   );
 
-  const bed = (await exists(path.join(dir, 'audio', 'bed.wav'))) ? 'audio/bed.wav' : undefined;
-  const data = {audio: voice.audio, bed, bedGain: 0.1, marks, words};
+  const has = async (name) => ((await exists(path.join(dir, 'audio', name))) ? `audio/${name}` : undefined);
+  const data = {
+    audio: voice.audio,
+    bed: await has('bed.wav'),
+    bedGain: 0.13,
+    thump: await has('thump.wav'),
+    riser: await has('riser.wav'),
+    scenes,
+    words,
+    beats,
+    end: bounds[bounds.length - 1],
+  };
   await writeFile(path.join(dir, 'short.json'), `${JSON.stringify(data, null, 2)}\n`, 'utf8');
 
-  console.log(`${id}: ${marks.length - 1} scene(s), ${words.length} word(s), ${(marks.at(-1) / FPS).toFixed(1)}s`);
+  const unknown = scenes.filter((scene) => !scene.spec || scene.spec.kind === 'missing');
+  if (unknown.length) console.log(`⚠ ${unknown.length} line(s) have no shot in the brief — they render as a red card`);
+  console.log(
+    `${id}: ${scenes.length} scene(s) [${scenes.map((s) => s.spec.kind).join(', ')}], ` +
+      `${words.length} word(s), ${beats.length} beat(s), ${(data.end / FPS).toFixed(1)}s`,
+  );
   if (args.plan) return;
 
   const serveUrl = await bundle({

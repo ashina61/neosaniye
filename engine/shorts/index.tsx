@@ -3,7 +3,7 @@ import {Composition, registerRoot} from 'remotion';
 import {Short, type ShortData} from './Short';
 
 type Props = {data: ShortData};
-const empty: ShortData = {marks: [0, 30], words: []};
+const empty: ShortData = {scenes: [], words: [], end: 30};
 
 const Root: React.FC = () => (
   <Composition
@@ -15,7 +15,7 @@ const Root: React.FC = () => (
     height={1920}
     defaultProps={{data: empty}}
     calculateMetadata={({props}: {props: Props}) => ({
-      durationInFrames: Math.max(2, props.data.marks[props.data.marks.length - 1]),
+      durationInFrames: Math.max(2, props.data.end),
     })}
   />
 );

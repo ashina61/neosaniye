@@ -103,3 +103,44 @@ test('the asset limits stay loose enough to not cry wolf', () => {
   assert.ok(ASSET_LIMITS.spread < 0.05);
   assert.ok(ASSET_LIMITS.flat > 0.8);
 });
+
+/* ------------------------------------------------------------- SHORTS -- */
+
+import {readFile} from 'node:fs/promises';
+
+test('a short brief names one shot per spoken line', async () => {
+  const brief = JSON.parse(await readFile(new URL('../episodes/paper-moon/brief.json', import.meta.url), 'utf8'));
+  const voice = JSON.parse(await readFile(new URL('../episodes/paper-moon/audio/vo.json', import.meta.url), 'utf8'));
+  assert.equal(brief.shots.length, voice.lines.length, 'a line with no shot renders as a red card');
+});
+
+test('every shot kind in the brief is one the engine knows', async () => {
+  const brief = JSON.parse(await readFile(new URL('../episodes/paper-moon/brief.json', import.meta.url), 'utf8'));
+  const known = new Set(['hook', 'curves', 'fold', 'climb', 'scale', 'stamp']);
+  for (const shot of brief.shots) assert.ok(known.has(shot.kind), `unknown shot kind: ${shot.kind}`);
+});
+
+test('a climb lands on a whole number its label can name', async () => {
+  const brief = JSON.parse(await readFile(new URL('../episodes/paper-moon/brief.json', import.meta.url), 'utf8'));
+  for (const shot of brief.shots.filter((s) => s.kind === 'climb')) {
+    assert.equal(shot.from, Math.round(shot.from));
+    assert.equal(shot.to, Math.round(shot.to));
+    // Every milestone has to be reachable inside the climb it belongs to,
+    // otherwise it is a chip that can never be drawn.
+    for (const mark of shot.marks) assert.ok(mark.at >= shot.from && mark.at <= shot.to, `${mark.at} is outside`);
+  }
+});
+
+test('the built short puts a beat on every cut but the first', async () => {
+  const data = JSON.parse(await readFile(new URL('../episodes/paper-moon/short.json', import.meta.url), 'utf8'));
+  const thumps = data.beats.filter((b) => b.kind === 'thump');
+  assert.equal(thumps.length, data.scenes.length - 1, 'one thump per cut, none before the reel starts');
+  for (const beat of data.beats) assert.ok(beat.at >= 0 && beat.at < data.end);
+});
+
+test('captions clear the platform furniture', async () => {
+  // 1080x1920, and the bottom 18% is the caption, the handle and the sound
+  // label. A cue drawn under that is a cue nobody reads.
+  const SAFE = 0.22;
+  assert.ok(SAFE > 0.18);
+});

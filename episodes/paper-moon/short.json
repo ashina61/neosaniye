@@ -1,16 +1,97 @@
 {
   "audio": "audio/vo.wav",
   "bed": "audio/bed.wav",
-  "bedGain": 0.1,
-  "marks": [
-    0,
-    131,
-    281,
-    419,
-    533,
-    655,
-    790,
-    905
+  "bedGain": 0.13,
+  "thump": "audio/thump.wav",
+  "riser": "audio/riser.wav",
+  "scenes": [
+    {
+      "spec": {
+        "kind": "hook",
+        "pre": "bir kağıdı",
+        "big": "42",
+        "post": "kez katla",
+        "punch": "ay'a çıkarsın"
+      },
+      "from": 0,
+      "to": 131
+    },
+    {
+      "spec": {
+        "kind": "curves",
+        "slow": "beynin toplar",
+        "fast": "katlamak çarpar"
+      },
+      "from": 131,
+      "to": 281
+    },
+    {
+      "spec": {
+        "kind": "fold",
+        "base": 0.1,
+        "ratio": 2,
+        "steps": 3
+      },
+      "from": 281,
+      "to": 419
+    },
+    {
+      "spec": {
+        "kind": "climb",
+        "from": 3,
+        "to": 20,
+        "base": 0.1,
+        "ratio": 2,
+        "marks": [
+          {
+            "at": 10,
+            "label": "10 kat · bir el"
+          },
+          {
+            "at": 20,
+            "label": "20 kat · gökdelen"
+          }
+        ]
+      },
+      "from": 419,
+      "to": 533
+    },
+    {
+      "spec": {
+        "kind": "climb",
+        "from": 20,
+        "to": 30,
+        "base": 0.1,
+        "ratio": 2,
+        "marks": [
+          {
+            "at": 30,
+            "label": "30 kat · uzay sınırı"
+          }
+        ]
+      },
+      "from": 533,
+      "to": 655
+    },
+    {
+      "spec": {
+        "kind": "scale",
+        "big": "440.000",
+        "unit": "kilometre"
+      },
+      "from": 655,
+      "to": 790
+    },
+    {
+      "spec": {
+        "kind": "stamp",
+        "pre": "ama katlayamazsın",
+        "big": "12",
+        "post": "dünya rekoru"
+      },
+      "from": 790,
+      "to": 905
+    }
   ],
   "words": [
     {
@@ -331,5 +412,36 @@
       "from": 892,
       "to": 905
     }
-  ]
+  ],
+  "beats": [
+    {
+      "at": 130,
+      "kind": "thump"
+    },
+    {
+      "at": 280,
+      "kind": "thump"
+    },
+    {
+      "at": 418,
+      "kind": "thump"
+    },
+    {
+      "at": 532,
+      "kind": "thump"
+    },
+    {
+      "at": 654,
+      "kind": "thump"
+    },
+    {
+      "at": 789,
+      "kind": "thump"
+    },
+    {
+      "at": 610,
+      "kind": "riser"
+    }
+  ],
+  "end": 905
 }
