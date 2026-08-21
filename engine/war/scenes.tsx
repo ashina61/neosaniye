@@ -531,8 +531,11 @@ export const Card: React.FC<{kicker: string; big: string; under: string; colour?
   const rule = ease(frame, 14, 34);
 
   return (
-    <AbsoluteFill style={{backgroundColor: '#07060a', justifyContent: 'center', alignItems: 'center'}}>
-      <div style={{textAlign: 'center', fontFamily: FONT}}>
+    <AbsoluteFill style={{justifyContent: 'center', alignItems: 'center'}}>
+      {/* A scrim, not a background. The map underneath stays legible, which is
+          the whole reason the number means anything by the time it arrives. */}
+      <AbsoluteFill style={{background: 'rgba(10,8,4,0.72)'}} />
+      <div style={{textAlign: 'center', fontFamily: FONT, position: 'relative'}}>
         <div
           style={{
             fontFamily: MONO,
