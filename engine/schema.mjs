@@ -187,6 +187,41 @@ export function validateEpisodeConfig(config) {
     }
   }
 
+  /**
+   * ROOM TONE — the same rules as the narration, because it is the same kind
+   * of thing: one file, playing under the whole reel, living in the episode.
+   */
+  if (c.bed !== undefined) {
+    if (typeof c.bed !== 'string' || !c.bed.trim()) push('bed: must be a non-empty path when present');
+    else if (c.bed.startsWith('/') || c.bed.includes('..')) push(`bed: must be episode-relative (got "${c.bed}")`);
+  }
+  if (c.bedGain !== undefined && (typeof c.bedGain !== 'number' || c.bedGain < 0 || c.bedGain > 1)) {
+    push('bedGain: must be a number between 0 and 1');
+  }
+
+  /**
+   * SUBTITLES ARE THE ONE THING COUNTED IN REEL FRAMES.
+   *
+   * Everything else in this config is scene-relative, and law eleven exists
+   * because mixing the two silently is how a caption ends up under the wrong
+   * picture. This is the exception and it is validated as one: `from`/`to` are
+   * absolute frames of the finished reel, because the voice they were measured
+   * against does not restart at a cut either.
+   */
+  if (c.subtitles !== undefined) {
+    if (!Array.isArray(c.subtitles)) push('subtitles: must be an array when present');
+    else
+      c.subtitles.forEach((cue, index) => {
+        const at = `subtitles[${index}]`;
+        if (typeof cue?.text !== 'string' || !cue.text.trim()) push(`${at}.text: required, non-empty string`);
+        if (typeof cue?.from !== 'number' || cue.from < 0) push(`${at}.from: required, >= 0`);
+        if (typeof cue?.to !== 'number') push(`${at}.to: required number`);
+        else if (typeof cue?.from === 'number' && cue.to <= cue.from) {
+          push(`${at}.to: ${cue.to} is not after from (${cue.from}) — a cue with no duration never shows`);
+        }
+      });
+  }
+
   if (!Array.isArray(c.scenes) || c.scenes.length === 0) {
     push('scenes: required, at least one scene');
     return problems;

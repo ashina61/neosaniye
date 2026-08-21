@@ -86,7 +86,22 @@ export const EvidenceBoard: React.FC<SceneProps> = ({scene, assets, durationInFr
 
       <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center', filter: blur > 0.4 ? `blur(${blur}px)` : undefined}}>
         {items.map((raw, index) => {
-          const [kind, primary = '', secondary = ''] = raw.split('|');
+          /**
+           * AN ITEM THAT DID NOT NAME A KIND IS NOT AN EMPTY ITEM.
+           *
+           * The planner normalises this now, but a config can be written by
+           * hand and an episode planned before that change still says just
+           * "MAVİ". Splitting blind put that word in the `kind` slot, matched
+           * nothing, and drew a card with no heading — three wordless slips of
+           * paper that passed validation and the whole test suite, because
+           * every one of them is a perfectly valid card. Drawing nothing is
+           * never the right reading of a string somebody typed.
+           */
+          const parts = raw.split('|');
+          const named = parts.length >= 2 && (parts[0] === 'card' || parts[0] === 'news' || parts[0] === 'print');
+          const kind = named ? parts[0] : 'card';
+          const primary = named ? (parts[1] ?? '') : raw;
+          const secondary = named ? parts.slice(2).join('|') : '';
           const entry = ENTRIES[index % ENTRIES.length];
           const at = frames[index] ?? 0;
           if (stepped < at) return null;

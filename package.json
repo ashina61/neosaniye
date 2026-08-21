@@ -23,7 +23,8 @@
     "assets:generate": "node scripts/generate-assets.mjs",
     "assets:commons": "node scripts/fetch-commons.mjs",
     "assets:review": "node scripts/review-assets.mjs",
-    "assets:placeholder": "node scripts/make-placeholder-assets.mjs"
+    "assets:placeholder": "node scripts/make-placeholder-assets.mjs",
+    "bed": "node scripts/make-bed.mjs"
   },
   "dependencies": {
     "@remotion/bundler": "4.0.499",
@@ -32,7 +33,8 @@
     "react": "19.1.1",
     "react-dom": "19.1.1",
     "remotion": "4.0.499",
-    "sharp": "^0.35.3"
+    "sharp": "^0.35.3",
+    "text2wav": "^0.0.14"
   },
   "devDependencies": {
     "@types/react": "19.1.10",

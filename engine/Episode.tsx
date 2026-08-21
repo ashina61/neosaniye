@@ -5,6 +5,7 @@ import {DEFAULT_LOOK, resolveAssets, sceneOffsets} from './schema';
 import {FilmLook} from './FilmLook';
 import {OnScreenText} from './OnScreenText';
 import {Transition} from './Transition';
+import {Subtitles} from './draw/Subtitles';
 import {resolveSceneType} from './sceneTypes/registry';
 
 /**
@@ -72,6 +73,13 @@ export const Episode: React.FC<{config: EpisodeConfig}> = ({config}) => {
           push the rest of the words out of step with their own pictures. */}
       {config.audio ? <Audio src={staticFile(config.audio)} /> : null}
 
+      {/* ROOM TONE, UNDER EVERYTHING, FOR THE SAME REASON.
+          A reel with only narration on it falls to absolute digital silence in
+          every gap between two sentences — and no room has ever been silent, so
+          the ear reads it as the sound dropping out rather than as a pause. Low
+          enough to be a room and not a score. */}
+      {config.bed ? <Audio src={staticFile(config.bed)} volume={config.bedGain ?? 0.16} loop /> : null}
+
       {config.scenes.map((scene, index) => (
         <Sequence
           key={scene.id}
@@ -81,6 +89,14 @@ export const Episode: React.FC<{config: EpisodeConfig}> = ({config}) => {
           <Scene scene={scene} look={look} />
         </Sequence>
       ))}
+
+      {/* AND THE CAPTIONS ON TOP OF ALL OF THEM, outside every Sequence.
+          They are measured against the narration, which is also unsequenced;
+          cutting them per scene would let each scene's rounding walk the words
+          away from the voice, a frame at a time, until the caption is a word
+          behind the mouth. Above the scenes but under nothing: a subtitle the
+          film grain sits on top of stops reading as burnt in. */}
+      <Subtitles cues={config.subtitles} />
     </AbsoluteFill>
   );
 };

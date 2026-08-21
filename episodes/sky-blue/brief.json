@@ -1,0 +1,177 @@
+{
+  "id": "sky-blue",
+  "title": "Gökyüzü neden mavi görünür",
+  "mood": "cold-noir",
+  "style": "documentary photograph, available light, muted colour, fine grain, no text, no watermark",
+  "negative": "text, letters, words, watermark, logo, cartoon, cgi, painting, illustration",
+  "$note": "DRAWN EPISODE — no line carries an image. Every shot falls back to engine/draw, which is the point: this reel proves the graphics layer stands on its own with zero photographs on disk.",
+  "lines": [
+    {
+      "slug": "look-up",
+      "vo": "Yukarı bak. Gökyüzünde mavi bir şey yok — ne boya, ne cam, ne su.",
+      "kicker": "IŞIK · ATMOSFER",
+      "title": "MAVİ NEREDE?",
+      "footer": "gökyüzünde mavi bir madde yok",
+      "shot": {
+        "template": "title-slate",
+        "signature": "kart boşluğun ortasında tek başına durur ve çerçeve içeri doğru sürünür — soru sorulur, cevap verilmez",
+        "camera": {
+          "from": 1.0,
+          "to": 1.0,
+          "focus": "sharp"
+        },
+        "props": []
+      }
+    },
+    {
+      "slug": "white-light",
+      "vo": "Güneşin ışığı beyazdır. Beyaz dediğimiz şey bütün renklerin aynı anda gelmesidir.",
+      "items": [
+        "KIRMIZI",
+        "YEŞİL",
+        "MAVİ"
+      ],
+      "shot": {
+        "template": "evidence-board",
+        "signature": "üç renk adı tek tek iner ve yan yana durur — beyazın aslında bir liste olduğu, listenin kendisiyle söylenir",
+        "camera": {
+          "from": 1.0,
+          "to": 1.08,
+          "focus": "sharp"
+        },
+        "props": []
+      }
+    },
+    {
+      "slug": "scatter",
+      "vo": "Havadaki moleküller mavi ışığı kırmızıdan on altı kat fazla saçar.",
+      "kicker": "RAYLEIGH SAÇILMASI",
+      "title": "16 KAT",
+      "footer": "mavi, kırmızıdan bu kadar fazla saçılır",
+      "count": 16,
+      "shot": {
+        "template": "title-slate",
+        "signature": "sayı sıfırdan on altıya TIRMANIR — büyüklüğü okunmaz, hissedilir; anlatıcı sayıyı söylerken o hâlâ sayıyor",
+        "camera": {
+          "from": 1.0,
+          "to": 1.0,
+          "focus": "sharp"
+        },
+        "props": [
+          {
+            "kind": "plaque",
+            "text": "λ⁻⁴",
+            "size": 0.34,
+            "x": 0.5,
+            "y": 0.83,
+            "depth": 0.1,
+            "at": 0.55
+          }
+        ]
+      }
+    },
+    {
+      "slug": "everywhere",
+      "vo": "Saçılan mavi, gökyüzünün her noktasından tekrar tekrar gözüne ulaşır.",
+      "motif": "rays",
+      "shot": {
+        "template": "composite",
+        "signature": "ışınlar kareyi baştan sona tarar ve çizilen halka kendini mavinin geldiği yöne kapatır — tek hareket, her yönden geliş",
+        "camera": {
+          "from": 1.0,
+          "to": 1.18,
+          "focus": "sharp"
+        },
+        "anchor": [
+          0.5,
+          0.5
+        ],
+        "layers": [],
+        "props": [
+          {
+            "kind": "wire",
+            "text": "her yönden",
+            "shape": "circle",
+            "size": 0.46,
+            "x": 0.5,
+            "y": 0.44,
+            "depth": 0.6,
+            "at": 0.3
+          },
+          {
+            "kind": "beam",
+            "size": 0.3,
+            "x": 0.26,
+            "y": 0.0,
+            "depth": 0.35,
+            "at": 0.08,
+            "opacity": 0.55
+          }
+        ]
+      }
+    },
+    {
+      "slug": "sunset",
+      "vo": "Akşam ışık daha kalın havadan geçer; mavi yolda tükenir, kırmızı kalır.",
+      "motif": "embers",
+      "caption": [
+        "mavi yolda tükenir",
+        "kırmızı kalır"
+      ],
+      "shot": {
+        "template": "composite",
+        "signature": "kor parçacıkları aşağıdan yukarı süzülürken kare ısınır — kaybolan mavi değil, kalan kırmızı gösterilir",
+        "camera": {
+          "from": 1.12,
+          "to": 1.0,
+          "focus": "sharp"
+        },
+        "anchor": [
+          0.5,
+          0.6
+        ],
+        "layers": [],
+        "props": [
+          {
+            "kind": "card",
+            "heading": "AKŞAM",
+            "lines": [
+              "ışığın yolu uzar"
+            ],
+            "size": 0.46,
+            "x": 0.54,
+            "y": 0.6,
+            "depth": 0.8,
+            "at": 0.25,
+            "tilt": -4,
+            "enter": "right"
+          }
+        ],
+        "grade": {
+          "saturate": 0.9,
+          "contrast": 1.14,
+          "sepia": 0.34,
+          "brightness": 1.04
+        }
+      }
+    },
+    {
+      "slug": "close",
+      "vo": "Gökyüzü mavi değil. Sadece maviyi senden saklayamıyor.",
+      "kicker": "IŞIK · ATMOSFER",
+      "title": "SAKLAYAMIYOR",
+      "footer": "gökyüzü mavi değil",
+      "shot": {
+        "template": "title-slate",
+        "signature": "kapanış kartı, renk çekilmiş bir zeminin üstünde; söylenen şey bir cevap değil bir düzeltmedir ve öyle durur",
+        "camera": {
+          "from": 1.06,
+          "to": 1.0,
+          "focus": "sharp"
+        },
+        "cut": "flare",
+        "props": []
+      }
+    }
+  ]
+}

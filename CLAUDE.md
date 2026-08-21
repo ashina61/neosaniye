@@ -47,6 +47,22 @@ Ses dosyası da `vo.json` da COMMIT EDİLİR. Render taze checkout yapıyor ve
 config `audio:` diyor — dosya orada olmazsa doğrulama düşer. `vo.json` da
 gitmek zorunda: config'teki her süre ona göre kesildi.
 
+Ölçüm SATIRDA BİTMEZ. `vo.json` her satırın penceresini ve o pencerenin
+İÇİNDEKİ kelimeleri taşır; kelime sınırları da aynı kuralla bulunur — sayı
+bilinir (kelime − 1), o yüzden eşik değil sayı sorulur. Bulunamazsa kelime
+ağırlığına bölünür ve `wordsHow` bunu SÖYLER. Ölçülmüş bir altyazı ile tahmin
+edilmiş bir altyazı dosyada birbirinden ayırt edilemiyorsa, bu dosyanın var olma
+sebebi kalmaz. Ve reel'e yalnız ÖLÇÜLMÜŞ kelimeler yazılır: tahmini bir zamanı
+anlatıcının ağzının altına yakmak, izleyiciye "yaklaşık" değil "bozuk" diye
+okunur.
+
+`espeak` sağlayıcısı hiçbir şey indirmez — sentezleyici de sesler de npm
+paketinin içindedir, yani `npm ci` kurulumun tamamıdır. Sesi açıkça robotiktir
+ve bu bir TASLAK sesidir: kesimi, altyazıyı ve ritmi kimse okumaya para
+ödemeden kanıtlamak içindir. Varsayılan sağlayıcı bilerek o değildir; bir
+anlatıcının yerine sessizce robot koymak, tahminle kesilmiş reel'in sessizce
+bitmiş görünmesiyle aynı hatadır. Gerçek ses geldiği gün `--measure` onu alır.
+
 Piper satır satır okur ve klipleri BİZ birleştiririz; orada sınırlar ölçüm
 değil aritmetiktir, çünkü sessizliği koyan biziz. Kural aynı: sınır klibin
 SONUDUR.
@@ -267,6 +283,29 @@ ve sütunlar karenin altından taşar.
     kontrast artar; altın ve ihtişamda ısınır. Üç kayıt, dokuz değil — her
     sahnesi ayrı derecelenmiş bir reel'in grade'i yoktur, titremesi vardır.
 
+18. **SES DE BİR KATMANDIR VE O DA ÇİZİLİR.** Yalnız anlatım taşıyan bir reel,
+    iki cümle arasında mutlak dijital sessizliğe düşer — hiçbir odanın hiç
+    sahip olmadığı bir şeydir bu, ve kulak onu duraklama diye değil sesin
+    KESİLMESİ diye okur. `scripts/make-bed.mjs` oda tonunu bölümün seed'inden
+    ÜRETİR: grain neden yüklenmeyip çiziliyorsa aynı sebeple. Bedava müzik
+    kütüphanesi bir atıf dizesi, değişen bir lisans ve videonun susturulma
+    riski demektir — izleyicinin fark etmemesi gereken bir ses için.
+
+19. **BİR ÇEKİM FOTOĞRAFSIZ DA ÇEKİMDİR.** `title-slate` ve `evidence-board`
+    plaka gelmediğinde `Field` çizer; `composite` de artık çizer. Bu yedek
+    motorda hep vardı ve HİÇ ÇALIŞAMADI, çünkü planlayıcı rolü ZORUNLU
+    yazıyordu — resmi olmayan bölüm, çizilen yola varmadan doğrulamada
+    ölüyordu. Ayrım şudur: satır bir görsel ADIYSA dosya borçtur; hiçbir şey
+    adamadıysa borç yoktur. Bütün arka planları opsiyonel yapmak da aynı derece
+    yanlıştır — o zaman eksik plaka hiçbir yerde hata olmaz ve reel altı gri
+    kutuyla teslim edilir.
+
+20. **ELLE YAZILMIŞ BAŞLIK SAYI DEĞİLDİR.** Yazılmış bir RAKAM bütün hâlde
+    sayar ya da döner; yazılmış bir CÜMLE sadece başlıktır. `number`'ın varlığı
+    üç ayrı şeye karar veriyor — 230 punto, slot dönüşü, ve slotun etrafına
+    çizilen kutu. "MAVİ NEREDE?" üçünü birden aldı: bir soru slot makinesi gibi
+    döndü ve kendi altyazısını çizen bir kafesin içinde bitti.
+
 ## İş bölümü — bu deponun en pahalı dersi
 
 Önceki hat (`collage-factory-son`) **görsel malzemeyi üretemediği için**
@@ -312,3 +351,18 @@ tek bir karede belliydi. O yüzden BAKMAK ucuzdur:
   yığılan bir motif, kendini çizen bir yol ve tırmanan bir sayı tek karede
   hiçbir şey göstermez.
 - `npm run assets:review -- --episode=<id>` cutout'ları dama tahtasına dizer.
+
+BAKMANIN MAKİNENİN YAPABİLDİĞİ YARISI ARTIK OTOMATİK. `frames` her kareyi
+ölçer: parlaklık, kontrast, tek tonda kalan alan oranı — ve aynı sahnenin iki
+örneği arasındaki MESAFE. Kanun zaten "kamera itişinin %4'ünde duran bir çekim
+fotoğraftır" diyordu; artık bunu söyleyen bir sayı var. Bitmiş bir reel 22 MB,
+düzeltilmişi 54 MB geldi: aynı süre, aynı codec, karenin üçte ikisi düz beyaz.
+Dosya boyutu bağırıyordu ve hattın hiçbir yeri resimlere BAKMIYORDU.
+
+`validate` artık dosyanın varlığını değil, dosyayı da sorar: tek düz tonda mı,
+iki rol aynı resmi mi paylaşıyor, dikey karede yatay plaka mı. Ve asıl soruyu —
+"istenen resim mi geldi" — bir görme modeli olmadan CEVAPLAYAMADIĞINI söyler.
+Sessizce "sorun yok" demek, bir bölümün yedi assetinden beşinin alakasız
+çıkmasının yoludur: "deniz dibi" istendi, bir deniz sümüklüböceği geldi; "düz
+gri laboratuvar duvarı" istendi, bir mürekkep hokkası geldi; "koyu yeşil su"
+istendi, uzaydan Green Bay, Wisconsin geldi. Hepsi doğrulamayı geçti.

@@ -4,6 +4,7 @@ import type {SceneProps} from './types';
 import type {LayerSpec} from '../schema';
 import {CLAMP, boil, dampedSwing, focusHunt, holdKeyframes, posterizeTime, springEntrance} from '../motion';
 import {Fog, Glow} from '../draw/Glow';
+import {Field, type FieldKind} from '../draw/Field';
 import {WordStack} from '../draw/Type';
 import {Annotation, type MarkKind} from '../draw/Annotation';
 import {SceneMotif} from '../draw/Motif';
@@ -201,6 +202,24 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
 
   return (
     <AbsoluteFill style={{filter: blur > 0.4 ? `blur(${blur}px)` : undefined}}>
+      {/* NOTHING ON DISK IS STILL A SHOT.
+          `title-slate` and `evidence-board` have always drawn a field when no
+          plate arrived; a composite went black instead, which made "the reel
+          survives a missing asset" true for two templates out of seven. It is
+          the same fallback and it belongs here for the same reason — a shot
+          carrying a motif, a prop and a beam of light does not need a
+          photograph underneath to be worth cutting to, and an episode written
+          with no images at all is a legitimate episode rather than a fault. */}
+      {layers.length === 0 ? (
+        <AbsoluteFill style={{transformOrigin: origin, transform: `scale(${1 + (push - 1) * 0.12})`}}>
+          <Field
+            kind={str('field', 'wash') as FieldKind}
+            colours={list('fieldColours').length === 3 ? (list('fieldColours') as [string, string, string]) : undefined}
+            seed={scene.id}
+          />
+        </AbsoluteFill>
+      ) : null}
+
       {layers.map((layer, index) => (
         <React.Fragment key={`${layer.role}-${index}`}>
           {layer.shadow ? draw(layer, `shadow-${index}`, true) : null}

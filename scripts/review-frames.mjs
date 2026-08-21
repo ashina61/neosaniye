@@ -26,6 +26,7 @@ import {bundle} from '@remotion/bundler';
 import {renderStill, selectComposition} from '@remotion/renderer';
 import sharp from 'sharp';
 import {sceneOffsets, validateEpisodeConfig} from '../engine/schema.mjs';
+import {auditTiles, frameDistance, measureFrame} from './lib/audit.mjs';
 import {ROOT, episodeDir, loadConfig, parseArgs, pruneOptionalAssets, writeSceneOverrides} from './lib/episode.mjs';
 
 const COLS = 4;
@@ -71,6 +72,7 @@ async function main() {
     for (let i = 0; i < per; i += 1) {
       const at = (i + 1) / (per + 1);
       shots.push({
+        scene: scene.id,
         label: `${scene.id} ${Math.round(at * 100)}%`,
         frame: Math.min(composition.durationInFrames - 1, offsets[index] + Math.round(scene.durationInFrames * at)),
       });
@@ -102,13 +104,37 @@ async function main() {
   const width = CELL_W * Math.min(COLS, tiles.length);
   const height = cellH * rows;
 
+  /**
+   * AND WHILE THE TILES ARE OPEN, MEASURE THEM.
+   *
+   * The sheet is still the authority — a person looking at it is the only thing
+   * that catches a newspaper floating in front of a portico. But a person does
+   * not notice that two samples of one scene are identical, and that is exactly
+   * the defect the laws describe in words and nothing enforced.
+   */
   const composited = [];
+  const measured = [];
+  const byScene = new Map();
   for (const [index, tile] of tiles.entries()) {
+    const image = sharp(tile.file);
+    measured.push({label: tile.label, scene: tile.scene, stats: await measureFrame(image), file: tile.file});
+    const seen = byScene.get(tile.scene);
+    if (seen) seen.push(tile.file);
+    else byScene.set(tile.scene, [tile.file]);
     composited.push({
-      input: await sharp(tile.file).resize(CELL_W, cellH, {fit: 'cover'}).png().toBuffer(),
+      input: await image.clone().resize(CELL_W, cellH, {fit: 'cover'}).png().toBuffer(),
       left: (index % COLS) * CELL_W,
       top: Math.floor(index / COLS) * cellH,
     });
+  }
+
+  // One distance per scene, on its first two samples. Attached to the first
+  // sample so the warning names a tile the reader can find on the sheet.
+  for (const [scene, files] of byScene) {
+    if (files.length < 2) continue;
+    const distance = await frameDistance(sharp(files[0]), sharp(files[1]));
+    const target = measured.find((m) => m.scene === scene);
+    if (target) target.distance = distance;
   }
 
   const out = path.resolve(typeof args.out === 'string' ? args.out : path.join(ROOT, 'out', `${episodeId}-frames.png`));
@@ -119,6 +145,14 @@ async function main() {
   await rm(tmp, {recursive: true, force: true});
 
   console.log(`\n→ ${path.relative(ROOT, out)}  — ${tiles.length} still(s). Open it.`);
+
+  const notes = auditTiles(measured);
+  if (notes.length) {
+    console.log(`\n${notes.length} thing(s) to look at first:`);
+    for (const note of notes) console.log(`  ⚠ ${note}`);
+  } else {
+    console.log('\nNothing measured as blank, flat or motionless. Still look at it.');
+  }
 }
 
 main().catch((error) => {

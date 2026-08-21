@@ -35,7 +35,7 @@
 import {readFile, rm, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
-import {episodeDir, parseArgs} from './lib/episode.mjs';
+import {episodeDir, exists, parseArgs} from './lib/episode.mjs';
 import {PROP_KINDS} from '../engine/schema.mjs';
 
 const FPS = 30;
@@ -385,6 +385,39 @@ function beatOf(line, index, total) {
   if (NUMBER_WORD.test(line.vo)) return 'number';
   if ((line.vo.match(/,/g) ?? []).length >= 2) return 'list';
   return 'place';
+}
+
+/**
+ * DID THIS LINE ACTUALLY ASK FOR A PICTURE?
+ *
+ * The difference between "no image was named" and "an image was named and has
+ * not been drawn yet". The first is a graphics-first shot and must render; the
+ * second is an episode mid-production and must fail validation until the file
+ * lands. Telling them apart is the whole reason the role can be optional at
+ * all — make every background optional and a missing plate stops being an
+ * error anywhere, which is how a reel ships with six grey boxes in it.
+ */
+/**
+ * `kind|heading|body` out of whatever the brief wrote.
+ *
+ * A string that already names one of the three paper kinds is left alone. One
+ * that does not IS the heading — because a writer who typed "WITNESS" meant it
+ * to appear, and the one thing this must never do is drop it.
+ */
+const ITEM_KINDS = new Set(['card', 'news', 'print']);
+
+export function normaliseItem(raw) {
+  const text = String(raw ?? '').trim();
+  if (!text) return 'card||';
+  const parts = text.split('|');
+  if (parts.length >= 2 && ITEM_KINDS.has(parts[0].trim().toLowerCase())) {
+    return [parts[0].trim().toLowerCase(), parts[1] ?? '', parts.slice(2).join('|') ?? ''].join('|');
+  }
+  return `card|${text}|`;
+}
+
+function wantsPlate(line) {
+  return Boolean(line?.image || line?.imageCommons?.length || line?.shot?.layers?.length);
 }
 
 const DIRECTED_TEMPLATES = new Set(['composite', 'portal-zoom-reveal', 'title-slate', 'evidence-board', 'stacked-reveal', 'split-shift', 'parallax-punch']);
@@ -1031,7 +1064,16 @@ function buildStack({line, ground, rand, groundDepth, spread = 0, cutouts = fals
    */
   const depth = pieces.length ? groundDepth : round(between(rand, [0.72, 0.95]), 2);
 
-  const assets = {ground};
+  /**
+   * AND THE GROUND ITSELF IS OPTIONAL WHEN NOTHING ASKED FOR IT.
+   *
+   * Same rule as the graphics-first templates: a line that named an image owes
+   * a file, a line that named none does not. `Composite` drops a layer whose
+   * role has no asset and draws a `Field` in its place, so a shot written with
+   * `layers: []` is a DRAWN shot rather than a hole — which is what lets an
+   * episode exist with no photograph on disk at all.
+   */
+  const assets = {[wantsPlate(line) ? 'ground' : '?ground']: ground};
   const layers = [{role: 'ground', depth, anchor: 'fill'}];
   const highlights = [];
 
@@ -1214,6 +1256,13 @@ function planContinuation({line, index, part, fragment, frames: measured, rand, 
       pushTo: pullBack ? round(between(rand, [1.02, 1.1]), 2) : round(between(rand, [1.3, 1.48]), 2),
       pushEndFrame: Math.round(frames * 0.94),
       accent: look.accent,
+      // AND THE SAME DRAWN FIELD AS THE SHOT IT CONTINUES.
+      // A continuation stands in the same room; when that room is drawn rather
+      // than photographed, leaving these off sent the template to its built-in
+      // default — so a cut inside one scene changed the colour of the world.
+      // Two shots of the same moment came back one blue and one red.
+      field: look.field,
+      fieldColours: look.fieldColours,
       caption: lines,
       ...captionPlacement({shot: line.shot, rand, durationInFrames: frames, lines}),
       // A CONTINUATION IS A SHOT, NOT A SLIDE. Its params used to carry the
@@ -1284,9 +1333,18 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
     // A DIRECTED BACKGROUND, here too. These two templates are graphics-first
     // and derive their own plate, which quietly ignored an episode that had
     // named its own — the closing card asked for a file the brief never had.
+    /**
+     * AND THE BACKGROUND IS OPTIONAL HERE, because these two templates were
+     * built to stand without one — `TitleSlate` draws a `Field` when no plate
+     * arrives, `EvidenceBoard` the same. That fallback existed in the engine
+     * and could never fire: the planner wrote the role as REQUIRED, so an
+     * episode with no photograph on disk failed validation before the drawn
+     * path was ever reached. A line that named an image still gets a required
+     * role; one that named nothing gets a role the reel can do without.
+     */
     scene.assets = line?.shot?.layers?.length
       ? directedStack({shot: line.shot, rand, durationInFrames}).assets
-      : {background: backdrop};
+      : {[wantsPlate(line) ? 'background' : '?background']: backdrop};
     // A hand-written title can BE the number — "TWELVE YEARS" — and the old
     // rule only looked at the voiceover on the `number` beat, so a slate whose
     // whole point was a figure got neither the count nor the spin.
@@ -1303,8 +1361,25 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
      * So a written title spins or counts AS ITSELF. The extractor is only for
      * the line that never had one.
      */
+    /**
+     * …BUT A TITLE IS ONLY A NUMBER WHEN IT IS ONE.
+     *
+     * Taking the whole written title was right and went one step too far: EVERY
+     * hand-written title became `number`, and `number` is what decides three
+     * separate things — the 230px setting, the slot spin, and the tall box the
+     * mark draws round the slot. So a card reading "MAVİ NEREDE?" was set as a
+     * figure, rattled through a slot reel like a jackpot, and finished inside a
+     * cage that crossed out its own footer. It is a question, and none of the
+     * three had anything to do with it.
+     *
+     * The rule the comment above describes is intact: a written FIGURE spins or
+     * counts as itself, whole, never chopped by the extractor. A written phrase
+     * is simply the title.
+     */
     const number = line.title
-      ? String(line.title).toUpperCase()
+      ? bigNumber(String(line.title))
+        ? String(line.title).toUpperCase()
+        : ''
       : beat === 'number'
         ? bigNumber(line.vo)
         : '';
@@ -1355,13 +1430,28 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
       scene.params.spinReel = SPIN_DECOYS;
       scene.params.spinFrames = Math.max(14, Math.round(durationInFrames * 0.4));
     }
+    /**
+     * THE BOX GOES ROUND THE NUMBER SLOT, AND ONLY IF THERE IS ONE.
+     *
+     * Law fifteen says the middle of a slate belongs to its type, and this is
+     * the same collision from the other side. The tall box is a frame drawn
+     * round a figure that counts or spins in the title's place; `number` being
+     * merely PRESENT IN THE SENTENCE was enough to draw it, so a card whose
+     * title is a word got a 300px box across the middle of that word — the
+     * title behind it, the footer struck through, both illegible, and the reel
+     * rendered without complaint.
+     *
+     * A slot was actually drawn only if the count or the spin was set. When it
+     * was not, what belongs under the block is a rule, not a cage.
+     */
+    const hasSlot = scene.params.countTo !== undefined || scene.params.spinTo !== undefined;
     if (rand() > 0.45) {
       Object.assign(scene.params, {
         mark: look.mark,
         markX: 260,
-        markY: number ? 820 : 1160,
+        markY: hasSlot ? 820 : 1160,
         markWidth: 560,
-        markHeight: number ? 300 : 96,
+        markHeight: hasSlot ? 300 : 96,
         markFrame: Math.round(durationInFrames * 0.34),
       });
     }
@@ -1369,10 +1459,35 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
     // A DIRECTED BACKGROUND, here too. These two templates are graphics-first
     // and derive their own plate, which quietly ignored an episode that had
     // named its own — the closing card asked for a file the brief never had.
+    /**
+     * AND THE BACKGROUND IS OPTIONAL HERE, because these two templates were
+     * built to stand without one — `TitleSlate` draws a `Field` when no plate
+     * arrives, `EvidenceBoard` the same. That fallback existed in the engine
+     * and could never fire: the planner wrote the role as REQUIRED, so an
+     * episode with no photograph on disk failed validation before the drawn
+     * path was ever reached. A line that named an image still gets a required
+     * role; one that named nothing gets a role the reel can do without.
+     */
     scene.assets = line?.shot?.layers?.length
       ? directedStack({shot: line.shot, rand, durationInFrames}).assets
-      : {background: backdrop};
-    const items = (line.items ?? []).slice(0, 3);
+      : {[wantsPlate(line) ? 'background' : '?background']: backdrop};
+    /**
+     * AN ITEM IS `kind|heading|body`, AND A LINE THAT DID NOT SAY SO STILL GETS
+     * A CARD WITH ITS WORDS ON IT.
+     *
+     * The three-field form was a convention held only by the two hand-written
+     * episodes that predate the planner. Everything since passed `line.items`
+     * through untouched, so a brief that listed three plain words — exactly what
+     * "a line listing three things becomes three pieces of paper" invites —
+     * planned, validated, rendered, and produced THREE BLANK SLIPS OF PAPER: the
+     * word landed in the `kind` slot, matched no template, and left the heading
+     * empty. Nothing failed. It just came out wordless.
+     *
+     * So the shape is normalised here, where the config is written, rather than
+     * guessed at in the template: what the scene will draw is now readable in
+     * scene-config.json instead of depending on how a string splits.
+     */
+    const items = (line.items ?? []).slice(0, 3).map(normaliseItem);
     scene.params = {
       bgScale: round(between(rand, [1.05, 1.12]), 3),
       scrim: round(between(rand, [0.18, 0.32])),
@@ -1459,6 +1574,13 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
       ...captionPlacement({shot: line.shot, rand, durationInFrames, lines: line.caption ?? []}),
       captionRecedeAt: Math.round(durationInFrames * 0.72),
       accent: look.accent,
+      // THE EPISODE'S OWN FIELD, in case there is no plate to put in front of
+      // it. Costs nothing when a photograph arrives — the template only reads
+      // these when its layers came back empty — and it is the difference
+      // between a drawn shot that belongs to this reel and a default one that
+      // belongs to no reel at all.
+      field: look.field,
+      fieldColours: look.fieldColours,
       ...motifParams(motif, {rand, from: 18 + Math.round(rand() * 14), accent: look.accent, stops: line.stops}),
     };
     if (line.accentLine !== undefined) scene.params.captionAccent = line.accentLine;
@@ -1521,6 +1643,7 @@ async function main() {
    * come from a word count, and the run says so out loud — because a reel cut
    * to an estimate is a draft, and it should never quietly look finished.
    */
+  const bed = (await exists(path.join(dir, 'audio', 'bed.wav'))) ? 'audio/bed.wav' : null;
   const voice = await readFile(path.join(dir, 'audio', 'vo.json'), 'utf8')
     .then(JSON.parse)
     .catch(() => null);
@@ -1634,6 +1757,46 @@ async function main() {
     // The narration rides the whole reel, so it belongs to the episode, not to
     // any one scene. Absent until the voice script has run.
     ...(voice ? {audio: voice.audio ?? 'audio/vo.mp3'} : {}),
+    /**
+     * THE CAPTIONS BELONG TO THE REEL, NOT TO A SCENE.
+     *
+     * Same argument as the narration one line up, and it has to be the same or
+     * they drift: a caption track cut per scene would inherit each scene's
+     * rounding, and by the sixth cut the word on screen is not the word being
+     * said. These times come straight off the measured windows in vo.json, in
+     * REEL frames — the one place in this config that is not scene-relative,
+     * because the voice it belongs to is not scene-relative either.
+     *
+     * Only when the words were actually MEASURED. A weighted split is a decent
+     * estimate for laying out a caption a line at a time; burning it in word by
+     * word puts an estimate under the narrator's mouth, and a viewer reads that
+     * as the video being broken rather than as an approximation.
+     */
+    ...(voice?.wordsHow === 'measured' && voice?.lines?.some((l) => l.words?.length)
+      ? {
+          subtitles: voice.lines.flatMap((line) =>
+            (line.words ?? [])
+              // A DASH IS NOT A WORD. The script is split on whitespace, so a
+              // free-standing em dash becomes a token, gets a measured window of
+              // its own, and lands on screen as a caption reading "—".
+              .filter((word) => /[\p{L}\p{N}]/u.test(word.text))
+              .map((word) => ({
+                from: Math.round(word.start * FPS),
+                to: Math.max(Math.round(word.start * FPS) + 1, Math.round(word.end * FPS)),
+                text: word.text,
+              })),
+          ),
+        }
+      : {}),
+    /**
+     * ROOM TONE, IF THE EPISODE HAS ANY.
+     *
+     * Half of what makes a cut feel like a documentary is not in the picture.
+     * A reel carrying only narration goes to absolute digital silence between
+     * sentences, and absolute silence is a thing no room has ever had — the ear
+     * hears it as the audio dropping out rather than as a pause.
+     */
+    ...(bed ? {bed, bedGain: 0.16} : {}),
     fps: FPS,
     width: WIDTH,
     height: HEIGHT,

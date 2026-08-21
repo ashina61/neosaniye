@@ -42,8 +42,8 @@ import path from 'node:path';
 import {createRequire} from 'node:module';
 import {pathToFileURL} from 'node:url';
 import {ROOT, episodeDir, exists, parseArgs} from './lib/episode.mjs';
-import {findBoundaries, loudness, windowsFromBoundaries} from './lib/measure.mjs';
-import {joinWithGaps, writeWav} from './lib/wav.mjs';
+import {findBoundaries, loudness, windowsFromBoundaries, wordWindows} from './lib/measure.mjs';
+import {joinWithGaps, readWav, writeWav} from './lib/wav.mjs';
 
 const API = process.env.ELEVENLABS_BASE_URL || 'https://api.elevenlabs.io/v1';
 /** "Clear narrator for documentary" — overridable, because a voice is a look. */
@@ -110,9 +110,15 @@ export function windowsFor(lines, alignment) {
  * has to return audio. If it also returns an alignment, that is used, because
  * exact beats measured — but nothing depends on it any more.
  *
+ *   espeak       audio only, offline, nothing to install beyond npm ci
+ *   piper        audio only, offline, needs a binary and a voice model
  *   elevenlabs   audio + character alignment (exact)
  *   openai       audio only, measured off the samples
  *   file         no synthesis at all — measure an mp3 already on disk
+ *
+ * The default stays a paid provider on purpose. `espeak` is a draft voice and
+ * silently substituting it for a narrator would hide that — the same reason a
+ * reel cut to estimated timings has to announce itself.
  */
 const PROVIDER = process.env.VOICE_PROVIDER || (process.env.ELEVENLABS_API_KEY ? 'elevenlabs' : 'openai');
 
@@ -266,14 +272,62 @@ async function speakPiper(lines) {
 
   const gap = Number(process.env.PIPER_GAP_SECONDS ?? 0.55);
   const {samples, boundaries, duration} = joinWithGaps(clips, sampleRate, gap);
-  return {audio: writeWav(samples, sampleRate), alignment: null, boundaries, duration, extension: 'wav'};
+  return {audio: writeWav(samples, sampleRate), alignment: null, boundaries, duration, extension: 'wav', clips, sampleRate};
+}
+
+/**
+ * ESPEAK-NG, COMPILED TO WASM — the provider that needs nothing at all.
+ *
+ * No key, no account, no binary to fetch, no model to download: the synthesiser
+ * and its voices are inside an npm package, so `npm ci` is the whole install.
+ * That matters more than it sounds. Piper is free and offline too, but it still
+ * has to REACH a release page and a model host to exist, and a pipeline whose
+ * clock depends on a download is a pipeline that stops when that host has a bad
+ * day — which is the same failure the zeroth law was written against, moved one
+ * step upstream.
+ *
+ * The voice is frankly robotic. That is the trade and it should be stated
+ * plainly rather than discovered: this is the provider for a DRAFT — for
+ * proving the cut, the captions and the rhythm work before anybody pays for a
+ * read. The moment a real voice arrives, `--measure` takes it and every window
+ * is re-measured off the new file.
+ *
+ * Like piper, it reads a line at a time and WE join the clips, so the
+ * boundaries are arithmetic rather than measurement. And unlike every other
+ * provider, the per-line clips are handed back, which is what lets the words
+ * inside each line be measured instead of estimated.
+ */
+async function speakEspeak(lines) {
+  const {default: text2wav} = await import('text2wav');
+  const voice = process.env.ESPEAK_VOICE || 'en';
+  const speed = Number(process.env.ESPEAK_SPEED ?? 145);
+  const pitch = Number(process.env.ESPEAK_PITCH ?? 42);
+
+  const clips = [];
+  let sampleRate = 22_050;
+  for (const line of lines) {
+    const wav = await text2wav(line, {voice, speed, pitch});
+    const buffer = Buffer.from(wav);
+    // The synthesiser writes a normal WAV, so its own header says what rate it
+    // speaks at. Assuming one works until a voice disagrees and everything is
+    // pitched — the same trap the piper path documents.
+    sampleRate = buffer.readUInt32LE(24) || sampleRate;
+    const samples = readWav(buffer);
+    if (!samples.length) throw new Error(`espeak returned no audio for: "${line.slice(0, 40)}…"`);
+    clips.push(samples);
+  }
+
+  const gap = Number(process.env.ESPEAK_GAP_SECONDS ?? 0.5);
+  const {samples, boundaries, duration} = joinWithGaps(clips, sampleRate, gap);
+  return {audio: writeWav(samples, sampleRate), alignment: null, boundaries, duration, extension: 'wav', clips, sampleRate};
 }
 
 async function speak(text, lines) {
   if (PROVIDER === 'elevenlabs') return speakElevenLabs(text);
   if (PROVIDER === 'openai') return speakOpenAI(text);
   if (PROVIDER === 'piper') return speakPiper(lines);
-  throw new Error(`unknown VOICE_PROVIDER "${PROVIDER}" — use piper, elevenlabs, openai, or --measure on a file`);
+  if (PROVIDER === 'espeak') return speakEspeak(lines);
+  throw new Error(`unknown VOICE_PROVIDER "${PROVIDER}" — use espeak, piper, elevenlabs, openai, or --measure on a file`);
 }
 
 /**
@@ -344,6 +398,8 @@ async function main() {
   let how;
   let alignment = null;
   let known = null;
+  let clips = null;
+  let clipRate = null;
   let file = path.join(outDir, 'vo.mp3');
 
   if (args.measure) {
@@ -363,6 +419,8 @@ async function main() {
     }
     await writeFile(file, spoken.audio);
     alignment = spoken.alignment;
+    clips = spoken.clips ?? null;
+    clipRate = spoken.sampleRate ?? null;
     // A provider that JOINED the clips itself knows where the seams are. That
     // beats measuring, because measuring can only ever recover what is already
     // known here exactly.
@@ -395,6 +453,27 @@ async function main() {
   }
 
   const duration = windows[windows.length - 1].end;
+
+  /**
+   * AND NOW THE WORDS INSIDE EACH LINE.
+   *
+   * The line windows are what the planner cuts scenes to; these are what a
+   * caption arrives on. Kept in the same file because they are the same
+   * measurement at a finer grain, and a reel whose cuts and whose captions came
+   * from two different readings would drift against itself.
+   *
+   * A provider that handed back its per-line clips gets them measured. Everyone
+   * else gets the weighted split, and `wordsHow` records which — an estimate
+   * that cannot be told apart from a measurement is the thing this whole file
+   * exists to prevent.
+   */
+  const wordSets = windows.map((w, i) => wordWindows(w.text, clips?.[i] ?? null, clipRate ?? 22_050, w));
+  const wordsHow = wordSets.every((set) => set.how === 'measured')
+    ? 'measured'
+    : wordSets.some((set) => set.how === 'measured')
+      ? 'mixed'
+      : 'weighted';
+
   await writeFile(
     path.join(outDir, 'vo.json'),
     `${JSON.stringify(
@@ -404,11 +483,13 @@ async function main() {
         provider: args.measure ? 'file' : PROVIDER,
         audio: `audio/${path.basename(file)}`,
         duration,
+        wordsHow,
         lines: brief.lines.map((line, i) => ({
           slug: line.slug ?? `line-${i + 1}`,
           text: windows[i].text,
           start: Number(windows[i].start.toFixed(3)),
           end: Number(windows[i].end.toFixed(3)),
+          words: wordSets[i].words,
         })),
       },
       null,
@@ -421,6 +502,7 @@ async function main() {
   for (const [i, w] of windows.entries()) {
     console.log(`  ${String(i + 1).padStart(2)}  ${w.start.toFixed(2)}–${w.end.toFixed(2)}s  (${(w.end - w.start).toFixed(2)}s)  ${w.text.slice(0, 52)}`);
   }
+  console.log(`\nwords: ${wordsHow}${wordsHow === 'weighted' ? ' (no measurable gaps between words — captions are split by weight)' : ''}`);
   console.log(`\n→ ${path.relative(ROOT, file)} + vo.json — re-run the planner to cut to it.`);
 }
 

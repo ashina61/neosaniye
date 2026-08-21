@@ -78,6 +78,47 @@ npm run studio                          # Remotion Studio, live knobs
 npm test && npm run typecheck
 ```
 
+## The clock, and the words inside it
+
+```bash
+VOICE_PROVIDER=espeak ESPEAK_VOICE=tr npm run voice -- --episode=<id>
+npm run bed    -- --episode=<id>        # room tone, synthesised from the id
+npm run plan   -- --episode=<id>        # cuts to the measured windows
+npm run frames -- --episode=<id> --per=2
+```
+
+`espeak` needs no key, no binary and no model download — the synthesiser and its
+voices ship inside an npm package, so `npm ci` is the whole install. The voice is
+frankly robotic: it is the DRAFT provider, for proving the cut, the captions and
+the rhythm work before anybody pays for a read. It is never the default, because
+silently swapping a narrator for a robot is the same mistake as a reel cut to
+estimated timings that does not say so.
+
+`vo.json` now carries the words inside each line as well as the lines
+themselves, measured the same way and labelled `wordsHow: measured | weighted`.
+Only measured words become burnt-in captions — an estimate under the narrator's
+mouth reads as broken rather than as an approximation.
+
+## An episode with no photographs in it
+
+`title-slate`, `evidence-board` and now `composite` draw a `Field` when no plate
+arrives, so a brief whose lines name no image is a DRAWN episode rather than six
+grey boxes. `episodes/sky-blue` is one, end to end: no asset on disk at all.
+
+A line that names an image still owes a file; a line that names nothing does not.
+Making every background optional would mean a missing plate is an error nowhere,
+which is how a reel ships with holes in it.
+
+## Looking, and the half of it a machine can do
+
+`npm run frames` measures every still it samples — brightness, contrast, the
+share of the frame sitting in one tone — and the DISTANCE between two samples of
+the same scene, which is the check for "this shot does not move". `npm run
+validate` asks the same kind of question of the artwork: one flat tone, one
+picture doing two jobs, a landscape plate in a vertical frame. Neither answers
+"is this the picture that was asked for" — that needs a model, and both say so
+rather than reporting *fine*.
+
 `npm run assets:placeholder -- --episode=<id>` writes labelled stand-ins — one
 per file the config references, at the size its recipe asks for — so an episode
 can be cut and timed before its artwork exists.

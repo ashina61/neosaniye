@@ -1,0 +1,368 @@
+{
+  "$comment": "MEASURED from vo.mp3, not estimated. The planner cuts every scene to these windows.",
+  "how": "exact",
+  "provider": "espeak",
+  "audio": "audio/vo.wav",
+  "duration": 33.37850340136055,
+  "wordsHow": "measured",
+  "lines": [
+    {
+      "slug": "look-up",
+      "text": "Yukarı bak. Gökyüzünde mavi bir şey yok — ne boya, ne cam, ne su.",
+      "start": 0,
+      "end": 5.425,
+      "words": [
+        {
+          "text": "Yukarı",
+          "start": 0,
+          "end": 0.12
+        },
+        {
+          "text": "bak.",
+          "start": 0.12,
+          "end": 0.28
+        },
+        {
+          "text": "Gökyüzünde",
+          "start": 0.28,
+          "end": 0.69
+        },
+        {
+          "text": "mavi",
+          "start": 0.69,
+          "end": 1.22
+        },
+        {
+          "text": "bir",
+          "start": 1.22,
+          "end": 1.78
+        },
+        {
+          "text": "şey",
+          "start": 1.78,
+          "end": 1.92
+        },
+        {
+          "text": "yok",
+          "start": 1.92,
+          "end": 2.27
+        },
+        {
+          "text": "—",
+          "start": 2.27,
+          "end": 2.86
+        },
+        {
+          "text": "ne",
+          "start": 2.86,
+          "end": 3.78
+        },
+        {
+          "text": "boya,",
+          "start": 3.78,
+          "end": 4.11
+        },
+        {
+          "text": "ne",
+          "start": 4.11,
+          "end": 4.43
+        },
+        {
+          "text": "cam,",
+          "start": 4.43,
+          "end": 4.8
+        },
+        {
+          "text": "ne",
+          "start": 4.8,
+          "end": 5.11
+        },
+        {
+          "text": "su.",
+          "start": 5.11,
+          "end": 5.425
+        }
+      ]
+    },
+    {
+      "slug": "white-light",
+      "text": "Güneşin ışığı beyazdır. Beyaz dediğimiz şey bütün renklerin aynı anda gelmesidir.",
+      "start": 5.425,
+      "end": 11.627,
+      "words": [
+        {
+          "text": "Güneşin",
+          "start": 5.925,
+          "end": 7.115
+        },
+        {
+          "text": "ışığı",
+          "start": 7.115,
+          "end": 7.375
+        },
+        {
+          "text": "beyazdır.",
+          "start": 7.375,
+          "end": 8.025
+        },
+        {
+          "text": "Beyaz",
+          "start": 8.025,
+          "end": 8.245
+        },
+        {
+          "text": "dediğimiz",
+          "start": 8.245,
+          "end": 8.615
+        },
+        {
+          "text": "şey",
+          "start": 8.615,
+          "end": 9.155
+        },
+        {
+          "text": "bütün",
+          "start": 9.155,
+          "end": 9.565
+        },
+        {
+          "text": "renklerin",
+          "start": 9.565,
+          "end": 10.715
+        },
+        {
+          "text": "aynı",
+          "start": 10.715,
+          "end": 11.045
+        },
+        {
+          "text": "anda",
+          "start": 11.045,
+          "end": 11.235
+        },
+        {
+          "text": "gelmesidir.",
+          "start": 11.235,
+          "end": 11.627
+        }
+      ]
+    },
+    {
+      "slug": "scatter",
+      "text": "Havadaki moleküller mavi ışığı kırmızıdan on altı kat fazla saçar.",
+      "start": 11.627,
+      "end": 16.923,
+      "words": [
+        {
+          "text": "Havadaki",
+          "start": 12.127,
+          "end": 12.297
+        },
+        {
+          "text": "moleküller",
+          "start": 12.297,
+          "end": 13.007
+        },
+        {
+          "text": "mavi",
+          "start": 13.007,
+          "end": 13.427
+        },
+        {
+          "text": "ışığı",
+          "start": 13.427,
+          "end": 13.637
+        },
+        {
+          "text": "kırmızıdan",
+          "start": 13.637,
+          "end": 14.217
+        },
+        {
+          "text": "on",
+          "start": 14.217,
+          "end": 14.387
+        },
+        {
+          "text": "altı",
+          "start": 14.387,
+          "end": 15.347
+        },
+        {
+          "text": "kat",
+          "start": 15.347,
+          "end": 15.547
+        },
+        {
+          "text": "fazla",
+          "start": 15.547,
+          "end": 16.537
+        },
+        {
+          "text": "saçar.",
+          "start": 16.537,
+          "end": 16.923
+        }
+      ]
+    },
+    {
+      "slug": "everywhere",
+      "text": "Saçılan mavi, gökyüzünün her noktasından tekrar tekrar gözüne ulaşır.",
+      "start": 16.923,
+      "end": 22.643,
+      "words": [
+        {
+          "text": "Saçılan",
+          "start": 17.423,
+          "end": 18.143
+        },
+        {
+          "text": "mavi,",
+          "start": 18.143,
+          "end": 18.453
+        },
+        {
+          "text": "gökyüzünün",
+          "start": 18.453,
+          "end": 19.653
+        },
+        {
+          "text": "her",
+          "start": 19.653,
+          "end": 20.483
+        },
+        {
+          "text": "noktasından",
+          "start": 20.483,
+          "end": 20.763
+        },
+        {
+          "text": "tekrar",
+          "start": 20.763,
+          "end": 20.973
+        },
+        {
+          "text": "tekrar",
+          "start": 20.973,
+          "end": 21.243
+        },
+        {
+          "text": "gözüne",
+          "start": 21.243,
+          "end": 22.253
+        },
+        {
+          "text": "ulaşır.",
+          "start": 22.253,
+          "end": 22.643
+        }
+      ]
+    },
+    {
+      "slug": "sunset",
+      "text": "Akşam ışık daha kalın havadan geçer; mavi yolda tükenir, kırmızı kalır.",
+      "start": 22.643,
+      "end": 28.776,
+      "words": [
+        {
+          "text": "Akşam",
+          "start": 23.143,
+          "end": 23.223
+        },
+        {
+          "text": "ışık",
+          "start": 23.223,
+          "end": 23.833
+        },
+        {
+          "text": "daha",
+          "start": 23.833,
+          "end": 24.243
+        },
+        {
+          "text": "kalın",
+          "start": 24.243,
+          "end": 24.663
+        },
+        {
+          "text": "havadan",
+          "start": 24.663,
+          "end": 24.823
+        },
+        {
+          "text": "geçer;",
+          "start": 24.823,
+          "end": 25.693
+        },
+        {
+          "text": "mavi",
+          "start": 25.693,
+          "end": 26.793
+        },
+        {
+          "text": "yolda",
+          "start": 26.793,
+          "end": 27.203
+        },
+        {
+          "text": "tükenir,",
+          "start": 27.203,
+          "end": 27.943
+        },
+        {
+          "text": "kırmızı",
+          "start": 27.943,
+          "end": 28.383
+        },
+        {
+          "text": "kalır.",
+          "start": 28.383,
+          "end": 28.776
+        }
+      ]
+    },
+    {
+      "slug": "close",
+      "text": "Gökyüzü mavi değil. Sadece maviyi senden saklayamıyor.",
+      "start": 28.776,
+      "end": 33.379,
+      "words": [
+        {
+          "text": "Gökyüzü",
+          "start": 29.276,
+          "end": 29.766
+        },
+        {
+          "text": "mavi",
+          "start": 29.766,
+          "end": 29.896
+        },
+        {
+          "text": "değil.",
+          "start": 29.896,
+          "end": 30.466
+        },
+        {
+          "text": "Sadece",
+          "start": 30.466,
+          "end": 31.426
+        },
+        {
+          "text": "maviyi",
+          "start": 31.426,
+          "end": 32.336
+        },
+        {
+          "text": "senden",
+          "start": 32.336,
+          "end": 32.996
+        },
+        {
+          "text": "saklayamıyor.",
+          "start": 32.996,
+          "end": 33.379
+        }
+      ]
+    }
+  ]
+}

@@ -231,6 +231,13 @@ export type SceneSpec = {
   onScreenText?: OnScreenTextSpec[];
 };
 
+/** One spoken word and the reel frames it is spoken on. */
+export type SubtitleCue = {
+  from: number;
+  to: number;
+  text: string;
+};
+
 export type EpisodeConfig = {
   id: string;
   title?: string;
@@ -240,6 +247,12 @@ export type EpisodeConfig = {
    * the whole reel rather than inside any one scene.
    */
   audio?: string;
+  /** Room tone under the whole reel — episode-relative, like `audio`. */
+  bed?: string;
+  /** 0..1. Low: it is the room, not a score. */
+  bedGain?: number;
+  /** Word cues in REEL frames — the one thing here that is not scene-relative. */
+  subtitles?: SubtitleCue[];
   fps: number;
   width: number;
   height: number;

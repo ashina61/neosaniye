@@ -110,3 +110,79 @@ export function windowsFromBoundaries(lines, boundaries, duration) {
     end: edges[i + 1] ?? duration,
   }));
 }
+
+/**
+ * A LINE'S WINDOW, SPLIT INTO ITS WORDS.
+ *
+ * The zeroth law, one level down. A line's window is measured off the file; the
+ * words inside it were not, and a caption that arrives word by word needs to
+ * know when each one is spoken or it is a typewriter effect with no relation to
+ * the voice.
+ *
+ * Same rule as the line boundaries, for the same reason: the COUNT is known, so
+ * the count is what gets asked for. A narrator does not leave a silence between
+ * every pair of words — "the sky" runs together — so most readings will not
+ * yield enough gaps, and that is expected rather than a failure.
+ *
+ * When they are not there, the window is split by WORD WEIGHT: a nine-letter
+ * word holds the screen longer than "a". That is an estimate, and it says so,
+ * because a caption timed by measurement and one timed by arithmetic should not
+ * be indistinguishable in the file that records them.
+ *
+ * The remainder goes to the LAST word so the words add up to exactly the
+ * window — the same rule the planner uses for parts inside a scene, and for the
+ * same reason: a drift of a frame per word is a drift of a second per reel.
+ *
+ * @param {string} text the line as spoken
+ * @param {Int16Array|null} samples that line's audio, or null to skip measuring
+ * @param {number} sampleRate
+ * @param {{start: number, end: number}} window the line's place in the reel
+ * @returns {{words: {text: string, start: number, end: number}[], how: 'measured'|'weighted'}}
+ */
+export function wordWindows(text, samples, sampleRate, window) {
+  const words = text.trim().split(/\s+/).filter(Boolean);
+  const span = Math.max(0.001, window.end - window.start);
+  if (words.length <= 1) {
+    return {words: words.map((w) => ({text: w, start: window.start, end: window.end})), how: 'weighted'};
+  }
+
+  if (samples && samples.length) {
+    const WINDOW_MS = 10;
+    const spoken = samples.length / sampleRate;
+    const cuts = findBoundaries(loudness(samples, sampleRate, WINDOW_MS), WINDOW_MS, words.length - 1, {
+      floor: 0.16,
+      minPauseMs: 30,
+    });
+    if (cuts.length === words.length - 1) {
+      // The clip is the SPOKEN part; the window may be longer because the
+      // silence before the line belongs to it. Times are measured from where
+      // the speech actually starts, not from the top of the window.
+      const speechStart = window.end - spoken;
+      const edges = [0, ...cuts, spoken];
+      return {
+        words: words.map((w, i) => ({
+          text: w,
+          start: Number((speechStart + edges[i]).toFixed(3)),
+          end: Number((speechStart + edges[i + 1]).toFixed(3)),
+        })),
+        how: 'measured',
+      };
+    }
+  }
+
+  // WEIGHT, NOT EVEN SHARES. Even shares give "a" the same screen time as
+  // "extraordinary", and the caption falls behind the voice by the middle of
+  // any line with a long word in it.
+  const weights = words.map((w) => w.length + 1);
+  const total = weights.reduce((sum, w) => sum + w, 0);
+  const out = [];
+  let cursor = window.start;
+  words.forEach((w, i) => {
+    const share = (weights[i] / total) * span;
+    const start = cursor;
+    const end = i === words.length - 1 ? window.end : cursor + share;
+    cursor = end;
+    out.push({text: w, start: Number(start.toFixed(3)), end: Number(end.toFixed(3))});
+  });
+  return {words: out, how: 'weighted'};
+}

@@ -13,6 +13,7 @@ import {readFile, readdir, stat} from 'node:fs/promises';
 import path from 'node:path';
 import {ROOT, episodeDir, exists, loadConfig, parseArgs} from './lib/episode.mjs';
 import {readPlaceholders} from './lib/placeholders.mjs';
+import {assetsOf, auditAssets} from './lib/assetcheck.mjs';
 
 import {BUILT_IN_SCENE_TYPES, validateEpisodeConfig} from '../engine/schema.mjs';
 
@@ -124,6 +125,31 @@ async function main() {
       if (absentOptional.length) {
         console.log(`  · ${absentOptional.length} optional asset(s) absent: ${absentOptional.join(', ')}`);
       }
+
+      /**
+       * AND ARE THE FILES THAT ARE THERE THE RIGHT FILES?
+       *
+       * Existence was the only question this step ever asked, and five wrong
+       * pictures shipped through it in one episode. What can be answered from
+       * the pixels is answered here; the relevance question needs a model and
+       * says so rather than passing quietly.
+       */
+      const dir = episodeDir(episodeId);
+      const recipes = await readFile(path.join(dir, 'assets.json'), 'utf8')
+        .then((raw) => JSON.parse(raw).assets ?? {})
+        .catch(() => ({}));
+      const present = [];
+      for (const asset of assetsOf(config, dir, recipes)) {
+        if (await exists(asset.absolute)) present.push(asset);
+      }
+      const wanted = Object.fromEntries(
+        Object.entries(recipes).map(([name, recipe]) => [
+          Object.keys(recipe).length ? `assets/${name}` : `assets/${name}`,
+          recipe.prompt ?? '',
+        ]),
+      );
+      const {notes} = await auditAssets(present, {wanted});
+      for (const note of notes) console.log(`  ⚠ ${note}`);
     }
   }
 
