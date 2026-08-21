@@ -24,7 +24,10 @@
     "assets:commons": "node scripts/fetch-commons.mjs",
     "assets:review": "node scripts/review-assets.mjs",
     "assets:placeholder": "node scripts/make-placeholder-assets.mjs",
-    "bed": "node scripts/make-bed.mjs"
+    "bed": "node scripts/make-bed.mjs",
+    "broll:shots": "node scripts/broll-shots.mjs",
+    "broll:key": "node scripts/broll-key.mjs",
+    "broll:render": "node scripts/broll-render.mjs"
   },
   "dependencies": {
     "@remotion/bundler": "4.0.499",

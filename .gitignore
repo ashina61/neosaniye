@@ -14,3 +14,11 @@ engine/episodeScenes.generated.ts
 # from a public repository is a separate decision and not one a build makes
 # on its own. Drop the kit into episodes/netflix/assets/ and re-plan.
 episodes/netflix/
+
+# WHAT YOU BRING BACK IS NOT SOURCE.
+# `episodes/<id>/raw/` is the drop box for the generated pictures — original
+# size, background still on. `broll:key` turns them into the cut-outs in
+# `assets/`, and THOSE are what the render reads and what gets committed.
+# Keeping both would double the repo for no gain: the raw drop can always be
+# re-made from PROMPTS.md, the keyed cut-out cannot.
+episodes/*/raw/

@@ -1,0 +1,425 @@
+{
+  "format": "vertical",
+  "frame": [
+    1080,
+    1920
+  ],
+  "beats": [
+    {
+      "slug": "pact",
+      "vo": "Yirmi üç Ağustos gecesi Moskova'da iki bakan bir anlaşma imzaladı.",
+      "bg": null,
+      "mid": [
+        {
+          "name": "ribbentrop",
+          "prompt": "High-contrast black and white halftone cut-out portrait of a 1930s German diplomat in a dark suit, chest-up, stern expression, bold newsprint dot texture",
+          "x": 0.3,
+          "y": 0.42,
+          "width": 0.44,
+          "at": 8,
+          "file": "s01-mid-ribbentrop.png"
+        },
+        {
+          "name": "molotov",
+          "prompt": "High-contrast black and white halftone cut-out portrait of a 1930s Soviet official with round glasses and moustache, chest-up, bold newsprint dot texture",
+          "x": 0.7,
+          "y": 0.42,
+          "width": 0.44,
+          "at": 22,
+          "strokeX": 0.016,
+          "file": "s01-mid-molotov.png"
+        }
+      ],
+      "fore": [
+        {
+          "name": "signing-desk",
+          "prompt": "Flat editorial illustration of a heavy 1930s wooden desk with an open document and a fountain pen, front-on view, warm soft shadow",
+          "x": 0.5,
+          "y": 0.86,
+          "width": 1.05,
+          "at": 0,
+          "file": "s01-fore-signing-desk.png"
+        }
+      ],
+      "text": {
+        "big": "23 AĞUSTOS 1939",
+        "small": "gizli protokol",
+        "at": 0.45,
+        "y": 0.14
+      },
+      "camera": null
+    },
+    {
+      "slug": "map-split",
+      "vo": "Kâğıdın gizli maddesi Polonya'yı ikiye bölüyordu.",
+      "bg": null,
+      "mid": [
+        {
+          "name": "poland-map",
+          "prompt": "Flat vintage map illustration of Poland 1939 with its borders marked in dark ink on aged paper, top-down view, isolated",
+          "x": 0.5,
+          "y": 0.46,
+          "width": 0.78,
+          "at": 6,
+          "file": "s02-mid-poland-map.png"
+        }
+      ],
+      "fore": [],
+      "text": {
+        "big": "İKİYE BÖLÜNDÜ",
+        "at": 0.5,
+        "y": 0.82
+      },
+      "camera": null
+    },
+    {
+      "slug": "dawn",
+      "vo": "Bir Eylül sabahı saat dört kırk beşte sınır geçildi.",
+      "bg": null,
+      "mid": [
+        {
+          "name": "tank-column",
+          "prompt": "Side-profile flat editorial illustration of a 1939 German light tank column, three tanks in a row, muted olive and grey, isolated",
+          "x": 0.46,
+          "y": 0.5,
+          "width": 0.92,
+          "at": 4,
+          "file": "s03-mid-tank-column.png"
+        }
+      ],
+      "fore": [
+        {
+          "name": "border-post",
+          "prompt": "Flat illustration of a striped wooden border barrier pole, broken and tilted, front-on, warm soft shadow, isolated",
+          "x": 0.52,
+          "y": 0.8,
+          "width": 0.7,
+          "at": 16,
+          "file": "s03-fore-border-post.png"
+        }
+      ],
+      "text": {
+        "big": "04:45",
+        "small": "1 eylül 1939",
+        "at": 0.25,
+        "y": 0.15
+      },
+      "camera": null
+    },
+    {
+      "slug": "stuka",
+      "vo": "Gökyüzünden gelen sesi kimse daha önce duymamıştı.",
+      "bg": null,
+      "mid": [
+        {
+          "name": "stuka",
+          "prompt": "Flat editorial illustration of a 1939 dive bomber aircraft seen from below at a steep diving angle, gull wings, muted grey, isolated",
+          "x": 0.52,
+          "y": 0.38,
+          "width": 0.72,
+          "at": 2,
+          "file": "s04-mid-stuka.png"
+        }
+      ],
+      "fore": [
+        {
+          "name": "rooftops",
+          "prompt": "Flat illustration of a row of old European town rooftops and chimneys silhouette, front-on, isolated",
+          "x": 0.5,
+          "y": 0.88,
+          "width": 1.1,
+          "at": 0,
+          "file": "s04-fore-rooftops.png"
+        }
+      ],
+      "text": {
+        "big": "STUKA",
+        "at": 0.4,
+        "y": 0.72
+      },
+      "camera": null
+    },
+    {
+      "slug": "declare",
+      "vo": "Üç Eylül'de İngiltere ve Fransa savaş ilan etti.",
+      "bg": null,
+      "mid": [
+        {
+          "name": "newspaper",
+          "prompt": "Flat illustration of a folded 1939 British newspaper front page with a huge bold headline, aged paper, isolated, front-on",
+          "x": 0.5,
+          "y": 0.46,
+          "width": 0.82,
+          "at": 4,
+          "file": "s05-mid-newspaper.png"
+        }
+      ],
+      "fore": [
+        {
+          "name": "radio",
+          "prompt": "Flat editorial illustration of a 1930s wooden valve radio set with a round speaker grille, front-on, warm soft shadow, isolated",
+          "x": 0.5,
+          "y": 0.87,
+          "width": 0.62,
+          "at": 14,
+          "file": "s05-fore-radio.png"
+        }
+      ],
+      "text": {
+        "big": "SAVAŞ İLAN EDİLDİ",
+        "small": "3 eylül 1939",
+        "at": 0.42,
+        "y": 0.14
+      },
+      "camera": null
+    },
+    {
+      "slug": "east",
+      "vo": "On yedi Eylül'de Kızıl Ordu doğudan girdi.",
+      "bg": null,
+      "mid": [
+        {
+          "name": "soviet-column",
+          "prompt": "Side-profile flat editorial illustration of a 1939 Soviet cavalry and truck column moving right to left, muted brown and olive, isolated",
+          "x": 0.52,
+          "y": 0.52,
+          "width": 0.95,
+          "at": 4,
+          "file": "s06-mid-soviet-column.png"
+        }
+      ],
+      "fore": [
+        {
+          "name": "signpost",
+          "prompt": "Flat illustration of an old wooden signpost with two arrow boards pointing opposite ways, weathered, front-on, isolated",
+          "x": 0.24,
+          "y": 0.78,
+          "width": 0.4,
+          "at": 12,
+          "file": "s06-fore-signpost.png"
+        }
+      ],
+      "text": {
+        "big": "DOĞUDAN",
+        "small": "17 eylül 1939",
+        "at": 0.35,
+        "y": 0.16
+      },
+      "camera": null
+    },
+    {
+      "slug": "fall",
+      "vo": "Polonya beş hafta dayandı. Sonra ikiye bölündü.",
+      "bg": null,
+      "mid": [
+        {
+          "name": "ruins",
+          "prompt": "Flat editorial illustration of a bombed European city street with collapsed building facades, muted grey and ochre, isolated",
+          "x": 0.5,
+          "y": 0.5,
+          "width": 1,
+          "at": 2,
+          "file": "s07-mid-ruins.png"
+        }
+      ],
+      "fore": [],
+      "text": {
+        "big": "5 HAFTA",
+        "at": 0.45,
+        "y": 0.78
+      },
+      "camera": null
+    },
+    {
+      "slug": "close",
+      "vo": "Savaş altı yıl sürdü. İki bin yüz doksan dört gün.",
+      "bg": null,
+      "mid": [
+        {
+          "name": "calendar",
+          "prompt": "Flat illustration of a torn 1939 wall calendar page with large numerals, aged paper, isolated, front-on",
+          "x": 0.5,
+          "y": 0.44,
+          "width": 0.66,
+          "at": 4,
+          "file": "s08-mid-calendar.png"
+        }
+      ],
+      "fore": [],
+      "text": {
+        "big": "2194 GÜN",
+        "small": "1939 — 1945",
+        "at": 0.4,
+        "y": 0.78
+      },
+      "camera": null
+    }
+  ],
+  "wanted": [
+    {
+      "file": "background.png",
+      "kind": "bg",
+      "beat": "(shared)",
+      "vo": "every scene",
+      "size": [
+        1080,
+        1920
+      ],
+      "prompt": "an aged paper texture with faint printed grid and coffee stains, archival document, 1939 documentary aesthetic, muted desaturated colour, halftone newsprint texture, cinematic, wide establishing shot, muted desaturated colour, subtle paper grain, no text, no watermark, no people in the foreground"
+    },
+    {
+      "file": "s01-mid-ribbentrop.png",
+      "kind": "mid",
+      "beat": "pact",
+      "vo": "Yirmi üç Ağustos gecesi Moskova'da iki bakan bir anlaşma imzaladı.",
+      "size": [
+        1024,
+        1024
+      ],
+      "prompt": "High-contrast black and white halftone cut-out portrait of a 1930s German diplomat in a dark suit, chest-up, stern expression, bold newsprint dot texture, 1939 documentary aesthetic, muted desaturated colour, halftone newsprint texture, cinematic, cut-out subject, isolated, plain flat off-white background, sharp clean edges, no shadow on the background, no text, no watermark"
+    },
+    {
+      "file": "s01-mid-molotov.png",
+      "kind": "mid",
+      "beat": "pact",
+      "vo": "Yirmi üç Ağustos gecesi Moskova'da iki bakan bir anlaşma imzaladı.",
+      "size": [
+        1024,
+        1024
+      ],
+      "prompt": "High-contrast black and white halftone cut-out portrait of a 1930s Soviet official with round glasses and moustache, chest-up, bold newsprint dot texture, 1939 documentary aesthetic, muted desaturated colour, halftone newsprint texture, cinematic, cut-out subject, isolated, plain flat off-white background, sharp clean edges, no shadow on the background, no text, no watermark"
+    },
+    {
+      "file": "s01-fore-signing-desk.png",
+      "kind": "fore",
+      "beat": "pact",
+      "vo": "Yirmi üç Ağustos gecesi Moskova'da iki bakan bir anlaşma imzaladı.",
+      "size": [
+        1024,
+        1024
+      ],
+      "prompt": "Flat editorial illustration of a heavy 1930s wooden desk with an open document and a fountain pen, front-on view, warm soft shadow, 1939 documentary aesthetic, muted desaturated colour, halftone newsprint texture, cinematic, flat editorial illustration, isolated object, plain flat off-white background, sharp clean edges, no text, no watermark"
+    },
+    {
+      "file": "s02-mid-poland-map.png",
+      "kind": "mid",
+      "beat": "map-split",
+      "vo": "Kâğıdın gizli maddesi Polonya'yı ikiye bölüyordu.",
+      "size": [
+        1024,
+        1024
+      ],
+      "prompt": "Flat vintage map illustration of Poland 1939 with its borders marked in dark ink on aged paper, top-down view, isolated, 1939 documentary aesthetic, muted desaturated colour, halftone newsprint texture, cinematic, cut-out subject, isolated, plain flat off-white background, sharp clean edges, no shadow on the background, no text, no watermark"
+    },
+    {
+      "file": "s03-mid-tank-column.png",
+      "kind": "mid",
+      "beat": "dawn",
+      "vo": "Bir Eylül sabahı saat dört kırk beşte sınır geçildi.",
+      "size": [
+        1024,
+        1024
+      ],
+      "prompt": "Side-profile flat editorial illustration of a 1939 German light tank column, three tanks in a row, muted olive and grey, isolated, 1939 documentary aesthetic, muted desaturated colour, halftone newsprint texture, cinematic, cut-out subject, isolated, plain flat off-white background, sharp clean edges, no shadow on the background, no text, no watermark"
+    },
+    {
+      "file": "s03-fore-border-post.png",
+      "kind": "fore",
+      "beat": "dawn",
+      "vo": "Bir Eylül sabahı saat dört kırk beşte sınır geçildi.",
+      "size": [
+        1024,
+        1024
+      ],
+      "prompt": "Flat illustration of a striped wooden border barrier pole, broken and tilted, front-on, warm soft shadow, isolated, 1939 documentary aesthetic, muted desaturated colour, halftone newsprint texture, cinematic, flat editorial illustration, isolated object, plain flat off-white background, sharp clean edges, no text, no watermark"
+    },
+    {
+      "file": "s04-mid-stuka.png",
+      "kind": "mid",
+      "beat": "stuka",
+      "vo": "Gökyüzünden gelen sesi kimse daha önce duymamıştı.",
+      "size": [
+        1024,
+        1024
+      ],
+      "prompt": "Flat editorial illustration of a 1939 dive bomber aircraft seen from below at a steep diving angle, gull wings, muted grey, isolated, 1939 documentary aesthetic, muted desaturated colour, halftone newsprint texture, cinematic, cut-out subject, isolated, plain flat off-white background, sharp clean edges, no shadow on the background, no text, no watermark"
+    },
+    {
+      "file": "s04-fore-rooftops.png",
+      "kind": "fore",
+      "beat": "stuka",
+      "vo": "Gökyüzünden gelen sesi kimse daha önce duymamıştı.",
+      "size": [
+        1024,
+        1024
+      ],
+      "prompt": "Flat illustration of a row of old European town rooftops and chimneys silhouette, front-on, isolated, 1939 documentary aesthetic, muted desaturated colour, halftone newsprint texture, cinematic, flat editorial illustration, isolated object, plain flat off-white background, sharp clean edges, no text, no watermark"
+    },
+    {
+      "file": "s05-mid-newspaper.png",
+      "kind": "mid",
+      "beat": "declare",
+      "vo": "Üç Eylül'de İngiltere ve Fransa savaş ilan etti.",
+      "size": [
+        1024,
+        1024
+      ],
+      "prompt": "Flat illustration of a folded 1939 British newspaper front page with a huge bold headline, aged paper, isolated, front-on, 1939 documentary aesthetic, muted desaturated colour, halftone newsprint texture, cinematic, cut-out subject, isolated, plain flat off-white background, sharp clean edges, no shadow on the background, no text, no watermark"
+    },
+    {
+      "file": "s05-fore-radio.png",
+      "kind": "fore",
+      "beat": "declare",
+      "vo": "Üç Eylül'de İngiltere ve Fransa savaş ilan etti.",
+      "size": [
+        1024,
+        1024
+      ],
+      "prompt": "Flat editorial illustration of a 1930s wooden valve radio set with a round speaker grille, front-on, warm soft shadow, isolated, 1939 documentary aesthetic, muted desaturated colour, halftone newsprint texture, cinematic, flat editorial illustration, isolated object, plain flat off-white background, sharp clean edges, no text, no watermark"
+    },
+    {
+      "file": "s06-mid-soviet-column.png",
+      "kind": "mid",
+      "beat": "east",
+      "vo": "On yedi Eylül'de Kızıl Ordu doğudan girdi.",
+      "size": [
+        1024,
+        1024
+      ],
+      "prompt": "Side-profile flat editorial illustration of a 1939 Soviet cavalry and truck column moving right to left, muted brown and olive, isolated, 1939 documentary aesthetic, muted desaturated colour, halftone newsprint texture, cinematic, cut-out subject, isolated, plain flat off-white background, sharp clean edges, no shadow on the background, no text, no watermark"
+    },
+    {
+      "file": "s06-fore-signpost.png",
+      "kind": "fore",
+      "beat": "east",
+      "vo": "On yedi Eylül'de Kızıl Ordu doğudan girdi.",
+      "size": [
+        1024,
+        1024
+      ],
+      "prompt": "Flat illustration of an old wooden signpost with two arrow boards pointing opposite ways, weathered, front-on, isolated, 1939 documentary aesthetic, muted desaturated colour, halftone newsprint texture, cinematic, flat editorial illustration, isolated object, plain flat off-white background, sharp clean edges, no text, no watermark"
+    },
+    {
+      "file": "s07-mid-ruins.png",
+      "kind": "mid",
+      "beat": "fall",
+      "vo": "Polonya beş hafta dayandı. Sonra ikiye bölündü.",
+      "size": [
+        1024,
+        1024
+      ],
+      "prompt": "Flat editorial illustration of a bombed European city street with collapsed building facades, muted grey and ochre, isolated, 1939 documentary aesthetic, muted desaturated colour, halftone newsprint texture, cinematic, cut-out subject, isolated, plain flat off-white background, sharp clean edges, no shadow on the background, no text, no watermark"
+    },
+    {
+      "file": "s08-mid-calendar.png",
+      "kind": "mid",
+      "beat": "close",
+      "vo": "Savaş altı yıl sürdü. İki bin yüz doksan dört gün.",
+      "size": [
+        1024,
+        1024
+      ],
+      "prompt": "Flat illustration of a torn 1939 wall calendar page with large numerals, aged paper, isolated, front-on, 1939 documentary aesthetic, muted desaturated colour, halftone newsprint texture, cinematic, cut-out subject, isolated, plain flat off-white background, sharp clean edges, no shadow on the background, no text, no watermark"
+    }
+  ]
+}

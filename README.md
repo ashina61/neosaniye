@@ -198,6 +198,44 @@ one as it draws it for real, and `npm run validate` prints how many are left.
   ⚠ 25 of these assets are still stand-ins: boot-print.png, car-exterior.png, …
 ```
 
+## The B-roll line — you bring the pictures, the machine does the rest
+
+The generator above draws what it can reach. When nothing can be reached — every
+image host this repo can see answers 403 — the missing step is not a capability,
+it is **the pictures themselves**, and a person with a browser has them in ten
+minutes. So that one step is handed over, and only that one.
+
+```bash
+npm run broll:shots  -- --episode=eylul-1939   # writes PROMPTS.md: names, sizes, prompts
+#   … you fetch the images and drop them in episodes/eylul-1939/raw/ …
+npm run broll:key    -- --episode=eylul-1939   # backgrounds off, trimmed to the subject
+node scripts/voice-episode.mjs --episode=eylul-1939
+npm run broll:render -- --episode=eylul-1939   # cut to the measured narration
+```
+
+**The filename is the contract.** `PROMPTS.md` does not say "get a picture of a
+tank" — it says `s03-mid-tank-column.png`, 1024×1024, and the exact prompt. A
+handover that has to guess which file is which is a handover that puts the
+White House behind the ocean. `broll:key` names anything missing; `broll:render`
+refuses to start without them.
+
+Three layers per beat, and the third is the one people skip:
+
+| layer | what it is | why |
+|---|---|---|
+| `bg` | the plate, usually **one shared backdrop for the whole film** | seven cuts over one backdrop read as one film; seven backdrops read as seven films |
+| `mid` | the subject, keyed, with an offset **marker stroke** behind it | the stroke is one mask in CSS, applied identically to every cut-out — that repetition is the house style |
+| `fore` | something that **occludes the subject's lower body** | without it a cut-out is a sticker lying on a photograph, and every viewer can see it |
+
+Positions are **fractions of the frame**, so the same beat file works vertical
+and landscape without a number changing. Text rides on its own plate — an ink
+slab for the headline, an accent chip for the strap — because a caption whose
+legibility depends on what the generator happened to return is not a caption.
+
+`episodes/<id>/raw/` is **not** committed: it is the drop box. The keyed
+cut-outs in `assets/` are what the render reads, and those are committed. The
+raw drop can always be re-made from `PROMPTS.md`; the keyed cut-out cannot.
+
 ## The seven templates
 
 Each takes **roles**, not files. The episode decides which image fills a role.
