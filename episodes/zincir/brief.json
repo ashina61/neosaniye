@@ -1,0 +1,45 @@
+{
+  "id": "zincir",
+  "title": "Zincir",
+  "mood": "ash-grey",
+  "footage": true,
+  "style": "handheld documentary footage, available light, heavy machinery",
+  "lines": [
+    {
+      "slug": "ucuz",
+      "vo": "Bir ormanı bir günde silmenin en ucuz yolu bir zincirdir.",
+      "footage": "aerial view of cleared forest land",
+      "alt": "drone shot deforestation"
+    },
+    {
+      "slug": "capa",
+      "vo": "İki dozer, aralarında gemiden sökülmüş yüz metrelik bir çapa zinciri.",
+      "footage": "heavy rusty anchor chain close up",
+      "alt": "thick metal chain dragging on ground"
+    },
+    {
+      "slug": "yururler",
+      "vo": "Yan yana yürürler ve zincir önündeki her şeyi yatırır.",
+      "footage": "bulldozer working in forest",
+      "alt": "excavator pushing trees"
+    },
+    {
+      "slug": "hiz",
+      "vo": "Testere yok, işçi yok. Saatte altı hektar.",
+      "footage": "tree falling in forest",
+      "alt": "chainsaw cutting tree trunk close up"
+    },
+    {
+      "slug": "yirmiyil",
+      "vo": "Amerika'da buna zincirleme dendi ve yirmi yıl sürdü.",
+      "footage": "dry grassland with dead trees",
+      "alt": "cattle grazing on dry field"
+    },
+    {
+      "slug": "curume",
+      "vo": "Devrilen ağaçların çoğu yerinde çürümeye bırakıldı.",
+      "footage": "dead tree trunks lying on the ground",
+      "alt": "logging site aftermath stumps"
+    }
+  ]
+}

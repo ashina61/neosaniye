@@ -159,7 +159,13 @@ jobs:
           LANG_DIR=$(echo "$VOICE" | cut -d- -f1)
           NAME=$(echo "$VOICE" | cut -d- -f2)
           QUALITY=$(echo "$VOICE" | cut -d- -f3)
-          BASE="https://huggingface.co/rhasspy/piper-voices/resolve/main/en/${LANG_DIR}/${NAME}/${QUALITY}/${VOICE}"
+          # THE REEL DOES NOT HAVE TO BE IN ENGLISH. The voice tree is
+          # <lang>/<lang_COUNTRY>/…, and "en" was written into the path — so
+          # every non-English voice, tr_TR-dfki-medium included, resolved to a
+          # folder that does not exist and the run died on a download that had
+          # never been possible.
+          LANG_TOP="${LANG_DIR%%_*}"
+          BASE="https://huggingface.co/rhasspy/piper-voices/resolve/main/${LANG_TOP}/${LANG_DIR}/${NAME}/${QUALITY}/${VOICE}"
           # ?download=true asks for the FILE. Without it the host is entitled to
           # answer a browser-shaped request with its own web page, which is
           # exactly what came back: a 200, an HTML body, and a corrupt model.
