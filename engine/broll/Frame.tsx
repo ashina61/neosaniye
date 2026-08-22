@@ -1,5 +1,6 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
+import {DISPLAY, TEXT} from './fonts';
 
 /**
  * THE THING THAT MAKES THIRTEEN SHOTS ONE FILM.
@@ -56,7 +57,7 @@ export const Furniture: React.FC<{
             position: 'absolute',
             left: inset + tick * 0.6,
             top: inset - width * 0.004,
-            fontFamily: '"Archivo", Arial, sans-serif',
+            fontFamily: TEXT,
             fontWeight: 700,
             fontSize: width * 0.019,
             letterSpacing: '0.26em',
@@ -75,7 +76,7 @@ export const Furniture: React.FC<{
           position: 'absolute',
           right: inset + tick * 0.6,
           top: inset - width * 0.004,
-          fontFamily: '"Archivo", Arial, sans-serif',
+          fontFamily: TEXT,
           fontWeight: 700,
           fontSize: width * 0.019,
           letterSpacing: '0.18em',
@@ -115,7 +116,7 @@ export const Furniture: React.FC<{
             position: 'absolute',
             left: inset + tick * 0.6,
             bottom: inset + width * 0.016,
-            fontFamily: '"Archivo", Arial, sans-serif',
+            fontFamily: TEXT,
             fontWeight: 700,
             fontSize: width * 0.019,
             letterSpacing: '0.22em',

@@ -3,6 +3,9 @@
   "ink": "#0B141C",
   "paper": "#F2ECDF",
   "ground": "#0B141C",
+  "label": "hürmüz · kapalı",
+  "grain": 0.17,
+  "vignette": 0.6,
   "audio": "audio/vo.wav",
   "music": "audio/score.wav",
   "musicGain": 0.26,
@@ -38,13 +41,15 @@
         "big": "150 GEMİ",
         "small": "şubat'tan beri demirde",
         "at": 0.55,
-        "y": 0.18
+        "shape": "lower-left",
+        "deck": "körfez dışında demirli"
       },
       "camera": {
         "from": 1.14,
         "to": 1
       },
       "anchor": null,
+      "ticker": "şubat",
       "graphics": null,
       "from": 0,
       "to": 191
@@ -71,6 +76,7 @@
         "to": 1.16
       },
       "anchor": null,
+      "ticker": "stake",
       "graphics": [
         {
           "kind": "dots",
@@ -106,13 +112,14 @@
       "text": {
         "big": "HÜRMÜZ",
         "at": 0.08,
-        "y": 0.13
+        "shape": "upper-left"
       },
       "camera": {
         "from": 1,
         "to": 1.22
       },
       "anchor": null,
+      "ticker": "coğrafya",
       "graphics": [
         {
           "kind": "measure",
@@ -150,13 +157,15 @@
         "big": "2 DENİZ MİLİ",
         "small": "her yön için",
         "at": 0.6,
-        "y": 0.86
+        "shape": "lower-left",
+        "deck": "gidiş ve geliş, ayrı ayrı"
       },
       "camera": {
         "from": 1.22,
         "to": 1
       },
       "anchor": null,
+      "ticker": "seyir şeridi",
       "graphics": [
         {
           "kind": "route",
@@ -250,7 +259,7 @@
       "text": {
         "big": "28 ŞUBAT 2026",
         "at": 0.42,
-        "y": 0.16
+        "shape": "upper-left"
       },
       "camera": {
         "from": 1,
@@ -258,6 +267,7 @@
         "panY": -0.03
       },
       "anchor": null,
+      "ticker": "28 şubat",
       "graphics": null,
       "from": 690,
       "to": 848
@@ -282,14 +292,16 @@
         "big": "HİÇBİR GEMİ\nHÜRMÜZ'DEN\nGEÇEMEZ",
         "small": "irgc · 1 mart 2026",
         "at": 0.34,
-        "y": 0.74,
-        "size": 0.078
+        "size": 0.088,
+        "shape": "banner",
+        "plate": true
       },
       "camera": {
         "from": 1.18,
         "to": 1.02
       },
       "anchor": null,
+      "ticker": "emir",
       "graphics": null,
       "from": 848,
       "to": 960
@@ -323,7 +335,7 @@
         "big": "SİGORTA",
         "small": "boğazı kapatan üçüncü şey",
         "at": 0.62,
-        "y": 0.83
+        "shape": "lower-right"
       },
       "camera": {
         "from": 1,
@@ -331,6 +343,7 @@
         "panX": 0.04
       },
       "anchor": null,
+      "ticker": "mekanik",
       "graphics": null,
       "from": 960,
       "to": 1219
@@ -344,13 +357,14 @@
       "text": {
         "big": "130 → 10",
         "at": 0.72,
-        "y": 0.8
+        "shape": "lower-left"
       },
       "camera": {
         "from": 1,
         "to": 1.05
       },
       "anchor": null,
+      "ticker": "trafik",
       "graphics": [
         {
           "kind": "dots",
@@ -389,6 +403,7 @@
         "to": 1
       },
       "anchor": null,
+      "ticker": "fiyat",
       "graphics": [
         {
           "kind": "count",
@@ -425,13 +440,14 @@
         "big": "+14 GÜN",
         "small": "3.800 deniz mili",
         "at": 0.66,
-        "y": 0.85
+        "shape": "lower-left"
       },
       "camera": {
         "from": 1,
         "to": 1.12
       },
       "anchor": null,
+      "ticker": "rota",
       "graphics": [
         {
           "kind": "route",
@@ -473,7 +489,8 @@
           "over": 58,
           "dash": true,
           "head": true,
-          "label": "ÜMİT BURNU"
+          "label": "ÜMİT BURNU",
+          "labelAt": 5
         }
       ],
       "from": 1477,
@@ -499,7 +516,7 @@
         "big": "BORU HATTI YOK",
         "small": "dünya lng'sinin beşte biri",
         "at": 0.48,
-        "y": 0.83
+        "shape": "lower-right"
       },
       "camera": {
         "from": 1,
@@ -507,6 +524,7 @@
         "panX": -0.04
       },
       "anchor": null,
+      "ticker": "gaz",
       "graphics": null,
       "from": 1655,
       "to": 1797
@@ -530,7 +548,7 @@
       "text": {
         "big": "KENDİ KAPISI",
         "at": 0.5,
-        "y": 0.82
+        "shape": "centre"
       },
       "camera": {
         "from": 1.14,
@@ -538,6 +556,7 @@
         "panX": 0.05
       },
       "anchor": null,
+      "ticker": "tuzak",
       "graphics": null,
       "from": 1797,
       "to": 1934
@@ -572,6 +591,7 @@
         "to": 1.1
       },
       "anchor": null,
+      "ticker": "bugün",
       "graphics": [
         {
           "kind": "count",

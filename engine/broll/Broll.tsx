@@ -3,6 +3,7 @@ import {AbsoluteFill, Audio, Img, Series, interpolate, spring, staticFile, useCu
 import {Enter, FilmLook, Furniture} from './Frame';
 import {Graphic, Graphics} from './Graphics';
 import {Caption, TextBlock} from './Type';
+import {useFonts} from './fonts';
 
 /**
  * THE THREE-LAYER B-ROLL ENGINE.
@@ -255,7 +256,9 @@ const Scene: React.FC<{beat: Beat; data: BrollData; length: number}> = ({beat, d
   );
 };
 
-export const Broll: React.FC<{data: BrollData}> = ({data}) => (
+export const Broll: React.FC<{data: BrollData}> = ({data}) => {
+  useFonts();
+  return (
   <AbsoluteFill style={{backgroundColor: data.ground ?? '#DAD9D5'}}>
     {data.audio ? <Audio src={staticFile(data.audio)} /> : null}
     {data.music ? (
@@ -286,7 +289,8 @@ export const Broll: React.FC<{data: BrollData}> = ({data}) => (
         they are what does not change when the picture does. */}
     <Shell data={data} />
   </AbsoluteFill>
-);
+  );
+};
 
 /** The furniture and the treatment, reading the film's own clock. */
 const Shell: React.FC<{data: BrollData}> = ({data}) => {

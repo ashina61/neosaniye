@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Vertical crime documentary reels \u2014 one shared engine, many episodes",
+  "description": "Vertical crime documentary reels — one shared engine, many episodes",
   "engines": {
     "node": ">=20"
   },
@@ -30,6 +30,8 @@
     "broll:render": "node scripts/broll-render.mjs"
   },
   "dependencies": {
+    "@fontsource/archivo": "^5.3.0",
+    "@fontsource/archivo-black": "^5.3.0",
     "@remotion/bundler": "4.0.499",
     "@remotion/cli": "4.0.499",
     "@remotion/renderer": "4.0.499",

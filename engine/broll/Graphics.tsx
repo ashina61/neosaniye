@@ -1,5 +1,6 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
+import {DISPLAY, TEXT} from './fonts';
 
 /**
  * THE LAYER THAT SAYS WHAT HAPPENED.
@@ -131,7 +132,7 @@ const Route: React.FC<{g: Extract<Graphic, {kind: 'route'}>; accent: string; pap
           x={(pts[g.labelAt ?? 0] ?? pts[0])[0]}
           y={(pts[g.labelAt ?? 0] ?? pts[0])[1] - stroke * 2}
           fill={paper}
-          fontFamily='"Archivo", Arial, sans-serif'
+          fontFamily={TEXT}
           fontWeight={800}
           fontSize={width * 0.028}
           letterSpacing={width * 0.003}
@@ -197,7 +198,7 @@ const Measure: React.FC<{g: Extract<Graphic, {kind: 'measure'}>; accent: string;
             y={my + width * 0.019}
             fill={paper}
             textAnchor="middle"
-            fontFamily='"Archivo Black", "Arial Black", Arial, sans-serif'
+            fontFamily={DISPLAY}
             fontWeight={900}
             fontSize={width * 0.05}
           >
@@ -273,7 +274,7 @@ const Dots: React.FC<{g: Extract<Graphic, {kind: 'dots'}>; accent: string; paper
           y={top + rows * gap + width * 0.06}
           fill={paper}
           textAnchor="middle"
-          fontFamily='"Archivo", Arial, sans-serif'
+          fontFamily={TEXT}
           fontWeight={800}
           fontSize={width * 0.03}
           letterSpacing={width * 0.004}
@@ -314,7 +315,7 @@ const Count: React.FC<{g: Extract<Graphic, {kind: 'count'}>; accent: string; pap
         y={y}
         fill={g.colour ?? accent}
         textAnchor="middle"
-        fontFamily='"Archivo Black", "Arial Black", Arial, sans-serif'
+        fontFamily={DISPLAY}
         fontWeight={900}
         fontSize={size}
         style={{fontVariantNumeric: 'tabular-nums'}}
@@ -327,7 +328,7 @@ const Count: React.FC<{g: Extract<Graphic, {kind: 'count'}>; accent: string; pap
           y={y + size * 0.42}
           fill={paper}
           textAnchor="middle"
-          fontFamily='"Archivo", Arial, sans-serif'
+          fontFamily={TEXT}
           fontWeight={800}
           fontSize={width * 0.032}
           letterSpacing={width * 0.005}

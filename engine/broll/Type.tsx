@@ -1,5 +1,6 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
+import {DISPLAY, TEXT} from './fonts';
 
 /**
  * THE CAPTION, WITH A HIERARCHY AND A PLACE TO STAND.
@@ -128,7 +129,7 @@ export const Caption: React.FC<{
             ) : null}
             <div
               style={{
-                fontFamily: '"Archivo", Arial, sans-serif',
+                fontFamily: TEXT,
                 fontWeight: 800,
                 fontSize: width * 0.026,
                 letterSpacing: '0.2em',
@@ -182,7 +183,7 @@ export const Caption: React.FC<{
                       display: 'inline-block',
                       transform: `translateY(${(1 - rise) * size * 0.9}px)`,
                       opacity: rise,
-                      fontFamily: '"Archivo Black", "Arial Black", Arial, sans-serif',
+                      fontFamily: DISPLAY,
                       fontWeight: 900,
                       fontSize: size,
                       letterSpacing: '-0.025em',
@@ -205,7 +206,7 @@ export const Caption: React.FC<{
           <div
             style={{
               marginTop: height * 0.012,
-              fontFamily: '"Archivo", Arial, sans-serif',
+              fontFamily: TEXT,
               fontWeight: 600,
               fontSize: width * 0.032,
               letterSpacing: '0.02em',
