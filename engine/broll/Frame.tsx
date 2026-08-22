@@ -74,7 +74,9 @@ export const Furniture: React.FC<{
       <div
         style={{
           position: 'absolute',
-          right: inset + tick * 0.6,
+          // Clear of the corner tick: overlapping it, the shot number lost a
+          // digit into a hairline and read as a rendering fault.
+          right: inset + tick * 1.5,
           top: inset - width * 0.004,
           fontFamily: TEXT,
           fontWeight: 700,

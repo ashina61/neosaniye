@@ -149,12 +149,27 @@ export const Caption: React.FC<{
         {lines.map((line, li) => (
           <div
             key={li}
+            /**
+             * THE SLAB BELONGS TO THE LINE, NOT TO THE WORD.
+             *
+             * Painted per word it becomes four separate black boxes with holes
+             * between them — the headline stops being a block and turns into
+             * loose keycaps. One ground per line is what a printed title is.
+             */
             style={{
               display: 'flex',
               flexWrap: 'wrap',
               gap: `0 ${size * 0.26}px`,
+              width: slab ? 'fit-content' : undefined,
+              marginLeft: slab && align === 'center' ? 'auto' : undefined,
+              marginRight: slab && align === 'center' ? 'auto' : undefined,
+              marginBottom: slab ? size * 0.09 : undefined,
+              background: slab ? ink : undefined,
+              padding: slab ? `${size * 0.08}px ${size * 0.16}px ${size * 0.13}px` : undefined,
+              boxShadow: slab ? `${width * 0.007}px ${height * 0.005}px 0 ${accent}` : undefined,
               justifyContent: align === 'left' ? 'flex-start' : align === 'right' ? 'flex-end' : 'center',
               lineHeight: 0.98,
+              opacity: slab ? intro : undefined,
             }}
           >
             {line.split(/\s+/).filter(Boolean).map((word) => {
@@ -187,10 +202,7 @@ export const Caption: React.FC<{
                       fontWeight: 900,
                       fontSize: size,
                       letterSpacing: '-0.025em',
-                      color: slab ? paper : paper,
-                      background: slab ? ink : undefined,
-                      padding: slab ? `${size * 0.06}px ${size * 0.14}px` : undefined,
-                      boxShadow: slab ? `${width * 0.007}px ${height * 0.005}px 0 ${accent}` : undefined,
+                      color: paper,
                       textShadow: slab ? undefined : `0 ${height * 0.004}px ${height * 0.014}px ${ink}CC`,
                     }}
                   >
