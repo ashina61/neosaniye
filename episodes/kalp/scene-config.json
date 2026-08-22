@@ -41,13 +41,79 @@
   },
   "scenes": [
     {
-      "id": "s01-pompa",
+      "id": "s00-insan",
       "sceneType": "heart",
       "durationInFrames": 60,
       "params": {
         "bpm": 66,
-        "title": "Kalbin tek işi var: kanı hareket ettirmek.",
-        "note": "Dakikada altmış altı kez.",
+        "title": "Göğsünün ortasında bir pompa var.",
+        "note": "Yumruk kadar.",
+        "show": [
+          "figure"
+        ],
+        "figureOpacity": 1,
+        "skeletonOpacity": 0,
+        "skeletonTo": 0.9,
+        "zoom": 0.2645502645502646,
+        "zoomTo": 0.2645502645502646,
+        "panY": 0,
+        "lit": [
+          "none"
+        ],
+        "flow": []
+      }
+    },
+    {
+      "id": "s00b-iskelet",
+      "sceneType": "heart",
+      "durationInFrames": 55,
+      "transition": {
+        "kind": "cut",
+        "frames": 3
+      },
+      "params": {
+        "bpm": 66,
+        "title": "Göğüs kafesinin arkasında, sternumun solunda.",
+        "show": [
+          "figure",
+          "skeleton"
+        ],
+        "figureOpacity": 0.35,
+        "skeletonOpacity": 1,
+        "zoom": 0.2645502645502646,
+        "zoomTo": 0.5026455026455027,
+        "panY": 0,
+        "panYTo": 300,
+        "lit": [
+          "none"
+        ],
+        "flow": []
+      }
+    },
+    {
+      "id": "s00c-kafes",
+      "sceneType": "heart",
+      "durationInFrames": 60,
+      "transition": {
+        "kind": "cut",
+        "frames": 3
+      },
+      "params": {
+        "bpm": 70,
+        "title": "Ve hiç durmadan atıyor.",
+        "show": [
+          "figure",
+          "skeleton",
+          "lungs"
+        ],
+        "figureOpacity": 0.18,
+        "skeletonOpacity": 0.85,
+        "skeletonTo": 0.5,
+        "lungsOpacity": 0.9,
+        "zoom": 0.5026455026455027,
+        "zoomTo": 1.1640211640211644,
+        "panY": 300,
+        "panYTo": 170,
         "flow": [
           "venaCava",
           "ivc",
@@ -61,15 +127,56 @@
       }
     },
     {
+      "id": "s01-pompa",
+      "sceneType": "heart",
+      "durationInFrames": 60,
+      "params": {
+        "bpm": 66,
+        "title": "Dört odası var. İkisi alır, ikisi basar.",
+        "note": "Sağ taraf, sol taraf.",
+        "flow": [
+          "venaCava",
+          "ivc",
+          "toRV",
+          "toLung",
+          "fromLung",
+          "toLV",
+          "toBody"
+        ],
+        "lit": [],
+        "zoom": 1.1640211640211644,
+        "zoomTo": 1.0,
+        "panY": 170,
+        "panYTo": 0,
+        "show": [
+          "lungs"
+        ],
+        "lungsOpacity": 0.35,
+        "lungsTo": 0.15,
+        "labels": [
+          "SAĞ KULAKÇIK|0.31|0.40|l",
+          "SOL KULAKÇIK|0.68|0.39|r"
+        ]
+      },
+      "transition": {
+        "kind": "cut",
+        "frames": 3
+      }
+    },
+    {
       "id": "s02-iki",
       "sceneType": "heart",
-      "durationInFrames": 55,
+      "durationInFrames": 37,
       "params": {
         "bpm": 66,
         "title": "Ama tek pompa değil. Yan yana iki pompa.",
         "note": "Solda sağ taraf, sağda sol taraf.",
         "lit": [],
-        "flow": []
+        "flow": [],
+        "labels": [
+          "SAĞ KARINCIK|0.38|0.62|l",
+          "SOL KARINCIK|0.66|0.60|r"
+        ]
       },
       "transition": {
         "kind": "cut",
@@ -79,7 +186,7 @@
     {
       "id": "s03-donus",
       "sceneType": "heart",
-      "durationInFrames": 65,
+      "durationInFrames": 47,
       "params": {
         "bpm": 66,
         "title": "Kirli kan vücuttan sağ kulakçığa döner.",
@@ -90,6 +197,10 @@
         "flow": [
           "venaCava",
           "ivc"
+        ],
+        "labels": [
+          "VENA KAVA|0.24|0.20|l",
+          "SAĞ KULAKÇIK|0.31|0.40|l"
         ]
       },
       "transition": {
@@ -100,7 +211,7 @@
     {
       "id": "s04-akciger",
       "sceneType": "heart",
-      "durationInFrames": 65,
+      "durationInFrames": 47,
       "params": {
         "bpm": 66,
         "title": "Sağ karıncık onu akciğere basar.",
@@ -112,6 +223,10 @@
         "flow": [
           "toRV",
           "toLung"
+        ],
+        "labels": [
+          "PULMONER ARTER|0.33|0.24|l",
+          "TRİKÜSPİT KAPAK|0.37|0.49|l"
         ]
       },
       "transition": {
@@ -122,7 +237,7 @@
     {
       "id": "s05-oksijen",
       "sceneType": "heart",
-      "durationInFrames": 60,
+      "durationInFrames": 42,
       "params": {
         "bpm": 66,
         "title": "Akciğerde oksijeni alır. Rengi değişir.",
@@ -144,7 +259,7 @@
     {
       "id": "s06-sol",
       "sceneType": "heart",
-      "durationInFrames": 65,
+      "durationInFrames": 47,
       "params": {
         "bpm": 66,
         "title": "Temiz kan sol kulakçığa girer.",
@@ -154,6 +269,10 @@
         ],
         "flow": [
           "fromLung"
+        ],
+        "labels": [
+          "PULMONER VEN|0.79|0.33|r",
+          "SOL KULAKÇIK|0.68|0.39|r"
         ]
       },
       "transition": {
@@ -164,7 +283,7 @@
     {
       "id": "s07-vucut",
       "sceneType": "heart",
-      "durationInFrames": 70,
+      "durationInFrames": 52,
       "params": {
         "bpm": 66,
         "title": "Sol karıncık bütün vücuda basar.",
@@ -176,6 +295,10 @@
         "flow": [
           "toLV",
           "toBody"
+        ],
+        "labels": [
+          "AORT|0.72|0.26|r",
+          "SOL KARINCIK|0.64|0.60|r"
         ]
       },
       "transition": {
@@ -186,7 +309,7 @@
     {
       "id": "s08-duvar",
       "sceneType": "heart",
-      "durationInFrames": 55,
+      "durationInFrames": 42,
       "params": {
         "bpm": 66,
         "title": "Sol karıncığın duvarı üç kat kalın.",
@@ -207,7 +330,7 @@
     {
       "id": "s09-kapak",
       "sceneType": "heart",
-      "durationInFrames": 55,
+      "durationInFrames": 37,
       "params": {
         "bpm": 66,
         "title": "Kapakçıklar tek yön verir. Geri akış yok.",
@@ -218,7 +341,10 @@
         ],
         "zoom": 1.7,
         "panY": -260,
-        "flow": []
+        "flow": [],
+        "labels": [
+          "MİTRAL KAPAK|0.65|0.49|r"
+        ]
       },
       "transition": {
         "kind": "cut",
@@ -228,7 +354,7 @@
     {
       "id": "s10-atim",
       "sceneType": "heart",
-      "durationInFrames": 40,
+      "durationInFrames": 28,
       "params": {
         "bpm": 66,
         "title": "Bir atımda bu kadar kan.",
@@ -248,7 +374,7 @@
     {
       "id": "s11-gun",
       "sceneType": "heart",
-      "durationInFrames": 40,
+      "durationInFrames": 28,
       "params": {
         "bpm": 66,
         "title": "Günde bu kadar atım.",
@@ -264,7 +390,7 @@
     {
       "id": "s12-omur",
       "sceneType": "heart",
-      "durationInFrames": 45,
+      "durationInFrames": 33,
       "params": {
         "bpm": 74,
         "title": "Ve bir kere bile durmuyor.",
