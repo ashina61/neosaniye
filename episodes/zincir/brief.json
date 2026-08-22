@@ -8,8 +8,8 @@
     {
       "slug": "ucuz",
       "vo": "Bir ormanı bir günde silmenin en ucuz yolu bir zincirdir.",
-      "footage": "aerial view of cleared forest land",
-      "alt": "drone shot deforestation"
+      "footage": "deforestation aerial",
+      "alt": "clear cut forest stumps"
     },
     {
       "slug": "capa",
@@ -26,20 +26,20 @@
     {
       "slug": "hiz",
       "vo": "Testere yok, işçi yok. Saatte altı hektar.",
-      "footage": "tree falling in forest",
-      "alt": "chainsaw cutting tree trunk close up"
+      "footage": "falling tree",
+      "alt": "chainsaw felling tree"
     },
     {
       "slug": "yirmiyil",
       "vo": "Amerika'da buna zincirleme dendi ve yirmi yıl sürdü.",
-      "footage": "dry grassland with dead trees",
-      "alt": "cattle grazing on dry field"
+      "footage": "dry cracked earth",
+      "alt": "dead tree dry land"
     },
     {
       "slug": "curume",
       "vo": "Devrilen ağaçların çoğu yerinde çürümeye bırakıldı.",
-      "footage": "dead tree trunks lying on the ground",
-      "alt": "logging site aftermath stumps"
+      "footage": "fallen logs forest floor",
+      "alt": "cut logs stacked"
     }
   ]
 }

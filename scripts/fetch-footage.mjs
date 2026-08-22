@@ -65,9 +65,21 @@ async function fromPexels(query) {
       .filter((f) => (f.height ?? 0) >= MIN_HEIGHT && /mp4/i.test(f.file_type ?? ''))
       .sort((a, b) => (a.height ?? 0) - (b.height ?? 0));
     if (!files.length) continue;
+    /**
+     * WHAT IT ACTUALLY IS, not just where it came from. Pexels puts a
+     * description in its page slug, and printing it is the cheapest way to
+     * catch the failure this step really has: a query that returns something
+     * plausible and wrong. Six lines in a log beat finding a squirrel in the
+     * rendered reel.
+     */
+    const slug = String(video.url ?? '')
+      .replace(/^.*\/video\//, '')
+      .replace(/-\d+\/?$/, '')
+      .replace(/-/g, ' ');
     return {
       url: files[0].link,
       credit: `${video.user?.name ?? 'unknown'} — Pexels (free to use), ${video.url}`,
+      shows: slug,
       seconds: video.duration ?? 0,
     };
   }
@@ -124,7 +136,19 @@ async function main() {
   }
   const dir = episodeDir(id);
   const recipes = JSON.parse(await readFile(path.join(dir, 'assets.json'), 'utf8').catch(() => '{}'));
-  const wanted = Object.entries(recipes?.assets ?? {}).filter(([, recipe]) => recipe?.kind === 'footage');
+  /**
+   * `--only=s04-hiz.mp4` — ONE clip again, not all six.
+   *
+   * The first real run brought back a snowy forest for "tree falling in forest"
+   * and a squirrel for "dead tree trunks". That is a SEARCH problem, not a
+   * pipeline one: the fix is to sharpen that one line's phrasing and fetch that
+   * one file. Without this the only way to do it was `--force`, which throws
+   * away two hundred megabytes of clips that were fine.
+   */
+  const only = typeof args.only === 'string' ? args.only.split(',').map((n) => n.trim()) : null;
+  const wanted = Object.entries(recipes?.assets ?? {}).filter(
+    ([name, recipe]) => recipe?.kind === 'footage' && (!only || only.includes(name)),
+  );
 
   if (!wanted.length) {
     console.log(`${id} asks for no footage — nothing to fetch.`);
@@ -135,7 +159,7 @@ async function main() {
   let failed = 0;
   for (const [name, recipe] of wanted) {
     const target = path.join(dir, 'assets', name);
-    if ((await exists(target)) && !args.force) {
+    if ((await exists(target)) && !args.force && !only) {
       const {size} = await stat(target);
       console.log(`  = ${name} (${(size / 1e6).toFixed(1)} MB, already here)`);
       got += 1;
@@ -168,7 +192,10 @@ async function main() {
     const size = await download(found.url, target);
     await addCredit(dir, `- \`${name}\` — ${found.credit}`);
     got += 1;
-    console.log(`  ✓ ${name} (${(size / 1e6).toFixed(1)} MB) — ${found.credit}`);
+    console.log(`  ✓ ${name} (${(size / 1e6).toFixed(1)} MB)`);
+    console.log(`      asked  ${JSON.stringify(recipe.stock)}`);
+    console.log(`      got    ${found.shows ?? '(no description)'}`);
+    console.log(`      ${found.credit}`);
   }
 
   console.log(`\n${got}/${wanted.length} clip(s) in place for ${id}.`);

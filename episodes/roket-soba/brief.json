@@ -1,0 +1,46 @@
+{
+  "id": "roket-soba",
+  "title": "Dokuz tuğla",
+  "mood": "ash-grey",
+  "footage": true,
+  "style": "handheld outdoor footage, daylight, close on hands",
+  "$cekim": "Toplam 25-30 sn çek. Telefon dikey, sabit, tuğlalara 1 metre. Her adımı ayrı klip olarak kaydet; dosya adları aşağıdaki gibi.",
+  "lines": [
+    {
+      "slug": "dokuz",
+      "vo": "Dokuz tuğla, sıfır çimento.",
+      "footage": "yerdeki dokuz tuğla, üstten, eller kadraja giriyor",
+      "shot": {"marks": [{"kind": "oval", "x": 0.5, "y": 0.55, "size": 0.5, "at": 0.4, "text": "9 tuğla"}]}
+    },
+    {
+      "slug": "kanal",
+      "vo": "İki tuğla paralel. Aradaki boşluk hava kanalı.",
+      "footage": "iki tuğlayı yan yana koyan eller, aradaki boşluk görünüyor",
+      "shot": {"marks": [{"kind": "arrow", "x": 0.5, "y": 0.62, "size": 0.3, "aim": 30, "at": 0.35, "text": "hava kanalı"}]}
+    },
+    {
+      "slug": "oda",
+      "vo": "Üstüne iki dikey tuğla: yanma odası burası.",
+      "footage": "dikey tuğlaların yerleştirilmesi, oda oluşuyor",
+      "shot": {"marks": [{"kind": "box", "x": 0.52, "y": 0.5, "size": 0.34, "at": 0.4, "text": "yanma odası"}]}
+    },
+    {
+      "slug": "baca",
+      "vo": "İkinci katta ağzı daraltıyor. Dar baca alevi yukarı çeker.",
+      "footage": "ikinci sıra tuğlalar diziliyor, üstteki delik daralıyor",
+      "shot": {"marks": [{"kind": "arrow", "x": 0.5, "y": 0.42, "size": 0.28, "aim": -35, "at": 0.3, "text": "dar baca"}]}
+    },
+    {
+      "slug": "odun",
+      "vo": "Odun alttaki tünelden giriyor, ateş yukarı yanıyor.",
+      "footage": "alttaki tünelden içeri sürülen ince odunlar, yakın plan",
+      "shot": {"marks": [{"kind": "arrow", "x": 0.36, "y": 0.72, "size": 0.3, "aim": 150, "at": 0.25, "text": "odun buradan"}]}
+    },
+    {
+      "slug": "kaynadi",
+      "vo": "Tencere üstte. Duman az, odun yarıya iniyor.",
+      "footage": "sobanın üstünde kaynayan tencere, buhar",
+      "shot": {"marks": [{"kind": "underline", "x": 0.5, "y": 0.34, "size": 0.42, "at": 0.35, "text": "kaynadı"}]}
+    }
+  ]
+}

@@ -67,8 +67,19 @@ for (const id of episodeIds) {
     for (const name of referenced) {
       const recipe = recipes.assets?.[name];
       assert.ok(recipe, `no recipe in assets.json for "${name}" — the generator would never draw it`);
-      assert.ok(recipe.prompt?.trim(), `recipe for "${name}" has no prompt`);
-      assert.ok(kinds[recipe.kind], `recipe for "${name}" has unknown kind "${recipe.kind}"`);
+      /**
+       * WHERE IT COMES FROM, in whichever of the three ways an asset can be
+       * supplied: drawn from a prompt, fetched off Commons by name, or pulled
+       * from a stock library by search. This used to demand a prompt, which is
+       * the one thing a CLIP can never have — nothing invents eight seconds of
+       * a bulldozer — so the first real footage episode turned the gate red.
+       */
+      const supplied = recipe.prompt?.trim() || recipe.commons?.length || recipe.stock?.length;
+      assert.ok(supplied, `recipe for "${name}" says nothing about where it comes from`);
+      // Footage is fetched whole; the size table is for things that get drawn.
+      if (recipe.kind !== 'footage') {
+        assert.ok(kinds[recipe.kind], `recipe for "${name}" has unknown kind "${recipe.kind}"`);
+      }
     }
 
     // The reverse leak: a recipe nobody uses costs a draw every run.
