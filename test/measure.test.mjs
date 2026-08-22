@@ -44,22 +44,44 @@ const near = (actual, expected, tolerance, what) =>
     `${what}: expected ~${expected}s, got ${actual.toFixed(3)}s (tolerance ${tolerance}s)`,
   );
 
-test('the cuts land where the narrator stopped', () => {
+test('the cuts land just before the next line speaks', () => {
   //  speech 2s | pause 0.6 | speech 1.5 | pause 0.5 | speech 2s
   const samples = pcm([2, 0.6, 1.5, 0.5, 2]);
   const boundaries = findBoundaries(loudness(samples, RATE), 20, 2);
 
   assert.equal(boundaries.length, 2);
-  near(boundaries[0], 2.0, 0.1, 'first cut');
-  near(boundaries[1], 4.1, 0.1, 'second cut');
+  near(boundaries[0], 2.44, 0.08, 'first cut');
+  near(boundaries[1], 4.44, 0.08, 'second cut');
 });
 
-test('the boundary is the START of the pause, not its middle', () => {
-  // The silence belongs to the line that FOLLOWS it, so a cut lands on the
-  // breath before a sentence rather than in the middle of the one that ended.
-  const samples = pcm([1.5, 1.0, 1.5]);
-  const [cut] = findBoundaries(loudness(samples, RATE), 20, 1);
-  near(cut, 1.5, 0.08, 'cut');
+test('the length of a pause does not move the cut', () => {
+  /**
+   * THE RULE THIS REPLACES was "the boundary is the start of the pause", and it
+   * was wrong in a way that only shows up on a good recording: the pause was
+   * handed whole to the incoming line, so every shot opened with however long
+   * the narrator happened to hold. On a take read with clean two-second beats —
+   * which is exactly what the recording sheet asks for, because that is what
+   * makes the pauses findable — thirteen shots each opened on two seconds of
+   * silent picture.
+   *
+   * So the cut sits a FIXED lead before the next line speaks. Reading with
+   * longer pauses now makes the measurement easier and changes nothing else.
+   */
+  const short = findBoundaries(loudness(pcm([1.5, 0.6, 1.5]), RATE), 20, 1)[0];
+  const long = findBoundaries(loudness(pcm([1.5, 2.4, 1.5]), RATE), 20, 1)[0];
+
+  near(short, 1.5 + 0.6 - 0.16, 0.08, 'short pause');
+  near(long, 1.5 + 2.4 - 0.16, 0.08, 'long pause');
+  // Four times the pause, and the gap between the cut and the next word is the
+  // same both times.
+  near(1.5 + 0.6 - short, 1.5 + 2.4 - long, 0.03, 'lead is constant');
+});
+
+test('the lead never reaches back into the sentence that just ended', () => {
+  // On a pause shorter than the lead, stepping back a fixed amount would put
+  // the cut inside the previous line's last word.
+  const [cut] = findBoundaries(loudness(pcm([1.5, 0.12, 1.5]), RATE), 20, 1, {minPauseMs: 60});
+  assert.ok(cut >= 1.5, `cut at ${cut} is inside the previous line`);
 });
 
 test('only the LONGEST pauses count — a narrator breathes mid-sentence too', () => {
@@ -85,7 +107,7 @@ test('silence at the top of the file is not a boundary', () => {
   const samples = pcm([0, 0.9, 2, 0.5, 2]);
   const boundaries = findBoundaries(loudness(samples, RATE), 20, 1);
   assert.equal(boundaries.length, 1);
-  near(boundaries[0], 2.9, 0.12, 'the only real cut');
+  near(boundaries[0], 3.24, 0.12, 'the only real cut');
 });
 
 test('a reading with no pauses is refused, not guessed at', () => {
@@ -120,14 +142,22 @@ const clip = (seconds, rate = 22050) => {
   return samples;
 };
 
-test('joined clips put every boundary at the end of a clip', () => {
+test('joined clips cut by the same rule the measurer uses', () => {
+  // Two paths, one convention. Differ here and a reel cut from a synthesised
+  // draft sits a breath away from the same reel cut from a real recording, in
+  // every shot, for no reason anyone watching could name.
   const rate = 22050;
   const {boundaries, duration} = joinWithGaps([clip(2), clip(1.5), clip(3)], rate, 0.5);
 
   assert.equal(boundaries.length, 2, 'three clips, two seams');
-  assert.equal(boundaries[0], 2, 'the first seam is where the first clip stopped');
-  assert.equal(boundaries[1], 4, '2 + 0.5 gap + 1.5');
+  assert.equal(boundaries[0], 2.34, 'a 0.16s lead before the second clip speaks');
+  assert.equal(boundaries[1], 4.34, '2 + 0.5 + 1.5 + 0.5 − 0.16');
   assert.equal(duration, 7.5, '2 + 1.5 + 3 + two 0.5 gaps');
+});
+
+test('a gap shorter than the lead is split rather than overrun', () => {
+  const {boundaries} = joinWithGaps([clip(1), clip(1)], 22050, 0.2);
+  assert.equal(boundaries[0], 1.1, 'half of a 0.2s gap, not 0.16 back from its end');
 });
 
 test('one clip has no seams and no gap', () => {

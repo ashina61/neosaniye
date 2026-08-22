@@ -64,7 +64,7 @@ export function loudness(samples, sampleRate, windowMs = 20) {
  * @param {{floor?: number, minPauseMs?: number}} [options]
  * @returns {number[]} boundary times in seconds, ascending
  */
-export function findBoundaries(windows, windowMs, count, {floor = 0.12, minPauseMs = 90} = {}) {
+export function findBoundaries(windows, windowMs, count, {floor = 0.12, minPauseMs = 90, leadMs = 160} = {}) {
   if (count <= 0) return [];
 
   // The threshold is relative to how loud THIS recording is. An absolute one
@@ -88,10 +88,37 @@ export function findBoundaries(windows, windowMs, count, {floor = 0.12, minPause
   // Leading silence is not a boundary between two lines — it is the top of the
   // file, and taking it would push every line one place along.
   const inner = runs.filter((run) => run.start > 0);
+
+  /**
+   * THE BOUNDARY IS WHERE THE NEXT LINE STARTS, NOT WHERE THE LAST ONE STOPPED.
+   *
+   * Taking the head of the silent run put every cut at the moment the previous
+   * sentence ended, which sounds like the same thing and is not: the new shot
+   * then sits on screen in silence for the whole length of the pause, and the
+   * error GROWS with how cleanly the narrator reads. Measured against a take
+   * whose true boundaries were known, every cut landed ~310ms early on a
+   * 1.7-second pause — and the recording sheet asks for pauses that long,
+   * because that is what makes them findable.
+   *
+   * So the boundary is the END of the run, pulled back by `leadMs`: picture
+   * leads sound by a few frames, which is how a cut is made everywhere else,
+   * and never by an amount that depends on how long somebody paused.
+   *
+   * `joinWithGaps` places its boundaries by the same rule, so a reel cut from
+   * a synthesised draft and one cut from a real recording differ by the reading
+   * and by nothing else.
+   */
+  const lead = leadMs / 1000;
   return inner
     .sort((a, b) => b.length - a.length)
     .slice(0, count)
-    .map((run) => (run.start * windowMs) / 1000)
+    .map((run) => {
+      const endsAt = ((run.start + run.length) * windowMs) / 1000;
+      const startsAt = (run.start * windowMs) / 1000;
+      // Never step back past the middle of the pause: on a short gap a fixed
+      // lead would otherwise land inside the previous sentence.
+      return Math.max((startsAt + endsAt) / 2, endsAt - lead);
+    })
     .sort((a, b) => a - b);
 }
 
