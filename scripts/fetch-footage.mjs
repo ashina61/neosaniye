@@ -49,7 +49,11 @@ const MIN_HEIGHT = 900;
  */
 async function fromPexels(query) {
   const key = process.env.PEXELS_API_KEY;
-  if (!key) return null;
+  // SAY WHICH DOOR WAS LOCKED. Returning null here let the run fall through to
+  // Commons, find nothing there either, and report "nothing licensed came
+  // back" — which reads as "your searches are bad" when the truth is that the
+  // biggest library was never asked.
+  if (!key) throw new Error('no PEXELS_API_KEY — the largest free library was not asked');
   const url =
     `https://api.pexels.com/videos/search?query=${encodeURIComponent(query)}` +
     `&per_page=15${WANT_PORTRAIT ? '&orientation=portrait' : ''}`;
@@ -139,12 +143,14 @@ async function main() {
     }
     let found = null;
     let why = '';
+    let keyless = false;
     for (const query of [].concat(recipe.stock ?? [])) {
       for (const source of [fromPexels, fromCommons]) {
         try {
           found = await source(query);
         } catch (error) {
           why = String(error?.message ?? error);
+          if (/PEXELS_API_KEY/.test(why)) keyless = true;
         }
         if (found) break;
       }
@@ -152,7 +158,11 @@ async function main() {
     }
     if (!found) {
       failed += 1;
-      console.error(`  ✗ ${name} — nothing licensed came back for ${JSON.stringify(recipe.stock)}${why ? ` (${why})` : ''}`);
+      console.error(
+        keyless
+          ? `  ✗ ${name} — no PEXELS_API_KEY is set, and Commons has no free video for ${JSON.stringify(recipe.stock)}`
+          : `  ✗ ${name} — nothing licensed came back for ${JSON.stringify(recipe.stock)}${why ? ` (${why})` : ''}`,
+      );
       continue;
     }
     const size = await download(found.url, target);
@@ -162,6 +172,12 @@ async function main() {
   }
 
   console.log(`\n${got}/${wanted.length} clip(s) in place for ${id}.`);
+  if (!process.env.PEXELS_API_KEY && got < wanted.length) {
+    console.error(
+      '\n   PEXELS_API_KEY is not set on this run. A free key from pexels.com/api,\n' +
+        '   saved as a repository secret, is what the stock half of this step needs.',
+    );
+  }
   if (failed) {
     console.error(
       '\n   What is missing has to be supplied, not invented: drop your own recording into\n' +
