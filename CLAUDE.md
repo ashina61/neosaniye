@@ -99,6 +99,8 @@ engine/sceneTypes/*.tsx             → plakalar, hareket, gölge
 engine/draw/*.tsx                   → ışık, kâğıt, işaretleme, tipografi
         ↓
 out/<id>.mp4
+        ↓
+scripts/publish-episode.mjs         → kanal (ÜÇ RET, sonra yükleme)
 ```
 
 ## Sıfırıncı yasa, ikinci hâli: KOREOGRAFİYİ YAZAN DÜŞÜNÜR
@@ -135,6 +137,27 @@ otuz altı piksellik manşetiyle bir çıkartmadır. Ama tam kadraj bir gazete d
 bütün bir gazete OLAMAZ: sahte tram bloğu gri bir levhaya, sahte sütunlar gri
 çizgilere döner. Yakın çekim sayfanın ÜSTÜNÜ gösterir — logo, çizgi, manşet —
 ve sütunlar karenin altından taşar.
+
+## Son adım geri alınamaz: YAYIN BİR RET LİSTESİDİR
+
+Buraya kadar her adım dosya yazar; dosyaya bakılır, atılır, yeniden yapılır.
+Yayın öyle değil: unlisted bir link iletilir, private bir video kanalın
+geçmişine düşer, public olan dakikalar içinde indekslenir. O yüzden
+`publish-episode.mjs` bir "yükleme aracı" değil, sonunda yükleme olan bir RET
+LİSTESİDİR. Üç şeyi reddeder, üçü de render'ı mutlu mesut geçen hâllerdir:
+
+- **Yer tutucu görsel.** Ledger, makinenin "bu resimler bitmedi" dediği yazılı
+  nottur. Gri kutulardan oluşan bir reel doğrulamayı geçer, render olur, gerçek
+  bir mp4 üretir — o notun üstünden yayınlamak bu deponun en pahalı hatasının
+  otomatikleşmiş hâlidir.
+- **Kelime sayısından kesilmiş reel.** `audio/vo.json` yoksa saat tahmindir ve
+  kesimler duraklara oturmaz (sıfırıncı yasa). Taslak yayınlanmaz.
+- **Kredisiz Commons.** CC BY / CC BY-SA atfı ESERİN YAYINLANDIĞI YERDE ister;
+  depodaki CREDITS.md orası değil. Kredi açıklamaya girer ya da yükleme olmaz.
+
+Ve gizlilik varsayılanı `private`'tır. Kendi başına kanala post edebilen bir
+hattın dünyaya tek tuş uzakta olmaması gerekir; `--privacy=public` bir insanın
+yazdığı şeydir.
 
 ## Değişmez kurallar
 

@@ -15,6 +15,7 @@
     "voice": "node scripts/voice-episode.mjs",
     "render": "node scripts/render-episode.mjs",
     "validate": "node scripts/validate-episode.mjs",
+    "publish": "node scripts/publish-episode.mjs",
     "frames": "node scripts/review-frames.mjs",
     "prestudio": "node scripts/ensure-scene-overrides.mjs",
     "studio": "remotion studio engine/index.ts",

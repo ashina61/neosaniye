@@ -339,6 +339,37 @@ One workflow, `reel.yml`, and which job runs depends on why it started.
   artwork has to match the new scene ids. Running them out of order is the
   mistake this layout makes impossible.
 
+## Publishing
+
+```bash
+npm run publish -- --episode=<id> --dry-run          # prints exactly what would go up
+npm run publish -- --episode=<id>                    # private
+npm run publish -- --episode=<id> --privacy=public
+```
+
+Every step before this writes a file, and a file can be looked at, thrown away
+and made again. This one hands the reel to a platform, so it is shaped as a list
+of refusals with an upload at the end. It will not publish:
+
+- **stand-in artwork.** The placeholder ledger is the machine already saying, in
+  writing, that the pictures are not finished. A reel of grey labelled boxes
+  validates, renders and produces a real mp4 — publishing past that note is this
+  repo's most expensive failure, automated.
+- **a cut made from a word count.** No `audio/vo.json` means the scene lengths
+  were estimated and the cuts do not land on the pauses. That is a draft.
+- **Commons pictures with no credit.** CC BY and CC BY-SA require attribution
+  *where the work is published*; a CREDITS.md in a repo is not that. The credit
+  goes into the description or the upload does not happen.
+
+Privacy defaults to `private` and nothing infers otherwise — a pipeline that can
+post to a channel on its own must not be one keystroke from posting to the world.
+
+It needs three secrets, granted once by the channel's owner:
+`YOUTUBE_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET`, `YOUTUBE_REFRESH_TOKEN` (an OAuth
+client of type Desktop, in a Google Cloud project with the YouTube Data API v3
+enabled, consented once to the `youtube.upload` scope). Stage 4 of the Reel
+workflow runs it; it is off by default.
+
 ## Episodes
 
 | id | scenes | length |

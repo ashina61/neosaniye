@@ -68,6 +68,20 @@ on:
         required: false
         default: '18'
         type: string
+      publish:
+        description: '4 · Upload it to the channel'
+        required: false
+        default: false
+        type: boolean
+      privacy:
+        description: 'How it goes up — public is a thing a person chooses'
+        required: false
+        default: private
+        type: choice
+        options:
+          - private
+          - unlisted
+          - public
 
 permissions:
   contents: write
@@ -331,6 +345,26 @@ jobs:
       # twenty-one pieces were not on Commons. A red tick that means nothing is
       # worse than no tick, because the next real failure is the one nobody
       # looks at.
+      # ── 5 · PUBLISH ─────────────────────────────────────────────────────
+      # The only step in this file that cannot be re-run. Everything above
+      # writes files; this hands the reel to a platform, and from that second it
+      # has been seen. So it is off by default, it goes up PRIVATE unless
+      # somebody chose otherwise, and the script itself refuses three states
+      # that render happily and are not finished reels: stand-in artwork, a cut
+      # made from a word count instead of the narration, and Commons pictures
+      # with no credit travelling with them.
+      #
+      # Needs three secrets, granted once by the channel owner:
+      #   YOUTUBE_CLIENT_ID · YOUTUBE_CLIENT_SECRET · YOUTUBE_REFRESH_TOKEN
+      - name: Publish
+        if: inputs.publish && inputs.render
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          npm run publish -- --episode="${{ inputs.episode_id }}" --privacy="${{ inputs.privacy }}"
+
       - name: Report artwork that could not be drawn
         if: inputs.assets && steps.draw.outputs.code != '0' && steps.draw.outputs.code != '3'
         run: |
