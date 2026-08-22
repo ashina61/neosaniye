@@ -6,7 +6,7 @@
   "label": "hürmüz · kapalı",
   "grain": 0.17,
   "vignette": 0.6,
-  "audio": "audio/vo.wav",
+  "audio": "audio/vo.mp3",
   "music": "audio/score.wav",
   "musicGain": 0.26,
   "beats": [
@@ -52,7 +52,7 @@
       "ticker": "şubat",
       "graphics": null,
       "from": 0,
-      "to": 191
+      "to": 192
     },
     {
       "slug": "stake",
@@ -90,8 +90,8 @@
           "label": "HER BEŞ VARİLDEN BİRİ"
         }
       ],
-      "from": 191,
-      "to": 367
+      "from": 192,
+      "to": 342
     },
     {
       "slug": "place",
@@ -135,8 +135,8 @@
           "at": 30
         }
       ],
-      "from": 367,
-      "to": 500
+      "from": 342,
+      "to": 458
     },
     {
       "slug": "lane",
@@ -227,8 +227,8 @@
           "colour": "#F2ECDF"
         }
       ],
-      "from": 500,
-      "to": 690
+      "from": 458,
+      "to": 595
     },
     {
       "slug": "theday",
@@ -269,8 +269,8 @@
       "anchor": null,
       "ticker": "28 şubat",
       "graphics": null,
-      "from": 690,
-      "to": 848
+      "from": 595,
+      "to": 694
     },
     {
       "slug": "order",
@@ -303,8 +303,8 @@
       "anchor": null,
       "ticker": "emir",
       "graphics": null,
-      "from": 848,
-      "to": 960
+      "from": 694,
+      "to": 801
     },
     {
       "slug": "how",
@@ -345,8 +345,8 @@
       "anchor": null,
       "ticker": "mekanik",
       "graphics": null,
-      "from": 960,
-      "to": 1219
+      "from": 801,
+      "to": 1019
     },
     {
       "slug": "empty",
@@ -378,8 +378,8 @@
           "label": "GÜNDE GEÇEN GEMİ"
         }
       ],
-      "from": 1219,
-      "to": 1328
+      "from": 1019,
+      "to": 1075
     },
     {
       "slug": "price",
@@ -417,8 +417,8 @@
           "size": 0.22
         }
       ],
-      "from": 1328,
-      "to": 1477
+      "from": 1075,
+      "to": 1215
     },
     {
       "slug": "detour",
@@ -493,8 +493,8 @@
           "labelAt": 5
         }
       ],
-      "from": 1477,
-      "to": 1655
+      "from": 1215,
+      "to": 1388
     },
     {
       "slug": "gas",
@@ -526,8 +526,8 @@
       "anchor": null,
       "ticker": "gaz",
       "graphics": null,
-      "from": 1655,
-      "to": 1797
+      "from": 1388,
+      "to": 1511
     },
     {
       "slug": "trap",
@@ -558,8 +558,8 @@
       "anchor": null,
       "ticker": "tuzak",
       "graphics": null,
-      "from": 1797,
-      "to": 1934
+      "from": 1511,
+      "to": 1628
     },
     {
       "slug": "close",
@@ -604,9 +604,9 @@
           "size": 0.26
         }
       ],
-      "from": 1934,
-      "to": 2064
+      "from": 1628,
+      "to": 1755
     }
   ],
-  "end": 2064
+  "end": 1755
 }
