@@ -150,7 +150,29 @@ export function namesIn(title) {
  * teach whoever runs it what a shootable topic looks like. A refusal is not a
  * low score: it is a topic the machine cannot photograph at all.
  */
-export function judge(rawTitle, meta = {}) {
+/**
+ * WHAT A CAMERA CAN BE POINTED AT.
+ *
+ * A footage reel is supplied by stock libraries, and they are indexed by
+ * ACTION: hands, machines, water, fire, tools, animals, weather. A topic whose
+ * story is entirely abstract — a policy, an argument, a feeling — has no
+ * picture in any of them, which is the footage equivalent of a topic with no
+ * archive behind it.
+ */
+const FILMABLE =
+  /\b(build|built|cut|carv|burn|dig|dug|drill|drive|drove|lift|haul|drag|pull|push|break|broke|smash|crush|fix|repair|weld|forge|melt|pour|climb|dive|swim|sail|fly|flew|crash|fall|fell|collaps|flood|freeze|froze|melt|grow|harvest|hunt|fish|cook|bake|paint|print|sew|knit|hammer|saw|chain|rope|net|trap|clear|fell|log|mine|blast|tunnel|bridge|launch|land|tow|lower|raise)\w*\b/i;
+
+/**
+ * Judge one title.
+ *
+ * `footage` switches which SUPPLY the topic has to survive. The still pipeline
+ * needs a named, archived, photographed subject — Commons is the shelf, and a
+ * topic that is not on it renders as grey plates. A footage reel is supplied by
+ * stock, which holds actions rather than events: it does not care that the
+ * story is from last year or that nobody famous is in it, and it cares very
+ * much that something in the line can be pointed at.
+ */
+export function judge(rawTitle, meta = {}, {footage = false} = {}) {
   const topic = cleanTitle(rawTitle);
   const names = namesIn(topic);
   const years = topic.match(YEAR) ?? [];
@@ -172,7 +194,9 @@ export function judge(rawTitle, meta = {}) {
   else if (FIRST_PERSON.test(topic)) verdict.refused = 'first person — an anecdote has no archive to photograph';
   else if (topic.endsWith('?') || ASKING.test(topic)) verdict.refused = 'a question, not an event';
   else if (words.length > 32) verdict.refused = `${words.length} words — a hook is one line`;
-  else if (!names.length && !years.length && !PERIOD.test(topic))
+  else if (footage && !FILMABLE.test(topic) && !names.length)
+    verdict.refused = 'nothing happens that a camera can be pointed at';
+  else if (!footage && !names.length && !years.length && !PERIOD.test(topic))
     verdict.refused = 'nothing named and no date — there is nothing to fetch';
 
   if (verdict.refused) return verdict;
@@ -183,7 +207,8 @@ export function judge(rawTitle, meta = {}) {
   };
 
   if (names.length) add(Math.min(3, names.length), `names ${names.slice(0, 3).join(', ')}`);
-  if (years.length) add(3, `dated ${years[0]}`);
+  if (footage && FILMABLE.test(topic)) add(3, `filmable — "${topic.match(FILMABLE)[0]}"`);
+  if (years.length) add(footage ? 1 : 3, `dated ${years[0]}`);
   else if (PERIOD.test(topic)) add(2, 'has a period');
   if (OUTCOME.test(topic)) add(2, `something happens — "${topic.match(OUTCOME)[0]}"`);
   // The year is a date, not a quantity; counting it here scored it twice.
@@ -195,8 +220,10 @@ export function judge(rawTitle, meta = {}) {
    * 2016 exists and belongs to the person who took it; fetch-commons refuses
    * anything that is not free, so a recent topic arrives with empty hands.
    */
+  // Only the still line pays for being modern: its pictures come off an
+  // archive. A stock library is full of this year.
   const newest = years.length ? Math.max(...years.map(Number)) : 0;
-  if (newest >= 1990) add(-4, `${newest} — free photographs of the moment itself are scarce`);
+  if (!footage && newest >= 1990) add(-4, `${newest} — free photographs of the moment itself are scarce`);
 
   // Reddit's own ranking, logged flat. It is evidence the hook works and
   // nothing more: a 90k-upvote anecdote is still refused above.
@@ -286,11 +313,11 @@ async function fetchSub(sub, {sort = 'top', t = 'year', limit = 50} = {}) {
 }
 
 /** Judge every post, drop the refused, best first. Ties break on votes. */
-export function rank(posts) {
+export function rank(posts, options = {}) {
   const seen = new Set();
   const kept = [];
   for (const post of posts) {
-    const verdict = judge(post.title, post);
+    const verdict = judge(post.title, post, options);
     if (verdict.refused) continue;
     const key = verdict.topic.toLowerCase();
     if (seen.has(key)) continue;
@@ -346,10 +373,11 @@ async function main() {
     process.exit(1);
   }
 
-  const ranked = rank(posts);
+  const footage = args.footage === true || args.footage === 'true';
+  const ranked = rank(posts, {footage});
   const taken = await existingEpisodes();
   const passing = ranked.filter((r) => r.score >= PASS);
-  const refused = posts.map((post) => judge(post.title, post)).filter((v) => v.refused);
+  const refused = posts.map((post) => judge(post.title, post, {footage})).filter((v) => v.refused);
 
   if (args.json) {
     console.log(JSON.stringify(passing.slice(0, top), null, 2));
@@ -379,7 +407,10 @@ async function main() {
     const clash = taken.has(candidate.id) ? '  ← id already used, pick another' : '';
     console.log(`  ${String(candidate.score).padStart(2)}  ${candidate.topic}`);
     console.log(`      ${candidate.reasons.join(' · ')}`);
-    console.log(`      npm run write -- --id=${candidate.id} --topic="${candidate.topic.replace(/"/g, "'")}" --mood=${candidate.mood}${clash}`);
+    console.log(
+      `      npm run write -- --id=${candidate.id} --topic="${candidate.topic.replace(/"/g, "'")}" --mood=${candidate.mood}` +
+        `${footage ? ' --footage' : ''}${clash}`,
+    );
     if (candidate.url) console.log(`      ${candidate.url}`);
     console.log('');
   }

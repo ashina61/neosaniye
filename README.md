@@ -51,6 +51,11 @@ and anything with nothing named in it are refused outright rather than ranked
 low, however many upvotes they carry. What passes is the shape the machine was
 built around: a named thing, a date, and an outcome.
 
+`--footage` judges by a different supply. The still line needs a named, archived
+subject; a stock library holds ACTIONS, so it stops caring whether the story is
+archived or recent and starts caring whether anything in it can be pointed at —
+an abstraction is refused there the way an unarchived event is refused here.
+
 It prints the command to write each one, so the whole distance from a listing to
 a storyboard is one copied line:
 

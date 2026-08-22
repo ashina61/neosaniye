@@ -118,3 +118,32 @@ test('ranking drops the refused, dedupes and puts the best first', () => {
   assert.ok(ranked[0].score >= ranked[1].score);
   assert.ok(ranked.every((r) => r.id && r.mood));
 });
+
+/**
+ * A FOOTAGE TOPIC IS SUPPLIED BY A DIFFERENT SHELF.
+ *
+ * The still line needs a named, archived, photographed subject — Commons is the
+ * shelf and a topic that is not on it renders as grey plates. Stock libraries
+ * hold ACTIONS instead of events: they do not care that a story is from last
+ * year or that nobody famous is in it, and they care very much that something
+ * in it can be pointed at.
+ */
+test('footage mode judges by what a camera can see, not by what is archived', () => {
+  const nameless = 'Two bulldozers drag a ship anchor chain through a forest to clear it';
+  assert.match(judge(nameless, {votes: 30_000}).refused ?? '', /nothing named/, 'the still line still wants an archive');
+
+  const shot = judge(nameless, {votes: 30_000}, {footage: true});
+  assert.equal(shot.refused, null);
+  assert.ok(shot.score >= PASS, `scored ${shot.score}: ${shot.reasons.join(' · ')}`);
+  assert.ok(shot.reasons.some((r) => /filmable/.test(r)));
+
+  // Modern is only a problem for the line whose pictures come off an archive.
+  const modern = judge('A crane lifts a bridge section into place in 2019', {}, {footage: true});
+  assert.ok(!modern.reasons.some((r) => /scarce/.test(r)), modern.reasons.join(' · '));
+
+  // And an abstraction has no picture in any library.
+  assert.match(
+    judge('The argument for a wealth tax explained', {}, {footage: true}).refused ?? '',
+    /camera can be pointed/,
+  );
+});
