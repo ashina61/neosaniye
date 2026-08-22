@@ -102,9 +102,18 @@ export const DrawnProps: React.FC<{
               crop={w > width * 0.6}
             />
           ) : prop.kind === 'card' ? (
-            <Card title={prop.heading} lines={prop.lines} width={w} stamp={prop.stamp} />
+            /**
+             * `text` IS WHAT THE PROP SAYS. Every other kind reads it, the
+             * writer refuses a brief whose card has none, and the planner
+             * carries it through — and then these two read `heading` and
+             * `caption`, fields nothing upstream sets. So a directed card with
+             * "twenty-one drowned" written on it rendered as a blank white
+             * rectangle, and it did it past the schema, past the validator and
+             * into a finished mp4.
+             */
+            <Card title={prop.heading ?? prop.text} lines={prop.lines} width={w} stamp={prop.stamp} />
           ) : (
-            <Print width={w} caption={prop.caption} />
+            <Print width={w} caption={prop.caption ?? prop.text} />
           );
 
         return (

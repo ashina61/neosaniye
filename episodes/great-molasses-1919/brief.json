@@ -1,0 +1,101 @@
+{
+  "id": "great-molasses-1919",
+  "title": "The wave that was not water",
+  "mood": "green-rot",
+  "style": "documentary photograph, 1919, winter, available light, muted colour, fine grain, no text, no watermark, no modern objects",
+  "negative": "text, letters, words, watermark, logo, cartoon, cgi, painting, illustration, modern objects, cars",
+  "lines": [
+    {
+      "slug": "tank",
+      "vo": "In January 1919 a steel tank in Boston's North End burst.",
+      "image": "a winter street of brick warehouses under a low grey sky",
+      "imageCommons": ["North End Boston 1919", "Commercial Street Boston waterfront", "brick warehouse waterfront winter"],
+      "pieces": ["steel storage tank above a wharf", "wooden telegraph pole"],
+      "shot": {
+        "template": "composite",
+        "signature": "one slow push straight into the tank until its riveted seam is the whole frame — the shot exists to make you look at the thing before it fails",
+        "camera": {"from": 1.0, "to": 1.3, "focus": "hunt"},
+        "anchor": [0.5, 0.55],
+        "props": [
+          {"kind": "plaque", "text": "Boston · 1919", "size": 0.42, "x": 0.5, "y": 0.84, "depth": 0.14, "at": 0.45}
+        ]
+      }
+    },
+    {
+      "slug": "street",
+      "vo": "Two million gallons of molasses ran down Commercial Street.",
+      "image": "a narrow cobbled street between brick buildings",
+      "imageCommons": ["Commercial Street Boston", "cobbled street brick buildings Boston", "Boston street 1919"],
+      "pieces": ["wooden barrel lying on its side", "iron lamp post"],
+      "shot": {
+        "template": "composite",
+        "signature": "the camera falls back down the street as if pushed, opening the frame instead of closing it — the only shot in the reel that retreats",
+        "camera": {"from": 1.36, "to": 1.02, "focus": "hunt"},
+        "anchor": [0.48, 0.62],
+        "props": [
+          {"kind": "plaque", "text": "Commercial Street", "size": 0.46, "x": 0.5, "y": 0.86, "depth": 0.12, "at": 0.3}
+        ]
+      }
+    },
+    {
+      "slug": "wave",
+      "vo": "The wave stood fifteen feet high and moved at thirty-five miles an hour.",
+      "image": "a dark warehouse wall lit from one side",
+      "imageCommons": ["brick warehouse wall", "warehouse wall shadow"],
+      "pieces": ["wooden cart wheel", "sheet of corrugated iron"],
+      "shot": {
+        "template": "title-slate",
+        "signature": "the number arrives alone on the card and everything else in the reel stops for it — no photograph, no prop, nothing to look at but the height",
+        "camera": {"from": 1.0, "to": 1.14},
+        "props": []
+      }
+    },
+    {
+      "slug": "firehouse",
+      "vo": "It tore a firehouse off its foundation and buried the horses.",
+      "image": "a wrecked wooden building leaning into black mud",
+      "imageCommons": ["Great Molasses Flood aftermath", "Boston molasses disaster 1919", "collapsed wooden building wreckage 1919"],
+      "pieces": ["broken wooden beam", "fire helmet lying in mud"],
+      "shot": {
+        "template": "composite",
+        "signature": "a hard fast push onto the leaning wall, harder than any other shot, so the cut lands like the building did",
+        "camera": {"from": 1.02, "to": 1.44, "focus": "hunt"},
+        "anchor": [0.42, 0.6],
+        "props": [
+          {"kind": "card", "text": "firehouse", "size": 0.38, "x": 0.7, "y": 0.28, "depth": 0.5, "at": 0.5}
+        ]
+      }
+    },
+    {
+      "slug": "dead",
+      "vo": "Twenty-one people drowned in it and a hundred and fifty were hurt.",
+      "image": "a long hall of empty iron cots",
+      "imageCommons": ["hospital ward 1919", "military hospital ward cots", "long hospital hall beds"],
+      "pieces": ["folded canvas stretcher", "enamel bowl on a stand"],
+      "shot": {
+        "template": "evidence-board",
+        "signature": "the count is pinned up rather than spoken over a picture — the shot stops being a place and becomes a record",
+        "camera": {"from": 1.0, "to": 1.2},
+        "props": [
+          {"kind": "card", "text": "twenty-one drowned", "size": 0.44, "x": 0.34, "y": 0.4, "depth": 0.3, "at": 0.35}
+        ]
+      }
+    },
+    {
+      "slug": "verdict",
+      "vo": "The company paid six hundred thousand dollars and blamed anarchists.",
+      "image": "a wooden courtroom bench in low light",
+      "imageCommons": ["courtroom interior 1920", "wooden courtroom bench", "courthouse interior early 20th century"],
+      "pieces": ["leather ledger lying open", "brass inkwell"],
+      "shot": {
+        "template": "composite",
+        "signature": "the camera pulls off the bench while the front page settles over it — the reel ends by backing away from the room",
+        "camera": {"from": 1.24, "to": 1.0, "focus": "hunt"},
+        "anchor": [0.5, 0.58],
+        "props": [
+          {"kind": "newspaper", "text": "BLAMED ANARCHISTS", "size": 0.78, "x": 0.5, "y": 0.46, "depth": 0.45, "at": 0.25}
+        ]
+      }
+    }
+  ]
+}

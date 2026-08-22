@@ -227,6 +227,24 @@ export function validateEpisodeConfig(config) {
         }
       }
     }
+    /**
+     * A TITLE SLATE WITH NOTHING ON IT.
+     *
+     * The template is typography — rules, a kicker, a figure set large — so a
+     * slate with no title, no kicker and no footer draws its rules over an
+     * empty field and holds there for two seconds. Like an unknown scene type
+     * it is invisible to everything downstream: it renders, it is the right
+     * length, and it looks like a deliberate beat of silence to anyone who did
+     * not write it. Refused here, where both the validator and the bundle run
+     * the same check.
+     */
+    if (scene.sceneType === 'title-slate') {
+      const said = ['title', 'kicker', 'footer'].map((key) => String(scene.params?.[key] ?? '').trim());
+      const typed = (scene.onScreenText ?? []).some((entry) => String(entry?.text ?? '').trim());
+      if (!said.some(Boolean) && !typed) {
+        push(`${where}.params: a title-slate with no title, kicker or footer is an empty card`);
+      }
+    }
     // A motif that does not exist draws nothing and reports nothing, which is
     // exactly how a shot ends up being a still picture with a caption on it.
     const motif = scene.params?.motif;

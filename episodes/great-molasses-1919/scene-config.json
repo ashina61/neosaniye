@@ -1,0 +1,580 @@
+{
+  "id": "great-molasses-1919",
+  "title": "The wave that was not water",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "look": {
+    "posterizeFps": 12,
+    "grade": {
+      "saturate": 0.64,
+      "contrast": 1.15,
+      "sepia": 0.16,
+      "brightness": 1.04
+    },
+    "film": {
+      "grain": true,
+      "grunge": true,
+      "scanlines": true,
+      "vignette": true,
+      "gateWeave": true,
+      "grainOpacity": 0.39,
+      "grungeOpacity": 0.16,
+      "scanlineOpacity": 0.13,
+      "scanlinePeriod": 8,
+      "vignetteStrength": 0.41,
+      "weavePx": 5,
+      "weaveScale": 1.012
+    }
+  },
+  "scenes": [
+    {
+      "id": "s01-tank",
+      "sceneType": "composite",
+      "voText": "In January 1919 a steel tank in Boston's North End burst.",
+      "durationInFrames": 118,
+      "gradeOverride": {
+        "saturate": 0.58,
+        "contrast": 1.14,
+        "brightness": 0.95
+      },
+      "assets": {
+        "ground": "assets/s01-tank-bg.png"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.81,
+          "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "Boston · 1919",
+          "width": 454,
+          "x": 540,
+          "y": 1613,
+          "depth": 0.14,
+          "rotate": 0,
+          "from": 53
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1056,
+        "pushFrom": 1,
+        "pushTo": 1.3,
+        "pushEndFrame": 101,
+        "glowX": 1436,
+        "glowY": 543,
+        "glowSize": 489,
+        "glowIntensity": 0.52,
+        "glowWarm": "#c8d94a",
+        "glowDepth": 0.81,
+        "focusPx": 8,
+        "fog": 0.42,
+        "caption": [],
+        "captionX": 84,
+        "captionY": 731,
+        "captionSize": 94,
+        "captionAlign": "left",
+        "captionFrame": 4,
+        "captionEvery": 6,
+        "captionScrim": 0.34,
+        "captionRecedeAt": 85,
+        "accent": "#c8d94a",
+        "motif": "embers",
+        "motifX": 511,
+        "motifY": 960,
+        "motifSize": 37,
+        "motifCount": 33,
+        "motifFrame": 27,
+        "motifColour": "#c8d94a",
+        "motifOpacity": 0.92
+      }
+    },
+    {
+      "id": "s02-street",
+      "sceneType": "composite",
+      "voText": "Two million gallons of molasses ran down Commercial Street.",
+      "durationInFrames": 108,
+      "transition": {
+        "kind": "flare",
+        "frames": 7
+      },
+      "assets": {
+        "ground": "assets/s02-street-bg.png"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.84,
+          "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "Commercial Street",
+          "width": 497,
+          "x": 540,
+          "y": 1651,
+          "depth": 0.12,
+          "rotate": 0,
+          "from": 32
+        }
+      ],
+      "params": {
+        "anchorX": 518,
+        "anchorY": 1190,
+        "pushFrom": 1.36,
+        "pushTo": 1.02,
+        "pushEndFrame": 93,
+        "glowX": 1430,
+        "glowY": 290,
+        "glowSize": 445,
+        "glowIntensity": 0.62,
+        "glowWarm": "#c8d94a",
+        "glowDepth": 0.84,
+        "focusPx": 13,
+        "fog": 0.36,
+        "caption": [],
+        "captionX": 84,
+        "captionY": 707,
+        "captionSize": 95,
+        "captionAlign": "left",
+        "captionFrame": 4,
+        "captionEvery": 7,
+        "captionScrim": 0.34,
+        "captionRecedeAt": 78,
+        "accent": "#c8d94a"
+      }
+    },
+    {
+      "id": "s03-wave",
+      "sceneType": "title-slate",
+      "voText": "The wave stood fifteen feet high",
+      "durationInFrames": 75,
+      "transition": {
+        "kind": "slip",
+        "frames": 10
+      },
+      "assets": {
+        "background": "assets/s03-wave-bg.png"
+      },
+      "params": {
+        "scrim": 0.44,
+        "kicker": "",
+        "title": "FIFTEEN FEET",
+        "footer": "",
+        "titleFrame": 5,
+        "titleSize": 230,
+        "creep": 1.1,
+        "accent": "#c8d94a",
+        "field": "wash",
+        "fieldColours": [
+          "#3a4530",
+          "#1f2619",
+          "#0b0e08"
+        ]
+      },
+      "props": []
+    },
+    {
+      "id": "s03-wave-b",
+      "sceneType": "composite",
+      "voText": "and moved at thirty-five miles an hour.",
+      "durationInFrames": 86,
+      "transition": {
+        "kind": "flare",
+        "frames": 5
+      },
+      "assets": {
+        "ground": "assets/s03-wave-bg.png"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.87,
+          "anchor": "fill"
+        }
+      ],
+      "props": [],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.49,
+        "pushTo": 1.04,
+        "pushEndFrame": 81,
+        "accent": "#c8d94a",
+        "caption": [
+          "and moved",
+          "at thirty-five",
+          "miles an",
+          "hour"
+        ],
+        "captionX": 84,
+        "captionY": 337,
+        "captionSize": 94,
+        "captionAlign": "left",
+        "captionFrame": 4,
+        "captionEvery": 6,
+        "captionScrim": 0.34,
+        "glowX": 1390,
+        "glowY": 429,
+        "glowSize": 400,
+        "glowIntensity": 0.59,
+        "glowWarm": "#c8d94a",
+        "glowDepth": 0.87,
+        "focusPx": 10,
+        "fog": 0.41
+      }
+    },
+    {
+      "id": "s04-firehouse",
+      "sceneType": "composite",
+      "voText": "It tore a firehouse off its foundation",
+      "durationInFrames": 86,
+      "transition": {
+        "kind": "slip",
+        "frames": 10
+      },
+      "assets": {
+        "ground": "assets/s04-firehouse-bg.png"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.92,
+          "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "card",
+          "text": "firehouse",
+          "width": 410,
+          "x": 756,
+          "y": 538,
+          "depth": 0.5,
+          "rotate": 0,
+          "from": 43
+        }
+      ],
+      "params": {
+        "anchorX": 454,
+        "anchorY": 1152,
+        "pushFrom": 1.02,
+        "pushTo": 1.44,
+        "pushEndFrame": 74,
+        "glowX": 1470,
+        "glowY": 605,
+        "glowSize": 390,
+        "glowIntensity": 0.57,
+        "glowWarm": "#c8d94a",
+        "glowDepth": 0.92,
+        "focusPx": 12,
+        "fog": 0.36,
+        "caption": [],
+        "captionX": 84,
+        "captionY": 787,
+        "captionSize": 91,
+        "captionAlign": "left",
+        "captionFrame": 4,
+        "captionEvery": 10,
+        "captionScrim": 0.34,
+        "captionRecedeAt": 62,
+        "accent": "#c8d94a"
+      }
+    },
+    {
+      "id": "s04-firehouse-b",
+      "sceneType": "composite",
+      "voText": "and buried the horses.",
+      "durationInFrames": 52,
+      "transition": {
+        "kind": "flare",
+        "frames": 6
+      },
+      "assets": {
+        "ground": "assets/s04-firehouse-bg.png"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.93,
+          "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "card",
+          "text": "firehouse",
+          "width": 410,
+          "x": 756,
+          "y": 538,
+          "depth": 0.5,
+          "rotate": 0,
+          "from": 0
+        }
+      ],
+      "params": {
+        "anchorX": 454,
+        "anchorY": 1152,
+        "pushFrom": 1.47,
+        "pushTo": 1.05,
+        "pushEndFrame": 49,
+        "accent": "#c8d94a",
+        "caption": [
+          "and buried",
+          "the horses"
+        ],
+        "captionX": 84,
+        "captionY": 525,
+        "captionSize": 97,
+        "captionAlign": "left",
+        "captionFrame": 4,
+        "captionEvery": 9,
+        "captionScrim": 0.34,
+        "glowX": 1404,
+        "glowY": 291,
+        "glowSize": 397,
+        "glowIntensity": 0.43,
+        "glowWarm": "#c8d94a",
+        "glowDepth": 0.93,
+        "focusPx": 13,
+        "fog": 0.31
+      }
+    },
+    {
+      "id": "s05-dead",
+      "sceneType": "evidence-board",
+      "voText": "Twenty-one people drowned in it",
+      "durationInFrames": 64,
+      "transition": {
+        "kind": "slip",
+        "frames": 10
+      },
+      "assets": {
+        "background": "assets/s05-dead-bg.png"
+      },
+      "params": {
+        "bgScale": 1.101,
+        "scrim": 0.25,
+        "focusPx": 9,
+        "itemWidth": 577,
+        "itemFrames": [],
+        "items": [],
+        "caption": [],
+        "captionX": 84,
+        "captionY": 217,
+        "captionFrame": 6,
+        "captionSize": 91,
+        "captionRecedeAt": 29
+      },
+      "props": [
+        {
+          "kind": "card",
+          "text": "twenty-one drowned",
+          "width": 475,
+          "x": 367,
+          "y": 768,
+          "depth": 0.3,
+          "rotate": 0,
+          "from": 22
+        }
+      ]
+    },
+    {
+      "id": "s05-dead-b",
+      "sceneType": "composite",
+      "voText": "and a hundred and fifty were hurt.",
+      "durationInFrames": 86,
+      "transition": {
+        "kind": "blinds",
+        "frames": 12
+      },
+      "assets": {
+        "ground": "assets/s05-dead-bg.png"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.92,
+          "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "card",
+          "text": "twenty-one drowned",
+          "width": 475,
+          "x": 367,
+          "y": 768,
+          "depth": 0.3,
+          "rotate": 0,
+          "from": 0
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.5,
+        "pushTo": 1.04,
+        "pushEndFrame": 81,
+        "accent": "#c8d94a",
+        "caption": [
+          "and a",
+          "hundred and",
+          "fifty were",
+          "hurt"
+        ],
+        "captionX": 84,
+        "captionY": 314,
+        "captionSize": 96,
+        "captionAlign": "left",
+        "captionFrame": 4,
+        "captionEvery": 7,
+        "captionScrim": 0.34,
+        "glowX": 1593,
+        "glowY": 341,
+        "glowSize": 533,
+        "glowIntensity": 0.45,
+        "glowWarm": "#c8d94a",
+        "glowDepth": 0.92,
+        "focusPx": 9,
+        "fog": 0.41
+      }
+    },
+    {
+      "id": "s06-verdict",
+      "sceneType": "composite",
+      "voText": "The company paid six hundred thousand dollars",
+      "durationInFrames": 86,
+      "gradeOverride": {
+        "saturate": 0.96,
+        "sepia": 0.34,
+        "brightness": 1.06
+      },
+      "transition": {
+        "kind": "slip",
+        "frames": 12
+      },
+      "assets": {
+        "ground": "assets/s06-verdict-bg.png"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.83,
+          "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "newspaper",
+          "text": "BLAMED ANARCHISTS",
+          "width": 842,
+          "x": 540,
+          "y": 883,
+          "depth": 0.45,
+          "rotate": 0,
+          "from": 22
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1114,
+        "pushFrom": 1.24,
+        "pushTo": 1,
+        "pushEndFrame": 74,
+        "glowX": 1353,
+        "glowY": 171,
+        "glowSize": 356,
+        "glowIntensity": 0.51,
+        "glowWarm": "#c8d94a",
+        "glowDepth": 0.83,
+        "focusPx": 12,
+        "fog": 0.33,
+        "caption": [],
+        "captionX": 84,
+        "captionY": 304,
+        "captionSize": 91,
+        "captionAlign": "left",
+        "captionFrame": 4,
+        "captionEvery": 7,
+        "captionScrim": 0.34,
+        "captionRecedeAt": 62,
+        "accent": "#c8d94a",
+        "motif": "coins",
+        "motifX": 525,
+        "motifY": 1651,
+        "motifSize": 41,
+        "motifCount": 21,
+        "motifFrame": 29,
+        "motifColour": "#c8d94a",
+        "motifOpacity": 0.95
+      }
+    },
+    {
+      "id": "s06-verdict-b",
+      "sceneType": "composite",
+      "voText": "and blamed anarchists.",
+      "durationInFrames": 45,
+      "transition": {
+        "kind": "flare",
+        "frames": 8
+      },
+      "assets": {
+        "ground": "assets/s06-verdict-bg.png"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.89,
+          "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "newspaper",
+          "text": "BLAMED ANARCHISTS",
+          "width": 842,
+          "x": 540,
+          "y": 883,
+          "depth": 0.45,
+          "rotate": 0,
+          "from": 0
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1114,
+        "pushFrom": 1.48,
+        "pushTo": 1.05,
+        "pushEndFrame": 42,
+        "accent": "#c8d94a",
+        "caption": [
+          "and blamed",
+          "anarchists"
+        ],
+        "captionX": 84,
+        "captionY": 356,
+        "captionSize": 93,
+        "captionAlign": "left",
+        "captionFrame": 4,
+        "captionEvery": 7,
+        "captionScrim": 0.34,
+        "glowX": 1288,
+        "glowY": 121,
+        "glowSize": 306,
+        "glowIntensity": 0.51,
+        "glowWarm": "#c8d94a",
+        "glowDepth": 0.89,
+        "focusPx": 14,
+        "fog": 0.24
+      }
+    }
+  ]
+}

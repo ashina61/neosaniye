@@ -98,3 +98,23 @@ test('a required role is never dropped, however missing it is', () => {
 test('the ? is stripped so templates never see it', () => {
   assert.deepEqual(Object.keys(resolveAssets({'?haze': 'h.png'})), ['haze']);
 });
+
+/**
+ * An empty title slate is invisible to everything downstream — it renders, it
+ * is the right length, and it looks intended. Same class as an unknown scene
+ * type, so it is refused in the same place: the one validator both the CLI and
+ * the render bundle run.
+ */
+test('a title-slate with nothing on it is refused', () => {
+  const slate = (params, extra = {}) =>
+    config({scenes: [scene({sceneType: 'title-slate', params, ...extra})]});
+  assert.match(validateEpisodeConfig(slate({})).join(' '), /empty card/);
+  assert.match(validateEpisodeConfig(slate({title: '   '})).join(' '), /empty card/);
+  assert.deepEqual(validateEpisodeConfig(slate({title: 'FIFTEEN FEET'})), []);
+  assert.deepEqual(validateEpisodeConfig(slate({kicker: 'BOSTON'})), []);
+  assert.deepEqual(
+    validateEpisodeConfig(slate({}, {onScreenText: [{text: 'SIX HOURS', atFrame: 10, durationInFrames: 20}]})),
+    [],
+    'a card carrying typed words is not empty',
+  );
+});

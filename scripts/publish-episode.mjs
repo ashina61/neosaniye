@@ -214,7 +214,13 @@ async function main() {
   const commons = await usedCommons(dir);
 
   const problems = problemsWithRelease({video, placeholders, measured, credits, commons, privacy});
-  if (problems.length) {
+  /**
+   * A DRY RUN IS NOT A PUBLISH, so the refusals do not gate it — they are
+   * printed and it carries on. The first version exited here, which meant the
+   * one moment you actually want to see what would go up (before it is ready)
+   * was the one moment it would not show you.
+   */
+  if (problems.length && !args['dry-run']) {
     console.error(`✗ ${id} is not ready to publish — nothing was uploaded:\n`);
     for (const problem of problems) console.error(`   · ${problem}`);
     console.error('\n   These are the states that render happily and are not finished reels.');
@@ -230,7 +236,12 @@ async function main() {
 
   if (args['dry-run']) {
     console.log(`— dry run, nothing uploaded —\n`);
-    console.log(`file      ${path.relative(ROOT, video.file)}  ${(video.size / 1e6).toFixed(1)} MB  ${seconds}s`);
+    if (problems.length) {
+      console.log('would be REFUSED as it stands:');
+      for (const problem of problems) console.log(`   · ${problem}`);
+      console.log('');
+    }
+    console.log(`file      ${video ? `${path.relative(ROOT, video.file)}  ${(video.size / 1e6).toFixed(1)} MB` : 'not rendered yet'}  ${seconds}s`);
     console.log(`privacy   ${privacy}`);
     console.log(`title     ${metadata.snippet.title}  (${metadata.snippet.title.length}/${TITLE_MAX})`);
     console.log(`tags      ${metadata.snippet.tags.join(', ')}`);

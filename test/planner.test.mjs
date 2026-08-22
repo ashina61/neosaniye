@@ -280,3 +280,46 @@ test('a title the author wrote is the card, whole', async () => {
   // Whatever device the figure arrives on, it arrives entire.
   assert.equal(slate.params.spinTo ?? slate.params.countTo ?? slate.params.title, 'FOURTEEN HUNDRED');
 });
+
+/**
+ * A SLATE WITH NOTHING ON IT.
+ *
+ * The template is typography: two rules, a kicker, a figure set large. Given a
+ * line with nothing to set it draws the rules and holds on an empty field for
+ * two seconds — renders, validates, right length, and reads as a deliberate
+ * beat of silence to everyone who did not write it. Pompeii shipped one.
+ */
+test('a directed slate is given the line\'s own figure', async () => {
+  const lines = six();
+  lines[2] = line('wave', 'The wave stood fifteen feet high and kept moving.', {
+    shot: shot({template: 'title-slate'}),
+  });
+  const {config, refused} = await plan(lines);
+  assert.ok(!refused, refused);
+  const slate = config.scenes.find((s) => s.sceneType === 'title-slate' && s.id.startsWith('s03'));
+  assert.ok(slate, 'the directed slate did not survive planning');
+  assert.equal(slate.params.title, 'FIFTEEN FEET', 'the beat used to decide whether a slate got its number');
+});
+
+test('the rotation may not choose a slate it has nothing to put on', async () => {
+  const {config, refused} = await plan(six({}, 'Something happened and then it stopped.'));
+  assert.ok(!refused, refused);
+  for (const scene of config.scenes) {
+    if (scene.sceneType !== 'title-slate') continue;
+    const said = [scene.params?.title, scene.params?.kicker, scene.params?.footer].map((v) => String(v ?? '').trim());
+    assert.ok(said.some(Boolean), `${scene.id} is a slate with nothing on it`);
+  }
+});
+
+test('words written for a beat become the slate itself, not a caption under it', async () => {
+  const lines = six();
+  lines[3] = line('fall', 'Pumice fell for hours and the roofs gave.', {
+    onScreen: 'SIX HOURS',
+    shot: shot({template: 'title-slate'}),
+  });
+  const {config, refused} = await plan(lines);
+  assert.ok(!refused, refused);
+  const slate = config.scenes.find((s) => s.id.startsWith('s04') && s.sceneType === 'title-slate');
+  assert.equal(slate.params.title, 'SIX HOURS');
+  assert.ok(!slate.onScreenText?.length, 'it is drawn twice on the same card');
+});

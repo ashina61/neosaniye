@@ -1251,6 +1251,31 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
   if (!contentBound && recentTypes.length && recentTypes[recentTypes.length - 1] === sceneType) {
     sceneType = sceneType === 'composite' ? 'title-slate' : 'composite';
   }
+  /**
+   * AN EMPTY CARD IS NOT A SHOT.
+   *
+   * A slate is typography: rules, a kicker, a figure set large. Given a line
+   * with no title and no number it draws the rules and nothing between them —
+   * two seconds of a hairline on a dark field, which renders, validates and
+   * ships. It already had: pompeii's fourth scene is that card.
+   *
+   * So the rotation may not CHOOSE a slate it has nothing to put on. A slate
+   * the director asked for is left alone and refused by the schema instead —
+   * silently turning a written choice into a different shot is the other way
+   * to lose a scene.
+   */
+  /**
+   * WHAT THE CARD WOULD SAY: the written title, else the line's own figure,
+   * else the words the author put on screen for this beat. That last one is
+   * how pompeii's fourth scene came out: the brief said SIX HOURS, the slate
+   * read `title` only, and the words it was given were set small at the bottom
+   * of an otherwise empty card. A slate's job is to set words LARGE.
+   */
+  const slateWords =
+    (line.title ? String(line.title) : bigNumber(line.vo) || String(line.onScreen ?? '')).toUpperCase();
+  if (sceneType === 'title-slate' && !slateWords && !line.kicker && !line.footer && line?.shot?.template !== 'title-slate') {
+    sceneType = 'composite';
+  }
   // The shot lasts as long as ITS FRAGMENT takes to say — not as long as the
   // whole sentence does. That one change is what stopped every scene coming out
   // at the ceiling.
@@ -1303,11 +1328,14 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
      * So a written title spins or counts AS ITSELF. The extractor is only for
      * the line that never had one.
      */
-    const number = line.title
-      ? String(line.title).toUpperCase()
-      : beat === 'number'
-        ? bigNumber(line.vo)
-        : '';
+    /**
+     * AND THE EXTRACTION IS NOT THE BEAT'S PRIVILEGE. It used to run only on
+     * the `number` beat, so a slate the director asked for on any other line
+     * got nothing at all — "the wave stood fifteen feet high" arrived as an
+     * empty card. The beat decides what the planner would have CHOSEN; once
+     * the shot is a slate, the line's own figure is what goes on it.
+     */
+    const number = slateWords;
     const titleFrame = 4 + Math.round(rand() * 6);
     scene.params = {
       scrim: round(between(rand, [0.36, 0.54])),
@@ -1476,7 +1504,9 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
     scene.props = planProps({line, rand, look, side, durationInFrames, recentProps, beat});
   }
 
-  if (line.onScreen) {
+  // …unless they are already the title of this card, set large. Drawing them
+  // twice on one slate is the overlay arguing with the typography.
+  if (line.onScreen && !(sceneType === 'title-slate' && scene.params?.title === String(line.onScreen).toUpperCase())) {
     scene.onScreenText = [
       {
         text: line.onScreen,
