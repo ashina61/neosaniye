@@ -24,6 +24,7 @@
     "test": "node --test \"test/*.test.mjs\"",
     "assets:generate": "node scripts/generate-assets.mjs",
     "assets:commons": "node scripts/fetch-commons.mjs",
+    "assets:footage": "node scripts/fetch-footage.mjs",
     "assets:review": "node scripts/review-assets.mjs",
     "assets:placeholder": "node scripts/make-placeholder-assets.mjs"
   },

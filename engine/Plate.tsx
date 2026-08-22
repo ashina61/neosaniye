@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, Img, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, Img, OffthreadVideo, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {anchorOrigin, boil, posterizeTime} from './motion';
 
 /**
@@ -40,6 +40,25 @@ export const Plate: React.FC<{
   plateHeight?: number;
   footX?: number;
   footY?: number;
+  /**
+   * A PLATE THAT MOVES BY ITSELF.
+   *
+   * A plate is normally a still: everything on screen moves because the CAMERA
+   * moves, and that is what makes six pictures read as a reel. Footage is the
+   * one source where the picture moves on its own, and it goes in the same
+   * slot — same anchor, same depth, same grain, same grade — because a shot
+   * with a clip in it is still a stack, not a different kind of programme.
+   *
+   * The engine is never told what a file IS, only what to do with it: the
+   * config says `motion` and the config is where names and formats live. It is
+   * always SILENT — the narration is the clock (law zero), so a clip arriving
+   * with its own sound would put two voices on one reel.
+   */
+  motion?: boolean;
+  /** Seconds into the clip where this shot starts. */
+  motionFrom?: number;
+  /** Below 1 it drags, above 1 it hurries. The cut length does not change. */
+  motionSpeed?: number;
   /** 'cover' crops to fill its box; 'contain' fits the whole file inside it. */
   fit?: 'cover' | 'contain';
   translateX?: number;
@@ -67,6 +86,9 @@ export const Plate: React.FC<{
   plateHeight,
   footX,
   footY,
+  motion = false,
+  motionFrom = 0,
+  motionSpeed = 1,
   fit = 'cover',
   translateX = 0,
   translateY = 0,
@@ -83,6 +105,24 @@ export const Plate: React.FC<{
 }) => {
   const frame = useCurrentFrame();
   const {fps, width, height} = useVideoConfig();
+
+  /**
+   * ONE SOURCE, TWO MATERIALS. Written once so the sized branch and the
+   * full-bleed branch cannot drift apart — the first version of the cut-out
+   * path grew a second copy of this and only one of them ever got a fix.
+   */
+  const source = (elementStyle: React.CSSProperties) =>
+    !src ? null : motion ? (
+      <OffthreadVideo
+        src={staticFile(src)}
+        muted
+        trimBefore={Math.max(0, Math.round(motionFrom * fps))}
+        playbackRate={motionSpeed > 0 ? motionSpeed : 1}
+        style={elementStyle}
+      />
+    ) : (
+      <Img src={staticFile(src)} style={elementStyle} />
+    );
 
   const stepped = posterizeTime(frame, fps, 12);
   const life = alive ? boil(stepped, {phase: boilPhase}) : {scale: 1, rotate: 0};
@@ -138,16 +178,11 @@ export const Plate: React.FC<{
             opacity,
           }}
         >
-          {src ? (
-            <Img
-              src={staticFile(src)}
-              style={
-                byHeight
-                  ? {height: '100%', width: 'auto', display: 'block', objectFit: fit}
-                  : {width: '100%', display: 'block', objectFit: fit}
-              }
-            />
-          ) : null}
+          {source(
+            byHeight
+              ? {height: '100%', width: 'auto', display: 'block', objectFit: fit}
+              : {width: '100%', display: 'block', objectFit: fit},
+          )}
           {children}
         </div>
       </AbsoluteFill>
@@ -166,7 +201,7 @@ export const Plate: React.FC<{
         ...style,
       }}
     >
-      {src ? <Img src={staticFile(src)} style={{width: '100%', height: '100%', objectFit: fit}} /> : null}
+      {source({width: '100%', height: '100%', objectFit: fit})}
       {children}
     </AbsoluteFill>
   );

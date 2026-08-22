@@ -323,3 +323,37 @@ test('words written for a beat become the slate itself, not a caption under it',
   assert.equal(slate.params.title, 'SIX HOURS');
   assert.ok(!slate.onScreenText?.length, 'it is drawn twice on the same card');
 });
+
+/**
+ * FOOTAGE GOES IN THE SAME SLOT.
+ *
+ * A clip is not a different kind of programme — it is a layer, at a depth, in
+ * a stack, under the same grade. What makes it one is the CONFIG saying so:
+ * the engine may not look at a file name to decide what to draw (see
+ * enginePurity), so the planner has to say it, and a layer whose file moves and
+ * whose config does not say `motion` renders as a black rectangle.
+ */
+test('a layer whose file moves is planned as footage', async () => {
+  const lines = six();
+  lines[1] = line('bench', 'He opened it and found the fault in ten minutes.', {
+    shot: shot({layers: [{role: 'footage', asset: 'clip-01.mp4', depth: 0.25, motionFrom: 1.5}]}),
+  });
+  const {config, refused} = await plan(lines);
+  assert.ok(!refused, refused);
+  const scene = config.scenes.find((s) => s.assets?.footage);
+  assert.ok(scene, 'the footage layer did not survive planning');
+  const layer = scene.layers.find((l) => l.role === 'footage');
+  assert.equal(layer.motion, true, 'the engine would draw a clip as a still');
+  assert.equal(layer.motionFrom, 1.5);
+  assertRenderable(config, 'footage');
+});
+
+test('a still layer is never marked as footage', async () => {
+  const lines = six();
+  lines[1] = line('wall', 'The wall had not been painted in years.', {
+    shot: shot({layers: [{role: 'wall', asset: 'wall.png', depth: 0.2}]}),
+  });
+  const {config} = await plan(lines);
+  const layer = config.scenes.flatMap((s) => s.layers ?? []).find((l) => l.role === 'wall');
+  assert.ok(!layer.motion, 'a still would be opened as video and draw nothing');
+});

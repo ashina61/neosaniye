@@ -139,6 +139,16 @@ export type LayerSpec = {
   rotate?: number;
   opacity?: number;
   blur?: number;
+  /**
+   * This layer's file is FOOTAGE — it moves on its own, in the same slot, at
+   * the same depth, under the same grade. Always silent: the narration is the
+   * clock, so a clip's own track would be a second voice on the reel.
+   */
+  motion?: boolean;
+  /** Seconds into the clip where this shot starts. */
+  motionFrom?: number;
+  /** Below 1 it drags, above 1 it hurries. The cut length does not change. */
+  motionSpeed?: number;
   /** A cast shadow made from this layer's own artwork, never a second file. */
   shadow?: boolean;
   shadowSkew?: number;

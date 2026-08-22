@@ -339,6 +339,40 @@ One workflow, `reel.yml`, and which job runs depends on why it started.
   artwork has to match the new scene ids. Running them out of order is the
   mistake this layout makes impossible.
 
+## Footage
+
+A shot can carry a clip in the same slot as a plate — same anchor, same depth,
+same grade, same grain. The layer says so; the engine is never asked to work it
+out from a file name:
+
+```json
+{"role": "bench", "asset": "s02-bench.mp4", "depth": 0.25, "motionFrom": 1.5}
+```
+
+`motion` is inferred from the file and can be set outright; `motionFrom` is
+seconds into the clip, `motionSpeed` runs it faster or slower. It is always
+muted — the narration is the clock, so a clip's own track would be a second
+voice. There is no placeholder for footage: a PNG written to a clip's name
+renders as a black rectangle, so the validator names the missing file instead.
+
+Supply is the whole question, and there is one wrong answer:
+
+> **Downloading a video somebody posted and narrating over it is a reupload.**
+> Content ID finds it and the strike lands on the channel that uploaded it.
+
+So `npm run assets:footage -- --episode=<id>` talks only to libraries that
+licence reuse — Pexels (needs a free `PEXELS_API_KEY`) and Commons video under
+the same licence check the still fetcher runs — and writes every credit into
+`assets/CREDITS.md`, which the publisher requires. A recipe asks for a clip with
+`stock` where a still would say `prompt`:
+
+```json
+"s02-bench.mp4": {"kind": "footage", "stock": ["hands repairing a watch"]}
+```
+
+Your own recording needs none of that: drop it in `episodes/<id>/assets/` under
+the name the brief gave it.
+
 ## Publishing
 
 ```bash

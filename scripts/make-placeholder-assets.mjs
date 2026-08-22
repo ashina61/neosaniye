@@ -19,6 +19,9 @@ import {ROOT, episodeDir, exists, loadConfig, parseArgs} from './lib/episode.mjs
 import {markPlaceholders} from './lib/placeholders.mjs';
 
 /** Roles that fill the frame; everything else is an object standing in space. */
+/** Footage: supplied, never invented. See the loop below. */
+const MOVING_FILE = /\.(mp4|mov|m4v|webm)$/i;
+
 const FULL_FRAME = new Set(['background', 'wall']);
 
 function hue(name) {
@@ -97,6 +100,17 @@ async function main() {
        * artwork lands. Never pass it in CI.
        */
       if (role.startsWith(OPTIONAL_ROLE) && !args.pieces) continue;
+      /**
+       * A CLIP HAS NO STAND-IN.
+       *
+       * Every other asset can be a labelled grey card while the artwork is
+       * drawn. Footage cannot: writing a PNG to the name of a clip produces a
+       * file the renderer opens as video, finds no stream in, and draws as a
+       * black rectangle — a stand-in that does not look like one. The reel
+       * fails visibly instead, and the validator already names the missing
+       * file.
+       */
+      if (MOVING_FILE.test(file)) continue;
       const name = path.basename(file);
       const recipe = recipes?.assets?.[name];
       const kind = recipe ? recipes?.kinds?.[recipe.kind] : null;

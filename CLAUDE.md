@@ -159,6 +159,30 @@ Ve gizlilik varsayılanı `private`'tır. Kendi başına kanala post edebilen bi
 hattın dünyaya tek tuş uzakta olmaması gerekir; `--privacy=public` bir insanın
 yazdığı şeydir.
 
+## Footage: aynı yuva, BAŞKA TEDARİK
+
+Bir çekim artık KLİP taşıyabilir: aynı çapa, aynı derinlik, aynı grade, aynı
+grain. Katman `motion` der, motor `OffthreadVideo` çizer — ve klip HER ZAMAN
+sessizdir, çünkü saat anlatımdır (sıfırıncı yasa) ve klibin kendi sesi reel'e
+ikinci bir ses koyar.
+
+Motor dosyanın ne olduğunu ANLAMAZ, söylenir: `enginePurity` motorun içindeki
+her uzantıyı düşürür, o yüzden "bu dosya video mu" sorusunu planlayıcı cevaplar.
+Uzantıdan anlar, ama brief'in `motion`'ı her zaman kazanır.
+
+Ve yer tutucu yoktur: bir klibin adına PNG yazmak, render'ın açıp içinde akış
+bulamadığı ve siyah dikdörtgen çizdiği bir dosya üretir — yer tutucuya
+benzemeyen bir yer tutucu. Klip ya vardır ya doğrulama düşer.
+
+**TEDARİK KANUNU BURADA DA GEÇERLİ, VE BURADA DAHA SERTTİR.** Bir feed'den
+indirilen tamir videosunun üstüne anlatım koymak YENİDEN YÜKLEMEDİR: ne kadar
+değiştirdiğin fark etmez, Content ID bulur ve fatura yükleyen kanala çıkar. O
+yüzden `fetch-footage.mjs` bunu yapamaz — yalnız yeniden kullanımı lisanslayan
+kütüphanelerle konuşur (Pexels; ve durağan tarafla aynı lisans kontrolünden
+geçen Commons videosu), kredisini `CREDITS.md`'ye yazar, ve yayıncı kredisiz
+bölümü zaten reddeder. Kendi çektiğin klibin bunların hiçbirine ihtiyacı yok:
+dosyayı bölümün assets klasörüne koyarsın, bu adımın yapacak işi kalmaz.
+
 ## Değişmez kurallar
 
 1. **DOSYA ADI CONFIG'TEDİR, KODDA DEĞİL.** Şablon `assets.character` gibi bir

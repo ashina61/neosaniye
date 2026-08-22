@@ -955,6 +955,29 @@ function assetFile(name, where) {
   return base;
 }
 
+/**
+ * FOOTAGE IS A FILE THE ENGINE MAY NOT SNIFF.
+ *
+ * `test/enginePurity.test.mjs` drops any file extension written inside
+ * `engine/`, and it is right to: a template that decides what to draw by
+ * looking at a name is one file-naming convention away from drawing nothing.
+ * So the CONFIG says a layer moves, and working that out from the name is a
+ * script's job — here, where names already live. Saying `motion` in the brief
+ * still wins; this only spares an author from repeating what the file already
+ * says.
+ */
+const MOVING_FILE = /\.(mp4|mov|m4v|webm)$/i;
+
+function motionOf(layer) {
+  const moves = layer.motion ?? MOVING_FILE.test(String(layer.asset ?? ''));
+  if (!moves) return {};
+  return {
+    motion: true,
+    ...(layer.motionFrom !== undefined ? {motionFrom: Math.max(0, Number(layer.motionFrom) || 0)} : {}),
+    ...(layer.motionSpeed !== undefined ? {motionSpeed: Math.max(0.05, Number(layer.motionSpeed) || 1)} : {}),
+  };
+}
+
 function directedStack({shot, rand, durationInFrames = 90}) {
   const assets = {};
   const layers = [];
@@ -976,6 +999,7 @@ function directedStack({shot, rand, durationInFrames = 90}) {
         role,
         depth: round(num(layer.depth, 0.2, 0, 1), 2),
         anchor: 'fill',
+        ...motionOf(layer),
         ...(layer.alive ? {alive: true} : {}),
         ...beat(layer),
         ...move(layer),
@@ -989,6 +1013,7 @@ function directedStack({shot, rand, durationInFrames = 90}) {
       height: Math.round(HEIGHT * num(layer.height, 0.5, 0.02, 1.6)),
       x: Math.round(WIDTH * num(layer.x, 0.5, 0, 1)),
       y: Math.round(HEIGHT * num(layer.y, 0.94, 0, 1)),
+      ...motionOf(layer),
       ...(layer.alive ? {alive: true} : {}),
       ...(layer.shadow
         ? {shadow: true, shadowSkew: Number(layer.shadowSkew) || -53, shadowOpacity: Number(layer.shadowOpacity) || 0.55}
@@ -1721,12 +1746,20 @@ async function main() {
   for (const {line} of planned) {
     for (const layer of line?.shot?.layers ?? []) {
       const name = String(layer.asset ?? '').trim();
-      if (!name || assets[name] || !(layer.prompt || layer.commons)) continue;
-      assets[name] = {
-        kind: layer.kind ?? (layer.height ? 'piece' : 'backdrop'),
-        ...(layer.commons ? {commons: [].concat(layer.commons)} : {}),
-        ...(layer.prompt ? {prompt: layer.prompt} : {}),
-      };
+      if (!name || assets[name] || !(layer.prompt || layer.commons || layer.stock)) continue;
+      /**
+       * FOOTAGE IS FETCHED, NEVER DRAWN. `stock` names what to look for in the
+       * licensed libraries; there is no prompt fallback, because nothing here
+       * can invent eight seconds of a hand turning a screwdriver — and the
+       * failure mode if it tried is a black rectangle where the shot was.
+       */
+      assets[name] = layer.stock
+        ? {kind: 'footage', stock: [].concat(layer.stock)}
+        : {
+            kind: layer.kind ?? (layer.height ? 'piece' : 'backdrop'),
+            ...(layer.commons ? {commons: [].concat(layer.commons)} : {}),
+            ...(layer.prompt ? {prompt: layer.prompt} : {}),
+          };
     }
   }
 

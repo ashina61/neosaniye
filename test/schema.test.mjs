@@ -118,3 +118,12 @@ test('a title-slate with nothing on it is refused', () => {
     'a card carrying typed words is not empty',
   );
 });
+
+test('motion timings mean nothing without motion itself', () => {
+  const withLayer = (layer) =>
+    config({scenes: [scene({assets: {clip: 'assets/clip-01.mp4'}, layers: [{role: 'clip', ...layer}]})]});
+  assert.deepEqual(validateEpisodeConfig(withLayer({motion: true, motionFrom: 2, motionSpeed: 0.5})), []);
+  assert.match(validateEpisodeConfig(withLayer({motionFrom: 2})).join(' '), /only mean something/);
+  assert.match(validateEpisodeConfig(withLayer({motion: true, motionSpeed: 0})).join(' '), /greater than 0/);
+  assert.match(validateEpisodeConfig(withLayer({motion: 'yes'})).join(' '), /must be true or false/);
+});

@@ -287,6 +287,27 @@ export function validateEpisodeConfig(config) {
               !(scene.assets ?? {})[`?${layer.role}`]) {
             push(`${at}.role: "${layer.role}" is not a role in this scene's assets`);
           }
+          /**
+           * A LAYER THAT MOVES BY ITSELF.
+           *
+           * `motion` is how the config tells the engine that this layer's file
+           * is footage — the engine may not look at a name to work that out,
+           * and a still drawn as a clip renders a black rectangle. The numbers
+           * beside it are the only two things a shot needs to say about a clip:
+           * where in it to start, and how fast to run it.
+           */
+          if (layer.motion !== undefined && typeof layer.motion !== 'boolean') {
+            push(`${at}.motion: must be true or false`);
+          }
+          if (layer.motionFrom !== undefined && (typeof layer.motionFrom !== 'number' || layer.motionFrom < 0)) {
+            push(`${at}.motionFrom: must be seconds into the clip, 0 or more`);
+          }
+          if (layer.motionSpeed !== undefined && (typeof layer.motionSpeed !== 'number' || !(layer.motionSpeed > 0))) {
+            push(`${at}.motionSpeed: must be greater than 0`);
+          }
+          if ((layer.motionFrom !== undefined || layer.motionSpeed !== undefined) && !layer.motion) {
+            push(`${at}: motionFrom/motionSpeed only mean something on a layer with motion: true`);
+          }
         });
       }
     }

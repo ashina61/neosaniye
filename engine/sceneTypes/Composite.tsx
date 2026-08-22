@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, Easing, Img, OffthreadVideo, interpolate, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import type {SceneProps} from './types';
 import type {LayerSpec} from '../schema';
 import {CLAMP, boil, dampedSwing, focusHunt, holdKeyframes, posterizeTime, springEntrance} from '../motion';
@@ -109,6 +109,27 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
     const lit = layer.flicker ? holdKeyframes(stepped, layer.flicker) : true;
     if (layer.recolour && !lit) return null;
 
+    /**
+     * A LAYER THAT MOVES BY ITSELF sits in the same slot as one that does not:
+     * same anchor, same depth, same cap, same grade. The stack is the shot
+     * (law 4) whether a plate in it is a still or a clip — and it is SILENT,
+     * because the narration is the clock and a clip's own track would be a
+     * second voice on the reel. Which files move is the config's business; the
+     * engine is told, never asked to guess.
+     */
+    const material = (elementStyle: React.CSSProperties) =>
+      layer.motion ? (
+        <OffthreadVideo
+          src={staticFile(src)}
+          muted
+          trimBefore={Math.max(0, Math.round((layer.motionFrom ?? 0) * fps))}
+          playbackRate={(layer.motionSpeed ?? 1) > 0 ? (layer.motionSpeed ?? 1) : 1}
+          style={elementStyle}
+        />
+      ) : (
+        <Img src={staticFile(src)} style={elementStyle} />
+      );
+
     const anchor = layer.anchor ?? (layer.width || layer.height ? 'bottom' : 'fill');
     const common: React.CSSProperties = {
       filter: [
@@ -135,7 +156,7 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
               `scale(${scale * life.scale}) rotate(${swing}deg)`,
           }}
         >
-          <Img src={staticFile(src)} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+          {material({width: '100%', height: '100%', objectFit: 'cover'})}
         </AbsoluteFill>
       );
     }
@@ -187,14 +208,11 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
     const cap = num('pieceMaxWidth', Math.round(width * (0.3 + (layer.depth ?? 1) * 0.38)));
     return (
       <div key={key} style={box}>
-        <Img
-          src={staticFile(src)}
-          style={
-            layer.height && !layer.width
-              ? {maxHeight: '100%', maxWidth: cap, width: 'auto', height: 'auto', display: 'block'}
-              : {width: '100%', maxWidth: cap, display: 'block'}
-          }
-        />
+        {material(
+          layer.height && !layer.width
+            ? {maxHeight: '100%', maxWidth: cap, width: 'auto', height: 'auto', display: 'block'}
+            : {width: '100%', maxWidth: cap, display: 'block'},
+        )}
       </div>
     );
   };
