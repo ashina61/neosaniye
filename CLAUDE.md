@@ -51,6 +51,33 @@ Piper satır satır okur ve klipleri BİZ birleştiririz; orada sınırlar ölç
 değil aritmetiktir, çünkü sessizliği koyan biziz. Kural aynı: sınır klibin
 SONUDUR.
 
+## Konu bir hikâye değil, TEDARİK HATTIDIR
+
+Zincirin başında brief var, brief'in başında konu var, ve konuyu uzun süre
+haftada bir kere birinin aklına gelen şey belirledi. Fabrika günde bir bölüm
+render edebiliyorken besleyicinin haftada bir çalışması, hattı yedide birinde
+çalıştırmaktır.
+
+`npm run topics` bunu besler — varsayılan olarak arşivi olan olayları
+sıralayan subreddit'lerden. Ama Reddit iyi bir BESLEYİCİ, kötü bir KAYNAKTIR ve
+fark şu: **en çok oy almış gönderi, fotoğraflanamıyorsa burada değersizdir.**
+İnsan ve mekân FOTOĞRAFTIR (kanun 2) ve fotoğraf Commons'tan gelir; Commons'ta
+Katalan Atlası, Djinguereber Camii ve 1969 tarihli bir polis bülteni vardır.
+Senin amcanın vardiyası, isimsiz bir işçi ya da geçen salı olan bir şey yoktur.
+
+Adı ve arşivi olmayan bir konu altı gri yer tutucu plaka + üstüne anlatım
+olarak render olur — ve SESSİZCE olur: doğrulama geçer, dosya çıkar, bitmiş
+görünür. Bu deponun en pahalı hatası budur çünkü bir koşuya mal olur ve
+başarıyla aynı görünür. O yüzden filtre brief'ten ÖNCEDEDİR: anı, soru ve
+içinde adı geçen hiçbir şey olmayan gönderi kaç oy almış olursa olsun elenir,
+düşük puanlanmaz. Geçen şey makinenin etrafına kurulduğu şekildir: **ADI OLAN
+BİR ŞEY, BİR TARİH VE BİR SONUÇ.**
+
+Ve şu format değil, konu meselesidir: "şu adam şöyle çalışıyor" bu hattın
+yapabileceği bir şey değil — motor durağan plaka yığar ve üstüne çizer, video
+katmanı yoktur. Footage isteyen bir fikir başka bir hattır, bu deponun eksik
+bir özelliği değil.
+
 ## Zincir
 
 ```

@@ -27,6 +27,43 @@ scripts/                    render + validate CLIs
 test/                       engine-purity guard, schema, registry, episodes
 ```
 
+## Where the topics come from
+
+The factory can render an episode a day. Thinking of one a day is the part
+nobody automated, so the topics came in ones and twos and most of them were
+whatever the writer happened to remember that week.
+
+```bash
+npm run topics                                   # the default subreddits, top of the year
+npm run topics -- --sub=UnresolvedMysteries --t=all --top=20
+npm run topics -- --file=dump.json --refused     # judge a saved listing, show what was thrown out
+```
+
+Reddit ranks stories by whether they stop a scroll, which is the one thing this
+pipeline cannot measure about itself. That makes it a good feeder and a bad
+source, and the difference is the filter:
+
+**A topic is a supply line, not a story.** People and places are PHOTOGRAPHS and
+they come off Commons. A topic with no named, archived subject renders as six
+grey placeholder plates with narration over them — and it renders silently, past
+the validator, out the far end as a finished file. So an anecdote, a question,
+and anything with nothing named in it are refused outright rather than ranked
+low, however many upvotes they carry. What passes is the shape the machine was
+built around: a named thing, a date, and an outcome.
+
+It prints the command to write each one, so the whole distance from a listing to
+a storyboard is one copied line:
+
+```
+  10  the Great Molasses Flood of 1919 killed 21 people in Boston
+      +3 names Great, Molasses, Flood · +3 dated 1919 · +2 something happens
+      npm run write -- --id=great-molasses-1919 --topic="..." --mood=green-rot
+```
+
+Reddit blocks datacentre addresses about as often as it answers them, so a saved
+listing is a first-class input: the judgement is the valuable half and it has to
+run where the fetch cannot. A file with one title per line works too.
+
 ## The planner
 
 A reel laid out by hand is ten shots that each work and do not add up, because
