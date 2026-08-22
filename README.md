@@ -339,6 +339,39 @@ One workflow, `reel.yml`, and which job runs depends on why it started.
   artwork has to match the new scene ids. Running them out of order is the
   mistake this layout makes impossible.
 
+## Footage-only episodes
+
+```bash
+npm run write -- --id=repair --topic="the bench that outlived the shop" --footage
+npm run plan  -- --episode=repair
+npm run assets:footage -- --episode=repair      # or drop your own clips in
+```
+
+One line in the brief — `"footage": true` — and the drawn half of the pipeline
+switches off: no backdrops to fetch, no props, no motif, no drawn light, and the
+camera holds still, because a slow push over a picture that is already moving is
+a second motion fighting the first.
+
+What is left is treatment rather than artwork: the cut to the narration, the
+grade and grain, and **the line's own words on screen**, which are on by default
+here. With a still, a caption is emphasis — the plate and the graphics are
+already talking. Strip those away and an uncaptioned clip is just a clip: the
+reel plays silently in half the feeds it lands in.
+
+The rotation only picks `composite`; a title card is drawn type, so it comes only
+when a shot asks for one by name.
+
+Each line carries the search instead of a description:
+
+```json
+{"slug": "brass", "vo": "So he cut a new one out of brass on a lathe.",
+ "footage": "metal lathe turning brass"}
+```
+
+The line carries the story, the search carries the picture, and they are allowed
+to be different sentences — no stock library is indexed by event, so a search
+naming a date or a place is refused at writing time.
+
 ## Footage
 
 A shot can carry a clip in the same slot as a plate — same anchor, same depth,

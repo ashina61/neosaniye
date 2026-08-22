@@ -357,3 +357,54 @@ test('a still layer is never marked as footage', async () => {
   const layer = config.scenes.flatMap((s) => s.layers ?? []).find((l) => l.role === 'wall');
   assert.ok(!layer.motion, 'a still would be opened as video and draw nothing');
 });
+
+/**
+ * A FOOTAGE EPISODE DRAWS NOTHING.
+ *
+ * `"footage": true` is a supply decision, not a style one: the pictures are
+ * clips somebody already filmed, so there is no artwork step to run and nothing
+ * for a prop or a motif to be drawn over. What is left — the cut to the
+ * narration, the words on screen, the grade — is treatment. If any of the drawn
+ * machinery leaks back in, the reel asks for files nobody is going to fetch and
+ * renders holes.
+ */
+test('a footage episode plans clips and nothing drawn', async () => {
+  const lines = [1, 2, 3, 4, 5, 6].map((i) => ({
+    slug: `s${i}`,
+    vo: 'He found the fault in ten minutes and fixed it.',
+    footage: 'hands repairing a watch close up',
+  }));
+  const shelf = await mkdtemp(path.join(os.tmpdir(), 'reel-shelf-'));
+  const dir = path.join(shelf, 'probe');
+  try {
+    await mkdir(dir, {recursive: true});
+    await writeFile(
+      path.join(dir, 'brief.json'),
+      JSON.stringify({id: 'probe', title: 'p', mood: 'cold-noir', style: 's', footage: true, lines}),
+    );
+    await run('node', [PLANNER, '--episode=probe'], {cwd: ROOT, env: {...process.env, EPISODES_DIR: shelf}});
+    const config = JSON.parse(await readFile(path.join(dir, 'scene-config.json'), 'utf8'));
+    const recipes = JSON.parse(await readFile(path.join(dir, 'assets.json'), 'utf8'));
+
+    for (const scene of config.scenes) {
+      assert.ok(!scene.props?.length, `${scene.id} carries drawn props`);
+      assert.ok(!scene.params?.motif, `${scene.id} carries a motif`);
+      assert.ok(scene.params?.glowSize === undefined, `${scene.id} carries drawn light`);
+      assert.equal(scene.params?.pushFrom, 1, `${scene.id} pushes a picture that is already moving`);
+      assert.equal(scene.params?.pushTo, 1);
+      for (const layer of scene.layers ?? []) assert.equal(layer.motion, true, `${scene.id} draws a clip as a still`);
+      for (const file of Object.values(scene.assets ?? {})) {
+        assert.match(String(file), /\.mp4$/, `${scene.id} asks for artwork: ${file}`);
+      }
+      // Nothing else is on screen, so the words have to be.
+      assert.ok(scene.params?.caption?.length, `${scene.id} has no caption and nothing drawn either`);
+    }
+    for (const recipe of Object.values(recipes.assets ?? {})) {
+      assert.equal(recipe.kind, 'footage');
+      assert.ok(recipe.stock?.length, 'a clip with no search is a clip nobody can fetch');
+      assert.equal(new Set(recipe.stock).size, recipe.stock.length, 'the same search twice');
+    }
+  } finally {
+    await rm(shelf, {recursive: true, force: true});
+  }
+});

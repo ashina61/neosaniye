@@ -52,6 +52,71 @@ const PROP_KINDS = ['plaque', 'newspaper', 'card', 'print', 'wire', 'beam'];
  *                          silences between lines. Lines that run together give
  *                          a reel that cannot be cut to its own voice.
  */
+/**
+ * THE FOOTAGE BRIEF — a different supply line, so a different prompt.
+ *
+ * The stills brief asks for a backdrop and the objects standing in front of it,
+ * because that reel is BUILT: a stack of plates with graphics drawn over them.
+ * A footage reel is FOUND. Nothing is drawn, so there are no pieces to name and
+ * no props to place, and the only thing each line needs is the sentence and the
+ * search that will land the clip under it.
+ *
+ * The searches are the hard part and they are the whole brief. A phrase that
+ * names a specific event ("the Leeds repair shop closing") returns nothing in
+ * any stock library; a phrase that names an ACTION with hands and objects in it
+ * ("hands repairing a watch, close up") returns fifty. So the line is written
+ * for the story and the search is written for the library, and they are allowed
+ * to be different sentences.
+ */
+export function footagePromptFor(topic, id, mood) {
+  return `Write the voiceover for a 30-second vertical documentary reel about: ${topic}
+
+This reel is cut from STOCK FOOTAGE. Nothing is drawn and nothing is
+photographed to order — every shot is a clip somebody already filmed and
+licensed for reuse, so a line that cannot be matched to an ordinary,
+findable action has no picture at all.
+
+Return ONLY a JSON object, no prose around it, in exactly this shape:
+
+{
+  "id": ${JSON.stringify(id)},
+  "title": "a short title for the episode",
+  "mood": ${JSON.stringify(mood)},
+  "footage": true,
+  "style": "handheld documentary footage, available light",
+  "lines": [ six line objects ]
+}
+
+THE SCRIPT — same six lines, same discipline:
+
+* EXACTLY SIX lines, one per scene, around 80 words TOTAL, none over 15 words.
+* Line 1 is the hook and must stop a scroll on its own.
+* Line 6 is the verdict. If there is a number worth saying, say it here.
+* Write VERBS: what was done, what broke, what was found, what it cost.
+* Every line ends in a full stop and is spoken with a pause after it — the
+  reel is cut apart at those pauses.
+
+EACH LINE OBJECT:
+
+  "slug"      one lowercase word, unique, used in the file name
+  "vo"        the spoken line
+  "footage"   THE SEARCH. What the camera is looking at, phrased the way a
+              stock library is indexed: an action, close, with hands or
+              machines in it. "hands soldering a circuit board", "metal lathe
+              turning brass", "rain on a workshop window".
+              NOT a named event, NOT a named person, NOT a date — no library
+              has "the Leeds repair shop in 2010". The line carries the story;
+              the search only has to carry the picture under it.
+              Vertical or square framing exists for far fewer subjects than
+              landscape, so prefer a subject that is shot close: hands, tools,
+              faces, surfaces.
+  "alt"       optional second search, tried if the first finds nothing.
+
+No "pieces", no "props", no "shot": there is nothing to place. The clip is the
+shot, the words on screen come from the line itself, and the grade and the
+grain are the only things this pipeline adds.`;
+}
+
 export function promptFor(topic, id, mood) {
   return `Write the voiceover for a 30-second vertical documentary reel about: ${topic}
 
@@ -299,6 +364,17 @@ export function jsonFrom(text) {
 export function problemsWith(brief) {
   const problems = [];
   if (!Array.isArray(brief?.lines)) return ['no lines array'];
+  /**
+   * A FOOTAGE BRIEF IS HELD TO THE SCRIPT, NOT TO THE STACK.
+   *
+   * Every rule below about pieces, props and the camera exists because a still
+   * reel is BUILT — and a brief that hands over six photographs and no depth is
+   * the failure they catch. A footage reel has none of that machinery: there is
+   * one clip per shot, nothing stands in front of it, and the camera holds
+   * still because the picture is already moving. What it can fail at instead is
+   * a search no library can answer, so that is what is checked.
+   */
+  const footage = brief.footage === true;
   if (brief.lines.length !== 6) problems.push(`${brief.lines.length} lines, must be exactly 6`);
 
   const words = brief.lines.reduce((total, l) => total + String(l?.vo ?? '').trim().split(/\s+/).filter(Boolean).length, 0);
@@ -318,12 +394,28 @@ export function problemsWith(brief) {
     if (!line?.slug) problems.push(`line ${i + 1}: no slug`);
     else if (slugs.has(line.slug)) problems.push(`line ${i + 1}: slug "${line.slug}" is used twice`);
     else slugs.add(line.slug);
-    if (!line?.image) problems.push(`line ${i + 1}: no image — say what we are looking at`);
+    // A footage line says what the camera is looking at in `footage`; the
+    // check for that is a few lines down, with the rest of the supply rules.
+    if (!line?.image && !footage) problems.push(`line ${i + 1}: no image — say what we are looking at`);
 
     // A SHOT IS A STACK. A line with no pieces is one photograph pushed into
     // slowly, and six of those is a slideshow — the exact failure that made a
     // finished reel worth throwing away. One bare line is a rest; two is a
     // pattern.
+    if (footage) {
+      const search = String(line?.footage ?? line?.image ?? '').trim();
+      if (!search) {
+        problems.push(`line ${i + 1}: no footage search — say what the camera is looking at`);
+      } else if (/\b(1[0-9]{3}|20[0-2][0-9])\b/.test(search) || /^[A-Z][a-z]+ [A-Z]/.test(search)) {
+        // No library is indexed by event. "Leeds 2010" returns nothing and the
+        // shot ends up empty; the story is the LINE's job, not the search's.
+        problems.push(
+          `line ${i + 1}: footage search "${search}" names a date or an event — a stock library is indexed by action`,
+        );
+      }
+      continue;
+    }
+
     const pieces = Array.isArray(line?.pieces) ? line.pieces.map((p) => String(p ?? '').trim()).filter(Boolean) : [];
 
     /**
@@ -470,7 +562,8 @@ async function main() {
 
   const dir = episodeDir(id);
   await mkdir(dir, {recursive: true});
-  const prompt = promptFor(topic, id, mood);
+  const footage = args.footage === true || args.footage === 'true';
+  const prompt = footage ? footagePromptFor(topic, id, mood) : promptFor(topic, id, mood);
 
   const reply = await ask(prompt);
   if (!reply) {
@@ -505,7 +598,7 @@ async function main() {
     console.error(`✗ ${path.relative(ROOT, file)} already exists — pass --force to overwrite it.`);
     process.exit(1);
   }
-  await writeFile(file, `${JSON.stringify({...brief, id, mood}, null, 2)}\n`, 'utf8');
+  await writeFile(file, `${JSON.stringify({...brief, id, mood, ...(footage ? {footage: true} : {})}, null, 2)}\n`, 'utf8');
 
   const words = brief.lines.reduce((t, l) => t + l.vo.trim().split(/\s+/).length, 0);
   console.log(`✓ ${path.relative(ROOT, file)} — 6 lines, ${words} words, ~${(words / 2.7).toFixed(0)}s\n`);

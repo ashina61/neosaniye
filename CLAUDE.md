@@ -159,6 +159,29 @@ Ve gizlilik varsayılanı `private`'tır. Kendi başına kanala post edebilen bi
 hattın dünyaya tek tuş uzakta olmaması gerekir; `--privacy=public` bir insanın
 yazdığı şeydir.
 
+## Hiçbir şey çizmeyen bölüm: `"footage": true`
+
+Brief'te tek satır, ve zincirin görsel yarısı kapanır: **resimler KLİPTİR.**
+Fotoğraf yok, üretilen görsel yok, plaket yok, motif yok, çizilen ışık yok — ve
+kamera DURUR, çünkü resim zaten hareket ediyor; hareketli bir görüntünün
+üstündeki yavaş itiş ikinci bir harekettir ve hata gibi okunur.
+
+Geriye kalan üç şey işlemedir, çizim değil: **anlatıma göre kesim** (sıfırıncı
+yasa), **grade + grain**, ve **satırın kendi kelimeleri ekranda**. Sonuncusu
+varsayılan olarak açılır — durağan hatta altyazı vurgudur, çünkü plaka ve
+grafikler zaten konuşur; burada onlar yok, ve reel indiği akışların yarısında
+sessiz oynar. Altyazısız bir klip, kliptir.
+
+Şablon da kısılır: rotasyon yalnız `composite` seçer. `title-slate` çizilmiş
+tipografidir — yönetmen isterse gelir (siyaha kesilen bir sayı bir kurgu
+kararıdır), ama rotasyon ona uzanamaz, yoksa reel'in yarısı boş alanda yazı
+olur ve klipler kullanılmaz.
+
+Ve arama satırın kendisi DEĞİLDİR: hiçbir kütüphane "2010'da kapanan Leeds
+tamirhanesi" ile indekslenmiş değildir. Satır hikâyeyi taşır, `footage` alanı
+resmi taşır — "hands repairing a watch, close up". Yazar bunu ihlal ederse
+brief reddedilir.
+
 ## Footage: aynı yuva, BAŞKA TEDARİK
 
 Bir çekim artık KLİP taşıyabilir: aynı çapa, aynı derinlik, aynı grade, aynı

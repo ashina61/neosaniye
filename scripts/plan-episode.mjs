@@ -490,7 +490,8 @@ export function framesFor(text, {min = 45, max = 118} = {}) {
  * its noun or it says nothing, so the word that follows it comes too when it is
  * a unit rather than grammar.
  */
-const NOT_A_UNIT = /^(and|or|of|the|a|an|in|on|to|for|from|by|with|at|was|were|is|are|had|has|that|this|it|he|she|they)$/i;
+const NOT_A_UNIT =
+  /^(and|or|of|the|a|an|in|on|to|for|from|by|with|at|was|were|is|are|had|has|that|this|it|he|she|they|out|off|up|down|back|over|away|again|through|into|onto|apart|more|other|another|else)$/i;
 
 function bigNumber(vo) {
   const numeric = /\b\d[\d,.]*\b/;
@@ -967,6 +968,8 @@ function assetFile(name, where) {
  * says.
  */
 const MOVING_FILE = /\.(mp4|mov|m4v|webm)$/i;
+/** What a footage episode calls its plate. One place, so nothing drifts. */
+const FOOTAGE_SUFFIX = '.mp4';
 
 function motionOf(layer) {
   const moves = layer.motion ?? MOVING_FILE.test(String(layer.asset ?? ''));
@@ -1057,7 +1060,10 @@ function buildStack({line, ground, rand, groundDepth, spread = 0, cutouts = fals
   const depth = pieces.length ? groundDepth : round(between(rand, [0.72, 0.95]), 2);
 
   const assets = {ground};
-  const layers = [{role: 'ground', depth, anchor: 'fill'}];
+  // WHEN THE GROUND IS FOOTAGE it is still the ground: same role, same depth,
+  // same slot. Only the material changes, and the engine has to be TOLD (see
+  // motionOf) because it is not allowed to read the name.
+  const layers = [{role: 'ground', depth, anchor: 'fill', ...motionOf({asset: ground})}];
   const highlights = [];
 
   // WHICH SIDE THE STACK OPENS ON is the episode's, not the index's. Alternating
@@ -1148,7 +1154,7 @@ function buildStack({line, ground, rand, groundDepth, spread = 0, cutouts = fals
  * It always pushes from a DIFFERENT anchor than the shot before it. Cutting
  * from a plate to the same plate on the same move is not a cut, it is a jump.
  */
-function planContinuation({line, index, part, fragment, frames: measured, rand, look, previousTransition, plate, side, cutouts, recentProps}) {
+function planContinuation({line, index, part, fragment, frames: measured, rand, look, previousTransition, plate, side, cutouts, recentProps, footage = false}) {
   const assetBase = `s${String(index + 1).padStart(2, '0')}-${line.slug ?? 'shot'}`;
   const corner = part % 4;
   const frames = measured ?? framesFor(fragment);
@@ -1175,7 +1181,7 @@ function planContinuation({line, index, part, fragment, frames: measured, rand, 
     ? directedStack({shot: line.shot, rand, durationInFrames: frames})
     : buildStack({
     line,
-    ground: plate ?? `assets/${assetBase}-bg.png`,
+    ground: plate ?? `assets/${assetBase}${footage ? FOOTAGE_SUFFIX : '-bg.png'}`,
     rand,
     cutouts,
     groundDepth: round(between(rand, [0.06, 0.16]), 2),
@@ -1209,10 +1215,12 @@ function planContinuation({line, index, part, fragment, frames: measured, rand, 
     // ALREADY STANDING. A prop that springs in again on every cut is a prop
     // being placed over and over; by the continuation the hand has gone and the
     // thing is simply in the room.
-    props: planProps({line, rand, look, side, durationInFrames: frames, recentProps, beat: 'middle'}).map((p) => ({
-      ...p,
-      from: 0,
-    })),
+    props: footage
+      ? []
+      : planProps({line, rand, look, side, durationInFrames: frames, recentProps, beat: 'middle'}).map((p) => ({
+          ...p,
+          from: 0,
+        })),
     params: {
       /**
        * THE GROUND POINT SURVIVES THE CUT.
@@ -1235,8 +1243,10 @@ function planContinuation({line, index, part, fragment, frames: measured, rand, 
           }),
       // A wider throw than the old 1.14→1.3, which was too small to register as
       // a new framing at all — four shots of one gate, all the same size.
-      pushFrom: pullBack ? round(between(rand, [1.34, 1.5]), 2) : 1,
-      pushTo: pullBack ? round(between(rand, [1.02, 1.1]), 2) : round(between(rand, [1.3, 1.48]), 2),
+      // The clip is the motion in a footage episode; a push on top of it is a
+      // second one pulling the other way.
+      pushFrom: footage ? 1 : pullBack ? round(between(rand, [1.34, 1.5]), 2) : 1,
+      pushTo: footage ? 1 : pullBack ? round(between(rand, [1.02, 1.1]), 2) : round(between(rand, [1.3, 1.48]), 2),
       pushEndFrame: Math.round(frames * 0.94),
       accent: look.accent,
       caption: lines,
@@ -1244,12 +1254,12 @@ function planContinuation({line, index, part, fragment, frames: measured, rand, 
       // A CONTINUATION IS A SHOT, NOT A SLIDE. Its params used to carry the
       // push and the caption and nothing else — no light, no fog, no focus —
       // so half the reel was a photograph moving slowly with grain on it.
-      ...drawnLayer({rand, look, side, groundDepth, durationInFrames: frames}),
+      ...(footage ? {} : drawnLayer({rand, look, side, groundDepth, durationInFrames: frames})),
     },
   };
 }
 
-function planScene({line, index, total, fragment, frames, rand, look, previousTransition, recentMotifs, recentTypes, side, cutouts, recentProps}) {
+function planScene({line, index, total, fragment, frames, rand, look, previousTransition, recentMotifs, recentTypes, side, cutouts, recentProps, footage = false}) {
   const beat = beatOf(line, index, total);
   /**
    * THE DIRECTOR PICKS THE TEMPLATE. The rotation below is the fallback.
@@ -1296,6 +1306,21 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
    * read `title` only, and the words it was given were set small at the bottom
    * of an otherwise empty card. A slate's job is to set words LARGE.
    */
+  /**
+   * THE TEMPLATES THAT SURVIVE WITHOUT ARTWORK. A portal flies into a
+   * photograph and a split needs two plates; asked for in a footage episode
+   * they name files nobody is going to fetch. A composite holds the clip and a
+   * slate holds type.
+   */
+  if (footage && sceneType !== 'composite' && sceneType !== 'title-slate') sceneType = 'composite';
+  /**
+   * AND A CARD IS DRAWN TYPE, which is the one thing a footage episode said it
+   * did not want. A director may still ask for one — a hard cut to a number on
+   * black is an edit, not decoration — but the rotation may not reach for it,
+   * or half the reel comes out as text on an empty field with the clips
+   * unused.
+   */
+  if (footage && sceneType === 'title-slate' && line?.shot?.template !== 'title-slate') sceneType = 'composite';
   const slateWords =
     (line.title ? String(line.title) : bigNumber(line.vo) || String(line.onScreen ?? '')).toUpperCase();
   if (sceneType === 'title-slate' && !slateWords && !line.kicker && !line.footer && line?.shot?.template !== 'title-slate') {
@@ -1323,12 +1348,25 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
    * feel about what it is showing. Only where the line earns it: a reel where
    * every scene is graded differently has no grade at all, it has a wobble.
    */
-  const shift = GRADE_SHIFT[beat === 'close' ? 'close' : motifFor(line, recentMotifs, sceneType)];
+  const shift = GRADE_SHIFT[beat === 'close' ? 'close' : footage ? '' : motifFor(line, recentMotifs, sceneType)];
   if (shift) scene.gradeOverride = shift;
   if (transition) scene.transition = transition;
 
-  const backdrop = `assets/${id}-bg.png`;
-  const motif = motifFor(line, recentMotifs, sceneType);
+  /**
+   * A FOOTAGE EPISODE DRAWS NOTHING.
+   *
+   * `"footage": true` in the brief says the pictures are CLIPS and there is no
+   * artwork step at all: no backdrop to fetch, no props, no motif, no drawn
+   * light. Everything the reel still does — cutting to the narration, the
+   * captions, the grade and the grain — is treatment, not artwork, and it is
+   * what separates a reel from a clip somebody put words on.
+   *
+   * And the camera holds still. A push exists to give a STILL something to do;
+   * over footage that is already moving it is a second motion fighting the
+   * first, which is how a slow zoom on a moving picture reads as a mistake.
+   */
+  const backdrop = footage ? `assets/${id}${FOOTAGE_SUFFIX}` : `assets/${id}-bg.png`;
+  const motif = footage ? '' : motifFor(line, recentMotifs, sceneType);
 
   if (sceneType === 'title-slate') {
     // A DIRECTED BACKGROUND, here too. These two templates are graphics-first
@@ -1336,7 +1374,9 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
     // named its own — the closing card asked for a file the brief never had.
     scene.assets = line?.shot?.layers?.length
       ? directedStack({shot: line.shot, rand, durationInFrames}).assets
-      : {background: backdrop};
+      : footage
+        ? {}
+        : {background: backdrop};
     // A hand-written title can BE the number — "TWELVE YEARS" — and the old
     // rule only looked at the voiceover on the `number` beat, so a slate whose
     // whole point was a figure got neither the count nor the spin.
@@ -1424,7 +1464,9 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
     // named its own — the closing card asked for a file the brief never had.
     scene.assets = line?.shot?.layers?.length
       ? directedStack({shot: line.shot, rand, durationInFrames}).assets
-      : {background: backdrop};
+      : footage
+        ? {}
+        : {background: backdrop};
     const items = (line.items ?? []).slice(0, 3);
     scene.params = {
       bgScale: round(between(rand, [1.05, 1.12]), 3),
@@ -1493,7 +1535,7 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
     // THE OTHER FOURTEEN ASSETS, DRAWN. See planProps: the reference reel is
     // four backdrops and sixteen graphics, and this pipeline was making six
     // backdrops and nothing else.
-    scene.props = planProps({line, rand, look, side, durationInFrames, recentProps, beat});
+    scene.props = footage ? [] : planProps({line, rand, look, side, durationInFrames, recentProps, beat});
 
     const anchor = line?.shot?.anchor;
     scene.params = {
@@ -1504,12 +1546,27 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
       // THE CAMERA IS THE DIRECTOR'S. A push and a pull-back are two different
       // shots, and which one this line wants is not a thing a die should decide.
       pushFrom: round(Number(line?.shot?.camera?.from) || 1, 2),
-      pushTo: round(Number(line?.shot?.camera?.to) || between(rand, [1.22, 1.5]), 2),
+      pushTo: round(Number(line?.shot?.camera?.to) || (footage ? 1 : between(rand, [1.22, 1.5])), 2),
       pushEndFrame: Math.round(durationInFrames * 0.86),
-      ...drawnLayer({rand, look, side, groundDepth: stack.groundDepth, durationInFrames}),
+      ...(footage ? {} : drawnLayer({rand, look, side, groundDepth: stack.groundDepth, durationInFrames})),
       ...(line?.shot?.camera?.focus === 'sharp' ? {focusPx: 0} : {}),
-      caption: line.caption ?? [],
-      ...captionPlacement({shot: line.shot, rand, durationInFrames, lines: line.caption ?? []}),
+      /**
+       * IN A FOOTAGE EPISODE THE WORDS ARE THE GRAPHICS.
+       *
+       * With a still, a caption is emphasis — used on the lines that earn it,
+       * because the plate and the drawn objects are already saying something.
+       * Strip those away and an uncaptioned clip is a clip: the reel plays
+       * silently in half the feeds it lands in, and everything it had to say
+       * was in the audio. So the line captions itself unless the author wrote
+       * something better.
+       */
+      caption: line.caption ?? (footage ? captionLines(fragment ?? line.vo) : []),
+      ...captionPlacement({
+        shot: line.shot,
+        rand,
+        durationInFrames,
+        lines: line.caption ?? (footage ? captionLines(fragment ?? line.vo) : []),
+      }),
       captionRecedeAt: Math.round(durationInFrames * 0.72),
       accent: look.accent,
       ...motifParams(motif, {rand, from: 18 + Math.round(rand() * 14), accent: look.accent, stops: line.stops}),
@@ -1526,7 +1583,7 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
    * arrival nothing and give the second half of the shot something to be.
    */
   if (sceneType !== 'composite') {
-    scene.props = planProps({line, rand, look, side, durationInFrames, recentProps, beat});
+    scene.props = footage ? [] : planProps({line, rand, look, side, durationInFrames, recentProps, beat});
   }
 
   // …unless they are already the title of this card, set large. Drawing them
@@ -1620,6 +1677,14 @@ async function main() {
   // Pieces are placed only where there is a supply of clean cut-outs. See
   // buildStack: the brief still names them, nothing places them until this is on.
   const cutouts = brief.cutouts === true;
+  /**
+   * FOOTAGE EPISODE: the pictures are clips and NOTHING is drawn. No artwork
+   * step, no props, no motif, no drawn light — the cut, the captions and the
+   * grade are the whole treatment. Supply is the reason it is a brief-level
+   * switch rather than a per-line one: a reel that is half fetched stills and
+   * half stock clips has two visual languages and looks like an accident.
+   */
+  const footage = brief.footage === true;
 
   const planned = [];
   let previousTransition = null;
@@ -1635,6 +1700,7 @@ async function main() {
     const cuts = spoken ? splitWindow(fragments, spoken.start, spoken.end) : null;
 
     const result = planScene({
+      footage,
       line,
       index,
       total: brief.lines.length,
@@ -1662,6 +1728,7 @@ async function main() {
 
     fragments.slice(1).forEach((fragment, i) => {
       const scene = planContinuation({
+        footage,
         line,
         index,
         part: i + 1,
@@ -1763,10 +1830,21 @@ async function main() {
     }
   }
 
-  for (const {scene, backdropPrompt, photoPrompt, backdropCommons, photoCommons, pieces} of planned) {
+  for (const {scene, backdropPrompt, photoPrompt, backdropCommons, photoCommons, pieces, line} of planned) {
     // `commons` names a REAL thing and is tried first; `prompt` is what draws it
     // when nothing free and large enough exists. A named artefact is always
     // better fetched than invented.
+    if (footage && named.has(`${scene.id}${FOOTAGE_SUFFIX}`)) {
+      /**
+       * WHAT TO GO AND FIND. `footage` on the line is the search; `image` is
+       * the fallback because a footage brief still describes what we are
+       * looking at, and that description IS the query.
+       */
+      const stock = [...new Set(
+        [line?.footage, line?.image, ...(line?.imageCommons ?? [])].map((q) => String(q ?? '').trim()).filter(Boolean),
+      )];
+      if (stock.length) assets[`${scene.id}${FOOTAGE_SUFFIX}`] = {kind: 'footage', stock};
+    }
     if ((backdropPrompt || backdropCommons) && named.has(`${scene.id}-bg.png`)) {
       assets[`${scene.id}-bg.png`] = {
         kind: 'backdrop',
