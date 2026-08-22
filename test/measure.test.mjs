@@ -13,7 +13,7 @@
  */
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {findBoundaries, loudness, windowsFromBoundaries} from '../scripts/lib/measure.mjs';
+import {alignBoundaries, findBoundaries, loudness, silences, windowsFromBoundaries} from '../scripts/lib/measure.mjs';
 
 const RATE = 16_000;
 
@@ -174,4 +174,71 @@ test('a wav survives a round trip, header chunks and all', () => {
   const back = readWav(writeWav(samples, 22050));
   assert.equal(back.length, samples.length);
   for (let i = 0; i < samples.length; i += 977) assert.equal(back[i], samples[i], `sample ${i}`);
+});
+
+/**
+ * CHOOSING THE RIGHT SILENCES, NOT THE LONGEST ONES.
+ *
+ * This is the failure that cost a whole take. A real thirteen-line reading came
+ * back with five shots at speaking rates between 0.65 and 7.5 words per second,
+ * and the run reported success: the windows still tiled the file end to end, so
+ * everything downstream was happy and every picture after the first bad cut sat
+ * against the wrong sentence.
+ *
+ * The cause was not the detector. It was the rule: rank the pauses by length,
+ * take the longest N. A line with a full stop in the middle of it has an
+ * internal pause the same size as the one at its end, so on any natural read
+ * the ranking is a coin toss.
+ */
+test('a pause inside a line does not steal the cut', () => {
+  //  A long first line with a full stop in it, then two short ones. The
+  //  mid-line pause is LONGER than the real break that follows it, which is
+  //  exactly what a narrator does when a sentence ends inside a paragraph.
+  const samples = pcm([1.6, 0.9, 1.6, 0.5, 1.2, 0.5, 1.2]);
+  const lines = [
+    'Bu geminin bir adı var ama önemli değil. Altı aydır demirde bekleyen yüz elli tankerden biri.',
+    'Hürmüz Boğazı. En dar yerinde otuz üç.',
+    'Kapı hâlâ kapalı bugün.',
+  ];
+  const duration = 7.5;
+  const found = alignBoundaries(silences(loudness(samples, RATE), 20), lines, duration);
+
+  assert.equal(found.length, 2);
+  // The 0.9s pause at 1.6s is inside the first line and must NOT be taken.
+  assert.ok(found[0] > 3.0, `took the mid-line pause at ${found[0].toFixed(2)}s`);
+  // The cut sits a lead before the next line speaks, so it is near the END of
+  // each 0.5s pause: 4.1→4.6 and 5.8→6.3.
+  near(found[0], 4.44, 0.12, 'first real break');
+  near(found[1], 6.14, 0.12, 'second real break');
+
+  // And the blunt rule gets it wrong on the same input, which is why this
+  // function exists.
+  const blunt = findBoundaries(loudness(samples, RATE), 20, 2);
+  assert.ok(blunt[0] < 3.0, 'the longest-pause rule should still be picking the mid-line pause');
+});
+
+test('every line ends up at a speaking rate a person could produce', () => {
+  // The check that would have caught it. Nobody reads at 7.5 words a second or
+  // at 0.65, so a window claiming either is a cut in the wrong place.
+  const samples = pcm([1.6, 0.9, 1.6, 0.5, 1.2, 0.5, 1.2]);
+  const lines = [
+    'Bu geminin bir adı var ama önemli değil. Altı aydır demirde bekleyen yüz elli tankerden biri.',
+    'Hürmüz Boğazı. En dar yerinde otuz üç.',
+    'Kapı hâlâ kapalı bugün.',
+  ];
+  const duration = 7.5;
+  const windows = windowsFromBoundaries(
+    lines,
+    alignBoundaries(silences(loudness(samples, RATE), 20), lines, duration),
+    duration,
+  );
+  for (const w of windows) {
+    const rate = w.text.split(/\s+/).filter(Boolean).length / (w.end - w.start);
+    assert.ok(rate > 1.0 && rate < 6.0, `${rate.toFixed(2)} words/sec is not a reading`);
+  }
+});
+
+test('with no candidates at all it returns nothing rather than inventing cuts', () => {
+  assert.deepEqual(alignBoundaries([], ['bir', 'iki', 'üç'], 6), []);
+  assert.deepEqual(alignBoundaries([{cut: 2, length: 0.5}], ['bir', 'iki', 'üç'], 6), []);
 });

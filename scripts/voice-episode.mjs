@@ -42,7 +42,7 @@ import path from 'node:path';
 import {createRequire} from 'node:module';
 import {pathToFileURL} from 'node:url';
 import {ROOT, episodeDir, exists, parseArgs} from './lib/episode.mjs';
-import {findBoundaries, loudness, windowsFromBoundaries, wordWindows} from './lib/measure.mjs';
+import {alignBoundaries, findBoundaries, loudness, silences, windowsFromBoundaries, wordWindows} from './lib/measure.mjs';
 import {joinWithGaps, readWav, writeWav} from './lib/wav.mjs';
 
 const API = process.env.ELEVENLABS_BASE_URL || 'https://api.elevenlabs.io/v1';
@@ -447,17 +447,28 @@ async function main() {
     windows = windowsFor(lines, alignment);
   } else {
     /**
-     * NO ALIGNMENT, SO MEASURE IT. The pauses are in the file: find every quiet
-     * run, take the longest (lines - 1) of them, and those are the cuts. Asking
-     * for the longest N rather than everything past a threshold is what makes
-     * this survive a narrator who breathes in the middle of a sentence.
+     * NO ALIGNMENT, SO MEASURE IT — with the script in hand.
+     *
+     * Every quiet run in the file is a candidate; which of them are the LINE
+     * breaks is decided by how well the resulting lengths match what the text
+     * predicts. Ranking by pause length alone was the older rule, and it holds
+     * only while the longest silences in the file are the paragraph breaks: on
+     * a natural read, a line with a full stop in the middle of it has an
+     * internal pause exactly as long as the one at its end.
      */
     const {samples, sampleRate, duration: seconds} = await decode(file);
     const WINDOW_MS = 20;
-    const boundaries = findBoundaries(loudness(samples, sampleRate, WINDOW_MS), WINDOW_MS, lines.length - 1);
+    const level = loudness(samples, sampleRate, WINDOW_MS);
+    const candidates = silences(level, WINDOW_MS);
+    let boundaries = alignBoundaries(candidates, lines, seconds);
+    if (!boundaries.length && lines.length > 1) {
+      // Nothing fitted: fall back to the blunt rule rather than refusing, and
+      // let the plausibility check below be the thing that speaks up.
+      boundaries = findBoundaries(level, WINDOW_MS, lines.length - 1);
+    }
     if (boundaries.length < lines.length - 1) {
       throw new Error(
-        `found ${boundaries.length} pause(s) in ${seconds.toFixed(1)}s but the script has ${lines.length} lines.\n` +
+        `found ${candidates.length} pause(s) in ${seconds.toFixed(1)}s but the script has ${lines.length} lines.\n` +
           '   The reading ran the lines together — ask for clearer pauses between paragraphs, or record it again.',
       );
     }
@@ -510,9 +521,42 @@ async function main() {
     'utf8',
   );
 
+  /**
+   * DOES EACH LINE TAKE A HUMANLY POSSIBLE AMOUNT OF TIME?
+   *
+   * A mis-measured boundary does not throw. Every window still tiles the file
+   * end to end, the reel still renders, and the only symptom is that from that
+   * cut onwards the pictures are against the wrong sentences — which no still
+   * frame will ever show you. It happened here: a real read came back with one
+   * shot at 7.5 words per second and another at 0.65, and the run reported
+   * success.
+   *
+   * Nobody speaks outside this band. A line that claims to is not a slow line,
+   * it is a cut in the wrong place, and it gets said out loud.
+   */
+  const FAST = 4.2;
+  const SLOW = 1.0;
+  const suspect = [];
+
   console.log(`\n${duration.toFixed(1)}s of narration:`);
   for (const [i, w] of windows.entries()) {
-    console.log(`  ${String(i + 1).padStart(2)}  ${w.start.toFixed(2)}–${w.end.toFixed(2)}s  (${(w.end - w.start).toFixed(2)}s)  ${w.text.slice(0, 52)}`);
+    const words = w.text.split(/\s+/).filter(Boolean).length;
+    const rate = words / Math.max(0.01, w.end - w.start);
+    const odd = rate > FAST || rate < SLOW;
+    if (odd) suspect.push({line: i + 1, rate});
+    console.log(
+      `  ${String(i + 1).padStart(2)}  ${w.start.toFixed(2)}–${w.end.toFixed(2)}s  (${(w.end - w.start).toFixed(2)}s)  ` +
+        `${odd ? '⚠ ' : ''}${w.text.slice(0, 52)}`,
+    );
+  }
+  if (suspect.length) {
+    console.log(
+      `\n⚠ ${suspect.length} satırın hızı imkânsız (${suspect
+        .map((x) => `${x.line}: ${x.rate.toFixed(1)} kel/sn`)
+        .join(', ')}).`,
+    );
+    console.log('   Sınırlar yanlış duraklara düşmüş. Kayıtta satır araları belirgin değil —');
+    console.log('   satır aralarına net es koyup tekrar okut, ya da metni satırlara böl.');
   }
   console.log(`\nwords: ${wordsHow}${wordsHow === 'weighted' ? ' (no measurable gaps between words — captions are split by weight)' : ''}`);
   console.log(`\n→ ${path.relative(ROOT, file)} + vo.json — re-run the planner to cut to it.`);

@@ -123,6 +123,135 @@ export function findBoundaries(windows, windowMs, count, {floor = 0.12, minPause
 }
 
 /**
+ * THE SILENCES, ALL OF THEM, WITH THEIR LENGTHS.
+ *
+ * `findBoundaries` ranks these by length and takes the longest N. That is the
+ * right answer only when the longest pauses in the file ARE the line breaks —
+ * true of a reading made to order, false of almost everything else.
+ *
+ * @returns {{cut: number, length: number}[]} ascending in time
+ */
+export function silences(windows, windowMs, {floor = 0.12, minPauseMs = 90, leadMs = 160} = {}) {
+  let peak = 0;
+  for (const value of windows) if (value > peak) peak = value;
+  const quiet = peak * floor;
+  const minWindows = Math.max(1, Math.round(minPauseMs / windowMs));
+
+  const runs = [];
+  let start = -1;
+  for (let i = 0; i <= windows.length; i += 1) {
+    const isQuiet = i < windows.length && windows[i] <= quiet;
+    if (isQuiet && start < 0) start = i;
+    else if (!isQuiet && start >= 0) {
+      if (i - start >= minWindows && start > 0) {
+        const from = (start * windowMs) / 1000;
+        const to = (i * windowMs) / 1000;
+        runs.push({cut: Math.max((from + to) / 2, to - leadMs / 1000), length: to - from});
+      }
+      start = -1;
+    }
+  }
+  return runs;
+}
+
+/**
+ * WHICH SILENCES ARE THE LINE BREAKS — decided with the script in hand.
+ *
+ * Taking the longest (lines − 1) pauses is a rule that holds right up until
+ * somebody reads naturally. A line that is two sentences long has a full stop
+ * inside it, and that pause is the same length as the one at its end; rank by
+ * length alone and the film cuts on the wrong one. Measured against a real
+ * thirteen-line read, five of the thirteen shots came back at speaking rates
+ * between 0.65 and 7.5 words per second — physically impossible, and SILENT:
+ * every window still tiled the file end to end, so nothing downstream could
+ * tell.
+ *
+ * But the text is right here, and it says how long each line ought to take: a
+ * line of eighty characters takes about twice as long as one of forty. So this
+ * picks the subset of candidate pauses whose resulting line lengths best match
+ * the ones the script predicts — every combination considered at once, by
+ * dynamic programming, rather than each cut chosen greedily on its own.
+ *
+ * Length still counts, as a tie-break: among fits that are equally good, the
+ * longer silence is the more likely paragraph break. It is a nudge, not the
+ * rule, which is the whole difference.
+ *
+ * @param {{cut: number, length: number}[]} candidates
+ * @param {string[]} lines the spoken text, in order
+ * @param {number} duration seconds
+ * @returns {number[]} boundary times in seconds, ascending
+ */
+export function alignBoundaries(candidates, lines, duration) {
+  const count = lines.length - 1;
+  if (count <= 0) return [];
+  if (candidates.length < count) return [];
+
+  // Characters, not words: "Hürmüz Boğazı" and "En dar yerinde otuz üç
+  // kilometre" are two words and five, and take nowhere near that ratio of
+  // time to say. Letters are a far better proxy for how long speech runs.
+  const weights = lines.map((line) => Math.max(1, line.trim().length));
+  const total = weights.reduce((a, b) => a + b, 0);
+  const expected = weights.map((w) => (w / total) * duration);
+
+  const longest = Math.max(...candidates.map((c) => c.length), 0.001);
+  const NUDGE = 0.35;
+
+  /** How badly a line of `want` seconds fits a slot of `got` seconds. */
+  const misfit = (got, want) => {
+    if (got <= 0.05) return 1e9;
+    const d = got - want;
+    return (d * d) / want;
+  };
+
+  const M = candidates.length;
+  // dp[k][j]: best cost with k boundaries placed, the last at candidate j.
+  const dp = Array.from({length: count + 1}, () => new Float64Array(M).fill(Infinity));
+  const from = Array.from({length: count + 1}, () => new Int32Array(M).fill(-1));
+
+  for (let j = 0; j < M; j += 1) {
+    dp[1][j] = misfit(candidates[j].cut, expected[0]) - NUDGE * (candidates[j].length / longest);
+  }
+  for (let k = 2; k <= count; k += 1) {
+    for (let j = k - 1; j < M; j += 1) {
+      let best = Infinity;
+      let bestFrom = -1;
+      for (let i = k - 2; i < j; i += 1) {
+        if (dp[k - 1][i] === Infinity) continue;
+        const cost = dp[k - 1][i] + misfit(candidates[j].cut - candidates[i].cut, expected[k - 1]);
+        if (cost < best) {
+          best = cost;
+          bestFrom = i;
+        }
+      }
+      dp[k][j] = best - NUDGE * (candidates[j].length / longest);
+      from[k][j] = bestFrom;
+    }
+  }
+
+  // The last line runs from the final boundary to the end of the file, and it
+  // has to fit too — without this the run home is free and the last cut drifts.
+  let best = Infinity;
+  let end = -1;
+  for (let j = count - 1; j < M; j += 1) {
+    if (dp[count][j] === Infinity) continue;
+    const cost = dp[count][j] + misfit(duration - candidates[j].cut, expected[count]);
+    if (cost < best) {
+      best = cost;
+      end = j;
+    }
+  }
+  if (end < 0) return [];
+
+  const chosen = [];
+  for (let k = count, j = end; k >= 1; k -= 1) {
+    chosen.push(candidates[j].cut);
+    j = from[k][j];
+    if (j < 0 && k > 1) return [];
+  }
+  return chosen.reverse();
+}
+
+/**
  * Boundaries → one window per line, covering the file end to end.
  *
  * @param {string[]} lines
