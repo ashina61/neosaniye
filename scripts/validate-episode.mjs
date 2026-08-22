@@ -90,8 +90,25 @@ async function main() {
   if (typeof args.episode === 'string') {
     episodes = [args.episode];
   } else {
-    const entries = await readdir(process.env.EPISODES_DIR || path.join(ROOT, 'episodes'), {withFileTypes: true});
-    episodes = entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name);
+    const shelf = process.env.EPISODES_DIR || path.join(ROOT, 'episodes');
+    const entries = await readdir(shelf, {withFileTypes: true});
+    const folders = entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name);
+    /**
+     * A FOLDER WITH NO CUT IS NOT A BROKEN EPISODE.
+     *
+     * It is one nobody has planned yet — six lines written and nothing derived
+     * from them, which is exactly the state a footage episode sits in until the
+     * clips have been fetched. Failing the whole sweep on it turns "there is a
+     * brief here" into a red gate on every push; saying it out loud keeps it
+     * from being invisible instead.
+     */
+    const cut = [];
+    const written = [];
+    for (const id of folders) {
+      (await exists(path.join(shelf, id, 'scene-config.json')) ? cut : written).push(id);
+    }
+    if (written.length) console.log(`· written but not cut: ${written.join(', ')} — run npm run plan\n`);
+    episodes = cut;
   }
 
   if (!episodes.length) {

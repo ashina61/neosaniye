@@ -212,6 +212,16 @@ jobs:
         if: inputs.assets
         run: node scripts/fetch-commons.mjs --episode="${{ inputs.episode_id }}"
 
+      # FOOTAGE IS FETCHED, NEVER DRAWN — and only from libraries that licence
+      # reuse. A clip lifted off a feed and narrated over is a reupload; the
+      # strike lands on the channel that posted it, so the script cannot do it.
+      # An episode with no footage recipes passes straight through.
+      - name: Fetch licensed footage
+        if: inputs.assets
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: node scripts/fetch-footage.mjs --episode="${{ inputs.episode_id }}"
+
       # Exit 2 means "some drawn, some failed". That is worth committing — the
       # drawings that worked are real work and a re-run retries only the rest —
       # so the failure is carried to the end of the job instead.

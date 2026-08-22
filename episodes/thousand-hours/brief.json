@@ -1,0 +1,45 @@
+{
+  "id": "thousand-hours",
+  "title": "A thousand hours",
+  "mood": "cold-noir",
+  "footage": true,
+  "style": "handheld documentary footage, available light, close on hands and objects",
+  "lines": [
+    {
+      "slug": "worse",
+      "vo": "In nineteen twenty four the men who made light bulbs agreed to make them worse.",
+      "footage": "glowing light bulb filament close up",
+      "alt": "incandescent bulb filament macro"
+    },
+    {
+      "slug": "capped",
+      "vo": "Meeting in Geneva, they capped every bulb at a thousand hours.",
+      "footage": "hands signing a paper document close up",
+      "alt": "old typewriter typing document close up"
+    },
+    {
+      "slug": "fined",
+      "vo": "Any factory whose bulbs lasted longer was fined by the others.",
+      "footage": "light bulb factory production line",
+      "alt": "glass bottles moving on a conveyor belt"
+    },
+    {
+      "slug": "sales",
+      "vo": "Average life fell by half in eight years. Sales rose.",
+      "footage": "hands unscrewing a light bulb from a ceiling fixture",
+      "alt": "changing a light bulb close up"
+    },
+    {
+      "slug": "habit",
+      "vo": "The cartel broke up in the war. The habit did not.",
+      "footage": "broken electronics in a pile close up",
+      "alt": "electronic waste dump slow motion"
+    },
+    {
+      "slug": "firehouse",
+      "vo": "One bulb from nineteen oh one still burns in a California firehouse.",
+      "footage": "single light bulb glowing in a dark room",
+      "alt": "dusty bulb hanging from ceiling dark"
+    }
+  ]
+}

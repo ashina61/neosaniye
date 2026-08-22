@@ -1841,7 +1841,13 @@ async function main() {
        * looking at, and that description IS the query.
        */
       const stock = [...new Set(
-        [line?.footage, line?.image, ...(line?.imageCommons ?? [])].map((q) => String(q ?? '').trim()).filter(Boolean),
+        // `alt` is the second search the writer was asked for — the shot the
+        // library actually has when the first phrase comes back empty. It was
+        // written into the prompt and then not read here, which is a search
+        // that exists in every brief and reaches nothing.
+        [line?.footage, line?.alt, line?.image, ...(line?.imageCommons ?? [])]
+          .map((q) => String(q ?? '').trim())
+          .filter(Boolean),
       )];
       if (stock.length) assets[`${scene.id}${FOOTAGE_SUFFIX}`] = {kind: 'footage', stock};
     }

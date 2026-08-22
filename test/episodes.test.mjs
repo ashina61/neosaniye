@@ -13,9 +13,17 @@ import {BUILT_IN_SCENE_TYPES, validateEpisodeConfig} from '../engine/schema.mjs'
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const EPISODES = path.join(ROOT, 'episodes');
 
-const episodeIds = (await readdir(EPISODES, {withFileTypes: true}))
-  .filter((entry) => entry.isDirectory())
-  .map((entry) => entry.name);
+/**
+ * Every episode that has been CUT. A folder holding only a brief is an episode
+ * nobody has planned yet — the state a footage episode is in until its clips
+ * have been fetched — and there is nothing in it for these tests to check.
+ */
+const episodeIds = [];
+for (const entry of await readdir(EPISODES, {withFileTypes: true})) {
+  if (!entry.isDirectory()) continue;
+  const planned = await stat(path.join(EPISODES, entry.name, 'scene-config.json')).catch(() => null);
+  if (planned) episodeIds.push(entry.name);
+}
 
 test('the repo ships at least one episode', () => {
   assert.ok(episodeIds.length > 0);
