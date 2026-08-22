@@ -71,13 +71,36 @@ export type Graphic =
       colour?: string;
     };
 
-type Props = {graphics: Graphic[]; accent: string; paper: string};
+type Props = {graphics: Graphic[]; accent: string; paper: string; length: number};
 
-/** 0→1 over `over` frames starting at `at`, eased so nothing starts or stops
- *  at full speed. */
-const useProgress = (at = 0, over = 30) => {
+/**
+ * WHEN THINGS HAPPEN IS A SHARE OF THE SHOT, NOT A COUNT OF FRAMES.
+ *
+ * The voice is the clock in this repo, and the voice is the thing most likely
+ * to be replaced: a draft read swapped for a real one re-times every shot in
+ * the film. Written in frames, a line that draws over 58 of them simply never
+ * finishes inside a beat that came back shorter — and it fails silently, as a
+ * route that stops halfway across the map for no reason anyone can see.
+ *
+ * So a value of 1 or less is read as a FRACTION of the shot: `at: 0.2` is a
+ * fifth of the way in, whatever the narrator did. Anything above 1 is still
+ * frames, because sometimes you do mean "eight frames after the cut".
+ */
+const LengthContext = React.createContext(90);
+
+const share = (value: number | undefined, fallback: number, length: number) => {
+  const v = value ?? fallback;
+  return v <= 1 ? v * length : v;
+};
+
+/** 0→1 over `over`, starting at `at`, eased so nothing starts or stops at
+ *  full speed. */
+const useProgress = (at: number | undefined, over: number | undefined, atDefault: number, overDefault: number) => {
   const frame = useCurrentFrame();
-  const t = interpolate(frame, [at, at + Math.max(1, over)], [0, 1], {
+  const length = React.useContext(LengthContext);
+  const start = share(at, atDefault, length);
+  const span = Math.max(1, share(over, overDefault, length));
+  const t = interpolate(frame, [start, start + span], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
@@ -90,7 +113,7 @@ const Route: React.FC<{g: Extract<Graphic, {kind: 'route'}>; accent: string; pap
   paper,
 }) => {
   const {width, height} = useVideoConfig();
-  const p = useProgress(g.at ?? 0, g.over ?? 45);
+  const p = useProgress(g.at, g.over, 0.05, 0.55);
   if (p <= 0) return null;
 
   const pts = g.points.map(([x, y]) => [x * width, y * height] as const);
@@ -151,7 +174,7 @@ const Measure: React.FC<{g: Extract<Graphic, {kind: 'measure'}>; accent: string;
   paper,
 }) => {
   const {width, height} = useVideoConfig();
-  const p = useProgress(g.at ?? 0, 26);
+  const p = useProgress(g.at, undefined, 0.25, 0.3);
   if (p <= 0) return null;
 
   const x1 = g.from[0] * width;
@@ -224,7 +247,7 @@ const Dots: React.FC<{g: Extract<Graphic, {kind: 'dots'}>; accent: string; paper
   paper,
 }) => {
   const {width, height} = useVideoConfig();
-  const p = useProgress(g.at ?? 0, g.over ?? 40);
+  const p = useProgress(g.at, g.over, 0.05, 0.6);
   if (p <= 0) return null;
 
   const boxW = (g.width ?? 0.78) * width;
@@ -300,7 +323,7 @@ const Count: React.FC<{g: Extract<Graphic, {kind: 'count'}>; accent: string; pap
   paper,
 }) => {
   const {width, height} = useVideoConfig();
-  const p = useProgress(g.at ?? 0, g.over ?? 46);
+  const p = useProgress(g.at, g.over, 0.08, 0.6);
   if (p <= 0) return null;
   const eased = 1 - (1 - p) ** 3;
   const value = Math.round((g.from ?? 0) + ((g.to ?? 0) - (g.from ?? 0)) * eased);
@@ -340,10 +363,11 @@ const Count: React.FC<{g: Extract<Graphic, {kind: 'count'}>; accent: string; pap
   );
 };
 
-export const Graphics: React.FC<Props> = ({graphics, accent, paper}) => {
+export const Graphics: React.FC<Props> = ({graphics, accent, paper, length}) => {
   const {width, height} = useVideoConfig();
   if (!graphics?.length) return null;
   return (
+    <LengthContext.Provider value={Math.max(1, length)}>
     <AbsoluteFill>
       <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{position: 'absolute'}}>
         {graphics.map((g, i) => {
@@ -361,5 +385,6 @@ export const Graphics: React.FC<Props> = ({graphics, accent, paper}) => {
         })}
       </svg>
     </AbsoluteFill>
+    </LengthContext.Provider>
   );
 };

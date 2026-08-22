@@ -108,16 +108,25 @@ export type BrollData = {
  * offset on one side reads as a marker pen someone drew round the subject and
  * did not line up perfectly, which is the whole point.
  */
-const Cutout: React.FC<{layer: Layer; accent: string; index: number}> = ({layer, accent, index}) => {
+const Cutout: React.FC<{layer: Layer; accent: string; index: number; length: number}> = ({
+  layer,
+  accent,
+  index,
+  length,
+}) => {
   const frame = useCurrentFrame();
   const {fps, width, height} = useVideoConfig();
 
-  const at = layer.at ?? 0;
+  // A value of 1 or less is a share of the shot; above 1 it is frames. Same
+  // rule as the drawn layer, and for the same reason: re-record the narration
+  // and a subject that entered "at frame 24" of a five-second shot must not
+  // still be arriving at the end of a three-second one.
+  const at = (layer.at ?? 0) <= 1 ? (layer.at ?? 0) * length : (layer.at as number);
   const rise = spring({
     frame: frame - at,
     fps,
     config: {damping: 15, mass: 0.9},
-    durationInFrames: layer.rise ?? 26,
+    durationInFrames: Math.max(6, (layer.rise ?? 26) <= 1 ? (layer.rise ?? 0) * length : (layer.rise as number)),
   });
   if (rise <= 0.001) return null;
 
@@ -234,19 +243,19 @@ const Scene: React.FC<{beat: Beat; data: BrollData; length: number}> = ({beat, d
 
       {beat.mid.map((layer, i) => (
         <AbsoluteFill key={`m${i}`} style={move(layer.depth ?? 0.85)}>
-          <Cutout layer={layer} accent={data.accent} index={i} />
+          <Cutout layer={layer} accent={data.accent} index={i} length={length} />
         </AbsoluteFill>
       ))}
       {beat.fore.map((layer, i) => (
         <AbsoluteFill key={`f${i}`} style={move(layer.depth ?? 1.3)}>
-          <Cutout layer={{strokeX: 0.012, ...layer}} accent={data.accent} index={i} />
+          <Cutout layer={{strokeX: 0.012, ...layer}} accent={data.accent} index={i} length={length} />
         </AbsoluteFill>
       ))}
 
       {/* Over the pictures, under the caption: a drawn line belongs to the shot,
           a caption belongs to the film. */}
       {beat.graphics?.length ? (
-        <Graphics graphics={beat.graphics} accent={data.accent} paper={paper} />
+        <Graphics graphics={beat.graphics} accent={data.accent} paper={paper} length={length} />
       ) : null}
 
       {beat.text?.big ? (
