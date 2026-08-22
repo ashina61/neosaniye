@@ -36,7 +36,7 @@ import {readFile, rm, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {episodeDir, parseArgs} from './lib/episode.mjs';
-import {PROP_KINDS} from '../engine/schema.mjs';
+import {MARK_KINDS, PROP_KINDS} from '../engine/schema.mjs';
 
 const FPS = 30;
 const WIDTH = 1080;
@@ -981,6 +981,29 @@ function motionOf(layer) {
   };
 }
 
+/**
+ * THE POINTING FINGER, COMPILED. Fractions in, pixels out — the director says
+ * "two thirds across, a third down" and only this file knows the frame is 1080
+ * wide.
+ *
+ * Three at most, and that is not a style rule: an explainer cut works because
+ * the eye is told where to look, and four arrows at once is the same as none.
+ * A mark with no `at` lands early, because a mark that arrives after the shot
+ * has cut is a mark nobody saw.
+ */
+function compileMarks(marks, durationInFrames) {
+  return (marks ?? []).slice(0, 3).map((mark) => ({
+    kind: MARK_KINDS.includes(mark?.kind) ? mark.kind : 'arrow',
+    x: Math.round(WIDTH * num(mark?.x, 0.5, 0, 1)),
+    y: Math.round(HEIGHT * num(mark?.y, 0.5, 0, 1)),
+    width: Math.round(WIDTH * num(mark?.size, 0.3, 0.06, 0.9)),
+    ...(mark?.height !== undefined ? {height: Math.round(HEIGHT * num(mark.height, 0.16, 0.02, 0.9))} : {}),
+    ...(mark?.aim !== undefined ? {aim: Number(mark.aim) || 0} : {}),
+    from: Math.round(durationInFrames * num(mark?.at, 0.18, 0, 0.85)),
+    ...(String(mark?.text ?? '').trim() ? {text: String(mark.text).trim()} : {}),
+  }));
+}
+
 function directedStack({shot, rand, durationInFrames = 90}) {
   const assets = {};
   const layers = [];
@@ -1599,6 +1622,9 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
       },
     ];
   }
+
+  const marks = compileMarks(line?.shot?.marks, durationInFrames);
+  if (marks.length) scene.marks = marks;
 
   return {
     scene,

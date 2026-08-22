@@ -408,3 +408,50 @@ test('a footage episode plans clips and nothing drawn', async () => {
     await rm(shelf, {recursive: true, force: true});
   }
 });
+
+/**
+ * THE POINTING FINGER.
+ *
+ * An explainer cut is a clip plus somebody saying "look at THAT" — and the
+ * "that" is an arrow landing on a point. Fractions in, pixels out, because the
+ * director says "two thirds across" and only the compiler knows the frame.
+ */
+test('marks compile to pixels and survive a footage episode', async () => {
+  const lines = [1, 2, 3, 4, 5, 6].map((i) => ({
+    slug: `s${i}`,
+    vo: 'He heats the body instead of turning the screw.',
+    footage: 'hands repairing a watch close up',
+  }));
+  lines[0].shot = {
+    marks: [
+      {kind: 'arrow', x: 0.44, y: 0.5, size: 0.3, aim: 25, at: 0.25, text: 'not the screw'},
+      {kind: 'oval', x: 0.6, y: 0.4, size: 0.4, at: 0.5},
+      {kind: 'box', x: 0.5, y: 0.5, size: 0.3, at: 0.6},
+      {kind: 'underline', x: 0.5, y: 0.8, size: 0.4, at: 0.7},
+    ],
+  };
+  const shelf = await mkdtemp(path.join(os.tmpdir(), 'reel-shelf-'));
+  const dir = path.join(shelf, 'probe');
+  try {
+    await mkdir(dir, {recursive: true});
+    await writeFile(
+      path.join(dir, 'brief.json'),
+      JSON.stringify({id: 'probe', title: 'p', mood: 'cold-noir', style: 's', footage: true, lines}),
+    );
+    await run('node', [PLANNER, '--episode=probe'], {cwd: ROOT, env: {...process.env, EPISODES_DIR: shelf}});
+    const config = JSON.parse(await readFile(path.join(dir, 'scene-config.json'), 'utf8'));
+    const scene = config.scenes.find((s) => s.id.startsWith('s01'));
+    assert.ok(scene.marks?.length, 'the marks did not survive a footage episode');
+    assert.equal(scene.marks.length, 3, 'four marks at once is the same as none');
+    const [arrow] = scene.marks;
+    assert.equal(arrow.kind, 'arrow');
+    assert.equal(arrow.x, Math.round(1080 * 0.44));
+    assert.equal(arrow.y, Math.round(1920 * 0.5));
+    assert.equal(arrow.aim, 25);
+    assert.equal(arrow.text, 'not the screw');
+    assert.ok(arrow.from > 0 && arrow.from < scene.durationInFrames, `lands at ${arrow.from}`);
+    assert.deepEqual(validateEpisodeConfig(config), []);
+  } finally {
+    await rm(shelf, {recursive: true, force: true});
+  }
+});

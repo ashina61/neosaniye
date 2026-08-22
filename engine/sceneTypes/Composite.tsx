@@ -8,6 +8,7 @@ import {WordStack} from '../draw/Type';
 import {Annotation, type MarkKind} from '../draw/Annotation';
 import {SceneMotif} from '../draw/Motif';
 import {DrawnProps} from '../draw/Props';
+import {Marks} from '../draw/Marks';
 
 /**
  * A COMPOSED SHOT — as many layers as the scene declares.
@@ -282,6 +283,16 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
           scrim={num('captionScrim', 0)}
         />
       ) : null}
+
+      {/**
+        * THE POINTING FINGER, and it is NAILED TO THE FRAME.
+        *
+        * A prop is an object in the room and takes its share of the push; a
+        * mark is the edit talking over the picture, so it must not drift with
+        * the camera — an arrow that slides off the thing it is pointing at is
+        * worse than no arrow. Same law as a motif.
+        */}
+      <Marks marks={scene.marks} seed={scene.id} />
 
       {mark ? (
         <Annotation

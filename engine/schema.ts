@@ -121,6 +121,23 @@ export type PropSpec = {
   enterDistance?: number;
 };
 
+/** An arrow, circle or label aimed at a point in the picture. Pixels. */
+export type MarkSpec = {
+  kind?: 'arrow' | 'oval' | 'box' | 'bracket' | 'underline' | 'strike';
+  x: number;
+  y: number;
+  width: number;
+  height?: number;
+  /** Degrees the arrow's tail swings away from its head. */
+  aim?: number;
+  colour?: string;
+  thickness?: number;
+  from?: number;
+  over?: number;
+  text?: string;
+  textSize?: number;
+};
+
 export type LayerSpec = {
   /** Asset role to draw. A layer with no role and no fill draws nothing. */
   role?: string;
@@ -236,6 +253,8 @@ export type SceneSpec = {
   /** The layer stack, for scene types that compose one. */
   layers?: LayerSpec[];
   props?: PropSpec[];
+  /** Arrows and circles aimed at the picture. Nailed to the frame, like a motif. */
+  marks?: MarkSpec[];
   /** Partial grade for this scene only, merged over the episode's grade. */
   gradeOverride?: Partial<Grade>;
   onScreenText?: OnScreenTextSpec[];

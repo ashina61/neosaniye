@@ -121,6 +121,9 @@ export const Annotation: React.FC<{
           left: x - pad,
           top: y - pad,
           overflow: 'visible',
+          // The wobble is the hand; anything that AIMS the mark is applied by
+          // whoever placed it, outside this box, so the two rotations do not
+          // fight over one transform.
           transform: `rotate(${wobble}deg)`,
           opacity,
         }}

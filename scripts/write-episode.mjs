@@ -31,6 +31,8 @@ const MOODS = ['gold-heat', 'cold-noir', 'green-rot', 'ash-grey'];
 const TEMPLATES = ['composite', 'portal-zoom-reveal', 'title-slate', 'evidence-board', 'stacked-reveal', 'split-shift', 'parallax-punch'];
 /** Drawn objects a shot may stand in the frame. Mirrors engine/schema.mjs. */
 const PROP_KINDS = ['plaque', 'newspaper', 'card', 'print', 'wire', 'beam'];
+/** What a mark can be. Mirrors engine/schema.mjs. */
+const MARK_KINDS = ['arrow', 'oval', 'box', 'bracket', 'underline', 'strike'];
 
 /**
  * THE BRIEF-WRITING PROMPT.
@@ -111,10 +113,36 @@ EACH LINE OBJECT:
               landscape, so prefer a subject that is shot close: hands, tools,
               faces, surfaces.
   "alt"       optional second search, tried if the first finds nothing.
+  "shot"      optional, and it holds ONE thing: "marks".
 
-No "pieces", no "props", no "shot": there is nothing to place. The clip is the
-shot, the words on screen come from the line itself, and the grade and the
-grain are the only things this pipeline adds.`;
+MARKS — THE POINTING FINGER, which is the whole grammar of this format.
+
+The clip already shows the thing. The edit's job is to say WHICH PART and WHY,
+and that is an arrow landing on it with three words beside it. Without them a
+narrated clip is a narrated clip; with them it is somebody explaining.
+
+  "shot": {"marks": [
+    {"kind": "arrow", "x": 0.44, "y": 0.52, "size": 0.3, "aim": 25,
+     "at": 0.25, "text": "not the screw"}
+  ]}
+
+  kind   arrow (lands its HEAD on the point), oval (rings it), box, underline
+  x, y   the point being pointed at, as fractions of the frame
+  size   how big the mark is, as a fraction of the width. 0.25-0.45 is normal
+  aim    degrees the arrow's tail swings away, so it comes in from where there
+         is room. Point at something on the left, aim the tail right
+  at     when it lands, as a fraction of the shot. Early — a mark that arrives
+         after the cut is a mark nobody saw
+  text   three or four words. It names the thing; the narration explains it.
+         Never a sentence, and never the line repeated
+
+AT MOST THREE ON A SHOT, and most shots want one. Four arrows at once is the
+same as none — the eye is not being told where to look any more. And a shot with
+NO marks is a decision: the closing shot usually earns it.
+
+No "pieces", no "props", no camera: there is nothing to place and nothing to
+push. The clip is the shot, the words on screen come from the line itself, and
+the grade and the grain are the only things this pipeline adds.`;
 }
 
 export function promptFor(topic, id, mood) {
@@ -403,6 +431,35 @@ export function problemsWith(brief) {
     // finished reel worth throwing away. One bare line is a rest; two is a
     // pattern.
     if (footage) {
+      /**
+       * THE MARKS ARE THE EDIT. A mark placed off the thing points confidently
+       * at nothing, and it does it on the shot the reel exists for — so the
+       * numbers are checked rather than trusted, the same way the props are on
+       * the drawn side.
+       */
+      const marks = Array.isArray(line?.shot?.marks) ? line.shot.marks : [];
+      if (marks.length > 3) {
+        problems.push(`line ${i + 1}: ${marks.length} marks — three at once is the same as none`);
+      }
+      for (const mark of marks) {
+        if (mark?.kind !== undefined && !MARK_KINDS.includes(mark.kind)) {
+          problems.push(`line ${i + 1}: mark kind "${mark.kind}" is not one of ${MARK_KINDS.join(', ')}`);
+        }
+        for (const key of ['x', 'y']) {
+          const value = Number(mark?.[key]);
+          if (!(value >= 0 && value <= 1)) {
+            problems.push(`line ${i + 1}: mark ${key} is ${mark?.[key]} — it is a fraction of the frame, 0 to 1`);
+          }
+        }
+        if (mark?.at !== undefined && !(Number(mark.at) >= 0 && Number(mark.at) <= 0.9)) {
+          problems.push(`line ${i + 1}: mark at ${mark.at} — land it inside the shot, 0 to 0.9`);
+        }
+        const words = String(mark?.text ?? '').trim().split(/\s+/).filter(Boolean);
+        if (words.length > 5) {
+          problems.push(`line ${i + 1}: mark says "${mark.text}" — a label names the thing, it does not explain it`);
+        }
+      }
+
       const search = String(line?.footage ?? line?.image ?? '').trim();
       if (!search) {
         problems.push(`line ${i + 1}: no footage search — say what the camera is looking at`);

@@ -63,6 +63,8 @@ export const BUILT_IN_SCENE_TYPES = [
  * nothing about it, which is the same failure as an unknown scene type.
  */
 export const MOTIF_KINDS = ['coins', 'rise', 'route', 'embers', 'rays', 'tally'];
+/** What a mark can be. Kept in step with engine/draw/Annotation.tsx. */
+export const MARK_KINDS = ['arrow', 'oval', 'box', 'bracket', 'underline', 'strike'];
 
 /**
  * OPTIONAL ASSET ROLES.
@@ -226,6 +228,34 @@ export function validateEpisodeConfig(config) {
           }
         }
       }
+    }
+    /**
+     * MARKS — arrows and circles aimed at a point in the picture.
+     *
+     * A mark that lands in the wrong place is worse than no mark: it points
+     * confidently at nothing, and the shot it is drawn over is usually the one
+     * the whole reel exists for. So the numbers are checked here rather than
+     * trusted, and a mark with no target is refused instead of drawn at 0,0.
+     */
+    if (scene.marks !== undefined) {
+      if (!Array.isArray(scene.marks)) push(`${where}.marks: must be an array`);
+      else
+        scene.marks.forEach((mark, i) => {
+          const at = `${where}.marks[${i}]`;
+          if (typeof mark !== 'object' || mark === null) return push(`${at}: must be an object`);
+          if (mark.kind !== undefined && !MARK_KINDS.includes(mark.kind)) {
+            push(`${at}.kind: "${mark.kind}" is not one of ${MARK_KINDS.join(', ')}`);
+          }
+          for (const key of ['x', 'y', 'width']) {
+            if (typeof mark[key] !== 'number' || !Number.isFinite(mark[key])) {
+              push(`${at}.${key}: required, a number in scene pixels`);
+            }
+          }
+          if (mark.text !== undefined && typeof mark.text !== 'string') push(`${at}.text: must be a string`);
+          if (mark.aim !== undefined && (typeof mark.aim !== 'number' || !Number.isFinite(mark.aim))) {
+            push(`${at}.aim: must be a number of degrees`);
+          }
+        });
     }
     /**
      * A TITLE SLATE WITH NOTHING ON IT.
