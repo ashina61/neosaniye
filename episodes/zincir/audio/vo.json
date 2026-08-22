@@ -1,0 +1,45 @@
+{
+  "$comment": "MEASURED from vo.mp3, not estimated. The planner cuts every scene to these windows.",
+  "how": "exact",
+  "provider": "piper",
+  "audio": "audio/vo.wav",
+  "duration": 26.548390022675736,
+  "lines": [
+    {
+      "slug": "ucuz",
+      "text": "Bir ormanı bir günde silmenin en ucuz yolu bir zincirdir.",
+      "start": 0,
+      "end": 3.915
+    },
+    {
+      "slug": "capa",
+      "text": "İki dozer, aralarında gemiden sökülmüş yüz metrelik bir çapa zinciri.",
+      "start": 3.915,
+      "end": 9.479
+    },
+    {
+      "slug": "yururler",
+      "text": "Yan yana yürürler ve zincir önündeki her şeyi yatırır.",
+      "start": 9.479,
+      "end": 13.886
+    },
+    {
+      "slug": "hiz",
+      "text": "Testere yok, işçi yok. Saatte altı hektar.",
+      "start": 13.886,
+      "end": 18.616
+    },
+    {
+      "slug": "yirmiyil",
+      "text": "Amerika'da buna zincirleme dendi ve yirmi yıl sürdü.",
+      "start": 18.616,
+      "end": 22.652
+    },
+    {
+      "slug": "curume",
+      "text": "Devrilen ağaçların çoğu yerinde çürümeye bırakıldı.",
+      "start": 22.652,
+      "end": 26.548
+    }
+  ]
+}

@@ -1,0 +1,335 @@
+{
+  "id": "zincir",
+  "title": "Zincir",
+  "audio": "audio/vo.wav",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "look": {
+    "posterizeFps": 15,
+    "grade": {
+      "saturate": 0.49,
+      "contrast": 1.26,
+      "sepia": 0.15,
+      "brightness": 1.06
+    },
+    "film": {
+      "grain": true,
+      "grunge": true,
+      "scanlines": true,
+      "vignette": true,
+      "gateWeave": true,
+      "grainOpacity": 0.41,
+      "grungeOpacity": 0.1,
+      "scanlineOpacity": 0.16,
+      "scanlinePeriod": 9,
+      "vignetteStrength": 0.52,
+      "weavePx": 6,
+      "weaveScale": 1.018
+    }
+  },
+  "scenes": [
+    {
+      "id": "s01-ucuz",
+      "sceneType": "composite",
+      "voText": "Bir ormanı bir günde silmenin en ucuz yolu bir zincirdir.",
+      "durationInFrames": 117,
+      "assets": {
+        "ground": "assets/s01-ucuz.mp4"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.8,
+          "anchor": "fill",
+          "motion": true
+        }
+      ],
+      "props": [],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1,
+        "pushTo": 1,
+        "pushEndFrame": 101,
+        "caption": [
+          "Bir ormanı bir",
+          "günde silmenin en",
+          "ucuz yolu bir",
+          "zincirdir"
+        ],
+        "captionX": 84,
+        "captionY": 427,
+        "captionSize": 78,
+        "captionAlign": "left",
+        "captionFrame": 4,
+        "captionEvery": 7,
+        "captionScrim": 0.34,
+        "captionRecedeAt": 84,
+        "accent": "#d94f3d"
+      }
+    },
+    {
+      "id": "s02-capa",
+      "sceneType": "composite",
+      "voText": "İki dozer, aralarında gemiden sökülmüş yüz metrelik bir çapa zinciri.",
+      "durationInFrames": 167,
+      "transition": {
+        "kind": "flare",
+        "frames": 6
+      },
+      "assets": {
+        "ground": "assets/s02-capa.mp4"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.87,
+          "anchor": "fill",
+          "motion": true
+        }
+      ],
+      "props": [],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1,
+        "pushTo": 1,
+        "pushEndFrame": 144,
+        "caption": [
+          "İki dozer, aralarında",
+          "gemiden sökülmüş yüz",
+          "metrelik bir çapa",
+          "zinciri"
+        ],
+        "captionX": 84,
+        "captionY": 569,
+        "captionSize": 75,
+        "captionAlign": "left",
+        "captionFrame": 4,
+        "captionEvery": 8,
+        "captionScrim": 0.34,
+        "captionRecedeAt": 120,
+        "accent": "#d94f3d"
+      }
+    },
+    {
+      "id": "s03-yururler",
+      "sceneType": "composite",
+      "voText": "Yan yana yürürler ve zincir önündeki her şeyi yatırır.",
+      "durationInFrames": 133,
+      "transition": {
+        "kind": "rack",
+        "frames": 9
+      },
+      "assets": {
+        "ground": "assets/s03-yururler.mp4"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.85,
+          "anchor": "fill",
+          "motion": true
+        }
+      ],
+      "props": [],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1,
+        "pushTo": 1,
+        "pushEndFrame": 114,
+        "caption": [
+          "Yan yana yürürler",
+          "ve zincir önündeki",
+          "her şeyi yatırır"
+        ],
+        "captionX": 84,
+        "captionY": 799,
+        "captionSize": 82,
+        "captionAlign": "left",
+        "captionFrame": 4,
+        "captionEvery": 8,
+        "captionScrim": 0.34,
+        "captionRecedeAt": 96,
+        "accent": "#d94f3d"
+      }
+    },
+    {
+      "id": "s04-hiz",
+      "sceneType": "composite",
+      "voText": "Testere yok, işçi yok.",
+      "durationInFrames": 81,
+      "transition": {
+        "kind": "flare",
+        "frames": 7
+      },
+      "assets": {
+        "ground": "assets/s04-hiz.mp4"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.75,
+          "anchor": "fill",
+          "motion": true
+        }
+      ],
+      "props": [],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1,
+        "pushTo": 1,
+        "pushEndFrame": 70,
+        "caption": [
+          "Testere yok,",
+          "işçi yok"
+        ],
+        "captionX": 84,
+        "captionY": 1035,
+        "captionSize": 91,
+        "captionAlign": "left",
+        "captionFrame": 4,
+        "captionEvery": 10,
+        "captionScrim": 0.34,
+        "captionRecedeAt": 58,
+        "accent": "#d94f3d"
+      }
+    },
+    {
+      "id": "s04-hiz-b",
+      "sceneType": "composite",
+      "voText": "Saatte altı hektar.",
+      "durationInFrames": 60,
+      "transition": {
+        "kind": "slip",
+        "frames": 11
+      },
+      "assets": {
+        "ground": "assets/s04-hiz.mp4"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.85,
+          "anchor": "fill",
+          "motion": true
+        }
+      ],
+      "props": [],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1,
+        "pushTo": 1,
+        "pushEndFrame": 56,
+        "accent": "#d94f3d",
+        "caption": [
+          "Saatte altı",
+          "hektar"
+        ],
+        "captionX": 84,
+        "captionY": 814,
+        "captionSize": 97,
+        "captionAlign": "left",
+        "captionFrame": 4,
+        "captionEvery": 8,
+        "captionScrim": 0.34
+      }
+    },
+    {
+      "id": "s05-yirmiyil",
+      "sceneType": "composite",
+      "voText": "Amerika'da buna zincirleme dendi ve yirmi yıl sürdü.",
+      "durationInFrames": 122,
+      "transition": {
+        "kind": "blinds",
+        "frames": 12
+      },
+      "assets": {
+        "ground": "assets/s05-yirmiyil.mp4"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.84,
+          "anchor": "fill",
+          "motion": true
+        }
+      ],
+      "props": [],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1,
+        "pushTo": 1,
+        "pushEndFrame": 105,
+        "caption": [
+          "Amerika'da buna",
+          "zincirleme dendi",
+          "ve yirmi",
+          "yıl sürdü"
+        ],
+        "captionX": 84,
+        "captionY": 781,
+        "captionSize": 97,
+        "captionAlign": "left",
+        "captionFrame": 4,
+        "captionEvery": 8,
+        "captionScrim": 0.34,
+        "captionRecedeAt": 88,
+        "accent": "#d94f3d"
+      }
+    },
+    {
+      "id": "s06-curume",
+      "sceneType": "composite",
+      "voText": "Devrilen ağaçların çoğu yerinde çürümeye bırakıldı.",
+      "durationInFrames": 116,
+      "gradeOverride": {
+        "saturate": 0.5,
+        "contrast": 1.16,
+        "brightness": 0.94
+      },
+      "transition": {
+        "kind": "flare",
+        "frames": 6
+      },
+      "assets": {
+        "ground": "assets/s06-curume.mp4"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.93,
+          "anchor": "fill",
+          "motion": true
+        }
+      ],
+      "props": [],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1,
+        "pushTo": 1,
+        "pushEndFrame": 100,
+        "caption": [
+          "Devrilen ağaçların",
+          "çoğu yerinde",
+          "çürümeye bırakıldı"
+        ],
+        "captionX": 84,
+        "captionY": 849,
+        "captionSize": 80,
+        "captionAlign": "left",
+        "captionFrame": 4,
+        "captionEvery": 8,
+        "captionScrim": 0.34,
+        "captionRecedeAt": 84,
+        "accent": "#d94f3d"
+      }
+    }
+  ]
+}
