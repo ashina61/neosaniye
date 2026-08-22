@@ -1,5 +1,6 @@
 import React from 'react';
 import {AbsoluteFill, Audio, Img, Series, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import {Graphic, Graphics} from './Graphics';
 
 /**
  * THE THREE-LAYER B-ROLL ENGINE.
@@ -72,6 +73,11 @@ export type Beat = {
   camera?: {from?: number; to?: number; panX?: number; panY?: number} | null;
   /** The point everything scales about, as a fraction of the frame. */
   anchor?: {x?: number; y?: number} | null;
+  /**
+   * Lines, dimensions, counts — the sentences a photograph cannot say. Nailed
+   * to the frame rather than to the room; see Graphics.tsx.
+   */
+  graphics?: Graphic[] | null;
   from: number;
   to: number;
 };
@@ -80,6 +86,14 @@ export type BrollData = {
   background?: string;
   accent: string;
   ink: string;
+  /**
+   * The pale half of the palette: the caption slab's type, and the colour of
+   * words drawn straight onto the picture. Set once per episode, so a reel
+   * cannot end up with black type on a black sea.
+   */
+  paper?: string;
+  /** What is behind everything when a plate is missing or does not reach. */
+  ground?: string;
   audio?: string;
   music?: string;
   musicGain?: number;
@@ -200,6 +214,7 @@ const Scene: React.FC<{beat: Beat; data: BrollData; length: number}> = ({beat, d
 
   const plate = beat.bg?.file ?? data.background;
   const textPlate = beat.text?.plate !== false;
+  const paper = data.paper ?? '#F4F1E8';
   const textAt = beat.text?.at ?? 0.3;
   const textIn = interpolate(frame, [length * textAt, length * textAt + 12], [0, 1], {
     extrapolateLeft: 'clamp',
@@ -207,14 +222,19 @@ const Scene: React.FC<{beat: Beat; data: BrollData; length: number}> = ({beat, d
   });
 
   return (
-    <AbsoluteFill style={{backgroundColor: '#DAD9D5', overflow: 'hidden'}}>
+    <AbsoluteFill style={{backgroundColor: data.ground ?? '#DAD9D5', overflow: 'hidden'}}>
       <AbsoluteFill style={move(beat.bg?.depth ?? 0.28)}>
         {plate ? (
           <Img src={staticFile(plate)} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
         ) : null}
         {/* A soft-light wash, so every scene sits in the same light no matter
-            what the generator returned. */}
-        <AbsoluteFill style={{background: 'rgba(218,217,213,0.34)', mixBlendMode: 'soft-light'}} />
+            what the generator returned — and ONLY where there is a plate to
+            wash. Left running over an empty frame it lifts the ground colour
+            instead: a film set in a deep navy night drafted itself mid-grey,
+            and the wash was the only thing in the frame doing it. */}
+        {plate ? (
+          <AbsoluteFill style={{background: 'rgba(218,217,213,0.34)', mixBlendMode: 'soft-light'}} />
+        ) : null}
       </AbsoluteFill>
 
       {beat.mid.map((layer, i) => (
@@ -227,6 +247,12 @@ const Scene: React.FC<{beat: Beat; data: BrollData; length: number}> = ({beat, d
           <Cutout layer={{strokeX: 0.012, ...layer}} accent={data.accent} index={i} />
         </AbsoluteFill>
       ))}
+
+      {/* Over the pictures, under the caption: a drawn line belongs to the shot,
+          a caption belongs to the film. */}
+      {beat.graphics?.length ? (
+        <Graphics graphics={beat.graphics} accent={data.accent} paper={paper} />
+      ) : null}
 
       {/**
        * THE TEXT SITS ON A PLATE, NOT ON THE PICTURE.
@@ -267,7 +293,7 @@ const Scene: React.FC<{beat: Beat; data: BrollData; length: number}> = ({beat, d
               style={{
                 display: 'inline-block',
                 backgroundColor: textPlate ? data.accent : 'transparent',
-                color: textPlate ? '#F4F1E8' : data.accent,
+                color: textPlate ? paper : data.accent,
                 fontFamily: '"Archivo", Arial, sans-serif',
                 fontWeight: 800,
                 fontSize: width * 0.03,
@@ -285,7 +311,7 @@ const Scene: React.FC<{beat: Beat; data: BrollData; length: number}> = ({beat, d
               style={{
                 display: 'inline-block',
                 backgroundColor: textPlate ? data.ink : 'transparent',
-                color: textPlate ? '#F4F1E8' : data.ink,
+                color: textPlate ? paper : data.ink,
                 fontFamily: '"Archivo Black", "Arial Black", Arial, sans-serif',
                 fontWeight: 900,
                 fontSize: width * (beat.text.size ?? 0.082),
@@ -308,7 +334,7 @@ const Scene: React.FC<{beat: Beat; data: BrollData; length: number}> = ({beat, d
 };
 
 export const Broll: React.FC<{data: BrollData}> = ({data}) => (
-  <AbsoluteFill style={{backgroundColor: '#DAD9D5'}}>
+  <AbsoluteFill style={{backgroundColor: data.ground ?? '#DAD9D5'}}>
     {data.audio ? <Audio src={staticFile(data.audio)} /> : null}
     {data.music ? (
       <Audio

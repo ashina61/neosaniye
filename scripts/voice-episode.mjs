@@ -385,8 +385,20 @@ async function main() {
 
   const dir = episodeDir(episodeId);
   const brief = JSON.parse(await readFile(path.join(dir, 'brief.json'), 'utf8'));
-  const lines = brief.lines.map((line) => line.vo.trim());
-  const script = scriptOf(brief.lines);
+  /**
+   * THE SPOKEN LINES LIVE IN ONE PLACE.
+   *
+   * A `lines` array beside a `beats` array is the same sentences written twice,
+   * and the copy that drifts is always the one the clock reads: the reel is
+   * then cut to a script nobody is speaking. `beats` is the newer shape and
+   * carries `vo` already, so it is used directly when there is no `lines`.
+   */
+  const spoken = brief.lines ?? brief.beats;
+  if (!Array.isArray(spoken) || !spoken.length) {
+    throw new Error('brief.json has neither `lines` nor `beats` to speak');
+  }
+  const lines = spoken.map((line) => line.vo.trim());
+  const script = scriptOf(spoken);
   const words = script.split(/\s+/).filter(Boolean).length;
 
   const outDir = path.join(dir, 'audio');
@@ -484,7 +496,7 @@ async function main() {
         audio: `audio/${path.basename(file)}`,
         duration,
         wordsHow,
-        lines: brief.lines.map((line, i) => ({
+        lines: spoken.map((line, i) => ({
           slug: line.slug ?? `line-${i + 1}`,
           text: windows[i].text,
           start: Number(windows[i].start.toFixed(3)),

@@ -1,0 +1,592 @@
+{
+  "accent": "#E9A13B",
+  "ink": "#0B141C",
+  "paper": "#F2ECDF",
+  "ground": "#0B141C",
+  "audio": "audio/vo.wav",
+  "music": "audio/score.wav",
+  "musicGain": 0.26,
+  "beats": [
+    {
+      "slug": "wait",
+      "vo": "Bu geminin bir adı var ama önemli değil. Altı aydır demirde bekleyen yüz elli tankerden biri.",
+      "bg": null,
+      "mid": [
+        {
+          "name": "tanker-anchored",
+          "prompt": "A huge laden crude oil tanker lying at anchor on a flat dark sea at dusk, side-on, single deck light burning, no land in sight, cold blue light, cinematic photograph",
+          "x": 0.5,
+          "y": 0.52,
+          "width": 1.05,
+          "at": 6,
+          "rise": 34,
+          "file": "assets/s01-mid-tanker-anchored.png"
+        }
+      ],
+      "fore": [
+        {
+          "name": "sea-swell",
+          "prompt": "Flat editorial illustration of a low dark ocean swell silhouette, a single wide band of calm water seen edge-on, isolated",
+          "x": 0.5,
+          "y": 0.92,
+          "width": 1.3,
+          "at": 0,
+          "file": "assets/s01-fore-sea-swell.png"
+        }
+      ],
+      "text": {
+        "big": "150 GEMİ",
+        "small": "şubat'tan beri demirde",
+        "at": 0.55,
+        "y": 0.18
+      },
+      "camera": {
+        "from": 1.14,
+        "to": 1
+      },
+      "anchor": null,
+      "graphics": null,
+      "from": 0,
+      "to": 191
+    },
+    {
+      "slug": "stake",
+      "vo": "Dünyanın kullandığı her beş varil petrolden biri, tek bir sudan geçiyordu.",
+      "bg": null,
+      "mid": [
+        {
+          "name": "tanker-convoy",
+          "prompt": "A line of loaded oil tankers strung out to the horizon on open sea photographed from high above at dawn, aerial view, muted cold colour, cinematic photograph",
+          "x": 0.5,
+          "y": 0.32,
+          "width": 1.1,
+          "at": 4,
+          "file": "assets/s02-mid-tanker-convoy.png"
+        }
+      ],
+      "fore": [],
+      "text": null,
+      "camera": {
+        "from": 1,
+        "to": 1.16
+      },
+      "anchor": null,
+      "graphics": [
+        {
+          "kind": "dots",
+          "count": 20,
+          "keep": 4,
+          "x": 0.5,
+          "y": 0.68,
+          "width": 0.62,
+          "at": 26,
+          "over": 44,
+          "label": "HER BEŞ VARİLDEN BİRİ"
+        }
+      ],
+      "from": 191,
+      "to": 367
+    },
+    {
+      "slug": "place",
+      "vo": "Hürmüz Boğazı. En dar yerinde otuz üç kilometre.",
+      "bg": null,
+      "mid": [
+        {
+          "name": "strait-map",
+          "prompt": "Satellite view of the Strait of Hormuz from directly above, Iran to the north and the Musandam peninsula of Oman to the south, dark water and arid brown coastline, high contrast, no labels, no text",
+          "x": 0.5,
+          "y": 0.46,
+          "width": 1.15,
+          "at": 0,
+          "file": "assets/s03-mid-strait-map.png"
+        }
+      ],
+      "fore": [],
+      "text": {
+        "big": "HÜRMÜZ",
+        "at": 0.08,
+        "y": 0.13
+      },
+      "camera": {
+        "from": 1,
+        "to": 1.22
+      },
+      "anchor": null,
+      "graphics": [
+        {
+          "kind": "measure",
+          "from": [
+            0.36,
+            0.36
+          ],
+          "to": [
+            0.62,
+            0.56
+          ],
+          "label": "33 KM",
+          "at": 30
+        }
+      ],
+      "from": 367,
+      "to": 500
+    },
+    {
+      "slug": "lane",
+      "vo": "Gemilerin geçtiği şerit her yönde sadece iki deniz mili. Ve tamamı menzil içinde.",
+      "bg": null,
+      "mid": [
+        {
+          "use": "s03-mid-strait-map.png",
+          "x": 0.5,
+          "y": 0.46,
+          "width": 1.55,
+          "at": 0,
+          "file": "assets/s03-mid-strait-map.png"
+        }
+      ],
+      "fore": [],
+      "text": {
+        "big": "2 DENİZ MİLİ",
+        "small": "her yön için",
+        "at": 0.6,
+        "y": 0.86
+      },
+      "camera": {
+        "from": 1.22,
+        "to": 1
+      },
+      "anchor": null,
+      "graphics": [
+        {
+          "kind": "route",
+          "points": [
+            [
+              0.86,
+              0.72
+            ],
+            [
+              0.66,
+              0.6
+            ],
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.34,
+              0.42
+            ],
+            [
+              0.12,
+              0.34
+            ]
+          ],
+          "at": 8,
+          "over": 52,
+          "head": true,
+          "thickness": 0.009
+        },
+        {
+          "kind": "route",
+          "points": [
+            [
+              0.08,
+              0.44
+            ],
+            [
+              0.3,
+              0.52
+            ],
+            [
+              0.46,
+              0.6
+            ],
+            [
+              0.62,
+              0.7
+            ],
+            [
+              0.82,
+              0.82
+            ]
+          ],
+          "at": 28,
+          "over": 52,
+          "head": true,
+          "thickness": 0.009,
+          "colour": "#F2ECDF"
+        }
+      ],
+      "from": 500,
+      "to": 690
+    },
+    {
+      "slug": "theday",
+      "vo": "Yirmi sekiz Şubat gecesi Amerikan ve İsrail uçakları İran'ı vurdu.",
+      "bg": null,
+      "mid": [
+        {
+          "name": "jets-night",
+          "prompt": "Military jet aircraft silhouetted against a night sky lit by distant orange flashes on the horizon, seen from below, grain, cinematic war photograph",
+          "x": 0.52,
+          "y": 0.36,
+          "width": 1,
+          "at": 2,
+          "file": "assets/s05-mid-jets-night.png"
+        }
+      ],
+      "fore": [
+        {
+          "name": "city-skyline",
+          "prompt": "Flat illustration of a dark Middle Eastern city skyline silhouette with low buildings, minarets and antenna masts, front-on, isolated",
+          "x": 0.5,
+          "y": 0.9,
+          "width": 1.25,
+          "at": 0,
+          "file": "assets/s05-fore-city-skyline.png"
+        }
+      ],
+      "text": {
+        "big": "28 ŞUBAT 2026",
+        "at": 0.42,
+        "y": 0.16
+      },
+      "camera": {
+        "from": 1,
+        "to": 1.2,
+        "panY": -0.03
+      },
+      "anchor": null,
+      "graphics": null,
+      "from": 690,
+      "to": 848
+    },
+    {
+      "slug": "order",
+      "vo": "Ertesi sabah telsizden tek bir cümle geldi.",
+      "bg": null,
+      "mid": [
+        {
+          "name": "bridge-radio",
+          "prompt": "A ship's bridge VHF radio handset hanging on a dark console at night, close up, small green instrument glow, cold cinematic photograph",
+          "x": 0.5,
+          "y": 0.4,
+          "width": 0.9,
+          "at": 4,
+          "file": "assets/s06-mid-bridge-radio.png"
+        }
+      ],
+      "fore": [],
+      "text": {
+        "big": "HİÇBİR GEMİ\nHÜRMÜZ'DEN\nGEÇEMEZ",
+        "small": "irgc · 1 mart 2026",
+        "at": 0.34,
+        "y": 0.74,
+        "size": 0.078
+      },
+      "camera": {
+        "from": 1.18,
+        "to": 1.02
+      },
+      "anchor": null,
+      "graphics": null,
+      "from": 848,
+      "to": 960
+    },
+    {
+      "slug": "how",
+      "vo": "Bir boğazı kapatmak için gemi batırmak gerekmiyor. Mayın, hızlı bot, ve bir sigortacının hayır demesi yetiyor.",
+      "bg": null,
+      "mid": [
+        {
+          "name": "naval-mine",
+          "prompt": "Flat editorial illustration of a spherical horned naval contact mine tethered underwater, side-on, muted rust and black, isolated",
+          "x": 0.28,
+          "y": 0.34,
+          "width": 0.42,
+          "at": 6,
+          "file": "assets/s07-mid-naval-mine.png"
+        },
+        {
+          "name": "fast-boat",
+          "prompt": "Flat editorial illustration of a small fast military attack boat at speed throwing spray, side-on view, muted grey green, isolated",
+          "x": 0.68,
+          "y": 0.52,
+          "width": 0.6,
+          "at": 24,
+          "file": "assets/s07-mid-fast-boat.png"
+        }
+      ],
+      "fore": [],
+      "text": {
+        "big": "SİGORTA",
+        "small": "boğazı kapatan üçüncü şey",
+        "at": 0.62,
+        "y": 0.83
+      },
+      "camera": {
+        "from": 1,
+        "to": 1.14,
+        "panX": 0.04
+      },
+      "anchor": null,
+      "graphics": null,
+      "from": 960,
+      "to": 1219
+    },
+    {
+      "slug": "empty",
+      "vo": "Günde yüz otuz gemi geçerdi. Şimdi on.",
+      "bg": null,
+      "mid": [],
+      "fore": [],
+      "text": {
+        "big": "130 → 10",
+        "at": 0.72,
+        "y": 0.8
+      },
+      "camera": {
+        "from": 1,
+        "to": 1.05
+      },
+      "anchor": null,
+      "graphics": [
+        {
+          "kind": "dots",
+          "count": 130,
+          "keep": 10,
+          "x": 0.5,
+          "y": 0.46,
+          "width": 0.82,
+          "at": 4,
+          "over": 62,
+          "label": "GÜNDE GEÇEN GEMİ"
+        }
+      ],
+      "from": 1219,
+      "to": 1328
+    },
+    {
+      "slug": "price",
+      "vo": "Petrol iki gün içinde varil başına yüz on sekiz dolara çıktı.",
+      "bg": null,
+      "mid": [
+        {
+          "name": "refinery-flare",
+          "prompt": "A refinery flare stack burning against a black night sky, long lens, orange flame and dark steel structure, cinematic photograph",
+          "x": 0.5,
+          "y": 0.62,
+          "width": 1,
+          "at": 0,
+          "file": "assets/s09-mid-refinery-flare.png"
+        }
+      ],
+      "fore": [],
+      "text": null,
+      "camera": {
+        "from": 1.16,
+        "to": 1
+      },
+      "anchor": null,
+      "graphics": [
+        {
+          "kind": "count",
+          "to": 118,
+          "prefix": "$",
+          "label": "VARİL · 2 MART 2026",
+          "x": 0.5,
+          "y": 0.3,
+          "at": 8,
+          "over": 54,
+          "size": 0.22
+        }
+      ],
+      "from": 1328,
+      "to": 1477
+    },
+    {
+      "slug": "detour",
+      "vo": "Alternatif yol Ümit Burnu. Üç bin sekiz yüz mil ve on dört gün fazladan.",
+      "bg": null,
+      "mid": [
+        {
+          "name": "world-map",
+          "prompt": "A plain dark navy world map centred on Africa and the Indian Ocean, land in flat deep slate, no borders, no labels, no text, minimal",
+          "x": 0.5,
+          "y": 0.44,
+          "width": 1.2,
+          "at": 0,
+          "file": "assets/s10-mid-world-map.png"
+        }
+      ],
+      "fore": [],
+      "text": {
+        "big": "+14 GÜN",
+        "small": "3.800 deniz mili",
+        "at": 0.66,
+        "y": 0.85
+      },
+      "camera": {
+        "from": 1,
+        "to": 1.12
+      },
+      "anchor": null,
+      "graphics": [
+        {
+          "kind": "route",
+          "points": [
+            [
+              0.72,
+              0.34
+            ],
+            [
+              0.66,
+              0.44
+            ],
+            [
+              0.56,
+              0.56
+            ],
+            [
+              0.44,
+              0.66
+            ],
+            [
+              0.38,
+              0.74
+            ],
+            [
+              0.42,
+              0.8
+            ],
+            [
+              0.52,
+              0.78
+            ],
+            [
+              0.6,
+              0.7
+            ]
+          ],
+          "at": 10,
+          "over": 58,
+          "dash": true,
+          "head": true,
+          "label": "ÜMİT BURNU"
+        }
+      ],
+      "from": 1477,
+      "to": 1655
+    },
+    {
+      "slug": "gas",
+      "vo": "Doğal gaz için alternatif yol diye bir şey yok. Hiç yok.",
+      "bg": null,
+      "mid": [
+        {
+          "name": "lng-carrier",
+          "prompt": "An LNG carrier with four spherical tanks moored at a gas terminal at night, side-on, cold floodlight, steam, cinematic photograph",
+          "x": 0.5,
+          "y": 0.5,
+          "width": 1.1,
+          "at": 4,
+          "file": "assets/s11-mid-lng-carrier.png"
+        }
+      ],
+      "fore": [],
+      "text": {
+        "big": "BORU HATTI YOK",
+        "small": "dünya lng'sinin beşte biri",
+        "at": 0.48,
+        "y": 0.83
+      },
+      "camera": {
+        "from": 1,
+        "to": 1.18,
+        "panX": -0.04
+      },
+      "anchor": null,
+      "graphics": null,
+      "from": 1655,
+      "to": 1797
+    },
+    {
+      "slug": "trap",
+      "vo": "Ama kapıyı kapatan İran'ın kendi petrolü de oradan çıkıyor.",
+      "bg": null,
+      "mid": [
+        {
+          "name": "oil-terminal",
+          "prompt": "An offshore crude oil loading terminal and jetty at dusk, pipes and mooring buoys, empty berth, cold blue light, cinematic photograph",
+          "x": 0.5,
+          "y": 0.48,
+          "width": 1.05,
+          "at": 2,
+          "file": "assets/s12-mid-oil-terminal.png"
+        }
+      ],
+      "fore": [],
+      "text": {
+        "big": "KENDİ KAPISI",
+        "at": 0.5,
+        "y": 0.82
+      },
+      "camera": {
+        "from": 1.14,
+        "to": 1,
+        "panX": 0.05
+      },
+      "anchor": null,
+      "graphics": null,
+      "from": 1797,
+      "to": 1934
+    },
+    {
+      "slug": "close",
+      "vo": "Bugün yüz yetmiş dördüncü gün. Kapı hâlâ kapalı.",
+      "bg": null,
+      "mid": [
+        {
+          "use": "s01-mid-tanker-anchored.png",
+          "x": 0.5,
+          "y": 0.62,
+          "width": 1.05,
+          "at": 0,
+          "file": "assets/s01-mid-tanker-anchored.png"
+        }
+      ],
+      "fore": [
+        {
+          "use": "s01-fore-sea-swell.png",
+          "x": 0.5,
+          "y": 0.92,
+          "width": 1.3,
+          "at": 0,
+          "file": "assets/s01-fore-sea-swell.png"
+        }
+      ],
+      "text": null,
+      "camera": {
+        "from": 1,
+        "to": 1.1
+      },
+      "anchor": null,
+      "graphics": [
+        {
+          "kind": "count",
+          "to": 174,
+          "label": "GÜN",
+          "x": 0.5,
+          "y": 0.26,
+          "at": 6,
+          "over": 60,
+          "size": 0.26
+        }
+      ],
+      "from": 1934,
+      "to": 2064
+    }
+  ],
+  "end": 2064
+}

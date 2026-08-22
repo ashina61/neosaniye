@@ -1,0 +1,819 @@
+{
+  "$comment": "MEASURED from vo.mp3, not estimated. The planner cuts every scene to these windows.",
+  "how": "exact",
+  "provider": "espeak",
+  "audio": "audio/vo.wav",
+  "duration": 68.81469387755102,
+  "wordsHow": "measured",
+  "lines": [
+    {
+      "slug": "wait",
+      "text": "Bu geminin bir adı var ama önemli değil. Altı aydır demirde bekleyen yüz elli tankerden biri.",
+      "start": 0,
+      "end": 6.38,
+      "words": [
+        {
+          "text": "Bu",
+          "start": 0,
+          "end": 0.13
+        },
+        {
+          "text": "geminin",
+          "start": 0.13,
+          "end": 0.26
+        },
+        {
+          "text": "bir",
+          "start": 0.26,
+          "end": 0.77
+        },
+        {
+          "text": "adı",
+          "start": 0.77,
+          "end": 0.9
+        },
+        {
+          "text": "var",
+          "start": 0.9,
+          "end": 1.09
+        },
+        {
+          "text": "ama",
+          "start": 1.09,
+          "end": 1.32
+        },
+        {
+          "text": "önemli",
+          "start": 1.32,
+          "end": 2.4
+        },
+        {
+          "text": "değil.",
+          "start": 2.4,
+          "end": 2.89
+        },
+        {
+          "text": "Altı",
+          "start": 2.89,
+          "end": 3.35
+        },
+        {
+          "text": "aydır",
+          "start": 3.35,
+          "end": 3.65
+        },
+        {
+          "text": "demirde",
+          "start": 3.65,
+          "end": 4.01
+        },
+        {
+          "text": "bekleyen",
+          "start": 4.01,
+          "end": 5.16
+        },
+        {
+          "text": "yüz",
+          "start": 5.16,
+          "end": 5.33
+        },
+        {
+          "text": "elli",
+          "start": 5.33,
+          "end": 5.79
+        },
+        {
+          "text": "tankerden",
+          "start": 5.79,
+          "end": 6.06
+        },
+        {
+          "text": "biri.",
+          "start": 6.06,
+          "end": 6.38
+        }
+      ]
+    },
+    {
+      "slug": "stake",
+      "text": "Dünyanın kullandığı her beş varil petrolden biri, tek bir sudan geçiyordu.",
+      "start": 6.38,
+      "end": 12.242,
+      "words": [
+        {
+          "text": "Dünyanın",
+          "start": 6.88,
+          "end": 7.37
+        },
+        {
+          "text": "kullandığı",
+          "start": 7.37,
+          "end": 8.05
+        },
+        {
+          "text": "her",
+          "start": 8.05,
+          "end": 8.23
+        },
+        {
+          "text": "beş",
+          "start": 8.23,
+          "end": 8.95
+        },
+        {
+          "text": "varil",
+          "start": 8.95,
+          "end": 9.14
+        },
+        {
+          "text": "petrolden",
+          "start": 9.14,
+          "end": 10.07
+        },
+        {
+          "text": "biri,",
+          "start": 10.07,
+          "end": 10.4
+        },
+        {
+          "text": "tek",
+          "start": 10.4,
+          "end": 10.64
+        },
+        {
+          "text": "bir",
+          "start": 10.64,
+          "end": 11.63
+        },
+        {
+          "text": "sudan",
+          "start": 11.63,
+          "end": 11.89
+        },
+        {
+          "text": "geçiyordu.",
+          "start": 11.89,
+          "end": 12.242
+        }
+      ]
+    },
+    {
+      "slug": "place",
+      "text": "Hürmüz Boğazı. En dar yerinde otuz üç kilometre.",
+      "start": 12.242,
+      "end": 16.672,
+      "words": [
+        {
+          "text": "Hürmüz",
+          "start": 12.742,
+          "end": 13.112
+        },
+        {
+          "text": "Boğazı.",
+          "start": 13.112,
+          "end": 13.762
+        },
+        {
+          "text": "En",
+          "start": 13.762,
+          "end": 14.442
+        },
+        {
+          "text": "dar",
+          "start": 14.442,
+          "end": 15.082
+        },
+        {
+          "text": "yerinde",
+          "start": 15.082,
+          "end": 15.412
+        },
+        {
+          "text": "otuz",
+          "start": 15.412,
+          "end": 15.962
+        },
+        {
+          "text": "üç",
+          "start": 15.962,
+          "end": 16.352
+        },
+        {
+          "text": "kilometre.",
+          "start": 16.352,
+          "end": 16.672
+        }
+      ]
+    },
+    {
+      "slug": "lane",
+      "text": "Gemilerin geçtiği şerit her yönde sadece iki deniz mili. Ve tamamı menzil içinde.",
+      "start": 16.672,
+      "end": 23.013,
+      "words": [
+        {
+          "text": "Gemilerin",
+          "start": 17.172,
+          "end": 17.752
+        },
+        {
+          "text": "geçtiği",
+          "start": 17.752,
+          "end": 17.882
+        },
+        {
+          "text": "şerit",
+          "start": 17.882,
+          "end": 18.622
+        },
+        {
+          "text": "her",
+          "start": 18.622,
+          "end": 18.902
+        },
+        {
+          "text": "yönde",
+          "start": 18.902,
+          "end": 19.692
+        },
+        {
+          "text": "sadece",
+          "start": 19.692,
+          "end": 19.922
+        },
+        {
+          "text": "iki",
+          "start": 19.922,
+          "end": 20.132
+        },
+        {
+          "text": "deniz",
+          "start": 20.132,
+          "end": 20.392
+        },
+        {
+          "text": "mili.",
+          "start": 20.392,
+          "end": 20.812
+        },
+        {
+          "text": "Ve",
+          "start": 20.812,
+          "end": 21.312
+        },
+        {
+          "text": "tamamı",
+          "start": 21.312,
+          "end": 22.182
+        },
+        {
+          "text": "menzil",
+          "start": 22.182,
+          "end": 22.682
+        },
+        {
+          "text": "içinde.",
+          "start": 22.682,
+          "end": 23.013
+        }
+      ]
+    },
+    {
+      "slug": "theday",
+      "text": "Yirmi sekiz Şubat gecesi Amerikan ve İsrail uçakları İran'ı vurdu.",
+      "start": 23.013,
+      "end": 28.251,
+      "words": [
+        {
+          "text": "Yirmi",
+          "start": 23.513,
+          "end": 24.223
+        },
+        {
+          "text": "sekiz",
+          "start": 24.223,
+          "end": 24.673
+        },
+        {
+          "text": "Şubat",
+          "start": 24.673,
+          "end": 25.533
+        },
+        {
+          "text": "gecesi",
+          "start": 25.533,
+          "end": 25.833
+        },
+        {
+          "text": "Amerikan",
+          "start": 25.833,
+          "end": 26.203
+        },
+        {
+          "text": "ve",
+          "start": 26.203,
+          "end": 26.743
+        },
+        {
+          "text": "İsrail",
+          "start": 26.743,
+          "end": 27.453
+        },
+        {
+          "text": "uçakları",
+          "start": 27.453,
+          "end": 27.613
+        },
+        {
+          "text": "İran'ı",
+          "start": 27.613,
+          "end": 27.933
+        },
+        {
+          "text": "vurdu.",
+          "start": 27.933,
+          "end": 28.251
+        }
+      ]
+    },
+    {
+      "slug": "order",
+      "text": "Ertesi sabah telsizden tek bir cümle geldi.",
+      "start": 28.251,
+      "end": 31.998,
+      "words": [
+        {
+          "text": "Ertesi",
+          "start": 28.751,
+          "end": 28.851
+        },
+        {
+          "text": "sabah",
+          "start": 28.851,
+          "end": 29.631
+        },
+        {
+          "text": "telsizden",
+          "start": 29.631,
+          "end": 30.071
+        },
+        {
+          "text": "tek",
+          "start": 30.071,
+          "end": 30.561
+        },
+        {
+          "text": "bir",
+          "start": 30.561,
+          "end": 30.791
+        },
+        {
+          "text": "cümle",
+          "start": 30.791,
+          "end": 31.681
+        },
+        {
+          "text": "geldi.",
+          "start": 31.681,
+          "end": 31.998
+        }
+      ]
+    },
+    {
+      "slug": "how",
+      "text": "Bir boğazı kapatmak için gemi batırmak gerekmiyor. Mayın, hızlı bot, ve bir sigortacının hayır demesi yetiyor.",
+      "start": 31.998,
+      "end": 40.635,
+      "words": [
+        {
+          "text": "Bir",
+          "start": 32.498,
+          "end": 32.628
+        },
+        {
+          "text": "boğazı",
+          "start": 32.628,
+          "end": 32.958
+        },
+        {
+          "text": "kapatmak",
+          "start": 32.958,
+          "end": 33.138
+        },
+        {
+          "text": "için",
+          "start": 33.138,
+          "end": 33.298
+        },
+        {
+          "text": "gemi",
+          "start": 33.298,
+          "end": 33.448
+        },
+        {
+          "text": "batırmak",
+          "start": 33.448,
+          "end": 34.728
+        },
+        {
+          "text": "gerekmiyor.",
+          "start": 34.728,
+          "end": 34.938
+        },
+        {
+          "text": "Mayın,",
+          "start": 34.938,
+          "end": 35.268
+        },
+        {
+          "text": "hızlı",
+          "start": 35.268,
+          "end": 35.708
+        },
+        {
+          "text": "bot,",
+          "start": 35.708,
+          "end": 36.528
+        },
+        {
+          "text": "ve",
+          "start": 36.528,
+          "end": 37.338
+        },
+        {
+          "text": "bir",
+          "start": 37.338,
+          "end": 37.968
+        },
+        {
+          "text": "sigortacının",
+          "start": 37.968,
+          "end": 38.348
+        },
+        {
+          "text": "hayır",
+          "start": 38.348,
+          "end": 39.208
+        },
+        {
+          "text": "demesi",
+          "start": 39.208,
+          "end": 40.198
+        },
+        {
+          "text": "yetiyor.",
+          "start": 40.198,
+          "end": 40.635
+        }
+      ]
+    },
+    {
+      "slug": "empty",
+      "text": "Günde yüz otuz gemi geçerdi. Şimdi on.",
+      "start": 40.635,
+      "end": 44.269,
+      "words": [
+        {
+          "text": "Günde",
+          "start": 41.135,
+          "end": 41.785
+        },
+        {
+          "text": "yüz",
+          "start": 41.785,
+          "end": 41.935
+        },
+        {
+          "text": "otuz",
+          "start": 41.935,
+          "end": 42.655
+        },
+        {
+          "text": "gemi",
+          "start": 42.655,
+          "end": 42.975
+        },
+        {
+          "text": "geçerdi.",
+          "start": 42.975,
+          "end": 43.455
+        },
+        {
+          "text": "Şimdi",
+          "start": 43.455,
+          "end": 43.905
+        },
+        {
+          "text": "on.",
+          "start": 43.905,
+          "end": 44.269
+        }
+      ]
+    },
+    {
+      "slug": "price",
+      "text": "Petrol iki gün içinde varil başına yüz on sekiz dolara çıktı.",
+      "start": 44.269,
+      "end": 49.242,
+      "words": [
+        {
+          "text": "Petrol",
+          "start": 44.769,
+          "end": 44.919
+        },
+        {
+          "text": "iki",
+          "start": 44.919,
+          "end": 45.309
+        },
+        {
+          "text": "gün",
+          "start": 45.309,
+          "end": 45.529
+        },
+        {
+          "text": "içinde",
+          "start": 45.529,
+          "end": 46.199
+        },
+        {
+          "text": "varil",
+          "start": 46.199,
+          "end": 46.569
+        },
+        {
+          "text": "başına",
+          "start": 46.569,
+          "end": 47.249
+        },
+        {
+          "text": "yüz",
+          "start": 47.249,
+          "end": 47.509
+        },
+        {
+          "text": "on",
+          "start": 47.509,
+          "end": 47.889
+        },
+        {
+          "text": "sekiz",
+          "start": 47.889,
+          "end": 48.589
+        },
+        {
+          "text": "dolara",
+          "start": 48.589,
+          "end": 48.929
+        },
+        {
+          "text": "çıktı.",
+          "start": 48.929,
+          "end": 49.242
+        }
+      ]
+    },
+    {
+      "slug": "detour",
+      "text": "Alternatif yol Ümit Burnu. Üç bin sekiz yüz mil ve on dört gün fazladan.",
+      "start": 49.242,
+      "end": 55.174,
+      "words": [
+        {
+          "text": "Alternatif",
+          "start": 49.742,
+          "end": 49.852
+        },
+        {
+          "text": "yol",
+          "start": 49.852,
+          "end": 50.012
+        },
+        {
+          "text": "Ümit",
+          "start": 50.012,
+          "end": 50.352
+        },
+        {
+          "text": "Burnu.",
+          "start": 50.352,
+          "end": 50.902
+        },
+        {
+          "text": "Üç",
+          "start": 50.902,
+          "end": 51.442
+        },
+        {
+          "text": "bin",
+          "start": 51.442,
+          "end": 51.852
+        },
+        {
+          "text": "sekiz",
+          "start": 51.852,
+          "end": 52.432
+        },
+        {
+          "text": "yüz",
+          "start": 52.432,
+          "end": 52.602
+        },
+        {
+          "text": "mil",
+          "start": 52.602,
+          "end": 52.832
+        },
+        {
+          "text": "ve",
+          "start": 52.832,
+          "end": 53.132
+        },
+        {
+          "text": "on",
+          "start": 53.132,
+          "end": 53.752
+        },
+        {
+          "text": "dört",
+          "start": 53.752,
+          "end": 54.132
+        },
+        {
+          "text": "gün",
+          "start": 54.132,
+          "end": 54.832
+        },
+        {
+          "text": "fazladan.",
+          "start": 54.832,
+          "end": 55.174
+        }
+      ]
+    },
+    {
+      "slug": "gas",
+      "text": "Doğal gaz için alternatif yol diye bir şey yok. Hiç yok.",
+      "start": 55.174,
+      "end": 59.888,
+      "words": [
+        {
+          "text": "Doğal",
+          "start": 55.674,
+          "end": 56.024
+        },
+        {
+          "text": "gaz",
+          "start": 56.024,
+          "end": 56.184
+        },
+        {
+          "text": "için",
+          "start": 56.184,
+          "end": 56.684
+        },
+        {
+          "text": "alternatif",
+          "start": 56.684,
+          "end": 56.834
+        },
+        {
+          "text": "yol",
+          "start": 56.834,
+          "end": 57.004
+        },
+        {
+          "text": "diye",
+          "start": 57.004,
+          "end": 57.174
+        },
+        {
+          "text": "bir",
+          "start": 57.174,
+          "end": 57.974
+        },
+        {
+          "text": "şey",
+          "start": 57.974,
+          "end": 58.554
+        },
+        {
+          "text": "yok.",
+          "start": 58.554,
+          "end": 59.134
+        },
+        {
+          "text": "Hiç",
+          "start": 59.134,
+          "end": 59.484
+        },
+        {
+          "text": "yok.",
+          "start": 59.484,
+          "end": 59.888
+        }
+      ]
+    },
+    {
+      "slug": "trap",
+      "text": "Ama kapıyı kapatan İran'ın kendi petrolü de oradan çıkıyor.",
+      "start": 59.888,
+      "end": 64.465,
+      "words": [
+        {
+          "text": "Ama",
+          "start": 60.388,
+          "end": 60.628
+        },
+        {
+          "text": "kapıyı",
+          "start": 60.628,
+          "end": 60.808
+        },
+        {
+          "text": "kapatan",
+          "start": 60.808,
+          "end": 61.108
+        },
+        {
+          "text": "İran'ın",
+          "start": 61.108,
+          "end": 62.038
+        },
+        {
+          "text": "kendi",
+          "start": 62.038,
+          "end": 62.408
+        },
+        {
+          "text": "petrolü",
+          "start": 62.408,
+          "end": 62.558
+        },
+        {
+          "text": "de",
+          "start": 62.558,
+          "end": 63.698
+        },
+        {
+          "text": "oradan",
+          "start": 63.698,
+          "end": 64.078
+        },
+        {
+          "text": "çıkıyor.",
+          "start": 64.078,
+          "end": 64.465
+        }
+      ]
+    },
+    {
+      "slug": "close",
+      "text": "Bugün yüz yetmiş dördüncü gün. Kapı hâlâ kapalı.",
+      "start": 64.465,
+      "end": 68.815,
+      "words": [
+        {
+          "text": "Bugün",
+          "start": 64.965,
+          "end": 65.475
+        },
+        {
+          "text": "yüz",
+          "start": 65.475,
+          "end": 65.685
+        },
+        {
+          "text": "yetmiş",
+          "start": 65.685,
+          "end": 66.145
+        },
+        {
+          "text": "dördüncü",
+          "start": 66.145,
+          "end": 66.555
+        },
+        {
+          "text": "gün.",
+          "start": 66.555,
+          "end": 66.885
+        },
+        {
+          "text": "Kapı",
+          "start": 66.885,
+          "end": 67.855
+        },
+        {
+          "text": "hâlâ",
+          "start": 67.855,
+          "end": 68.465
+        },
+        {
+          "text": "kapalı.",
+          "start": 68.465,
+          "end": 68.815
+        }
+      ]
+    }
+  ]
+}

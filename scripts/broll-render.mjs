@@ -83,19 +83,33 @@ async function main() {
     to: windows[i][1],
   }));
 
+  /**
+   * `--allow-missing` cuts the film with the pictures that ARE here.
+   *
+   * Not a convenience: between writing a brief and having fifteen images there
+   * is a day, and the timing, the graphics and the captions are all decidable
+   * in that day. A cut you can look at before you go shopping is how you find
+   * out that a beat does not need the picture you were about to ask for.
+   */
+  const allowMissing = args['allow-missing'] === true || args['allow-missing'] === 'true';
   const missing = [];
   for (const beat of beats) {
     for (const layer of [beat.bg, ...beat.mid, ...beat.fore].filter(Boolean)) {
       if (!(await exists(path.join(dir, layer.file)))) missing.push(layer.file);
     }
   }
-  const background = brief.background ? 'assets/background.png' : undefined;
-  if (background && !(await exists(path.join(dir, background)))) missing.push(background);
+  let background = brief.background ? 'assets/background.png' : undefined;
+  if (background && !(await exists(path.join(dir, background)))) {
+    missing.push(background);
+    if (allowMissing) background = undefined;
+  }
 
   const data = {
     background,
     accent: brief.look?.accent ?? '#E04329',
     ink: brief.look?.ink ?? '#1A1A1A',
+    paper: brief.look?.paper ?? '#F4F1E8',
+    ground: brief.look?.ground ?? '#DAD9D5',
     audio: voice?.audio,
     // A score if the episode has one, a room tone if it has only that. Either
     // way SOMETHING is under the voice: a reel carrying narration alone drops
@@ -116,12 +130,22 @@ async function main() {
     );
   }
 
-  if (missing.length) {
+  if (missing.length && !allowMissing) {
     console.error(`\n✗ ${missing.length} görsel eksik — render durdu:`);
     for (const file of [...new Set(missing)]) console.error(`   · ${file}`);
     console.error(`\n   Promptları: episodes/${id}/PROMPTS.md`);
     console.error(`   raw/ içine attıktan sonra: npm run broll:key -- --episode=${id}`);
+    console.error(`   Sadece kesimi görmek için: --allow-missing`);
     process.exit(1);
+  }
+  if (missing.length) {
+    const gone = new Set(missing);
+    console.log(`⚠ TASLAK: ${gone.size} görsel yok, o katmanlar boş geçiliyor.`);
+    for (const beat of beats) {
+      if (beat.bg && gone.has(beat.bg.file)) beat.bg = null;
+      beat.mid = beat.mid.filter((l) => !gone.has(l.file));
+      beat.fore = beat.fore.filter((l) => !gone.has(l.file));
+    }
   }
   if (args.plan) return;
 

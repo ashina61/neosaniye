@@ -265,39 +265,5 @@
         "to": 1.16
       }
     }
-  ],
-  "lines": [
-    {
-      "slug": "pact",
-      "vo": "Yirmi üç Ağustos gecesi Moskova'da iki bakan bir anlaşma imzaladı."
-    },
-    {
-      "slug": "map-split",
-      "vo": "Kâğıdın gizli maddesi Polonya'yı ikiye bölüyordu."
-    },
-    {
-      "slug": "dawn",
-      "vo": "Bir Eylül sabahı saat dört kırk beşte sınır geçildi."
-    },
-    {
-      "slug": "stuka",
-      "vo": "Gökyüzünden gelen sesi kimse daha önce duymamıştı."
-    },
-    {
-      "slug": "declare",
-      "vo": "Üç Eylül'de İngiltere ve Fransa savaş ilan etti."
-    },
-    {
-      "slug": "east",
-      "vo": "On yedi Eylül'de Kızıl Ordu doğudan girdi."
-    },
-    {
-      "slug": "fall",
-      "vo": "Polonya beş hafta dayandı. Sonra ikiye bölündü."
-    },
-    {
-      "slug": "close",
-      "vo": "Savaş altı yıl sürdü. İki bin yüz doksan dört gün."
-    }
   ]
 }

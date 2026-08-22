@@ -61,6 +61,15 @@ export function shotsOf(brief) {
   const beats = (brief.beats ?? []).map((beat, index) => {
     const n = String(index + 1).padStart(2, '0');
     const layer = (kind, item, order) => {
+      /**
+       * `use` POINTS AT A PICTURE THAT ALREADY EXISTS.
+       *
+       * The last shot of a film coming back to its first is an edit, not a
+       * shortage — and asking a generator for "the same tanker again" returns a
+       * different tanker, which is the one thing that kills the callback. A
+       * layer that names a file is simply not on the shopping list.
+       */
+      if (item.use) return {...item, file: item.use};
       const name = slugify(item.name ?? item.prompt ?? `${kind}-${order + 1}`);
       const file = `s${n}-${kind}-${name}.png`;
       wanted.push({
@@ -85,6 +94,10 @@ export function shotsOf(brief) {
       fore: (beat.fore ?? []).map((item, i) => layer('fore', item, i)),
       text: beat.text ?? null,
       camera: beat.camera ?? null,
+      anchor: beat.anchor ?? null,
+      // Drawn layers ask nothing of the generator, so they ride straight
+      // through: the shopping list is for pictures, and a line is not one.
+      graphics: beat.graphics ?? null,
     };
   });
 
