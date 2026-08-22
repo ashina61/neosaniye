@@ -95,6 +95,7 @@ export function shotsOf(brief) {
       text: beat.text ?? null,
       camera: beat.camera ?? null,
       anchor: beat.anchor ?? null,
+      ticker: beat.ticker ?? null,
       // Drawn layers ask nothing of the generator, so they ride straight
       // through: the shopping list is for pictures, and a line is not one.
       graphics: beat.graphics ?? null,

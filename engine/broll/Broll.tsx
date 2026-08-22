@@ -1,6 +1,8 @@
 import React from 'react';
 import {AbsoluteFill, Audio, Img, Series, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import {Enter, FilmLook, Furniture} from './Frame';
 import {Graphic, Graphics} from './Graphics';
+import {Caption, TextBlock} from './Type';
 
 /**
  * THE THREE-LAYER B-ROLL ENGINE.
@@ -50,21 +52,7 @@ export type Beat = {
   bg: Layer | null;
   mid: Layer[];
   fore: Layer[];
-  text?: {
-    big?: string;
-    small?: string;
-    at?: number;
-    x?: number;
-    y?: number;
-    /**
-     * False prints the words as INK, with no slab under them — for the shot
-     * where the words are the thing in the picture rather than a caption over
-     * it: a headline on a newspaper, a line on a document.
-     */
-    plate?: boolean;
-    /** Type size as a fraction of frame width. */
-    size?: number;
-  } | null;
+  text?: TextBlock | null;
   /**
    * `from`→`to` is the push. `panX`/`panY` slide the whole room sideways over
    * the beat, in fractions of the frame — a push and a pull-back are two
@@ -78,6 +66,8 @@ export type Beat = {
    * to the frame rather than to the room; see Graphics.tsx.
    */
   graphics?: Graphic[] | null;
+  /** A word in the bottom-left that says where in the story this shot sits. */
+  ticker?: string | null;
   from: number;
   to: number;
 };
@@ -94,6 +84,10 @@ export type BrollData = {
   paper?: string;
   /** What is behind everything when a plate is missing or does not reach. */
   ground?: string;
+  /** Standing type in the top-left corner — the film's own name. */
+  label?: string;
+  grain?: number;
+  vignette?: number;
   audio?: string;
   music?: string;
   musicGain?: number;
@@ -254,80 +248,8 @@ const Scene: React.FC<{beat: Beat; data: BrollData; length: number}> = ({beat, d
         <Graphics graphics={beat.graphics} accent={data.accent} paper={paper} />
       ) : null}
 
-      {/**
-       * THE TEXT SITS ON A PLATE, NOT ON THE PICTURE.
-       *
-       * The first cut of this had the words painted straight onto the frame:
-       * dark ink for the headline, accent red for the strap. Over a bright
-       * paper background it read fine, and the moment a dark cut-out rose
-       * behind it the strap disappeared — accent red on a black overcoat is
-       * two dark colours. A caption whose legibility depends on what the
-       * generator happened to return is not a caption.
-       *
-       * So the words carry their own ground: an ink slab that hugs the
-       * headline, an accent chip above it for the strap, and the whole thing
-       * wiped in from the left rather than faded. It also fixes the overlap —
-       * a plate ON TOP of a cut-out reads as a title card laid over the shot,
-       * which is what it is; bare letters crossing a subject read as a mistake.
-       *
-       * `plate: false` is the exception, and it earns it: asked for a front
-       * page with a huge headline the generator returned BLANK PAPER, because
-       * one half of that prompt fights the other. That is the right outcome —
-       * a headline is type, so it gets set here and printed onto the page. A
-       * black slab on a blank newspaper is a sticker; ink on it is the paper.
-       */}
       {beat.text?.big ? (
-        <div
-          style={{
-            position: 'absolute',
-            left: (beat.text.x ?? 0.5) * width,
-            top: (beat.text.y ?? 0.16) * height,
-            transform: `translate(-50%, -50%) translateY(${(1 - textIn) * height * 0.02}px)`,
-            width: width * 0.86,
-            textAlign: 'center',
-            clipPath: `inset(0 ${(1 - textIn) * 100}% 0 0)`,
-          }}
-        >
-          {beat.text.small ? (
-            <div
-              style={{
-                display: 'inline-block',
-                backgroundColor: textPlate ? data.accent : 'transparent',
-                color: textPlate ? paper : data.accent,
-                fontFamily: '"Archivo", Arial, sans-serif',
-                fontWeight: 800,
-                fontSize: width * 0.03,
-                letterSpacing: '0.18em',
-                textTransform: 'uppercase',
-                padding: `${height * 0.006}px ${width * 0.026}px`,
-                marginBottom: height * 0.006,
-              }}
-            >
-              {beat.text.small}
-            </div>
-          ) : null}
-          <div>
-            <div
-              style={{
-                display: 'inline-block',
-                backgroundColor: textPlate ? data.ink : 'transparent',
-                color: textPlate ? paper : data.ink,
-                fontFamily: '"Archivo Black", "Arial Black", Arial, sans-serif',
-                fontWeight: 900,
-                fontSize: width * (beat.text.size ?? 0.082),
-                lineHeight: 1.08,
-                letterSpacing: '-0.02em',
-                padding: textPlate
-                  ? `${height * 0.008}px ${width * 0.03}px ${height * 0.012}px`
-                  : `0 ${width * 0.02}px`,
-                borderBottom: textPlate ? undefined : `${height * 0.004}px solid ${data.accent}`,
-                boxShadow: textPlate ? `${width * 0.008}px ${height * 0.006}px 0 ${data.accent}` : undefined,
-              }}
-            >
-              {beat.text.big}
-            </div>
-          </div>
-        </div>
+        <Caption text={beat.text} accent={data.accent} ink={data.ink} paper={paper} length={length} />
       ) : null}
     </AbsoluteFill>
   );
@@ -351,11 +273,40 @@ export const Broll: React.FC<{data: BrollData}> = ({data}) => (
     {/* Chained, each beat for exactly its spoken window. The script is the
         timeline: nothing here decides how long a shot is, the narration does. */}
     <Series>
-      {data.beats.map((beat) => (
+      {data.beats.map((beat, i) => (
         <Series.Sequence key={beat.slug} durationInFrames={Math.max(1, beat.to - beat.from)}>
-          <Scene beat={beat} data={data} length={beat.to - beat.from} />
+          <Enter index={i}>
+            <Scene beat={beat} data={data} length={beat.to - beat.from} />
+          </Enter>
         </Series.Sequence>
       ))}
     </Series>
+
+    {/* ABOVE THE CUT, NOT INSIDE IT. This is the whole point of these two:
+        they are what does not change when the picture does. */}
+    <Shell data={data} />
   </AbsoluteFill>
 );
+
+/** The furniture and the treatment, reading the film's own clock. */
+const Shell: React.FC<{data: BrollData}> = ({data}) => {
+  const frame = useCurrentFrame();
+  const index = Math.max(
+    0,
+    data.beats.findIndex((b) => frame >= b.from && frame < b.to),
+  );
+  return (
+    <>
+      <FilmLook strength={data.grain ?? 0.16} vignette={data.vignette ?? 0.55} />
+      <Furniture
+        accent={data.accent}
+        paper={data.paper ?? '#F4F1E8'}
+        index={index}
+        count={data.beats.length}
+        progress={Math.min(1, frame / Math.max(1, data.end))}
+        label={data.label}
+        ticker={data.beats[index]?.ticker ?? undefined}
+      />
+    </>
+  );
+};

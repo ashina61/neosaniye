@@ -110,6 +110,9 @@ async function main() {
     ink: brief.look?.ink ?? '#1A1A1A',
     paper: brief.look?.paper ?? '#F4F1E8',
     ground: brief.look?.ground ?? '#DAD9D5',
+    label: brief.look?.label ?? brief.title,
+    grain: brief.look?.grain,
+    vignette: brief.look?.vignette,
     audio: voice?.audio,
     // A score if the episode has one, a room tone if it has only that. Either
     // way SOMETHING is under the voice: a reel carrying narration alone drops
