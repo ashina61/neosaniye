@@ -154,8 +154,8 @@
         "lungsOpacity": 0.35,
         "lungsTo": 0.15,
         "labels": [
-          "SAĞ KULAKÇIK|0.31|0.40|l",
-          "SOL KULAKÇIK|0.68|0.39|r"
+          "SAĞ KULAKÇIK|0.30|0.38|l",
+          "SOL KULAKÇIK|0.68|0.38|r"
         ]
       },
       "transition": {
@@ -174,8 +174,8 @@
         "lit": [],
         "flow": [],
         "labels": [
-          "SAĞ KARINCIK|0.38|0.62|l",
-          "SOL KARINCIK|0.66|0.60|r"
+          "SAĞ KARINCIK|0.37|0.62|l",
+          "SOL KARINCIK|0.63|0.62|r"
         ]
       },
       "transition": {
@@ -199,8 +199,8 @@
           "ivc"
         ],
         "labels": [
-          "VENA KAVA|0.24|0.20|l",
-          "SAĞ KULAKÇIK|0.31|0.40|l"
+          "VENA KAVA|0.21|0.17|l",
+          "SAĞ KULAKÇIK|0.30|0.38|l"
         ]
       },
       "transition": {
@@ -225,8 +225,8 @@
           "toLung"
         ],
         "labels": [
-          "PULMONER ARTER|0.33|0.24|l",
-          "TRİKÜSPİT KAPAK|0.37|0.49|l"
+          "PULMONER ARTER|0.36|0.24|l",
+          "TRİKÜSPİT KAPAK|0.34|0.49|l"
         ]
       },
       "transition": {
@@ -271,8 +271,8 @@
           "fromLung"
         ],
         "labels": [
-          "PULMONER VEN|0.79|0.33|r",
-          "SOL KULAKÇIK|0.68|0.39|r"
+          "PULMONER VEN|0.86|0.35|r",
+          "SOL KULAKÇIK|0.68|0.38|r"
         ]
       },
       "transition": {
@@ -297,8 +297,8 @@
           "toBody"
         ],
         "labels": [
-          "AORT|0.72|0.26|r",
-          "SOL KARINCIK|0.64|0.60|r"
+          "AORT|0.79|0.28|r",
+          "SOL KARINCIK|0.63|0.62|r"
         ]
       },
       "transition": {
@@ -343,7 +343,7 @@
         "panY": -260,
         "flow": [],
         "labels": [
-          "MİTRAL KAPAK|0.65|0.49|r"
+          "MİTRAL KAPAK|0.66|0.49|r"
         ]
       },
       "transition": {

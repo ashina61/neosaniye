@@ -51,56 +51,66 @@ export const SEPTUM =
   'M 508 596 C 528 800, 556 1090, 600 1394 C 630 1416, 664 1400, 678 1372 ' +
   'C 630 1070, 596 800, 578 596 Z';
 
-/** Sağ kulakçık boşluğu. İnce duvar, geniş boşluk. */
+/**
+ * LÜMEN — KANIN BOŞLUĞU, TEK PARÇA.
+ *
+ * Önceki sürümde kulakçık, karıncık, halka ve çıkış yolu AYRI şekillerdi ve
+ * aralarında miyokard kalıyordu: kapaklar havada duran iki yay, çıkış yolları
+ * ortada duran iki kâse gibi okunuyordu. Kan bir odadan diğerine geçiyorsa
+ * aralarında BOŞLUK vardır; o boşluk tek bir kapalı yoldur ve kopması imkânsız
+ * olmalıdır.
+ *
+ * Her yol, o tarafın bütün kan yolunu dolaşır: kulakçığın duvarı boyunca iner,
+ * AV deliğinden karıncığa geçer, apekse kadar iner, karşı duvardan çıkar ve
+ * çıkış yolundan damar köküne yükselir. Kapaklar bu yolun DARALDIĞI iki yere
+ * çizilir — yani ait oldukları yere, tanımı gereği.
+ */
+export const RIGHT_LUMEN =
+  'M 300 950 C 262 1032, 288 1150, 344 1240 C 396 1322, 462 1386, 516 1412 ' +
+  'C 534 1330, 522 1130, 512 1020 ' +
+  'C 524 986, 528 906, 524 846 C 520 826, 502 818, 490 818 ' +
+  'C 476 818, 460 828, 458 848 C 452 906, 450 962, 448 990 ' +
+  'C 442 962, 436 930, 430 900 C 476 830, 486 690, 462 616 ' +
+  'C 428 586, 380 570, 330 578 C 254 590, 202 660, 202 742 ' +
+  'C 198 822, 232 882, 300 900 Z';
+
+export const LEFT_LUMEN =
+  'M 604 986 C 594 1080, 620 1240, 652 1360 C 692 1330, 738 1208, 764 1078 ' +
+  'C 780 1014, 774 980, 750 966 C 748 940, 748 918, 750 900 ' +
+  'C 810 892, 852 850, 862 778 C 872 702, 854 632, 802 602 ' +
+  'C 746 570, 664 570, 614 598 C 598 666, 598 788, 612 858 ' +
+  'C 632 888, 654 898, 676 900 C 678 930, 676 958, 672 980 ' +
+  'C 668 950, 664 890, 660 848 C 658 828, 644 818, 630 818 ' +
+  'C 616 818, 604 828, 602 848 C 598 890, 600 946, 604 986 Z';
+
+/** Kulakçık ve karıncığın AYRI vurgulanabilmesi için aynı yolun parçaları. */
 export const RA_CAVITY =
-  'M 330 578 C 254 590, 206 660, 202 742 C 198 822, 232 882, 300 900 ' +
-  'C 366 918, 434 900, 470 862 C 486 790, 484 682, 462 616 ' +
-  'C 428 586, 380 570, 330 578 Z';
-
-/** Sol kulakçık boşluğu. */
+  'M 300 900 C 232 882, 198 822, 202 742 C 202 660, 254 590, 330 578 ' +
+  'C 380 570, 428 586, 462 616 C 486 690, 476 830, 430 900 Z';
 export const LA_CAVITY =
-  'M 616 596 C 668 570, 748 572, 802 604 C 852 634, 868 704, 858 780 ' +
-  'C 848 852, 806 894, 744 902 C 688 908, 636 886, 614 856 ' +
-  'C 600 786, 600 664, 616 596 Z';
-
-/**
- * Sağ karıncık boşluğu — hilal, çünkü septum içine doğru bombeli. Duvarı
- * İNCE: akciğere basar, yolu kısa, basıncı düşük.
- */
+  'M 676 900 C 654 898, 632 888, 612 858 C 598 788, 598 666, 614 598 ' +
+  'C 664 570, 746 570, 802 602 C 854 632, 872 702, 862 778 ' +
+  'C 852 850, 810 892, 750 900 Z';
 export const RV_CAVITY =
-  'M 300 962 C 262 1032, 288 1150, 344 1240 C 396 1322, 462 1386, 516 1412 ' +
-  'C 534 1330, 516 1120, 496 1000 C 470 962, 344 946, 300 962 Z';
-
-/**
- * Sol karıncık boşluğu — küçük ve dar, ÇÜNKÜ ETRAFI KALIN. Dış hat ile bu
- * boşluk arasındaki mesafe sağ tarafın üç katıdır; sekizinci sahnenin bütün
- * derdi bu, ve bir cümleyle değil bu iki eğrinin arasındaki boşlukla anlatılır.
- */
+  'M 300 950 C 262 1032, 288 1150, 344 1240 C 396 1322, 462 1386, 516 1412 ' +
+  'C 534 1330, 520 1120, 506 1010 L 430 950 Z';
 export const LV_CAVITY =
-  'M 636 984 C 610 1066, 620 1230, 652 1360 C 690 1330, 736 1210, 762 1080 ' +
-  'C 776 1020, 760 984, 720 972 C 686 962, 652 966, 636 984 Z';
+  'M 596 966 C 592 1064, 618 1240, 652 1360 C 692 1330, 738 1208, 764 1078 ' +
+  'C 780 1014, 774 980, 750 966 Z';
 
 /**
- * AV HALKASI (annulus) — kulakçıkla karıncığın arasındaki lifli yüzük.
- *
- * Yaprakçıklar buna ASILIDIR. İlk sürümde havada duruyorlardı: kulakçığın
- * altında, karıncığın üstünde, ikisine de değmeyen iki yay. Kapak bir çizim
- * öğesi değil, iki odanın ARASINDAKİ kapıdır; bağlı olmadığı anda gösterdiği
- * şey de kalmaz.
+ * ÇIKIŞ YOLLARI artık şekil değil, lümenin kendi kolları — ayrı kâse yok.
+ * Kalanı yalnız damar kökünün nereye oturduğunu söyler.
  */
-export const AV_RING_R = 'M 292 906 C 350 936, 430 940, 496 916 L 496 962 C 428 986, 348 982, 292 952 Z';
-export const AV_RING_L = 'M 604 916 C 668 944, 748 942, 812 912 L 812 958 C 748 990, 668 992, 604 962 Z';
-
 /**
- * ÇIKIŞ YOLLARI — damar kalbin YANINDAN geçmez, İÇİNDEN çıkar.
- *
- * Pulmoner trunkus sağ karıncığın konusundan, aort sol karıncığın tabanından
- * doğar. İlk sürümde ikisi de miyokardın arkasına çizilmişti, yani kalbin
- * yanında duran iki boru gibi okunuyordu — bütün dolaşım şemasının bağlandığı
- * yer tam da burasıydı.
+ * AV HALKASI — kulakçıkla karıncığın arasındaki lifli yüzük. Lümen tam burada
+ * daralır; yaprakçıklar da buraya asılır, çünkü kapı budur.
  */
-export const RV_OUTFLOW = 'M 352 1000 C 338 902, 356 834, 400 818 C 444 834, 460 902, 448 1000 Z';
-export const LV_OUTFLOW = 'M 628 1010 C 618 912, 636 844, 678 828 C 720 844, 738 912, 726 1010 Z';
+export const AV_RING_R = 'M 292 890 C 340 914, 400 916, 438 890 L 438 956 C 398 978, 340 976, 292 952 Z';
+export const AV_RING_L = 'M 664 890 C 698 914, 730 916, 760 890 L 760 956 C 730 978, 698 978, 664 956 Z';
+
+export const PULM_ROOT = {x: 490, y: 834, r: 38};
+export const AORTIC_ROOT = {x: 630, y: 830, r: 30};
 
 /** Kapak yaprakçığı: kapalıyken düz, açıkken duvara yapışır. */
 export function leaflet(x: number, y: number, span: number, drop: number, open: number, flip = 1) {

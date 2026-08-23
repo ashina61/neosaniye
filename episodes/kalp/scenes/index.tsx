@@ -15,11 +15,13 @@ import {
   RA_CAVITY,
   RED,
   RED_DARK,
+  AORTIC_ROOT,
   AV_RING_L,
   AV_RING_R,
-  LV_OUTFLOW,
+  LEFT_LUMEN,
+  PULM_ROOT,
+  RIGHT_LUMEN,
   RV_CAVITY,
-  RV_OUTFLOW,
   SEPTUM,
   TRABECULAE_LV,
   TRABECULAE_RV,
@@ -74,36 +76,36 @@ const d = (p: Pt[]) => `M ${p[0][0]} ${p[0][1]} C ${p[1][0]} ${p[1][1]}, ${p[2][
  */
 const ROUTES: Record<string, Pt[][]> = {
   venaCava: [
-    [[248, 250], [248, 380], [252, 470], [286, 560]],
-    [[286, 560], [316, 630], [330, 700], [340, 790]],
+    [[224, 250], [228, 380], [244, 470], [268, 560]],
+    [[268, 560], [286, 640], [300, 700], [312, 780]],
   ],
   ivc: [
-    [[236, 1560], [236, 1300], [252, 1080], [300, 940]],
-    [[300, 940], [330, 890], [340, 850], [345, 810]],
+    [[172, 1520], [186, 1260], [214, 1030], [252, 900]],
+    [[252, 900], [272, 862], [292, 830], [312, 800]],
   ],
   toRV: [
-    [[345, 810], [360, 870], [372, 900], [392, 946]],
-    [[392, 946], [400, 1010], [400, 1120], [420, 1220]],
+    [[312, 800], [330, 856], [352, 892], [372, 926]],
+    [[372, 926], [378, 1010], [372, 1130], [396, 1250]],
   ],
   toLung: [
-    [[420, 1220], [400, 1080], [396, 940], [418, 860]],
-    [[418, 860], [440, 760], [430, 620], [408, 470]],
-    [[408, 470], [372, 380], [300, 330], [232, 316]],
+    [[396, 1250], [400, 1120], [420, 1010], [470, 930]],
+    [[470, 930], [492, 880], [492, 850], [490, 820]],
+    [[490, 820], [462, 640], [400, 440], [246, 320]],
   ],
   fromLung: [
-    [[858, 300], [900, 360], [906, 470], [880, 560]],
-    [[880, 560], [850, 640], [800, 700], [730, 742]],
-    [[730, 742], [700, 790], [680, 830], [668, 880]],
+    [[960, 620], [900, 640], [870, 680], [852, 730]],
+    [[852, 730], [820, 800], [770, 850], [716, 878]],
+    [[716, 878], [700, 900], [692, 920], [688, 940]],
   ],
   toLV: [
-    [[668, 880], [672, 920], [676, 940], [686, 968]],
-    [[686, 968], [700, 1060], [694, 1200], [662, 1300]],
+    [[688, 940], [696, 1000], [700, 1100], [690, 1210]],
+    [[690, 1210], [676, 1290], [660, 1330], [648, 1352]],
   ],
   toBody: [
-    [[662, 1300], [690, 1140], [700, 1010], [676, 906]],
-    [[676, 906], [660, 800], [660, 660], [700, 520]],
-    [[700, 520], [760, 380], [880, 360], [944, 470]],
-    [[944, 470], [980, 640], [968, 1100], [946, 1580]],
+    [[648, 1352], [664, 1200], [660, 1050], [640, 940]],
+    [[640, 940], [630, 890], [628, 860], [630, 826]],
+    [[630, 826], [660, 620], [740, 440], [846, 452]],
+    [[846, 452], [896, 560], [900, 1000], [890, 1560]],
   ],
 };
 
@@ -245,35 +247,45 @@ const Heart: React.FC<SceneProps> = ({scene, durationInFrames}) => {
 
           {/* ── BÜYÜK DAMARLAR, kasın ARKASINDA başlayıp önünden çıkanlar ── */}
           <g opacity={lit('vessels')}>
-            {/* Vena kava superior ve inferior — kirli kanın döndüğü yer */}
-            <path d="M 214 236 L 282 236 L 300 560 L 262 590 Z" fill="url(#blueTube)" stroke={BLUE_DARK} strokeWidth={5} />
-            <path d="M 206 1600 L 268 1600 L 306 1120 L 250 1090 Z" fill="url(#blueTube)" stroke={BLUE_DARK} strokeWidth={5} />
-            {/* Pulmoner trunkus: sağ karıncıktan çıkar, ikiye ayrılır */}
+            {/* Vena kava superior — sağ kulakçığın tavanına iner */}
             <path
-              d="M 372 880 C 350 720, 356 560, 400 452 C 430 384, 470 356, 520 352 L 520 300 C 430 300, 350 356, 316 452 C 282 552, 288 740, 316 892 Z"
+              d="M 190 236 C 186 380, 210 500, 246 590 C 276 612, 306 606, 312 586 C 292 494, 270 372, 268 240 Z"
               fill="url(#blueTube)"
               stroke={BLUE_DARK}
               strokeWidth={5}
             />
-            <path d="M 316 300 L 520 300 L 520 352 L 316 352 Z" fill="url(#blueTube)" stroke={BLUE_DARK} strokeWidth={5} />
-            {/* Aort: sol karıncıktan çıkar, kavis yapar, aşağı iner */}
+            {/* Vena kava inferior — kulakçığın tabanına alttan girer */}
             <path
-              d="M 646 880 C 636 700, 660 560, 730 470 C 800 382, 906 396, 944 500 C 968 700, 962 1120, 946 1600 L 884 1600 C 900 1120, 906 700, 886 528 C 866 456, 800 452, 762 512 C 720 580, 706 720, 716 890 Z"
+              d="M 148 1600 C 172 1300, 208 1050, 244 916 C 272 890, 300 900, 300 924 C 268 1050, 226 1300, 210 1600 Z"
+              fill="url(#blueTube)"
+              stroke={BLUE_DARK}
+              strokeWidth={5}
+            />
+            {/* Pulmoner trunkus: SAĞ KARINCIĞIN çıkış ağzından doğar, sola kavis yapıp ikiye ayrılır */}
+            <path
+              d="M 452 838 C 440 700, 424 560, 380 470 C 336 380, 282 338, 222 328 L 222 262 
+                 C 304 274, 376 324, 428 414 C 480 504, 504 666, 528 838 Z"
+              fill="url(#blueTube)"
+              stroke={BLUE_DARK}
+              strokeWidth={5}
+            />
+            {/* Aort: SOL KARINCIĞIN çıkış ağzından doğar, kavis yapar, aşağı iner */}
+            <path
+              d="M 600 834 C 604 700, 616 558, 664 468 C 716 370, 830 364, 884 452 
+                 C 920 522, 930 700, 928 900 C 926 1200, 922 1450, 918 1600 
+                 L 858 1600 C 862 1440, 868 1180, 870 900 C 872 700, 864 546, 832 500 
+                 C 796 450, 732 456, 702 512 C 670 572, 660 700, 660 834 Z"
               fill="url(#redTube)"
               stroke={RED_DARK}
               strokeWidth={5}
             />
-            {/* Arkus dalları: brakiyosefalik, sol karotis, sol subklavyen */}
-            <path d="M 766 300 L 800 300 L 806 452 L 772 452 Z" fill="url(#redTube)" stroke={RED_DARK} strokeWidth={4} />
-            <path d="M 826 300 L 858 300 L 862 424 L 830 428 Z" fill="url(#redTube)" stroke={RED_DARK} strokeWidth={4} />
-            <path d="M 884 300 L 916 300 L 926 430 L 894 436 Z" fill="url(#redTube)" stroke={RED_DARK} strokeWidth={4} />
-            {/* Pulmoner venler — akciğerden sol kulakçığa, dört tane */}
-            {[
-              'M 900 560 C 840 566, 812 596, 806 636 L 862 648 C 878 618, 900 604, 940 600 Z',
-              'M 908 700 C 852 700, 818 720, 806 752 L 860 772 C 878 744, 904 736, 946 738 Z',
-            ].map((path, i) => (
-              <path key={i} d={path} fill="url(#redTube)" stroke={RED_DARK} strokeWidth={4} />
-            ))}
+            {/* Arkus dalları */}
+            <path d="M 726 292 L 758 292 L 762 448 L 730 452 Z" fill="url(#redTube)" stroke={RED_DARK} strokeWidth={4} />
+            <path d="M 788 286 L 820 286 L 826 420 L 794 426 Z" fill="url(#redTube)" stroke={RED_DARK} strokeWidth={4} />
+            <path d="M 848 292 L 880 292 L 892 434 L 860 442 Z" fill="url(#redTube)" stroke={RED_DARK} strokeWidth={4} />
+            {/* Pulmoner venler — akciğerden sol kulakçığa, sağ kenardan */}
+            <path d="M 964 596 C 906 600, 872 622, 858 656 L 862 700 C 890 664, 926 646, 972 642 Z" fill="url(#redTube)" stroke={RED_DARK} strokeWidth={4} />
+            <path d="M 972 760 C 916 758, 878 772, 858 796 L 866 840 C 890 812, 926 800, 976 802 Z" fill="url(#redTube)" stroke={RED_DARK} strokeWidth={4} />
           </g>
 
           {/* ── MİYOKARD ── */}
@@ -281,42 +293,30 @@ const Heart: React.FC<SceneProps> = ({scene, durationInFrames}) => {
             <path d={OUTLINE} fill="url(#myo)" stroke={MYO_DARK} strokeWidth={7} />
           </g>
 
-          {/* ── ÇIKIŞ YOLLARI: kanın karıncıktan damara geçtiği delik ── */}
-          <g opacity={lit('vessels')}>
-            <path d={RV_OUTFLOW} fill="#2f5170" stroke={ENDO} strokeWidth={5} />
-            <path d={LV_OUTFLOW} fill="#7c2b27" stroke={ENDO} strokeWidth={5} />
-          </g>
-
-          {/* ── SEPTUM: iki karıncığın arasındaki kalın duvar ── */}
+          {/* ── SEPTUM ── */}
           <g transform={`translate(560 1440) scale(${vSq}) translate(-560 -1440)`}>
             <path d={SEPTUM} fill={MYO} stroke={MYO_DARK} strokeWidth={6} />
           </g>
 
-          {/* ── BOŞLUKLAR ── */}
-          <g opacity={lit('ra')} transform={`translate(360 900) scale(${aSq}) translate(-360 -900)`}>
-            <path d={RA_CAVITY} fill="#2c4a68" stroke={ENDO} strokeWidth={5} />
-          </g>
-          <g opacity={lit('la')} transform={`translate(720 900) scale(${aSq}) translate(-720 -900)`}>
-            <path d={LA_CAVITY} fill="#6d2b28" stroke={ENDO} strokeWidth={5} />
-          </g>
-          <g opacity={lit('rv')} transform={`translate(430 1440) scale(${vSq}) translate(-430 -1440)`}>
-            <path d={RV_CAVITY} fill="#2f5170" stroke={ENDO} strokeWidth={5} />
+          {/* ── LÜMEN: her taraf TEK parça, kulakçıktan damar köküne ── */}
+          <g transform={`translate(430 1440) scale(${vSq}) translate(-430 -1440)`} opacity={Math.max(lit('ra'), lit('rv'))}>
+            <path d={RIGHT_LUMEN} fill="#2f5170" stroke={ENDO} strokeWidth={5} />
             {TRABECULAE_RV.map((t, i) => (
-              <path key={i} d={t} fill="none" stroke={MYO_LIGHT} strokeWidth={9} strokeLinecap="round" opacity={0.75} />
+              <path key={i} d={t} fill="none" stroke={MYO_LIGHT} strokeWidth={9} strokeLinecap="round" opacity={0.6} />
             ))}
             <path d={papillary(392, 1300, 92, 150, ventricles)} fill={MYO} stroke={MYO_DARK} strokeWidth={5} />
-            {chordae(392, 1150, 400, 986, 4, 60).map((c, i) => (
-              <path key={i} d={c} fill="none" stroke={ENDO} strokeWidth={3.5} opacity={0.85} />
+            {chordae(392, 1150, 380, 986, 4, 60).map((c, i) => (
+              <path key={i} d={c} fill="none" stroke={ENDO} strokeWidth={3.5} opacity={0.8} />
             ))}
           </g>
-          <g opacity={lit('lv')} transform={`translate(660 1440) scale(${vSq}) translate(-660 -1440)`}>
-            <path d={LV_CAVITY} fill="#7c2b27" stroke={ENDO} strokeWidth={5} />
+          <g transform={`translate(660 1440) scale(${vSq}) translate(-660 -1440)`} opacity={Math.max(lit('la'), lit('lv'))}>
+            <path d={LEFT_LUMEN} fill="#7c2b27" stroke={ENDO} strokeWidth={5} />
             {TRABECULAE_LV.map((t, i) => (
-              <path key={i} d={t} fill="none" stroke={MYO_LIGHT} strokeWidth={8} strokeLinecap="round" opacity={0.7} />
+              <path key={i} d={t} fill="none" stroke={MYO_LIGHT} strokeWidth={8} strokeLinecap="round" opacity={0.55} />
             ))}
-            <path d={papillary(676, 1280, 88, 140, ventricles)} fill={MYO} stroke={MYO_DARK} strokeWidth={5} />
-            {chordae(676, 1140, 668, 990, 4, 56).map((c, i) => (
-              <path key={i} d={c} fill="none" stroke={ENDO} strokeWidth={3.5} opacity={0.85} />
+            <path d={papillary(690, 1270, 84, 132, ventricles)} fill={MYO} stroke={MYO_DARK} strokeWidth={5} />
+            {chordae(690, 1140, 706, 1000, 4, 52).map((c, i) => (
+              <path key={i} d={c} fill="none" stroke={ENDO} strokeWidth={3.5} opacity={0.8} />
             ))}
           </g>
 
@@ -327,17 +327,17 @@ const Heart: React.FC<SceneProps> = ({scene, durationInFrames}) => {
           </g>
           <g opacity={lit('valve')} stroke={ENDO} strokeWidth={7} fill="none" strokeLinecap="round">
             {/* Triküspit — üç yaprakçık */}
-            <path d={leaflet(300, 950, 120, 130, 1 - ventricles, 1)} />
-            <path d={leaflet(492, 946, 120, 130, 1 - ventricles, -1)} />
-            <path d={leaflet(396, 962, 62, 96, 1 - ventricles, 1)} opacity={0.9} />
-            {/* Mitral — iki yaprakçık */}
-            <path d={leaflet(610, 954, 130, 140, 1 - ventricles, 1)} />
-            <path d={leaflet(806, 950, 130, 140, 1 - ventricles, -1)} />
-            {/* Pulmoner ve aort yarım ay kapakları */}
-            {semilunar(400, 826, 58, ventricles).map((p, i) => (
+            <path d={leaflet(300, 918, 104, 132, 1 - ventricles, 1)} />
+            <path d={leaflet(430, 914, 100, 132, 1 - ventricles, -1)} />
+            <path d={leaflet(364, 922, 54, 96, 1 - ventricles, 1)} opacity={0.9} />
+            {/* Mitral — iki yaprakçık, halkanın iki ucundan sarkar */}
+            <path d={leaflet(668, 916, 100, 142, 1 - ventricles, 1)} />
+            <path d={leaflet(756, 912, 96, 142, 1 - ventricles, -1)} />
+            {/* Yarım ay kapakları — çıkış ağızlarında */}
+            {semilunar(PULM_ROOT.x, PULM_ROOT.y, PULM_ROOT.r, ventricles).map((p, i) => (
               <path key={`p${i}`} d={p} />
             ))}
-            {semilunar(676, 834, 58, ventricles).map((p, i) => (
+            {semilunar(AORTIC_ROOT.x, AORTIC_ROOT.y, AORTIC_ROOT.r, ventricles).map((p, i) => (
               <path key={`a${i}`} d={p} />
             ))}
           </g>
