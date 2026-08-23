@@ -1,6 +1,6 @@
 {
   "id": "zodiac-1969",
-  "title": "Zodiac 1969 — the letters that had to be printed",
+  "title": "Zodiac 1969 \u2014 the letters that had to be printed",
   "fps": 30,
   "width": 1080,
   "height": 1920,
@@ -38,7 +38,7 @@
       },
       "params": {
         "scrim": 0.4,
-        "kicker": "San Francisco · July 31, 1969",
+        "kicker": "San Francisco \u00b7 July 31, 1969",
         "title": "THREE LETTERS",
         "footer": "and one condition",
         "titleFrame": 4,
@@ -66,7 +66,7 @@
       },
       "onScreenText": [
         {
-          "text": "“or I will go on a kill rampage”",
+          "text": "\u201cor I will go on a kill rampage\u201d",
           "atFrame": 108,
           "durationInFrames": 44,
           "style": "serif-italic",
@@ -150,7 +150,7 @@
         "captionY": 300,
         "captionFrame": 12,
         "captionEvery": 22,
-        "captionSize": 84,
+        "captionSize": 46,
         "captionRecedeAt": 120,
         "mark": "underline",
         "markX": 84,
@@ -265,7 +265,7 @@
         "captionY": 1040,
         "captionFrame": 16,
         "captionEvery": 20,
-        "captionSize": 90,
+        "captionSize": 85,
         "captionAccent": 0,
         "captionRecedeAt": 126,
         "fog": 0.62,
@@ -337,9 +337,9 @@
           98
         ],
         "items": [
-          "card|WITNESS DESCRIPTION|white male, 26-30 · heavy-rimmed glasses, crew cut · seen by ~three teenagers~",
-          "card|EXHIBIT 12-C|Bloodstained shirt panel · mailed to the ~Chronicle~",
-          "card|EXHIBIT 12-D|Boot print, size 10 1/2 · military tread"
+          "card|WITNESS DESCRIPTION|white male, 26-30 \u00b7 heavy-rimmed glasses, crew cut \u00b7 seen by ~three teenagers~",
+          "card|EXHIBIT 12-C|Bloodstained shirt panel \u00b7 mailed to the ~Chronicle~",
+          "card|EXHIBIT 12-D|Boot print, size 10 1/2 \u00b7 military tread"
         ],
         "stamp": "NO MATCH",
         "caption": [
@@ -444,7 +444,7 @@
       },
       "params": {
         "scrim": 0.34,
-        "kicker": "Case 69-37 · Unsolved",
+        "kicker": "Case 69-37 \u00b7 Unsolved",
         "title": "STILL OPEN",
         "footer": "He stopped writing. No one ever answered for it.",
         "titleFrame": 10,

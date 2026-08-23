@@ -49,6 +49,7 @@ import {
 import {endingStrategy, hookStrategy, readScript, rhythmFor} from './lib/story.mjs';
 import {colourCentre, judge, loadReview, measureAsset} from './lib/assetdirector.mjs';
 import {directFraming, graphicJustified, hierarchyFor, labelFor} from './lib/visual.mjs';
+import {CAPTION_ZONE, chooseRepresentation} from './lib/representation.mjs';
 
 const FPS = 30;
 const WIDTH = 1080;
@@ -688,11 +689,23 @@ export function captionLines(text, emphasis = '') {
   return best.parts.map((part) => part.join(' '));
 }
 
-/** Caption type shrinks as the fragment grows, so four lines still fit the frame. */
-function captionSize(lines, rand) {
+/**
+ * CAPTION TYPE THAT FITS, IN THE CONFIG AND NOT ONLY AT RENDER.
+ *
+ * The engine clamps an oversized caption because a guarantee has to live where
+ * it cannot be forgotten. But a config carrying a size the engine then has to
+ * overrule is a config that lies about its own layout: the clipping check reads
+ * it and reports a caption 126 pixels past the right edge that will in fact
+ * render correctly. So the planner sizes it the same way the engine does —
+ * against the widest line, at the size the EMPHASIS will be set at, which is
+ * the one that overflows.
+ */
+function captionSize(lines, rand, x = 84) {
   const longest = lines.reduce((n, line) => Math.max(n, line.length), 0);
   const base = longest > 22 ? 62 : longest > 16 ? 74 : 88;
-  return base + Math.round(rand() * 10);
+  const wanted = base + Math.round(rand() * 10);
+  const column = Math.max(240, WIDTH - x - 110);
+  return Math.max(34, Math.min(wanted, Math.floor(column / (longest * 1.24 * 0.64))));
 }
 
 /**
@@ -777,7 +790,20 @@ function captionPlacement({shot, rand, durationInFrames, lines}) {
       HEIGHT - 150 - lines.length * (text.size === undefined ? captionSize(lines, rand) : WIDTH * Number(text.size)) * 1.3,
       text.y === undefined ? Math.round(between(rand, [300, 1080])) : Math.round(HEIGHT * Number(text.y)),
     ),
-    captionSize: text.size === undefined ? captionSize(lines, rand) : Math.round(WIDTH * Number(text.size)),
+    /**
+     * AN AUTHORED SIZE IS CLAMPED TOO.
+     *
+     * The brief writes a type size for the line it was written against, and the
+     * planner then cuts that line into fragments of different lengths. "Cut by
+     * hand, meshing" at the size chosen for "thirty gears" runs 126 pixels past
+     * the right edge. The engine catches it at render; letting the config carry
+     * the wrong number means the clipping check is arguing with a value nobody
+     * will ever see, which is how a real finding gets dismissed as a false one.
+     */
+    captionSize: Math.min(
+      captionSize(lines, rand, text.x === undefined ? 84 : Math.round(WIDTH * Number(text.x))),
+      text.size === undefined ? Infinity : Math.round(WIDTH * Number(text.size)),
+    ),
     captionAlign: text.align ?? 'left',
     captionFrame: at(text.at, 4),
     captionEvery: text.every === undefined ? 6 + Math.round(rand() * 4) : Math.round(Number(text.every)),
@@ -1356,6 +1382,7 @@ function applyDirection({
   isContinuation = false,
   read = null,
   quota = {camera: {}, transition: {}, framing: {}},
+  representation = null,
 }) {
   const params = scene.params ?? (scene.params = {});
   const caption = Array.isArray(params.caption) ? params.caption : [];
@@ -1413,7 +1440,83 @@ function applyDirection({
   if (params.motif) wants.push('motif');
   if (params.mark) wants.push('mark');
 
+  /**
+   * THE DRAWN VISUAL IS AN EVENT, AND USUALLY THE SHOT'S BIGGEST.
+   *
+   * Declared before the budget is spent so it takes an early beat rather than
+   * queueing behind a decoration — a gear train that starts turning two thirds
+   * of the way through a two-second shot is a gear train nobody sees.
+   */
+  const drawn = representation?.diagram ?? null;
+  if (drawn) wants.unshift('diagram');
+
   const plan = directShot({durationInFrames, index, total, rand, wants, recent, fps: FPS});
+
+  if (drawn) {
+    const at = plan.at.diagram ?? 4;
+    /**
+     * A DIAGRAM DRAWS ITSELF ONCE.
+     *
+     * On the second shot of the same idea it is ALREADY THERE — the timeline
+     * has been drawn, the count has landed. Re-running both makes the cut a
+     * reset rather than a new angle, and the figure climbing to thirty twice is
+     * the reel contradicting itself. The gears keep turning, because they were
+     * turning before the cut and would not stop for it.
+     */
+    /**
+     * WHERE THE DRAWING IS THE SHOT, IT STARTS AT THE TOP OF THE SHOT.
+     *
+     * A gear train scheduled on beat two opens the shot on an empty field for
+     * a third of a second and then begins — which is the "opens on a still"
+     * fault, applied to the one element the shot exists for.
+     */
+    const own = representation.mode === 'PROCEDURAL' || representation.mode === 'DIAGRAM';
+    scene.diagram = isContinuation
+      ? {...drawn, from: 0, over: 1}
+      : {
+          ...drawn,
+          from: own ? 0 : at,
+          over: Math.max(14, Math.round(durationInFrames * 0.45)),
+          ...(drawn.type === 'gearSystem' && drawn.count ? {countTo: drawn.count} : {}),
+        };
+    delete scene.diagram.gears;
+    plan.representation = representation.mode;
+
+    /**
+     * THE DRAWING GETS ITS SPACE AND THE WORDS TAKE WHAT IS LEFT.
+     *
+     * Placement written for a photograph is wrong once a diagram is in the
+     * frame, however carefully it was written — the picture it was avoiding is
+     * not the thing that is there now.
+     */
+    const zone = CAPTION_ZONE[drawn.type];
+    if (zone && caption.length) {
+      // The zone says where the words belong relative to the drawing; the safe
+      // area says how far down they may go. The block is placed to satisfy both,
+      // which on a short caption means the zone and on a long one means the floor.
+      const block = caption.length * (Number(params.captionSize) || 84) * 1.3;
+      params.captionY = Math.round(Math.min(HEIGHT * zone.y, HEIGHT * 0.88 - block));
+      params.captionAlign = zone.align;
+      params.captionScrim = Math.max(Number(params.captionScrim) || 0, 0.38);
+    }
+
+    /**
+     * AND A DRAWN CARD DOES NOT REPEAT THE DRAWING.
+     *
+     * A timeline that reads "50 YEARS UNOPENED" with an index card beside it
+     * reading "FIFTY YEARS / nobody looked inside" is the same fact three times
+     * — once spoken, once drawn, once typed. The diagram is the more
+     * informative of the two, so the card goes.
+     */
+    scene.props = (scene.props ?? []).filter((prop) => {
+      if (prop.kind === 'wire' || prop.kind === 'beam') return true;
+      const copy = [prop.text, prop.heading, ...(prop.lines ?? [])].filter(Boolean).join(' ').toLowerCase();
+      const drawnWords = JSON.stringify(scene.diagram).toLowerCase();
+      const own = copy.match(/[\p{L}\p{N}]+/gu) ?? [];
+      const shared = own.filter((w) => w.length > 3 && drawnWords.includes(w)).length;
+      return shared < 2;
+    });
+  }
 
   /**
    * A HELD BEAT STOPS ADDING THINGS.
@@ -1856,6 +1959,16 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
    * this pipeline made felt like the last one with new photographs in it.
    */
   let sceneType = DIRECTED_TEMPLATES.has(line?.shot?.template) ? line.shot.template : SCENE_FOR[beat];
+  /**
+   * A PORTAL IS A FLIGHT INTO A PHOTOGRAPH.
+   *
+   * With every plate refused there is nothing to fly into, and the template
+   * cheerfully derived two file names for pictures nobody has. A drawn shot is
+   * a composite: it has a ground, a camera and somewhere to put the diagram.
+   */
+  if (line.graphicsOnly && (sceneType === 'portal-zoom-reveal' || sceneType === 'parallax-punch')) {
+    sceneType = 'composite';
+  }
   // RHYTHM. Never the same template as the shot before it. The old rule waited
   // for THREE in a row, which let the reel run portal, portal back to back —
   // and two seven-second flights into a picture, one after the other, is the
@@ -2318,6 +2431,11 @@ async function main() {
   const recastNotes = [];
   /** Layers lifted out of one line to be stood up in another. */
   const moves = [];
+  // How many plates the brief WROTE, kept before any are dropped, so a refusal
+  // can be told apart from a brief that never named one.
+  for (const line of brief.lines) {
+    if (line.shot) line.shot.layersDeclared = (line.shot.layers ?? []).length;
+  }
   for (const line of brief.lines) {
     const layers = line?.shot?.layers ?? [];
     if (!layers.length) continue;
@@ -2418,7 +2536,18 @@ async function main() {
   for (const line of brief.lines) {
     const layers = line?.shot?.layers ?? [];
     const fills = layers.filter((l) => l.fill !== false && !l.height);
-    if (!fills.length) {
+    /**
+     * A LINE THAT NEVER DECLARED A PLATE IS NOT A LINE WHOSE PLATES WERE
+     * REFUSED.
+     *
+     * An older brief names no layers at all and lets the planner derive a
+     * backdrop file for it — that is a supported way to write one. Treating the
+     * absence as a refusal turned three whole episodes graphics-only, deleted
+     * every generation recipe they had, and left their configs naming nothing.
+     * The drawn ground is the answer to a REFUSAL, and only to that.
+     */
+    const declared = (line?.shot?.layersDeclared ?? layers.length) > 0 || line.graphicsOnly === true;
+    if (!fills.length && declared) {
       line.graphicsOnly = true;
       /**
        * AN AUTHORED CUT DIES WITH THE PICTURE IT WAS WRITTEN FOR.
@@ -2439,9 +2568,46 @@ async function main() {
       if (line.shot?.text?.at !== undefined) {
         line.shot = {...line.shot, text: {...line.shot.text, at: undefined}};
       }
-    } else {
+    } else if (fills.length) {
       delete line.graphicsOnly;
     }
+  }
+
+  /**
+   * HOW EACH LINE IS TO BE SHOWN — decided before a single shot is designed.
+   *
+   * This is the ordering the last stage was still missing. The asset director
+   * can refuse a picture, but a refusal on its own only produces a hole; the
+   * question "what IS the truthful way to show this?" has to be asked next, and
+   * it has to be asked before composition, because the answer changes what kind
+   * of shot the line is.
+   *
+   * A mechanism with a count becomes a meshing gear train. A span of empty
+   * years becomes a timeline. A claim about eclipses becomes orbital geometry
+   * laid over the real moon. None of those are fallbacks — each is a better
+   * shot than the photograph it replaces, and two of them are better than any
+   * photograph that could exist.
+   */
+  const representation = {};
+  const anchorYears = [
+    ...new Set(brief.lines.flatMap((l) => [...String(l.vo).matchAll(/\b(1[0-9]{3}|20[0-9]{2})\b/g)].map((m) => Number(m[1])))),
+  ].sort((a, b) => a - b);
+  for (const line of brief.lines) {
+    const read = story[brief.lines.indexOf(line)];
+    const survives = (line?.shot?.layers ?? []).some((l) => {
+      const name = String(l.asset ?? '').split(/[\\/]/).pop();
+      return name && assetVerdicts[name]?.verdict !== 'reject';
+    });
+    representation[line.slug] = chooseRepresentation({
+      vo: line.vo,
+      beat: read?.beat,
+      emphasis: read?.emphasis,
+      photo: survives ? true : null,
+      accent: look.accent,
+      muted: '#cfc6ae',
+      seed: `${episodeId}:${line.slug}`,
+      anchorYears,
+    });
   }
 
   /** Quotas, counted across the whole reel rather than over a sliding three. */
@@ -2531,6 +2697,7 @@ async function main() {
       durationInFrames: result.scene.durationInFrames,
       read: story[index],
       quota,
+      representation: representation[line.slug],
     });
     shotIndex += 1;
     previousTransition.push(result.scene.transition?.kind ?? 'cut');
@@ -2567,6 +2734,7 @@ async function main() {
         durationInFrames: scene.durationInFrames,
         read: story[index],
         quota,
+        representation: representation[line.slug],
         // A continuation already re-frames the plate on purpose — it alternates
         // push and pull-back so two shots of one photograph are not the same
         // shot twice. Handing it a fresh camera would throw that away.
@@ -2779,6 +2947,22 @@ async function main() {
         panY: scene.params?.panY ?? null,
       },
       transition: scene.transition?.kind ?? 'cut',
+      /**
+       * HOW THIS SHOT CHOSE TO SHOW ITS IDEA, and why.
+       *
+       * The most important line in the log. "PROCEDURAL — a mechanism with a
+       * count: meshing is the claim, and a photograph cannot show it" is a
+       * decision somebody can argue with; a scene-config full of coordinates
+       * is not.
+       */
+      representation: scene.diagram
+        ? Object.keys(scene.assets ?? {}).length
+          ? 'HYBRID'
+          : 'PROCEDURAL'
+        : Object.keys(scene.assets ?? {}).length
+          ? 'PHOTO'
+          : 'TYPOGRAPHY',
+      drawn: scene.diagram?.type ?? null,
       emphasis: scene.params?.captionEmphasis ?? null,
       reveal: scene.params?.captionReveal ?? null,
       plates: Object.values(scene.assets ?? {}).map((f) => String(f).split('/').pop()),
@@ -2792,6 +2976,9 @@ async function main() {
         idea: story[Math.min(i, story.length - 1)]?.idea,
       }),
     })),
+    representation: Object.fromEntries(
+      Object.entries(representation).map(([slug, r]) => [slug, {mode: r.mode, why: r.why, drawn: r.diagram?.type ?? null}]),
+    ),
     quotas: quota,
     typography: {
       system: 'one family per semantic role — statement, body, label, figure',

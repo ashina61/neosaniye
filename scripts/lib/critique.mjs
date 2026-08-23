@@ -56,6 +56,25 @@ export function eventsOf(scene) {
   for (const [i, item] of (Array.isArray(p.itemFrames) ? p.itemFrames : []).entries()) {
     out.push({kind: 'item', at: n(item) ?? 0, index: i});
   }
+  /**
+   * A DRAWN VISUAL IS AN EVENT, AND USUALLY THE SHOT'S LARGEST.
+   *
+   * A gear train beginning to turn, a timeline drawing itself, a count climbing
+   * to thirty — these were invisible to the event counter, so replacing three
+   * duplicated index cards with one meshing mechanism made the motion score go
+   * DOWN. A check that punishes the right decision is worse than no check.
+   *
+   * The count is its own second event: it lands after the drawing arrives, and
+   * the landing is the thing the shot is built around.
+   */
+  if (scene.diagram) {
+    const at = n(scene.diagram.from) ?? 0;
+    out.push({kind: `diagram:${scene.diagram.type}`, at});
+    if (scene.diagram.countTo !== undefined) {
+      out.push({kind: 'diagram:count', at: at + (n(scene.diagram.over) ?? 20)});
+    }
+  }
+
   // THE TEXT LAYER IS AN EVENT TOO. It lives on the scene rather than in
   // params, and leaving it out reported a shot with a sticker punching onto it
   // as a shot in which nothing happens.
@@ -689,4 +708,199 @@ export function qualityGates(config, {assets = {}, fps = config.fps ?? FPS_DEFAU
     .filter(([, v]) => v < 7)
     .map(([k, v]) => `${k} ${v}/10`);
   return {gates, failed, productionReady: failed.length === 0};
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+ * THIRD STAGE — geometry, representation, and the ending.
+ *
+ * These check things that are TRUE OR FALSE about the config rather than
+ * matters of taste: a circle whose bounding box leaves the frame does not
+ * enclose its subject, and no amount of art direction makes it do so.
+ * ══════════════════════════════════════════════════════════════════════════ */
+
+/**
+ * WHERE A DRAWN THING ACTUALLY SITS, in frame pixels.
+ *
+ * Returned as a box so the clipping check can be arithmetic instead of a human
+ * squinting at a contact sheet. The moon's dashed orbit had its top outside the
+ * composition for two whole renders and passed every check in this file,
+ * because nothing in here knew where anything was.
+ */
+export function boundsOf(scene, {width, height}) {
+  const out = [];
+  const p = scene.params ?? {};
+  const n = (v, d = 0) => (typeof v === 'number' && Number.isFinite(v) ? v : d);
+
+  for (const [i, prop] of (scene.props ?? []).entries()) {
+    const w = n(prop.width, width * 0.42);
+    const x = n(prop.x, width * 0.5);
+    const y = n(prop.y, height * 0.55);
+    /**
+     * A BEAM HAS NO BOUNDS TO CHECK.
+     *
+     * It is a shaft of light from a source outside the composition: it enters
+     * at the top edge, spills past the sides and reaches the floor, and every
+     * one of those is the point rather than a fault. Bounding it reported six
+     * shots across four episodes as clipped, all of them correct as drawn — and
+     * a check that is wrong about the easy case will be ignored on the hard one.
+     */
+    if (prop.kind === 'beam') continue;
+    /**
+     * PAPER IS WIDE AND SHORT; A WIRE IS SQUARE.
+     *
+     * A plaque modelled as a square of its own width is reported as reaching a
+     * third of the way down the frame, which it does not — and a check that
+     * flags things that are fine is a check people switch off.
+     */
+    const tall = prop.kind === 'wire' ? w : w * (prop.kind === 'plaque' ? 0.34 : 0.72);
+    out.push({what: `prop[${i}] ${prop.kind}`, left: x - w / 2, right: x + w / 2, top: y - tall / 2, bottom: y + tall / 2});
+  }
+
+  if (p.mark) {
+    const x = n(p.markX, 84);
+    const y = n(p.markY, height * 0.4);
+    out.push({
+      what: 'mark',
+      left: x,
+      right: x + n(p.markWidth, width * 0.4),
+      top: y,
+      bottom: y + n(p.markHeight, 96),
+    });
+  }
+
+  const d = scene.diagram;
+  if (d?.type === 'orbit') {
+    const cx = n(d.cx, 0.5) * width;
+    const cy = n(d.cy, 0.45) * height;
+    const r = n(d.radius, 0.3) * width;
+    out.push({what: 'diagram orbit', left: cx - r, right: cx + r, top: cy - r, bottom: cy + r});
+  }
+  if (d?.type === 'gearSystem' && Array.isArray(d.gears)) {
+    for (const [i, g] of d.gears.entries()) {
+      const r = n(g.radius, 0.15) * width;
+      out.push({
+        what: `diagram gear[${i}]`,
+        left: n(g.x, 0.5) * width - r,
+        right: n(g.x, 0.5) * width + r,
+        top: n(g.y, 0.5) * height - r,
+        bottom: n(g.y, 0.5) * height + r,
+      });
+    }
+  }
+
+  const caption = Array.isArray(p.caption) ? p.caption : [];
+  if (caption.length) {
+    const size = n(p.captionSize, 88);
+    const x = n(p.captionX, 84);
+    out.push({
+      what: 'caption',
+      left: x,
+      // The emphasis word is set larger than the rest, which is what put
+      // "THIRTY GEARS" through the right edge of the frame.
+      right: x + Math.max(...caption.map((l) => l.length)) * size * 0.58 * 1.16,
+      top: n(p.captionY, 300),
+      bottom: n(p.captionY, 300) + caption.length * size * 1.3,
+    });
+  }
+  return out;
+}
+
+/**
+ * CLIPPING AND SAFE AREA, checked rather than eyeballed.
+ *
+ * The safe area on a vertical short is not the frame: the platform draws its
+ * own caption, handle and buttons over the bottom eighth and a progress bar
+ * across the very bottom. Type that is technically inside the composition and
+ * underneath a share button is type nobody reads.
+ */
+export function clippingProblems(config) {
+  const width = config.width ?? 1080;
+  const height = config.height ?? 1920;
+  const safe = {top: height * 0.04, bottom: height * 0.9, left: 40, right: width - 40};
+  const errors = [];
+  const warnings = [];
+
+  (config.scenes ?? []).forEach((scene, index) => {
+    for (const box of boundsOf(scene, {width, height})) {
+      const where = `scene[${index}] "${scene.id}": ${box.what}`;
+      // OUTSIDE THE FRAME is an error: it is not a judgement, the thing is
+      // partly not there.
+      if (box.left < 0 || box.right > width || box.top < 0 || box.bottom > height) {
+        errors.push(
+          `${where} leaves the frame ` +
+            `(${Math.round(box.left)},${Math.round(box.top)})–(${Math.round(box.right)},${Math.round(box.bottom)}) ` +
+            `of ${width}x${height}`,
+        );
+        continue;
+      }
+      if (box.top < safe.top || box.bottom > safe.bottom || box.left < safe.left || box.right > safe.right) {
+        warnings.push(`${where} sits outside the safe area — the platform draws its own furniture there`);
+      }
+    }
+  });
+  return {errors, warnings};
+}
+
+/**
+ * THE ENDING, checked hard.
+ *
+ * A reel that stops is not a reel that ends. The last shot has to carry a
+ * claim, show something, and then be quiet for long enough that the claim is
+ * the last thing in the viewer's head rather than the cut.
+ */
+export function endingProblems(config, {fps = config.fps ?? FPS_DEFAULT} = {}) {
+  const scenes = config.scenes ?? [];
+  const last = scenes[scenes.length - 1];
+  const errors = [];
+  const warnings = [];
+  if (!last) return {errors, warnings};
+
+  const p = last.params ?? {};
+  /**
+   * A FIXTURE IS NOT A REEL.
+   *
+   * The ending gate is about a short that has to land; an eight-second,
+   * two-scene test config has no ending to get wrong, and failing it teaches
+   * people that the gate is noise.
+   */
+  const isReel = scenes.length >= 4;
+  const claim = p.title || p.captionEmphasis || p.countTo || p.spinTo;
+  if (!claim) {
+    (isReel ? errors : warnings).push('ending: the last shot states no claim — the reel simply stops');
+  }
+
+  const shows = Object.keys(last.assets ?? {}).length > 0 || last.diagram || p.field || (last.props ?? []).length;
+  if (!shows) warnings.push('ending: the last shot has nothing in it but words');
+
+  const events = eventsOf(last);
+  const lastAt = events.length ? events[events.length - 1].at : 0;
+  const hold = ((last.durationInFrames ?? 0) - lastAt) / fps;
+  if (hold < 0.7) {
+    (isReel ? errors : warnings).push(
+      `ending: only ${hold.toFixed(1)}s between the last event and the cut — ` +
+        `a claim needs silence after it or the edit swallows it`,
+    );
+  }
+  return {errors, warnings};
+}
+
+/**
+ * REPRESENTATION COVERAGE.
+ *
+ * Reported rather than judged: how the reel chose to show things. A reel that
+ * is all photographs has probably settled for some of them; a reel that is all
+ * diagrams has stopped being a documentary and become a lecture.
+ */
+export function representationMix(config) {
+  const scenes = config.scenes ?? [];
+  const mix = {PHOTO: 0, HYBRID: 0, PROCEDURAL: 0, TYPOGRAPHY: 0};
+  for (const scene of scenes) {
+    const photo = Object.keys(scene.assets ?? {}).length > 0;
+    const drawn = Boolean(scene.diagram);
+    if (photo && drawn) mix.HYBRID += 1;
+    else if (drawn) mix.PROCEDURAL += 1;
+    else if (photo) mix.PHOTO += 1;
+    else mix.TYPOGRAPHY += 1;
+  }
+  return mix;
 }

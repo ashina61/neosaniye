@@ -6,7 +6,7 @@
   "width": 1080,
   "height": 1920,
   "look": {
-    "posterizeFps": 15,
+    "posterizeFps": 12,
     "grade": {
       "saturate": 0.61,
       "contrast": 1.16,
@@ -19,12 +19,12 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.37,
-      "grungeOpacity": 0.15,
-      "scanlineOpacity": 0.09,
+      "grainOpacity": 0.45,
+      "grungeOpacity": 0.13,
+      "scanlineOpacity": 0.1,
       "scanlinePeriod": 11,
-      "vignetteStrength": 0.4,
-      "weavePx": 5,
+      "vignetteStrength": 0.49,
+      "weavePx": 7,
       "weaveScale": 1.012
     }
   },
@@ -79,7 +79,7 @@
         "glowWarm": "#c8d94a",
         "glowDepth": 0.16,
         "focusPx": 0,
-        "fog": 0.2,
+        "fog": 0.11,
         "caption": [
           "In 1901",
           "sponge divers",
@@ -88,7 +88,7 @@
         ],
         "captionX": 76,
         "captionY": 192,
-        "captionSize": 78,
+        "captionSize": 75,
         "captionAlign": "left",
         "captionFrame": 21,
         "captionEvery": 8,
@@ -96,16 +96,13 @@
         "captionRecedeAt": 74,
         "accent": "#c8d94a",
         "handheld": 1.5,
-        "shakeAt": [
-          8
-        ],
-        "shakeAmount": 21,
+        "panX": -242,
         "captionEmphasis": "1901",
-        "captionReveal": "punch",
-        "captionMark": "underline",
-        "captionWordEvery": 2,
-        "cameraMove": "pull",
-        "cameraPurpose": "single out the subject — the frame closes on what matters"
+        "captionReveal": "blur",
+        "captionMark": "highlight",
+        "captionWordEvery": 3,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
       }
     },
     {
@@ -113,10 +110,6 @@
       "sceneType": "composite",
       "voText": "full of bronze.",
       "durationInFrames": 34,
-      "transition": {
-        "kind": "slip",
-        "frames": 4
-      },
       "assets": {
         "find": "assets/museum-dark.jpg"
       },
@@ -152,8 +145,8 @@
       "params": {
         "anchorX": 540,
         "anchorY": 768,
-        "pushFrom": 1.04,
-        "pushTo": 1.6,
+        "pushFrom": 1.02,
+        "pushTo": 1.41,
         "pushEndFrame": 32,
         "accent": "#c8d94a",
         "caption": [
@@ -166,17 +159,17 @@
         "captionFrame": 7,
         "captionEvery": 8,
         "captionScrim": 0.4,
-        "glowX": -379,
-        "glowY": 314,
-        "glowSize": 547,
-        "glowIntensity": 0.48,
+        "glowX": -460,
+        "glowY": 154,
+        "glowSize": 481,
+        "glowIntensity": 0.41,
         "glowWarm": "#c8d94a",
         "glowDepth": 0.16,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "bronze",
-        "captionReveal": "blur",
+        "captionReveal": "rise",
         "captionMark": "box",
         "captionWordEvery": 3,
         "cameraMove": "push",
@@ -188,6 +181,10 @@
       "sceneType": "composite",
       "voText": "Among the statues lay a lump",
       "durationInFrames": 54,
+      "transition": {
+        "kind": "slip",
+        "frames": 6
+      },
       "assets": {
         "bronze": "assets/bronze-weight.png"
       },
@@ -204,11 +201,12 @@
       "props": [
         {
           "kind": "wire",
-          "depth": 0.73,
+          "depth": 0.84,
           "x": 540,
-          "y": 923,
-          "width": 377,
-          "shape": "circle"
+          "y": 1002,
+          "width": 387,
+          "from": 46,
+          "shape": "diamond"
         }
       ],
       "params": {
@@ -237,20 +235,20 @@
         ],
         "captionX": 76,
         "captionY": 269,
-        "captionSize": 82,
+        "captionSize": 80,
         "captionAlign": "left",
         "captionFrame": 4,
         "captionEvery": 8,
         "captionScrim": 0.35,
         "captionRecedeAt": 39,
         "accent": "#c8d94a",
-        "handheld": 3,
+        "handheld": 1.5,
         "captionEmphasis": "corroded",
         "captionReveal": "punch",
-        "captionMark": "highlight",
-        "captionWordEvery": 3,
+        "captionMark": "none",
+        "captionWordEvery": 4,
         "cameraMove": "push",
-        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
       }
     },
     {
@@ -258,10 +256,6 @@
       "sceneType": "composite",
       "voText": "of corroded metal the size of a book.",
       "durationInFrames": 73,
-      "transition": {
-        "kind": "slip",
-        "frames": 9
-      },
       "assets": {
         "bronze": "assets/bronze-weight.png"
       },
@@ -275,23 +269,13 @@
           "y": 1536
         }
       ],
-      "props": [
-        {
-          "kind": "wire",
-          "depth": 0.89,
-          "x": 540,
-          "y": 755,
-          "width": 466,
-          "from": 62,
-          "shape": "diamond"
-        }
-      ],
+      "props": [],
       "params": {
         "anchorX": 540,
         "anchorY": 1152,
-        "pushFrom": 1.21,
-        "pushTo": 1.27,
-        "pushEndFrame": 68,
+        "pushFrom": 1.18,
+        "pushTo": 1.26,
+        "pushEndFrame": 69,
         "accent": "#c8d94a",
         "field": "spotlight",
         "fieldColours": [
@@ -299,10 +283,10 @@
           "#242c1e",
           "#0d100a"
         ],
-        "glowX": -277,
-        "glowY": 161,
-        "glowSize": 350,
-        "glowIntensity": 0.66,
+        "glowX": -252,
+        "glowY": 397,
+        "glowSize": 303,
+        "glowIntensity": 0.5,
         "glowWarm": "#c8d94a",
         "glowDepth": 0.8,
         "caption": [
@@ -311,7 +295,7 @@
         ],
         "captionX": 76,
         "captionY": 269,
-        "captionSize": 82,
+        "captionSize": 62,
         "captionAlign": "left",
         "captionFrame": 6,
         "captionEvery": 8,
@@ -319,11 +303,17 @@
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panX": 187,
+        "panX": -141,
         "captionEmphasis": "corroded",
-        "captionReveal": "rise",
-        "captionMark": "none",
-        "captionWordEvery": 2,
+        "captionReveal": "wipe",
+        "captionMark": "box",
+        "captionWordEvery": 3,
+        "mark": "underline",
+        "markX": 76,
+        "markY": 423,
+        "markWidth": 647,
+        "markHeight": 10,
+        "markFrame": 62,
         "cameraMove": "pan",
         "cameraPurpose": "expose information the frame was withholding, or follow a movement"
       }
@@ -334,27 +324,12 @@
       "voText": "It sat in a museum drawer",
       "durationInFrames": 64,
       "transition": {
-        "kind": "slam",
-        "frames": 4
+        "kind": "slip",
+        "frames": 8
       },
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "card",
-          "text": "fifty years",
-          "heading": "FIFTY YEARS",
-          "lines": [
-            "nobody looked inside"
-          ],
-          "width": 540,
-          "x": 605,
-          "y": 1075,
-          "depth": 0.85,
-          "rotate": -5,
-          "from": 14
-        }
-      ],
+      "props": [],
       "params": {
         "anchorX": 540,
         "anchorY": 1056,
@@ -381,30 +356,53 @@
           "drawer"
         ],
         "captionX": 76,
-        "captionY": 230,
+        "captionY": 106,
         "captionSize": 76,
         "captionAlign": "left",
-        "captionFrame": 5,
+        "captionFrame": 40,
         "captionEvery": 8,
         "captionScrim": 0.5,
         "captionRecedeAt": 46,
         "accent": "#c8d94a",
         "motif": "tally",
-        "motifX": 106,
+        "motifX": 152,
         "motifY": 499,
-        "motifSize": 97,
-        "motifCount": 13,
-        "motifFrame": 25,
+        "motifSize": 104,
+        "motifCount": 15,
+        "motifFrame": 19,
         "motifColour": "#c8d94a",
-        "motifOpacity": 0.96,
+        "motifOpacity": 0.83,
         "handheld": 1.5,
-        "panX": 187,
         "captionEmphasis": "museum",
-        "captionReveal": "rise",
+        "captionReveal": "wipe",
         "captionMark": "box",
-        "captionWordEvery": 4,
-        "cameraMove": "pan",
-        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+        "captionWordEvery": 2,
+        "cameraMove": "pull",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "diagram": {
+        "type": "timeline",
+        "events": [
+          {
+            "at": 1901,
+            "label": "1901",
+            "note": "recovered"
+          },
+          {
+            "at": 1951,
+            "label": "1951",
+            "note": "examined"
+          }
+        ],
+        "gap": [
+          1901,
+          1951
+        ],
+        "gapLabel": "50 years\nunopened",
+        "accent": "#c8d94a",
+        "muted": "#cfc6ae",
+        "from": 0,
+        "over": 29
       }
     },
     {
@@ -412,15 +410,19 @@
       "sceneType": "composite",
       "voText": "for fifty years before anyone looked inside.",
       "durationInFrames": 74,
+      "transition": {
+        "kind": "slam",
+        "frames": 4
+      },
       "assets": {},
       "layers": [],
       "props": [],
       "params": {
         "anchorX": 540,
         "anchorY": 1056,
-        "pushFrom": 1.04,
-        "pushTo": 1.47,
-        "pushEndFrame": 69,
+        "pushFrom": 1.17,
+        "pushTo": 1.3,
+        "pushEndFrame": 72,
         "accent": "#c8d94a",
         "field": "spotlight",
         "fieldColours": [
@@ -428,10 +430,10 @@
           "#242c1e",
           "#0d100a"
         ],
-        "glowX": -290,
-        "glowY": 381,
-        "glowSize": 434,
-        "glowIntensity": 0.42,
+        "glowX": -249,
+        "glowY": 560,
+        "glowSize": 321,
+        "glowIntensity": 0.54,
         "glowWarm": "#c8d94a",
         "glowDepth": 0.1,
         "caption": [
@@ -440,65 +442,55 @@
           "looked inside"
         ],
         "captionX": 76,
-        "captionY": 230,
-        "captionSize": 76,
+        "captionY": 106,
+        "captionSize": 75,
         "captionAlign": "left",
-        "captionFrame": 6,
+        "captionFrame": 46,
         "captionEvery": 8,
         "captionScrim": 0.5,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
+        "panX": 210,
         "captionEmphasis": "fifty years",
-        "captionReveal": "punch",
+        "captionReveal": "rise",
         "captionMark": "highlight",
-        "captionWordEvery": 4,
-        "shakeAt": [
-          63
+        "captionWordEvery": 3,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      },
+      "diagram": {
+        "type": "timeline",
+        "events": [
+          {
+            "at": 1901,
+            "label": "1901",
+            "note": "recovered"
+          },
+          {
+            "at": 1951,
+            "label": "1951",
+            "note": "examined"
+          }
         ],
-        "shakeAmount": 16,
-        "cameraMove": "push",
-        "cameraPurpose": "single out the subject — the frame closes on what matters"
+        "gap": [
+          1901,
+          1951
+        ],
+        "gapLabel": "50 years\nunopened",
+        "accent": "#c8d94a",
+        "muted": "#cfc6ae",
+        "from": 0,
+        "over": 1
       }
     },
     {
       "id": "s04-gears",
-      "sceneType": "portal-zoom-reveal",
+      "sceneType": "composite",
       "voText": "X-rays found thirty gears,",
       "durationInFrames": 58,
-      "transition": {
-        "kind": "rack",
-        "frames": 4
-      },
-      "assets": {
-        "photo": "assets/mechanism-xray.jpg"
-      },
-      "params": {
-        "frameWidth": 835,
-        "frameRatio": 1.1,
-        "pushEndFrame": 17,
-        "detachFrame": 28,
-        "throughEndFrame": 38,
-        "weldRatio": 0.363,
-        "wallScaleEnd": 5.4,
-        "accent": "#c8d94a",
-        "caption": [
-          "thirty gears",
-          "cut by hand"
-        ],
-        "captionX": 84,
-        "captionY": 1283,
-        "captionFrame": 36,
-        "captionEvery": 9,
-        "captionSize": 92,
-        "captionRecedeAt": 40,
-        "captionEmphasis": "thirty gears",
-        "captionReveal": "punch",
-        "captionMark": "underline",
-        "captionWordEvery": 3,
-        "cameraMove": "hold",
-        "cameraPurpose": "a vertical reveal — height, depth, or a drop"
-      },
+      "assets": {},
+      "layers": [],
       "props": [
         {
           "kind": "wire",
@@ -512,23 +504,68 @@
           "rotate": 0,
           "from": 43
         }
-      ]
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1,
+        "pushTo": 6.4,
+        "pushEndFrame": 50,
+        "glowX": -65,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
+        "glowWarm": "#c8d94a",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "spotlight",
+        "fieldColours": [
+          "#44503a",
+          "#242c1e",
+          "#0d100a"
+        ],
+        "caption": [
+          "thirty gears",
+          "cut by hand"
+        ],
+        "captionX": 76,
+        "captionY": 1471,
+        "captionSize": 84,
+        "captionAlign": "left",
+        "captionFrame": 36,
+        "captionEvery": 7,
+        "captionScrim": 0.38,
+        "captionRecedeAt": 42,
+        "accent": "#c8d94a",
+        "handheld": 1.5,
+        "captionEmphasis": "thirty gears",
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "diagram": {
+        "type": "gearSystem",
+        "count": 30,
+        "countLabel": "thirty gears",
+        "rate": 18,
+        "accent": "#c8d94a",
+        "muted": "#cfc6ae",
+        "disclosure": "schematic reconstruction · not to scale",
+        "from": 0,
+        "over": 26,
+        "countTo": 30
+      }
     },
     {
       "id": "s04-gears-b",
       "sceneType": "composite",
       "voText": "cut by hand, meshing.",
       "durationInFrames": 57,
-      "assets": {
-        "photo": "assets/mechanism-xray.jpg"
-      },
-      "layers": [
-        {
-          "role": "photo",
-          "depth": 1,
-          "anchor": "fill"
-        }
-      ],
+      "assets": {},
+      "layers": [],
       "props": [
         {
           "kind": "wire",
@@ -547,35 +584,52 @@
         "anchorX": 799,
         "anchorY": 576,
         "pushFrom": 1.19,
-        "pushTo": 1.22,
-        "pushEndFrame": 55,
+        "pushTo": 1.25,
+        "pushEndFrame": 53,
         "accent": "#c8d94a",
+        "field": "spotlight",
+        "fieldColours": [
+          "#44503a",
+          "#242c1e",
+          "#0d100a"
+        ],
+        "glowX": -527,
+        "glowY": 264,
+        "glowSize": 541,
+        "glowIntensity": 0.59,
+        "glowWarm": "#c8d94a",
+        "glowDepth": 0.1,
         "caption": [
           "cut by hand, meshing"
         ],
         "captionX": 76,
-        "captionY": 192,
-        "captionSize": 84,
+        "captionY": 1517,
+        "captionSize": 56,
         "captionAlign": "left",
-        "captionFrame": 31,
+        "captionFrame": 35,
         "captionEvery": 7,
-        "captionScrim": 0.3,
-        "glowX": -256,
-        "glowY": 319,
-        "glowSize": 368,
-        "glowIntensity": 0.56,
-        "glowWarm": "#c8d94a",
-        "glowDepth": 1,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panY": -153,
+        "panY": 145,
         "captionEmphasis": "meshing",
-        "captionReveal": "blur",
+        "captionReveal": "wipe",
         "captionMark": "none",
-        "captionWordEvery": 3,
+        "captionWordEvery": 4,
         "cameraMove": "tilt",
         "cameraPurpose": "a vertical reveal — height, depth, or a drop"
+      },
+      "diagram": {
+        "type": "gearSystem",
+        "count": 30,
+        "countLabel": "thirty gears",
+        "rate": 18,
+        "accent": "#c8d94a",
+        "muted": "#cfc6ae",
+        "disclosure": "schematic reconstruction · not to scale",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -584,8 +638,8 @@
       "voText": "It predicted eclipses, and it tracked the moon's changing speed.",
       "durationInFrames": 136,
       "transition": {
-        "kind": "slip",
-        "frames": 9
+        "kind": "rack",
+        "frames": 6
       },
       "assets": {
         "sky": "assets/moon-sky.jpg"
@@ -617,10 +671,10 @@
         "pushFrom": 1,
         "pushTo": 1.22,
         "pushEndFrame": 117,
-        "glowX": -389,
-        "glowY": 172,
-        "glowSize": 510,
-        "glowIntensity": 0.69,
+        "glowX": -447,
+        "glowY": 489,
+        "glowSize": 555,
+        "glowIntensity": 0.47,
         "glowWarm": "#c8d94a",
         "glowDepth": 0.08,
         "focusPx": 0,
@@ -632,27 +686,38 @@
           "changing speed"
         ],
         "captionX": 76,
-        "captionY": 1365.6480000000001,
-        "captionSize": 78,
+        "captionY": 1367,
+        "captionSize": 62,
         "captionAlign": "left",
         "captionFrame": 20,
         "captionEvery": 8,
         "captionScrim": 0.42,
         "captionRecedeAt": 98,
         "accent": "#c8d94a",
-        "handheld": 3,
+        "handheld": 1.5,
         "captionEmphasis": "predicted",
-        "captionReveal": "blur",
-        "captionMark": "none",
+        "captionReveal": "rise",
+        "captionMark": "underline",
         "captionWordEvery": 2,
-        "mark": "underline",
-        "markX": 76,
-        "markY": 1753,
-        "markWidth": 778,
-        "markHeight": 10,
-        "markFrame": 81,
+        "shakeAt": [
+          84
+        ],
+        "shakeAmount": 20,
         "cameraMove": "push",
-        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      },
+      "diagram": {
+        "type": "orbit",
+        "cx": 0.5,
+        "cy": 0.42,
+        "radius": 0.3,
+        "label": "predicted path",
+        "markAt": 0.74,
+        "markLabel": "eclipse",
+        "accent": "#c8d94a",
+        "muted": "#cfc6ae",
+        "from": 11,
+        "over": 61
       }
     },
     {
@@ -666,18 +731,18 @@
         "brightness": 0.94
       },
       "transition": {
-        "kind": "flare",
+        "kind": "slam",
         "frames": 5
       },
       "assets": {},
       "params": {
-        "scrim": 0.37,
+        "scrim": 0.43,
         "kicker": "1901 · 1951",
         "title": "FOURTEEN HUNDRED",
         "footer": "years before anything like it",
         "titleFrame": 10,
         "titleSize": 230,
-        "creep": 1.041,
+        "creep": 1.073,
         "accent": "#c8d94a",
         "field": "grid",
         "fieldColours": [
@@ -695,18 +760,24 @@
           "TWENTY"
         ],
         "spinFrames": 52,
+        "mark": "strike",
+        "markX": 260,
+        "markY": 820,
+        "markWidth": 560,
+        "markHeight": 300,
+        "markFrame": 44,
         "cameraMove": "hold",
-        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       },
       "props": [
         {
           "kind": "wire",
-          "depth": 0.78,
+          "depth": 0.69,
           "x": 540,
-          "y": 816,
-          "width": 536,
-          "from": 54,
-          "shape": "diamond"
+          "y": 1034,
+          "width": 395,
+          "from": 81,
+          "shape": "circle"
         }
       ]
     }

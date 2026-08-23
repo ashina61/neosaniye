@@ -82,7 +82,7 @@
   "bronze-weight.png": {
     "depicts": "one complete corroded bronze weight, cut out to transparency, cropped from lab-wall.jpg",
     "relevance": 8,
-    "accuracy": 7,
+    "accuracy": 8,
     "subject": 9,
     "recastTo": {
       "line": "lump",
@@ -92,7 +92,7 @@
       "x": 0.5,
       "y": 0.8,
       "relevance": 8,
-      "accuracy": 7,
+      "accuracy": 8,
       "subject": 9
     },
     "needed": "",

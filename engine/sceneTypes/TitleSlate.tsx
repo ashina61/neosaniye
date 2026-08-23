@@ -9,6 +9,7 @@ import {Slate, Slot} from '../draw/Type';
 import {Annotation, type MarkKind} from '../draw/Annotation';
 import {Glow} from '../draw/Glow';
 import {SceneMotif} from '../draw/Motif';
+import {Diagram, type DiagramSpec} from '../draw/Diagram';
 
 /**
  * TITLE SLATE — a scene made of type and drawn light, with no photograph
@@ -112,6 +113,21 @@ export const TitleSlate: React.FC<SceneProps> = ({scene, assets, durationInFrame
 
       {/* Frame-locked, outside the creep, and UNDER the type: a motif that
           scales with the card would make the words grow with it. */}
+      {/**
+        * THE DRAWN VISUAL, in front of the room and behind the words.
+        *
+        * Where the asset director refused every photograph, this IS the shot —
+        * a meshing gear train, a timeline of the years nobody looked, the
+        * geometry of an eclipse. Where a photograph survived, it lies over it
+        * as annotation, which is the hybrid this pipeline is aiming at: a true
+        * picture with a true diagram on it, neither pretending to be the other.
+        *
+        * It is pinned to the frame and takes no part in the camera push, for
+        * the same reason a motif is: a drawing that parallaxes stops being a
+        * drawing and becomes a prop sliding around the room.
+        */}
+      <Diagram spec={scene.diagram as DiagramSpec | undefined} />
+
       <SceneMotif
         params={scene.params}
         seed={scene.id}

@@ -62,6 +62,8 @@ scripts/lib/story.mjs               → NE OLDUĞU (vuruş tipi, görsel fikir, 
         ↓
 scripts/lib/assetdirector.mjs       → GÖSTERİLEBİLİR Mİ (puan, yeniden rol, RED)
         ↓
+scripts/lib/representation.mjs      → NASIL GÖSTERİLİR (foto, hibrit, prosedürel)
+        ↓
 scripts/lib/visual.mjs              → HİYERARŞİ, kadraj, tek tipografi sistemi
         ↓
 scripts/lib/director.mjs            → NE ZAMAN OLACAĞI (vuruşlar, kamera, kota)
@@ -83,6 +85,7 @@ engine/sceneTypes/registry.ts       → sceneType → şablon
 engine/sceneTypes/*.tsx             → plakalar, hareket, gölge
 engine/draw/*.tsx                   → ışık, kâğıt, işaretleme, tipografi
 engine/draw/Kinetic.tsx             → kelime kelime iniş, VURGU kelimesi, sayaç
+engine/draw/Diagram.tsx             → meshleyen dişliler, zaman çizelgesi, yörünge
         ↓
 out/<id>.mp4
 ```
@@ -357,6 +360,46 @@ ve sütunlar karenin altından taşar.
     yazmış olsa bile. Bu bir tercih değil, emniyet kuralıdır: 4.5 saniyelik bir
     çekim için yazılmış 11 karelik rack, çekim 1.9 saniyeye indiğinde okunabilir
     ilk karenin beşte birini siler.
+
+23. **EKSİK GÖRSEL ÇÖZÜLECEK BİR PROBLEMDİR; YANLIŞ FOTOĞRAF KULLANMA İZNİ
+    DEĞİL.** Sistem asla "resmim yok, rastgele bir resim koyayım" diye
+    düşünmez. Sıra bellidir: tam doğru varlık → yüksek güvenli alternatif →
+    üretilmiş görsel → PROSEDÜREL yeniden inşa → diyagram → tasarlanmış
+    tipografi → bilinçli soyut.
+
+    **ANLAM SERT BİR KAPIDIR.** İlgi ya da tarihsel doğruluk 8'in altındaysa
+    varlık REDDEDİLİR — teknik eksenlerin hepsi yeşil olsa bile. "Yaklaşık
+    doğru" bu deponun en pahalı hatasıdır: Antikythera'nın röntgeni yerine
+    antika pirinç kadranlı bir alet kullanıldı, aile doğru nesne yanlıştı, ve
+    belgesel bir iddia olmayan bir şeyle resmedildi.
+
+    Cevap daha iyi bir arama değildi. Mekanizmayı ÇİZMEK, yeniden inşa olduğunu
+    söylemek ve dişlileri gerçekten döndürmekti.
+
+24. **PROSEDÜREL GÖRSEL BİRİNCİ SINIF GÖRSELDİR.** Yedek değil: doğru meshleyen
+    bir dişli takımı, yanlış makinenin kötü bir fotoğrafından daha iyi bir
+    KAHRAMAN çekimdir; elli boş yılın zaman çizelgesi, bir dolabın stok
+    fotoğrafından daha iyidir. Seçim "diskte ne var"a göre değil, NEYİ DAHA İYİ
+    ANLATTIĞINA göre yapılır — ve tersi de geçerlidir: gerçek fotoğraf en güçlü
+    doğru temsil olduğunda o kazanır, ikisi birlikte daha güçlüyse hibrit kazanır.
+
+    Üç kural clipart'tan ayırır: **mühendislik çizimidir** (kareden türeyen
+    çizgi kalınlıkları, mono etiketler, tescil işaretleri, tek aksan tek nötr),
+    **kendini çizer** (fade değil), ve yeniden inşa edilen her şey bunu KAREDE
+    SÖYLER — `SCHEMATIC RECONSTRUCTION · NOT TO SCALE`. Kayıt gibi sunulan bir
+    çizim, yanlış fotoğraftan daha kötü bir yalandır: izleyici onu kontrol
+    edemez.
+
+25. **NEDENSEL HAREKET.** A hareket eder, B hareket eder, C hareket eder — bu
+    dekorasyondur. A döner → B onu döndürdüğü için döner → sayaç otuza varır →
+    bütün dişliler yanar: bu motion design'dır. Dişli takımında oran
+    fizikseldir (diş sayılarının tersi), yani meshleme sahte değildir.
+
+26. **KIRPILMA GÖZLE DEĞİL HESAPLA BULUNUR.** Ay'ın kesikli yörüngesi iki render
+    boyunca karenin üstünden taşıyordu ve buradaki her kontrolü geçti, çünkü
+    hiçbiri neyin nerede olduğunu bilmiyordu. Artık her çizilen nesnenin,
+    caption'ın ve diyagramın sınır kutusu hesaplanır: kareden taşarsa HATA,
+    güvenli alandan taşarsa UYARI.
 
 ## İş bölümü — bu deponun en pahalı dersi
 

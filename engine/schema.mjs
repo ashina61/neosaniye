@@ -94,6 +94,16 @@ export const MOTIF_KINDS = ['coins', 'rise', 'route', 'embers', 'rays', 'tally']
  */
 export const PROP_KINDS = ['plaque', 'newspaper', 'card', 'print', 'wire', 'beam'];
 
+/**
+ * THE DRAWN VISUALS a scene may ask for.
+ *
+ * A missing photograph is a problem to solve, not permission to use the wrong
+ * one — and these are how it gets solved. A kind the drawing layer does not
+ * know draws nothing and says nothing about it, which is exactly how a shot
+ * ends up empty, so the validator refuses one before the render.
+ */
+export const DIAGRAM_KINDS = ['gearSystem', 'timeline', 'measurement', 'orbit', 'scan'];
+
 export const OPTIONAL_ROLE = '?';
 
 /**
@@ -232,6 +242,13 @@ export function validateEpisodeConfig(config) {
     const motif = scene.params?.motif;
     if (motif !== undefined && motif !== '' && !MOTIF_KINDS.includes(motif)) {
       push(`${where}.params.motif: "${motif}" is not one of ${MOTIF_KINDS.join(', ')}`);
+    }
+    if (scene.diagram !== undefined) {
+      if (typeof scene.diagram !== 'object' || scene.diagram === null || Array.isArray(scene.diagram)) {
+        push(`${where}.diagram: must be an object`);
+      } else if (!DIAGRAM_KINDS.includes(scene.diagram.type)) {
+        push(`${where}.diagram.type: "${scene.diagram.type}" is not one of ${DIAGRAM_KINDS.join(', ')}`);
+      }
     }
     if (scene.transition !== undefined) {
       const kinds = ['cut', 'slam', 'slip', 'flare', 'rack', 'blinds'];

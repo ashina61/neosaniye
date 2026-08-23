@@ -35,15 +35,6 @@
       ],
       "prompt": "a dark museum interior wall, low even lighting, nothing on it"
     },
-    "mechanism-xray.jpg": {
-      "kind": "backdrop",
-      "commons": [
-        "Antikythera mechanism radiograph gears",
-        "Antikythera mechanism x-ray",
-        "Antikythera mechanism gear detail"
-      ],
-      "prompt": "a radiograph of interlocking bronze gears, high contrast, grey"
-    },
     "moon-sky.jpg": {
       "kind": "backdrop",
       "commons": [

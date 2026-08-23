@@ -88,12 +88,12 @@
         "file": "bronze-weight.png",
         "role": "(unused)",
         "depicts": "one complete corroded bronze weight, cut out to transparency, cropped from lab-wall.jpg",
-        "score": 7.2,
+        "score": 7.8,
         "verdict": "use",
         "reviewed": true,
         "axes": {
           "relevance": 8,
-          "accuracy": 7,
+          "accuracy": 8,
           "subject": 9,
           "resolution": 4.4,
           "exposure": 9.1,
@@ -169,7 +169,7 @@
         "role": "photo",
         "depicts": "an antique brass astronomical instrument with concentric engraved dials and pointers, behind glass",
         "score": 6.1,
-        "verdict": "warn",
+        "verdict": "reject",
         "reviewed": true,
         "axes": {
           "relevance": 7,
@@ -366,6 +366,29 @@
         }
       },
       {
+        "line": "gears",
+        "drop": "mechanism-xray.jpg",
+        "role": "photo",
+        "why": "not a radiograph and not the mechanism — but it is a geared brass instrument of the right family, and it is the strongest and most legible image in the folder. Used knowingly, with the caption carrying the claim rather than the picture.",
+        "brief": {
+          "role": "photo",
+          "subject": "a radiograph of the Antikythera mechanism showing interlocking gear teeth, high contrast, grey",
+          "required": [
+            "inside the gears: the detail nobody expected, isolated",
+            "The eye must find: the words \"thirty gears\" and the thing in frame they refer to",
+            "Vertical or square framing, or a subject that survives a 9:16 crop",
+            "Even, motivated lighting — no blown highlights, no crushed blacks"
+          ],
+          "avoid": [
+            "Modern objects in a historical scene",
+            "Stock-library staging",
+            "A texture standing in for a subject",
+            "Anything where the subject is not identifiable at phone size"
+          ],
+          "composition": "Subject occupies 60–80% of frame."
+        }
+      },
+      {
         "line": "verdict",
         "drop": "deep-green.jpg",
         "role": "background",
@@ -447,6 +470,23 @@
         "composition": "Subject occupies 60–80% of frame."
       },
       {
+        "role": "photo",
+        "subject": "a radiograph of the Antikythera mechanism showing interlocking gear teeth, high contrast, grey",
+        "required": [
+          "inside the gears: the detail nobody expected, isolated",
+          "The eye must find: the words \"thirty gears\" and the thing in frame they refer to",
+          "Vertical or square framing, or a subject that survives a 9:16 crop",
+          "Even, motivated lighting — no blown highlights, no crushed blacks"
+        ],
+        "avoid": [
+          "Modern objects in a historical scene",
+          "Stock-library staging",
+          "A texture standing in for a subject",
+          "Anything where the subject is not identifiable at phone size"
+        ],
+        "composition": "Subject occupies 60–80% of frame."
+      },
+      {
         "role": "sea",
         "subject": "dark green open water over a rocky Mediterranean seabed, shafts of light from above, no wildlife subject",
         "required": [
@@ -490,12 +530,14 @@
       "camera": {
         "from": 1.5,
         "to": 1,
-        "panX": null,
+        "panX": -242,
         "panY": null
       },
       "transition": "cut",
+      "representation": "PHOTO",
+      "drawn": null,
       "emphasis": "1901",
-      "reveal": "punch",
+      "reveal": "blur",
       "plates": [
         "museum-dark.jpg"
       ],
@@ -516,14 +558,16 @@
       "template": "composite",
       "seconds": 1.13,
       "camera": {
-        "from": 1.04,
-        "to": 1.6,
+        "from": 1.02,
+        "to": 1.41,
         "panX": null,
         "panY": null
       },
-      "transition": "slip",
+      "transition": "cut",
+      "representation": "PHOTO",
+      "drawn": null,
       "emphasis": "bronze",
-      "reveal": "blur",
+      "reveal": "rise",
       "plates": [
         "museum-dark.jpg"
       ],
@@ -549,7 +593,9 @@
         "panX": null,
         "panY": null
       },
-      "transition": "cut",
+      "transition": "slip",
+      "representation": "PHOTO",
+      "drawn": null,
       "emphasis": "corroded",
       "reveal": "punch",
       "plates": [
@@ -571,21 +617,21 @@
       "template": "composite",
       "seconds": 2.43,
       "camera": {
-        "from": 1.21,
-        "to": 1.27,
-        "panX": 187,
+        "from": 1.18,
+        "to": 1.26,
+        "panX": -141,
         "panY": null
       },
-      "transition": "slip",
+      "transition": "cut",
+      "representation": "PHOTO",
+      "drawn": null,
       "emphasis": "corroded",
-      "reveal": "rise",
+      "reveal": "wipe",
       "plates": [
         "bronze-weight.png"
       ],
       "drawnGround": "spotlight",
-      "props": [
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the detail in the photograph, isolated by a mark",
         "secondary": "the words \"corroded\"",
@@ -600,17 +646,17 @@
       "camera": {
         "from": 1.2,
         "to": 1.02,
-        "panX": 187,
+        "panX": null,
         "panY": null
       },
-      "transition": "slam",
+      "transition": "slip",
+      "representation": "PROCEDURAL",
+      "drawn": "timeline",
       "emphasis": "museum",
-      "reveal": "rise",
+      "reveal": "wipe",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [
-        "card"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"museum\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -623,14 +669,16 @@
       "template": "composite",
       "seconds": 2.47,
       "camera": {
-        "from": 1.04,
-        "to": 1.47,
-        "panX": null,
+        "from": 1.17,
+        "to": 1.3,
+        "panX": 210,
         "panY": null
       },
-      "transition": "cut",
+      "transition": "slam",
+      "representation": "PROCEDURAL",
+      "drawn": "timeline",
       "emphasis": "fifty years",
-      "reveal": "punch",
+      "reveal": "rise",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [],
@@ -643,28 +691,28 @@
     },
     {
       "id": "s04-gears",
-      "template": "portal-zoom-reveal",
+      "template": "composite",
       "seconds": 1.93,
       "camera": {
-        "from": null,
-        "to": null,
+        "from": 1,
+        "to": 6.4,
         "panX": null,
         "panY": null
       },
-      "transition": "rack",
+      "transition": "cut",
+      "representation": "PROCEDURAL",
+      "drawn": "gearSystem",
       "emphasis": "thirty gears",
-      "reveal": "punch",
-      "plates": [
-        "mechanism-xray.jpg"
-      ],
-      "drawnGround": null,
+      "reveal": "rise",
+      "plates": [],
+      "drawnGround": "spotlight",
       "props": [
         "wire"
       ],
       "hierarchy": {
         "primary": "the claim: \"thirty gears\"",
-        "secondary": "the strongest image in the reel, returned to",
-        "background": "darkness",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
         "carrier": "type"
       }
     },
@@ -674,24 +722,24 @@
       "seconds": 1.9,
       "camera": {
         "from": 1.19,
-        "to": 1.22,
+        "to": 1.25,
         "panX": null,
-        "panY": -153
+        "panY": 145
       },
       "transition": "cut",
+      "representation": "PROCEDURAL",
+      "drawn": "gearSystem",
       "emphasis": "meshing",
-      "reveal": "blur",
-      "plates": [
-        "mechanism-xray.jpg"
-      ],
-      "drawnGround": null,
+      "reveal": "wipe",
+      "plates": [],
+      "drawnGround": "spotlight",
       "props": [
         "wire"
       ],
       "hierarchy": {
         "primary": "the claim: \"meshing\"",
-        "secondary": "the strongest image in the reel, returned to",
-        "background": "darkness",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
         "carrier": "type"
       }
     },
@@ -705,9 +753,11 @@
         "panX": null,
         "panY": null
       },
-      "transition": "slip",
+      "transition": "rack",
+      "representation": "HYBRID",
+      "drawn": "orbit",
       "emphasis": "predicted",
-      "reveal": "blur",
+      "reveal": "rise",
       "plates": [
         "moon-sky.jpg"
       ],
@@ -732,7 +782,9 @@
         "panX": null,
         "panY": null
       },
-      "transition": "flare",
+      "transition": "slam",
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
       "emphasis": null,
       "reveal": null,
       "plates": [],
@@ -748,20 +800,51 @@
       }
     }
   ],
+  "representation": {
+    "wreck": {
+      "mode": "PHOTO",
+      "why": "a correct photograph exists and is the strongest representation",
+      "drawn": null
+    },
+    "lump": {
+      "mode": "PHOTO",
+      "why": "a correct photograph exists and is the strongest representation",
+      "drawn": null
+    },
+    "drawer": {
+      "mode": "DIAGRAM",
+      "why": "the sentence is about elapsed time, which no photograph contains",
+      "drawn": "timeline"
+    },
+    "gears": {
+      "mode": "PROCEDURAL",
+      "why": "a mechanism with a count: meshing is the claim, and a photograph cannot show it",
+      "drawn": "gearSystem"
+    },
+    "moon": {
+      "mode": "HYBRID",
+      "why": "a claim about celestial prediction — the geometry is the evidence",
+      "drawn": "orbit"
+    },
+    "verdict": {
+      "mode": "TYPOGRAPHY",
+      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
+      "drawn": null
+    }
+  },
   "quotas": {
     "camera": {
-      "pull": 1,
+      "pan": 3,
       "push": 4,
-      "pan": 2,
-      "hold": 2,
-      "tilt": 1
+      "pull": 1,
+      "tilt": 1,
+      "hold": 1
     },
     "transition": {
-      "slip": 3,
-      "cut": 3,
-      "slam": 1,
-      "rack": 1,
-      "flare": 1
+      "cut": 4,
+      "slip": 2,
+      "slam": 2,
+      "rack": 1
     },
     "framing": {}
   },
@@ -790,6 +873,7 @@
     "ASSET_REQUIRED: a dark, featureless deep-water surface, or an empty dark field with no horizon and no objects",
     "ASSET_REQUIRED: a plain grey wall with even light and nothing on it",
     "ASSET_REQUIRED: Antikythera mechanism Fragment A — corroded green bronze with visible gear teeth, museum lighting, dark ground, object filling 60-80% of frame",
+    "ASSET_REQUIRED: a radiograph of the Antikythera mechanism showing interlocking gear teeth, high contrast, grey",
     "ASSET_REQUIRED: dark green open water over a rocky Mediterranean seabed, shafts of light from above, no wildlife subject",
     "ASSET_REQUIRED: a dim museum or archive storage drawer front, close framing, visible label slot, historical rather than domestic"
   ]

@@ -110,6 +110,7 @@ storage. Four verdicts:
 | --- | --- |
 | `use` | it goes in |
 | `warn` | it goes in and the run says why it is weak, every time |
+| *(gate)* | **below 8 on relevance or historical accuracy it is refused outright** — no arrangement of green technical axes carries a picture of the wrong thing into a documentary |
 | `recast` | it is moved to the role — or the line — it actually illustrates |
 | `reject` | it is removed, and an `ASSET_REQUIRED` brief is written |
 
@@ -120,6 +121,37 @@ rather than a wrong photograph with motion on it.
 npm run assets:audit -- --episode=<id>              # score everything
 npm run assets:audit -- --episode=<id> --template   # write a review skeleton
 ```
+
+**The Representation Director** (`scripts/lib/representation.mjs`) asks the
+question that comes before composition: *what is the most truthful and visually
+effective way to show this?* It works down a ladder — the exact real asset, a
+high-confidence alternative, a generated visual, a procedural reconstruction, a
+diagram, designed typography, an intentional abstract — and returns one of
+`PHOTO` · `HYBRID` · `PROCEDURAL` · `DIAGRAM` · `TYPOGRAPHY` with the drawing to
+build.
+
+Rungs four and five are **not consolation prizes**. A mechanism with a count
+becomes a gear train that actually meshes, because meshing is the claim and no
+photograph shows it. A span of empty years becomes a timeline, because a gap is
+the one thing a photograph of a cupboard cannot contain.
+
+**The Procedural Visual Library** (`engine/draw/Diagram.tsx`) draws them, from
+data rather than markup:
+
+| `diagram.type` | what it draws |
+| --- | --- |
+| `gearSystem` | a meshing train — each wheel turns because the driven one does, at the inverse of their tooth counts. Optional count that lands on the wheels. |
+| `timeline` | dates, and the hatched years between them where nothing happened |
+| `measurement` | a bar, a counted figure, and something to measure it against |
+| `orbit` | a path clamped inside the frame, a body travelling it, the alignment marked |
+| `scan` | a bar travelling down the frame — the act of looking inside |
+
+Three rules keep them from being clipart: they are **engineering drawings**
+(line weights derived from the frame, mono annotation, registration ticks, one
+accent and one muted tone); they **draw themselves** rather than fading up; and
+anything reconstructed **carries a plate saying so** — `SCHEMATIC
+RECONSTRUCTION · NOT TO SCALE`. A drawing presented as a record is a worse lie
+than a wrong photograph, because it is one the viewer cannot check.
 
 **The Visual Director** (`scripts/lib/visual.mjs`) states PRIMARY / SECONDARY /
 BACKGROUND for every shot, picks a framing under a quota so a reel is not twelve

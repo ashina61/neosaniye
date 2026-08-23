@@ -6,6 +6,7 @@ import {boil, dampedSwing, focusHunt, holdKeyframes, posterizeTime, springEntran
 import {cameraFromParams, useCamera} from '../Camera';
 import {Fog, Glow} from '../draw/Glow';
 import {WordStack} from '../draw/Type';
+import {Diagram, type DiagramSpec} from '../draw/Diagram';
 import type {EmphasisMark, Reveal} from '../draw/Kinetic';
 import {Annotation, type MarkKind} from '../draw/Annotation';
 import {SceneMotif} from '../draw/Motif';
@@ -274,6 +275,21 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
           layer: it takes no part in the camera push, because a thing that is
           anchored to the room and drawn on top of it is not a graphic, it is a
           prop that is sliding. */}
+      {/**
+        * THE DRAWN VISUAL, in front of the room and behind the words.
+        *
+        * Where the asset director refused every photograph, this IS the shot —
+        * a meshing gear train, a timeline of the years nobody looked, the
+        * geometry of an eclipse. Where a photograph survived, it lies over it
+        * as annotation, which is the hybrid this pipeline is aiming at: a true
+        * picture with a true diagram on it, neither pretending to be the other.
+        *
+        * It is pinned to the frame and takes no part in the camera push, for
+        * the same reason a motif is: a drawing that parallaxes stops being a
+        * drawing and becomes a prop sliding around the room.
+        */}
+      <Diagram spec={scene.diagram as DiagramSpec | undefined} />
+
       <SceneMotif
         params={scene.params}
         seed={scene.id}

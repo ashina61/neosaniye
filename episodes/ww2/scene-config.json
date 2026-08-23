@@ -19,21 +19,21 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.38,
-      "grungeOpacity": 0.2,
-      "scanlineOpacity": 0.14,
+      "grainOpacity": 0.43,
+      "grungeOpacity": 0.17,
+      "scanlineOpacity": 0.09,
       "scanlinePeriod": 9,
-      "vignetteStrength": 0.55,
-      "weavePx": 6,
-      "weaveScale": 1.017
+      "vignetteStrength": 0.54,
+      "weavePx": 5,
+      "weaveScale": 1.015
     }
   },
   "scenes": [
     {
       "id": "s01-peace",
       "sceneType": "composite",
-      "voText": "In the summer of 1939 Europe had been",
-      "durationInFrames": 82,
+      "voText": "In the summer",
+      "durationInFrames": 31,
       "assets": {
         "map": "assets/europe-1939.jpg"
       },
@@ -53,7 +53,7 @@
           "y": 1613,
           "depth": 0.1,
           "rotate": 0,
-          "from": 29
+          "from": 11
         }
       ],
       "params": {
@@ -61,52 +61,119 @@
         "anchorY": 883,
         "pushFrom": 1.45,
         "pushTo": 1,
-        "pushEndFrame": 71,
+        "pushEndFrame": 27,
         "glowX": -438,
         "glowY": 461,
         "glowSize": 464,
         "glowIntensity": 0.52,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.14,
-        "focusPx": 9,
-        "fog": 0.52,
+        "focusPx": 0,
+        "fog": 0,
         "caption": [
-          "In the summer",
-          "of 1939 Europe",
+          "In the summer"
+        ],
+        "captionX": 76,
+        "captionY": 1382,
+        "captionSize": 78,
+        "captionAlign": "left",
+        "captionFrame": 9,
+        "captionEvery": 8,
+        "captionScrim": 0.5,
+        "captionRecedeAt": 22,
+        "accent": "#e8e2d4",
+        "motif": "tally",
+        "motifX": 77,
+        "motifY": 499,
+        "motifSize": 96,
+        "motifCount": 10,
+        "motifFrame": 22,
+        "motifColour": "#e8e2d4",
+        "motifOpacity": 0.99,
+        "handheld": 3,
+        "captionEmphasis": "summer",
+        "captionReveal": "rise",
+        "captionMark": "underline",
+        "captionWordEvery": 3,
+        "cameraMove": "pull",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      }
+    },
+    {
+      "id": "s01-peace-b",
+      "sceneType": "composite",
+      "voText": "of 1939 Europe had been",
+      "durationInFrames": 52,
+      "assets": {
+        "map": "assets/europe-1939.jpg"
+      },
+      "layers": [
+        {
+          "role": "map",
+          "depth": 0.14,
+          "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "plaque",
+          "heading": "1939",
+          "width": 367,
+          "x": 540,
+          "y": 1613,
+          "depth": 0.1,
+          "rotate": 0,
+          "from": 0
+        }
+      ],
+      "params": {
+        "anchorX": 562,
+        "anchorY": 883,
+        "pushFrom": 1.05,
+        "pushTo": 1.56,
+        "pushEndFrame": 51,
+        "accent": "#e8e2d4",
+        "caption": [
+          "of 1939",
+          "Europe",
           "had been"
         ],
         "captionX": 76,
         "captionY": 1382,
         "captionSize": 78,
         "captionAlign": "left",
-        "captionFrame": 25,
+        "captionFrame": 16,
         "captionEvery": 8,
         "captionScrim": 0.5,
-        "captionRecedeAt": 59,
-        "accent": "#e8e2d4",
-        "motif": "tally",
-        "motifX": 107,
-        "motifY": 499,
-        "motifSize": 81,
-        "motifCount": 13,
-        "motifFrame": 28,
-        "motifColour": "#e8e2d4",
-        "motifOpacity": 0.82,
+        "glowX": -300,
+        "glowY": 241,
+        "glowSize": 461,
+        "glowIntensity": 0.51,
+        "glowWarm": "#e8e2d4",
+        "glowDepth": 0.14,
+        "focusPx": 0,
+        "fog": 0,
         "handheld": 1.5,
+        "shakeAt": [
+          4
+        ],
+        "shakeAmount": 21,
         "captionEmphasis": "1939",
         "captionReveal": "blur",
-        "captionMark": "box",
-        "captionWordEvery": 3
+        "captionMark": "highlight",
+        "captionWordEvery": 3,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
       }
     },
     {
-      "id": "s01-peace-b",
+      "id": "s01-peace-c",
       "sceneType": "composite",
       "voText": "at peace for twenty years.",
-      "durationInFrames": 52,
+      "durationInFrames": 51,
       "transition": {
         "kind": "slam",
-        "frames": 5
+        "frames": 4
       },
       "assets": {
         "map": "assets/europe-1939.jpg"
@@ -133,9 +200,9 @@
       "params": {
         "anchorX": 562,
         "anchorY": 883,
-        "pushFrom": 1.42,
-        "pushTo": 1.09,
-        "pushEndFrame": 49,
+        "pushFrom": 1,
+        "pushTo": 1.31,
+        "pushEndFrame": 47,
         "accent": "#e8e2d4",
         "caption": [
           "at peace",
@@ -143,28 +210,26 @@
         ],
         "captionX": 76,
         "captionY": 1382,
-        "captionSize": 78,
+        "captionSize": 70,
         "captionAlign": "left",
-        "captionFrame": 16,
+        "captionFrame": 15,
         "captionEvery": 8,
         "captionScrim": 0.5,
-        "glowX": -245,
-        "glowY": 469,
-        "glowSize": 307,
-        "glowIntensity": 0.41,
+        "glowX": -276,
+        "glowY": 542,
+        "glowSize": 391,
+        "glowIntensity": 0.55,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.14,
-        "focusPx": 12,
-        "fog": 0.29,
+        "focusPx": 0,
+        "fog": 0,
         "handheld": 1.5,
-        "shakeAt": [
-          4
-        ],
-        "shakeAmount": 22,
         "captionEmphasis": "twenty years",
         "captionReveal": "punch",
         "captionMark": "none",
-        "captionWordEvery": 4
+        "captionWordEvery": 3,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
       }
     },
     {
@@ -172,10 +237,6 @@
       "sceneType": "composite",
       "voText": "On the first of September,",
       "durationInFrames": 68,
-      "transition": {
-        "kind": "slam",
-        "frames": 6
-      },
       "assets": {
         "road": "assets/border-road.jpg",
         "tank": "assets/tank-profile.png"
@@ -216,14 +277,14 @@
         "pushFrom": 1,
         "pushTo": 1.42,
         "pushEndFrame": 58,
-        "glowX": -286,
-        "glowY": 326,
-        "glowSize": 406,
-        "glowIntensity": 0.68,
+        "glowX": -450,
+        "glowY": 256,
+        "glowSize": 456,
+        "glowIntensity": 0.65,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.2,
         "focusPx": 0,
-        "fog": 0.53,
+        "fog": 0,
         "caption": [
           "German tanks",
           "crossed the",
@@ -231,7 +292,7 @@
         ],
         "captionX": 76,
         "captionY": 269,
-        "captionSize": 89,
+        "captionSize": 86,
         "captionAlign": "left",
         "captionFrame": 12,
         "captionEvery": 7,
@@ -239,20 +300,20 @@
         "captionRecedeAt": 49,
         "accent": "#e8e2d4",
         "motif": "route",
-        "motifX": 173,
+        "motifX": 217,
         "motifY": 1190,
-        "motifSize": 218,
+        "motifSize": 187,
         "motifCount": 1,
-        "motifFrame": 21,
+        "motifFrame": 22,
         "motifColour": "#e8e2d4",
-        "motifOpacity": 0.96,
+        "motifOpacity": 0.89,
         "handheld": 1.5,
-        "panX": -108,
-        "panY": 8,
         "captionEmphasis": "Polish",
-        "captionReveal": "punch",
-        "captionMark": "underline",
-        "captionWordEvery": 2
+        "captionReveal": "rise",
+        "captionMark": "box",
+        "captionWordEvery": 2,
+        "cameraMove": "push",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
       }
     },
     {
@@ -261,8 +322,8 @@
       "voText": "German tanks crossed the Polish border.",
       "durationInFrames": 81,
       "transition": {
-        "kind": "blinds",
-        "frames": 11
+        "kind": "slip",
+        "frames": 8
       },
       "assets": {
         "road": "assets/border-road.jpg",
@@ -301,9 +362,9 @@
       "params": {
         "anchorX": 454,
         "anchorY": 1690,
-        "pushFrom": 1.49,
-        "pushTo": 1.07,
-        "pushEndFrame": 76,
+        "pushFrom": 1.35,
+        "pushTo": 1.04,
+        "pushEndFrame": 77,
         "accent": "#e8e2d4",
         "caption": [
           "German tanks crossed",
@@ -311,26 +372,26 @@
         ],
         "captionX": 76,
         "captionY": 269,
-        "captionSize": 89,
+        "captionSize": 56,
         "captionAlign": "left",
         "captionFrame": 15,
         "captionEvery": 7,
         "captionScrim": 0.62,
-        "glowX": -254,
-        "glowY": 148,
-        "glowSize": 342,
-        "glowIntensity": 0.47,
+        "glowX": -366,
+        "glowY": 556,
+        "glowSize": 378,
+        "glowIntensity": 0.51,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.2,
-        "focusPx": 14,
-        "fog": 0.27,
+        "focusPx": 0,
+        "fog": 0,
         "handheld": 1.5,
-        "panX": -110,
-        "panY": 7,
         "captionEmphasis": "Polish",
-        "captionReveal": "wipe",
-        "captionMark": "box",
-        "captionWordEvery": 2
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 4,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
       }
     },
     {
@@ -338,10 +399,6 @@
       "sceneType": "composite",
       "voText": "Britain and France gave Berlin two days",
       "durationInFrames": 72,
-      "transition": {
-        "kind": "slip",
-        "frames": 13
-      },
       "assets": {
         "desk": "assets/desk-surface.jpg"
       },
@@ -357,9 +414,6 @@
           "kind": "card",
           "text": "Britain",
           "heading": "BRITAIN",
-          "lines": [
-            "two days"
-          ],
           "width": 475,
           "x": 367,
           "y": 806,
@@ -371,9 +425,6 @@
           "kind": "card",
           "text": "France",
           "heading": "FRANCE",
-          "lines": [
-            "two days"
-          ],
           "width": 475,
           "x": 691,
           "y": 1190,
@@ -388,21 +439,21 @@
         "pushFrom": 1.16,
         "pushTo": 1,
         "pushEndFrame": 62,
-        "glowX": -355,
-        "glowY": 463,
-        "glowSize": 423,
-        "glowIntensity": 0.6,
+        "glowX": -348,
+        "glowY": 446,
+        "glowSize": 361,
+        "glowIntensity": 0.5,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.12,
-        "focusPx": 9,
-        "fog": 0.52,
+        "focusPx": 0,
+        "fog": 0,
         "caption": [
           "Britain and France",
           "gave Berlin two days"
         ],
         "captionX": 76,
         "captionY": 192,
-        "captionSize": 81,
+        "captionSize": 56,
         "captionAlign": "left",
         "captionFrame": 11,
         "captionEvery": 8,
@@ -410,18 +461,21 @@
         "captionRecedeAt": 52,
         "accent": "#e8e2d4",
         "motif": "tally",
-        "motifX": 119,
+        "motifX": 78,
         "motifY": 499,
-        "motifSize": 84,
-        "motifCount": 15,
-        "motifFrame": 30,
+        "motifSize": 85,
+        "motifCount": 13,
+        "motifFrame": 27,
         "motifColour": "#e8e2d4",
-        "motifOpacity": 0.94,
+        "motifOpacity": 0.82,
         "handheld": 1.5,
+        "panX": 245,
         "captionEmphasis": "two days",
-        "captionReveal": "rise",
-        "captionMark": "box",
-        "captionWordEvery": 3
+        "captionReveal": "blur",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
       }
     },
     {
@@ -430,8 +484,8 @@
       "voText": "to pull them back.",
       "durationInFrames": 41,
       "transition": {
-        "kind": "rack",
-        "frames": 10
+        "kind": "slam",
+        "frames": 5
       },
       "assets": {
         "desk": "assets/desk-surface.jpg"
@@ -476,33 +530,35 @@
       "params": {
         "anchorX": 540,
         "anchorY": 1152,
-        "pushFrom": 1.49,
-        "pushTo": 1.09,
-        "pushEndFrame": 39,
+        "pushFrom": 1.47,
+        "pushTo": 1.03,
+        "pushEndFrame": 38,
         "accent": "#e8e2d4",
         "caption": [
           "to pull them back"
         ],
         "captionX": 76,
         "captionY": 192,
-        "captionSize": 81,
+        "captionSize": 66,
         "captionAlign": "left",
         "captionFrame": 6,
         "captionEvery": 8,
         "captionScrim": 0.55,
-        "glowX": -387,
-        "glowY": 433,
-        "glowSize": 399,
-        "glowIntensity": 0.69,
+        "glowX": -195,
+        "glowY": 354,
+        "glowSize": 325,
+        "glowIntensity": 0.49,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.12,
-        "focusPx": 8,
-        "fog": 0.31,
+        "focusPx": 0,
+        "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "pull",
-        "captionReveal": "punch",
-        "captionMark": "underline",
-        "captionWordEvery": 2
+        "captionReveal": "blur",
+        "captionMark": "highlight",
+        "captionWordEvery": 3,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
       }
     },
     {
@@ -511,7 +567,7 @@
       "voText": "No answer came. The ultimatum ran out",
       "durationInFrames": 81,
       "transition": {
-        "kind": "blinds",
+        "kind": "slip",
         "frames": 10
       },
       "assets": {
@@ -519,21 +575,23 @@
         "photo": "assets/clock-face.jpg"
       },
       "params": {
-        "frameWidth": 708,
-        "frameRatio": 1.27,
+        "frameWidth": 738,
+        "frameRatio": 0.96,
         "pushEndFrame": 24,
         "detachFrame": 39,
         "throughEndFrame": 53,
-        "weldRatio": 0.397,
-        "wallScaleEnd": 5.5,
+        "weldRatio": 0.411,
+        "wallScaleEnd": 6.1,
         "accent": "#e8e2d4",
         "caption": [],
         "captionX": 84,
-        "captionY": 1489,
+        "captionY": 1393,
         "captionFrame": 58,
         "captionEvery": 10,
-        "captionSize": 87,
-        "captionRecedeAt": 63
+        "captionSize": 93,
+        "captionRecedeAt": 63,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
       },
       "props": [
         {
@@ -556,8 +614,8 @@
       "voText": "at eleven in the morning.",
       "durationInFrames": 58,
       "transition": {
-        "kind": "rack",
-        "frames": 13
+        "kind": "slam",
+        "frames": 5
       },
       "assets": {
         "wall": "assets/station-wall.jpg",
@@ -592,9 +650,9 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.46,
-        "pushTo": 1.05,
-        "pushEndFrame": 55,
+        "pushFrom": 1.15,
+        "pushTo": 1.31,
+        "pushEndFrame": 56,
         "accent": "#e8e2d4",
         "caption": [
           "at eleven",
@@ -602,26 +660,27 @@
         ],
         "captionX": 76,
         "captionY": 230,
-        "captionSize": 84,
+        "captionSize": 80,
         "captionAlign": "left",
         "captionFrame": 32,
         "captionEvery": 7,
         "captionScrim": 0.28,
-        "glowX": -250,
-        "glowY": 539,
-        "glowSize": 414,
-        "glowIntensity": 0.63,
+        "glowX": -450,
+        "glowY": 587,
+        "glowSize": 477,
+        "glowIntensity": 0.64,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.06,
-        "focusPx": 14,
-        "fog": 0.49,
+        "focusPx": 0,
+        "fog": 0,
         "handheld": 1.5,
-        "panY": -35,
-        "roll": 0.21,
+        "panX": -237,
         "captionEmphasis": "eleven",
-        "captionReveal": "blur",
-        "captionMark": "none",
-        "captionWordEvery": 2
+        "captionReveal": "wipe",
+        "captionMark": "box",
+        "captionWordEvery": 2,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
       }
     },
     {
@@ -635,8 +694,8 @@
         "brightness": 0.95
       },
       "transition": {
-        "kind": "flare",
-        "frames": 5
+        "kind": "slip",
+        "frames": 7
       },
       "assets": {
         "street": "assets/dusk-street.jpg"
@@ -668,21 +727,21 @@
         "pushFrom": 1,
         "pushTo": 1.24,
         "pushEndFrame": 53,
-        "glowX": -305,
-        "glowY": 469,
-        "glowSize": 424,
-        "glowIntensity": 0.68,
+        "glowX": -336,
+        "glowY": 169,
+        "glowSize": 557,
+        "glowIntensity": 0.53,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.18,
         "focusPx": 0,
-        "fog": 0.53,
+        "fog": 0,
         "caption": [
           "By that evening",
           "two empires were"
         ],
         "captionX": 76,
         "captionY": 154,
-        "captionSize": 78,
+        "captionSize": 70,
         "captionAlign": "left",
         "captionFrame": 38,
         "captionEvery": 7,
@@ -690,18 +749,21 @@
         "captionRecedeAt": 45,
         "accent": "#e8e2d4",
         "motif": "embers",
-        "motifX": 580,
+        "motifX": 571,
         "motifY": 960,
-        "motifSize": 38,
-        "motifCount": 33,
-        "motifFrame": 23,
+        "motifSize": 42,
+        "motifCount": 36,
+        "motifFrame": 29,
         "motifColour": "#e8e2d4",
-        "motifOpacity": 0.91,
+        "motifOpacity": 0.97,
         "handheld": 1.5,
+        "panX": -141,
         "captionEmphasis": "two",
-        "captionReveal": "punch",
-        "captionMark": "highlight",
-        "captionWordEvery": 3
+        "captionReveal": "wipe",
+        "captionMark": "underline",
+        "captionWordEvery": 4,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
       }
     },
     {
@@ -709,10 +771,6 @@
       "sceneType": "composite",
       "voText": "at war with Germany.",
       "durationInFrames": 41,
-      "transition": {
-        "kind": "flare",
-        "frames": 6
-      },
       "assets": {
         "street": "assets/dusk-street.jpg"
       },
@@ -740,33 +798,37 @@
       "params": {
         "anchorX": 540,
         "anchorY": 1344,
-        "pushFrom": 1.38,
-        "pushTo": 1.03,
-        "pushEndFrame": 39,
+        "pushFrom": 1,
+        "pushTo": 1.1,
+        "pushEndFrame": 38,
         "accent": "#e8e2d4",
         "caption": [
           "at war with Germany"
         ],
         "captionX": 76,
         "captionY": 154,
-        "captionSize": 78,
+        "captionSize": 59,
         "captionAlign": "left",
         "captionFrame": 25,
         "captionEvery": 7,
         "captionScrim": 0,
-        "glowX": -393,
-        "glowY": 428,
-        "glowSize": 485,
-        "glowIntensity": 0.64,
+        "glowX": -448,
+        "glowY": 546,
+        "glowSize": 492,
+        "glowIntensity": 0.45,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.18,
-        "focusPx": 14,
-        "fog": 0.56,
+        "focusPx": 0,
+        "fog": 0,
         "handheld": 1.5,
+        "panY": -41,
+        "roll": -0.46,
         "captionEmphasis": "Germany",
-        "captionReveal": "punch",
-        "captionMark": "box",
-        "captionWordEvery": 2
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       }
     },
     {
@@ -780,20 +842,20 @@
         "brightness": 0.94
       },
       "transition": {
-        "kind": "slam",
-        "frames": 7
+        "kind": "flare",
+        "frames": 5
       },
       "assets": {
         "background": "assets/grey-sky.jpg"
       },
       "params": {
-        "scrim": 0.45,
+        "scrim": 0.5,
         "kicker": "1939 · 1945",
         "title": "SIXTY MILLION",
         "footer": "six years later",
-        "titleFrame": 9,
+        "titleFrame": 55,
         "titleSize": 230,
-        "creep": 1.099,
+        "creep": 1.081,
         "accent": "#e8e2d4",
         "field": "wash",
         "fieldColours": [
@@ -806,9 +868,20 @@
         "markY": 820,
         "markWidth": 560,
         "markHeight": 300,
-        "markFrame": 37
+        "markFrame": 37,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
       },
-      "props": []
+      "props": [],
+      "diagram": {
+        "type": "measurement",
+        "value": 6,
+        "unit": "people",
+        "accent": "#e8e2d4",
+        "muted": "#cfc6ae",
+        "from": 9,
+        "over": 49
+      }
     }
   ]
 }

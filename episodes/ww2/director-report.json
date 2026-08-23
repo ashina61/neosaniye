@@ -1,0 +1,675 @@
+{
+  "episode": "ww2",
+  "generatedFrom": {
+    "brief": "brief.json",
+    "review": "assets.review.json",
+    "voice": "audio/vo.json"
+  },
+  "concept": {
+    "title": "The two days that started the war",
+    "mood": "ash-grey",
+    "hook": {
+      "line": "In the summer of 1939 Europe had been at peace for twenty years.",
+      "beat": "HOOK",
+      "idea": "the single strongest image in the story, held tight",
+      "demands": "the strongest, most specific image available — never a texture, never a stand-in"
+    },
+    "ending": {
+      "line": "Six years later, sixty million people were dead.",
+      "beat": "VERDICT",
+      "idea": "the closing claim, typographic and still",
+      "claim": "Six years",
+      "demands": "one shot: the strongest relevant image, the claim over it, then a hold and a hard out"
+    }
+  },
+  "beats": [
+    {
+      "line": "peace",
+      "beat": "HOOK",
+      "pace": "fast",
+      "holdsAfter": false,
+      "emphasis": "1939",
+      "visualIdea": "the single strongest image in the story, held tight",
+      "viewerShouldNotice": "the words \"1939\" and the thing in frame they refer to"
+    },
+    {
+      "line": "border",
+      "beat": "CONTEXT",
+      "pace": "medium",
+      "holdsAfter": false,
+      "emphasis": "September",
+      "visualIdea": "the border in its place",
+      "viewerShouldNotice": "the words \"September\" and the thing in frame they refer to"
+    },
+    {
+      "line": "ultimatum",
+      "beat": "EVIDENCE",
+      "pace": "medium",
+      "holdsAfter": false,
+      "emphasis": "two days",
+      "visualIdea": "the figure, proven on screen",
+      "viewerShouldNotice": "the words \"two days\" and the thing in frame they refer to"
+    },
+    {
+      "line": "eleven",
+      "beat": "EVIDENCE",
+      "pace": "medium",
+      "holdsAfter": false,
+      "emphasis": "eleven",
+      "visualIdea": "the figure, proven on screen",
+      "viewerShouldNotice": "the words \"eleven\" and the thing in frame they refer to"
+    },
+    {
+      "line": "war",
+      "beat": "EVIDENCE",
+      "pace": "medium",
+      "holdsAfter": false,
+      "emphasis": "two",
+      "visualIdea": "the figure, proven on screen",
+      "viewerShouldNotice": "the words \"two\" and the thing in frame they refer to"
+    },
+    {
+      "line": "cost",
+      "beat": "VERDICT",
+      "pace": "slow",
+      "holdsAfter": true,
+      "emphasis": "Six years",
+      "visualIdea": "the closing claim, typographic and still",
+      "viewerShouldNotice": "the words \"Six years\" and the thing in frame they refer to"
+    }
+  ],
+  "assets": {
+    "colourCentre": {
+      "brightness": 0.464,
+      "colourfulness": 0.09
+    },
+    "decisions": [
+      {
+        "file": "border-road.jpg",
+        "role": "road",
+        "depicts": null,
+        "score": 5.7,
+        "verdict": "warn",
+        "reviewed": false,
+        "axes": {
+          "relevance": 5.5,
+          "accuracy": 5.5,
+          "subject": 5.5,
+          "resolution": 10,
+          "exposure": 2.8,
+          "quality": 3.2,
+          "composition": 10,
+          "animationPotential": 4.8,
+          "colourCompatibility": 5.7
+        },
+        "note": null
+      },
+      {
+        "file": "clock-face.jpg",
+        "role": "photo",
+        "depicts": null,
+        "score": 6.6,
+        "verdict": "warn",
+        "reviewed": false,
+        "axes": {
+          "relevance": 5.5,
+          "accuracy": 5.5,
+          "subject": 5.5,
+          "resolution": 10,
+          "exposure": 8,
+          "quality": 5.9,
+          "composition": 10,
+          "animationPotential": 7,
+          "colourCompatibility": 9
+        },
+        "note": null
+      },
+      {
+        "file": "desk-surface.jpg",
+        "role": "desk",
+        "depicts": null,
+        "score": 6.6,
+        "verdict": "warn",
+        "reviewed": false,
+        "axes": {
+          "relevance": 5.5,
+          "accuracy": 5.5,
+          "subject": 5.5,
+          "resolution": 10,
+          "exposure": 8.5,
+          "quality": 6,
+          "composition": 10,
+          "animationPotential": 7,
+          "colourCompatibility": 8.4
+        },
+        "note": null
+      },
+      {
+        "file": "dusk-street.jpg",
+        "role": "street",
+        "depicts": null,
+        "score": 6.7,
+        "verdict": "warn",
+        "reviewed": false,
+        "axes": {
+          "relevance": 5.5,
+          "accuracy": 5.5,
+          "subject": 5.5,
+          "resolution": 10,
+          "exposure": 9.9,
+          "quality": 5.5,
+          "composition": 10,
+          "animationPotential": 6.7,
+          "colourCompatibility": 9.3
+        },
+        "note": null
+      },
+      {
+        "file": "europe-1939.jpg",
+        "role": "map",
+        "depicts": null,
+        "score": 6.5,
+        "verdict": "warn",
+        "reviewed": false,
+        "axes": {
+          "relevance": 5.5,
+          "accuracy": 5.5,
+          "subject": 5.5,
+          "resolution": 10,
+          "exposure": 7.4,
+          "quality": 9.3,
+          "composition": 10,
+          "animationPotential": 9.3,
+          "colourCompatibility": 6.2
+        },
+        "note": null
+      },
+      {
+        "file": "grey-sky.jpg",
+        "role": "background",
+        "depicts": null,
+        "score": 6.2,
+        "verdict": "warn",
+        "reviewed": false,
+        "axes": {
+          "relevance": 5.5,
+          "accuracy": 5.5,
+          "subject": 5.5,
+          "resolution": 10,
+          "exposure": 6.6,
+          "quality": 4.1,
+          "composition": 10,
+          "animationPotential": 5.6,
+          "colourCompatibility": 7.7
+        },
+        "note": null
+      },
+      {
+        "file": "station-wall.jpg",
+        "role": "wall",
+        "depicts": null,
+        "score": 6.6,
+        "verdict": "warn",
+        "reviewed": false,
+        "axes": {
+          "relevance": 5.5,
+          "accuracy": 5.5,
+          "subject": 5.5,
+          "resolution": 10,
+          "exposure": 7.8,
+          "quality": 7.1,
+          "composition": 10,
+          "animationPotential": 7.9,
+          "colourCompatibility": 8.2
+        },
+        "note": null
+      },
+      {
+        "file": "tank-profile.png",
+        "role": "tank",
+        "depicts": null,
+        "score": 5.3,
+        "verdict": "warn",
+        "reviewed": false,
+        "axes": {
+          "relevance": 5.5,
+          "accuracy": 5.5,
+          "subject": 5.5,
+          "resolution": 10,
+          "exposure": 3.9,
+          "quality": 3.4,
+          "composition": 4.2,
+          "animationPotential": 5,
+          "colourCompatibility": 5.3
+        },
+        "note": null
+      }
+    ],
+    "recast": [],
+    "required": []
+  },
+  "shots": [
+    {
+      "id": "s01-peace",
+      "template": "composite",
+      "seconds": 1.03,
+      "camera": {
+        "from": 1.45,
+        "to": 1,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "representation": "PHOTO",
+      "drawn": null,
+      "emphasis": "summer",
+      "reveal": "rise",
+      "plates": [
+        "europe-1939.jpg"
+      ],
+      "drawnGround": null,
+      "props": [
+        "plaque"
+      ],
+      "hierarchy": {
+        "primary": "the single strongest image in the story, held tight",
+        "secondary": "the caption",
+        "background": "the plate",
+        "carrier": "image"
+      }
+    },
+    {
+      "id": "s01-peace-b",
+      "template": "composite",
+      "seconds": 1.73,
+      "camera": {
+        "from": 1.05,
+        "to": 1.56,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "representation": "PHOTO",
+      "drawn": null,
+      "emphasis": "1939",
+      "reveal": "blur",
+      "plates": [
+        "europe-1939.jpg"
+      ],
+      "drawnGround": null,
+      "props": [
+        "plaque"
+      ],
+      "hierarchy": {
+        "primary": "the border in its place",
+        "secondary": "the caption",
+        "background": "the plate",
+        "carrier": "image"
+      }
+    },
+    {
+      "id": "s01-peace-c",
+      "template": "composite",
+      "seconds": 1.7,
+      "camera": {
+        "from": 1,
+        "to": 1.31,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "slam",
+      "representation": "PHOTO",
+      "drawn": null,
+      "emphasis": "twenty years",
+      "reveal": "punch",
+      "plates": [
+        "europe-1939.jpg"
+      ],
+      "drawnGround": null,
+      "props": [
+        "plaque"
+      ],
+      "hierarchy": {
+        "primary": "the figure: \"twenty years\"",
+        "secondary": "the object it is counting",
+        "background": "the plate",
+        "carrier": "graphic"
+      }
+    },
+    {
+      "id": "s02-border",
+      "template": "composite",
+      "seconds": 2.27,
+      "camera": {
+        "from": 1,
+        "to": 1.42,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "representation": "PHOTO",
+      "drawn": null,
+      "emphasis": "Polish",
+      "reveal": "rise",
+      "plates": [
+        "border-road.jpg",
+        "tank-profile.png"
+      ],
+      "drawnGround": null,
+      "props": [
+        "plaque"
+      ],
+      "hierarchy": {
+        "primary": "the figure: \"Polish\"",
+        "secondary": "the object it is counting",
+        "background": "the plate",
+        "carrier": "graphic"
+      }
+    },
+    {
+      "id": "s02-border-b",
+      "template": "composite",
+      "seconds": 2.7,
+      "camera": {
+        "from": 1.35,
+        "to": 1.04,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "slip",
+      "representation": "PHOTO",
+      "drawn": null,
+      "emphasis": "Polish",
+      "reveal": "rise",
+      "plates": [
+        "border-road.jpg",
+        "tank-profile.png"
+      ],
+      "drawnGround": null,
+      "props": [
+        "plaque"
+      ],
+      "hierarchy": {
+        "primary": "the figure: \"Polish\"",
+        "secondary": "the object it is counting",
+        "background": "the plate",
+        "carrier": "graphic"
+      }
+    },
+    {
+      "id": "s03-ultimatum",
+      "template": "composite",
+      "seconds": 2.4,
+      "camera": {
+        "from": 1.16,
+        "to": 1,
+        "panX": 245,
+        "panY": null
+      },
+      "transition": "cut",
+      "representation": "PHOTO",
+      "drawn": null,
+      "emphasis": "two days",
+      "reveal": "blur",
+      "plates": [
+        "desk-surface.jpg"
+      ],
+      "drawnGround": null,
+      "props": [
+        "card",
+        "card"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"two days\"",
+        "secondary": "the strongest image in the reel, returned to",
+        "background": "darkness",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s03-ultimatum-b",
+      "template": "composite",
+      "seconds": 1.37,
+      "camera": {
+        "from": 1.47,
+        "to": 1.03,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "slam",
+      "representation": "PHOTO",
+      "drawn": null,
+      "emphasis": "pull",
+      "reveal": "blur",
+      "plates": [
+        "desk-surface.jpg"
+      ],
+      "drawnGround": null,
+      "props": [
+        "card",
+        "card"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"pull\"",
+        "secondary": "the strongest image in the reel, returned to",
+        "background": "darkness",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s04-eleven",
+      "template": "portal-zoom-reveal",
+      "seconds": 2.7,
+      "camera": {
+        "from": null,
+        "to": null,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "slip",
+      "representation": "PHOTO",
+      "drawn": null,
+      "emphasis": null,
+      "reveal": null,
+      "plates": [
+        "station-wall.jpg",
+        "clock-face.jpg"
+      ],
+      "drawnGround": null,
+      "props": [
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the closing claim",
+        "secondary": "the strongest image in the reel, returned to",
+        "background": "darkness",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s04-eleven-b",
+      "template": "composite",
+      "seconds": 1.93,
+      "camera": {
+        "from": 1.15,
+        "to": 1.31,
+        "panX": -237,
+        "panY": null
+      },
+      "transition": "slam",
+      "representation": "PHOTO",
+      "drawn": null,
+      "emphasis": "eleven",
+      "reveal": "wipe",
+      "plates": [
+        "station-wall.jpg",
+        "clock-face.jpg"
+      ],
+      "drawnGround": null,
+      "props": [
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"eleven\"",
+        "secondary": "the strongest image in the reel, returned to",
+        "background": "darkness",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s05-war",
+      "template": "composite",
+      "seconds": 2.07,
+      "camera": {
+        "from": 1,
+        "to": 1.24,
+        "panX": -141,
+        "panY": null
+      },
+      "transition": "slip",
+      "representation": "PHOTO",
+      "drawn": null,
+      "emphasis": "two",
+      "reveal": "wipe",
+      "plates": [
+        "dusk-street.jpg"
+      ],
+      "drawnGround": null,
+      "props": [
+        "newspaper"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"two\"",
+        "secondary": "the strongest image in the reel, returned to",
+        "background": "darkness",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s05-war-b",
+      "template": "composite",
+      "seconds": 1.37,
+      "camera": {
+        "from": 1,
+        "to": 1.1,
+        "panX": null,
+        "panY": -41
+      },
+      "transition": "cut",
+      "representation": "PHOTO",
+      "drawn": null,
+      "emphasis": "Germany",
+      "reveal": "rise",
+      "plates": [
+        "dusk-street.jpg"
+      ],
+      "drawnGround": null,
+      "props": [
+        "newspaper"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"Germany\"",
+        "secondary": "the strongest image in the reel, returned to",
+        "background": "darkness",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s06-cost",
+      "template": "title-slate",
+      "seconds": 3.6,
+      "camera": {
+        "from": null,
+        "to": null,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "flare",
+      "representation": "HYBRID",
+      "drawn": "measurement",
+      "emphasis": null,
+      "reveal": null,
+      "plates": [
+        "grey-sky.jpg"
+      ],
+      "drawnGround": "wash",
+      "props": [],
+      "hierarchy": {
+        "primary": "the closing claim",
+        "secondary": "the strongest image in the reel, returned to",
+        "background": "darkness",
+        "carrier": "type"
+      }
+    }
+  ],
+  "representation": {
+    "peace": {
+      "mode": "PHOTO",
+      "why": "a correct photograph exists and is the strongest representation",
+      "drawn": null
+    },
+    "border": {
+      "mode": "PHOTO",
+      "why": "a correct photograph exists and is the strongest representation",
+      "drawn": null
+    },
+    "ultimatum": {
+      "mode": "PHOTO",
+      "why": "a correct photograph exists and is the strongest representation",
+      "drawn": null
+    },
+    "eleven": {
+      "mode": "PHOTO",
+      "why": "a correct photograph exists and is the strongest representation",
+      "drawn": null
+    },
+    "war": {
+      "mode": "PHOTO",
+      "why": "a correct photograph exists and is the strongest representation",
+      "drawn": null
+    },
+    "cost": {
+      "mode": "HYBRID",
+      "why": "a magnitude means more beside something than it does alone",
+      "drawn": "measurement"
+    }
+  },
+  "quotas": {
+    "camera": {
+      "pull": 3,
+      "push": 3,
+      "pan": 3,
+      "hold": 2,
+      "drift": 1
+    },
+    "transition": {
+      "cut": 4,
+      "slam": 3,
+      "slip": 3,
+      "flare": 1
+    },
+    "framing": {}
+  },
+  "typography": {
+    "system": "one family per semantic role — statement, body, label, figure",
+    "accent": "#e8e2d4",
+    "note": "the emphasis is the only element allowed the accent colour in a shot"
+  },
+  "colourStrategy": {
+    "accent": "#e8e2d4",
+    "field": "wash",
+    "fieldColours": [
+      "#3d4144",
+      "#212426",
+      "#0c0d0e"
+    ],
+    "grade": {
+      "saturate": 0.26,
+      "contrast": 1.15,
+      "sepia": 0.15,
+      "brightness": 1.07
+    },
+    "note": "one accent across the reel; the grade moves only where the sentence earns it"
+  },
+  "limitations": []
+}

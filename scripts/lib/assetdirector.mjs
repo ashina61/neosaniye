@@ -39,7 +39,23 @@ import {readFile} from 'node:fs/promises';
 /** Below this an asset is refused outright and the role goes graphics-first. */
 export const REJECT_BELOW = 4.5;
 /** Below this it is used but reported — a known weakness, not a silent one. */
-export const WARN_BELOW = 6.5;
+export const WARN_BELOW = 7.5;
+
+/**
+ * THE HARD GATE.
+ *
+ * Not a weight in an average — a floor. A documentary makes factual claims, and
+ * a picture that is nearly the thing is not the thing: an antique brass dial
+ * instrument scored 7 for relevance and 5 for accuracy against "an x-ray of the
+ * Antikythera mechanism", passed on a combined score, and illustrated a claim
+ * with an object that is not the object.
+ *
+ * "Close enough" is the failure mode this number exists to end. Below eight on
+ * either axis the asset is refused however good the photograph is, and the shot
+ * goes to the representation director to be solved another way — which is
+ * almost always a better shot anyway.
+ */
+export const SEMANTIC_FLOOR = 8;
 
 /**
  * WHAT EACH ROLE NEEDS FROM A PICTURE.
@@ -276,7 +292,29 @@ export function judge({file, role, kind = 'backdrop', measured, reviewed, idea, 
   const recastAs = reviewed?.recastAs ?? null;
 
   let verdict = 'use';
-  if (total < REJECT_BELOW) verdict = recastAs ? 'recast' : 'reject';
+  /**
+   * SEMANTICS ARE A GATE, NOT A TERM.
+   *
+   * Checked before the combined score is even consulted: no arrangement of five
+   * green technical axes may carry a picture of the wrong thing into a
+   * documentary.
+   */
+  /**
+   * THE GATE JUDGES A JUDGEMENT, NOT ITS ABSENCE.
+   *
+   * An unreviewed file scores a neutral 5.5 because nobody has looked at it —
+   * that is a statement about the ledger, not about the photograph. Gating on
+   * it refused every asset in three episodes that had never been reviewed and
+   * left their configs naming nothing at all, which is a far worse outcome than
+   * the risk it was guarding against.
+   *
+   * Unreviewed is still never approved: every one of them is reported as
+   * unreviewed on every run, and reviewing an episode is what turns the gate on
+   * for it.
+   */
+  const semanticFail = known && (relevance < SEMANTIC_FLOOR || accuracy < SEMANTIC_FLOOR);
+  if (semanticFail) verdict = 'reject';
+  else if (total < REJECT_BELOW) verdict = recastAs ? 'recast' : 'reject';
   else if (total < WARN_BELOW) verdict = 'warn';
   /**
    * A RECAST IS A CASTING NOTE, NOT A FAILURE GRADE.
@@ -304,6 +342,10 @@ export function judge({file, role, kind = 'backdrop', measured, reviewed, idea, 
     recast: reviewed?.recastTo ?? null,
     note: reviewed?.note ?? null,
     brief: verdict === 'reject' ? assetBrief({role, idea, notice, need: reviewed?.needed}) : null,
+    /** Why it was refused, when it was refused on meaning rather than on quality. */
+    gate: semanticFail
+      ? `semantic floor: relevance ${relevance}/10, accuracy ${accuracy}/10 — both must reach ${SEMANTIC_FLOOR}`
+      : null,
   };
 }
 

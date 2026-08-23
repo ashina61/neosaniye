@@ -25,7 +25,14 @@ import {ROOT, episodeDir, exists, loadConfig, parseArgs} from './lib/episode.mjs
 import {readPlaceholders} from './lib/placeholders.mjs';
 
 import {BUILT_IN_SCENE_TYPES, validateEpisodeConfig} from '../engine/schema.mjs';
-import {critiqueDirection, critiqueEpisode, qualityGates} from './lib/critique.mjs';
+import {
+  clippingProblems,
+  critiqueDirection,
+  critiqueEpisode,
+  endingProblems,
+  qualityGates,
+  representationMix,
+} from './lib/critique.mjs';
 
 async function validateEpisode(episodeId) {
   const problems = [];
@@ -117,15 +124,19 @@ async function validateEpisode(episodeId) {
     (report?.assets?.decisions ?? []).map((d) => [d.file, d]),
   );
   const direction = critiqueDirection(config, {assets, story: report?.beats ?? []});
-  problems.push(...direction.errors);
+  const clipped = clippingProblems(config);
+  const ending = endingProblems(config);
+  problems.push(...direction.errors, ...clipped.errors, ...ending.errors);
   const gates = report ? qualityGates(config, {assets}) : null;
+  const mix = representationMix(config);
 
   return {
     problems,
     absentOptional,
-    warnings: [...warnings, ...direction.warnings],
+    warnings: [...warnings, ...direction.warnings, ...clipped.warnings, ...ending.warnings],
     stats,
     gates,
+    mix,
     directed: Boolean(report),
   };
 }
@@ -150,7 +161,7 @@ async function main() {
 
   let failed = 0;
   for (const episodeId of episodes) {
-    const {problems, absentOptional, warnings = [], stats, gates, directed} = await validateEpisode(episodeId);
+    const {problems, absentOptional, warnings = [], stats, gates, directed, mix} = await validateEpisode(episodeId);
     if (strict && warnings.length) problems.push(...warnings);
     if (problems.length) {
       failed += 1;
@@ -186,6 +197,11 @@ async function main() {
        * "The video feels flat" cannot be acted on. "asset relevance 2.1/10"
        * names the root cause and the department that owns it.
        */
+      if (mix) {
+        console.log(
+          `  shown   ${Object.entries(mix).filter(([, v]) => v).map(([k, v]) => `${v} ${k.toLowerCase()}`).join(' · ')}`,
+        );
+      }
       if (gates) {
         const line = Object.entries(gates.gates)
           .map(([k, v]) => `${k} ${v}`)

@@ -18,6 +18,7 @@ engine/                     shared code — knows roles and numbers, never asset
   schema.mjs / schema.ts    the contract: one runtime, one set of types
   draw/                     drawn graphics: light, paper, marks, motifs, overlays
     Kinetic.tsx             word-level reveals, the emphasis word, the counter
+    Diagram.tsx             meshing gears, timelines, measurement, orbits, scans
   sceneTypes/               the seven shared templates + registry
 
 episodes/<episode-id>/
@@ -29,6 +30,7 @@ scripts/
   plan-episode.mjs          brief → scene-config
   lib/story.mjs             WHAT each line is: beat, visual idea, rhythm, ending
   lib/assetdirector.mjs     WHETHER a picture may be used — score, recast, refuse
+  lib/representation.mjs    HOW to show it: photo, hybrid, procedural, diagram, type
   lib/visual.mjs            hierarchy, framing, one type system
   lib/director.mjs          WHEN things happen: beats, camera, transitions, quotas
   lib/critique.mjs          the checks that can see a boring reel
@@ -71,6 +73,13 @@ against the role it plays; semantics gate the score, so a sharp, well-exposed
 photograph of the wrong thing is refused rather than animated. A refusal writes
 an `ASSET_REQUIRED` brief and the line becomes a typographic shot on a drawn
 field. See [VIDEO_PIPELINE.md](VIDEO_PIPELINE.md).
+
+**The representation director decides how to show it.** A missing photograph is
+a problem to solve, not permission to use the wrong one: a mechanism with a
+count becomes a meshing gear train, a span of empty years becomes a timeline, a
+claim about eclipses becomes orbital geometry over the real moon. Procedural
+visuals are first-class — often the strongest shot in the reel — and anything
+reconstructed says so on the frame.
 
 **The director decides what happens inside the shot.** Every shot gets at least
 two events, spread across its length, the first one early: the words landing,

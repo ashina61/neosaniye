@@ -1,0 +1,764 @@
+{
+  "episode": "ai-arrived",
+  "generatedFrom": {
+    "brief": "brief.json",
+    "review": "assets.review.json",
+    "voice": "audio/vo.json"
+  },
+  "concept": {
+    "title": "AI — seventy years to arrive, two months to be everywhere",
+    "mood": "cold-noir",
+    "hook": {
+      "line": "In 1956, ten men spent a summer inventing a name for it.",
+      "beat": "HOOK",
+      "idea": "the single strongest image in the story, held tight",
+      "demands": "the strongest, most specific image available — never a texture, never a stand-in"
+    },
+    "ending": {
+      "line": "Seventy years to arrive. Two months to be everywhere.",
+      "beat": "VERDICT",
+      "idea": "the closing claim, typographic and still",
+      "claim": "Seventy years",
+      "demands": "one shot: the strongest relevant image, the claim over it, then a hold and a hard out"
+    }
+  },
+  "beats": [
+    {
+      "line": "name",
+      "beat": "HOOK",
+      "pace": "fast",
+      "holdsAfter": false,
+      "emphasis": "1956",
+      "visualIdea": "the single strongest image in the story, held tight",
+      "viewerShouldNotice": "the words \"1956\" and the thing in frame they refer to"
+    },
+    {
+      "line": "kasparov",
+      "beat": "ESCALATION",
+      "pace": "fast",
+      "holdsAfter": false,
+      "emphasis": "forty years",
+      "visualIdea": "quantity accumulating",
+      "viewerShouldNotice": "the words \"forty years\" and the thing in frame they refer to"
+    },
+    {
+      "line": "seeing",
+      "beat": "MYSTERY",
+      "pace": "slow",
+      "holdsAfter": true,
+      "emphasis": "2012",
+      "visualIdea": "absence — the thing not shown",
+      "viewerShouldNotice": "the words \"2012\" and the thing in frame they refer to"
+    },
+    {
+      "line": "move",
+      "beat": "CONTEXT",
+      "pace": "medium",
+      "holdsAfter": false,
+      "emphasis": "2016",
+      "visualIdea": "the setting, established",
+      "viewerShouldNotice": "the words \"2016\" and the thing in frame they refer to"
+    },
+    {
+      "line": "talk",
+      "beat": "ESCALATION",
+      "pace": "fast",
+      "holdsAfter": false,
+      "emphasis": "hundred million people",
+      "visualIdea": "quantity accumulating",
+      "viewerShouldNotice": "the words \"hundred million people\" and the thing in frame they refer to"
+    },
+    {
+      "line": "close",
+      "beat": "VERDICT",
+      "pace": "slow",
+      "holdsAfter": true,
+      "emphasis": "Seventy years",
+      "visualIdea": "the closing claim, typographic and still",
+      "viewerShouldNotice": "the words \"Seventy years\" and the thing in frame they refer to"
+    }
+  ],
+  "assets": {
+    "colourCentre": {
+      "brightness": 0.294,
+      "colourfulness": 0.078
+    },
+    "decisions": [
+      {
+        "file": "black-computer-cabinet.png",
+        "role": "(unused)",
+        "depicts": null,
+        "score": 5,
+        "verdict": "warn",
+        "reviewed": false,
+        "axes": {
+          "relevance": 5.5,
+          "accuracy": 5.5,
+          "subject": 5.5,
+          "resolution": 6.9,
+          "exposure": 2,
+          "quality": 2.6,
+          "composition": 1.8,
+          "animationPotential": 3.4,
+          "colourCompatibility": 6.2
+        },
+        "note": null
+      },
+      {
+        "file": "carved-chess-king-piece.png",
+        "role": "(unused)",
+        "depicts": null,
+        "score": 5.2,
+        "verdict": "warn",
+        "reviewed": false,
+        "axes": {
+          "relevance": 5.5,
+          "accuracy": 5.5,
+          "subject": 5.5,
+          "resolution": 10,
+          "exposure": 1,
+          "quality": 3.4,
+          "composition": 3.8,
+          "animationPotential": 4.6,
+          "colourCompatibility": 6.1
+        },
+        "note": null
+      },
+      {
+        "file": "empty-wooden-chair.png",
+        "role": "(unused)",
+        "depicts": null,
+        "score": 5.5,
+        "verdict": "warn",
+        "reviewed": false,
+        "axes": {
+          "relevance": 5.5,
+          "accuracy": 5.5,
+          "subject": 5.5,
+          "resolution": 10,
+          "exposure": 1.7,
+          "quality": 5.8,
+          "composition": 3.6,
+          "animationPotential": 6.6,
+          "colourCompatibility": 6.2
+        },
+        "note": null
+      },
+      {
+        "file": "office-swivel-chair.png",
+        "role": "(unused)",
+        "depicts": null,
+        "score": 5.5,
+        "verdict": "warn",
+        "reviewed": false,
+        "axes": {
+          "relevance": 5.5,
+          "accuracy": 5.5,
+          "subject": 5.5,
+          "resolution": 10,
+          "exposure": 2.4,
+          "quality": 3.9,
+          "composition": 3.7,
+          "animationPotential": 5,
+          "colourCompatibility": 7
+        },
+        "note": null
+      },
+      {
+        "file": "s01-name-bg.png",
+        "role": "(unused)",
+        "depicts": null,
+        "score": 6.3,
+        "verdict": "warn",
+        "reviewed": false,
+        "axes": {
+          "relevance": 5.5,
+          "accuracy": 5.5,
+          "subject": 5.5,
+          "resolution": 10,
+          "exposure": 8.8,
+          "quality": 5.6,
+          "composition": 10,
+          "animationPotential": 6.8,
+          "colourCompatibility": 6.4
+        },
+        "note": null
+      },
+      {
+        "file": "s02-kasparov-bg.png",
+        "role": "(unused)",
+        "depicts": null,
+        "score": 6.3,
+        "verdict": "warn",
+        "reviewed": false,
+        "axes": {
+          "relevance": 5.5,
+          "accuracy": 5.5,
+          "subject": 5.5,
+          "resolution": 10,
+          "exposure": 8.2,
+          "quality": 6.1,
+          "composition": 10,
+          "animationPotential": 7.1,
+          "colourCompatibility": 6.1
+        },
+        "note": null
+      },
+      {
+        "file": "s02-kasparov-photo.png",
+        "role": "(unused)",
+        "depicts": null,
+        "score": 6.3,
+        "verdict": "warn",
+        "reviewed": false,
+        "axes": {
+          "relevance": 5.5,
+          "accuracy": 5.5,
+          "subject": 5.5,
+          "resolution": 10,
+          "exposure": 9.9,
+          "quality": 5.8,
+          "composition": 7.3,
+          "animationPotential": 6.5,
+          "colourCompatibility": 7.5
+        },
+        "note": null
+      },
+      {
+        "file": "s03-seeing-bg.png",
+        "role": "(unused)",
+        "depicts": null,
+        "score": 6.4,
+        "verdict": "warn",
+        "reviewed": false,
+        "axes": {
+          "relevance": 5.5,
+          "accuracy": 5.5,
+          "subject": 5.5,
+          "resolution": 10,
+          "exposure": 8.2,
+          "quality": 7.3,
+          "composition": 10,
+          "animationPotential": 8.1,
+          "colourCompatibility": 5.9
+        },
+        "note": null
+      },
+      {
+        "file": "s04-move-bg.png",
+        "role": "(unused)",
+        "depicts": null,
+        "score": 5.8,
+        "verdict": "warn",
+        "reviewed": false,
+        "axes": {
+          "relevance": 5.5,
+          "accuracy": 5.5,
+          "subject": 5.5,
+          "resolution": 10,
+          "exposure": 6.5,
+          "quality": 6.2,
+          "composition": 10,
+          "animationPotential": 7.2,
+          "colourCompatibility": 3
+        },
+        "note": null
+      },
+      {
+        "file": "s04-move-photo.png",
+        "role": "(unused)",
+        "depicts": null,
+        "score": 5.7,
+        "verdict": "warn",
+        "reviewed": false,
+        "axes": {
+          "relevance": 5.5,
+          "accuracy": 5.5,
+          "subject": 5.5,
+          "resolution": 10,
+          "exposure": 7.5,
+          "quality": 5.1,
+          "composition": 7.3,
+          "animationPotential": 5.9,
+          "colourCompatibility": 3.7
+        },
+        "note": null
+      },
+      {
+        "file": "s05-talk-bg.png",
+        "role": "(unused)",
+        "depicts": null,
+        "score": 6.6,
+        "verdict": "warn",
+        "reviewed": false,
+        "axes": {
+          "relevance": 5.5,
+          "accuracy": 5.5,
+          "subject": 5.5,
+          "resolution": 10,
+          "exposure": 7.6,
+          "quality": 5.5,
+          "composition": 10,
+          "animationPotential": 6.7,
+          "colourCompatibility": 9
+        },
+        "note": null
+      },
+      {
+        "file": "s06-close-bg.png",
+        "role": "(unused)",
+        "depicts": null,
+        "score": 5.9,
+        "verdict": "warn",
+        "reviewed": false,
+        "axes": {
+          "relevance": 5.5,
+          "accuracy": 5.5,
+          "subject": 5.5,
+          "resolution": 10,
+          "exposure": 2.7,
+          "quality": 3.5,
+          "composition": 10,
+          "animationPotential": 5,
+          "colourCompatibility": 7.3
+        },
+        "note": null
+      },
+      {
+        "file": "smartphone-held-upright.png",
+        "role": "(unused)",
+        "depicts": null,
+        "score": 5.2,
+        "verdict": "warn",
+        "reviewed": false,
+        "axes": {
+          "relevance": 5.5,
+          "accuracy": 5.5,
+          "subject": 5.5,
+          "resolution": 6.2,
+          "exposure": 2.5,
+          "quality": 5.1,
+          "composition": 1.5,
+          "animationPotential": 5.2,
+          "colourCompatibility": 6.7
+        },
+        "note": null
+      },
+      {
+        "file": "wooden-chess-clock.png",
+        "role": "(unused)",
+        "depicts": null,
+        "score": 5.1,
+        "verdict": "warn",
+        "reviewed": false,
+        "axes": {
+          "relevance": 5.5,
+          "accuracy": 5.5,
+          "subject": 5.5,
+          "resolution": 4.1,
+          "exposure": 2.7,
+          "quality": 4.4,
+          "composition": 0.9,
+          "animationPotential": 4.3,
+          "colourCompatibility": 7.1
+        },
+        "note": null
+      }
+    ],
+    "recast": [],
+    "required": []
+  },
+  "shots": [
+    {
+      "id": "s01-name",
+      "template": "composite",
+      "seconds": 2.37,
+      "camera": {
+        "from": 1.42,
+        "to": 1,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "representation": "HYBRID",
+      "drawn": "measurement",
+      "emphasis": "1956",
+      "reveal": "punch",
+      "plates": [
+        "s01-name-bg.png"
+      ],
+      "drawnGround": null,
+      "props": [
+        "plaque"
+      ],
+      "hierarchy": {
+        "primary": "the single strongest image in the story, held tight",
+        "secondary": "the caption",
+        "background": "the plate",
+        "carrier": "image"
+      }
+    },
+    {
+      "id": "s01-name-b",
+      "template": "composite",
+      "seconds": 2.37,
+      "camera": {
+        "from": 1.23,
+        "to": 1.24,
+        "panX": null,
+        "panY": -149
+      },
+      "transition": "slam",
+      "representation": "HYBRID",
+      "drawn": "measurement",
+      "emphasis": "inventing",
+      "reveal": "wipe",
+      "plates": [
+        "s01-name-bg.png"
+      ],
+      "drawnGround": null,
+      "props": [
+        "plaque"
+      ],
+      "hierarchy": {
+        "primary": "quantity accumulating",
+        "secondary": "the caption",
+        "background": "the plate",
+        "carrier": "image"
+      }
+    },
+    {
+      "id": "s02-kasparov",
+      "template": "portal-zoom-reveal",
+      "seconds": 2.67,
+      "camera": {
+        "from": null,
+        "to": null,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "representation": "HYBRID",
+      "drawn": "timeline",
+      "emphasis": "Forty years",
+      "reveal": "punch",
+      "plates": [
+        "s02-kasparov-bg.png",
+        "s02-kasparov-photo.png"
+      ],
+      "drawnGround": null,
+      "props": [
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "absence — the thing not shown",
+        "secondary": "the caption",
+        "background": "the plate",
+        "carrier": "image"
+      }
+    },
+    {
+      "id": "s02-kasparov-b",
+      "template": "composite",
+      "seconds": 1.77,
+      "camera": {
+        "from": 1.03,
+        "to": 1.32,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "slam",
+      "representation": "HYBRID",
+      "drawn": "timeline",
+      "emphasis": "Kasparov",
+      "reveal": "punch",
+      "plates": [
+        "s02-kasparov-photo.png"
+      ],
+      "drawnGround": null,
+      "props": [
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the setting, established",
+        "secondary": "the caption",
+        "background": "the plate",
+        "carrier": "image"
+      }
+    },
+    {
+      "id": "s03-seeing",
+      "template": "composite",
+      "seconds": 2.6,
+      "camera": {
+        "from": 1,
+        "to": 1.38,
+        "panX": null,
+        "panY": -44
+      },
+      "transition": "cut",
+      "representation": "PHOTO",
+      "drawn": null,
+      "emphasis": "2012",
+      "reveal": "rise",
+      "plates": [
+        "s03-seeing-bg.png"
+      ],
+      "drawnGround": null,
+      "props": [
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "quantity accumulating",
+        "secondary": "the caption",
+        "background": "the plate",
+        "carrier": "image"
+      }
+    },
+    {
+      "id": "s03-seeing-b",
+      "template": "composite",
+      "seconds": 2.57,
+      "camera": {
+        "from": 1.38,
+        "to": 1.02,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "rack",
+      "representation": "PHOTO",
+      "drawn": null,
+      "emphasis": "outside",
+      "reveal": "punch",
+      "plates": [
+        "s03-seeing-bg.png"
+      ],
+      "drawnGround": null,
+      "props": [
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"outside\"",
+        "secondary": "the strongest image in the reel, returned to",
+        "background": "darkness",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s04-move",
+      "template": "portal-zoom-reveal",
+      "seconds": 2.3,
+      "camera": {
+        "from": null,
+        "to": null,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "slip",
+      "representation": "PHOTO",
+      "drawn": null,
+      "emphasis": "thirty-seven",
+      "reveal": "blur",
+      "plates": [
+        "s04-move-bg.png",
+        "s04-move-photo.png"
+      ],
+      "drawnGround": null,
+      "props": [
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"thirty-seven\"",
+        "secondary": "the strongest image in the reel, returned to",
+        "background": "darkness",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s04-move-b",
+      "template": "composite",
+      "seconds": 1.9,
+      "camera": {
+        "from": 1.56,
+        "to": 1.01,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "representation": "PHOTO",
+      "drawn": null,
+      "emphasis": "played",
+      "reveal": "rise",
+      "plates": [
+        "s04-move-photo.png"
+      ],
+      "drawnGround": null,
+      "props": [
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"played\"",
+        "secondary": "the strongest image in the reel, returned to",
+        "background": "darkness",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s05-talk",
+      "template": "composite",
+      "seconds": 1.7,
+      "camera": {
+        "from": 1,
+        "to": 1.3,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "slam",
+      "representation": "HYBRID",
+      "drawn": "measurement",
+      "emphasis": "learned",
+      "reveal": "punch",
+      "plates": [
+        "s05-talk-bg.png"
+      ],
+      "drawnGround": null,
+      "props": [
+        "newspaper"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"learned\"",
+        "secondary": "the strongest image in the reel, returned to",
+        "background": "darkness",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s05-talk-b",
+      "template": "composite",
+      "seconds": 2.07,
+      "camera": {
+        "from": 1.17,
+        "to": 1.27,
+        "panX": null,
+        "panY": -134
+      },
+      "transition": "flare",
+      "representation": "HYBRID",
+      "drawn": "measurement",
+      "emphasis": "hundred million people",
+      "reveal": "rise",
+      "plates": [
+        "s05-talk-bg.png"
+      ],
+      "drawnGround": null,
+      "props": [
+        "newspaper"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"hundred million people\"",
+        "secondary": "the strongest image in the reel, returned to",
+        "background": "darkness",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s06-close",
+      "template": "title-slate",
+      "seconds": 3.97,
+      "camera": {
+        "from": null,
+        "to": null,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "representation": "HYBRID",
+      "drawn": "timeline",
+      "emphasis": null,
+      "reveal": null,
+      "plates": [
+        "s06-close-bg.png"
+      ],
+      "drawnGround": "grid",
+      "props": [
+        "plaque"
+      ],
+      "hierarchy": {
+        "primary": "the closing claim",
+        "secondary": "the strongest image in the reel, returned to",
+        "background": "darkness",
+        "carrier": "type"
+      }
+    }
+  ],
+  "representation": {
+    "name": {
+      "mode": "DIAGRAM",
+      "why": "a magnitude means more beside something than it does alone",
+      "drawn": "measurement"
+    },
+    "kasparov": {
+      "mode": "DIAGRAM",
+      "why": "the sentence is about elapsed time, which no photograph contains",
+      "drawn": "timeline"
+    },
+    "seeing": {
+      "mode": "TYPOGRAPHY",
+      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
+      "drawn": null
+    },
+    "move": {
+      "mode": "TYPOGRAPHY",
+      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
+      "drawn": null
+    },
+    "talk": {
+      "mode": "DIAGRAM",
+      "why": "a magnitude means more beside something than it does alone",
+      "drawn": "measurement"
+    },
+    "close": {
+      "mode": "DIAGRAM",
+      "why": "the sentence is about elapsed time, which no photograph contains",
+      "drawn": "timeline"
+    }
+  },
+  "quotas": {
+    "camera": {
+      "pull": 3,
+      "tilt": 2,
+      "hold": 3,
+      "push": 3
+    },
+    "transition": {
+      "slam": 3,
+      "cut": 4,
+      "rack": 1,
+      "slip": 1,
+      "flare": 1
+    },
+    "framing": {}
+  },
+  "typography": {
+    "system": "one family per semantic role — statement, body, label, figure",
+    "accent": "#c9a94b",
+    "note": "the emphasis is the only element allowed the accent colour in a shot"
+  },
+  "colourStrategy": {
+    "accent": "#c9a94b",
+    "field": "grid",
+    "fieldColours": [
+      "#333a3e",
+      "#1b2024",
+      "#0a0c0e"
+    ],
+    "grade": {
+      "saturate": 0.52,
+      "contrast": 1.15,
+      "sepia": 0.13,
+      "brightness": 1.02
+    },
+    "note": "one accent across the reel; the grade moves only where the sentence earns it"
+  },
+  "limitations": []
+}

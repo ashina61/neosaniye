@@ -19,13 +19,13 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.48,
-      "grungeOpacity": 0.11,
-      "scanlineOpacity": 0.15,
-      "scanlinePeriod": 8,
-      "vignetteStrength": 0.41,
-      "weavePx": 6,
-      "weaveScale": 1.012
+      "grainOpacity": 0.38,
+      "grungeOpacity": 0.2,
+      "scanlineOpacity": 0.12,
+      "scanlinePeriod": 10,
+      "vignetteStrength": 0.55,
+      "weavePx": 4,
+      "weaveScale": 1.018
     }
   },
   "scenes": [
@@ -68,32 +68,41 @@
         "glowIntensity": 0.63,
         "glowWarm": "#c9a94b",
         "glowDepth": 0.73,
-        "focusPx": 15,
-        "fog": 0.46,
+        "focusPx": 0,
+        "fog": 0,
         "caption": [
           "In 1956, ten",
           "men spent a"
         ],
         "captionX": 84,
-        "captionY": 995,
-        "captionSize": 97,
+        "captionY": 307,
+        "captionSize": 93,
         "captionAlign": "left",
-        "captionFrame": 6,
+        "captionFrame": 44,
         "captionEvery": 9,
-        "captionScrim": 0.34,
+        "captionScrim": 0.38,
         "captionRecedeAt": 51,
         "accent": "#c9a94b",
-        "handheld": 1.5,
-        "panY": -36,
-        "roll": 0.57,
+        "handheld": 3,
         "shakeAt": [
           6
         ],
-        "shakeAmount": 22,
+        "shakeAmount": 21,
         "captionEmphasis": "1956",
-        "captionReveal": "rise",
+        "captionReveal": "punch",
         "captionMark": "none",
-        "captionWordEvery": 3
+        "captionWordEvery": 3,
+        "cameraMove": "pull",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      },
+      "diagram": {
+        "type": "measurement",
+        "value": 1956,
+        "unit": "men",
+        "accent": "#c9a94b",
+        "muted": "#cfc6ae",
+        "from": 0,
+        "over": 32
       }
     },
     {
@@ -102,8 +111,8 @@
       "voText": "summer inventing a name for it.",
       "durationInFrames": 71,
       "transition": {
-        "kind": "rack",
-        "frames": 10
+        "kind": "slam",
+        "frames": 5
       },
       "assets": {
         "ground": "assets/s01-name-bg.png"
@@ -111,7 +120,7 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.78,
+          "depth": 0.75,
           "anchor": "fill"
         }
       ],
@@ -130,38 +139,46 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.36,
-        "pushTo": 1.05,
-        "pushEndFrame": 67,
+        "pushFrom": 1.23,
+        "pushTo": 1.24,
+        "pushEndFrame": 65,
         "accent": "#c9a94b",
         "caption": [
           "summer inventing",
           "a name for it"
         ],
         "captionX": 84,
-        "captionY": 473,
-        "captionSize": 89,
+        "captionY": 307,
+        "captionSize": 69,
         "captionAlign": "left",
-        "captionFrame": 6,
-        "captionEvery": 6,
-        "captionScrim": 0.34,
-        "glowX": 1519,
-        "glowY": 319,
-        "glowSize": 530,
-        "glowIntensity": 0.63,
+        "captionFrame": 44,
+        "captionEvery": 8,
+        "captionScrim": 0.38,
+        "glowX": 1512,
+        "glowY": 420,
+        "glowSize": 503,
+        "glowIntensity": 0.53,
         "glowWarm": "#c9a94b",
-        "glowDepth": 0.78,
-        "focusPx": 12,
-        "fog": 0.44,
+        "glowDepth": 0.75,
+        "focusPx": 0,
+        "fog": 0,
         "handheld": 1.5,
-        "shakeAt": [
-          6
-        ],
-        "shakeAmount": 22,
+        "panY": -149,
         "captionEmphasis": "inventing",
-        "captionReveal": "punch",
-        "captionMark": "none",
-        "captionWordEvery": 2
+        "captionReveal": "wipe",
+        "captionMark": "box",
+        "captionWordEvery": 2,
+        "cameraMove": "tilt",
+        "cameraPurpose": "a vertical reveal — height, depth, or a drop"
+      },
+      "diagram": {
+        "type": "measurement",
+        "value": 1956,
+        "unit": "men",
+        "accent": "#c9a94b",
+        "muted": "#cfc6ae",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -169,45 +186,45 @@
       "sceneType": "portal-zoom-reveal",
       "voText": "For forty years it mostly lost.",
       "durationInFrames": 80,
-      "transition": {
-        "kind": "flare",
-        "frames": 6
-      },
       "assets": {
         "wall": "assets/s02-kasparov-bg.png",
         "photo": "assets/s02-kasparov-photo.png"
       },
       "params": {
-        "frameWidth": 817,
-        "frameRatio": 1.26,
+        "frameWidth": 715,
+        "frameRatio": 1.02,
         "pushEndFrame": 24,
         "detachFrame": 39,
         "throughEndFrame": 53,
-        "weldRatio": 0.366,
-        "wallScaleEnd": 6.4,
+        "weldRatio": 0.36,
+        "wallScaleEnd": 5.1,
         "accent": "#c9a94b",
         "caption": [
           "Forty years",
           "of losing."
         ],
         "captionX": 84,
-        "captionY": 1272,
-        "captionFrame": 6,
-        "captionEvery": 9,
-        "captionSize": 86,
+        "captionY": 106,
+        "captionFrame": 50,
+        "captionEvery": 10,
+        "captionSize": 88,
         "captionRecedeAt": 62,
         "motif": "tally",
-        "motifX": 147,
+        "motifX": 174,
         "motifY": 499,
-        "motifSize": 95,
-        "motifCount": 10,
+        "motifSize": 108,
+        "motifCount": 11,
         "motifFrame": 59,
         "motifColour": "#c9a94b",
-        "motifOpacity": 0.99,
+        "motifOpacity": 0.81,
+        "captionAlign": "left",
+        "captionScrim": 0.38,
         "captionEmphasis": "Forty years",
         "captionReveal": "punch",
         "captionMark": "highlight",
-        "captionWordEvery": 2
+        "captionWordEvery": 3,
+        "cameraMove": "hold",
+        "cameraPurpose": "a vertical reveal — height, depth, or a drop"
       },
       "props": [
         {
@@ -222,7 +239,31 @@
           "rotate": 0,
           "from": 58
         }
-      ]
+      ],
+      "diagram": {
+        "type": "timeline",
+        "events": [
+          {
+            "at": 1956,
+            "label": "1956",
+            "note": "recovered"
+          },
+          {
+            "at": 1996,
+            "label": "1996",
+            "note": "examined"
+          }
+        ],
+        "gap": [
+          1956,
+          1996
+        ],
+        "gapLabel": "40 years\nunopened",
+        "accent": "#c9a94b",
+        "muted": "#cfc6ae",
+        "from": 0,
+        "over": 36
+      }
     },
     {
       "id": "s02-kasparov-b",
@@ -230,8 +271,8 @@
       "voText": "Then it beat Kasparov.",
       "durationInFrames": 53,
       "transition": {
-        "kind": "slip",
-        "frames": 12
+        "kind": "slam",
+        "frames": 4
       },
       "assets": {
         "ground": "assets/s02-kasparov-photo.png"
@@ -239,7 +280,7 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.8,
+          "depth": 0.79,
           "anchor": "fill"
         }
       ],
@@ -260,33 +301,59 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.49,
-        "pushTo": 1.06,
+        "pushFrom": 1.03,
+        "pushTo": 1.32,
         "pushEndFrame": 50,
         "accent": "#c9a94b",
         "caption": [
           "Then it beat Kasparov"
         ],
         "captionX": 84,
-        "captionY": 950,
-        "captionSize": 78,
+        "captionY": 106,
+        "captionSize": 53,
         "captionAlign": "left",
-        "captionFrame": 4,
-        "captionEvery": 10,
-        "captionScrim": 0.34,
-        "glowX": 1589,
-        "glowY": 373,
-        "glowSize": 515,
-        "glowIntensity": 0.46,
+        "captionFrame": 33,
+        "captionEvery": 9,
+        "captionScrim": 0.38,
+        "glowX": 1464,
+        "glowY": 228,
+        "glowSize": 439,
+        "glowIntensity": 0.56,
         "glowWarm": "#c9a94b",
-        "glowDepth": 0.8,
-        "focusPx": 7,
-        "fog": 0.57,
+        "glowDepth": 0.79,
+        "focusPx": 0,
+        "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "Kasparov",
-        "captionReveal": "wipe",
+        "captionReveal": "punch",
         "captionMark": "underline",
-        "captionWordEvery": 2
+        "captionWordEvery": 2,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "diagram": {
+        "type": "timeline",
+        "events": [
+          {
+            "at": 1956,
+            "label": "1956",
+            "note": "recovered"
+          },
+          {
+            "at": 1996,
+            "label": "1996",
+            "note": "examined"
+          }
+        ],
+        "gap": [
+          1956,
+          1996
+        ],
+        "gapLabel": "40 years\nunopened",
+        "accent": "#c9a94b",
+        "muted": "#cfc6ae",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -294,29 +361,25 @@
       "sceneType": "composite",
       "voText": "In 2012 it learned to see,",
       "durationInFrames": 78,
-      "transition": {
-        "kind": "rack",
-        "frames": 13
-      },
       "assets": {
         "ground": "assets/s03-seeing-bg.png"
       },
       "layers": [
         {
           "role": "ground",
-          "depth": 0.88,
+          "depth": 0.74,
           "anchor": "fill"
         }
       ],
       "props": [
         {
-          "kind": "beam",
-          "depth": 0.19,
-          "x": 842,
-          "y": 0,
-          "width": 288,
-          "from": 66,
-          "opacity": 0.51
+          "kind": "wire",
+          "depth": 0.75,
+          "x": 540,
+          "y": 934,
+          "width": 374,
+          "from": 48,
+          "shape": "circle"
         }
       ],
       "params": {
@@ -325,33 +388,37 @@
         "pushFrom": 1,
         "pushTo": 1.38,
         "pushEndFrame": 67,
-        "glowX": 1475,
-        "glowY": 457,
-        "glowSize": 486,
-        "glowIntensity": 0.47,
+        "glowX": 1307,
+        "glowY": 379,
+        "glowSize": 351,
+        "glowIntensity": 0.65,
         "glowWarm": "#c9a94b",
-        "glowDepth": 0.88,
-        "focusPx": 11,
-        "fog": 0.41,
+        "glowDepth": 0.74,
+        "focusPx": 0,
+        "fog": 0,
         "caption": [
           "In 2012",
           "it learned",
           "to see"
         ],
         "captionX": 84,
-        "captionY": 629,
-        "captionSize": 89,
+        "captionY": 563,
+        "captionSize": 88,
         "captionAlign": "left",
         "captionFrame": 6,
         "captionEvery": 10,
         "captionScrim": 0.34,
         "captionRecedeAt": 56,
         "accent": "#c9a94b",
-        "handheld": 3,
+        "handheld": 1.5,
+        "panY": -44,
+        "roll": -0.24,
         "captionEmphasis": "2012",
-        "captionReveal": "blur",
-        "captionMark": "highlight",
-        "captionWordEvery": 4
+        "captionReveal": "rise",
+        "captionMark": "underline",
+        "captionWordEvery": 2,
+        "cameraMove": "push",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       },
       "onScreenText": [
         {
@@ -370,7 +437,7 @@
       "durationInFrames": 77,
       "transition": {
         "kind": "rack",
-        "frames": 10
+        "frames": 6
       },
       "assets": {
         "ground": "assets/s03-seeing-bg.png"
@@ -378,25 +445,26 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.88,
+          "depth": 0.78,
           "anchor": "fill"
         }
       ],
       "props": [
         {
           "kind": "wire",
-          "depth": 0.87,
+          "depth": 0.92,
           "x": 799,
-          "y": 736,
-          "width": 436,
+          "y": 902,
+          "width": 382,
+          "from": 48,
           "shape": "diamond"
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.42,
-        "pushTo": 1.09,
+        "pushFrom": 1.38,
+        "pushTo": 1.02,
         "pushEndFrame": 72,
         "accent": "#c9a94b",
         "caption": [
@@ -404,25 +472,27 @@
           "the labs noticed"
         ],
         "captionX": 84,
-        "captionY": 1001,
-        "captionSize": 78,
+        "captionY": 1038,
+        "captionSize": 62,
         "captionAlign": "left",
         "captionFrame": 6,
-        "captionEvery": 7,
+        "captionEvery": 9,
         "captionScrim": 0.34,
-        "glowX": 1375,
-        "glowY": 352,
-        "glowSize": 310,
-        "glowIntensity": 0.43,
+        "glowX": 1388,
+        "glowY": 455,
+        "glowSize": 461,
+        "glowIntensity": 0.67,
         "glowWarm": "#c9a94b",
-        "glowDepth": 0.88,
-        "focusPx": 14,
-        "fog": 0.37,
-        "handheld": 3,
+        "glowDepth": 0.78,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
         "captionEmphasis": "outside",
-        "captionReveal": "rise",
-        "captionMark": "underline",
-        "captionWordEvery": 3
+        "captionReveal": "punch",
+        "captionMark": "box",
+        "captionWordEvery": 3,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
       }
     },
     {
@@ -431,36 +501,38 @@
       "voText": "In 2016 it played a move",
       "durationInFrames": 69,
       "transition": {
-        "kind": "slam",
-        "frames": 5
+        "kind": "slip",
+        "frames": 8
       },
       "assets": {
         "wall": "assets/s04-move-bg.png",
         "photo": "assets/s04-move-photo.png"
       },
       "params": {
-        "frameWidth": 731,
-        "frameRatio": 1.05,
+        "frameWidth": 769,
+        "frameRatio": 1.26,
         "pushEndFrame": 21,
         "detachFrame": 34,
         "throughEndFrame": 46,
-        "weldRatio": 0.367,
-        "wallScaleEnd": 5.5,
+        "weldRatio": 0.354,
+        "wallScaleEnd": 6.6,
         "accent": "#c9a94b",
         "caption": [
           "Move",
           "thirty-seven."
         ],
         "captionX": 84,
-        "captionY": 1460,
+        "captionY": 1467,
         "captionFrame": 6,
         "captionEvery": 10,
         "captionSize": 91,
         "captionRecedeAt": 51,
         "captionEmphasis": "thirty-seven",
-        "captionReveal": "rise",
-        "captionMark": "none",
-        "captionWordEvery": 4
+        "captionReveal": "blur",
+        "captionMark": "box",
+        "captionWordEvery": 4,
+        "cameraMove": "hold",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
       },
       "props": [
         {
@@ -482,17 +554,13 @@
       "sceneType": "composite",
       "voText": "no human would have played.",
       "durationInFrames": 57,
-      "transition": {
-        "kind": "flare",
-        "frames": 7
-      },
       "assets": {
         "ground": "assets/s04-move-photo.png"
       },
       "layers": [
         {
           "role": "ground",
-          "depth": 0.81,
+          "depth": 0.92,
           "anchor": "fill"
         }
       ],
@@ -513,34 +581,36 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.45,
-        "pushTo": 1.05,
-        "pushEndFrame": 54,
+        "pushFrom": 1.56,
+        "pushTo": 1.01,
+        "pushEndFrame": 55,
         "accent": "#c9a94b",
         "caption": [
           "no human would",
           "have played"
         ],
         "captionX": 84,
-        "captionY": 928,
-        "captionSize": 97,
+        "captionY": 627,
+        "captionSize": 79,
         "captionAlign": "left",
         "captionFrame": 5,
-        "captionEvery": 9,
+        "captionEvery": 6,
         "captionScrim": 0.34,
-        "glowX": 1367,
-        "glowY": 326,
-        "glowSize": 429,
-        "glowIntensity": 0.47,
+        "glowX": 1437,
+        "glowY": 598,
+        "glowSize": 480,
+        "glowIntensity": 0.68,
         "glowWarm": "#c9a94b",
-        "glowDepth": 0.81,
-        "focusPx": 11,
-        "fog": 0.34,
+        "glowDepth": 0.92,
+        "focusPx": 0,
+        "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "played",
-        "captionReveal": "punch",
+        "captionReveal": "rise",
         "captionMark": "underline",
-        "captionWordEvery": 4
+        "captionWordEvery": 2,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
       }
     },
     {
@@ -550,7 +620,7 @@
       "durationInFrames": 51,
       "transition": {
         "kind": "slam",
-        "frames": 5
+        "frames": 4
       },
       "assets": {
         "ground": "assets/s05-talk-bg.png"
@@ -558,7 +628,7 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.91,
+          "depth": 0.78,
           "anchor": "fill"
         }
       ],
@@ -582,41 +652,52 @@
         "pushFrom": 1,
         "pushTo": 1.3,
         "pushEndFrame": 44,
-        "glowX": 1481,
-        "glowY": 122,
-        "glowSize": 488,
-        "glowIntensity": 0.49,
+        "glowX": 1415,
+        "glowY": 561,
+        "glowSize": 358,
+        "glowIntensity": 0.4,
         "glowWarm": "#c9a94b",
-        "glowDepth": 0.91,
+        "glowDepth": 0.78,
         "focusPx": 0,
-        "fog": 0.41,
+        "fog": 0,
         "caption": [
           "Then",
           "it learned",
           "to talk"
         ],
         "captionX": 84,
-        "captionY": 652,
-        "captionSize": 97,
+        "captionY": 307,
+        "captionSize": 89,
         "captionAlign": "left",
-        "captionFrame": 4,
+        "captionFrame": 32,
         "captionEvery": 9,
-        "captionScrim": 0.34,
+        "captionScrim": 0.38,
         "captionRecedeAt": 37,
         "accent": "#c9a94b",
         "motif": "rise",
-        "motifX": 161,
+        "motifX": 208,
         "motifY": 1574,
-        "motifSize": 64,
-        "motifCount": 6,
-        "motifFrame": 25,
+        "motifSize": 57,
+        "motifCount": 8,
+        "motifFrame": 24,
         "motifColour": "#c9a94b",
-        "motifOpacity": 0.98,
+        "motifOpacity": 0.93,
         "handheld": 1.5,
         "captionEmphasis": "learned",
-        "captionReveal": "wipe",
+        "captionReveal": "punch",
         "captionMark": "none",
-        "captionWordEvery": 2
+        "captionWordEvery": 3,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "diagram": {
+        "type": "measurement",
+        "value": 100000000,
+        "unit": "people",
+        "accent": "#c9a94b",
+        "muted": "#cfc6ae",
+        "from": 0,
+        "over": 23
       }
     },
     {
@@ -625,8 +706,8 @@
       "voText": "and a hundred million people arrived.",
       "durationInFrames": 62,
       "transition": {
-        "kind": "slam",
-        "frames": 5
+        "kind": "flare",
+        "frames": 6
       },
       "assets": {
         "ground": "assets/s05-talk-bg.png"
@@ -634,7 +715,7 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.82,
+          "depth": 0.87,
           "anchor": "fill"
         }
       ],
@@ -655,8 +736,8 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.45,
-        "pushTo": 1.05,
+        "pushFrom": 1.17,
+        "pushTo": 1.27,
         "pushEndFrame": 58,
         "accent": "#c9a94b",
         "caption": [
@@ -665,47 +746,55 @@
           "arrived"
         ],
         "captionX": 84,
-        "captionY": 1036,
-        "captionSize": 84,
+        "captionY": 307,
+        "captionSize": 50,
         "captionAlign": "left",
-        "captionFrame": 5,
-        "captionEvery": 8,
-        "captionScrim": 0.34,
-        "glowX": 1497,
-        "glowY": 313,
-        "glowSize": 537,
-        "glowIntensity": 0.47,
+        "captionFrame": 38,
+        "captionEvery": 6,
+        "captionScrim": 0.38,
+        "glowX": 1410,
+        "glowY": 150,
+        "glowSize": 541,
+        "glowIntensity": 0.58,
         "glowWarm": "#c9a94b",
-        "glowDepth": 0.82,
-        "focusPx": 11,
-        "fog": 0.31,
+        "glowDepth": 0.87,
+        "focusPx": 0,
+        "fog": 0,
         "handheld": 1.5,
+        "panY": -134,
         "captionEmphasis": "hundred million people",
-        "captionReveal": "punch",
-        "captionMark": "none",
-        "captionWordEvery": 4
+        "captionReveal": "rise",
+        "captionMark": "highlight",
+        "captionWordEvery": 4,
+        "cameraMove": "tilt",
+        "cameraPurpose": "a vertical reveal — height, depth, or a drop"
+      },
+      "diagram": {
+        "type": "measurement",
+        "value": 100000000,
+        "unit": "people",
+        "accent": "#c9a94b",
+        "muted": "#cfc6ae",
+        "from": 0,
+        "over": 1
       }
     },
     {
       "id": "s06-close",
       "sceneType": "title-slate",
-      "voText": "Seventy years to arrive.",
-      "durationInFrames": 53,
-      "transition": {
-        "kind": "slip",
-        "frames": 12
-      },
+      "voText": "Seventy years to arrive. Two months to be everywhere.",
+      "durationInFrames": 119,
       "assets": {
         "background": "assets/s06-close-bg.png"
       },
       "params": {
-        "scrim": 0.45,
+        "scrim": 0.39,
         "kicker": "1956 · 2022",
         "title": "SEVENTY YEARS",
         "footer": "then two months",
-        "titleFrame": 4,
+        "titleFrame": 60,
         "titleSize": 230,
-        "creep": 1.041,
+        "creep": 1.096,
         "accent": "#c9a94b",
         "field": "grid",
         "fieldColours": [
@@ -722,7 +811,15 @@
           "FIFTY",
           "TWENTY"
         ],
-        "spinFrames": 21
+        "spinFrames": 48,
+        "mark": "oval",
+        "markX": 260,
+        "markY": 820,
+        "markWidth": 560,
+        "markHeight": 300,
+        "markFrame": 40,
+        "cameraMove": "hold",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       },
       "props": [
         {
@@ -733,73 +830,32 @@
           "y": 1574,
           "depth": 0.5,
           "rotate": 0,
-          "from": 29
-        }
-      ]
-    },
-    {
-      "id": "s06-close-b",
-      "sceneType": "composite",
-      "voText": "Two months to be everywhere.",
-      "durationInFrames": 66,
-      "transition": {
-        "kind": "rack",
-        "frames": 12
-      },
-      "assets": {
-        "ground": "assets/s06-close-bg.png"
-      },
-      "layers": [
-        {
-          "role": "ground",
-          "depth": 0.91,
-          "anchor": "fill"
+          "from": 65
         }
       ],
-      "props": [
-        {
-          "kind": "plaque",
-          "text": "1956 · 2022",
-          "width": 432,
-          "x": 540,
-          "y": 1574,
-          "depth": 0.5,
-          "rotate": 0,
-          "from": 0
-        }
-      ],
-      "params": {
-        "anchorX": 799,
-        "anchorY": 576,
-        "pushFrom": 1.42,
-        "pushTo": 1.06,
-        "pushEndFrame": 62,
-        "accent": "#c9a94b",
-        "caption": [
-          "Two months",
-          "to be",
-          "everywhere"
+      "diagram": {
+        "type": "timeline",
+        "events": [
+          {
+            "at": 1956,
+            "label": "1956",
+            "note": "recovered"
+          },
+          {
+            "at": 2026,
+            "label": "2026",
+            "note": "examined"
+          }
         ],
-        "captionX": 84,
-        "captionY": 1050,
-        "captionSize": 95,
-        "captionAlign": "left",
-        "captionFrame": 5,
-        "captionEvery": 6,
-        "captionScrim": 0.34,
-        "glowX": 1546,
-        "glowY": 303,
-        "glowSize": 539,
-        "glowIntensity": 0.56,
-        "glowWarm": "#c9a94b",
-        "glowDepth": 0.91,
-        "focusPx": 15,
-        "fog": 0.57,
-        "handheld": 3,
-        "captionEmphasis": "Two months",
-        "captionReveal": "rise",
-        "captionMark": "highlight",
-        "captionWordEvery": 3
+        "gap": [
+          1956,
+          2026
+        ],
+        "gapLabel": "70 years\nunopened",
+        "accent": "#c9a94b",
+        "muted": "#cfc6ae",
+        "from": 0,
+        "over": 54
       }
     }
   ]

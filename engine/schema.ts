@@ -226,6 +226,17 @@ export type SceneSpec = {
   /** The layer stack, for scene types that compose one. */
   layers?: LayerSpec[];
   props?: PropSpec[];
+  /**
+   * A DRAWN VISUAL, described as data.
+   *
+   * The answer to "we do not have a photograph of this". Not a placeholder: a
+   * meshing gear train is a better hero than a poor photograph of the wrong
+   * machine, and a timeline is a better shot than a stock picture of a cupboard.
+   * Typed loosely here because the shape is a union owned by the drawing layer;
+   * `validateEpisodeConfig` checks the discriminator and the engine refuses a
+   * kind it does not know.
+   */
+  diagram?: {type: string} & Record<string, unknown>;
   /** Partial grade for this scene only, merged over the episode's grade. */
   gradeOverride?: Partial<Grade>;
   onScreenText?: OnScreenTextSpec[];
@@ -253,6 +264,7 @@ export {
   DEFAULT_LOOK,
   BUILT_IN_SCENE_TYPES as BUILT_IN_SCENE_TYPE_LIST,
   MOTIF_KINDS,
+  DIAGRAM_KINDS,
   sceneOffsets,
   resolveAssets,
   OPTIONAL_ROLE,
