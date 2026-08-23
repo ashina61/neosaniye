@@ -56,7 +56,21 @@ export const SERVES = {
   process: ['process', 'material'],
   crossSection: ['material', 'anatomy', 'process'],
   anatomyFlow: ['anatomy'],
-  scaleHaulage: ['scale', 'process'],
+  /**
+   * A HAULAGE DRAWING IS ABOUT SIZE, AND ONLY ABOUT SIZE.
+   *
+   * It used to serve `process` as well, on the reasoning that hauling is a
+   * process. It is — but the domain does not say WHICH process, and a reel
+   * about swordsmithing is `process` from end to end. "A sword that is hard the
+   * whole way through is a sword that snaps" went to the process builder, which
+   * correctly refused it (nothing is being transformed), fell through to
+   * haulage, and was delivered as a stone block on rollers behind a hatched
+   * road, under a plate reading METHOD UNCERTAIN.
+   *
+   * Whether a process is a haulage is a question about the CLAIM, not the
+   * domain, and the builder answers it.
+   */
+  scaleHaulage: ['scale'],
   gearSystem: ['mechanism'],
   timeline: ['elapsed'],
   measurement: ['scale', 'quantity', 'geography'],

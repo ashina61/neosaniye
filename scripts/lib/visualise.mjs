@@ -492,6 +492,23 @@ export function buildScaleHaulage({vo, accent, muted, claims = [], anchorFigure 
   const lifting = has(vo, /\blift\w*|crane|pulley\b/i);
 
   /**
+   * AND IT REFUSES A LINE WITH NOTHING TO MOVE.
+   *
+   * The builders are allowed to say "not from this sentence" — the process
+   * builder does — and this one never did, so it was the last thing standing
+   * whenever every better drawing had declined. Its answer to a claim about
+   * metallurgy was a megalith on rollers with a man drawn next to it for scale.
+   *
+   * A haulage drawing needs one of two things in the sentence: a MASS, which is
+   * a size worth showing beside a person, or the act of MOVING one. Neither and
+   * the honest answer is no drawing, which sends the line to the next candidate
+   * and, if there is none, to type — where a claim with no picture belongs.
+   */
+  const moves = rolled || roped || lifting;
+  const massive = Boolean(figure && mass);
+  if (!moves && !massive) return null;
+
+  /**
    * HOW BIG THE BLOCK IS DRAWN, AND WHY IT IS NOT A STYLE CHOICE.
    *
    * The first version picked between two sizes and put the smaller one — three

@@ -171,7 +171,15 @@ export const AnatomyFlowPlate: React.FC<{spec: AnatomyFlowSpec; w: number; h: nu
         {/* THE WORLD. Everything below here is what the camera is looking at;
             the ticks above and the plates below are the sheet it is drawn on. */}
         <g transform={world}>
-        <MaterialDefs id="anat-flesh" material="flesh" colour={muted} w={w} seed="organ" />
+        {/**
+         * FLESH IS NOT A NEUTRAL.
+         *
+         * The hue wash was handed the plate's muted grey, so four chambers of a
+         * heart rendered as four grey discs — the correct value, the correct
+         * speckle, and the colour of a washer. The drawing already names the two
+         * colours this organ is made of; the muscle takes the arterial one.
+         */}
+        <MaterialDefs id="anat-flesh" material="flesh" colour={HIGH} w={w} seed="organ" />
 
         {/* VESSELS FIRST — the plumbing is behind the organ, as it is in a plate. */}
         {vessels.map((vessel, i) => {

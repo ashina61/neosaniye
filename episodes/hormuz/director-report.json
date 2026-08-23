@@ -195,9 +195,7 @@
       "reveal": null,
       "plates": [],
       "drawnGround": "wash",
-      "props": [
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim",
         "secondary": "the drawn label or mark that dates and places it",
@@ -210,8 +208,8 @@
       "template": "composite",
       "seconds": 1.73,
       "camera": {
-        "from": 1,
-        "to": 1.4,
+        "from": 1.01,
+        "to": 1.3,
         "panX": null,
         "panY": null
       },
@@ -224,12 +222,10 @@
       "representation": "PROCEDURAL",
       "drawn": "map",
       "emphasis": "two miles",
-      "reveal": "blur",
+      "reveal": "rise",
       "plates": [],
       "drawnGround": "wash",
-      "props": [
-        "beam"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"two miles\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -243,8 +239,8 @@
       "seconds": 2.5,
       "camera": {
         "from": 1.21,
-        "to": 1.18,
-        "panX": 166,
+        "to": 1.28,
+        "panX": -229,
         "panY": null
       },
       "transition": "cut",
@@ -256,10 +252,12 @@
       "representation": "PROCEDURAL",
       "drawn": "map",
       "emphasis": "One",
-      "reveal": "punch",
+      "reveal": "rise",
       "plates": [],
       "drawnGround": "wash",
-      "props": [],
+      "props": [
+        "beam"
+      ],
       "hierarchy": {
         "primary": "the claim: \"One\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -272,8 +270,8 @@
       "template": "title-slate",
       "seconds": 1.73,
       "camera": {
-        "from": 1.05,
-        "to": 1.04,
+        "from": 1,
+        "to": 1.42,
         "panX": null,
         "panY": null
       },
@@ -289,9 +287,7 @@
       "reveal": null,
       "plates": [],
       "drawnGround": "wash",
-      "props": [
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim",
         "secondary": "the drawn label or mark that dates and places it",
@@ -304,10 +300,10 @@
       "template": "composite",
       "seconds": 2.13,
       "camera": {
-        "from": 1.03,
-        "to": 1.44,
+        "from": 1.22,
+        "to": 1.31,
         "panX": null,
-        "panY": null
+        "panY": -123
       },
       "transition": "cut",
       "cut": {
@@ -318,7 +314,7 @@
       "representation": "PROCEDURAL",
       "drawn": "measurement",
       "emphasis": "through",
-      "reveal": "punch",
+      "reveal": "rise",
       "plates": [],
       "drawnGround": "wash",
       "props": [
@@ -336,10 +332,10 @@
       "template": "composite",
       "seconds": 2.13,
       "camera": {
-        "from": 1.21,
-        "to": 1.29,
+        "from": 1.02,
+        "to": 1.38,
         "panX": null,
-        "panY": 150
+        "panY": null
       },
       "transition": "cut",
       "cut": {
@@ -350,7 +346,7 @@
       "representation": "PROCEDURAL",
       "drawn": "measurement",
       "emphasis": "single",
-      "reveal": "blur",
+      "reveal": "punch",
       "plates": [],
       "drawnGround": "wash",
       "props": [],
@@ -366,10 +362,10 @@
       "template": "composite",
       "seconds": 2.5,
       "camera": {
-        "from": 1.14,
-        "to": 1.31,
-        "panX": -158,
-        "panY": null
+        "from": 1,
+        "to": 1.09,
+        "panX": null,
+        "panY": -44
       },
       "transition": "cut",
       "cut": {
@@ -380,13 +376,10 @@
       "representation": "TYPOGRAPHY",
       "drawn": null,
       "emphasis": "close",
-      "reveal": "rise",
+      "reveal": "wipe",
       "plates": [],
       "drawnGround": "wash",
-      "props": [
-        "beam",
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"close\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -399,9 +392,9 @@
       "template": "composite",
       "seconds": 2.13,
       "camera": {
-        "from": 1.49,
-        "to": 1.05,
-        "panX": null,
+        "from": 1.14,
+        "to": 1.21,
+        "panX": 189,
         "panY": null
       },
       "transition": "cut",
@@ -416,9 +409,7 @@
       "reveal": "rise",
       "plates": [],
       "drawnGround": "wash",
-      "props": [
-        "beam"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"everything\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -431,7 +422,7 @@
       "template": "composite",
       "seconds": 2.5,
       "camera": {
-        "from": 1.05,
+        "from": 1.04,
         "to": 1.05,
         "panX": null,
         "panY": null
@@ -445,10 +436,12 @@
       "representation": "PROCEDURAL",
       "drawn": "map",
       "emphasis": "around",
-      "reveal": "punch",
+      "reveal": "wipe",
       "plates": [],
       "drawnGround": "wash",
-      "props": [],
+      "props": [
+        "beam"
+      ],
       "hierarchy": {
         "primary": "the claim: \"around\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -461,9 +454,9 @@
       "template": "composite",
       "seconds": 2.13,
       "camera": {
-        "from": 1.01,
-        "to": 1.4,
-        "panX": null,
+        "from": 1.18,
+        "to": 1.25,
+        "panX": -177,
         "panY": null
       },
       "transition": "cut",
@@ -475,7 +468,7 @@
       "representation": "PROCEDURAL",
       "drawn": "map",
       "emphasis": "one",
-      "reveal": "punch",
+      "reveal": "rise",
       "plates": [],
       "drawnGround": "wash",
       "props": [],
@@ -491,9 +484,9 @@
       "template": "composite",
       "seconds": 2.13,
       "camera": {
-        "from": 1.2,
-        "to": 1.26,
-        "panX": -245,
+        "from": 1.04,
+        "to": 1.34,
+        "panX": null,
         "panY": null
       },
       "transition": "cut",
@@ -505,7 +498,7 @@
       "representation": "PROCEDURAL",
       "drawn": "map",
       "emphasis": "door",
-      "reveal": "wipe",
+      "reveal": "blur",
       "plates": [],
       "drawnGround": "wash",
       "props": [
@@ -524,7 +517,7 @@
       "seconds": 2.13,
       "camera": {
         "from": 1.54,
-        "to": 1.01,
+        "to": 1.05,
         "panX": null,
         "panY": null
       },
@@ -554,9 +547,9 @@
       "seconds": 1.73,
       "camera": {
         "from": 1,
-        "to": 1.13,
+        "to": 1.12,
         "panX": null,
-        "panY": -45
+        "panY": -26
       },
       "transition": "cut",
       "cut": {
@@ -567,12 +560,10 @@
       "representation": "PROCEDURAL",
       "drawn": "map",
       "emphasis": "holds",
-      "reveal": "rise",
+      "reveal": "punch",
       "plates": [],
       "drawnGround": "wash",
-      "props": [
-        "beam"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"holds\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -585,9 +576,9 @@
       "template": "composite",
       "seconds": 2.87,
       "camera": {
-        "from": 1.16,
-        "to": 1.26,
-        "panX": 253,
+        "from": 1.21,
+        "to": 1.27,
+        "panX": -192,
         "panY": null
       },
       "transition": "cut",
@@ -602,7 +593,9 @@
       "reveal": "blur",
       "plates": [],
       "drawnGround": "wash",
-      "props": [],
+      "props": [
+        "beam"
+      ],
       "hierarchy": {
         "primary": "the claim: \"Omani\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -615,8 +608,8 @@
       "template": "title-slate",
       "seconds": 1.5,
       "camera": {
-        "from": 1,
-        "to": 1.43,
+        "from": 1.04,
+        "to": 1.05,
         "panX": null,
         "panY": null
       },
@@ -632,9 +625,7 @@
       "reveal": null,
       "plates": [],
       "drawnGround": "wash",
-      "props": [
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim",
         "secondary": "the drawn label or mark that dates and places it",
@@ -647,9 +638,9 @@
       "template": "composite",
       "seconds": 2.87,
       "camera": {
-        "from": 1.22,
-        "to": 1.26,
-        "panX": 187,
+        "from": 1.24,
+        "to": 1.22,
+        "panX": 221,
         "panY": null
       },
       "transition": "cut",
@@ -661,7 +652,7 @@
       "representation": "PROCEDURAL",
       "drawn": "map",
       "emphasis": "two-mile",
-      "reveal": "wipe",
+      "reveal": "punch",
       "plates": [],
       "drawnGround": "wash",
       "props": [
@@ -680,7 +671,7 @@
       "seconds": 1.5,
       "camera": {
         "from": 1,
-        "to": 1.54,
+        "to": 1.5,
         "panX": null,
         "panY": null
       },
@@ -710,7 +701,7 @@
       "seconds": 2.5,
       "camera": {
         "from": 1.04,
-        "to": 1.07,
+        "to": 1.04,
         "panX": null,
         "panY": null
       },
@@ -723,12 +714,10 @@
       "representation": "TYPOGRAPHY",
       "drawn": null,
       "emphasis": "Every",
-      "reveal": "rise",
+      "reveal": "wipe",
       "plates": [],
       "drawnGround": "wash",
-      "props": [
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"Every\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -741,10 +730,10 @@
       "template": "composite",
       "seconds": 2.5,
       "camera": {
-        "from": 1.2,
-        "to": 1.29,
+        "from": 1.22,
+        "to": 1.22,
         "panX": null,
-        "panY": -191
+        "panY": 202
       },
       "transition": "cut",
       "cut": {
@@ -758,9 +747,7 @@
       "reveal": "blur",
       "plates": [],
       "drawnGround": "wash",
-      "props": [
-        "beam"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"warship\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -774,7 +761,7 @@
       "seconds": 3.93,
       "camera": {
         "from": 1.04,
-        "to": 1.05,
+        "to": 1.06,
         "panX": null,
         "panY": null
       },
@@ -854,9 +841,9 @@
       "push": 6,
       "tilt": 3,
       "pan": 6,
+      "drift": 2,
       "hold": 4,
-      "pull": 2,
-      "drift": 1
+      "pull": 1
     },
     "transition": {
       "cut": 21

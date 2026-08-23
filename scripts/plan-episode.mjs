@@ -1382,6 +1382,21 @@ function buildStack({line, ground, rand, groundDepth, spread = 0, cutouts = fals
  * lit centre give the type something to sit on and the camera something to move
  * against, and a little drawn light off the episode's own side finishes it.
  */
+/**
+ * A COLOUR PULLED TOWARD BLACK, keeping its hue.
+ *
+ * Multiplying the channels rather than blending with black or dropping the
+ * lightness in HSL: multiplication is what less light actually does to a
+ * surface, and it leaves the relationship between the three stops intact.
+ */
+function dim(hex, k) {
+  const m = /^#?([0-9a-f]{6})$/i.exec(String(hex));
+  if (!m) return hex;
+  const v = Number.parseInt(m[1], 16);
+  const ch = [(v >> 16) & 255, (v >> 8) & 255, v & 255].map((c) => Math.max(0, Math.min(255, Math.round(c * k))));
+  return `#${ch.map((c) => c.toString(16).padStart(2, '0')).join('')}`;
+}
+
 function graphicGround(look) {
   return {
     field: look.field === 'grid' || look.field === 'paper' ? 'spotlight' : look.field,
@@ -2302,6 +2317,26 @@ function applyDirection({
     }
   }
 
+  /**
+   * A DRAWING NEEDS A GROUND DARKER THAN THE DRAWING.
+   *
+   * The four chambers of a heart came out as grey buttons because the field
+   * behind them was a wash running from bright ochre at the top of the frame,
+   * and a schematic is LINE WORK: pale strokes, thin labels, a muted contour.
+   * Put light lines on a light ground and the drawing does not lose a little
+   * contrast, it stops being visible — the brightest thing in a shot about a
+   * heart was the empty air beside it.
+   *
+   * The palette is not replaced, only pulled down: the reel still looks like
+   * itself, the hues are the same family, and the values go where a plate's
+   * values belong. Photographic shots keep the ground they were given, because
+   * there the ground is BEHIND a picture rather than under a pen.
+   */
+  if (scene.diagram && Array.isArray(scene.params?.fieldColours)) {
+    const pull = [0.26, 0.34, 0.72];
+    scene.params.fieldColours = scene.params.fieldColours.map((hex, i) => dim(hex, pull[i] ?? 0.4));
+  }
+
   if (Array.isArray(scene.props) && scene.props.length) {
     const before = scene.props.length;
     /**
@@ -2314,6 +2349,22 @@ function applyDirection({
      * circles of the same colour in the same place, one of them meaningless.
      */
     if (scene.diagram) scene.props = scene.props.filter((q) => q.kind !== 'wire');
+    /**
+     * NOR DOES A SENTENCE. The same argument, and the case it was missing.
+     *
+     * A pure graphic exists so a shot with nothing in it is not empty. A shot
+     * whose entire content is three lines of type is not empty — the words ARE
+     * the subject, and the whole point of a typographic shot is that the
+     * representation director could find no honest picture and said so. What it
+     * delivered instead was a dashed diamond rotating above the words, related
+     * to nothing, drawn because a slot was free.
+     *
+     * `wire` and `beam` are the two props with nothing of their own to say, so
+     * they are the two that go. A plaque or a card carries the line's own label
+     * and stays.
+     */
+    const typeOnly = !scene.diagram && !(scene.layers ?? []).length;
+    if (typeOnly) scene.props = scene.props.filter((q) => q.kind !== 'wire' && q.kind !== 'beam');
     scene.props = standClear(scene.props, typeZone(scene));
     if (scene.props.length < before) plan.propsDropped = before - scene.props.length;
     if (!scene.props.length) delete scene.props;

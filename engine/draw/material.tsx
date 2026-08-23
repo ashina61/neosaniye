@@ -145,10 +145,18 @@ export const MaterialDefs: React.FC<{
         <stop offset="62%" stopColor={value(m.body * 0.86)} stopOpacity={m.bodyAlpha} />
         <stop offset="100%" stopColor={value(m.body * 0.52)} stopOpacity={m.bodyAlpha} />
       </linearGradient>
-      {/** The hue, as a wash over the body rather than as the body itself. */}
+      {/**
+       * THE HUE, as a wash over the body rather than as the body itself.
+       *
+       * How much of it depends on the material. Stone and concrete are grey
+       * things that take a cast from the light; flesh and wood ARE their colour,
+       * and washing them at a fifth left a heart's chambers reading as four
+       * grey discs. `give` already distinguishes the two families — a material
+       * that yields is a material made of something coloured.
+       */}
       <linearGradient id={`${id}-hue`} x1="0" y1="0" x2="0.3" y2="1">
-        <stop offset="0%" stopColor={colour} stopOpacity={0.2} />
-        <stop offset="100%" stopColor={colour} stopOpacity={0.08} />
+        <stop offset="0%" stopColor={colour} stopOpacity={0.18 + m.give * 0.42} />
+        <stop offset="100%" stopColor={colour} stopOpacity={0.07 + m.give * 0.2} />
       </linearGradient>
       <linearGradient id={`${id}-sheen`} x1="0" y1="0" x2="0.7" y2="1">
         <stop offset="0%" stopColor={tint} stopOpacity={0.05 + m.sheen * 0.1} />

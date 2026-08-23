@@ -18,13 +18,13 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.3,
-      "grungeOpacity": 0.2,
-      "scanlineOpacity": 0.07,
-      "scanlinePeriod": 9,
-      "vignetteStrength": 0.35,
-      "weavePx": 5,
-      "weaveScale": 1.016
+      "grainOpacity": 0.4,
+      "grungeOpacity": 0.11,
+      "scanlineOpacity": 0.13,
+      "scanlinePeriod": 11,
+      "vignetteStrength": 0.4,
+      "weavePx": 6,
+      "weaveScale": 1.011
     }
   },
   "scenes": [
@@ -71,16 +71,6 @@
           "width": 389,
           "rotate": -2.1,
           "from": 8
-        },
-        {
-          "kind": "wire",
-          "shape": "diamond",
-          "depth": 0.6,
-          "x": 687,
-          "y": 1094,
-          "width": 267,
-          "colour": "#e8a020",
-          "from": 7
         }
       ]
     },
@@ -107,20 +97,20 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.04,
-        "pushTo": 1.48,
+        "pushFrom": 1.03,
+        "pushTo": 1.56,
         "pushEndFrame": 42,
         "accent": "#e8a020",
         "field": "spotlight",
         "fieldColours": [
-          "#d9a13c",
-          "#8a5a18",
-          "#241505"
+          "#382a10",
+          "#2f1f08",
+          "#1a0f04"
         ],
-        "glowX": 1331,
-        "glowY": 483,
-        "glowSize": 393,
-        "glowIntensity": 0.6,
+        "glowX": 1408,
+        "glowY": 368,
+        "glowSize": 438,
+        "glowIntensity": 0.51,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
@@ -131,14 +121,14 @@
         "captionSize": 85,
         "captionAlign": "left",
         "captionFrame": 28,
-        "captionEvery": 9,
+        "captionEvery": 8,
         "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "forged",
         "captionReveal": "rise",
-        "captionMark": "underline",
+        "captionMark": "highlight",
         "captionWordEvery": 3,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
@@ -250,31 +240,31 @@
         {
           "kind": "plaque",
           "text": "EUROPE · 1350",
-          "depth": 0.58,
-          "x": 388,
-          "y": 1499,
-          "width": 403,
-          "rotate": -0.4,
+          "depth": 0.67,
+          "x": 342,
+          "y": 1416,
+          "width": 430,
+          "rotate": -0.8,
           "from": 0
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
-        "pushFrom": 1.25,
-        "pushTo": 1.33,
-        "pushEndFrame": 59,
+        "pushFrom": 1.23,
+        "pushTo": 1.23,
+        "pushEndFrame": 62,
         "accent": "#e8a020",
         "field": "spotlight",
         "fieldColours": [
-          "#d9a13c",
-          "#8a5a18",
-          "#241505"
+          "#382a10",
+          "#2f1f08",
+          "#1a0f04"
         ],
-        "glowX": 1355,
-        "glowY": 472,
-        "glowSize": 456,
-        "glowIntensity": 0.46,
+        "glowX": 1284,
+        "glowY": 249,
+        "glowSize": 313,
+        "glowIntensity": 0.51,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
@@ -285,16 +275,20 @@
         "captionSize": 62,
         "captionAlign": "left",
         "captionFrame": 35,
-        "captionEvery": 8,
+        "captionEvery": 6,
         "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panY": -142,
+        "panY": -201,
+        "shakeAt": [
+          5
+        ],
+        "shakeAmount": 21,
         "captionEmphasis": "iron",
         "captionReveal": "wipe",
-        "captionMark": "highlight",
-        "captionWordEvery": 4,
+        "captionMark": "box",
+        "captionWordEvery": 3,
         "cameraMove": "tilt",
         "cameraPurpose": "a vertical reveal — height, depth, or a drop"
       },
@@ -401,13 +395,13 @@
       "durationInFrames": 97,
       "assets": {},
       "params": {
-        "scrim": 0.4,
+        "scrim": 0.43,
         "kicker": "",
         "title": "TWELVE HUNDRED DEGREES",
         "footer": "",
-        "titleFrame": 45,
+        "titleFrame": 46,
         "titleSize": 230,
-        "creep": 1.052,
+        "creep": 1.1,
         "accent": "#e8a020",
         "field": "spotlight",
         "fieldColours": [
@@ -421,24 +415,12 @@
         "markWidth": 560,
         "markHeight": 300,
         "markFrame": 33,
-        "pushEndFrame": 94,
-        "pushFrom": 1.05,
-        "pushTo": 1.05,
+        "pushEndFrame": 95,
+        "pushFrom": 1.04,
+        "pushTo": 1.06,
         "cameraMove": "hold",
         "cameraPurpose": "importance. The frame stops because the idea needs no help"
-      },
-      "props": [
-        {
-          "kind": "wire",
-          "shape": "diamond",
-          "depth": 0.73,
-          "x": 420,
-          "y": 474,
-          "width": 419,
-          "colour": "#e8a020",
-          "from": 82
-        }
-      ]
+      }
     },
     {
       "id": "s02-heat-b",
@@ -450,12 +432,12 @@
       "props": [
         {
           "kind": "beam",
-          "depth": 0.4,
-          "x": 929,
-          "y": 15,
-          "width": 302,
-          "rotate": -16,
-          "opacity": 0.56,
+          "depth": 0.33,
+          "x": 799,
+          "y": 83,
+          "width": 296,
+          "rotate": -12,
+          "opacity": 0.72,
           "colour": "#e8a020",
           "from": 0
         }
@@ -464,18 +446,18 @@
         "anchorX": 799,
         "anchorY": 576,
         "pushFrom": 1.01,
-        "pushTo": 1.42,
+        "pushTo": 1.43,
         "pushEndFrame": 43,
         "accent": "#e8a020",
         "field": "spotlight",
         "fieldColours": [
-          "#d9a13c",
-          "#8a5a18",
-          "#241505"
+          "#382a10",
+          "#2f1f08",
+          "#1a0f04"
         ],
-        "glowX": 1391,
-        "glowY": 366,
-        "glowSize": 367,
+        "glowX": 1429,
+        "glowY": 166,
+        "glowSize": 383,
         "glowIntensity": 0.68,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
@@ -493,9 +475,9 @@
         "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "Orange",
-        "captionReveal": "rise",
-        "captionMark": "highlight",
-        "captionWordEvery": 4,
+        "captionReveal": "blur",
+        "captionMark": "none",
+        "captionWordEvery": 3,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
       },
@@ -640,24 +622,12 @@
       "durationInFrames": 75,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "wire",
-          "shape": "circle",
-          "depth": 0.75,
-          "x": 388,
-          "y": 1682,
-          "width": 360,
-          "colour": "#e8a020",
-          "from": 64
-        }
-      ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1,
-        "pushTo": 1.11,
-        "pushEndFrame": 71,
+        "pushFrom": 1.21,
+        "pushTo": 1.2,
+        "pushEndFrame": 70,
         "glowX": 1145,
         "glowY": 422,
         "glowSize": 560,
@@ -684,19 +654,18 @@
         "captionSize": 170,
         "captionAlign": "left",
         "captionFrame": -12,
-        "captionEvery": 8,
+        "captionEvery": 9,
         "captionScrim": 0,
         "captionRecedeAt": 54,
         "accent": "#e8a020",
         "handheld": 1.5,
-        "panY": -60,
-        "roll": -0.18,
+        "panX": -182,
         "captionEmphasis": "little",
-        "captionReveal": "wipe",
+        "captionReveal": "punch",
         "captionMark": "none",
-        "captionWordEvery": 4,
-        "cameraMove": "drift",
-        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+        "captionWordEvery": 2,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
       }
     },
     {
@@ -706,25 +675,12 @@
       "durationInFrames": 64,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.33,
-          "x": 822,
-          "y": 150,
-          "width": 264,
-          "rotate": -15,
-          "opacity": 0.81,
-          "colour": "#e8a020",
-          "from": 54
-        }
-      ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.23,
-        "pushTo": 1.22,
-        "pushEndFrame": 60,
+        "pushFrom": 1.44,
+        "pushTo": 1.01,
+        "pushEndFrame": 62,
         "accent": "#e8a020",
         "field": "spotlight",
         "fieldColours": [
@@ -732,10 +688,10 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1332,
-        "glowY": 343,
-        "glowSize": 379,
-        "glowIntensity": 0.63,
+        "glowX": 1336,
+        "glowY": 499,
+        "glowSize": 383,
+        "glowIntensity": 0.67,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
@@ -747,18 +703,17 @@
         "captionSize": 104,
         "captionAlign": "left",
         "captionFrame": -12,
-        "captionEvery": 7,
+        "captionEvery": 9,
         "captionScrim": 0,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panX": -248,
         "captionEmphasis": "shatters",
-        "captionReveal": "punch",
-        "captionMark": "highlight",
-        "captionWordEvery": 4,
-        "cameraMove": "pan",
-        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+        "captionReveal": "rise",
+        "captionMark": "box",
+        "captionWordEvery": 2,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
       }
     },
     {
@@ -768,24 +723,12 @@
       "durationInFrames": 52,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "wire",
-          "shape": "diamond",
-          "depth": 0.77,
-          "x": 398,
-          "y": 552,
-          "width": 344,
-          "colour": "#e8a020",
-          "from": 44
-        }
-      ],
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
-        "pushFrom": 1.35,
-        "pushTo": 1.01,
-        "pushEndFrame": 48,
+        "pushFrom": 1,
+        "pushTo": 1.08,
+        "pushEndFrame": 47,
         "accent": "#e8a020",
         "field": "spotlight",
         "fieldColours": [
@@ -793,10 +736,10 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1331,
-        "glowY": 537,
-        "glowSize": 375,
-        "glowIntensity": 0.53,
+        "glowX": 1338,
+        "glowY": 248,
+        "glowSize": 396,
+        "glowIntensity": 0.42,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
@@ -808,17 +751,19 @@
         "captionSize": 113,
         "captionAlign": "left",
         "captionFrame": -12,
-        "captionEvery": 8,
+        "captionEvery": 10,
         "captionScrim": 0,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
+        "panY": -62,
+        "roll": -0.59,
         "captionEmphasis": "first",
-        "captionReveal": "rise",
+        "captionReveal": "wipe",
         "captionMark": "none",
-        "captionWordEvery": 2,
-        "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "captionWordEvery": 4,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       }
     },
     {
@@ -831,12 +776,12 @@
       "props": [
         {
           "kind": "beam",
-          "depth": 0.4,
-          "x": 811,
-          "y": 19,
-          "width": 333,
-          "rotate": -12,
-          "opacity": 0.77,
+          "depth": 0.31,
+          "x": 978,
+          "y": -9,
+          "width": 337,
+          "rotate": -8,
+          "opacity": 0.7,
           "colour": "#e8a020",
           "from": 0
         }
@@ -844,9 +789,9 @@
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1,
-        "pushTo": 1.09,
-        "pushEndFrame": 80,
+        "pushFrom": 1.42,
+        "pushTo": 1.05,
+        "pushEndFrame": 84,
         "glowX": 1145,
         "glowY": 422,
         "glowSize": 560,
@@ -857,9 +802,9 @@
         "fog": 0,
         "field": "spotlight",
         "fieldColours": [
-          "#d9a13c",
-          "#8a5a18",
-          "#241505"
+          "#382a10",
+          "#2f1f08",
+          "#1a0f04"
         ],
         "caption": [
           "So the blade",
@@ -881,17 +826,15 @@
           "The core",
           "The spine"
         ],
-        "motifFrame": 23,
+        "motifFrame": 27,
         "motifColour": "#e8a020",
         "handheld": 1.5,
-        "panY": -56,
-        "roll": -0.32,
         "captionEmphasis": "layers",
-        "captionReveal": "punch",
+        "captionReveal": "rise",
         "captionMark": "underline",
         "captionWordEvery": 3,
-        "cameraMove": "drift",
-        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
       },
       "diagram": {
         "type": "process",
@@ -997,20 +940,20 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.39,
-        "pushTo": 1.01,
-        "pushEndFrame": 62,
+        "pushFrom": 1,
+        "pushTo": 1.07,
+        "pushEndFrame": 61,
         "accent": "#e8a020",
         "field": "spotlight",
         "fieldColours": [
-          "#d9a13c",
-          "#8a5a18",
-          "#241505"
+          "#382a10",
+          "#2f1f08",
+          "#1a0f04"
         ],
-        "glowX": 1435,
-        "glowY": 456,
-        "glowSize": 456,
-        "glowIntensity": 0.7,
+        "glowX": 1421,
+        "glowY": 211,
+        "glowSize": 444,
+        "glowIntensity": 0.66,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
@@ -1019,7 +962,7 @@
         ],
         "captionX": 84,
         "captionY": 106,
-        "captionSize": 97,
+        "captionSize": 96,
         "captionAlign": "left",
         "captionFrame": 35,
         "captionEvery": 9,
@@ -1027,12 +970,14 @@
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
+        "panY": -45,
+        "roll": -0.6,
         "captionEmphasis": "steel",
-        "captionReveal": "wipe",
-        "captionMark": "highlight",
-        "captionWordEvery": 4,
-        "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "captionReveal": "blur",
+        "captionMark": "underline",
+        "captionWordEvery": 3,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       },
       "diagram": {
         "type": "process",
@@ -1135,36 +1080,23 @@
       "durationInFrames": 64,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.25,
-          "x": 841,
-          "y": 116,
-          "width": 361,
-          "rotate": -8,
-          "opacity": 0.64,
-          "colour": "#e8a020",
-          "from": 0
-        }
-      ],
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
-        "pushFrom": 1.18,
-        "pushTo": 1.31,
-        "pushEndFrame": 61,
+        "pushFrom": 1.21,
+        "pushTo": 1.23,
+        "pushEndFrame": 63,
         "accent": "#e8a020",
         "field": "spotlight",
         "fieldColours": [
-          "#d9a13c",
-          "#8a5a18",
-          "#241505"
+          "#382a10",
+          "#2f1f08",
+          "#1a0f04"
         ],
-        "glowX": 1307,
-        "glowY": 353,
-        "glowSize": 319,
-        "glowIntensity": 0.53,
+        "glowX": 1482,
+        "glowY": 345,
+        "glowSize": 414,
+        "glowIntensity": 0.52,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
@@ -1173,7 +1105,7 @@
         ],
         "captionX": 84,
         "captionY": 106,
-        "captionSize": 89,
+        "captionSize": 91,
         "captionAlign": "left",
         "captionFrame": 35,
         "captionEvery": 8,
@@ -1181,7 +1113,7 @@
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panX": -194,
+        "panX": 169,
         "captionEmphasis": "spine",
         "captionReveal": "rise",
         "captionMark": "none",
@@ -1293,9 +1225,9 @@
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1.04,
-        "pushTo": 1.06,
-        "pushEndFrame": 48,
+        "pushFrom": 1.02,
+        "pushTo": 1.08,
+        "pushEndFrame": 47,
         "glowX": 1145,
         "glowY": 422,
         "glowSize": 560,
@@ -1306,9 +1238,9 @@
         "fog": 0,
         "field": "spotlight",
         "fieldColours": [
-          "#d9a13c",
-          "#8a5a18",
-          "#241505"
+          "#382a10",
+          "#2f1f08",
+          "#1a0f04"
         ],
         "caption": [
           "Hammer",
@@ -1320,22 +1252,22 @@
         "captionSize": 93,
         "captionAlign": "left",
         "captionFrame": 29,
-        "captionEvery": 7,
+        "captionEvery": 8,
         "captionScrim": 0.38,
         "captionRecedeAt": 37,
         "accent": "#e8a020",
         "motif": "tally",
-        "motifX": 111,
-        "motifY": 546,
-        "motifSize": 94,
-        "motifCount": 14,
+        "motifX": 78,
+        "motifY": 550,
+        "motifSize": 103,
+        "motifCount": 13,
         "motifFrame": 21,
         "motifColour": "#e8a020",
-        "motifOpacity": 0.8,
+        "motifOpacity": 0.89,
         "handheld": 3,
         "captionEmphasis": "Hammer",
         "captionReveal": "punch",
-        "captionMark": "none",
+        "captionMark": "highlight",
         "captionWordEvery": 3,
         "cameraMove": "hold",
         "cameraPurpose": "importance. The frame stops because the idea needs no help"
@@ -1486,12 +1418,12 @@
       "props": [
         {
           "kind": "beam",
-          "depth": 0.29,
-          "x": 898,
-          "y": -64,
-          "width": 302,
-          "rotate": -16,
-          "opacity": 0.69,
+          "depth": 0.25,
+          "x": 873,
+          "y": 26,
+          "width": 231,
+          "rotate": -17,
+          "opacity": 0.58,
           "colour": "#e8a020",
           "from": 0
         }
@@ -1499,20 +1431,20 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.06,
-        "pushTo": 1.48,
-        "pushEndFrame": 47,
+        "pushFrom": 1.02,
+        "pushTo": 1.45,
+        "pushEndFrame": 48,
         "accent": "#e8a020",
         "field": "spotlight",
         "fieldColours": [
-          "#d9a13c",
-          "#8a5a18",
-          "#241505"
+          "#382a10",
+          "#2f1f08",
+          "#1a0f04"
         ],
-        "glowX": 1379,
-        "glowY": 360,
-        "glowSize": 406,
-        "glowIntensity": 0.42,
+        "glowX": 1423,
+        "glowY": 308,
+        "glowSize": 496,
+        "glowIntensity": 0.41,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
@@ -1529,8 +1461,8 @@
         "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "Each",
-        "captionReveal": "rise",
-        "captionMark": "underline",
+        "captionReveal": "punch",
+        "captionMark": "none",
         "captionWordEvery": 3,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
@@ -1681,20 +1613,20 @@
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
-        "pushFrom": 1.04,
-        "pushTo": 1.07,
+        "pushFrom": 1.02,
+        "pushTo": 1.4,
         "pushEndFrame": 41,
         "accent": "#e8a020",
         "field": "spotlight",
         "fieldColours": [
-          "#d9a13c",
-          "#8a5a18",
-          "#241505"
+          "#382a10",
+          "#2f1f08",
+          "#1a0f04"
         ],
-        "glowX": 1574,
-        "glowY": 593,
-        "glowSize": 551,
-        "glowIntensity": 0.5,
+        "glowX": 1373,
+        "glowY": 361,
+        "glowSize": 446,
+        "glowIntensity": 0.68,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
@@ -1705,17 +1637,17 @@
         "captionSize": 62,
         "captionAlign": "left",
         "captionFrame": 28,
-        "captionEvery": 6,
+        "captionEvery": 9,
         "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
-        "handheld": 3,
+        "handheld": 1.5,
         "captionEmphasis": "doubles",
-        "captionReveal": "blur",
-        "captionMark": "highlight",
+        "captionReveal": "rise",
+        "captionMark": "none",
         "captionWordEvery": 2,
-        "cameraMove": "hold",
-        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
       },
       "diagram": {
         "type": "process",
@@ -1860,12 +1792,25 @@
       "durationInFrames": 52,
       "assets": {},
       "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.29,
+          "x": 884,
+          "y": -37,
+          "width": 374,
+          "rotate": -17,
+          "opacity": 0.64,
+          "colour": "#e8a020",
+          "from": 0
+        }
+      ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
         "pushFrom": 1,
-        "pushTo": 1.49,
-        "pushEndFrame": 50,
+        "pushTo": 1.46,
+        "pushEndFrame": 47,
         "glowX": 1145,
         "glowY": 422,
         "glowSize": 560,
@@ -1876,9 +1821,9 @@
         "fog": 0,
         "field": "spotlight",
         "fieldColours": [
-          "#d9a13c",
-          "#8a5a18",
-          "#241505"
+          "#382a10",
+          "#2f1f08",
+          "#1a0f04"
         ],
         "caption": [
           "Then",
@@ -1887,7 +1832,7 @@
         ],
         "captionX": 84,
         "captionY": 106,
-        "captionSize": 88,
+        "captionSize": 93,
         "captionAlign": "left",
         "captionFrame": 29,
         "captionEvery": 7,
@@ -1897,7 +1842,7 @@
         "handheld": 1.5,
         "captionEmphasis": "finished",
         "captionReveal": "blur",
-        "captionMark": "highlight",
+        "captionMark": "underline",
         "captionWordEvery": 3,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
@@ -2050,19 +1995,19 @@
         "anchorX": 799,
         "anchorY": 576,
         "pushFrom": 1.02,
-        "pushTo": 1.07,
-        "pushEndFrame": 48,
+        "pushTo": 1.05,
+        "pushEndFrame": 49,
         "accent": "#e8a020",
         "field": "spotlight",
         "fieldColours": [
-          "#d9a13c",
-          "#8a5a18",
-          "#241505"
+          "#382a10",
+          "#2f1f08",
+          "#1a0f04"
         ],
-        "glowX": 1392,
-        "glowY": 577,
-        "glowSize": 502,
-        "glowIntensity": 0.42,
+        "glowX": 1368,
+        "glowY": 552,
+        "glowSize": 397,
+        "glowIntensity": 0.45,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
@@ -2073,14 +2018,14 @@
         "captionSize": 58,
         "captionAlign": "left",
         "captionFrame": 29,
-        "captionEvery": 7,
+        "captionEvery": 10,
         "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 3,
         "captionEmphasis": "heated",
-        "captionReveal": "wipe",
-        "captionMark": "box",
+        "captionReveal": "rise",
+        "captionMark": "underline",
         "captionWordEvery": 2,
         "cameraMove": "hold",
         "cameraPurpose": "importance. The frame stops because the idea needs no help"
@@ -2232,12 +2177,12 @@
       "props": [
         {
           "kind": "beam",
-          "depth": 0.16,
-          "x": 1003,
-          "y": 113,
-          "width": 373,
-          "rotate": -13,
-          "opacity": 0.61,
+          "depth": 0.31,
+          "x": 962,
+          "y": -47,
+          "width": 302,
+          "rotate": -22,
+          "opacity": 0.6,
           "colour": "#e8a020",
           "from": 0
         }
@@ -2245,20 +2190,20 @@
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
-        "pushFrom": 1,
-        "pushTo": 1.44,
+        "pushFrom": 1.01,
+        "pushTo": 1.36,
         "pushEndFrame": 50,
         "accent": "#e8a020",
         "field": "spotlight",
         "fieldColours": [
-          "#d9a13c",
-          "#8a5a18",
-          "#241505"
+          "#382a10",
+          "#2f1f08",
+          "#1a0f04"
         ],
-        "glowX": 1455,
-        "glowY": 394,
-        "glowSize": 439,
-        "glowIntensity": 0.42,
+        "glowX": 1419,
+        "glowY": 184,
+        "glowSize": 357,
+        "glowIntensity": 0.53,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
@@ -2269,15 +2214,15 @@
         "captionSize": 55,
         "captionAlign": "left",
         "captionFrame": 29,
-        "captionEvery": 9,
+        "captionEvery": 10,
         "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "plunged",
-        "captionReveal": "punch",
+        "captionReveal": "rise",
         "captionMark": "highlight",
-        "captionWordEvery": 3,
+        "captionWordEvery": 2,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
       },
@@ -2428,9 +2373,9 @@
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1.17,
-        "pushTo": 1.25,
-        "pushEndFrame": 89,
+        "pushFrom": 1,
+        "pushTo": 1.1,
+        "pushEndFrame": 94,
         "glowX": 1145,
         "glowY": 422,
         "glowSize": 560,
@@ -2441,9 +2386,9 @@
         "fog": 0,
         "field": "spotlight",
         "fieldColours": [
-          "#d9a13c",
-          "#8a5a18",
-          "#241505"
+          "#382a10",
+          "#2f1f08",
+          "#1a0f04"
         ],
         "caption": [
           "The thin edge cools",
@@ -2453,19 +2398,20 @@
         "captionY": 106,
         "captionSize": 58,
         "captionAlign": "left",
-        "captionFrame": 41,
-        "captionEvery": 10,
+        "captionFrame": 47,
+        "captionEvery": 6,
         "captionScrim": 0.38,
         "captionRecedeAt": 70,
         "accent": "#e8a020",
         "handheld": 1.5,
-        "panX": -221,
+        "panY": -28,
+        "roll": 0.11,
         "captionEmphasis": "second",
-        "captionReveal": "rise",
+        "captionReveal": "blur",
         "captionMark": "none",
-        "captionWordEvery": 3,
-        "cameraMove": "pan",
-        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+        "captionWordEvery": 4,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       },
       "onScreenText": [
         {
@@ -2580,12 +2526,12 @@
       "props": [
         {
           "kind": "beam",
-          "depth": 0.36,
-          "x": 869,
-          "y": -23,
-          "width": 248,
-          "rotate": -12,
-          "opacity": 0.52,
+          "depth": 0.28,
+          "x": 923,
+          "y": 112,
+          "width": 346,
+          "rotate": -21,
+          "opacity": 0.8,
           "colour": "#e8a020",
           "from": 0
         }
@@ -2593,20 +2539,20 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.44,
-        "pushTo": 1.04,
-        "pushEndFrame": 83,
+        "pushFrom": 1.22,
+        "pushTo": 1.22,
+        "pushEndFrame": 84,
         "accent": "#e8a020",
         "field": "spotlight",
         "fieldColours": [
-          "#d9a13c",
-          "#8a5a18",
-          "#241505"
+          "#382a10",
+          "#2f1f08",
+          "#1a0f04"
         ],
-        "glowX": 1480,
-        "glowY": 548,
-        "glowSize": 495,
-        "glowIntensity": 0.54,
+        "glowX": 1307,
+        "glowY": 450,
+        "glowSize": 337,
+        "glowIntensity": 0.69,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
@@ -2618,17 +2564,18 @@
         "captionSize": 55,
         "captionAlign": "left",
         "captionFrame": 46,
-        "captionEvery": 8,
+        "captionEvery": 9,
         "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
+        "panX": -270,
         "captionEmphasis": "The",
-        "captionReveal": "punch",
-        "captionMark": "none",
+        "captionReveal": "rise",
+        "captionMark": "underline",
         "captionWordEvery": 2,
-        "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
       },
       "diagram": {
         "type": "process",
@@ -2734,9 +2681,9 @@
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1.22,
-        "pushTo": 1.22,
-        "pushEndFrame": 91,
+        "pushFrom": 1.2,
+        "pushTo": 1.19,
+        "pushEndFrame": 93,
         "glowX": 1145,
         "glowY": 422,
         "glowSize": 560,
@@ -2756,48 +2703,29 @@
           "that is hard",
           "the whole way"
         ],
-        "captionX": 84,
-        "captionY": 1344,
-        "captionSize": 85,
+        "captionX": 81,
+        "captionY": 696,
+        "captionSize": 104,
         "captionAlign": "left",
-        "captionFrame": 45,
-        "captionEvery": 9,
-        "captionScrim": 0.38,
+        "captionFrame": -12,
+        "captionEvery": 7,
+        "captionScrim": 0,
         "captionRecedeAt": 70,
         "accent": "#e8a020",
         "handheld": 1.5,
-        "panX": -243,
-        "shakeAt": [
-          8
-        ],
-        "shakeAmount": 22,
+        "panX": -149,
         "captionEmphasis": "sword",
-        "captionReveal": "rise",
-        "captionMark": "highlight",
-        "captionWordEvery": 4,
+        "captionReveal": "wipe",
+        "captionMark": "underline",
+        "captionWordEvery": 3,
+        "mark": "underline",
+        "markX": 81,
+        "markY": 1083,
+        "markWidth": 778,
+        "markHeight": 10,
+        "markFrame": 82,
         "cameraMove": "pan",
         "cameraPurpose": "expose information the frame was withholding, or follow a movement"
-      },
-      "diagram": {
-        "type": "scaleHaulage",
-        "accent": "#e8a020",
-        "muted": "#cfc6ae",
-        "object": {
-          "w": 0.7,
-          "h": 0.0856,
-          "label": "the block"
-        },
-        "humanHeight": 0.0267,
-        "humans": 1,
-        "rollers": 0,
-        "sledge": false,
-        "ropes": 0,
-        "travel": 0.02,
-        "subject": "swordMaking",
-        "claims": [],
-        "depicts": "process",
-        "from": 0,
-        "over": 44
       }
     },
     {
@@ -2810,9 +2738,9 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.63,
-        "pushTo": 1.03,
-        "pushEndFrame": 72,
+        "pushFrom": 1,
+        "pushTo": 1.09,
+        "pushEndFrame": 70,
         "accent": "#e8a020",
         "field": "spotlight",
         "fieldColours": [
@@ -2820,57 +2748,39 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1366,
-        "glowY": 561,
-        "glowSize": 344,
-        "glowIntensity": 0.54,
+        "glowX": 1408,
+        "glowY": 287,
+        "glowSize": 378,
+        "glowIntensity": 0.46,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
-          "through is a sword",
+          "through",
+          "is a sword",
           "that snaps"
         ],
-        "captionX": 84,
-        "captionY": 1344,
-        "captionSize": 62,
+        "captionX": 81,
+        "captionY": 638,
+        "captionSize": 136,
         "captionAlign": "left",
-        "captionFrame": 41,
+        "captionFrame": -12,
         "captionEvery": 7,
-        "captionScrim": 0.38,
+        "captionScrim": 0,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
+        "panY": -41,
+        "roll": 0.41,
         "shakeAt": [
           6
         ],
         "shakeAmount": 22,
         "captionEmphasis": "through",
-        "captionReveal": "blur",
-        "captionMark": "underline",
-        "captionWordEvery": 2,
-        "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
-      },
-      "diagram": {
-        "type": "scaleHaulage",
-        "accent": "#e8a020",
-        "muted": "#cfc6ae",
-        "object": {
-          "w": 0.7,
-          "h": 0.0856,
-          "label": "the block"
-        },
-        "humanHeight": 0.0267,
-        "humans": 1,
-        "rollers": 0,
-        "sledge": false,
-        "ropes": 0,
-        "travel": 0.02,
-        "subject": "swordMaking",
-        "claims": [],
-        "depicts": "process",
-        "from": 0,
-        "over": 1
+        "captionReveal": "wipe",
+        "captionMark": "none",
+        "captionWordEvery": 4,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       }
     },
     {
@@ -2885,13 +2795,13 @@
       },
       "assets": {},
       "params": {
-        "scrim": 0.43,
+        "scrim": 0.46,
         "kicker": "ONE BLADE",
         "title": "TWO HUNDRED HOURS",
         "footer": "and all of it is in the cooling",
-        "titleFrame": 48,
+        "titleFrame": 50,
         "titleSize": 230,
-        "creep": 1.06,
+        "creep": 1.049,
         "accent": "#e8a020",
         "field": "spotlight",
         "fieldColours": [
@@ -2899,38 +2809,32 @@
           "#8a5a18",
           "#241505"
         ],
-        "mark": "underline",
-        "markX": 260,
-        "markY": 820,
-        "markWidth": 560,
-        "markHeight": 300,
-        "markFrame": 40,
-        "pushEndFrame": 107,
-        "pushFrom": 1.03,
-        "pushTo": 1.06,
-        "cameraMove": "hold",
-        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+        "pushEndFrame": 113,
+        "pushFrom": 1,
+        "pushTo": 1.09,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       },
       "props": [
         {
           "kind": "plaque",
           "text": "ONE BLADE",
-          "depth": 0.71,
-          "x": 330,
-          "y": 612,
-          "width": 418,
-          "rotate": 0.5,
+          "depth": 0.53,
+          "x": 346,
+          "y": 603,
+          "width": 469,
+          "rotate": -1.6,
           "from": 73
         },
         {
           "kind": "newspaper",
-          "masthead": "THE GAZETTE",
+          "masthead": "THE HERALD",
           "text": "TWO HUNDRED HOURS",
-          "depth": 0.65,
-          "x": 672,
-          "y": 539,
-          "width": 401,
-          "rotate": -2.2,
+          "depth": 0.64,
+          "x": 636,
+          "y": 521,
+          "width": 449,
+          "rotate": -5.1,
           "from": 13
         }
       ]
