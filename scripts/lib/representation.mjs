@@ -275,7 +275,7 @@ export function chooseRepresentation({
   const read = readSubject(vo);
   const BUILDERS = {
     map: () => buildMap({vo, seed, accent, muted, stops, claims: read.claims}),
-    process: () => buildProcess({vo, accent, muted, stops}),
+    process: () => buildProcess({vo, accent, muted}),
     crossSection: () => buildCrossSection({vo, seed, accent, muted, claims: read.claims}),
     anatomyFlow: () => buildAnatomyFlow({vo, accent, muted, claims: read.claims}),
     scaleHaulage: () => buildScaleHaulage({vo, accent, muted, claims: read.claims}),

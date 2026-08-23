@@ -208,7 +208,7 @@ function bar({stretch = 1, taper = 0, thickness = 0.34}) {
   ];
 }
 
-export function buildProcess({vo, accent, muted, objectLabel = null, stops = []}) {
+export function buildProcess({vo, accent, muted, objectLabel = null}) {
   const text = String(vo);
   /** Stages named by the brief win; otherwise the verbs in the line are read. */
   const found = [];
@@ -234,13 +234,15 @@ export function buildProcess({vo, accent, muted, objectLabel = null, stops = []}
   if (stages.length < 2) return null;
 
   /**
-   * AND THE LAST STAGE SAYS WHAT IT BECAME.
+   * THE STAGE LABELS COME FROM THE VERBS AND NOWHERE ELSE.
    *
-   * A process whose final label is "quenched" has described a step; one whose
-   * final label is the object has described a making. Where the brief named
-   * stages, the last of them is used.
+   * An earlier version let a brief's `stops` rename the last stage, on the
+   * theory that an author who listed steps knew them best. But `stops` are
+   * PLACES, and on a line listing the parts of a blade — the edge, the core,
+   * the spine — it renamed the final state of the forging to "THE SPINE". A
+   * stage label has to name what the object has BECOME; a part of it is not
+   * that, and a label that is confidently wrong is worse than a plain one.
    */
-  if (stops.length) stages[stages.length - 1].label = String(stops[stops.length - 1]);
 
   // The causal caption under each stage: what the previous agent did.
   const EFFECT = {

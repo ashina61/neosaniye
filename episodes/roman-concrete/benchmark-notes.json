@@ -5,66 +5,57 @@
     "storytelling": 8.5,
     "visualHierarchy": 8,
     "semanticAccuracy": 9,
-    "assetRelevance": 2,
-    "visualCausality": 2,
-    "motionQuality": 6,
-    "cameraVariety": 6,
+    "assetRelevance": 6,
+    "visualCausality": 8.5,
+    "motionQuality": 7.5,
+    "cameraVariety": 6.5,
     "transitionQuality": 7,
     "pacing": 8,
-    "visualContinuity": 8.5,
+    "visualContinuity": 9,
     "typography": 8,
     "ending": 8,
-    "professionalism": 5.5
+    "professionalism": 7.5
   },
-  "verdict": "The best script of the five and the worst match to the engine. The whole episode is about a MECHANISM -- a crack opens, water reaches a lime clast, the lime recrystallises across the gap and seals it -- and not one frame shows it. Twenty-three shots, twenty-three of them typography. A viewer finishes knowing the fact and having seen nothing that would let them check it.",
+  "verdict": "The mechanism is demonstrated rather than described, and it advances across the reel rather than restarting: modern concrete cracks; the Roman mix is shown with its lime lumps sitting in it from the first frame; a crack propagates down through the strata; water runs down the crack it cannot outrun; a lump is consumed; mineral grows across the gap and the crack closes. Fourteen shots carry it. Every clause of the episode's central claim has a frame.",
   "whatWorked": [
-    "The script's reversal is genuinely good: the lumps we read as sloppy work are the repair system.",
-    "green-rot over the drawn ground is the one mood of the five that produces a usable frame without a photograph -- dark olive with pale gold type reads as a document rather than as an empty slide.",
-    "The route motif drawing an arc on the 'crack' line is the closest the reel gets to showing a process.",
-    "The closing card -- TWO THOUSAND, years and still curing -- is well made."
+    "Causal ordering is enforced, not hoped for: the fluid cannot arrive before the crack it runs down, and the growth cannot precede the water that starts it. A test asserts both.",
+    "The lumps are in the wall from the first frame. Drawing them as they arrive would tell the story backwards -- the whole surprise is that the repair was built in and looked like a flaw.",
+    "The strata are drawn the way their materials behave: hatch, aggregate, grain. A section where every layer looks the same is a rectangle with lines in it.",
+    "green-rot over the drawn ground is the second-best mood pairing of the five.",
+    "The self-heal is drawn as crystal blades bridging the gap rather than as the crack fading out -- a gap being erased and a gap being bridged are different claims."
   ],
   "whatFailed": [
     {
-      "what": "The self-healing mechanism, which is the entire subject, is never drawn.",
-      "why": "chooseRepresentation has gearSystem, timeline, measurement, orbit and scan. A chemical process that closes a gap matches none of them, so the strongest available representation for the episode's central claim was a sentence.",
-      "failureIs": "REPRESENTATION"
+      "what": "Five shots drew water with no crack to run down, and the payoff shot -- the seal -- drew an empty box.",
+      "why": "The builder gated the crack on the word 'crack' alone, so lines that mention only the water or only the sealing got a fluid and a growth with no channel for either. A channel is a precondition of both. Fixed.",
+      "failureIs": "ENGINE"
     },
     {
-      "what": "Zero diagrams in fifty seconds; the image kind never changes.",
-      "why": "Same cause. The editor reports 'the reel changes its kind of image 0 times in 23 shots'.",
-      "failureIs": "REPRESENTATION"
+      "what": "Fourteen consecutive sections make the middle of the reel visually uniform.",
+      "why": "Arguably correct -- it is one wall, and each shot advances the mechanism -- but the hard-cut ratio stays at 1.00 because there is nothing to contrast against.",
+      "failureIs": "EDITORIAL"
     },
     {
-      "what": "'40 BC' and 'the first century' never became a timeline.",
-      "why": "yearsIn only recognises four-digit years, so a BC date and a named century are invisible to the one diagram type that would have fitted this episode.",
+      "what": "'40 BC' and 'the first century' still never become a timeline.",
+      "why": "yearsIn only recognises four-digit years. Reported in the last benchmark, still open.",
       "failureIs": "REPRESENTATION"
-    },
-    {
-      "what": "A wire prop and the slate land on the same frame in shot 0.",
-      "why": "Two arrivals sharing a moment read as one beat; the opening shot has one event, not two.",
-      "failureIs": "COMPOSITION"
     }
   ],
   "remainingDefects": [
     {
-      "what": "The self-healing mechanism, which is the entire subject, is never drawn.",
-      "cause": "REPRESENTATION",
-      "why": "chooseRepresentation has gearSystem, timeline, measurement, orbit and scan. A chemical process that closes a gap matches none of them, so the strongest available representation for the episode's central claim was a sentence."
+      "what": "Five shots drew water with no crack to run down, and the payoff shot -- the seal -- drew an empty box.",
+      "cause": "ENGINE",
+      "why": "The builder gated the crack on the word 'crack' alone, so lines that mention only the water or only the sealing got a fluid and a growth with no channel for either. A channel is a precondition of both. Fixed."
     },
     {
-      "what": "Zero diagrams in fifty seconds; the image kind never changes.",
-      "cause": "REPRESENTATION",
-      "why": "Same cause. The editor reports 'the reel changes its kind of image 0 times in 23 shots'."
+      "what": "Fourteen consecutive sections make the middle of the reel visually uniform.",
+      "cause": "EDITORIAL",
+      "why": "Arguably correct -- it is one wall, and each shot advances the mechanism -- but the hard-cut ratio stays at 1.00 because there is nothing to contrast against."
     },
     {
-      "what": "'40 BC' and 'the first century' never became a timeline.",
+      "what": "'40 BC' and 'the first century' still never become a timeline.",
       "cause": "REPRESENTATION",
-      "why": "yearsIn only recognises four-digit years, so a BC date and a named century are invisible to the one diagram type that would have fitted this episode."
-    },
-    {
-      "what": "A wire prop and the slate land on the same frame in shot 0.",
-      "cause": "COMPOSITION",
-      "why": "Two arrivals sharing a moment read as one beat; the opening shot has one event, not two."
+      "why": "yearsIn only recognises four-digit years. Reported in the last benchmark, still open."
     }
   ]
 }

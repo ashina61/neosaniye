@@ -24,7 +24,8 @@
  */
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
-import {countTo, drawOn, posterizeTime} from '../motion';
+import {drawOn, posterizeTime} from '../motion';
+import {counterValue} from '../state.mjs';
 import {Arrow, Callout, Disclosure, MONO, SANS, Sheet, Ticks, weights} from './sheet';
 
 const CLAMP = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
@@ -343,11 +344,20 @@ export const ScaleHaulagePlate: React.FC<{spec: ScaleHaulageSpec; w: number; h: 
           }}
         >
           <div style={{fontSize: w * 0.13, lineHeight: 1}}>
-            {countTo(
-              stepped,
-              [from + (spec.figure.at ?? 6), from + (spec.figure.at ?? 6) + (spec.figure.over ?? 26)],
-              spec.figure.value,
-            ).toLocaleString('en-US')}
+            {/**
+              * THE SHARED COUNTER, NOT A RAW INTERPOLATION.
+              *
+              * `countTo` returns a float, so eight hundred tons counted up
+              * through "576.377 TONS" — three decimal places on a figure about
+              * a block of stone. `counterValue` is the one the whole repo
+              * counts with: integer, never backwards, and it lands exactly on
+              * the figure it claims.
+              */}
+            {counterValue(stepped, {
+              from: from + (spec.figure.at ?? 6),
+              over: spec.figure.over ?? 26,
+              to: spec.figure.value,
+            }).toLocaleString('en-US')}
             {spec.figure.unit ? (
               <span style={{fontFamily: MONO, fontSize: w * 0.028, letterSpacing: '0.2em', marginLeft: w * 0.016}}>
                 {spec.figure.unit.toUpperCase()}

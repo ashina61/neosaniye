@@ -5,57 +5,57 @@
     "storytelling": 8,
     "visualHierarchy": 8.5,
     "semanticAccuracy": 9,
-    "assetRelevance": 3,
-    "visualCausality": 5,
-    "motionQuality": 6.5,
+    "assetRelevance": 6,
+    "visualCausality": 6.5,
+    "motionQuality": 7.5,
     "cameraVariety": 7,
     "transitionQuality": 7.5,
     "pacing": 8,
     "visualContinuity": 9,
     "typography": 8.5,
     "ending": 8.5,
-    "professionalism": 6.5
+    "professionalism": 7.5
   },
-  "verdict": "The best of the five, and the reason is that the subject happens to be made of measurements. Three shots get a real drawn bar -- twenty-one miles, two miles, and the closing figure -- and those three are the only shots in the whole benchmark where the picture carries the claim instead of repeating it. cold-noir over the wash field gives a clean near-black ground that suits an oil-and-warships subject. It still shows no place, no ship and no water.",
+  "verdict": "It shows the strait now. Two coasts, the water between them, one lane in and one lane out, and a dimension across the gap reading 21 MILES -- built from a sentence that says 'twenty-one miles across' and 'northern shore, southern shore', with no map of Hormuz anywhere in the repository. Eleven of twenty-two shots carry it. The chokepoint line gets a hatched closure and a hazard marker on the lane, which is the argument the whole episode is making, drawn.",
   "whatWorked": [
-    "The measurement diagram fired three times and each one is the right graphic for its sentence.",
-    "cold-noir + wash is the strongest mood/ground pairing of the five: flat, dark, legible, unfussy.",
-    "The argument is built properly -- narrow, narrower, volume, share, no alternative, who holds it, what one accident does, what it costs -- and the 'one door' line sits at the hinge.",
-    "Hierarchy is the clearest of the five: one accent word per frame, never two.",
-    "The ending returns to the opening figure, which closes the loop rather than just stopping."
+    "The map fired on six of nine lines and each one is the right graphic for its sentence: a width where the line states a width, two lanes where it says one in and one out, a closure where it says one tanker shuts it.",
+    "The 21 MILES dimension is correct. It was 20 until the hyphenated-compound bug was found -- a drawn figure contradicting its own narration is worse than no figure.",
+    "cold-noir over the wash field remains the strongest ground of the five: the schematic reads as a chart rather than as an illustration.",
+    "The measurement bar carries 20,000,000 BARRELS, a unit the matcher did not know before.",
+    "Nothing claims survey precision: the coasts are generated from the line's seed and the plate says SCHEMATIC -- NOT TO SCALE on every frame."
   ],
   "whatFailed": [
     {
-      "what": "No map. A geography episode with no geography in it.",
-      "why": "There is no map diagram type. The stops device draws an itinerary as a route motif, which is a line with labels, not a strait between two shores.",
+      "what": "Nine of twenty-two shots are still typography.",
+      "why": "Five are title slates, which is deliberate. The other four are genuinely abstract lines -- 'a fifth of everything the world burns', 'every fuel price on earth moves' -- and words are the honest representation for those.",
+      "failureIs": "STORY"
+    },
+    {
+      "what": "The chain from one grounded tanker to a global price is still asserted, not drawn.",
+      "why": "A map can show a blockage. It has no way to show a consequence propagating out of the frame; that needs a dependency or flow-out-of-system primitive that does not exist.",
       "failureIs": "REPRESENTATION"
     },
     {
-      "what": "The causal chain -- one grounded tanker closes the lane, and every price moves -- is stated and never shown.",
-      "why": "No representation for a blockage or a dependency; the rise motif on the price line is decoration, not consequence.",
-      "failureIs": "REPRESENTATION"
-    },
-    {
-      "what": "A plaque and a newspaper prop overlap on the closing shot.",
-      "why": "standClear moves graphics off the type but does not separate two graphics from each other when both are pushed into the same clear band.",
+      "what": "The single-landmass variant reads as an abstract hexagon rather than as land.",
+      "why": "With no two-shore signal the builder makes one blob from six control points. It is honest but it is not evocative.",
       "failureIs": "COMPOSITION"
     }
   ],
   "remainingDefects": [
     {
-      "what": "No map. A geography episode with no geography in it.",
-      "cause": "REPRESENTATION",
-      "why": "There is no map diagram type. The stops device draws an itinerary as a route motif, which is a line with labels, not a strait between two shores."
+      "what": "Nine of twenty-two shots are still typography.",
+      "cause": "STORY",
+      "why": "Five are title slates, which is deliberate. The other four are genuinely abstract lines -- 'a fifth of everything the world burns', 'every fuel price on earth moves' -- and words are the honest representation for those."
     },
     {
-      "what": "The causal chain -- one grounded tanker closes the lane, and every price moves -- is stated and never shown.",
+      "what": "The chain from one grounded tanker to a global price is still asserted, not drawn.",
       "cause": "REPRESENTATION",
-      "why": "No representation for a blockage or a dependency; the rise motif on the price line is decoration, not consequence."
+      "why": "A map can show a blockage. It has no way to show a consequence propagating out of the frame; that needs a dependency or flow-out-of-system primitive that does not exist."
     },
     {
-      "what": "A plaque and a newspaper prop overlap on the closing shot.",
+      "what": "The single-landmass variant reads as an abstract hexagon rather than as land.",
       "cause": "COMPOSITION",
-      "why": "standClear moves graphics off the type but does not separate two graphics from each other when both are pushed into the same clear band."
+      "why": "With no two-shore signal the builder makes one blob from six control points. It is honest but it is not evocative."
     }
   ]
 }

@@ -368,3 +368,68 @@ it belongs on a bulb; with no plate under it, only the spill is drawn.
 
 Sample `--at=0,0.33,0.66,0.94` rather than `--per`. Even spacing never sees
 frame zero, and half of this repo's shipped defects lived there.
+
+---
+
+## The representation vocabulary
+
+The generalisation benchmark found the bottleneck in one number: five unrelated
+subjects, **forty-one of forty-five lines resolving to typography**. Not because
+the drawings were bad — because there was no drawing for a place, a process, the
+inside of a material, a circulation, or the size of a thing, which is most of
+what a documentary has to explain.
+
+Five first-class representations, all data-driven, none of them a fallback:
+
+| | shows | the rule that shapes it |
+|---|---|---|
+| `map` | a place, a route, a width, a closure | **never imply survey precision** — coasts are generated from the line's seed and every frame says `SCHEMATIC · NOT TO SCALE` |
+| `process` | input → transformation → output | **the same object persists**; four cards are four illustrations, one outline that changes is a process |
+| `crossSection` | strata, cracks, fluids, reactions | **demonstrate the claim, do not label it** — the crack propagates, the water runs down it, the particle is consumed, the gap closes |
+| `anatomyFlow` | chambers, valves, vessels, circulation | **a body is not a machine**; the circuit must close |
+| `scaleHaulage` | a hero object, a human unit, rollers, ropes, force | **scale needs a human**, and an uncertain method says `ILLUSTRATIVE RECONSTRUCTION` |
+
+They share one sheet (`engine/draw/sheet.tsx`): four line weights derived from
+the frame, one disclosure plate, one callout, one arrow, the same registration
+ticks. Five drawings that each invented their own furniture would be five
+programs; sharing it makes them a drawing office.
+
+### Selection is semantic
+
+`scripts/lib/semantics.mjs` reads a line and returns its **domain** — anatomy,
+geography, process, material, scale, mechanism, elapsed, celestial, quantity —
+its subject, and the claims it makes. `scripts/lib/visualise.mjs` builds a spec
+from those claims. Nothing in either file knows which episode it is working on:
+a sentence naming two shores and a width becomes two coasts and a dimension, and
+the same sentence about a different strait gets the same drawing. A subject the
+repo has never seen resolves on the same evidence — a test asserts it with
+glass-blowing.
+
+Ties go to the drawing **built for the job** over one that merely covers it: a
+section serves `process` as a secondary domain, and without that rule every
+forging line got a cut-through instead of a making.
+
+### The contract, and the gate
+
+Every drawn spec declares `subject`, `claims` and `depicts`. The hard semantic
+gate now runs on **PHOTO, PROCEDURAL, DIAGRAM and HYBRID** — it previously
+guarded photographs only, which is precisely how a train of meshing gears
+shipped as a `SCHEMATIC RECONSTRUCTION` of a human heart. Every coordinate was
+right, the wheels meshed, the plate was present, and it was a lie no gate could
+see.
+
+A gear train can only be a picture of a mechanism, and it does not matter which
+episode asked for it.
+
+Checked at plan time against the sentence and again at validate time against the
+declared subject — the second is deliberately not a re-derivation, because a
+continuation shot is a *fragment* and the drawing belongs to the sentence.
+
+### The typography limit
+
+Words carry a claim, a number, a date, an emphasis. They are not a picture of a
+place, a process, a body, a mechanism, a size or the inside of a material. A
+line in one of those domains that reaches the bottom of the ladder has **not
+found a representation**: it writes `REPRESENTATION_REQUIRED`, is counted, and
+is reported — the same treatment a refused photograph gets. The reel still
+renders. Nobody gets to believe it was a design choice.

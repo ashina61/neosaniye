@@ -33,7 +33,9 @@ scripts/
   plan-episode.mjs          brief → scene-config
   lib/story.mjs             WHAT each line is: beat, visual idea, rhythm, ending
   lib/assetdirector.mjs     WHETHER a picture may be used — score, recast, refuse
+  lib/semantics.mjs         WHAT a line is about — domain, subject, claims + the gate
   lib/representation.mjs    HOW to show it: photo, hybrid, procedural, diagram, type
+  lib/visualise.mjs         sentence → drawing: map, process, section, anatomy, scale
   lib/visual.mjs            hierarchy, framing, one type system
   lib/director.mjs          WHEN things happen: beats, camera, transitions, quotas
   lib/cut.mjs               WHAT each seam is — and a hard cut is an answer

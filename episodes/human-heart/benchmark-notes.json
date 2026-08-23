@@ -3,67 +3,58 @@
   "question": "How Does the Human Heart Pump Blood?",
   "scores": {
     "storytelling": 7.5,
-    "visualHierarchy": 7.5,
-    "semanticAccuracy": 8,
-    "assetRelevance": 2,
-    "visualCausality": 2,
-    "motionQuality": 5.5,
-    "cameraVariety": 6,
+    "visualHierarchy": 8,
+    "semanticAccuracy": 9,
+    "assetRelevance": 6,
+    "visualCausality": 7.5,
+    "motionQuality": 7.5,
+    "cameraVariety": 6.5,
     "transitionQuality": 7,
     "pacing": 7.5,
-    "visualContinuity": 7,
-    "typography": 7.5,
+    "visualContinuity": 8.5,
+    "typography": 8,
     "ending": 7.5,
-    "professionalism": 5
+    "professionalism": 7
   },
-  "verdict": "The weakest of the five and the most useful. An anatomy explainer is the purest test of 'show, do not tell', and this one tells for fifty seconds: twenty-two shots, all typography, over a flat mustard field that never changes. The sentence the episode is built around -- the tenth of a second of delay between the upper chambers and the lower -- is exactly what motion design exists for, and it is delivered as two lines of text. It also produced the benchmark's only semantically WRONG picture before the script was reworded.",
+  "verdict": "The biggest change of the five, and the most deserved: this is the episode that produced a gear train as a picture of a heart. Fifteen shots now carry a circulation -- four chambers that contract on their own phases, valves that swing open one way, and particles travelling a circuit that closes. Blue leaves for the lungs, red comes back and goes out to the body and round again. The chamber count is read off the sentence, not off the topic.",
   "whatWorked": [
-    "The script is sound and correctly ordered: two pumps, two circuits, why one wall is thicker, the valves, the spark, the delay, why the delay matters, the count, the lifetime figure.",
-    "Nothing false is shown in the final cut. The reel refuses rather than approximating.",
-    "The closing figure -- two and a half billion beats -- is the right ending for the script."
+    "The circulation is coherent: every leg of the circuit names a vessel that exists and the last returns to where the first began. A test asserts it, because a loop that ends somewhere is not a circulation.",
+    "The wall-thickness claim is drawn as wall thickness -- three times the stroke on the systemic side, and only on the line that makes that claim.",
+    "Contraction is a squeeze, not a pulse of opacity: a chamber that contracts gets smaller and nothing else about it moves.",
+    "The gear train is gone and cannot come back: the semantic gate now refuses the pair (humanHeart, gearSystem) from the config alone, and a test asserts the refusal."
   ],
   "whatFailed": [
     {
-      "what": "BEFORE THE FIX: a train of meshing gears was drawn as a schematic reconstruction of a human heart.",
-      "why": "chooseRepresentation matched the word 'mechanism' plus the figure four and emitted a gearSystem. The hard semantic gate guards PHOTOGRAPHS only -- a procedural visual is never checked for whether it depicts the subject. The drawing then labelled itself SCHEMATIC RECONSTRUCTION, which is the repo's own definition of a worse lie than a wrong photograph. Fixed at the episode level by rewording the line; the hole in the engine is still open.",
-      "failureIs": "ENGINE"
-    },
-    {
-      "what": "The delay between atrial and ventricular contraction is never animated.",
-      "why": "No representation for a two-stage cycle. This is the episode's central claim.",
+      "what": "The chambers are plain ellipses; nothing distinguishes an atrium from a ventricle except size and a row label.",
+      "why": "The layout is derived from a count so it stays general. Generality costs specificity, and here the cost is visible.",
       "failureIs": "REPRESENTATION"
     },
     {
-      "what": "Twenty-two identical mustard frames.",
-      "why": "gold-heat over the wash field produces one flat tone that fills the frame; with no plate to light, every shot is the same colour. A writer's mood choice compounding the supply problem.",
-      "failureIs": "COMPOSITION"
+      "what": "The delay -- the episode's central claim -- is a bar under the drawing rather than something the chambers do.",
+      "why": "The phases are staggered so the upper pair does squeeze before the lower, but at 36 frames a cycle the tenth of a second is too small to read without the bar.",
+      "failureIs": "REPRESENTATION"
     },
     {
-      "what": "Lowest motion density of the five, and one shot holds 3.2s on a single event.",
-      "why": "With no diagram and no props surviving the type band, the only event available is the caption.",
-      "failureIs": "MOTION"
+      "what": "gold-heat still gives a flat mustard ground.",
+      "why": "A writer's mood choice. It suits a forge and not an anatomy plate.",
+      "failureIs": "STORY"
     }
   ],
   "remainingDefects": [
     {
-      "what": "BEFORE THE FIX: a train of meshing gears was drawn as a schematic reconstruction of a human heart.",
-      "cause": "ENGINE",
-      "why": "chooseRepresentation matched the word 'mechanism' plus the figure four and emitted a gearSystem. The hard semantic gate guards PHOTOGRAPHS only -- a procedural visual is never checked for whether it depicts the subject. The drawing then labelled itself SCHEMATIC RECONSTRUCTION, which is the repo's own definition of a worse lie than a wrong photograph. Fixed at the episode level by rewording the line; the hole in the engine is still open."
-    },
-    {
-      "what": "The delay between atrial and ventricular contraction is never animated.",
+      "what": "The chambers are plain ellipses; nothing distinguishes an atrium from a ventricle except size and a row label.",
       "cause": "REPRESENTATION",
-      "why": "No representation for a two-stage cycle. This is the episode's central claim."
+      "why": "The layout is derived from a count so it stays general. Generality costs specificity, and here the cost is visible."
     },
     {
-      "what": "Twenty-two identical mustard frames.",
-      "cause": "COMPOSITION",
-      "why": "gold-heat over the wash field produces one flat tone that fills the frame; with no plate to light, every shot is the same colour. A writer's mood choice compounding the supply problem."
+      "what": "The delay -- the episode's central claim -- is a bar under the drawing rather than something the chambers do.",
+      "cause": "REPRESENTATION",
+      "why": "The phases are staggered so the upper pair does squeeze before the lower, but at 36 frames a cycle the tenth of a second is too small to read without the bar."
     },
     {
-      "what": "Lowest motion density of the five, and one shot holds 3.2s on a single event.",
-      "cause": "MOTION",
-      "why": "With no diagram and no props surviving the type band, the only event available is the caption."
+      "what": "gold-heat still gives a flat mustard ground.",
+      "cause": "STORY",
+      "why": "A writer's mood choice. It suits a forge and not an anatomy plate."
     }
   ]
 }

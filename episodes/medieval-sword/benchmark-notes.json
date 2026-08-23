@@ -3,68 +3,59 @@
   "question": "How Was a Medieval Sword Actually Made?",
   "scores": {
     "storytelling": 8,
-    "visualHierarchy": 8,
+    "visualHierarchy": 8.5,
     "semanticAccuracy": 9,
-    "assetRelevance": 2,
-    "visualCausality": 3,
-    "motionQuality": 6,
+    "assetRelevance": 6,
+    "visualCausality": 8,
+    "motionQuality": 7.5,
     "cameraVariety": 6.5,
     "transitionQuality": 7,
     "pacing": 8,
-    "visualContinuity": 8,
+    "visualContinuity": 8.5,
     "typography": 8.5,
     "ending": 8,
-    "professionalism": 5.5
+    "professionalism": 7.5
   },
-  "verdict": "The best-looking typography of the five and still a process film with no process in it. Forging is a sequence -- heat, fold, quench, and the differential cooling that is the whole design -- and a sequence is the one thing this reel cannot draw. What it does have is the cleanest type: the gold-heat spotlight gives the frame a centre, and 'Iron / with too / LITTLE / carbon / bends' set at 170px across five lines is a real composition rather than a caption.",
+  "verdict": "The process reads. One outline persists across every stage -- it stretches under the hammer, reddens in the fire, shortens when it is folded, tapers as it is ground, and goes cold in the quench -- with the agent drawn above it doing the thing and the caption under it naming both the state and its cause: FOLDED / THE LAYERS DOUBLE. Fourteen shots carry it. This is the one the previous benchmark said was impossible.",
   "whatWorked": [
-    "Typography at its best in this benchmark: five short lines at statement scale, serif against heavy sans, one accent word, the rest getting out of the way.",
-    "The spotlight field gives the frame an optical centre, which the wash field does not.",
-    "The script's structure is textbook: what it is not, the constraint, the dilemma, the solution, the method, the trick, and the counter-example that proves it.",
-    "Highest motion-design score of the five (10/10) -- every shot obeys the two-events rule."
+    "Object identity holds. Every stage has the same point count and tweens into the next, so the viewer sees one thing changing rather than four illustrations of different things.",
+    "The causality is explicit and correct: heat softens, the hammer changes shape, the fold doubles the layers, the quench locks the edge. Each stage names the agent that produced it.",
+    "The stage rule under the object shows how many steps there are and which one we are on, without ever taking the object off the screen.",
+    "Heat is a state readout, not decoration: the colour is derived from the stage's heat value, so a viewer can see the metal is workable.",
+    "The plate says ILLUSTRATIVE RECONSTRUCTION, which is the honest claim for a method known from practice rather than from a record."
   ],
   "whatFailed": [
     {
-      "what": "Not one of heat, folding, quenching or differential cooling is shown.",
-      "why": "A forging sequence needs a process representation. The five diagram types cover a mechanism, a span of years, a magnitude, an orbit and a scan.",
+      "what": "On one line the stages come out as 'raw, forged, heated' -- the heat should precede the working.",
+      "why": "Stages are ordered by where their verb appears in the sentence, and 'the smith worked it near twelve hundred degrees' names the working first. The sentence order and the physical order disagree, and the builder trusts the sentence.",
       "failureIs": "REPRESENTATION"
     },
     {
-      "what": "'Twelve hundred degrees' did not become a measurement bar.",
-      "why": "The MAGNITUDE regex lists tons, miles, metres, feet, pounds and people. Degrees is not a unit it knows, so the one line in the episode with a drawable figure fell to typography.",
+      "what": "The object is a generic bar rather than anything sword-shaped until it tapers.",
+      "why": "Deliberate -- the same primitive has to serve a blade, a billet and a casting -- but it means the viewer is told what it is rather than shown.",
       "failureIs": "REPRESENTATION"
     },
     {
-      "what": "A wire prop and the slate share the opening frame's single beat.",
-      "why": "Same collision as roman-concrete shot 0.",
-      "failureIs": "COMPOSITION"
-    },
-    {
-      "what": "'push' on three consecutive shots (13-15).",
-      "why": "The camera quota counts across the reel but cannot refuse a run when the beat pool for three adjacent shots resolves the same way.",
-      "failureIs": "MOTION"
+      "what": "Two lines resolved to scaleHaulage rather than process.",
+      "why": "'A sword that is hard the whole way through is a sword that snaps' names no transformation, so the process builder declined it and the next candidate took it.",
+      "failureIs": "REPRESENTATION"
     }
   ],
   "remainingDefects": [
     {
-      "what": "Not one of heat, folding, quenching or differential cooling is shown.",
+      "what": "On one line the stages come out as 'raw, forged, heated' -- the heat should precede the working.",
       "cause": "REPRESENTATION",
-      "why": "A forging sequence needs a process representation. The five diagram types cover a mechanism, a span of years, a magnitude, an orbit and a scan."
+      "why": "Stages are ordered by where their verb appears in the sentence, and 'the smith worked it near twelve hundred degrees' names the working first. The sentence order and the physical order disagree, and the builder trusts the sentence."
     },
     {
-      "what": "'Twelve hundred degrees' did not become a measurement bar.",
+      "what": "The object is a generic bar rather than anything sword-shaped until it tapers.",
       "cause": "REPRESENTATION",
-      "why": "The MAGNITUDE regex lists tons, miles, metres, feet, pounds and people. Degrees is not a unit it knows, so the one line in the episode with a drawable figure fell to typography."
+      "why": "Deliberate -- the same primitive has to serve a blade, a billet and a casting -- but it means the viewer is told what it is rather than shown."
     },
     {
-      "what": "A wire prop and the slate share the opening frame's single beat.",
-      "cause": "COMPOSITION",
-      "why": "Same collision as roman-concrete shot 0."
-    },
-    {
-      "what": "'push' on three consecutive shots (13-15).",
-      "cause": "MOTION",
-      "why": "The camera quota counts across the reel but cannot refuse a run when the beat pool for three adjacent shots resolves the same way."
+      "what": "Two lines resolved to scaleHaulage rather than process.",
+      "cause": "REPRESENTATION",
+      "why": "'A sword that is hard the whole way through is a sword that snaps' names no transformation, so the process builder declined it and the next candidate took it."
     }
   ]
 }

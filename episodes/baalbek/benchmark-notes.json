@@ -4,78 +4,58 @@
   "scores": {
     "storytelling": 8,
     "visualHierarchy": 8,
-    "semanticAccuracy": 9,
-    "assetRelevance": 3,
-    "visualCausality": 3,
-    "motionQuality": 6,
-    "cameraVariety": 6,
+    "semanticAccuracy": 8.5,
+    "assetRelevance": 6,
+    "visualCausality": 7,
+    "motionQuality": 7,
+    "cameraVariety": 6.5,
     "transitionQuality": 7,
     "pacing": 8,
-    "visualContinuity": 9,
+    "visualContinuity": 8.5,
     "typography": 8,
     "ending": 8,
-    "professionalism": 6
+    "professionalism": 7
   },
-  "verdict": "A competent kinetic-typography reel and not yet a documentary. The script is the strongest thing in it: the reversal -- they did not lift the stones, they rolled them -- lands at the two-thirds mark exactly where it should. But seventeen of twenty shots are words on an unlit grey field, so the viewer is told the whole story and shown almost none of it. The measurement bar counting to 800 tons is the only shot that does the job a picture is for.",
+  "verdict": "Fourteen shots now carry the block: standing on the ground line, measured against a human figure drawn at a stated height, on rollers that turn at the speed it travels, with ropes leaving the frame forward and a force arrow labelled NO CRANE. The size is derived from the person rather than asserted, which is the only way a drawing can make a thousand tons mean anything. The plate says ILLUSTRATIVE RECONSTRUCTION -- METHOD UNCERTAIN, because it is.",
   "whatWorked": [
-    "The story structure: impossible object, the weight, the distance, the two things that could not have worked, then the answer. The reversal is placed correctly.",
-    "Typography carries a shot on its own now -- serif run-in, heavy sans emphasis in the accent, the mark drawing itself under the word. Legible at thumbnail size.",
-    "The measurement diagram fired on 'eight hundred tons' and again on 'a thousand men', and both are honest: the bar counts the thing the sentence counts.",
-    "Pacing. 2.46s average, rhythm 0.28, no shot outstays its line.",
-    "The ending is deliberate: the figure spins to SIXTY THOUSAND and the qualifier lands after it."
+    "Scale is done properly: a marked human-height bar and a silhouette beside the load, so the block's size is read off the figure instead of being claimed.",
+    "The rollers turn at the speed the load moves. If they did not, the drawing would be contradicting itself, and that is checkable.",
+    "The load moves slowly and never arrives, which is what 'a few feet an hour, for months' means. A block crossing the frame would have contradicted the narration.",
+    "The uncertainty is stated in the weaker form. Nobody knows how the trilithon was moved, and SCHEMATIC RECONSTRUCTION would have claimed otherwise.",
+    "The quarry line correctly took a map rather than a haulage drawing -- it is about where the stone came from, not about moving it."
   ],
   "whatFailed": [
     {
-      "what": "Seventeen of twenty shots are typography over an empty ground. The reel tells and does not show.",
-      "why": "No photographic supply is reachable and the procedural vocabulary has no form for haulage, leverage, rollers or a slope. The ladder's lower rungs are five diagram types tuned to one previous episode.",
+      "what": "The counter read 576.377 TONS on its way to 800.",
+      "why": "The component used a raw float interpolation instead of the repo's shared integer counter. Fixed; it now lands exactly, as law 27 requires everywhere else.",
+      "failureIs": "ENGINE"
+    },
+    {
+      "what": "The ropes leave the frame but nothing is pulling them.",
+      "why": "True to the claim -- the capstans were off-picture -- but it means the force is implied rather than shown.",
       "failureIs": "REPRESENTATION"
     },
     {
-      "what": "Nothing in the reel is caused by anything else.",
-      "why": "Causal motion needs a mechanism to animate. Words landing in sequence is timing, not causality.",
-      "failureIs": "REPRESENTATION"
-    },
-    {
-      "what": "ash-grey over a drawn ground renders as near-black; the frame is unlit.",
-      "why": "graphicGround was designed as a bed for a photograph that would supply the tone. With no plate the glow at 0.42 intensity is all the light there is.",
+      "what": "ash-grey over a drawn ground is still nearly black.",
+      "why": "The drawn ground was designed as a bed for a photograph that would supply the tone.",
       "failureIs": "COMPOSITION"
-    },
-    {
-      "what": "Camera moves are imperceptible.",
-      "why": "A push over a radial gradient has no parallax and no detail to move past. The camera is working; there is nothing for it to work on.",
-      "failureIs": "COMPOSITION"
-    },
-    {
-      "what": "Every seam is a plain cut (hard-cut ratio 1.00).",
-      "why": "Correct, and a symptom: twenty shots that look alike give the Cut Director no correspondence to rhyme and no contrast to punctuate.",
-      "failureIs": "EDITORIAL"
     }
   ],
   "remainingDefects": [
     {
-      "what": "Seventeen of twenty shots are typography over an empty ground. The reel tells and does not show.",
+      "what": "The counter read 576.377 TONS on its way to 800.",
+      "cause": "ENGINE",
+      "why": "The component used a raw float interpolation instead of the repo's shared integer counter. Fixed; it now lands exactly, as law 27 requires everywhere else."
+    },
+    {
+      "what": "The ropes leave the frame but nothing is pulling them.",
       "cause": "REPRESENTATION",
-      "why": "No photographic supply is reachable and the procedural vocabulary has no form for haulage, leverage, rollers or a slope. The ladder's lower rungs are five diagram types tuned to one previous episode."
+      "why": "True to the claim -- the capstans were off-picture -- but it means the force is implied rather than shown."
     },
     {
-      "what": "Nothing in the reel is caused by anything else.",
-      "cause": "REPRESENTATION",
-      "why": "Causal motion needs a mechanism to animate. Words landing in sequence is timing, not causality."
-    },
-    {
-      "what": "ash-grey over a drawn ground renders as near-black; the frame is unlit.",
+      "what": "ash-grey over a drawn ground is still nearly black.",
       "cause": "COMPOSITION",
-      "why": "graphicGround was designed as a bed for a photograph that would supply the tone. With no plate the glow at 0.42 intensity is all the light there is."
-    },
-    {
-      "what": "Camera moves are imperceptible.",
-      "cause": "COMPOSITION",
-      "why": "A push over a radial gradient has no parallax and no detail to move past. The camera is working; there is nothing for it to work on."
-    },
-    {
-      "what": "Every seam is a plain cut (hard-cut ratio 1.00).",
-      "cause": "EDITORIAL",
-      "why": "Correct, and a symptom: twenty shots that look alike give the Cut Director no correspondence to rhyme and no contrast to punctuate."
+      "why": "The drawn ground was designed as a bed for a photograph that would supply the tone."
     }
   ]
 }
