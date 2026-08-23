@@ -18,32 +18,150 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.4,
-      "grungeOpacity": 0.16,
-      "scanlineOpacity": 0.07,
+      "grainOpacity": 0.44,
+      "grungeOpacity": 0.11,
+      "scanlineOpacity": 0.08,
       "scanlinePeriod": 9,
-      "vignetteStrength": 0.46,
-      "weavePx": 4,
-      "weaveScale": 1.012
+      "vignetteStrength": 0.56,
+      "weavePx": 5,
+      "weaveScale": 1.017
     }
   },
   "scenes": [
     {
       "id": "s01-morning",
       "sceneType": "title-slate",
-      "voText": "On an August morning a Roman town went about its business.",
-      "durationInFrames": 118,
+      "voText": "On an August morning a Roman town went",
+      "durationInFrames": 97,
       "assets": {
         "background": "assets/s01-morning-bg.png"
       },
       "params": {
-        "scrim": 0.49,
+        "scrim": 0.37,
         "kicker": "Campania · 79 AD",
         "title": "AN ORDINARY DAY",
         "footer": "twenty thousand people lived here",
-        "titleFrame": 4,
+        "titleFrame": 8,
+        "titleSize": 230,
+        "creep": 1.079,
+        "accent": "#e8e2d4",
+        "field": "wash",
+        "fieldColours": [
+          "#33373a",
+          "#1c1f21",
+          "#0a0b0c"
+        ],
+        "pushEndFrame": 95,
+        "pushFrom": 1.52,
+        "pushTo": 1.02
+      },
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "Campania · 79 AD",
+          "depth": 0.59,
+          "x": 344,
+          "y": 1396,
+          "width": 402,
+          "rotate": 0.9,
+          "from": 43
+        },
+        {
+          "kind": "newspaper",
+          "masthead": "THE RECORD",
+          "text": "AN ORDINARY DAY",
+          "depth": 0.84,
+          "x": 664,
+          "y": 813,
+          "width": 371,
+          "rotate": 5.8,
+          "from": 82
+        }
+      ]
+    },
+    {
+      "id": "s01-morning-b",
+      "sceneType": "composite",
+      "voText": "about its business.",
+      "durationInFrames": 45,
+      "transition": {
+        "kind": "slip",
+        "frames": 14
+      },
+      "assets": {
+        "ground": "assets/s01-morning-bg.png"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.8,
+          "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.71,
+          "x": 373,
+          "y": 1132,
+          "width": 334,
+          "colour": "#e8e2d4",
+          "from": 38
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.47,
+        "pushTo": 1.04,
+        "pushEndFrame": 42,
+        "accent": "#e8e2d4",
+        "caption": [
+          "about its business"
+        ],
+        "captionX": 84,
+        "captionY": 906,
+        "captionSize": 83,
+        "captionAlign": "left",
+        "captionFrame": 4,
+        "captionEvery": 7,
+        "captionScrim": 0.34,
+        "glowX": -289,
+        "glowY": 441,
+        "glowSize": 412,
+        "glowIntensity": 0.41,
+        "glowWarm": "#e8e2d4",
+        "glowDepth": 0.8,
+        "focusPx": 15,
+        "fog": 0.43,
+        "handheld": 1.5,
+        "captionEmphasis": "business",
+        "captionReveal": "wipe",
+        "captionMark": "none",
+        "captionWordEvery": 3
+      }
+    },
+    {
+      "id": "s02-mountain",
+      "sceneType": "title-slate",
+      "voText": "Nobody there had a word",
+      "durationInFrames": 64,
+      "transition": {
+        "kind": "rack",
+        "frames": 11
+      },
+      "assets": {
+        "background": "assets/s02-mountain-bg.png"
+      },
+      "params": {
+        "scrim": 0.46,
+        "kicker": "",
+        "title": "",
+        "footer": "",
+        "titleFrame": 7,
         "titleSize": 124,
-        "creep": 1.044,
+        "creep": 1.066,
         "accent": "#e8e2d4",
         "field": "wash",
         "fieldColours": [
@@ -56,17 +174,33 @@
         "markY": 1160,
         "markWidth": 560,
         "markHeight": 96,
-        "markFrame": 40
-      }
+        "markFrame": 22,
+        "pushEndFrame": 60,
+        "pushFrom": 1.05,
+        "pushTo": 1.09
+      },
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.22,
+          "x": 89,
+          "y": -88,
+          "width": 225,
+          "rotate": 22,
+          "opacity": 0.6,
+          "colour": "#e8e2d4",
+          "from": 5
+        }
+      ]
     },
     {
-      "id": "s02-mountain",
+      "id": "s02-mountain-b",
       "sceneType": "composite",
-      "voText": "Nobody there had a word for what the mountain was.",
-      "durationInFrames": 118,
+      "voText": "for what the mountain was.",
+      "durationInFrames": 64,
       "transition": {
         "kind": "slam",
-        "frames": 9
+        "frames": 7
       },
       "assets": {
         "ground": "assets/s02-mountain-bg.png"
@@ -74,29 +208,53 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.07,
+          "depth": 0.8,
           "anchor": "fill"
         }
       ],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.78,
+          "x": 391,
+          "y": 984,
+          "width": 292,
+          "colour": "#e8e2d4",
+          "from": 54
+        }
+      ],
       "params": {
-        "anchorX": 540,
-        "anchorY": 1700,
-        "pushTo": 1.26,
-        "pushEndFrame": 101,
-        "focusPx": 0,
-        "fog": 0.49,
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.35,
+        "pushTo": 1.03,
+        "pushEndFrame": 60,
+        "accent": "#e8e2d4",
         "caption": [
-          "No word",
-          "for volcano.",
-          "Not yet."
+          "for what",
+          "the mountain was"
         ],
         "captionX": 84,
-        "captionY": 559,
-        "captionFrame": 10,
-        "captionEvery": 17,
-        "captionSize": 83,
-        "captionRecedeAt": 85,
-        "accent": "#e8e2d4"
+        "captionY": 943,
+        "captionSize": 97,
+        "captionAlign": "left",
+        "captionFrame": 5,
+        "captionEvery": 9,
+        "captionScrim": 0.34,
+        "glowX": -416,
+        "glowY": 526,
+        "glowSize": 551,
+        "glowIntensity": 0.68,
+        "glowWarm": "#e8e2d4",
+        "glowDepth": 0.8,
+        "focusPx": 12,
+        "fog": 0.28,
+        "handheld": 3,
+        "captionEmphasis": "mountain",
+        "captionReveal": "rise",
+        "captionMark": "underline",
+        "captionWordEvery": 3
       }
     },
     {
@@ -110,20 +268,20 @@
         "brightness": 0.95
       },
       "transition": {
-        "kind": "rack",
-        "frames": 8
+        "kind": "flare",
+        "frames": 5
       },
       "assets": {
         "background": "assets/s03-column-bg.png"
       },
       "params": {
-        "scrim": 0.51,
+        "scrim": 0.49,
         "kicker": "",
         "title": "TWENTY MILES",
         "footer": "",
-        "titleFrame": 9,
+        "titleFrame": 5,
         "titleSize": 230,
-        "creep": 1.051,
+        "creep": 1.096,
         "accent": "#e8e2d4",
         "field": "wash",
         "fieldColours": [
@@ -132,14 +290,30 @@
           "#0a0b0c"
         ],
         "motif": "embers",
-        "motifX": 565,
+        "motifX": 579,
         "motifY": 960,
-        "motifSize": 39,
-        "motifCount": 29,
-        "motifFrame": 17,
+        "motifSize": 38,
+        "motifCount": 26,
+        "motifFrame": 13,
         "motifColour": "#e8e2d4",
-        "motifOpacity": 0.93
-      }
+        "motifOpacity": 0.99,
+        "pushEndFrame": 60,
+        "pushFrom": 1.04,
+        "pushTo": 1.06
+      },
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.16,
+          "x": 158,
+          "y": -29,
+          "width": 343,
+          "rotate": 15,
+          "opacity": 0.82,
+          "colour": "#e8e2d4",
+          "from": 54
+        }
+      ]
     },
     {
       "id": "s03-column-b",
@@ -147,8 +321,8 @@
       "voText": "and threw ash twenty miles up.",
       "durationInFrames": 75,
       "transition": {
-        "kind": "flare",
-        "frames": 8
+        "kind": "rack",
+        "frames": 9
       },
       "assets": {
         "ground": "assets/s03-column-bg.png"
@@ -156,27 +330,53 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.75,
+          "depth": 0.83,
           "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "rect",
+          "depth": 0.62,
+          "x": 372,
+          "y": 1168,
+          "width": 261,
+          "colour": "#e8e2d4",
+          "from": 64
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.48,
-        "pushTo": 1.09,
+        "pushFrom": 1.43,
+        "pushTo": 1.04,
         "pushEndFrame": 71,
         "accent": "#e8e2d4",
         "caption": [
-          "and threw",
-          "ash twenty",
-          "miles up"
+          "and threw ash",
+          "twenty miles up"
         ],
         "captionX": 84,
-        "captionY": 646,
-        "captionFrame": 4,
+        "captionY": 1025,
+        "captionSize": 97,
+        "captionAlign": "left",
+        "captionFrame": 6,
         "captionEvery": 8,
-        "captionSize": 92
+        "captionScrim": 0.34,
+        "glowX": -310,
+        "glowY": 460,
+        "glowSize": 405,
+        "glowIntensity": 0.6,
+        "glowWarm": "#e8e2d4",
+        "glowDepth": 0.83,
+        "focusPx": 11,
+        "fog": 0.58,
+        "handheld": 3,
+        "captionEmphasis": "twenty miles",
+        "captionReveal": "blur",
+        "captionMark": "underline",
+        "captionWordEvery": 3
       }
     },
     {
@@ -186,19 +386,19 @@
       "durationInFrames": 52,
       "transition": {
         "kind": "slam",
-        "frames": 10
+        "frames": 6
       },
       "assets": {
         "background": "assets/s04-fall-bg.png"
       },
       "params": {
-        "scrim": 0.41,
+        "scrim": 0.49,
         "kicker": "",
         "title": "",
         "footer": "",
-        "titleFrame": 10,
+        "titleFrame": 5,
         "titleSize": 124,
-        "creep": 1.076,
+        "creep": 1.046,
         "accent": "#e8e2d4",
         "field": "wash",
         "fieldColours": [
@@ -206,13 +406,29 @@
           "#1c1f21",
           "#0a0b0c"
         ],
+        "pushEndFrame": 48,
+        "pushFrom": 1,
+        "pushTo": 1.1,
         "mark": "bracket",
-        "markX": 260,
-        "markY": 1160,
-        "markWidth": 560,
-        "markHeight": 96,
-        "markFrame": 18
+        "markX": 206,
+        "markY": 777,
+        "markWidth": 558,
+        "markHeight": 223,
+        "markFrame": 44
       },
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.2,
+          "x": 151,
+          "y": 37,
+          "width": 288,
+          "rotate": 16,
+          "opacity": 0.68,
+          "colour": "#e8e2d4",
+          "from": 4
+        }
+      ],
       "onScreenText": [
         {
           "text": "SIX HOURS",
@@ -230,7 +446,7 @@
       "durationInFrames": 52,
       "transition": {
         "kind": "slip",
-        "frames": 11
+        "frames": 10
       },
       "assets": {
         "ground": "assets/s04-fall-bg.png"
@@ -238,15 +454,27 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.82,
+          "depth": 0.78,
           "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.64,
+          "x": 354,
+          "y": 793,
+          "width": 269,
+          "colour": "#e8e2d4",
+          "from": 44
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.34,
-        "pushTo": 1.09,
+        "pushFrom": 1.42,
+        "pushTo": 1.06,
         "pushEndFrame": 49,
         "accent": "#e8e2d4",
         "caption": [
@@ -254,10 +482,27 @@
           "the weight"
         ],
         "captionX": 84,
-        "captionY": 466,
+        "captionY": 375,
+        "captionSize": 93,
+        "captionAlign": "left",
         "captionFrame": 4,
-        "captionEvery": 9,
-        "captionSize": 96
+        "captionEvery": 10,
+        "captionScrim": 0.34,
+        "glowX": -433,
+        "glowY": 167,
+        "glowSize": 450,
+        "glowIntensity": 0.66,
+        "glowWarm": "#e8e2d4",
+        "glowDepth": 0.78,
+        "focusPx": 8,
+        "fog": 0.4,
+        "handheld": 1.5,
+        "panY": -63,
+        "roll": -0.47,
+        "captionEmphasis": "weight",
+        "captionReveal": "blur",
+        "captionMark": "none",
+        "captionWordEvery": 3
       }
     },
     {
@@ -266,8 +511,8 @@
       "voText": "then gave.",
       "durationInFrames": 45,
       "transition": {
-        "kind": "flare",
-        "frames": 8
+        "kind": "slip",
+        "frames": 9
       },
       "assets": {
         "ground": "assets/s04-fall-bg.png"
@@ -275,25 +520,53 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.81,
+          "depth": 0.76,
           "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.38,
+          "x": 151,
+          "y": -15,
+          "width": 345,
+          "rotate": 16,
+          "opacity": 0.54,
+          "colour": "#e8e2d4",
+          "from": 38
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
         "pushFrom": 1,
-        "pushTo": 1.35,
+        "pushTo": 1.44,
         "pushEndFrame": 42,
         "accent": "#e8e2d4",
         "caption": [
           "then gave"
         ],
         "captionX": 84,
-        "captionY": 810,
+        "captionY": 626,
+        "captionSize": 96,
+        "captionAlign": "left",
         "captionFrame": 4,
-        "captionEvery": 6,
-        "captionSize": 97
+        "captionEvery": 7,
+        "captionScrim": 0.34,
+        "glowX": -517,
+        "glowY": 537,
+        "glowSize": 530,
+        "glowIntensity": 0.52,
+        "glowWarm": "#e8e2d4",
+        "glowDepth": 0.76,
+        "focusPx": 8,
+        "fog": 0.39,
+        "handheld": 1.5,
+        "captionEmphasis": "gave",
+        "captionReveal": "punch",
+        "captionMark": "box",
+        "captionWordEvery": 2
       }
     },
     {
@@ -303,22 +576,51 @@
       "durationInFrames": 75,
       "transition": {
         "kind": "slam",
-        "frames": 9
+        "frames": 8
       },
       "assets": {
         "wall": "assets/s05-cast-bg.png",
         "photo": "assets/s05-cast-photo.png"
       },
       "params": {
-        "frameWidth": 833,
-        "frameRatio": 1.11,
-        "pushEndFrame": 27,
-        "detachFrame": 49,
-        "throughEndFrame": 71,
-        "weldRatio": 0.37,
-        "wallScaleEnd": 6.8,
-        "accent": "#e8e2d4"
-      }
+        "frameWidth": 829,
+        "frameRatio": 1.01,
+        "pushEndFrame": 72,
+        "detachFrame": 37,
+        "throughEndFrame": 50,
+        "weldRatio": 0.351,
+        "wallScaleEnd": 5.1,
+        "accent": "#e8e2d4",
+        "caption": [
+          "Not bones.",
+          "The shape",
+          "the body left."
+        ],
+        "captionX": 84,
+        "captionY": 1229,
+        "captionFrame": 6,
+        "captionEvery": 10,
+        "captionSize": 86,
+        "captionRecedeAt": 57,
+        "pushFrom": 1.17,
+        "pushTo": 1.27,
+        "captionEmphasis": "The",
+        "captionReveal": "rise",
+        "captionMark": "underline",
+        "captionWordEvery": 4
+      },
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "rect",
+          "depth": 0.61,
+          "x": 418,
+          "y": 1033,
+          "width": 273,
+          "colour": "#e8e2d4",
+          "from": 64
+        }
+      ]
     },
     {
       "id": "s05-cast-b",
@@ -326,8 +628,8 @@
       "voText": "exactly where they fell.",
       "durationInFrames": 52,
       "transition": {
-        "kind": "slip",
-        "frames": 9
+        "kind": "slam",
+        "frames": 5
       },
       "assets": {
         "ground": "assets/s05-cast-photo.png"
@@ -335,26 +637,56 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.85,
+          "depth": 0.83,
           "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.21,
+          "x": 184,
+          "y": 3,
+          "width": 231,
+          "rotate": 9,
+          "opacity": 0.67,
+          "colour": "#e8e2d4",
+          "from": 44
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.4,
-        "pushTo": 1.04,
+        "pushFrom": 1.45,
+        "pushTo": 1.08,
         "pushEndFrame": 49,
         "accent": "#e8e2d4",
         "caption": [
-          "exactly where",
-          "they fell"
+          "exactly",
+          "where",
+          "they",
+          "fell"
         ],
         "captionX": 84,
-        "captionY": 646,
+        "captionY": 682,
+        "captionSize": 95,
+        "captionAlign": "left",
         "captionFrame": 4,
-        "captionEvery": 8,
-        "captionSize": 94
+        "captionEvery": 7,
+        "captionScrim": 0.34,
+        "glowX": -252,
+        "glowY": 197,
+        "glowSize": 356,
+        "glowIntensity": 0.64,
+        "glowWarm": "#e8e2d4",
+        "glowDepth": 0.83,
+        "focusPx": 12,
+        "fog": 0.45,
+        "handheld": 1.5,
+        "captionEmphasis": "exactly",
+        "captionReveal": "punch",
+        "captionMark": "box",
+        "captionWordEvery": 3
       }
     },
     {
@@ -368,28 +700,54 @@
         "brightness": 0.94
       },
       "transition": {
-        "kind": "slam",
-        "frames": 11
+        "kind": "slip",
+        "frames": 10
       },
       "assets": {
         "background": "assets/s06-close-bg.png"
       },
       "params": {
-        "scrim": 0.41,
+        "scrim": 0.44,
         "kicker": "Rediscovered · 1748",
         "title": "SEVENTEEN CENTURIES",
         "footer": "the afternoon was still there",
-        "titleFrame": 8,
-        "titleSize": 124,
-        "creep": 1.047,
+        "titleFrame": 5,
+        "titleSize": 230,
+        "creep": 1.067,
         "accent": "#e8e2d4",
         "field": "wash",
         "fieldColours": [
           "#33373a",
           "#1c1f21",
           "#0a0b0c"
-        ]
-      }
+        ],
+        "pushEndFrame": 62,
+        "pushFrom": 1,
+        "pushTo": 1.53
+      },
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "Rediscovered · 1748",
+          "depth": 0.6,
+          "x": 414,
+          "y": 1364,
+          "width": 465,
+          "rotate": 0.3,
+          "from": 54
+        },
+        {
+          "kind": "newspaper",
+          "masthead": "THE GAZETTE",
+          "text": "SEVENTEEN CENTURIES",
+          "depth": 0.85,
+          "x": 655,
+          "y": 918,
+          "width": 412,
+          "rotate": -1.7,
+          "from": 14
+        }
+      ]
     },
     {
       "id": "s06-close-b",
@@ -398,7 +756,7 @@
       "durationInFrames": 75,
       "transition": {
         "kind": "rack",
-        "frames": 12
+        "frames": 13
       },
       "assets": {
         "ground": "assets/s06-close-bg.png"
@@ -406,27 +764,68 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.77,
+          "depth": 0.94,
           "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.26,
+          "x": 161,
+          "y": 66,
+          "width": 353,
+          "rotate": 18,
+          "opacity": 0.53,
+          "colour": "#e8e2d4",
+          "from": 64
+        },
+        {
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.75,
+          "x": 631,
+          "y": 815,
+          "width": 316,
+          "colour": "#e8e2d4",
+          "from": 0
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.41,
-        "pushTo": 1.06,
+        "pushFrom": 1.46,
+        "pushTo": 1.1,
         "pushEndFrame": 71,
         "accent": "#e8e2d4",
         "caption": [
-          "and the",
-          "afternoon was",
-          "still there"
+          "and the afternoon",
+          "was still there"
         ],
         "captionX": 84,
-        "captionY": 1014,
-        "captionFrame": 4,
+        "captionY": 316,
+        "captionSize": 77,
+        "captionAlign": "left",
+        "captionFrame": 6,
         "captionEvery": 8,
-        "captionSize": 97
+        "captionScrim": 0.34,
+        "glowX": -245,
+        "glowY": 533,
+        "glowSize": 347,
+        "glowIntensity": 0.67,
+        "glowWarm": "#e8e2d4",
+        "glowDepth": 0.94,
+        "focusPx": 11,
+        "fog": 0.54,
+        "handheld": 1.5,
+        "shakeAt": [
+          6
+        ],
+        "shakeAmount": 23,
+        "captionEmphasis": "afternoon",
+        "captionReveal": "rise",
+        "captionMark": "highlight",
+        "captionWordEvery": 3
       }
     }
   ]

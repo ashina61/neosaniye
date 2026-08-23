@@ -8,14 +8,16 @@ name, an episode id, or a story.
 
 ```
 engine/                     shared code — knows roles and numbers, never assets
-  motion.ts                 posterize, boil, drift, pingpong, spring, blur
+  motion.ts                 posterize · boil · spring · punch · shake · wipe · count
+  Camera.ts                 one virtual camera per shot; layers take their share by depth
   FilmLook.tsx              grain · grunge · scanlines · vignette · gate weave · grade
   Plate.tsx                 one flat image layer (full-bleed, or a sized subject)
   OnScreenText.tsx          scene-relative text
   Episode.tsx               the timeline
   Root.tsx                  the composition (size and duration come from config)
   schema.mjs / schema.ts    the contract: one runtime, one set of types
-  draw/                     drawn graphics: light, paper, marks, type, overlays
+  draw/                     drawn graphics: light, paper, marks, motifs, overlays
+    Kinetic.tsx             word-level reveals, the emphasis word, the counter
   sceneTypes/               the seven shared templates + registry
 
 episodes/<episode-id>/
@@ -23,8 +25,14 @@ episodes/<episode-id>/
   assets/                   its images
   scenes/index.tsx          OPTIONAL — templates only this episode uses
 
-scripts/                    render + validate CLIs
-test/                       engine-purity guard, schema, registry, episodes
+scripts/
+  plan-episode.mjs          brief → scene-config
+  lib/director.mjs          WHEN things happen: beats, camera, emphasis, guardrails
+  lib/critique.mjs          the check that can see a boring reel
+test/                       engine-purity guard, schema, registry, episodes, director
+
+MOTION_SYSTEM.md            the design language — what moves and why
+VIDEO_PIPELINE.md           script → storyboard → plan → assets → render → QA
 ```
 
 ## The planner
@@ -41,7 +49,7 @@ one phrase per line saying what we are looking at. Then:
 npm run plan -- --episode=mansa-musa
 ```
 
-which writes `scene-config.json` and `assets.json`. Three things are derived:
+which writes `scene-config.json` and `assets.json`. Four things are derived:
 
 **The words decide the shot.** A line with a number becomes a slate with that
 number set large; a line listing three things becomes three pieces of paper
@@ -50,7 +58,15 @@ outright (`title`, `items`, `artefact`, `pieces`) always beats what the planner
 would have guessed.
 
 **The words decide the length.** A scene runs as long as its line takes to speak
-at a documentary rate. Nothing is padded to a round number.
+at a documentary rate. Nothing is padded to a round number — and nothing is
+allowed to run long either: past 2.9 spoken seconds a sentence is cut again,
+with or without a comma to cut at. A shot that runs four and a half seconds on
+one camera move is the slideshow this whole engine exists to stop making.
+
+**The director decides what happens inside the shot.** Every shot gets at least
+two events, spread across its length, the first one early: the words landing,
+a card dropping, a wireframe closing, the camera taking a hit. A camera push is
+the floor, not an event. See [MOTION_SYSTEM.md](MOTION_SYSTEM.md).
 
 **The episode decides its own look.** Grade, accent, drawn field, mark style,
 caption face and a three-of-five transition vocabulary are drawn from a seed
@@ -63,20 +79,29 @@ gold-heat  accent #f2b53a · field sunburst · typed   · cuts slam, flare, rack
 ash-grey   accent #e8e2d4 · field wash     · sticker · cuts flare, slip, rack
 ```
 
-Rhythm is guarded: no two adjacent scenes arrive the same way, and a run of
-three identical shot types is broken — two of a kind is a pair, three is a
-pattern, and a reel that falls into one stops being edited and becomes a list.
+Rhythm is guarded by one rule, stated once and reused: **never the same thing
+three shots running** — transitions, camera moves, text reveals, emphasis marks,
+drawn props, motifs. Deliberately not "never twice": two of a kind is a rhyme,
+and forbidding rhymes makes a reel alternate mechanically, which is its own tell.
 
 ## Run it
 
 ```bash
 npm ci
-npm run validate                        # every episode: schema + assets, no render
-npm run validate -- --episode=test-episode
-npm run render   -- --episode=test-episode      # → out/test-episode.mp4
+npm run validate                        # schema + assets + IS THERE ANYTHING IN IT
+npm run validate -- --strict            # warnings become failures
+npm run plan     -- --episode=antikythera
+npm run frames   -- --episode=antikythera --per=2   # contact sheet — LOOK AT IT
+npm run render   -- --episode=antikythera           # → out/antikythera.mp4
 npm run studio                          # Remotion Studio, live knobs
 npm test && npm run typecheck
 ```
+
+`npm run validate` prints the shape of each reel — `motion  33 event(s), 1.26/s,
+2.18s per shot` — and names every shot that will read as a still. A config can
+be perfectly well formed, name files that all exist, and describe seven
+photographs being slowly scaled; the schema check cannot see that and
+`scripts/lib/critique.mjs` can.
 
 `npm run assets:placeholder -- --episode=<id>` writes labelled stand-ins — one
 per file the config references, at the size its recipe asks for — so an episode

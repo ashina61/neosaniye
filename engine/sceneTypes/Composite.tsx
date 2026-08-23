@@ -1,10 +1,12 @@
 import React from 'react';
-import {AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, Img, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import type {SceneProps} from './types';
 import type {LayerSpec} from '../schema';
-import {CLAMP, boil, dampedSwing, focusHunt, holdKeyframes, posterizeTime, springEntrance} from '../motion';
+import {boil, dampedSwing, focusHunt, holdKeyframes, posterizeTime, springEntrance} from '../motion';
+import {cameraFromParams, useCamera} from '../Camera';
 import {Fog, Glow} from '../draw/Glow';
 import {WordStack} from '../draw/Type';
+import type {EmphasisMark, Reveal} from '../draw/Kinetic';
 import {Annotation, type MarkKind} from '../draw/Annotation';
 import {SceneMotif} from '../draw/Motif';
 import {DrawnProps} from '../draw/Props';
@@ -54,16 +56,18 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
 
   // ONE camera move for the whole stack. Each layer takes the fraction of it
   // its depth allows, which is what keeps them in the same space.
+  //
   // A shot may also PULL BACK — start close and open out. Two pushes in a row
   // on the same plate read as one continuous move with a stutter in the middle;
   // a push then a pull reads as two shots, which is what they are. Both ends
   // stay at or above 1 so a fill layer never shrinks inside the frame.
-  const push = interpolate(
-    stepped,
-    [0, num('pushEndFrame', durationInFrames)],
-    [num('pushFrom', 1), num('pushTo', 1.55)],
-    {...CLAMP, easing: Easing.out(Easing.cubic)},
-  );
+  //
+  // And a push is not the only move a camera has. Pan, roll, handheld breath
+  // and impact all live in the same object now, so a shot can travel PAST its
+  // subject instead of only toward it — which is the difference between six
+  // shots that move and six shots that move identically.
+  const camera = useCamera(cameraFromParams(scene.params, durationInFrames), durationInFrames);
+  const push = camera.push;
   const blur = focusHunt(stepped, durationInFrames, {maxPx: num('focusPx', 0), dipAt: 0.34, dipBack: 0.46});
 
   const layers = (scene.layers ?? []).filter((layer) => !layer.role || assets[layer.role]);
@@ -75,9 +79,13 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
     if (!src) return null;
 
     const depth = layer.depth ?? 1;
-    const scale = 1 + (push - 1) * depth;
-    const drift = ((layer.drift ?? 0) * stepped) / Math.max(1, durationInFrames);
-    const driftY = ((layer.driftY ?? 0) * stepped) / Math.max(1, durationInFrames);
+    const scale = camera.scaleAt(depth);
+    // The camera's own travel at this depth, plus whatever this layer is doing
+    // on its own account. A cloud drifts because it is a cloud; the frame moves
+    // because somebody moved it. They add.
+    const shot = camera.offsetAt(depth);
+    const drift = shot.x + ((layer.drift ?? 0) * stepped) / Math.max(1, durationInFrames);
+    const driftY = shot.y + ((layer.driftY ?? 0) * stepped) / Math.max(1, durationInFrames);
     const life = layer.alive ? boil(stepped, {phase: key.length * 11}) : {scale: 1, rotate: 0};
     const enter =
       layer.from === undefined ? 1 : springEntrance(stepped, fps, {delay: layer.from, stiffness: 48, mass: 1});
@@ -132,7 +140,7 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
             transformOrigin: origin,
             transform:
               `translate(${drift + enterX}px, ${driftY + enterY}px) ` +
-              `scale(${scale * life.scale}) rotate(${swing}deg)`,
+              `scale(${scale * life.scale}) rotate(${swing + camera.rotate}deg)`,
           }}
         >
           <Img src={staticFile(src)} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
@@ -155,7 +163,7 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
         `translate(${drift + enterX}px, ${driftY + enterY}px) ` +
         `scale(${scale * life.scale}) ` +
         (asShadow ? `scaleY(-0.55) skewX(${layer.shadowSkew ?? -53}deg) ` : '') +
-        `rotate(${(layer.rotate ?? 0) + life.rotate + swing}deg)`,
+        `rotate(${(layer.rotate ?? 0) + life.rotate + swing + camera.rotate}deg)`,
       ...common,
     };
     if (anchor === 'bottom') box.bottom = height - standY;
@@ -253,6 +261,12 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
       {caption.length ? (
         <WordStack
           lines={caption}
+          /* WHICH WORD THE LINE IS FOR, and how the words arrive. Set by the
+             director; absent means the older behaviour, a line at a time. */
+          emphasis={str('captionEmphasis', '') || undefined}
+          emphasisMark={str('captionMark', 'none') as EmphasisMark}
+          reveal={str('captionReveal', 'rise') as Reveal}
+          wordEvery={num('captionWordEvery', 3)}
           x={num('captionX', 84)}
           y={num('captionY', 430)}
           from={num('captionFrame', 10)}

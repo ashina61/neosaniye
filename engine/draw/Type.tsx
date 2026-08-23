@@ -1,6 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
-import {CLAMP, dampedSwing, holdKeyframes, posterizeTime, springEntrance} from '../motion';
+import {CLAMP, dampedSwing, holdKeyframes, posterizeTime, springEntrance, stagger} from '../motion';
+import {KineticLine, type EmphasisMark, type Reveal} from './Kinetic';
 
 const SERIF = '"Playfair Display", "Iowan Old Style", Georgia, serif';
 const SANS = '"Archivo", "Helvetica Neue", Arial, sans-serif';
@@ -53,6 +54,23 @@ export const WordStack: React.FC<{
   accent?: number;
   accentColour?: string;
   /**
+   * HOW THE WORDS ARRIVE, and WHICH ONE MATTERS.
+   *
+   * The stack used to land whole lines with a slide, which is one step up from
+   * a fade and several short of typography: "a lump of / corroded metal" and
+   * "the stone weighs / 1,000 TONS" were given exactly the same treatment,
+   * although one of them is the reason its shot exists.
+   *
+   * So the line arrives word by word, and the emphasis — a word or a phrase —
+   * takes the accent colour, a size, a punch and a drawn mark. One per stack:
+   * a reel that emphasises everything emphasises nothing.
+   */
+  reveal?: Reveal;
+  emphasis?: string;
+  emphasisMark?: EmphasisMark;
+  /** Frames between WORDS inside a line. The gap between lines is `every`. */
+  wordEvery?: number;
+  /**
    * A SOFT GROUND UNDER THE WORDS, 0 to 1.
    *
    * A stroke and a drop shadow are enough over a dark plate and nowhere near
@@ -81,17 +99,66 @@ export const WordStack: React.FC<{
   restOpacity = 0.32,
   accent,
   accentColour = '#ffcf3d',
+  reveal = 'rise',
+  emphasis,
+  emphasisMark = 'none',
+  wordEvery = 3,
   scrim = 0,
 }) => {
   const frame = useCurrentFrame();
-  const {fps} = useVideoConfig();
+  const {fps, width, height} = useVideoConfig();
   const stepped = posterizeTime(frame, fps, 12);
 
-  const recede = recedeAt === undefined ? 1 : interpolate(stepped, [recedeAt, recedeAt + 14], [1, restOpacity], CLAMP);
+  /**
+   * IT CANNOT START LEAVING BEFORE IT HAS FINISHED ARRIVING.
+   *
+   * `recedeAt` was set from the shot's length and the stagger from the words,
+   * and nothing checked the two against each other. On a short shot the stack
+   * began fading at frame 38 while its second line was still landing at 44 —
+   * so the last line of the caption was never seen at full strength, and the
+   * only sign of it was a half-faded word in a still nobody sampled.
+   */
+  const lastWord =
+    stagger(Math.max(0, lines.length - 1), {from, every}) +
+    wordEvery * Math.max(1, (lines[lines.length - 1] ?? '').split(/\s+/).filter(Boolean).length) +
+    10;
+  const rest = recedeAt === undefined ? undefined : Math.max(recedeAt, lastWord);
+  const recede = rest === undefined ? 1 : interpolate(stepped, [rest, rest + 14], [1, restOpacity], CLAMP);
+
+  /**
+   * THE WORDS FIT THE FRAME, AND THE ENGINE GUARANTEES IT.
+   *
+   * Same law as a piece plate never covering the shot: the config promises
+   * nothing, the engine enforces it. A caption set at 84px whose emphasis word
+   * is then set at 1.16 of that delivered "THIRTY GEARS" with the S through the
+   * right edge of the frame — and the render succeeded, the tests passed, and
+   * the reel shipped with half a word missing. The same failure the title card
+   * was fixed for, in the other text component.
+   *
+   * Two limits. The column is bounded so a long word wraps instead of leaving,
+   * and the size comes down until the longest line fits inside that column at
+   * the size the EMPHASIS will be set at, which is the size that overflows.
+   */
+  const column = Math.max(240, width - x - 110);
+  const longest = lines.reduce((n, line) => Math.max(n, line.length), 0);
+  // The estimate is inflated twice over on purpose: the emphasis word is set at
+  // 1.16 of the size, and it also carries margins on both sides that a
+  // per-character estimate knows nothing about. Being a little small is
+  // invisible; being a little large puts the last letter through the edge.
+  const fitted = Math.max(34, Math.min(size, fitSize('x'.repeat(Math.ceil(longest * 1.24)), size, column, 0)));
 
   // How tall the block will be, so the ground under it covers the words and
   // not the whole frame.
-  const block = lines.length * size * 1.02;
+  const block = lines.length * fitted * 1.3;
+  /**
+   * AND IT SITS INSIDE THE SAFE AREA.
+   *
+   * A four-line stack placed three quarters of the way down runs its last line
+   * off the bottom of the frame — which on a vertical short is also where the
+   * platform draws its own caption and buttons. The block is pushed up until it
+   * fits, rather than being allowed to leave.
+   */
+  const top = Math.max(96, Math.min(y, height - block - 150));
 
   return (
     <AbsoluteFill style={{pointerEvents: 'none'}}>
@@ -101,8 +168,8 @@ export const WordStack: React.FC<{
             position: 'absolute',
             left: 0,
             right: 0,
-            top: Math.max(0, y - size * 0.7),
-            height: block + size * 1.4,
+            top: Math.max(0, top - fitted * 0.7),
+            height: block + fitted * 1.4,
             background:
               align === 'right'
                 ? `linear-gradient(270deg, rgba(0,0,0,${scrim}) 0%, rgba(0,0,0,${scrim * 0.82}) 42%, transparent 88%)`
@@ -120,35 +187,36 @@ export const WordStack: React.FC<{
           position: 'absolute',
           left: align === 'right' ? undefined : x,
           right: align === 'right' ? x : undefined,
-          top: y,
+          top,
+          maxWidth: column,
           textAlign: align,
           opacity: recede,
         }}
       >
         {lines.map((line, i) => {
-          const at = from + i * every;
-          if (stepped < at) return <div key={i} style={{height: size * 1.02}} />;
-          const land = springEntrance(stepped, fps, {delay: at, stiffness: 58, mass: 0.9, damping: 13});
-          const isAccent = accent === i;
+          const at = stagger(i, {from, every});
+          // The slot is held from the first frame. Collapsing an unarrived line
+          // makes every line below it JUMP as each one lands, and a caption
+          // that reflows while it is being read is worse than one that is late.
+          if (stepped < at) return <div key={i} style={{height: fitted * 1.24}} />;
           return (
-            <div
-              key={i}
-              style={{
-                fontFamily: isAccent || face === 'sans' ? SANS : SERIF,
-                fontStyle: isAccent || face === 'sans' ? 'normal' : 'italic',
-                fontWeight: 900,
-                fontSize: isAccent ? size * 1.18 : size,
-                lineHeight: 1.02,
-                color: isAccent ? accentColour : colour,
-                letterSpacing: isAccent ? '-0.03em' : '-0.01em',
-                textTransform: isAccent ? 'uppercase' : 'none',
-                opacity: land,
-                transform: `translateX(${(1 - land) * (align === 'right' ? 34 : -34)}px)`,
-                WebkitTextStroke: '1.5px rgba(10,8,5,0.5)',
-                textShadow: '0 0 26px rgba(0,0,0,0.95), 0 6px 20px rgba(0,0,0,0.8)',
-              }}
-            >
-              {line}
+            <div key={i} style={{lineHeight: 1.02, marginBottom: fitted * 0.06}}>
+              <KineticLine
+                text={line}
+                from={at}
+                every={wordEvery}
+                reveal={reveal}
+                size={fitted}
+                colour={colour}
+                face={face}
+                // A whole line named as the accent is the older, coarser way of
+                // saying which part matters; it still works, and an explicit
+                // emphasis phrase wins over it.
+                emphasis={emphasis ?? (accent === i ? line : undefined)}
+                emphasisColour={accentColour}
+                emphasisMark={emphasisMark}
+                settleTracking={i === 0}
+              />
             </div>
           );
         })}
@@ -298,7 +366,18 @@ export const Slot: React.FC<{
   // is a reel that wobbles; and the row that decides the size is whichever
   // decoy is widest, not the answer.
   const fitted = rows.reduce((smallest, row) => Math.min(smallest, fitSize(row, size, width)), size);
-  const line = fitted * 1.12;
+  /**
+   * THE WINDOW IS TALLER THAN THE TYPE, AND ITS EDGES ARE SOFT.
+   *
+   * At 1.12 the glyphs nearly filled the window, so any frame caught mid-scroll
+   * showed the bottom half of one word sitting on the top half of the next —
+   * two sliced words overlapping between the slate's rules, which reads as a
+   * broken layout rather than as a mechanism. A real odometer shows one value
+   * with the neighbours falling away, so the window is half again as tall as
+   * the type and the rows fade out at its edges.
+   */
+  const line = fitted * 1.5;
+  const softEdge = 'linear-gradient(180deg, transparent 0%, #000 26%, #000 74%, transparent 100%)';
   const travel = interpolate(stepped, [from, from + spin], [0, rows.length - 1], {
     ...CLAMP,
     easing: Easing.out(Easing.cubic),
@@ -307,7 +386,15 @@ export const Slot: React.FC<{
   const settle = stepped <= from + spin ? 0 : dampedSwing(stepped, {amplitude: fitted * 0.06, rate: 0.9, decay: 0.24, delay: from + spin});
 
   return (
-    <div style={{height: line, overflow: 'hidden', position: 'relative'}}>
+    <div
+      style={{
+        height: line,
+        overflow: 'hidden',
+        position: 'relative',
+        WebkitMaskImage: softEdge,
+        maskImage: softEdge,
+      }}
+    >
       <div style={{transform: `translateY(${-travel * line + settle}px)`}}>
         {rows.map((row, i) => (
           <div

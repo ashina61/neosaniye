@@ -19,21 +19,21 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.38,
-      "grungeOpacity": 0.11,
-      "scanlineOpacity": 0.12,
-      "scanlinePeriod": 10,
-      "vignetteStrength": 0.42,
-      "weavePx": 5,
-      "weaveScale": 1.012
+      "grainOpacity": 0.3,
+      "grungeOpacity": 0.13,
+      "scanlineOpacity": 0.13,
+      "scanlinePeriod": 9,
+      "vignetteStrength": 0.46,
+      "weavePx": 6,
+      "weaveScale": 1.015
     }
   },
   "scenes": [
     {
       "id": "s01-atlas",
       "sceneType": "portal-zoom-reveal",
-      "voText": "This is the only picture anyone drew of him,",
-      "durationInFrames": 71,
+      "voText": "This is the only picture anyone drew",
+      "durationInFrames": 55,
       "gradeOverride": {
         "saturate": 0.98,
         "sepia": 0.3,
@@ -44,13 +44,13 @@
         "photo": "assets/s01-atlas-photo.png"
       },
       "params": {
-        "frameWidth": 786,
-        "frameRatio": 1.06,
-        "pushEndFrame": 26,
-        "detachFrame": 48,
-        "throughEndFrame": 70,
-        "weldRatio": 0.369,
-        "wallScaleEnd": 6.7,
+        "frameWidth": 758,
+        "frameRatio": 1.02,
+        "pushEndFrame": 53,
+        "detachFrame": 27,
+        "throughEndFrame": 36,
+        "weldRatio": 0.423,
+        "wallScaleEnd": 6.2,
         "accent": "#f2b53a",
         "caption": [
           "Drawn by",
@@ -58,29 +58,58 @@
           "never met him."
         ],
         "captionX": 84,
-        "captionY": 1388,
-        "captionFrame": 74,
-        "captionEvery": 10,
-        "captionSize": 86,
-        "captionRecedeAt": 53,
+        "captionY": 1401,
+        "captionFrame": 4,
+        "captionEvery": 8,
+        "captionSize": 88,
+        "captionRecedeAt": 37,
         "motif": "rays",
-        "motifX": 533,
+        "motifX": 501,
         "motifY": 768,
-        "motifSize": 304,
-        "motifCount": 21,
-        "motifFrame": 76,
+        "motifSize": 322,
+        "motifCount": 25,
+        "motifFrame": 40,
         "motifColour": "#f2b53a",
-        "motifOpacity": 0.93
-      }
+        "motifOpacity": 0.97,
+        "pushFrom": 1.49,
+        "pushTo": 1.01,
+        "captionEmphasis": "someone",
+        "captionReveal": "blur",
+        "captionMark": "none",
+        "captionWordEvery": 3
+      },
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.32,
+          "x": 895,
+          "y": -87,
+          "width": 220,
+          "rotate": -15,
+          "opacity": 0.63,
+          "colour": "#f2b53a",
+          "from": 47
+        },
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.74,
+          "x": 696,
+          "y": 1135,
+          "width": 288,
+          "colour": "#f2b53a",
+          "from": 9
+        }
+      ]
     },
     {
       "id": "s01-atlas-b",
       "sceneType": "composite",
-      "voText": "and they never met.",
-      "durationInFrames": 32,
+      "voText": "of him,",
+      "durationInFrames": 16,
       "transition": {
         "kind": "slam",
-        "frames": 10
+        "frames": 5
       },
       "assets": {
         "ground": "assets/s01-atlas-photo.png"
@@ -88,33 +117,122 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.87,
+          "depth": 0.8,
           "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.26,
+          "x": 929,
+          "y": -9,
+          "width": 345,
+          "rotate": -16,
+          "opacity": 0.73,
+          "colour": "#f2b53a",
+          "from": 0
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.41,
-        "pushTo": 1.02,
+        "pushFrom": 1.37,
+        "pushTo": 1.03,
+        "pushEndFrame": 15,
+        "accent": "#f2b53a",
+        "caption": [
+          "of him"
+        ],
+        "captionX": 84,
+        "captionY": 577,
+        "captionSize": 96,
+        "captionAlign": "left",
+        "captionFrame": 1,
+        "captionEvery": 7,
+        "captionScrim": 0.34,
+        "glowX": 1509,
+        "glowY": 558,
+        "glowSize": 437,
+        "glowIntensity": 0.41,
+        "glowWarm": "#f2b53a",
+        "glowDepth": 0.8,
+        "focusPx": 13,
+        "fog": 0.12,
+        "handheld": 1.5,
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 2
+      }
+    },
+    {
+      "id": "s01-atlas-c",
+      "sceneType": "composite",
+      "voText": "and they never met.",
+      "durationInFrames": 32,
+      "transition": {
+        "kind": "flare",
+        "frames": 6
+      },
+      "assets": {
+        "ground": "assets/s01-atlas-photo.png"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.9,
+          "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.84,
+          "x": 452,
+          "y": 980,
+          "width": 306,
+          "colour": "#f2b53a",
+          "from": 0
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1,
+        "pushTo": 1.43,
         "pushEndFrame": 30,
         "accent": "#f2b53a",
         "caption": [
-          "and they",
-          "never met"
+          "and they never met"
         ],
         "captionX": 84,
-        "captionY": 301,
-        "captionFrame": 4,
+        "captionY": 656,
+        "captionSize": 78,
+        "captionAlign": "left",
+        "captionFrame": 3,
         "captionEvery": 8,
-        "captionSize": 92
+        "captionScrim": 0.34,
+        "glowX": 1282,
+        "glowY": 481,
+        "glowSize": 317,
+        "glowIntensity": 0.63,
+        "glowWarm": "#f2b53a",
+        "glowDepth": 0.9,
+        "focusPx": 12,
+        "fog": 0.13,
+        "handheld": 1.5,
+        "captionEmphasis": "never",
+        "captionReveal": "wipe",
+        "captionMark": "highlight",
+        "captionWordEvery": 2
       }
     },
     {
       "id": "s02-route",
       "sceneType": "composite",
-      "voText": "In thirteen twenty-four the king of Mali set out for Mecca with his treasury.",
-      "durationInFrames": 130,
+      "voText": "In thirteen twenty-four the king",
+      "durationInFrames": 46,
       "transition": {
         "kind": "slip",
         "frames": 10
@@ -125,24 +243,50 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.08,
+          "depth": 0.89,
           "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.3,
+          "x": 929,
+          "y": -79,
+          "width": 267,
+          "rotate": -16,
+          "opacity": 0.64,
+          "colour": "#f2b53a",
+          "from": 39
         }
       ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushTo": 1.46,
-        "pushEndFrame": 112,
-        "focusPx": 0,
-        "fog": 0.07,
-        "caption": [],
+        "pushFrom": 1,
+        "pushTo": 1.27,
+        "pushEndFrame": 42,
+        "glowX": 1478,
+        "glowY": 376,
+        "glowSize": 468,
+        "glowIntensity": 0.52,
+        "glowWarm": "#f2b53a",
+        "glowDepth": 0.89,
+        "focusPx": 13,
+        "fog": 0.09,
+        "caption": [
+          "In thirteen",
+          "twenty-four",
+          "the king"
+        ],
         "captionX": 84,
-        "captionY": 1074,
-        "captionFrame": 10,
-        "captionEvery": 18,
-        "captionSize": 83,
-        "captionRecedeAt": 94,
+        "captionY": 791,
+        "captionSize": 94,
+        "captionAlign": "left",
+        "captionFrame": 4,
+        "captionEvery": 8,
+        "captionScrim": 0.34,
+        "captionRecedeAt": 33,
         "accent": "#f2b53a",
         "motif": "route",
         "motifStops": [
@@ -153,200 +297,153 @@
           "Mecca"
         ],
         "motifFrame": 21,
-        "motifColour": "#f2b53a"
+        "motifColour": "#f2b53a",
+        "handheld": 1.5,
+        "captionEmphasis": "thirteen",
+        "captionReveal": "punch",
+        "captionMark": "underline",
+        "captionWordEvery": 2
+      }
+    },
+    {
+      "id": "s02-route-b",
+      "sceneType": "composite",
+      "voText": "of Mali set out",
+      "durationInFrames": 37,
+      "transition": {
+        "kind": "slam",
+        "frames": 6
+      },
+      "assets": {
+        "ground": "assets/s02-route-bg.png"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.81,
+          "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.8,
+          "x": 378,
+          "y": 977,
+          "width": 413,
+          "colour": "#f2b53a",
+          "from": 0
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.36,
+        "pushTo": 1.03,
+        "pushEndFrame": 35,
+        "accent": "#f2b53a",
+        "caption": [
+          "of Mali set out"
+        ],
+        "captionX": 84,
+        "captionY": 532,
+        "captionSize": 89,
+        "captionAlign": "left",
+        "captionFrame": 3,
+        "captionEvery": 8,
+        "captionScrim": 0.34,
+        "glowX": 1497,
+        "glowY": 481,
+        "glowSize": 516,
+        "glowIntensity": 0.46,
+        "glowWarm": "#f2b53a",
+        "glowDepth": 0.81,
+        "focusPx": 7,
+        "fog": 0.02,
+        "handheld": 1.5,
+        "captionEmphasis": "Mali",
+        "captionReveal": "punch",
+        "captionMark": "underline",
+        "captionWordEvery": 2
+      }
+    },
+    {
+      "id": "s02-route-c",
+      "sceneType": "composite",
+      "voText": "for Mecca with his treasury.",
+      "durationInFrames": 47,
+      "transition": {
+        "kind": "slip",
+        "frames": 10
+      },
+      "assets": {
+        "ground": "assets/s02-route-bg.png"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.9,
+          "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.18,
+          "x": 1000,
+          "y": -24,
+          "width": 317,
+          "rotate": -9,
+          "opacity": 0.51,
+          "colour": "#f2b53a",
+          "from": 40
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1,
+        "pushTo": 1.43,
+        "pushEndFrame": 44,
+        "accent": "#f2b53a",
+        "caption": [
+          "for Mecca",
+          "with his treasury"
+        ],
+        "captionX": 84,
+        "captionY": 909,
+        "captionSize": 81,
+        "captionAlign": "left",
+        "captionFrame": 4,
+        "captionEvery": 7,
+        "captionScrim": 0.34,
+        "glowX": 1401,
+        "glowY": 614,
+        "glowSize": 501,
+        "glowIntensity": 0.59,
+        "glowWarm": "#f2b53a",
+        "glowDepth": 0.9,
+        "focusPx": 13,
+        "fog": 0.08,
+        "handheld": 1.5,
+        "captionEmphasis": "Mecca",
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 2
       }
     },
     {
       "id": "s03-caravan",
       "sceneType": "composite",
-      "voText": "The caravan was so long that accounts still argue about the number.",
-      "durationInFrames": 126,
+      "voText": "The caravan was so long",
+      "durationInFrames": 53,
       "transition": {
         "kind": "slam",
-        "frames": 8
+        "frames": 6
       },
       "assets": {
-        "ground": "assets/s03-caravan-bg.png",
-        "?camel-standing-in-profile": "assets/camel-standing-in-profile.png",
-        "?date-palm-tree": "assets/date-palm-tree.png",
-        "?traveller-in-a-long-desert-robe": "assets/traveller-in-a-long-desert-robe.png"
-      },
-      "layers": [
-        {
-          "role": "ground",
-          "depth": 0.05,
-          "anchor": "fill"
-        },
-        {
-          "role": "camel-standing-in-profile",
-          "depth": 0.26,
-          "anchor": "bottom",
-          "x": 297,
-          "y": 1287,
-          "height": 518,
-          "opacity": 0.63
-        },
-        {
-          "role": "date-palm-tree",
-          "depth": 0.55,
-          "anchor": "bottom",
-          "x": 887,
-          "y": 1489,
-          "height": 727,
-          "opacity": 0.78
-        },
-        {
-          "role": "traveller-in-a-long-desert-robe",
-          "depth": 0.84,
-          "anchor": "bottom",
-          "x": 150,
-          "y": 1689,
-          "height": 924,
-          "opacity": 0.92,
-          "shadow": true,
-          "shadowSkew": -55,
-          "shadowOpacity": 0.34
-        }
-      ],
-      "params": {
-        "anchorX": 540,
-        "anchorY": 1700,
-        "pushTo": 1.34,
-        "pushEndFrame": 108,
-        "focusPx": 14,
-        "fog": 0.03,
-        "caption": [],
-        "captionX": 84,
-        "captionY": 442,
-        "captionFrame": 10,
-        "captionEvery": 23,
-        "captionSize": 86,
-        "captionRecedeAt": 91,
-        "accent": "#f2b53a"
-      },
-      "onScreenText": [
-        {
-          "text": "ACCOUNTS DIFFER",
-          "atFrame": 76,
-          "durationInFrames": 40,
-          "style": "typed",
-          "position": "bottom"
-        }
-      ]
-    },
-    {
-      "id": "s04-mecca",
-      "sceneType": "portal-zoom-reveal",
-      "voText": "He reached the holy city with an empire of gold still on his camels.",
-      "durationInFrames": 126,
-      "gradeOverride": {
-        "saturate": 0.96,
-        "sepia": 0.34,
-        "brightness": 1.06
-      },
-      "transition": {
-        "kind": "flare",
-        "frames": 10
-      },
-      "assets": {
-        "wall": "assets/s04-mecca-bg.png",
-        "photo": "assets/s04-mecca-photo.png"
-      },
-      "params": {
-        "frameWidth": 833,
-        "frameRatio": 1.25,
-        "pushEndFrame": 45,
-        "detachFrame": 67,
-        "throughEndFrame": 89,
-        "weldRatio": 0.344,
-        "wallScaleEnd": 6.4,
-        "accent": "#f2b53a",
-        "caption": [],
-        "captionX": 84,
-        "captionY": 1399,
-        "captionFrame": 93,
-        "captionEvery": 7,
-        "captionSize": 89,
-        "captionRecedeAt": 108,
-        "motif": "coins",
-        "motifX": 522,
-        "motifY": 1651,
-        "motifSize": 41,
-        "motifCount": 19,
-        "motifFrame": 95,
-        "motifColour": "#f2b53a",
-        "motifOpacity": 0.82
-      },
-      "onScreenText": [
-        {
-          "text": "MECCA · 1324",
-          "atFrame": 76,
-          "durationInFrames": 40,
-          "style": "typed",
-          "position": "bottom"
-        }
-      ]
-    },
-    {
-      "id": "s05-cairo",
-      "sceneType": "composite",
-      "voText": "In Cairo he did not sell it.",
-      "durationInFrames": 68,
-      "gradeOverride": {
-        "saturate": 0.96,
-        "sepia": 0.34,
-        "brightness": 1.06
-      },
-      "transition": {
-        "kind": "slip",
-        "frames": 11
-      },
-      "assets": {
-        "ground": "assets/s05-cairo-bg.png"
-      },
-      "layers": [
-        {
-          "role": "ground",
-          "depth": 0.1,
-          "anchor": "fill"
-        }
-      ],
-      "params": {
-        "anchorX": 540,
-        "anchorY": 1700,
-        "pushTo": 1.42,
-        "pushEndFrame": 58,
-        "focusPx": 0,
-        "fog": 0.06,
-        "caption": [],
-        "captionX": 84,
-        "captionY": 1073,
-        "captionFrame": 10,
-        "captionEvery": 26,
-        "captionSize": 88,
-        "captionRecedeAt": 49,
-        "accent": "#f2b53a",
-        "motif": "coins",
-        "motifX": 522,
-        "motifY": 1651,
-        "motifSize": 51,
-        "motifCount": 18,
-        "motifFrame": 22,
-        "motifColour": "#f2b53a",
-        "motifOpacity": 0.89
-      }
-    },
-    {
-      "id": "s05-cairo-b",
-      "sceneType": "composite",
-      "voText": "He gave it away,",
-      "durationInFrames": 39,
-      "transition": {
-        "kind": "rack",
-        "frames": 9
-      },
-      "assets": {
-        "ground": "assets/s05-cairo-bg.png"
+        "ground": "assets/s03-caravan-bg.png"
       },
       "layers": [
         {
@@ -355,22 +452,394 @@
           "anchor": "fill"
         }
       ],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.74,
+          "x": 337,
+          "y": 935,
+          "width": 271,
+          "colour": "#f2b53a",
+          "from": 45
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1.52,
+        "pushTo": 1.04,
+        "pushEndFrame": 50,
+        "glowX": 1303,
+        "glowY": 515,
+        "glowSize": 325,
+        "glowIntensity": 0.47,
+        "glowWarm": "#f2b53a",
+        "glowDepth": 0.72,
+        "focusPx": 13,
+        "fog": 0.03,
+        "caption": [
+          "The caravan",
+          "was so long"
+        ],
+        "captionX": 84,
+        "captionY": 965,
+        "captionSize": 92,
+        "captionAlign": "left",
+        "captionFrame": 4,
+        "captionEvery": 9,
+        "captionScrim": 0.34,
+        "captionRecedeAt": 38,
+        "accent": "#f2b53a",
+        "motif": "route",
+        "motifX": 206,
+        "motifY": 1190,
+        "motifSize": 230,
+        "motifCount": 1,
+        "motifFrame": 23,
+        "motifColour": "#f2b53a",
+        "motifOpacity": 0.87,
+        "handheld": 1.5,
+        "captionEmphasis": "caravan",
+        "captionReveal": "punch",
+        "captionMark": "highlight",
+        "captionWordEvery": 2
+      },
+      "onScreenText": [
+        {
+          "text": "ACCOUNTS DIFFER",
+          "atFrame": 32,
+          "durationInFrames": 17,
+          "style": "typed",
+          "position": "bottom"
+        }
+      ]
+    },
+    {
+      "id": "s03-caravan-b",
+      "sceneType": "composite",
+      "voText": "that accounts still argue about the number.",
+      "durationInFrames": 73,
+      "transition": {
+        "kind": "flare",
+        "frames": 6
+      },
+      "assets": {
+        "ground": "assets/s03-caravan-bg.png"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.88,
+          "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.21,
+          "x": 913,
+          "y": 124,
+          "width": 356,
+          "rotate": -20,
+          "opacity": 0.74,
+          "colour": "#f2b53a",
+          "from": 62
+        }
+      ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.35,
-        "pushTo": 1.08,
+        "pushFrom": 1.49,
+        "pushTo": 1.06,
+        "pushEndFrame": 69,
+        "accent": "#f2b53a",
+        "caption": [
+          "that accounts",
+          "still argue",
+          "about the number"
+        ],
+        "captionX": 84,
+        "captionY": 477,
+        "captionSize": 98,
+        "captionAlign": "left",
+        "captionFrame": 6,
+        "captionEvery": 9,
+        "captionScrim": 0.34,
+        "glowX": 1324,
+        "glowY": 433,
+        "glowSize": 334,
+        "glowIntensity": 0.65,
+        "glowWarm": "#f2b53a",
+        "glowDepth": 0.88,
+        "focusPx": 15,
+        "fog": 0.13,
+        "handheld": 1.5,
+        "panY": -58,
+        "roll": -0.8,
+        "captionEmphasis": "accounts",
+        "captionReveal": "wipe",
+        "captionMark": "highlight",
+        "captionWordEvery": 3
+      }
+    },
+    {
+      "id": "s04-mecca",
+      "sceneType": "portal-zoom-reveal",
+      "voText": "He reached the holy city with an empire",
+      "durationInFrames": 72,
+      "gradeOverride": {
+        "saturate": 0.96,
+        "sepia": 0.34,
+        "brightness": 1.06
+      },
+      "transition": {
+        "kind": "slip",
+        "frames": 14
+      },
+      "assets": {
+        "wall": "assets/s04-mecca-bg.png",
+        "photo": "assets/s04-mecca-photo.png"
+      },
+      "params": {
+        "frameWidth": 818,
+        "frameRatio": 1.05,
+        "pushEndFrame": 65,
+        "detachFrame": 35,
+        "throughEndFrame": 48,
+        "weldRatio": 0.367,
+        "wallScaleEnd": 5.2,
+        "accent": "#f2b53a",
+        "caption": [],
+        "captionX": 84,
+        "captionY": 1335,
+        "captionFrame": 52,
+        "captionEvery": 9,
+        "captionSize": 93,
+        "captionRecedeAt": 54,
+        "motif": "coins",
+        "motifX": 614,
+        "motifY": 1651,
+        "motifSize": 44,
+        "motifCount": 24,
+        "motifFrame": 61,
+        "motifColour": "#f2b53a",
+        "motifOpacity": 0.86,
+        "pushFrom": 1,
+        "pushTo": 1.12
+      },
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "rect",
+          "depth": 0.82,
+          "x": 387,
+          "y": 1005,
+          "width": 393,
+          "colour": "#f2b53a",
+          "from": 6
+        }
+      ],
+      "onScreenText": [
+        {
+          "text": "MECCA · 1324",
+          "atFrame": 43,
+          "durationInFrames": 23,
+          "style": "typed",
+          "position": "bottom"
+        }
+      ]
+    },
+    {
+      "id": "s04-mecca-b",
+      "sceneType": "composite",
+      "voText": "of gold still on his camels.",
+      "durationInFrames": 54,
+      "transition": {
+        "kind": "rack",
+        "frames": 13
+      },
+      "assets": {
+        "ground": "assets/s04-mecca-photo.png"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.85,
+          "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.25,
+          "x": 929,
+          "y": 98,
+          "width": 335,
+          "rotate": -16,
+          "opacity": 0.57,
+          "colour": "#f2b53a",
+          "from": 46
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.4,
+        "pushTo": 1.04,
+        "pushEndFrame": 51,
+        "accent": "#f2b53a",
+        "caption": [
+          "of gold still",
+          "on his camels"
+        ],
+        "captionX": 84,
+        "captionY": 946,
+        "captionSize": 96,
+        "captionAlign": "left",
+        "captionFrame": 4,
+        "captionEvery": 9,
+        "captionScrim": 0.34,
+        "glowX": 1326,
+        "glowY": 280,
+        "glowSize": 383,
+        "glowIntensity": 0.52,
+        "glowWarm": "#f2b53a",
+        "glowDepth": 0.85,
+        "focusPx": 14,
+        "fog": 0.03,
+        "handheld": 1.5,
+        "captionEmphasis": "camels",
+        "captionReveal": "punch",
+        "captionMark": "none",
+        "captionWordEvery": 4
+      }
+    },
+    {
+      "id": "s05-cairo",
+      "sceneType": "title-slate",
+      "voText": "In Cairo he did not sell it.",
+      "durationInFrames": 68,
+      "gradeOverride": {
+        "saturate": 0.96,
+        "sepia": 0.34,
+        "brightness": 1.06
+      },
+      "transition": {
+        "kind": "slam",
+        "frames": 8
+      },
+      "assets": {
+        "background": "assets/s05-cairo-bg.png"
+      },
+      "params": {
+        "scrim": 0.47,
+        "kicker": "",
+        "title": "",
+        "footer": "",
+        "titleFrame": 5,
+        "titleSize": 124,
+        "creep": 1.057,
+        "accent": "#f2b53a",
+        "field": "sunburst",
+        "fieldColours": [
+          "#c98a2a",
+          "#7d4d12",
+          "#2c1a06"
+        ],
+        "motif": "coins",
+        "motifX": 581,
+        "motifY": 1651,
+        "motifSize": 52,
+        "motifCount": 24,
+        "motifFrame": 58,
+        "motifColour": "#f2b53a",
+        "motifOpacity": 0.92,
+        "mark": "underline",
+        "markX": 260,
+        "markY": 1160,
+        "markWidth": 560,
+        "markHeight": 96,
+        "markFrame": 23,
+        "pushEndFrame": 64,
+        "pushFrom": 1,
+        "pushTo": 1.4
+      },
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.79,
+          "x": 445,
+          "y": 884,
+          "width": 368,
+          "colour": "#f2b53a",
+          "from": 5
+        }
+      ]
+    },
+    {
+      "id": "s05-cairo-b",
+      "sceneType": "composite",
+      "voText": "He gave it away,",
+      "durationInFrames": 39,
+      "transition": {
+        "kind": "slip",
+        "frames": 13
+      },
+      "assets": {
+        "ground": "assets/s05-cairo-bg.png"
+      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.75,
+          "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.29,
+          "x": 929,
+          "y": 3,
+          "width": 373,
+          "rotate": -16,
+          "opacity": 0.58,
+          "colour": "#f2b53a",
+          "from": 0
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.39,
+        "pushTo": 1.06,
         "pushEndFrame": 37,
         "accent": "#f2b53a",
         "caption": [
-          "He gave",
-          "it away"
+          "He gave it away"
         ],
         "captionX": 84,
-        "captionY": 894,
-        "captionFrame": 4,
+        "captionY": 682,
+        "captionSize": 94,
+        "captionAlign": "left",
+        "captionFrame": 3,
         "captionEvery": 9,
-        "captionSize": 95
+        "captionScrim": 0.34,
+        "glowX": 1539,
+        "glowY": 350,
+        "glowSize": 531,
+        "glowIntensity": 0.49,
+        "glowWarm": "#f2b53a",
+        "glowDepth": 0.75,
+        "focusPx": 9,
+        "fog": 0.09,
+        "handheld": 1.5,
+        "captionEmphasis": "gave",
+        "captionReveal": "wipe",
+        "captionMark": "underline",
+        "captionWordEvery": 2
       }
     },
     {
@@ -379,8 +848,8 @@
       "voText": "and the price of gold collapsed.",
       "durationInFrames": 57,
       "transition": {
-        "kind": "flare",
-        "frames": 7
+        "kind": "slam",
+        "frames": 6
       },
       "assets": {
         "ground": "assets/s05-cairo-bg.png"
@@ -388,27 +857,53 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.94,
+          "depth": 0.81,
           "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.83,
+          "x": 449,
+          "y": 855,
+          "width": 420,
+          "colour": "#f2b53a",
+          "from": 48
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
         "pushFrom": 1,
-        "pushTo": 1.35,
+        "pushTo": 1.41,
         "pushEndFrame": 54,
         "accent": "#f2b53a",
         "caption": [
-          "and the",
-          "price of",
-          "gold collapsed"
+          "and the price",
+          "of gold collapsed"
         ],
         "captionX": 84,
-        "captionY": 537,
-        "captionFrame": 4,
-        "captionEvery": 6,
-        "captionSize": 89
+        "captionY": 526,
+        "captionSize": 80,
+        "captionAlign": "left",
+        "captionFrame": 5,
+        "captionEvery": 7,
+        "captionScrim": 0.34,
+        "glowX": 1495,
+        "glowY": 224,
+        "glowSize": 497,
+        "glowIntensity": 0.58,
+        "glowWarm": "#f2b53a",
+        "glowDepth": 0.81,
+        "focusPx": 13,
+        "fog": 0.11,
+        "handheld": 1.5,
+        "captionEmphasis": "collapsed",
+        "captionReveal": "wipe",
+        "captionMark": "underline",
+        "captionWordEvery": 4
       }
     },
     {
@@ -422,18 +917,18 @@
         "brightness": 0.94
       },
       "transition": {
-        "kind": "slip",
-        "frames": 11
+        "kind": "rack",
+        "frames": 9
       },
       "assets": {
         "background": "assets/s06-close-bg.png"
       },
       "params": {
-        "scrim": 0.42,
+        "scrim": 0.37,
         "kicker": "Gold in Cairo",
         "title": "TWELVE YEARS",
         "footer": "the most expensive journey in history",
-        "titleFrame": 8,
+        "titleFrame": 7,
         "titleSize": 230,
         "creep": 1.058,
         "accent": "#f2b53a",
@@ -453,13 +948,44 @@
           "TWENTY"
         ],
         "spinFrames": 35,
-        "mark": "underline",
-        "markX": 260,
-        "markY": 820,
-        "markWidth": 560,
-        "markHeight": 300,
-        "markFrame": 30
-      }
+        "pushEndFrame": 81,
+        "pushFrom": 1,
+        "pushTo": 1.55
+      },
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "Gold in Cairo",
+          "depth": 0.71,
+          "x": 329,
+          "y": 1495,
+          "width": 363,
+          "rotate": -1.6,
+          "from": 74
+        },
+        {
+          "kind": "newspaper",
+          "masthead": "THE GAZETTE",
+          "text": "TWELVE YEARS",
+          "depth": 0.81,
+          "x": 657,
+          "y": 996,
+          "width": 382,
+          "rotate": -3.9,
+          "from": 25
+        },
+        {
+          "kind": "beam",
+          "depth": 0.24,
+          "x": 922,
+          "y": 149,
+          "width": 370,
+          "rotate": -17,
+          "opacity": 0.65,
+          "colour": "#f2b53a",
+          "from": 0
+        }
+      ]
     },
     {
       "id": "s06-close-b",
@@ -467,8 +993,8 @@
       "voText": "The most expensive journey in history.",
       "durationInFrames": 75,
       "transition": {
-        "kind": "flare",
-        "frames": 8
+        "kind": "slip",
+        "frames": 12
       },
       "assets": {
         "ground": "assets/s06-close-bg.png"
@@ -476,27 +1002,53 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.82,
+          "depth": 0.93,
           "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "rect",
+          "depth": 0.71,
+          "x": 385,
+          "y": 876,
+          "width": 390,
+          "colour": "#f2b53a",
+          "from": 64
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.43,
-        "pushTo": 1.07,
+        "pushFrom": 1.35,
+        "pushTo": 1.04,
         "pushEndFrame": 71,
         "accent": "#f2b53a",
         "caption": [
-          "The most",
-          "expensive journey",
-          "in history"
+          "The most expensive",
+          "journey in history"
         ],
         "captionX": 84,
-        "captionY": 787,
-        "captionFrame": 4,
-        "captionEvery": 8,
-        "captionSize": 78
+        "captionY": 836,
+        "captionSize": 77,
+        "captionAlign": "left",
+        "captionFrame": 6,
+        "captionEvery": 7,
+        "captionScrim": 0.34,
+        "glowX": 1475,
+        "glowY": 291,
+        "glowSize": 412,
+        "glowIntensity": 0.68,
+        "glowWarm": "#f2b53a",
+        "glowDepth": 0.93,
+        "focusPx": 11,
+        "fog": 0.01,
+        "handheld": 3,
+        "captionEmphasis": "expensive",
+        "captionReveal": "punch",
+        "captionMark": "box",
+        "captionWordEvery": 2
       }
     }
   ]

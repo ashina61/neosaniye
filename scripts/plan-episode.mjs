@@ -37,6 +37,7 @@ import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {episodeDir, parseArgs} from './lib/episode.mjs';
 import {PROP_KINDS} from '../engine/schema.mjs';
+import {directShot, emphasisOf} from './lib/director.mjs';
 
 const FPS = 30;
 const WIDTH = 1080;
@@ -222,10 +223,30 @@ export function cutFor(line, previous, allowed, rand) {
    * the first one that is not a repeat is taken. Only when the sentence has
    * nothing to say does the die get a turn — and there the rule still holds.
    */
-  const earned = CUT_WORDS.filter(([, re]) => re.test(line?.vo ?? '')).map(([kind]) => kind);
-  const fresh = earned.find((kind) => kind !== previous);
-  const choices = allowed.filter((k) => k !== previous);
-  const chosen = fresh ?? earned[0] ?? pick(rand, choices.length ? choices : allowed);
+  /**
+   * A RHYME IS ALLOWED. A TIC IS NOT.
+   *
+   * A sentence that earns a cut beats the rule, and it should: the verdict of
+   * an episode should arrive on the cut its words asked for, not on venetian
+   * blinds because the shot before had flared. But "earned beats the rule" with
+   * no ceiling gave four consecutive flares in one reel — every closing line of
+   * a war episode matches the same word list, so every one of them earned the
+   * same cut, and the exception ate the rule.
+   *
+   * So: never the same as the last one unless the sentence earned it, and never
+   * the same as the last TWO under any circumstances.
+   */
+  const history = Array.isArray(previous) ? previous : [previous];
+  const last = history[history.length - 1] ?? null;
+  const jammed =
+    history.length >= 2 && history[history.length - 2] && history[history.length - 2] === last ? last : null;
+
+  const earned = CUT_WORDS.filter(([, re]) => re.test(line?.vo ?? ''))
+    .map(([kind]) => kind)
+    .filter((kind) => kind !== jammed);
+  const fresh = earned.find((kind) => kind !== last);
+  const choices = allowed.filter((k) => k !== last && k !== jammed);
+  const chosen = fresh ?? earned[0] ?? pick(rand, choices.length ? choices : allowed.filter((k) => k !== jammed));
 
   // A hard arrival cuts SHORT and lands; a noticing takes longer, because the
   // whole point of it is the lens catching up.
@@ -418,8 +439,50 @@ const SCENE_FOR = {
  * which is also what makes the durations differ from one another at last.
  */
 const SPLIT_AT = /(?<=,)\s+|\s+(?=and\s|but\s|because\s|so\s|then\s|while\s)|(?<=\.)\s+/i;
-/** Seconds of speech beyond which a shot stops being a shot and becomes a wait. */
-const MAX_SPOKEN = 3.6;
+/**
+ * Seconds of speech beyond which a shot stops being a shot and becomes a wait.
+ *
+ * Pulled down from 3.6. At 3.6 the budget is ten words, and ten words of
+ * documentary narration is three and a half seconds of one camera move — which
+ * is what the reels out of here were made of. The reference cuts about every
+ * two seconds; eight words lands just under three, which is as slow as a shot
+ * can be while still being a shot.
+ */
+const MAX_SPOKEN = 2.9;
+
+/**
+ * WHERE A CLAUSE-FREE SENTENCE BREAKS.
+ *
+ * Prefer a preposition or a relative — "found a wreck | full of bronze" reads
+ * as two shots; "found a wreck full | of bronze" reads as a dropped frame. The
+ * midpoint is the fallback, and it is still better than not cutting: the split
+ * exists because a shot that runs four and a half seconds on one camera move is
+ * the slideshow this whole pipeline is trying to stop making.
+ */
+const BREAK_BEFORE = /^(of|in|on|at|for|from|by|with|into|over|under|through|across|before|after|until|about|that|who|which|where|when|full|and|but|to)$/i;
+
+function breakLongest(piece, budget) {
+  const words = piece.trim().split(/\s+/).filter(Boolean);
+  if (words.length <= budget) return [piece];
+
+  const halves = Math.ceil(words.length / budget);
+  const target = Math.round(words.length / halves);
+  // Search outward from the target for a word worth breaking before, but never
+  // so far out that one side becomes a flash.
+  const floor = Math.max(2, Math.round(target * 0.5));
+  let cut = target;
+  for (let d = 0; d <= target - floor; d += 1) {
+    if (BREAK_BEFORE.test(words[target - d] ?? '')) {
+      cut = target - d;
+      break;
+    }
+    if (BREAK_BEFORE.test(words[target + d] ?? '')) {
+      cut = target + d;
+      break;
+    }
+  }
+  return [words.slice(0, cut).join(' '), ...breakLongest(words.slice(cut).join(' '), budget)];
+}
 
 export function fragmentsOf(vo, max = MAX_SPOKEN) {
   const words = (s) => s.trim().split(/\s+/).filter(Boolean).length;
@@ -438,7 +501,22 @@ export function fragmentsOf(vo, max = MAX_SPOKEN) {
       out.push(piece);
     }
   }
-  return out.length ? out : [String(vo).trim()];
+
+  /**
+   * AND THEN ACTUALLY HONOUR THE BUDGET.
+   *
+   * MAX_SPOKEN was aspirational: the split only ever happened at commas and
+   * conjunctions, so a sentence without one came through whole however long it
+   * was. "In 1901 sponge divers off Antikythera found a wreck full of bronze"
+   * has no comma in it, and it became a single four-and-a-half-second shot
+   * whose only event was the camera scaling by 13%. Five of that reel's six
+   * lines were exactly that, which is the reel.
+   *
+   * A clause boundary is the BEST place to cut. It is not the only one, and
+   * having none is not a reason to give up and hold the shot.
+   */
+  const paced = out.flatMap((piece) => breakLongest(piece, budget));
+  return paced.length ? paced : [String(vo).trim()];
 }
 
 /** Frames a fragment needs, spoken at a documentary rate, plus a breath. */
@@ -519,13 +597,84 @@ function bigNumber(vo) {
  */
 export const CAPTION_LINES = 4;
 
-export function captionLines(text) {
+/** A line should not end on one of these if there is any alternative. */
+const DANGLER =
+  /^(a|an|the|of|off|in|into|on|onto|at|to|for|from|by|with|within|over|under|through|and|or|but|as|than|is|was|were|it|its|his|her|their|that|this|when|while|after|before)$/i;
+
+/**
+ * WHERE THE LINE BREAKS.
+ *
+ * It used to be `words.length / lines` and a slice, which is even and wrong.
+ * Even splitting gave "of corroded / metal the / size of / a book" — three of
+ * the four lines ending on a preposition, and the sentence read as four
+ * fragments rather than as a sentence in four parts.
+ *
+ * It also cut straight through the emphasis. "for fourteen / hundred years"
+ * puts "fourteen hundred years" across a break, and the type layer sets an
+ * emphasis inside ONE line, so the figure the shot exists for lost its accent
+ * and nothing reported it.
+ *
+ * The counts here are small — ten words at most, four lines at most — so every
+ * arrangement is simply scored and the best one wins. Balance is the base cost;
+ * splitting the emphasis is close to disqualifying; a dangling preposition is a
+ * nudge.
+ */
+export function captionLines(text, emphasis = '') {
   const words = text.replace(/[.,]\s*$/, '').trim().split(/\s+/).filter(Boolean);
   if (!words.length) return [];
-  const perLine = Math.ceil(words.length / Math.min(CAPTION_LINES, Math.ceil(words.length / 2)));
-  const lines = [];
-  for (let i = 0; i < words.length; i += perLine) lines.push(words.slice(i, i + perLine).join(' '));
-  return lines;
+
+  const want = emphasis.trim().toLowerCase();
+  const chars = words.join(' ').length;
+
+  /**
+   * MEASURED IN CHARACTERS, NOT WORDS.
+   *
+   * "of a book" and "Antikythera" are one word and three, and balancing by
+   * word count sets them as equal lines — which they are not, on screen.
+   *
+   * The long-line penalty is what stops the scorer collapsing everything onto
+   * one line: past about twenty characters the type has to shrink to fit the
+   * frame, and a caption that has shrunk is a caption competing with the
+   * picture instead of sitting on it.
+   */
+  const score = (parts) => {
+    if (parts.some((part) => !part.length)) return Infinity;
+    const set = parts.map((part) => part.join(' '));
+    const avg = chars / parts.length;
+    let cost = set.reduce((n, line) => n + (line.length - avg) ** 2, 0) / 12;
+    cost += set.reduce((n, line) => n + Math.max(0, line.length - 20) ** 2 * 0.5, 0);
+    for (const part of parts) {
+      const last = part[part.length - 1].replace(/[^\p{L}\p{N}]/gu, '');
+      if (DANGLER.test(last)) cost += 3;
+    }
+    // A figure cut in half cannot be emphasised, and the type layer will not
+    // say so — it will simply set the line flat.
+    if (want && words.join(' ').toLowerCase().includes(want)) {
+      if (!set.some((line) => line.toLowerCase().includes(want))) cost += 60;
+    }
+    return cost;
+  };
+
+  let best = {cost: Infinity, parts: [words]};
+  const walk = (cuts, from, lines) => {
+    if (cuts.length === lines - 1) {
+      const parts = [];
+      let at = 0;
+      for (const cut of [...cuts, words.length]) {
+        parts.push(words.slice(at, cut));
+        at = cut;
+      }
+      const cost = score(parts);
+      if (cost < best.cost) best = {cost, parts};
+      return;
+    }
+    for (let i = from; i < words.length; i += 1) walk([...cuts, i], i + 1, lines);
+  };
+  // Every arrangement into one to four lines. Ten words at most, so this is a
+  // few hundred candidates — cheaper than one frame of the render it feeds.
+  for (let lines = 1; lines <= Math.min(CAPTION_LINES, words.length); lines += 1) walk([], 1, lines);
+
+  return best.parts.map((part) => part.join(' '));
 }
 
 /** Caption type shrinks as the fragment grows, so four lines still fit the frame. */
@@ -605,8 +754,18 @@ function captionPlacement({shot, rand, durationInFrames, lines}) {
   const at = (v, d) => (v === undefined ? d : Math.round(durationInFrames * Math.min(0.9, Math.max(0, Number(v)))));
   return {
     captionX: text.x === undefined ? 84 : Math.round(WIDTH * Number(text.x)),
-    captionY:
+    /**
+     * INSIDE THE SAFE AREA, IN THE CONFIG AND NOT ONLY IN THE ENGINE.
+     *
+     * The engine pushes an overflowing block back up because a guarantee has
+     * to live where it cannot be forgotten. But a config carrying a y the
+     * engine then has to overrule is a config that lies about its own layout,
+     * and the next person reading it believes the number.
+     */
+    captionY: Math.min(
+      HEIGHT - 150 - lines.length * (text.size === undefined ? captionSize(lines, rand) : WIDTH * Number(text.size)) * 1.3,
       text.y === undefined ? Math.round(between(rand, [300, 1080])) : Math.round(HEIGHT * Number(text.y)),
+    ),
     captionSize: text.size === undefined ? captionSize(lines, rand) : Math.round(WIDTH * Number(text.size)),
     captionAlign: text.align ?? 'left',
     captionFrame: at(text.at, 4),
@@ -1123,11 +1282,241 @@ function buildStack({line, ground, rand, groundDepth, spread = 0, cutouts = fals
  * It always pushes from a DIFFERENT anchor than the shot before it. Cutting
  * from a plate to the same plate on the same move is not a cut, it is a jump.
  */
+/**
+ * THE DIRECTOR'S PASS — run over every shot, after it has been built.
+ *
+ * The planner decides what is in the frame. This decides what HAPPENS in it,
+ * and it is the step this pipeline never had. Before it, a shot could be:
+ * a photograph, a slow scale, and nothing else, for four and a half seconds —
+ * and four of seven shots in the last reel were exactly that, because a caption
+ * is the only event the planner scheduled and those four had no caption.
+ *
+ * Three things happen here:
+ *
+ *   THE EVENTS ARE SPREAD. Whatever the shot carries — words, a card landing,
+ *       a motif — is laid across the shot's length instead of all of it firing
+ *       at frame six. The first one lands early, the last one before the cut.
+ *
+ *   AN EMPTY SHOT IS FILLED, and filled with something that means something: a
+ *       mark drawing itself on the frame, a wireframe closing on the subject, a
+ *       shaft of light, the camera taking a hit. Never a particle system.
+ *
+ *   THE CAMERA STOPS REPEATING. Push, pull, pan, drift, hold — chosen against
+ *       what the last two shots did, so a reel is a sequence of moves rather
+ *       than one move eleven times.
+ *
+ * WHAT THE BRIEF WROTE IS NEVER OVERRULED. A director who said "from 1.5 to
+ * 1.0, focus hunts, caption at 0.2" gets exactly that; the pass only fills in
+ * what nobody wrote. That is this repo's first law applied one level up.
+ */
+const CAMERA_TEMPLATES = new Set(['composite', 'parallax-punch']);
+
+function applyDirection({scene, line, index, total, rand, look, recent, durationInFrames, isContinuation = false}) {
+  const params = scene.params ?? (scene.params = {});
+  const caption = Array.isArray(params.caption) ? params.caption : [];
+  const props = scene.props ?? [];
+  const written = line?.shot ?? {};
+
+  // WHAT THE SHOT ALREADY DOES, most important first. The caption is why the
+  // shot is as long as it is, so it never queues behind a decoration.
+  const wants = [];
+  if (caption.length) wants.push('caption');
+  // A CARD IS AN EVENT AND IT OWNS THE OPENING BEAT. Left out of the list, the
+  // slate's title and a filler mark were both scheduled at frame six — one
+  // beat wearing two hats, on the shot that closes the reel.
+  if (params.title || params.kicker) wants.push('slate');
+  props.forEach((_, i) => wants.push(`prop${i}`));
+  if (params.motif) wants.push('motif');
+  if (params.mark) wants.push('mark');
+
+  const plan = directShot({durationInFrames, index, total, rand, wants, recent, fps: FPS});
+  // The slate's own copy lands on the beat the schedule gave it.
+  if (plan.at.slate !== undefined && params.titleFrame !== undefined) {
+    params.titleFrame = Math.max(4, plan.at.slate);
+  }
+
+  /**
+   * A THIN SHOT NEEDS A THING, NOT A JOLT.
+   *
+   * A composite with one plate and nothing standing in front of it has no
+   * depth to move — that is law 4 failing in the config rather than in the
+   * engine. Shaking the camera does not fix it; it shakes a flat picture. So
+   * where the frame is thin, the filler is something that STANDS in it.
+   */
+  const thin = scene.sceneType === 'composite' && (scene.layers ?? []).length < 2 && !props.length;
+  if (thin) plan.fill = plan.fill.map((k) => (k === 'shake' ? (recent.fillers.at(-1) === 'wire' ? 'beam' : 'wire') : k));
+
+  /**
+   * THE CAMERA. Written beats derived, every time.
+   *
+   * A brief that names `camera.from` and `camera.to` has decided the move and
+   * the pass leaves it alone — but a written push says nothing about roll, or
+   * handheld, or whether the frame is struck when the card lands, and those
+   * were simply never set by anything. So the derived move fills the silence
+   * around the written one instead of replacing it.
+   */
+  const wroteCamera = written.camera?.from !== undefined || written.camera?.to !== undefined;
+  const camera = {...plan.camera};
+  if (wroteCamera || isContinuation) {
+    delete camera.pushFrom;
+    delete camera.pushTo;
+    delete camera.pushEndFrame;
+  }
+  /**
+   * ONLY WHERE THERE IS A CAMERA TO MOVE.
+   *
+   * A pan written into a title slate is a number in a config that nothing
+   * reads. It costs nothing at render and it costs plenty later, because the
+   * next person to look at the file believes the card is panning. The
+   * templates that own a camera are the ones built out of plates.
+   */
+  if (!CAMERA_TEMPLATES.has(scene.sceneType)) {
+    for (const key of ['panX', 'panY', 'roll', 'handheld', 'shakeAt', 'shakeAmount']) delete camera[key];
+  }
+  Object.assign(params, camera);
+
+  // WHEN THE WORDS ARRIVE, and which one the line is for. A caption placed by
+  // hand keeps its frame; the emphasis is picked either way, because nothing
+  // in a brief has ever named one and the line still has a word that matters.
+  if (caption.length) {
+    if (written.text?.at === undefined && plan.at.caption !== undefined) {
+      params.captionFrame = plan.at.caption;
+    }
+    /**
+     * WORDS THAT ARRIVE AFTER THE CUT ARE WORDS NOBODY SEES.
+     *
+     * The portal template held its caption until the flight into the picture
+     * was over — `push + 48` — which was correct while every shot was seven
+     * seconds and became nonsense the moment one was under two: the caption
+     * was scheduled at frame 69 of a 58-frame shot and simply never appeared.
+     * Nothing reported it. The reel rendered, and one of its shots was mute.
+     *
+     * The clamp is the backstop, not the fix; the fix is that the templates
+     * below derive their schedules from the shot's own length.
+     */
+    const lastUseful = Math.round(durationInFrames * 0.62);
+    if (Number(params.captionFrame) > lastUseful) params.captionFrame = lastUseful;
+    if (Number(params.captionRecedeAt) <= Number(params.captionFrame)) {
+      params.captionRecedeAt = Math.max(1, durationInFrames - 6);
+    }
+    /**
+     * THE EMPHASIS COMES OUT OF THE WORDS ON SCREEN, not out of the sentence.
+     *
+     * Taken from the fragment, a shot whose caption was written by hand got an
+     * emphasis that is not in its caption — "statues" picked out of "Among the
+     * statues lay a lump" while the screen reads "a lump of / corroded metal".
+     * The type layer then matches it against words that are not there and
+     * nothing is emphasised at all, silently.
+     */
+    const emphasis = line?.emphasis ?? emphasisOf(caption.join(' ')) ?? emphasisOf(scene.voText ?? '');
+    /**
+     * AND IT HAS TO FIT ON ONE LINE.
+     *
+     * The type layer sets the emphasis inside a line, so a phrase straddling
+     * the break between two of them matches nothing — the caption renders with
+     * no emphasis and the run says nothing about it. Where the phrase does not
+     * survive the line breaks, its longest word does.
+     */
+    const fits = emphasis && caption.some((l) => l.toLowerCase().includes(emphasis.toLowerCase()));
+    const usable = fits
+      ? emphasis
+      : (emphasis || '')
+          .split(/\s+/)
+          .filter((w) => caption.some((l) => l.toLowerCase().includes(w.toLowerCase())))
+          .sort((a, b) => b.length - a.length)[0];
+    if (usable) params.captionEmphasis = usable;
+    params.captionReveal = plan.reveal;
+    params.captionMark = plan.emphasisMark;
+    params.captionWordEvery = 2 + Math.round(rand() * 2);
+  }
+
+  // EVERY DRAWN OBJECT ON ITS OWN BEAT. Two cards landing on the same frame are
+  // one event with a thickness; a beat apart they are two things happening.
+  props.forEach((prop, i) => {
+    const at = plan.at[`prop${i}`];
+    if (at !== undefined && written.props?.[i]?.at === undefined) prop.from = at;
+  });
+
+  // The motif's own beat. The key is `motifFrame`, and writing `motifFrom`
+  // here put a number in the config that the engine does not read — a motif
+  // scheduled by nothing, which is how it was before this pass existed.
+  if (params.motif && plan.at.motif !== undefined) params.motifFrame = plan.at.motif;
+
+  /**
+   * FILLING A SHOT THAT DOES NOTHING.
+   *
+   * The important half of this pass. Everything above re-times events the shot
+   * already had; this is what happens when it had none — which was four shots
+   * out of seven.
+   */
+  for (const kind of plan.fill) {
+    const at = plan.at[kind];
+    if (kind === 'mark' && !params.mark) {
+      Object.assign(params, {
+        mark: look.mark,
+        markX: Math.round(WIDTH * between(rand, [0.1, 0.34])),
+        markY: Math.round(HEIGHT * between(rand, [0.3, 0.66])),
+        markWidth: Math.round(WIDTH * between(rand, [0.34, 0.56])),
+        markHeight: Math.round(HEIGHT * between(rand, [0.05, 0.12])),
+        markFrame: at,
+      });
+      continue;
+    }
+    if ((kind === 'wire' || kind === 'beam') && !props.some((p) => p.kind === kind)) {
+      // A wireframe closes on the SUBJECT, so it goes near the anchor the whole
+      // stack is scaling about; a beam comes from wherever the light does,
+      // which is decided once for the episode and not per shot.
+      const near = kind === 'wire';
+      props.push({
+        kind,
+        depth: near ? round(between(rand, [0.6, 0.95]), 2) : round(between(rand, [0.18, 0.4]), 2),
+        x: near
+          ? Math.round(Number(params.anchorX) || WIDTH * 0.5)
+          : Math.round(WIDTH * (look.side > 0 ? 0.78 : 0.22)),
+        y: near ? Math.round(HEIGHT * between(rand, [0.36, 0.56])) : 0,
+        width: Math.round(WIDTH * (near ? between(rand, [0.32, 0.52]) : between(rand, [0.26, 0.4]))),
+        from: at,
+        ...(near ? {shape: pick(rand, ['circle', 'diamond', 'rect'])} : {opacity: round(between(rand, [0.5, 0.8]), 2)}),
+      });
+      scene.props = props;
+      continue;
+    }
+    if (kind === 'shake' && !params.shakeAt && CAMERA_TEMPLATES.has(scene.sceneType)) {
+      params.shakeAt = [at];
+      params.shakeAmount = Math.round(8 + plan.intensity * 12);
+    }
+  }
+
+  /**
+   * RECORD WHAT IS ACTUALLY IN THE CONFIG, not what was chosen.
+   *
+   * A continuation keeps its own alternating push/pull, so the director's
+   * choice is thrown away for it — and pushing the discarded choice into the
+   * memory made the anti-repeat rule reason about a camera nobody would see.
+   * Three pull-backs in a row went unnoticed for exactly that reason.
+   */
+  const from = Number(params.pushFrom ?? 1);
+  const to = Number(params.pushTo ?? 1);
+  const actual =
+    Math.abs(Number(params.panX) || 0) > 40
+      ? 'pan'
+      : to - from > 0.06
+        ? 'push'
+        : from - to > 0.06
+          ? 'pull'
+          : 'hold';
+  recent.camera.push(CAMERA_TEMPLATES.has(scene.sceneType) ? actual : plan.cameraKind);
+  recent.reveal.push(plan.reveal);
+  recent.mark.push(plan.emphasisMark);
+  recent.fillers.push(...plan.fill);
+  return plan;
+}
+
 function planContinuation({line, index, part, fragment, frames: measured, rand, look, previousTransition, plate, side, cutouts, recentProps}) {
   const assetBase = `s${String(index + 1).padStart(2, '0')}-${line.slug ?? 'shot'}`;
   const corner = part % 4;
   const frames = measured ?? framesFor(fragment);
-  const lines = captionLines(fragment);
+  const lines = captionLines(fragment, line.emphasis ?? emphasisOf(fragment));
   // Alternate the direction of travel. Two pushes on one plate look like the
   // same shot played twice; a push followed by a pull-back looks like an edit.
   const pullBack = part % 2 === 1;
@@ -1394,13 +1783,23 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
     // backdrop is how a flight into a picture became a zoom on a wall.
     const directedPortal = line?.shot?.layers?.length ? directedStack({shot: line.shot, rand, durationInFrames}) : null;
     scene.assets = directedPortal ? directedPortal.assets : {wall: backdrop, photo: `assets/${id}-photo.png`};
-    const push = Math.round(durationInFrames * 0.36);
+    /**
+     * A FLIGHT SCALED TO THE SHOT, not to a seven-second one.
+     *
+     * These were `push + 22` and `push + 44`, fixed. At seven seconds the
+     * flight took two thirds of the shot and landed; at two seconds it took
+     * more than the whole shot, so the reveal the scene exists for happened
+     * after the cut. Every key is a fraction now, which is the same law the
+     * focus hunt was already fixed under.
+     */
+    const push = Math.round(durationInFrames * 0.3);
+    const through = Math.round(durationInFrames * 0.66);
     scene.params = {
       frameWidth: 700 + Math.round(rand() * 140),
       frameRatio: round(between(rand, [0.9, 1.3]), 2),
       pushEndFrame: push,
-      detachFrame: push + 22,
-      throughEndFrame: push + 44,
+      detachFrame: Math.round((push + through) / 2),
+      throughEndFrame: through,
       weldRatio: round(between(rand, [0.34, 0.44]), 3),
       wallScaleEnd: round(between(rand, [5, 7]), 1),
       accent: look.accent,
@@ -1410,14 +1809,14 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
       caption: line.caption ?? [],
       captionX: 84,
       captionY: Math.round(between(rand, [1180, 1520])),
-      captionFrame: push + 48,
+      captionFrame: Math.round(through + durationInFrames * 0.06),
       captionEvery: 7 + Math.round(rand() * 4),
       captionSize: 84 + Math.round(rand() * 10),
       captionRecedeAt: Math.max(1, durationInFrames - 18),
       // AFTER the arrival. The first half of this shot is the flight into the
       // picture; the second half is a photograph sitting still, and that is the
       // half a portrait wants gold falling past it.
-      ...motifParams(motif, {rand, from: push + 50, accent: look.accent, stops: line.stops}),
+      ...motifParams(motif, {rand, from: Math.round(through + durationInFrames * 0.08), accent: look.accent, stops: line.stops}),
     };
   } else {
     // COMPOSITE — the stack. Pieces are optional at RENDER time, so a piece
@@ -1455,8 +1854,29 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
       pushEndFrame: Math.round(durationInFrames * 0.86),
       ...drawnLayer({rand, look, side, groundDepth: stack.groundDepth, durationInFrames}),
       ...(line?.shot?.camera?.focus === 'sharp' ? {focusPx: 0} : {}),
-      caption: line.caption ?? [],
-      ...captionPlacement({shot: line.shot, rand, durationInFrames, lines: line.caption ?? []}),
+      /**
+       * THE FIRST SHOT OF A LINE SPEAKS TOO.
+       *
+       * `line.caption` is what a brief WROTE, and most lines write nothing —
+       * so the opening shot of five of six lines carried no words at all,
+       * while every continuation derived its own from its fragment. Four of
+       * the last reel's seven shots were silent pictures for that one reason.
+       *
+       * A written caption still wins. This only fills the silence.
+       */
+      // The emphasis is chosen BEFORE the breaks, so the breaks can be chosen
+      // around it: a figure split across two lines cannot be emphasised.
+      caption: line.caption?.length
+        ? line.caption
+        : captionLines(fragment ?? line.vo, line.emphasis ?? emphasisOf(fragment ?? line.vo)),
+      ...captionPlacement({
+        shot: line.shot,
+        rand,
+        durationInFrames,
+        lines: line.caption?.length
+          ? line.caption
+          : captionLines(fragment ?? line.vo, line.emphasis ?? emphasisOf(fragment ?? line.vo)),
+      }),
       captionRecedeAt: Math.round(durationInFrames * 0.72),
       accent: look.accent,
       ...motifParams(motif, {rand, from: 18 + Math.round(rand() * 14), accent: look.accent, stops: line.stops}),
@@ -1562,12 +1982,31 @@ async function main() {
    * pipeline generates ten shots that cannot possibly be the same afternoon.
    */
   const side = rand() > 0.5 ? 1 : -1;
+  // The director places a shaft of light too, and it has to come from the same
+  // window everything else in the episode is lit by.
+  look.side = side;
   // Pieces are placed only where there is a supply of clean cut-outs. See
   // buildStack: the brief still names them, nothing places them until this is on.
   const cutouts = brief.cutouts === true;
 
   const planned = [];
-  let previousTransition = null;
+  /** The last few arrivals, so a third repeat can be refused. */
+  const previousTransition = [];
+
+  /**
+   * WHAT THE LAST FEW SHOTS DID.
+   *
+   * The anti-repeat guardrails need a memory, and it has to span the whole reel
+   * rather than a line: a line that becomes three shots can repeat itself three
+   * times without any per-line rule noticing.
+   */
+  const recent = {camera: [], reveal: [], mark: [], fillers: []};
+  // How many SHOTS the reel will be, which is not how many lines it has. The
+  // escalation curve needs to know where in the reel a shot sits, and "line 4
+  // of 6" and "shot 8 of 12" are different places.
+  const totalShots = brief.lines.reduce((n, line) => n + fragmentsOf(line.vo).length, 0);
+  let shotIndex = 0;
+
   brief.lines.forEach((line, index) => {
     // ONE SENTENCE, SEVERAL SHOTS. The first fragment gets the beat's template
     // and the line's artwork; the rest reuse that same picture from a different
@@ -1597,7 +2036,18 @@ async function main() {
       // motifs and the transitions are already held to.
       recentProps: planned.slice(-1).flatMap((p) => (p.scene.props ?? []).map((q) => q.kind)),
     });
-    previousTransition = result.scene.transition?.kind ?? null;
+    applyDirection({
+      scene: result.scene,
+      line,
+      index: shotIndex,
+      total: totalShots,
+      rand,
+      look,
+      recent,
+      durationInFrames: result.scene.durationInFrames,
+    });
+    shotIndex += 1;
+    previousTransition.push(result.scene.transition?.kind ?? 'cut');
     planned.push(result);
 
     // A portal shot lands INSIDE the picture, so its continuations stay there
@@ -1620,7 +2070,22 @@ async function main() {
         cutouts,
         recentProps: planned.slice(-1).flatMap((p) => (p.scene.props ?? []).map((q) => q.kind)),
       });
-      previousTransition = scene.transition.kind;
+      applyDirection({
+        scene,
+        line,
+        index: shotIndex,
+        total: totalShots,
+        rand,
+        look,
+        recent,
+        durationInFrames: scene.durationInFrames,
+        // A continuation already re-frames the plate on purpose — it alternates
+        // push and pull-back so two shots of one photograph are not the same
+        // shot twice. Handing it a fresh camera would throw that away.
+        isContinuation: true,
+      });
+      shotIndex += 1;
+      previousTransition.push(scene.transition.kind);
       // The continuation stands the SAME pieces in the same room, so it carries
       // the line's list too — otherwise the recipe builder, which now only
       // draws what a layer asks for, would find nothing asking for them.

@@ -168,3 +168,136 @@ export function hash01(seed: string, salt = 0): number {
   }
   return ((h >>> 0) % 10000) / 10000;
 }
+
+/**
+ * PUNCH — an impact, not an animation.
+ *
+ * A scale that snaps up in two frames and decays back. The whole character of
+ * it is the ASYMMETRY: a symmetric ease in and out is a pulse, and a pulse
+ * reads as a loading spinner. Something has to be hit hard and then recover.
+ *
+ * Returns a scale multiplier, so it composes with whatever scale the caller
+ * already has rather than replacing it.
+ */
+export function punch(
+  frame: number,
+  at: number,
+  {amount = 0.07, rise = 2, decay = 0.16} = {},
+): number {
+  const t = frame - at;
+  if (t < 0) return 1;
+  const attack = Math.min(1, t / Math.max(1, rise));
+  return 1 + amount * attack * Math.exp(-decay * Math.max(0, t - rise));
+}
+
+/**
+ * IMPACT SHAKE — the camera taking the hit.
+ *
+ * Two sines at incommensurable rates so the path never repeats, times an
+ * exponential decay so it is an event rather than a loop. Rotation is a tenth
+ * of the translation in degrees, which is roughly what a real handheld does
+ * when something lands.
+ *
+ * Use it ON THE CAMERA, not on one layer. A single plate shaking inside a still
+ * frame is a plate coming loose; the frame shaking is the world being struck.
+ */
+export function shake(
+  frame: number,
+  at: number,
+  {amplitude = 16, decay = 0.24, rate = 1.9} = {},
+): {x: number; y: number; rotate: number} {
+  const t = frame - at;
+  if (t < 0) return {x: 0, y: 0, rotate: 0};
+  const fall = Math.exp(-decay * t);
+  return {
+    x: Math.sin(t * rate) * amplitude * fall,
+    y: Math.cos(t * rate * 1.37 + 0.6) * amplitude * 0.72 * fall,
+    rotate: Math.sin(t * rate * 0.81 + 1.4) * amplitude * 0.055 * fall,
+  };
+}
+
+/**
+ * A SOFT-EDGED WIPE, as a CSS mask.
+ *
+ * The reveal that is not a fade. A fade changes how much of a thing you can
+ * see everywhere at once, which is a dissolve; a wipe changes WHERE the thing
+ * is, which is an edge travelling — and an edge travelling is a thing being
+ * uncovered.
+ *
+ * `softness` is the width of the feathered edge as a percentage. Zero is a hard
+ * matte line, which is right for a graphic and wrong for type: type wiped with
+ * a hard edge shows half a letter for two frames and reads as a clipping bug.
+ */
+export type WipeDirection = 'left' | 'right' | 'up' | 'down';
+
+const WIPE_ANGLE: Record<WipeDirection, number> = {left: 90, right: 270, up: 0, down: 180};
+
+export function wipeMask(progress: number, direction: WipeDirection = 'up', softness = 14): string {
+  const p = Math.min(1, Math.max(0, progress));
+  // The window travels past the far edge by `softness`, so the last sliver of
+  // the subject reaches FULL opacity instead of being left under the feather.
+  const edge = p * (100 + softness);
+  return (
+    `linear-gradient(${WIPE_ANGLE[direction]}deg, ` +
+    `#000 0%, #000 ${Math.max(0, edge - softness)}%, transparent ${edge}%, transparent 100%)`
+  );
+}
+
+/** A hard clip reveal — for graphics, rules and bars, where an edge is wanted. */
+export function clipReveal(progress: number, direction: WipeDirection = 'left'): string {
+  const gone = (1 - Math.min(1, Math.max(0, progress))) * 100;
+  switch (direction) {
+    case 'right':
+      return `inset(0 0 0 ${gone}%)`;
+    case 'up':
+      return `inset(${gone}% 0 0 0)`;
+    case 'down':
+      return `inset(0 0 ${gone}% 0)`;
+    default:
+      return `inset(0 ${gone}% 0 0)`;
+  }
+}
+
+/**
+ * A NUMBER CLIMBING.
+ *
+ * Eased out, so it runs fast and lands slow: a linear count is a clock, and a
+ * clock does not make a figure feel large. Returns the raw number — rounding
+ * and formatting belong to whatever is drawing it, because a year, a count and
+ * a sum of money are three different strings from the same climb.
+ */
+export function countTo(frame: number, [start, end]: number[], to: number, from = 0): number {
+  return interpolate(frame, [start, Math.max(start + 1, end)], [from, to], {
+    ...CLAMP,
+    easing: Easing.out(Easing.cubic),
+  });
+}
+
+/**
+ * LETTER-SPACING OPENING OUT, in em.
+ *
+ * Type that arrives already set reads as a caption dropped in. Type whose
+ * tracking settles reads as type being SET, which is a small difference on one
+ * word and the whole difference across a reel.
+ */
+export function tracking(frame: number, [start, end]: number[], [from, to] = [0.18, -0.02]): number {
+  return interpolate(frame, [start, Math.max(start + 1, end)], [from, to], {
+    ...CLAMP,
+    easing: Easing.out(Easing.cubic),
+  });
+}
+
+/**
+ * WHEN THE NTH THING IN A GROUP ARRIVES.
+ *
+ * Centralised because a stagger written inline is a stagger that drifts: three
+ * templates each doing `from + i * 6` is three templates that will disagree the
+ * first time one of them is tuned.
+ *
+ * `ease` bunches the later items up (0.7 is a good crowd), so a long list does
+ * not take proportionally longer than a short one — which is what turns the
+ * last item of a nine-item stack into an afterthought arriving alone.
+ */
+export function stagger(index: number, {from = 0, every = 6, ease = 1} = {}): number {
+  return from + every * Math.pow(Math.max(0, index), ease);
+}

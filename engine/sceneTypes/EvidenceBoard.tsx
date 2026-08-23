@@ -5,8 +5,10 @@ import {focusHunt, posterizeTime, springEntrance} from '../motion';
 import {Plate} from '../Plate';
 import {Field, type FieldKind} from '../draw/Field';
 import {Card, Newspaper, Print} from '../draw/Paper';
-import {Annotation} from '../draw/Annotation';
+import {Annotation, type MarkKind} from '../draw/Annotation';
+import {DrawnProps} from '../draw/Props';
 import {WordStack} from '../draw/Type';
+import type {EmphasisMark, Reveal} from '../draw/Kinetic';
 
 /**
  * EVIDENCE BOARD — drawn paper landing on a surface, one piece at a time.
@@ -145,6 +147,12 @@ export const EvidenceBoard: React.FC<SceneProps> = ({scene, assets, durationInFr
       {caption.length ? (
         <WordStack
           lines={caption}
+          /* WHICH WORD THE LINE IS FOR, and how the words arrive. Set by the
+             director; absent means the older behaviour, a line at a time. */
+          emphasis={str('captionEmphasis', '') || undefined}
+          emphasisMark={str('captionMark', 'none') as EmphasisMark}
+          reveal={str('captionReveal', 'rise') as Reveal}
+          wordEvery={num('captionWordEvery', 3)}
           x={num('captionX', 84)}
           y={num('captionY', 250)}
           from={num('captionFrame', 8)}
@@ -155,9 +163,15 @@ export const EvidenceBoard: React.FC<SceneProps> = ({scene, assets, durationInFr
         />
       ) : null}
 
+      {/* THE DRAWN OBJECTS. This template was handed props by the planner and
+          rendered none of them: a card scheduled to land on an evidence board
+          simply did not exist, and nothing anywhere said so. It has no camera
+          push of its own, so they stand at their own size about the centre. */}
+      <DrawnProps props={scene.props} push={1} origin="50% 50%" accent={str('accent', '#f2b53a')} />
+
       {num('markWidth', 0) > 0 ? (
         <Annotation
-          kind="underline"
+          kind={str('mark', 'underline') as MarkKind}
           x={num('markX', 84)}
           y={num('markY', Math.round(height * 0.2))}
           width={num('markWidth', 0)}

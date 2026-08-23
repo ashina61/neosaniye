@@ -5,6 +5,7 @@ import {CLAMP, focusHunt, posterizeTime} from '../motion';
 import {Plate} from '../Plate';
 import {Glow} from '../draw/Glow';
 import {WordStack} from '../draw/Type';
+import type {EmphasisMark, Reveal} from '../draw/Kinetic';
 import {Annotation, type MarkKind} from '../draw/Annotation';
 import {Overlay} from '../draw/Overlay';
 
@@ -156,6 +157,12 @@ export const ParallaxPunch: React.FC<SceneProps> = ({scene, assets, durationInFr
       {caption.length ? (
         <WordStack
           lines={caption}
+          /* WHICH WORD THE LINE IS FOR, and how the words arrive. Set by the
+             director; absent means the older behaviour, a line at a time. */
+          emphasis={str('captionEmphasis', '') || undefined}
+          emphasisMark={str('captionMark', 'none') as EmphasisMark}
+          reveal={str('captionReveal', 'rise') as Reveal}
+          wordEvery={num('captionWordEvery', 3)}
           x={num('captionX', 84)}
           y={num('captionY', 430)}
           from={num('captionFrame', 10)}

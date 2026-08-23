@@ -58,7 +58,11 @@ episodes/<id>/brief.json            → altı satır + HER SATIRIN KOREOGRAFİS�
         ↓
 scripts/voice-episode.mjs           → vo.mp3|wav + vo.json (ÖLÇÜM)
         ↓
+scripts/lib/director.mjs            → NE ZAMAN OLACAĞI (vuruşlar, kamera, vurgu)
+        ↓
 episodes/<id>/scene-config.json     → bölümün tek gerçeği (sahneler, süreler, look)
+        ↓
+scripts/lib/critique.mjs            → sıkıcı reel'i GÖREN kontrol
         ↓
 scripts/render-episode.mjs          → doğrula → publicDir = episodes/<id> → bundle
         ↓
@@ -66,10 +70,13 @@ engine/Root.tsx (calculateMetadata) → fps/en/boy/süre config'ten gelir
         ↓
 engine/Episode.tsx                  → <Sequence> zinciri, sahne başına FilmLook
         ↓
+engine/Camera.ts                    → çekim başına TEK kamera; katman payını depth'ten alır
+        ↓
 engine/sceneTypes/registry.ts       → sceneType → şablon
         ↓
 engine/sceneTypes/*.tsx             → plakalar, hareket, gölge
 engine/draw/*.tsx                   → ışık, kâğıt, işaretleme, tipografi
+engine/draw/Kinetic.tsx             → kelime kelime iniş, VURGU kelimesi, sayaç
         ↓
 out/<id>.mp4
 ```
@@ -267,6 +274,46 @@ ve sütunlar karenin altından taşar.
     kontrast artar; altın ve ihtişamda ısınır. Üç kayıt, dokuz değil — her
     sahnesi ayrı derecelenmiş bir reel'in grade'i yoktur, titremesi vardır.
 
+18. **KAMERA İTİŞİ OLAY DEĞİLDİR; ZEMİNDİR.** Bu deponun üçüncü en pahalı
+    dersi ve tek karede görülüyordu: dört buçuk saniyelik bir çekim, içeriği
+    "bir fotoğraf, 1.0'dan 1.46'ya bir itiş, biraz sis". Üçte birinde ve üçte
+    ikisinde alınan iki kare birbirinden ayırt edilemiyordu. Son reel'in yedi
+    çekiminden DÖRDÜNDE caption boştu; o dördünde dört buçuk saniyede ekranda
+    olan biten şey: resim %13 büyüdü.
+
+    Bir OLAY, karesini gösterebileceğin bir varıştır: kelimelerin inmesi, bir
+    kartın masaya düşmesi, bir tel-kafesin özneye kapanması, bir sayının
+    tırmanmaya başlaması, bir işaretin kendini çizmesi, kameranın darbe alması.
+
+    Her çekim EN AZ İKİ olay alır, çekimin boyuna yayılmış, ilki erken. 40
+    kareden kısa olan bir çekim bir flaştır ve bir tane alır; altı saniyeden
+    uzun olan beşten fazlasını almaz — kanun "önemli olanı oynat", "her şeyi
+    oynat" değil.
+
+    Bunu `scripts/lib/director.mjs` planlar, `scripts/lib/critique.mjs`
+    kontrol eder — olayı sıfır olan çekim HATA, bir olan UYARI — ve şablonlar
+    kareleri `params`'tan okuyup çizer. Üçü de gerek: motor bütün kelimeleri
+    biliyordu ve planlayıcı hiçbirini istemiyordu.
+
+19. **BİR CÜMLE BİR ÇEKİM DEĞİLDİR, VE BU KURAL UYGULANIR.** `MAX_SPOKEN`
+    yıllarca temenniydi: bölme yalnızca virgülde ve bağlaçta olduğu için
+    virgülsüz bir cümle ne kadar uzunsa o kadar tek parça geliyordu. Altı
+    satırın beşi tek başına 4.5 saniyelik birer çekim oldu. Artık virgül yoksa
+    da bölünür — en iyi yer bir cümlecik sınırıdır, tek yer değildir, ve hiç
+    olmaması çekimi tutmak için gerekçe değildir.
+
+20. **CÜMLENİN BİR KELİMESİ DİĞERLERİ GİBİ DEĞİLDİR.** "Taş 1.000 TON
+    ağırlığında" cümlesinin var olma sebebi tek bir kelimedir. O kelime aksan
+    rengini, puntoyu, darbeyi ve çizilen işareti alır; geri kalanı yolundan
+    çekilir. Çıplak sayı bir şey söylemez — SAYDIĞI ŞEYLE gelir, yoksa "YİRMİ"
+    yazan bir kart mil'i çöpe atmıştır. Ve her kelimesi vurgulu bir satırın
+    vurgusu yoktur, bağırması vardır.
+
+    Vurgu ekrandaki KELİMELERDEN çıkarılır, cümleden değil: elle yazılmış bir
+    caption'ın vurgusu caption'da yoksa tip katmanı hiçbir şey bulamaz ve bunu
+    kimseye söylemez. Satır kırımı da vurgunun etrafında seçilir — iki satıra
+    bölünmüş bir rakam vurgulanamaz.
+
 ## İş bölümü — bu deponun en pahalı dersi
 
 Önceki hat (`collage-factory-son`) **görsel malzemeyi üretemediği için**
@@ -298,8 +345,15 @@ Bu hat aynı duvara çarpmaz çünkü malzeme koda sokulmaz:
 `npm run validate` render yapmadan üç saniyede cevap verir: şema, sahne tipi ve
 her asset'in diskte olup olmadığı. Eksik bir PNG'de ölen render bundle'ı,
 tarayıcıyı ve kuyruk slotunu çoktan ödemiştir.
-`npm test` motor saflığını, şemayı, registry tutarlılığını ve depodaki her
-bölümü kapıda tutar.
+`npm test` motor saflığını, şemayı, registry tutarlılığını, yönetmeni,
+eleştirmeni ve depodaki her bölümü kapıda tutar.
+
+`npm run validate` artık İKİ ayrı soruya cevap veriyor. Birincisi "render olur
+mu": şema, sahne tipi, diskteki dosyalar. Bu deponun teslim ettiği HER reel bu
+soruyu geçti. İkincisi "içinde bir şey var mı": ölü çekim, kesimden sonraya
+kurulmuş olay, güvenli alanın dışına taşan caption, tek katmanlı composite,
+caption'da bulunmayan vurgu, üst üste üç kez kullanılan aygıt. `--strict`
+uyarıları hataya çevirir; CI onu koşar.
 
 Ama bu deponun gördüğü her görsel kusur — kareyi dört kez karartmak, tipografiyi
 yumuşatana kadar zoom'lamak, lambadan kayan ışık, birbirini gömen kartlar, tam

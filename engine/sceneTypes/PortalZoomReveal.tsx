@@ -4,6 +4,7 @@ import type {SceneProps} from './types';
 import {CLAMP, blurBurst, posterizeTime} from '../motion';
 import {Plate} from '../Plate';
 import {WordStack} from '../draw/Type';
+import type {EmphasisMark, Reveal} from '../draw/Kinetic';
 import {SceneMotif} from '../draw/Motif';
 import {DrawnProps} from '../draw/Props';
 
@@ -126,6 +127,12 @@ export const PortalZoomReveal: React.FC<SceneProps> = ({scene, assets, durationI
       {caption.length ? (
         <WordStack
           lines={caption}
+          /* WHICH WORD THE LINE IS FOR, and how the words arrive. Set by the
+             director; absent means the older behaviour, a line at a time. */
+          emphasis={str('captionEmphasis', '') || undefined}
+          emphasisMark={str('captionMark', 'none') as EmphasisMark}
+          reveal={str('captionReveal', 'rise') as Reveal}
+          wordEvery={num('captionWordEvery', 3)}
           x={num('captionX', 84)}
           y={num('captionY', Math.round(width * 1.1))}
           from={num('captionFrame', throughEnd + 4)}

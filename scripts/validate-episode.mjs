@@ -1,13 +1,23 @@
 #!/usr/bin/env node
 /**
- * VALIDATE — schema plus asset existence, without rendering.
+ * VALIDATE — schema, asset existence, and whether anything actually happens.
  *
  * This exists to fail in three seconds instead of three minutes. A render that
  * dies on a missing PNG has already paid for a bundle, a browser and a queue
  * slot; a typo in a file name should never cost that.
  *
- * With no --episode it checks every episode in the folder, which is what the
- * CI workflow runs on a pull request.
+ * The second half is newer and answers the question the first half cannot. A
+ * config can be perfectly well formed, name files that all exist, sum to the
+ * right length, and describe seven photographs being slowly scaled — every reel
+ * this pipeline shipped passed the schema check. So `critiqueEpisode` looks for
+ * dead shots, events scheduled after the cut, captions outside the safe area
+ * and devices used three times running.
+ *
+ * ERRORS fail the run. WARNINGS print, because a held shot and a long closing
+ * card are occasionally the point; `--strict` promotes them, which is what CI
+ * should run.
+ *
+ * With no --episode it checks every episode in the folder.
  */
 import {readFile, readdir, stat} from 'node:fs/promises';
 import path from 'node:path';
@@ -15,6 +25,7 @@ import {ROOT, episodeDir, exists, loadConfig, parseArgs} from './lib/episode.mjs
 import {readPlaceholders} from './lib/placeholders.mjs';
 
 import {BUILT_IN_SCENE_TYPES, validateEpisodeConfig} from '../engine/schema.mjs';
+import {critiqueEpisode} from './lib/critique.mjs';
 
 async function validateEpisode(episodeId) {
   const problems = [];
@@ -80,11 +91,17 @@ async function validateEpisode(episodeId) {
     }
   }
 
-  return {problems, absentOptional};
+  // AND THEN THE OTHER QUESTION: is there anything in it?
+  const {errors, warnings, stats} = critiqueEpisode(config);
+  problems.push(...errors);
+
+  return {problems, absentOptional, warnings, stats};
 }
 
 async function main() {
   const args = parseArgs();
+  /** Promote warnings to failures. What CI runs; not what a person runs. */
+  const strict = args.strict === true || args.strict === 'true';
 
   let episodes;
   if (typeof args.episode === 'string') {
@@ -101,7 +118,8 @@ async function main() {
 
   let failed = 0;
   for (const episodeId of episodes) {
-    const {problems, absentOptional} = await validateEpisode(episodeId);
+    const {problems, absentOptional, warnings = [], stats} = await validateEpisode(episodeId);
+    if (strict && warnings.length) problems.push(...warnings);
     if (problems.length) {
       failed += 1;
       console.error(`\n✗ ${episodeId} — ${problems.length} problem(s):`);
@@ -124,6 +142,15 @@ async function main() {
       if (absentOptional.length) {
         console.log(`  · ${absentOptional.length} optional asset(s) absent: ${absentOptional.join(', ')}`);
       }
+      if (stats) {
+        console.log(
+          `  motion  ${stats.events} event(s), ${stats.eventsPerSecond}/s, ` +
+            `${stats.secondsPerShot}s per shot`,
+        );
+      }
+      // Said every time, not hidden behind a flag: a warning nobody reads is a
+      // defect that ships, and all of these have shipped.
+      for (const warning of warnings) console.log(`  ⚠ ${warning}`);
     }
   }
 
