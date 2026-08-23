@@ -13,10 +13,10 @@ const SPINE_X = 540;
 
 /** On iki çiftin her biri: omurdan çıkar, yanı sarar, öne ve aşağı kıvrılır. */
 function rib(i: number, side: 1 | -1) {
-  const y0 = 470 + i * 34;
+  const y0 = 466 + i * 38;
   // Kafes yukarıdan aşağı önce genişler, sonra daralır — göğüs fıçı biçimidir.
   const bulge = Math.sin(((i + 1.2) / 13) * Math.PI);
-  const spread = 96 + bulge * 138;
+  const spread = 88 + bulge * 128;
   const drop = 40 + i * 12;
   const sx = SPINE_X + side * 14;
   const lat = SPINE_X + side * spread;
@@ -61,7 +61,7 @@ export const Skeleton: React.FC<{opacity: number; bone: string; boneDim: string}
     ))}
 
     {/* Omurga */}
-    {Array.from({length: 21}).map((_, i) => (
+    {Array.from({length: 18}).map((_, i) => (
       <rect
         key={i}
         x={SPINE_X - 22 - (i > 12 ? 6 : 0)}
@@ -88,33 +88,36 @@ export const Skeleton: React.FC<{opacity: number; bone: string; boneDim: string}
     {/* ON İKİ ÇİFT. Kıkırdak önce ve sönük çizilir ki kemik sayılabilsin. */}
     {Array.from({length: 12}).map((_, i) =>
       i < 10 ? (
-        <g key={`c${i}`} opacity={0.45}>
-          <path d={cartilage(i, 1)} fill="none" stroke={boneDim} strokeWidth={7} strokeLinecap="round" />
-          <path d={cartilage(i, -1)} fill="none" stroke={boneDim} strokeWidth={7} strokeLinecap="round" />
+        <g key={`c${i}`} opacity={0.7}>
+          <path d={cartilage(i, 1)} fill="none" stroke={boneDim} strokeWidth={8} strokeLinecap="round" />
+          <path d={cartilage(i, -1)} fill="none" stroke={boneDim} strokeWidth={8} strokeLinecap="round" />
         </g>
       ) : null,
     )}
     {Array.from({length: 12}).map((_, i) => (
       <g key={`r${i}`}>
-        <path d={rib(i, 1)} fill="none" stroke={bone} strokeWidth={i > 9 ? 8 : 12} strokeLinecap="round" />
-        <path d={rib(i, -1)} fill="none" stroke={bone} strokeWidth={i > 9 ? 8 : 12} strokeLinecap="round" />
+        <path d={rib(i, 1)} fill="none" stroke={bone} strokeWidth={i > 9 ? 7 : 11} strokeLinecap="round" />
+        <path d={rib(i, -1)} fill="none" stroke={bone} strokeWidth={i > 9 ? 7 : 11} strokeLinecap="round" />
       </g>
     ))}
 
     {/* Leğen */}
-    <path d="M 540 1128 C 468 1120, 392 1140, 368 1194 C 348 1244, 372 1312, 424 1344 C 462 1366, 492 1352, 504 1318 L 540 1276 Z" fill={boneDim} stroke={bone} strokeWidth={5} />
-    <path d="M 540 1128 C 612 1120, 688 1140, 712 1194 C 732 1244, 708 1312, 656 1344 C 618 1366, 588 1352, 576 1318 L 540 1276 Z" fill={boneDim} stroke={bone} strokeWidth={5} />
+    {/* Leğen, siluetin kalçasıyla aynı hizada — öncekinde kemik etin altında
+        kalıyor, ayrı bir kütle gibi duruyordu. */}
+    <path d="M 540 986 C 476 980, 410 998, 390 1044 C 372 1088, 394 1142, 440 1168 C 472 1186, 498 1174, 508 1146 L 540 1110 Z" fill={boneDim} stroke={bone} strokeWidth={5} />
+    <path d="M 540 986 C 604 980, 670 998, 690 1044 C 708 1088, 686 1142, 640 1168 C 608 1186, 582 1174, 572 1146 L 540 1110 Z" fill={boneDim} stroke={bone} strokeWidth={5} />
+    <path d="M 516 1096 L 564 1096 L 560 1150 L 520 1150 Z" fill={boneDim} stroke={bone} strokeWidth={4} />
 
     {/* Uzun kemikler */}
     {[
-      ['M 336 500 C 312 604, 306 700, 314 786', 20],
-      ['M 744 500 C 768 604, 774 700, 766 786', 20],
-      ['M 314 794 C 306 878, 302 950, 308 1020', 15],
-      ['M 766 794 C 774 878, 778 950, 772 1020', 15],
-      ['M 462 1336 C 448 1470, 442 1576, 450 1664', 24],
-      ['M 618 1336 C 632 1470, 638 1576, 630 1664', 24],
-      ['M 450 1674 C 444 1756, 442 1818, 448 1878', 19],
-      ['M 630 1674 C 636 1756, 638 1818, 632 1878', 19],
+      ['M 348 430 C 326 560, 312 660, 302 726', 22],
+      ['M 732 430 C 754 560, 768 660, 778 726', 22],
+      ['M 300 742 C 294 830, 290 900, 288 964', 16],
+      ['M 780 742 C 786 830, 790 900, 792 964', 16],
+      ['M 462 1150 C 452 1250, 448 1330, 452 1396', 26],
+      ['M 618 1150 C 628 1250, 632 1330, 628 1396', 26],
+      ['M 452 1414 C 446 1540, 442 1670, 444 1786', 20],
+      ['M 628 1414 C 634 1540, 638 1670, 636 1786', 20],
     ].map(([p, w], i) => (
       <path key={i} d={p as string} fill="none" stroke={bone} strokeWidth={w as number} strokeLinecap="round" opacity={0.92} />
     ))}
@@ -125,33 +128,60 @@ export const Skeleton: React.FC<{opacity: number; bone: string; boneDim: string}
  * GÖVDE SİLÜETİ — omuzlar geniş, bel dar, kollar yanda, bacaklar ayrı.
  * İlk sürüm bir manken kütlesiydi: kollar gövdeye yapışık, bacaklar tek parça.
  */
-export const Figure: React.FC<{opacity: number; fill: string; edge: string}> = ({opacity, fill, edge}) => (
-  <g opacity={opacity}>
-    <path
-      d={
-        'M 540 72 C 476 72, 428 126, 428 200 C 428 246, 446 284, 474 306 ' +
-        'C 476 344, 464 362, 430 378 C 380 400, 342 412, 316 440 ' +
-        'C 296 462, 288 512, 286 566 ' +
-        'C 282 660, 276 760, 268 856 C 262 928, 256 990, 252 1036 ' +
-        'C 248 1076, 292 1084, 300 1044 C 310 986, 320 906, 328 828 ' +
-        'C 332 906, 330 986, 338 1058 C 346 1130, 360 1196, 376 1258 ' +
-        'C 392 1320, 404 1394, 410 1478 C 416 1566, 418 1706, 414 1854 ' +
-        'C 412 1886, 486 1888, 490 1856 C 500 1712, 512 1566, 524 1450 ' +
-        'C 530 1392, 550 1392, 556 1450 C 568 1566, 580 1712, 590 1856 ' +
-        'C 594 1888, 668 1886, 666 1854 C 662 1706, 664 1566, 670 1478 ' +
-        'C 676 1394, 688 1320, 704 1258 C 720 1196, 734 1130, 742 1058 ' +
-        'C 750 986, 748 906, 752 828 C 760 906, 770 986, 780 1044 ' +
-        'C 788 1084, 832 1076, 828 1036 C 824 990, 818 928, 812 856 ' +
-        'C 804 760, 798 660, 794 566 C 792 512, 784 462, 764 440 ' +
-        'C 738 412, 700 400, 650 378 C 616 362, 604 344, 606 306 ' +
-        'C 634 284, 652 246, 652 200 C 652 126, 604 72, 540 72 Z'
-      }
-      fill={fill}
-      stroke={edge}
-      strokeWidth={6}
-    />
-  </g>
-);
+export const Figure: React.FC<{opacity: number; fill: string; edge: string}> = ({opacity, fill, edge}) => {
+  /**
+   * İNSAN TEK BİR KÜTLE DEĞİL.
+   *
+   * İlk iki sürüm gövdeyi tek bir kapalı yol olarak çizdi ve sonuç bir manken
+   * oldu: kollar gövdeye yapışık, bacaklar tek parça, omuz yok. Bir siluetin
+   * insan gibi okunması için gereken şey detay değil ORANTI ve EKLEM — omuzun
+   * nerede bittiği, dirseğin nerede kırıldığı, baldırın nerede inceldiği.
+   * O yüzden her uzuv kendi konik yolu olarak çizilir.
+   */
+  const limb = (pts: [number, number][], w: number[]) => {
+    const left: string[] = [];
+    const right: string[] = [];
+    pts.forEach(([x, y], i) => {
+      left.push(`${i === 0 ? 'M' : 'L'} ${x - w[i]} ${y}`);
+      right.unshift(`L ${x + w[i]} ${y}`);
+    });
+    return `${left.join(' ')} ${right.join(' ')} Z`;
+  };
+  const skin = {fill, stroke: edge, strokeWidth: 5, strokeLinejoin: 'round' as const};
+  return (
+    <g opacity={opacity}>
+      {/* Baş ve boyun */}
+      <ellipse cx={540} cy={196} rx={82} ry={102} {...skin} />
+      <path d="M 508 286 L 572 286 L 578 336 L 502 336 Z" {...skin} />
+
+      {/* Gövde: omuz, göğüs, bel, kalça */}
+      <path
+        d={
+          'M 540 330 C 470 336, 406 356, 366 392 C 340 416, 330 470, 328 540 ' +
+          'C 326 620, 336 700, 352 768 C 366 828, 372 878, 374 936 ' +
+          'C 376 986, 392 1010, 440 1014 C 500 1020, 580 1020, 640 1014 ' +
+          'C 688 1010, 704 986, 706 936 C 708 878, 714 828, 728 768 ' +
+          'C 744 700, 754 620, 752 540 C 750 470, 740 416, 714 392 ' +
+          'C 674 356, 610 336, 540 330 Z'
+        }
+        {...skin}
+      />
+
+      {/* Kollar: omuz → dirsek → bilek → el */}
+      <path d={limb([[352, 392], [318, 560], [300, 720], [292, 880], [288, 968]], [44, 40, 33, 29, 26])} {...skin} />
+      <path d={limb([[728, 392], [762, 560], [780, 720], [788, 880], [792, 968]], [44, 40, 33, 29, 26])} {...skin} />
+      <ellipse cx={286} cy={1016} rx={30} ry={48} {...skin} />
+      <ellipse cx={794} cy={1016} rx={30} ry={48} {...skin} />
+
+      {/* Bacaklar: kalça → diz → bilek */}
+      <path d={limb([[462, 1000], [452, 1220], [446, 1400], [442, 1620], [440, 1800]], [72, 58, 44, 38, 32])} {...skin} />
+      <path d={limb([[618, 1000], [628, 1220], [634, 1400], [638, 1620], [640, 1800]], [72, 58, 44, 38, 32])} {...skin} />
+      {/* Ayaklar */}
+      <path d="M 410 1798 L 472 1798 L 478 1848 L 396 1852 Z" {...skin} />
+      <path d="M 608 1798 L 670 1798 L 684 1852 L 602 1848 Z" {...skin} />
+    </g>
+  );
+};
 
 /** Akciğer — sağ üç, sol iki lob; ortada kalbin oturduğu çentik. */
 export const LUNG_RIGHT =

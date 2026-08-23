@@ -17,6 +17,10 @@ import {
   RED_DARK,
   AORTIC_ROOT,
   AV_RING_L,
+  CORONARIES,
+  LEFT_AURICLE,
+  MODERATOR_BAND,
+  RIGHT_AURICLE,
   AV_RING_R,
   LEFT_LUMEN,
   PULM_ROOT,
@@ -313,14 +317,33 @@ const Heart: React.FC<SceneProps> = ({scene, durationInFrames}) => {
             <path d="M 972 760 C 916 758, 878 772, 858 796 L 866 840 C 890 812, 926 800, 976 802 Z" fill="url(#redTube)" stroke={RED_DARK} strokeWidth={4} />
           </g>
 
-          {/* ── MİYOKARD ── */}
+          {/* ── MİYOKARD, kulakçıklarıyla ── */}
           <g transform={`translate(560 1440) scale(${vSq}) translate(-560 -1440)`}>
+            <path d={RIGHT_AURICLE} fill={MYO_DARK} stroke={MYO_DARK} strokeWidth={6} opacity={0.95} />
+            <path d={LEFT_AURICLE} fill={MYO_DARK} stroke={MYO_DARK} strokeWidth={6} opacity={0.95} />
             <path d={OUTLINE} fill="url(#myo)" stroke={MYO_DARK} strokeWidth={7} />
           </g>
 
           {/* ── SEPTUM ── */}
           <g transform={`translate(560 1440) scale(${vSq}) translate(-560 -1440)`}>
-            <path d={SEPTUM} fill={MYO} stroke={MYO_DARK} strokeWidth={6} />
+            {/* Septum bir ÇUBUK değil, kasın kendisi: aynı gradyan, aynı doku.
+                Düz dolgu verilince kalbin ortasından geçen bir boru gibi
+                okunuyordu — aortla karıştırılmasının sebebi buydu. */}
+            <path d={SEPTUM} fill="url(#myo)" stroke={MYO_DARK} strokeWidth={6} />
+            <path d={SEPTUM} fill="none" stroke={MYO_LIGHT} strokeWidth={2.5} opacity={0.5} />
+          </g>
+
+          {/* ── KORONERLER: kalbin kendi damarları, yüzeyin üstünde ── */}
+          <g transform={`translate(560 1440) scale(${vSq}) translate(-560 -1440)`} opacity={lit('coronary') * 0.95}>
+            {[CORONARIES.rca, CORONARIES.cx, CORONARIES.lad].map((p2, i) => (
+              <path key={i} d={p2} fill="none" stroke="#7d1f1c" strokeWidth={i === 2 ? 13 : 12} strokeLinecap="round" opacity={0.75} />
+            ))}
+            {[CORONARIES.rca, CORONARIES.cx, CORONARIES.lad].map((p2, i) => (
+              <path key={`i${i}`} d={p2} fill="none" stroke="#c4443c" strokeWidth={i === 2 ? 7 : 6} strokeLinecap="round" />
+            ))}
+            {CORONARIES.branches.map((p2, i) => (
+              <path key={`b${i}`} d={p2} fill="none" stroke="#b03a34" strokeWidth={4} strokeLinecap="round" opacity={0.85} />
+            ))}
           </g>
 
           {/* ── LÜMEN: her taraf TEK parça, kulakçıktan damar köküne ── */}
@@ -329,6 +352,7 @@ const Heart: React.FC<SceneProps> = ({scene, durationInFrames}) => {
             {TRABECULAE_RV.map((t, i) => (
               <path key={i} d={t} fill="none" stroke={MYO_LIGHT} strokeWidth={9} strokeLinecap="round" opacity={0.6} />
             ))}
+            <path d={MODERATOR_BAND} fill="none" stroke={MYO_LIGHT} strokeWidth={14} strokeLinecap="round" opacity={0.9} />
             <path d={papillary(392, 1300, 92, 150, ventricles)} fill={MYO} stroke={MYO_DARK} strokeWidth={5} />
             {chordae(392, 1150, 380, 986, 4, 60).map((c, i) => (
               <path key={i} d={c} fill="none" stroke={ENDO} strokeWidth={3.5} opacity={0.8} />
@@ -410,12 +434,16 @@ const Heart: React.FC<SceneProps> = ({scene, durationInFrames}) => {
             if (x < -40 || x > W + 40 || y < -40 || y > H + 40) return null;
 
             const leftSide = side === 'l';
-            const tx = leftSide ? 64 : W - 64;
-            // Her etiketin kendi rafı var: iki yazı asla üst üste binmez.
-            const railY = 190 + i * 112;
+            // Sağ sütun oynatıcının düğmeleri için ayrılır; yazı oraya girmez.
+            const tx = leftSide ? 62 : W - 128;
+            /**
+             * Raf bandı: üstte altyazı, altta oynatıcı arayüzü. Etiket ikisinin
+             * arasında kalan güvenli banda iner ve her etiketin kendi rafı olur.
+             */
+            const railY = 1210 + i * 104;
             const show = Math.min(1, Math.max(0, (frame - 3 - i * 3) / 5));
             if (show <= 0) return null;
-            const elbowX = leftSide ? Math.min(x, 260) - 60 : Math.max(x, W - 260) + 60;
+            const elbowX = leftSide ? Math.max(120, Math.min(x, 300) - 70) : Math.min(W - 170, Math.max(x, W - 320) + 70);
             return (
               <g key={i} opacity={show}>
                 <circle cx={x} cy={y} r={10} fill="#ffcf3d" />
@@ -451,7 +479,7 @@ const Heart: React.FC<SceneProps> = ({scene, durationInFrames}) => {
             position: 'absolute',
             left: 0,
             right: 0,
-            top: 300,
+            top: 560,
             textAlign: 'center',
             color: '#ffcf3d',
             font: '800 200px/1 Helvetica, Arial, sans-serif',
@@ -464,18 +492,28 @@ const Heart: React.FC<SceneProps> = ({scene, durationInFrames}) => {
         </div>
       ) : null}
 
+      {/**
+        * YAZI YUKARIDA DURUR.
+        *
+        * Dikey akışta karenin ALT ÜÇTE BİRİ ölü alandır: oynatıcının kendi
+        * arayüzü, hesap adı, ses etiketi ve sağdaki düğme sütunu oraya biner.
+        * Altyazıyı oraya koymak, reel'in söylediği şeyi platformun kendi
+        * arayüzüne yazdırmaktır. Üst bant güvenli: durum çubuğunun altı, ve
+        * göz zaten oradan başlar.
+        */}
       {title ? (
         <div
           style={{
             position: 'absolute',
-            left: 58,
-            right: 58,
-            bottom: 168,
+            left: 56,
+            right: 56,
+            top: 210,
             color: '#fbf6ee',
-            font: '800 72px/1.12 Helvetica, Arial, sans-serif',
-            textShadow: '0 6px 30px rgba(0,0,0,0.95)',
+            font: '800 76px/1.1 Helvetica, Arial, sans-serif',
+            letterSpacing: '-0.015em',
+            textShadow: '0 6px 34px rgba(0,0,0,0.98), 0 2px 10px rgba(0,0,0,0.9)',
             opacity: arrive,
-            transform: `translateY(${(1 - arrive) * 14}px)`,
+            transform: `translateY(${(1 - arrive) * -12}px)`,
           }}
         >
           {title}
@@ -485,11 +523,12 @@ const Heart: React.FC<SceneProps> = ({scene, durationInFrames}) => {
         <div
           style={{
             position: 'absolute',
-            left: 58,
-            right: 58,
-            bottom: 96,
+            left: 56,
+            right: 56,
+            top: 386,
             color: '#ffcf3d',
-            font: '700 42px/1.2 Helvetica, Arial, sans-serif',
+            font: '700 44px/1.2 Helvetica, Arial, sans-serif',
+            textShadow: '0 4px 20px rgba(0,0,0,0.95)',
             opacity: arrive * Math.min(1, Math.max(0, (frame - 4) / 6)),
           }}
         >

@@ -128,6 +128,41 @@ export function papillary(x: number, y: number, w: number, h: number, squeeze: n
     `C ${x + w * 0.22} ${y - h * k}, ${x + w / 2} ${y - h * 0.5 * k}, ${x + w / 2} ${y} Z`;
 }
 
+/**
+ * KORONER DAMARLAR — kalbin KENDİ kanı.
+ *
+ * Kalp içinden geçen kanı kullanmaz; kendi kasını besleyen ayrı bir ağacı
+ * vardır ve o ağaç yüzeyin ÜSTÜNDE, oluklarda yürür. Bir kalp çiziminin
+ * gerçek görünmesini sağlayan tek detay bu: düz bir kas kütlesi ile üzerinde
+ * damar ağı olan bir organ arasındaki fark.
+ */
+export const CORONARIES = {
+  /** Sol ön inen dal — ön interventriküler olukta, apekse doğru. */
+  lad: 'M 596 606 C 606 760, 622 1000, 646 1230 C 654 1310, 660 1370, 664 1420',
+  /** Sağ koroner — sağ AV oluğunda, kalbin sağ kenarını dolanır. */
+  rca: 'M 560 590 C 500 606, 420 646, 356 716 C 300 780, 276 880, 274 986',
+  /** Sirkumfleks — sol AV oluğunda, arkaya doğru. */
+  cx: 'M 622 596 C 700 604, 790 646, 842 720 C 884 780, 894 880, 886 972',
+  branches: [
+    'M 626 830 C 668 846, 706 872, 736 906',
+    'M 640 1010 C 686 1026, 722 1052, 748 1084',
+    'M 612 700 C 566 716, 520 746, 486 786',
+    'M 330 780 C 316 836, 310 890, 312 942',
+    'M 856 800 C 866 856, 868 906, 862 950',
+  ],
+};
+
+/** Kulakçık kulakçıkları (aurikula) — kalbin siluetindeki o iki kıvrım. */
+export const RIGHT_AURICLE =
+  'M 300 560 C 246 540, 196 556, 186 604 C 178 646, 208 676, 254 668 ' +
+  'C 292 662, 316 620, 322 578 Z';
+export const LEFT_AURICLE =
+  'M 786 566 C 840 548, 890 570, 896 616 C 900 656, 868 682, 824 672 ' +
+  'C 790 664, 770 624, 768 584 Z';
+
+/** Moderatör bant — sağ karıncıkta septumdan papiller kasa uzanan et köprüsü. */
+export const MODERATOR_BAND = 'M 494 1148 C 458 1188, 420 1240, 396 1290';
+
 /** Trabeküller — karıncık iç yüzeyindeki et köprüleri. Doku, süs değil. */
 export const TRABECULAE_RV = [
   'M 322 1030 C 356 1046, 392 1042, 424 1022',

@@ -175,7 +175,7 @@
         "flow": [],
         "labels": [
           "SAĞ KARINCIK|0.370|0.615|l",
-          "SOL KARINCIK|0.639|0.615|r"
+          "SEPTUM|0.546|0.560|r"
         ]
       },
       "transition": {
@@ -330,7 +330,7 @@
           "body"
         ],
         "labels": [
-          "AORT|0.741|0.219|r"
+          "AORT|0.60|0.435|r"
         ],
         "zoom": 1.0,
         "zoomTo": 0.2645502645502646,
