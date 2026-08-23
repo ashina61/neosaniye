@@ -27,8 +27,11 @@ episodes/<episode-id>/
 
 scripts/
   plan-episode.mjs          brief → scene-config
-  lib/director.mjs          WHEN things happen: beats, camera, emphasis, guardrails
-  lib/critique.mjs          the check that can see a boring reel
+  lib/story.mjs             WHAT each line is: beat, visual idea, rhythm, ending
+  lib/assetdirector.mjs     WHETHER a picture may be used — score, recast, refuse
+  lib/visual.mjs            hierarchy, framing, one type system
+  lib/director.mjs          WHEN things happen: beats, camera, transitions, quotas
+  lib/critique.mjs          the checks that can see a boring reel
 test/                       engine-purity guard, schema, registry, episodes, director
 
 MOTION_SYSTEM.md            the design language — what moves and why
@@ -62,6 +65,12 @@ at a documentary rate. Nothing is padded to a round number — and nothing is
 allowed to run long either: past 2.9 spoken seconds a sentence is cut again,
 with or without a comma to cut at. A shot that runs four and a half seconds on
 one camera move is the slideshow this whole engine exists to stop making.
+
+**The asset director decides what may be shown.** Every picture is scored
+against the role it plays; semantics gate the score, so a sharp, well-exposed
+photograph of the wrong thing is refused rather than animated. A refusal writes
+an `ASSET_REQUIRED` brief and the line becomes a typographic shot on a drawn
+field. See [VIDEO_PIPELINE.md](VIDEO_PIPELINE.md).
 
 **The director decides what happens inside the shot.** Every shot gets at least
 two events, spread across its length, the first one early: the words landing,

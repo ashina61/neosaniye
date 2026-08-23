@@ -44,3 +44,10 @@ credit wherever the reel is published — in the description, not only here.
 - Author: NASA
 - Licence: Public domain
 - Source: https://commons.wikimedia.org/wiki/File:ISS-38_Green_Bay,_Wisconsin.jpg
+
+## bronze-weight.png
+
+Derived from `lab-wall.jpg` in this same folder: cropped to its central object and
+keyed to transparency with the repo's own keyer (`keyBackdrop`). The licence and
+attribution of the source file above apply unchanged — a crop and an alpha channel
+do not make it a new work.

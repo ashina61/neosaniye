@@ -197,7 +197,7 @@ export function chooseEmphasisMark(rand, recent = []) {
  * Every one of them still ends at or above 1, because a fill plate scaled below
  * 1 shows the frame behind it.
  */
-export const CAMERA_MOVES = ['push', 'pull', 'pan', 'drift', 'hold'];
+export const CAMERA_MOVES = ['push', 'pull', 'pan', 'tilt', 'drift', 'hold'];
 
 export function cameraMove({rand, recent = [], durationInFrames, intensity = 0.5, impactAt = null}) {
   const between = ([lo, hi]) => lo + rand() * (hi - lo);
@@ -289,7 +289,17 @@ export function escalation(index, total) {
  * test — "add a particle system" is how a pipeline fills a shot without
  * filling it.
  */
-export const FILLERS = ['mark', 'wire', 'beam', 'shake'];
+/**
+ * `beam` IS NOT ON THIS LIST, AND THAT IS THE POINT.
+ *
+ * The visual director's own test — a graphic must explain, measure, locate,
+ * compare, highlight, count, connect or reveal — returns null for a shaft of
+ * light, because it does none of them. It went into a shot of the moon on a
+ * black sky, where there is no source for it to be the falloff of, and read as
+ * a smear on the lens. A rule that the pipeline states and then breaks is not
+ * a rule.
+ */
+export const FILLERS = ['mark', 'wire', 'shake'];
 
 export function directShot({
   durationInFrames,
@@ -349,5 +359,327 @@ export function directShot({
     cameraKind: camera.kind,
     reveal: chooseReveal(rand, recent.reveal ?? []),
     emphasisMark: chooseEmphasisMark(rand, recent.mark ?? []),
+  };
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+ * SECOND STAGE — the directors that choose for a REASON rather than for
+ * variety. Everything above this line schedules; everything below it decides.
+ * ══════════════════════════════════════════════════════════════════════════ */
+
+/**
+ * THE CAMERA DIRECTOR.
+ *
+ * The previous version picked a move from a list, avoided three in a row, and
+ * called that variety. It is not, and the reel proves it: eight of ten moves in
+ * the last cut were pull-backs. The anti-repeat rule cannot see a device used
+ * eighty per cent of the time non-consecutively, and the audience does not
+ * experience a reel as a sliding window of three.
+ *
+ * Two changes. First, a move now has a PURPOSE and is chosen from what the beat
+ * is doing, so a reveal pushes and a verdict holds because that is what those
+ * beats are, not because the die said so. Second, there is a QUOTA: no family
+ * may exceed roughly thirty per cent of the reel, counted across the whole
+ * thing.
+ */
+export const CAMERA_PURPOSE = {
+  push: 'single out the subject — the frame closes on what matters',
+  pull: 'reveal scale or context — the subject turns out to sit in something',
+  pan: 'expose information the frame was withholding, or follow a movement',
+  tilt: 'a vertical reveal — height, depth, or a drop',
+  drift: 'atmosphere, and the calm that makes the next cut land',
+  hold: 'importance. The frame stops because the idea needs no help',
+};
+
+/** What each beat wants the camera to do, best first. */
+const CAMERA_FOR_BEAT = {
+  HOOK: ['push', 'tilt', 'hold'],
+  MYSTERY: ['hold', 'drift', 'pull'],
+  CONTEXT: ['pan', 'drift', 'pull'],
+  DISCOVERY: ['push', 'tilt', 'pan'],
+  EVIDENCE: ['hold', 'push', 'pan'],
+  DETAIL: ['push', 'hold', 'tilt'],
+  ESCALATION: ['push', 'pan', 'tilt'],
+  COMPARISON: ['pan', 'pull', 'hold'],
+  REVEAL: ['push', 'tilt', 'hold'],
+  PAYOFF: ['pull', 'hold', 'drift'],
+  VERDICT: ['hold', 'drift', 'push'],
+};
+
+/**
+ * A QUOTA, COUNTED OVER THE WHOLE REEL.
+ *
+ * `used` is a tally of what has already been spent. A family at or over its
+ * share is dropped from the candidate list unless nothing else is left, so the
+ * reel cannot end up as one move wearing different names.
+ */
+export function withinQuota(candidates, used, total, share = 0.3) {
+  const cap = Math.max(1, Math.ceil(total * share));
+  const allowed = candidates.filter((kind) => (used[kind] ?? 0) < cap);
+  if (allowed.length) return allowed;
+  /**
+   * WHEN EVERYTHING IS CAPPED, SPEND THE LEAST-USED ONE.
+   *
+   * Handing the whole list back is what let `hold` reach forty per cent of a
+   * reel after every candidate had hit its ceiling: the overflow went to the
+   * die, and the die kept picking the one already in front. A shot must move
+   * somehow, so the fallback cannot be "nothing" — but it can be "the one this
+   * reel has leaned on least".
+   */
+  const fewest = Math.min(...candidates.map((kind) => used[kind] ?? 0));
+  return candidates.filter((kind) => (used[kind] ?? 0) === fewest);
+}
+
+/**
+ * CHOOSE THE MOVE — purpose first, quota second, die last.
+ *
+ * `reframeFrom` is the previous shot's move on the SAME plate. A continuation
+ * has to change the visual information (see the reframe rule); repeating the
+ * previous move on the same picture is the definition of not doing that.
+ */
+export function directCamera({
+  beat,
+  rand,
+  durationInFrames,
+  used = {},
+  total = 12,
+  intensity = 0.6,
+  impactAt = null,
+  reframeFrom = null,
+  sameSubject = false,
+  share = 0.3,
+}) {
+  const between = ([lo, hi]) => lo + rand() * (hi - lo);
+  const round = (n, p = 2) => Number(n.toFixed(p));
+
+  let wanted = CAMERA_FOR_BEAT[beat] ?? ['push', 'pull', 'hold'];
+  // A pan or a tilt needs time to travel far enough to be read as travel.
+  if (durationInFrames < 55) wanted = wanted.filter((k) => k !== 'pan' && k !== 'tilt');
+  /**
+   * A SECOND SHOT OF ONE PICTURE MUST MOVE, AND MOVE DIFFERENTLY.
+   *
+   * Repeating the previous move is a stutter; HOLDING is worse — the only thing
+   * that made the cut a cut was the promise of new visual information, and a
+   * locked-off frame on the same plate delivers none. One continuation came out
+   * travelling 0.02, which is a photograph with grain on it.
+   */
+  if (sameSubject) wanted = wanted.filter((k) => k !== reframeFrom && k !== 'hold');
+  if (!wanted.length) wanted = ['push', 'hold'];
+
+  /**
+   * WHEN THE BEAT'S PREFERENCES ARE SPENT, WIDEN — DO NOT REPEAT.
+   *
+   * A beat names two or three moves it likes. Filter those by shot length and
+   * by what the previous shot on the same plate did and you can be left with
+   * one, and then the quota has nothing to choose between: excluding `hold`
+   * from continuations pushed every one of them onto that single survivor and
+   * `push` went from forty per cent of the reel to sixty-three.
+   *
+   * So the beat's list is a PREFERENCE, and the full vocabulary is what it
+   * falls back into. A pull-back on a reveal is a second choice; a fifth
+   * consecutive push is not a choice at all.
+   */
+  const cap = Math.max(1, Math.ceil(total * share));
+  const spent = wanted.every((k) => (used[k] ?? 0) >= cap);
+  const pool = spent
+    ? CAMERA_MOVES.filter(
+        (k) =>
+          k !== reframeFrom &&
+          !(sameSubject && k === 'hold') &&
+          !(durationInFrames < 55 && (k === 'pan' || k === 'tilt')),
+      )
+    : wanted;
+
+  const kind = pickFrom(withinQuota(pool.length ? pool : wanted, used, total, share), rand);
+  const end = Math.round(durationInFrames * between([0.9, 0.98]));
+  const reach = 0.16 + intensity * 0.3;
+
+  /**
+   * PREFER A CHANGE OF FRAMING TO A CHANGE OF SCALE.
+   *
+   * A 1.45→1.50 push is the same frame twice. Where two shots share a subject
+   * the move starts from a genuinely different place, so the CROP differs at
+   * frame zero — which is the only reliable way a cut reads as a new shot.
+   */
+  const spec =
+    kind === 'push'
+      ? {pushFrom: round(1 + (sameSubject ? between([0.0, 0.06]) : 0)), pushTo: round(1 + between([reach * 0.9, reach * 1.4]))}
+      : kind === 'pull'
+        ? {pushFrom: round(1 + between([reach * 1.0, reach * 1.6])), pushTo: round(1 + between([0.0, 0.05]))}
+        : kind === 'pan'
+          ? {
+              pushFrom: round(1 + between([0.14, 0.24])),
+              pushTo: round(1 + between([0.18, 0.32])),
+              panX: Math.round((rand() > 0.5 ? 1 : -1) * between([140, 280])),
+            }
+          : kind === 'tilt'
+            ? {
+                pushFrom: round(1 + between([0.16, 0.26])),
+                pushTo: round(1 + between([0.2, 0.34])),
+                panY: Math.round((rand() > 0.5 ? 1 : -1) * between([120, 240])),
+              }
+            : kind === 'drift'
+              ? {
+                  pushFrom: 1,
+                  pushTo: round(1 + between([0.07, 0.13])),
+                  panY: Math.round(between([-70, -26])),
+                  roll: round(between([-0.7, 0.7]), 2),
+                }
+              : {pushFrom: round(1 + between([0.02, 0.05])), pushTo: round(1 + between([0.04, 0.08]))};
+
+  return {
+    kind,
+    purpose: CAMERA_PURPOSE[kind],
+    params: {
+      pushEndFrame: end,
+      handheld: kind === 'hold' ? 3 : 1.5,
+      ...spec,
+      ...(impactAt === null ? {} : {shakeAt: [impactAt], shakeAmount: Math.round(9 + intensity * 13)}),
+    },
+  };
+}
+
+const pickFrom = (list, rand) => list[Math.floor(rand() * list.length) % list.length];
+
+/**
+ * THE TRANSITION DIRECTOR.
+ *
+ * Motivated by what is happening, capped so nothing dominates, and forbidden
+ * from blanking the frame on a short shot.
+ *
+ * The last cut used `rack` on five of eleven cuts — forty-five per cent of the
+ * reel arriving out of focus — and `blinds` opened a two-second shot on a
+ * completely black frame while `flare` opened another on a white one. On a
+ * 1.7-second shot a transition that spends its first twelve frames unreadable
+ * has eaten a fifth of the shot before anything can be seen.
+ */
+export const TRANSITION_PURPOSE = {
+  slam: 'something lands — a document, a verdict, a fact',
+  slip: 'something is moved into view, laterally',
+  flare: 'a splice, a flash, a jump in the record',
+  rack: 'the lens finds it — noticing, not cutting',
+  blinds: 'a room is opened onto',
+  cut: 'no ceremony — the next thing simply is',
+};
+
+/** Transitions that spend their opening frames unreadable. */
+const BLANKING = new Set(['blinds', 'flare', 'rack']);
+
+/** What the content is doing, and therefore how the next shot should arrive. */
+const TRANSITION_FOR_BEAT = {
+  HOOK: ['cut', 'slam'],
+  MYSTERY: ['rack', 'blinds', 'cut'],
+  CONTEXT: ['slip', 'cut'],
+  DISCOVERY: ['blinds', 'slip', 'cut'],
+  EVIDENCE: ['slam', 'cut', 'slip'],
+  DETAIL: ['cut', 'slam'],
+  ESCALATION: ['slam', 'flare', 'cut'],
+  COMPARISON: ['slip', 'cut'],
+  REVEAL: ['flare', 'rack', 'cut'],
+  PAYOFF: ['rack', 'cut', 'slip'],
+  VERDICT: ['slam', 'flare', 'cut'],
+};
+
+/**
+ * CHOOSE HOW A SHOT ARRIVES.
+ *
+ * `cut` is in every list and that is deliberate. A hard cut is the default
+ * grammar of documentary editing, and a reel where every seam is decorated has
+ * no seams left to decorate — the plainness of most cuts is what makes the
+ * three that are not plain mean something.
+ */
+export function directTransition({
+  beat,
+  rand,
+  durationInFrames,
+  used = {},
+  total = 12,
+  previous = [],
+  share = 0.25,
+}) {
+  let wanted = TRANSITION_FOR_BEAT[beat] ?? ['cut', 'slip'];
+
+  /**
+   * A SHORT SHOT CANNOT AFFORD TO ARRIVE UNREADABLE.
+   *
+   * Under two seconds, anything that blanks or blurs the opening is spending
+   * the part of the shot the viewer actually uses to understand it.
+   */
+  if (durationInFrames < 60) wanted = wanted.filter((k) => !BLANKING.has(k));
+  const last = previous[previous.length - 1] ?? null;
+  wanted = wanted.filter((k) => k !== last);
+  if (!wanted.length) wanted = ['cut'];
+
+  /**
+   * OVERFLOW GOES TO A HARD CUT, NOT BACK INTO THE POOL.
+   *
+   * `withinQuota` returns the unfiltered list when every candidate is capped,
+   * which is right for a camera — a shot must move somehow — and wrong here,
+   * because a shot does not have to be decorated. Letting the overflow fall
+   * back into the pool put `slip` on a third of the reel. A plain cut is always
+   * available and is the correct answer when the vocabulary is spent.
+   */
+  const cap = Math.max(1, Math.ceil(total * share));
+  const allowed = wanted.filter((k) => (used[k] ?? 0) < cap);
+  const kind = allowed.length ? pickFrom(allowed, rand) : 'cut';
+  // A hard arrival cuts short and lands; a noticing takes longer because the
+  // whole point of it is the lens catching up. Both are shorter than they were.
+  const hard = kind === 'slam' || kind === 'flare';
+  const frames = kind === 'cut' ? 0 : hard ? 4 + Math.round(rand() * 2) : 8 + Math.round(rand() * 3);
+  return {kind, purpose: TRANSITION_PURPOSE[kind], frames: clampArrival(kind, frames, durationInFrames)};
+}
+
+/**
+ * AN ARRIVAL MAY NOT EAT THE SHOT.
+ *
+ * A safety rule rather than a preference, which is why it also applies to a
+ * transition the brief asked for by name. This episode's brief writes `rack` on
+ * a shot that was four and a half seconds when it was written and is one point
+ * nine now: eleven frames of blur on a fifty-eight frame shot, a fifth of it
+ * gone before anything is legible. The author's device survives; its cost does
+ * not.
+ */
+export function clampArrival(kind, frames, durationInFrames) {
+  if (!frames) return 0;
+  const ceiling = Math.max(3, Math.round(durationInFrames * 0.12));
+  // `blinds` and `flare` START fully covered, so their cost is measured from
+  // the first readable frame rather than from the cut. Six frames is a fifth of
+  // a second of black; more than that is a gap in the reel.
+  const blanking = BLANKING.has(kind) ? Math.min(ceiling, durationInFrames < 60 ? 4 : 6) : ceiling;
+  return Math.min(frames, blanking);
+}
+
+/**
+ * FOCUS AND ATMOSPHERE ARE NOT DEFAULTS.
+ *
+ * `focusPx` was 7–15 on eight of twelve shots and `fog` was on all twelve. A
+ * lens hunt that appears in every shot is not a lens, it is a filter; and haze
+ * over every frame is not atmosphere, it is the reason the whole reel is grey.
+ *
+ * Both now need a REASON, and the amount is bounded by the shot's own length so
+ * a focus hunt can never eat the opening of a short shot. They also refuse to
+ * stack: a shot arriving on a rack transition gets no hunt of its own.
+ */
+const ATMOSPHERIC = /\b(sea|water|underwater|dive[rs]?|wreck|dust|ash|smoke|fog|mist|night|dark|storm|rain|deep)\b/i;
+
+export function atmosphereFor({vo = '', beat, durationInFrames, transitionKind, rand}) {
+  const reason = ATMOSPHERIC.exec(String(vo))?.[0]?.toLowerCase() ?? null;
+  const arrivesSoft = transitionKind === 'rack' || transitionKind === 'blinds';
+
+  /**
+   * A HUNT ONLY WHERE THE SHOT CAN PAY FOR IT.
+   *
+   * The hunt clears over a fifth of the shot. On 34 frames that is seven frames
+   * of mush at the top of a one-second shot; on 130 it is a lens finding its
+   * subject. So it is available above four seconds, on beats that are about
+   * looking, and never on top of a transition that is already soft.
+   */
+  const canHunt = durationInFrames >= 120 && !arrivesSoft && (beat === 'MYSTERY' || beat === 'DISCOVERY');
+  return {
+    focusPx: canHunt ? 8 + Math.round(rand() * 4) : 0,
+    // Haze needs something in the sentence to be hazy about, and even then it
+    // is light: 0.45 over a pale plate is what turned an opening shot white.
+    fog: reason ? Number((0.1 + rand() * 0.14).toFixed(2)) : 0,
+    fogReason: reason,
   };
 }

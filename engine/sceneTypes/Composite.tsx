@@ -10,6 +10,7 @@ import type {EmphasisMark, Reveal} from '../draw/Kinetic';
 import {Annotation, type MarkKind} from '../draw/Annotation';
 import {SceneMotif} from '../draw/Motif';
 import {DrawnProps} from '../draw/Props';
+import {Field, type FieldKind} from '../draw/Field';
 
 /**
  * A COMPOSED SHOT — as many layers as the scene declares.
@@ -209,6 +210,29 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
 
   return (
     <AbsoluteFill style={{filter: blur > 0.4 ? `blur(${blur}px)` : undefined}}>
+      {/**
+       * A GROUND THAT IS NOT A PHOTOGRAPH.
+       *
+       * The one capability the director needed and the engine did not have.
+       * When the asset director REFUSES a plate — because the picture is of the
+       * wrong thing, which is a decision no amount of motion can rescue — the
+       * shot still needs something under it. Without this, a refusal meant an
+       * empty frame, so the only way to keep a shot alive was to use the wrong
+       * photograph, which is the failure the refusal exists to prevent.
+       *
+       * It sits behind the stack rather than replacing it, so a shot may also
+       * use it as a ground under partial artwork. It takes no part in the
+       * camera push: it is the surface the shot is drawn ON, not a thing in the
+       * room, and a drawn field that parallaxes reads as a sliding backdrop.
+       */}
+      {str('field', '') ? (
+        <Field
+          kind={str('field', 'wash') as FieldKind}
+          colours={list('fieldColours').length === 3 ? list('fieldColours') : undefined}
+          seed={scene.id}
+        />
+      ) : null}
+
       {layers.map((layer, index) => (
         <React.Fragment key={`${layer.role}-${index}`}>
           {layer.shadow ? draw(layer, `shadow-${index}`, true) : null}

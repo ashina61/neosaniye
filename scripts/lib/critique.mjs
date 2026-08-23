@@ -109,7 +109,7 @@ function runsOfThree(values, label, push) {
   }
 }
 
-export function critiqueEpisode(config, {fps = config.fps ?? FPS_DEFAULT} = {}) {
+export function critiqueEpisode(config, {fps = config.fps ?? FPS_DEFAULT, holds = new Set()} = {}) {
   const errors = [];
   const warnings = [];
   const scenes = config.scenes ?? [];
@@ -209,9 +209,15 @@ export function critiqueEpisode(config, {fps = config.fps ?? FPS_DEFAULT} = {}) 
       }
     }
 
-    // A SHOT THAT OUTLASTS ITS ONE IDEA. Not said twice: a single-event shot has
-    // already been reported above, and one finding printed two ways is noise.
-    if (seconds > 4.2 && events.length >= 2 && events.length < 3) {
+    /**
+     * A SHOT THAT OUTLASTS ITS ONE IDEA — unless it is holding on purpose.
+     *
+     * A verdict is SUPPOSED to run long on few events: the claim lands and the
+     * frame is left alone so it can be read. Warning about the one shot in the
+     * reel that was deliberately given air is how a check teaches people to
+     * ignore it.
+     */
+    if (seconds > 4.2 && events.length >= 2 && events.length < 3 && !holds.has(scene.id)) {
       warnings.push(`${where}: ${seconds.toFixed(1)}s on ${events.length} event(s) — it will feel held`);
     }
 
@@ -256,7 +262,7 @@ export function critiqueEpisode(config, {fps = config.fps ?? FPS_DEFAULT} = {}) 
     'template',
     (m) => warnings.push(m),
   );
-  runsOfThree(scenes.map(cameraKind), 'camera', (m) => warnings.push(m));
+  runsOfThree(scenes.map((s) => cameraFamily(s) ?? ''), 'camera', (m) => warnings.push(m));
   runsOfThree(
     scenes.map((s) => String(s.params?.captionReveal ?? '')),
     'text reveal',
@@ -291,4 +297,396 @@ export function critiqueEpisode(config, {fps = config.fps ?? FPS_DEFAULT} = {}) 
       secondsPerShot: Number(perShot.toFixed(2)),
     },
   };
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+ * SECOND STAGE — the art-direction checks.
+ *
+ * Everything above answers "does anything happen". These answer "was anything
+ * DECIDED", which is the failure the first stage could not see: a reel where
+ * every shot has three events, every caption lands, and the pictures are of the
+ * wrong things, arriving through the same transition, on the same camera move,
+ * ending on a whimper.
+ * ══════════════════════════════════════════════════════════════════════════ */
+
+/** Which family a shot's camera belongs to. Shared with the director's names. */
+export function cameraFamily(scene) {
+  const p = scene.params ?? {};
+  // The director records what it chose. Inference below is only for configs
+  // written before it did — and it cannot tell a drift from a push.
+  if (typeof p.cameraMove === 'string') return p.cameraMove;
+  /**
+   * A CARD IS NOT HOLDING; IT HAS NO CAMERA.
+   *
+   * A title slate and a portal flight express their movement in their own
+   * params, so reading them through `pushFrom`/`pushTo` reports them as locked
+   * off — and two cards in a ten-shot reel were enough to make `hold` look like
+   * forty per cent of the camera work while the quota, which counts what the
+   * director actually chose, had spent two.
+   */
+  if (p.pushFrom === undefined && p.pushTo === undefined) return null;
+  const from = typeof p.pushFrom === 'number' ? p.pushFrom : 1;
+  const to = typeof p.pushTo === 'number' ? p.pushTo : 1;
+  if (Math.abs(Number(p.panX) || 0) > 40) return 'pan';
+  if (Math.abs(Number(p.panY) || 0) > 60) return 'tilt';
+  if (to - from > 0.06) return 'push';
+  if (from - to > 0.06) return 'pull';
+  return 'hold';
+}
+
+/** Count, and report anything that takes more than its share of the reel. */
+function dominance(values, label, share, warn) {
+  const total = values.length;
+  if (total < 4) return;
+  const tally = {};
+  for (const v of values) tally[v] = (tally[v] ?? 0) + 1;
+  for (const [kind, count] of Object.entries(tally)) {
+    const fraction = count / total;
+    if (fraction > share) {
+      warn(
+        `${label}: "${kind}" on ${count} of ${total} shots (${Math.round(fraction * 100)}%) — ` +
+          `over the ${Math.round(share * 100)}% ceiling; one device is carrying the reel`,
+      );
+    }
+  }
+}
+
+/**
+ * ART DIRECTION CHECKS.
+ *
+ * Separate from `critiqueEpisode` because they answer a different question and
+ * because they need things the config alone does not carry — the asset
+ * verdicts, and the story's reading of each line. Called with whatever is
+ * available; every check degrades to silence rather than to a false alarm.
+ */
+export function critiqueDirection(config, {assets = {}, story = [], fps = config.fps ?? FPS_DEFAULT} = {}) {
+  const errors = [];
+  const warnings = [];
+  const scenes = config.scenes ?? [];
+  const total = scenes.length;
+
+  /**
+   * A PICTURE OF THE WRONG THING.
+   *
+   * The most expensive fault this pipeline has, and until the asset director
+   * existed nothing could see it: every wrong file was the right size, on disk,
+   * and well exposed. An asset still in the cut with a failing score is either
+   * a decision somebody should own or an oversight.
+   */
+  const used = new Set();
+  for (const scene of scenes) {
+    for (const file of Object.values(scene.assets ?? {})) used.add(String(file).split('/').pop());
+  }
+  for (const name of used) {
+    const verdict = assets[name];
+    if (!verdict) continue;
+    if (verdict.verdict === 'reject') {
+      errors.push(
+        `asset "${name}" scored ${verdict.score}/10 and is still in the cut — ` +
+          `${verdict.depicts ? `it depicts ${verdict.depicts}` : 'it was refused'}`,
+      );
+    } else if (verdict.score < 6.5) {
+      warnings.push(
+        `asset "${name}" scored ${verdict.score}/10 — used knowingly` +
+          (verdict.note ? `: ${verdict.note.slice(0, 90)}` : ''),
+      );
+    }
+    if (!verdict.reviewed) {
+      warnings.push(`asset "${name}" has never been reviewed — its relevance is unknown, not good`);
+    }
+  }
+
+  /**
+   * THE HOOK.
+   *
+   * The first shot is the single most consequential asset decision in a short,
+   * and the last reel gave its longest duration to its worst photograph.
+   */
+  const first = scenes[0];
+  if (first) {
+    const longest = Math.max(...scenes.map((s) => s.durationInFrames ?? 0));
+    const firstAsset = Object.values(first.assets ?? {})[0];
+    const verdict = firstAsset ? assets[String(firstAsset).split('/').pop()] : null;
+    if ((first.durationInFrames ?? 0) >= longest && total > 3) {
+      warnings.push(
+        `hook: the opening shot is the longest in the reel (${((first.durationInFrames ?? 0) / fps).toFixed(1)}s) — ` +
+          `a short earns its next two seconds in the first one`,
+      );
+    }
+    if (verdict && verdict.score < 6) {
+      errors.push(`hook: the opening shot rests on "${verdict.file}", scored ${verdict.score}/10`);
+    }
+  }
+
+  /**
+   * THE ENDING.
+   *
+   * A verdict split across two shots puts the claim on the first and a quieter
+   * repeat of it on the second, so the reel gets smaller as it finishes.
+   */
+  const last = scenes[scenes.length - 1];
+  const before = scenes[scenes.length - 2];
+  if (last && before) {
+    const claim = String(last.params?.captionEmphasis ?? last.params?.title ?? '').toLowerCase();
+    const earlier = String(before.params?.captionEmphasis ?? before.params?.title ?? '').toLowerCase();
+    if (claim && claim === earlier) {
+      errors.push(
+        `ending: "${claim}" is the payload of both of the last two shots — ` +
+          `the verdict is split and the reel finishes on the weaker half`,
+      );
+    }
+    const events = eventsOf(last);
+    const lastEvent = events.length ? events[events.length - 1].at : 0;
+    const tail = ((last.durationInFrames ?? 0) - lastEvent) / fps;
+    if (tail < 0.6 && (last.durationInFrames ?? 0) > 45) {
+      warnings.push(
+        `ending: the final shot keeps adding things until ${tail.toFixed(1)}s from the cut — ` +
+          `a claim needs silence after it to land`,
+      );
+    }
+  }
+
+  // NO DEVICE CARRIES THE REEL.
+  dominance(scenes.map(cameraFamily).filter(Boolean), 'camera', 0.34, (m) => warnings.push(m));
+  /**
+   * A TRANSITION'S SHARE IS OF THE WHOLE REEL, NOT OF THE DECORATED CUTS.
+   *
+   * Counting only the non-plain arrivals made three `slip`s in a ten-shot reel
+   * report as fifty per cent — which is arithmetically true of a set nobody
+   * watches and false of the thing on screen. `cut` is excluded from being
+   * REPORTED, because a reel of hard cuts is correct, but it stays in the
+   * denominator because it is a third of what the viewer sees.
+   */
+  const arrivals = scenes.map((s) => s.transition?.kind ?? 'cut');
+  dominance(arrivals, 'transition', 0.34, (m) => {
+    if (!m.includes('"cut"')) warnings.push(m);
+  });
+
+  /**
+   * REUSING A PICTURE IS FINE. REUSING A FRAME IS NOT.
+   *
+   * Two shots of one plate must change the visual information — the crop, the
+   * subject, the direction. A 1.45→1.50 difference is the same frame twice, and
+   * the cut between them is a jump rather than an edit.
+   */
+  const byPlate = {};
+  scenes.forEach((scene, i) => {
+    const plate = Object.values(scene.assets ?? {})[0];
+    if (!plate) return;
+    (byPlate[String(plate)] ??= []).push({scene, i});
+  });
+  for (const [plate, shots] of Object.entries(byPlate)) {
+    for (let n = 1; n < shots.length; n += 1) {
+      const a = shots[n - 1].scene.params ?? {};
+      const b = shots[n].scene.params ?? {};
+      const startDelta = Math.abs((Number(b.pushFrom) || 1) - (Number(a.pushFrom) || 1));
+      const anchorDelta =
+        Math.abs((Number(b.anchorX) || 0) - (Number(a.anchorX) || 0)) +
+        Math.abs((Number(b.anchorY) || 0) - (Number(a.anchorY) || 0));
+      const sameMove = cameraFamily(shots[n - 1].scene) === cameraFamily(shots[n].scene);
+      if (startDelta < 0.08 && anchorDelta < 90 && sameMove) {
+        warnings.push(
+          `scene[${shots[n].i}] "${shots[n].scene.id}": same plate as the shot before it ` +
+            `(${String(plate).split('/').pop()}), same framing, same move — the cut shows nothing new`,
+        );
+      }
+    }
+  }
+
+  /**
+   * BLUR AND HAZE, WHICH MULTIPLY.
+   *
+   * A soft arrival over a lens hunt over fog over a low-contrast plate is not
+   * four subtle treatments, it is mush. The last reel stacked all four.
+   */
+  scenes.forEach((scene, index) => {
+    const p = scene.params ?? {};
+    const frames = scene.durationInFrames ?? 0;
+    const soft = scene.transition?.kind === 'rack' || scene.transition?.kind === 'blinds';
+    const hunt = Number(p.focusPx) || 0;
+    const fog = Number(p.fog) || 0;
+    const arrival = Number(scene.transition?.frames) || 0;
+
+    if (soft && hunt > 0) {
+      warnings.push(
+        `scene[${index}] "${scene.id}": arrives soft AND hunts focus — two blurs on one opening`,
+      );
+    }
+    if (frames && arrival / frames > 0.16) {
+      warnings.push(
+        `scene[${index}] "${scene.id}": the arrival takes ${Math.round((arrival / frames) * 100)}% of the shot`,
+      );
+    }
+    if (hunt > 0 && frames < 90) {
+      warnings.push(
+        `scene[${index}] "${scene.id}": a focus hunt on a ${(frames / fps).toFixed(1)}s shot — ` +
+          `it clears a fifth of the way in, and a fifth of this shot is everything`,
+      );
+    }
+    if (fog > 0.3) warnings.push(`scene[${index}] "${scene.id}": fog ${fog} — haze this heavy is a grade, not weather`);
+  });
+
+  // ATMOSPHERE ON EVERYTHING IS A FILTER, NOT A CHOICE.
+  const fogged = scenes.filter((s) => (Number(s.params?.fog) || 0) > 0.05).length;
+  if (total >= 4 && fogged / total > 0.6) {
+    warnings.push(`atmosphere: fog on ${fogged} of ${total} shots — that is a look applied, not a place described`);
+  }
+
+  /**
+   * THE SAME SENTENCE, THREE TIMES.
+   *
+   * Narration, a drawn card and a caption all carrying the same words is not
+   * emphasis, it is an echo — and it costs the graphic its only job, which is
+   * to carry what a voice cannot.
+   */
+  scenes.forEach((scene, index) => {
+    const caption = (Array.isArray(scene.params?.caption) ? scene.params.caption : []).join(' ').toLowerCase();
+    if (!caption) return;
+    const words = (text) => new Set(String(text).toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? []);
+    const capWords = words(caption);
+    for (const prop of scene.props ?? []) {
+      // A wireframe and a beam draw no text, so whatever copy they carry is not
+      // on screen and cannot be echoing anything.
+      if (prop.kind === 'wire' || prop.kind === 'beam') continue;
+      const copy = [prop.text, prop.heading, ...(prop.lines ?? [])].filter(Boolean).join(' ');
+      if (!copy) continue;
+      const propWords = words(copy);
+      if (!propWords.size) continue;
+      const shared = [...propWords].filter((w) => capWords.has(w) && w.length > 3).length;
+      /**
+       * THREE, NOT TWO — because a label legitimately shares its nouns.
+       *
+       * "Antikythera · 1901" over a line that says "in 1901 … off Antikythera"
+       * is apparatus doing its job: it dates and places the shot, and the
+       * narration naturally names the same place. An echo is a SENTENCE said
+       * twice, and a sentence shares more than two words with itself.
+       */
+      if (shared >= 3) {
+        warnings.push(
+          `scene[${index}] "${scene.id}": the ${prop.kind} and the caption say the same thing — ` +
+            `a graphic should carry the apparatus (a date, a place, a number), not repeat the line`,
+        );
+      }
+    }
+  });
+
+  /**
+   * FRAMING VARIETY.
+   *
+   * Twelve shots anchored within a few per cent of one another is twelve
+   * versions of the same composition, however different the pictures are.
+   */
+  const anchors = scenes
+    .filter((s) => s.params?.anchorX !== undefined)
+    .map((s) => `${Math.round((Number(s.params.anchorX) / (config.width ?? 1080)) * 5)}-${Math.round((Number(s.params.anchorY) / (config.height ?? 1920)) * 5)}`);
+  if (anchors.length >= 5 && new Set(anchors).size <= 2) {
+    warnings.push(
+      `framing: ${anchors.length} shots share ${new Set(anchors).size} anchor position(s) — ` +
+        `no close-up, no wide, no off-centre composition in the whole reel`,
+    );
+  }
+
+  /**
+   * A GRAPHIC THAT PROVES NOTHING.
+   *
+   * `wire` and `beam` are the two pure decorations in the vocabulary. A
+   * wireframe closing on an even texture encloses nothing; a shaft of light in
+   * a shot with no light source is a smear on the lens.
+   */
+  scenes.forEach((scene, index) => {
+    for (const prop of scene.props ?? []) {
+      if (prop.kind !== 'beam') continue;
+      const dark = Number(scene.params?.glowSize ?? 0) > 0;
+      if (!dark) {
+        warnings.push(
+          `scene[${index}] "${scene.id}": a light beam with no light source in the shot — ` +
+            `it proves nothing and reads as a lens smear`,
+        );
+      }
+    }
+  });
+
+  return {errors, warnings};
+}
+
+/**
+ * THE QUALITY GATES.
+ *
+ * Scored from what the config and the asset ledger actually say, so the number
+ * cannot be talked up. A reel below seven on any of these is not production
+ * ready, and the gate names the root cause rather than the symptom.
+ */
+export function qualityGates(config, {assets = {}, fps = config.fps ?? FPS_DEFAULT} = {}) {
+  const scenes = config.scenes ?? [];
+  const total = Math.max(1, scenes.length);
+  const clamp = (n) => Number(Math.max(0, Math.min(10, n)).toFixed(1));
+
+  // ASSET RELEVANCE — the mean of what is actually on screen, weighted by how
+  // long each picture is up.
+  let weighted = 0;
+  let frames = 0;
+  for (const scene of scenes) {
+    const plate = Object.values(scene.assets ?? {})[0];
+    const verdict = plate ? assets[String(plate).split('/').pop()] : null;
+    const d = scene.durationInFrames ?? 0;
+    frames += d;
+    // A shot with no photograph is not penalised: a drawn field chosen on
+    // purpose is a correct visual, and this axis is about correctness.
+    weighted += d * (verdict ? verdict.score : plate ? 5 : 8);
+  }
+  const assetRelevance = clamp(frames ? weighted / frames : 8);
+
+  // VISUAL HIERARCHY — does each shot state a primary element, and is there
+  // exactly one thing carrying it?
+  const withPrimary = scenes.filter((s) => s.params?.captionEmphasis || s.params?.title || s.params?.countTo).length;
+  const visualHierarchy = clamp((withPrimary / total) * 10);
+
+  // MOTION DESIGN — events per second, against roughly one per second.
+  const events = scenes.reduce((n, s) => n + eventsOf(s).length, 0);
+  const perSecond = events / Math.max(1, frames / fps);
+  const motionDesign = clamp(perSecond * 7.5);
+
+  // CAMERA + TRANSITION DIVERSITY — the share of the most-used device.
+  const share = (values) => {
+    if (!values.length) return 1;
+    const tally = {};
+    for (const v of values) tally[v] = (tally[v] ?? 0) + 1;
+    return Math.max(...Object.values(tally)) / values.length;
+  };
+  const cameraDiversity = clamp((1 - Math.max(0, share(scenes.map(cameraFamily)) - 0.3) / 0.7) * 10);
+  const transitionQuality = clamp(
+    (1 - Math.max(0, share(scenes.map((s) => s.transition?.kind ?? 'cut')) - 0.34) / 0.66) * 10,
+  );
+
+  /**
+   * VISUAL CONTINUITY — one accent across the reel, and a grade that does not
+   * wander. Measured rather than asserted: the number of distinct accents and
+   * the number of scenes that override the episode's grade.
+   */
+  const accents = new Set(scenes.map((s) => String(s.params?.accent ?? '')).filter(Boolean));
+  const overrides = scenes.filter((s) => s.gradeOverride).length;
+  const visualContinuity = clamp(10 - (accents.size - 1) * 3 - Math.max(0, overrides - 2) * 1.5);
+
+  const professionalism = clamp(
+    (assetRelevance * 0.3 +
+      visualHierarchy * 0.15 +
+      motionDesign * 0.15 +
+      cameraDiversity * 0.13 +
+      transitionQuality * 0.12 +
+      visualContinuity * 0.15),
+  );
+
+  const gates = {
+    assetRelevance,
+    visualHierarchy,
+    motionDesign,
+    cameraDiversity,
+    transitionQuality,
+    visualContinuity,
+    professionalism,
+  };
+  const failed = Object.entries(gates)
+    .filter(([, v]) => v < 7)
+    .map(([k, v]) => `${k} ${v}/10`);
+  return {gates, failed, productionReady: failed.length === 0};
 }

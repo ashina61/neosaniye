@@ -6,7 +6,7 @@
   "width": 1080,
   "height": 1920,
   "look": {
-    "posterizeFps": 12,
+    "posterizeFps": 15,
     "grade": {
       "saturate": 0.61,
       "contrast": 1.16,
@@ -19,13 +19,13 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.4,
+      "grainOpacity": 0.37,
       "grungeOpacity": 0.15,
-      "scanlineOpacity": 0.08,
-      "scanlinePeriod": 9,
-      "vignetteStrength": 0.44,
-      "weavePx": 7,
-      "weaveScale": 1.015
+      "scanlineOpacity": 0.09,
+      "scanlinePeriod": 11,
+      "vignetteStrength": 0.4,
+      "weavePx": 5,
+      "weaveScale": 1.012
     }
   },
   "scenes": [
@@ -35,11 +35,11 @@
       "voText": "In 1901 sponge divers off Antikythera found a wreck",
       "durationInFrames": 103,
       "assets": {
-        "sea": "assets/seabed.jpg"
+        "find": "assets/museum-dark.jpg"
       },
       "layers": [
         {
-          "role": "sea",
+          "role": "find",
           "depth": 0.16,
           "anchor": "fill"
         }
@@ -57,7 +57,7 @@
         },
         {
           "kind": "plaque",
-          "text": "Antikythera · 1901",
+          "heading": "1901",
           "width": 432,
           "x": 540,
           "y": 1574,
@@ -78,8 +78,8 @@
         "glowIntensity": 0.54,
         "glowWarm": "#c8d94a",
         "glowDepth": 0.16,
-        "focusPx": 14,
-        "fog": 0.36,
+        "focusPx": 0,
+        "fog": 0.2,
         "caption": [
           "In 1901",
           "sponge divers",
@@ -99,11 +99,13 @@
         "shakeAt": [
           8
         ],
-        "shakeAmount": 22,
+        "shakeAmount": 21,
         "captionEmphasis": "1901",
         "captionReveal": "punch",
         "captionMark": "underline",
-        "captionWordEvery": 3
+        "captionWordEvery": 2,
+        "cameraMove": "pull",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
       }
     },
     {
@@ -112,15 +114,15 @@
       "voText": "full of bronze.",
       "durationInFrames": 34,
       "transition": {
-        "kind": "slam",
-        "frames": 6
+        "kind": "slip",
+        "frames": 4
       },
       "assets": {
-        "sea": "assets/seabed.jpg"
+        "find": "assets/museum-dark.jpg"
       },
       "layers": [
         {
-          "role": "sea",
+          "role": "find",
           "depth": 0.16,
           "anchor": "fill"
         }
@@ -150,8 +152,8 @@
       "params": {
         "anchorX": 540,
         "anchorY": 768,
-        "pushFrom": 1.45,
-        "pushTo": 1.04,
+        "pushFrom": 1.04,
+        "pushTo": 1.6,
         "pushEndFrame": 32,
         "accent": "#c8d94a",
         "caption": [
@@ -164,19 +166,21 @@
         "captionFrame": 7,
         "captionEvery": 8,
         "captionScrim": 0.4,
-        "glowX": -354,
-        "glowY": 167,
-        "glowSize": 398,
-        "glowIntensity": 0.51,
+        "glowX": -379,
+        "glowY": 314,
+        "glowSize": 547,
+        "glowIntensity": 0.48,
         "glowWarm": "#c8d94a",
         "glowDepth": 0.16,
-        "focusPx": 15,
-        "fog": 0.22,
+        "focusPx": 0,
+        "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "bronze",
-        "captionReveal": "punch",
-        "captionMark": "none",
-        "captionWordEvery": 2
+        "captionReveal": "blur",
+        "captionMark": "box",
+        "captionWordEvery": 3,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
       }
     },
     {
@@ -184,45 +188,49 @@
       "sceneType": "composite",
       "voText": "Among the statues lay a lump",
       "durationInFrames": 54,
-      "transition": {
-        "kind": "rack",
-        "frames": 10
-      },
       "assets": {
-        "case": "assets/museum-dark.jpg",
-        "fragment": "assets/mechanism-fragment.jpg"
+        "bronze": "assets/bronze-weight.png"
       },
       "layers": [
         {
-          "role": "case",
-          "depth": 0.1,
-          "anchor": "fill"
-        },
-        {
-          "role": "fragment",
-          "depth": 0.9,
+          "role": "bronze",
+          "depth": 0.8,
           "anchor": "bottom",
           "height": 845,
           "x": 540,
-          "y": 1267,
-          "from": 3
+          "y": 1536
         }
       ],
-      "props": [],
+      "props": [
+        {
+          "kind": "wire",
+          "depth": 0.73,
+          "x": 540,
+          "y": 923,
+          "width": 377,
+          "shape": "circle"
+        }
+      ],
       "params": {
         "anchorX": 540,
         "anchorY": 1152,
         "pushFrom": 1,
         "pushTo": 1.46,
         "pushEndFrame": 46,
-        "glowX": -443,
-        "glowY": 536,
-        "glowSize": 455,
-        "glowIntensity": 0.5,
+        "glowX": -65,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
         "glowWarm": "#c8d94a",
         "glowDepth": 0.1,
         "focusPx": 0,
-        "fog": 0.45,
+        "fog": 0,
+        "field": "spotlight",
+        "fieldColours": [
+          "#44503a",
+          "#242c1e",
+          "#0d100a"
+        ],
         "caption": [
           "a lump of",
           "corroded metal"
@@ -231,24 +239,18 @@
         "captionY": 269,
         "captionSize": 82,
         "captionAlign": "left",
-        "captionFrame": 16,
+        "captionFrame": 4,
         "captionEvery": 8,
         "captionScrim": 0.35,
         "captionRecedeAt": 39,
         "accent": "#c8d94a",
-        "handheld": 1.5,
-        "panY": -66,
-        "roll": -0.41,
+        "handheld": 3,
         "captionEmphasis": "corroded",
-        "captionReveal": "blur",
-        "captionMark": "none",
-        "captionWordEvery": 4,
-        "mark": "strike",
-        "markX": 345,
-        "markY": 650,
-        "markWidth": 540,
-        "markHeight": 180,
-        "markFrame": 46
+        "captionReveal": "punch",
+        "captionMark": "highlight",
+        "captionWordEvery": 3,
+        "cameraMove": "push",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
       }
     },
     {
@@ -257,47 +259,52 @@
       "voText": "of corroded metal the size of a book.",
       "durationInFrames": 73,
       "transition": {
-        "kind": "flare",
-        "frames": 6
+        "kind": "slip",
+        "frames": 9
       },
       "assets": {
-        "case": "assets/museum-dark.jpg",
-        "fragment": "assets/mechanism-fragment.jpg"
+        "bronze": "assets/bronze-weight.png"
       },
       "layers": [
         {
-          "role": "case",
-          "depth": 0.1,
-          "anchor": "fill"
-        },
-        {
-          "role": "fragment",
-          "depth": 0.9,
+          "role": "bronze",
+          "depth": 0.8,
           "anchor": "bottom",
           "height": 845,
           "x": 540,
-          "y": 1267,
-          "from": 4
+          "y": 1536
         }
       ],
       "props": [
         {
-          "kind": "beam",
-          "depth": 0.22,
-          "x": 238,
-          "y": 0,
-          "width": 353,
+          "kind": "wire",
+          "depth": 0.89,
+          "x": 540,
+          "y": 755,
+          "width": 466,
           "from": 62,
-          "opacity": 0.53
+          "shape": "diamond"
         }
       ],
       "params": {
         "anchorX": 540,
         "anchorY": 1152,
-        "pushFrom": 1.43,
-        "pushTo": 1.09,
-        "pushEndFrame": 69,
+        "pushFrom": 1.21,
+        "pushTo": 1.27,
+        "pushEndFrame": 68,
         "accent": "#c8d94a",
+        "field": "spotlight",
+        "fieldColours": [
+          "#44503a",
+          "#242c1e",
+          "#0d100a"
+        ],
+        "glowX": -277,
+        "glowY": 161,
+        "glowSize": 350,
+        "glowIntensity": 0.66,
+        "glowWarm": "#c8d94a",
+        "glowDepth": 0.8,
         "caption": [
           "of corroded metal",
           "the size of a book"
@@ -306,22 +313,19 @@
         "captionY": 269,
         "captionSize": 82,
         "captionAlign": "left",
-        "captionFrame": 22,
+        "captionFrame": 6,
         "captionEvery": 8,
         "captionScrim": 0.35,
-        "glowX": -330,
-        "glowY": 518,
-        "glowSize": 386,
-        "glowIntensity": 0.66,
-        "glowWarm": "#c8d94a",
-        "glowDepth": 0.1,
-        "focusPx": 15,
-        "fog": 0.37,
+        "focusPx": 0,
+        "fog": 0,
         "handheld": 1.5,
+        "panX": 187,
         "captionEmphasis": "corroded",
         "captionReveal": "rise",
-        "captionMark": "box",
-        "captionWordEvery": 4
+        "captionMark": "none",
+        "captionWordEvery": 2,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
       }
     },
     {
@@ -330,19 +334,11 @@
       "voText": "It sat in a museum drawer",
       "durationInFrames": 64,
       "transition": {
-        "kind": "blinds",
-        "frames": 11
+        "kind": "slam",
+        "frames": 4
       },
-      "assets": {
-        "drawers": "assets/storage-drawers.jpg"
-      },
-      "layers": [
-        {
-          "role": "drawers",
-          "depth": 0.14,
-          "anchor": "fill"
-        }
-      ],
+      "assets": {},
+      "layers": [],
       "props": [
         {
           "kind": "card",
@@ -365,14 +361,20 @@
         "pushFrom": 1.2,
         "pushTo": 1.02,
         "pushEndFrame": 55,
-        "glowX": -457,
-        "glowY": 276,
-        "glowSize": 522,
-        "glowIntensity": 0.55,
+        "glowX": -65,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
         "glowWarm": "#c8d94a",
-        "glowDepth": 0.14,
-        "focusPx": 7,
-        "fog": 0.32,
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "spotlight",
+        "fieldColours": [
+          "#44503a",
+          "#242c1e",
+          "#0d100a"
+        ],
         "caption": [
           "It sat",
           "in a museum",
@@ -382,24 +384,27 @@
         "captionY": 230,
         "captionSize": 76,
         "captionAlign": "left",
-        "captionFrame": 32,
+        "captionFrame": 5,
         "captionEvery": 8,
         "captionScrim": 0.5,
         "captionRecedeAt": 46,
         "accent": "#c8d94a",
         "motif": "tally",
-        "motifX": 111,
+        "motifX": 106,
         "motifY": 499,
-        "motifSize": 93,
-        "motifCount": 11,
-        "motifFrame": 26,
+        "motifSize": 97,
+        "motifCount": 13,
+        "motifFrame": 25,
         "motifColour": "#c8d94a",
-        "motifOpacity": 0.81,
+        "motifOpacity": 0.96,
         "handheld": 1.5,
+        "panX": 187,
         "captionEmphasis": "museum",
-        "captionReveal": "wipe",
-        "captionMark": "none",
-        "captionWordEvery": 4
+        "captionReveal": "rise",
+        "captionMark": "box",
+        "captionWordEvery": 4,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
       }
     },
     {
@@ -407,43 +412,28 @@
       "sceneType": "composite",
       "voText": "for fifty years before anyone looked inside.",
       "durationInFrames": 74,
-      "transition": {
-        "kind": "rack",
-        "frames": 10
-      },
-      "assets": {
-        "drawers": "assets/storage-drawers.jpg"
-      },
-      "layers": [
-        {
-          "role": "drawers",
-          "depth": 0.14,
-          "anchor": "fill"
-        }
-      ],
-      "props": [
-        {
-          "kind": "card",
-          "text": "fifty years",
-          "heading": "FIFTY YEARS",
-          "lines": [
-            "nobody looked inside"
-          ],
-          "width": 540,
-          "x": 605,
-          "y": 1075,
-          "depth": 0.85,
-          "rotate": -5,
-          "from": 0
-        }
-      ],
+      "assets": {},
+      "layers": [],
+      "props": [],
       "params": {
         "anchorX": 540,
         "anchorY": 1056,
-        "pushFrom": 1.47,
-        "pushTo": 1.03,
-        "pushEndFrame": 70,
+        "pushFrom": 1.04,
+        "pushTo": 1.47,
+        "pushEndFrame": 69,
         "accent": "#c8d94a",
+        "field": "spotlight",
+        "fieldColours": [
+          "#44503a",
+          "#242c1e",
+          "#0d100a"
+        ],
+        "glowX": -290,
+        "glowY": 381,
+        "glowSize": 434,
+        "glowIntensity": 0.42,
+        "glowWarm": "#c8d94a",
+        "glowDepth": 0.1,
         "caption": [
           "for fifty years",
           "before anyone",
@@ -453,24 +443,22 @@
         "captionY": 230,
         "captionSize": 76,
         "captionAlign": "left",
-        "captionFrame": 37,
+        "captionFrame": 6,
         "captionEvery": 8,
         "captionScrim": 0.5,
-        "glowX": -343,
-        "glowY": 399,
-        "glowSize": 445,
-        "glowIntensity": 0.48,
-        "glowWarm": "#c8d94a",
-        "glowDepth": 0.14,
-        "focusPx": 7,
-        "fog": 0.21,
+        "focusPx": 0,
+        "fog": 0,
         "handheld": 1.5,
-        "panX": 196,
-        "panY": -19,
         "captionEmphasis": "fifty years",
-        "captionReveal": "rise",
-        "captionMark": "none",
-        "captionWordEvery": 4
+        "captionReveal": "punch",
+        "captionMark": "highlight",
+        "captionWordEvery": 4,
+        "shakeAt": [
+          63
+        ],
+        "shakeAmount": 16,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
       }
     },
     {
@@ -480,35 +468,36 @@
       "durationInFrames": 58,
       "transition": {
         "kind": "rack",
-        "frames": 11
+        "frames": 4
       },
       "assets": {
-        "wall": "assets/lab-wall.jpg",
         "photo": "assets/mechanism-xray.jpg"
       },
       "params": {
-        "frameWidth": 829,
-        "frameRatio": 0.97,
+        "frameWidth": 835,
+        "frameRatio": 1.1,
         "pushEndFrame": 17,
         "detachFrame": 28,
         "throughEndFrame": 38,
-        "weldRatio": 0.428,
-        "wallScaleEnd": 5,
+        "weldRatio": 0.363,
+        "wallScaleEnd": 5.4,
         "accent": "#c8d94a",
         "caption": [
           "thirty gears",
           "cut by hand"
         ],
         "captionX": 84,
-        "captionY": 1509,
+        "captionY": 1283,
         "captionFrame": 36,
-        "captionEvery": 11,
-        "captionSize": 88,
+        "captionEvery": 9,
+        "captionSize": 92,
         "captionRecedeAt": 40,
         "captionEmphasis": "thirty gears",
         "captionReveal": "punch",
-        "captionMark": "highlight",
-        "captionWordEvery": 2
+        "captionMark": "underline",
+        "captionWordEvery": 3,
+        "cameraMove": "hold",
+        "cameraPurpose": "a vertical reveal — height, depth, or a drop"
       },
       "props": [
         {
@@ -530,20 +519,10 @@
       "sceneType": "composite",
       "voText": "cut by hand, meshing.",
       "durationInFrames": 57,
-      "transition": {
-        "kind": "slam",
-        "frames": 7
-      },
       "assets": {
-        "wall": "assets/lab-wall.jpg",
         "photo": "assets/mechanism-xray.jpg"
       },
       "layers": [
-        {
-          "role": "wall",
-          "depth": 0.06,
-          "anchor": "fill"
-        },
         {
           "role": "photo",
           "depth": 1,
@@ -567,9 +546,9 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.37,
-        "pushTo": 1.06,
-        "pushEndFrame": 54,
+        "pushFrom": 1.19,
+        "pushTo": 1.22,
+        "pushEndFrame": 55,
         "accent": "#c8d94a",
         "caption": [
           "cut by hand, meshing"
@@ -581,31 +560,32 @@
         "captionFrame": 31,
         "captionEvery": 7,
         "captionScrim": 0.3,
-        "glowX": -249,
-        "glowY": 560,
-        "glowSize": 321,
-        "glowIntensity": 0.54,
+        "glowX": -256,
+        "glowY": 319,
+        "glowSize": 368,
+        "glowIntensity": 0.56,
         "glowWarm": "#c8d94a",
-        "glowDepth": 0.06,
-        "focusPx": 8,
-        "fog": 0.38,
+        "glowDepth": 1,
+        "focusPx": 0,
+        "fog": 0,
         "handheld": 1.5,
-        "panX": 137,
-        "panY": 18,
+        "panY": -153,
         "captionEmphasis": "meshing",
-        "captionReveal": "punch",
-        "captionMark": "highlight",
-        "captionWordEvery": 4
+        "captionReveal": "blur",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "tilt",
+        "cameraPurpose": "a vertical reveal — height, depth, or a drop"
       }
     },
     {
       "id": "s05-moon",
       "sceneType": "composite",
-      "voText": "It predicted eclipses,",
-      "durationInFrames": 41,
+      "voText": "It predicted eclipses, and it tracked the moon's changing speed.",
+      "durationInFrames": 136,
       "transition": {
-        "kind": "rack",
-        "frames": 11
+        "kind": "slip",
+        "frames": 9
       },
       "assets": {
         "sky": "assets/moon-sky.jpg"
@@ -628,7 +608,7 @@
           "y": 845,
           "depth": 0.5,
           "rotate": 0,
-          "from": 14
+          "from": 48
         }
       ],
       "params": {
@@ -636,117 +616,50 @@
         "anchorY": 960,
         "pushFrom": 1,
         "pushTo": 1.22,
-        "pushEndFrame": 35,
-        "glowX": -242,
-        "glowY": 266,
-        "glowSize": 361,
-        "glowIntensity": 0.56,
+        "pushEndFrame": 117,
+        "glowX": -389,
+        "glowY": 172,
+        "glowSize": 510,
+        "glowIntensity": 0.69,
         "glowWarm": "#c8d94a",
         "glowDepth": 0.08,
         "focusPx": 0,
-        "fog": 0.18,
+        "fog": 0,
         "caption": [
-          "It predicted eclipses"
-        ],
-        "captionX": 76,
-        "captionY": 1459,
-        "captionSize": 78,
-        "captionAlign": "left",
-        "captionFrame": 6,
-        "captionEvery": 8,
-        "captionScrim": 0.42,
-        "captionRecedeAt": 30,
-        "accent": "#c8d94a",
-        "handheld": 1.5,
-        "panY": -41,
-        "roll": -0.23,
-        "captionEmphasis": "predicted",
-        "captionReveal": "rise",
-        "captionMark": "underline",
-        "captionWordEvery": 2
-      }
-    },
-    {
-      "id": "s05-moon-b",
-      "sceneType": "composite",
-      "voText": "and it tracked the moon's changing speed.",
-      "durationInFrames": 95,
-      "transition": {
-        "kind": "slip",
-        "frames": 10
-      },
-      "assets": {
-        "sky": "assets/moon-sky.jpg"
-      },
-      "layers": [
-        {
-          "role": "sky",
-          "depth": 0.08,
-          "anchor": "fill"
-        }
-      ],
-      "props": [
-        {
-          "kind": "wire",
-          "text": "eclipses",
-          "shape": "circle",
-          "colour": "#c8d94a",
-          "width": 540,
-          "x": 540,
-          "y": 845,
-          "depth": 0.5,
-          "rotate": 0,
-          "from": 0
-        },
-        {
-          "kind": "beam",
-          "depth": 0.21,
-          "x": 238,
-          "y": 0,
-          "width": 373,
-          "from": 81,
-          "opacity": 0.71
-        }
-      ],
-      "params": {
-        "anchorX": 540,
-        "anchorY": 960,
-        "pushFrom": 1.36,
-        "pushTo": 1.08,
-        "pushEndFrame": 89,
-        "accent": "#c8d94a",
-        "caption": [
-          "and it tracked",
-          "the moon's",
+          "It predicted",
+          "eclipses, and it",
+          "tracked the moon's",
           "changing speed"
         ],
         "captionX": 76,
-        "captionY": 1459,
+        "captionY": 1365.6480000000001,
         "captionSize": 78,
         "captionAlign": "left",
-        "captionFrame": 14,
+        "captionFrame": 20,
         "captionEvery": 8,
         "captionScrim": 0.42,
-        "glowX": -315,
-        "glowY": 378,
-        "glowSize": 368,
-        "glowIntensity": 0.53,
-        "glowWarm": "#c8d94a",
-        "glowDepth": 0.08,
-        "focusPx": 12,
-        "fog": 0.17,
+        "captionRecedeAt": 98,
+        "accent": "#c8d94a",
         "handheld": 3,
-        "captionEmphasis": "changing",
+        "captionEmphasis": "predicted",
         "captionReveal": "blur",
         "captionMark": "none",
-        "captionWordEvery": 3
+        "captionWordEvery": 2,
+        "mark": "underline",
+        "markX": 76,
+        "markY": 1753,
+        "markWidth": 778,
+        "markHeight": 10,
+        "markFrame": 81,
+        "cameraMove": "push",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
       }
     },
     {
       "id": "s06-verdict",
       "sceneType": "title-slate",
-      "voText": "Nothing this complex was built again",
-      "durationInFrames": 78,
+      "voText": "Nothing this complex was built again for fourteen hundred years.",
+      "durationInFrames": 130,
       "gradeOverride": {
         "saturate": 0.5,
         "contrast": 1.16,
@@ -754,19 +667,17 @@
       },
       "transition": {
         "kind": "flare",
-        "frames": 6
+        "frames": 5
       },
-      "assets": {
-        "background": "assets/deep-green.jpg"
-      },
+      "assets": {},
       "params": {
-        "scrim": 0.5,
+        "scrim": 0.37,
         "kicker": "1901 · 1951",
         "title": "FOURTEEN HUNDRED",
         "footer": "years before anything like it",
-        "titleFrame": 6,
+        "titleFrame": 10,
         "titleSize": 230,
-        "creep": 1.058,
+        "creep": 1.041,
         "accent": "#c8d94a",
         "field": "grid",
         "fieldColours": [
@@ -783,77 +694,21 @@
           "FIFTY",
           "TWENTY"
         ],
-        "spinFrames": 31,
-        "mark": "strike",
-        "markX": 302,
-        "markY": 738,
-        "markWidth": 571,
-        "markHeight": 176,
-        "markFrame": 66
+        "spinFrames": 52,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
       },
-      "props": []
-    },
-    {
-      "id": "s06-verdict-b",
-      "sceneType": "composite",
-      "voText": "for fourteen hundred years.",
-      "durationInFrames": 52,
-      "transition": {
-        "kind": "rack",
-        "frames": 12
-      },
-      "assets": {
-        "background": "assets/deep-green.jpg"
-      },
-      "layers": [
-        {
-          "role": "background",
-          "depth": 0.08,
-          "anchor": "fill"
-        }
-      ],
       "props": [
         {
           "kind": "wire",
-          "depth": 0.72,
-          "x": 799,
-          "y": 719,
-          "width": 391,
-          "from": 44,
+          "depth": 0.78,
+          "x": 540,
+          "y": 816,
+          "width": 536,
+          "from": 54,
           "shape": "diamond"
         }
-      ],
-      "params": {
-        "anchorX": 799,
-        "anchorY": 576,
-        "pushFrom": 1.37,
-        "pushTo": 1.02,
-        "pushEndFrame": 49,
-        "accent": "#c8d94a",
-        "caption": [
-          "for fourteen hundred years"
-        ],
-        "captionX": 84,
-        "captionY": 1050,
-        "captionSize": 70,
-        "captionAlign": "left",
-        "captionFrame": 4,
-        "captionEvery": 7,
-        "captionScrim": 0.34,
-        "glowX": -311,
-        "glowY": 197,
-        "glowSize": 387,
-        "glowIntensity": 0.5,
-        "glowWarm": "#c8d94a",
-        "glowDepth": 0.08,
-        "focusPx": 13,
-        "fog": 0.44,
-        "handheld": 1.5,
-        "captionEmphasis": "fourteen hundred years",
-        "captionReveal": "rise",
-        "captionMark": "none",
-        "captionWordEvery": 2
-      }
+      ]
     }
   ]
 }

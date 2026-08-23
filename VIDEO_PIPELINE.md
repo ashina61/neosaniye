@@ -82,6 +82,60 @@ look finished.
 
 ---
 
+## 2b. THE DECISION LAYER — story, assets, art direction
+
+Between the script and the animation sit four judgements the pipeline used to
+skip. They run inside `npm run plan`, before a single coordinate is derived.
+
+**The Story Brain** (`scripts/lib/story.mjs`) reads each line as an editorial
+beat — HOOK · CONTEXT · DISCOVERY · EVIDENCE · DETAIL · ESCALATION · REVEAL ·
+COMPARISON · MYSTERY · PAYOFF · VERDICT — and writes down the visual idea and
+what the viewer must notice. A hook and a verdict are not the same object with
+different words in them, and until something says which is which the middle of
+every reel is identical.
+
+**The Asset Director** (`scripts/lib/assetdirector.mjs`) scores every picture
+against the ROLE it plays, on ten axes. Five are measured from the file
+(resolution, exposure, contrast, how much survives a 9:16 crop, whether there is
+enough structure to push into); five are semantic and live in a reviewed ledger,
+`episodes/<id>/assets.review.json`, because whether a cabinet is a MUSEUM
+cabinet is not in the histogram.
+
+**Semantics gate the score.** A beautifully exposed, perfectly croppable
+photograph of the wrong thing is not a 7 — it is unusable, and averaging it with
+five green technical axes is exactly how a Victorian sideboard shipped as museum
+storage. Four verdicts:
+
+| verdict | what happens |
+| --- | --- |
+| `use` | it goes in |
+| `warn` | it goes in and the run says why it is weak, every time |
+| `recast` | it is moved to the role — or the line — it actually illustrates |
+| `reject` | it is removed, and an `ASSET_REQUIRED` brief is written |
+
+A refusal is a **result**. The line becomes a typographic shot on a drawn field
+rather than a wrong photograph with motion on it.
+
+```bash
+npm run assets:audit -- --episode=<id>              # score everything
+npm run assets:audit -- --episode=<id> --template   # write a review skeleton
+```
+
+**The Visual Director** (`scripts/lib/visual.mjs`) states PRIMARY / SECONDARY /
+BACKGROUND for every shot, picks a framing under a quota so a reel is not twelve
+centred medium shots, and holds type to four semantic roles — statement, body,
+label, figure.
+
+**The Camera and Transition Directors** (`scripts/lib/director.mjs`) choose from
+what the beat is doing and then answer to a quota counted across the whole reel:
+no camera family over ~30%, no transition over ~25%, nothing that blanks the
+frame on a short shot, and no arrival allowed to eat more than an eighth of the
+shot it opens.
+
+Every judgement is written to `episodes/<id>/director-report.json`.
+
+---
+
 ## 3. SCENE PLAN — `episodes/<id>/scene-config.json`
 
 ```bash
@@ -174,7 +228,7 @@ npm test                                            # ~3s
 npm run frames -- --episode=<id> [--per=2]          # ~1 min
 ```
 
-**`validate`** answers two different questions.
+**`validate`** answers three different questions.
 
 *Will it render* — schema, scene types, every asset on disk and non-empty, audio
 present. This exists to fail in three seconds instead of three minutes.
@@ -186,6 +240,19 @@ scaled. So the second half looks for shots where nothing happens, events
 scheduled after the cut, captions outside the safe area, one-layer composites,
 emphasis words that are not in their caption, and devices used three shots
 running.
+
+*Was anything decided* — `critiqueDirection` and `qualityGates`, reading the
+director's log. A picture still in the cut with a failing score, a hook resting
+on a weak plate, a verdict split across two shots, a graphic repeating the
+narration, a device carrying the reel, two shots of one plate with the same
+framing and the same move. It ends in seven scores, and a reel below 7 on any of
+them is reported NOT PRODUCTION READY with the failing axis named:
+
+```
+gates   assetRelevance 7.6 · visualHierarchy 10 · motionDesign 7.8 ·
+        cameraDiversity 8.6 · transitionQuality 9.1 · visualContinuity 10 ·
+        professionalism 8.7
+```
 
 **Errors** fail the run and are things that cannot be intended — a caption at
 frame 69 of a 58-frame shot, a four-second shot with no events at all.

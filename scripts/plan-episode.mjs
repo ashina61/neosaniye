@@ -32,12 +32,23 @@
  *
  *   node scripts/plan-episode.mjs --episode=mansa-musa
  */
-import {readFile, rm, writeFile} from 'node:fs/promises';
+import {readFile, readdir, rm, writeFile} from 'node:fs/promises';
+import sharp from 'sharp';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {episodeDir, parseArgs} from './lib/episode.mjs';
 import {PROP_KINDS} from '../engine/schema.mjs';
-import {directShot, emphasisOf} from './lib/director.mjs';
+import {
+  atmosphereFor,
+  clampArrival,
+  directCamera,
+  directShot,
+  directTransition,
+  emphasisOf,
+} from './lib/director.mjs';
+import {endingStrategy, hookStrategy, readScript, rhythmFor} from './lib/story.mjs';
+import {colourCentre, judge, loadReview, measureAsset} from './lib/assetdirector.mjs';
+import {directFraming, graphicJustified, hierarchyFor, labelFor} from './lib/visual.mjs';
 
 const FPS = 30;
 const WIDTH = 1080;
@@ -1309,9 +1320,43 @@ function buildStack({line, ground, rand, groundDepth, spread = 0, cutouts = fals
  * 1.0, focus hunts, caption at 0.2" gets exactly that; the pass only fills in
  * what nobody wrote. That is this repo's first law applied one level up.
  */
+/**
+ * THE GROUND UNDER A TYPOGRAPHIC SHOT.
+ *
+ * A drawn field is the whole picture in a shot with no photograph, so it cannot
+ * be the reel's darkest preset — a near-black grid under cream type is not a
+ * designed frame, it is a fade-out somebody put words on. The two fields with a
+ * lit centre give the type something to sit on and the camera something to move
+ * against, and a little drawn light off the episode's own side finishes it.
+ */
+function graphicGround(look) {
+  return {
+    field: look.field === 'grid' || look.field === 'paper' ? 'spotlight' : look.field,
+    fieldColours: look.fieldColours,
+    glowX: look.side > 0 ? Math.round(WIDTH * 1.06) : Math.round(-WIDTH * 0.06),
+    glowY: Math.round(HEIGHT * 0.22),
+    glowSize: 460,
+    glowIntensity: 0.42,
+    glowWarm: look.accent,
+    glowDepth: 0.1,
+  };
+}
+
 const CAMERA_TEMPLATES = new Set(['composite', 'parallax-punch']);
 
-function applyDirection({scene, line, index, total, rand, look, recent, durationInFrames, isContinuation = false}) {
+function applyDirection({
+  scene,
+  line,
+  index,
+  total,
+  rand,
+  look,
+  recent,
+  durationInFrames,
+  isContinuation = false,
+  read = null,
+  quota = {camera: {}, transition: {}, framing: {}},
+}) {
   const params = scene.params ?? (scene.params = {});
   const caption = Array.isArray(params.caption) ? params.caption : [];
   const props = scene.props ?? [];
@@ -1319,17 +1364,70 @@ function applyDirection({scene, line, index, total, rand, look, recent, duration
 
   // WHAT THE SHOT ALREADY DOES, most important first. The caption is why the
   // shot is as long as it is, so it never queues behind a decoration.
+  /**
+   * A GRAPHIC MUST NOT SAY WHAT THE CAPTION IS ALREADY SAYING.
+   *
+   * The narration said "for fifty years nobody looked inside", a card said
+   * "FIFTY YEARS / nobody looked inside", and the caption said "for FIFTY YEARS
+   * before anyone looked inside" — one sentence, three times, in three
+   * typefaces. That is not emphasis; it is an echo, and it costs the graphic
+   * its only real job, which is to carry what a voice cannot: the apparatus. A
+   * date range, a place, an accession number.
+   *
+   * So an echoing prop keeps its LABEL and loses its sentence. Where the label
+   * itself is the echo, the apparatus replaces it, and where there is no
+   * apparatus to be had the prop goes — an object with nothing to say is one of
+   * the two things this repo's second law forbids.
+   */
+  if (caption.length) {
+    const capWords = new Set(caption.join(' ').toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? []);
+    const echo = (text) => {
+      const own = String(text ?? '').toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [];
+      return own.filter((w) => w.length > 3 && capWords.has(w)).length >= 2;
+    };
+    scene.props = props.filter((prop) => {
+      if (prop.kind === 'wire' || prop.kind === 'beam') return true;
+      const sentence = [prop.text, ...(prop.lines ?? [])].filter(Boolean).join(' ');
+      if (!echo(sentence) && !echo(prop.heading)) return true;
+      if (prop.lines) delete prop.lines;
+      if (echo(prop.text)) delete prop.text;
+      const label = labelFor({vo: scene.voText ?? '', kicker: line?.kicker, place: line?.place});
+      if (label && !echo(label)) {
+        prop.heading = label.toUpperCase();
+        return true;
+      }
+      // The heading survives only if it is a label rather than a sentence.
+      return Boolean(prop.heading) && String(prop.heading).split(/\s+/).length <= 3 && !echo(prop.heading);
+    });
+  }
+
+
+  const kept = scene.props ?? props;
   const wants = [];
   if (caption.length) wants.push('caption');
   // A CARD IS AN EVENT AND IT OWNS THE OPENING BEAT. Left out of the list, the
   // slate's title and a filler mark were both scheduled at frame six — one
   // beat wearing two hats, on the shot that closes the reel.
   if (params.title || params.kicker) wants.push('slate');
-  props.forEach((_, i) => wants.push(`prop${i}`));
+  kept.forEach((_, i) => wants.push(`prop${i}`));
   if (params.motif) wants.push('motif');
   if (params.mark) wants.push('mark');
 
   const plan = directShot({durationInFrames, index, total, rand, wants, recent, fps: FPS});
+
+  /**
+   * A HELD BEAT STOPS ADDING THINGS.
+   *
+   * The hold is not empty time — it is the shot continuing with nothing NEW in
+   * it, which is what lets a claim land. So the events are compressed into the
+   * front of the shot and the tail is left alone. Without this a verdict keeps
+   * introducing wireframes and marks over the sentence it is supposed to be
+   * letting the viewer read.
+   */
+  if (read?.hold && durationInFrames > 60) {
+    const tail = Math.round(durationInFrames * 0.62);
+    for (const key of Object.keys(plan.at)) plan.at[key] = Math.min(plan.at[key], tail);
+  }
   // The slate's own copy lands on the beat the schedule gave it.
   if (plan.at.slate !== undefined && params.titleFrame !== undefined) {
     params.titleFrame = Math.max(4, plan.at.slate);
@@ -1356,8 +1454,43 @@ function applyDirection({scene, line, index, total, rand, look, recent, duration
    * around the written one instead of replacing it.
    */
   const wroteCamera = written.camera?.from !== undefined || written.camera?.to !== undefined;
-  const camera = {...plan.camera};
-  if (wroteCamera || isContinuation) {
+
+  /**
+   * THE CAMERA IS CHOSEN FOR A REASON, AND UNDER A QUOTA.
+   *
+   * `directShot`'s move was picked from a list with a three-in-a-row guard, and
+   * eight of the last reel's ten moves came out as pull-backs — because every
+   * continuation forced one and nothing counted the total. A sliding window of
+   * three cannot see a device used eighty per cent of the time.
+   *
+   * So the move now comes from what the BEAT is doing (a reveal pushes, a
+   * verdict holds), no family may take more than about a third of the reel, and
+   * two shots of one picture may not repeat the move — which is what makes the
+   * second one a new shot rather than the first one again.
+   */
+  const directed = directCamera({
+    beat: read?.beat ?? 'CONTEXT',
+    rand,
+    durationInFrames,
+    used: quota.camera,
+    total,
+    share: 0.25,
+    intensity: plan.intensity,
+    impactAt: plan.camera.shakeAt?.[0] ?? null,
+    reframeFrom: isContinuation ? recent.camera[recent.camera.length - 1] ?? null : null,
+    sameSubject: isContinuation,
+  });
+  const camera = {...directed.params};
+  /**
+   * A WRITTEN CAMERA DESCRIBES THE LINE'S OWN SHOT, NOT ITS CONTINUATIONS.
+   *
+   * The brief says how this line is seen; it says nothing about the second and
+   * third angles the cut invents to hold that line. Letting the written move
+   * cover them meant every continuation fell back to the planner's alternating
+   * pull-back — seven pull-backs in twelve shots, and the quota never saw them
+   * because the quota was never consulted.
+   */
+  if (wroteCamera && !isContinuation) {
     delete camera.pushFrom;
     delete camera.pushTo;
     delete camera.pushEndFrame;
@@ -1374,6 +1507,61 @@ function applyDirection({scene, line, index, total, rand, look, recent, duration
     for (const key of ['panX', 'panY', 'roll', 'handheld', 'shakeAt', 'shakeAmount']) delete camera[key];
   }
   Object.assign(params, camera);
+
+  /**
+   * HOW THE SHOT ARRIVES — motivated, capped, and never blank.
+   *
+   * `rack` was on five of eleven cuts in the last reel: forty-five per cent of
+   * it arriving out of focus. `blinds` opened a two-second shot on a completely
+   * black frame and `flare` opened another on a white one, each eating a fifth
+   * of a shot before anything could be seen. None of that is caught by a rule
+   * about consecutive repeats.
+   *
+   * A written `shot.cut` still wins — the sentence that asked for a slam gets
+   * its slam — but everything derived now answers to the beat and the quota.
+   */
+  if (index > 0 && (!written.cut || isContinuation)) {
+    const arrival = directTransition({
+      beat: read?.beat ?? 'CONTEXT',
+      rand,
+      durationInFrames,
+      used: quota.transition,
+      total,
+      previous: recent.transition ?? [],
+    });
+    scene.transition = arrival.kind === 'cut' ? undefined : {kind: arrival.kind, frames: arrival.frames};
+    quota.transition[arrival.kind] = (quota.transition[arrival.kind] ?? 0) + 1;
+    (recent.transition ??= []).push(arrival.kind);
+    plan.transitionKind = arrival.kind;
+    plan.transitionPurpose = arrival.purpose;
+  } else if (scene.transition) {
+    // An authored arrival keeps its character and loses its excess.
+    const kept = clampArrival(scene.transition.kind, scene.transition.frames ?? 10, durationInFrames);
+    scene.transition = {...scene.transition, frames: kept};
+    quota.transition[scene.transition.kind] = (quota.transition[scene.transition.kind] ?? 0) + 1;
+    (recent.transition ??= []).push(scene.transition.kind);
+  }
+
+  /**
+   * ATMOSPHERE AND FOCUS NEED A REASON.
+   *
+   * Fog was on all twelve shots and a focus hunt on eight. A haze in every
+   * frame is not atmosphere, it is why the whole reel was grey; a lens that
+   * hunts in every shot is not a lens, it is a filter. Both are now bounded by
+   * the shot's own length and refuse to stack on a soft arrival.
+   */
+  if (CAMERA_TEMPLATES.has(scene.sceneType)) {
+    const air = atmosphereFor({
+      vo: scene.voText ?? '',
+      beat: read?.beat ?? 'CONTEXT',
+      durationInFrames,
+      transitionKind: scene.transition?.kind,
+      rand,
+    });
+    params.focusPx = air.focusPx;
+    params.fog = air.fog;
+    plan.fogReason = air.fogReason;
+  }
 
   // WHEN THE WORDS ARRIVE, and which one the line is for. A caption placed by
   // hand keeps its frame; the emphasis is picked either way, because nothing
@@ -1432,7 +1620,7 @@ function applyDirection({scene, line, index, total, rand, look, recent, duration
 
   // EVERY DRAWN OBJECT ON ITS OWN BEAT. Two cards landing on the same frame are
   // one event with a thickness; a beat apart they are two things happening.
-  props.forEach((prop, i) => {
+  kept.forEach((prop, i) => {
     const at = plan.at[`prop${i}`];
     if (at !== undefined && written.props?.[i]?.at === undefined) prop.from = at;
   });
@@ -1452,16 +1640,43 @@ function applyDirection({scene, line, index, total, rand, look, recent, duration
   for (const kind of plan.fill) {
     const at = plan.at[kind];
     if (kind === 'mark' && !params.mark) {
-      Object.assign(params, {
-        mark: look.mark,
-        markX: Math.round(WIDTH * between(rand, [0.1, 0.34])),
-        markY: Math.round(HEIGHT * between(rand, [0.3, 0.66])),
-        markWidth: Math.round(WIDTH * between(rand, [0.34, 0.56])),
-        markHeight: Math.round(HEIGHT * between(rand, [0.05, 0.12])),
-        markFrame: at,
-      });
+      /**
+       * A MARK IS MADE ON SOMETHING.
+       *
+       * Placed at a random x and y it is a yellow line lying in the middle of
+       * the frame under nothing — which fails the only test a graphic has to
+       * pass: it explains, measures, locates, highlights or connects, or it
+       * comes out. So it attaches: under the words when there are words, and
+       * around the subject when there are not.
+       */
+      const lines = caption.length;
+      const size = Number(params.captionSize) || 82;
+      Object.assign(
+        params,
+        lines
+          ? {
+              mark: 'underline',
+              markX: Math.round(Number(params.captionX) || 84),
+              markY: Math.round((Number(params.captionY) || 300) + lines * size * 1.24),
+              markWidth: Math.round(Math.min(WIDTH * 0.72, size * 0.58 * Math.max(...caption.map((l) => l.length)))),
+              markHeight: 10,
+              markFrame: at,
+            }
+          : {
+              mark: look.mark === 'underline' ? 'oval' : look.mark,
+              markX: Math.round((Number(params.anchorX) || WIDTH * 0.5) - WIDTH * 0.22),
+              markY: Math.round((Number(params.anchorY) || HEIGHT * 0.5) - HEIGHT * 0.1),
+              markWidth: Math.round(WIDTH * 0.44),
+              markHeight: Math.round(HEIGHT * 0.16),
+              markFrame: at,
+            },
+      );
       continue;
     }
+    // A SHAFT OF LIGHT IS THE FALLOFF OF A SOURCE. With no source in the shot
+    // it proves nothing and reads as a smear on the lens, which is the test a
+    // decorative graphic fails.
+    if (kind === 'beam' && !(Number(params.glowSize) > 0)) continue;
     if ((kind === 'wire' || kind === 'beam') && !props.some((p) => p.kind === kind)) {
       // A wireframe closes on the SUBJECT, so it goes near the anchor the whole
       // stack is scaling about; a beam comes from wherever the light does,
@@ -1505,7 +1720,22 @@ function applyDirection({scene, line, index, total, rand, look, recent, duration
         : from - to > 0.06
           ? 'pull'
           : 'hold';
-  recent.camera.push(CAMERA_TEMPLATES.has(scene.sceneType) ? actual : plan.cameraKind);
+  /**
+   * RECORD THE DECISION; DO NOT MAKE ANYONE INFER IT.
+   *
+   * A drift sets a small scale change and a vertical travel, and any classifier
+   * reading `pushTo - pushFrom` calls that a push — so the reel reported sixty
+   * per cent pushes while the director had spent two. Every downstream check
+   * was then arguing with a measurement rather than with a choice. The engine
+   * ignores this param; the report and the critique read it instead of guessing.
+   */
+  const family = CAMERA_TEMPLATES.has(scene.sceneType) ? actual : directed.kind;
+  params.cameraMove = wroteCamera && !isContinuation ? actual : directed.kind;
+  params.cameraPurpose = directed.purpose;
+  quota.camera[params.cameraMove] = (quota.camera[params.cameraMove] ?? 0) + 1;
+  recent.camera.push(params.cameraMove);
+  plan.cameraKind = directed.kind;
+  plan.cameraPurpose = directed.purpose;
   recent.reveal.push(plan.reveal);
   recent.mark.push(plan.emphasisMark);
   recent.fillers.push(...plan.fill);
@@ -1537,6 +1767,8 @@ function planContinuation({line, index, part, fragment, frames: measured, rand, 
   // had and loses every plate the director put in the frame.
   const {assets, layers, groundDepth} = line?.shot?.layers?.length
     ? directedStack({shot: line.shot, rand, durationInFrames: frames})
+    : line.graphicsOnly
+    ? {assets: {}, layers: [], groundDepth: 0.1}
     : buildStack({
     line,
     ground: plate ?? `assets/${assetBase}-bg.png`,
@@ -1603,6 +1835,7 @@ function planContinuation({line, index, part, fragment, frames: measured, rand, 
       pushTo: pullBack ? round(between(rand, [1.02, 1.1]), 2) : round(between(rand, [1.3, 1.48]), 2),
       pushEndFrame: Math.round(frames * 0.94),
       accent: look.accent,
+      ...(line.graphicsOnly ? graphicGround(look) : {}),
       caption: lines,
       ...captionPlacement({shot: line.shot, rand, durationInFrames: frames, lines}),
       // A CONTINUATION IS A SHOT, NOT A SLIDE. Its params used to carry the
@@ -1675,7 +1908,9 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
     // named its own — the closing card asked for a file the brief never had.
     scene.assets = line?.shot?.layers?.length
       ? directedStack({shot: line.shot, rand, durationInFrames}).assets
-      : {background: backdrop};
+      : line.graphicsOnly
+        ? {}
+        : {background: backdrop};
     // A hand-written title can BE the number — "TWELVE YEARS" — and the old
     // rule only looked at the voiceover on the `number` beat, so a slate whose
     // whole point was a figure got neither the count nor the spin.
@@ -1760,7 +1995,9 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
     // named its own — the closing card asked for a file the brief never had.
     scene.assets = line?.shot?.layers?.length
       ? directedStack({shot: line.shot, rand, durationInFrames}).assets
-      : {background: backdrop};
+      : line.graphicsOnly
+        ? {}
+        : {background: backdrop};
     const items = (line.items ?? []).slice(0, 3);
     scene.params = {
       bgScale: round(between(rand, [1.05, 1.12]), 3),
@@ -1825,15 +2062,26 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
     // refused for handing over six photographs.
     // A DIRECTED SHOT WINS. Same law as the props: what somebody thought about
     // beats what a rule derived, and the rule is only the fallback.
+    /**
+     * NO PICTURE IS NOT NO SHOT.
+     *
+     * A line whose plates the asset director refused used to fall through to a
+     * derived `sNN-bg.png` — a file name for a photograph nobody had — so a
+     * refusal produced a broken render instead of a decision. Now it produces
+     * a DRAWN GROUND, and the shot becomes what it should have been all along:
+     * a typographic shot that states the thing the reel cannot show.
+     */
     const stack = line?.shot?.layers?.length
       ? directedStack({shot: line.shot, rand, durationInFrames})
-      : buildStack({
-          line,
-          ground: backdrop,
-          rand,
-          cutouts,
-          groundDepth: round(between(rand, [0.04, 0.12]), 2),
-        });
+      : line.graphicsOnly
+        ? {assets: {}, layers: [], groundDepth: 0.1}
+        : buildStack({
+            line,
+            ground: backdrop,
+            rand,
+            cutouts,
+            groundDepth: round(between(rand, [0.04, 0.12]), 2),
+          });
     scene.assets = stack.assets;
     scene.layers = stack.layers;
     // THE OTHER FOURTEEN ASSETS, DRAWN. See planProps: the reference reel is
@@ -1866,6 +2114,7 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
        */
       // The emphasis is chosen BEFORE the breaks, so the breaks can be chosen
       // around it: a figure split across two lines cannot be emphasised.
+      ...(line.graphicsOnly ? graphicGround(look) : {}),
       caption: line.caption?.length
         ? line.caption
         : captionLines(fragment ?? line.vo, line.emphasis ?? emphasisOf(fragment ?? line.vo)),
@@ -1989,6 +2238,215 @@ async function main() {
   // buildStack: the brief still names them, nothing places them until this is on.
   const cutouts = brief.cutouts === true;
 
+  /**
+   * THE STORY BRAIN READS THE SCRIPT BEFORE ANYTHING IS PLANNED.
+   *
+   * Beat, pace, whether the beat wants air after it, what the viewer is meant
+   * to notice. Everything below reasons about THIS rather than about the
+   * sentence, because a sentence does not tell you whether it is a hook or a
+   * verdict and those are not the same shot.
+   */
+  const story = readScript(brief.lines, {emphasisOf});
+
+  /**
+   * THE ASSET DIRECTOR RUNS BEFORE THE FIRST SHOT IS CHOSEN.
+   *
+   * Not after, and not as a warning. A refused plate changes what KIND of shot
+   * the line becomes — a photograph-less line is a typographic shot, not a
+   * broken one — and that decision has to be available while the shot is being
+   * designed rather than reported once it is too late to act on.
+   */
+  const assetDir = path.join(dir, 'assets');
+  const files = await readdir(assetDir).then((all) => all.filter((f) => /\.(png|jpe?g|webp)$/i.test(f))).catch(() => []);
+  const reviewLedger = await loadReview(dir);
+  const measured = {};
+  for (const file of files) {
+    measured[file] = await measureAsset(sharp, path.join(assetDir, file), {width: WIDTH, height: HEIGHT});
+  }
+  const centre = colourCentre(measured);
+
+  /** Which role each file is being asked to play, read off the brief. */
+  const roleOf = {};
+  for (const line of brief.lines) {
+    for (const layer of line?.shot?.layers ?? []) {
+      const name = String(layer.asset ?? '').split(/[\\/]/).pop();
+      if (name) roleOf[name] = String(layer.role ?? 'plate');
+    }
+  }
+
+  const assetVerdicts = {};
+  for (const file of files) {
+    const line = brief.lines.find((l) => (l?.shot?.layers ?? []).some((y) => String(y.asset ?? '').endsWith(file)));
+    const read = line ? story[brief.lines.indexOf(line)] : null;
+    assetVerdicts[file] = judge({
+      file,
+      role: roleOf[file] ?? '(unused)',
+      kind: (line?.shot?.layers ?? []).find((y) => String(y.asset ?? '').endsWith(file))?.kind ?? 'backdrop',
+      measured: measured[file],
+      reviewed: reviewLedger[file],
+      idea: read?.idea,
+      notice: read?.notice,
+      episodeColour: centre,
+    });
+  }
+  /**
+   * A REFUSAL IS A RESULT.
+   *
+   * The rejected set is consulted when the stack is built, so the layer is
+   * never placed at all — as opposed to being placed and then apologised for.
+   */
+  const rejectedAssets = new Set(
+    Object.values(assetVerdicts).filter((v) => v.verdict === 'reject').map((v) => v.file),
+  );
+  const assetBriefs = Object.values(assetVerdicts)
+    .filter((v) => v.brief)
+    .map((v) => v.brief);
+
+  /**
+   * THE DECISION IS APPLIED TO THE BRIEF, BEFORE ANYTHING IS PLANNED.
+   *
+   * This is the ordering the whole second stage turns on. An asset decision
+   * that arrives after the shot has been designed can only ever be a warning
+   * printed next to a finished frame; applied here, a refusal actually changes
+   * what kind of shot the line becomes, and a recast puts a picture in the role
+   * it belongs in before a single coordinate has been derived from it.
+   *
+   * The brief on disk is untouched — this is the working copy. The authored
+   * document stays the authored document, and the director's edit to it is
+   * recorded in the report rather than written back over somebody's writing.
+   */
+  const recastNotes = [];
+  /** Layers lifted out of one line to be stood up in another. */
+  const moves = [];
+  for (const line of brief.lines) {
+    const layers = line?.shot?.layers ?? [];
+    if (!layers.length) continue;
+    const kept = [];
+    for (const layer of layers) {
+      const name = String(layer.asset ?? '').split(/[\\/]/).pop();
+      const verdict = assetVerdicts[name];
+      if (verdict?.verdict === 'reject') {
+        recastNotes.push({line: line.slug, drop: name, role: layer.role, why: verdict.note, brief: verdict.brief});
+        continue;
+      }
+      /**
+       * A CROSS-LINE RECAST — the casting decision proper.
+       *
+       * Some pictures are not wrong, they are in the wrong scene. A catalogue
+       * photograph of corroded bronze weights is a poor grey wall and an
+       * excellent illustration of "a wreck full of bronze"; leaving it where it
+       * was meant throwing away the one asset that matched a line, while that
+       * line got nothing. So the ledger may say where a picture belongs, and it
+       * is moved there.
+       */
+      if (verdict?.recast?.line) {
+        recastNotes.push({
+          line: line.slug,
+          move: name,
+          from: layer.role,
+          to: `${verdict.recast.line}.${verdict.recast.role}`,
+          why: verdict.note,
+        });
+        moves.push({...layer, ...verdict.recast, role: verdict.recast.role});
+        continue;
+      }
+      if (verdict?.recastAs && verdict.recastAs !== layer.role) {
+        recastNotes.push({line: line.slug, recast: name, from: layer.role, to: verdict.recastAs, why: verdict.note});
+        /**
+         * A RECAST CHANGES THE ROLE AND THEREFORE THE JOB.
+         *
+         * The encrusted wreck find in this episode was cast as an empty wall
+         * with a brick texture standing in front of it. Recast, it stops being
+         * scenery and becomes the subject — which means it also stops being a
+         * layer something else is placed over, and takes the depth of a thing
+         * the camera is looking AT.
+         */
+        kept.push({...layer, role: verdict.recastAs, depth: Math.max(Number(layer.depth) || 0, 0.55)});
+        continue;
+      }
+      kept.push(layer);
+    }
+    line.shot = {...line.shot, layers: kept};
+    /**
+     * A LINE WITH NO PICTURE IS A TYPOGRAPHIC SHOT.
+     *
+     * Not a failure and not an empty frame. The reel says what it can prove
+     * with a photograph and STATES the rest, which is what a documentary does
+     * when the footage does not exist — and it looks authored, where a wrong
+     * photograph looks scraped.
+     */
+    if (!kept.length) line.graphicsOnly = true;
+  }
+
+  /**
+   * AN ASSET THE BRIEF NEVER NAMED CAN STILL BE CAST.
+   *
+   * The recast mechanism above can only MOVE a picture the brief already cast
+   * somewhere. That is not enough: refusing a plate often means the right
+   * picture is a derived one — a crop, a keyed cut-out — that no brief mentions
+   * because it did not exist when the brief was written. Without this the
+   * refusal removed the bad plate and put nothing in its place, and two shots
+   * came back as an empty field with a caption on it.
+   */
+  for (const [file, entry] of Object.entries(reviewLedger)) {
+    if (!entry?.recastTo?.line) continue;
+    if (roleOf[file]) continue; // already cast somewhere; handled above
+    if (!files.includes(file)) continue;
+    const target = brief.lines.find((l) => l.slug === entry.recastTo.line);
+    if (!target) continue;
+    recastNotes.push({introduce: file, to: `${entry.recastTo.line}.${entry.recastTo.role}`, why: entry.note});
+    moves.push({...entry.recastTo, asset: file, role: entry.recastTo.role, kind: 'piece'});
+  }
+
+  // The moved plates, stood up in the lines they actually illustrate.
+  for (const move of moves) {
+    const target = brief.lines.find((l) => l.slug === move.line);
+    if (!target) continue;
+    target.shot = {...(target.shot ?? {}), layers: [...(target.shot?.layers ?? []), move]};
+  }
+
+  /**
+   * A GROUND IS NEEDED WHENEVER NOTHING FILLS THE FRAME.
+   *
+   * Not only when every plate was refused. A shot can keep one subject and lose
+   * its backdrop — which is exactly what a recast produces — and a subject
+   * standing on nothing is a cut-out on black. The drawn field is what it
+   * stands on, and it is also the fix for the recast plate's own problem: a
+   * catalogue photograph on a white sweep must not fill a frame in a dark reel,
+   * but it is perfectly good standing IN one.
+   */
+  for (const line of brief.lines) {
+    const layers = line?.shot?.layers ?? [];
+    const fills = layers.filter((l) => l.fill !== false && !l.height);
+    if (!fills.length) {
+      line.graphicsOnly = true;
+      /**
+       * AN AUTHORED CUT DIES WITH THE PICTURE IT WAS WRITTEN FOR.
+       *
+       * "blinds" was chosen because the shot opened onto a room full of museum
+       * drawers. With that photograph refused there is no room to open onto —
+       * only a drawn field — so the device becomes eight frames of solid black
+       * at the head of a two-second shot and nothing behind it.
+       */
+      if (line.shot?.cut) line.shot = {...line.shot, cut: undefined};
+      /**
+       * AND SO DOES ITS AUTHORED CAPTION TIMING.
+       *
+       * "Words at halfway" was written for a shot whose first half was a
+       * photograph doing the work. With the photograph gone the words ARE the
+       * shot, and holding them back leaves thirty-seven frames of empty field.
+       */
+      if (line.shot?.text?.at !== undefined) {
+        line.shot = {...line.shot, text: {...line.shot.text, at: undefined}};
+      }
+    } else {
+      delete line.graphicsOnly;
+    }
+  }
+
+  /** Quotas, counted across the whole reel rather than over a sliding three. */
+  const quota = {camera: {}, transition: {}, framing: {}};
+
   const planned = [];
   /** The last few arrivals, so a third repeat can be refused. */
   const previousTransition = [];
@@ -2004,14 +2462,40 @@ async function main() {
   // How many SHOTS the reel will be, which is not how many lines it has. The
   // escalation curve needs to know where in the reel a shot sits, and "line 4
   // of 6" and "shot 8 of 12" are different places.
-  const totalShots = brief.lines.reduce((n, line) => n + fragmentsOf(line.vo).length, 0);
+  const totalShots = brief.lines.reduce((n, line, i) => {
+    const read = story[i];
+    if (read.hold && i === brief.lines.length - 1) return n + 1;
+    const budget = read.pace === 'fast' ? 2.2 : read.pace === 'slow' ? 4.2 : MAX_SPOKEN;
+    return n + fragmentsOf(line.vo, budget).length;
+  }, 0);
   let shotIndex = 0;
 
   brief.lines.forEach((line, index) => {
     // ONE SENTENCE, SEVERAL SHOTS. The first fragment gets the beat's template
     // and the line's artwork; the rest reuse that same picture from a different
     // corner. Nine long lines used to be nine identical seven-second scenes.
-    const fragments = fragmentsOf(line.vo);
+    /**
+     * RHYTHM IS HOW MANY SHOTS A LINE BECOMES, not how its window is skewed.
+     *
+     * A short is not divided equally — a hook cuts fast and a verdict is
+     * allowed to sit. But the window each line occupies is MEASURED from the
+     * narration, and skewing time inside it would slide the captions off the
+     * words they belong to. So the rhythm is spent on the number of shots
+     * instead: a fast beat is cut into more, shorter shots and a slow one into
+     * fewer, longer ones, and the audio stays exactly where it was.
+     */
+    const read = story[index];
+    const budget = read.pace === 'fast' ? 2.2 : read.pace === 'slow' ? 4.2 : MAX_SPOKEN;
+    /**
+     * AND A VERDICT IS NEVER SPLIT.
+     *
+     * The last reel put "FOURTEEN HUNDRED" on a slate and then cut to a smaller,
+     * quieter repeat of the same words over a worse picture — the payload on the
+     * first shot and the silence on the second, so the reel decrescendoed into
+     * its own ending. A closing beat that wants air gets one shot and keeps it.
+     */
+    const closing = read.hold && index === brief.lines.length - 1;
+    const fragments = closing ? [line.vo] : fragmentsOf(line.vo, budget);
     // THE SPOKEN WINDOW WINS. If the narration has been recorded, this line
     // starts and ends at measured times and the fragments divide that; only an
     // episode with no voiceover yet falls back to counting words.
@@ -2045,6 +2529,8 @@ async function main() {
       look,
       recent,
       durationInFrames: result.scene.durationInFrames,
+      read: story[index],
+      quota,
     });
     shotIndex += 1;
     previousTransition.push(result.scene.transition?.kind ?? 'cut');
@@ -2079,13 +2565,15 @@ async function main() {
         look,
         recent,
         durationInFrames: scene.durationInFrames,
+        read: story[index],
+        quota,
         // A continuation already re-frames the plate on purpose — it alternates
         // push and pull-back so two shots of one photograph are not the same
         // shot twice. Handing it a fresh camera would throw that away.
         isContinuation: true,
       });
       shotIndex += 1;
-      previousTransition.push(scene.transition.kind);
+      previousTransition.push(scene.transition?.kind ?? 'cut');
       // The continuation stands the SAME pieces in the same room, so it carries
       // the line's list too — otherwise the recipe builder, which now only
       // draws what a layer asks for, would find nothing asking for them.
@@ -2233,6 +2721,115 @@ async function main() {
   };
 
   await writeFile(path.join(dir, 'scene-config.json'), `${JSON.stringify(config, null, 2)}\n`, 'utf8');
+
+  /**
+   * THE DIRECTOR'S DECISION LOG.
+   *
+   * Every reel this pipeline made was un-arguable: the config said WHAT was
+   * drawn and nothing said WHY, so a bad reel could only be diagnosed by
+   * looking at it and guessing backwards. The log records the judgements — the
+   * beat each line was read as, which pictures were refused and on what
+   * grounds, where the camera went and why, what is missing and what to shoot.
+   *
+   * It is machine-readable because the next iteration should be able to check
+   * itself against it, and because "asset relevance 2/10" is a fact somebody
+   * can act on where "the video feels flat" is not.
+   */
+  const report = {
+    episode: episodeId,
+    generatedFrom: {brief: 'brief.json', review: 'assets.review.json', voice: voice ? 'audio/vo.json' : null},
+    concept: {
+      title: brief.title ?? null,
+      mood: brief.mood ?? null,
+      hook: hookStrategy(story),
+      ending: endingStrategy(story),
+    },
+    beats: story.map((r) => ({
+      line: r.slug,
+      beat: r.beat,
+      pace: r.pace,
+      holdsAfter: r.hold,
+      emphasis: r.emphasis,
+      visualIdea: r.idea,
+      viewerShouldNotice: r.notice,
+    })),
+    assets: {
+      colourCentre: centre,
+      decisions: Object.values(assetVerdicts).map((v) => ({
+        file: v.file,
+        role: v.role,
+        depicts: v.depicts,
+        score: v.score,
+        verdict: v.verdict,
+        reviewed: v.reviewed,
+        axes: v.axes,
+        note: v.note,
+      })),
+      recast: recastNotes,
+      required: assetBriefs,
+    },
+    shots: planned.map(({scene}, i) => ({
+      id: scene.id,
+      template: scene.sceneType,
+      seconds: Number((scene.durationInFrames / FPS).toFixed(2)),
+      camera: {
+        from: scene.params?.pushFrom ?? null,
+        to: scene.params?.pushTo ?? null,
+        panX: scene.params?.panX ?? null,
+        panY: scene.params?.panY ?? null,
+      },
+      transition: scene.transition?.kind ?? 'cut',
+      emphasis: scene.params?.captionEmphasis ?? null,
+      reveal: scene.params?.captionReveal ?? null,
+      plates: Object.values(scene.assets ?? {}).map((f) => String(f).split('/').pop()),
+      drawnGround: scene.params?.field ?? null,
+      props: (scene.props ?? []).map((q) => q.kind),
+      hierarchy: hierarchyFor({
+        beat: story[Math.min(i, story.length - 1)]?.beat,
+        hasPhoto: Object.keys(scene.assets ?? {}).length > 0,
+        hasFigure: false,
+        emphasis: scene.params?.captionEmphasis,
+        idea: story[Math.min(i, story.length - 1)]?.idea,
+      }),
+    })),
+    quotas: quota,
+    typography: {
+      system: 'one family per semantic role — statement, body, label, figure',
+      accent: look.accent,
+      note: 'the emphasis is the only element allowed the accent colour in a shot',
+    },
+    colourStrategy: {
+      accent: look.accent,
+      field: look.field,
+      fieldColours: look.fieldColours,
+      grade,
+      note: 'one accent across the reel; the grade moves only where the sentence earns it',
+    },
+    limitations: [
+      ...assetBriefs.map((b) => `ASSET_REQUIRED: ${b.subject}`),
+      voice ? null : 'cut to an estimate — no voiceover measured yet',
+    ].filter(Boolean),
+  };
+  /**
+   * A RECIPE FOR A PICTURE THE DIRECTOR CAST BUT NOBODY WROTE.
+   *
+   * An asset introduced from the review ledger — a crop, a keyed cut-out, a
+   * derived plate — is in the cut and has no recipe, so the guard that says
+   * "the generator would never draw this" is right to complain. It records
+   * where the file came from, which is the point of a recipe: provenance, not
+   * just a prompt.
+   */
+  for (const [file, entry] of Object.entries(reviewLedger)) {
+    if (!entry?.recastTo?.line || roleOf[file] || !files.includes(file)) continue;
+    assets[file] ??= {
+      // `piece`: a cut-out standing in a shot, which is what a derived plate is.
+      kind: entry.recastTo.kind ?? 'piece',
+      derivedFrom: entry.derivedFrom ?? null,
+      prompt: entry.depicts || entry.needed || 'cast by the asset director from the episode review ledger',
+    };
+  }
+
+  await writeFile(path.join(dir, 'director-report.json'), `${JSON.stringify(report, null, 2)}\n`, 'utf8');
   /**
    * NO RECIPES, NO RECIPE FILE.
    *

@@ -1,0 +1,102 @@
+{
+  "deep-green.jpg": {
+    "depicts": "black-and-white aerial photograph of a modern coastal town, roads and field boundaries",
+    "relevance": 1,
+    "accuracy": 1,
+    "subject": 1,
+    "recastAs": null,
+    "needed": "a dark, featureless deep-water surface, or an empty dark field with no horizon and no objects",
+    "note": "the brief asked for dark green water; this is a modern aerial survey photograph and carries roads, a harbour and a town. Nothing in the episode is set here."
+  },
+  "lab-wall.jpg": {
+    "depicts": "four corroded bronze weights on a plain white sweep; the frame's edges cut two of them in half",
+    "relevance": 6,
+    "accuracy": 6,
+    "subject": 2,
+    "recastAs": null,
+    "needed": "a plain grey wall with even light and nothing on it",
+    "note": "not a wall. Used whole it brings its own white sweep into a dark reel — a white rectangle floating on a green field — and two of its four objects are cut off by the frame edge, so it has no single subject. Superseded by bronze-weight.png, cropped from it and keyed to transparency."
+  },
+  "mechanism-fragment.jpg": {
+    "depicts": "flat close-up of a pinkish-brown stone or terracotta surface with a hairline crack",
+    "relevance": 2,
+    "accuracy": 1,
+    "subject": 1,
+    "recastAs": null,
+    "needed": "Antikythera mechanism Fragment A — corroded green bronze with visible gear teeth, museum lighting, dark ground, object filling 60-80% of frame",
+    "note": "a texture, not an artefact. It has no gear, no edge and no subject; it was being stood in front of the one genuinely good wreck photograph in the folder and hiding it."
+  },
+  "mechanism-xray.jpg": {
+    "depicts": "an antique brass astronomical instrument with concentric engraved dials and pointers, behind glass",
+    "relevance": 7,
+    "accuracy": 5,
+    "subject": 7,
+    "recastAs": null,
+    "needed": "a radiograph of the Antikythera mechanism showing interlocking gear teeth, high contrast, grey",
+    "note": "not a radiograph and not the mechanism — but it is a geared brass instrument of the right family, and it is the strongest and most legible image in the folder. Used knowingly, with the caption carrying the claim rather than the picture."
+  },
+  "moon-sky.jpg": {
+    "depicts": "a full moon in a clear black sky, no landscape",
+    "relevance": 9,
+    "accuracy": 9,
+    "subject": 9,
+    "recastAs": null,
+    "needed": "",
+    "note": "exactly what was asked for. Dark, but that is the subject rather than an exposure fault."
+  },
+  "museum-dark.jpg": {
+    "depicts": "a heavily encrusted, corroded object recovered from the sea, lit on a black ground",
+    "relevance": 9,
+    "accuracy": 8,
+    "subject": 9,
+    "recastAs": "find",
+    "needed": "",
+    "note": "the best photograph in the episode and it was being used as an empty wall. This IS a wreck find — an encrusted, corroded object on black, already framed vertically. It belongs on the opening line, because the first shot is the most consequential asset decision in a short and this is the strongest image there is.",
+    "recastTo": {
+      "line": "wreck",
+      "role": "find",
+      "depth": 0.16,
+      "relevance": 9,
+      "accuracy": 8,
+      "subject": 9
+    }
+  },
+  "seabed.jpg": {
+    "depicts": "macro photograph of a yellow nudibranch on pale white-green algae",
+    "relevance": 2,
+    "accuracy": 1,
+    "subject": 1,
+    "recastAs": null,
+    "needed": "dark green open water over a rocky Mediterranean seabed, shafts of light from above, no wildlife subject",
+    "note": "underwater, and that is the whole of its relevance. It is a wildlife macro: pale, low contrast, and it reads as an aquarium. It was the opening shot of the reel and the longest one."
+  },
+  "storage-drawers.jpg": {
+    "depicts": "an ornate Victorian display cabinet on turned legs in a bright domestic interior with a polished wooden floor",
+    "relevance": 2,
+    "accuracy": 1,
+    "subject": 2,
+    "recastAs": null,
+    "needed": "a dim museum or archive storage drawer front, close framing, visible label slot, historical rather than domestic",
+    "note": "technically the best-exposed file in the folder, which is exactly why it slipped through: sharp, well lit, high contrast, and completely the wrong room. Bright daylight and domestic furniture against a line about fifty years of institutional neglect."
+  },
+  "bronze-weight.png": {
+    "depicts": "one complete corroded bronze weight, cut out to transparency, cropped from lab-wall.jpg",
+    "relevance": 8,
+    "accuracy": 7,
+    "subject": 9,
+    "recastTo": {
+      "line": "lump",
+      "role": "bronze",
+      "depth": 0.8,
+      "height": 0.44,
+      "x": 0.5,
+      "y": 0.8,
+      "relevance": 8,
+      "accuracy": 7,
+      "subject": 9
+    },
+    "needed": "",
+    "note": "derived, not fetched: the centre object of lab-wall.jpg, cropped away from its neighbours and keyed off its white sweep with the repo's own keyer. A single corroded bronze object, book-sized, standing on a drawn ground — which is what the line actually says.",
+    "derivedFrom": "lab-wall.jpg (centre crop, keyed to transparency)"
+  }
+}

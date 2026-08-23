@@ -25,7 +25,7 @@ import {ROOT, episodeDir, exists, loadConfig, parseArgs} from './lib/episode.mjs
 import {readPlaceholders} from './lib/placeholders.mjs';
 
 import {BUILT_IN_SCENE_TYPES, validateEpisodeConfig} from '../engine/schema.mjs';
-import {critiqueEpisode} from './lib/critique.mjs';
+import {critiqueDirection, critiqueEpisode, qualityGates} from './lib/critique.mjs';
 
 async function validateEpisode(episodeId) {
   const problems = [];
@@ -91,11 +91,43 @@ async function validateEpisode(episodeId) {
     }
   }
 
+  const report = await readFile(path.join(dir, 'director-report.json'), 'utf8')
+    .then(JSON.parse)
+    .catch(() => null);
+  /** Shots the story deliberately gave air to, so they are not scolded for it. */
+  const holds = new Set(
+    (config?.scenes ?? [])
+      .filter((scene) => (report?.beats ?? []).some((b) => b.holdsAfter && String(scene.id).endsWith(`-${b.line}`)))
+      .map((scene) => scene.id),
+  );
+
   // AND THEN THE OTHER QUESTION: is there anything in it?
-  const {errors, warnings, stats} = critiqueEpisode(config);
+  const {errors, warnings, stats} = critiqueEpisode(config, {holds});
   problems.push(...errors);
 
-  return {problems, absentOptional, warnings, stats};
+  /**
+   * AND THE THIRD QUESTION: was anything DECIDED?
+   *
+   * The director's log carries the judgements — which pictures were refused,
+   * what each line was read as. Without it these checks stay quiet rather than
+   * guessing; an episode planned before the second stage existed is reported as
+   * unexamined, not as passing.
+   */
+  const assets = Object.fromEntries(
+    (report?.assets?.decisions ?? []).map((d) => [d.file, d]),
+  );
+  const direction = critiqueDirection(config, {assets, story: report?.beats ?? []});
+  problems.push(...direction.errors);
+  const gates = report ? qualityGates(config, {assets}) : null;
+
+  return {
+    problems,
+    absentOptional,
+    warnings: [...warnings, ...direction.warnings],
+    stats,
+    gates,
+    directed: Boolean(report),
+  };
 }
 
 async function main() {
@@ -118,7 +150,7 @@ async function main() {
 
   let failed = 0;
   for (const episodeId of episodes) {
-    const {problems, absentOptional, warnings = [], stats} = await validateEpisode(episodeId);
+    const {problems, absentOptional, warnings = [], stats, gates, directed} = await validateEpisode(episodeId);
     if (strict && warnings.length) problems.push(...warnings);
     if (problems.length) {
       failed += 1;
@@ -147,6 +179,23 @@ async function main() {
           `  motion  ${stats.events} event(s), ${stats.eventsPerSecond}/s, ` +
             `${stats.secondsPerShot}s per shot`,
         );
+      }
+      /**
+       * THE GATES, printed as numbers rather than as an impression.
+       *
+       * "The video feels flat" cannot be acted on. "asset relevance 2.1/10"
+       * names the root cause and the department that owns it.
+       */
+      if (gates) {
+        const line = Object.entries(gates.gates)
+          .map(([k, v]) => `${k} ${v}`)
+          .join(' · ');
+        console.log(`  gates   ${line}`);
+        if (!gates.productionReady) {
+          console.log(`  ✗ NOT PRODUCTION READY — below 7: ${gates.failed.join(', ')}`);
+        }
+      } else if (!directed) {
+        console.log('  · no director report — plan this episode to have its decisions examined');
       }
       // Said every time, not hidden behind a flag: a warning nobody reads is a
       // defect that ships, and all of these have shipped.

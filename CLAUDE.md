@@ -58,7 +58,13 @@ episodes/<id>/brief.json            → altı satır + HER SATIRIN KOREOGRAFİS�
         ↓
 scripts/voice-episode.mjs           → vo.mp3|wav + vo.json (ÖLÇÜM)
         ↓
-scripts/lib/director.mjs            → NE ZAMAN OLACAĞI (vuruşlar, kamera, vurgu)
+scripts/lib/story.mjs               → NE OLDUĞU (vuruş tipi, görsel fikir, ritim)
+        ↓
+scripts/lib/assetdirector.mjs       → GÖSTERİLEBİLİR Mİ (puan, yeniden rol, RED)
+        ↓
+scripts/lib/visual.mjs              → HİYERARŞİ, kadraj, tek tipografi sistemi
+        ↓
+scripts/lib/director.mjs            → NE ZAMAN OLACAĞI (vuruşlar, kamera, kota)
         ↓
 episodes/<id>/scene-config.json     → bölümün tek gerçeği (sahneler, süreler, look)
         ↓
@@ -313,6 +319,44 @@ ve sütunlar karenin altından taşar.
     caption'ın vurgusu caption'da yoksa tip katmanı hiçbir şey bulamaz ve bunu
     kimseye söylemez. Satır kırımı da vurgunun etrafında seçilir — iki satıra
     bölünmüş bir rakam vurgulanamaz.
+
+21. **YANLIŞ GÖRSEL, GÜZEL HAREKETLE KURTARILMAZ.** Bu deponun dördüncü ve en
+    utandırıcı dersi: bir Yunan batığı hakkındaki reel, sarı bir deniz salyangozu
+    makrosuyla açıldı; müze çekmecesi yerine Viktorya dönemi bir konsol gösterdi;
+    modern bir kasabanın hava fotoğrafıyla kapandı. Altı arka planın ÜÇÜ yanlış
+    resimdi. Hepsi diskteydi, doğru boyuttaydı, iyi pozlanmıştı ve deponun o
+    günkü BÜTÜN kontrollerini geçti.
+
+    Bir varlık, OYNADIĞI ROLE göre puanlanır. Beş eksen dosyadan ölçülür
+    (çözünürlük, pozlama, kontrast, 9:16 kırpımından ne kadarı kalır, itilecek
+    yapı var mı); beş eksen ANLAMSALDIR ve histogramda yoktur — bir dolabın
+    MÜZE dolabı olup olmadığı dünya hakkında bir sorudur, dosya hakkında değil.
+    O yarı `episodes/<id>/assets.review.json` içinde, bakan birinin yazdığı
+    yerde durur.
+
+    **ANLAM PUANI KAPIDIR, ortalama değil.** Yanlış şeyin kusursuz fotoğrafı 7
+    değildir; kullanılamaz. Beş yeşil teknik ekseni ortalamaya katmak, konsolun
+    müze deposu olarak yayınlanmasının tam olarak sebebidir.
+
+    Ve **REDDETMEK BİR SONUÇTUR.** Kabul edilebilir bir görsel yoksa satır
+    sessizce yanlış bir fotoğrafa razı olmaz: `ASSET_REQUIRED` brief'i yazılır,
+    çekim çizilmiş bir zemin üzerinde TİPOGRAFİK bir çekime dönüşür. Belgesel
+    çekim yokken böyle yapar, ve sonuç kurgulanmış görünür — yanlış fotoğraf
+    ise kazınmış görünür.
+
+22. **HER AYGIT KENDİ PAYINA RAZI OLUR.** "Üst üste üç kez" kuralı, bir aygıtın
+    reel'in yüzde sekseninde ARALIKLI olarak kullanılmasını göremez: son kesimde
+    on kamera hareketinin sekizi geri çekilmeydi ve hiçbiri üç kere arka arkaya
+    gelmemişti. Artık kota BÜTÜN reel üzerinden sayılır — hiçbir kamera ailesi
+    ~%30'u, hiçbir geçiş ~%25'i aşmaz — ve taşma zara değil, EN AZ KULLANILANA
+    gider. Kamera hareketi de zardan değil VURUŞTAN seçilir: reveal iter, verdict
+    durur.
+
+    Geçiş kareyi karartıyorsa (blinds, flare, rack) kısa çekimde hiç kullanılmaz,
+    ve hiçbir varış çekimin sekizde birinden fazlasını yiyemez — brief elle
+    yazmış olsa bile. Bu bir tercih değil, emniyet kuralıdır: 4.5 saniyelik bir
+    çekim için yazılmış 11 karelik rack, çekim 1.9 saniyeye indiğinde okunabilir
+    ilk karenin beşte birini siler.
 
 ## İş bölümü — bu deponun en pahalı dersi
 

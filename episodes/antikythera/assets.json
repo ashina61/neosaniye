@@ -27,15 +27,6 @@
     }
   },
   "assets": {
-    "seabed.jpg": {
-      "kind": "backdrop",
-      "commons": [
-        "underwater rocky seabed Mediterranean",
-        "Aegean sea underwater rocks",
-        "seabed green water"
-      ],
-      "prompt": "dark green water over a rocky seabed, shafts of light from above"
-    },
     "museum-dark.jpg": {
       "kind": "backdrop",
       "commons": [
@@ -43,32 +34,6 @@
         "black museum wall exhibit"
       ],
       "prompt": "a dark museum interior wall, low even lighting, nothing on it"
-    },
-    "mechanism-fragment.jpg": {
-      "kind": "piece",
-      "commons": [
-        "Antikythera mechanism fragment A",
-        "Antikythera mechanism National Archaeological Museum",
-        "Antikythera mechanism"
-      ],
-      "prompt": "a corroded bronze fragment the size of a book, museum lighting, plain dark background"
-    },
-    "storage-drawers.jpg": {
-      "kind": "backdrop",
-      "commons": [
-        "museum storage drawers wooden",
-        "archive cabinet drawers",
-        "specimen cabinet drawers"
-      ],
-      "prompt": "rows of wooden museum storage drawers, dim even light"
-    },
-    "lab-wall.jpg": {
-      "kind": "backdrop",
-      "commons": [
-        "plain grey laboratory wall",
-        "grey concrete wall texture"
-      ],
-      "prompt": "a plain grey wall, even light, nothing on it"
     },
     "mechanism-xray.jpg": {
       "kind": "backdrop",
@@ -87,13 +52,10 @@
       ],
       "prompt": "the moon in a dark clear sky, photographed, no landscape"
     },
-    "deep-green.jpg": {
-      "kind": "backdrop",
-      "commons": [
-        "dark green water surface photograph",
-        "deep water dark green"
-      ],
-      "prompt": "a dark green water surface, no horizon, no objects"
+    "bronze-weight.png": {
+      "kind": "piece",
+      "derivedFrom": "lab-wall.jpg (centre crop, keyed to transparency)",
+      "prompt": "one complete corroded bronze weight, cut out to transparency, cropped from lab-wall.jpg"
     }
   }
 }
