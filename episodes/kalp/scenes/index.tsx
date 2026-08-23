@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame, useVideoConfig} from 'remotion';
 import type {SceneProps} from '../../../engine/sceneTypes/types';
-import {ARTERIES, BRONCHI, Figure, LUNG_LEFT, LUNG_RIGHT, Skeleton, VEINS} from './Body';
+import {BODY_ARTERIES, BODY_VEINS, BRONCHI, Figure, LUNG_FISSURES, LUNG_LEFT, LUNG_RIGHT, Skeleton} from './Body';
 import {
   BLUE,
   BLUE_DARK,
@@ -222,13 +222,33 @@ const Heart: React.FC<SceneProps> = ({scene, durationInFrames}) => {
           <g transform={BODY_TRANSFORM}>
             <Figure opacity={fade('figure')} fill="#17161a" edge="#3d3a44" />
             {fade('arteries') > 0 ? (
-              <g opacity={fade('arteries')} fill="none" strokeLinecap="round">
-                {VEINS.map((p, i) => (
-                  <path key={`v${i}`} d={p} stroke={BLUE_DARK} strokeWidth={9} opacity={0.85} />
+              <g opacity={fade('arteries')}>
+                {BODY_VEINS.map((route, i) => (
+                  <path key={`v${i}`} d={route.map(d).join(' ')} fill="none" stroke={BLUE_DARK} strokeWidth={11} strokeLinecap="round" opacity={0.8} />
                 ))}
-                {ARTERIES.map((p, i) => (
-                  <path key={`a${i}`} d={p} stroke={RED_DARK} strokeWidth={10} />
+                {BODY_ARTERIES.map((route, i) => (
+                  <path key={`a${i}`} d={route.map(d).join(' ')} fill="none" stroke={RED_DARK} strokeWidth={13} strokeLinecap="round" />
                 ))}
+                {/* VE ÜSTÜNDE KAN YÜRÜR. Damar ağacı çizilip boş bırakılırsa
+                    "bütün vücuda dağılır" cümlesi bir kroki olarak kalır. */}
+                {flowing('body') > 0
+                  ? BODY_ARTERIES.map((route, i) =>
+                      Array.from({length: 6}).map((_, k) => {
+                        const t = (((frame * 0.008 + k / 6 + i * 0.09) % 1) + 1) % 1;
+                        const [x, y] = along(route, t);
+                        return <circle key={`bf${i}-${k}`} cx={x} cy={y} r={13} fill={RED} />;
+                      }),
+                    )
+                  : null}
+                {flowing('bodyBack') > 0
+                  ? BODY_VEINS.map((route, i) =>
+                      Array.from({length: 5}).map((_, k) => {
+                        const t = 1 - ((((frame * 0.007 + k / 5 + i * 0.11) % 1) + 1) % 1);
+                        const [x, y] = along(route, t);
+                        return <circle key={`bv${i}-${k}`} cx={x} cy={y} r={11} fill={BLUE} />;
+                      }),
+                    )
+                  : null}
               </g>
             ) : null}
             <Skeleton opacity={fade('skeleton')} bone="#e6dccb" boneDim="#8d8474" />
@@ -239,6 +259,9 @@ const Heart: React.FC<SceneProps> = ({scene, durationInFrames}) => {
             <g opacity={fade('lungs')} transform={BODY_TRANSFORM}>
               <path d={LUNG_RIGHT} fill="#2b3b46" stroke="#7f94a1" strokeWidth={4} opacity={0.92} />
               <path d={LUNG_LEFT} fill="#2b3b46" stroke="#7f94a1" strokeWidth={4} opacity={0.92} />
+              {LUNG_FISSURES.map((f, i) => (
+                <path key={`f${i}`} d={f} fill="none" stroke="#8fa3b0" strokeWidth={3.5} opacity={0.7} />
+              ))}
               {BRONCHI.map((p, i) => (
                 <path key={i} d={p} fill="none" stroke="#cfd9de" strokeWidth={i === 0 ? 12 : 7} strokeLinecap="round" opacity={0.75} />
               ))}
@@ -269,20 +292,22 @@ const Heart: React.FC<SceneProps> = ({scene, durationInFrames}) => {
               stroke={BLUE_DARK}
               strokeWidth={5}
             />
-            {/* Aort: SOL KARINCIĞIN çıkış ağzından doğar, kavis yapar, aşağı iner */}
+            {/* Aort: SOL KARINCIĞIN çıkış ağzından doğar, kavis yapar, aşağı iner.
+                Duvar kalınlığı boyunca sabit — iki kenar ayrı çizilir, tek bir
+                kalın çizgi değil; damarın içi olmalı ki kan onun içinden aksın. */}
             <path
-              d="M 600 834 C 604 700, 616 558, 664 468 C 716 370, 830 364, 884 452 
-                 C 920 522, 930 700, 928 900 C 926 1200, 922 1450, 918 1600 
-                 L 858 1600 C 862 1440, 868 1180, 870 900 C 872 700, 864 546, 832 500 
-                 C 796 450, 732 456, 702 512 C 670 572, 660 700, 660 834 Z"
+              d="M 600 834 C 604 690, 612 560, 664 468 C 720 366, 850 360, 902 452 
+                 C 936 520, 950 700, 952 900 C 954 1200, 950 1450, 946 1600 
+                 L 886 1600 C 890 1450, 894 1200, 892 900 C 890 700, 882 546, 856 502 
+                 C 822 448, 754 452, 722 512 C 684 584, 664 700, 660 834 Z"
               fill="url(#redTube)"
               stroke={RED_DARK}
               strokeWidth={5}
             />
             {/* Arkus dalları */}
-            <path d="M 726 292 L 758 292 L 762 448 L 730 452 Z" fill="url(#redTube)" stroke={RED_DARK} strokeWidth={4} />
-            <path d="M 788 286 L 820 286 L 826 420 L 794 426 Z" fill="url(#redTube)" stroke={RED_DARK} strokeWidth={4} />
-            <path d="M 848 292 L 880 292 L 892 434 L 860 442 Z" fill="url(#redTube)" stroke={RED_DARK} strokeWidth={4} />
+            <path d="M 700 268 C 700 340, 706 396, 716 442 L 754 424 C 744 384, 738 330, 738 268 Z" fill="url(#redTube)" stroke={RED_DARK} strokeWidth={4} />
+            <path d="M 776 258 C 776 320, 778 366, 784 404 L 820 396 C 816 358, 814 314, 814 258 Z" fill="url(#redTube)" stroke={RED_DARK} strokeWidth={4} />
+            <path d="M 848 268 C 850 322, 856 366, 866 404 L 900 424 C 890 382, 886 330, 886 268 Z" fill="url(#redTube)" stroke={RED_DARK} strokeWidth={4} />
             {/* Pulmoner venler — akciğerden sol kulakçığa, sağ kenardan */}
             <path d="M 964 596 C 906 600, 872 622, 858 656 L 862 700 C 890 664, 926 646, 972 642 Z" fill="url(#redTube)" stroke={RED_DARK} strokeWidth={4} />
             <path d="M 972 760 C 916 758, 878 772, 858 796 L 866 840 C 890 812, 926 800, 976 802 Z" fill="url(#redTube)" stroke={RED_DARK} strokeWidth={4} />
@@ -363,35 +388,51 @@ const Heart: React.FC<SceneProps> = ({scene, durationInFrames}) => {
       {listOf(scene, 'labels').length ? (
         <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{position: 'absolute', inset: 0}}>
           {listOf(scene, 'labels').map((raw, i) => {
-            const [text, xs, ys, side] = String(raw).split('|');
-            const x = Number(xs) * W;
-            const y = Number(ys) * H;
+            const [text, xs, ys, side, space] = String(raw).split('|');
+            /**
+             * ETİKET ANATOMİYE ÇAKILIDIR, KAREYE DEĞİL.
+             *
+             * Nokta kare oranı olarak veriliyordu; kamera yaklaşınca ya da
+             * kayınca çizim gidiyor, etiket olduğu yerde kalıyordu — "AORT"
+             * yazısının aortu göstermemesinin sebebi buydu. Artık nokta DÜNYA
+             * koordinatında duruyor ve kameranın aynı dönüşümünden geçiyor;
+             * gövde uzayındaki bir nokta (akciğer, bacak) önce gövde
+             * dönüşümünden geçer.
+             */
+            const localX = Number(xs) * W;
+            const localY = Number(ys) * H;
+            const worldX = space === 'b' ? BODY_TX + localX * BODY_SCALE : localX;
+            const worldY = space === 'b' ? BODY_TY + localY * BODY_SCALE : localY;
+            const x = (worldX - W / 2) * zoom + W / 2 + panX;
+            const y = (worldY - H / 2) * zoom + H / 2 + panY;
+            // Kadraj dışındaki bir noktayı göstermeye çalışan kılavuz çizgi,
+            // hiçbir şeyi göstermeyen bir çizgidir.
+            if (x < -40 || x > W + 40 || y < -40 || y > H + 40) return null;
+
             const leftSide = side === 'l';
             const tx = leftSide ? 64 : W - 64;
-            /**
-             * Yazı ÇİZİMİN ÜSTÜNE düşmez: kılavuz noktadan kenara gider ve
-             * metin orada durur. Üst üste binmesin diye her etiket bir öncekinin
-             * altına iner — iki yazı çakışınca ikisi de okunmaz olur.
-             */
-            const railY = Math.min(H - 300, Math.max(150, y - 150 + i * 96));
+            // Her etiketin kendi rafı var: iki yazı asla üst üste binmez.
+            const railY = 190 + i * 112;
             const show = Math.min(1, Math.max(0, (frame - 3 - i * 3) / 5));
             if (show <= 0) return null;
+            const elbowX = leftSide ? Math.min(x, 260) - 60 : Math.max(x, W - 260) + 60;
             return (
               <g key={i} opacity={show}>
-                <circle cx={x} cy={y} r={9} fill="#ffcf3d" />
+                <circle cx={x} cy={y} r={10} fill="#ffcf3d" />
+                <circle cx={x} cy={y} r={20} fill="none" stroke="#ffcf3d" strokeWidth={3} opacity={0.5} />
                 <path
-                  d={`M ${x} ${y} L ${leftSide ? x - 70 : x + 70} ${railY} L ${tx} ${railY}`}
+                  d={`M ${x} ${y} L ${elbowX} ${railY} L ${tx} ${railY}`}
                   fill="none"
                   stroke="#ffcf3d"
                   strokeWidth={4}
-                  strokeDasharray={900}
-                  strokeDashoffset={900 * (1 - show)}
+                  strokeDasharray={1400}
+                  strokeDashoffset={1400 * (1 - show)}
                 />
                 <text
                   x={tx}
-                  y={railY - 18}
+                  y={railY - 20}
                   fill="#ffcf3d"
-                  fontSize={44}
+                  fontSize={46}
                   fontWeight={800}
                   textAnchor={leftSide ? 'start' : 'end'}
                   fontFamily="Helvetica, Arial, sans-serif"
