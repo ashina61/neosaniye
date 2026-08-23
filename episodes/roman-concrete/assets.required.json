@@ -1,0 +1,181 @@
+{
+  "episode": "roman-concrete",
+  "generatedAt": "2026-08-23",
+  "$note": "Written for whoever is sourcing pictures, not for the pipeline. The reel renders without any of these: every line here is either drawn procedurally or stated in type, and each entry says which. BLOCKING means the line is about something type cannot depict and no drawing covers it.",
+  "supplied": [],
+  "outstanding": 9,
+  "blocking": 0,
+  "wanted": [
+    {
+      "line": "harbour",
+      "says": "A Roman harbour wall poured into the sea in 40 BC still stands in the surf.",
+      "subject": "geography",
+      "domain": "geography",
+      "currently": "drawn as map",
+      "priority": "would strengthen",
+      "searches": [
+        "Portus Cosanus pier",
+        "Roman marine concrete harbour"
+      ],
+      "described": "a weathered concrete mole running into grey-green water",
+      "purpose": "establish where this is and how the parts of it stand relative to each other",
+      "composition": "high or aerial view with a clear horizon; the relation between the two sides must be legible",
+      "orientation": "landscape source, croppable to 9:16 without losing the relation",
+      "constraints": "the actual named place; contemporary imagery is acceptable unless the line dates it",
+      "substitutes": "a comparable coastline of the same character, LABELLED as illustrative and not as the place",
+      "reject": "tourist framing, visible modern signage where the line is historical, any view that hides the relation the sentence is about"
+    },
+    {
+      "line": "modern",
+      "says": "Modern marine concrete cracks and fails in fifty years. Often in thirty.",
+      "subject": "romanConcrete",
+      "domain": "material",
+      "currently": "drawn as crossSection",
+      "priority": "would strengthen",
+      "searches": [
+        "spalling concrete rebar corrosion",
+        "failed sea wall concrete"
+      ],
+      "described": "spalled modern concrete with rusted reinforcement showing",
+      "purpose": "show the substance itself at a scale where its structure is visible",
+      "composition": "macro or section; the structure is the subject, not the object it came from",
+      "orientation": "either",
+      "constraints": "the actual material named; a sample of the same class only if labelled",
+      "substitutes": "a published micrograph or core sample photograph with its source credited",
+      "reject": "a generic texture, a rendered material, anything where the structure cannot be seen"
+    },
+    {
+      "line": "recipe",
+      "says": "The Romans mixed volcanic ash from Pozzuoli with lime, and poured it in seawater.",
+      "subject": "romanConcrete",
+      "domain": "process",
+      "currently": "drawn as crossSection",
+      "priority": "would strengthen",
+      "searches": [
+        "pozzolana volcanic ash",
+        "Pozzuoli tuff"
+      ],
+      "described": "coarse grey volcanic ash in a heap",
+      "purpose": "show the work being done — hands, tool, material, at the moment of contact",
+      "composition": "close, over the work; the tool and the material both in frame",
+      "orientation": "either, with room to crop tall",
+      "constraints": "period-correct tools and technique; a modern reconstruction is acceptable if captioned as one",
+      "substitutes": "a living practitioner of the same craft, captioned as a modern demonstration",
+      "reject": "machine tooling standing in for hand work, safety equipment in a historical scene, staged studio lighting"
+    },
+    {
+      "line": "ingredient",
+      "says": "Seawater is what destroys modern concrete. Here it was an ingredient.",
+      "subject": "romanConcrete",
+      "domain": "material",
+      "currently": "drawn as crossSection",
+      "priority": "would strengthen",
+      "searches": [
+        "seawater breaking on rock",
+        "Mediterranean surf stone"
+      ],
+      "described": "green seawater breaking over dark stone",
+      "purpose": "show the substance itself at a scale where its structure is visible",
+      "composition": "macro or section; the structure is the subject, not the object it came from",
+      "orientation": "either",
+      "constraints": "the actual material named; a sample of the same class only if labelled",
+      "substitutes": "a published micrograph or core sample photograph with its source credited",
+      "reject": "a generic texture, a rendered material, anything where the structure cannot be seen"
+    },
+    {
+      "line": "lumps",
+      "says": "The mix left lumps of unslaked lime through the wall. We read those as sloppy work.",
+      "subject": "romanConcrete",
+      "domain": "process",
+      "currently": "drawn as crossSection",
+      "priority": "would strengthen",
+      "searches": [
+        "Roman concrete lime clast",
+        "concrete core sample inclusions"
+      ],
+      "described": "a broken concrete face showing white inclusions",
+      "purpose": "show the work being done — hands, tool, material, at the moment of contact",
+      "composition": "close, over the work; the tool and the material both in frame",
+      "orientation": "either, with room to crop tall",
+      "constraints": "period-correct tools and technique; a modern reconstruction is acceptable if captioned as one",
+      "substitutes": "a living practitioner of the same craft, captioned as a modern demonstration",
+      "reject": "machine tooling standing in for hand work, safety equipment in a historical scene, staged studio lighting"
+    },
+    {
+      "line": "crack",
+      "says": "When a crack opens, water runs down it and reaches one of the lumps.",
+      "subject": "material",
+      "domain": "material",
+      "currently": "drawn as crossSection",
+      "priority": "would strengthen",
+      "searches": [
+        "hairline crack concrete",
+        "cracked masonry close"
+      ],
+      "described": "a hairline crack across weathered grey concrete",
+      "purpose": "show the substance itself at a scale where its structure is visible",
+      "composition": "macro or section; the structure is the subject, not the object it came from",
+      "orientation": "either",
+      "constraints": "the actual material named; a sample of the same class only if labelled",
+      "substitutes": "a published micrograph or core sample photograph with its source credited",
+      "reject": "a generic texture, a rendered material, anything where the structure cannot be seen"
+    },
+    {
+      "line": "heals",
+      "says": "The lime dissolves, recrystallises across the gap, and seals it shut.",
+      "subject": "romanConcrete",
+      "domain": "material",
+      "currently": "drawn as crossSection",
+      "priority": "would strengthen",
+      "searches": [
+        "calcite crystals in fracture",
+        "aluminous tobermorite"
+      ],
+      "described": "white mineral crystals grown across a dark fracture",
+      "purpose": "show the substance itself at a scale where its structure is visible",
+      "composition": "macro or section; the structure is the subject, not the object it came from",
+      "orientation": "either",
+      "constraints": "the actual material named; a sample of the same class only if labelled",
+      "substitutes": "a published micrograph or core sample photograph with its source credited",
+      "reject": "a generic texture, a rendered material, anything where the structure cannot be seen"
+    },
+    {
+      "line": "stronger",
+      "says": "Two thousand years of storms have made that harbour stronger, not weaker.",
+      "subject": "geography",
+      "domain": "geography",
+      "currently": "drawn as map",
+      "priority": "would strengthen",
+      "searches": [
+        "storm waves breakwater",
+        "rough sea old harbour wall"
+      ],
+      "described": "a storm sea against an old breakwater",
+      "purpose": "establish where this is and how the parts of it stand relative to each other",
+      "composition": "high or aerial view with a clear horizon; the relation between the two sides must be legible",
+      "orientation": "landscape source, croppable to 9:16 without losing the relation",
+      "constraints": "the actual named place; contemporary imagery is acceptable unless the line dates it",
+      "substitutes": "a comparable coastline of the same character, LABELLED as illustrative and not as the place",
+      "reject": "tourist framing, visible modern signage where the line is historical, any view that hides the relation the sentence is about"
+    },
+    {
+      "line": "close",
+      "says": "We only worked out why in 2017. The recipe was written down in the first century.",
+      "subject": "elapsed",
+      "domain": "elapsed",
+      "currently": "carried by typography",
+      "priority": "optional",
+      "searches": [
+        "Vitruvius De architectura page",
+        "Latin manuscript page"
+      ],
+      "described": "an old page of latin text under glass",
+      "purpose": "a dated document or place that fixes the span in something real",
+      "composition": "the document or the place, legible",
+      "orientation": "either",
+      "constraints": "the date must be verifiable",
+      "substitutes": "a contemporaneous document of the same kind",
+      "reject": "undated material presented as dated"
+    }
+  ]
+}

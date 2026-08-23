@@ -24,8 +24,9 @@
  */
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
-import {drawOn, posterizeTime} from '../motion';
+import {angular, drawOn, hash01, heavy, posterizeTime, tension} from '../motion';
 import {counterValue} from '../state.mjs';
+import {Contact, Depth, Haze, MaterialDefs, MaterialFace, Motes} from './material';
 import {Arrow, Callout, Disclosure, MONO, SANS, Sheet, Ticks, weights} from './sheet';
 
 const CLAMP = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
@@ -125,8 +126,23 @@ export const ScaleHaulagePlate: React.FC<{spec: ScaleHaulageSpec; w: number; h: 
   const travel = (spec.travel ?? 0.16) * w;
   // It moves SLOWLY and never arrives: the point of the sentence is usually
   // that this took months. A block that crosses the frame has contradicted it.
-  const moved = interpolate(t, [0, over * 1.8], [0, travel], CLAMP);
-  const startX = w * 0.32;
+  /**
+   * A THOUSAND TONS DOES NOT EASE LIKE A MENU.
+   *
+   * Linear travel says the block is on wheels; a cubic ease says it is a
+   * dialog box. `heavy` at mass 3 spends most of the shot getting started and
+   * most of the rest failing to stop, which is what the sentence is about.
+   */
+  const moved = heavy(Math.min(1, t / Math.max(1, over * 1.8)), 3) * travel;
+  /**
+   * THE LOAD STARTS CLEAR OF THE SCALE REFERENCE.
+   *
+   * The standing figure that gives the block its size lives at the left margin,
+   * and the haulers stand just ahead of the load. At 0.32 the load's front edge
+   * reached back to 0.11 and the haulers were drawn on top of the reference —
+   * two figures in the same place, one of them a measuring instrument.
+   */
+  const startX = w * 0.44;
   const x = startX + moved;
   /**
    * THE BLOCK STANDS ON THE GROUND, NOT IN IT.
@@ -143,10 +159,43 @@ export const ScaleHaulagePlate: React.FC<{spec: ScaleHaulageSpec; w: number; h: 
   const humanH = (spec.humanHeight ?? 0.075) * h;
   const humans = Math.max(0, spec.humans ?? 2);
 
+  /**
+   * THE CAMERA, SHARED BY EVERY PLANE.
+   *
+   * One number. The far ground takes a sixth of it, the load takes all of it,
+   * the dust in front takes half again — and the difference between those rates
+   * is the only reason a flat drawing reads as a space. A push that scales
+   * everything equally is a zoom.
+   */
+  const cam = 1 + drawOn(stepped, [from, from + over * 2.2]) * 0.1;
+  const anchor: [number, number] = [0.42, 0.62];
+
   return (
     <AbsoluteFill style={{pointerEvents: 'none'}}>
       <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{position: 'absolute', inset: 0}}>
         <Ticks colour={muted} w={w} h={h} on={on} />
+
+        <MaterialDefs id="haul-stone" material="stone" colour={accent} w={w} seed="haul" />
+        <MaterialDefs id="haul-wood" material="wood" colour={muted} w={w} seed="roller" />
+
+        {/**
+         * BACKGROUND — a far horizon and the ground plane behind everything.
+         *
+         * Two lines and a wash. The point is not the mountains; it is that
+         * there is something BEHIND the block that moves at a different rate,
+         * so the push reveals space instead of enlarging a rectangle.
+         */}
+        <Depth plane="background" push={cam} anchor={anchor} w={w} h={h}>
+          <path
+            d={`M 0 ${ground - h * 0.16} L ${w * 0.22} ${ground - h * 0.21} L ${w * 0.41} ${ground - h * 0.15} ` +
+               `L ${w * 0.63} ${ground - h * 0.2} L ${w * 0.84} ${ground - h * 0.145} L ${w} ${ground - h * 0.175} ` +
+               `L ${w} ${ground} L 0 ${ground} Z`}
+            fill={`${muted}0d`}
+            stroke={`${muted}44`}
+            strokeWidth={line.construction}
+          />
+        </Depth>
+        <Haze colour={muted} strength={0.05} w={w} h={ground} from={0.2} />
 
         <g transform={ramp ? `rotate(${-ramp} ${w * 0.1} ${ground})` : undefined}>
           {/* THE GROUND, and the ramp if there is one. */}
@@ -170,10 +219,20 @@ export const ScaleHaulagePlate: React.FC<{spec: ScaleHaulageSpec; w: number; h: 
           {Array.from({length: Math.max(0, spec.rollers ?? 0)}, (_, i) => {
             const spacing = objW / Math.max(1, (spec.rollers ?? 1) - 0.001);
             const rx = x - objW / 2 + spacing * (i + 0.5);
+            /**
+             * THE ROLLER TURNS BECAUSE THE BLOCK MOVED.
+             *
+             * Not a rotation on a timer. The angle is the distance travelled
+             * divided by the radius — the actual relation — so if the load
+             * stops the rollers stop, and if it never moves they never turn.
+             * That is the difference between causal motion and decoration.
+             */
             const spin = (moved / Math.max(1, rollerR)) * 57.3;
             return (
               <g key={`r${i}`} transform={`translate(${rx} ${ground - rollerR})`}>
-                <circle cx={0} cy={0} r={rollerR} fill="none" stroke={muted} strokeWidth={line.detail} />
+                <Contact x={0} y={rollerR * 0.98} width={rollerR * 1.6} strength={0.5} />
+                <circle cx={0} cy={0} r={rollerR} fill={`${muted}18`} stroke={muted} strokeWidth={line.detail} />
+                <MaterialFace id="haul-wood" material="wood" ellipse={{cx: 0, cy: 0, rx: rollerR, ry: rollerR}} w={w} />
                 <line
                   x1={0}
                   y1={0}
@@ -198,8 +257,19 @@ export const ScaleHaulagePlate: React.FC<{spec: ScaleHaulageSpec; w: number; h: 
             />
           ) : null}
 
-          {/* THE OBJECT. Solid outline, accent, the only filled thing here. */}
-          <rect x={x - objW / 2} y={baseY} width={objW} height={objH} fill={`${accent}18`} stroke={accent} strokeWidth={line.emphasis} />
+          {/**
+           * THE OBJECT. The only thing in the frame with a material on it.
+           *
+           * Cut stone: almost no sheen, heavy tooth, a deep shadow of its own,
+           * and a contact shadow where it meets what is carrying it. The
+           * contact shadow is the cheapest depth cue in the file and the one
+           * whose absence made the first version a sticker.
+           */}
+          <Contact x={x} y={ground + h * 0.004} width={objW * 1.06} strength={0.85} />
+          <rect x={x - objW / 2} y={baseY} width={objW} height={objH} fill="#0d0b09" opacity={0.8} />
+          <rect x={x - objW / 2} y={baseY} width={objW} height={objH} fill={accent} opacity={0.14} />
+          <MaterialFace id="haul-stone" material="stone" rect={{x: x - objW / 2, y: baseY, w: objW, h: objH}} w={w} />
+          <rect x={x - objW / 2} y={baseY} width={objW} height={objH} fill="none" stroke={accent} strokeWidth={line.emphasis} />
           {/* Two courses of jointing, so it reads as cut stone rather than as a
               rectangle. */}
           {[0.34, 0.68].map((f) => (
@@ -219,7 +289,16 @@ export const ScaleHaulagePlate: React.FC<{spec: ScaleHaulageSpec; w: number; h: 
               somewhere off-picture, which is also true. */}
           {Array.from({length: Math.max(0, spec.ropes ?? 0)}, (_, i) => {
             const ry = baseY + objH * (0.25 + i * 0.22);
-            const sag = Math.sin(t / 6 + i) * w * 0.004;
+            /**
+             * A ROPE UNDER LOAD TAKES UP ITS SLACK AND THEN HOLDS.
+             *
+             * The first version wobbled it on a sine, which is a rope with
+             * nothing on the end of it. `tension` pulls the sag out as the haul
+             * begins, overshoots once, and settles — and the residual tremor is
+             * a fraction of the original because a loaded rope barely moves.
+             */
+            const pull = tension(Math.min(1, t / Math.max(1, over)));
+            const sag = (1 - pull) * w * 0.022 + Math.sin(t / 6 + i) * w * 0.0009;
             return (
               <path
                 key={`rope${i}`}
@@ -238,7 +317,7 @@ export const ScaleHaulagePlate: React.FC<{spec: ScaleHaulageSpec; w: number; h: 
               key={`f${i}`}
               // Clear of the standing scale reference at 0.135w, which is a
               // different figure doing a different job.
-              x={x - objW / 2 - w * (0.04 + i * 0.05)}
+              x={x - objW / 2 - w * (0.05 + i * 0.045)}
               y={ground}
               height={humanH}
               colour={muted}
@@ -287,11 +366,11 @@ export const ScaleHaulagePlate: React.FC<{spec: ScaleHaulageSpec; w: number; h: 
         {/* THE HUMAN SCALE BAR, beside the block: the height of a person,
             marked, so the size is derived rather than asserted. */}
         <g opacity={0.75 * on}>
-          <line x1={w * 0.09} y1={ground} x2={w * 0.09} y2={ground - humanH} stroke={muted} strokeWidth={line.detail} />
+          <line x1={w * 0.055} y1={ground} x2={w * 0.055} y2={ground - humanH} stroke={muted} strokeWidth={line.detail} />
           {[ground, ground - humanH].map((y, i) => (
-            <line key={i} x1={w * 0.075} y1={y} x2={w * 0.105} y2={y} stroke={muted} strokeWidth={line.detail} />
+            <line key={i} x1={w * 0.04} y1={y} x2={w * 0.07} y2={y} stroke={muted} strokeWidth={line.detail} />
           ))}
-          <Figure x={w * 0.135} y={ground} height={humanH} colour={muted} w={w} />
+          <Figure x={w * 0.1} y={ground} height={humanH} colour={muted} w={w} />
         </g>
 
         {spec.distance ? (
@@ -313,6 +392,18 @@ export const ScaleHaulagePlate: React.FC<{spec: ScaleHaulageSpec; w: number; h: 
             </text>
           </g>
         ) : null}
+
+        {/**
+         * FOREGROUND — dust at the roller line, moving faster than anything.
+         *
+         * It explains nothing, which is exactly why it is allowed: it says the
+         * air in front of the camera exists, and it is the plane that makes the
+         * push read as a push. Held to a band at the ground so it never crosses
+         * the block or the words.
+         */}
+        <Depth plane="foreground" push={cam} anchor={anchor} w={w} h={h}>
+          <Motes w={w} h={h} colour={muted} count={14} seed="haul-dust" air={0.8} band={[0.56, 0.68]} />
+        </Depth>
 
         {(spec.annotations ?? []).map((note, i) => (
           <Callout

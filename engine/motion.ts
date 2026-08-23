@@ -301,3 +301,119 @@ export function tracking(frame: number, [start, end]: number[], [from, to] = [0.
 export function stagger(index: number, {from = 0, every = 6, ease = 1} = {}): number {
   return from + every * Math.pow(Math.max(0, index), ease);
 }
+
+/* ── PHYSICAL MOTION ───────────────────────────────────────────────────── */
+
+/**
+ * A CUBIC EASE IS NOT A PHYSICS.
+ *
+ * Everything in this engine moved on the same in-out curve: a thousand-ton
+ * block, a rope under tension, a hammer, blood. They all accelerated like a
+ * dialog box. The curve is what tells a viewer how heavy something is before
+ * they have read a single word, and using one curve for everything throws that
+ * away for free.
+ *
+ * These are the same shape of function as everything else here — a number in, a
+ * number out, no knowledge of what is being moved. What makes them physical is
+ * the SHAPE, not a simulation: mass accelerates slowly and stops slowly, a rope
+ * overshoots and settles, metal does not move until it is struck and then moves
+ * all at once.
+ */
+
+/**
+ * MASS. Slow to start, slow to stop, and never quite linear in between.
+ *
+ * The heavier the thing, the longer both ends take. `mass` of 1 is a crate;
+ * 3 is a megalith. A block that eases like a menu is a light block.
+ */
+export function heavy(p: number, mass = 2): number {
+  const t = Math.max(0, Math.min(1, p));
+  const k = 1 + Math.max(0, mass);
+  // Symmetric power ease: the exponent IS the inertia.
+  return t < 0.5 ? Math.pow(2 * t, k) / 2 : 1 - Math.pow(2 * (1 - t), k) / 2;
+}
+
+/**
+ * TENSION. A rope takes up slack, overshoots a little, and settles.
+ *
+ * Not a spring — a spring rings. A rope under load overshoots ONCE and damps
+ * hard, because the fibres absorb the rest.
+ */
+export function tension(p: number, overshoot = 0.09): number {
+  const t = Math.max(0, Math.min(1, p));
+  const settle = 1 - Math.pow(1 - t, 3);
+  return settle + Math.sin(t * Math.PI) * overshoot * (1 - t);
+}
+
+/**
+ * RIGID. Nothing happens, then everything happens, then nothing happens.
+ *
+ * Metal under a hammer does not travel; it yields at the moment of impact. The
+ * curve is flat either side of a step, which is what makes a strike read as a
+ * strike rather than as a move.
+ */
+export function rigid(p: number, at = 0.5, sharpness = 12): number {
+  const t = Math.max(0, Math.min(1, p));
+  return 1 / (1 + Math.exp(-sharpness * (t - at)));
+}
+
+/**
+ * IMPACT AND REBOUND. Arrive fast, overshoot, come back, settle.
+ *
+ * The hammer's own motion, and anything else that hits something. Returns a
+ * displacement around 0 rather than a 0..1 progress, so it can be added to a
+ * position.
+ */
+export function impact(frame: number, at: number, {amount = 1, fall = 5, rise = 9} = {}): number {
+  if (frame < at - fall) return 0;
+  if (frame < at) return -amount * Math.pow((frame - (at - fall)) / fall, 2);
+  const t = (frame - at) / Math.max(1, rise);
+  if (t > 1) return 0;
+  // One bounce, damped: down hard, up past zero, back.
+  return amount * Math.sin(t * Math.PI * 1.5) * Math.pow(1 - t, 1.6);
+}
+
+/**
+ * FLOW. Continuous, never arriving, no beginning and no end.
+ *
+ * Water and blood do not ease. Anything that eases has stopped being a fluid
+ * and started being an object moving from A to B.
+ */
+export function flow(frame: number, fps: number, rate = 0.4): number {
+  return ((frame / fps) * rate) % 1;
+}
+
+/**
+ * A CYCLE WITH A FAST STROKE AND A SLOW RETURN.
+ *
+ * A heart, a piston, a bellows. Symmetrical oscillation is a sine wave and
+ * reads as decoration; the asymmetry is what makes it a pump.
+ */
+export function cyclic(frame: number, period: number, {stroke = 0.3, phase = 0} = {}): number {
+  const t = (((frame / Math.max(1, period)) + phase) % 1 + 1) % 1;
+  if (t < stroke) return Math.sin((t / stroke) * Math.PI);
+  // The return is slower and shallower than the stroke.
+  return -0.18 * Math.sin(((t - stroke) / (1 - stroke)) * Math.PI);
+}
+
+/**
+ * ANGULAR. Mechanical rotation that is exactly linear, forever.
+ *
+ * The one place easing is wrong on principle: a driven wheel turns at a
+ * constant rate, and any acceleration in it is a fault in the mechanism.
+ */
+export function angular(frame: number, fps: number, degreesPerSecond: number): number {
+  return (frame / fps) * degreesPerSecond;
+}
+
+/**
+ * SETTLE. A thing set down: it lands, compresses slightly, and rests.
+ *
+ * Used where an object ARRIVES rather than travels — a card on a table, a plate
+ * onto a wall. Distinct from `tension` because there is no slack to take up.
+ */
+export function settle(p: number, give = 0.06): number {
+  const t = Math.max(0, Math.min(1, p));
+  const land = 1 - Math.pow(1 - t, 4);
+  return land - Math.sin(Math.max(0, t - 0.72) / 0.28 * Math.PI) * give;
+}

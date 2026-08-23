@@ -24,8 +24,9 @@
  */
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
-import {drawOn, posterizeTime} from '../motion';
+import {cyclic, drawOn, posterizeTime} from '../motion';
 import {Callout, Disclosure, MONO, Sheet, Ticks, weights} from './sheet';
+import {Contact, MaterialDefs, MaterialFace} from './material';
 
 const CLAMP = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 
@@ -91,6 +92,22 @@ export type AnatomyFlowSpec = Sheet & {
   annotations?: {x: number; y: number; text: string; side?: 'left' | 'right'; at?: number}[];
 };
 
+/**
+ * HOW FAR THE FLOW HAS TRAVELLED, GIVEN WHAT THE CHAMBERS HAVE DONE.
+ *
+ * Integrated rather than interpolated: each frame adds the current contraction
+ * to a running total, so the position of the blood is the HISTORY of the
+ * squeezes. That is the difference between "blood moves and chambers contract"
+ * and "blood moves because chambers contract".
+ */
+function chambersDrive(spec: AnatomyFlowSpec, squeeze: (at: number) => number): number {
+  const phases = (spec.chambers ?? []).map((c) => c.phase ?? 0);
+  const pumped = phases.reduce((n, p) => n + squeeze(p), 0) / Math.max(1, phases.length);
+  // A resting baseline so the circuit never freezes between beats: real flow is
+  // continuous, pulsed rather than stop-start.
+  return 0.34 + pumped * 0.66;
+}
+
 const HIGH = '#d9534f';
 const LOW = '#5b8fa8';
 
@@ -122,11 +139,24 @@ export const AnatomyFlowPlate: React.FC<{spec: AnatomyFlowSpec; w: number; h: nu
    */
   const phase = ((Math.max(0, stepped - from) % cycle) / cycle + 1) % 1;
 
-  /** Contraction curve: a fast squeeze and a slower refill, like the real one. */
-  const squeeze = (at: number) => {
-    const d = (phase - at + 1) % 1;
-    return interpolate(d, [0, 0.12, 0.34, 1], [0, 1, 0, 0], CLAMP);
-  };
+  /**
+   * A FAST STROKE AND A SLOW RETURN — the shape of a pump, not of a sine.
+   *
+   * `cyclic` is asymmetric on purpose: the squeeze occupies under a third of
+   * the cycle and the refill takes the rest, which is what makes it read as
+   * something doing work rather than as something oscillating.
+   */
+  const squeeze = (at: number) => Math.max(0, cyclic(Math.max(0, stepped - from), cycle, {stroke: 0.3, phase: -at}));
+
+  /**
+   * AND THE FLOW IS CAUSED BY THE SQUEEZE.
+   *
+   * The particles used to travel at a constant rate while the chambers happened
+   * to contract nearby — two animations sharing a frame. Their speed is now the
+   * contraction itself, so blood surges when a chamber empties and slows when
+   * it is filling. If the heart stopped, the flow would stop.
+   */
+  const drive = chambersDrive(spec, squeeze);
 
   const chambers = spec.chambers ?? [];
   const vessels = spec.vessels ?? [];
@@ -135,6 +165,7 @@ export const AnatomyFlowPlate: React.FC<{spec: AnatomyFlowSpec; w: number; h: nu
     <AbsoluteFill style={{pointerEvents: 'none'}}>
       <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{position: 'absolute', inset: 0}}>
         <Ticks colour={muted} w={w} h={h} on={on} />
+        <MaterialDefs id="anat-flesh" material="flesh" colour={muted} w={w} seed="organ" />
 
         {/* VESSELS FIRST — the plumbing is behind the organ, as it is in a plate. */}
         {vessels.map((vessel, i) => {
@@ -192,15 +223,19 @@ export const AnatomyFlowPlate: React.FC<{spec: AnatomyFlowSpec; w: number; h: nu
           const colour = chamber.focus ? accent : muted;
           return (
             <g key={`c${i}`}>
+              <Contact x={cx} y={cy + ry * 1.12} width={rx * 1.5} strength={0.35} />
+              <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="#0c0806" opacity={0.7} />
               <ellipse
                 cx={cx}
                 cy={cy}
                 rx={rx}
                 ry={ry}
-                fill={`${colour}${chamber.focus ? '1f' : '12'}`}
+                fill={colour}
+                opacity={chamber.focus ? 0.16 : 0.1}
                 stroke={colour}
                 strokeWidth={wall}
               />
+              <MaterialFace id="anat-flesh" material="flesh" ellipse={{cx, cy, rx, ry}} w={w} />
               {/* The inner face, so a thick wall reads as a wall and not as a
                   heavy outline. */}
               <ellipse cx={cx} cy={cy} rx={Math.max(1, rx - wall)} ry={Math.max(1, ry - wall)} fill="none" stroke={colour} strokeWidth={line.construction} opacity={0.5} />
@@ -232,6 +267,7 @@ export const AnatomyFlowPlate: React.FC<{spec: AnatomyFlowSpec; w: number; h: nu
           const len = w * 0.03;
           return (
             <g key={`va${i}`} transform={`translate(${x} ${y}) rotate(${valve.angle ?? 0})`}>
+              {/* A SHUT VALVE IS SHUT. The leaflets meet, and nothing passes. */}
               {[-1, 1].map((side) => (
                 <line
                   key={side}
@@ -260,7 +296,8 @@ export const AnatomyFlowPlate: React.FC<{spec: AnatomyFlowSpec; w: number; h: nu
           ? Array.from({length: 14}, (_, k) => {
               const order = spec.circuit ?? vessels.map((_, i) => i);
               if (!order.length) return null;
-              const trip = (phase + k / 14) % 1;
+              // Driven by the pump, not by the clock.
+              const trip = ((phase * drive * 1.4) + k / 14) % 1;
               const at = trip * order.length;
               const leg = Math.min(order.length - 1, Math.floor(at));
               const vessel = vessels[order[leg]];

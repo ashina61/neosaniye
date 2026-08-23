@@ -1,0 +1,181 @@
+{
+  "episode": "baalbek",
+  "generatedAt": "2026-08-23",
+  "$note": "Written for whoever is sourcing pictures, not for the pipeline. The reel renders without any of these: every line here is either drawn procedurally or stated in type, and each entry says which. BLOCKING means the line is about something type cannot depict and no drawing covers it.",
+  "supplied": [],
+  "outstanding": 9,
+  "blocking": 1,
+  "wanted": [
+    {
+      "line": "blocks",
+      "says": "Under a Roman temple in Lebanon sit three blocks no crane today could lift.",
+      "subject": "megalith",
+      "domain": "scale",
+      "currently": "drawn as scaleHaulage",
+      "priority": "would strengthen",
+      "searches": [
+        "Baalbek trilithon",
+        "Temple of Jupiter Baalbek foundation"
+      ],
+      "described": "three colossal limestone blocks in a temple foundation, hard sunlight",
+      "purpose": "make the size felt by putting something known beside it",
+      "composition": "the object with a person or a known object in the same plane; no telephoto compression",
+      "orientation": "either; the whole object must fit",
+      "constraints": "the actual object named, at the site",
+      "substitutes": "another object of the same order of magnitude, captioned as a comparison",
+      "reject": "any framing with no scale reference in it, which is the one thing this shot exists to provide"
+    },
+    {
+      "line": "weight",
+      "says": "Each weighs about eight hundred tons. The one still in the quarry weighs sixteen hundred.",
+      "subject": "scale",
+      "domain": "scale",
+      "currently": "drawn as scaleHaulage",
+      "priority": "would strengthen",
+      "searches": [
+        "Stone of the Pregnant Woman Baalbek",
+        "Hajjar al-Hibla"
+      ],
+      "described": "an unfinished megalith lying in a limestone quarry",
+      "purpose": "make the size felt by putting something known beside it",
+      "composition": "the object with a person or a known object in the same plane; no telephoto compression",
+      "orientation": "either; the whole object must fit",
+      "constraints": "the actual object named, at the site",
+      "substitutes": "another object of the same order of magnitude, captioned as a comparison",
+      "reject": "any framing with no scale reference in it, which is the one thing this shot exists to provide"
+    },
+    {
+      "line": "quarry",
+      "says": "They were cut from bedrock half a mile uphill from where they sit.",
+      "subject": "geography",
+      "domain": "geography",
+      "currently": "drawn as map",
+      "priority": "would strengthen",
+      "searches": [
+        "Baalbek quarry",
+        "Roman quarry limestone cut channels"
+      ],
+      "described": "a limestone quarry face with cut channels, sloping ground",
+      "purpose": "establish where this is and how the parts of it stand relative to each other",
+      "composition": "high or aerial view with a clear horizon; the relation between the two sides must be legible",
+      "orientation": "landscape source, croppable to 9:16 without losing the relation",
+      "constraints": "the actual named place; contemporary imagery is acceptable unless the line dates it",
+      "substitutes": "a comparable coastline of the same character, LABELLED as illustrative and not as the place",
+      "reject": "tourist framing, visible modern signage where the line is historical, any view that hides the relation the sentence is about"
+    },
+    {
+      "line": "nolift",
+      "says": "No pulley of the period could take that load. No rope would hold it.",
+      "subject": "scale",
+      "domain": "scale",
+      "currently": "drawn as scaleHaulage",
+      "priority": "would strengthen",
+      "searches": [
+        "ancient hemp rope",
+        "Roman pulley block"
+      ],
+      "described": "a coil of heavy hemp rope on stone",
+      "purpose": "make the size felt by putting something known beside it",
+      "composition": "the object with a person or a known object in the same plane; no telephoto compression",
+      "orientation": "either; the whole object must fit",
+      "constraints": "the actual object named, at the site",
+      "substitutes": "another object of the same order of magnitude, captioned as a comparison",
+      "reject": "any framing with no scale reference in it, which is the one thing this shot exists to provide"
+    },
+    {
+      "line": "rolled",
+      "says": "So the Romans did not lift them. They rolled them.",
+      "subject": "scale",
+      "domain": "scale",
+      "currently": "drawn as scaleHaulage",
+      "priority": "would strengthen",
+      "searches": [
+        "wooden rollers",
+        "oak logs row"
+      ],
+      "described": "hardwood logs laid in rows on a flat earth road",
+      "purpose": "make the size felt by putting something known beside it",
+      "composition": "the object with a person or a known object in the same plane; no telephoto compression",
+      "orientation": "either; the whole object must fit",
+      "constraints": "the actual object named, at the site",
+      "substitutes": "another object of the same order of magnitude, captioned as a comparison",
+      "reject": "any framing with no scale reference in it, which is the one thing this shot exists to provide"
+    },
+    {
+      "line": "cradle",
+      "says": "Hardwood rollers under a timber cradle, and capstans hauling on ropes ahead.",
+      "subject": "scale",
+      "domain": "scale",
+      "currently": "drawn as scaleHaulage",
+      "priority": "would strengthen",
+      "searches": [
+        "timber cradle beams",
+        "capstan winch wooden"
+      ],
+      "described": "a heavy timber frame, thick beams pegged together",
+      "purpose": "make the size felt by putting something known beside it",
+      "composition": "the object with a person or a known object in the same plane; no telephoto compression",
+      "orientation": "either; the whole object must fit",
+      "constraints": "the actual object named, at the site",
+      "substitutes": "another object of the same order of magnitude, captioned as a comparison",
+      "reject": "any framing with no scale reference in it, which is the one thing this shot exists to provide"
+    },
+    {
+      "line": "men",
+      "says": "Roughly a thousand men on those ropes, moving the block a few feet an hour.",
+      "subject": "megalith",
+      "domain": "scale",
+      "currently": "drawn as scaleHaulage",
+      "priority": "would strengthen",
+      "searches": [
+        "dusty haul road",
+        "Levant dry landscape"
+      ],
+      "described": "a wide dusty haul road under white sun",
+      "purpose": "make the size felt by putting something known beside it",
+      "composition": "the object with a person or a known object in the same plane; no telephoto compression",
+      "orientation": "either; the whole object must fit",
+      "constraints": "the actual object named, at the site",
+      "substitutes": "another object of the same order of magnitude, captioned as a comparison",
+      "reject": "any framing with no scale reference in it, which is the one thing this shot exists to provide"
+    },
+    {
+      "line": "level",
+      "says": "It took months. The stones were never lifted, only slid, level, on wood.",
+      "subject": "megalith",
+      "domain": "scale",
+      "currently": "drawn as scaleHaulage",
+      "priority": "would strengthen",
+      "searches": [
+        "Roman road bed",
+        "compacted earth causeway"
+      ],
+      "described": "a flat compacted earth causeway",
+      "purpose": "make the size felt by putting something known beside it",
+      "composition": "the object with a person or a known object in the same plane; no telephoto compression",
+      "orientation": "either; the whole object must fit",
+      "constraints": "the actual object named, at the site",
+      "substitutes": "another object of the same order of magnitude, captioned as a comparison",
+      "reject": "any framing with no scale reference in it, which is the one thing this shot exists to provide"
+    },
+    {
+      "line": "close",
+      "says": "Not one machine. Sixty thousand man-days, and a road flat enough to hold them.",
+      "subject": "scale",
+      "domain": "scale",
+      "currently": "carried by typography",
+      "priority": "BLOCKING",
+      "searches": [
+        "Baalbek podium dusk",
+        "Temple of Jupiter columns"
+      ],
+      "described": "the temple podium at dusk, empty",
+      "purpose": "make the size felt by putting something known beside it",
+      "composition": "the object with a person or a known object in the same plane; no telephoto compression",
+      "orientation": "either; the whole object must fit",
+      "constraints": "the actual object named, at the site",
+      "substitutes": "another object of the same order of magnitude, captioned as a comparison",
+      "reject": "any framing with no scale reference in it, which is the one thing this shot exists to provide"
+    }
+  ]
+}

@@ -239,8 +239,7 @@
     "editorial": {
       "hardCutRatio": 1,
       "cutKinds": {
-        "HARD_CUT": 8,
-        "MATCH_CUT": 11
+        "HARD_CUT": 19
       },
       "arrivals": {
         "cut": 19
@@ -265,6 +264,26 @@
       "words": 89,
       "wordsPerSecond": 1.81,
       "unreadableCaptions": 0
+    },
+    "depth": {
+      "layeredDrawings": 16,
+      "averagePlanes": 3.4
+    },
+    "materials": [
+      "stone + wood",
+      "water + stone"
+    ],
+    "causalAnimations": 17,
+    "transformations": 0,
+    "microMotion": 16,
+    "meaningfulCameraMoves": 16,
+    "payoff": {
+      "seconds": 1.5,
+      "frames": 45,
+      "words": 8,
+      "needFrames": 45,
+      "enough": true,
+      "why": "the claim lands and is allowed to sit"
     },
     "rhythm": {
       "variation": 0.28,
@@ -291,6 +310,11 @@
     ]
   },
   "remainingDefects": [
+    {
+      "severity": "warning",
+      "where": "shot",
+      "what": "scene[15] \"s07-men\": onScreenText and spin both land at ~53 — one beat, not two"
+    },
     {
       "severity": "warning",
       "where": "geometry",

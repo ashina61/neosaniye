@@ -410,7 +410,7 @@
       "cut": {
         "kind": "HARD_CUT",
         "purpose": null,
-        "because": "FLASH was refused: the arrival could not be afforded here"
+        "because": "scale held (medium) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "HYBRID",
       "drawn": "scaleHaulage",
@@ -433,8 +433,8 @@
       "template": "composite",
       "seconds": 1.73,
       "camera": {
-        "from": 1.02,
-        "to": 1.07,
+        "from": 1.05,
+        "to": 1.05,
         "panX": null,
         "panY": null
       },
@@ -452,7 +452,9 @@
         "s04-fall-bg.png"
       ],
       "drawnGround": null,
-      "props": [],
+      "props": [
+        "beam"
+      ],
       "hierarchy": {
         "primary": "the claim: \"weight\"",
         "secondary": "the strongest image in the reel, returned to",
@@ -465,8 +467,8 @@
       "template": "composite",
       "seconds": 1.5,
       "camera": {
-        "from": 1.42,
-        "to": 1.03,
+        "from": 1.39,
+        "to": 1.02,
         "panX": null,
         "panY": null
       },
@@ -479,7 +481,7 @@
       "representation": "HYBRID",
       "drawn": "scaleHaulage",
       "emphasis": "gave",
-      "reveal": "blur",
+      "reveal": "wipe",
       "plates": [
         "s04-fall-bg.png"
       ],
@@ -498,7 +500,7 @@
       "seconds": 2.5,
       "camera": {
         "from": 1,
-        "to": 1.09,
+        "to": 1.08,
         "panX": null,
         "panY": null
       },
@@ -511,7 +513,7 @@
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "The",
-      "reveal": "punch",
+      "reveal": "blur",
       "plates": [
         "s05-cast-bg.png",
         "s05-cast-photo.png"
@@ -532,7 +534,7 @@
       "template": "composite",
       "seconds": 1.73,
       "camera": {
-        "from": 1.49,
+        "from": 1.69,
         "to": 1.02,
         "panX": null,
         "panY": null
@@ -546,7 +548,7 @@
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "exactly",
-      "reveal": "rise",
+      "reveal": "wipe",
       "plates": [
         "s05-cast-photo.png"
       ],
@@ -566,8 +568,8 @@
       "template": "title-slate",
       "seconds": 3.93,
       "camera": {
-        "from": 1,
-        "to": 1.08,
+        "from": 1.05,
+        "to": 1.05,
         "panX": null,
         "panY": null
       },
@@ -633,8 +635,8 @@
     "camera": {
       "tilt": 1,
       "push": 3,
-      "drift": 3,
-      "hold": 2,
+      "drift": 2,
+      "hold": 3,
       "pull": 2
     },
     "transition": {

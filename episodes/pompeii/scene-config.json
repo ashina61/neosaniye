@@ -18,13 +18,13 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.4,
-      "grungeOpacity": 0.15,
-      "scanlineOpacity": 0.07,
-      "scanlinePeriod": 9,
-      "vignetteStrength": 0.54,
+      "grainOpacity": 0.39,
+      "grungeOpacity": 0.16,
+      "scanlineOpacity": 0.1,
+      "scanlinePeriod": 8,
+      "vignetteStrength": 0.51,
       "weavePx": 7,
-      "weaveScale": 1.011
+      "weaveScale": 1.017
     }
   },
   "scenes": [
@@ -465,7 +465,7 @@
         "captionEmphasis": "Pumice",
         "captionReveal": "blur",
         "captionMark": "box",
-        "captionWordEvery": 2,
+        "captionWordEvery": 4,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
       },
@@ -515,15 +515,28 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.77,
+          "depth": 0.95,
           "anchor": "fill"
+        }
+      ],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.19,
+          "x": 109,
+          "y": 17,
+          "width": 343,
+          "rotate": 15,
+          "opacity": 0.84,
+          "colour": "#e8e2d4",
+          "from": 0
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.02,
-        "pushTo": 1.07,
+        "pushFrom": 1.05,
+        "pushTo": 1.05,
         "pushEndFrame": 50,
         "accent": "#e8e2d4",
         "caption": [
@@ -532,24 +545,24 @@
         ],
         "captionX": 84,
         "captionY": 1344,
-        "captionSize": 97,
+        "captionSize": 91,
         "captionAlign": "left",
         "captionFrame": 29,
         "captionEvery": 8,
         "captionScrim": 0.38,
-        "glowX": -323,
-        "glowY": 491,
-        "glowSize": 494,
-        "glowIntensity": 0.5,
+        "glowX": -339,
+        "glowY": 556,
+        "glowSize": 517,
+        "glowIntensity": 0.68,
         "glowWarm": "#e8e2d4",
-        "glowDepth": 0.77,
+        "glowDepth": 0.95,
         "focusPx": 0,
         "fog": 0,
         "handheld": 3,
         "captionEmphasis": "weight",
         "captionReveal": "punch",
-        "captionMark": "underline",
-        "captionWordEvery": 4,
+        "captionMark": "box",
+        "captionWordEvery": 2,
         "cameraMove": "hold",
         "cameraPurpose": "importance. The frame stops because the idea needs no help"
       },
@@ -590,39 +603,39 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.93,
+          "depth": 0.9,
           "anchor": "fill"
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
-        "pushFrom": 1.42,
-        "pushTo": 1.03,
-        "pushEndFrame": 44,
+        "pushFrom": 1.39,
+        "pushTo": 1.02,
+        "pushEndFrame": 41,
         "accent": "#e8e2d4",
         "caption": [
           "then gave"
         ],
         "captionX": 84,
         "captionY": 1344,
-        "captionSize": 91,
+        "captionSize": 95,
         "captionAlign": "left",
         "captionFrame": 28,
-        "captionEvery": 8,
+        "captionEvery": 9,
         "captionScrim": 0.38,
-        "glowX": -414,
-        "glowY": 488,
-        "glowSize": 450,
-        "glowIntensity": 0.63,
+        "glowX": -339,
+        "glowY": 438,
+        "glowSize": 387,
+        "glowIntensity": 0.59,
         "glowWarm": "#e8e2d4",
-        "glowDepth": 0.93,
+        "glowDepth": 0.9,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "gave",
-        "captionReveal": "blur",
-        "captionMark": "none",
+        "captionReveal": "wipe",
+        "captionMark": "underline",
         "captionWordEvery": 3,
         "cameraMove": "pull",
         "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
@@ -667,13 +680,13 @@
         "photo": "assets/s05-cast-photo.png"
       },
       "params": {
-        "frameWidth": 711,
-        "frameRatio": 1.09,
-        "pushEndFrame": 69,
+        "frameWidth": 740,
+        "frameRatio": 1.1,
+        "pushEndFrame": 73,
         "detachFrame": 37,
         "throughEndFrame": 50,
-        "weldRatio": 0.411,
-        "wallScaleEnd": 6.4,
+        "weldRatio": 0.406,
+        "wallScaleEnd": 5.6,
         "accent": "#e8e2d4",
         "caption": [
           "Not bones.",
@@ -681,15 +694,15 @@
           "the body left."
         ],
         "captionX": 84,
-        "captionY": 1277,
+        "captionY": 1253,
         "captionFrame": 6,
-        "captionEvery": 9,
-        "captionSize": 91,
+        "captionEvery": 8,
+        "captionSize": 86,
         "captionRecedeAt": 57,
         "pushFrom": 1,
-        "pushTo": 1.09,
+        "pushTo": 1.08,
         "captionEmphasis": "The",
-        "captionReveal": "punch",
+        "captionReveal": "blur",
         "captionMark": "underline",
         "captionWordEvery": 3,
         "cameraMove": "drift",
@@ -699,12 +712,12 @@
         {
           "kind": "wire",
           "shape": "diamond",
-          "depth": 0.63,
-          "x": 345,
-          "y": 1077,
-          "width": 352,
+          "depth": 0.8,
+          "x": 749,
+          "y": 974,
+          "width": 346,
           "colour": "#e8e2d4",
-          "from": 64
+          "from": 9
         }
       ]
     },
@@ -719,19 +732,19 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.85,
+          "depth": 0.92,
           "anchor": "fill"
         }
       ],
       "props": [
         {
           "kind": "beam",
-          "depth": 0.39,
-          "x": 105,
-          "y": 43,
-          "width": 280,
-          "rotate": 17,
-          "opacity": 0.82,
+          "depth": 0.35,
+          "x": 87,
+          "y": 142,
+          "width": 332,
+          "rotate": 10,
+          "opacity": 0.78,
           "colour": "#e8e2d4",
           "from": 44
         }
@@ -739,9 +752,9 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.49,
+        "pushFrom": 1.69,
         "pushTo": 1.02,
-        "pushEndFrame": 47,
+        "pushEndFrame": 49,
         "accent": "#e8e2d4",
         "caption": [
           "exactly",
@@ -750,25 +763,29 @@
           "fell"
         ],
         "captionX": 84,
-        "captionY": 988,
-        "captionSize": 93,
+        "captionY": 807,
+        "captionSize": 96,
         "captionAlign": "left",
         "captionFrame": 4,
-        "captionEvery": 8,
+        "captionEvery": 9,
         "captionScrim": 0.34,
-        "glowX": -442,
-        "glowY": 166,
-        "glowSize": 483,
-        "glowIntensity": 0.69,
+        "glowX": -204,
+        "glowY": 446,
+        "glowSize": 323,
+        "glowIntensity": 0.41,
         "glowWarm": "#e8e2d4",
-        "glowDepth": 0.85,
+        "glowDepth": 0.92,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
+        "shakeAt": [
+          4
+        ],
+        "shakeAmount": 22,
         "captionEmphasis": "exactly",
-        "captionReveal": "rise",
-        "captionMark": "none",
-        "captionWordEvery": 3,
+        "captionReveal": "wipe",
+        "captionMark": "box",
+        "captionWordEvery": 4,
         "cameraMove": "pull",
         "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
       }
@@ -785,19 +802,19 @@
       },
       "transition": {
         "kind": "slip",
-        "frames": 11
+        "frames": 9
       },
       "assets": {
         "background": "assets/s06-close-bg.png"
       },
       "params": {
-        "scrim": 0.36,
+        "scrim": 0.45,
         "kicker": "Rediscovered · 1748",
         "title": "SEVENTEEN CENTURIES",
         "footer": "the afternoon was still there",
         "titleFrame": 9,
         "titleSize": 230,
-        "creep": 1.056,
+        "creep": 1.095,
         "accent": "#e8e2d4",
         "field": "wash",
         "fieldColours": [
@@ -805,32 +822,38 @@
           "#1c1f21",
           "#0a0b0c"
         ],
-        "pushEndFrame": 114,
-        "pushFrom": 1,
-        "pushTo": 1.08,
-        "cameraMove": "drift",
-        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+        "mark": "bracket",
+        "markX": 260,
+        "markY": 820,
+        "markWidth": 560,
+        "markHeight": 300,
+        "markFrame": 40,
+        "pushEndFrame": 115,
+        "pushFrom": 1.05,
+        "pushTo": 1.05,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
       },
       "props": [
         {
           "kind": "plaque",
           "text": "Rediscovered · 1748",
-          "depth": 0.56,
-          "x": 432,
-          "y": 1515,
-          "width": 380,
-          "rotate": -0.1,
-          "from": 51
+          "depth": 0.66,
+          "x": 437,
+          "y": 617,
+          "width": 390,
+          "rotate": -2.1,
+          "from": 50
         },
         {
           "kind": "newspaper",
           "masthead": "THE HERALD",
           "text": "SEVENTEEN CENTURIES",
-          "depth": 0.76,
-          "x": 666,
-          "y": 536,
-          "width": 408,
-          "rotate": -0.3,
+          "depth": 0.73,
+          "x": 764,
+          "y": 539,
+          "width": 400,
+          "rotate": 3.4,
           "from": 73
         }
       ]

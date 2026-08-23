@@ -249,9 +249,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (map)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (tradeRoute) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "map",
@@ -343,9 +343,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "rule onto rule (measurement → measurement)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (measurement) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "measurement",
@@ -468,9 +468,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (map)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (geography) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "map",
@@ -498,9 +498,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (map)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (geography) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "map",
@@ -530,9 +530,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (map)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (map) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "map",
@@ -560,9 +560,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (map)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (coastline) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "map",
@@ -592,9 +592,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (map)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (coastline) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "map",
@@ -686,9 +686,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (map)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (strait) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "map",
@@ -863,14 +863,12 @@
     },
     "framing": {},
     "cut": {
-      "HARD_CUT": 13,
-      "MATCH_CUT": 8
+      "HARD_CUT": 21
     }
   },
   "editing": {
     "tally": {
-      "HARD_CUT": 13,
-      "MATCH_CUT": 8
+      "HARD_CUT": 21
     },
     "hardRatio": 1,
     "total": 21,

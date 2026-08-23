@@ -1388,8 +1388,18 @@ function graphicGround(look) {
     fieldColours: look.fieldColours,
     glowX: look.side > 0 ? Math.round(WIDTH * 1.06) : Math.round(-WIDTH * 0.06),
     glowY: Math.round(HEIGHT * 0.22),
-    glowSize: 460,
-    glowIntensity: 0.42,
+    /**
+     * A DRAWN GROUND HAS TO SUPPLY ITS OWN LIGHT.
+     *
+     * Law 3 says the premium is the layer drawn OVER the photograph. With the
+     * photograph refused there is no photograph to light, and the glow that was
+     * calibrated as an accent on a plate was the only illumination in the
+     * frame — which is why every drawn shot rendered as a diagram in a dark
+     * room. Raised enough to model the ground and no further: this is a lamp
+     * off to one side, not a key light.
+     */
+    glowSize: 560,
+    glowIntensity: 0.62,
     glowWarm: look.accent,
     glowDepth: 0.1,
   };
@@ -1695,11 +1705,26 @@ function applyDirection({
      */
     const spin = Number(params.spinFrames);
     if (Number.isFinite(spin) && spin > 0) {
-      const room = durationInFrames - 6 - params.titleFrame;
+      /**
+       * AND THE CLAIM IS LEFT TIME TO BE READ.
+       *
+       * Six frames was the "it lands before the cut" clamp, and landing before
+       * the cut is not the same as landing. A fact that appears two tenths of a
+       * second before black has been stated and not delivered — the shape a
+       * closing beat needs is ARRIVAL, EMPHASIS, HOLD, CUT, and the hold is the
+       * part that quietly disappears when a shot is trimmed.
+       *
+       * Reserved against the same reading rate the captions use, so the ending
+       * and the captions cannot disagree about how long words take.
+       */
+      const words = String(params.spinTo ?? params.title ?? '').split(/\s+/).filter(Boolean).length +
+        String(params.footer ?? '').split(/\s+/).filter(Boolean).length;
+      const hold = Math.max(Math.round(FPS * 0.8), readingFrames(words, FPS));
+      const room = durationInFrames - hold - params.titleFrame;
       if (spin > room) {
         params.spinFrames = Math.max(9, Math.min(spin, room));
-        if (params.titleFrame + params.spinFrames > durationInFrames - 6) {
-          params.titleFrame = Math.max(2, durationInFrames - 6 - params.spinFrames);
+        if (params.titleFrame + params.spinFrames > durationInFrames - hold) {
+          params.titleFrame = Math.max(2, durationInFrames - hold - params.spinFrames);
         }
       }
     }

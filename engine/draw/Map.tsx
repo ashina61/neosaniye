@@ -25,8 +25,9 @@
  */
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame, useVideoConfig} from 'remotion';
-import {drawOn, posterizeTime} from '../motion';
+import {drawOn, flow, posterizeTime} from '../motion';
 import {Arrow, Callout, Disclosure, MONO, Sheet, Ticks, weights} from './sheet';
+import {Depth, Haze, MaterialDefs, MaterialFace, Motes} from './material';
 
 /** A landmass or a body of water: a closed form with a name. */
 export type MapRegion = {
@@ -115,12 +116,38 @@ export const MapPlate: React.FC<{spec: MapSpec; w: number; h: number}> = ({spec,
       <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{position: 'absolute', inset: 0}}>
         <Ticks colour={muted} w={w} h={h} on={on} />
         <g transform={`translate(${w / 2} ${h / 2}) scale(${push}) translate(${-w / 2} ${-h / 2})`}>
+          <MaterialDefs id="map-water" material="water" colour="#7fb2c4" w={w} seed="sea" />
+          <MaterialDefs id="map-stone" material="stone" colour={muted} w={w} seed="coast" />
+
           {/* WATER FIRST, then land on top of it: the way a chart is printed. */}
           {(spec.regions ?? [])
             .filter((r) => r.kind === 'water')
             .map((region, i) => (
               <g key={`w${i}`}>
                 <path d={path(region.shape, w, h)} fill="#0a0f14" stroke={`${muted}55`} strokeWidth={line.construction} />
+                <MaterialFace id="map-water" material="water" d={path(region.shape, w, h)} w={w} />
+                {/**
+                 * THE SEA MOVES.
+                 *
+                 * Three swell lines drifting at different rates. It is a chart,
+                 * so this is two per cent of an effect — but a strait whose
+                 * water is perfectly still is a diagram of a strait, and the
+                 * whole complaint about the last pass was that everything was.
+                 */}
+                {[0, 1, 2].map((k) => {
+                  const cy = region.shape[0][1] + ((k + 1) / 4) * (region.shape[2][1] - region.shape[0][1]);
+                  const off = flow(stepped, fps, 0.05 + k * 0.03) * w * 0.3;
+                  return (
+                    <path
+                      key={k}
+                      d={`M ${-w * 0.3 + off} ${cy * h} q ${w * 0.08} ${-h * 0.006} ${w * 0.16} 0 t ${w * 0.16} 0 t ${w * 0.16} 0 t ${w * 0.16} 0 t ${w * 0.16} 0 t ${w * 0.16} 0 t ${w * 0.16} 0 t ${w * 0.16} 0`}
+                      fill="none"
+                      stroke="#7fb2c4"
+                      strokeWidth={line.construction}
+                      opacity={0.16}
+                    />
+                  );
+                })}
               </g>
             ))}
 
@@ -137,6 +164,7 @@ export const MapPlate: React.FC<{spec: MapSpec; w: number; h: number}> = ({spec,
                     strokeWidth={region.focus ? line.object : line.detail}
                     strokeLinejoin="round"
                   />
+                  <MaterialFace id="map-stone" material="stone" d={path(region.shape, w, h)} w={w} />
                 </g>
               );
             })}

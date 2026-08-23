@@ -267,5 +267,97 @@ export function editReel(config) {
     warnings.push(`the reel changes its kind of image ${changes} time(s) in ${scenes.length} shots — one idea, repeated`);
   }
 
-  return {errors, warnings, rhythm: beat, variety, density};
+  /**
+   * AND THE ENDING IS ALLOWED TO LAND.
+   *
+   * A warning rather than an error: a reel whose last fact is tight is worse
+   * than one whose last fact breathes, and it is still a reel.
+   */
+  const payoff = payoffHold(config);
+  if (payoff && !payoff.enough) {
+    warnings.push(
+      `payoff: the closing claim holds for ${payoff.seconds}s and needs ${(payoff.needFrames / fps).toFixed(2)}s — ` +
+        'a fact that arrives on the last frame has not arrived',
+    );
+  }
+
+  return {errors, warnings, rhythm: beat, variety, density, payoff, causal: causalLinks(config)};
+}
+
+/* ── THE PAYOFF, AND WHETHER IT WAS LET LAND ───────────────────────────── */
+
+/**
+ * A FACT THAT ARRIVES ON THE LAST FRAME HAS NOT ARRIVED.
+ *
+ * The shape a documentary ending needs is ARRIVAL → EMPHASIS → HOLD → CUT, and
+ * the hold is the part that gets cut when a reel is trimmed to length. Without
+ * it the closing figure is on screen for four frames and the viewer is looking
+ * at black before they have read it — which is indistinguishable, at the only
+ * moment that matters, from not having said it.
+ *
+ * Measured against the same reading rate the captions are scheduled with, so
+ * the check and the schedule cannot disagree.
+ */
+export function payoffHold(config) {
+  const fps = config.fps ?? FPS_DEFAULT;
+  const scenes = config.scenes ?? [];
+  const last = scenes[scenes.length - 1];
+  if (!last) return null;
+  const p = last.params ?? {};
+  const claim = p.spinTo ?? p.title ?? (p.countTo !== undefined ? String(p.countTo) : null);
+  if (!claim) return {seconds: 0, frames: 0, words: 0, needFrames: 0, enough: true, why: 'the last shot states no claim to hold'};
+
+  const lands =
+    (Number(p.titleFrame) || 0) +
+    (Number(p.spinFrames) || Number(p.countOver) || 0);
+  const heldFrames = Math.max(0, (last.durationInFrames ?? 0) - lands);
+  const words = String(claim).split(/\s+/).filter(Boolean).length + String(p.footer ?? '').split(/\s+/).filter(Boolean).length;
+  const need = Math.max(fps * 0.8, readingFrames(words, fps));
+  return {
+    seconds: Number((heldFrames / fps).toFixed(2)),
+    frames: heldFrames,
+    words,
+    needFrames: Math.round(need),
+    enough: heldFrames >= need,
+    why: heldFrames >= need ? 'the claim lands and is allowed to sit' : 'the claim lands too close to the cut',
+  };
+}
+
+/**
+ * IS THE CAUSAL CHAIN ACTUALLY IN THE SPEC?
+ *
+ * The representations were built so that one thing makes another happen — a
+ * blow deforms, a contraction moves blood, a crack admits water. That is only
+ * true if the spec carries the fields the causality is computed from, and a
+ * spec that lost them draws three animations sharing a frame. Counted rather
+ * than assumed, and reported per episode.
+ */
+export function causalLinks(config) {
+  const links = [];
+  for (const [i, scene] of (config.scenes ?? []).entries()) {
+    const d = scene.diagram;
+    if (!d) continue;
+    const where = `scene[${i}] "${scene.id}"`;
+    if (d.type === 'process') {
+      for (const stage of d.stages ?? []) {
+        if (stage.agent && stage.agent !== 'none') links.push({where, cause: stage.agent, effect: stage.label});
+      }
+    }
+    if (d.type === 'crossSection') {
+      if (d.crack && d.fluid) links.push({where, cause: 'crack opens', effect: 'water enters'});
+      if (d.fluid && d.inclusions?.some((n) => n.reactsAt !== undefined)) links.push({where, cause: 'water reaches lime', effect: 'it reacts'});
+      if (d.growth && d.crack?.healsAt !== undefined) links.push({where, cause: 'mineral grows', effect: 'the gap closes'});
+    }
+    if (d.type === 'anatomyFlow') {
+      if ((d.chambers ?? []).length && (d.circuit ?? []).length) links.push({where, cause: 'chambers contract', effect: 'blood moves'});
+      if ((d.valves ?? []).length) links.push({where, cause: 'a valve opens', effect: 'flow passes one way'});
+    }
+    if (d.type === 'scaleHaulage') {
+      if ((d.rollers ?? 0) > 0 && (d.travel ?? 0) > 0.02) links.push({where, cause: 'the load moves', effect: 'the rollers turn'});
+      if ((d.ropes ?? 0) > 0) links.push({where, cause: 'the ropes take tension', effect: 'the slack goes out'});
+    }
+    if (d.type === 'gearSystem') links.push({where, cause: 'the driven wheel turns', effect: 'the train turns with it'});
+    if (d.type === 'map' && (d.route ?? []).length) links.push({where, cause: 'the route is travelled', effect: 'the vessel arrives'});
+  }
+  return links;
 }

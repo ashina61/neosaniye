@@ -81,11 +81,45 @@ export function shapeOf(scene) {
   const round =
     scene.diagram?.type === 'orbit' ||
     scene.diagram?.type === 'gearSystem' ||
+    // NOT anatomyFlow. Adding it made every consecutive chamber diagram a
+    // "circle onto circle" rhyme and put sixteen match cuts in a twenty-two
+    // shot reel — a diagram containing circles is not a circular composition.
     (scene.props ?? []).some((q) => q.kind === 'wire' && q.shape === 'circle');
   return {
     plates,
     props,
     diagram: scene.diagram?.type ?? null,
+    /**
+     * THE FOUR THINGS THE EYE CARRIES ACROSS A CUT.
+     *
+     * Subject, shape, direction and scale — and until now only the first two
+     * were available, because a drawing exposed nothing about itself. A cut
+     * between two shots of the same object at the same size travelling the same
+     * way is a match whether or not they are the same photograph, and the whole
+     * point of a match cut is that the eye does not notice the join.
+     */
+    subject: scene.diagram?.subject ?? (plates[0] ?? null),
+    /** Which way the shot moves. A pan right into a pan right is a rhyme. */
+    direction:
+      Math.abs(Number(p.panX) || 0) > 40
+        ? (Number(p.panX) > 0 ? 'right' : 'left')
+        : Math.abs(Number(p.panY) || 0) > 60
+          ? (Number(p.panY) > 0 ? 'down' : 'up')
+          : (Number(p.pushTo) || 1) - (Number(p.pushFrom) || 1) > 0.06
+            ? 'in'
+            : (Number(p.pushFrom) || 1) - (Number(p.pushTo) || 1) > 0.06
+              ? 'out'
+              : null,
+    /** How big the subject is in frame, coarsely. */
+    scale: scene.diagram
+      ? scene.diagram.type === 'measurement' || scene.diagram.type === 'timeline'
+        ? 'wide'
+        : 'medium'
+      : p.plateWidth
+        ? p.plateWidth > 0.85
+          ? 'full'
+          : 'medium'
+        : 'wide',
     round,
     // A timeline and a measurement are both a long straight rule; a slate is a
     // block of type. Both are forms a following shot can pick up.
@@ -106,9 +140,60 @@ export function correspondence(a, b) {
   if (!a || !b) return null;
   const shared = a.plates.filter((f) => b.plates.includes(f));
   if (shared.length) return {kind: 'same subject', detail: shared[0]};
-  if (a.round && b.round) return {kind: 'circle onto circle', detail: `${a.diagram ?? 'ring'} → ${b.diagram ?? 'ring'}`};
-  if (a.linear && b.linear) return {kind: 'rule onto rule', detail: `${a.diagram} → ${b.diagram}`};
-  if (a.diagram && b.diagram && a.diagram === b.diagram) return {kind: 'same drawing', detail: a.diagram};
+  /**
+   * A RHYME IS A SHAPE CARRIED ACROSS A CHANGE.
+   *
+   * Both halves matter. A circle onto a circle is only a rhyme if the two shots
+   * are otherwise different things — a gear train into an orbit. A gear train
+   * into a gear train is the same drawing continuing, and calling that a match
+   * cut is how one reel came out with sixteen of them in twenty-two shots.
+   */
+  if (a.round && b.round && a.diagram !== b.diagram) {
+    return {kind: 'circle onto circle', detail: `${a.diagram ?? 'ring'} → ${b.diagram ?? 'ring'}`};
+  }
+  if (a.linear && b.linear && a.diagram !== b.diagram) {
+    return {kind: 'rule onto rule', detail: `${a.diagram} → ${b.diagram}`};
+  }
+  /**
+   * THE SAME SUBJECT, DRAWN, IS THE SAME SUBJECT.
+   *
+   * Two shots of one blade at two stages of forging are a match cut in the
+   * strictest sense — it is literally the same object, and the whole
+   * representation layer was built so that it stays the same object. Reading
+   * only file names, that fact was invisible to the editor.
+   */
+  if (a.subject && a.subject === b.subject && a.diagram && b.diagram) {
+    /**
+     * BUT THE SAME SUBJECT IN THE SAME DRAWING IS A CONTINUATION.
+     *
+     * A match cut is a rhyme ACROSS a change: something persists while
+     * something else does not. Fifteen consecutive shots of one heart in one
+     * anatomical schematic are not fifteen rhymes — they are one drawing seen
+     * fifteen times, and labelling every seam a match cut is the same failure
+     * as calling a shared accent colour a rhyme. Seventy-six per cent of one
+     * reel came out "earned" that way.
+     *
+     * Same subject, DIFFERENT representation is the real thing: the blade in
+     * section after the blade being forged.
+     */
+    if (a.diagram === b.diagram) {
+      return {kind: 'the same drawing continuing', detail: a.subject, weak: true};
+    }
+    return {kind: 'same subject, seen another way', detail: `${a.subject}: ${a.diagram} → ${b.diagram}`};
+  }
+  // The same drawing again is a continuation, not a rhyme. Weak: it argues for
+  // a plain cut, because there is nothing to bridge between a thing and itself.
+  if (a.diagram && b.diagram && a.diagram === b.diagram) {
+    return {kind: 'the same drawing continuing', detail: a.diagram, weak: true};
+  }
+  /** A move continued across a cut. The eye follows the direction, not the frame. */
+  if (a.direction && a.direction === b.direction && a.direction !== 'in') {
+    return {kind: 'direction carried', detail: a.direction};
+  }
+  /** Same size, same kind of subject: a scale rhyme, weaker but real. */
+  if (a.scale && a.scale === b.scale && a.diagram && b.diagram && a.scale !== 'wide') {
+    return {kind: 'scale held', detail: a.scale, weak: true};
+  }
   /**
    * A SHARED ACCENT IS NOT A MATCH CUT.
    *

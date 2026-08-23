@@ -427,11 +427,11 @@
         "panX": null,
         "panY": null
       },
-      "transition": "slip",
+      "transition": "cut",
       "cut": {
-        "kind": "OBJECT_WIPE",
-        "purpose": "object transformation",
-        "because": "beat is EVIDENCE"
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "direction carried (out)"
       },
       "representation": "PHOTO",
       "drawn": null,
@@ -569,9 +569,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "OBJECT_WIPE was refused: the arrival could not be afforded here"
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "direction carried (right)"
       },
       "representation": "PHOTO",
       "drawn": null,
@@ -635,11 +635,11 @@
         "panX": null,
         "panY": null
       },
-      "transition": "cut",
+      "transition": "slip",
       "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "OBJECT_WIPE was refused: the arrival could not be afforded here"
+        "kind": "OBJECT_WIPE",
+        "purpose": "object transformation",
+        "because": "beat is VERDICT"
       },
       "representation": "PHOTO",
       "drawn": null,
@@ -706,18 +706,16 @@
     },
     "framing": {},
     "cut": {
-      "MATCH_CUT": 6,
+      "MATCH_CUT": 8,
       "DIRECTIONAL": 1,
-      "OBJECT_WIPE": 2,
-      "HARD_CUT": 2
+      "OBJECT_WIPE": 2
     }
   },
   "editing": {
     "tally": {
-      "MATCH_CUT": 6,
+      "MATCH_CUT": 8,
       "DIRECTIONAL": 1,
-      "OBJECT_WIPE": 2,
-      "HARD_CUT": 2
+      "OBJECT_WIPE": 2
     },
     "hardRatio": 0.73,
     "total": 11,

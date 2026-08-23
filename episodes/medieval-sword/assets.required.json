@@ -1,0 +1,181 @@
+{
+  "episode": "medieval-sword",
+  "generatedAt": "2026-08-23",
+  "$note": "Written for whoever is sourcing pictures, not for the pipeline. The reel renders without any of these: every line here is either drawn procedurally or stated in type, and each entry says which. BLOCKING means the line is about something type cannot depict and no drawing covers it.",
+  "supplied": [],
+  "outstanding": 9,
+  "blocking": 2,
+  "wanted": [
+    {
+      "line": "notcast",
+      "says": "A medieval sword was never cast. It was forged from a bar of iron.",
+      "subject": "swordMaking",
+      "domain": "process",
+      "currently": "drawn as process",
+      "priority": "would strengthen",
+      "searches": [
+        "iron billet anvil",
+        "blacksmith bar stock forge"
+      ],
+      "described": "a rough iron billet on an anvil",
+      "purpose": "show the work being done — hands, tool, material, at the moment of contact",
+      "composition": "close, over the work; the tool and the material both in frame",
+      "orientation": "either, with room to crop tall",
+      "constraints": "period-correct tools and technique; a modern reconstruction is acceptable if captioned as one",
+      "substitutes": "a living practitioner of the same craft, captioned as a modern demonstration",
+      "reject": "machine tooling standing in for hand work, safety equipment in a historical scene, staged studio lighting"
+    },
+    {
+      "line": "heat",
+      "says": "The smith worked it near twelve hundred degrees. Orange, not yellow.",
+      "subject": "swordMaking",
+      "domain": "process",
+      "currently": "drawn as process",
+      "priority": "would strengthen",
+      "searches": [
+        "hot steel forge fire",
+        "blacksmith heating steel"
+      ],
+      "described": "glowing steel drawn from a charcoal fire",
+      "purpose": "show the work being done — hands, tool, material, at the moment of contact",
+      "composition": "close, over the work; the tool and the material both in frame",
+      "orientation": "either, with room to crop tall",
+      "constraints": "period-correct tools and technique; a modern reconstruction is acceptable if captioned as one",
+      "substitutes": "a living practitioner of the same craft, captioned as a modern demonstration",
+      "reject": "machine tooling standing in for hand work, safety equipment in a historical scene, staged studio lighting"
+    },
+    {
+      "line": "carbon",
+      "says": "Iron with too little carbon bends. Iron with too much shatters on the first parry.",
+      "subject": "material",
+      "domain": "material",
+      "currently": "carried by typography",
+      "priority": "BLOCKING",
+      "searches": [
+        "broken sword blade fragment",
+        "fractured steel section"
+      ],
+      "described": "a broken blade section, dark metal",
+      "purpose": "show the substance itself at a scale where its structure is visible",
+      "composition": "macro or section; the structure is the subject, not the object it came from",
+      "orientation": "either",
+      "constraints": "the actual material named; a sample of the same class only if labelled",
+      "substitutes": "a published micrograph or core sample photograph with its source credited",
+      "reject": "a generic texture, a rendered material, anything where the structure cannot be seen"
+    },
+    {
+      "line": "layered",
+      "says": "So the blade is built in layers. Hard steel at the edge, soft iron in the spine.",
+      "subject": "swordMaking",
+      "domain": "process",
+      "currently": "drawn as process",
+      "priority": "would strengthen",
+      "searches": [
+        "pattern welded blade etched",
+        "laminated steel blade"
+      ],
+      "described": "an etched blade showing a layered pattern",
+      "purpose": "show the work being done — hands, tool, material, at the moment of contact",
+      "composition": "close, over the work; the tool and the material both in frame",
+      "orientation": "either, with room to crop tall",
+      "constraints": "period-correct tools and technique; a modern reconstruction is acceptable if captioned as one",
+      "substitutes": "a living practitioner of the same craft, captioned as a modern demonstration",
+      "reject": "machine tooling standing in for hand work, safety equipment in a historical scene, staged studio lighting"
+    },
+    {
+      "line": "fold",
+      "says": "Hammer and fold, again and again. Each fold doubles the layers.",
+      "subject": "process",
+      "domain": "process",
+      "currently": "drawn as process",
+      "priority": "would strengthen",
+      "searches": [
+        "forging hammer sparks",
+        "blacksmith striking hot steel"
+      ],
+      "described": "a hammer striking bright steel, sparks",
+      "purpose": "show the work being done — hands, tool, material, at the moment of contact",
+      "composition": "close, over the work; the tool and the material both in frame",
+      "orientation": "either, with room to crop tall",
+      "constraints": "period-correct tools and technique; a modern reconstruction is acceptable if captioned as one",
+      "substitutes": "a living practitioner of the same craft, captioned as a modern demonstration",
+      "reject": "machine tooling standing in for hand work, safety equipment in a historical scene, staged studio lighting"
+    },
+    {
+      "line": "quench",
+      "says": "Then the finished blade is heated once more and plunged into oil.",
+      "subject": "swordMaking",
+      "domain": "process",
+      "currently": "drawn as process",
+      "priority": "would strengthen",
+      "searches": [
+        "quenching blade oil",
+        "forge quench tank"
+      ],
+      "described": "a quench tank, dark oil, smoke",
+      "purpose": "show the work being done — hands, tool, material, at the moment of contact",
+      "composition": "close, over the work; the tool and the material both in frame",
+      "orientation": "either, with room to crop tall",
+      "constraints": "period-correct tools and technique; a modern reconstruction is acceptable if captioned as one",
+      "substitutes": "a living practitioner of the same craft, captioned as a modern demonstration",
+      "reject": "machine tooling standing in for hand work, safety equipment in a historical scene, staged studio lighting"
+    },
+    {
+      "line": "cool",
+      "says": "The thin edge cools in under a second and locks hard. The spine stays soft.",
+      "subject": "process",
+      "domain": "process",
+      "currently": "drawn as process",
+      "priority": "would strengthen",
+      "searches": [
+        "steam oil quench",
+        "smoke dark forge interior"
+      ],
+      "described": "steam rising off dark oil in a low room",
+      "purpose": "show the work being done — hands, tool, material, at the moment of contact",
+      "composition": "close, over the work; the tool and the material both in frame",
+      "orientation": "either, with room to crop tall",
+      "constraints": "period-correct tools and technique; a modern reconstruction is acceptable if captioned as one",
+      "substitutes": "a living practitioner of the same craft, captioned as a modern demonstration",
+      "reject": "machine tooling standing in for hand work, safety equipment in a historical scene, staged studio lighting"
+    },
+    {
+      "line": "snaps",
+      "says": "A sword that is hard the whole way through is a sword that snaps.",
+      "subject": "swordMaking",
+      "domain": "process",
+      "currently": "drawn as scaleHaulage",
+      "priority": "would strengthen",
+      "searches": [
+        "broken sword on stone",
+        "shattered blade"
+      ],
+      "described": "a snapped blade lying on stone",
+      "purpose": "show the work being done — hands, tool, material, at the moment of contact",
+      "composition": "close, over the work; the tool and the material both in frame",
+      "orientation": "either, with room to crop tall",
+      "constraints": "period-correct tools and technique; a modern reconstruction is acceptable if captioned as one",
+      "substitutes": "a living practitioner of the same craft, captioned as a modern demonstration",
+      "reject": "machine tooling standing in for hand work, safety equipment in a historical scene, staged studio lighting"
+    },
+    {
+      "line": "close",
+      "says": "Two hundred hours of work, and the design is entirely in how fast it cooled.",
+      "subject": "process",
+      "domain": "process",
+      "currently": "carried by typography",
+      "priority": "BLOCKING",
+      "searches": [
+        "finished sword blade workbench",
+        "medieval sword museum"
+      ],
+      "described": "a finished blade on a workbench, low light",
+      "purpose": "show the work being done — hands, tool, material, at the moment of contact",
+      "composition": "close, over the work; the tool and the material both in frame",
+      "orientation": "either, with room to crop tall",
+      "constraints": "period-correct tools and technique; a modern reconstruction is acceptable if captioned as one",
+      "substitutes": "a living practitioner of the same craft, captioned as a modern demonstration",
+      "reject": "machine tooling standing in for hand work, safety equipment in a historical scene, staged studio lighting"
+    }
+  ]
+}

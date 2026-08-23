@@ -188,9 +188,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (anatomyFlow)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (humanHeart) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "anatomyFlow",
@@ -218,9 +218,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (anatomyFlow)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (anatomyFlow) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "anatomyFlow",
@@ -250,9 +250,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (anatomyFlow)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (circulation) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "anatomyFlow",
@@ -408,9 +408,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (anatomyFlow)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (anatomy) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "anatomyFlow",
@@ -438,9 +438,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (anatomyFlow)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (anatomyFlow) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "anatomyFlow",
@@ -470,9 +470,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (anatomyFlow)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (humanHeart) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "anatomyFlow",
@@ -500,9 +500,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (anatomyFlow)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (humanHeart) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "anatomyFlow",
@@ -532,9 +532,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (anatomyFlow)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (anatomyFlow) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "anatomyFlow",
@@ -562,9 +562,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (anatomyFlow)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (anatomy) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "anatomyFlow",
@@ -594,9 +594,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (anatomyFlow)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (anatomy) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "anatomyFlow",
@@ -624,9 +624,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (anatomyFlow)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (anatomy) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "anatomyFlow",
@@ -720,9 +720,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "graphic continuity (#ffcf3d) — the two shots already share a world, so there is nothing to bridge"
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "direction carried (out)"
       },
       "representation": "TYPOGRAPHY",
       "drawn": null,
@@ -867,14 +867,14 @@
     },
     "framing": {},
     "cut": {
-      "HARD_CUT": 10,
-      "MATCH_CUT": 11
+      "HARD_CUT": 20,
+      "MATCH_CUT": 1
     }
   },
   "editing": {
     "tally": {
-      "HARD_CUT": 10,
-      "MATCH_CUT": 11
+      "HARD_CUT": 20,
+      "MATCH_CUT": 1
     },
     "hardRatio": 1,
     "total": 21,

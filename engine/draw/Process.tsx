@@ -25,8 +25,9 @@
  */
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
-import {drawOn, posterizeTime, punch} from '../motion';
+import {drawOn, impact, posterizeTime, punch, rigid} from '../motion';
 import {Arrow, Disclosure, MONO, SANS, Sheet, Ticks, weights} from './sheet';
+import {Contact, Depth, MaterialDefs, MaterialFace, Motes, shimmer} from './material';
 
 const CLAMP = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 
@@ -242,17 +243,36 @@ export const ProcessPlate: React.FC<{spec: ProcessSpec; w: number; h: number}> =
   const shown = settled ? stages[stages.length - 1] : stages[index];
   const nextStage = stages[Math.min(stages.length - 1, index + 1)];
 
+  /**
+   * THE HAMMER FALLS, AND THE METAL YIELDS BECAUSE IT WAS STRUCK.
+   *
+   * The object's transformation used to run on a smooth ease regardless of what
+   * was being done to it — the same curve for heating and for being hit. Metal
+   * does not flow under a hammer; it does nothing, then yields all at once at
+   * the moment of contact. So a strike stage advances on `rigid` (flat, step,
+   * flat) timed to the blow, and the whole drawing takes the recoil.
+   *
+   * This is the causal link, not a coincidence of timings: the deformation is
+   * computed from the strike's own progress.
+   */
+  const struck = !settled && (nextStage.agent === 'strike' || nextStage.agent === 'fold');
+  const blowAt = 0.52;
+  const yielded = struck ? rigid(within, blowAt, 16) : eased;
+  const recoil = struck ? impact(within * 100, blowAt * 100, {amount: w * 0.006, fall: 6, rise: 10}) : 0;
+
   // THE OBJECT'S BOX. Fixed, so the thing does not wander while it changes —
   // a shape that drifts across the frame as it transforms reads as two shapes.
   const box = {x: w * 0.2, y: h * 0.3, w: w * 0.6, h: h * 0.24};
   const shape = a.map(([ax, ay], i) => {
     const [bx, by] = b[i];
-    return [box.x + (ax + (bx - ax) * eased) * box.w, box.y + (ay + (by - ay) * eased) * box.h];
+    const t = struck ? yielded : eased;
+    return [box.x + (ax + (bx - ax) * t) * box.w, box.y + (ay + (by - ay) * t) * box.h];
   });
   const d = shape.map(([x, y], i) => `${i === 0 ? 'M' : 'L'} ${x} ${y}`).join(' ') + ' Z';
 
   const heat = (stages[index].heat ?? 0) + ((nextStage.heat ?? 0) - (stages[index].heat ?? 0)) * eased;
   const colour = glowColour(heat, accent, muted);
+
 
   const on = drawOn(stepped, [from, from + 10]);
   const agent = settled ? 'none' : nextStage.agent ?? 'none';
@@ -306,9 +326,46 @@ export const ProcessPlate: React.FC<{spec: ProcessSpec; w: number; h: number}> =
           />
         </g>
 
-        {/* THE OBJECT. One outline, from the first frame to the last. */}
-        <g>
-          <path d={d} fill={`${colour}22`} stroke={colour} strokeWidth={line.object} strokeLinejoin="round" />
+        {/* Hot iron is its own light source, so its highlight is its own colour. */}
+        <MaterialDefs id="proc-metal" material="metal" colour={colour} w={w} seed="forge" tint={heat > 0.3 ? colour : '#ffffff'} />
+
+        {/**
+         * THE OBJECT. One outline, from the first frame to the last.
+         *
+         * It sits on the primary plane, it takes the recoil of the blow, and
+         * when it is hot the air over it shimmers — which is the only cue in
+         * the drawing that says the temperature is a real quantity rather than
+         * a colour choice.
+         */}
+        <g transform={`translate(0 ${recoil}) ${shimmer(stepped, heat, w)}`}>
+          {/**
+           * THE SHADOW SITS UNDER THE OBJECT, not under the box it lives in.
+           *
+           * Measured from the shape's own extent, so it follows the blade as it
+           * stretches and tapers. Placed from the box it was a grey smear a
+           * couple of hundred pixels below, attached to nothing.
+           */}
+          <Contact
+            x={(Math.min(...shape.map((s) => s[0])) + Math.max(...shape.map((s) => s[0]))) / 2}
+            y={Math.max(...shape.map((s) => s[1])) + w * 0.022}
+            width={Math.max(...shape.map((s) => s[0])) - Math.min(...shape.map((s) => s[0]))}
+            strength={0.5 + heat * 0.3}
+          />
+          {/**
+           * THE SUBJECT IS THE DENSEST THING IN THE FRAME.
+           *
+           * A 15% tint over a lit ground is a shape you can see through, and
+           * once the drawn ground was raised enough to model itself the blade
+           * stopped reading as an object at all. So it gets a dark body first —
+           * iron is dark, even hot iron is dark at its edges — then its heat
+           * over that, then the material, then a heavy contour. Hierarchy is not
+           * a preference here; it is the difference between a subject and a
+           * watermark.
+           */}
+          <path d={d} fill="#0d0906" opacity={0.72} />
+          <path d={d} fill={colour} opacity={0.12 + heat * 0.3} />
+          <MaterialFace id="proc-metal" material="metal" d={d} w={w} />
+          <path d={d} fill="none" stroke={colour} strokeWidth={line.emphasis} strokeLinejoin="round" />
           {/* An inner line at heat, so hot metal reads as hot rather than as
               orange metal: the core is brighter than the skin. */}
           {heat > 0.15 ? (
@@ -322,6 +379,16 @@ export const ProcessPlate: React.FC<{spec: ProcessSpec; w: number; h: number}> =
             />
           ) : null}
         </g>
+
+        {/**
+         * SPARKS ARE NOT DECORATION HERE — they are the evidence of the blow.
+         *
+         * Only on a strike, only at the moment of contact, and they die within
+         * a few frames. A forge that sparks continuously is a fountain.
+         */}
+        {struck && within > blowAt && within < blowAt + 0.22 ? (
+          <Motes w={w} h={h} colour={accent} count={9} seed={`spark${index}`} air={2} band={[0.36, 0.46]} />
+        ) : null}
 
         {/* THE AGENT, above the object, acting on it. */}
         {agent !== 'none' ? (

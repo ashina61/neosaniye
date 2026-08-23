@@ -291,7 +291,9 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
         * the same reason a motif is: a drawing that parallaxes stops being a
         * drawing and becomes a prop sliding around the room.
         */}
-      <Diagram spec={scene.diagram as DiagramSpec | undefined} />
+      {/* THE DRAWING TAKES THE SHOT'S CAMERA, at a share of it: a diagram that
+          scales exactly with the plates behind it is a sticker on the plate. */}
+      <Diagram spec={scene.diagram as DiagramSpec | undefined} push={1 + (push - 1) * 0.72} origin={origin} />
 
       <SceneMotif
         params={scene.params}

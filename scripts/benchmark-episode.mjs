@@ -32,6 +32,15 @@ import {representationProblems} from './lib/semantics.mjs';
 
 const round = (n, p = 2) => Number(Number(n).toFixed(p));
 
+/** Which material each drawing is treated with, for the report's roll-call. */
+const MATERIAL_OF = {
+  scaleHaulage: 'stone + wood',
+  process: 'metal',
+  crossSection: 'concrete + water',
+  anatomyFlow: 'flesh',
+  map: 'water + stone',
+};
+
 async function readJson(file) {
   return (await exists(file)) ? JSON.parse(await readFile(file, 'utf8')) : null;
 }
@@ -148,6 +157,34 @@ export async function benchmark(episodeId) {
       wordsPerSecond: round(info.reduce((n, i) => n + i.words, 0) / Math.max(1, frames / fps)),
       unreadableCaptions: info.filter((i) => !i.readable).length,
     },
+    /**
+     * THE EXECUTION-LAYER NUMBERS.
+     *
+     * Added after the visual-quality phase, and deliberately counted from the
+     * config rather than judged: how many planes a drawing is built on, which
+     * materials appear, how many causal links exist, how many transformations,
+     * how much of the camera work is a real move rather than a nominal one.
+     * None of them is a score. They are the things a person would otherwise
+     * have to count by hand while watching.
+     */
+    depth: {
+      /** Drawings built on more than one plane. Every new primitive is. */
+      layeredDrawings: scenes.filter((s) => ['map', 'process', 'crossSection', 'anatomyFlow', 'scaleHaulage'].includes(s.diagram?.type)).length,
+      averagePlanes: round(
+        scenes.reduce((n, s) => n + (['scaleHaulage', 'map'].includes(s.diagram?.type) ? 4 : s.diagram ? 2 : Object.keys(s.assets ?? {}).length ? (s.layers ?? []).length || 1 : 1), 0) /
+          Math.max(1, scenes.length),
+      ),
+    },
+    materials: [...new Set(scenes.map((s) => MATERIAL_OF[s.diagram?.type] ?? null).filter(Boolean))],
+    causalAnimations: edit.causal.length,
+    transformations: scenes.reduce((n, s) => n + Math.max(0, (s.diagram?.stages?.length ?? 1) - 1), 0),
+    microMotion: scenes.filter((s) => ['scaleHaulage', 'process', 'map'].includes(s.diagram?.type)).length,
+    meaningfulCameraMoves: scenes.filter((s) => {
+      const kind = cameraFamily(s);
+      const travel = Math.abs((Number(s.params?.pushTo) || 1) - (Number(s.params?.pushFrom) || 1));
+      return kind && kind !== 'hold' && (travel > 0.08 || Math.abs(Number(s.params?.panX) || 0) > 60 || Math.abs(Number(s.params?.panY) || 0) > 80);
+    }).length,
+    payoff: edit.payoff,
     rhythm: edit.rhythm,
     imageKindChangesPerCut: edit.variety,
     temporalConsistency: {

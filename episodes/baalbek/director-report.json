@@ -187,9 +187,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (scaleHaulage)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (megalith) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "scaleHaulage",
@@ -283,9 +283,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (scaleHaulage)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (scale) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "scaleHaulage",
@@ -315,7 +315,7 @@
       "cut": {
         "kind": "HARD_CUT",
         "purpose": null,
-        "because": "graphic continuity (#d94f3d) — the two shots already share a world, so there is nothing to bridge"
+        "because": "scale held (medium) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "map",
@@ -345,9 +345,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (map)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (geography) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "map",
@@ -377,7 +377,7 @@
       "cut": {
         "kind": "HARD_CUT",
         "purpose": null,
-        "because": "graphic continuity (#d94f3d) — the two shots already share a world, so there is nothing to bridge"
+        "because": "scale held (medium) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "scaleHaulage",
@@ -405,9 +405,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (scaleHaulage)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (scale) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "scaleHaulage",
@@ -437,9 +437,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (scaleHaulage)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (scale) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "scaleHaulage",
@@ -467,9 +467,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (scaleHaulage)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (scale) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "scaleHaulage",
@@ -499,9 +499,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (scaleHaulage)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (scale) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "scaleHaulage",
@@ -529,9 +529,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (scaleHaulage)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (scale) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "scaleHaulage",
@@ -559,9 +559,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (scaleHaulage)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (scale) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "scaleHaulage",
@@ -655,9 +655,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (scaleHaulage)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (megalith) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "scaleHaulage",
@@ -685,9 +685,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (scaleHaulage)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (megalith) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "scaleHaulage",
@@ -798,14 +798,12 @@
     },
     "framing": {},
     "cut": {
-      "HARD_CUT": 8,
-      "MATCH_CUT": 11
+      "HARD_CUT": 19
     }
   },
   "editing": {
     "tally": {
-      "HARD_CUT": 8,
-      "MATCH_CUT": 11
+      "HARD_CUT": 19
     },
     "hardRatio": 1,
     "total": 19,

@@ -188,9 +188,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (map)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (geography) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "map",
@@ -284,9 +284,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (crossSection)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (romanConcrete) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "crossSection",
@@ -314,9 +314,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (crossSection)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (romanConcrete) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "crossSection",
@@ -346,9 +346,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (crossSection)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (romanConcrete) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "crossSection",
@@ -376,9 +376,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (crossSection)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (romanConcrete) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "crossSection",
@@ -408,9 +408,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (crossSection)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (romanConcrete) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "crossSection",
@@ -438,9 +438,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (crossSection)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (romanConcrete) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "crossSection",
@@ -470,9 +470,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (crossSection)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (romanConcrete) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "crossSection",
@@ -500,9 +500,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (crossSection)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (romanConcrete) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "crossSection",
@@ -532,9 +532,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (crossSection)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (romanConcrete) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "crossSection",
@@ -626,9 +626,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (crossSection)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (material) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "crossSection",
@@ -656,9 +656,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (crossSection)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (crossSection) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "crossSection",
@@ -686,9 +686,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (crossSection)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (romanConcrete) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "crossSection",
@@ -780,9 +780,9 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "same drawing (map)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (geography) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "map",
@@ -893,14 +893,12 @@
     },
     "framing": {},
     "cut": {
-      "HARD_CUT": 8,
-      "MATCH_CUT": 14
+      "HARD_CUT": 22
     }
   },
   "editing": {
     "tally": {
-      "HARD_CUT": 8,
-      "MATCH_CUT": 14
+      "HARD_CUT": 22
     },
     "hardRatio": 1,
     "total": 22,

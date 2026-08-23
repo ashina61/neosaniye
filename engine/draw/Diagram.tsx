@@ -812,30 +812,48 @@ const Scan: React.FC<{spec: ScanSpec; w: number; h: number}> = ({spec, w, h}) =>
  * particular episode is compiled in — the same gear system serves any story
  * with a mechanism in it, and the same timeline serves any story with a gap.
  */
-export const Diagram: React.FC<{spec?: DiagramSpec | null}> = ({spec}) => {
+/**
+ * THE SHOT'S CAMERA REACHES THE DRAWING.
+ *
+ * Every procedural shot had a camera in its config and none of it was visible,
+ * because the drawings never read it — they scaled themselves, or not at all,
+ * and the planner's careful choice between a push and a pull-back landed on
+ * nothing. A camera move over a flat drawing is also invisible even when it is
+ * applied, so the two fixes are one: pass the push in, and let the DEPTH PLANES
+ * inside each drawing distribute it at different rates.
+ *
+ * That is what turns a scale into a reveal.
+ */
+export const Diagram: React.FC<{spec?: DiagramSpec | null; push?: number; origin?: string}> = ({
+  spec,
+  push = 1,
+  origin = '50% 55%',
+}) => {
   const {width, height} = useVideoConfig();
   if (!spec) return null;
+  const camera = (node: React.ReactNode) =>
+    push === 1 ? node : <AbsoluteFill style={{transformOrigin: origin, transform: `scale(${push})`}}>{node}</AbsoluteFill>;
   switch (spec.type) {
     case 'gearSystem':
-      return <GearSystem spec={spec} w={width} h={height} />;
+      return camera(<GearSystem spec={spec} w={width} h={height} />);
     case 'timeline':
-      return <Timeline spec={spec} w={width} h={height} />;
+      return camera(<Timeline spec={spec} w={width} h={height} />);
     case 'measurement':
-      return <Measurement spec={spec} w={width} h={height} />;
+      return camera(<Measurement spec={spec} w={width} h={height} />);
     case 'orbit':
-      return <Orbit spec={spec} w={width} h={height} />;
+      return camera(<Orbit spec={spec} w={width} h={height} />);
     case 'scan':
-      return <Scan spec={spec} w={width} h={height} />;
+      return camera(<Scan spec={spec} w={width} h={height} />);
     case 'map':
-      return <MapPlate spec={spec} w={width} h={height} />;
+      return camera(<MapPlate spec={spec} w={width} h={height} />);
     case 'process':
-      return <ProcessPlate spec={spec} w={width} h={height} />;
+      return camera(<ProcessPlate spec={spec} w={width} h={height} />);
     case 'crossSection':
-      return <CrossSectionPlate spec={spec} w={width} h={height} />;
+      return camera(<CrossSectionPlate spec={spec} w={width} h={height} />);
     case 'anatomyFlow':
-      return <AnatomyFlowPlate spec={spec} w={width} h={height} />;
+      return camera(<AnatomyFlowPlate spec={spec} w={width} h={height} />);
     case 'scaleHaulage':
-      return <ScaleHaulagePlate spec={spec} w={width} h={height} />;
+      return camera(<ScaleHaulagePlate spec={spec} w={width} h={height} />);
     default:
       return null;
   }

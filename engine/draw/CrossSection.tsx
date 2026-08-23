@@ -21,8 +21,9 @@
  */
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
-import {drawOn, posterizeTime} from '../motion';
+import {drawOn, flow, posterizeTime} from '../motion';
 import {Callout, Disclosure, MONO, Sheet, Ticks, weights} from './sheet';
+import {Contact, MaterialDefs, MaterialFace, Motes} from './material';
 
 const CLAMP = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 
@@ -139,6 +140,8 @@ export const CrossSectionPlate: React.FC<{spec: CrossSectionSpec; w: number; h: 
     <AbsoluteFill style={{pointerEvents: 'none'}}>
       <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{position: 'absolute', inset: 0}}>
         <Ticks colour={muted} w={w} h={h} on={on} />
+        <MaterialDefs id="cs-concrete" material="concrete" colour={muted} w={w} seed="section" />
+        <MaterialDefs id="cs-water" material="water" colour="#7fb2c4" w={w} seed="fluid" />
 
         <defs>
           <pattern id="csHatch" width={w * 0.018} height={w * 0.018} patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
@@ -178,6 +181,12 @@ export const CrossSectionPlate: React.FC<{spec: CrossSectionSpec; w: number; h: 
                     return <circle key={k} cx={cx} cy={cy} r={w * 0.0018} fill={muted} opacity={0.5} />;
                   })
                 : null}
+              <MaterialFace
+                id="cs-concrete"
+                material="concrete"
+                rect={{x: box.x, y: band.top, w: box.w, h: band.height}}
+                w={w}
+              />
               <line
                 x1={box.x}
                 y1={band.top}
@@ -221,7 +230,17 @@ export const CrossSectionPlate: React.FC<{spec: CrossSectionSpec; w: number; h: 
         {spec.fluid && fluidOn > 0 && crackPoints.length > 1 ? (
           <g clipPath="url(#csBox)">
             {Array.from({length: 7}, (_, k) => {
-              const lead = Math.min(open, fluidOn) * (0.55 + k * 0.06);
+              /**
+               * WATER DOES NOT EASE.
+               *
+               * Anything that eases has stopped being a fluid and started being
+               * an object travelling from A to B. Each droplet runs on a
+               * continuous cycle, offset by its index, bounded by how far the
+               * crack has actually opened — so it can never outrun the channel
+               * it is running down.
+               */
+              const cycled = flow(Math.max(0, stepped - (from + (spec.fluid?.at ?? 0))), fps, 0.5 + k * 0.04);
+              const lead = Math.min(open, fluidOn) * (0.25 + cycled * 0.7);
               const at = Math.min(crackPoints.length - 1, Math.max(0, lead * (crackPoints.length - 1)));
               const i = Math.floor(at);
               const t = at - i;
@@ -308,7 +327,10 @@ export const CrossSectionPlate: React.FC<{spec: CrossSectionSpec; w: number; h: 
           </g>
         ) : null}
 
-        {/* THE SECTION'S OWN EDGE, last, so nothing spills over it. */}
+        {/* THE SECTION'S OWN EDGE, last, so nothing spills over it. And a
+            contact shadow beneath, so the block of material sits on the sheet
+            instead of floating on it. */}
+        <Contact x={box.x + box.w / 2} y={box.y + box.h + w * 0.008} width={box.w} strength={0.6} />
         <rect x={box.x} y={box.y} width={box.w} height={box.h} fill="none" stroke={muted} strokeWidth={line.detail} />
 
         {bands

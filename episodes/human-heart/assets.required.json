@@ -1,0 +1,181 @@
+{
+  "episode": "human-heart",
+  "generatedAt": "2026-08-23",
+  "$note": "Written for whoever is sourcing pictures, not for the pipeline. The reel renders without any of these: every line here is either drawn procedurally or stated in type, and each entry says which. BLOCKING means the line is about something type cannot depict and no drawing covers it.",
+  "supplied": [],
+  "outstanding": 9,
+  "blocking": 1,
+  "wanted": [
+    {
+      "line": "twopumps",
+      "says": "Your heart is not one pump. It is two, side by side, beating together.",
+      "subject": "humanHeart",
+      "domain": "anatomy",
+      "currently": "drawn as anatomyFlow",
+      "priority": "would strengthen",
+      "searches": [
+        "anatomical heart specimen museum",
+        "preserved human heart"
+      ],
+      "described": "an anatomical heart specimen under museum glass",
+      "purpose": "show the real thing the schematic is a reconstruction of",
+      "composition": "specimen or plate, evenly lit, whole structure in frame",
+      "orientation": "either",
+      "constraints": "anatomically correct for the species named; historical plates acceptable and preferred where the reel is historical",
+      "substitutes": "a public-domain anatomical plate, credited",
+      "reject": "stylised medical illustration presented as a specimen, anything gratuitous, any image of an identifiable patient"
+    },
+    {
+      "line": "circuits",
+      "says": "The right side sends blood to the lungs. The left sends it everywhere else.",
+      "subject": "circulation",
+      "domain": "anatomy",
+      "currently": "drawn as anatomyFlow",
+      "priority": "would strengthen",
+      "searches": [
+        "Gray's Anatomy heart plate",
+        "anatomical engraving thorax"
+      ],
+      "described": "a dark anatomical plate of the chest cavity",
+      "purpose": "show the real thing the schematic is a reconstruction of",
+      "composition": "specimen or plate, evenly lit, whole structure in frame",
+      "orientation": "either",
+      "constraints": "anatomically correct for the species named; historical plates acceptable and preferred where the reel is historical",
+      "substitutes": "a public-domain anatomical plate, credited",
+      "reject": "stylised medical illustration presented as a specimen, anything gratuitous, any image of an identifiable patient"
+    },
+    {
+      "line": "thicker",
+      "says": "The left has to reach your whole body, so its wall is three times thicker.",
+      "subject": "anatomy",
+      "domain": "anatomy",
+      "currently": "drawn as anatomyFlow",
+      "priority": "would strengthen",
+      "searches": [
+        "heart ventricle cross section",
+        "myocardium cross section"
+      ],
+      "described": "a cross section of cardiac muscle wall",
+      "purpose": "show the real thing the schematic is a reconstruction of",
+      "composition": "specimen or plate, evenly lit, whole structure in frame",
+      "orientation": "either",
+      "constraints": "anatomically correct for the species named; historical plates acceptable and preferred where the reel is historical",
+      "substitutes": "a public-domain anatomical plate, credited",
+      "reject": "stylised medical illustration presented as a specimen, anything gratuitous, any image of an identifiable patient"
+    },
+    {
+      "line": "valves",
+      "says": "Four chambers. Four valves. Every one of them opens in a single direction.",
+      "subject": "anatomy",
+      "domain": "anatomy",
+      "currently": "drawn as anatomyFlow",
+      "priority": "would strengthen",
+      "searches": [
+        "heart valve specimen",
+        "mitral valve dissection"
+      ],
+      "described": "a dissected heart valve, pale tissue",
+      "purpose": "show the real thing the schematic is a reconstruction of",
+      "composition": "specimen or plate, evenly lit, whole structure in frame",
+      "orientation": "either",
+      "constraints": "anatomically correct for the species named; historical plates acceptable and preferred where the reel is historical",
+      "substitutes": "a public-domain anatomical plate, credited",
+      "reject": "stylised medical illustration presented as a specimen, anything gratuitous, any image of an identifiable patient"
+    },
+    {
+      "line": "spark",
+      "says": "The beat starts on its own. A knot of cells in the right atrium fires.",
+      "subject": "humanHeart",
+      "domain": "anatomy",
+      "currently": "drawn as anatomyFlow",
+      "priority": "would strengthen",
+      "searches": [
+        "sinoatrial node histology",
+        "cardiac tissue microscopy"
+      ],
+      "described": "dark tissue lit from one side",
+      "purpose": "show the real thing the schematic is a reconstruction of",
+      "composition": "specimen or plate, evenly lit, whole structure in frame",
+      "orientation": "either",
+      "constraints": "anatomically correct for the species named; historical plates acceptable and preferred where the reel is historical",
+      "substitutes": "a public-domain anatomical plate, credited",
+      "reject": "stylised medical illustration presented as a specimen, anything gratuitous, any image of an identifiable patient"
+    },
+    {
+      "line": "delay",
+      "says": "The signal spreads, the upper chambers squeeze, then a tenth of a second later the lower.",
+      "subject": "anatomy",
+      "domain": "anatomy",
+      "currently": "drawn as anatomyFlow",
+      "priority": "would strengthen",
+      "searches": [
+        "electrocardiogram trace paper",
+        "oscilloscope trace"
+      ],
+      "described": "an old oscilloscope trace on dark glass",
+      "purpose": "show the real thing the schematic is a reconstruction of",
+      "composition": "specimen or plate, evenly lit, whole structure in frame",
+      "orientation": "either",
+      "constraints": "anatomically correct for the species named; historical plates acceptable and preferred where the reel is historical",
+      "substitutes": "a public-domain anatomical plate, credited",
+      "reject": "stylised medical illustration presented as a specimen, anything gratuitous, any image of an identifiable patient"
+    },
+    {
+      "line": "trick",
+      "says": "That delay is the whole trick. Fill first, then fire.",
+      "subject": "abstract",
+      "domain": "abstract",
+      "currently": "carried by typography",
+      "priority": "optional",
+      "searches": [
+        "surgical lamp dark",
+        "laboratory lamp"
+      ],
+      "described": "a single lamp over dark instruments",
+      "purpose": "illustrate the claim the line makes",
+      "composition": "the subject clear of clutter, with room to crop to 9:16",
+      "orientation": "either",
+      "constraints": "must depict the thing the line names",
+      "substitutes": "none — a near miss is a rejection",
+      "reject": "anything that is not the subject; approximation is what this manifest exists to prevent"
+    },
+    {
+      "line": "beats",
+      "says": "About one hundred thousand beats a day, with nobody paying any attention.",
+      "subject": "anatomy",
+      "domain": "anatomy",
+      "currently": "drawn as anatomyFlow",
+      "priority": "would strengthen",
+      "searches": [
+        "kymograph drum",
+        "chart recorder instrument"
+      ],
+      "described": "a mechanical chart recorder drum",
+      "purpose": "show the real thing the schematic is a reconstruction of",
+      "composition": "specimen or plate, evenly lit, whole structure in frame",
+      "orientation": "either",
+      "constraints": "anatomically correct for the species named; historical plates acceptable and preferred where the reel is historical",
+      "substitutes": "a public-domain anatomical plate, credited",
+      "reject": "stylised medical illustration presented as a specimen, anything gratuitous, any image of an identifiable patient"
+    },
+    {
+      "line": "close",
+      "says": "Two and a half billion beats in a life, and not one of them is voluntary.",
+      "subject": "anatomy",
+      "domain": "anatomy",
+      "currently": "carried by typography",
+      "priority": "BLOCKING",
+      "searches": [
+        "empty clinic room night",
+        "dark examination room"
+      ],
+      "described": "an empty examination room at night",
+      "purpose": "show the real thing the schematic is a reconstruction of",
+      "composition": "specimen or plate, evenly lit, whole structure in frame",
+      "orientation": "either",
+      "constraints": "anatomically correct for the species named; historical plates acceptable and preferred where the reel is historical",
+      "substitutes": "a public-domain anatomical plate, credited",
+      "reject": "stylised medical illustration presented as a specimen, anything gratuitous, any image of an identifiable patient"
+    }
+  ]
+}

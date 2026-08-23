@@ -19,13 +19,13 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.48,
+      "grainOpacity": 0.38,
       "grungeOpacity": 0.13,
-      "scanlineOpacity": 0.07,
-      "scanlinePeriod": 9,
+      "scanlineOpacity": 0.11,
+      "scanlinePeriod": 11,
       "vignetteStrength": 0.48,
-      "weavePx": 7,
-      "weaveScale": 1.014
+      "weavePx": 5,
+      "weaveScale": 1.013
     }
   },
   "scenes": [
@@ -587,10 +587,6 @@
       "sceneType": "composite",
       "voText": "Britain and France gave Berlin two days",
       "durationInFrames": 72,
-      "transition": {
-        "kind": "slip",
-        "frames": 9
-      },
       "assets": {
         "desk": "assets/desk-surface.jpg"
       },
@@ -664,7 +660,7 @@
         "captionEmphasis": "two days",
         "captionReveal": "wipe",
         "captionMark": "none",
-        "captionWordEvery": 3,
+        "captionWordEvery": 4,
         "cameraMove": "pull",
         "cameraPurpose": "single out the subject — the frame closes on what matters",
         "cameraAuthored": true
@@ -732,10 +728,10 @@
         "captionFrame": 6,
         "captionEvery": 8,
         "captionScrim": 0.55,
-        "glowX": -449,
-        "glowY": 436,
-        "glowSize": 499,
-        "glowIntensity": 0.59,
+        "glowX": -471,
+        "glowY": 497,
+        "glowSize": 537,
+        "glowIntensity": 0.63,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.12,
         "focusPx": 0,
@@ -1033,6 +1029,10 @@
         "contrast": 1.16,
         "brightness": 0.94
       },
+      "transition": {
+        "kind": "slip",
+        "frames": 8
+      },
       "assets": {
         "background": "assets/grey-sky.jpg"
       },
@@ -1058,10 +1058,10 @@
       "props": [
         {
           "kind": "wire",
-          "depth": 0.83,
+          "depth": 0.94,
           "x": 540,
-          "y": 407,
-          "width": 553,
+          "y": 473,
+          "width": 421,
           "from": 67,
           "shape": "rect"
         }
