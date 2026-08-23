@@ -266,7 +266,7 @@
           "text": "September",
           "width": 324,
           "x": 799,
-          "y": 190,
+          "y": 520,
           "depth": 0.1,
           "rotate": 0,
           "from": 34
@@ -292,7 +292,7 @@
           "Polish border"
         ],
         "captionX": 76,
-        "captionY": 269,
+        "captionY": 106,
         "captionSize": 86,
         "captionAlign": "left",
         "captionFrame": 12,
@@ -316,6 +316,101 @@
         "cameraMove": "push",
         "cameraPurpose": "reveal scale or context — the subject turns out to sit in something",
         "cameraAuthored": true
+      },
+      "diagram": {
+        "type": "process",
+        "stages": [
+          {
+            "shape": [
+              [
+                0.1688,
+                0.3
+              ],
+              [
+                0.40064,
+                0.3
+              ],
+              [
+                0.68216,
+                0.3
+              ],
+              [
+                0.8311999999999999,
+                0.5
+              ],
+              [
+                0.68216,
+                0.7
+              ],
+              [
+                0.40064,
+                0.7
+              ],
+              [
+                0.1688,
+                0.7
+              ],
+              [
+                0.1688,
+                0.5
+              ]
+            ],
+            "label": "raw",
+            "heat": 0,
+            "agent": "none"
+          },
+          {
+            "shape": [
+              [
+                0.03999999999999998,
+                0.3294
+              ],
+              [
+                0.362,
+                0.3294
+              ],
+              [
+                0.7530000000000001,
+                0.40105199999999996
+              ],
+              [
+                0.96,
+                0.5
+              ],
+              [
+                0.7530000000000001,
+                0.598948
+              ],
+              [
+                0.362,
+                0.6706
+              ],
+              [
+                0.03999999999999998,
+                0.6706
+              ],
+              [
+                0.03999999999999998,
+                0.5
+              ]
+            ],
+            "label": "ground",
+            "agent": "grind",
+            "heat": 0,
+            "effect": "the edge is formed"
+          }
+        ],
+        "objectLabel": null,
+        "accent": "#e8e2d4",
+        "muted": "#cfc6ae",
+        "highlight": 1,
+        "subject": "process",
+        "claims": [
+          "sequence"
+        ],
+        "depicts": "process",
+        "from": 5,
+        "over": 31
       }
     },
     {
@@ -351,7 +446,7 @@
           "text": "September",
           "width": 324,
           "x": 799,
-          "y": 190,
+          "y": 384,
           "depth": 0.1,
           "rotate": 0,
           "from": 0
@@ -369,7 +464,7 @@
           "the Polish border"
         ],
         "captionX": 76,
-        "captionY": 269,
+        "captionY": 106,
         "captionSize": 56,
         "captionAlign": "left",
         "captionFrame": 15,
@@ -390,6 +485,101 @@
         "captionWordEvery": 4,
         "cameraMove": "pull",
         "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      },
+      "diagram": {
+        "type": "process",
+        "stages": [
+          {
+            "shape": [
+              [
+                0.1688,
+                0.3
+              ],
+              [
+                0.40064,
+                0.3
+              ],
+              [
+                0.68216,
+                0.3
+              ],
+              [
+                0.8311999999999999,
+                0.5
+              ],
+              [
+                0.68216,
+                0.7
+              ],
+              [
+                0.40064,
+                0.7
+              ],
+              [
+                0.1688,
+                0.7
+              ],
+              [
+                0.1688,
+                0.5
+              ]
+            ],
+            "label": "raw",
+            "heat": 0,
+            "agent": "none"
+          },
+          {
+            "shape": [
+              [
+                0.03999999999999998,
+                0.3294
+              ],
+              [
+                0.362,
+                0.3294
+              ],
+              [
+                0.7530000000000001,
+                0.40105199999999996
+              ],
+              [
+                0.96,
+                0.5
+              ],
+              [
+                0.7530000000000001,
+                0.598948
+              ],
+              [
+                0.362,
+                0.6706
+              ],
+              [
+                0.03999999999999998,
+                0.6706
+              ],
+              [
+                0.03999999999999998,
+                0.5
+              ]
+            ],
+            "label": "ground",
+            "agent": "grind",
+            "heat": 0,
+            "effect": "the edge is formed"
+          }
+        ],
+        "objectLabel": null,
+        "accent": "#e8e2d4",
+        "muted": "#cfc6ae",
+        "highlight": 1,
+        "subject": "process",
+        "claims": [
+          "sequence"
+        ],
+        "depicts": "process",
+        "from": 0,
+        "over": 1
       }
     },
     {

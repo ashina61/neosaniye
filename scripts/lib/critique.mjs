@@ -923,6 +923,55 @@ export function boundsOf(scene, {width, height}) {
       });
     }
   }
+  /**
+   * THE NEW DRAWINGS HAVE GEOMETRY TOO.
+   *
+   * Added five representations and the clipping check knew about none of them,
+   * which is how a cross-section shipped with its band label reading "SURFA" —
+   * the callout, its leader and its text ran past the right edge and nothing
+   * measured it. Each of these mirrors the box its component lays out in.
+   */
+  if (d?.type === 'map') {
+    // The plate uses the whole frame by design; what can leave it is a marker
+    // label, so those are bounded rather than the coastlines.
+    for (const [i, marker] of (d.markers ?? []).entries()) {
+      const mx = n(marker.x, 0.5) * width;
+      const my = n(marker.y, 0.5) * height;
+      const text = String(marker.label ?? '').length * width * 0.013;
+      // Past the midpoint the component hangs the label to the LEFT of its dot,
+      // so the box has to follow it there or the check measures the wrong side.
+      const flips = n(marker.x, 0.5) > 0.62;
+      out.push({
+        what: `map marker[${i}]`,
+        role: 'drawn',
+        left: flips ? mx - width * 0.018 - text : mx,
+        right: flips ? mx : mx + width * 0.018 + text,
+        top: my - 40,
+        bottom: my + 40,
+      });
+    }
+  }
+  if (d?.type === 'crossSection') {
+    out.push({what: 'diagram section', role: 'drawn', left: width * 0.12, right: width * 0.88, top: height * 0.24, bottom: height * 0.66});
+  }
+  if (d?.type === 'anatomyFlow') {
+    for (const [i, chamber] of (d.chambers ?? []).entries()) {
+      const cx = n(chamber.x, 0.5) * width;
+      const cy = n(chamber.y, 0.5) * height;
+      const rx = n(chamber.rx, 0.08) * width;
+      const ry = n(chamber.ry, 0.05) * height;
+      out.push({what: `chamber[${i}]`, role: 'drawn', left: cx - rx, right: cx + rx, top: cy - ry, bottom: cy + ry});
+    }
+  }
+  if (d?.type === 'scaleHaulage') {
+    const ow = n(d.object?.w, 0.3) * width;
+    const oh = n(d.object?.h, 0.08) * height;
+    const ground = height * 0.62;
+    out.push({what: 'haulage load', role: 'drawn', left: width * 0.32 - ow / 2, right: width * 0.32 + ow / 2 + n(d.travel, 0.14) * width, top: ground - oh * 2, bottom: ground});
+  }
+  if (d?.type === 'process') {
+    out.push({what: 'process object', role: 'drawn', left: width * 0.2, right: width * 0.8, top: height * 0.3, bottom: height * 0.54});
+  }
   if (d?.type === 'timeline') {
     // The rule is drawn at x = 0.3w between 0.24h and 0.78h, and its labels
     // reach to the right of it. Hard-coded in the component; mirrored here.

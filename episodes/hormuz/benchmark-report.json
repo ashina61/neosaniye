@@ -52,14 +52,149 @@
     "representationMix": {
       "PHOTO": 0,
       "HYBRID": 0,
-      "PROCEDURAL": 3,
-      "TYPOGRAPHY": 19
+      "PROCEDURAL": 13,
+      "TYPOGRAPHY": 9
     },
-    "proceduralVisuals": 3,
+    "proceduralVisuals": 13,
     "hybridVisuals": 0,
     "diagramKinds": [
+      "map",
       "measurement"
     ],
+    "byRepresentation": {
+      "map": 11,
+      "process": 0,
+      "crossSection": 0,
+      "anatomyFlow": 0,
+      "scaleHaulage": 0,
+      "olderDiagrams": 2,
+      "typographyOnly": 9
+    },
+    "semanticContracts": [
+      {
+        "shot": "s01-narrow-b",
+        "type": "map",
+        "subject": "strait",
+        "depicts": "geography",
+        "claims": [
+          "narrowness",
+          "distance"
+        ]
+      },
+      {
+        "shot": "s02-lanes-b",
+        "type": "map",
+        "subject": "tradeRoute",
+        "depicts": "geography",
+        "claims": [
+          "narrowness",
+          "distance"
+        ]
+      },
+      {
+        "shot": "s02-lanes-c",
+        "type": "map",
+        "subject": "tradeRoute",
+        "depicts": "geography",
+        "claims": [
+          "narrowness",
+          "distance"
+        ]
+      },
+      {
+        "shot": "s03-volume-b",
+        "type": "measurement",
+        "subject": null,
+        "depicts": null,
+        "claims": []
+      },
+      {
+        "shot": "s03-volume-c",
+        "type": "measurement",
+        "subject": null,
+        "depicts": null,
+        "claims": []
+      },
+      {
+        "shot": "s05-nobypass",
+        "type": "map",
+        "subject": "geography",
+        "depicts": "geography",
+        "claims": [
+          "no_alternative"
+        ]
+      },
+      {
+        "shot": "s05-nobypass-b",
+        "type": "map",
+        "subject": "geography",
+        "depicts": "geography",
+        "claims": [
+          "no_alternative"
+        ]
+      },
+      {
+        "shot": "s05-nobypass-c",
+        "type": "map",
+        "subject": "geography",
+        "depicts": "geography",
+        "claims": [
+          "no_alternative"
+        ]
+      },
+      {
+        "shot": "s06-shores",
+        "type": "map",
+        "subject": "coastline",
+        "depicts": "geography",
+        "claims": [
+          "two_shores",
+          "fluid_ingress"
+        ]
+      },
+      {
+        "shot": "s06-shores-b",
+        "type": "map",
+        "subject": "coastline",
+        "depicts": "geography",
+        "claims": [
+          "two_shores",
+          "fluid_ingress"
+        ]
+      },
+      {
+        "shot": "s06-shores-c",
+        "type": "map",
+        "subject": "coastline",
+        "depicts": "geography",
+        "claims": [
+          "two_shores",
+          "fluid_ingress"
+        ]
+      },
+      {
+        "shot": "s07-grounding-b",
+        "type": "map",
+        "subject": "strait",
+        "depicts": "geography",
+        "claims": [
+          "chokepoint",
+          "distance"
+        ]
+      },
+      {
+        "shot": "s07-grounding-c",
+        "type": "map",
+        "subject": "strait",
+        "depicts": "geography",
+        "claims": [
+          "chokepoint",
+          "distance"
+        ]
+      }
+    ],
+    "semanticFailures": 0,
+    "representationRequired": 3,
     "assets": {
       "linesRequestingAPicture": 9,
       "picturesOnScreen": 0,
@@ -70,8 +205,8 @@
     "editorial": {
       "hardCutRatio": 1,
       "cutKinds": {
-        "HARD_CUT": 20,
-        "MATCH_CUT": 1
+        "HARD_CUT": 13,
+        "MATCH_CUT": 8
       },
       "arrivals": {
         "cut": 21
@@ -87,8 +222,8 @@
       "drift": 1
     },
     "motionDensity": {
-      "events": 54,
-      "perSecond": 1.08,
+      "events": 60,
+      "perSecond": 1.2,
       "deadShots": 0,
       "busiestMoment": 2
     },
@@ -103,7 +238,7 @@
       "shortest": 1.5,
       "longest": 3.93
     },
-    "imageKindChangesPerCut": 0.19,
+    "imageKindChangesPerCut": 0.48,
     "temporalConsistency": {
       "errors": 0,
       "warnings": 0,
@@ -111,7 +246,7 @@
     },
     "gates": {
       "visualHierarchy": 9.5,
-      "motionDesign": 9.8,
+      "motionDesign": 9.6,
       "cameraDiversity": 10,
       "transitionQuality": 10,
       "visualContinuity": 10,
@@ -125,12 +260,27 @@
     {
       "severity": "warning",
       "where": "geometry",
+      "what": "scene[19] \"s08-price\": prop[0] wire sits outside the safe area — the platform draws its own furniture there"
+    },
+    {
+      "severity": "warning",
+      "where": "geometry",
       "what": "scene[21] \"s09-close\": prop[0] plaque and prop[1] newspaper occupy the same place"
     },
     {
       "severity": "warning",
-      "where": "edit",
-      "what": "the reel changes its kind of image 4 time(s) in 22 shots — one idea, repeated"
+      "where": "semantic",
+      "what": "scene[0] \"s01-narrow\": REPRESENTATION_REQUIRED — the line is about geography (strait) and is being carried by type alone"
+    },
+    {
+      "severity": "warning",
+      "where": "semantic",
+      "what": "scene[2] \"s02-lanes\": REPRESENTATION_REQUIRED — the line is about geography (tradeRoute) and is being carried by type alone"
+    },
+    {
+      "severity": "warning",
+      "where": "semantic",
+      "what": "scene[21] \"s09-close\": REPRESENTATION_REQUIRED — the line is about geography and is being carried by type alone"
     },
     {
       "severity": "observed",

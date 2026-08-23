@@ -35,6 +35,7 @@ import {
 } from './lib/critique.mjs';
 import {temporalProblems} from './lib/temporal.mjs';
 import {editReel} from './lib/editor.mjs';
+import {representationProblems} from './lib/semantics.mjs';
 
 async function validateEpisode(episodeId) {
   const problems = [];
@@ -147,14 +148,30 @@ async function validateEpisode(episodeId) {
    * described as boring had ten shots that each passed.
    */
   const edit = editReel(config);
-  problems.push(...direction.errors, ...clipped.errors, ...ending.errors, ...temporal.errors, ...edit.errors);
+  /**
+   * AND THE SIXTH: is each drawing a picture of the thing its line is about?
+   *
+   * The hard semantic gate, now applied to PROCEDURAL and DIAGRAM and HYBRID
+   * and not only to PHOTO. It exists because the worst thing this engine ever
+   * drew — a gear train presented as a schematic reconstruction of a human
+   * heart — was correct in every other respect and passed every other check.
+   */
+  const semantic = representationProblems(config);
+  problems.push(
+    ...direction.errors,
+    ...clipped.errors,
+    ...ending.errors,
+    ...temporal.errors,
+    ...edit.errors,
+    ...semantic.errors,
+  );
   const gates = report ? qualityGates(config, {assets}) : null;
   const mix = representationMix(config);
 
   return {
     problems,
     absentOptional,
-    warnings: [...warnings, ...direction.warnings, ...clipped.warnings, ...ending.warnings, ...temporal.warnings, ...edit.warnings],
+    warnings: [...warnings, ...direction.warnings, ...clipped.warnings, ...ending.warnings, ...temporal.warnings, ...edit.warnings, ...semantic.warnings],
     stats,
     gates,
     mix,

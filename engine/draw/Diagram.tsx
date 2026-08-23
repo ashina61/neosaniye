@@ -39,8 +39,12 @@ import {gearTrainLayout} from '../state.mjs';
  *       wrong photograph, because it is a lie the viewer cannot check.
  */
 
-const MONO = '"Courier New", ui-monospace, monospace';
-const SANS = '"Archivo", "Helvetica Neue", Arial, sans-serif';
+import {AnatomyFlowPlate, AnatomyFlowSpec} from './AnatomyFlow';
+import {CrossSectionPlate, CrossSectionSpec} from './CrossSection';
+import {MapPlate, MapSpec} from './Map';
+import {ProcessPlate, ProcessSpec} from './Process';
+import {ScaleHaulagePlate, ScaleHaulageSpec} from './ScaleHaulage';
+import {Disclosure, MONO, SANS, Sheet, Ticks} from './sheet';
 
 /** Every diagram is one of these, described as data rather than as markup. */
 export type DiagramSpec =
@@ -48,22 +52,25 @@ export type DiagramSpec =
   | TimelineSpec
   | MeasurementSpec
   | OrbitSpec
-  | ScanSpec;
-
-type Common = {
-  /** Scene frame it begins drawing on. */
-  from?: number;
-  /** Frames the draw-on takes. */
-  over?: number;
-  accent?: string;
-  muted?: string;
+  | ScanSpec
   /**
-   * The honesty plate. Present on anything reconstructed rather than measured.
-   * Absent only where the drawing is a pure abstraction nobody could mistake
-   * for a record — a timeline of dates, a measurement bar.
+   * THE FIVE THAT WERE MISSING.
+   *
+   * The benchmark put five unrelated subjects through this library and got
+   * forty-one lines of typography out of forty-five. Not because the drawings
+   * were bad — because there was no drawing for a place, a process, the inside
+   * of a material, a circulation, or the size of something. Those are most of
+   * what a documentary has to explain.
    */
-  disclosure?: string;
-};
+  | MapSpec
+  | ProcessSpec
+  | CrossSectionSpec
+  | AnatomyFlowSpec
+  | ScaleHaulageSpec;
+
+export type {MapSpec, ProcessSpec, CrossSectionSpec, AnatomyFlowSpec, ScaleHaulageSpec};
+
+type Common = Sheet;
 
 /** One wheel. Positions are fractions of the frame; `teeth` sets the ratio. */
 export type Gear = {x: number; y: number; teeth: number; radius: number; label?: string};
@@ -135,79 +142,6 @@ export type ScanSpec = Common & {
 };
 
 /* ── SHARED FURNITURE ──────────────────────────────────────────────────── */
-
-/**
- * THE PLATE THAT SAYS WHAT THIS IS.
- *
- * A reconstruction must announce itself. It sits in the corner in mono at a
- * size that is legible and not loud, the way a museum diagram is captioned —
- * because the alternative is a drawing that a viewer reads as a photograph of a
- * thing, which is the failure this whole library exists to avoid.
- */
-const Disclosure: React.FC<{text: string; colour: string; at: number; width: number}> = ({
-  text,
-  colour,
-  at,
-  width,
-}) => {
-  const frame = useCurrentFrame();
-  const {fps} = useVideoConfig();
-  const stepped = posterizeTime(frame, fps, 12);
-  const on = drawOn(stepped, [at, at + 10]);
-  if (stepped < at) return null;
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        left: width * 0.075,
-        bottom: width * 0.075,
-        fontFamily: MONO,
-        fontSize: width * 0.0185,
-        letterSpacing: '0.16em',
-        textTransform: 'uppercase',
-        color: colour,
-        opacity: on * 0.72,
-        borderLeft: `2px solid ${colour}`,
-        paddingLeft: width * 0.018,
-        lineHeight: 1.5,
-        /**
-         * ONE LINE. A DISCLOSURE THAT WRAPS READS AS A CAPTION.
-         *
-         * "SCHEMATIC RECONSTRUCTION · NOT TO / SCALE" broke after "TO", so the
-         * plate that exists to say the drawing is not a record turned into two
-         * lines of mono text with an orphan — which is exactly the shape of a
-         * subtitle, and the last thing this label should be mistaken for.
-         */
-        whiteSpace: 'nowrap',
-        maxWidth: width * 0.85,
-      }}
-    >
-      {text}
-    </div>
-  );
-};
-
-/** Registration ticks — the corner marks of a drawing sheet. */
-const Ticks: React.FC<{colour: string; w: number; h: number; on: number}> = ({colour, w, h, on}) => {
-  const m = w * 0.055;
-  const len = w * 0.035;
-  const corners = [
-    [m, m, 1, 1],
-    [w - m, m, -1, 1],
-    [m, h - m, 1, -1],
-    [w - m, h - m, -1, -1],
-  ];
-  return (
-    <g opacity={on * 0.45}>
-      {corners.map(([x, y, sx, sy], i) => (
-        <g key={i}>
-          <line x1={x} y1={y} x2={x + len * sx} y2={y} stroke={colour} strokeWidth={w * 0.0022} />
-          <line x1={x} y1={y} x2={x} y2={y + len * sy} stroke={colour} strokeWidth={w * 0.0022} />
-        </g>
-      ))}
-    </g>
-  );
-};
 
 /**
  * ONE GEAR, DRAWN AS A GEAR.
@@ -892,6 +826,16 @@ export const Diagram: React.FC<{spec?: DiagramSpec | null}> = ({spec}) => {
       return <Orbit spec={spec} w={width} h={height} />;
     case 'scan':
       return <Scan spec={spec} w={width} h={height} />;
+    case 'map':
+      return <MapPlate spec={spec} w={width} h={height} />;
+    case 'process':
+      return <ProcessPlate spec={spec} w={width} h={height} />;
+    case 'crossSection':
+      return <CrossSectionPlate spec={spec} w={width} h={height} />;
+    case 'anatomyFlow':
+      return <AnatomyFlowPlate spec={spec} w={width} h={height} />;
+    case 'scaleHaulage':
+      return <ScaleHaulagePlate spec={spec} w={width} h={height} />;
     default:
       return null;
   }

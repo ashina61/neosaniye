@@ -183,6 +183,10 @@
       "sceneType": "portal-zoom-reveal",
       "voText": "For forty years it mostly lost.",
       "durationInFrames": 80,
+      "transition": {
+        "kind": "flare",
+        "frames": 6
+      },
       "assets": {
         "wall": "assets/s02-kasparov-bg.png",
         "photo": "assets/s02-kasparov-photo.png"
@@ -225,26 +229,172 @@
         "cameraAuthored": true
       },
       "diagram": {
-        "type": "timeline",
-        "events": [
+        "type": "anatomyFlow",
+        "chambers": [
           {
-            "at": 1956,
-            "label": "1956",
-            "note": "recovered"
+            "id": "c00",
+            "x": 0.34,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
           },
           {
-            "at": 1996,
-            "label": "1996",
-            "note": "examined"
+            "id": "c01",
+            "x": 0.34,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          },
+          {
+            "id": "c10",
+            "x": 0.66,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c11",
+            "x": 0.66,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
           }
         ],
-        "gap": [
-          1956,
-          1996
+        "valves": [
+          {
+            "x": 0.34,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          },
+          {
+            "x": 0.66,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          }
         ],
-        "gapLabel": "40 years\nunopened",
+        "vessels": [
+          {
+            "path": [
+              [
+                0.28,
+                0.5
+              ],
+              [
+                0.15,
+                0.6
+              ],
+              [
+                0.11,
+                0.36
+              ],
+              [
+                0.27,
+                0.29
+              ]
+            ],
+            "charge": "low",
+            "label": "to the lungs"
+          },
+          {
+            "path": [
+              [
+                0.34,
+                0.25
+              ],
+              [
+                0.5,
+                0.235
+              ],
+              [
+                0.66,
+                0.25
+              ]
+            ],
+            "charge": "high",
+            "label": "from the lungs"
+          },
+          {
+            "path": [
+              [
+                0.73,
+                0.31
+              ],
+              [
+                0.83,
+                0.4
+              ],
+              [
+                0.73,
+                0.44999999999999996
+              ]
+            ],
+            "charge": "high"
+          },
+          {
+            "path": [
+              [
+                0.7000000000000001,
+                0.52
+              ],
+              [
+                0.84,
+                0.7
+              ],
+              [
+                0.6,
+                0.78
+              ],
+              [
+                0.4,
+                0.78
+              ],
+              [
+                0.16,
+                0.7
+              ],
+              [
+                0.28,
+                0.5
+              ]
+            ],
+            "charge": "high",
+            "label": "to the body"
+          }
+        ],
+        "circuit": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "cycleFrames": 36,
         "accent": "#c9a94b",
         "muted": "#cfc6ae",
+        "subject": "anatomy",
+        "claims": [
+          "contraction",
+          "sequence",
+          "duration"
+        ],
+        "depicts": "anatomy",
         "from": 0,
         "over": 36
       }
@@ -260,16 +410,16 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.84,
+          "depth": 0.73,
           "anchor": "fill"
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1,
-        "pushTo": 1.34,
-        "pushEndFrame": 52,
+        "pushFrom": 1.02,
+        "pushTo": 1.41,
+        "pushEndFrame": 48,
         "accent": "#c9a94b",
         "caption": [
           "Then it beat Kasparov"
@@ -279,45 +429,191 @@
         "captionSize": 53,
         "captionAlign": "left",
         "captionFrame": 30,
-        "captionEvery": 8,
+        "captionEvery": 7,
         "captionScrim": 0.38,
-        "glowX": 1348,
-        "glowY": 532,
-        "glowSize": 407,
-        "glowIntensity": 0.66,
+        "glowX": 1572,
+        "glowY": 467,
+        "glowSize": 517,
+        "glowIntensity": 0.64,
         "glowWarm": "#c9a94b",
-        "glowDepth": 0.84,
+        "glowDepth": 0.73,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "Kasparov",
-        "captionReveal": "blur",
-        "captionMark": "none",
-        "captionWordEvery": 3,
+        "captionReveal": "rise",
+        "captionMark": "box",
+        "captionWordEvery": 4,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
       },
       "diagram": {
-        "type": "timeline",
-        "events": [
+        "type": "anatomyFlow",
+        "chambers": [
           {
-            "at": 1956,
-            "label": "1956",
-            "note": "recovered"
+            "id": "c00",
+            "x": 0.34,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
           },
           {
-            "at": 1996,
-            "label": "1996",
-            "note": "examined"
+            "id": "c01",
+            "x": 0.34,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          },
+          {
+            "id": "c10",
+            "x": 0.66,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c11",
+            "x": 0.66,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
           }
         ],
-        "gap": [
-          1956,
-          1996
+        "valves": [
+          {
+            "x": 0.34,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          },
+          {
+            "x": 0.66,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          }
         ],
-        "gapLabel": "40 years\nunopened",
+        "vessels": [
+          {
+            "path": [
+              [
+                0.28,
+                0.5
+              ],
+              [
+                0.15,
+                0.6
+              ],
+              [
+                0.11,
+                0.36
+              ],
+              [
+                0.27,
+                0.29
+              ]
+            ],
+            "charge": "low",
+            "label": "to the lungs"
+          },
+          {
+            "path": [
+              [
+                0.34,
+                0.25
+              ],
+              [
+                0.5,
+                0.235
+              ],
+              [
+                0.66,
+                0.25
+              ]
+            ],
+            "charge": "high",
+            "label": "from the lungs"
+          },
+          {
+            "path": [
+              [
+                0.73,
+                0.31
+              ],
+              [
+                0.83,
+                0.4
+              ],
+              [
+                0.73,
+                0.44999999999999996
+              ]
+            ],
+            "charge": "high"
+          },
+          {
+            "path": [
+              [
+                0.7000000000000001,
+                0.52
+              ],
+              [
+                0.84,
+                0.7
+              ],
+              [
+                0.6,
+                0.78
+              ],
+              [
+                0.4,
+                0.78
+              ],
+              [
+                0.16,
+                0.7
+              ],
+              [
+                0.28,
+                0.5
+              ]
+            ],
+            "charge": "high",
+            "label": "to the body"
+          }
+        ],
+        "circuit": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "cycleFrames": 36,
         "accent": "#c9a94b",
         "muted": "#cfc6ae",
+        "subject": "anatomy",
+        "claims": [
+          "contraction",
+          "sequence",
+          "duration"
+        ],
+        "depicts": "anatomy",
         "from": 0,
         "over": 1
       }
@@ -337,19 +633,18 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.74,
+          "depth": 0.83,
           "anchor": "fill"
         }
       ],
       "props": [
         {
           "kind": "wire",
-          "depth": 0.75,
+          "depth": 0.72,
           "x": 540,
-          "y": 946,
-          "width": 403,
-          "from": 48,
-          "shape": "rect"
+          "y": 637,
+          "width": 371,
+          "shape": "diamond"
         }
       ],
       "params": {
@@ -358,12 +653,12 @@
         "pushFrom": 1,
         "pushTo": 1.38,
         "pushEndFrame": 67,
-        "glowX": 1384,
-        "glowY": 598,
-        "glowSize": 442,
-        "glowIntensity": 0.42,
+        "glowX": 1431,
+        "glowY": 146,
+        "glowSize": 356,
+        "glowIntensity": 0.41,
         "glowWarm": "#c9a94b",
-        "glowDepth": 0.74,
+        "glowDepth": 0.83,
         "focusPx": 0,
         "fog": 0,
         "caption": [
@@ -372,21 +667,23 @@
           "to see"
         ],
         "captionX": 84,
-        "captionY": 357,
-        "captionSize": 95,
+        "captionY": 846,
+        "captionSize": 90,
         "captionAlign": "left",
         "captionFrame": 6,
-        "captionEvery": 7,
+        "captionEvery": 6,
         "captionScrim": 0.34,
         "captionRecedeAt": 56,
         "accent": "#c9a94b",
-        "handheld": 3,
+        "handheld": 1.5,
+        "panY": -51,
+        "roll": 0.23,
         "captionEmphasis": "2012",
-        "captionReveal": "punch",
-        "captionMark": "underline",
-        "captionWordEvery": 4,
+        "captionReveal": "blur",
+        "captionMark": "none",
+        "captionWordEvery": 3,
         "cameraMove": "push",
-        "cameraPurpose": "importance. The frame stops because the idea needs no help",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land",
         "cameraAuthored": true
       },
       "onScreenText": [
@@ -410,54 +707,50 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.9,
+          "depth": 0.72,
           "anchor": "fill"
         }
       ],
-      "props": [
-        {
-          "kind": "wire",
-          "depth": 0.88,
-          "x": 799,
-          "y": 1039,
-          "width": 526,
-          "from": 48,
-          "shape": "diamond"
-        }
-      ],
+      "props": [],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
         "pushFrom": 1,
-        "pushTo": 1.1,
-        "pushEndFrame": 73,
+        "pushTo": 1.12,
+        "pushEndFrame": 74,
         "accent": "#c9a94b",
         "caption": [
           "and nobody outside",
           "the labs noticed"
         ],
         "captionX": 84,
-        "captionY": 474,
+        "captionY": 920,
         "captionSize": 62,
         "captionAlign": "left",
         "captionFrame": 6,
-        "captionEvery": 7,
+        "captionEvery": 8,
         "captionScrim": 0.34,
-        "glowX": 1425,
-        "glowY": 512,
-        "glowSize": 371,
-        "glowIntensity": 0.61,
+        "glowX": 1433,
+        "glowY": 538,
+        "glowSize": 546,
+        "glowIntensity": 0.59,
         "glowWarm": "#c9a94b",
-        "glowDepth": 0.9,
+        "glowDepth": 0.72,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panY": -40,
-        "roll": -0.25,
+        "panY": -33,
+        "roll": 0,
         "captionEmphasis": "outside",
         "captionReveal": "rise",
-        "captionMark": "underline",
+        "captionMark": "highlight",
         "captionWordEvery": 2,
+        "mark": "underline",
+        "markX": 84,
+        "markY": 1074,
+        "markWidth": 647,
+        "markHeight": 10,
+        "markFrame": 48,
         "cameraMove": "drift",
         "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       }
@@ -476,30 +769,30 @@
         "photo": "assets/s04-move-photo.png"
       },
       "params": {
-        "frameWidth": 733,
-        "frameRatio": 1.08,
+        "frameWidth": 762,
+        "frameRatio": 1.04,
         "pushEndFrame": 21,
         "detachFrame": 34,
         "throughEndFrame": 46,
-        "weldRatio": 0.375,
-        "wallScaleEnd": 6.8,
+        "weldRatio": 0.431,
+        "wallScaleEnd": 6.1,
         "accent": "#c9a94b",
         "caption": [
           "Move",
           "thirty-seven."
         ],
         "captionX": 84,
-        "captionY": 1367,
+        "captionY": 1237,
         "captionFrame": 6,
-        "captionEvery": 8,
-        "captionSize": 90,
+        "captionEvery": 9,
+        "captionSize": 85,
         "captionRecedeAt": 51,
         "captionEmphasis": "thirty-seven",
-        "captionReveal": "blur",
+        "captionReveal": "rise",
         "captionMark": "none",
-        "captionWordEvery": 3,
+        "captionWordEvery": 4,
         "cameraMove": "hold",
-        "cameraPurpose": "expose information the frame was withholding, or follow a movement",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land",
         "cameraAuthored": true
       },
       "props": [
@@ -528,7 +821,7 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.92,
+          "depth": 0.81,
           "anchor": "fill"
         }
       ],
@@ -540,7 +833,7 @@
           "colour": "#c9a94b",
           "width": 367,
           "x": 670,
-          "y": 627,
+          "y": 757,
           "depth": 0.9,
           "rotate": 0,
           "from": 0
@@ -558,25 +851,25 @@
           "have played"
         ],
         "captionX": 84,
-        "captionY": 834,
+        "captionY": 964,
         "captionSize": 79,
         "captionAlign": "left",
         "captionFrame": 5,
         "captionEvery": 7,
         "captionScrim": 0.34,
-        "glowX": 1375,
-        "glowY": 415,
-        "glowSize": 384,
-        "glowIntensity": 0.42,
+        "glowX": 1403,
+        "glowY": 224,
+        "glowSize": 478,
+        "glowIntensity": 0.5,
         "glowWarm": "#c9a94b",
-        "glowDepth": 0.92,
+        "glowDepth": 0.81,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
         "panY": -39,
         "roll": -0.62,
         "captionEmphasis": "played",
-        "captionReveal": "wipe",
+        "captionReveal": "blur",
         "captionMark": "highlight",
         "captionWordEvery": 2,
         "cameraMove": "drift",

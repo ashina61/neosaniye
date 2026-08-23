@@ -5,7 +5,7 @@
   "width": 1080,
   "height": 1920,
   "look": {
-    "posterizeFps": 12,
+    "posterizeFps": 15,
     "grade": {
       "saturate": 0.56,
       "contrast": 1.09,
@@ -18,12 +18,12 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.41,
-      "grungeOpacity": 0.12,
-      "scanlineOpacity": 0.09,
-      "scanlinePeriod": 8,
-      "vignetteStrength": 0.41,
-      "weavePx": 5,
+      "grainOpacity": 0.46,
+      "grungeOpacity": 0.15,
+      "scanlineOpacity": 0.1,
+      "scanlinePeriod": 9,
+      "vignetteStrength": 0.4,
+      "weavePx": 4,
       "weaveScale": 1.011
     }
   },
@@ -39,7 +39,7 @@
         "kicker": "BAIAE · 40 BC",
         "title": "",
         "footer": "",
-        "titleFrame": 5,
+        "titleFrame": 54,
         "titleSize": 124,
         "creep": 1.086,
         "accent": "#e0d089",
@@ -64,7 +64,7 @@
           "y": 1462,
           "width": 433,
           "rotate": 1.1,
-          "from": 54
+          "from": 4
         },
         {
           "kind": "wire",
@@ -95,15 +95,15 @@
           "rotate": -16,
           "opacity": 0.56,
           "colour": "#e0d089",
-          "from": 42
+          "from": 82
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.17,
-        "pushTo": 1.27,
-        "pushEndFrame": 88,
+        "pushFrom": 1.22,
+        "pushTo": 1.21,
+        "pushEndFrame": 90,
         "accent": "#e0d089",
         "field": "spotlight",
         "fieldColours": [
@@ -118,31 +118,73 @@
         "glowWarm": "#e0d089",
         "glowDepth": 0.1,
         "caption": [
-          "into the sea",
-          "in 40 BC",
-          "still stands"
+          "into the sea in 40",
+          "BC still stands"
         ],
-        "captionX": 81,
-        "captionY": 680,
-        "captionSize": 113,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 62,
         "captionAlign": "left",
-        "captionFrame": -12,
+        "captionFrame": 42,
         "captionEvery": 7,
-        "captionScrim": 0,
+        "captionScrim": 0.38,
         "focusPx": 0,
-        "fog": 0.2,
+        "fog": 0.17,
         "handheld": 1.5,
-        "panY": -227,
+        "panY": -177,
         "shakeAt": [
           8
         ],
         "shakeAmount": 21,
         "captionEmphasis": "40",
         "captionReveal": "rise",
-        "captionMark": "highlight",
-        "captionWordEvery": 2,
+        "captionMark": "none",
+        "captionWordEvery": 4,
         "cameraMove": "tilt",
         "cameraPurpose": "a vertical reveal — height, depth, or a drop"
+      },
+      "diagram": {
+        "type": "map",
+        "regions": [
+          {
+            "kind": "land",
+            "shape": [
+              [
+                0.06,
+                0.2
+              ],
+              [
+                0.438,
+                0.14
+              ],
+              [
+                0.94,
+                0.24
+              ],
+              [
+                0.9,
+                0.66
+              ],
+              [
+                0.51068,
+                0.72
+              ],
+              [
+                0.08,
+                0.62
+              ]
+            ]
+          }
+        ],
+        "accent": "#e0d089",
+        "muted": "#cfc6ae",
+        "subject": "geography",
+        "claims": [
+          "wall_thickness"
+        ],
+        "depicts": "geography",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -156,21 +198,11 @@
         {
           "kind": "plaque",
           "text": "BAIAE · 40 BC",
-          "depth": 0.54,
-          "x": 395,
-          "y": 1470,
-          "width": 462,
-          "rotate": -2.1,
-          "from": 38
-        },
-        {
-          "kind": "wire",
-          "shape": "rect",
-          "depth": 0.64,
-          "x": 762,
-          "y": 608,
-          "width": 354,
-          "colour": "#e0d089",
+          "depth": 0.68,
+          "x": 445,
+          "y": 1375,
+          "width": 382,
+          "rotate": 0.2,
           "from": 0
         }
       ],
@@ -187,31 +219,74 @@
           "#1f2619",
           "#0b0e08"
         ],
-        "glowX": 1330,
-        "glowY": 231,
-        "glowSize": 303,
-        "glowIntensity": 0.45,
+        "glowX": 1401,
+        "glowY": 121,
+        "glowSize": 443,
+        "glowIntensity": 0.57,
         "glowWarm": "#e0d089",
         "glowDepth": 0.1,
         "caption": [
           "in the surf"
         ],
-        "captionX": 81,
-        "captionY": 809,
-        "captionSize": 124,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 94,
         "captionAlign": "left",
-        "captionFrame": -12,
+        "captionFrame": 28,
         "captionEvery": 7,
-        "captionScrim": 0,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "surf",
         "captionReveal": "wipe",
-        "captionMark": "none",
+        "captionMark": "box",
         "captionWordEvery": 4,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "diagram": {
+        "type": "map",
+        "regions": [
+          {
+            "kind": "land",
+            "shape": [
+              [
+                0.06,
+                0.2
+              ],
+              [
+                0.438,
+                0.14
+              ],
+              [
+                0.94,
+                0.24
+              ],
+              [
+                0.9,
+                0.66
+              ],
+              [
+                0.51068,
+                0.72
+              ],
+              [
+                0.08,
+                0.62
+              ]
+            ]
+          }
+        ],
+        "accent": "#e0d089",
+        "muted": "#cfc6ae",
+        "subject": "geography",
+        "claims": [
+          "wall_thickness"
+        ],
+        "depicts": "geography",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -225,7 +300,7 @@
         "kicker": "",
         "title": "FIFTY YEARS",
         "footer": "",
-        "titleFrame": 4,
+        "titleFrame": 44,
         "titleSize": 230,
         "creep": 1.051,
         "accent": "#e0d089",
@@ -235,12 +310,24 @@
           "#1f2619",
           "#0b0e08"
         ],
-        "pushEndFrame": 50,
-        "pushFrom": 1,
-        "pushTo": 1.4,
-        "cameraMove": "push",
-        "cameraPurpose": "single out the subject — the frame closes on what matters"
-      }
+        "pushEndFrame": 48,
+        "pushFrom": 1.04,
+        "pushTo": 1.05,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      },
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.69,
+          "x": 403,
+          "y": 538,
+          "width": 291,
+          "colour": "#e0d089",
+          "from": 12
+        }
+      ]
     },
     {
       "id": "s02-modern-b",
@@ -251,22 +338,23 @@
       "layers": [],
       "props": [
         {
-          "kind": "wire",
-          "shape": "circle",
-          "depth": 0.6,
-          "x": 392,
-          "y": 559,
-          "width": 369,
+          "kind": "beam",
+          "depth": 0.16,
+          "x": 967,
+          "y": -28,
+          "width": 287,
+          "rotate": -22,
+          "opacity": 0.85,
           "colour": "#e0d089",
-          "from": 54
+          "from": 0
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.18,
+        "pushFrom": 1.2,
         "pushTo": 1.27,
-        "pushEndFrame": 61,
+        "pushEndFrame": 58,
         "accent": "#e0d089",
         "field": "spotlight",
         "fieldColours": [
@@ -274,33 +362,105 @@
           "#1f2619",
           "#0b0e08"
         ],
-        "glowX": 1554,
-        "glowY": 254,
-        "glowSize": 496,
-        "glowIntensity": 0.47,
+        "glowX": 1553,
+        "glowY": 467,
+        "glowSize": 552,
+        "glowIntensity": 0.55,
         "glowWarm": "#e0d089",
         "glowDepth": 0.1,
         "caption": [
           "and fails",
           "in fifty years"
         ],
-        "captionX": 81,
-        "captionY": 767,
-        "captionSize": 97,
+        "captionX": 84,
+        "captionY": 115,
+        "captionSize": 79,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 9,
-        "captionScrim": 0,
+        "captionFrame": 35,
+        "captionEvery": 7,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panX": -271,
+        "panX": 229,
         "captionEmphasis": "fifty years",
-        "captionReveal": "rise",
-        "captionMark": "none",
+        "captionReveal": "wipe",
+        "captionMark": "box",
         "captionWordEvery": 3,
         "cameraMove": "pan",
         "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      },
+      "diagram": {
+        "type": "crossSection",
+        "accent": "#e0d089",
+        "muted": "#cfc6ae",
+        "layers": [
+          {
+            "label": "surface",
+            "depth": 0.16,
+            "fill": "solid"
+          },
+          {
+            "label": "body",
+            "depth": 0.56,
+            "fill": "hatch",
+            "focus": true
+          },
+          {
+            "label": "base",
+            "depth": 0.28,
+            "fill": "grain"
+          }
+        ],
+        "scaleNote": "magnified",
+        "crack": {
+          "path": [
+            [
+              0.5,
+              0
+            ],
+            [
+              0.394528,
+              0.16
+            ],
+            [
+              0.494512,
+              0.34
+            ],
+            [
+              0.379136,
+              0.52
+            ],
+            [
+              0.412304,
+              0.68
+            ],
+            [
+              0.34697599999999995,
+              0.82
+            ]
+          ],
+          "opensAt": 4,
+          "opensOver": 16,
+          "label": "crack"
+        },
+        "annotations": [
+          {
+            "x": 0.5,
+            "y": 0.06,
+            "text": "crack opens",
+            "side": "right",
+            "at": 8
+          }
+        ],
+        "subject": "romanConcrete",
+        "claims": [
+          "crack_propagation",
+          "duration"
+        ],
+        "depicts": "material",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -310,25 +470,12 @@
       "durationInFrames": 45,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.32,
-          "x": 937,
-          "y": 5,
-          "width": 361,
-          "rotate": -20,
-          "opacity": 0.7,
-          "colour": "#e0d089",
-          "from": 38
-        }
-      ],
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
-        "pushFrom": 1.01,
-        "pushTo": 1.38,
-        "pushEndFrame": 43,
+        "pushFrom": 1.05,
+        "pushTo": 1.33,
+        "pushEndFrame": 41,
         "accent": "#e0d089",
         "field": "spotlight",
         "fieldColours": [
@@ -336,32 +483,103 @@
           "#1f2619",
           "#0b0e08"
         ],
-        "glowX": 1302,
-        "glowY": 546,
-        "glowSize": 308,
-        "glowIntensity": 0.57,
+        "glowX": 1338,
+        "glowY": 450,
+        "glowSize": 410,
+        "glowIntensity": 0.68,
         "glowWarm": "#e0d089",
         "glowDepth": 0.1,
         "caption": [
-          "Often",
-          "in thirty"
+          "Often in thirty"
         ],
-        "captionX": 81,
-        "captionY": 702,
-        "captionSize": 151,
+        "captionX": 84,
+        "captionY": 115,
+        "captionSize": 74,
         "captionAlign": "left",
-        "captionFrame": -12,
+        "captionFrame": 28,
         "captionEvery": 7,
-        "captionScrim": 0,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "thirty",
         "captionReveal": "rise",
-        "captionMark": "box",
-        "captionWordEvery": 2,
+        "captionMark": "none",
+        "captionWordEvery": 4,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "diagram": {
+        "type": "crossSection",
+        "accent": "#e0d089",
+        "muted": "#cfc6ae",
+        "layers": [
+          {
+            "label": "surface",
+            "depth": 0.16,
+            "fill": "solid"
+          },
+          {
+            "label": "body",
+            "depth": 0.56,
+            "fill": "hatch",
+            "focus": true
+          },
+          {
+            "label": "base",
+            "depth": 0.28,
+            "fill": "grain"
+          }
+        ],
+        "scaleNote": "magnified",
+        "crack": {
+          "path": [
+            [
+              0.5,
+              0
+            ],
+            [
+              0.394528,
+              0.16
+            ],
+            [
+              0.494512,
+              0.34
+            ],
+            [
+              0.379136,
+              0.52
+            ],
+            [
+              0.412304,
+              0.68
+            ],
+            [
+              0.34697599999999995,
+              0.82
+            ]
+          ],
+          "opensAt": 4,
+          "opensOver": 16,
+          "label": "crack"
+        },
+        "annotations": [
+          {
+            "x": 0.5,
+            "y": 0.06,
+            "text": "crack opens",
+            "side": "right",
+            "at": 8
+          }
+        ],
+        "subject": "romanConcrete",
+        "claims": [
+          "crack_propagation",
+          "duration"
+        ],
+        "depicts": "material",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -378,22 +596,23 @@
       "layers": [],
       "props": [
         {
-          "kind": "wire",
-          "shape": "rect",
-          "depth": 0.8,
-          "x": 424,
-          "y": 485,
-          "width": 342,
+          "kind": "beam",
+          "depth": 0.28,
+          "x": 855,
+          "y": -67,
+          "width": 265,
+          "rotate": -10,
+          "opacity": 0.78,
           "colour": "#e0d089",
-          "from": 54
+          "from": 0
         }
       ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1.37,
-        "pushTo": 1,
-        "pushEndFrame": 58,
+        "pushFrom": 1.16,
+        "pushTo": 1.26,
+        "pushEndFrame": 59,
         "glowX": 1145,
         "glowY": 422,
         "glowSize": 460,
@@ -401,7 +620,7 @@
         "glowWarm": "#e0d089",
         "glowDepth": 0.1,
         "focusPx": 0,
-        "fog": 0.2,
+        "fog": 0.16,
         "field": "spotlight",
         "fieldColours": [
           "#3a4530",
@@ -409,34 +628,138 @@
           "#0b0e08"
         ],
         "caption": [
-          "The Romans",
-          "mixed",
+          "The Romans mixed",
           "volcanic ash"
         ],
-        "captionX": 81,
-        "captionY": 680,
-        "captionSize": 113,
+        "captionX": 84,
+        "captionY": 115,
+        "captionSize": 69,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 9,
-        "captionScrim": 0,
+        "captionFrame": 35,
+        "captionEvery": 8,
+        "captionScrim": 0.38,
         "captionRecedeAt": 46,
         "accent": "#e0d089",
         "motif": "embers",
-        "motifX": 515,
-        "motifY": 631,
-        "motifSize": 39,
-        "motifCount": 35,
-        "motifFrame": 20,
+        "motifX": 509,
+        "motifY": 960,
+        "motifSize": 47,
+        "motifCount": 33,
+        "motifFrame": 26,
         "motifColour": "#e0d089",
-        "motifOpacity": 0.92,
+        "motifOpacity": 0.82,
         "handheld": 1.5,
+        "panX": 184,
         "captionEmphasis": "Romans",
-        "captionReveal": "wipe",
+        "captionReveal": "blur",
         "captionMark": "box",
         "captionWordEvery": 3,
-        "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      },
+      "diagram": {
+        "type": "crossSection",
+        "accent": "#e0d089",
+        "muted": "#cfc6ae",
+        "layers": [
+          {
+            "label": "surface",
+            "depth": 0.16,
+            "fill": "solid"
+          },
+          {
+            "label": "aggregate",
+            "depth": 0.56,
+            "fill": "aggregate",
+            "focus": true
+          },
+          {
+            "label": "base",
+            "depth": 0.28,
+            "fill": "grain"
+          }
+        ],
+        "scaleNote": "magnified",
+        "crack": {
+          "path": [
+            [
+              0.5,
+              0
+            ],
+            [
+              0.350896,
+              0.16
+            ],
+            [
+              0.472416,
+              0.34
+            ],
+            [
+              0.41287999999999997,
+              0.52
+            ],
+            [
+              0.414464,
+              0.68
+            ],
+            [
+              0.36056,
+              0.82
+            ]
+          ],
+          "opensAt": 4,
+          "opensOver": 16,
+          "label": "crack"
+        },
+        "fluid": {
+          "at": 18,
+          "label": "water"
+        },
+        "inclusions": [
+          {
+            "x": 0.322272,
+            "y": 0.26170000000000004,
+            "r": 0.027748799999999997,
+            "consumes": 0.6
+          },
+          {
+            "x": 0.504696,
+            "y": 0.19519000000000003,
+            "r": 0.023283599999999998,
+            "reactsAt": 30,
+            "consumes": 0.6,
+            "label": "lime"
+          },
+          {
+            "x": 0.7165279999999999,
+            "y": 0.36112000000000005,
+            "r": 0.028163999999999998,
+            "consumes": 0.6
+          }
+        ],
+        "annotations": [
+          {
+            "x": 0.5,
+            "y": 0.06,
+            "text": "crack opens",
+            "side": "right",
+            "at": 8
+          },
+          {
+            "x": 0.44,
+            "y": 0.4,
+            "text": "water enters",
+            "side": "right",
+            "at": 22
+          }
+        ],
+        "subject": "romanConcrete",
+        "claims": [
+          "fluid_ingress"
+        ],
+        "depicts": "process",
+        "from": 0,
+        "over": 29
       }
     },
     {
@@ -446,25 +769,12 @@
       "durationInFrames": 52,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.28,
-          "x": 1009,
-          "y": -62,
-          "width": 252,
-          "rotate": -11,
-          "opacity": 0.7,
-          "colour": "#e0d089",
-          "from": 44
-        }
-      ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1,
-        "pushTo": 1.12,
-        "pushEndFrame": 50,
+        "pushFrom": 1.42,
+        "pushTo": 1.01,
+        "pushEndFrame": 48,
         "accent": "#e0d089",
         "field": "spotlight",
         "fieldColours": [
@@ -472,34 +782,136 @@
           "#1f2619",
           "#0b0e08"
         ],
-        "glowX": 1460,
-        "glowY": 250,
-        "glowSize": 478,
-        "glowIntensity": 0.7,
+        "glowX": 1419,
+        "glowY": 324,
+        "glowSize": 379,
+        "glowIntensity": 0.61,
         "glowWarm": "#e0d089",
         "glowDepth": 0.1,
         "caption": [
           "from Pozzuoli",
           "with lime"
         ],
-        "captionX": 81,
-        "captionY": 758,
-        "captionSize": 104,
+        "captionX": 84,
+        "captionY": 115,
+        "captionSize": 85,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 8,
-        "captionScrim": 0,
+        "captionFrame": 29,
+        "captionEvery": 10,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panY": -51,
-        "roll": 0.03,
         "captionEmphasis": "Pozzuoli",
-        "captionReveal": "wipe",
-        "captionMark": "underline",
-        "captionWordEvery": 2,
-        "cameraMove": "drift",
-        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+        "captionReveal": "blur",
+        "captionMark": "box",
+        "captionWordEvery": 4,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      },
+      "diagram": {
+        "type": "crossSection",
+        "accent": "#e0d089",
+        "muted": "#cfc6ae",
+        "layers": [
+          {
+            "label": "surface",
+            "depth": 0.16,
+            "fill": "solid"
+          },
+          {
+            "label": "aggregate",
+            "depth": 0.56,
+            "fill": "aggregate",
+            "focus": true
+          },
+          {
+            "label": "base",
+            "depth": 0.28,
+            "fill": "grain"
+          }
+        ],
+        "scaleNote": "magnified",
+        "crack": {
+          "path": [
+            [
+              0.5,
+              0
+            ],
+            [
+              0.350896,
+              0.16
+            ],
+            [
+              0.472416,
+              0.34
+            ],
+            [
+              0.41287999999999997,
+              0.52
+            ],
+            [
+              0.414464,
+              0.68
+            ],
+            [
+              0.36056,
+              0.82
+            ]
+          ],
+          "opensAt": 4,
+          "opensOver": 16,
+          "label": "crack"
+        },
+        "fluid": {
+          "at": 18,
+          "label": "water"
+        },
+        "inclusions": [
+          {
+            "x": 0.322272,
+            "y": 0.26170000000000004,
+            "r": 0.027748799999999997,
+            "consumes": 0.6
+          },
+          {
+            "x": 0.504696,
+            "y": 0.19519000000000003,
+            "r": 0.023283599999999998,
+            "reactsAt": 30,
+            "consumes": 0.6,
+            "label": "lime"
+          },
+          {
+            "x": 0.7165279999999999,
+            "y": 0.36112000000000005,
+            "r": 0.028163999999999998,
+            "consumes": 0.6
+          }
+        ],
+        "annotations": [
+          {
+            "x": 0.5,
+            "y": 0.06,
+            "text": "crack opens",
+            "side": "right",
+            "at": 8
+          },
+          {
+            "x": 0.44,
+            "y": 0.4,
+            "text": "water enters",
+            "side": "right",
+            "at": 22
+          }
+        ],
+        "subject": "romanConcrete",
+        "claims": [
+          "fluid_ingress"
+        ],
+        "depicts": "process",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -511,21 +923,22 @@
       "layers": [],
       "props": [
         {
-          "kind": "wire",
-          "shape": "diamond",
-          "depth": 0.67,
-          "x": 399,
-          "y": 538,
-          "width": 411,
+          "kind": "beam",
+          "depth": 0.29,
+          "x": 871,
+          "y": 132,
+          "width": 317,
+          "rotate": -10,
+          "opacity": 0.51,
           "colour": "#e0d089",
-          "from": 54
+          "from": 0
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
-        "pushFrom": 1.15,
-        "pushTo": 1.3,
+        "pushFrom": 1,
+        "pushTo": 1.11,
         "pushEndFrame": 60,
         "accent": "#e0d089",
         "field": "spotlight",
@@ -534,33 +947,138 @@
           "#1f2619",
           "#0b0e08"
         ],
-        "glowX": 1430,
-        "glowY": 281,
-        "glowSize": 422,
-        "glowIntensity": 0.67,
+        "glowX": 1434,
+        "glowY": 416,
+        "glowSize": 533,
+        "glowIntensity": 0.42,
         "glowWarm": "#e0d089",
         "glowDepth": 0.1,
         "caption": [
           "and poured",
           "it in seawater"
         ],
-        "captionX": 81,
-        "captionY": 767,
-        "captionSize": 97,
+        "captionX": 84,
+        "captionY": 115,
+        "captionSize": 79,
         "captionAlign": "left",
-        "captionFrame": -12,
+        "captionFrame": 35,
         "captionEvery": 8,
-        "captionScrim": 0,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panX": 265,
+        "panY": -62,
+        "roll": 0.29,
         "captionEmphasis": "seawater",
         "captionReveal": "punch",
-        "captionMark": "box",
-        "captionWordEvery": 2,
-        "cameraMove": "pan",
-        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+        "captionMark": "underline",
+        "captionWordEvery": 3,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      },
+      "diagram": {
+        "type": "crossSection",
+        "accent": "#e0d089",
+        "muted": "#cfc6ae",
+        "layers": [
+          {
+            "label": "surface",
+            "depth": 0.16,
+            "fill": "solid"
+          },
+          {
+            "label": "aggregate",
+            "depth": 0.56,
+            "fill": "aggregate",
+            "focus": true
+          },
+          {
+            "label": "base",
+            "depth": 0.28,
+            "fill": "grain"
+          }
+        ],
+        "scaleNote": "magnified",
+        "crack": {
+          "path": [
+            [
+              0.5,
+              0
+            ],
+            [
+              0.350896,
+              0.16
+            ],
+            [
+              0.472416,
+              0.34
+            ],
+            [
+              0.41287999999999997,
+              0.52
+            ],
+            [
+              0.414464,
+              0.68
+            ],
+            [
+              0.36056,
+              0.82
+            ]
+          ],
+          "opensAt": 4,
+          "opensOver": 16,
+          "label": "crack"
+        },
+        "fluid": {
+          "at": 18,
+          "label": "water"
+        },
+        "inclusions": [
+          {
+            "x": 0.322272,
+            "y": 0.26170000000000004,
+            "r": 0.027748799999999997,
+            "consumes": 0.6
+          },
+          {
+            "x": 0.504696,
+            "y": 0.19519000000000003,
+            "r": 0.023283599999999998,
+            "reactsAt": 30,
+            "consumes": 0.6,
+            "label": "lime"
+          },
+          {
+            "x": 0.7165279999999999,
+            "y": 0.36112000000000005,
+            "r": 0.028163999999999998,
+            "consumes": 0.6
+          }
+        ],
+        "annotations": [
+          {
+            "x": 0.5,
+            "y": 0.06,
+            "text": "crack opens",
+            "side": "right",
+            "at": 8
+          },
+          {
+            "x": 0.44,
+            "y": 0.4,
+            "text": "water enters",
+            "side": "right",
+            "at": 22
+          }
+        ],
+        "subject": "romanConcrete",
+        "claims": [
+          "fluid_ingress"
+        ],
+        "depicts": "process",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -575,25 +1093,12 @@
       },
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.35,
-          "x": 824,
-          "y": 143,
-          "width": 355,
-          "rotate": -19,
-          "opacity": 0.67,
-          "colour": "#e0d089",
-          "from": 64
-        }
-      ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1.34,
-        "pushTo": 1,
-        "pushEndFrame": 73,
+        "pushFrom": 1.43,
+        "pushTo": 1.03,
+        "pushEndFrame": 72,
         "glowX": 1145,
         "glowY": 422,
         "glowSize": 460,
@@ -610,35 +1115,115 @@
         ],
         "caption": [
           "Seawater",
-          "is what",
-          "destroys",
-          "modern",
-          "concrete"
+          "is what destroys",
+          "modern concrete"
         ],
-        "captionX": 81,
-        "captionY": 373,
-        "captionSize": 170,
+        "captionX": 84,
+        "captionY": 115,
+        "captionSize": 69,
         "captionAlign": "left",
-        "captionFrame": -12,
+        "captionFrame": 41,
         "captionEvery": 6,
-        "captionScrim": 0,
+        "captionScrim": 0.38,
         "captionRecedeAt": 54,
         "accent": "#e0d089",
         "motif": "embers",
-        "motifX": 545,
-        "motifY": 324,
-        "motifSize": 39,
-        "motifCount": 27,
-        "motifFrame": 29,
+        "motifX": 504,
+        "motifY": 960,
+        "motifSize": 44,
+        "motifCount": 35,
+        "motifFrame": 28,
         "motifColour": "#e0d089",
-        "motifOpacity": 0.96,
+        "motifOpacity": 0.83,
         "handheld": 1.5,
         "captionEmphasis": "Seawater",
-        "captionReveal": "punch",
-        "captionMark": "underline",
-        "captionWordEvery": 2,
+        "captionReveal": "wipe",
+        "captionMark": "highlight",
+        "captionWordEvery": 3,
         "cameraMove": "pull",
         "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      },
+      "diagram": {
+        "type": "crossSection",
+        "accent": "#e0d089",
+        "muted": "#cfc6ae",
+        "layers": [
+          {
+            "label": "surface",
+            "depth": 0.16,
+            "fill": "solid"
+          },
+          {
+            "label": "body",
+            "depth": 0.56,
+            "fill": "hatch",
+            "focus": true
+          },
+          {
+            "label": "base",
+            "depth": 0.28,
+            "fill": "grain"
+          }
+        ],
+        "scaleNote": "magnified",
+        "crack": {
+          "path": [
+            [
+              0.5,
+              0
+            ],
+            [
+              0.391968,
+              0.16
+            ],
+            [
+              0.39460799999999996,
+              0.34
+            ],
+            [
+              0.34592,
+              0.52
+            ],
+            [
+              0.414736,
+              0.68
+            ],
+            [
+              0.36003199999999996,
+              0.82
+            ]
+          ],
+          "opensAt": 4,
+          "opensOver": 16,
+          "label": "crack"
+        },
+        "fluid": {
+          "at": 18,
+          "label": "water"
+        },
+        "annotations": [
+          {
+            "x": 0.5,
+            "y": 0.06,
+            "text": "crack opens",
+            "side": "right",
+            "at": 8
+          },
+          {
+            "x": 0.44,
+            "y": 0.4,
+            "text": "water enters",
+            "side": "right",
+            "at": 22
+          }
+        ],
+        "subject": "romanConcrete",
+        "claims": [
+          "fluid_ingress"
+        ],
+        "depicts": "material",
+        "from": 0,
+        "over": 34
       }
     },
     {
@@ -650,22 +1235,23 @@
       "layers": [],
       "props": [
         {
-          "kind": "wire",
-          "shape": "rect",
-          "depth": 0.83,
-          "x": 345,
-          "y": 528,
-          "width": 412,
+          "kind": "beam",
+          "depth": 0.34,
+          "x": 875,
+          "y": -14,
+          "width": 378,
+          "rotate": -19,
+          "opacity": 0.82,
           "colour": "#e0d089",
-          "from": 54
+          "from": 0
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
         "pushFrom": 1,
-        "pushTo": 1.08,
-        "pushEndFrame": 63,
+        "pushTo": 1.09,
+        "pushEndFrame": 60,
         "accent": "#e0d089",
         "field": "spotlight",
         "fieldColours": [
@@ -673,34 +1259,116 @@
           "#1f2619",
           "#0b0e08"
         ],
-        "glowX": 1434,
-        "glowY": 328,
-        "glowSize": 421,
-        "glowIntensity": 0.57,
+        "glowX": 1446,
+        "glowY": 404,
+        "glowSize": 391,
+        "glowIntensity": 0.55,
         "glowWarm": "#e0d089",
         "glowDepth": 0.1,
         "caption": [
           "Here it was",
           "an ingredient"
         ],
-        "captionX": 81,
-        "captionY": 758,
-        "captionSize": 104,
+        "captionX": 84,
+        "captionY": 115,
+        "captionSize": 85,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 9,
-        "captionScrim": 0,
+        "captionFrame": 35,
+        "captionEvery": 10,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panY": -27,
-        "roll": 0.42,
+        "panY": -62,
+        "roll": -0.66,
         "captionEmphasis": "ingredient",
         "captionReveal": "rise",
-        "captionMark": "none",
-        "captionWordEvery": 2,
+        "captionMark": "underline",
+        "captionWordEvery": 3,
         "cameraMove": "drift",
         "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      },
+      "diagram": {
+        "type": "crossSection",
+        "accent": "#e0d089",
+        "muted": "#cfc6ae",
+        "layers": [
+          {
+            "label": "surface",
+            "depth": 0.16,
+            "fill": "solid"
+          },
+          {
+            "label": "body",
+            "depth": 0.56,
+            "fill": "hatch",
+            "focus": true
+          },
+          {
+            "label": "base",
+            "depth": 0.28,
+            "fill": "grain"
+          }
+        ],
+        "scaleNote": "magnified",
+        "crack": {
+          "path": [
+            [
+              0.5,
+              0
+            ],
+            [
+              0.391968,
+              0.16
+            ],
+            [
+              0.39460799999999996,
+              0.34
+            ],
+            [
+              0.34592,
+              0.52
+            ],
+            [
+              0.414736,
+              0.68
+            ],
+            [
+              0.36003199999999996,
+              0.82
+            ]
+          ],
+          "opensAt": 4,
+          "opensOver": 16,
+          "label": "crack"
+        },
+        "fluid": {
+          "at": 18,
+          "label": "water"
+        },
+        "annotations": [
+          {
+            "x": 0.5,
+            "y": 0.06,
+            "text": "crack opens",
+            "side": "right",
+            "at": 8
+          },
+          {
+            "x": 0.44,
+            "y": 0.4,
+            "text": "water enters",
+            "side": "right",
+            "at": 22
+          }
+        ],
+        "subject": "romanConcrete",
+        "claims": [
+          "fluid_ingress"
+        ],
+        "depicts": "material",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -710,25 +1378,12 @@
       "durationInFrames": 52,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.38,
-          "x": 929,
-          "y": -22,
-          "width": 358,
-          "rotate": -16,
-          "opacity": 0.67,
-          "colour": "#e0d089",
-          "from": 44
-        }
-      ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1,
-        "pushTo": 1.1,
-        "pushEndFrame": 51,
+        "pushFrom": 1.37,
+        "pushTo": 1.02,
+        "pushEndFrame": 47,
         "glowX": 1145,
         "glowY": 422,
         "glowSize": 460,
@@ -744,27 +1399,78 @@
           "#0b0e08"
         ],
         "caption": [
-          "The mix",
-          "left lumps"
+          "The mix left lumps"
         ],
-        "captionX": 81,
-        "captionY": 720,
-        "captionSize": 136,
+        "captionX": 84,
+        "captionY": 115,
+        "captionSize": 62,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 9,
-        "captionScrim": 0,
+        "captionFrame": 29,
+        "captionEvery": 7,
+        "captionScrim": 0.38,
         "captionRecedeAt": 37,
         "accent": "#e0d089",
         "handheld": 1.5,
-        "panY": -66,
-        "roll": -0.18,
         "captionEmphasis": "lumps",
-        "captionReveal": "rise",
+        "captionReveal": "punch",
         "captionMark": "none",
-        "captionWordEvery": 4,
-        "cameraMove": "drift",
-        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+        "captionWordEvery": 3,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      },
+      "diagram": {
+        "type": "crossSection",
+        "accent": "#e0d089",
+        "muted": "#cfc6ae",
+        "layers": [
+          {
+            "label": "surface",
+            "depth": 0.16,
+            "fill": "solid"
+          },
+          {
+            "label": "aggregate",
+            "depth": 0.56,
+            "fill": "aggregate",
+            "focus": true
+          },
+          {
+            "label": "base",
+            "depth": 0.28,
+            "fill": "grain"
+          }
+        ],
+        "scaleNote": "magnified",
+        "inclusions": [
+          {
+            "x": 0.30019999999999997,
+            "y": 0.45781000000000005,
+            "r": 0.028546799999999997,
+            "consumes": 0.6
+          },
+          {
+            "x": 0.527648,
+            "y": 0.30838000000000004,
+            "r": 0.0210816,
+            "reactsAt": 30,
+            "consumes": 0.6,
+            "label": "lime"
+          },
+          {
+            "x": 0.743736,
+            "y": 0.34171,
+            "r": 0.0294996,
+            "consumes": 0.6
+          }
+        ],
+        "annotations": [],
+        "subject": "romanConcrete",
+        "claims": [
+          "wall_thickness"
+        ],
+        "depicts": "process",
+        "from": 0,
+        "over": 23
       }
     },
     {
@@ -776,22 +1482,23 @@
       "layers": [],
       "props": [
         {
-          "kind": "wire",
-          "shape": "circle",
-          "depth": 0.83,
-          "x": 405,
-          "y": 492,
-          "width": 329,
+          "kind": "beam",
+          "depth": 0.33,
+          "x": 858,
+          "y": 134,
+          "width": 312,
+          "rotate": -13,
+          "opacity": 0.7,
           "colour": "#e0d089",
-          "from": 64
+          "from": 0
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.2,
-        "pushTo": 1.23,
-        "pushEndFrame": 73,
+        "pushFrom": 1.22,
+        "pushTo": 1.26,
+        "pushEndFrame": 70,
         "accent": "#e0d089",
         "field": "spotlight",
         "fieldColours": [
@@ -799,34 +1506,87 @@
           "#1f2619",
           "#0b0e08"
         ],
-        "glowX": 1477,
-        "glowY": 507,
-        "glowSize": 550,
-        "glowIntensity": 0.65,
+        "glowX": 1430,
+        "glowY": 209,
+        "glowSize": 483,
+        "glowIntensity": 0.58,
         "glowWarm": "#e0d089",
         "glowDepth": 0.1,
         "caption": [
-          "of unslaked",
-          "lime through",
-          "the wall"
+          "of unslaked lime",
+          "through the wall"
         ],
-        "captionX": 81,
-        "captionY": 680,
-        "captionSize": 113,
+        "captionX": 84,
+        "captionY": 115,
+        "captionSize": 69,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 8,
-        "captionScrim": 0,
+        "captionFrame": 41,
+        "captionEvery": 10,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panX": 251,
+        "panX": 228,
         "captionEmphasis": "unslaked",
-        "captionReveal": "punch",
+        "captionReveal": "rise",
         "captionMark": "box",
         "captionWordEvery": 4,
         "cameraMove": "pan",
         "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      },
+      "diagram": {
+        "type": "crossSection",
+        "accent": "#e0d089",
+        "muted": "#cfc6ae",
+        "layers": [
+          {
+            "label": "surface",
+            "depth": 0.16,
+            "fill": "solid"
+          },
+          {
+            "label": "aggregate",
+            "depth": 0.56,
+            "fill": "aggregate",
+            "focus": true
+          },
+          {
+            "label": "base",
+            "depth": 0.28,
+            "fill": "grain"
+          }
+        ],
+        "scaleNote": "magnified",
+        "inclusions": [
+          {
+            "x": 0.30019999999999997,
+            "y": 0.45781000000000005,
+            "r": 0.028546799999999997,
+            "consumes": 0.6
+          },
+          {
+            "x": 0.527648,
+            "y": 0.30838000000000004,
+            "r": 0.0210816,
+            "reactsAt": 30,
+            "consumes": 0.6,
+            "label": "lime"
+          },
+          {
+            "x": 0.743736,
+            "y": 0.34171,
+            "r": 0.0294996,
+            "consumes": 0.6
+          }
+        ],
+        "annotations": [],
+        "subject": "romanConcrete",
+        "claims": [
+          "wall_thickness"
+        ],
+        "depicts": "process",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -836,25 +1596,12 @@
       "durationInFrames": 75,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.35,
-          "x": 929,
-          "y": -80,
-          "width": 350,
-          "rotate": -16,
-          "opacity": 0.5,
-          "colour": "#e0d089",
-          "from": 64
-        }
-      ],
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
-        "pushFrom": 1.53,
-        "pushTo": 1.03,
-        "pushEndFrame": 71,
+        "pushFrom": 1.49,
+        "pushTo": 1.01,
+        "pushEndFrame": 70,
         "accent": "#e0d089",
         "field": "spotlight",
         "fieldColours": [
@@ -862,34 +1609,86 @@
           "#1f2619",
           "#0b0e08"
         ],
-        "glowX": 1372,
-        "glowY": 473,
-        "glowSize": 349,
-        "glowIntensity": 0.55,
+        "glowX": 1311,
+        "glowY": 357,
+        "glowSize": 347,
+        "glowIntensity": 0.67,
         "glowWarm": "#e0d089",
         "glowDepth": 0.1,
         "caption": [
-          "We read",
-          "those",
-          "as sloppy",
-          "work"
+          "We read those",
+          "as sloppy work"
         ],
-        "captionX": 81,
-        "captionY": 521,
-        "captionSize": 151,
+        "captionX": 84,
+        "captionY": 115,
+        "captionSize": 79,
         "captionAlign": "left",
-        "captionFrame": -12,
+        "captionFrame": 41,
         "captionEvery": 7,
-        "captionScrim": 0,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "sloppy",
         "captionReveal": "wipe",
-        "captionMark": "highlight",
-        "captionWordEvery": 4,
+        "captionMark": "underline",
+        "captionWordEvery": 3,
         "cameraMove": "pull",
         "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      },
+      "diagram": {
+        "type": "crossSection",
+        "accent": "#e0d089",
+        "muted": "#cfc6ae",
+        "layers": [
+          {
+            "label": "surface",
+            "depth": 0.16,
+            "fill": "solid"
+          },
+          {
+            "label": "aggregate",
+            "depth": 0.56,
+            "fill": "aggregate",
+            "focus": true
+          },
+          {
+            "label": "base",
+            "depth": 0.28,
+            "fill": "grain"
+          }
+        ],
+        "scaleNote": "magnified",
+        "inclusions": [
+          {
+            "x": 0.30019999999999997,
+            "y": 0.45781000000000005,
+            "r": 0.028546799999999997,
+            "consumes": 0.6
+          },
+          {
+            "x": 0.527648,
+            "y": 0.30838000000000004,
+            "r": 0.0210816,
+            "reactsAt": 30,
+            "consumes": 0.6,
+            "label": "lime"
+          },
+          {
+            "x": 0.743736,
+            "y": 0.34171,
+            "r": 0.0294996,
+            "consumes": 0.6
+          }
+        ],
+        "annotations": [],
+        "subject": "romanConcrete",
+        "claims": [
+          "wall_thickness"
+        ],
+        "depicts": "process",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -903,9 +1702,9 @@
         "kicker": "",
         "title": "ONE",
         "footer": "",
-        "titleFrame": 4,
+        "titleFrame": 44,
         "titleSize": 230,
-        "creep": 1.078,
+        "creep": 1.099,
         "accent": "#e0d089",
         "field": "grid",
         "fieldColours": [
@@ -914,35 +1713,29 @@
           "#0b0e08"
         ],
         "motif": "route",
-        "motifX": 157,
-        "motifY": 563,
-        "motifSize": 228,
+        "motifX": 119,
+        "motifY": 575,
+        "motifSize": 204,
         "motifCount": 1,
-        "motifFrame": 17,
+        "motifFrame": 15,
         "motifColour": "#e0d089",
-        "motifOpacity": 0.92,
-        "mark": "oval",
-        "markX": 260,
-        "markY": 820,
-        "markWidth": 560,
-        "markHeight": 300,
-        "markFrame": 18,
-        "pushEndFrame": 50,
-        "pushFrom": 1,
-        "pushTo": 1.39,
-        "cameraMove": "push",
-        "cameraPurpose": "single out the subject — the frame closes on what matters"
+        "motifOpacity": 0.97,
+        "pushEndFrame": 49,
+        "pushFrom": 1.02,
+        "pushTo": 1.05,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
       },
       "props": [
         {
           "kind": "wire",
           "shape": "diamond",
-          "depth": 0.7,
-          "x": 366,
-          "y": 540,
-          "width": 286,
+          "depth": 0.84,
+          "x": 648,
+          "y": 538,
+          "width": 290,
           "colour": "#e0d089",
-          "from": 44
+          "from": 7
         }
       ]
     },
@@ -956,22 +1749,22 @@
       "props": [
         {
           "kind": "beam",
-          "depth": 0.24,
-          "x": 933,
-          "y": -59,
-          "width": 314,
-          "rotate": -19,
+          "depth": 0.34,
+          "x": 976,
+          "y": -46,
+          "width": 301,
+          "rotate": -20,
           "opacity": 0.71,
           "colour": "#e0d089",
-          "from": 44
+          "from": 0
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.04,
-        "pushTo": 1.46,
-        "pushEndFrame": 51,
+        "pushFrom": 1.06,
+        "pushTo": 1.34,
+        "pushEndFrame": 48,
         "accent": "#e0d089",
         "field": "spotlight",
         "fieldColours": [
@@ -979,32 +1772,114 @@
           "#1f2619",
           "#0b0e08"
         ],
-        "glowX": 1426,
-        "glowY": 500,
-        "glowSize": 523,
-        "glowIntensity": 0.67,
+        "glowX": 1450,
+        "glowY": 554,
+        "glowSize": 464,
+        "glowIntensity": 0.63,
         "glowWarm": "#e0d089",
         "glowDepth": 0.1,
         "caption": [
-          "water runs",
-          "down it"
+          "water runs down it"
         ],
-        "captionX": 81,
-        "captionY": 720,
-        "captionSize": 136,
+        "captionX": 84,
+        "captionY": 115,
+        "captionSize": 62,
         "captionAlign": "left",
-        "captionFrame": -12,
+        "captionFrame": 29,
         "captionEvery": 7,
-        "captionScrim": 0,
+        "captionScrim": 0.38,
         "focusPx": 0,
-        "fog": 0.23,
+        "fog": 0.1,
         "handheld": 1.5,
         "captionEmphasis": "water",
-        "captionReveal": "rise",
+        "captionReveal": "punch",
         "captionMark": "none",
-        "captionWordEvery": 3,
+        "captionWordEvery": 4,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "diagram": {
+        "type": "crossSection",
+        "accent": "#e0d089",
+        "muted": "#cfc6ae",
+        "layers": [
+          {
+            "label": "surface",
+            "depth": 0.16,
+            "fill": "solid"
+          },
+          {
+            "label": "body",
+            "depth": 0.56,
+            "fill": "hatch",
+            "focus": true
+          },
+          {
+            "label": "base",
+            "depth": 0.28,
+            "fill": "grain"
+          }
+        ],
+        "scaleNote": "magnified",
+        "crack": {
+          "path": [
+            [
+              0.5,
+              0
+            ],
+            [
+              0.492816,
+              0.16
+            ],
+            [
+              0.420256,
+              0.34
+            ],
+            [
+              0.43889599999999995,
+              0.52
+            ],
+            [
+              0.454528,
+              0.68
+            ],
+            [
+              0.43272,
+              0.82
+            ]
+          ],
+          "opensAt": 4,
+          "opensOver": 16,
+          "label": "crack"
+        },
+        "fluid": {
+          "at": 18,
+          "label": "water"
+        },
+        "annotations": [
+          {
+            "x": 0.5,
+            "y": 0.06,
+            "text": "crack opens",
+            "side": "right",
+            "at": 8
+          },
+          {
+            "x": 0.44,
+            "y": 0.4,
+            "text": "water enters",
+            "side": "right",
+            "at": 22
+          }
+        ],
+        "subject": "material",
+        "claims": [
+          "crack_propagation",
+          "fluid_ingress"
+        ],
+        "depicts": "material",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -1014,24 +1889,12 @@
       "durationInFrames": 75,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "wire",
-          "shape": "diamond",
-          "depth": 0.72,
-          "x": 338,
-          "y": 520,
-          "width": 272,
-          "colour": "#e0d089",
-          "from": 64
-        }
-      ],
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
         "pushFrom": 1.23,
-        "pushTo": 1.3,
-        "pushEndFrame": 68,
+        "pushTo": 1.28,
+        "pushEndFrame": 70,
         "accent": "#e0d089",
         "field": "spotlight",
         "fieldColours": [
@@ -1039,34 +1902,116 @@
           "#1f2619",
           "#0b0e08"
         ],
-        "glowX": 1362,
-        "glowY": 548,
-        "glowSize": 352,
-        "glowIntensity": 0.58,
+        "glowX": 1394,
+        "glowY": 338,
+        "glowSize": 351,
+        "glowIntensity": 0.63,
         "glowWarm": "#e0d089",
         "glowDepth": 0.1,
         "caption": [
-          "and reaches",
-          "one",
+          "and reaches one",
           "of the lumps"
         ],
-        "captionX": 81,
-        "captionY": 680,
-        "captionSize": 113,
+        "captionX": 84,
+        "captionY": 115,
+        "captionSize": 74,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 9,
-        "captionScrim": 0,
+        "captionFrame": 41,
+        "captionEvery": 8,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panX": -176,
+        "panX": 258,
         "captionEmphasis": "one",
         "captionReveal": "punch",
-        "captionMark": "none",
+        "captionMark": "highlight",
         "captionWordEvery": 3,
         "cameraMove": "pan",
         "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      },
+      "diagram": {
+        "type": "crossSection",
+        "accent": "#e0d089",
+        "muted": "#cfc6ae",
+        "layers": [
+          {
+            "label": "surface",
+            "depth": 0.16,
+            "fill": "solid"
+          },
+          {
+            "label": "body",
+            "depth": 0.56,
+            "fill": "hatch",
+            "focus": true
+          },
+          {
+            "label": "base",
+            "depth": 0.28,
+            "fill": "grain"
+          }
+        ],
+        "scaleNote": "magnified",
+        "crack": {
+          "path": [
+            [
+              0.5,
+              0
+            ],
+            [
+              0.492816,
+              0.16
+            ],
+            [
+              0.420256,
+              0.34
+            ],
+            [
+              0.43889599999999995,
+              0.52
+            ],
+            [
+              0.454528,
+              0.68
+            ],
+            [
+              0.43272,
+              0.82
+            ]
+          ],
+          "opensAt": 4,
+          "opensOver": 16,
+          "label": "crack"
+        },
+        "fluid": {
+          "at": 18,
+          "label": "water"
+        },
+        "annotations": [
+          {
+            "x": 0.5,
+            "y": 0.06,
+            "text": "crack opens",
+            "side": "right",
+            "at": 8
+          },
+          {
+            "x": 0.44,
+            "y": 0.4,
+            "text": "water enters",
+            "side": "right",
+            "at": 22
+          }
+        ],
+        "subject": "material",
+        "claims": [
+          "crack_propagation",
+          "fluid_ingress"
+        ],
+        "depicts": "material",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -1076,25 +2021,12 @@
       "durationInFrames": 86,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.37,
-          "x": 867,
-          "y": 152,
-          "width": 231,
-          "rotate": -8,
-          "opacity": 0.8,
-          "colour": "#e0d089",
-          "from": 73
-        }
-      ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1.58,
-        "pushTo": 1.02,
-        "pushEndFrame": 80,
+        "pushFrom": 1,
+        "pushTo": 1.09,
+        "pushEndFrame": 82,
         "glowX": 1145,
         "glowY": 422,
         "glowSize": 460,
@@ -1110,36 +2042,138 @@
           "#0b0e08"
         ],
         "caption": [
-          "The lime",
-          "dissolves,",
+          "The lime dissolves,",
           "recrystallises",
-          "across",
-          "the gap"
+          "across the gap"
         ],
-        "captionX": 81,
-        "captionY": 592,
-        "captionSize": 97,
+        "captionX": 84,
+        "captionY": 115,
+        "captionSize": 58,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 7,
-        "captionScrim": 0,
+        "captionFrame": 46,
+        "captionEvery": 9,
+        "captionScrim": 0.38,
         "captionRecedeAt": 62,
         "accent": "#e0d089",
         "motif": "route",
-        "motifX": 165,
-        "motifY": 464,
-        "motifSize": 197,
+        "motifX": 129,
+        "motifY": 1190,
+        "motifSize": 214,
         "motifCount": 1,
-        "motifFrame": 30,
+        "motifFrame": 26,
         "motifColour": "#e0d089",
-        "motifOpacity": 0.89,
+        "motifOpacity": 0.83,
         "handheld": 1.5,
+        "panY": -49,
+        "roll": -0.17,
         "captionEmphasis": "recrystallises",
-        "captionReveal": "punch",
-        "captionMark": "highlight",
-        "captionWordEvery": 4,
-        "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "captionReveal": "blur",
+        "captionMark": "underline",
+        "captionWordEvery": 3,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      },
+      "diagram": {
+        "type": "crossSection",
+        "accent": "#e0d089",
+        "muted": "#cfc6ae",
+        "layers": [
+          {
+            "label": "surface",
+            "depth": 0.16,
+            "fill": "solid"
+          },
+          {
+            "label": "aggregate",
+            "depth": 0.56,
+            "fill": "aggregate",
+            "focus": true
+          },
+          {
+            "label": "base",
+            "depth": 0.28,
+            "fill": "grain"
+          }
+        ],
+        "scaleNote": "magnified",
+        "crack": {
+          "path": [
+            [
+              0.5,
+              0
+            ],
+            [
+              0.3952,
+              0.16
+            ],
+            [
+              0.391472,
+              0.34
+            ],
+            [
+              0.385248,
+              0.52
+            ],
+            [
+              0.361168,
+              0.68
+            ],
+            [
+              0.37068799999999996,
+              0.82
+            ]
+          ],
+          "opensAt": 4,
+          "opensOver": 16,
+          "label": "crack",
+          "healsAt": 44,
+          "healsOver": 22
+        },
+        "inclusions": [
+          {
+            "x": 0.28084,
+            "y": 0.27649,
+            "r": 0.0274188,
+            "consumes": 0.6
+          },
+          {
+            "x": 0.540224,
+            "y": 0.28186000000000005,
+            "r": 0.021422399999999998,
+            "reactsAt": 30,
+            "consumes": 0.6,
+            "label": "lime"
+          },
+          {
+            "x": 0.760856,
+            "y": 0.48943000000000003,
+            "r": 0.022995599999999998,
+            "consumes": 0.6
+          }
+        ],
+        "growth": {
+          "at": 42,
+          "over": 24,
+          "label": "sealed"
+        },
+        "annotations": [
+          {
+            "x": 0.5,
+            "y": 0.72,
+            "text": "gap closes",
+            "side": "right",
+            "at": 50
+          }
+        ],
+        "subject": "romanConcrete",
+        "claims": [
+          "chokepoint",
+          "reaction",
+          "self_healing"
+        ],
+        "depicts": "material",
+        "from": 0,
+        "over": 39
       }
     },
     {
@@ -1149,24 +2183,12 @@
       "durationInFrames": 52,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "wire",
-          "shape": "rect",
-          "depth": 0.69,
-          "x": 335,
-          "y": 536,
-          "width": 285,
-          "colour": "#e0d089",
-          "from": 44
-        }
-      ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1,
-        "pushTo": 1.1,
-        "pushEndFrame": 50,
+        "pushFrom": 1.54,
+        "pushTo": 1.03,
+        "pushEndFrame": 51,
         "accent": "#e0d089",
         "field": "spotlight",
         "fieldColours": [
@@ -1174,34 +2196,133 @@
           "#1f2619",
           "#0b0e08"
         ],
-        "glowX": 1609,
-        "glowY": 512,
-        "glowSize": 550,
-        "glowIntensity": 0.63,
+        "glowX": 1434,
+        "glowY": 376,
+        "glowSize": 365,
+        "glowIntensity": 0.66,
         "glowWarm": "#e0d089",
         "glowDepth": 0.1,
         "caption": [
-          "and seals",
-          "it shut"
+          "and seals it shut"
         ],
-        "captionX": 81,
-        "captionY": 702,
-        "captionSize": 151,
+        "captionX": 84,
+        "captionY": 115,
+        "captionSize": 65,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 9,
-        "captionScrim": 0,
+        "captionFrame": 29,
+        "captionEvery": 7,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panY": -56,
-        "roll": -0.23,
         "captionEmphasis": "seals",
-        "captionReveal": "wipe",
-        "captionMark": "none",
+        "captionReveal": "rise",
+        "captionMark": "underline",
         "captionWordEvery": 2,
-        "cameraMove": "drift",
-        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      },
+      "diagram": {
+        "type": "crossSection",
+        "accent": "#e0d089",
+        "muted": "#cfc6ae",
+        "layers": [
+          {
+            "label": "surface",
+            "depth": 0.16,
+            "fill": "solid"
+          },
+          {
+            "label": "aggregate",
+            "depth": 0.56,
+            "fill": "aggregate",
+            "focus": true
+          },
+          {
+            "label": "base",
+            "depth": 0.28,
+            "fill": "grain"
+          }
+        ],
+        "scaleNote": "magnified",
+        "crack": {
+          "path": [
+            [
+              0.5,
+              0
+            ],
+            [
+              0.3952,
+              0.16
+            ],
+            [
+              0.391472,
+              0.34
+            ],
+            [
+              0.385248,
+              0.52
+            ],
+            [
+              0.361168,
+              0.68
+            ],
+            [
+              0.37068799999999996,
+              0.82
+            ]
+          ],
+          "opensAt": 4,
+          "opensOver": 16,
+          "label": "crack",
+          "healsAt": 44,
+          "healsOver": 22
+        },
+        "inclusions": [
+          {
+            "x": 0.28084,
+            "y": 0.27649,
+            "r": 0.0274188,
+            "consumes": 0.6
+          },
+          {
+            "x": 0.540224,
+            "y": 0.28186000000000005,
+            "r": 0.021422399999999998,
+            "reactsAt": 30,
+            "consumes": 0.6,
+            "label": "lime"
+          },
+          {
+            "x": 0.760856,
+            "y": 0.48943000000000003,
+            "r": 0.022995599999999998,
+            "consumes": 0.6
+          }
+        ],
+        "growth": {
+          "at": 42,
+          "over": 24,
+          "label": "sealed"
+        },
+        "annotations": [
+          {
+            "x": 0.5,
+            "y": 0.72,
+            "text": "gap closes",
+            "side": "right",
+            "at": 50
+          }
+        ],
+        "subject": "romanConcrete",
+        "claims": [
+          "chokepoint",
+          "reaction",
+          "self_healing"
+        ],
+        "depicts": "material",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -1211,13 +2332,13 @@
       "durationInFrames": 45,
       "assets": {},
       "params": {
-        "scrim": 0.44,
+        "scrim": 0.43,
         "kicker": "",
         "title": "TWO THOUSAND YEARS",
         "footer": "",
-        "titleFrame": 4,
+        "titleFrame": 38,
         "titleSize": 230,
-        "creep": 1.083,
+        "creep": 1.066,
         "accent": "#e0d089",
         "field": "grid",
         "fieldColours": [
@@ -1225,12 +2346,30 @@
           "#1f2619",
           "#0b0e08"
         ],
-        "pushEndFrame": 41,
-        "pushFrom": 1.05,
-        "pushTo": 1.06,
-        "cameraMove": "hold",
-        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+        "mark": "oval",
+        "markX": 260,
+        "markY": 820,
+        "markWidth": 560,
+        "markHeight": 300,
+        "markFrame": 15,
+        "pushEndFrame": 43,
+        "pushFrom": 1,
+        "pushTo": 1.6,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
       },
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.61,
+          "x": 442,
+          "y": 505,
+          "width": 357,
+          "colour": "#e0d089",
+          "from": 6
+        }
+      ],
       "onScreenText": [
         {
           "text": "STRONGER, NOT WEAKER",
@@ -1250,22 +2389,23 @@
       "layers": [],
       "props": [
         {
-          "kind": "wire",
-          "shape": "circle",
-          "depth": 0.75,
-          "x": 335,
-          "y": 410,
-          "width": 356,
+          "kind": "beam",
+          "depth": 0.23,
+          "x": 929,
+          "y": 52,
+          "width": 273,
+          "rotate": -16,
+          "opacity": 0.75,
           "colour": "#e0d089",
-          "from": 73
+          "from": 0
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
         "pushFrom": 1.16,
-        "pushTo": 1.19,
-        "pushEndFrame": 78,
+        "pushTo": 1.31,
+        "pushEndFrame": 80,
         "accent": "#e0d089",
         "field": "spotlight",
         "fieldColours": [
@@ -1273,35 +2413,80 @@
           "#1f2619",
           "#0b0e08"
         ],
-        "glowX": 1496,
-        "glowY": 428,
-        "glowSize": 474,
-        "glowIntensity": 0.52,
+        "glowX": 1491,
+        "glowY": 312,
+        "glowSize": 517,
+        "glowIntensity": 0.42,
         "glowWarm": "#e0d089",
         "glowDepth": 0.1,
         "caption": [
-          "of storms",
-          "have made",
-          "that harbour",
-          "stronger"
+          "of storms have made",
+          "that harbour stronger"
         ],
-        "captionX": 81,
-        "captionY": 612,
-        "captionSize": 113,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 53,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 6,
-        "captionScrim": 0,
+        "captionFrame": 46,
+        "captionEvery": 9,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panX": -264,
+        "panX": -239,
+        "shakeAt": [
+          7
+        ],
+        "shakeAmount": 22,
         "captionEmphasis": "stronger",
-        "captionReveal": "blur",
-        "captionMark": "underline",
-        "captionWordEvery": 4,
+        "captionReveal": "rise",
+        "captionMark": "box",
+        "captionWordEvery": 2,
         "cameraMove": "pan",
         "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      },
+      "diagram": {
+        "type": "map",
+        "regions": [
+          {
+            "kind": "land",
+            "shape": [
+              [
+                0.06,
+                0.2
+              ],
+              [
+                0.45186,
+                0.14
+              ],
+              [
+                0.94,
+                0.24
+              ],
+              [
+                0.9,
+                0.66
+              ],
+              [
+                0.44558,
+                0.72
+              ],
+              [
+                0.08,
+                0.62
+              ]
+            ]
+          }
+        ],
+        "accent": "#e0d089",
+        "muted": "#cfc6ae",
+        "subject": "geography",
+        "claims": [
+          "duration"
+        ],
+        "depicts": "geography",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -1311,24 +2496,11 @@
       "durationInFrames": 45,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.17,
-          "x": 929,
-          "y": -3,
-          "width": 287,
-          "rotate": -16,
-          "opacity": 0.71,
-          "colour": "#e0d089",
-          "from": 38
-        }
-      ],
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
-        "pushFrom": 1.67,
-        "pushTo": 1.02,
+        "pushFrom": 1.04,
+        "pushTo": 1.45,
         "pushEndFrame": 43,
         "accent": "#e0d089",
         "field": "spotlight",
@@ -1337,31 +2509,74 @@
           "#1f2619",
           "#0b0e08"
         ],
-        "glowX": 1434,
-        "glowY": 456,
-        "glowSize": 538,
-        "glowIntensity": 0.65,
+        "glowX": 1501,
+        "glowY": 256,
+        "glowSize": 475,
+        "glowIntensity": 0.58,
         "glowWarm": "#e0d089",
         "glowDepth": 0.1,
         "caption": [
           "not weaker"
         ],
-        "captionX": 81,
-        "captionY": 802,
-        "captionSize": 136,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 97,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 8,
-        "captionScrim": 0,
+        "captionFrame": 28,
+        "captionEvery": 9,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "weaker",
-        "captionReveal": "rise",
-        "captionMark": "underline",
-        "captionWordEvery": 2,
-        "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "captionReveal": "blur",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "diagram": {
+        "type": "map",
+        "regions": [
+          {
+            "kind": "land",
+            "shape": [
+              [
+                0.06,
+                0.2
+              ],
+              [
+                0.45186,
+                0.14
+              ],
+              [
+                0.94,
+                0.24
+              ],
+              [
+                0.9,
+                0.66
+              ],
+              [
+                0.44558,
+                0.72
+              ],
+              [
+                0.08,
+                0.62
+              ]
+            ]
+          }
+        ],
+        "accent": "#e0d089",
+        "muted": "#cfc6ae",
+        "subject": "geography",
+        "claims": [
+          "duration"
+        ],
+        "depicts": "geography",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -1376,13 +2591,13 @@
       },
       "assets": {},
       "params": {
-        "scrim": 0.4,
+        "scrim": 0.38,
         "kicker": "VITRUVIUS · AD 30",
         "title": "TWO THOUSAND",
         "footer": "years, and still curing",
         "titleFrame": 9,
         "titleSize": 230,
-        "creep": 1.08,
+        "creep": 1.09,
         "accent": "#e0d089",
         "field": "grid",
         "fieldColours": [
@@ -1396,9 +2611,9 @@
         "markWidth": 560,
         "markHeight": 300,
         "markFrame": 40,
-        "pushEndFrame": 109,
+        "pushEndFrame": 113,
         "pushFrom": 1,
-        "pushTo": 1.11,
+        "pushTo": 1.09,
         "cameraMove": "drift",
         "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       },
@@ -1406,22 +2621,22 @@
         {
           "kind": "plaque",
           "text": "VITRUVIUS · AD 30",
-          "depth": 0.71,
-          "x": 426,
-          "y": 1502,
-          "width": 417,
-          "rotate": -2.2,
-          "from": 56
+          "depth": 0.55,
+          "x": 384,
+          "y": 616,
+          "width": 396,
+          "rotate": 2,
+          "from": 48
         },
         {
           "kind": "newspaper",
-          "masthead": "THE GAZETTE",
+          "masthead": "THE HERALD",
           "text": "TWO THOUSAND",
-          "depth": 0.82,
-          "x": 760,
-          "y": 543,
-          "width": 389,
-          "rotate": 2.4,
+          "depth": 0.76,
+          "x": 662,
+          "y": 533,
+          "width": 416,
+          "rotate": -3.7,
           "from": 73
         }
       ]

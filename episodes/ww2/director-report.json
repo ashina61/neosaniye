@@ -363,8 +363,8 @@
         "purpose": "spatial continuity",
         "because": "beat is CONTEXT"
       },
-      "representation": "PHOTO",
-      "drawn": null,
+      "representation": "HYBRID",
+      "drawn": "process",
       "emphasis": "Polish",
       "reveal": "rise",
       "plates": [
@@ -398,8 +398,8 @@
         "purpose": "visual similarity",
         "because": "same subject (border-road.jpg)"
       },
-      "representation": "PHOTO",
-      "drawn": null,
+      "representation": "HYBRID",
+      "drawn": "process",
       "emphasis": "Polish",
       "reveal": "rise",
       "plates": [
@@ -667,9 +667,9 @@
       "drawn": null
     },
     "border": {
-      "mode": "PHOTO",
-      "why": "a correct photograph exists and is the strongest representation",
-      "drawn": null
+      "mode": "HYBRID",
+      "why": "process is a picture of process — it demonstrates 1 of what the line asserts",
+      "drawn": "process"
     },
     "ultimatum": {
       "mode": "PHOTO",

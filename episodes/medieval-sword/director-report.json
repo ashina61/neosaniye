@@ -160,8 +160,8 @@
         "purpose": null,
         "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
       },
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
+      "representation": "PROCEDURAL",
+      "drawn": "process",
       "emphasis": "forged",
       "reveal": "rise",
       "plates": [],
@@ -188,19 +188,18 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same drawing (process)"
       },
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
+      "representation": "PROCEDURAL",
+      "drawn": "process",
       "emphasis": "iron",
       "reveal": "wipe",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [
-        "plaque",
-        "wire"
+        "plaque"
       ],
       "hierarchy": {
         "primary": "the claim: \"iron\"",
@@ -214,8 +213,8 @@
       "template": "title-slate",
       "seconds": 3.23,
       "camera": {
-        "from": 1,
-        "to": 1.28,
+        "from": 1.05,
+        "to": 1.05,
         "panX": null,
         "panY": null
       },
@@ -231,7 +230,9 @@
       "reveal": null,
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [],
+      "props": [
+        "wire"
+      ],
       "hierarchy": {
         "primary": "the claim",
         "secondary": "the drawn label or mark that dates and places it",
@@ -244,8 +245,8 @@
       "template": "composite",
       "seconds": 1.5,
       "camera": {
-        "from": 1.02,
-        "to": 1.06,
+        "from": 1.01,
+        "to": 1.42,
         "panX": null,
         "panY": null
       },
@@ -255,15 +256,14 @@
         "purpose": null,
         "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
       },
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
+      "representation": "PROCEDURAL",
+      "drawn": "process",
       "emphasis": "Orange",
       "reveal": "rise",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [
-        "beam",
-        "wire"
+        "beam"
       ],
       "hierarchy": {
         "primary": "the claim: \"Orange\"",
@@ -277,10 +277,10 @@
       "template": "composite",
       "seconds": 2.5,
       "camera": {
-        "from": 1.41,
-        "to": 1.05,
+        "from": 1,
+        "to": 1.11,
         "panX": null,
-        "panY": null
+        "panY": -60
       },
       "transition": "cut",
       "cut": {
@@ -295,7 +295,7 @@
       "plates": [],
       "drawnGround": "spotlight",
       "props": [
-        "beam"
+        "wire"
       ],
       "hierarchy": {
         "primary": "the claim: \"little\"",
@@ -309,9 +309,9 @@
       "template": "composite",
       "seconds": 2.13,
       "camera": {
-        "from": 1.22,
-        "to": 1.31,
-        "panX": 261,
+        "from": 1.23,
+        "to": 1.22,
+        "panX": -248,
         "panY": null
       },
       "transition": "cut",
@@ -323,11 +323,11 @@
       "representation": "TYPOGRAPHY",
       "drawn": null,
       "emphasis": "shatters",
-      "reveal": "blur",
+      "reveal": "punch",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [
-        "wire"
+        "beam"
       ],
       "hierarchy": {
         "primary": "the claim: \"shatters\"",
@@ -341,10 +341,10 @@
       "template": "composite",
       "seconds": 1.73,
       "camera": {
-        "from": 1,
-        "to": 1.07,
+        "from": 1.35,
+        "to": 1.01,
         "panX": null,
-        "panY": -56
+        "panY": null
       },
       "transition": "cut",
       "cut": {
@@ -355,11 +355,11 @@
       "representation": "TYPOGRAPHY",
       "drawn": null,
       "emphasis": "first",
-      "reveal": "punch",
+      "reveal": "rise",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [
-        "beam"
+        "wire"
       ],
       "hierarchy": {
         "primary": "the claim: \"first\"",
@@ -373,10 +373,10 @@
       "template": "composite",
       "seconds": 2.87,
       "camera": {
-        "from": 1.17,
-        "to": 1.28,
-        "panX": -253,
-        "panY": null
+        "from": 1,
+        "to": 1.09,
+        "panX": null,
+        "panY": -56
       },
       "transition": "cut",
       "cut": {
@@ -384,14 +384,14 @@
         "purpose": null,
         "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
       },
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
+      "representation": "PROCEDURAL",
+      "drawn": "process",
       "emphasis": "layers",
-      "reveal": "blur",
+      "reveal": "punch",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [
-        "wire"
+        "beam"
       ],
       "hierarchy": {
         "primary": "the claim: \"layers\"",
@@ -405,26 +405,24 @@
       "template": "composite",
       "seconds": 2.13,
       "camera": {
-        "from": 1.48,
-        "to": 1.03,
+        "from": 1.39,
+        "to": 1.01,
         "panX": null,
         "panY": null
       },
       "transition": "cut",
       "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same drawing (process)"
       },
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
+      "representation": "PROCEDURAL",
+      "drawn": "process",
       "emphasis": "steel",
       "reveal": "wipe",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [
-        "beam"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"steel\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -444,18 +442,18 @@
       },
       "transition": "cut",
       "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same drawing (process)"
       },
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
+      "representation": "PROCEDURAL",
+      "drawn": "process",
       "emphasis": "spine",
       "reveal": "rise",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [
-        "wire"
+        "beam"
       ],
       "hierarchy": {
         "primary": "the claim: \"spine\"",
@@ -470,25 +468,23 @@
       "seconds": 1.73,
       "camera": {
         "from": 1.04,
-        "to": 1.05,
+        "to": 1.06,
         "panX": null,
         "panY": null
       },
       "transition": "cut",
       "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same drawing (process)"
       },
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
+      "representation": "PROCEDURAL",
+      "drawn": "process",
       "emphasis": "Hammer",
       "reveal": "punch",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [
-        "beam"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"Hammer\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -501,25 +497,25 @@
       "template": "composite",
       "seconds": 1.73,
       "camera": {
-        "from": 1.01,
-        "to": 1.46,
+        "from": 1.06,
+        "to": 1.48,
         "panX": null,
         "panY": null
       },
       "transition": "cut",
       "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same drawing (process)"
       },
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
+      "representation": "PROCEDURAL",
+      "drawn": "process",
       "emphasis": "Each",
-      "reveal": "punch",
+      "reveal": "rise",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [
-        "wire"
+        "beam"
       ],
       "hierarchy": {
         "primary": "the claim: \"Each\"",
@@ -534,25 +530,23 @@
       "seconds": 1.5,
       "camera": {
         "from": 1.04,
-        "to": 1.37,
+        "to": 1.07,
         "panX": null,
         "panY": null
       },
       "transition": "cut",
       "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same drawing (process)"
       },
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
+      "representation": "PROCEDURAL",
+      "drawn": "process",
       "emphasis": "doubles",
-      "reveal": "wipe",
+      "reveal": "blur",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [
-        "beam"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"doubles\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -566,25 +560,23 @@
       "seconds": 1.73,
       "camera": {
         "from": 1,
-        "to": 1.45,
+        "to": 1.49,
         "panX": null,
         "panY": null
       },
       "transition": "cut",
       "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same drawing (process)"
       },
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
+      "representation": "PROCEDURAL",
+      "drawn": "process",
       "emphasis": "finished",
       "reveal": "blur",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"finished\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -597,26 +589,24 @@
       "template": "composite",
       "seconds": 1.73,
       "camera": {
-        "from": 1.03,
-        "to": 1.08,
+        "from": 1.02,
+        "to": 1.07,
         "panX": null,
         "panY": null
       },
       "transition": "cut",
       "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same drawing (process)"
       },
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
+      "representation": "PROCEDURAL",
+      "drawn": "process",
       "emphasis": "heated",
       "reveal": "wipe",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [
-        "beam"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"heated\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -629,25 +619,25 @@
       "template": "composite",
       "seconds": 1.73,
       "camera": {
-        "from": 1.04,
-        "to": 1.47,
+        "from": 1,
+        "to": 1.44,
         "panX": null,
         "panY": null
       },
       "transition": "cut",
       "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same drawing (process)"
       },
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
+      "representation": "PROCEDURAL",
+      "drawn": "process",
       "emphasis": "plunged",
-      "reveal": "blur",
+      "reveal": "punch",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [
-        "wire"
+        "beam"
       ],
       "hierarchy": {
         "primary": "the claim: \"plunged\"",
@@ -661,26 +651,24 @@
       "template": "composite",
       "seconds": 3.23,
       "camera": {
-        "from": 1.16,
-        "to": 1.2,
-        "panX": -148,
+        "from": 1.17,
+        "to": 1.25,
+        "panX": -221,
         "panY": null
       },
       "transition": "cut",
       "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same drawing (process)"
       },
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
+      "representation": "PROCEDURAL",
+      "drawn": "process",
       "emphasis": "second",
       "reveal": "rise",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [
-        "beam"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"second\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -693,25 +681,25 @@
       "template": "composite",
       "seconds": 2.87,
       "camera": {
-        "from": 1,
-        "to": 1.1,
+        "from": 1.44,
+        "to": 1.04,
         "panX": null,
-        "panY": -32
+        "panY": null
       },
       "transition": "cut",
       "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same drawing (process)"
       },
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
+      "representation": "PROCEDURAL",
+      "drawn": "process",
       "emphasis": "The",
-      "reveal": "wipe",
+      "reveal": "punch",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [
-        "wire"
+        "beam"
       ],
       "hierarchy": {
         "primary": "the claim: \"The\"",
@@ -725,9 +713,9 @@
       "template": "composite",
       "seconds": 3.23,
       "camera": {
-        "from": 1.64,
-        "to": 1,
-        "panX": null,
+        "from": 1.22,
+        "to": 1.22,
+        "panX": -243,
         "panY": null
       },
       "transition": "cut",
@@ -736,15 +724,13 @@
         "purpose": null,
         "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
       },
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
+      "representation": "PROCEDURAL",
+      "drawn": "scaleHaulage",
       "emphasis": "sword",
       "reveal": "rise",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [
-        "beam"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"sword\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -757,26 +743,24 @@
       "template": "composite",
       "seconds": 2.5,
       "camera": {
-        "from": 1.16,
-        "to": 1.26,
-        "panX": 203,
+        "from": 1.63,
+        "to": 1.03,
+        "panX": null,
         "panY": null
       },
       "transition": "cut",
       "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same drawing (scaleHaulage)"
       },
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
+      "representation": "PROCEDURAL",
+      "drawn": "scaleHaulage",
       "emphasis": "through",
-      "reveal": "punch",
+      "reveal": "blur",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"through\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -789,8 +773,8 @@
       "template": "title-slate",
       "seconds": 3.93,
       "camera": {
-        "from": 1.04,
-        "to": 1.05,
+        "from": 1.03,
+        "to": 1.06,
         "panX": null,
         "panY": null
       },
@@ -820,71 +804,73 @@
   ],
   "representation": {
     "notcast": {
-      "mode": "TYPOGRAPHY",
-      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
-      "drawn": null
+      "mode": "PROCEDURAL",
+      "why": "process is a picture of process — it demonstrates 1 of what the line asserts",
+      "drawn": "process"
     },
     "heat": {
-      "mode": "TYPOGRAPHY",
-      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
-      "drawn": null
+      "mode": "PROCEDURAL",
+      "why": "process is a picture of process — it demonstrates the claim of what the line asserts",
+      "drawn": "process"
     },
     "carbon": {
-      "mode": "TYPOGRAPHY",
-      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
+      "mode": "REPRESENTATION_REQUIRED",
+      "why": "this line is about material and needs a picture; no photograph and no drawing in the library can carry it",
       "drawn": null
     },
     "layered": {
-      "mode": "TYPOGRAPHY",
-      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
-      "drawn": null
+      "mode": "PROCEDURAL",
+      "why": "process is a picture of process — it demonstrates the claim of what the line asserts",
+      "drawn": "process"
     },
     "fold": {
-      "mode": "TYPOGRAPHY",
-      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
-      "drawn": null
+      "mode": "PROCEDURAL",
+      "why": "process is a picture of process — it demonstrates 1 of what the line asserts",
+      "drawn": "process"
     },
     "quench": {
-      "mode": "TYPOGRAPHY",
-      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
-      "drawn": null
+      "mode": "PROCEDURAL",
+      "why": "process is a picture of process — it demonstrates 2 of what the line asserts",
+      "drawn": "process"
     },
     "cool": {
-      "mode": "TYPOGRAPHY",
-      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
-      "drawn": null
+      "mode": "PROCEDURAL",
+      "why": "process is a picture of process — it demonstrates the claim of what the line asserts",
+      "drawn": "process"
     },
     "snaps": {
-      "mode": "TYPOGRAPHY",
-      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
-      "drawn": null
+      "mode": "PROCEDURAL",
+      "why": "scaleHaulage is a picture of process — it demonstrates the claim of what the line asserts",
+      "drawn": "scaleHaulage"
     },
     "close": {
-      "mode": "TYPOGRAPHY",
-      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
-      "drawn": null
+      "mode": "PROCEDURAL",
+      "why": "process is a picture of process — it demonstrates 1 of what the line asserts",
+      "drawn": "process"
     }
   },
   "quotas": {
     "camera": {
-      "hold": 5,
-      "push": 6,
+      "hold": 6,
+      "push": 5,
       "tilt": 1,
-      "pull": 3,
-      "pan": 5,
-      "drift": 2
+      "drift": 2,
+      "pan": 4,
+      "pull": 4
     },
     "transition": {
       "cut": 21
     },
     "framing": {},
     "cut": {
-      "HARD_CUT": 21
+      "HARD_CUT": 9,
+      "MATCH_CUT": 12
     }
   },
   "editing": {
     "tally": {
-      "HARD_CUT": 21
+      "HARD_CUT": 9,
+      "MATCH_CUT": 12
     },
     "hardRatio": 1,
     "total": 21,

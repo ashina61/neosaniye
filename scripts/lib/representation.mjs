@@ -32,7 +32,26 @@
  * photograph plus a drawing beats either alone, that is the answer.
  */
 
-export const REPRESENTATIONS = ['PHOTO', 'HYBRID', 'PROCEDURAL', 'DIAGRAM', 'TYPOGRAPHY'];
+import {NEEDS_A_PICTURE, SERVES, contract, readSubject, semanticCheck} from './semantics.mjs';
+import {buildAnatomyFlow, buildCrossSection, buildMap, buildProcess, buildScaleHaulage} from './visualise.mjs';
+
+export const REPRESENTATIONS = [
+  'PHOTO',
+  'HYBRID',
+  'PROCEDURAL',
+  'DIAGRAM',
+  'TYPOGRAPHY',
+  /**
+   * AND THE ONE THAT ADMITS DEFEAT OUT LOUD.
+   *
+   * A line that needs a picture and cannot be given one used to become a title
+   * card, silently, and the reel shipped looking like a design choice. It is
+   * not a design choice; it is a hole, and it now says so — the way a refused
+   * photograph already writes ASSET_REQUIRED rather than quietly using a worse
+   * one.
+   */
+  'REPRESENTATION_REQUIRED',
+];
 
 /**
  * WHERE THE WORDS GO WHEN A DRAWING IS ALREADY THERE.
@@ -60,6 +79,20 @@ export const CAPTION_ZONE = {
   // The bar and its figure sit low; the words go above them.
   measurement: {y: 0.16, align: 'left'},
   scan: {y: 0.8, align: 'left'},
+  /**
+   * THE FIVE NEW ONES DECLARE THEIR BANDS TOO.
+   *
+   * Each was laid out with a band left free for the words, and the number here
+   * is that band — not a guess. A map keeps its coasts in the middle third and
+   * gives the words the top; a process owns the middle and the lower third for
+   * its own stage labels, so the words take the top; a section fills the middle
+   * and leaves the head clear.
+   */
+  map: {y: 0.055, align: 'left'},
+  process: {y: 0.055, align: 'left'},
+  crossSection: {y: 0.06, align: 'left'},
+  anatomyFlow: {y: 0.055, align: 'left'},
+  scaleHaulage: {y: 0.7, align: 'left'},
 };
 
 /** Words that say the shot is about a machine with moving parts. */
@@ -72,7 +105,7 @@ const INSIDE = /\b(x[- ]?rays?|scan\w*|radiograph\w*|inside|beneath|underneath|w
 const CELESTIAL = /\b(eclipses?|moon|lunar|solar|sun|planets?|orbit\w*|stars?|sky|calendar)\b/i;
 /** A magnitude with something it counts — the case for a measured graphic. */
 const MAGNITUDE =
-  /\b(\d[\d,.]*|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion)\s+(tons?|tonnes?|miles?|kilometres?|kilometers?|metres?|meters?|feet|pounds?|people|men|women|dead|killed)\b/i;
+  /\b(\d[\d,.]*|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion)\s+(tons?|tonnes?|miles?|kilometres?|kilometers?|metres?|meters?|feet|pounds?|people|men|women|dead|killed|degrees|barrels?|gallons?|litres?|liters?|hours?|beats?|man-days?)\b/i;
 
 const WORD_NUMBERS = {
   one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10,
@@ -98,6 +131,17 @@ export function figureIn(text) {
     const next = (words[i + 1] ?? '').replace(/[.,]$/, '');
     if ((next === 'hundred' || next === 'thousand' || next === 'million') && value < WORD_NUMBERS[next]) {
       value *= WORD_NUMBERS[next];
+    } else if (value >= 20 && value <= 90 && value % 10 === 0) {
+      /**
+       * A HYPHENATED COMPOUND IS ONE NUMBER.
+       *
+       * "twenty-one miles" tokenises as "twenty" and "one", and taking the
+       * first gave a map that labelled the Strait of Hormuz TWENTY MILES while
+       * the narration said twenty-one. A drawn figure that contradicts the line
+       * it illustrates is worse than no figure: the viewer can see both.
+       */
+      const unit = WORD_NUMBERS[next];
+      if (unit !== undefined && unit >= 1 && unit <= 9) value += unit;
     }
     return value;
   }
@@ -116,6 +160,88 @@ export function yearsIn(text) {
  * asset director's gate, so its presence means it is genuinely correct rather
  * than merely present.
  */
+/**
+ * THE LADDER, AFTER THE GENERALISATION BENCHMARK.
+ *
+ * Five unrelated subjects went through the old ladder and forty-one of their
+ * forty-five lines came out as typography — not because the drawings were bad
+ * but because there was no drawing for a place, a process, the inside of a
+ * material, a circulation or the size of a thing, which is most of what a
+ * documentary has to explain.
+ *
+ * The order is a preference, not a law: the rung that best communicates THIS
+ * claim wins, which is why a magnitude inside a geography line can still get a
+ * measurement bar and a photograph beats all of it when one exists.
+ */
+export const LADDER = [
+  'PHOTO',
+  'HYBRID',
+  'PROCEDURAL_OBJECT',
+  'MAP',
+  'PROCESS',
+  'CROSS_SECTION',
+  'ANATOMY_FLOW',
+  'SCALE_HAULAGE',
+  'DIAGRAM',
+  'TYPOGRAPHY',
+];
+
+/**
+ * WHICH DRAWING BEST CARRIES THIS CLAIM.
+ *
+ * Scored rather than branched, because the domains overlap on purpose: a
+ * sentence about rolling a stone uphill is scale AND geography, and which of
+ * those the shot must show depends on what the sentence is asserting. The score
+ * is the count of the line's own claims that the candidate can actually
+ * demonstrate — which is the only definition of "best" that is about the
+ * viewer rather than about the code.
+ */
+const DEMONSTRATES = {
+  map: ['narrowness', 'no_alternative', 'chokepoint', 'two_shores', 'distance'],
+  process: ['transformation', 'sequence', 'reaction'],
+  crossSection: ['crack_propagation', 'fluid_ingress', 'reaction', 'self_healing', 'wall_thickness'],
+  anatomyFlow: ['chambers', 'valves', 'one_way_flow', 'circulation', 'contraction', 'wall_thickness', 'delay'],
+  scaleHaulage: ['mass', 'human_scale', 'haulage', 'distance'],
+  measurement: ['mass', 'distance', 'narrowness'],
+  timeline: ['duration'],
+  gearSystem: [],
+  orbit: [],
+  scan: ['fluid_ingress'],
+};
+
+const SPECIFICITY = ['anatomyFlow', 'crossSection', 'process', 'map', 'scaleHaulage', 'orbit', 'gearSystem', 'timeline', 'scan', 'measurement'];
+
+export function bestDrawing({domain = 'abstract', domains = [], claims = []}) {
+  const candidates = Object.keys(DEMONSTRATES).filter((type) =>
+    (SERVES[type] ?? []).some((d) => domains.includes(d)),
+  );
+  if (!candidates.length) return [];
+  return candidates
+    .map((type) => {
+      const met = (DEMONSTRATES[type] ?? []).filter((c) => claims.includes(c)).length;
+      /**
+       * WHAT THE DRAWING IS PRIMARILY FOR BEATS WHAT IT CAN ALSO COVER.
+       *
+       * A section serves material, anatomy AND process, so on claim-count alone
+       * it took every forging line off the process builder — a cut through a
+       * blade instead of the blade being made, which is a picture of the wrong
+       * question. A type whose FIRST domain is this line's first domain is the
+       * one built for this job; the others are covering.
+       */
+      const primary = (SERVES[type] ?? [])[0] === domain ? 6 : 0;
+      /**
+       * AND A TIE GOES TO THE MORE SPECIFIC DRAWING.
+       *
+       * `measurement` serves scale, quantity and geography, so on a tie it
+       * would win nearly everything — and a bar is the least explanatory thing
+       * in the library.
+       */
+      const rank = SPECIFICITY.indexOf(type);
+      return {type, met, score: met * 10 + primary - rank};
+    })
+    .sort((a, b) => b.score - a.score);
+}
+
 export function chooseRepresentation({
   vo = '',
   beat,
@@ -124,6 +250,8 @@ export function chooseRepresentation({
   accent = '#f2b53a',
   muted = '#cfc6ae',
   seed = 'x',
+  /** Places the line names, when it names any. A map can draw them in order. */
+  stops = [],
   /**
    * THE REEL'S OWN DATES, so a line can borrow one.
    *
@@ -136,6 +264,56 @@ export function chooseRepresentation({
 }) {
   const figure = figureIn(vo);
   const years = yearsIn(vo);
+
+  /**
+   * WHAT IS THIS LINE ABOUT, AND WHAT DOES IT ASSERT?
+   *
+   * Read from the sentence — no episode id reaches this function and none ever
+   * will. The domain decides which drawings are even eligible; the claims
+   * decide which of those actually demonstrates what is being said.
+   */
+  const read = readSubject(vo);
+  const BUILDERS = {
+    map: () => buildMap({vo, seed, accent, muted, stops, claims: read.claims}),
+    process: () => buildProcess({vo, accent, muted, stops}),
+    crossSection: () => buildCrossSection({vo, seed, accent, muted, claims: read.claims}),
+    anatomyFlow: () => buildAnatomyFlow({vo, accent, muted, claims: read.claims}),
+    scaleHaulage: () => buildScaleHaulage({vo, accent, muted, claims: read.claims}),
+  };
+
+  /**
+   * TRY THE CANDIDATES IN ORDER AND FALL THROUGH.
+   *
+   * A builder is allowed to say "not from this sentence" — the process builder
+   * does exactly that when the line names no transformation — and when it does,
+   * the answer is the next best drawing rather than the bottom of the ladder.
+   * Taking only the top candidate sent three lines straight to
+   * REPRESENTATION_REQUIRED with a perfectly good second choice unexamined.
+   */
+  for (const drawn of bestDrawing(read)) {
+    const build = BUILDERS[drawn.type];
+    if (!build) continue;
+    {
+      const spec = build();
+      /**
+       * AND IT ONLY SHIPS IF IT IS A PICTURE OF THE RIGHT KIND OF THING.
+       *
+       * The gate the gear-heart got through. A builder can return something —
+       * it always can — and the question is whether that something may stand as
+       * a depiction of this claim. A refusal here falls through to the rungs
+       * below rather than being drawn anyway.
+       */
+      const check = spec ? semanticCheck({type: drawn.type, subject: read.subject, domains: read.domains, claims: read.claims}) : {ok: false, why: 'nothing to build from'};
+      if (spec && check.ok) {
+        return {
+          mode: photo ? 'HYBRID' : 'PROCEDURAL',
+          why: `${check.why} — it demonstrates ${drawn.met || 'the claim'} of what the line asserts`,
+          diagram: {...spec, ...contract({type: drawn.type, subject: read.subject, domain: check.domain, claims: read.claims})},
+          semantic: {...check, subject: read.subject, domains: read.domains, claims: read.claims},
+        };
+      }
+    }
+  }
 
   /**
    * A MACHINE WITH A COUNT IS A GEAR TRAIN.
@@ -248,6 +426,36 @@ export function chooseRepresentation({
   }
 
   if (photo) return {mode: 'PHOTO', why: 'a correct photograph exists and is the strongest representation', diagram: null};
+
+  /**
+   * THE TYPOGRAPHY FALLBACK LIMIT.
+   *
+   * Words can carry a claim, a number, a date or an emphasis. They cannot be a
+   * picture of a place, a process, a body, a mechanism, a size or the inside of
+   * a material — and being allowed to try is exactly how five episodes came out
+   * as forty-one text cards while every gate said they were fine.
+   *
+   * So a line in one of those domains that reaches this point has NOT found a
+   * representation. It says so, loudly, and the planner writes it up the way it
+   * writes a refused photograph. The shot still renders — a hole in a reel is
+   * not a reason to fail a render — but nobody gets to believe it was designed.
+   */
+  if (NEEDS_A_PICTURE.includes(read.domain)) {
+    return {
+      mode: 'REPRESENTATION_REQUIRED',
+      why:
+        `this line is about ${read.domain}${read.subject ? ` (${read.subject})` : ''} and needs a picture; ` +
+        'no photograph and no drawing in the library can carry it',
+      diagram: null,
+      semantic: {ok: false, ...read},
+      required: {
+        domain: read.domain,
+        subject: read.subject,
+        claims: read.claims,
+        wanted: (Object.entries(SERVES).find(([, d]) => d.includes(read.domain)) ?? ['a new representation'])[0],
+      },
+    };
+  }
 
   /**
    * NOTHING TO SHOW AND NOTHING TO DRAW — but a fallback is not permission to

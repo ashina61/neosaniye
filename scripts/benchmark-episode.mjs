@@ -28,6 +28,7 @@ import {cameraFamily, critiqueDirection, critiqueEpisode, clippingProblems, endi
 import {temporalProblems} from './lib/temporal.mjs';
 import {editReel, informationDensity, motionDensity} from './lib/editor.mjs';
 import {cutMix} from './lib/cut.mjs';
+import {representationProblems} from './lib/semantics.mjs';
 
 const round = (n, p = 2) => Number(Number(n).toFixed(p));
 
@@ -53,6 +54,7 @@ export async function benchmark(episodeId) {
   const critique = critiqueEpisode(config);
   const direction = critiqueDirection(config, {assets, story: report?.beats ?? []});
   const clipped = clippingProblems(config);
+  const semantic = representationProblems(config);
   const ending = endingProblems(config);
 
   /** How each shot chose to show its idea. The headline of the whole exercise. */
@@ -98,6 +100,29 @@ export async function benchmark(episodeId) {
     proceduralVisuals: scenes.filter((s) => s.diagram && !Object.keys(s.assets ?? {}).length).length,
     hybridVisuals: scenes.filter((s) => s.diagram && Object.keys(s.assets ?? {}).length).length,
     diagramKinds: [...new Set(scenes.map((s) => s.diagram?.type).filter(Boolean))],
+    /**
+     * THE LINE THE VOCABULARY EXPANSION IS JUDGED ON.
+     *
+     * Counted by KIND, because "procedural: 15" hides the whole question. The
+     * benchmark asked whether the engine can show a place, a process, a body,
+     * the inside of a material and the size of a thing, and this is where the
+     * answer is either five numbers or five zeroes.
+     */
+    byRepresentation: {
+      map: scenes.filter((s) => s.diagram?.type === 'map').length,
+      process: scenes.filter((s) => s.diagram?.type === 'process').length,
+      crossSection: scenes.filter((s) => s.diagram?.type === 'crossSection').length,
+      anatomyFlow: scenes.filter((s) => s.diagram?.type === 'anatomyFlow').length,
+      scaleHaulage: scenes.filter((s) => s.diagram?.type === 'scaleHaulage').length,
+      olderDiagrams: scenes.filter((s) => ['gearSystem', 'timeline', 'measurement', 'orbit', 'scan'].includes(s.diagram?.type)).length,
+      typographyOnly: scenes.filter((s) => !s.diagram && !Object.keys(s.assets ?? {}).length).length,
+    },
+    /** Every drawing's declared contract, so the claims can be argued with. */
+    semanticContracts: scenes
+      .filter((s) => s.diagram)
+      .map((s) => ({shot: s.id, type: s.diagram.type, subject: s.diagram.subject ?? null, depicts: s.diagram.depicts ?? null, claims: s.diagram.claims ?? []})),
+    semanticFailures: semantic.errors.length,
+    representationRequired: semantic.warnings.filter((m) => m.includes('REPRESENTATION_REQUIRED')).length,
     assets: {
       linesRequestingAPicture: requested,
       picturesOnScreen: used.size,
@@ -147,6 +172,8 @@ export async function benchmark(episodeId) {
     ...ending.warnings.map((m) => ({severity: 'warning', where: 'ending', what: m})),
     ...temporal.warnings.map((m) => ({severity: 'warning', where: 'temporal', what: m})),
     ...edit.warnings.map((m) => ({severity: 'warning', where: 'edit', what: m})),
+    ...semantic.errors.map((m) => ({severity: 'error', where: 'semantic', what: m})),
+    ...semantic.warnings.map((m) => ({severity: 'warning', where: 'semantic', what: m})),
     ...(notes?.remainingDefects ?? []).map((d) => ({severity: 'observed', where: 'inspection', ...d})),
   ];
 
@@ -189,6 +216,7 @@ async function main() {
         `${Object.entries(m.representationMix).filter(([, v]) => v).map(([k, v]) => `${v} ${k.toLowerCase()}`).join(' · ')} · ` +
         `plain cuts ${Math.round(m.editorial.hardCutRatio * 100)}% · ` +
         `${m.temporalConsistency.clean ? 'temporally clean' : `${m.temporalConsistency.errors} temporal error(s)`} · ` +
+        `${m.semanticFailures} semantic failure(s) · ` +
         `final ${out.finalScore ?? '—'}`,
     );
   }

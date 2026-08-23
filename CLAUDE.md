@@ -62,7 +62,10 @@ scripts/lib/story.mjs               → NE OLDUĞU (vuruş tipi, görsel fikir, 
         ↓
 scripts/lib/assetdirector.mjs       → GÖSTERİLEBİLİR Mİ (puan, yeniden rol, RED)
         ↓
+scripts/lib/semantics.mjs           → NE HAKKINDA (alan, özne, iddia) + SERT KAPI
+        ↓
 scripts/lib/representation.mjs      → NASIL GÖSTERİLİR (foto, hibrit, prosedürel)
+scripts/lib/visualise.mjs           → cümleden çizime: harita, süreç, kesit, dolaşım, ölçek
         ↓
 scripts/lib/visual.mjs              → HİYERARŞİ, kadraj, tek tipografi sistemi
         ↓
@@ -92,6 +95,9 @@ engine/sceneTypes/*.tsx             → plakalar, hareket, gölge
 engine/draw/*.tsx                   → ışık, kâğıt, işaretleme, tipografi
 engine/draw/Kinetic.tsx             → kelime kelime iniş, VURGU kelimesi, sayaç
 engine/draw/Diagram.tsx             → meshleyen dişliler, zaman çizelgesi, yörünge
+engine/draw/Map|Process|CrossSection|AnatomyFlow|ScaleHaulage.tsx
+                                    → yer, süreç, iç mekanizma, dolaşım, büyüklük
+engine/draw/sheet.tsx               → ortak pafta: çizgi kalınlığı, plaka, çıkma, ok
 engine/state.mjs                    → frame N'de ne var; çizen ve doğrulayan aynı fonksiyon
         ↓
 out/<id>.mp4
@@ -502,6 +508,59 @@ Bu hat aynı duvara çarpmaz çünkü malzeme koda sokulmaz:
     Aynı kural fotoğrafsız bir kareye düşen IŞIK için de geçerlidir: `Glow`'un
     en içteki katmanı beyaz sıcak çekirdektir ve ampule aittir. Altında plaka
     olmayan çekimde çekirdek çizilmez; kareye ulaşan şey kaynağın SAÇILMASIDIR.
+
+31. **TEMSİL DAĞARCIĞI KONUYA GÖRE DEĞİL, İDDİANIN TÜRÜNE GÖRE GENELLEŞİR.** Beş
+    bağımsız konu bu hattan geçti ve 45 satırın 41'i TİPOGRAFİYE düştü — çizimler
+    kötü olduğu için değil, bir YER, bir SÜREÇ, bir malzemenin İÇİ, bir DOLAŞIM
+    ve bir şeyin BÜYÜKLÜĞÜ için hiçbir çizim olmadığı için. Belgeselin anlatmak
+    zorunda olduğu şeylerin çoğu bunlar.
+
+    Beş yeni birincil öge eklendi: `map`, `process`, `crossSection`,
+    `anatomyFlow`, `scaleHaulage`. Hiçbiri acil durum yedeği değil; her biri
+    veriyle çalışır ve hiçbiri hangi bölümde olduğunu bilmez. Hormuz'un haritası
+    bu depoda yok ve olmayacak: iki kıyı ve arasındaki su, "iki yaka" ve "şu
+    kadar mil" diyen bir CÜMLEDEN kurulur. Aynı cümle başka bir boğaz için de
+    aynı çizimi verir, ve genelleşme tam olarak budur.
+
+    `process` için tek kural: **AYNI NESNE DEVAM EDER.** Demir, sıcak demir,
+    dövülmüş külçe, bitmiş ağız — dört kart dört illüstrasyondur; gerilen,
+    kızaran, katlanan ve bilenen TEK bir dış hat bir süreçtir. Ve her aşama
+    NEDENİNİ taşır: ısı → metal yumuşar, çekiç → biçim değişir, su → tepkime
+    başlar.
+
+32. **HER PROSEDÜREL GÖRSEL BİR ANLAM SÖZLEŞMESİ BEYAN EDER, VE SERT KAPI ARTIK
+    ONA DA UYGULANIR.** Bu deponun çizdiği en pahalı şey her ölçülebilir açıdan
+    doğruydu: "dört oda, dört kapak, ve mekanizmadaki her kapak tek yöne açılır"
+    cümlesi `mechanism` kelimesiyle 4 sayısını eşleştirdi ve motor bir insan
+    kalbinin ŞEMATİK YENİDEN İNŞASI olarak meshleyen bir dişli takımı çizdi.
+    Dişler kaymıyordu. Plaka yerindeydi. Yalandı, ve hiçbir kapı yakalamadı —
+    çünkü sert anlam kapısı yalnız FOTOĞRAFLARI koruyordu.
+
+    Artık her çizilen spec `subject` ve `claims` taşır, ve kapı PHOTO,
+    PROCEDURAL, DIAGRAM ve HYBRID'in dördüne birden uygulanır. Reddetme bir
+    bölüm listesi değil, bir ALANDIR: cümleden okunan alan (`anatomy`,
+    `geography`, `process`, `material`, `scale`, `mechanism`, `elapsed`,
+    `celestial`, `quantity`) ile her temsilin neyin resmi OLABİLECEĞİ
+    karşılaştırılır. Bir dişli takımı yalnız bir mekanizmanın resmi olabilir ve
+    hangi bölümün istediği hiç fark etmez.
+
+    Ve bir devam çekimi bir PARÇADIR: çizim CÜMLEYE aittir, o yüzden kapı
+    parçanın kendi kelimelerine değil spec'in beyan ettiği ÖZNEYE bakar — "kalp"
+    her cümlede anatomidir, dolayısıyla (özne, tip) çifti tek başına
+    reddedilebilir. Parçaya bakan ilk sürüm dört bölümde on dokuz DOĞRU çizimi
+    yanlış diye bildirdi; yanlış alarma sürekli basan bir kontrol kapatılır.
+
+33. **TİPOGRAFİ EVRENSEL BİR VERİCİ DEĞİLDİR.** Kelimeler bir iddiayı, bir
+    sayıyı, bir tarihi ve bir vurguyu taşıyabilir. Bir YERİN, bir SÜRECİN, bir
+    BEDENİN, bir MEKANİZMANIN, bir BÜYÜKLÜĞÜN ya da bir malzemenin İÇİNİN resmi
+    olamazlar — ve denemelerine izin vermek, beş bölümün kırk bir metin kartı
+    olarak çıkmasının tam sebebidir.
+
+    Bu alanlardan birindeki bir satır merdivenin dibine ulaşırsa temsil
+    BULUNAMAMIŞTIR: `REPRESENTATION_REQUIRED` yazılır, sayılır ve raporlanır —
+    reddedilmiş bir fotoğrafın `ASSET_REQUIRED` alması gibi. Reel yine render
+    olur; bir delik render'ı düşürmek için sebep değildir. Ama kimse onun bir
+    tasarım kararı olduğuna inanmaz.
 
 ## Doğrulama
 

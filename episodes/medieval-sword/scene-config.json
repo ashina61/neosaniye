@@ -18,13 +18,13 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.37,
-      "grungeOpacity": 0.18,
-      "scanlineOpacity": 0.13,
+      "grainOpacity": 0.3,
+      "grungeOpacity": 0.2,
+      "scanlineOpacity": 0.07,
       "scanlinePeriod": 9,
-      "vignetteStrength": 0.44,
-      "weavePx": 7,
-      "weaveScale": 1.012
+      "vignetteStrength": 0.35,
+      "weavePx": 5,
+      "weaveScale": 1.016
     }
   },
   "scenes": [
@@ -39,7 +39,7 @@
         "kicker": "EUROPE · 1350",
         "title": "",
         "footer": "",
-        "titleFrame": 6,
+        "titleFrame": 64,
         "titleSize": 124,
         "creep": 1.061,
         "accent": "#e8a020",
@@ -70,7 +70,7 @@
           "y": 1513,
           "width": 389,
           "rotate": -2.1,
-          "from": 64
+          "from": 8
         },
         {
           "kind": "wire",
@@ -101,7 +101,7 @@
           "rotate": -13,
           "opacity": 0.51,
           "colour": "#e8a020",
-          "from": 38
+          "from": 0
         }
       ],
       "params": {
@@ -126,13 +126,13 @@
         "caption": [
           "It was forged"
         ],
-        "captionX": 81,
-        "captionY": 821,
-        "captionSize": 104,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 85,
         "captionAlign": "left",
-        "captionFrame": -12,
+        "captionFrame": 28,
         "captionEvery": 9,
-        "captionScrim": 0,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
@@ -142,6 +142,101 @@
         "captionWordEvery": 3,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "diagram": {
+        "type": "process",
+        "stages": [
+          {
+            "shape": [
+              [
+                0.1688,
+                0.3
+              ],
+              [
+                0.40064,
+                0.3
+              ],
+              [
+                0.68216,
+                0.3
+              ],
+              [
+                0.8311999999999999,
+                0.5
+              ],
+              [
+                0.68216,
+                0.7
+              ],
+              [
+                0.40064,
+                0.7
+              ],
+              [
+                0.1688,
+                0.7
+              ],
+              [
+                0.1688,
+                0.5
+              ]
+            ],
+            "label": "raw",
+            "heat": 0,
+            "agent": "none"
+          },
+          {
+            "shape": [
+              [
+                0.010000000000000009,
+                0.30979999999999996
+              ],
+              [
+                0.353,
+                0.30979999999999996
+              ],
+              [
+                0.7695000000000001,
+                0.336428
+              ],
+              [
+                0.99,
+                0.5
+              ],
+              [
+                0.7695000000000001,
+                0.663572
+              ],
+              [
+                0.353,
+                0.6902
+              ],
+              [
+                0.010000000000000009,
+                0.6902
+              ],
+              [
+                0.010000000000000009,
+                0.5
+              ]
+            ],
+            "label": "forged",
+            "agent": "strike",
+            "heat": 0.65,
+            "effect": "the shape changes"
+          }
+        ],
+        "objectLabel": null,
+        "accent": "#e8a020",
+        "muted": "#cfc6ae",
+        "highlight": 1,
+        "subject": "swordMaking",
+        "claims": [
+          "transformation"
+        ],
+        "depicts": "process",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -160,16 +255,6 @@
           "y": 1499,
           "width": 403,
           "rotate": -0.4,
-          "from": 54
-        },
-        {
-          "kind": "wire",
-          "shape": "circle",
-          "depth": 0.74,
-          "x": 746,
-          "y": 536,
-          "width": 320,
-          "colour": "#e8a020",
           "from": 0
         }
       ],
@@ -193,16 +278,15 @@
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
-          "from a bar",
-          "of iron"
+          "from a bar of iron"
         ],
-        "captionX": 81,
-        "captionY": 720,
-        "captionSize": 136,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 62,
         "captionAlign": "left",
-        "captionFrame": -12,
+        "captionFrame": 35,
         "captionEvery": 8,
-        "captionScrim": 0,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
@@ -213,6 +297,101 @@
         "captionWordEvery": 4,
         "cameraMove": "tilt",
         "cameraPurpose": "a vertical reveal — height, depth, or a drop"
+      },
+      "diagram": {
+        "type": "process",
+        "stages": [
+          {
+            "shape": [
+              [
+                0.1688,
+                0.3
+              ],
+              [
+                0.40064,
+                0.3
+              ],
+              [
+                0.68216,
+                0.3
+              ],
+              [
+                0.8311999999999999,
+                0.5
+              ],
+              [
+                0.68216,
+                0.7
+              ],
+              [
+                0.40064,
+                0.7
+              ],
+              [
+                0.1688,
+                0.7
+              ],
+              [
+                0.1688,
+                0.5
+              ]
+            ],
+            "label": "raw",
+            "heat": 0,
+            "agent": "none"
+          },
+          {
+            "shape": [
+              [
+                0.010000000000000009,
+                0.30979999999999996
+              ],
+              [
+                0.353,
+                0.30979999999999996
+              ],
+              [
+                0.7695000000000001,
+                0.336428
+              ],
+              [
+                0.99,
+                0.5
+              ],
+              [
+                0.7695000000000001,
+                0.663572
+              ],
+              [
+                0.353,
+                0.6902
+              ],
+              [
+                0.010000000000000009,
+                0.6902
+              ],
+              [
+                0.010000000000000009,
+                0.5
+              ]
+            ],
+            "label": "forged",
+            "agent": "strike",
+            "heat": 0.65,
+            "effect": "the shape changes"
+          }
+        ],
+        "objectLabel": null,
+        "accent": "#e8a020",
+        "muted": "#cfc6ae",
+        "highlight": 1,
+        "subject": "swordMaking",
+        "claims": [
+          "transformation"
+        ],
+        "depicts": "process",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -226,7 +405,7 @@
         "kicker": "",
         "title": "TWELVE HUNDRED DEGREES",
         "footer": "",
-        "titleFrame": 8,
+        "titleFrame": 45,
         "titleSize": 230,
         "creep": 1.052,
         "accent": "#e8a020",
@@ -242,12 +421,24 @@
         "markWidth": 560,
         "markHeight": 300,
         "markFrame": 33,
-        "pushEndFrame": 92,
-        "pushFrom": 1,
-        "pushTo": 1.28,
-        "cameraMove": "push",
-        "cameraPurpose": "single out the subject — the frame closes on what matters"
-      }
+        "pushEndFrame": 94,
+        "pushFrom": 1.05,
+        "pushTo": 1.05,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      },
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.73,
+          "x": 420,
+          "y": 474,
+          "width": 419,
+          "colour": "#e8a020",
+          "from": 82
+        }
+      ]
     },
     {
       "id": "s02-heat-b",
@@ -259,22 +450,12 @@
       "props": [
         {
           "kind": "beam",
-          "depth": 0.23,
-          "x": 943,
-          "y": 151,
-          "width": 269,
-          "rotate": -22,
-          "opacity": 0.68,
-          "colour": "#e8a020",
-          "from": 38
-        },
-        {
-          "kind": "wire",
-          "shape": "circle",
-          "depth": 0.61,
-          "x": 647,
-          "y": 509,
-          "width": 375,
+          "depth": 0.4,
+          "x": 929,
+          "y": 15,
+          "width": 302,
+          "rotate": -16,
+          "opacity": 0.56,
           "colour": "#e8a020",
           "from": 0
         }
@@ -282,8 +463,8 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.02,
-        "pushTo": 1.06,
+        "pushFrom": 1.01,
+        "pushTo": 1.42,
         "pushEndFrame": 43,
         "accent": "#e8a020",
         "field": "spotlight",
@@ -292,32 +473,164 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1308,
-        "glowY": 189,
-        "glowSize": 377,
-        "glowIntensity": 0.62,
+        "glowX": 1391,
+        "glowY": 366,
+        "glowSize": 367,
+        "glowIntensity": 0.68,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
-          "Orange,",
-          "not yellow"
+          "Orange, not yellow"
         ],
-        "captionX": 81,
-        "captionY": 720,
-        "captionSize": 136,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 62,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 10,
-        "captionScrim": 0,
+        "captionFrame": 28,
+        "captionEvery": 8,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
-        "handheld": 3,
+        "handheld": 1.5,
         "captionEmphasis": "Orange",
         "captionReveal": "rise",
-        "captionMark": "box",
-        "captionWordEvery": 3,
-        "cameraMove": "hold",
-        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+        "captionMark": "highlight",
+        "captionWordEvery": 4,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "diagram": {
+        "type": "process",
+        "stages": [
+          {
+            "shape": [
+              [
+                0.1688,
+                0.3
+              ],
+              [
+                0.40064,
+                0.3
+              ],
+              [
+                0.68216,
+                0.3
+              ],
+              [
+                0.8311999999999999,
+                0.5
+              ],
+              [
+                0.68216,
+                0.7
+              ],
+              [
+                0.40064,
+                0.7
+              ],
+              [
+                0.1688,
+                0.7
+              ],
+              [
+                0.1688,
+                0.5
+              ]
+            ],
+            "label": "raw",
+            "heat": 0,
+            "agent": "none"
+          },
+          {
+            "shape": [
+              [
+                0.010000000000000009,
+                0.30979999999999996
+              ],
+              [
+                0.353,
+                0.30979999999999996
+              ],
+              [
+                0.7695000000000001,
+                0.336428
+              ],
+              [
+                0.99,
+                0.5
+              ],
+              [
+                0.7695000000000001,
+                0.663572
+              ],
+              [
+                0.353,
+                0.6902
+              ],
+              [
+                0.010000000000000009,
+                0.6902
+              ],
+              [
+                0.010000000000000009,
+                0.5
+              ]
+            ],
+            "label": "forged",
+            "agent": "strike",
+            "heat": 0.65,
+            "effect": "the shape changes"
+          },
+          {
+            "shape": [
+              [
+                0.012399999999999967,
+                0.307
+              ],
+              [
+                0.35372000000000003,
+                0.307
+              ],
+              [
+                0.7681800000000001,
+                0.3263
+              ],
+              [
+                0.9876,
+                0.5
+              ],
+              [
+                0.7681800000000001,
+                0.6737
+              ],
+              [
+                0.35372000000000003,
+                0.6930000000000001
+              ],
+              [
+                0.012399999999999967,
+                0.6930000000000001
+              ],
+              [
+                0.012399999999999967,
+                0.5
+              ]
+            ],
+            "label": "heated",
+            "agent": "heat",
+            "heat": 0.75,
+            "effect": "the metal softens"
+          }
+        ],
+        "objectLabel": null,
+        "accent": "#e8a020",
+        "muted": "#cfc6ae",
+        "highlight": 2,
+        "subject": "swordMaking",
+        "claims": [],
+        "depicts": "process",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -329,13 +642,12 @@
       "layers": [],
       "props": [
         {
-          "kind": "beam",
-          "depth": 0.31,
-          "x": 929,
-          "y": 22,
-          "width": 315,
-          "rotate": -16,
-          "opacity": 0.51,
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.75,
+          "x": 388,
+          "y": 1682,
+          "width": 360,
           "colour": "#e8a020",
           "from": 64
         }
@@ -343,9 +655,9 @@
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1.41,
-        "pushTo": 1.05,
-        "pushEndFrame": 68,
+        "pushFrom": 1,
+        "pushTo": 1.11,
+        "pushEndFrame": 71,
         "glowX": 1145,
         "glowY": 422,
         "glowSize": 460,
@@ -377,12 +689,14 @@
         "captionRecedeAt": 54,
         "accent": "#e8a020",
         "handheld": 1.5,
+        "panY": -60,
+        "roll": -0.18,
         "captionEmphasis": "little",
         "captionReveal": "wipe",
-        "captionMark": "highlight",
-        "captionWordEvery": 3,
-        "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "captionMark": "none",
+        "captionWordEvery": 4,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       }
     },
     {
@@ -394,12 +708,13 @@
       "layers": [],
       "props": [
         {
-          "kind": "wire",
-          "shape": "diamond",
-          "depth": 0.69,
-          "x": 439,
-          "y": 602,
+          "kind": "beam",
+          "depth": 0.33,
+          "x": 822,
+          "y": 150,
           "width": 264,
+          "rotate": -15,
+          "opacity": 0.81,
           "colour": "#e8a020",
           "from": 54
         }
@@ -407,9 +722,9 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.22,
-        "pushTo": 1.31,
-        "pushEndFrame": 58,
+        "pushFrom": 1.23,
+        "pushTo": 1.22,
+        "pushEndFrame": 60,
         "accent": "#e8a020",
         "field": "spotlight",
         "fieldColours": [
@@ -417,10 +732,10 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1408,
-        "glowY": 560,
-        "glowSize": 497,
-        "glowIntensity": 0.45,
+        "glowX": 1332,
+        "glowY": 343,
+        "glowSize": 379,
+        "glowIntensity": 0.63,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
@@ -432,16 +747,16 @@
         "captionSize": 104,
         "captionAlign": "left",
         "captionFrame": -12,
-        "captionEvery": 8,
+        "captionEvery": 7,
         "captionScrim": 0,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panX": 261,
+        "panX": -248,
         "captionEmphasis": "shatters",
-        "captionReveal": "blur",
-        "captionMark": "box",
-        "captionWordEvery": 2,
+        "captionReveal": "punch",
+        "captionMark": "highlight",
+        "captionWordEvery": 4,
         "cameraMove": "pan",
         "cameraPurpose": "expose information the frame was withholding, or follow a movement"
       }
@@ -455,13 +770,12 @@
       "layers": [],
       "props": [
         {
-          "kind": "beam",
-          "depth": 0.28,
-          "x": 941,
-          "y": 88,
-          "width": 366,
-          "rotate": -21,
-          "opacity": 0.82,
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.77,
+          "x": 398,
+          "y": 552,
+          "width": 344,
           "colour": "#e8a020",
           "from": 44
         }
@@ -469,8 +783,8 @@
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
-        "pushFrom": 1,
-        "pushTo": 1.07,
+        "pushFrom": 1.35,
+        "pushTo": 1.01,
         "pushEndFrame": 48,
         "accent": "#e8a020",
         "field": "spotlight",
@@ -479,10 +793,10 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1375,
-        "glowY": 157,
-        "glowSize": 402,
-        "glowIntensity": 0.57,
+        "glowX": 1331,
+        "glowY": 537,
+        "glowSize": 375,
+        "glowIntensity": 0.53,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
@@ -499,14 +813,12 @@
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panY": -56,
-        "roll": 0.5,
         "captionEmphasis": "first",
-        "captionReveal": "punch",
-        "captionMark": "highlight",
-        "captionWordEvery": 3,
-        "cameraMove": "drift",
-        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 2,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
       }
     },
     {
@@ -518,21 +830,22 @@
       "layers": [],
       "props": [
         {
-          "kind": "wire",
-          "shape": "circle",
-          "depth": 0.76,
-          "x": 362,
-          "y": 521,
-          "width": 271,
+          "kind": "beam",
+          "depth": 0.4,
+          "x": 811,
+          "y": 19,
+          "width": 333,
+          "rotate": -12,
+          "opacity": 0.77,
           "colour": "#e8a020",
-          "from": 73
+          "from": 0
         }
       ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1.17,
-        "pushTo": 1.28,
+        "pushFrom": 1,
+        "pushTo": 1.09,
         "pushEndFrame": 80,
         "glowX": 1145,
         "glowY": 422,
@@ -553,13 +866,13 @@
           "is built",
           "in layers"
         ],
-        "captionX": 81,
-        "captionY": 680,
-        "captionSize": 113,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 93,
         "captionAlign": "left",
-        "captionFrame": -12,
+        "captionFrame": 46,
         "captionEvery": 9,
-        "captionScrim": 0,
+        "captionScrim": 0.38,
         "captionRecedeAt": 62,
         "accent": "#e8a020",
         "motif": "route",
@@ -568,17 +881,110 @@
           "The core",
           "The spine"
         ],
-        "motifFrame": 18,
+        "motifFrame": 23,
         "motifColour": "#e8a020",
         "handheld": 1.5,
-        "panX": -253,
+        "panY": -56,
+        "roll": -0.32,
         "captionEmphasis": "layers",
-        "captionReveal": "blur",
+        "captionReveal": "punch",
         "captionMark": "underline",
         "captionWordEvery": 3,
-        "cameraMove": "pan",
-        "cameraPurpose": "expose information the frame was withholding, or follow a movement",
-        "motifY": 488
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      },
+      "diagram": {
+        "type": "process",
+        "stages": [
+          {
+            "shape": [
+              [
+                0.1688,
+                0.3
+              ],
+              [
+                0.40064,
+                0.3
+              ],
+              [
+                0.68216,
+                0.3
+              ],
+              [
+                0.8311999999999999,
+                0.5
+              ],
+              [
+                0.68216,
+                0.7
+              ],
+              [
+                0.40064,
+                0.7
+              ],
+              [
+                0.1688,
+                0.7
+              ],
+              [
+                0.1688,
+                0.5
+              ]
+            ],
+            "label": "raw",
+            "heat": 0,
+            "agent": "none"
+          },
+          {
+            "shape": [
+              [
+                0.10439999999999999,
+                0.3112
+              ],
+              [
+                0.38132,
+                0.3112
+              ],
+              [
+                0.71758,
+                0.341408
+              ],
+              [
+                0.8956,
+                0.5
+              ],
+              [
+                0.71758,
+                0.6585920000000001
+              ],
+              [
+                0.38132,
+                0.6888000000000001
+              ],
+              [
+                0.10439999999999999,
+                0.6888000000000001
+              ],
+              [
+                0.10439999999999999,
+                0.5
+              ]
+            ],
+            "label": "The spine",
+            "agent": "fold",
+            "heat": 0.55,
+            "effect": "the layers double"
+          }
+        ],
+        "objectLabel": null,
+        "accent": "#e8a020",
+        "muted": "#cfc6ae",
+        "highlight": 1,
+        "subject": "swordMaking",
+        "claims": [],
+        "depicts": "process",
+        "from": 0,
+        "over": 39
       }
     },
     {
@@ -588,25 +994,12 @@
       "durationInFrames": 64,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.32,
-          "x": 824,
-          "y": -35,
-          "width": 344,
-          "rotate": -20,
-          "opacity": 0.69,
-          "colour": "#e8a020",
-          "from": 54
-        }
-      ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.48,
-        "pushTo": 1.03,
-        "pushEndFrame": 61,
+        "pushFrom": 1.39,
+        "pushTo": 1.01,
+        "pushEndFrame": 62,
         "accent": "#e8a020",
         "field": "spotlight",
         "fieldColours": [
@@ -614,32 +1007,125 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1490,
-        "glowY": 471,
-        "glowSize": 420,
-        "glowIntensity": 0.68,
+        "glowX": 1435,
+        "glowY": 456,
+        "glowSize": 456,
+        "glowIntensity": 0.7,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
           "Hard steel",
           "at the edge"
         ],
-        "captionX": 81,
-        "captionY": 734,
-        "captionSize": 124,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 97,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 10,
-        "captionScrim": 0,
+        "captionFrame": 35,
+        "captionEvery": 9,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "steel",
         "captionReveal": "wipe",
         "captionMark": "highlight",
-        "captionWordEvery": 3,
+        "captionWordEvery": 4,
         "cameraMove": "pull",
         "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      },
+      "diagram": {
+        "type": "process",
+        "stages": [
+          {
+            "shape": [
+              [
+                0.1688,
+                0.3
+              ],
+              [
+                0.40064,
+                0.3
+              ],
+              [
+                0.68216,
+                0.3
+              ],
+              [
+                0.8311999999999999,
+                0.5
+              ],
+              [
+                0.68216,
+                0.7
+              ],
+              [
+                0.40064,
+                0.7
+              ],
+              [
+                0.1688,
+                0.7
+              ],
+              [
+                0.1688,
+                0.5
+              ]
+            ],
+            "label": "raw",
+            "heat": 0,
+            "agent": "none"
+          },
+          {
+            "shape": [
+              [
+                0.10439999999999999,
+                0.3112
+              ],
+              [
+                0.38132,
+                0.3112
+              ],
+              [
+                0.71758,
+                0.341408
+              ],
+              [
+                0.8956,
+                0.5
+              ],
+              [
+                0.71758,
+                0.6585920000000001
+              ],
+              [
+                0.38132,
+                0.6888000000000001
+              ],
+              [
+                0.10439999999999999,
+                0.6888000000000001
+              ],
+              [
+                0.10439999999999999,
+                0.5
+              ]
+            ],
+            "label": "The spine",
+            "agent": "fold",
+            "heat": 0.55,
+            "effect": "the layers double"
+          }
+        ],
+        "objectLabel": null,
+        "accent": "#e8a020",
+        "muted": "#cfc6ae",
+        "highlight": 1,
+        "subject": "swordMaking",
+        "claims": [],
+        "depicts": "process",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -651,14 +1137,15 @@
       "layers": [],
       "props": [
         {
-          "kind": "wire",
-          "shape": "rect",
-          "depth": 0.56,
-          "x": 375,
-          "y": 514,
-          "width": 420,
+          "kind": "beam",
+          "depth": 0.25,
+          "x": 841,
+          "y": 116,
+          "width": 361,
+          "rotate": -8,
+          "opacity": 0.64,
           "colour": "#e8a020",
-          "from": 54
+          "from": 0
         }
       ],
       "params": {
@@ -674,23 +1161,23 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1389,
-        "glowY": 395,
-        "glowSize": 491,
-        "glowIntensity": 0.42,
+        "glowX": 1307,
+        "glowY": 353,
+        "glowSize": 319,
+        "glowIntensity": 0.53,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
           "soft iron",
           "in the spine"
         ],
-        "captionX": 81,
-        "captionY": 748,
-        "captionSize": 113,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 89,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 10,
-        "captionScrim": 0,
+        "captionFrame": 35,
+        "captionEvery": 8,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
@@ -701,6 +1188,99 @@
         "captionWordEvery": 2,
         "cameraMove": "pan",
         "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      },
+      "diagram": {
+        "type": "process",
+        "stages": [
+          {
+            "shape": [
+              [
+                0.1688,
+                0.3
+              ],
+              [
+                0.40064,
+                0.3
+              ],
+              [
+                0.68216,
+                0.3
+              ],
+              [
+                0.8311999999999999,
+                0.5
+              ],
+              [
+                0.68216,
+                0.7
+              ],
+              [
+                0.40064,
+                0.7
+              ],
+              [
+                0.1688,
+                0.7
+              ],
+              [
+                0.1688,
+                0.5
+              ]
+            ],
+            "label": "raw",
+            "heat": 0,
+            "agent": "none"
+          },
+          {
+            "shape": [
+              [
+                0.10439999999999999,
+                0.3112
+              ],
+              [
+                0.38132,
+                0.3112
+              ],
+              [
+                0.71758,
+                0.341408
+              ],
+              [
+                0.8956,
+                0.5
+              ],
+              [
+                0.71758,
+                0.6585920000000001
+              ],
+              [
+                0.38132,
+                0.6888000000000001
+              ],
+              [
+                0.10439999999999999,
+                0.6888000000000001
+              ],
+              [
+                0.10439999999999999,
+                0.5
+              ]
+            ],
+            "label": "The spine",
+            "agent": "fold",
+            "heat": 0.55,
+            "effect": "the layers double"
+          }
+        ],
+        "objectLabel": null,
+        "accent": "#e8a020",
+        "muted": "#cfc6ae",
+        "highlight": 1,
+        "subject": "swordMaking",
+        "claims": [],
+        "depicts": "process",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -710,25 +1290,12 @@
       "durationInFrames": 52,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.29,
-          "x": 907,
-          "y": 10,
-          "width": 369,
-          "rotate": -8,
-          "opacity": 0.73,
-          "colour": "#e8a020",
-          "from": 44
-        }
-      ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
         "pushFrom": 1.04,
-        "pushTo": 1.05,
-        "pushEndFrame": 49,
+        "pushTo": 1.06,
+        "pushEndFrame": 48,
         "glowX": 1145,
         "glowY": 422,
         "glowSize": 460,
@@ -748,30 +1315,165 @@
           "and fold,",
           "again"
         ],
-        "captionX": 81,
-        "captionY": 611,
-        "captionSize": 151,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 93,
         "captionAlign": "left",
-        "captionFrame": -12,
+        "captionFrame": 29,
         "captionEvery": 7,
-        "captionScrim": 0,
+        "captionScrim": 0.38,
         "captionRecedeAt": 37,
         "accent": "#e8a020",
         "motif": "tally",
-        "motifX": 128,
-        "motifY": 499,
-        "motifSize": 103,
-        "motifCount": 10,
-        "motifFrame": 23,
+        "motifX": 111,
+        "motifY": 546,
+        "motifSize": 94,
+        "motifCount": 14,
+        "motifFrame": 21,
         "motifColour": "#e8a020",
-        "motifOpacity": 0.92,
+        "motifOpacity": 0.8,
         "handheld": 3,
         "captionEmphasis": "Hammer",
         "captionReveal": "punch",
-        "captionMark": "highlight",
-        "captionWordEvery": 2,
+        "captionMark": "none",
+        "captionWordEvery": 3,
         "cameraMove": "hold",
         "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      },
+      "diagram": {
+        "type": "process",
+        "stages": [
+          {
+            "shape": [
+              [
+                0.1688,
+                0.3
+              ],
+              [
+                0.40064,
+                0.3
+              ],
+              [
+                0.68216,
+                0.3
+              ],
+              [
+                0.8311999999999999,
+                0.5
+              ],
+              [
+                0.68216,
+                0.7
+              ],
+              [
+                0.40064,
+                0.7
+              ],
+              [
+                0.1688,
+                0.7
+              ],
+              [
+                0.1688,
+                0.5
+              ]
+            ],
+            "label": "raw",
+            "heat": 0,
+            "agent": "none"
+          },
+          {
+            "shape": [
+              [
+                0.010000000000000009,
+                0.3154
+              ],
+              [
+                0.353,
+                0.3154
+              ],
+              [
+                0.7695000000000001,
+                0.356012
+              ],
+              [
+                0.99,
+                0.5
+              ],
+              [
+                0.7695000000000001,
+                0.643988
+              ],
+              [
+                0.353,
+                0.6846
+              ],
+              [
+                0.010000000000000009,
+                0.6846
+              ],
+              [
+                0.010000000000000009,
+                0.5
+              ]
+            ],
+            "label": "hammered",
+            "agent": "strike",
+            "heat": 0.6,
+            "effect": "the shape changes"
+          },
+          {
+            "shape": [
+              [
+                0.10439999999999999,
+                0.3112
+              ],
+              [
+                0.38132,
+                0.3112
+              ],
+              [
+                0.71758,
+                0.341408
+              ],
+              [
+                0.8956,
+                0.5
+              ],
+              [
+                0.71758,
+                0.6585920000000001
+              ],
+              [
+                0.38132,
+                0.6888000000000001
+              ],
+              [
+                0.10439999999999999,
+                0.6888000000000001
+              ],
+              [
+                0.10439999999999999,
+                0.5
+              ]
+            ],
+            "label": "folded",
+            "agent": "fold",
+            "heat": 0.55,
+            "effect": "the layers double"
+          }
+        ],
+        "objectLabel": null,
+        "accent": "#e8a020",
+        "muted": "#cfc6ae",
+        "highlight": 2,
+        "subject": "process",
+        "claims": [
+          "sequence"
+        ],
+        "depicts": "process",
+        "from": 0,
+        "over": 23
       }
     },
     {
@@ -783,21 +1485,22 @@
       "layers": [],
       "props": [
         {
-          "kind": "wire",
-          "shape": "circle",
-          "depth": 0.59,
-          "x": 390,
-          "y": 522,
-          "width": 348,
+          "kind": "beam",
+          "depth": 0.29,
+          "x": 898,
+          "y": -64,
+          "width": 302,
+          "rotate": -16,
+          "opacity": 0.69,
           "colour": "#e8a020",
-          "from": 44
+          "from": 0
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.01,
-        "pushTo": 1.46,
+        "pushFrom": 1.06,
+        "pushTo": 1.48,
         "pushEndFrame": 47,
         "accent": "#e8a020",
         "field": "spotlight",
@@ -806,32 +1509,166 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1537,
-        "glowY": 479,
-        "glowSize": 536,
-        "glowIntensity": 0.65,
+        "glowX": 1379,
+        "glowY": 360,
+        "glowSize": 406,
+        "glowIntensity": 0.42,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
-          "and again.",
-          "Each fold"
+          "and again. Each fold"
         ],
-        "captionX": 81,
-        "captionY": 720,
-        "captionSize": 136,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 55,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 6,
-        "captionScrim": 0,
+        "captionFrame": 29,
+        "captionEvery": 8,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "Each",
-        "captionReveal": "punch",
-        "captionMark": "none",
+        "captionReveal": "rise",
+        "captionMark": "underline",
         "captionWordEvery": 3,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "diagram": {
+        "type": "process",
+        "stages": [
+          {
+            "shape": [
+              [
+                0.1688,
+                0.3
+              ],
+              [
+                0.40064,
+                0.3
+              ],
+              [
+                0.68216,
+                0.3
+              ],
+              [
+                0.8311999999999999,
+                0.5
+              ],
+              [
+                0.68216,
+                0.7
+              ],
+              [
+                0.40064,
+                0.7
+              ],
+              [
+                0.1688,
+                0.7
+              ],
+              [
+                0.1688,
+                0.5
+              ]
+            ],
+            "label": "raw",
+            "heat": 0,
+            "agent": "none"
+          },
+          {
+            "shape": [
+              [
+                0.010000000000000009,
+                0.3154
+              ],
+              [
+                0.353,
+                0.3154
+              ],
+              [
+                0.7695000000000001,
+                0.356012
+              ],
+              [
+                0.99,
+                0.5
+              ],
+              [
+                0.7695000000000001,
+                0.643988
+              ],
+              [
+                0.353,
+                0.6846
+              ],
+              [
+                0.010000000000000009,
+                0.6846
+              ],
+              [
+                0.010000000000000009,
+                0.5
+              ]
+            ],
+            "label": "hammered",
+            "agent": "strike",
+            "heat": 0.6,
+            "effect": "the shape changes"
+          },
+          {
+            "shape": [
+              [
+                0.10439999999999999,
+                0.3112
+              ],
+              [
+                0.38132,
+                0.3112
+              ],
+              [
+                0.71758,
+                0.341408
+              ],
+              [
+                0.8956,
+                0.5
+              ],
+              [
+                0.71758,
+                0.6585920000000001
+              ],
+              [
+                0.38132,
+                0.6888000000000001
+              ],
+              [
+                0.10439999999999999,
+                0.6888000000000001
+              ],
+              [
+                0.10439999999999999,
+                0.5
+              ]
+            ],
+            "label": "folded",
+            "agent": "fold",
+            "heat": 0.55,
+            "effect": "the layers double"
+          }
+        ],
+        "objectLabel": null,
+        "accent": "#e8a020",
+        "muted": "#cfc6ae",
+        "highlight": 2,
+        "subject": "process",
+        "claims": [
+          "sequence"
+        ],
+        "depicts": "process",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -841,25 +1678,12 @@
       "durationInFrames": 45,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.37,
-          "x": 919,
-          "y": 92,
-          "width": 257,
-          "rotate": -13,
-          "opacity": 0.51,
-          "colour": "#e8a020",
-          "from": 38
-        }
-      ],
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
         "pushFrom": 1.04,
-        "pushTo": 1.37,
-        "pushEndFrame": 43,
+        "pushTo": 1.07,
+        "pushEndFrame": 41,
         "accent": "#e8a020",
         "field": "spotlight",
         "fieldColours": [
@@ -867,32 +1691,166 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1435,
-        "glowY": 438,
-        "glowSize": 554,
-        "glowIntensity": 0.42,
+        "glowX": 1574,
+        "glowY": 593,
+        "glowSize": 551,
+        "glowIntensity": 0.5,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
-          "doubles",
-          "the layers"
+          "doubles the layers"
         ],
-        "captionX": 81,
-        "captionY": 720,
-        "captionSize": 136,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 62,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 10,
-        "captionScrim": 0,
+        "captionFrame": 28,
+        "captionEvery": 6,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
-        "handheld": 1.5,
+        "handheld": 3,
         "captionEmphasis": "doubles",
-        "captionReveal": "wipe",
-        "captionMark": "box",
-        "captionWordEvery": 4,
-        "cameraMove": "push",
-        "cameraPurpose": "single out the subject — the frame closes on what matters"
+        "captionReveal": "blur",
+        "captionMark": "highlight",
+        "captionWordEvery": 2,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      },
+      "diagram": {
+        "type": "process",
+        "stages": [
+          {
+            "shape": [
+              [
+                0.1688,
+                0.3
+              ],
+              [
+                0.40064,
+                0.3
+              ],
+              [
+                0.68216,
+                0.3
+              ],
+              [
+                0.8311999999999999,
+                0.5
+              ],
+              [
+                0.68216,
+                0.7
+              ],
+              [
+                0.40064,
+                0.7
+              ],
+              [
+                0.1688,
+                0.7
+              ],
+              [
+                0.1688,
+                0.5
+              ]
+            ],
+            "label": "raw",
+            "heat": 0,
+            "agent": "none"
+          },
+          {
+            "shape": [
+              [
+                0.010000000000000009,
+                0.3154
+              ],
+              [
+                0.353,
+                0.3154
+              ],
+              [
+                0.7695000000000001,
+                0.356012
+              ],
+              [
+                0.99,
+                0.5
+              ],
+              [
+                0.7695000000000001,
+                0.643988
+              ],
+              [
+                0.353,
+                0.6846
+              ],
+              [
+                0.010000000000000009,
+                0.6846
+              ],
+              [
+                0.010000000000000009,
+                0.5
+              ]
+            ],
+            "label": "hammered",
+            "agent": "strike",
+            "heat": 0.6,
+            "effect": "the shape changes"
+          },
+          {
+            "shape": [
+              [
+                0.10439999999999999,
+                0.3112
+              ],
+              [
+                0.38132,
+                0.3112
+              ],
+              [
+                0.71758,
+                0.341408
+              ],
+              [
+                0.8956,
+                0.5
+              ],
+              [
+                0.71758,
+                0.6585920000000001
+              ],
+              [
+                0.38132,
+                0.6888000000000001
+              ],
+              [
+                0.10439999999999999,
+                0.6888000000000001
+              ],
+              [
+                0.10439999999999999,
+                0.5
+              ]
+            ],
+            "label": "folded",
+            "agent": "fold",
+            "heat": 0.55,
+            "effect": "the layers double"
+          }
+        ],
+        "objectLabel": null,
+        "accent": "#e8a020",
+        "muted": "#cfc6ae",
+        "highlight": 2,
+        "subject": "process",
+        "claims": [
+          "sequence"
+        ],
+        "depicts": "process",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -902,24 +1860,12 @@
       "durationInFrames": 52,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "wire",
-          "shape": "rect",
-          "depth": 0.62,
-          "x": 430,
-          "y": 515,
-          "width": 283,
-          "colour": "#e8a020",
-          "from": 44
-        }
-      ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
         "pushFrom": 1,
-        "pushTo": 1.45,
-        "pushEndFrame": 51,
+        "pushTo": 1.49,
+        "pushEndFrame": 50,
         "glowX": 1145,
         "glowY": 422,
         "glowSize": 460,
@@ -939,13 +1885,13 @@
           "the finished",
           "blade"
         ],
-        "captionX": 81,
-        "captionY": 680,
-        "captionSize": 113,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 88,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 8,
-        "captionScrim": 0,
+        "captionFrame": 29,
+        "captionEvery": 7,
+        "captionScrim": 0.38,
         "captionRecedeAt": 37,
         "accent": "#e8a020",
         "handheld": 1.5,
@@ -955,6 +1901,142 @@
         "captionWordEvery": 3,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "diagram": {
+        "type": "process",
+        "stages": [
+          {
+            "shape": [
+              [
+                0.1688,
+                0.3
+              ],
+              [
+                0.40064,
+                0.3
+              ],
+              [
+                0.68216,
+                0.3
+              ],
+              [
+                0.8311999999999999,
+                0.5
+              ],
+              [
+                0.68216,
+                0.7
+              ],
+              [
+                0.40064,
+                0.7
+              ],
+              [
+                0.1688,
+                0.7
+              ],
+              [
+                0.1688,
+                0.5
+              ]
+            ],
+            "label": "raw",
+            "heat": 0,
+            "agent": "none"
+          },
+          {
+            "shape": [
+              [
+                0.012399999999999967,
+                0.307
+              ],
+              [
+                0.35372000000000003,
+                0.307
+              ],
+              [
+                0.7681800000000001,
+                0.3263
+              ],
+              [
+                0.9876,
+                0.5
+              ],
+              [
+                0.7681800000000001,
+                0.6737
+              ],
+              [
+                0.35372000000000003,
+                0.6930000000000001
+              ],
+              [
+                0.012399999999999967,
+                0.6930000000000001
+              ],
+              [
+                0.012399999999999967,
+                0.5
+              ]
+            ],
+            "label": "heated",
+            "agent": "heat",
+            "heat": 0.75,
+            "effect": "the metal softens"
+          },
+          {
+            "shape": [
+              [
+                0.03999999999999998,
+                0.32099999999999995
+              ],
+              [
+                0.362,
+                0.32099999999999995
+              ],
+              [
+                0.7530000000000001,
+                0.37470000000000003
+              ],
+              [
+                0.96,
+                0.5
+              ],
+              [
+                0.7530000000000001,
+                0.6253
+              ],
+              [
+                0.362,
+                0.679
+              ],
+              [
+                0.03999999999999998,
+                0.679
+              ],
+              [
+                0.03999999999999998,
+                0.5
+              ]
+            ],
+            "label": "quenched",
+            "agent": "quench",
+            "heat": 0.06,
+            "effect": "the edge locks hard"
+          }
+        ],
+        "objectLabel": null,
+        "accent": "#e8a020",
+        "muted": "#cfc6ae",
+        "highlight": 2,
+        "subject": "swordMaking",
+        "claims": [
+          "transformation",
+          "sequence"
+        ],
+        "depicts": "process",
+        "from": 0,
+        "over": 23
       }
     },
     {
@@ -964,24 +2046,11 @@
       "durationInFrames": 52,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.37,
-          "x": 910,
-          "y": -80,
-          "width": 348,
-          "rotate": -10,
-          "opacity": 0.6,
-          "colour": "#e8a020",
-          "from": 44
-        }
-      ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.03,
-        "pushTo": 1.08,
+        "pushFrom": 1.02,
+        "pushTo": 1.07,
         "pushEndFrame": 48,
         "accent": "#e8a020",
         "field": "spotlight",
@@ -990,32 +2059,167 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1466,
-        "glowY": 184,
-        "glowSize": 542,
-        "glowIntensity": 0.61,
+        "glowX": 1392,
+        "glowY": 577,
+        "glowSize": 502,
+        "glowIntensity": 0.42,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
-          "is heated",
-          "once more"
+          "is heated once more"
         ],
-        "captionX": 81,
-        "captionY": 702,
-        "captionSize": 151,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 58,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 8,
-        "captionScrim": 0,
+        "captionFrame": 29,
+        "captionEvery": 7,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 3,
         "captionEmphasis": "heated",
         "captionReveal": "wipe",
-        "captionMark": "none",
-        "captionWordEvery": 3,
+        "captionMark": "box",
+        "captionWordEvery": 2,
         "cameraMove": "hold",
         "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      },
+      "diagram": {
+        "type": "process",
+        "stages": [
+          {
+            "shape": [
+              [
+                0.1688,
+                0.3
+              ],
+              [
+                0.40064,
+                0.3
+              ],
+              [
+                0.68216,
+                0.3
+              ],
+              [
+                0.8311999999999999,
+                0.5
+              ],
+              [
+                0.68216,
+                0.7
+              ],
+              [
+                0.40064,
+                0.7
+              ],
+              [
+                0.1688,
+                0.7
+              ],
+              [
+                0.1688,
+                0.5
+              ]
+            ],
+            "label": "raw",
+            "heat": 0,
+            "agent": "none"
+          },
+          {
+            "shape": [
+              [
+                0.012399999999999967,
+                0.307
+              ],
+              [
+                0.35372000000000003,
+                0.307
+              ],
+              [
+                0.7681800000000001,
+                0.3263
+              ],
+              [
+                0.9876,
+                0.5
+              ],
+              [
+                0.7681800000000001,
+                0.6737
+              ],
+              [
+                0.35372000000000003,
+                0.6930000000000001
+              ],
+              [
+                0.012399999999999967,
+                0.6930000000000001
+              ],
+              [
+                0.012399999999999967,
+                0.5
+              ]
+            ],
+            "label": "heated",
+            "agent": "heat",
+            "heat": 0.75,
+            "effect": "the metal softens"
+          },
+          {
+            "shape": [
+              [
+                0.03999999999999998,
+                0.32099999999999995
+              ],
+              [
+                0.362,
+                0.32099999999999995
+              ],
+              [
+                0.7530000000000001,
+                0.37470000000000003
+              ],
+              [
+                0.96,
+                0.5
+              ],
+              [
+                0.7530000000000001,
+                0.6253
+              ],
+              [
+                0.362,
+                0.679
+              ],
+              [
+                0.03999999999999998,
+                0.679
+              ],
+              [
+                0.03999999999999998,
+                0.5
+              ]
+            ],
+            "label": "quenched",
+            "agent": "quench",
+            "heat": 0.06,
+            "effect": "the edge locks hard"
+          }
+        ],
+        "objectLabel": null,
+        "accent": "#e8a020",
+        "muted": "#cfc6ae",
+        "highlight": 2,
+        "subject": "swordMaking",
+        "claims": [
+          "transformation",
+          "sequence"
+        ],
+        "depicts": "process",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -1027,22 +2231,23 @@
       "layers": [],
       "props": [
         {
-          "kind": "wire",
-          "shape": "rect",
-          "depth": 0.6,
-          "x": 441,
-          "y": 518,
-          "width": 384,
+          "kind": "beam",
+          "depth": 0.16,
+          "x": 1003,
+          "y": 113,
+          "width": 373,
+          "rotate": -13,
+          "opacity": 0.61,
           "colour": "#e8a020",
-          "from": 44
+          "from": 0
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
-        "pushFrom": 1.04,
-        "pushTo": 1.47,
-        "pushEndFrame": 47,
+        "pushFrom": 1,
+        "pushTo": 1.44,
+        "pushEndFrame": 50,
         "accent": "#e8a020",
         "field": "spotlight",
         "fieldColours": [
@@ -1050,32 +2255,167 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1429,
-        "glowY": 527,
-        "glowSize": 527,
-        "glowIntensity": 0.62,
+        "glowX": 1455,
+        "glowY": 394,
+        "glowSize": 439,
+        "glowIntensity": 0.42,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
-          "and plunged",
-          "into oil"
+          "and plunged into oil"
         ],
-        "captionX": 81,
-        "captionY": 734,
-        "captionSize": 124,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 55,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 7,
-        "captionScrim": 0,
+        "captionFrame": 29,
+        "captionEvery": 9,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "plunged",
-        "captionReveal": "blur",
-        "captionMark": "none",
-        "captionWordEvery": 4,
+        "captionReveal": "punch",
+        "captionMark": "highlight",
+        "captionWordEvery": 3,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "diagram": {
+        "type": "process",
+        "stages": [
+          {
+            "shape": [
+              [
+                0.1688,
+                0.3
+              ],
+              [
+                0.40064,
+                0.3
+              ],
+              [
+                0.68216,
+                0.3
+              ],
+              [
+                0.8311999999999999,
+                0.5
+              ],
+              [
+                0.68216,
+                0.7
+              ],
+              [
+                0.40064,
+                0.7
+              ],
+              [
+                0.1688,
+                0.7
+              ],
+              [
+                0.1688,
+                0.5
+              ]
+            ],
+            "label": "raw",
+            "heat": 0,
+            "agent": "none"
+          },
+          {
+            "shape": [
+              [
+                0.012399999999999967,
+                0.307
+              ],
+              [
+                0.35372000000000003,
+                0.307
+              ],
+              [
+                0.7681800000000001,
+                0.3263
+              ],
+              [
+                0.9876,
+                0.5
+              ],
+              [
+                0.7681800000000001,
+                0.6737
+              ],
+              [
+                0.35372000000000003,
+                0.6930000000000001
+              ],
+              [
+                0.012399999999999967,
+                0.6930000000000001
+              ],
+              [
+                0.012399999999999967,
+                0.5
+              ]
+            ],
+            "label": "heated",
+            "agent": "heat",
+            "heat": 0.75,
+            "effect": "the metal softens"
+          },
+          {
+            "shape": [
+              [
+                0.03999999999999998,
+                0.32099999999999995
+              ],
+              [
+                0.362,
+                0.32099999999999995
+              ],
+              [
+                0.7530000000000001,
+                0.37470000000000003
+              ],
+              [
+                0.96,
+                0.5
+              ],
+              [
+                0.7530000000000001,
+                0.6253
+              ],
+              [
+                0.362,
+                0.679
+              ],
+              [
+                0.03999999999999998,
+                0.679
+              ],
+              [
+                0.03999999999999998,
+                0.5
+              ]
+            ],
+            "label": "quenched",
+            "agent": "quench",
+            "heat": 0.06,
+            "effect": "the edge locks hard"
+          }
+        ],
+        "objectLabel": null,
+        "accent": "#e8a020",
+        "muted": "#cfc6ae",
+        "highlight": 2,
+        "subject": "swordMaking",
+        "claims": [
+          "transformation",
+          "sequence"
+        ],
+        "depicts": "process",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -1085,25 +2425,12 @@
       "durationInFrames": 97,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.28,
-          "x": 929,
-          "y": 115,
-          "width": 282,
-          "rotate": -16,
-          "opacity": 0.56,
-          "colour": "#e8a020",
-          "from": 44
-        }
-      ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1.16,
-        "pushTo": 1.2,
-        "pushEndFrame": 93,
+        "pushFrom": 1.17,
+        "pushTo": 1.25,
+        "pushEndFrame": 89,
         "glowX": 1145,
         "glowY": 422,
         "glowSize": 460,
@@ -1119,30 +2446,24 @@
           "#241505"
         ],
         "caption": [
-          "The thin",
-          "edge cools",
-          "in under",
-          "a second"
+          "The thin edge cools",
+          "in under a second"
         ],
-        "captionX": 81,
-        "captionY": 557,
-        "captionSize": 136,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 58,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 7,
-        "captionScrim": 0,
+        "captionFrame": 41,
+        "captionEvery": 10,
+        "captionScrim": 0.38,
         "captionRecedeAt": 70,
         "accent": "#e8a020",
         "handheld": 1.5,
-        "panX": -148,
+        "panX": -221,
         "captionEmphasis": "second",
         "captionReveal": "rise",
-        "captionMark": "underline",
+        "captionMark": "none",
         "captionWordEvery": 3,
-        "shakeAt": [
-          82
-        ],
-        "shakeAmount": 17,
         "cameraMove": "pan",
         "cameraPurpose": "expose information the frame was withholding, or follow a movement"
       },
@@ -1154,7 +2475,100 @@
           "style": "typed",
           "position": "bottom"
         }
-      ]
+      ],
+      "diagram": {
+        "type": "process",
+        "stages": [
+          {
+            "shape": [
+              [
+                0.1688,
+                0.3
+              ],
+              [
+                0.40064,
+                0.3
+              ],
+              [
+                0.68216,
+                0.3
+              ],
+              [
+                0.8311999999999999,
+                0.5
+              ],
+              [
+                0.68216,
+                0.7
+              ],
+              [
+                0.40064,
+                0.7
+              ],
+              [
+                0.1688,
+                0.7
+              ],
+              [
+                0.1688,
+                0.5
+              ]
+            ],
+            "label": "raw",
+            "heat": 0,
+            "agent": "none"
+          },
+          {
+            "shape": [
+              [
+                0.03999999999999998,
+                0.32099999999999995
+              ],
+              [
+                0.362,
+                0.32099999999999995
+              ],
+              [
+                0.7530000000000001,
+                0.37470000000000003
+              ],
+              [
+                0.96,
+                0.5
+              ],
+              [
+                0.7530000000000001,
+                0.6253
+              ],
+              [
+                0.362,
+                0.679
+              ],
+              [
+                0.03999999999999998,
+                0.679
+              ],
+              [
+                0.03999999999999998,
+                0.5
+              ]
+            ],
+            "label": "quenched",
+            "agent": "quench",
+            "heat": 0.06,
+            "effect": "the edge locks hard"
+          }
+        ],
+        "objectLabel": null,
+        "accent": "#e8a020",
+        "muted": "#cfc6ae",
+        "highlight": 1,
+        "subject": "process",
+        "claims": [],
+        "depicts": "process",
+        "from": 0,
+        "over": 44
+      }
     },
     {
       "id": "s07-cool-b",
@@ -1165,21 +2579,22 @@
       "layers": [],
       "props": [
         {
-          "kind": "wire",
-          "shape": "diamond",
-          "depth": 0.64,
-          "x": 393,
-          "y": 357,
-          "width": 353,
+          "kind": "beam",
+          "depth": 0.36,
+          "x": 869,
+          "y": -23,
+          "width": 248,
+          "rotate": -12,
+          "opacity": 0.52,
           "colour": "#e8a020",
-          "from": 73
+          "from": 0
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1,
-        "pushTo": 1.1,
+        "pushFrom": 1.44,
+        "pushTo": 1.04,
         "pushEndFrame": 83,
         "accent": "#e8a020",
         "field": "spotlight",
@@ -1188,36 +2603,125 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1326,
-        "glowY": 146,
-        "glowSize": 345,
-        "glowIntensity": 0.68,
+        "glowX": 1480,
+        "glowY": 548,
+        "glowSize": 495,
+        "glowIntensity": 0.54,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
-          "and locks",
-          "hard.",
-          "The spine",
-          "stays soft"
+          "and locks hard.",
+          "The spine stays soft"
         ],
-        "captionX": 81,
-        "captionY": 557,
-        "captionSize": 136,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 55,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 7,
-        "captionScrim": 0,
+        "captionFrame": 46,
+        "captionEvery": 8,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panY": -32,
-        "roll": -0.03,
         "captionEmphasis": "The",
-        "captionReveal": "wipe",
-        "captionMark": "highlight",
-        "captionWordEvery": 4,
-        "cameraMove": "drift",
-        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+        "captionReveal": "punch",
+        "captionMark": "none",
+        "captionWordEvery": 2,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      },
+      "diagram": {
+        "type": "process",
+        "stages": [
+          {
+            "shape": [
+              [
+                0.1688,
+                0.3
+              ],
+              [
+                0.40064,
+                0.3
+              ],
+              [
+                0.68216,
+                0.3
+              ],
+              [
+                0.8311999999999999,
+                0.5
+              ],
+              [
+                0.68216,
+                0.7
+              ],
+              [
+                0.40064,
+                0.7
+              ],
+              [
+                0.1688,
+                0.7
+              ],
+              [
+                0.1688,
+                0.5
+              ]
+            ],
+            "label": "raw",
+            "heat": 0,
+            "agent": "none"
+          },
+          {
+            "shape": [
+              [
+                0.03999999999999998,
+                0.32099999999999995
+              ],
+              [
+                0.362,
+                0.32099999999999995
+              ],
+              [
+                0.7530000000000001,
+                0.37470000000000003
+              ],
+              [
+                0.96,
+                0.5
+              ],
+              [
+                0.7530000000000001,
+                0.6253
+              ],
+              [
+                0.362,
+                0.679
+              ],
+              [
+                0.03999999999999998,
+                0.679
+              ],
+              [
+                0.03999999999999998,
+                0.5
+              ]
+            ],
+            "label": "quenched",
+            "agent": "quench",
+            "heat": 0.06,
+            "effect": "the edge locks hard"
+          }
+        ],
+        "objectLabel": null,
+        "accent": "#e8a020",
+        "muted": "#cfc6ae",
+        "highlight": 1,
+        "subject": "process",
+        "claims": [],
+        "depicts": "process",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -1227,25 +2731,12 @@
       "durationInFrames": 97,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.29,
-          "x": 929,
-          "y": 4,
-          "width": 314,
-          "rotate": -16,
-          "opacity": 0.67,
-          "colour": "#e8a020",
-          "from": 50
-        }
-      ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1.64,
-        "pushTo": 1,
-        "pushEndFrame": 88,
+        "pushFrom": 1.22,
+        "pushTo": 1.22,
+        "pushEndFrame": 91,
         "glowX": 1145,
         "glowY": 422,
         "glowSize": 460,
@@ -1265,26 +2756,48 @@
           "that is hard",
           "the whole way"
         ],
-        "captionX": 81,
-        "captionY": 696,
-        "captionSize": 104,
+        "captionX": 84,
+        "captionY": 1344,
+        "captionSize": 85,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 7,
-        "captionScrim": 0,
+        "captionFrame": 45,
+        "captionEvery": 9,
+        "captionScrim": 0.38,
         "captionRecedeAt": 70,
         "accent": "#e8a020",
         "handheld": 1.5,
+        "panX": -243,
+        "shakeAt": [
+          8
+        ],
+        "shakeAmount": 22,
         "captionEmphasis": "sword",
         "captionReveal": "rise",
-        "captionMark": "none",
-        "captionWordEvery": 3,
-        "shakeAt": [
-          82
-        ],
-        "shakeAmount": 20,
-        "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "captionMark": "highlight",
+        "captionWordEvery": 4,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      },
+      "diagram": {
+        "type": "scaleHaulage",
+        "accent": "#e8a020",
+        "muted": "#cfc6ae",
+        "object": {
+          "w": 0.3,
+          "h": 0.075,
+          "label": "the block"
+        },
+        "humanHeight": 0.062,
+        "humans": 1,
+        "rollers": 0,
+        "sledge": false,
+        "ropes": 0,
+        "travel": 0.02,
+        "subject": "swordMaking",
+        "claims": [],
+        "depicts": "process",
+        "from": 0,
+        "over": 44
       }
     },
     {
@@ -1294,24 +2807,12 @@
       "durationInFrames": 75,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "wire",
-          "shape": "rect",
-          "depth": 0.79,
-          "x": 361,
-          "y": 410,
-          "width": 409,
-          "colour": "#e8a020",
-          "from": 64
-        }
-      ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.16,
-        "pushTo": 1.26,
-        "pushEndFrame": 69,
+        "pushFrom": 1.63,
+        "pushTo": 1.03,
+        "pushEndFrame": 72,
         "accent": "#e8a020",
         "field": "spotlight",
         "fieldColours": [
@@ -1319,34 +2820,57 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1451,
-        "glowY": 580,
-        "glowSize": 415,
+        "glowX": 1366,
+        "glowY": 561,
+        "glowSize": 344,
         "glowIntensity": 0.54,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
-          "through",
-          "is a sword",
+          "through is a sword",
           "that snaps"
         ],
-        "captionX": 81,
-        "captionY": 638,
-        "captionSize": 136,
+        "captionX": 84,
+        "captionY": 1344,
+        "captionSize": 62,
         "captionAlign": "left",
-        "captionFrame": -12,
+        "captionFrame": 41,
         "captionEvery": 7,
-        "captionScrim": 0,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panX": 203,
+        "shakeAt": [
+          6
+        ],
+        "shakeAmount": 22,
         "captionEmphasis": "through",
-        "captionReveal": "punch",
-        "captionMark": "highlight",
-        "captionWordEvery": 4,
-        "cameraMove": "pan",
-        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+        "captionReveal": "blur",
+        "captionMark": "underline",
+        "captionWordEvery": 2,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      },
+      "diagram": {
+        "type": "scaleHaulage",
+        "accent": "#e8a020",
+        "muted": "#cfc6ae",
+        "object": {
+          "w": 0.3,
+          "h": 0.075,
+          "label": "the block"
+        },
+        "humanHeight": 0.062,
+        "humans": 1,
+        "rollers": 0,
+        "sledge": false,
+        "ropes": 0,
+        "travel": 0.02,
+        "subject": "swordMaking",
+        "claims": [],
+        "depicts": "process",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -1361,13 +2885,13 @@
       },
       "assets": {},
       "params": {
-        "scrim": 0.49,
+        "scrim": 0.43,
         "kicker": "ONE BLADE",
         "title": "TWO HUNDRED HOURS",
         "footer": "and all of it is in the cooling",
-        "titleFrame": 9,
+        "titleFrame": 48,
         "titleSize": 230,
-        "creep": 1.073,
+        "creep": 1.06,
         "accent": "#e8a020",
         "field": "spotlight",
         "fieldColours": [
@@ -1375,9 +2899,15 @@
           "#8a5a18",
           "#241505"
         ],
-        "pushEndFrame": 109,
-        "pushFrom": 1.04,
-        "pushTo": 1.05,
+        "mark": "underline",
+        "markX": 260,
+        "markY": 820,
+        "markWidth": 560,
+        "markHeight": 300,
+        "markFrame": 40,
+        "pushEndFrame": 107,
+        "pushFrom": 1.03,
+        "pushTo": 1.06,
         "cameraMove": "hold",
         "cameraPurpose": "importance. The frame stops because the idea needs no help"
       },
@@ -1385,23 +2915,23 @@
         {
           "kind": "plaque",
           "text": "ONE BLADE",
-          "depth": 0.51,
-          "x": 388,
-          "y": 618,
-          "width": 383,
-          "rotate": 1.3,
-          "from": 55
+          "depth": 0.71,
+          "x": 330,
+          "y": 612,
+          "width": 418,
+          "rotate": 0.5,
+          "from": 73
         },
         {
           "kind": "newspaper",
           "masthead": "THE GAZETTE",
           "text": "TWO HUNDRED HOURS",
-          "depth": 0.67,
-          "x": 720,
-          "y": 529,
-          "width": 429,
-          "rotate": 2.7,
-          "from": 73
+          "depth": 0.65,
+          "x": 672,
+          "y": 539,
+          "width": 401,
+          "rotate": -2.2,
+          "from": 13
         }
       ]
     }

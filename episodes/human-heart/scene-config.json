@@ -18,12 +18,12 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.44,
-      "grungeOpacity": 0.14,
-      "scanlineOpacity": 0.11,
-      "scanlinePeriod": 9,
-      "vignetteStrength": 0.44,
-      "weavePx": 6,
+      "grainOpacity": 0.36,
+      "grungeOpacity": 0.16,
+      "scanlineOpacity": 0.13,
+      "scanlinePeriod": 10,
+      "vignetteStrength": 0.46,
+      "weavePx": 5,
       "weaveScale": 1.015
     }
   },
@@ -39,7 +39,7 @@
         "kicker": "THE HUMAN HEART",
         "title": "",
         "footer": "",
-        "titleFrame": 6,
+        "titleFrame": 64,
         "titleSize": 124,
         "creep": 1.098,
         "accent": "#ffcf3d",
@@ -64,7 +64,7 @@
           "y": 1348,
           "width": 431,
           "rotate": -1.7,
-          "from": 64
+          "from": 6
         },
         {
           "kind": "wire",
@@ -95,7 +95,7 @@
           "rotate": -14,
           "opacity": 0.8,
           "colour": "#ffcf3d",
-          "from": 64
+          "from": 0
         }
       ],
       "params": {
@@ -121,13 +121,13 @@
           "It is two,",
           "side by side"
         ],
-        "captionX": 81,
-        "captionY": 748,
-        "captionSize": 113,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 93,
         "captionAlign": "left",
-        "captionFrame": -12,
+        "captionFrame": 41,
         "captionEvery": 9,
-        "captionScrim": 0,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
@@ -138,6 +138,174 @@
         "captionWordEvery": 2,
         "cameraMove": "tilt",
         "cameraPurpose": "a vertical reveal — height, depth, or a drop"
+      },
+      "diagram": {
+        "type": "anatomyFlow",
+        "chambers": [
+          {
+            "id": "c00",
+            "x": 0.34,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c01",
+            "x": 0.34,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          },
+          {
+            "id": "c10",
+            "x": 0.66,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c11",
+            "x": 0.66,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          }
+        ],
+        "valves": [
+          {
+            "x": 0.34,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          },
+          {
+            "x": 0.66,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          }
+        ],
+        "vessels": [
+          {
+            "path": [
+              [
+                0.28,
+                0.5
+              ],
+              [
+                0.15,
+                0.6
+              ],
+              [
+                0.11,
+                0.36
+              ],
+              [
+                0.27,
+                0.29
+              ]
+            ],
+            "charge": "low",
+            "label": "to the lungs"
+          },
+          {
+            "path": [
+              [
+                0.34,
+                0.25
+              ],
+              [
+                0.5,
+                0.235
+              ],
+              [
+                0.66,
+                0.25
+              ]
+            ],
+            "charge": "high",
+            "label": "from the lungs"
+          },
+          {
+            "path": [
+              [
+                0.73,
+                0.31
+              ],
+              [
+                0.83,
+                0.4
+              ],
+              [
+                0.73,
+                0.44999999999999996
+              ]
+            ],
+            "charge": "high"
+          },
+          {
+            "path": [
+              [
+                0.7000000000000001,
+                0.52
+              ],
+              [
+                0.84,
+                0.7
+              ],
+              [
+                0.6,
+                0.78
+              ],
+              [
+                0.4,
+                0.78
+              ],
+              [
+                0.16,
+                0.7
+              ],
+              [
+                0.28,
+                0.5
+              ]
+            ],
+            "charge": "high",
+            "label": "to the body"
+          }
+        ],
+        "circuit": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "cycleFrames": 36,
+        "accent": "#ffcf3d",
+        "muted": "#cfc6ae",
+        "subject": "humanHeart",
+        "claims": [
+          "contraction"
+        ],
+        "depicts": "anatomy",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -147,28 +315,6 @@
       "durationInFrames": 45,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "plaque",
-          "text": "THE HUMAN HEART",
-          "depth": 0.72,
-          "x": 375,
-          "y": 1429,
-          "width": 369,
-          "rotate": -2.3,
-          "from": 38
-        },
-        {
-          "kind": "wire",
-          "shape": "diamond",
-          "depth": 0.61,
-          "x": 718,
-          "y": 459,
-          "width": 392,
-          "colour": "#ffcf3d",
-          "from": 0
-        }
-      ],
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
@@ -189,16 +335,15 @@
         "glowWarm": "#ffcf3d",
         "glowDepth": 0.1,
         "caption": [
-          "beating",
-          "together"
+          "beating together"
         ],
-        "captionX": 81,
-        "captionY": 679,
-        "captionSize": 170,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 69,
         "captionAlign": "left",
-        "captionFrame": -12,
+        "captionFrame": 28,
         "captionEvery": 8,
-        "captionScrim": 0,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
@@ -208,6 +353,174 @@
         "captionWordEvery": 3,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "diagram": {
+        "type": "anatomyFlow",
+        "chambers": [
+          {
+            "id": "c00",
+            "x": 0.34,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c01",
+            "x": 0.34,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          },
+          {
+            "id": "c10",
+            "x": 0.66,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c11",
+            "x": 0.66,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          }
+        ],
+        "valves": [
+          {
+            "x": 0.34,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          },
+          {
+            "x": 0.66,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          }
+        ],
+        "vessels": [
+          {
+            "path": [
+              [
+                0.28,
+                0.5
+              ],
+              [
+                0.15,
+                0.6
+              ],
+              [
+                0.11,
+                0.36
+              ],
+              [
+                0.27,
+                0.29
+              ]
+            ],
+            "charge": "low",
+            "label": "to the lungs"
+          },
+          {
+            "path": [
+              [
+                0.34,
+                0.25
+              ],
+              [
+                0.5,
+                0.235
+              ],
+              [
+                0.66,
+                0.25
+              ]
+            ],
+            "charge": "high",
+            "label": "from the lungs"
+          },
+          {
+            "path": [
+              [
+                0.73,
+                0.31
+              ],
+              [
+                0.83,
+                0.4
+              ],
+              [
+                0.73,
+                0.44999999999999996
+              ]
+            ],
+            "charge": "high"
+          },
+          {
+            "path": [
+              [
+                0.7000000000000001,
+                0.52
+              ],
+              [
+                0.84,
+                0.7
+              ],
+              [
+                0.6,
+                0.78
+              ],
+              [
+                0.4,
+                0.78
+              ],
+              [
+                0.16,
+                0.7
+              ],
+              [
+                0.28,
+                0.5
+              ]
+            ],
+            "charge": "high",
+            "label": "to the body"
+          }
+        ],
+        "circuit": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "cycleFrames": 36,
+        "accent": "#ffcf3d",
+        "muted": "#cfc6ae",
+        "subject": "humanHeart",
+        "claims": [
+          "contraction"
+        ],
+        "depicts": "anatomy",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -227,15 +540,15 @@
           "rotate": -18,
           "opacity": 0.62,
           "colour": "#ffcf3d",
-          "from": 40
+          "from": 82
         }
       ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1,
-        "pushTo": 1.1,
-        "pushEndFrame": 93,
+        "pushFrom": 1.38,
+        "pushTo": 1.04,
+        "pushEndFrame": 92,
         "glowX": 1145,
         "glowY": 422,
         "glowSize": 460,
@@ -251,18 +564,16 @@
           "#241505"
         ],
         "caption": [
-          "The right",
-          "side sends",
-          "blood",
-          "to the lungs"
+          "The right side sends",
+          "blood to the lungs"
         ],
-        "captionX": 81,
-        "captionY": 612,
-        "captionSize": 113,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 55,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 8,
-        "captionScrim": 0,
+        "captionFrame": 49,
+        "captionEvery": 6,
+        "captionScrim": 0.38,
         "captionRecedeAt": 70,
         "accent": "#ffcf3d",
         "motif": "route",
@@ -272,18 +583,183 @@
           "Left side",
           "The body"
         ],
-        "motifFrame": 82,
+        "motifFrame": 26,
         "motifColour": "#ffcf3d",
         "handheld": 1.5,
-        "panY": -32,
-        "roll": 0.08,
         "captionEmphasis": "right",
         "captionReveal": "rise",
-        "captionMark": "box",
+        "captionMark": "underline",
         "captionWordEvery": 3,
-        "cameraMove": "drift",
-        "cameraPurpose": "atmosphere, and the calm that makes the next cut land",
-        "motifY": 420
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      },
+      "diagram": {
+        "type": "anatomyFlow",
+        "chambers": [
+          {
+            "id": "c00",
+            "x": 0.34,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c01",
+            "x": 0.34,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          },
+          {
+            "id": "c10",
+            "x": 0.66,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c11",
+            "x": 0.66,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          }
+        ],
+        "valves": [
+          {
+            "x": 0.34,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          },
+          {
+            "x": 0.66,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          }
+        ],
+        "vessels": [
+          {
+            "path": [
+              [
+                0.28,
+                0.5
+              ],
+              [
+                0.15,
+                0.6
+              ],
+              [
+                0.11,
+                0.36
+              ],
+              [
+                0.27,
+                0.29
+              ]
+            ],
+            "charge": "low",
+            "label": "to the lungs"
+          },
+          {
+            "path": [
+              [
+                0.34,
+                0.25
+              ],
+              [
+                0.5,
+                0.235
+              ],
+              [
+                0.66,
+                0.25
+              ]
+            ],
+            "charge": "high",
+            "label": "from the lungs"
+          },
+          {
+            "path": [
+              [
+                0.73,
+                0.31
+              ],
+              [
+                0.83,
+                0.4
+              ],
+              [
+                0.73,
+                0.44999999999999996
+              ]
+            ],
+            "charge": "high"
+          },
+          {
+            "path": [
+              [
+                0.7000000000000001,
+                0.52
+              ],
+              [
+                0.84,
+                0.7
+              ],
+              [
+                0.6,
+                0.78
+              ],
+              [
+                0.4,
+                0.78
+              ],
+              [
+                0.16,
+                0.7
+              ],
+              [
+                0.28,
+                0.5
+              ]
+            ],
+            "charge": "high",
+            "label": "to the body"
+          }
+        ],
+        "circuit": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "cycleFrames": 36,
+        "accent": "#ffcf3d",
+        "muted": "#cfc6ae",
+        "subject": "circulation",
+        "claims": [
+          "circulation"
+        ],
+        "depicts": "anatomy",
+        "from": 0,
+        "over": 44
       }
     },
     {
@@ -293,24 +769,12 @@
       "durationInFrames": 75,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "wire",
-          "shape": "diamond",
-          "depth": 0.58,
-          "x": 428,
-          "y": 410,
-          "width": 401,
-          "colour": "#ffcf3d",
-          "from": 64
-        }
-      ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.18,
-        "pushTo": 1.24,
-        "pushEndFrame": 72,
+        "pushFrom": 1.2,
+        "pushTo": 1.21,
+        "pushEndFrame": 70,
         "accent": "#ffcf3d",
         "field": "wash",
         "fieldColours": [
@@ -318,35 +782,201 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1542,
-        "glowY": 160,
-        "glowSize": 523,
-        "glowIntensity": 0.68,
+        "glowX": 1396,
+        "glowY": 211,
+        "glowSize": 323,
+        "glowIntensity": 0.43,
         "glowWarm": "#ffcf3d",
         "glowDepth": 0.1,
         "caption": [
-          "The left",
-          "sends",
-          "it everywhere",
-          "else"
+          "The left sends",
+          "it everywhere else"
         ],
-        "captionX": 81,
-        "captionY": 634,
-        "captionSize": 104,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 62,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 6,
-        "captionScrim": 0,
+        "captionFrame": 41,
+        "captionEvery": 9,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panX": 173,
+        "panX": -249,
         "captionEmphasis": "everywhere",
         "captionReveal": "rise",
-        "captionMark": "underline",
+        "captionMark": "none",
         "captionWordEvery": 3,
         "cameraMove": "pan",
         "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      },
+      "diagram": {
+        "type": "anatomyFlow",
+        "chambers": [
+          {
+            "id": "c00",
+            "x": 0.34,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c01",
+            "x": 0.34,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          },
+          {
+            "id": "c10",
+            "x": 0.66,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c11",
+            "x": 0.66,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          }
+        ],
+        "valves": [
+          {
+            "x": 0.34,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          },
+          {
+            "x": 0.66,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          }
+        ],
+        "vessels": [
+          {
+            "path": [
+              [
+                0.28,
+                0.5
+              ],
+              [
+                0.15,
+                0.6
+              ],
+              [
+                0.11,
+                0.36
+              ],
+              [
+                0.27,
+                0.29
+              ]
+            ],
+            "charge": "low",
+            "label": "to the lungs"
+          },
+          {
+            "path": [
+              [
+                0.34,
+                0.25
+              ],
+              [
+                0.5,
+                0.235
+              ],
+              [
+                0.66,
+                0.25
+              ]
+            ],
+            "charge": "high",
+            "label": "from the lungs"
+          },
+          {
+            "path": [
+              [
+                0.73,
+                0.31
+              ],
+              [
+                0.83,
+                0.4
+              ],
+              [
+                0.73,
+                0.44999999999999996
+              ]
+            ],
+            "charge": "high"
+          },
+          {
+            "path": [
+              [
+                0.7000000000000001,
+                0.52
+              ],
+              [
+                0.84,
+                0.7
+              ],
+              [
+                0.6,
+                0.78
+              ],
+              [
+                0.4,
+                0.78
+              ],
+              [
+                0.16,
+                0.7
+              ],
+              [
+                0.28,
+                0.5
+              ]
+            ],
+            "charge": "high",
+            "label": "to the body"
+          }
+        ],
+        "circuit": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "cycleFrames": 36,
+        "accent": "#ffcf3d",
+        "muted": "#cfc6ae",
+        "subject": "circulation",
+        "claims": [
+          "circulation"
+        ],
+        "depicts": "anatomy",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -356,13 +986,13 @@
       "durationInFrames": 97,
       "assets": {},
       "params": {
-        "scrim": 0.39,
+        "scrim": 0.38,
         "kicker": "",
         "title": "THREE TIMES",
         "footer": "",
-        "titleFrame": 8,
+        "titleFrame": 46,
         "titleSize": 230,
-        "creep": 1.061,
+        "creep": 1.053,
         "accent": "#ffcf3d",
         "field": "wash",
         "fieldColours": [
@@ -370,12 +1000,30 @@
           "#8a5a18",
           "#241505"
         ],
+        "mark": "underline",
+        "markX": 260,
+        "markY": 820,
+        "markWidth": 560,
+        "markHeight": 300,
+        "markFrame": 33,
         "pushEndFrame": 88,
         "pushFrom": 1,
         "pushTo": 1.39,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
-      }
+      },
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.57,
+          "x": 350,
+          "y": 489,
+          "width": 389,
+          "colour": "#ffcf3d",
+          "from": 82
+        }
+      ]
     },
     {
       "id": "s03-thicker-b",
@@ -394,25 +1042,15 @@
           "rotate": -20,
           "opacity": 0.57,
           "colour": "#ffcf3d",
-          "from": 73
-        },
-        {
-          "kind": "wire",
-          "shape": "circle",
-          "depth": 0.6,
-          "x": 684,
-          "y": 550,
-          "width": 271,
-          "colour": "#ffcf3d",
           "from": 0
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.16,
-        "pushTo": 1.31,
-        "pushEndFrame": 81,
+        "pushFrom": 1.21,
+        "pushTo": 1.25,
+        "pushEndFrame": 79,
         "accent": "#ffcf3d",
         "field": "wash",
         "fieldColours": [
@@ -420,10 +1058,10 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1511,
-        "glowY": 272,
-        "glowSize": 496,
-        "glowIntensity": 0.47,
+        "glowX": 1490,
+        "glowY": 331,
+        "glowSize": 547,
+        "glowIntensity": 0.55,
         "glowWarm": "#ffcf3d",
         "glowDepth": 0.1,
         "caption": [
@@ -431,23 +1069,191 @@
           "is three times",
           "thicker"
         ],
-        "captionX": 81,
-        "captionY": 709,
-        "captionSize": 97,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 79,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 7,
-        "captionScrim": 0,
+        "captionFrame": 46,
+        "captionEvery": 6,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panX": 248,
+        "panX": -247,
         "captionEmphasis": "three times",
-        "captionReveal": "wipe",
-        "captionMark": "none",
-        "captionWordEvery": 2,
+        "captionReveal": "punch",
+        "captionMark": "box",
+        "captionWordEvery": 3,
         "cameraMove": "pan",
         "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      },
+      "diagram": {
+        "type": "anatomyFlow",
+        "chambers": [
+          {
+            "id": "c00",
+            "x": 0.34,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c01",
+            "x": 0.34,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          },
+          {
+            "id": "c10",
+            "x": 0.66,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 3,
+            "phase": 0,
+            "focus": true
+          },
+          {
+            "id": "c11",
+            "x": 0.66,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 3,
+            "phase": 0.12,
+            "focus": true
+          }
+        ],
+        "valves": [
+          {
+            "x": 0.34,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          },
+          {
+            "x": 0.66,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          }
+        ],
+        "vessels": [
+          {
+            "path": [
+              [
+                0.28,
+                0.5
+              ],
+              [
+                0.15,
+                0.6
+              ],
+              [
+                0.11,
+                0.36
+              ],
+              [
+                0.27,
+                0.29
+              ]
+            ],
+            "charge": "low",
+            "label": "to the lungs"
+          },
+          {
+            "path": [
+              [
+                0.34,
+                0.25
+              ],
+              [
+                0.5,
+                0.235
+              ],
+              [
+                0.66,
+                0.25
+              ]
+            ],
+            "charge": "high",
+            "label": "from the lungs"
+          },
+          {
+            "path": [
+              [
+                0.73,
+                0.31
+              ],
+              [
+                0.83,
+                0.4
+              ],
+              [
+                0.73,
+                0.44999999999999996
+              ]
+            ],
+            "charge": "high"
+          },
+          {
+            "path": [
+              [
+                0.7000000000000001,
+                0.52
+              ],
+              [
+                0.84,
+                0.7
+              ],
+              [
+                0.6,
+                0.78
+              ],
+              [
+                0.4,
+                0.78
+              ],
+              [
+                0.16,
+                0.7
+              ],
+              [
+                0.28,
+                0.5
+              ]
+            ],
+            "charge": "high",
+            "label": "to the body"
+          }
+        ],
+        "circuit": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "cycleFrames": 36,
+        "accent": "#ffcf3d",
+        "muted": "#cfc6ae",
+        "subject": "anatomy",
+        "claims": [
+          "wall_thickness"
+        ],
+        "depicts": "anatomy",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -457,13 +1263,13 @@
       "durationInFrames": 52,
       "assets": {},
       "params": {
-        "scrim": 0.43,
+        "scrim": 0.54,
         "kicker": "",
         "title": "FOUR CHAMBERS",
         "footer": "",
-        "titleFrame": 4,
+        "titleFrame": 44,
         "titleSize": 230,
-        "creep": 1.048,
+        "creep": 1.086,
         "accent": "#ffcf3d",
         "field": "wash",
         "fieldColours": [
@@ -471,12 +1277,24 @@
           "#8a5a18",
           "#241505"
         ],
-        "pushEndFrame": 47,
-        "pushFrom": 1.03,
-        "pushTo": 1.05,
-        "cameraMove": "hold",
-        "cameraPurpose": "importance. The frame stops because the idea needs no help"
-      }
+        "pushEndFrame": 50,
+        "pushFrom": 1,
+        "pushTo": 1.44,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.6,
+          "x": 426,
+          "y": 543,
+          "width": 281,
+          "colour": "#ffcf3d",
+          "from": 3
+        }
+      ]
     },
     {
       "id": "s04-valves-b",
@@ -487,21 +1305,22 @@
       "layers": [],
       "props": [
         {
-          "kind": "wire",
-          "shape": "circle",
-          "depth": 0.58,
-          "x": 406,
-          "y": 378,
-          "width": 419,
+          "kind": "beam",
+          "depth": 0.26,
+          "x": 929,
+          "y": -43,
+          "width": 352,
+          "rotate": -16,
+          "opacity": 0.74,
           "colour": "#ffcf3d",
-          "from": 54
+          "from": 0
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.01,
-        "pushTo": 1.35,
+        "pushFrom": 1.22,
+        "pushTo": 1.33,
         "pushEndFrame": 61,
         "accent": "#ffcf3d",
         "field": "wash",
@@ -510,33 +1329,212 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1585,
-        "glowY": 558,
-        "glowSize": 522,
-        "glowIntensity": 0.66,
+        "glowX": 1460,
+        "glowY": 368,
+        "glowSize": 543,
+        "glowIntensity": 0.61,
         "glowWarm": "#ffcf3d",
         "glowDepth": 0.1,
         "caption": [
           "Every one",
-          "of them",
-          "opens"
+          "of them opens"
         ],
-        "captionX": 81,
-        "captionY": 611,
-        "captionSize": 151,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 85,
         "captionAlign": "left",
-        "captionFrame": -12,
+        "captionFrame": 35,
         "captionEvery": 10,
-        "captionScrim": 0,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
+        "panY": 121,
         "captionEmphasis": "one",
         "captionReveal": "rise",
-        "captionMark": "none",
-        "captionWordEvery": 3,
-        "cameraMove": "push",
-        "cameraPurpose": "single out the subject — the frame closes on what matters"
+        "captionMark": "box",
+        "captionWordEvery": 2,
+        "cameraMove": "tilt",
+        "cameraPurpose": "a vertical reveal — height, depth, or a drop"
+      },
+      "diagram": {
+        "type": "anatomyFlow",
+        "chambers": [
+          {
+            "id": "c00",
+            "x": 0.34,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c01",
+            "x": 0.34,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          },
+          {
+            "id": "c10",
+            "x": 0.66,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c11",
+            "x": 0.66,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          }
+        ],
+        "valves": [
+          {
+            "x": 0.34,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          },
+          {
+            "x": 0.66,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          }
+        ],
+        "vessels": [
+          {
+            "path": [
+              [
+                0.28,
+                0.5
+              ],
+              [
+                0.15,
+                0.6
+              ],
+              [
+                0.11,
+                0.36
+              ],
+              [
+                0.27,
+                0.29
+              ]
+            ],
+            "charge": "low",
+            "label": "to the lungs"
+          },
+          {
+            "path": [
+              [
+                0.34,
+                0.25
+              ],
+              [
+                0.5,
+                0.235
+              ],
+              [
+                0.66,
+                0.25
+              ]
+            ],
+            "charge": "high",
+            "label": "from the lungs"
+          },
+          {
+            "path": [
+              [
+                0.73,
+                0.31
+              ],
+              [
+                0.83,
+                0.4
+              ],
+              [
+                0.73,
+                0.44999999999999996
+              ]
+            ],
+            "charge": "high"
+          },
+          {
+            "path": [
+              [
+                0.7000000000000001,
+                0.52
+              ],
+              [
+                0.84,
+                0.7
+              ],
+              [
+                0.6,
+                0.78
+              ],
+              [
+                0.4,
+                0.78
+              ],
+              [
+                0.16,
+                0.7
+              ],
+              [
+                0.28,
+                0.5
+              ]
+            ],
+            "charge": "high",
+            "label": "to the body"
+          }
+        ],
+        "circuit": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "cycleFrames": 36,
+        "accent": "#ffcf3d",
+        "muted": "#cfc6ae",
+        "annotations": [
+          {
+            "x": 0.34,
+            "y": 0.47,
+            "text": "one way only",
+            "side": "left",
+            "at": 16
+          }
+        ],
+        "subject": "anatomy",
+        "claims": [
+          "chambers",
+          "valves",
+          "one_way_flow"
+        ],
+        "depicts": "anatomy",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -546,24 +1544,11 @@
       "durationInFrames": 52,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.38,
-          "x": 992,
-          "y": -86,
-          "width": 378,
-          "rotate": -20,
-          "opacity": 0.83,
-          "colour": "#ffcf3d",
-          "from": 44
-        }
-      ],
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
-        "pushFrom": 1.05,
-        "pushTo": 1.08,
+        "pushFrom": 1.02,
+        "pushTo": 1.33,
         "pushEndFrame": 51,
         "accent": "#ffcf3d",
         "field": "wash",
@@ -572,32 +1557,211 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1334,
-        "glowY": 350,
-        "glowSize": 380,
-        "glowIntensity": 0.6,
+        "glowX": 1558,
+        "glowY": 532,
+        "glowSize": 546,
+        "glowIntensity": 0.67,
         "glowWarm": "#ffcf3d",
         "glowDepth": 0.1,
         "caption": [
           "in a single",
           "direction"
         ],
-        "captionX": 81,
-        "captionY": 734,
-        "captionSize": 124,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 98,
         "captionAlign": "left",
-        "captionFrame": -12,
+        "captionFrame": 29,
         "captionEvery": 9,
-        "captionScrim": 0,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
-        "handheld": 3,
+        "handheld": 1.5,
         "captionEmphasis": "direction",
-        "captionReveal": "rise",
+        "captionReveal": "punch",
         "captionMark": "none",
         "captionWordEvery": 4,
-        "cameraMove": "hold",
-        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "diagram": {
+        "type": "anatomyFlow",
+        "chambers": [
+          {
+            "id": "c00",
+            "x": 0.34,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c01",
+            "x": 0.34,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          },
+          {
+            "id": "c10",
+            "x": 0.66,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c11",
+            "x": 0.66,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          }
+        ],
+        "valves": [
+          {
+            "x": 0.34,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          },
+          {
+            "x": 0.66,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          }
+        ],
+        "vessels": [
+          {
+            "path": [
+              [
+                0.28,
+                0.5
+              ],
+              [
+                0.15,
+                0.6
+              ],
+              [
+                0.11,
+                0.36
+              ],
+              [
+                0.27,
+                0.29
+              ]
+            ],
+            "charge": "low",
+            "label": "to the lungs"
+          },
+          {
+            "path": [
+              [
+                0.34,
+                0.25
+              ],
+              [
+                0.5,
+                0.235
+              ],
+              [
+                0.66,
+                0.25
+              ]
+            ],
+            "charge": "high",
+            "label": "from the lungs"
+          },
+          {
+            "path": [
+              [
+                0.73,
+                0.31
+              ],
+              [
+                0.83,
+                0.4
+              ],
+              [
+                0.73,
+                0.44999999999999996
+              ]
+            ],
+            "charge": "high"
+          },
+          {
+            "path": [
+              [
+                0.7000000000000001,
+                0.52
+              ],
+              [
+                0.84,
+                0.7
+              ],
+              [
+                0.6,
+                0.78
+              ],
+              [
+                0.4,
+                0.78
+              ],
+              [
+                0.16,
+                0.7
+              ],
+              [
+                0.28,
+                0.5
+              ]
+            ],
+            "charge": "high",
+            "label": "to the body"
+          }
+        ],
+        "circuit": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "cycleFrames": 36,
+        "accent": "#ffcf3d",
+        "muted": "#cfc6ae",
+        "annotations": [
+          {
+            "x": 0.34,
+            "y": 0.47,
+            "text": "one way only",
+            "side": "left",
+            "at": 16
+          }
+        ],
+        "subject": "anatomy",
+        "claims": [
+          "chambers",
+          "valves",
+          "one_way_flow"
+        ],
+        "depicts": "anatomy",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -609,14 +1773,15 @@
       "layers": [],
       "props": [
         {
-          "kind": "wire",
-          "shape": "diamond",
-          "depth": 0.79,
-          "x": 383,
-          "y": 410,
-          "width": 409,
+          "kind": "beam",
+          "depth": 0.39,
+          "x": 1011,
+          "y": 143,
+          "width": 346,
+          "rotate": -17,
+          "opacity": 0.72,
           "colour": "#ffcf3d",
-          "from": 64
+          "from": 0
         }
       ],
       "params": {
@@ -644,24 +1809,193 @@
           "starts",
           "on its own"
         ],
-        "captionX": 81,
-        "captionY": 638,
-        "captionSize": 136,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 98,
         "captionAlign": "left",
-        "captionFrame": -12,
+        "captionFrame": 41,
         "captionEvery": 7,
-        "captionScrim": 0,
+        "captionScrim": 0.38,
         "captionRecedeAt": 54,
         "accent": "#ffcf3d",
         "handheld": 1.5,
         "panY": -28,
         "roll": 0.32,
         "captionEmphasis": "starts",
-        "captionReveal": "blur",
-        "captionMark": "box",
+        "captionReveal": "wipe",
+        "captionMark": "none",
         "captionWordEvery": 4,
         "cameraMove": "drift",
         "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      },
+      "diagram": {
+        "type": "anatomyFlow",
+        "chambers": [
+          {
+            "id": "c00",
+            "x": 0.34,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c01",
+            "x": 0.34,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          },
+          {
+            "id": "c10",
+            "x": 0.66,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c11",
+            "x": 0.66,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          }
+        ],
+        "valves": [
+          {
+            "x": 0.34,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          },
+          {
+            "x": 0.66,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          }
+        ],
+        "vessels": [
+          {
+            "path": [
+              [
+                0.28,
+                0.5
+              ],
+              [
+                0.15,
+                0.6
+              ],
+              [
+                0.11,
+                0.36
+              ],
+              [
+                0.27,
+                0.29
+              ]
+            ],
+            "charge": "low",
+            "label": "to the lungs"
+          },
+          {
+            "path": [
+              [
+                0.34,
+                0.25
+              ],
+              [
+                0.5,
+                0.235
+              ],
+              [
+                0.66,
+                0.25
+              ]
+            ],
+            "charge": "high",
+            "label": "from the lungs"
+          },
+          {
+            "path": [
+              [
+                0.73,
+                0.31
+              ],
+              [
+                0.83,
+                0.4
+              ],
+              [
+                0.73,
+                0.44999999999999996
+              ]
+            ],
+            "charge": "high"
+          },
+          {
+            "path": [
+              [
+                0.7000000000000001,
+                0.52
+              ],
+              [
+                0.84,
+                0.7
+              ],
+              [
+                0.6,
+                0.78
+              ],
+              [
+                0.4,
+                0.78
+              ],
+              [
+                0.16,
+                0.7
+              ],
+              [
+                0.28,
+                0.5
+              ]
+            ],
+            "charge": "high",
+            "label": "to the body"
+          }
+        ],
+        "circuit": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "cycleFrames": 36,
+        "accent": "#ffcf3d",
+        "muted": "#cfc6ae",
+        "subject": "humanHeart",
+        "claims": [
+          "chambers",
+          "contraction"
+        ],
+        "depicts": "anatomy",
+        "from": 0,
+        "over": 34
       }
     },
     {
@@ -671,25 +2005,12 @@
       "durationInFrames": 52,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.24,
-          "x": 1013,
-          "y": -1,
-          "width": 287,
-          "rotate": -10,
-          "opacity": 0.66,
-          "colour": "#ffcf3d",
-          "from": 44
-        }
-      ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.41,
-        "pushTo": 1,
-        "pushEndFrame": 48,
+        "pushFrom": 1.37,
+        "pushTo": 1.01,
+        "pushEndFrame": 49,
         "accent": "#ffcf3d",
         "field": "wash",
         "fieldColours": [
@@ -697,32 +2018,200 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1552,
-        "glowY": 189,
-        "glowSize": 484,
-        "glowIntensity": 0.48,
+        "glowX": 1480,
+        "glowY": 584,
+        "glowSize": 453,
+        "glowIntensity": 0.44,
         "glowWarm": "#ffcf3d",
         "glowDepth": 0.1,
         "caption": [
-          "A knot",
-          "of cells"
+          "A knot of cells"
         ],
-        "captionX": 81,
-        "captionY": 679,
-        "captionSize": 170,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 74,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 8,
-        "captionScrim": 0,
+        "captionFrame": 29,
+        "captionEvery": 10,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "cells",
         "captionReveal": "rise",
-        "captionMark": "underline",
+        "captionMark": "box",
         "captionWordEvery": 3,
         "cameraMove": "pull",
         "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      },
+      "diagram": {
+        "type": "anatomyFlow",
+        "chambers": [
+          {
+            "id": "c00",
+            "x": 0.34,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c01",
+            "x": 0.34,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          },
+          {
+            "id": "c10",
+            "x": 0.66,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c11",
+            "x": 0.66,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          }
+        ],
+        "valves": [
+          {
+            "x": 0.34,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          },
+          {
+            "x": 0.66,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          }
+        ],
+        "vessels": [
+          {
+            "path": [
+              [
+                0.28,
+                0.5
+              ],
+              [
+                0.15,
+                0.6
+              ],
+              [
+                0.11,
+                0.36
+              ],
+              [
+                0.27,
+                0.29
+              ]
+            ],
+            "charge": "low",
+            "label": "to the lungs"
+          },
+          {
+            "path": [
+              [
+                0.34,
+                0.25
+              ],
+              [
+                0.5,
+                0.235
+              ],
+              [
+                0.66,
+                0.25
+              ]
+            ],
+            "charge": "high",
+            "label": "from the lungs"
+          },
+          {
+            "path": [
+              [
+                0.73,
+                0.31
+              ],
+              [
+                0.83,
+                0.4
+              ],
+              [
+                0.73,
+                0.44999999999999996
+              ]
+            ],
+            "charge": "high"
+          },
+          {
+            "path": [
+              [
+                0.7000000000000001,
+                0.52
+              ],
+              [
+                0.84,
+                0.7
+              ],
+              [
+                0.6,
+                0.78
+              ],
+              [
+                0.4,
+                0.78
+              ],
+              [
+                0.16,
+                0.7
+              ],
+              [
+                0.28,
+                0.5
+              ]
+            ],
+            "charge": "high",
+            "label": "to the body"
+          }
+        ],
+        "circuit": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "cycleFrames": 36,
+        "accent": "#ffcf3d",
+        "muted": "#cfc6ae",
+        "subject": "humanHeart",
+        "claims": [
+          "chambers",
+          "contraction"
+        ],
+        "depicts": "anatomy",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -734,22 +2223,23 @@
       "layers": [],
       "props": [
         {
-          "kind": "wire",
-          "shape": "rect",
-          "depth": 0.55,
-          "x": 369,
-          "y": 517,
-          "width": 415,
+          "kind": "beam",
+          "depth": 0.29,
+          "x": 1012,
+          "y": -94,
+          "width": 276,
+          "rotate": -9,
+          "opacity": 0.84,
           "colour": "#ffcf3d",
-          "from": 54
+          "from": 0
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
         "pushFrom": 1,
-        "pushTo": 1.09,
-        "pushEndFrame": 60,
+        "pushTo": 1.11,
+        "pushEndFrame": 58,
         "accent": "#ffcf3d",
         "field": "wash",
         "fieldColours": [
@@ -757,34 +2247,203 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1591,
-        "glowY": 543,
-        "glowSize": 524,
-        "glowIntensity": 0.42,
+        "glowX": 1391,
+        "glowY": 311,
+        "glowSize": 354,
+        "glowIntensity": 0.54,
         "glowWarm": "#ffcf3d",
         "glowDepth": 0.1,
         "caption": [
           "in the right",
           "atrium fires"
         ],
-        "captionX": 81,
-        "captionY": 748,
-        "captionSize": 113,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 89,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 8,
-        "captionScrim": 0,
+        "captionFrame": 35,
+        "captionEvery": 7,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panY": -55,
-        "roll": -0.21,
+        "panY": -54,
+        "roll": -0.35,
         "captionEmphasis": "atrium",
         "captionReveal": "wipe",
         "captionMark": "highlight",
         "captionWordEvery": 3,
         "cameraMove": "drift",
         "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      },
+      "diagram": {
+        "type": "anatomyFlow",
+        "chambers": [
+          {
+            "id": "c00",
+            "x": 0.34,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c01",
+            "x": 0.34,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          },
+          {
+            "id": "c10",
+            "x": 0.66,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c11",
+            "x": 0.66,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          }
+        ],
+        "valves": [
+          {
+            "x": 0.34,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          },
+          {
+            "x": 0.66,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          }
+        ],
+        "vessels": [
+          {
+            "path": [
+              [
+                0.28,
+                0.5
+              ],
+              [
+                0.15,
+                0.6
+              ],
+              [
+                0.11,
+                0.36
+              ],
+              [
+                0.27,
+                0.29
+              ]
+            ],
+            "charge": "low",
+            "label": "to the lungs"
+          },
+          {
+            "path": [
+              [
+                0.34,
+                0.25
+              ],
+              [
+                0.5,
+                0.235
+              ],
+              [
+                0.66,
+                0.25
+              ]
+            ],
+            "charge": "high",
+            "label": "from the lungs"
+          },
+          {
+            "path": [
+              [
+                0.73,
+                0.31
+              ],
+              [
+                0.83,
+                0.4
+              ],
+              [
+                0.73,
+                0.44999999999999996
+              ]
+            ],
+            "charge": "high"
+          },
+          {
+            "path": [
+              [
+                0.7000000000000001,
+                0.52
+              ],
+              [
+                0.84,
+                0.7
+              ],
+              [
+                0.6,
+                0.78
+              ],
+              [
+                0.4,
+                0.78
+              ],
+              [
+                0.16,
+                0.7
+              ],
+              [
+                0.28,
+                0.5
+              ]
+            ],
+            "charge": "high",
+            "label": "to the body"
+          }
+        ],
+        "circuit": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "cycleFrames": 36,
+        "accent": "#ffcf3d",
+        "muted": "#cfc6ae",
+        "subject": "humanHeart",
+        "claims": [
+          "chambers",
+          "contraction"
+        ],
+        "depicts": "anatomy",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -794,25 +2453,12 @@
       "durationInFrames": 52,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.21,
-          "x": 929,
-          "y": -24,
-          "width": 359,
-          "rotate": -16,
-          "opacity": 0.59,
-          "colour": "#ffcf3d",
-          "from": 44
-        }
-      ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
         "pushFrom": 1,
-        "pushTo": 1.49,
-        "pushEndFrame": 47,
+        "pushTo": 1.39,
+        "pushEndFrame": 49,
         "glowX": 1145,
         "glowY": 422,
         "glowSize": 460,
@@ -831,30 +2477,205 @@
           "The signal",
           "spreads, the"
         ],
-        "captionX": 81,
-        "captionY": 748,
-        "captionSize": 113,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 93,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 10,
-        "captionScrim": 0,
+        "captionFrame": 29,
+        "captionEvery": 8,
+        "captionScrim": 0.38,
         "captionRecedeAt": 37,
         "accent": "#ffcf3d",
         "motif": "rise",
-        "motifX": 147,
+        "motifX": 164,
         "motifY": 1574,
-        "motifSize": 65,
-        "motifCount": 8,
-        "motifFrame": 30,
+        "motifSize": 71,
+        "motifCount": 6,
+        "motifFrame": 27,
         "motifColour": "#ffcf3d",
-        "motifOpacity": 0.99,
+        "motifOpacity": 0.9,
         "handheld": 1.5,
         "captionEmphasis": "spreads",
         "captionReveal": "rise",
-        "captionMark": "highlight",
-        "captionWordEvery": 2,
+        "captionMark": "none",
+        "captionWordEvery": 3,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "diagram": {
+        "type": "anatomyFlow",
+        "chambers": [
+          {
+            "id": "c00",
+            "x": 0.34,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c01",
+            "x": 0.34,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          },
+          {
+            "id": "c10",
+            "x": 0.66,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c11",
+            "x": 0.66,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          }
+        ],
+        "valves": [
+          {
+            "x": 0.34,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          },
+          {
+            "x": 0.66,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          }
+        ],
+        "vessels": [
+          {
+            "path": [
+              [
+                0.28,
+                0.5
+              ],
+              [
+                0.15,
+                0.6
+              ],
+              [
+                0.11,
+                0.36
+              ],
+              [
+                0.27,
+                0.29
+              ]
+            ],
+            "charge": "low",
+            "label": "to the lungs"
+          },
+          {
+            "path": [
+              [
+                0.34,
+                0.25
+              ],
+              [
+                0.5,
+                0.235
+              ],
+              [
+                0.66,
+                0.25
+              ]
+            ],
+            "charge": "high",
+            "label": "from the lungs"
+          },
+          {
+            "path": [
+              [
+                0.73,
+                0.31
+              ],
+              [
+                0.83,
+                0.4
+              ],
+              [
+                0.73,
+                0.44999999999999996
+              ]
+            ],
+            "charge": "high"
+          },
+          {
+            "path": [
+              [
+                0.7000000000000001,
+                0.52
+              ],
+              [
+                0.84,
+                0.7
+              ],
+              [
+                0.6,
+                0.78
+              ],
+              [
+                0.4,
+                0.78
+              ],
+              [
+                0.16,
+                0.7
+              ],
+              [
+                0.28,
+                0.5
+              ]
+            ],
+            "charge": "high",
+            "label": "to the body"
+          }
+        ],
+        "circuit": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "cycleFrames": 36,
+        "accent": "#ffcf3d",
+        "muted": "#cfc6ae",
+        "delay": {
+          "label": "fill, then fire",
+          "fraction": 0.12
+        },
+        "subject": "anatomy",
+        "claims": [
+          "chambers",
+          "contraction",
+          "delay",
+          "sequence"
+        ],
+        "depicts": "anatomy",
+        "from": 0,
+        "over": 23
       }
     },
     {
@@ -866,22 +2687,23 @@
       "layers": [],
       "props": [
         {
-          "kind": "wire",
-          "shape": "diamond",
-          "depth": 0.73,
-          "x": 374,
-          "y": 391,
-          "width": 325,
+          "kind": "beam",
+          "depth": 0.23,
+          "x": 950,
+          "y": -74,
+          "width": 230,
+          "rotate": -9,
+          "opacity": 0.84,
           "colour": "#ffcf3d",
-          "from": 38
+          "from": 0
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.04,
-        "pushTo": 1.04,
-        "pushEndFrame": 42,
+        "pushFrom": 1.05,
+        "pushTo": 1.07,
+        "pushEndFrame": 43,
         "accent": "#ffcf3d",
         "field": "wash",
         "fieldColours": [
@@ -889,10 +2711,10 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1561,
-        "glowY": 605,
-        "glowSize": 551,
-        "glowIntensity": 0.65,
+        "glowX": 1482,
+        "glowY": 288,
+        "glowSize": 407,
+        "glowIntensity": 0.56,
         "glowWarm": "#ffcf3d",
         "glowDepth": 0.1,
         "caption": [
@@ -900,22 +2722,197 @@
           "chambers",
           "squeeze"
         ],
-        "captionX": 81,
-        "captionY": 577,
-        "captionSize": 170,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 91,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 6,
-        "captionScrim": 0,
+        "captionFrame": 28,
+        "captionEvery": 7,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 3,
         "captionEmphasis": "chambers",
-        "captionReveal": "wipe",
-        "captionMark": "underline",
-        "captionWordEvery": 2,
+        "captionReveal": "rise",
+        "captionMark": "highlight",
+        "captionWordEvery": 4,
         "cameraMove": "hold",
         "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      },
+      "diagram": {
+        "type": "anatomyFlow",
+        "chambers": [
+          {
+            "id": "c00",
+            "x": 0.34,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c01",
+            "x": 0.34,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          },
+          {
+            "id": "c10",
+            "x": 0.66,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c11",
+            "x": 0.66,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          }
+        ],
+        "valves": [
+          {
+            "x": 0.34,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          },
+          {
+            "x": 0.66,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          }
+        ],
+        "vessels": [
+          {
+            "path": [
+              [
+                0.28,
+                0.5
+              ],
+              [
+                0.15,
+                0.6
+              ],
+              [
+                0.11,
+                0.36
+              ],
+              [
+                0.27,
+                0.29
+              ]
+            ],
+            "charge": "low",
+            "label": "to the lungs"
+          },
+          {
+            "path": [
+              [
+                0.34,
+                0.25
+              ],
+              [
+                0.5,
+                0.235
+              ],
+              [
+                0.66,
+                0.25
+              ]
+            ],
+            "charge": "high",
+            "label": "from the lungs"
+          },
+          {
+            "path": [
+              [
+                0.73,
+                0.31
+              ],
+              [
+                0.83,
+                0.4
+              ],
+              [
+                0.73,
+                0.44999999999999996
+              ]
+            ],
+            "charge": "high"
+          },
+          {
+            "path": [
+              [
+                0.7000000000000001,
+                0.52
+              ],
+              [
+                0.84,
+                0.7
+              ],
+              [
+                0.6,
+                0.78
+              ],
+              [
+                0.4,
+                0.78
+              ],
+              [
+                0.16,
+                0.7
+              ],
+              [
+                0.28,
+                0.5
+              ]
+            ],
+            "charge": "high",
+            "label": "to the body"
+          }
+        ],
+        "circuit": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "cycleFrames": 36,
+        "accent": "#ffcf3d",
+        "muted": "#cfc6ae",
+        "delay": {
+          "label": "fill, then fire",
+          "fraction": 0.12
+        },
+        "subject": "anatomy",
+        "claims": [
+          "chambers",
+          "contraction",
+          "delay",
+          "sequence"
+        ],
+        "depicts": "anatomy",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -925,25 +2922,12 @@
       "durationInFrames": 45,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.17,
-          "x": 929,
-          "y": -56,
-          "width": 264,
-          "rotate": -16,
-          "opacity": 0.6,
-          "colour": "#ffcf3d",
-          "from": 38
-        }
-      ],
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
-        "pushFrom": 1.06,
-        "pushTo": 1.38,
-        "pushEndFrame": 42,
+        "pushFrom": 1.03,
+        "pushTo": 1.36,
+        "pushEndFrame": 44,
         "accent": "#ffcf3d",
         "field": "wash",
         "fieldColours": [
@@ -951,31 +2935,206 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1557,
-        "glowY": 246,
-        "glowSize": 519,
-        "glowIntensity": 0.5,
+        "glowX": 1362,
+        "glowY": 326,
+        "glowSize": 453,
+        "glowIntensity": 0.68,
         "glowWarm": "#ffcf3d",
         "glowDepth": 0.1,
         "caption": [
           "then a tenth"
         ],
-        "captionX": 81,
-        "captionY": 815,
-        "captionSize": 113,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 92,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 10,
-        "captionScrim": 0,
+        "captionFrame": 28,
+        "captionEvery": 7,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "tenth",
-        "captionReveal": "wipe",
-        "captionMark": "underline",
-        "captionWordEvery": 3,
+        "captionReveal": "blur",
+        "captionMark": "none",
+        "captionWordEvery": 2,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "diagram": {
+        "type": "anatomyFlow",
+        "chambers": [
+          {
+            "id": "c00",
+            "x": 0.34,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c01",
+            "x": 0.34,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          },
+          {
+            "id": "c10",
+            "x": 0.66,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c11",
+            "x": 0.66,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          }
+        ],
+        "valves": [
+          {
+            "x": 0.34,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          },
+          {
+            "x": 0.66,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          }
+        ],
+        "vessels": [
+          {
+            "path": [
+              [
+                0.28,
+                0.5
+              ],
+              [
+                0.15,
+                0.6
+              ],
+              [
+                0.11,
+                0.36
+              ],
+              [
+                0.27,
+                0.29
+              ]
+            ],
+            "charge": "low",
+            "label": "to the lungs"
+          },
+          {
+            "path": [
+              [
+                0.34,
+                0.25
+              ],
+              [
+                0.5,
+                0.235
+              ],
+              [
+                0.66,
+                0.25
+              ]
+            ],
+            "charge": "high",
+            "label": "from the lungs"
+          },
+          {
+            "path": [
+              [
+                0.73,
+                0.31
+              ],
+              [
+                0.83,
+                0.4
+              ],
+              [
+                0.73,
+                0.44999999999999996
+              ]
+            ],
+            "charge": "high"
+          },
+          {
+            "path": [
+              [
+                0.7000000000000001,
+                0.52
+              ],
+              [
+                0.84,
+                0.7
+              ],
+              [
+                0.6,
+                0.78
+              ],
+              [
+                0.4,
+                0.78
+              ],
+              [
+                0.16,
+                0.7
+              ],
+              [
+                0.28,
+                0.5
+              ]
+            ],
+            "charge": "high",
+            "label": "to the body"
+          }
+        ],
+        "circuit": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "cycleFrames": 36,
+        "accent": "#ffcf3d",
+        "muted": "#cfc6ae",
+        "delay": {
+          "label": "fill, then fire",
+          "fraction": 0.12
+        },
+        "subject": "anatomy",
+        "claims": [
+          "chambers",
+          "contraction",
+          "delay",
+          "sequence"
+        ],
+        "depicts": "anatomy",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -987,22 +3146,23 @@
       "layers": [],
       "props": [
         {
-          "kind": "wire",
-          "shape": "diamond",
-          "depth": 0.61,
-          "x": 367,
-          "y": 503,
-          "width": 266,
+          "kind": "beam",
+          "depth": 0.18,
+          "x": 967,
+          "y": 22,
+          "width": 373,
+          "rotate": -10,
+          "opacity": 0.7,
           "colour": "#ffcf3d",
-          "from": 64
+          "from": 0
         }
       ],
       "params": {
         "anchorX": 281,
         "anchorY": 1498,
-        "pushFrom": 1.24,
-        "pushTo": 1.29,
-        "pushEndFrame": 72,
+        "pushFrom": 1.18,
+        "pushTo": 1.26,
+        "pushEndFrame": 73,
         "accent": "#ffcf3d",
         "field": "wash",
         "fieldColours": [
@@ -1010,34 +3170,208 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1438,
-        "glowY": 503,
-        "glowSize": 548,
-        "glowIntensity": 0.54,
+        "glowX": 1580,
+        "glowY": 433,
+        "glowSize": 553,
+        "glowIntensity": 0.65,
         "glowWarm": "#ffcf3d",
         "glowDepth": 0.1,
         "caption": [
           "of a second",
-          "later",
-          "the lower"
+          "later the lower"
         ],
-        "captionX": 81,
-        "captionY": 660,
-        "captionSize": 124,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 74,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 10,
-        "captionScrim": 0,
+        "captionFrame": 41,
+        "captionEvery": 9,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panX": 257,
+        "panY": 145,
         "captionEmphasis": "second",
-        "captionReveal": "rise",
-        "captionMark": "box",
+        "captionReveal": "wipe",
+        "captionMark": "highlight",
         "captionWordEvery": 3,
-        "cameraMove": "pan",
-        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+        "cameraMove": "tilt",
+        "cameraPurpose": "a vertical reveal — height, depth, or a drop"
+      },
+      "diagram": {
+        "type": "anatomyFlow",
+        "chambers": [
+          {
+            "id": "c00",
+            "x": 0.34,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c01",
+            "x": 0.34,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          },
+          {
+            "id": "c10",
+            "x": 0.66,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c11",
+            "x": 0.66,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          }
+        ],
+        "valves": [
+          {
+            "x": 0.34,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          },
+          {
+            "x": 0.66,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          }
+        ],
+        "vessels": [
+          {
+            "path": [
+              [
+                0.28,
+                0.5
+              ],
+              [
+                0.15,
+                0.6
+              ],
+              [
+                0.11,
+                0.36
+              ],
+              [
+                0.27,
+                0.29
+              ]
+            ],
+            "charge": "low",
+            "label": "to the lungs"
+          },
+          {
+            "path": [
+              [
+                0.34,
+                0.25
+              ],
+              [
+                0.5,
+                0.235
+              ],
+              [
+                0.66,
+                0.25
+              ]
+            ],
+            "charge": "high",
+            "label": "from the lungs"
+          },
+          {
+            "path": [
+              [
+                0.73,
+                0.31
+              ],
+              [
+                0.83,
+                0.4
+              ],
+              [
+                0.73,
+                0.44999999999999996
+              ]
+            ],
+            "charge": "high"
+          },
+          {
+            "path": [
+              [
+                0.7000000000000001,
+                0.52
+              ],
+              [
+                0.84,
+                0.7
+              ],
+              [
+                0.6,
+                0.78
+              ],
+              [
+                0.4,
+                0.78
+              ],
+              [
+                0.16,
+                0.7
+              ],
+              [
+                0.28,
+                0.5
+              ]
+            ],
+            "charge": "high",
+            "label": "to the body"
+          }
+        ],
+        "circuit": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "cycleFrames": 36,
+        "accent": "#ffcf3d",
+        "muted": "#cfc6ae",
+        "delay": {
+          "label": "fill, then fire",
+          "fraction": 0.12
+        },
+        "subject": "anatomy",
+        "claims": [
+          "chambers",
+          "contraction",
+          "delay",
+          "sequence"
+        ],
+        "depicts": "anatomy",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -1054,13 +3388,12 @@
       "layers": [],
       "props": [
         {
-          "kind": "beam",
-          "depth": 0.38,
-          "x": 929,
-          "y": 104,
-          "width": 370,
-          "rotate": -16,
-          "opacity": 0.71,
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.83,
+          "x": 345,
+          "y": 521,
+          "width": 270,
           "colour": "#ffcf3d",
           "from": 64
         }
@@ -1068,9 +3401,9 @@
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1.23,
-        "pushTo": 1.34,
-        "pushEndFrame": 71,
+        "pushFrom": 1.22,
+        "pushTo": 1.3,
+        "pushEndFrame": 72,
         "glowX": 1145,
         "glowY": 422,
         "glowSize": 460,
@@ -1095,26 +3428,26 @@
         "captionSize": 113,
         "captionAlign": "left",
         "captionFrame": -12,
-        "captionEvery": 9,
+        "captionEvery": 10,
         "captionScrim": 0,
         "captionRecedeAt": 54,
         "accent": "#ffcf3d",
         "motif": "embers",
         "motifX": 587,
-        "motifY": 632,
-        "motifSize": 37,
-        "motifCount": 24,
-        "motifFrame": 19,
+        "motifY": 627,
+        "motifSize": 46,
+        "motifCount": 25,
+        "motifFrame": 29,
         "motifColour": "#ffcf3d",
-        "motifOpacity": 0.81,
+        "motifOpacity": 1,
         "handheld": 1.5,
-        "panY": 232,
+        "panX": 215,
         "captionEmphasis": "delay",
-        "captionReveal": "rise",
-        "captionMark": "box",
-        "captionWordEvery": 4,
-        "cameraMove": "tilt",
-        "cameraPurpose": "a vertical reveal — height, depth, or a drop"
+        "captionReveal": "blur",
+        "captionMark": "underline",
+        "captionWordEvery": 3,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
       },
       "onScreenText": [
         {
@@ -1135,12 +3468,13 @@
       "layers": [],
       "props": [
         {
-          "kind": "wire",
-          "shape": "rect",
-          "depth": 0.64,
-          "x": 408,
-          "y": 520,
-          "width": 381,
+          "kind": "beam",
+          "depth": 0.26,
+          "x": 929,
+          "y": -15,
+          "width": 276,
+          "rotate": -16,
+          "opacity": 0.79,
           "colour": "#ffcf3d",
           "from": 44
         }
@@ -1148,9 +3482,9 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.03,
-        "pushTo": 1.54,
-        "pushEndFrame": 50,
+        "pushFrom": 1.41,
+        "pushTo": 1.05,
+        "pushEndFrame": 47,
         "accent": "#ffcf3d",
         "field": "wash",
         "fieldColours": [
@@ -1158,10 +3492,10 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1508,
-        "glowY": 289,
-        "glowSize": 525,
-        "glowIntensity": 0.45,
+        "glowX": 1556,
+        "glowY": 490,
+        "glowSize": 558,
+        "glowIntensity": 0.62,
         "glowWarm": "#ffcf3d",
         "glowDepth": 0.1,
         "caption": [
@@ -1173,17 +3507,17 @@
         "captionSize": 124,
         "captionAlign": "left",
         "captionFrame": -12,
-        "captionEvery": 9,
+        "captionEvery": 8,
         "captionScrim": 0,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "first",
-        "captionReveal": "blur",
+        "captionReveal": "wipe",
         "captionMark": "none",
-        "captionWordEvery": 3,
-        "cameraMove": "push",
-        "cameraPurpose": "single out the subject — the frame closes on what matters"
+        "captionWordEvery": 2,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
       }
     },
     {
@@ -1193,13 +3527,13 @@
       "durationInFrames": 86,
       "assets": {},
       "params": {
-        "scrim": 0.5,
+        "scrim": 0.43,
         "kicker": "",
         "title": "ONE HUNDRED THOUSAND",
         "footer": "",
-        "titleFrame": 7,
+        "titleFrame": 53,
         "titleSize": 230,
-        "creep": 1.053,
+        "creep": 1.081,
         "accent": "#ffcf3d",
         "field": "wash",
         "fieldColours": [
@@ -1208,19 +3542,37 @@
           "#241505"
         ],
         "motif": "tally",
-        "motifX": 168,
+        "motifX": 102,
         "motifY": 499,
-        "motifSize": 89,
-        "motifCount": 10,
-        "motifFrame": 14,
+        "motifSize": 103,
+        "motifCount": 15,
+        "motifFrame": 13,
         "motifColour": "#ffcf3d",
-        "motifOpacity": 0.85,
-        "pushEndFrame": 79,
-        "pushFrom": 1.51,
-        "pushTo": 1,
+        "motifOpacity": 0.9,
+        "mark": "underline",
+        "markX": 260,
+        "markY": 820,
+        "markWidth": 560,
+        "markHeight": 300,
+        "markFrame": 29,
+        "pushEndFrame": 83,
+        "pushFrom": 1.59,
+        "pushTo": 1.03,
         "cameraMove": "pull",
         "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
-      }
+      },
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.78,
+          "x": 362,
+          "y": 551,
+          "width": 264,
+          "colour": "#ffcf3d",
+          "from": 14
+        }
+      ]
     },
     {
       "id": "s08-beats-b",
@@ -1232,22 +3584,12 @@
       "props": [
         {
           "kind": "beam",
-          "depth": 0.22,
-          "x": 941,
-          "y": 23,
-          "width": 250,
-          "rotate": -10,
-          "opacity": 0.58,
-          "colour": "#ffcf3d",
-          "from": 40
-        },
-        {
-          "kind": "wire",
-          "shape": "rect",
-          "depth": 0.76,
-          "x": 754,
-          "y": 453,
-          "width": 366,
+          "depth": 0.25,
+          "x": 988,
+          "y": 10,
+          "width": 241,
+          "rotate": -17,
+          "opacity": 0.75,
           "colour": "#ffcf3d",
           "from": 0
         }
@@ -1256,8 +3598,8 @@
         "anchorX": 799,
         "anchorY": 576,
         "pushFrom": 1,
-        "pushTo": 1.12,
-        "pushEndFrame": 62,
+        "pushTo": 1.11,
+        "pushEndFrame": 60,
         "accent": "#ffcf3d",
         "field": "wash",
         "fieldColours": [
@@ -1265,10 +3607,10 @@
           "#8a5a18",
           "#241505"
         ],
-        "glowX": 1496,
-        "glowY": 407,
-        "glowSize": 471,
-        "glowIntensity": 0.53,
+        "glowX": 1440,
+        "glowY": 426,
+        "glowSize": 413,
+        "glowIntensity": 0.69,
         "glowWarm": "#ffcf3d",
         "glowDepth": 0.1,
         "caption": [
@@ -1276,24 +3618,197 @@
           "paying any",
           "attention"
         ],
-        "captionX": 81,
-        "captionY": 660,
-        "captionSize": 124,
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 93,
         "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 7,
-        "captionScrim": 0,
+        "captionFrame": 35,
+        "captionEvery": 8,
+        "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panY": -63,
-        "roll": -0.16,
+        "panY": -52,
+        "roll": -0.28,
+        "shakeAt": [
+          5
+        ],
+        "shakeAmount": 22,
         "captionEmphasis": "attention",
-        "captionReveal": "blur",
+        "captionReveal": "rise",
         "captionMark": "highlight",
-        "captionWordEvery": 2,
+        "captionWordEvery": 4,
         "cameraMove": "drift",
         "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      },
+      "diagram": {
+        "type": "anatomyFlow",
+        "chambers": [
+          {
+            "id": "c00",
+            "x": 0.34,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c01",
+            "x": 0.34,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          },
+          {
+            "id": "c10",
+            "x": 0.66,
+            "y": 0.3,
+            "rx": 0.085,
+            "ry": 0.045,
+            "label": "upper",
+            "wall": 1,
+            "phase": 0,
+            "focus": false
+          },
+          {
+            "id": "c11",
+            "x": 0.66,
+            "y": 0.47,
+            "rx": 0.105,
+            "ry": 0.058,
+            "label": "lower",
+            "wall": 1,
+            "phase": 0.12,
+            "focus": false
+          }
+        ],
+        "valves": [
+          {
+            "x": 0.34,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          },
+          {
+            "x": 0.66,
+            "y": 0.388,
+            "angle": 0,
+            "opensAt": 0.1
+          }
+        ],
+        "vessels": [
+          {
+            "path": [
+              [
+                0.28,
+                0.5
+              ],
+              [
+                0.15,
+                0.6
+              ],
+              [
+                0.11,
+                0.36
+              ],
+              [
+                0.27,
+                0.29
+              ]
+            ],
+            "charge": "low",
+            "label": "to the lungs"
+          },
+          {
+            "path": [
+              [
+                0.34,
+                0.25
+              ],
+              [
+                0.5,
+                0.235
+              ],
+              [
+                0.66,
+                0.25
+              ]
+            ],
+            "charge": "high",
+            "label": "from the lungs"
+          },
+          {
+            "path": [
+              [
+                0.73,
+                0.31
+              ],
+              [
+                0.83,
+                0.4
+              ],
+              [
+                0.73,
+                0.44999999999999996
+              ]
+            ],
+            "charge": "high"
+          },
+          {
+            "path": [
+              [
+                0.7000000000000001,
+                0.52
+              ],
+              [
+                0.84,
+                0.7
+              ],
+              [
+                0.6,
+                0.78
+              ],
+              [
+                0.4,
+                0.78
+              ],
+              [
+                0.16,
+                0.7
+              ],
+              [
+                0.28,
+                0.5
+              ]
+            ],
+            "charge": "high",
+            "label": "to the body"
+          }
+        ],
+        "circuit": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "cycleFrames": 36,
+        "accent": "#ffcf3d",
+        "muted": "#cfc6ae",
+        "subject": "anatomy",
+        "claims": [
+          "contraction",
+          "duration"
+        ],
+        "depicts": "anatomy",
+        "from": 0,
+        "over": 1
       }
     },
     {
@@ -1308,13 +3823,13 @@
       },
       "assets": {},
       "params": {
-        "scrim": 0.47,
+        "scrim": 0.37,
         "kicker": "ONE LIFETIME",
         "title": "TWO POINT FIVE BILLION",
         "footer": "beats, none of them yours to make",
-        "titleFrame": 9,
+        "titleFrame": 50,
         "titleSize": 230,
-        "creep": 1.065,
+        "creep": 1.079,
         "accent": "#ffcf3d",
         "field": "wash",
         "fieldColours": [
@@ -1322,9 +3837,15 @@
           "#8a5a18",
           "#241505"
         ],
-        "pushEndFrame": 111,
+        "mark": "underline",
+        "markX": 260,
+        "markY": 820,
+        "markWidth": 560,
+        "markHeight": 300,
+        "markFrame": 40,
+        "pushEndFrame": 112,
         "pushFrom": 1,
-        "pushTo": 1.09,
+        "pushTo": 1.11,
         "cameraMove": "drift",
         "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       },
@@ -1332,23 +3853,23 @@
         {
           "kind": "plaque",
           "text": "ONE LIFETIME",
-          "depth": 0.61,
-          "x": 388,
-          "y": 606,
-          "width": 454,
-          "rotate": -2.1,
-          "from": 57
+          "depth": 0.5,
+          "x": 352,
+          "y": 614,
+          "width": 403,
+          "rotate": -0.3,
+          "from": 73
         },
         {
           "kind": "newspaper",
-          "masthead": "THE DAILY",
+          "masthead": "THE CHRONICLE",
           "text": "TWO POINT FIVE BILLION",
-          "depth": 0.62,
-          "x": 659,
-          "y": 529,
-          "width": 428,
-          "rotate": -1,
-          "from": 73
+          "depth": 0.65,
+          "x": 742,
+          "y": 526,
+          "width": 437,
+          "rotate": 4.6,
+          "from": 10
         }
       ]
     }

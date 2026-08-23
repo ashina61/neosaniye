@@ -3075,6 +3075,8 @@ async function main() {
       muted: '#cfc6ae',
       seed: `${episodeId}:${line.slug}`,
       anchorYears,
+      // Places the line names, so a map can draw them in the order it says.
+      stops: line.stops ?? [],
     });
   }
 

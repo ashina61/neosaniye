@@ -102,7 +102,20 @@ export const PROP_KINDS = ['plaque', 'newspaper', 'card', 'print', 'wire', 'beam
  * know draws nothing and says nothing about it, which is exactly how a shot
  * ends up empty, so the validator refuses one before the render.
  */
-export const DIAGRAM_KINDS = ['gearSystem', 'timeline', 'measurement', 'orbit', 'scan'];
+export const DIAGRAM_KINDS = [
+  'gearSystem',
+  'timeline',
+  'measurement',
+  'orbit',
+  'scan',
+  // The five added after the generalisation benchmark: a place, a process, the
+  // inside of a material, a circulation, and the size of something.
+  'map',
+  'process',
+  'crossSection',
+  'anatomyFlow',
+  'scaleHaulage',
+];
 
 export const OPTIONAL_ROLE = '?';
 

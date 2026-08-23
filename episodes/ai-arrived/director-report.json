@@ -443,14 +443,14 @@
         "panX": null,
         "panY": null
       },
-      "transition": "cut",
+      "transition": "flare",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "rule onto rule (measurement → timeline)"
+        "kind": "FLASH",
+        "purpose": "energy escalation",
+        "because": "beat is ESCALATION"
       },
       "representation": "HYBRID",
-      "drawn": "timeline",
+      "drawn": "anatomyFlow",
       "emphasis": "Forty years",
       "reveal": "punch",
       "plates": [
@@ -471,8 +471,8 @@
       "template": "composite",
       "seconds": 1.77,
       "camera": {
-        "from": 1,
-        "to": 1.34,
+        "from": 1.02,
+        "to": 1.41,
         "panX": null,
         "panY": null
       },
@@ -483,9 +483,9 @@
         "because": "same subject (s02-kasparov-photo.png)"
       },
       "representation": "HYBRID",
-      "drawn": "timeline",
+      "drawn": "anatomyFlow",
       "emphasis": "Kasparov",
-      "reveal": "blur",
+      "reveal": "rise",
       "plates": [
         "s02-kasparov-photo.png"
       ],
@@ -506,7 +506,7 @@
         "from": 1,
         "to": 1.38,
         "panX": null,
-        "panY": null
+        "panY": -51
       },
       "transition": "blinds",
       "cut": {
@@ -517,7 +517,7 @@
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "2012",
-      "reveal": "punch",
+      "reveal": "blur",
       "plates": [
         "s03-seeing-bg.png"
       ],
@@ -538,9 +538,9 @@
       "seconds": 2.57,
       "camera": {
         "from": 1,
-        "to": 1.1,
+        "to": 1.12,
         "panX": null,
-        "panY": -40
+        "panY": -33
       },
       "transition": "cut",
       "cut": {
@@ -556,9 +556,7 @@
         "s03-seeing-bg.png"
       ],
       "drawnGround": null,
-      "props": [
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"outside\"",
         "secondary": "the strongest image in the reel, returned to",
@@ -585,7 +583,7 @@
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "thirty-seven",
-      "reveal": "blur",
+      "reveal": "rise",
       "plates": [
         "s04-move-bg.png",
         "s04-move-photo.png"
@@ -620,7 +618,7 @@
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "played",
-      "reveal": "wipe",
+      "reveal": "blur",
       "plates": [
         "s04-move-photo.png"
       ],
@@ -745,9 +743,9 @@
       "drawn": "measurement"
     },
     "kasparov": {
-      "mode": "DIAGRAM",
-      "why": "the sentence is about elapsed time, which no photograph contains",
-      "drawn": "timeline"
+      "mode": "PROCEDURAL",
+      "why": "anatomyFlow is a picture of anatomy — it demonstrates 1 of what the line asserts",
+      "drawn": "anatomyFlow"
     },
     "seeing": {
       "mode": "TYPOGRAPHY",
@@ -779,13 +777,15 @@
       "drift": 2
     },
     "transition": {
-      "cut": 7,
+      "cut": 6,
+      "flare": 1,
       "blinds": 1,
       "slip": 2
     },
     "framing": {},
     "cut": {
-      "MATCH_CUT": 6,
+      "MATCH_CUT": 5,
+      "FLASH": 1,
       "MASK": 1,
       "DIRECTIONAL": 1,
       "HARD_CUT": 1,
@@ -794,13 +794,14 @@
   },
   "editing": {
     "tally": {
-      "MATCH_CUT": 6,
+      "MATCH_CUT": 5,
+      "FLASH": 1,
       "MASK": 1,
       "DIRECTIONAL": 1,
       "HARD_CUT": 1,
       "OBJECT_WIPE": 1
     },
-    "hardRatio": 0.7,
+    "hardRatio": 0.6,
     "total": 10,
     "note": "HARD_CUT and MATCH_CUT are both made of nothing; the difference is that a match cut was earned"
   },

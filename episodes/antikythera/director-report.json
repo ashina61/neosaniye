@@ -605,17 +605,15 @@
         "purpose": "spatial continuity",
         "because": "beat is COMPARISON"
       },
-      "representation": "PHOTO",
-      "drawn": null,
+      "representation": "HYBRID",
+      "drawn": "scaleHaulage",
       "emphasis": "corroded",
-      "reveal": "punch",
+      "reveal": "rise",
       "plates": [
         "bronze-weight.png"
       ],
       "drawnGround": "spotlight",
-      "props": [
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the figure: \"corroded\"",
         "secondary": "the object it is counting",
@@ -628,9 +626,9 @@
       "template": "composite",
       "seconds": 2.43,
       "camera": {
-        "from": 1.24,
-        "to": 1.21,
-        "panX": 163,
+        "from": 1.17,
+        "to": 1.27,
+        "panX": 239,
         "panY": null
       },
       "transition": "cut",
@@ -639,10 +637,10 @@
         "purpose": "visual similarity",
         "because": "same subject (bronze-weight.png)"
       },
-      "representation": "PHOTO",
-      "drawn": null,
+      "representation": "HYBRID",
+      "drawn": "scaleHaulage",
       "emphasis": "corroded",
-      "reveal": "rise",
+      "reveal": "wipe",
       "plates": [
         "bronze-weight.png"
       ],
@@ -662,7 +660,7 @@
       "camera": {
         "from": 1.2,
         "to": 1.02,
-        "panX": 187,
+        "panX": 142,
         "panY": null
       },
       "transition": "slip",
@@ -674,7 +672,7 @@
       "representation": "PROCEDURAL",
       "drawn": "timeline",
       "emphasis": "museum",
-      "reveal": "rise",
+      "reveal": "wipe",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [],
@@ -690,8 +688,8 @@
       "template": "composite",
       "seconds": 2.47,
       "camera": {
-        "from": 1.04,
-        "to": 1.47,
+        "from": 1.01,
+        "to": 1.41,
         "panX": null,
         "panY": null
       },
@@ -704,7 +702,7 @@
       "representation": "PROCEDURAL",
       "drawn": "timeline",
       "emphasis": "fifty years",
-      "reveal": "punch",
+      "reveal": "blur",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [],
@@ -723,7 +721,7 @@
         "from": 1,
         "to": 6.4,
         "panX": null,
-        "panY": null
+        "panY": -196
       },
       "transition": "cut",
       "cut": {
@@ -750,10 +748,10 @@
       "template": "composite",
       "seconds": 1.9,
       "camera": {
-        "from": 1.23,
-        "to": 1.26,
+        "from": 1.17,
+        "to": 1.29,
         "panX": null,
-        "panY": 155
+        "panY": 171
       },
       "transition": "cut",
       "cut": {
@@ -783,7 +781,7 @@
         "from": 1,
         "to": 1.22,
         "panX": null,
-        "panY": null
+        "panY": -55
       },
       "transition": "cut",
       "cut": {
@@ -794,7 +792,7 @@
       "representation": "HYBRID",
       "drawn": "orbit",
       "emphasis": "predicted",
-      "reveal": "punch",
+      "reveal": "wipe",
       "plates": [
         "moon-sky.jpg"
       ],
@@ -845,9 +843,9 @@
       "drawn": null
     },
     "lump": {
-      "mode": "PHOTO",
-      "why": "a correct photograph exists and is the strongest representation",
-      "drawn": null
+      "mode": "HYBRID",
+      "why": "scaleHaulage is a picture of scale — it demonstrates the claim of what the line asserts",
+      "drawn": "scaleHaulage"
     },
     "drawer": {
       "mode": "DIAGRAM",
