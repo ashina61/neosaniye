@@ -71,6 +71,20 @@ them.
 **41 of 45 lines resolved to TYPOGRAPHY.** Four got a `measurement` bar. That
 one number is the benchmark's result.
 
+### One observation that is not a defect
+
+The rendered masters are **16, 19, 25, 46 and 96 MB** for fifty seconds each.
+The two large ones are both `gold-heat`, and the cause is physical rather than
+a bug: `renderMedia` defaults to **CRF 18**, which is a visually-lossless
+master, and film grain laid over a bright *flat* drawn ground is the worst case
+h264 has — every macroblock carries noise at high luminance and nothing else.
+The dark grounds (`ash-grey`, `cold-noir`) compress to a sixth of the size with
+the same grain on them.
+
+Nothing needs changing: `npm run render -- --crf=23` is already the knob. It is
+recorded because "the reel rendered" and "the reel is deliverable" turned out
+to be different statements, and only one of them was being checked.
+
 ---
 
 ## The headline finding
