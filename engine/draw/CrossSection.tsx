@@ -22,7 +22,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 import {drawOn, flow, posterizeTime} from '../motion';
-import {Callout, Disclosure, MONO, Sheet, Ticks, weights} from './sheet';
+import {Callout, Cam, Disclosure, MONO, Sheet, Ticks, weights, worldTransform} from './sheet';
 import {Contact, MaterialDefs, MaterialFace, Motes} from './material';
 
 const CLAMP = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
@@ -84,7 +84,9 @@ function noise(seed: number) {
   return x - Math.floor(x);
 }
 
-export const CrossSectionPlate: React.FC<{spec: CrossSectionSpec; w: number; h: number}> = ({spec, w, h}) => {
+export const CrossSectionPlate: React.FC<{spec: CrossSectionSpec; w: number; h: number; cam?: Cam}> = ({spec, w, h, cam}) => {
+  /** The camera looks AT the world and THROUGH the sheet. */
+  const world = worldTransform(cam, w, h);
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const stepped = posterizeTime(frame, fps, 12);
@@ -140,6 +142,10 @@ export const CrossSectionPlate: React.FC<{spec: CrossSectionSpec; w: number; h: 
     <AbsoluteFill style={{pointerEvents: 'none'}}>
       <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{position: 'absolute', inset: 0}}>
         <Ticks colour={muted} w={w} h={h} on={on} />
+
+        {/* THE WORLD. Everything below here is what the camera is looking at;
+            the ticks above and the plates below are the sheet it is drawn on. */}
+        <g transform={world}>
         <MaterialDefs id="cs-concrete" material="concrete" colour={muted} w={w} seed="section" />
         <MaterialDefs id="cs-water" material="water" colour="#7fb2c4" w={w} seed="fluid" />
 
@@ -364,6 +370,7 @@ export const CrossSectionPlate: React.FC<{spec: CrossSectionSpec; w: number; h: 
             at={from + (note.at ?? 20 + i * 8)}
           />
         ))}
+        </g>
       </svg>
 
       {spec.scaleNote ? (

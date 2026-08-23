@@ -26,7 +26,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 import {drawOn, impact, posterizeTime, punch, rigid} from '../motion';
-import {Arrow, Disclosure, MONO, SANS, Sheet, Ticks, weights} from './sheet';
+import {Arrow, Cam, Disclosure, MONO, SANS, Sheet, Ticks, weights, worldTransform} from './sheet';
 import {Contact, Depth, MaterialDefs, MaterialFace, Motes, shimmer} from './material';
 
 const CLAMP = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
@@ -207,7 +207,9 @@ const Agent: React.FC<{
   return null;
 };
 
-export const ProcessPlate: React.FC<{spec: ProcessSpec; w: number; h: number}> = ({spec, w, h}) => {
+export const ProcessPlate: React.FC<{spec: ProcessSpec; w: number; h: number; cam?: Cam}> = ({spec, w, h, cam}) => {
+  /** The camera looks AT the world and THROUGH the sheet. */
+  const world = worldTransform(cam, w, h);
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const stepped = posterizeTime(frame, fps, 12);
@@ -281,6 +283,10 @@ export const ProcessPlate: React.FC<{spec: ProcessSpec; w: number; h: number}> =
     <AbsoluteFill style={{pointerEvents: 'none'}}>
       <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{position: 'absolute', inset: 0}}>
         <Ticks colour={muted} w={w} h={h} on={on} />
+
+        {/* THE WORLD. Everything below here is what the camera is looking at;
+            the ticks above and the plates below are the sheet it is drawn on. */}
+        <g transform={world}>
 
         {/**
          * THE STAGE RULE — set out at frame zero, so the cut lands on a figure.
@@ -362,7 +368,7 @@ export const ProcessPlate: React.FC<{spec: ProcessSpec; w: number; h: number}> =
            * a preference here; it is the difference between a subject and a
            * watermark.
            */}
-          <path d={d} fill="#0d0906" opacity={0.72} />
+          <path d={d} fill="#0d0906" opacity={0.45} />
           <path d={d} fill={colour} opacity={0.12 + heat * 0.3} />
           <MaterialFace id="proc-metal" material="metal" d={d} w={w} />
           <path d={d} fill="none" stroke={colour} strokeWidth={line.emphasis} strokeLinejoin="round" />
@@ -394,6 +400,7 @@ export const ProcessPlate: React.FC<{spec: ProcessSpec; w: number; h: number}> =
         {agent !== 'none' ? (
           <Agent kind={agent} x={w * 0.5} y={box.y - w * 0.05} w={w} colour={accent} p={within} />
         ) : null}
+        </g>
       </svg>
 
       {/**

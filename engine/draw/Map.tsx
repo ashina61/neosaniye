@@ -26,7 +26,7 @@
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame, useVideoConfig} from 'remotion';
 import {drawOn, flow, posterizeTime} from '../motion';
-import {Arrow, Callout, Disclosure, MONO, Sheet, Ticks, weights} from './sheet';
+import {Arrow, Callout, Cam, Disclosure, MONO, Sheet, Ticks, weights, worldTransform} from './sheet';
 import {Depth, Haze, MaterialDefs, MaterialFace, Motes} from './material';
 
 /** A landmass or a body of water: a closed form with a name. */
@@ -88,7 +88,9 @@ function along(points: [number, number][], p: number): [number, number] {
   ];
 }
 
-export const MapPlate: React.FC<{spec: MapSpec; w: number; h: number}> = ({spec, w, h}) => {
+export const MapPlate: React.FC<{spec: MapSpec; w: number; h: number; cam?: Cam}> = ({spec, w, h, cam}) => {
+  /** The camera looks AT the world and THROUGH the sheet. */
+  const world = worldTransform(cam, w, h);
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const stepped = posterizeTime(frame, fps, 12);
@@ -115,6 +117,10 @@ export const MapPlate: React.FC<{spec: MapSpec; w: number; h: number}> = ({spec,
     <AbsoluteFill style={{pointerEvents: 'none'}}>
       <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{position: 'absolute', inset: 0}}>
         <Ticks colour={muted} w={w} h={h} on={on} />
+
+        {/* THE WORLD. Everything below here is what the camera is looking at;
+            the ticks above and the plates below are the sheet it is drawn on. */}
+        <g transform={world}>
         <g transform={`translate(${w / 2} ${h / 2}) scale(${push}) translate(${-w / 2} ${-h / 2})`}>
           <MaterialDefs id="map-water" material="water" colour="#7fb2c4" w={w} seed="sea" />
           <MaterialDefs id="map-stone" material="stone" colour={muted} w={w} seed="coast" />
@@ -345,6 +351,7 @@ export const MapPlate: React.FC<{spec: MapSpec; w: number; h: number}> = ({spec,
               at={from + over * 0.6 + i * 6}
             />
           ))}
+        </g>
         </g>
       </svg>
       <Disclosure text={spec.disclosure ?? 'schematic · not to scale'} colour={muted} at={from + 10} width={w} />

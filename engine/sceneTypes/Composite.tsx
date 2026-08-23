@@ -293,7 +293,27 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
         */}
       {/* THE DRAWING TAKES THE SHOT'S CAMERA, at a share of it: a diagram that
           scales exactly with the plates behind it is a sticker on the plate. */}
-      <Diagram spec={scene.diagram as DiagramSpec | undefined} push={1 + (push - 1) * 0.72} origin={origin} />
+      {/* THE DRAWING TAKES THE SHOT'S CAMERA — the whole of it, at a share.
+          A diagram that scales exactly with the plates behind it is a sticker
+          on the plate; one that ignores the pan is a diagram the camera never
+          reached. Depth 0.72 puts it just in front of the ground. */}
+      <Diagram
+        spec={scene.diagram as DiagramSpec | undefined}
+        /**
+         * A SHARE OF THE PUSH, AND A SMALL ONE.
+         *
+         * A photographic plate can take a 50% push because there is more
+         * picture outside the frame. A drawing has exactly the frame it was
+         * composed for: at 0.72 of a 1.5 push the haulers walked off the left
+         * edge of a shot whose subject was how big the load is next to a man.
+         * The variety between drawn shots comes from the PAN and the roll,
+         * which move the framing without eating it.
+         */
+        push={1 + (push - 1) * 0.3}
+        origin={origin}
+        offset={camera.offsetAt(0.72)}
+        rotate={camera.rotate * 0.4}
+      />
 
       <SceneMotif
         params={scene.params}

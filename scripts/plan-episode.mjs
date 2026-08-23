@@ -53,7 +53,7 @@ import {countWindow} from '../engine/state.mjs';
 import {endingStrategy, hookStrategy, readScript, rhythmFor} from './lib/story.mjs';
 import {colourCentre, judge, loadReview, measureAsset} from './lib/assetdirector.mjs';
 import {directFraming, graphicJustified, hierarchyFor, labelFor} from './lib/visual.mjs';
-import {CAPTION_ZONE, chooseRepresentation} from './lib/representation.mjs';
+import {CAPTION_ZONE, chooseRepresentation, figureIn} from './lib/representation.mjs';
 
 const FPS = 30;
 const WIDTH = 1080;
@@ -3085,6 +3085,20 @@ async function main() {
   const anchorYears = [
     ...new Set(brief.lines.flatMap((l) => [...String(l.vo).matchAll(/\b(1[0-9]{3}|20[0-9]{2})\b/g)].map((m) => Number(m[1])))),
   ].sort((a, b) => a - b);
+  /**
+   * THE BIGGEST THING THE REEL CLAIMS, SO IT IS THE SAME THING EVERY TIME.
+   *
+   * A haulage drawing sized itself from the sentence it was under, and the
+   * sentences say different amounts: the shot naming eight hundred tons drew a
+   * megalith, the one saying "they rolled them" drew a crate half its size, and
+   * the reel cut between them as though they were the same stone. The load is a
+   * CHARACTER — the whole episode is about one block — so its size is a
+   * property of the reel, not of the line that happens to be under it.
+   */
+  const anchorFigure = Math.max(
+    0,
+    ...brief.lines.map((l) => figureIn(String(l.vo)) ?? 0).filter((v) => Number.isFinite(v)),
+  );
   for (const line of brief.lines) {
     const read = story[brief.lines.indexOf(line)];
     const survives = (line?.shot?.layers ?? []).some((l) => {
@@ -3100,6 +3114,7 @@ async function main() {
       muted: '#cfc6ae',
       seed: `${episodeId}:${line.slug}`,
       anchorYears,
+      anchorFigure,
       // Places the line names, so a map can draw them in the order it says.
       stops: line.stops ?? [],
     });

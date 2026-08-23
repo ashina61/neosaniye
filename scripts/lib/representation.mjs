@@ -261,6 +261,15 @@ export function chooseRepresentation({
    * available representation is silently skipped.
    */
   anchorYears = [],
+  /**
+   * THE LARGEST FIGURE THE REEL STATES ANYWHERE.
+   *
+   * So a drawing whose subject is a size draws the SAME size in every shot. A
+   * load that shrinks between two cuts is not the same load, and an episode
+   * about one block that shows two different blocks has broken the only thing
+   * the viewer was tracking.
+   */
+  anchorFigure = 0,
 }) {
   const figure = figureIn(vo);
   const years = yearsIn(vo);
@@ -278,7 +287,7 @@ export function chooseRepresentation({
     process: () => buildProcess({vo, accent, muted}),
     crossSection: () => buildCrossSection({vo, seed, accent, muted, claims: read.claims}),
     anatomyFlow: () => buildAnatomyFlow({vo, accent, muted, claims: read.claims}),
-    scaleHaulage: () => buildScaleHaulage({vo, accent, muted, claims: read.claims}),
+    scaleHaulage: () => buildScaleHaulage({vo, accent, muted, claims: read.claims, anchorFigure}),
   };
 
   /**

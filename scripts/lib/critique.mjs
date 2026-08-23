@@ -964,10 +964,23 @@ export function boundsOf(scene, {width, height}) {
     }
   }
   if (d?.type === 'scaleHaulage') {
+    /**
+     * The same arithmetic the plate does, and it has to STAY the same: this
+     * check reported a load eighty pixels off the left edge that was in fact
+     * eighty-six pixels inside it, because the plate had been rewritten to haul
+     * leftward from the right margin and the bounds were still measuring a
+     * load that started at a third of the frame and travelled right.
+     */
     const ow = n(d.object?.w, 0.3) * width;
     const oh = n(d.object?.h, 0.08) * height;
     const ground = height * 0.62;
-    out.push({what: 'haulage load', role: 'drawn', left: width * 0.32 - ow / 2, right: width * 0.32 + ow / 2 + n(d.travel, 0.14) * width, top: ground - oh * 2, bottom: ground});
+    const humans = Math.max(0, n(d.humans, 2));
+    const margin = width * 0.07;
+    const leadPad = width * (0.05 + Math.max(0, humans - 1) * 0.045) + width * 0.035;
+    const endLeft = margin + leadPad;
+    const travelPx = Math.max(0, Math.min(n(d.travel, 0.14) * width, width - margin - endLeft - ow));
+    out.push({what: 'haulage load', role: 'drawn', left: endLeft, right: endLeft + travelPx + ow, top: ground - oh * 2, bottom: ground});
+    out.push({what: 'haulage lead figure', role: 'drawn', left: margin, right: endLeft, top: ground - oh * 2, bottom: ground});
   }
   if (d?.type === 'process') {
     out.push({what: 'process object', role: 'drawn', left: width * 0.2, right: width * 0.8, top: height * 0.3, bottom: height * 0.54});

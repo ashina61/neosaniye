@@ -44,7 +44,7 @@ import {CrossSectionPlate, CrossSectionSpec} from './CrossSection';
 import {MapPlate, MapSpec} from './Map';
 import {ProcessPlate, ProcessSpec} from './Process';
 import {ScaleHaulagePlate, ScaleHaulageSpec} from './ScaleHaulage';
-import {Disclosure, MONO, SANS, Sheet, Ticks} from './sheet';
+import {Cam, Disclosure, MONO, SANS, Sheet, Ticks, worldTransform} from './sheet';
 
 /** Every diagram is one of these, described as data rather than as markup. */
 export type DiagramSpec =
@@ -202,7 +202,8 @@ function labelIsClear(gears: Gear[], index: number): boolean {
   });
 }
 
-const GearSystem: React.FC<{spec: GearSystemSpec; w: number; h: number}> = ({spec, w, h}) => {
+const GearSystem: React.FC<{spec: GearSystemSpec; w: number; h: number; cam?: Cam}> = ({spec, w, h, cam}) => {
+  const world = worldTransform(cam, w, h);
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const stepped = posterizeTime(frame, fps, 12);
@@ -231,6 +232,7 @@ const GearSystem: React.FC<{spec: GearSystemSpec; w: number; h: number}> = ({spe
       <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{position: 'absolute', inset: 0}}>
         <Ticks colour={muted} w={w} h={h} on={on} />
 
+        <g transform={world}>
         {/**
          * THE SETTING OUT — the frame the cut LANDS on.
          *
@@ -361,6 +363,7 @@ const GearSystem: React.FC<{spec: GearSystemSpec; w: number; h: number}> = ({spe
             </text>
           ) : null,
         )}
+        </g>
       </svg>
 
       {/**
@@ -412,7 +415,8 @@ const GearSystem: React.FC<{spec: GearSystemSpec; w: number; h: number}> = ({spe
  * is what the sentence is about, so it is the part that is marked, and the
  * events at either end are only what bound it.
  */
-const Timeline: React.FC<{spec: TimelineSpec; w: number; h: number}> = ({spec, w, h}) => {
+const Timeline: React.FC<{spec: TimelineSpec; w: number; h: number; cam?: Cam}> = ({spec, w, h, cam}) => {
+  const world = worldTransform(cam, w, h);
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const stepped = posterizeTime(frame, fps, 12);
@@ -440,6 +444,7 @@ const Timeline: React.FC<{spec: TimelineSpec; w: number; h: number}> = ({spec, w
   return (
     <AbsoluteFill style={{pointerEvents: 'none'}}>
       <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{position: 'absolute', inset: 0}}>
+        <g transform={world}>
         {/**
          * THE RULE IS SET OUT BEFORE IT IS DRAWN.
          *
@@ -515,6 +520,7 @@ const Timeline: React.FC<{spec: TimelineSpec; w: number; h: number}> = ({spec, w
             </g>
           );
         })}
+        </g>
       </svg>
 
       {spec.gapLabel && stepped > from + over * 0.5 ? (
@@ -552,7 +558,8 @@ const Timeline: React.FC<{spec: TimelineSpec; w: number; h: number}> = ({spec, w
  * is an argument. The comparison is optional and it is what makes the graphic
  * worth its space.
  */
-const Measurement: React.FC<{spec: MeasurementSpec; w: number; h: number}> = ({spec, w, h}) => {
+const Measurement: React.FC<{spec: MeasurementSpec; w: number; h: number; cam?: Cam}> = ({spec, w, h, cam}) => {
+  const world = worldTransform(cam, w, h);
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const stepped = posterizeTime(frame, fps, 12);
@@ -571,6 +578,7 @@ const Measurement: React.FC<{spec: MeasurementSpec; w: number; h: number}> = ({s
   return (
     <AbsoluteFill style={{pointerEvents: 'none'}}>
       <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{position: 'absolute', inset: 0}}>
+        <g transform={world}>
         <line x1={x} y1={y - tick} x2={x} y2={y + tick} stroke={accent} strokeWidth={w * 0.0034} />
         <line x1={x} y1={y} x2={x + width * grow} y2={y} stroke={accent} strokeWidth={w * 0.0034} />
         <line
@@ -606,6 +614,7 @@ const Measurement: React.FC<{spec: MeasurementSpec; w: number; h: number}> = ({s
             </text>
           </g>
         ) : null}
+        </g>
       </svg>
 
       <div
@@ -646,7 +655,8 @@ const Measurement: React.FC<{spec: MeasurementSpec; w: number; h: number}> = ({s
  * library is aiming at — a true picture with a true diagram on it, and neither
  * pretending to be the other.
  */
-const Orbit: React.FC<{spec: OrbitSpec; w: number; h: number}> = ({spec, w, h}) => {
+const Orbit: React.FC<{spec: OrbitSpec; w: number; h: number; cam?: Cam}> = ({spec, w, h, cam}) => {
+  const world = worldTransform(cam, w, h);
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const stepped = posterizeTime(frame, fps, 12);
@@ -683,6 +693,7 @@ const Orbit: React.FC<{spec: OrbitSpec; w: number; h: number}> = ({spec, w, h}) 
   return (
     <AbsoluteFill style={{pointerEvents: 'none'}}>
       <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{position: 'absolute', inset: 0}}>
+        <g transform={world}>
         <circle
           cx={cx}
           cy={cy}
@@ -712,6 +723,7 @@ const Orbit: React.FC<{spec: OrbitSpec; w: number; h: number}> = ({spec, w, h}) 
         ) : null}
         <circle cx={bx} cy={by} r={bodyR} fill="none" stroke={accent} strokeWidth={w * 0.0034} />
         <circle cx={bx} cy={by} r={bodyR * 0.28} fill={accent} opacity={0.85} />
+        </g>
       </svg>
 
       {spec.markLabel && marked ? (
@@ -824,36 +836,54 @@ const Scan: React.FC<{spec: ScanSpec; w: number; h: number}> = ({spec, w, h}) =>
  *
  * That is what turns a scale into a reveal.
  */
-export const Diagram: React.FC<{spec?: DiagramSpec | null; push?: number; origin?: string}> = ({
-  spec,
-  push = 1,
-  origin = '50% 55%',
-}) => {
+export const Diagram: React.FC<{
+  spec?: DiagramSpec | null;
+  push?: number;
+  origin?: string;
+  /**
+   * AND THE REST OF THE CAMERA, NOT ONLY THE SCALE.
+   *
+   * Passing the push alone left a pan invisible on every drawn shot — the
+   * planner distinguishes carefully between travelling toward a subject and
+   * travelling past it, and on a procedural shot both came out as the same
+   * slow enlargement. Fourteen shots of one block, framed identically.
+   */
+  offset?: {x: number; y: number};
+  rotate?: number;
+}> = ({spec, push = 1, origin = '50% 55%', offset, rotate = 0}) => {
   const {width, height} = useVideoConfig();
   if (!spec) return null;
-  const camera = (node: React.ReactNode) =>
-    push === 1 ? node : <AbsoluteFill style={{transformOrigin: origin, transform: `scale(${push})`}}>{node}</AbsoluteFill>;
+  /**
+   * The origin arrives as the CSS the plates behind the drawing are scaled
+   * about, because the drawing has to turn around the same point in the room
+   * they do or it slides off them.
+   */
+  const [ox, oy] = origin
+    .split(/\s+/)
+    .map((part) => Number.parseFloat(part) / 100)
+    .map((v) => (Number.isFinite(v) ? v : 0.5));
+  const cam: Cam = {push, ox, oy: Number.isFinite(oy) ? oy : 0.55, dx: offset?.x ?? 0, dy: offset?.y ?? 0, rotate};
   switch (spec.type) {
     case 'gearSystem':
-      return camera(<GearSystem spec={spec} w={width} h={height} />);
+      return <GearSystem spec={spec} w={width} h={height} cam={cam} />;
     case 'timeline':
-      return camera(<Timeline spec={spec} w={width} h={height} />);
+      return <Timeline spec={spec} w={width} h={height} cam={cam} />;
     case 'measurement':
-      return camera(<Measurement spec={spec} w={width} h={height} />);
+      return <Measurement spec={spec} w={width} h={height} cam={cam} />;
     case 'orbit':
-      return camera(<Orbit spec={spec} w={width} h={height} />);
+      return <Orbit spec={spec} w={width} h={height} cam={cam} />;
     case 'scan':
-      return camera(<Scan spec={spec} w={width} h={height} />);
+      return <Scan spec={spec} w={width} h={height} />;
     case 'map':
-      return camera(<MapPlate spec={spec} w={width} h={height} />);
+      return <MapPlate spec={spec} w={width} h={height} cam={cam} />;
     case 'process':
-      return camera(<ProcessPlate spec={spec} w={width} h={height} />);
+      return <ProcessPlate spec={spec} w={width} h={height} cam={cam} />;
     case 'crossSection':
-      return camera(<CrossSectionPlate spec={spec} w={width} h={height} />);
+      return <CrossSectionPlate spec={spec} w={width} h={height} cam={cam} />;
     case 'anatomyFlow':
-      return camera(<AnatomyFlowPlate spec={spec} w={width} h={height} />);
+      return <AnatomyFlowPlate spec={spec} w={width} h={height} cam={cam} />;
     case 'scaleHaulage':
-      return camera(<ScaleHaulagePlate spec={spec} w={width} h={height} />);
+      return <ScaleHaulagePlate spec={spec} w={width} h={height} cam={cam} />;
     default:
       return null;
   }

@@ -48,18 +48,52 @@ export type Material =
  *   `depth`    how dark its own shadow is
  *   `give`     how much it responds to force, for the motion layer
  */
-export const MATERIALS: Record<Material, {sheen: number; tooth: number; depth: number; give: number}> = {
-  stone: {sheen: 0.1, tooth: 0.85, depth: 0.55, give: 0.02},
-  concrete: {sheen: 0.08, tooth: 1, depth: 0.5, give: 0.03},
-  metal: {sheen: 0.95, tooth: 0.12, depth: 0.4, give: 0.1},
-  iron: {sheen: 0.7, tooth: 0.3, depth: 0.45, give: 0.12},
-  bronze: {sheen: 0.8, tooth: 0.22, depth: 0.42, give: 0.08},
-  wood: {sheen: 0.25, tooth: 0.6, depth: 0.38, give: 0.22},
-  water: {sheen: 1, tooth: 0.05, depth: 0.2, give: 1},
-  flesh: {sheen: 0.35, tooth: 0.18, depth: 0.3, give: 0.6},
-  paper: {sheen: 0.15, tooth: 0.45, depth: 0.18, give: 0.35},
-  none: {sheen: 0, tooth: 0, depth: 0, give: 0},
+/**
+ * ALBEDO — the value the material HAS, before any light hits it.
+ *
+ * The first version of this table had none, and the consequence was visible in
+ * every frame the pipeline delivered: a treatment made of a raking gradient and
+ * a speckle, painted onto whatever the plate had drawn underneath, which was a
+ * near-black rectangle. Six per cent of white at the top edge is a highlight,
+ * and a highlight with no body under it is a silhouette. A thousand-ton block
+ * of limestone came out darker than the sky behind it.
+ *
+ * A material is a value first and a finish second. Limestone is a mid grey you
+ * could read a newspaper by; wrought iron is dark; paper is nearly white. Get
+ * that wrong and no amount of specular does anything, because there is nothing
+ * for the light to be falling ON.
+ *
+ * `body` is that value, `bodyAlpha` is how much of it survives — the one
+ * material you can see through is water, and it is the only one that should be
+ * a wash rather than a mass.
+ */
+export const MATERIALS: Record<
+  Material,
+  {sheen: number; tooth: number; depth: number; give: number; body: number; bodyAlpha: number}
+> = {
+  stone: {sheen: 0.1, tooth: 0.85, depth: 0.55, give: 0.02, body: 0.34, bodyAlpha: 1},
+  concrete: {sheen: 0.08, tooth: 1, depth: 0.5, give: 0.03, body: 0.4, bodyAlpha: 1},
+  metal: {sheen: 0.95, tooth: 0.12, depth: 0.4, give: 0.1, body: 0.44, bodyAlpha: 1},
+  iron: {sheen: 0.7, tooth: 0.3, depth: 0.45, give: 0.12, body: 0.24, bodyAlpha: 1},
+  bronze: {sheen: 0.8, tooth: 0.22, depth: 0.42, give: 0.08, body: 0.32, bodyAlpha: 1},
+  wood: {sheen: 0.25, tooth: 0.6, depth: 0.38, give: 0.22, body: 0.28, bodyAlpha: 1},
+  water: {sheen: 1, tooth: 0.05, depth: 0.2, give: 1, body: 0.2, bodyAlpha: 0.5},
+  flesh: {sheen: 0.35, tooth: 0.18, depth: 0.3, give: 0.6, body: 0.32, bodyAlpha: 0.92},
+  paper: {sheen: 0.15, tooth: 0.45, depth: 0.18, give: 0.35, body: 0.7, bodyAlpha: 1},
+  none: {sheen: 0, tooth: 0, depth: 0, give: 0, body: 0, bodyAlpha: 0},
 };
+
+/**
+ * A NEUTRAL AT A GIVEN VALUE, warmed the way daylight on a solid is warm.
+ *
+ * Not pure grey: a perfectly neutral mass in a warm-graded frame reads as a
+ * hole cut in the picture. The bias is small enough to be a temperature and
+ * not a colour.
+ */
+function value(v: number): string {
+  const l = Math.round(255 * Math.max(0, Math.min(1, v)));
+  return `rgb(${l}, ${Math.round(l * 0.955)}, ${Math.round(l * 0.9)})`;
+}
 
 /**
  * THE SVG DEFS EVERY MATERIAL NEEDS, DECLARED ONCE PER PLATE.
@@ -97,6 +131,25 @@ export const MaterialDefs: React.FC<{
        * and a falloff that says what the surface is: metal goes from bright to
        * dark across a few per cent, stone across the whole face.
        */}
+      {/**
+       * THE BODY — the material's own value, laid down before any light.
+       *
+       * Two stops rather than one, because a mass is never one value: the face
+       * turned toward the key is lighter than the face turned away, and that
+       * difference IS the reading of it as a solid rather than a shape. Warmed
+       * a few per cent toward the object's own colour so a stone block and a
+       * bronze plate are not the same grey with different highlights.
+       */}
+      <linearGradient id={`${id}-body`} x1="0.1" y1="0" x2="0.6" y2="1">
+        <stop offset="0%" stopColor={value(m.body * 1.18)} stopOpacity={m.bodyAlpha} />
+        <stop offset="62%" stopColor={value(m.body * 0.86)} stopOpacity={m.bodyAlpha} />
+        <stop offset="100%" stopColor={value(m.body * 0.52)} stopOpacity={m.bodyAlpha} />
+      </linearGradient>
+      {/** The hue, as a wash over the body rather than as the body itself. */}
+      <linearGradient id={`${id}-hue`} x1="0" y1="0" x2="0.3" y2="1">
+        <stop offset="0%" stopColor={colour} stopOpacity={0.2} />
+        <stop offset="100%" stopColor={colour} stopOpacity={0.08} />
+      </linearGradient>
       <linearGradient id={`${id}-sheen`} x1="0" y1="0" x2="0.7" y2="1">
         <stop offset="0%" stopColor={tint} stopOpacity={0.05 + m.sheen * 0.1} />
         <stop offset={`${18 + (1 - m.sheen) * 40}%`} stopColor={tint} stopOpacity={0.015 + m.sheen * 0.03} />
@@ -151,6 +204,8 @@ export const MaterialFace: React.FC<{
 }> = ({id, material, d, rect, ellipse, w}) => {
   const m = MATERIALS[material] ?? MATERIALS.none;
   if (material === 'none') return null;
+  const bodyFill = 'url(#' + id + '-body)';
+  const hueFill = 'url(#' + id + '-hue)';
   const shape = (fill: string, key: string, opacity = 1) => {
     if (d) return <path key={key} d={d} fill={fill} opacity={opacity} />;
     if (rect) return <rect key={key} x={rect.x} y={rect.y} width={rect.w} height={rect.h} fill={fill} opacity={opacity} />;
@@ -159,12 +214,97 @@ export const MaterialFace: React.FC<{
   };
   return (
     <g style={{pointerEvents: 'none'}}>
+      {/* BODY FIRST. The light goes on top of the material, not instead of it. */}
+      {m.body > 0 ? shape(bodyFill, 'body') : null}
+      {m.body > 0 ? shape(hueFill, 'hue') : null}
       {shape(`url(#${id}-sheen)`, 'sheen')}
       {m.tooth > 0 ? shape(`url(#${id}-tooth)`, 'tooth', 0.9) : null}
       {m.sheen > 0.6 ? shape(`url(#${id}-spec)`, 'spec', 0.8) : null}
     </g>
   );
 };
+
+/**
+ * THE GROUND, AS A SURFACE RATHER THAN AS A LINE.
+ *
+ * A haulage drawing put a hatched line at three fifths of the frame and left
+ * the seven hundred pixels below it black. Nothing was wrong with any object in
+ * the shot; the shot was a band of drawing floating in a void, and in a 9:16
+ * frame that void is most of what the viewer is looking at.
+ *
+ * The fix is not to fill it. It is to admit that the ground CONTINUES toward
+ * the viewer: a wash that falls off with distance and a few lines running away
+ * to a point on the horizon. Two per cent of ink, and the lower third stops
+ * being empty and starts being floor — which is also true, and is the thing
+ * that makes the object standing on it read as standing on something.
+ */
+export const GroundPlane: React.FC<{
+  y: number;
+  w: number;
+  h: number;
+  colour: string;
+  id?: string;
+  strength?: number;
+}> = ({y, w, h, colour, id = 'gp', strength = 1}) => {
+  const vpx = w * 0.5;
+  const vpy = y - h * 0.05;
+  const rows = 9;
+  return (
+    <g style={{pointerEvents: 'none'}}>
+      <defs>
+        <linearGradient id={`${id}-fade`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={colour} stopOpacity={0.09 * strength} />
+          <stop offset="52%" stopColor={colour} stopOpacity={0.032 * strength} />
+          <stop offset="100%" stopColor={colour} stopOpacity={0} />
+        </linearGradient>
+      </defs>
+      <rect x={0} y={y} width={w} height={Math.max(0, h - y)} fill={`url(#${id}-fade)`} />
+      {/* Convergence, not a grid: a floor grid is graph paper, and this is a
+          plate. Lines run away from the viewer and stop at the horizon. */}
+      {Array.from({length: rows}, (_, i) => {
+        const f = (i - (rows - 1) / 2) / ((rows - 1) / 2);
+        return (
+          <line
+            key={i}
+            x1={vpx + f * w * 2.1}
+            y1={h}
+            x2={vpx + f * w * 0.03}
+            y2={vpy}
+            stroke={colour}
+            strokeWidth={w * 0.0012}
+            opacity={0.055 * strength}
+          />
+        );
+      })}
+    </g>
+  );
+};
+
+/**
+ * THE AIR ABOVE THE HORIZON.
+ *
+ * Same argument as the ground, upside down. A sky that is #000 is not a sky; it
+ * is the absence of one, and it makes every drawn object look like a decal on a
+ * black card. One gradient, warmest where the light is.
+ */
+export const Sky: React.FC<{y: number; w: number; colour: string; id?: string; strength?: number}> = ({
+  y,
+  w,
+  colour,
+  id = 'sky',
+  strength = 1,
+}) => (
+  <g style={{pointerEvents: 'none'}}>
+    <defs>
+      <linearGradient id={`${id}-air`} x1="0" y1="1" x2="0.25" y2="0">
+        <stop offset="0%" stopColor={colour} stopOpacity={0.075 * strength} />
+        <stop offset="46%" stopColor={colour} stopOpacity={0.026 * strength} />
+        <stop offset="100%" stopColor={colour} stopOpacity={0} />
+      </linearGradient>
+    </defs>
+    <rect x={0} y={0} width={w} height={Math.max(0, y)} fill={`url(#${id}-air)`} />
+  </g>
+);
 
 /**
  * A CONTACT SHADOW — the cheapest depth cue there is, and the most missed.

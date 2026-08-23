@@ -117,6 +117,47 @@ export const Disclosure: React.FC<{text: string; colour: string; at: number; wid
   );
 };
 
+/**
+ * THE CAMERA MOVES THE WORLD. THE SHEET DOES NOT MOVE.
+ *
+ * A shot's camera used to reach the drawings as a scale and nothing else, so
+ * fourteen consecutive haulage shots came out framed identically. Handing the
+ * whole camera to the plate fixed that and broke something worse: the push
+ * carried the registration ticks, the disclosure and the tonnage readout with
+ * it, and a shot at 1.29 delivered "800 TONS" sliced off the top of the frame
+ * and "…USTRATIVE RECONSTRUCTION" running off the left.
+ *
+ * Both are the same mistake, made in opposite directions. A drawing has two
+ * layers that are not the same kind of thing: the WORLD it depicts, which the
+ * camera is looking at, and the SHEET it is drawn on, which the camera is
+ * looking THROUGH. Pan across a museum plate and the object shifts; the label
+ * screwed to the wall beside it does not.
+ *
+ * So the camera is an SVG transform on the world group only. Everything the
+ * draughtsman added — corner ticks, the honesty plate, a counted figure —
+ * stays pinned where it was composed, for the same reason a motif is pinned.
+ */
+export type Cam = {push?: number; ox?: number; oy?: number; dx?: number; dy?: number; rotate?: number};
+
+/** The world transform for a plate, or undefined when the camera is still. */
+export function worldTransform(cam: Cam | undefined, w: number, h: number): string | undefined {
+  if (!cam) return undefined;
+  const push = cam.push ?? 1;
+  const rotate = cam.rotate ?? 0;
+  const dx = cam.dx ?? 0;
+  const dy = cam.dy ?? 0;
+  // A transform that resolves to the identity is still a compositing layer.
+  if (Math.abs(push - 1) < 0.001 && Math.abs(rotate) < 0.01 && Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) return undefined;
+  const ox = w * (cam.ox ?? 0.5);
+  const oy = h * (cam.oy ?? 0.55);
+  return [
+    `translate(${(ox + dx).toFixed(2)} ${(oy + dy).toFixed(2)})`,
+    `scale(${push.toFixed(4)})`,
+    `rotate(${rotate.toFixed(3)})`,
+    `translate(${(-ox).toFixed(2)} ${(-oy).toFixed(2)})`,
+  ].join(' ');
+}
+
 /** Registration ticks — the corner marks of a drawing sheet. */
 export const Ticks: React.FC<{colour: string; w: number; h: number; on: number}> = ({colour, w, h, on}) => {
   const m = w * 0.055;

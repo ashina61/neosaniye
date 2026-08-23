@@ -484,21 +484,63 @@ export function buildAnatomyFlow({vo, accent, muted, claims = []}) {
  * haulage the arrangement is the best available hypothesis rather than the
  * record.
  */
-export function buildScaleHaulage({vo, accent, muted, claims = []}) {
+export function buildScaleHaulage({vo, accent, muted, claims = [], anchorFigure = 0}) {
   const figure = figureIn(vo);
   const mass = /\btonnes?\b/i.test(vo) ? 'tonnes' : /\btons?\b/i.test(vo) ? 'tons' : /\bmen\b/i.test(vo) ? 'men' : '';
   const rolled = claims.includes('haulage') || has(vo, /\broll\w*|slid|haul\w*|drag\w*\b/i);
   const roped = has(vo, /\brope|capstan|pull\w*\b/i);
   const lifting = has(vo, /\blift\w*|crane|pulley\b/i);
 
-  /** The block is drawn big because the sentence says it is big. */
-  const heavy = (figure ?? 0) >= 100 || /\bcolossal|massive|megalith\b/i.test(vo);
+  /**
+   * HOW BIG THE BLOCK IS DRAWN, AND WHY IT IS NOT A STYLE CHOICE.
+   *
+   * The first version picked between two sizes and put the smaller one — three
+   * tenths of the frame's width, a fifteenth of its height — under a sentence
+   * about eight hundred tons. Beside a figure drawn at six per cent of the
+   * frame that made the block about twice a man's height, which is a large
+   * crate. The shot exists to make a size FELT and it was quietly understating
+   * it by a factor of five.
+   *
+   * So the proportions come from the object, not from a preference. A megalith
+   * is a beam: Baalbek's largest is about twenty metres by four by four, and
+   * the ratio that matters on screen is the one between the stone and the man
+   * standing next to it. Fix the man at a human fraction of the frame, derive
+   * the block's height from how many of him fit up its face, and let the length
+   * follow the block's own proportion. The frame then fills itself, because a
+   * thing drawn at its true size relative to a person is large.
+   */
+  const colossal = Math.max(figure ?? 0, anchorFigure) >= 100 || /\bcolossal|massive|megalith\b/i.test(vo);
+  /**
+   * The load fills the frame's WIDTH, because that is the axis a 9:16 frame
+   * has to spare and a beam of stone is a horizontal object.
+   */
+  const objW = colossal ? 0.7 : 0.5;
+  /** Length to height. Cut stone travels as a beam, not as a cube. */
+  const beam = colossal ? 4.6 : 3.2;
+  /**
+   * Height crosses the aspect: a fraction of the frame's width is not the same
+   * fraction of its height. Written out rather than folded into a constant,
+   * because the frame is 1080 wide TODAY.
+   */
+  const aspect = 1080 / 1920;
+  const objH = (objW / beam) * aspect;
+  /**
+   * AND THE MAN IS DERIVED FROM THE STONE, NOT THE OTHER WAY ROUND.
+   *
+   * He is the instrument, so his size is the reading. Setting him at a fixed
+   * six per cent of the frame and then choosing a block size independently is
+   * how a sentence about eight hundred tons ended up illustrated with a stone
+   * twice a man's height — a large crate, drawn to the wrong scale by a factor
+   * of five, in the one shot whose entire job is scale.
+   */
+  const mensTall = colossal ? 3.2 : 2;
+  const humanHeight = Number((objH / mensTall).toFixed(4));
   const spec = {
     type: 'scaleHaulage',
     accent,
     muted,
-    object: {w: heavy ? 0.42 : 0.3, h: heavy ? 0.1 : 0.075, label: 'the block'},
-    humanHeight: 0.062,
+    object: {w: objW, h: Number(objH.toFixed(4)), label: 'the block'},
+    humanHeight,
     humans: /\bmen|thousand|people\b/i.test(vo) ? 3 : 1,
     rollers: rolled ? 5 : 0,
     sledge: rolled,

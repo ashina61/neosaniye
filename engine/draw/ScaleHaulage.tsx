@@ -26,8 +26,8 @@ import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 import {angular, drawOn, hash01, heavy, posterizeTime, tension} from '../motion';
 import {counterValue} from '../state.mjs';
-import {Contact, Depth, Haze, MaterialDefs, MaterialFace, Motes} from './material';
-import {Arrow, Callout, Disclosure, MONO, SANS, Sheet, Ticks, weights} from './sheet';
+import {Contact, Depth, GroundPlane, Haze, MaterialDefs, MaterialFace, Motes, Sky} from './material';
+import {Arrow, Callout, Cam, Disclosure, MONO, SANS, Sheet, Ticks, weights, worldTransform} from './sheet';
 
 const CLAMP = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 
@@ -92,7 +92,9 @@ const Figure: React.FC<{x: number; y: number; height: number; colour: string; le
   );
 };
 
-export const ScaleHaulagePlate: React.FC<{spec: ScaleHaulageSpec; w: number; h: number}> = ({spec, w, h}) => {
+export const ScaleHaulagePlate: React.FC<{spec: ScaleHaulageSpec; w: number; h: number; cam?: Cam}> = ({spec, w, h, cam}) => {
+  /** The camera looks AT the world and THROUGH the sheet. */
+  const world = worldTransform(cam, w, h);
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const stepped = posterizeTime(frame, fps, 12);
@@ -142,8 +144,35 @@ export const ScaleHaulagePlate: React.FC<{spec: ScaleHaulageSpec; w: number; h: 
    * reached back to 0.11 and the haulers were drawn on top of the reference —
    * two figures in the same place, one of them a measuring instrument.
    */
-  const startX = w * 0.44;
-  const x = startX + moved;
+  const humanH = (spec.humanHeight ?? 0.075) * h;
+  const humans = Math.max(0, spec.humans ?? 2);
+
+  /**
+   * WHICH WAY IT GOES, AND WHY IT WAS GOING THE WRONG WAY.
+   *
+   * Every other part of this drawing was built for a load travelling LEFT: the
+   * haulers stand off the left edge leaning into it, the ropes leave the left
+   * face and run out of frame, the force arrow points left and is labelled
+   * PULL. The position was `startX + moved`. So the men leaned into a rope,
+   * the arrow said PULL, and the block slid the other way — a shot about cause
+   * and effect in which the effect contradicted the cause, on screen, for
+   * fourteen shots.
+   *
+   * AND THE FRAME IS BUDGETED, NOT ASSUMED. Once the load was drawn at its true
+   * size it filled four fifths of the width, and the first arrangement simply
+   * pinned it to the right margin: the haulers went off the left edge, taking
+   * the only figure in the shot with them, and a drawing whose subject is scale
+   * delivered a rectangle with no reference in it. The width is spent in order
+   * — men first, because they are the reading, then the load, and whatever is
+   * left over becomes travel.
+   */
+  const margin = w * 0.07;
+  /** What the haulers need to the left of the load, including their own width. */
+  const leadPad = w * (0.05 + Math.max(0, humans - 1) * 0.045) + w * 0.035;
+  const endLeft = margin + leadPad;
+  const travelPx = Math.max(0, Math.min(travel, w - margin - endLeft - objW));
+  const startX = endLeft + travelPx + objW / 2;
+  const x = startX - Math.min(moved, travelPx);
   /**
    * THE BLOCK STANDS ON THE GROUND, NOT IN IT.
    *
@@ -156,9 +185,6 @@ export const ScaleHaulagePlate: React.FC<{spec: ScaleHaulageSpec; w: number; h: 
   const support = (spec.rollers ?? 0) > 0 ? rollerR * 2 : 0;
   const baseY = ground - support - sledgeH - objH;
 
-  const humanH = (spec.humanHeight ?? 0.075) * h;
-  const humans = Math.max(0, spec.humans ?? 2);
-
   /**
    * THE CAMERA, SHARED BY EVERY PLANE.
    *
@@ -167,13 +193,20 @@ export const ScaleHaulagePlate: React.FC<{spec: ScaleHaulageSpec; w: number; h: 
    * is the only reason a flat drawing reads as a space. A push that scales
    * everything equally is a zoom.
    */
-  const cam = 1 + drawOn(stepped, [from, from + over * 2.2]) * 0.1;
+  // The plate's OWN push, which is what drives the parallax between planes:
+  // the world transform from the shot's camera scales every plane equally and
+  // so cannot make a space. This one can, and they compose.
+  const parallax = 1 + drawOn(stepped, [from, from + over * 2.2]) * 0.1;
   const anchor: [number, number] = [0.42, 0.62];
 
   return (
     <AbsoluteFill style={{pointerEvents: 'none'}}>
       <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{position: 'absolute', inset: 0}}>
         <Ticks colour={muted} w={w} h={h} on={on} />
+
+        {/* THE WORLD. Everything below here is what the camera is looking at;
+            the ticks above and the plates below are the sheet it is drawn on. */}
+        <g transform={world}>
 
         <MaterialDefs id="haul-stone" material="stone" colour={accent} w={w} seed="haul" />
         <MaterialDefs id="haul-wood" material="wood" colour={muted} w={w} seed="roller" />
@@ -185,7 +218,12 @@ export const ScaleHaulagePlate: React.FC<{spec: ScaleHaulageSpec; w: number; h: 
          * there is something BEHIND the block that moves at a different rate,
          * so the push reveals space instead of enlarging a rectangle.
          */}
-        <Depth plane="background" push={cam} anchor={anchor} w={w} h={h}>
+        {/* AIR ABOVE, FLOOR BELOW. Neither is an effect: they are the two
+            surfaces the drawing is standing between, and without them the
+            drawn band hangs in a black rectangle. */}
+        <Sky y={ground - h * 0.14} w={w} colour={muted} id="haul-sky" />
+
+        <Depth plane="background" push={parallax} anchor={anchor} w={w} h={h}>
           <path
             d={`M 0 ${ground - h * 0.16} L ${w * 0.22} ${ground - h * 0.21} L ${w * 0.41} ${ground - h * 0.15} ` +
                `L ${w * 0.63} ${ground - h * 0.2} L ${w * 0.84} ${ground - h * 0.145} L ${w} ${ground - h * 0.175} ` +
@@ -199,6 +237,7 @@ export const ScaleHaulagePlate: React.FC<{spec: ScaleHaulageSpec; w: number; h: 
 
         <g transform={ramp ? `rotate(${-ramp} ${w * 0.1} ${ground})` : undefined}>
           {/* THE GROUND, and the ramp if there is one. */}
+          <GroundPlane y={ground} w={w} h={h} colour={muted} id="haul-ground" />
           <line x1={0} y1={ground} x2={w} y2={ground} stroke={muted} strokeWidth={line.detail} />
           {Array.from({length: 40}, (_, i) => (
             <line
@@ -266,8 +305,8 @@ export const ScaleHaulagePlate: React.FC<{spec: ScaleHaulageSpec; w: number; h: 
            * whose absence made the first version a sticker.
            */}
           <Contact x={x} y={ground + h * 0.004} width={objW * 1.06} strength={0.85} />
-          <rect x={x - objW / 2} y={baseY} width={objW} height={objH} fill="#0d0b09" opacity={0.8} />
-          <rect x={x - objW / 2} y={baseY} width={objW} height={objH} fill={accent} opacity={0.14} />
+          <rect x={x - objW / 2} y={baseY} width={objW} height={objH} fill="#0d0b09" opacity={0.5} />
+          
           <MaterialFace id="haul-stone" material="stone" rect={{x: x - objW / 2, y: baseY, w: objW, h: objH}} w={w} />
           <rect x={x - objW / 2} y={baseY} width={objW} height={objH} fill="none" stroke={accent} strokeWidth={line.emphasis} />
           {/* Two courses of jointing, so it reads as cut stone rather than as a
@@ -346,31 +385,90 @@ export const ScaleHaulagePlate: React.FC<{spec: ScaleHaulageSpec; w: number; h: 
                   weight={line.object}
                 />
                 {force.label ? (
-                  <text
-                    x={fx + Math.cos(a) * len * 1.1}
-                    y={fy + Math.sin(a) * len * 1.1 - w * 0.012}
-                    fill={accent}
-                    fontFamily={MONO}
-                    fontSize={w * 0.02}
-                    letterSpacing="0.14em"
-                    textAnchor="middle"
-                  >
-                    {force.label.toUpperCase()}
-                  </text>
+                  /**
+                   * THE LABEL IS KEPT IN THE FRAME.
+                   *
+                   * It sits at the arrow's point, and the arrow points out of
+                   * the picture on purpose — the load is being pulled from
+                   * somewhere off-screen. So the word followed it out and the
+                   * shot delivered "ULL" against the left edge. Past the margin
+                   * the text stops travelling with the arrow and anchors to the
+                   * side it is on.
+                   */
+                  (() => {
+                    const tipX = fx + Math.cos(a) * len * 1.1;
+                    const inner = w * 0.075;
+                    const clamped = Math.max(inner, Math.min(w - inner, tipX));
+                    const anchored = clamped !== tipX;
+                    return (
+                      <text
+                        x={clamped}
+                        y={fy + Math.sin(a) * len * 1.1 - w * 0.012}
+                        fill={accent}
+                        fontFamily={MONO}
+                        fontSize={w * 0.02}
+                        letterSpacing="0.14em"
+                        textAnchor={anchored ? (clamped <= w * 0.5 ? 'start' : 'end') : 'middle'}
+                      >
+                        {force.label.toUpperCase()}
+                      </text>
+                    );
+                  })()
                 ) : null}
               </g>
             );
           })}
         </g>
 
-        {/* THE HUMAN SCALE BAR, beside the block: the height of a person,
-            marked, so the size is derived rather than asserted. */}
-        <g opacity={0.75 * on}>
-          <line x1={w * 0.055} y1={ground} x2={w * 0.055} y2={ground - humanH} stroke={muted} strokeWidth={line.detail} />
-          {[ground, ground - humanH].map((y, i) => (
-            <line key={i} x1={w * 0.04} y1={y} x2={w * 0.07} y2={y} stroke={muted} strokeWidth={line.detail} />
-          ))}
-          <Figure x={w * 0.1} y={ground} height={humanH} colour={muted} w={w} />
+        {/**
+         * THE SCALE, MEASURED AGAINST THE LOAD ITSELF.
+         *
+         * This used to be a second standing figure with a dimension bar in the
+         * left margin, and it stopped working the moment the block was drawn at
+         * its true size: a load that fills the frame's width puts its own left
+         * face exactly where the reference stood, and the drawing delivered two
+         * figures standing in the same place, one of them an instrument.
+         *
+         * A draughtsman would not have drawn a second man. He would have ticked
+         * the load's height off in man-heights against its face, which asserts
+         * nothing and measures everything — and leaves the men in the picture
+         * doing the one job they are there for, which is pulling.
+         */}
+        <g opacity={0.7 * on}>
+          {(() => {
+            const gx = x - objW / 2 + w * 0.028;
+            const men = Math.max(1, Math.round(objH / Math.max(1, humanH)));
+            return (
+              <>
+                <line x1={gx} y1={ground} x2={gx} y2={baseY} stroke={muted} strokeWidth={line.construction} />
+                {Array.from({length: men + 1}, (_, i) => {
+                  const gy = ground - Math.min(objH + (ground - baseY - objH), i * humanH);
+                  return (
+                    <line
+                      key={i}
+                      x1={gx - w * 0.011}
+                      y1={gy}
+                      x2={gx + w * 0.011}
+                      y2={gy}
+                      stroke={muted}
+                      strokeWidth={line.detail}
+                    />
+                  );
+                })}
+                <text
+                  x={gx + w * 0.02}
+                  y={baseY + objH * 0.5}
+                  fill={muted}
+                  fontFamily={MONO}
+                  fontSize={w * 0.019}
+                  letterSpacing="0.18em"
+                  dominantBaseline="middle"
+                >
+                  {`${men} × MAN`}
+                </text>
+              </>
+            );
+          })()}
         </g>
 
         {spec.distance ? (
@@ -401,7 +499,7 @@ export const ScaleHaulagePlate: React.FC<{spec: ScaleHaulageSpec; w: number; h: 
          * push read as a push. Held to a band at the ground so it never crosses
          * the block or the words.
          */}
-        <Depth plane="foreground" push={cam} anchor={anchor} w={w} h={h}>
+        <Depth plane="foreground" push={parallax} anchor={anchor} w={w} h={h}>
           <Motes w={w} h={h} colour={muted} count={14} seed="haul-dust" air={0.8} band={[0.56, 0.68]} />
         </Depth>
 
@@ -417,6 +515,7 @@ export const ScaleHaulagePlate: React.FC<{spec: ScaleHaulageSpec; w: number; h: 
             at={from + (note.at ?? 16 + i * 7)}
           />
         ))}
+        </g>
       </svg>
 
       {spec.figure ? (

@@ -2783,11 +2783,11 @@
         "accent": "#e8a020",
         "muted": "#cfc6ae",
         "object": {
-          "w": 0.3,
-          "h": 0.075,
+          "w": 0.7,
+          "h": 0.0856,
           "label": "the block"
         },
-        "humanHeight": 0.062,
+        "humanHeight": 0.0267,
         "humans": 1,
         "rollers": 0,
         "sledge": false,
@@ -2856,11 +2856,11 @@
         "accent": "#e8a020",
         "muted": "#cfc6ae",
         "object": {
-          "w": 0.3,
-          "h": 0.075,
+          "w": 0.7,
+          "h": 0.0856,
           "label": "the block"
         },
-        "humanHeight": 0.062,
+        "humanHeight": 0.0267,
         "humans": 1,
         "rollers": 0,
         "sledge": false,
