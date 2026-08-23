@@ -1,0 +1,913 @@
+{
+  "episode": "hormuz",
+  "generatedFrom": {
+    "brief": "brief.json",
+    "review": "assets.review.json",
+    "voice": null
+  },
+  "concept": {
+    "title": "One door",
+    "mood": "cold-noir",
+    "hook": {
+      "line": "At its narrowest the Strait of Hormuz is twenty-one miles across.",
+      "beat": "HOOK",
+      "idea": "the single strongest image in the story, held tight",
+      "demands": "the strongest, most specific image available — never a texture, never a stand-in"
+    },
+    "ending": {
+      "line": "Twenty-one miles of water, and there is no substitute for any of it.",
+      "beat": "VERDICT",
+      "idea": "the closing claim, typographic and still",
+      "claim": "Twenty-one",
+      "demands": "one shot: the strongest relevant image, the claim over it, then a hold and a hard out"
+    }
+  },
+  "beats": [
+    {
+      "line": "narrow",
+      "beat": "HOOK",
+      "pace": "fast",
+      "holdsAfter": false,
+      "emphasis": "Strait",
+      "visualIdea": "the single strongest image in the story, held tight",
+      "viewerShouldNotice": "the words \"Strait\" and the thing in frame they refer to"
+    },
+    {
+      "line": "lanes",
+      "beat": "EVIDENCE",
+      "pace": "medium",
+      "holdsAfter": false,
+      "emphasis": "two miles",
+      "visualIdea": "the figure, proven on screen",
+      "viewerShouldNotice": "the words \"two miles\" and the thing in frame they refer to"
+    },
+    {
+      "line": "volume",
+      "beat": "DETAIL",
+      "pace": "fast",
+      "holdsAfter": false,
+      "emphasis": "twenty million",
+      "visualIdea": "one part of the whole, magnified",
+      "viewerShouldNotice": "the words \"twenty million\" and the thing in frame they refer to"
+    },
+    {
+      "line": "share",
+      "beat": "CONTEXT",
+      "pace": "medium",
+      "holdsAfter": false,
+      "emphasis": "everything",
+      "visualIdea": "the setting, established",
+      "viewerShouldNotice": "the words \"everything\" and the thing in frame they refer to"
+    },
+    {
+      "line": "nobypass",
+      "beat": "EVIDENCE",
+      "pace": "medium",
+      "holdsAfter": false,
+      "emphasis": "one",
+      "visualIdea": "the figure, proven on screen",
+      "viewerShouldNotice": "the words \"one\" and the thing in frame they refer to"
+    },
+    {
+      "line": "shores",
+      "beat": "CONTEXT",
+      "pace": "medium",
+      "holdsAfter": false,
+      "emphasis": "Oman",
+      "visualIdea": "the setting, established",
+      "viewerShouldNotice": "the words \"Oman\" and the thing in frame they refer to"
+    },
+    {
+      "line": "grounding",
+      "beat": "EVIDENCE",
+      "pace": "medium",
+      "holdsAfter": false,
+      "emphasis": "One",
+      "visualIdea": "the figure, proven on screen",
+      "viewerShouldNotice": "the words \"One\" and the thing in frame they refer to"
+    },
+    {
+      "line": "price",
+      "beat": "DETAIL",
+      "pace": "fast",
+      "holdsAfter": false,
+      "emphasis": "warship",
+      "visualIdea": "one part of the whole, magnified",
+      "viewerShouldNotice": "the words \"warship\" and the thing in frame they refer to"
+    },
+    {
+      "line": "close",
+      "beat": "VERDICT",
+      "pace": "slow",
+      "holdsAfter": true,
+      "emphasis": "Twenty-one",
+      "visualIdea": "the closing claim, typographic and still",
+      "viewerShouldNotice": "the words \"Twenty-one\" and the thing in frame they refer to"
+    }
+  ],
+  "assets": {
+    "colourCentre": {
+      "brightness": 0.44,
+      "colourfulness": 0.12
+    },
+    "decisions": [],
+    "recast": [],
+    "required": []
+  },
+  "shots": [
+    {
+      "id": "s01-narrow",
+      "template": "title-slate",
+      "seconds": 2.13,
+      "camera": {
+        "from": 1,
+        "to": 1.53,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": null,
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": null,
+      "reveal": null,
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [
+        "plaque"
+      ],
+      "hierarchy": {
+        "primary": "the claim",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s01-narrow-b",
+      "template": "composite",
+      "seconds": 2.5,
+      "camera": {
+        "from": 1.2,
+        "to": 1.28,
+        "panX": null,
+        "panY": -207
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e6e2d6) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "PROCEDURAL",
+      "drawn": "measurement",
+      "emphasis": "Hormuz",
+      "reveal": "punch",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [],
+      "hierarchy": {
+        "primary": "the claim: \"Hormuz\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s02-lanes",
+      "template": "title-slate",
+      "seconds": 2.13,
+      "camera": {
+        "from": 1.19,
+        "to": 1.2,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e6e2d6) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": null,
+      "reveal": null,
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the claim",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s02-lanes-b",
+      "template": "composite",
+      "seconds": 1.73,
+      "camera": {
+        "from": 1,
+        "to": 1.4,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e6e2d6) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "PROCEDURAL",
+      "drawn": "measurement",
+      "emphasis": "two miles",
+      "reveal": "blur",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [
+        "beam"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"two miles\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s02-lanes-c",
+      "template": "composite",
+      "seconds": 2.5,
+      "camera": {
+        "from": 1.21,
+        "to": 1.18,
+        "panX": 166,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "rule onto rule (measurement → measurement)"
+      },
+      "representation": "PROCEDURAL",
+      "drawn": "measurement",
+      "emphasis": "One",
+      "reveal": "punch",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [],
+      "hierarchy": {
+        "primary": "the claim: \"One\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s03-volume",
+      "template": "title-slate",
+      "seconds": 1.73,
+      "camera": {
+        "from": 1.05,
+        "to": 1.04,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e6e2d6) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": null,
+      "reveal": null,
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the claim",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s03-volume-b",
+      "template": "composite",
+      "seconds": 2.13,
+      "camera": {
+        "from": 1.03,
+        "to": 1.44,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e6e2d6) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "through",
+      "reveal": "punch",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [
+        "beam"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"through\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s03-volume-c",
+      "template": "composite",
+      "seconds": 2.13,
+      "camera": {
+        "from": 1.21,
+        "to": 1.29,
+        "panX": null,
+        "panY": 150
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e6e2d6) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "single",
+      "reveal": "blur",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"single\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s04-share",
+      "template": "composite",
+      "seconds": 2.5,
+      "camera": {
+        "from": 1.44,
+        "to": 1.03,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e6e2d6) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "close",
+      "reveal": "punch",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [
+        "beam"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"close\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s04-share-b",
+      "template": "composite",
+      "seconds": 2.13,
+      "camera": {
+        "from": 1.16,
+        "to": 1.29,
+        "panX": 163,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e6e2d6) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "everything",
+      "reveal": "punch",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"everything\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s05-nobypass",
+      "template": "composite",
+      "seconds": 2.5,
+      "camera": {
+        "from": 1,
+        "to": 1.45,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e6e2d6) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "around",
+      "reveal": "blur",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [
+        "beam"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"around\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s05-nobypass-b",
+      "template": "composite",
+      "seconds": 2.13,
+      "camera": {
+        "from": 1.17,
+        "to": 1.25,
+        "panX": 176,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e6e2d6) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "one",
+      "reveal": "wipe",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"one\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s05-nobypass-c",
+      "template": "composite",
+      "seconds": 2.13,
+      "camera": {
+        "from": 1.02,
+        "to": 1.41,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e6e2d6) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "door",
+      "reveal": "rise",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [
+        "beam"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"door\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s06-shores",
+      "template": "composite",
+      "seconds": 2.13,
+      "camera": {
+        "from": 1.18,
+        "to": 1.26,
+        "panX": 270,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e6e2d6) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "northern",
+      "reveal": "rise",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"northern\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s06-shores-b",
+      "template": "composite",
+      "seconds": 1.73,
+      "camera": {
+        "from": 1.58,
+        "to": 1.01,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e6e2d6) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "holds",
+      "reveal": "blur",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [
+        "beam"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"holds\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s06-shores-c",
+      "template": "composite",
+      "seconds": 2.87,
+      "camera": {
+        "from": 1.21,
+        "to": 1.31,
+        "panX": -215,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e6e2d6) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "Omani",
+      "reveal": "punch",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"Omani\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s07-grounding",
+      "template": "title-slate",
+      "seconds": 1.5,
+      "camera": {
+        "from": 1.03,
+        "to": 1.06,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e6e2d6) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": null,
+      "reveal": null,
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [],
+      "hierarchy": {
+        "primary": "the claim",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s07-grounding-b",
+      "template": "composite",
+      "seconds": 2.87,
+      "camera": {
+        "from": 1.02,
+        "to": 1.45,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e6e2d6) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "two-mile",
+      "reveal": "blur",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [
+        "beam",
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"two-mile\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s07-grounding-c",
+      "template": "composite",
+      "seconds": 1.5,
+      "camera": {
+        "from": 1.04,
+        "to": 1.04,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e6e2d6) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "weeks",
+      "reveal": "punch",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [
+        "beam"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"weeks\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s08-price",
+      "template": "composite",
+      "seconds": 2.5,
+      "camera": {
+        "from": 1.03,
+        "to": 1.04,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e6e2d6) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "Every",
+      "reveal": "punch",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"Every\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s08-price-b",
+      "template": "composite",
+      "seconds": 2.5,
+      "camera": {
+        "from": 1.2,
+        "to": 1.27,
+        "panX": null,
+        "panY": 233
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e6e2d6) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "warship",
+      "reveal": "rise",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [
+        "beam"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"warship\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s09-close",
+      "template": "title-slate",
+      "seconds": 3.93,
+      "camera": {
+        "from": 1,
+        "to": 1.09,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e6e2d6) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": null,
+      "reveal": null,
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [
+        "plaque",
+        "newspaper"
+      ],
+      "hierarchy": {
+        "primary": "the claim",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    }
+  ],
+  "representation": {
+    "narrow": {
+      "mode": "DIAGRAM",
+      "why": "a magnitude means more beside something than it does alone",
+      "drawn": "measurement"
+    },
+    "lanes": {
+      "mode": "DIAGRAM",
+      "why": "a magnitude means more beside something than it does alone",
+      "drawn": "measurement"
+    },
+    "volume": {
+      "mode": "TYPOGRAPHY",
+      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
+      "drawn": null
+    },
+    "share": {
+      "mode": "TYPOGRAPHY",
+      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
+      "drawn": null
+    },
+    "nobypass": {
+      "mode": "TYPOGRAPHY",
+      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
+      "drawn": null
+    },
+    "shores": {
+      "mode": "TYPOGRAPHY",
+      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
+      "drawn": null
+    },
+    "grounding": {
+      "mode": "TYPOGRAPHY",
+      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
+      "drawn": null
+    },
+    "price": {
+      "mode": "TYPOGRAPHY",
+      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
+      "drawn": null
+    },
+    "close": {
+      "mode": "DIAGRAM",
+      "why": "a magnitude means more beside something than it does alone",
+      "drawn": "measurement"
+    }
+  },
+  "quotas": {
+    "camera": {
+      "push": 6,
+      "tilt": 3,
+      "pan": 6,
+      "hold": 4,
+      "pull": 2,
+      "drift": 1
+    },
+    "transition": {
+      "cut": 21
+    },
+    "framing": {},
+    "cut": {
+      "HARD_CUT": 20,
+      "MATCH_CUT": 1
+    }
+  },
+  "editing": {
+    "tally": {
+      "HARD_CUT": 20,
+      "MATCH_CUT": 1
+    },
+    "hardRatio": 1,
+    "total": 21,
+    "note": "HARD_CUT and MATCH_CUT are both made of nothing; the difference is that a match cut was earned"
+  },
+  "typography": {
+    "system": "one family per semantic role — statement, body, label, figure",
+    "accent": "#e6e2d6",
+    "note": "the emphasis is the only element allowed the accent colour in a shot"
+  },
+  "colourStrategy": {
+    "accent": "#e6e2d6",
+    "field": "wash",
+    "fieldColours": [
+      "#2c3340",
+      "#171c26",
+      "#080a0f"
+    ],
+    "grade": {
+      "saturate": 0.5,
+      "contrast": 1.2,
+      "sepia": 0.18,
+      "brightness": 0.92
+    },
+    "note": "one accent across the reel; the grade moves only where the sentence earns it"
+  },
+  "limitations": [
+    "cut to an estimate — no voiceover measured yet"
+  ]
+}

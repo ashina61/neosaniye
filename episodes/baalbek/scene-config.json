@@ -1,0 +1,1311 @@
+{
+  "id": "baalbek",
+  "title": "The stones nobody could lift",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "look": {
+    "posterizeFps": 12,
+    "grade": {
+      "saturate": 0.37,
+      "contrast": 1.16,
+      "sepia": 0.12,
+      "brightness": 1.01
+    },
+    "film": {
+      "grain": true,
+      "grunge": true,
+      "scanlines": true,
+      "vignette": true,
+      "gateWeave": true,
+      "grainOpacity": 0.46,
+      "grungeOpacity": 0.14,
+      "scanlineOpacity": 0.06,
+      "scanlinePeriod": 9,
+      "vignetteStrength": 0.55,
+      "weavePx": 4,
+      "weaveScale": 1.016
+    }
+  },
+  "scenes": [
+    {
+      "id": "s01-blocks",
+      "sceneType": "title-slate",
+      "voText": "Under a Roman temple",
+      "durationInFrames": 52,
+      "assets": {},
+      "params": {
+        "scrim": 0.37,
+        "kicker": "BAALBEK · LEBANON",
+        "title": "",
+        "footer": "",
+        "titleFrame": 4,
+        "titleSize": 124,
+        "creep": 1.048,
+        "accent": "#d94f3d",
+        "field": "spotlight",
+        "fieldColours": [
+          "#33373a",
+          "#1c1f21",
+          "#0a0b0c"
+        ],
+        "mark": "underline",
+        "markX": 260,
+        "markY": 1160,
+        "markWidth": 560,
+        "markHeight": 96,
+        "markFrame": 18,
+        "pushEndFrame": 50,
+        "pushFrom": 1,
+        "pushTo": 1.52,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "BAALBEK · LEBANON",
+          "depth": 0.52,
+          "x": 335,
+          "y": 1387,
+          "width": 429,
+          "rotate": 1.9,
+          "from": 44
+        }
+      ]
+    },
+    {
+      "id": "s01-blocks-b",
+      "sceneType": "composite",
+      "voText": "in Lebanon sit three blocks",
+      "durationInFrames": 64,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.21,
+          "x": 813,
+          "y": -88,
+          "width": 277,
+          "rotate": -17,
+          "opacity": 0.81,
+          "colour": "#d94f3d",
+          "from": 54
+        },
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.7,
+          "x": 684,
+          "y": 453,
+          "width": 323,
+          "colour": "#d94f3d",
+          "from": 0
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.25,
+        "pushTo": 1.23,
+        "pushEndFrame": 58,
+        "accent": "#d94f3d",
+        "field": "spotlight",
+        "fieldColours": [
+          "#33373a",
+          "#1c1f21",
+          "#0a0b0c"
+        ],
+        "glowX": 1358,
+        "glowY": 169,
+        "glowSize": 352,
+        "glowIntensity": 0.64,
+        "glowWarm": "#d94f3d",
+        "glowDepth": 0.1,
+        "caption": [
+          "in Lebanon",
+          "sit three",
+          "blocks"
+        ],
+        "captionX": 81,
+        "captionY": 638,
+        "captionSize": 136,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 7,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panY": 203,
+        "shakeAt": [
+          5
+        ],
+        "shakeAmount": 21,
+        "captionEmphasis": "three",
+        "captionReveal": "rise",
+        "captionMark": "underline",
+        "captionWordEvery": 3,
+        "cameraMove": "tilt",
+        "cameraPurpose": "a vertical reveal — height, depth, or a drop"
+      }
+    },
+    {
+      "id": "s01-blocks-c",
+      "sceneType": "composite",
+      "voText": "no crane today could lift.",
+      "durationInFrames": 64,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "BAALBEK · LEBANON",
+          "depth": 0.57,
+          "x": 366,
+          "y": 242,
+          "width": 385,
+          "rotate": -1.2,
+          "from": 54
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1.04,
+        "pushTo": 1.48,
+        "pushEndFrame": 59,
+        "accent": "#d94f3d",
+        "field": "spotlight",
+        "fieldColours": [
+          "#33373a",
+          "#1c1f21",
+          "#0a0b0c"
+        ],
+        "glowX": 1583,
+        "glowY": 348,
+        "glowSize": 530,
+        "glowIntensity": 0.52,
+        "glowWarm": "#d94f3d",
+        "glowDepth": 0.1,
+        "caption": [
+          "no",
+          "crane",
+          "today",
+          "could",
+          "lift"
+        ],
+        "captionX": 81,
+        "captionY": 331,
+        "captionSize": 184,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 9,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "crane",
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      }
+    },
+    {
+      "id": "s02-weight",
+      "sceneType": "title-slate",
+      "voText": "Each weighs about eight hundred tons.",
+      "durationInFrames": 75,
+      "assets": {},
+      "params": {
+        "scrim": 0.47,
+        "kicker": "",
+        "title": "EIGHT HUNDRED TONS",
+        "footer": "",
+        "titleFrame": 60,
+        "titleSize": 230,
+        "creep": 1.063,
+        "accent": "#d94f3d",
+        "field": "spotlight",
+        "fieldColours": [
+          "#33373a",
+          "#1c1f21",
+          "#0a0b0c"
+        ],
+        "spinTo": "EIGHT HUNDRED TONS",
+        "spinReel": [
+          "THOUSAND",
+          "HUNDRED",
+          "MILLION",
+          "BILLION",
+          "FIFTY",
+          "TWENTY"
+        ],
+        "spinFrames": 9,
+        "mark": "underline",
+        "markX": 260,
+        "markY": 820,
+        "markWidth": 560,
+        "markHeight": 300,
+        "markFrame": 26,
+        "pushEndFrame": 73,
+        "pushFrom": 1.04,
+        "pushTo": 1.05,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      },
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.71,
+          "x": 347,
+          "y": 520,
+          "width": 327,
+          "colour": "#d94f3d",
+          "from": 17
+        }
+      ]
+    },
+    {
+      "id": "s02-weight-b",
+      "sceneType": "composite",
+      "voText": "The one still",
+      "durationInFrames": 45,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.3,
+          "x": 929,
+          "y": 29,
+          "width": 289,
+          "rotate": -16,
+          "opacity": 0.75,
+          "colour": "#d94f3d",
+          "from": 0
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.05,
+        "pushTo": 1.32,
+        "pushEndFrame": 43,
+        "accent": "#d94f3d",
+        "field": "spotlight",
+        "fieldColours": [
+          "#33373a",
+          "#1c1f21",
+          "#0a0b0c"
+        ],
+        "glowX": 1288,
+        "glowY": 573,
+        "glowSize": 315,
+        "glowIntensity": 0.65,
+        "glowWarm": "#d94f3d",
+        "glowDepth": 0.1,
+        "caption": [
+          "The one still"
+        ],
+        "captionX": 84,
+        "captionY": 307,
+        "captionSize": 85,
+        "captionAlign": "left",
+        "captionFrame": 28,
+        "captionEvery": 9,
+        "captionScrim": 0.38,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "one",
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "diagram": {
+        "type": "measurement",
+        "value": 800,
+        "unit": "tons",
+        "accent": "#d94f3d",
+        "muted": "#cfc6ae",
+        "from": 0,
+        "over": 1
+      }
+    },
+    {
+      "id": "s02-weight-c",
+      "sceneType": "composite",
+      "voText": "in the quarry weighs sixteen hundred.",
+      "durationInFrames": 75,
+      "assets": {},
+      "layers": [],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1.23,
+        "pushTo": 1.25,
+        "pushEndFrame": 71,
+        "accent": "#d94f3d",
+        "field": "spotlight",
+        "fieldColours": [
+          "#33373a",
+          "#1c1f21",
+          "#0a0b0c"
+        ],
+        "glowX": 1401,
+        "glowY": 596,
+        "glowSize": 524,
+        "glowIntensity": 0.53,
+        "glowWarm": "#d94f3d",
+        "glowDepth": 0.1,
+        "caption": [
+          "in the quarry weighs",
+          "sixteen hundred"
+        ],
+        "captionX": 84,
+        "captionY": 307,
+        "captionSize": 55,
+        "captionAlign": "left",
+        "captionFrame": 41,
+        "captionEvery": 10,
+        "captionScrim": 0.38,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panY": -194,
+        "captionEmphasis": "sixteen hundred",
+        "captionReveal": "wipe",
+        "captionMark": "box",
+        "captionWordEvery": 2,
+        "cameraMove": "tilt",
+        "cameraPurpose": "a vertical reveal — height, depth, or a drop"
+      },
+      "diagram": {
+        "type": "measurement",
+        "value": 800,
+        "unit": "tons",
+        "accent": "#d94f3d",
+        "muted": "#cfc6ae",
+        "from": 0,
+        "over": 1
+      }
+    },
+    {
+      "id": "s03-quarry",
+      "sceneType": "composite",
+      "voText": "They were cut from bedrock half a mile uphill",
+      "durationInFrames": 108,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "rect",
+          "depth": 0.58,
+          "x": 405,
+          "y": 407,
+          "width": 407,
+          "colour": "#d94f3d",
+          "from": 51
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1.38,
+        "pushTo": 1.04,
+        "pushEndFrame": 97,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
+        "glowWarm": "#d94f3d",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "spotlight",
+        "fieldColours": [
+          "#33373a",
+          "#1c1f21",
+          "#0a0b0c"
+        ],
+        "caption": [
+          "They were cut",
+          "from bedrock",
+          "half a mile",
+          "uphill"
+        ],
+        "captionX": 81,
+        "captionY": 634,
+        "captionSize": 104,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 8,
+        "captionScrim": 0,
+        "captionRecedeAt": 78,
+        "accent": "#d94f3d",
+        "motif": "route",
+        "motifStops": [
+          "The quarry",
+          "The slope",
+          "The podium"
+        ],
+        "motifFrame": 92,
+        "motifColour": "#d94f3d",
+        "handheld": 1.5,
+        "captionEmphasis": "bedrock",
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 2,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something",
+        "motifY": 442
+      }
+    },
+    {
+      "id": "s03-quarry-b",
+      "sceneType": "composite",
+      "voText": "from where they sit.",
+      "durationInFrames": 52,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.36,
+          "x": 929,
+          "y": -84,
+          "width": 265,
+          "rotate": -16,
+          "opacity": 0.59,
+          "colour": "#d94f3d",
+          "from": 44
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.03,
+        "pushTo": 1.06,
+        "pushEndFrame": 47,
+        "accent": "#d94f3d",
+        "field": "spotlight",
+        "fieldColours": [
+          "#33373a",
+          "#1c1f21",
+          "#0a0b0c"
+        ],
+        "glowX": 1430,
+        "glowY": 495,
+        "glowSize": 367,
+        "glowIntensity": 0.52,
+        "glowWarm": "#d94f3d",
+        "glowDepth": 0.1,
+        "caption": [
+          "from where",
+          "they sit"
+        ],
+        "captionX": 81,
+        "captionY": 720,
+        "captionSize": 136,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 10,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 3,
+        "captionEmphasis": "where",
+        "captionReveal": "punch",
+        "captionMark": "none",
+        "captionWordEvery": 4,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      }
+    },
+    {
+      "id": "s04-nolift",
+      "sceneType": "composite",
+      "voText": "No pulley of the period could take",
+      "durationInFrames": 86,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "rect",
+          "depth": 0.85,
+          "x": 447,
+          "y": 487,
+          "width": 370,
+          "colour": "#d94f3d",
+          "from": 73
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1.23,
+        "pushTo": 1.19,
+        "pushEndFrame": 84,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
+        "glowWarm": "#d94f3d",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "spotlight",
+        "fieldColours": [
+          "#33373a",
+          "#1c1f21",
+          "#0a0b0c"
+        ],
+        "caption": [
+          "No pulley",
+          "of the period",
+          "could take"
+        ],
+        "captionX": 81,
+        "captionY": 696,
+        "captionSize": 104,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 9,
+        "captionScrim": 0,
+        "captionRecedeAt": 62,
+        "accent": "#d94f3d",
+        "handheld": 1.5,
+        "panX": 257,
+        "captionEmphasis": "pulley",
+        "captionReveal": "rise",
+        "captionMark": "box",
+        "captionWordEvery": 3,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      }
+    },
+    {
+      "id": "s04-nolift-b",
+      "sceneType": "composite",
+      "voText": "that load.",
+      "durationInFrames": 45,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.22,
+          "x": 937,
+          "y": -65,
+          "width": 252,
+          "rotate": -15,
+          "opacity": 0.84,
+          "colour": "#d94f3d",
+          "from": 38
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.53,
+        "pushTo": 1.04,
+        "pushEndFrame": 41,
+        "accent": "#d94f3d",
+        "field": "spotlight",
+        "fieldColours": [
+          "#33373a",
+          "#1c1f21",
+          "#0a0b0c"
+        ],
+        "glowX": 1430,
+        "glowY": 245,
+        "glowSize": 367,
+        "glowIntensity": 0.56,
+        "glowWarm": "#d94f3d",
+        "glowDepth": 0.1,
+        "caption": [
+          "that load"
+        ],
+        "captionX": 81,
+        "captionY": 793,
+        "captionSize": 151,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 8,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "load",
+        "captionReveal": "blur",
+        "captionMark": "highlight",
+        "captionWordEvery": 3,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      }
+    },
+    {
+      "id": "s04-nolift-c",
+      "sceneType": "composite",
+      "voText": "No rope would hold it.",
+      "durationInFrames": 64,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.59,
+          "x": 447,
+          "y": 347,
+          "width": 362,
+          "colour": "#d94f3d",
+          "from": 54
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1,
+        "pushTo": 1.11,
+        "pushEndFrame": 62,
+        "accent": "#d94f3d",
+        "field": "spotlight",
+        "fieldColours": [
+          "#33373a",
+          "#1c1f21",
+          "#0a0b0c"
+        ],
+        "glowX": 1392,
+        "glowY": 390,
+        "glowSize": 512,
+        "glowIntensity": 0.5,
+        "glowWarm": "#d94f3d",
+        "glowDepth": 0.1,
+        "caption": [
+          "No rope",
+          "would",
+          "hold it"
+        ],
+        "captionX": 81,
+        "captionY": 552,
+        "captionSize": 184,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 9,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panY": -28,
+        "roll": -0.38,
+        "captionEmphasis": "would",
+        "captionReveal": "blur",
+        "captionMark": "underline",
+        "captionWordEvery": 4,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      }
+    },
+    {
+      "id": "s05-rolled",
+      "sceneType": "composite",
+      "voText": "So the Romans did not lift them.",
+      "durationInFrames": 86,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.18,
+          "x": 921,
+          "y": 115,
+          "width": 303,
+          "rotate": -12,
+          "opacity": 0.72,
+          "colour": "#d94f3d",
+          "from": 73
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1.24,
+        "pushTo": 1.2,
+        "pushEndFrame": 81,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
+        "glowWarm": "#d94f3d",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "spotlight",
+        "fieldColours": [
+          "#33373a",
+          "#1c1f21",
+          "#0a0b0c"
+        ],
+        "caption": [
+          "So the Romans",
+          "did not",
+          "lift them"
+        ],
+        "captionX": 81,
+        "captionY": 696,
+        "captionSize": 104,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 7,
+        "captionScrim": 0,
+        "captionRecedeAt": 62,
+        "accent": "#d94f3d",
+        "motif": "route",
+        "motifX": 141,
+        "motifY": 561,
+        "motifSize": 210,
+        "motifCount": 1,
+        "motifFrame": 29,
+        "motifColour": "#d94f3d",
+        "motifOpacity": 0.84,
+        "handheld": 1.5,
+        "panX": 186,
+        "captionEmphasis": "Romans",
+        "captionReveal": "punch",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      }
+    },
+    {
+      "id": "s05-rolled-b",
+      "sceneType": "composite",
+      "voText": "They rolled them.",
+      "durationInFrames": 45,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.76,
+          "x": 334,
+          "y": 322,
+          "width": 413,
+          "colour": "#d94f3d",
+          "from": 38
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1,
+        "pushTo": 1.09,
+        "pushEndFrame": 42,
+        "accent": "#d94f3d",
+        "field": "spotlight",
+        "fieldColours": [
+          "#33373a",
+          "#1c1f21",
+          "#0a0b0c"
+        ],
+        "glowX": 1441,
+        "glowY": 120,
+        "glowSize": 376,
+        "glowIntensity": 0.63,
+        "glowWarm": "#d94f3d",
+        "glowDepth": 0.1,
+        "caption": [
+          "They",
+          "rolled",
+          "them"
+        ],
+        "captionX": 81,
+        "captionY": 552,
+        "captionSize": 184,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 9,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panY": -30,
+        "roll": 0.53,
+        "captionEmphasis": "rolled",
+        "captionReveal": "rise",
+        "captionMark": "underline",
+        "captionWordEvery": 3,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      }
+    },
+    {
+      "id": "s06-cradle",
+      "sceneType": "composite",
+      "voText": "Hardwood rollers under a timber cradle,",
+      "durationInFrames": 75,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.2,
+          "x": 929,
+          "y": -55,
+          "width": 317,
+          "rotate": -16,
+          "opacity": 0.67,
+          "colour": "#d94f3d",
+          "from": 64
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1,
+        "pushTo": 1.11,
+        "pushEndFrame": 69,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
+        "glowWarm": "#d94f3d",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "spotlight",
+        "fieldColours": [
+          "#33373a",
+          "#1c1f21",
+          "#0a0b0c"
+        ],
+        "caption": [
+          "Hardwood",
+          "rollers",
+          "under a",
+          "timber",
+          "cradle"
+        ],
+        "captionX": 81,
+        "captionY": 373,
+        "captionSize": 170,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 8,
+        "captionScrim": 0,
+        "captionRecedeAt": 54,
+        "accent": "#d94f3d",
+        "handheld": 1.5,
+        "panY": -69,
+        "roll": 0.46,
+        "captionEmphasis": "Hardwood",
+        "captionReveal": "punch",
+        "captionMark": "underline",
+        "captionWordEvery": 3,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      }
+    },
+    {
+      "id": "s06-cradle-b",
+      "sceneType": "composite",
+      "voText": "and capstans hauling on ropes ahead.",
+      "durationInFrames": 75,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "rect",
+          "depth": 0.68,
+          "x": 415,
+          "y": 430,
+          "width": 316,
+          "colour": "#d94f3d",
+          "from": 64
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.23,
+        "pushTo": 1.26,
+        "pushEndFrame": 71,
+        "accent": "#d94f3d",
+        "field": "spotlight",
+        "fieldColours": [
+          "#33373a",
+          "#1c1f21",
+          "#0a0b0c"
+        ],
+        "glowX": 1612,
+        "glowY": 344,
+        "glowSize": 534,
+        "glowIntensity": 0.66,
+        "glowWarm": "#d94f3d",
+        "glowDepth": 0.1,
+        "caption": [
+          "and capstans",
+          "hauling",
+          "on ropes",
+          "ahead"
+        ],
+        "captionX": 81,
+        "captionY": 612,
+        "captionSize": 113,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 8,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panX": 265,
+        "captionEmphasis": "capstans",
+        "captionReveal": "rise",
+        "captionMark": "box",
+        "captionWordEvery": 4,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      }
+    },
+    {
+      "id": "s07-men",
+      "sceneType": "title-slate",
+      "voText": "Roughly a thousand men on those ropes,",
+      "durationInFrames": 86,
+      "assets": {},
+      "params": {
+        "scrim": 0.5,
+        "kicker": "",
+        "title": "THOUSAND MEN",
+        "footer": "",
+        "titleFrame": 71,
+        "titleSize": 230,
+        "creep": 1.056,
+        "accent": "#d94f3d",
+        "field": "spotlight",
+        "fieldColours": [
+          "#33373a",
+          "#1c1f21",
+          "#0a0b0c"
+        ],
+        "spinTo": "THOUSAND MEN",
+        "spinReel": [
+          "THOUSAND",
+          "HUNDRED",
+          "MILLION",
+          "BILLION",
+          "FIFTY",
+          "TWENTY"
+        ],
+        "spinFrames": 9,
+        "mark": "underline",
+        "markX": 260,
+        "markY": 820,
+        "markWidth": 560,
+        "markHeight": 300,
+        "markFrame": 29,
+        "pushEndFrame": 78,
+        "pushFrom": 1.03,
+        "pushTo": 1.05,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      },
+      "onScreenText": [
+        {
+          "text": "A FEW FEET AN HOUR",
+          "atFrame": 52,
+          "durationInFrames": 28,
+          "style": "sticker",
+          "position": "bottom"
+        }
+      ]
+    },
+    {
+      "id": "s07-men-b",
+      "sceneType": "composite",
+      "voText": "moving the block a few feet an hour.",
+      "durationInFrames": 97,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.3,
+          "x": 1011,
+          "y": -19,
+          "width": 332,
+          "rotate": -16,
+          "opacity": 0.56,
+          "colour": "#d94f3d",
+          "from": 82
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.2,
+        "pushTo": 1.31,
+        "pushEndFrame": 88,
+        "accent": "#d94f3d",
+        "field": "spotlight",
+        "fieldColours": [
+          "#33373a",
+          "#1c1f21",
+          "#0a0b0c"
+        ],
+        "glowX": 1413,
+        "glowY": 226,
+        "glowSize": 451,
+        "glowIntensity": 0.66,
+        "glowWarm": "#d94f3d",
+        "glowDepth": 0.1,
+        "caption": [
+          "moving the block",
+          "a few feet an hour"
+        ],
+        "captionX": 84,
+        "captionY": 307,
+        "captionSize": 62,
+        "captionAlign": "left",
+        "captionFrame": 43,
+        "captionEvery": 7,
+        "captionScrim": 0.38,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panX": 146,
+        "captionEmphasis": "moving",
+        "captionReveal": "wipe",
+        "captionMark": "box",
+        "captionWordEvery": 3,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      },
+      "diagram": {
+        "type": "measurement",
+        "value": 1000,
+        "unit": "men",
+        "accent": "#d94f3d",
+        "muted": "#cfc6ae",
+        "from": 0,
+        "over": 1
+      }
+    },
+    {
+      "id": "s08-level",
+      "sceneType": "composite",
+      "voText": "It took months. The stones were never lifted,",
+      "durationInFrames": 97,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.56,
+          "x": 386,
+          "y": 254,
+          "width": 394,
+          "colour": "#d94f3d",
+          "from": 49
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1.62,
+        "pushTo": 1.01,
+        "pushEndFrame": 92,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
+        "glowWarm": "#d94f3d",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "spotlight",
+        "fieldColours": [
+          "#33373a",
+          "#1c1f21",
+          "#0a0b0c"
+        ],
+        "caption": [
+          "It took",
+          "months.",
+          "The stones",
+          "were never",
+          "lifted"
+        ],
+        "captionX": 81,
+        "captionY": 475,
+        "captionSize": 136,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 6,
+        "captionScrim": 0,
+        "captionRecedeAt": 70,
+        "accent": "#d94f3d",
+        "motif": "tally",
+        "motifX": 140,
+        "motifY": 401,
+        "motifSize": 88,
+        "motifCount": 14,
+        "motifFrame": 82,
+        "motifColour": "#d94f3d",
+        "motifOpacity": 0.98,
+        "handheld": 1.5,
+        "captionEmphasis": "The",
+        "captionReveal": "punch",
+        "captionMark": "underline",
+        "captionWordEvery": 2,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      }
+    },
+    {
+      "id": "s08-level-b",
+      "sceneType": "composite",
+      "voText": "only slid, level, on wood.",
+      "durationInFrames": 64,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.32,
+          "x": 814,
+          "y": 36,
+          "width": 332,
+          "rotate": -16,
+          "opacity": 0.79,
+          "colour": "#d94f3d",
+          "from": 54
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.21,
+        "pushTo": 1.27,
+        "pushEndFrame": 58,
+        "accent": "#d94f3d",
+        "field": "spotlight",
+        "fieldColours": [
+          "#33373a",
+          "#1c1f21",
+          "#0a0b0c"
+        ],
+        "glowX": 1403,
+        "glowY": 576,
+        "glowSize": 417,
+        "glowIntensity": 0.41,
+        "glowWarm": "#d94f3d",
+        "glowDepth": 0.1,
+        "caption": [
+          "only",
+          "slid,",
+          "level,",
+          "on wood"
+        ],
+        "captionX": 81,
+        "captionY": 442,
+        "captionSize": 184,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 6,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panX": -203,
+        "captionEmphasis": "level",
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      }
+    },
+    {
+      "id": "s09-close",
+      "sceneType": "title-slate",
+      "voText": "Not one machine. Sixty thousand man-days, and a road flat enough to hold them.",
+      "durationInFrames": 118,
+      "gradeOverride": {
+        "saturate": 0.5,
+        "contrast": 1.16,
+        "brightness": 0.94
+      },
+      "assets": {},
+      "params": {
+        "scrim": 0.4,
+        "kicker": "BAALBEK · 27 BC",
+        "title": "SIXTY THOUSAND",
+        "footer": "man-days, and no machine at all",
+        "titleFrame": 9,
+        "titleSize": 230,
+        "creep": 1.053,
+        "accent": "#d94f3d",
+        "field": "spotlight",
+        "fieldColours": [
+          "#33373a",
+          "#1c1f21",
+          "#0a0b0c"
+        ],
+        "spinTo": "SIXTY THOUSAND",
+        "spinReel": [
+          "THOUSAND",
+          "HUNDRED",
+          "MILLION",
+          "BILLION",
+          "FIFTY",
+          "TWENTY"
+        ],
+        "spinFrames": 47,
+        "pushEndFrame": 109,
+        "pushFrom": 1.04,
+        "pushTo": 1.04,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      },
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "BAALBEK · 27 BC",
+          "depth": 0.64,
+          "x": 435,
+          "y": 1524,
+          "width": 394,
+          "rotate": -1.8,
+          "from": 60
+        },
+        {
+          "kind": "newspaper",
+          "masthead": "THE CHRONICLE",
+          "text": "SIXTY THOUSAND",
+          "depth": 0.69,
+          "x": 654,
+          "y": 515,
+          "width": 468,
+          "rotate": -2.4,
+          "from": 73
+        }
+      ]
+    }
+  ]
+}

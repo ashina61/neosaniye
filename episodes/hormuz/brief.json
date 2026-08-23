@@ -1,0 +1,112 @@
+{
+  "id": "hormuz",
+  "title": "One door",
+  "mood": "cold-noir",
+  "style": "documentary photograph, maritime, overcast steel light, muted colour, fine grain, no text, no watermark",
+  "negative": "text, letters, words, watermark, logo, cartoon, cgi, painting, illustration, map graphics",
+  "lines": [
+    {
+      "slug": "narrow",
+      "vo": "At its narrowest the Strait of Hormuz is twenty-one miles across.",
+      "image": "a narrow sea channel between two arid headlands, seen from the air",
+      "imageCommons": [
+        "Strait of Hormuz satellite",
+        "Musandam peninsula coast"
+      ],
+      "kicker": "HORMUZ · 26°34′N",
+      "graphicsOnly": true
+    },
+    {
+      "slug": "lanes",
+      "vo": "The shipping lanes inside it are two miles wide. One lane in, one lane out.",
+      "image": "two tanker wakes running opposite ways in dark water",
+      "imageCommons": [
+        "tanker traffic separation scheme",
+        "ship wake aerial"
+      ],
+      "graphicsOnly": true
+    },
+    {
+      "slug": "volume",
+      "vo": "About twenty million barrels of crude oil pass through that gap every single day.",
+      "image": "a loaded crude tanker low in the water",
+      "imageCommons": [
+        "VLCC crude oil tanker",
+        "loaded tanker at sea"
+      ],
+      "graphicsOnly": true
+    },
+    {
+      "slug": "share",
+      "vo": "That is close to a fifth of everything the world burns.",
+      "image": "a refinery skyline at dusk",
+      "imageCommons": [
+        "oil refinery dusk",
+        "petrochemical plant skyline"
+      ],
+      "graphicsOnly": true
+    },
+    {
+      "slug": "nobypass",
+      "vo": "There is no way around it. The Gulf has one door, and this is the door.",
+      "image": "a rocky headland closing on a channel",
+      "imageCommons": [
+        "Musandam fjord",
+        "rocky strait headland"
+      ],
+      "stops": [
+        "Kuwait",
+        "Basra",
+        "Ras Tanura",
+        "Hormuz"
+      ],
+      "graphicsOnly": true
+    },
+    {
+      "slug": "shores",
+      "vo": "Iran holds the northern shore. Oman holds the south. The outbound lane runs through Omani water.",
+      "image": "bare mountains falling straight into the sea",
+      "imageCommons": [
+        "Hormuz coastline mountains",
+        "Oman coast cliffs sea"
+      ],
+      "graphicsOnly": true
+    },
+    {
+      "slug": "grounding",
+      "vo": "One tanker aground in a two-mile lane closes the strait for weeks.",
+      "image": "a grounded ship listing in shallow water",
+      "imageCommons": [
+        "grounded ship salvage",
+        "ship aground shallow"
+      ],
+      "onScreen": "TWO MILES WIDE",
+      "graphicsOnly": true
+    },
+    {
+      "slug": "price",
+      "vo": "Every fuel price on earth moves when a warship changes course here.",
+      "image": "a warship bow wave in grey sea",
+      "imageCommons": [
+        "destroyer at sea grey",
+        "naval vessel bow wave"
+      ],
+      "motif": "rise",
+      "graphicsOnly": true
+    },
+    {
+      "slug": "close",
+      "vo": "Twenty-one miles of water, and there is no substitute for any of it.",
+      "image": "an empty grey sea at first light",
+      "imageCommons": [
+        "empty sea horizon dawn",
+        "grey ocean minimal"
+      ],
+      "kicker": "HORMUZ · 21 MILES",
+      "title": "TWENTY-ONE MILES",
+      "footer": "and nothing else will do",
+      "graphicsOnly": true
+    }
+  ],
+  "$supply": "No photographic supply reachable from this environment: Commons returns 403 through the proxy and the image generator returns 403. Rungs 1-3 of the asset ladder (right asset, confident alternative, generated image) are unavailable, so every line is declared graphicsOnly and answered procedurally. The imageCommons searches stay in the brief: they are the standing request, and the day a provider is reachable they are what gets fetched."
+}

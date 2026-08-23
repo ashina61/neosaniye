@@ -1,0 +1,175 @@
+{
+  "episode": "medieval-sword",
+  "title": "Hard edge, soft spine",
+  "question": "How Was a Medieval Sword Actually Made?",
+  "generatedAt": "2026-08-23",
+  "finalScore": 5.5,
+  "scoredBy": "inspection of rendered frames at 0/33/66/94 per shot",
+  "judged": {
+    "storytelling": 8,
+    "visualHierarchy": 8,
+    "semanticAccuracy": 9,
+    "assetRelevance": 2,
+    "visualCausality": 3,
+    "motionQuality": 6,
+    "cameraVariety": 6.5,
+    "transitionQuality": 7,
+    "pacing": 8,
+    "visualContinuity": 8,
+    "typography": 8.5,
+    "ending": 8,
+    "professionalism": 5.5
+  },
+  "verdict": "The best-looking typography of the five and still a process film with no process in it. Forging is a sequence -- heat, fold, quench, and the differential cooling that is the whole design -- and a sequence is the one thing this reel cannot draw. What it does have is the cleanest type: the gold-heat spotlight gives the frame a centre, and 'Iron / with too / LITTLE / carbon / bends' set at 170px across five lines is a real composition rather than a caption.",
+  "whatWorked": [
+    "Typography at its best in this benchmark: five short lines at statement scale, serif against heavy sans, one accent word, the rest getting out of the way.",
+    "The spotlight field gives the frame an optical centre, which the wash field does not.",
+    "The script's structure is textbook: what it is not, the constraint, the dilemma, the solution, the method, the trick, and the counter-example that proves it.",
+    "Highest motion-design score of the five (10/10) -- every shot obeys the two-events rule."
+  ],
+  "whatFailed": [
+    {
+      "what": "Not one of heat, folding, quenching or differential cooling is shown.",
+      "why": "A forging sequence needs a process representation. The five diagram types cover a mechanism, a span of years, a magnitude, an orbit and a scan.",
+      "failureIs": "REPRESENTATION"
+    },
+    {
+      "what": "'Twelve hundred degrees' did not become a measurement bar.",
+      "why": "The MAGNITUDE regex lists tons, miles, metres, feet, pounds and people. Degrees is not a unit it knows, so the one line in the episode with a drawable figure fell to typography.",
+      "failureIs": "REPRESENTATION"
+    },
+    {
+      "what": "A wire prop and the slate share the opening frame's single beat.",
+      "why": "Same collision as roman-concrete shot 0.",
+      "failureIs": "COMPOSITION"
+    },
+    {
+      "what": "'push' on three consecutive shots (13-15).",
+      "why": "The camera quota counts across the reel but cannot refuse a run when the beat pool for three adjacent shots resolves the same way.",
+      "failureIs": "MOTION"
+    }
+  ],
+  "measured": {
+    "shots": 22,
+    "seconds": 50.3,
+    "averageShotSeconds": 2.29,
+    "representationMix": {
+      "PHOTO": 0,
+      "HYBRID": 0,
+      "PROCEDURAL": 0,
+      "TYPOGRAPHY": 22
+    },
+    "proceduralVisuals": 0,
+    "hybridVisuals": 0,
+    "diagramKinds": [],
+    "assets": {
+      "linesRequestingAPicture": 9,
+      "picturesOnScreen": 0,
+      "rejectedOnScore": 0,
+      "unavailable": 9,
+      "rejectionCount": 9
+    },
+    "editorial": {
+      "hardCutRatio": 1,
+      "cutKinds": {
+        "HARD_CUT": 21
+      },
+      "arrivals": {
+        "cut": 21
+      },
+      "transitionRatio": 0
+    },
+    "cameraDistribution": {
+      "hold": 5,
+      "push": 6,
+      "tilt": 1,
+      "pull": 3,
+      "pan": 5,
+      "drift": 2
+    },
+    "motionDensity": {
+      "events": 54,
+      "perSecond": 1.07,
+      "deadShots": 0,
+      "busiestMoment": 2
+    },
+    "informationDensity": {
+      "words": 95,
+      "wordsPerSecond": 1.89,
+      "unreadableCaptions": 0
+    },
+    "rhythm": {
+      "variation": 0.29,
+      "mean": 2.29,
+      "shortest": 1.5,
+      "longest": 3.93
+    },
+    "imageKindChangesPerCut": 0,
+    "temporalConsistency": {
+      "errors": 0,
+      "warnings": 0,
+      "clean": true
+    },
+    "gates": {
+      "visualHierarchy": 9.5,
+      "motionDesign": 10,
+      "cameraDiversity": 10,
+      "transitionQuality": 10,
+      "visualContinuity": 10,
+      "professionalism": 9.9
+    },
+    "gatesFailed": [
+      "no photograph anywhere in the reel — every shot is drawn or typeset"
+    ]
+  },
+  "remainingDefects": [
+    {
+      "severity": "warning",
+      "where": "shot",
+      "what": "scene[0] \"s01-notcast\": slate and prop:wire both land at ~7 — one beat, not two"
+    },
+    {
+      "severity": "warning",
+      "where": "shot",
+      "what": "camera: \"push\" 3 shots running (13-15) — a device that repeats is a tic"
+    },
+    {
+      "severity": "warning",
+      "where": "geometry",
+      "what": "scene[8] \"s04-layered\": prop[0] wire and motif route occupy the same place"
+    },
+    {
+      "severity": "warning",
+      "where": "edit",
+      "what": "the reel changes its kind of image 0 time(s) in 22 shots — one idea, repeated"
+    },
+    {
+      "severity": "observed",
+      "where": "inspection",
+      "what": "Not one of heat, folding, quenching or differential cooling is shown.",
+      "cause": "REPRESENTATION",
+      "why": "A forging sequence needs a process representation. The five diagram types cover a mechanism, a span of years, a magnitude, an orbit and a scan."
+    },
+    {
+      "severity": "observed",
+      "where": "inspection",
+      "what": "'Twelve hundred degrees' did not become a measurement bar.",
+      "cause": "REPRESENTATION",
+      "why": "The MAGNITUDE regex lists tons, miles, metres, feet, pounds and people. Degrees is not a unit it knows, so the one line in the episode with a drawable figure fell to typography."
+    },
+    {
+      "severity": "observed",
+      "where": "inspection",
+      "what": "A wire prop and the slate share the opening frame's single beat.",
+      "cause": "COMPOSITION",
+      "why": "Same collision as roman-concrete shot 0."
+    },
+    {
+      "severity": "observed",
+      "where": "inspection",
+      "what": "'push' on three consecutive shots (13-15).",
+      "cause": "MOTION",
+      "why": "The camera quota counts across the reel but cannot refuse a run when the beat pool for three adjacent shots resolves the same way."
+    }
+  ]
+}

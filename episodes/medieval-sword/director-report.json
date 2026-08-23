@@ -1,0 +1,917 @@
+{
+  "episode": "medieval-sword",
+  "generatedFrom": {
+    "brief": "brief.json",
+    "review": "assets.review.json",
+    "voice": null
+  },
+  "concept": {
+    "title": "Hard edge, soft spine",
+    "mood": "gold-heat",
+    "hook": {
+      "line": "A medieval sword was never cast. It was forged from a bar of iron.",
+      "beat": "HOOK",
+      "idea": "the cast in one frame, close enough that the eye has nowhere else to go",
+      "demands": "the strongest, most specific image available — never a texture, never a stand-in"
+    },
+    "ending": {
+      "line": "Two hundred hours of work, and the design is entirely in how fast it cooled.",
+      "beat": "VERDICT",
+      "idea": "the closing claim, typographic and still",
+      "claim": "Two hundred hours",
+      "demands": "one shot: the strongest relevant image, the claim over it, then a hold and a hard out"
+    }
+  },
+  "beats": [
+    {
+      "line": "notcast",
+      "beat": "HOOK",
+      "pace": "fast",
+      "holdsAfter": false,
+      "emphasis": "medieval",
+      "visualIdea": "the cast in one frame, close enough that the eye has nowhere else to go",
+      "viewerShouldNotice": "the words \"medieval\" and the thing in frame they refer to"
+    },
+    {
+      "line": "heat",
+      "beat": "EVIDENCE",
+      "pace": "medium",
+      "holdsAfter": false,
+      "emphasis": "twelve hundred",
+      "visualIdea": "the figure, proven on screen",
+      "viewerShouldNotice": "the words \"twelve hundred\" and the thing in frame they refer to"
+    },
+    {
+      "line": "carbon",
+      "beat": "CONTEXT",
+      "pace": "medium",
+      "holdsAfter": false,
+      "emphasis": "Iron",
+      "visualIdea": "the setting, established",
+      "viewerShouldNotice": "the words \"Iron\" and the thing in frame they refer to"
+    },
+    {
+      "line": "layered",
+      "beat": "CONTEXT",
+      "pace": "medium",
+      "holdsAfter": false,
+      "emphasis": "Hard",
+      "visualIdea": "the setting, established",
+      "viewerShouldNotice": "the words \"Hard\" and the thing in frame they refer to"
+    },
+    {
+      "line": "fold",
+      "beat": "DETAIL",
+      "pace": "fast",
+      "holdsAfter": false,
+      "emphasis": "Each",
+      "visualIdea": "one part of the whole, magnified",
+      "viewerShouldNotice": "the words \"Each\" and the thing in frame they refer to"
+    },
+    {
+      "line": "quench",
+      "beat": "ESCALATION",
+      "pace": "fast",
+      "holdsAfter": false,
+      "emphasis": "finished",
+      "visualIdea": "quantity accumulating",
+      "viewerShouldNotice": "the words \"finished\" and the thing in frame they refer to"
+    },
+    {
+      "line": "cool",
+      "beat": "CONTEXT",
+      "pace": "medium",
+      "holdsAfter": false,
+      "emphasis": "The",
+      "visualIdea": "the setting, established",
+      "viewerShouldNotice": "the words \"The\" and the thing in frame they refer to"
+    },
+    {
+      "line": "snaps",
+      "beat": "CONTEXT",
+      "pace": "medium",
+      "holdsAfter": false,
+      "emphasis": "through",
+      "visualIdea": "the setting, established",
+      "viewerShouldNotice": "the words \"through\" and the thing in frame they refer to"
+    },
+    {
+      "line": "close",
+      "beat": "VERDICT",
+      "pace": "slow",
+      "holdsAfter": true,
+      "emphasis": "Two hundred hours",
+      "visualIdea": "the closing claim, typographic and still",
+      "viewerShouldNotice": "the words \"Two hundred hours\" and the thing in frame they refer to"
+    }
+  ],
+  "assets": {
+    "colourCentre": {
+      "brightness": 0.44,
+      "colourfulness": 0.12
+    },
+    "decisions": [],
+    "recast": [],
+    "required": []
+  },
+  "shots": [
+    {
+      "id": "s01-notcast",
+      "template": "title-slate",
+      "seconds": 2.5,
+      "camera": {
+        "from": 1.03,
+        "to": 1.06,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": null,
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": null,
+      "reveal": null,
+      "plates": [],
+      "drawnGround": "spotlight",
+      "props": [
+        "plaque",
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the claim",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s01-notcast-b",
+      "template": "composite",
+      "seconds": 1.5,
+      "camera": {
+        "from": 1.04,
+        "to": 1.48,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "forged",
+      "reveal": "rise",
+      "plates": [],
+      "drawnGround": "spotlight",
+      "props": [
+        "beam"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"forged\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s01-notcast-c",
+      "template": "composite",
+      "seconds": 2.13,
+      "camera": {
+        "from": 1.25,
+        "to": 1.33,
+        "panX": null,
+        "panY": -142
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "iron",
+      "reveal": "wipe",
+      "plates": [],
+      "drawnGround": "spotlight",
+      "props": [
+        "plaque",
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"iron\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s02-heat",
+      "template": "title-slate",
+      "seconds": 3.23,
+      "camera": {
+        "from": 1,
+        "to": 1.28,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": null,
+      "reveal": null,
+      "plates": [],
+      "drawnGround": "spotlight",
+      "props": [],
+      "hierarchy": {
+        "primary": "the claim",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s02-heat-b",
+      "template": "composite",
+      "seconds": 1.5,
+      "camera": {
+        "from": 1.02,
+        "to": 1.06,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "Orange",
+      "reveal": "rise",
+      "plates": [],
+      "drawnGround": "spotlight",
+      "props": [
+        "beam",
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"Orange\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s03-carbon",
+      "template": "composite",
+      "seconds": 2.5,
+      "camera": {
+        "from": 1.41,
+        "to": 1.05,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "little",
+      "reveal": "wipe",
+      "plates": [],
+      "drawnGround": "spotlight",
+      "props": [
+        "beam"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"little\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s03-carbon-b",
+      "template": "composite",
+      "seconds": 2.13,
+      "camera": {
+        "from": 1.22,
+        "to": 1.31,
+        "panX": 261,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "shatters",
+      "reveal": "blur",
+      "plates": [],
+      "drawnGround": "spotlight",
+      "props": [
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"shatters\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s03-carbon-c",
+      "template": "composite",
+      "seconds": 1.73,
+      "camera": {
+        "from": 1,
+        "to": 1.07,
+        "panX": null,
+        "panY": -56
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "first",
+      "reveal": "punch",
+      "plates": [],
+      "drawnGround": "spotlight",
+      "props": [
+        "beam"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"first\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s04-layered",
+      "template": "composite",
+      "seconds": 2.87,
+      "camera": {
+        "from": 1.17,
+        "to": 1.28,
+        "panX": -253,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "layers",
+      "reveal": "blur",
+      "plates": [],
+      "drawnGround": "spotlight",
+      "props": [
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"layers\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s04-layered-b",
+      "template": "composite",
+      "seconds": 2.13,
+      "camera": {
+        "from": 1.48,
+        "to": 1.03,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "steel",
+      "reveal": "wipe",
+      "plates": [],
+      "drawnGround": "spotlight",
+      "props": [
+        "beam"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"steel\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s04-layered-c",
+      "template": "composite",
+      "seconds": 2.13,
+      "camera": {
+        "from": 1.18,
+        "to": 1.31,
+        "panX": -194,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "spine",
+      "reveal": "rise",
+      "plates": [],
+      "drawnGround": "spotlight",
+      "props": [
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"spine\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s05-fold",
+      "template": "composite",
+      "seconds": 1.73,
+      "camera": {
+        "from": 1.04,
+        "to": 1.05,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "Hammer",
+      "reveal": "punch",
+      "plates": [],
+      "drawnGround": "spotlight",
+      "props": [
+        "beam"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"Hammer\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s05-fold-b",
+      "template": "composite",
+      "seconds": 1.73,
+      "camera": {
+        "from": 1.01,
+        "to": 1.46,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "Each",
+      "reveal": "punch",
+      "plates": [],
+      "drawnGround": "spotlight",
+      "props": [
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"Each\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s05-fold-c",
+      "template": "composite",
+      "seconds": 1.5,
+      "camera": {
+        "from": 1.04,
+        "to": 1.37,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "doubles",
+      "reveal": "wipe",
+      "plates": [],
+      "drawnGround": "spotlight",
+      "props": [
+        "beam"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"doubles\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s06-quench",
+      "template": "composite",
+      "seconds": 1.73,
+      "camera": {
+        "from": 1,
+        "to": 1.45,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "finished",
+      "reveal": "blur",
+      "plates": [],
+      "drawnGround": "spotlight",
+      "props": [
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"finished\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s06-quench-b",
+      "template": "composite",
+      "seconds": 1.73,
+      "camera": {
+        "from": 1.03,
+        "to": 1.08,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "heated",
+      "reveal": "wipe",
+      "plates": [],
+      "drawnGround": "spotlight",
+      "props": [
+        "beam"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"heated\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s06-quench-c",
+      "template": "composite",
+      "seconds": 1.73,
+      "camera": {
+        "from": 1.04,
+        "to": 1.47,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "plunged",
+      "reveal": "blur",
+      "plates": [],
+      "drawnGround": "spotlight",
+      "props": [
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"plunged\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s07-cool",
+      "template": "composite",
+      "seconds": 3.23,
+      "camera": {
+        "from": 1.16,
+        "to": 1.2,
+        "panX": -148,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "second",
+      "reveal": "rise",
+      "plates": [],
+      "drawnGround": "spotlight",
+      "props": [
+        "beam"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"second\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s07-cool-b",
+      "template": "composite",
+      "seconds": 2.87,
+      "camera": {
+        "from": 1,
+        "to": 1.1,
+        "panX": null,
+        "panY": -32
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "The",
+      "reveal": "wipe",
+      "plates": [],
+      "drawnGround": "spotlight",
+      "props": [
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"The\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s08-snaps",
+      "template": "composite",
+      "seconds": 3.23,
+      "camera": {
+        "from": 1.64,
+        "to": 1,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "sword",
+      "reveal": "rise",
+      "plates": [],
+      "drawnGround": "spotlight",
+      "props": [
+        "beam"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"sword\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s08-snaps-b",
+      "template": "composite",
+      "seconds": 2.5,
+      "camera": {
+        "from": 1.16,
+        "to": 1.26,
+        "panX": 203,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": "through",
+      "reveal": "punch",
+      "plates": [],
+      "drawnGround": "spotlight",
+      "props": [
+        "wire"
+      ],
+      "hierarchy": {
+        "primary": "the claim: \"through\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s09-close",
+      "template": "title-slate",
+      "seconds": 3.93,
+      "camera": {
+        "from": 1.04,
+        "to": 1.05,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#e8a020) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "TYPOGRAPHY",
+      "drawn": null,
+      "emphasis": null,
+      "reveal": null,
+      "plates": [],
+      "drawnGround": "spotlight",
+      "props": [
+        "plaque",
+        "newspaper"
+      ],
+      "hierarchy": {
+        "primary": "the claim",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    }
+  ],
+  "representation": {
+    "notcast": {
+      "mode": "TYPOGRAPHY",
+      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
+      "drawn": null
+    },
+    "heat": {
+      "mode": "TYPOGRAPHY",
+      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
+      "drawn": null
+    },
+    "carbon": {
+      "mode": "TYPOGRAPHY",
+      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
+      "drawn": null
+    },
+    "layered": {
+      "mode": "TYPOGRAPHY",
+      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
+      "drawn": null
+    },
+    "fold": {
+      "mode": "TYPOGRAPHY",
+      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
+      "drawn": null
+    },
+    "quench": {
+      "mode": "TYPOGRAPHY",
+      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
+      "drawn": null
+    },
+    "cool": {
+      "mode": "TYPOGRAPHY",
+      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
+      "drawn": null
+    },
+    "snaps": {
+      "mode": "TYPOGRAPHY",
+      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
+      "drawn": null
+    },
+    "close": {
+      "mode": "TYPOGRAPHY",
+      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
+      "drawn": null
+    }
+  },
+  "quotas": {
+    "camera": {
+      "hold": 5,
+      "push": 6,
+      "tilt": 1,
+      "pull": 3,
+      "pan": 5,
+      "drift": 2
+    },
+    "transition": {
+      "cut": 21
+    },
+    "framing": {},
+    "cut": {
+      "HARD_CUT": 21
+    }
+  },
+  "editing": {
+    "tally": {
+      "HARD_CUT": 21
+    },
+    "hardRatio": 1,
+    "total": 21,
+    "note": "HARD_CUT and MATCH_CUT are both made of nothing; the difference is that a match cut was earned"
+  },
+  "typography": {
+    "system": "one family per semantic role — statement, body, label, figure",
+    "accent": "#e8a020",
+    "note": "the emphasis is the only element allowed the accent colour in a shot"
+  },
+  "colourStrategy": {
+    "accent": "#e8a020",
+    "field": "spotlight",
+    "fieldColours": [
+      "#d9a13c",
+      "#8a5a18",
+      "#241505"
+    ],
+    "grade": {
+      "saturate": 0.83,
+      "contrast": 1.05,
+      "sepia": 0.4,
+      "brightness": 1.02
+    },
+    "note": "one accent across the reel; the grade moves only where the sentence earns it"
+  },
+  "limitations": [
+    "cut to an estimate — no voiceover measured yet"
+  ]
+}

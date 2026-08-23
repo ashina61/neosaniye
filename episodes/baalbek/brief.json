@@ -1,0 +1,112 @@
+{
+  "id": "baalbek",
+  "title": "The stones nobody could lift",
+  "mood": "ash-grey",
+  "style": "documentary photograph, limestone quarry, hard Levantine sunlight, muted colour, fine grain, no text, no watermark, no modern objects",
+  "negative": "text, letters, words, watermark, logo, cartoon, cgi, painting, illustration, modern machinery, tourists",
+  "lines": [
+    {
+      "slug": "blocks",
+      "vo": "Under a Roman temple in Lebanon sit three blocks no crane today could lift.",
+      "image": "three colossal limestone blocks in a temple foundation, hard sunlight",
+      "imageCommons": [
+        "Baalbek trilithon",
+        "Temple of Jupiter Baalbek foundation"
+      ],
+      "kicker": "BAALBEK · LEBANON",
+      "graphicsOnly": true
+    },
+    {
+      "slug": "weight",
+      "vo": "Each weighs about eight hundred tons. The one still in the quarry weighs sixteen hundred.",
+      "image": "an unfinished megalith lying in a limestone quarry",
+      "imageCommons": [
+        "Stone of the Pregnant Woman Baalbek",
+        "Hajjar al-Hibla"
+      ],
+      "graphicsOnly": true
+    },
+    {
+      "slug": "quarry",
+      "vo": "They were cut from bedrock half a mile uphill from where they sit.",
+      "image": "a limestone quarry face with cut channels, sloping ground",
+      "imageCommons": [
+        "Baalbek quarry",
+        "Roman quarry limestone cut channels"
+      ],
+      "stops": [
+        "The quarry",
+        "The slope",
+        "The podium"
+      ],
+      "graphicsOnly": true
+    },
+    {
+      "slug": "nolift",
+      "vo": "No pulley of the period could take that load. No rope would hold it.",
+      "image": "a coil of heavy hemp rope on stone",
+      "imageCommons": [
+        "ancient hemp rope",
+        "Roman pulley block"
+      ],
+      "graphicsOnly": true
+    },
+    {
+      "slug": "rolled",
+      "vo": "So the Romans did not lift them. They rolled them.",
+      "image": "hardwood logs laid in rows on a flat earth road",
+      "imageCommons": [
+        "wooden rollers",
+        "oak logs row"
+      ],
+      "motif": "route",
+      "graphicsOnly": true
+    },
+    {
+      "slug": "cradle",
+      "vo": "Hardwood rollers under a timber cradle, and capstans hauling on ropes ahead.",
+      "image": "a heavy timber frame, thick beams pegged together",
+      "imageCommons": [
+        "timber cradle beams",
+        "capstan winch wooden"
+      ],
+      "graphicsOnly": true
+    },
+    {
+      "slug": "men",
+      "vo": "Roughly a thousand men on those ropes, moving the block a few feet an hour.",
+      "image": "a wide dusty haul road under white sun",
+      "imageCommons": [
+        "dusty haul road",
+        "Levant dry landscape"
+      ],
+      "onScreen": "A FEW FEET AN HOUR",
+      "graphicsOnly": true
+    },
+    {
+      "slug": "level",
+      "vo": "It took months. The stones were never lifted, only slid, level, on wood.",
+      "image": "a flat compacted earth causeway",
+      "imageCommons": [
+        "Roman road bed",
+        "compacted earth causeway"
+      ],
+      "motif": "tally",
+      "graphicsOnly": true
+    },
+    {
+      "slug": "close",
+      "vo": "Not one machine. Sixty thousand man-days, and a road flat enough to hold them.",
+      "image": "the temple podium at dusk, empty",
+      "imageCommons": [
+        "Baalbek podium dusk",
+        "Temple of Jupiter columns"
+      ],
+      "kicker": "BAALBEK · 27 BC",
+      "title": "SIXTY THOUSAND",
+      "footer": "man-days, and no machine at all",
+      "graphicsOnly": true
+    }
+  ],
+  "$supply": "No photographic supply reachable from this environment: Commons returns 403 through the proxy and the image generator returns 403. Rungs 1-3 of the asset ladder (right asset, confident alternative, generated image) are unavailable, so every line is declared graphicsOnly and answered procedurally. The imageCommons searches stay in the brief: they are the standing request, and the day a provider is reachable they are what gets fetched."
+}

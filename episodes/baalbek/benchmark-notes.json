@@ -1,0 +1,81 @@
+{
+  "$note": "Written after looking at every shot at 0%, 33%, 66% and 94% in out/.frames-<id>/, plus the rendered reel. Scores are one person's judgement out of ten and are deliberately NOT computed: every reel this repo has shipped broken passed the computed gates.",
+  "question": "How Did Humans Move Stones Weighing Over 1,000 Tons?",
+  "scores": {
+    "storytelling": 8,
+    "visualHierarchy": 8,
+    "semanticAccuracy": 9,
+    "assetRelevance": 3,
+    "visualCausality": 3,
+    "motionQuality": 6,
+    "cameraVariety": 6,
+    "transitionQuality": 7,
+    "pacing": 8,
+    "visualContinuity": 9,
+    "typography": 8,
+    "ending": 8,
+    "professionalism": 6
+  },
+  "verdict": "A competent kinetic-typography reel and not yet a documentary. The script is the strongest thing in it: the reversal -- they did not lift the stones, they rolled them -- lands at the two-thirds mark exactly where it should. But seventeen of twenty shots are words on an unlit grey field, so the viewer is told the whole story and shown almost none of it. The measurement bar counting to 800 tons is the only shot that does the job a picture is for.",
+  "whatWorked": [
+    "The story structure: impossible object, the weight, the distance, the two things that could not have worked, then the answer. The reversal is placed correctly.",
+    "Typography carries a shot on its own now -- serif run-in, heavy sans emphasis in the accent, the mark drawing itself under the word. Legible at thumbnail size.",
+    "The measurement diagram fired on 'eight hundred tons' and again on 'a thousand men', and both are honest: the bar counts the thing the sentence counts.",
+    "Pacing. 2.46s average, rhythm 0.28, no shot outstays its line.",
+    "The ending is deliberate: the figure spins to SIXTY THOUSAND and the qualifier lands after it."
+  ],
+  "whatFailed": [
+    {
+      "what": "Seventeen of twenty shots are typography over an empty ground. The reel tells and does not show.",
+      "why": "No photographic supply is reachable and the procedural vocabulary has no form for haulage, leverage, rollers or a slope. The ladder's lower rungs are five diagram types tuned to one previous episode.",
+      "failureIs": "REPRESENTATION"
+    },
+    {
+      "what": "Nothing in the reel is caused by anything else.",
+      "why": "Causal motion needs a mechanism to animate. Words landing in sequence is timing, not causality.",
+      "failureIs": "REPRESENTATION"
+    },
+    {
+      "what": "ash-grey over a drawn ground renders as near-black; the frame is unlit.",
+      "why": "graphicGround was designed as a bed for a photograph that would supply the tone. With no plate the glow at 0.42 intensity is all the light there is.",
+      "failureIs": "COMPOSITION"
+    },
+    {
+      "what": "Camera moves are imperceptible.",
+      "why": "A push over a radial gradient has no parallax and no detail to move past. The camera is working; there is nothing for it to work on.",
+      "failureIs": "COMPOSITION"
+    },
+    {
+      "what": "Every seam is a plain cut (hard-cut ratio 1.00).",
+      "why": "Correct, and a symptom: twenty shots that look alike give the Cut Director no correspondence to rhyme and no contrast to punctuate.",
+      "failureIs": "EDITORIAL"
+    }
+  ],
+  "remainingDefects": [
+    {
+      "what": "Seventeen of twenty shots are typography over an empty ground. The reel tells and does not show.",
+      "cause": "REPRESENTATION",
+      "why": "No photographic supply is reachable and the procedural vocabulary has no form for haulage, leverage, rollers or a slope. The ladder's lower rungs are five diagram types tuned to one previous episode."
+    },
+    {
+      "what": "Nothing in the reel is caused by anything else.",
+      "cause": "REPRESENTATION",
+      "why": "Causal motion needs a mechanism to animate. Words landing in sequence is timing, not causality."
+    },
+    {
+      "what": "ash-grey over a drawn ground renders as near-black; the frame is unlit.",
+      "cause": "COMPOSITION",
+      "why": "graphicGround was designed as a bed for a photograph that would supply the tone. With no plate the glow at 0.42 intensity is all the light there is."
+    },
+    {
+      "what": "Camera moves are imperceptible.",
+      "cause": "COMPOSITION",
+      "why": "A push over a radial gradient has no parallax and no detail to move past. The camera is working; there is nothing for it to work on."
+    },
+    {
+      "what": "Every seam is a plain cut (hard-cut ratio 1.00).",
+      "cause": "EDITORIAL",
+      "why": "Correct, and a symptom: twenty shots that look alike give the Cut Director no correspondence to rhyme and no contrast to punctuate."
+    }
+  ]
+}

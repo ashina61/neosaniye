@@ -1,0 +1,1356 @@
+{
+  "id": "human-heart",
+  "title": "Two pumps, one beat",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "look": {
+    "posterizeFps": 12,
+    "grade": {
+      "saturate": 0.91,
+      "contrast": 1.11,
+      "sepia": 0.4,
+      "brightness": 1.02
+    },
+    "film": {
+      "grain": true,
+      "grunge": true,
+      "scanlines": true,
+      "vignette": true,
+      "gateWeave": true,
+      "grainOpacity": 0.44,
+      "grungeOpacity": 0.14,
+      "scanlineOpacity": 0.11,
+      "scanlinePeriod": 9,
+      "vignetteStrength": 0.44,
+      "weavePx": 6,
+      "weaveScale": 1.015
+    }
+  },
+  "scenes": [
+    {
+      "id": "s01-twopumps",
+      "sceneType": "title-slate",
+      "voText": "Your heart is not one pump.",
+      "durationInFrames": 75,
+      "assets": {},
+      "params": {
+        "scrim": 0.4,
+        "kicker": "THE HUMAN HEART",
+        "title": "",
+        "footer": "",
+        "titleFrame": 6,
+        "titleSize": 124,
+        "creep": 1.098,
+        "accent": "#ffcf3d",
+        "field": "wash",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "pushEndFrame": 69,
+        "pushFrom": 1.05,
+        "pushTo": 1.07,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      },
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "THE HUMAN HEART",
+          "depth": 0.63,
+          "x": 422,
+          "y": 1348,
+          "width": 431,
+          "rotate": -1.7,
+          "from": 64
+        },
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.72,
+          "x": 743,
+          "y": 1115,
+          "width": 265,
+          "colour": "#ffcf3d",
+          "from": 20
+        }
+      ]
+    },
+    {
+      "id": "s01-twopumps-b",
+      "sceneType": "composite",
+      "voText": "It is two, side by side,",
+      "durationInFrames": 75,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.39,
+          "x": 981,
+          "y": 153,
+          "width": 326,
+          "rotate": -14,
+          "opacity": 0.8,
+          "colour": "#ffcf3d",
+          "from": 64
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.24,
+        "pushTo": 1.3,
+        "pushEndFrame": 73,
+        "accent": "#ffcf3d",
+        "field": "wash",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1329,
+        "glowY": 569,
+        "glowSize": 402,
+        "glowIntensity": 0.53,
+        "glowWarm": "#ffcf3d",
+        "glowDepth": 0.1,
+        "caption": [
+          "It is two,",
+          "side by side"
+        ],
+        "captionX": 81,
+        "captionY": 748,
+        "captionSize": 113,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 9,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panY": 170,
+        "captionEmphasis": "two",
+        "captionReveal": "rise",
+        "captionMark": "box",
+        "captionWordEvery": 2,
+        "cameraMove": "tilt",
+        "cameraPurpose": "a vertical reveal — height, depth, or a drop"
+      }
+    },
+    {
+      "id": "s01-twopumps-c",
+      "sceneType": "composite",
+      "voText": "beating together.",
+      "durationInFrames": 45,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "THE HUMAN HEART",
+          "depth": 0.72,
+          "x": 375,
+          "y": 1429,
+          "width": 369,
+          "rotate": -2.3,
+          "from": 38
+        },
+        {
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.61,
+          "x": 718,
+          "y": 459,
+          "width": 392,
+          "colour": "#ffcf3d",
+          "from": 0
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1.02,
+        "pushTo": 1.56,
+        "pushEndFrame": 44,
+        "accent": "#ffcf3d",
+        "field": "wash",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1557,
+        "glowY": 569,
+        "glowSize": 486,
+        "glowIntensity": 0.59,
+        "glowWarm": "#ffcf3d",
+        "glowDepth": 0.1,
+        "caption": [
+          "beating",
+          "together"
+        ],
+        "captionX": 81,
+        "captionY": 679,
+        "captionSize": 170,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 8,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "together",
+        "captionReveal": "wipe",
+        "captionMark": "highlight",
+        "captionWordEvery": 3,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      }
+    },
+    {
+      "id": "s02-circuits",
+      "sceneType": "composite",
+      "voText": "The right side sends blood to the lungs.",
+      "durationInFrames": 97,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.24,
+          "x": 952,
+          "y": 44,
+          "width": 368,
+          "rotate": -18,
+          "opacity": 0.62,
+          "colour": "#ffcf3d",
+          "from": 40
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1,
+        "pushTo": 1.1,
+        "pushEndFrame": 93,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
+        "glowWarm": "#ffcf3d",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "wash",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "caption": [
+          "The right",
+          "side sends",
+          "blood",
+          "to the lungs"
+        ],
+        "captionX": 81,
+        "captionY": 612,
+        "captionSize": 113,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 8,
+        "captionScrim": 0,
+        "captionRecedeAt": 70,
+        "accent": "#ffcf3d",
+        "motif": "route",
+        "motifStops": [
+          "Right side",
+          "The lungs",
+          "Left side",
+          "The body"
+        ],
+        "motifFrame": 82,
+        "motifColour": "#ffcf3d",
+        "handheld": 1.5,
+        "panY": -32,
+        "roll": 0.08,
+        "captionEmphasis": "right",
+        "captionReveal": "rise",
+        "captionMark": "box",
+        "captionWordEvery": 3,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land",
+        "motifY": 420
+      }
+    },
+    {
+      "id": "s02-circuits-b",
+      "sceneType": "composite",
+      "voText": "The left sends it everywhere else.",
+      "durationInFrames": 75,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.58,
+          "x": 428,
+          "y": 410,
+          "width": 401,
+          "colour": "#ffcf3d",
+          "from": 64
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.18,
+        "pushTo": 1.24,
+        "pushEndFrame": 72,
+        "accent": "#ffcf3d",
+        "field": "wash",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1542,
+        "glowY": 160,
+        "glowSize": 523,
+        "glowIntensity": 0.68,
+        "glowWarm": "#ffcf3d",
+        "glowDepth": 0.1,
+        "caption": [
+          "The left",
+          "sends",
+          "it everywhere",
+          "else"
+        ],
+        "captionX": 81,
+        "captionY": 634,
+        "captionSize": 104,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 6,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panX": 173,
+        "captionEmphasis": "everywhere",
+        "captionReveal": "rise",
+        "captionMark": "underline",
+        "captionWordEvery": 3,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      }
+    },
+    {
+      "id": "s03-thicker",
+      "sceneType": "title-slate",
+      "voText": "The left has to reach your whole body,",
+      "durationInFrames": 97,
+      "assets": {},
+      "params": {
+        "scrim": 0.39,
+        "kicker": "",
+        "title": "THREE TIMES",
+        "footer": "",
+        "titleFrame": 8,
+        "titleSize": 230,
+        "creep": 1.061,
+        "accent": "#ffcf3d",
+        "field": "wash",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "pushEndFrame": 88,
+        "pushFrom": 1,
+        "pushTo": 1.39,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      }
+    },
+    {
+      "id": "s03-thicker-b",
+      "sceneType": "composite",
+      "voText": "so its wall is three times thicker.",
+      "durationInFrames": 86,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.22,
+          "x": 986,
+          "y": -26,
+          "width": 277,
+          "rotate": -20,
+          "opacity": 0.57,
+          "colour": "#ffcf3d",
+          "from": 73
+        },
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.6,
+          "x": 684,
+          "y": 550,
+          "width": 271,
+          "colour": "#ffcf3d",
+          "from": 0
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.16,
+        "pushTo": 1.31,
+        "pushEndFrame": 81,
+        "accent": "#ffcf3d",
+        "field": "wash",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1511,
+        "glowY": 272,
+        "glowSize": 496,
+        "glowIntensity": 0.47,
+        "glowWarm": "#ffcf3d",
+        "glowDepth": 0.1,
+        "caption": [
+          "so its wall",
+          "is three times",
+          "thicker"
+        ],
+        "captionX": 81,
+        "captionY": 709,
+        "captionSize": 97,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 7,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panX": 248,
+        "captionEmphasis": "three times",
+        "captionReveal": "wipe",
+        "captionMark": "none",
+        "captionWordEvery": 2,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      }
+    },
+    {
+      "id": "s04-valves",
+      "sceneType": "title-slate",
+      "voText": "Four chambers. Four valves.",
+      "durationInFrames": 52,
+      "assets": {},
+      "params": {
+        "scrim": 0.43,
+        "kicker": "",
+        "title": "FOUR CHAMBERS",
+        "footer": "",
+        "titleFrame": 4,
+        "titleSize": 230,
+        "creep": 1.048,
+        "accent": "#ffcf3d",
+        "field": "wash",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "pushEndFrame": 47,
+        "pushFrom": 1.03,
+        "pushTo": 1.05,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      }
+    },
+    {
+      "id": "s04-valves-b",
+      "sceneType": "composite",
+      "voText": "Every one of them opens",
+      "durationInFrames": 64,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.58,
+          "x": 406,
+          "y": 378,
+          "width": 419,
+          "colour": "#ffcf3d",
+          "from": 54
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.01,
+        "pushTo": 1.35,
+        "pushEndFrame": 61,
+        "accent": "#ffcf3d",
+        "field": "wash",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1585,
+        "glowY": 558,
+        "glowSize": 522,
+        "glowIntensity": 0.66,
+        "glowWarm": "#ffcf3d",
+        "glowDepth": 0.1,
+        "caption": [
+          "Every one",
+          "of them",
+          "opens"
+        ],
+        "captionX": 81,
+        "captionY": 611,
+        "captionSize": 151,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 10,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "one",
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      }
+    },
+    {
+      "id": "s04-valves-c",
+      "sceneType": "composite",
+      "voText": "in a single direction.",
+      "durationInFrames": 52,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.38,
+          "x": 992,
+          "y": -86,
+          "width": 378,
+          "rotate": -20,
+          "opacity": 0.83,
+          "colour": "#ffcf3d",
+          "from": 44
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1.05,
+        "pushTo": 1.08,
+        "pushEndFrame": 51,
+        "accent": "#ffcf3d",
+        "field": "wash",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1334,
+        "glowY": 350,
+        "glowSize": 380,
+        "glowIntensity": 0.6,
+        "glowWarm": "#ffcf3d",
+        "glowDepth": 0.1,
+        "caption": [
+          "in a single",
+          "direction"
+        ],
+        "captionX": 81,
+        "captionY": 734,
+        "captionSize": 124,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 9,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 3,
+        "captionEmphasis": "direction",
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 4,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      }
+    },
+    {
+      "id": "s05-spark",
+      "sceneType": "composite",
+      "voText": "The beat starts on its own.",
+      "durationInFrames": 75,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.79,
+          "x": 383,
+          "y": 410,
+          "width": 409,
+          "colour": "#ffcf3d",
+          "from": 64
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1,
+        "pushTo": 1.08,
+        "pushEndFrame": 69,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
+        "glowWarm": "#ffcf3d",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "wash",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "caption": [
+          "The beat",
+          "starts",
+          "on its own"
+        ],
+        "captionX": 81,
+        "captionY": 638,
+        "captionSize": 136,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 7,
+        "captionScrim": 0,
+        "captionRecedeAt": 54,
+        "accent": "#ffcf3d",
+        "handheld": 1.5,
+        "panY": -28,
+        "roll": 0.32,
+        "captionEmphasis": "starts",
+        "captionReveal": "blur",
+        "captionMark": "box",
+        "captionWordEvery": 4,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      }
+    },
+    {
+      "id": "s05-spark-b",
+      "sceneType": "composite",
+      "voText": "A knot of cells",
+      "durationInFrames": 52,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.24,
+          "x": 1013,
+          "y": -1,
+          "width": 287,
+          "rotate": -10,
+          "opacity": 0.66,
+          "colour": "#ffcf3d",
+          "from": 44
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.41,
+        "pushTo": 1,
+        "pushEndFrame": 48,
+        "accent": "#ffcf3d",
+        "field": "wash",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1552,
+        "glowY": 189,
+        "glowSize": 484,
+        "glowIntensity": 0.48,
+        "glowWarm": "#ffcf3d",
+        "glowDepth": 0.1,
+        "caption": [
+          "A knot",
+          "of cells"
+        ],
+        "captionX": 81,
+        "captionY": 679,
+        "captionSize": 170,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 8,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "cells",
+        "captionReveal": "rise",
+        "captionMark": "underline",
+        "captionWordEvery": 3,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      }
+    },
+    {
+      "id": "s05-spark-c",
+      "sceneType": "composite",
+      "voText": "in the right atrium fires.",
+      "durationInFrames": 64,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "rect",
+          "depth": 0.55,
+          "x": 369,
+          "y": 517,
+          "width": 415,
+          "colour": "#ffcf3d",
+          "from": 54
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1,
+        "pushTo": 1.09,
+        "pushEndFrame": 60,
+        "accent": "#ffcf3d",
+        "field": "wash",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1591,
+        "glowY": 543,
+        "glowSize": 524,
+        "glowIntensity": 0.42,
+        "glowWarm": "#ffcf3d",
+        "glowDepth": 0.1,
+        "caption": [
+          "in the right",
+          "atrium fires"
+        ],
+        "captionX": 81,
+        "captionY": 748,
+        "captionSize": 113,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 8,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panY": -55,
+        "roll": -0.21,
+        "captionEmphasis": "atrium",
+        "captionReveal": "wipe",
+        "captionMark": "highlight",
+        "captionWordEvery": 3,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      }
+    },
+    {
+      "id": "s06-delay",
+      "sceneType": "composite",
+      "voText": "The signal spreads, the",
+      "durationInFrames": 52,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.21,
+          "x": 929,
+          "y": -24,
+          "width": 359,
+          "rotate": -16,
+          "opacity": 0.59,
+          "colour": "#ffcf3d",
+          "from": 44
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1,
+        "pushTo": 1.49,
+        "pushEndFrame": 47,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
+        "glowWarm": "#ffcf3d",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "wash",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "caption": [
+          "The signal",
+          "spreads, the"
+        ],
+        "captionX": 81,
+        "captionY": 748,
+        "captionSize": 113,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 10,
+        "captionScrim": 0,
+        "captionRecedeAt": 37,
+        "accent": "#ffcf3d",
+        "motif": "rise",
+        "motifX": 147,
+        "motifY": 1574,
+        "motifSize": 65,
+        "motifCount": 8,
+        "motifFrame": 30,
+        "motifColour": "#ffcf3d",
+        "motifOpacity": 0.99,
+        "handheld": 1.5,
+        "captionEmphasis": "spreads",
+        "captionReveal": "rise",
+        "captionMark": "highlight",
+        "captionWordEvery": 2,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      }
+    },
+    {
+      "id": "s06-delay-b",
+      "sceneType": "composite",
+      "voText": "upper chambers squeeze,",
+      "durationInFrames": 45,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.73,
+          "x": 374,
+          "y": 391,
+          "width": 325,
+          "colour": "#ffcf3d",
+          "from": 38
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.04,
+        "pushTo": 1.04,
+        "pushEndFrame": 42,
+        "accent": "#ffcf3d",
+        "field": "wash",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1561,
+        "glowY": 605,
+        "glowSize": 551,
+        "glowIntensity": 0.65,
+        "glowWarm": "#ffcf3d",
+        "glowDepth": 0.1,
+        "caption": [
+          "upper",
+          "chambers",
+          "squeeze"
+        ],
+        "captionX": 81,
+        "captionY": 577,
+        "captionSize": 170,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 6,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 3,
+        "captionEmphasis": "chambers",
+        "captionReveal": "wipe",
+        "captionMark": "underline",
+        "captionWordEvery": 2,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      }
+    },
+    {
+      "id": "s06-delay-c",
+      "sceneType": "composite",
+      "voText": "then a tenth",
+      "durationInFrames": 45,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.17,
+          "x": 929,
+          "y": -56,
+          "width": 264,
+          "rotate": -16,
+          "opacity": 0.6,
+          "colour": "#ffcf3d",
+          "from": 38
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1.06,
+        "pushTo": 1.38,
+        "pushEndFrame": 42,
+        "accent": "#ffcf3d",
+        "field": "wash",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1557,
+        "glowY": 246,
+        "glowSize": 519,
+        "glowIntensity": 0.5,
+        "glowWarm": "#ffcf3d",
+        "glowDepth": 0.1,
+        "caption": [
+          "then a tenth"
+        ],
+        "captionX": 81,
+        "captionY": 815,
+        "captionSize": 113,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 10,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "tenth",
+        "captionReveal": "wipe",
+        "captionMark": "underline",
+        "captionWordEvery": 3,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      }
+    },
+    {
+      "id": "s06-delay-d",
+      "sceneType": "composite",
+      "voText": "of a second later the lower.",
+      "durationInFrames": 75,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.61,
+          "x": 367,
+          "y": 503,
+          "width": 266,
+          "colour": "#ffcf3d",
+          "from": 64
+        }
+      ],
+      "params": {
+        "anchorX": 281,
+        "anchorY": 1498,
+        "pushFrom": 1.24,
+        "pushTo": 1.29,
+        "pushEndFrame": 72,
+        "accent": "#ffcf3d",
+        "field": "wash",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1438,
+        "glowY": 503,
+        "glowSize": 548,
+        "glowIntensity": 0.54,
+        "glowWarm": "#ffcf3d",
+        "glowDepth": 0.1,
+        "caption": [
+          "of a second",
+          "later",
+          "the lower"
+        ],
+        "captionX": 81,
+        "captionY": 660,
+        "captionSize": 124,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 10,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panX": 257,
+        "captionEmphasis": "second",
+        "captionReveal": "rise",
+        "captionMark": "box",
+        "captionWordEvery": 3,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      }
+    },
+    {
+      "id": "s07-trick",
+      "sceneType": "composite",
+      "voText": "That delay is the whole trick.",
+      "durationInFrames": 75,
+      "gradeOverride": {
+        "saturate": 0.58,
+        "contrast": 1.14,
+        "brightness": 0.95
+      },
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.38,
+          "x": 929,
+          "y": 104,
+          "width": 370,
+          "rotate": -16,
+          "opacity": 0.71,
+          "colour": "#ffcf3d",
+          "from": 64
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1.23,
+        "pushTo": 1.34,
+        "pushEndFrame": 71,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
+        "glowWarm": "#ffcf3d",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "wash",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "caption": [
+          "That delay",
+          "is the whole",
+          "trick"
+        ],
+        "captionX": 81,
+        "captionY": 680,
+        "captionSize": 113,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 9,
+        "captionScrim": 0,
+        "captionRecedeAt": 54,
+        "accent": "#ffcf3d",
+        "motif": "embers",
+        "motifX": 587,
+        "motifY": 632,
+        "motifSize": 37,
+        "motifCount": 24,
+        "motifFrame": 19,
+        "motifColour": "#ffcf3d",
+        "motifOpacity": 0.81,
+        "handheld": 1.5,
+        "panY": 232,
+        "captionEmphasis": "delay",
+        "captionReveal": "rise",
+        "captionMark": "box",
+        "captionWordEvery": 4,
+        "cameraMove": "tilt",
+        "cameraPurpose": "a vertical reveal — height, depth, or a drop"
+      },
+      "onScreenText": [
+        {
+          "text": "FILL, THEN FIRE",
+          "atFrame": 45,
+          "durationInFrames": 24,
+          "style": "typed",
+          "position": "bottom"
+        }
+      ]
+    },
+    {
+      "id": "s07-trick-b",
+      "sceneType": "composite",
+      "voText": "Fill first, then fire.",
+      "durationInFrames": 52,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "rect",
+          "depth": 0.64,
+          "x": 408,
+          "y": 520,
+          "width": 381,
+          "colour": "#ffcf3d",
+          "from": 44
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.03,
+        "pushTo": 1.54,
+        "pushEndFrame": 50,
+        "accent": "#ffcf3d",
+        "field": "wash",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1508,
+        "glowY": 289,
+        "glowSize": 525,
+        "glowIntensity": 0.45,
+        "glowWarm": "#ffcf3d",
+        "glowDepth": 0.1,
+        "caption": [
+          "Fill first,",
+          "then fire"
+        ],
+        "captionX": 81,
+        "captionY": 734,
+        "captionSize": 124,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 9,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "first",
+        "captionReveal": "blur",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      }
+    },
+    {
+      "id": "s08-beats",
+      "sceneType": "title-slate",
+      "voText": "About one hundred thousand beats a day,",
+      "durationInFrames": 86,
+      "assets": {},
+      "params": {
+        "scrim": 0.5,
+        "kicker": "",
+        "title": "ONE HUNDRED THOUSAND",
+        "footer": "",
+        "titleFrame": 7,
+        "titleSize": 230,
+        "creep": 1.053,
+        "accent": "#ffcf3d",
+        "field": "wash",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "motif": "tally",
+        "motifX": 168,
+        "motifY": 499,
+        "motifSize": 89,
+        "motifCount": 10,
+        "motifFrame": 14,
+        "motifColour": "#ffcf3d",
+        "motifOpacity": 0.85,
+        "pushEndFrame": 79,
+        "pushFrom": 1.51,
+        "pushTo": 1,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      }
+    },
+    {
+      "id": "s08-beats-b",
+      "sceneType": "composite",
+      "voText": "with nobody paying any attention.",
+      "durationInFrames": 64,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.22,
+          "x": 941,
+          "y": 23,
+          "width": 250,
+          "rotate": -10,
+          "opacity": 0.58,
+          "colour": "#ffcf3d",
+          "from": 40
+        },
+        {
+          "kind": "wire",
+          "shape": "rect",
+          "depth": 0.76,
+          "x": 754,
+          "y": 453,
+          "width": 366,
+          "colour": "#ffcf3d",
+          "from": 0
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1,
+        "pushTo": 1.12,
+        "pushEndFrame": 62,
+        "accent": "#ffcf3d",
+        "field": "wash",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1496,
+        "glowY": 407,
+        "glowSize": 471,
+        "glowIntensity": 0.53,
+        "glowWarm": "#ffcf3d",
+        "glowDepth": 0.1,
+        "caption": [
+          "with nobody",
+          "paying any",
+          "attention"
+        ],
+        "captionX": 81,
+        "captionY": 660,
+        "captionSize": 124,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 7,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panY": -63,
+        "roll": -0.16,
+        "captionEmphasis": "attention",
+        "captionReveal": "blur",
+        "captionMark": "highlight",
+        "captionWordEvery": 2,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      }
+    },
+    {
+      "id": "s09-close",
+      "sceneType": "title-slate",
+      "voText": "Two and a half billion beats in a life, and not one of them is voluntary.",
+      "durationInFrames": 118,
+      "gradeOverride": {
+        "saturate": 0.5,
+        "contrast": 1.16,
+        "brightness": 0.94
+      },
+      "assets": {},
+      "params": {
+        "scrim": 0.47,
+        "kicker": "ONE LIFETIME",
+        "title": "TWO POINT FIVE BILLION",
+        "footer": "beats, none of them yours to make",
+        "titleFrame": 9,
+        "titleSize": 230,
+        "creep": 1.065,
+        "accent": "#ffcf3d",
+        "field": "wash",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "pushEndFrame": 111,
+        "pushFrom": 1,
+        "pushTo": 1.09,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      },
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "ONE LIFETIME",
+          "depth": 0.61,
+          "x": 388,
+          "y": 606,
+          "width": 454,
+          "rotate": -2.1,
+          "from": 57
+        },
+        {
+          "kind": "newspaper",
+          "masthead": "THE DAILY",
+          "text": "TWO POINT FIVE BILLION",
+          "depth": 0.62,
+          "x": 659,
+          "y": 529,
+          "width": 428,
+          "rotate": -1,
+          "from": 73
+        }
+      ]
+    }
+  ]
+}

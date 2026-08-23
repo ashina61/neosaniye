@@ -1,0 +1,70 @@
+{
+  "$note": "Written after looking at every shot at 0%, 33%, 66% and 94% in out/.frames-<id>/, plus the rendered reel. Scores are one person's judgement out of ten and are deliberately NOT computed: every reel this repo has shipped broken passed the computed gates.",
+  "question": "How Was a Medieval Sword Actually Made?",
+  "scores": {
+    "storytelling": 8,
+    "visualHierarchy": 8,
+    "semanticAccuracy": 9,
+    "assetRelevance": 2,
+    "visualCausality": 3,
+    "motionQuality": 6,
+    "cameraVariety": 6.5,
+    "transitionQuality": 7,
+    "pacing": 8,
+    "visualContinuity": 8,
+    "typography": 8.5,
+    "ending": 8,
+    "professionalism": 5.5
+  },
+  "verdict": "The best-looking typography of the five and still a process film with no process in it. Forging is a sequence -- heat, fold, quench, and the differential cooling that is the whole design -- and a sequence is the one thing this reel cannot draw. What it does have is the cleanest type: the gold-heat spotlight gives the frame a centre, and 'Iron / with too / LITTLE / carbon / bends' set at 170px across five lines is a real composition rather than a caption.",
+  "whatWorked": [
+    "Typography at its best in this benchmark: five short lines at statement scale, serif against heavy sans, one accent word, the rest getting out of the way.",
+    "The spotlight field gives the frame an optical centre, which the wash field does not.",
+    "The script's structure is textbook: what it is not, the constraint, the dilemma, the solution, the method, the trick, and the counter-example that proves it.",
+    "Highest motion-design score of the five (10/10) -- every shot obeys the two-events rule."
+  ],
+  "whatFailed": [
+    {
+      "what": "Not one of heat, folding, quenching or differential cooling is shown.",
+      "why": "A forging sequence needs a process representation. The five diagram types cover a mechanism, a span of years, a magnitude, an orbit and a scan.",
+      "failureIs": "REPRESENTATION"
+    },
+    {
+      "what": "'Twelve hundred degrees' did not become a measurement bar.",
+      "why": "The MAGNITUDE regex lists tons, miles, metres, feet, pounds and people. Degrees is not a unit it knows, so the one line in the episode with a drawable figure fell to typography.",
+      "failureIs": "REPRESENTATION"
+    },
+    {
+      "what": "A wire prop and the slate share the opening frame's single beat.",
+      "why": "Same collision as roman-concrete shot 0.",
+      "failureIs": "COMPOSITION"
+    },
+    {
+      "what": "'push' on three consecutive shots (13-15).",
+      "why": "The camera quota counts across the reel but cannot refuse a run when the beat pool for three adjacent shots resolves the same way.",
+      "failureIs": "MOTION"
+    }
+  ],
+  "remainingDefects": [
+    {
+      "what": "Not one of heat, folding, quenching or differential cooling is shown.",
+      "cause": "REPRESENTATION",
+      "why": "A forging sequence needs a process representation. The five diagram types cover a mechanism, a span of years, a magnitude, an orbit and a scan."
+    },
+    {
+      "what": "'Twelve hundred degrees' did not become a measurement bar.",
+      "cause": "REPRESENTATION",
+      "why": "The MAGNITUDE regex lists tons, miles, metres, feet, pounds and people. Degrees is not a unit it knows, so the one line in the episode with a drawable figure fell to typography."
+    },
+    {
+      "what": "A wire prop and the slate share the opening frame's single beat.",
+      "cause": "COMPOSITION",
+      "why": "Same collision as roman-concrete shot 0."
+    },
+    {
+      "what": "'push' on three consecutive shots (13-15).",
+      "cause": "MOTION",
+      "why": "The camera quota counts across the reel but cannot refuse a run when the beat pool for three adjacent shots resolves the same way."
+    }
+  ]
+}

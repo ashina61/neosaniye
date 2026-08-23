@@ -1,0 +1,106 @@
+{
+  "id": "roman-concrete",
+  "title": "The wall that heals itself",
+  "mood": "green-rot",
+  "style": "documentary photograph, weathered marine masonry, overcast Mediterranean light, muted colour, fine grain, no text, no watermark, no modern objects",
+  "negative": "text, letters, words, watermark, logo, cartoon, cgi, painting, illustration, modern construction, people",
+  "lines": [
+    {
+      "slug": "harbour",
+      "vo": "A Roman harbour wall poured into the sea in 40 BC still stands in the surf.",
+      "image": "a weathered concrete mole running into grey-green water",
+      "imageCommons": [
+        "Portus Cosanus pier",
+        "Roman marine concrete harbour"
+      ],
+      "kicker": "BAIAE · 40 BC",
+      "graphicsOnly": true
+    },
+    {
+      "slug": "modern",
+      "vo": "Modern marine concrete cracks and fails in fifty years. Often in thirty.",
+      "image": "spalled modern concrete with rusted reinforcement showing",
+      "imageCommons": [
+        "spalling concrete rebar corrosion",
+        "failed sea wall concrete"
+      ],
+      "graphicsOnly": true
+    },
+    {
+      "slug": "recipe",
+      "vo": "The Romans mixed volcanic ash from Pozzuoli with lime, and poured it in seawater.",
+      "image": "coarse grey volcanic ash in a heap",
+      "imageCommons": [
+        "pozzolana volcanic ash",
+        "Pozzuoli tuff"
+      ],
+      "graphicsOnly": true
+    },
+    {
+      "slug": "ingredient",
+      "vo": "Seawater is what destroys modern concrete. Here it was an ingredient.",
+      "image": "green seawater breaking over dark stone",
+      "imageCommons": [
+        "seawater breaking on rock",
+        "Mediterranean surf stone"
+      ],
+      "graphicsOnly": true
+    },
+    {
+      "slug": "lumps",
+      "vo": "The mix left lumps of unslaked lime through the wall. We read those as sloppy work.",
+      "image": "a broken concrete face showing white inclusions",
+      "imageCommons": [
+        "Roman concrete lime clast",
+        "concrete core sample inclusions"
+      ],
+      "graphicsOnly": true
+    },
+    {
+      "slug": "crack",
+      "vo": "When a crack opens, water runs down it and reaches one of the lumps.",
+      "image": "a hairline crack across weathered grey concrete",
+      "imageCommons": [
+        "hairline crack concrete",
+        "cracked masonry close"
+      ],
+      "motif": "route",
+      "graphicsOnly": true
+    },
+    {
+      "slug": "heals",
+      "vo": "The lime dissolves, recrystallises across the gap, and seals it shut.",
+      "image": "white mineral crystals grown across a dark fracture",
+      "imageCommons": [
+        "calcite crystals in fracture",
+        "aluminous tobermorite"
+      ],
+      "graphicsOnly": true
+    },
+    {
+      "slug": "stronger",
+      "vo": "Two thousand years of storms have made that harbour stronger, not weaker.",
+      "image": "a storm sea against an old breakwater",
+      "imageCommons": [
+        "storm waves breakwater",
+        "rough sea old harbour wall"
+      ],
+      "onScreen": "STRONGER, NOT WEAKER",
+      "graphicsOnly": true
+    },
+    {
+      "slug": "close",
+      "vo": "We only worked out why in 2017. The recipe was written down in the first century.",
+      "image": "an old page of latin text under glass",
+      "imageCommons": [
+        "Vitruvius De architectura page",
+        "Latin manuscript page"
+      ],
+      "kicker": "VITRUVIUS · AD 30",
+      "title": "TWO THOUSAND",
+      "footer": "years, and still curing",
+      "graphicsOnly": true
+    }
+  ],
+  "$supply": "No photographic supply reachable from this environment: Commons returns 403 through the proxy and the image generator returns 403. Rungs 1-3 of the asset ladder (right asset, confident alternative, generated image) are unavailable, so every line is declared graphicsOnly and answered procedurally. The imageCommons searches stay in the brief: they are the standing request, and the day a provider is reachable they are what gets fetched."
+}

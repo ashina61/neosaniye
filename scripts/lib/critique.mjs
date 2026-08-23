@@ -697,7 +697,21 @@ export function qualityGates(config, {assets = {}, fps = config.fps ?? FPS_DEFAU
     // purpose is a correct visual, and this axis is about correctness.
     weighted += d * (verdict ? verdict.score : plate ? 5 : 8);
   }
-  const assetRelevance = clamp(frames ? weighted / frames : 8);
+  /**
+   * AND AN AXIS WITH NOTHING ON IT IS NOT A SCORE OF EIGHT.
+   *
+   * The default said "a shot with no photograph is not penalised", which is
+   * right per shot and became a lie per reel: five episodes with no picture in
+   * them at all reported assetRelevance 8.0 and passed the gate. The number
+   * that was supposed to catch "you are showing the wrong thing" quietly
+   * certified "you are showing nothing".
+   *
+   * So where the reel carries no photograph anywhere, the axis does not apply
+   * and says so. It is dropped from the average rather than defaulted into it —
+   * a measurement that cannot be taken must not be allowed to vote.
+   */
+  const photographic = scenes.some((s) => Object.keys(s.assets ?? {}).length > 0);
+  const assetRelevance = photographic ? clamp(weighted / Math.max(1, frames)) : null;
 
   // VISUAL HIERARCHY — does each shot state a primary element, and is there
   // exactly one thing carrying it?
@@ -773,17 +787,26 @@ export function qualityGates(config, {assets = {}, fps = config.fps ?? FPS_DEFAU
   const overrides = scenes.filter((s) => s.gradeOverride).length;
   const visualContinuity = clamp(10 - (accents.size - 1) * 3 - Math.max(0, overrides - 2) * 1.5);
 
-  const professionalism = clamp(
-    (assetRelevance * 0.3 +
-      visualHierarchy * 0.15 +
-      motionDesign * 0.15 +
-      cameraDiversity * 0.13 +
-      transitionQuality * 0.12 +
-      visualContinuity * 0.15),
-  );
+  /**
+   * THE AVERAGE IS TAKEN OVER THE AXES THAT EXIST.
+   *
+   * Reweighted rather than renormalised against a missing term, so a reel with
+   * no photography is judged on the six things it can be judged on instead of
+   * being handed three tenths of a score for a picture nobody saw.
+   */
+  const weights = [
+    [assetRelevance, 0.3],
+    [visualHierarchy, 0.15],
+    [motionDesign, 0.15],
+    [cameraDiversity, 0.13],
+    [transitionQuality, 0.12],
+    [visualContinuity, 0.15],
+  ].filter(([v]) => v !== null);
+  const weighting = weights.reduce((n, [, w]) => n + w, 0);
+  const professionalism = clamp(weights.reduce((n, [v, w]) => n + v * w, 0) / weighting);
 
   const gates = {
-    assetRelevance,
+    ...(assetRelevance === null ? {} : {assetRelevance}),
     visualHierarchy,
     motionDesign,
     cameraDiversity,
@@ -794,7 +817,12 @@ export function qualityGates(config, {assets = {}, fps = config.fps ?? FPS_DEFAU
   const failed = Object.entries(gates)
     .filter(([, v]) => v < 7)
     .map(([k, v]) => `${k} ${v}/10`);
-  return {gates, failed, productionReady: failed.length === 0};
+  /**
+   * AND A REEL WITH NO PICTURE IN IT IS NOT PRODUCTION READY, whatever the six
+   * remaining axes say. This is not a score; it is a fact about the reel.
+   */
+  if (!photographic) failed.push('no photograph anywhere in the reel — every shot is drawn or typeset');
+  return {gates, failed, productionReady: failed.length === 0, photographic};
 }
 
 /* ══════════════════════════════════════════════════════════════════════════

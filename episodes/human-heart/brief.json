@@ -1,0 +1,113 @@
+{
+  "id": "human-heart",
+  "title": "Two pumps, one beat",
+  "mood": "gold-heat",
+  "style": "documentary photograph, anatomical museum specimen, low warm lamp light, muted colour, fine grain, no text, no watermark",
+  "negative": "text, letters, words, watermark, logo, cartoon, cgi, painting, illustration, modern medical equipment, gore",
+  "lines": [
+    {
+      "slug": "twopumps",
+      "vo": "Your heart is not one pump. It is two, side by side, beating together.",
+      "image": "an anatomical heart specimen under museum glass",
+      "imageCommons": [
+        "anatomical heart specimen museum",
+        "preserved human heart"
+      ],
+      "kicker": "THE HUMAN HEART",
+      "graphicsOnly": true
+    },
+    {
+      "slug": "circuits",
+      "vo": "The right side sends blood to the lungs. The left sends it everywhere else.",
+      "image": "a dark anatomical plate of the chest cavity",
+      "imageCommons": [
+        "Gray's Anatomy heart plate",
+        "anatomical engraving thorax"
+      ],
+      "stops": [
+        "Right side",
+        "The lungs",
+        "Left side",
+        "The body"
+      ],
+      "graphicsOnly": true
+    },
+    {
+      "slug": "thicker",
+      "vo": "The left has to reach your whole body, so its wall is three times thicker.",
+      "image": "a cross section of cardiac muscle wall",
+      "imageCommons": [
+        "heart ventricle cross section",
+        "myocardium cross section"
+      ],
+      "graphicsOnly": true
+    },
+    {
+      "slug": "valves",
+      "vo": "Four chambers. Four valves. Every one of them opens in a single direction.",
+      "image": "a dissected heart valve, pale tissue",
+      "imageCommons": [
+        "heart valve specimen",
+        "mitral valve dissection"
+      ],
+      "graphicsOnly": true
+    },
+    {
+      "slug": "spark",
+      "vo": "The beat starts on its own. A knot of cells in the right atrium fires.",
+      "image": "dark tissue lit from one side",
+      "imageCommons": [
+        "sinoatrial node histology",
+        "cardiac tissue microscopy"
+      ],
+      "graphicsOnly": true
+    },
+    {
+      "slug": "delay",
+      "vo": "The signal spreads, the upper chambers squeeze, then a tenth of a second later the lower.",
+      "image": "an old oscilloscope trace on dark glass",
+      "imageCommons": [
+        "electrocardiogram trace paper",
+        "oscilloscope trace"
+      ],
+      "motif": "rise",
+      "graphicsOnly": true
+    },
+    {
+      "slug": "trick",
+      "vo": "That delay is the whole trick. Fill first, then fire.",
+      "image": "a single lamp over dark instruments",
+      "imageCommons": [
+        "surgical lamp dark",
+        "laboratory lamp"
+      ],
+      "onScreen": "FILL, THEN FIRE",
+      "graphicsOnly": true
+    },
+    {
+      "slug": "beats",
+      "vo": "About one hundred thousand beats a day, with nobody paying any attention.",
+      "image": "a mechanical chart recorder drum",
+      "imageCommons": [
+        "kymograph drum",
+        "chart recorder instrument"
+      ],
+      "motif": "tally",
+      "graphicsOnly": true
+    },
+    {
+      "slug": "close",
+      "vo": "Two and a half billion beats in a life, and not one of them is voluntary.",
+      "image": "an empty examination room at night",
+      "imageCommons": [
+        "empty clinic room night",
+        "dark examination room"
+      ],
+      "kicker": "ONE LIFETIME",
+      "title": "TWO POINT FIVE BILLION",
+      "footer": "beats, none of them yours to make",
+      "graphicsOnly": true
+    }
+  ],
+  "$supply": "No photographic supply reachable from this environment: Commons returns 403 through the proxy and the image generator returns 403. Rungs 1-3 of the asset ladder (right asset, confident alternative, generated image) are unavailable, so every line is declared graphicsOnly and answered procedurally. The imageCommons searches stay in the brief: they are the standing request, and the day a provider is reachable they are what gets fetched."
+}

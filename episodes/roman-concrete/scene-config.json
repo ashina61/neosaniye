@@ -1,0 +1,1430 @@
+{
+  "id": "roman-concrete",
+  "title": "The wall that heals itself",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "look": {
+    "posterizeFps": 12,
+    "grade": {
+      "saturate": 0.56,
+      "contrast": 1.09,
+      "sepia": 0.26,
+      "brightness": 1
+    },
+    "film": {
+      "grain": true,
+      "grunge": true,
+      "scanlines": true,
+      "vignette": true,
+      "gateWeave": true,
+      "grainOpacity": 0.41,
+      "grungeOpacity": 0.12,
+      "scanlineOpacity": 0.09,
+      "scanlinePeriod": 8,
+      "vignetteStrength": 0.41,
+      "weavePx": 5,
+      "weaveScale": 1.011
+    }
+  },
+  "scenes": [
+    {
+      "id": "s01-harbour",
+      "sceneType": "title-slate",
+      "voText": "A Roman harbour wall poured",
+      "durationInFrames": 64,
+      "assets": {},
+      "params": {
+        "scrim": 0.5,
+        "kicker": "BAIAE · 40 BC",
+        "title": "",
+        "footer": "",
+        "titleFrame": 5,
+        "titleSize": 124,
+        "creep": 1.086,
+        "accent": "#e0d089",
+        "field": "grid",
+        "fieldColours": [
+          "#3a4530",
+          "#1f2619",
+          "#0b0e08"
+        ],
+        "pushEndFrame": 58,
+        "pushFrom": 1,
+        "pushTo": 1.47,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "BAIAE · 40 BC",
+          "depth": 0.67,
+          "x": 355,
+          "y": 1462,
+          "width": 433,
+          "rotate": 1.1,
+          "from": 54
+        },
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.72,
+          "x": 659,
+          "y": 952,
+          "width": 313,
+          "colour": "#e0d089",
+          "from": 5
+        }
+      ]
+    },
+    {
+      "id": "s01-harbour-b",
+      "sceneType": "composite",
+      "voText": "into the sea in 40 BC still stands",
+      "durationInFrames": 97,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.19,
+          "x": 929,
+          "y": 60,
+          "width": 267,
+          "rotate": -16,
+          "opacity": 0.56,
+          "colour": "#e0d089",
+          "from": 42
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.17,
+        "pushTo": 1.27,
+        "pushEndFrame": 88,
+        "accent": "#e0d089",
+        "field": "spotlight",
+        "fieldColours": [
+          "#3a4530",
+          "#1f2619",
+          "#0b0e08"
+        ],
+        "glowX": 1367,
+        "glowY": 142,
+        "glowSize": 325,
+        "glowIntensity": 0.57,
+        "glowWarm": "#e0d089",
+        "glowDepth": 0.1,
+        "caption": [
+          "into the sea",
+          "in 40 BC",
+          "still stands"
+        ],
+        "captionX": 81,
+        "captionY": 680,
+        "captionSize": 113,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 7,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0.2,
+        "handheld": 1.5,
+        "panY": -227,
+        "shakeAt": [
+          8
+        ],
+        "shakeAmount": 21,
+        "captionEmphasis": "40",
+        "captionReveal": "rise",
+        "captionMark": "highlight",
+        "captionWordEvery": 2,
+        "cameraMove": "tilt",
+        "cameraPurpose": "a vertical reveal — height, depth, or a drop"
+      }
+    },
+    {
+      "id": "s01-harbour-c",
+      "sceneType": "composite",
+      "voText": "in the surf.",
+      "durationInFrames": 45,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "BAIAE · 40 BC",
+          "depth": 0.54,
+          "x": 395,
+          "y": 1470,
+          "width": 462,
+          "rotate": -2.1,
+          "from": 38
+        },
+        {
+          "kind": "wire",
+          "shape": "rect",
+          "depth": 0.64,
+          "x": 762,
+          "y": 608,
+          "width": 354,
+          "colour": "#e0d089",
+          "from": 0
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1.02,
+        "pushTo": 1.59,
+        "pushEndFrame": 44,
+        "accent": "#e0d089",
+        "field": "spotlight",
+        "fieldColours": [
+          "#3a4530",
+          "#1f2619",
+          "#0b0e08"
+        ],
+        "glowX": 1330,
+        "glowY": 231,
+        "glowSize": 303,
+        "glowIntensity": 0.45,
+        "glowWarm": "#e0d089",
+        "glowDepth": 0.1,
+        "caption": [
+          "in the surf"
+        ],
+        "captionX": 81,
+        "captionY": 809,
+        "captionSize": 124,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 7,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "surf",
+        "captionReveal": "wipe",
+        "captionMark": "none",
+        "captionWordEvery": 4,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      }
+    },
+    {
+      "id": "s02-modern",
+      "sceneType": "title-slate",
+      "voText": "Modern marine concrete cracks",
+      "durationInFrames": 52,
+      "assets": {},
+      "params": {
+        "scrim": 0.45,
+        "kicker": "",
+        "title": "FIFTY YEARS",
+        "footer": "",
+        "titleFrame": 4,
+        "titleSize": 230,
+        "creep": 1.051,
+        "accent": "#e0d089",
+        "field": "grid",
+        "fieldColours": [
+          "#3a4530",
+          "#1f2619",
+          "#0b0e08"
+        ],
+        "pushEndFrame": 50,
+        "pushFrom": 1,
+        "pushTo": 1.4,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      }
+    },
+    {
+      "id": "s02-modern-b",
+      "sceneType": "composite",
+      "voText": "and fails in fifty years.",
+      "durationInFrames": 64,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.6,
+          "x": 392,
+          "y": 559,
+          "width": 369,
+          "colour": "#e0d089",
+          "from": 54
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.18,
+        "pushTo": 1.27,
+        "pushEndFrame": 61,
+        "accent": "#e0d089",
+        "field": "spotlight",
+        "fieldColours": [
+          "#3a4530",
+          "#1f2619",
+          "#0b0e08"
+        ],
+        "glowX": 1554,
+        "glowY": 254,
+        "glowSize": 496,
+        "glowIntensity": 0.47,
+        "glowWarm": "#e0d089",
+        "glowDepth": 0.1,
+        "caption": [
+          "and fails",
+          "in fifty years"
+        ],
+        "captionX": 81,
+        "captionY": 767,
+        "captionSize": 97,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 9,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panX": -271,
+        "captionEmphasis": "fifty years",
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      }
+    },
+    {
+      "id": "s02-modern-c",
+      "sceneType": "composite",
+      "voText": "Often in thirty.",
+      "durationInFrames": 45,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.32,
+          "x": 937,
+          "y": 5,
+          "width": 361,
+          "rotate": -20,
+          "opacity": 0.7,
+          "colour": "#e0d089",
+          "from": 38
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1.01,
+        "pushTo": 1.38,
+        "pushEndFrame": 43,
+        "accent": "#e0d089",
+        "field": "spotlight",
+        "fieldColours": [
+          "#3a4530",
+          "#1f2619",
+          "#0b0e08"
+        ],
+        "glowX": 1302,
+        "glowY": 546,
+        "glowSize": 308,
+        "glowIntensity": 0.57,
+        "glowWarm": "#e0d089",
+        "glowDepth": 0.1,
+        "caption": [
+          "Often",
+          "in thirty"
+        ],
+        "captionX": 81,
+        "captionY": 702,
+        "captionSize": 151,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 7,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "thirty",
+        "captionReveal": "rise",
+        "captionMark": "box",
+        "captionWordEvery": 2,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      }
+    },
+    {
+      "id": "s03-recipe",
+      "sceneType": "composite",
+      "voText": "The Romans mixed volcanic ash",
+      "durationInFrames": 64,
+      "gradeOverride": {
+        "saturate": 0.58,
+        "contrast": 1.14,
+        "brightness": 0.95
+      },
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "rect",
+          "depth": 0.8,
+          "x": 424,
+          "y": 485,
+          "width": 342,
+          "colour": "#e0d089",
+          "from": 54
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1.37,
+        "pushTo": 1,
+        "pushEndFrame": 58,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
+        "glowWarm": "#e0d089",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0.2,
+        "field": "spotlight",
+        "fieldColours": [
+          "#3a4530",
+          "#1f2619",
+          "#0b0e08"
+        ],
+        "caption": [
+          "The Romans",
+          "mixed",
+          "volcanic ash"
+        ],
+        "captionX": 81,
+        "captionY": 680,
+        "captionSize": 113,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 9,
+        "captionScrim": 0,
+        "captionRecedeAt": 46,
+        "accent": "#e0d089",
+        "motif": "embers",
+        "motifX": 515,
+        "motifY": 631,
+        "motifSize": 39,
+        "motifCount": 35,
+        "motifFrame": 20,
+        "motifColour": "#e0d089",
+        "motifOpacity": 0.92,
+        "handheld": 1.5,
+        "captionEmphasis": "Romans",
+        "captionReveal": "wipe",
+        "captionMark": "box",
+        "captionWordEvery": 3,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      }
+    },
+    {
+      "id": "s03-recipe-b",
+      "sceneType": "composite",
+      "voText": "from Pozzuoli with lime,",
+      "durationInFrames": 52,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.28,
+          "x": 1009,
+          "y": -62,
+          "width": 252,
+          "rotate": -11,
+          "opacity": 0.7,
+          "colour": "#e0d089",
+          "from": 44
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1,
+        "pushTo": 1.12,
+        "pushEndFrame": 50,
+        "accent": "#e0d089",
+        "field": "spotlight",
+        "fieldColours": [
+          "#3a4530",
+          "#1f2619",
+          "#0b0e08"
+        ],
+        "glowX": 1460,
+        "glowY": 250,
+        "glowSize": 478,
+        "glowIntensity": 0.7,
+        "glowWarm": "#e0d089",
+        "glowDepth": 0.1,
+        "caption": [
+          "from Pozzuoli",
+          "with lime"
+        ],
+        "captionX": 81,
+        "captionY": 758,
+        "captionSize": 104,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 8,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panY": -51,
+        "roll": 0.03,
+        "captionEmphasis": "Pozzuoli",
+        "captionReveal": "wipe",
+        "captionMark": "underline",
+        "captionWordEvery": 2,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      }
+    },
+    {
+      "id": "s03-recipe-c",
+      "sceneType": "composite",
+      "voText": "and poured it in seawater.",
+      "durationInFrames": 64,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.67,
+          "x": 399,
+          "y": 538,
+          "width": 411,
+          "colour": "#e0d089",
+          "from": 54
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1.15,
+        "pushTo": 1.3,
+        "pushEndFrame": 60,
+        "accent": "#e0d089",
+        "field": "spotlight",
+        "fieldColours": [
+          "#3a4530",
+          "#1f2619",
+          "#0b0e08"
+        ],
+        "glowX": 1430,
+        "glowY": 281,
+        "glowSize": 422,
+        "glowIntensity": 0.67,
+        "glowWarm": "#e0d089",
+        "glowDepth": 0.1,
+        "caption": [
+          "and poured",
+          "it in seawater"
+        ],
+        "captionX": 81,
+        "captionY": 767,
+        "captionSize": 97,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 8,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panX": 265,
+        "captionEmphasis": "seawater",
+        "captionReveal": "punch",
+        "captionMark": "box",
+        "captionWordEvery": 2,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      }
+    },
+    {
+      "id": "s04-ingredient",
+      "sceneType": "composite",
+      "voText": "Seawater is what destroys modern concrete.",
+      "durationInFrames": 75,
+      "gradeOverride": {
+        "saturate": 0.58,
+        "contrast": 1.14,
+        "brightness": 0.95
+      },
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.35,
+          "x": 824,
+          "y": 143,
+          "width": 355,
+          "rotate": -19,
+          "opacity": 0.67,
+          "colour": "#e0d089",
+          "from": 64
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1.34,
+        "pushTo": 1,
+        "pushEndFrame": 73,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
+        "glowWarm": "#e0d089",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "spotlight",
+        "fieldColours": [
+          "#3a4530",
+          "#1f2619",
+          "#0b0e08"
+        ],
+        "caption": [
+          "Seawater",
+          "is what",
+          "destroys",
+          "modern",
+          "concrete"
+        ],
+        "captionX": 81,
+        "captionY": 373,
+        "captionSize": 170,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 6,
+        "captionScrim": 0,
+        "captionRecedeAt": 54,
+        "accent": "#e0d089",
+        "motif": "embers",
+        "motifX": 545,
+        "motifY": 324,
+        "motifSize": 39,
+        "motifCount": 27,
+        "motifFrame": 29,
+        "motifColour": "#e0d089",
+        "motifOpacity": 0.96,
+        "handheld": 1.5,
+        "captionEmphasis": "Seawater",
+        "captionReveal": "punch",
+        "captionMark": "underline",
+        "captionWordEvery": 2,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      }
+    },
+    {
+      "id": "s04-ingredient-b",
+      "sceneType": "composite",
+      "voText": "Here it was an ingredient.",
+      "durationInFrames": 64,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "rect",
+          "depth": 0.83,
+          "x": 345,
+          "y": 528,
+          "width": 412,
+          "colour": "#e0d089",
+          "from": 54
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1,
+        "pushTo": 1.08,
+        "pushEndFrame": 63,
+        "accent": "#e0d089",
+        "field": "spotlight",
+        "fieldColours": [
+          "#3a4530",
+          "#1f2619",
+          "#0b0e08"
+        ],
+        "glowX": 1434,
+        "glowY": 328,
+        "glowSize": 421,
+        "glowIntensity": 0.57,
+        "glowWarm": "#e0d089",
+        "glowDepth": 0.1,
+        "caption": [
+          "Here it was",
+          "an ingredient"
+        ],
+        "captionX": 81,
+        "captionY": 758,
+        "captionSize": 104,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 9,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panY": -27,
+        "roll": 0.42,
+        "captionEmphasis": "ingredient",
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 2,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      }
+    },
+    {
+      "id": "s05-lumps",
+      "sceneType": "composite",
+      "voText": "The mix left lumps",
+      "durationInFrames": 52,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.38,
+          "x": 929,
+          "y": -22,
+          "width": 358,
+          "rotate": -16,
+          "opacity": 0.67,
+          "colour": "#e0d089",
+          "from": 44
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1,
+        "pushTo": 1.1,
+        "pushEndFrame": 51,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
+        "glowWarm": "#e0d089",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "spotlight",
+        "fieldColours": [
+          "#3a4530",
+          "#1f2619",
+          "#0b0e08"
+        ],
+        "caption": [
+          "The mix",
+          "left lumps"
+        ],
+        "captionX": 81,
+        "captionY": 720,
+        "captionSize": 136,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 9,
+        "captionScrim": 0,
+        "captionRecedeAt": 37,
+        "accent": "#e0d089",
+        "handheld": 1.5,
+        "panY": -66,
+        "roll": -0.18,
+        "captionEmphasis": "lumps",
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 4,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      }
+    },
+    {
+      "id": "s05-lumps-b",
+      "sceneType": "composite",
+      "voText": "of unslaked lime through the wall.",
+      "durationInFrames": 75,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.83,
+          "x": 405,
+          "y": 492,
+          "width": 329,
+          "colour": "#e0d089",
+          "from": 64
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.2,
+        "pushTo": 1.23,
+        "pushEndFrame": 73,
+        "accent": "#e0d089",
+        "field": "spotlight",
+        "fieldColours": [
+          "#3a4530",
+          "#1f2619",
+          "#0b0e08"
+        ],
+        "glowX": 1477,
+        "glowY": 507,
+        "glowSize": 550,
+        "glowIntensity": 0.65,
+        "glowWarm": "#e0d089",
+        "glowDepth": 0.1,
+        "caption": [
+          "of unslaked",
+          "lime through",
+          "the wall"
+        ],
+        "captionX": 81,
+        "captionY": 680,
+        "captionSize": 113,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 8,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panX": 251,
+        "captionEmphasis": "unslaked",
+        "captionReveal": "punch",
+        "captionMark": "box",
+        "captionWordEvery": 4,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      }
+    },
+    {
+      "id": "s05-lumps-c",
+      "sceneType": "composite",
+      "voText": "We read those as sloppy work.",
+      "durationInFrames": 75,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.35,
+          "x": 929,
+          "y": -80,
+          "width": 350,
+          "rotate": -16,
+          "opacity": 0.5,
+          "colour": "#e0d089",
+          "from": 64
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1.53,
+        "pushTo": 1.03,
+        "pushEndFrame": 71,
+        "accent": "#e0d089",
+        "field": "spotlight",
+        "fieldColours": [
+          "#3a4530",
+          "#1f2619",
+          "#0b0e08"
+        ],
+        "glowX": 1372,
+        "glowY": 473,
+        "glowSize": 349,
+        "glowIntensity": 0.55,
+        "glowWarm": "#e0d089",
+        "glowDepth": 0.1,
+        "caption": [
+          "We read",
+          "those",
+          "as sloppy",
+          "work"
+        ],
+        "captionX": 81,
+        "captionY": 521,
+        "captionSize": 151,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 7,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "sloppy",
+        "captionReveal": "wipe",
+        "captionMark": "highlight",
+        "captionWordEvery": 4,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      }
+    },
+    {
+      "id": "s06-crack",
+      "sceneType": "title-slate",
+      "voText": "When a crack opens,",
+      "durationInFrames": 52,
+      "assets": {},
+      "params": {
+        "scrim": 0.52,
+        "kicker": "",
+        "title": "ONE",
+        "footer": "",
+        "titleFrame": 4,
+        "titleSize": 230,
+        "creep": 1.078,
+        "accent": "#e0d089",
+        "field": "grid",
+        "fieldColours": [
+          "#3a4530",
+          "#1f2619",
+          "#0b0e08"
+        ],
+        "motif": "route",
+        "motifX": 157,
+        "motifY": 563,
+        "motifSize": 228,
+        "motifCount": 1,
+        "motifFrame": 17,
+        "motifColour": "#e0d089",
+        "motifOpacity": 0.92,
+        "mark": "oval",
+        "markX": 260,
+        "markY": 820,
+        "markWidth": 560,
+        "markHeight": 300,
+        "markFrame": 18,
+        "pushEndFrame": 50,
+        "pushFrom": 1,
+        "pushTo": 1.39,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.7,
+          "x": 366,
+          "y": 540,
+          "width": 286,
+          "colour": "#e0d089",
+          "from": 44
+        }
+      ]
+    },
+    {
+      "id": "s06-crack-b",
+      "sceneType": "composite",
+      "voText": "water runs down it",
+      "durationInFrames": 52,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.24,
+          "x": 933,
+          "y": -59,
+          "width": 314,
+          "rotate": -19,
+          "opacity": 0.71,
+          "colour": "#e0d089",
+          "from": 44
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.04,
+        "pushTo": 1.46,
+        "pushEndFrame": 51,
+        "accent": "#e0d089",
+        "field": "spotlight",
+        "fieldColours": [
+          "#3a4530",
+          "#1f2619",
+          "#0b0e08"
+        ],
+        "glowX": 1426,
+        "glowY": 500,
+        "glowSize": 523,
+        "glowIntensity": 0.67,
+        "glowWarm": "#e0d089",
+        "glowDepth": 0.1,
+        "caption": [
+          "water runs",
+          "down it"
+        ],
+        "captionX": 81,
+        "captionY": 720,
+        "captionSize": 136,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 7,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0.23,
+        "handheld": 1.5,
+        "captionEmphasis": "water",
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      }
+    },
+    {
+      "id": "s06-crack-c",
+      "sceneType": "composite",
+      "voText": "and reaches one of the lumps.",
+      "durationInFrames": 75,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.72,
+          "x": 338,
+          "y": 520,
+          "width": 272,
+          "colour": "#e0d089",
+          "from": 64
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1.23,
+        "pushTo": 1.3,
+        "pushEndFrame": 68,
+        "accent": "#e0d089",
+        "field": "spotlight",
+        "fieldColours": [
+          "#3a4530",
+          "#1f2619",
+          "#0b0e08"
+        ],
+        "glowX": 1362,
+        "glowY": 548,
+        "glowSize": 352,
+        "glowIntensity": 0.58,
+        "glowWarm": "#e0d089",
+        "glowDepth": 0.1,
+        "caption": [
+          "and reaches",
+          "one",
+          "of the lumps"
+        ],
+        "captionX": 81,
+        "captionY": 680,
+        "captionSize": 113,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 9,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panX": -176,
+        "captionEmphasis": "one",
+        "captionReveal": "punch",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      }
+    },
+    {
+      "id": "s07-heals",
+      "sceneType": "composite",
+      "voText": "The lime dissolves, recrystallises across the gap,",
+      "durationInFrames": 86,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.37,
+          "x": 867,
+          "y": 152,
+          "width": 231,
+          "rotate": -8,
+          "opacity": 0.8,
+          "colour": "#e0d089",
+          "from": 73
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1.58,
+        "pushTo": 1.02,
+        "pushEndFrame": 80,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
+        "glowWarm": "#e0d089",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "spotlight",
+        "fieldColours": [
+          "#3a4530",
+          "#1f2619",
+          "#0b0e08"
+        ],
+        "caption": [
+          "The lime",
+          "dissolves,",
+          "recrystallises",
+          "across",
+          "the gap"
+        ],
+        "captionX": 81,
+        "captionY": 592,
+        "captionSize": 97,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 7,
+        "captionScrim": 0,
+        "captionRecedeAt": 62,
+        "accent": "#e0d089",
+        "motif": "route",
+        "motifX": 165,
+        "motifY": 464,
+        "motifSize": 197,
+        "motifCount": 1,
+        "motifFrame": 30,
+        "motifColour": "#e0d089",
+        "motifOpacity": 0.89,
+        "handheld": 1.5,
+        "captionEmphasis": "recrystallises",
+        "captionReveal": "punch",
+        "captionMark": "highlight",
+        "captionWordEvery": 4,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      }
+    },
+    {
+      "id": "s07-heals-b",
+      "sceneType": "composite",
+      "voText": "and seals it shut.",
+      "durationInFrames": 52,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "rect",
+          "depth": 0.69,
+          "x": 335,
+          "y": 536,
+          "width": 285,
+          "colour": "#e0d089",
+          "from": 44
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1,
+        "pushTo": 1.1,
+        "pushEndFrame": 50,
+        "accent": "#e0d089",
+        "field": "spotlight",
+        "fieldColours": [
+          "#3a4530",
+          "#1f2619",
+          "#0b0e08"
+        ],
+        "glowX": 1609,
+        "glowY": 512,
+        "glowSize": 550,
+        "glowIntensity": 0.63,
+        "glowWarm": "#e0d089",
+        "glowDepth": 0.1,
+        "caption": [
+          "and seals",
+          "it shut"
+        ],
+        "captionX": 81,
+        "captionY": 702,
+        "captionSize": 151,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 9,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panY": -56,
+        "roll": -0.23,
+        "captionEmphasis": "seals",
+        "captionReveal": "wipe",
+        "captionMark": "none",
+        "captionWordEvery": 2,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      }
+    },
+    {
+      "id": "s08-stronger",
+      "sceneType": "title-slate",
+      "voText": "Two thousand years",
+      "durationInFrames": 45,
+      "assets": {},
+      "params": {
+        "scrim": 0.44,
+        "kicker": "",
+        "title": "TWO THOUSAND YEARS",
+        "footer": "",
+        "titleFrame": 4,
+        "titleSize": 230,
+        "creep": 1.083,
+        "accent": "#e0d089",
+        "field": "grid",
+        "fieldColours": [
+          "#3a4530",
+          "#1f2619",
+          "#0b0e08"
+        ],
+        "pushEndFrame": 41,
+        "pushFrom": 1.05,
+        "pushTo": 1.06,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      },
+      "onScreenText": [
+        {
+          "text": "STRONGER, NOT WEAKER",
+          "atFrame": 27,
+          "durationInFrames": 14,
+          "style": "sticker",
+          "position": "bottom"
+        }
+      ]
+    },
+    {
+      "id": "s08-stronger-b",
+      "sceneType": "composite",
+      "voText": "of storms have made that harbour stronger,",
+      "durationInFrames": 86,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.75,
+          "x": 335,
+          "y": 410,
+          "width": 356,
+          "colour": "#e0d089",
+          "from": 73
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.16,
+        "pushTo": 1.19,
+        "pushEndFrame": 78,
+        "accent": "#e0d089",
+        "field": "spotlight",
+        "fieldColours": [
+          "#3a4530",
+          "#1f2619",
+          "#0b0e08"
+        ],
+        "glowX": 1496,
+        "glowY": 428,
+        "glowSize": 474,
+        "glowIntensity": 0.52,
+        "glowWarm": "#e0d089",
+        "glowDepth": 0.1,
+        "caption": [
+          "of storms",
+          "have made",
+          "that harbour",
+          "stronger"
+        ],
+        "captionX": 81,
+        "captionY": 612,
+        "captionSize": 113,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 6,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panX": -264,
+        "captionEmphasis": "stronger",
+        "captionReveal": "blur",
+        "captionMark": "underline",
+        "captionWordEvery": 4,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      }
+    },
+    {
+      "id": "s08-stronger-c",
+      "sceneType": "composite",
+      "voText": "not weaker.",
+      "durationInFrames": 45,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.17,
+          "x": 929,
+          "y": -3,
+          "width": 287,
+          "rotate": -16,
+          "opacity": 0.71,
+          "colour": "#e0d089",
+          "from": 38
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1.67,
+        "pushTo": 1.02,
+        "pushEndFrame": 43,
+        "accent": "#e0d089",
+        "field": "spotlight",
+        "fieldColours": [
+          "#3a4530",
+          "#1f2619",
+          "#0b0e08"
+        ],
+        "glowX": 1434,
+        "glowY": 456,
+        "glowSize": 538,
+        "glowIntensity": 0.65,
+        "glowWarm": "#e0d089",
+        "glowDepth": 0.1,
+        "caption": [
+          "not weaker"
+        ],
+        "captionX": 81,
+        "captionY": 802,
+        "captionSize": 136,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 8,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "weaker",
+        "captionReveal": "rise",
+        "captionMark": "underline",
+        "captionWordEvery": 2,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      }
+    },
+    {
+      "id": "s09-close",
+      "sceneType": "title-slate",
+      "voText": "We only worked out why in 2017. The recipe was written down in the first century.",
+      "durationInFrames": 118,
+      "gradeOverride": {
+        "saturate": 0.5,
+        "contrast": 1.16,
+        "brightness": 0.94
+      },
+      "assets": {},
+      "params": {
+        "scrim": 0.4,
+        "kicker": "VITRUVIUS · AD 30",
+        "title": "TWO THOUSAND",
+        "footer": "years, and still curing",
+        "titleFrame": 9,
+        "titleSize": 230,
+        "creep": 1.08,
+        "accent": "#e0d089",
+        "field": "grid",
+        "fieldColours": [
+          "#3a4530",
+          "#1f2619",
+          "#0b0e08"
+        ],
+        "mark": "oval",
+        "markX": 260,
+        "markY": 820,
+        "markWidth": 560,
+        "markHeight": 300,
+        "markFrame": 40,
+        "pushEndFrame": 109,
+        "pushFrom": 1,
+        "pushTo": 1.11,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      },
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "VITRUVIUS · AD 30",
+          "depth": 0.71,
+          "x": 426,
+          "y": 1502,
+          "width": 417,
+          "rotate": -2.2,
+          "from": 56
+        },
+        {
+          "kind": "newspaper",
+          "masthead": "THE GAZETTE",
+          "text": "TWO THOUSAND",
+          "depth": 0.82,
+          "x": 760,
+          "y": 543,
+          "width": 389,
+          "rotate": 2.4,
+          "from": 73
+        }
+      ]
+    }
+  ]
+}

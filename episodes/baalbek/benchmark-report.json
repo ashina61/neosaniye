@@ -1,0 +1,191 @@
+{
+  "episode": "baalbek",
+  "title": "The stones nobody could lift",
+  "question": "How Did Humans Move Stones Weighing Over 1,000 Tons?",
+  "generatedAt": "2026-08-23",
+  "finalScore": 6,
+  "scoredBy": "inspection of rendered frames at 0/33/66/94 per shot",
+  "judged": {
+    "storytelling": 8,
+    "visualHierarchy": 8,
+    "semanticAccuracy": 9,
+    "assetRelevance": 3,
+    "visualCausality": 3,
+    "motionQuality": 6,
+    "cameraVariety": 6,
+    "transitionQuality": 7,
+    "pacing": 8,
+    "visualContinuity": 9,
+    "typography": 8,
+    "ending": 8,
+    "professionalism": 6
+  },
+  "verdict": "A competent kinetic-typography reel and not yet a documentary. The script is the strongest thing in it: the reversal -- they did not lift the stones, they rolled them -- lands at the two-thirds mark exactly where it should. But seventeen of twenty shots are words on an unlit grey field, so the viewer is told the whole story and shown almost none of it. The measurement bar counting to 800 tons is the only shot that does the job a picture is for.",
+  "whatWorked": [
+    "The story structure: impossible object, the weight, the distance, the two things that could not have worked, then the answer. The reversal is placed correctly.",
+    "Typography carries a shot on its own now -- serif run-in, heavy sans emphasis in the accent, the mark drawing itself under the word. Legible at thumbnail size.",
+    "The measurement diagram fired on 'eight hundred tons' and again on 'a thousand men', and both are honest: the bar counts the thing the sentence counts.",
+    "Pacing. 2.46s average, rhythm 0.28, no shot outstays its line.",
+    "The ending is deliberate: the figure spins to SIXTY THOUSAND and the qualifier lands after it."
+  ],
+  "whatFailed": [
+    {
+      "what": "Seventeen of twenty shots are typography over an empty ground. The reel tells and does not show.",
+      "why": "No photographic supply is reachable and the procedural vocabulary has no form for haulage, leverage, rollers or a slope. The ladder's lower rungs are five diagram types tuned to one previous episode.",
+      "failureIs": "REPRESENTATION"
+    },
+    {
+      "what": "Nothing in the reel is caused by anything else.",
+      "why": "Causal motion needs a mechanism to animate. Words landing in sequence is timing, not causality.",
+      "failureIs": "REPRESENTATION"
+    },
+    {
+      "what": "ash-grey over a drawn ground renders as near-black; the frame is unlit.",
+      "why": "graphicGround was designed as a bed for a photograph that would supply the tone. With no plate the glow at 0.42 intensity is all the light there is.",
+      "failureIs": "COMPOSITION"
+    },
+    {
+      "what": "Camera moves are imperceptible.",
+      "why": "A push over a radial gradient has no parallax and no detail to move past. The camera is working; there is nothing for it to work on.",
+      "failureIs": "COMPOSITION"
+    },
+    {
+      "what": "Every seam is a plain cut (hard-cut ratio 1.00).",
+      "why": "Correct, and a symptom: twenty shots that look alike give the Cut Director no correspondence to rhyme and no contrast to punctuate.",
+      "failureIs": "EDITORIAL"
+    }
+  ],
+  "measured": {
+    "shots": 20,
+    "seconds": 49.1,
+    "averageShotSeconds": 2.46,
+    "representationMix": {
+      "PHOTO": 0,
+      "HYBRID": 0,
+      "PROCEDURAL": 3,
+      "TYPOGRAPHY": 17
+    },
+    "proceduralVisuals": 3,
+    "hybridVisuals": 0,
+    "diagramKinds": [
+      "measurement"
+    ],
+    "assets": {
+      "linesRequestingAPicture": 9,
+      "picturesOnScreen": 0,
+      "rejectedOnScore": 0,
+      "unavailable": 9,
+      "rejectionCount": 9
+    },
+    "editorial": {
+      "hardCutRatio": 1,
+      "cutKinds": {
+        "HARD_CUT": 18,
+        "MATCH_CUT": 1
+      },
+      "arrivals": {
+        "cut": 19
+      },
+      "transitionRatio": 0
+    },
+    "cameraDistribution": {
+      "push": 3,
+      "tilt": 2,
+      "hold": 4,
+      "pull": 3,
+      "pan": 5,
+      "drift": 3
+    },
+    "motionDensity": {
+      "events": 51,
+      "perSecond": 1.04,
+      "deadShots": 0,
+      "busiestMoment": 2
+    },
+    "informationDensity": {
+      "words": 89,
+      "wordsPerSecond": 1.81,
+      "unreadableCaptions": 0
+    },
+    "rhythm": {
+      "variation": 0.28,
+      "mean": 2.46,
+      "shortest": 1.5,
+      "longest": 3.93
+    },
+    "imageKindChangesPerCut": 0.21,
+    "temporalConsistency": {
+      "errors": 0,
+      "warnings": 0,
+      "clean": true
+    },
+    "gates": {
+      "visualHierarchy": 9.5,
+      "motionDesign": 9.8,
+      "cameraDiversity": 10,
+      "transitionQuality": 10,
+      "visualContinuity": 10,
+      "professionalism": 9.8
+    },
+    "gatesFailed": [
+      "no photograph anywhere in the reel — every shot is drawn or typeset"
+    ]
+  },
+  "remainingDefects": [
+    {
+      "severity": "warning",
+      "where": "shot",
+      "what": "scene[7] \"s03-quarry-b\": camera travels 0.030 — a photograph with grain on it"
+    },
+    {
+      "severity": "warning",
+      "where": "geometry",
+      "what": "scene[6] \"s03-quarry\": prop[0] wire and motif route occupy the same place"
+    },
+    {
+      "severity": "warning",
+      "where": "geometry",
+      "what": "scene[11] \"s05-rolled\": motif route sits outside the safe area — the platform draws its own furniture there"
+    },
+    {
+      "severity": "warning",
+      "where": "geometry",
+      "what": "scene[17] \"s08-level\": prop[0] wire sits outside the safe area — the platform draws its own furniture there"
+    },
+    {
+      "severity": "observed",
+      "where": "inspection",
+      "what": "Seventeen of twenty shots are typography over an empty ground. The reel tells and does not show.",
+      "cause": "REPRESENTATION",
+      "why": "No photographic supply is reachable and the procedural vocabulary has no form for haulage, leverage, rollers or a slope. The ladder's lower rungs are five diagram types tuned to one previous episode."
+    },
+    {
+      "severity": "observed",
+      "where": "inspection",
+      "what": "Nothing in the reel is caused by anything else.",
+      "cause": "REPRESENTATION",
+      "why": "Causal motion needs a mechanism to animate. Words landing in sequence is timing, not causality."
+    },
+    {
+      "severity": "observed",
+      "where": "inspection",
+      "what": "ash-grey over a drawn ground renders as near-black; the frame is unlit.",
+      "cause": "COMPOSITION",
+      "why": "graphicGround was designed as a bed for a photograph that would supply the tone. With no plate the glow at 0.42 intensity is all the light there is."
+    },
+    {
+      "severity": "observed",
+      "where": "inspection",
+      "what": "Camera moves are imperceptible.",
+      "cause": "COMPOSITION",
+      "why": "A push over a radial gradient has no parallax and no detail to move past. The camera is working; there is nothing for it to work on."
+    },
+    {
+      "severity": "observed",
+      "where": "inspection",
+      "what": "Every seam is a plain cut (hard-cut ratio 1.00).",
+      "cause": "EDITORIAL",
+      "why": "Correct, and a symptom: twenty shots that look alike give the Cut Director no correspondence to rhyme and no contrast to punctuate."
+    }
+  ]
+}

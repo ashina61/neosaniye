@@ -1,0 +1,1406 @@
+{
+  "id": "hormuz",
+  "title": "One door",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "look": {
+    "posterizeFps": 12,
+    "grade": {
+      "saturate": 0.5,
+      "contrast": 1.2,
+      "sepia": 0.18,
+      "brightness": 0.92
+    },
+    "film": {
+      "grain": true,
+      "grunge": true,
+      "scanlines": true,
+      "vignette": true,
+      "gateWeave": true,
+      "grainOpacity": 0.41,
+      "grungeOpacity": 0.17,
+      "scanlineOpacity": 0.14,
+      "scanlinePeriod": 11,
+      "vignetteStrength": 0.4,
+      "weavePx": 6,
+      "weaveScale": 1.01
+    }
+  },
+  "scenes": [
+    {
+      "id": "s01-narrow",
+      "sceneType": "title-slate",
+      "voText": "At its narrowest the Strait",
+      "durationInFrames": 64,
+      "assets": {},
+      "params": {
+        "scrim": 0.39,
+        "kicker": "HORMUZ · 26°34′N",
+        "title": "",
+        "footer": "",
+        "titleFrame": 54,
+        "titleSize": 124,
+        "creep": 1.067,
+        "accent": "#e6e2d6",
+        "field": "wash",
+        "fieldColours": [
+          "#2c3340",
+          "#171c26",
+          "#080a0f"
+        ],
+        "mark": "strike",
+        "markX": 260,
+        "markY": 1160,
+        "markWidth": 560,
+        "markHeight": 96,
+        "markFrame": 22,
+        "pushEndFrame": 59,
+        "pushFrom": 1,
+        "pushTo": 1.53,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "HORMUZ · 26°34′N",
+          "depth": 0.64,
+          "x": 375,
+          "y": 1403,
+          "width": 386,
+          "rotate": -1.2,
+          "from": 7
+        }
+      ]
+    },
+    {
+      "id": "s01-narrow-b",
+      "sceneType": "composite",
+      "voText": "of Hormuz is twenty-one miles across.",
+      "durationInFrames": 75,
+      "assets": {},
+      "layers": [],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.2,
+        "pushTo": 1.28,
+        "pushEndFrame": 73,
+        "accent": "#e6e2d6",
+        "field": "wash",
+        "fieldColours": [
+          "#2c3340",
+          "#171c26",
+          "#080a0f"
+        ],
+        "glowX": 1329,
+        "glowY": 545,
+        "glowSize": 329,
+        "glowIntensity": 0.7,
+        "glowWarm": "#e6e2d6",
+        "glowDepth": 0.1,
+        "caption": [
+          "of Hormuz",
+          "is twenty-one",
+          "miles across"
+        ],
+        "captionX": 84,
+        "captionY": 307,
+        "captionSize": 85,
+        "captionAlign": "left",
+        "captionFrame": 41,
+        "captionEvery": 6,
+        "captionScrim": 0.38,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panY": -207,
+        "captionEmphasis": "Hormuz",
+        "captionReveal": "punch",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "tilt",
+        "cameraPurpose": "a vertical reveal — height, depth, or a drop"
+      },
+      "diagram": {
+        "type": "measurement",
+        "value": 20,
+        "unit": "miles",
+        "accent": "#e6e2d6",
+        "muted": "#cfc6ae",
+        "from": 0,
+        "over": 1
+      }
+    },
+    {
+      "id": "s02-lanes",
+      "sceneType": "title-slate",
+      "voText": "The shipping lanes inside it",
+      "durationInFrames": 64,
+      "assets": {},
+      "params": {
+        "scrim": 0.39,
+        "kicker": "",
+        "title": "TWO MILES",
+        "footer": "",
+        "titleFrame": 49,
+        "titleSize": 230,
+        "creep": 1.083,
+        "accent": "#e6e2d6",
+        "field": "wash",
+        "fieldColours": [
+          "#2c3340",
+          "#171c26",
+          "#080a0f"
+        ],
+        "spinTo": "TWO MILES",
+        "spinReel": [
+          "THOUSAND",
+          "HUNDRED",
+          "MILLION",
+          "BILLION",
+          "FIFTY",
+          "TWENTY"
+        ],
+        "spinFrames": 9,
+        "mark": "strike",
+        "markX": 260,
+        "markY": 820,
+        "markWidth": 560,
+        "markHeight": 300,
+        "markFrame": 22,
+        "pushEndFrame": 58,
+        "pushFrom": 1.19,
+        "pushTo": 1.2,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      },
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.66,
+          "x": 419,
+          "y": 515,
+          "width": 337,
+          "colour": "#e6e2d6",
+          "from": 14
+        }
+      ]
+    },
+    {
+      "id": "s02-lanes-b",
+      "sceneType": "composite",
+      "voText": "are two miles wide.",
+      "durationInFrames": 52,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.26,
+          "x": 929,
+          "y": 18,
+          "width": 243,
+          "rotate": -16,
+          "opacity": 0.59,
+          "colour": "#e6e2d6",
+          "from": 0
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1,
+        "pushTo": 1.4,
+        "pushEndFrame": 49,
+        "accent": "#e6e2d6",
+        "field": "wash",
+        "fieldColours": [
+          "#2c3340",
+          "#171c26",
+          "#080a0f"
+        ],
+        "glowX": 1531,
+        "glowY": 530,
+        "glowSize": 481,
+        "glowIntensity": 0.44,
+        "glowWarm": "#e6e2d6",
+        "glowDepth": 0.1,
+        "caption": [
+          "are two miles wide"
+        ],
+        "captionX": 84,
+        "captionY": 307,
+        "captionSize": 62,
+        "captionAlign": "left",
+        "captionFrame": 29,
+        "captionEvery": 8,
+        "captionScrim": 0.38,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "two miles",
+        "captionReveal": "blur",
+        "captionMark": "underline",
+        "captionWordEvery": 2,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "diagram": {
+        "type": "measurement",
+        "value": 2,
+        "unit": "miles",
+        "accent": "#e6e2d6",
+        "muted": "#cfc6ae",
+        "from": 0,
+        "over": 1
+      }
+    },
+    {
+      "id": "s02-lanes-c",
+      "sceneType": "composite",
+      "voText": "One lane in, one lane out.",
+      "durationInFrames": 75,
+      "assets": {},
+      "layers": [],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1.21,
+        "pushTo": 1.18,
+        "pushEndFrame": 68,
+        "accent": "#e6e2d6",
+        "field": "wash",
+        "fieldColours": [
+          "#2c3340",
+          "#171c26",
+          "#080a0f"
+        ],
+        "glowX": 1332,
+        "glowY": 372,
+        "glowSize": 396,
+        "glowIntensity": 0.42,
+        "glowWarm": "#e6e2d6",
+        "glowDepth": 0.1,
+        "caption": [
+          "One lane",
+          "in, one",
+          "lane out"
+        ],
+        "captionX": 84,
+        "captionY": 307,
+        "captionSize": 91,
+        "captionAlign": "left",
+        "captionFrame": 41,
+        "captionEvery": 8,
+        "captionScrim": 0.38,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panX": 166,
+        "captionEmphasis": "One",
+        "captionReveal": "punch",
+        "captionMark": "box",
+        "captionWordEvery": 2,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      },
+      "diagram": {
+        "type": "measurement",
+        "value": 2,
+        "unit": "miles",
+        "accent": "#e6e2d6",
+        "muted": "#cfc6ae",
+        "from": 0,
+        "over": 1
+      }
+    },
+    {
+      "id": "s03-volume",
+      "sceneType": "title-slate",
+      "voText": "About twenty million barrels",
+      "durationInFrames": 52,
+      "assets": {},
+      "params": {
+        "scrim": 0.53,
+        "kicker": "",
+        "title": "TWENTY MILLION BARRELS",
+        "footer": "",
+        "titleFrame": 4,
+        "titleSize": 230,
+        "creep": 1.082,
+        "accent": "#e6e2d6",
+        "field": "wash",
+        "fieldColours": [
+          "#2c3340",
+          "#171c26",
+          "#080a0f"
+        ],
+        "spinTo": "TWENTY MILLION BARRELS",
+        "spinReel": [
+          "THOUSAND",
+          "HUNDRED",
+          "MILLION",
+          "BILLION",
+          "FIFTY",
+          "TWENTY"
+        ],
+        "spinFrames": 21,
+        "mark": "strike",
+        "markX": 260,
+        "markY": 820,
+        "markWidth": 560,
+        "markHeight": 300,
+        "markFrame": 18,
+        "pushEndFrame": 51,
+        "pushFrom": 1.05,
+        "pushTo": 1.04,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      },
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.63,
+          "x": 442,
+          "y": 508,
+          "width": 351,
+          "colour": "#e6e2d6",
+          "from": 44
+        }
+      ]
+    },
+    {
+      "id": "s03-volume-b",
+      "sceneType": "composite",
+      "voText": "of crude oil pass through",
+      "durationInFrames": 64,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.39,
+          "x": 952,
+          "y": 24,
+          "width": 380,
+          "rotate": -20,
+          "opacity": 0.54,
+          "colour": "#e6e2d6",
+          "from": 54
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.03,
+        "pushTo": 1.44,
+        "pushEndFrame": 58,
+        "accent": "#e6e2d6",
+        "field": "wash",
+        "fieldColours": [
+          "#2c3340",
+          "#171c26",
+          "#080a0f"
+        ],
+        "glowX": 1323,
+        "glowY": 168,
+        "glowSize": 397,
+        "glowIntensity": 0.6,
+        "glowWarm": "#e6e2d6",
+        "glowDepth": 0.1,
+        "caption": [
+          "of crude oil",
+          "pass through"
+        ],
+        "captionX": 81,
+        "captionY": 748,
+        "captionSize": 113,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 6,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "through",
+        "captionReveal": "punch",
+        "captionMark": "highlight",
+        "captionWordEvery": 4,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      }
+    },
+    {
+      "id": "s03-volume-c",
+      "sceneType": "composite",
+      "voText": "that gap every single day.",
+      "durationInFrames": 64,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "rect",
+          "depth": 0.66,
+          "x": 336,
+          "y": 446,
+          "width": 336,
+          "colour": "#e6e2d6",
+          "from": 54
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1.21,
+        "pushTo": 1.29,
+        "pushEndFrame": 62,
+        "accent": "#e6e2d6",
+        "field": "wash",
+        "fieldColours": [
+          "#2c3340",
+          "#171c26",
+          "#080a0f"
+        ],
+        "glowX": 1420,
+        "glowY": 512,
+        "glowSize": 408,
+        "glowIntensity": 0.55,
+        "glowWarm": "#e6e2d6",
+        "glowDepth": 0.1,
+        "caption": [
+          "that gap",
+          "every",
+          "single day"
+        ],
+        "captionX": 81,
+        "captionY": 638,
+        "captionSize": 136,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 10,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panY": 150,
+        "captionEmphasis": "single",
+        "captionReveal": "blur",
+        "captionMark": "underline",
+        "captionWordEvery": 3,
+        "cameraMove": "tilt",
+        "cameraPurpose": "a vertical reveal — height, depth, or a drop"
+      }
+    },
+    {
+      "id": "s04-share",
+      "sceneType": "composite",
+      "voText": "That is close to a fifth",
+      "durationInFrames": 75,
+      "gradeOverride": {
+        "saturate": 0.58,
+        "contrast": 1.14,
+        "brightness": 0.95
+      },
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.23,
+          "x": 898,
+          "y": -11,
+          "width": 341,
+          "rotate": -20,
+          "opacity": 0.68,
+          "colour": "#e6e2d6",
+          "from": 64
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1.44,
+        "pushTo": 1.03,
+        "pushEndFrame": 72,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
+        "glowWarm": "#e6e2d6",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "wash",
+        "fieldColours": [
+          "#2c3340",
+          "#171c26",
+          "#080a0f"
+        ],
+        "caption": [
+          "That is close",
+          "to a fifth"
+        ],
+        "captionX": 81,
+        "captionY": 758,
+        "captionSize": 104,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 7,
+        "captionScrim": 0,
+        "captionRecedeAt": 54,
+        "accent": "#e6e2d6",
+        "motif": "embers",
+        "motifX": 492,
+        "motifY": 709,
+        "motifSize": 38,
+        "motifCount": 34,
+        "motifFrame": 25,
+        "motifColour": "#e6e2d6",
+        "motifOpacity": 0.91,
+        "handheld": 1.5,
+        "captionEmphasis": "close",
+        "captionReveal": "punch",
+        "captionMark": "underline",
+        "captionWordEvery": 4,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      }
+    },
+    {
+      "id": "s04-share-b",
+      "sceneType": "composite",
+      "voText": "of everything the world burns.",
+      "durationInFrames": 64,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.63,
+          "x": 354,
+          "y": 540,
+          "width": 264,
+          "colour": "#e6e2d6",
+          "from": 54
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.16,
+        "pushTo": 1.29,
+        "pushEndFrame": 58,
+        "accent": "#e6e2d6",
+        "field": "wash",
+        "fieldColours": [
+          "#2c3340",
+          "#171c26",
+          "#080a0f"
+        ],
+        "glowX": 1395,
+        "glowY": 297,
+        "glowSize": 464,
+        "glowIntensity": 0.7,
+        "glowWarm": "#e6e2d6",
+        "glowDepth": 0.1,
+        "caption": [
+          "of everything",
+          "the world",
+          "burns"
+        ],
+        "captionX": 81,
+        "captionY": 696,
+        "captionSize": 104,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 10,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panX": 163,
+        "captionEmphasis": "everything",
+        "captionReveal": "punch",
+        "captionMark": "box",
+        "captionWordEvery": 3,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      }
+    },
+    {
+      "id": "s05-nobypass",
+      "sceneType": "composite",
+      "voText": "There is no way around it.",
+      "durationInFrames": 75,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.2,
+          "x": 972,
+          "y": 93,
+          "width": 342,
+          "rotate": -21,
+          "opacity": 0.75,
+          "colour": "#e6e2d6",
+          "from": 64
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1,
+        "pushTo": 1.45,
+        "pushEndFrame": 71,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
+        "glowWarm": "#e6e2d6",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "wash",
+        "fieldColours": [
+          "#2c3340",
+          "#171c26",
+          "#080a0f"
+        ],
+        "caption": [
+          "There is no",
+          "way around it"
+        ],
+        "captionX": 81,
+        "captionY": 758,
+        "captionSize": 104,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 9,
+        "captionScrim": 0,
+        "captionRecedeAt": 54,
+        "accent": "#e6e2d6",
+        "motif": "route",
+        "motifStops": [
+          "Kuwait",
+          "Basra",
+          "Ras Tanura",
+          "Hormuz"
+        ],
+        "motifFrame": 19,
+        "motifColour": "#e6e2d6",
+        "handheld": 1.5,
+        "captionEmphasis": "around",
+        "captionReveal": "blur",
+        "captionMark": "box",
+        "captionWordEvery": 3,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters",
+        "motifY": 566
+      }
+    },
+    {
+      "id": "s05-nobypass-b",
+      "sceneType": "composite",
+      "voText": "The Gulf has one door,",
+      "durationInFrames": 64,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.64,
+          "x": 366,
+          "y": 571,
+          "width": 306,
+          "colour": "#e6e2d6",
+          "from": 54
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.17,
+        "pushTo": 1.25,
+        "pushEndFrame": 61,
+        "accent": "#e6e2d6",
+        "field": "wash",
+        "fieldColours": [
+          "#2c3340",
+          "#171c26",
+          "#080a0f"
+        ],
+        "glowX": 1441,
+        "glowY": 369,
+        "glowSize": 519,
+        "glowIntensity": 0.63,
+        "glowWarm": "#e6e2d6",
+        "glowDepth": 0.1,
+        "caption": [
+          "The Gulf",
+          "has one door"
+        ],
+        "captionX": 81,
+        "captionY": 748,
+        "captionSize": 113,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 8,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panX": 176,
+        "captionEmphasis": "one",
+        "captionReveal": "wipe",
+        "captionMark": "highlight",
+        "captionWordEvery": 4,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      }
+    },
+    {
+      "id": "s05-nobypass-c",
+      "sceneType": "composite",
+      "voText": "and this is the door.",
+      "durationInFrames": 64,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.18,
+          "x": 840,
+          "y": 21,
+          "width": 336,
+          "rotate": -17,
+          "opacity": 0.66,
+          "colour": "#e6e2d6",
+          "from": 54
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1.02,
+        "pushTo": 1.41,
+        "pushEndFrame": 62,
+        "accent": "#e6e2d6",
+        "field": "wash",
+        "fieldColours": [
+          "#2c3340",
+          "#171c26",
+          "#080a0f"
+        ],
+        "glowX": 1284,
+        "glowY": 212,
+        "glowSize": 304,
+        "glowIntensity": 0.55,
+        "glowWarm": "#e6e2d6",
+        "glowDepth": 0.1,
+        "caption": [
+          "and this",
+          "is the door"
+        ],
+        "captionX": 81,
+        "captionY": 734,
+        "captionSize": 124,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 8,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "door",
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      }
+    },
+    {
+      "id": "s06-shores",
+      "sceneType": "composite",
+      "voText": "Iran holds the northern shore.",
+      "durationInFrames": 64,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.69,
+          "x": 399,
+          "y": 480,
+          "width": 353,
+          "colour": "#e6e2d6",
+          "from": 54
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1.18,
+        "pushTo": 1.26,
+        "pushEndFrame": 58,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
+        "glowWarm": "#e6e2d6",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "wash",
+        "fieldColours": [
+          "#2c3340",
+          "#171c26",
+          "#080a0f"
+        ],
+        "caption": [
+          "Iran holds",
+          "the northern",
+          "shore"
+        ],
+        "captionX": 81,
+        "captionY": 680,
+        "captionSize": 113,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 9,
+        "captionScrim": 0,
+        "captionRecedeAt": 46,
+        "accent": "#e6e2d6",
+        "handheld": 1.5,
+        "panX": 270,
+        "captionEmphasis": "northern",
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      }
+    },
+    {
+      "id": "s06-shores-b",
+      "sceneType": "composite",
+      "voText": "Oman holds the south.",
+      "durationInFrames": 52,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.33,
+          "x": 904,
+          "y": 116,
+          "width": 252,
+          "rotate": -10,
+          "opacity": 0.65,
+          "colour": "#e6e2d6",
+          "from": 44
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.58,
+        "pushTo": 1.01,
+        "pushEndFrame": 49,
+        "accent": "#e6e2d6",
+        "field": "wash",
+        "fieldColours": [
+          "#2c3340",
+          "#171c26",
+          "#080a0f"
+        ],
+        "glowX": 1387,
+        "glowY": 447,
+        "glowSize": 338,
+        "glowIntensity": 0.57,
+        "glowWarm": "#e6e2d6",
+        "glowDepth": 0.1,
+        "caption": [
+          "Oman holds",
+          "the south"
+        ],
+        "captionX": 81,
+        "captionY": 720,
+        "captionSize": 136,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 7,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "holds",
+        "captionReveal": "blur",
+        "captionMark": "highlight",
+        "captionWordEvery": 4,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      }
+    },
+    {
+      "id": "s06-shores-c",
+      "sceneType": "composite",
+      "voText": "The outbound lane runs through Omani water.",
+      "durationInFrames": 86,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "rect",
+          "depth": 0.66,
+          "x": 382,
+          "y": 462,
+          "width": 297,
+          "colour": "#e6e2d6",
+          "from": 73
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1.21,
+        "pushTo": 1.31,
+        "pushEndFrame": 80,
+        "accent": "#e6e2d6",
+        "field": "wash",
+        "fieldColours": [
+          "#2c3340",
+          "#171c26",
+          "#080a0f"
+        ],
+        "glowX": 1392,
+        "glowY": 413,
+        "glowSize": 313,
+        "glowIntensity": 0.63,
+        "glowWarm": "#e6e2d6",
+        "glowDepth": 0.1,
+        "caption": [
+          "The outbound",
+          "lane runs",
+          "through Omani",
+          "water"
+        ],
+        "captionX": 81,
+        "captionY": 634,
+        "captionSize": 104,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 8,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0.23,
+        "handheld": 1.5,
+        "panX": -215,
+        "captionEmphasis": "Omani",
+        "captionReveal": "punch",
+        "captionMark": "underline",
+        "captionWordEvery": 4,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      }
+    },
+    {
+      "id": "s07-grounding",
+      "sceneType": "title-slate",
+      "voText": "One tanker aground",
+      "durationInFrames": 45,
+      "assets": {},
+      "params": {
+        "scrim": 0.48,
+        "kicker": "",
+        "title": "ONE TANKER",
+        "footer": "",
+        "titleFrame": 4,
+        "titleSize": 230,
+        "creep": 1.062,
+        "accent": "#e6e2d6",
+        "field": "wash",
+        "fieldColours": [
+          "#2c3340",
+          "#171c26",
+          "#080a0f"
+        ],
+        "spinTo": "ONE TANKER",
+        "spinReel": [
+          "THOUSAND",
+          "HUNDRED",
+          "MILLION",
+          "BILLION",
+          "FIFTY",
+          "TWENTY"
+        ],
+        "spinFrames": 18,
+        "mark": "strike",
+        "markX": 260,
+        "markY": 820,
+        "markWidth": 560,
+        "markHeight": 300,
+        "markFrame": 15,
+        "pushEndFrame": 41,
+        "pushFrom": 1.03,
+        "pushTo": 1.06,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      },
+      "onScreenText": [
+        {
+          "text": "TWO MILES WIDE",
+          "atFrame": 27,
+          "durationInFrames": 14,
+          "style": "typed",
+          "position": "bottom"
+        }
+      ]
+    },
+    {
+      "id": "s07-grounding-b",
+      "sceneType": "composite",
+      "voText": "in a two-mile lane closes the strait",
+      "durationInFrames": 86,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.33,
+          "x": 963,
+          "y": -18,
+          "width": 339,
+          "rotate": -22,
+          "opacity": 0.77,
+          "colour": "#e6e2d6",
+          "from": 73
+        },
+        {
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.55,
+          "x": 677,
+          "y": 500,
+          "width": 345,
+          "colour": "#e6e2d6",
+          "from": 0
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.02,
+        "pushTo": 1.45,
+        "pushEndFrame": 80,
+        "accent": "#e6e2d6",
+        "field": "wash",
+        "fieldColours": [
+          "#2c3340",
+          "#171c26",
+          "#080a0f"
+        ],
+        "glowX": 1408,
+        "glowY": 137,
+        "glowSize": 507,
+        "glowIntensity": 0.56,
+        "glowWarm": "#e6e2d6",
+        "glowDepth": 0.1,
+        "caption": [
+          "in a two-mile",
+          "lane closes",
+          "the strait"
+        ],
+        "captionX": 81,
+        "captionY": 696,
+        "captionSize": 104,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 7,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "two-mile",
+        "captionReveal": "blur",
+        "captionMark": "highlight",
+        "captionWordEvery": 3,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      }
+    },
+    {
+      "id": "s07-grounding-c",
+      "sceneType": "composite",
+      "voText": "for weeks.",
+      "durationInFrames": 45,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.3,
+          "x": 929,
+          "y": -86,
+          "width": 268,
+          "rotate": -16,
+          "opacity": 0.73,
+          "colour": "#e6e2d6",
+          "from": 38
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1.04,
+        "pushTo": 1.04,
+        "pushEndFrame": 44,
+        "accent": "#e6e2d6",
+        "field": "wash",
+        "fieldColours": [
+          "#2c3340",
+          "#171c26",
+          "#080a0f"
+        ],
+        "glowX": 1439,
+        "glowY": 214,
+        "glowSize": 387,
+        "glowIntensity": 0.52,
+        "glowWarm": "#e6e2d6",
+        "glowDepth": 0.1,
+        "caption": [
+          "for weeks"
+        ],
+        "captionX": 81,
+        "captionY": 793,
+        "captionSize": 151,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 10,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 3,
+        "captionEmphasis": "weeks",
+        "captionReveal": "punch",
+        "captionMark": "box",
+        "captionWordEvery": 2,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      }
+    },
+    {
+      "id": "s08-price",
+      "sceneType": "composite",
+      "voText": "Every fuel price on earth moves",
+      "durationInFrames": 75,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "rect",
+          "depth": 0.58,
+          "x": 407,
+          "y": 214,
+          "width": 271,
+          "colour": "#e6e2d6",
+          "from": 64
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1.03,
+        "pushTo": 1.04,
+        "pushEndFrame": 70,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
+        "glowWarm": "#e6e2d6",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "wash",
+        "fieldColours": [
+          "#2c3340",
+          "#171c26",
+          "#080a0f"
+        ],
+        "caption": [
+          "Every",
+          "fuel",
+          "price",
+          "on earth",
+          "moves"
+        ],
+        "captionX": 81,
+        "captionY": 373,
+        "captionSize": 170,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 9,
+        "captionScrim": 0,
+        "captionRecedeAt": 54,
+        "accent": "#e6e2d6",
+        "motif": "rise",
+        "motifX": 148,
+        "motifY": 1574,
+        "motifSize": 73,
+        "motifCount": 8,
+        "motifFrame": 30,
+        "motifColour": "#e6e2d6",
+        "motifOpacity": 0.96,
+        "handheld": 3,
+        "captionEmphasis": "Every",
+        "captionReveal": "punch",
+        "captionMark": "underline",
+        "captionWordEvery": 3,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      }
+    },
+    {
+      "id": "s08-price-b",
+      "sceneType": "composite",
+      "voText": "when a warship changes course here.",
+      "durationInFrames": 75,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.19,
+          "x": 929,
+          "y": -73,
+          "width": 336,
+          "rotate": -16,
+          "opacity": 0.53,
+          "colour": "#e6e2d6",
+          "from": 64
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.2,
+        "pushTo": 1.27,
+        "pushEndFrame": 70,
+        "accent": "#e6e2d6",
+        "field": "wash",
+        "fieldColours": [
+          "#2c3340",
+          "#171c26",
+          "#080a0f"
+        ],
+        "glowX": 1323,
+        "glowY": 297,
+        "glowSize": 333,
+        "glowIntensity": 0.69,
+        "glowWarm": "#e6e2d6",
+        "glowDepth": 0.1,
+        "caption": [
+          "when a",
+          "warship",
+          "changes",
+          "course",
+          "here"
+        ],
+        "captionX": 81,
+        "captionY": 331,
+        "captionSize": 184,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 9,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panY": 233,
+        "captionEmphasis": "warship",
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 4,
+        "cameraMove": "tilt",
+        "cameraPurpose": "a vertical reveal — height, depth, or a drop"
+      }
+    },
+    {
+      "id": "s09-close",
+      "sceneType": "title-slate",
+      "voText": "Twenty-one miles of water, and there is no substitute for any of it.",
+      "durationInFrames": 118,
+      "gradeOverride": {
+        "saturate": 0.5,
+        "contrast": 1.16,
+        "brightness": 0.94
+      },
+      "assets": {},
+      "params": {
+        "scrim": 0.37,
+        "kicker": "HORMUZ · 21 MILES",
+        "title": "TWENTY-ONE MILES",
+        "footer": "and nothing else will do",
+        "titleFrame": 59,
+        "titleSize": 230,
+        "creep": 1.067,
+        "accent": "#e6e2d6",
+        "field": "wash",
+        "fieldColours": [
+          "#2c3340",
+          "#171c26",
+          "#080a0f"
+        ],
+        "spinTo": "TWENTY-ONE MILES",
+        "spinReel": [
+          "THOUSAND",
+          "HUNDRED",
+          "MILLION",
+          "BILLION",
+          "FIFTY",
+          "TWENTY"
+        ],
+        "spinFrames": 47,
+        "pushEndFrame": 114,
+        "pushFrom": 1,
+        "pushTo": 1.09,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      },
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "HORMUZ · 21 MILES",
+          "depth": 0.58,
+          "x": 380,
+          "y": 605,
+          "width": 458,
+          "rotate": -2.5,
+          "from": 73
+        },
+        {
+          "kind": "newspaper",
+          "masthead": "THE CHRONICLE",
+          "text": "TWENTY-ONE MILES",
+          "depth": 0.62,
+          "x": 636,
+          "y": 536,
+          "width": 407,
+          "rotate": 3,
+          "from": 34
+        }
+      ]
+    }
+  ]
+}

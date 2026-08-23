@@ -1,0 +1,157 @@
+{
+  "episode": "hormuz",
+  "title": "One door",
+  "question": "Why Does This Tiny Strait Matter to the World?",
+  "generatedAt": "2026-08-23",
+  "finalScore": 6.5,
+  "scoredBy": "inspection of rendered frames at 0/33/66/94 per shot",
+  "judged": {
+    "storytelling": 8,
+    "visualHierarchy": 8.5,
+    "semanticAccuracy": 9,
+    "assetRelevance": 3,
+    "visualCausality": 5,
+    "motionQuality": 6.5,
+    "cameraVariety": 7,
+    "transitionQuality": 7.5,
+    "pacing": 8,
+    "visualContinuity": 9,
+    "typography": 8.5,
+    "ending": 8.5,
+    "professionalism": 6.5
+  },
+  "verdict": "The best of the five, and the reason is that the subject happens to be made of measurements. Three shots get a real drawn bar -- twenty-one miles, two miles, and the closing figure -- and those three are the only shots in the whole benchmark where the picture carries the claim instead of repeating it. cold-noir over the wash field gives a clean near-black ground that suits an oil-and-warships subject. It still shows no place, no ship and no water.",
+  "whatWorked": [
+    "The measurement diagram fired three times and each one is the right graphic for its sentence.",
+    "cold-noir + wash is the strongest mood/ground pairing of the five: flat, dark, legible, unfussy.",
+    "The argument is built properly -- narrow, narrower, volume, share, no alternative, who holds it, what one accident does, what it costs -- and the 'one door' line sits at the hinge.",
+    "Hierarchy is the clearest of the five: one accent word per frame, never two.",
+    "The ending returns to the opening figure, which closes the loop rather than just stopping."
+  ],
+  "whatFailed": [
+    {
+      "what": "No map. A geography episode with no geography in it.",
+      "why": "There is no map diagram type. The stops device draws an itinerary as a route motif, which is a line with labels, not a strait between two shores.",
+      "failureIs": "REPRESENTATION"
+    },
+    {
+      "what": "The causal chain -- one grounded tanker closes the lane, and every price moves -- is stated and never shown.",
+      "why": "No representation for a blockage or a dependency; the rise motif on the price line is decoration, not consequence.",
+      "failureIs": "REPRESENTATION"
+    },
+    {
+      "what": "A plaque and a newspaper prop overlap on the closing shot.",
+      "why": "standClear moves graphics off the type but does not separate two graphics from each other when both are pushed into the same clear band.",
+      "failureIs": "COMPOSITION"
+    }
+  ],
+  "measured": {
+    "shots": 22,
+    "seconds": 49.93,
+    "averageShotSeconds": 2.27,
+    "representationMix": {
+      "PHOTO": 0,
+      "HYBRID": 0,
+      "PROCEDURAL": 3,
+      "TYPOGRAPHY": 19
+    },
+    "proceduralVisuals": 3,
+    "hybridVisuals": 0,
+    "diagramKinds": [
+      "measurement"
+    ],
+    "assets": {
+      "linesRequestingAPicture": 9,
+      "picturesOnScreen": 0,
+      "rejectedOnScore": 0,
+      "unavailable": 9,
+      "rejectionCount": 9
+    },
+    "editorial": {
+      "hardCutRatio": 1,
+      "cutKinds": {
+        "HARD_CUT": 20,
+        "MATCH_CUT": 1
+      },
+      "arrivals": {
+        "cut": 21
+      },
+      "transitionRatio": 0
+    },
+    "cameraDistribution": {
+      "push": 6,
+      "tilt": 3,
+      "pan": 6,
+      "hold": 4,
+      "pull": 2,
+      "drift": 1
+    },
+    "motionDensity": {
+      "events": 54,
+      "perSecond": 1.08,
+      "deadShots": 0,
+      "busiestMoment": 2
+    },
+    "informationDensity": {
+      "words": 90,
+      "wordsPerSecond": 1.8,
+      "unreadableCaptions": 0
+    },
+    "rhythm": {
+      "variation": 0.23,
+      "mean": 2.27,
+      "shortest": 1.5,
+      "longest": 3.93
+    },
+    "imageKindChangesPerCut": 0.19,
+    "temporalConsistency": {
+      "errors": 0,
+      "warnings": 0,
+      "clean": true
+    },
+    "gates": {
+      "visualHierarchy": 9.5,
+      "motionDesign": 9.8,
+      "cameraDiversity": 10,
+      "transitionQuality": 10,
+      "visualContinuity": 10,
+      "professionalism": 9.8
+    },
+    "gatesFailed": [
+      "no photograph anywhere in the reel — every shot is drawn or typeset"
+    ]
+  },
+  "remainingDefects": [
+    {
+      "severity": "warning",
+      "where": "geometry",
+      "what": "scene[21] \"s09-close\": prop[0] plaque and prop[1] newspaper occupy the same place"
+    },
+    {
+      "severity": "warning",
+      "where": "edit",
+      "what": "the reel changes its kind of image 4 time(s) in 22 shots — one idea, repeated"
+    },
+    {
+      "severity": "observed",
+      "where": "inspection",
+      "what": "No map. A geography episode with no geography in it.",
+      "cause": "REPRESENTATION",
+      "why": "There is no map diagram type. The stops device draws an itinerary as a route motif, which is a line with labels, not a strait between two shores."
+    },
+    {
+      "severity": "observed",
+      "where": "inspection",
+      "what": "The causal chain -- one grounded tanker closes the lane, and every price moves -- is stated and never shown.",
+      "cause": "REPRESENTATION",
+      "why": "No representation for a blockage or a dependency; the rise motif on the price line is decoration, not consequence."
+    },
+    {
+      "severity": "observed",
+      "where": "inspection",
+      "what": "A plaque and a newspaper prop overlap on the closing shot.",
+      "cause": "COMPOSITION",
+      "why": "standClear moves graphics off the type but does not separate two graphics from each other when both are pushed into the same clear band."
+    }
+  ]
+}

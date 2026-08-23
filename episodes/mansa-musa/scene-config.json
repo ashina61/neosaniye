@@ -19,13 +19,13 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.4,
-      "grungeOpacity": 0.18,
+      "grainOpacity": 0.41,
+      "grungeOpacity": 0.17,
       "scanlineOpacity": 0.15,
-      "scanlinePeriod": 9,
-      "vignetteStrength": 0.45,
-      "weavePx": 4,
-      "weaveScale": 1.016
+      "scanlinePeriod": 10,
+      "vignetteStrength": 0.4,
+      "weavePx": 6,
+      "weaveScale": 1.017
     }
   },
   "scenes": [
@@ -82,17 +82,6 @@
       },
       "props": [
         {
-          "kind": "beam",
-          "depth": 0.32,
-          "x": 895,
-          "y": -87,
-          "width": 220,
-          "rotate": -15,
-          "opacity": 0.63,
-          "colour": "#f2b53a",
-          "from": 47
-        },
-        {
           "kind": "wire",
           "shape": "circle",
           "depth": 0.74,
@@ -122,12 +111,12 @@
       "props": [
         {
           "kind": "beam",
-          "depth": 0.33,
-          "x": 929,
-          "y": -21,
-          "width": 359,
-          "rotate": -16,
-          "opacity": 0.57,
+          "depth": 0.24,
+          "x": 983,
+          "y": -39,
+          "width": 304,
+          "rotate": -21,
+          "opacity": 0.81,
           "colour": "#f2b53a",
           "from": 0
         }
@@ -135,30 +124,30 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.06,
+        "pushFrom": 1,
         "pushTo": 1.49,
-        "pushEndFrame": 16,
+        "pushEndFrame": 15,
         "accent": "#f2b53a",
         "caption": [
           "of him"
         ],
         "captionX": 84,
-        "captionY": 328,
-        "captionSize": 95,
+        "captionY": 378,
+        "captionSize": 93,
         "captionAlign": "left",
         "captionFrame": 1,
-        "captionEvery": 9,
+        "captionEvery": 7,
         "captionScrim": 0.34,
-        "glowX": 1345,
-        "glowY": 183,
-        "glowSize": 326,
-        "glowIntensity": 0.42,
+        "glowX": 1284,
+        "glowY": 172,
+        "glowSize": 318,
+        "glowIntensity": 0.47,
         "glowWarm": "#f2b53a",
         "glowDepth": 0.89,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "captionReveal": "rise",
+        "captionReveal": "blur",
         "captionMark": "highlight",
         "captionWordEvery": 3,
         "cameraMove": "push",
@@ -176,7 +165,7 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.72,
+          "depth": 0.74,
           "anchor": "fill"
         }
       ],
@@ -184,10 +173,10 @@
         {
           "kind": "wire",
           "shape": "circle",
-          "depth": 0.57,
-          "x": 336,
-          "y": 1077,
-          "width": 382,
+          "depth": 0.77,
+          "x": 339,
+          "y": 782,
+          "width": 414,
           "colour": "#f2b53a",
           "from": 0
         }
@@ -195,35 +184,35 @@
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
-        "pushFrom": 1.04,
-        "pushTo": 1.37,
+        "pushFrom": 1.02,
+        "pushTo": 1.07,
         "pushEndFrame": 30,
         "accent": "#f2b53a",
         "caption": [
           "and they never met"
         ],
         "captionX": 84,
-        "captionY": 326,
+        "captionY": 409,
         "captionSize": 62,
         "captionAlign": "left",
         "captionFrame": 3,
-        "captionEvery": 7,
+        "captionEvery": 9,
         "captionScrim": 0.34,
-        "glowX": 1317,
-        "glowY": 185,
-        "glowSize": 379,
-        "glowIntensity": 0.48,
+        "glowX": 1435,
+        "glowY": 266,
+        "glowSize": 490,
+        "glowIntensity": 0.58,
         "glowWarm": "#f2b53a",
-        "glowDepth": 0.72,
+        "glowDepth": 0.74,
         "focusPx": 0,
         "fog": 0,
-        "handheld": 1.5,
+        "handheld": 3,
         "captionEmphasis": "never",
         "captionReveal": "rise",
-        "captionMark": "none",
+        "captionMark": "highlight",
         "captionWordEvery": 3,
-        "cameraMove": "push",
-        "cameraPurpose": "single out the subject — the frame closes on what matters"
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
       }
     },
     {
@@ -241,19 +230,19 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.73,
+          "depth": 0.81,
           "anchor": "fill"
         }
       ],
       "props": [
         {
           "kind": "beam",
-          "depth": 0.27,
-          "x": 841,
-          "y": -44,
-          "width": 284,
-          "rotate": -12,
-          "opacity": 0.53,
+          "depth": 0.18,
+          "x": 929,
+          "y": 95,
+          "width": 310,
+          "rotate": -16,
+          "opacity": 0.54,
           "colour": "#f2b53a",
           "from": 39
         }
@@ -261,15 +250,15 @@
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1.04,
-        "pushTo": 1.07,
+        "pushFrom": 1,
+        "pushTo": 1.32,
         "pushEndFrame": 44,
-        "glowX": 1509,
-        "glowY": 188,
-        "glowSize": 536,
-        "glowIntensity": 0.44,
+        "glowX": 1429,
+        "glowY": 289,
+        "glowSize": 457,
+        "glowIntensity": 0.63,
         "glowWarm": "#f2b53a",
-        "glowDepth": 0.73,
+        "glowDepth": 0.81,
         "focusPx": 0,
         "fog": 0,
         "caption": [
@@ -278,11 +267,11 @@
           "the king"
         ],
         "captionX": 84,
-        "captionY": 896,
-        "captionSize": 91,
+        "captionY": 624,
+        "captionSize": 93,
         "captionAlign": "left",
         "captionFrame": 4,
-        "captionEvery": 6,
+        "captionEvery": 10,
         "captionScrim": 0.34,
         "captionRecedeAt": 33,
         "accent": "#f2b53a",
@@ -296,14 +285,14 @@
         ],
         "motifFrame": 30,
         "motifColour": "#f2b53a",
-        "handheld": 3,
+        "handheld": 1.5,
         "captionEmphasis": "thirteen",
-        "captionReveal": "wipe",
-        "captionMark": "none",
-        "captionWordEvery": 2,
-        "cameraMove": "hold",
-        "cameraPurpose": "importance. The frame stops because the idea needs no help",
-        "motifY": 704
+        "captionReveal": "blur",
+        "captionMark": "box",
+        "captionWordEvery": 3,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters",
+        "motifY": 432
       }
     },
     {
@@ -317,7 +306,7 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.82,
+          "depth": 0.83,
           "anchor": "fill"
         }
       ],
@@ -325,10 +314,10 @@
         {
           "kind": "wire",
           "shape": "diamond",
-          "depth": 0.58,
-          "x": 406,
-          "y": 814,
-          "width": 372,
+          "depth": 0.74,
+          "x": 427,
+          "y": 1064,
+          "width": 361,
           "colour": "#f2b53a",
           "from": 0
         }
@@ -336,33 +325,33 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.05,
-        "pushTo": 1.33,
-        "pushEndFrame": 35,
+        "pushFrom": 1.01,
+        "pushTo": 1.36,
+        "pushEndFrame": 34,
         "accent": "#f2b53a",
         "caption": [
           "of Mali set out"
         ],
         "captionX": 84,
-        "captionY": 1024,
+        "captionY": 524,
         "captionSize": 74,
         "captionAlign": "left",
         "captionFrame": 3,
-        "captionEvery": 8,
+        "captionEvery": 6,
         "captionScrim": 0.34,
-        "glowX": 1276,
-        "glowY": 466,
-        "glowSize": 322,
-        "glowIntensity": 0.57,
+        "glowX": 1349,
+        "glowY": 393,
+        "glowSize": 305,
+        "glowIntensity": 0.63,
         "glowWarm": "#f2b53a",
-        "glowDepth": 0.82,
+        "glowDepth": 0.83,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "Mali",
-        "captionReveal": "punch",
-        "captionMark": "underline",
-        "captionWordEvery": 3,
+        "captionReveal": "blur",
+        "captionMark": "none",
+        "captionWordEvery": 2,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
       }
@@ -378,19 +367,19 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.77,
+          "depth": 0.93,
           "anchor": "fill"
         }
       ],
       "props": [
         {
           "kind": "beam",
-          "depth": 0.35,
-          "x": 803,
-          "y": 131,
-          "width": 315,
-          "rotate": -17,
-          "opacity": 0.54,
+          "depth": 0.3,
+          "x": 934,
+          "y": -71,
+          "width": 283,
+          "rotate": -9,
+          "opacity": 0.81,
           "colour": "#f2b53a",
           "from": 40
         }
@@ -398,36 +387,36 @@
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
-        "pushFrom": 1.03,
-        "pushTo": 1.43,
-        "pushEndFrame": 44,
+        "pushFrom": 1.05,
+        "pushTo": 1.05,
+        "pushEndFrame": 45,
         "accent": "#f2b53a",
         "caption": [
           "for Mecca",
           "with his treasury"
         ],
         "captionX": 84,
-        "captionY": 999,
+        "captionY": 469,
         "captionSize": 65,
         "captionAlign": "left",
         "captionFrame": 4,
-        "captionEvery": 6,
+        "captionEvery": 7,
         "captionScrim": 0.34,
-        "glowX": 1408,
-        "glowY": 235,
-        "glowSize": 356,
-        "glowIntensity": 0.62,
+        "glowX": 1413,
+        "glowY": 362,
+        "glowSize": 493,
+        "glowIntensity": 0.66,
         "glowWarm": "#f2b53a",
-        "glowDepth": 0.77,
+        "glowDepth": 0.93,
         "focusPx": 0,
         "fog": 0,
-        "handheld": 1.5,
+        "handheld": 3,
         "captionEmphasis": "Mecca",
-        "captionReveal": "wipe",
-        "captionMark": "highlight",
-        "captionWordEvery": 3,
-        "cameraMove": "push",
-        "cameraPurpose": "single out the subject — the frame closes on what matters"
+        "captionReveal": "rise",
+        "captionMark": "underline",
+        "captionWordEvery": 2,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
       }
     },
     {
@@ -445,18 +434,18 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.78,
+          "depth": 0.87,
           "anchor": "fill"
         }
       ],
       "props": [
         {
           "kind": "wire",
-          "shape": "rect",
+          "shape": "circle",
           "depth": 0.74,
-          "x": 364,
-          "y": 921,
-          "width": 363,
+          "x": 353,
+          "y": 990,
+          "width": 401,
           "colour": "#f2b53a",
           "from": 45
         }
@@ -465,14 +454,14 @@
         "anchorX": 540,
         "anchorY": 1700,
         "pushFrom": 1,
-        "pushTo": 1.08,
-        "pushEndFrame": 50,
-        "glowX": 1578,
-        "glowY": 538,
-        "glowSize": 529,
-        "glowIntensity": 0.6,
+        "pushTo": 1.12,
+        "pushEndFrame": 52,
+        "glowX": 1541,
+        "glowY": 383,
+        "glowSize": 476,
+        "glowIntensity": 0.68,
         "glowWarm": "#f2b53a",
-        "glowDepth": 0.78,
+        "glowDepth": 0.87,
         "focusPx": 0,
         "fog": 0,
         "caption": [
@@ -480,8 +469,8 @@
           "was so long"
         ],
         "captionX": 84,
-        "captionY": 477,
-        "captionSize": 98,
+        "captionY": 401,
+        "captionSize": 91,
         "captionAlign": "left",
         "captionFrame": 4,
         "captionEvery": 9,
@@ -489,20 +478,20 @@
         "captionRecedeAt": 38,
         "accent": "#f2b53a",
         "motif": "route",
-        "motifX": 154,
+        "motifX": 221,
         "motifY": 1190,
-        "motifSize": 225,
+        "motifSize": 229,
         "motifCount": 1,
-        "motifFrame": 20,
+        "motifFrame": 29,
         "motifColour": "#f2b53a",
-        "motifOpacity": 0.99,
+        "motifOpacity": 0.9,
         "handheld": 1.5,
-        "panY": -26,
-        "roll": 0.48,
+        "panY": -53,
+        "roll": -0.32,
         "captionEmphasis": "caravan",
-        "captionReveal": "rise",
-        "captionMark": "highlight",
-        "captionWordEvery": 2,
+        "captionReveal": "wipe",
+        "captionMark": "underline",
+        "captionWordEvery": 3,
         "cameraMove": "drift",
         "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       },
@@ -527,19 +516,19 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.92,
+          "depth": 0.77,
           "anchor": "fill"
         }
       ],
       "props": [
         {
           "kind": "beam",
-          "depth": 0.36,
-          "x": 929,
-          "y": 95,
-          "width": 308,
-          "rotate": -16,
-          "opacity": 0.67,
+          "depth": 0.27,
+          "x": 920,
+          "y": 111,
+          "width": 240,
+          "rotate": -12,
+          "opacity": 0.68,
           "colour": "#f2b53a",
           "from": 62
         }
@@ -547,9 +536,9 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.43,
-        "pushTo": 1.01,
-        "pushEndFrame": 67,
+        "pushFrom": 1.37,
+        "pushTo": 1.02,
+        "pushEndFrame": 68,
         "accent": "#f2b53a",
         "caption": [
           "that accounts",
@@ -557,23 +546,23 @@
           "about the number"
         ],
         "captionX": 84,
-        "captionY": 695,
+        "captionY": 381,
         "captionSize": 69,
         "captionAlign": "left",
         "captionFrame": 6,
-        "captionEvery": 6,
+        "captionEvery": 8,
         "captionScrim": 0.34,
-        "glowX": 1430,
-        "glowY": 219,
-        "glowSize": 545,
-        "glowIntensity": 0.53,
+        "glowX": 1399,
+        "glowY": 372,
+        "glowSize": 359,
+        "glowIntensity": 0.57,
         "glowWarm": "#f2b53a",
-        "glowDepth": 0.92,
+        "glowDepth": 0.77,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "accounts",
-        "captionReveal": "wipe",
+        "captionReveal": "punch",
         "captionMark": "box",
         "captionWordEvery": 3,
         "cameraMove": "pull",
@@ -599,42 +588,42 @@
         "photo": "assets/s04-mecca-photo.png"
       },
       "params": {
-        "frameWidth": 819,
-        "frameRatio": 1.03,
-        "pushEndFrame": 66,
+        "frameWidth": 756,
+        "frameRatio": 0.92,
+        "pushEndFrame": 68,
         "detachFrame": 35,
         "throughEndFrame": 48,
-        "weldRatio": 0.351,
-        "wallScaleEnd": 5.7,
+        "weldRatio": 0.345,
+        "wallScaleEnd": 6.2,
         "accent": "#f2b53a",
         "caption": [],
         "captionX": 84,
-        "captionY": 1312,
+        "captionY": 1492,
         "captionFrame": 52,
         "captionEvery": 10,
-        "captionSize": 86,
+        "captionSize": 91,
         "captionRecedeAt": 54,
         "motif": "coins",
-        "motifX": 551,
+        "motifX": 610,
         "motifY": 1651,
-        "motifSize": 41,
-        "motifCount": 18,
+        "motifSize": 54,
+        "motifCount": 20,
         "motifFrame": 61,
         "motifColour": "#f2b53a",
-        "motifOpacity": 0.92,
-        "pushFrom": 1.51,
-        "pushTo": 1.02,
-        "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "motifOpacity": 0.93,
+        "pushFrom": 1.18,
+        "pushTo": 1.3,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
       },
       "props": [
         {
           "kind": "wire",
-          "shape": "rect",
-          "depth": 0.8,
-          "x": 416,
-          "y": 1170,
-          "width": 414,
+          "shape": "diamond",
+          "depth": 0.75,
+          "x": 428,
+          "y": 1007,
+          "width": 353,
           "colour": "#f2b53a",
           "from": 6
         }
@@ -660,19 +649,19 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.82,
+          "depth": 0.77,
           "anchor": "fill"
         }
       ],
       "props": [
         {
           "kind": "beam",
-          "depth": 0.19,
+          "depth": 0.23,
           "x": 929,
-          "y": -94,
-          "width": 358,
+          "y": 1,
+          "width": 353,
           "rotate": -16,
-          "opacity": 0.56,
+          "opacity": 0.65,
           "colour": "#f2b53a",
           "from": 46
         }
@@ -681,42 +670,42 @@
         "anchorX": 799,
         "anchorY": 576,
         "pushFrom": 1,
-        "pushTo": 1.1,
-        "pushEndFrame": 50,
+        "pushTo": 1.13,
+        "pushEndFrame": 51,
         "accent": "#f2b53a",
         "caption": [
           "of gold still",
           "on his camels"
         ],
         "captionX": 84,
-        "captionY": 495,
+        "captionY": 814,
         "captionSize": 85,
         "captionAlign": "left",
         "captionFrame": 4,
-        "captionEvery": 8,
+        "captionEvery": 7,
         "captionScrim": 0.34,
-        "glowX": 1486,
-        "glowY": 413,
-        "glowSize": 510,
-        "glowIntensity": 0.63,
+        "glowX": 1378,
+        "glowY": 362,
+        "glowSize": 377,
+        "glowIntensity": 0.5,
         "glowWarm": "#f2b53a",
-        "glowDepth": 0.82,
+        "glowDepth": 0.77,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panY": -66,
-        "roll": -0.48,
+        "panY": -28,
+        "roll": -0.41,
         "captionEmphasis": "camels",
-        "captionReveal": "wipe",
+        "captionReveal": "blur",
         "captionMark": "none",
-        "captionWordEvery": 2,
+        "captionWordEvery": 4,
         "cameraMove": "drift",
         "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       }
     },
     {
       "id": "s05-cairo",
-      "sceneType": "title-slate",
+      "sceneType": "composite",
       "voText": "In Cairo he did not sell it.",
       "durationInFrames": 68,
       "gradeOverride": {
@@ -729,55 +718,73 @@
         "frames": 8
       },
       "assets": {
-        "background": "assets/s05-cairo-bg.png"
+        "ground": "assets/s05-cairo-bg.png"
       },
-      "params": {
-        "scrim": 0.39,
-        "kicker": "",
-        "title": "",
-        "footer": "",
-        "titleFrame": 4,
-        "titleSize": 124,
-        "creep": 1.077,
-        "accent": "#f2b53a",
-        "field": "sunburst",
-        "fieldColours": [
-          "#c98a2a",
-          "#7d4d12",
-          "#2c1a06"
-        ],
-        "motif": "coins",
-        "motifX": 609,
-        "motifY": 1651,
-        "motifSize": 54,
-        "motifCount": 20,
-        "motifFrame": 58,
-        "motifColour": "#f2b53a",
-        "motifOpacity": 1,
-        "mark": "underline",
-        "markX": 260,
-        "markY": 1160,
-        "markWidth": 560,
-        "markHeight": 96,
-        "markFrame": 23,
-        "pushEndFrame": 65,
-        "pushFrom": 1.17,
-        "pushTo": 1.26,
-        "cameraMove": "pan",
-        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
-      },
+      "layers": [
+        {
+          "role": "ground",
+          "depth": 0.94,
+          "anchor": "fill"
+        }
+      ],
       "props": [
         {
           "kind": "wire",
           "shape": "circle",
-          "depth": 0.83,
-          "x": 361,
-          "y": 1038,
-          "width": 294,
+          "depth": 0.61,
+          "x": 422,
+          "y": 569,
+          "width": 295,
           "colour": "#f2b53a",
-          "from": 5
+          "from": 58
         }
-      ]
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1,
+        "pushTo": 1.08,
+        "pushEndFrame": 66,
+        "glowX": 1397,
+        "glowY": 565,
+        "glowSize": 455,
+        "glowIntensity": 0.45,
+        "glowWarm": "#f2b53a",
+        "glowDepth": 0.94,
+        "focusPx": 0,
+        "fog": 0,
+        "caption": [
+          "In Cairo",
+          "he did not",
+          "sell it"
+        ],
+        "captionX": 84,
+        "captionY": 740,
+        "captionSize": 97,
+        "captionAlign": "left",
+        "captionFrame": 5,
+        "captionEvery": 9,
+        "captionScrim": 0.34,
+        "captionRecedeAt": 49,
+        "accent": "#f2b53a",
+        "motif": "coins",
+        "motifX": 546,
+        "motifY": 1651,
+        "motifSize": 42,
+        "motifCount": 21,
+        "motifFrame": 19,
+        "motifColour": "#f2b53a",
+        "motifOpacity": 0.83,
+        "handheld": 1.5,
+        "panY": -33,
+        "roll": -0.39,
+        "captionEmphasis": "Cairo",
+        "captionReveal": "wipe",
+        "captionMark": "highlight",
+        "captionWordEvery": 3,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      }
     },
     {
       "id": "s05-cairo-b",
@@ -790,19 +797,19 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.75,
+          "depth": 0.94,
           "anchor": "fill"
         }
       ],
       "props": [
         {
           "kind": "beam",
-          "depth": 0.35,
+          "depth": 0.19,
           "x": 929,
-          "y": -60,
-          "width": 308,
+          "y": 25,
+          "width": 245,
           "rotate": -16,
-          "opacity": 0.56,
+          "opacity": 0.6,
           "colour": "#f2b53a",
           "from": 0
         }
@@ -810,26 +817,26 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.4,
-        "pushTo": 1.05,
+        "pushFrom": 1.45,
+        "pushTo": 1.01,
         "pushEndFrame": 37,
         "accent": "#f2b53a",
         "caption": [
           "He gave it away"
         ],
         "captionX": 84,
-        "captionY": 963,
+        "captionY": 1058,
         "captionSize": 74,
         "captionAlign": "left",
         "captionFrame": 3,
         "captionEvery": 10,
         "captionScrim": 0.34,
-        "glowX": 1485,
-        "glowY": 400,
-        "glowSize": 546,
+        "glowX": 1527,
+        "glowY": 398,
+        "glowSize": 516,
         "glowIntensity": 0.69,
         "glowWarm": "#f2b53a",
-        "glowDepth": 0.75,
+        "glowDepth": 0.94,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
@@ -852,18 +859,18 @@
       "layers": [
         {
           "role": "ground",
-          "depth": 0.87,
+          "depth": 0.93,
           "anchor": "fill"
         }
       ],
       "props": [
         {
           "kind": "wire",
-          "shape": "circle",
-          "depth": 0.69,
-          "x": 357,
-          "y": 649,
-          "width": 326,
+          "shape": "rect",
+          "depth": 0.71,
+          "x": 375,
+          "y": 847,
+          "width": 399,
           "colour": "#f2b53a",
           "from": 48
         }
@@ -872,35 +879,35 @@
         "anchorX": 799,
         "anchorY": 1498,
         "pushFrom": 1,
-        "pushTo": 1.09,
-        "pushEndFrame": 51,
+        "pushTo": 1.11,
+        "pushEndFrame": 56,
         "accent": "#f2b53a",
         "caption": [
           "and the price",
           "of gold collapsed"
         ],
         "captionX": 84,
-        "captionY": 836,
+        "captionY": 1070,
         "captionSize": 65,
         "captionAlign": "left",
         "captionFrame": 5,
-        "captionEvery": 7,
+        "captionEvery": 9,
         "captionScrim": 0.34,
-        "glowX": 1475,
-        "glowY": 291,
-        "glowSize": 412,
-        "glowIntensity": 0.68,
+        "glowX": 1292,
+        "glowY": 470,
+        "glowSize": 300,
+        "glowIntensity": 0.45,
         "glowWarm": "#f2b53a",
-        "glowDepth": 0.87,
+        "glowDepth": 0.93,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panY": -39,
-        "roll": -0.45,
+        "panY": -42,
+        "roll": -0.64,
         "captionEmphasis": "collapsed",
-        "captionReveal": "punch",
-        "captionMark": "none",
-        "captionWordEvery": 3,
+        "captionReveal": "wipe",
+        "captionMark": "underline",
+        "captionWordEvery": 4,
         "cameraMove": "drift",
         "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       }
@@ -919,13 +926,13 @@
         "background": "assets/s06-close-bg.png"
       },
       "params": {
-        "scrim": 0.37,
+        "scrim": 0.39,
         "kicker": "Gold in Cairo",
         "title": "TWELVE YEARS",
         "footer": "the most expensive journey in history",
         "titleFrame": 12,
         "titleSize": 230,
-        "creep": 1.069,
+        "creep": 1.082,
         "accent": "#f2b53a",
         "field": "sunburst",
         "fieldColours": [
@@ -943,44 +950,39 @@
           "TWENTY"
         ],
         "spinFrames": 65,
-        "pushEndFrame": 156,
-        "pushFrom": 1,
-        "pushTo": 1.12,
-        "cameraMove": "drift",
-        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+        "mark": "underline",
+        "markX": 260,
+        "markY": 820,
+        "markWidth": 560,
+        "markHeight": 300,
+        "markFrame": 55,
+        "pushEndFrame": 155,
+        "pushFrom": 1.04,
+        "pushTo": 1.05,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
       },
       "props": [
         {
           "kind": "plaque",
           "text": "Gold in Cairo",
-          "depth": 0.59,
-          "x": 325,
-          "y": 621,
-          "width": 366,
-          "rotate": 0.2,
-          "from": 52
+          "depth": 0.65,
+          "x": 368,
+          "y": 613,
+          "width": 413,
+          "rotate": -2.1,
+          "from": 58
         },
         {
           "kind": "newspaper",
-          "masthead": "THE GAZETTE",
+          "masthead": "THE RECORD",
           "text": "TWELVE YEARS",
-          "depth": 0.84,
-          "x": 724,
-          "y": 540,
-          "width": 396,
-          "rotate": -6.4,
-          "from": 91
-        },
-        {
-          "kind": "beam",
-          "depth": 0.21,
-          "x": 907,
-          "y": -52,
-          "width": 333,
-          "rotate": -15,
-          "opacity": 0.67,
-          "colour": "#f2b53a",
-          "from": 100
+          "depth": 0.85,
+          "x": 775,
+          "y": 521,
+          "width": 451,
+          "rotate": 3.7,
+          "from": 94
         }
       ]
     }

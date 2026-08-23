@@ -1,0 +1,175 @@
+{
+  "episode": "roman-concrete",
+  "title": "The wall that heals itself",
+  "question": "Why Has Roman Concrete Survived for 2,000 Years?",
+  "generatedAt": "2026-08-23",
+  "finalScore": 5.5,
+  "scoredBy": "inspection of rendered frames at 0/33/66/94 per shot",
+  "judged": {
+    "storytelling": 8.5,
+    "visualHierarchy": 8,
+    "semanticAccuracy": 9,
+    "assetRelevance": 2,
+    "visualCausality": 2,
+    "motionQuality": 6,
+    "cameraVariety": 6,
+    "transitionQuality": 7,
+    "pacing": 8,
+    "visualContinuity": 8.5,
+    "typography": 8,
+    "ending": 8,
+    "professionalism": 5.5
+  },
+  "verdict": "The best script of the five and the worst match to the engine. The whole episode is about a MECHANISM -- a crack opens, water reaches a lime clast, the lime recrystallises across the gap and seals it -- and not one frame shows it. Twenty-three shots, twenty-three of them typography. A viewer finishes knowing the fact and having seen nothing that would let them check it.",
+  "whatWorked": [
+    "The script's reversal is genuinely good: the lumps we read as sloppy work are the repair system.",
+    "green-rot over the drawn ground is the one mood of the five that produces a usable frame without a photograph -- dark olive with pale gold type reads as a document rather than as an empty slide.",
+    "The route motif drawing an arc on the 'crack' line is the closest the reel gets to showing a process.",
+    "The closing card -- TWO THOUSAND, years and still curing -- is well made."
+  ],
+  "whatFailed": [
+    {
+      "what": "The self-healing mechanism, which is the entire subject, is never drawn.",
+      "why": "chooseRepresentation has gearSystem, timeline, measurement, orbit and scan. A chemical process that closes a gap matches none of them, so the strongest available representation for the episode's central claim was a sentence.",
+      "failureIs": "REPRESENTATION"
+    },
+    {
+      "what": "Zero diagrams in fifty seconds; the image kind never changes.",
+      "why": "Same cause. The editor reports 'the reel changes its kind of image 0 times in 23 shots'.",
+      "failureIs": "REPRESENTATION"
+    },
+    {
+      "what": "'40 BC' and 'the first century' never became a timeline.",
+      "why": "yearsIn only recognises four-digit years, so a BC date and a named century are invisible to the one diagram type that would have fitted this episode.",
+      "failureIs": "REPRESENTATION"
+    },
+    {
+      "what": "A wire prop and the slate land on the same frame in shot 0.",
+      "why": "Two arrivals sharing a moment read as one beat; the opening shot has one event, not two.",
+      "failureIs": "COMPOSITION"
+    }
+  ],
+  "measured": {
+    "shots": 23,
+    "seconds": 49.97,
+    "averageShotSeconds": 2.17,
+    "representationMix": {
+      "PHOTO": 0,
+      "HYBRID": 0,
+      "PROCEDURAL": 0,
+      "TYPOGRAPHY": 23
+    },
+    "proceduralVisuals": 0,
+    "hybridVisuals": 0,
+    "diagramKinds": [],
+    "assets": {
+      "linesRequestingAPicture": 9,
+      "picturesOnScreen": 0,
+      "rejectedOnScore": 0,
+      "unavailable": 9,
+      "rejectionCount": 9
+    },
+    "editorial": {
+      "hardCutRatio": 1,
+      "cutKinds": {
+        "HARD_CUT": 22
+      },
+      "arrivals": {
+        "cut": 22
+      },
+      "transitionRatio": 0
+    },
+    "cameraDistribution": {
+      "push": 6,
+      "tilt": 1,
+      "pan": 5,
+      "pull": 5,
+      "drift": 5,
+      "hold": 1
+    },
+    "motionDensity": {
+      "events": 55,
+      "perSecond": 1.1,
+      "deadShots": 0,
+      "busiestMoment": 2
+    },
+    "informationDensity": {
+      "words": 90,
+      "wordsPerSecond": 1.8,
+      "unreadableCaptions": 0
+    },
+    "rhythm": {
+      "variation": 0.28,
+      "mean": 2.17,
+      "shortest": 1.5,
+      "longest": 3.93
+    },
+    "imageKindChangesPerCut": 0,
+    "temporalConsistency": {
+      "errors": 0,
+      "warnings": 0,
+      "clean": true
+    },
+    "gates": {
+      "visualHierarchy": 9.6,
+      "motionDesign": 9.6,
+      "cameraDiversity": 10,
+      "transitionQuality": 10,
+      "visualContinuity": 8.5,
+      "professionalism": 9.5
+    },
+    "gatesFailed": [
+      "no photograph anywhere in the reel — every shot is drawn or typeset"
+    ]
+  },
+  "remainingDefects": [
+    {
+      "severity": "warning",
+      "where": "shot",
+      "what": "scene[0] \"s01-harbour\": prop:wire and slate both land at ~5 — one beat, not two"
+    },
+    {
+      "severity": "warning",
+      "where": "shot",
+      "what": "scene[3] \"s02-modern\": 1.7s on one event — the shot will read as a still with a caption"
+    },
+    {
+      "severity": "warning",
+      "where": "shot",
+      "what": "scene[14] \"s06-crack\": motif:route and mark both land at ~18 — one beat, not two"
+    },
+    {
+      "severity": "warning",
+      "where": "edit",
+      "what": "the reel changes its kind of image 0 time(s) in 23 shots — one idea, repeated"
+    },
+    {
+      "severity": "observed",
+      "where": "inspection",
+      "what": "The self-healing mechanism, which is the entire subject, is never drawn.",
+      "cause": "REPRESENTATION",
+      "why": "chooseRepresentation has gearSystem, timeline, measurement, orbit and scan. A chemical process that closes a gap matches none of them, so the strongest available representation for the episode's central claim was a sentence."
+    },
+    {
+      "severity": "observed",
+      "where": "inspection",
+      "what": "Zero diagrams in fifty seconds; the image kind never changes.",
+      "cause": "REPRESENTATION",
+      "why": "Same cause. The editor reports 'the reel changes its kind of image 0 times in 23 shots'."
+    },
+    {
+      "severity": "observed",
+      "where": "inspection",
+      "what": "'40 BC' and 'the first century' never became a timeline.",
+      "cause": "REPRESENTATION",
+      "why": "yearsIn only recognises four-digit years, so a BC date and a named century are invisible to the one diagram type that would have fitted this episode."
+    },
+    {
+      "severity": "observed",
+      "where": "inspection",
+      "what": "A wire prop and the slate land on the same frame in shot 0.",
+      "cause": "COMPOSITION",
+      "why": "Two arrivals sharing a moment read as one beat; the opening shot has one event, not two."
+    }
+  ]
+}

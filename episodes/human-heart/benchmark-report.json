@@ -1,0 +1,184 @@
+{
+  "episode": "human-heart",
+  "title": "Two pumps, one beat",
+  "question": "How Does the Human Heart Pump Blood?",
+  "generatedAt": "2026-08-23",
+  "finalScore": 5,
+  "scoredBy": "inspection of rendered frames at 0/33/66/94 per shot",
+  "judged": {
+    "storytelling": 7.5,
+    "visualHierarchy": 7.5,
+    "semanticAccuracy": 8,
+    "assetRelevance": 2,
+    "visualCausality": 2,
+    "motionQuality": 5.5,
+    "cameraVariety": 6,
+    "transitionQuality": 7,
+    "pacing": 7.5,
+    "visualContinuity": 7,
+    "typography": 7.5,
+    "ending": 7.5,
+    "professionalism": 5
+  },
+  "verdict": "The weakest of the five and the most useful. An anatomy explainer is the purest test of 'show, do not tell', and this one tells for fifty seconds: twenty-two shots, all typography, over a flat mustard field that never changes. The sentence the episode is built around -- the tenth of a second of delay between the upper chambers and the lower -- is exactly what motion design exists for, and it is delivered as two lines of text. It also produced the benchmark's only semantically WRONG picture before the script was reworded.",
+  "whatWorked": [
+    "The script is sound and correctly ordered: two pumps, two circuits, why one wall is thicker, the valves, the spark, the delay, why the delay matters, the count, the lifetime figure.",
+    "Nothing false is shown in the final cut. The reel refuses rather than approximating.",
+    "The closing figure -- two and a half billion beats -- is the right ending for the script."
+  ],
+  "whatFailed": [
+    {
+      "what": "BEFORE THE FIX: a train of meshing gears was drawn as a schematic reconstruction of a human heart.",
+      "why": "chooseRepresentation matched the word 'mechanism' plus the figure four and emitted a gearSystem. The hard semantic gate guards PHOTOGRAPHS only -- a procedural visual is never checked for whether it depicts the subject. The drawing then labelled itself SCHEMATIC RECONSTRUCTION, which is the repo's own definition of a worse lie than a wrong photograph. Fixed at the episode level by rewording the line; the hole in the engine is still open.",
+      "failureIs": "ENGINE"
+    },
+    {
+      "what": "The delay between atrial and ventricular contraction is never animated.",
+      "why": "No representation for a two-stage cycle. This is the episode's central claim.",
+      "failureIs": "REPRESENTATION"
+    },
+    {
+      "what": "Twenty-two identical mustard frames.",
+      "why": "gold-heat over the wash field produces one flat tone that fills the frame; with no plate to light, every shot is the same colour. A writer's mood choice compounding the supply problem.",
+      "failureIs": "COMPOSITION"
+    },
+    {
+      "what": "Lowest motion density of the five, and one shot holds 3.2s on a single event.",
+      "why": "With no diagram and no props surviving the type band, the only event available is the caption.",
+      "failureIs": "MOTION"
+    }
+  ],
+  "measured": {
+    "shots": 22,
+    "seconds": 50.7,
+    "averageShotSeconds": 2.3,
+    "representationMix": {
+      "PHOTO": 0,
+      "HYBRID": 0,
+      "PROCEDURAL": 0,
+      "TYPOGRAPHY": 22
+    },
+    "proceduralVisuals": 0,
+    "hybridVisuals": 0,
+    "diagramKinds": [],
+    "assets": {
+      "linesRequestingAPicture": 9,
+      "picturesOnScreen": 0,
+      "rejectedOnScore": 0,
+      "unavailable": 9,
+      "rejectionCount": 9
+    },
+    "editorial": {
+      "hardCutRatio": 1,
+      "cutKinds": {
+        "HARD_CUT": 21
+      },
+      "arrivals": {
+        "cut": 21
+      },
+      "transitionRatio": 0
+    },
+    "cameraDistribution": {
+      "hold": 4,
+      "tilt": 2,
+      "push": 6,
+      "drift": 5,
+      "pan": 3,
+      "pull": 2
+    },
+    "motionDensity": {
+      "events": 51,
+      "perSecond": 1.01,
+      "deadShots": 0,
+      "busiestMoment": 1
+    },
+    "informationDensity": {
+      "words": 84,
+      "wordsPerSecond": 1.66,
+      "unreadableCaptions": 0
+    },
+    "rhythm": {
+      "variation": 0.28,
+      "mean": 2.3,
+      "shortest": 1.5,
+      "longest": 3.93
+    },
+    "imageKindChangesPerCut": 0,
+    "temporalConsistency": {
+      "errors": 0,
+      "warnings": 0,
+      "clean": true
+    },
+    "gates": {
+      "visualHierarchy": 9.5,
+      "motionDesign": 8.9,
+      "cameraDiversity": 10,
+      "transitionQuality": 10,
+      "visualContinuity": 10,
+      "professionalism": 9.7
+    },
+    "gatesFailed": [
+      "no photograph anywhere in the reel — every shot is drawn or typeset"
+    ]
+  },
+  "remainingDefects": [
+    {
+      "severity": "warning",
+      "where": "shot",
+      "what": "scene[5] \"s03-thicker\": 3.2s on one event — the shot will read as a still with a caption"
+    },
+    {
+      "severity": "warning",
+      "where": "shot",
+      "what": "scene[7] \"s04-valves\": 1.7s on one event — the shot will read as a still with a caption"
+    },
+    {
+      "severity": "warning",
+      "where": "shot",
+      "what": "scene[9] \"s04-valves-c\": camera travels 0.030 — a photograph with grain on it"
+    },
+    {
+      "severity": "warning",
+      "where": "geometry",
+      "what": "scene[21] \"s09-close\": prop[0] plaque and prop[1] newspaper occupy the same place"
+    },
+    {
+      "severity": "warning",
+      "where": "edit",
+      "what": "scene[5] \"s03-thicker\": 3.23s with one beat — a shot this long needs somewhere to arrive"
+    },
+    {
+      "severity": "warning",
+      "where": "edit",
+      "what": "the reel changes its kind of image 0 time(s) in 22 shots — one idea, repeated"
+    },
+    {
+      "severity": "observed",
+      "where": "inspection",
+      "what": "BEFORE THE FIX: a train of meshing gears was drawn as a schematic reconstruction of a human heart.",
+      "cause": "ENGINE",
+      "why": "chooseRepresentation matched the word 'mechanism' plus the figure four and emitted a gearSystem. The hard semantic gate guards PHOTOGRAPHS only -- a procedural visual is never checked for whether it depicts the subject. The drawing then labelled itself SCHEMATIC RECONSTRUCTION, which is the repo's own definition of a worse lie than a wrong photograph. Fixed at the episode level by rewording the line; the hole in the engine is still open."
+    },
+    {
+      "severity": "observed",
+      "where": "inspection",
+      "what": "The delay between atrial and ventricular contraction is never animated.",
+      "cause": "REPRESENTATION",
+      "why": "No representation for a two-stage cycle. This is the episode's central claim."
+    },
+    {
+      "severity": "observed",
+      "where": "inspection",
+      "what": "Twenty-two identical mustard frames.",
+      "cause": "COMPOSITION",
+      "why": "gold-heat over the wash field produces one flat tone that fills the frame; with no plate to light, every shot is the same colour. A writer's mood choice compounding the supply problem."
+    },
+    {
+      "severity": "observed",
+      "where": "inspection",
+      "what": "Lowest motion density of the five, and one shot holds 3.2s on a single event.",
+      "cause": "MOTION",
+      "why": "With no diagram and no props surviving the type band, the only event available is the caption."
+    }
+  ]
+}

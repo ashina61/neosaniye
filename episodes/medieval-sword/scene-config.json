@@ -1,0 +1,1409 @@
+{
+  "id": "medieval-sword",
+  "title": "Hard edge, soft spine",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "look": {
+    "posterizeFps": 12,
+    "grade": {
+      "saturate": 0.83,
+      "contrast": 1.05,
+      "sepia": 0.4,
+      "brightness": 1.02
+    },
+    "film": {
+      "grain": true,
+      "grunge": true,
+      "scanlines": true,
+      "vignette": true,
+      "gateWeave": true,
+      "grainOpacity": 0.37,
+      "grungeOpacity": 0.18,
+      "scanlineOpacity": 0.13,
+      "scanlinePeriod": 9,
+      "vignetteStrength": 0.44,
+      "weavePx": 7,
+      "weaveScale": 1.012
+    }
+  },
+  "scenes": [
+    {
+      "id": "s01-notcast",
+      "sceneType": "title-slate",
+      "voText": "A medieval sword was never cast.",
+      "durationInFrames": 75,
+      "assets": {},
+      "params": {
+        "scrim": 0.54,
+        "kicker": "EUROPE · 1350",
+        "title": "",
+        "footer": "",
+        "titleFrame": 6,
+        "titleSize": 124,
+        "creep": 1.061,
+        "accent": "#e8a020",
+        "field": "spotlight",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "mark": "underline",
+        "markX": 260,
+        "markY": 1160,
+        "markWidth": 560,
+        "markHeight": 96,
+        "markFrame": 26,
+        "pushEndFrame": 72,
+        "pushFrom": 1.03,
+        "pushTo": 1.06,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      },
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "EUROPE · 1350",
+          "depth": 0.72,
+          "x": 356,
+          "y": 1513,
+          "width": 389,
+          "rotate": -2.1,
+          "from": 64
+        },
+        {
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.6,
+          "x": 687,
+          "y": 1094,
+          "width": 267,
+          "colour": "#e8a020",
+          "from": 7
+        }
+      ]
+    },
+    {
+      "id": "s01-notcast-b",
+      "sceneType": "composite",
+      "voText": "It was forged",
+      "durationInFrames": 45,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.19,
+          "x": 922,
+          "y": 6,
+          "width": 324,
+          "rotate": -13,
+          "opacity": 0.51,
+          "colour": "#e8a020",
+          "from": 38
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.04,
+        "pushTo": 1.48,
+        "pushEndFrame": 42,
+        "accent": "#e8a020",
+        "field": "spotlight",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1331,
+        "glowY": 483,
+        "glowSize": 393,
+        "glowIntensity": 0.6,
+        "glowWarm": "#e8a020",
+        "glowDepth": 0.1,
+        "caption": [
+          "It was forged"
+        ],
+        "captionX": 81,
+        "captionY": 821,
+        "captionSize": 104,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 9,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "forged",
+        "captionReveal": "rise",
+        "captionMark": "underline",
+        "captionWordEvery": 3,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      }
+    },
+    {
+      "id": "s01-notcast-c",
+      "sceneType": "composite",
+      "voText": "from a bar of iron.",
+      "durationInFrames": 64,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "EUROPE · 1350",
+          "depth": 0.58,
+          "x": 388,
+          "y": 1499,
+          "width": 403,
+          "rotate": -0.4,
+          "from": 54
+        },
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.74,
+          "x": 746,
+          "y": 536,
+          "width": 320,
+          "colour": "#e8a020",
+          "from": 0
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1.25,
+        "pushTo": 1.33,
+        "pushEndFrame": 59,
+        "accent": "#e8a020",
+        "field": "spotlight",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1355,
+        "glowY": 472,
+        "glowSize": 456,
+        "glowIntensity": 0.46,
+        "glowWarm": "#e8a020",
+        "glowDepth": 0.1,
+        "caption": [
+          "from a bar",
+          "of iron"
+        ],
+        "captionX": 81,
+        "captionY": 720,
+        "captionSize": 136,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 8,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panY": -142,
+        "captionEmphasis": "iron",
+        "captionReveal": "wipe",
+        "captionMark": "highlight",
+        "captionWordEvery": 4,
+        "cameraMove": "tilt",
+        "cameraPurpose": "a vertical reveal — height, depth, or a drop"
+      }
+    },
+    {
+      "id": "s02-heat",
+      "sceneType": "title-slate",
+      "voText": "The smith worked it near twelve hundred degrees.",
+      "durationInFrames": 97,
+      "assets": {},
+      "params": {
+        "scrim": 0.4,
+        "kicker": "",
+        "title": "TWELVE HUNDRED DEGREES",
+        "footer": "",
+        "titleFrame": 8,
+        "titleSize": 230,
+        "creep": 1.052,
+        "accent": "#e8a020",
+        "field": "spotlight",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "mark": "underline",
+        "markX": 260,
+        "markY": 820,
+        "markWidth": 560,
+        "markHeight": 300,
+        "markFrame": 33,
+        "pushEndFrame": 92,
+        "pushFrom": 1,
+        "pushTo": 1.28,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      }
+    },
+    {
+      "id": "s02-heat-b",
+      "sceneType": "composite",
+      "voText": "Orange, not yellow.",
+      "durationInFrames": 45,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.23,
+          "x": 943,
+          "y": 151,
+          "width": 269,
+          "rotate": -22,
+          "opacity": 0.68,
+          "colour": "#e8a020",
+          "from": 38
+        },
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.61,
+          "x": 647,
+          "y": 509,
+          "width": 375,
+          "colour": "#e8a020",
+          "from": 0
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.02,
+        "pushTo": 1.06,
+        "pushEndFrame": 43,
+        "accent": "#e8a020",
+        "field": "spotlight",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1308,
+        "glowY": 189,
+        "glowSize": 377,
+        "glowIntensity": 0.62,
+        "glowWarm": "#e8a020",
+        "glowDepth": 0.1,
+        "caption": [
+          "Orange,",
+          "not yellow"
+        ],
+        "captionX": 81,
+        "captionY": 720,
+        "captionSize": 136,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 10,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 3,
+        "captionEmphasis": "Orange",
+        "captionReveal": "rise",
+        "captionMark": "box",
+        "captionWordEvery": 3,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      }
+    },
+    {
+      "id": "s03-carbon",
+      "sceneType": "composite",
+      "voText": "Iron with too little carbon bends.",
+      "durationInFrames": 75,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.31,
+          "x": 929,
+          "y": 22,
+          "width": 315,
+          "rotate": -16,
+          "opacity": 0.51,
+          "colour": "#e8a020",
+          "from": 64
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1.41,
+        "pushTo": 1.05,
+        "pushEndFrame": 68,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
+        "glowWarm": "#e8a020",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "spotlight",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "caption": [
+          "Iron",
+          "with too",
+          "little",
+          "carbon",
+          "bends"
+        ],
+        "captionX": 81,
+        "captionY": 373,
+        "captionSize": 170,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 8,
+        "captionScrim": 0,
+        "captionRecedeAt": 54,
+        "accent": "#e8a020",
+        "handheld": 1.5,
+        "captionEmphasis": "little",
+        "captionReveal": "wipe",
+        "captionMark": "highlight",
+        "captionWordEvery": 3,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      }
+    },
+    {
+      "id": "s03-carbon-b",
+      "sceneType": "composite",
+      "voText": "Iron with too much shatters",
+      "durationInFrames": 64,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.69,
+          "x": 439,
+          "y": 602,
+          "width": 264,
+          "colour": "#e8a020",
+          "from": 54
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.22,
+        "pushTo": 1.31,
+        "pushEndFrame": 58,
+        "accent": "#e8a020",
+        "field": "spotlight",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1408,
+        "glowY": 560,
+        "glowSize": 497,
+        "glowIntensity": 0.45,
+        "glowWarm": "#e8a020",
+        "glowDepth": 0.1,
+        "caption": [
+          "Iron with too",
+          "much shatters"
+        ],
+        "captionX": 81,
+        "captionY": 758,
+        "captionSize": 104,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 8,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panX": 261,
+        "captionEmphasis": "shatters",
+        "captionReveal": "blur",
+        "captionMark": "box",
+        "captionWordEvery": 2,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      }
+    },
+    {
+      "id": "s03-carbon-c",
+      "sceneType": "composite",
+      "voText": "on the first parry.",
+      "durationInFrames": 52,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.28,
+          "x": 941,
+          "y": 88,
+          "width": 366,
+          "rotate": -21,
+          "opacity": 0.82,
+          "colour": "#e8a020",
+          "from": 44
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1,
+        "pushTo": 1.07,
+        "pushEndFrame": 48,
+        "accent": "#e8a020",
+        "field": "spotlight",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1375,
+        "glowY": 157,
+        "glowSize": 402,
+        "glowIntensity": 0.57,
+        "glowWarm": "#e8a020",
+        "glowDepth": 0.1,
+        "caption": [
+          "on the first",
+          "parry"
+        ],
+        "captionX": 81,
+        "captionY": 748,
+        "captionSize": 113,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 8,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panY": -56,
+        "roll": 0.5,
+        "captionEmphasis": "first",
+        "captionReveal": "punch",
+        "captionMark": "highlight",
+        "captionWordEvery": 3,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      }
+    },
+    {
+      "id": "s04-layered",
+      "sceneType": "composite",
+      "voText": "So the blade is built in layers.",
+      "durationInFrames": 86,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.76,
+          "x": 362,
+          "y": 521,
+          "width": 271,
+          "colour": "#e8a020",
+          "from": 73
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1.17,
+        "pushTo": 1.28,
+        "pushEndFrame": 80,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
+        "glowWarm": "#e8a020",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "spotlight",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "caption": [
+          "So the blade",
+          "is built",
+          "in layers"
+        ],
+        "captionX": 81,
+        "captionY": 680,
+        "captionSize": 113,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 9,
+        "captionScrim": 0,
+        "captionRecedeAt": 62,
+        "accent": "#e8a020",
+        "motif": "route",
+        "motifStops": [
+          "The edge",
+          "The core",
+          "The spine"
+        ],
+        "motifFrame": 18,
+        "motifColour": "#e8a020",
+        "handheld": 1.5,
+        "panX": -253,
+        "captionEmphasis": "layers",
+        "captionReveal": "blur",
+        "captionMark": "underline",
+        "captionWordEvery": 3,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement",
+        "motifY": 488
+      }
+    },
+    {
+      "id": "s04-layered-b",
+      "sceneType": "composite",
+      "voText": "Hard steel at the edge,",
+      "durationInFrames": 64,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.32,
+          "x": 824,
+          "y": -35,
+          "width": 344,
+          "rotate": -20,
+          "opacity": 0.69,
+          "colour": "#e8a020",
+          "from": 54
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.48,
+        "pushTo": 1.03,
+        "pushEndFrame": 61,
+        "accent": "#e8a020",
+        "field": "spotlight",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1490,
+        "glowY": 471,
+        "glowSize": 420,
+        "glowIntensity": 0.68,
+        "glowWarm": "#e8a020",
+        "glowDepth": 0.1,
+        "caption": [
+          "Hard steel",
+          "at the edge"
+        ],
+        "captionX": 81,
+        "captionY": 734,
+        "captionSize": 124,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 10,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "steel",
+        "captionReveal": "wipe",
+        "captionMark": "highlight",
+        "captionWordEvery": 3,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      }
+    },
+    {
+      "id": "s04-layered-c",
+      "sceneType": "composite",
+      "voText": "soft iron in the spine.",
+      "durationInFrames": 64,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "rect",
+          "depth": 0.56,
+          "x": 375,
+          "y": 514,
+          "width": 420,
+          "colour": "#e8a020",
+          "from": 54
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1.18,
+        "pushTo": 1.31,
+        "pushEndFrame": 61,
+        "accent": "#e8a020",
+        "field": "spotlight",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1389,
+        "glowY": 395,
+        "glowSize": 491,
+        "glowIntensity": 0.42,
+        "glowWarm": "#e8a020",
+        "glowDepth": 0.1,
+        "caption": [
+          "soft iron",
+          "in the spine"
+        ],
+        "captionX": 81,
+        "captionY": 748,
+        "captionSize": 113,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 10,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panX": -194,
+        "captionEmphasis": "spine",
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 2,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      }
+    },
+    {
+      "id": "s05-fold",
+      "sceneType": "composite",
+      "voText": "Hammer and fold, again",
+      "durationInFrames": 52,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.29,
+          "x": 907,
+          "y": 10,
+          "width": 369,
+          "rotate": -8,
+          "opacity": 0.73,
+          "colour": "#e8a020",
+          "from": 44
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1.04,
+        "pushTo": 1.05,
+        "pushEndFrame": 49,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
+        "glowWarm": "#e8a020",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "spotlight",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "caption": [
+          "Hammer",
+          "and fold,",
+          "again"
+        ],
+        "captionX": 81,
+        "captionY": 611,
+        "captionSize": 151,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 7,
+        "captionScrim": 0,
+        "captionRecedeAt": 37,
+        "accent": "#e8a020",
+        "motif": "tally",
+        "motifX": 128,
+        "motifY": 499,
+        "motifSize": 103,
+        "motifCount": 10,
+        "motifFrame": 23,
+        "motifColour": "#e8a020",
+        "motifOpacity": 0.92,
+        "handheld": 3,
+        "captionEmphasis": "Hammer",
+        "captionReveal": "punch",
+        "captionMark": "highlight",
+        "captionWordEvery": 2,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      }
+    },
+    {
+      "id": "s05-fold-b",
+      "sceneType": "composite",
+      "voText": "and again. Each fold",
+      "durationInFrames": 52,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "circle",
+          "depth": 0.59,
+          "x": 390,
+          "y": 522,
+          "width": 348,
+          "colour": "#e8a020",
+          "from": 44
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.01,
+        "pushTo": 1.46,
+        "pushEndFrame": 47,
+        "accent": "#e8a020",
+        "field": "spotlight",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1537,
+        "glowY": 479,
+        "glowSize": 536,
+        "glowIntensity": 0.65,
+        "glowWarm": "#e8a020",
+        "glowDepth": 0.1,
+        "caption": [
+          "and again.",
+          "Each fold"
+        ],
+        "captionX": 81,
+        "captionY": 720,
+        "captionSize": 136,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 6,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "Each",
+        "captionReveal": "punch",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      }
+    },
+    {
+      "id": "s05-fold-c",
+      "sceneType": "composite",
+      "voText": "doubles the layers.",
+      "durationInFrames": 45,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.37,
+          "x": 919,
+          "y": 92,
+          "width": 257,
+          "rotate": -13,
+          "opacity": 0.51,
+          "colour": "#e8a020",
+          "from": 38
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1.04,
+        "pushTo": 1.37,
+        "pushEndFrame": 43,
+        "accent": "#e8a020",
+        "field": "spotlight",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1435,
+        "glowY": 438,
+        "glowSize": 554,
+        "glowIntensity": 0.42,
+        "glowWarm": "#e8a020",
+        "glowDepth": 0.1,
+        "caption": [
+          "doubles",
+          "the layers"
+        ],
+        "captionX": 81,
+        "captionY": 720,
+        "captionSize": 136,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 10,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "doubles",
+        "captionReveal": "wipe",
+        "captionMark": "box",
+        "captionWordEvery": 4,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      }
+    },
+    {
+      "id": "s06-quench",
+      "sceneType": "composite",
+      "voText": "Then the finished blade",
+      "durationInFrames": 52,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "rect",
+          "depth": 0.62,
+          "x": 430,
+          "y": 515,
+          "width": 283,
+          "colour": "#e8a020",
+          "from": 44
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1,
+        "pushTo": 1.45,
+        "pushEndFrame": 51,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
+        "glowWarm": "#e8a020",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "spotlight",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "caption": [
+          "Then",
+          "the finished",
+          "blade"
+        ],
+        "captionX": 81,
+        "captionY": 680,
+        "captionSize": 113,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 8,
+        "captionScrim": 0,
+        "captionRecedeAt": 37,
+        "accent": "#e8a020",
+        "handheld": 1.5,
+        "captionEmphasis": "finished",
+        "captionReveal": "blur",
+        "captionMark": "highlight",
+        "captionWordEvery": 3,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      }
+    },
+    {
+      "id": "s06-quench-b",
+      "sceneType": "composite",
+      "voText": "is heated once more",
+      "durationInFrames": 52,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.37,
+          "x": 910,
+          "y": -80,
+          "width": 348,
+          "rotate": -10,
+          "opacity": 0.6,
+          "colour": "#e8a020",
+          "from": 44
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.03,
+        "pushTo": 1.08,
+        "pushEndFrame": 48,
+        "accent": "#e8a020",
+        "field": "spotlight",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1466,
+        "glowY": 184,
+        "glowSize": 542,
+        "glowIntensity": 0.61,
+        "glowWarm": "#e8a020",
+        "glowDepth": 0.1,
+        "caption": [
+          "is heated",
+          "once more"
+        ],
+        "captionX": 81,
+        "captionY": 702,
+        "captionSize": 151,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 8,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 3,
+        "captionEmphasis": "heated",
+        "captionReveal": "wipe",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      }
+    },
+    {
+      "id": "s06-quench-c",
+      "sceneType": "composite",
+      "voText": "and plunged into oil.",
+      "durationInFrames": 52,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "rect",
+          "depth": 0.6,
+          "x": 441,
+          "y": 518,
+          "width": 384,
+          "colour": "#e8a020",
+          "from": 44
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1.04,
+        "pushTo": 1.47,
+        "pushEndFrame": 47,
+        "accent": "#e8a020",
+        "field": "spotlight",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1429,
+        "glowY": 527,
+        "glowSize": 527,
+        "glowIntensity": 0.62,
+        "glowWarm": "#e8a020",
+        "glowDepth": 0.1,
+        "caption": [
+          "and plunged",
+          "into oil"
+        ],
+        "captionX": 81,
+        "captionY": 734,
+        "captionSize": 124,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 7,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "plunged",
+        "captionReveal": "blur",
+        "captionMark": "none",
+        "captionWordEvery": 4,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      }
+    },
+    {
+      "id": "s07-cool",
+      "sceneType": "composite",
+      "voText": "The thin edge cools in under a second",
+      "durationInFrames": 97,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.28,
+          "x": 929,
+          "y": 115,
+          "width": 282,
+          "rotate": -16,
+          "opacity": 0.56,
+          "colour": "#e8a020",
+          "from": 44
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1.16,
+        "pushTo": 1.2,
+        "pushEndFrame": 93,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
+        "glowWarm": "#e8a020",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "spotlight",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "caption": [
+          "The thin",
+          "edge cools",
+          "in under",
+          "a second"
+        ],
+        "captionX": 81,
+        "captionY": 557,
+        "captionSize": 136,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 7,
+        "captionScrim": 0,
+        "captionRecedeAt": 70,
+        "accent": "#e8a020",
+        "handheld": 1.5,
+        "panX": -148,
+        "captionEmphasis": "second",
+        "captionReveal": "rise",
+        "captionMark": "underline",
+        "captionWordEvery": 3,
+        "shakeAt": [
+          82
+        ],
+        "shakeAmount": 17,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      },
+      "onScreenText": [
+        {
+          "text": "UNDER ONE SECOND",
+          "atFrame": 58,
+          "durationInFrames": 31,
+          "style": "typed",
+          "position": "bottom"
+        }
+      ]
+    },
+    {
+      "id": "s07-cool-b",
+      "sceneType": "composite",
+      "voText": "and locks hard. The spine stays soft.",
+      "durationInFrames": 86,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "diamond",
+          "depth": 0.64,
+          "x": 393,
+          "y": 357,
+          "width": 353,
+          "colour": "#e8a020",
+          "from": 73
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1,
+        "pushTo": 1.1,
+        "pushEndFrame": 83,
+        "accent": "#e8a020",
+        "field": "spotlight",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1326,
+        "glowY": 146,
+        "glowSize": 345,
+        "glowIntensity": 0.68,
+        "glowWarm": "#e8a020",
+        "glowDepth": 0.1,
+        "caption": [
+          "and locks",
+          "hard.",
+          "The spine",
+          "stays soft"
+        ],
+        "captionX": 81,
+        "captionY": 557,
+        "captionSize": 136,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 7,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panY": -32,
+        "roll": -0.03,
+        "captionEmphasis": "The",
+        "captionReveal": "wipe",
+        "captionMark": "highlight",
+        "captionWordEvery": 4,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      }
+    },
+    {
+      "id": "s08-snaps",
+      "sceneType": "composite",
+      "voText": "A sword that is hard the whole way",
+      "durationInFrames": 97,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.29,
+          "x": 929,
+          "y": 4,
+          "width": 314,
+          "rotate": -16,
+          "opacity": 0.67,
+          "colour": "#e8a020",
+          "from": 50
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1.64,
+        "pushTo": 1,
+        "pushEndFrame": 88,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 460,
+        "glowIntensity": 0.42,
+        "glowWarm": "#e8a020",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "spotlight",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "caption": [
+          "A sword",
+          "that is hard",
+          "the whole way"
+        ],
+        "captionX": 81,
+        "captionY": 696,
+        "captionSize": 104,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 7,
+        "captionScrim": 0,
+        "captionRecedeAt": 70,
+        "accent": "#e8a020",
+        "handheld": 1.5,
+        "captionEmphasis": "sword",
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "shakeAt": [
+          82
+        ],
+        "shakeAmount": 20,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      }
+    },
+    {
+      "id": "s08-snaps-b",
+      "sceneType": "composite",
+      "voText": "through is a sword that snaps.",
+      "durationInFrames": 75,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "wire",
+          "shape": "rect",
+          "depth": 0.79,
+          "x": 361,
+          "y": 410,
+          "width": 409,
+          "colour": "#e8a020",
+          "from": 64
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.16,
+        "pushTo": 1.26,
+        "pushEndFrame": 69,
+        "accent": "#e8a020",
+        "field": "spotlight",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "glowX": 1451,
+        "glowY": 580,
+        "glowSize": 415,
+        "glowIntensity": 0.54,
+        "glowWarm": "#e8a020",
+        "glowDepth": 0.1,
+        "caption": [
+          "through",
+          "is a sword",
+          "that snaps"
+        ],
+        "captionX": 81,
+        "captionY": 638,
+        "captionSize": 136,
+        "captionAlign": "left",
+        "captionFrame": -12,
+        "captionEvery": 7,
+        "captionScrim": 0,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panX": 203,
+        "captionEmphasis": "through",
+        "captionReveal": "punch",
+        "captionMark": "highlight",
+        "captionWordEvery": 4,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      }
+    },
+    {
+      "id": "s09-close",
+      "sceneType": "title-slate",
+      "voText": "Two hundred hours of work, and the design is entirely in how fast it cooled.",
+      "durationInFrames": 118,
+      "gradeOverride": {
+        "saturate": 0.5,
+        "contrast": 1.16,
+        "brightness": 0.94
+      },
+      "assets": {},
+      "params": {
+        "scrim": 0.49,
+        "kicker": "ONE BLADE",
+        "title": "TWO HUNDRED HOURS",
+        "footer": "and all of it is in the cooling",
+        "titleFrame": 9,
+        "titleSize": 230,
+        "creep": 1.073,
+        "accent": "#e8a020",
+        "field": "spotlight",
+        "fieldColours": [
+          "#d9a13c",
+          "#8a5a18",
+          "#241505"
+        ],
+        "pushEndFrame": 109,
+        "pushFrom": 1.04,
+        "pushTo": 1.05,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      },
+      "props": [
+        {
+          "kind": "plaque",
+          "text": "ONE BLADE",
+          "depth": 0.51,
+          "x": 388,
+          "y": 618,
+          "width": 383,
+          "rotate": 1.3,
+          "from": 55
+        },
+        {
+          "kind": "newspaper",
+          "masthead": "THE GAZETTE",
+          "text": "TWO HUNDRED HOURS",
+          "depth": 0.67,
+          "x": 720,
+          "y": 529,
+          "width": 429,
+          "rotate": 2.7,
+          "from": 73
+        }
+      ]
+    }
+  ]
+}

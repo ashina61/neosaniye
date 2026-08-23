@@ -420,7 +420,21 @@ function beatOf(line, index, total) {
   if (index === 0) return 'open';
   if (index === total - 1) return 'close';
   if (NUMBER_WORD.test(line.vo)) return 'number';
-  if ((line.vo.match(/,/g) ?? []).length >= 2) return 'list';
+  /**
+   * TWO COMMAS ARE NOT A LIST OF THINGS TO PIN UP.
+   *
+   * The `list` beat builds an evidence board, and a board is index cards — it
+   * needs `items` to put on it. The heuristic counted commas, so "Hammer, fold,
+   * hammer again" became a board with nothing to pin, and four unrelated
+   * episodes each shipped an evidence board with zero cards and zero caption:
+   * an entirely empty shot that the validator could only describe as "1.7s and
+   * nothing happens".
+   *
+   * A comma is punctuation, not an inventory. Where the line did not say what
+   * the things ARE, the shot is composed instead — which is what a sentence
+   * with a rhythm in it wanted anyway.
+   */
+  if (line.items?.length && (line.vo.match(/,/g) ?? []).length >= 2) return 'list';
   return 'place';
 }
 
@@ -635,7 +649,16 @@ const DANGLER =
  * splitting the emphasis is close to disqualifying; a dangling preposition is a
  * nudge.
  */
-export function captionLines(text, emphasis = '') {
+/**
+ * `ideal` is the character count past which a line starts costing, and
+ * `maxLines` the most it may break into.
+ *
+ * Both exist because a caption and a STATEMENT want different shapes. Twenty
+ * characters over three lines is right for words sitting on a photograph; it is
+ * wrong for words that are the entire shot, where the same sentence wants to be
+ * five short lines set large. Same scorer, same emphasis rule, different target.
+ */
+export function captionLines(text, emphasis = '', {ideal = 20, maxLines = CAPTION_LINES} = {}) {
   const words = text.replace(/[.,]\s*$/, '').trim().split(/\s+/).filter(Boolean);
   if (!words.length) return [];
 
@@ -658,7 +681,7 @@ export function captionLines(text, emphasis = '') {
     const set = parts.map((part) => part.join(' '));
     const avg = chars / parts.length;
     let cost = set.reduce((n, line) => n + (line.length - avg) ** 2, 0) / 12;
-    cost += set.reduce((n, line) => n + Math.max(0, line.length - 20) ** 2 * 0.5, 0);
+    cost += set.reduce((n, line) => n + Math.max(0, line.length - ideal) ** 2 * 0.5, 0);
     for (const part of parts) {
       const last = part[part.length - 1].replace(/[^\p{L}\p{N}]/gu, '');
       if (DANGLER.test(last)) cost += 3;
@@ -688,7 +711,7 @@ export function captionLines(text, emphasis = '') {
   };
   // Every arrangement into one to four lines. Ten words at most, so this is a
   // few hundred candidates — cheaper than one frame of the render it feeds.
-  for (let lines = 1; lines <= Math.min(CAPTION_LINES, words.length); lines += 1) walk([], 1, lines);
+  for (let lines = 1; lines <= Math.min(maxLines, words.length); lines += 1) walk([], 1, lines);
 
   return best.parts.map((part) => part.join(' '));
 }
@@ -1461,7 +1484,7 @@ function applyDirection({
   previousScene = null,
 }) {
   const params = scene.params ?? (scene.params = {});
-  const caption = Array.isArray(params.caption) ? params.caption : [];
+  let caption = Array.isArray(params.caption) ? params.caption : [];
   const props = scene.props ?? [];
   const written = line?.shot ?? {};
 
@@ -1656,6 +1679,30 @@ function applyDirection({
   // The slate's own copy lands on the beat the schedule gave it.
   if (plan.at.slate !== undefined && params.titleFrame !== undefined) {
     params.titleFrame = Math.max(4, plan.at.slate);
+    /**
+     * AND THE REEL HAS TO LAND BEFORE THE CUT.
+     *
+     * Exactly the fault the counter had, on the other device, and it survived
+     * because the fix was applied to `countWindow` and never to the spin. The
+     * beat schedule can put the slate late in a short shot; `spinFrames` was
+     * derived from the shot's whole length regardless, so on a forty-five frame
+     * shot the reel was still rattling at frame 56 — the answer arrives after
+     * the cut, which means the shot's one job never happens.
+     *
+     * Pull the spin in first, because a slightly faster reel is a smaller loss
+     * than a late one; only if that is not enough does the slate itself move
+     * earlier. Nine frames is the floor at which a reel is still a reel.
+     */
+    const spin = Number(params.spinFrames);
+    if (Number.isFinite(spin) && spin > 0) {
+      const room = durationInFrames - 6 - params.titleFrame;
+      if (spin > room) {
+        params.spinFrames = Math.max(9, Math.min(spin, room));
+        if (params.titleFrame + params.spinFrames > durationInFrames - 6) {
+          params.titleFrame = Math.max(2, durationInFrames - 6 - params.spinFrames);
+        }
+      }
+    }
   }
 
   /**
@@ -1837,7 +1884,17 @@ function applyDirection({
       transitionKind: scene.transition?.kind,
       rand,
     });
-    params.focusPx = air.focusPx;
+    /**
+     * A LENS CANNOT HUNT IN A FRAME WITH NOTHING PHOTOGRAPHIC IN IT.
+     *
+     * The hunt is a camera finding its subject, and it is applied to the whole
+     * shot. On a shot whose only content is TYPE, the thing that goes soft is
+     * the sentence — a caption that opens out of focus, which is not a lens
+     * effect but a rendering fault, and it is what five unrelated episodes
+     * delivered. Blur is a photographic device; it needs a photograph.
+     */
+    const photographic = Object.keys(scene.assets ?? {}).length > 0;
+    params.focusPx = photographic ? air.focusPx : 0;
     params.fog = air.fog;
     plan.fogReason = air.fogReason;
   }
@@ -1906,6 +1963,100 @@ function applyDirection({
     params.captionReveal = plan.reveal;
     params.captionMark = plan.emphasisMark;
     params.captionWordEvery = 2 + Math.round(rand() * 2);
+
+    /**
+     * WHEN THE WORDS ARE THE SHOT, THEY ARE SET LIKE A STATEMENT.
+     *
+     * The last rung of the representation ladder is DESIGNED TYPOGRAPHY, and
+     * what this pipeline was producing on that rung was a caption: 84 pixels of
+     * text in the top-left corner of an otherwise empty frame, sized and placed
+     * for a photograph that had been refused. Five unrelated episodes came out
+     * that way — forty-one shots where the type occupied about eight per cent
+     * of the picture and the other ninety-two was drawn ground. Every gate
+     * passed. The frames are unusable.
+     *
+     * A caption is a label on something. A statement IS the thing. So where the
+     * shot has no plate and no drawing, the words take the column, take the
+     * optical centre, and are set at statement scale — which is the size the
+     * slate has always used for exactly this reason.
+     *
+     * Nothing new is invented here: the hierarchy already said the type was
+     * primary on these shots. It was simply never asked.
+     */
+    const bare = !Object.keys(scene.assets ?? {}).length && !scene.diagram;
+    if (bare && caption.length) {
+      /**
+       * AND IT IS RE-BROKEN FOR THE SHAPE IT IS NOW IN.
+       *
+       * The lines were chosen for a caption: about twenty characters each, over
+       * as few lines as read well beside a picture. Set as the whole shot, a
+       * twenty-character line pins the type size to about seventy pixels — so
+       * making the words the hero and leaving the wrap alone gets a slightly
+       * larger caption, not a statement. The same sentence over five short
+       * lines carries three times the size in the same column.
+       */
+      const wrapped = captionLines(scene.voText ?? caption.join(' '), params.captionEmphasis ?? '', {
+        ideal: 12,
+        maxLines: 5,
+      });
+      if (wrapped.length) {
+        caption = wrapped;
+        params.caption = wrapped;
+      }
+      const longest = caption.reduce((n, l) => Math.max(n, l.length), 0);
+      const margin = Math.round(WIDTH * 0.075);
+      const column = WIDTH - margin * 2;
+      // Fill the column, then stay inside the two sizes a statement lives
+      // between: below the floor it is a caption again, above the ceiling a
+      // three-word line runs off both edges.
+      /**
+       * SIZED BY THE SAME ARITHMETIC THE CHECKER MEASURES WITH.
+       *
+       * The emphasis word is set larger than the rest of its line, so a block
+       * that fits at the nominal size does not fit once one word grows — 0.58
+       * per character, inflated by 1.16 for the emphasis, which is exactly what
+       * `boundsOf` computes. Sizing to the nominal width put six captions past
+       * the right edge of the frame, and the clipping check said so.
+       */
+      /**
+       * AND THE FIT WINS OVER THE AMBITION.
+       *
+       * A floor under the statement size is a promise the column cannot always
+       * keep: a fourteen-character line fits at 160, a twenty-six-character one
+       * does not fit at 84, and holding the floor put eleven captions past the
+       * right edge. So the column decides the maximum and the statement scale
+       * is a CEILING to grow toward, never a minimum to insist on.
+       */
+      const size = Math.min(184, Math.floor(column / Math.max(1, longest * 0.58 * 1.16)));
+      const block = caption.length * size * 1.2;
+      params.captionSize = size;
+      params.captionX = margin;
+      // Optically centred, which sits slightly above true centre.
+      params.captionY = Math.round(Math.max(HEIGHT * 0.1, Math.min(HEIGHT * 0.46 - block / 2, HEIGHT * 0.86 - block)));
+      params.captionAlign = 'left';
+      // A scrim darkens type against a photograph. There is no photograph.
+      params.captionScrim = 0;
+      /**
+       * AND THE CUT LANDS ON THE STATEMENT, NOT ON AN EMPTY FRAME.
+       *
+       * Law 30, applied to the one representation it had never been applied to.
+       * The rule was written for diagrams — a mechanism that draws itself is
+       * nothing at frame zero, so the cut arrives on debris — and the answer
+       * was to set the geometry out first. Words have exactly the same problem
+       * and it is worse, because a shot whose ONLY content is type is, until
+       * its first word lands, a shot with nothing in it at all. Every one of
+       * these shots opened on black for about four tenths of a second: across
+       * twenty cuts, eight seconds of a fifty-second reel.
+       *
+       * So the stack starts BEFORE the cut. The first line is already set when
+       * we arrive and the rest land onto it, which is what kinetic type does in
+       * every documentary that uses it. The negative frame is not a trick: it
+       * says the words were already on screen, and on a continuation they
+       * literally were.
+       */
+      params.captionFrame = -12;
+      plan.typeIsTheShot = true;
+    }
   }
 
   // EVERY DRAWN OBJECT ON ITS OWN BEAT. Two cards landing on the same frame are
@@ -1927,6 +2078,24 @@ function applyDirection({
    * already had; this is what happens when it had none — which was four shots
    * out of seven.
    */
+  /**
+   * A SHAFT OF LIGHT NEEDS SOMETHING CASTING IT.
+   *
+   * The event filler already refuses a beam in a shot with no lamp; the prop
+   * planner did not, and could not — the atmosphere is decided here, after the
+   * props are made. So the rule lived in one of the two places that put beams
+   * in shots, which is the same as not existing, and four unrelated episodes
+   * each shipped three beams over drawn ground with nothing casting them.
+   *
+   * It has to happen BEFORE the filler runs. Removing the beam afterwards left
+   * one shot with no events at all — the beam had been its only one — and a
+   * repair that empties a shot has traded a warning for an error.
+   */
+  if (Array.isArray(scene.props) && !(Number(params.glowSize) > 0)) {
+    scene.props = scene.props.filter((q) => q.kind !== 'beam');
+    if (!scene.props.length) delete scene.props;
+  }
+
   for (const kind of plan.fill) {
     const at = plan.at[kind];
     /**
@@ -2265,8 +2434,25 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
   // substitutes one that was not — three consecutive scenes of a hand-built
   // reel came out as title cards that way.
   const contentBound = Boolean(line.pieces?.length || line.stops?.length >= 2 || line.shot?.template);
+  /**
+   * AND A CARD NEEDS SOMETHING TO SAY ON IT.
+   *
+   * The rhythm rule swapped a repeated composite for a title-slate without ever
+   * asking whether the line had a title. On an episode where most shots are
+   * composites — which is every episode with no photographs in it — the swap
+   * fired constantly, and lines with no kicker, no title and no footer became
+   * BLANK CARDS: a scrim, a creep, and nothing written on it. Three unrelated
+   * episodes shipped one, and two more were seven title cards long.
+   *
+   * A slate is a statement. Where the line has no statement to set, the shot
+   * stays a composite and earns its difference the way the others do — a
+   * different camera, a different caption, a different drawn object. Variety
+   * that empties a shot is not variety.
+   */
+  const canSlate = Boolean(line.title || line.kicker || line.footer || bigNumber(line.vo));
   if (!contentBound && recentTypes.length && recentTypes[recentTypes.length - 1] === sceneType) {
-    sceneType = sceneType === 'composite' ? 'title-slate' : 'composite';
+    if (sceneType !== 'composite') sceneType = 'composite';
+    else if (canSlate) sceneType = 'title-slate';
   }
   // The shot lasts as long as ITS FRAGMENT takes to say — not as long as the
   // whole sentence does. That one change is what stopped every scene coming out

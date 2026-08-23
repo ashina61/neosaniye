@@ -1,0 +1,61 @@
+{
+  "$note": "Written after looking at every shot at 0%, 33%, 66% and 94% in out/.frames-<id>/, plus the rendered reel. Scores are one person's judgement out of ten and are deliberately NOT computed: every reel this repo has shipped broken passed the computed gates.",
+  "question": "Why Does This Tiny Strait Matter to the World?",
+  "scores": {
+    "storytelling": 8,
+    "visualHierarchy": 8.5,
+    "semanticAccuracy": 9,
+    "assetRelevance": 3,
+    "visualCausality": 5,
+    "motionQuality": 6.5,
+    "cameraVariety": 7,
+    "transitionQuality": 7.5,
+    "pacing": 8,
+    "visualContinuity": 9,
+    "typography": 8.5,
+    "ending": 8.5,
+    "professionalism": 6.5
+  },
+  "verdict": "The best of the five, and the reason is that the subject happens to be made of measurements. Three shots get a real drawn bar -- twenty-one miles, two miles, and the closing figure -- and those three are the only shots in the whole benchmark where the picture carries the claim instead of repeating it. cold-noir over the wash field gives a clean near-black ground that suits an oil-and-warships subject. It still shows no place, no ship and no water.",
+  "whatWorked": [
+    "The measurement diagram fired three times and each one is the right graphic for its sentence.",
+    "cold-noir + wash is the strongest mood/ground pairing of the five: flat, dark, legible, unfussy.",
+    "The argument is built properly -- narrow, narrower, volume, share, no alternative, who holds it, what one accident does, what it costs -- and the 'one door' line sits at the hinge.",
+    "Hierarchy is the clearest of the five: one accent word per frame, never two.",
+    "The ending returns to the opening figure, which closes the loop rather than just stopping."
+  ],
+  "whatFailed": [
+    {
+      "what": "No map. A geography episode with no geography in it.",
+      "why": "There is no map diagram type. The stops device draws an itinerary as a route motif, which is a line with labels, not a strait between two shores.",
+      "failureIs": "REPRESENTATION"
+    },
+    {
+      "what": "The causal chain -- one grounded tanker closes the lane, and every price moves -- is stated and never shown.",
+      "why": "No representation for a blockage or a dependency; the rise motif on the price line is decoration, not consequence.",
+      "failureIs": "REPRESENTATION"
+    },
+    {
+      "what": "A plaque and a newspaper prop overlap on the closing shot.",
+      "why": "standClear moves graphics off the type but does not separate two graphics from each other when both are pushed into the same clear band.",
+      "failureIs": "COMPOSITION"
+    }
+  ],
+  "remainingDefects": [
+    {
+      "what": "No map. A geography episode with no geography in it.",
+      "cause": "REPRESENTATION",
+      "why": "There is no map diagram type. The stops device draws an itinerary as a route motif, which is a line with labels, not a strait between two shores."
+    },
+    {
+      "what": "The causal chain -- one grounded tanker closes the lane, and every price moves -- is stated and never shown.",
+      "cause": "REPRESENTATION",
+      "why": "No representation for a blockage or a dependency; the rise motif on the price line is decoration, not consequence."
+    },
+    {
+      "what": "A plaque and a newspaper prop overlap on the closing shot.",
+      "cause": "COMPOSITION",
+      "why": "standClear moves graphics off the type but does not separate two graphics from each other when both are pushed into the same clear band."
+    }
+  ]
+}

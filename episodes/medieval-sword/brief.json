@@ -1,0 +1,111 @@
+{
+  "id": "medieval-sword",
+  "title": "Hard edge, soft spine",
+  "mood": "gold-heat",
+  "style": "documentary photograph, working forge, firelight, deep shadow, muted colour, fine grain, no text, no watermark, no modern tools",
+  "negative": "text, letters, words, watermark, logo, cartoon, cgi, painting, illustration, modern workshop, safety equipment",
+  "lines": [
+    {
+      "slug": "notcast",
+      "vo": "A medieval sword was never cast. It was forged from a bar of iron.",
+      "image": "a rough iron billet on an anvil",
+      "imageCommons": [
+        "iron billet anvil",
+        "blacksmith bar stock forge"
+      ],
+      "kicker": "EUROPE · 1350",
+      "graphicsOnly": true
+    },
+    {
+      "slug": "heat",
+      "vo": "The smith worked it near twelve hundred degrees. Orange, not yellow.",
+      "image": "glowing steel drawn from a charcoal fire",
+      "imageCommons": [
+        "hot steel forge fire",
+        "blacksmith heating steel"
+      ],
+      "graphicsOnly": true
+    },
+    {
+      "slug": "carbon",
+      "vo": "Iron with too little carbon bends. Iron with too much shatters on the first parry.",
+      "image": "a broken blade section, dark metal",
+      "imageCommons": [
+        "broken sword blade fragment",
+        "fractured steel section"
+      ],
+      "graphicsOnly": true
+    },
+    {
+      "slug": "layered",
+      "vo": "So the blade is built in layers. Hard steel at the edge, soft iron in the spine.",
+      "image": "an etched blade showing a layered pattern",
+      "imageCommons": [
+        "pattern welded blade etched",
+        "laminated steel blade"
+      ],
+      "stops": [
+        "The edge",
+        "The core",
+        "The spine"
+      ],
+      "graphicsOnly": true
+    },
+    {
+      "slug": "fold",
+      "vo": "Hammer and fold, again and again. Each fold doubles the layers.",
+      "image": "a hammer striking bright steel, sparks",
+      "imageCommons": [
+        "forging hammer sparks",
+        "blacksmith striking hot steel"
+      ],
+      "motif": "tally",
+      "graphicsOnly": true
+    },
+    {
+      "slug": "quench",
+      "vo": "Then the finished blade is heated once more and plunged into oil.",
+      "image": "a quench tank, dark oil, smoke",
+      "imageCommons": [
+        "quenching blade oil",
+        "forge quench tank"
+      ],
+      "graphicsOnly": true
+    },
+    {
+      "slug": "cool",
+      "vo": "The thin edge cools in under a second and locks hard. The spine stays soft.",
+      "image": "steam rising off dark oil in a low room",
+      "imageCommons": [
+        "steam oil quench",
+        "smoke dark forge interior"
+      ],
+      "onScreen": "UNDER ONE SECOND",
+      "graphicsOnly": true
+    },
+    {
+      "slug": "snaps",
+      "vo": "A sword that is hard the whole way through is a sword that snaps.",
+      "image": "a snapped blade lying on stone",
+      "imageCommons": [
+        "broken sword on stone",
+        "shattered blade"
+      ],
+      "graphicsOnly": true
+    },
+    {
+      "slug": "close",
+      "vo": "Two hundred hours of work, and the design is entirely in how fast it cooled.",
+      "image": "a finished blade on a workbench, low light",
+      "imageCommons": [
+        "finished sword blade workbench",
+        "medieval sword museum"
+      ],
+      "kicker": "ONE BLADE",
+      "title": "TWO HUNDRED HOURS",
+      "footer": "and all of it is in the cooling",
+      "graphicsOnly": true
+    }
+  ],
+  "$supply": "No photographic supply reachable from this environment: Commons returns 403 through the proxy and the image generator returns 403. Rungs 1-3 of the asset ladder (right asset, confident alternative, generated image) are unavailable, so every line is declared graphicsOnly and answered procedurally. The imageCommons searches stay in the brief: they are the standing request, and the day a provider is reachable they are what gets fetched."
+}
