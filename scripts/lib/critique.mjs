@@ -916,6 +916,7 @@ export function boundsOf(scene, {width, height}) {
       out.push({
         what: `diagram gear[${i}]`,
         role: 'drawn',
+        camera: true,
         left: n(g.x, 0.5) * width - r,
         right: n(g.x, 0.5) * width + r,
         top: n(g.y, 0.5) * height - r,
@@ -952,7 +953,7 @@ export function boundsOf(scene, {width, height}) {
     }
   }
   if (d?.type === 'crossSection') {
-    out.push({what: 'diagram section', role: 'drawn', left: width * 0.12, right: width * 0.88, top: height * 0.24, bottom: height * 0.66});
+    out.push({what: 'diagram section', role: 'drawn', camera: true, left: width * 0.12, right: width * 0.88, top: height * 0.24, bottom: height * 0.66});
   }
   if (d?.type === 'anatomyFlow') {
     for (const [i, chamber] of (d.chambers ?? []).entries()) {
@@ -960,7 +961,7 @@ export function boundsOf(scene, {width, height}) {
       const cy = n(chamber.y, 0.5) * height;
       const rx = n(chamber.rx, 0.08) * width;
       const ry = n(chamber.ry, 0.05) * height;
-      out.push({what: `chamber[${i}]`, role: 'drawn', left: cx - rx, right: cx + rx, top: cy - ry, bottom: cy + ry});
+      out.push({what: `chamber[${i}]`, role: 'drawn', camera: true, left: cx - rx, right: cx + rx, top: cy - ry, bottom: cy + ry});
     }
   }
   if (d?.type === 'scaleHaulage') {
@@ -979,11 +980,21 @@ export function boundsOf(scene, {width, height}) {
     const leadPad = width * (0.05 + Math.max(0, humans - 1) * 0.045) + width * 0.035;
     const endLeft = margin + leadPad;
     const travelPx = Math.max(0, Math.min(n(d.travel, 0.14) * width, width - margin - endLeft - ow));
-    out.push({what: 'haulage load', role: 'drawn', left: endLeft, right: endLeft + travelPx + ow, top: ground - oh * 2, bottom: ground});
-    out.push({what: 'haulage lead figure', role: 'drawn', left: margin, right: endLeft, top: ground - oh * 2, bottom: ground});
+    out.push({what: 'haulage load', role: 'drawn', camera: true, left: endLeft, right: endLeft + travelPx + ow, top: ground - oh * 2, bottom: ground});
+    const figW = width * 0.035;
+    const leadX = endLeft - width * 0.05;
+    out.push({
+      what: 'haulage lead figure',
+      role: 'drawn',
+      camera: true,
+      left: leadX - figW / 2,
+      right: leadX + figW / 2,
+      top: ground - n(d.humanHeight, 0.03) * height,
+      bottom: ground,
+    });
   }
   if (d?.type === 'process') {
-    out.push({what: 'process object', role: 'drawn', left: width * 0.2, right: width * 0.8, top: height * 0.3, bottom: height * 0.54});
+    out.push({what: 'process object', role: 'drawn', camera: true, left: width * 0.2, right: width * 0.8, top: height * 0.3, bottom: height * 0.54});
   }
   if (d?.type === 'timeline') {
     // The rule is drawn at x = 0.3w between 0.24h and 0.78h, and its labels
@@ -1040,6 +1051,76 @@ export function boundsOf(scene, {width, height}) {
   return out;
 }
 
+
+/**
+ * WHERE THE DRAWING ACTUALLY IS, once the shot's camera has moved.
+ *
+ * Every box this file measures is measured AT REST, and for two years that was
+ * the whole check. Then the drawings started taking the camera, and a magnified
+ * cross-section composed to fit the frame exactly was panned two hundred and
+ * sixty pixels and delivered with its right half outside the picture — through
+ * a clipping checker whose entire job is that, because the checker was looking
+ * at where the section would have been if nothing had moved.
+ *
+ * So the boxes go through the same transform the plates do, at the extremes:
+ * both ends of the push, and the pan at full reach. Conservative on purpose. A
+ * drawing is not a window onto a larger scene — there is nothing outside it to
+ * pan onto — so a camera that takes any part of it off the edge is a camera
+ * that has cropped the shot, whichever frame it happens on.
+ *
+ * Only DRAWN boxes: photographic plates have picture outside the frame, which
+ * is the whole reason a push on one is free.
+ */
+const DIAGRAM_PUSH_SHARE = 0.3;
+const DIAGRAM_PAN_DEPTH = 0.24;
+/**
+ * AND A CEILING, because a share of a portal is still a portal.
+ *
+ * One shot pushes from 1 to 6.4 — a zoom THROUGH a photographic plate into what
+ * is behind it, which is free on a photograph because there is more picture
+ * outside the frame. Three tenths of that is still 2.6, and a gear train at 2.6
+ * is four wheels and the edges of three others. A drawing never enlarges by
+ * more than the amount its own margins can absorb.
+ */
+const DIAGRAM_PUSH_CAP = 1.18;
+
+export function throughTheCamera(scene, boxes, {width, height}) {
+  const p = scene.params ?? {};
+  const n = (v, d = 0) => (typeof v === 'number' && Number.isFinite(v) ? v : d);
+  if (!scene.diagram) return boxes;
+  const ox = n(p.anchorX, width * 0.5);
+  const oy = n(p.anchorY, height * 0.55);
+  /**
+   * HOW MUCH OF THE SHOT'S CAMERA THIS DRAWING CAN AFFORD.
+   *
+   * Written into the scene by the planner, which is the only place that knows
+   * both the camera and the drawing's extent. Absent means the full share.
+   */
+  const k = Math.max(0, Math.min(1, n(p.diagramCamera, 1)));
+  const share = (v) => Math.min(DIAGRAM_PUSH_CAP, 1 + (n(v, 1) - 1) * DIAGRAM_PUSH_SHARE * k);
+  const scales = [share(p.pushFrom), share(p.pushTo)];
+  const dxs = [0, n(p.panX, 0) * DIAGRAM_PAN_DEPTH * k];
+  const dys = [0, n(p.panY, 0) * DIAGRAM_PAN_DEPTH * k];
+  return boxes.map((box) => {
+    if (!box.camera) return box;
+    let left = Infinity;
+    let right = -Infinity;
+    let top = Infinity;
+    let bottom = -Infinity;
+    for (const s of scales) {
+      for (const dx of dxs) {
+        for (const dy of dys) {
+          left = Math.min(left, ox + (box.left - ox) * s + dx);
+          right = Math.max(right, ox + (box.right - ox) * s + dx);
+          top = Math.min(top, oy + (box.top - oy) * s + dy);
+          bottom = Math.max(bottom, oy + (box.bottom - oy) * s + dy);
+        }
+      }
+    }
+    return {...box, left, right, top, bottom};
+  });
+}
+
 /**
  * CLIPPING AND SAFE AREA, checked rather than eyeballed.
  *
@@ -1056,7 +1137,7 @@ export function clippingProblems(config) {
   const warnings = [];
 
   (config.scenes ?? []).forEach((scene, index) => {
-    for (const box of boundsOf(scene, {width, height})) {
+    for (const box of throughTheCamera(scene, boundsOf(scene, {width, height}), {width, height})) {
       const where = `scene[${index}] "${scene.id}": ${box.what}`;
       // OUTSIDE THE FRAME is an error: it is not a judgement, the thing is
       // partly not there.

@@ -308,11 +308,25 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
          * edge of a shot whose subject was how big the load is next to a man.
          * The variety between drawn shots comes from the PAN and the roll,
          * which move the framing without eating it.
+         *
+         * And a ceiling on top of the share, because a share of a portal is
+         * still a portal: one shot pushes from 1 to 6.4 — a zoom THROUGH a
+         * plate into what is behind it — and three tenths of that is 2.6, at
+         * which a gear train is four wheels and the edges of three others.
          */
-        push={1 + (push - 1) * 0.3}
+        push={Math.min(1.18, 1 + (push - 1) * 0.3 * num('diagramCamera', 1))}
         origin={origin}
-        offset={camera.offsetAt(0.72)}
-        rotate={camera.rotate * 0.4}
+        /**
+         * AND A SMALL SHARE OF THE PAN, FOR THE SAME REASON.
+         *
+         * At 0.72 a 262-pixel pan moved a section 189 pixels sideways, and a
+         * section composed to fit the frame exactly went off the right edge —
+         * half a magnified cross-section, which is to say none of one. The pan
+         * has to be felt, not obeyed: a drawing is not a window onto a larger
+         * scene, it is the whole of what there is.
+         */
+        offset={camera.offsetAt(0.24 * num('diagramCamera', 1))}
+        rotate={camera.rotate * 0.4 * num('diagramCamera', 1)}
       />
 
       <SceneMotif

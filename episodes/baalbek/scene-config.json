@@ -233,7 +233,8 @@
         "captionMark": "highlight",
         "captionWordEvery": 3,
         "cameraMove": "push",
-        "cameraPurpose": "single out the subject — the frame closes on what matters"
+        "cameraPurpose": "single out the subject — the frame closes on what matters",
+        "diagramCamera": 0.95
       },
       "diagram": {
         "type": "scaleHaulage",
@@ -890,7 +891,8 @@
         "captionMark": "none",
         "captionWordEvery": 2,
         "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something",
+        "diagramCamera": 0.95
       },
       "diagram": {
         "type": "scaleHaulage",
@@ -971,7 +973,8 @@
         "captionMark": "box",
         "captionWordEvery": 2,
         "cameraMove": "pan",
-        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement",
+        "diagramCamera": 0.85
       },
       "diagram": {
         "type": "scaleHaulage",
@@ -1659,7 +1662,8 @@
         "captionMark": "none",
         "captionWordEvery": 2,
         "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something",
+        "diagramCamera": 0.8
       },
       "diagram": {
         "type": "scaleHaulage",

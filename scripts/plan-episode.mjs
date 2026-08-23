@@ -48,6 +48,7 @@ import {
   TRANSITION_PURPOSE,
 } from './lib/director.mjs';
 import {cutMix, directCut} from './lib/cut.mjs';
+import {boundsOf, throughTheCamera} from './lib/critique.mjs';
 import {readingFrames} from './lib/editor.mjs';
 import {countWindow} from '../engine/state.mjs';
 import {endingStrategy, hookStrategy, readScript, rhythmFor} from './lib/story.mjs';
@@ -3343,6 +3344,40 @@ async function main() {
     },
     scenes: planned.map((p) => p.scene),
   };
+
+  /**
+   * HOW MUCH CAMERA EACH DRAWING CAN AFFORD, MEASURED RATHER THAN GUESSED.
+   *
+   * A photograph can take any push because there is more picture outside the
+   * frame. A drawing has exactly the frame it was composed for, so the camera
+   * that makes fourteen haulage shots look like fourteen shots is the same
+   * camera that puts the haulers off the left edge and half a magnified section
+   * past the right one.
+   *
+   * A fixed small share is the wrong answer twice over: too much for a section
+   * that already spans three quarters of the width, and needlessly little for a
+   * gear train sitting in the middle of the frame with room on every side. This
+   * is the only place that knows both the camera and the drawing's extent, so
+   * it hands each shot the LARGEST share that keeps every drawn box inside —
+   * maximum variety, guaranteed framing.
+   */
+  for (const scene of config.scenes) {
+    if (!scene.diagram) continue;
+    const boxes = boundsOf(scene, {width: WIDTH, height: HEIGHT}).filter((b) => b.camera);
+    if (!boxes.length) continue;
+    let afford = 0;
+    for (let k = 1; k >= 0; k -= 0.05) {
+      const probe = {...scene, params: {...scene.params, diagramCamera: k}};
+      const moved = throughTheCamera(probe, boxes, {width: WIDTH, height: HEIGHT});
+      const inside = moved.every((b) => b.left >= 0 && b.right <= WIDTH && b.top >= 0 && b.bottom <= HEIGHT);
+      if (inside) {
+        afford = k;
+        break;
+      }
+    }
+    // Rounded, because the value is written into a config a person reads.
+    if (afford < 0.999) scene.params.diagramCamera = Math.max(0, round(afford, 2));
+  }
 
   // RECIPES. Backdrops and artefacts are photographs; pieces are cut-outs and
   // therefore optional in the config above.

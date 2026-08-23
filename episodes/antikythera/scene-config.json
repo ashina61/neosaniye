@@ -527,7 +527,8 @@
         "captionWordEvery": 2,
         "cameraMove": "push",
         "cameraPurpose": "a vertical reveal — height, depth, or a drop",
-        "cameraAuthored": true
+        "cameraAuthored": true,
+        "diagramCamera": 0.05
       },
       "diagram": {
         "type": "gearSystem",
@@ -589,7 +590,8 @@
         "captionMark": "underline",
         "captionWordEvery": 4,
         "cameraMove": "tilt",
-        "cameraPurpose": "a vertical reveal — height, depth, or a drop"
+        "cameraPurpose": "a vertical reveal — height, depth, or a drop",
+        "diagramCamera": 0.9
       },
       "diagram": {
         "type": "gearSystem",
