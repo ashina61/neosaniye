@@ -68,7 +68,13 @@ scripts/lib/visual.mjs              → HİYERARŞİ, kadraj, tek tipografi sist
         ↓
 scripts/lib/director.mjs            → NE ZAMAN OLACAĞI (vuruşlar, kamera, kota)
         ↓
+scripts/lib/cut.mjs                 → HER DİKÜŞ NE (sert kesim bir cevaptır)
+        ↓
 episodes/<id>/scene-config.json     → bölümün tek gerçeği (sahneler, süreler, look)
+        ↓
+scripts/lib/temporal.mjs            → HER KAREDE geçerli mi (durum makinesi)
+        ↓
+scripts/lib/editor.mjs              → bu bir REEL mi (ritim, yoğunluk, slayt)
         ↓
 scripts/lib/critique.mjs            → sıkıcı reel'i GÖREN kontrol
         ↓
@@ -86,6 +92,7 @@ engine/sceneTypes/*.tsx             → plakalar, hareket, gölge
 engine/draw/*.tsx                   → ışık, kâğıt, işaretleme, tipografi
 engine/draw/Kinetic.tsx             → kelime kelime iniş, VURGU kelimesi, sayaç
 engine/draw/Diagram.tsx             → meshleyen dişliler, zaman çizelgesi, yörünge
+engine/state.mjs                    → frame N'de ne var; çizen ve doğrulayan aynı fonksiyon
         ↓
 out/<id>.mp4
 ```
@@ -427,6 +434,75 @@ Bu hat aynı duvara çarpmaz çünkü malzeme koda sokulmaz:
   değersizdir ama figürü zorunlu yapmak, üreticinin kötü gün geçirdiği gün
   bütün reel'i durdurur; sahne kendini indirir.
 
+27. **BİR GÖRSEL HER KAREDE GEÇERLİ BİR DURUMDA OLMAK ZORUNDA.** Slot reel
+    kesintisiz kayıyordu, yani iki değer arasındaki HER an ikisi de pencerenin
+    içindeydi — kuralların arasında üst üste binmiş iki dilim kelime. İlk
+    "düzeltme" pencere kenarlarına yumuşak bir maskeydi: bozuk durumu görmeyi
+    zorlaştırır, bozukluğu bırakır. Okunamayan bir durum da bir durumdur.
+
+    Kontak sayfası altmış kareden dördünü alır; kusur diğer elli altısında
+    yaşadı ve iki tur incelemeden sağ çıktı. **Baktığın karelerin ARASINDA
+    yaşayan bir kusur, hepsine bakan bir kontrol ister.**
+
+    `engine/state.mjs` düz JavaScript'tir, `schema.mjs` ile aynı sebeple: çizen
+    ile doğrulayan AYNI fonksiyonu çağırmak zorunda. Kendi kopyasını yazan bir
+    doğrulayıcı, er ya da geç başka bir şeyi doğrular — nitekim sayaç
+    `countTo` ile çiziliyor, `counterValue` ile kontrol ediliyordu ve 58
+    karelik bir çekim "otuz dişli" iddiasının üstüne 29 yazarak teslim edildi.
+
+    Mekanizma değişti, maske değil: reel artık bir SPLIT-FLAP'tir — bir değer
+    TAMAMEN çıkmadan sonraki girmez. Kontroller `scripts/lib/temporal.mjs`
+    içinde ve her kareyi yürür: reel tek değer gösterir, sayaç geri gitmez ve
+    tam sayısına iner, dişliler gerçekten meshler, halka öznesini içine alır,
+    zaman çizelgesi sıralıdır, kesimden sonraya hiçbir şey kurulmaz.
+
+28. **HER KESİM BİR KARARDIR VE `HARD_CUT` BİR CEVAPTIR.** Önceki katman her
+    diküşe bir VARIŞ seçiyordu — hangisi, kotayla, üst üste üç kez değil. Hiç
+    sormadığı şey diküşün varış İSTEYİP istemediğiydi. Belgesel kurgusunun
+    grameri sert kesimdir; kesimlerin çoğunun sade olması, sade olmayan üçünün
+    anlam taşımasını sağlayan şeydir. Her diküşü süslenmiş bir reel'in noktalama
+    işareti kalmamıştır.
+
+    `scripts/lib/cut.mjs` önce EDİTORYAL kararı verir (`HARD_CUT`, `MATCH_CUT`,
+    `OBJECT_WIPE`, `MASK`, `MORPH`, `DIRECTIONAL`, `FADE`, `FLASH`), sonra
+    yürütmeyi `directTransition`'a ısmarlar — emniyet kuralları orada kalır. Sert
+    olmayan bir kesim AMAÇ taşımak zorundadır; söylenecek amaç yoksa cevap sert
+    kesimdir.
+
+    **VE İKİ ÇEKİM GERÇEKTEN KAFİYELİYSE DİKÜŞ SERT KALIR.** Çember üstüne
+    çember, cetvel üstüne cetvel, aynı plaka üstüne kendisi: en güçlü geçiş
+    hiçbir şeyden yapılmıştır ve üstüne bir wipe koymak onu var eden şeyi siler.
+    Ama ortak aksan rengi kafiye DEĞİLDİR: ilk sürüm onu kafiye sayıp dokuz
+    diküşün altısına MATCH_CUT verdi, ve altı match cut hiç match cut yok
+    demektir.
+
+29. **HİÇBİR GRAFİK BİR CÜMLENİN İÇİNDEN GEÇMEZ.** Kırpılma bir nesnenin karede
+    olup olmadığını sorar; bu, İKİ nesnenin aynı yerde olup olmadığını sorar —
+    aynı kanunun diğer yarısı ve teslim edilen yarısı. Kesikli bir çerçeve
+    "FOURTEEN HUNDRED"ün içinden geçip footer'ı çizerek çıktı; bir çentik motifi
+    zaman çizelgesinin ilk tiklerinin üstüne yığıldı. İkisi de tek karede
+    belliydi ve her kontrolden geçti, çünkü her kontrol BİR nesnenin nerede
+    olduğunu biliyordu ve hiçbiri ikisini karşılaştırmıyordu.
+
+    Tipografi kazanır. Çizilen nesne bir fotoğrafın arkasında ya da bir cetvelin
+    yanında durabilir; bir cümlenin içinden geçemez. Planlayıcı nesneyi tip
+    bandının dışına taşır, taşıyacak yer yoksa DÜŞÜRÜR — duracak yeri olmayan bir
+    grafik grafik değil, dağınıklıktır. Ve bir şey kapalı bir şeyin üstüne
+    konmaz: mekanizması olan bir çekime "boş kalmasın" diye halka eklenmez.
+
+30. **KESİMİN İNDİĞİ KARE BOŞ OLAMAZ.** Kendini çizen bir diyagram sıfırıncı
+    karede hiçbir şeydir, yani içine yapılan her kesim karanlıkta yüzen birkaç
+    kopuk zikzak yayına iniyordu: mekanizmanın gelişi değil, moloz. Cevap
+    draw-on'dan vazgeçmek değil — solarak açılan bir diyagram slayttır. Cevap
+    şu: bir teknik ressam dişlerden BAŞLAMAZ. Önce pitch çemberleri ve merkez
+    işaretleri KURULUR, çizim onların üstüne yapılır. Kesim kurulmuş geometrik
+    bir figüre iner, mekanizma onun üstüne kendini çizer, ve inşa çizgileri
+    gerçek paftada olduğu gibi altta soluk kalır.
+
+    Aynı kural fotoğrafsız bir kareye düşen IŞIK için de geçerlidir: `Glow`'un
+    en içteki katmanı beyaz sıcak çekirdektir ve ampule aittir. Altında plaka
+    olmayan çekimde çekirdek çizilmez; kareye ulaşan şey kaynağın SAÇILMASIDIR.
+
 ## Doğrulama
 
 `npm run validate` render yapmadan üç saniyede cevap verir: şema, sahne tipi ve
@@ -452,4 +528,17 @@ tek bir karede belliydi. O yüzden BAKMAK ucuzdur:
   saniyelik bir composite aynı ilgiyi hak eder. `--per=2` şart olan yerdir —
   yığılan bir motif, kendini çizen bir yol ve tırmanan bir sayı tek karede
   hiçbir şey göstermez.
+- `npm run frames -- --episode=<id> --at=0,0.33,0.66,0.94` çekimin kesimin
+  indiği karesini de alır. `--per` eşit aralıklarla örnekler ve sıfırıncı kareyi
+  ASLA görmez — oysa bu deponun teslim ettiği kusurların yarısı orada yaşıyordu:
+  siyah açan bir geçiş, henüz gelmemiş bir caption, boş gökyüzünde duran bir ışık
+  topu, mekanizma yerine moloz. `--keep` ızgarayı değil tek tek kareleri bırakır;
+  ızgara genel bakıştır, inceleme değil.
 - `npm run assets:review -- --episode=<id>` cutout'ları dama tahtasına dizer.
+
+Ve `npm run validate` artık BEŞ soru soruyor. Dördüncüsü "her karede tutarlı
+mı" (`scripts/lib/temporal.mjs`), beşincisi "bu bir REEL mi, yoksa arka arkaya
+on çekim mi" (`scripts/lib/editor.mjs`). Sonuncusu tek bir çekimin sahip
+olabileceği bir özellik değildir: "slayt gösterisi" ancak şeylerin ARASINDA
+vardır, ve her biri her kontrolden geçen on çekim hâlâ bir slayt gösterisi
+olabilir.

@@ -33,6 +33,8 @@ import {
   qualityGates,
   representationMix,
 } from './lib/critique.mjs';
+import {temporalProblems} from './lib/temporal.mjs';
+import {editReel} from './lib/editor.mjs';
 
 async function validateEpisode(episodeId) {
   const problems = [];
@@ -126,17 +128,37 @@ async function validateEpisode(episodeId) {
   const direction = critiqueDirection(config, {assets, story: report?.beats ?? []});
   const clipped = clippingProblems(config);
   const ending = endingProblems(config);
-  problems.push(...direction.errors, ...clipped.errors, ...ending.errors);
+  /**
+   * AND THE FOURTH QUESTION: is it coherent at EVERY frame?
+   *
+   * Everything above judges a shot as an arrangement. This walks it as a
+   * sequence of states and asserts the ones that can be wrong: a reel showing
+   * two values, a counter that never reaches the figure it claims, wheels that
+   * do not touch, a ring around empty sky, a timeline out of order. The slot
+   * reel's double-value frame passed every other check in this file because
+   * every other check in this file looks at a shot once.
+   */
+  const temporal = temporalProblems(config);
+  /**
+   * AND THE FIFTH: is it a REEL, or ten shots in a row?
+   *
+   * Every check above judges a shot. "Slideshow" is not a property any shot
+   * has — it is a property of the sequence, and the reel that was correctly
+   * described as boring had ten shots that each passed.
+   */
+  const edit = editReel(config);
+  problems.push(...direction.errors, ...clipped.errors, ...ending.errors, ...temporal.errors, ...edit.errors);
   const gates = report ? qualityGates(config, {assets}) : null;
   const mix = representationMix(config);
 
   return {
     problems,
     absentOptional,
-    warnings: [...warnings, ...direction.warnings, ...clipped.warnings, ...ending.warnings],
+    warnings: [...warnings, ...direction.warnings, ...clipped.warnings, ...ending.warnings, ...temporal.warnings, ...edit.warnings],
     stats,
     gates,
     mix,
+    edit,
     directed: Boolean(report),
   };
 }
@@ -161,7 +183,7 @@ async function main() {
 
   let failed = 0;
   for (const episodeId of episodes) {
-    const {problems, absentOptional, warnings = [], stats, gates, directed, mix} = await validateEpisode(episodeId);
+    const {problems, absentOptional, warnings = [], stats, gates, directed, mix, edit} = await validateEpisode(episodeId);
     if (strict && warnings.length) problems.push(...warnings);
     if (problems.length) {
       failed += 1;
@@ -200,6 +222,15 @@ async function main() {
       if (mix) {
         console.log(
           `  shown   ${Object.entries(mix).filter(([, v]) => v).map(([k, v]) => `${v} ${k.toLowerCase()}`).join(' · ')}`,
+        );
+      }
+      if (edit) {
+        // The edit as three numbers: how much the shot lengths vary, how often
+        // the KIND of image changes, and how much lands per second.
+        const busiest = edit.density.reduce((n, d) => Math.max(n, d.busiest), 0);
+        console.log(
+          `  edit    rhythm ${edit.rhythm.variation} (${edit.rhythm.shortest}–${edit.rhythm.longest}s) · ` +
+            `image changes ${Math.round(edit.variety * 100)}% of cuts · busiest moment ${busiest} event(s)`,
         );
       }
       if (gates) {

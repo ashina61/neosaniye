@@ -39,6 +39,27 @@ async function main() {
     process.exit(1);
   }
   const per = Math.max(1, Number(args.per ?? 2));
+  /**
+   * WHERE IN THE SHOT TO LOOK.
+   *
+   * `--per` spreads stills evenly and never sees frame zero, which is where
+   * half of this repo's shipped defects lived: a transition that opens on a
+   * black frame, a caption that has not arrived, a glow sitting in an empty
+   * sky. An arrival is invisible to any sample that starts after it.
+   *
+   * `--at=0,0.33,0.66,0.94` asks for the four positions an editor actually
+   * checks: the frame the cut lands on, two through the middle, and the last
+   * readable frame before the next cut.
+   */
+  const positions =
+    typeof args.at === 'string'
+      ? args.at
+          .split(',')
+          .map((v) => Number(v.trim()))
+          .filter((v) => Number.isFinite(v) && v >= 0 && v < 1)
+      : null;
+  /** Keep the individual stills; the grid is an overview, not an inspection. */
+  const keep = args.keep === true || args.keep === 'true';
 
   const {config} = await loadConfig(episodeId);
   const problems = validateEpisodeConfig(config);
@@ -68,8 +89,8 @@ async function main() {
   const offsets = sceneOffsets(config);
   const shots = [];
   config.scenes.forEach((scene, index) => {
-    for (let i = 0; i < per; i += 1) {
-      const at = (i + 1) / (per + 1);
+    const wanted = positions ?? Array.from({length: per}, (_, i) => (i + 1) / (per + 1));
+    for (const at of wanted) {
       shots.push({
         label: `${scene.id} ${Math.round(at * 100)}%`,
         frame: Math.min(composition.durationInFrames - 1, offsets[index] + Math.round(scene.durationInFrames * at)),
@@ -82,7 +103,7 @@ async function main() {
 
   const tiles = [];
   for (const [index, shot] of shots.entries()) {
-    const file = path.join(tmp, `${String(index).padStart(3, '0')}.png`);
+    const file = path.join(tmp, `${String(index).padStart(3, '0')}-${shot.label.replace(/[^a-z0-9]+/gi, '-')}.png`);
     process.stdout.write(`  ${shot.label} … `);
     await renderStill({
       composition,
@@ -116,7 +137,8 @@ async function main() {
     out,
     await sharp({create: {width, height, channels: 3, background: '#101010'}}).composite(composited).png().toBuffer(),
   );
-  await rm(tmp, {recursive: true, force: true});
+  if (keep) console.log(`  stills kept in ${path.relative(ROOT, tmp)}`);
+  else await rm(tmp, {recursive: true, force: true});
 
   console.log(`\n→ ${path.relative(ROOT, out)}  — ${tiles.length} still(s). Open it.`);
 }

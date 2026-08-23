@@ -19,13 +19,13 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.43,
-      "grungeOpacity": 0.17,
-      "scanlineOpacity": 0.09,
+      "grainOpacity": 0.48,
+      "grungeOpacity": 0.13,
+      "scanlineOpacity": 0.07,
       "scanlinePeriod": 9,
-      "vignetteStrength": 0.54,
-      "weavePx": 5,
-      "weaveScale": 1.015
+      "vignetteStrength": 0.48,
+      "weavePx": 7,
+      "weaveScale": 1.014
     }
   },
   "scenes": [
@@ -96,7 +96,8 @@
         "captionMark": "underline",
         "captionWordEvery": 3,
         "cameraMove": "pull",
-        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+        "cameraPurpose": "importance. The frame stops because the idea needs no help",
+        "cameraAuthored": true
       }
     },
     {
@@ -120,7 +121,7 @@
           "heading": "1939",
           "width": 367,
           "x": 540,
-          "y": 1613,
+          "y": 1296,
           "depth": 0.1,
           "rotate": 0,
           "from": 0
@@ -161,7 +162,7 @@
         "captionEmphasis": "1939",
         "captionReveal": "blur",
         "captionMark": "highlight",
-        "captionWordEvery": 3,
+        "captionWordEvery": 2,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
       }
@@ -171,10 +172,6 @@
       "sceneType": "composite",
       "voText": "at peace for twenty years.",
       "durationInFrames": 51,
-      "transition": {
-        "kind": "slam",
-        "frames": 4
-      },
       "assets": {
         "map": "assets/europe-1939.jpg"
       },
@@ -191,7 +188,7 @@
           "text": "Europe · 1939",
           "width": 367,
           "x": 540,
-          "y": 1613,
+          "y": 1296,
           "depth": 0.1,
           "rotate": 0,
           "from": 0
@@ -200,9 +197,9 @@
       "params": {
         "anchorX": 562,
         "anchorY": 883,
-        "pushFrom": 1,
-        "pushTo": 1.31,
-        "pushEndFrame": 47,
+        "pushFrom": 1.02,
+        "pushTo": 1.05,
+        "pushEndFrame": 49,
         "accent": "#e8e2d4",
         "caption": [
           "at peace",
@@ -215,21 +212,21 @@
         "captionFrame": 15,
         "captionEvery": 8,
         "captionScrim": 0.5,
-        "glowX": -276,
-        "glowY": 542,
-        "glowSize": 391,
-        "glowIntensity": 0.55,
+        "glowX": -349,
+        "glowY": 248,
+        "glowSize": 471,
+        "glowIntensity": 0.66,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.14,
         "focusPx": 0,
         "fog": 0,
-        "handheld": 1.5,
+        "handheld": 3,
         "captionEmphasis": "twenty years",
         "captionReveal": "punch",
-        "captionMark": "none",
-        "captionWordEvery": 3,
-        "cameraMove": "push",
-        "cameraPurpose": "single out the subject — the frame closes on what matters"
+        "captionMark": "highlight",
+        "captionWordEvery": 2,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
       }
     },
     {
@@ -237,6 +234,10 @@
       "sceneType": "composite",
       "voText": "On the first of September,",
       "durationInFrames": 68,
+      "transition": {
+        "kind": "slip",
+        "frames": 8
+      },
       "assets": {
         "road": "assets/border-road.jpg",
         "tank": "assets/tank-profile.png"
@@ -265,7 +266,7 @@
           "text": "September",
           "width": 324,
           "x": 799,
-          "y": 384,
+          "y": 190,
           "depth": 0.1,
           "rotate": 0,
           "from": 34
@@ -277,10 +278,10 @@
         "pushFrom": 1,
         "pushTo": 1.42,
         "pushEndFrame": 58,
-        "glowX": -450,
-        "glowY": 256,
-        "glowSize": 456,
-        "glowIntensity": 0.65,
+        "glowX": -321,
+        "glowY": 336,
+        "glowSize": 512,
+        "glowIntensity": 0.68,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.2,
         "focusPx": 0,
@@ -300,20 +301,21 @@
         "captionRecedeAt": 49,
         "accent": "#e8e2d4",
         "motif": "route",
-        "motifX": 217,
+        "motifX": 122,
         "motifY": 1190,
-        "motifSize": 187,
+        "motifSize": 195,
         "motifCount": 1,
-        "motifFrame": 22,
+        "motifFrame": 30,
         "motifColour": "#e8e2d4",
-        "motifOpacity": 0.89,
+        "motifOpacity": 0.86,
         "handheld": 1.5,
         "captionEmphasis": "Polish",
         "captionReveal": "rise",
-        "captionMark": "box",
-        "captionWordEvery": 2,
+        "captionMark": "underline",
+        "captionWordEvery": 4,
         "cameraMove": "push",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something",
+        "cameraAuthored": true
       }
     },
     {
@@ -321,10 +323,6 @@
       "sceneType": "composite",
       "voText": "German tanks crossed the Polish border.",
       "durationInFrames": 81,
-      "transition": {
-        "kind": "slip",
-        "frames": 8
-      },
       "assets": {
         "road": "assets/border-road.jpg",
         "tank": "assets/tank-profile.png"
@@ -353,7 +351,7 @@
           "text": "September",
           "width": 324,
           "x": 799,
-          "y": 384,
+          "y": 190,
           "depth": 0.1,
           "rotate": 0,
           "from": 0
@@ -362,9 +360,9 @@
       "params": {
         "anchorX": 454,
         "anchorY": 1690,
-        "pushFrom": 1.35,
-        "pushTo": 1.04,
-        "pushEndFrame": 77,
+        "pushFrom": 1.46,
+        "pushTo": 1,
+        "pushEndFrame": 74,
         "accent": "#e8e2d4",
         "caption": [
           "German tanks crossed",
@@ -377,10 +375,10 @@
         "captionFrame": 15,
         "captionEvery": 7,
         "captionScrim": 0.62,
-        "glowX": -366,
-        "glowY": 556,
-        "glowSize": 378,
-        "glowIntensity": 0.51,
+        "glowX": -294,
+        "glowY": 432,
+        "glowSize": 308,
+        "glowIntensity": 0.58,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.2,
         "focusPx": 0,
@@ -388,7 +386,7 @@
         "handheld": 1.5,
         "captionEmphasis": "Polish",
         "captionReveal": "rise",
-        "captionMark": "none",
+        "captionMark": "underline",
         "captionWordEvery": 4,
         "cameraMove": "pull",
         "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
@@ -399,6 +397,10 @@
       "sceneType": "composite",
       "voText": "Britain and France gave Berlin two days",
       "durationInFrames": 72,
+      "transition": {
+        "kind": "slip",
+        "frames": 9
+      },
       "assets": {
         "desk": "assets/desk-surface.jpg"
       },
@@ -439,10 +441,10 @@
         "pushFrom": 1.16,
         "pushTo": 1,
         "pushEndFrame": 62,
-        "glowX": -348,
-        "glowY": 446,
-        "glowSize": 361,
-        "glowIntensity": 0.5,
+        "glowX": -299,
+        "glowY": 215,
+        "glowSize": 327,
+        "glowIntensity": 0.42,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.12,
         "focusPx": 0,
@@ -461,21 +463,21 @@
         "captionRecedeAt": 52,
         "accent": "#e8e2d4",
         "motif": "tally",
-        "motifX": 78,
+        "motifX": 147,
         "motifY": 499,
-        "motifSize": 85,
-        "motifCount": 13,
-        "motifFrame": 27,
+        "motifSize": 90,
+        "motifCount": 10,
+        "motifFrame": 31,
         "motifColour": "#e8e2d4",
-        "motifOpacity": 0.82,
+        "motifOpacity": 0.93,
         "handheld": 1.5,
-        "panX": 245,
         "captionEmphasis": "two days",
-        "captionReveal": "blur",
+        "captionReveal": "wipe",
         "captionMark": "none",
         "captionWordEvery": 3,
-        "cameraMove": "pan",
-        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+        "cameraMove": "pull",
+        "cameraPurpose": "single out the subject — the frame closes on what matters",
+        "cameraAuthored": true
       }
     },
     {
@@ -483,10 +485,6 @@
       "sceneType": "composite",
       "voText": "to pull them back.",
       "durationInFrames": 41,
-      "transition": {
-        "kind": "slam",
-        "frames": 5
-      },
       "assets": {
         "desk": "assets/desk-surface.jpg"
       },
@@ -530,9 +528,9 @@
       "params": {
         "anchorX": 540,
         "anchorY": 1152,
-        "pushFrom": 1.47,
-        "pushTo": 1.03,
-        "pushEndFrame": 38,
+        "pushFrom": 1.04,
+        "pushTo": 1.45,
+        "pushEndFrame": 40,
         "accent": "#e8e2d4",
         "caption": [
           "to pull them back"
@@ -544,10 +542,10 @@
         "captionFrame": 6,
         "captionEvery": 8,
         "captionScrim": 0.55,
-        "glowX": -195,
-        "glowY": 354,
-        "glowSize": 325,
-        "glowIntensity": 0.49,
+        "glowX": -449,
+        "glowY": 436,
+        "glowSize": 499,
+        "glowIntensity": 0.59,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.12,
         "focusPx": 0,
@@ -557,8 +555,8 @@
         "captionReveal": "blur",
         "captionMark": "highlight",
         "captionWordEvery": 3,
-        "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
       }
     },
     {
@@ -575,23 +573,30 @@
         "photo": "assets/clock-face.jpg"
       },
       "params": {
-        "frameWidth": 738,
-        "frameRatio": 0.96,
+        "frameWidth": 803,
+        "frameRatio": 1.11,
         "pushEndFrame": 24,
         "detachFrame": 39,
         "throughEndFrame": 53,
-        "weldRatio": 0.411,
-        "wallScaleEnd": 6.1,
+        "weldRatio": 0.362,
+        "wallScaleEnd": 5,
         "accent": "#e8e2d4",
         "caption": [],
         "captionX": 84,
-        "captionY": 1393,
+        "captionY": 1288,
         "captionFrame": 58,
-        "captionEvery": 10,
-        "captionSize": 93,
+        "captionEvery": 9,
+        "captionSize": 90,
         "captionRecedeAt": 63,
+        "mark": "oval",
+        "markX": 302,
+        "markY": 768,
+        "markWidth": 475,
+        "markHeight": 307,
+        "markFrame": 69,
         "cameraMove": "hold",
-        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement",
+        "cameraAuthored": true
       },
       "props": [
         {
@@ -613,10 +618,6 @@
       "sceneType": "composite",
       "voText": "at eleven in the morning.",
       "durationInFrames": 58,
-      "transition": {
-        "kind": "slam",
-        "frames": 5
-      },
       "assets": {
         "wall": "assets/station-wall.jpg",
         "photo": "assets/clock-face.jpg"
@@ -651,8 +652,8 @@
         "anchorX": 799,
         "anchorY": 576,
         "pushFrom": 1.15,
-        "pushTo": 1.31,
-        "pushEndFrame": 56,
+        "pushTo": 1.2,
+        "pushEndFrame": 53,
         "accent": "#e8e2d4",
         "caption": [
           "at eleven",
@@ -662,23 +663,23 @@
         "captionY": 230,
         "captionSize": 80,
         "captionAlign": "left",
-        "captionFrame": 32,
+        "captionFrame": 29,
         "captionEvery": 7,
         "captionScrim": 0.28,
-        "glowX": -450,
-        "glowY": 587,
-        "glowSize": 477,
-        "glowIntensity": 0.64,
+        "glowX": -277,
+        "glowY": 356,
+        "glowSize": 441,
+        "glowIntensity": 0.7,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.06,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panX": -237,
+        "panX": 248,
         "captionEmphasis": "eleven",
-        "captionReveal": "wipe",
+        "captionReveal": "punch",
         "captionMark": "box",
-        "captionWordEvery": 2,
+        "captionWordEvery": 3,
         "cameraMove": "pan",
         "cameraPurpose": "expose information the frame was withholding, or follow a movement"
       }
@@ -692,10 +693,6 @@
         "saturate": 0.58,
         "contrast": 1.14,
         "brightness": 0.95
-      },
-      "transition": {
-        "kind": "slip",
-        "frames": 7
       },
       "assets": {
         "street": "assets/dusk-street.jpg"
@@ -727,10 +724,10 @@
         "pushFrom": 1,
         "pushTo": 1.24,
         "pushEndFrame": 53,
-        "glowX": -336,
-        "glowY": 169,
-        "glowSize": 557,
-        "glowIntensity": 0.53,
+        "glowX": -426,
+        "glowY": 164,
+        "glowSize": 444,
+        "glowIntensity": 0.67,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.18,
         "focusPx": 0,
@@ -743,27 +740,28 @@
         "captionY": 154,
         "captionSize": 70,
         "captionAlign": "left",
-        "captionFrame": 38,
+        "captionFrame": 28,
         "captionEvery": 7,
         "captionScrim": 0,
         "captionRecedeAt": 45,
         "accent": "#e8e2d4",
         "motif": "embers",
-        "motifX": 571,
+        "motifX": 511,
         "motifY": 960,
-        "motifSize": 42,
+        "motifSize": 40,
         "motifCount": 36,
-        "motifFrame": 29,
+        "motifFrame": 28,
         "motifColour": "#e8e2d4",
-        "motifOpacity": 0.97,
+        "motifOpacity": 0.8,
         "handheld": 1.5,
-        "panX": -141,
+        "panX": 217,
         "captionEmphasis": "two",
-        "captionReveal": "wipe",
+        "captionReveal": "rise",
         "captionMark": "underline",
-        "captionWordEvery": 4,
+        "captionWordEvery": 3,
         "cameraMove": "pan",
-        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement",
+        "cameraAuthored": true
       }
     },
     {
@@ -799,8 +797,8 @@
         "anchorX": 540,
         "anchorY": 1344,
         "pushFrom": 1,
-        "pushTo": 1.1,
-        "pushEndFrame": 38,
+        "pushTo": 1.11,
+        "pushEndFrame": 37,
         "accent": "#e8e2d4",
         "caption": [
           "at war with Germany"
@@ -809,24 +807,28 @@
         "captionY": 154,
         "captionSize": 59,
         "captionAlign": "left",
-        "captionFrame": 25,
+        "captionFrame": 18,
         "captionEvery": 7,
         "captionScrim": 0,
-        "glowX": -448,
-        "glowY": 546,
-        "glowSize": 492,
-        "glowIntensity": 0.45,
+        "glowX": -350,
+        "glowY": 397,
+        "glowSize": 375,
+        "glowIntensity": 0.41,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.18,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panY": -41,
-        "roll": -0.46,
+        "panY": -61,
+        "roll": -0.33,
+        "shakeAt": [
+          3
+        ],
+        "shakeAmount": 22,
         "captionEmphasis": "Germany",
         "captionReveal": "rise",
         "captionMark": "none",
-        "captionWordEvery": 3,
+        "captionWordEvery": 4,
         "cameraMove": "drift",
         "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       }
@@ -841,21 +843,17 @@
         "contrast": 1.16,
         "brightness": 0.94
       },
-      "transition": {
-        "kind": "flare",
-        "frames": 5
-      },
       "assets": {
         "background": "assets/grey-sky.jpg"
       },
       "params": {
-        "scrim": 0.5,
+        "scrim": 0.39,
         "kicker": "1939 · 1945",
         "title": "SIXTY MILLION",
         "footer": "six years later",
-        "titleFrame": 55,
+        "titleFrame": 54,
         "titleSize": 230,
-        "creep": 1.081,
+        "creep": 1.044,
         "accent": "#e8e2d4",
         "field": "wash",
         "fieldColours": [
@@ -863,25 +861,21 @@
           "#212426",
           "#0c0d0e"
         ],
-        "mark": "underline",
-        "markX": 260,
-        "markY": 820,
-        "markWidth": 560,
-        "markHeight": 300,
-        "markFrame": 37,
         "cameraMove": "hold",
-        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land",
+        "cameraAuthored": true
       },
-      "props": [],
-      "diagram": {
-        "type": "measurement",
-        "value": 6,
-        "unit": "people",
-        "accent": "#e8e2d4",
-        "muted": "#cfc6ae",
-        "from": 9,
-        "over": 49
-      }
+      "props": [
+        {
+          "kind": "wire",
+          "depth": 0.83,
+          "x": 540,
+          "y": 407,
+          "width": 553,
+          "from": 67,
+          "shape": "rect"
+        }
+      ]
     }
   ]
 }

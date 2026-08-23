@@ -102,6 +102,8 @@ export const TitleSlate: React.FC<SceneProps> = ({scene, assets, durationInFrame
             y={num('glowY', Math.round(height * 0.36))}
             size={num('glowSize', 0)}
             intensity={num('glowIntensity', 0.7)}
+            // A card has no lamp in it. What lights it comes from off-frame.
+            core={false}
           />
         ) : null}
       </AbsoluteFill>
@@ -147,6 +149,9 @@ export const TitleSlate: React.FC<SceneProps> = ({scene, assets, durationInFrame
         kicker={kicker || undefined}
         title={counted || title}
         footer={footer || undefined}
+        // The figure lands, and THEN the sentence that qualifies it. Two beats
+        // on a card that used to have one.
+        footerFrom={num('footerFrame', num('titleFrame', 6) + num('spinFrames', num('countOver', 20)) + 8)}
         from={num('titleFrame', 6)}
         size={num('titleSize', 118)}
         accent={str('accent', '#ffcf3d')}

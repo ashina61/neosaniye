@@ -17,6 +17,8 @@
  * closing card. `--strict` promotes them, which is what CI runs.
  */
 
+import {gearTrainLayout} from '../../engine/state.mjs';
+
 const FPS_DEFAULT = 30;
 
 /** Every scheduled moment in a scene, with a name, in scene frames. */
@@ -41,6 +43,14 @@ export function eventsOf(scene) {
   const figure = p.countTo !== undefined ? 'count' : p.spinTo !== undefined ? 'spin' : null;
   if (figure) out.push({kind: figure, at: n(p.titleFrame) ?? 0});
   else if (p.title || p.kicker) out.push({kind: 'slate', at: n(p.titleFrame) ?? 0});
+  /**
+   * THE QUALIFIER IS ITS OWN ARRIVAL.
+   *
+   * A closing card lands its figure and then the sentence that qualifies it —
+   * two beats, and the second one was invisible to the counter because the
+   * footer used to fade up with the whole block.
+   */
+  if (p.footer && p.footerFrame !== undefined) out.push({kind: 'footer', at: n(p.footerFrame) ?? 0});
   /**
    * THE PORTAL'S FLIGHT IS THE SHOT.
    *
@@ -192,7 +202,10 @@ export function critiqueEpisode(config, {fps = config.fps ?? FPS_DEFAULT, holds 
      */
     if (scene.sceneType === 'composite') {
       const layers = scene.layers ?? [];
-      if (layers.length === 1 && (scene.props ?? []).length === 0) {
+      // A diagram is a drawn object — the largest one the engine makes. A plate
+      // with a meshing gear train in front of it is a stack; reporting it as a
+      // bare photograph sent the planner looking for a prop it did not need.
+      if (layers.length === 1 && (scene.props ?? []).length === 0 && !scene.diagram) {
         warnings.push(`${where}: one layer and no drawn objects — nothing can move in front of anything`);
       }
       const depths = layers.map((l) => l.depth ?? 1);
@@ -267,7 +280,23 @@ export function critiqueEpisode(config, {fps = config.fps ?? FPS_DEFAULT, holds 
   });
 
   // ACROSS THE REEL: repetition is the thing a per-scene check cannot see.
-  runsOfThree(scenes.map((s) => s.transition?.kind ?? 'cut'), 'transition', (m) => warnings.push(m));
+  /**
+   * A RUN OF HARD CUTS IS NOT A TIC.
+   *
+   * The repeat rule was applied to `cut` alongside everything else, so a reel
+   * that correctly left four seams plain was told off for it — and the only way
+   * to satisfy the warning was to decorate one of them, which is precisely
+   * backwards. A hard cut is the default grammar of documentary editing; it is
+   * what most seams should be, and the plainness of most is what makes the
+   * three that are not mean something. Only the DEVICES are held to the rule.
+   */
+  runsOfThree(
+    // Blanked rather than removed: dropping the plain cuts would close the gaps
+    // and report three slips at shots 2, 4 and 9 as three shots running.
+    scenes.map((s) => (s.transition?.kind && s.transition.kind !== 'cut' ? s.transition.kind : null)),
+    'transition',
+    (m) => warnings.push(m),
+  );
   /**
    * COMPOSITE IS THE GENERAL CASE, NOT A DEVICE.
    *
@@ -354,7 +383,7 @@ export function cameraFamily(scene) {
 }
 
 /** Count, and report anything that takes more than its share of the reel. */
-function dominance(values, label, share, warn) {
+function dominance(values, label, share, warn, attribute = null) {
   const total = values.length;
   if (total < 4) return;
   const tally = {};
@@ -362,9 +391,18 @@ function dominance(values, label, share, warn) {
   for (const [kind, count] of Object.entries(tally)) {
     const fraction = count / total;
     if (fraction > share) {
+      /**
+       * AND WHOSE FAULT IT IS.
+       *
+       * A move the brief wrote cannot be refused by a quota — written wins, and
+       * that is the right law. Saying so turns a warning the planner cannot act
+       * on into a note for the person who can.
+       */
+      const authored = attribute ? attribute(kind) : 0;
       warn(
         `${label}: "${kind}" on ${count} of ${total} shots (${Math.round(fraction * 100)}%) — ` +
-          `over the ${Math.round(share * 100)}% ceiling; one device is carrying the reel`,
+          `over the ${Math.round(share * 100)}% ceiling; one device is carrying the reel` +
+          (authored ? ` (${authored} of them written into the brief, which the quota cannot refuse)` : ''),
       );
     }
   }
@@ -466,7 +504,13 @@ export function critiqueDirection(config, {assets = {}, story = [], fps = config
   }
 
   // NO DEVICE CARRIES THE REEL.
-  dominance(scenes.map(cameraFamily).filter(Boolean), 'camera', 0.34, (m) => warnings.push(m));
+  dominance(
+    scenes.map(cameraFamily).filter(Boolean),
+    'camera',
+    0.34,
+    (m) => warnings.push(m),
+    (kind) => scenes.filter((s) => s.params?.cameraAuthored && cameraFamily(s) === kind).length,
+  );
   /**
    * A TRANSITION'S SHARE IS OF THE WHOLE REEL, NOT OF THE DECORATED CUTS.
    *
@@ -660,10 +704,33 @@ export function qualityGates(config, {assets = {}, fps = config.fps ?? FPS_DEFAU
   const withPrimary = scenes.filter((s) => s.params?.captionEmphasis || s.params?.title || s.params?.countTo).length;
   const visualHierarchy = clamp((withPrimary / total) * 10);
 
-  // MOTION DESIGN — events per second, against roughly one per second.
-  const events = scenes.reduce((n, s) => n + eventsOf(s).length, 0);
-  const perSecond = events / Math.max(1, frames / fps);
-  const motionDesign = clamp(perSecond * 7.5);
+  /**
+   * MOTION DESIGN — how many shots OBEY LAW 18, not how many events there are.
+   *
+   * Scored as events per second, this rewarded quantity: three decorative wire
+   * frames padded the number as effectively as three designed arrivals, and
+   * REMOVING three meaningless graphics — the correct repair — dropped the
+   * score by a point. A metric that punishes the right decision is worse than
+   * no metric.
+   *
+   * The law is specific and therefore measurable: every shot gets at least two
+   * events, spread out, the first one early; a shot under forty frames is a
+   * flash and gets one; a long shot takes no more than five, because "play what
+   * matters" is not "play everything".
+   */
+  const judged = scenes.map((scene) => {
+    const list = eventsOf(scene);
+    const length = scene.durationInFrames ?? 0;
+    const want = length < 40 ? 1 : 2;
+    const ceiling = length > 6 * fps ? 5 : 6;
+    if (list.length < want) return 0;
+    if (list.length > ceiling) return 0.5;
+    // Spread: the first event early, and not everything in one moment.
+    const early = list[0].at <= Math.max(8, length * 0.25);
+    const spread = list.length < 2 || list[list.length - 1].at - list[0].at >= fps * 0.3;
+    return early && spread ? 1 : 0.6;
+  });
+  const motionDesign = clamp((judged.reduce((a, b) => a + b, 0) / Math.max(1, judged.length)) * 10);
 
   // CAMERA + TRANSITION DIVERSITY — the share of the most-used device.
   const share = (values) => {
@@ -673,8 +740,28 @@ export function qualityGates(config, {assets = {}, fps = config.fps ?? FPS_DEFAU
     return Math.max(...Object.values(tally)) / values.length;
   };
   const cameraDiversity = clamp((1 - Math.max(0, share(scenes.map(cameraFamily)) - 0.3) / 0.7) * 10);
+  /**
+   * TRANSITION QUALITY IS INTENTION, NOT VARIETY.
+   *
+   * Scoring it as diversity punished the correct answer. A reel of ten shots
+   * with three devices and seven plain cuts scored 4.5 out of 10 — because
+   * `cut` was the most common arrival and the metric read "most common" as
+   * "monotonous". The only way to raise the number was to decorate more seams,
+   * which is the failure the metric was supposed to detect.
+   *
+   * What actually goes wrong is over-editing and domination: past roughly
+   * forty per cent decorated there are no plain cuts left to contrast against,
+   * and any one device past a quarter of the reel is a template rather than a
+   * choice. Both are measured; a reel that is mostly hard cuts scores ten,
+   * which is right.
+   */
+  const arrivalKinds = scenes.slice(1).map((s) => s.transition?.kind ?? 'cut');
+  const decorated = arrivalKinds.filter((k) => k !== 'cut');
+  const seams = Math.max(1, arrivalKinds.length);
+  const stylisedShare = decorated.length / seams;
+  const worstDevice = decorated.length ? share(decorated) * (decorated.length / seams) : 0;
   const transitionQuality = clamp(
-    (1 - Math.max(0, share(scenes.map((s) => s.transition?.kind ?? 'cut')) - 0.34) / 0.66) * 10,
+    10 - (Math.max(0, stylisedShare - 0.4) / 0.6) * 10 - (Math.max(0, worstDevice - 0.25) / 0.75) * 10,
   );
 
   /**
@@ -753,14 +840,23 @@ export function boundsOf(scene, {width, height}) {
      * flags things that are fine is a check people switch off.
      */
     const tall = prop.kind === 'wire' ? w : w * (prop.kind === 'plaque' ? 0.34 : 0.72);
-    out.push({what: `prop[${i}] ${prop.kind}`, left: x - w / 2, right: x + w / 2, top: y - tall / 2, bottom: y + tall / 2});
+    out.push({what: `prop[${i}] ${prop.kind}`, role: 'drawn', left: x - w / 2, right: x + w / 2, top: y - tall / 2, bottom: y + tall / 2});
   }
 
   if (p.mark) {
     const x = n(p.markX, 84);
     const y = n(p.markY, height * 0.4);
     out.push({
+      /**
+       * A MARK IS TYPOGRAPHY, NOT A GRAPHIC.
+       *
+       * A highlight, an underline and a box are drawn ON the emphasis word —
+       * touching the type is the entire function. It is bounded like everything
+       * else so it cannot leave the frame, but it is not something that can
+       * collide with a sentence.
+       */
       what: 'mark',
+      role: 'type-mark',
       left: x,
       right: x + n(p.markWidth, width * 0.4),
       top: y,
@@ -773,19 +869,67 @@ export function boundsOf(scene, {width, height}) {
     const cx = n(d.cx, 0.5) * width;
     const cy = n(d.cy, 0.45) * height;
     const r = n(d.radius, 0.3) * width;
-    out.push({what: 'diagram orbit', left: cx - r, right: cx + r, top: cy - r, bottom: cy + r});
+    out.push({what: 'diagram orbit', role: 'drawn', left: cx - r, right: cx + r, top: cy - r, bottom: cy + r});
   }
-  if (d?.type === 'gearSystem' && Array.isArray(d.gears)) {
-    for (const [i, g] of d.gears.entries()) {
+  /**
+   * A DERIVED TRAIN IS STILL GEOMETRY.
+   *
+   * This only ran when the config DECLARED its wheels, and the planner deletes
+   * them so the engine can lay the train out from a count. So the check was
+   * live on the case that never happens and silent on the one that always
+   * does — and a rendered reel shipped with two wheels cut in half by the right
+   * edge. The layout comes from the shared module, so the check measures the
+   * same wheels the renderer draws.
+   */
+  if (d?.type === 'gearSystem') {
+    const gears = Array.isArray(d.gears) && d.gears.length ? d.gears : gearTrainLayout(d.count ?? 8);
+    for (const [i, g] of gears.entries()) {
       const r = n(g.radius, 0.15) * width;
       out.push({
         what: `diagram gear[${i}]`,
+        role: 'drawn',
         left: n(g.x, 0.5) * width - r,
         right: n(g.x, 0.5) * width + r,
         top: n(g.y, 0.5) * height - r,
         bottom: n(g.y, 0.5) * height + r,
       });
     }
+  }
+  if (d?.type === 'timeline') {
+    // The rule is drawn at x = 0.3w between 0.24h and 0.78h, and its labels
+    // reach to the right of it. Hard-coded in the component; mirrored here.
+    out.push({what: 'diagram timeline', role: 'drawn', left: width * 0.27, right: width * 0.62, top: height * 0.22, bottom: height * 0.8});
+  }
+
+  /**
+   * THE SLATE'S TYPE IS TYPE.
+   *
+   * Missing from the bounds entirely, which is why a dashed frame prop was
+   * drawn straight through "FOURTEEN HUNDRED" and out the other side, striking
+   * the footer through as it went, in a finished reel.
+   */
+  if (p.title || p.spinTo) {
+    const size = n(p.titleSize, width * 0.115);
+    const cy = n(p.titleY, height * 0.5);
+    out.push({
+      what: 'slate title',
+      role: 'type',
+      left: width * 0.08,
+      right: width * 0.92,
+      top: cy - size * 0.85,
+      bottom: cy + size * 0.85 + (p.footer ? size * 0.8 : 0),
+    });
+  }
+  if (p.motif) {
+    const mw = n(p.motifSize, width * 0.3);
+    out.push({
+      what: `motif ${p.motif}`,
+      role: 'drawn',
+      left: n(p.motifX, width * 0.5) - mw / 2,
+      right: n(p.motifX, width * 0.5) + mw / 2,
+      top: n(p.motifY, height * 0.45) - mw / 2,
+      bottom: n(p.motifY, height * 0.45) + mw / 2,
+    });
   }
 
   const caption = Array.isArray(p.caption) ? p.caption : [];
@@ -794,6 +938,7 @@ export function boundsOf(scene, {width, height}) {
     const x = n(p.captionX, 84);
     out.push({
       what: 'caption',
+      role: 'type',
       left: x,
       // The emphasis word is set larger than the rest, which is what put
       // "THIRTY GEARS" through the right edge of the frame.
@@ -837,8 +982,59 @@ export function clippingProblems(config) {
         warnings.push(`${where} sits outside the safe area — the platform draws its own furniture there`);
       }
     }
+
+    /**
+     * AND NOTHING IS DRAWN THROUGH THE WORDS.
+     *
+     * Clipping asks whether a thing is in the frame. This asks whether two
+     * things are in the SAME PLACE, which is the other half of the same law and
+     * the half that shipped: a dashed frame ruled straight through "FOURTEEN
+     * HUNDRED" and struck the footer out on its way past, and a tally motif was
+     * stacked on top of a timeline's first ticks. Both were obvious in one
+     * still and invisible to every check, because every check knew where one
+     * object was and none compared two.
+     *
+     * Type wins. A drawn object can be behind a photograph or beside a rule; it
+     * cannot be through a sentence, because the sentence is the only part of
+     * the shot the viewer has to READ.
+     */
+    const boxes = boundsOf(scene, {width, height});
+    const type = boxes.filter((b) => b.role === 'type');
+    const drawn = boxes.filter((b) => b.role === 'drawn');
+    for (const t of type) {
+      for (const g of drawn) {
+        const over = overlap(t, g);
+        if (over > 0.16) {
+          errors.push(
+            `scene[${index}] "${scene.id}": ${g.what} is drawn through ${t.what} ` +
+              `(${Math.round(over * 100)}% of the type) — a graphic may not cross a sentence`,
+          );
+        } else if (over > 0.04) {
+          warnings.push(`scene[${index}] "${scene.id}": ${g.what} touches ${t.what}`);
+        }
+      }
+    }
+    // Two drawn objects in one place are a collision too, just a quieter one.
+    for (let i = 0; i < drawn.length; i += 1) {
+      for (let j = i + 1; j < drawn.length; j += 1) {
+        if (overlap(drawn[i], drawn[j]) > 0.35 && !drawn[i].what.startsWith('diagram gear')) {
+          warnings.push(
+            `scene[${index}] "${scene.id}": ${drawn[i].what} and ${drawn[j].what} occupy the same place`,
+          );
+        }
+      }
+    }
   });
   return {errors, warnings};
+}
+
+/** How much of `a` is covered by `b`, as a fraction of `a`'s area. */
+function overlap(a, b) {
+  const w = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+  const h = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+  if (w <= 0 || h <= 0) return 0;
+  const area = Math.max(1, (a.right - a.left) * (a.bottom - a.top));
+  return (w * h) / area;
 }
 
 /**

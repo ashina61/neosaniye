@@ -250,6 +250,9 @@ export const Composite: React.FC<SceneProps> = ({scene, assets, durationInFrames
             intensity={num('glowIntensity', 0.9)}
             warm={str('glowWarm', '#ffb457')}
             defocus={blur}
+            // No plate means no lamp, and a core with no lamp under it is a
+            // white ball hanging in the frame rather than a light in a room.
+            core={layers.length > 0}
           />
         </AbsoluteFill>
       ) : null}

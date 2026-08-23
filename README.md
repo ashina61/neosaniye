@@ -26,6 +26,9 @@ episodes/<episode-id>/
   assets/                   its images
   scenes/index.tsx          OPTIONAL — templates only this episode uses
 
+engine/state.mjs            what is on screen at frame N, as arithmetic —
+                            the renderer and the validator call the SAME function
+
 scripts/
   plan-episode.mjs          brief → scene-config
   lib/story.mjs             WHAT each line is: beat, visual idea, rhythm, ending
@@ -33,6 +36,9 @@ scripts/
   lib/representation.mjs    HOW to show it: photo, hybrid, procedural, diagram, type
   lib/visual.mjs            hierarchy, framing, one type system
   lib/director.mjs          WHEN things happen: beats, camera, transitions, quotas
+  lib/cut.mjs               WHAT each seam is — and a hard cut is an answer
+  lib/temporal.mjs          is the shot coherent at EVERY frame, not just sampled ones
+  lib/editor.mjs            is this a reel, or ten shots in a row
   lib/critique.mjs          the checks that can see a boring reel
 test/                       engine-purity guard, schema, registry, episodes, director
 
@@ -109,7 +115,7 @@ npm ci
 npm run validate                        # schema + assets + IS THERE ANYTHING IN IT
 npm run validate -- --strict            # warnings become failures
 npm run plan     -- --episode=antikythera
-npm run frames   -- --episode=antikythera --per=2   # contact sheet — LOOK AT IT
+npm run frames   -- --episode=antikythera --at=0,0.33,0.66,0.94   # LOOK AT IT
 npm run render   -- --episode=antikythera           # → out/antikythera.mp4
 npm run studio                          # Remotion Studio, live knobs
 npm test && npm run typecheck

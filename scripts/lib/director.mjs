@@ -596,8 +596,20 @@ export function directTransition({
   total = 12,
   previous = [],
   share = 0.25,
+  prefer = null,
 }) {
-  let wanted = TRANSITION_FOR_BEAT[beat] ?? ['cut', 'slip'];
+  /**
+   * AN EXECUTION ASKED FOR BY THE CUT DIRECTOR.
+   *
+   * The editorial layer above this one decides WHAT the cut is — a match, a
+   * wipe, a flash — and hands down the one arrival that performs it. This stays
+   * the place where the arrival has to survive the reel: a short shot still
+   * refuses to open unreadable, a third repeat is still refused, and a spent
+   * quota still goes to a plain cut. The editorial decision is a request, not
+   * an override; when it cannot be met the answer is a hard cut, which is also
+   * what the Cut Director falls back to on its own.
+   */
+  let wanted = prefer ? [prefer] : (TRANSITION_FOR_BEAT[beat] ?? ['cut', 'slip']);
 
   /**
    * A SHORT SHOT CANNOT AFFORD TO ARRIVE UNREADABLE.

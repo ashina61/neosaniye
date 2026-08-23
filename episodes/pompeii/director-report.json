@@ -240,6 +240,7 @@
         "panY": null
       },
       "transition": "cut",
+      "cut": null,
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": null,
@@ -270,6 +271,11 @@
         "panY": null
       },
       "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (s01-morning-bg.png)"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "business",
@@ -293,12 +299,17 @@
       "template": "title-slate",
       "seconds": 3.93,
       "camera": {
-        "from": 1,
-        "to": 1.12,
+        "from": 1.04,
+        "to": 1.07,
         "panX": null,
         "panY": null
       },
-      "transition": "rack",
+      "transition": "blinds",
+      "cut": {
+        "kind": "MASK",
+        "purpose": "conceal and reveal",
+        "because": "beat is MYSTERY"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": null,
@@ -308,7 +319,8 @@
       ],
       "drawnGround": "wash",
       "props": [
-        "beam"
+        "beam",
+        "wire"
       ],
       "hierarchy": {
         "primary": "the detail in the photograph, isolated by a mark",
@@ -328,6 +340,11 @@
         "panY": 177
       },
       "transition": "flare",
+      "cut": {
+        "kind": "FLASH",
+        "purpose": "conceal and reveal",
+        "because": "beat is REVEAL"
+      },
       "representation": "HYBRID",
       "drawn": "measurement",
       "emphasis": "opened",
@@ -337,7 +354,7 @@
       ],
       "drawnGround": null,
       "props": [
-        "wire"
+        "beam"
       ],
       "hierarchy": {
         "primary": "quantity accumulating",
@@ -351,12 +368,17 @@
       "template": "composite",
       "seconds": 2.5,
       "camera": {
-        "from": 1.02,
-        "to": 1.4,
+        "from": 1.04,
+        "to": 1.36,
         "panX": null,
         "panY": null
       },
       "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (s03-column-bg.png)"
+      },
       "representation": "HYBRID",
       "drawn": "measurement",
       "emphasis": "twenty miles",
@@ -365,9 +387,7 @@
         "s03-column-bg.png"
       ],
       "drawnGround": null,
-      "props": [
-        "beam"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the setting, established",
         "secondary": "the caption",
@@ -381,11 +401,16 @@
       "seconds": 1.73,
       "camera": {
         "from": 1,
-        "to": 1.4,
+        "to": 1.32,
         "panX": null,
         "panY": null
       },
-      "transition": "slam",
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "FLASH was refused: the arrival could not be afforded here"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": null,
@@ -409,12 +434,17 @@
       "template": "composite",
       "seconds": 1.73,
       "camera": {
-        "from": 1.05,
-        "to": 1.06,
+        "from": 1.03,
+        "to": 1.07,
         "panX": null,
         "panY": null
       },
       "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (s04-fall-bg.png)"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "weight",
@@ -439,15 +469,20 @@
       "seconds": 1.5,
       "camera": {
         "from": 1,
-        "to": 1.1,
+        "to": 1.12,
         "panX": null,
-        "panY": -37
+        "panY": -55
       },
-      "transition": "slam",
+      "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (s04-fall-bg.png)"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "gave",
-      "reveal": "wipe",
+      "reveal": "blur",
       "plates": [
         "s04-fall-bg.png"
       ],
@@ -467,12 +502,17 @@
       "template": "portal-zoom-reveal",
       "seconds": 2.5,
       "camera": {
-        "from": 1.22,
-        "to": 1.25,
+        "from": 1.2,
+        "to": 1.26,
         "panX": null,
         "panY": null
       },
       "transition": "slip",
+      "cut": {
+        "kind": "DIRECTIONAL",
+        "purpose": "spatial continuity",
+        "because": "beat is CONTEXT"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "The",
@@ -497,16 +537,21 @@
       "template": "composite",
       "seconds": 1.73,
       "camera": {
-        "from": 1.65,
-        "to": 1,
+        "from": 1.68,
+        "to": 1.05,
         "panX": null,
         "panY": null
       },
       "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (s05-cast-photo.png)"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "exactly",
-      "reveal": "blur",
+      "reveal": "rise",
       "plates": [
         "s05-cast-photo.png"
       ],
@@ -526,12 +571,17 @@
       "template": "title-slate",
       "seconds": 3.93,
       "camera": {
-        "from": 1,
-        "to": 1.12,
+        "from": 1.03,
+        "to": 1.08,
         "panX": null,
         "panY": null
       },
-      "transition": "flare",
+      "transition": "slip",
+      "cut": {
+        "kind": "OBJECT_WIPE",
+        "purpose": "object transformation",
+        "because": "beat is VERDICT"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": null,
@@ -589,19 +639,39 @@
     "camera": {
       "tilt": 2,
       "push": 3,
-      "drift": 3,
-      "hold": 1,
+      "hold": 3,
+      "drift": 1,
       "pan": 1,
       "pull": 1
     },
     "transition": {
-      "cut": 4,
-      "rack": 1,
-      "flare": 2,
-      "slam": 2,
-      "slip": 1
+      "cut": 6,
+      "blinds": 1,
+      "flare": 1,
+      "slip": 2
     },
-    "framing": {}
+    "framing": {},
+    "cut": {
+      "MATCH_CUT": 5,
+      "MASK": 1,
+      "FLASH": 1,
+      "HARD_CUT": 1,
+      "DIRECTIONAL": 1,
+      "OBJECT_WIPE": 1
+    }
+  },
+  "editing": {
+    "tally": {
+      "MATCH_CUT": 5,
+      "MASK": 1,
+      "FLASH": 1,
+      "HARD_CUT": 1,
+      "DIRECTIONAL": 1,
+      "OBJECT_WIPE": 1
+    },
+    "hardRatio": 0.6,
+    "total": 10,
+    "note": "HARD_CUT and MATCH_CUT are both made of nothing; the difference is that a match cut was earned"
   },
   "typography": {
     "system": "one family per semantic role — statement, body, label, figure",

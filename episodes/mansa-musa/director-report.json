@@ -300,6 +300,7 @@
         "panY": null
       },
       "transition": "cut",
+      "cut": null,
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "someone",
@@ -331,6 +332,11 @@
         "panY": null
       },
       "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (s01-atlas-photo.png)"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": null,
@@ -355,11 +361,16 @@
       "seconds": 1.07,
       "camera": {
         "from": 1.04,
-        "to": 1.06,
+        "to": 1.37,
         "panX": null,
         "panY": null
       },
-      "transition": "slam",
+      "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (s01-atlas-photo.png)"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "never",
@@ -383,12 +394,17 @@
       "template": "composite",
       "seconds": 1.53,
       "camera": {
-        "from": 1,
-        "to": 1.4,
+        "from": 1.04,
+        "to": 1.07,
         "panX": null,
         "panY": null
       },
-      "transition": "cut",
+      "transition": "slip",
+      "cut": {
+        "kind": "OBJECT_WIPE",
+        "purpose": "object transformation",
+        "because": "beat is EVIDENCE"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "thirteen",
@@ -412,16 +428,21 @@
       "template": "composite",
       "seconds": 1.23,
       "camera": {
-        "from": 1.01,
+        "from": 1.05,
         "to": 1.33,
         "panX": null,
         "panY": null
       },
-      "transition": "slam",
+      "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (s02-route-bg.png)"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "Mali",
-      "reveal": "rise",
+      "reveal": "punch",
       "plates": [
         "s02-route-bg.png"
       ],
@@ -441,16 +462,21 @@
       "template": "composite",
       "seconds": 1.57,
       "camera": {
-        "from": 1.05,
-        "to": 1.05,
+        "from": 1.03,
+        "to": 1.43,
         "panX": null,
         "panY": null
       },
       "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (s02-route-bg.png)"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "Mecca",
-      "reveal": "blur",
+      "reveal": "wipe",
       "plates": [
         "s02-route-bg.png"
       ],
@@ -471,15 +497,20 @@
       "seconds": 1.77,
       "camera": {
         "from": 1,
-        "to": 1.12,
+        "to": 1.08,
         "panX": null,
-        "panY": -53
+        "panY": -26
       },
       "transition": "slip",
+      "cut": {
+        "kind": "DIRECTIONAL",
+        "purpose": "spatial continuity",
+        "because": "beat is CONTEXT"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "caravan",
-      "reveal": "wipe",
+      "reveal": "rise",
       "plates": [
         "s03-caravan-bg.png"
       ],
@@ -499,16 +530,21 @@
       "template": "composite",
       "seconds": 2.43,
       "camera": {
-        "from": 1.37,
-        "to": 1.02,
+        "from": 1.43,
+        "to": 1.01,
         "panX": null,
         "panY": null
       },
       "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (s03-caravan-bg.png)"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "accounts",
-      "reveal": "punch",
+      "reveal": "wipe",
       "plates": [
         "s03-caravan-bg.png"
       ],
@@ -528,12 +564,17 @@
       "template": "portal-zoom-reveal",
       "seconds": 2.4,
       "camera": {
-        "from": 1,
-        "to": 1.12,
+        "from": 1.51,
+        "to": 1.02,
         "panX": null,
         "panY": null
       },
       "transition": "slip",
+      "cut": {
+        "kind": "DIRECTIONAL",
+        "purpose": "spatial continuity",
+        "because": "beat is CONTEXT"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": null,
@@ -558,16 +599,21 @@
       "template": "composite",
       "seconds": 1.8,
       "camera": {
-        "from": 1.58,
-        "to": 1.05,
+        "from": 1,
+        "to": 1.1,
         "panX": null,
-        "panY": null
+        "panY": -66
       },
       "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (s04-mecca-photo.png)"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "camels",
-      "reveal": "blur",
+      "reveal": "wipe",
       "plates": [
         "s04-mecca-photo.png"
       ],
@@ -587,12 +633,17 @@
       "template": "title-slate",
       "seconds": 2.27,
       "camera": {
-        "from": 1.15,
-        "to": 1.18,
+        "from": 1.17,
+        "to": 1.26,
         "panX": null,
         "panY": null
       },
       "transition": "slip",
+      "cut": {
+        "kind": "DIRECTIONAL",
+        "purpose": "spatial continuity",
+        "because": "beat is CONTEXT"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": null,
@@ -616,16 +667,21 @@
       "template": "composite",
       "seconds": 1.3,
       "camera": {
-        "from": 1.45,
-        "to": 1.04,
+        "from": 1.4,
+        "to": 1.05,
         "panX": null,
         "panY": null
       },
       "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (s05-cairo-bg.png)"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "gave",
-      "reveal": "blur",
+      "reveal": "rise",
       "plates": [
         "s05-cairo-bg.png"
       ],
@@ -645,12 +701,17 @@
       "template": "composite",
       "seconds": 1.9,
       "camera": {
-        "from": 1.15,
-        "to": 1.23,
-        "panX": -159,
-        "panY": null
+        "from": 1,
+        "to": 1.09,
+        "panX": null,
+        "panY": -39
       },
-      "transition": "slip",
+      "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (s05-cairo-bg.png)"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "collapsed",
@@ -675,11 +736,16 @@
       "seconds": 5.4,
       "camera": {
         "from": 1,
-        "to": 1.49,
+        "to": 1.12,
         "panX": null,
         "panY": null
       },
-      "transition": "flare",
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "OBJECT_WIPE was refused: the arrival could not be afforded here"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": null,
@@ -690,7 +756,8 @@
       "drawnGround": "sunburst",
       "props": [
         "plaque",
-        "newspaper"
+        "newspaper",
+        "beam"
       ],
       "hierarchy": {
         "primary": "the closing claim",
@@ -736,18 +803,33 @@
     "camera": {
       "tilt": 1,
       "push": 4,
-      "hold": 2,
-      "drift": 2,
+      "hold": 1,
+      "drift": 4,
       "pull": 3,
-      "pan": 2
+      "pan": 1
     },
     "transition": {
-      "cut": 6,
-      "slam": 2,
-      "slip": 4,
-      "flare": 1
+      "cut": 9,
+      "slip": 4
     },
-    "framing": {}
+    "framing": {},
+    "cut": {
+      "MATCH_CUT": 8,
+      "OBJECT_WIPE": 1,
+      "DIRECTIONAL": 3,
+      "HARD_CUT": 1
+    }
+  },
+  "editing": {
+    "tally": {
+      "MATCH_CUT": 8,
+      "OBJECT_WIPE": 1,
+      "DIRECTIONAL": 3,
+      "HARD_CUT": 1
+    },
+    "hardRatio": 0.69,
+    "total": 13,
+    "note": "HARD_CUT and MATCH_CUT are both made of nothing; the difference is that a match cut was earned"
   },
   "typography": {
     "system": "one family per semantic role — statement, body, label, figure",

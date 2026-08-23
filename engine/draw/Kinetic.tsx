@@ -2,7 +2,6 @@ import React from 'react';
 import {useCurrentFrame, useVideoConfig} from 'remotion';
 import {
   clipReveal,
-  countTo,
   drawOn,
   posterizeTime,
   punch,
@@ -11,6 +10,7 @@ import {
   tracking,
   wipeMask,
 } from '../motion';
+import {counterValue} from '../state.mjs';
 
 const SERIF = '"Playfair Display", "Iowan Old Style", Georgia, serif';
 const SANS = '"Archivo", "Helvetica Neue", Arial, sans-serif';
@@ -378,7 +378,16 @@ export const Counter: React.FC<{
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const stepped = posterizeTime(frame, fps, 12);
-  const value = Math.round(countTo(stepped, [start, start + over], to, from));
+  /**
+   * THE VALIDATOR AND THE COMPONENT COUNT WITH ONE FUNCTION.
+   *
+   * The temporal check asserts that a figure never goes backwards and lands
+   * exactly on what it claims. It was asserting that about `counterValue` while
+   * this drew with `countTo` — so the check was passing about a function nobody
+   * rendered, which is the same class of mistake as a test that re-implements
+   * the thing it tests.
+   */
+  const value = counterValue(stepped, {from: start, over, to, start: from});
   // One small hit as it lands, so the count STOPS rather than just ceasing.
   const hit = punch(stepped, start + over, {amount: 0.09, rise: 2, decay: 0.2});
 

@@ -255,12 +255,12 @@ and should not be made to download one.
 ## 7. QA — three checks, three costs
 
 ```bash
-npm run validate  [-- --episode=<id>] [--strict]   # ~3s
-npm test                                            # ~3s
-npm run frames -- --episode=<id> [--per=2]          # ~1 min
+npm run validate  [-- --episode=<id>] [--strict]         # ~3s
+npm test                                                  # ~6s
+npm run frames -- --episode=<id> --at=0,0.33,0.66,0.94    # ~1 min
 ```
 
-**`validate`** answers three different questions.
+**`validate`** answers five different questions.
 
 *Will it render* — schema, scene types, every asset on disk and non-empty, audio
 present. This exists to fail in three seconds instead of three minutes.
@@ -286,6 +286,26 @@ gates   assetRelevance 7.6 · visualHierarchy 10 · motionDesign 7.8 ·
         professionalism 8.7
 ```
 
+*Is it coherent at every frame* — `scripts/lib/temporal.mjs`. Everything above
+judges a shot as an arrangement; this walks it as a sequence of states and
+asserts the ones that can be wrong: a reel showing two values, a counter that
+never reaches the figure it claims, wheels that do not touch, a ring around
+empty sky, a timeline out of order. The slot reel's double-value frame passed
+every other check because every other check looks at a shot once, and a contact
+sheet takes four stills out of sixty.
+
+*Is it a reel, or ten shots in a row* — `scripts/lib/editor.mjs`. "Slideshow" is
+not a property any shot has; it only exists between shots. Shots are reduced to
+a signature and compared; the spread of their lengths is measured; events are
+counted per shot rather than averaged, at both ends (a dead shot and a shot
+where four things land together are both failures); and a caption is checked
+against the time it is actually on screen.
+
+```
+edit    rhythm 0.41 (1.13–4.53s) · image changes 33% of cuts ·
+        busiest moment 2 event(s)
+```
+
 **Errors** fail the run and are things that cannot be intended — a caption at
 frame 69 of a 58-frame shot, a four-second shot with no events at all.
 **Warnings** print every run and are usually-wrong-occasionally-deliberate — a
@@ -306,9 +326,16 @@ motion  33 event(s), 1.26/s, 2.18s per shot
 visual defect this repo has actually shipped — the frame darkened four times
 over, glow sliding off the lamp it was lighting, cards burying each other,
 "THIRTY GEARS" with its S through the edge of the frame — passed validation,
-passed the tests, and was obvious in one still. `--per=2` is not optional for
-anything that moves: a motif that piles up, a route that draws itself and a
-count that climbs all look like nothing at all in a single frame.
+passed the tests, and was obvious in one still. More than one still per shot is
+not optional for anything that moves: a motif that piles up, a route that draws
+itself and a count that climbs all look like nothing at all in a single frame.
+
+Sample `--at=0,0.33,0.66,0.94` rather than `--per`. Even spacing never sees
+frame zero, and half of what has shipped broken lived exactly there: a
+transition opening on black, a caption that has not arrived, a white ball of
+light hanging in an empty sky, a mechanism that is still four disconnected arcs
+of debris when the cut lands on it. `--keep` leaves the individual stills
+behind; the grid is an overview, not an inspection.
 
 ---
 
@@ -317,7 +344,7 @@ count that climbs all look like nothing at all in a single frame.
 A successful render is not a successful video.
 
 1. `plan` → `validate` → read the warnings
-2. `frames --per=2` → **look at it**
+2. `frames --at=0,0.33,0.66,0.94 --keep` → **look at it**
 3. fix
 4. back to 1
 5. `render` only when the contact sheet reads as designed

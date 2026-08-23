@@ -45,7 +45,11 @@ import {
   directShot,
   directTransition,
   emphasisOf,
+  TRANSITION_PURPOSE,
 } from './lib/director.mjs';
+import {cutMix, directCut} from './lib/cut.mjs';
+import {readingFrames} from './lib/editor.mjs';
+import {countWindow} from '../engine/state.mjs';
 import {endingStrategy, hookStrategy, readScript, rhythmFor} from './lib/story.mjs';
 import {colourCentre, judge, loadReview, measureAsset} from './lib/assetdirector.mjs';
 import {directFraming, graphicJustified, hierarchyFor, labelFor} from './lib/visual.mjs';
@@ -1082,7 +1086,7 @@ function planProps({line, rand, look, side, durationInFrames, recentProps, beat}
    * This is the fallback, not the rule. Every prop above still has to have
    * something of the line's own to say.
    */
-  if (!props.length) {
+  if (!props.length && beat !== 'close') {
     props.push(
       banned.has('wire')
         ? {
@@ -1370,6 +1374,77 @@ function graphicGround(look) {
 
 const CAMERA_TEMPLATES = new Set(['composite', 'parallax-punch']);
 
+/**
+ * NOTHING STANDS WHERE THE WORDS ARE.
+ *
+ * A dashed wire frame was placed at the middle of the closing card and drawn
+ * straight through "FOURTEEN HUNDRED", striking the footer out on its way past.
+ * Every check passed: the prop was inside the frame, inside the safe area, the
+ * right size, and the type was inside the frame too. Nobody compared them.
+ *
+ * The type band is not negotiable — a sentence is the only part of a shot the
+ * viewer has to read — so the object moves. Where there is a clear band above
+ * or below it stands there; where there is not, it is DROPPED, because a
+ * graphic with nowhere to stand is not a graphic, it is clutter.
+ *
+ * The height model is the one the checker uses; two models would disagree, and
+ * the disagreement would surface as a warning nobody could act on.
+ */
+function standClear(props, zone) {
+  if (!zone) return props;
+  const heightOf = (prop) => {
+    const w = Number(prop.width) || WIDTH * 0.42;
+    return prop.kind === 'wire' ? w : w * (prop.kind === 'plaque' ? 0.34 : 0.72);
+  };
+  const out = [];
+  for (const prop of props) {
+    // A beam is a shaft of light from off-frame; it has no body to collide with.
+    if (prop.kind === 'beam') {
+      out.push(prop);
+      continue;
+    }
+    const half = heightOf(prop) / 2;
+    const y = Number(prop.y) || HEIGHT * 0.55;
+    if (y + half <= zone.top || y - half >= zone.bottom) {
+      out.push(prop);
+      continue;
+    }
+    const above = zone.top - half - 24;
+    const below = zone.bottom + half + 24;
+    if (above > half + 40) out.push({...prop, y: Math.round(above)});
+    else if (below < HEIGHT - half - 40) out.push({...prop, y: Math.round(below)});
+    // else: dropped.
+  }
+  return out;
+}
+
+/** Where the shot's own words are, in pixels. Null when it has none. */
+function typeZone(scene) {
+  const p = scene.params ?? {};
+  if (p.title || p.spinTo) {
+    const size = Number(p.titleSize) || WIDTH * 0.115;
+    const cy = Number(p.titleY) || HEIGHT * 0.5;
+    return {top: cy - size * 1.1, bottom: cy + size * 1.1 + (p.footer ? size * 0.9 : 0)};
+  }
+  const caption = Array.isArray(p.caption) ? p.caption : [];
+  if (caption.length) {
+    const size = Number(p.captionSize) || 88;
+    const top = Number(p.captionY) || 300;
+    return {top, bottom: top + caption.length * size * 1.3};
+  }
+  return null;
+}
+
+/**
+ * AN AUTHORED ARRIVAL, READ BACK AS AN EDITORIAL DECISION.
+ *
+ * The brief writes in the engine's vocabulary because that is what a person
+ * looking at the reel can picture. The Cut Director thinks in the editorial
+ * one, and the two have to be counted together — otherwise a reel where every
+ * seam was authored would report itself as entirely hard cuts.
+ */
+const AUTHORED_CUT = {slam: 'OBJECT_WIPE', slip: 'DIRECTIONAL', flare: 'FLASH', rack: 'MORPH', blinds: 'MASK'};
+
 function applyDirection({
   scene,
   line,
@@ -1383,6 +1458,7 @@ function applyDirection({
   read = null,
   quota = {camera: {}, transition: {}, framing: {}},
   representation = null,
+  previousScene = null,
 }) {
   const params = scene.params ?? (scene.params = {});
   const caption = Array.isArray(params.caption) ? params.caption : [];
@@ -1452,7 +1528,26 @@ function applyDirection({
 
   const plan = directShot({durationInFrames, index, total, rand, wants, recent, fps: FPS});
 
-  if (drawn) {
+  /**
+   * A SLATE'S TYPE OWNS THE MIDDLE OF THE FRAME.
+   *
+   * Every drawing this engine makes is built around the centre — a vertical
+   * rule, a ring, a train of wheels, a dimensioned figure — and a slate puts
+   * its verdict there. Put both in and the timeline is ruled straight through
+   * "THE MACHINE ARRIVED", which is what shipped. There is no placement that
+   * fixes it: the two elements want the same third of the frame.
+   *
+   * So the slate keeps its words. A closing card IS the typographic
+   * representation; asking it to also be the drawn one is asking one shot to be
+   * two, and the shot it becomes is neither.
+   */
+  const slate = scene.sceneType === 'title-slate';
+  if (drawn && slate) {
+    plan.representation = 'TYPOGRAPHY';
+    plan.drawingRefused = `a ${drawn.type} and a slate want the same third of the frame`;
+  }
+
+  if (drawn && !slate) {
     const at = plan.at.diagram ?? 4;
     /**
      * A DIAGRAM DRAWS ITSELF ONCE.
@@ -1470,6 +1565,19 @@ function applyDirection({
      * a third of a second and then begins — which is the "opens on a still"
      * fault, applied to the one element the shot exists for.
      */
+    /**
+     * A SLATE'S TYPE OWNS THE MIDDLE OF THE FRAME.
+     *
+     * Every drawing this engine makes is built around the centre — a vertical
+     * rule, a ring, a train of wheels, a dimensioned figure — and a slate puts
+     * its verdict there. Put both in and the timeline is ruled straight through
+     * "THE MACHINE ARRIVED", which is what shipped. There is no placement that
+     * fixes it: the two elements want the same third of the frame.
+     *
+     * So the slate keeps its words. A closing card IS the typographic
+     * representation; asking it to also be the drawn one is asking one shot to
+     * be two, and the shot it becomes is neither.
+     */
     const own = representation.mode === 'PROCEDURAL' || representation.mode === 'DIAGRAM';
     scene.diagram = isContinuation
       ? {...drawn, from: 0, over: 1}
@@ -1479,6 +1587,20 @@ function applyDirection({
           over: Math.max(14, Math.round(durationInFrames * 0.45)),
           ...(drawn.type === 'gearSystem' && drawn.count ? {countTo: drawn.count} : {}),
         };
+    /**
+     * AND THE FIGURE LANDS BEFORE THE CUT.
+     *
+     * The count's window used to be derived inside the component from the
+     * drawing's schedule, which on a 58-frame shot put the landing at frame 60:
+     * the reel shipped showing 29 on a claim about thirty gears. The planner
+     * knows how long the shot is, so the planner writes the window, and the
+     * component and the checker both read it.
+     */
+    if (scene.diagram.countTo !== undefined) {
+      const win = countWindow(scene.diagram, durationInFrames);
+      scene.diagram.countFrom = win.start;
+      scene.diagram.countOver = win.over;
+    }
     delete scene.diagram.gears;
     plan.representation = representation.mode;
 
@@ -1624,17 +1746,59 @@ function applyDirection({
    * its slam — but everything derived now answers to the beat and the quota.
    */
   if (index > 0 && (!written.cut || isContinuation)) {
-    const arrival = directTransition({
+    /**
+     * THE EDITORIAL DECISION COMES FIRST, THE EXECUTION SECOND.
+     *
+     * `directTransition` answered "which arrival" and could not answer "an
+     * arrival at all?", so every seam past the first got decorated with
+     * whatever the quota still had room for. The Cut Director answers the
+     * earlier question: what IS this cut. A hard cut is a first-class answer
+     * and a rhyme between two shots is the strongest cut available — both of
+     * them made of nothing, both of them previously unreachable.
+     */
+    const decision = directCut({
+      previous: previousScene,
+      next: scene,
       beat: read?.beat ?? 'CONTEXT',
       rand,
-      durationInFrames,
-      used: quota.transition,
+      used: quota.cut ?? (quota.cut = {}),
       total,
-      previous: recent.transition ?? [],
     });
+    /**
+     * AND THE EXECUTION STILL ANSWERS TO THE REEL.
+     *
+     * The safety rules live one layer down and stay there: a short shot refuses
+     * to open unreadable, a third repeat is refused, an arrival may not eat the
+     * shot. If the requested arrival cannot be afforded the answer is a plain
+     * cut — which is the Cut Director's own fallback, so nothing is lost in
+     * translation.
+     */
+    const arrival = decision.execution
+      ? directTransition({
+          beat: read?.beat ?? 'CONTEXT',
+          rand,
+          durationInFrames,
+          used: quota.transition,
+          total,
+          previous: recent.transition ?? [],
+          prefer: decision.execution,
+        })
+      : {kind: 'cut', frames: 0, purpose: TRANSITION_PURPOSE.cut};
     scene.transition = arrival.kind === 'cut' ? undefined : {kind: arrival.kind, frames: arrival.frames};
     quota.transition[arrival.kind] = (quota.transition[arrival.kind] ?? 0) + 1;
     (recent.transition ??= []).push(arrival.kind);
+    // A stylised cut that came back as a plain one is a plain one — the reel is
+    // counted by what it SHOWS, not by what was asked for.
+    const kind = arrival.kind === 'cut' && decision.execution ? 'HARD_CUT' : decision.kind;
+    quota.cut[kind] = (quota.cut[kind] ?? 0) + 1;
+    plan.cut = {
+      kind,
+      purpose: kind === 'HARD_CUT' ? null : decision.purpose,
+      because:
+        kind === decision.kind
+          ? decision.because
+          : `${decision.kind} was refused: ${arrival.kind === 'cut' ? 'the arrival could not be afforded here' : arrival.kind}`,
+    };
     plan.transitionKind = arrival.kind;
     plan.transitionPurpose = arrival.purpose;
   } else if (scene.transition) {
@@ -1643,6 +1807,18 @@ function applyDirection({
     scene.transition = {...scene.transition, frames: kept};
     quota.transition[scene.transition.kind] = (quota.transition[scene.transition.kind] ?? 0) + 1;
     (recent.transition ??= []).push(scene.transition.kind);
+    // Authored, so the editorial reason is the author's; it is still counted,
+    // because the cap on how much of a reel is decorated is about the FINISHED
+    // reel and does not care who asked for each piece of it.
+    const kind = AUTHORED_CUT[scene.transition.kind] ?? 'DIRECTIONAL';
+    (quota.cut ??= {})[kind] = (quota.cut[kind] ?? 0) + 1;
+    plan.cut = {kind, purpose: 'authored', because: `the brief writes ${scene.transition.kind} on this line`};
+    plan.transitionKind = scene.transition.kind;
+    plan.transitionPurpose = TRANSITION_PURPOSE[scene.transition.kind];
+  } else if (index > 0) {
+    // No arrival and nobody asked for one: still a decision, still recorded.
+    (quota.cut ??= {}).HARD_CUT = (quota.cut.HARD_CUT ?? 0) + 1;
+    plan.cut = {kind: 'HARD_CUT', purpose: null, because: 'the brief writes a hard cut here'};
   }
 
   /**
@@ -1685,7 +1861,18 @@ function applyDirection({
      * The clamp is the backstop, not the fix; the fix is that the templates
      * below derive their schedules from the shot's own length.
      */
-    const lastUseful = Math.round(durationInFrames * 0.62);
+    /**
+     * AND HOW LATE IS TOO LATE DEPENDS ON THE WORDS, not only on the shot.
+     *
+     * Sixty-two per cent of the shot is the right ceiling for three words and
+     * far too late for seven. A diagram takes the front of its shot, the
+     * caption queues behind it, and on a two-second shot that put six words on
+     * screen with eight tenths of a second left — a caption that renders, that
+     * every check passed, and that nobody read. The clamp now asks how long
+     * these particular words need, using the same figure the editor judges by.
+     */
+    const words = caption.join(' ').split(/\s+/).filter(Boolean).length;
+    const lastUseful = Math.max(2, Math.min(Math.round(durationInFrames * 0.62), durationInFrames - readingFrames(words, FPS)));
     if (Number(params.captionFrame) > lastUseful) params.captionFrame = lastUseful;
     if (Number(params.captionRecedeAt) <= Number(params.captionFrame)) {
       params.captionRecedeAt = Math.max(1, durationInFrames - 6);
@@ -1742,6 +1929,34 @@ function applyDirection({
    */
   for (const kind of plan.fill) {
     const at = plan.at[kind];
+    /**
+     * A SLATE'S STATEMENT IS NOT MARKED.
+     *
+     * The card is already a typographic device: a rule above, a rule below, a
+     * kicker over and a qualifier under. The filler added a third mark on top
+     * of that and, with no caption to attach to, placed it from the scene
+     * anchor — which on a slate is the middle of the frame. A strike was drawn
+     * horizontally through "FOURTEEN HUNDRED", so the reel's closing shot spent
+     * four seconds appearing to cross its own verdict out.
+     */
+    if (kind === 'mark' && (params.title || params.spinTo)) {
+      /**
+       * BUT THE CARD STILL NEEDS ITS SECOND BEAT.
+       *
+       * Refusing the mark cannot leave the closing shot with one event in four
+       * seconds. The card has one to give that it was throwing away: the
+       * qualifier under the rules used to fade up with the title, so "fourteen
+       * hundred / years before anything like it" arrived as a single object.
+       * Landing the figure and then the sentence is how the line is SPOKEN.
+       */
+      if (params.footer && params.footerFrame === undefined) {
+        const lands = (Number(params.titleFrame) || 6) + (Number(params.spinFrames) || Number(params.countOver) || 20);
+        params.footerFrame = Math.min(Math.round(durationInFrames * 0.72), lands + 8);
+        plan.fill = plan.fill.filter((k) => k !== 'mark');
+        continue;
+      }
+      continue;
+    }
     if (kind === 'mark' && !params.mark) {
       /**
        * A MARK IS MADE ON SOMETHING.
@@ -1780,6 +1995,16 @@ function applyDirection({
     // it proves nothing and reads as a smear on the lens, which is the test a
     // decorative graphic fails.
     if (kind === 'beam' && !(Number(params.glowSize) > 0)) continue;
+    /**
+     * A WIREFRAME CLOSES ON SOMETHING.
+     *
+     * It is a hand-drawn outline AROUND A SUBJECT, so with no plate in the shot
+     * there is nothing for it to close on and what gets drawn is an empty
+     * dashed rectangle hanging in the dark. One shipped over the closing card
+     * of the last reel, and once it was moved off the verdict's type it was
+     * simply an empty box in the sky — the graphic had never had a job.
+     */
+    if (kind === 'wire' && !Object.keys(scene.assets ?? {}).length) continue;
     if ((kind === 'wire' || kind === 'beam') && !props.some((p) => p.kind === kind)) {
       // A wireframe closes on the SUBJECT, so it goes near the anchor the whole
       // stack is scaling about; a beam comes from wherever the light does,
@@ -1835,6 +2060,17 @@ function applyDirection({
   const family = CAMERA_TEMPLATES.has(scene.sceneType) ? actual : directed.kind;
   params.cameraMove = wroteCamera && !isContinuation ? actual : directed.kind;
   params.cameraPurpose = directed.purpose;
+  /**
+   * WHO CHOSE THIS MOVE.
+   *
+   * The quota can refuse a move it derived and cannot refuse one the brief
+   * wrote — written wins, and that is the right law. But it means a reel can
+   * come out over the ceiling with the director having done everything
+   * correctly, and the warning then reads as a bug in the planner. Recording
+   * authorship turns "push on half the reel" into "push on half the reel, and
+   * three of them are in your brief", which is a note somebody can act on.
+   */
+  if (wroteCamera && !isContinuation) params.cameraAuthored = true;
   quota.camera[params.cameraMove] = (quota.camera[params.cameraMove] ?? 0) + 1;
   recent.camera.push(params.cameraMove);
   plan.cameraKind = directed.kind;
@@ -1842,6 +2078,52 @@ function applyDirection({
   recent.reveal.push(plan.reveal);
   recent.mark.push(plan.emphasisMark);
   recent.fillers.push(...plan.fill);
+
+  /**
+   * LAST, AFTER EVERY ELEMENT HAS ITS PLACE: get the graphics off the words.
+   *
+   * It has to be last. The caption's frame, its size and the slate's title are
+   * all decided above, so the type band does not exist until here — moving a
+   * prop any earlier would be moving it away from a sentence that had not been
+   * written yet.
+   */
+  /**
+   * THE MOTIF IS FRAME-LOCKED, WHICH IS NOT THE SAME AS FREE TO SIT ANYWHERE.
+   *
+   * A route drew itself across the caption of "he crossed the Sahara" — the two
+   * best things in the shot, on top of each other. Law 14 pins the motif to the
+   * frame rather than to the room; it says nothing about which part of the
+   * frame, and the part with the sentence in it is spoken for.
+   */
+  if (params.motif) {
+    const zone = typeZone(scene);
+    const size = Number(params.motifSize) || WIDTH * 0.3;
+    if (zone) {
+      const y = Number(params.motifY) || HEIGHT * 0.45;
+      if (y + size / 2 > zone.top && y - size / 2 < zone.bottom) {
+        const above = zone.top - size / 2 - 30;
+        const below = zone.bottom + size / 2 + 30;
+        params.motifY = Math.round(above > size / 2 + 40 ? above : Math.min(below, HEIGHT - size / 2 - 40));
+      }
+    }
+  }
+
+  if (Array.isArray(scene.props) && scene.props.length) {
+    const before = scene.props.length;
+    /**
+     * A DRAWING DOES NOT NEED A DECORATION ON TOP OF IT.
+     *
+     * `wire` is the one prop with nothing of its own to say — it is a shape
+     * that frames whatever it is put around, and it exists for the shot that
+     * would otherwise be bare. A shot carrying a gear train or an orbit is the
+     * opposite of bare, and the ring was landing directly on the mechanism: two
+     * circles of the same colour in the same place, one of them meaningless.
+     */
+    if (scene.diagram) scene.props = scene.props.filter((q) => q.kind !== 'wire');
+    scene.props = standClear(scene.props, typeZone(scene));
+    if (scene.props.length < before) plan.propsDropped = before - scene.props.length;
+    if (!scene.props.length) delete scene.props;
+  }
   return plan;
 }
 
@@ -2686,7 +2968,7 @@ async function main() {
       // motifs and the transitions are already held to.
       recentProps: planned.slice(-1).flatMap((p) => (p.scene.props ?? []).map((q) => q.kind)),
     });
-    applyDirection({
+    const firstPlan = applyDirection({
       scene: result.scene,
       line,
       index: shotIndex,
@@ -2698,10 +2980,13 @@ async function main() {
       read: story[index],
       quota,
       representation: representation[line.slug],
+      // The seam is between two shots, so the decision needs both of them. The
+      // rhyme that makes a match cut lives in the pair and nowhere else.
+      previousScene: planned[planned.length - 1]?.scene ?? null,
     });
     shotIndex += 1;
     previousTransition.push(result.scene.transition?.kind ?? 'cut');
-    planned.push(result);
+    planned.push({...result, cut: firstPlan.cut ?? null});
 
     // A portal shot lands INSIDE the picture, so its continuations stay there
     // rather than cutting back out to the wall it hung on.
@@ -2723,7 +3008,7 @@ async function main() {
         cutouts,
         recentProps: planned.slice(-1).flatMap((p) => (p.scene.props ?? []).map((q) => q.kind)),
       });
-      applyDirection({
+      const partPlan = applyDirection({
         scene,
         line,
         index: shotIndex,
@@ -2735,6 +3020,7 @@ async function main() {
         read: story[index],
         quota,
         representation: representation[line.slug],
+        previousScene: planned[planned.length - 1]?.scene ?? null,
         // A continuation already re-frames the plate on purpose — it alternates
         // push and pull-back so two shots of one photograph are not the same
         // shot twice. Handing it a fresh camera would throw that away.
@@ -2745,7 +3031,7 @@ async function main() {
       // The continuation stands the SAME pieces in the same room, so it carries
       // the line's list too — otherwise the recipe builder, which now only
       // draws what a layer asks for, would find nothing asking for them.
-      planned.push({scene, line, motif: '', pieces: line.pieces ?? []});
+      planned.push({scene, line, motif: '', pieces: line.pieces ?? [], cut: partPlan.cut ?? null});
     });
   });
 
@@ -2936,7 +3222,7 @@ async function main() {
       recast: recastNotes,
       required: assetBriefs,
     },
-    shots: planned.map(({scene}, i) => ({
+    shots: planned.map(({scene, cut}, i) => ({
       id: scene.id,
       template: scene.sceneType,
       seconds: Number((scene.durationInFrames / FPS).toFixed(2)),
@@ -2947,6 +3233,14 @@ async function main() {
         panY: scene.params?.panY ?? null,
       },
       transition: scene.transition?.kind ?? 'cut',
+      /**
+       * WHAT THIS SEAM IS, before how it is performed.
+       *
+       * `"HARD_CUT — no correspondence and no reason to decorate"` is a
+       * decision. `"cut"` was the absence of one, and it read identically in
+       * the log whether the director had thought about it or run out of quota.
+       */
+      cut: cut ?? null,
       /**
        * HOW THIS SHOT CHOSE TO SHOW ITS IDEA, and why.
        *
@@ -2980,6 +3274,18 @@ async function main() {
       Object.entries(representation).map(([slug, r]) => [slug, {mode: r.mode, why: r.why, drawn: r.diagram?.type ?? null}]),
     ),
     quotas: quota,
+    /**
+     * HOW MUCH OF THE REEL IS DECORATED, as a number.
+     *
+     * The complaint "the transitions feel like a template" is unanswerable; a
+     * hard-cut ratio of 0.36 is not. A documentary short lives above two
+     * thirds — below that the plain cuts have stopped outnumbering the effects
+     * and there is nothing left for an effect to stand out against.
+     */
+    editing: {
+      ...cutMix(planned.map((p) => p.cut).filter(Boolean)),
+      note: 'HARD_CUT and MATCH_CUT are both made of nothing; the difference is that a match cut was earned',
+    },
     typography: {
       system: 'one family per semantic role — statement, body, label, figure',
       accent: look.accent,
@@ -3036,7 +3342,12 @@ async function main() {
   console.log(`✓ planned ${episodeId}: ${config.scenes.length} scenes, ${frames} frames (${(frames / FPS).toFixed(1)}s)`);
   console.log(`  look   accent ${look.accent} · field ${look.field} · mark ${look.mark} · text ${look.textStyle}`);
   console.log(`  grade  ${JSON.stringify(grade)}`);
-  console.log(`  cuts   ${look.transitions.join(', ')}`);
+  const mix = cutMix(planned.map((p) => p.cut).filter(Boolean));
+  console.log(
+    `  cuts   ${Object.entries(mix.tally)
+      .map(([k, n]) => `${k}×${n}`)
+      .join(' ')} · ${Math.round(mix.hardRatio * 100)}% plain`,
+  );
   console.log(`  types  ${config.scenes.map((s) => s.sceneType).join(' → ')}`);
   console.log(`  drawn  ${planned.map((p) => p.motif || '·').join(' ')}`);
   console.log(`  assets ${Object.keys(assets).length} recipes`);

@@ -1,6 +1,8 @@
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame, useVideoConfig} from 'remotion';
-import {countTo, drawOn, hash01, posterizeTime, punch, springEntrance} from '../motion';
+import {drawOn, posterizeTime, punch, springEntrance} from '../motion';
+import {GEAR_ASPECT, countWindow, counterValue} from '../state.mjs';
+import {gearTrainLayout} from '../state.mjs';
 
 /**
  * THE PROCEDURAL VISUAL LIBRARY.
@@ -160,15 +162,24 @@ const Disclosure: React.FC<{text: string; colour: string; at: number; width: num
         left: width * 0.075,
         bottom: width * 0.075,
         fontFamily: MONO,
-        fontSize: width * 0.021,
-        letterSpacing: '0.22em',
+        fontSize: width * 0.0185,
+        letterSpacing: '0.16em',
         textTransform: 'uppercase',
         color: colour,
         opacity: on * 0.72,
         borderLeft: `2px solid ${colour}`,
         paddingLeft: width * 0.018,
         lineHeight: 1.5,
-        maxWidth: width * 0.62,
+        /**
+         * ONE LINE. A DISCLOSURE THAT WRAPS READS AS A CAPTION.
+         *
+         * "SCHEMATIC RECONSTRUCTION · NOT TO / SCALE" broke after "TO", so the
+         * plate that exists to say the drawing is not a record turned into two
+         * lines of mono text with an orphan — which is exactly the shape of a
+         * subtitle, and the last thing this label should be mistaken for.
+         */
+        whiteSpace: 'nowrap',
+        maxWidth: width * 0.85,
       }}
     >
       {text}
@@ -239,6 +250,24 @@ function gearPath(cx: number, cy: number, r: number, teeth: number): string {
  * tooth counts. That is causal motion in the strict sense — B moves because A
  * moved — and it is a thing a photograph of a mechanism can never do.
  */
+/**
+ * IS THERE ROOM ABOVE THIS WHEEL FOR ITS NAME?
+ *
+ * Arithmetic, in the same fractional units the train is laid out in: the label
+ * sits a little above the wheel's top, and if that point falls inside any other
+ * wheel it has nowhere to go.
+ */
+function labelIsClear(gears: Gear[], index: number): boolean {
+  const gear = gears[index];
+  const lx = gear.x;
+  const ly = gear.y - (gear.radius + 0.03) / GEAR_ASPECT;
+  return gears.every((other, i) => {
+    if (i === index) return true;
+    const dy = (ly - other.y) * GEAR_ASPECT;
+    return Math.hypot(lx - other.x, dy) > other.radius * 1.08;
+  });
+}
+
 const GearSystem: React.FC<{spec: GearSystemSpec; w: number; h: number}> = ({spec, w, h}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
@@ -253,17 +282,68 @@ const GearSystem: React.FC<{spec: GearSystemSpec; w: number; h: number}> = ({spe
 
   const drive = spec.drive ?? 0;
   const declared = spec.gears ?? [];
-  const gears = declared.length > 0 ? declared : gearTrainFor(spec.count ?? 8, 'train');
+  const gears: Gear[] = declared.length > 0 ? declared : (gearTrainLayout(spec.count ?? 8) as Gear[]);
   const driven = gears[drive] ?? gears[0];
   const turn = (t / fps) * (spec.rate ?? 26);
 
-  const countEnd = from + over + 34;
+  // The window is written into the spec by the planner and read here, so the
+  // figure lands inside the shot rather than after the cut.
+  const count = countWindow(spec);
+  const countEnd = count.start + count.over;
   const landed = spec.countTo !== undefined && stepped >= countEnd;
 
   return (
     <AbsoluteFill style={{pointerEvents: 'none'}}>
       <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{position: 'absolute', inset: 0}}>
         <Ticks colour={muted} w={w} h={h} on={on} />
+
+        {/**
+         * THE SETTING OUT — the frame the cut LANDS on.
+         *
+         * A self-drawing mechanism is nothing at frame zero, so every cut into
+         * one landed on a black frame with a few disconnected zigzag arcs
+         * floating in it: not a mechanism arriving, just debris. Sampling the
+         * first frame of every shot is what found it; nothing else would.
+         *
+         * The answer is not to abandon the draw-on — a diagram that fades up is
+         * a slide. It is that a draughtsman does not start with the teeth. The
+         * pitch circles and the centre marks are SET OUT first, and the drawing
+         * is made on top of them. So the cut lands on a composed geometric
+         * figure, the mechanism draws itself onto that figure, and the
+         * construction lines stay faintly visible underneath the way they do on
+         * the real sheet.
+         */}
+        <g opacity={0.52}>
+          {gears.map((gear, i) => (
+            <g key={`set${i}`}>
+              <circle
+                cx={gear.x * w}
+                cy={gear.y * h}
+                r={gear.radius * w}
+                fill="none"
+                stroke={muted}
+                strokeWidth={w * 0.0024}
+                strokeDasharray={`${w * 0.012} ${w * 0.009}`}
+              />
+              <line
+                x1={gear.x * w - w * 0.016}
+                y1={gear.y * h}
+                x2={gear.x * w + w * 0.016}
+                y2={gear.y * h}
+                stroke={muted}
+                strokeWidth={w * 0.0024}
+              />
+              <line
+                x1={gear.x * w}
+                y1={gear.y * h - w * 0.016}
+                x2={gear.x * w}
+                y2={gear.y * h + w * 0.016}
+                stroke={muted}
+                strokeWidth={w * 0.0024}
+              />
+            </g>
+          ))}
+        </g>
 
         {gears.map((gear, i) => {
           const cx = gear.x * w;
@@ -321,9 +401,17 @@ const GearSystem: React.FC<{spec: GearSystemSpec; w: number; h: number}> = ({spe
           );
         })}
 
-        {/* Labels do not rotate with the wheel they name. */}
+        {/**
+         * A LABEL LANDS ON PAPER, NOT ON A WHEEL.
+         *
+         * "MAIN WHEEL" was centred above the hub and the hub is surrounded by
+         * the satellites it drives, so the label was printed across the teeth
+         * of one of them and was unreadable. Where the callout has nowhere
+         * clear to sit, it is not drawn — an unreadable label is worse than no
+         * label, because it is also clutter.
+         */}
         {gears.map((gear, i) =>
-          gear.label ? (
+          gear.label && labelIsClear(gears, i) ? (
             <text
               key={`l${i}`}
               x={gear.x * w}
@@ -347,7 +435,7 @@ const GearSystem: React.FC<{spec: GearSystemSpec; w: number; h: number}> = ({spe
        * That is the shot's event, and it is one event with two halves rather
        * than two events that happen to coincide.
        */}
-      {spec.countTo !== undefined && stepped >= from + over * 0.5 ? (
+      {spec.countTo !== undefined && stepped >= count.start ? (
         <div
           style={{
             position: 'absolute',
@@ -364,7 +452,7 @@ const GearSystem: React.FC<{spec: GearSystemSpec; w: number; h: number}> = ({spe
           }}
         >
           <div style={{fontSize: w * 0.15, lineHeight: 1}}>
-            {Math.round(countTo(stepped, [from + over * 0.5, countEnd], spec.countTo))}
+            {counterValue(stepped, {from: count.start, over: count.over, to: spec.countTo})}
           </div>
           {spec.countLabel ? (
             <div style={{fontFamily: MONO, fontSize: w * 0.026, letterSpacing: '0.3em', opacity: 0.8}}>
@@ -418,7 +506,21 @@ const Timeline: React.FC<{spec: TimelineSpec; w: number; h: number}> = ({spec, w
   return (
     <AbsoluteFill style={{pointerEvents: 'none'}}>
       <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{position: 'absolute', inset: 0}}>
-        <line x1={x} y1={top} x2={x} y2={bottom} stroke={muted} strokeWidth={w * 0.0018} opacity={0.28} />
+        {/**
+         * THE RULE IS SET OUT BEFORE IT IS DRAWN.
+         *
+         * At 0.28 on a near-black ground the construction line was invisible,
+         * so the cut into this shot landed on an empty frame and the timeline
+         * appeared out of nothing a third of a second later. The rule and its
+         * two ends are the SHEET; the accent line growing down it is the
+         * drawing. One is there when we cut, the other happens.
+         */}
+        <g opacity={0.5}>
+          <line x1={x} y1={top} x2={x} y2={bottom} stroke={muted} strokeWidth={w * 0.002} />
+          {[top, bottom].map((y) => (
+            <line key={y} x1={x - w * 0.026} y1={y} x2={x + w * 0.026} y2={y} stroke={muted} strokeWidth={w * 0.002} />
+          ))}
+        </g>
         <line x1={x} y1={top} x2={x} y2={head} stroke={accent} strokeWidth={w * 0.0038} />
 
         {/* THE EMPTY YEARS, hatched. The subject of the sentence. */}
@@ -586,7 +688,7 @@ const Measurement: React.FC<{spec: MeasurementSpec; w: number; h: number}> = ({s
           textShadow: '0 0 30px rgba(0,0,0,0.9)',
         }}
       >
-        {Math.round(countTo(stepped, [from, from + over], spec.value)).toLocaleString('en-US')}
+        {counterValue(stepped, {from, over, to: spec.value}).toLocaleString('en-US')}
         {spec.unit ? (
           <span style={{fontFamily: MONO, fontSize: w * 0.028, letterSpacing: '0.2em', marginLeft: w * 0.016}}>
             {spec.unit.toUpperCase()}
@@ -794,44 +896,3 @@ export const Diagram: React.FC<{spec?: DiagramSpec | null}> = ({spec}) => {
       return null;
   }
 };
-
-/**
- * A GEAR TRAIN LAID OUT FROM A COUNT.
- *
- * The planner knows "thirty gears" and nothing about geometry. This turns the
- * one into the other: a large driven wheel, a ring of meshing wheels around it,
- * and the rest implied — because thirty gears drawn literally at readable size
- * is a grey mass, and the shot has to be legible before it is complete.
- *
- * Positions are deterministic from the count, so the same episode draws the
- * same machine every run.
- */
-export function gearTrainFor(count: number, seed = 'gears'): Gear[] {
-  const shown = Math.max(3, Math.min(7, Math.round(count / 5) + 2));
-  const gears: Gear[] = [{x: 0.5, y: 0.46, teeth: 32, radius: 0.19, label: 'main wheel'}];
-  for (let i = 1; i < shown; i += 1) {
-    const angle = (i / (shown - 1)) * Math.PI * 1.7 - Math.PI * 0.85;
-    const teeth = 14 + Math.round(hash01(seed, i) * 12);
-    const radius = 0.19 * (teeth / 32) + 0.035;
-    // Meshing distance: the pitch circles touch, which is what makes the teeth
-    // interlock instead of overlapping or floating apart.
-    const d = 0.19 + radius;
-    /**
-     * THE TRAIN LIVES IN A BAND, and the band is what the rest of the shot is
-     * composed around.
-     *
-     * Laid out on a true circle the outermost wheels reached y = 0.82, straight
-     * through the caption — a mechanism and a sentence fighting for the same
-     * corner. Squashing the ring vertically keeps the meshing (which is about
-     * the distance between centres, not about the shape of the arrangement) and
-     * leaves the top for the count and the bottom for the words.
-     */
-    gears.push({
-      x: 0.5 + Math.cos(angle) * d,
-      y: 0.46 + Math.sin(angle) * d * (1080 / 1920) * 1.78 * 0.78,
-      teeth,
-      radius,
-    });
-  }
-  return gears;
-}

@@ -37,7 +37,20 @@ export const Glow: React.FC<{
    * so the core is bloomed by this amount instead.
    */
   defocus?: number;
-}> = ({x, y, size = 120, colour = '#fff6e2', warm = '#ffb457', intensity = 1, defocus = 0}) => {
+  /**
+   * IS THERE A LAMP UNDER THIS LIGHT?
+   *
+   * The innermost layer is a white-hot CORE and it belongs on a bulb. Put it on
+   * an open frame with no lamp beneath it and it is not light: it is a white
+   * ball hanging in the room, which is exactly what the first frame of every
+   * drawn shot in the last reel had in the top-left corner.
+   *
+   * With no plate to hang it on, the source is off-frame by definition and what
+   * reaches the picture is the SPILL — the outer falloff, no core. Same
+   * component, same law: the source is outside the frame.
+   */
+  core?: boolean;
+}> = ({x, y, size = 120, colour = '#fff6e2', warm = '#ffb457', intensity = 1, defocus = 0, core = true}) => {
   const bloom = 1 + Math.min(defocus, 20) * 0.07;
   const layer = (radius: number, stops: string, opacity: number): React.CSSProperties => ({
     position: 'absolute',
@@ -52,10 +65,14 @@ export const Glow: React.FC<{
 
   return (
     <AbsoluteFill style={{mixBlendMode: 'screen', pointerEvents: 'none'}}>
-      <div style={layer(size * 5.2 * bloom, `${warm}22 0%, ${warm}10 45%, transparent 72%`, 0.9)} />
-      <div style={layer(size * 2.4 * bloom, `${warm}66 0%, ${warm}2a 40%, transparent 70%`, 0.95)} />
-      <div style={layer(size * 1.25 * bloom, `${colour}cc 0%, ${warm}77 46%, transparent 74%`, 1)} />
-      <div style={layer(size * 0.5 * bloom, `#ffffff 0%, ${colour}dd 42%, transparent 78%`, 1)} />
+      <div style={layer(size * 5.2 * bloom, `${warm}22 0%, ${warm}10 45%, transparent 72%`, core ? 0.9 : 1)} />
+      <div style={layer(size * 2.4 * bloom, `${warm}66 0%, ${warm}2a 40%, transparent 70%`, core ? 0.95 : 0.5)} />
+      {core ? (
+        <>
+          <div style={layer(size * 1.25 * bloom, `${colour}cc 0%, ${warm}77 46%, transparent 74%`, 1)} />
+          <div style={layer(size * 0.5 * bloom, `#ffffff 0%, ${colour}dd 42%, transparent 78%`, 1)} />
+        </>
+      ) : null}
     </AbsoluteFill>
   );
 };

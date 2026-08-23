@@ -260,6 +260,7 @@
         "panY": null
       },
       "transition": "cut",
+      "cut": null,
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "summer",
@@ -289,6 +290,11 @@
         "panY": null
       },
       "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (europe-1939.jpg)"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "1939",
@@ -312,12 +318,17 @@
       "template": "composite",
       "seconds": 1.7,
       "camera": {
-        "from": 1,
-        "to": 1.31,
+        "from": 1.02,
+        "to": 1.05,
         "panX": null,
         "panY": null
       },
-      "transition": "slam",
+      "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (europe-1939.jpg)"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "twenty years",
@@ -346,7 +357,12 @@
         "panX": null,
         "panY": null
       },
-      "transition": "cut",
+      "transition": "slip",
+      "cut": {
+        "kind": "DIRECTIONAL",
+        "purpose": "spatial continuity",
+        "because": "beat is CONTEXT"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "Polish",
@@ -371,12 +387,17 @@
       "template": "composite",
       "seconds": 2.7,
       "camera": {
-        "from": 1.35,
-        "to": 1.04,
+        "from": 1.46,
+        "to": 1,
         "panX": null,
         "panY": null
       },
-      "transition": "slip",
+      "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (border-road.jpg)"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "Polish",
@@ -403,14 +424,19 @@
       "camera": {
         "from": 1.16,
         "to": 1,
-        "panX": 245,
+        "panX": null,
         "panY": null
       },
-      "transition": "cut",
+      "transition": "slip",
+      "cut": {
+        "kind": "OBJECT_WIPE",
+        "purpose": "object transformation",
+        "because": "beat is EVIDENCE"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "two days",
-      "reveal": "blur",
+      "reveal": "wipe",
       "plates": [
         "desk-surface.jpg"
       ],
@@ -431,12 +457,17 @@
       "template": "composite",
       "seconds": 1.37,
       "camera": {
-        "from": 1.47,
-        "to": 1.03,
+        "from": 1.04,
+        "to": 1.45,
         "panX": null,
         "panY": null
       },
-      "transition": "slam",
+      "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (desk-surface.jpg)"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "pull",
@@ -467,6 +498,11 @@
         "panY": null
       },
       "transition": "slip",
+      "cut": {
+        "kind": "OBJECT_WIPE",
+        "purpose": "object transformation",
+        "because": "beat is EVIDENCE"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": null,
@@ -492,15 +528,20 @@
       "seconds": 1.93,
       "camera": {
         "from": 1.15,
-        "to": 1.31,
-        "panX": -237,
+        "to": 1.2,
+        "panX": 248,
         "panY": null
       },
-      "transition": "slam",
+      "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (station-wall.jpg)"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "eleven",
-      "reveal": "wipe",
+      "reveal": "punch",
       "plates": [
         "station-wall.jpg",
         "clock-face.jpg"
@@ -523,14 +564,19 @@
       "camera": {
         "from": 1,
         "to": 1.24,
-        "panX": -141,
+        "panX": 217,
         "panY": null
       },
-      "transition": "slip",
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "OBJECT_WIPE was refused: the arrival could not be afforded here"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "two",
-      "reveal": "wipe",
+      "reveal": "rise",
       "plates": [
         "dusk-street.jpg"
       ],
@@ -551,11 +597,16 @@
       "seconds": 1.37,
       "camera": {
         "from": 1,
-        "to": 1.1,
+        "to": 1.11,
         "panX": null,
-        "panY": -41
+        "panY": -61
       },
       "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (dusk-street.jpg)"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "Germany",
@@ -584,16 +635,23 @@
         "panX": null,
         "panY": null
       },
-      "transition": "flare",
-      "representation": "HYBRID",
-      "drawn": "measurement",
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "OBJECT_WIPE was refused: the arrival could not be afforded here"
+      },
+      "representation": "PHOTO",
+      "drawn": null,
       "emphasis": null,
       "reveal": null,
       "plates": [
         "grey-sky.jpg"
       ],
       "drawnGround": "wash",
-      "props": [],
+      "props": [
+        "wire"
+      ],
       "hierarchy": {
         "primary": "the closing claim",
         "secondary": "the strongest image in the reel, returned to",
@@ -638,17 +696,32 @@
     "camera": {
       "pull": 3,
       "push": 3,
-      "pan": 3,
-      "hold": 2,
+      "hold": 3,
+      "pan": 2,
       "drift": 1
     },
     "transition": {
-      "cut": 4,
-      "slam": 3,
-      "slip": 3,
-      "flare": 1
+      "cut": 8,
+      "slip": 3
     },
-    "framing": {}
+    "framing": {},
+    "cut": {
+      "MATCH_CUT": 6,
+      "DIRECTIONAL": 1,
+      "OBJECT_WIPE": 2,
+      "HARD_CUT": 2
+    }
+  },
+  "editing": {
+    "tally": {
+      "MATCH_CUT": 6,
+      "DIRECTIONAL": 1,
+      "OBJECT_WIPE": 2,
+      "HARD_CUT": 2
+    },
+    "hardRatio": 0.73,
+    "total": 11,
+    "note": "HARD_CUT and MATCH_CUT are both made of nothing; the difference is that a match cut was earned"
   },
   "typography": {
     "system": "one family per semantic role — statement, body, label, figure",

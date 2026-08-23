@@ -6,7 +6,7 @@
   "width": 1080,
   "height": 1920,
   "look": {
-    "posterizeFps": 12,
+    "posterizeFps": 15,
     "grade": {
       "saturate": 0.52,
       "contrast": 1.15,
@@ -19,13 +19,13 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.38,
+      "grainOpacity": 0.39,
       "grungeOpacity": 0.2,
-      "scanlineOpacity": 0.12,
-      "scanlinePeriod": 10,
+      "scanlineOpacity": 0.14,
+      "scanlinePeriod": 8,
       "vignetteStrength": 0.55,
-      "weavePx": 4,
-      "weaveScale": 1.018
+      "weavePx": 6,
+      "weaveScale": 1.016
     }
   },
   "scenes": [
@@ -78,7 +78,7 @@
         "captionY": 307,
         "captionSize": 93,
         "captionAlign": "left",
-        "captionFrame": 44,
+        "captionFrame": 37,
         "captionEvery": 9,
         "captionScrim": 0.38,
         "captionRecedeAt": 51,
@@ -93,7 +93,8 @@
         "captionMark": "none",
         "captionWordEvery": 3,
         "cameraMove": "pull",
-        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+        "cameraPurpose": "importance. The frame stops because the idea needs no help",
+        "cameraAuthored": true
       },
       "diagram": {
         "type": "measurement",
@@ -110,10 +111,6 @@
       "sceneType": "composite",
       "voText": "summer inventing a name for it.",
       "durationInFrames": 71,
-      "transition": {
-        "kind": "slam",
-        "frames": 5
-      },
       "assets": {
         "ground": "assets/s01-name-bg.png"
       },
@@ -151,7 +148,7 @@
         "captionY": 307,
         "captionSize": 69,
         "captionAlign": "left",
-        "captionFrame": 44,
+        "captionFrame": 37,
         "captionEvery": 8,
         "captionScrim": 0.38,
         "glowX": 1512,
@@ -167,7 +164,7 @@
         "captionEmphasis": "inventing",
         "captionReveal": "wipe",
         "captionMark": "box",
-        "captionWordEvery": 2,
+        "captionWordEvery": 3,
         "cameraMove": "tilt",
         "cameraPurpose": "a vertical reveal — height, depth, or a drop"
       },
@@ -191,13 +188,13 @@
         "photo": "assets/s02-kasparov-photo.png"
       },
       "params": {
-        "frameWidth": 715,
-        "frameRatio": 1.02,
+        "frameWidth": 831,
+        "frameRatio": 1.28,
         "pushEndFrame": 24,
         "detachFrame": 39,
         "throughEndFrame": 53,
-        "weldRatio": 0.36,
-        "wallScaleEnd": 5.1,
+        "weldRatio": 0.35,
+        "wallScaleEnd": 5.6,
         "accent": "#c9a94b",
         "caption": [
           "Forty years",
@@ -206,40 +203,27 @@
         "captionX": 84,
         "captionY": 106,
         "captionFrame": 50,
-        "captionEvery": 10,
-        "captionSize": 88,
+        "captionEvery": 7,
+        "captionSize": 87,
         "captionRecedeAt": 62,
         "motif": "tally",
-        "motifX": 174,
+        "motifX": 165,
         "motifY": 499,
-        "motifSize": 108,
-        "motifCount": 11,
+        "motifSize": 93,
+        "motifCount": 15,
         "motifFrame": 59,
         "motifColour": "#c9a94b",
-        "motifOpacity": 0.81,
+        "motifOpacity": 1,
         "captionAlign": "left",
         "captionScrim": 0.38,
         "captionEmphasis": "Forty years",
         "captionReveal": "punch",
-        "captionMark": "highlight",
-        "captionWordEvery": 3,
+        "captionMark": "underline",
+        "captionWordEvery": 4,
         "cameraMove": "hold",
-        "cameraPurpose": "a vertical reveal — height, depth, or a drop"
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement",
+        "cameraAuthored": true
       },
-      "props": [
-        {
-          "kind": "wire",
-          "text": "Deep Blue",
-          "shape": "rect",
-          "colour": "#c9a94b",
-          "width": 648,
-          "x": 540,
-          "y": 845,
-          "depth": 0.9,
-          "rotate": 0,
-          "from": 58
-        }
-      ],
       "diagram": {
         "type": "timeline",
         "events": [
@@ -270,40 +254,22 @@
       "sceneType": "composite",
       "voText": "Then it beat Kasparov.",
       "durationInFrames": 53,
-      "transition": {
-        "kind": "slam",
-        "frames": 4
-      },
       "assets": {
         "ground": "assets/s02-kasparov-photo.png"
       },
       "layers": [
         {
           "role": "ground",
-          "depth": 0.79,
+          "depth": 0.84,
           "anchor": "fill"
-        }
-      ],
-      "props": [
-        {
-          "kind": "wire",
-          "text": "Deep Blue",
-          "shape": "rect",
-          "colour": "#c9a94b",
-          "width": 648,
-          "x": 540,
-          "y": 845,
-          "depth": 0.9,
-          "rotate": 0,
-          "from": 0
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.03,
-        "pushTo": 1.32,
-        "pushEndFrame": 50,
+        "pushFrom": 1,
+        "pushTo": 1.34,
+        "pushEndFrame": 52,
         "accent": "#c9a94b",
         "caption": [
           "Then it beat Kasparov"
@@ -312,22 +278,22 @@
         "captionY": 106,
         "captionSize": 53,
         "captionAlign": "left",
-        "captionFrame": 33,
-        "captionEvery": 9,
+        "captionFrame": 30,
+        "captionEvery": 8,
         "captionScrim": 0.38,
-        "glowX": 1464,
-        "glowY": 228,
-        "glowSize": 439,
-        "glowIntensity": 0.56,
+        "glowX": 1348,
+        "glowY": 532,
+        "glowSize": 407,
+        "glowIntensity": 0.66,
         "glowWarm": "#c9a94b",
-        "glowDepth": 0.79,
+        "glowDepth": 0.84,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "Kasparov",
-        "captionReveal": "punch",
-        "captionMark": "underline",
-        "captionWordEvery": 2,
+        "captionReveal": "blur",
+        "captionMark": "none",
+        "captionWordEvery": 3,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
       },
@@ -361,6 +327,10 @@
       "sceneType": "composite",
       "voText": "In 2012 it learned to see,",
       "durationInFrames": 78,
+      "transition": {
+        "kind": "blinds",
+        "frames": 6
+      },
       "assets": {
         "ground": "assets/s03-seeing-bg.png"
       },
@@ -376,10 +346,10 @@
           "kind": "wire",
           "depth": 0.75,
           "x": 540,
-          "y": 934,
-          "width": 374,
+          "y": 946,
+          "width": 403,
           "from": 48,
-          "shape": "circle"
+          "shape": "rect"
         }
       ],
       "params": {
@@ -388,10 +358,10 @@
         "pushFrom": 1,
         "pushTo": 1.38,
         "pushEndFrame": 67,
-        "glowX": 1307,
-        "glowY": 379,
-        "glowSize": 351,
-        "glowIntensity": 0.65,
+        "glowX": 1384,
+        "glowY": 598,
+        "glowSize": 442,
+        "glowIntensity": 0.42,
         "glowWarm": "#c9a94b",
         "glowDepth": 0.74,
         "focusPx": 0,
@@ -402,23 +372,22 @@
           "to see"
         ],
         "captionX": 84,
-        "captionY": 563,
-        "captionSize": 88,
+        "captionY": 357,
+        "captionSize": 95,
         "captionAlign": "left",
         "captionFrame": 6,
-        "captionEvery": 10,
+        "captionEvery": 7,
         "captionScrim": 0.34,
         "captionRecedeAt": 56,
         "accent": "#c9a94b",
-        "handheld": 1.5,
-        "panY": -44,
-        "roll": -0.24,
+        "handheld": 3,
         "captionEmphasis": "2012",
-        "captionReveal": "rise",
+        "captionReveal": "punch",
         "captionMark": "underline",
-        "captionWordEvery": 2,
+        "captionWordEvery": 4,
         "cameraMove": "push",
-        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+        "cameraPurpose": "importance. The frame stops because the idea needs no help",
+        "cameraAuthored": true
       },
       "onScreenText": [
         {
@@ -435,27 +404,23 @@
       "sceneType": "composite",
       "voText": "and nobody outside the labs noticed.",
       "durationInFrames": 77,
-      "transition": {
-        "kind": "rack",
-        "frames": 6
-      },
       "assets": {
         "ground": "assets/s03-seeing-bg.png"
       },
       "layers": [
         {
           "role": "ground",
-          "depth": 0.78,
+          "depth": 0.9,
           "anchor": "fill"
         }
       ],
       "props": [
         {
           "kind": "wire",
-          "depth": 0.92,
+          "depth": 0.88,
           "x": 799,
-          "y": 902,
-          "width": 382,
+          "y": 1039,
+          "width": 526,
           "from": 48,
           "shape": "diamond"
         }
@@ -463,36 +428,38 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.38,
-        "pushTo": 1.02,
-        "pushEndFrame": 72,
+        "pushFrom": 1,
+        "pushTo": 1.1,
+        "pushEndFrame": 73,
         "accent": "#c9a94b",
         "caption": [
           "and nobody outside",
           "the labs noticed"
         ],
         "captionX": 84,
-        "captionY": 1038,
+        "captionY": 474,
         "captionSize": 62,
         "captionAlign": "left",
         "captionFrame": 6,
-        "captionEvery": 9,
+        "captionEvery": 7,
         "captionScrim": 0.34,
-        "glowX": 1388,
-        "glowY": 455,
-        "glowSize": 461,
-        "glowIntensity": 0.67,
+        "glowX": 1425,
+        "glowY": 512,
+        "glowSize": 371,
+        "glowIntensity": 0.61,
         "glowWarm": "#c9a94b",
-        "glowDepth": 0.78,
+        "glowDepth": 0.9,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
+        "panY": -40,
+        "roll": -0.25,
         "captionEmphasis": "outside",
-        "captionReveal": "punch",
-        "captionMark": "box",
-        "captionWordEvery": 3,
-        "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "captionReveal": "rise",
+        "captionMark": "underline",
+        "captionWordEvery": 2,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       }
     },
     {
@@ -509,30 +476,31 @@
         "photo": "assets/s04-move-photo.png"
       },
       "params": {
-        "frameWidth": 769,
-        "frameRatio": 1.26,
+        "frameWidth": 733,
+        "frameRatio": 1.08,
         "pushEndFrame": 21,
         "detachFrame": 34,
         "throughEndFrame": 46,
-        "weldRatio": 0.354,
-        "wallScaleEnd": 6.6,
+        "weldRatio": 0.375,
+        "wallScaleEnd": 6.8,
         "accent": "#c9a94b",
         "caption": [
           "Move",
           "thirty-seven."
         ],
         "captionX": 84,
-        "captionY": 1467,
+        "captionY": 1367,
         "captionFrame": 6,
-        "captionEvery": 10,
-        "captionSize": 91,
+        "captionEvery": 8,
+        "captionSize": 90,
         "captionRecedeAt": 51,
         "captionEmphasis": "thirty-seven",
         "captionReveal": "blur",
-        "captionMark": "box",
-        "captionWordEvery": 4,
+        "captionMark": "none",
+        "captionWordEvery": 3,
         "cameraMove": "hold",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement",
+        "cameraAuthored": true
       },
       "props": [
         {
@@ -572,7 +540,7 @@
           "colour": "#c9a94b",
           "width": 367,
           "x": 670,
-          "y": 883,
+          "y": 627,
           "depth": 0.9,
           "rotate": 0,
           "from": 0
@@ -581,36 +549,38 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.56,
-        "pushTo": 1.01,
-        "pushEndFrame": 55,
+        "pushFrom": 1,
+        "pushTo": 1.12,
+        "pushEndFrame": 53,
         "accent": "#c9a94b",
         "caption": [
           "no human would",
           "have played"
         ],
         "captionX": 84,
-        "captionY": 627,
+        "captionY": 834,
         "captionSize": 79,
         "captionAlign": "left",
         "captionFrame": 5,
-        "captionEvery": 6,
+        "captionEvery": 7,
         "captionScrim": 0.34,
-        "glowX": 1437,
-        "glowY": 598,
-        "glowSize": 480,
-        "glowIntensity": 0.68,
+        "glowX": 1375,
+        "glowY": 415,
+        "glowSize": 384,
+        "glowIntensity": 0.42,
         "glowWarm": "#c9a94b",
         "glowDepth": 0.92,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
+        "panY": -39,
+        "roll": -0.62,
         "captionEmphasis": "played",
-        "captionReveal": "rise",
-        "captionMark": "underline",
+        "captionReveal": "wipe",
+        "captionMark": "highlight",
         "captionWordEvery": 2,
-        "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       }
     },
     {
@@ -618,17 +588,13 @@
       "sceneType": "composite",
       "voText": "Then it learned to talk,",
       "durationInFrames": 51,
-      "transition": {
-        "kind": "slam",
-        "frames": 4
-      },
       "assets": {
         "ground": "assets/s05-talk-bg.png"
       },
       "layers": [
         {
           "role": "ground",
-          "depth": 0.78,
+          "depth": 0.9,
           "anchor": "fill"
         }
       ],
@@ -640,7 +606,7 @@
           "date": "two months",
           "width": 950,
           "x": 540,
-          "y": 960,
+          "y": 1047,
           "depth": 0.86,
           "rotate": -3,
           "from": 12
@@ -652,12 +618,12 @@
         "pushFrom": 1,
         "pushTo": 1.3,
         "pushEndFrame": 44,
-        "glowX": 1415,
-        "glowY": 561,
-        "glowSize": 358,
-        "glowIntensity": 0.4,
+        "glowX": 1381,
+        "glowY": 235,
+        "glowSize": 362,
+        "glowIntensity": 0.56,
         "glowWarm": "#c9a94b",
-        "glowDepth": 0.78,
+        "glowDepth": 0.9,
         "focusPx": 0,
         "fog": 0,
         "caption": [
@@ -667,28 +633,29 @@
         ],
         "captionX": 84,
         "captionY": 307,
-        "captionSize": 89,
+        "captionSize": 96,
         "captionAlign": "left",
-        "captionFrame": 32,
-        "captionEvery": 9,
+        "captionFrame": 22,
+        "captionEvery": 10,
         "captionScrim": 0.38,
         "captionRecedeAt": 37,
         "accent": "#c9a94b",
         "motif": "rise",
-        "motifX": 208,
+        "motifX": 166,
         "motifY": 1574,
-        "motifSize": 57,
-        "motifCount": 8,
-        "motifFrame": 24,
+        "motifSize": 59,
+        "motifCount": 6,
+        "motifFrame": 18,
         "motifColour": "#c9a94b",
-        "motifOpacity": 0.93,
+        "motifOpacity": 0.97,
         "handheld": 1.5,
         "captionEmphasis": "learned",
-        "captionReveal": "punch",
-        "captionMark": "none",
+        "captionReveal": "rise",
+        "captionMark": "underline",
         "captionWordEvery": 3,
         "cameraMove": "push",
-        "cameraPurpose": "single out the subject — the frame closes on what matters"
+        "cameraPurpose": "single out the subject — the frame closes on what matters",
+        "cameraAuthored": true
       },
       "diagram": {
         "type": "measurement",
@@ -705,10 +672,6 @@
       "sceneType": "composite",
       "voText": "and a hundred million people arrived.",
       "durationInFrames": 62,
-      "transition": {
-        "kind": "flare",
-        "frames": 6
-      },
       "assets": {
         "ground": "assets/s05-talk-bg.png"
       },
@@ -737,8 +700,8 @@
         "anchorX": 799,
         "anchorY": 576,
         "pushFrom": 1.17,
-        "pushTo": 1.27,
-        "pushEndFrame": 58,
+        "pushTo": 1.32,
+        "pushEndFrame": 56,
         "accent": "#c9a94b",
         "caption": [
           "and a",
@@ -749,23 +712,23 @@
         "captionY": 307,
         "captionSize": 50,
         "captionAlign": "left",
-        "captionFrame": 38,
-        "captionEvery": 6,
+        "captionFrame": 28,
+        "captionEvery": 10,
         "captionScrim": 0.38,
-        "glowX": 1410,
-        "glowY": 150,
-        "glowSize": 541,
-        "glowIntensity": 0.58,
+        "glowX": 1430,
+        "glowY": 175,
+        "glowSize": 465,
+        "glowIntensity": 0.42,
         "glowWarm": "#c9a94b",
         "glowDepth": 0.87,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panY": -134,
+        "panY": 204,
         "captionEmphasis": "hundred million people",
-        "captionReveal": "rise",
-        "captionMark": "highlight",
-        "captionWordEvery": 4,
+        "captionReveal": "wipe",
+        "captionMark": "none",
+        "captionWordEvery": 3,
         "cameraMove": "tilt",
         "cameraPurpose": "a vertical reveal — height, depth, or a drop"
       },
@@ -784,17 +747,21 @@
       "sceneType": "title-slate",
       "voText": "Seventy years to arrive. Two months to be everywhere.",
       "durationInFrames": 119,
+      "transition": {
+        "kind": "slip",
+        "frames": 10
+      },
       "assets": {
         "background": "assets/s06-close-bg.png"
       },
       "params": {
-        "scrim": 0.39,
+        "scrim": 0.49,
         "kicker": "1956 · 2022",
         "title": "SEVENTY YEARS",
         "footer": "then two months",
-        "titleFrame": 60,
+        "titleFrame": 49,
         "titleSize": 230,
-        "creep": 1.096,
+        "creep": 1.064,
         "accent": "#c9a94b",
         "field": "grid",
         "fieldColours": [
@@ -812,14 +779,9 @@
           "TWENTY"
         ],
         "spinFrames": 48,
-        "mark": "oval",
-        "markX": 260,
-        "markY": 820,
-        "markWidth": 560,
-        "markHeight": 300,
-        "markFrame": 40,
         "cameraMove": "hold",
-        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land",
+        "cameraAuthored": true
       },
       "props": [
         {
@@ -832,31 +794,7 @@
           "rotate": 0,
           "from": 65
         }
-      ],
-      "diagram": {
-        "type": "timeline",
-        "events": [
-          {
-            "at": 1956,
-            "label": "1956",
-            "note": "recovered"
-          },
-          {
-            "at": 2026,
-            "label": "2026",
-            "note": "examined"
-          }
-        ],
-        "gap": [
-          1956,
-          2026
-        ],
-        "gapLabel": "70 years\nunopened",
-        "accent": "#c9a94b",
-        "muted": "#cfc6ae",
-        "from": 0,
-        "over": 54
-      }
+      ]
     }
   ]
 }

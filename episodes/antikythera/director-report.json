@@ -534,6 +534,7 @@
         "panY": null
       },
       "transition": "cut",
+      "cut": null,
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "1901",
@@ -564,6 +565,11 @@
         "panY": null
       },
       "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (museum-dark.jpg)"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "bronze",
@@ -594,6 +600,11 @@
         "panY": null
       },
       "transition": "slip",
+      "cut": {
+        "kind": "DIRECTIONAL",
+        "purpose": "spatial continuity",
+        "because": "beat is COMPARISON"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "corroded",
@@ -617,16 +628,21 @@
       "template": "composite",
       "seconds": 2.43,
       "camera": {
-        "from": 1.18,
-        "to": 1.26,
-        "panX": -141,
+        "from": 1.24,
+        "to": 1.21,
+        "panX": 163,
         "panY": null
       },
       "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (bronze-weight.png)"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "corroded",
-      "reveal": "wipe",
+      "reveal": "rise",
       "plates": [
         "bronze-weight.png"
       ],
@@ -646,14 +662,19 @@
       "camera": {
         "from": 1.2,
         "to": 1.02,
-        "panX": null,
+        "panX": 187,
         "panY": null
       },
       "transition": "slip",
+      "cut": {
+        "kind": "OBJECT_WIPE",
+        "purpose": "object transformation",
+        "because": "beat is EVIDENCE"
+      },
       "representation": "PROCEDURAL",
       "drawn": "timeline",
       "emphasis": "museum",
-      "reveal": "wipe",
+      "reveal": "rise",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [],
@@ -669,16 +690,21 @@
       "template": "composite",
       "seconds": 2.47,
       "camera": {
-        "from": 1.17,
-        "to": 1.3,
-        "panX": 210,
+        "from": 1.04,
+        "to": 1.47,
+        "panX": null,
         "panY": null
       },
-      "transition": "slam",
+      "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "rule onto rule (timeline → timeline)"
+      },
       "representation": "PROCEDURAL",
       "drawn": "timeline",
       "emphasis": "fifty years",
-      "reveal": "rise",
+      "reveal": "punch",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [],
@@ -700,15 +726,18 @@
         "panY": null
       },
       "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "graphic continuity (#c8d94a) — the two shots already share a world, so there is nothing to bridge"
+      },
       "representation": "PROCEDURAL",
       "drawn": "gearSystem",
       "emphasis": "thirty gears",
       "reveal": "rise",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"thirty gears\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -721,21 +750,24 @@
       "template": "composite",
       "seconds": 1.9,
       "camera": {
-        "from": 1.19,
-        "to": 1.25,
+        "from": 1.23,
+        "to": 1.26,
         "panX": null,
-        "panY": 145
+        "panY": 155
       },
       "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "circle onto circle (gearSystem → gearSystem)"
+      },
       "representation": "PROCEDURAL",
       "drawn": "gearSystem",
       "emphasis": "meshing",
-      "reveal": "wipe",
+      "reveal": "rise",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"meshing\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -753,18 +785,21 @@
         "panX": null,
         "panY": null
       },
-      "transition": "rack",
+      "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "circle onto circle (gearSystem → orbit)"
+      },
       "representation": "HYBRID",
       "drawn": "orbit",
       "emphasis": "predicted",
-      "reveal": "rise",
+      "reveal": "punch",
       "plates": [
         "moon-sky.jpg"
       ],
       "drawnGround": null,
-      "props": [
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"predicted\"",
         "secondary": "the strongest image in the reel, returned to",
@@ -782,16 +817,19 @@
         "panX": null,
         "panY": null
       },
-      "transition": "slam",
+      "transition": "slip",
+      "cut": {
+        "kind": "OBJECT_WIPE",
+        "purpose": "object transformation",
+        "because": "beat is VERDICT"
+      },
       "representation": "TYPOGRAPHY",
       "drawn": null,
       "emphasis": null,
       "reveal": null,
       "plates": [],
       "drawnGround": "grid",
-      "props": [
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim",
         "secondary": "the drawn label or mark that dates and places it",
@@ -835,18 +873,32 @@
   "quotas": {
     "camera": {
       "pan": 3,
-      "push": 4,
-      "pull": 1,
+      "push": 5,
       "tilt": 1,
       "hold": 1
     },
     "transition": {
-      "cut": 4,
-      "slip": 2,
-      "slam": 2,
-      "rack": 1
+      "cut": 6,
+      "slip": 3
     },
-    "framing": {}
+    "framing": {},
+    "cut": {
+      "MATCH_CUT": 5,
+      "DIRECTIONAL": 1,
+      "OBJECT_WIPE": 2,
+      "HARD_CUT": 1
+    }
+  },
+  "editing": {
+    "tally": {
+      "MATCH_CUT": 5,
+      "DIRECTIONAL": 1,
+      "OBJECT_WIPE": 2,
+      "HARD_CUT": 1
+    },
+    "hardRatio": 0.67,
+    "total": 9,
+    "note": "HARD_CUT and MATCH_CUT are both made of nothing; the difference is that a match cut was earned"
   },
   "typography": {
     "system": "one family per semantic role — statement, body, label, figure",

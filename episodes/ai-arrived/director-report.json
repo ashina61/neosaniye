@@ -380,6 +380,7 @@
         "panY": null
       },
       "transition": "cut",
+      "cut": null,
       "representation": "HYBRID",
       "drawn": "measurement",
       "emphasis": "1956",
@@ -408,7 +409,12 @@
         "panX": null,
         "panY": -149
       },
-      "transition": "slam",
+      "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (s01-name-bg.png)"
+      },
       "representation": "HYBRID",
       "drawn": "measurement",
       "emphasis": "inventing",
@@ -438,6 +444,11 @@
         "panY": null
       },
       "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "rule onto rule (measurement → timeline)"
+      },
       "representation": "HYBRID",
       "drawn": "timeline",
       "emphasis": "Forty years",
@@ -447,9 +458,7 @@
         "s02-kasparov-photo.png"
       ],
       "drawnGround": null,
-      "props": [
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "absence — the thing not shown",
         "secondary": "the caption",
@@ -462,23 +471,26 @@
       "template": "composite",
       "seconds": 1.77,
       "camera": {
-        "from": 1.03,
-        "to": 1.32,
+        "from": 1,
+        "to": 1.34,
         "panX": null,
         "panY": null
       },
-      "transition": "slam",
+      "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (s02-kasparov-photo.png)"
+      },
       "representation": "HYBRID",
       "drawn": "timeline",
       "emphasis": "Kasparov",
-      "reveal": "punch",
+      "reveal": "blur",
       "plates": [
         "s02-kasparov-photo.png"
       ],
       "drawnGround": null,
-      "props": [
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the setting, established",
         "secondary": "the caption",
@@ -494,13 +506,18 @@
         "from": 1,
         "to": 1.38,
         "panX": null,
-        "panY": -44
+        "panY": null
       },
-      "transition": "cut",
+      "transition": "blinds",
+      "cut": {
+        "kind": "MASK",
+        "purpose": "conceal and reveal",
+        "because": "beat is MYSTERY"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "2012",
-      "reveal": "rise",
+      "reveal": "punch",
       "plates": [
         "s03-seeing-bg.png"
       ],
@@ -520,16 +537,21 @@
       "template": "composite",
       "seconds": 2.57,
       "camera": {
-        "from": 1.38,
-        "to": 1.02,
+        "from": 1,
+        "to": 1.1,
         "panX": null,
-        "panY": null
+        "panY": -40
       },
-      "transition": "rack",
+      "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (s03-seeing-bg.png)"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "outside",
-      "reveal": "punch",
+      "reveal": "rise",
       "plates": [
         "s03-seeing-bg.png"
       ],
@@ -555,6 +577,11 @@
         "panY": null
       },
       "transition": "slip",
+      "cut": {
+        "kind": "DIRECTIONAL",
+        "purpose": "spatial continuity",
+        "because": "beat is CONTEXT"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "thirty-seven",
@@ -579,16 +606,21 @@
       "template": "composite",
       "seconds": 1.9,
       "camera": {
-        "from": 1.56,
-        "to": 1.01,
+        "from": 1,
+        "to": 1.12,
         "panX": null,
-        "panY": null
+        "panY": -39
       },
       "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (s04-move-photo.png)"
+      },
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "played",
-      "reveal": "rise",
+      "reveal": "wipe",
       "plates": [
         "s04-move-photo.png"
       ],
@@ -613,11 +645,16 @@
         "panX": null,
         "panY": null
       },
-      "transition": "slam",
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "FLASH was refused: the arrival could not be afforded here"
+      },
       "representation": "HYBRID",
       "drawn": "measurement",
       "emphasis": "learned",
-      "reveal": "punch",
+      "reveal": "rise",
       "plates": [
         "s05-talk-bg.png"
       ],
@@ -638,15 +675,20 @@
       "seconds": 2.07,
       "camera": {
         "from": 1.17,
-        "to": 1.27,
+        "to": 1.32,
         "panX": null,
-        "panY": -134
+        "panY": 204
       },
-      "transition": "flare",
+      "transition": "cut",
+      "cut": {
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (s05-talk-bg.png)"
+      },
       "representation": "HYBRID",
       "drawn": "measurement",
       "emphasis": "hundred million people",
-      "reveal": "rise",
+      "reveal": "wipe",
       "plates": [
         "s05-talk-bg.png"
       ],
@@ -671,9 +713,14 @@
         "panX": null,
         "panY": null
       },
-      "transition": "cut",
-      "representation": "HYBRID",
-      "drawn": "timeline",
+      "transition": "slip",
+      "cut": {
+        "kind": "OBJECT_WIPE",
+        "purpose": "object transformation",
+        "because": "beat is VERDICT"
+      },
+      "representation": "PHOTO",
+      "drawn": null,
       "emphasis": null,
       "reveal": null,
       "plates": [
@@ -725,19 +772,37 @@
   },
   "quotas": {
     "camera": {
-      "pull": 3,
+      "pull": 1,
       "tilt": 2,
       "hold": 3,
-      "push": 3
+      "push": 3,
+      "drift": 2
     },
     "transition": {
-      "slam": 3,
-      "cut": 4,
-      "rack": 1,
-      "slip": 1,
-      "flare": 1
+      "cut": 7,
+      "blinds": 1,
+      "slip": 2
     },
-    "framing": {}
+    "framing": {},
+    "cut": {
+      "MATCH_CUT": 6,
+      "MASK": 1,
+      "DIRECTIONAL": 1,
+      "HARD_CUT": 1,
+      "OBJECT_WIPE": 1
+    }
+  },
+  "editing": {
+    "tally": {
+      "MATCH_CUT": 6,
+      "MASK": 1,
+      "DIRECTIONAL": 1,
+      "HARD_CUT": 1,
+      "OBJECT_WIPE": 1
+    },
+    "hardRatio": 0.7,
+    "total": 10,
+    "note": "HARD_CUT and MATCH_CUT are both made of nothing; the difference is that a match cut was earned"
   },
   "typography": {
     "system": "one family per semantic role — statement, body, label, figure",

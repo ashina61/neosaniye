@@ -252,3 +252,119 @@ close     1.00    the only part anybody quotes
 
 Impact shake is only available above 0.8, and even then only sometimes: a reel
 where the camera is struck on every cut is not emphatic, it is broken.
+
+---
+
+## Temporal consistency — a valid state at every frame
+
+Everything above judges a shot as an arrangement. This judges it as a
+**sequence of states**, and asks whether every one of them is possible.
+
+The distinction is not academic. A contact sheet takes four stills out of
+sixty; the slot reel's two-values-at-once frame lived in the fifty-six that
+were never sampled, survived two rounds of review, and was then hidden under a
+soft edge mask rather than fixed. **A defect that only exists between the
+frames you look at needs a checker that looks at all of them.**
+
+`engine/state.mjs` is plain JavaScript for the same reason `schema.mjs` is: the
+renderer and the validator have to agree, and the only way to guarantee that is
+for both of them to call the same function. A checker that re-implements what
+the drawing does is a checker that will eventually be checking something else —
+which is exactly what happened when the counter was drawn with `countTo` and
+asserted with `counterValue`, and 29 shipped on a shot about thirty gears.
+
+| function | the invariant |
+| --- | --- |
+| `slotState` / `slotReadableCount` | at most one value readable, at every frame |
+| `counterValue` | monotonic, and lands **exactly** on its figure |
+| `gearAngle` / `gearsMesh` | a meshed wheel turns the other way at the inverse ratio, and the wheels actually touch |
+| `gearTrainLayout` / `trainInsideFrame` | the train fits the frame, and fitting it cannot break the mesh |
+| `countWindow` | the figure lands before the cut |
+| `contains` / `insideFrame` | a ring encircles its subject and stays in the picture |
+
+The reel is now a **split-flap, not a scroll**: a value exits completely before
+the next begins to enter, so the invariant holds by construction rather than by
+tuning. A continuous scroll cannot make that promise — between any two rows
+there is always a moment where each is half in, and no easing curve removes it.
+That is why the honest fix was to change the mechanism.
+
+`scripts/lib/temporal.mjs` walks every frame of every shot and asserts these.
+It runs in `npm run validate`, costs a few hundred frames of arithmetic per
+scene, and needs no browser.
+
+## The Cut Director — every seam gets a decision
+
+The transition director answered *which arrival*. It could not answer *an
+arrival at all?*, so every seam past the first got decorated with whatever the
+quota still had room for.
+
+`scripts/lib/cut.mjs` answers the earlier question. The vocabulary is
+editorial — `HARD_CUT`, `MATCH_CUT`, `OBJECT_WIPE`, `MASK`, `MORPH`,
+`DIRECTIONAL`, `FADE`, `FLASH` — and **`HARD_CUT` is a first-class answer**, not
+the absence of one. A non-hard cut must carry a purpose from a fixed list; if
+there is no purpose to state, the answer is a hard cut.
+
+Where two shots genuinely rhyme, the correspondence does the work and the seam
+stays hard. A match cut is the strongest transition there is and it is made of
+nothing; a wipe over one hides the very thing that makes it work.
+
+A shared accent colour is **not** a rhyme. The first pass counted it as one and
+handed six of nine seams a `MATCH_CUT` — and six match cuts is no match cuts.
+It comes back as a *weak* correspondence, which argues for a plain cut.
+
+The editorial decision is a request, not an override. It is handed down to
+`directTransition`, where the safety rules stay: a short shot refuses to open
+unreadable, a third repeat is refused, an arrival may not eat the shot. When
+the arrival cannot be afforded the answer is a plain cut — which is the Cut
+Director's own fallback, so nothing is lost in translation.
+
+`director-report.json` records `editing.hardRatio`. A documentary short lives
+above two thirds; below that the plain cuts have stopped outnumbering the
+effects and there is nothing left for an effect to stand out against.
+
+## The reel-level editor — is this a reel, or ten shots in a row?
+
+`scripts/lib/editor.mjs`. "Slideshow" is not a property any shot has. Ten shots
+that each pass every check in this repo can still be a slideshow, because what
+makes it one is that they are the *same shot* ten times — and sameness only
+exists between things.
+
+- **Anti-slideshow.** Shots are reduced to a signature (representation, camera,
+  framing, length). Sixty per cent identical is an error. Note that the test is
+  about sameness rather than about motion: every shot in the reel this was
+  written for had a camera push. Motion that never varies carries no
+  information.
+- **Rhythm.** The coefficient of variation of shot lengths. Under 0.18 the reel
+  is a metronome — length is the loudest way an edit says what matters.
+- **Motion density, per shot rather than averaged.** An average hides both
+  failures at once: one shot with six things happening and one with none play
+  as a strobe followed by a photograph. Four events inside a fifth of a second
+  is one unreadable moment, not four beats.
+- **Information density.** Words on screen against the time they are up. The
+  planner schedules captions against the same figure (`readingFrames`), so the
+  check and the schedule cannot disagree.
+
+## Nothing is drawn through a sentence
+
+Clipping asks whether a thing is in the frame. `clippingProblems` now also asks
+whether **two** things are in the same place, which is the other half of law 26
+and the half that shipped: a dashed frame ruled straight through "FOURTEEN
+HUNDRED" and struck the footer out on its way past.
+
+Type wins. The planner moves a colliding graphic out of the type band, and
+where there is no clear band it **drops** it — a graphic with nowhere to stand
+is not a graphic, it is clutter.
+
+## The frame the cut lands on
+
+A self-drawing diagram is nothing at frame zero, so every cut into one landed
+on a black frame with a few disconnected zigzag arcs floating in it. The answer
+is not to abandon the draw-on — a diagram that fades up is a slide. It is that
+a draughtsman does not start with the teeth: the pitch circles and centre marks
+are **set out** first, and the drawing is made on top of them.
+
+The same law applies to light. `Glow`'s innermost layer is a white-hot core and
+it belongs on a bulb; with no plate under it, only the spill is drawn.
+
+Sample `--at=0,0.33,0.66,0.94` rather than `--per`. Even spacing never sees
+frame zero, and half of this repo's shipped defects lived there.

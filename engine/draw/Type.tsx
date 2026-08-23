@@ -2,6 +2,7 @@ import React from 'react';
 import {AbsoluteFill, Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 import {CLAMP, dampedSwing, holdKeyframes, posterizeTime, springEntrance, stagger} from '../motion';
 import {KineticLine, type EmphasisMark, type Reveal} from './Kinetic';
+import {slotState} from '../state.mjs';
 
 const SERIF = '"Playfair Display", "Iowan Old Style", Georgia, serif';
 const SANS = '"Archivo", "Helvetica Neue", Arial, sans-serif';
@@ -235,6 +236,16 @@ export const Slate: React.FC<{
   kicker?: string;
   title: string;
   footer?: string;
+  /**
+   * WHEN THE QUALIFIER ARRIVES.
+   *
+   * The footer used to fade up with the whole block, so a closing card had one
+   * event in it: everything appeared, and then four seconds passed. Landing the
+   * figure and THEN the sentence that qualifies it is two beats — "fourteen
+   * hundred", pause, "years before anything like it" — which is how the line is
+   * spoken and, until now, not how it was shown.
+   */
+  footerFrom?: number;
   from?: number;
   colour?: string;
   accent?: string;
@@ -258,6 +269,7 @@ export const Slate: React.FC<{
   kicker,
   title,
   footer,
+  footerFrom,
   from = 0,
   colour = '#f6ead0',
   accent = '#ffcf3d',
@@ -270,6 +282,7 @@ export const Slate: React.FC<{
   const stepped = posterizeTime(frame, fps, 12);
   const land = springEntrance(stepped, fps, {delay: from, stiffness: 46, mass: 1.05});
   const rule = interpolate(stepped, [from + 4, from + 20], [0, 1], CLAMP);
+  const tail = footerFrom === undefined ? 1 : interpolate(stepped, [footerFrom, footerFrom + 10], [0, 1], CLAMP);
 
   return (
     <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center', pointerEvents: 'none', padding: '0 90px'}}>
@@ -315,8 +328,9 @@ export const Slate: React.FC<{
               fontStyle: 'italic',
               fontSize: 44,
               color: colour,
-              opacity: 0.78,
+              opacity: 0.78 * tail,
               marginTop: 34,
+              transform: `translateY(${(1 - tail) * 16}px)`,
             }}
           >
             {footer}
@@ -360,52 +374,53 @@ export const Slot: React.FC<{
   const {fps, width} = useVideoConfig();
   const stepped = posterizeTime(frame, fps, 12);
 
-  // The decoys, then the answer. Landing is just scrolling to the last row.
+  // The decoys, then the answer. The reel stops on the last row.
   const rows = [...reel.filter((r) => r !== value), value];
   // Fit the LONGEST row, not each one. A reel whose type resizes as it scrolls
   // is a reel that wobbles; and the row that decides the size is whichever
   // decoy is widest, not the answer.
   const fitted = rows.reduce((smallest, row) => Math.min(smallest, fitSize(row, size, width)), size);
+  const line = fitted * 1.34;
+
   /**
-   * THE WINDOW IS TALLER THAN THE TYPE, AND ITS EDGES ARE SOFT.
+   * ONE VALUE READABLE AT A TIME — GUARANTEED, NOT TUNED.
    *
-   * At 1.12 the glyphs nearly filled the window, so any frame caught mid-scroll
-   * showed the bottom half of one word sitting on the top half of the next —
-   * two sliced words overlapping between the slate's rules, which reads as a
-   * broken layout rather than as a mechanism. A real odometer shows one value
-   * with the neighbours falling away, so the window is half again as tall as
-   * the type and the rows fade out at its edges.
+   * This was a continuous scroll, so between any two values both were half in
+   * the window: two sliced words stacked between the slate's rules. The first
+   * attempt at a fix put a soft mask over the window edges, which made the
+   * broken state harder to see and left it broken.
+   *
+   * The mechanism itself is different now. A value ENTERS from below, holds
+   * still for the half of its slice anybody actually reads, and LEAVES upward
+   * before the next one starts arriving — a split-flap rather than an odometer.
+   * `slotState` owns the arithmetic and the regression test asserts against the
+   * same function the drawing calls, so the two cannot drift apart.
    */
-  const line = fitted * 1.5;
-  const softEdge = 'linear-gradient(180deg, transparent 0%, #000 26%, #000 74%, transparent 100%)';
-  const travel = interpolate(stepped, [from, from + spin], [0, rows.length - 1], {
-    ...CLAMP,
-    easing: Easing.out(Easing.cubic),
-  });
-  // One bounce on the stop — the mechanism settling, not the type animating.
-  const settle = stepped <= from + spin ? 0 : dampedSwing(stepped, {amplitude: fitted * 0.06, rate: 0.9, decay: 0.24, delay: from + spin});
+  const settle =
+    stepped <= from + spin
+      ? 0
+      : dampedSwing(stepped, {amplitude: fitted * 0.05, rate: 0.9, decay: 0.24, delay: from + spin});
 
   return (
-    <div
-      style={{
-        height: line,
-        overflow: 'hidden',
-        position: 'relative',
-        WebkitMaskImage: softEdge,
-        maskImage: softEdge,
-      }}
-    >
-      <div style={{transform: `translateY(${-travel * line + settle}px)`}}>
-        {rows.map((row, i) => (
+    <div style={{height: line, overflow: 'hidden', position: 'relative'}}>
+      {rows.map((row, i) => {
+        const state = slotState(stepped, i, {from, spin, count: rows.length});
+        // A row a whole line out of the window is not drawn at all. Leaving it
+        // at zero opacity is the same picture with a compositing cost, and it
+        // is also how a "hidden" element ends up visible after a later change.
+        if (Math.abs(state.offset) >= 1) return null;
+        return (
           <div
             key={`${row}-${i}`}
             style={{
+              position: 'absolute',
+              inset: 0,
               height: line,
               lineHeight: `${line}px`,
+              transform: `translateY(${state.offset * line + (state.phase === 'settled' ? settle : 0)}px)`,
               // A REEL ROW IS ONE LINE. The window is one line tall and clips
               // what leaves it, so "SEVENTY YEARS" wrapped at the space and the
               // second word was cut away entirely — the card read "SEVENTY".
-              // Shrinking the type was only half the fix; it also must not wrap.
               whiteSpace: 'nowrap',
               fontFamily: SANS,
               fontWeight: 900,
@@ -414,14 +429,16 @@ export const Slot: React.FC<{
               fontVariantNumeric: 'tabular-nums',
               color: colour,
               textAlign: 'center',
-              opacity: i === rows.length - 1 ? 1 : 0.5,
+              // The decoys are dimmer than the answer, so even the one readable
+              // value says whether it is a candidate or the result.
+              opacity: state.phase === 'settled' ? 1 : 0.62,
               textShadow: '0 0 40px rgba(0,0,0,0.92)',
             }}
           >
             {row}
           </div>
-        ))}
-      </div>
+        );
+      })}
     </div>
   );
 };
