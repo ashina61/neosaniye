@@ -6,10 +6,10 @@
   "look": {
     "posterizeFps": 15,
     "grade": {
-      "saturate": 1.05,
-      "contrast": 1.08,
+      "saturate": 1.16,
+      "contrast": 1.12,
       "sepia": 0.0,
-      "brightness": 1.0
+      "brightness": 1.02
     },
     "film": {
       "grain": true,
@@ -17,11 +17,11 @@
       "scanlines": false,
       "vignette": true,
       "gateWeave": false,
-      "grainOpacity": 0.16,
+      "grainOpacity": 0.13,
       "grungeOpacity": 0,
       "scanlineOpacity": 0,
       "scanlinePeriod": 9,
-      "vignetteStrength": 0.42,
+      "vignetteStrength": 0.5,
       "weavePx": 0,
       "weaveScale": 1
     },
@@ -41,416 +41,48 @@
   },
   "scenes": [
     {
-      "id": "s00-insan",
+      "id": "s01-hook",
       "sceneType": "heart",
-      "durationInFrames": 55,
+      "durationInFrames": 30,
       "params": {
-        "bpm": 66,
-        "title": "Göğsünün ortasında bir pompa var.",
-        "note": "Yumruk kadar.",
+        "bpm": 72,
+        "title": "Kalbin bugün 100.000 kez atacak.",
+        "note": "Nasıl olduğuna bak.",
+        "zoom": 1.04,
+        "zoomTo": 1.0,
+        "flow": [
+          "venaCava",
+          "ivc",
+          "toRV",
+          "toLung",
+          "fromLung",
+          "toLV",
+          "toBody"
+        ],
+        "lit": [],
+        "prog": 0.0,
+        "progTo": 0.0444
+      }
+    },
+    {
+      "id": "s02-insan",
+      "sceneType": "heart",
+      "durationInFrames": 34,
+      "params": {
+        "bpm": 68,
+        "title": "Yumruk kadar.",
+        "note": "Göğsünün tam ortasında.",
         "show": [
           "figure"
         ],
-        "figureOpacity": 1,
-        "skeletonOpacity": 0,
-        "skeletonTo": 0.9,
-        "zoom": 0.2645502645502646,
-        "zoomTo": 0.2645502645502646,
-        "panY": 0,
-        "lit": [
-          "none"
-        ],
-        "flow": []
-      }
-    },
-    {
-      "id": "s00b-iskelet",
-      "sceneType": "heart",
-      "durationInFrames": 50,
-      "transition": {
-        "kind": "cut",
-        "frames": 3
-      },
-      "params": {
-        "bpm": 66,
-        "title": "Göğüs kafesinin arkasında, sternumun solunda.",
-        "show": [
-          "figure",
-          "skeleton"
-        ],
-        "figureOpacity": 0.35,
-        "skeletonOpacity": 1,
-        "zoom": 0.2645502645502646,
-        "zoomTo": 0.5026455026455027,
-        "panY": 0,
-        "panYTo": 300,
-        "lit": [
-          "none"
-        ],
-        "flow": []
-      }
-    },
-    {
-      "id": "s00c-kafes",
-      "sceneType": "heart",
-      "durationInFrames": 55,
-      "transition": {
-        "kind": "cut",
-        "frames": 3
-      },
-      "params": {
-        "bpm": 70,
-        "title": "Ve hiç durmadan atıyor.",
-        "show": [
-          "figure",
-          "skeleton",
-          "lungs"
-        ],
-        "figureOpacity": 0.18,
-        "skeletonOpacity": 0.85,
-        "skeletonTo": 0.5,
-        "lungsOpacity": 0.9,
-        "zoom": 0.5026455026455027,
-        "zoomTo": 1.1640211640211644,
-        "panY": 300,
-        "panYTo": 170,
-        "flow": [
-          "venaCava",
-          "ivc",
-          "toRV",
-          "toLung",
-          "fromLung",
-          "toLV",
-          "toBody"
-        ],
-        "lit": []
-      }
-    },
-    {
-      "id": "s01-pompa",
-      "sceneType": "heart",
-      "durationInFrames": 55,
-      "params": {
-        "bpm": 66,
-        "title": "Dört odası var. İkisi alır, ikisi basar.",
-        "note": "Sağ taraf, sol taraf.",
-        "flow": [
-          "venaCava",
-          "ivc",
-          "toRV",
-          "toLung",
-          "fromLung",
-          "toLV",
-          "toBody"
-        ],
-        "lit": [],
-        "zoom": 1.1640211640211644,
-        "zoomTo": 1.0,
-        "panY": 170,
-        "panYTo": 0,
-        "show": [
-          "lungs"
-        ],
-        "lungsOpacity": 0.35,
-        "lungsTo": 0.15,
-        "labels": [
-          "SAĞ KULAKÇIK|0.306|0.385|l",
-          "SOL KULAKÇIK|0.685|0.385|r"
-        ]
-      },
-      "transition": {
-        "kind": "cut",
-        "frames": 3
-      }
-    },
-    {
-      "id": "s02-iki",
-      "sceneType": "heart",
-      "durationInFrames": 40,
-      "params": {
-        "bpm": 66,
-        "title": "Ama tek pompa değil. Yan yana iki pompa.",
-        "note": "Solda sağ taraf, sağda sol taraf.",
-        "lit": [],
-        "flow": [],
-        "labels": [
-          "SAĞ KARINCIK|0.370|0.615|l",
-          "SEPTUM|0.546|0.560|r"
-        ]
-      },
-      "transition": {
-        "kind": "cut",
-        "frames": 3
-      }
-    },
-    {
-      "id": "s03-donus",
-      "sceneType": "heart",
-      "durationInFrames": 42,
-      "params": {
-        "bpm": 66,
-        "title": "Kirli kan vücuttan sağ kulakçığa döner.",
-        "lit": [
-          "ra",
-          "vessels"
-        ],
-        "flow": [
-          "venaCava",
-          "ivc"
-        ],
-        "labels": [
-          "VENA KAVA|0.222|0.172|l",
-          "SAĞ KULAKÇIK|0.306|0.385|l"
-        ]
-      },
-      "transition": {
-        "kind": "cut",
-        "frames": 3
-      }
-    },
-    {
-      "id": "s04-akciger",
-      "sceneType": "heart",
-      "durationInFrames": 47,
-      "params": {
-        "bpm": 66,
-        "title": "Sağ karıncık onu akciğere basar.",
-        "lit": [
-          "rv",
-          "valve",
-          "vessels"
-        ],
-        "flow": [
-          "toRV",
-          "toLung"
-        ],
-        "labels": [
-          "PULMONER ARTER|0.306|0.208|l",
-          "AKCİĞER|0.361|0.396|l|b"
-        ],
-        "zoom": 1.0,
-        "zoomTo": 0.45,
-        "panX": 0,
-        "panXTo": 46,
-        "panY": 0,
-        "panYTo": 19,
-        "show": [
-          "lungs"
-        ],
-        "lungsOpacity": 0.0,
-        "lungsTo": 0.95
-      },
-      "transition": {
-        "kind": "cut",
-        "frames": 3
-      }
-    },
-    {
-      "id": "s05-oksijen",
-      "sceneType": "heart",
-      "durationInFrames": 37,
-      "params": {
-        "bpm": 66,
-        "title": "Akciğerde oksijeni alır. Rengi değişir.",
-        "lit": [
-          "vessels"
-        ],
-        "flow": [
-          "toLung",
-          "fromLung"
-        ],
-        "zoom": 0.45,
-        "panY": 19,
-        "labels": [
-          "AKCİĞER|0.660|0.396|r|b"
-        ],
-        "zoomTo": 0.5625,
-        "panX": 46,
-        "panYTo": 59,
-        "show": [
-          "lungs"
-        ],
-        "lungsOpacity": 0.95
-      },
-      "transition": {
-        "kind": "cut",
-        "frames": 3
-      }
-    },
-    {
-      "id": "s06-sol",
-      "sceneType": "heart",
-      "durationInFrames": 42,
-      "params": {
-        "bpm": 66,
-        "title": "Temiz kan sol kulakçığa girer.",
-        "lit": [
-          "la",
-          "vessels"
-        ],
-        "flow": [
-          "fromLung"
-        ],
-        "labels": [
-          "PULMONER VEN|0.861|0.323|r",
-          "SOL KULAKÇIK|0.685|0.385|r"
-        ],
-        "zoom": 0.5625,
-        "zoomTo": 1.0,
-        "panX": 46,
-        "panXTo": 0,
-        "panY": 59,
-        "panYTo": 0,
-        "show": [
-          "lungs"
-        ],
-        "lungsOpacity": 0.9,
-        "lungsTo": 0.3
-      },
-      "transition": {
-        "kind": "cut",
-        "frames": 3
-      }
-    },
-    {
-      "id": "s07-vucut",
-      "sceneType": "heart",
-      "durationInFrames": 78,
-      "params": {
-        "bpm": 66,
-        "title": "Sol karıncık bütün vücuda basar.",
-        "lit": [
-          "lv",
-          "valve",
-          "vessels"
-        ],
-        "flow": [
-          "toLV",
-          "toBody",
-          "body"
-        ],
-        "labels": [
-          "AORT|0.60|0.435|r"
-        ],
+        "figureOpacity": 0,
+        "figureTo": 0.9,
         "zoom": 1.0,
         "zoomTo": 0.2645502645502646,
         "panX": 0,
         "panXTo": 27,
         "panY": 0,
         "panYTo": -249,
-        "show": [
-          "figure",
-          "skeleton",
-          "lungs",
-          "arteries"
-        ],
-        "figureOpacity": 0.0,
-        "figureTo": 0.22,
-        "skeletonOpacity": 0.0,
-        "skeletonTo": 0.22,
-        "lungsOpacity": 0.3,
-        "lungsTo": 0.2,
-        "arteriesOpacity": 0.0,
-        "arteriesTo": 1
-      },
-      "transition": {
-        "kind": "cut",
-        "frames": 3
-      }
-    },
-    {
-      "id": "s08-duvar",
-      "sceneType": "heart",
-      "durationInFrames": 42,
-      "params": {
-        "bpm": 66,
-        "title": "Sol karıncığın duvarı üç kat kalın.",
-        "note": "Çünkü yolu bütün vücut.",
-        "lit": [
-          "lv",
-          "rv"
-        ],
-        "zoom": 1.5,
-        "panY": -420,
-        "flow": [],
-        "show": []
-      },
-      "transition": {
-        "kind": "cut",
-        "frames": 3
-      }
-    },
-    {
-      "id": "s09-kapak",
-      "sceneType": "heart",
-      "durationInFrames": 37,
-      "params": {
-        "bpm": 66,
-        "title": "Kapakçıklar tek yön verir. Geri akış yok.",
-        "lit": [
-          "valve",
-          "rv",
-          "lv"
-        ],
-        "zoom": 1.7,
-        "panY": -260,
-        "flow": [],
-        "labels": [
-          "TRİKÜSPİT|0.338|0.484|l",
-          "MİTRAL|0.659|0.483|r"
-        ],
-        "show": []
-      },
-      "transition": {
-        "kind": "cut",
-        "frames": 3
-      }
-    },
-    {
-      "id": "s10-atim",
-      "sceneType": "heart",
-      "durationInFrames": 28,
-      "params": {
-        "bpm": 66,
-        "title": "Bir atımda bu kadar kan.",
-        "big": "70 mL",
-        "lit": [
-          "lv"
-        ],
-        "flow": [
-          "toBody"
-        ],
-        "show": []
-      },
-      "transition": {
-        "kind": "cut",
-        "frames": 3
-      }
-    },
-    {
-      "id": "s11-gun",
-      "sceneType": "heart",
-      "durationInFrames": 34,
-      "params": {
-        "bpm": 66,
-        "title": "Günde bu kadar atım.",
-        "big": "100.000",
-        "lit": [],
-        "flow": [],
-        "show": []
-      },
-      "transition": {
-        "kind": "cut",
-        "frames": 3
-      }
-    },
-    {
-      "id": "s12-omur",
-      "sceneType": "heart",
-      "durationInFrames": 33,
-      "params": {
-        "bpm": 74,
-        "title": "Ve bir kere bile durmuyor.",
         "flow": [
           "venaCava",
           "ivc",
@@ -458,30 +90,452 @@
           "toLung",
           "fromLung",
           "toLV",
-          "toBody",
-          "body",
-          "bodyBack"
+          "toBody"
         ],
         "lit": [],
+        "prog": 0.0444,
+        "progTo": 0.0948
+      },
+      "transition": {
+        "kind": "cut",
+        "frames": 2
+      }
+    },
+    {
+      "id": "s03-iskelet",
+      "sceneType": "heart",
+      "durationInFrames": 34,
+      "params": {
+        "bpm": 68,
+        "title": "Göğüs kafesinin arkasında.",
+        "show": [
+          "figure",
+          "skeleton"
+        ],
+        "figureOpacity": 0.9,
+        "figureTo": 0.32,
+        "skeletonOpacity": 0,
+        "skeletonTo": 1,
         "zoom": 0.2645502645502646,
         "panX": 27,
         "panY": -249,
+        "flow": [
+          "venaCava",
+          "ivc",
+          "toRV",
+          "toLung",
+          "fromLung",
+          "toLV",
+          "toBody"
+        ],
+        "lit": [],
+        "prog": 0.0948,
+        "progTo": 0.1452
+      },
+      "transition": {
+        "kind": "cut",
+        "frames": 2
+      }
+    },
+    {
+      "id": "s04-kafes",
+      "sceneType": "heart",
+      "durationInFrames": 40,
+      "params": {
+        "bpm": 70,
+        "title": "Sternumun hemen solunda.",
+        "note": "Ve hiç durmuyor.",
+        "show": [
+          "figure",
+          "skeleton",
+          "lungs"
+        ],
+        "figureOpacity": 0.32,
+        "figureTo": 0.1,
+        "skeletonOpacity": 1,
+        "skeletonTo": 0.5,
+        "lungsOpacity": 0,
+        "lungsTo": 0.55,
+        "zoom": 0.2645502645502646,
+        "zoomTo": 0.45,
+        "panX": 27,
+        "panXTo": 46,
+        "panY": -249,
+        "panYTo": 19,
+        "flow": [
+          "venaCava",
+          "ivc",
+          "toRV",
+          "toLung",
+          "fromLung",
+          "toLV",
+          "toBody"
+        ],
+        "lit": [],
+        "prog": 0.1452,
+        "progTo": 0.2044
+      },
+      "transition": {
+        "kind": "cut",
+        "frames": 2
+      }
+    },
+    {
+      "id": "s05-dort",
+      "sceneType": "heart",
+      "durationInFrames": 42,
+      "params": {
+        "bpm": 66,
+        "title": "Dört odası var.",
+        "note": "İkisi alır, ikisi basar.",
+        "show": [
+          "lungs"
+        ],
+        "lungsOpacity": 0.55,
+        "lungsTo": 0.12,
+        "zoom": 0.45,
+        "zoomTo": 1.0,
+        "panX": 46,
+        "panXTo": 0,
+        "panY": 19,
+        "panYTo": 0,
+        "flow": [],
+        "lit": [],
+        "labels": [
+          "SAĞ KULAKÇIK|0.306|0.385|l",
+          "SOL KULAKÇIK|0.685|0.385|r"
+        ],
+        "prog": 0.2044,
+        "progTo": 0.2667
+      },
+      "transition": {
+        "kind": "cut",
+        "frames": 2
+      }
+    },
+    {
+      "id": "s06-donus",
+      "sceneType": "heart",
+      "durationInFrames": 46,
+      "params": {
+        "bpm": 66,
+        "title": "Kirli kan sağ kulakçığa döner.",
+        "zoom": 1.0,
+        "zoomTo": 1.06,
+        "flow": [
+          "venaCava",
+          "ivc"
+        ],
+        "lit": [
+          "ra",
+          "vessels"
+        ],
+        "labels": [
+          "VENA KAVA|0.222|0.172|l",
+          "SAĞ KULAKÇIK|0.306|0.385|l"
+        ],
+        "prog": 0.2667,
+        "progTo": 0.3348
+      },
+      "transition": {
+        "kind": "cut",
+        "frames": 2
+      }
+    },
+    {
+      "id": "s07-akciger",
+      "sceneType": "heart",
+      "durationInFrames": 52,
+      "params": {
+        "bpm": 70,
+        "title": "Sağ karıncık akciğere basar.",
+        "show": [
+          "lungs"
+        ],
+        "lungsOpacity": 0.1,
+        "lungsTo": 0.95,
+        "zoom": 1.06,
+        "zoomTo": 0.45,
+        "panX": 0,
+        "panXTo": 46,
+        "panY": 0,
+        "panYTo": 19,
+        "flow": [
+          "toRV",
+          "toLung"
+        ],
+        "lit": [
+          "rv",
+          "valve",
+          "vessels"
+        ],
+        "labels": [
+          "PULMONER ARTER|0.306|0.208|l",
+          "AKCİĞER|0.361|0.396|l|b"
+        ],
+        "prog": 0.3348,
+        "progTo": 0.4119
+      },
+      "transition": {
+        "kind": "cut",
+        "frames": 2
+      }
+    },
+    {
+      "id": "s08-oksijen",
+      "sceneType": "heart",
+      "durationInFrames": 40,
+      "params": {
+        "bpm": 70,
+        "title": "Orada oksijeni alır.",
+        "note": "Rengi değişir.",
+        "show": [
+          "lungs"
+        ],
+        "lungsOpacity": 0.95,
+        "zoom": 0.45,
+        "zoomTo": 0.549,
+        "panX": 46,
+        "panY": 19,
+        "panYTo": 53,
+        "flow": [
+          "toLung",
+          "fromLung"
+        ],
+        "lit": [
+          "vessels"
+        ],
+        "labels": [
+          "AKCİĞER|0.660|0.396|r|b"
+        ],
+        "prog": 0.4119,
+        "progTo": 0.4711
+      },
+      "transition": {
+        "kind": "cut",
+        "frames": 2
+      }
+    },
+    {
+      "id": "s09-sol",
+      "sceneType": "heart",
+      "durationInFrames": 44,
+      "params": {
+        "bpm": 66,
+        "title": "Temiz kan sol kulakçığa girer.",
+        "show": [
+          "lungs"
+        ],
+        "lungsOpacity": 0.9,
+        "lungsTo": 0.2,
+        "zoom": 0.549,
+        "zoomTo": 1.0,
+        "panX": 46,
+        "panXTo": 0,
+        "panY": 53,
+        "panYTo": 0,
+        "flow": [
+          "fromLung"
+        ],
+        "lit": [
+          "la",
+          "vessels"
+        ],
+        "labels": [
+          "PULMONER VEN|0.861|0.323|r"
+        ],
+        "prog": 0.4711,
+        "progTo": 0.5363
+      },
+      "transition": {
+        "kind": "cut",
+        "frames": 2
+      }
+    },
+    {
+      "id": "s10-vucut",
+      "sceneType": "heart",
+      "durationInFrames": 66,
+      "params": {
+        "bpm": 74,
+        "title": "Sol karıncık bütün vücuda basar.",
         "show": [
           "figure",
           "skeleton",
           "lungs",
           "arteries"
         ],
-        "figureOpacity": 0.22,
-        "skeletonOpacity": 0.25,
-        "lungsOpacity": 0.25,
-        "arteriesOpacity": 1,
+        "figureOpacity": 0,
         "figureTo": 0.22,
-        "skeletonTo": 0.22
+        "skeletonOpacity": 0,
+        "skeletonTo": 0.22,
+        "lungsOpacity": 0.2,
+        "lungsTo": 0.16,
+        "arteriesOpacity": 0,
+        "arteriesTo": 1,
+        "zoom": 1.0,
+        "zoomTo": 0.2645502645502646,
+        "panX": 0,
+        "panXTo": 27,
+        "panY": 0,
+        "panYTo": -249,
+        "flow": [
+          "toLV",
+          "toBody",
+          "body"
+        ],
+        "lit": [
+          "lv",
+          "valve",
+          "vessels"
+        ],
+        "labels": [
+          "AORT|0.60|0.435|r"
+        ],
+        "prog": 0.5363,
+        "progTo": 0.6341
       },
       "transition": {
         "kind": "cut",
-        "frames": 3
+        "frames": 2
+      }
+    },
+    {
+      "id": "s11-duvar",
+      "sceneType": "heart",
+      "durationInFrames": 44,
+      "params": {
+        "bpm": 66,
+        "title": "Duvarı üç kat kalın.",
+        "note": "Çünkü yolu bütün vücut.",
+        "zoom": 1.42,
+        "zoomTo": 1.5,
+        "panY": -380,
+        "panYTo": -400,
+        "flow": [],
+        "lit": [
+          "lv",
+          "rv"
+        ],
+        "labels": [
+          "SOL KARINCIK|0.639|0.615|r"
+        ],
+        "prog": 0.6341,
+        "progTo": 0.6993
+      },
+      "transition": {
+        "kind": "cut",
+        "frames": 2
+      }
+    },
+    {
+      "id": "s12-kapak",
+      "sceneType": "heart",
+      "durationInFrames": 44,
+      "params": {
+        "bpm": 66,
+        "title": "Kapaklar tek yön verir.",
+        "note": "Geri akış yok.",
+        "zoom": 1.62,
+        "zoomTo": 1.7,
+        "panY": -250,
+        "panYTo": -268,
+        "flow": [],
+        "lit": [
+          "valve",
+          "rv",
+          "lv"
+        ],
+        "labels": [
+          "TRİKÜSPİT|0.338|0.484|l",
+          "MİTRAL|0.659|0.483|r"
+        ],
+        "prog": 0.6993,
+        "progTo": 0.7644
+      },
+      "transition": {
+        "kind": "cut",
+        "frames": 2
+      }
+    },
+    {
+      "id": "s13-atim",
+      "sceneType": "heart",
+      "durationInFrames": 44,
+      "params": {
+        "bpm": 72,
+        "title": "Her atımda bu kadar kan.",
+        "countTo": 70,
+        "bigSuffix": " mL",
+        "zoom": 1.0,
+        "zoomTo": 1.04,
+        "flow": [
+          "toBody"
+        ],
+        "lit": [
+          "lv"
+        ],
+        "prog": 0.7644,
+        "progTo": 0.8296
+      },
+      "transition": {
+        "kind": "cut",
+        "frames": 2
+      }
+    },
+    {
+      "id": "s14-gun",
+      "sceneType": "heart",
+      "durationInFrames": 48,
+      "params": {
+        "bpm": 78,
+        "title": "Günde bu kadar atım.",
+        "countTo": 100000,
+        "zoom": 1.04,
+        "zoomTo": 1.0,
+        "flow": [
+          "venaCava",
+          "ivc",
+          "toRV",
+          "toLung",
+          "fromLung",
+          "toLV",
+          "toBody"
+        ],
+        "lit": [],
+        "prog": 0.8296,
+        "progTo": 0.9007
+      },
+      "transition": {
+        "kind": "cut",
+        "frames": 2
+      }
+    },
+    {
+      "id": "s15-loop",
+      "sceneType": "heart",
+      "durationInFrames": 67,
+      "params": {
+        "bpm": 72,
+        "title": "Ve bir kere bile durmuyor.",
+        "zoom": 1.0,
+        "zoomTo": 1.04,
+        "flow": [
+          "venaCava",
+          "ivc",
+          "toRV",
+          "toLung",
+          "fromLung",
+          "toLV",
+          "toBody"
+        ],
+        "lit": [],
+        "prog": 0.9007,
+        "progTo": 1.0
+      },
+      "transition": {
+        "kind": "cut",
+        "frames": 2
       }
     }
   ]

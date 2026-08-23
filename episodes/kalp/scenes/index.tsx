@@ -176,8 +176,23 @@ const Heart: React.FC<SceneProps> = ({scene, durationInFrames}) => {
    */
   const ease = (u: number) => u * u * (3 - 2 * u);
   const progress = ease(Math.min(1, frame / Math.max(1, durationInFrames - 1)));
+  /**
+   * KESİM VURUŞU. Her çekim %2 büyük başlayıp dört karede yerine oturur. Sert
+   * kesimi HİSSETTİREN şey budur; onsuz iki sahne aynı çizimin iki hâli gibi
+   * akar ve göz kesildiğini fark etmez.
+   */
+  const punch = 1 + 0.02 * Math.max(0, 1 - frame / 4);
   const lerp = (a: number, b: number) => a + (b - a) * progress;
-  const zoom = lerp(numOf(scene, 'zoom', 1), numOf(scene, 'zoomTo', numOf(scene, 'zoom', 1)));
+  /**
+   * NABIZ KAREYE VURUR.
+   *
+   * Dikey akışta durağan kare ölüdür: parmak, hareket etmeyen ilk yarım
+   * saniyede kaydırır. Kalp zaten kasılıyor — o kasılmanın yarım yüzdelik
+   * yansımasını BÜTÜN kareye vermek, izleyene sebebini söylemeden "bu şey
+   * canlı" dedirtir. Yüzde yarım: fark edilmez, ama yokluğu fark edilir.
+   */
+  const pulse = 1 + ventricles * 0.006 + atria * 0.002;
+  const zoom = lerp(numOf(scene, 'zoom', 1), numOf(scene, 'zoomTo', numOf(scene, 'zoom', 1))) * pulse;
   const panX = lerp(numOf(scene, 'panX', 0), numOf(scene, 'panXTo', numOf(scene, 'panX', 0)));
   const panY = lerp(numOf(scene, 'panY', 0), numOf(scene, 'panYTo', numOf(scene, 'panY', 0)));
 
@@ -195,8 +210,22 @@ const Heart: React.FC<SceneProps> = ({scene, durationInFrames}) => {
   };
   const title = strOf(scene, 'title');
   const note = strOf(scene, 'note');
-  const big = strOf(scene, 'big');
-  const arrive = Math.min(1, frame / 4);
+  /**
+   * BİR SAYI YA TIRMANIR YA HİÇBİR ŞEY DEMEZ.
+   *
+   * Ekrana basılan hazır bir rakam bir yazıdır; sıfırdan tırmanan bir rakam
+   * bir OLAYDIR — izleyen sonucu beklemek için kalır. Shorts'ta üç saniyeyi
+   * kazandıran şey tam olarak bu bekleme.
+   */
+  const countTo = numOf(scene, 'countTo', 0);
+  const counted = countTo
+    ? Math.round(countTo * ease(Math.min(1, frame / Math.max(1, durationInFrames * 0.62))))
+    : 0;
+  const big = countTo ? counted.toLocaleString('tr-TR') + strOf(scene, 'bigSuffix', '') : strOf(scene, 'big');
+  // Yazı SNAP ile gelir: iki karede %6 büyükten yerine oturur. Fade, dikey
+  // akışta yumuşaklık değil GECİKME olarak okunur.
+  const arrive = Math.min(1, frame / 3);
+  const snap = 1 + 0.06 * Math.max(0, 1 - frame / 3);
 
   // Kasılma: karıncıklar apekse doğru küçülür, kulakçıklar tabana doğru.
   const vSq = 1 - ventricles * 0.075;
@@ -221,7 +250,7 @@ const Heart: React.FC<SceneProps> = ({scene, durationInFrames}) => {
           </linearGradient>
         </defs>
 
-        <g transform={`translate(${W / 2 + panX} ${H / 2 + panY}) scale(${zoom}) translate(${-W / 2} ${-H / 2})`}>
+        <g transform={`translate(${W / 2 + panX} ${H / 2 + panY}) scale(${zoom * punch}) translate(${-W / 2} ${-H / 2})`}>
           {/* ── GÖVDE: deri, sonra iskelet, sonra akciğer. Kalbin ARKASINDA. ── */}
           <g transform={BODY_TRANSFORM}>
             <Figure opacity={fade('figure')} fill="#17161a" edge="#3d3a44" />
@@ -409,6 +438,23 @@ const Heart: React.FC<SceneProps> = ({scene, durationInFrames}) => {
         * olduğunu söylemeyen bir çizim, izleyene şekil gösterir, bilgi vermez.
         * Kılavuz çizgi noktadan yazıya gider, yazı kadrajın kenarında kalır.
         */}
+      {/**
+        * İLERLEME ÇUBUĞU — üstte, ince, iki piksel.
+        *
+        * Dikey akışta izleyen ne kadar kaldığını bilmez ve bilmediği için
+        * çıkar. Görünen bir son, kalmak için bir sebeptir. Oynatıcının kendi
+        * çubuğu ALTTA ve ölü alanda; bu yüzden kendi çubuğumuzu üste koyarız.
+        */}
+      <div style={{position: 'absolute', left: 0, right: 0, top: 0, height: 6, background: 'rgba(255,255,255,0.10)'}}>
+        <div
+          style={{
+            height: '100%',
+            width: `${(numOf(scene, 'prog', 0) + (numOf(scene, 'progTo', 0) - numOf(scene, 'prog', 0)) * (frame / Math.max(1, durationInFrames))) * 100}%`,
+            background: '#ffcf3d',
+          }}
+        />
+      </div>
+
       {listOf(scene, 'labels').length ? (
         <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{position: 'absolute', inset: 0}}>
           {listOf(scene, 'labels').map((raw, i) => {
@@ -485,7 +531,8 @@ const Heart: React.FC<SceneProps> = ({scene, durationInFrames}) => {
             font: '800 200px/1 Helvetica, Arial, sans-serif',
             letterSpacing: '-0.03em',
             opacity: arrive,
-            textShadow: '0 10px 44px rgba(0,0,0,0.9)',
+            transform: `scale(${snap})`,
+            textShadow: '0 10px 44px rgba(0,0,0,0.9), 0 0 90px rgba(255,207,61,0.25)',
           }}
         >
           {big}
@@ -513,7 +560,8 @@ const Heart: React.FC<SceneProps> = ({scene, durationInFrames}) => {
             letterSpacing: '-0.015em',
             textShadow: '0 6px 34px rgba(0,0,0,0.98), 0 2px 10px rgba(0,0,0,0.9)',
             opacity: arrive,
-            transform: `translateY(${(1 - arrive) * -12}px)`,
+            transform: `translateY(${(1 - arrive) * -14}px) scale(${snap})`,
+            transformOrigin: 'left top',
           }}
         >
           {title}
