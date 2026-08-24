@@ -1,61 +1,35 @@
 {
-  "$note": "Written after looking at every shot at 0%, 33%, 66% and 94% in out/.frames-<id>/, plus the rendered reel. Scores are one person's judgement out of ten and are deliberately NOT computed: every reel this repo has shipped broken passed the computed gates.",
-  "question": "Why Has Roman Concrete Survived for 2,000 Years?",
-  "scores": {
-    "storytelling": 8.5,
-    "visualHierarchy": 8,
-    "semanticAccuracy": 9,
-    "assetRelevance": 6,
-    "visualCausality": 8.5,
-    "motionQuality": 7.5,
-    "cameraVariety": 6.5,
-    "transitionQuality": 7,
-    "pacing": 8,
-    "visualContinuity": 9,
-    "typography": 8,
-    "ending": 8,
-    "professionalism": 7.5
-  },
-  "verdict": "The mechanism is demonstrated rather than described, and it advances across the reel rather than restarting: modern concrete cracks; the Roman mix is shown with its lime lumps sitting in it from the first frame; a crack propagates down through the strata; water runs down the crack it cannot outrun; a lump is consumed; mineral grows across the gap and the crack closes. Fourteen shots carry it. Every clause of the episode's central claim has a frame.",
-  "whatWorked": [
-    "Causal ordering is enforced, not hoped for: the fluid cannot arrive before the crack it runs down, and the growth cannot precede the water that starts it. A test asserts both.",
-    "The lumps are in the wall from the first frame. Drawing them as they arrive would tell the story backwards -- the whole surprise is that the repair was built in and looked like a flaw.",
-    "The strata are drawn the way their materials behave: hatch, aggregate, grain. A section where every layer looks the same is a rectangle with lines in it.",
-    "green-rot over the drawn ground is the second-best mood pairing of the five.",
-    "The self-heal is drawn as crystal blades bridging the gap rather than as the crack fading out -- a gap being erased and a gap being bridged are different claims."
-  ],
-  "whatFailed": [
-    {
-      "what": "Five shots drew water with no crack to run down, and the payoff shot -- the seal -- drew an empty box.",
-      "why": "The builder gated the crack on the word 'crack' alone, so lines that mention only the water or only the sealing got a fluid and a growth with no channel for either. A channel is a precondition of both. Fixed.",
-      "failureIs": "ENGINE"
-    },
-    {
-      "what": "Fourteen consecutive sections make the middle of the reel visually uniform.",
-      "why": "Arguably correct -- it is one wall, and each shot advances the mechanism -- but the hard-cut ratio stays at 1.00 because there is nothing to contrast against.",
-      "failureIs": "EDITORIAL"
-    },
-    {
-      "what": "'40 BC' and 'the first century' still never become a timeline.",
-      "why": "yearsIn only recognises four-digit years. Reported in the last benchmark, still open.",
-      "failureIs": "REPRESENTATION"
-    }
-  ],
-  "remainingDefects": [
-    {
-      "what": "Five shots drew water with no crack to run down, and the payoff shot -- the seal -- drew an empty box.",
-      "cause": "ENGINE",
-      "why": "The builder gated the crack on the word 'crack' alone, so lines that mention only the water or only the sealing got a fluid and a growth with no channel for either. A channel is a precondition of both. Fixed."
-    },
-    {
-      "what": "Fourteen consecutive sections make the middle of the reel visually uniform.",
-      "cause": "EDITORIAL",
-      "why": "Arguably correct -- it is one wall, and each shot advances the mechanism -- but the hard-cut ratio stays at 1.00 because there is nothing to contrast against."
-    },
-    {
-      "what": "'40 BC' and 'the first century' still never become a timeline.",
-      "cause": "REPRESENTATION",
-      "why": "yearsIn only recognises four-digit years. Reported in the last benchmark, still open."
-    }
-  ]
+ "$note": "Written after rendering the reel and looking at full-resolution stills from it — not from the contact sheet, which is an overview and not an inspection. Scores are one person's judgement out of ten and are deliberately NOT computed: every reel this repo has shipped broken passed the computed gates.",
+ "question": "Why Has Roman Concrete Survived for 2,000 Years?",
+ "scores": {
+  "storytelling": 8.5,
+  "visualHierarchy": 8.5,
+  "semanticAccuracy": 9,
+  "assetRelevance": 6,
+  "visualCausality": 8.5,
+  "motionQuality": 8,
+  "cameraVariety": 7,
+  "transitionQuality": 7,
+  "pacing": 8,
+  "visualContinuity": 9,
+  "typography": 8,
+  "ending": 8,
+  "professionalism": 8
+ },
+ "verdict": "The strongest of the five. The section is a material now rather than three grey bands: concrete with the densest tooth in the table, aggregate circles sitting in it, a crack propagating down through the strata and water running down behind it. The mechanism advances across the reel instead of restarting, and every clause of the central claim has a frame. The stratum labels read SURFACE and AGGREGATE rather than the ACE and ATE the previous build shipped.",
+ "whatWorked": [
+  "The crack, the water, the consumed lump and the mineral growth are one continuous argument across fourteen shots.",
+  "Concrete's material treatment is the most legible of the nine: dense speckle, low sheen, and a body value that separates it from the ground.",
+  "Callouts pick the side of the geometry that has room, so no label is delivered with three letters missing."
+ ],
+ "whatFailed": [
+  "The section box occupies the middle half of the frame and the space above and below it is empty except for type.",
+  "The aggregate circles are outlines only; they read as annotation rather than as stone in a matrix."
+ ],
+ "remainingDefects": [
+  {
+   "what": "No photograph of the real material",
+   "why": "a published micrograph would make the claim checkable; nine ASSET_REQUIRED briefs unfilled"
+  }
+ ]
 }

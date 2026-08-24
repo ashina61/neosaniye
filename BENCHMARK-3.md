@@ -133,26 +133,39 @@ subject is where one ends and the other begins.
 
 ## Scores
 
-Judged on the eight axes the brief asked for, out of 10. The **before** column
-is the end of the vocabulary phase; the **after** column is this build.
+Judged by looking at rendered stills, not computed — every reel this repo has
+shipped broken passed the computed gates. **Before** is the end of the
+vocabulary phase; **after** is this build.
 
-| | Baalbek | Roman concrete | Hormuz | Human heart | Medieval sword |
-|---|---|---|---|---|---|
-| Storytelling | 8 → **8** | 8 → **8.5** | 8 → **8** | 7.5 → **7.5** | 8 → **8** |
-| Visual hierarchy | 7 → **8** | 7 → **8** | 7.5 → **8.5** | 6.5 → **8** | 7.5 → **8.5** |
-| Motion design | 6.5 → **7** | 6.5 → **7.5** | 6.5 → **7.5** | 6.5 → **7.5** | 7 → **7.5** |
-| Camera diversity | 5 → **6.5** | 5 → **6.5** | 5.5 → **7** | 5 → **6.5** | 5 → **6.5** |
-| Transition quality | 7 → **7** | 7 → **7** | 7.5 → **7.5** | 7 → **7** | 7 → **7** |
-| Pacing | 8 → **8** | 8 → **8** | 8 → **8** | 7.5 → **7.5** | 8 → **8** |
-| Visual continuity | 7 → **8.5** | 8 → **9** | 8 → **9** | 7.5 → **8.5** | 7.5 → **8.5** |
-| Professionalism | 6 → **7** | 6 → **7.5** | 6.5 → **7.5** | 5.5 → **7** | 6 → **7.5** |
-| **Overall** | 7.0 → **7.0** | 7.5 → **7.5** | 7.5 → **7.5** | 7.0 → **7.0** | 7.5 → **7.5** |
+| | Baalbek | Roman concrete | Hormuz | Human heart | Medieval sword | Δ mean |
+|---|---|---|---|---|---|---|
+| Storytelling | 8 → 8 | 8.5 → 8.5 | 8 → 8 | 7.5 → 7.5 | 8 → 8 | +0.00 |
+| Visual hierarchy | 8 → **8.5** | 8 → **8.5** | 8.5 → 8.5 | 8 → **8.5** | 8.5 → 8.5 | +0.30 |
+| Motion design | 7 → **7.5** | 7.5 → **8** | 7.5 → 7.5 | 7.5 → **8** | 7.5 → **8** | +0.40 |
+| Visual causality | 7 → **8.5** | 8.5 → 8.5 | 6.5 → 6.5 | 7.5 → **8** | 8 → 8 | +0.40 |
+| Camera diversity | 6.5 → **7** | 6.5 → **7** | 7 → 7 | 6.5 → **7** | 6.5 → 6.5 | +0.30 |
+| Transition quality | 7 → 7 | 7 → 7 | 7.5 → 7.5 | 7 → 7 | 7 → 7 | +0.00 |
+| Pacing | 8 → 8 | 8 → 8 | 8 → 8 | 7.5 → 7.5 | 8 → 8 | +0.00 |
+| Visual continuity | 8.5 → **9** | 9 → 9 | 9 → 9 | 8.5 → 8.5 | 8.5 → **9** | +0.20 |
+| Professionalism | 7 → **7.5** | 7.5 → **8** | 7.5 → **8** | 7 → **7.5** | 7.5 → **8** | +0.50 |
+| **Mean of the nine** | 7.44 → **7.89** | 7.83 → **8.06** | 7.72 → **7.78** | 7.44 → **7.72** | 7.72 → **7.89** | +0.23 |
 
-The overall figure did not move, and that is the honest result. It is dominated
-by an axis this phase could not touch: `assetRelevance` is 6.0 in all five
-because there is **no photography in any of them**, and no amount of execution
-fixes that. What moved is everything execution owns — hierarchy, continuity,
-professionalism, camera — by one to one and a half points each.
+Three axes did not move at all, and they are the three this phase could not
+touch. **Storytelling** and **pacing** are decided by the brief and the
+director, both untouched here. **Transition quality** is 7 everywhere because
+the seams are 100% hard cuts *by instruction* — see below.
+
+The axes execution owns moved: **professionalism** by half a point across the
+board, **motion design** and **visual causality** by four tenths, **hierarchy**
+and **camera** by three.
+
+The largest single movement is Baalbek's visual causality, 7 → 8.5, and it is
+not a polish improvement: the load had been sliding the opposite way to the men
+pulling it.
+
+The overall score in `benchmark-report.json` still reads 7.0–7.5, because it
+includes `assetRelevance`, which is **6.0 in all five and cannot move**: there
+is no photography in any of these reels. No amount of execution fixes that.
 
 ## Measured
 
@@ -182,6 +195,21 @@ transformation — it is the same shape somewhere else — and neither is a map.
 The metric counts transformation where transformation happens, which after this
 phase means process stages, a crack that opens and heals, and a chamber cycle;
 it used to count only the first of those and reported four zeros.
+
+## Checks added, and what they caught the moment they ran
+
+| check | where | found on first run |
+|---|---|---|
+| `contrastProblems` — can the eye separate the drawing from its ground | `critique.mjs` | the defect it was written for, reproduced from the shipped palette |
+| camera-aware clipping — boxes through the same transform the plates take | `critique.mjs` | 3 gear boxes, 6 haulage figures, 1 section, all real |
+| an element that stops being drawn with nothing to say it left | `temporal.mjs` | nothing — inert today, and kept with a test so it cannot rot |
+| fog standing in front of the caption band | `temporal.mjs` | 1, on a legacy hand-authored config |
+
+Six new regression tests, 274 → 280, all passing. Two of them are the false
+alarms rather than the defects: a drawing over a surviving photograph must not
+be judged on its field alone, and a zero camera budget must leave a drawing
+where it was composed. A check that flags what is fine is a check people learn
+to scroll past.
 
 ## Hard cuts are still 1.00, and that is the answer
 

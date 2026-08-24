@@ -1,61 +1,35 @@
 {
-  "$note": "Written after looking at every shot at 0%, 33%, 66% and 94% in out/.frames-<id>/, plus the rendered reel. Scores are one person's judgement out of ten and are deliberately NOT computed: every reel this repo has shipped broken passed the computed gates.",
-  "question": "Why Does This Tiny Strait Matter to the World?",
-  "scores": {
-    "storytelling": 8,
-    "visualHierarchy": 8.5,
-    "semanticAccuracy": 9,
-    "assetRelevance": 6,
-    "visualCausality": 6.5,
-    "motionQuality": 7.5,
-    "cameraVariety": 7,
-    "transitionQuality": 7.5,
-    "pacing": 8,
-    "visualContinuity": 9,
-    "typography": 8.5,
-    "ending": 8.5,
-    "professionalism": 7.5
-  },
-  "verdict": "It shows the strait now. Two coasts, the water between them, one lane in and one lane out, and a dimension across the gap reading 21 MILES -- built from a sentence that says 'twenty-one miles across' and 'northern shore, southern shore', with no map of Hormuz anywhere in the repository. Eleven of twenty-two shots carry it. The chokepoint line gets a hatched closure and a hazard marker on the lane, which is the argument the whole episode is making, drawn.",
-  "whatWorked": [
-    "The map fired on six of nine lines and each one is the right graphic for its sentence: a width where the line states a width, two lanes where it says one in and one out, a closure where it says one tanker shuts it.",
-    "The 21 MILES dimension is correct. It was 20 until the hyphenated-compound bug was found -- a drawn figure contradicting its own narration is worse than no figure.",
-    "cold-noir over the wash field remains the strongest ground of the five: the schematic reads as a chart rather than as an illustration.",
-    "The measurement bar carries 20,000,000 BARRELS, a unit the matcher did not know before.",
-    "Nothing claims survey precision: the coasts are generated from the line's seed and the plate says SCHEMATIC -- NOT TO SCALE on every frame."
-  ],
-  "whatFailed": [
-    {
-      "what": "Nine of twenty-two shots are still typography.",
-      "why": "Five are title slates, which is deliberate. The other four are genuinely abstract lines -- 'a fifth of everything the world burns', 'every fuel price on earth moves' -- and words are the honest representation for those.",
-      "failureIs": "STORY"
-    },
-    {
-      "what": "The chain from one grounded tanker to a global price is still asserted, not drawn.",
-      "why": "A map can show a blockage. It has no way to show a consequence propagating out of the frame; that needs a dependency or flow-out-of-system primitive that does not exist.",
-      "failureIs": "REPRESENTATION"
-    },
-    {
-      "what": "The single-landmass variant reads as an abstract hexagon rather than as land.",
-      "why": "With no two-shore signal the builder makes one blob from six control points. It is honest but it is not evocative.",
-      "failureIs": "COMPOSITION"
-    }
-  ],
-  "remainingDefects": [
-    {
-      "what": "Nine of twenty-two shots are still typography.",
-      "cause": "STORY",
-      "why": "Five are title slates, which is deliberate. The other four are genuinely abstract lines -- 'a fifth of everything the world burns', 'every fuel price on earth moves' -- and words are the honest representation for those."
-    },
-    {
-      "what": "The chain from one grounded tanker to a global price is still asserted, not drawn.",
-      "cause": "REPRESENTATION",
-      "why": "A map can show a blockage. It has no way to show a consequence propagating out of the frame; that needs a dependency or flow-out-of-system primitive that does not exist."
-    },
-    {
-      "what": "The single-landmass variant reads as an abstract hexagon rather than as land.",
-      "cause": "COMPOSITION",
-      "why": "With no two-shore signal the builder makes one blob from six control points. It is honest but it is not evocative."
-    }
-  ]
+ "$note": "Written after rendering the reel and looking at full-resolution stills from it — not from the contact sheet, which is an overview and not an inspection. Scores are one person's judgement out of ten and are deliberately NOT computed: every reel this repo has shipped broken passed the computed gates.",
+ "question": "Why Does This Tiny Strait Matter to the World?",
+ "scores": {
+  "storytelling": 8,
+  "visualHierarchy": 8.5,
+  "semanticAccuracy": 9,
+  "assetRelevance": 6,
+  "visualCausality": 6.5,
+  "motionQuality": 7.5,
+  "cameraVariety": 7,
+  "transitionQuality": 7.5,
+  "pacing": 8,
+  "visualContinuity": 9,
+  "typography": 8.5,
+  "ending": 8.5,
+  "professionalism": 8
+ },
+ "verdict": "The strait reads. Two coasts with a stone body on them, water with its own treatment between, a lane through it and a dimension across it saying 21 MILES — built from a sentence, with no map of Hormuz anywhere in the repository. The black stripe that used to sit between the sea and the shore is gone: the water runs under both coasts and the coastline is the boundary, which is what a coastline is.",
+ "whatWorked": [
+  "The dimension is derived from the sentence's own figure and lands on the water it measures.",
+  "Land and sea are distinguishable by material, not only by outline.",
+  "The chokepoint gets a hatched closure and a hazard marker — the episode's argument, drawn."
+ ],
+ "whatFailed": [
+  "Causality is the weakest of the five: a map is a state, not a mechanism, so most shots show a place rather than something happening in it.",
+  "Nine of twenty-two lines still carry no picture, the most of any episode bar the sword."
+ ],
+ "remainingDefects": [
+  {
+   "what": "The southern landmass is a large featureless field",
+   "why": "nothing in the sentence gives it anything to carry"
+  }
+ ]
 }
