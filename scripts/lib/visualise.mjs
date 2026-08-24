@@ -86,11 +86,25 @@ export function buildMap({vo, seed, accent, muted, stops = [], claims = []}) {
     });
     regions.push({
       kind: 'water',
+      /**
+       * THE WATER RUNS UNDER BOTH COASTS.
+       *
+       * A coastline is not a ruled line — it wobbles up to a tenth of the frame
+       * off its base — and the water was a rectangle inset two hundredths from
+       * the same base. So wherever the coast wandered further than that, the
+       * strait had a black stripe between the sea and the shore: neither land
+       * nor water, in the one drawing whose whole subject is where one ends and
+       * the other begins.
+       *
+       * The sea is drawn first and the land on top of it, so the overlap costs
+       * nothing and the COASTLINE becomes the boundary — which is what a
+       * coastline is.
+       */
       shape: [
-        [0, midY - gap / 2 - 0.02],
-        [1, midY - gap / 2 - 0.02],
-        [1, midY + gap / 2 + 0.02],
-        [0, midY + gap / 2 + 0.02],
+        [0, midY - gap / 2 - 0.15],
+        [1, midY - gap / 2 - 0.15],
+        [1, midY + gap / 2 + 0.15],
+        [0, midY + gap / 2 + 0.15],
       ],
     });
     regions.push({

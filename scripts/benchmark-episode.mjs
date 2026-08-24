@@ -177,8 +177,31 @@ export async function benchmark(episodeId) {
     },
     materials: [...new Set(scenes.map((s) => MATERIAL_OF[s.diagram?.type] ?? null).filter(Boolean))],
     causalAnimations: edit.causal.length,
-    transformations: scenes.reduce((n, s) => n + Math.max(0, (s.diagram?.stages?.length ?? 1) - 1), 0),
-    microMotion: scenes.filter((s) => ['scaleHaulage', 'process', 'map'].includes(s.diagram?.type)).length,
+    /**
+     * TRANSFORMATION, NOT REPLACEMENT — counted wherever it happens.
+     *
+     * The first version counted process stages and nothing else, so four of the
+     * five episodes reported zero transformations while a crack opened and
+     * healed in one of them and four chambers squeezed and refilled in another.
+     * Those are the same thing the forging stages are: ONE object that is a
+     * different shape at the end than it was at the start.
+     */
+    transformations: scenes.reduce((n, s) => {
+      const d = s.diagram;
+      if (!d) return n;
+      if (Array.isArray(d.stages)) return n + Math.max(0, d.stages.length - 1);
+      // A section whose crack opens is one; one that also heals is two.
+      if (d.type === 'crossSection') return n + (d.crack ? 1 : 0) + (d.crack?.healsAt !== undefined ? 1 : 0) + (d.growth ? 1 : 0);
+      // A cycle that contracts and refills is one transformation, repeated.
+      if (d.type === 'anatomyFlow') return n + (d.cycleFrames ? 1 : 0);
+      // A load that moves is not a transformation: it is the same shape somewhere else.
+      return n;
+    }, 0),
+    /** Drawings carrying subordinate life: dust, motes, particles, drift. */
+    microMotion: scenes.filter((s) =>
+      ['scaleHaulage', 'process', 'map', 'crossSection'].includes(s.diagram?.type) ||
+      (s.diagram?.type === 'anatomyFlow' && Boolean(s.diagram?.cycleFrames)),
+    ).length,
     meaningfulCameraMoves: scenes.filter((s) => {
       const kind = cameraFamily(s);
       const travel = Math.abs((Number(s.params?.pushTo) || 1) - (Number(s.params?.pushFrom) || 1));

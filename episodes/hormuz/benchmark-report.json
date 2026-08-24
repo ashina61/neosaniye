@@ -2,7 +2,7 @@
   "episode": "hormuz",
   "title": "One door",
   "question": "Why Does This Tiny Strait Matter to the World?",
-  "generatedAt": "2026-08-23",
+  "generatedAt": "2026-08-24",
   "finalScore": 7.5,
   "scoredBy": "inspection of rendered frames at 0/33/66/94 per shot",
   "judged": {
@@ -205,8 +205,7 @@
     "editorial": {
       "hardCutRatio": 1,
       "cutKinds": {
-        "HARD_CUT": 13,
-        "MATCH_CUT": 8
+        "HARD_CUT": 21
       },
       "arrivals": {
         "cut": 21
@@ -217,13 +216,13 @@
       "push": 6,
       "tilt": 3,
       "pan": 6,
+      "drift": 2,
       "hold": 4,
-      "pull": 2,
-      "drift": 1
+      "pull": 1
     },
     "motionDensity": {
-      "events": 60,
-      "perSecond": 1.2,
+      "events": 51,
+      "perSecond": 1.02,
       "deadShots": 0,
       "busiestMoment": 2
     },
@@ -231,6 +230,25 @@
       "words": 90,
       "wordsPerSecond": 1.8,
       "unreadableCaptions": 0
+    },
+    "depth": {
+      "layeredDrawings": 11,
+      "averagePlanes": 2.59
+    },
+    "materials": [
+      "water + stone"
+    ],
+    "causalAnimations": 9,
+    "transformations": 0,
+    "microMotion": 11,
+    "meaningfulCameraMoves": 17,
+    "payoff": {
+      "seconds": 1.33,
+      "frames": 40,
+      "words": 7,
+      "needFrames": 40,
+      "enough": true,
+      "why": "the claim lands and is allowed to sit"
     },
     "rhythm": {
       "variation": 0.23,
@@ -246,17 +264,37 @@
     },
     "gates": {
       "visualHierarchy": 9.5,
-      "motionDesign": 9.6,
+      "motionDesign": 8.5,
       "cameraDiversity": 10,
       "transitionQuality": 10,
       "visualContinuity": 10,
-      "professionalism": 9.8
+      "professionalism": 9.6
     },
     "gatesFailed": [
       "no photograph anywhere in the reel — every shot is drawn or typeset"
     ]
   },
   "remainingDefects": [
+    {
+      "severity": "warning",
+      "where": "shot",
+      "what": "scene[5] \"s03-volume\": mark and spin both land at ~19 — one beat, not two"
+    },
+    {
+      "severity": "warning",
+      "where": "shot",
+      "what": "scene[9] \"s04-share-b\": 2.1s on one event — the shot will read as a still with a caption"
+    },
+    {
+      "severity": "warning",
+      "where": "shot",
+      "what": "scene[19] \"s08-price\": camera travels 0.000 — a photograph with grain on it"
+    },
+    {
+      "severity": "warning",
+      "where": "shot",
+      "what": "scene[20] \"s08-price-b\": 2.5s on one event — the shot will read as a still with a caption"
+    },
     {
       "severity": "warning",
       "where": "geometry",
@@ -269,13 +307,8 @@
     },
     {
       "severity": "warning",
-      "where": "geometry",
-      "what": "scene[19] \"s08-price\": prop[0] wire sits outside the safe area — the platform draws its own furniture there"
-    },
-    {
-      "severity": "warning",
-      "where": "geometry",
-      "what": "scene[21] \"s09-close\": prop[0] plaque and prop[1] newspaper occupy the same place"
+      "where": "edit",
+      "what": "scene[20] \"s08-price-b\": 2.5s with one beat — a shot this long needs somewhere to arrive"
     },
     {
       "severity": "warning",

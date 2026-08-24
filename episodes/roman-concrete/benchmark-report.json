@@ -2,7 +2,7 @@
   "episode": "roman-concrete",
   "title": "The wall that heals itself",
   "question": "Why Has Roman Concrete Survived for 2,000 Years?",
-  "generatedAt": "2026-08-23",
+  "generatedAt": "2026-08-24",
   "finalScore": 7.5,
   "scoredBy": "inspection of rendered frames at 0/33/66/94 per shot",
   "judged": {
@@ -254,8 +254,7 @@
     "editorial": {
       "hardCutRatio": 1,
       "cutKinds": {
-        "HARD_CUT": 8,
-        "MATCH_CUT": 14
+        "HARD_CUT": 22
       },
       "arrivals": {
         "cut": 22
@@ -266,20 +265,40 @@
       "push": 6,
       "tilt": 1,
       "hold": 2,
-      "pan": 5,
-      "pull": 5,
-      "drift": 4
+      "pan": 4,
+      "drift": 6,
+      "pull": 4
     },
     "motionDensity": {
-      "events": 66,
-      "perSecond": 1.32,
+      "events": 61,
+      "perSecond": 1.22,
       "deadShots": 0,
-      "busiestMoment": 2
+      "busiestMoment": 3
     },
     "informationDensity": {
       "words": 90,
       "wordsPerSecond": 1.8,
       "unreadableCaptions": 0
+    },
+    "depth": {
+      "layeredDrawings": 18,
+      "averagePlanes": 2.13
+    },
+    "materials": [
+      "water + stone",
+      "concrete + water"
+    ],
+    "causalAnimations": 12,
+    "transformations": 15,
+    "microMotion": 18,
+    "meaningfulCameraMoves": 20,
+    "payoff": {
+      "seconds": 3.63,
+      "frames": 109,
+      "words": 6,
+      "needFrames": 34,
+      "enough": true,
+      "why": "the claim lands and is allowed to sit"
     },
     "rhythm": {
       "variation": 0.28,
@@ -295,11 +314,11 @@
     },
     "gates": {
       "visualHierarchy": 9.6,
-      "motionDesign": 10,
+      "motionDesign": 9.5,
       "cameraDiversity": 10,
       "transitionQuality": 10,
       "visualContinuity": 8.5,
-      "professionalism": 9.6
+      "professionalism": 9.5
     },
     "gatesFailed": [
       "no photograph anywhere in the reel — every shot is drawn or typeset"
@@ -308,18 +327,13 @@
   "remainingDefects": [
     {
       "severity": "warning",
-      "where": "shot",
-      "what": "scene[0] \"s01-harbour\": prop:plaque and prop:wire both land at ~5 — one beat, not two"
+      "where": "geometry",
+      "what": "scene[7] \"s03-recipe-b\": diagram section sits outside the safe area — the platform draws its own furniture there"
     },
     {
       "severity": "warning",
       "where": "geometry",
-      "what": "scene[14] \"s06-crack\": motif route sits outside the safe area — the platform draws its own furniture there"
-    },
-    {
-      "severity": "warning",
-      "where": "geometry",
-      "what": "scene[17] \"s07-heals\": motif route sits outside the safe area — the platform draws its own furniture there"
+      "what": "scene[22] \"s09-close\": prop[0] plaque and prop[1] newspaper occupy the same place"
     },
     {
       "severity": "warning",
