@@ -20,6 +20,7 @@
  * anatomy — and the selector upstream is not touched.
  */
 import {LICENCE_REQUIREMENT} from './licence.mjs';
+import {DOMAINS} from '../scripts/lib/semantics.mjs';
 
 export const BRIEF_FIELDS = [
   'subject',
@@ -57,17 +58,53 @@ const CONSTRAINT_KIND = {
 
 /** What a picture in this domain has to have in it to be worth having. */
 const MUST_SHOW = {
-  geography: ['the named place', 'the spatial relation the line is about'],
-  process: ['the material being worked', 'the tool or agent doing the work', 'the moment of contact'],
-  material: ['the substance itself', 'structure visible at the scale it is shown'],
-  anatomy: ['the whole named structure', 'even lighting with the structure distinguishable'],
-  scale: ['the object', 'a person or a known object in the same plane as a size reference'],
-  mechanism: ['the working parts', 'how the parts engage'],
-  elapsed: ['a dated document or place', 'the date legible or verifiable'],
-  celestial: ['the named body or event'],
-  quantity: ['the thing being counted'],
+  geography: ['{subject}', 'the spatial relation the line is about'],
+  process: ['{subject} being worked', 'the tool or agent doing the work', 'the moment of contact'],
+  material: ['{subject}', 'structure visible at the scale it is shown'],
+  anatomy: ['{subject}, the whole structure', 'even lighting with the structure distinguishable'],
+  scale: ['{subject}', 'a person or a known object in the same plane as a size reference'],
+  mechanism: ['{subject}, the working parts', 'how the parts engage'],
+  elapsed: ['a dated document or place showing {subject}', 'the date legible or verifiable'],
+  celestial: ['{subject}'],
+  quantity: ['{subject}, arrayed so the count is readable'],
   abstract: [],
 };
+
+/**
+ * THE SUBJECT, IN WORDS A PERSON WOULD USE.
+ *
+ * The semantic layer's subjects are slugs — `humanHeart`, `swordMaking`,
+ * `tradeRoute` — and where it found no specific subject it returns the domain
+ * itself. Both are useless as literal text: a photograph's description never
+ * contains the word "humanHeart", and matching the word "scale" against a
+ * picture of stones finds nothing.
+ *
+ * So the slug is unpacked, and where the subject IS the domain the sentence's
+ * own nouns stand in for it — those are the words somebody describing the
+ * picture would actually use.
+ */
+export function subjectWords(subject, says) {
+  const slug = String(subject ?? '')
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .toLowerCase()
+    .trim();
+  const generic = new Set([...DOMAINS, 'photo', 'asset']);
+  if (slug && !generic.has(slug)) return slug;
+  /** No specific subject: the line's own concrete nouns are the subject. */
+  const nouns = String(says ?? '')
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .filter((w) => w.length > 3 && !TOPIC_STOP.has(w));
+  return nouns.slice(0, 6).join(' ') || slug;
+}
+
+const TOPIC_STOP = new Set([
+  'about', 'above', 'after', 'again', 'against', 'been', 'before', 'being', 'between', 'both',
+  'could', 'does', 'each', 'from', 'have', 'into', 'more', 'most', 'much', 'must', 'never',
+  'only', 'other', 'over', 'same', 'some', 'such', 'than', 'that', 'them', 'then', 'there',
+  'these', 'they', 'this', 'those', 'through', 'under', 'until', 'were', 'what', 'when',
+  'where', 'which', 'while', 'with', 'would', 'your', 'still', 'every', 'sits', 'took',
+]);
 
 /** Framing that serves the shot the director already planned. */
 const COMPOSITION = {
@@ -151,7 +188,9 @@ export function briefFrom(entry, {episode} = {}) {
     subject: entry.subject ?? domain,
     purpose: entry.purpose ?? 'illustrate the claim the line makes',
     representation: entry.representation ?? 'photo',
-    must_show: MUST_SHOW[domain] ?? [],
+    must_show: (MUST_SHOW[domain] ?? []).map((item) =>
+      item.replace('{subject}', subjectWords(entry.subject ?? domain, entry.says)),
+    ),
     preferred_orientation: entry.orientation ?? ORIENTATION[domain] ?? 'either',
     preferred_composition: entry.composition ?? COMPOSITION[domain] ?? COMPOSITION.abstract,
     historical_constraints: kind.historical ? stated ?? 'must be period-correct for the date the line names' : null,

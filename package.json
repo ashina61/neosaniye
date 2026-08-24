@@ -26,7 +26,12 @@
     "assets:placeholder": "node scripts/make-placeholder-assets.mjs",
     "assets:audit": "node scripts/audit-assets.mjs",
     "assets:acquire": "node scripts/acquire-assets.mjs",
-    "assets:providers": "node scripts/provider-status.mjs"
+    "assets:providers": "node scripts/provider-status.mjs",
+    "assets:briefs": "node scripts/casting.mjs briefs",
+    "assets:list": "node scripts/casting.mjs list",
+    "assets:match": "node scripts/casting.mjs match",
+    "assets:validate": "node scripts/casting.mjs validate",
+    "assets:report": "node scripts/casting.mjs report"
   },
   "dependencies": {
     "@remotion/bundler": "4.0.499",

@@ -216,3 +216,135 @@ generator are literally the same list.
 `CREDITS.md` says what it is for: CC BY and CC BY-SA require credit **wherever
 the reel is published** — in the video description, not only in a repository
 nobody reading the description will open.
+
+---
+
+# Human-in-the-loop casting
+
+When no provider can be reached — or when a provider simply has nothing — a
+person supplies the file. Same three gates, same licence rules, same manifest;
+the only difference is who found the picture.
+
+```
+ASSET_REQUIRED → ASSET BRIEF → HUMAN SUPPLIES FILE → INGESTION
+  → SEMANTIC → QUALITY → COMPOSITION → LICENCE/PROVENANCE
+  → ACCEPT / REJECT → ASSET_MANIFEST.json → RENDER
+```
+
+## Commands
+
+```
+npm run assets:briefs -- --episode=baalbek [--plates]   what has to be supplied, and why
+npm run assets:list                                     what is in the inbox and what became of it
+npm run assets:match [-- --describe="…"]                score the inbox against every open brief
+npm run assets:validate -- --file=… --id=… [--source=… --license=… …]
+npm run assets:report                                   one page: what is still needed
+```
+
+## `assets/casting.json` is the deliverable
+
+One file that answers *"what images do I need to supply?"* without opening
+anything else. Per brief: `id`, `episode`, `shot`, `subject`, `purpose`,
+`representation`, `must_show`, `preferred_orientation`,
+`preferred_composition`, `historical_constraints`, `scientific_constraints`,
+`reject_if`, `status` — plus the line it serves, what the reel currently does
+instead, search terms, and the shape the shot demands.
+
+Regenerating never discards human work: status, candidates, provenance and
+decisions are carried across by `id`.
+
+### Status is a lifecycle
+
+| status | meaning |
+|---|---|
+| `OPEN` | nobody has supplied anything |
+| `CANDIDATE` | a file is in, scored, awaiting a decision |
+| `PROVENANCE_REQUIRED` | the picture is right and we do not know where it came from |
+| `ACCEPTED` | it passed every gate and is in the manifest |
+| `REJECTED` | refused, with the reason recorded |
+
+`PROVENANCE_REQUIRED` is separate from `REJECTED` because the two need
+different actions: a rejected picture needs a different picture, an
+unprovenanced one needs somebody to write down where they got it. Collapsing
+them loses a usable asset and teaches nobody anything.
+
+## The shot's demands are read, not guessed
+
+A brief written from the sentence says what the image must be OF. The scene
+config says what it must be SHAPED like, and that is the half discovered too
+late. For each line, `acquire/shot.mjs` unions every shot that line is carried
+by and takes the **worst case**: the hardest push, the union of the caption
+bands, the widest pan. A picture sized for the average shot fails in the
+hardest one.
+
+From `baalbek/blocks`, served by three shots:
+
+```
+at least 1700px on the short edge — the camera pushes to 1.52x
+keep the subject clear of y=1312–1581: that band carries the caption
+the subject should sit inside x 185–895, y 361–1312 after the push
+this shot pushes hard, so leave room — a subject touching the frame edge
+  has nowhere to be revealed from
+```
+
+Nothing writes back to the scene config. The scene is the director's.
+
+## The filename carries no authority
+
+A file called `baalbek-trilithon.jpg` is a file somebody *named*
+`baalbek-trilithon.jpg`. `assets:match` scores what is in it against **every**
+open brief and returns a ranking with reasons — never an assignment.
+
+A supplied file also has no description, and the semantic scorer is not allowed
+to trust a filename, so **somebody has to say what the picture is**
+(`--describe`). A file nobody will describe cannot be cast.
+
+### When two roles score alike, a person decides
+
+Casting is automatic only when the top brief leads the runner-up by more than
+`CONFIRM_MARGIN` (0.25). Below that the pipeline stops and asks, because the
+cost of an automatic wrong cast is the failure this repository is named after
+and the cost of asking is one question.
+
+```
+Baalbek stone 9.2 · generic megalith 8.9   → suggests Baalbek stone
+lamp shot     9.3 · ancient artefact  9.1   → asks
+```
+
+## The original is never touched
+
+`assets/original/` holds the supplied file under its content hash, unmodified —
+not cropped, not resized, not re-encoded. Two people supplying the same
+photograph under two names is one photograph. Everything downstream reads that
+copy and writes to `assets/processed/`, so a bad normalisation costs a rerun
+rather than a file, and the provenance chain stays attached to the thing the
+licence actually describes.
+
+Normalisation squares up EXIF orientation, crops 9:16 around a supplied focus
+point, sizes for the push the camera will make, and keeps side margin for a pan.
+It does **not** grade — `FilmLook` grades the whole reel once at the end, and a
+pre-graded picture is graded twice.
+
+**Background removal is asked for, never assumed.** A clean cut-out needs a
+clean source; keying a photograph of an object in a room returns a rectangle.
+When a human asks for alpha they are asserting the source supports it, and the
+record says they asked.
+
+## The composition preview
+
+The check no score can make. Every candidate gets a full-frame preview with four
+overlays: the 9:16 crop, the **caption band** in red (the words win), the
+**subject box** in green, and the **end-of-push bounds** in yellow. This
+repository has shipped every one of these as a defect — a subject behind a
+caption, a monument cropped out by a push, a plate with nothing to push into —
+and every one was obvious in a single annotated still.
+
+`--plates` generates the empty version: the frame, the caption band and the
+subject box on a blank ground, which is what you hand somebody going out with a
+camera. It answers the question before the picture exists.
+
+## Provenance is stated, never inferred
+
+`source`, `sourceUrl`, `creator`, `license`, `licenseUrl`, `retrievalDate`,
+`notes`. `source` and `license` are mandatory; the rest are required by whichever
+licence applies. **No licence is ever inferred from a file.**

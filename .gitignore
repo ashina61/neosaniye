@@ -17,3 +17,10 @@ episodes/netflix/
 
 # Downloaded asset cache: reproducible from ASSET_MANIFEST.json, not source.
 .asset-cache/
+
+# Casting working directories.
+# `inbox` is a human drop zone and `preview` is a regenerable diagnostic;
+# `original` and `processed` ARE the assets and are kept.
+assets/inbox/*
+!assets/inbox/README.md
+assets/preview/

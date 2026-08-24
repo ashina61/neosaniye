@@ -25,6 +25,17 @@
 
 export const SEMANTIC_FLOOR = 8;
 
+/**
+ * Subjects that are really domains. The semantic layer returns the domain when
+ * it found no specific subject, and "scale" is not a word that appears in a
+ * description of stones — so where the subject is generic the must-show line,
+ * which has already been instantiated from the sentence, stands in for it.
+ */
+const DOMAIN_WORDS = new Set([
+  'anatomy', 'geography', 'process', 'material', 'scale', 'mechanism',
+  'elapsed', 'celestial', 'quantity', 'abstract',
+]);
+
 /** Words that carry meaning; the rest are noise in a match. */
 function terms(text) {
   return new Set(
@@ -123,17 +134,40 @@ export function scoreSemantic(candidate, brief) {
   }
 
   const said = terms(evidence.text);
-  const wanted = terms(`${brief.subject} ${brief.says ?? ''}`);
   const mustShow = brief.must_show ?? [];
 
-  /** Relevance: how much of what the brief is about appears in the evidence. */
-  const base = overlap(wanted, said);
-  /** And how many of the must-show items are named at all. */
+  /**
+   * RELEVANCE IS DRIVEN BY THE SUBJECT, NOT BY A BAG OF WORDS.
+   *
+   * The first version averaged the whole sentence against the whole
+   * description and weighted `must_show` at nearly half. Both were wrong.
+   *
+   * The sentence carries words that are not the subject — a brief about the
+   * moon whose line reads "the moon rose over the wreck" is not half about a
+   * wreck — so scoring the line as a flat bag put a correct photograph of the
+   * moon at 1.8 out of 10.
+   *
+   * And `must_show` is written for a PERSON: "a person or a known object in the
+   * same plane as a size reference" is an instruction, not a caption, and no
+   * description ever contains those words. Matching it literally at 45% of the
+   * score meant the requirement could only ever be failed.
+   *
+   * So: is the subject in the picture, first and worth most. Then how much of
+   * the rest of the line survives. Then a bonus where a must-show item is
+   * actually named — a bonus, because its absence is not evidence.
+   */
+  const subject = terms(brief.subject && !DOMAIN_WORDS.has(String(brief.subject).toLowerCase())
+    ? String(brief.subject).replace(/([a-z])([A-Z])/g, '$1 $2')
+    : mustShow[0] ?? brief.says ?? '');
+  const line = terms(brief.says ?? '');
+
+  const subjectHit = overlap(subject, said);
+  const lineHit = overlap(line, said);
   const shown = mustShow.length
     ? mustShow.filter((item) => overlap(terms(item), said) > 0.34).length / mustShow.length
-    : base;
+    : 0;
 
-  let relevance = (base * 0.55 + shown * 0.45) * 10;
+  let relevance = subjectHit * 6 + lineHit * 2.5 + shown * 1.5;
 
   /**
    * REJECTION CRITERIA ARE READ, NOT DECORATIVE. A candidate whose own
@@ -188,7 +222,7 @@ export function scoreSemantic(candidate, brief) {
   return {
     relevance: Number(relevance.toFixed(1)),
     accuracy: Number(accuracy.toFixed(1)),
-    subject: Number(Math.min(relevance, shown * 10).toFixed(1)),
+    subject: Number(Math.min(relevance, subjectHit * 10).toFixed(1)),
     evidence: evidence.kind,
     notes,
   };

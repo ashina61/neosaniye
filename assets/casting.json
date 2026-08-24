@@ -1,0 +1,865 @@
+{
+  "$note": "What a person has to supply to make these episodes production-ready. Every entry says what the picture must be OF, what must be visible, what must NOT be, and the shape the shot demands — the last of those is read from the scene config, not guessed. Drop files in assets/inbox/ and run `npm run assets:match`; filenames carry no authority.",
+  "generatedAt": "2026-08-24T07:50:26.460Z",
+  "episodes": [
+    "baalbek"
+  ],
+  "counts": {
+    "total": 9,
+    "blocking": 1,
+    "wouldStrengthen": 8,
+    "optional": 0,
+    "stillNeeded": 9
+  },
+  "statuses": {
+    "OPEN": 9,
+    "CANDIDATE": 0,
+    "PROVENANCE_REQUIRED": 0,
+    "ACCEPTED": 0,
+    "REJECTED": 0
+  },
+  "briefs": [
+    {
+      "id": "baalbek/blocks",
+      "episode": "baalbek",
+      "shot": [
+        "s01-blocks",
+        "s01-blocks-b",
+        "s01-blocks-c"
+      ],
+      "subject": "megalith",
+      "purpose": "make the size felt by putting something known beside it",
+      "representation": "photo",
+      "must_show": [
+        "megalith",
+        "a person or a known object in the same plane as a size reference"
+      ],
+      "preferred_orientation": "either; the whole object must fit",
+      "preferred_composition": "the object with a person or a known object in the same plane; no telephoto compression",
+      "historical_constraints": "the actual object named, at the site",
+      "scientific_constraints": null,
+      "reject_if": [
+        "a subject already cropped to the frame edge — the camera pushes in and there is nothing to push into",
+        "any framing with no scale reference in it, which is the one thing this shot exists to provide",
+        "heavy existing colour grading, especially teal-and-orange — the reel grades once, at the end",
+        "burnt-in dates or captions — the reel has its own typography and two sets fight",
+        "watermarks, logos or agency bugs — they survive every crop and every grade",
+        "telephoto compression that flattens the size",
+        "a different monument of the same family"
+      ],
+      "status": "OPEN",
+      "says": "Under a Roman temple in Lebanon sit three blocks no crane today could lift.",
+      "domain": "scale",
+      "priority": "would strengthen",
+      "currently": "drawn as scaleHaulage",
+      "subjectInferredFrom": null,
+      "searchTerms": [
+        "Baalbek trilithon",
+        "Temple of Jupiter Baalbek foundation",
+        "three colossal limestone blocks in a temple foundation, hard sunlight"
+      ],
+      "acceptable_substitutes": "another object of the same order of magnitude, captioned as a comparison",
+      "license_requirements": "free for commercial use and for derivative works; credit recorded where the licence requires it",
+      "shotRequirements": {
+        "shots": [
+          "s01-blocks",
+          "s01-blocks-b",
+          "s01-blocks-c"
+        ],
+        "sceneTypes": [
+          "title-slate",
+          "composite"
+        ],
+        "frame": {
+          "width": 1080,
+          "height": 1920,
+          "aspect": "9:16"
+        },
+        "camera": {
+          "maxPush": 1.52,
+          "moves": [
+            "push",
+            "tilt"
+          ],
+          "panRange": [
+            0,
+            0
+          ]
+        },
+        "captionBand": {
+          "top": 1312,
+          "bottom": 1581
+        },
+        "subjectBox": {
+          "left": 185,
+          "right": 895,
+          "top": 361,
+          "bottom": 1312
+        },
+        "demands": [
+          "at least 1700px on the short edge — the camera pushes to 1.52x and a soft push is a wasted shot",
+          "keep the subject clear of y=1312–1581: that band carries the caption in at least one of these shots",
+          "the subject should sit inside x 185–895, y 361–1312 after the push",
+          "this shot pushes hard (1.52x), so leave room around the subject — a subject touching the frame edge has nowhere to be revealed from"
+        ]
+      },
+      "candidates": [],
+      "accepted": null,
+      "provenance": {
+        "source": null,
+        "sourceUrl": null,
+        "creator": null,
+        "license": null,
+        "licenseUrl": null,
+        "retrievalDate": null,
+        "notes": null
+      }
+    },
+    {
+      "id": "baalbek/weight",
+      "episode": "baalbek",
+      "shot": [
+        "s02-weight",
+        "s02-weight-b",
+        "s02-weight-c"
+      ],
+      "subject": "megalith",
+      "purpose": "make the size felt by putting something known beside it",
+      "representation": "photo",
+      "must_show": [
+        "megalith",
+        "a person or a known object in the same plane as a size reference"
+      ],
+      "preferred_orientation": "either; the whole object must fit",
+      "preferred_composition": "the object with a person or a known object in the same plane; no telephoto compression",
+      "historical_constraints": "the actual object named, at the site",
+      "scientific_constraints": null,
+      "reject_if": [
+        "a subject already cropped to the frame edge — the camera pushes in and there is nothing to push into",
+        "any framing with no scale reference in it, which is the one thing this shot exists to provide",
+        "heavy existing colour grading, especially teal-and-orange — the reel grades once, at the end",
+        "burnt-in dates or captions — the reel has its own typography and two sets fight",
+        "watermarks, logos or agency bugs — they survive every crop and every grade",
+        "telephoto compression that flattens the size",
+        "a different monument of the same family"
+      ],
+      "status": "OPEN",
+      "says": "Each weighs about eight hundred tons. The one still in the quarry weighs sixteen hundred.",
+      "domain": "scale",
+      "priority": "would strengthen",
+      "currently": "drawn as scaleHaulage",
+      "subjectInferredFrom": "the episode's other scale lines — this one names no subject of its own",
+      "searchTerms": [
+        "Stone of the Pregnant Woman Baalbek",
+        "Hajjar al-Hibla",
+        "an unfinished megalith lying in a limestone quarry"
+      ],
+      "acceptable_substitutes": "another object of the same order of magnitude, captioned as a comparison",
+      "license_requirements": "free for commercial use and for derivative works; credit recorded where the licence requires it",
+      "shotRequirements": {
+        "shots": [
+          "s02-weight",
+          "s02-weight-b",
+          "s02-weight-c"
+        ],
+        "sceneTypes": [
+          "title-slate",
+          "composite"
+        ],
+        "frame": {
+          "width": 1080,
+          "height": 1920,
+          "aspect": "9:16"
+        },
+        "camera": {
+          "maxPush": 1.35,
+          "moves": [
+            "hold",
+            "push",
+            "tilt"
+          ],
+          "panRange": [
+            0,
+            0
+          ]
+        },
+        "captionBand": {
+          "top": 1310,
+          "bottom": 1509
+        },
+        "subjectBox": {
+          "left": 207,
+          "right": 1007,
+          "top": 149,
+          "bottom": 1310
+        },
+        "demands": [
+          "at least 1500px on the short edge — the camera pushes to 1.35x and a soft push is a wasted shot",
+          "keep the subject clear of y=1310–1509: that band carries the caption in at least one of these shots",
+          "the subject should sit inside x 207–1007, y 149–1310 after the push",
+          "this shot pushes hard (1.35x), so leave room around the subject — a subject touching the frame edge has nowhere to be revealed from"
+        ]
+      },
+      "candidates": [],
+      "accepted": null,
+      "provenance": {
+        "source": null,
+        "sourceUrl": null,
+        "creator": null,
+        "license": null,
+        "licenseUrl": null,
+        "retrievalDate": null,
+        "notes": null
+      }
+    },
+    {
+      "id": "baalbek/quarry",
+      "episode": "baalbek",
+      "shot": [
+        "s03-quarry",
+        "s03-quarry-b"
+      ],
+      "subject": "geography",
+      "purpose": "establish where this is and how the parts of it stand relative to each other",
+      "representation": "photo",
+      "must_show": [
+        "bedrock half mile uphill",
+        "the spatial relation the line is about"
+      ],
+      "preferred_orientation": "landscape source, croppable to 9:16 without losing the relation",
+      "preferred_composition": "high or aerial view with a clear horizon; the relation between the two sides must be legible",
+      "historical_constraints": null,
+      "scientific_constraints": null,
+      "reject_if": [
+        "tourist framing, visible modern signage where the line is historical, any view that hides the relation the sentence is about",
+        "a subject already cropped to the frame edge — the camera pushes in and there is nothing to push into",
+        "heavy existing colour grading, especially teal-and-orange — the reel grades once, at the end",
+        "burnt-in dates or captions — the reel has its own typography and two sets fight",
+        "watermarks, logos or agency bugs — they survive every crop and every grade",
+        "any view that hides the relation the sentence is about",
+        "visible modern signage where the line is historical"
+      ],
+      "status": "OPEN",
+      "says": "They were cut from bedrock half a mile uphill from where they sit.",
+      "domain": "geography",
+      "priority": "would strengthen",
+      "currently": "drawn as map",
+      "subjectInferredFrom": null,
+      "searchTerms": [
+        "Baalbek quarry",
+        "Roman quarry limestone cut channels",
+        "a limestone quarry face with cut channels, sloping ground"
+      ],
+      "acceptable_substitutes": "a comparable coastline of the same character, LABELLED as illustrative and not as the place",
+      "license_requirements": "free for commercial use and for derivative works; credit recorded where the licence requires it",
+      "shotRequirements": {
+        "shots": [
+          "s03-quarry",
+          "s03-quarry-b"
+        ],
+        "sceneTypes": [
+          "composite"
+        ],
+        "frame": {
+          "width": 1080,
+          "height": 1920,
+          "aspect": "9:16"
+        },
+        "camera": {
+          "maxPush": 1.44,
+          "moves": [
+            "pull",
+            "push"
+          ],
+          "panRange": [
+            0,
+            0
+          ]
+        },
+        "captionBand": {
+          "top": 80,
+          "bottom": 386
+        },
+        "subjectBox": {
+          "left": 244,
+          "right": 994,
+          "top": 386,
+          "bottom": 1509
+        },
+        "demands": [
+          "at least 1600px on the short edge — the camera pushes to 1.44x and a soft push is a wasted shot",
+          "keep the subject clear of y=80–386: that band carries the caption in at least one of these shots",
+          "the subject should sit inside x 244–994, y 386–1509 after the push",
+          "this shot pushes hard (1.44x), so leave room around the subject — a subject touching the frame edge has nowhere to be revealed from"
+        ]
+      },
+      "candidates": [],
+      "accepted": null,
+      "provenance": {
+        "source": null,
+        "sourceUrl": null,
+        "creator": null,
+        "license": null,
+        "licenseUrl": null,
+        "retrievalDate": null,
+        "notes": null
+      }
+    },
+    {
+      "id": "baalbek/nolift",
+      "episode": "baalbek",
+      "shot": [
+        "s04-nolift",
+        "s04-nolift-b",
+        "s04-nolift-c"
+      ],
+      "subject": "megalith",
+      "purpose": "make the size felt by putting something known beside it",
+      "representation": "photo",
+      "must_show": [
+        "megalith",
+        "a person or a known object in the same plane as a size reference"
+      ],
+      "preferred_orientation": "either; the whole object must fit",
+      "preferred_composition": "the object with a person or a known object in the same plane; no telephoto compression",
+      "historical_constraints": "the actual object named, at the site",
+      "scientific_constraints": null,
+      "reject_if": [
+        "a subject already cropped to the frame edge — the camera pushes in and there is nothing to push into",
+        "any framing with no scale reference in it, which is the one thing this shot exists to provide",
+        "heavy existing colour grading, especially teal-and-orange — the reel grades once, at the end",
+        "burnt-in dates or captions — the reel has its own typography and two sets fight",
+        "watermarks, logos or agency bugs — they survive every crop and every grade",
+        "telephoto compression that flattens the size",
+        "a different monument of the same family"
+      ],
+      "status": "OPEN",
+      "says": "No pulley of the period could take that load. No rope would hold it.",
+      "domain": "scale",
+      "priority": "would strengthen",
+      "currently": "drawn as scaleHaulage",
+      "subjectInferredFrom": "the episode's other scale lines — this one names no subject of its own",
+      "searchTerms": [
+        "ancient hemp rope",
+        "Roman pulley block",
+        "a coil of heavy hemp rope on stone"
+      ],
+      "acceptable_substitutes": "another object of the same order of magnitude, captioned as a comparison",
+      "license_requirements": "free for commercial use and for derivative works; credit recorded where the licence requires it",
+      "shotRequirements": {
+        "shots": [
+          "s04-nolift",
+          "s04-nolift-b",
+          "s04-nolift-c"
+        ],
+        "sceneTypes": [
+          "composite"
+        ],
+        "frame": {
+          "width": 1080,
+          "height": 1920,
+          "aspect": "9:16"
+        },
+        "camera": {
+          "maxPush": 1.45,
+          "moves": [
+            "drift",
+            "pull",
+            "pan"
+          ],
+          "panRange": [
+            -257,
+            0
+          ]
+        },
+        "captionBand": {
+          "top": 1272,
+          "bottom": 1728
+        },
+        "subjectBox": {
+          "left": 248,
+          "right": 993,
+          "top": 179,
+          "bottom": 1272
+        },
+        "demands": [
+          "at least 1600px on the short edge — the camera pushes to 1.45x and a soft push is a wasted shot",
+          "keep the subject clear of y=1272–1728: that band carries the caption in at least one of these shots",
+          "the subject should sit inside x 248–993, y 179–1272 after the push",
+          "this shot pushes hard (1.45x), so leave room around the subject — a subject touching the frame edge has nowhere to be revealed from"
+        ]
+      },
+      "candidates": [],
+      "accepted": null,
+      "provenance": {
+        "source": null,
+        "sourceUrl": null,
+        "creator": null,
+        "license": null,
+        "licenseUrl": null,
+        "retrievalDate": null,
+        "notes": null
+      }
+    },
+    {
+      "id": "baalbek/rolled",
+      "episode": "baalbek",
+      "shot": [
+        "s05-rolled",
+        "s05-rolled-b"
+      ],
+      "subject": "megalith",
+      "purpose": "make the size felt by putting something known beside it",
+      "representation": "photo",
+      "must_show": [
+        "megalith",
+        "a person or a known object in the same plane as a size reference"
+      ],
+      "preferred_orientation": "either; the whole object must fit",
+      "preferred_composition": "the object with a person or a known object in the same plane; no telephoto compression",
+      "historical_constraints": "the actual object named, at the site",
+      "scientific_constraints": null,
+      "reject_if": [
+        "a subject already cropped to the frame edge — the camera pushes in and there is nothing to push into",
+        "any framing with no scale reference in it, which is the one thing this shot exists to provide",
+        "heavy existing colour grading, especially teal-and-orange — the reel grades once, at the end",
+        "burnt-in dates or captions — the reel has its own typography and two sets fight",
+        "watermarks, logos or agency bugs — they survive every crop and every grade",
+        "telephoto compression that flattens the size",
+        "a different monument of the same family"
+      ],
+      "status": "OPEN",
+      "says": "So the Romans did not lift them. They rolled them.",
+      "domain": "scale",
+      "priority": "would strengthen",
+      "currently": "drawn as scaleHaulage",
+      "subjectInferredFrom": "the episode's other scale lines — this one names no subject of its own",
+      "searchTerms": [
+        "wooden rollers",
+        "oak logs row",
+        "hardwood logs laid in rows on a flat earth road"
+      ],
+      "acceptable_substitutes": "another object of the same order of magnitude, captioned as a comparison",
+      "license_requirements": "free for commercial use and for derivative works; credit recorded where the licence requires it",
+      "shotRequirements": {
+        "shots": [
+          "s05-rolled",
+          "s05-rolled-b"
+        ],
+        "sceneTypes": [
+          "composite"
+        ],
+        "frame": {
+          "width": 1080,
+          "height": 1920,
+          "aspect": "9:16"
+        },
+        "camera": {
+          "maxPush": 1.47,
+          "moves": [
+            "pull",
+            "drift"
+          ],
+          "panRange": [
+            0,
+            0
+          ]
+        },
+        "captionBand": {
+          "top": 1316,
+          "bottom": 1539
+        },
+        "subjectBox": {
+          "left": 173,
+          "right": 907,
+          "top": 544,
+          "bottom": 1316
+        },
+        "demands": [
+          "at least 1600px on the short edge — the camera pushes to 1.47x and a soft push is a wasted shot",
+          "keep the subject clear of y=1316–1539: that band carries the caption in at least one of these shots",
+          "the subject should sit inside x 173–907, y 544–1316 after the push",
+          "this shot pushes hard (1.47x), so leave room around the subject — a subject touching the frame edge has nowhere to be revealed from"
+        ]
+      },
+      "candidates": [],
+      "accepted": null,
+      "provenance": {
+        "source": null,
+        "sourceUrl": null,
+        "creator": null,
+        "license": null,
+        "licenseUrl": null,
+        "retrievalDate": null,
+        "notes": null
+      }
+    },
+    {
+      "id": "baalbek/cradle",
+      "episode": "baalbek",
+      "shot": [
+        "s06-cradle",
+        "s06-cradle-b"
+      ],
+      "subject": "megalith",
+      "purpose": "make the size felt by putting something known beside it",
+      "representation": "photo",
+      "must_show": [
+        "megalith",
+        "a person or a known object in the same plane as a size reference"
+      ],
+      "preferred_orientation": "either; the whole object must fit",
+      "preferred_composition": "the object with a person or a known object in the same plane; no telephoto compression",
+      "historical_constraints": "the actual object named, at the site",
+      "scientific_constraints": null,
+      "reject_if": [
+        "a subject already cropped to the frame edge — the camera pushes in and there is nothing to push into",
+        "any framing with no scale reference in it, which is the one thing this shot exists to provide",
+        "heavy existing colour grading, especially teal-and-orange — the reel grades once, at the end",
+        "burnt-in dates or captions — the reel has its own typography and two sets fight",
+        "watermarks, logos or agency bugs — they survive every crop and every grade",
+        "telephoto compression that flattens the size",
+        "a different monument of the same family"
+      ],
+      "status": "OPEN",
+      "says": "Hardwood rollers under a timber cradle, and capstans hauling on ropes ahead.",
+      "domain": "scale",
+      "priority": "would strengthen",
+      "currently": "drawn as scaleHaulage",
+      "subjectInferredFrom": "the episode's other scale lines — this one names no subject of its own",
+      "searchTerms": [
+        "timber cradle beams",
+        "capstan winch wooden",
+        "a heavy timber frame, thick beams pegged together"
+      ],
+      "acceptable_substitutes": "another object of the same order of magnitude, captioned as a comparison",
+      "license_requirements": "free for commercial use and for derivative works; credit recorded where the licence requires it",
+      "shotRequirements": {
+        "shots": [
+          "s06-cradle",
+          "s06-cradle-b"
+        ],
+        "sceneTypes": [
+          "composite"
+        ],
+        "frame": {
+          "width": 1080,
+          "height": 1920,
+          "aspect": "9:16"
+        },
+        "camera": {
+          "maxPush": 1.24,
+          "moves": [
+            "drift",
+            "pan"
+          ],
+          "panRange": [
+            0,
+            253
+          ]
+        },
+        "captionBand": {
+          "top": 1322,
+          "bottom": 1509
+        },
+        "subjectBox": {
+          "left": 155,
+          "right": 1026,
+          "top": 111,
+          "bottom": 1322
+        },
+        "demands": [
+          "at least 1400px on the short edge — the camera pushes to 1.24x and a soft push is a wasted shot",
+          "keep the subject clear of y=1322–1509: that band carries the caption in at least one of these shots",
+          "the subject should sit inside x 155–1026, y 111–1322 after the push",
+          "the camera barely moves, so the supplied framing is close to the delivered framing"
+        ]
+      },
+      "candidates": [],
+      "accepted": null,
+      "provenance": {
+        "source": null,
+        "sourceUrl": null,
+        "creator": null,
+        "license": null,
+        "licenseUrl": null,
+        "retrievalDate": null,
+        "notes": null
+      }
+    },
+    {
+      "id": "baalbek/men",
+      "episode": "baalbek",
+      "shot": [
+        "s07-men",
+        "s07-men-b"
+      ],
+      "subject": "megalith",
+      "purpose": "make the size felt by putting something known beside it",
+      "representation": "photo",
+      "must_show": [
+        "megalith",
+        "a person or a known object in the same plane as a size reference"
+      ],
+      "preferred_orientation": "either; the whole object must fit",
+      "preferred_composition": "the object with a person or a known object in the same plane; no telephoto compression",
+      "historical_constraints": "the actual object named, at the site",
+      "scientific_constraints": null,
+      "reject_if": [
+        "a subject already cropped to the frame edge — the camera pushes in and there is nothing to push into",
+        "any framing with no scale reference in it, which is the one thing this shot exists to provide",
+        "heavy existing colour grading, especially teal-and-orange — the reel grades once, at the end",
+        "burnt-in dates or captions — the reel has its own typography and two sets fight",
+        "watermarks, logos or agency bugs — they survive every crop and every grade",
+        "telephoto compression that flattens the size",
+        "a different monument of the same family"
+      ],
+      "status": "OPEN",
+      "says": "Roughly a thousand men on those ropes, moving the block a few feet an hour.",
+      "domain": "scale",
+      "priority": "would strengthen",
+      "currently": "drawn as scaleHaulage",
+      "subjectInferredFrom": null,
+      "searchTerms": [
+        "dusty haul road",
+        "Levant dry landscape",
+        "a wide dusty haul road under white sun"
+      ],
+      "acceptable_substitutes": "another object of the same order of magnitude, captioned as a comparison",
+      "license_requirements": "free for commercial use and for derivative works; credit recorded where the licence requires it",
+      "shotRequirements": {
+        "shots": [
+          "s07-men",
+          "s07-men-b"
+        ],
+        "sceneTypes": [
+          "title-slate",
+          "composite"
+        ],
+        "frame": {
+          "width": 1080,
+          "height": 1920,
+          "aspect": "9:16"
+        },
+        "camera": {
+          "maxPush": 1.45,
+          "moves": [
+            "pan",
+            "push"
+          ],
+          "panRange": [
+            0,
+            0
+          ]
+        },
+        "captionBand": {
+          "top": 1319,
+          "bottom": 1530
+        },
+        "subjectBox": {
+          "left": 248,
+          "right": 993,
+          "top": 179,
+          "bottom": 1319
+        },
+        "demands": [
+          "at least 1600px on the short edge — the camera pushes to 1.45x and a soft push is a wasted shot",
+          "keep the subject clear of y=1319–1530: that band carries the caption in at least one of these shots",
+          "the subject should sit inside x 248–993, y 179–1319 after the push",
+          "this shot pushes hard (1.45x), so leave room around the subject — a subject touching the frame edge has nowhere to be revealed from"
+        ]
+      },
+      "candidates": [],
+      "accepted": null,
+      "provenance": {
+        "source": null,
+        "sourceUrl": null,
+        "creator": null,
+        "license": null,
+        "licenseUrl": null,
+        "retrievalDate": null,
+        "notes": null
+      }
+    },
+    {
+      "id": "baalbek/level",
+      "episode": "baalbek",
+      "shot": [
+        "s08-level",
+        "s08-level-b"
+      ],
+      "subject": "megalith",
+      "purpose": "make the size felt by putting something known beside it",
+      "representation": "photo",
+      "must_show": [
+        "megalith",
+        "a person or a known object in the same plane as a size reference"
+      ],
+      "preferred_orientation": "either; the whole object must fit",
+      "preferred_composition": "the object with a person or a known object in the same plane; no telephoto compression",
+      "historical_constraints": "the actual object named, at the site",
+      "scientific_constraints": null,
+      "reject_if": [
+        "a subject already cropped to the frame edge — the camera pushes in and there is nothing to push into",
+        "any framing with no scale reference in it, which is the one thing this shot exists to provide",
+        "heavy existing colour grading, especially teal-and-orange — the reel grades once, at the end",
+        "burnt-in dates or captions — the reel has its own typography and two sets fight",
+        "watermarks, logos or agency bugs — they survive every crop and every grade",
+        "telephoto compression that flattens the size",
+        "a different monument of the same family"
+      ],
+      "status": "OPEN",
+      "says": "It took months. The stones were never lifted, only slid, level, on wood.",
+      "domain": "scale",
+      "priority": "would strengthen",
+      "currently": "drawn as scaleHaulage",
+      "subjectInferredFrom": null,
+      "searchTerms": [
+        "Roman road bed",
+        "compacted earth causeway",
+        "a flat compacted earth causeway"
+      ],
+      "acceptable_substitutes": "another object of the same order of magnitude, captioned as a comparison",
+      "license_requirements": "free for commercial use and for derivative works; credit recorded where the licence requires it",
+      "shotRequirements": {
+        "shots": [
+          "s08-level",
+          "s08-level-b"
+        ],
+        "sceneTypes": [
+          "composite"
+        ],
+        "frame": {
+          "width": 1080,
+          "height": 1920,
+          "aspect": "9:16"
+        },
+        "camera": {
+          "maxPush": 1.55,
+          "moves": [
+            "drift",
+            "pull"
+          ],
+          "panRange": [
+            0,
+            0
+          ]
+        },
+        "captionBand": {
+          "top": 1174,
+          "bottom": 1726
+        },
+        "subjectBox": {
+          "left": 284,
+          "right": 980,
+          "top": 204,
+          "bottom": 1174
+        },
+        "demands": [
+          "at least 1700px on the short edge — the camera pushes to 1.55x and a soft push is a wasted shot",
+          "keep the subject clear of y=1174–1726: that band carries the caption in at least one of these shots",
+          "the subject should sit inside x 284–980, y 204–1174 after the push",
+          "this shot pushes hard (1.55x), so leave room around the subject — a subject touching the frame edge has nowhere to be revealed from"
+        ]
+      },
+      "candidates": [],
+      "accepted": null,
+      "provenance": {
+        "source": null,
+        "sourceUrl": null,
+        "creator": null,
+        "license": null,
+        "licenseUrl": null,
+        "retrievalDate": null,
+        "notes": null
+      }
+    },
+    {
+      "id": "baalbek/close",
+      "episode": "baalbek",
+      "shot": [
+        "s09-close"
+      ],
+      "subject": "megalith",
+      "purpose": "make the size felt by putting something known beside it",
+      "representation": "photo",
+      "must_show": [
+        "megalith",
+        "a person or a known object in the same plane as a size reference"
+      ],
+      "preferred_orientation": "either; the whole object must fit",
+      "preferred_composition": "the object with a person or a known object in the same plane; no telephoto compression",
+      "historical_constraints": "the actual object named, at the site",
+      "scientific_constraints": null,
+      "reject_if": [
+        "a subject already cropped to the frame edge — the camera pushes in and there is nothing to push into",
+        "any framing with no scale reference in it, which is the one thing this shot exists to provide",
+        "heavy existing colour grading, especially teal-and-orange — the reel grades once, at the end",
+        "burnt-in dates or captions — the reel has its own typography and two sets fight",
+        "watermarks, logos or agency bugs — they survive every crop and every grade",
+        "telephoto compression that flattens the size",
+        "a different monument of the same family"
+      ],
+      "status": "OPEN",
+      "says": "Not one machine. Sixty thousand man-days, and a road flat enough to hold them.",
+      "domain": "scale",
+      "priority": "BLOCKING",
+      "currently": "carried by typography",
+      "subjectInferredFrom": "the episode's other scale lines — this one names no subject of its own",
+      "searchTerms": [
+        "Baalbek podium dusk",
+        "Temple of Jupiter columns",
+        "the temple podium at dusk, empty"
+      ],
+      "acceptable_substitutes": "another object of the same order of magnitude, captioned as a comparison",
+      "license_requirements": "free for commercial use and for derivative works; credit recorded where the licence requires it",
+      "shotRequirements": {
+        "shots": [
+          "s09-close"
+        ],
+        "sceneTypes": [
+          "title-slate"
+        ],
+        "frame": {
+          "width": 1080,
+          "height": 1920,
+          "aspect": "9:16"
+        },
+        "camera": {
+          "maxPush": 1.08,
+          "moves": [
+            "drift"
+          ],
+          "panRange": [
+            0,
+            0
+          ]
+        },
+        "captionBand": null,
+        "subjectBox": {
+          "left": 40,
+          "right": 1040,
+          "top": 78,
+          "bottom": 1728
+        },
+        "demands": [
+          "at least 1200px on the short edge — the camera pushes to 1.08x and a soft push is a wasted shot",
+          "no caption band in these shots — the whole frame is available",
+          "the subject should sit inside x 40–1040, y 78–1728 after the push",
+          "the camera barely moves, so the supplied framing is close to the delivered framing"
+        ]
+      },
+      "candidates": [],
+      "accepted": null,
+      "provenance": {
+        "source": null,
+        "sourceUrl": null,
+        "creator": null,
+        "license": null,
+        "licenseUrl": null,
+        "retrievalDate": null,
+        "notes": null
+      }
+    }
+  ]
+}
