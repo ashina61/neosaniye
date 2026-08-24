@@ -158,12 +158,33 @@ restored the file. A re-plan clears all nine warnings whenever you want it.
 
 ## 11. Antikythera regression
 
-Valid. **0 DNA errors.** Renders. The one warning is the 50% push share — a real
-observation about the oldest episode in the repo, reported rather than tuned away.
+**Valid. 0 DNA errors. Renders** (`out/antikythera.mp4`, 25.2 MB). The two
+warnings are its legacy 76px caption margin and a 50% push share — real
+observations about the oldest episode in the repository, reported rather than
+tuned away.
 
 ## 12. Five benchmark results
 
-*(rendered from unchanged configs — see the render section below)*
+Rendered from **unchanged** scene configs. Every number identical to the
+pre-DNA run, which is the expected result and the point: naming a language does
+not change it.
+
+| episode | shots | seconds | procedural | typography | cuts | temporal | semantic fails | DNA errors | final |
+|---|---|---|---|---|---|---|---|---|---|
+| Baalbek | 20 | 49.1 | 16 | 4 | 100% plain | clean | 0 | 0 | 7.5 |
+| Roman concrete | 23 | 50.0 | 18 | 5 | 100% plain | clean | 0 | 0 | 8.0 |
+| Hormuz | 22 | 49.9 | 13 | 9 | 100% plain | clean | 0 | 0 | 8.0 |
+| Human heart | 22 | 50.7 | 15 | 7 | 100% plain | clean | 0 | 0 | 7.5 |
+| Medieval sword | 22 | 50.3 | 14 | 8 | 100% plain | clean | 0 | 0 | 8.0 |
+
+**Nothing was tuned.** No score moved because no score was aimed at — this phase
+added a seventh question to validation and a lint over the engine, neither of
+which touches what a shot draws.
+
+The one code change with a visual consequence was the `Rays` → `Sunburst`
+rename. Verified by rendering the single scene in the repository that uses the
+`sunburst` field (`mansa-musa/s06-close`): it renders, and it renders the same.
+A broken reference would have thrown.
 
 ---
 
