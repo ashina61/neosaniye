@@ -433,3 +433,92 @@ line in one of those domains that reaches the bottom of the ladder has **not
 found a representation**: it writes `REPRESENTATION_REQUIRED`, is counted, and
 is reported — the same treatment a refused photograph gets. The reel still
 renders. Nobody gets to believe it was a design choice.
+
+## The execution layer
+
+The vocabulary phase answered *what to draw*. This one answers *whether it
+looks like anything*. Five things, all of them found by rendering a frame and
+looking at it rather than by reading a number.
+
+### A material is a value before it is a finish
+
+`engine/draw/material.tsx` began as a raking gradient plus a deterministic
+speckle, painted over whatever the plate had drawn underneath — which was a
+near-black rectangle. Six per cent of white along the top edge is a *highlight*,
+and a highlight with no body under it is a silhouette. A thousand-ton block of
+limestone rendered darker than the sky behind it.
+
+Every material now declares an **albedo**: the value it has before any light
+reaches it. Limestone is a mid grey, wrought iron is dark, paper is nearly
+white. `MaterialFace` lays that body down first and the light goes on top of it,
+which is the order light actually works in.
+
+The hue wash is scaled by `give`, because that field already separates the two
+families it matters for: stone and concrete are grey things that take a cast
+from the light; flesh and wood *are* their colour. Washing flesh at a fifth of
+the accent is how four chambers of a heart came out as grey discs.
+
+### The camera looks at the world and through the sheet
+
+Handing a drawing the whole of the shot's camera fixed fourteen identically
+framed haulage shots and broke something worse: the push carried the
+registration ticks, the disclosure and the tonnage readout with it, and a shot
+at 1.29 delivered `800 TONS` sliced off the top of the frame.
+
+A drawing has two layers that are not the same kind of thing. The **world** is
+what the camera is looking at. The **sheet** is what it is looking through —
+corner ticks, the honesty plate, a counted figure. Walk past a museum plate and
+the object shifts; the label screwed to the wall beside it does not.
+
+`worldTransform` in `sheet.tsx` is an SVG transform applied to the world group
+only. Everything the draughtsman added stays where it was composed.
+
+### Every shot takes the largest camera it can afford
+
+A photograph survives any push because there is more picture outside the frame.
+A drawing has exactly the frame it was composed for. A fixed small share is
+wrong twice over — too much for a section that already spans three quarters of
+the width, needlessly little for a gear train with room on every side.
+
+The planner is the only place that knows both the camera and the drawing's
+extent, so it computes the share. It walks `k` down from 1 and takes the first
+value at which every drawn box, pushed and panned to its extremes, is still
+inside the frame; the result is written to the scene as `diagramCamera`. In
+practice most shots keep the whole share, the wide ones drop to 0.80–0.95, and
+the one shot that zooms 6.4× *through* a plate drops to 0.05 — because a share
+of a portal is still a portal, and at 2.6× a gear train is four wheels and the
+edges of three others.
+
+The clipping checker runs the same transform. Measuring boxes **at rest** is how
+a magnified cross-section composed to fit the frame exactly was panned 262
+pixels and shipped with its right half outside the picture, through a checker
+whose entire job is that.
+
+### Can you see it?
+
+`contrastProblems` is the sixth question `npm run validate` asks. Everything
+before it judges where a thing is; this one judges whether the eye can separate
+it from what it is on.
+
+The measurement is relative luminance — the same one an accessibility contrast
+ratio uses, because it is the same question. A drawing is line work with no mass
+to carry itself on, so 3:1 against the field's brightest stop is the floor and
+anything under 4.5 is a warning. Drawn shots only: the local luminance behind a
+stroke laid over a photograph is not knowable from the config, and a check that
+guesses is a check people switch off.
+
+The planner pulls the field's palette down behind every drawing rather than
+replacing it, so the reel still looks like itself and the values go where a
+plate's values belong.
+
+### Causality has to point the right way
+
+Every part of the haulage drawing was built for a load travelling left: the
+haulers stand off the left edge leaning into it, the ropes leave the left face
+and run out of frame, the force arrow points left and is labelled `PULL`. The
+position was `startX + moved`. So the men leaned into a rope, the arrow said
+PULL, and the block slid the other way — for fourteen shots, in a drawing whose
+subject is cause and effect.
+
+The frame is now budgeted in order: men first, because they are the reading,
+then the load, and whatever is left over becomes travel.

@@ -562,6 +562,60 @@ Bu hat aynı duvara çarpmaz çünkü malzeme koda sokulmaz:
     olur; bir delik render'ı düşürmek için sebep değildir. Ama kimse onun bir
     tasarım kararı olduğuna inanmaz.
 
+34. **KAMERA DÜNYAYA BAKAR, PAFTADAN GEÇEREK BAKAR.** Bir çekimin kamerası
+    çizimlere uzun süre yalnız bir ölçek olarak ulaştı, o yüzden art arda on
+    dört nakliye çekimi aynı kadrajla çıktı. Kameranın tamamını plakaya vermek
+    bunu düzeltti ve daha kötü bir şeyi bozdu: itiş tescil işaretlerini,
+    dürüstlük plaketini ve tonaj sayacını da götürdü, 1.29'luk bir çekim
+    karenin üstünden kesilmiş "800 TONS" teslim etti.
+
+    İkisi aynı hatanın iki yönü. Bir çizimin aynı cinsten olmayan iki katmanı
+    vardır: kameranın BAKTIĞI dünya, ve kameranın içinden baktığı PAFTA. Bir
+    müze levhasının önünde yürü, nesne kayar; yanındaki duvara vidalanmış
+    etiket kaymaz. Kamera yalnız dünya grubuna uygulanan bir SVG dönüşümüdür.
+
+35. **MALZEME ÖNCE BİR DEĞERDİR, SONRA BİR YÜZEY.** İlk malzeme tablosunda
+    albedo yoktu: tedavi tırmalayan bir gradyan ile bir benekti ve plakanın
+    altına çizdiği neredeyse siyah dikdörtgenin üstüne sürülüyordu. Üst kenarda
+    yüzde altı beyaz bir PARLAMADIR, ve altında gövdesi olmayan bir parlama
+    siluettir. Bin tonluk kireçtaşı bloğu arkasındaki gökyüzünden koyu çıktı.
+
+    Kireçtaşı gazete okuyabileceğin bir orta gridir, dövme demir koyudur, kâğıt
+    neredeyse beyazdır. Bunu yanlış al, spekülerin hiçbir faydası olmaz: ışığın
+    üstüne DÜŞECEĞİ bir şey yoktur. Ton yıkaması da malzemeye göredir — taş ve
+    beton ışıktan renk alan gri şeylerdir, et ve ahşap kendi renkleridir.
+
+36. **ÇİZİM, KENDİNDEN KOYU BİR ZEMİN İSTER.** Bir insan kalbinin dört odacığı
+    gri düğme olarak çıktı çünkü arkalarındaki alan karenin üstünde parlak okra
+    ile başlıyordu. Şema ÇİZGİ İŞİDİR: soluk kontur, ince etiket, kendini
+    taşıyacak kütle yok. Açık çizgi açık zemine konunca çizim biraz kontrast
+    kaybetmez, GÖRÜNMEZ olur.
+
+    Ölçü bağıl parlaklıktır — erişilebilirlik kontrast oranının kullandığının
+    aynısı, çünkü soru aynı sorudur: göz bu iki yüzeyi ayırabiliyor mu. 3:1
+    taban, 4.5 altı uyarı, ve yalnız çizili çekimlerde: fotoğrafın altındaki
+    yerel parlaklık config'ten bilinemez, tahmin eden kontrol yalancı çobandır.
+
+37. **HER ÇEKİM, ÇERÇEVEYİ KIRPMADAN ALABİLECEĞİ EN BÜYÜK KAMERAYI ALIR.** Bir
+    fotoğraf her itişi kaldırır çünkü karenin dışında daha fazla resim vardır.
+    Bir çizimin ise yalnız kendisi için kurulduğu kare vardır. Sabit küçük bir
+    pay iki kere yanlış cevaptır: genişliğin dörtte üçünü kaplayan bir kesit
+    için fazla, karenin ortasında her yanında yer olan bir dişli takımı için
+    gereksiz az.
+
+    Planlayıcı hem kamerayı hem çizimin sınırlarını bilen tek yerdir, o yüzden
+    payı O hesaplar. Ve kırpma kontrolü kutuları plakaların geçtiği dönüşümden
+    geçirir: DURURKEN ölçen bir kontrol, kareye tam oturacak şekilde kurulmuş
+    bir kesitin 262 piksel pan'lanıp sağ yarısı dışarıda teslim edilmesini
+    onaylar — tek işi bu olduğu hâlde.
+
+38. **SAF GRAFİK BOŞ ÇEKİM İÇİNDİR, VE ÜÇ SATIR YAZI BOŞ DEĞİLDİR.** Tipografik
+    bir çekimin bütün anlamı, temsil yönetmeninin dürüst bir resim bulamayıp
+    bunu SÖYLEMESİDİR. Kelimeler öznedir. Üstlerine hiçbir şeye bağlı olmayan
+    kesikli bir baklava konmaz — `wire` ve `beam` kendi söyleyecek şeyi olmayan
+    iki proptur, o yüzden giden de o ikisidir; kendi etiketini taşıyan bir
+    plaket kalır.
+
 ## Doğrulama
 
 `npm run validate` render yapmadan üç saniyede cevap verir: şema, sahne tipi ve
@@ -595,9 +649,16 @@ tek bir karede belliydi. O yüzden BAKMAK ucuzdur:
   ızgara genel bakıştır, inceleme değil.
 - `npm run assets:review -- --episode=<id>` cutout'ları dama tahtasına dizer.
 
-Ve `npm run validate` artık BEŞ soru soruyor. Dördüncüsü "her karede tutarlı
+Ve `npm run validate` artık ALTI soru soruyor. Dördüncüsü "her karede tutarlı
 mı" (`scripts/lib/temporal.mjs`), beşincisi "bu bir REEL mi, yoksa arka arkaya
-on çekim mi" (`scripts/lib/editor.mjs`). Sonuncusu tek bir çekimin sahip
+on çekim mi" (`scripts/lib/editor.mjs`). Beşincisi tek bir çekimin sahip
 olabileceği bir özellik değildir: "slayt gösterisi" ancak şeylerin ARASINDA
 vardır, ve her biri her kontrolden geçen on çekim hâlâ bir slayt gösterisi
 olabilir.
+
+Altıncısı `scripts/lib/critique.mjs` içindeki `contrastProblems`: **görebiliyor
+musun?** Kalbin dört odacığı yukarıdaki her kontrolden geçti — kare içinde,
+güvenli alan içinde, doğru boyutta, çakışma yok, her karede geçerli, ritmi iyi
+bir dizinin parçası — ve yanındaki havayla neredeyse aynı değerdeydi. Diğer
+hepsi bir şeyin NEREDE olduğunu sorar; bu, gözün onu zeminden ayırıp
+ayıramadığını.
