@@ -794,21 +794,7 @@
         "cameraMove": "hold",
         "cameraPurpose": "atmosphere, and the calm that makes the next cut land",
         "cameraAuthored": true
-      },
-      "props": [
-        {
-          "kind": "wire",
-          "text": "move 37",
-          "shape": "diamond",
-          "colour": "#c9a94b",
-          "width": 367,
-          "x": 670,
-          "y": 883,
-          "depth": 0.9,
-          "rotate": 0,
-          "from": 51
-        }
-      ]
+      }
     },
     {
       "id": "s04-move-b",

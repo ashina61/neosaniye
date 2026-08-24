@@ -2333,6 +2333,25 @@ function applyDirection({
    * values belong. Photographic shots keep the ground they were given, because
    * there the ground is BEHIND a picture rather than under a pen.
    */
+  /**
+   * AND THE WEATHER STANDS BEHIND THE SENTENCE, NOT IN FRONT OF IT.
+   *
+   * Fog is drawn nearest the viewer, which is where fog is. It is also the one
+   * place a caption cannot survive: at three fifths strength across the band
+   * the words are in, a shot's sentence becomes a rumour. Atmosphere is worth
+   * having and the words are worth reading, so the fog is pulled back over the
+   * type rather than switched off — the shot keeps its air and loses nothing
+   * the viewer had to read.
+   */
+  {
+    const q = scene.params ?? {};
+    const capY = (Number(q.captionY) || 0) / HEIGHT;
+    const fogTop = 1 - (Number(q.fogHeight) || 0.62);
+    if ((Number(q.fog) || 0) > 0.5 && Array.isArray(q.caption) && q.caption.length && capY > fogTop) {
+      q.fog = 0.42;
+    }
+  }
+
   if (scene.diagram && Array.isArray(scene.params?.fieldColours)) {
     const pull = [0.26, 0.34, 0.72];
     scene.params.fieldColours = scene.params.fieldColours.map((hex, i) => dim(hex, pull[i] ?? 0.4));

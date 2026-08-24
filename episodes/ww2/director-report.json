@@ -512,9 +512,7 @@
         "clock-face.jpg"
       ],
       "drawnGround": null,
-      "props": [
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the closing claim",
         "secondary": "the strongest image in the reel, returned to",
@@ -649,9 +647,7 @@
         "grey-sky.jpg"
       ],
       "drawnGround": "wash",
-      "props": [
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the closing claim",
         "secondary": "the strongest image in the reel, returned to",

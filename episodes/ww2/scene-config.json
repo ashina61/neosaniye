@@ -783,21 +783,7 @@
         "cameraMove": "hold",
         "cameraPurpose": "expose information the frame was withholding, or follow a movement",
         "cameraAuthored": true
-      },
-      "props": [
-        {
-          "kind": "wire",
-          "text": "eleven",
-          "shape": "circle",
-          "colour": "#e8e2d4",
-          "width": 497,
-          "x": 540,
-          "y": 845,
-          "depth": 0.95,
-          "rotate": 0,
-          "from": 58
-        }
-      ]
+      }
     },
     {
       "id": "s04-eleven-b",
@@ -1054,18 +1040,7 @@
         "cameraMove": "hold",
         "cameraPurpose": "atmosphere, and the calm that makes the next cut land",
         "cameraAuthored": true
-      },
-      "props": [
-        {
-          "kind": "wire",
-          "depth": 0.94,
-          "x": 540,
-          "y": 473,
-          "width": 421,
-          "from": 67,
-          "shape": "rect"
-        }
-      ]
+      }
     }
   ]
 }

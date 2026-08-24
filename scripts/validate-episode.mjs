@@ -27,6 +27,7 @@ import {readPlaceholders} from './lib/placeholders.mjs';
 import {BUILT_IN_SCENE_TYPES, validateEpisodeConfig} from '../engine/schema.mjs';
 import {
   clippingProblems,
+  contrastProblems,
   critiqueDirection,
   critiqueEpisode,
   endingProblems,
@@ -130,6 +131,11 @@ async function validateEpisode(episodeId) {
   const clipped = clippingProblems(config);
   const ending = endingProblems(config);
   /**
+   * AND: can you see the drawing? Everything above judges where a thing is.
+   * This one judges whether the eye can separate it from what it is on.
+   */
+  const contrast = contrastProblems(config);
+  /**
    * AND THE FOURTH QUESTION: is it coherent at EVERY frame?
    *
    * Everything above judges a shot as an arrangement. This walks it as a
@@ -161,6 +167,7 @@ async function validateEpisode(episodeId) {
     ...direction.errors,
     ...clipped.errors,
     ...ending.errors,
+    ...contrast.errors,
     ...temporal.errors,
     ...edit.errors,
     ...semantic.errors,
@@ -171,7 +178,7 @@ async function validateEpisode(episodeId) {
   return {
     problems,
     absentOptional,
-    warnings: [...warnings, ...direction.warnings, ...clipped.warnings, ...ending.warnings, ...temporal.warnings, ...edit.warnings, ...semantic.warnings],
+    warnings: [...warnings, ...direction.warnings, ...clipped.warnings, ...ending.warnings, ...contrast.warnings, ...temporal.warnings, ...edit.warnings, ...semantic.warnings],
     stats,
     gates,
     mix,

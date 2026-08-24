@@ -310,9 +310,7 @@
         "s01-atlas-photo.png"
       ],
       "drawnGround": null,
-      "props": [
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the single strongest image in the story, held tight",
         "secondary": "the caption",
@@ -326,7 +324,7 @@
       "seconds": 0.53,
       "camera": {
         "from": 1,
-        "to": 1.49,
+        "to": 1.41,
         "panX": null,
         "panY": null
       },
@@ -339,13 +337,14 @@
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": null,
-      "reveal": "blur",
+      "reveal": "rise",
       "plates": [
         "s01-atlas-photo.png"
       ],
       "drawnGround": null,
       "props": [
-        "beam"
+        "beam",
+        "wire"
       ],
       "hierarchy": {
         "primary": "the figure",
@@ -359,8 +358,8 @@
       "template": "composite",
       "seconds": 1.07,
       "camera": {
-        "from": 1.02,
-        "to": 1.07,
+        "from": 1.03,
+        "to": 1.35,
         "panX": null,
         "panY": null
       },
@@ -379,7 +378,7 @@
       ],
       "drawnGround": null,
       "props": [
-        "wire"
+        "beam"
       ],
       "hierarchy": {
         "primary": "the setting, established",
@@ -393,8 +392,8 @@
       "template": "composite",
       "seconds": 1.53,
       "camera": {
-        "from": 1,
-        "to": 1.32,
+        "from": 1.02,
+        "to": 1.06,
         "panX": null,
         "panY": null
       },
@@ -407,13 +406,13 @@
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "thirteen",
-      "reveal": "blur",
+      "reveal": "wipe",
       "plates": [
         "s02-route-bg.png"
       ],
       "drawnGround": null,
       "props": [
-        "beam"
+        "wire"
       ],
       "hierarchy": {
         "primary": "the setting, established",
@@ -428,7 +427,7 @@
       "seconds": 1.23,
       "camera": {
         "from": 1.01,
-        "to": 1.36,
+        "to": 1.43,
         "panX": null,
         "panY": null
       },
@@ -441,13 +440,13 @@
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "Mali",
-      "reveal": "blur",
+      "reveal": "wipe",
       "plates": [
         "s02-route-bg.png"
       ],
       "drawnGround": null,
       "props": [
-        "wire"
+        "beam"
       ],
       "hierarchy": {
         "primary": "the setting, established",
@@ -461,7 +460,7 @@
       "template": "composite",
       "seconds": 1.57,
       "camera": {
-        "from": 1.05,
+        "from": 1.02,
         "to": 1.05,
         "panX": null,
         "panY": null
@@ -475,13 +474,13 @@
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "Mecca",
-      "reveal": "rise",
+      "reveal": "punch",
       "plates": [
         "s02-route-bg.png"
       ],
       "drawnGround": null,
       "props": [
-        "beam"
+        "wire"
       ],
       "hierarchy": {
         "primary": "the claim: \"Mecca\"",
@@ -515,7 +514,7 @@
       ],
       "drawnGround": null,
       "props": [
-        "wire"
+        "beam"
       ],
       "hierarchy": {
         "primary": "the claim: \"caravan\"",
@@ -529,9 +528,9 @@
       "template": "composite",
       "seconds": 2.43,
       "camera": {
-        "from": 1.37,
-        "to": 1.02,
-        "panX": null,
+        "from": 1.22,
+        "to": 1.29,
+        "panX": 185,
         "panY": null
       },
       "transition": "cut",
@@ -543,13 +542,13 @@
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "accounts",
-      "reveal": "punch",
+      "reveal": "wipe",
       "plates": [
         "s03-caravan-bg.png"
       ],
       "drawnGround": null,
       "props": [
-        "beam"
+        "wire"
       ],
       "hierarchy": {
         "primary": "the claim: \"accounts\"",
@@ -563,8 +562,8 @@
       "template": "portal-zoom-reveal",
       "seconds": 2.4,
       "camera": {
-        "from": 1.18,
-        "to": 1.3,
+        "from": 1,
+        "to": 1.08,
         "panX": null,
         "panY": null
       },
@@ -583,9 +582,7 @@
         "s04-mecca-photo.png"
       ],
       "drawnGround": null,
-      "props": [
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the closing claim",
         "secondary": "the strongest image in the reel, returned to",
@@ -598,10 +595,10 @@
       "template": "composite",
       "seconds": 1.8,
       "camera": {
-        "from": 1,
-        "to": 1.13,
+        "from": 1.5,
+        "to": 1.05,
         "panX": null,
-        "panY": -28
+        "panY": null
       },
       "transition": "cut",
       "cut": {
@@ -612,13 +609,13 @@
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "camels",
-      "reveal": "blur",
+      "reveal": "rise",
       "plates": [
         "s04-mecca-photo.png"
       ],
       "drawnGround": null,
       "props": [
-        "beam"
+        "wire"
       ],
       "hierarchy": {
         "primary": "the claim: \"camels\"",
@@ -646,13 +643,13 @@
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "Cairo",
-      "reveal": "wipe",
+      "reveal": "blur",
       "plates": [
         "s05-cairo-bg.png"
       ],
       "drawnGround": null,
       "props": [
-        "wire"
+        "beam"
       ],
       "hierarchy": {
         "primary": "the claim: \"Cairo\"",
@@ -666,8 +663,8 @@
       "template": "composite",
       "seconds": 1.3,
       "camera": {
-        "from": 1.45,
-        "to": 1.01,
+        "from": 1.6,
+        "to": 1.02,
         "panX": null,
         "panY": null
       },
@@ -686,7 +683,7 @@
       ],
       "drawnGround": null,
       "props": [
-        "beam"
+        "wire"
       ],
       "hierarchy": {
         "primary": "the claim: \"gave\"",
@@ -720,7 +717,7 @@
       ],
       "drawnGround": null,
       "props": [
-        "wire"
+        "beam"
       ],
       "hierarchy": {
         "primary": "the claim: \"collapsed\"",
@@ -734,8 +731,8 @@
       "template": "title-slate",
       "seconds": 5.4,
       "camera": {
-        "from": 1.04,
-        "to": 1.05,
+        "from": 1.05,
+        "to": 1.07,
         "panX": null,
         "panY": null
       },
@@ -803,8 +800,8 @@
       "push": 3,
       "hold": 3,
       "drift": 4,
-      "pull": 2,
-      "pan": 1
+      "pan": 1,
+      "pull": 2
     },
     "transition": {
       "cut": 9,

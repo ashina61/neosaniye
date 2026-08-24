@@ -589,9 +589,7 @@
         "s04-move-photo.png"
       ],
       "drawnGround": null,
-      "props": [
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"thirty-seven\"",
         "secondary": "the strongest image in the reel, returned to",

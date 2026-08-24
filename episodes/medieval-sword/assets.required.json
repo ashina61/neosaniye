@@ -4,7 +4,7 @@
   "$note": "Written for whoever is sourcing pictures, not for the pipeline. The reel renders without any of these: every line here is either drawn procedurally or stated in type, and each entry says which. BLOCKING means the line is about something type cannot depict and no drawing covers it.",
   "supplied": [],
   "outstanding": 9,
-  "blocking": 2,
+  "blocking": 3,
   "wanted": [
     {
       "line": "notcast",
@@ -144,8 +144,8 @@
       "says": "A sword that is hard the whole way through is a sword that snaps.",
       "subject": "swordMaking",
       "domain": "process",
-      "currently": "drawn as scaleHaulage",
-      "priority": "would strengthen",
+      "currently": "carried by typography",
+      "priority": "BLOCKING",
       "searches": [
         "broken sword on stone",
         "shattered blade"

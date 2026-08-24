@@ -352,9 +352,7 @@
         "s03-column-bg.png"
       ],
       "drawnGround": "wash",
-      "props": [
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "quantity accumulating",
         "secondary": "the caption",
@@ -367,10 +365,10 @@
       "template": "composite",
       "seconds": 2.5,
       "camera": {
-        "from": 1.04,
-        "to": 1.36,
+        "from": 1.24,
+        "to": 1.23,
         "panX": null,
-        "panY": null
+        "panY": 151
       },
       "transition": "cut",
       "cut": {
@@ -402,7 +400,7 @@
       "seconds": 1.73,
       "camera": {
         "from": 1,
-        "to": 1.33,
+        "to": 1.42,
         "panX": null,
         "panY": null
       },
@@ -410,17 +408,19 @@
       "cut": {
         "kind": "HARD_CUT",
         "purpose": null,
-        "because": "scale held (medium) — the two shots already share a world, so there is nothing to bridge"
+        "because": "FLASH was refused: the arrival could not be afforded here"
       },
-      "representation": "HYBRID",
-      "drawn": "scaleHaulage",
+      "representation": "PHOTO",
+      "drawn": null,
       "emphasis": "Pumice",
-      "reveal": "blur",
+      "reveal": "punch",
       "plates": [
         "s04-fall-bg.png"
       ],
       "drawnGround": null,
-      "props": [],
+      "props": [
+        "wire"
+      ],
       "hierarchy": {
         "primary": "the claim: \"Pumice\"",
         "secondary": "the strongest image in the reel, returned to",
@@ -433,8 +433,8 @@
       "template": "composite",
       "seconds": 1.73,
       "camera": {
-        "from": 1.05,
-        "to": 1.05,
+        "from": 1.06,
+        "to": 1.37,
         "panX": null,
         "panY": null
       },
@@ -444,8 +444,8 @@
         "purpose": "visual similarity",
         "because": "same subject (s04-fall-bg.png)"
       },
-      "representation": "HYBRID",
-      "drawn": "scaleHaulage",
+      "representation": "PHOTO",
+      "drawn": null,
       "emphasis": "weight",
       "reveal": "punch",
       "plates": [
@@ -467,8 +467,8 @@
       "template": "composite",
       "seconds": 1.5,
       "camera": {
-        "from": 1.39,
-        "to": 1.02,
+        "from": 1.02,
+        "to": 1.06,
         "panX": null,
         "panY": null
       },
@@ -478,15 +478,17 @@
         "purpose": "visual similarity",
         "because": "same subject (s04-fall-bg.png)"
       },
-      "representation": "HYBRID",
-      "drawn": "scaleHaulage",
+      "representation": "PHOTO",
+      "drawn": null,
       "emphasis": "gave",
-      "reveal": "wipe",
+      "reveal": "rise",
       "plates": [
         "s04-fall-bg.png"
       ],
       "drawnGround": null,
-      "props": [],
+      "props": [
+        "wire"
+      ],
       "hierarchy": {
         "primary": "the claim: \"gave\"",
         "secondary": "the strongest image in the reel, returned to",
@@ -499,8 +501,8 @@
       "template": "portal-zoom-reveal",
       "seconds": 2.5,
       "camera": {
-        "from": 1,
-        "to": 1.08,
+        "from": 1.18,
+        "to": 1.28,
         "panX": null,
         "panY": null
       },
@@ -519,9 +521,7 @@
         "s05-cast-photo.png"
       ],
       "drawnGround": null,
-      "props": [
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"The\"",
         "secondary": "the strongest image in the reel, returned to",
@@ -534,8 +534,8 @@
       "template": "composite",
       "seconds": 1.73,
       "camera": {
-        "from": 1.69,
-        "to": 1.02,
+        "from": 1.59,
+        "to": 1.04,
         "panX": null,
         "panY": null
       },
@@ -548,13 +548,14 @@
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "exactly",
-      "reveal": "wipe",
+      "reveal": "rise",
       "plates": [
         "s05-cast-photo.png"
       ],
       "drawnGround": null,
       "props": [
-        "beam"
+        "beam",
+        "wire"
       ],
       "hierarchy": {
         "primary": "the claim: \"exactly\"",
@@ -568,8 +569,8 @@
       "template": "title-slate",
       "seconds": 3.93,
       "camera": {
-        "from": 1.05,
-        "to": 1.05,
+        "from": 1,
+        "to": 1.07,
         "panX": null,
         "panY": null
       },
@@ -616,9 +617,9 @@
       "drawn": "map"
     },
     "fall": {
-      "mode": "PROCEDURAL",
-      "why": "scaleHaulage is a picture of scale — it demonstrates 1 of what the line asserts",
-      "drawn": "scaleHaulage"
+      "mode": "REPRESENTATION_REQUIRED",
+      "why": "this line is about scale and needs a picture; no photograph and no drawing in the library can carry it",
+      "drawn": null
     },
     "cast": {
       "mode": "TYPOGRAPHY",
@@ -633,11 +634,12 @@
   },
   "quotas": {
     "camera": {
-      "tilt": 1,
+      "tilt": 2,
       "push": 3,
       "drift": 2,
-      "hold": 3,
-      "pull": 2
+      "hold": 2,
+      "pan": 1,
+      "pull": 1
     },
     "transition": {
       "cut": 6,

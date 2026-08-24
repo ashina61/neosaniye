@@ -1215,6 +1215,89 @@ function overlap(a, b) {
  * claim, show something, and then be quiet for long enough that the claim is
  * the last thing in the viewer's head rather than the cut.
  */
+
+/**
+ * CAN YOU SEE IT — the check for a drawing that is technically all present.
+ *
+ * A schematic of a human heart was delivered with its four chambers rendered as
+ * grey discs against a wash running from bright ochre at the top of the frame.
+ * Every existing check passed it. The chambers were inside the frame, inside
+ * the safe area, correctly sized, not colliding with anything, valid at every
+ * frame, and part of a sequence with good rhythm. They were also nearly the
+ * same value as the air beside them, and the brightest thing in a shot about a
+ * heart was the empty background.
+ *
+ * The measurement is relative luminance, the same one an accessibility contrast
+ * ratio uses, because the question is the same question: can the eye separate
+ * these two surfaces. A drawing is line work — it has no mass to carry itself
+ * on — so it needs its ground to be a long way from its ink.
+ *
+ * Only DRAWN shots. Where a photograph survived, the local luminance behind any
+ * given stroke is not knowable from the config, and a check that guesses is a
+ * check that cries wolf.
+ */
+function luminance(hex) {
+  const m = /^#?([0-9a-f]{6})$/i.exec(String(hex ?? ''));
+  if (!m) return null;
+  const v = Number.parseInt(m[1], 16);
+  const lin = [(v >> 16) & 255, (v >> 8) & 255, v & 255]
+    .map((c) => c / 255)
+    .map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2];
+}
+
+/** The WCAG ratio, which is the number people have intuitions about. */
+function contrastRatio(a, b) {
+  const la = luminance(a);
+  const lb = luminance(b);
+  if (la === null || lb === null) return null;
+  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+}
+
+export function contrastProblems(config) {
+  const errors = [];
+  const warnings = [];
+  (config.scenes ?? []).forEach((scene, index) => {
+    const d = scene.diagram;
+    if (!d) return;
+    // A drawing over a surviving photograph is a hybrid; the ground is the
+    // picture, and this file cannot read a picture.
+    if ((scene.layers ?? []).length) return;
+    const ground = (scene.params?.fieldColours ?? []).map(luminance).filter((v) => v !== null);
+    if (!ground.length) return;
+    /**
+     * The BRIGHTEST stop, because a gradient shows all of them and the drawing
+     * has to survive the worst part of it, not the average.
+     */
+    const lit = Math.max(...ground);
+    const where = `scene[${index}] "${scene.id}"`;
+    const inks = [
+      ['accent', d.accent ?? scene.params?.accent],
+      ['muted', d.muted ?? '#cfc6ae'],
+    ].filter(([, hex]) => luminance(hex) !== null);
+    if (!inks.length) return;
+    const worst = inks
+      .map(([name, hex]) => ({name, hex, ratio: (Math.max(lit, luminance(hex)) + 0.05) / (Math.min(lit, luminance(hex)) + 0.05)}))
+      .sort((a, b) => a.ratio - b.ratio)[0];
+    /**
+     * 3:1 is the floor for a graphical object in the accessibility guidelines
+     * and it is the right floor here too: below it the drawing is a shape you
+     * can find if you already know where it is.
+     */
+    if (worst.ratio < 3) {
+      errors.push(
+        `${where}: the ${d.type} has no contrast against its ground — ` +
+          `${worst.name} ${worst.hex} against the field's brightest stop is ${worst.ratio.toFixed(1)}:1`,
+      );
+    } else if (worst.ratio < 4.5) {
+      warnings.push(
+        `${where}: the ${d.type} is close in value to its ground (${worst.name} at ${worst.ratio.toFixed(1)}:1)`,
+      );
+    }
+  });
+  return {errors, warnings};
+}
+
 export function endingProblems(config, {fps = config.fps ?? FPS_DEFAULT} = {}) {
   const scenes = config.scenes ?? [];
   const last = scenes[scenes.length - 1];

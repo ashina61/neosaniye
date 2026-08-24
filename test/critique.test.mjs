@@ -9,7 +9,7 @@
  */
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {critiqueEpisode, eventsOf} from '../scripts/lib/critique.mjs';
+import {boundsOf, contrastProblems, critiqueEpisode, eventsOf, throughTheCamera} from '../scripts/lib/critique.mjs';
 
 const reel = (scenes) => ({id: 'x', fps: 30, width: 1080, height: 1920, scenes});
 const shot = (over = {}) => ({
@@ -147,4 +147,101 @@ test('the pace of the whole reel is measured, not just each shot', () => {
   assert.ok(has(slow.warnings, 'per shot'));
   assert.equal(slow.stats.scenes, 2);
   assert.ok(slow.stats.eventsPerSecond > 0);
+});
+
+/**
+ * THE THREE THAT SHIPPED THROUGH EVERY OTHER CHECK IN THIS FILE.
+ *
+ * Each of them was inside the frame, inside the safe area, the right size, not
+ * colliding with anything and valid at every frame. Each was also obviously
+ * wrong in one still, which is the whole reason these exist.
+ */
+test('a drawing the same value as its ground is reported, not shipped', () => {
+  const heart = {
+    id: 's1',
+    sceneType: 'composite',
+    durationInFrames: 120,
+    params: {fieldColours: ['#d9a13c', '#8a5a18', '#241505']},
+    diagram: {type: 'anatomyFlow', accent: '#f2b53a', muted: '#cfc6ae'},
+  };
+  const {errors} = contrastProblems(reel([heart]));
+  assert.ok(errors.some((e) => e.includes('no contrast')), errors.join('\n'));
+});
+
+test('the same drawing on a ground pulled down passes', () => {
+  const heart = {
+    id: 's1',
+    sceneType: 'composite',
+    durationInFrames: 120,
+    params: {fieldColours: ['#382a10', '#2f1f08', '#1a0f04']},
+    diagram: {type: 'anatomyFlow', accent: '#f2b53a', muted: '#cfc6ae'},
+  };
+  const {errors, warnings} = contrastProblems(reel([heart]));
+  assert.equal(errors.length, 0, errors.join('\n'));
+  assert.equal(warnings.length, 0, warnings.join('\n'));
+});
+
+test('a drawing over a surviving photograph is not judged on the field alone', () => {
+  const hybrid = {
+    id: 's1',
+    sceneType: 'composite',
+    durationInFrames: 120,
+    layers: [{role: 'bg', depth: 0.2, asset: 'x'}],
+    params: {fieldColours: ['#d9a13c', '#8a5a18', '#241505']},
+    diagram: {type: 'anatomyFlow', accent: '#f2b53a', muted: '#cfc6ae'},
+  };
+  assert.equal(contrastProblems(reel([hybrid])).errors.length, 0);
+});
+
+test('a pan that takes the drawing off the edge is measured, not assumed away', () => {
+  const size = {width: 1080, height: 1920};
+  const section = (panX) => ({
+    id: 's1',
+    sceneType: 'composite',
+    durationInFrames: 120,
+    params: {anchorX: 799, anchorY: 576, pushFrom: 1.2, pushTo: 1.24, panX},
+    diagram: {type: 'crossSection'},
+  });
+  const at = (scene) => throughTheCamera(scene, boundsOf(scene, size).filter((b) => b.camera), size);
+
+  // The camera reaches the box at all — the whole point. A checker that
+  // measured the section at rest reported this shot as fine and shipped it with
+  // its right half outside the picture.
+  const still = at(section(0))[0];
+  const panned = at(section(262))[0];
+  assert.ok(panned.right > still.right, 'the pan moves the measured box');
+
+  // The share the drawing takes now keeps that pan inside the frame …
+  assert.ok(panned.right <= 1080, `the 262px pan fits (${panned.right.toFixed(0)})`);
+  // … and a pan large enough to break it is still caught.
+  assert.ok(at(section(700))[0].right > 1080, 'a pan too big for the drawing is reported');
+});
+
+test('the budget the planner writes is what the checker reads', () => {
+  const scene = {
+    id: 's1',
+    sceneType: 'composite',
+    durationInFrames: 120,
+    params: {anchorX: 799, anchorY: 576, pushFrom: 1.2, pushTo: 1.24, panX: 262, diagramCamera: 0},
+    diagram: {type: 'crossSection'},
+  };
+  const size = {width: 1080, height: 1920};
+  const boxes = boundsOf(scene, size).filter((b) => b.camera);
+  const moved = throughTheCamera(scene, boxes, size);
+  assert.ok(moved.every((b) => b.right <= 1080 && b.left >= 0), 'a zero budget leaves the drawing where it was composed');
+});
+
+test('a share of a portal is still a portal', () => {
+  const scene = {
+    id: 's1',
+    sceneType: 'composite',
+    durationInFrames: 120,
+    params: {anchorX: 540, anchorY: 960, pushFrom: 1, pushTo: 6.4},
+    diagram: {type: 'crossSection'},
+  };
+  const size = {width: 1080, height: 1920};
+  const moved = throughTheCamera(scene, boundsOf(scene, size).filter((b) => b.camera), size);
+  // 0.3 of 6.4 is 2.6, at which a section is a stripe. The cap holds it to 1.18.
+  const grew = (moved[0].right - moved[0].left) / (1080 * 0.76);
+  assert.ok(grew <= 1.19, `the drawing grew ${grew.toFixed(2)}x`);
 });

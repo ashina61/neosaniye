@@ -260,6 +260,45 @@ export function temporalProblems(config) {
         errors.push(`${where}: ${state.stateId} begins at frame ${state.frameStart} of ${frames}`);
       }
     }
+
+    /**
+     * NOTHING LEAVES WITHOUT A REASON.
+     *
+     * An element that arrives and then stops being drawn has either exited —
+     * which is an event, and events are stated — or it has been forgotten. The
+     * viewer cannot tell those apart, and neither can any check that looks at
+     * one frame: an object present at 40 and absent at 70 passes every still
+     * either side of the moment it vanished.
+     *
+     * A recede is an exit and is allowed. An `until` with no recede and no
+     * transition after it is a disappearance.
+     */
+    const recedes = Number.isFinite(Number(p.captionRecedeAt));
+    for (const state of statesOf(scene)) {
+      const ends = Number(state.frameEnd);
+      if (!Number.isFinite(ends) || ends >= frames - 2) continue;
+      if (state.exit || (state.stateId.startsWith('caption') && recedes)) continue;
+      warnings.push(
+        `${where}: ${state.stateId} stops at frame ${ends} of ${frames} with nothing to say it left`,
+      );
+    }
+
+    /**
+     * AND A FOREGROUND DOES NOT STAND IN FRONT OF THE SENTENCE.
+     *
+     * Atmosphere is drawn nearest the viewer, which is correct and is also the
+     * one place a caption cannot survive: a fog bank at three quarters strength
+     * across the band where the words are is a shot whose words are a rumour.
+     * The type is the only part of a shot the viewer HAS to read.
+     */
+    const fog = Number(p.fog) || 0;
+    const fogTop = 1 - (Number(p.fogHeight) || 0.62);
+    const capY = (Number(p.captionY) || 0) / height;
+    if (fog > 0.5 && Array.isArray(p.caption) && p.caption.length && capY > fogTop) {
+      warnings.push(
+        `${where}: fog at ${fog.toFixed(2)} sits over the caption band — the words are behind the weather`,
+      );
+    }
   });
 
   return {errors, warnings};
