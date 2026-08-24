@@ -186,10 +186,26 @@ disguised.
 
 ## Re-render
 
-All five re-rendered from unchanged scene configs. Acquisition writes a manifest
-and never touches a scene config, so `git status` after the run shows **zero
-scene-config changes** — which is the architectural claim, checked rather than
-asserted. 304 tests pass, 12 episodes valid.
+All five re-rendered from unchanged scene configs and inspected. Acquisition
+writes a manifest and never touches a scene config, so `git status` after the
+run shows **zero scene-config changes** — the architectural claim, checked
+rather than asserted.
+
+| episode | shots | seconds | procedural | typography | temporal | semantic failures | final |
+|---|---|---|---|---|---|---|---|
+| Baalbek | 20 | 49.1 | 16 | 4 | clean | 0 | 7.5 |
+| Roman concrete | 23 | 50.0 | 18 | 5 | clean | 0 | 8.0 |
+| Hormuz | 22 | 49.9 | 13 | 9 | clean | 0 | 8.0 |
+| Human heart | 22 | 50.7 | 15 | 7 | clean | 0 | 7.5 |
+| Medieval sword | 22 | 50.3 | 14 | 8 | clean | 0 | 8.0 |
+
+Identical to the pre-acquisition run, which is the expected result and the
+point: the asset layer cannot change a reel it did not supply an asset to. A
+frame pulled from the re-rendered Baalbek confirms it visually — the load still
+carries its material body, its man-height scale reference, its turning rollers
+and its receding ground.
+
+304 tests pass, 12 episodes valid.
 
 ## What it would take to move the number
 
