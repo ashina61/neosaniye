@@ -205,10 +205,25 @@ const VERBS = [
   [/\bcure[ds]?|curing|set\b/i, {agent: 'pressure', label: 'cured', heat: 0, stretch: 1.0, taper: 0.08}],
 ];
 
-/** A bar in a unit box: eight points, so every stage tweens against every other. */
-function bar({stretch = 1, taper = 0, thickness = 0.34}) {
-  const halfW = clamp(0.46 * stretch, 0.12, 0.49);
-  const t = thickness / 2;
+/**
+ * A bar in a unit box: eight points, so every stage tweens against every other.
+ *
+ * AND IT KEEPS ITS VOLUME. The first version fixed the thickness per stage and
+ * clamped the length at almost the full box, so every stage after the first was
+ * the same stubby wedge at the same width: a forging sequence in which working
+ * the metal changed nothing about its proportions. What it delivered was an
+ * object that never looked like a blade at any point in a reel about making one.
+ *
+ * Metal does not appear or vanish under a hammer, it MOVES: drawing a bar out
+ * makes it longer and thinner, folding it makes it shorter and thicker, and
+ * those two facts are the whole visual grammar of a forge. `thickness` is
+ * therefore derived from `stretch` rather than set beside it — which is also
+ * true of rolled glass and of anything else worked from stock, so it stays a
+ * general rule rather than a fact about swords.
+ */
+function bar({stretch = 1, taper = 0, thickness = 0.22}) {
+  const halfW = clamp(0.38 * stretch, 0.12, 0.47);
+  const t = clamp(thickness / Math.max(0.2, stretch) - taper * 0.09, 0.05, 0.34) / 2;
   const tip = t * (1 - clamp(taper, 0, 0.9));
   return [
     [0.5 - halfW, 0.5 - t],
@@ -235,10 +250,10 @@ export function buildProcess({vo, accent, muted, objectLabel = null}) {
   // The raw state, so the first stage is the thing BEFORE anything happened —
   // without it a process starts halfway through and there is nothing to change
   // from.
-  const stages = [{shape: bar({stretch: 0.72, taper: 0, thickness: 0.4}), label: 'raw', heat: 0, agent: 'none'}];
+  const stages = [{shape: bar({stretch: 0.72, taper: 0}), label: 'raw', heat: 0, agent: 'none'}];
   for (const step of found.slice(0, 4)) {
     stages.push({
-      shape: bar({stretch: step.stretch, taper: step.taper, thickness: 0.4 - step.taper * 0.14}),
+      shape: bar({stretch: step.stretch, taper: step.taper}),
       label: step.label,
       agent: step.agent,
       heat: step.heat,
