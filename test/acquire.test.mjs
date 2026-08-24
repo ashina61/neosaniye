@@ -25,6 +25,7 @@ import {hamming, makeLedger, perceptualHash} from '../acquire/dedupe.mjs';
 import {cacheKey} from '../acquire/cache.mjs';
 import {NEEDS_A_PICTURE, settle, usableRungs} from '../acquire/ladder.mjs';
 import {PROVIDERS} from '../acquire/providers/index.mjs';
+import generated, {disclosureFor, promptFor} from '../acquire/providers/generated.mjs';
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const fixture = (name) => readFile(path.join(ROOT, 'episodes', 'antikythera', 'assets', name));
@@ -291,5 +292,47 @@ test('every provider satisfies the same four-function contract', () => {
 test('providers needing a key declare which one', () => {
   for (const provider of PROVIDERS.filter((p) => p.needsKey)) {
     assert.match(provider.needsKey, /^[A-Z0-9_]+$/, `${provider.id} must name an env var`);
+  }
+});
+
+/* ------------------------------------------------------- generated assets */
+
+test('a generated reconstruction says it is one', () => {
+  assert.equal(disclosureFor(brief({domain: 'scale'})), 'ILLUSTRATIVE RECONSTRUCTION');
+  assert.equal(disclosureFor(brief({domain: 'process'})), 'ILLUSTRATIVE RECONSTRUCTION');
+  assert.equal(
+    disclosureFor(brief({domain: 'geography', historical_constraints: null})),
+    'ILLUSTRATION · NOT A PHOTOGRAPH',
+    'a place that exists today is illustrated, not reconstructed',
+  );
+});
+
+test('a generated candidate records prompt, provider, model and date', async () => {
+  const [candidate] = await generated.search('x', {brief: brief({domain: 'scale'})});
+  for (const field of ['prompt', 'provider', 'model', 'generatedAt', 'disclosure']) {
+    assert.ok(candidate.generation[field], `generation record is missing ${field}`);
+  }
+  assert.match(candidate.title, /ILLUSTRATIVE RECONSTRUCTION/);
+  assert.match(candidate.description, /ILLUSTRATIVE RECONSTRUCTION/);
+});
+
+test('the rejection criteria become the generator\'s negative prompt', () => {
+  const {negative} = promptFor(brief({reject_if: ['modern construction', 'generic quarry']}));
+  assert.match(negative, /modern construction/);
+  assert.match(negative, /generic quarry/);
+});
+
+test('a generated asset is never settled as a photograph', () => {
+  const settled = settle({brief: brief({domain: 'scale'}), accepted: {rung: 4}, drawn: null});
+  assert.equal(settled.resolution, 'generated illustration');
+  assert.notEqual(settled.resolution, 'photograph');
+});
+
+test('rung four is closed, and says why, when nothing is configured', async () => {
+  const verdict = await generated.available();
+  if (!process.env.IMAGE_API_URL && !process.env.IMAGE_API_KEY) {
+    assert.equal(verdict.ok, false);
+    assert.equal(verdict.why, 'unconfigured');
+    assert.match(verdict.detail, /IMAGE_API_URL/);
   }
 });

@@ -1,6 +1,6 @@
 {
   "episode": "medieval-sword",
-  "generatedAt": "2026-08-24T03:31:54.634Z",
+  "generatedAt": "2026-08-24T03:35:39.757Z",
   "providers": [
     {
       "id": "local",
@@ -11,7 +11,7 @@
       "why": null,
       "reason": null,
       "detail": "77 reviewed file(s) on disk",
-      "ms": 118
+      "ms": 121
     },
     {
       "id": "commons",
@@ -22,7 +22,7 @@
       "why": "blocked",
       "reason": "blocked — the network refused the connection (egress policy or firewall)",
       "detail": "HTTP 403 at commons.wikimedia.org",
-      "ms": 105
+      "ms": 95
     },
     {
       "id": "openverse",
@@ -44,7 +44,7 @@
       "why": "blocked",
       "reason": "blocked — the network refused the connection (egress policy or firewall)",
       "detail": "HTTP 403 at www.loc.gov",
-      "ms": 123
+      "ms": 117
     },
     {
       "id": "archive",
@@ -55,7 +55,7 @@
       "why": "blocked",
       "reason": "blocked — the network refused the connection (egress policy or firewall)",
       "detail": "HTTP 403 at archive.org",
-      "ms": 43
+      "ms": 38
     },
     {
       "id": "europeana",
@@ -66,7 +66,7 @@
       "why": "blocked",
       "reason": "blocked — the network refused the connection (egress policy or firewall)",
       "detail": "HTTP 403 at api.europeana.eu",
-      "ms": 109
+      "ms": 320
     },
     {
       "id": "nasa",
@@ -77,7 +77,7 @@
       "why": "blocked",
       "reason": "blocked — the network refused the connection (egress policy or firewall)",
       "detail": "HTTP 403 at images-api.nasa.gov",
-      "ms": 112
+      "ms": 248
     },
     {
       "id": "pexels",
@@ -88,7 +88,7 @@
       "why": "blocked",
       "reason": "blocked — the network refused the connection (egress policy or firewall)",
       "detail": "HTTP 403 at api.pexels.com",
-      "ms": 284
+      "ms": 127
     },
     {
       "id": "pixabay",
@@ -99,7 +99,18 @@
       "why": "blocked",
       "reason": "blocked — the network refused the connection (egress policy or firewall)",
       "detail": "HTTP 403 at pixabay.com",
-      "ms": 104
+      "ms": 174
+    },
+    {
+      "id": "generated",
+      "name": "Configured image generator",
+      "homepage": "https://example.invalid/unconfigured",
+      "needsKey": null,
+      "available": false,
+      "why": "unconfigured",
+      "reason": "unconfigured — this provider needs an API key that is not set",
+      "detail": "set IMAGE_API_URL (and IMAGE_API_KEY / IMAGE_MODEL) to open rung four",
+      "ms": 1
     }
   ],
   "ladder": [
@@ -192,6 +203,11 @@
           "rung": 3,
           "label": "public-domain archive",
           "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        },
+        {
+          "rung": 4,
+          "label": "generated illustrative image",
+          "skipped": "no image generation provider configured"
         }
       ]
     },
@@ -357,6 +373,11 @@
           "rung": 3,
           "label": "public-domain archive",
           "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        },
+        {
+          "rung": 4,
+          "label": "generated illustrative image",
+          "skipped": "no image generation provider configured"
         }
       ]
     },
@@ -432,6 +453,11 @@
           "rung": 3,
           "label": "public-domain archive",
           "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        },
+        {
+          "rung": 4,
+          "label": "generated illustrative image",
+          "skipped": "no image generation provider configured"
         }
       ]
     },
@@ -476,6 +502,11 @@
           "rung": 3,
           "label": "public-domain archive",
           "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        },
+        {
+          "rung": 4,
+          "label": "generated illustrative image",
+          "skipped": "no image generation provider configured"
         }
       ]
     },
@@ -626,6 +657,11 @@
           "rung": 3,
           "label": "public-domain archive",
           "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        },
+        {
+          "rung": 4,
+          "label": "generated illustrative image",
+          "skipped": "no image generation provider configured"
         }
       ]
     },
@@ -716,6 +752,11 @@
           "rung": 3,
           "label": "public-domain archive",
           "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        },
+        {
+          "rung": 4,
+          "label": "generated illustrative image",
+          "skipped": "no image generation provider configured"
         }
       ]
     },
@@ -881,6 +922,11 @@
           "rung": 3,
           "label": "public-domain archive",
           "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        },
+        {
+          "rung": 4,
+          "label": "generated illustrative image",
+          "skipped": "no image generation provider configured"
         }
       ]
     },
@@ -956,6 +1002,11 @@
           "rung": 3,
           "label": "public-domain archive",
           "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        },
+        {
+          "rung": 4,
+          "label": "generated illustrative image",
+          "skipped": "no image generation provider configured"
         }
       ]
     },
@@ -1046,6 +1097,11 @@
           "rung": 3,
           "label": "public-domain archive",
           "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        },
+        {
+          "rung": 4,
+          "label": "generated illustrative image",
+          "skipped": "no image generation provider configured"
         }
       ]
     }

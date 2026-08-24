@@ -152,7 +152,12 @@ export async function acquireOne({brief, availability, ledger, sharp, force = fa
   let best = null;
 
   for (const rung of rungs) {
-    if (rung.n > 3) break; // Rungs 4-6 are not acquisitions; the caller settles them.
+    /**
+     * Rungs five and six are not acquisitions — a drawing and a sentence are
+     * made by the engine, not fetched — so the climb stops after four and the
+     * caller settles what is left.
+     */
+    if (rung.n > 4) break;
     if (!rung.usable) {
       attempts.push({rung: rung.n, label: rung.label, skipped: rung.because});
       continue;
@@ -163,7 +168,7 @@ export async function acquireOne({brief, availability, ledger, sharp, force = fa
       for (const query of brief.queries.slice(0, 3)) {
         let candidates = [];
         try {
-          candidates = await provider.search(query, {limit, orientation: /vertical/.test(brief.preferred_orientation ?? '') ? 'portrait' : undefined});
+          candidates = await provider.search(query, {limit, brief, orientation: /vertical/.test(brief.preferred_orientation ?? '') ? 'portrait' : undefined});
         } catch (error) {
           attempts.push({rung: rung.n, provider: id, query, failed: String(error?.message ?? error)});
           continue;

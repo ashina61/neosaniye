@@ -13,6 +13,7 @@
 import archive from './archive.mjs';
 import commons from './commons.mjs';
 import europeana from './europeana.mjs';
+import generated from './generated.mjs';
 import loc from './loc.mjs';
 import local from './local.mjs';
 import nasa from './nasa.mjs';
@@ -21,7 +22,7 @@ import pexels from './pexels.mjs';
 import pixabay from './pixabay.mjs';
 import {UNAVAILABLE} from './provider.mjs';
 
-export const PROVIDERS = [local, commons, openverse, loc, archive, europeana, nasa, pexels, pixabay];
+export const PROVIDERS = [local, commons, openverse, loc, archive, europeana, nasa, pexels, pixabay, generated];
 
 export function providerById(id) {
   return PROVIDERS.find((p) => p.id === id) ?? null;

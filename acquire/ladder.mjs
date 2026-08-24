@@ -53,7 +53,7 @@ export const RUNGS = [
     n: 4,
     id: 'generated',
     label: 'generated illustrative image',
-    providers: [],
+    providers: ['generated'],
     why: 'only where an image provider is configured, and only ever labelled as an illustration',
   },
   {
@@ -78,6 +78,13 @@ export function generationConfigured() {
 }
 
 /**
+ * A GENERATED ASSET IS NOT A PHOTOGRAPH, and the settle step has to say which
+ * of the two a line ended up with. Rungs one to three are records; rung four is
+ * an illustration carrying a disclosure plate.
+ */
+export const RECORD_RUNGS = [1, 2, 3];
+
+/**
  * WHERE A LINE ENDED UP, AND WHETHER THAT IS ALLOWED.
  *
  * Called once per brief after acquisition has run. The verdict is the thing the
@@ -88,7 +95,7 @@ export function settle({brief, accepted, drawn}) {
   if (accepted) {
     return {
       rung: accepted.rung,
-      resolution: accepted.rung <= 3 ? 'photograph' : 'generated',
+      resolution: RECORD_RUNGS.includes(accepted.rung) ? 'photograph' : 'generated illustration',
       ok: true,
       note: null,
     };

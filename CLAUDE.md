@@ -616,6 +616,37 @@ Bu hat aynı duvara çarpmaz çünkü malzeme koda sokulmaz:
     iki proptur, o yüzden giden de o ikisidir; kendi etiketini taşıyan bir
     plaket kalır.
 
+39. **BİR SAĞLAYICININ ULAŞILAMAZ OLMASI BİR OLGUDUR, BOŞ BİR SONUÇ DEĞİL.**
+    Edinim katmanı her koşuda her sağlayıcıyı BİR KEZ preflight eder ve sonucu
+    rapora taşır. 403'ü boş bir sonuç kümesi saymak, hiç istek yapmamış bir
+    ortam için "uygun görsel bulunamadı" diyen bir koşu üretir — bu katmanın
+    söyleyebileceği en pahalı yalan. Dört ayrı sebep: `blocked` (ağ reddetti),
+    `unconfigured` (anahtar yok), `timeout`, `failing` (cevap verdi ve cevap
+    kullanılamaz). Bunlar bir insandan farklı eylemler ister.
+
+40. **BİR İNCELEME DOSYAYA DEĞİL, ROLE AİTTİR.** `museum-dark.jpg`'ye 9 veren
+    kişi "Antikythera reel'i için karanlık müze zemini olarak 9" dedi. DOSYANIN
+    özelliği olarak okununca o 9 yolculuk etti: bir Roma kandilinin tek
+    fotoğrafı beş bölümde megalit, liman, boğaz, insan kalbi ve ortaçağ
+    demirhanesi olarak kabul edildi — bu deponun adını aldığı hatanın ta
+    kendisi, onu önlemek için yapılan makinenin içinde. Sayılar yalnız dosyanın
+    O ROLDE oynadığı yere taşınır; her zaman taşınan şey `depicts`, çünkü o
+    dosya hakkında bir olgudur.
+
+41. **POZLAMA ORTA GRİDEN UZAKLIK DEĞİL, KAYIP DETAYDIR.** Gece göğündeki ay,
+    karanlık müze zemininde bronz parça, siyah fonlu örnek plakası — hepsi
+    doğru pozlanmış ve hepsi 0.46'dan çok uzak. Bir fotoğrafı kullanılamaz
+    yapan şey ORADA OLMAYAN detaydır: aralığın ucuna sıkışmış, hiçbir
+    derecelendirmenin geri getiremeyeceği pikseller. Işık kırpılması gölge
+    kırpılmasından dört kat sert cezalandırılır: karanlık bir reel siyah bir
+    kenarı yutar, beyaz bir kenarı yutamaz.
+
+42. **KAYNAK, DOSYAYI OKUDUĞUMUZ YER DEĞİL YAYIMLANDIĞI YERDİR.** Yerel korpus
+    arşivlerin bir ÖNBELLEĞİDİR; bir Wikimedia fotoğrafının kaynağı olarak
+    "local" yazmak künye değil, künyenin yokluğudur. Ve çelişkili bir kayıt —
+    lisans "CC BY 2.0", yazar alanı "All rights reserved, …" — reddedilir:
+    hat işine gelen okumayı seçemez, birini kaynağa bakıp yazması gerekir.
+
 ## Doğrulama
 
 `npm run validate` render yapmadan üç saniyede cevap verir: şema, sahne tipi ve
