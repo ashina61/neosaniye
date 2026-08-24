@@ -3,47 +3,33 @@
   "title": "The stones nobody could lift",
   "question": "How Did Humans Move Stones Weighing Over 1,000 Tons?",
   "generatedAt": "2026-08-24",
-  "finalScore": 7,
+  "finalScore": 7.5,
   "scoredBy": "inspection of rendered frames at 0/33/66/94 per shot",
   "judged": {
     "storytelling": 8,
-    "visualHierarchy": 8,
+    "visualHierarchy": 8.5,
     "semanticAccuracy": 8.5,
     "assetRelevance": 6,
-    "visualCausality": 7,
-    "motionQuality": 7,
-    "cameraVariety": 6.5,
+    "visualCausality": 8.5,
+    "motionQuality": 7.5,
+    "cameraVariety": 7,
     "transitionQuality": 7,
     "pacing": 8,
-    "visualContinuity": 8.5,
+    "visualContinuity": 9,
     "typography": 8,
     "ending": 8,
-    "professionalism": 7
+    "professionalism": 7.5
   },
-  "verdict": "Fourteen shots now carry the block: standing on the ground line, measured against a human figure drawn at a stated height, on rollers that turn at the speed it travels, with ropes leaving the frame forward and a force arrow labelled NO CRANE. The size is derived from the person rather than asserted, which is the only way a drawing can make a thousand tons mean anything. The plate says ILLUSTRATIVE RECONSTRUCTION -- METHOD UNCERTAIN, because it is.",
+  "verdict": "The load is now a mass rather than an outline: limestone with a body value under the raking light, a contact shadow where it meets the sledge, and speckle you can see. It is also the RIGHT size for the first time — three men tall and most of the frame wide, derived from the figure beside it instead of chosen — and it is the SAME load in all fourteen shots, sized once from the reel's largest stated figure. It travels the way the men are pulling, which it did not before: the rope, the arrow and the position now agree. Ground and sky read as surfaces, so the band of drawing is standing in a space rather than floating in a black rectangle.",
   "whatWorked": [
-    "Scale is done properly: a marked human-height bar and a silhouette beside the load, so the block's size is read off the figure instead of being claimed.",
-    "The rollers turn at the speed the load moves. If they did not, the drawing would be contradicting itself, and that is checkable.",
-    "The load moves slowly and never arrives, which is what 'a few feet an hour, for months' means. A block crossing the frame would have contradicted the narration.",
-    "The uncertainty is stated in the weaker form. Nobody knows how the trilithon was moved, and SCHEMATIC RECONSTRUCTION would have claimed otherwise.",
-    "The quarry line correctly took a map rather than a haulage drawing -- it is about where the stone came from, not about moving it."
+    "Scale is measured against the load itself, in man-heights ticked off its face, which asserts nothing.",
+    "Rollers turn at the speed the load moves and the rope pulls its own slack out and settles.",
+    "Registration ticks and the disclosure plate stay pinned while the camera moves, so nothing is sliced off the frame edge.",
+    "Fourteen shots of one object, and it is recognisably one object."
   ],
   "whatFailed": [
-    {
-      "what": "The counter read 576.377 TONS on its way to 800.",
-      "why": "The component used a raw float interpolation instead of the repo's shared integer counter. Fixed; it now lands exactly, as law 27 requires everywhere else.",
-      "failureIs": "ENGINE"
-    },
-    {
-      "what": "The ropes leave the frame but nothing is pulling them.",
-      "why": "True to the claim -- the capstans were off-picture -- but it means the force is implied rather than shown.",
-      "failureIs": "REPRESENTATION"
-    },
-    {
-      "what": "ash-grey over a drawn ground is still nearly black.",
-      "why": "The drawn ground was designed as a bed for a photograph that would supply the tone.",
-      "failureIs": "COMPOSITION"
-    }
+    "The frame is still mostly air and floor: a five-to-one beam in 9:16 leaves a band, and the vertical space carries type or nothing.",
+    "Three lines are still typography with no picture behind them."
   ],
   "measured": {
     "shots": 20,
@@ -273,6 +259,12 @@
       "stone + wood",
       "water + stone"
     ],
+    "diagramCamera": {
+      "full": 12,
+      "of": 16,
+      "lowest": 0.8,
+      "mean": 0.97
+    },
     "causalAnimations": 17,
     "transformations": 0,
     "microMotion": 16,
@@ -408,23 +400,14 @@
     {
       "severity": "observed",
       "where": "inspection",
-      "what": "The counter read 576.377 TONS on its way to 800.",
-      "cause": "ENGINE",
-      "why": "The component used a raw float interpolation instead of the repo's shared integer counter. Fixed; it now lands exactly, as law 27 requires everywhere else."
+      "what": "No photograph anywhere in the reel",
+      "why": "nine ASSET_REQUIRED briefs unfilled"
     },
     {
       "severity": "observed",
       "where": "inspection",
-      "what": "The ropes leave the frame but nothing is pulling them.",
-      "cause": "REPRESENTATION",
-      "why": "True to the claim -- the capstans were off-picture -- but it means the force is implied rather than shown."
-    },
-    {
-      "severity": "observed",
-      "where": "inspection",
-      "what": "ash-grey over a drawn ground is still nearly black.",
-      "cause": "COMPOSITION",
-      "why": "The drawn ground was designed as a bed for a photograph that would supply the tone."
+      "what": "One drawing kind carries fourteen of twenty shots",
+      "why": "variety comes from camera and stage, not from a second kind"
     }
   ]
 }

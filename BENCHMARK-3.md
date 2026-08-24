@@ -188,9 +188,11 @@ The largest single movement is Baalbek's visual causality, 7 → 8.5, and it is
 not a polish improvement: the load had been sliding the opposite way to the men
 pulling it.
 
-The overall score in `benchmark-report.json` still reads 7.0–7.5, because it
-includes `assetRelevance`, which is **6.0 in all five and cannot move**: there
-is no photography in any of these reels. No amount of execution fixes that.
+The headline figure in `benchmark-report.json` is the professionalism score, so
+it moves with that row: **7.0 → 7.5, 7.5 → 8.0, 7.5 → 8.0, 7.0 → 7.5,
+7.5 → 8.0**. It is worth naming what is holding all five below 8.5:
+`assetRelevance` is **6.0 in every one and cannot move**, because there is no
+photography in any of these reels. No amount of execution fixes that.
 
 ## Measured
 
@@ -200,12 +202,13 @@ Counted from the config, not judged. None of these is a score.
 |---|---|---|---|---|---|
 | Shots · seconds | 20 · 49.1 | 23 · 50.0 | 22 · 49.9 | 22 · 50.7 | 22 · 50.3 |
 | Average depth planes | **3.40** | 2.13 | 2.59 | 1.68 | 1.64 |
-| Layered drawings | 16 | 18 | 11 | 15 | 14 |
+| Layered drawings | 16 | **18** | 11 | 15 | 14 |
 | Materials in use | stone, wood, water | concrete, water, stone | water, stone | flesh | metal |
 | Causal animations | 17 | 12 | 9 | **30** | 21 |
 | Transformations | 0 | 15 | 0 | 15 | **21** |
-| Micro-motion shots | 16 | 18 | 11 | 15 | 14 |
+| Micro-motion shots | 16 | **18** | 11 | 15 | 14 |
 | Meaningful camera moves | 18 | **20** | 17 | 18 | 17 |
+| Camera budget: drawings taking the full share | 12 of 16 | 18 of 18 | 13 of 13 | 15 of 15 | 14 of 14 |
 | Match cuts | 0 | 0 | 0 | 0 | 1 |
 | Hard cuts | 19 | 22 | 21 | 21 | 20 |
 | Payoff hold | 1.50 s | **3.63 s** | 1.33 s | 2.27 s | 2.27 s |
@@ -214,6 +217,13 @@ Counted from the config, not judged. None of these is a score.
 | Semantic failures | 0 | 0 | 0 | 0 | 0 |
 | `REPRESENTATION_REQUIRED` | 3 | 3 | 3 | 5 | 7 |
 | `ASSET_REQUIRED` | 9 | 9 | 9 | 9 | 9 |
+| Benchmark final | 7.5 | 8.0 | 8.0 | 7.5 | 8.0 |
+
+Sixty-four of the sixty-six drawn shots take the **whole** of the camera their
+shot was directed with. Only Baalbek gives any back, and only four shots of the
+sixteen, down to 0.80 — those are the ones whose load spans four fifths of the
+frame's width, where the alternative to giving a fifth of the camera back is
+delivering the haulers off the left edge.
 
 Two zeros are correct rather than missing. A load being hauled is **not** a
 transformation — it is the same shape somewhere else — and neither is a map.

@@ -3,46 +3,33 @@
   "title": "Two pumps, one beat",
   "question": "How Does the Human Heart Pump Blood?",
   "generatedAt": "2026-08-24",
-  "finalScore": 7,
+  "finalScore": 7.5,
   "scoredBy": "inspection of rendered frames at 0/33/66/94 per shot",
   "judged": {
     "storytelling": 7.5,
-    "visualHierarchy": 8,
+    "visualHierarchy": 8.5,
     "semanticAccuracy": 9,
     "assetRelevance": 6,
-    "visualCausality": 7.5,
-    "motionQuality": 7.5,
-    "cameraVariety": 6.5,
+    "visualCausality": 8,
+    "motionQuality": 8,
+    "cameraVariety": 7,
     "transitionQuality": 7,
     "pacing": 7.5,
     "visualContinuity": 8.5,
     "typography": 8,
     "ending": 7.5,
-    "professionalism": 7
+    "professionalism": 7.5
   },
-  "verdict": "The biggest change of the five, and the most deserved: this is the episode that produced a gear train as a picture of a heart. Fifteen shots now carry a circulation -- four chambers that contract on their own phases, valves that swing open one way, and particles travelling a circuit that closes. Blue leaves for the lungs, red comes back and goes out to the body and round again. The chamber count is read off the sentence, not off the topic.",
+  "verdict": "This is the episode that once produced a gear train as a picture of a heart, and the one this phase changed most. Two builds ago the four chambers were grey discs on a bright ochre wash — every check passed them and the brightest thing in the frame was the empty air. The ground is pulled down behind the drawing now and the muscle takes the arterial colour rather than the plate's neutral, so it reads as tissue. Thirty causal links, the most of the five: the chambers contract on their own phases and the particles move because they do.",
   "whatWorked": [
-    "The circulation is coherent: every leg of the circuit names a vessel that exists and the last returns to where the first began. A test asserts it, because a loop that ends somewhere is not a circulation.",
-    "The wall-thickness claim is drawn as wall thickness -- three times the stroke on the systemic side, and only on the line that makes that claim.",
-    "Contraction is a squeeze, not a pulse of opacity: a chamber that contracts gets smaller and nothing else about it moves.",
-    "The gear train is gone and cannot come back: the semantic gate now refuses the pair (humanHeart, gearSystem) from the config alone, and a test asserts the refusal."
+    "Flesh is the clearest demonstration that a material needs a body value: the same geometry went from grey buttons to tissue with one table change.",
+    "Blue leaves for the lungs, red comes back and goes out to the body and round again, and the circuit closes.",
+    "The chamber count is read off the sentence, not off the topic."
   ],
   "whatFailed": [
-    {
-      "what": "The chambers are plain ellipses; nothing distinguishes an atrium from a ventricle except size and a row label.",
-      "why": "The layout is derived from a count so it stays general. Generality costs specificity, and here the cost is visible.",
-      "failureIs": "REPRESENTATION"
-    },
-    {
-      "what": "The delay -- the episode's central claim -- is a bar under the drawing rather than something the chambers do.",
-      "why": "The phases are staggered so the upper pair does squeeze before the lower, but at 36 frames a cycle the tenth of a second is too small to read without the bar.",
-      "failureIs": "REPRESENTATION"
-    },
-    {
-      "what": "gold-heat still gives a flat mustard ground.",
-      "why": "A writer's mood choice. It suits a forge and not an anatomy plate.",
-      "failureIs": "STORY"
-    }
+    "Four equal circles in a two-by-two grid labelled UPPER/UPPER/LOWER/LOWER is a circuit diagram, not a heart, and at a glance it reads as a face.",
+    "The caption names the right atrium while the drawing says UPPER — the vocabulary does not meet in the middle.",
+    "The valve marks are a few pixels tall; the one-way claim is carried by the caption more than by the drawing."
   ],
   "measured": {
     "shots": 22,
@@ -270,6 +257,12 @@
     "materials": [
       "flesh"
     ],
+    "diagramCamera": {
+      "full": 15,
+      "of": 15,
+      "lowest": 1,
+      "mean": 1
+    },
     "causalAnimations": 30,
     "transformations": 15,
     "microMotion": 15,
@@ -370,23 +363,14 @@
     {
       "severity": "observed",
       "where": "inspection",
-      "what": "The chambers are plain ellipses; nothing distinguishes an atrium from a ventricle except size and a row label.",
-      "cause": "REPRESENTATION",
-      "why": "The layout is derived from a count so it stays general. Generality costs specificity, and here the cost is visible."
+      "what": "The chamber layout is schematic to the point of abstraction",
+      "why": "honest, declared, and still the weakest read of the five"
     },
     {
       "severity": "observed",
       "where": "inspection",
-      "what": "The delay -- the episode's central claim -- is a bar under the drawing rather than something the chambers do.",
-      "cause": "REPRESENTATION",
-      "why": "The phases are staggered so the upper pair does squeeze before the lower, but at 36 frames a cycle the tenth of a second is too small to read without the bar."
-    },
-    {
-      "severity": "observed",
-      "where": "inspection",
-      "what": "gold-heat still gives a flat mustard ground.",
-      "cause": "STORY",
-      "why": "A writer's mood choice. It suits a forge and not an anatomy plate."
+      "what": "gold-heat gives an anatomy plate a mustard ground",
+      "why": "brief-level mood choice, not an engine limit"
     }
   ]
 }
