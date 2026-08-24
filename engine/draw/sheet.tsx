@@ -204,17 +204,43 @@ export const Callout: React.FC<{
   const stepped = posterizeTime(frame, fps, 12);
   const on = drawOn(stepped, [at, at + 9]);
   if (stepped < at) return null;
-  const dir = side === 'right' ? 1 : -1;
-  const end = x + dir * w * lead;
   const type = size ?? w * 0.021;
+  /**
+   * THE LEADER POINTS AT THE THING; THE LABEL GOES WHERE THERE IS ROOM.
+   *
+   * A magnified section had its strata labelled from the left, and the section
+   * spans most of the frame's width, so the words ran off the edge and the shot
+   * delivered "…ACE" and "…ATE" where it meant SURFACE and AGGREGATE. The plate
+   * that asked for `side: 'left'` was not wrong about which side of the
+   * geometry the label belonged on; it had no way to know how wide the word
+   * was, and neither does anything else upstream.
+   *
+   * So the side is a preference and the frame decides. A draughtsman does the
+   * same thing: the leader is the statement, the label sits wherever it fits.
+   */
+  const margin = w * 0.06;
+  const runOf = (d: 1 | -1) => x + d * (w * lead + w * 0.012 + text.length * type * 0.62);
+  let dir: 1 | -1 = side === 'right' ? 1 : -1;
+  const fits = (d: 1 | -1) => runOf(d) >= margin && runOf(d) <= w - margin;
+  if (!fits(dir) && fits(dir === 1 ? -1 : 1)) dir = dir === 1 ? -1 : 1;
+  const end = x + dir * w * lead;
+  /**
+   * And where NEITHER side has room — a long word beside a wide box — the label
+   * is pulled back inside rather than left hanging over the edge. A leader that
+   * has been shortened is still a leader; a word with three letters missing is
+   * not a label.
+   */
+  const run = runOf(dir);
+  const overshoot = run < margin ? margin - run : run > w - margin ? w - margin - run : 0;
+  const textX = end + dir * w * 0.012 + overshoot;
   return (
     <g opacity={on}>
       <circle cx={x} cy={y} r={w * 0.005} fill={colour} />
       <line x1={x} y1={y} x2={end} y2={y} stroke={colour} strokeWidth={w * 0.0018} />
       <text
-        x={end + dir * w * 0.012}
+        x={textX}
         y={y + type * 0.34}
-        textAnchor={side === 'right' ? 'start' : 'end'}
+        textAnchor={dir === 1 ? 'start' : 'end'}
         fill={colour}
         fontFamily={MONO}
         fontSize={type}
