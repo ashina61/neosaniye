@@ -31,7 +31,8 @@
     "assets:list": "node scripts/casting.mjs list",
     "assets:match": "node scripts/casting.mjs match",
     "assets:validate": "node scripts/casting.mjs validate",
-    "assets:report": "node scripts/casting.mjs report"
+    "assets:report": "node scripts/casting.mjs report",
+    "dna:lint": "node scripts/dna-lint.mjs"
   },
   "dependencies": {
     "@remotion/bundler": "4.0.499",

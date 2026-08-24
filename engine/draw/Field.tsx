@@ -17,7 +17,7 @@ import {hash01} from '../motion';
  */
 export type FieldKind = 'sunburst' | 'wash' | 'paper' | 'grid' | 'spotlight';
 
-const Rays: React.FC<{count: number; colour: string; opacity: number; seed: string}> = ({
+const Sunburst: React.FC<{count: number; colour: string; opacity: number; seed: string}> = ({
   count,
   colour,
   opacity,
@@ -62,7 +62,7 @@ export const Field: React.FC<{
         <AbsoluteFill
           style={{background: `radial-gradient(circle at ${centreX}% ${centreY}%, ${a} 0%, ${b} 42%, ${c} 78%)`}}
         />
-        <Rays count={rays} colour={a} opacity={0.16} seed={seed} />
+        <Sunburst count={rays} colour={a} opacity={0.16} seed={seed} />
         <AbsoluteFill
           style={{background: `radial-gradient(ellipse at ${centreX}% ${centreY}%, transparent 30%, ${c}cc 88%)`}}
         />

@@ -49,6 +49,7 @@ import {
 } from './lib/director.mjs';
 import {cutMix, directCut} from './lib/cut.mjs';
 import {boundsOf, throughTheCamera} from './lib/critique.mjs';
+import {TYPE} from '../visual-system/dna.mjs';
 import {readingFrames} from './lib/editor.mjs';
 import {countWindow} from '../engine/state.mjs';
 import {endingStrategy, hookStrategy, readScript, rhythmFor} from './lib/story.mjs';
@@ -805,7 +806,7 @@ function captionPlacement({shot, rand, durationInFrames, lines}) {
   const text = shot?.text ?? {};
   const at = (v, d) => (v === undefined ? d : Math.round(durationInFrames * Math.min(0.9, Math.max(0, Number(v)))));
   return {
-    captionX: text.x === undefined ? 84 : Math.round(WIDTH * Number(text.x)),
+    captionX: text.x === undefined ? Math.round(WIDTH * TYPE.margin) : Math.round(WIDTH * Number(text.x)),
     /**
      * INSIDE THE SAFE AREA, IN THE CONFIG AND NOT ONLY IN THE ENGINE.
      *
@@ -2045,7 +2046,15 @@ function applyDirection({
         params.caption = wrapped;
       }
       const longest = caption.reduce((n, l) => Math.max(n, l.length), 0);
-      const margin = Math.round(WIDTH * 0.075);
+      /**
+       * THE MARGIN COMES FROM THE DNA, not from a second opinion about it.
+       *
+       * This line said `WIDTH * 0.075` — 81px — while three other places in
+       * this file said 84. Captions are set left, so their left edge is the
+       * strongest alignment in the frame, and three episodes shipped with two
+       * of them. A margin expressed twice is a margin.
+       */
+      const margin = Math.round(WIDTH * TYPE.margin);
       const column = WIDTH - margin * 2;
       // Fill the column, then stay inside the two sizes a statement lives
       // between: below the floor it is a caption again, above the ceiling a
@@ -2184,7 +2193,7 @@ function applyDirection({
         lines
           ? {
               mark: 'underline',
-              markX: Math.round(Number(params.captionX) || 84),
+              markX: Math.round(Number(params.captionX) || WIDTH * TYPE.margin),
               markY: Math.round((Number(params.captionY) || 300) + lines * size * 1.24),
               markWidth: Math.round(Math.min(WIDTH * 0.72, size * 0.58 * Math.max(...caption.map((l) => l.length)))),
               markHeight: 10,
@@ -2684,7 +2693,7 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
       itemFrames: items.map((_, i) => 10 + i * (36 + Math.round(rand() * 14))),
       items,
       caption: line.caption ?? [],
-      captionX: 84,
+      captionX: Math.round(WIDTH * TYPE.margin),
       captionY: 190 + Math.round(rand() * 60),
       captionFrame: 6,
       captionSize: 82 + Math.round(rand() * 10),
@@ -2721,7 +2730,7 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
       // competing with the one move the shot exists for is a caption nobody
       // reads and a move nobody watches.
       caption: line.caption ?? [],
-      captionX: 84,
+      captionX: Math.round(WIDTH * TYPE.margin),
       captionY: Math.round(between(rand, [1180, 1520])),
       captionFrame: Math.round(through + durationInFrames * 0.06),
       captionEvery: 7 + Math.round(rand() * 4),

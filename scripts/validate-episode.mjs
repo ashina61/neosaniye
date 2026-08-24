@@ -36,6 +36,7 @@ import {
 } from './lib/critique.mjs';
 import {temporalProblems} from './lib/temporal.mjs';
 import {editReel} from './lib/editor.mjs';
+import {dnaProblems} from './lib/dna.mjs';
 import {representationProblems} from './lib/semantics.mjs';
 
 async function validateEpisode(episodeId) {
@@ -136,6 +137,14 @@ async function validateEpisode(episodeId) {
    */
   const contrast = contrastProblems(config);
   /**
+   * AND THE SEVENTH: does this look like the same channel made it?
+   *
+   * Every check above asks whether a shot WORKS. This asks whether it BELONGS —
+   * a caption three pixels off the reel's margin is not an error, it is drift,
+   * and drift is what makes twelve episodes look like twelve studios.
+   */
+  const dna = dnaProblems(config);
+  /**
    * AND THE FOURTH QUESTION: is it coherent at EVERY frame?
    *
    * Everything above judges a shot as an arrangement. This walks it as a
@@ -168,6 +177,7 @@ async function validateEpisode(episodeId) {
     ...clipped.errors,
     ...ending.errors,
     ...contrast.errors,
+    ...dna.errors,
     ...temporal.errors,
     ...edit.errors,
     ...semantic.errors,
@@ -178,7 +188,7 @@ async function validateEpisode(episodeId) {
   return {
     problems,
     absentOptional,
-    warnings: [...warnings, ...direction.warnings, ...clipped.warnings, ...ending.warnings, ...contrast.warnings, ...temporal.warnings, ...edit.warnings, ...semantic.warnings],
+    warnings: [...warnings, ...direction.warnings, ...clipped.warnings, ...ending.warnings, ...contrast.warnings, ...dna.warnings, ...temporal.warnings, ...edit.warnings, ...semantic.warnings],
     stats,
     gates,
     mix,
