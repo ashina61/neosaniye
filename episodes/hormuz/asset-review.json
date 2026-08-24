@@ -1,0 +1,1248 @@
+{
+  "episode": "hormuz",
+  "generatedAt": "2026-08-24T03:31:54.623Z",
+  "providers": [
+    {
+      "id": "local",
+      "name": "Local reviewed corpus",
+      "homepage": "file://episodes/*/assets",
+      "needsKey": null,
+      "available": true,
+      "why": null,
+      "reason": null,
+      "detail": "77 reviewed file(s) on disk",
+      "ms": 118
+    },
+    {
+      "id": "commons",
+      "name": "Wikimedia Commons",
+      "homepage": "https://commons.wikimedia.org",
+      "needsKey": null,
+      "available": false,
+      "why": "blocked",
+      "reason": "blocked — the network refused the connection (egress policy or firewall)",
+      "detail": "HTTP 403 at commons.wikimedia.org",
+      "ms": 105
+    },
+    {
+      "id": "openverse",
+      "name": "Openverse",
+      "homepage": "https://openverse.org",
+      "needsKey": null,
+      "available": false,
+      "why": "blocked",
+      "reason": "blocked — the network refused the connection (egress policy or firewall)",
+      "detail": "HTTP 403 at api.openverse.org",
+      "ms": 35
+    },
+    {
+      "id": "loc",
+      "name": "Library of Congress",
+      "homepage": "https://www.loc.gov",
+      "needsKey": null,
+      "available": false,
+      "why": "blocked",
+      "reason": "blocked — the network refused the connection (egress policy or firewall)",
+      "detail": "HTTP 403 at www.loc.gov",
+      "ms": 123
+    },
+    {
+      "id": "archive",
+      "name": "Internet Archive",
+      "homepage": "https://archive.org",
+      "needsKey": null,
+      "available": false,
+      "why": "blocked",
+      "reason": "blocked — the network refused the connection (egress policy or firewall)",
+      "detail": "HTTP 403 at archive.org",
+      "ms": 43
+    },
+    {
+      "id": "europeana",
+      "name": "Europeana",
+      "homepage": "https://www.europeana.eu",
+      "needsKey": "EUROPEANA_API_KEY",
+      "available": false,
+      "why": "blocked",
+      "reason": "blocked — the network refused the connection (egress policy or firewall)",
+      "detail": "HTTP 403 at api.europeana.eu",
+      "ms": 109
+    },
+    {
+      "id": "nasa",
+      "name": "NASA Image and Video Library",
+      "homepage": "https://images.nasa.gov",
+      "needsKey": null,
+      "available": false,
+      "why": "blocked",
+      "reason": "blocked — the network refused the connection (egress policy or firewall)",
+      "detail": "HTTP 403 at images-api.nasa.gov",
+      "ms": 112
+    },
+    {
+      "id": "pexels",
+      "name": "Pexels",
+      "homepage": "https://www.pexels.com",
+      "needsKey": "PEXELS_API_KEY",
+      "available": false,
+      "why": "blocked",
+      "reason": "blocked — the network refused the connection (egress policy or firewall)",
+      "detail": "HTTP 403 at api.pexels.com",
+      "ms": 284
+    },
+    {
+      "id": "pixabay",
+      "name": "Pixabay",
+      "homepage": "https://pixabay.com",
+      "needsKey": "PIXABAY_API_KEY",
+      "available": false,
+      "why": "blocked",
+      "reason": "blocked — the network refused the connection (egress policy or firewall)",
+      "detail": "HTTP 403 at pixabay.com",
+      "ms": 104
+    }
+  ],
+  "ladder": [
+    {
+      "n": 1,
+      "id": "reviewed-local",
+      "label": "reviewed local asset",
+      "usable": true,
+      "because": null
+    },
+    {
+      "n": 2,
+      "id": "external-photo",
+      "label": "reliable external real photograph",
+      "usable": false,
+      "because": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+    },
+    {
+      "n": 3,
+      "id": "public-archive",
+      "label": "public-domain archive",
+      "usable": false,
+      "because": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+    },
+    {
+      "n": 4,
+      "id": "generated",
+      "label": "generated illustrative image",
+      "usable": false,
+      "because": "no image generation provider configured"
+    },
+    {
+      "n": 5,
+      "id": "procedural",
+      "label": "procedural representation",
+      "usable": true,
+      "because": null
+    },
+    {
+      "n": 6,
+      "id": "typography",
+      "label": "typography",
+      "usable": true,
+      "because": null
+    }
+  ],
+  "generationConfigured": false,
+  "requested": 9,
+  "accepted": 0,
+  "rejected": 46,
+  "lines": [
+    {
+      "line": "narrow",
+      "subject": "strait",
+      "domain": "geography",
+      "priority": "would strengthen",
+      "settled": {
+        "rung": 5,
+        "resolution": "procedural",
+        "ok": true,
+        "note": "no acceptable photograph; the line is carried by a map drawing, declared as a reconstruction"
+      },
+      "accepted": null,
+      "candidates": [
+        {
+          "provider": "local",
+          "id": "81697657836b96b6",
+          "title": "File:ISS-38 Green Bay, Wisconsin.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of strait",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "bf69d7da492b7964",
+          "title": "File:Roman lamp, reconstructed view (Treasure case 2015 T909). Copyright North Herts Museum Service (FindID 621821).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of strait",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "255e2f9be12999b5",
+          "title": "File:Post Medieval, Inkwell (FindID 152296).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of strait",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "83db567f1fb63ec0",
+          "title": "File:Two women stand near shelves at the U.S. Air Force 1361st PHOTO Squadron Still Depository DF-SN-82-00436.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of strait",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "479fa7367b7bc10f",
+          "title": "bronze-weight.png",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of strait",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "47ec10b7aaaadc54",
+          "title": "mechanism-fragment.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of strait",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "02231f170a2cdc08",
+          "title": "empty-wooden-chair.png",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of strait",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        }
+      ],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "Strait of Hormuz satellite",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "Musandam peninsula coast",
+          "found": 1
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "a narrow sea channel between two arid headlands, seen from the air",
+          "found": 6
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    },
+    {
+      "line": "lanes",
+      "subject": "tradeRoute",
+      "domain": "geography",
+      "priority": "would strengthen",
+      "settled": {
+        "rung": 5,
+        "resolution": "procedural",
+        "ok": true,
+        "note": "no acceptable photograph; the line is carried by a map drawing, declared as a reconstruction"
+      },
+      "accepted": null,
+      "candidates": [
+        {
+          "provider": "local",
+          "id": "81697657836b96b6",
+          "title": "File:ISS-38 Green Bay, Wisconsin.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of tradeRoute",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "255e2f9be12999b5",
+          "title": "File:Post Medieval, Inkwell (FindID 152296).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of tradeRoute",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "83db567f1fb63ec0",
+          "title": "File:Two women stand near shelves at the U.S. Air Force 1361st PHOTO Squadron Still Depository DF-SN-82-00436.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of tradeRoute",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "bf69d7da492b7964",
+          "title": "File:Roman lamp, reconstructed view (Treasure case 2015 T909). Copyright North Herts Museum Service (FindID 621821).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of tradeRoute",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        }
+      ],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "tanker traffic separation scheme",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "ship wake aerial",
+          "found": 1
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "two tanker wakes running opposite ways in dark water",
+          "found": 3
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    },
+    {
+      "line": "volume",
+      "subject": "quantity",
+      "domain": "quantity",
+      "priority": "would strengthen",
+      "settled": {
+        "rung": 5,
+        "resolution": "procedural",
+        "ok": true,
+        "note": "no acceptable photograph; the line is carried by a measurement drawing, declared as a reconstruction"
+      },
+      "accepted": null,
+      "candidates": [
+        {
+          "provider": "local",
+          "id": "bf69d7da492b7964",
+          "title": "File:Roman lamp, reconstructed view (Treasure case 2015 T909). Copyright North Herts Museum Service (FindID 621821).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of quantity",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "754bf2cee34008cd",
+          "title": "File:Babosa de mar (Felimare picta webbi), franja marina Teno-Rasca, Tenerife, España, 2022-01-09, DD 60.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of quantity",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "255e2f9be12999b5",
+          "title": "File:Post Medieval, Inkwell (FindID 152296).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of quantity",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "bf69d7da492b7964",
+          "title": "File:Roman lamp, reconstructed view (Treasure case 2015 T909). Copyright North Herts Museum Service (FindID 621821).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of quantity",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "754bf2cee34008cd",
+          "title": "File:Babosa de mar (Felimare picta webbi), franja marina Teno-Rasca, Tenerife, España, 2022-01-09, DD 60.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of quantity",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "83db567f1fb63ec0",
+          "title": "File:Two women stand near shelves at the U.S. Air Force 1361st PHOTO Squadron Still Depository DF-SN-82-00436.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of quantity",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "815422dc4e583828",
+          "title": "File:An Evening in the City - April 1941 Art.IWMARTLD1354.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of quantity",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "6eec9f5872a75294",
+          "title": "File:Camille Jacob Pissarro - The Oise near Pontoise in Grey Weather - Google Art Project.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of quantity",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        }
+      ],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "VLCC crude oil tanker",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "loaded tanker at sea",
+          "found": 2
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "a loaded crude tanker low in the water",
+          "found": 6
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    },
+    {
+      "line": "share",
+      "subject": "abstract",
+      "domain": "abstract",
+      "priority": "optional",
+      "settled": {
+        "rung": 6,
+        "resolution": "typography",
+        "ok": true,
+        "note": "an abstract claim, which words can carry"
+      },
+      "accepted": null,
+      "candidates": [
+        {
+          "provider": "local",
+          "id": "815422dc4e583828",
+          "title": "File:An Evening in the City - April 1941 Art.IWMARTLD1354.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of abstract",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "3e6725e8dbac53c0",
+          "title": "lake-dusk.png",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of abstract",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "815422dc4e583828",
+          "title": "File:An Evening in the City - April 1941 Art.IWMARTLD1354.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of abstract",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "3e6725e8dbac53c0",
+          "title": "lake-dusk.png",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of abstract",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        }
+      ],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "oil refinery dusk",
+          "found": 2
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "petrochemical plant skyline",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "a refinery skyline at dusk",
+          "found": 2
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    },
+    {
+      "line": "nobypass",
+      "subject": "geography",
+      "domain": "geography",
+      "priority": "would strengthen",
+      "settled": {
+        "rung": 5,
+        "resolution": "procedural",
+        "ok": true,
+        "note": "no acceptable photograph; the line is carried by a map drawing, declared as a reconstruction"
+      },
+      "accepted": null,
+      "candidates": [],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "Musandam fjord",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "rocky strait headland",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "a rocky headland closing on a channel",
+          "found": 0
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    },
+    {
+      "line": "shores",
+      "subject": "coastline",
+      "domain": "geography",
+      "priority": "would strengthen",
+      "settled": {
+        "rung": 5,
+        "resolution": "procedural",
+        "ok": true,
+        "note": "no acceptable photograph; the line is carried by a map drawing, declared as a reconstruction"
+      },
+      "accepted": null,
+      "candidates": [
+        {
+          "provider": "local",
+          "id": "bf69d7da492b7964",
+          "title": "File:Roman lamp, reconstructed view (Treasure case 2015 T909). Copyright North Herts Museum Service (FindID 621821).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of coastline",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "81697657836b96b6",
+          "title": "File:ISS-38 Green Bay, Wisconsin.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of coastline",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "754bf2cee34008cd",
+          "title": "File:Babosa de mar (Felimare picta webbi), franja marina Teno-Rasca, Tenerife, España, 2022-01-09, DD 60.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of coastline",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "bf69d7da492b7964",
+          "title": "File:Roman lamp, reconstructed view (Treasure case 2015 T909). Copyright North Herts Museum Service (FindID 621821).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of coastline",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "255e2f9be12999b5",
+          "title": "File:Post Medieval, Inkwell (FindID 152296).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of coastline",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "83db567f1fb63ec0",
+          "title": "File:Two women stand near shelves at the U.S. Air Force 1361st PHOTO Squadron Still Depository DF-SN-82-00436.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of coastline",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "754bf2cee34008cd",
+          "title": "File:Babosa de mar (Felimare picta webbi), franja marina Teno-Rasca, Tenerife, España, 2022-01-09, DD 60.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of coastline",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "815422dc4e583828",
+          "title": "File:An Evening in the City - April 1941 Art.IWMARTLD1354.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of coastline",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "6eec9f5872a75294",
+          "title": "File:Camille Jacob Pissarro - The Oise near Pontoise in Grey Weather - Google Art Project.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of coastline",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        }
+      ],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "Hormuz coastline mountains",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "Oman coast cliffs sea",
+          "found": 3
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "bare mountains falling straight into the sea",
+          "found": 6
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    },
+    {
+      "line": "grounding",
+      "subject": "strait",
+      "domain": "geography",
+      "priority": "would strengthen",
+      "settled": {
+        "rung": 5,
+        "resolution": "procedural",
+        "ok": true,
+        "note": "no acceptable photograph; the line is carried by a map drawing, declared as a reconstruction"
+      },
+      "accepted": null,
+      "candidates": [],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "grounded ship salvage",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "ship aground shallow",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "a grounded ship listing in shallow water",
+          "found": 0
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    },
+    {
+      "line": "price",
+      "subject": "abstract",
+      "domain": "abstract",
+      "priority": "optional",
+      "settled": {
+        "rung": 6,
+        "resolution": "typography",
+        "ok": true,
+        "note": "an abstract claim, which words can carry"
+      },
+      "accepted": null,
+      "candidates": [
+        {
+          "provider": "local",
+          "id": "bf69d7da492b7964",
+          "title": "File:Roman lamp, reconstructed view (Treasure case 2015 T909). Copyright North Herts Museum Service (FindID 621821).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of abstract",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "754bf2cee34008cd",
+          "title": "File:Babosa de mar (Felimare picta webbi), franja marina Teno-Rasca, Tenerife, España, 2022-01-09, DD 60.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of abstract",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "6eec9f5872a75294",
+          "title": "File:Camille Jacob Pissarro - The Oise near Pontoise in Grey Weather - Google Art Project.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of abstract",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "bf69d7da492b7964",
+          "title": "File:Roman lamp, reconstructed view (Treasure case 2015 T909). Copyright North Herts Museum Service (FindID 621821).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of abstract",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "754bf2cee34008cd",
+          "title": "File:Babosa de mar (Felimare picta webbi), franja marina Teno-Rasca, Tenerife, España, 2022-01-09, DD 60.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of abstract",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "6eec9f5872a75294",
+          "title": "File:Camille Jacob Pissarro - The Oise near Pontoise in Grey Weather - Google Art Project.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of abstract",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        }
+      ],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "destroyer at sea grey",
+          "found": 3
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "naval vessel bow wave",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "a warship bow wave in grey sea",
+          "found": 3
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    },
+    {
+      "line": "close",
+      "subject": "geography",
+      "domain": "geography",
+      "priority": "BLOCKING",
+      "settled": {
+        "rung": 6,
+        "resolution": "REPRESENTATION_REQUIRED",
+        "ok": false,
+        "note": "the line is about geography and reached the bottom of the ladder with no picture — this is a hole, not a design decision"
+      },
+      "accepted": null,
+      "candidates": [
+        {
+          "provider": "local",
+          "id": "bf69d7da492b7964",
+          "title": "File:Roman lamp, reconstructed view (Treasure case 2015 T909). Copyright North Herts Museum Service (FindID 621821).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of geography",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "02231f170a2cdc08",
+          "title": "empty-wooden-chair.png",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of geography",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "754bf2cee34008cd",
+          "title": "File:Babosa de mar (Felimare picta webbi), franja marina Teno-Rasca, Tenerife, España, 2022-01-09, DD 60.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of geography",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "6eec9f5872a75294",
+          "title": "File:Camille Jacob Pissarro - The Oise near Pontoise in Grey Weather - Google Art Project.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of geography",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "bf69d7da492b7964",
+          "title": "File:Roman lamp, reconstructed view (Treasure case 2015 T909). Copyright North Herts Museum Service (FindID 621821).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of geography",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "02231f170a2cdc08",
+          "title": "empty-wooden-chair.png",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of geography",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "754bf2cee34008cd",
+          "title": "File:Babosa de mar (Felimare picta webbi), franja marina Teno-Rasca, Tenerife, España, 2022-01-09, DD 60.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of geography",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "6eec9f5872a75294",
+          "title": "File:Camille Jacob Pissarro - The Oise near Pontoise in Grey Weather - Google Art Project.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of geography",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        }
+      ],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "empty sea horizon dawn",
+          "found": 3
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "grey ocean minimal",
+          "found": 1
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "an empty grey sea at first light",
+          "found": 4
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    }
+  ]
+}

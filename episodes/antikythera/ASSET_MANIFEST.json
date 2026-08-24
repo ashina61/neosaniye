@@ -1,0 +1,33 @@
+{
+  "episode": "antikythera",
+  "generatedAt": "2026-08-24T03:32:48.378Z",
+  "$note": "Every entry here is a file this pipeline downloaded, scored, licence-checked and accepted. Provenance is not optional: an asset with no source is not public domain, it is an asset with no source.",
+  "providersUsed": [
+    "local"
+  ],
+  "assets": [
+    {
+      "line": "moon",
+      "subject": "celestial",
+      "title": "File:Full moon in night sky - India.jpg",
+      "source": "Wikimedia Commons",
+      "via": "local",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Full_moon_in_night_sky_-_India.jpg",
+      "creator": "Ksheera Piraati",
+      "licence": "CC BY 4.0",
+      "licenceUrl": null,
+      "licenceFamily": "cc-by",
+      "needsCredit": true,
+      "retrieved": "2026-08-24",
+      "assetId": "5e814d1dc2bda1d4",
+      "localFile": ".asset-cache/6054ddec91ff394be765e8664feb36d0.jpg",
+      "scores": {
+        "semanticRelevance": 9,
+        "historicalAccuracy": 9,
+        "quality": 9.3,
+        "composition": 7.5,
+        "rank": 8.85
+      }
+    }
+  ]
+}

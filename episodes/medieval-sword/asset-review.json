@@ -1,0 +1,1053 @@
+{
+  "episode": "medieval-sword",
+  "generatedAt": "2026-08-24T03:31:54.634Z",
+  "providers": [
+    {
+      "id": "local",
+      "name": "Local reviewed corpus",
+      "homepage": "file://episodes/*/assets",
+      "needsKey": null,
+      "available": true,
+      "why": null,
+      "reason": null,
+      "detail": "77 reviewed file(s) on disk",
+      "ms": 118
+    },
+    {
+      "id": "commons",
+      "name": "Wikimedia Commons",
+      "homepage": "https://commons.wikimedia.org",
+      "needsKey": null,
+      "available": false,
+      "why": "blocked",
+      "reason": "blocked — the network refused the connection (egress policy or firewall)",
+      "detail": "HTTP 403 at commons.wikimedia.org",
+      "ms": 105
+    },
+    {
+      "id": "openverse",
+      "name": "Openverse",
+      "homepage": "https://openverse.org",
+      "needsKey": null,
+      "available": false,
+      "why": "blocked",
+      "reason": "blocked — the network refused the connection (egress policy or firewall)",
+      "detail": "HTTP 403 at api.openverse.org",
+      "ms": 35
+    },
+    {
+      "id": "loc",
+      "name": "Library of Congress",
+      "homepage": "https://www.loc.gov",
+      "needsKey": null,
+      "available": false,
+      "why": "blocked",
+      "reason": "blocked — the network refused the connection (egress policy or firewall)",
+      "detail": "HTTP 403 at www.loc.gov",
+      "ms": 123
+    },
+    {
+      "id": "archive",
+      "name": "Internet Archive",
+      "homepage": "https://archive.org",
+      "needsKey": null,
+      "available": false,
+      "why": "blocked",
+      "reason": "blocked — the network refused the connection (egress policy or firewall)",
+      "detail": "HTTP 403 at archive.org",
+      "ms": 43
+    },
+    {
+      "id": "europeana",
+      "name": "Europeana",
+      "homepage": "https://www.europeana.eu",
+      "needsKey": "EUROPEANA_API_KEY",
+      "available": false,
+      "why": "blocked",
+      "reason": "blocked — the network refused the connection (egress policy or firewall)",
+      "detail": "HTTP 403 at api.europeana.eu",
+      "ms": 109
+    },
+    {
+      "id": "nasa",
+      "name": "NASA Image and Video Library",
+      "homepage": "https://images.nasa.gov",
+      "needsKey": null,
+      "available": false,
+      "why": "blocked",
+      "reason": "blocked — the network refused the connection (egress policy or firewall)",
+      "detail": "HTTP 403 at images-api.nasa.gov",
+      "ms": 112
+    },
+    {
+      "id": "pexels",
+      "name": "Pexels",
+      "homepage": "https://www.pexels.com",
+      "needsKey": "PEXELS_API_KEY",
+      "available": false,
+      "why": "blocked",
+      "reason": "blocked — the network refused the connection (egress policy or firewall)",
+      "detail": "HTTP 403 at api.pexels.com",
+      "ms": 284
+    },
+    {
+      "id": "pixabay",
+      "name": "Pixabay",
+      "homepage": "https://pixabay.com",
+      "needsKey": "PIXABAY_API_KEY",
+      "available": false,
+      "why": "blocked",
+      "reason": "blocked — the network refused the connection (egress policy or firewall)",
+      "detail": "HTTP 403 at pixabay.com",
+      "ms": 104
+    }
+  ],
+  "ladder": [
+    {
+      "n": 1,
+      "id": "reviewed-local",
+      "label": "reviewed local asset",
+      "usable": true,
+      "because": null
+    },
+    {
+      "n": 2,
+      "id": "external-photo",
+      "label": "reliable external real photograph",
+      "usable": false,
+      "because": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+    },
+    {
+      "n": 3,
+      "id": "public-archive",
+      "label": "public-domain archive",
+      "usable": false,
+      "because": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+    },
+    {
+      "n": 4,
+      "id": "generated",
+      "label": "generated illustrative image",
+      "usable": false,
+      "because": "no image generation provider configured"
+    },
+    {
+      "n": 5,
+      "id": "procedural",
+      "label": "procedural representation",
+      "usable": true,
+      "because": null
+    },
+    {
+      "n": 6,
+      "id": "typography",
+      "label": "typography",
+      "usable": true,
+      "because": null
+    }
+  ],
+  "generationConfigured": false,
+  "requested": 9,
+  "accepted": 0,
+  "rejected": 33,
+  "lines": [
+    {
+      "line": "notcast",
+      "subject": "swordMaking",
+      "domain": "process",
+      "priority": "would strengthen",
+      "settled": {
+        "rung": 5,
+        "resolution": "procedural",
+        "ok": true,
+        "note": "no acceptable photograph; the line is carried by a process drawing, declared as a reconstruction"
+      },
+      "accepted": null,
+      "candidates": [],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "iron billet anvil",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "blacksmith bar stock forge",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "a rough iron billet on an anvil",
+          "found": 0
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    },
+    {
+      "line": "heat",
+      "subject": "swordMaking",
+      "domain": "process",
+      "priority": "would strengthen",
+      "settled": {
+        "rung": 5,
+        "resolution": "procedural",
+        "ok": true,
+        "note": "no acceptable photograph; the line is carried by a process drawing, declared as a reconstruction"
+      },
+      "accepted": null,
+      "candidates": [
+        {
+          "provider": "local",
+          "id": "81697657836b96b6",
+          "title": "File:ISS-38 Green Bay, Wisconsin.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of swordMaking",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "754bf2cee34008cd",
+          "title": "File:Babosa de mar (Felimare picta webbi), franja marina Teno-Rasca, Tenerife, España, 2022-01-09, DD 60.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0.6/10 is below the floor of 8 — it is not a picture of swordMaking",
+          "semantic": {
+            "relevance": 0.6,
+            "accuracy": 0.6,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "90c88f67aab7df9d",
+          "title": "File:Say hello to Deep Blue (2586059148).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of swordMaking",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "83db567f1fb63ec0",
+          "title": "File:Two women stand near shelves at the U.S. Air Force 1361st PHOTO Squadron Still Depository DF-SN-82-00436.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0.6/10 is below the floor of 8 — it is not a picture of swordMaking",
+          "semantic": {
+            "relevance": 0.6,
+            "accuracy": 0.6,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "82375d48e15165bd",
+          "title": "File:Weihnachten, Schriftzug \"MERRY XMAS\" -- 2020 -- 3710.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of swordMaking",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "4feabbbef2b5918f",
+          "title": "s01-atlas-photo.png",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of swordMaking",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "479fa7367b7bc10f",
+          "title": "bronze-weight.png",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of swordMaking",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "bf69d7da492b7964",
+          "title": "File:Roman lamp, reconstructed view (Treasure case 2015 T909). Copyright North Herts Museum Service (FindID 621821).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of swordMaking",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        }
+      ],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "hot steel forge fire",
+          "found": 6
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "blacksmith heating steel",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "glowing steel drawn from a charcoal fire",
+          "found": 2
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    },
+    {
+      "line": "carbon",
+      "subject": "material",
+      "domain": "material",
+      "priority": "BLOCKING",
+      "settled": {
+        "rung": 6,
+        "resolution": "REPRESENTATION_REQUIRED",
+        "ok": false,
+        "note": "the line is about material and reached the bottom of the ladder with no picture — this is a hole, not a design decision"
+      },
+      "accepted": null,
+      "candidates": [
+        {
+          "provider": "local",
+          "id": "47ec10b7aaaadc54",
+          "title": "mechanism-fragment.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of material",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "bf69d7da492b7964",
+          "title": "File:Roman lamp, reconstructed view (Treasure case 2015 T909). Copyright North Herts Museum Service (FindID 621821).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of material",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        }
+      ],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "broken sword blade fragment",
+          "found": 1
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "fractured steel section",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "a broken blade section, dark metal",
+          "found": 1
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    },
+    {
+      "line": "layered",
+      "subject": "swordMaking",
+      "domain": "process",
+      "priority": "would strengthen",
+      "settled": {
+        "rung": 5,
+        "resolution": "procedural",
+        "ok": true,
+        "note": "no acceptable photograph; the line is carried by a process drawing, declared as a reconstruction"
+      },
+      "accepted": null,
+      "candidates": [],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "pattern welded blade etched",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "laminated steel blade",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "an etched blade showing a layered pattern",
+          "found": 0
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    },
+    {
+      "line": "fold",
+      "subject": "process",
+      "domain": "process",
+      "priority": "would strengthen",
+      "settled": {
+        "rung": 5,
+        "resolution": "procedural",
+        "ok": true,
+        "note": "no acceptable photograph; the line is carried by a process drawing, declared as a reconstruction"
+      },
+      "accepted": null,
+      "candidates": [
+        {
+          "provider": "local",
+          "id": "81697657836b96b6",
+          "title": "File:ISS-38 Green Bay, Wisconsin.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of process",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "754bf2cee34008cd",
+          "title": "File:Babosa de mar (Felimare picta webbi), franja marina Teno-Rasca, Tenerife, España, 2022-01-09, DD 60.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of process",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "90c88f67aab7df9d",
+          "title": "File:Say hello to Deep Blue (2586059148).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of process",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "83db567f1fb63ec0",
+          "title": "File:Two women stand near shelves at the U.S. Air Force 1361st PHOTO Squadron Still Depository DF-SN-82-00436.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of process",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "82375d48e15165bd",
+          "title": "File:Weihnachten, Schriftzug \"MERRY XMAS\" -- 2020 -- 3710.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of process",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "4feabbbef2b5918f",
+          "title": "s01-atlas-photo.png",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of process",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "aedf5a1188ba2acf",
+          "title": "File:Chests of drawers 63.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of process",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        }
+      ],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "forging hammer sparks",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "blacksmith striking hot steel",
+          "found": 6
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "a hammer striking bright steel, sparks",
+          "found": 1
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    },
+    {
+      "line": "quench",
+      "subject": "swordMaking",
+      "domain": "process",
+      "priority": "would strengthen",
+      "settled": {
+        "rung": 5,
+        "resolution": "procedural",
+        "ok": true,
+        "note": "no acceptable photograph; the line is carried by a process drawing, declared as a reconstruction"
+      },
+      "accepted": null,
+      "candidates": [
+        {
+          "provider": "local",
+          "id": "8e100b2b19b8644c",
+          "title": "File:Panzer Xangango Angola.JPG",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of swordMaking",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "bf69d7da492b7964",
+          "title": "File:Roman lamp, reconstructed view (Treasure case 2015 T909). Copyright North Herts Museum Service (FindID 621821).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of swordMaking",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "8e100b2b19b8644c",
+          "title": "File:Panzer Xangango Angola.JPG",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of swordMaking",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        }
+      ],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "quenching blade oil",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "forge quench tank",
+          "found": 1
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "a quench tank, dark oil, smoke",
+          "found": 2
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    },
+    {
+      "line": "cool",
+      "subject": "process",
+      "domain": "process",
+      "priority": "would strengthen",
+      "settled": {
+        "rung": 5,
+        "resolution": "procedural",
+        "ok": true,
+        "note": "no acceptable photograph; the line is carried by a process drawing, declared as a reconstruction"
+      },
+      "accepted": null,
+      "candidates": [
+        {
+          "provider": "local",
+          "id": "aedf5a1188ba2acf",
+          "title": "File:Chests of drawers 63.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of process",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "bf69d7da492b7964",
+          "title": "File:Roman lamp, reconstructed view (Treasure case 2015 T909). Copyright North Herts Museum Service (FindID 621821).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of process",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "754bf2cee34008cd",
+          "title": "File:Babosa de mar (Felimare picta webbi), franja marina Teno-Rasca, Tenerife, España, 2022-01-09, DD 60.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of process",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "b2f8f7113b64a8a8",
+          "title": "office-swivel-chair.png",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of process",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "bf69d7da492b7964",
+          "title": "File:Roman lamp, reconstructed view (Treasure case 2015 T909). Copyright North Herts Museum Service (FindID 621821).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of process",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "592766ae6086513b",
+          "title": "detective-office.png",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of process",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "99ea6c0de7f4a3c7",
+          "title": "newsroom-desk.png",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of process",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "3587c877a0c587b6",
+          "title": "newsroom-wall.png",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of process",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        }
+      ],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "steam oil quench",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "smoke dark forge interior",
+          "found": 2
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "steam rising off dark oil in a low room",
+          "found": 6
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    },
+    {
+      "line": "snaps",
+      "subject": "swordMaking",
+      "domain": "process",
+      "priority": "BLOCKING",
+      "settled": {
+        "rung": 6,
+        "resolution": "REPRESENTATION_REQUIRED",
+        "ok": false,
+        "note": "the line is about process and reached the bottom of the ladder with no picture — this is a hole, not a design decision"
+      },
+      "accepted": null,
+      "candidates": [
+        {
+          "provider": "local",
+          "id": "47ec10b7aaaadc54",
+          "title": "mechanism-fragment.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of swordMaking",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "47ec10b7aaaadc54",
+          "title": "mechanism-fragment.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of swordMaking",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        }
+      ],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "broken sword on stone",
+          "found": 1
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "shattered blade",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "a snapped blade lying on stone",
+          "found": 1
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    },
+    {
+      "line": "close",
+      "subject": "process",
+      "domain": "process",
+      "priority": "BLOCKING",
+      "settled": {
+        "rung": 6,
+        "resolution": "REPRESENTATION_REQUIRED",
+        "ok": false,
+        "note": "the line is about process and reached the bottom of the ladder with no picture — this is a hole, not a design decision"
+      },
+      "accepted": null,
+      "candidates": [
+        {
+          "provider": "local",
+          "id": "255e2f9be12999b5",
+          "title": "File:Post Medieval, Inkwell (FindID 152296).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of process",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "bf69d7da492b7964",
+          "title": "File:Roman lamp, reconstructed view (Treasure case 2015 T909). Copyright North Herts Museum Service (FindID 621821).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of process",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "754bf2cee34008cd",
+          "title": "File:Babosa de mar (Felimare picta webbi), franja marina Teno-Rasca, Tenerife, España, 2022-01-09, DD 60.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of process",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        }
+      ],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "finished sword blade workbench",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "medieval sword museum",
+          "found": 2
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "a finished blade on a workbench, low light",
+          "found": 1
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    }
+  ]
+}

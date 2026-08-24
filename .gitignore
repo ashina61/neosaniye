@@ -14,3 +14,6 @@ engine/episodeScenes.generated.ts
 # from a public repository is a separate decision and not one a build makes
 # on its own. Drop the kit into episodes/netflix/assets/ and re-plan.
 episodes/netflix/
+
+# Downloaded asset cache: reproducible from ASSET_MANIFEST.json, not source.
+.asset-cache/

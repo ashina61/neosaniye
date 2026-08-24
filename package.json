@@ -24,7 +24,9 @@
     "assets:commons": "node scripts/fetch-commons.mjs",
     "assets:review": "node scripts/review-assets.mjs",
     "assets:placeholder": "node scripts/make-placeholder-assets.mjs",
-    "assets:audit": "node scripts/audit-assets.mjs"
+    "assets:audit": "node scripts/audit-assets.mjs",
+    "assets:acquire": "node scripts/acquire-assets.mjs",
+    "assets:providers": "node scripts/provider-status.mjs"
   },
   "dependencies": {
     "@remotion/bundler": "4.0.499",

@@ -1,0 +1,1325 @@
+{
+  "episode": "roman-concrete",
+  "generatedAt": "2026-08-24T03:31:54.617Z",
+  "providers": [
+    {
+      "id": "local",
+      "name": "Local reviewed corpus",
+      "homepage": "file://episodes/*/assets",
+      "needsKey": null,
+      "available": true,
+      "why": null,
+      "reason": null,
+      "detail": "77 reviewed file(s) on disk",
+      "ms": 118
+    },
+    {
+      "id": "commons",
+      "name": "Wikimedia Commons",
+      "homepage": "https://commons.wikimedia.org",
+      "needsKey": null,
+      "available": false,
+      "why": "blocked",
+      "reason": "blocked — the network refused the connection (egress policy or firewall)",
+      "detail": "HTTP 403 at commons.wikimedia.org",
+      "ms": 105
+    },
+    {
+      "id": "openverse",
+      "name": "Openverse",
+      "homepage": "https://openverse.org",
+      "needsKey": null,
+      "available": false,
+      "why": "blocked",
+      "reason": "blocked — the network refused the connection (egress policy or firewall)",
+      "detail": "HTTP 403 at api.openverse.org",
+      "ms": 35
+    },
+    {
+      "id": "loc",
+      "name": "Library of Congress",
+      "homepage": "https://www.loc.gov",
+      "needsKey": null,
+      "available": false,
+      "why": "blocked",
+      "reason": "blocked — the network refused the connection (egress policy or firewall)",
+      "detail": "HTTP 403 at www.loc.gov",
+      "ms": 123
+    },
+    {
+      "id": "archive",
+      "name": "Internet Archive",
+      "homepage": "https://archive.org",
+      "needsKey": null,
+      "available": false,
+      "why": "blocked",
+      "reason": "blocked — the network refused the connection (egress policy or firewall)",
+      "detail": "HTTP 403 at archive.org",
+      "ms": 43
+    },
+    {
+      "id": "europeana",
+      "name": "Europeana",
+      "homepage": "https://www.europeana.eu",
+      "needsKey": "EUROPEANA_API_KEY",
+      "available": false,
+      "why": "blocked",
+      "reason": "blocked — the network refused the connection (egress policy or firewall)",
+      "detail": "HTTP 403 at api.europeana.eu",
+      "ms": 109
+    },
+    {
+      "id": "nasa",
+      "name": "NASA Image and Video Library",
+      "homepage": "https://images.nasa.gov",
+      "needsKey": null,
+      "available": false,
+      "why": "blocked",
+      "reason": "blocked — the network refused the connection (egress policy or firewall)",
+      "detail": "HTTP 403 at images-api.nasa.gov",
+      "ms": 112
+    },
+    {
+      "id": "pexels",
+      "name": "Pexels",
+      "homepage": "https://www.pexels.com",
+      "needsKey": "PEXELS_API_KEY",
+      "available": false,
+      "why": "blocked",
+      "reason": "blocked — the network refused the connection (egress policy or firewall)",
+      "detail": "HTTP 403 at api.pexels.com",
+      "ms": 284
+    },
+    {
+      "id": "pixabay",
+      "name": "Pixabay",
+      "homepage": "https://pixabay.com",
+      "needsKey": "PIXABAY_API_KEY",
+      "available": false,
+      "why": "blocked",
+      "reason": "blocked — the network refused the connection (egress policy or firewall)",
+      "detail": "HTTP 403 at pixabay.com",
+      "ms": 104
+    }
+  ],
+  "ladder": [
+    {
+      "n": 1,
+      "id": "reviewed-local",
+      "label": "reviewed local asset",
+      "usable": true,
+      "because": null
+    },
+    {
+      "n": 2,
+      "id": "external-photo",
+      "label": "reliable external real photograph",
+      "usable": false,
+      "because": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+    },
+    {
+      "n": 3,
+      "id": "public-archive",
+      "label": "public-domain archive",
+      "usable": false,
+      "because": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+    },
+    {
+      "n": 4,
+      "id": "generated",
+      "label": "generated illustrative image",
+      "usable": false,
+      "because": "no image generation provider configured"
+    },
+    {
+      "n": 5,
+      "id": "procedural",
+      "label": "procedural representation",
+      "usable": true,
+      "because": null
+    },
+    {
+      "n": 6,
+      "id": "typography",
+      "label": "typography",
+      "usable": true,
+      "because": null
+    }
+  ],
+  "generationConfigured": false,
+  "requested": 9,
+  "accepted": 0,
+  "rejected": 51,
+  "lines": [
+    {
+      "line": "harbour",
+      "subject": "geography",
+      "domain": "geography",
+      "priority": "would strengthen",
+      "settled": {
+        "rung": 5,
+        "resolution": "procedural",
+        "ok": true,
+        "note": "no acceptable photograph; the line is carried by a map drawing, declared as a reconstruction"
+      },
+      "accepted": null,
+      "candidates": [
+        {
+          "provider": "local",
+          "id": "bf69d7da492b7964",
+          "title": "File:Roman lamp, reconstructed view (Treasure case 2015 T909). Copyright North Herts Museum Service (FindID 621821).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 1.2/10 is below the floor of 8 — it is not a picture of geography",
+          "semantic": {
+            "relevance": 1.2,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "754bf2cee34008cd",
+          "title": "File:Babosa de mar (Felimare picta webbi), franja marina Teno-Rasca, Tenerife, España, 2022-01-09, DD 60.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of geography",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "81697657836b96b6",
+          "title": "File:ISS-38 Green Bay, Wisconsin.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of geography",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "d46a26ded5595886",
+          "title": "File:London, Greenwich, Royal Greenwich Observatory -- 2016 -- 4745-6-8.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of geography",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "6eec9f5872a75294",
+          "title": "File:Camille Jacob Pissarro - The Oise near Pontoise in Grey Weather - Google Art Project.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of geography",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        }
+      ],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "Portus Cosanus pier",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "Roman marine concrete harbour",
+          "found": 1
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "a weathered concrete mole running into grey-green water",
+          "found": 4
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    },
+    {
+      "line": "modern",
+      "subject": "romanConcrete",
+      "domain": "material",
+      "priority": "would strengthen",
+      "settled": {
+        "rung": 5,
+        "resolution": "procedural",
+        "ok": true,
+        "note": "no acceptable photograph; the line is carried by a crossSection drawing, declared as a reconstruction"
+      },
+      "accepted": null,
+      "candidates": [
+        {
+          "provider": "local",
+          "id": "479fa7367b7bc10f",
+          "title": "bronze-weight.png",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "bf69d7da492b7964",
+          "title": "File:Roman lamp, reconstructed view (Treasure case 2015 T909). Copyright North Herts Museum Service (FindID 621821).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "255e2f9be12999b5",
+          "title": "File:Post Medieval, Inkwell (FindID 152296).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "754bf2cee34008cd",
+          "title": "File:Babosa de mar (Felimare picta webbi), franja marina Teno-Rasca, Tenerife, España, 2022-01-09, DD 60.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "d9fe2474744eb289",
+          "title": "File:Wall clock on Golra Sharif Railway Station.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "3587c877a0c587b6",
+          "title": "newsroom-wall.png",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "81697657836b96b6",
+          "title": "File:ISS-38 Green Bay, Wisconsin.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0.6/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0.6,
+            "accuracy": 0.6,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "47ec10b7aaaadc54",
+          "title": "mechanism-fragment.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "fde0770a6d97e521",
+          "title": "File:NAMA Machine d'Anticythère 5.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "bf69d7da492b7964",
+          "title": "File:Roman lamp, reconstructed view (Treasure case 2015 T909). Copyright North Herts Museum Service (FindID 621821).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "aedf5a1188ba2acf",
+          "title": "File:Chests of drawers 63.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        }
+      ],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "spalling concrete rebar corrosion",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "failed sea wall concrete",
+          "found": 6
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "spalled modern concrete with rusted reinforcement showing",
+          "found": 5
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    },
+    {
+      "line": "recipe",
+      "subject": "romanConcrete",
+      "domain": "process",
+      "priority": "would strengthen",
+      "settled": {
+        "rung": 5,
+        "resolution": "procedural",
+        "ok": true,
+        "note": "no acceptable photograph; the line is carried by a crossSection drawing, declared as a reconstruction"
+      },
+      "accepted": null,
+      "candidates": [
+        {
+          "provider": "local",
+          "id": "6eec9f5872a75294",
+          "title": "File:Camille Jacob Pissarro - The Oise near Pontoise in Grey Weather - Google Art Project.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        }
+      ],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "pozzolana volcanic ash",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "Pozzuoli tuff",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "coarse grey volcanic ash in a heap",
+          "found": 1
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    },
+    {
+      "line": "ingredient",
+      "subject": "romanConcrete",
+      "domain": "material",
+      "priority": "would strengthen",
+      "settled": {
+        "rung": 5,
+        "resolution": "procedural",
+        "ok": true,
+        "note": "no acceptable photograph; the line is carried by a crossSection drawing, declared as a reconstruction"
+      },
+      "accepted": null,
+      "candidates": [
+        {
+          "provider": "local",
+          "id": "47ec10b7aaaadc54",
+          "title": "mechanism-fragment.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "174981ebf3caba87",
+          "title": "desk-surface.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "bf69d7da492b7964",
+          "title": "File:Roman lamp, reconstructed view (Treasure case 2015 T909). Copyright North Herts Museum Service (FindID 621821).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "47ec10b7aaaadc54",
+          "title": "mechanism-fragment.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "754bf2cee34008cd",
+          "title": "File:Babosa de mar (Felimare picta webbi), franja marina Teno-Rasca, Tenerife, España, 2022-01-09, DD 60.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "81697657836b96b6",
+          "title": "File:ISS-38 Green Bay, Wisconsin.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0.7/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0.7,
+            "accuracy": 0.7,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "d46a26ded5595886",
+          "title": "File:London, Greenwich, Royal Greenwich Observatory -- 2016 -- 4745-6-8.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        }
+      ],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "seawater breaking on rock",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "Mediterranean surf stone",
+          "found": 2
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "green seawater breaking over dark stone",
+          "found": 5
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    },
+    {
+      "line": "lumps",
+      "subject": "romanConcrete",
+      "domain": "process",
+      "priority": "would strengthen",
+      "settled": {
+        "rung": 5,
+        "resolution": "procedural",
+        "ok": true,
+        "note": "no acceptable photograph; the line is carried by a crossSection drawing, declared as a reconstruction"
+      },
+      "accepted": null,
+      "candidates": [
+        {
+          "provider": "local",
+          "id": "bf69d7da492b7964",
+          "title": "File:Roman lamp, reconstructed view (Treasure case 2015 T909). Copyright North Herts Museum Service (FindID 621821).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "81697657836b96b6",
+          "title": "File:ISS-38 Green Bay, Wisconsin.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "255e2f9be12999b5",
+          "title": "File:Post Medieval, Inkwell (FindID 152296).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "47ec10b7aaaadc54",
+          "title": "mechanism-fragment.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "754bf2cee34008cd",
+          "title": "File:Babosa de mar (Felimare picta webbi), franja marina Teno-Rasca, Tenerife, España, 2022-01-09, DD 60.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "d46a26ded5595886",
+          "title": "File:London, Greenwich, Royal Greenwich Observatory -- 2016 -- 4745-6-8.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "174981ebf3caba87",
+          "title": "desk-surface.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        }
+      ],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "Roman concrete lime clast",
+          "found": 1
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "concrete core sample inclusions",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "a broken concrete face showing white inclusions",
+          "found": 6
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    },
+    {
+      "line": "crack",
+      "subject": "material",
+      "domain": "material",
+      "priority": "would strengthen",
+      "settled": {
+        "rung": 5,
+        "resolution": "procedural",
+        "ok": true,
+        "note": "no acceptable photograph; the line is carried by a crossSection drawing, declared as a reconstruction"
+      },
+      "accepted": null,
+      "candidates": [
+        {
+          "provider": "local",
+          "id": "47ec10b7aaaadc54",
+          "title": "mechanism-fragment.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0.6/10 is below the floor of 8 — it is not a picture of material",
+          "semantic": {
+            "relevance": 0.6,
+            "accuracy": 0.6,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "47ec10b7aaaadc54",
+          "title": "mechanism-fragment.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0.6/10 is below the floor of 8 — it is not a picture of material",
+          "semantic": {
+            "relevance": 0.6,
+            "accuracy": 0.6,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "ff95481a15053f35",
+          "title": "File:Budapest 20260412 223533.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of material",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "d855ee1dc648a3ba",
+          "title": "s06-close-bg.png",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of material",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "deafedf326e8afa1",
+          "title": "s06-close-bg.png",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of material",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "47ec10b7aaaadc54",
+          "title": "mechanism-fragment.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0.6/10 is below the floor of 8 — it is not a picture of material",
+          "semantic": {
+            "relevance": 0.6,
+            "accuracy": 0.6,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "6eec9f5872a75294",
+          "title": "File:Camille Jacob Pissarro - The Oise near Pontoise in Grey Weather - Google Art Project.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of material",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        }
+      ],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "hairline crack concrete",
+          "found": 1
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "cracked masonry close",
+          "found": 4
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "a hairline crack across weathered grey concrete",
+          "found": 2
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    },
+    {
+      "line": "heals",
+      "subject": "romanConcrete",
+      "domain": "material",
+      "priority": "would strengthen",
+      "settled": {
+        "rung": 5,
+        "resolution": "procedural",
+        "ok": true,
+        "note": "no acceptable photograph; the line is carried by a crossSection drawing, declared as a reconstruction"
+      },
+      "accepted": null,
+      "candidates": [
+        {
+          "provider": "local",
+          "id": "81697657836b96b6",
+          "title": "File:ISS-38 Green Bay, Wisconsin.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "255e2f9be12999b5",
+          "title": "File:Post Medieval, Inkwell (FindID 152296).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "754bf2cee34008cd",
+          "title": "File:Babosa de mar (Felimare picta webbi), franja marina Teno-Rasca, Tenerife, España, 2022-01-09, DD 60.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "bf69d7da492b7964",
+          "title": "File:Roman lamp, reconstructed view (Treasure case 2015 T909). Copyright North Herts Museum Service (FindID 621821).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of romanConcrete",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        }
+      ],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "calcite crystals in fracture",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "aluminous tobermorite",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "white mineral crystals grown across a dark fracture",
+          "found": 4
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    },
+    {
+      "line": "stronger",
+      "subject": "geography",
+      "domain": "geography",
+      "priority": "would strengthen",
+      "settled": {
+        "rung": 5,
+        "resolution": "procedural",
+        "ok": true,
+        "note": "no acceptable photograph; the line is carried by a map drawing, declared as a reconstruction"
+      },
+      "accepted": null,
+      "candidates": [
+        {
+          "provider": "local",
+          "id": "479fa7367b7bc10f",
+          "title": "bronze-weight.png",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of geography",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "bf69d7da492b7964",
+          "title": "File:Roman lamp, reconstructed view (Treasure case 2015 T909). Copyright North Herts Museum Service (FindID 621821).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of geography",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "255e2f9be12999b5",
+          "title": "File:Post Medieval, Inkwell (FindID 152296).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of geography",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "754bf2cee34008cd",
+          "title": "File:Babosa de mar (Felimare picta webbi), franja marina Teno-Rasca, Tenerife, España, 2022-01-09, DD 60.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of geography",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "d9fe2474744eb289",
+          "title": "File:Wall clock on Golra Sharif Railway Station.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of geography",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "3587c877a0c587b6",
+          "title": "newsroom-wall.png",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of geography",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "title only"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "bf69d7da492b7964",
+          "title": "File:Roman lamp, reconstructed view (Treasure case 2015 T909). Copyright North Herts Museum Service (FindID 621821).jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of geography",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        },
+        {
+          "provider": "local",
+          "id": "754bf2cee34008cd",
+          "title": "File:Babosa de mar (Felimare picta webbi), franja marina Teno-Rasca, Tenerife, España, 2022-01-09, DD 60.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of geography",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 10,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        }
+      ],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "storm waves breakwater",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "rough sea old harbour wall",
+          "found": 6
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "a storm sea against an old breakwater",
+          "found": 2
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    },
+    {
+      "line": "close",
+      "subject": "elapsed",
+      "domain": "elapsed",
+      "priority": "optional",
+      "settled": {
+        "rung": 6,
+        "resolution": "typography",
+        "ok": true,
+        "note": "an abstract claim, which words can carry"
+      },
+      "accepted": null,
+      "candidates": [
+        {
+          "provider": "local",
+          "id": "fde0770a6d97e521",
+          "title": "File:NAMA Machine d'Anticythère 5.jpg",
+          "accepted": false,
+          "rejectedAt": "semantic",
+          "why": "semantic relevance 0/10 is below the floor of 8 — it is not a picture of elapsed",
+          "semantic": {
+            "relevance": 0,
+            "accuracy": 0,
+            "evidence": "human description"
+          },
+          "quality": null,
+          "composition": null
+        }
+      ],
+      "searched": [
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "Vitruvius De architectura page",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "Latin manuscript page",
+          "found": 0
+        },
+        {
+          "rung": 1,
+          "provider": "local",
+          "query": "an old page of latin text under glass",
+          "found": 1
+        },
+        {
+          "rung": 2,
+          "label": "reliable external real photograph",
+          "skipped": "every provider on this rung is unavailable: commons, openverse, pexels, pixabay"
+        },
+        {
+          "rung": 3,
+          "label": "public-domain archive",
+          "skipped": "every provider on this rung is unavailable: loc, archive, europeana, nasa"
+        }
+      ]
+    }
+  ]
+}
