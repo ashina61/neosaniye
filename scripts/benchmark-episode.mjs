@@ -176,6 +176,24 @@ export async function benchmark(episodeId) {
       ),
     },
     materials: [...new Set(scenes.map((s) => MATERIAL_OF[s.diagram?.type] ?? null).filter(Boolean))],
+    /**
+     * HOW MUCH OF THE SHOT'S CAMERA EACH DRAWING WAS ABLE TO TAKE.
+     *
+     * The planner hands every drawn shot the largest share that keeps it inside
+     * the frame. A reel of ones means the drawings had room; a reel of small
+     * numbers means they are composed to the edges and the camera is paying for
+     * it, which is worth knowing before anybody calls the camera work timid.
+     */
+    diagramCamera: (() => {
+      const shares = scenes.filter((s) => s.diagram).map((s) => s.params?.diagramCamera ?? 1);
+      if (!shares.length) return null;
+      return {
+        full: shares.filter((v) => v >= 0.999).length,
+        of: shares.length,
+        lowest: round(Math.min(...shares)),
+        mean: round(shares.reduce((n, v) => n + v, 0) / shares.length),
+      };
+    })(),
     causalAnimations: edit.causal.length,
     /**
      * TRANSFORMATION, NOT REPLACEMENT — counted wherever it happens.

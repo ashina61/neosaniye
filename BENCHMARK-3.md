@@ -20,9 +20,10 @@ one of them had already passed the schema, the type check, the 274-case test
 suite, the clipping checker, the temporal state machine and the reel editor.
 
 That is the recurring lesson of this repository and it held again: **a check
-that does not exist cannot fail.** Four of the eight fixes below shipped with a
-new check alongside them, and three of those checks found something the moment
-they were switched on.
+that does not exist cannot fail.** Four of the ten fixes below shipped with a
+new check alongside them; two of those found live defects the moment they ran,
+one reproduced the defect it was written for, and one found nothing and is kept
+with a test so it cannot rot.
 
 ## What looking found
 
@@ -130,6 +131,30 @@ Plus one geometry bug: a coastline wobbles up to a tenth of the frame off its
 base and the water was inset two hundredths from the same base, so the strait
 had a **black stripe between the sea and the shore** — in the one drawing whose
 subject is where one ends and the other begins.
+
+### 9. A worked bar that never changed its proportions
+
+Every forging stage fixed the thickness and clamped the length at almost the
+full box, so every stage after the first was the same stubby wedge at the same
+width — a sequence in which working the metal changed nothing about its shape.
+It delivered an object that never looked like a blade at any point in a reel
+about making one.
+
+Metal does not appear or vanish under a hammer, it **moves**. Thickness is now
+derived from stretch rather than set beside it, which is true of rolled glass
+and anything else worked from stock, so it stays a general rule: drawing the bar
+out makes it longer and thinner (raw 1.8:1 → hammered 6.0:1), folding it makes
+it shorter and thicker (2.7:1), and by the quench it reads as a blade.
+
+### 10. A label with three letters missing
+
+A magnified section's strata were labelled from the left, and the section spans
+most of the frame's width, so the words ran off the edge: the shot delivered
+`…ACE` and `…ATE` where it meant SURFACE and AGGREGATE. The plate asking for
+`side: 'left'` was not wrong about which side of the geometry the label belonged
+on — it had no way to know how wide the word was, and neither does anything else
+upstream. The side is a preference now and the frame decides, the way a
+draughtsman does it: the leader is the statement, the label sits where it fits.
 
 ## Scores
 
