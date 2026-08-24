@@ -153,6 +153,27 @@ now scores 10, and the plate that brings its own white studio sweep into a
 black-and-amber film scores 0 with *"blown out: 66% of the frame is at
 clipping"*.
 
+## What this run did NOT exercise
+
+Stated because a benchmark that only lists what worked is an advertisement.
+
+- **Deduplication never fired end to end.** Only one asset was accepted across
+  all six runs, so no second asset could collide with it. The ledger is covered
+  by unit tests — same asset, identical bytes, near-duplicate at 0 bits against
+  26 for a different photograph, and same-composition demotion — but it has not
+  yet refused a real duplicate in a real run.
+- **Rungs two, three and four have never returned a candidate.** Every provider
+  on them is written against its real API and none has been able to answer.
+  Their search parsing is therefore unproven against live responses; the
+  contract, the preflight and the failure reporting are proven, the field
+  mapping is not.
+- **The composition gate has never rejected anything.** Nothing survived the
+  semantic gate in the five benchmark episodes, and the one asset that did in
+  the control scored 7.5. It is exercised by unit test only.
+
+The cache is proven: a second run over the same episode added **zero** new cache
+entries, so every fetch was a hit.
+
 ## Remaining ASSET_REQUIRED
 
 **45**, unchanged, across the five episodes — 6 of them `BLOCKING` (a line about
