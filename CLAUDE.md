@@ -647,6 +647,39 @@ Bu hat aynı duvara çarpmaz çünkü malzeme koda sokulmaz:
     lisans "CC BY 2.0", yazar alanı "All rights reserved, …" — reddedilir:
     hat işine gelen okumayı seçemez, birini kaynağa bakıp yazması gerekir.
 
+43. **YENİ HİKÂYE YENİ GÖRSEL DİL DEĞİLDİR.** Konu değişir, gramer değişmez.
+    `visual-system/` kanalın dilini tutar: üç yazı ailesi, dört adımlı çizgi
+    ölçeği, dört ruh hâli kaydı, altı kamera ailesi, altı hareket ailesi. Bir
+    bölüm RENK SEÇMEZ — kanalın zaten sahip olduğu dört kayıttan birini seçer ve
+    aksanını onun içinden alır. Bir kalp haritaya benzemesin; ama ikisi de aynı
+    stüdyonun yaptığı görünsün.
+
+    `visual-system/dna.mjs` düz JavaScript'tir, `schema.mjs` ile aynı sebeple:
+    bu değerlerle ÇİZEN motor ve onları DENETLEYEN kontrol aynı sayıları
+    okumak zorundadır. İki kopya sürüklenir, ve sürüklenen bir tasarım sistemi
+    var olmayan bir tasarım sistemidir.
+
+44. **BİR HAREKET BİR AİLEYE AİTTİR, VE AİLE BİR SEBEPTİR.** ENTRANCE,
+    EMPHASIS, TRANSFORMATION, CAUSAL, CAMERA, EXIT. Ailesini söyleyemeyen bir
+    hareket süstür. Ve nedensellik ailesi diğerlerinden farklıdır: A döner → B
+    ONUN İÇİN döner → sayaç otuza varır. Anlatım susturulduğunda görsel dizi
+    hâlâ fiziksel ilişkiyi anlatmalıdır — konu buna izin verdiği her yerde.
+
+45. **BİLEŞEN YAZMADAN ÖNCE ARANIR.** `visual-system/components.mjs` doksan
+    bileşeni ne için olduğu ve ne için OLMADIĞIYLA kaydeder. Gerçekten yeni bir
+    davranış sessizce icat edilmez: `visual-system/proposals/` altına PROPOSED
+    olarak yazılır, ve ancak birden çok konuda yeniden kullanılabiliyorsa
+    uygulanır. `Arrow2` yok, `ArrowNew` yok, `BetterArrow` yok, `ArrowFinal`
+    yok — `Arrow` var ve prop alır. Lint bu adları doğrudan reddeder.
+
+46. **BİR SAPMA KAYDEDİLİR, SİSTEME ALINMAZ.** `Motif.tsx` kalem darbelerini
+    1080'lik kareye karşı düz sayı olarak yazar; bugün doğru, başka her boyutta
+    yanlış. On altı sayıyı DNA'ya yazmak sürüklenmeyi adını değiştirerek
+    "sistem" yapmak olurdu. `KNOWN_DEVIATION` olarak, sebebiyle ve çaresiyle
+    kaydedildi. El işaretleri gerçekten ayrı bir kayıttır — fotoğrafın üstünde
+    okunmak zorunda oldukları için altlarında koyu bir destek darbesi taşırlar —
+    ama parametrelenmiş değildir, ve bu böyle söylenir.
+
 ## Doğrulama
 
 `npm run validate` render yapmadan üç saniyede cevap verir: şema, sahne tipi ve
