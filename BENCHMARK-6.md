@@ -77,6 +77,7 @@ Scores are from inspecting the frames, not from the gates.
 | Clipping violations | 0 | 0 | 0 | 0 | 0 |
 | Semantic representation failures | 3 | 3 | 3 | 7 | 5 |
 | Other strict findings | 3 | **0** | 2 | 6 | 5 |
+| Total strict findings | 6 | 3 | 5 | 13 | 10 |
 | Remaining visible defects | 2 | 1 | 1 | 4 | 3 |
 
 **Asset relevance is not scored.** There are zero photographs in all five reels,
@@ -102,7 +103,7 @@ featureless landmass; and a closing card that opens on an empty frame.
 | HYBRID shots | 0 |
 | hard-cut ratio | **1.00** |
 | average motion density | 1.07 events/s (0.97–1.16) |
-| failed gates | 0 errors; 39 strict warnings, 21 of them `REPRESENTATION_REQUIRED` |
+| failed gates | 0 errors; 37 strict warnings, 21 of them `REPRESENTATION_REQUIRED` |
 | tests | 352 pass, 0 fail |
 | DNA lint | 0 errors, 13 warnings, 1 recorded deviation |
 | production ready | **No — see §6** |
@@ -110,12 +111,16 @@ featureless landmass; and a closing card that opens on an empty frame.
 Camera diversity, measured across the whole reel: no family above **27%** against
 a 30% ceiling. Every episode uses all six.
 
-The strict count went **up** from 33 to 39 after the last three fixes, and that is
-the right direction. Dropping a plaque that repeated the card's own words also
-removed an event from those cards, so several now trip the generic "one event"
-rule. A title card that states itself at 0.4s and holds beats a card with two
-beats that says nothing for 1.8s — the warning is the checker's rule meeting a
-shot the rule was not written for.
+The strict count moved 51 → 33 → 37, and the rise at the end is the right
+direction. Dropping a plaque that repeated the card's own words also removed an
+event from those cards, so several now trip the generic "one event" rule. A title
+card that states itself at 0.4s and holds beats a card with two beats that says
+nothing for 1.8s — the warning is the checker's rule meeting a shot the rule was
+not written for.
+
+Sixteen of the thirty-seven are the `REPRESENTATION_REQUIRED` declarations
+themselves plus five more that are their direct consequence. **Zero are
+geometry, collision, clipping, temporal, DNA or camera-quota findings.**
 
 Hard cuts remain 1.00 by decision, not omission. The Cut Director records:
 *"HARD_CUT and MATCH_CUT are both made of nothing; the difference is that a match
@@ -134,7 +139,7 @@ Against BENCHMARK-5, whose configs the run started from.
 | Roman concrete | 8.0 | **8.5** |
 | Medieval sword | 8.0 | 7.5 |
 | Human heart | 7.5 | **8.0** |
-| strict findings | 51 | 39 |
+| strict findings | 51 | 37 |
 | of which real defects | 26 | **0** |
 | geometry / collision / camera findings | 26 | **0** |
 | drawings that assemble rather than appear | — | **+19 shots** |
