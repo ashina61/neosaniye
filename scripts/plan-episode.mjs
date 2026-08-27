@@ -1462,13 +1462,21 @@ function standClear(props, zone) {
     const w = Number(prop.width) || WIDTH * 0.42;
     const x = Number(prop.x) || WIDTH / 2;
     const half = heightOf(prop) / 2;
-    return {left: x - w / 2, right: x + w / 2, top: y - half, bottom: y + half};
+    return {left: x - w / 2, right: x + w / 2, top: y - half, bottom: y + half, text: carriesText(prop)};
   };
   /**
    * The checker calls two boxes one place at 0.35 of either area; clearing to
    * 0.3 leaves the decision on the planner's side of the line rather than on
    * the boundary, where a rounded pixel decides it.
+   *
+   * BUT A PLAQUE IS A SENTENCE WITH A BEVEL ON IT. Two props that both carry
+   * words get no tolerance at all: a newspaper lying over a quarter of a
+   * plaque is not a quarter of a defect, it is the words BC missing off the
+   * end of "BAALBEK · 27 BC", which is how that shot was delivered — under the
+   * threshold, past the checker, and unreadable. Type wins over graphics
+   * (law 29); this is the same law applied where BOTH objects are type.
    */
+  const carriesText = (prop) => Boolean(prop.text || prop.masthead);
   const clashes = (a, b) => {
     const w = Math.min(a.right, b.right) - Math.max(a.left, b.left);
     const h = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
@@ -1476,7 +1484,8 @@ function standClear(props, zone) {
     const over = w * h;
     const areaA = Math.max(1, (a.right - a.left) * (a.bottom - a.top));
     const areaB = Math.max(1, (b.right - b.left) * (b.bottom - b.top));
-    return over / areaA > 0.3 || over / areaB > 0.3;
+    const tolerance = a.text && b.text ? 0.02 : 0.3;
+    return over / areaA > tolerance || over / areaB > tolerance;
   };
   const out = [];
   const placed = [];
