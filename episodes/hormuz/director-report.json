@@ -164,7 +164,6 @@
       "plates": [],
       "drawnGround": "wash",
       "props": [
-        "plaque",
         "beam"
       ],
       "hierarchy": {

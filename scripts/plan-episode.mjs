@@ -3653,6 +3653,33 @@ async function main() {
    * maximum variety, guaranteed framing.
    */
   /**
+   * AND IT DOES NOT REPEAT THEM ONE CUT LATER EITHER.
+   *
+   * Dropping the plaque that said what the card already said fixed the frame
+   * and not the reel: the shot AFTER the opening card carries the line's own
+   * label, and the opening card's title is that label — so four of the five
+   * reels announced BAALBEK · LEBANON in ninety-point type and then screwed the
+   * same six words to a brass plate two seconds later. Nobody hears a place
+   * named twice as emphasis; they hear it as a machine with one fact.
+   *
+   * A frame cannot see this and a scene cannot either. The reel can, so it is
+   * asked here, where the neighbours exist — and it runs BEFORE the passes that
+   * count events, because a dropped prop is one fewer arrival and those passes
+   * have to count what is actually left.
+   */
+  const saidBy = (scene) =>
+    [scene?.params?.title, scene?.params?.kicker, scene?.params?.footer]
+      .filter(Boolean)
+      .map((v) => String(v).trim().toUpperCase());
+  for (const [index, scene] of config.scenes.entries()) {
+    const spoken = new Set([...saidBy(scene), ...saidBy(config.scenes[index - 1])]);
+    if (!spoken.size || !scene.props?.length) continue;
+    scene.props = scene.props.filter(
+      (prop) => prop.kind !== 'plaque' || !spoken.has(String(prop.text ?? '').trim().toUpperCase()),
+    );
+  }
+
+  /**
    * A CARD WITH ONE THING ON IT PUTS THAT THING WHERE THE CUT LANDS.
    *
    * Law 30 says the frame a cut arrives on cannot be empty. Every slate in the

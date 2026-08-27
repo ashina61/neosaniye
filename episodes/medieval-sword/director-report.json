@@ -163,9 +163,7 @@
       "reveal": "rise",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [
-        "plaque"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"forged\"",
         "secondary": "the drawn label or mark that dates and places it",

@@ -164,7 +164,6 @@
       "plates": [],
       "drawnGround": "spotlight",
       "props": [
-        "plaque",
         "beam"
       ],
       "hierarchy": {

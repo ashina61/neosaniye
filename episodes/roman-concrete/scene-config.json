@@ -65,16 +65,6 @@
       "layers": [],
       "props": [
         {
-          "kind": "plaque",
-          "text": "BAIAE · 40 BC",
-          "depth": 0.54,
-          "x": 420,
-          "y": 1381,
-          "width": 405,
-          "rotate": -1.5,
-          "from": 82
-        },
-        {
           "kind": "beam",
           "depth": 0.17,
           "x": 941,

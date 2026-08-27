@@ -71,16 +71,6 @@
       "layers": [],
       "props": [
         {
-          "kind": "plaque",
-          "text": "HORMUZ · 26°34′N",
-          "depth": 0.67,
-          "x": 415,
-          "y": 1479,
-          "width": 373,
-          "rotate": 2.3,
-          "from": 0
-        },
-        {
           "kind": "beam",
           "depth": 0.35,
           "x": 825,
