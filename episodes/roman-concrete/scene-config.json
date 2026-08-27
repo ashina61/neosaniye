@@ -273,7 +273,7 @@
           "wall_thickness"
         ],
         "depicts": "geography",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -547,7 +547,7 @@
           "duration"
         ],
         "depicts": "material",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -868,7 +868,7 @@
           "fluid_ingress"
         ],
         "depicts": "process",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -1035,7 +1035,7 @@
           "fluid_ingress"
         ],
         "depicts": "process",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -1312,7 +1312,7 @@
           "fluid_ingress"
         ],
         "depicts": "material",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -1518,7 +1518,7 @@
           "wall_thickness"
         ],
         "depicts": "process",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -1634,7 +1634,7 @@
           "wall_thickness"
         ],
         "depicts": "process",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -1952,7 +1952,7 @@
           "fluid_ingress"
         ],
         "depicts": "material",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -2276,7 +2276,7 @@
           "self_healing"
         ],
         "depicts": "material",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -2516,7 +2516,7 @@
           "duration"
         ],
         "depicts": "geography",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },

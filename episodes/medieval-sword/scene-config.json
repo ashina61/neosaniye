@@ -378,7 +378,7 @@
           "transformation"
         ],
         "depicts": "process",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -1064,7 +1064,7 @@
         "subject": "swordMaking",
         "claims": [],
         "depicts": "process",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -1206,7 +1206,7 @@
         "subject": "swordMaking",
         "claims": [],
         "depicts": "process",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -1594,7 +1594,7 @@
           "sequence"
         ],
         "depicts": "process",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -1777,7 +1777,7 @@
           "sequence"
         ],
         "depicts": "process",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -2146,7 +2146,7 @@
           "sequence"
         ],
         "depicts": "process",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -2342,7 +2342,7 @@
           "sequence"
         ],
         "depicts": "process",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -2636,7 +2636,7 @@
         "subject": "process",
         "claims": [],
         "depicts": "process",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },

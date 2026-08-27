@@ -769,7 +769,7 @@
           "distance"
         ],
         "depicts": "geography",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -941,7 +941,7 @@
         "unit": "barrels",
         "accent": "#e6e2d6",
         "muted": "#cfc6ae",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -1381,7 +1381,7 @@
           "no_alternative"
         ],
         "depicts": "geography",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -1544,7 +1544,7 @@
           "no_alternative"
         ],
         "depicts": "geography",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -1963,7 +1963,7 @@
           "fluid_ingress"
         ],
         "depicts": "geography",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -2185,7 +2185,7 @@
           "fluid_ingress"
         ],
         "depicts": "geography",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -2487,7 +2487,7 @@
           "distance"
         ],
         "depicts": "geography",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },

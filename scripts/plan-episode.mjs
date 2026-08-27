@@ -1727,8 +1727,20 @@ function applyDirection({
      * it is read off the previous shot.
      */
     const carriedOver = isContinuation && Boolean(previousScene?.diagram);
+    /**
+     * AND IT IS ALREADY FINISHED ON THE FRAME THE CUT LANDS ON.
+     *
+     * `from: 0, over: 1` looked like "instant", and it is one frame too late:
+     * the plates read progress as `(frame - from) / over`, so at frame ZERO a
+     * carried-over drawing is at progress 0 — its FIRST state. A sword that had
+     * been hammered and folded across three shots snapped back to a raw grey
+     * wedge for a thirtieth of a second at every cut, then re-advanced. One
+     * frame is enough: it is the frame the cut lands on (law 30), and law 31
+     * asks the same object to CONTINUE. Starting one frame in the past makes
+     * the drawing complete when the shot opens.
+     */
     scene.diagram = carriedOver
-      ? {...drawn, from: 0, over: 1}
+      ? {...drawn, from: -1, over: 1}
       : {
           ...drawn,
           from: own ? 0 : at,

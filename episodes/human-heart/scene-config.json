@@ -513,7 +513,7 @@
           "contraction"
         ],
         "depicts": "anatomy",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -972,7 +972,7 @@
           "circulation"
         ],
         "depicts": "anatomy",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -1719,7 +1719,7 @@
           "one_way_flow"
         ],
         "depicts": "anatomy",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -2169,7 +2169,7 @@
           "contraction"
         ],
         "depicts": "anatomy",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -2387,7 +2387,7 @@
           "contraction"
         ],
         "depicts": "anatomy",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -2857,7 +2857,7 @@
           "sequence"
         ],
         "depicts": "anatomy",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -3092,7 +3092,7 @@
           "sequence"
         ],
         "depicts": "anatomy",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -3316,7 +3316,7 @@
           "sequence"
         ],
         "depicts": "anatomy",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
