@@ -2897,6 +2897,23 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
      */
     const MIDLINE_MARKS = new Set(['strike']);
     /**
+     * AND AN ENCLOSING MARK CANNOT WRAP TWO SENTENCES.
+     *
+     * `oval` and `box` go AROUND what they mark, which is right for a figure
+     * standing alone and wrong the moment the card also carries a qualifier:
+     * the closing card of the concrete drew its ellipse around TWO THOUSAND and
+     * ran the bottom of the arc straight through "years, and still curing". The
+     * overlap check could not see it — a mark is classed as typography rather
+     * than as a graphic, because touching the type is what a highlight is FOR —
+     * and that reasoning holds for a mark on one word and breaks on a mark that
+     * encircles a whole card.
+     *
+     * With a footer under the figure the mark becomes the one that sits at the
+     * bottom edge of its own box and cannot wrap around a second line.
+     */
+    const ENCLOSING_MARKS = new Set(['oval', 'box']);
+    const wraps = (kind) => ENCLOSING_MARKS.has(kind) && Boolean(scene.params.footer);
+    /**
      * The draw is taken BEFORE the title is tested, so that refusing a mark
      * does not shift the seeded stream underneath every later decision: the
      * short-circuit version of this line moved a mark off one card and, three
@@ -2905,7 +2922,7 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
     const wantsMark = rand() > 0.45;
     if (scene.params.title && wantsMark) {
       Object.assign(scene.params, {
-        mark: MIDLINE_MARKS.has(look.mark) ? 'underline' : look.mark,
+        mark: MIDLINE_MARKS.has(look.mark) || wraps(look.mark) ? 'underline' : look.mark,
         markX: 260,
         markY: number ? 820 : 1160,
         markWidth: 560,
