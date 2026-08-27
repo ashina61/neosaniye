@@ -186,7 +186,7 @@ after that fix.
 
 ---
 
-## 6. The three highest-impact remaining problems
+## 6. The four highest-impact remaining problems
 
 ### 1. Nineteen per cent of the reel has no picture
 
@@ -208,7 +208,31 @@ unavailable; rung 4 additionally has no key configured. Every reel is therefore
 as specified (law 39: an unreachable provider is a *fact*, not an empty result) —
 but it caps what the episodes can be.
 
-### 3. The typographic fallback has no designed ground
+### 3. The forged blade goes back to raw at every new line
+
+Confirmed on the finished video, not on a contact sheet. Each line's `process`
+spec is built independently and every one of them starts at `raw`:
+
+```
+s02-heat-b    raw → forged → heated
+s04-layered   raw → folded
+s05-fold      raw → hammered → folded
+s06-quench    raw → heated → quenched
+s07-cool      raw → quenched
+```
+
+So after the blade has been quenched, the next line shows it as a grey raw wedge
+again and re-advances. Law 31 asks the same object to CONTINUE — one outline that
+stretches, reddens, folds and is sharpened — and across a line boundary it does
+not. Within a line it now does, which is the frame-0 fix (#15).
+
+**Not fixed here, deliberately.** The stage lists are the representation
+director's output, and making a process spec start from where the previous one
+ended is a change to the representation vocabulary — the thing this run was told
+not to touch. It is the single largest remaining correctness problem in the
+sword, and it is a spec-level fix, not a planner one.
+
+### 4. The typographic fallback has no designed ground
 
 When representation is refused, the shot becomes words on a `wash` or `spotlight`
 field — which renders as a large amorphous glow. Law 38 says pure graphic is for
