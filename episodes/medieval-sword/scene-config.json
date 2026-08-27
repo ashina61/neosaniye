@@ -220,7 +220,7 @@
         ],
         "depicts": "process",
         "from": 0,
-        "over": 1
+        "over": 20
       }
     },
     {
@@ -606,7 +606,7 @@
         "claims": [],
         "depicts": "process",
         "from": 0,
-        "over": 1
+        "over": 20
       }
     },
     {

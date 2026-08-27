@@ -1691,7 +1691,25 @@ function applyDirection({
      * be two, and the shot it becomes is neither.
      */
     const own = representation.mode === 'PROCEDURAL' || representation.mode === 'DIAGRAM';
-    scene.diagram = isContinuation
+    /**
+     * A CONTINUATION OF A SHOT THAT NEVER DREW IT IS NOT A CONTINUATION.
+     *
+     * A continuation stands the same drawing in the same room, so it arrives
+     * already made — `over: 1`, no second draw-on, because re-drawing a
+     * mechanism the viewer watched assemble one cut ago is the "every
+     * continuation shows the same plate again" fault read backwards.
+     *
+     * But a slate suppresses its own drawing (its type owns the middle of the
+     * frame, four comments up), so the shot after a slate is the FIRST sight of
+     * that drawing however the planner labelled it. Twenty million barrels was
+     * therefore delivered by a counter that went from 0 to its final value in
+     * ONE FRAME and then held for sixty-three — law 15 asks a number to make
+     * its magnitude felt, and a number that is simply already there makes
+     * nothing felt at all. Continuation is a fact about the PREVIOUS SHOT, so
+     * it is read off the previous shot.
+     */
+    const carriedOver = isContinuation && Boolean(previousScene?.diagram);
+    scene.diagram = carriedOver
       ? {...drawn, from: 0, over: 1}
       : {
           ...drawn,
