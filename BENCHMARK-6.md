@@ -79,8 +79,10 @@ Scores are from inspecting the frames, not from the gates.
 because ten of ten external providers answer 403 at CONNECT. Scoring the
 relevance of an empty set would be scoring nothing. See §6.
 
-Every remaining "visible defect" is the same one: a line the representation
-director refused a picture for, carried by type on a field.
+The remaining visible defects are of three kinds only, and none of them is a
+placement, a collision or a timing fault: a line the representation director
+refused a picture for and carried by type on a field; the trade-route map's
+featureless landmass; and a closing card that opens on an empty frame.
 
 ---
 

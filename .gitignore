@@ -24,3 +24,7 @@ episodes/netflix/
 assets/inbox/*
 !assets/inbox/README.md
 assets/preview/
+
+# Inspection scaffolding: contact grids and video sheets, not part of the pipeline.
+scratch-*.mjs
+scratch-*.sh
