@@ -2,7 +2,7 @@
 
 Rendered and inspected at 0%, 33%, 66% and 94% of **every one of the 109 shots**.
 Nothing in the visual system, the DNA, the engine, the representation vocabulary,
-the metrics, the gates or the tests was changed. **Eighteen** defects were fixed at
+the metrics, the gates or the tests was changed. **Nineteen** defects were fixed at
 their root cause in the **planner**, and the ones that mattered most were found by
 looking at a frame — three of them only by watching the finished video end to
 end, after every gate and every contact sheet had passed them.
@@ -42,6 +42,7 @@ show you is what the first second of the reel feels like.
 | 16 | **All five reels opened on ~2s of near-black** | every episode | a hook beat has no figure to extract and usually no written title, so `title` came out empty and the card was left holding a KICKER — small, arriving at four fifths of the way through | where there is no title the kicker is **promoted** to one; a place and a date set large IS the documentary opening |
 | 17 | The same six words twice, once as type and once on a brass plate | opening and closing card of all five | a plaque carries its shot's label (law 2) and the slate prints that label too | a prop does not repeat the card's own words |
 | 18 | An emphasis rule drawn under a title that had not arrived | Hormuz, Baalbek, sword | it satisfies the two-event count and still shows a viewer nothing | the reel's first card states itself at once — every other shot inherits an established frame from the cut before it; the first has nothing behind it |
+| 19 | The opening title announced in 90pt type, then screwed to a brass plate two seconds later | 4 of 5 | dropping the plaque that repeated the card's own words fixed the FRAME and not the REEL — the shot after the opening card carries the line's label, and the card's title is that label | asked at reel level, where the neighbours exist, before the passes that count events |
 
 Two of these were mistakes of my own, caught and reverted:
 
@@ -75,7 +76,7 @@ Scores are from inspecting the frames, not from the gates.
 | Temporal violations | 0 | 0 | 0 | 0 | 0 |
 | Clipping violations | 0 | 0 | 0 | 0 | 0 |
 | Semantic representation failures | 3 | 3 | 3 | 7 | 5 |
-| Other strict findings | 4 | 1 | 2 | 6 | 5 |
+| Other strict findings | 3 | **0** | 2 | 6 | 5 |
 | Remaining visible defects | 2 | 1 | 1 | 4 | 3 |
 
 **Asset relevance is not scored.** There are zero photographs in all five reels,
@@ -142,6 +143,7 @@ Against BENCHMARK-5, whose configs the run started from.
 | time before the reel states itself | 1.5–2.1s | **0.27–0.4s** |
 | reels opening on a card with no title | **5 of 5** | **0** |
 | cards printing the same words twice | 10 | **0** |
+| reels naming their subject twice in three seconds | 4 of 5 | **0** |
 
 **The sword went down.** Its score was carrying two shots I had not looked at
 closely enough before: `s03-carbon-b` and `s03-carbon-c` are a large amorphous
