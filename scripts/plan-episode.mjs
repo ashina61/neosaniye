@@ -2568,6 +2568,25 @@ function applyDirection({
      */
     const typeOnly = !scene.diagram && !(scene.layers ?? []).length;
     if (typeOnly) scene.props = scene.props.filter((q) => q.kind !== 'wire' && q.kind !== 'beam');
+    /**
+     * AND A PROP DOES NOT REPEAT THE CARD'S OWN WORDS.
+     *
+     * A plaque carries its shot's label (law 2) and a slate prints that label
+     * too, so the opening and closing cards of all five reels said the same six
+     * words twice — once set as type and once screwed to a brass plate three
+     * hundred pixels below it. Two treatments of one fact is not emphasis, it
+     * is a frame with nothing else to say.
+     */
+    const spoken = new Set(
+      [scene.params?.title, scene.params?.kicker, scene.params?.footer]
+        .filter(Boolean)
+        .map((v) => String(v).trim().toUpperCase()),
+    );
+    if (spoken.size) {
+      scene.props = (scene.props ?? []).filter(
+        (prop) => prop.kind !== 'plaque' || !spoken.has(String(prop.text ?? '').trim().toUpperCase()),
+      );
+    }
     scene.props = standClear(scene.props, typeZone(scene));
     if (scene.props.length < before) plan.propsDropped = before - scene.props.length;
     if (!scene.props.length) delete scene.props;
@@ -2793,10 +2812,27 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
         ? bigNumber(line.vo)
         : '';
     const titleFrame = 4 + Math.round(rand() * 6);
+    /**
+     * A TITLE CARD WITH NO TITLE IS NOT A TITLE CARD.
+     *
+     * A hook beat has no figure to extract and usually no written title, so
+     * `title` came out empty and the card was left holding a KICKER — a small
+     * label, arriving at four fifths of the way through. All five reels
+     * therefore opened on about two seconds of near-black followed by a line of
+     * small caps, and a vertical short is decided in its first second.
+     *
+     * The card already has the words for it. A place and a date set large IS
+     * the documentary opening — HORMUZ · 26°34′N, BAIAE · 40 BC — so where
+     * there is no title the kicker becomes one rather than the card standing
+     * empty. It is promoted, not copied: a kicker still printed above a title
+     * that reads the same is the duplication one line down.
+     */
+    const written = (line.title ?? number ?? '').toString().toUpperCase();
+    const promoted = !written && line.kicker ? String(line.kicker).toUpperCase() : '';
     scene.params = {
       scrim: round(between(rand, [0.36, 0.54])),
-      kicker: line.kicker ?? '',
-      title: (line.title ?? number ?? '').toString().toUpperCase(),
+      kicker: promoted ? '' : line.kicker ?? '',
+      title: written || promoted,
       footer: line.footer ?? '',
       titleFrame,
       titleSize: number ? 230 : 124,
@@ -3632,14 +3668,27 @@ async function main() {
    * has. A number that is there when you arrive and then held is how a title
    * card works; a number that appears once you have stopped looking is not.
    */
-  for (const scene of config.scenes) {
+  for (const [index, scene] of config.scenes.entries()) {
     if (scene.sceneType !== 'title-slate') continue;
     const events = eventsOf(scene);
-    if (events.length !== 1) continue;
     const only = events[0];
-    if (!['slate', 'spin', 'count'].includes(only.kind)) continue;
-    const lead = Math.round(scene.durationInFrames * 0.3);
-    if (only.at <= lead) continue;
+    /**
+     * AND THE REEL'S FIRST CARD STATES ITSELF AT ONCE.
+     *
+     * Every other shot inherits an established frame from the cut before it.
+     * The first one has nothing behind it, so law 30's "the cut lands on
+     * geometry already set out" has nothing to inherit — the card IS the
+     * establishing shot. Left to the ordinary rule, all five reels opened on
+     * about two seconds of near-black and then a line of type at four fifths of
+     * the way through; one of them drew an emphasis rule under a title that had
+     * not arrived, which satisfies the two-event count and still shows a
+     * viewer nothing. A vertical short is decided in its first second.
+     */
+    const opening = index === 0;
+    if (!opening && events.length !== 1) continue;
+    if (!only || !['slate', 'spin', 'count'].includes(events[events.length - 1].kind)) continue;
+    const lead = Math.round(scene.durationInFrames * (opening ? 0.16 : 0.3));
+    if ((scene.params.titleFrame ?? 0) <= lead) continue;
     scene.params.titleFrame = lead;
   }
 

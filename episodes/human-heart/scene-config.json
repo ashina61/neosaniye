@@ -36,10 +36,10 @@
       "assets": {},
       "params": {
         "scrim": 0.4,
-        "kicker": "THE HUMAN HEART",
-        "title": "",
+        "kicker": "",
+        "title": "THE HUMAN HEART",
         "footer": "",
-        "titleFrame": 64,
+        "titleFrame": 12,
         "titleSize": 124,
         "creep": 1.098,
         "accent": "#ffcf3d",
@@ -54,19 +54,7 @@
         "pushTo": 1.07,
         "cameraMove": "hold",
         "cameraPurpose": "importance. The frame stops because the idea needs no help"
-      },
-      "props": [
-        {
-          "kind": "plaque",
-          "text": "THE HUMAN HEART",
-          "depth": 0.63,
-          "x": 422,
-          "y": 1348,
-          "width": 431,
-          "rotate": -1.7,
-          "from": 6
-        }
-      ]
+      }
     },
     {
       "id": "s01-twopumps-b",
@@ -78,12 +66,12 @@
       "props": [
         {
           "kind": "beam",
-          "depth": 0.39,
-          "x": 981,
-          "y": 153,
-          "width": 326,
-          "rotate": -14,
-          "opacity": 0.8,
+          "depth": 0.24,
+          "x": 892,
+          "y": -25,
+          "width": 344,
+          "rotate": -16,
+          "opacity": 0.74,
           "colour": "#ffcf3d",
           "from": 0
         }
@@ -3750,22 +3738,12 @@
       },
       "props": [
         {
-          "kind": "plaque",
-          "text": "ONE LIFETIME",
-          "depth": 0.67,
-          "x": 387,
-          "y": 608,
-          "width": 439,
-          "rotate": -0.6,
-          "from": 73
-        },
-        {
           "kind": "newspaper",
           "masthead": "THE DAILY",
           "text": "TWO POINT FIVE BILLION",
           "depth": 0.71,
           "x": 636,
-          "y": 341,
+          "y": 515,
           "width": 468,
           "rotate": 2.9,
           "from": 20

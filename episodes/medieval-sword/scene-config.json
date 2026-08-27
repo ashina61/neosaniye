@@ -36,10 +36,10 @@
       "assets": {},
       "params": {
         "scrim": 0.54,
-        "kicker": "EUROPE · 1350",
-        "title": "",
+        "kicker": "",
+        "title": "EUROPE · 1350",
         "footer": "",
-        "titleFrame": 64,
+        "titleFrame": 12,
         "titleSize": 124,
         "creep": 1.061,
         "accent": "#e8a020",
@@ -49,24 +49,18 @@
           "#8a5a18",
           "#241505"
         ],
+        "mark": "underline",
+        "markX": 260,
+        "markY": 1160,
+        "markWidth": 560,
+        "markHeight": 96,
+        "markFrame": 26,
         "pushEndFrame": 72,
         "pushFrom": 1.03,
         "pushTo": 1.06,
         "cameraMove": "hold",
         "cameraPurpose": "importance. The frame stops because the idea needs no help"
-      },
-      "props": [
-        {
-          "kind": "plaque",
-          "text": "EUROPE · 1350",
-          "depth": 0.72,
-          "x": 356,
-          "y": 1513,
-          "width": 389,
-          "rotate": -2.1,
-          "from": 8
-        }
-      ]
+      }
     },
     {
       "id": "s01-notcast-b",
@@ -77,14 +71,13 @@
       "layers": [],
       "props": [
         {
-          "kind": "beam",
-          "depth": 0.19,
-          "x": 922,
-          "y": 6,
-          "width": 324,
-          "rotate": -13,
-          "opacity": 0.51,
-          "colour": "#e8a020",
+          "kind": "plaque",
+          "text": "EUROPE · 1350",
+          "depth": 0.54,
+          "x": 398,
+          "y": 1422,
+          "width": 423,
+          "rotate": 0.7,
           "from": 0
         }
       ],
@@ -232,22 +225,23 @@
       "layers": [],
       "props": [
         {
-          "kind": "plaque",
-          "text": "EUROPE · 1350",
-          "depth": 0.67,
-          "x": 342,
-          "y": 1416,
-          "width": 430,
-          "rotate": -0.8,
+          "kind": "beam",
+          "depth": 0.35,
+          "x": 830,
+          "y": -2,
+          "width": 273,
+          "rotate": -9,
+          "opacity": 0.63,
+          "colour": "#e8a020",
           "from": 0
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
-        "pushFrom": 1.23,
+        "pushFrom": 1.18,
         "pushTo": 1.23,
-        "pushEndFrame": 62,
+        "pushEndFrame": 61,
         "accent": "#e8a020",
         "field": "spotlight",
         "fieldColours": [
@@ -255,10 +249,10 @@
           "#2f1f08",
           "#1a0f04"
         ],
-        "glowX": 1284,
-        "glowY": 249,
-        "glowSize": 313,
-        "glowIntensity": 0.51,
+        "glowX": 1315,
+        "glowY": 297,
+        "glowSize": 333,
+        "glowIntensity": 0.47,
         "glowWarm": "#e8a020",
         "glowDepth": 0.1,
         "caption": [
@@ -274,15 +268,11 @@
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panY": -201,
-        "shakeAt": [
-          5
-        ],
-        "shakeAmount": 21,
+        "panY": 167,
         "captionEmphasis": "iron",
-        "captionReveal": "wipe",
-        "captionMark": "box",
-        "captionWordEvery": 3,
+        "captionReveal": "punch",
+        "captionMark": "none",
+        "captionWordEvery": 2,
         "cameraMove": "tilt",
         "cameraPurpose": "a vertical reveal — height, depth, or a drop"
       },
@@ -389,13 +379,13 @@
       "durationInFrames": 97,
       "assets": {},
       "params": {
-        "scrim": 0.43,
+        "scrim": 0.54,
         "kicker": "",
         "title": "TWELVE HUNDRED DEGREES",
         "footer": "",
-        "titleFrame": 46,
+        "titleFrame": 29,
         "titleSize": 230,
-        "creep": 1.1,
+        "creep": 1.093,
         "accent": "#e8a020",
         "field": "spotlight",
         "fieldColours": [
@@ -403,12 +393,6 @@
           "#8a5a18",
           "#241505"
         ],
-        "mark": "underline",
-        "markX": 260,
-        "markY": 820,
-        "markWidth": 560,
-        "markHeight": 300,
-        "markFrame": 33,
         "pushEndFrame": 95,
         "pushFrom": 1.04,
         "pushTo": 1.06,
@@ -2784,22 +2768,12 @@
       },
       "props": [
         {
-          "kind": "plaque",
-          "text": "ONE BLADE",
-          "depth": 0.56,
-          "x": 384,
-          "y": 608,
-          "width": 440,
-          "rotate": 0.8,
-          "from": 73
-        },
-        {
           "kind": "newspaper",
           "masthead": "THE DAILY",
           "text": "TWO HUNDRED HOURS",
           "depth": 0.65,
           "x": 673,
-          "y": 343,
+          "y": 517,
           "width": 462,
           "rotate": -5,
           "from": 8
