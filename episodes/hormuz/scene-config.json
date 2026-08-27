@@ -790,7 +790,7 @@
         "kicker": "",
         "title": "TWENTY MILLION BARRELS",
         "footer": "",
-        "titleFrame": 19,
+        "titleFrame": 22,
         "titleSize": 230,
         "creep": 1.096,
         "accent": "#e6e2d6",
@@ -987,7 +987,7 @@
           "That is close",
           "to a fifth"
         ],
-        "captionX": 81,
+        "captionX": 84,
         "captionY": 758,
         "captionSize": 104,
         "captionAlign": "left",
@@ -997,9 +997,9 @@
         "captionRecedeAt": 54,
         "accent": "#e6e2d6",
         "motif": "embers",
-        "motifX": 500,
-        "motifY": 707,
-        "motifSize": 43,
+        "motifX": 560,
+        "motifY": 710,
+        "motifSize": 37,
         "motifCount": 23,
         "motifFrame": 18,
         "motifColour": "#e6e2d6",
@@ -1046,7 +1046,7 @@
           "the world",
           "burns"
         ],
-        "captionX": 81,
+        "captionX": 84,
         "captionY": 696,
         "captionSize": 104,
         "captionAlign": "left",
@@ -1133,7 +1133,8 @@
         "captionMark": "none",
         "captionWordEvery": 4,
         "cameraMove": "hold",
-        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+        "cameraPurpose": "importance. The frame stops because the idea needs no help",
+        "motifY": 519
       },
       "diagram": {
         "type": "map",
@@ -2506,7 +2507,7 @@
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1.04,
+        "pushFrom": 1.11,
         "pushTo": 1.04,
         "pushEndFrame": 70,
         "glowX": 1145,
@@ -2530,9 +2531,9 @@
           "on earth",
           "moves"
         ],
-        "captionX": 81,
-        "captionY": 373,
-        "captionSize": 170,
+        "captionX": 84,
+        "captionY": 376,
+        "captionSize": 169,
         "captionAlign": "left",
         "captionFrame": -12,
         "captionEvery": 8,
@@ -2540,20 +2541,20 @@
         "captionRecedeAt": 54,
         "accent": "#e6e2d6",
         "motif": "rise",
-        "motifX": 161,
+        "motifX": 172,
         "motifY": 1574,
-        "motifSize": 64,
+        "motifSize": 62,
         "motifCount": 8,
         "motifFrame": 23,
         "motifColour": "#e6e2d6",
         "motifOpacity": 0.99,
-        "handheld": 3,
+        "handheld": 1.5,
         "captionEmphasis": "Every",
         "captionReveal": "wipe",
         "captionMark": "box",
         "captionWordEvery": 3,
-        "cameraMove": "hold",
-        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+        "cameraMove": "pull",
+        "cameraPurpose": "the frame withdraws as the claim lands, because a still frame here has nothing carrying it"
       }
     },
     {
@@ -2589,7 +2590,7 @@
           "course",
           "here"
         ],
-        "captionX": 81,
+        "captionX": 84,
         "captionY": 331,
         "captionSize": 184,
         "captionAlign": "left",
@@ -2667,7 +2668,7 @@
           "text": "TWENTY-ONE MILES",
           "depth": 0.78,
           "x": 690,
-          "y": 520,
+          "y": 352,
           "width": 452,
           "rotate": 4.4,
           "from": 28

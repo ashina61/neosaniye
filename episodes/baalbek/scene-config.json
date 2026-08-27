@@ -234,7 +234,7 @@
         "captionWordEvery": 3,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters",
-        "diagramCamera": 0.95
+        "diagramCamera": 0.5
       },
       "diagram": {
         "type": "scaleHaulage",
@@ -280,7 +280,7 @@
         "kicker": "",
         "title": "EIGHT HUNDRED TONS",
         "footer": "",
-        "titleFrame": 42,
+        "titleFrame": 23,
         "titleSize": 230,
         "creep": 1.091,
         "accent": "#d94f3d",
@@ -351,7 +351,8 @@
         "captionMark": "highlight",
         "captionWordEvery": 3,
         "cameraMove": "push",
-        "cameraPurpose": "single out the subject — the frame closes on what matters"
+        "cameraPurpose": "single out the subject — the frame closes on what matters",
+        "diagramCamera": 0.7
       },
       "diagram": {
         "type": "scaleHaulage",
@@ -431,7 +432,8 @@
         "captionMark": "none",
         "captionWordEvery": 3,
         "cameraMove": "tilt",
-        "cameraPurpose": "a vertical reveal — height, depth, or a drop"
+        "cameraPurpose": "a vertical reveal — height, depth, or a drop",
+        "diagramCamera": 0.8
       },
       "diagram": {
         "type": "scaleHaulage",
@@ -520,7 +522,8 @@
         "captionMark": "highlight",
         "captionWordEvery": 3,
         "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something",
+        "motifY": 552
       },
       "diagram": {
         "type": "map",
@@ -892,7 +895,7 @@
         "captionWordEvery": 2,
         "cameraMove": "pull",
         "cameraPurpose": "reveal scale or context — the subject turns out to sit in something",
-        "diagramCamera": 0.95
+        "diagramCamera": 0.55
       },
       "diagram": {
         "type": "scaleHaulage",
@@ -974,7 +977,7 @@
         "captionWordEvery": 2,
         "cameraMove": "pan",
         "cameraPurpose": "expose information the frame was withholding, or follow a movement",
-        "diagramCamera": 0.85
+        "diagramCamera": 0.5
       },
       "diagram": {
         "type": "scaleHaulage",
@@ -1062,9 +1065,9 @@
         "captionRecedeAt": 62,
         "accent": "#d94f3d",
         "motif": "route",
-        "motifX": 225,
-        "motifY": 1190,
-        "motifSize": 227,
+        "motifX": 191,
+        "motifY": 590,
+        "motifSize": 247,
         "motifCount": 1,
         "motifFrame": 19,
         "motifColour": "#d94f3d",
@@ -1075,7 +1078,8 @@
         "captionMark": "underline",
         "captionWordEvery": 3,
         "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something",
+        "diagramCamera": 0.5
       },
       "diagram": {
         "type": "scaleHaulage",
@@ -1330,7 +1334,8 @@
         "captionMark": "highlight",
         "captionWordEvery": 3,
         "cameraMove": "pan",
-        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement",
+        "diagramCamera": 0.45
       },
       "diagram": {
         "type": "scaleHaulage",
@@ -1375,7 +1380,7 @@
         "kicker": "",
         "title": "THOUSAND MEN",
         "footer": "",
-        "titleFrame": 53,
+        "titleFrame": 56,
         "titleSize": 230,
         "creep": 1.053,
         "accent": "#d94f3d",
@@ -1475,7 +1480,8 @@
         "captionMark": "underline",
         "captionWordEvery": 3,
         "cameraMove": "push",
-        "cameraPurpose": "single out the subject — the frame closes on what matters"
+        "cameraPurpose": "single out the subject — the frame closes on what matters",
+        "diagramCamera": 0.6
       },
       "diagram": {
         "type": "scaleHaulage",
@@ -1564,9 +1570,9 @@
         "captionRecedeAt": 70,
         "accent": "#d94f3d",
         "motif": "tally",
-        "motifX": 101,
+        "motifX": 95,
         "motifY": 499,
-        "motifSize": 86,
+        "motifSize": 88,
         "motifCount": 10,
         "motifFrame": 20,
         "motifColour": "#d94f3d",
@@ -1663,7 +1669,7 @@
         "captionWordEvery": 2,
         "cameraMove": "pull",
         "cameraPurpose": "reveal scale or context — the subject turns out to sit in something",
-        "diagramCamera": 0.8
+        "diagramCamera": 0.45
       },
       "diagram": {
         "type": "scaleHaulage",

@@ -463,8 +463,23 @@ export function directCamera({
    * locked-off frame on the same plate delivers none. One continuation came out
    * travelling 0.02, which is a photograph with grain on it.
    */
-  if (sameSubject) wanted = wanted.filter((k) => k !== reframeFrom && k !== 'hold');
-  if (!wanted.length) wanted = ['push', 'hold'];
+  /**
+   * `reframeFrom` is a move this shot may not make: the previous move on the
+   * same plate, or — set by the planner — the move that has already run twice
+   * and would be a tic on a third. It is honoured whatever the subject, because
+   * a third consecutive push reads as a tic whether or not the picture changed;
+   * only the ban on HOLDING is particular to a continuation.
+   */
+  wanted = wanted.filter((k) => k !== reframeFrom);
+  if (sameSubject) wanted = wanted.filter((k) => k !== 'hold');
+  /**
+   * The fallback cannot re-offer the move that was just banned. A continuation
+   * whose beat likes only pushes emptied the list, fell into this line and was
+   * handed `push` straight back — which is how three consecutive pushes were
+   * planned by a director that had already decided not to repeat itself.
+   */
+  if (!wanted.length) wanted = ['push', 'hold'].filter((k) => k !== reframeFrom && !(sameSubject && k === 'hold'));
+  if (!wanted.length) wanted = CAMERA_MOVES.filter((k) => k !== reframeFrom);
 
   /**
    * WHEN THE BEAT'S PREFERENCES ARE SPENT, WIDEN — DO NOT REPEAT.

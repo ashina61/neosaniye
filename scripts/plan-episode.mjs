@@ -48,7 +48,7 @@ import {
   TRANSITION_PURPOSE,
 } from './lib/director.mjs';
 import {cutMix, directCut} from './lib/cut.mjs';
-import {boundsOf, throughTheCamera} from './lib/critique.mjs';
+import {boundsOf, cameraTravel, eventsOf, throughTheCamera} from './lib/critique.mjs';
 import {TYPE} from '../visual-system/dna.mjs';
 import {readingFrames} from './lib/editor.mjs';
 import {countWindow} from '../engine/state.mjs';
@@ -380,11 +380,24 @@ function motifParams(kind, {rand, from, accent, stops}) {
   if (kind === 'route' && stops?.length >= 2) {
     return {motif: kind, motifStops: stops, motifFrame: from, motifColour: accent};
   }
+  const size = Math.round(place.size * (0.88 + rand() * 0.3));
+  /**
+   * AND THE JITTER KEEPS ITS OWN WIDTH INSIDE THE FRAME.
+   *
+   * The anchor is a fraction and the shake is ±5% of the width, and neither
+   * knows how wide the mark it is placing turns out to be: a tally anchored
+   * near the left edge was shaken 54px further left and delivered with its
+   * first stroke 13px outside the safe area. This is the plaque's rule — an x
+   * clamps so the object's own width stays in — applied to the one drawn thing
+   * that had been exempt from it.
+   */
+  const half = size / 2;
+  const bound = (v) => Math.min(WIDTH - 40 - half, Math.max(40 + half, v));
   return {
     motif: kind,
-    motifX: Math.round(WIDTH * place.x + (rand() - 0.5) * WIDTH * 0.1),
+    motifX: Math.round(bound(WIDTH * place.x + (rand() - 0.5) * WIDTH * 0.1)),
     motifY: Math.round(HEIGHT * place.y),
-    motifSize: Math.round(place.size * (0.88 + rand() * 0.3)),
+    motifSize: size,
     motifCount: Math.max(1, Math.round(place.count * (0.8 + rand() * 0.5))),
     motifFrame: from,
     motifColour: accent,
@@ -1441,12 +1454,32 @@ const CAMERA_TEMPLATES = new Set(['composite', 'parallax-punch']);
  * the disagreement would surface as a warning nobody could act on.
  */
 function standClear(props, zone) {
-  if (!zone) return props;
   const heightOf = (prop) => {
     const w = Number(prop.width) || WIDTH * 0.42;
     return prop.kind === 'wire' ? w : w * (prop.kind === 'plaque' ? 0.34 : 0.72);
   };
+  const boxOf = (prop, y) => {
+    const w = Number(prop.width) || WIDTH * 0.42;
+    const x = Number(prop.x) || WIDTH / 2;
+    const half = heightOf(prop) / 2;
+    return {left: x - w / 2, right: x + w / 2, top: y - half, bottom: y + half};
+  };
+  /**
+   * The checker calls two boxes one place at 0.35 of either area; clearing to
+   * 0.3 leaves the decision on the planner's side of the line rather than on
+   * the boundary, where a rounded pixel decides it.
+   */
+  const clashes = (a, b) => {
+    const w = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+    const h = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+    if (w <= 0 || h <= 0) return false;
+    const over = w * h;
+    const areaA = Math.max(1, (a.right - a.left) * (a.bottom - a.top));
+    const areaB = Math.max(1, (b.right - b.left) * (b.bottom - b.top));
+    return over / areaA > 0.3 || over / areaB > 0.3;
+  };
   const out = [];
+  const placed = [];
   for (const prop of props) {
     // A beam is a shaft of light from off-frame; it has no body to collide with.
     if (prop.kind === 'beam') {
@@ -1455,15 +1488,44 @@ function standClear(props, zone) {
     }
     const half = heightOf(prop) / 2;
     const y = Number(prop.y) || HEIGHT * 0.55;
-    if (y + half <= zone.top || y - half >= zone.bottom) {
-      out.push(prop);
-      continue;
+    /**
+     * AND NOT WHERE ANOTHER OBJECT ALREADY STANDS.
+     *
+     * The type pass moved every prop independently, so two props with nowhere
+     * else to go were both moved to the one clear strip and delivered on top of
+     * each other — a plaque reading ONE LIFETIME with a newspaper laid across
+     * it, in the closing shot of three of the five episodes. Clearing the words
+     * and clearing the furniture are the same question asked twice, so they are
+     * answered in one pass: each candidate position is tested against the type
+     * band AND against everything already standing, and a prop with no clear
+     * position is dropped for the same reason as before.
+     */
+    const clearOfType = (at) => !zone || at + half <= zone.top || at - half >= zone.bottom;
+    const clearOfProps = (at) => {
+      const box = boxOf(prop, at);
+      return placed.every((b) => !clashes(box, b));
+    };
+    /**
+     * The floor and ceiling are the SAFE AREA the checker measures against, not
+     * the frame edge. Bounding to the frame moved a displaced newspaper down to
+     * within forty pixels of the bottom, where the platform draws its own
+     * furniture: the collision was gone and a second warning had taken its
+     * place, which is not a fix.
+     */
+    const usable = (at) =>
+      at - half >= HEIGHT * 0.04 && at + half <= HEIGHT * 0.9 && clearOfType(at) && clearOfProps(at);
+    const candidates = [y];
+    if (zone) {
+      candidates.push(zone.top - half - 24, zone.bottom + half + 24);
+      // A second object sent to the same strip stacks behind the first.
+      for (const b of placed) {
+        candidates.push(b.top - half - 24, b.bottom + half + 24);
+      }
     }
-    const above = zone.top - half - 24;
-    const below = zone.bottom + half + 24;
-    if (above > half + 40) out.push({...prop, y: Math.round(above)});
-    else if (below < HEIGHT - half - 40) out.push({...prop, y: Math.round(below)});
-    // else: dropped.
+    const at = candidates.find((c) => usable(c));
+    if (at === undefined) continue; // dropped: a graphic with nowhere to stand is clutter.
+    placed.push(boxOf(prop, at));
+    out.push(at === y ? prop : {...prop, y: Math.round(at)});
   }
   return out;
 }
@@ -1791,7 +1853,18 @@ function applyDirection({
     share: 0.25,
     intensity: plan.intensity,
     impactAt: plan.camera.shakeAt?.[0] ?? null,
-    reframeFrom: isContinuation ? recent.camera[recent.camera.length - 1] ?? null : null,
+    /**
+     * On a continuation, the previous move on the same plate. Otherwise the
+     * move that has ALREADY run twice: three of anything is a tic, and the
+     * check that says so counts across subjects while this only ever looked
+     * within one — so three pushes ran in a sword's forging sequence and the
+     * director had no idea it had made them.
+     */
+    reframeFrom: isContinuation
+      ? recent.camera[recent.camera.length - 1] ?? null
+      : recent.camera.length >= 2 && recent.camera[recent.camera.length - 1] === recent.camera[recent.camera.length - 2]
+        ? recent.camera[recent.camera.length - 1]
+        : null,
     sameSubject: isContinuation,
   });
   const camera = {...directed.params};
@@ -2314,15 +2387,68 @@ function applyDirection({
    * frame rather than to the room; it says nothing about which part of the
    * frame, and the part with the sentence in it is spoken for.
    */
+  /**
+   * AND OFF THE DRAWING, WHICH IS THE OTHER THING IN THE FRAME.
+   *
+   * Clearing the words was half the law. A route motif drew itself straight
+   * across a strait's own shipping markers, across a quarry map's pin, across
+   * two chambers of a heart and along the blade of a sword — five shots in
+   * which the two graphics that carry the sentence were laid on top of each
+   * other. The motif was moved away from the type and nothing ever asked where
+   * the DIAGRAM was, so the clear band it was sent to was the band the drawing
+   * occupies.
+   *
+   * The drawing's position is not guessed: `boundsOf` and `throughTheCamera`
+   * are the functions the checker measures with, so the planner asks them.
+   * Two models of where a gear train is would disagree, and the disagreement
+   * would surface as a warning nobody could act on.
+   */
   if (params.motif) {
     const zone = typeZone(scene);
     const size = Number(params.motifSize) || WIDTH * 0.3;
-    if (zone) {
-      const y = Number(params.motifY) || HEIGHT * 0.45;
-      if (y + size / 2 > zone.top && y - size / 2 < zone.bottom) {
-        const above = zone.top - size / 2 - 30;
-        const below = zone.bottom + size / 2 + 30;
-        params.motifY = Math.round(above > size / 2 + 40 ? above : Math.min(below, HEIGHT - size / 2 - 40));
+    const x = Number(params.motifX) || WIDTH * 0.5;
+    const y = Number(params.motifY) || HEIGHT * 0.45;
+    const others = throughTheCamera(
+      scene,
+      boundsOf(scene, {width: WIDTH, height: HEIGHT}).filter(
+        (b) => b.role === 'drawn' && !String(b.what).startsWith('motif'),
+      ),
+      {width: WIDTH, height: HEIGHT},
+    );
+    const clearOfType = (at) => !zone || at + size / 2 <= zone.top || at - size / 2 >= zone.bottom;
+    const clearOfDrawing = (at) => {
+      const box = {left: x - size / 2, right: x + size / 2, top: at - size / 2, bottom: at + size / 2};
+      return others.every((b) => {
+        const w = Math.min(box.right, b.right) - Math.max(box.left, b.left);
+        const h = Math.min(box.bottom, b.bottom) - Math.max(box.top, b.top);
+        if (w <= 0 || h <= 0) return true;
+        const over = w * h;
+        const mine = Math.max(1, size * size);
+        const theirs = Math.max(1, (b.right - b.left) * (b.bottom - b.top));
+        return over / mine <= 0.3 && over / theirs <= 0.3;
+      });
+    };
+    const usable = (at) =>
+      at - size / 2 >= HEIGHT * 0.04 && at + size / 2 <= HEIGHT * 0.9 && clearOfType(at) && clearOfDrawing(at);
+    if (!usable(y)) {
+      const candidates = [];
+      if (zone) candidates.push(zone.top - size / 2 - 30, zone.bottom + size / 2 + 30);
+      for (const b of others) candidates.push(b.top - size / 2 - 30, b.bottom + size / 2 + 30);
+      const at = candidates.find((c) => usable(c));
+      /**
+       * A motif with nowhere to stand is DROPPED, for the reason a prop is:
+       * the shot already has a graphic saying what the sentence says, and a
+       * second one laid over it is not emphasis, it is noise. Law 14's "a bare
+       * shot is what makes the others exist" is the same sentence read from
+       * the other end.
+       */
+      if (at === undefined) {
+        delete params.motif;
+        delete params.motifX;
+        delete params.motifY;
+        delete params.motifSize;
+      } else {
+        params.motifY = Math.round(at);
       }
     }
   }
@@ -3389,6 +3515,136 @@ async function main() {
    * it hands each shot the LARGEST share that keeps every drawn box inside —
    * maximum variety, guaranteed framing.
    */
+  /**
+   * A CARD WITH ONE THING ON IT PUTS THAT THING WHERE THE CUT LANDS.
+   *
+   * Law 30 says the frame a cut arrives on cannot be empty. Every slate in the
+   * five reels is set up by something — a plaque, an emphasis mark, a tally —
+   * arriving in the first third, and the figure lands on that. Two were given
+   * nothing, and an empty card with a slow creep on it held for a second and a
+   * half before its number appeared: the cut landed on nothing and stayed
+   * there.
+   *
+   * A graphic cannot be invented to fill it — the middle of a type card belongs
+   * to the words (law 14), and a mark placed over the figure would trade an
+   * empty frame for a crossed-out one. So the card leads with the only thing it
+   * has. A number that is there when you arrive and then held is how a title
+   * card works; a number that appears once you have stopped looking is not.
+   */
+  for (const scene of config.scenes) {
+    if (scene.sceneType !== 'title-slate') continue;
+    const events = eventsOf(scene);
+    if (events.length !== 1) continue;
+    const only = events[0];
+    if (!['slate', 'spin', 'count'].includes(only.kind)) continue;
+    const lead = Math.round(scene.durationInFrames * 0.3);
+    if (only.at <= lead) continue;
+    scene.params.titleFrame = lead;
+  }
+
+  /**
+   * TWO ARRIVALS ONE FRAME APART ARE ONE ARRIVAL.
+   *
+   * An emphasis mark was struck at frame 18 and the figure it emphasised
+   * landed at 19; a sticker punched on at 52 and the slate's number span up at
+   * 53. Both shots were planned as two beats and both play as one, because
+   * every element chose its own frame and nothing ever compared them. Law 18
+   * counts events; it cannot count events the eye cannot separate.
+   *
+   * The setter moves the LATER one, and the later one is almost always the
+   * figure: a mark or a sticker is set-up and the number is the arrival, so
+   * separating them in that direction is also the right reading. Nothing moves
+   * past the shot's own tail — a beat pushed off the end is a beat deleted.
+   */
+  const FRAME_HANDLES = (scene) => {
+    const p = scene.params ?? {};
+    const out = [];
+    const push = (kind, index, at, set) => {
+      if (typeof at === 'number' && Number.isFinite(at)) out.push({kind, index, at, set});
+    };
+    push('mark', undefined, p.markFrame, (v) => {
+      p.markFrame = v;
+    });
+    push('motif:' + p.motif, undefined, p.motifFrame, (v) => {
+      p.motifFrame = v;
+    });
+    const figure = p.countTo !== undefined ? 'count' : p.spinTo !== undefined ? 'spin' : 'slate';
+    push(figure, undefined, p.titleFrame, (v) => {
+      p.titleFrame = v;
+    });
+    for (const [i, spec] of (scene.onScreenText ?? []).entries()) {
+      push('onScreenText', i, spec.atFrame, (v) => {
+        spec.atFrame = v;
+      });
+    }
+    for (const [i, prop] of (scene.props ?? []).entries()) {
+      push('prop:' + prop.kind, i, prop.from, (v) => {
+        prop.from = v;
+      });
+    }
+    return out;
+  };
+
+  for (const scene of config.scenes) {
+    const tail = Math.floor(scene.durationInFrames * 0.9);
+    // Repeat until settled: moving one beat off another can land it on a third.
+    for (let pass = 0; pass < 4; pass += 1) {
+      const events = eventsOf(scene);
+      let moved = false;
+      for (let i = 1; i < events.length; i += 1) {
+        const a = events[i - 1];
+        const b = events[i];
+        if (b.at <= 1 || b.at - a.at >= 3 || b.kind === a.kind) continue;
+        if (['shake', 'flight', 'arrival'].includes(a.kind) || ['shake', 'flight', 'arrival'].includes(b.kind)) continue;
+        const handle = FRAME_HANDLES(scene).find((h) => h.kind === b.kind && h.index === b.index && h.at === b.at);
+        if (!handle) continue;
+        const to = a.at + 4;
+        if (to > tail) continue;
+        handle.set(to);
+        moved = true;
+        break;
+      }
+      if (!moved) break;
+    }
+  }
+
+  /**
+   * A HOLD IS A DECISION THE SHOT HAS TO BE ABLE TO AFFORD.
+   *
+   * The camera director picks `hold` for a verdict because a frame that stops
+   * is how an edit says the idea needs no help — and it picks it before the
+   * beats are counted, so it cannot know whether anything else is going to
+   * happen in those two and a half seconds. Twice it stopped the camera on a
+   * shot with two events and nothing else, and two and a half seconds of a
+   * still picture with a caption on it is what "a photograph with grain on it"
+   * describes.
+   *
+   * The answer is not to ban the hold: a reel needs the still shots that give
+   * the moving ones somewhere to land. It is to say that stillness is EARNED —
+   * three events carry a locked frame, two do not — and where it is not
+   * earned the frame withdraws instead. A pull-back is the move for a claim
+   * landing, it ends on the framing the shot was composed for rather than
+   * inside it, and it is not a push, so a shot rescued here cannot become the
+   * third push in a row.
+   *
+   * It runs BEFORE the budget below: widening the travel changes the largest
+   * scale the drawing reaches, and a budget measured against the old one would
+   * be measuring a camera that no longer exists.
+   */
+  for (const scene of config.scenes) {
+    const params = scene.params ?? {};
+    if (scene.durationInFrames < 50) continue;
+    if (cameraTravel(scene) >= 0.05) continue;
+    if (eventsOf(scene).length >= 3) continue;
+    const to = typeof params.pushTo === 'number' ? params.pushTo : 1;
+    params.pushFrom = round(to + 0.07, 3);
+    params.pushTo = round(to, 3);
+    params.cameraMove = 'pull';
+    params.cameraPurpose = 'the frame withdraws as the claim lands, because a still frame here has nothing carrying it';
+    params.handheld = 1.5;
+  }
+
+  const SAFE = {top: HEIGHT * 0.04, bottom: HEIGHT * 0.9, left: 40, right: WIDTH - 40};
   for (const scene of config.scenes) {
     if (!scene.diagram) continue;
     const boxes = boundsOf(scene, {width: WIDTH, height: HEIGHT}).filter((b) => b.camera);
@@ -3397,7 +3653,20 @@ async function main() {
     for (let k = 1; k >= 0; k -= 0.05) {
       const probe = {...scene, params: {...scene.params, diagramCamera: k}};
       const moved = throughTheCamera(probe, boxes, {width: WIDTH, height: HEIGHT});
-      const inside = moved.every((b) => b.left >= 0 && b.right <= WIDTH && b.top >= 0 && b.bottom <= HEIGHT);
+      /**
+       * AND "INSIDE" MEANS THE SAFE AREA, NOT THE FRAME.
+       *
+       * The budget was bounded by the frame while the checker measured the
+       * safe area, so the planner handed a shot the largest camera that kept
+       * the drawing barely on screen and the checker then reported the result
+       * as a fault — ten warnings the planner had deliberately created. A
+       * lead figure at x=0 is not a framing decision either way: the platform
+       * draws its own furniture over that strip, so a hauler standing there is
+       * a hauler nobody sees.
+       */
+      const inside = moved.every(
+        (b) => b.left >= SAFE.left && b.right <= SAFE.right && b.top >= SAFE.top && b.bottom <= SAFE.bottom,
+      );
       if (inside) {
         afford = k;
         break;

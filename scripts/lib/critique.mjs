@@ -95,7 +95,7 @@ export function eventsOf(scene) {
 }
 
 /** How far the camera actually travels in this shot, as a fraction of frame. */
-function cameraTravel(scene) {
+export function cameraTravel(scene) {
   const p = scene.params ?? {};
   const from = typeof p.pushFrom === 'number' ? p.pushFrom : 1;
   const to = typeof p.pushTo === 'number' ? p.pushTo : 1;

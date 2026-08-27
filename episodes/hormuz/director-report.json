@@ -700,7 +700,7 @@
       "template": "composite",
       "seconds": 2.5,
       "camera": {
-        "from": 1.04,
+        "from": 1.11,
         "to": 1.04,
         "panX": null,
         "panY": null
