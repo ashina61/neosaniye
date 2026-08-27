@@ -3004,11 +3004,36 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
   }
 
   if (line.onScreen) {
+    /**
+     * A STICKER THAT FINISHES ARRIVING AS IT LEAVES WAS NEVER READ.
+     *
+     * "TWO MILES WIDE" was scheduled at 60% of a 45-frame shot for 32% of it —
+     * fourteen frames. The typed style spends 55% of its life putting the
+     * characters down, so the line stood complete for SIX FRAMES and then went
+     * out, four frames before the cut. A fifth of a second is not a caption, it
+     * is a flicker, and the frame grabs showed it mid-word at 66% and gone at
+     * 94%.
+     *
+     * `readingFrames` was exported for exactly this and never called here — its
+     * own comment says so: the planner is supposed to schedule against the
+     * number the editor judges by. So the sticker is given the time its words
+     * need AFTER it has finished arriving, and it runs to the cut rather than
+     * leaving early: the cut is the exit, and an exit before the cut is a state
+     * change nobody asked for.
+     */
+    const words = String(line.onScreen).trim().split(/\s+/).filter(Boolean).length;
+    // The typed style lays characters down over 55% of its life, so the life
+    // has to be long enough that the remaining 45% covers the read.
+    const life = Math.min(
+      durationInFrames,
+      Math.max(Math.round(durationInFrames * 0.32), Math.ceil(readingFrames(words, FPS) / 0.45)),
+    );
+    const atFrame = Math.max(0, Math.min(Math.round(durationInFrames * 0.6), durationInFrames - life));
     scene.onScreenText = [
       {
         text: line.onScreen,
-        atFrame: Math.round(durationInFrames * 0.6),
-        durationInFrames: Math.round(durationInFrames * 0.32),
+        atFrame,
+        durationInFrames: durationInFrames - atFrame,
         style: look.textStyle,
         position: 'bottom',
       },

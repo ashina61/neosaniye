@@ -3386,8 +3386,8 @@
       "onScreenText": [
         {
           "text": "FILL, THEN FIRE",
-          "atFrame": 45,
-          "durationInFrames": 24,
+          "atFrame": 37,
+          "durationInFrames": 38,
           "style": "typed",
           "position": "bottom"
         }

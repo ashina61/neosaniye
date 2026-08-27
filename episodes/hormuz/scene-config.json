@@ -2229,8 +2229,8 @@
       "onScreenText": [
         {
           "text": "TWO MILES WIDE",
-          "atFrame": 27,
-          "durationInFrames": 14,
+          "atFrame": 7,
+          "durationInFrames": 38,
           "style": "typed",
           "position": "bottom"
         }

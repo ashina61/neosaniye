@@ -1374,7 +1374,7 @@
         "kicker": "",
         "title": "THOUSAND MEN",
         "footer": "",
-        "titleFrame": 56,
+        "titleFrame": 53,
         "titleSize": 230,
         "creep": 1.053,
         "accent": "#d94f3d",
@@ -1409,8 +1409,8 @@
       "onScreenText": [
         {
           "text": "A FEW FEET AN HOUR",
-          "atFrame": 52,
-          "durationInFrames": 28,
+          "atFrame": 21,
+          "durationInFrames": 65,
           "style": "sticker",
           "position": "bottom"
         }

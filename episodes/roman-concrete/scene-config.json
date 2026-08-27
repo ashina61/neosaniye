@@ -2309,8 +2309,8 @@
       "onScreenText": [
         {
           "text": "STRONGER, NOT WEAKER",
-          "atFrame": 27,
-          "durationInFrames": 14,
+          "atFrame": 7,
+          "durationInFrames": 38,
           "style": "sticker",
           "position": "bottom"
         }
