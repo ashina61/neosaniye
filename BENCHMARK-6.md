@@ -17,7 +17,10 @@ they all had one shape:
 > **A placer that knows its own object and not the other object in the frame.**
 
 The gates could not see them because each gate knew where *one* thing was. Then
-the frames showed six more that no gate models at all.
+the frames showed nine more that no gate models at all — and three of those only
+surfaced on the finished VIDEO, after every gate and every contact sheet had
+passed them. A contact sheet samples four frames of a shot; the thing it cannot
+show you is what the first second of the reel feels like.
 
 | # | defect | where | root cause | fix |
 |---|---|---|---|---|
