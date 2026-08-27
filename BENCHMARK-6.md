@@ -2,9 +2,10 @@
 
 Rendered and inspected at 0%, 33%, 66% and 94% of **every one of the 109 shots**.
 Nothing in the visual system, the DNA, the engine, the representation vocabulary,
-the metrics, the gates or the tests was changed. Nine defects were fixed at their
-root cause in the **planner**, and every one of them was found by looking at a
-frame, not by reading a gate.
+the metrics, the gates or the tests was changed. **Eighteen** defects were fixed at
+their root cause in the **planner**, and the ones that mattered most were found by
+looking at a frame — three of them only by watching the finished video end to
+end, after every gate and every contact sheet had passed them.
 
 ---
 
@@ -35,6 +36,9 @@ the frames showed six more that no gate models at all.
 | 13 | "BAALBEK · 27 BC" delivered as "BAALBEK · 27" | Baalbek | 26% overlap, under the 30% prop threshold | two props that both carry words get no tolerance |
 | 14 | `embers` — glowing fire — on "**Seawater** is what destroys concrete" | roman concrete | `destroy\w*` alone matched | destruction counts as fire only with fire in the sentence |
 | 15 | A forged blade snapping back to raw grey at every cut | sword, 19 shots | `from: 0, over: 1` is one frame too late — plates read `(frame - from)/over`, so a carried-over drawing is at progress **0** on frame 0 | start one frame in the past |
+| 16 | **All five reels opened on ~2s of near-black** | every episode | a hook beat has no figure to extract and usually no written title, so `title` came out empty and the card was left holding a KICKER — small, arriving at four fifths of the way through | where there is no title the kicker is **promoted** to one; a place and a date set large IS the documentary opening |
+| 17 | The same six words twice, once as type and once on a brass plate | opening and closing card of all five | a plaque carries its shot's label (law 2) and the slate prints that label too | a prop does not repeat the card's own words |
+| 18 | An emphasis rule drawn under a title that had not arrived | Hormuz, Baalbek, sword | it satisfies the two-event count and still shows a viewer nothing | the reel's first card states itself at once — every other shot inherits an established frame from the cut before it; the first has nothing behind it |
 
 Two of these were mistakes of my own, caught and reverted:
 
@@ -68,7 +72,8 @@ Scores are from inspecting the frames, not from the gates.
 | Temporal violations | 0 | 0 | 0 | 0 | 0 |
 | Clipping violations | 0 | 0 | 0 | 0 | 0 |
 | Semantic representation failures | 3 | 3 | 3 | 7 | 5 |
-| Remaining visible defects | 3 | 2 | 0 | 4 | 3 |
+| Other strict findings | 4 | 1 | 2 | 6 | 5 |
+| Remaining visible defects | 2 | 1 | 1 | 4 | 3 |
 
 **Asset relevance is not scored.** There are zero photographs in all five reels,
 because ten of ten external providers answer 403 at CONNECT. Scoring the
@@ -90,14 +95,21 @@ director refused a picture for, carried by type on a field.
 | DIAGRAM shots | 0 (folded into PROCEDURAL) |
 | HYBRID shots | 0 |
 | hard-cut ratio | **1.00** |
-| average motion density | 1.09 events/s (1.00–1.24) |
-| failed gates | 0 errors; 33 strict warnings, 21 of them `REPRESENTATION_REQUIRED` |
+| average motion density | 1.07 events/s (0.97–1.16) |
+| failed gates | 0 errors; 39 strict warnings, 21 of them `REPRESENTATION_REQUIRED` |
 | tests | 352 pass, 0 fail |
 | DNA lint | 0 errors, 13 warnings, 1 recorded deviation |
 | production ready | **No — see §6** |
 
 Camera diversity, measured across the whole reel: no family above **27%** against
 a 30% ceiling. Every episode uses all six.
+
+The strict count went **up** from 33 to 39 after the last three fixes, and that is
+the right direction. Dropping a plaque that repeated the card's own words also
+removed an event from those cards, so several now trip the generic "one event"
+rule. A title card that states itself at 0.4s and holds beats a card with two
+beats that says nothing for 1.8s — the warning is the checker's rule meeting a
+shot the rule was not written for.
 
 Hard cuts remain 1.00 by decision, not omission. The Cut Director records:
 *"HARD_CUT and MATCH_CUT are both made of nothing; the difference is that a match
@@ -116,12 +128,15 @@ Against BENCHMARK-5, whose configs the run started from.
 | Roman concrete | 8.0 | **8.5** |
 | Medieval sword | 8.0 | 7.5 |
 | Human heart | 7.5 | **8.0** |
-| strict findings | 51 | **33** |
+| strict findings | 51 | 39 |
 | of which real defects | 26 | **0** |
 | geometry / collision / camera findings | 26 | **0** |
 | drawings that assemble rather than appear | — | **+19 shots** |
 | shots with a graphic through a sentence | 8 | **0** |
-| legible frames on the typed sticker | 6 | 17–34 |
+| legible frames on the typed sticker | 6 | **17–34** |
+| time before the reel states itself | 1.5–2.1s | **0.27–0.4s** |
+| reels opening on a card with no title | **5 of 5** | **0** |
+| cards printing the same words twice | 10 | **0** |
 
 **The sword went down.** Its score was carrying two shots I had not looked at
 closely enough before: `s03-carbon-b` and `s03-carbon-c` are a large amorphous
@@ -133,22 +148,29 @@ visible. A number that falls because you finally looked is the number working.
 
 ## 5. The five weakest shots
 
+Item 2 of the first draft of this list — the dark, titleless opening — was fixed
+once writing it down made it obvious how bad it was. What follows is the list
+after that fix.
+
 1. **`medieval-sword / s03-carbon-b` and `s03-carbon-c`** — two consecutive shots
    that are a large soft ochre blob with one line of type, static across all four
    sample positions, and nearly indistinguishable from each other. The weakest
-   thing in the benchmark.
-2. **`hormuz / s01-narrow`** — the reel's opening. Near-black, no title, a small
-   plaque, and a kicker that repeats the plaque's text verbatim. The first two
-   seconds of the episode say one thing twice, quietly.
-3. **`hormuz / s08-price-b`** — 2.5 seconds, one event, a caption carried over
-   from the previous cut. Genuinely a still with words on it.
-4. **`hormuz / s05-nobypass` and `s07-grounding-b`** — the trade-route map's
+   thing in the benchmark, and the reason the sword's score fell.
+2. **`hormuz / s05-nobypass` and `s07-grounding-b`** — the trade-route map's
    landmass is a featureless light-grey polygon over roughly 70% of the frame,
    with pale line work on top of it. Law 36 asks for a ground darker than the
-   drawing; this is the inverse.
-5. **The closing card of all five** — opens on an empty frame with a soft glow
-   for the first quarter to third of its length, then assembles. The reel's most
-   important shot begins on nothing.
+   drawing; this is the inverse, and it is about ten seconds of the episode.
+3. **The closing card of all five** — opens on an empty frame with a soft glow
+   for the first 7–24% of its length, then assembles. The reel's most important
+   shot still begins on nothing. The opening card was fixed; the closing one has
+   three arrivals and so never tripped the rule that fixed it.
+4. **`hormuz / s08-price-b`** — 2.5 seconds, one event, a caption carried over
+   from the previous cut. Genuinely a still with words on it.
+5. **`baalbek / s05-rolled`** — the authored `route` motif ("They rolled them")
+   now stands clear of the load instead of colliding with the haulers, but it
+   stands in empty sky above the sledge rather than along the path the sledge
+   travels. A frame-locked graphic (law 14) cannot attach to the room, so the
+   placement is correct and the reading is still loose.
 
 ---
 
@@ -192,8 +214,9 @@ deliberate and reading as unfinished.
 Everything the engine controls is in order: 352 tests, 0 errors across 12
 episodes, 0 DNA violations, 0 temporal violations, 0 clipping violations, 0
 graphics through sentences, camera diversity inside its ceiling, and every
-drawing assembling on the frame the cut lands on. Roman concrete is completely
-clean under `--strict` and would ship today.
+drawing assembling on the frame the cut lands on, and every reel stating itself
+inside its first half second. Roman concrete is the strongest and carries only
+two strict findings beyond its representation gaps.
 
 What is missing is **voiceover and pictures**:
 
