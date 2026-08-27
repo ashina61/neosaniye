@@ -301,7 +301,16 @@ const MOTIF_WORDS = [
   ['coins', /\b(gold|golden|money|wealth|wealthy|rich|riches|fortune|coins?|treasur\w*|dinars?|bullion|paid|price|cost|gift\w*|alms|crashed?)\b|\bgave\s+(it\s+|them\s+)?away\b|\bgiv(es|ing)\s+away\b|\bspen[dt]\w*\b(?!\s+(\w+\s+){0,2}(second|minute|hour|day|night|week|month|year|decade|summer|winter|spring|autumn|life|time)s?\b)/i],
   ['rise', /\b(rose|rise|risen|rising|grew|grow\w*|doubl\w*|tripl\w*|soar\w*|surg\w*|increas\w*|boom\w*|climb\w*|multipl\w*|swell\w*)\b/i],
   ['route', /\b(journey|travel\w*|caravan|pilgrimage|pilgrim|road|route|marched?|crossed?|across|set out|departed|returned|miles?)\b/i],
-  ['embers', /\b(fire|burn\w*|ash|ashes|collaps\w*|ruin\w*|destroy\w*|sacked?|war|siege|died|death|end\w*)\b/i],
+  // EMBERS ARE A FIRE. `destroy` on its own is not one — "seawater is what
+  // destroys modern concrete" was given glowing warm embers, which is the
+  // opposite of what the line says destroyed it. Destruction counts here only
+  // where the sentence has fire or heat in it, the way `gave` counts only as
+  // "gave it away". `end\w*` went with it: it is a substring trap that catches
+  // endless, endure and ending up, and `died|death` already carries the elegy.
+  [
+    'embers',
+    /\b(fire|burn\w*|ash|ashes|collaps\w*|ruin\w*|sacked?|war|siege|died|death)\b|\bdestroy\w*\b(?=[\s\S]*\b(fire|burn\w*|flame\w*|heat|smoke|ash|ashes)\b)|\b(fire|burn\w*|flame\w*|heat|smoke)\b(?=[\s\S]*\bdestroy\w*\b)/i,
+  ],
   ['rays', /\b(king|emperor|empire|throne|crown|glory|legend\w*|holy|sacred|greatest|famous|power\w*|remembered)\b/i],
   ['tally', /\b(years?|days?|months?|centur\w*|counted?|thousands?|hundreds?|men|camels?|scholars?|people)\b/i],
 ];
