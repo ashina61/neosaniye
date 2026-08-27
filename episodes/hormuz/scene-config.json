@@ -49,12 +49,6 @@
           "#171c26",
           "#080a0f"
         ],
-        "mark": "strike",
-        "markX": 260,
-        "markY": 1160,
-        "markWidth": 560,
-        "markHeight": 96,
-        "markFrame": 22,
         "pushEndFrame": 59,
         "pushFrom": 1,
         "pushTo": 1.53,
@@ -314,7 +308,7 @@
           "TWENTY"
         ],
         "spinFrames": 9,
-        "mark": "strike",
+        "mark": "underline",
         "markX": 260,
         "markY": 820,
         "markWidth": 560,
@@ -810,7 +804,7 @@
           "TWENTY"
         ],
         "spinFrames": 9,
-        "mark": "strike",
+        "mark": "underline",
         "markX": 260,
         "markY": 820,
         "markWidth": 560,

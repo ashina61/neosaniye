@@ -2791,9 +2791,37 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
       scene.params.spinReel = SPIN_DECOYS;
       scene.params.spinFrames = Math.max(14, Math.round(durationInFrames * 0.4));
     }
-    if (rand() > 0.45) {
+    /**
+     * A MARK IS MADE ON SOMETHING, AND IT DOES NOT CANCEL IT.
+     *
+     * Two failures shipped here, both plain in one still and invisible to every
+     * check because a mark and a title were each inside the frame and neither
+     * knew about the other.
+     *
+     * The first: `strike` draws its line at the MIDDLE of its box, and the box
+     * is the title's own band — so a reel whose mood mark is a strike delivered
+     * "TWO MILES" and "TWENTY MILLION BARRELS" with a line ruled through them.
+     * The reel crossed out its own claim. A strike means cancelled; a slate
+     * exists to assert. Under a title it becomes the mark that emphasises
+     * instead, which is the same decision already made one branch over when an
+     * underline with no baseline becomes an oval.
+     *
+     * The second: a card with an empty title has nothing to mark, and the mark
+     * was placed anyway — a gold rule lying across the dark under nothing, in
+     * the OPENING shot of three of the five reels. A mark explains, measures,
+     * locates, highlights or connects, or it comes out.
+     */
+    const MIDLINE_MARKS = new Set(['strike']);
+    /**
+     * The draw is taken BEFORE the title is tested, so that refusing a mark
+     * does not shift the seeded stream underneath every later decision: the
+     * short-circuit version of this line moved a mark off one card and, three
+     * shots later, dropped a motif onto a caption. Same seed, same reel.
+     */
+    const wantsMark = rand() > 0.45;
+    if (scene.params.title && wantsMark) {
       Object.assign(scene.params, {
-        mark: look.mark,
+        mark: MIDLINE_MARKS.has(look.mark) ? 'underline' : look.mark,
         markX: 260,
         markY: number ? 820 : 1160,
         markWidth: 560,
@@ -3562,6 +3590,9 @@ async function main() {
     const push = (kind, index, at, set) => {
       if (typeof at === 'number' && Number.isFinite(at)) out.push({kind, index, at, set});
     };
+    push('caption', undefined, p.captionFrame, (v) => {
+      p.captionFrame = v;
+    });
     push('mark', undefined, p.markFrame, (v) => {
       p.markFrame = v;
     });
