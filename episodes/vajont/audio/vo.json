@@ -3,7 +3,7 @@
   "how": "measured",
   "provider": "file",
   "audio": "audio/vo.wav",
-  "duration": 50.46,
+  "duration": 50.3683125,
   "lines": [
     {
       "slug": "hook",
@@ -13,63 +13,63 @@
     },
     {
       "slug": "wall",
-      "text": "The dam was two hundred and sixty-two metres of concrete in a gorge.",
+      "text": "The dam was a wall of concrete two hundred and sixty-two metres high.",
       "start": 2.1,
-      "end": 7.16
+      "end": 7.26
     },
     {
       "slug": "valley",
       "text": "The river below it ran down to the town of Longarone.",
-      "start": 7.16,
-      "end": 11.14
+      "start": 7.26,
+      "end": 11.08
     },
     {
       "slug": "toc",
       "text": "But the mountainside above the reservoir was already creeping.",
-      "start": 11.14,
-      "end": 15.32
+      "start": 11.08,
+      "end": 15.26
     },
     {
       "slug": "bed",
       "text": "Inside it a slab of rock rested on a weak bed of clay.",
-      "start": 15.32,
-      "end": 19.66
+      "start": 15.26,
+      "end": 19.56
     },
     {
       "slug": "water",
       "text": "Water from the reservoir soaked into that clay until the bed let go.",
-      "start": 19.66,
-      "end": 24.52
+      "start": 19.56,
+      "end": 24.44
     },
     {
       "slug": "slide",
       "text": "On the ninth of October the slab slid into the lake in forty-five seconds.",
-      "start": 24.52,
-      "end": 29.72
+      "start": 24.44,
+      "end": 29.64
     },
     {
       "slug": "displace",
       "text": "Two hundred and seventy million cubic metres of rock took the reservoir's place.",
-      "start": 29.72,
-      "end": 35.58
+      "start": 29.64,
+      "end": 35.5
     },
     {
       "slug": "over",
       "text": "The lake had nowhere to go but over the crest of the dam.",
-      "start": 35.58,
-      "end": 39.82
+      "start": 35.5,
+      "end": 39.74
     },
     {
       "slug": "town",
       "text": "Minutes later it reached the town of Longarone, and two thousand people died.",
-      "start": 39.82,
-      "end": 45.32
+      "start": 39.74,
+      "end": 45.22
     },
     {
       "slug": "close",
       "text": "The dam is still standing, and they built the wrong thing correctly.",
-      "start": 45.32,
-      "end": 50.46
+      "start": 45.22,
+      "end": 50.368
     }
   ]
 }

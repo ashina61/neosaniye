@@ -72,6 +72,18 @@ export type TerrainSectionSpec = Sheet & {
   seepage?: {at: number; over?: number; label?: string};
   /** The water leaving over the structure: the CONSEQUENCE, and it arrives last. */
   overtop?: {at: number; over?: number; label?: string};
+  /**
+   * WHERE TO STAND TO SEE WHAT THIS SENTENCE IS ABOUT.
+   *
+   * A section drawn once and shown fourteen times from the same distance is a
+   * slideshow of one picture however much moves inside it. But the answer is
+   * not variety for its own sake: a sentence about the slab wants to be near
+   * the slab, one about the crest wants to be at the dam, and one about the
+   * valley wants the valley. The BUILDER knows which, because it put those
+   * things where they are — so the framing is declared with the drawing rather
+   * than guessed by the planner, and it moves only when the subject moves.
+   */
+  focus?: {x: number; y: number; scale: number};
   annotations?: {x: number; y: number; text: string; side?: 'left' | 'right'; at?: number}[];
   scaleNote?: string;
 };
@@ -178,7 +190,16 @@ export const TerrainSectionPlate: React.FC<{spec: TerrainSectionSpec; cam?: Cam}
     ? drawOn(stepped, [from + spec.overtop.at, from + spec.overtop.at + (spec.overtop.over ?? 18)])
     : 0;
 
+  /**
+   * The shot camera moves the world; the focus decides where the world is seen
+   * FROM. They compose: the drawing is framed on its subject and the shot's own
+   * push and pan still play over that framing.
+   */
   const world = worldTransform(cam, w, h);
+  const f = spec.focus;
+  const framed = f
+    ? `translate(${(w * 0.5).toFixed(2)} ${(h * 0.5).toFixed(2)}) scale(${f.scale.toFixed(3)}) translate(${(-w * f.x).toFixed(2)} ${(-h * f.y).toFixed(2)})`
+    : undefined;
   const crest = spec.structure ? spec.structure.base : 0;
 
   return (
@@ -193,6 +214,7 @@ export const TerrainSectionPlate: React.FC<{spec: TerrainSectionSpec; cam?: Cam}
           </clipPath>
         </defs>
 
+        <g transform={framed}>
         <g transform={world}>
           {/* THE WATER, under the land so the shoreline is the ground's edge. */}
           {waterShape ? (
@@ -285,14 +307,31 @@ export const TerrainSectionPlate: React.FC<{spec: TerrainSectionSpec; cam?: Cam}
           {/* THE MASS. Drawn after the ground so it reads as a body ON it. */}
           {mass && massNow ? (
             <g>
-              <path d={poly(massNow, w, h)} fill="#131110" />
+              {/**
+                * THE SLAB HAS TO BE VISIBLE BEFORE IT MOVES.
+                *
+                * Drawn in the ground's own material, flush against the ground,
+                * it was invisible until it separated — so the two shots that
+                * exist to say "this piece is going to go" showed a hillside and
+                * a label. A section distinguishes a body from its surroundings
+                * by TONE and by hatch, not by waiting for it to move, and the
+                * whole argument of those shots is that the thing was already
+                * there, already defined, already resting on its plane.
+                */}
+              <defs>
+                <pattern id="ts-slab" width={w * 0.026} height={w * 0.026} patternUnits="userSpaceOnUse" patternTransform="rotate(52)">
+                  <line x1="0" y1="0" x2="0" y2={w * 0.026} stroke={accent} strokeWidth={weight.construction} opacity={0.5} />
+                </pattern>
+              </defs>
+              <path d={poly(massNow, w, h)} fill="#1b1712" />
               <MaterialFace id="ts-rock" material="stone" d={poly(massNow, w, h)} w={w} />
+              <path d={poly(massNow, w, h)} fill="url(#ts-slab)" />
               <path
                 d={poly(massNow, w, h)}
                 fill="none"
                 stroke={accent}
-                strokeWidth={weight.object}
-                opacity={0.9}
+                strokeWidth={weight.emphasis}
+                opacity={0.95}
               />
               {/* Debris where it lands, once it is actually moving. */}
               {slid > 0.35 ? (
@@ -348,23 +387,37 @@ export const TerrainSectionPlate: React.FC<{spec: TerrainSectionSpec; cam?: Cam}
             <g opacity={on * 0.9}>
               {(() => {
                 const s = spec.structure!;
-                const x = (s.x + s.width / 2 + 0.045) * w;
+                /**
+                 * CLEAR OF THE WATER AND CLEAR OF THE WALL.
+                 *
+                 * At four and a half hundredths the label sat on the reservoir
+                 * surface, so a dimension of the dam read as a caption floating
+                 * on the lake. A dimension belongs OUTSIDE the thing it
+                 * measures, on the dry side, with its own extension lines — the
+                 * way it is drawn on a real elevation.
+                 */
+                const x = Math.min(0.93, s.x + s.width / 2 + 0.085) * w;
                 const foot = Math.max(groundAt(profile, s.x), s.base) * h;
                 const top = s.base * h;
                 const tick = w * 0.016;
                 return (
                   <>
+                    {/* Extension lines from the structure out to the dimension. */}
+                    <line x1={(s.x + s.width / 2) * w} y1={top} x2={x} y2={top} stroke={muted} strokeWidth={weight.construction} opacity={0.5} />
+                    <line x1={(s.x + s.width / 2) * w} y1={foot} x2={x} y2={foot} stroke={muted} strokeWidth={weight.construction} opacity={0.5} />
                     <line x1={x} y1={top} x2={x} y2={foot} stroke={accent} strokeWidth={weight.detail} />
                     <line x1={x - tick} y1={top} x2={x + tick} y2={top} stroke={accent} strokeWidth={weight.detail} />
                     <line x1={x - tick} y1={foot} x2={x + tick} y2={foot} stroke={accent} strokeWidth={weight.detail} />
                     <text
-                      x={x + tick * 1.6}
+                      x={x + tick * 1.4}
                       y={(top + foot) / 2}
                       fill={accent}
                       fontFamily={MONO}
                       fontSize={w * 0.026}
-                      letterSpacing="0.14em"
+                      letterSpacing="0.12em"
                       dominantBaseline="middle"
+                      textAnchor="middle"
+                      transform={`rotate(-90 ${x + tick * 1.4} ${(top + foot) / 2})`}
                     >
                       {String(spec.structure!.height).toUpperCase()}
                     </text>
@@ -373,6 +426,7 @@ export const TerrainSectionPlate: React.FC<{spec: TerrainSectionSpec; cam?: Cam}
               })()}
             </g>
           ) : null}
+        </g>
         </g>
 
         {/* THE SHEET. Pinned outside the camera (law 34). */}

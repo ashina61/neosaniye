@@ -911,6 +911,21 @@ export function buildTerrainSection({vo, seed, accent, muted, claims = []}) {
     };
   }
 
+  /**
+   * AND WHERE TO STAND. Declared by the same builder that placed the geometry,
+   * so it can never point at nothing: near the slab for the sentences about the
+   * slab, at the dam for the ones about the wall and the crest, wide for the
+   * ones about the valley. Fourteen sections framed identically is one picture
+   * shown fourteen times, whatever moves inside it.
+   */
+  if (spills || isHeight) {
+    spec.focus = {x: 0.70, y: 0.47, scale: 1.42};
+  } else if (plane && !goes) {
+    spec.focus = {x: 0.33, y: 0.47, scale: 1.34};
+  } else if (goes) {
+    spec.focus = {x: 0.45, y: 0.52, scale: 1.18};
+  }
+
   if (seeps && plane) spec.seepage = {at: 4, over: 18, label: 'water in the bed'};
   if (spills) spec.overtop = {at: 30, over: 20, label: 'over the crest'};
 

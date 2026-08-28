@@ -11,24 +11,34 @@
     {
       "slug": "hook",
       "vo": "The dam at Vajont did not fail.",
-      "graphicsOnly": true,
       "kicker": "Vajont · 1963",
       "title": "IT HELD",
-      "footer": "that was never the question"
+      "footer": "that was never the question",
+      "image": "the Vajont dam standing today in its gorge, seen from below, with the bare grey scar of the 1963 slide on the mountainside behind it, overcast light, no people",
+      "imageCommons": [
+        "Vajont Dam",
+        "Diga del Vajont",
+        "Vajont dam Monte Toc"
+      ]
     },
     {
       "slug": "wall",
-      "vo": "The dam was two hundred and sixty-two metres of concrete in a gorge.",
+      "vo": "The dam was a wall of concrete two hundred and sixty-two metres high.",
       "graphicsOnly": true,
       "onScreen": "262 METRES"
     },
     {
       "slug": "valley",
       "vo": "The river below it ran down to the town of Longarone.",
-      "graphicsOnly": true,
       "stops": [
         "THE DAM",
         "LONGARONE"
+      ],
+      "image": "the town of Longarone in the Piave valley seen from the slope above, the valley floor flat and built on, mountains either side",
+      "imageCommons": [
+        "Longarone",
+        "Longarone Piave valley",
+        "Longarone panorama"
       ]
     },
     {
@@ -91,10 +101,15 @@
     {
       "slug": "close",
       "vo": "The dam is still standing, and they built the wrong thing correctly.",
-      "graphicsOnly": true,
       "kicker": "Vajont · 9 October 1963",
       "title": "STILL THERE",
-      "footer": "the wrong thing, built correctly"
+      "footer": "the wrong thing, built correctly",
+      "image": "the crest and downstream face of the Vajont dam intact, the reservoir behind it filled with rock instead of water",
+      "imageCommons": [
+        "Vajont dam crest",
+        "Diga del Vajont oggi",
+        "Vajont landslide deposit"
+      ]
     }
   ]
 }

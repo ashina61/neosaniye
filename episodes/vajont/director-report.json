@@ -145,47 +145,49 @@
       },
       "transition": "cut",
       "cut": null,
-      "representation": "TYPOGRAPHY",
+      "representation": "PHOTO",
       "drawn": null,
       "emphasis": null,
       "reveal": null,
-      "plates": [],
+      "plates": [
+        "s01-hook-bg.png"
+      ],
       "drawnGround": "grid",
       "props": [
         "newspaper"
       ],
       "hierarchy": {
-        "primary": "the claim",
-        "secondary": "the drawn label or mark that dates and places it",
-        "background": "a drawn field — texture, not a photograph pretending to be one",
-        "carrier": "type"
+        "primary": "the single strongest image in the story, held tight",
+        "secondary": "the caption",
+        "background": "the plate",
+        "carrier": "image"
       }
     },
     {
       "id": "s02-wall",
       "template": "composite",
-      "seconds": 1.93,
+      "seconds": 2,
       "camera": {
         "from": 1.04,
         "to": 1.06,
         "panX": null,
         "panY": null
       },
-      "transition": "cut",
+      "transition": "slip",
       "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "graphic continuity (#b9c3c9) — the two shots already share a world, so there is nothing to bridge"
+        "kind": "OBJECT_WIPE",
+        "purpose": "object transformation",
+        "because": "beat is EVIDENCE"
       },
       "representation": "PROCEDURAL",
       "drawn": "terrainSection",
-      "emphasis": "two hundred",
+      "emphasis": "wall",
       "reveal": "punch",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [],
       "hierarchy": {
-        "primary": "the claim: \"two hundred\"",
+        "primary": "the claim: \"wall\"",
         "secondary": "the drawn label or mark that dates and places it",
         "background": "a drawn field — texture, not a photograph pretending to be one",
         "carrier": "type"
@@ -194,11 +196,11 @@
     {
       "id": "s02-wall-b",
       "template": "composite",
-      "seconds": 3.13,
+      "seconds": 3.17,
       "camera": {
-        "from": 1.01,
-        "to": 1.39,
-        "panX": null,
+        "from": 1.17,
+        "to": 1.26,
+        "panX": -190,
         "panY": null
       },
       "transition": "cut",
@@ -209,13 +211,15 @@
       },
       "representation": "PROCEDURAL",
       "drawn": "terrainSection",
-      "emphasis": "sixty-two",
-      "reveal": "wipe",
+      "emphasis": "two hundred",
+      "reveal": "punch",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [],
+      "props": [
+        "beam"
+      ],
       "hierarchy": {
-        "primary": "the claim: \"sixty-two\"",
+        "primary": "the claim: \"two hundred\"",
         "secondary": "the drawn label or mark that dates and places it",
         "background": "a drawn field — texture, not a photograph pretending to be one",
         "carrier": "type"
@@ -224,12 +228,12 @@
     {
       "id": "s03-valley",
       "template": "composite",
-      "seconds": 2.17,
+      "seconds": 2.07,
       "camera": {
-        "from": 1,
-        "to": 1.11,
-        "panX": null,
-        "panY": -53
+        "from": 1.21,
+        "to": 1.32,
+        "panX": 258,
+        "panY": null
       },
       "transition": "cut",
       "cut": {
@@ -237,50 +241,54 @@
         "purpose": null,
         "because": "scale held (medium) — the two shots already share a world, so there is nothing to bridge"
       },
-      "representation": "PROCEDURAL",
+      "representation": "HYBRID",
       "drawn": "map",
       "emphasis": "river",
-      "reveal": "punch",
-      "plates": [],
-      "drawnGround": "spotlight",
+      "reveal": "wipe",
+      "plates": [
+        "s03-valley-bg.png"
+      ],
+      "drawnGround": null,
       "props": [],
       "hierarchy": {
-        "primary": "the claim: \"river\"",
-        "secondary": "the drawn label or mark that dates and places it",
-        "background": "a drawn field — texture, not a photograph pretending to be one",
-        "carrier": "type"
+        "primary": "the setting, established",
+        "secondary": "the caption",
+        "background": "the plate",
+        "carrier": "image"
       }
     },
     {
       "id": "s03-valley-b",
       "template": "composite",
-      "seconds": 1.8,
+      "seconds": 1.73,
       "camera": {
-        "from": 1.39,
-        "to": 1.02,
+        "from": 1,
+        "to": 1.09,
         "panX": null,
-        "panY": null
+        "panY": -50
       },
       "transition": "cut",
       "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "the same drawing continuing (geography) — the two shots already share a world, so there is nothing to bridge"
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "same subject (s03-valley-bg.png)"
       },
-      "representation": "PROCEDURAL",
+      "representation": "HYBRID",
       "drawn": "map",
       "emphasis": "Longarone",
-      "reveal": "rise",
-      "plates": [],
-      "drawnGround": "spotlight",
+      "reveal": "blur",
+      "plates": [
+        "s03-valley-bg.png"
+      ],
+      "drawnGround": null,
       "props": [
         "beam"
       ],
       "hierarchy": {
-        "primary": "the claim: \"Longarone\"",
-        "secondary": "the drawn label or mark that dates and places it",
-        "background": "a drawn field — texture, not a photograph pretending to be one",
-        "carrier": "type"
+        "primary": "the setting, established",
+        "secondary": "the caption",
+        "background": "the plate",
+        "carrier": "image"
       }
     },
     {
@@ -288,10 +296,10 @@
       "template": "composite",
       "seconds": 2.33,
       "camera": {
-        "from": 1,
-        "to": 1.09,
+        "from": 1.42,
+        "to": 1.01,
         "panX": null,
-        "panY": -35
+        "panY": null
       },
       "transition": "cut",
       "cut": {
@@ -318,10 +326,10 @@
       "template": "composite",
       "seconds": 1.87,
       "camera": {
-        "from": 1.43,
-        "to": 1.02,
+        "from": 1,
+        "to": 1.1,
         "panX": null,
-        "panY": null
+        "panY": -35
       },
       "transition": "cut",
       "cut": {
@@ -332,10 +340,12 @@
       "representation": "PROCEDURAL",
       "drawn": "terrainSection",
       "emphasis": "reservoir",
-      "reveal": "rise",
+      "reveal": "blur",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [],
+      "props": [
+        "beam"
+      ],
       "hierarchy": {
         "primary": "the claim: \"reservoir\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -346,10 +356,10 @@
     {
       "id": "s05-bed",
       "template": "composite",
-      "seconds": 2.33,
+      "seconds": 2.3,
       "camera": {
-        "from": 1.4,
-        "to": 1.05,
+        "from": 1.37,
+        "to": 1.01,
         "panX": null,
         "panY": null
       },
@@ -362,12 +372,10 @@
       "representation": "PROCEDURAL",
       "drawn": "terrainSection",
       "emphasis": "mountain",
-      "reveal": "blur",
+      "reveal": "punch",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [
-        "beam"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"mountain\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -381,9 +389,9 @@
       "seconds": 2,
       "camera": {
         "from": 1,
-        "to": 1.07,
+        "to": 1.08,
         "panX": null,
-        "panY": -57
+        "panY": -65
       },
       "transition": "cut",
       "cut": {
@@ -394,7 +402,7 @@
       "representation": "PROCEDURAL",
       "drawn": "terrainSection",
       "emphasis": "weak",
-      "reveal": "punch",
+      "reveal": "rise",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [],
@@ -410,9 +418,9 @@
       "template": "composite",
       "seconds": 2.23,
       "camera": {
-        "from": 1.2,
-        "to": 1.3,
-        "panX": 209,
+        "from": 1.39,
+        "to": 1,
+        "panX": null,
         "panY": null
       },
       "transition": "cut",
@@ -427,9 +435,7 @@
       "reveal": "punch",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [
-        "beam"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"reservoir\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -442,9 +448,9 @@
       "template": "composite",
       "seconds": 2.63,
       "camera": {
-        "from": 1.4,
-        "to": 1.03,
-        "panX": null,
+        "from": 1.24,
+        "to": 1.19,
+        "panX": 173,
         "panY": null
       },
       "transition": "cut",
@@ -456,10 +462,12 @@
       "representation": "PROCEDURAL",
       "drawn": "terrainSection",
       "emphasis": "until",
-      "reveal": "blur",
+      "reveal": "rise",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [],
+      "props": [
+        "beam"
+      ],
       "hierarchy": {
         "primary": "the claim: \"until\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -469,29 +477,29 @@
     },
     {
       "id": "s07-slide",
-      "template": "title-slate",
+      "template": "composite",
       "seconds": 2.97,
       "camera": {
-        "from": 1,
-        "to": 1.37,
-        "panX": null,
+        "from": 1.2,
+        "to": 1.29,
+        "panX": -224,
         "panY": null
       },
       "transition": "cut",
       "cut": {
         "kind": "HARD_CUT",
         "purpose": null,
-        "because": "graphic continuity (#b9c3c9) — the two shots already share a world, so there is nothing to bridge"
+        "because": "the same drawing continuing (terrainSection) — the two shots already share a world, so there is nothing to bridge"
       },
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
-      "emphasis": null,
-      "reveal": null,
+      "representation": "PROCEDURAL",
+      "drawn": "terrainSection",
+      "emphasis": "October",
+      "reveal": "rise",
       "plates": [],
-      "drawnGround": "grid",
+      "drawnGround": "spotlight",
       "props": [],
       "hierarchy": {
-        "primary": "the claim",
+        "primary": "the claim: \"October\"",
         "secondary": "the drawn label or mark that dates and places it",
         "background": "a drawn field — texture, not a photograph pretending to be one",
         "carrier": "type"
@@ -502,21 +510,21 @@
       "template": "composite",
       "seconds": 2.23,
       "camera": {
-        "from": 1.2,
-        "to": 1.27,
-        "panX": -238,
+        "from": 1.01,
+        "to": 1.33,
+        "panX": null,
         "panY": null
       },
       "transition": "cut",
       "cut": {
         "kind": "HARD_CUT",
         "purpose": null,
-        "because": "graphic continuity (#b9c3c9) — the two shots already share a world, so there is nothing to bridge"
+        "because": "the same drawing continuing (terrain) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "terrainSection",
       "emphasis": "forty-five",
-      "reveal": "rise",
+      "reveal": "blur",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [],
@@ -529,29 +537,31 @@
     },
     {
       "id": "s08-displace",
-      "template": "title-slate",
-      "seconds": 3.13,
+      "template": "composite",
+      "seconds": 3.17,
       "camera": {
-        "from": 1.03,
-        "to": 1.06,
-        "panX": null,
+        "from": 1.22,
+        "to": 1.26,
+        "panX": 262,
         "panY": null
       },
       "transition": "cut",
       "cut": {
         "kind": "HARD_CUT",
         "purpose": null,
-        "because": "graphic continuity (#b9c3c9) — the two shots already share a world, so there is nothing to bridge"
+        "because": "the same drawing continuing (terrainSection) — the two shots already share a world, so there is nothing to bridge"
       },
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
-      "emphasis": null,
-      "reveal": null,
+      "representation": "PROCEDURAL",
+      "drawn": "terrainSection",
+      "emphasis": "The",
+      "reveal": "rise",
       "plates": [],
-      "drawnGround": "grid",
-      "props": [],
+      "drawnGround": "spotlight",
+      "props": [
+        "beam"
+      ],
       "hierarchy": {
-        "primary": "the claim",
+        "primary": "the claim: \"The\"",
         "secondary": "the drawn label or mark that dates and places it",
         "background": "a drawn field — texture, not a photograph pretending to be one",
         "carrier": "type"
@@ -562,21 +572,21 @@
       "template": "composite",
       "seconds": 2.7,
       "camera": {
-        "from": 1.18,
-        "to": 1.2,
-        "panX": 276,
+        "from": 1.02,
+        "to": 1.46,
+        "panX": null,
         "panY": null
       },
       "transition": "cut",
       "cut": {
         "kind": "HARD_CUT",
         "purpose": null,
-        "because": "graphic continuity (#b9c3c9) — the two shots already share a world, so there is nothing to bridge"
+        "because": "the same drawing continuing (terrainSection) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "terrainSection",
       "emphasis": "reservoir's",
-      "reveal": "wipe",
+      "reveal": "rise",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [],
@@ -592,9 +602,9 @@
       "template": "composite",
       "seconds": 1.97,
       "camera": {
-        "from": 1.5,
-        "to": 1.02,
-        "panX": null,
+        "from": 1.21,
+        "to": 1.22,
+        "panX": 179,
         "panY": null
       },
       "transition": "cut",
@@ -606,7 +616,7 @@
       "representation": "PROCEDURAL",
       "drawn": "terrainSection",
       "emphasis": null,
-      "reveal": "punch",
+      "reveal": "wipe",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [],
@@ -620,11 +630,11 @@
     {
       "id": "s09-over-b",
       "template": "composite",
-      "seconds": 2.3,
+      "seconds": 2.27,
       "camera": {
-        "from": 1.21,
-        "to": 1.32,
-        "panX": -157,
+        "from": 1.61,
+        "to": 1.05,
+        "panX": null,
         "panY": null
       },
       "transition": "cut",
@@ -636,7 +646,7 @@
       "representation": "PROCEDURAL",
       "drawn": "terrainSection",
       "emphasis": "crest",
-      "reveal": "blur",
+      "reveal": "punch",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [
@@ -654,21 +664,21 @@
       "template": "composite",
       "seconds": 3.4,
       "camera": {
-        "from": 1.17,
-        "to": 1.29,
-        "panX": -158,
+        "from": 1.03,
+        "to": 1.07,
+        "panX": null,
         "panY": null
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "direction carried (left)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "scale held (medium) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "map",
       "emphasis": "Longarone",
-      "reveal": "blur",
+      "reveal": "wipe",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [],
@@ -684,8 +694,8 @@
       "template": "composite",
       "seconds": 2.1,
       "camera": {
-        "from": 1.04,
-        "to": 1.54,
+        "from": 1.01,
+        "to": 1.44,
         "panX": null,
         "panY": null
       },
@@ -698,10 +708,12 @@
       "representation": "PROCEDURAL",
       "drawn": "map",
       "emphasis": "two thousand people",
-      "reveal": "wipe",
+      "reveal": "rise",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [],
+      "props": [
+        "beam"
+      ],
       "hierarchy": {
         "primary": "the claim: \"two thousand people\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -714,30 +726,32 @@
       "template": "title-slate",
       "seconds": 5.13,
       "camera": {
-        "from": 1,
-        "to": 1.11,
+        "from": 1.03,
+        "to": 1.05,
         "panX": null,
         "panY": null
       },
-      "transition": "cut",
+      "transition": "slip",
       "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "graphic continuity (#b9c3c9) — the two shots already share a world, so there is nothing to bridge"
+        "kind": "OBJECT_WIPE",
+        "purpose": "object transformation",
+        "because": "beat is VERDICT"
       },
-      "representation": "TYPOGRAPHY",
+      "representation": "PHOTO",
       "drawn": null,
       "emphasis": null,
       "reveal": null,
-      "plates": [],
+      "plates": [
+        "s11-close-bg.png"
+      ],
       "drawnGround": "grid",
       "props": [
         "newspaper"
       ],
       "hierarchy": {
-        "primary": "the claim",
-        "secondary": "the drawn label or mark that dates and places it",
-        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "primary": "the closing claim",
+        "secondary": "the strongest image in the reel, returned to",
+        "background": "darkness",
         "carrier": "type"
       }
     }
@@ -802,27 +816,30 @@
   "quotas": {
     "camera": {
       "tilt": 1,
-      "hold": 2,
-      "push": 3,
-      "drift": 4,
-      "pull": 5,
-      "pan": 5
+      "hold": 3,
+      "pan": 6,
+      "drift": 3,
+      "pull": 4,
+      "push": 3
     },
     "transition": {
-      "cut": 19
+      "slip": 2,
+      "cut": 17
     },
     "framing": {},
     "cut": {
-      "HARD_CUT": 18,
+      "OBJECT_WIPE": 2,
+      "HARD_CUT": 16,
       "MATCH_CUT": 1
     }
   },
   "editing": {
     "tally": {
-      "HARD_CUT": 18,
+      "OBJECT_WIPE": 2,
+      "HARD_CUT": 16,
       "MATCH_CUT": 1
     },
-    "hardRatio": 1,
+    "hardRatio": 0.89,
     "total": 19,
     "note": "HARD_CUT and MATCH_CUT are both made of nothing; the difference is that a match cut was earned"
   },

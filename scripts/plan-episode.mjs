@@ -494,6 +494,16 @@ const SCENE_FOR = {
  */
 const SPLIT_AT = /(?<=,)\s+|\s+(?=and\s|but\s|because\s|so\s|then\s|while\s)|(?<=\.)\s+/i;
 /**
+ * …EXCEPT THE "AND" INSIDE A NUMBER.
+ *
+ * "two hundred AND sixty-two metres high" is one figure, and the clause splitter
+ * cut it in half: the reel said "The dam was TWO HUNDRED" and then, after a cut,
+ * "and SIXTY-TWO metres of concrete". A number broken across a cut cannot be
+ * read as a number, let alone emphasised (law 20) — and this one is the first
+ * fact in the film.
+ */
+const NUMBER_JOIN = /\b(?:hundred|thousand|million|billion)\s+and\s+\w/i;
+/**
  * Seconds of speech beyond which a shot stops being a shot and becomes a wait.
  *
  * Pulled down from 3.6. At 3.6 the budget is ten words, and ten words of
@@ -553,7 +563,16 @@ function breakLongest(piece, budget) {
 export function fragmentsOf(vo, max = MAX_SPOKEN) {
   const words = (s) => s.trim().split(/\s+/).filter(Boolean).length;
   const budget = Math.round(max * RATE);
-  const pieces = String(vo).split(SPLIT_AT).map((s) => s.trim()).filter(Boolean);
+  const pieces = [];
+  for (const piece of String(vo).split(SPLIT_AT).map((s) => s.trim()).filter(Boolean)) {
+    const last = pieces[pieces.length - 1];
+    // Re-join a split that landed inside a spoken figure.
+    if (last && NUMBER_JOIN.test(`${last} ${piece}`) && /^and\b/i.test(piece)) {
+      pieces[pieces.length - 1] = `${last} ${piece}`;
+    } else {
+      pieces.push(piece);
+    }
+  }
 
   // Re-join what is too short to stand on its own. A three-word shot is a
   // flash, and a clause like "and kept paying" is not a sentence — the split
@@ -2586,6 +2605,15 @@ function applyDirection({
     scaleHaulage: ['route'],
     timeline: ['tally', 'rise'],
     gearSystem: ['rise'],
+    /**
+     * A SECTION IS NOT A TALLY SHEET.
+     *
+     * The number-word rule put a row of tally strokes in the sky over a valley
+     * because the sentence said "two hundred and sixty-two". Tally marks count
+     * occurrences; a dam's height is a dimension, and the section draws it as
+     * one. Nothing here counts, so nothing here tallies.
+     */
+    terrainSection: ['tally', 'rise', 'route'],
   };
   if (params.motif && (PLAYED_BY[scene.diagram?.type] ?? []).includes(String(params.motif))) {
     delete params.motif;
@@ -3675,6 +3703,44 @@ async function main() {
     });
   }
 
+  /**
+   * A NUMBER INSIDE A CONTINUING DRAWING DOES NOT GET A CARD OF ITS OWN.
+   *
+   * `beatOf` turns any line with a number word into a title-slate, and it
+   * already carves out the case where that is wrong: a line naming `stops`
+   * stays a composite because "the itinerary needs the whole frame … left to
+   * the number-word rule, 'four thousand miles' would make it a title card and
+   * the route would be drawn straight through the title."
+   *
+   * A landslide is the same sentence read again. "The slab slid into the lake
+   * in FORTY-FIVE SECONDS" and "TWO HUNDRED AND SEVENTY MILLION cubic metres of
+   * rock took the reservoir's place" both became three-second cards counting up
+   * on a black field — six seconds of the reel's payoff spent watching a
+   * number, with the section that shows the thing happening cut away to make
+   * room, and the counter passing through 188 and 267 on its way to 270 in a
+   * shot whose whole job is one figure. The drawing already prints it.
+   *
+   * So: where a line's own representation is a drawing that CONTINUES the one
+   * before it, the number goes on the drawing and the shot stays a composite.
+   * A number card is still right where the number is the whole beat — a
+   * standalone tonnage, a death toll — because there is no drawing to put it on.
+   */
+  {
+    const drawnType = (slug) => representation[slug]?.diagram?.type ?? null;
+    for (const [i, line] of brief.lines.entries()) {
+      const mine = drawnType(line.slug);
+      if (!mine) continue;
+      const before = i > 0 ? drawnType(brief.lines[i - 1].slug) : null;
+      const after = i + 1 < brief.lines.length ? drawnType(brief.lines[i + 1].slug) : null;
+      if (mine !== before && mine !== after) continue;
+      if (!NUMBER_WORD.test(line.vo)) continue;
+      if (line.items || line.artefact || line.stops?.length >= 2 || line.pieces?.length) continue;
+      // A hook and a verdict are cards by position, not by their numbers.
+      if (i === 0 || i === brief.lines.length - 1) continue;
+      line.shot = {...(line.shot ?? {}), template: 'composite'};
+    }
+  }
+
   /** Quotas, counted across the whole reel rather than over a sliding three. */
   const quota = {camera: {}, transition: {}, framing: {}};
 
@@ -4028,6 +4094,50 @@ async function main() {
     }
     return out;
   };
+
+  /**
+   * A PLACE DOES NOT COME AND GO WITH THE SENTENCE.
+   *
+   * Each terrain section was built from its own line, so the reservoir and the
+   * dam appeared only in the sentences that happened to name them. The reel
+   * showed the lake, then a bare valley for two shots, then the lake again —
+   * and the shot of the slab sliding INTO THE LAKE had no lake in it, because
+   * that sentence says "lake" and not "reservoir". A section is a section OF A
+   * PLACE, and the place is the same place all the way through.
+   *
+   * So the setting — the ground profile, the beds under it, the structure and
+   * the water it impounds — is established once for the episode from the
+   * richest description any line gives, and every section shares it. What stays
+   * per-sentence is the EVENT: which mass moves, when the water gets into the
+   * bed, when it goes over the crest. Continuity of place, exactly as law 31
+   * asks for continuity of object.
+   */
+  {
+    const sections = config.scenes.filter((s) => s.diagram?.type === 'terrainSection');
+    if (sections.length > 1) {
+      const richest = (key) =>
+        sections.map((s) => s.diagram[key]).find((v) => (Array.isArray(v) ? v.length : v != null)) ?? null;
+      // A structure that carries its dimension is the fuller description of the
+      // same structure, so it is the one the whole episode inherits.
+      const structure =
+        sections.map((s) => s.diagram.structure).find((v) => v?.height) ?? richest('structure');
+      const beds = sections
+        .map((s) => s.diagram.beds)
+        .filter(Boolean)
+        .sort((a, b) => b.length - a.length)[0] ?? null;
+      const setting = {
+        profile: richest('profile'),
+        beds,
+        structure,
+        water: richest('water'),
+      };
+      for (const scene of sections) {
+        for (const [key, value] of Object.entries(setting)) {
+          if (value != null) scene.diagram[key] = value;
+        }
+      }
+    }
+  }
 
   /**
    * A PROCESS CONTINUES ACROSS THE CUT; AN ASSEMBLY HOLDS.
