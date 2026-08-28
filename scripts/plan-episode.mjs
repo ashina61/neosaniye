@@ -2911,8 +2911,25 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
      * With a footer under the figure the mark becomes the one that sits at the
      * bottom edge of its own box and cannot wrap around a second line.
      */
-    const ENCLOSING_MARKS = new Set(['oval', 'box']);
-    const wraps = (kind) => ENCLOSING_MARKS.has(kind) && Boolean(scene.params.footer);
+    /**
+     * AND A CARD THAT DRAWS ITS OWN RULES DOES NOT NEED A FOURTH ONE.
+     *
+     * Turning the enclosing mark into an underline moved the collision instead
+     * of ending it: the rule then landed ON "years, and still curing" instead of
+     * around it. The reason is that the mark's box is hardcoded pixel geometry —
+     * 260/820/560/300, tuned for a card carrying nothing but a number — while
+     * the slate itself is a FLEX-CENTRED block: kicker, rule, title, rule,
+     * footer, its height and therefore its position decided at render time. Add
+     * a qualifier and the block grows and shifts, and the fixed box no longer
+     * knows where anything is.
+     *
+     * A slate already draws rules above and below its title. Those ARE the
+     * mark. So where the card also carries a footer — the one case where the
+     * block is tall enough for the guess to be wrong — no mark is placed at
+     * all. Cards without one keep it, and there it sits under the title as
+     * intended.
+     */
+    const wantsFooter = Boolean(scene.params.footer);
     /**
      * The draw is taken BEFORE the title is tested, so that refusing a mark
      * does not shift the seeded stream underneath every later decision: the
@@ -2920,9 +2937,9 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
      * shots later, dropped a motif onto a caption. Same seed, same reel.
      */
     const wantsMark = rand() > 0.45;
-    if (scene.params.title && wantsMark) {
+    if (scene.params.title && !wantsFooter && wantsMark) {
       Object.assign(scene.params, {
-        mark: MIDLINE_MARKS.has(look.mark) || wraps(look.mark) ? 'underline' : look.mark,
+        mark: MIDLINE_MARKS.has(look.mark) ? 'underline' : look.mark,
         markX: 260,
         markY: number ? 820 : 1160,
         markWidth: 560,
