@@ -2,7 +2,7 @@
 
 Rendered and inspected at 0%, 33%, 66% and 94% of **every one of the 109 shots**.
 Nothing in the visual system, the DNA, the engine, the representation vocabulary,
-the metrics, the gates or the tests was changed. **Nineteen** defects were fixed at
+the metrics, the gates or the tests was changed. **Twenty** defects were fixed at
 their root cause in the **planner**, and the ones that mattered most were found by
 looking at a frame — three of them only by watching the finished video end to
 end, after every gate and every contact sheet had passed them.
@@ -17,7 +17,7 @@ they all had one shape:
 > **A placer that knows its own object and not the other object in the frame.**
 
 The gates could not see them because each gate knew where *one* thing was. Then
-the frames showed nine more that no gate models at all — and three of those only
+the frames showed ten more that no gate models at all — and four of those only
 surfaced on the finished VIDEO, after every gate and every contact sheet had
 passed them. A contact sheet samples four frames of a shot; the thing it cannot
 show you is what the first second of the reel feels like.
@@ -43,8 +43,14 @@ show you is what the first second of the reel feels like.
 | 17 | The same six words twice, once as type and once on a brass plate | opening and closing card of all five | a plaque carries its shot's label (law 2) and the slate prints that label too | a prop does not repeat the card's own words |
 | 18 | An emphasis rule drawn under a title that had not arrived | Hormuz, Baalbek, sword | it satisfies the two-event count and still shows a viewer nothing | the reel's first card states itself at once — every other shot inherits an established frame from the cut before it; the first has nothing behind it |
 | 19 | The opening title announced in 90pt type, then screwed to a brass plate two seconds later | 4 of 5 | dropping the plaque that repeated the card's own words fixed the FRAME and not the REEL — the shot after the opening card carries the line's label, and the card's title is that label | asked at reel level, where the neighbours exist, before the passes that count events |
+| 20 | An oval ruled through "years, and still curing" — and then, after the first fix, an underline ruled ACROSS it | closing card of 3 of 5 | the mark's box is hardcoded pixel geometry (260/820/560/300, tuned for a card carrying only a number) while the slate is a FLEX-CENTRED block whose height and position are decided at render time | a slate already draws rules above and below its title; those ARE the mark, so a card that also carries a footer gets none |
 
-Two of these were mistakes of my own, caught and reverted:
+Number 20 is a correction to number 19 of this same run: the first fix converted
+the enclosing oval to an underline, which moved the collision instead of ending
+it. It was caught only because the specific frame the fix was meant to repair was
+checked afterwards, rather than the fix being assumed to work.
+
+Two other mistakes of my own were caught and reverted:
 
 - I briefly renamed each camera move after its own numbers, which reported pushes
   at 45–64%. Wrong: `cameraFamily` honours the declared move **by design**,
