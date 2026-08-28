@@ -884,11 +884,17 @@ export function buildTerrainSection({vo, seed, accent, muted, claims = []}) {
 
   if (plane || goes || creeps) {
     spec.mass = {
+      /**
+       * A BODY ON THE FLANK, NOT THE FLANK ITSELF. At its first size the slab
+       * was a quarter of the frame wide and, framed close, filled it — so the
+       * shot read as an abstract hatched diagonal rather than as a piece of a
+       * mountain with a mountain around it.
+       */
       shape: [
-        [0.20, 0.365],
-        [0.42, 0.475],
-        [0.46, 0.60],
-        [0.24, 0.50],
+        [0.235, 0.395],
+        [0.395, 0.475],
+        [0.425, 0.565],
+        [0.265, 0.495],
       ],
       plane: [
         [0.16, 0.34],
@@ -918,12 +924,27 @@ export function buildTerrainSection({vo, seed, accent, muted, claims = []}) {
    * ones about the valley. Fourteen sections framed identically is one picture
    * shown fourteen times, whatever moves inside it.
    */
-  if (spills || isHeight) {
-    spec.focus = {x: 0.70, y: 0.47, scale: 1.42};
+  if (spills) {
+    // At the wall, for the thing the wall does.
+    spec.focus = {x: 0.70, y: 0.46, scale: 1.46};
+  } else if (isHeight) {
+    spec.focus = {x: 0.68, y: 0.47, scale: 1.34};
   } else if (plane && !goes) {
-    spec.focus = {x: 0.33, y: 0.47, scale: 1.34};
+    spec.focus = {x: 0.34, y: 0.47, scale: 1.30};
+  } else if (travels) {
+    // With the mass, close, while it travels.
+    spec.focus = {x: 0.40, y: 0.53, scale: 1.44};
+  } else if (already) {
+    /**
+     * AND WIDE FOR THE CONSEQUENCE. Close, wide, close is an edit; three
+     * consecutive shots at one distance is one shot played three times, whatever
+     * moves inside it. The sentence earns the pull-back: "the rock took the
+     * reservoir's place" is a claim about the whole basin, so the whole basin is
+     * what to show.
+     */
+    spec.focus = {x: 0.5, y: 0.52, scale: 1.0};
   } else if (goes) {
-    spec.focus = {x: 0.45, y: 0.52, scale: 1.18};
+    spec.focus = {x: 0.45, y: 0.52, scale: 1.16};
   }
 
   if (seeps && plane) spec.seepage = {at: 4, over: 18, label: 'water in the bed'};

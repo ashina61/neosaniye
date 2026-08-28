@@ -360,19 +360,50 @@ export const TerrainSectionPlate: React.FC<{spec: TerrainSectionSpec; cam?: Cam}
                     {/* THE WATER GOING OVER. It leaves the crest and falls; a
                         glow or a flash here would be decoration, and this is
                         the consequence the whole section was built to show. */}
+                    {/**
+                      * THE WATER GOING OVER IS THE SHOT.
+                      *
+                      * The first version tinted a thin wedge at 45% and the
+                      * payoff frame — the one the whole film is built toward —
+                      * read as a lake that was merely high. What a dam does when
+                      * it is overtopped is that a SHEET of water leaves the crest
+                      * and falls the height of the wall, so that is what is
+                      * drawn: it clears the crest, curves over, and lands.
+                      */}
                     {spill > 0.02 ? (
-                      <g opacity={Math.min(1, spill * 1.4)}>
-                        <path
-                          d={`M ${(s.x - s.width / 2) * w} ${s.base * h}
-                              C ${(s.x + s.width * 0.2) * w} ${(s.base - 0.012 * spill) * h},
-                                ${(s.x + s.width * 0.8) * w} ${(s.base + 0.05 * spill) * h},
-                                ${(s.x + s.width * 0.75) * w} ${(s.base + 0.22 * spill) * h}
-                              L ${(s.x + s.width / 2) * w} ${(s.base + 0.2 * spill) * h}
-                              L ${(s.x + s.width / 2) * w} ${s.base * h} Z`}
-                          fill="#7fb2c4"
-                          opacity={0.45}
-                        />
-                        <Motes w={w} h={h} colour="#cfe4ec" count={10} seed="spill" band={[0.3, 0.6]} />
+                      <g opacity={Math.min(1, spill * 1.6)}>
+                        {(() => {
+                          const drop = 0.30 * spill;
+                          const lip = s.x - s.width / 2;
+                          const toe = s.x + s.width / 2;
+                          const foot = Math.max(groundAt(profile, s.x), s.base);
+                          return (
+                            <>
+                              <path
+                                d={`M ${lip * w} ${(s.base - 0.008) * h}
+                                    C ${(toe + s.width * 0.5) * w} ${(s.base - 0.004) * h},
+                                      ${(toe + s.width * 1.1) * w} ${(s.base + drop * 0.55) * h},
+                                      ${(toe + s.width * 0.9) * w} ${Math.min(foot, s.base + drop) * h}
+                                    L ${(toe - s.width * 0.1) * w} ${Math.min(foot, s.base + drop) * h}
+                                    C ${(toe - s.width * 0.2) * w} ${(s.base + drop * 0.5) * h},
+                                      ${toe * w} ${(s.base + drop * 0.2) * h},
+                                      ${toe * w} ${(s.base - 0.008) * h} Z`}
+                                fill="#8fc0d2"
+                                opacity={0.72}
+                              />
+                              {/* The lip itself: a bright line where the sheet
+                                  leaves the concrete. */}
+                              <path
+                                d={`M ${lip * w} ${(s.base - 0.008) * h} L ${toe * w} ${(s.base - 0.008) * h}`}
+                                stroke="#dcefF5"
+                                strokeWidth={weight.emphasis}
+                                fill="none"
+                                opacity={0.9}
+                              />
+                              <Motes w={w} h={h} colour="#cfe4ec" count={16} seed="spill" band={[0.42, 0.72]} />
+                            </>
+                          );
+                        })()}
                       </g>
                     ) : null}
                   </>
