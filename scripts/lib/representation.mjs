@@ -33,7 +33,7 @@
  */
 
 import {NEEDS_A_PICTURE, SERVES, contract, readSubject, semanticCheck} from './semantics.mjs';
-import {buildAnatomyFlow, buildCrossSection, buildMap, buildProcess, buildScaleHaulage} from './visualise.mjs';
+import {buildAnatomyFlow, buildCrossSection, buildMap, buildMouldCast, buildProcess, buildScaleHaulage} from './visualise.mjs';
 
 export const REPRESENTATIONS = [
   'PHOTO',
@@ -93,6 +93,12 @@ export const CAPTION_ZONE = {
   crossSection: {y: 0.06, align: 'left'},
   anatomyFlow: {y: 0.055, align: 'left'},
   scaleHaulage: {y: 0.7, align: 'left'},
+  /**
+   * The form stands on a ground line at two thirds, and the state label and its
+   * cause take the band under it. The words go ABOVE — under them they land on
+   * the sentence the drawing is already making.
+   */
+  mouldCast: {y: 0.07, align: 'left'},
 };
 
 /** Words that say the shot is about a machine with moving parts. */
@@ -202,6 +208,7 @@ const DEMONSTRATES = {
   crossSection: ['crack_propagation', 'fluid_ingress', 'reaction', 'self_healing', 'wall_thickness'],
   anatomyFlow: ['chambers', 'valves', 'one_way_flow', 'circulation', 'contraction', 'wall_thickness', 'delay'],
   scaleHaulage: ['mass', 'human_scale', 'haulage', 'distance'],
+  mouldCast: ['engulf_front', 'entombment', 'decay', 'void_left', 'infill', 'sequence'],
   measurement: ['mass', 'distance', 'narrowness'],
   timeline: ['duration'],
   gearSystem: [],
@@ -209,7 +216,7 @@ const DEMONSTRATES = {
   scan: ['fluid_ingress'],
 };
 
-const SPECIFICITY = ['anatomyFlow', 'crossSection', 'process', 'map', 'scaleHaulage', 'orbit', 'gearSystem', 'timeline', 'scan', 'measurement'];
+const SPECIFICITY = ['mouldCast', 'anatomyFlow', 'crossSection', 'process', 'map', 'scaleHaulage', 'orbit', 'gearSystem', 'timeline', 'scan', 'measurement'];
 
 export function bestDrawing({domain = 'abstract', domains = [], claims = []}) {
   const candidates = Object.keys(DEMONSTRATES).filter((type) =>
@@ -288,6 +295,7 @@ export function chooseRepresentation({
     crossSection: () => buildCrossSection({vo, seed, accent, muted, claims: read.claims}),
     anatomyFlow: () => buildAnatomyFlow({vo, accent, muted, claims: read.claims}),
     scaleHaulage: () => buildScaleHaulage({vo, accent, muted, claims: read.claims, anchorFigure}),
+    mouldCast: () => buildMouldCast({vo, accent, muted, claims: read.claims}),
   };
 
   /**

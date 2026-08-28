@@ -71,6 +71,18 @@ export const SERVES = {
    * domain, and the builder answers it.
    */
   scaleHaulage: ['scale'],
+  /**
+   * A MOULD IS ABOUT A PROCESS AND ABOUT A MATERIAL, AND IT IS ABOUT NEITHER
+   * ANATOMY NOR GEOGRAPHY.
+   *
+   * The line that raised this — a body sealed in ash, decaying, leaving a
+   * cavity — reads as `anatomy` on the word "body", and anatomy's drawing is a
+   * circuit of chambers. It produced four heart chambers labelled UPPER and
+   * LOWER over a sentence about a corpse in a volcanic deposit. Declaring
+   * anatomy here would let that back in through the front door: what is being
+   * depicted is not the body, it is what HAPPENED TO the space it occupied.
+   */
+  mouldCast: ['process', 'material'],
   gearSystem: ['mechanism'],
   timeline: ['elapsed'],
   measurement: ['scale', 'quantity', 'geography'],
@@ -110,11 +122,11 @@ const SIGNALS = [
   ],
   [
     'process',
-    /\b(forge[ds]?|forging|smith|anvil|billet|blade|sword|hammer\w*|fold\w*|quench\w*|temper\w*|smelt\w*|cast|casting|weld\w*|anneal\w*|carve[ds]?|mix\w*|mixed|pour\w*|poured|cure[ds]?|curing|bake[ds]?|brew\w*|distil\w*|grind\w*|polish\w*|assembl\w*|layers?|step by step|heated|heating|cool\w*|blown|dried|drying|melt\w*|harden\w*|batch)\b/i,
+    /\b(forge[ds]?|forging|smith|anvil|billet|blade|sword|hammer\w*|fold\w*|quench\w*|temper\w*|smelt\w*|cast|casting|weld\w*|anneal\w*|carve[ds]?|mix\w*|mixed|pour\w*|poured|cure[ds]?|curing|bake[ds]?|brew\w*|distil\w*|grind\w*|polish\w*|assembl\w*|layers?|step by step|heated|heating|cool\w*|blown|dried|drying|melt\w*|harden\w*|batch|buri\w*|burial|entomb\w*|engulf\w*|decay\w*|decompos\w*)\b/i,
   ],
   [
     'material',
-    /\b(crack\w*|fracture\w*|crystal\w*|recrystallis\w*|recrystalliz\w*|lime|concrete|cement|mortar|corro\w*|rust\w*|dissolv\w*|react\w*|seal\w*|pore|porous|grain|alloy|carbon|steel|iron|molecul\w*|chemical|mineral|inside the|within the)\b/i,
+    /\b(crack\w*|fracture\w*|crystal\w*|recrystallis\w*|recrystalliz\w*|lime|concrete|cement|mortar|corro\w*|rust\w*|dissolv\w*|react\w*|seal\w*|pore|porous|grain|alloy|carbon|steel|iron|molecul\w*|chemical|mineral|ash|ashes|pumice|tephra|sediment|silt|plaster|inside the|within the)\b/i,
   ],
   [
     'scale',
@@ -142,6 +154,7 @@ const SUBJECTS = [
   ['romanConcrete', /\b(concrete|cement|mortar|pozzolan\w*|lime)\b/i],
   ['megalith', /\b(megalith|block|blocks|stone|stones|trilithon)\b/i],
   ['mechanism', /\b(gears?|cogs?|clockwork|escapement)\b/i],
+  ['mouldCast', /\b(cavit\w*|plaster cast|entomb\w*)\b/i],
 ];
 
 /**
@@ -155,6 +168,7 @@ const SUBJECTS = [
  * FRAGMENT of the sentence the drawing was chosen for.
  */
 export const SUBJECT_DOMAIN = {
+  mouldCast: 'process',
   humanHeart: 'anatomy',
   circulation: 'anatomy',
   strait: 'geography',
@@ -190,6 +204,21 @@ const CLAIMS = [
   ['haulage', /\b(roll\w*|haul\w*|drag\w*|slid|sledge|rope|capstan)\b/i],
   ['distance', /\b(miles?|kilometres?|kilometers?|metres?|meters?|feet|uphill)\b/i],
   ['duration', /\b(years?|months?|decades?|centuries|hours?|days?)\b/i],
+  /**
+   * ENGULFMENT AND RECOVERY BY NEGATIVE SPACE.
+   *
+   * Deliberately narrow. `seal` and `dissolve` already belong to the section's
+   * chemistry — "the lime dissolves, recrystallises across the gap, and seals
+   * it" is a reaction inside a material, not a burial — so sealing counts here
+   * only when something is sealed IN or UNDER or a body is sealed, and decay
+   * excludes dissolution. Widening any of these takes lines off the drawing
+   * that was built for them.
+   */
+  ['engulf_front', /\b(current|surge|swept|rushed|raced|poured down|flowed?|flowing|rolled over)\b/i],
+  ['entombment', /\b(buri\w*|engulf\w*|entomb\w*|swallow\w*)\b|\bseal\w*\s+(?:each|every|the body|them|her|him|in|under)\b/i],
+  ['decay', /\b(decay\w*|decompos\w*|rots?|rotted|rotting|vanish\w*|left nothing)\b/i],
+  ['void_left', /\b(cavit\w*|hollows?|voids?|impressions?|empty space|the space (?:it|they|he|she) left)\b/i],
+  ['infill', /\b(plaster|infill|poured in)\b|\bfilled? (?:in|with)\b|\bpour\w*\b[^.]*\binto the (?:cavity|cavities|void|hollow|space|mould|mold|impression)\b/i],
 ];
 
 /**

@@ -1541,8 +1541,14 @@ function standClear(props, zone) {
      * clamped into the safe band — if the clamped position still clears the
      * words and the other objects, it stands there.
      */
-    const floor = HEIGHT * 0.04 + half;
-    const ceiling = HEIGHT * 0.9 - half;
+    /**
+     * A pixel of slack, because the bound is fractional and the position it
+     * produces is rounded to an integer: a clamp that lands exactly on the
+     * floor rounds DOWN through it, and the checker measures the rounded value.
+     * Four tenths of a pixel put a newspaper outside the safe area.
+     */
+    const floor = HEIGHT * 0.04 + half + 1;
+    const ceiling = HEIGHT * 0.9 - half - 1;
     const clamp = (v) => Math.min(ceiling, Math.max(floor, v));
     const candidates = [y];
     if (zone) {
@@ -3832,6 +3838,35 @@ async function main() {
         break;
       }
       if (!moved) break;
+    }
+  }
+
+  /**
+   * AND THE CAPTION CLAMP IS APPLIED AGAIN, ONCE THE SHOT IS ITS FINAL LENGTH.
+   *
+   * `lastUseful` is computed while the shot is being planned, against the
+   * duration it has at that moment — and the reel is cut to the clock
+   * afterwards, so a shot that loses a fifth of its length keeps a caption
+   * timed for the longer version. "The streets were open" arrived at 62% of a
+   * shot that had since shrunk to 1.7 seconds, leaving four words two thirds of
+   * a second to be read in. The clamp was right; it was just asked too early,
+   * so it is asked again here, where the duration is the one that ships — and
+   * AFTER the separation pass, which is entitled to push a caption later and
+   * has no idea there is a deadline. Two beats three frames apart is a smaller
+   * fault than a sentence nobody can read.
+   */
+  for (const scene of config.scenes) {
+    const p = scene.params ?? {};
+    const caption = Array.isArray(p.caption) ? p.caption : [];
+    if (!caption.length || typeof p.captionFrame !== 'number' || p.captionFrame < 0) continue;
+    const words = caption.join(' ').split(/\s+/).filter(Boolean).length;
+    const lastUseful = Math.max(
+      2,
+      Math.min(Math.round(scene.durationInFrames * 0.62), scene.durationInFrames - readingFrames(words, FPS)),
+    );
+    if (p.captionFrame > lastUseful) {
+      p.captionFrame = lastUseful;
+      if (Number(p.captionRecedeAt) <= lastUseful) p.captionRecedeAt = Math.max(1, scene.durationInFrames - 6);
     }
   }
 

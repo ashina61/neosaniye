@@ -602,3 +602,65 @@ export function buildScaleHaulage({vo, accent, muted, claims = [], anchorFigure 
   if (claims.includes('distance')) spec.distance = {label: 'uphill'};
   return spec;
 }
+
+/**
+ * A FORM LOST INSIDE A MEDIUM, AND RECOVERED AS ITS NEGATIVE.
+ *
+ * The stages are read off the sentence exactly the way the process builder
+ * reads its verbs, and for the same reason: a line almost always names the part
+ * of the mechanism it is about. "Ash sealed each body, the body decayed, and a
+ * cavity was left" names three of them in order; "diggers poured plaster into
+ * the cavity" names the last two.
+ *
+ * A LINE THAT NAMES NONE OF THEM GETS NOTHING. This builder refuses, the way
+ * the process builder refuses a line with no transformation in it, because the
+ * alternative is a five-stage burial diagram appearing under a sentence that
+ * never mentioned one.
+ */
+export function buildMouldCast({vo, accent, muted, claims = []}) {
+  const said = (re) => has(vo, re);
+  const wants = [];
+  // Order is the mechanism's order, not the sentence's: a line may mention the
+  // cavity before the decay that produced it, and the drawing still has to run
+  // forwards.
+  if (said(/\b(stood|standing|before|was there|lived|walked)\b/i)) wants.push('form');
+  if (claims.includes('engulf_front') || claims.includes('entombment')) wants.push('engulf');
+  if (claims.includes('decay') || claims.includes('void_left')) wants.push('void');
+  if (claims.includes('infill')) wants.push('fill');
+  if (said(/\b(cast|casts|the shape of|came back|form returned|figure)\b/i) && wants.includes('fill')) {
+    wants.push('cast');
+  }
+  if (!wants.length) return null;
+  /**
+   * A ONE-STAGE SHOT IS A STILL. Where the line names a single stage the
+   * drawing plays it FROM the state before it, so the viewer sees the change
+   * that stage IS rather than the state it leaves behind.
+   */
+  const ORDER = ['form', 'engulf', 'void', 'fill', 'cast'];
+  if (wants.length === 1) {
+    const only = ORDER.indexOf(wants[0]);
+    if (only > 0) wants.unshift(ORDER[only - 1]);
+  }
+  const stages = ORDER.filter((s) => wants.includes(s));
+
+  const medium = said(/\bash|pumice|tephra|silt|sediment|sand|mud|tar|ice\b/i) ? 'ash' : 'the deposit';
+  const filler = said(/\bplaster\b/i) ? 'plaster' : said(/\bbronze|metal\b/i) ? 'bronze' : 'the fill';
+
+  return {
+    type: 'mouldCast',
+    accent,
+    muted,
+    form: {label: 'the form', height: 0.2},
+    medium: {label: medium, material: 'concrete'},
+    filler: {label: filler},
+    stages,
+    captions: {
+      engulf: {state: 'ENGULFED', cause: `${medium} arrives and banks up`},
+      void: {state: 'VOID', cause: 'the form decays and leaves its shape'},
+      fill: {state: 'FILLED', cause: `${filler} is poured into the space`},
+      cast: {state: 'CAST', cause: 'the fill IS the form, in new material'},
+    },
+    subject: 'mouldCast',
+    depicts: 'process',
+  };
+}

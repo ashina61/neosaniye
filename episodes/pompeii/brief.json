@@ -1,56 +1,99 @@
 {
   "id": "pompeii",
-  "title": "Pompeii — the city buried in an afternoon",
+  "title": "Pompeii — what actually happened to the people",
   "mood": "ash-grey",
   "style": "documentary photograph, Roman Italy, hard Mediterranean light, ash grey and terracotta, fine grain, no text, no watermark, no modern objects",
+  "negative": "no modern buildings, no tourists, no signage, no cartoon, no illustration",
+  "$supply": {
+    "cutouts": false
+  },
   "lines": [
     {
-      "slug": "morning",
-      "vo": "On an August morning a Roman town went about its business.",
-      "image": "a paved street of stone houses under hard morning sun, no people",
-      "imageCommons": ["Pompeii Via dell'Abbondanza", "Pompeii street ruins"],
+      "slug": "hook",
+      "vo": "The victims of Pompeii were not killed by falling rock.",
+      "graphicsOnly": true,
       "kicker": "Campania · 79 AD",
-      "title": "AN ORDINARY DAY",
-      "footer": "twenty thousand people lived here"
+      "title": "NOT THE ROCK",
+      "footer": "the disaster came in stages"
     },
     {
       "slug": "mountain",
-      "vo": "Nobody there had a word for what the mountain was.",
-      "image": "a broad mountain over a bay, seen from a distance",
-      "imageCommons": ["Mount Vesuvius from Pompeii", "Mount Vesuvius"],
-      "caption": ["No word", "for volcano.", "Not yet."]
-    },
-    {
-      "slug": "column",
-      "vo": "Just after noon it opened, and threw ash twenty miles up.",
-      "image": "a towering ash column against a bruised sky",
-      "imageCommons": ["Vesuvius eruption plume", "volcanic eruption column"],
-      "motif": "embers"
+      "vo": "The mountain stood five miles from the town, across the bay.",
+      "graphicsOnly": true,
+      "stops": [
+        "VESUVIUS",
+        "POMPEII"
+      ],
+      "caption": [
+        "Five miles",
+        "of open ground."
+      ]
     },
     {
       "slug": "fall",
-      "vo": "Pumice fell for hours. Roofs took the weight, then gave.",
-      "image": "a collapsed tiled roof over a stone room, rubble on the floor",
-      "imageCommons": ["Pompeii collapsed roof", "Pompeii ruins interior"],
-      "onScreen": "SIX HOURS"
+      "vo": "Pumice came down on the roofs, grain after grain, hour after hour.",
+      "graphicsOnly": true,
+      "onScreen": "EIGHTEEN HOURS"
+    },
+    {
+      "slug": "window",
+      "vo": "The streets were open, and the road to the coast was still a way out.",
+      "graphicsOnly": true,
+      "stops": [
+        "POMPEII",
+        "THE COAST"
+      ]
+    },
+    {
+      "slug": "change",
+      "vo": "Then it changed.",
+      "graphicsOnly": true,
+      "kicker": "",
+      "title": "IT CHANGED",
+      "footer": ""
+    },
+    {
+      "slug": "current",
+      "vo": "A current of hot ash swept down and buried the streets.",
+      "graphicsOnly": true,
+      "caption": [
+        "Not falling.",
+        "FLOWING."
+      ]
+    },
+    {
+      "slug": "heat",
+      "vo": "The heat killed them, and it killed them fast.",
+      "graphicsOnly": true
     },
     {
       "slug": "cast",
-      "vo": "What buried them also kept them, exactly where they fell.",
-      "image": "a plaster cast of a figure lying in a glass case",
-      "imageCommons": ["Pompeii plaster cast body", "Pompeii casts"],
-      "artefact": "a close view of a plaster cast of a curled figure, grey and cracked",
-      "artefactCommons": ["Pompeii body cast", "Garden of the Fugitives Pompeii"],
-      "caption": ["Not bones.", "The shape", "the body left."]
+      "vo": "Ash sealed each body, and the body decayed to a cavity.",
+      "graphicsOnly": true,
+      "caption": [
+        "A hollow",
+        "where a person",
+        "had been."
+      ]
+    },
+    {
+      "slug": "plaster",
+      "vo": "Diggers poured plaster into the cavity, and the shape of a person came back.",
+      "graphicsOnly": true,
+      "onScreen": "SCHEMATIC RECONSTRUCTION"
+    },
+    {
+      "slug": "notstone",
+      "vo": "The famous casts are not people turned to stone.",
+      "graphicsOnly": true
     },
     {
       "slug": "close",
-      "vo": "Seventeen centuries later somebody dug, and the afternoon was still there.",
-      "image": "an excavated street trench cut through grey ash",
-      "imageCommons": ["Pompeii excavation", "Pompeii archaeological site"],
-      "kicker": "Rediscovered · 1748",
-      "title": "SEVENTEEN CENTURIES",
-      "footer": "the afternoon was still there"
+      "vo": "Pompeii was not destroyed in one instant. It was destroyed in stages.",
+      "graphicsOnly": true,
+      "kicker": "Vesuvius · 79 AD",
+      "title": "IN STAGES",
+      "footer": "pumice, then ash, then the current"
     }
   ]
 }

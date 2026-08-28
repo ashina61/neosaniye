@@ -1016,6 +1016,26 @@ export function boundsOf(scene, {width, height}) {
       bottom: ground,
     });
   }
+  if (d?.type === 'mouldCast') {
+    /**
+     * The same arithmetic the plate does: a form of the stated height standing
+     * on a ground line at two thirds, and the deposit banked up to just over
+     * the top of it. The state label and the run strip sit below the ground and
+     * are part of the drawing's own furniture, so they are inside the box.
+     */
+    const formH = n(d.form?.h ?? d.form?.height, 0.2) * height;
+    const ground = height * 0.66;
+    out.push({
+      what: 'mouldCast form',
+      role: 'drawn',
+      camera: true,
+      left: width * 0.5 - formH * 0.42,
+      right: width * 0.5 + formH * 0.42,
+      top: ground - formH * 1.2,
+      bottom: ground,
+    });
+    out.push({what: 'mouldCast label', role: 'drawn', left: width * 0.16, right: width * 0.84, top: height * 0.745, bottom: height * 0.83});
+  }
   if (d?.type === 'process') {
     out.push({what: 'process object', role: 'drawn', camera: true, left: width * 0.2, right: width * 0.8, top: height * 0.3, bottom: height * 0.54});
   }

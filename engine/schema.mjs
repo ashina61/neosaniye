@@ -115,6 +115,8 @@ export const DIAGRAM_KINDS = [
   'crossSection',
   'anatomyFlow',
   'scaleHaulage',
+  // And the sixth: a form lost inside a medium and recovered as its negative.
+  'mouldCast',
 ];
 
 export const OPTIONAL_ROLE = '?';

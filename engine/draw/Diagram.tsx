@@ -43,6 +43,7 @@ import {AnatomyFlowPlate, AnatomyFlowSpec} from './AnatomyFlow';
 import {CrossSectionPlate, CrossSectionSpec} from './CrossSection';
 import {MapPlate, MapSpec} from './Map';
 import {ProcessPlate, ProcessSpec} from './Process';
+import {MouldCastPlate, MouldCastSpec} from './MouldCast';
 import {ScaleHaulagePlate, ScaleHaulageSpec} from './ScaleHaulage';
 import {Cam, Disclosure, MONO, SANS, Sheet, Ticks, worldTransform} from './sheet';
 
@@ -66,9 +67,10 @@ export type DiagramSpec =
   | ProcessSpec
   | CrossSectionSpec
   | AnatomyFlowSpec
-  | ScaleHaulageSpec;
+  | ScaleHaulageSpec
+  | MouldCastSpec;
 
-export type {MapSpec, ProcessSpec, CrossSectionSpec, AnatomyFlowSpec, ScaleHaulageSpec};
+export type {MapSpec, ProcessSpec, CrossSectionSpec, AnatomyFlowSpec, ScaleHaulageSpec, MouldCastSpec};
 
 type Common = Sheet;
 
@@ -884,6 +886,8 @@ export const Diagram: React.FC<{
       return <AnatomyFlowPlate spec={spec} w={width} h={height} cam={cam} />;
     case 'scaleHaulage':
       return <ScaleHaulagePlate spec={spec} w={width} h={height} cam={cam} />;
+    case 'mouldCast':
+      return <MouldCastPlate spec={spec} w={width} h={height} cam={cam} />;
     default:
       return null;
   }
