@@ -84,6 +84,13 @@ export type TerrainSectionSpec = Sheet & {
    * than guessed by the planner, and it moves only when the subject moves.
    */
   focus?: {x: number; y: number; scale: number};
+  /**
+   * NAMED PLACES ON THE PROFILE — the town below the dam, the village on the
+   * shoulder. A section can say WHERE as well as what: the whole point of the
+   * last beat of a dam story is that the water arrived somewhere with a name in
+   * it, and a plan-view map cannot draw water arriving.
+   */
+  places?: {x: number; label: string; below?: boolean}[];
   annotations?: {x: number; y: number; text: string; side?: 'left' | 'right'; at?: number}[];
   scaleNote?: string;
 };
@@ -411,6 +418,31 @@ export const TerrainSectionPlate: React.FC<{spec: TerrainSectionSpec; cam?: Cam}
               })()}
             </g>
           ) : null}
+
+          {/* NAMED PLACES, sitting on the ground they are built on. */}
+          {(spec.places ?? []).map((place, i) => {
+            const y = groundAt(profile, place.x);
+            const px = place.x * w;
+            const py = y * h;
+            const right = place.x < 0.6;
+            return (
+              <g key={`p${i}`} opacity={on}>
+                <circle cx={px} cy={py} r={w * 0.007} fill={accent} />
+                <line x1={px} y1={py} x2={px} y2={py - h * 0.028} stroke={accent} strokeWidth={weight.detail} />
+                <text
+                  x={right ? px + w * 0.012 : px - w * 0.012}
+                  y={py - h * 0.034}
+                  fill={accent}
+                  fontFamily={MONO}
+                  fontSize={w * 0.024}
+                  letterSpacing="0.14em"
+                  textAnchor={right ? 'start' : 'end'}
+                >
+                  {String(place.label).toUpperCase()}
+                </text>
+              </g>
+            );
+          })}
 
           {/* THE STRUCTURE'S HEIGHT, as a dimension rather than a claim in a
               caption: a number beside the thing it measures. */}

@@ -662,7 +662,7 @@
     {
       "id": "s10-town",
       "template": "composite",
-      "seconds": 3.4,
+      "seconds": 3.3,
       "camera": {
         "from": 1.03,
         "to": 1.07,
@@ -673,10 +673,10 @@
       "cut": {
         "kind": "HARD_CUT",
         "purpose": null,
-        "because": "scale held (medium) — the two shots already share a world, so there is nothing to bridge"
+        "because": "the same drawing continuing (terrainSection) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
-      "drawn": "map",
+      "drawn": "terrainSection",
       "emphasis": "Longarone",
       "reveal": "wipe",
       "plates": [],
@@ -692,7 +692,7 @@
     {
       "id": "s10-town-b",
       "template": "composite",
-      "seconds": 2.1,
+      "seconds": 2.07,
       "camera": {
         "from": 1.01,
         "to": 1.44,
@@ -703,10 +703,10 @@
       "cut": {
         "kind": "HARD_CUT",
         "purpose": null,
-        "because": "the same drawing continuing (geography) — the two shots already share a world, so there is nothing to bridge"
+        "because": "the same drawing continuing (terrain) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
-      "drawn": "map",
+      "drawn": "terrainSection",
       "emphasis": "two thousand people",
       "reveal": "rise",
       "plates": [],
@@ -724,7 +724,7 @@
     {
       "id": "s11-close",
       "template": "title-slate",
-      "seconds": 5.13,
+      "seconds": 4.93,
       "camera": {
         "from": 1.03,
         "to": 1.05,
@@ -804,8 +804,8 @@
     },
     "town": {
       "mode": "PROCEDURAL",
-      "why": "map is a picture of geography — it demonstrates the claim of what the line asserts",
-      "drawn": "map"
+      "why": "terrainSection is a picture of terrain — it demonstrates the claim of what the line asserts",
+      "drawn": "terrainSection"
     },
     "close": {
       "mode": "PROCEDURAL",

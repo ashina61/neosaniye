@@ -2828,8 +2828,8 @@
     {
       "id": "s10-town",
       "sceneType": "composite",
-      "voText": "Minutes later it reached the town of Longarone,",
-      "durationInFrames": 102,
+      "voText": "The wave went down the gorge into Longarone",
+      "durationInFrames": 99,
       "assets": {},
       "layers": [],
       "params": {
@@ -2837,7 +2837,7 @@
         "anchorY": 1700,
         "pushFrom": 1.03,
         "pushTo": 1.07,
-        "pushEndFrame": 100,
+        "pushEndFrame": 97,
         "glowX": 1145,
         "glowY": 422,
         "glowSize": 560,
@@ -2853,19 +2853,18 @@
           "#09090a"
         ],
         "caption": [
-          "Minutes later",
-          "it reached",
-          "the town",
-          "of Longarone"
+          "The wave went",
+          "down the gorge",
+          "into Longarone"
         ],
         "captionX": 84,
-        "captionY": 106,
-        "captionSize": 85,
+        "captionY": 134,
+        "captionSize": 79,
         "captionAlign": "left",
-        "captionFrame": 52,
+        "captionFrame": 50,
         "captionEvery": 8,
         "captionScrim": 0.38,
-        "captionRecedeAt": 73,
+        "captionRecedeAt": 71,
         "accent": "#b9c3c9",
         "motifStops": [
           "THE DAM",
@@ -2882,90 +2881,107 @@
       "onScreenText": [
         {
           "text": "TWO THOUSAND",
-          "atFrame": 61,
-          "durationInFrames": 41,
+          "atFrame": 59,
+          "durationInFrames": 40,
           "style": "typed",
           "position": "bottom"
         }
       ],
       "diagram": {
-        "type": "map",
-        "regions": [
-          {
-            "kind": "land",
-            "shape": [
-              [
-                0.06,
-                0.2
-              ],
-              [
-                0.54944,
-                0.14
-              ],
-              [
-                0.94,
-                0.24
-              ],
-              [
-                0.9,
-                0.66
-              ],
-              [
-                0.51188,
-                0.72
-              ],
-              [
-                0.08,
-                0.62
-              ]
-            ]
-          }
-        ],
+        "type": "terrainSection",
         "accent": "#b9c3c9",
         "muted": "#cfc6ae",
-        "route": [
-          {
-            "points": [
-              [
-                0.1,
-                0.458056
-              ],
-              [
-                0.9,
-                0.452816
-              ]
-            ]
-          }
+        "profile": [
+          [
+            0,
+            0.28787999999999997
+          ],
+          [
+            0.16,
+            0.35106800000000005
+          ],
+          [
+            0.34,
+            0.45990400000000003
+          ],
+          [
+            0.46,
+            0.659514
+          ],
+          [
+            0.58,
+            0.72
+          ],
+          [
+            0.66,
+            0.651852
+          ],
+          [
+            0.78,
+            0.501708
+          ],
+          [
+            1,
+            0.42558399999999996
+          ]
         ],
-        "markers": [
-          {
-            "x": 0.1,
-            "y": 0.458056,
-            "label": "THE DAM",
-            "kind": "place"
-          },
-          {
-            "x": 0.9,
-            "y": 0.452816,
-            "label": "LONGARONE",
-            "kind": "place"
-          }
-        ],
-        "subject": "geography",
+        "scaleNote": "schematic profile",
+        "subject": "terrain",
+        "depicts": "terrain",
         "claims": [
-          "delay",
           "human_scale"
         ],
-        "depicts": "geography",
+        "beds": [
+          {
+            "label": "rock",
+            "depth": 0.05
+          },
+          {
+            "label": "clay",
+            "depth": 0.115,
+            "weak": true
+          },
+          {
+            "depth": 0.19
+          }
+        ],
+        "places": [
+          {
+            "x": 0.9,
+            "label": "LONGARONE"
+          }
+        ],
+        "overtop": {
+          "at": 6,
+          "over": 22,
+          "label": "over the crest"
+        },
+        "focus": {
+          "x": 0.74,
+          "y": 0.5,
+          "scale": 1.22
+        },
+        "annotations": [],
         "from": 0,
-        "over": 46
+        "over": 45,
+        "structure": {
+          "x": 0.72,
+          "base": 0.44,
+          "width": 0.035,
+          "label": "dam",
+          "height": "262 m"
+        },
+        "water": {
+          "level": 0.52,
+          "label": "reservoir"
+        }
       }
     },
     {
       "id": "s10-town-b",
       "sceneType": "composite",
-      "voText": "and two thousand people died.",
-      "durationInFrames": 63,
+      "voText": "and killed two thousand people.",
+      "durationInFrames": 62,
       "assets": {},
       "layers": [],
       "props": [
@@ -2986,7 +3002,7 @@
         "anchorY": 576,
         "pushFrom": 1.01,
         "pushTo": 1.44,
-        "pushEndFrame": 58,
+        "pushEndFrame": 57,
         "accent": "#b9c3c9",
         "field": "spotlight",
         "fieldColours": [
@@ -3001,15 +3017,14 @@
         "glowWarm": "#b9c3c9",
         "glowDepth": 0.1,
         "caption": [
-          "and",
-          "two thousand people",
-          "died"
+          "and killed",
+          "two thousand people"
         ],
         "captionX": 84,
-        "captionY": 106,
+        "captionY": 134,
         "captionSize": 58,
         "captionAlign": "left",
-        "captionFrame": 34,
+        "captionFrame": 33,
         "captionEvery": 9,
         "captionScrim": 0.38,
         "focusPx": 0,
@@ -3024,86 +3039,104 @@
         "captionMark": "underline",
         "captionWordEvery": 3,
         "cameraMove": "push",
-        "cameraPurpose": "single out the subject — the frame closes on what matters"
+        "cameraPurpose": "single out the subject — the frame closes on what matters",
+        "diagramCamera": 0.75
       },
       "diagram": {
-        "type": "map",
-        "regions": [
-          {
-            "kind": "land",
-            "shape": [
-              [
-                0.06,
-                0.2
-              ],
-              [
-                0.54944,
-                0.14
-              ],
-              [
-                0.94,
-                0.24
-              ],
-              [
-                0.9,
-                0.66
-              ],
-              [
-                0.51188,
-                0.72
-              ],
-              [
-                0.08,
-                0.62
-              ]
-            ]
-          }
-        ],
+        "type": "terrainSection",
         "accent": "#b9c3c9",
         "muted": "#cfc6ae",
-        "route": [
-          {
-            "points": [
-              [
-                0.1,
-                0.458056
-              ],
-              [
-                0.9,
-                0.452816
-              ]
-            ]
-          }
+        "profile": [
+          [
+            0,
+            0.28787999999999997
+          ],
+          [
+            0.16,
+            0.35106800000000005
+          ],
+          [
+            0.34,
+            0.45990400000000003
+          ],
+          [
+            0.46,
+            0.659514
+          ],
+          [
+            0.58,
+            0.72
+          ],
+          [
+            0.66,
+            0.651852
+          ],
+          [
+            0.78,
+            0.501708
+          ],
+          [
+            1,
+            0.42558399999999996
+          ]
         ],
-        "markers": [
-          {
-            "x": 0.1,
-            "y": 0.458056,
-            "label": "THE DAM",
-            "kind": "place"
-          },
-          {
-            "x": 0.9,
-            "y": 0.452816,
-            "label": "LONGARONE",
-            "kind": "place"
-          }
-        ],
-        "subject": "geography",
+        "scaleNote": "schematic profile",
+        "subject": "terrain",
+        "depicts": "terrain",
         "claims": [
-          "delay",
           "human_scale"
         ],
-        "depicts": "geography",
+        "beds": [
+          {
+            "label": "rock",
+            "depth": 0.05
+          },
+          {
+            "label": "clay",
+            "depth": 0.115,
+            "weak": true
+          },
+          {
+            "depth": 0.19
+          }
+        ],
+        "places": [
+          {
+            "x": 0.9,
+            "label": "LONGARONE"
+          }
+        ],
+        "overtop": {
+          "at": 6,
+          "over": 22,
+          "label": "over the crest"
+        },
+        "focus": {
+          "x": 0.74,
+          "y": 0.5,
+          "scale": 1.22
+        },
+        "annotations": [],
         "from": -1,
-        "over": 1
+        "over": 1,
+        "structure": {
+          "x": 0.72,
+          "base": 0.44,
+          "width": 0.035,
+          "label": "dam",
+          "height": "262 m"
+        },
+        "water": {
+          "level": 0.52,
+          "label": "reservoir"
+        }
       }
     },
     {
       "id": "s11-close",
       "sceneType": "title-slate",
       "voText": "The dam is still standing, and they built the wrong thing correctly.",
-      "durationInFrames": 154,
+      "durationInFrames": 148,
       "gradeOverride": {
         "saturate": 0.5,
         "contrast": 1.16,
@@ -3121,7 +3154,7 @@
         "kicker": "Vajont · 9 October 1963",
         "title": "STILL THERE",
         "footer": "the wrong thing, built correctly",
-        "titleFrame": 46,
+        "titleFrame": 45,
         "titleSize": 230,
         "creep": 1.095,
         "accent": "#b9c3c9",
@@ -3131,7 +3164,7 @@
           "#212426",
           "#0c0d0e"
         ],
-        "pushEndFrame": 150,
+        "pushEndFrame": 144,
         "pushFrom": 1.03,
         "pushTo": 1.05,
         "cameraMove": "hold",
@@ -3147,7 +3180,7 @@
           "y": 410,
           "width": 414,
           "rotate": -0.2,
-          "from": 95
+          "from": 92
         }
       ]
     }

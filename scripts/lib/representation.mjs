@@ -333,7 +333,7 @@ export function chooseRepresentation({
     anatomyFlow: () => buildAnatomyFlow({vo, accent, muted, claims: read.claims}),
     scaleHaulage: () => buildScaleHaulage({vo, accent, muted, claims: read.claims, anchorFigure}),
     mouldCast: () => buildMouldCast({vo, accent, muted, claims: read.claims}),
-    terrainSection: () => buildTerrainSection({vo, seed, accent, muted, claims: read.claims}),
+    terrainSection: () => buildTerrainSection({vo, seed, accent, muted, claims: read.claims, stops}),
   };
 
   /**

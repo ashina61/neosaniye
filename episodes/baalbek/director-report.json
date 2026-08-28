@@ -205,7 +205,7 @@
     },
     {
       "id": "s02-weight",
-      "template": "title-slate",
+      "template": "composite",
       "seconds": 2.5,
       "camera": {
         "from": 1.04,
@@ -217,17 +217,19 @@
       "cut": {
         "kind": "HARD_CUT",
         "purpose": null,
-        "because": "graphic continuity (#d94f3d) — the two shots already share a world, so there is nothing to bridge"
+        "because": "the same drawing continuing (scaleHaulage) — the two shots already share a world, so there is nothing to bridge"
       },
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
-      "emphasis": null,
-      "reveal": null,
+      "representation": "PROCEDURAL",
+      "drawn": "scaleHaulage",
+      "emphasis": "eight hundred tons",
+      "reveal": "punch",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [],
+      "props": [
+        "beam"
+      ],
       "hierarchy": {
-        "primary": "the claim",
+        "primary": "the claim: \"eight hundred tons\"",
         "secondary": "the drawn label or mark that dates and places it",
         "background": "a drawn field — texture, not a photograph pretending to be one",
         "carrier": "type"
@@ -238,8 +240,8 @@
       "template": "composite",
       "seconds": 1.5,
       "camera": {
-        "from": 1.04,
-        "to": 1.34,
+        "from": 1.02,
+        "to": 1.38,
         "panX": null,
         "panY": null
       },
@@ -247,12 +249,12 @@
       "cut": {
         "kind": "HARD_CUT",
         "purpose": null,
-        "because": "graphic continuity (#d94f3d) — the two shots already share a world, so there is nothing to bridge"
+        "because": "the same drawing continuing (scale) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "scaleHaulage",
       "emphasis": "one",
-      "reveal": "blur",
+      "reveal": "punch",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [],
@@ -268,10 +270,10 @@
       "template": "composite",
       "seconds": 2.5,
       "camera": {
-        "from": 1.25,
-        "to": 1.23,
+        "from": 1.2,
+        "to": 1.28,
         "panX": null,
-        "panY": 163
+        "panY": 144
       },
       "transition": "cut",
       "cut": {
@@ -282,12 +284,10 @@
       "representation": "PROCEDURAL",
       "drawn": "scaleHaulage",
       "emphasis": "sixteen hundred",
-      "reveal": "punch",
+      "reveal": "blur",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [
-        "beam"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"sixteen hundred\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -300,9 +300,9 @@
       "template": "composite",
       "seconds": 3.6,
       "camera": {
-        "from": 1.19,
-        "to": 1.2,
-        "panX": 198,
+        "from": 1.12,
+        "to": 1.05,
+        "panX": null,
         "panY": null
       },
       "transition": "cut",
@@ -314,7 +314,7 @@
       "representation": "PROCEDURAL",
       "drawn": "terrainSection",
       "emphasis": "bedrock",
-      "reveal": "rise",
+      "reveal": "blur",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [],
@@ -330,8 +330,8 @@
       "template": "composite",
       "seconds": 1.73,
       "camera": {
-        "from": 1.5,
-        "to": 1.03,
+        "from": 1.4,
+        "to": 1.05,
         "panX": null,
         "panY": null
       },
@@ -347,9 +347,7 @@
       "reveal": "wipe",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [
-        "beam"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"where\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -362,16 +360,16 @@
       "template": "composite",
       "seconds": 2.13,
       "camera": {
-        "from": 1.45,
-        "to": 1.02,
+        "from": 1,
+        "to": 1.1,
         "panX": null,
-        "panY": null
+        "panY": -61
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "direction carried (out)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "scale held (medium) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "scaleHaulage",
@@ -392,37 +390,7 @@
       "template": "composite",
       "seconds": 1.73,
       "camera": {
-        "from": 1,
-        "to": 1.09,
-        "panX": null,
-        "panY": -46
-      },
-      "transition": "cut",
-      "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "the same drawing continuing (scale) — the two shots already share a world, so there is nothing to bridge"
-      },
-      "representation": "PROCEDURAL",
-      "drawn": "scaleHaulage",
-      "emphasis": "could",
-      "reveal": "wipe",
-      "plates": [],
-      "drawnGround": "spotlight",
-      "props": [],
-      "hierarchy": {
-        "primary": "the claim: \"could\"",
-        "secondary": "the drawn label or mark that dates and places it",
-        "background": "a drawn field — texture, not a photograph pretending to be one",
-        "carrier": "type"
-      }
-    },
-    {
-      "id": "s04-nolift-c",
-      "template": "composite",
-      "seconds": 2.13,
-      "camera": {
-        "from": 1.55,
+        "from": 1.39,
         "to": 1.04,
         "panX": null,
         "panY": null
@@ -435,13 +403,43 @@
       },
       "representation": "PROCEDURAL",
       "drawn": "scaleHaulage",
-      "emphasis": "would",
+      "emphasis": "could",
       "reveal": "punch",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [
         "beam"
       ],
+      "hierarchy": {
+        "primary": "the claim: \"could\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s04-nolift-c",
+      "template": "composite",
+      "seconds": 2.13,
+      "camera": {
+        "from": 1,
+        "to": 1.08,
+        "panX": null,
+        "panY": -46
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (scale) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "PROCEDURAL",
+      "drawn": "scaleHaulage",
+      "emphasis": "would",
+      "reveal": "rise",
+      "plates": [],
+      "drawnGround": "spotlight",
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"would\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -454,10 +452,10 @@
       "template": "composite",
       "seconds": 2.87,
       "camera": {
-        "from": 1,
-        "to": 1.09,
-        "panX": null,
-        "panY": -36
+        "from": 1.2,
+        "to": 1.26,
+        "panX": -262,
+        "panY": null
       },
       "transition": "cut",
       "cut": {
@@ -471,7 +469,9 @@
       "reveal": "rise",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [],
+      "props": [
+        "beam"
+      ],
       "hierarchy": {
         "primary": "the claim: \"Romans\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -484,10 +484,10 @@
       "template": "composite",
       "seconds": 1.5,
       "camera": {
-        "from": 1.45,
-        "to": 1.03,
+        "from": 1,
+        "to": 1.12,
         "panX": null,
-        "panY": null
+        "panY": -64
       },
       "transition": "cut",
       "cut": {
@@ -498,7 +498,7 @@
       "representation": "PROCEDURAL",
       "drawn": "scaleHaulage",
       "emphasis": "rolled",
-      "reveal": "rise",
+      "reveal": "punch",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [],
@@ -514,7 +514,7 @@
       "template": "composite",
       "seconds": 2.5,
       "camera": {
-        "from": 1.59,
+        "from": 1.45,
         "to": 1.04,
         "panX": null,
         "panY": null
@@ -528,7 +528,7 @@
       "representation": "PROCEDURAL",
       "drawn": "scaleHaulage",
       "emphasis": "Hardwood",
-      "reveal": "wipe",
+      "reveal": "blur",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [
@@ -546,9 +546,9 @@
       "template": "composite",
       "seconds": 2.5,
       "camera": {
-        "from": 1.21,
-        "to": 1.21,
-        "panX": -151,
+        "from": 1.23,
+        "to": 1.24,
+        "panX": 150,
         "panY": null
       },
       "transition": "cut",
@@ -560,7 +560,7 @@
       "representation": "PROCEDURAL",
       "drawn": "scaleHaulage",
       "emphasis": "capstans",
-      "reveal": "rise",
+      "reveal": "wipe",
       "plates": [],
       "drawnGround": "spotlight",
       "props": [],
@@ -573,11 +573,11 @@
     },
     {
       "id": "s07-men",
-      "template": "title-slate",
+      "template": "composite",
       "seconds": 2.87,
       "camera": {
-        "from": 1.16,
-        "to": 1.18,
+        "from": 1,
+        "to": 1.5,
         "panX": null,
         "panY": null
       },
@@ -585,17 +585,19 @@
       "cut": {
         "kind": "HARD_CUT",
         "purpose": null,
-        "because": "graphic continuity (#d94f3d) — the two shots already share a world, so there is nothing to bridge"
+        "because": "the same drawing continuing (scaleHaulage) — the two shots already share a world, so there is nothing to bridge"
       },
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
-      "emphasis": null,
-      "reveal": null,
+      "representation": "PROCEDURAL",
+      "drawn": "scaleHaulage",
+      "emphasis": "thousand men",
+      "reveal": "punch",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [],
+      "props": [
+        "beam"
+      ],
       "hierarchy": {
-        "primary": "the claim",
+        "primary": "the claim: \"thousand men\"",
         "secondary": "the drawn label or mark that dates and places it",
         "background": "a drawn field — texture, not a photograph pretending to be one",
         "carrier": "type"
@@ -606,26 +608,24 @@
       "template": "composite",
       "seconds": 3.23,
       "camera": {
-        "from": 1.03,
-        "to": 1.48,
-        "panX": null,
+        "from": 1.16,
+        "to": 1.21,
+        "panX": -209,
         "panY": null
       },
       "transition": "cut",
       "cut": {
         "kind": "HARD_CUT",
         "purpose": null,
-        "because": "graphic continuity (#d94f3d) — the two shots already share a world, so there is nothing to bridge"
+        "because": "the same drawing continuing (megalith) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "scaleHaulage",
       "emphasis": "moving",
-      "reveal": "blur",
+      "reveal": "rise",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [
-        "beam"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"moving\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -639,9 +639,9 @@
       "seconds": 3.23,
       "camera": {
         "from": 1,
-        "to": 1.08,
+        "to": 1.09,
         "panX": null,
-        "panY": -52
+        "panY": -28
       },
       "transition": "cut",
       "cut": {
@@ -652,10 +652,12 @@
       "representation": "PROCEDURAL",
       "drawn": "scaleHaulage",
       "emphasis": "The",
-      "reveal": "wipe",
+      "reveal": "rise",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [],
+      "props": [
+        "beam"
+      ],
       "hierarchy": {
         "primary": "the claim: \"The\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -668,9 +670,9 @@
       "template": "composite",
       "seconds": 2.13,
       "camera": {
-        "from": 1.18,
-        "to": 1.27,
-        "panX": -260,
+        "from": 1.73,
+        "to": 1.01,
+        "panX": null,
         "panY": null
       },
       "transition": "cut",
@@ -682,12 +684,10 @@
       "representation": "PROCEDURAL",
       "drawn": "scaleHaulage",
       "emphasis": "level",
-      "reveal": "rise",
+      "reveal": "punch",
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [
-        "beam"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"level\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -701,7 +701,7 @@
       "seconds": 3.93,
       "camera": {
         "from": 1,
-        "to": 1.07,
+        "to": 1.56,
         "panX": null,
         "panY": null
       },
@@ -777,26 +777,24 @@
   },
   "quotas": {
     "camera": {
-      "push": 4,
+      "push": 5,
       "tilt": 2,
-      "hold": 1,
-      "pan": 4,
-      "pull": 5,
-      "drift": 4
+      "hold": 2,
+      "pull": 4,
+      "drift": 4,
+      "pan": 3
     },
     "transition": {
       "cut": 19
     },
     "framing": {},
     "cut": {
-      "HARD_CUT": 18,
-      "MATCH_CUT": 1
+      "HARD_CUT": 19
     }
   },
   "editing": {
     "tally": {
-      "HARD_CUT": 18,
-      "MATCH_CUT": 1
+      "HARD_CUT": 19
     },
     "hardRatio": 1,
     "total": 19,

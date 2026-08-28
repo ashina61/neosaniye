@@ -775,7 +775,7 @@ function volumeLabel(n) {
   return `${n} m³`;
 }
 
-export function buildTerrainSection({vo, seed, accent, muted, claims = []}) {
+export function buildTerrainSection({vo, seed, accent, muted, claims = [], stops = []}) {
   const wobble = (i, amp = 0.04) => (hash01(seed, i) - 0.5) * amp;
   const impounds = claims.includes('impoundment') || has(vo, /\b(dams?|reservoirs?|impound\w*)\b/i);
   const plane = claims.includes('slip_plane') || has(vo, /\b(slab|clay|bed of|resting on|slip)\b/i);
@@ -945,6 +945,24 @@ export function buildTerrainSection({vo, seed, accent, muted, claims = []}) {
     spec.focus = {x: 0.5, y: 0.52, scale: 1.0};
   } else if (goes) {
     spec.focus = {x: 0.45, y: 0.52, scale: 1.16};
+  }
+
+  /**
+   * A PLACE BELOW THE WALL, when the sentence names one.
+   *
+   * The last beat of a dam story is that the water arrived somewhere with a
+   * name in it. Handed to a plan-view map that beat was nine and a half seconds
+   * — a fifth of the reel — of a grey polygon with a straight line and two dots
+   * on it, because a map cannot draw water arriving. A section can: the town is
+   * downstream of the wall, on the ground, and the water comes over and reaches
+   * it. So a terrain line that names places puts the last of them below the
+   * structure, and water that has left a dam is water going somewhere.
+   */
+  const named = stops.filter((s) => typeof s === 'string' && s.trim());
+  if (named.length) {
+    spec.places = [{x: 0.90, label: named[named.length - 1]}];
+    if (!spills) spec.overtop = {at: 6, over: 22, label: 'over the crest'};
+    spec.focus = {x: 0.74, y: 0.5, scale: 1.22};
   }
 
   if (seeps && plane) spec.seepage = {at: 4, over: 18, label: 'water in the bed'};

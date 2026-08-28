@@ -253,94 +253,72 @@
     },
     {
       "id": "s02-modern",
-      "sceneType": "title-slate",
+      "sceneType": "composite",
       "voText": "Modern marine concrete cracks",
       "durationInFrames": 52,
-      "assets": {},
-      "params": {
-        "scrim": 0.45,
-        "kicker": "",
-        "title": "50 YEARS",
-        "footer": "",
-        "titleFrame": 16,
-        "titleSize": 230,
-        "creep": 1.051,
-        "accent": "#e0d089",
-        "field": "grid",
-        "fieldColours": [
-          "#3a4530",
-          "#1f2619",
-          "#0b0e08"
-        ],
-        "countTo": 50,
-        "countOver": 29,
-        "pushEndFrame": 48,
-        "pushFrom": 1.04,
-        "pushTo": 1.05,
-        "cameraMove": "hold",
-        "cameraPurpose": "importance. The frame stops because the idea needs no help"
-      }
-    },
-    {
-      "id": "s02-modern-b",
-      "sceneType": "composite",
-      "voText": "and fails in fifty years.",
-      "durationInFrames": 64,
       "assets": {},
       "layers": [],
       "props": [
         {
           "kind": "beam",
-          "depth": 0.16,
-          "x": 967,
-          "y": -28,
-          "width": 287,
-          "rotate": -22,
-          "opacity": 0.85,
+          "depth": 0.28,
+          "x": 838,
+          "y": -5,
+          "width": 247,
+          "rotate": -15,
+          "opacity": 0.66,
           "colour": "#e0d089",
           "from": 0
         }
       ],
       "params": {
-        "anchorX": 799,
-        "anchorY": 576,
-        "pushFrom": 1.23,
-        "pushTo": 1.3,
-        "pushEndFrame": 60,
-        "accent": "#e0d089",
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1.04,
+        "pushTo": 1.07,
+        "pushEndFrame": 51,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 560,
+        "glowIntensity": 0.62,
+        "glowWarm": "#e0d089",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
         "field": "spotlight",
         "fieldColours": [
           "#0f120c",
           "#0b0d09",
           "#080a06"
         ],
-        "glowX": 1410,
-        "glowY": 448,
-        "glowSize": 377,
-        "glowIntensity": 0.54,
-        "glowWarm": "#e0d089",
-        "glowDepth": 0.1,
         "caption": [
-          "and fails",
-          "in fifty years"
+          "Modern marine",
+          "concrete cracks"
         ],
         "captionX": 84,
         "captionY": 115,
-        "captionSize": 79,
+        "captionSize": 74,
         "captionAlign": "left",
-        "captionFrame": 35,
-        "captionEvery": 6,
+        "captionFrame": 29,
+        "captionEvery": 7,
         "captionScrim": 0.38,
-        "focusPx": 0,
-        "fog": 0,
-        "handheld": 1.5,
-        "panX": 207,
-        "captionEmphasis": "fifty years",
-        "captionReveal": "rise",
-        "captionMark": "none",
+        "captionRecedeAt": 37,
+        "accent": "#e0d089",
+        "motif": "tally",
+        "motifX": 149,
+        "motifY": 379,
+        "motifSize": 84,
+        "motifCount": 10,
+        "motifFrame": 25,
+        "motifColour": "#e0d089",
+        "motifOpacity": 0.96,
+        "handheld": 3,
+        "captionEmphasis": "concrete",
+        "captionReveal": "wipe",
+        "captionMark": "highlight",
         "captionWordEvery": 3,
-        "cameraMove": "pan",
-        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
       },
       "diagram": {
         "type": "crossSection",
@@ -412,7 +390,127 @@
         ],
         "depicts": "material",
         "from": 0,
-        "over": 29
+        "over": 23
+      }
+    },
+    {
+      "id": "s02-modern-b",
+      "sceneType": "composite",
+      "voText": "and fails in fifty years.",
+      "durationInFrames": 64,
+      "assets": {},
+      "layers": [],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.04,
+        "pushTo": 1.42,
+        "pushEndFrame": 58,
+        "accent": "#e0d089",
+        "field": "spotlight",
+        "fieldColours": [
+          "#0f120c",
+          "#0b0d09",
+          "#080a06"
+        ],
+        "glowX": 1493,
+        "glowY": 434,
+        "glowSize": 471,
+        "glowIntensity": 0.52,
+        "glowWarm": "#e0d089",
+        "glowDepth": 0.1,
+        "caption": [
+          "and fails",
+          "in fifty years"
+        ],
+        "captionX": 84,
+        "captionY": 115,
+        "captionSize": 79,
+        "captionAlign": "left",
+        "captionFrame": 35,
+        "captionEvery": 8,
+        "captionScrim": 0.38,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "fifty years",
+        "captionReveal": "rise",
+        "captionMark": "highlight",
+        "captionWordEvery": 3,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "diagram": {
+        "type": "crossSection",
+        "accent": "#e0d089",
+        "muted": "#cfc6ae",
+        "layers": [
+          {
+            "label": "surface",
+            "depth": 0.16,
+            "fill": "solid"
+          },
+          {
+            "label": "body",
+            "depth": 0.56,
+            "fill": "hatch",
+            "focus": true
+          },
+          {
+            "label": "base",
+            "depth": 0.28,
+            "fill": "grain"
+          }
+        ],
+        "scaleNote": "magnified",
+        "crack": {
+          "path": [
+            [
+              0.5,
+              0
+            ],
+            [
+              0.394528,
+              0.16
+            ],
+            [
+              0.494512,
+              0.34
+            ],
+            [
+              0.379136,
+              0.52
+            ],
+            [
+              0.412304,
+              0.68
+            ],
+            [
+              0.34697599999999995,
+              0.82
+            ]
+          ],
+          "opensAt": 4,
+          "opensOver": 16,
+          "label": "crack"
+        },
+        "annotations": [
+          {
+            "x": 0.5,
+            "y": 0.06,
+            "text": "crack opens",
+            "side": "right",
+            "at": 8
+          }
+        ],
+        "subject": "material",
+        "claims": [
+          "crack_propagation",
+          "duration"
+        ],
+        "depicts": "material",
+        "from": -1,
+        "over": 1
       }
     },
     {
@@ -425,9 +523,9 @@
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
-        "pushFrom": 1.03,
-        "pushTo": 1.32,
-        "pushEndFrame": 44,
+        "pushFrom": 1,
+        "pushTo": 1.09,
+        "pushEndFrame": 41,
         "accent": "#e0d089",
         "field": "spotlight",
         "fieldColours": [
@@ -435,10 +533,10 @@
           "#0b0d09",
           "#080a06"
         ],
-        "glowX": 1455,
-        "glowY": 292,
-        "glowSize": 515,
-        "glowIntensity": 0.45,
+        "glowX": 1567,
+        "glowY": 370,
+        "glowSize": 501,
+        "glowIntensity": 0.48,
         "glowWarm": "#e0d089",
         "glowDepth": 0.1,
         "caption": [
@@ -449,17 +547,19 @@
         "captionSize": 74,
         "captionAlign": "left",
         "captionFrame": 28,
-        "captionEvery": 8,
+        "captionEvery": 9,
         "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
+        "panY": -56,
+        "roll": 0.55,
         "captionEmphasis": "thirty",
-        "captionReveal": "punch",
-        "captionMark": "box",
-        "captionWordEvery": 2,
-        "cameraMove": "push",
-        "cameraPurpose": "single out the subject — the frame closes on what matters"
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       },
       "diagram": {
         "type": "crossSection",
@@ -549,12 +649,12 @@
       "props": [
         {
           "kind": "beam",
-          "depth": 0.28,
-          "x": 972,
-          "y": -40,
-          "width": 264,
-          "rotate": -9,
-          "opacity": 0.68,
+          "depth": 0.35,
+          "x": 926,
+          "y": 53,
+          "width": 255,
+          "rotate": -22,
+          "opacity": 0.76,
           "colour": "#e0d089",
           "from": 0
         }
@@ -562,9 +662,9 @@
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1.2,
-        "pushTo": 1.28,
-        "pushEndFrame": 60,
+        "pushFrom": 1.46,
+        "pushTo": 1.02,
+        "pushEndFrame": 59,
         "glowX": 1145,
         "glowY": 422,
         "glowSize": 560,
@@ -572,7 +672,7 @@
         "glowWarm": "#e0d089",
         "glowDepth": 0.1,
         "focusPx": 0,
-        "fog": 0.17,
+        "fog": 0.2,
         "field": "spotlight",
         "fieldColours": [
           "#0f120c",
@@ -588,27 +688,25 @@
         "captionSize": 69,
         "captionAlign": "left",
         "captionFrame": 35,
-        "captionEvery": 7,
+        "captionEvery": 8,
         "captionScrim": 0.38,
         "captionRecedeAt": 46,
         "accent": "#e0d089",
         "motif": "embers",
-        "motifX": 513,
-        "motifY": 346,
-        "motifSize": 44,
-        "motifCount": 33,
-        "motifFrame": 19,
+        "motifX": 530,
+        "motifY": 1282,
+        "motifSize": 43,
+        "motifCount": 32,
+        "motifFrame": 26,
         "motifColour": "#e0d089",
-        "motifOpacity": 0.83,
+        "motifOpacity": 0.9,
         "handheld": 1.5,
-        "panX": -236,
         "captionEmphasis": "Romans",
-        "captionReveal": "blur",
-        "captionMark": "none",
-        "captionWordEvery": 3,
-        "cameraMove": "pan",
-        "cameraPurpose": "expose information the frame was withholding, or follow a movement",
-        "diagramCamera": 0.95
+        "captionReveal": "punch",
+        "captionMark": "underline",
+        "captionWordEvery": 4,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
       },
       "diagram": {
         "type": "crossSection",
@@ -726,8 +824,8 @@
         "anchorX": 799,
         "anchorY": 576,
         "pushFrom": 1,
-        "pushTo": 1.1,
-        "pushEndFrame": 49,
+        "pushTo": 1.08,
+        "pushEndFrame": 50,
         "accent": "#e0d089",
         "field": "spotlight",
         "fieldColours": [
@@ -735,10 +833,10 @@
           "#0b0d09",
           "#080a06"
         ],
-        "glowX": 1415,
-        "glowY": 127,
-        "glowSize": 414,
-        "glowIntensity": 0.58,
+        "glowX": 1316,
+        "glowY": 349,
+        "glowSize": 305,
+        "glowIntensity": 0.57,
         "glowWarm": "#e0d089",
         "glowDepth": 0.1,
         "caption": [
@@ -750,17 +848,17 @@
         "captionSize": 85,
         "captionAlign": "left",
         "captionFrame": 29,
-        "captionEvery": 9,
+        "captionEvery": 10,
         "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panY": -55,
-        "roll": 0.58,
+        "panY": -47,
+        "roll": -0.49,
         "captionEmphasis": "Pozzuoli",
-        "captionReveal": "punch",
+        "captionReveal": "rise",
         "captionMark": "none",
-        "captionWordEvery": 3,
+        "captionWordEvery": 4,
         "cameraMove": "drift",
         "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       },
@@ -879,9 +977,9 @@
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
-        "pushFrom": 1.47,
+        "pushFrom": 1.48,
         "pushTo": 1.01,
-        "pushEndFrame": 59,
+        "pushEndFrame": 63,
         "accent": "#e0d089",
         "field": "spotlight",
         "fieldColours": [
@@ -889,10 +987,10 @@
           "#0b0d09",
           "#080a06"
         ],
-        "glowX": 1367,
-        "glowY": 141,
-        "glowSize": 341,
-        "glowIntensity": 0.63,
+        "glowX": 1531,
+        "glowY": 307,
+        "glowSize": 470,
+        "glowIntensity": 0.62,
         "glowWarm": "#e0d089",
         "glowDepth": 0.1,
         "caption": [
@@ -910,9 +1008,9 @@
         "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "seawater",
-        "captionReveal": "punch",
-        "captionMark": "underline",
-        "captionWordEvery": 3,
+        "captionReveal": "wipe",
+        "captionMark": "highlight",
+        "captionWordEvery": 2,
         "cameraMove": "pull",
         "cameraPurpose": "reveal scale or context — the subject turns out to sit in something",
         "diagramCamera": 0.9
@@ -1032,12 +1130,12 @@
       "props": [
         {
           "kind": "beam",
-          "depth": 0.22,
-          "x": 875,
-          "y": 98,
-          "width": 376,
-          "rotate": -19,
-          "opacity": 0.54,
+          "depth": 0.36,
+          "x": 991,
+          "y": -95,
+          "width": 224,
+          "rotate": -9,
+          "opacity": 0.75,
           "colour": "#e0d089",
           "from": 0
         }
@@ -1045,9 +1143,9 @@
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1.4,
-        "pushTo": 1.05,
-        "pushEndFrame": 70,
+        "pushFrom": 1.22,
+        "pushTo": 1.18,
+        "pushEndFrame": 73,
         "glowX": 1145,
         "glowY": 422,
         "glowSize": 560,
@@ -1072,17 +1170,18 @@
         "captionSize": 69,
         "captionAlign": "left",
         "captionFrame": 41,
-        "captionEvery": 6,
+        "captionEvery": 8,
         "captionScrim": 0.38,
         "captionRecedeAt": 54,
         "accent": "#e0d089",
         "handheld": 1.5,
+        "panX": 194,
         "captionEmphasis": "Seawater",
         "captionReveal": "rise",
-        "captionMark": "underline",
-        "captionWordEvery": 4,
-        "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "captionMark": "box",
+        "captionWordEvery": 3,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
       },
       "diagram": {
         "type": "crossSection",
@@ -1177,9 +1276,9 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.2,
-        "pushTo": 1.28,
-        "pushEndFrame": 58,
+        "pushFrom": 1.5,
+        "pushTo": 1.03,
+        "pushEndFrame": 60,
         "accent": "#e0d089",
         "field": "spotlight",
         "fieldColours": [
@@ -1187,10 +1286,10 @@
           "#0b0d09",
           "#080a06"
         ],
-        "glowX": 1512,
-        "glowY": 372,
-        "glowSize": 519,
-        "glowIntensity": 0.55,
+        "glowX": 1469,
+        "glowY": 291,
+        "glowSize": 486,
+        "glowIntensity": 0.46,
         "glowWarm": "#e0d089",
         "glowDepth": 0.1,
         "caption": [
@@ -1202,18 +1301,18 @@
         "captionSize": 85,
         "captionAlign": "left",
         "captionFrame": 35,
-        "captionEvery": 7,
+        "captionEvery": 8,
         "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panX": 165,
         "captionEmphasis": "ingredient",
-        "captionReveal": "blur",
+        "captionReveal": "rise",
         "captionMark": "highlight",
-        "captionWordEvery": 2,
-        "cameraMove": "pan",
-        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+        "captionWordEvery": 4,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something",
+        "diagramCamera": 0.85
       },
       "diagram": {
         "type": "crossSection",
@@ -1308,9 +1407,9 @@
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1,
-        "pushTo": 1.12,
-        "pushEndFrame": 47,
+        "pushFrom": 1.4,
+        "pushTo": 1.01,
+        "pushEndFrame": 49,
         "glowX": 1145,
         "glowY": 422,
         "glowSize": 560,
@@ -1333,19 +1432,17 @@
         "captionSize": 62,
         "captionAlign": "left",
         "captionFrame": 29,
-        "captionEvery": 10,
+        "captionEvery": 8,
         "captionScrim": 0.38,
         "captionRecedeAt": 37,
         "accent": "#e0d089",
         "handheld": 1.5,
-        "panY": -38,
-        "roll": -0.32,
         "captionEmphasis": "lumps",
-        "captionReveal": "wipe",
-        "captionMark": "highlight",
+        "captionReveal": "blur",
+        "captionMark": "none",
         "captionWordEvery": 4,
-        "cameraMove": "drift",
-        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
       },
       "diagram": {
         "type": "crossSection",
@@ -1409,25 +1506,12 @@
       "durationInFrames": 75,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.35,
-          "x": 979,
-          "y": 10,
-          "width": 262,
-          "rotate": -12,
-          "opacity": 0.77,
-          "colour": "#e0d089",
-          "from": 0
-        }
-      ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.45,
-        "pushTo": 1.04,
-        "pushEndFrame": 71,
+        "pushFrom": 1,
+        "pushTo": 1.11,
+        "pushEndFrame": 73,
         "accent": "#e0d089",
         "field": "spotlight",
         "fieldColours": [
@@ -1435,9 +1519,9 @@
           "#0b0d09",
           "#080a06"
         ],
-        "glowX": 1446,
-        "glowY": 374,
-        "glowSize": 378,
+        "glowX": 1362,
+        "glowY": 441,
+        "glowSize": 326,
         "glowIntensity": 0.43,
         "glowWarm": "#e0d089",
         "glowDepth": 0.1,
@@ -1455,13 +1539,14 @@
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
+        "panY": -54,
+        "roll": 0.25,
         "captionEmphasis": "unslaked",
-        "captionReveal": "punch",
-        "captionMark": "none",
+        "captionReveal": "blur",
+        "captionMark": "underline",
         "captionWordEvery": 4,
-        "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something",
-        "diagramCamera": 0.95
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       },
       "diagram": {
         "type": "crossSection",
@@ -1528,9 +1613,9 @@
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
-        "pushFrom": 1.15,
-        "pushTo": 1.26,
-        "pushEndFrame": 71,
+        "pushFrom": 1.57,
+        "pushTo": 1,
+        "pushEndFrame": 73,
         "accent": "#e0d089",
         "field": "spotlight",
         "fieldColours": [
@@ -1538,10 +1623,10 @@
           "#0b0d09",
           "#080a06"
         ],
-        "glowX": 1536,
-        "glowY": 334,
-        "glowSize": 488,
-        "glowIntensity": 0.46,
+        "glowX": 1324,
+        "glowY": 253,
+        "glowSize": 306,
+        "glowIntensity": 0.55,
         "glowWarm": "#e0d089",
         "glowDepth": 0.1,
         "caption": [
@@ -1553,18 +1638,18 @@
         "captionSize": 79,
         "captionAlign": "left",
         "captionFrame": 41,
-        "captionEvery": 10,
+        "captionEvery": 8,
         "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panX": 224,
         "captionEmphasis": "sloppy",
-        "captionReveal": "blur",
-        "captionMark": "none",
+        "captionReveal": "punch",
+        "captionMark": "underline",
         "captionWordEvery": 3,
-        "cameraMove": "pan",
-        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something",
+        "diagramCamera": 0.75
       },
       "diagram": {
         "type": "crossSection",
@@ -1623,86 +1708,58 @@
     },
     {
       "id": "s06-crack",
-      "sceneType": "title-slate",
-      "voText": "When a crack opens,",
-      "durationInFrames": 52,
-      "assets": {},
-      "params": {
-        "scrim": 0.41,
-        "kicker": "",
-        "title": "1",
-        "footer": "",
-        "titleFrame": 44,
-        "titleSize": 230,
-        "creep": 1.054,
-        "accent": "#e0d089",
-        "field": "grid",
-        "fieldColours": [
-          "#3a4530",
-          "#1f2619",
-          "#0b0e08"
-        ],
-        "motif": "route",
-        "motifX": 160,
-        "motifY": 558,
-        "motifSize": 239,
-        "motifCount": 1,
-        "motifFrame": 12,
-        "motifColour": "#e0d089",
-        "motifOpacity": 0.98,
-        "pushEndFrame": 49,
-        "pushFrom": 1,
-        "pushTo": 1.45,
-        "cameraMove": "push",
-        "cameraPurpose": "single out the subject — the frame closes on what matters"
-      }
-    },
-    {
-      "id": "s06-crack-b",
       "sceneType": "composite",
-      "voText": "water runs down it",
+      "voText": "When a crack opens,",
       "durationInFrames": 52,
       "assets": {},
       "layers": [],
       "params": {
-        "anchorX": 799,
-        "anchorY": 576,
-        "pushFrom": 1.14,
-        "pushTo": 1.3,
-        "pushEndFrame": 49,
-        "accent": "#e0d089",
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1,
+        "pushTo": 1.36,
+        "pushEndFrame": 50,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 560,
+        "glowIntensity": 0.62,
+        "glowWarm": "#e0d089",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
         "field": "spotlight",
         "fieldColours": [
           "#0f120c",
           "#0b0d09",
           "#080a06"
         ],
-        "glowX": 1374,
-        "glowY": 610,
-        "glowSize": 352,
-        "glowIntensity": 0.58,
-        "glowWarm": "#e0d089",
-        "glowDepth": 0.1,
         "caption": [
-          "water runs down it"
+          "When a crack opens"
         ],
         "captionX": 84,
         "captionY": 115,
         "captionSize": 62,
         "captionAlign": "left",
         "captionFrame": 29,
-        "captionEvery": 8,
+        "captionEvery": 10,
         "captionScrim": 0.38,
-        "focusPx": 0,
-        "fog": 0.14,
+        "captionRecedeAt": 37,
+        "accent": "#e0d089",
+        "motif": "route",
+        "motifX": 191,
+        "motifY": 1408,
+        "motifSize": 222,
+        "motifCount": 1,
+        "motifFrame": 28,
+        "motifColour": "#e0d089",
+        "motifOpacity": 0.91,
         "handheld": 1.5,
-        "panX": 263,
-        "captionEmphasis": "water",
-        "captionReveal": "punch",
-        "captionMark": "underline",
-        "captionWordEvery": 4,
-        "cameraMove": "pan",
-        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+        "captionEmphasis": "crack",
+        "captionReveal": "wipe",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
       },
       "diagram": {
         "type": "crossSection",
@@ -1789,25 +1846,142 @@
       }
     },
     {
+      "id": "s06-crack-b",
+      "sceneType": "composite",
+      "voText": "water runs down it",
+      "durationInFrames": 52,
+      "assets": {},
+      "layers": [],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.11,
+        "pushTo": 1.04,
+        "pushEndFrame": 48,
+        "accent": "#e0d089",
+        "field": "spotlight",
+        "fieldColours": [
+          "#0f120c",
+          "#0b0d09",
+          "#080a06"
+        ],
+        "glowX": 1481,
+        "glowY": 242,
+        "glowSize": 516,
+        "glowIntensity": 0.59,
+        "glowWarm": "#e0d089",
+        "glowDepth": 0.1,
+        "caption": [
+          "water runs down it"
+        ],
+        "captionX": 84,
+        "captionY": 115,
+        "captionSize": 62,
+        "captionAlign": "left",
+        "captionFrame": 29,
+        "captionEvery": 9,
+        "captionScrim": 0.38,
+        "focusPx": 0,
+        "fog": 0.16,
+        "handheld": 1.5,
+        "captionEmphasis": "water",
+        "captionReveal": "rise",
+        "captionMark": "box",
+        "captionWordEvery": 2,
+        "cameraMove": "pull",
+        "cameraPurpose": "the frame withdraws as the claim lands, because a still frame here has nothing carrying it"
+      },
+      "diagram": {
+        "type": "crossSection",
+        "accent": "#e0d089",
+        "muted": "#cfc6ae",
+        "layers": [
+          {
+            "label": "surface",
+            "depth": 0.16,
+            "fill": "solid"
+          },
+          {
+            "label": "body",
+            "depth": 0.56,
+            "fill": "hatch",
+            "focus": true
+          },
+          {
+            "label": "base",
+            "depth": 0.28,
+            "fill": "grain"
+          }
+        ],
+        "scaleNote": "magnified",
+        "crack": {
+          "path": [
+            [
+              0.5,
+              0
+            ],
+            [
+              0.492816,
+              0.16
+            ],
+            [
+              0.420256,
+              0.34
+            ],
+            [
+              0.43889599999999995,
+              0.52
+            ],
+            [
+              0.454528,
+              0.68
+            ],
+            [
+              0.43272,
+              0.82
+            ]
+          ],
+          "opensAt": 4,
+          "opensOver": 16,
+          "label": "crack"
+        },
+        "fluid": {
+          "at": 18,
+          "label": "water"
+        },
+        "annotations": [
+          {
+            "x": 0.5,
+            "y": 0.06,
+            "text": "crack opens",
+            "side": "right",
+            "at": 8
+          },
+          {
+            "x": 0.44,
+            "y": 0.4,
+            "text": "water enters",
+            "side": "right",
+            "at": 22
+          }
+        ],
+        "subject": "material",
+        "claims": [
+          "crack_propagation",
+          "fluid_ingress"
+        ],
+        "depicts": "material",
+        "from": -1,
+        "over": 1
+      }
+    },
+    {
       "id": "s06-crack-c",
       "sceneType": "composite",
       "voText": "and reaches one of the lumps.",
       "durationInFrames": 75,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.37,
-          "x": 871,
-          "y": -22,
-          "width": 240,
-          "rotate": -14,
-          "opacity": 0.52,
-          "colour": "#e0d089",
-          "from": 0
-        }
-      ],
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
@@ -1821,10 +1995,10 @@
           "#0b0d09",
           "#080a06"
         ],
-        "glowX": 1417,
-        "glowY": 223,
-        "glowSize": 351,
-        "glowIntensity": 0.41,
+        "glowX": 1267,
+        "glowY": 552,
+        "glowSize": 307,
+        "glowIntensity": 0.49,
         "glowWarm": "#e0d089",
         "glowDepth": 0.1,
         "caption": [
@@ -1836,7 +2010,7 @@
         "captionSize": 74,
         "captionAlign": "left",
         "captionFrame": 41,
-        "captionEvery": 9,
+        "captionEvery": 7,
         "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
@@ -1942,9 +2116,9 @@
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1,
-        "pushTo": 1.08,
-        "pushEndFrame": 83,
+        "pushFrom": 1.39,
+        "pushTo": 1.01,
+        "pushEndFrame": 79,
         "glowX": 1145,
         "glowY": 422,
         "glowSize": 560,
@@ -1969,27 +2143,25 @@
         "captionSize": 58,
         "captionAlign": "left",
         "captionFrame": 46,
-        "captionEvery": 7,
+        "captionEvery": 9,
         "captionScrim": 0.38,
         "captionRecedeAt": 62,
         "accent": "#e0d089",
         "motif": "route",
-        "motifX": 154,
-        "motifY": 1478,
-        "motifSize": 211,
+        "motifX": 155,
+        "motifY": 1429,
+        "motifSize": 205,
         "motifCount": 1,
-        "motifFrame": 28,
+        "motifFrame": 24,
         "motifColour": "#e0d089",
-        "motifOpacity": 0.8,
+        "motifOpacity": 0.89,
         "handheld": 1.5,
-        "panY": -68,
-        "roll": -0.35,
         "captionEmphasis": "recrystallises",
-        "captionReveal": "wipe",
+        "captionReveal": "blur",
         "captionMark": "underline",
         "captionWordEvery": 4,
-        "cameraMove": "drift",
-        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
       },
       "diagram": {
         "type": "crossSection",
@@ -2117,8 +2289,8 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.46,
-        "pushTo": 1.02,
+        "pushFrom": 1,
+        "pushTo": 1.09,
         "pushEndFrame": 49,
         "accent": "#e0d089",
         "field": "spotlight",
@@ -2146,13 +2318,14 @@
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
+        "panY": -50,
+        "roll": -0.12,
         "captionEmphasis": "seals",
         "captionReveal": "rise",
         "captionMark": "box",
-        "captionWordEvery": 3,
-        "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something",
-        "diagramCamera": 0.95
+        "captionWordEvery": 2,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       },
       "diagram": {
         "type": "crossSection",
@@ -2264,13 +2437,13 @@
       "durationInFrames": 45,
       "assets": {},
       "params": {
-        "scrim": 0.37,
+        "scrim": 0.44,
         "kicker": "",
         "title": "2,000 YEARS",
         "footer": "",
         "titleFrame": 38,
         "titleSize": 230,
-        "creep": 1.067,
+        "creep": 1.093,
         "accent": "#e0d089",
         "field": "grid",
         "fieldColours": [
@@ -2413,8 +2586,8 @@
       "params": {
         "anchorX": 799,
         "anchorY": 1498,
-        "pushFrom": 1.6,
-        "pushTo": 1,
+        "pushFrom": 1,
+        "pushTo": 1.1,
         "pushEndFrame": 42,
         "accent": "#e0d089",
         "field": "spotlight",
@@ -2442,12 +2615,14 @@
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
+        "panY": -68,
+        "roll": -0.28,
         "captionEmphasis": "weaker",
         "captionReveal": "rise",
         "captionMark": "highlight",
         "captionWordEvery": 3,
-        "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       },
       "diagram": {
         "type": "map",
@@ -2505,13 +2680,13 @@
       },
       "assets": {},
       "params": {
-        "scrim": 0.49,
+        "scrim": 0.41,
         "kicker": "VITRUVIUS · AD 30",
         "title": "TWO THOUSAND",
         "footer": "years, and still curing",
         "titleFrame": 9,
         "titleSize": 230,
-        "creep": 1.056,
+        "creep": 1.077,
         "accent": "#e0d089",
         "field": "grid",
         "fieldColours": [
@@ -2528,13 +2703,13 @@
       "props": [
         {
           "kind": "newspaper",
-          "masthead": "THE HERALD",
+          "masthead": "THE GAZETTE",
           "text": "TWO THOUSAND",
-          "depth": 0.73,
-          "x": 685,
-          "y": 383,
-          "width": 463,
-          "rotate": -3.9,
+          "depth": 0.71,
+          "x": 663,
+          "y": 381,
+          "width": 460,
+          "rotate": -5.2,
           "from": 73
         }
       ]

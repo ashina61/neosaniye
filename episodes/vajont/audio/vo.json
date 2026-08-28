@@ -3,7 +3,7 @@
   "how": "measured",
   "provider": "file",
   "audio": "audio/vo.wav",
-  "duration": 50.3683125,
+  "duration": 50.041375,
   "lines": [
     {
       "slug": "hook",
@@ -61,15 +61,15 @@
     },
     {
       "slug": "town",
-      "text": "Minutes later it reached the town of Longarone, and two thousand people died.",
+      "text": "The wave went down the gorge into Longarone and killed two thousand people.",
       "start": 39.74,
-      "end": 45.22
+      "end": 45.1
     },
     {
       "slug": "close",
       "text": "The dam is still standing, and they built the wrong thing correctly.",
-      "start": 45.22,
-      "end": 50.368
+      "start": 45.1,
+      "end": 50.041
     }
   ]
 }
