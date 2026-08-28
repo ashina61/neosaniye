@@ -60,18 +60,21 @@ Two of these were mistakes of my own, caught and reverted:
 
 Scores are from inspecting the frames, not from the gates.
 
+Every number below is from watching the finished MP4 end to end, plus the
+0/33/66/94 stills of all 109 shots.
+
 | | Hormuz | Baalbek | Roman concrete | Medieval sword | Human heart |
 |---|---|---|---|---|---|
-| Professionalism | 8.0 | 8.0 | 8.5 | 7.5 | 8.0 |
+| Professionalism | 8.5 | 8.5 | 8.5 | 7.5 | 8.0 |
 | Storytelling | 8.0 | 8.0 | 8.5 | 8.0 | 7.5 |
 | Visual hierarchy | 8.5 | 8.5 | 8.5 | 8.5 | 8.5 |
-| Motion design | 8.0 | 8.0 | 8.5 | 7.5 | 8.0 |
+| Motion design | 8.0 | 8.5 | 8.5 | 7.5 | 8.0 |
 | Camera diversity | 8.5 | 8.5 | 8.5 | 8.5 | 8.5 |
 | Transition quality | 7.0 | 7.0 | 7.0 | 7.0 | 7.0 |
-| Visual continuity | 9.0 | 9.0 | 9.0 | 8.5 | 8.5 |
-| Editorial | 8.0 | 8.0 | 8.5 | 7.5 | 7.5 |
+| Visual continuity | 9.0 | 9.0 | 9.0 | **7.0** | 8.5 |
+| Editorial | 8.5 | 8.5 | 8.5 | 7.5 | 7.5 |
 | Asset relevance | — | — | — | — | — |
-| **Final** | **8.0** | **8.0** | **8.5** | **7.5** | **8.0** |
+| **Final** | **8.0** | **8.5** | **8.5** | **7.0** | **8.0** |
 | DNA violations | 0 | 0 | 0 | 0 | 0 |
 | Temporal violations | 0 | 0 | 0 | 0 | 0 |
 | Clipping violations | 0 | 0 | 0 | 0 | 0 |
@@ -135,9 +138,9 @@ Against BENCHMARK-5, whose configs the run started from.
 | | before | after |
 |---|---|---|
 | Hormuz | 8.0 | 8.0 |
-| Baalbek | 7.5 | **8.0** |
+| Baalbek | 7.5 | **8.5** |
 | Roman concrete | 8.0 | **8.5** |
-| Medieval sword | 8.0 | 7.5 |
+| Medieval sword | 8.0 | **7.0** |
 | Human heart | 7.5 | **8.0** |
 | strict findings | 51 | 37 |
 | of which real defects | 26 | **0** |
@@ -150,11 +153,17 @@ Against BENCHMARK-5, whose configs the run started from.
 | cards printing the same words twice | 10 | **0** |
 | reels naming their subject twice in three seconds | 4 of 5 | **0** |
 
-**The sword went down.** Its score was carrying two shots I had not looked at
-closely enough before: `s03-carbon-b` and `s03-carbon-c` are a large amorphous
-glow with a line of type on it, static for their whole length, and near-identical
-to each other. The fixes did not make them worse — the inspection made them
-visible. A number that falls because you finally looked is the number working.
+**The sword went down a full point, and that is the most useful number here.**
+Two things it was getting away with came out on the finished video. Six of its
+twenty-two shots — nearly a third of the reel — are a large amorphous ochre glow
+with one line of type, static end to end and near-identical to each other. And
+after the blade is quenched, the next line shows it as a raw grey wedge again
+(§6.3): its continuity is the worst of the five, not the best.
+
+Nothing was made worse. The inspection made it visible, and a score that falls
+because you finally looked is the score working. Baalbek rose for the opposite
+reason: it is the only episode with **zero** strict findings beyond its three
+representation gaps.
 
 ---
 
@@ -254,6 +263,13 @@ drawing assembling on the frame the cut lands on, and every reel stating itself
 inside its first half second. Roman concrete is the strongest and carries only
 two strict findings beyond its representation gaps.
 
+One more thing is now known that was not before: **every one of these five was
+verified by watching the rendered MP4 end to end**, not by reading a gate. Three
+of the nineteen defects were invisible to every gate AND to the 0/33/66/94
+contact sheets, and only appeared in the video — a contact sheet samples four
+frames of a shot, and what it cannot show you is what the first second of a reel
+feels like.
+
 What is missing is **voiceover and pictures**:
 
 - All five reels are cut to **estimated** timings (`word / 2.7 * 30`). Every
@@ -269,7 +285,10 @@ Both are supply, not code.
 
 ## 8. Commands for the first production Short
 
-Roman concrete is the strongest and the only one clean under `--strict`.
+Baalbek and roman concrete are the two clean ones. Roman concrete is the
+strongest overall; Baalbek is the only reel with zero strict findings beyond its
+representation gaps. Either is a defensible first Short — the commands below use
+roman concrete.
 
 ```sh
 export REMOTION_BROWSER_EXECUTABLE=/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell
