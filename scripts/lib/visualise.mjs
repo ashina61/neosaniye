@@ -939,7 +939,7 @@ export function buildTerrainSection({vo, seed, accent, muted, claims = [], stops
      * toward the toe, because a flow piles up where it stops.
      */
     const XS = [0.02, 0.2, 0.38, 0.56, 0.74, 1.02];
-    const deep = 0.075;
+    const deep = 0.095;
     const lying = [
       ...XS.map((x) => [x, ground(Math.min(1, x)) - deep * (0.45 + 0.75 * x)]),
       ...[...XS].reverse().map((x) => [x, ground(Math.min(1, x)) + 0.004]),

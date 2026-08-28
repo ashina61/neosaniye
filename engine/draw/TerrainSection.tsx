@@ -255,7 +255,7 @@ export const TerrainSectionPlate: React.FC<{spec: TerrainSectionSpec; cam?: Cam}
             * and drawing that air is the difference between a section of a
             * mountainside and a line on a page.
             */}
-          <Sky y={Math.min(...profile.map(([, y]) => y)) * h} w={w} colour={muted} id="ts-sky" strength={1.1} />
+          <Sky y={Math.min(...profile.map(([, y]) => y)) * h} w={w} colour={muted} id="ts-sky" strength={2.6} />
           {/* THE WATER, under the land so the shoreline is the ground's edge. */}
           {waterShape ? (
             <g>
@@ -293,9 +293,19 @@ export const TerrainSectionPlate: React.FC<{spec: TerrainSectionSpec; cam?: Cam}
             </g>
           ) : null}
 
-          {/* THE LAND. */}
+          {/**
+            * THE LAND — and under a pale deposit it is the DARK GROUND that
+            * deposit lies on (law 36: a drawing wants a ground darker than
+            * itself). At full stone value the ash and the rock came out within
+            * a few per cent of each other, so a covered mountainside read as an
+            * uncovered one and the burial was invisible twice over: once
+            * because the ash was too dark, and then because the rock was too
+            * light.
+            */}
           <path d={poly(ground, w, h)} fill="#0d0b09" />
-          <MaterialFace id="ts-rock" material="stone" d={poly(ground, w, h)} w={w} />
+          <g opacity={spec.mass?.kind === 'front' ? 0.5 : 1}>
+            <MaterialFace id="ts-rock" material="stone" d={poly(ground, w, h)} w={w} />
+          </g>
           <path d={line(profile, w, h)} fill="none" stroke={muted} strokeWidth={weight.object} />
 
           {/* THE BEDS, hung under the surface so they FOLLOW it. A weak bed is
