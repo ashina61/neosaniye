@@ -1763,7 +1763,23 @@ function applyDirection({
       : {
           ...drawn,
           from: own ? 0 : at,
-          over: Math.max(14, Math.round(durationInFrames * 0.45)),
+          /**
+           * MORE STATES NEED MORE OF THE SHOT.
+           *
+           * A fixed 45% is right for a drawing that assembles once and then
+           * holds. A drawing that runs through STATES has to spend that time
+           * n-1 times over, and at 45% a three-state run gave each transition
+           * about half a second: plaster poured into a cavity went from empty
+           * to finished between two sampled frames, so the stage the whole
+           * sequence exists to show was the one nobody saw.
+           */
+          over: Math.max(
+            14,
+            Math.round(
+              durationInFrames *
+                Math.min(0.86, 0.45 + Math.max(0, (drawn.stages?.length ?? 2) - 2) * 0.2),
+            ),
+          ),
           ...(drawn.type === 'gearSystem' && drawn.count ? {countTo: drawn.count} : {}),
         };
     /**

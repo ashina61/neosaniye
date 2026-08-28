@@ -1023,8 +1023,8 @@ export function boundsOf(scene, {width, height}) {
      * the top of it. The state label and the run strip sit below the ground and
      * are part of the drawing's own furniture, so they are inside the box.
      */
-    const formH = n(d.form?.h ?? d.form?.height, 0.2) * height;
-    const ground = height * 0.66;
+    const formH = n(d.form?.h ?? d.form?.height, 0.26) * height;
+    const ground = height * 0.615;
     out.push({
       what: 'mouldCast form',
       role: 'drawn',

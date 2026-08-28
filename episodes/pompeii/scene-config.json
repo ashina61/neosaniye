@@ -5,7 +5,7 @@
   "width": 1080,
   "height": 1920,
   "look": {
-    "posterizeFps": 15,
+    "posterizeFps": 12,
     "grade": {
       "saturate": 0.46,
       "contrast": 1.23,
@@ -18,13 +18,13 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.44,
-      "grungeOpacity": 0.17,
-      "scanlineOpacity": 0.14,
-      "scanlinePeriod": 10,
-      "vignetteStrength": 0.51,
-      "weavePx": 5,
-      "weaveScale": 1.015
+      "grainOpacity": 0.36,
+      "grungeOpacity": 0.19,
+      "scanlineOpacity": 0.13,
+      "scanlinePeriod": 9,
+      "vignetteStrength": 0.43,
+      "weavePx": 6,
+      "weaveScale": 1.018
     }
   },
   "scenes": [
@@ -1108,7 +1108,7 @@
         "muted": "#cfc6ae",
         "form": {
           "label": "the form",
-          "height": 0.2
+          "height": 0.26
         },
         "medium": {
           "label": "ash",
@@ -1202,7 +1202,7 @@
         "muted": "#cfc6ae",
         "form": {
           "label": "the form",
-          "height": 0.2
+          "height": 0.26
         },
         "medium": {
           "label": "ash",
@@ -1423,7 +1423,7 @@
         "muted": "#cfc6ae",
         "form": {
           "label": "the form",
-          "height": 0.2
+          "height": 0.26
         },
         "medium": {
           "label": "ash",
@@ -1454,13 +1454,12 @@
             "cause": "the fill IS the form, in new material"
           }
         },
-        "subject": "mouldCast",
+        "subject": "process",
         "depicts": "process",
         "claims": [
           "sequence",
           "entombment",
-          "decay",
-          "void_left"
+          "decay"
         ],
         "from": 0,
         "over": 23
@@ -1469,16 +1468,16 @@
     {
       "id": "s08-cast-b",
       "sceneType": "composite",
-      "voText": "and the body decayed",
-      "durationInFrames": 52,
+      "voText": "and the body decayed away.",
+      "durationInFrames": 64,
       "assets": {},
       "layers": [],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.02,
-        "pushTo": 1.48,
-        "pushEndFrame": 49,
+        "pushFrom": 1.18,
+        "pushTo": 1.26,
+        "pushEndFrame": 62,
         "accent": "#e8e2d4",
         "field": "wash",
         "fieldColours": [
@@ -1493,131 +1492,24 @@
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.1,
         "caption": [
-          "and the body decayed"
+          "and the body",
+          "decayed away"
         ],
         "captionX": 84,
         "captionY": 134,
-        "captionSize": 55,
+        "captionSize": 93,
         "captionAlign": "left",
-        "captionFrame": 29,
+        "captionFrame": 35,
         "captionEvery": 8,
         "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
+        "panY": 202,
         "captionEmphasis": "decayed",
         "captionReveal": "blur",
-        "captionMark": "underline",
-        "captionWordEvery": 4,
-        "cameraMove": "push",
-        "cameraPurpose": "single out the subject — the frame closes on what matters"
-      },
-      "diagram": {
-        "type": "mouldCast",
-        "accent": "#e8e2d4",
-        "muted": "#cfc6ae",
-        "form": {
-          "label": "the form",
-          "height": 0.2
-        },
-        "medium": {
-          "label": "ash",
-          "material": "concrete"
-        },
-        "filler": {
-          "label": "the fill"
-        },
-        "stages": [
-          "engulf",
-          "void"
-        ],
-        "captions": {
-          "engulf": {
-            "state": "ENGULFED",
-            "cause": "ash arrives and banks up"
-          },
-          "void": {
-            "state": "VOID",
-            "cause": "the form decays and leaves its shape"
-          },
-          "fill": {
-            "state": "FILLED",
-            "cause": "the fill is poured into the space"
-          },
-          "cast": {
-            "state": "CAST",
-            "cause": "the fill IS the form, in new material"
-          }
-        },
-        "subject": "mouldCast",
-        "depicts": "process",
-        "claims": [
-          "sequence",
-          "entombment",
-          "decay",
-          "void_left"
-        ],
-        "from": -1,
-        "over": 1
-      }
-    },
-    {
-      "id": "s08-cast-c",
-      "sceneType": "composite",
-      "voText": "to a cavity.",
-      "durationInFrames": 45,
-      "assets": {},
-      "layers": [],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.32,
-          "x": 67,
-          "y": 130,
-          "width": 305,
-          "rotate": 11,
-          "opacity": 0.59,
-          "colour": "#e8e2d4",
-          "from": 0
-        }
-      ],
-      "params": {
-        "anchorX": 799,
-        "anchorY": 1498,
-        "pushFrom": 1.17,
-        "pushTo": 1.29,
-        "pushEndFrame": 44,
-        "accent": "#e8e2d4",
-        "field": "wash",
-        "fieldColours": [
-          "#0d0e0f",
-          "#0a0b0b",
-          "#070809"
-        ],
-        "glowX": -388,
-        "glowY": 417,
-        "glowSize": 546,
-        "glowIntensity": 0.51,
-        "glowWarm": "#e8e2d4",
-        "glowDepth": 0.1,
-        "caption": [
-          "to a cavity"
-        ],
-        "captionX": 84,
-        "captionY": 134,
-        "captionSize": 94,
-        "captionAlign": "left",
-        "captionFrame": 28,
-        "captionEvery": 8,
-        "captionScrim": 0.38,
-        "focusPx": 0,
-        "fog": 0,
-        "handheld": 1.5,
-        "panY": 187,
-        "captionEmphasis": "cavity",
-        "captionReveal": "punch",
-        "captionMark": "none",
-        "captionWordEvery": 3,
+        "captionMark": "highlight",
+        "captionWordEvery": 2,
         "cameraMove": "tilt",
         "cameraPurpose": "a vertical reveal — height, depth, or a drop"
       },
@@ -1627,7 +1519,7 @@
         "muted": "#cfc6ae",
         "form": {
           "label": "the form",
-          "height": 0.2
+          "height": 0.26
         },
         "medium": {
           "label": "ash",
@@ -1658,13 +1550,12 @@
             "cause": "the fill IS the form, in new material"
           }
         },
-        "subject": "mouldCast",
+        "subject": "process",
         "depicts": "process",
         "claims": [
           "sequence",
           "entombment",
-          "decay",
-          "void_left"
+          "decay"
         ],
         "from": -1,
         "over": 1
@@ -1681,8 +1572,8 @@
         "anchorX": 540,
         "anchorY": 1700,
         "pushFrom": 1,
-        "pushTo": 1.09,
-        "pushEndFrame": 70,
+        "pushTo": 1.1,
+        "pushEndFrame": 71,
         "glowX": -65,
         "glowY": 422,
         "glowSize": 560,
@@ -1712,12 +1603,12 @@
         "captionRecedeAt": 54,
         "accent": "#e8e2d4",
         "handheld": 1.5,
-        "panY": -31,
-        "roll": 0.59,
+        "panY": -41,
+        "roll": 0.19,
         "captionEmphasis": "Diggers",
-        "captionReveal": "rise",
+        "captionReveal": "punch",
         "captionMark": "none",
-        "captionWordEvery": 3,
+        "captionWordEvery": 2,
         "cameraMove": "drift",
         "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       },
@@ -1736,7 +1627,7 @@
         "muted": "#cfc6ae",
         "form": {
           "label": "the form",
-          "height": 0.2
+          "height": 0.26
         },
         "medium": {
           "label": "the deposit",
@@ -1775,7 +1666,7 @@
           "infill"
         ],
         "from": 0,
-        "over": 34
+        "over": 49
       }
     },
     {
@@ -1785,12 +1676,25 @@
       "durationInFrames": 97,
       "assets": {},
       "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.2,
+          "x": 152,
+          "y": 132,
+          "width": 316,
+          "rotate": 18,
+          "opacity": 0.52,
+          "colour": "#e8e2d4",
+          "from": 82
+        }
+      ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.52,
-        "pushTo": 1.03,
-        "pushEndFrame": 94,
+        "pushFrom": 1.19,
+        "pushTo": 1.23,
+        "pushEndFrame": 88,
         "accent": "#e8e2d4",
         "field": "wash",
         "fieldColours": [
@@ -1798,10 +1702,10 @@
           "#0a0b0b",
           "#070809"
         ],
-        "glowX": -400,
-        "glowY": 269,
+        "glowX": -444,
+        "glowY": 586,
         "glowSize": 465,
-        "glowIntensity": 0.66,
+        "glowIntensity": 0.44,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.1,
         "caption": [
@@ -1813,18 +1717,19 @@
         "captionY": 134,
         "captionSize": 85,
         "captionAlign": "left",
-        "captionFrame": 50,
-        "captionEvery": 8,
+        "captionFrame": 43,
+        "captionEvery": 7,
         "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
+        "panX": 267,
         "captionEmphasis": "person",
         "captionReveal": "rise",
-        "captionMark": "highlight",
+        "captionMark": "box",
         "captionWordEvery": 3,
-        "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
       },
       "diagram": {
         "type": "mouldCast",
@@ -1832,7 +1737,7 @@
         "muted": "#cfc6ae",
         "form": {
           "label": "the form",
-          "height": 0.2
+          "height": 0.26
         },
         "medium": {
           "label": "the deposit",
@@ -1879,19 +1784,14 @@
       "sceneType": "composite",
       "voText": "The famous casts are not people turned",
       "durationInFrames": 86,
-      "gradeOverride": {
-        "saturate": 0.98,
-        "sepia": 0.3,
-        "brightness": 1.08
-      },
       "assets": {},
       "layers": [],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
         "pushFrom": 1,
-        "pushTo": 1.12,
-        "pushEndFrame": 81,
+        "pushTo": 1.11,
+        "pushEndFrame": 80,
         "glowX": -65,
         "glowY": 422,
         "glowSize": 560,
@@ -1917,28 +1817,20 @@
         "captionSize": 135,
         "captionAlign": "left",
         "captionFrame": -12,
-        "captionEvery": 6,
+        "captionEvery": 7,
         "captionScrim": 0,
         "captionRecedeAt": 62,
         "accent": "#e8e2d4",
-        "motif": "rays",
-        "motifX": 585,
-        "motifY": 367,
-        "motifSize": 325,
-        "motifCount": 26,
-        "motifFrame": 21,
-        "motifColour": "#e8e2d4",
-        "motifOpacity": 0.94,
         "handheld": 1.5,
-        "panY": -58,
-        "roll": 0.66,
+        "panY": -51,
+        "roll": -0.7,
         "shakeAt": [
           7
         ],
         "shakeAmount": 22,
         "captionEmphasis": "famous",
-        "captionReveal": "punch",
-        "captionMark": "highlight",
+        "captionReveal": "wipe",
+        "captionMark": "underline",
         "captionWordEvery": 2,
         "cameraMove": "drift",
         "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
@@ -1954,8 +1846,8 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.7,
-        "pushTo": 1.04,
+        "pushFrom": 1.71,
+        "pushTo": 1.03,
         "pushEndFrame": 41,
         "accent": "#e8e2d4",
         "field": "wash",
@@ -1964,10 +1856,10 @@
           "#1c1f21",
           "#0a0b0c"
         ],
-        "glowX": -326,
-        "glowY": 597,
-        "glowSize": 534,
-        "glowIntensity": 0.67,
+        "glowX": -443,
+        "glowY": 385,
+        "glowSize": 509,
+        "glowIntensity": 0.53,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.1,
         "caption": [
@@ -1978,15 +1870,19 @@
         "captionSize": 169,
         "captionAlign": "left",
         "captionFrame": -12,
-        "captionEvery": 6,
+        "captionEvery": 10,
         "captionScrim": 0,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
+        "shakeAt": [
+          4
+        ],
+        "shakeAmount": 22,
         "captionEmphasis": "stone",
-        "captionReveal": "wipe",
-        "captionMark": "none",
-        "captionWordEvery": 2,
+        "captionReveal": "rise",
+        "captionMark": "highlight",
+        "captionWordEvery": 3,
         "cameraMove": "pull",
         "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
       }
@@ -2003,13 +1899,13 @@
       },
       "assets": {},
       "params": {
-        "scrim": 0.49,
+        "scrim": 0.54,
         "kicker": "Vesuvius · 79 AD",
         "title": "IN STAGES",
         "footer": "pumice, then ash, then the current",
         "titleFrame": 9,
         "titleSize": 230,
-        "creep": 1.081,
+        "creep": 1.053,
         "accent": "#e8e2d4",
         "field": "wash",
         "fieldColours": [
@@ -2017,22 +1913,22 @@
           "#1c1f21",
           "#0a0b0c"
         ],
-        "pushEndFrame": 111,
-        "pushFrom": 1.05,
-        "pushTo": 1.05,
+        "pushEndFrame": 115,
+        "pushFrom": 1.03,
+        "pushTo": 1.06,
         "cameraMove": "hold",
         "cameraPurpose": "importance. The frame stops because the idea needs no help"
       },
       "props": [
         {
           "kind": "newspaper",
-          "masthead": "THE GAZETTE",
+          "masthead": "THE DAILY",
           "text": "IN STAGES",
-          "depth": 0.79,
-          "x": 705,
-          "y": 412,
-          "width": 410,
-          "rotate": 0.8,
+          "depth": 0.74,
+          "x": 769,
+          "y": 404,
+          "width": 423,
+          "rotate": -5.5,
           "from": 73
         }
       ]

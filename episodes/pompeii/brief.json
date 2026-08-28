@@ -68,7 +68,7 @@
     },
     {
       "slug": "cast",
-      "vo": "Ash sealed each body, and the body decayed to a cavity.",
+      "vo": "Ash sealed each body, and the body decayed away.",
       "graphicsOnly": true,
       "caption": [
         "A hollow",
@@ -85,7 +85,8 @@
     {
       "slug": "notstone",
       "vo": "The famous casts are not people turned to stone.",
-      "graphicsOnly": true
+      "graphicsOnly": true,
+      "motif": "none"
     },
     {
       "slug": "close",

@@ -119,18 +119,27 @@ export const MouldCastPlate: React.FC<{spec: MouldCastSpec; w: number; h: number
    * index of the state we are leaving and `mix` how far we have left it. A
    * single-state shot holds, which is what a payoff wants.
    */
-  const each = over / Math.max(1, stages.length - 1);
-  const raw = stages.length === 1 ? 0 : Math.min(stages.length - 1, t / Math.max(1, each));
-  const k = Math.min(stages.length - 1, Math.floor(raw));
-  const next = Math.min(stages.length - 1, k + 1);
+  /**
+   * n STATES ARE n-1 TRANSITIONS, and `k` is the state being LEFT.
+   *
+   * The first version indexed the state being entered and clamped `raw` to the
+   * last index, so on the final state `raw - k` was zero and that state never
+   * registered as reached at all: a shot whose whole job was the VOID drew the
+   * deposit, the label, and no cavity. The state the cut lands on is state one,
+   * established (law 30); everything after it is a transition into the next.
+   */
+  const n = stages.length;
+  const each = over / Math.max(1, n - 1);
+  const raw = n === 1 ? 0 : Math.min(n - 1, t / Math.max(1, each));
+  const k = Math.min(Math.max(0, n - 2), Math.floor(raw));
   const mix = settle(Math.min(1, raw - k));
+  const current = mix > 0.55 ? Math.min(n - 1, k + 1) : k;
   const at = (s: MouldStage) => {
-    // How far this shot has got INTO a given state, 0..1.
     const idx = stages.indexOf(s);
-    if (idx < 0) return stages.indexOf('cast') >= 0 && s !== 'cast' ? 1 : 0;
-    if (k > idx) return 1;
-    if (k < idx) return 0;
-    return mix;
+    if (idx < 0) return 0;
+    if (idx <= k) return 1;
+    if (idx === k + 1) return mix;
+    return 0;
   };
   // A state already passed counts as complete even if this shot never plays it:
   // a shot that opens on VOID must draw the medium the previous shot banked up.
@@ -143,8 +152,8 @@ export const MouldCastPlate: React.FC<{spec: MouldCastSpec; w: number; h: number
   };
 
   const cx = w * 0.5;
-  const ground = h * 0.66;
-  const formH = (spec.form?.height ?? 0.2) * h;
+  const ground = h * 0.615;
+  const formH = (spec.form?.height ?? 0.26) * h;
   const path = formPath(cx, ground, formH);
 
   // THE MEDIUM. A front sweeps in from the right, then the level banks up.
@@ -176,9 +185,8 @@ export const MouldCastPlate: React.FC<{spec: MouldCastSpec; w: number; h: number
         <g transform={world}>
           <GroundPlane y={ground} w={w} h={h} colour={muted} />
 
-          {/* THE FORM, while it is still there. Fades as it decays — the one
-              thing in the drawing that is allowed to disappear. */}
-          {cast < 0.02 ? (
+          {/* THE FORM IN THE OPEN, before the medium reaches it. */}
+          {cast < 0.02 && sweep < 0.999 ? (
             <g opacity={1 - buried}>
               <Contact x={cx} y={ground + h * 0.003} width={formH * 0.5} strength={0.7} />
               <path d={path} fill="#0d0b09" opacity={0.45} />
@@ -201,19 +209,37 @@ export const MouldCastPlate: React.FC<{spec: MouldCastSpec; w: number; h: number
             </g>
           ) : null}
 
+          {/**
+           * AND THE FORM IS STILL THERE ONCE THE MEDIUM IS OVER IT.
+           *
+           * Drawn AFTER the deposit, dimmed, because the ash is in front of it
+           * — but not gone. The first version painted the deposit over the top
+           * and the form simply vanished at the moment of burial, so the cavity
+           * in the next shot arrived from nowhere: the viewer had nothing to
+           * connect it to. The whole argument is that the hollow is the SAME
+           * SHAPE, and that only works if you watched the shape go under.
+           */}
+          {sweep > 0.4 && buried < 0.999 && cast < 0.02 ? (
+            <g clipPath="url(#mc-deck)" opacity={(1 - buried) * 0.85}>
+              <path d={path} fill="#0d0b09" opacity={0.75} />
+              <MaterialFace id="mc-fill" material="paper" d={path} w={w} />
+              <path d={path} fill="none" stroke={accent} strokeWidth={line.detail} opacity={0.7} />
+            </g>
+          ) : null}
+
           {/* THE CAVITY. Drawn only once the form has gone, and drawn as a
               DASHED negative — the convention for a space rather than a thing.
               Clipped to the deposit so it reads as a hole in it. */}
           {buried > 0.02 && cast < 0.98 ? (
             <g clipPath="url(#mc-deck)" opacity={buried}>
-              <path d={path} fill="#07060a" opacity={0.85} />
+              <path d={path} fill="#050407" opacity={0.97} />
               <path
                 d={path}
                 fill="none"
                 stroke={accent}
-                strokeWidth={line.detail}
-                strokeDasharray={`${w * 0.012} ${w * 0.009}`}
-                opacity={0.95}
+                strokeWidth={line.object}
+                strokeDasharray={`${w * 0.016} ${w * 0.011}`}
+                opacity={1}
               />
             </g>
           ) : null}
@@ -337,7 +363,7 @@ export const MouldCastPlate: React.FC<{spec: MouldCastSpec; w: number; h: number
             letterSpacing={w * 0.004}
             textAnchor="middle"
           >
-            {(spec.captions?.[stages[k]] ?? SAYS[stages[k]]).state}
+            {(spec.captions?.[stages[current]] ?? SAYS[stages[current]]).state}
           </text>
           <text
             x={w * 0.5}
@@ -349,7 +375,7 @@ export const MouldCastPlate: React.FC<{spec: MouldCastSpec; w: number; h: number
             textAnchor="middle"
             opacity={0.85}
           >
-            {(spec.captions?.[stages[k]] ?? SAYS[stages[k]]).cause.toUpperCase()}
+            {(spec.captions?.[stages[current]] ?? SAYS[stages[current]]).cause.toUpperCase()}
           </text>
         </g>
 
@@ -363,8 +389,8 @@ export const MouldCastPlate: React.FC<{spec: MouldCastSpec; w: number; h: number
               y={h * 0.822}
               width={w * 0.038}
               height={h * 0.0035}
-              fill={i <= k ? accent : muted}
-              opacity={i <= k ? 0.95 : 0.32}
+              fill={i <= current ? accent : muted}
+              opacity={i <= current ? 0.95 : 0.32}
             />
           ))}
         </g>

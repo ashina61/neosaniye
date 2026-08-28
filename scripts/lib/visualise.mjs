@@ -650,7 +650,7 @@ export function buildMouldCast({vo, accent, muted, claims = []}) {
     type: 'mouldCast',
     accent,
     muted,
-    form: {label: 'the form', height: 0.2},
+    form: {label: 'the form', height: 0.26},
     medium: {label: medium, material: 'concrete'},
     filler: {label: filler},
     stages,
