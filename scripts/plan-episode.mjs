@@ -2532,6 +2532,39 @@ function applyDirection({
    * Two models of where a gear train is would disagree, and the disagreement
    * would surface as a warning nobody could act on.
    */
+  /**
+   * AND A MOTIF IS REFUSED WHEN THE DRAWING ALREADY PLAYS ITS VERB.
+   *
+   * The check below this one is geometric — it moves a motif off whatever it
+   * would sit on, and drops it when there is nowhere clear. It cannot see the
+   * other way a motif goes wrong, which is being the SECOND graphic in the shot
+   * saying the same thing. A map that draws a route between two named places
+   * was also handed a `route` motif drawing its own line across the same frame:
+   * two diagonals crossing, and the dimension label "5 MILES" sitting exactly
+   * on the intersection. Neither line was out of bounds and neither overlapped
+   * enough of the other to trip the geometry, so the frame shipped with a
+   * graphic through a sentence (law 29) that every check called clean.
+   *
+   * Law 14 says the motif plays the VERB of the sentence. If the drawing is
+   * already playing it, the sentence does not have a second verb.
+   */
+  const PLAYED_BY = {
+    map: ['route'],
+    scaleHaulage: ['route'],
+    timeline: ['tally', 'rise'],
+    gearSystem: ['rise'],
+  };
+  if (params.motif && (PLAYED_BY[scene.diagram?.type] ?? []).includes(String(params.motif))) {
+    delete params.motif;
+    delete params.motifX;
+    delete params.motifY;
+    delete params.motifSize;
+    delete params.motifCount;
+    delete params.motifFrame;
+    delete params.motifColour;
+    delete params.motifOpacity;
+  }
+
   if (params.motif) {
     const zone = typeZone(scene);
     const size = Number(params.motifSize) || WIDTH * 0.3;

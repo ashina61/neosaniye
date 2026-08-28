@@ -1104,23 +1104,19 @@
         "captionScrim": 0.38,
         "captionRecedeAt": 54,
         "accent": "#e6e2d6",
-        "motif": "route",
         "motifStops": [
           "Kuwait",
           "Basra",
           "Ras Tanura",
           "Hormuz"
         ],
-        "motifFrame": 27,
-        "motifColour": "#e6e2d6",
         "handheld": 1.5,
         "captionEmphasis": "around",
         "captionReveal": "rise",
         "captionMark": "none",
         "captionWordEvery": 3,
         "cameraMove": "push",
-        "cameraPurpose": "single out the subject — the frame closes on what matters",
-        "motifY": 519
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
       },
       "diagram": {
         "type": "map",

@@ -486,14 +486,11 @@
         "captionScrim": 0.38,
         "captionRecedeAt": 78,
         "accent": "#d94f3d",
-        "motif": "route",
         "motifStops": [
           "The quarry",
           "The slope",
           "The podium"
         ],
-        "motifFrame": 18,
-        "motifColour": "#d94f3d",
         "handheld": 1.5,
         "panX": 198,
         "captionEmphasis": "bedrock",
@@ -501,8 +498,7 @@
         "captionMark": "highlight",
         "captionWordEvery": 4,
         "cameraMove": "pan",
-        "cameraPurpose": "expose information the frame was withholding, or follow a movement",
-        "motifY": 552
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
       },
       "diagram": {
         "type": "map",
@@ -1022,14 +1018,6 @@
         "captionScrim": 0.38,
         "captionRecedeAt": 62,
         "accent": "#d94f3d",
-        "motif": "route",
-        "motifX": 140,
-        "motifY": 701,
-        "motifSize": 199,
-        "motifCount": 1,
-        "motifFrame": 27,
-        "motifColour": "#d94f3d",
-        "motifOpacity": 0.93,
         "handheld": 1.5,
         "panY": -36,
         "roll": -0.51,

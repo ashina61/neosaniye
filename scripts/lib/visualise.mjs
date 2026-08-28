@@ -53,7 +53,25 @@ const has = (vo, re) => re.test(String(vo));
  */
 export function buildMap({vo, seed, accent, muted, stops = [], claims = []}) {
   const wobble = (i, amp = 0.05) => (hash01(seed, i) - 0.5) * amp;
-  const twoSided = has(vo, /\b(north\w*|south\w*|both sides|either side|shores)\b/i) || claims.includes('two_shores');
+  /**
+   * "ACROSS THE BAY" IS A TWO-SHORE SENTENCE.
+   *
+   * The land–water–land layout, the swell lines and the water material were all
+   * already here and the builder only reached for them when the line said
+   * "north", "shores" or "narrow". Everything else got the featureless blob:
+   * one grey pentagon on black, which is what "the mountain stood five miles
+   * from the town, ACROSS THE BAY" shipped as, twice, and the second map in the
+   * same reel was the identical polygon. A sentence that puts one place across
+   * water from another has described two shores; that is what to draw.
+   */
+  const crossesWater = has(
+    vo,
+    /\bacross the (bay|sea|strait|channel|gulf|lake|river|water|harbour|harbor|sound|firth)\b|\b(opposite|far) (shore|bank|side)\b/i,
+  );
+  const twoSided =
+    has(vo, /\b(north\w*|south\w*|both sides|either side|shores)\b/i) ||
+    claims.includes('two_shores') ||
+    crossesWater;
   const narrow = claims.includes('narrowness') || has(vo, /\b(narrow\w*|miles across|wide)\b/i);
   const figure = figureIn(vo);
   const unit = /\bkilometre|kilometer/i.test(vo) ? 'km' : /\bmiles?\b/i.test(vo) ? 'miles' : '';
@@ -133,15 +151,30 @@ export function buildMap({vo, seed, accent, muted, stops = [], claims = []}) {
    * ways through and they are two miles wide".
    */
   const lanes = has(vo, /\b(one (?:lane )?in.*one|lanes?|in and out|traffic)\b/i);
+  /**
+   * AND ON A TWO-SHORE MAP THE PLACES STAND ON OPPOSITE SHORES.
+   *
+   * Stops used to run along `midY` whatever the geography was, which on a map
+   * with water down the middle is the one place they cannot be. If the sentence
+   * says these two are across water from each other, then the water is between
+   * them and the route CROSSES it — which is the whole claim, drawn.
+   */
+  const shored = (twoSided || narrow) && stops.length >= 2;
+  const stopY = (i) =>
+    shored
+      ? i % 2 === 0
+        ? midY - gap / 2 - 0.10 - Math.abs(wobble(i + 40, 0.05))
+        : midY + gap / 2 + 0.10 + Math.abs(wobble(i + 40, 0.05))
+      : midY + wobble(i + 40, 0.08);
   if (stops.length >= 2) {
     spec.route = [
       {
-        points: stops.map((_, i) => [0.1 + (i / Math.max(1, stops.length - 1)) * 0.8, midY + wobble(i + 40, 0.08)]),
+        points: stops.map((_, i) => [0.1 + (i / Math.max(1, stops.length - 1)) * 0.8, stopY(i)]),
       },
     ];
     spec.markers = stops.map((label, i) => ({
       x: 0.1 + (i / Math.max(1, stops.length - 1)) * 0.8,
-      y: midY + wobble(i + 40, 0.08),
+      y: stopY(i),
       label,
       kind: 'place',
       /**
@@ -181,11 +214,18 @@ export function buildMap({vo, seed, accent, muted, stops = [], claims = []}) {
      * than through them, so the dimension and the route are two lines and not
      * one.
      */
-    spec.distance = {
-      from: [0.1, midY + 0.11],
-      to: [0.9, midY + 0.11],
-      label: `${figure}${unit ? ` ${unit}` : ''}`,
-    };
+    spec.distance = shored
+      ? // Across the water, between the two shores: the dimension IS the claim.
+        {
+          from: [0.1, stopY(0)],
+          to: [0.9, stopY(1)],
+          label: `${figure}${unit ? ` ${unit}` : ''}`,
+        }
+      : {
+          from: [0.1, midY + 0.11],
+          to: [0.9, midY + 0.11],
+          label: `${figure}${unit ? ` ${unit}` : ''}`,
+        };
   }
 
   if (claims.includes('chokepoint')) {
