@@ -32,7 +32,7 @@
  *
  *   node scripts/plan-episode.mjs --episode=mansa-musa
  */
-import {readFile, readdir, rm, writeFile} from 'node:fs/promises';
+import {access, readFile, readdir, rm, writeFile} from 'node:fs/promises';
 import sharp from 'sharp';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
@@ -3920,6 +3920,40 @@ async function main() {
     params.cameraMove = 'pull';
     params.cameraPurpose = 'the frame withdraws as the claim lands, because a still frame here has nothing carrying it';
     params.handheld = 1.5;
+  }
+
+  /**
+   * THE PLANNER NEVER WRITES A HARD DEPENDENCY ON A FILE THAT IS NOT THERE.
+   *
+   * "Eksik asset reel'i durdurmaz" is a law of this repo, and the mechanism for
+   * it already exists: a role written with `?` is used when the file is on disk
+   * and dropped when it is not. What was missing is that the planner wrote the
+   * role WITHOUT the mark whether or not the picture existed, so requesting a
+   * photograph that has not been supplied yet turned a whole episode red — the
+   * asset layer said ASSET_REQUIRED, non-blocking, and the validator said file
+   * not found.
+   *
+   * Asking for a picture and depending on one are different things. A role
+   * whose file is absent at plan time is written optional: the casting list
+   * still carries the request, the reel still renders, and the shot falls to
+   * the rung below exactly as the ladder intends.
+   */
+  for (const scene of config.scenes) {
+    for (const [role, file] of Object.entries(scene.assets ?? {})) {
+      if (role.startsWith('?') || typeof file !== 'string') continue;
+      let there = true;
+      try {
+        await access(path.join(episodeDir(brief.id), file));
+      } catch {
+        there = false;
+      }
+      if (there) continue;
+      delete scene.assets[role];
+      scene.assets[`?${role}`] = file;
+      if (Array.isArray(scene.layers)) {
+        for (const layer of scene.layers) if (layer.role === role) layer.role = `?${role}`;
+      }
+    }
   }
 
   const SAFE = {top: HEIGHT * 0.04, bottom: HEIGHT * 0.9, left: 40, right: WIDTH - 40};

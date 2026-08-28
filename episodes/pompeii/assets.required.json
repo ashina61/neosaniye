@@ -1,0 +1,32 @@
+{
+  "episode": "pompeii",
+  "generatedAt": "2026-08-28",
+  "$note": "Written for whoever is sourcing pictures, not for the pipeline. The reel renders without any of these: every line here is either drawn procedurally or stated in type, and each entry says which. BLOCKING means the line is about something type cannot depict and no drawing covers it.",
+  "supplied": [
+    "s02-mountain-bg.png"
+  ],
+  "outstanding": 1,
+  "blocking": 0,
+  "wanted": [
+    {
+      "line": "mountain",
+      "says": "The mountain stood five miles from the town, across the bay.",
+      "subject": "geography",
+      "domain": "geography",
+      "currently": "drawn as map",
+      "priority": "would strengthen",
+      "searches": [
+        "Pompeii with Vesuvius",
+        "Pompeii forum Vesuvius background",
+        "Pompeii ruins Vesuvius"
+      ],
+      "described": "the excavated streets of Pompeii with the cone of Vesuvius on the skyline behind, hard daylight, no people",
+      "purpose": "establish where this is and how the parts of it stand relative to each other",
+      "composition": "high or aerial view with a clear horizon; the relation between the two sides must be legible",
+      "orientation": "landscape source, croppable to 9:16 without losing the relation",
+      "constraints": "the actual named place; contemporary imagery is acceptable unless the line dates it",
+      "substitutes": "a comparable coastline of the same character, LABELLED as illustrative and not as the place",
+      "reject": "tourist framing, visible modern signage where the line is historical, any view that hides the relation the sentence is about"
+    }
+  ]
+}

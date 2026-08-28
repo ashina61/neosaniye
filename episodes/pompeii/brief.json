@@ -19,7 +19,6 @@
     {
       "slug": "mountain",
       "vo": "The mountain stood five miles from the town, across the bay.",
-      "graphicsOnly": true,
       "stops": [
         "VESUVIUS",
         "POMPEII"
@@ -27,6 +26,12 @@
       "caption": [
         "Five miles",
         "of open ground."
+      ],
+      "image": "the excavated streets of Pompeii with the cone of Vesuvius on the skyline behind, hard daylight, no people",
+      "imageCommons": [
+        "Pompeii with Vesuvius",
+        "Pompeii forum Vesuvius background",
+        "Pompeii ruins Vesuvius"
       ]
     },
     {
@@ -85,16 +90,16 @@
     {
       "slug": "notstone",
       "vo": "The famous casts are not people turned to stone.",
-      "graphicsOnly": true,
-      "motif": "none"
+      "motif": "none",
+      "graphicsOnly": true
     },
     {
       "slug": "close",
       "vo": "Pompeii was not destroyed in one instant. It was destroyed in stages.",
-      "graphicsOnly": true,
       "kicker": "Vesuvius · 79 AD",
       "title": "IN STAGES",
-      "footer": "pumice, then ash, then the current"
+      "footer": "pumice, then ash, then the current",
+      "graphicsOnly": true
     }
   ]
 }
