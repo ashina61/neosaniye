@@ -804,26 +804,53 @@ export function buildTerrainSection({vo, seed, accent, muted, claims = [], stops
   const isVolume = /\bcubic\s+(metres?|meters?|yards?|kilometres?|kilometers?)\b|\bm³/i.test(vo);
 
   /**
-   * THE VALLEY. A high shoulder on the left, a gorge, and a lower shoulder on
-   * the right — the shape of every impounded valley there is, roughened so it
-   * is a landform and not a diagram of one.
+   * THE LANDFORM IS READ FROM THE SENTENCE, like everything else here.
+   *
+   * A valley that impounds water is a high shoulder, a gorge and a lower
+   * shoulder. A mountain with something coming down it is a FLANK: high on one
+   * side, falling to ground the town is standing on. Drawing the second story
+   * on the first landform puts a volcano's flow into a reservoir it does not
+   * have, which is a picture of somewhere else.
    */
-  const profile = [
-    [0, 0.30 + wobble(1)],
-    [0.16, 0.34 + wobble(2)],
-    [0.34, 0.46 + wobble(3)],
-    [0.46, 0.66 + wobble(4, 0.02)],
-    [0.58, 0.72],
-    [0.66, 0.66 + wobble(5, 0.02)],
-    [0.78, 0.50 + wobble(6)],
-    [1, 0.42 + wobble(7)],
-  ];
+  const descends = claims.includes('engulf_front') || has(vo, /\b(flanks?|mountainside|hillside|slopes?)\b/i);
+  const profile = impounds
+    ? [
+        [0, 0.30 + wobble(1)],
+        [0.16, 0.34 + wobble(2)],
+        [0.34, 0.46 + wobble(3)],
+        [0.46, 0.66 + wobble(4, 0.02)],
+        [0.58, 0.72],
+        [0.66, 0.66 + wobble(5, 0.02)],
+        [0.78, 0.50 + wobble(6)],
+        [1, 0.42 + wobble(7)],
+      ]
+    : /**
+       * AND THE FLANK SITS LOW, because the words have to go somewhere.
+       *
+       * Drawn from a fifth of the way down, the slope and the mass on it filled
+       * the frame from 12% to 72% — there was no clear band left, and moving
+       * the caption only chose which part of the drawing to lay it on. A
+       * section is composed WITH the type, not in spite of it: the summit is
+       * off the top of the frame, which is also how you would frame it with a
+       * camera, and the upper third belongs to the sentence.
+       */
+      [
+        [0, 0.42 + wobble(1, 0.03)],
+        [0.14, 0.47 + wobble(2, 0.025)],
+        [0.30, 0.545 + wobble(3, 0.02)],
+        [0.46, 0.60 + wobble(4, 0.018)],
+        [0.62, 0.655 + wobble(5, 0.015)],
+        [0.78, 0.69 + wobble(6, 0.012)],
+        [1, 0.71 + wobble(7, 0.012)],
+      ];
 
   const spec = {
     type: 'terrainSection',
     accent,
     muted,
     profile,
+    /** Both landforms are composed to leave the upper third to the words. */
+    captionZone: {y: 0.07, align: 'left'},
     scaleNote: 'schematic profile',
     subject: 'terrainSection',
     depicts: 'terrain',
@@ -882,7 +909,48 @@ export function buildTerrainSection({vo, seed, accent, muted, claims = [], stops
   const lets = claims.includes('release') && claims.includes('fluid_ingress');
   const travels = claims.includes('release') && !claims.includes('fluid_ingress');
 
-  if (plane || goes || creeps) {
+  /**
+   * A FRONT COMING DOWN THE FLANK.
+   *
+   * It starts as a compact mass high on the slope and ends as a deposit lying
+   * over the ground where the town is — so the drawing says "it came down and
+   * covered that", which is the sentence. Point for point, because the plate
+   * interpolates between the two footprints rather than sliding one of them.
+   */
+  const buries = claims.includes('engulf_front') || claims.includes('entombment');
+  if (buries && !plane && !impounds) {
+    const ground = (x) => {
+      for (let i = 1; i < profile.length; i += 1) {
+        const [x1, y1] = profile[i - 1];
+        const [x2, y2] = profile[i];
+        if (x >= x1 && x <= x2) return y1 + ((y2 - y1) * (x - x1)) / Math.max(1e-6, x2 - x1);
+      }
+      return profile[profile.length - 1][1];
+    };
+    const deep = 0.055;
+    spec.mass = {
+      kind: 'front',
+      shape: [
+        [0.02, ground(0.02) - 0.075],
+        [0.16, ground(0.16) - 0.085],
+        [0.26, ground(0.26) - 0.045],
+        [0.20, ground(0.20) + 0.004],
+        [0.06, ground(0.06) + 0.004],
+      ],
+      becomes: [
+        [0.02, ground(0.02) - deep],
+        [0.42, ground(0.42) - deep - 0.008],
+        [1.02, ground(1.0) - deep - 0.012],
+        [1.02, ground(1.0) + 0.004],
+        [0.02, ground(0.02) + 0.004],
+      ],
+      // Already lying there when the sentence is about the burial rather than
+      // the arrival: law 31 across a cut, the same rule the slab obeys.
+      at: claims.includes('engulf_front') ? 5 : -34,
+      over: 34,
+      label: 'the flow',
+    };
+  } else if (plane || goes || creeps) {
     spec.mass = {
       /**
        * A BODY ON THE FLANK, NOT THE FLANK ITSELF. At its first size the slab
@@ -907,6 +975,7 @@ export function buildTerrainSection({vo, seed, accent, muted, claims = [], stops
       // starting the mountain over at the top of the slope.
       at: already ? -26 : travels ? -5 : lets ? 30 : creeps ? 6 : 8,
       over: creeps ? 46 : travels ? 34 : lets ? 22 : 26,
+      kind: 'slab',
       label: 'slab',
       /**
        * And it is printed as the sentence says it, not as a raw integer:
@@ -924,7 +993,11 @@ export function buildTerrainSection({vo, seed, accent, muted, claims = [], stops
    * ones about the valley. Fourteen sections framed identically is one picture
    * shown fourteen times, whatever moves inside it.
    */
-  if (spills) {
+  if (spec.mass?.kind === 'front') {
+    // Wide while it comes down — a flow is a thing you watch cross a distance,
+    // and cropping in on it removes the distance it crosses.
+    spec.focus = claims.includes('engulf_front') ? undefined : {x: 0.62, y: 0.55, scale: 1.2};
+  } else if (spills) {
     // At the wall, for the thing the wall does.
     spec.focus = {x: 0.70, y: 0.46, scale: 1.46};
   } else if (isHeight) {
@@ -961,8 +1034,14 @@ export function buildTerrainSection({vo, seed, accent, muted, claims = [], stops
   const named = stops.filter((s) => typeof s === 'string' && s.trim());
   if (named.length) {
     spec.places = [{x: 0.90, label: named[named.length - 1]}];
-    if (!spills) spec.overtop = {at: 6, over: 22, label: 'over the crest'};
-    spec.focus = {x: 0.74, y: 0.5, scale: 1.22};
+    /**
+     * Water only goes over a wall if there is a wall. The overtopping belongs to
+     * the impounded case; a flank with a town on it has nothing to overtop, and
+     * drawing a spill there would be a graphic of an event the sentence never
+     * described.
+     */
+    if (!spills && impounds) spec.overtop = {at: 6, over: 22, label: 'over the crest'};
+    if (impounds) spec.focus = {x: 0.74, y: 0.5, scale: 1.22};
   }
 
   if (seeps && plane) spec.seepage = {at: 4, over: 18, label: 'water in the bed'};

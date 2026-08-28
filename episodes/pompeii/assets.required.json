@@ -7,11 +7,11 @@
   "blocking": 0,
   "wanted": [
     {
-      "line": "mountain",
-      "says": "The mountain stood five miles from the town, across the bay.",
-      "subject": "geography",
-      "domain": "geography",
-      "currently": "drawn as map",
+      "line": "hook",
+      "says": "Pompeii was not frozen in time, the volcano buried it.",
+      "subject": "terrain",
+      "domain": "terrain",
+      "currently": "drawn as terrainSection",
       "priority": "would strengthen",
       "searches": [
         "Pompeii with Vesuvius",
@@ -19,12 +19,12 @@
         "Pompeii ruins Vesuvius"
       ],
       "described": "the excavated streets of Pompeii with the cone of Vesuvius on the skyline behind, hard daylight, no people",
-      "purpose": "establish where this is and how the parts of it stand relative to each other",
-      "composition": "high or aerial view with a clear horizon; the relation between the two sides must be legible",
-      "orientation": "landscape source, croppable to 9:16 without losing the relation",
-      "constraints": "the actual named place; contemporary imagery is acceptable unless the line dates it",
-      "substitutes": "a comparable coastline of the same character, LABELLED as illustrative and not as the place",
-      "reject": "tourist framing, visible modern signage where the line is historical, any view that hides the relation the sentence is about"
+      "purpose": "illustrate the claim the line makes",
+      "composition": "the subject clear of clutter, with room to crop to 9:16",
+      "orientation": "either",
+      "constraints": "must depict the thing the line names",
+      "substitutes": "none — a near miss is a rejection",
+      "reject": "anything that is not the subject; approximation is what this manifest exists to prevent"
     }
   ]
 }

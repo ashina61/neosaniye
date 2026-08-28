@@ -170,6 +170,10 @@
             0.42558399999999996
           ]
         ],
+        "captionZone": {
+          "y": 0.07,
+          "align": "left"
+        },
         "scaleNote": "schematic profile",
         "subject": "terrainSection",
         "depicts": "terrain",
@@ -314,6 +318,10 @@
             0.42558399999999996
           ]
         ],
+        "captionZone": {
+          "y": 0.07,
+          "align": "left"
+        },
         "scaleNote": "schematic profile",
         "subject": "terrainSection",
         "depicts": "terrain",
@@ -703,6 +711,10 @@
             0.42558399999999996
           ]
         ],
+        "captionZone": {
+          "y": 0.07,
+          "align": "left"
+        },
         "scaleNote": "schematic profile",
         "subject": "terrainSection",
         "depicts": "terrain",
@@ -777,6 +789,7 @@
           ],
           "at": 6,
           "over": 46,
+          "kind": "slab",
           "label": "slab"
         },
         "annotations": [],
@@ -885,6 +898,10 @@
             0.42558399999999996
           ]
         ],
+        "captionZone": {
+          "y": 0.07,
+          "align": "left"
+        },
         "scaleNote": "schematic profile",
         "subject": "terrainSection",
         "depicts": "terrain",
@@ -959,6 +976,7 @@
           ],
           "at": 6,
           "over": 46,
+          "kind": "slab",
           "label": "slab"
         },
         "annotations": [],
@@ -1053,6 +1071,10 @@
             0.42558399999999996
           ]
         ],
+        "captionZone": {
+          "y": 0.07,
+          "align": "left"
+        },
         "scaleNote": "schematic profile",
         "subject": "terrain",
         "depicts": "terrain",
@@ -1116,6 +1138,7 @@
           ],
           "at": 8,
           "over": 26,
+          "kind": "slab",
           "label": "slab"
         },
         "focus": {
@@ -1233,6 +1256,10 @@
             0.42558399999999996
           ]
         ],
+        "captionZone": {
+          "y": 0.07,
+          "align": "left"
+        },
         "scaleNote": "schematic profile",
         "subject": "terrain",
         "depicts": "terrain",
@@ -1296,6 +1323,7 @@
           ],
           "at": 8,
           "over": 26,
+          "kind": "slab",
           "label": "slab"
         },
         "focus": {
@@ -1414,6 +1442,10 @@
             0.42558399999999996
           ]
         ],
+        "captionZone": {
+          "y": 0.07,
+          "align": "left"
+        },
         "scaleNote": "schematic profile",
         "subject": "terrainSection",
         "depicts": "terrain",
@@ -1490,6 +1522,7 @@
           ],
           "at": 30,
           "over": 22,
+          "kind": "slab",
           "label": "slab"
         },
         "focus": {
@@ -1615,6 +1648,10 @@
             0.42558399999999996
           ]
         ],
+        "captionZone": {
+          "y": 0.07,
+          "align": "left"
+        },
         "scaleNote": "schematic profile",
         "subject": "terrainSection",
         "depicts": "terrain",
@@ -1691,6 +1728,7 @@
           ],
           "at": 30,
           "over": 22,
+          "kind": "slab",
           "label": "slab"
         },
         "focus": {
@@ -1814,6 +1852,10 @@
             0.42558399999999996
           ]
         ],
+        "captionZone": {
+          "y": 0.07,
+          "align": "left"
+        },
         "scaleNote": "schematic profile",
         "subject": "terrain",
         "depicts": "terrain",
@@ -1877,6 +1919,7 @@
           ],
           "at": -5,
           "over": 34,
+          "kind": "slab",
           "label": "slab"
         },
         "focus": {
@@ -1986,6 +2029,10 @@
             0.42558399999999996
           ]
         ],
+        "captionZone": {
+          "y": 0.07,
+          "align": "left"
+        },
         "scaleNote": "schematic profile",
         "subject": "terrain",
         "depicts": "terrain",
@@ -2049,6 +2096,7 @@
           ],
           "at": -5,
           "over": 34,
+          "kind": "slab",
           "label": "slab"
         },
         "focus": {
@@ -2173,6 +2221,10 @@
             0.42558399999999996
           ]
         ],
+        "captionZone": {
+          "y": 0.07,
+          "align": "left"
+        },
         "scaleNote": "schematic profile",
         "subject": "terrainSection",
         "depicts": "terrain",
@@ -2249,6 +2301,7 @@
           ],
           "at": -26,
           "over": 26,
+          "kind": "slab",
           "label": "slab",
           "volume": "270 MILLION m³"
         },
@@ -2348,6 +2401,10 @@
             0.42558399999999996
           ]
         ],
+        "captionZone": {
+          "y": 0.07,
+          "align": "left"
+        },
         "scaleNote": "schematic profile",
         "subject": "terrainSection",
         "depicts": "terrain",
@@ -2424,6 +2481,7 @@
           ],
           "at": -26,
           "over": 26,
+          "kind": "slab",
           "label": "slab",
           "volume": "270 MILLION m³"
         },
@@ -2524,6 +2582,10 @@
             0.42558399999999996
           ]
         ],
+        "captionZone": {
+          "y": 0.07,
+          "align": "left"
+        },
         "scaleNote": "schematic profile",
         "subject": "terrainSection",
         "depicts": "terrain",
@@ -2600,6 +2662,7 @@
           ],
           "at": -26,
           "over": 26,
+          "kind": "slab",
           "label": "slab"
         },
         "focus": {
@@ -2724,6 +2787,10 @@
             0.42558399999999996
           ]
         ],
+        "captionZone": {
+          "y": 0.07,
+          "align": "left"
+        },
         "scaleNote": "schematic profile",
         "subject": "terrainSection",
         "depicts": "terrain",
@@ -2800,6 +2867,7 @@
           ],
           "at": -26,
           "over": 26,
+          "kind": "slab",
           "label": "slab"
         },
         "focus": {
@@ -2925,6 +2993,10 @@
             0.42558399999999996
           ]
         ],
+        "captionZone": {
+          "y": 0.07,
+          "align": "left"
+        },
         "scaleNote": "schematic profile",
         "subject": "terrain",
         "depicts": "terrain",
@@ -2951,16 +3023,6 @@
             "label": "LONGARONE"
           }
         ],
-        "overtop": {
-          "at": 6,
-          "over": 22,
-          "label": "over the crest"
-        },
-        "focus": {
-          "x": 0.74,
-          "y": 0.5,
-          "scale": 1.22
-        },
         "annotations": [],
         "from": 0,
         "over": 45,
@@ -3080,6 +3142,10 @@
             0.42558399999999996
           ]
         ],
+        "captionZone": {
+          "y": 0.07,
+          "align": "left"
+        },
         "scaleNote": "schematic profile",
         "subject": "terrain",
         "depicts": "terrain",
@@ -3106,16 +3172,6 @@
             "label": "LONGARONE"
           }
         ],
-        "overtop": {
-          "at": 6,
-          "over": 22,
-          "label": "over the crest"
-        },
-        "focus": {
-          "x": 0.74,
-          "y": 0.5,
-          "scale": 1.22
-        },
         "annotations": [],
         "from": -1,
         "over": 1,

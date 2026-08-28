@@ -245,7 +245,19 @@ const DEMONSTRATES = {
   anatomyFlow: ['chambers', 'valves', 'one_way_flow', 'circulation', 'contraction', 'wall_thickness', 'delay'],
   scaleHaulage: ['mass', 'human_scale', 'haulage', 'distance'],
   mouldCast: ['engulf_front', 'entombment', 'decay', 'void_left', 'infill', 'sequence'],
-  terrainSection: ['impoundment', 'slip_plane', 'release', 'displacement', 'overtopping', 'fluid_ingress'],
+  /**
+   * A LANDFORM CAN BE BURIED AND A FRONT CAN COME DOWN IT.
+   *
+   * `entombment` and `engulf_front` were the mould's alone, so "a hot flow came
+   * down the flank onto the town" — a claim about a landscape if there ever was
+   * one — reached for a plate that draws an object through stages, and "the
+   * town was buried on the flank of a volcano" reached for the one that draws a
+   * human silhouette. The claims are shared; what separates them is the DOMAIN,
+   * which is the whole reason the director scores rather than branches. A body
+   * sealed in ash is anatomy and material and goes to the mould; a town under a
+   * flow is terrain and comes here.
+   */
+  terrainSection: ['impoundment', 'slip_plane', 'release', 'displacement', 'overtopping', 'fluid_ingress', 'entombment', 'engulf_front'],
   measurement: ['mass', 'distance', 'narrowness'],
   timeline: ['duration'],
   gearSystem: [],

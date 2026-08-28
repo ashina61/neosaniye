@@ -1,8 +1,8 @@
 {
   "id": "pompeii",
-  "title": "Pompeii — what actually happened to the people",
+  "title": "Pompeii — the city that died in a day",
   "mood": "ash-grey",
-  "style": "documentary photograph, Roman Italy, hard Mediterranean light, ash grey and terracotta, fine grain, no text, no watermark, no modern objects",
+  "style": "documentary photograph, Roman Campania, hard Mediterranean light, ash grey and terracotta, fine grain, no text, no watermark, no modern objects",
   "negative": "no modern buildings, no tourists, no signage, no cartoon, no illustration",
   "$supply": {
     "cutouts": false
@@ -10,22 +10,13 @@
   "lines": [
     {
       "slug": "hook",
-      "vo": "The victims of Pompeii were not killed by falling rock.",
-      "graphicsOnly": true,
+      "vo": "Pompeii was not frozen in time, the volcano buried it.",
       "kicker": "Campania · 79 AD",
-      "title": "NOT THE ROCK",
-      "footer": "the disaster came in stages"
-    },
-    {
-      "slug": "mountain",
-      "vo": "The mountain stood five miles from the town, across the bay.",
+      "title": "NOT FROZEN",
+      "footer": "buried, not preserved",
       "stops": [
         "VESUVIUS",
         "POMPEII"
-      ],
-      "caption": [
-        "Five miles",
-        "of open ground."
       ],
       "image": "the excavated streets of Pompeii with the cone of Vesuvius on the skyline behind, hard daylight, no people",
       "imageCommons": [
@@ -35,40 +26,59 @@
       ]
     },
     {
+      "slug": "mountain",
+      "vo": "The town sat six miles from Vesuvius, downwind.",
+      "graphicsOnly": true,
+      "stops": [
+        "VESUVIUS",
+        "POMPEII"
+      ]
+    },
+    {
       "slug": "fall",
-      "vo": "Pumice came down on the roofs, grain after grain, hour after hour.",
+      "vo": "Pumice and ash fell on the roofs for hours.",
       "graphicsOnly": true,
       "onScreen": "EIGHTEEN HOURS"
     },
     {
-      "slug": "window",
-      "vo": "The road to the coast was still open.",
+      "slug": "escape",
+      "vo": "People went out to the road, trying to reach the sea.",
       "graphicsOnly": true,
       "stops": [
         "POMPEII",
-        "THE COAST"
+        "THE SEA"
       ]
     },
     {
-      "slug": "change",
-      "vo": "Then it changed.",
+      "slug": "flow",
+      "vo": "Then the pyroclastic flows came down the flank onto the town.",
       "graphicsOnly": true,
-      "kicker": "",
-      "title": "IT CHANGED",
-      "footer": ""
-    },
-    {
-      "slug": "current",
-      "vo": "A current of hot ash swept down and buried the streets, and the heat killed them fast.",
-      "graphicsOnly": true,
+      "stops": [
+        "VESUVIUS",
+        "POMPEII"
+      ],
       "caption": [
         "Not falling.",
         "FLOWING."
       ]
     },
     {
-      "slug": "cast",
-      "vo": "Ash sealed each body, and the body decayed away.",
+      "slug": "seal",
+      "vo": "The ash sealed each body where it lay.",
+      "graphicsOnly": true,
+      "caption": [
+        "Sealed",
+        "where it lay."
+      ]
+    },
+    {
+      "slug": "decay",
+      "vo": "The body inside decayed away to nothing.",
+      "graphicsOnly": true
+    },
+    {
+      "slug": "shape",
+      "vo": "What was left was a cavity in the ash, shaped like a person.",
       "graphicsOnly": true,
       "caption": [
         "A hollow",
@@ -78,23 +88,21 @@
     },
     {
       "slug": "plaster",
-      "vo": "Diggers poured plaster into the cavity, and the shape of a person came back.",
-      "graphicsOnly": true,
-      "onScreen": "SCHEMATIC RECONSTRUCTION"
+      "vo": "Diggers poured plaster into the cavity and let it set.",
+      "graphicsOnly": true
     },
     {
-      "slug": "notstone",
-      "vo": "The famous casts are not people turned to stone.",
-      "motif": "none",
+      "slug": "cast",
+      "vo": "The plaster came out as the shape of the person.",
       "graphicsOnly": true
     },
     {
       "slug": "close",
-      "vo": "Pompeii was not destroyed in one instant. It was destroyed in stages.",
-      "kicker": "Vesuvius · 79 AD",
-      "title": "IN STAGES",
-      "footer": "pumice, then ash, then the current",
-      "graphicsOnly": true
+      "vo": "Pompeii did not preserve the people, it preserved the space they left behind.",
+      "graphicsOnly": true,
+      "kicker": "Pompeii · 79 AD",
+      "title": "THE SPACE",
+      "footer": "they left behind"
     }
   ]
 }

@@ -1904,7 +1904,17 @@ function applyDirection({
      * frame, however carefully it was written — the picture it was avoiding is
      * not the thing that is there now.
      */
-    const zone = CAPTION_ZONE[drawn.type];
+    /**
+     * …AND THE DRAWING KNOWS ITS OWN SHAPE BETTER THAN ITS TYPE DOES.
+     *
+     * A caption zone per TYPE is right where every instance of that type has
+     * the same silhouette. A terrain section does not: an impounded valley is
+     * clear across the top and a mountain flank is solid there, so the zone
+     * that keeps the words off a reservoir lays them straight through a
+     * volcano. Where the builder — the only thing that knows which landform it
+     * just drew — declares a band, that wins; the type default covers the rest.
+     */
+    const zone = scene.diagram.captionZone ?? CAPTION_ZONE[drawn.type];
     if (zone && caption.length) {
       // The zone says where the words belong relative to the drawing; the safe
       // area says how far down they may go. The block is placed to satisfy both,
@@ -4136,6 +4146,45 @@ async function main() {
           if (value != null) scene.diagram[key] = value;
         }
       }
+    }
+  }
+
+  /**
+   * ONE FORM, ONE RUN THROUGH ITS STATES — ACROSS THE WHOLE EPISODE.
+   *
+   * Each line's stage list is derived from that line's own claims, so two
+   * consecutive sentences about neighbouring parts of one process both reached
+   * for the transition between them: "the body decayed away" played
+   * ENGULFED→VOID, and then "what was left was a cavity" played ENGULFED→VOID
+   * again. The body decayed twice. That is the process reset this drawing
+   * exists to make impossible — the whole claim of a mould sequence is that it
+   * is ONE form going through states in order, and a viewer who sees a stage
+   * replayed learns that the states are illustrations rather than a history.
+   *
+   * So the states are walked once. A line that opens on a stage the reel has
+   * already reached starts where the last one finished; if that leaves it
+   * nothing new to play, it HOLDS that state, which is what a sentence about a
+   * result should do anyway.
+   */
+  {
+    const ORDER = ['form', 'engulf', 'void', 'fill', 'cast'];
+    const stem = (id) => String(id).replace(/-[a-z]$/, '');
+    let reached = -1;
+    let group = null;
+    let run = null;
+    for (const scene of config.scenes) {
+      if (scene.diagram?.type !== 'mouldCast' || !Array.isArray(scene.diagram.stages)) continue;
+      const mine = stem(scene.id);
+      if (mine !== group) {
+        group = mine;
+        const stages = scene.diagram.stages;
+        const kept = stages.filter((st) => ORDER.indexOf(st) >= reached);
+        run = kept.length ? kept : [stages[stages.length - 1]];
+        reached = Math.max(reached, ORDER.indexOf(run[run.length - 1]));
+      }
+      // Every shot of the line plays the line's run — the continuation shots
+      // are the same drawing seen again, not a fresh derivation of it.
+      scene.diagram.stages = run;
     }
   }
 

@@ -60,9 +60,22 @@ export type TerrainSectionSpec = Sheet & {
     /** Its outline, in fractions. */
     shape: [number, number][];
     /** The surface it rests on and slides along. */
-    plane: [number, number][];
-    /** How far it travels, as a fraction of the frame. */
-    to: [number, number];
+    plane?: [number, number][];
+    /** How far it travels, as a fraction of the frame. A slab is displaced. */
+    to?: [number, number];
+    /**
+     * WHAT IT ENDS AS. A FLOW DOES NOT MOVE, IT SPREADS.
+     *
+     * A slab keeps its shape and changes place, so a translation is the truth
+     * about it. A pyroclastic flow, a lahar, a lava front, a flood — none of
+     * those arrive as a block that slid; they advance, thin out and lie down
+     * over what they cover. Translating one is a diagram of the wrong physics.
+     * So a front declares the footprint it BECOMES, point for point, and the
+     * drawing interpolates between the two: the leading edge runs downslope and
+     * the body flattens out behind it.
+     */
+    becomes?: [number, number][];
+    kind?: 'slab' | 'front';
     at: number;
     over: number;
     label?: string;
@@ -84,6 +97,8 @@ export type TerrainSectionSpec = Sheet & {
    * than guessed by the planner, and it moves only when the subject moves.
    */
   focus?: {x: number; y: number; scale: number};
+  /** Where the words fit around THIS landform. Read by the planner, not here. */
+  captionZone?: {y: number; align: 'left' | 'right' | 'center'};
   /**
    * NAMED PLACES ON THE PROFILE — the town below the dam, the village on the
    * shoulder. A section can say WHERE as well as what: the whole point of the
@@ -152,11 +167,17 @@ export const TerrainSectionPlate: React.FC<{spec: TerrainSectionSpec; cam?: Cam}
    */
   const mass = spec.mass;
   const slid = mass ? settle(drawOn(stepped, [from + mass.at, from + mass.at + mass.over])) : 0;
-  const dx = mass ? mass.to[0] * slid : 0;
-  const dy = mass ? mass.to[1] * slid : 0;
-  const massNow: [number, number][] | null = mass
-    ? (mass.shape.map(([x, y]) => [x + dx, y + dy]) as [number, number][])
-    : null;
+  const front = mass?.kind === 'front' && mass.becomes?.length === mass.shape.length;
+  const dx = mass && !front ? (mass.to?.[0] ?? 0) * slid : 0;
+  const dy = mass && !front ? (mass.to?.[1] ?? 0) * slid : 0;
+  const massNow: [number, number][] | null = !mass
+    ? null
+    : front
+      ? (mass.shape.map(([x, y], i) => {
+          const [bx, by] = mass.becomes![i];
+          return [x + (bx - x) * slid, y + (by - y) * slid];
+        }) as [number, number][])
+      : (mass.shape.map(([x, y]) => [x + dx, y + dy]) as [number, number][]);
 
   /**
    * AND WHAT IT TOOK FROM THE BASIN.
@@ -300,7 +321,7 @@ export const TerrainSectionPlate: React.FC<{spec: TerrainSectionSpec; cam?: Cam}
           </g>
 
           {/* THE PLANE THE MASS RESTS ON, and then leaves. */}
-          {mass ? (
+          {mass?.plane ? (
             <path
               d={line(mass.plane, w, h)}
               fill="none"
@@ -330,16 +351,30 @@ export const TerrainSectionPlate: React.FC<{spec: TerrainSectionSpec; cam?: Cam}
                   <line x1="0" y1="0" x2="0" y2={w * 0.026} stroke={accent} strokeWidth={weight.construction} opacity={0.5} />
                 </pattern>
               </defs>
-              <path d={poly(massNow, w, h)} fill="#1b1712" />
-              <MaterialFace id="ts-rock" material="stone" d={poly(massNow, w, h)} w={w} />
-              <path d={poly(massNow, w, h)} fill="url(#ts-slab)" />
+              {/* A SLAB IS ROCK AND A FRONT IS NOT. Hatch says "cut through
+                  solid material"; a cloud of ash and gas is neither solid nor
+                  cut, so it is drawn as a mass with a soft body and a hard
+                  LEADING EDGE, which is the only part of a flow you can see
+                  the position of. */}
+              <path d={poly(massNow, w, h)} fill={front ? '#2a241d' : '#1b1712'} opacity={front ? 0.94 : 1} />
+              <MaterialFace id="ts-rock" material={front ? 'concrete' : 'stone'} d={poly(massNow, w, h)} w={w} />
+              {front ? null : <path d={poly(massNow, w, h)} fill="url(#ts-slab)" />}
               <path
                 d={poly(massNow, w, h)}
                 fill="none"
                 stroke={accent}
-                strokeWidth={weight.emphasis}
-                opacity={0.95}
+                strokeWidth={front ? weight.object : weight.emphasis}
+                opacity={front ? 0.55 : 0.95}
               />
+              {front && slid > 0.02 && slid < 0.99 ? (
+                <circle
+                  cx={massNow[1][0] * w}
+                  cy={massNow[1][1] * h}
+                  r={w * 0.009}
+                  fill={accent}
+                  opacity={0.9}
+                />
+              ) : null}
               {/* Debris where it lands, once it is actually moving. */}
               {slid > 0.35 ? (
                 <Motes w={w} h={h} colour={muted} count={14} seed="slide" band={[0.5, 0.8]} />

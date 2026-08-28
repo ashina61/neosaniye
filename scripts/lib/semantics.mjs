@@ -130,7 +130,7 @@ const SIGNALS = [
    */
   [
     'terrain',
-    /\b(landslides?|rockslides?|slip|slippage|slope|slopes?|hillside|mountainside|flank|scarp|escarpment|slump\w*|rockfall|avalanche|collaps\w*|subsid\w*|sinkhole|dams?|reservoirs?|impound\w*|spillway|crest|overtop\w*|glaciers?|moraine|cliffs?|erod\w*|erosion|bedrock|strata|seabed|lakebed|valley floor|gorge|ravine|slabs?|clay|shale|marl|creep\w*|talus|scree)\b|\bslid (?:in|into|down)\b|\bslides? (?:in|into|down)\b/i,
+    /\b(landslides?|rockslides?|slip|slippage|slope|slopes?|hillside|mountainside|flank|scarp|escarpment|slump\w*|rockfall|avalanche|collaps\w*|subsid\w*|sinkhole|dams?|reservoirs?|impound\w*|spillway|crest|overtop\w*|glaciers?|moraine|cliffs?|erod\w*|erosion|bedrock|strata|seabed|lakebed|valley floor|gorge|ravine|slabs?|clay|shale|marl|creep\w*|talus|scree|volcanoe?s?|crater|caldera|summit|ridge|plateau)\b|\bslid (?:in|into|down)\b|\bslides? (?:in|into|down)\b/i,
   ],
   [
     'geography',
@@ -251,7 +251,15 @@ const CLAIMS = [
    * excludes dissolution. Widening any of these takes lines off the drawing
    * that was built for them.
    */
-  ['engulf_front', /\b(current|surge|swept|rushed|raced|poured down|flowed?|flowing|rolled over)\b/i],
+  /**
+   * `flowed?` MATCHED "flowed" AND NOT "flow".
+   *
+   * The optional `d` hangs off "flowe", so the commonest noun form of the
+   * commonest word in this claim never matched: "a pyroclastic flow came down"
+   * read as no front at all, and so did a lava flow, a debris flow, a flood
+   * flow. The one word the claim is named after.
+   */
+  ['engulf_front', /\b(current|surge|swept|rushed|raced|poured down|flows?|flowed|flowing|rolled over)\b/i],
   ['entombment', /\b(buri\w*|engulf\w*|entomb\w*|swallow\w*)\b|\bseal\w*\s+(?:each|every|the body|them|her|him|in|under)\b/i],
   ['decay', /\b(decay\w*|decompos\w*|rots?|rotted|rotting|vanish\w*|left nothing)\b/i],
   ['void_left', /\b(cavit\w*|hollows?|voids?|impressions?|empty space|the space (?:it|they|he|she) left)\b/i],

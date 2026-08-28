@@ -1046,7 +1046,7 @@ export function boundsOf(scene, {width, height}) {
      */
     const prof = Array.isArray(d.profile) && d.profile.length ? d.profile : [[0, 0.3], [1, 0.5]];
     const tops = prof.map((p) => n(p?.[1], 0.4));
-    const massY = Array.isArray(d.mass?.shape) ? d.mass.shape.map((p) => n(p?.[1], 0.5)) : [];
+    const massY = Array.isArray(d.mass?.shape) && d.mass?.kind !== 'front' ? d.mass.shape.map((p) => n(p?.[1], 0.5)) : [];
     const dimRight = d.structure?.height
       ? (n(d.structure.x, 0.72) + n(d.structure.width, 0.035) / 2 + 0.045) * width + width * 0.16
       : width;
@@ -1062,9 +1062,19 @@ export function boundsOf(scene, {width, height}) {
      */
     const sx = n(d.structure?.x, 0.72);
     const sw = n(d.structure?.width, 0.035);
-    const massX = Array.isArray(d.mass?.shape) ? d.mass.shape.map((p) => n(p?.[0], 0.3)) : [];
-    const travelX = massX.length ? massX.map((x) => x + n(d.mass?.to?.[0], 0)) : [];
-    const travelY = massY.length ? massY.map((y) => y + n(d.mass?.to?.[1], 0)) : [];
+    /**
+     * A FRONT'S FOOTPRINT IS GROUND TOO.
+     *
+     * A flow ends as a deposit lying over the land, so it reaches the frame
+     * edge for the same reason the profile does — and reporting it as content
+     * asked the camera budget to keep a full-width deposit inside the safe
+     * area, which nothing can do. What has to stay readable is where the flow
+     * STARTED and the places it reached, not the spread itself.
+     */
+    const spreads = d.mass?.kind === 'front';
+    const massX = Array.isArray(d.mass?.shape) && !spreads ? d.mass.shape.map((p) => n(p?.[0], 0.3)) : [];
+    const travelX = massX.length && !spreads ? massX.map((x) => x + n(d.mass?.to?.[0], 0)) : [];
+    const travelY = massY.length && !spreads ? massY.map((y) => y + n(d.mass?.to?.[1], 0)) : [];
     const xs = [...massX, ...travelX, ...(d.structure ? [sx - sw / 2, sx + sw / 2] : [])];
     const ys = [...massY, ...travelY, ...(d.structure ? [n(d.structure.base, 0.44)] : [])];
     if (xs.length) {

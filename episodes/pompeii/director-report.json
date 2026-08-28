@@ -6,19 +6,19 @@
     "voice": "audio/vo.json"
   },
   "concept": {
-    "title": "Pompeii — what actually happened to the people",
+    "title": "Pompeii — the city that died in a day",
     "mood": "ash-grey",
     "hook": {
-      "line": "The victims of Pompeii were not killed by falling rock.",
+      "line": "Pompeii was not frozen in time, the volcano buried it.",
       "beat": "HOOK",
       "idea": "the single strongest image in the story, held tight",
       "demands": "the strongest, most specific image available — never a texture, never a stand-in"
     },
     "ending": {
-      "line": "Pompeii was not destroyed in one instant. It was destroyed in stages.",
+      "line": "Pompeii did not preserve the people, it preserved the space they left behind.",
       "beat": "VERDICT",
       "idea": "the closing claim, typographic and still",
-      "claim": "one",
+      "claim": "preserved",
       "demands": "one shot: the strongest relevant image, the claim over it, then a hold and a hard out"
     }
   },
@@ -37,9 +37,9 @@
       "beat": "EVIDENCE",
       "pace": "medium",
       "holdsAfter": false,
-      "emphasis": "five miles",
+      "emphasis": "six miles",
       "visualIdea": "the figure, proven on screen",
-      "viewerShouldNotice": "the words \"five miles\" and the thing in frame they refer to"
+      "viewerShouldNotice": "the words \"six miles\" and the thing in frame they refer to"
     },
     {
       "line": "fall",
@@ -47,44 +47,53 @@
       "pace": "medium",
       "holdsAfter": false,
       "emphasis": "Pumice",
-      "visualIdea": "the setting, established",
+      "visualIdea": "the ash in its place",
       "viewerShouldNotice": "the words \"Pumice\" and the thing in frame they refer to"
     },
     {
-      "line": "window",
+      "line": "escape",
       "beat": "CONTEXT",
       "pace": "medium",
       "holdsAfter": false,
-      "emphasis": "coast",
+      "emphasis": "People",
       "visualIdea": "the setting, established",
-      "viewerShouldNotice": "the words \"coast\" and the thing in frame they refer to"
+      "viewerShouldNotice": "the words \"People\" and the thing in frame they refer to"
     },
     {
-      "line": "change",
+      "line": "flow",
       "beat": "ESCALATION",
       "pace": "fast",
       "holdsAfter": false,
-      "emphasis": "changed",
+      "emphasis": "pyroclastic",
       "visualIdea": "quantity accumulating",
-      "viewerShouldNotice": "the words \"changed\" and the thing in frame they refer to"
+      "viewerShouldNotice": "the words \"pyroclastic\" and the thing in frame they refer to"
     },
     {
-      "line": "current",
-      "beat": "CONTEXT",
-      "pace": "medium",
-      "holdsAfter": false,
-      "emphasis": "current",
-      "visualIdea": "the ash in its place",
-      "viewerShouldNotice": "the words \"current\" and the thing in frame they refer to"
-    },
-    {
-      "line": "cast",
+      "line": "seal",
       "beat": "DETAIL",
       "pace": "fast",
       "holdsAfter": false,
-      "emphasis": "decayed",
+      "emphasis": "sealed",
       "visualIdea": "one ash, extreme close, filling the frame",
+      "viewerShouldNotice": "the words \"sealed\" and the thing in frame they refer to"
+    },
+    {
+      "line": "decay",
+      "beat": "CONTEXT",
+      "pace": "medium",
+      "holdsAfter": false,
+      "emphasis": "decayed",
+      "visualIdea": "the body in its place",
       "viewerShouldNotice": "the words \"decayed\" and the thing in frame they refer to"
+    },
+    {
+      "line": "shape",
+      "beat": "CONTEXT",
+      "pace": "medium",
+      "holdsAfter": false,
+      "emphasis": "cavity",
+      "visualIdea": "the ash in its place",
+      "viewerShouldNotice": "the words \"cavity\" and the thing in frame they refer to"
     },
     {
       "line": "plaster",
@@ -96,22 +105,22 @@
       "viewerShouldNotice": "the words \"Diggers\" and the thing in frame they refer to"
     },
     {
-      "line": "notstone",
+      "line": "cast",
       "beat": "CONTEXT",
       "pace": "medium",
       "holdsAfter": false,
-      "emphasis": "famous",
-      "visualIdea": "the stone in its place",
-      "viewerShouldNotice": "the words \"famous\" and the thing in frame they refer to"
+      "emphasis": "plaster",
+      "visualIdea": "the setting, established",
+      "viewerShouldNotice": "the words \"plaster\" and the thing in frame they refer to"
     },
     {
       "line": "close",
       "beat": "VERDICT",
       "pace": "slow",
       "holdsAfter": true,
-      "emphasis": "one",
+      "emphasis": "preserved",
       "visualIdea": "the closing claim, typographic and still",
-      "viewerShouldNotice": "the words \"one\" and the thing in frame they refer to"
+      "viewerShouldNotice": "the words \"preserved\" and the thing in frame they refer to"
     }
   ],
   "assets": {
@@ -126,101 +135,43 @@
   "shots": [
     {
       "id": "s01-hook",
-      "template": "title-slate",
-      "seconds": 2.5,
+      "template": "composite",
+      "seconds": 2.3,
       "camera": {
-        "from": 1.04,
-        "to": 1.05,
+        "from": 1.03,
+        "to": 1.06,
         "panX": null,
         "panY": null
       },
       "transition": "cut",
       "cut": null,
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
-      "emphasis": null,
-      "reveal": null,
-      "plates": [],
-      "drawnGround": "wash",
-      "props": [
-        "newspaper"
-      ],
-      "hierarchy": {
-        "primary": "the claim",
-        "secondary": "the drawn label or mark that dates and places it",
-        "background": "a drawn field — texture, not a photograph pretending to be one",
-        "carrier": "type"
-      }
-    },
-    {
-      "id": "s01-hook-b",
-      "template": "composite",
-      "seconds": 1.07,
-      "camera": {
-        "from": 1.03,
-        "to": 1.57,
-        "panX": null,
-        "panY": null
-      },
-      "transition": "cut",
-      "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "graphic continuity (#e8e2d4) — the two shots already share a world, so there is nothing to bridge"
-      },
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
-      "emphasis": "falling",
-      "reveal": "wipe",
-      "plates": [],
-      "drawnGround": "wash",
-      "props": [],
-      "hierarchy": {
-        "primary": "the claim: \"falling\"",
-        "secondary": "the drawn label or mark that dates and places it",
-        "background": "a drawn field — texture, not a photograph pretending to be one",
-        "carrier": "type"
-      }
-    },
-    {
-      "id": "s02-mountain",
-      "template": "composite",
-      "seconds": 3.53,
-      "camera": {
-        "from": 1.2,
-        "to": 1.19,
-        "panX": 172,
-        "panY": null
-      },
-      "transition": "slip",
-      "cut": {
-        "kind": "OBJECT_WIPE",
-        "purpose": "object transformation",
-        "because": "beat is EVIDENCE"
-      },
       "representation": "HYBRID",
-      "drawn": "map",
-      "emphasis": "Five miles",
-      "reveal": "punch",
+      "drawn": "terrainSection",
+      "emphasis": "Pompeii",
+      "reveal": "wipe",
       "plates": [
-        "s02-mountain-bg.png"
+        "s01-hook-bg.png"
       ],
       "drawnGround": null,
-      "props": [],
+      "props": [
+        "plaque",
+        "newspaper",
+        "beam"
+      ],
       "hierarchy": {
-        "primary": "the setting, established",
+        "primary": "the single strongest image in the story, held tight",
         "secondary": "the caption",
         "background": "the plate",
         "carrier": "image"
       }
     },
     {
-      "id": "s02-mountain-b",
+      "id": "s01-hook-b",
       "template": "composite",
-      "seconds": 1.33,
+      "seconds": 1.53,
       "camera": {
-        "from": 1.04,
-        "to": 1.31,
+        "from": 1.02,
+        "to": 1.46,
         "panX": null,
         "panY": null
       },
@@ -228,31 +179,61 @@
       "cut": {
         "kind": "MATCH_CUT",
         "purpose": "visual similarity",
-        "because": "same subject (s02-mountain-bg.png)"
+        "because": "same subject (s01-hook-bg.png)"
       },
       "representation": "HYBRID",
-      "drawn": "map",
-      "emphasis": "across",
-      "reveal": "blur",
+      "drawn": "terrainSection",
+      "emphasis": "volcano",
+      "reveal": "punch",
       "plates": [
-        "s02-mountain-bg.png"
+        "s01-hook-bg.png"
       ],
       "drawnGround": null,
       "props": [],
       "hierarchy": {
-        "primary": "the setting, established",
-        "secondary": "the caption",
+        "primary": "the figure: \"volcano\"",
+        "secondary": "the object it is counting",
         "background": "the plate",
-        "carrier": "image"
+        "carrier": "graphic"
+      }
+    },
+    {
+      "id": "s02-mountain",
+      "template": "composite",
+      "seconds": 4.1,
+      "camera": {
+        "from": 1.14,
+        "to": 1.07,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "scale held (medium) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "PROCEDURAL",
+      "drawn": "map",
+      "emphasis": "six miles",
+      "reveal": "punch",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [],
+      "hierarchy": {
+        "primary": "the claim: \"six miles\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
       }
     },
     {
       "id": "s03-fall",
       "template": "composite",
-      "seconds": 2.63,
+      "seconds": 1.4,
       "camera": {
-        "from": 1.47,
-        "to": 1.01,
+        "from": 1.39,
+        "to": 1.05,
         "panX": null,
         "panY": null
       },
@@ -265,7 +246,7 @@
       "representation": "PROCEDURAL",
       "drawn": "crossSection",
       "emphasis": "Pumice",
-      "reveal": "rise",
+      "reveal": "wipe",
       "plates": [],
       "drawnGround": "wash",
       "props": [
@@ -281,12 +262,12 @@
     {
       "id": "s03-fall-b",
       "template": "composite",
-      "seconds": 2.6,
+      "seconds": 1.73,
       "camera": {
-        "from": 1.15,
-        "to": 1.24,
-        "panX": 169,
-        "panY": null
+        "from": 1,
+        "to": 1.13,
+        "panX": null,
+        "panY": -54
       },
       "transition": "cut",
       "cut": {
@@ -296,55 +277,85 @@
       },
       "representation": "PROCEDURAL",
       "drawn": "crossSection",
-      "emphasis": "grain",
-      "reveal": "blur",
+      "emphasis": "roofs",
+      "reveal": "rise",
       "plates": [],
       "drawnGround": "wash",
       "props": [],
       "hierarchy": {
-        "primary": "the claim: \"grain\"",
+        "primary": "the claim: \"roofs\"",
         "secondary": "the drawn label or mark that dates and places it",
         "background": "a drawn field — texture, not a photograph pretending to be one",
         "carrier": "type"
       }
     },
     {
-      "id": "s04-window",
+      "id": "s04-escape",
       "template": "composite",
-      "seconds": 3.2,
+      "seconds": 2.3,
       "camera": {
-        "from": 1.15,
-        "to": 1.3,
-        "panX": 173,
+        "from": 1.5,
+        "to": 1.02,
+        "panX": null,
         "panY": null
       },
       "transition": "cut",
       "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "direction carried (right)"
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "scale held (medium) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "map",
-      "emphasis": "coast",
-      "reveal": "punch",
+      "emphasis": "People",
+      "reveal": "wipe",
       "plates": [],
       "drawnGround": "wash",
       "props": [],
       "hierarchy": {
-        "primary": "the claim: \"coast\"",
+        "primary": "the claim: \"People\"",
         "secondary": "the drawn label or mark that dates and places it",
         "background": "a drawn field — texture, not a photograph pretending to be one",
         "carrier": "type"
       }
     },
     {
-      "id": "s05-change",
-      "template": "title-slate",
-      "seconds": 1.6,
+      "id": "s04-escape-b",
+      "template": "composite",
+      "seconds": 1.9,
+      "camera": {
+        "from": 1.22,
+        "to": 1.2,
+        "panX": 167,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (geography) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "PROCEDURAL",
+      "drawn": "map",
+      "emphasis": "trying",
+      "reveal": "wipe",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [],
+      "hierarchy": {
+        "primary": "the claim: \"trying\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s05-flow",
+      "template": "composite",
+      "seconds": 2.57,
       "camera": {
         "from": 1,
-        "to": 1.45,
+        "to": 1.4,
         "panX": null,
         "panY": null
       },
@@ -352,49 +363,15 @@
       "cut": {
         "kind": "HARD_CUT",
         "purpose": null,
-        "because": "graphic continuity (#e8e2d4) — the two shots already share a world, so there is nothing to bridge"
-      },
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
-      "emphasis": null,
-      "reveal": null,
-      "plates": [],
-      "drawnGround": "wash",
-      "props": [
-        "newspaper"
-      ],
-      "hierarchy": {
-        "primary": "the claim",
-        "secondary": "the drawn label or mark that dates and places it",
-        "background": "a drawn field — texture, not a photograph pretending to be one",
-        "carrier": "type"
-      }
-    },
-    {
-      "id": "s06-current",
-      "template": "composite",
-      "seconds": 2.83,
-      "camera": {
-        "from": 1,
-        "to": 1.13,
-        "panX": null,
-        "panY": -62
-      },
-      "transition": "cut",
-      "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "graphic continuity (#e8e2d4) — the two shots already share a world, so there is nothing to bridge"
+        "because": "scale held (medium) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
-      "drawn": "mouldCast",
+      "drawn": "terrainSection",
       "emphasis": "falling",
-      "reveal": "blur",
+      "reveal": "rise",
       "plates": [],
       "drawnGround": "wash",
-      "props": [
-        "beam"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"falling\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -403,12 +380,42 @@
       }
     },
     {
-      "id": "s06-current-b",
+      "id": "s05-flow-b",
       "template": "composite",
-      "seconds": 1.6,
+      "seconds": 2.17,
       "camera": {
-        "from": 1.35,
-        "to": 1.01,
+        "from": 1.22,
+        "to": 1.25,
+        "panX": null,
+        "panY": 230
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (terrain) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "PROCEDURAL",
+      "drawn": "terrainSection",
+      "emphasis": "flank",
+      "reveal": "blur",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [],
+      "hierarchy": {
+        "primary": "the claim: \"flank\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s06-seal",
+      "template": "composite",
+      "seconds": 1.87,
+      "camera": {
+        "from": 1.03,
+        "to": 1.06,
         "panX": null,
         "panY": null
       },
@@ -416,71 +423,11 @@
       "cut": {
         "kind": "HARD_CUT",
         "purpose": null,
-        "because": "the same drawing continuing (process) — the two shots already share a world, so there is nothing to bridge"
+        "because": "scale held (medium) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "mouldCast",
-      "emphasis": "streets",
-      "reveal": "rise",
-      "plates": [],
-      "drawnGround": "wash",
-      "props": [],
-      "hierarchy": {
-        "primary": "the claim: \"streets\"",
-        "secondary": "the drawn label or mark that dates and places it",
-        "background": "a drawn field — texture, not a photograph pretending to be one",
-        "carrier": "type"
-      }
-    },
-    {
-      "id": "s06-current-c",
-      "template": "composite",
-      "seconds": 2.43,
-      "camera": {
-        "from": 1,
-        "to": 1.1,
-        "panX": null,
-        "panY": -53
-      },
-      "transition": "cut",
-      "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "the same drawing continuing (process) — the two shots already share a world, so there is nothing to bridge"
-      },
-      "representation": "PROCEDURAL",
-      "drawn": "mouldCast",
-      "emphasis": "killed",
-      "reveal": "rise",
-      "plates": [],
-      "drawnGround": "wash",
-      "props": [],
-      "hierarchy": {
-        "primary": "the claim: \"killed\"",
-        "secondary": "the drawn label or mark that dates and places it",
-        "background": "a drawn field — texture, not a photograph pretending to be one",
-        "carrier": "type"
-      }
-    },
-    {
-      "id": "s07-cast",
-      "template": "composite",
-      "seconds": 1.8,
-      "camera": {
-        "from": 1,
-        "to": 1.43,
-        "panX": null,
-        "panY": null
-      },
-      "transition": "cut",
-      "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "the same drawing continuing (process) — the two shots already share a world, so there is nothing to bridge"
-      },
-      "representation": "PROCEDURAL",
-      "drawn": "mouldCast",
-      "emphasis": "hollow",
+      "emphasis": "Sealed",
       "reveal": "blur",
       "plates": [],
       "drawnGround": "wash",
@@ -488,51 +435,51 @@
         "beam"
       ],
       "hierarchy": {
-        "primary": "the claim: \"hollow\"",
+        "primary": "the claim: \"Sealed\"",
         "secondary": "the drawn label or mark that dates and places it",
         "background": "a drawn field — texture, not a photograph pretending to be one",
         "carrier": "type"
       }
     },
     {
-      "id": "s07-cast-b",
+      "id": "s06-seal-b",
       "template": "composite",
-      "seconds": 2.23,
+      "seconds": 1.1,
       "camera": {
-        "from": 1.26,
-        "to": 1.25,
+        "from": 1,
+        "to": 1.37,
         "panX": null,
-        "panY": -120
+        "panY": null
       },
       "transition": "cut",
       "cut": {
         "kind": "HARD_CUT",
         "purpose": null,
-        "because": "the same drawing continuing (process) — the two shots already share a world, so there is nothing to bridge"
+        "because": "the same drawing continuing (material) — the two shots already share a world, so there is nothing to bridge"
       },
       "representation": "PROCEDURAL",
       "drawn": "mouldCast",
-      "emphasis": "decayed",
-      "reveal": "rise",
+      "emphasis": "where",
+      "reveal": "wipe",
       "plates": [],
       "drawnGround": "wash",
       "props": [],
       "hierarchy": {
-        "primary": "the claim: \"decayed\"",
+        "primary": "the claim: \"where\"",
         "secondary": "the drawn label or mark that dates and places it",
         "background": "a drawn field — texture, not a photograph pretending to be one",
         "carrier": "type"
       }
     },
     {
-      "id": "s08-plaster",
+      "id": "s07-decay",
       "template": "composite",
-      "seconds": 2.43,
+      "seconds": 3.03,
       "camera": {
-        "from": 1,
-        "to": 1.09,
-        "panX": null,
-        "panY": -29
+        "from": 1.24,
+        "to": 1.28,
+        "panX": -280,
+        "panY": null
       },
       "transition": "cut",
       "cut": {
@@ -542,24 +489,118 @@
       },
       "representation": "PROCEDURAL",
       "drawn": "mouldCast",
-      "emphasis": "Diggers",
+      "emphasis": "decayed",
       "reveal": "rise",
       "plates": [],
       "drawnGround": "wash",
-      "props": [],
+      "props": [
+        "beam"
+      ],
       "hierarchy": {
-        "primary": "the claim: \"Diggers\"",
+        "primary": "the claim: \"decayed\"",
         "secondary": "the drawn label or mark that dates and places it",
         "background": "a drawn field — texture, not a photograph pretending to be one",
         "carrier": "type"
       }
     },
     {
-      "id": "s08-plaster-b",
+      "id": "s08-shape",
       "template": "composite",
-      "seconds": 3.23,
+      "seconds": 2.1,
+      "camera": {
+        "from": 1.56,
+        "to": 1.03,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (mouldCast) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "PROCEDURAL",
+      "drawn": "mouldCast",
+      "emphasis": "hollow",
+      "reveal": "punch",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [],
+      "hierarchy": {
+        "primary": "the claim: \"hollow\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s08-shape-b",
+      "template": "composite",
+      "seconds": 1.07,
+      "camera": {
+        "from": 1,
+        "to": 1.12,
+        "panX": null,
+        "panY": -41
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (mouldCast) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "PROCEDURAL",
+      "drawn": "mouldCast",
+      "emphasis": null,
+      "reveal": "rise",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [
+        "beam"
+      ],
+      "hierarchy": {
+        "primary": "the claim",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s08-shape-c",
+      "template": "composite",
+      "seconds": 1.4,
       "camera": {
         "from": 1.51,
+        "to": 1.02,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (mouldCast) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "PROCEDURAL",
+      "drawn": "mouldCast",
+      "emphasis": "shaped",
+      "reveal": "punch",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [],
+      "hierarchy": {
+        "primary": "the claim: \"shaped\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s09-plaster",
+      "template": "composite",
+      "seconds": 2.43,
+      "camera": {
+        "from": 1.38,
         "to": 1.05,
         "panX": null,
         "panY": null
@@ -572,11 +613,105 @@
       },
       "representation": "PROCEDURAL",
       "drawn": "mouldCast",
-      "emphasis": "person",
+      "emphasis": "Diggers",
       "reveal": "wipe",
       "plates": [],
       "drawnGround": "wash",
       "props": [],
+      "hierarchy": {
+        "primary": "the claim: \"Diggers\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s09-plaster-b",
+      "template": "composite",
+      "seconds": 1.63,
+      "camera": {
+        "from": 1,
+        "to": 1.12,
+        "panX": null,
+        "panY": -35
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (mouldCast) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "PROCEDURAL",
+      "drawn": "mouldCast",
+      "emphasis": null,
+      "reveal": "blur",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [
+        "beam"
+      ],
+      "hierarchy": {
+        "primary": "the claim",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s10-cast",
+      "template": "composite",
+      "seconds": 2.6,
+      "camera": {
+        "from": 1.4,
+        "to": 1.03,
+        "panX": null,
+        "panY": null
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (mouldCast) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "PROCEDURAL",
+      "drawn": "mouldCast",
+      "emphasis": "plaster",
+      "reveal": "wipe",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [],
+      "hierarchy": {
+        "primary": "the claim: \"plaster\"",
+        "secondary": "the drawn label or mark that dates and places it",
+        "background": "a drawn field — texture, not a photograph pretending to be one",
+        "carrier": "type"
+      }
+    },
+    {
+      "id": "s10-cast-b",
+      "template": "composite",
+      "seconds": 1.1,
+      "camera": {
+        "from": 1,
+        "to": 1.1,
+        "panX": null,
+        "panY": -51
+      },
+      "transition": "cut",
+      "cut": {
+        "kind": "HARD_CUT",
+        "purpose": null,
+        "because": "the same drawing continuing (material) — the two shots already share a world, so there is nothing to bridge"
+      },
+      "representation": "PROCEDURAL",
+      "drawn": "mouldCast",
+      "emphasis": "person",
+      "reveal": "punch",
+      "plates": [],
+      "drawnGround": "wash",
+      "props": [
+        "beam"
+      ],
       "hierarchy": {
         "primary": "the claim: \"person\"",
         "secondary": "the drawn label or mark that dates and places it",
@@ -585,72 +720,12 @@
       }
     },
     {
-      "id": "s09-notstone",
-      "template": "composite",
-      "seconds": 2.27,
-      "camera": {
-        "from": 1.52,
-        "to": 1.02,
-        "panX": null,
-        "panY": null
-      },
-      "transition": "cut",
-      "cut": {
-        "kind": "MATCH_CUT",
-        "purpose": "visual similarity",
-        "because": "direction carried (out)"
-      },
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
-      "emphasis": "famous",
-      "reveal": "blur",
-      "plates": [],
-      "drawnGround": "wash",
-      "props": [],
-      "hierarchy": {
-        "primary": "the claim: \"famous\"",
-        "secondary": "the drawn label or mark that dates and places it",
-        "background": "a drawn field — texture, not a photograph pretending to be one",
-        "carrier": "type"
-      }
-    },
-    {
-      "id": "s09-notstone-b",
-      "template": "composite",
-      "seconds": 1.83,
-      "camera": {
-        "from": 1,
-        "to": 1.11,
-        "panX": null,
-        "panY": -42
-      },
-      "transition": "cut",
-      "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "graphic continuity (#e8e2d4) — the two shots already share a world, so there is nothing to bridge"
-      },
-      "representation": "TYPOGRAPHY",
-      "drawn": null,
-      "emphasis": "people",
-      "reveal": "rise",
-      "plates": [],
-      "drawnGround": "wash",
-      "props": [],
-      "hierarchy": {
-        "primary": "the claim: \"people\"",
-        "secondary": "the drawn label or mark that dates and places it",
-        "background": "a drawn field — texture, not a photograph pretending to be one",
-        "carrier": "type"
-      }
-    },
-    {
-      "id": "s10-close",
+      "id": "s11-close",
       "template": "title-slate",
-      "seconds": 6.07,
+      "seconds": 5.83,
       "camera": {
-        "from": 1,
-        "to": 1.42,
+        "from": 1.04,
+        "to": 1.07,
         "panX": null,
         "panY": null
       },
@@ -679,9 +754,9 @@
   ],
   "representation": {
     "hook": {
-      "mode": "TYPOGRAPHY",
-      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
-      "drawn": null
+      "mode": "PROCEDURAL",
+      "why": "terrainSection is a picture of terrain — it demonstrates 1 of what the line asserts",
+      "drawn": "terrainSection"
     },
     "mountain": {
       "mode": "PROCEDURAL",
@@ -693,24 +768,29 @@
       "why": "crossSection is a picture of material — it demonstrates the claim of what the line asserts",
       "drawn": "crossSection"
     },
-    "window": {
+    "escape": {
       "mode": "PROCEDURAL",
       "why": "map is a picture of geography — it demonstrates the claim of what the line asserts",
       "drawn": "map"
     },
-    "change": {
-      "mode": "TYPOGRAPHY",
-      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
-      "drawn": null
-    },
-    "current": {
+    "flow": {
       "mode": "PROCEDURAL",
-      "why": "mouldCast is a picture of process — it demonstrates 2 of what the line asserts",
+      "why": "terrainSection is a picture of terrain — it demonstrates 1 of what the line asserts",
+      "drawn": "terrainSection"
+    },
+    "seal": {
+      "mode": "PROCEDURAL",
+      "why": "mouldCast is a picture of material — it demonstrates 2 of what the line asserts",
       "drawn": "mouldCast"
     },
-    "cast": {
+    "decay": {
       "mode": "PROCEDURAL",
-      "why": "mouldCast is a picture of process — it demonstrates 3 of what the line asserts",
+      "why": "mouldCast is a picture of process — it demonstrates 1 of what the line asserts",
+      "drawn": "mouldCast"
+    },
+    "shape": {
+      "mode": "PROCEDURAL",
+      "why": "mouldCast is a picture of material — it demonstrates 1 of what the line asserts",
       "drawn": "mouldCast"
     },
     "plaster": {
@@ -718,10 +798,10 @@
       "why": "mouldCast is a picture of process — it demonstrates 2 of what the line asserts",
       "drawn": "mouldCast"
     },
-    "notstone": {
-      "mode": "TYPOGRAPHY",
-      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
-      "drawn": null
+    "cast": {
+      "mode": "PROCEDURAL",
+      "why": "mouldCast is a picture of material — it demonstrates 1 of what the line asserts",
+      "drawn": "mouldCast"
     },
     "close": {
       "mode": "TYPOGRAPHY",
@@ -731,32 +811,29 @@
   },
   "quotas": {
     "camera": {
-      "hold": 1,
-      "push": 5,
-      "pan": 3,
-      "pull": 4,
+      "hold": 4,
+      "push": 3,
+      "pull": 6,
       "drift": 4,
+      "pan": 2,
       "tilt": 1
     },
     "transition": {
-      "cut": 16,
-      "slip": 1
+      "cut": 19
     },
     "framing": {},
     "cut": {
-      "HARD_CUT": 13,
-      "OBJECT_WIPE": 1,
-      "MATCH_CUT": 3
+      "MATCH_CUT": 1,
+      "HARD_CUT": 18
     }
   },
   "editing": {
     "tally": {
-      "HARD_CUT": 13,
-      "OBJECT_WIPE": 1,
-      "MATCH_CUT": 3
+      "MATCH_CUT": 1,
+      "HARD_CUT": 18
     },
-    "hardRatio": 0.94,
-    "total": 17,
+    "hardRatio": 1,
+    "total": 19,
     "note": "HARD_CUT and MATCH_CUT are both made of nothing; the difference is that a match cut was earned"
   },
   "typography": {

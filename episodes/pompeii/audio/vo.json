@@ -3,67 +3,73 @@
   "how": "measured",
   "provider": "file",
   "audio": "audio/vo.wav",
-  "duration": 45.216,
+  "duration": 44.15575,
   "lines": [
     {
       "slug": "hook",
-      "text": "The victims of Pompeii were not killed by falling rock.",
+      "text": "Pompeii was not frozen in time, the volcano buried it.",
       "start": 0,
-      "end": 3.58
+      "end": 3.84
     },
     {
       "slug": "mountain",
-      "text": "The mountain stood five miles from the town, across the bay.",
-      "start": 3.58,
-      "end": 8.42
+      "text": "The town sat six miles from Vesuvius, downwind.",
+      "start": 3.84,
+      "end": 7.92
     },
     {
       "slug": "fall",
-      "text": "Pumice came down on the roofs, grain after grain, hour after hour.",
-      "start": 8.42,
-      "end": 13.66
+      "text": "Pumice and ash fell on the roofs for hours.",
+      "start": 7.92,
+      "end": 11.08
     },
     {
-      "slug": "window",
-      "text": "The road to the coast was still open.",
-      "start": 13.66,
-      "end": 16.86
+      "slug": "escape",
+      "text": "People went out to the road, trying to reach the sea.",
+      "start": 11.08,
+      "end": 15.28
     },
     {
-      "slug": "change",
-      "text": "Then it changed.",
-      "start": 16.86,
-      "end": 18.48
+      "slug": "flow",
+      "text": "Then the pyroclastic flows came down the flank onto the town.",
+      "start": 15.28,
+      "end": 20
     },
     {
-      "slug": "current",
-      "text": "A current of hot ash swept down and buried the streets, and the heat killed them fast.",
-      "start": 18.48,
-      "end": 25.32
+      "slug": "seal",
+      "text": "The ash sealed each body where it lay.",
+      "start": 20,
+      "end": 22.96
     },
     {
-      "slug": "cast",
-      "text": "Ash sealed each body, and the body decayed away.",
-      "start": 25.32,
-      "end": 29.36
+      "slug": "decay",
+      "text": "The body inside decayed away to nothing.",
+      "start": 22.96,
+      "end": 26
+    },
+    {
+      "slug": "shape",
+      "text": "What was left was a cavity in the ash, shaped like a person.",
+      "start": 26,
+      "end": 30.58
     },
     {
       "slug": "plaster",
-      "text": "Diggers poured plaster into the cavity, and the shape of a person came back.",
-      "start": 29.36,
-      "end": 35.02
+      "text": "Diggers poured plaster into the cavity and let it set.",
+      "start": 30.58,
+      "end": 34.64
     },
     {
-      "slug": "notstone",
-      "text": "The famous casts are not people turned to stone.",
-      "start": 35.02,
-      "end": 39.14
+      "slug": "cast",
+      "text": "The plaster came out as the shape of the person.",
+      "start": 34.64,
+      "end": 38.32
     },
     {
       "slug": "close",
-      "text": "Pompeii was not destroyed in one instant. It was destroyed in stages.",
-      "start": 39.14,
-      "end": 45.216
+      "text": "Pompeii did not preserve the people, it preserved the space they left behind.",
+      "start": 38.32,
+      "end": 44.156
     }
   ]
 }
