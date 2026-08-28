@@ -161,6 +161,23 @@ export function buildMap({vo, seed, accent, muted, stops = [], claims = []}) {
       to: [0.3, midY + gap / 2],
       label: `${figure}${unit ? ` ${unit}` : ''}`,
     };
+  } else if (figure && stops.length >= 2 && claims.includes('distance')) {
+    /**
+     * A STATED DISTANCE BETWEEN TWO NAMED PLACES IS A DISTANCE THE MAP CAN DRAW.
+     *
+     * The dimension used to appear only for `narrowness` — "miles across" — so
+     * "the mountain stood five miles from the town" put two markers on a blank
+     * landmass and drew the one number the sentence was actually about
+     * nowhere. `spec.distance` already exists and the plate already renders it;
+     * the builder simply never reached for it. Set under the markers rather
+     * than through them, so the dimension and the route are two lines and not
+     * one.
+     */
+    spec.distance = {
+      from: [0.1, midY + 0.11],
+      to: [0.9, midY + 0.11],
+      label: `${figure}${unit ? ` ${unit}` : ''}`,
+    };
   }
 
   if (claims.includes('chokepoint')) {
@@ -316,13 +333,36 @@ export function buildCrossSection({vo, seed, accent, muted, claims = []}) {
   const cracks = claims.includes('crack_propagation') || has(vo, /\bcrack|fracture|split|gap\b/i) || fluid || heals;
   const grainy = has(vo, /\b(ash|sand|aggregate|volcanic|grain|mix\w*|lime)\b/i);
 
+  /**
+   * THE BANDS ARE NAMED BY THE SENTENCE, NOT BY A FIXED VOCABULARY.
+   *
+   * A section labelled SURFACE / AGGREGATE / BASE is the right drawing for a
+   * concrete wall and the wrong caption for anything else. A line about pumice
+   * falling on roofs got AGGREGATE across its focus band — a materials-science
+   * word the sentence never said, over a picture of a roof under a snowfall of
+   * rock. It is the same failure as an "approximately right" photograph: the
+   * geometry was true and the label was making its own claim (law 32).
+   *
+   * So the deposit takes the name of the stuff the line says is accumulating,
+   * and the top band takes the name of what it is landing on. Both fall back to
+   * the generic pair, which is still correct for a material section.
+   */
+  const named = (re) => (String(vo).match(re)?.[1] ?? '').toLowerCase();
+  const deposit = named(/\b(pumice|ash|cinders?|tephra|sand|silt|gravel|snow|dust|soot|sediment)\b/i);
+  const upon = named(/\b(roofs?|streets?|decks?|floors?|fields?|pavements?)\b/i);
+
   const spec = {
     type: 'crossSection',
     accent,
     muted,
     layers: [
-      {label: 'surface', depth: 0.16, fill: 'solid'},
-      {label: grainy ? 'aggregate' : 'body', depth: 0.56, fill: grainy ? 'aggregate' : 'hatch', focus: true},
+      {label: upon || 'surface', depth: 0.16, fill: 'solid'},
+      {
+        label: deposit || (grainy ? 'aggregate' : 'body'),
+        depth: 0.56,
+        fill: grainy || deposit ? 'aggregate' : 'hatch',
+        focus: true,
+      },
       {label: 'base', depth: 0.28, fill: 'grain'},
     ],
     scaleNote: 'magnified',

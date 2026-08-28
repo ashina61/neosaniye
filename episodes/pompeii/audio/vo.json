@@ -1,0 +1,69 @@
+{
+  "$comment": "MEASURED from vo.mp3, not estimated. The planner cuts every scene to these windows.",
+  "how": "measured",
+  "provider": "file",
+  "audio": "audio/vo.wav",
+  "duration": 45.216,
+  "lines": [
+    {
+      "slug": "hook",
+      "text": "The victims of Pompeii were not killed by falling rock.",
+      "start": 0,
+      "end": 3.58
+    },
+    {
+      "slug": "mountain",
+      "text": "The mountain stood five miles from the town, across the bay.",
+      "start": 3.58,
+      "end": 8.42
+    },
+    {
+      "slug": "fall",
+      "text": "Pumice came down on the roofs, grain after grain, hour after hour.",
+      "start": 8.42,
+      "end": 13.66
+    },
+    {
+      "slug": "window",
+      "text": "The road to the coast was still open.",
+      "start": 13.66,
+      "end": 16.86
+    },
+    {
+      "slug": "change",
+      "text": "Then it changed.",
+      "start": 16.86,
+      "end": 18.48
+    },
+    {
+      "slug": "current",
+      "text": "A current of hot ash swept down and buried the streets, and the heat killed them fast.",
+      "start": 18.48,
+      "end": 25.32
+    },
+    {
+      "slug": "cast",
+      "text": "Ash sealed each body, and the body decayed away.",
+      "start": 25.32,
+      "end": 29.36
+    },
+    {
+      "slug": "plaster",
+      "text": "Diggers poured plaster into the cavity, and the shape of a person came back.",
+      "start": 29.36,
+      "end": 35.02
+    },
+    {
+      "slug": "notstone",
+      "text": "The famous casts are not people turned to stone.",
+      "start": 35.02,
+      "end": 39.14
+    },
+    {
+      "slug": "close",
+      "text": "Pompeii was not destroyed in one instant. It was destroyed in stages.",
+      "start": 39.14,
+      "end": 45.216
+    }
+  ]
+}

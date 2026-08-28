@@ -521,16 +521,28 @@ function breakLongest(piece, budget) {
 
   const halves = Math.ceil(words.length / budget);
   const target = Math.round(words.length / halves);
-  // Search outward from the target for a word worth breaking before, but never
-  // so far out that one side becomes a flash.
+  /**
+   * Search outward from the target for a word worth breaking before, but never
+   * so far out that one side becomes a flash.
+   *
+   * BOTH sides. The floor used to bound only how far LEFT the search could
+   * reach, which said nothing about the piece being left behind on the right:
+   * "The famous casts are not people turned to stone" found `to` two words past
+   * the target and shipped a seven-word shot followed by a two-word one — 3.2
+   * seconds holding on a single caption, then a nine-tenths-of-a-second flash,
+   * and an English phrase severed between a verb and its particle. A candidate
+   * that leaves a tail too short to be a shot is not a better break than the
+   * midpoint; it is the same fault the floor already refuses on the other side.
+   */
   const floor = Math.max(2, Math.round(target * 0.5));
+  const standsAlone = (at) => at >= floor && words.length - at >= floor;
   let cut = target;
   for (let d = 0; d <= target - floor; d += 1) {
-    if (BREAK_BEFORE.test(words[target - d] ?? '')) {
+    if (BREAK_BEFORE.test(words[target - d] ?? '') && standsAlone(target - d)) {
       cut = target - d;
       break;
     }
-    if (BREAK_BEFORE.test(words[target + d] ?? '')) {
+    if (BREAK_BEFORE.test(words[target + d] ?? '') && standsAlone(target + d)) {
       cut = target + d;
       break;
     }
@@ -1045,9 +1057,23 @@ function planProps({line, rand, look, side, durationInFrames, recentProps, beat}
      */
     const carried = props.some((p) => p.kind === 'plaque');
     const paperWidth = Math.round(between(rand, [360, 470]));
+    /**
+     * ONE REEL, ONE PAPER.
+     *
+     * The name was drawn per shot, so a reel with three front pages in it had
+     * three different newspapers: THE RECORD opened it, THE HERALD carried the
+     * turn and THE GAZETTE closed it. A masthead is the one part of the graphic
+     * that claims continuity — the same paper reporting the story as it
+     * develops — and three of them says the opposite, in the largest type on
+     * the sheet. The die is still thrown on every page so the rest of the
+     * episode's seeded stream is unchanged; the first result is the one that
+     * names the paper, and every later page is that same paper.
+     */
+    const thrown = pick(rand, ['THE RECORD', 'THE DAILY', 'THE GAZETTE', 'THE CHRONICLE', 'THE HERALD']);
+    look.masthead = look.masthead ?? thrown;
     props.push({
       kind: 'newspaper',
-      masthead: pick(rand, ['THE RECORD', 'THE DAILY', 'THE GAZETTE', 'THE CHRONICLE', 'THE HERALD']),
+      masthead: look.masthead,
       text: String(line.title),
       date: !carried && line.kicker ? String(line.kicker) : undefined,
       depth: round(between(rand, [0.62, 0.86]), 2),
@@ -1798,6 +1824,26 @@ function applyDirection({
     }
     delete scene.diagram.gears;
     plan.representation = representation.mode;
+
+    /**
+     * AND THE DRAWING DOES NOT NEED TO BE TOLD WHAT IT ALREADY SAYS.
+     *
+     * Every procedural plate prints its own honesty line — law 24 requires it —
+     * so a brief that ALSO asks for those words on screen gets them twice: a
+     * SCHEMATIC RECONSTRUCTION card typed into the middle of the frame, right
+     * over the plate's state label, while SCHEMATIC RECONSTRUCTION · NOT TO
+     * SCALE stood at the bottom of the same shot. Two labels, one claim, and
+     * one of them laid through a sentence (law 29). The disclosure belongs to
+     * the drawing; a sticker repeating it is clutter in the middle of the
+     * frame.
+     */
+    const declared = String(scene.diagram.disclosure ?? 'SCHEMATIC RECONSTRUCTION · NOT TO SCALE').toUpperCase();
+    if (Array.isArray(scene.onScreenText)) {
+      scene.onScreenText = scene.onScreenText.filter(
+        (t) => !declared.includes(String(t.text ?? '').trim().toUpperCase()),
+      );
+      if (!scene.onScreenText.length) delete scene.onScreenText;
+    }
 
     /**
      * THE DRAWING GETS ITS SPACE AND THE WORDS TAKE WHAT IS LEFT.
@@ -3833,6 +3879,59 @@ async function main() {
     }
     return out;
   };
+
+  /**
+   * A PROCESS CONTINUES ACROSS THE CUT; AN ASSEMBLY HOLDS.
+   *
+   * A continuation is handed `from: -1, over: 1` so a mechanism the viewer
+   * watched assemble does not assemble again — right for a gear train, wrong
+   * for a drawing that runs through STATES. A burial spread over three shots
+   * finished banking up in the first two point eight seconds and then stood
+   * there for four more while the narration was still describing it: the same
+   * picture three times, which is the "does anything repeat without adding
+   * information" fault stated exactly.
+   *
+   * So a staged drawing carried across a run of shots is re-timed against the
+   * WHOLE run. Zeroth law: the voice is the clock, and if the sentence about
+   * the ash arriving lasts six seconds then the ash arrives over six seconds.
+   * The run's last shot is the payoff — the final state lands as the cut into
+   * it lands, and that shot holds it. An assembly (one state, or a drawing with
+   * no states at all) is untouched: it still opens finished.
+   */
+  {
+    const staged = (scene) => (scene.diagram?.stages?.length ?? 0) > 1;
+    const signature = (scene) =>
+      `${scene.diagram?.type}|${scene.diagram?.subject}|${(scene.diagram?.stages ?? []).join('>')}`;
+    let i = 0;
+    while (i < config.scenes.length) {
+      if (!staged(config.scenes[i])) {
+        i += 1;
+        continue;
+      }
+      let j = i + 1;
+      while (
+        j < config.scenes.length &&
+        staged(config.scenes[j]) &&
+        signature(config.scenes[j]) === signature(config.scenes[i]) &&
+        config.scenes[j].diagram.from === -1
+      ) {
+        j += 1;
+      }
+      const run = config.scenes.slice(i, j);
+      if (run.length > 1) {
+        const total = run.reduce((n, s) => n + s.durationInFrames, 0);
+        const last = run[run.length - 1].durationInFrames;
+        const over = Math.max(Math.round(total * 0.4), total - last);
+        let prefix = 0;
+        for (const scene of run) {
+          scene.diagram.from = -prefix;
+          scene.diagram.over = over;
+          prefix += scene.durationInFrames;
+        }
+      }
+      i = j;
+    }
+  }
 
   for (const scene of config.scenes) {
     const tail = Math.floor(scene.durationInFrames * 0.9);

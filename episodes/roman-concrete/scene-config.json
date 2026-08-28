@@ -619,7 +619,7 @@
             "fill": "solid"
           },
           {
-            "label": "aggregate",
+            "label": "ash",
             "depth": 0.56,
             "fill": "aggregate",
             "focus": true
@@ -773,7 +773,7 @@
             "fill": "solid"
           },
           {
-            "label": "aggregate",
+            "label": "ash",
             "depth": 0.56,
             "fill": "aggregate",
             "focus": true
@@ -926,7 +926,7 @@
             "fill": "solid"
           },
           {
-            "label": "aggregate",
+            "label": "ash",
             "depth": 0.56,
             "fill": "aggregate",
             "focus": true

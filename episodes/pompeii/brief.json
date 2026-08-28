@@ -42,7 +42,7 @@
     },
     {
       "slug": "window",
-      "vo": "The streets were open, and the road to the coast was still a way out.",
+      "vo": "The road to the coast was still open.",
       "graphicsOnly": true,
       "stops": [
         "POMPEII",
@@ -59,17 +59,12 @@
     },
     {
       "slug": "current",
-      "vo": "A current of hot ash swept down and buried the streets.",
+      "vo": "A current of hot ash swept down and buried the streets, and the heat killed them fast.",
       "graphicsOnly": true,
       "caption": [
         "Not falling.",
         "FLOWING."
       ]
-    },
-    {
-      "slug": "heat",
-      "vo": "The heat killed them, and it killed them fast.",
-      "graphicsOnly": true
     },
     {
       "slug": "cast",

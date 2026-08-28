@@ -22,7 +22,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 import {drawOn, flow, posterizeTime} from '../motion';
-import {Callout, Cam, Disclosure, MONO, Sheet, Ticks, weights, worldTransform} from './sheet';
+import {Callout, Cam, Disclosure, MONO, Sheet, Ticks, setUp, weights, worldTransform} from './sheet';
 import {Contact, MaterialDefs, MaterialFace, Motes} from './material';
 
 const CLAMP = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
@@ -96,7 +96,7 @@ export const CrossSectionPlate: React.FC<{spec: CrossSectionSpec; w: number; h: 
   const line = weights(w);
   if (stepped < from) return null;
 
-  const on = drawOn(stepped, [from, from + 10]);
+  const on = setUp(stepped, from, spec.over ?? 10);
 
   /**
    * THE SECTION BOX — set out at frame zero and never animated.

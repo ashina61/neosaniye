@@ -363,9 +363,9 @@
         "captionRecedeAt": 46,
         "accent": "#c8d94a",
         "motif": "tally",
-        "motifX": 106,
+        "motifX": 137,
         "motifY": 499,
-        "motifSize": 97,
+        "motifSize": 89,
         "motifCount": 13,
         "motifFrame": 25,
         "motifColour": "#c8d94a",
@@ -475,7 +475,7 @@
         "gapLabel": "50 years\nunopened",
         "accent": "#c8d94a",
         "muted": "#cfc6ae",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -528,7 +528,7 @@
         "cameraMove": "push",
         "cameraPurpose": "a vertical reveal — height, depth, or a drop",
         "cameraAuthored": true,
-        "diagramCamera": 0.05
+        "diagramCamera": 0
       },
       "diagram": {
         "type": "gearSystem",
@@ -591,7 +591,7 @@
         "captionWordEvery": 4,
         "cameraMove": "tilt",
         "cameraPurpose": "a vertical reveal — height, depth, or a drop",
-        "diagramCamera": 0.9
+        "diagramCamera": 0.3
       },
       "diagram": {
         "type": "gearSystem",
@@ -601,7 +601,7 @@
         "accent": "#c8d94a",
         "muted": "#cfc6ae",
         "disclosure": "schematic reconstruction · not to scale",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },

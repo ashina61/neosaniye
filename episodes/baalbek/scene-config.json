@@ -748,8 +748,8 @@
     {
       "id": "s04-nolift",
       "sceneType": "composite",
-      "voText": "No pulley of the period could take",
-      "durationInFrames": 86,
+      "voText": "No pulley of the period",
+      "durationInFrames": 64,
       "assets": {},
       "layers": [],
       "params": {
@@ -757,7 +757,7 @@
         "anchorY": 1700,
         "pushFrom": 1.45,
         "pushTo": 1.02,
-        "pushEndFrame": 79,
+        "pushEndFrame": 59,
         "glowX": 1145,
         "glowY": 422,
         "glowSize": 560,
@@ -774,17 +774,16 @@
         ],
         "caption": [
           "No pulley",
-          "of the period",
-          "could take"
+          "of the period"
         ],
         "captionX": 84,
         "captionY": 1344,
         "captionSize": 85,
         "captionAlign": "left",
-        "captionFrame": 46,
+        "captionFrame": 35,
         "captionEvery": 7,
         "captionScrim": 0.38,
-        "captionRecedeAt": 62,
+        "captionRecedeAt": 46,
         "accent": "#d94f3d",
         "handheld": 1.5,
         "captionEmphasis": "pulley",
@@ -824,14 +823,14 @@
         ],
         "depicts": "scale",
         "from": 0,
-        "over": 39
+        "over": 29
       }
     },
     {
       "id": "s04-nolift-b",
       "sceneType": "composite",
-      "voText": "that load.",
-      "durationInFrames": 45,
+      "voText": "could take that load.",
+      "durationInFrames": 52,
       "assets": {},
       "layers": [],
       "params": {
@@ -839,7 +838,7 @@
         "anchorY": 576,
         "pushFrom": 1,
         "pushTo": 1.09,
-        "pushEndFrame": 41,
+        "pushEndFrame": 48,
         "accent": "#d94f3d",
         "field": "spotlight",
         "fieldColours": [
@@ -854,13 +853,13 @@
         "glowWarm": "#d94f3d",
         "glowDepth": 0.1,
         "caption": [
-          "that load"
+          "could take that load"
         ],
         "captionX": 84,
         "captionY": 1344,
-        "captionSize": 95,
+        "captionSize": 55,
         "captionAlign": "left",
-        "captionFrame": 28,
+        "captionFrame": 29,
         "captionEvery": 8,
         "captionScrim": 0.38,
         "focusPx": 0,
@@ -868,7 +867,7 @@
         "handheld": 1.5,
         "panY": -46,
         "roll": 0.28,
-        "captionEmphasis": "load",
+        "captionEmphasis": "could",
         "captionReveal": "wipe",
         "captionMark": "box",
         "captionWordEvery": 2,

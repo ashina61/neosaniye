@@ -27,7 +27,7 @@ import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remoti
 import {angular, drawOn, hash01, heavy, posterizeTime, tension} from '../motion';
 import {counterValue} from '../state.mjs';
 import {Contact, Depth, GroundPlane, Haze, MaterialDefs, MaterialFace, Motes, Sky} from './material';
-import {Arrow, Callout, Cam, Disclosure, MONO, SANS, Sheet, Ticks, weights, worldTransform} from './sheet';
+import {Arrow, Callout, Cam, Disclosure, MONO, SANS, Sheet, Ticks, setUp, weights, worldTransform} from './sheet';
 
 const CLAMP = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 
@@ -105,7 +105,7 @@ export const ScaleHaulagePlate: React.FC<{spec: ScaleHaulageSpec; w: number; h: 
   const line = weights(w);
   if (stepped < from) return null;
 
-  const on = drawOn(stepped, [from, from + 10]);
+  const on = setUp(stepped, from, over);
   const t = Math.max(0, stepped - from);
 
   /**

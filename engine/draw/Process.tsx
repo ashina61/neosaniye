@@ -26,7 +26,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 import {drawOn, impact, posterizeTime, punch, rigid} from '../motion';
-import {Arrow, Cam, Disclosure, MONO, SANS, Sheet, Ticks, weights, worldTransform} from './sheet';
+import {Arrow, Cam, Disclosure, MONO, SANS, Sheet, Ticks, setUp, weights, worldTransform} from './sheet';
 import {Contact, Depth, MaterialDefs, MaterialFace, Motes, shimmer} from './material';
 
 const CLAMP = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
@@ -276,7 +276,7 @@ export const ProcessPlate: React.FC<{spec: ProcessSpec; w: number; h: number; ca
   const colour = glowColour(heat, accent, muted);
 
 
-  const on = drawOn(stepped, [from, from + 10]);
+  const on = setUp(stepped, from, over);
   const agent = settled ? 'none' : nextStage.agent ?? 'none';
 
   return (

@@ -158,6 +158,29 @@ export function worldTransform(cam: Cam | undefined, w: number, h: number): stri
   ].join(' ');
 }
 
+/**
+ * WHEN THE SHEET ITSELF IS THERE.
+ *
+ * Law 30 says the frame a cut lands on cannot be empty, and it says how: a
+ * draughtsman sets up the construction first and draws the mechanism onto it.
+ * The registration ticks, the honesty plate and the place names are the SHEET.
+ * They are not the argument, so they do not get to arrive — a bracket fading
+ * up over a second and a half is a title sequence.
+ *
+ * Every plate was ramping them across its whole draw-on window, which cost the
+ * reel twice. A first shot cut to a bare grey polygon and only became a map a
+ * third of the way in. And a CONTINUATION — handed `from: -1, over: 1` for the
+ * express purpose of opening already finished — rebuilt its brackets anyway,
+ * because the ramp was a hard-coded ten frames that knew nothing about `over`.
+ *
+ * So: a settle, bounded by the window it lives in. A carried-over drawing opens
+ * complete; a first sight of one gets a fifth of a second of arrival, which
+ * reads as the sheet being laid down rather than assembled.
+ */
+export function setUp(stepped: number, from: number, over = 10): number {
+  return drawOn(stepped, [from, from + Math.min(6, Math.max(1, over))]);
+}
+
 /** Registration ticks — the corner marks of a drawing sheet. */
 export const Ticks: React.FC<{colour: string; w: number; h: number; on: number}> = ({colour, w, h, on}) => {
   const m = w * 0.055;

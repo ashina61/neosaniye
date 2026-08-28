@@ -281,12 +281,22 @@ export const Slate: React.FC<{
   const {fps, width} = useVideoConfig();
   const stepped = posterizeTime(frame, fps, 12);
   const land = springEntrance(stepped, fps, {delay: from, stiffness: 46, mass: 1.05});
-  const rule = interpolate(stepped, [from + 4, from + 20], [0, 1], CLAMP);
+  /**
+   * THE RULES ARE THE SHEET; THE WORDS LAND ON THEM.
+   *
+   * Law 30. A slate used to hold its whole block — rules included — behind the
+   * title's spring, so every card in the channel opened on a bare field: black
+   * for the four to twelve frames before `from`, and the reel's very FIRST
+   * frame was one of them. The rules are not the statement, they are what the
+   * statement is set between, so they draw from frame zero outward and the cut
+   * lands on a composed frame with something already moving in it.
+   */
+  const rule = interpolate(stepped, [0, Math.max(10, from + 6)], [0, 1], CLAMP);
   const tail = footerFrom === undefined ? 1 : interpolate(stepped, [footerFrom, footerFrom + 10], [0, 1], CLAMP);
 
   return (
     <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center', pointerEvents: 'none', padding: '0 90px'}}>
-      <div style={{width: '100%', textAlign: 'center', opacity: land}}>
+      <div style={{width: '100%', textAlign: 'center'}}>
         {kicker ? (
           <div
             style={{
@@ -296,13 +306,14 @@ export const Slate: React.FC<{
               color: accent,
               marginBottom: 34,
               textTransform: 'uppercase',
+              opacity: land,
             }}
           >
             {kicker}
           </div>
         ) : null}
         <div style={{height: 3, background: accent, width: `${rule * 100}%`, margin: '0 auto 40px'}} />
-        {titleNode ?? (
+        {titleNode ? <div style={{opacity: land}}>{titleNode}</div> : (
         <div
           style={{
             fontFamily: SANS,
@@ -314,6 +325,7 @@ export const Slate: React.FC<{
             color: colour,
             textTransform: 'uppercase',
             transform: `translateY(${(1 - land) * 22}px)`,
+            opacity: land,
             textShadow: '0 0 34px rgba(0,0,0,0.9)',
           }}
         >

@@ -202,7 +202,7 @@
         ],
         "depicts": "process",
         "from": 0,
-        "over": 20
+        "over": 45
       }
     },
     {
@@ -357,8 +357,8 @@
           "transformation"
         ],
         "depicts": "process",
-        "from": -1,
-        "over": 1
+        "from": -45,
+        "over": 45
       }
     },
     {
@@ -895,7 +895,7 @@
         "claims": [],
         "depicts": "process",
         "from": 0,
-        "over": 39
+        "over": 150
       }
     },
     {
@@ -1037,8 +1037,8 @@
         "subject": "swordMaking",
         "claims": [],
         "depicts": "process",
-        "from": -1,
-        "over": 1
+        "from": -86,
+        "over": 150
       }
     },
     {
@@ -1179,8 +1179,8 @@
         "subject": "swordMaking",
         "claims": [],
         "depicts": "process",
-        "from": -1,
-        "over": 1
+        "from": -150,
+        "over": 150
       }
     },
     {
@@ -1373,7 +1373,7 @@
         ],
         "depicts": "process",
         "from": 0,
-        "over": 34
+        "over": 104
       }
     },
     {
@@ -1567,8 +1567,8 @@
           "sequence"
         ],
         "depicts": "process",
-        "from": -1,
-        "over": 1
+        "from": -52,
+        "over": 104
       }
     },
     {
@@ -1750,8 +1750,8 @@
           "sequence"
         ],
         "depicts": "process",
-        "from": -1,
-        "over": 1
+        "from": -104,
+        "over": 104
       }
     },
     {
@@ -1937,7 +1937,7 @@
         ],
         "depicts": "process",
         "from": 0,
-        "over": 34
+        "over": 104
       }
     },
     {
@@ -2119,8 +2119,8 @@
           "sequence"
         ],
         "depicts": "process",
-        "from": -1,
-        "over": 1
+        "from": -52,
+        "over": 104
       }
     },
     {
@@ -2315,8 +2315,8 @@
           "sequence"
         ],
         "depicts": "process",
-        "from": -1,
-        "over": 1
+        "from": -104,
+        "over": 104
       }
     },
     {
@@ -2469,7 +2469,7 @@
         "claims": [],
         "depicts": "process",
         "from": 0,
-        "over": 44
+        "over": 97
       }
     },
     {
@@ -2609,8 +2609,8 @@
         "subject": "process",
         "claims": [],
         "depicts": "process",
-        "from": -1,
-        "over": 1
+        "from": -97,
+        "over": 97
       }
     },
     {

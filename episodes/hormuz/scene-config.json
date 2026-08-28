@@ -2255,8 +2255,8 @@
     {
       "id": "s07-grounding-b",
       "sceneType": "composite",
-      "voText": "in a two-mile lane closes the strait",
-      "durationInFrames": 86,
+      "voText": "in a two-mile lane closes",
+      "durationInFrames": 64,
       "assets": {},
       "layers": [],
       "params": {
@@ -2264,7 +2264,7 @@
         "anchorY": 576,
         "pushFrom": 1.14,
         "pushTo": 1.32,
-        "pushEndFrame": 84,
+        "pushEndFrame": 62,
         "accent": "#e6e2d6",
         "field": "wash",
         "fieldColours": [
@@ -2279,14 +2279,14 @@
         "glowWarm": "#e6e2d6",
         "glowDepth": 0.1,
         "caption": [
-          "in a two-mile lane",
-          "closes the strait"
+          "in a two-mile",
+          "lane closes"
         ],
         "captionX": 84,
         "captionY": 106,
-        "captionSize": 62,
+        "captionSize": 85,
         "captionAlign": "left",
-        "captionFrame": 46,
+        "captionFrame": 35,
         "captionEvery": 9,
         "captionScrim": 0.38,
         "focusPx": 0,
@@ -2371,14 +2371,14 @@
         ],
         "depicts": "geography",
         "from": 0,
-        "over": 39
+        "over": 29
       }
     },
     {
       "id": "s07-grounding-c",
       "sceneType": "composite",
-      "voText": "for weeks.",
-      "durationInFrames": 45,
+      "voText": "the strait for weeks.",
+      "durationInFrames": 52,
       "assets": {},
       "layers": [],
       "props": [
@@ -2399,7 +2399,7 @@
         "anchorY": 1498,
         "pushFrom": 1,
         "pushTo": 1.08,
-        "pushEndFrame": 44,
+        "pushEndFrame": 50,
         "accent": "#e6e2d6",
         "field": "wash",
         "fieldColours": [
@@ -2414,13 +2414,13 @@
         "glowWarm": "#e6e2d6",
         "glowDepth": 0.1,
         "caption": [
-          "for weeks"
+          "the strait for weeks"
         ],
         "captionX": 84,
         "captionY": 106,
-        "captionSize": 92,
+        "captionSize": 55,
         "captionAlign": "left",
-        "captionFrame": 28,
+        "captionFrame": 29,
         "captionEvery": 8,
         "captionScrim": 0.38,
         "focusPx": 0,
@@ -2428,7 +2428,7 @@
         "handheld": 1.5,
         "panY": -56,
         "roll": -0.19,
-        "captionEmphasis": "weeks",
+        "captionEmphasis": "strait",
         "captionReveal": "rise",
         "captionMark": "none",
         "captionWordEvery": 4,

@@ -1,6 +1,7 @@
 {
   "id": "pompeii",
   "title": "Pompeii — what actually happened to the people",
+  "audio": "audio/vo.wav",
   "fps": 30,
   "width": 1080,
   "height": 1920,
@@ -18,13 +19,13 @@
       "scanlines": true,
       "vignette": true,
       "gateWeave": true,
-      "grainOpacity": 0.5,
-      "grungeOpacity": 0.17,
-      "scanlineOpacity": 0.08,
-      "scanlinePeriod": 9,
-      "vignetteStrength": 0.49,
+      "grainOpacity": 0.42,
+      "grungeOpacity": 0.16,
+      "scanlineOpacity": 0.15,
+      "scanlinePeriod": 10,
+      "vignetteStrength": 0.42,
       "weavePx": 7,
-      "weaveScale": 1.016
+      "weaveScale": 1.01
     }
   },
   "scenes": [
@@ -32,14 +33,14 @@
       "id": "s01-hook",
       "sceneType": "title-slate",
       "voText": "The victims of Pompeii were not killed",
-      "durationInFrames": 86,
+      "durationInFrames": 75,
       "assets": {},
       "params": {
         "scrim": 0.37,
         "kicker": "Campania · 79 AD",
         "title": "NOT THE ROCK",
         "footer": "the disaster came in stages",
-        "titleFrame": 7,
+        "titleFrame": 6,
         "titleSize": 230,
         "creep": 1.079,
         "accent": "#e8e2d4",
@@ -49,7 +50,7 @@
           "#1c1f21",
           "#0a0b0c"
         ],
-        "pushEndFrame": 80,
+        "pushEndFrame": 70,
         "pushFrom": 1.04,
         "pushTo": 1.05,
         "cameraMove": "hold",
@@ -65,7 +66,7 @@
           "y": 438,
           "width": 371,
           "rotate": 5.8,
-          "from": 22
+          "from": 19
         }
       ]
     },
@@ -73,16 +74,16 @@
       "id": "s01-hook-b",
       "sceneType": "composite",
       "voText": "by falling rock.",
-      "durationInFrames": 45,
+      "durationInFrames": 32,
       "assets": {},
       "layers": [],
       "props": [],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.02,
-        "pushTo": 1.41,
-        "pushEndFrame": 43,
+        "pushFrom": 1.03,
+        "pushTo": 1.57,
+        "pushEndFrame": 30,
         "accent": "#e8e2d4",
         "field": "wash",
         "fieldColours": [
@@ -110,14 +111,10 @@
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "shakeAt": [
-          4
-        ],
-        "shakeAmount": 21,
         "captionEmphasis": "falling",
-        "captionReveal": "blur",
+        "captionReveal": "wipe",
         "captionMark": "underline",
-        "captionWordEvery": 2,
+        "captionWordEvery": 3,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
       }
@@ -126,10 +123,10 @@
       "id": "s02-mountain",
       "sceneType": "composite",
       "voText": "The mountain stood five miles from the town,",
-      "durationInFrames": 97,
+      "durationInFrames": 106,
       "transition": {
         "kind": "slip",
-        "frames": 11
+        "frames": 10
       },
       "assets": {
         "?ground": "assets/s02-mountain-bg.png"
@@ -137,35 +134,22 @@
       "layers": [
         {
           "role": "?ground",
-          "depth": 0.81,
+          "depth": 0.73,
           "anchor": "fill"
-        }
-      ],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.28,
-          "x": 259,
-          "y": 125,
-          "width": 265,
-          "rotate": 16,
-          "opacity": 0.53,
-          "colour": "#e8e2d4",
-          "from": 82
         }
       ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1.04,
-        "pushTo": 1.06,
-        "pushEndFrame": 89,
-        "glowX": -350,
-        "glowY": 216,
-        "glowSize": 435,
-        "glowIntensity": 0.47,
+        "pushFrom": 1.2,
+        "pushTo": 1.19,
+        "pushEndFrame": 103,
+        "glowX": -288,
+        "glowY": 276,
+        "glowSize": 452,
+        "glowIntensity": 0.51,
         "glowWarm": "#e8e2d4",
-        "glowDepth": 0.81,
+        "glowDepth": 0.73,
         "focusPx": 0,
         "fog": 0,
         "caption": [
@@ -176,29 +160,26 @@
         "captionY": 106,
         "captionSize": 74,
         "captionAlign": "left",
-        "captionFrame": 49,
-        "captionEvery": 9,
+        "captionFrame": 46,
+        "captionEvery": 8,
         "captionScrim": 0.38,
-        "captionRecedeAt": 70,
+        "captionRecedeAt": 76,
         "accent": "#e8e2d4",
         "motif": "route",
         "motifStops": [
           "VESUVIUS",
           "POMPEII"
         ],
-        "motifFrame": 32,
+        "motifFrame": 25,
         "motifColour": "#e8e2d4",
-        "handheld": 3,
-        "shakeAt": [
-          8
-        ],
-        "shakeAmount": 21,
+        "handheld": 1.5,
+        "panX": 172,
         "captionEmphasis": "Five miles",
         "captionReveal": "punch",
-        "captionMark": "none",
-        "captionWordEvery": 2,
-        "cameraMove": "hold",
-        "cameraPurpose": "importance. The frame stops because the idea needs no help",
+        "captionMark": "highlight",
+        "captionWordEvery": 3,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement",
         "motifY": 490
       },
       "diagram": {
@@ -266,36 +247,47 @@
             "at": 15
           }
         ],
+        "distance": {
+          "from": [
+            0.1,
+            0.55
+          ],
+          "to": [
+            0.9,
+            0.55
+          ],
+          "label": "5 miles"
+        },
         "subject": "geography",
         "claims": [
           "distance"
         ],
         "depicts": "geography",
         "from": 0,
-        "over": 44
+        "over": 48
       }
     },
     {
       "id": "s02-mountain-b",
       "sceneType": "composite",
       "voText": "across the bay.",
-      "durationInFrames": 45,
+      "durationInFrames": 40,
       "assets": {
         "?ground": "assets/s02-mountain-bg.png"
       },
       "layers": [
         {
           "role": "?ground",
-          "depth": 0.93,
+          "depth": 0.82,
           "anchor": "fill"
         }
       ],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.03,
-        "pushTo": 1.36,
-        "pushEndFrame": 41,
+        "pushFrom": 1.04,
+        "pushTo": 1.31,
+        "pushEndFrame": 36,
         "accent": "#e8e2d4",
         "caption": [
           "across the bay"
@@ -304,22 +296,22 @@
         "captionY": 106,
         "captionSize": 79,
         "captionAlign": "left",
-        "captionFrame": 28,
-        "captionEvery": 10,
+        "captionFrame": 23,
+        "captionEvery": 9,
         "captionScrim": 0.38,
-        "glowX": -377,
-        "glowY": 293,
+        "glowX": -406,
+        "glowY": 117,
         "glowSize": 423,
-        "glowIntensity": 0.53,
+        "glowIntensity": 0.43,
         "glowWarm": "#e8e2d4",
-        "glowDepth": 0.93,
+        "glowDepth": 0.82,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
         "captionEmphasis": "across",
-        "captionReveal": "wipe",
-        "captionMark": "highlight",
-        "captionWordEvery": 2,
+        "captionReveal": "blur",
+        "captionMark": "underline",
+        "captionWordEvery": 3,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
       },
@@ -388,6 +380,17 @@
             "at": 15
           }
         ],
+        "distance": {
+          "from": [
+            0.1,
+            0.55
+          ],
+          "to": [
+            0.9,
+            0.55
+          ],
+          "label": "5 miles"
+        },
         "subject": "geography",
         "claims": [
           "distance"
@@ -401,18 +404,18 @@
       "id": "s03-fall",
       "sceneType": "composite",
       "voText": "Pumice came down on the roofs,",
-      "durationInFrames": 75,
+      "durationInFrames": 79,
       "assets": {},
       "layers": [],
       "props": [
         {
           "kind": "beam",
-          "depth": 0.27,
-          "x": 152,
-          "y": 7,
-          "width": 331,
-          "rotate": 17,
-          "opacity": 0.66,
+          "depth": 0.3,
+          "x": 106,
+          "y": 26,
+          "width": 369,
+          "rotate": 20,
+          "opacity": 0.67,
           "colour": "#e8e2d4",
           "from": 0
         }
@@ -420,9 +423,9 @@
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1.17,
-        "pushTo": 1.18,
-        "pushEndFrame": 70,
+        "pushFrom": 1.47,
+        "pushTo": 1.01,
+        "pushEndFrame": 72,
         "glowX": -65,
         "glowY": 422,
         "glowSize": 560,
@@ -445,25 +448,24 @@
         "captionY": 115,
         "captionSize": 69,
         "captionAlign": "left",
-        "captionFrame": 41,
+        "captionFrame": 45,
         "captionEvery": 7,
         "captionScrim": 0.38,
-        "captionRecedeAt": 54,
+        "captionRecedeAt": 57,
         "accent": "#e8e2d4",
         "handheld": 1.5,
-        "panX": -181,
         "captionEmphasis": "Pumice",
-        "captionReveal": "wipe",
-        "captionMark": "none",
-        "captionWordEvery": 4,
-        "cameraMove": "pan",
-        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+        "captionReveal": "rise",
+        "captionMark": "box",
+        "captionWordEvery": 3,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
       },
       "onScreenText": [
         {
           "text": "EIGHTEEN HOURS",
-          "atFrame": 45,
-          "durationInFrames": 30,
+          "atFrame": 49,
+          "durationInFrames": 32,
           "style": "typed",
           "position": "bottom"
         }
@@ -474,12 +476,12 @@
         "muted": "#cfc6ae",
         "layers": [
           {
-            "label": "surface",
+            "label": "roofs",
             "depth": 0.16,
             "fill": "solid"
           },
           {
-            "label": "aggregate",
+            "label": "pumice",
             "depth": 0.56,
             "fill": "aggregate",
             "focus": true
@@ -520,22 +522,22 @@
         ],
         "depicts": "material",
         "from": 0,
-        "over": 34
+        "over": 36
       }
     },
     {
       "id": "s03-fall-b",
       "sceneType": "composite",
       "voText": "grain after grain, hour after hour.",
-      "durationInFrames": 75,
+      "durationInFrames": 78,
       "assets": {},
       "layers": [],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.35,
-        "pushTo": 1.01,
-        "pushEndFrame": 71,
+        "pushFrom": 1.15,
+        "pushTo": 1.24,
+        "pushEndFrame": 76,
         "accent": "#e8e2d4",
         "field": "wash",
         "fieldColours": [
@@ -543,10 +545,10 @@
           "#0a0b0b",
           "#070809"
         ],
-        "glowX": -408,
-        "glowY": 163,
-        "glowSize": 423,
-        "glowIntensity": 0.55,
+        "glowX": -337,
+        "glowY": 232,
+        "glowSize": 471,
+        "glowIntensity": 0.42,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.1,
         "caption": [
@@ -557,18 +559,19 @@
         "captionY": 115,
         "captionSize": 62,
         "captionAlign": "left",
-        "captionFrame": 41,
-        "captionEvery": 8,
+        "captionFrame": 44,
+        "captionEvery": 6,
         "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
+        "panX": 169,
         "captionEmphasis": "grain",
-        "captionReveal": "rise",
+        "captionReveal": "blur",
         "captionMark": "box",
-        "captionWordEvery": 3,
-        "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "captionWordEvery": 4,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
       },
       "diagram": {
         "type": "crossSection",
@@ -576,12 +579,12 @@
         "muted": "#cfc6ae",
         "layers": [
           {
-            "label": "surface",
+            "label": "roofs",
             "depth": 0.16,
             "fill": "solid"
           },
           {
-            "label": "aggregate",
+            "label": "pumice",
             "depth": 0.56,
             "fill": "aggregate",
             "focus": true
@@ -628,29 +631,16 @@
     {
       "id": "s04-window",
       "sceneType": "composite",
-      "voText": "The streets were open,",
-      "durationInFrames": 52,
+      "voText": "The road to the coast was still open.",
+      "durationInFrames": 96,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.27,
-          "x": 103,
-          "y": -76,
-          "width": 222,
-          "rotate": 9,
-          "opacity": 0.82,
-          "colour": "#e8e2d4",
-          "from": 0
-        }
-      ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1,
-        "pushTo": 1.08,
-        "pushEndFrame": 50,
+        "pushFrom": 1.15,
+        "pushTo": 1.3,
+        "pushEndFrame": 92,
         "glowX": -65,
         "glowY": 422,
         "glowSize": 560,
@@ -666,34 +656,35 @@
           "#070809"
         ],
         "caption": [
-          "The streets",
-          "were open"
+          "The road",
+          "to the coast",
+          "was still open"
         ],
         "captionX": 84,
         "captionY": 106,
-        "captionSize": 92,
+        "captionSize": 79,
         "captionAlign": "left",
-        "captionFrame": 29,
-        "captionEvery": 7,
+        "captionFrame": 49,
+        "captionEvery": 8,
         "captionScrim": 0.38,
-        "captionRecedeAt": 37,
+        "captionRecedeAt": 69,
         "accent": "#e8e2d4",
         "motif": "route",
         "motifStops": [
           "POMPEII",
           "THE COAST"
         ],
-        "motifFrame": 28,
+        "motifFrame": 30,
         "motifColour": "#e8e2d4",
         "handheld": 1.5,
-        "panY": -28,
-        "roll": -0.43,
-        "captionEmphasis": "streets",
-        "captionReveal": "rise",
-        "captionMark": "none",
-        "captionWordEvery": 3,
-        "cameraMove": "drift",
-        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+        "panX": 173,
+        "captionEmphasis": "coast",
+        "captionReveal": "punch",
+        "captionMark": "highlight",
+        "captionWordEvery": 4,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement",
+        "motifY": 606
       },
       "diagram": {
         "type": "map",
@@ -764,263 +755,23 @@
         "claims": [],
         "depicts": "geography",
         "from": 0,
-        "over": 23
-      }
-    },
-    {
-      "id": "s04-window-b",
-      "sceneType": "composite",
-      "voText": "and the road",
-      "durationInFrames": 45,
-      "assets": {},
-      "layers": [],
-      "params": {
-        "anchorX": 799,
-        "anchorY": 576,
-        "pushFrom": 1.42,
-        "pushTo": 1.03,
-        "pushEndFrame": 42,
-        "accent": "#e8e2d4",
-        "field": "wash",
-        "fieldColours": [
-          "#0d0e0f",
-          "#0a0b0b",
-          "#070809"
-        ],
-        "glowX": -409,
-        "glowY": 209,
-        "glowSize": 497,
-        "glowIntensity": 0.54,
-        "glowWarm": "#e8e2d4",
-        "glowDepth": 0.1,
-        "caption": [
-          "and the road"
-        ],
-        "captionX": 84,
-        "captionY": 106,
-        "captionSize": 93,
-        "captionAlign": "left",
-        "captionFrame": 28,
-        "captionEvery": 8,
-        "captionScrim": 0.38,
-        "focusPx": 0,
-        "fog": 0,
-        "handheld": 1.5,
-        "captionEmphasis": "road",
-        "captionReveal": "blur",
-        "captionMark": "none",
-        "captionWordEvery": 3,
-        "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
-      },
-      "diagram": {
-        "type": "map",
-        "regions": [
-          {
-            "kind": "land",
-            "shape": [
-              [
-                0.06,
-                0.2
-              ],
-              [
-                0.44734,
-                0.14
-              ],
-              [
-                0.94,
-                0.24
-              ],
-              [
-                0.9,
-                0.66
-              ],
-              [
-                0.5225,
-                0.72
-              ],
-              [
-                0.08,
-                0.62
-              ]
-            ]
-          }
-        ],
-        "accent": "#e8e2d4",
-        "muted": "#cfc6ae",
-        "route": [
-          {
-            "points": [
-              [
-                0.1,
-                0.404096
-              ],
-              [
-                0.9,
-                0.455912
-              ]
-            ]
-          }
-        ],
-        "markers": [
-          {
-            "x": 0.1,
-            "y": 0.404096,
-            "label": "POMPEII",
-            "kind": "place",
-            "at": 8
-          },
-          {
-            "x": 0.9,
-            "y": 0.455912,
-            "label": "THE COAST",
-            "kind": "place",
-            "at": 15
-          }
-        ],
-        "subject": "coastline",
-        "claims": [],
-        "depicts": "geography",
-        "from": -1,
-        "over": 1
-      }
-    },
-    {
-      "id": "s04-window-c",
-      "sceneType": "composite",
-      "voText": "to the coast was still a way out.",
-      "durationInFrames": 97,
-      "assets": {},
-      "layers": [],
-      "params": {
-        "anchorX": 799,
-        "anchorY": 1498,
-        "pushFrom": 1,
-        "pushTo": 1.1,
-        "pushEndFrame": 89,
-        "accent": "#e8e2d4",
-        "field": "wash",
-        "fieldColours": [
-          "#0d0e0f",
-          "#0a0b0b",
-          "#070809"
-        ],
-        "glowX": -307,
-        "glowY": 246,
-        "glowSize": 440,
-        "glowIntensity": 0.54,
-        "glowWarm": "#e8e2d4",
-        "glowDepth": 0.1,
-        "caption": [
-          "to the coast",
-          "was still",
-          "a way out"
-        ],
-        "captionX": 84,
-        "captionY": 106,
-        "captionSize": 93,
-        "captionAlign": "left",
-        "captionFrame": 44,
-        "captionEvery": 8,
-        "captionScrim": 0.38,
-        "focusPx": 0,
-        "fog": 0,
-        "handheld": 1.5,
-        "panY": -53,
-        "roll": 0.24,
-        "captionEmphasis": "coast",
-        "captionReveal": "blur",
-        "captionMark": "underline",
-        "captionWordEvery": 4,
-        "cameraMove": "drift",
-        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
-      },
-      "diagram": {
-        "type": "map",
-        "regions": [
-          {
-            "kind": "land",
-            "shape": [
-              [
-                0.06,
-                0.2
-              ],
-              [
-                0.44734,
-                0.14
-              ],
-              [
-                0.94,
-                0.24
-              ],
-              [
-                0.9,
-                0.66
-              ],
-              [
-                0.5225,
-                0.72
-              ],
-              [
-                0.08,
-                0.62
-              ]
-            ]
-          }
-        ],
-        "accent": "#e8e2d4",
-        "muted": "#cfc6ae",
-        "route": [
-          {
-            "points": [
-              [
-                0.1,
-                0.404096
-              ],
-              [
-                0.9,
-                0.455912
-              ]
-            ]
-          }
-        ],
-        "markers": [
-          {
-            "x": 0.1,
-            "y": 0.404096,
-            "label": "POMPEII",
-            "kind": "place",
-            "at": 8
-          },
-          {
-            "x": 0.9,
-            "y": 0.455912,
-            "label": "THE COAST",
-            "kind": "place",
-            "at": 15
-          }
-        ],
-        "subject": "coastline",
-        "claims": [],
-        "depicts": "geography",
-        "from": -1,
-        "over": 1
+        "over": 43
       }
     },
     {
       "id": "s05-change",
       "sceneType": "title-slate",
       "voText": "Then it changed.",
-      "durationInFrames": 45,
+      "durationInFrames": 48,
       "assets": {},
       "params": {
-        "scrim": 0.52,
+        "scrim": 0.37,
         "kicker": "",
         "title": "IT CHANGED",
         "footer": "",
         "titleFrame": 4,
         "titleSize": 230,
-        "creep": 1.072,
+        "creep": 1.049,
         "accent": "#e8e2d4",
         "field": "wash",
         "fieldColours": [
@@ -1033,24 +784,24 @@
         "markY": 820,
         "markWidth": 560,
         "markHeight": 300,
-        "markFrame": 15,
-        "pushEndFrame": 43,
+        "markFrame": 16,
+        "pushEndFrame": 44,
         "pushFrom": 1,
-        "pushTo": 1.31,
+        "pushTo": 1.45,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
       },
       "props": [
         {
           "kind": "newspaper",
-          "masthead": "THE CHRONICLE",
+          "masthead": "THE RECORD",
           "text": "IT CHANGED",
-          "depth": 0.64,
-          "x": 448,
-          "y": 395,
-          "width": 437,
-          "rotate": -4.6,
-          "from": 38
+          "depth": 0.67,
+          "x": 418,
+          "y": 432,
+          "width": 380,
+          "rotate": -5.8,
+          "from": 41
         }
       ]
     },
@@ -1058,7 +809,7 @@
       "id": "s06-current",
       "sceneType": "composite",
       "voText": "A current of hot ash swept down",
-      "durationInFrames": 86,
+      "durationInFrames": 85,
       "gradeOverride": {
         "saturate": 0.58,
         "contrast": 1.14,
@@ -1066,11 +817,24 @@
       },
       "assets": {},
       "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.25,
+          "x": 79,
+          "y": -77,
+          "width": 298,
+          "rotate": 18,
+          "opacity": 0.75,
+          "colour": "#e8e2d4",
+          "from": 0
+        }
+      ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1.4,
-        "pushTo": 1.03,
+        "pushFrom": 1,
+        "pushTo": 1.13,
         "pushEndFrame": 80,
         "glowX": -65,
         "glowY": 422,
@@ -1079,7 +843,7 @@
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.1,
         "focusPx": 0,
-        "fog": 0.11,
+        "fog": 0.15,
         "field": "wash",
         "fieldColours": [
           "#0d0e0f",
@@ -1095,25 +859,27 @@
         "captionSize": 93,
         "captionAlign": "left",
         "captionFrame": 53,
-        "captionEvery": 8,
+        "captionEvery": 9,
         "captionScrim": 0.38,
-        "captionRecedeAt": 62,
+        "captionRecedeAt": 61,
         "accent": "#e8e2d4",
         "motif": "embers",
-        "motifX": 525,
-        "motifY": 424,
-        "motifSize": 37,
-        "motifCount": 36,
-        "motifFrame": 19,
+        "motifX": 512,
+        "motifY": 427,
+        "motifSize": 42,
+        "motifCount": 26,
+        "motifFrame": 25,
         "motifColour": "#e8e2d4",
         "motifOpacity": 0.89,
         "handheld": 1.5,
+        "panY": -62,
+        "roll": 0.08,
         "captionEmphasis": "falling",
-        "captionReveal": "wipe",
+        "captionReveal": "blur",
         "captionMark": "underline",
         "captionWordEvery": 3,
-        "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       },
       "diagram": {
         "type": "mouldCast",
@@ -1159,22 +925,22 @@
           "entombment"
         ],
         "from": 0,
-        "over": 39
+        "over": 133
       }
     },
     {
       "id": "s06-current-b",
       "sceneType": "composite",
-      "voText": "and buried the streets.",
-      "durationInFrames": 52,
+      "voText": "and buried the streets,",
+      "durationInFrames": 48,
       "assets": {},
       "layers": [],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1,
-        "pushTo": 1.09,
-        "pushEndFrame": 49,
+        "pushFrom": 1.35,
+        "pushTo": 1.01,
+        "pushEndFrame": 46,
         "accent": "#e8e2d4",
         "field": "wash",
         "fieldColours": [
@@ -1182,10 +948,10 @@
           "#0a0b0b",
           "#070809"
         ],
-        "glowX": -504,
-        "glowY": 550,
-        "glowSize": 530,
-        "glowIntensity": 0.54,
+        "glowX": -428,
+        "glowY": 338,
+        "glowSize": 546,
+        "glowIntensity": 0.6,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.1,
         "caption": [
@@ -1194,20 +960,114 @@
         ],
         "captionX": 84,
         "captionY": 134,
-        "captionSize": 92,
+        "captionSize": 90,
         "captionAlign": "left",
-        "captionFrame": 29,
+        "captionFrame": 25,
         "captionEvery": 9,
         "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panY": -51,
-        "roll": -0.1,
         "captionEmphasis": "streets",
-        "captionReveal": "blur",
-        "captionMark": "underline",
+        "captionReveal": "rise",
+        "captionMark": "box",
         "captionWordEvery": 3,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      },
+      "diagram": {
+        "type": "mouldCast",
+        "accent": "#e8e2d4",
+        "muted": "#cfc6ae",
+        "form": {
+          "label": "the form",
+          "height": 0.26
+        },
+        "medium": {
+          "label": "ash",
+          "material": "concrete"
+        },
+        "filler": {
+          "label": "the fill"
+        },
+        "stages": [
+          "form",
+          "engulf"
+        ],
+        "captions": {
+          "engulf": {
+            "state": "ENGULFED",
+            "cause": "ash arrives and banks up"
+          },
+          "void": {
+            "state": "VOID",
+            "cause": "the form decays and leaves its shape"
+          },
+          "fill": {
+            "state": "FILLED",
+            "cause": "the fill is poured into the space"
+          },
+          "cast": {
+            "state": "CAST",
+            "cause": "the fill IS the form, in new material"
+          }
+        },
+        "subject": "process",
+        "depicts": "process",
+        "claims": [
+          "engulf_front",
+          "entombment"
+        ],
+        "from": -85,
+        "over": 133
+      }
+    },
+    {
+      "id": "s06-current-c",
+      "sceneType": "composite",
+      "voText": "and the heat killed them fast.",
+      "durationInFrames": 73,
+      "assets": {},
+      "layers": [],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 1498,
+        "pushFrom": 1,
+        "pushTo": 1.1,
+        "pushEndFrame": 67,
+        "accent": "#e8e2d4",
+        "field": "wash",
+        "fieldColours": [
+          "#0d0e0f",
+          "#0a0b0b",
+          "#070809"
+        ],
+        "glowX": -338,
+        "glowY": 475,
+        "glowSize": 478,
+        "glowIntensity": 0.66,
+        "glowWarm": "#e8e2d4",
+        "glowDepth": 0.1,
+        "caption": [
+          "and the heat",
+          "killed them fast"
+        ],
+        "captionX": 84,
+        "captionY": 134,
+        "captionSize": 69,
+        "captionAlign": "left",
+        "captionFrame": 39,
+        "captionEvery": 10,
+        "captionScrim": 0.38,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panY": -53,
+        "roll": 0.12,
+        "captionEmphasis": "killed",
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 4,
         "cameraMove": "drift",
         "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       },
@@ -1254,114 +1114,15 @@
           "engulf_front",
           "entombment"
         ],
-        "from": -1,
-        "over": 1
+        "from": -133,
+        "over": 133
       }
     },
     {
-      "id": "s07-heat",
-      "sceneType": "composite",
-      "voText": "The heat killed them,",
-      "durationInFrames": 52,
-      "assets": {},
-      "layers": [],
-      "params": {
-        "anchorX": 540,
-        "anchorY": 1700,
-        "pushFrom": 1.36,
-        "pushTo": 1,
-        "pushEndFrame": 48,
-        "glowX": -65,
-        "glowY": 422,
-        "glowSize": 560,
-        "glowIntensity": 0.62,
-        "glowWarm": "#e8e2d4",
-        "glowDepth": 0.1,
-        "focusPx": 0,
-        "fog": 0,
-        "field": "wash",
-        "fieldColours": [
-          "#33373a",
-          "#1c1f21",
-          "#0a0b0c"
-        ],
-        "caption": [
-          "The heat",
-          "killed them"
-        ],
-        "captionX": 84,
-        "captionY": 736,
-        "captionSize": 123,
-        "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 6,
-        "captionScrim": 0,
-        "captionRecedeAt": 37,
-        "accent": "#e8e2d4",
-        "handheld": 1.5,
-        "captionEmphasis": "killed",
-        "captionReveal": "rise",
-        "captionMark": "highlight",
-        "captionWordEvery": 4,
-        "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
-      }
-    },
-    {
-      "id": "s07-heat-b",
-      "sceneType": "composite",
-      "voText": "and it killed them fast.",
-      "durationInFrames": 64,
-      "assets": {},
-      "layers": [],
-      "params": {
-        "anchorX": 799,
-        "anchorY": 576,
-        "pushFrom": 1,
-        "pushTo": 1.12,
-        "pushEndFrame": 61,
-        "accent": "#e8e2d4",
-        "field": "wash",
-        "fieldColours": [
-          "#33373a",
-          "#1c1f21",
-          "#0a0b0c"
-        ],
-        "glowX": -403,
-        "glowY": 305,
-        "glowSize": 430,
-        "glowIntensity": 0.69,
-        "glowWarm": "#e8e2d4",
-        "glowDepth": 0.1,
-        "caption": [
-          "and it killed",
-          "them fast"
-        ],
-        "captionX": 84,
-        "captionY": 758,
-        "captionSize": 104,
-        "captionAlign": "left",
-        "captionFrame": -12,
-        "captionEvery": 8,
-        "captionScrim": 0,
-        "focusPx": 0,
-        "fog": 0,
-        "handheld": 1.5,
-        "panY": -53,
-        "roll": 0.6,
-        "captionEmphasis": "killed",
-        "captionReveal": "punch",
-        "captionMark": "none",
-        "captionWordEvery": 4,
-        "cameraMove": "drift",
-        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
-      }
-    },
-    {
-      "id": "s08-cast",
+      "id": "s07-cast",
       "sceneType": "composite",
       "voText": "Ash sealed each body,",
-      "durationInFrames": 52,
+      "durationInFrames": 54,
       "gradeOverride": {
         "saturate": 0.58,
         "contrast": 1.14,
@@ -1373,11 +1134,11 @@
         {
           "kind": "beam",
           "depth": 0.17,
-          "x": 163,
-          "y": 5,
-          "width": 237,
-          "rotate": 20,
-          "opacity": 0.51,
+          "x": 157,
+          "y": 129,
+          "width": 366,
+          "rotate": 10,
+          "opacity": 0.53,
           "colour": "#e8e2d4",
           "from": 0
         }
@@ -1386,8 +1147,8 @@
         "anchorX": 540,
         "anchorY": 1700,
         "pushFrom": 1,
-        "pushTo": 1.48,
-        "pushEndFrame": 51,
+        "pushTo": 1.43,
+        "pushEndFrame": 52,
         "glowX": -65,
         "glowY": 422,
         "glowSize": 560,
@@ -1395,7 +1156,7 @@
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.1,
         "focusPx": 0,
-        "fog": 0.23,
+        "fog": 0.14,
         "field": "wash",
         "fieldColours": [
           "#0d0e0f",
@@ -1411,23 +1172,23 @@
         "captionY": 134,
         "captionSize": 79,
         "captionAlign": "left",
-        "captionFrame": 12,
-        "captionEvery": 9,
+        "captionFrame": 14,
+        "captionEvery": 8,
         "captionScrim": 0.38,
-        "captionRecedeAt": 37,
+        "captionRecedeAt": 39,
         "accent": "#e8e2d4",
         "motif": "embers",
-        "motifX": 513,
-        "motifY": 1353,
-        "motifSize": 44,
-        "motifCount": 31,
-        "motifFrame": 18,
+        "motifX": 514,
+        "motifY": 1229,
+        "motifSize": 42,
+        "motifCount": 27,
+        "motifFrame": 24,
         "motifColour": "#e8e2d4",
-        "motifOpacity": 0.8,
+        "motifOpacity": 0.97,
         "handheld": 1.5,
         "captionEmphasis": "hollow",
         "captionReveal": "blur",
-        "captionMark": "none",
+        "captionMark": "underline",
         "captionWordEvery": 3,
         "cameraMove": "push",
         "cameraPurpose": "single out the subject — the frame closes on what matters"
@@ -1477,22 +1238,22 @@
           "decay"
         ],
         "from": 0,
-        "over": 23
+        "over": 54
       }
     },
     {
-      "id": "s08-cast-b",
+      "id": "s07-cast-b",
       "sceneType": "composite",
       "voText": "and the body decayed away.",
-      "durationInFrames": 64,
+      "durationInFrames": 67,
       "assets": {},
       "layers": [],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.16,
-        "pushTo": 1.28,
-        "pushEndFrame": 60,
+        "pushFrom": 1.26,
+        "pushTo": 1.25,
+        "pushEndFrame": 63,
         "accent": "#e8e2d4",
         "field": "wash",
         "fieldColours": [
@@ -1500,10 +1261,10 @@
           "#0a0b0b",
           "#070809"
         ],
-        "glowX": -409,
-        "glowY": 266,
-        "glowSize": 519,
-        "glowIntensity": 0.58,
+        "glowX": -338,
+        "glowY": 326,
+        "glowSize": 505,
+        "glowIntensity": 0.55,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.1,
         "caption": [
@@ -1512,18 +1273,18 @@
         ],
         "captionX": 84,
         "captionY": 134,
-        "captionSize": 92,
+        "captionSize": 93,
         "captionAlign": "left",
-        "captionFrame": 35,
+        "captionFrame": 38,
         "captionEvery": 9,
         "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panY": -213,
+        "panY": -120,
         "captionEmphasis": "decayed",
         "captionReveal": "rise",
-        "captionMark": "highlight",
+        "captionMark": "none",
         "captionWordEvery": 4,
         "cameraMove": "tilt",
         "cameraPurpose": "a vertical reveal — height, depth, or a drop"
@@ -1572,36 +1333,23 @@
           "entombment",
           "decay"
         ],
-        "from": -1,
-        "over": 1
+        "from": -54,
+        "over": 54
       }
     },
     {
-      "id": "s09-plaster",
+      "id": "s08-plaster",
       "sceneType": "composite",
       "voText": "Diggers poured plaster into the cavity,",
-      "durationInFrames": 75,
+      "durationInFrames": 73,
       "assets": {},
       "layers": [],
-      "props": [
-        {
-          "kind": "beam",
-          "depth": 0.32,
-          "x": 67,
-          "y": 130,
-          "width": 305,
-          "rotate": 11,
-          "opacity": 0.59,
-          "colour": "#e8e2d4",
-          "from": 0
-        }
-      ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1.53,
-        "pushTo": 1.03,
-        "pushEndFrame": 68,
+        "pushFrom": 1,
+        "pushTo": 1.09,
+        "pushEndFrame": 71,
         "glowX": -65,
         "glowY": 422,
         "glowSize": 560,
@@ -1625,28 +1373,21 @@
         "captionY": 134,
         "captionSize": 74,
         "captionAlign": "left",
-        "captionFrame": 41,
-        "captionEvery": 10,
+        "captionFrame": 39,
+        "captionEvery": 9,
         "captionScrim": 0.38,
-        "captionRecedeAt": 54,
+        "captionRecedeAt": 53,
         "accent": "#e8e2d4",
         "handheld": 1.5,
+        "panY": -29,
+        "roll": 0.62,
         "captionEmphasis": "Diggers",
         "captionReveal": "rise",
-        "captionMark": "underline",
-        "captionWordEvery": 3,
-        "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "captionMark": "box",
+        "captionWordEvery": 2,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       },
-      "onScreenText": [
-        {
-          "text": "SCHEMATIC RECONSTRUCTION",
-          "atFrame": 45,
-          "durationInFrames": 30,
-          "style": "typed",
-          "position": "bottom"
-        }
-      ],
       "diagram": {
         "type": "mouldCast",
         "accent": "#e8e2d4",
@@ -1692,11 +1433,11 @@
           "infill"
         ],
         "from": 0,
-        "over": 49
+        "over": 73
       }
     },
     {
-      "id": "s09-plaster-b",
+      "id": "s08-plaster-b",
       "sceneType": "composite",
       "voText": "and the shape of a person came back.",
       "durationInFrames": 97,
@@ -1705,9 +1446,9 @@
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.17,
-        "pushTo": 1.3,
-        "pushEndFrame": 90,
+        "pushFrom": 1.51,
+        "pushTo": 1.05,
+        "pushEndFrame": 89,
         "accent": "#e8e2d4",
         "field": "wash",
         "fieldColours": [
@@ -1715,9 +1456,9 @@
           "#0a0b0b",
           "#070809"
         ],
-        "glowX": -266,
-        "glowY": 449,
-        "glowSize": 315,
+        "glowX": -364,
+        "glowY": 226,
+        "glowSize": 460,
         "glowIntensity": 0.41,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.1,
@@ -1730,19 +1471,18 @@
         "captionY": 134,
         "captionSize": 85,
         "captionAlign": "left",
-        "captionFrame": 45,
-        "captionEvery": 7,
+        "captionFrame": 46,
+        "captionEvery": 8,
         "captionScrim": 0.38,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
-        "panX": 189,
         "captionEmphasis": "person",
         "captionReveal": "wipe",
         "captionMark": "none",
-        "captionWordEvery": 4,
-        "cameraMove": "pan",
-        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+        "captionWordEvery": 3,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
       },
       "diagram": {
         "type": "mouldCast",
@@ -1788,23 +1528,23 @@
           "void_left",
           "infill"
         ],
-        "from": -1,
-        "over": 1
+        "from": -73,
+        "over": 73
       }
     },
     {
-      "id": "s10-notstone",
+      "id": "s09-notstone",
       "sceneType": "composite",
-      "voText": "The famous casts are not people turned",
-      "durationInFrames": 86,
+      "voText": "The famous casts are not",
+      "durationInFrames": 68,
       "assets": {},
       "layers": [],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
-        "pushFrom": 1,
-        "pushTo": 1.13,
-        "pushEndFrame": 83,
+        "pushFrom": 1.52,
+        "pushTo": 1.02,
+        "pushEndFrame": 66,
         "glowX": -65,
         "glowY": 422,
         "glowSize": 560,
@@ -1821,47 +1561,39 @@
         ],
         "caption": [
           "The famous",
-          "casts are",
-          "not people",
-          "turned"
+          "casts are not"
         ],
         "captionX": 84,
-        "captionY": 559,
-        "captionSize": 135,
+        "captionY": 758,
+        "captionSize": 104,
         "captionAlign": "left",
         "captionFrame": -12,
-        "captionEvery": 9,
+        "captionEvery": 7,
         "captionScrim": 0,
-        "captionRecedeAt": 62,
+        "captionRecedeAt": 49,
         "accent": "#e8e2d4",
         "handheld": 1.5,
-        "panY": -54,
-        "roll": -0.39,
-        "shakeAt": [
-          7
-        ],
-        "shakeAmount": 22,
         "captionEmphasis": "famous",
-        "captionReveal": "rise",
-        "captionMark": "underline",
-        "captionWordEvery": 3,
-        "cameraMove": "drift",
-        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+        "captionReveal": "blur",
+        "captionMark": "highlight",
+        "captionWordEvery": 4,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
       }
     },
     {
-      "id": "s10-notstone-b",
+      "id": "s09-notstone-b",
       "sceneType": "composite",
-      "voText": "to stone.",
-      "durationInFrames": 45,
+      "voText": "people turned to stone.",
+      "durationInFrames": 55,
       "assets": {},
       "layers": [],
       "params": {
         "anchorX": 799,
         "anchorY": 576,
-        "pushFrom": 1.71,
-        "pushTo": 1.03,
-        "pushEndFrame": 41,
+        "pushFrom": 1,
+        "pushTo": 1.11,
+        "pushEndFrame": 52,
         "accent": "#e8e2d4",
         "field": "wash",
         "fieldColours": [
@@ -1869,42 +1601,46 @@
           "#1c1f21",
           "#0a0b0c"
         ],
-        "glowX": -443,
-        "glowY": 385,
-        "glowSize": 509,
-        "glowIntensity": 0.53,
+        "glowX": -354,
+        "glowY": 304,
+        "glowSize": 357,
+        "glowIntensity": 0.6,
         "glowWarm": "#e8e2d4",
         "glowDepth": 0.1,
         "caption": [
+          "people",
+          "turned",
           "to stone"
         ],
         "captionX": 84,
-        "captionY": 782,
+        "captionY": 579,
         "captionSize": 169,
         "captionAlign": "left",
         "captionFrame": -12,
-        "captionEvery": 10,
+        "captionEvery": 7,
         "captionScrim": 0,
         "focusPx": 0,
         "fog": 0,
         "handheld": 1.5,
+        "panY": -42,
+        "roll": -0.67,
         "shakeAt": [
           4
         ],
         "shakeAmount": 22,
-        "captionEmphasis": "stone",
+        "captionEmphasis": "people",
         "captionReveal": "rise",
-        "captionMark": "highlight",
-        "captionWordEvery": 3,
-        "cameraMove": "pull",
-        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+        "captionMark": "none",
+        "captionWordEvery": 4,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
       }
     },
     {
-      "id": "s11-close",
+      "id": "s10-close",
       "sceneType": "title-slate",
       "voText": "Pompeii was not destroyed in one instant. It was destroyed in stages.",
-      "durationInFrames": 118,
+      "durationInFrames": 182,
       "gradeOverride": {
         "saturate": 0.5,
         "contrast": 1.16,
@@ -1912,13 +1648,13 @@
       },
       "assets": {},
       "params": {
-        "scrim": 0.54,
+        "scrim": 0.43,
         "kicker": "Vesuvius · 79 AD",
         "title": "IN STAGES",
         "footer": "pumice, then ash, then the current",
-        "titleFrame": 9,
+        "titleFrame": 12,
         "titleSize": 230,
-        "creep": 1.053,
+        "creep": 1.095,
         "accent": "#e8e2d4",
         "field": "wash",
         "fieldColours": [
@@ -1926,23 +1662,24 @@
           "#1c1f21",
           "#0a0b0c"
         ],
-        "pushEndFrame": 115,
+        "pushEndFrame": 165,
         "pushFrom": 1,
-        "pushTo": 1.09,
-        "cameraMove": "drift",
-        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+        "pushTo": 1.42,
+        "footerFrame": 40,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
       },
       "props": [
         {
           "kind": "newspaper",
-          "masthead": "THE DAILY",
+          "masthead": "THE RECORD",
           "text": "IN STAGES",
-          "depth": 0.74,
-          "x": 769,
-          "y": 404,
-          "width": 423,
-          "rotate": -5.5,
-          "from": 73
+          "depth": 0.78,
+          "x": 659,
+          "y": 397,
+          "width": 434,
+          "rotate": 0.2,
+          "from": 88
         }
       ]
     }

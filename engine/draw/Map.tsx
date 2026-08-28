@@ -26,7 +26,7 @@
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame, useVideoConfig} from 'remotion';
 import {drawOn, flow, posterizeTime} from '../motion';
-import {Arrow, Callout, Cam, Disclosure, MONO, Sheet, Ticks, weights, worldTransform} from './sheet';
+import {Arrow, Callout, Cam, Disclosure, MONO, Sheet, Ticks, setUp, weights, worldTransform} from './sheet';
 import {Depth, Haze, MaterialDefs, MaterialFace, Motes} from './material';
 
 /** A landmass or a body of water: a closed form with a name. */
@@ -101,7 +101,7 @@ export const MapPlate: React.FC<{spec: MapSpec; w: number; h: number; cam?: Cam}
   const line = weights(w);
   if (stepped < from) return null;
 
-  const on = drawOn(stepped, [from, from + over]);
+  const on = setUp(stepped, from, over);
   /**
    * THE COASTS ARE ALREADY THERE WHEN WE CUT.
    *
@@ -274,7 +274,17 @@ export const MapPlate: React.FC<{spec: MapSpec; w: number; h: number; cam?: Cam}
           ) : null}
 
           {(spec.markers ?? []).map((marker, i) => {
-            const at = marker.at ?? from + 10 + i * 6;
+            /**
+             * A PLACE NAME IS GEOGRAPHY, NOT ARGUMENT.
+             *
+             * These used to arrive from ten frames in, six apart, so the frame
+             * the cut landed on was an unlabelled grey polygon and the shot only
+             * became a map a third of the way through it — the "featureless map"
+             * complaint, and law 30 exactly. Where the places ARE is the sheet
+             * the route is drawn on. They settle in place; the route is what
+             * arrives.
+             */
+            const at = marker.at ?? from + i * 2;
             const shown = drawOn(stepped, [at, at + 8]);
             if (shown <= 0) return null;
             const x = marker.x * w;

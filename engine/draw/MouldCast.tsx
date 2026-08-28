@@ -31,7 +31,7 @@ import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 import {drawOn, flow, hash01, posterizeTime, settle} from '../motion';
 import {Contact, GroundPlane, MaterialDefs, MaterialFace, Motes} from './material';
-import {Cam, Callout, Disclosure, MONO, Sheet, Ticks, weights, worldTransform} from './sheet';
+import {Cam, Callout, Disclosure, MONO, Sheet, Ticks, setUp, weights, worldTransform} from './sheet';
 
 const CLAMP = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 
@@ -164,7 +164,7 @@ export const MouldCastPlate: React.FC<{spec: MouldCastSpec; w: number; h: number
   const buried = reached('void');
   const filled = reached('fill');
   const cast = reached('cast');
-  const on = drawOn(stepped, [from, from + over * 0.35]);
+  const on = setUp(stepped, from, over);
 
   const world = worldTransform(cam, w, h);
   const grain = spec.medium?.material ?? 'concrete';

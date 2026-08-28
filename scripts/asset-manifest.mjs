@@ -109,9 +109,27 @@ export async function manifest(episodeId) {
   const brief = (await exists(briefPath)) ? JSON.parse(await readFile(briefPath, 'utf8')) : {lines: []};
   const {config} = await loadConfig(episodeId);
 
-  /** What is already on screen, so a supplied asset is not requested twice. */
+  /**
+   * WHAT IS ACTUALLY ON DISK, so a supplied asset is not requested twice.
+   *
+   * Read from the FILE SYSTEM, not from the config. A role the planner marked
+   * optional keeps its filename in `scene.assets` under a `?` key — the config
+   * still names the picture it would use if somebody supplied it. Counting
+   * those names as supplied made this manifest report the one photograph the
+   * episode had asked for as already delivered, while the render was drawing
+   * around its absence. A manifest that reports a missing file as supplied is
+   * worse than no manifest: it is the exact question it exists to answer,
+   * answered wrong.
+   */
   const supplied = new Set(
-    (config.scenes ?? []).flatMap((s) => Object.values(s.assets ?? {}).map((f) => String(f).split('/').pop())),
+    (
+      await Promise.all(
+        (config.scenes ?? [])
+          .flatMap((s) => Object.values(s.assets ?? {}))
+          .filter((f) => typeof f === 'string')
+          .map(async (f) => ((await exists(path.join(episodeDir(episodeId), f))) ? String(f).split('/').pop() : null)),
+      )
+    ).filter(Boolean),
   );
 
   const wanted = [];

@@ -292,10 +292,10 @@
     {
       "id": "s01-atlas",
       "template": "portal-zoom-reveal",
-      "seconds": 1.83,
+      "seconds": 1.33,
       "camera": {
-        "from": 1.21,
-        "to": 1.25,
+        "from": 1,
+        "to": 1.41,
         "panX": null,
         "panY": null
       },
@@ -304,7 +304,7 @@
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "someone",
-      "reveal": "blur",
+      "reveal": "rise",
       "plates": [
         "s01-atlas-bg.png",
         "s01-atlas-photo.png"
@@ -321,10 +321,10 @@
     {
       "id": "s01-atlas-b",
       "template": "composite",
-      "seconds": 0.53,
+      "seconds": 1.07,
       "camera": {
-        "from": 1,
-        "to": 1.41,
+        "from": 1.43,
+        "to": 1.02,
         "panX": null,
         "panY": null
       },
@@ -336,8 +336,8 @@
       },
       "representation": "PHOTO",
       "drawn": null,
-      "emphasis": null,
-      "reveal": "rise",
+      "emphasis": "anyone",
+      "reveal": "blur",
       "plates": [
         "s01-atlas-photo.png"
       ],
@@ -347,7 +347,7 @@
         "wire"
       ],
       "hierarchy": {
-        "primary": "the figure",
+        "primary": "the figure: \"anyone\"",
         "secondary": "the object it is counting",
         "background": "the plate",
         "carrier": "graphic"
@@ -356,10 +356,10 @@
     {
       "id": "s01-atlas-c",
       "template": "composite",
-      "seconds": 1.07,
+      "seconds": 1.03,
       "camera": {
-        "from": 1.03,
-        "to": 1.35,
+        "from": 1.02,
+        "to": 1.38,
         "panX": null,
         "panY": null
       },
@@ -372,7 +372,7 @@
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "never",
-      "reveal": "rise",
+      "reveal": "blur",
       "plates": [
         "s01-atlas-photo.png"
       ],
@@ -392,8 +392,8 @@
       "template": "composite",
       "seconds": 1.53,
       "camera": {
-        "from": 1.02,
-        "to": 1.06,
+        "from": 1.04,
+        "to": 1.07,
         "panX": null,
         "panY": null
       },
@@ -427,7 +427,7 @@
       "seconds": 1.23,
       "camera": {
         "from": 1.01,
-        "to": 1.43,
+        "to": 1.33,
         "panX": null,
         "panY": null
       },
@@ -440,7 +440,7 @@
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "Mali",
-      "reveal": "wipe",
+      "reveal": "rise",
       "plates": [
         "s02-route-bg.png"
       ],
@@ -460,9 +460,9 @@
       "template": "composite",
       "seconds": 1.57,
       "camera": {
-        "from": 1.02,
-        "to": 1.05,
-        "panX": null,
+        "from": 1.19,
+        "to": 1.29,
+        "panX": 269,
         "panY": null
       },
       "transition": "cut",
@@ -474,7 +474,7 @@
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "Mecca",
-      "reveal": "punch",
+      "reveal": "wipe",
       "plates": [
         "s02-route-bg.png"
       ],
@@ -495,9 +495,9 @@
       "seconds": 1.77,
       "camera": {
         "from": 1,
-        "to": 1.12,
+        "to": 1.13,
         "panX": null,
-        "panY": -53
+        "panY": -33
       },
       "transition": "slip",
       "cut": {
@@ -542,7 +542,7 @@
       "representation": "PHOTO",
       "drawn": null,
       "emphasis": "accounts",
-      "reveal": "wipe",
+      "reveal": "rise",
       "plates": [
         "s03-caravan-bg.png"
       ],
@@ -731,8 +731,8 @@
       "template": "title-slate",
       "seconds": 5.4,
       "camera": {
-        "from": 1.05,
-        "to": 1.07,
+        "from": 1,
+        "to": 1.61,
         "panX": null,
         "panY": null
       },
@@ -751,7 +751,6 @@
       ],
       "drawnGround": "sunburst",
       "props": [
-        "plaque",
         "newspaper"
       ],
       "hierarchy": {
@@ -796,12 +795,11 @@
   },
   "quotas": {
     "camera": {
-      "tilt": 1,
-      "push": 3,
-      "hold": 3,
-      "drift": 4,
-      "pan": 1,
-      "pull": 2
+      "push": 4,
+      "pull": 3,
+      "hold": 1,
+      "pan": 2,
+      "drift": 4
     },
     "transition": {
       "cut": 9,
