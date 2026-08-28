@@ -1,0 +1,2671 @@
+{
+  "id": "vajont",
+  "title": "Vajont — the dam did not fail",
+  "audio": "audio/vo.wav",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "look": {
+    "posterizeFps": 12,
+    "grade": {
+      "saturate": 0.42,
+      "contrast": 1.25,
+      "sepia": 0.07,
+      "brightness": 1.01
+    },
+    "film": {
+      "grain": true,
+      "grunge": true,
+      "scanlines": true,
+      "vignette": true,
+      "gateWeave": true,
+      "grainOpacity": 0.49,
+      "grungeOpacity": 0.2,
+      "scanlineOpacity": 0.15,
+      "scanlinePeriod": 9,
+      "vignetteStrength": 0.52,
+      "weavePx": 6,
+      "weaveScale": 1.012
+    }
+  },
+  "scenes": [
+    {
+      "id": "s01-hook",
+      "sceneType": "title-slate",
+      "voText": "The dam at Vajont did not fail.",
+      "durationInFrames": 63,
+      "assets": {},
+      "params": {
+        "scrim": 0.44,
+        "kicker": "Vajont · 1963",
+        "title": "IT HELD",
+        "footer": "that was never the question",
+        "titleFrame": 10,
+        "titleSize": 230,
+        "creep": 1.068,
+        "accent": "#b9c3c9",
+        "field": "grid",
+        "fieldColours": [
+          "#3d4144",
+          "#212426",
+          "#0c0d0e"
+        ],
+        "pushEndFrame": 59,
+        "pushFrom": 1.17,
+        "pushTo": 1.31,
+        "cameraMove": "tilt",
+        "cameraPurpose": "a vertical reveal — height, depth, or a drop"
+      },
+      "props": [
+        {
+          "kind": "newspaper",
+          "masthead": "THE CHRONICLE",
+          "text": "IT HELD",
+          "depth": 0.73,
+          "x": 775,
+          "y": 393,
+          "width": 440,
+          "rotate": -0.1,
+          "from": 15
+        }
+      ]
+    },
+    {
+      "id": "s02-wall",
+      "sceneType": "composite",
+      "voText": "The dam was two hundred",
+      "durationInFrames": 58,
+      "assets": {},
+      "layers": [],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1.04,
+        "pushTo": 1.06,
+        "pushEndFrame": 55,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 560,
+        "glowIntensity": 0.62,
+        "glowWarm": "#b9c3c9",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "spotlight",
+        "fieldColours": [
+          "#101112",
+          "#0b0c0d",
+          "#09090a"
+        ],
+        "caption": [
+          "The dam",
+          "was two hundred"
+        ],
+        "captionX": 84,
+        "captionY": 134,
+        "captionSize": 74,
+        "captionAlign": "left",
+        "captionFrame": 29,
+        "captionEvery": 9,
+        "captionScrim": 0.38,
+        "captionRecedeAt": 42,
+        "accent": "#b9c3c9",
+        "motif": "tally",
+        "motifX": 136,
+        "motifY": 499,
+        "motifSize": 104,
+        "motifCount": 16,
+        "motifFrame": 22,
+        "motifColour": "#b9c3c9",
+        "motifOpacity": 0.96,
+        "handheld": 3,
+        "captionEmphasis": "two hundred",
+        "captionReveal": "punch",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      },
+      "onScreenText": [
+        {
+          "text": "262 METRES",
+          "atFrame": 33,
+          "durationInFrames": 27,
+          "style": "typed",
+          "position": "bottom"
+        }
+      ],
+      "diagram": {
+        "type": "terrainSection",
+        "accent": "#b9c3c9",
+        "muted": "#cfc6ae",
+        "profile": [
+          [
+            0,
+            0.28787999999999997
+          ],
+          [
+            0.16,
+            0.35106800000000005
+          ],
+          [
+            0.34,
+            0.45990400000000003
+          ],
+          [
+            0.46,
+            0.659514
+          ],
+          [
+            0.58,
+            0.72
+          ],
+          [
+            0.66,
+            0.651852
+          ],
+          [
+            0.78,
+            0.501708
+          ],
+          [
+            1,
+            0.42558399999999996
+          ]
+        ],
+        "scaleNote": "schematic profile",
+        "subject": "terrainSection",
+        "depicts": "terrain",
+        "claims": [
+          "distance",
+          "impoundment"
+        ],
+        "beds": [
+          {
+            "label": "rock",
+            "depth": 0.06
+          },
+          {
+            "depth": 0.13
+          }
+        ],
+        "structure": {
+          "x": 0.72,
+          "base": 0.44,
+          "width": 0.035,
+          "label": "dam"
+        },
+        "water": {
+          "level": 0.52,
+          "label": "reservoir"
+        },
+        "annotations": [],
+        "from": 0,
+        "over": 26
+      }
+    },
+    {
+      "id": "s02-wall-b",
+      "sceneType": "composite",
+      "voText": "and sixty-two metres of concrete in a gorge.",
+      "durationInFrames": 94,
+      "assets": {},
+      "layers": [],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.01,
+        "pushTo": 1.39,
+        "pushEndFrame": 88,
+        "accent": "#b9c3c9",
+        "field": "spotlight",
+        "fieldColours": [
+          "#101112",
+          "#0b0c0d",
+          "#09090a"
+        ],
+        "glowX": 1509,
+        "glowY": 187,
+        "glowSize": 524,
+        "glowIntensity": 0.58,
+        "glowWarm": "#b9c3c9",
+        "glowDepth": 0.1,
+        "caption": [
+          "and sixty-two metres",
+          "of concrete in a gorge"
+        ],
+        "captionX": 84,
+        "captionY": 134,
+        "captionSize": 50,
+        "captionAlign": "left",
+        "captionFrame": 41,
+        "captionEvery": 6,
+        "captionScrim": 0.38,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "sixty-two",
+        "captionReveal": "wipe",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "diagram": {
+        "type": "terrainSection",
+        "accent": "#b9c3c9",
+        "muted": "#cfc6ae",
+        "profile": [
+          [
+            0,
+            0.28787999999999997
+          ],
+          [
+            0.16,
+            0.35106800000000005
+          ],
+          [
+            0.34,
+            0.45990400000000003
+          ],
+          [
+            0.46,
+            0.659514
+          ],
+          [
+            0.58,
+            0.72
+          ],
+          [
+            0.66,
+            0.651852
+          ],
+          [
+            0.78,
+            0.501708
+          ],
+          [
+            1,
+            0.42558399999999996
+          ]
+        ],
+        "scaleNote": "schematic profile",
+        "subject": "terrainSection",
+        "depicts": "terrain",
+        "claims": [
+          "distance",
+          "impoundment"
+        ],
+        "beds": [
+          {
+            "label": "rock",
+            "depth": 0.06
+          },
+          {
+            "depth": 0.13
+          }
+        ],
+        "structure": {
+          "x": 0.72,
+          "base": 0.44,
+          "width": 0.035,
+          "label": "dam"
+        },
+        "water": {
+          "level": 0.52,
+          "label": "reservoir"
+        },
+        "annotations": [],
+        "from": -1,
+        "over": 1
+      }
+    },
+    {
+      "id": "s03-valley",
+      "sceneType": "composite",
+      "voText": "The river below it ran down",
+      "durationInFrames": 65,
+      "assets": {},
+      "layers": [],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1,
+        "pushTo": 1.11,
+        "pushEndFrame": 59,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 560,
+        "glowIntensity": 0.62,
+        "glowWarm": "#b9c3c9",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "spotlight",
+        "fieldColours": [
+          "#101112",
+          "#0b0c0d",
+          "#09090a"
+        ],
+        "caption": [
+          "The river below",
+          "it ran down"
+        ],
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 74,
+        "captionAlign": "left",
+        "captionFrame": 31,
+        "captionEvery": 8,
+        "captionScrim": 0.38,
+        "captionRecedeAt": 47,
+        "accent": "#b9c3c9",
+        "motifStops": [
+          "THE DAM",
+          "LONGARONE"
+        ],
+        "handheld": 1.5,
+        "panY": -53,
+        "roll": 0.3,
+        "captionEmphasis": "river",
+        "captionReveal": "punch",
+        "captionMark": "underline",
+        "captionWordEvery": 2,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      },
+      "diagram": {
+        "type": "map",
+        "regions": [
+          {
+            "kind": "land",
+            "shape": [
+              [
+                0.06,
+                0.2
+              ],
+              [
+                0.5135,
+                0.14
+              ],
+              [
+                0.94,
+                0.24
+              ],
+              [
+                0.9,
+                0.66
+              ],
+              [
+                0.43801999999999996,
+                0.72
+              ],
+              [
+                0.08,
+                0.62
+              ]
+            ]
+          }
+        ],
+        "accent": "#b9c3c9",
+        "muted": "#cfc6ae",
+        "route": [
+          {
+            "points": [
+              [
+                0.1,
+                0.435632
+              ],
+              [
+                0.9,
+                0.468072
+              ]
+            ]
+          }
+        ],
+        "markers": [
+          {
+            "x": 0.1,
+            "y": 0.435632,
+            "label": "THE DAM",
+            "kind": "place"
+          },
+          {
+            "x": 0.9,
+            "y": 0.468072,
+            "label": "LONGARONE",
+            "kind": "place"
+          }
+        ],
+        "subject": "geography",
+        "claims": [],
+        "depicts": "geography",
+        "from": 0,
+        "over": 29
+      }
+    },
+    {
+      "id": "s03-valley-b",
+      "sceneType": "composite",
+      "voText": "to the town of Longarone.",
+      "durationInFrames": 54,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.37,
+          "x": 834,
+          "y": -28,
+          "width": 272,
+          "rotate": -11,
+          "opacity": 0.76,
+          "colour": "#b9c3c9",
+          "from": 0
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.39,
+        "pushTo": 1.02,
+        "pushEndFrame": 51,
+        "accent": "#b9c3c9",
+        "field": "spotlight",
+        "fieldColours": [
+          "#101112",
+          "#0b0c0d",
+          "#09090a"
+        ],
+        "glowX": 1350,
+        "glowY": 459,
+        "glowSize": 357,
+        "glowIntensity": 0.48,
+        "glowWarm": "#b9c3c9",
+        "glowDepth": 0.1,
+        "caption": [
+          "to the town",
+          "of Longarone"
+        ],
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 93,
+        "captionAlign": "left",
+        "captionFrame": 25,
+        "captionEvery": 9,
+        "captionScrim": 0.38,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "Longarone",
+        "captionReveal": "rise",
+        "captionMark": "highlight",
+        "captionWordEvery": 2,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      },
+      "diagram": {
+        "type": "map",
+        "regions": [
+          {
+            "kind": "land",
+            "shape": [
+              [
+                0.06,
+                0.2
+              ],
+              [
+                0.5135,
+                0.14
+              ],
+              [
+                0.94,
+                0.24
+              ],
+              [
+                0.9,
+                0.66
+              ],
+              [
+                0.43801999999999996,
+                0.72
+              ],
+              [
+                0.08,
+                0.62
+              ]
+            ]
+          }
+        ],
+        "accent": "#b9c3c9",
+        "muted": "#cfc6ae",
+        "route": [
+          {
+            "points": [
+              [
+                0.1,
+                0.435632
+              ],
+              [
+                0.9,
+                0.468072
+              ]
+            ]
+          }
+        ],
+        "markers": [
+          {
+            "x": 0.1,
+            "y": 0.435632,
+            "label": "THE DAM",
+            "kind": "place"
+          },
+          {
+            "x": 0.9,
+            "y": 0.468072,
+            "label": "LONGARONE",
+            "kind": "place"
+          }
+        ],
+        "subject": "geography",
+        "claims": [],
+        "depicts": "geography",
+        "from": -1,
+        "over": 1
+      }
+    },
+    {
+      "id": "s04-toc",
+      "sceneType": "composite",
+      "voText": "But the mountainside above the",
+      "durationInFrames": 70,
+      "assets": {},
+      "layers": [],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1,
+        "pushTo": 1.09,
+        "pushEndFrame": 66,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 560,
+        "glowIntensity": 0.62,
+        "glowWarm": "#b9c3c9",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "spotlight",
+        "fieldColours": [
+          "#101112",
+          "#0b0c0d",
+          "#09090a"
+        ],
+        "caption": [
+          "Monte Toc",
+          "was MOVING."
+        ],
+        "captionX": 84,
+        "captionY": 134,
+        "captionSize": 92,
+        "captionAlign": "left",
+        "captionFrame": 43,
+        "captionEvery": 7,
+        "captionScrim": 0.38,
+        "captionRecedeAt": 50,
+        "accent": "#b9c3c9",
+        "handheld": 1.5,
+        "panY": -35,
+        "roll": -0.47,
+        "captionEmphasis": "Toc",
+        "captionReveal": "punch",
+        "captionMark": "underline",
+        "captionWordEvery": 3,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      },
+      "diagram": {
+        "type": "terrainSection",
+        "accent": "#b9c3c9",
+        "muted": "#cfc6ae",
+        "profile": [
+          [
+            0,
+            0.31745599999999996
+          ],
+          [
+            0.16,
+            0.321884
+          ],
+          [
+            0.34,
+            0.46628000000000003
+          ],
+          [
+            0.46,
+            0.6684100000000001
+          ],
+          [
+            0.58,
+            0.72
+          ],
+          [
+            0.66,
+            0.654352
+          ],
+          [
+            0.78,
+            0.490508
+          ],
+          [
+            1,
+            0.421848
+          ]
+        ],
+        "scaleNote": "schematic profile",
+        "subject": "terrainSection",
+        "depicts": "terrain",
+        "claims": [
+          "impoundment"
+        ],
+        "beds": [
+          {
+            "label": "rock",
+            "depth": 0.06
+          },
+          {
+            "depth": 0.13
+          }
+        ],
+        "structure": {
+          "x": 0.72,
+          "base": 0.44,
+          "width": 0.035,
+          "label": "dam"
+        },
+        "water": {
+          "level": 0.52,
+          "label": "reservoir"
+        },
+        "mass": {
+          "shape": [
+            [
+              0.2,
+              0.365
+            ],
+            [
+              0.42,
+              0.475
+            ],
+            [
+              0.46,
+              0.6
+            ],
+            [
+              0.24,
+              0.5
+            ]
+          ],
+          "plane": [
+            [
+              0.16,
+              0.34
+            ],
+            [
+              0.3,
+              0.44
+            ],
+            [
+              0.42,
+              0.545
+            ],
+            [
+              0.5,
+              0.63
+            ]
+          ],
+          "to": [
+            0.018,
+            0.01
+          ],
+          "at": 6,
+          "over": 46,
+          "label": "slab"
+        },
+        "annotations": [],
+        "from": 0,
+        "over": 32
+      }
+    },
+    {
+      "id": "s04-toc-b",
+      "sceneType": "composite",
+      "voText": "reservoir was already creeping.",
+      "durationInFrames": 56,
+      "assets": {},
+      "layers": [],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.43,
+        "pushTo": 1.02,
+        "pushEndFrame": 55,
+        "accent": "#b9c3c9",
+        "field": "spotlight",
+        "fieldColours": [
+          "#101112",
+          "#0b0c0d",
+          "#09090a"
+        ],
+        "glowX": 1464,
+        "glowY": 380,
+        "glowSize": 536,
+        "glowIntensity": 0.46,
+        "glowWarm": "#b9c3c9",
+        "glowDepth": 0.1,
+        "caption": [
+          "reservoir",
+          "was already",
+          "creeping"
+        ],
+        "captionX": 84,
+        "captionY": 134,
+        "captionSize": 98,
+        "captionAlign": "left",
+        "captionFrame": 33,
+        "captionEvery": 9,
+        "captionScrim": 0.38,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "reservoir",
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 4,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      },
+      "diagram": {
+        "type": "terrainSection",
+        "accent": "#b9c3c9",
+        "muted": "#cfc6ae",
+        "profile": [
+          [
+            0,
+            0.31745599999999996
+          ],
+          [
+            0.16,
+            0.321884
+          ],
+          [
+            0.34,
+            0.46628000000000003
+          ],
+          [
+            0.46,
+            0.6684100000000001
+          ],
+          [
+            0.58,
+            0.72
+          ],
+          [
+            0.66,
+            0.654352
+          ],
+          [
+            0.78,
+            0.490508
+          ],
+          [
+            1,
+            0.421848
+          ]
+        ],
+        "scaleNote": "schematic profile",
+        "subject": "terrainSection",
+        "depicts": "terrain",
+        "claims": [
+          "impoundment"
+        ],
+        "beds": [
+          {
+            "label": "rock",
+            "depth": 0.06
+          },
+          {
+            "depth": 0.13
+          }
+        ],
+        "structure": {
+          "x": 0.72,
+          "base": 0.44,
+          "width": 0.035,
+          "label": "dam"
+        },
+        "water": {
+          "level": 0.52,
+          "label": "reservoir"
+        },
+        "mass": {
+          "shape": [
+            [
+              0.2,
+              0.365
+            ],
+            [
+              0.42,
+              0.475
+            ],
+            [
+              0.46,
+              0.6
+            ],
+            [
+              0.24,
+              0.5
+            ]
+          ],
+          "plane": [
+            [
+              0.16,
+              0.34
+            ],
+            [
+              0.3,
+              0.44
+            ],
+            [
+              0.42,
+              0.545
+            ],
+            [
+              0.5,
+              0.63
+            ]
+          ],
+          "to": [
+            0.018,
+            0.01
+          ],
+          "at": 6,
+          "over": 46,
+          "label": "slab"
+        },
+        "annotations": [],
+        "from": -1,
+        "over": 1
+      }
+    },
+    {
+      "id": "s05-bed",
+      "sceneType": "composite",
+      "voText": "Inside it a slab of rock rested",
+      "durationInFrames": 70,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.25,
+          "x": 845,
+          "y": 71,
+          "width": 277,
+          "rotate": -9,
+          "opacity": 0.68,
+          "colour": "#b9c3c9",
+          "from": 0
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1.4,
+        "pushTo": 1.05,
+        "pushEndFrame": 64,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 560,
+        "glowIntensity": 0.62,
+        "glowWarm": "#b9c3c9",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "spotlight",
+        "fieldColours": [
+          "#101112",
+          "#0b0c0d",
+          "#09090a"
+        ],
+        "caption": [
+          "A slip plane,",
+          "inside the mountain."
+        ],
+        "captionX": 84,
+        "captionY": 134,
+        "captionSize": 55,
+        "captionAlign": "left",
+        "captionFrame": 36,
+        "captionEvery": 9,
+        "captionScrim": 0.38,
+        "captionRecedeAt": 50,
+        "accent": "#b9c3c9",
+        "handheld": 1.5,
+        "captionEmphasis": "mountain",
+        "captionReveal": "blur",
+        "captionMark": "underline",
+        "captionWordEvery": 3,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      },
+      "diagram": {
+        "type": "terrainSection",
+        "accent": "#b9c3c9",
+        "muted": "#cfc6ae",
+        "profile": [
+          [
+            0,
+            0.281636
+          ],
+          [
+            0.16,
+            0.32320800000000005
+          ],
+          [
+            0.34,
+            0.479244
+          ],
+          [
+            0.46,
+            0.652104
+          ],
+          [
+            0.58,
+            0.72
+          ],
+          [
+            0.66,
+            0.6585540000000001
+          ],
+          [
+            0.78,
+            0.517176
+          ],
+          [
+            1,
+            0.438204
+          ]
+        ],
+        "scaleNote": "schematic profile",
+        "subject": "terrain",
+        "depicts": "terrain",
+        "claims": [
+          "slip_plane"
+        ],
+        "beds": [
+          {
+            "label": "rock",
+            "depth": 0.05
+          },
+          {
+            "label": "clay",
+            "depth": 0.115,
+            "weak": true
+          },
+          {
+            "depth": 0.19
+          }
+        ],
+        "mass": {
+          "shape": [
+            [
+              0.2,
+              0.365
+            ],
+            [
+              0.42,
+              0.475
+            ],
+            [
+              0.46,
+              0.6
+            ],
+            [
+              0.24,
+              0.5
+            ]
+          ],
+          "plane": [
+            [
+              0.16,
+              0.34
+            ],
+            [
+              0.3,
+              0.44
+            ],
+            [
+              0.42,
+              0.545
+            ],
+            [
+              0.5,
+              0.63
+            ]
+          ],
+          "to": [
+            0,
+            0
+          ],
+          "at": 8,
+          "over": 26,
+          "label": "slab"
+        },
+        "annotations": [
+          {
+            "x": 0.34,
+            "y": 0.455,
+            "text": "slip plane",
+            "side": "right"
+          }
+        ],
+        "from": 0,
+        "over": 32
+      }
+    },
+    {
+      "id": "s05-bed-b",
+      "sceneType": "composite",
+      "voText": "on a weak bed of clay.",
+      "durationInFrames": 60,
+      "assets": {},
+      "layers": [],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1,
+        "pushTo": 1.07,
+        "pushEndFrame": 56,
+        "accent": "#b9c3c9",
+        "field": "spotlight",
+        "fieldColours": [
+          "#101112",
+          "#0b0c0d",
+          "#09090a"
+        ],
+        "glowX": 1350,
+        "glowY": 236,
+        "glowSize": 398,
+        "glowIntensity": 0.67,
+        "glowWarm": "#b9c3c9",
+        "glowDepth": 0.1,
+        "caption": [
+          "on a weak",
+          "bed of clay"
+        ],
+        "captionX": 84,
+        "captionY": 134,
+        "captionSize": 90,
+        "captionAlign": "left",
+        "captionFrame": 26,
+        "captionEvery": 10,
+        "captionScrim": 0.38,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panY": -57,
+        "roll": 0.33,
+        "captionEmphasis": "weak",
+        "captionReveal": "punch",
+        "captionMark": "highlight",
+        "captionWordEvery": 3,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      },
+      "diagram": {
+        "type": "terrainSection",
+        "accent": "#b9c3c9",
+        "muted": "#cfc6ae",
+        "profile": [
+          [
+            0,
+            0.281636
+          ],
+          [
+            0.16,
+            0.32320800000000005
+          ],
+          [
+            0.34,
+            0.479244
+          ],
+          [
+            0.46,
+            0.652104
+          ],
+          [
+            0.58,
+            0.72
+          ],
+          [
+            0.66,
+            0.6585540000000001
+          ],
+          [
+            0.78,
+            0.517176
+          ],
+          [
+            1,
+            0.438204
+          ]
+        ],
+        "scaleNote": "schematic profile",
+        "subject": "terrain",
+        "depicts": "terrain",
+        "claims": [
+          "slip_plane"
+        ],
+        "beds": [
+          {
+            "label": "rock",
+            "depth": 0.05
+          },
+          {
+            "label": "clay",
+            "depth": 0.115,
+            "weak": true
+          },
+          {
+            "depth": 0.19
+          }
+        ],
+        "mass": {
+          "shape": [
+            [
+              0.2,
+              0.365
+            ],
+            [
+              0.42,
+              0.475
+            ],
+            [
+              0.46,
+              0.6
+            ],
+            [
+              0.24,
+              0.5
+            ]
+          ],
+          "plane": [
+            [
+              0.16,
+              0.34
+            ],
+            [
+              0.3,
+              0.44
+            ],
+            [
+              0.42,
+              0.545
+            ],
+            [
+              0.5,
+              0.63
+            ]
+          ],
+          "to": [
+            0,
+            0
+          ],
+          "at": 8,
+          "over": 26,
+          "label": "slab"
+        },
+        "annotations": [
+          {
+            "x": 0.34,
+            "y": 0.455,
+            "text": "slip plane",
+            "side": "right"
+          }
+        ],
+        "from": -1,
+        "over": 1
+      }
+    },
+    {
+      "id": "s06-water",
+      "sceneType": "composite",
+      "voText": "Water from the reservoir soaked into",
+      "durationInFrames": 67,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.36,
+          "x": 825,
+          "y": -63,
+          "width": 350,
+          "rotate": -14,
+          "opacity": 0.81,
+          "colour": "#b9c3c9",
+          "from": 0
+        }
+      ],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1.2,
+        "pushTo": 1.3,
+        "pushEndFrame": 62,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 560,
+        "glowIntensity": 0.62,
+        "glowWarm": "#b9c3c9",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0.15,
+        "field": "spotlight",
+        "fieldColours": [
+          "#101112",
+          "#0b0c0d",
+          "#09090a"
+        ],
+        "caption": [
+          "Water from",
+          "the reservoir",
+          "soaked into"
+        ],
+        "captionX": 84,
+        "captionY": 134,
+        "captionSize": 85,
+        "captionAlign": "left",
+        "captionFrame": 33,
+        "captionEvery": 7,
+        "captionScrim": 0.38,
+        "captionRecedeAt": 48,
+        "accent": "#b9c3c9",
+        "handheld": 1.5,
+        "panX": 209,
+        "captionEmphasis": "reservoir",
+        "captionReveal": "punch",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      },
+      "diagram": {
+        "type": "terrainSection",
+        "accent": "#b9c3c9",
+        "muted": "#cfc6ae",
+        "profile": [
+          [
+            0,
+            0.2989
+          ],
+          [
+            0.16,
+            0.35917600000000005
+          ],
+          [
+            0.34,
+            0.44820400000000005
+          ],
+          [
+            0.46,
+            0.669968
+          ],
+          [
+            0.58,
+            0.72
+          ],
+          [
+            0.66,
+            0.6579860000000001
+          ],
+          [
+            0.78,
+            0.517592
+          ],
+          [
+            1,
+            0.410396
+          ]
+        ],
+        "scaleNote": "schematic profile",
+        "subject": "terrainSection",
+        "depicts": "terrain",
+        "claims": [
+          "fluid_ingress",
+          "impoundment",
+          "release"
+        ],
+        "beds": [
+          {
+            "label": "rock",
+            "depth": 0.05
+          },
+          {
+            "label": "clay",
+            "depth": 0.115,
+            "weak": true
+          },
+          {
+            "depth": 0.19
+          }
+        ],
+        "structure": {
+          "x": 0.72,
+          "base": 0.44,
+          "width": 0.035,
+          "label": "dam"
+        },
+        "water": {
+          "level": 0.52,
+          "label": "reservoir"
+        },
+        "mass": {
+          "shape": [
+            [
+              0.2,
+              0.365
+            ],
+            [
+              0.42,
+              0.475
+            ],
+            [
+              0.46,
+              0.6
+            ],
+            [
+              0.24,
+              0.5
+            ]
+          ],
+          "plane": [
+            [
+              0.16,
+              0.34
+            ],
+            [
+              0.3,
+              0.44
+            ],
+            [
+              0.42,
+              0.545
+            ],
+            [
+              0.5,
+              0.63
+            ]
+          ],
+          "to": [
+            0.035,
+            0.019
+          ],
+          "at": 30,
+          "over": 22,
+          "label": "slab"
+        },
+        "seepage": {
+          "at": 4,
+          "over": 18,
+          "label": "water in the bed"
+        },
+        "annotations": [
+          {
+            "x": 0.3,
+            "y": 0.455,
+            "text": "water in the bed",
+            "side": "right",
+            "at": 8
+          }
+        ],
+        "from": 0,
+        "over": 30
+      }
+    },
+    {
+      "id": "s06-water-b",
+      "sceneType": "composite",
+      "voText": "that clay until the bed let go.",
+      "durationInFrames": 79,
+      "assets": {},
+      "layers": [],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.4,
+        "pushTo": 1.03,
+        "pushEndFrame": 77,
+        "accent": "#b9c3c9",
+        "field": "spotlight",
+        "fieldColours": [
+          "#101112",
+          "#0b0c0d",
+          "#09090a"
+        ],
+        "glowX": 1445,
+        "glowY": 175,
+        "glowSize": 549,
+        "glowIntensity": 0.64,
+        "glowWarm": "#b9c3c9",
+        "glowDepth": 0.1,
+        "caption": [
+          "that clay until",
+          "the bed let go"
+        ],
+        "captionX": 84,
+        "captionY": 134,
+        "captionSize": 74,
+        "captionAlign": "left",
+        "captionFrame": 39,
+        "captionEvery": 9,
+        "captionScrim": 0.38,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "captionEmphasis": "until",
+        "captionReveal": "blur",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      },
+      "diagram": {
+        "type": "terrainSection",
+        "accent": "#b9c3c9",
+        "muted": "#cfc6ae",
+        "profile": [
+          [
+            0,
+            0.2989
+          ],
+          [
+            0.16,
+            0.35917600000000005
+          ],
+          [
+            0.34,
+            0.44820400000000005
+          ],
+          [
+            0.46,
+            0.669968
+          ],
+          [
+            0.58,
+            0.72
+          ],
+          [
+            0.66,
+            0.6579860000000001
+          ],
+          [
+            0.78,
+            0.517592
+          ],
+          [
+            1,
+            0.410396
+          ]
+        ],
+        "scaleNote": "schematic profile",
+        "subject": "terrainSection",
+        "depicts": "terrain",
+        "claims": [
+          "fluid_ingress",
+          "impoundment",
+          "release"
+        ],
+        "beds": [
+          {
+            "label": "rock",
+            "depth": 0.05
+          },
+          {
+            "label": "clay",
+            "depth": 0.115,
+            "weak": true
+          },
+          {
+            "depth": 0.19
+          }
+        ],
+        "structure": {
+          "x": 0.72,
+          "base": 0.44,
+          "width": 0.035,
+          "label": "dam"
+        },
+        "water": {
+          "level": 0.52,
+          "label": "reservoir"
+        },
+        "mass": {
+          "shape": [
+            [
+              0.2,
+              0.365
+            ],
+            [
+              0.42,
+              0.475
+            ],
+            [
+              0.46,
+              0.6
+            ],
+            [
+              0.24,
+              0.5
+            ]
+          ],
+          "plane": [
+            [
+              0.16,
+              0.34
+            ],
+            [
+              0.3,
+              0.44
+            ],
+            [
+              0.42,
+              0.545
+            ],
+            [
+              0.5,
+              0.63
+            ]
+          ],
+          "to": [
+            0.035,
+            0.019
+          ],
+          "at": 30,
+          "over": 22,
+          "label": "slab"
+        },
+        "seepage": {
+          "at": 4,
+          "over": 18,
+          "label": "water in the bed"
+        },
+        "annotations": [
+          {
+            "x": 0.3,
+            "y": 0.455,
+            "text": "water in the bed",
+            "side": "right",
+            "at": 8
+          }
+        ],
+        "from": -1,
+        "over": 1
+      }
+    },
+    {
+      "id": "s07-slide",
+      "sceneType": "title-slate",
+      "voText": "On the ninth of October the slab slid",
+      "durationInFrames": 89,
+      "assets": {},
+      "params": {
+        "scrim": 0.49,
+        "kicker": "",
+        "title": "45 SECONDS",
+        "footer": "",
+        "titleFrame": 27,
+        "titleSize": 230,
+        "creep": 1.059,
+        "accent": "#b9c3c9",
+        "field": "grid",
+        "fieldColours": [
+          "#3d4144",
+          "#212426",
+          "#0c0d0e"
+        ],
+        "countTo": 45,
+        "countOver": 49,
+        "pushEndFrame": 85,
+        "pushFrom": 1,
+        "pushTo": 1.37,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      }
+    },
+    {
+      "id": "s07-slide-b",
+      "sceneType": "composite",
+      "voText": "into the lake in forty-five seconds.",
+      "durationInFrames": 67,
+      "assets": {},
+      "layers": [],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.2,
+        "pushTo": 1.27,
+        "pushEndFrame": 61,
+        "accent": "#b9c3c9",
+        "field": "spotlight",
+        "fieldColours": [
+          "#101112",
+          "#0b0c0d",
+          "#09090a"
+        ],
+        "glowX": 1342,
+        "glowY": 493,
+        "glowSize": 337,
+        "glowIntensity": 0.56,
+        "glowWarm": "#b9c3c9",
+        "glowDepth": 0.1,
+        "caption": [
+          "into the lake",
+          "in forty-five",
+          "seconds"
+        ],
+        "captionX": 84,
+        "captionY": 134,
+        "captionSize": 85,
+        "captionAlign": "left",
+        "captionFrame": 33,
+        "captionEvery": 7,
+        "captionScrim": 0.38,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panX": -238,
+        "captionEmphasis": "forty-five",
+        "captionReveal": "rise",
+        "captionMark": "none",
+        "captionWordEvery": 2,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      },
+      "diagram": {
+        "type": "terrainSection",
+        "accent": "#b9c3c9",
+        "muted": "#cfc6ae",
+        "profile": [
+          [
+            0,
+            0.281148
+          ],
+          [
+            0.16,
+            0.32328
+          ],
+          [
+            0.34,
+            0.464484
+          ],
+          [
+            0.46,
+            0.656188
+          ],
+          [
+            0.58,
+            0.72
+          ],
+          [
+            0.66,
+            0.666838
+          ],
+          [
+            0.78,
+            0.491168
+          ],
+          [
+            1,
+            0.40632399999999996
+          ]
+        ],
+        "scaleNote": "schematic profile",
+        "subject": "terrain",
+        "depicts": "terrain",
+        "claims": [
+          "release"
+        ],
+        "beds": [
+          {
+            "label": "rock",
+            "depth": 0.05
+          },
+          {
+            "label": "clay",
+            "depth": 0.115,
+            "weak": true
+          },
+          {
+            "depth": 0.19
+          }
+        ],
+        "mass": {
+          "shape": [
+            [
+              0.2,
+              0.365
+            ],
+            [
+              0.42,
+              0.475
+            ],
+            [
+              0.46,
+              0.6
+            ],
+            [
+              0.24,
+              0.5
+            ]
+          ],
+          "plane": [
+            [
+              0.16,
+              0.34
+            ],
+            [
+              0.3,
+              0.44
+            ],
+            [
+              0.42,
+              0.545
+            ],
+            [
+              0.5,
+              0.63
+            ]
+          ],
+          "to": [
+            0.2,
+            0.11
+          ],
+          "at": -5,
+          "over": 34,
+          "label": "slab"
+        },
+        "annotations": [],
+        "from": 0,
+        "over": 30
+      }
+    },
+    {
+      "id": "s08-displace",
+      "sceneType": "title-slate",
+      "voText": "Two hundred and seventy million cubic metres",
+      "durationInFrames": 94,
+      "assets": {},
+      "params": {
+        "scrim": 0.41,
+        "kicker": "",
+        "title": "270 MILLION CUBIC METRES",
+        "footer": "",
+        "titleFrame": 28,
+        "titleSize": 230,
+        "creep": 1.083,
+        "accent": "#b9c3c9",
+        "field": "grid",
+        "fieldColours": [
+          "#3d4144",
+          "#212426",
+          "#0c0d0e"
+        ],
+        "countTo": 270,
+        "countOver": 52,
+        "pushEndFrame": 90,
+        "pushFrom": 1.03,
+        "pushTo": 1.06,
+        "cameraMove": "hold",
+        "cameraPurpose": "importance. The frame stops because the idea needs no help"
+      }
+    },
+    {
+      "id": "s08-displace-b",
+      "sceneType": "composite",
+      "voText": "of rock took the reservoir's place.",
+      "durationInFrames": 81,
+      "assets": {},
+      "layers": [],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.18,
+        "pushTo": 1.2,
+        "pushEndFrame": 73,
+        "accent": "#b9c3c9",
+        "field": "spotlight",
+        "fieldColours": [
+          "#101112",
+          "#0b0c0d",
+          "#09090a"
+        ],
+        "glowX": 1316,
+        "glowY": 422,
+        "glowSize": 390,
+        "glowIntensity": 0.48,
+        "glowWarm": "#b9c3c9",
+        "glowDepth": 0.1,
+        "caption": [
+          "of rock took the",
+          "reservoir's place"
+        ],
+        "captionX": 84,
+        "captionY": 134,
+        "captionSize": 65,
+        "captionAlign": "left",
+        "captionFrame": 47,
+        "captionEvery": 7,
+        "captionScrim": 0.38,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panX": 276,
+        "captionEmphasis": "reservoir's",
+        "captionReveal": "wipe",
+        "captionMark": "highlight",
+        "captionWordEvery": 4,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      },
+      "diagram": {
+        "type": "terrainSection",
+        "accent": "#b9c3c9",
+        "muted": "#cfc6ae",
+        "profile": [
+          [
+            0,
+            0.295236
+          ],
+          [
+            0.16,
+            0.35128000000000004
+          ],
+          [
+            0.34,
+            0.44036400000000003
+          ],
+          [
+            0.46,
+            0.6528280000000001
+          ],
+          [
+            0.58,
+            0.72
+          ],
+          [
+            0.66,
+            0.6507620000000001
+          ],
+          [
+            0.78,
+            0.516128
+          ],
+          [
+            1,
+            0.419804
+          ]
+        ],
+        "scaleNote": "schematic profile",
+        "subject": "terrainSection",
+        "depicts": "terrain",
+        "claims": [
+          "distance",
+          "impoundment",
+          "displacement"
+        ],
+        "beds": [
+          {
+            "label": "rock",
+            "depth": 0.06
+          },
+          {
+            "depth": 0.13
+          }
+        ],
+        "structure": {
+          "x": 0.72,
+          "base": 0.44,
+          "width": 0.035,
+          "label": "dam"
+        },
+        "water": {
+          "level": 0.52,
+          "label": "reservoir"
+        },
+        "mass": {
+          "shape": [
+            [
+              0.2,
+              0.365
+            ],
+            [
+              0.42,
+              0.475
+            ],
+            [
+              0.46,
+              0.6
+            ],
+            [
+              0.24,
+              0.5
+            ]
+          ],
+          "plane": [
+            [
+              0.16,
+              0.34
+            ],
+            [
+              0.3,
+              0.44
+            ],
+            [
+              0.42,
+              0.545
+            ],
+            [
+              0.5,
+              0.63
+            ]
+          ],
+          "to": [
+            0.2,
+            0.11
+          ],
+          "at": -26,
+          "over": 26,
+          "label": "slab",
+          "volume": "270 MILLION m³"
+        },
+        "annotations": [],
+        "from": 0,
+        "over": 36
+      }
+    },
+    {
+      "id": "s09-over",
+      "sceneType": "composite",
+      "voText": "The lake had nowhere to go",
+      "durationInFrames": 59,
+      "assets": {},
+      "layers": [],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1.5,
+        "pushTo": 1.02,
+        "pushEndFrame": 54,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 560,
+        "glowIntensity": 0.62,
+        "glowWarm": "#b9c3c9",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "spotlight",
+        "fieldColours": [
+          "#101112",
+          "#0b0c0d",
+          "#09090a"
+        ],
+        "caption": [
+          "Over",
+          "the top."
+        ],
+        "captionX": 84,
+        "captionY": 134,
+        "captionSize": 92,
+        "captionAlign": "left",
+        "captionFrame": 37,
+        "captionEvery": 10,
+        "captionScrim": 0.38,
+        "captionRecedeAt": 42,
+        "accent": "#b9c3c9",
+        "handheld": 1.5,
+        "captionReveal": "punch",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "pull",
+        "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
+      },
+      "diagram": {
+        "type": "terrainSection",
+        "accent": "#b9c3c9",
+        "muted": "#cfc6ae",
+        "profile": [
+          [
+            0,
+            0.29564799999999997
+          ],
+          [
+            0.16,
+            0.330372
+          ],
+          [
+            0.34,
+            0.46332
+          ],
+          [
+            0.46,
+            0.6679820000000001
+          ],
+          [
+            0.58,
+            0.72
+          ],
+          [
+            0.66,
+            0.6652720000000001
+          ],
+          [
+            0.78,
+            0.489012
+          ],
+          [
+            1,
+            0.42247199999999996
+          ]
+        ],
+        "scaleNote": "schematic profile",
+        "subject": "terrainSection",
+        "depicts": "terrain",
+        "claims": [
+          "impoundment",
+          "displacement",
+          "overtopping"
+        ],
+        "beds": [
+          {
+            "label": "rock",
+            "depth": 0.06
+          },
+          {
+            "depth": 0.13
+          }
+        ],
+        "structure": {
+          "x": 0.72,
+          "base": 0.44,
+          "width": 0.035,
+          "label": "dam"
+        },
+        "water": {
+          "level": 0.52,
+          "label": "reservoir"
+        },
+        "mass": {
+          "shape": [
+            [
+              0.2,
+              0.365
+            ],
+            [
+              0.42,
+              0.475
+            ],
+            [
+              0.46,
+              0.6
+            ],
+            [
+              0.24,
+              0.5
+            ]
+          ],
+          "plane": [
+            [
+              0.16,
+              0.34
+            ],
+            [
+              0.3,
+              0.44
+            ],
+            [
+              0.42,
+              0.545
+            ],
+            [
+              0.5,
+              0.63
+            ]
+          ],
+          "to": [
+            0.2,
+            0.11
+          ],
+          "at": -26,
+          "over": 26,
+          "label": "slab"
+        },
+        "overtop": {
+          "at": 30,
+          "over": 20,
+          "label": "over the crest"
+        },
+        "annotations": [
+          {
+            "x": 0.72,
+            "y": 0.38,
+            "text": "over the crest",
+            "side": "left",
+            "at": 34
+          }
+        ],
+        "from": 0,
+        "over": 27
+      }
+    },
+    {
+      "id": "s09-over-b",
+      "sceneType": "composite",
+      "voText": "but over the crest of the dam.",
+      "durationInFrames": 69,
+      "assets": {},
+      "layers": [],
+      "props": [
+        {
+          "kind": "beam",
+          "depth": 0.17,
+          "x": 955,
+          "y": 33,
+          "width": 335,
+          "rotate": -22,
+          "opacity": 0.63,
+          "colour": "#b9c3c9",
+          "from": 0
+        }
+      ],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.21,
+        "pushTo": 1.32,
+        "pushEndFrame": 66,
+        "accent": "#b9c3c9",
+        "field": "spotlight",
+        "fieldColours": [
+          "#101112",
+          "#0b0c0d",
+          "#09090a"
+        ],
+        "glowX": 1408,
+        "glowY": 136,
+        "glowSize": 344,
+        "glowIntensity": 0.61,
+        "glowWarm": "#b9c3c9",
+        "glowDepth": 0.1,
+        "caption": [
+          "but over the crest",
+          "of the dam"
+        ],
+        "captionX": 84,
+        "captionY": 134,
+        "captionSize": 62,
+        "captionAlign": "left",
+        "captionFrame": 29,
+        "captionEvery": 9,
+        "captionScrim": 0.38,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "panX": -157,
+        "captionEmphasis": "crest",
+        "captionReveal": "blur",
+        "captionMark": "box",
+        "captionWordEvery": 3,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      },
+      "diagram": {
+        "type": "terrainSection",
+        "accent": "#b9c3c9",
+        "muted": "#cfc6ae",
+        "profile": [
+          [
+            0,
+            0.29564799999999997
+          ],
+          [
+            0.16,
+            0.330372
+          ],
+          [
+            0.34,
+            0.46332
+          ],
+          [
+            0.46,
+            0.6679820000000001
+          ],
+          [
+            0.58,
+            0.72
+          ],
+          [
+            0.66,
+            0.6652720000000001
+          ],
+          [
+            0.78,
+            0.489012
+          ],
+          [
+            1,
+            0.42247199999999996
+          ]
+        ],
+        "scaleNote": "schematic profile",
+        "subject": "terrainSection",
+        "depicts": "terrain",
+        "claims": [
+          "impoundment",
+          "displacement",
+          "overtopping"
+        ],
+        "beds": [
+          {
+            "label": "rock",
+            "depth": 0.06
+          },
+          {
+            "depth": 0.13
+          }
+        ],
+        "structure": {
+          "x": 0.72,
+          "base": 0.44,
+          "width": 0.035,
+          "label": "dam"
+        },
+        "water": {
+          "level": 0.52,
+          "label": "reservoir"
+        },
+        "mass": {
+          "shape": [
+            [
+              0.2,
+              0.365
+            ],
+            [
+              0.42,
+              0.475
+            ],
+            [
+              0.46,
+              0.6
+            ],
+            [
+              0.24,
+              0.5
+            ]
+          ],
+          "plane": [
+            [
+              0.16,
+              0.34
+            ],
+            [
+              0.3,
+              0.44
+            ],
+            [
+              0.42,
+              0.545
+            ],
+            [
+              0.5,
+              0.63
+            ]
+          ],
+          "to": [
+            0.2,
+            0.11
+          ],
+          "at": -26,
+          "over": 26,
+          "label": "slab"
+        },
+        "overtop": {
+          "at": 30,
+          "over": 20,
+          "label": "over the crest"
+        },
+        "annotations": [
+          {
+            "x": 0.72,
+            "y": 0.38,
+            "text": "over the crest",
+            "side": "left",
+            "at": 34
+          }
+        ],
+        "from": -1,
+        "over": 1
+      }
+    },
+    {
+      "id": "s10-town",
+      "sceneType": "composite",
+      "voText": "Minutes later it reached the town of Longarone,",
+      "durationInFrames": 102,
+      "assets": {},
+      "layers": [],
+      "params": {
+        "anchorX": 540,
+        "anchorY": 1700,
+        "pushFrom": 1.17,
+        "pushTo": 1.29,
+        "pushEndFrame": 97,
+        "glowX": 1145,
+        "glowY": 422,
+        "glowSize": 560,
+        "glowIntensity": 0.62,
+        "glowWarm": "#b9c3c9",
+        "glowDepth": 0.1,
+        "focusPx": 0,
+        "fog": 0,
+        "field": "spotlight",
+        "fieldColours": [
+          "#101112",
+          "#0b0c0d",
+          "#09090a"
+        ],
+        "caption": [
+          "Minutes later",
+          "it reached",
+          "the town",
+          "of Longarone"
+        ],
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 85,
+        "captionAlign": "left",
+        "captionFrame": 48,
+        "captionEvery": 10,
+        "captionScrim": 0.38,
+        "captionRecedeAt": 73,
+        "accent": "#b9c3c9",
+        "motifStops": [
+          "THE DAM",
+          "LONGARONE"
+        ],
+        "handheld": 1.5,
+        "panX": -158,
+        "captionEmphasis": "Longarone",
+        "captionReveal": "blur",
+        "captionMark": "none",
+        "captionWordEvery": 3,
+        "cameraMove": "pan",
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+      },
+      "onScreenText": [
+        {
+          "text": "TWO THOUSAND",
+          "atFrame": 61,
+          "durationInFrames": 41,
+          "style": "typed",
+          "position": "bottom"
+        }
+      ],
+      "diagram": {
+        "type": "map",
+        "regions": [
+          {
+            "kind": "land",
+            "shape": [
+              [
+                0.06,
+                0.2
+              ],
+              [
+                0.54944,
+                0.14
+              ],
+              [
+                0.94,
+                0.24
+              ],
+              [
+                0.9,
+                0.66
+              ],
+              [
+                0.51188,
+                0.72
+              ],
+              [
+                0.08,
+                0.62
+              ]
+            ]
+          }
+        ],
+        "accent": "#b9c3c9",
+        "muted": "#cfc6ae",
+        "route": [
+          {
+            "points": [
+              [
+                0.1,
+                0.458056
+              ],
+              [
+                0.9,
+                0.452816
+              ]
+            ]
+          }
+        ],
+        "markers": [
+          {
+            "x": 0.1,
+            "y": 0.458056,
+            "label": "THE DAM",
+            "kind": "place"
+          },
+          {
+            "x": 0.9,
+            "y": 0.452816,
+            "label": "LONGARONE",
+            "kind": "place"
+          }
+        ],
+        "subject": "geography",
+        "claims": [
+          "delay",
+          "human_scale"
+        ],
+        "depicts": "geography",
+        "from": 0,
+        "over": 46
+      }
+    },
+    {
+      "id": "s10-town-b",
+      "sceneType": "composite",
+      "voText": "and two thousand people died.",
+      "durationInFrames": 63,
+      "assets": {},
+      "layers": [],
+      "params": {
+        "anchorX": 799,
+        "anchorY": 576,
+        "pushFrom": 1.04,
+        "pushTo": 1.54,
+        "pushEndFrame": 60,
+        "accent": "#b9c3c9",
+        "field": "spotlight",
+        "fieldColours": [
+          "#101112",
+          "#0b0c0d",
+          "#09090a"
+        ],
+        "glowX": 1420,
+        "glowY": 322,
+        "glowSize": 533,
+        "glowIntensity": 0.44,
+        "glowWarm": "#b9c3c9",
+        "glowDepth": 0.1,
+        "caption": [
+          "and",
+          "two thousand people",
+          "died"
+        ],
+        "captionX": 84,
+        "captionY": 106,
+        "captionSize": 58,
+        "captionAlign": "left",
+        "captionFrame": 34,
+        "captionEvery": 8,
+        "captionScrim": 0.38,
+        "focusPx": 0,
+        "fog": 0,
+        "handheld": 1.5,
+        "shakeAt": [
+          5
+        ],
+        "shakeAmount": 22,
+        "captionEmphasis": "two thousand people",
+        "captionReveal": "wipe",
+        "captionMark": "underline",
+        "captionWordEvery": 4,
+        "cameraMove": "push",
+        "cameraPurpose": "single out the subject — the frame closes on what matters"
+      },
+      "diagram": {
+        "type": "map",
+        "regions": [
+          {
+            "kind": "land",
+            "shape": [
+              [
+                0.06,
+                0.2
+              ],
+              [
+                0.54944,
+                0.14
+              ],
+              [
+                0.94,
+                0.24
+              ],
+              [
+                0.9,
+                0.66
+              ],
+              [
+                0.51188,
+                0.72
+              ],
+              [
+                0.08,
+                0.62
+              ]
+            ]
+          }
+        ],
+        "accent": "#b9c3c9",
+        "muted": "#cfc6ae",
+        "route": [
+          {
+            "points": [
+              [
+                0.1,
+                0.458056
+              ],
+              [
+                0.9,
+                0.452816
+              ]
+            ]
+          }
+        ],
+        "markers": [
+          {
+            "x": 0.1,
+            "y": 0.458056,
+            "label": "THE DAM",
+            "kind": "place"
+          },
+          {
+            "x": 0.9,
+            "y": 0.452816,
+            "label": "LONGARONE",
+            "kind": "place"
+          }
+        ],
+        "subject": "geography",
+        "claims": [
+          "delay",
+          "human_scale"
+        ],
+        "depicts": "geography",
+        "from": -1,
+        "over": 1
+      }
+    },
+    {
+      "id": "s11-close",
+      "sceneType": "title-slate",
+      "voText": "The dam is still standing, and they built the wrong thing correctly.",
+      "durationInFrames": 154,
+      "gradeOverride": {
+        "saturate": 0.5,
+        "contrast": 1.16,
+        "brightness": 0.94
+      },
+      "assets": {},
+      "params": {
+        "scrim": 0.38,
+        "kicker": "Vajont · 9 October 1963",
+        "title": "STILL THERE",
+        "footer": "the wrong thing, built correctly",
+        "titleFrame": 52,
+        "titleSize": 230,
+        "creep": 1.07,
+        "accent": "#b9c3c9",
+        "field": "grid",
+        "fieldColours": [
+          "#3d4144",
+          "#212426",
+          "#0c0d0e"
+        ],
+        "pushEndFrame": 141,
+        "pushFrom": 1,
+        "pushTo": 1.11,
+        "cameraMove": "drift",
+        "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
+      },
+      "props": [
+        {
+          "kind": "newspaper",
+          "masthead": "THE CHRONICLE",
+          "text": "STILL THERE",
+          "depth": 0.82,
+          "x": 768,
+          "y": 383,
+          "width": 454,
+          "rotate": 3,
+          "from": 95
+        }
+      ]
+    }
+  ]
+}

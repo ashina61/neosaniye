@@ -1036,6 +1036,55 @@ export function boundsOf(scene, {width, height}) {
     });
     out.push({what: 'mouldCast label', role: 'drawn', left: width * 0.16, right: width * 0.84, top: height * 0.745, bottom: height * 0.83});
   }
+  if (d?.type === 'terrainSection') {
+    /**
+     * The same arithmetic the plate does. The world group — profile, beds, mass,
+     * structure — takes the camera; the height dimension beside the structure is
+     * the furthest right anything reaches, and the volume figure and the scale
+     * note are sheet furniture below it, pinned (law 34) and therefore not
+     * carried by the camera.
+     */
+    const prof = Array.isArray(d.profile) && d.profile.length ? d.profile : [[0, 0.3], [1, 0.5]];
+    const tops = prof.map((p) => n(p?.[1], 0.4));
+    const massY = Array.isArray(d.mass?.shape) ? d.mass.shape.map((p) => n(p?.[1], 0.5)) : [];
+    const dimRight = d.structure?.height
+      ? (n(d.structure.x, 0.72) + n(d.structure.width, 0.035) / 2 + 0.045) * width + width * 0.16
+      : width;
+    /**
+     * THE GROUND BLEEDS AND THE CONTENT DOES NOT.
+     *
+     * The first version reported the whole profile, which starts at x = 0 by
+     * definition, so the camera budget could never satisfy "inside the safe
+     * area" and every terrain shot was warned about a ground that is SUPPOSED
+     * to reach the frame edge — the same mistake as measuring a photographic
+     * backdrop for clipping. Law 37 is about not cropping what has to be READ:
+     * the structure, its dimension, and the mass that moves. Those are bounded.
+     */
+    const sx = n(d.structure?.x, 0.72);
+    const sw = n(d.structure?.width, 0.035);
+    const massX = Array.isArray(d.mass?.shape) ? d.mass.shape.map((p) => n(p?.[0], 0.3)) : [];
+    const travelX = massX.length ? massX.map((x) => x + n(d.mass?.to?.[0], 0)) : [];
+    const travelY = massY.length ? massY.map((y) => y + n(d.mass?.to?.[1], 0)) : [];
+    const xs = [...massX, ...travelX, ...(d.structure ? [sx - sw / 2, sx + sw / 2] : [])];
+    const ys = [...massY, ...travelY, ...(d.structure ? [n(d.structure.base, 0.44)] : [])];
+    if (xs.length) {
+      out.push({
+        what: 'terrain content',
+        role: 'drawn',
+        camera: true,
+        left: Math.min(...xs) * width,
+        right: Math.max(Math.max(...xs) * width, d.structure?.height ? dimRight : 0),
+        top: Math.min(...ys) * height,
+        bottom: Math.max(...ys, 0.72) * height,
+      });
+    }
+    if (d.mass?.volume) {
+      out.push({what: 'terrain volume', role: 'drawn', left: width * 0.18, right: width * 0.82, top: height * 0.77, bottom: height * 0.81});
+    }
+    if (d.scaleNote) {
+      out.push({what: 'terrain note', role: 'drawn', left: width * 0.2, right: width * 0.8, top: height * 0.83, bottom: height * 0.86});
+    }
+  }
   if (d?.type === 'process') {
     out.push({what: 'process object', role: 'drawn', camera: true, left: width * 0.2, right: width * 0.8, top: height * 0.3, bottom: height * 0.54});
   }

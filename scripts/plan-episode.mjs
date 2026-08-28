@@ -636,17 +636,50 @@ export function framesFor(text, {min = 45, max = 118} = {}) {
  */
 const NOT_A_UNIT = /^(and|or|of|the|a|an|in|on|to|for|from|by|with|at|was|were|is|are|had|has|that|this|it|he|she|they)$/i;
 
+/**
+ * A SPOKEN NUMBER IS ONE NUMBER, AND THERE IS ONLY ONE READER OF IT.
+ *
+ * This had its own grammar — one number word plus at most one scale word — and
+ * `figureIn` had another. Two readers of the same sentence disagree eventually,
+ * and here they disagreed ON SCREEN, in the same shot: a card set the largest
+ * type on the sheet to TWO HUNDRED while the sticker under it said 262 METRES,
+ * and on the next line the same card said TWO HUNDRED over a sentence about two
+ * hundred and SEVENTY MILLION cubic metres. That is the tonnage fault — a
+ * drawn figure contradicting the line it illustrates — with the contradiction
+ * inside one frame.
+ *
+ * So the extent of the compound is matched here and the VALUE comes from
+ * `figureIn`, which is the repository's number reader. And it is set in
+ * digits, because a card is where a figure lands and "270 MILLION" lands where
+ * "TWO HUNDRED AND SEVENTY MILLION" is a paragraph.
+ */
+const NUM_WORD =
+  '(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion)';
+
+function spokenFigure(n) {
+  if (n >= 1e9) return `${+(n / 1e9).toFixed(2)} BILLION`;
+  if (n >= 1e6) return `${+(n / 1e6).toFixed(0)} MILLION`;
+  return n.toLocaleString('en-GB');
+}
+
 function bigNumber(vo) {
   const numeric = /\b\d[\d,.]*\b/;
-  const spelled =
-    /\b(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion)(\s+(hundred|thousand|million|billion))?\b/i;
+  const spelled = new RegExp(`\\b${NUM_WORD}(?:[\\s-]+(?:and[\\s-]+)?${NUM_WORD})*\\b`, 'i');
 
   const match = vo.match(numeric) ?? vo.match(spelled);
   if (!match) return '';
 
-  const number = match[0].replace(/[.,]$/, '');
-  const after = vo.slice(match.index + match[0].length).trim().split(/\s+/)[0] ?? '';
-  const unit = after.replace(/[^a-z]/gi, '');
+  const value = figureIn(match[0]);
+  const number = value === null ? match[0].replace(/[.,]$/, '') : spokenFigure(value);
+  /**
+   * AND "CUBIC" IS NOT A UNIT, IT IS HALF OF ONE. Taking one word after the
+   * figure delivered "270 MILLION CUBIC", which is not a quantity of anything.
+   */
+  const rest = vo.slice(match.index + match[0].length).trim().split(/\s+/);
+  const word = (n) => (rest[n] ?? '').replace(/[^a-z³]/gi, '');
+  const unit = /^(cubic|square|nautical|metric|short|long)$/i.test(word(0))
+    ? `${word(0)} ${word(1)}`.trim()
+    : word(0);
   return (NOT_A_UNIT.test(unit) || !unit ? number : `${number} ${unit}`).toUpperCase();
 }
 
@@ -2862,7 +2895,19 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
    * that empties a shot is not variety.
    */
   const canSlate = Boolean(line.title || line.kicker || line.footer || bigNumber(line.vo));
-  if (!contentBound && recentTypes.length && recentTypes[recentTypes.length - 1] === sceneType) {
+  /**
+   * AND THE ENDING IS NOT SUBJECT TO IT.
+   *
+   * The rhythm rule exists to stop a DERIVED rotation repeating itself, and it
+   * fired on the one shot in the reel that is not derived: the closing card,
+   * swapped to a composite because the shot before it also happened to be a
+   * card. A short that ends by running out of narration over a diagram has no
+   * ending — law 14's closing beat IS the typographic representation, and it is
+   * as much a decision as a directed template. If two cards land back to back
+   * the earlier one yields; the last one never does.
+   */
+  const isEnding = beat === 'close';
+  if (!contentBound && !isEnding && recentTypes.length && recentTypes[recentTypes.length - 1] === sceneType) {
     if (sceneType !== 'composite') sceneType = 'composite';
     else if (canSlate) sceneType = 'title-slate';
   }
@@ -3221,7 +3266,22 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
     scene.props = planProps({line, rand, look, side, durationInFrames, recentProps, beat});
   }
 
-  if (line.onScreen) {
+  /**
+   * AND A CARD DOES NOT NEED A STICKER REPEATING ITS OWN FIGURE.
+   *
+   * Once the slate and the sticker read the same number the same way, they said
+   * it twice in one frame: 262 METRES set as the largest type on the sheet with
+   * 262 METRES typed underneath it. Two statements of one fact is not emphasis,
+   * it is the shot arguing with itself about which of them is the point. The
+   * card is where a figure lands (law 15), so the card keeps it.
+   */
+  const carriedByTheCard =
+    line.onScreen &&
+    typeof scene.params?.title === 'string' &&
+    figureIn(String(line.onScreen)) !== null &&
+    figureIn(String(line.onScreen)) === figureIn(String(scene.params.title));
+
+  if (line.onScreen && !carriedByTheCard) {
     /**
      * A STICKER THAT FINISHES ARRIVING AS IT LEAVES WAS NEVER READ.
      *
@@ -3666,12 +3726,41 @@ async function main() {
      * its own ending. A closing beat that wants air gets one shot and keeps it.
      */
     const closing = read.hold && index === brief.lines.length - 1;
-    const fragments = closing ? [line.vo] : fragmentsOf(line.vo, budget);
+    const raw = closing ? [line.vo] : fragmentsOf(line.vo, budget);
     // THE SPOKEN WINDOW WINS. If the narration has been recorded, this line
     // starts and ends at measured times and the fragments divide that; only an
     // episode with no voiceover yet falls back to counting words.
     const spoken = voice?.lines?.[index];
-    const cuts = spoken ? splitWindow(fragments, spoken.start, spoken.end) : null;
+    /**
+     * AND A FRAGMENT TOO SHORT TO BE A SHOT IS NOT A SHOT.
+     *
+     * `fragmentsOf` counts WORDS, and the pace budget makes a hook's budget six
+     * of them, so a seven-word hook was split — and the measured window for it
+     * was two seconds, so the reel opened on EIGHTEEN FRAMES of a title card
+     * and cut. Six tenths of a second is not an establishing shot; it is a
+     * flash, and it was the flash the whole short is judged on.
+     *
+     * The word budget cannot see this because it does not know how long the
+     * line takes to say. The measured window does. So once the window is known,
+     * a cut below the floor merges back into its neighbour and the fragments
+     * are re-divided — the audio never moves, only the number of shots over it.
+     */
+    let fragments = raw;
+    let cuts = spoken ? splitWindow(fragments, spoken.start, spoken.end) : null;
+    if (cuts) {
+      const FLASH = Math.round(FPS * 0.8);
+      let guard = fragments.length;
+      while (fragments.length > 1 && guard-- > 0) {
+        const worst = cuts.indexOf(Math.min(...cuts));
+        if (cuts[worst] >= FLASH) break;
+        const into = worst === 0 ? 1 : worst - 1;
+        const merged = [...fragments];
+        merged[Math.min(worst, into)] = `${fragments[Math.min(worst, into)]} ${fragments[Math.max(worst, into)]}`;
+        merged.splice(Math.max(worst, into), 1);
+        fragments = merged;
+        cuts = splitWindow(fragments, spoken.start, spoken.end);
+      }
+    }
 
     const result = planScene({
       line,
@@ -3869,6 +3958,29 @@ async function main() {
     const lead = Math.round(scene.durationInFrames * (opening ? 0.16 : 0.3));
     if ((scene.params.titleFrame ?? 0) <= lead) continue;
     scene.params.titleFrame = lead;
+  }
+
+  /**
+   * AND THE FIGURE LANDS BEFORE THE CUT — RE-CHECKED AFTER EVERYTHING MOVED IT.
+   *
+   * `countOver` is set from the shot's length at the moment the card is built,
+   * and every pass since then is allowed to push `titleFrame` later: the beat
+   * separator, the unearned-hold rescue, the early landing above. A card whose
+   * count started at frame 53 and ran for 47 was scheduled to arrive at 100 in
+   * an 86-frame shot, so the reel would have shipped a claim about a hundred
+   * thousand heartbeats under a counter still climbing when the cut came.
+   *
+   * Law 15 says a number either climbs or stands, and a number cut off mid-climb
+   * is neither. `countWindow` already knows how to bound one; it simply has to
+   * be asked again once nothing else is going to move.
+   */
+  for (const scene of config.scenes) {
+    const p = scene.params ?? {};
+    if (p.countTo === undefined && p.spinTo === undefined) continue;
+    const start = Number(p.titleFrame) || 0;
+    const win = countWindow({from: start, countFrom: start, countOver: p.countOver ?? p.spinFrames}, scene.durationInFrames);
+    if (p.countTo !== undefined) p.countOver = win.over;
+    else p.spinFrames = Math.max(10, win.over);
   }
 
   /**

@@ -117,6 +117,8 @@ export const DIAGRAM_KINDS = [
   'scaleHaulage',
   // And the sixth: a form lost inside a medium and recovered as its negative.
   'mouldCast',
+  // And the seventh: the land from the side, the water in it, the mass that moves.
+  'terrainSection',
 ];
 
 export const OPTIONAL_ROLE = '?';

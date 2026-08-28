@@ -752,3 +752,179 @@ export function buildMouldCast({vo, accent, muted, claims = []}) {
     depicts: 'process',
   };
 }
+
+/**
+ * A LANDFORM IN PROFILE, AND WHAT MOVES IN IT.
+ *
+ * Reads the sentence for the five things a terrain section can be about, and
+ * builds only what the line actually claims. A line that names a dam gets the
+ * structure; one that names a slip plane gets the plane and the slab resting on
+ * it; one that says water got in gets the seepage; one that says something let
+ * go gets the release; one that says the water went over gets the overtopping.
+ * Nothing here knows it is in the Alps.
+ *
+ * THE ORDER IS THE ARGUMENT. Seepage lands before the release, the release
+ * before the travel, and the overtopping last, because that is the causal chain
+ * the sentence is describing and the drawing has to be able to be believed.
+ */
+/** A spoken volume, written the way it is said. */
+function volumeLabel(n) {
+  if (n >= 1e9) return `${+(n / 1e9).toFixed(2)} BILLION m³`;
+  if (n >= 1e6) return `${+(n / 1e6).toFixed(0)} MILLION m³`;
+  if (n >= 1e3) return `${(n / 1e3).toFixed(0)} THOUSAND m³`;
+  return `${n} m³`;
+}
+
+export function buildTerrainSection({vo, seed, accent, muted, claims = []}) {
+  const wobble = (i, amp = 0.04) => (hash01(seed, i) - 0.5) * amp;
+  const impounds = claims.includes('impoundment') || has(vo, /\b(dams?|reservoirs?|impound\w*)\b/i);
+  const plane = claims.includes('slip_plane') || has(vo, /\b(slab|clay|bed of|resting on|slip)\b/i);
+  const seeps = claims.includes('fluid_ingress');
+  const goes = claims.includes('release') || claims.includes('displacement');
+  /**
+   * CREEP IS MOVEMENT, JUST SLOW — and drawing it as stillness is a lie the
+   * sentence contradicts. "The mountainside was already creeping" put a
+   * perfectly static valley on screen while the narration said it was moving,
+   * which is the anti-slideshow test failed at the level of meaning rather than
+   * of animation. It gets a fraction of the travel, which is the claim.
+   */
+  const creeps = !goes && has(vo, /\bcreep\w*|\bcrept\b|\binching\b|\bslowly moving\b/i);
+  const spills = claims.includes('overtopping');
+  /**
+   * A NUMBER IS A HEIGHT ONLY WHERE THE SENTENCE SAYS SO.
+   *
+   * The first version took whatever `figureIn` found and let the shape it was
+   * building decide what it meant, so "the slab slid into the lake in FORTY-FIVE
+   * SECONDS" put 45 MILLION m³ on the frame — a drawing inventing a fact out of
+   * a unit it had not read. The unit is read off the sentence, and a figure with
+   * the wrong unit for this slot is not used at all.
+   */
+  const figure = figureIn(vo);
+  const isHeight = /\b\d*\s*(metres?|meters?|feet|foot)\s+(high|tall|deep)\b|\b(high|tall|deep)\b[^.]*\b(metres?|meters?|feet)\b|\b(metres?|meters?|feet)\s+(high|tall|deep)\b/i.test(vo);
+  const isVolume = /\bcubic\s+(metres?|meters?|yards?|kilometres?|kilometers?)\b|\bm³/i.test(vo);
+
+  /**
+   * THE VALLEY. A high shoulder on the left, a gorge, and a lower shoulder on
+   * the right — the shape of every impounded valley there is, roughened so it
+   * is a landform and not a diagram of one.
+   */
+  const profile = [
+    [0, 0.30 + wobble(1)],
+    [0.16, 0.34 + wobble(2)],
+    [0.34, 0.46 + wobble(3)],
+    [0.46, 0.66 + wobble(4, 0.02)],
+    [0.58, 0.72],
+    [0.66, 0.66 + wobble(5, 0.02)],
+    [0.78, 0.50 + wobble(6)],
+    [1, 0.42 + wobble(7)],
+  ];
+
+  const spec = {
+    type: 'terrainSection',
+    accent,
+    muted,
+    profile,
+    scaleNote: 'schematic profile',
+    subject: 'terrainSection',
+    depicts: 'terrain',
+    claims,
+  };
+
+  /**
+   * THE BEDS. Two ordinary ones and, when the sentence says so, the weak one —
+   * the whole reason the section exists. Without the claim there is no weak bed,
+   * because a section that always draws a failure plane is asserting one.
+   */
+  spec.beds = plane
+    ? [{label: 'rock', depth: 0.05}, {label: 'clay', depth: 0.115, weak: true}, {depth: 0.19}]
+    : [{label: 'rock', depth: 0.06}, {depth: 0.13}];
+
+  if (impounds) {
+    spec.structure = {
+      x: 0.72,
+      base: 0.44,
+      width: 0.035,
+      label: 'dam',
+      ...(figure && isHeight ? {height: `${figure} m`} : {}),
+    };
+    spec.water = {level: 0.52, label: 'reservoir'};
+  }
+
+  /**
+   * THE SLAB. It sits ON the weak bed, between the shoulder and the water, and
+   * it travels DOWN AND RIGHT into the basin — along the plane it was resting
+   * on, because that is the claim.
+   */
+  /**
+   * WHERE IN THE SLIDE THIS SENTENCE SITS — because the slab does not go twice.
+   *
+   * Four consecutive beats describe one event: the bed lets go, the slab
+   * travels, the rock takes the water's place, the water goes over. Built
+   * independently they each animated the slide from the top, so the reel would
+   * have shown a mountain sliding into a lake THREE TIMES and called it one
+   * event. Law 31 and the process-continuity rule are the same rule: the object
+   * continues.
+   *
+   * So a sentence about a CONSEQUENCE of the release opens with the release
+   * already finished — the animation began before the cut and this shot is
+   * looking at the result, which is what the sentence is about.
+   */
+  const already = (claims.includes('displacement') || claims.includes('overtopping')) && !claims.includes('release');
+  /**
+   * AND THE SENTENCE THAT SAYS IT LET GO IS NOT THE SENTENCE THAT SAYS IT WENT.
+   *
+   * "Water soaked into the clay UNTIL THE BED LET GO" and "the slab SLID INTO
+   * THE LAKE" are the cause and the event, and giving both the full travel put
+   * the mountain into the reservoir twice. The first is the lurch — the moment
+   * it stops being held — and the second is the travel, opening from where the
+   * lurch left it.
+   */
+  const lets = claims.includes('release') && claims.includes('fluid_ingress');
+  const travels = claims.includes('release') && !claims.includes('fluid_ingress');
+
+  if (plane || goes || creeps) {
+    spec.mass = {
+      shape: [
+        [0.20, 0.365],
+        [0.42, 0.475],
+        [0.46, 0.60],
+        [0.24, 0.50],
+      ],
+      plane: [
+        [0.16, 0.34],
+        [0.30, 0.44],
+        [0.42, 0.545],
+        [0.50, 0.63],
+      ],
+      to: lets ? [0.035, 0.019] : goes ? [0.20, 0.11] : creeps ? [0.018, 0.010] : [0, 0],
+      // The travel opens already begun, so it continues the lurch instead of
+      // starting the mountain over at the top of the slope.
+      at: already ? -26 : travels ? -5 : lets ? 30 : creeps ? 6 : 8,
+      over: creeps ? 46 : travels ? 34 : lets ? 22 : 26,
+      label: 'slab',
+      /**
+       * And it is printed as the sentence says it, not as a raw integer:
+       * "270000000 m³" is a number nobody reads, and the narration says two
+       * hundred and seventy million.
+       */
+      ...(figure && isVolume ? {volume: volumeLabel(figure)} : {}),
+    };
+  }
+
+  if (seeps && plane) spec.seepage = {at: 4, over: 18, label: 'water in the bed'};
+  if (spills) spec.overtop = {at: 30, over: 20, label: 'over the crest'};
+
+  /**
+   * ONE annotation at most, and only for the thing the line is actually about.
+   * A section labelled everywhere is a section nobody reads.
+   */
+  spec.annotations = spills
+    ? [{x: 0.72, y: 0.38, text: 'over the crest', side: 'left', at: 34}]
+    : seeps && plane
+      ? [{x: 0.30, y: 0.455, text: 'water in the bed', side: 'right', at: 8}]
+      : plane && !goes
+        ? [{x: 0.34, y: 0.455, text: 'slip plane', side: 'right'}]
+        : [];
+
+  return spec;
+}

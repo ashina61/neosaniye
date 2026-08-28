@@ -1,0 +1,100 @@
+{
+  "id": "vajont",
+  "title": "Vajont — the dam did not fail",
+  "mood": "ash-grey",
+  "style": "documentary photograph, northern Italian Alps, overcast limestone light, grey and slate, fine grain, no text, no watermark, no people",
+  "negative": "no modern tourists, no signage, no cartoon, no illustration",
+  "$supply": {
+    "cutouts": false
+  },
+  "lines": [
+    {
+      "slug": "hook",
+      "vo": "The dam at Vajont did not fail.",
+      "graphicsOnly": true,
+      "kicker": "Vajont · 1963",
+      "title": "IT HELD",
+      "footer": "that was never the question"
+    },
+    {
+      "slug": "wall",
+      "vo": "The dam was two hundred and sixty-two metres of concrete in a gorge.",
+      "graphicsOnly": true,
+      "onScreen": "262 METRES"
+    },
+    {
+      "slug": "valley",
+      "vo": "The river below it ran down to the town of Longarone.",
+      "graphicsOnly": true,
+      "stops": [
+        "THE DAM",
+        "LONGARONE"
+      ]
+    },
+    {
+      "slug": "toc",
+      "vo": "But the mountainside above the reservoir was already creeping.",
+      "graphicsOnly": true,
+      "caption": [
+        "Monte Toc",
+        "was MOVING."
+      ]
+    },
+    {
+      "slug": "bed",
+      "vo": "Inside it a slab of rock rested on a weak bed of clay.",
+      "graphicsOnly": true,
+      "caption": [
+        "A slip plane,",
+        "inside the mountain."
+      ]
+    },
+    {
+      "slug": "water",
+      "vo": "Water from the reservoir soaked into that clay until the bed let go.",
+      "graphicsOnly": true
+    },
+    {
+      "slug": "slide",
+      "vo": "On the ninth of October the slab slid into the lake in forty-five seconds.",
+      "graphicsOnly": true,
+      "onScreen": "45 SECONDS"
+    },
+    {
+      "slug": "displace",
+      "vo": "Two hundred and seventy million cubic metres of rock took the reservoir's place.",
+      "graphicsOnly": true,
+      "caption": [
+        "The rock went in.",
+        "The water came OUT."
+      ]
+    },
+    {
+      "slug": "over",
+      "vo": "The lake had nowhere to go but over the crest of the dam.",
+      "graphicsOnly": true,
+      "caption": [
+        "Over",
+        "the top."
+      ]
+    },
+    {
+      "slug": "town",
+      "vo": "Minutes later it reached the town of Longarone, and two thousand people died.",
+      "graphicsOnly": true,
+      "stops": [
+        "THE DAM",
+        "LONGARONE"
+      ],
+      "onScreen": "TWO THOUSAND"
+    },
+    {
+      "slug": "close",
+      "vo": "The dam is still standing, and they built the wrong thing correctly.",
+      "graphicsOnly": true,
+      "kicker": "Vajont · 9 October 1963",
+      "title": "STILL THERE",
+      "footer": "the wrong thing, built correctly"
+    }
+  ]
+}

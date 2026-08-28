@@ -33,7 +33,8 @@
  */
 
 import {NEEDS_A_PICTURE, SERVES, contract, readSubject, semanticCheck} from './semantics.mjs';
-import {buildAnatomyFlow, buildCrossSection, buildMap, buildMouldCast, buildProcess, buildScaleHaulage} from './visualise.mjs';
+import {buildAnatomyFlow, buildCrossSection, buildMap, buildMouldCast,
+  buildTerrainSection, buildProcess, buildScaleHaulage} from './visualise.mjs';
 
 export const REPRESENTATIONS = [
   'PHOTO',
@@ -99,6 +100,7 @@ export const CAPTION_ZONE = {
    * the sentence the drawing is already making.
    */
   mouldCast: {y: 0.07, align: 'left'},
+  terrainSection: {y: 0.07, align: 'left'},
 };
 
 /** Words that say the shot is about a machine with moving parts. */
@@ -134,19 +136,53 @@ export function figureIn(text) {
     const digits = clean.replace(/,/g, '');
     let value = /^\d+$/.test(digits) ? Number(digits) : WORD_NUMBERS[clean];
     if (value === undefined) continue;
-    const next = (words[i + 1] ?? '').replace(/[.,]$/, '');
-    if ((next === 'hundred' || next === 'thousand' || next === 'million') && value < WORD_NUMBERS[next]) {
-      value *= WORD_NUMBERS[next];
+    /**
+     * A SPOKEN NUMBER RUNS UNTIL IT STOPS, and this used to read the first word
+     * of it and leave.
+     *
+     * "two hundred and sixty-two metres" returned TWO HUNDRED, so a dam whose
+     * whole first fact is its height was going to be dimensioned 200 m under a
+     * narration saying 262 — the same fault as the hyphen compound below it,
+     * one place further along the same sentence, and the reason that comment
+     * exists: a drawn figure that contradicts the line it illustrates is worse
+     * than no figure, because the viewer can see both.
+     *
+     * So the compound is walked to its end: a scale word multiplies, an "and"
+     * or a hyphen adds the remainder, and a scale word AFTER the remainder
+     * multiplies the whole thing — which is how "two hundred and seventy
+     * million" is said and the only way to get it right.
+     */
+    let k = i + 1;
+    const word = (n) => (words[n] ?? '').replace(/[.,]$/, '');
+    const SCALE = {hundred: 100, thousand: 1000, million: 1e6, billion: 1e9};
+
+    if (SCALE[word(k)] !== undefined && value < SCALE[word(k)]) {
+      value *= SCALE[word(k)];
+      k += 1;
+      if (word(k) === 'and') k += 1;
+      const rest = WORD_NUMBERS[word(k)];
+      if (rest !== undefined && rest < 100) {
+        value += rest;
+        k += 1;
+        // "sixty-two" tokenises as two words, so the units may follow the tens.
+        const unit = WORD_NUMBERS[word(k)];
+        if (rest >= 20 && rest % 10 === 0 && unit !== undefined && unit >= 1 && unit <= 9) {
+          value += unit;
+          k += 1;
+        }
+      }
+      // "two hundred and seventy MILLION" — the scale belongs to the whole run.
+      const outer = SCALE[word(k)];
+      if (outer !== undefined && outer > 100) value *= outer;
     } else if (value >= 20 && value <= 90 && value % 10 === 0) {
       /**
        * A HYPHENATED COMPOUND IS ONE NUMBER.
        *
        * "twenty-one miles" tokenises as "twenty" and "one", and taking the
        * first gave a map that labelled the Strait of Hormuz TWENTY MILES while
-       * the narration said twenty-one. A drawn figure that contradicts the line
-       * it illustrates is worse than no figure: the viewer can see both.
+       * the narration said twenty-one.
        */
-      const unit = WORD_NUMBERS[next];
+      const unit = WORD_NUMBERS[word(k)];
       if (unit !== undefined && unit >= 1 && unit <= 9) value += unit;
     }
     return value;
@@ -209,6 +245,7 @@ const DEMONSTRATES = {
   anatomyFlow: ['chambers', 'valves', 'one_way_flow', 'circulation', 'contraction', 'wall_thickness', 'delay'],
   scaleHaulage: ['mass', 'human_scale', 'haulage', 'distance'],
   mouldCast: ['engulf_front', 'entombment', 'decay', 'void_left', 'infill', 'sequence'],
+  terrainSection: ['impoundment', 'slip_plane', 'release', 'displacement', 'overtopping', 'fluid_ingress'],
   measurement: ['mass', 'distance', 'narrowness'],
   timeline: ['duration'],
   gearSystem: [],
@@ -216,7 +253,7 @@ const DEMONSTRATES = {
   scan: ['fluid_ingress'],
 };
 
-const SPECIFICITY = ['mouldCast', 'anatomyFlow', 'crossSection', 'process', 'map', 'scaleHaulage', 'orbit', 'gearSystem', 'timeline', 'scan', 'measurement'];
+const SPECIFICITY = ['terrainSection', 'mouldCast', 'anatomyFlow', 'crossSection', 'process', 'map', 'scaleHaulage', 'orbit', 'gearSystem', 'timeline', 'scan', 'measurement'];
 
 export function bestDrawing({domain = 'abstract', domains = [], claims = []}) {
   const candidates = Object.keys(DEMONSTRATES).filter((type) =>
@@ -296,6 +333,7 @@ export function chooseRepresentation({
     anatomyFlow: () => buildAnatomyFlow({vo, accent, muted, claims: read.claims}),
     scaleHaulage: () => buildScaleHaulage({vo, accent, muted, claims: read.claims, anchorFigure}),
     mouldCast: () => buildMouldCast({vo, accent, muted, claims: read.claims}),
+    terrainSection: () => buildTerrainSection({vo, seed, accent, muted, claims: read.claims}),
   };
 
   /**

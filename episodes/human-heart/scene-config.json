@@ -973,7 +973,7 @@
       "params": {
         "scrim": 0.39,
         "kicker": "",
-        "title": "THREE TIMES",
+        "title": "3 TIMES",
         "footer": "",
         "titleFrame": 29,
         "titleSize": 230,
@@ -1231,7 +1231,7 @@
       "params": {
         "scrim": 0.43,
         "kicker": "",
-        "title": "FOUR CHAMBERS",
+        "title": "4 CHAMBERS",
         "footer": "",
         "titleFrame": 16,
         "titleSize": 230,
@@ -3432,7 +3432,7 @@
       "params": {
         "scrim": 0.49,
         "kicker": "",
-        "title": "ONE HUNDRED THOUSAND",
+        "title": "100,000 BEATS",
         "footer": "",
         "titleFrame": 53,
         "titleSize": 230,
@@ -3452,6 +3452,8 @@
         "motifFrame": 15,
         "motifColour": "#ffcf3d",
         "motifOpacity": 0.83,
+        "countTo": 100000,
+        "countOver": 27,
         "pushEndFrame": 81,
         "pushFrom": 1.62,
         "pushTo": 1.02,

@@ -43,6 +43,7 @@ export const DOMAINS = [
   'celestial',
   'quantity',
   'abstract',
+  'terrain',
 ];
 
 /**
@@ -82,6 +83,7 @@ export const SERVES = {
    * anatomy here would let that back in through the front door: what is being
    * depicted is not the body, it is what HAPPENED TO the space it occupied.
    */
+  terrainSection: ['terrain', 'geography'],
   mouldCast: ['process', 'material'],
   gearSystem: ['mechanism'],
   timeline: ['elapsed'],
@@ -116,9 +118,23 @@ const SIGNALS = [
     'anatomy',
     /\b(heart|cardiac|chamber|chambers|atrium|atria|ventricle|ventricles|valves?|artery|arteries|vein|veins|blood|lungs?|pulmonary|circulat\w*|muscle|tissue|organ|nerve|kidney|liver|brain|cell|cells|body|torso|chest|beats?|beating|pulse)\b/i,
   ],
+  /**
+   * THE LAND FROM THE SIDE, not the land from above.
+   *
+   * `geography` is a plan: where things are relative to each other. A slope
+   * that fails, a reservoir that overtops, a glacier on its bed and a cliff
+   * that retreats are all events in ELEVATION, and reading them as plan-view
+   * geography sends them to a map that cannot draw a water level, let alone
+   * water going over something. Placed above geography because a sentence that
+   * says "slope" and "valley" in one breath is about the slope.
+   */
+  [
+    'terrain',
+    /\b(landslides?|rockslides?|slip|slippage|slope|slopes?|hillside|mountainside|flank|scarp|escarpment|slump\w*|rockfall|avalanche|collaps\w*|subsid\w*|sinkhole|dams?|reservoirs?|impound\w*|spillway|crest|overtop\w*|glaciers?|moraine|cliffs?|erod\w*|erosion|bedrock|strata|seabed|lakebed|valley floor|gorge|ravine|slabs?|clay|shale|marl|creep\w*|talus|scree)\b|\bslid (?:in|into|down)\b|\bslides? (?:in|into|down)\b/i,
+  ],
   [
     'geography',
-    /\b(strait|straits|coast|coastline|shore|shores|sea|ocean|gulf|bay|channel|island|peninsula|border|frontier|territory|region|province|harbour|harbor|port|route|lanes?|passage|mountains?|river|delta|desert|continent|northern|southern|uphill|downhill|miles?|kilometres?|kilometers?|way around|map)\b/i,
+    /\b(strait|straits|coast|coastline|shore|shores|sea|ocean|gulf|bay|channel|island|peninsula|border|frontier|territory|region|province|harbour|harbor|port|route|lanes?|passage|mountains?|river|delta|desert|continent|northern|southern|uphill|downhill|miles?|kilometres?|kilometers?|way around|map|valleys?|towns?|villages?|cit(?:y|ies))\b/i,
   ],
   [
     'process',
@@ -151,7 +167,18 @@ const SUBJECTS = [
   ['coastline', /\b(coast|shore|peninsula|island)\b/i],
   ['tradeRoute', /\b(route|lanes?|shipping|convoy|tanker)\b/i],
   ['swordMaking', /\b(sword|blade|smith|forge|forging)\b/i],
-  ['romanConcrete', /\b(concrete|cement|mortar|pozzolan\w*|lime)\b/i],
+  /**
+   * A SUBJECT IS A THING, NOT A MATERIAL IT IS MADE OF.
+   *
+   * "Two hundred and sixty-two metres of concrete closed a gorge" was read as
+   * romanConcrete, which would let a Roman-harbour section stand in for an
+   * Alpine dam — the same error as a Roman lamp playing five different
+   * civilisations (law 40), reached from the other direction. Roman concrete is
+   * a subject when the sentence is ABOUT the Roman material; a modern structure
+   * that happens to be concrete is not.
+   */
+  ['romanConcrete', /\b(roman concrete|pozzolan\w*|opus caementicium)\b|\b(concrete|cement|mortar|lime)\b(?=[^.]*\b(roman|antiquity|ancient|seawater|marine)\b)/i],
+  ['terrainSection', /\b(landslides?|slip plane|slope failure|reservoirs?|dams?)\b/i],
   ['megalith', /\b(megalith|block|blocks|stone|stones|trilithon)\b/i],
   ['mechanism', /\b(gears?|cogs?|clockwork|escapement)\b/i],
   ['mouldCast', /\b(cavit\w*|plaster cast|entomb\w*)\b/i],
@@ -178,6 +205,7 @@ export const SUBJECT_DOMAIN = {
   romanConcrete: 'material',
   megalith: 'scale',
   mechanism: 'mechanism',
+  terrainSection: 'terrain',
 };
 
 /** Everything the line asks the picture to demonstrate. */
@@ -201,7 +229,16 @@ const CLAIMS = [
   ['self_healing', /\b(seals?|heals?|repairs?|closes? (?:it|the gap))\b/i],
   ['mass', /\b(tons?|tonnes?|weigh\w*)\b/i],
   ['human_scale', /\b(men|people|hands?|crane|no crane)\b/i],
-  ['haulage', /\b(roll\w*|haul\w*|drag\w*|slid|sledge|rope|capstan)\b/i],
+  /**
+   * `slid` IS NOT HAULAGE.
+   *
+   * It was in this list because a megalith slides on rollers. A mountain also
+   * slides, and it does it with no rope, no sledge and nobody pulling — so a
+   * landslide came out claiming haulage and would have been drawn as a crew
+   * dragging a block. Haulage needs the APPARATUS in the sentence; sliding on
+   * its own is just a thing moving.
+   */
+  ['haulage', /\b(roll\w*|haul\w*|drag\w*|sledge|rope|capstan)\b/i],
   ['distance', /\b(miles?|kilometres?|kilometers?|metres?|meters?|feet|uphill)\b/i],
   ['duration', /\b(years?|months?|decades?|centuries|hours?|days?)\b/i],
   /**
@@ -219,6 +256,20 @@ const CLAIMS = [
   ['decay', /\b(decay\w*|decompos\w*|rots?|rotted|rotting|vanish\w*|left nothing)\b/i],
   ['void_left', /\b(cavit\w*|hollows?|voids?|impressions?|empty space|the space (?:it|they|he|she) left)\b/i],
   ['infill', /\b(plaster|infill|poured in)\b|\bfilled? (?:in|with)\b|\bpour\w*\b[^.]*\binto the (?:cavity|cavities|void|hollow|space|mould|mold|impression)\b/i],
+  /**
+   * A SLOPE LETTING GO, AND WHAT THAT DOES TO THE WATER BESIDE IT.
+   *
+   * Narrow on purpose, the way the mould's five are. `impoundment` needs a
+   * structure holding water back, not any mention of a lake; `release` needs
+   * something giving way rather than any motion; `displacement` needs one thing
+   * taking another's place. Widen any of these and they start taking lines off
+   * the drawings that were built for them.
+   */
+  ['impoundment', /\b(dams?|reservoirs?|impound\w*|held? back|behind the (?:dam|wall))\b/i],
+  ['slip_plane', /\b(slip plane|weak bed|bed of clay|planes? of weakness|shear\s?(?:plane|surface)|lay on|resting on|sliding surface)\b/i],
+  ['release', /\b(let go|gave way|released?|broke free|detached?|failed)\b|\bslid (?:in|into|down|off)\b/i],
+  ['displacement', /\b(took (?:the|its) .{0,12}place|displac\w*|pushed? (?:the )?water|nowhere to go|no(?:where)? else to go)\b/i],
+  ['overtopping', /\b(overtop\w*|over the (?:top|crest|wall|dam)|spilled? over|went over)\b/i],
 ];
 
 /**
@@ -252,7 +303,7 @@ export function readSubject(vo = '') {
  * "typography is one option" and "typography is the default", and the second
  * is what produced five reels of text.
  */
-export const NEEDS_A_PICTURE = ['geography', 'process', 'anatomy', 'mechanism', 'scale', 'material'];
+export const NEEDS_A_PICTURE = ['geography', 'process', 'anatomy', 'mechanism', 'scale', 'material', 'terrain'];
 
 /**
  * THE GATE.
@@ -307,6 +358,9 @@ export function contract({type, subject, domain, claims = []}) {
  * It is an ERROR, not a warning. A drawing of the wrong kind of thing is the
  * one defect in this repo that a viewer cannot detect and cannot check.
  */
+/** The shots of one line share a stem: s07-slide, s07-slide-b, s07-slide-c. */
+const stem = (id) => String(id ?? '').replace(/-[a-z]$/, '');
+
 export function representationProblems(config) {
   const errors = [];
   const warnings = [];
@@ -377,7 +431,21 @@ export function representationProblems(config) {
      * REPRESENTATION_REQUIRED, which is the same treatment a refused photograph
      * already gets.
      */
-    if (!drawn && !photographic && NEEDS_A_PICTURE.includes(read.domain) && read.confidence >= 0.7) {
+    /**
+     * …AND "HAS NONE" MEANS THE LINE, NOT THE SHOT.
+     *
+     * A sentence usually becomes two or three shots, and the card that states
+     * its figure is one of them: "the slab slid into the lake in forty-five
+     * seconds" is a 45 SECONDS slate CUT TO the section showing it slide. The
+     * check looked at one scene at a time, so it reported the card as a line
+     * carried by type alone while the drawing it belongs to was in the very next
+     * shot. A warning that fires on the correct arrangement is a warning people
+     * learn to scroll past.
+     */
+    const sameLine = (config.scenes ?? []).filter((other) => stem(other.id) === stem(scene.id));
+    const drawnNearby = sameLine.some((other) => other.diagram) || sameLine.some((other) => Object.keys(other.assets ?? {}).some((r) => !r.startsWith('?')));
+
+    if (!drawn && !photographic && !drawnNearby && NEEDS_A_PICTURE.includes(read.domain) && read.confidence >= 0.7) {
       warnings.push(
         `${where}: REPRESENTATION_REQUIRED — the line is about ${read.domain}` +
           `${read.subject ? ` (${read.subject})` : ''} and is being carried by type alone`,

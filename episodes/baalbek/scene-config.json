@@ -244,7 +244,7 @@
       "params": {
         "scrim": 0.47,
         "kicker": "",
-        "title": "EIGHT HUNDRED TONS",
+        "title": "800 TONS",
         "footer": "",
         "titleFrame": 23,
         "titleSize": 230,
@@ -256,7 +256,7 @@
           "#1c1f21",
           "#0a0b0c"
         ],
-        "spinTo": "EIGHT HUNDRED TONS",
+        "spinTo": "800 TONS",
         "spinReel": [
           "THOUSAND",
           "HUNDRED",
@@ -265,7 +265,7 @@
           "FIFTY",
           "TWENTY"
         ],
-        "spinFrames": 9,
+        "spinFrames": 10,
         "pushEndFrame": 73,
         "pushFrom": 1.04,
         "pushTo": 1.05,
@@ -478,7 +478,7 @@
           "a mile uphill"
         ],
         "captionX": 84,
-        "captionY": 106,
+        "captionY": 134,
         "captionSize": 65,
         "captionAlign": "left",
         "captionFrame": 55,
@@ -486,11 +486,14 @@
         "captionScrim": 0.38,
         "captionRecedeAt": 78,
         "accent": "#d94f3d",
+        "motif": "route",
         "motifStops": [
           "The quarry",
           "The slope",
           "The podium"
         ],
+        "motifFrame": 18,
+        "motifColour": "#d94f3d",
         "handheld": 1.5,
         "panX": 198,
         "captionEmphasis": "bedrock",
@@ -498,86 +501,63 @@
         "captionMark": "highlight",
         "captionWordEvery": 4,
         "cameraMove": "pan",
-        "cameraPurpose": "expose information the frame was withholding, or follow a movement"
+        "cameraPurpose": "expose information the frame was withholding, or follow a movement",
+        "motifY": 580
       },
       "diagram": {
-        "type": "map",
-        "regions": [
-          {
-            "kind": "land",
-            "shape": [
-              [
-                0.06,
-                0.2
-              ],
-              [
-                0.42228,
-                0.14
-              ],
-              [
-                0.94,
-                0.24
-              ],
-              [
-                0.9,
-                0.66
-              ],
-              [
-                0.56864,
-                0.72
-              ],
-              [
-                0.08,
-                0.62
-              ]
-            ]
-          }
-        ],
+        "type": "terrainSection",
         "accent": "#d94f3d",
         "muted": "#cfc6ae",
-        "route": [
-          {
-            "points": [
-              [
-                0.1,
-                0.423496
-              ],
-              [
-                0.5,
-                0.441984
-              ],
-              [
-                0.9,
-                0.45212
-              ]
-            ]
-          }
+        "profile": [
+          [
+            0,
+            0.316448
+          ],
+          [
+            0.16,
+            0.338476
+          ],
+          [
+            0.34,
+            0.444456
+          ],
+          [
+            0.46,
+            0.669722
+          ],
+          [
+            0.58,
+            0.72
+          ],
+          [
+            0.66,
+            0.6659280000000001
+          ],
+          [
+            0.78,
+            0.494332
+          ],
+          [
+            1,
+            0.41324
+          ]
         ],
-        "markers": [
-          {
-            "x": 0.1,
-            "y": 0.423496,
-            "label": "The quarry",
-            "kind": "place"
-          },
-          {
-            "x": 0.5,
-            "y": 0.441984,
-            "label": "The slope",
-            "kind": "place"
-          },
-          {
-            "x": 0.9,
-            "y": 0.45212,
-            "label": "The podium",
-            "kind": "place"
-          }
-        ],
-        "subject": "geography",
+        "scaleNote": "schematic profile",
+        "subject": "terrain",
+        "depicts": "terrain",
         "claims": [
           "distance"
         ],
-        "depicts": "geography",
+        "beds": [
+          {
+            "label": "rock",
+            "depth": 0.06
+          },
+          {
+            "depth": 0.13
+          }
+        ],
+        "annotations": [],
         "from": 0,
         "over": 49
       }
@@ -625,7 +605,7 @@
           "from where they sit"
         ],
         "captionX": 84,
-        "captionY": 106,
+        "captionY": 134,
         "captionSize": 58,
         "captionAlign": "left",
         "captionFrame": 29,
@@ -642,83 +622,59 @@
         "cameraPurpose": "reveal scale or context — the subject turns out to sit in something"
       },
       "diagram": {
-        "type": "map",
-        "regions": [
-          {
-            "kind": "land",
-            "shape": [
-              [
-                0.06,
-                0.2
-              ],
-              [
-                0.42228,
-                0.14
-              ],
-              [
-                0.94,
-                0.24
-              ],
-              [
-                0.9,
-                0.66
-              ],
-              [
-                0.56864,
-                0.72
-              ],
-              [
-                0.08,
-                0.62
-              ]
-            ]
-          }
-        ],
+        "type": "terrainSection",
         "accent": "#d94f3d",
         "muted": "#cfc6ae",
-        "route": [
-          {
-            "points": [
-              [
-                0.1,
-                0.423496
-              ],
-              [
-                0.5,
-                0.441984
-              ],
-              [
-                0.9,
-                0.45212
-              ]
-            ]
-          }
+        "profile": [
+          [
+            0,
+            0.316448
+          ],
+          [
+            0.16,
+            0.338476
+          ],
+          [
+            0.34,
+            0.444456
+          ],
+          [
+            0.46,
+            0.669722
+          ],
+          [
+            0.58,
+            0.72
+          ],
+          [
+            0.66,
+            0.6659280000000001
+          ],
+          [
+            0.78,
+            0.494332
+          ],
+          [
+            1,
+            0.41324
+          ]
         ],
-        "markers": [
-          {
-            "x": 0.1,
-            "y": 0.423496,
-            "label": "The quarry",
-            "kind": "place"
-          },
-          {
-            "x": 0.5,
-            "y": 0.441984,
-            "label": "The slope",
-            "kind": "place"
-          },
-          {
-            "x": 0.9,
-            "y": 0.45212,
-            "label": "The podium",
-            "kind": "place"
-          }
-        ],
-        "subject": "geography",
+        "scaleNote": "schematic profile",
+        "subject": "terrain",
+        "depicts": "terrain",
         "claims": [
           "distance"
         ],
-        "depicts": "geography",
+        "beds": [
+          {
+            "label": "rock",
+            "depth": 0.06
+          },
+          {
+            "depth": 0.13
+          }
+        ],
+        "annotations": [],
         "from": -1,
         "over": 1
       }
@@ -1323,9 +1279,9 @@
       "params": {
         "scrim": 0.49,
         "kicker": "",
-        "title": "THOUSAND MEN",
+        "title": "1,000 MEN",
         "footer": "",
-        "titleFrame": 53,
+        "titleFrame": 73,
         "titleSize": 230,
         "creep": 1.076,
         "accent": "#d94f3d",
@@ -1335,16 +1291,6 @@
           "#1c1f21",
           "#0a0b0c"
         ],
-        "spinTo": "THOUSAND MEN",
-        "spinReel": [
-          "THOUSAND",
-          "HUNDRED",
-          "MILLION",
-          "BILLION",
-          "FIFTY",
-          "TWENTY"
-        ],
-        "spinFrames": 9,
         "pushEndFrame": 80,
         "pushFrom": 1.16,
         "pushTo": 1.18,
@@ -1552,7 +1498,6 @@
         "subject": "megalith",
         "claims": [
           "no_alternative",
-          "haulage",
           "duration"
         ],
         "depicts": "scale",
@@ -1650,7 +1595,6 @@
         "subject": "megalith",
         "claims": [
           "no_alternative",
-          "haulage",
           "duration"
         ],
         "depicts": "scale",

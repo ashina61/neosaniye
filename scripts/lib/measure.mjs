@@ -85,9 +85,18 @@ export function findBoundaries(windows, windowMs, count, {floor = 0.12, minPause
     }
   }
 
-  // Leading silence is not a boundary between two lines — it is the top of the
-  // file, and taking it would push every line one place along.
-  const inner = runs.filter((run) => run.start > 0);
+  /**
+   * Leading silence is not a boundary between two lines — it is the top of the
+   * file, and taking it would push every line one place along.
+   *
+   * NEITHER IS TRAILING SILENCE, for the identical reason read backwards. A
+   * take that ended with a third of a second of room tone had that room tone
+   * counted as one of the boundaries, which pushed a REAL boundary out of the
+   * top n and merged three lines into one fourteen-second window — while the
+   * last line got the tail itself, 0.35s of nothing, and the reel would have
+   * cut its closing card to it. The two ends of a file are the same thing.
+   */
+  const inner = runs.filter((run) => run.start > 0 && run.start + run.length < windows.length);
   return inner
     .sort((a, b) => b.length - a.length)
     .slice(0, count)

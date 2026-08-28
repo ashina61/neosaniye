@@ -573,8 +573,8 @@
         "purpose": "spatial continuity",
         "because": "beat is CONTEXT"
       },
-      "representation": "PHOTO",
-      "drawn": null,
+      "representation": "HYBRID",
+      "drawn": "map",
       "emphasis": null,
       "reveal": null,
       "plates": [
@@ -606,17 +606,15 @@
         "purpose": "visual similarity",
         "because": "same subject (s04-mecca-photo.png)"
       },
-      "representation": "PHOTO",
-      "drawn": null,
+      "representation": "HYBRID",
+      "drawn": "map",
       "emphasis": "camels",
       "reveal": "rise",
       "plates": [
         "s04-mecca-photo.png"
       ],
       "drawnGround": null,
-      "props": [
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"camels\"",
         "secondary": "the strongest image in the reel, returned to",
@@ -629,21 +627,21 @@
       "template": "composite",
       "seconds": 2.27,
       "camera": {
-        "from": 1,
-        "to": 1.08,
+        "from": 1.52,
+        "to": 1.02,
         "panX": null,
-        "panY": -33
+        "panY": null
       },
-      "transition": "slip",
+      "transition": "cut",
       "cut": {
-        "kind": "DIRECTIONAL",
-        "purpose": "spatial continuity",
-        "because": "beat is CONTEXT"
+        "kind": "MATCH_CUT",
+        "purpose": "visual similarity",
+        "because": "direction carried (out)"
       },
-      "representation": "PHOTO",
-      "drawn": null,
+      "representation": "HYBRID",
+      "drawn": "terrainSection",
       "emphasis": "Cairo",
-      "reveal": "blur",
+      "reveal": "wipe",
       "plates": [
         "s05-cairo-bg.png"
       ],
@@ -663,10 +661,10 @@
       "template": "composite",
       "seconds": 1.3,
       "camera": {
-        "from": 1.6,
-        "to": 1.02,
+        "from": 1,
+        "to": 1.07,
         "panX": null,
-        "panY": null
+        "panY": -39
       },
       "transition": "cut",
       "cut": {
@@ -674,17 +672,15 @@
         "purpose": "visual similarity",
         "because": "same subject (s05-cairo-bg.png)"
       },
-      "representation": "PHOTO",
-      "drawn": null,
+      "representation": "HYBRID",
+      "drawn": "terrainSection",
       "emphasis": "gave",
-      "reveal": "rise",
+      "reveal": "punch",
       "plates": [
         "s05-cairo-bg.png"
       ],
       "drawnGround": null,
-      "props": [
-        "wire"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"gave\"",
         "secondary": "the strongest image in the reel, returned to",
@@ -697,10 +693,10 @@
       "template": "composite",
       "seconds": 1.9,
       "camera": {
-        "from": 1,
-        "to": 1.11,
-        "panX": null,
-        "panY": -42
+        "from": 1.17,
+        "to": 1.2,
+        "panX": -152,
+        "panY": null
       },
       "transition": "cut",
       "cut": {
@@ -708,10 +704,10 @@
         "purpose": "visual similarity",
         "because": "same subject (s05-cairo-bg.png)"
       },
-      "representation": "PHOTO",
-      "drawn": null,
+      "representation": "HYBRID",
+      "drawn": "terrainSection",
       "emphasis": "collapsed",
-      "reveal": "wipe",
+      "reveal": "rise",
       "plates": [
         "s05-cairo-bg.png"
       ],
@@ -732,15 +728,15 @@
       "seconds": 5.4,
       "camera": {
         "from": 1,
-        "to": 1.61,
+        "to": 1.12,
         "panX": null,
         "panY": null
       },
-      "transition": "cut",
+      "transition": "slip",
       "cut": {
-        "kind": "HARD_CUT",
-        "purpose": null,
-        "because": "OBJECT_WIPE was refused: the arrival could not be afforded here"
+        "kind": "OBJECT_WIPE",
+        "purpose": "object transformation",
+        "because": "beat is VERDICT"
       },
       "representation": "PHOTO",
       "drawn": null,
@@ -778,14 +774,14 @@
       "drawn": null
     },
     "mecca": {
-      "mode": "TYPOGRAPHY",
-      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
-      "drawn": null
+      "mode": "PROCEDURAL",
+      "why": "map is a picture of geography — it demonstrates the claim of what the line asserts",
+      "drawn": "map"
     },
     "cairo": {
-      "mode": "TYPOGRAPHY",
-      "why": "no correct photograph and nothing the sentence asks to be drawn — the claim is stated",
-      "drawn": null
+      "mode": "PROCEDURAL",
+      "why": "terrainSection is a picture of terrain — it demonstrates the claim of what the line asserts",
+      "drawn": "terrainSection"
     },
     "close": {
       "mode": "TYPOGRAPHY",
@@ -795,10 +791,10 @@
   },
   "quotas": {
     "camera": {
-      "push": 4,
+      "push": 3,
       "pull": 3,
       "hold": 1,
-      "pan": 2,
+      "pan": 3,
       "drift": 4
     },
     "transition": {
@@ -807,18 +803,16 @@
     },
     "framing": {},
     "cut": {
-      "MATCH_CUT": 8,
-      "OBJECT_WIPE": 1,
-      "DIRECTIONAL": 3,
-      "HARD_CUT": 1
+      "MATCH_CUT": 9,
+      "OBJECT_WIPE": 2,
+      "DIRECTIONAL": 2
     }
   },
   "editing": {
     "tally": {
-      "MATCH_CUT": 8,
-      "OBJECT_WIPE": 1,
-      "DIRECTIONAL": 3,
-      "HARD_CUT": 1
+      "MATCH_CUT": 9,
+      "OBJECT_WIPE": 2,
+      "DIRECTIONAL": 2
     },
     "hardRatio": 0.69,
     "total": 13,

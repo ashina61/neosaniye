@@ -44,6 +44,7 @@ import {CrossSectionPlate, CrossSectionSpec} from './CrossSection';
 import {MapPlate, MapSpec} from './Map';
 import {ProcessPlate, ProcessSpec} from './Process';
 import {MouldCastPlate, MouldCastSpec} from './MouldCast';
+import {TerrainSectionPlate, TerrainSectionSpec} from './TerrainSection';
 import {ScaleHaulagePlate, ScaleHaulageSpec} from './ScaleHaulage';
 import {Cam, Disclosure, MONO, SANS, Sheet, Ticks, worldTransform} from './sheet';
 
@@ -68,9 +69,10 @@ export type DiagramSpec =
   | CrossSectionSpec
   | AnatomyFlowSpec
   | ScaleHaulageSpec
-  | MouldCastSpec;
+  | MouldCastSpec
+  | TerrainSectionSpec;
 
-export type {MapSpec, ProcessSpec, CrossSectionSpec, AnatomyFlowSpec, ScaleHaulageSpec, MouldCastSpec};
+export type {MapSpec, ProcessSpec, CrossSectionSpec, AnatomyFlowSpec, ScaleHaulageSpec, MouldCastSpec, TerrainSectionSpec};
 
 type Common = Sheet;
 
@@ -888,6 +890,8 @@ export const Diagram: React.FC<{
       return <ScaleHaulagePlate spec={spec} w={width} h={height} cam={cam} />;
     case 'mouldCast':
       return <MouldCastPlate spec={spec} w={width} h={height} cam={cam} />;
+    case 'terrainSection':
+      return <TerrainSectionPlate spec={spec} cam={cam} />;
     default:
       return null;
   }

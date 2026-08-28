@@ -260,7 +260,7 @@
       "params": {
         "scrim": 0.45,
         "kicker": "",
-        "title": "FIFTY YEARS",
+        "title": "50 YEARS",
         "footer": "",
         "titleFrame": 16,
         "titleSize": 230,
@@ -272,6 +272,8 @@
           "#1f2619",
           "#0b0e08"
         ],
+        "countTo": 50,
+        "countOver": 29,
         "pushEndFrame": 48,
         "pushFrom": 1.04,
         "pushTo": 1.05,
@@ -403,7 +405,7 @@
             "at": 8
           }
         ],
-        "subject": "romanConcrete",
+        "subject": "material",
         "claims": [
           "crack_propagation",
           "duration"
@@ -522,7 +524,7 @@
             "at": 8
           }
         ],
-        "subject": "romanConcrete",
+        "subject": "material",
         "claims": [
           "crack_propagation",
           "duration"
@@ -1156,7 +1158,7 @@
             "at": 22
           }
         ],
-        "subject": "romanConcrete",
+        "subject": "material",
         "claims": [
           "fluid_ingress"
         ],
@@ -1287,7 +1289,7 @@
             "at": 22
           }
         ],
-        "subject": "romanConcrete",
+        "subject": "material",
         "claims": [
           "fluid_ingress"
         ],
@@ -1391,7 +1393,7 @@
           }
         ],
         "annotations": [],
-        "subject": "romanConcrete",
+        "subject": "process",
         "claims": [
           "wall_thickness"
         ],
@@ -1507,7 +1509,7 @@
           }
         ],
         "annotations": [],
-        "subject": "romanConcrete",
+        "subject": "process",
         "claims": [
           "wall_thickness"
         ],
@@ -1610,7 +1612,7 @@
           }
         ],
         "annotations": [],
-        "subject": "romanConcrete",
+        "subject": "process",
         "claims": [
           "wall_thickness"
         ],
@@ -1628,7 +1630,7 @@
       "params": {
         "scrim": 0.41,
         "kicker": "",
-        "title": "ONE",
+        "title": "1",
         "footer": "",
         "titleFrame": 44,
         "titleSize": 230,
@@ -2081,7 +2083,7 @@
             "at": 50
           }
         ],
-        "subject": "romanConcrete",
+        "subject": "material",
         "claims": [
           "chokepoint",
           "reaction",
@@ -2244,7 +2246,7 @@
             "at": 50
           }
         ],
-        "subject": "romanConcrete",
+        "subject": "material",
         "claims": [
           "chokepoint",
           "reaction",
@@ -2264,7 +2266,7 @@
       "params": {
         "scrim": 0.37,
         "kicker": "",
-        "title": "TWO THOUSAND YEARS",
+        "title": "2,000 YEARS",
         "footer": "",
         "titleFrame": 38,
         "titleSize": 230,

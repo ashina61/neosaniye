@@ -1,0 +1,75 @@
+{
+  "$comment": "MEASURED from vo.mp3, not estimated. The planner cuts every scene to these windows.",
+  "how": "measured",
+  "provider": "file",
+  "audio": "audio/vo.wav",
+  "duration": 50.46,
+  "lines": [
+    {
+      "slug": "hook",
+      "text": "The dam at Vajont did not fail.",
+      "start": 0,
+      "end": 2.1
+    },
+    {
+      "slug": "wall",
+      "text": "The dam was two hundred and sixty-two metres of concrete in a gorge.",
+      "start": 2.1,
+      "end": 7.16
+    },
+    {
+      "slug": "valley",
+      "text": "The river below it ran down to the town of Longarone.",
+      "start": 7.16,
+      "end": 11.14
+    },
+    {
+      "slug": "toc",
+      "text": "But the mountainside above the reservoir was already creeping.",
+      "start": 11.14,
+      "end": 15.32
+    },
+    {
+      "slug": "bed",
+      "text": "Inside it a slab of rock rested on a weak bed of clay.",
+      "start": 15.32,
+      "end": 19.66
+    },
+    {
+      "slug": "water",
+      "text": "Water from the reservoir soaked into that clay until the bed let go.",
+      "start": 19.66,
+      "end": 24.52
+    },
+    {
+      "slug": "slide",
+      "text": "On the ninth of October the slab slid into the lake in forty-five seconds.",
+      "start": 24.52,
+      "end": 29.72
+    },
+    {
+      "slug": "displace",
+      "text": "Two hundred and seventy million cubic metres of rock took the reservoir's place.",
+      "start": 29.72,
+      "end": 35.58
+    },
+    {
+      "slug": "over",
+      "text": "The lake had nowhere to go but over the crest of the dam.",
+      "start": 35.58,
+      "end": 39.82
+    },
+    {
+      "slug": "town",
+      "text": "Minutes later it reached the town of Longarone, and two thousand people died.",
+      "start": 39.82,
+      "end": 45.32
+    },
+    {
+      "slug": "close",
+      "text": "The dam is still standing, and they built the wrong thing correctly.",
+      "start": 45.32,
+      "end": 50.46
+    }
+  ]
+}
