@@ -3900,8 +3900,11 @@ async function main() {
    */
   {
     const staged = (scene) => (scene.diagram?.stages?.length ?? 0) > 1;
+    // Stages are strings for a mould and objects for a forge, so the run's
+    // identity is the whole list serialised — `join` on the second kind gives
+    // "[object Object]" for every spec there is, which is not an identity.
     const signature = (scene) =>
-      `${scene.diagram?.type}|${scene.diagram?.subject}|${(scene.diagram?.stages ?? []).join('>')}`;
+      `${scene.diagram?.type}|${scene.diagram?.subject}|${JSON.stringify(scene.diagram?.stages ?? [])}`;
     let i = 0;
     while (i < config.scenes.length) {
       if (!staged(config.scenes[i])) {
