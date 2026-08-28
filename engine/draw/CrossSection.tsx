@@ -96,7 +96,7 @@ export const CrossSectionPlate: React.FC<{spec: CrossSectionSpec; w: number; h: 
   const line = weights(w);
   if (stepped < from) return null;
 
-  const on = setUp(stepped, from, spec.over ?? 10);
+  const on = setUp(stepped, from);
 
   /**
    * THE SECTION BOX — set out at frame zero and never animated.
@@ -354,7 +354,9 @@ export const CrossSectionPlate: React.FC<{spec: CrossSectionSpec; w: number; h: 
               w={w}
               side="left"
               lead={0.03}
-              at={from + 6 + i * 5}
+              // The band is already drawn; the word names it. Construction.
+              at={from}
+              set
             />
           ))}
 

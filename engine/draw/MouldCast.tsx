@@ -164,7 +164,7 @@ export const MouldCastPlate: React.FC<{spec: MouldCastSpec; w: number; h: number
   const buried = reached('void');
   const filled = reached('fill');
   const cast = reached('cast');
-  const on = setUp(stepped, from, over);
+  const on = setUp(stepped, from);
 
   const world = worldTransform(cam, w, h);
   const grain = spec.medium?.material ?? 'concrete';

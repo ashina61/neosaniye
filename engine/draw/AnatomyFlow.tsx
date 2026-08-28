@@ -131,7 +131,7 @@ export const AnatomyFlowPlate: React.FC<{spec: AnatomyFlowSpec; w: number; h: nu
   const line = weights(w);
   if (stepped < from) return null;
 
-  const on = setUp(stepped, from, spec.over ?? 10);
+  const on = setUp(stepped, from);
   const cycle = Math.max(12, spec.cycleFrames ?? 34);
   /**
    * THE CYCLE RUNS FROM THE FIRST FRAME.

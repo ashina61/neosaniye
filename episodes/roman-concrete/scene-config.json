@@ -2276,12 +2276,6 @@
           "#1f2619",
           "#0b0e08"
         ],
-        "mark": "oval",
-        "markX": 260,
-        "markY": 820,
-        "markWidth": 560,
-        "markHeight": 300,
-        "markFrame": 15,
         "pushEndFrame": 42,
         "pushFrom": 1,
         "pushTo": 1.5,

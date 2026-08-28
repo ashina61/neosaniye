@@ -105,7 +105,7 @@ export const ScaleHaulagePlate: React.FC<{spec: ScaleHaulageSpec; w: number; h: 
   const line = weights(w);
   if (stepped < from) return null;
 
-  const on = setUp(stepped, from, over);
+  const on = setUp(stepped, from);
   const t = Math.max(0, stepped - from);
 
   /**

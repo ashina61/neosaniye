@@ -101,7 +101,7 @@ export const MapPlate: React.FC<{spec: MapSpec; w: number; h: number; cam?: Cam}
   const line = weights(w);
   if (stepped < from) return null;
 
-  const on = setUp(stepped, from, over);
+  const on = setUp(stepped, from);
   /**
    * THE COASTS ARE ALREADY THERE WHEN WE CUT.
    *
@@ -284,8 +284,8 @@ export const MapPlate: React.FC<{spec: MapSpec; w: number; h: number; cam?: Cam}
              * the route is drawn on. They settle in place; the route is what
              * arrives.
              */
-            const at = marker.at ?? from + i * 2;
-            const shown = drawOn(stepped, [at, at + 8]);
+            const at = marker.at;
+            const shown = at === undefined ? setUp(stepped, from) : drawOn(stepped, [at, at + 8]);
             if (shown <= 0) return null;
             const x = marker.x * w;
             const y = marker.y * h;

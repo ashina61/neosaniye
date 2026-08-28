@@ -49,12 +49,6 @@
           "#1c1f21",
           "#0a0b0c"
         ],
-        "mark": "underline",
-        "markX": 260,
-        "markY": 1160,
-        "markWidth": 560,
-        "markHeight": 96,
-        "markFrame": 18,
         "pushEndFrame": 50,
         "pushFrom": 1,
         "pushTo": 1.52,
@@ -252,7 +246,7 @@
         "kicker": "",
         "title": "EIGHT HUNDRED TONS",
         "footer": "",
-        "titleFrame": 42,
+        "titleFrame": 23,
         "titleSize": 230,
         "creep": 1.063,
         "accent": "#d94f3d",
@@ -272,12 +266,6 @@
           "TWENTY"
         ],
         "spinFrames": 9,
-        "mark": "underline",
-        "markX": 260,
-        "markY": 820,
-        "markWidth": 560,
-        "markHeight": 300,
-        "markFrame": 26,
         "pushEndFrame": 73,
         "pushFrom": 1.04,
         "pushTo": 1.05,
@@ -574,22 +562,19 @@
             "x": 0.1,
             "y": 0.423496,
             "label": "The quarry",
-            "kind": "place",
-            "at": 8
+            "kind": "place"
           },
           {
             "x": 0.5,
             "y": 0.441984,
             "label": "The slope",
-            "kind": "place",
-            "at": 15
+            "kind": "place"
           },
           {
             "x": 0.9,
             "y": 0.45212,
             "label": "The podium",
-            "kind": "place",
-            "at": 22
+            "kind": "place"
           }
         ],
         "subject": "geography",
@@ -718,22 +703,19 @@
             "x": 0.1,
             "y": 0.423496,
             "label": "The quarry",
-            "kind": "place",
-            "at": 8
+            "kind": "place"
           },
           {
             "x": 0.5,
             "y": 0.441984,
             "label": "The slope",
-            "kind": "place",
-            "at": 15
+            "kind": "place"
           },
           {
             "x": 0.9,
             "y": 0.45212,
             "label": "The podium",
-            "kind": "place",
-            "at": 22
+            "kind": "place"
           }
         ],
         "subject": "geography",

@@ -236,15 +236,13 @@
             "x": 0.1,
             "y": 0.444088,
             "label": "VESUVIUS",
-            "kind": "place",
-            "at": 8
+            "kind": "place"
           },
           {
             "x": 0.9,
             "y": 0.444432,
             "label": "POMPEII",
-            "kind": "place",
-            "at": 15
+            "kind": "place"
           }
         ],
         "distance": {
@@ -369,15 +367,13 @@
             "x": 0.1,
             "y": 0.444088,
             "label": "VESUVIUS",
-            "kind": "place",
-            "at": 8
+            "kind": "place"
           },
           {
             "x": 0.9,
             "y": 0.444432,
             "label": "POMPEII",
-            "kind": "place",
-            "at": 15
+            "kind": "place"
           }
         ],
         "distance": {
@@ -740,15 +736,13 @@
             "x": 0.1,
             "y": 0.404096,
             "label": "POMPEII",
-            "kind": "place",
-            "at": 8
+            "kind": "place"
           },
           {
             "x": 0.9,
             "y": 0.455912,
             "label": "THE COAST",
-            "kind": "place",
-            "at": 15
+            "kind": "place"
           }
         ],
         "subject": "coastline",
@@ -779,12 +773,6 @@
           "#1c1f21",
           "#0a0b0c"
         ],
-        "mark": "bracket",
-        "markX": 260,
-        "markY": 820,
-        "markWidth": 560,
-        "markHeight": 300,
-        "markFrame": 16,
         "pushEndFrame": 44,
         "pushFrom": 1,
         "pushTo": 1.45,

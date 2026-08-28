@@ -144,7 +144,15 @@ export function buildMap({vo, seed, accent, muted, stops = [], claims = []}) {
       y: midY + wobble(i + 40, 0.08),
       label,
       kind: 'place',
-      at: 8 + i * 7,
+      /**
+       * A PLACE NAME IS CONSTRUCTION, NOT AN ARRIVAL.
+       *
+       * These arrived from eight frames in, seven apart, so the map cut to an
+       * unlabelled grey polygon and only became a place a third of the way into
+       * the shot — the "featureless map" complaint, and law 30. Where the places
+       * ARE is the sheet; the ROUTE between them is what the map is arguing.
+       * The plate treats a marker with no `at` as set up.
+       */
     }));
   } else if (twoSided || narrow) {
     spec.route = lanes

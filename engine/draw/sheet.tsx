@@ -173,12 +173,14 @@ export function worldTransform(cam: Cam | undefined, w: number, h: number): stri
  * express purpose of opening already finished — rebuilt its brackets anyway,
  * because the ramp was a hard-coded ten frames that knew nothing about `over`.
  *
- * So: a settle, bounded by the window it lives in. A carried-over drawing opens
- * complete; a first sight of one gets a fifth of a second of arrival, which
- * reads as the sheet being laid down rather than assembled.
+ * The first attempt at this made the ramp SHORT instead of removing it, which
+ * is the same bug with a smaller number in it: a ramp that starts at `from` is
+ * still zero on the frame `from`, so the cut still landed on nothing and the
+ * contact sheet was unchanged. Construction is not animated. It is there, and
+ * the drawing is made on top of it.
  */
-export function setUp(stepped: number, from: number, over = 10): number {
-  return drawOn(stepped, [from, from + Math.min(6, Math.max(1, over))]);
+export function setUp(stepped: number, from: number): number {
+  return stepped >= from ? 1 : 0;
 }
 
 /** Registration ticks — the corner marks of a drawing sheet. */
@@ -210,6 +212,13 @@ export const Ticks: React.FC<{colour: string; w: number; h: number; on: number}>
  * decorates, and they are also the fastest way to make a mess. One rule: the
  * leader points AT the thing and the text sits clear of it, on whichever side
  * has room.
+ *
+ * A label is one of two things and it has to say which. NAMING a part of the
+ * construction — SURFACE, PUMICE, VESUVIUS — is `set`: the part is already
+ * drawn and the word belongs to it, so it is there when the cut lands. Calling
+ * out a CHANGE — "crack opens", "water enters" — is an arrival, and it ramps.
+ * With everything ramping, a section cut to three unlabelled grey bands and a
+ * map to a bare polygon, which is what law 30 is about.
  */
 export const Callout: React.FC<{
   x: number;
@@ -221,11 +230,12 @@ export const Callout: React.FC<{
   at: number;
   lead?: number;
   size?: number;
-}> = ({x, y, text, colour, w, side = 'right', at, lead = 0.06, size}) => {
+  set?: boolean;
+}> = ({x, y, text, colour, w, side = 'right', at, lead = 0.06, size, set = false}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const stepped = posterizeTime(frame, fps, 12);
-  const on = drawOn(stepped, [at, at + 9]);
+  const on = set ? setUp(stepped, at) : drawOn(stepped, [at, at + 9]);
   if (stepped < at) return null;
   const type = size ?? w * 0.021;
   /**

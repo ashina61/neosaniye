@@ -276,7 +276,7 @@ export const ProcessPlate: React.FC<{spec: ProcessSpec; w: number; h: number; ca
   const colour = glowColour(heat, accent, muted);
 
 
-  const on = setUp(stepped, from, over);
+  const on = setUp(stepped, from);
   const agent = settled ? 'none' : nextStage.agent ?? 'none';
 
   return (

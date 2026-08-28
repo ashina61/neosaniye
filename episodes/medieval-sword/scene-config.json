@@ -49,12 +49,6 @@
           "#8a5a18",
           "#241505"
         ],
-        "mark": "underline",
-        "markX": 260,
-        "markY": 1160,
-        "markWidth": 560,
-        "markHeight": 96,
-        "markFrame": 26,
         "pushEndFrame": 72,
         "pushFrom": 1.03,
         "pushTo": 1.06,

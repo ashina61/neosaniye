@@ -288,10 +288,12 @@ export const Slate: React.FC<{
    * title's spring, so every card in the channel opened on a bare field: black
    * for the four to twelve frames before `from`, and the reel's very FIRST
    * frame was one of them. The rules are not the statement, they are what the
-   * statement is set between, so they draw from frame zero outward and the cut
-   * lands on a composed frame with something already moving in it.
+   * statement is set between, so they are simply THERE and the cut lands on a
+   * composed frame. Drawing them outward from frame zero was the same mistake
+   * with a smaller number in it: a ramp that begins at zero is zero on the
+   * frame it begins, so the card still opened on nothing.
    */
-  const rule = interpolate(stepped, [0, Math.max(10, from + 6)], [0, 1], CLAMP);
+  const rule = 1;
   const tail = footerFrom === undefined ? 1 : interpolate(stepped, [footerFrom, footerFrom + 10], [0, 1], CLAMP);
 
   return (

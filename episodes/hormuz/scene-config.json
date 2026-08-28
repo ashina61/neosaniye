@@ -49,12 +49,6 @@
           "#171c26",
           "#080a0f"
         ],
-        "mark": "underline",
-        "markX": 260,
-        "markY": 1160,
-        "markWidth": 560,
-        "markHeight": 96,
-        "markFrame": 22,
         "pushEndFrame": 59,
         "pushFrom": 1,
         "pushTo": 1.53,
@@ -299,7 +293,7 @@
         "kicker": "",
         "title": "TWO MILES",
         "footer": "",
-        "titleFrame": 31,
+        "titleFrame": 19,
         "titleSize": 230,
         "creep": 1.067,
         "accent": "#e6e2d6",
@@ -319,12 +313,6 @@
           "TWENTY"
         ],
         "spinFrames": 9,
-        "mark": "underline",
-        "markX": 260,
-        "markY": 820,
-        "markWidth": 560,
-        "markHeight": 300,
-        "markFrame": 22,
         "pushEndFrame": 61,
         "pushFrom": 1.18,
         "pushTo": 1.24,
@@ -795,7 +783,7 @@
         "kicker": "",
         "title": "TWENTY MILLION BARRELS",
         "footer": "",
-        "titleFrame": 22,
+        "titleFrame": 16,
         "titleSize": 230,
         "creep": 1.1,
         "accent": "#e6e2d6",
@@ -815,12 +803,6 @@
           "TWENTY"
         ],
         "spinFrames": 9,
-        "mark": "underline",
-        "markX": 260,
-        "markY": 820,
-        "markWidth": 560,
-        "markHeight": 300,
-        "markFrame": 18,
         "pushEndFrame": 47,
         "pushFrom": 1.03,
         "pushTo": 1.04,
@@ -1202,29 +1184,25 @@
             "x": 0.1,
             "y": 0.405144,
             "label": "Kuwait",
-            "kind": "place",
-            "at": 8
+            "kind": "place"
           },
           {
             "x": 0.3666666666666667,
             "y": 0.410432,
             "label": "Basra",
-            "kind": "place",
-            "at": 15
+            "kind": "place"
           },
           {
             "x": 0.6333333333333333,
             "y": 0.460968,
             "label": "Ras Tanura",
-            "kind": "place",
-            "at": 22
+            "kind": "place"
           },
           {
             "x": 0.9,
             "y": 0.453584,
             "label": "Hormuz",
-            "kind": "place",
-            "at": 29
+            "kind": "place"
           }
         ],
         "annotations": [
@@ -1353,29 +1331,25 @@
             "x": 0.1,
             "y": 0.405144,
             "label": "Kuwait",
-            "kind": "place",
-            "at": 8
+            "kind": "place"
           },
           {
             "x": 0.3666666666666667,
             "y": 0.410432,
             "label": "Basra",
-            "kind": "place",
-            "at": 15
+            "kind": "place"
           },
           {
             "x": 0.6333333333333333,
             "y": 0.460968,
             "label": "Ras Tanura",
-            "kind": "place",
-            "at": 22
+            "kind": "place"
           },
           {
             "x": 0.9,
             "y": 0.453584,
             "label": "Hormuz",
-            "kind": "place",
-            "at": 29
+            "kind": "place"
           }
         ],
         "annotations": [
@@ -1516,29 +1490,25 @@
             "x": 0.1,
             "y": 0.405144,
             "label": "Kuwait",
-            "kind": "place",
-            "at": 8
+            "kind": "place"
           },
           {
             "x": 0.3666666666666667,
             "y": 0.410432,
             "label": "Basra",
-            "kind": "place",
-            "at": 15
+            "kind": "place"
           },
           {
             "x": 0.6333333333333333,
             "y": 0.460968,
             "label": "Ras Tanura",
-            "kind": "place",
-            "at": 22
+            "kind": "place"
           },
           {
             "x": 0.9,
             "y": 0.453584,
             "label": "Hormuz",
-            "kind": "place",
-            "at": 29
+            "kind": "place"
           }
         ],
         "annotations": [
@@ -2230,12 +2200,6 @@
           "TWENTY"
         ],
         "spinFrames": 9,
-        "mark": "underline",
-        "markX": 260,
-        "markY": 820,
-        "markWidth": 560,
-        "markHeight": 300,
-        "markFrame": 15,
         "pushEndFrame": 42,
         "pushFrom": 1,
         "pushTo": 1.51,

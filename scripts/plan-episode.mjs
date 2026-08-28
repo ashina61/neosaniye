@@ -3005,29 +3005,33 @@ function planScene({line, index, total, fragment, frames, rand, look, previousTr
      * knows where anything is.
      *
      * A slate already draws rules above and below its title. Those ARE the
-     * mark. So where the card also carries a footer — the one case where the
-     * block is tall enough for the guess to be wrong — no mark is placed at
-     * all. Cards without one keep it, and there it sits under the title as
-     * intended.
+     * mark.
+     *
+     * AND THE FOOTER WAS NEVER THE CONDITION — IT WAS ONE SYMPTOM.
+     *
+     * "No mark when the card carries a qualifier" fixed the case that had been
+     * looked at and left the reasoning behind it unapplied. A two-word card
+     * with no kicker and no footer sat higher in the frame than the guess, and
+     * a bracket 260 pixels from the left edge came down through the gap in
+     * "IT CHANGED" with its arms cutting across both of the slate's own rules:
+     * a graphic through a sentence (law 29), on the shortest, loudest card in
+     * the reel. The box cannot be right, because nothing upstream of the
+     * renderer knows how tall a flex-centred block is — and a box that is only
+     * usually right is a box that fails on the card nobody checked.
+     *
+     * So a slate takes no mark. It has two rules and it has the largest type
+     * on the sheet; it does not need a third device drawn over the second one.
+     * The die is still thrown so the seeded stream underneath every later
+     * decision is unchanged.
      */
-    const wantsFooter = Boolean(scene.params.footer);
     /**
-     * The draw is taken BEFORE the title is tested, so that refusing a mark
-     * does not shift the seeded stream underneath every later decision: the
-     * short-circuit version of this line moved a mark off one card and, three
-     * shots later, dropped a motif onto a caption. Same seed, same reel.
+     * The draw is still TAKEN, and its result still thrown away, so that
+     * refusing the mark does not shift the seeded stream underneath every later
+     * decision: the short-circuit version of this line moved a mark off one
+     * card and, three shots later, dropped a motif onto a caption. Same seed,
+     * same reel.
      */
-    const wantsMark = rand() > 0.45;
-    if (scene.params.title && !wantsFooter && wantsMark) {
-      Object.assign(scene.params, {
-        mark: MIDLINE_MARKS.has(look.mark) ? 'underline' : look.mark,
-        markX: 260,
-        markY: number ? 820 : 1160,
-        markWidth: 560,
-        markHeight: number ? 300 : 96,
-        markFrame: Math.round(durationInFrames * 0.34),
-      });
-    }
+    rand();
   } else if (sceneType === 'evidence-board') {
     // A DIRECTED BACKGROUND, here too. These two templates are graphics-first
     // and derive their own plate, which quietly ignored an episode that had
