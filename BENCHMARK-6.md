@@ -169,6 +169,8 @@ Against BENCHMARK-5, whose configs the run started from.
 | reels opening on a card with no title | **5 of 5** | **0** |
 | cards printing the same words twice | 10 | **0** |
 | reels naming their subject twice in three seconds | 4 of 5 | **0** |
+| time before the closing card is populated | 0.9–2.8s | **0.27–0.67s** |
+| closing cards with their front page occluding the kicker | 3 of 5 | **0** |
 
 **The sword went down a full point, and that is the most useful number here.**
 Two things it was getting away with came out on the finished video. Six of its
@@ -198,10 +200,13 @@ after that fix.
    landmass is a featureless light-grey polygon over roughly 70% of the frame,
    with pale line work on top of it. Law 36 asks for a ground darker than the
    drawing; this is the inverse, and it is about ten seconds of the episode.
-3. **The closing card of all five** — opens on an empty frame with a soft glow
-   for the first 7–24% of its length, then assembles. The reel's most important
-   shot still begins on nothing. The opening card was fixed; the closing one has
-   three arrivals and so never tripped the rule that fixed it.
+3. **`human-heart / s01-twopumps` and the anatomy shots after it** — four equal
+   circles in a two-by-two grid labelled UPPER/UPPER/LOWER/LOWER is a circuit
+   diagram, not a heart, and at a glance it reads as a face. The caption names
+   the right atrium while the drawing says UPPER: the words and the picture do
+   not meet in the middle. This is the episode's own recorded weakness and it
+   survived the run untouched, because fixing it means changing what
+   `anatomyFlow` draws.
 4. **`hormuz / s08-price-b`** — 2.5 seconds, one event, a caption carried over
    from the previous cut. Genuinely a still with words on it.
 5. **`baalbek / s05-rolled`** — the authored `route` motif ("They rolled them")
