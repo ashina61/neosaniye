@@ -256,9 +256,20 @@ export const MapPlate: React.FC<{spec: MapSpec; w: number; h: number; cam?: Cam}
                         strokeWidth={line.detail}
                       />
                     ))}
+                    {/**
+                      * OFF THE LINE ALONG ITS NORMAL, NOT STRAIGHT UP.
+                      *
+                      * A vertical offset clears a horizontal dimension and
+                      * nothing else. Once two places stood on opposite shores
+                      * the dimension ran diagonally and its own line went
+                      * straight through the gap in "5 MILES" — a graphic
+                      * through a sentence (law 29), drawn by the sentence's own
+                      * graphic. The normal is already computed here for the end
+                      * ticks; the label uses it too.
+                      */}
                     <text
-                      x={(x1 + x2) / 2}
-                      y={(y1 + y2) / 2 - w * 0.018}
+                      x={(x1 + x2) / 2 + (nx / nl) * w * 0.03}
+                      y={(y1 + y2) / 2 + (ny / nl) * w * 0.03 - w * 0.008}
                       textAnchor="middle"
                       fill={accent}
                       fontFamily={MONO}
