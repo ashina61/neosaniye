@@ -927,23 +927,38 @@ export function buildTerrainSection({vo, seed, accent, muted, claims = [], stops
       }
       return profile[profile.length - 1][1];
     };
-    const deep = 0.055;
+    /**
+     * A DEPOSIT LIES ON THE LAND, SO IT FOLLOWS THE LAND.
+     *
+     * The first version was a quadrilateral: a straight top edge and a straight
+     * bottom edge across a CURVED profile. Wherever the ground dipped below
+     * that straight base the deposit floated over it, and the render came back
+     * with a hard black wedge between the ash and the mountain it was lying on.
+     * Both edges are sampled along the profile now — the underside is the
+     * ground itself, and the surface is the ground plus a thickness that grows
+     * toward the toe, because a flow piles up where it stops.
+     */
+    const XS = [0.02, 0.2, 0.38, 0.56, 0.74, 1.02];
+    const deep = 0.075;
+    const lying = [
+      ...XS.map((x) => [x, ground(Math.min(1, x)) - deep * (0.45 + 0.75 * x)]),
+      ...[...XS].reverse().map((x) => [x, ground(Math.min(1, x)) + 0.004]),
+    ];
+    /**
+     * And the source is the same polygon gathered into a mass at the top of the
+     * slope — same points, same order, so the plate can interpolate one into
+     * the other and the flow READS as the same body of ash arriving.
+     */
+    const src = 0.02;
+    const span = 0.2;
+    const gathered = [
+      ...XS.map((x) => [src + x * span, ground(src + x * span) - 0.085 * (0.5 + x)]),
+      ...[...XS].reverse().map((x) => [src + x * span, ground(src + x * span) + 0.004]),
+    ];
     spec.mass = {
       kind: 'front',
-      shape: [
-        [0.02, ground(0.02) - 0.075],
-        [0.16, ground(0.16) - 0.085],
-        [0.26, ground(0.26) - 0.045],
-        [0.20, ground(0.20) + 0.004],
-        [0.06, ground(0.06) + 0.004],
-      ],
-      becomes: [
-        [0.02, ground(0.02) - deep],
-        [0.42, ground(0.42) - deep - 0.008],
-        [1.02, ground(1.0) - deep - 0.012],
-        [1.02, ground(1.0) + 0.004],
-        [0.02, ground(0.02) + 0.004],
-      ],
+      shape: gathered,
+      becomes: lying,
       // Already lying there when the sentence is about the burial rather than
       // the arrival: law 31 across a cut, the same rule the slab obeys.
       at: claims.includes('engulf_front') ? 5 : -34,
@@ -994,9 +1009,14 @@ export function buildTerrainSection({vo, seed, accent, muted, claims = [], stops
    * shown fourteen times, whatever moves inside it.
    */
   if (spec.mass?.kind === 'front') {
-    // Wide while it comes down — a flow is a thing you watch cross a distance,
-    // and cropping in on it removes the distance it crosses.
-    spec.focus = claims.includes('engulf_front') ? undefined : {x: 0.62, y: 0.55, scale: 1.2};
+    /**
+     * Wide while it comes down — a flow is a thing you watch cross a distance,
+     * and cropping in on it removes the distance it crosses. But a sentence
+     * about the AFTERMATH is not the same shot as the sentence about the
+     * arrival: it goes close on the place that is now under it, so the two
+     * beats are two pictures of one landscape rather than one picture twice.
+     */
+    spec.focus = claims.includes('engulf_front') ? undefined : {x: 0.58, y: 0.58, scale: 1.18};
   } else if (spills) {
     // At the wall, for the thing the wall does.
     spec.focus = {x: 0.70, y: 0.46, scale: 1.46};

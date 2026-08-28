@@ -37,7 +37,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 import {drawOn, flow, posterizeTime, settle} from '../motion';
-import {MaterialDefs, MaterialFace, Motes} from './material';
+import {Haze, MaterialDefs, MaterialFace, Motes, Sky} from './material';
 import {Cam, Callout, Disclosure, MONO, Sheet, Ticks, setUp, weights, worldTransform} from './sheet';
 
 const CLAMP = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
@@ -244,6 +244,18 @@ export const TerrainSectionPlate: React.FC<{spec: TerrainSectionSpec; cam?: Cam}
 
         <g transform={framed}>
         <g transform={world}>
+          {/**
+            * THE AIR ABOVE THE HORIZON.
+            *
+            * `Sky` is in the component index for precisely this — "so a drawn
+            * band is not floating in black" — and this plate had never reached
+            * for it. A flank sits low in the frame to leave the upper third to
+            * the type, which meant the upper third was DEAD BLACK: the reel
+            * opened on a thin diagonal in a void. A landform has air over it,
+            * and drawing that air is the difference between a section of a
+            * mountainside and a line on a page.
+            */}
+          <Sky y={Math.min(...profile.map(([, y]) => y)) * h} w={w} colour={muted} id="ts-sky" strength={1.1} />
           {/* THE WATER, under the land so the shoreline is the ground's edge. */}
           {waterShape ? (
             <g>
@@ -356,15 +368,37 @@ export const TerrainSectionPlate: React.FC<{spec: TerrainSectionSpec; cam?: Cam}
                   cut, so it is drawn as a mass with a soft body and a hard
                   LEADING EDGE, which is the only part of a flow you can see
                   the position of. */}
-              <path d={poly(massNow, w, h)} fill={front ? '#2a241d' : '#1b1712'} opacity={front ? 0.94 : 1} />
-              <MaterialFace id="ts-rock" material={front ? 'concrete' : 'stone'} d={poly(massNow, w, h)} w={w} />
+              {/**
+                * ASH IS THE PALEST THING IN THE FRAME (law 35: a material is a
+                * value before it is a surface).
+                *
+                * Given the tone of wet earth, the deposit was darker than the
+                * rock it lay on — so a slope with a flow across it read as one
+                * dark shape on a dark ground, and the burial, which is the
+                * whole first act, was invisible. Ash is near-white; that value
+                * is what makes a covered landscape legible at all, and it is
+                * also simply what the stuff looks like.
+                */}
+              <path d={poly(massNow, w, h)} fill={front ? '#9a9184' : '#1b1712'} opacity={front ? 0.97 : 1} />
+              <MaterialFace id="ts-rock" material={front ? 'paper' : 'stone'} d={poly(massNow, w, h)} w={w} />
               {front ? null : <path d={poly(massNow, w, h)} fill="url(#ts-slab)" />}
+              {/**
+                * A DEPOSIT HAS A SURFACE, NOT AN OUTLINE.
+                *
+                * Stroking the closed polygon drew its left end as a bright
+                * vertical line standing on the slope — which reads as a wall,
+                * and there is no wall. What you can see of a flow is its top
+                * surface and its leading edge; the underside is buried in the
+                * ground it is lying on. So a front strokes the upper half of
+                * its own outline and nothing else.
+                */}
               <path
-                d={poly(massNow, w, h)}
+                d={front ? line(massNow.slice(0, Math.ceil(massNow.length / 2)), w, h) : poly(massNow, w, h)}
                 fill="none"
                 stroke={accent}
                 strokeWidth={front ? weight.object : weight.emphasis}
-                opacity={front ? 0.55 : 0.95}
+                opacity={front ? 0.85 : 0.95}
+                strokeLinecap="round"
               />
               {front && slid > 0.02 && slid < 0.99 ? (
                 <circle
