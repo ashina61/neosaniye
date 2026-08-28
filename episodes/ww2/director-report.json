@@ -318,7 +318,7 @@
       "template": "composite",
       "seconds": 1.7,
       "camera": {
-        "from": 1.02,
+        "from": 1.12,
         "to": 1.05,
         "panX": null,
         "panY": null
@@ -579,9 +579,7 @@
         "dusk-street.jpg"
       ],
       "drawnGround": null,
-      "props": [
-        "newspaper"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"two\"",
         "secondary": "the strongest image in the reel, returned to",
@@ -613,9 +611,7 @@
         "dusk-street.jpg"
       ],
       "drawnGround": null,
-      "props": [
-        "newspaper"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"Germany\"",
         "secondary": "the strongest image in the reel, returned to",
@@ -628,8 +624,8 @@
       "template": "title-slate",
       "seconds": 3.6,
       "camera": {
-        "from": null,
-        "to": null,
+        "from": 1.07,
+        "to": 1,
         "panX": null,
         "panY": null
       },

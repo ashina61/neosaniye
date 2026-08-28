@@ -773,9 +773,7 @@
       "reveal": null,
       "plates": [],
       "drawnGround": "spotlight",
-      "props": [
-        "newspaper"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim",
         "secondary": "the drawn label or mark that dates and places it",

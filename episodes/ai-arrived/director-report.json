@@ -655,9 +655,7 @@
         "s05-talk-bg.png"
       ],
       "drawnGround": null,
-      "props": [
-        "newspaper"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"learned\"",
         "secondary": "the strongest image in the reel, returned to",
@@ -689,9 +687,7 @@
         "s05-talk-bg.png"
       ],
       "drawnGround": null,
-      "props": [
-        "newspaper"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the claim: \"hundred million people\"",
         "secondary": "the strongest image in the reel, returned to",
@@ -723,9 +719,7 @@
         "s06-close-bg.png"
       ],
       "drawnGround": "grid",
-      "props": [
-        "plaque"
-      ],
+      "props": [],
       "hierarchy": {
         "primary": "the closing claim",
         "secondary": "the strongest image in the reel, returned to",

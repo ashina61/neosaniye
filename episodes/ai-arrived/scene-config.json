@@ -174,7 +174,7 @@
         "unit": "men",
         "accent": "#c9a94b",
         "muted": "#cfc6ae",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -211,9 +211,9 @@
         "captionSize": 87,
         "captionRecedeAt": 62,
         "motif": "tally",
-        "motifX": 165,
+        "motifX": 122,
         "motifY": 499,
-        "motifSize": 93,
+        "motifSize": 104,
         "motifCount": 15,
         "motifFrame": 59,
         "motifColour": "#c9a94b",
@@ -614,7 +614,7 @@
           "duration"
         ],
         "depicts": "anatomy",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -690,7 +690,7 @@
         {
           "text": "NOBODY NOTICED",
           "atFrame": 47,
-          "durationInFrames": 25,
+          "durationInFrames": 31,
           "style": "sticker",
           "position": "bottom"
         }
@@ -877,20 +877,6 @@
           "anchor": "fill"
         }
       ],
-      "props": [
-        {
-          "kind": "newspaper",
-          "text": "100 MILLION",
-          "masthead": "THE RECORD",
-          "date": "two months",
-          "width": 950,
-          "x": 540,
-          "y": 1047,
-          "depth": 0.86,
-          "rotate": -3,
-          "from": 12
-        }
-      ],
       "params": {
         "anchorX": 540,
         "anchorY": 1700,
@@ -919,10 +905,6 @@
         "captionScrim": 0.38,
         "captionRecedeAt": 37,
         "accent": "#c9a94b",
-        "motif": "rise",
-        "motifX": 166,
-        "motifY": 1574,
-        "motifSize": 59,
         "motifCount": 6,
         "motifFrame": 18,
         "motifColour": "#c9a94b",
@@ -959,20 +941,6 @@
           "role": "ground",
           "depth": 0.87,
           "anchor": "fill"
-        }
-      ],
-      "props": [
-        {
-          "kind": "newspaper",
-          "text": "100 MILLION",
-          "masthead": "THE RECORD",
-          "date": "two months",
-          "width": 950,
-          "x": 540,
-          "y": 960,
-          "depth": 0.86,
-          "rotate": -3,
-          "from": 0
         }
       ],
       "params": {
@@ -1017,7 +985,7 @@
         "unit": "people",
         "accent": "#c9a94b",
         "muted": "#cfc6ae",
-        "from": 0,
+        "from": -1,
         "over": 1
       }
     },
@@ -1038,7 +1006,7 @@
         "kicker": "1956 · 2022",
         "title": "SEVENTY YEARS",
         "footer": "then two months",
-        "titleFrame": 49,
+        "titleFrame": 36,
         "titleSize": 230,
         "creep": 1.064,
         "accent": "#c9a94b",
@@ -1061,19 +1029,7 @@
         "cameraMove": "hold",
         "cameraPurpose": "atmosphere, and the calm that makes the next cut land",
         "cameraAuthored": true
-      },
-      "props": [
-        {
-          "kind": "plaque",
-          "text": "1956 · 2022",
-          "width": 432,
-          "x": 540,
-          "y": 1574,
-          "depth": 0.5,
-          "rotate": 0,
-          "from": 65
-        }
-      ]
+      }
     }
   ]
 }

@@ -48,7 +48,7 @@ import {
   TRANSITION_PURPOSE,
 } from './lib/director.mjs';
 import {cutMix, directCut} from './lib/cut.mjs';
-import {boundsOf, cameraTravel, eventsOf, throughTheCamera} from './lib/critique.mjs';
+import {boundsOf, cameraTravel, eventsOf, propHeight, throughTheCamera} from './lib/critique.mjs';
 import {TYPE} from '../visual-system/dna.mjs';
 import {readingFrames} from './lib/editor.mjs';
 import {countWindow} from '../engine/state.mjs';
@@ -1463,10 +1463,8 @@ const CAMERA_TEMPLATES = new Set(['composite', 'parallax-punch']);
  * the disagreement would surface as a warning nobody could act on.
  */
 function standClear(props, zone) {
-  const heightOf = (prop) => {
-    const w = Number(prop.width) || WIDTH * 0.42;
-    return prop.kind === 'wire' ? w : w * (prop.kind === 'plaque' ? 0.34 : 0.72);
-  };
+  // The checker's own model, imported rather than restated — see `propHeight`.
+  const heightOf = (prop) => propHeight(prop, WIDTH);
   const boxOf = (prop, y) => {
     const w = Number(prop.width) || WIDTH * 0.42;
     const x = Number(prop.x) || WIDTH / 2;

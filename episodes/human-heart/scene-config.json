@@ -3720,7 +3720,7 @@
         "kicker": "ONE LIFETIME",
         "title": "TWO POINT FIVE BILLION",
         "footer": "beats, none of them yours to make",
-        "titleFrame": 50,
+        "titleFrame": 35,
         "titleSize": 230,
         "creep": 1.092,
         "accent": "#ffcf3d",
@@ -3735,20 +3735,7 @@
         "pushTo": 1.13,
         "cameraMove": "drift",
         "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
-      },
-      "props": [
-        {
-          "kind": "newspaper",
-          "masthead": "THE DAILY",
-          "text": "TWO POINT FIVE BILLION",
-          "depth": 0.71,
-          "x": 636,
-          "y": 515,
-          "width": 468,
-          "rotate": 2.9,
-          "from": 20
-        }
-      ]
+      }
     }
   ]
 }

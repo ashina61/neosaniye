@@ -2528,20 +2528,7 @@
         "pushTo": 1.07,
         "cameraMove": "drift",
         "cameraPurpose": "atmosphere, and the calm that makes the next cut land"
-      },
-      "props": [
-        {
-          "kind": "newspaper",
-          "masthead": "THE HERALD",
-          "text": "TWO THOUSAND",
-          "depth": 0.73,
-          "x": 685,
-          "y": 516,
-          "width": 463,
-          "rotate": -3.9,
-          "from": 73
-        }
-      ]
+      }
     }
   ]
 }

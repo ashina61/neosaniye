@@ -2739,7 +2739,7 @@
         "kicker": "ONE BLADE",
         "title": "TWO HUNDRED HOURS",
         "footer": "and all of it is in the cooling",
-        "titleFrame": 49,
+        "titleFrame": 35,
         "titleSize": 230,
         "creep": 1.043,
         "accent": "#e8a020",
@@ -2754,20 +2754,7 @@
         "pushTo": 1.06,
         "cameraMove": "hold",
         "cameraPurpose": "importance. The frame stops because the idea needs no help"
-      },
-      "props": [
-        {
-          "kind": "newspaper",
-          "masthead": "THE DAILY",
-          "text": "TWO HUNDRED HOURS",
-          "depth": 0.65,
-          "x": 673,
-          "y": 517,
-          "width": 462,
-          "rotate": -5,
-          "from": 8
-        }
-      ]
+      }
     }
   ]
 }

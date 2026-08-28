@@ -841,6 +841,29 @@ export function qualityGates(config, {assets = {}, fps = config.fps ?? FPS_DEFAU
  * composition for two whole renders and passed every check in this file,
  * because nothing in here knew where anything was.
  */
+/**
+ * HOW TALL A PROP ACTUALLY IS, in the numbers the ENGINE uses.
+ *
+ * This was a guess in two places at once — `w * 0.72` for everything that was
+ * not a plaque or a wire — and a newspaper is `w * 1.32`, or `w * 1.9` once it
+ * is wide enough to be read as a close-up on the page. Eighty per cent short.
+ * So the closing card of three reels laid a broadsheet across the slate's
+ * kicker and both the planner and the checker agreed there was nothing there.
+ *
+ * Exported because the planner has to place props with the same model the
+ * checker measures them with. Two models of how tall a newspaper is will
+ * disagree, and the disagreement surfaces as an occlusion nobody flagged.
+ */
+export function propHeight(prop, frameWidth) {
+  const w = Number(prop.width) || frameWidth * 0.42;
+  if (prop.kind === 'wire') return w;
+  if (prop.kind === 'plaque') return w * 0.34;
+  // Paper.tsx: height = width * (crop ? 1.9 : 1.32), and Props.tsx crops once
+  // the sheet is more than three fifths of the frame wide.
+  if (prop.kind === 'newspaper') return w * (w > frameWidth * 0.6 ? 1.9 : 1.32);
+  return w * 0.72;
+}
+
 export function boundsOf(scene, {width, height}) {
   const out = [];
   const p = scene.params ?? {};
@@ -867,7 +890,7 @@ export function boundsOf(scene, {width, height}) {
      * third of the way down the frame, which it does not — and a check that
      * flags things that are fine is a check people switch off.
      */
-    const tall = prop.kind === 'wire' ? w : w * (prop.kind === 'plaque' ? 0.34 : 0.72);
+    const tall = propHeight(prop, width);
     out.push({what: `prop[${i}] ${prop.kind}`, role: 'drawn', left: x - w / 2, right: x + w / 2, top: y - tall / 2, bottom: y + tall / 2});
   }
 
