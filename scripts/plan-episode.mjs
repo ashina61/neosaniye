@@ -1530,13 +1530,28 @@ function standClear(props, zone) {
      */
     const usable = (at) =>
       at - half >= HEIGHT * 0.04 && at + half <= HEIGHT * 0.9 && clearOfType(at) && clearOfProps(at);
+    /**
+     * AND "AS FAR OVER AS IT WILL GO" IS A POSITION TOO.
+     *
+     * The candidates were "just clear of the thing" and nothing else, so an
+     * object whose ideal spot fell a few pixels outside the safe area was
+     * DROPPED rather than nudged back in. A newspaper 611px tall wanted its
+     * centre at 378 and the floor was 382: four pixels, and the closing card of
+     * three reels lost its front page. Each candidate is therefore also offered
+     * clamped into the safe band — if the clamped position still clears the
+     * words and the other objects, it stands there.
+     */
+    const floor = HEIGHT * 0.04 + half;
+    const ceiling = HEIGHT * 0.9 - half;
+    const clamp = (v) => Math.min(ceiling, Math.max(floor, v));
     const candidates = [y];
     if (zone) {
-      candidates.push(zone.top - half - 24, zone.bottom + half + 24);
+      const wanted = [zone.top - half - 24, zone.bottom + half + 24];
       // A second object sent to the same strip stacks behind the first.
       for (const b of placed) {
-        candidates.push(b.top - half - 24, b.bottom + half + 24);
+        wanted.push(b.top - half - 24, b.bottom + half + 24);
       }
+      for (const v of wanted) candidates.push(v, clamp(v));
     }
     const at = candidates.find((c) => usable(c));
     if (at === undefined) continue; // dropped: a graphic with nowhere to stand is clutter.
