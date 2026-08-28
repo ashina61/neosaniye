@@ -2,7 +2,7 @@
 
 Rendered and inspected at 0%, 33%, 66% and 94% of **every one of the 109 shots**.
 Nothing in the visual system, the DNA, the engine, the representation vocabulary,
-the metrics, the gates or the tests was changed. **Twenty** defects were fixed at
+the metrics, the gates or the tests was changed. **Twenty-two** defects were fixed at
 their root cause in the **planner**, and the ones that mattered most were found by
 looking at a frame — three of them only by watching the finished video end to
 end, after every gate and every contact sheet had passed them.
@@ -17,7 +17,7 @@ they all had one shape:
 > **A placer that knows its own object and not the other object in the frame.**
 
 The gates could not see them because each gate knew where *one* thing was. Then
-the frames showed ten more that no gate models at all — and four of those only
+the frames showed twelve more that no gate models at all — and six of those only
 surfaced on the finished VIDEO, after every gate and every contact sheet had
 passed them. A contact sheet samples four frames of a shot; the thing it cannot
 show you is what the first second of the reel feels like.
@@ -44,11 +44,22 @@ show you is what the first second of the reel feels like.
 | 18 | An emphasis rule drawn under a title that had not arrived | Hormuz, Baalbek, sword | it satisfies the two-event count and still shows a viewer nothing | the reel's first card states itself at once — every other shot inherits an established frame from the cut before it; the first has nothing behind it |
 | 19 | The opening title announced in 90pt type, then screwed to a brass plate two seconds later | 4 of 5 | dropping the plaque that repeated the card's own words fixed the FRAME and not the REEL — the shot after the opening card carries the line's label, and the card's title is that label | asked at reel level, where the neighbours exist, before the passes that count events |
 | 20 | An oval ruled through "years, and still curing" — and then, after the first fix, an underline ruled ACROSS it | closing card of 3 of 5 | the mark's box is hardcoded pixel geometry (260/820/560/300, tuned for a card carrying only a number) while the slate is a FLEX-CENTRED block whose height and position are decided at render time | a slate already draws rules above and below its title; those ARE the mark, so a card that also carries a footer gets none |
+| 21 | A broadsheet laid across the slate's kicker, and both the planner and the checker agreed nothing was there | closing card of 3 of 5 | prop height was GUESSED in two places at once — `w * 0.72` — and a newspaper is `w * 1.32`, or `w * 1.9` cropped. Eighty per cent short | one exported `propHeight`, using the engine's own numbers; it immediately caught a newspaper in `ai-arrived` leaving the frame and covering 100% of a caption |
+| 22 | Three closing cards lost their front page entirely | 3 of 5 | the candidates were "just clear of the thing" and nothing else, so an object whose ideal spot fell FOUR PIXELS outside the safe area was dropped rather than nudged in | each candidate is offered clamped into the safe band as well |
 
-Number 20 is a correction to number 19 of this same run: the first fix converted
-the enclosing oval to an underline, which moved the collision instead of ending
-it. It was caught only because the specific frame the fix was meant to repair was
-checked afterwards, rather than the fix being assumed to work.
+**Three of these are corrections to earlier fixes in this same run**, and each
+was caught by checking the exact frame the previous fix was meant to repair
+rather than assuming it had worked:
+
+- 20 corrects 19 — converting the enclosing oval to an underline moved the
+  collision instead of ending it.
+- 21 was only visible once 20 had cleared the mark off the card: with the rule
+  gone, the newspaper lying across the kicker was the next thing you saw.
+- 22 corrects 21 — giving the checker the true newspaper height made three
+  closing cards drop their front page by a four-pixel margin.
+
+A fix is not finished when the code changes. It is finished when the frame it was
+written for has been looked at again.
 
 Two other mistakes of my own were caught and reverted:
 
