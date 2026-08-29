@@ -312,6 +312,7 @@ jobs:
 
           {
             echo "EPISODE            $EPISODE"
+            echo "branch             ${{ github.ref_name }}"
             echo "commit             ${{ github.sha }}"
             echo "run                ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             echo "rendered           $(date -u +'%Y-%m-%d %H:%M:%SZ')"
@@ -355,13 +356,22 @@ jobs:
               console.log('shots              ' + c.scenes.length);
               console.log('frames             ' + t + '  (' + (t / c.fps).toFixed(2) + 's @ ' + c.fps + 'fps)');
               console.log('representation     ' + Object.entries(rep).sort((a,b)=>b[1]-a[1]).map(([k,v]) => k + ' x' + v).join(' · '));
-            "
+            " || echo "  (could not read episodes/$EPISODE/scene-config.json)"
             echo
             echo "── REMAINING WARNINGS ────────────────────────────────────────"
             npm run validate -- --episode="$EPISODE" 2>&1 | grep -E '^\s+(⚠|·)' || echo "  none"
             echo
             echo "── VISUAL DNA ────────────────────────────────────────────────"
-            npm run dna:lint 2>&1 | tail -2
+            # This summary must never be the thing that fails a finished render.
+            # `npm run` on a script the checkout does not define exits 1, and
+            # under pipefail that killed the whole report — which is exactly how
+            # a run whose master and review copy were both already on disk came
+            # back red. Older branches have no dna:lint at all, so ask first.
+            if node -e "process.exit(require('./package.json').scripts['dna:lint'] ? 0 : 1)" 2>/dev/null; then
+              npm run dna:lint 2>&1 | tail -2 || echo "  dna:lint failed — see its own step above"
+            else
+              echo "  no dna:lint script in this checkout"
+            fi
           } > "$REPORT"
 
           cat "$REPORT"
