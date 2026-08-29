@@ -1,0 +1,395 @@
+# RENDER AN EPISODE, AND HAND BACK SOMETHING A PERSON CAN WATCH.
+#
+# This is a CI WRAPPER, not a second production line. It calls the same four
+# commands a person calls at a terminal — voice, plan, validate, render — and
+# then does the one job a terminal does not: it packages the result so it can
+# be reviewed from a phone.
+#
+# `reel.yml` is the factory: it speaks, draws, COMMITS and renders, and it is
+# the only workflow allowed to write to the repository (CLAUDE.md's "tek
+# workflow" law is about that chain — voice changes the cut, the cut changes
+# the artwork, so they belong in one job). This one is read-only by design:
+# it renders what is already committed and uploads it. Nothing here pushes.
+#
+# What it adds over `reel.yml`, and the whole reason it exists:
+#   · a REVIEW copy under 30 MiB, because the master is routinely 60+ MB and
+#     a browser download on a phone is where a review actually dies
+#   · a contact sheet cut straight from the finished mp4
+#   · a text report with the numbers, so the artifact answers "is this good?"
+#     without opening the video
+name: Render episode
+
+on:
+  workflow_dispatch:
+    inputs:
+      episode:
+        description: 'Which episode to render'
+        required: true
+        type: choice
+        # GitHub cannot populate a choice list at dispatch time, so this is the
+        # one thing here that is typed out. It is not trusted: the first step
+        # checks the chosen id against episodes/ on disk and fails loudly if
+        # this list has drifted from the repository — which is the failure mode
+        # a hand-maintained list actually has.
+        options:
+          - pompeii
+          - vajont
+          - antikythera
+          - baalbek
+          - hormuz
+          - human-heart
+          - medieval-sword
+          - roman-concrete
+          - mansa-musa
+          - ai-arrived
+          - ww2
+      crf:
+        description: 'Master quality — lower is better, 18 is visually lossless'
+        required: false
+        default: '18'
+        type: string
+      review_mb:
+        description: 'Review copy size ceiling in MiB'
+        required: false
+        default: '28'
+        type: string
+
+# READ-ONLY. The factory commits; this job renders what is already committed
+# and uploads it. Nothing in here writes to the repository.
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      EPISODE: ${{ inputs.episode }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # package.json says >=20; the factory pins 22 and so does this.
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      # The choice list above is hand-written, so it is verified against the
+      # repository before anything expensive runs.
+      - name: The episode exists
+        run: |
+          set -euo pipefail
+          test -d "episodes/$EPISODE" || {
+            echo "::error::episodes/$EPISODE does not exist. Folders on disk:"
+            ls -1 episodes/
+            exit 1
+          }
+          test -f "episodes/$EPISODE/brief.json" || {
+            echo "::error::episodes/$EPISODE has no brief.json — it is not a renderable episode."
+            exit 1
+          }
+          echo "episodes/$EPISODE ✓"
+
+      # ── THE CHEAP GATE, before a bundle or a browser is paid for ─────────
+      - name: Engine guards, schema and planner tests
+        run: npm test
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      # ── VOICE IS THE CLOCK ──────────────────────────────────────────────
+      # Scene lengths are MEASURED from the pauses in the reading. `--measure`
+      # exits 1 when there is no audio committed for the episode, which is
+      # correct — it refuses to invent a measurement — but it must not fail the
+      # run for an episode that has never been voiced. So: measure where there
+      # is something to measure, and say plainly when there is not.
+      - name: Measure the narration and cut to it
+        id: voice
+        run: |
+          set -euo pipefail
+          # Each name is tested on its own: `ls a b` exits non-zero when EITHER
+          # operand is missing, so testing both in one call sends an episode
+          # that has vo.wav but no vo.mp3 down the estimated branch — a draft
+          # cut delivered as a finished one, which is the zeroth law inverted.
+          if [ -f "episodes/$EPISODE/audio/vo.mp3" ] || [ -f "episodes/$EPISODE/audio/vo.wav" ]; then
+            npm run voice -- --episode="$EPISODE" --measure
+            npm run plan  -- --episode="$EPISODE"
+            echo "clock=measured" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::No audio/vo.mp3|wav committed for $EPISODE — scene durations are ESTIMATED from word counts (words / 2.7 * 30). The reel renders; it is a draft cut."
+            echo "clock=estimated" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ── VALIDATION ──────────────────────────────────────────────────────
+      # `npm run validate` is the whole QA suite in one command: schema, scene
+      # types, assets on disk, the temporal state machine (lib/temporal.mjs),
+      # the reel editor (lib/editor.mjs), clipping and collision (lib/critique
+      # .mjs), the visual DNA (lib/dna.mjs) and the semantic gate (lib/semantics
+      # .mjs). There are no separate temporal/clipping/editorial commands and
+      # this workflow does not invent any.
+      - name: Validate — schema, temporal, clipping, editorial, DNA, semantics
+        run: npm run validate -- --episode="$EPISODE"
+
+      - name: Strict validation (advisory — warnings become errors)
+        id: strict
+        continue-on-error: true
+        run: npm run validate -- --episode="$EPISODE" --strict
+
+      - name: Visual DNA lint
+        continue-on-error: true
+        run: npm run dna:lint
+
+      # ── RENDER ──────────────────────────────────────────────────────────
+      # Headless Chromium needs these on a bare runner. The sound library was
+      # renamed in Ubuntu 24.04, so try both names. (Same list as reel.yml.)
+      - name: Install Chromium system libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libnss3 libdbus-1-3 libatk1.0-0t64 libgbm1 libxrandr2 libxfixes3 \
+            libxcomposite1 libxdamage1 libatk-bridge2.0-0t64 libpango-1.0-0 \
+            libcairo2 libcups2t64 libxkbcommon0 \
+            || sudo apt-get install -y \
+            libnss3 libdbus-1-3 libatk1.0-0 libgbm1 libxrandr2 libxfixes3 \
+            libxcomposite1 libxdamage1 libatk-bridge2.0-0 libpango-1.0-0 \
+            libcairo2 libcups2 libxkbcommon0
+          sudo apt-get install -y libasound2t64 || sudo apt-get install -y libasound2
+
+      - name: Download the Remotion browser
+        run: npx remotion browser ensure
+
+      - name: Render
+        env:
+          # Two runners' worth of cores; more tabs than that on a hosted runner
+          # thrash rather than help.
+          REMOTION_CONCURRENCY: '2'
+        run: npm run render -- --episode="$EPISODE" --crf="${{ inputs.crf }}"
+
+      # ── THE FILE IS REAL, AND IT IS WHAT IT CLAIMS TO BE ─────────────────
+      - name: Probe the master
+        id: probe
+        run: |
+          set -euo pipefail
+          MASTER="out/$EPISODE.mp4"
+          test -f "$MASTER" || { echo "::error::$MASTER was not produced."; exit 1; }
+
+          BYTES=$(stat -c%s "$MASTER")
+          test "$BYTES" -gt 100000 || { echo "::error::$MASTER is $BYTES bytes — that is not a render."; exit 1; }
+
+          # `-of default=nw=1:nk=1`, not `csv=p=0`: the csv writer appends a
+          # trailing comma to a stream entry, so W comes back "1080," and the
+          # 1080x1920 check below warns on a correct render.
+          probe () { ffprobe -v error "$@" -of default=nw=1:nk=1 "$MASTER"; }
+
+          DUR=$(probe -show_entries format=duration)
+          W=$(probe   -select_streams v:0 -show_entries stream=width)
+          H=$(probe   -select_streams v:0 -show_entries stream=height)
+          VC=$(probe  -select_streams v:0 -show_entries stream=codec_name)
+          FPS=$(probe -select_streams v:0 -show_entries stream=r_frame_rate)
+          # A missing audio stream is not an ffprobe error — it exits 0 and
+          # prints nothing — so the fallback has to be on the empty string,
+          # not on the exit code, or the "no narration" warning never fires.
+          AC=$(probe  -select_streams a:0 -show_entries stream=codec_name); AC="${AC:-none}"
+
+          echo "master=$MASTER"      >> "$GITHUB_OUTPUT"
+          echo "bytes=$BYTES"        >> "$GITHUB_OUTPUT"
+          echo "duration=$DUR"       >> "$GITHUB_OUTPUT"
+          echo "width=$W"            >> "$GITHUB_OUTPUT"
+          echo "height=$H"           >> "$GITHUB_OUTPUT"
+          echo "vcodec=$VC"          >> "$GITHUB_OUTPUT"
+          echo "acodec=$AC"          >> "$GITHUB_OUTPUT"
+          echo "fps=$FPS"            >> "$GITHUB_OUTPUT"
+
+          echo "$MASTER — $(numfmt --to=iec $BYTES), ${DUR}s, ${W}x${H}, $VC + $AC, $FPS fps"
+
+          # A vertical short is 1080x1920. Say so rather than discovering it later.
+          if [ "$W" != "1080" ] || [ "$H" != "1920" ]; then
+            echo "::warning::Rendered at ${W}x${H}, not 1080x1920."
+          fi
+          if [ "$AC" = "none" ]; then
+            echo "::warning::No audio stream — the episode has no committed narration."
+          fi
+
+      # ── A COPY SOMEBODY CAN ACTUALLY OPEN ───────────────────────────────
+      # The master is routinely 60+ MB at CRF 18. Two-pass x264 to a bitrate
+      # computed from the real duration, so the ceiling is hit rather than
+      # guessed at — and the master is never touched.
+      - name: Review copy under the ceiling
+        id: review
+        run: |
+          set -euo pipefail
+          mkdir -p out/review
+          MASTER="out/$EPISODE.mp4"
+          REVIEW="out/review/$EPISODE-review.mp4"
+          CEIL_MIB="${{ inputs.review_mb }}"
+          DUR="${{ steps.probe.outputs.duration }}"
+
+          # Total budget minus the audio track, in bits per second, with a 6%
+          # margin for the container overhead a muxer adds after the fact.
+          AUDIO_K=96
+          VIDEO_K=$(node -e "
+            const dur = Math.max(1, Number('$DUR'));
+            const ceilBits = Number('$CEIL_MIB') * 1024 * 1024 * 8 * 0.94;
+            const kbps = Math.floor(ceilBits / dur / 1000) - $AUDIO_K;
+            process.stdout.write(String(Math.max(400, Math.min(12000, kbps))));
+          ")
+          echo "Target: ${VIDEO_K}k video + ${AUDIO_K}k audio over ${DUR}s → ≤ ${CEIL_MIB} MiB"
+
+          ffmpeg -nostdin -v error -y -i "$MASTER" \
+            -c:v libx264 -preset slow -b:v "${VIDEO_K}k" -pass 1 -an -f null /dev/null
+          ffmpeg -nostdin -v error -y -i "$MASTER" \
+            -c:v libx264 -preset slow -b:v "${VIDEO_K}k" -pass 2 \
+            -profile:v high -pix_fmt yuv420p -movflags +faststart \
+            -c:a aac -b:a "${AUDIO_K}k" "$REVIEW"
+          rm -f ffmpeg2pass-*.log ffmpeg2pass-*.log.mbtree
+
+          RB=$(stat -c%s "$REVIEW")
+          LIMIT=$(node -e "process.stdout.write(String(Math.floor(Number('$CEIL_MIB')*1024*1024)))")
+          echo "review=$REVIEW"  >> "$GITHUB_OUTPUT"
+          echo "bytes=$RB"       >> "$GITHUB_OUTPUT"
+          echo "$REVIEW — $(numfmt --to=iec $RB)"
+          if [ "$RB" -gt "$LIMIT" ]; then
+            echo "::warning::Review copy is $(numfmt --to=iec $RB), over the ${CEIL_MIB} MiB ceiling."
+          fi
+
+      # Cut from the FINISHED mp4, not re-rendered — this is what shipped.
+      - name: Contact sheet
+        id: sheet
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          SHEET="out/review/$EPISODE-contact-sheet.jpg"
+          DUR="${{ steps.probe.outputs.duration }}"
+          N=14
+          rm -rf out/review/.frames && mkdir -p out/review/.frames
+          for i in $(seq 0 $((N-1))); do
+            T=$(node -e "process.stdout.write((Number('$DUR')*(($i+0.5)/$N)).toFixed(3))")
+            ffmpeg -nostdin -v error -y -ss "$T" -i "out/$EPISODE.mp4" -frames:v 1 \
+              "out/review/.frames/$(printf '%02d' $i).png"
+          done
+          # 7 across, 250px wide cells — readable on a phone, ~150 KB.
+          ffmpeg -nostdin -v error -y -pattern_type glob -i 'out/review/.frames/*.png' \
+            -filter_complex "scale=250:-1,tile=7x2:padding=6:color=0x141414" \
+            -frames:v 1 -q:v 3 "$SHEET"
+          rm -rf out/review/.frames
+          echo "sheet=$SHEET" >> "$GITHUB_OUTPUT"
+          echo "$SHEET — $(numfmt --to=iec $(stat -c%s "$SHEET"))"
+
+      # ── THE REPORT ──────────────────────────────────────────────────────
+      # So the artifact answers "is this any good?" without opening the video.
+      - name: Production summary
+        if: always() && steps.probe.outcome == 'success'
+        run: |
+          set -euo pipefail
+          REPORT="out/review/$EPISODE-review.txt"
+          mkdir -p out/review
+
+          {
+            echo "EPISODE            $EPISODE"
+            echo "commit             ${{ github.sha }}"
+            echo "run                ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo "rendered           $(date -u +'%Y-%m-%d %H:%M:%SZ')"
+            echo
+            echo "MASTER             out/$EPISODE.mp4"
+            echo "  size             $(numfmt --to=iec "${{ steps.probe.outputs.bytes || 0 }}") (${{ steps.probe.outputs.bytes }} bytes)"
+            echo "  duration         ${{ steps.probe.outputs.duration }} s"
+            echo "  resolution       ${{ steps.probe.outputs.width }}x${{ steps.probe.outputs.height }}"
+            echo "  video / audio    ${{ steps.probe.outputs.vcodec }} / ${{ steps.probe.outputs.acodec }}"
+            echo "  frame rate       ${{ steps.probe.outputs.fps }}"
+            echo "  master CRF       ${{ inputs.crf }}"
+            echo
+            echo "REVIEW COPY        out/review/$EPISODE-review.mp4"
+            echo "  size             $(numfmt --to=iec "${{ steps.review.outputs.bytes || 0 }}")"
+            echo "  ceiling          ${{ inputs.review_mb }} MiB"
+            echo
+            echo "CLOCK              ${{ steps.voice.outputs.clock }}"
+            if [ "${{ steps.voice.outputs.clock }}" != "measured" ]; then
+              echo "                   ^ durations came from word counts, not from the"
+              echo "                     narration. This is a draft cut (zeroth law)."
+            fi
+            echo
+            echo "TESTS              pass (npm test — the job would have stopped otherwise)"
+            echo "TYPECHECK          pass (npm run typecheck)"
+            echo "VALIDATE           pass (npm run validate -- --episode=$EPISODE)"
+            echo "                   covers schema, scene types, assets on disk,"
+            echo "                   temporal state machine, reel editor, clipping,"
+            echo "                   collision, visual DNA and the semantic gate"
+            echo "STRICT VALIDATE    ${{ steps.strict.outcome }}  (advisory — warnings as errors)"
+            echo
+            echo "── SHOTS AND REPRESENTATION ──────────────────────────────────"
+            node -e "
+              const c = require('./episodes/$EPISODE/scene-config.json');
+              const rep = {};
+              let t = 0;
+              for (const s of c.scenes) {
+                const k = s.diagram ? s.diagram.type : (s.sceneType === 'title-slate' ? 'slate' : 'typography');
+                rep[k] = (rep[k] || 0) + 1;
+                t += s.durationInFrames;
+              }
+              console.log('shots              ' + c.scenes.length);
+              console.log('frames             ' + t + '  (' + (t / c.fps).toFixed(2) + 's @ ' + c.fps + 'fps)');
+              console.log('representation     ' + Object.entries(rep).sort((a,b)=>b[1]-a[1]).map(([k,v]) => k + ' x' + v).join(' · '));
+            "
+            echo
+            echo "── REMAINING WARNINGS ────────────────────────────────────────"
+            npm run validate -- --episode="$EPISODE" 2>&1 | grep -E '^\s+(⚠|·)' || echo "  none"
+            echo
+            echo "── VISUAL DNA ────────────────────────────────────────────────"
+            npm run dna:lint 2>&1 | tail -2
+          } > "$REPORT"
+
+          cat "$REPORT"
+
+      # ── ARTIFACTS ───────────────────────────────────────────────────────
+      # Two uploads on purpose. The review bundle is small and must always
+      # arrive; the master is large and is allowed to fail on its own without
+      # taking the run — and when it does, the log says why rather than the
+      # bundle silently arriving one file short.
+      - name: Upload review bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.episode }}-review
+          path: |
+            out/review/${{ inputs.episode }}-review.mp4
+            out/review/${{ inputs.episode }}-contact-sheet.jpg
+            out/review/${{ inputs.episode }}-review.txt
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Upload master
+        id: master_upload
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.episode }}-master
+          path: out/${{ inputs.episode }}.mp4
+          if-no-files-found: error
+          # Already H.264; zipping it again buys nothing and costs minutes.
+          compression-level: 0
+          retention-days: 14
+
+      - name: Say plainly whether the master arrived
+        if: always()
+        run: |
+          if [ "${{ steps.master_upload.outcome }}" = "success" ]; then
+            echo "Master uploaded as artifact '${{ inputs.episode }}-master' ($(numfmt --to=iec "${{ steps.probe.outputs.bytes || 0 }}"))."
+          else
+            echo "::warning::The master ($(numfmt --to=iec "${{ steps.probe.outputs.bytes || 0 }}")) did NOT upload — see the 'Upload master' step for the reason (size limit, storage quota or a transfer failure). The review copy, contact sheet and report are in '${{ inputs.episode }}-review' and are the artifacts to use."
+          fi
+
+      # Nothing is committed. `out/` is gitignored and this job has read-only
+      # permissions; the render exists as an artifact and nowhere else.
+      - name: Working tree is untouched
+        if: always()
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::warning::The run modified tracked files. Nothing is pushed, but this is worth knowing:"
+            git status --porcelain
+          else
+            echo "Working tree clean — nothing to commit, nothing pushed."
+          fi
