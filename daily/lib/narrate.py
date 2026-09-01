@@ -9,10 +9,13 @@ from __future__ import annotations
 
 import json
 import subprocess
+import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import tts                       # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[2]
-VOICE = ROOT / ".voices" / "en-us-ryan-high.onnx"
 HEAD, TAIL = 0.35, 0.60          # lead-in silence, and air after the last word
 MIN_GAP = 0.15                   # never butt two lines together
 
@@ -30,15 +33,18 @@ def duration(path: Path) -> float:
     return float(out)
 
 
-def synthesize(lines: list[str], out_dir: Path) -> list[float]:
-    """Render one wav per line; return their durations."""
-    if not VOICE.exists():
-        raise FileNotFoundError(f"voice model missing: {VOICE} (run daily/bootstrap.sh)")
+def synthesize(lines: list[str], out_dir: Path, voice: str | None = None) -> list[float]:
+    """Render one wav per line; return their durations.
+
+    The engine is whichever is configured — Gemini when a key is present, piper
+    otherwise. Rates differ between them, which is exactly why nothing
+    downstream assumes a words-per-second constant.
+    """
     out_dir.mkdir(parents=True, exist_ok=True)
     durs = []
     for i, line in enumerate(lines, 1):
         wav = out_dir / f"{i:02d}.wav"
-        _run(["piper", "-m", str(VOICE), "-c", f"{VOICE}.json", "-f", str(wav)], stdin=line)
+        tts.say(line, wav, voice)
         durs.append(duration(wav))
     return durs
 
@@ -55,9 +61,11 @@ def plan(lines: list[str], durs: list[float], target: float,
     gaps = n - 1
     slack = target - speech - HEAD - TAIL - MIN_GAP * gaps
     if slack < 0:
+        over = -slack
+        rate = speech / max(sum(len(l.split()) for l in lines), 1)   # seconds per word, measured
         raise ValueError(
-            f"script is {speech + HEAD + TAIL + MIN_GAP * gaps - target:.2f}s too long "
-            f"for a {target:.0f}s cut — cut roughly {int(-slack * 2.9)} words")
+            f"script is {over:.2f}s too long for a {target:.0f}s cut — "
+            f"cut roughly {max(1, int(over / max(rate, 0.01)))} words")
     w = weights or [1.0] * gaps
     if len(w) != gaps:
         raise ValueError(f"need {gaps} weights, got {len(w)}")
@@ -81,7 +89,7 @@ def assemble(beats: list[dict], line_dir: Path, target: float, out: Path) -> Non
         filt.append(f"[{b['i']-1}:a]adelay={ms}|{ms},apad[d{b['i']}]")
         mix.append(f"[d{b['i']}]")
     chain = ";".join(filt) + ";" + "".join(mix) + f"amix=inputs={len(beats)}:normalize=0[m];"
-    chain += ("[m]highpass=f=85,"
+    chain += ("[m]aresample=48000,highpass=f=85,"
               "equalizer=f=240:t=q:w=1.1:g=-2,"      # tame the boxy low-mid
               "equalizer=f=3200:t=q:w=1.4:g=2.2,"    # lift consonants for phone speakers
               "acompressor=threshold=0.09:ratio=3:attack=8:release=180:makeup=1.6,"
@@ -93,9 +101,10 @@ def assemble(beats: list[dict], line_dir: Path, target: float, out: Path) -> Non
 
 
 def build(lines: list[str], target: float, work: Path,
-          weights: list[float] | None = None) -> dict:
-    durs = synthesize(lines, work / "lines")
+          weights: list[float] | None = None, voice: str | None = None) -> dict:
+    durs = synthesize(lines, work / "lines", voice)
     timing = plan(lines, durs, target, weights)
+    timing["engine"] = tts.engine()
     assemble(timing["beats"], work / "lines", target, work / "vo.wav")
     (work / "timing.json").write_text(json.dumps(timing, indent=1))
     return timing

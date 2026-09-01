@@ -1,16 +1,26 @@
 # Daily shorts pipeline
 
-Two vertical science shorts a day: written, narrated, scored, rendered,
-uploaded to YouTube, and bundled for hand-posting to Instagram and Facebook.
+Two 40-second vertical science shorts a day, produced and published by GitHub
+Actions: written by Gemini against a validated spec schema, narrated with Gemini
+TTS, scored from scratch, cut over real Pexels/Pixabay footage, then published to
+YouTube, Instagram and Facebook.
+
+Run it from Actions → **Daily short**. Manual runs default to `upload: none`, so
+the whole chain can be exercised without posting anything.
 
     daily/
-      RUNBOOK.md      what a scheduled run does, step by step
+      RUNBOOK.md      what a scheduled run does, and how to intervene
       SETUP.md        credentials, quota, and what is not automatable
       bootstrap.sh    prepares a fresh container (idempotent)
       topics.yaml     the queue of topics
       state.json      which topics are used up
       specs/          one spec per video
       lib/            the build and publish tooling
+                        write_spec  Gemini drafts, the validator decides
+                        tts         Gemini TTS, piper fallback
+                        stock       Pexels/Pixabay search and normalisation
+                        social      Instagram + Facebook
+                        release     public URL for Instagram to fetch
 
 Build one video from a spec:
 

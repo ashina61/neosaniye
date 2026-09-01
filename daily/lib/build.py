@@ -18,6 +18,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import compose            # noqa: E402
 import narrate            # noqa: E402
 import score              # noqa: E402
+import stock as stock_mod  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 PIPE = ROOT / "daily"
@@ -52,10 +53,12 @@ def build(spec_path: Path, work_root: Path | None = None) -> Path:
     slug = spec["slug"]
     work = (work_root or ROOT / "out") / slug
     work.mkdir(parents=True, exist_ok=True)
-    target = float(spec.get("duration", 30.0))
+    target = float(spec.get("duration", 40.0))
 
-    print(f"[1/7] narration ({len(spec['script'])} beats -> {target:.0f}s)")
-    timing = narrate.build(spec["script"], target, work, spec.get("gap_weights"))
+    print(f"[1/8] narration ({len(spec['script'])} beats -> {target:.0f}s)")
+    timing = narrate.build(spec["script"], target, work,
+                           spec.get("gap_weights"), spec.get("voice"))
+    print(f"      engine: {timing.get('engine')}")
     beats = timing["beats"]
     for i, b in enumerate(beats):
         cap = spec.get("captions", {}).get(i + 1) if isinstance(spec.get("captions"), dict) else None
@@ -65,28 +68,36 @@ def build(spec_path: Path, work_root: Path | None = None) -> Path:
     turn = beats[turn_beat - 1]["start"] if turn_beat else None
     spec["turn_time"] = turn
 
-    print("[2/7] score")
+    print("[2/8] score")
     score.compose(target, work / "music.wav", mood=spec.get("mood", "curious"),
                   turn=turn, changes=[b["start"] for b in beats])
 
-    print("[3/7] composition")
+    print("[3/8] stock footage")
     proj = work / "project"
     proj.mkdir(exist_ok=True)
+    stock = stock_mod.gather(spec["scenes"], proj, timing) if any(
+        sc.get("stock") for sc in spec["scenes"]) else {}
+    for i, info in stock.items():
+        info["rel"] = str(Path(info["clip"]).relative_to(proj))
+    if not stock and any(sc.get("stock") for sc in spec["scenes"]):
+        print("      none retrieved — the composition falls back to graphics")
+
+    print("[4/8] composition")
     for name in ("assets", "node_modules"):
         link = proj / name
         if not link.exists():
             link.symlink_to(PIPE / name)
     shutil.copy(PIPE / "hyperframes.json", proj / "hyperframes.json")
-    compose.build(spec, timing, proj / "index.html")
+    compose.build(spec, timing, proj / "index.html", stock)
 
-    print("[4/7] gates")
+    print("[5/8] gates")
     env = render_env()
     gate("lint", subprocess.run(["npx", "--yes", "hyperframes", "lint"],
                                 cwd=proj, capture_output=True, text=True, env=env, timeout=900))
     gate("inspect", subprocess.run(["npx", "--yes", "hyperframes", "inspect"],
                                    cwd=proj, capture_output=True, text=True, env=env, timeout=1800))
 
-    print("[5/7] render")
+    print("[6/8] render")
     silent = work / "silent.mp4"
     r = subprocess.run(["npx", "--yes", "hyperframes", "render", "--output", str(silent),
                         "--fps", "30", "--quality", "high"],
@@ -94,7 +105,7 @@ def build(spec_path: Path, work_root: Path | None = None) -> Path:
     if not silent.exists():
         raise RuntimeError(f"render produced no file:\n{(r.stdout + r.stderr)[-1500:]}")
 
-    print("[6/7] mix")
+    print("[7/8] mix")
     mix = work / "mix.wav"
     r = sh(["ffmpeg", "-y", "-i", str(work / "music.wav"), "-i", str(work / "vo.wav"),
             "-filter_complex",
@@ -107,7 +118,7 @@ def build(spec_path: Path, work_root: Path | None = None) -> Path:
     if r.returncode:
         raise RuntimeError(f"mix failed: {r.stderr[-800:]}")
 
-    print("[7/7] encode")
+    print("[8/8] encode")
     final = work / f"{slug}_1080x1920.mp4"
     r = sh(["ffmpeg", "-y", "-i", str(silent), "-i", str(mix), "-map", "0:v:0", "-map", "1:a:0",
             "-c:v", "libx264", "-profile:v", "high", "-level", "4.1", "-pix_fmt", "yuv420p",

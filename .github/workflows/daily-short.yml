@@ -1,0 +1,139 @@
+name: Daily short
+
+# Two vertical shorts a day. Manual runs default to upload disabled, so the
+# whole chain can be exercised against the real APIs without posting anything.
+
+on:
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: 'Where to publish'
+        type: choice
+        default: 'none'
+        options: ['none', 'youtube', 'all']
+      privacy:
+        description: 'YouTube privacy'
+        type: choice
+        default: 'unlisted'
+        options: ['unlisted', 'public', 'private']
+      topic:
+        description: 'Topic id (blank = next in the queue)'
+        type: string
+        default: ''
+  schedule:
+    - cron: '0 4 * * *'    # 07:00 Istanbul
+    - cron: '0 15 * * *'   # 18:00 Istanbul
+
+concurrency:
+  group: daily-short          # two runs must never draw from the queue at once
+  cancel-in-progress: false
+
+permissions:
+  contents: write             # commit the spec, state and deliverable; cut a release
+
+jobs:
+  short:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+
+      - name: System packages
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          ffmpeg -version | head -1
+
+      - name: Python dependencies
+        run: pip install --quiet pyyaml numpy requests
+
+      - name: Node dependencies
+        run: cd daily && npm install --no-audit --no-fund --silent
+
+      - name: Resolve a browser for the renderer
+        run: |
+          for c in /usr/bin/google-chrome /usr/bin/chromium-browser /usr/bin/chromium; do
+            if [ -x "$c" ]; then echo "HYPERFRAMES_BROWSER_PATH=$c" >> "$GITHUB_ENV"; break; fi
+          done
+          if ! grep -q HYPERFRAMES_BROWSER_PATH "$GITHUB_ENV" 2>/dev/null; then
+            npx --yes hyperframes browser ensure
+          fi
+          echo "HYPERFRAMES_SKIP_SKILLS=1" >> "$GITHUB_ENV"
+
+      - name: Fonts
+        run: python daily/lib/fetch_fonts.py
+
+      - name: Pick a topic and write the spec
+        id: spec
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -euo pipefail
+          ARGS=""
+          if [ -n "${{ inputs.topic }}" ]; then ARGS="--topic-id ${{ inputs.topic }}"; fi
+          python daily/lib/write_spec.py $ARGS --duration 40 | tee /tmp/spec.log
+          SPEC=$(tail -1 /tmp/spec.log)
+          echo "path=$SPEC" >> "$GITHUB_OUTPUT"
+          echo "slug=$(basename "$SPEC" .yaml)" >> "$GITHUB_OUTPUT"
+
+      - name: Build the video
+        env:
+          GEMINI_API_KEY:  ${{ secrets.GEMINI_API_KEY }}
+          PEXELS_API_KEY:  ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+        run: python daily/lib/build.py "${{ steps.spec.outputs.path }}"
+
+      - name: Contact sheet
+        run: python daily/lib/contact_sheet.py "out/${{ steps.spec.outputs.slug }}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: review-${{ steps.spec.outputs.slug }}
+          path: |
+            out/${{ steps.spec.outputs.slug }}/contact-sheet.jpg
+            out/${{ steps.spec.outputs.slug }}/*_1080x1920.mp4
+            ${{ steps.spec.outputs.path }}
+          retention-days: 14
+
+      - name: Publish
+        env:
+          GITHUB_TOKEN:          ${{ secrets.GITHUB_TOKEN }}
+          YOUTUBE_CLIENT_ID:     ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          META_USER_TOKEN:       ${{ secrets.META_USER_TOKEN }}
+        run: |
+          set -euo pipefail
+          UPLOAD='${{ inputs.upload || 'all' }}'
+          PRIVACY='${{ inputs.privacy || 'unlisted' }}'
+          python daily/lib/publish.py \
+            "out/${{ steps.spec.outputs.slug }}" \
+            --spec "${{ steps.spec.outputs.path }}" \
+            --upload "$UPLOAD" --privacy "$PRIVACY"
+
+      - name: Record and commit
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import sys; sys.path.insert(0, 'daily/lib')
+          import topics_queue
+          topics_queue.mark("${{ steps.spec.outputs.slug }}", run="${{ github.run_id }}")
+          PY
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add daily/specs daily/state.json videos || true
+          if git diff --cached --quiet; then
+            echo "nothing to commit"
+          else
+            git commit -m "Daily short: ${{ steps.spec.outputs.slug }}"
+            git pull --rebase --autostash origin "${{ github.ref_name }}"
+            git push origin HEAD:"${{ github.ref_name }}"
+          fi

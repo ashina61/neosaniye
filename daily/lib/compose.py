@@ -107,11 +107,14 @@ def _scene_body(sc: dict, sid: str, rng: random.Random) -> str:
     # `card` and `compare` already fill the art zone with a panel; a motif behind
     # one competes with it and reads as clutter, so it is dropped rather than
     # left to a spec author to remember.
-    wants_motif = sc.get("motif") and t not in ("card", "compare")
-    art = sc.get("art_svg") or (
+    # A scene running stock footage drops both backdrop and motif: the footage is
+    # the art, and graphics layered on it just fight for the frame.
+    on_footage = bool(sc.get("_has_stock"))
+    wants_motif = sc.get("motif") and t not in ("card", "compare", "metric") and not on_footage
+    art = sc.get("art_svg") or ("" if on_footage else (
         _backdrop(sc.get("backdrop", "plain"), rng, sid)
         + ('<svg class="art" viewBox="0 0 1080 1920" preserveAspectRatio="xMidYMid slice">'
-           + _motif(sc["motif"], sid) + "</svg>" if wants_motif else ""))
+           + _motif(sc["motif"], sid) + "</svg>" if wants_motif else "")))
     occl = " data-layout-allow-occlusion"
 
     if t == "hook":
@@ -181,8 +184,8 @@ def _scene_body(sc: dict, sid: str, rng: random.Random) -> str:
 # ------------------------------------------------------------------ timeline
 def _motif_tweens(sc: dict, sid: str, st: float, A) -> None:
     kind = sc.get("motif")
-    if not kind or sc["type"] in ("card", "compare"):   # see _scene_body
-        return
+    if not kind or sc["type"] in ("card", "compare", "metric") or sc.get("_has_stock"):
+        return                                          # see _scene_body
     if kind == "wave":
         A(f'tl.fromTo("#{sid}-motif .mfbar",{{scaleY:0.06,opacity:0}},'
           f'{{scaleY:1,opacity:.55,duration:.7,ease:B,stagger:{{each:.026,from:"center"}}}},{st+0.15:.2f});')
@@ -270,6 +273,11 @@ CSS = """
       #stars { position:absolute; inset:0; }
       #stars i { position:absolute; display:block; background:#CFE2FF; border-radius:50%; }
       #vig { position:absolute; inset:0; pointer-events:none; background:radial-gradient(115% 78% at 50% 44%, rgba(0,0,0,0) 52%, rgba(0,0,0,.62) 100%); }
+      video.stock { position:absolute; inset:0; width:1080px; height:1920px; object-fit:cover; }
+      #scrim { position:absolute; inset:0; background:
+               linear-gradient(180deg, rgba(5,7,14,.72) 0%, rgba(5,7,14,.30) 26%,
+                                       rgba(5,7,14,.34) 52%, rgba(5,7,14,.88) 82%,
+                                       rgba(5,7,14,.96) 100%); }
       .scene { position:absolute; inset:0; }
       .stage { position:absolute; inset:0; transform-origin:50% 46%; }
       .art { position:absolute; inset:0; width:1080px; height:1920px; }
@@ -299,7 +307,7 @@ CSS = """
       .eq-legend { margin-top:30px; font-size:40px; color:#B9C4D6; font-weight:600; }
       .eq-legend em { color:#46E0FF; font-style:normal; font-weight:800; }
       .zerotag { position:absolute; left:78px; right:78px; top:1120px; text-align:center; font-family:"AntonL", sans-serif; font-size:74px; color:#46E0FF; }
-      .meter { position:absolute; left:50%; transform:translateX(-50%); top:820px; min-width:620px; padding:30px 44px; border-radius:26px; text-align:center; background:rgba(9,16,30,.92); border:2px solid rgba(70,224,255,.35); }
+      .meter { position:absolute; left:50%; transform:translateX(-50%); top:700px; min-width:620px; padding:30px 44px; border-radius:26px; text-align:center; background:rgba(9,16,30,.92); border:2px solid rgba(70,224,255,.35); }
       .meter-k { font-size:24px; letter-spacing:.24em; color:#8A96AC; font-weight:800; }
       .meter-v { margin-top:10px; font-size:96px; color:#F2F5FA; font-weight:800; display:flex; align-items:baseline; justify-content:center; gap:14px; }
       .meter-v b { font-family:"AntonL", sans-serif; font-weight:400; }
@@ -327,12 +335,21 @@ CSS = """
 """
 
 
-def build(spec: dict, timing: dict, out: Path) -> Path:
-    """Emit index.html for `spec`, cut to the measured narration in `timing`."""
+def build(spec: dict, timing: dict, out: Path, stock: dict | None = None) -> Path:
+    """Emit index.html for `spec`, cut to the measured narration in `timing`.
+
+    `stock` maps a scene index to a downloaded, normalised clip. Video elements
+    must be direct children of the composition root — the framework owns their
+    playback — so footage cannot sit inside the scene divs and gets its own
+    tracks underneath instead.
+    """
     beats = timing["beats"]
     dur = float(timing["target"])
     rng = random.Random(spec.get("seed", 20260901))
     scenes = spec["scenes"]
+    stock = stock or {}
+    for i, sc in enumerate(scenes):
+        sc["_has_stock"] = i in stock
     if len(scenes) != len(beats):
         raise ValueError(f"spec has {len(scenes)} scenes but the script has {len(beats)} beats")
 
@@ -342,12 +359,30 @@ def build(spec: dict, timing: dict, out: Path) -> Path:
         st = max(0.0, b["start"] - (XFADE if i else b["start"]))
         end = (beats[i + 1]["start"] + XFADE * 0.0) if i + 1 < len(beats) else dur
         end = min(dur, end + (XFADE if i + 1 < len(beats) else 0.0))
-        placed.append((f"s{i+1}", sc, round(st, 2), round(end - st, 2), 2 + (i % 2)))
+        placed.append((f"s{i+1}", sc, round(st, 2), round(end - st, 2), 5 + (i % 2)))
 
     body = "\n".join(
         f'      <div id="{sid}" class="clip scene" data-start="{st}" data-duration="{du}" '
         f'data-track-index="{tr}">{_scene_body(sc, sid, rng)}</div>'
         for sid, sc, st, du, tr in placed)
+
+    # Footage cuts on the beat while the text above it cross-fades. Alternating
+    # tracks keep two adjacent clips off the same track during the dissolve.
+    stock_html, stock_ids = [], []
+    for i, info in sorted(stock.items()):
+        start = beats[i]["start"] - (0.25 if i else 0.0)
+        end = (beats[i + 1]["start"] + 0.25) if i + 1 < len(beats) else dur
+        vid = f"stk{i}"
+        stock_ids.append((vid, round(start, 2)))
+        stock_html.append(
+            f'<video id="{vid}" class="stock" data-start="{round(start,2)}" '
+            f'data-duration="{round(min(end, dur) - start, 2)}" '
+            f'data-track-index="{2 + (i % 2)}" data-media-start="0" '
+            f'src="{esc(info["rel"])}"></video>')
+    stock_markup = chr(10).join("      " + v for v in stock_html)
+    scrim = (f'      <div id="scrimclip" class="clip" data-start="0" data-duration="{dur}" '
+             f'data-track-index="4"><div id="scrim" data-layout-ignore></div></div>'
+             if stock else "")
 
     caps = "".join(f'<div id="cap{i}" class="cap"><span>{esc(b.get("caption") or b["text"])}</span></div>'
                    for i, b in enumerate(beats))
@@ -370,6 +405,8 @@ def build(spec: dict, timing: dict, out: Path) -> Path:
         A(f'tl.to("#glow",{{backgroundColor:"#5e1c1c",opacity:.8,duration:2.4,ease:EI}},{turn:.2f});')
         A(f'tl.to("#glow",{{backgroundColor:"#1b3556",opacity:.62,duration:2.2,ease:EI}},{min(turn+4.5,dur-1.5):.2f});')
     A('tl.fromTo("#stars i",{opacity:0},{opacity:1,duration:1.2,stagger:{each:.012,from:"random"},ease:E},.1);')
+    for vid, vst in stock_ids:
+        A(f'tl.fromTo("#{vid}",{{opacity:0}},{{opacity:1,duration:.38,ease:EI}},{vst:.2f});')
     for i, b in enumerate(beats):
         A(f'tl.fromTo("#cap{i}",{{opacity:0,y:20}},{{opacity:1,y:0,duration:.26,ease:E}},{b["start"]:.2f});')
         A(f'tl.to("#cap{i}",{{opacity:0,y:-14,duration:.22,ease:EI}},{b["end"]-0.02:.2f});')
@@ -392,10 +429,12 @@ def build(spec: dict, timing: dict, out: Path) -> Path:
         <div id="bg"></div><div id="glow" data-layout-ignore></div>
         <div id="stars">{_stars(rng)}</div>
       </div>
+{stock_markup}
+{scrim}
 {body}
-      <div id="fx" class="clip" data-start="0" data-duration="{dur}" data-track-index="6"><div id="vig" data-layout-ignore></div></div>
-      <div id="caps" class="clip" data-start="0" data-duration="{dur}" data-track-index="4">{caps}</div>
-      <div id="hud" class="clip" data-start="0" data-duration="{dur}" data-track-index="5"><div id="prog"></div></div>
+      <div id="fx" class="clip" data-start="0" data-duration="{dur}" data-track-index="7"><div id="vig" data-layout-ignore></div></div>
+      <div id="caps" class="clip" data-start="0" data-duration="{dur}" data-track-index="8">{caps}</div>
+      <div id="hud" class="clip" data-start="0" data-duration="{dur}" data-track-index="9"><div id="prog"></div></div>
     </div>
     <script>
       window.__timelines = window.__timelines || {{}};

@@ -1,0 +1,36 @@
+slug: why-ice-floats
+title: Why Ice Floats
+duration: 40.0
+mood: curious
+seed: 20260904
+gap_weights: [1.6, 1.0, 0.9, 0.9, 1.0, 1.2, 1.1, 1.3, 1.4]
+
+script:
+  - "Almost every solid sinks in its own liquid. Water does the opposite."
+  - "Ice floats, and that is genuinely strange."
+  - "It comes down to how water molecules hold each other."
+  - "In liquid water they tumble, packing close and loose by turns."
+  - "Freezing locks each one into a rigid open lattice."
+  - "That lattice holds them further apart than the liquid does."
+  - "Same molecules, more space, so ice is less dense."
+  - "Push it under and the water pushes back harder than gravity pulls."
+  - "Lakes freeze from the top down, and the water below stays liquid."
+  - "That quirk of packing is why life survives winter."
+
+scenes:
+  - {type: hook,      motif: rings,     headline: ["ICE FLOATS.", "THAT'S ODD."]}
+  - {type: statement, motif: wave,      accent: cyan,  headline: ["SOLIDS SINK.", "THIS ONE DOESN'T"]}
+  - {type: list,      motif: split,     items: ["CLOSE PACKED", "OPEN LATTICE"]}
+  - {type: statement, motif: particles, accent: cyan,  headline: ["LIQUID:", "MOLECULES TUMBLE"]}
+  - {type: statement, motif: rings,     accent: amber, headline: ["FREEZING:", "LOCKED OPEN"]}
+  - {type: card,      eyebrow: "THE MECHANISM", body: "MORE <em>SPACE</em>", legend: "same molecules, <em>further apart</em>"}
+  - {type: metric,    motif: wave,      label: "DENSITY VS WATER", count_to: 92, unit: "%", headline: ["LESS DENSE", "SO IT RISES"]}
+  - {type: statement, motif: beam,      accent: cyan,  headline: ["BUOYANCY", "WINS"]}
+  - {type: compare,   columns: [{chip: "surface", value: "ICE", label: "freezes first"}, {chip: "below", value: "LIQUID", label: "stays liquid"}]}
+  - {type: endcard,   motif: rings,     lines: ["ODD PACKING.", "LIFE SURVIVES."]}
+
+copy:
+  title: "Why ice floats when almost every other solid sinks #Shorts"
+  hook: "Almost every solid sinks in its own liquid. Water does the opposite."
+  caption: "Freezing locks water molecules into a rigid open lattice that holds them further apart than the liquid does. Same molecules, more space, about nine percent less dense — so ice rises, lakes freeze from the top, and the water underneath stays liquid."
+  hashtags: [science, physics, chemistry, shorts, didyouknow, water]

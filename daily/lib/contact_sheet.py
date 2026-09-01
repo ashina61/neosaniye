@@ -33,14 +33,12 @@ def build(out_dir: Path, at_fraction: float = 0.80) -> Path:
 
     n = len(shots)
     cols = 4 if n >= 4 else n
-    rows = (n + cols - 1) // cols
-    layout = "|".join(
-        ("0" if c == 0 else "+".join(f"w{k}" for k in range(c))) + "_" +
-        ("0" if r == 0 else "+".join(f"h{k*cols}" for k in range(r)))
-        for r in range(rows) for c in range(cols) if r * cols + c < n)
+    # `tile` pads a short last row with the chosen colour instead of leaving the
+    # undefined cells xstack fills with green.
     chain = ("".join(f"[{i}:v]scale=340:-1[s{i}];" for i in range(n))
              + "".join(f"[s{i}]" for i in range(n))
-             + f"xstack=inputs={n}:layout={layout}[o]")
+             + f"concat=n={n}:v=1:a=0[strip];"
+             + f"[strip]tile={cols}x{(n + cols - 1) // cols}:color=#0A1122:margin=6:padding=4[o]")
     sheet = out_dir / "contact-sheet.jpg"
     subprocess.run(["ffmpeg", "-v", "error", "-y", *sum([["-i", str(s)] for s in shots], []),
                     "-filter_complex", chain, "-map", "[o]", "-q:v", "3", str(sheet)], check=True)

@@ -1,134 +1,80 @@
-# Daily video runbook
+# Daily shorts — how it runs
 
-You are a scheduled run. Produce **one** finished vertical short, upload it to
-YouTube if credentials exist, and leave a hand-post bundle for Instagram and
-Facebook. Work top to bottom; do not skip a gate.
+Two 40-second vertical shorts a day, produced and published by GitHub Actions.
+Nothing here needs a person in the loop; this file describes what the workflow
+does, and how to intervene when it goes wrong.
 
-Budget roughly 25 minutes. Bootstrap ~6 min, render ~6 min, the rest is writing.
+## Why Actions and not the Claude Code environment
 
-## 0. Bootstrap
+The repository's secrets — Gemini, Pexels, Pixabay, Freesound, YouTube, Meta —
+exist only inside an Actions run; GitHub never returns their values through the
+API, so they cannot reach a Claude Code container. That container's egress
+policy also rejects every stock-media host and Meta's Graph API outright.
 
-```bash
-bash daily/bootstrap.sh
-source .venv/bin/activate && source .render-env
-```
+A GitHub-hosted runner has neither restriction, and this repository is public,
+so Actions minutes are free and a release asset gets the public HTTPS URL that
+Instagram's publishing API needs in order to fetch a video.
 
-Re-runnable and mostly cached. If it fails, stop and report — do not hand-patch
-around a broken environment.
+## The chain
 
-## 1. Take a topic
+`.github/workflows/daily-short.yml`, one job:
 
-```bash
-python daily/lib/topics_queue.py status
-```
+1. **Topic** — the next unused row from `topics.yaml`, skipping anything already
+   in `state.json`.
+2. **Script** — Gemini drafts ten beats and a scene plan; `write_spec.py`
+   validates beat count, word budget, headline width, scene variety and motif
+   names, and sends the problems back for a redraft. Four attempts, then it
+   fails the run rather than shipping a spec that renders badly.
+3. **Narration** — Gemini TTS (voice `Charon`). Durations are measured, never
+   assumed, and the leftover time is spread across the gaps to land exactly on
+   40 seconds.
+4. **Score** — synthesized per video, chord changes on the narration's beats.
+5. **Footage** — Pexels first, Pixabay second, vertical strongly preferred; each
+   clip is cropped to 1080x1920 and trimmed before it reaches the renderer. A
+   beat with no honest match falls back to graphics.
+6. **Composition** — the HyperFrames template, then `lint` and `inspect`. Both
+   must be clean or the build refuses to produce a file.
+7. **Render, mix, encode** — H.264/AAC, music ducked under the voice, −14 LUFS.
+8. **Publish** — see below.
+9. **Commit** — spec, `state.json` and the deliverable go back to the branch.
 
-Take the first remaining topic. Never reuse a topic already in `state.json`.
-If fewer than 6 topics remain, say so clearly in your final report so the queue
-gets refilled before it runs dry.
+## Running it by hand
 
-## 2. Write the script
+Actions → **Daily short** → *Run workflow*:
 
-Eight beats, **65–75 words total**. Piper speaks about 2.9 words per second, so
-75 words is roughly 26 seconds of speech and the gaps take it to 30. If
-`build.py` says the script is too long, cut words — never shorten the gaps.
+| Input | Default | Notes |
+| --- | --- | --- |
+| `upload` | `none` | `none` builds and bundles only. `youtube`, or `all` for YouTube + Instagram + Facebook. |
+| `privacy` | `unlisted` | YouTube only. |
+| `topic` | blank | A topic id to force; blank takes the next in the queue. |
 
-Shape, learned from the two videos that worked:
+Scheduled runs use `upload: all` and `privacy: unlisted`.
 
-1. **Hook** — the surprising fact, stated flat. No "did you know".
-2. **Reframe** — overturn the assumption the hook created.
-3. **Setup** — name the mechanism's two parts.
-4. **Part one.**
-5. **Part two.**
-6. **The rule** — the one sentence that does the explaining.
-7. **Consequence** — what follows from the rule.
-8. **Payoff** — land it; echo the hook's language.
+Every run uploads a `review-<slug>` artifact holding the contact sheet, the MP4
+and the spec — look at the contact sheet before promoting anything to public.
 
-Write plainly. Short sentences. No hedging, no filler adjectives, no "basically".
-Say the mechanism, not a metaphor for it. Every claim must be one you can
-defend — this is the part no gate can check for you, so if a beat overstates
-something, rewrite it before it ships.
+## When something fails
 
-## 3. Write the spec
+- **`write_spec.py` exhausts its attempts** — the model could not satisfy the
+  rules. The log lists exactly which. Usually the topic's `mechanism` line is
+  too vague to write ten honest beats from; sharpen it in `topics.yaml`.
+- **A gate fails** — a real layout defect. The `inspect` output names the
+  element and timestamp.
+- **No footage for a beat** — logged, not fatal; that scene renders as graphics.
+- **A platform fails** — the others still publish. `published.json` in the
+  deliverable folder records what landed where.
 
-Copy `daily/specs/why-your-recorded-voice-sounds-wrong.yaml` as the model.
-One scene per beat, eight scenes, in beat order.
+Keep uploads unlisted until a few days of output have been watched. These
+scripts are written and shipped without human review.
 
-Scene types: `hook`, `statement`, `card`, `metric`, `list`, `compare`, `endcard`.
-Motifs: `wave`, `rings`, `beam`, `split`, `particles`. Backdrops: `plain`,
-`flowlines`, `grid`, `orbit`.
+## Editing the look
 
-Rules that keep it readable:
+Everything visual lives in `daily/lib/compose.py`: palette, type scale, the
+vertical safe zones, seven scene archetypes, five motifs. Two rules there were
+learned the expensive way and should not be relaxed:
 
-- **Every scene needs a motif**, except `card` and `compare` — those draw their
-  own panel in the art zone, and the builder drops a motif behind them because
-  it reads as clutter. Without a motif elsewhere the top two thirds of the frame
-  is dead space and the piece looks like captions on a gradient.
-- **Headlines are one line each, max ~16 characters.** They are set `nowrap` in
-  a condensed face; longer text runs off the frame and no gate will catch it.
-- **Vary the scene types.** Four `statement` scenes in a row reads as a slideshow.
-- Pick the motif that means something for the beat — `split` for a fork, `wave`
-  for anything oscillating, `compare` for two options, `rings` for spreading.
-- Set `mood` from the topic row. Set `turn_beat` only if the story genuinely
-  darkens (it tints the frame red); most topics should leave it out.
-
-## 4. Build
-
-```bash
-python daily/lib/build.py daily/specs/<slug>.yaml
-```
-
-It runs narration → score → composition → **lint** → **inspect** → render → mix →
-encode, and refuses to produce a file if a gate fails or the final duration,
-frame size, or audio stream is wrong. A gate failure is a real defect: fix the
-spec and rebuild. Never bypass a gate.
-
-## 5. Look at it
-
-```bash
-python daily/lib/contact_sheet.py out/<slug>
-```
-
-Read the contact sheet before publishing. You are checking for: text colliding
-with the caption band, a headline running off frame, an empty art zone, a motif
-that contradicts the words. If something is wrong, fix the spec and rebuild —
-one rebuild is cheaper than a bad video on the channel.
-
-## 6. Publish
-
-Write the copy: a title (≤100 chars, ends with `#Shorts`), an Instagram hook
-line, a caption, a YouTube description, and 5–8 hashtags. Then:
-
-```bash
-python daily/lib/publish.py out/<slug> --spec daily/specs/<slug>.yaml \
-  --title "…" --hook "…" --caption "…" --description "…" \
-  --hashtags "science,physics,shorts" --privacy unlisted
-```
-
-Uploads run only when `YOUTUBE_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET` and
-`YOUTUBE_REFRESH_TOKEN` are set. Without them the step reports `SKIPPED` and the
-bundle is still written — that is a normal outcome, not a failure.
-
-**Privacy stays `unlisted` until a human says otherwise.** These scripts ship
-without review; unlisted means a bad one is recoverable.
-
-Instagram and Facebook are blocked at this network's egress gateway, so they are
-never uploaded from here. The bundle lands in `videos/<slug>/` — that is what
-gets posted by hand, and it is the part that gets committed. Everything under
-`out/` is scratch and is not tracked.
-
-## 7. Record and commit
-
-```bash
-python -c "import sys;sys.path.insert(0,'daily/lib');import topics_queue;\
-topics_queue.mark('<topic-id>', youtube='<video id or skipped>')"
-git add -A && git commit -m "Daily short: <slug>" && git push -u origin <branch>
-```
-
-Commit the spec, `state.json`, and the finished MP4. The intermediate audio and
-render artefacts are ignored.
-
-## 8. Report
-
-State in one short paragraph: the topic, where the video is, whether it uploaded
-or was skipped and why, anything you had to fix, and how many topics remain.
-If any step failed, say so plainly — a silent failure is worse than a red run.
+- Headlines are `nowrap` in a condensed face; over ~16 characters they run off
+  frame and no gate catches it.
+- `card`, `compare` and `metric` draw their own panel, and a scene running stock
+  footage has the footage as its art — the builder drops motifs in both cases
+  because layering graphics there reads as clutter.
