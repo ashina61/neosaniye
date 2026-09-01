@@ -1,0 +1,49 @@
+name: Daily pipeline — credential preflight
+
+# Checks which repository secrets actually authenticate, before anything is
+# built on top of them. Prints a status per service and never a value.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/openmontage-setup-dh10g0]
+    paths: ['.github/workflows/daily-preflight.yml', 'daily/lib/preflight.py']
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: pip install --quiet requests
+
+      - name: Check egress (this is the whole reason for moving here)
+        run: |
+          for h in api.pexels.com pixabay.com freesound.org \
+                   generativelanguage.googleapis.com graph.facebook.com \
+                   api.elevenlabs.io oauth2.googleapis.com; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 15 "https://$h/" || echo 000)
+            printf '  %-42s %s\n' "$h" "$code"
+          done
+          echo "  (000 = blocked; anything else = reachable)"
+
+      - name: Check credentials
+        env:
+          GEMINI_API_KEY:         ${{ secrets.GEMINI_API_KEY }}
+          PEXELS_API_KEY:         ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY:        ${{ secrets.PIXABAY_API_KEY }}
+          FREESOUND_API_KEY:      ${{ secrets.FREESOUND_API_KEY }}
+          ELEVENLABS_API_KEY:     ${{ secrets.ELEVENLABS_API_KEY }}
+          YOUTUBE_CLIENT_ID:      ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET:  ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN:  ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          META_USER_TOKEN:        ${{ secrets.META_USER_TOKEN }}
+          META_IG_LOGIN:          ${{ secrets.META_IG_LOGIN }}
+        run: python daily/lib/preflight.py
