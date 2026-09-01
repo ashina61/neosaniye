@@ -104,3 +104,6 @@ venv/
 
 # Local Wan / diffusers GPU environment
 .venv-wan/
+
+# Local TTS voice models (downloaded, not source)
+.voices/

@@ -1,0 +1,10 @@
+# Derived render artefacts — regenerate with `python build_composition.py` + hyperframes render
+snapshots/
+verify/
+renders/silent.mp4
+
+# Intermediate audio — regenerate with audio/compose_music.py and the piper step in README
+audio/lines/
+audio/vo.wav
+audio/music.wav
+audio/mix.wav

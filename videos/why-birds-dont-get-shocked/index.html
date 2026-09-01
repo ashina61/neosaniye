@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Why Birds Don't Get Shocked</title>
+    <script src="node_modules/gsap/dist/gsap.min.js"></script>
+    <style>
+      @font-face { font-family:"AntonL"; src:url("public/fonts/anton-400.woff2") format("woff2"); font-weight:400; font-display:block; }
+      @font-face { font-family:"InterL"; src:url("public/fonts/inter-400.woff2") format("woff2"); font-weight:400; font-display:block; }
+      @font-face { font-family:"InterL"; src:url("public/fonts/inter-600.woff2") format("woff2"); font-weight:600; font-display:block; }
+      @font-face { font-family:"InterL"; src:url("public/fonts/inter-800.woff2") format("woff2"); font-weight:800; font-display:block; }
+
+      * { margin:0; padding:0; box-sizing:border-box; }
+      html, body { width:1080px; height:1920px; overflow:hidden; background:#05070E; }
+      body { font-family:"InterL", system-ui, sans-serif; -webkit-font-smoothing:antialiased; }
+
+      #root { position:relative; width:1080px; height:1920px; overflow:hidden; }
+
+      /* ---------- persistent background ---------- */
+      #bg { position:absolute; inset:0; background:
+             radial-gradient(120% 70% at 50% 4%, #16233F 0%, #0A1122 42%, #05070E 78%); }
+      #glow { position:absolute; left:-10%; right:-10%; bottom:-16%; height:52%;
+               background:#12325a; filter:blur(120px); border-radius:50%; opacity:0.6; }
+      #stars { position:absolute; inset:0; }
+      #stars i { position:absolute; display:block; background:#CFE2FF; border-radius:50%; }
+      #vig { position:absolute; inset:0; pointer-events:none;
+              background:radial-gradient(115% 78% at 50% 44%, rgba(0,0,0,0) 52%, rgba(0,0,0,0.62) 100%); }
+      #grain { position:absolute; inset:0; opacity:0.055; mix-blend-mode:overlay;
+                background-image:repeating-linear-gradient(0deg,#fff 0 1px,transparent 1px 3px),
+                                 repeating-linear-gradient(90deg,#fff 0 1px,transparent 1px 3px); }
+
+      /* ---------- scenes ---------- */
+      .scene { position:absolute; inset:0; }
+      .stage { position:absolute; inset:0; transform-origin:50% 46%; }
+      .art { position:absolute; inset:0; width:1080px; height:1920px; }
+
+      .silh rect.pl, .pl { fill:#243149; }
+      .wire { fill:none; stroke:#2E3C55; stroke-width:7; stroke-linecap:round; }
+      .wire-thick { stroke-width:16; stroke:#33425E; }
+      .flow { fill:none; stroke:#46E0FF; stroke-width:7; stroke-linecap:round;
+               stroke-dasharray:26 46; filter:drop-shadow(0 0 14px rgba(70,224,255,0.75)); }
+      .flow-bright { stroke-width:11; stroke-dasharray:34 56; }
+      .flow-danger { stroke:#FF5A5A; filter:drop-shadow(0 0 16px rgba(255,90,90,0.8)); }
+      .copper { fill:#6B4A2A; stroke:#8A5F33; stroke-width:3; }
+      .earth { stroke:#8A96AC; stroke-width:11; stroke-linecap:round; }
+      .drop { stroke:#8A96AC; stroke-width:11; stroke-linecap:round; }
+      .want { fill:none; stroke:#46E0FF; stroke-width:9; stroke-linecap:round;
+               stroke-dasharray:22 26; opacity:0.95; }
+      .detour { fill:none; stroke:#F5B942; stroke-width:7; stroke-dasharray:16 20;
+                 stroke-linecap:round; opacity:0.9; }
+      .feet path { fill:none; stroke:#F5B942; stroke-width:15; stroke-linecap:round; }
+      .bolt { fill:none; stroke:#FFFFFF; stroke-width:12; stroke-linejoin:round; stroke-linecap:round;
+               stroke-dasharray:640; filter:drop-shadow(0 0 26px rgba(255,255,255,0.95)); }
+      .flash { position:absolute; inset:0; background:
+                radial-gradient(60% 34% at 50% 50%, #fff 0%, rgba(255,120,120,0.55) 40%, rgba(0,0,0,0) 72%);
+                opacity:0; }
+
+      /* ---------- bird ---------- */
+      .birdwrap { position:absolute; width:200px; height:170px; transform-origin:50% 96%; }
+      .bird { width:200px; height:170px; overflow:visible; display:block; transform-origin:50% 96%; }
+      .bird .bd { fill:#0E1626; stroke:#4A6183; stroke-width:2.5; }
+      .bird .wg { fill:#1A2740; }
+      .bird .bk { fill:#F5B942; }
+      .bird .ey { fill:#F2F5FA; }
+      .bird .lg { stroke:#F5B942; stroke-width:7; stroke-linecap:round; fill:none; }
+
+      /* ---------- type ---------- */
+      .kh { font-family:"AntonL", sans-serif; font-size:118px; line-height:0.98; white-space:nowrap;
+             letter-spacing:0.01em; color:#F2F5FA; text-transform:uppercase; }
+      .kh-amber { color:#F5B942; } .kh-cyan { color:#46E0FF; } .kh-red { color:#FF6161; }
+      #s1-h1 { position:absolute; left:78px; top:1150px; }
+      #s1-h2 { position:absolute; left:78px; top:1272px; }
+      .klines { position:absolute; left:78px; top:1160px; }
+      #s4-cap { top:1180px; } #s6-k { top:1150px; } #s7-k { top:220px; }
+      .note { position:absolute; left:82px; top:1420px; font-size:40px; color:#8A96AC;
+               font-weight:600; letter-spacing:0.04em; }
+
+      .badge { position:absolute; left:78px; top:760px; padding:22px 32px; border-radius:20px;
+                background:rgba(9,16,30,0.82); border:2px solid rgba(70,224,255,0.35);
+                backdrop-filter:blur(6px); }
+      .badge-k { display:block; font-size:26px; letter-spacing:0.26em; color:#46E0FF; font-weight:800; }
+      .badge-v { display:block; margin-top:8px; font-size:76px; font-weight:800; color:#F2F5FA; }
+      .badge-v b { font-family:"AntonL", sans-serif; font-weight:400; }
+
+      .card { position:absolute; left:78px; right:78px; top:590px; padding:56px 48px 52px;
+               border-radius:34px; background:rgba(10,18,34,0.9);
+               border:2px solid rgba(138,150,172,0.22); text-align:center; }
+      .card-top { font-size:28px; letter-spacing:0.3em; color:#8A96AC; font-weight:800; }
+      .eq { margin-top:38px; display:flex; align-items:center; justify-content:center; gap:26px;
+             font-family:"AntonL", sans-serif; color:#F2F5FA; }
+      .eq-i { font-size:152px; } .eq-op { font-size:96px; color:#8A96AC; }
+      .eq-frac { display:inline-block; text-align:center; }
+      .eq-frac b { display:block; font-size:120px; font-weight:400; }
+      .eq-frac i { display:block; height:6px; background:#8A96AC; margin:12px 0; border-radius:3px; }
+      .eq-frac span { display:block; font-size:120px; }
+      .eq-legend { margin-top:34px; font-size:40px; color:#B9C4D6; font-weight:600; }
+      .eq-legend em { color:#46E0FF; font-style:normal; font-weight:800; }
+      .zerotag { position:absolute; left:78px; right:78px; top:1120px; text-align:center;
+                  font-family:"AntonL", sans-serif; font-size:74px; color:#46E0FF; }
+
+      .pin { position:absolute; top:520px; padding:16px 26px; border-radius:16px;
+              background:rgba(9,16,30,0.88); border:2px solid rgba(245,185,66,0.4);
+              font-size:42px; font-weight:800; color:#F5B942; }
+      .pin-l { left:290px; } .pin-r { right:290px; }
+
+      .meter { position:absolute; left:50%; transform:translateX(-50%); top:900px;
+                min-width:620px; padding:30px 44px; border-radius:26px; text-align:center;
+                background:rgba(9,16,30,0.92); border:2px solid rgba(70,224,255,0.35); }
+      .meter-k { font-size:24px; letter-spacing:0.24em; color:#8A96AC; font-weight:800; }
+      .meter-v { margin-top:10px; font-size:96px; color:#F2F5FA; font-weight:800;
+                  display:flex; align-items:baseline; justify-content:center; gap:14px; }
+      .meter-v b { font-family:"AntonL", sans-serif; font-weight:400; }
+      .meter-v span { font-size:46px; color:#8A96AC; }
+      .meter-big { top:700px; }
+      .meter-danger { top:1200px; }
+      .meter-zero b { color:#46E0FF; }
+      .meter-danger { border-color:rgba(255,90,90,0.5); }
+      .meter-danger .meter-v b { color:#FF6161; }
+
+      .stack { position:absolute; left:78px; right:78px; top:1000px; }
+      .slam { font-family:"AntonL", sans-serif; font-size:112px; line-height:1.04; white-space:nowrap;
+               color:#F2F5FA; text-transform:uppercase; transform-origin:0% 50%; }
+      .slam-amber { color:#F5B942; }
+
+      .detour-tag { position:absolute; left:50%; transform:translateX(-50%); top:240px;
+                     padding:14px 26px; border-radius:14px; font-size:38px; font-weight:700;
+                     color:#F5B942; background:rgba(9,16,30,0.85);
+                     border:2px dashed rgba(245,185,66,0.55); }
+
+      .chip { position:absolute; padding:12px 24px; border-radius:999px; font-size:34px;
+               font-weight:800; letter-spacing:0.06em; }
+      .chip-ok { left:190px; top:735px; color:#5BE39A; background:rgba(12,40,28,0.9);
+                  border:2px solid rgba(91,227,154,0.45); }
+      .chip-risk { left:600px; top:440px; color:#FF6161; background:rgba(46,12,12,0.9);
+                    border:2px solid rgba(255,97,97,0.5); }
+      .endcard { position:absolute; left:78px; right:78px; top:1150px; text-align:center; }
+      .end-1 { font-family:"AntonL", sans-serif; font-size:124px; color:#F2F5FA; }
+      .end-2 { font-family:"AntonL", sans-serif; font-size:124px; color:#F5B942; }
+
+      /* ---------- captions + hud ---------- */
+      #caps { position:absolute; left:64px; right:64px; bottom:180px; height:250px; }
+      .cap { position:absolute; left:0; right:0; bottom:0; text-align:center; opacity:0; }
+      .cap span { display:inline-block; padding:18px 30px; border-radius:20px;
+                   background:rgba(5,8,16,0.78); font-size:48px; line-height:1.25;
+                   font-weight:700; color:#F2F5FA; letter-spacing:0.005em;
+                   box-shadow:0 10px 40px rgba(0,0,0,0.45); }
+      #hud { position:absolute; left:0; right:0; top:0; height:8px; }
+      #prog { position:absolute; inset:0; transform-origin:0% 50%; transform:scaleX(0);
+               background:linear-gradient(90deg,#46E0FF,#F5B942); opacity:0.85; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-width="1080" data-height="1920"
+         data-duration="30.0" data-fps="30">
+
+      <div id="bgclip" class="clip" data-start="0" data-duration="30.0" data-track-index="1">
+        <div id="bg"></div>
+        <div id="glow" data-layout-ignore></div>
+        <div id="stars"><i style="left:78.9%;top:1.94%;width:2.01px;height:2.01px;opacity:0.55"></i><i style="left:31.64%;top:27.78%;width:2.51px;height:2.51px;opacity:0.63"></i><i style="left:34.03%;top:5.36%;width:1.71px;height:1.71px;opacity:0.32"></i><i style="left:43.92%;top:18.15%;width:1.45px;height:1.45px;opacity:0.51"></i><i style="left:47.47%;top:34.87%;width:1.23px;height:1.23px;opacity:0.7"></i><i style="left:42.65%;top:37.03%;width:2.2px;height:2.2px;opacity:0.6"></i><i style="left:9.26%;top:32.6%;width:1.11px;height:1.11px;opacity:0.47"></i><i style="left:54.69%;top:23.77%;width:1.91px;height:1.91px;opacity:0.66"></i><i style="left:63.38%;top:36.7%;width:2.32px;height:2.32px;opacity:0.29"></i><i style="left:12.5%;top:43.44%;width:2.73px;height:2.73px;opacity:0.24"></i><i style="left:45.65%;top:43.72%;width:1.14px;height:1.14px;opacity:0.4"></i><i style="left:27.49%;top:43.22%;width:2.87px;height:2.87px;opacity:0.32"></i><i style="left:82.71%;top:38.78%;width:2.2px;height:2.2px;opacity:0.65"></i><i style="left:23.81%;top:29.99%;width:1.62px;height:1.62px;opacity:0.53"></i><i style="left:45.77%;top:14.27%;width:2.88px;height:2.88px;opacity:0.42"></i><i style="left:26.1%;top:40.74%;width:1.25px;height:1.25px;opacity:0.34"></i><i style="left:63.54%;top:31.46%;width:2.56px;height:2.56px;opacity:0.54"></i><i style="left:51.99%;top:36.43%;width:1.69px;height:1.69px;opacity:0.53"></i><i style="left:29.74%;top:28.53%;width:2.16px;height:2.16px;opacity:0.27"></i><i style="left:38.78%;top:38.07%;width:2.23px;height:2.23px;opacity:0.44"></i><i style="left:55.83%;top:30.7%;width:2.46px;height:2.46px;opacity:0.62"></i><i style="left:38.97%;top:26.28%;width:2.66px;height:2.66px;opacity:0.21"></i><i style="left:58.1%;top:33.62%;width:1.71px;height:1.71px;opacity:0.24"></i><i style="left:29.77%;top:24.46%;width:1.27px;height:1.27px;opacity:0.5"></i><i style="left:38.66%;top:13.09%;width:2.72px;height:2.72px;opacity:0.27"></i><i style="left:46.08%;top:22.83%;width:2.32px;height:2.32px;opacity:0.19"></i><i style="left:39.12%;top:6.92%;width:1.19px;height:1.19px;opacity:0.5"></i><i style="left:36.72%;top:7.19%;width:2.68px;height:2.68px;opacity:0.32"></i><i style="left:49.73%;top:12.31%;width:1.55px;height:1.55px;opacity:0.27"></i><i style="left:70.11%;top:41.3%;width:2.49px;height:2.49px;opacity:0.23"></i><i style="left:23.3%;top:33.04%;width:1.48px;height:1.48px;opacity:0.48"></i><i style="left:41.77%;top:18.39%;width:2.89px;height:2.89px;opacity:0.41"></i><i style="left:63.07%;top:45.25%;width:2.18px;height:2.18px;opacity:0.36"></i><i style="left:5.18%;top:4.95%;width:2.24px;height:2.24px;opacity:0.67"></i><i style="left:47.04%;top:15.95%;width:2.31px;height:2.31px;opacity:0.35"></i><i style="left:92.51%;top:27.21%;width:1.41px;height:1.41px;opacity:0.22"></i><i style="left:96.14%;top:39.38%;width:1.24px;height:1.24px;opacity:0.46"></i><i style="left:33.72%;top:27.25%;width:1.41px;height:1.41px;opacity:0.21"></i><i style="left:85.38%;top:42.75%;width:1.37px;height:1.37px;opacity:0.41"></i><i style="left:22.74%;top:32.13%;width:1.58px;height:1.58px;opacity:0.39"></i><i style="left:59.09%;top:30.58%;width:1.59px;height:1.59px;opacity:0.66"></i><i style="left:17.2%;top:38.6%;width:2.06px;height:2.06px;opacity:0.23"></i><i style="left:41.09%;top:36.36%;width:1.71px;height:1.71px;opacity:0.34"></i><i style="left:60.29%;top:36.51%;width:1.71px;height:1.71px;opacity:0.22"></i><i style="left:76.28%;top:33.7%;width:1.22px;height:1.22px;opacity:0.58"></i><i style="left:75.84%;top:37.18%;width:2.24px;height:2.24px;opacity:0.43"></i></div>
+        <div id="grain"></div>
+      </div>
+
+<div id="s1" class="clip scene" data-start="0.0" data-duration="5.6" data-track-index="2">
+<div class="stage">
+ <svg class="art" viewBox="0 0 1080 1920" preserveAspectRatio="xMidYMid slice">
+  <g id="s1-poles" class="silh"><g transform="translate(140,0)">
+  <rect class="pl" x="-9" y="470" width="18" height="770"/>
+  <rect class="pl" x="-92" y="510" width="184" height="13"/>
+  <rect class="pl" x="-70" y="580" width="140" height="11"/>
+ </g><g transform="translate(940,0)">
+  <rect class="pl" x="-9" y="470" width="18" height="770"/>
+  <rect class="pl" x="-92" y="510" width="184" height="13"/>
+  <rect class="pl" x="-70" y="580" width="140" height="11"/>
+ </g></g>
+  <path id="s1-w1" class="wire" d="M-40,510 Q540,582 1120,510"/>
+  <path id="s1-w2" class="wire" d="M-40,580 Q540,658 1120,580"/>
+  <path id="s1-w3" class="wire" d="M-40,650 Q540,732 1120,650"/>
+  <path id="s1-flow" class="flow" d="M-40,580 Q540,658 1120,580"/>
+ </svg>
+ <div id="s1-bird" class="birdwrap" style="left:440px;top:485px"><svg id="s1-b" class="bird" viewBox="0 0 200 170" style="transform:scale(1.8)">
+ <g transform="">
+  <path class="bd" d="M58,74 L6,44 L13,90 L52,99 Z"/>
+  <ellipse class="bd" cx="98" cy="78" rx="49" ry="35"/>
+  <circle class="bd" cx="145" cy="47" r="24"/>
+  <path class="bd" d="M140,30 C150,20 160,22 166,30 C158,32 148,32 140,30 Z"/>
+  <polygon class="bk" points="166,44 196,52 166,60"/>
+  <path class="wg" d="M70,72 C92,58 124,58 142,70 C120,84 92,86 70,72 Z"/>
+  <circle class="ey" cx="152" cy="42" r="3.6"/>
+  <path class="lg" d="M88,110 L86,146 M110,110 L113,146"/>
+  <path class="lg" d="M78,147 L96,147 M105,147 L123,147"/>
+ </g></svg></div>
+ <div id="s1-badge" class="badge" data-layout-allow-occlusion>
+   <span class="badge-k">LIVE LINE</span>
+   <span class="badge-v"><b id="s1-count">0</b> V</span>
+ </div>
+ <div id="s1-h1" class="kh">NOTHING</div>
+ <div id="s1-h2" class="kh kh-amber">HAPPENS.</div>
+</div></div>
+<div id="s2" class="clip scene" data-start="5.35" data-duration="3.75" data-track-index="3">
+<div class="stage">
+ <svg class="art" viewBox="0 0 1080 1920" preserveAspectRatio="xMidYMid slice">
+  <path id="s2-wire" class="wire wire-thick" d="M-40,420 L1120,420"/>
+  <path id="s2-flow" class="flow flow-bright" d="M-40,420 L1120,420"/>
+  <g id="s2-earth">
+    <path class="earth" d="M170,1020 L910,1020"/>
+    <path class="earth" d="M290,1072 L790,1072"/>
+    <path class="earth" d="M400,1124 L680,1124"/>
+    <path class="drop" d="M540,1020 L540,960"/>
+  </g>
+  <path id="s2-arrow" class="want" d="M540,460 L540,950"/>
+ </svg>
+ <div id="s2-bird" class="birdwrap" style="left:600px;top:281px"><svg id="s2-b" class="bird" viewBox="0 0 200 170" style="transform:scale(1.5)">
+ <g transform="">
+  <path class="bd" d="M58,74 L6,44 L13,90 L52,99 Z"/>
+  <ellipse class="bd" cx="98" cy="78" rx="49" ry="35"/>
+  <circle class="bd" cx="145" cy="47" r="24"/>
+  <path class="bd" d="M140,30 C150,20 160,22 166,30 C158,32 148,32 140,30 Z"/>
+  <polygon class="bk" points="166,44 196,52 166,60"/>
+  <path class="wg" d="M70,72 C92,58 124,58 142,70 C120,84 92,86 70,72 Z"/>
+  <circle class="ey" cx="152" cy="42" r="3.6"/>
+  <path class="lg" d="M88,110 L86,146 M110,110 L113,146"/>
+  <path class="lg" d="M78,147 L96,147 M105,147 L123,147"/>
+ </g></svg></div>
+ <div class="klines">
+  <div id="s2-k1" class="kh">IT WANTS</div>
+  <div id="s2-k2" class="kh kh-cyan">THE GROUND</div>
+ </div>
+</div></div>
+<div id="s3" class="clip scene" data-start="8.85" data-duration="2.9" data-track-index="2">
+<div class="stage">
+ <div class="card" id="s3-card">
+   <div class="card-top">THE ONLY RULE</div>
+   <div class="eq">
+     <span class="eq-i">I</span>
+     <span class="eq-op">=</span>
+     <span class="eq-frac"><b id="s3-dv">&Delta;V</b><i></i><span>R</span></span>
+   </div>
+   <div class="eq-legend"><span id="s3-l1">&Delta;V &nbsp;=&nbsp; voltage <em>difference</em></span></div>
+ </div>
+ <div id="s3-zero" class="zerotag">no &Delta;V &nbsp;&rarr;&nbsp; no current</div>
+</div></div>
+<div id="s4" class="clip scene" data-start="11.5" data-duration="3.75" data-track-index="3">
+<div class="stage">
+ <svg class="art" viewBox="0 0 1080 1920" preserveAspectRatio="xMidYMid slice">
+  <rect id="s4-bar" class="copper" data-layout-allow-overflow x="-40" y="780" width="1160" height="46" rx="23"/>
+  <path id="s4-cflow" class="flow flow-bright" d="M-40,803 L1120,803"/>
+  <g id="s4-feet" class="feet">
+    <path d="M415,782 C412,730 422,690 432,652 M478,782 C484,732 476,692 466,652"/>
+    <path d="M602,782 C599,730 609,690 619,652 M665,782 C671,732 663,692 653,652"/>
+  </g>
+ </svg>
+ <div id="s4-lt" class="pin pin-l">25,000 V</div>
+ <div id="s4-rt" class="pin pin-r">25,000 V</div>
+ <div id="s4-meter" class="meter" data-layout-allow-occlusion>
+   <div class="meter-k">POTENTIAL DIFFERENCE</div>
+   <div class="meter-v"><b id="s4-mv">25,000</b><span>V</span></div>
+ </div>
+ <div id="s4-cap" class="klines"><div class="kh">SAME WIRE.</div><div class="kh kh-amber">SAME VOLTAGE.</div></div>
+</div></div>
+<div id="s5" class="clip scene" data-start="15.0" data-duration="3.45" data-track-index="2">
+<div class="stage">
+ <div id="s5-meter" class="meter meter-big" data-layout-allow-occlusion>
+   <div class="meter-k">POTENTIAL DIFFERENCE</div>
+   <div class="meter-v meter-zero"><b id="s5-mv">0</b><span>V</span></div>
+ </div>
+ <div class="stack">
+   <div id="s5-a" class="slam">NO DIFFERENCE</div>
+   <div id="s5-b" class="slam">NO PUSH</div>
+   <div id="s5-c" class="slam slam-amber">NO CURRENT</div>
+ </div>
+</div></div>
+<div id="s6" class="clip scene" data-start="18.2" data-duration="4.05" data-track-index="3">
+<div class="stage">
+ <svg class="art" viewBox="0 0 1080 1920" preserveAspectRatio="xMidYMid slice">
+  <rect class="copper" data-layout-allow-overflow x="-40" y="800" width="1160" height="40" rx="20"/>
+  <path id="s6-flow" class="flow flow-bright" d="M-40,820 L1120,820"/>
+  <path id="s6-arc" class="detour" d="M300,795 C340,250 740,250 780,795"/>
+ </svg>
+ <div id="s6-bird" class="birdwrap" style="left:440px;top:669px"><svg id="s6-b" class="bird" viewBox="0 0 200 170" style="transform:scale(2.0)">
+ <g transform="">
+  <path class="bd" d="M58,74 L6,44 L13,90 L52,99 Z"/>
+  <ellipse class="bd" cx="98" cy="78" rx="49" ry="35"/>
+  <circle class="bd" cx="145" cy="47" r="24"/>
+  <path class="bd" d="M140,30 C150,20 160,22 166,30 C158,32 148,32 140,30 Z"/>
+  <polygon class="bk" points="166,44 196,52 166,60"/>
+  <path class="wg" d="M70,72 C92,58 124,58 142,70 C120,84 92,86 70,72 Z"/>
+  <circle class="ey" cx="152" cy="42" r="3.6"/>
+  <path class="lg" d="M88,110 L86,146 M110,110 L113,146"/>
+  <path class="lg" d="M78,147 L96,147 M105,147 L123,147"/>
+ </g></svg></div>
+ <div id="s6-tag" class="detour-tag">a detour to nowhere</div>
+ <div id="s6-k" class="klines"><div class="kh">THE CHARGE STAYS</div><div class="kh kh-cyan">IN THE COPPER</div></div>
+</div></div>
+<div id="s7" class="clip scene" data-start="22.0" data-duration="5.05" data-track-index="2">
+<div class="stage">
+ <div id="s7-flash" class="flash"></div>
+ <svg class="art" viewBox="0 0 1080 1920" preserveAspectRatio="xMidYMid slice">
+  <rect class="copper" data-layout-allow-overflow x="-40" y="760" width="1160" height="38" rx="19"/>
+  <rect class="copper" data-layout-allow-overflow x="-40" y="1130" width="1160" height="38" rx="19"/>
+  <path id="s7-flowA" class="flow flow-bright" d="M-40,779 L1120,779"/>
+  <path id="s7-flowB" class="flow flow-danger" d="M-40,1149 L1120,1149"/>
+  <path id="s7-bolt" class="bolt" d="M545,800 L505,905 L575,905 L520,1128"/>
+ </svg>
+ <div id="s7-bird" class="birdwrap" style="left:440px;top:623px"><svg id="s7-b" class="bird" viewBox="0 0 200 170" style="transform:scale(1.6)">
+ <g transform="">
+  <path class="bd" d="M58,74 L6,44 L13,90 L52,99 Z"/>
+  <ellipse class="bd" cx="98" cy="78" rx="49" ry="35"/>
+  <circle class="bd" cx="145" cy="47" r="24"/>
+  <path class="bd" d="M140,30 C150,20 160,22 166,30 C158,32 148,32 140,30 Z"/>
+  <polygon class="bk" points="166,44 196,52 166,60"/>
+  <path class="wg" d="M62,66 C86,44 128,42 150,60 C126,76 88,80 62,66 Z"/>
+  <circle class="ey" cx="152" cy="42" r="3.6"/>
+  <path class="lg" d="M88,110 L86,146 M110,110 L113,146"/>
+  <path class="lg" d="M78,147 L96,147 M105,147 L123,147"/>
+ </g></svg></div>
+ <div id="s7-meter" class="meter meter-danger" data-layout-allow-occlusion>
+   <div class="meter-k">POTENTIAL DIFFERENCE</div>
+   <div class="meter-v"><b id="s7-mv">0</b><span>V</span></div>
+ </div>
+ <div id="s7-k" class="klines"><div class="kh kh-red">TWO WIRES.</div><div class="kh kh-red">ONE BIRD.</div></div>
+</div></div>
+<div id="s8" class="clip scene" data-start="26.8" data-duration="3.2" data-track-index="3">
+<div class="stage">
+ <svg class="art" viewBox="0 0 1080 1920" preserveAspectRatio="xMidYMid slice">
+  <rect class="copper" data-layout-allow-overflow x="-40" y="1000" width="1160" height="34" rx="17"/>
+  <path class="flow" d="M-40,1017 L1120,1017" opacity="0.5"/>
+ </svg>
+ <div id="s8-small" class="birdwrap" style="left:180px;top:855px"><svg id="s8-a" class="bird" viewBox="0 0 200 170" style="transform:scale(1.1)">
+ <g transform="">
+  <path class="bd" d="M58,74 L6,44 L13,90 L52,99 Z"/>
+  <ellipse class="bd" cx="98" cy="78" rx="49" ry="35"/>
+  <circle class="bd" cx="145" cy="47" r="24"/>
+  <path class="bd" d="M140,30 C150,20 160,22 166,30 C158,32 148,32 140,30 Z"/>
+  <polygon class="bk" points="166,44 196,52 166,60"/>
+  <path class="wg" d="M70,72 C92,58 124,58 142,70 C120,84 92,86 70,72 Z"/>
+  <circle class="ey" cx="152" cy="42" r="3.6"/>
+  <path class="lg" d="M88,110 L86,146 M110,110 L113,146"/>
+  <path class="lg" d="M78,147 L96,147 M105,147 L123,147"/>
+ </g></svg></div>
+ <div id="s8-big" class="birdwrap" style="left:620px;top:883px"><svg id="s8-b" class="bird" viewBox="0 0 200 170" style="transform:scale(2.9)">
+ <g transform="">
+  <path class="bd" d="M58,74 L6,44 L13,90 L52,99 Z"/>
+  <ellipse class="bd" cx="98" cy="78" rx="49" ry="35"/>
+  <circle class="bd" cx="145" cy="47" r="24"/>
+  <path class="bd" d="M140,30 C150,20 160,22 166,30 C158,32 148,32 140,30 Z"/>
+  <polygon class="bk" points="166,44 196,52 166,60"/>
+  <path class="wg" d="M62,66 C86,44 128,42 150,60 C126,76 88,80 62,66 Z"/>
+  <circle class="ey" cx="152" cy="42" r="3.6"/>
+  <path class="lg" d="M88,110 L86,146 M110,110 L113,146"/>
+  <path class="lg" d="M78,147 L96,147 M105,147 L123,147"/>
+ </g></svg></div>
+ <div id="s8-okay" class="chip chip-ok">safe</div>
+ <div id="s8-risk" class="chip chip-risk">at risk</div>
+ <div id="s8-end" class="endcard">
+   <div class="end-1">WINGSPAN</div>
+   <div class="end-2">IS THE RISK.</div>
+ </div>
+</div></div>
+
+      <div id="fx" class="clip" data-start="0" data-duration="30.0" data-track-index="6">
+        <div id="vig" data-layout-ignore></div>
+      </div>
+
+      <div id="caps" class="clip" data-start="0" data-duration="30.0" data-track-index="4"><div id="cap0" class="cap"><span>A bird lands on a live power line.</span></div><div id="cap1" class="cap"><span>Thousands of volts. Nothing happens.</span></div><div id="cap2" class="cap"><span>Electricity isn't hunting the bird — it wants the ground.</span></div><div id="cap3" class="cap"><span>Current only flows where there's a difference in voltage.</span></div><div id="cap4" class="cap"><span>Both feet on the same wire. Same voltage.</span></div><div id="cap5" class="cap"><span>No difference. No push. No current.</span></div><div id="cap6" class="cap"><span>The bird is a detour to nowhere.</span></div><div id="cap7" class="cap"><span>Touch a second wire — and that difference appears instantly.</span></div><div id="cap8" class="cap"><span>The biggest birds are the ones at risk.</span></div></div>
+
+      <div id="hud" class="clip" data-start="0" data-duration="30.0" data-track-index="5"><div id="prog"></div></div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const E = "power3.out", EI = "power2.inOut", B = "back.out(1.7)";
+      tl.fromTo("#s1", {opacity:0}, {opacity:1, duration:0.42, ease:EI}, 0.0);
+      tl.to("#s1", {opacity:0, duration:0.34, ease:EI}, 5.26);
+      tl.set("#s1", {opacity:0}, 5.6);
+      tl.fromTo("#s2", {opacity:0}, {opacity:1, duration:0.42, ease:EI}, 5.35);
+      tl.to("#s2", {opacity:0, duration:0.34, ease:EI}, 8.76);
+      tl.set("#s2", {opacity:0}, 9.1);
+      tl.fromTo("#s3", {opacity:0}, {opacity:1, duration:0.42, ease:EI}, 8.85);
+      tl.to("#s3", {opacity:0, duration:0.34, ease:EI}, 11.41);
+      tl.set("#s3", {opacity:0}, 11.75);
+      tl.fromTo("#s4", {opacity:0}, {opacity:1, duration:0.42, ease:EI}, 11.5);
+      tl.to("#s4", {opacity:0, duration:0.34, ease:EI}, 14.91);
+      tl.set("#s4", {opacity:0}, 15.25);
+      tl.fromTo("#s5", {opacity:0}, {opacity:1, duration:0.42, ease:EI}, 15.0);
+      tl.to("#s5", {opacity:0, duration:0.34, ease:EI}, 18.11);
+      tl.set("#s5", {opacity:0}, 18.45);
+      tl.fromTo("#s6", {opacity:0}, {opacity:1, duration:0.42, ease:EI}, 18.2);
+      tl.to("#s6", {opacity:0, duration:0.34, ease:EI}, 21.91);
+      tl.set("#s6", {opacity:0}, 22.25);
+      tl.fromTo("#s7", {opacity:0}, {opacity:1, duration:0.42, ease:EI}, 22.0);
+      tl.to("#s7", {opacity:0, duration:0.34, ease:EI}, 26.71);
+      tl.set("#s7", {opacity:0}, 27.05);
+      tl.fromTo("#s8", {opacity:0}, {opacity:1, duration:0.42, ease:EI}, 26.8);
+      tl.fromTo("#s1-poles",{opacity:0,y:26},{opacity:1,y:0,duration:0.9,ease:E},0.05);
+      tl.fromTo(["#s1-w1","#s1-w2","#s1-w3"],{opacity:0},{opacity:1,duration:0.7,stagger:0.08,ease:E},0.15);
+      tl.fromTo("#s1-bird",{y:-260,opacity:0,rotation:-9},{y:0,opacity:1,rotation:0,duration:0.95,ease:"power2.out"},0.55);
+      tl.to("#s1-bird",{y:-9,duration:0.22,ease:EI},1.5).to("#s1-bird",{y:0,duration:0.3,ease:"bounce.out"},1.72);
+      tl.fromTo("#s1-w2",{attr:{d:"M-40,580 Q540,658 1120,580"}},{attr:{d:"M-40,580 Q540,676 1120,580"},duration:0.5,ease:EI},1.35);
+      tl.fromTo("#s1-flow",{strokeDashoffset:900,opacity:0},{strokeDashoffset:0,opacity:0.85,duration:3.4,ease:"none"},1.3);
+      tl.fromTo("#s1-badge",{opacity:0,y:22,scale:0.94},{opacity:1,y:0,scale:1,duration:0.5,ease:B},1.55);
+      const c1={v:0}; tl.to(c1,{v:25000,duration:1.15,ease:"power2.out",onUpdate:()=>{document.getElementById("s1-count").textContent=Math.round(c1.v).toLocaleString("en-US");}},1.75);
+      tl.fromTo("#s1-h1",{opacity:0,y:54},{opacity:1,y:0,duration:0.5,ease:E},3.95);
+      tl.fromTo("#s1-h2",{opacity:0,y:54},{opacity:1,y:0,duration:0.5,ease:E},4.25);
+      tl.fromTo("#s1 .stage",{scale:1},{scale:1.07,duration:5.3,ease:"none"},0.1);
+      tl.fromTo("#s2-wire",{opacity:0},{opacity:1,duration:0.4},5.45);
+      tl.fromTo("#s2-flow",{strokeDashoffset:1400},{strokeDashoffset:0,duration:3.3,ease:"none"},5.5);
+      tl.fromTo("#s2-bird",{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.5,ease:B},5.7);
+      tl.fromTo("#s2-earth",{opacity:0,y:36},{opacity:1,y:0,duration:0.6,ease:E},6.15);
+      tl.fromTo("#s2-arrow",{strokeDashoffset:900,opacity:0},{strokeDashoffset:0,opacity:1,duration:1.0,ease:"power2.inOut"},6.35);
+      tl.fromTo("#s2-k1",{opacity:0,y:46},{opacity:1,y:0,duration:0.42,ease:E},6.75);
+      tl.fromTo("#s2-k2",{opacity:0,y:46},{opacity:1,y:0,duration:0.42,ease:E},7.0);
+      tl.fromTo("#s3-card",{opacity:0,y:44,scale:0.96},{opacity:1,y:0,scale:1,duration:0.55,ease:B},8.95);
+      tl.fromTo("#s3-dv",{color:"#F2F5FA",scale:1},{color:"#46E0FF",scale:1.16,duration:0.45,ease:B},9.75);
+      tl.fromTo("#s3-l1",{opacity:0,y:20},{opacity:1,y:0,duration:0.4,ease:E},10.0);
+      tl.fromTo("#s3-zero",{opacity:0,y:28},{opacity:1,y:0,duration:0.45,ease:E},10.5);
+      tl.fromTo("#s4-bar",{opacity:0,scaleY:0.4},{opacity:1,scaleY:1,duration:0.5,ease:E},11.6);
+      tl.fromTo("#s4-cflow",{strokeDashoffset:1400},{strokeDashoffset:0,duration:3.4,ease:"none"},11.7);
+      tl.fromTo("#s4-feet",{opacity:0,y:-18},{opacity:1,y:0,duration:0.5,ease:E},11.9);
+      tl.fromTo("#s4-lt",{opacity:0,x:-40},{opacity:1,x:0,duration:0.45,ease:E},12.25);
+      tl.fromTo("#s4-rt",{opacity:0,x:40},{opacity:1,x:0,duration:0.45,ease:E},12.45);
+      tl.fromTo("#s4-meter",{opacity:0,y:-26,scale:0.94},{opacity:1,y:0,scale:1,duration:0.5,ease:B},12.95);
+      tl.fromTo("#s4-cap",{opacity:0,y:34},{opacity:1,y:0,duration:0.45,ease:E},13.6);
+      tl.fromTo("#s5-meter",{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.4,ease:B},15.1);
+      const c5={v:25000}; tl.to(c5,{v:0,duration:0.75,ease:"power4.out",onUpdate:()=>{document.getElementById("s5-mv").textContent=Math.round(c5.v).toLocaleString("en-US");}},15.2);
+      tl.fromTo("#s5-meter",{x:0},{x:0,duration:0.01},15.9);
+      tl.fromTo("#s5-a",{opacity:0,scale:1.5,y:26},{opacity:1,scale:1,y:0,duration:0.34,ease:B},16.05);
+      tl.fromTo("#s5 .stage",{x:-7},{x:0,duration:0.26,ease:"elastic.out(1,0.35)"},16.05);
+      tl.fromTo("#s5-b",{opacity:0,scale:1.5,y:26},{opacity:1,scale:1,y:0,duration:0.34,ease:B},16.62);
+      tl.fromTo("#s5 .stage",{x:-7},{x:0,duration:0.26,ease:"elastic.out(1,0.35)"},16.62);
+      tl.fromTo("#s5-c",{opacity:0,scale:1.5,y:26},{opacity:1,scale:1,y:0,duration:0.34,ease:B},17.12);
+      tl.fromTo("#s5 .stage",{x:-7},{x:0,duration:0.26,ease:"elastic.out(1,0.35)"},17.12);
+      tl.fromTo("#s6-flow",{strokeDashoffset:1500},{strokeDashoffset:0,duration:3.7,ease:"none"},18.3);
+      tl.fromTo("#s6-bird",{opacity:0,y:-24},{opacity:1,y:0,duration:0.5,ease:E},18.4);
+      tl.fromTo("#s6-arc",{strokeDashoffset:1300,opacity:0},{strokeDashoffset:0,opacity:1,duration:0.9,ease:EI},18.9);
+      tl.fromTo("#s6-tag",{opacity:0,y:18},{opacity:1,y:0,duration:0.4,ease:E},19.5);
+      tl.fromTo("#s6-k",{opacity:0,y:38},{opacity:1,y:0,duration:0.45,ease:E},20.15);
+      tl.fromTo("#s7-flowA",{strokeDashoffset:1500},{strokeDashoffset:0,duration:4.6,ease:"none"},22.1);
+      tl.fromTo("#s7-flowB",{strokeDashoffset:1500,opacity:0},{strokeDashoffset:0,opacity:1,duration:2.9,ease:"none"},23.9);
+      tl.fromTo("#s7-bird",{opacity:0,y:-30,scale:0.94},{opacity:1,y:0,scale:1,duration:0.55,ease:E},22.2);
+      tl.to("#s7-bird",{y:58,duration:1.25,ease:"power2.inOut"},23.1);
+      tl.fromTo("#s7-bolt",{strokeDashoffset:640,opacity:0},{strokeDashoffset:0,opacity:1,duration:0.34,ease:"none"},24.32);
+      tl.fromTo("#s7-flash",{opacity:0},{opacity:0.92,duration:0.09,ease:"none"},24.32);
+      tl.to("#s7-flash",{opacity:0,duration:0.55,ease:"power2.out"},24.42);
+      tl.fromTo("#s7 .stage",{x:14},{x:0,duration:0.5,ease:"elastic.out(1,0.3)"},24.34);
+      tl.fromTo("#s7-meter",{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.3,ease:B},24.4);
+      const c7={v:0}; tl.to(c7,{v:50000,duration:0.7,ease:"power3.out",onUpdate:()=>{document.getElementById("s7-mv").textContent=Math.round(c7.v).toLocaleString("en-US");}},24.5);
+      tl.fromTo("#s7-k",{opacity:0,y:34},{opacity:1,y:0,duration:0.4,ease:E},25.3);
+      tl.fromTo("#s8-small",{opacity:0,y:22},{opacity:1,y:0,duration:0.45,ease:E},26.95);
+      tl.fromTo("#s8-big",{opacity:0,y:22,scale:0.94},{opacity:1,y:0,scale:1,duration:0.5,ease:E},27.15);
+      tl.fromTo("#s8-okay",{opacity:0,scale:0.8},{opacity:1,scale:1,duration:0.3,ease:B},27.5);
+      tl.fromTo("#s8-risk",{opacity:0,scale:0.8},{opacity:1,scale:1,duration:0.3,ease:B},27.72);
+      tl.fromTo("#s8-end .end-1",{opacity:0,y:44},{opacity:1,y:0,duration:0.45,ease:E},28.1);
+      tl.fromTo("#s8-end .end-2",{opacity:0,y:44},{opacity:1,y:0,duration:0.45,ease:E},28.34);
+      tl.fromTo("#glow",{opacity:0.55,backgroundColor:"#12325a"},{opacity:0.7,backgroundColor:"#173a63",duration:18,ease:"none"},0);
+      tl.to("#glow",{backgroundColor:"#5e1c1c",opacity:0.8,duration:2.4,ease:EI},22.0);
+      tl.to("#glow",{backgroundColor:"#1b3556",opacity:0.62,duration:2.2,ease:EI},26.6);
+      tl.fromTo("#stars i",{opacity:0},{opacity:1,duration:1.2,stagger:{each:0.012,from:"random"},ease:E},0.1);
+      tl.fromTo("#cap0",{opacity:0,y:20},{opacity:1,y:0,duration:0.26,ease:E},0.35);
+      tl.to("#cap0",{opacity:0,y:-14,duration:0.22,ease:EI},2.53);
+      tl.set("#cap0",{opacity:0},2.75);
+      tl.fromTo("#cap1",{opacity:0,y:20},{opacity:1,y:0,duration:0.26,ease:E},2.62);
+      tl.to("#cap1",{opacity:0,y:-14,duration:0.22,ease:EI},5.13);
+      tl.set("#cap1",{opacity:0},5.35);
+      tl.fromTo("#cap2",{opacity:0,y:20},{opacity:1,y:0,duration:0.26,ease:E},5.6);
+      tl.to("#cap2",{opacity:0,y:-14,duration:0.22,ease:EI},8.79);
+      tl.set("#cap2",{opacity:0},9.01);
+      tl.fromTo("#cap3",{opacity:0,y:20},{opacity:1,y:0,duration:0.26,ease:E},9.01);
+      tl.to("#cap3",{opacity:0,y:-14,duration:0.22,ease:EI},11.43);
+      tl.set("#cap3",{opacity:0},11.65);
+      tl.fromTo("#cap4",{opacity:0,y:20},{opacity:1,y:0,duration:0.26,ease:E},11.6);
+      tl.to("#cap4",{opacity:0,y:-14,duration:0.22,ease:EI},14.9);
+      tl.set("#cap4",{opacity:0},15.12);
+      tl.fromTo("#cap5",{opacity:0,y:20},{opacity:1,y:0,duration:0.26,ease:E},15.07);
+      tl.to("#cap5",{opacity:0,y:-14,duration:0.22,ease:EI},17.72);
+      tl.set("#cap5",{opacity:0},17.94);
+      tl.fromTo("#cap6",{opacity:0,y:20},{opacity:1,y:0,duration:0.26,ease:E},18.24);
+      tl.to("#cap6",{opacity:0,y:-14,duration:0.22,ease:EI},21.87);
+      tl.set("#cap6",{opacity:0},22.09);
+      tl.fromTo("#cap7",{opacity:0,y:20},{opacity:1,y:0,duration:0.26,ease:E},22.14);
+      tl.to("#cap7",{opacity:0,y:-14,duration:0.22,ease:EI},26.65);
+      tl.set("#cap7",{opacity:0},26.87);
+      tl.fromTo("#cap8",{opacity:0,y:20},{opacity:1,y:0,duration:0.26,ease:E},26.97);
+      tl.to("#cap8",{opacity:0,y:-14,duration:0.22,ease:EI},29.26);
+      tl.set("#cap8",{opacity:0},29.48);
+      tl.fromTo("#prog",{scaleX:0},{scaleX:1,duration:30.0,ease:"none"},0);
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>
