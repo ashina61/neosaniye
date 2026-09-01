@@ -11,6 +11,7 @@ import json
 import os
 import re
 import sys
+import zlib
 from pathlib import Path
 
 import requests
@@ -75,6 +76,35 @@ Also give:
   hook_line: one sentence for the social caption
   caption: two or three sentences explaining the mechanism for a caption
   hashtags: 6 lowercase tags, no # prefix
+
+Return ONE JSON object and nothing else, in exactly this shape. `script` and
+`scenes` must both hold exactly {beats} entries, index for index.
+
+{{
+  "script": ["beat one sentence.", "beat two sentence.", "... {beats} in total"],
+  "scenes": [
+    {{"type": "hook", "motif": "rings", "stock": "power line closeup",
+      "headline": ["FIRST LINE", "SECOND LINE"]}},
+    {{"type": "statement", "motif": "wave", "accent": "cyan",
+      "headline": ["FIRST LINE", "SECOND LINE"]}},
+    {{"type": "list", "motif": "split", "items": ["ONE THING", "OTHER THING"]}},
+    {{"type": "card", "eyebrow": "THE MECHANISM",
+      "body": "SHORT <em>PHRASE</em>", "legend": "one clarifying line"}},
+    {{"type": "metric", "label": "WHAT IS MEASURED", "count_to": 92, "unit": "%",
+      "headline": ["FIRST LINE", "SECOND LINE"]}},
+    {{"type": "compare", "columns": [
+      {{"chip": "case one", "value": "SHORT", "label": "what it means"}},
+      {{"chip": "case two", "value": "LONG", "label": "what it means", "risk": true}}]}},
+    {{"type": "endcard", "motif": "rings", "headline": ["LAST LINE", "FINAL LINE"]}}
+  ],
+  "title": "...",
+  "hook_line": "...",
+  "caption": "...",
+  "hashtags": ["science", "physics", "shorts", "explained", "didyouknow", "learn"]
+}}
+
+Those seven objects are examples of each type, not the answer — your `scenes`
+array holds exactly {beats} entries following the beat shape above.
 """
 
 SCHEMA = {
@@ -164,17 +194,58 @@ def validate(d: dict) -> list[str]:
     return errs
 
 
+class DraftFailed(RuntimeError):
+    """One attempt did not produce usable JSON. Retryable."""
+
+
+def _generation_config(model: str) -> dict:
+    cfg = {"responseMimeType": "application/json", "temperature": 0.9,
+           # A ten-beat spec runs long. The default ceiling truncates it, and a
+           # truncated candidate comes back with no content part at all.
+           "maxOutputTokens": 16384}
+    if model.startswith("gemini-2.5"):
+        # 2.5 thinks by default and those tokens are charged against the output
+        # budget, so a long structured answer can exhaust it before writing any.
+        cfg["thinkingConfig"] = {"thinkingBudget": 0}
+    return cfg
+
+
+def _extract(payload: dict, model: str) -> dict:
+    cands = payload.get("candidates") or []
+    if not cands:
+        fb = payload.get("promptFeedback", {})
+        raise DraftFailed(f"{model}: no candidates (promptFeedback={fb})")
+    cand = cands[0]
+    reason = cand.get("finishReason", "?")
+    parts = (cand.get("content") or {}).get("parts") or []
+    if not parts:
+        raise DraftFailed(f"{model}: candidate had no content (finishReason={reason})")
+    text = parts[0].get("text", "")
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError as e:
+        raise DraftFailed(f"{model}: response was not valid JSON "
+                          f"(finishReason={reason}, {e}); starts {text[:120]!r}") from e
+
+
 def _ask(prompt: str, key: str) -> dict:
-    last = ""
+    problems = []
     for m in MODELS:
-        r = requests.post(URL.format(m=m), params={"key": key}, timeout=180, json={
-            "contents": [{"parts": [{"text": prompt}]}],
-            "generationConfig": {"responseMimeType": "application/json",
-                                 "responseSchema": SCHEMA, "temperature": 0.9}})
-        if r.status_code == 200:
-            return json.loads(r.json()["candidates"][0]["content"]["parts"][0]["text"])
-        last = f"{m}: HTTP {r.status_code} {r.text[:200]}"
-    raise RuntimeError(f"no Gemini model answered — {last}")
+        try:
+            r = requests.post(URL.format(m=m), params={"key": key}, timeout=240, json={
+                "contents": [{"parts": [{"text": prompt}]}],
+                "generationConfig": _generation_config(m)})
+        except requests.RequestException as e:
+            problems.append(f"{m}: {type(e).__name__}")
+            continue
+        if r.status_code != 200:
+            problems.append(f"{m}: HTTP {r.status_code} {r.text[:160]}")
+            continue
+        try:
+            return _extract(r.json(), m)
+        except DraftFailed as e:
+            problems.append(str(e))
+    raise DraftFailed("no Gemini model produced usable JSON — " + " | ".join(problems))
 
 
 def draft(topic: dict, attempts: int = 4) -> dict:
@@ -186,7 +257,13 @@ def draft(topic: dict, attempts: int = 4) -> dict:
                          types=SCENE_TYPES, motifs=MOTIFS, hmax=HEADLINE_MAX)
     prompt, problems = base, []
     for n in range(1, attempts + 1):
-        d = _ask(prompt, key)
+        try:
+            d = _ask(prompt, key)
+        except DraftFailed as e:
+            problems = [str(e)]
+            print(f"    attempt {n} failed: {e}")
+            prompt = base          # a malformed reply teaches nothing; start clean
+            continue
         problems = validate(d)
         if not problems:
             print(f"    draft accepted on attempt {n}")
@@ -207,11 +284,14 @@ def to_spec(topic: dict, d: dict, duration: float = 40.0) -> dict:
         out = {k: v for k, v in sc.items() if v not in (None, "", [], {})}
         if out["type"] == "endcard" and "headline" in out:
             out["lines"] = out.pop("headline")
-        out.pop("motif", None) if out["type"] in ("card", "compare") else None
+        if out["type"] in ("card", "compare", "metric"):
+            out.pop("motif", None)      # these draw their own panel; compose drops it anyway
         scenes.append(out)
     return {"slug": topic["id"], "title": d["title"].replace(" #Shorts", ""),
             "duration": duration, "mood": topic.get("mood", "curious"),
-            "seed": abs(hash(topic["id"])) % 10_000_000,
+            # str.hash is salted per process, so it would give a different seed
+            # every run; crc32 keeps a topic's decorative layout reproducible.
+            "seed": zlib.crc32(topic["id"].encode()) % 10_000_000,
             "script": d["script"], "scenes": scenes,
             "copy": {"title": d["title"], "hook": d["hook_line"],
                      "caption": d["caption"], "hashtags": d["hashtags"]}}
