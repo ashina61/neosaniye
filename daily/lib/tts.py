@@ -47,6 +47,15 @@ def _key() -> str | None:
     return os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
 
 
+def configured_engine() -> str:
+    """`auto` probes Gemini and falls back; `piper` skips Gemini entirely.
+
+    Worth pinning to piper when the key's tier cannot serve TTS: probing costs
+    three doomed requests and a confusing 429 in the log on every single run.
+    """
+    return os.environ.get("TTS_ENGINE", "auto").strip().lower()
+
+
 def _write_wav(pcm: bytes, path: Path, rate: int) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with wave.open(str(path), "wb") as w:
@@ -124,6 +133,8 @@ def _piper_line(text: str, out: Path) -> None:
 
 def probe() -> tuple[str, str]:
     """Find out which engine this environment can actually use. (engine, detail)"""
+    if configured_engine() == "piper":
+        return "piper", "pinned by TTS_ENGINE=piper"
     if not _key():
         return "piper", "no GEMINI_API_KEY"
     import tempfile
@@ -137,7 +148,7 @@ def probe() -> tuple[str, str]:
 
 def say(text: str, out: Path, voice: str | None = None, engine: str = "auto") -> str:
     """Render one line. `engine` of 'piper' skips Gemini entirely."""
-    if engine == "piper" or not _key():
+    if engine == "piper" or configured_engine() == "piper" or not _key():
         _piper_line(text, out)
         return "piper"
     _gemini_line(text, out, voice or GEMINI_VOICE)
@@ -145,4 +156,6 @@ def say(text: str, out: Path, voice: str | None = None, engine: str = "auto") ->
 
 
 def engine() -> str:
+    if configured_engine() == "piper":
+        return "piper"
     return "gemini" if _key() else "piper"

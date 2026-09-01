@@ -274,10 +274,13 @@ CSS = """
       #stars i { position:absolute; display:block; background:#CFE2FF; border-radius:50%; }
       #vig { position:absolute; inset:0; pointer-events:none; background:radial-gradient(115% 78% at 50% 44%, rgba(0,0,0,0) 52%, rgba(0,0,0,.62) 100%); }
       video.stock { position:absolute; inset:0; width:1080px; height:1920px; object-fit:cover; }
+      /* Footage cannot be contrast-checked statically, so this ramp is the only
+         guarantee that headlines stay readable over it. It stays light through
+         the art zone and deepens from 62% down, where the headline band sits. */
       #scrim { position:absolute; inset:0; background:
-               linear-gradient(180deg, rgba(5,7,14,.72) 0%, rgba(5,7,14,.30) 26%,
-                                       rgba(5,7,14,.34) 52%, rgba(5,7,14,.88) 82%,
-                                       rgba(5,7,14,.96) 100%); }
+               linear-gradient(180deg, rgba(5,7,14,.74) 0%, rgba(5,7,14,.34) 24%,
+                                       rgba(5,7,14,.42) 50%, rgba(5,7,14,.66) 62%,
+                                       rgba(5,7,14,.92) 80%, rgba(5,7,14,.97) 100%); }
       .scene { position:absolute; inset:0; }
       .stage { position:absolute; inset:0; transform-origin:50% 46%; }
       .art { position:absolute; inset:0; width:1080px; height:1920px; }
