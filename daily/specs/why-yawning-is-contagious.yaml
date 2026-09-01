@@ -1,0 +1,36 @@
+slug: why-yawning-is-contagious
+title: Why Yawning Is Contagious
+duration: 40.0
+mood: warm
+seed: 20260905
+gap_weights: [1.6, 1.0, 0.9, 0.9, 1.0, 1.1, 1.1, 1.2, 1.5]
+
+script:
+  - "Someone yawns. Seconds later, so do you. You had no say in it."
+  - "It isn't about oxygen. Your blood was never short of it."
+  - "A yawn you catch and a yawn you start are different things."
+  - "Spontaneous yawning shows up before birth."
+  - "Catching one doesn't appear until around age four or five."
+  - "That gap is the clue. Contagion is learned social wiring."
+  - "Watching the action quietly runs the same motor pattern in you."
+  - "And it scales with closeness. Family catches it more than strangers."
+  - "Chimpanzees catch them. So do dogs, watching their owners."
+  - "A yawn isn't a need for air. It's a social echo."
+
+scenes:
+  - {type: hook,      motif: rings,     headline: ["YOU DIDN'T", "DECIDE THAT."]}
+  - {type: statement, motif: wave,      accent: red,   headline: ["NOT OXYGEN.", "NEVER WAS."]}
+  - {type: list,      motif: split,     items: ["ONE YOU START", "ONE YOU CATCH"]}
+  - {type: statement, motif: particles, accent: cyan,  headline: ["YAWNING STARTS", "BEFORE BIRTH"]}
+  - {type: metric,    label: "AGE CONTAGION BEGINS", count_to: 5, unit: "yrs", headline: ["CATCHING ONE", "COMES LATER"]}
+  - {type: card,      eyebrow: "THE CLUE", body: "A LEARNED <em>ECHO</em>", legend: "social wiring, <em>not lungs</em>"}
+  - {type: statement, motif: beam,      accent: cyan,  headline: ["WATCHING RUNS", "THE SAME LOOP"]}
+  - {type: compare,   columns: [{chip: "family", value: "MORE", label: "catch it"}, {chip: "strangers", value: "LESS", label: "catch it"}]}
+  - {type: statement, motif: particles, accent: amber, headline: ["CHIMPS CATCH IT", "DOGS TOO"]}
+  - {type: endcard,   motif: rings,     lines: ["NOT AIR.", "A SOCIAL ECHO."]}
+
+copy:
+  title: "Why yawning is contagious (it isn't about oxygen) #Shorts"
+  hook: "Someone yawns, and seconds later so do you. You had no say in it."
+  caption: "The oxygen story is wrong — your blood was never short of it. Spontaneous yawning starts before birth, but catching one only appears around age four or five. That gap is the giveaway: contagion is learned social wiring. It scales with closeness, and chimpanzees and dogs do it too."
+  hashtags: [science, psychology, biology, shorts, didyouknow, yawning]
