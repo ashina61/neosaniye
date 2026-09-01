@@ -15,21 +15,48 @@ service account (service accounts cannot own YouTube uploads).
    works, publish the app to stop the expiry).
 3. **Credentials → Create credentials → OAuth client ID → Desktop app.**
    Keep the client ID and client secret.
-4. Mint a refresh token once, on a machine with a browser, with exactly this
-   scope: `https://www.googleapis.com/auth/youtube.upload`
+4. Mint a refresh token once, on a machine with a browser:
 
-   The quickest route is the OAuth 2.0 Playground: click the gear, tick *Use
-   your own OAuth credentials*, paste the client ID/secret, choose that scope,
-   authorise with the channel's account, then exchange the code. Copy the
-   refresh token.
+   ```bash
+   python daily/lib/mint_youtube_token.py \
+       --client-id "…apps.googleusercontent.com" --client-secret "GOCSPX-…"
+   ```
 
-5. Set these in the environment the scheduled session runs in:
+   Use this rather than the OAuth 2.0 Playground. The Playground signs the grant
+   with *Google's* client unless you remember to tick *Use your own OAuth
+   credentials*, and a token minted that way looks perfectly well-formed but
+   fails later with `invalid_grant` — the token and the client id you deploy it
+   with simply do not belong together. The script signs with the same
+   credentials you are about to deploy, so they cannot disagree.
+
+   Scope is `https://www.googleapis.com/auth/youtube.upload`.
+
+5. Set these three as **environment variables on the Claude Code environment**
+   that the scheduled runs fire into:
 
    ```
    YOUTUBE_CLIENT_ID=…
    YOUTUBE_CLIENT_SECRET=…
    YOUTUBE_REFRESH_TOKEN=…
    ```
+
+   They have to live on the environment, not in the repository and not in a chat
+   message: every scheduled run starts a brand-new container that clones this
+   repo fresh, so anything not in the environment's own configuration is gone
+   before the run begins. `.env` is git-ignored precisely so these never get
+   committed.
+
+## Diagnosing a rejected token
+
+`invalid_grant` from the token endpoint means the refresh token was refused;
+`invalid_client` means the id/secret pair is wrong. To tell them apart, send a
+deliberately fake refresh token with the same client id and secret: if that also
+returns `invalid_grant`, the client is fine and the token is the problem.
+
+A previously working token stops working when the consent screen is still in
+*Testing* mode (tokens expire after 7 days — publish the app), when access is
+revoked, or when the account has issued so many tokens for this client that
+Google evicted the oldest.
 
 **Quota.** One upload costs 1600 units against a default 10,000/day, so two
 videos a day uses under a third of it. Nothing else here spends quota.
