@@ -1,0 +1,417 @@
+topics:
+- id: birds-power-lines
+  question: Why don't birds get shocked on power lines?
+  mechanism: Both feet sit at the same potential, so no current flows; danger comes from bridging two conductors.
+  mood: curious
+- id: recorded-voice
+  question: Why does your recorded voice sound wrong?
+  mechanism: Bone conduction adds low frequencies only you hear; air conduction is what everyone else gets.
+  mood: curious
+- id: sky-blue
+  question: Why is the sky blue but sunsets red?
+  mechanism: Rayleigh scattering favours short wavelengths; a long path through air strips the blue out.
+  mood: curious
+- id: ice-floats
+  question: Why does ice float when almost every other solid sinks?
+  mechanism: Hydrogen bonds lock water into an open lattice that is less dense than the liquid.
+  mood: curious
+- id: yawn-contagious
+  question: Why is yawning contagious?
+  mechanism: Automatic motor mimicry tied to social bonding, not oxygen debt.
+  mood: warm
+- id: deja-vu
+  question: What is actually happening during deja vu?
+  mechanism: A familiarity signal fires without a matching memory retrieval.
+  mood: curious
+- id: plane-window-hole
+  question: Why is there a tiny hole in every plane window?
+  mechanism: The bleed hole makes the middle pane carry no pressure load, so the outer pane takes it.
+  mood: curious
+- id: microwave-metal
+  question: Why can't you put metal in a microwave?
+  mechanism: Edges concentrate the induced field until air breaks down and arcs.
+  mood: tense
+- id: cats-purr
+  question: Why do cats purr?
+  mechanism: A neural oscillator drives the larynx; purring signals more than contentment.
+  mood: warm
+- id: hiccups
+  question: What causes hiccups and why do they stop?
+  mechanism: A reflex arc spasms the diaphragm; the glottis snaps shut a moment later.
+  mood: curious
+- id: mirror-flips
+  question: Why does a mirror flip left and right but not up and down?
+  mechanism: It flips front to back; you supply the left-right swap by turning around.
+  mood: curious
+- id: static-shock-winter
+  question: Why do you get shocked more in winter?
+  mechanism: Dry air stops charge leaking away, so triboelectric charge accumulates.
+  mood: curious
+- id: bread-stale
+  question: Why does bread go stale faster in the fridge?
+  mechanism: Starch retrogradation peaks just above freezing, not at room temperature.
+  mood: curious
+- id: onion-tears
+  question: Why do onions make you cry?
+  mechanism: Cut cells release an enzyme that builds a volatile sulfur irritant.
+  mood: curious
+- id: spicy-heat
+  question: Why does spicy food feel hot?
+  mechanism: Capsaicin binds the same receptor that reports actual heat.
+  mood: tense
+- id: mint-cold
+  question: Why does mint feel cold?
+  mechanism: Menthol opens the cold-sensing channel without lowering temperature.
+  mood: curious
+- id: sleep-jerk
+  question: Why do you jerk awake as you fall asleep?
+  mechanism: A hypnic jerk as motor inhibition and wake systems briefly disagree.
+  mood: curious
+- id: goosebumps
+  question: Why do you get goosebumps?
+  mechanism: A vestigial reflex that once raised fur for insulation and threat display.
+  mood: curious
+- id: blue-eyes
+  question: Why are blue eyes blue when there is no blue pigment?
+  mechanism: 'Structural colour: scattering in the stroma, the same physics as the sky.'
+  mood: curious
+- id: moon-daytime
+  question: Why can you sometimes see the moon in daylight?
+  mechanism: It is bright enough to beat the scattered blue when it is far from the sun.
+  mood: curious
+- id: tides
+  question: Why are there two tides a day, not one?
+  mechanism: The near bulge and the far bulge come from the gradient of gravity.
+  mood: curious
+- id: planes-contrails
+  question: Why do planes leave trails only sometimes?
+  mechanism: Exhaust water freezes only when the surrounding air is cold and humid enough.
+  mood: curious
+- id: helium-voice
+  question: Why does helium change your voice?
+  mechanism: Sound travels faster in helium, shifting the vocal tract's resonances, not the pitch.
+  mood: curious
+- id: phantom-vibration
+  question: Why do you feel your phone buzz when it didn't?
+  mechanism: A trained prior makes ambiguous skin signals get read as a notification.
+  mood: curious
+- id: earworms
+  question: Why do songs get stuck in your head?
+  mechanism: Incomplete, repetitive musical phrases keep the loop open.
+  mood: warm
+- id: cold-metal
+  question: Why does metal feel colder than wood at the same temperature?
+  mechanism: Thermal conductivity pulls heat from your skin faster; you feel flux, not temperature.
+  mood: curious
+- id: boiling-altitude
+  question: Why does water boil faster but cook slower on a mountain?
+  mechanism: Lower pressure drops the boiling point, so the water is cooler.
+  mood: curious
+- id: rainbow-arc
+  question: Why is a rainbow always an arc?
+  mechanism: Every raindrop returns light at the same angle, tracing a cone around the anti-solar point.
+  mood: curious
+- id: shower-curtain
+  question: Why does the shower curtain blow inward?
+  mechanism: Moving air lowers pressure inside; a vortex plus buoyancy does the rest.
+  mood: curious
+- id: cracking-knuckles
+  question: What is the sound when you crack a knuckle?
+  mechanism: A gas bubble forms in the joint fluid as pressure drops.
+  mood: curious
+- id: wet-paper-transparent
+  question: Why does wet paper turn transparent?
+  mechanism: Water replaces air between fibres and kills the scattering that made it white.
+  mood: curious
+- id: bruise-colours
+  question: Why do bruises change colour?
+  mechanism: Haemoglobin breaks down through biliverdin and bilirubin.
+  mood: curious
+- id: dogs-tilt-head
+  question: Why do dogs tilt their heads?
+  mechanism: Repositioning the ears to localise a sound, and reading your face past a long muzzle.
+  mood: warm
+- id: sneeze-eyes
+  question: Why do your eyes close when you sneeze?
+  mechanism: The sneeze reflex recruits a whole facial motor pattern, eyes included.
+  mood: curious
+- id: brain-freeze
+  question: What is brain freeze?
+  mechanism: Rapid cooling of the palate triggers referred pain through the trigeminal nerve.
+  mood: tense
+- id: night-vision-red
+  question: Why do pilots use red light at night?
+  mechanism: Rods barely respond to deep red, so dark adaptation survives.
+  mood: curious
+- id: popcorn
+  question: Why does popcorn pop but other corn doesn't?
+  mechanism: A hard hull holds steam until the starch bursts and sets.
+  mood: curious
+- id: wifi-microwave
+  question: Why does the microwave slow your Wi-Fi?
+  mechanism: Both live near 2.4 GHz, and leakage is enough to raise the noise floor.
+  mood: tense
+- id: bubbles-round
+  question: Why are bubbles always round?
+  mechanism: Surface tension minimises area, and the sphere is the minimum for a given volume.
+  mood: curious
+- id: day-length-change
+  question: Why isn't the earliest sunset on the shortest day?
+  mechanism: 'The equation of time: orbital speed and axial tilt desynchronise clock noon.'
+  mood: curious
+- id: hot-water-freeze
+  question: Can hot water freeze faster than cold?
+  mechanism: 'The Mpemba effect: real in some setups, and still argued over.'
+  mood: curious
+- id: glass-transparent
+  question: Why is glass transparent but sand isn't?
+  mechanism: No electronic transitions at visible energies, and no grain boundaries to scatter.
+  mood: curious
+- id: metal-rings
+  question: Why does a struck bell ring but a struck brick doesn't?
+  mechanism: Low internal damping lets modes persist in metal.
+  mood: curious
+- id: hair-standing
+  question: Why does hair stand up near a Van de Graaff?
+  mechanism: Like charges on each strand push apart along the field.
+  mood: curious
+- id: sweating-cools
+  question: Why does sweating cool you but humidity ruins it?
+  mechanism: Evaporation carries latent heat; saturated air stops the evaporation.
+  mood: curious
+- id: cutting-onions-goggles
+  question: Why does a sharp knife make you cry less?
+  mechanism: Fewer crushed cells release less of the enzyme.
+  mood: curious
+- id: sound-underwater
+  question: Why is it hard to tell direction underwater?
+  mechanism: Sound is four times faster, so the interaural time difference collapses.
+  mood: curious
+- id: sky-dark-night
+  question: Why is the night sky dark if there are infinite stars?
+  mechanism: Olbers' paradox, resolved by a finite age and expansion.
+  mood: tense
+- id: aluminium-foil-teeth
+  question: Why does biting foil hurt with fillings?
+  mechanism: Two dissimilar metals plus saliva makes a battery on a nerve.
+  mood: tense
+- id: boiling-milk-over
+  question: Why does milk boil over but water doesn't?
+  mechanism: A protein-fat skin traps steam until it lifts the whole surface.
+  mood: curious
+- id: sun-yellow
+  question: Why does the sun look yellow when it emits white?
+  mechanism: Atmospheric scattering removes blue on the way to your eye.
+  mood: curious
+- id: compass-north
+  question: Why does a compass point to a magnetic pole that moves?
+  mechanism: The field comes from convecting liquid iron, not a fixed bar magnet.
+  mood: curious
+- id: perfume-fades
+  question: Why does perfume smell strong then vanish?
+  mechanism: Olfactory receptor adaptation, plus volatile top notes leaving first.
+  mood: curious
+- id: stairs-missing-step
+  question: Why does a missing step feel so violent?
+  mechanism: Your motor plan predicted ground contact; the error signal is the jolt.
+  mood: tense
+- id: elevator-stomach
+  question: Why does your stomach drop in a lift?
+  mechanism: Organs lag the floor's acceleration until the tissues catch up.
+  mood: curious
+- id: photo-blink
+  question: Why do you always blink in photos?
+  mechanism: The flash triggers a reflex faster than the shutter in many cameras.
+  mood: warm
+- id: hearing-own-chewing
+  question: Why is your own chewing so loud?
+  mechanism: Bone conduction routes it straight to the cochlea.
+  mood: curious
+- id: bees-fly
+  question: How do bees actually fly?
+  mechanism: 'Not a paradox: rapid short strokes with leading-edge vortices.'
+  mood: warm
+- id: cracks-in-mud
+  question: Why does drying mud crack into polygons?
+  mechanism: Shrinkage stress relieves along lines that meet near right angles.
+  mood: curious
+- id: frost-patterns
+  question: Why does frost make ferns on glass?
+  mechanism: Vapour deposits along scratches and dust in branching growth.
+  mood: warm
+- id: soap-cleans
+  question: How does soap actually clean?
+  mechanism: One end grips water, the other grips oil, so grease leaves in droplets.
+  mood: curious
+- id: bread-holes
+  question: Why does bread have holes?
+  mechanism: Yeast CO2 is trapped by a gluten network and set by heat.
+  mood: warm
+- id: moon-same-face
+  question: Why do we always see the same face of the moon?
+  mechanism: Tidal locking matched its spin to its orbit.
+  mood: curious
+- id: stars-twinkle
+  question: Why do stars twinkle but planets don't?
+  mechanism: A point source is bent by turbulence; a small disc averages it out.
+  mood: curious
+- id: plastic-static
+  question: Why does plastic wrap stick to everything?
+  mechanism: Triboelectric charge plus a light, flexible sheet.
+  mood: curious
+- id: headache-dehydration
+  question: Why does dehydration cause headaches?
+  mechanism: Blood volume and vessel tone shift, and pain-sensitive structures notice.
+  mood: tense
+- id: music-chills
+  question: Why does music give you chills?
+  mechanism: Prediction error at a resolved musical expectation triggers arousal.
+  mood: warm
+- id: colour-afterimage
+  question: Why do you see a colour after staring at its opposite?
+  mechanism: Opponent channels fatigue and the balance tips the other way.
+  mood: curious
+- id: hot-day-mirage
+  question: Why does hot road look wet?
+  mechanism: Light bends in a hot air layer and shows you the sky.
+  mood: curious
+- id: cold-hands-warm
+  question: Why do cold hands hurt when they warm up?
+  mechanism: Blood returns to tissue whose nerves are firing on reperfusion.
+  mood: tense
+- id: sourdough-sour
+  question: Why is sourdough sour?
+  mechanism: Lactic acid bacteria live alongside the yeast.
+  mood: warm
+- id: bruised-apple
+  question: Why does a cut apple go brown?
+  mechanism: Polyphenol oxidase plus oxygen builds pigment.
+  mood: curious
+- id: balloon-pops
+  question: Why does a balloon pop so loudly?
+  mechanism: Rubber tears faster than sound, so the air releases as a shock.
+  mood: tense
+- id: tv-blue-light
+  question: Why does blue light keep you awake?
+  mechanism: Melanopsin cells read blue as daylight and delay melatonin.
+  mood: curious
+- id: hair-grey
+  question: Why does hair go grey?
+  mechanism: Pigment stem cells in the follicle run out.
+  mood: warm
+- id: cold-water-shock
+  question: Why does cold water make you gasp?
+  mechanism: The cold shock response fires before you can override it.
+  mood: tense
+- id: shoelaces-untie
+  question: Why do shoelaces come undone on their own?
+  mechanism: Impact loosens the knot while swing pulls the free ends.
+  mood: curious
+- id: bike-stays-up
+  question: Why does a moving bicycle stay up?
+  mechanism: Steering geometry, not gyroscopes, does most of the work.
+  mood: curious
+- id: desert-cold-night
+  question: Why are deserts freezing at night?
+  mechanism: No water vapour to hold the day's heat in.
+  mood: curious
+- id: eyes-adjust-dark
+  question: Why does it take so long to see in the dark?
+  mechanism: Rhodopsin has to regenerate before rods reach full sensitivity.
+  mood: curious
+- id: thunder-delay
+  question: Why does thunder rumble instead of bang?
+  mechanism: The bolt is kilometres long, so sound arrives from many distances.
+  mood: tense
+- id: gold-doesnt-tarnish
+  question: Why doesn't gold tarnish?
+  mechanism: Its electrons sit too low in energy for oxygen to take.
+  mood: curious
+- id: dizzy-spinning
+  question: Why do you stay dizzy after spinning?
+  mechanism: The fluid in the canals keeps moving after you stop.
+  mood: curious
+- id: wind-chill
+  question: Why does wind make cold feel colder?
+  mechanism: It strips the warm boundary layer off your skin.
+  mood: curious
+- id: bruises-old-people
+  question: Why do older people bruise more easily?
+  mechanism: Thinner skin and less collagen support around capillaries.
+  mood: warm
+- id: water-tastes-different
+  question: Why does water taste different in the morning?
+  mechanism: Overnight the mouth's chemistry and your saliva both change.
+  mood: curious
+- id: paper-cuts-hurt
+  question: Why do paper cuts hurt so much?
+  mechanism: Dense nociceptors in fingertips and a ragged wound that stays open.
+  mood: tense
+- id: ocean-salty
+  question: Why is the ocean salty but rivers aren't?
+  mechanism: Rivers deliver salt; only water leaves by evaporation.
+  mood: curious
+- id: clouds-float
+  question: Why do clouds float when water is heavy?
+  mechanism: Droplets are tiny and updrafts beat their fall speed.
+  mood: curious
+- id: snow-quiet
+  question: Why does fresh snow make everything quiet?
+  mechanism: Porous snow absorbs sound instead of reflecting it.
+  mood: warm
+- id: hot-drink-hot-day
+  question: Why does a hot drink cool you down?
+  mechanism: It triggers sweating that removes more heat than the drink added.
+  mood: curious
+- id: magnets-through-copper
+  question: Why does a magnet fall slowly through a copper tube?
+  mechanism: Induced eddy currents oppose the motion.
+  mood: curious
+- id: cracking-back
+  question: Is cracking your back actually doing anything?
+  mechanism: Cavitation plus a reflex relaxation, not realignment.
+  mood: curious
+- id: baby-blue-eyes
+  question: Why are many babies born with blue eyes?
+  mechanism: Melanin has not yet accumulated in the iris.
+  mood: warm
+- id: smell-memory
+  question: Why does smell trigger memory so strongly?
+  mechanism: The olfactory bulb wires almost directly into memory structures.
+  mood: warm
+- id: cold-sensitive-teeth
+  question: Why does cold hurt a cracked tooth?
+  mechanism: Fluid moves in the dentine tubules and pulls on nerve endings.
+  mood: tense
+- id: burnt-toast-smell
+  question: Why does burnt toast smell so strong?
+  mechanism: Pyrolysis makes tiny amounts of very potent aromatics.
+  mood: curious
+- id: swimming-wrinkles
+  question: Why do fingers wrinkle in water?
+  mechanism: A nerve-driven vasoconstriction that improves wet grip.
+  mood: curious
+- id: night-sounds-louder
+  question: Why does everything sound louder at night?
+  mechanism: Less masking noise, and air layers can bend sound back down.
+  mood: curious
+- id: rain-smell
+  question: Why does rain have a smell?
+  mechanism: 'Petrichor: soil oils and geosmin lofted by droplet impacts.'
+  mood: warm
+- id: clock-second-freeze
+  question: Why does a clock's second hand seem to freeze?
+  mechanism: 'Chronostasis: your brain backfills the time lost to a saccade.'
+  mood: curious
+- id: bruise-no-injury
+  question: Why do some bruises appear with no memory of impact?
+  mechanism: Minor capillary damage below the threshold you would notice.
+  mood: warm
+- id: carbonation-fizz
+  question: Why does a fizzy drink go flat faster once opened?
+  mechanism: Pressure drop lets dissolved CO2 leave; nucleation sites speed it up.
+  mood: curious
+- id: tongue-stuck-metal
+  question: Why does a tongue stick to frozen metal?
+  mechanism: Metal pulls heat out fast enough to freeze the saliva film.
+  mood: tense

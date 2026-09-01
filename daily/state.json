@@ -1,0 +1,19 @@
+{
+ "done": [
+  {
+   "id": "birds-power-lines",
+   "date": "2026-09-01",
+   "note": "built manually before the pipeline existed"
+  },
+  {
+   "id": "recorded-voice",
+   "date": "2026-09-01",
+   "note": "first pipeline run"
+  },
+  {
+   "id": "sky-blue",
+   "date": "2026-09-01",
+   "youtube": "skipped"
+  }
+ ]
+}

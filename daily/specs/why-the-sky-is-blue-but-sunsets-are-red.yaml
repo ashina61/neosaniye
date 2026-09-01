@@ -1,0 +1,52 @@
+slug: why-the-sky-is-blue-but-sunsets-are-red
+title: Why the Sky Is Blue but Sunsets Are Red
+duration: 30.0
+mood: curious
+seed: 20260903
+turn_beat: 6
+gap_weights: [1.8, 1.0, 0.9, 0.9, 1.3, 1.2, 1.5]
+
+script:
+  - "Sunlight is white. The sky is blue. The sunset is red."
+  - "Same light, same air. The difference is distance."
+  - "Air molecules scatter short wavelengths far more than long ones."
+  - "Blue gets bounced around the sky in every direction."
+  - "Straight up, that scattered blue is most of what reaches you."
+  - "At sunset the light crosses far more air."
+  - "By then the blue has been scattered away entirely."
+  - "What's left is the red that never bounced."
+
+scenes:
+  - type: hook
+    motif: rings
+    headline: ["SAME LIGHT.", "TWO COLOURS."]
+  - type: statement
+    motif: beam
+    accent: cyan
+    headline: ["SAME AIR.", "MORE DISTANCE."]
+  - type: card
+    backdrop: grid
+    eyebrow: THE MECHANISM
+    body: "SHORT WAVES <em>SCATTER</em>"
+    legend: "long waves pass <em>straight through</em>"
+  - type: statement
+    motif: particles
+    accent: cyan
+    headline: ["BLUE GETS", "BOUNCED"]
+  - type: statement
+    motif: rings
+    backdrop: orbit
+    accent: cyan
+    headline: ["STRAIGHT UP", "MOSTLY BLUE"]
+  - type: statement
+    motif: beam
+    accent: amber
+    headline: ["AT SUNSET", "MORE AIR"]
+  - type: compare
+    motif: wave
+    columns:
+      - {chip: "overhead", value: "SHORT", label: "path through air"}
+      - {chip: "sunset", value: "LONG", label: "path through air", risk: true}
+  - type: endcard
+    motif: rings
+    lines: ["THE RED", "NEVER BOUNCED."]

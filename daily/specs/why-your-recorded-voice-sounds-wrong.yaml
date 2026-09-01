@@ -1,0 +1,55 @@
+slug: why-your-recorded-voice-sounds-wrong
+title: Why Your Recorded Voice Sounds Wrong
+duration: 30.0
+mood: curious
+seed: 20260902
+gap_weights: [2.0, 1.0, 0.9, 0.9, 1.2, 1.4, 1.6]
+
+script:
+  - "Your own voice on a recording sounds wrong. Thinner. Higher."
+  - "The recording is right. Your ears have been lying."
+  - "When you speak, sound reaches you two ways."
+  - "Through the air, the way everyone else hears you."
+  - "And through the bone of your skull."
+  - "Bone carries low frequencies far better than air."
+  - "So your head adds a bass boost no one else hears."
+  - "That thinner voice is the one the world knows."
+
+scenes:
+  - type: hook
+    backdrop: plain
+    motif: rings
+    headline: ["THAT'S NOT", "YOUR VOICE."]
+  - type: statement
+    backdrop: plain
+    accent: red
+    motif: wave
+    headline: ["THE MIC IS RIGHT", "YOUR EARS LIE"]
+  - type: list
+    backdrop: flowlines
+    motif: split
+    items: ["THROUGH AIR", "THROUGH BONE"]
+  - type: statement
+    backdrop: flowlines
+    accent: cyan
+    motif: beam
+    headline: ["PATH ONE", "EVERYONE ELSE"]
+  - type: statement
+    backdrop: grid
+    accent: amber
+    motif: particles
+    headline: ["PATH TWO", "ONLY YOU"]
+  - type: compare
+    backdrop: orbit
+    columns:
+      - {chip: "what they hear", value: "AIR", label: "highs and mids"}
+      - {chip: "what you hear", value: "BONE", label: "plus the low end", risk: true}
+  - type: statement
+    backdrop: plain
+    accent: amber
+    motif: wave
+    headline: ["A BASS BOOST", "ONLY YOU HEAR"]
+  - type: endcard
+    backdrop: plain
+    motif: rings
+    lines: ["THE THIN ONE", "IS THE REAL ONE."]
