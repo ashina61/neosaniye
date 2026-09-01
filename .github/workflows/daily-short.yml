@@ -53,7 +53,26 @@ jobs:
           ffmpeg -version | head -1
 
       - name: Python dependencies
-        run: pip install --quiet pyyaml numpy requests
+        run: pip install --quiet pyyaml numpy requests piper-tts
+
+      # Access to Gemini's TTS preview models is not implied by a working key —
+      # they can refuse on the first call. Without a local voice the run would
+      # have nowhere to fall back to, so the model is cached and always present.
+      - name: Cache the offline narration voice
+        id: voice
+        uses: actions/cache@v4
+        with:
+          path: .voices
+          key: piper-voice-en-us-ryan-high-v1
+
+      - name: Fetch the offline narration voice
+        if: steps.voice.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p .voices
+          curl -sL --max-time 600 -o /tmp/voice.tar.gz \
+            https://github.com/rhasspy/piper/releases/download/v0.0.2/voice-en-us-ryan-high.tar.gz
+          tar xzf /tmp/voice.tar.gz -C .voices && rm -f /tmp/voice.tar.gz
+          ls -1 .voices
 
       - name: Node dependencies
         run: cd daily && npm install --no-audit --no-fund --silent

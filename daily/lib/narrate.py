@@ -33,20 +33,38 @@ def duration(path: Path) -> float:
     return float(out)
 
 
-def synthesize(lines: list[str], out_dir: Path, voice: str | None = None) -> list[float]:
-    """Render one wav per line; return their durations.
+def synthesize(lines: list[str], out_dir: Path,
+               voice: str | None = None) -> tuple[list[float], str]:
+    """Render one wav per line. Returns (durations, engine).
 
-    The engine is whichever is configured — Gemini when a key is present, piper
-    otherwise. Rates differ between them, which is exactly why nothing
-    downstream assumes a words-per-second constant.
+    The engine is settled before the first real line, by synthesizing a throwaway
+    one: a working API key does not imply access to the TTS preview models, which
+    can refuse on the very first call. If Gemini runs out partway through anyway,
+    the whole narration is redone with piper — a video that changes voice halfway
+    is worse than one in the plainer voice throughout.
     """
     out_dir.mkdir(parents=True, exist_ok=True)
-    durs = []
-    for i, line in enumerate(lines, 1):
-        wav = out_dir / f"{i:02d}.wav"
-        tts.say(line, wav, voice)
-        durs.append(duration(wav))
-    return durs
+    engine, detail = tts.probe()
+    if engine == "piper" and tts._key():
+        print(f"      Gemini TTS unavailable, using piper — {detail}")
+    elif engine == "gemini":
+        print(f"      Gemini TTS via {detail}")
+
+    for attempt in ("first", "fallback"):
+        durs = []
+        try:
+            for i, line in enumerate(lines, 1):
+                wav = out_dir / f"{i:02d}.wav"
+                tts.say(line, wav, voice, engine=engine)
+                durs.append(duration(wav))
+            return durs, engine
+        except tts.QuotaExhausted as e:
+            if attempt == "fallback" or engine == "piper":
+                raise
+            print(f"      Gemini TTS ran out mid-script ({str(e)[:160]})")
+            print("      redoing the whole narration with piper")
+            engine = "piper"
+    raise RuntimeError("unreachable")
 
 
 def plan(lines: list[str], durs: list[float], target: float,
@@ -102,9 +120,9 @@ def assemble(beats: list[dict], line_dir: Path, target: float, out: Path) -> Non
 
 def build(lines: list[str], target: float, work: Path,
           weights: list[float] | None = None, voice: str | None = None) -> dict:
-    durs = synthesize(lines, work / "lines", voice)
+    durs, engine = synthesize(lines, work / "lines", voice)
     timing = plan(lines, durs, target, weights)
-    timing["engine"] = tts.engine()
+    timing["engine"] = engine
     assemble(timing["beats"], work / "lines", target, work / "vo.wav")
     (work / "timing.json").write_text(json.dumps(timing, indent=1))
     return timing

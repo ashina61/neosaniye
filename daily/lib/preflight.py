@@ -37,15 +37,39 @@ def check(name: str, env: str | list[str]):
     return wrap
 
 
-@check("Gemini (TTS + text)", "GEMINI_API_KEY")
-def _gemini():
-    r = requests.get("https://generativelanguage.googleapis.com/v1beta/models",
-                     params={"key": os.environ["GEMINI_API_KEY"]}, timeout=TIMEOUT)
+@check("Gemini text", "GEMINI_API_KEY")
+def _gemini_text():
+    r = requests.post(
+        "https://generativelanguage.googleapis.com/v1beta/models/"
+        "gemini-2.5-flash:generateContent",
+        params={"key": os.environ["GEMINI_API_KEY"]}, timeout=TIMEOUT,
+        json={"contents": [{"parts": [{"text": "Reply with the single word OK."}]}],
+              "generationConfig": {"maxOutputTokens": 2048,
+                                   "thinkingConfig": {"thinkingBudget": 0}}})
     if r.status_code != 200:
-        return False, f"HTTP {r.status_code}"
-    names = [m["name"].split("/")[-1] for m in r.json().get("models", [])]
-    tts = [n for n in names if "tts" in n.lower()]
-    return True, f"{len(names)} models; tts-capable: {', '.join(tts[:3]) or 'none listed'}"
+        return False, f"HTTP {r.status_code}: {r.text[:120]}"
+    return True, "generateContent answered"
+
+
+@check("Gemini TTS", "GEMINI_API_KEY")
+def _gemini_tts():
+    """Actually synthesize. Listing models succeeds on any tier and proves nothing
+    about access to the TTS preview models, which is what the pipeline needs."""
+    for model in ("gemini-2.5-flash-preview-tts", "gemini-3.1-flash-tts-preview"):
+        r = requests.post(
+            f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
+            params={"key": os.environ["GEMINI_API_KEY"]}, timeout=TIMEOUT,
+            json={"contents": [{"parts": [{"text": "Testing."}]}],
+                  "generationConfig": {
+                      "responseModalities": ["AUDIO"],
+                      "speechConfig": {"voiceConfig": {
+                          "prebuiltVoiceConfig": {"voiceName": "Charon"}}}}})
+        if r.status_code == 200:
+            return True, f"{model} synthesized"
+        if r.status_code not in (429, 403):
+            return False, f"{model}: HTTP {r.status_code} {r.text[:140]}"
+        last = f"{model}: HTTP {r.status_code} {r.json().get('error', {}).get('message', '')[:200]}"
+    return False, last
 
 
 @check("Pexels (stock video)", "PEXELS_API_KEY")
