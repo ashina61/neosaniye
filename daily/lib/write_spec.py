@@ -56,9 +56,11 @@ For each beat also give a scene:
   motif: one of {motifs}   (omit for type card and compare - they draw a panel)
   stock: 2-4 plain English words naming REAL FOOTAGE that exists in a stock
          library and shows the beat's subject literally. Concrete nouns only
-         ("power line closeup", "ocean waves aerial"). Omit stock when the beat
-         is abstract and no honest footage exists - a graphics scene is better
-         than footage that shows the wrong thing.
+         ("power line closeup", "ocean waves aerial"). Give AT LEAST FIVE of the
+         {beats} beats a stock query - real footage carries a short far better
+         than graphics do, and most beats have something honest to show. Omit it
+         only where the beat is genuinely abstract and any footage would show
+         the wrong thing; a graphics scene beats misleading footage.
   headline: for hook/statement/endcard, exactly two lines, EACH AT MOST {hmax}
          CHARACTERS INCLUDING SPACES. This is a hard limit: longer lines run off
          the screen. Uppercase.

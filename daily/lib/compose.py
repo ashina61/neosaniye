@@ -377,7 +377,7 @@ def build(spec: dict, timing: dict, out: Path, stock: dict | None = None) -> Pat
         stock_html.append(
             f'<video id="{vid}" class="stock" data-start="{round(start,2)}" '
             f'data-duration="{round(min(end, dur) - start, 2)}" '
-            f'data-track-index="{2 + (i % 2)}" data-media-start="0" '
+            f'data-track-index="{2 + (i % 2)}" data-media-start="0" muted '
             f'src="{esc(info["rel"])}"></video>')
     stock_markup = chr(10).join("      " + v for v in stock_html)
     scrim = (f'      <div id="scrimclip" class="clip" data-start="0" data-duration="{dur}" '
