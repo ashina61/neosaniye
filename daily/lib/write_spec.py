@@ -26,9 +26,16 @@ URL = "https://generativelanguage.googleapis.com/v1beta/models/{m}:generateConte
 BEATS = 10
 WORDS_MIN, WORDS_MAX = 95, 115
 HEADLINE_MAX = 16          # characters; headlines are nowrap in a condensed face
-MIN_STOCK = 7              # of BEATS; graphics are the exception, not the rule
-SCENE_TYPES = ["hook", "statement", "card", "metric", "list", "compare", "endcard"]
+# Stock coverage is counted over the scenes that can carry footage. Raising the
+# floor across all ten only bought generic b-roll: a library has a wing, not a
+# cross-section of a window, so the beats that need a cross-section get a
+# diagram and the rest carry real footage.
+MIN_STOCK = 5              # of the scenes that can take footage
+MIN_DIAGRAM, MAX_DIAGRAM = 2, 3
+SCENE_TYPES = ["hook", "statement", "card", "metric", "list", "compare",
+               "diagram", "endcard"]
 MOTIFS = ["wave", "rings", "beam", "split", "particles"]
+SHAPES = ["layers", "route", "flow"]
 
 PROMPT = """You are writing a 40-second vertical science short. It must teach one
 mechanism clearly enough that a viewer can repeat the explanation afterwards.
@@ -78,6 +85,46 @@ For each beat also give a scene:
   label/unit/count_to: for metric.
   columns: for compare, exactly 2, each {{chip, value, label}}; value at most 8
          characters, uppercase.
+  shape + its fields: for diagram. See below.
+
+DIAGRAMS. Between {dmin} and {dmax} of the {beats} beats must be `diagram`
+scenes, and they must be the beats that carry the mechanism itself (beats 3-7).
+A diagram draws the thing being explained, which is the one thing stock footage
+cannot do: a library has a photograph of an aeroplane, never a cross-section of
+its window. Give a diagram scene NO stock and NO motif - it is the artwork.
+Every diagram still needs a two-line `headline`.
+
+Pick the shape that matches the mechanism:
+
+  "layers" - things stacked in order: panes of glass, layers of atmosphere,
+      rock strata, skin and nerve. 2-4 entries, outermost first.
+      {{"type":"diagram","shape":"layers","headline":["...","..."],"layers":[
+        {{"label":"OUTER PANE","note":"takes the pressure"}},
+        {{"label":"MIDDLE PANE","mark":"hole","mark_label":"bleed hole"}},
+        {{"label":"INNER PANE","note":"you touch this one"}}]}}
+      `label` uppercase, at most {dglab} characters ({dghole} on the marked one).
+      `note` optional, lowercase, at most {dgnote} characters.
+      Give `mark":"hole"` to at most ONE entry, when a gap or opening through
+      that layer is the point.
+
+  "route" - two ways from A to B, one of them blocked. Use it when the
+      explanation is "the current/air/heat could go this way, but it doesn't".
+      {{"type":"diagram","shape":"route","headline":["...","..."],
+        "from":"CABIN","to":"OUTSIDE","routes":[
+        {{"label":"through the gap","state":"open"}},
+        {{"label":"through the pane","state":"blocked"}}]}}
+      `from`/`to` uppercase, at most {dgnode} characters. Exactly 2 routes,
+      exactly one "open" and one "blocked". Labels lowercase, at most
+      {dgroute} characters.
+
+  "flow" - an ordered chain of causes. Use it for "this leads to this leads
+      to this". 3-4 nodes, in order.
+      {{"type":"diagram","shape":"flow","headline":["...","..."],
+        "nodes":["CABIN AIR","BLEED HOLE","MIDDLE PANE","OUTER PANE"]}}
+      Nodes uppercase, at most {dgflow} characters each.
+
+Every word inside a diagram must come from THIS topic. A diagram labelled with
+generic words teaches nothing and is worse than the footage it replaced.
 
 Vary the scene types - never more than two `statement` scenes in a row.
 
@@ -108,6 +155,11 @@ Return ONE JSON object and nothing else, in exactly this shape. `script` and
     {{"type": "compare", "headline": ["FIRST LINE", "SECOND LINE"], "columns": [
       {{"chip": "case one", "value": "SHORT", "label": "what it means"}},
       {{"chip": "case two", "value": "LONG", "label": "what it means", "risk": true}}]}},
+    {{"type": "diagram", "shape": "layers", "headline": ["FIRST LINE", "SECOND LINE"],
+      "layers": [{{"label": "OUTER PART", "note": "what it does"}},
+                 {{"label": "INNER PART", "mark": "hole", "mark_label": "the gap"}}]}},
+    {{"type": "diagram", "shape": "flow", "headline": ["FIRST LINE", "SECOND LINE"],
+      "nodes": ["FIRST CAUSE", "THEN THIS", "THEN THIS"]}},
     {{"type": "endcard", "motif": "rings", "headline": ["LAST LINE", "FINAL LINE"]}}
   ],
   "title": "...",
@@ -117,7 +169,7 @@ Return ONE JSON object and nothing else, in exactly this shape. `script` and
   "stock_fallback": "birds power lines"
 }}
 
-Those seven objects are examples of each type, not the answer — your `scenes`
+Those objects are examples of each type, not the answer — your `scenes`
 array holds exactly {beats} entries following the beat shape above.
 """
 
@@ -139,6 +191,18 @@ SCHEMA = {
                 "eyebrow": {"type": "string"}, "body": {"type": "string"},
                 "legend": {"type": "string"}, "label": {"type": "string"},
                 "unit": {"type": "string"}, "count_to": {"type": "number"},
+                "shape": {"type": "string"},
+                "from": {"type": "string"}, "to": {"type": "string"},
+                "nodes": {"type": "array", "items": {"type": "string"}},
+                "layers": {"type": "array", "items": {
+                    "type": "object",
+                    "properties": {"label": {"type": "string"}, "note": {"type": "string"},
+                                   "mark": {"type": "string"},
+                                   "mark_label": {"type": "string"}}}},
+                "routes": {"type": "array", "items": {
+                    "type": "object",
+                    "properties": {"label": {"type": "string"},
+                                   "state": {"type": "string"}}}},
                 "columns": {"type": "array", "items": {
                     "type": "object",
                     "properties": {"chip": {"type": "string"}, "value": {"type": "string"},
@@ -208,14 +272,91 @@ def validate(d: dict) -> list[str]:
                     errs.append(f"scene {i}: column value {problem}")
         if t == "metric" and not sc.get("label"):
             errs.append(f"scene {i} (metric): label is missing")
+        if t == "diagram":
+            errs += _diagram(i, sc)
 
-    with_stock = sum(1 for sc in scenes if (sc.get("stock") or "").strip())
-    if scenes and with_stock < MIN_STOCK:
-        errs.append(f"only {with_stock} of {len(scenes)} scenes carry a stock query, "
-                    f"need at least {MIN_STOCK} — this is a footage-led format")
+    # a diagram IS the artwork, so it is not counted against footage coverage
+    footage_scenes = [sc for sc in scenes if sc.get("type") != "diagram"]
+    with_stock = sum(1 for sc in footage_scenes if (sc.get("stock") or "").strip())
+    if footage_scenes and with_stock < MIN_STOCK:
+        errs.append(f"only {with_stock} of the {len(footage_scenes)} non-diagram "
+                    f"scenes carry a stock query, need at least {MIN_STOCK} — "
+                    f"this is a footage-led format")
+
+    diagrams = len(scenes) - len(footage_scenes)
+    if scenes and not MIN_DIAGRAM <= diagrams <= MAX_DIAGRAM:
+        errs.append(f"{diagrams} diagram scenes, need {MIN_DIAGRAM}-{MAX_DIAGRAM} — "
+                    f"the mechanism beats have to draw the mechanism")
 
     if d.get("title") and len(d["title"]) > 100:
         errs.append(f"title is {len(d['title'])} chars, YouTube allows 100")
+    return errs
+
+
+def _fits(errs: list[str], where: str, text: str, kind: str) -> None:
+    problem = textfit.check(text or "", kind)
+    if problem:
+        errs.append(f"{where}: {problem}")
+
+
+def _diagram(i: int, sc: dict) -> list[str]:
+    """A diagram is drawn from the model's own words, so the words have to fit.
+
+    SVG text does not wrap: an over-long band label runs off the frame silently,
+    exactly the way an over-long headline does, so it is measured the same way.
+    """
+    errs: list[str] = []
+    shape = sc.get("shape")
+    if shape not in SHAPES:
+        return [f"scene {i} (diagram): shape {shape!r} is not one of {SHAPES}"]
+    if shape == "layers":
+        items = sc.get("layers") or []
+        if not 2 <= len(items) <= 4:
+            errs.append(f"scene {i} (layers): needs 2-4 layers, got {len(items)}")
+        marks = 0
+        for j, it in enumerate(items, 1):
+            label = (it.get("label") or "").strip()
+            if not label:
+                errs.append(f"scene {i} layer {j}: label is empty")
+            holed = (it.get("mark") or "").lower() == "hole"
+            marks += holed
+            _fits(errs, f"scene {i} layer {j} label", label,
+                  "dg_hole" if holed else "dg_label")
+            if it.get("note"):
+                _fits(errs, f"scene {i} layer {j} note", it["note"], "dg_note")
+            if it.get("mark") and not holed:
+                errs.append(f"scene {i} layer {j}: mark {it['mark']!r} — only "
+                            f"\"hole\" is drawn")
+            if holed and it.get("mark_label"):
+                _fits(errs, f"scene {i} layer {j} mark_label", it["mark_label"], "dg_note")
+        if marks > 1:
+            errs.append(f"scene {i} (layers): {marks} layers marked `hole`, at most one")
+
+    elif shape == "route":
+        for key in ("from", "to"):
+            v = (sc.get(key) or "").strip()
+            if not v:
+                errs.append(f"scene {i} (route): `{key}` is missing")
+            _fits(errs, f"scene {i} route `{key}`", v, "dg_node")
+        routes = sc.get("routes") or []
+        if len(routes) != 2:
+            errs.append(f"scene {i} (route): needs exactly 2 routes, got {len(routes)}")
+        states = [(r.get("state") or "").lower() for r in routes]
+        if sorted(states) != ["blocked", "open"]:
+            errs.append(f"scene {i} (route): states are {states}, need one "
+                        f"\"open\" and one \"blocked\"")
+        for j, r in enumerate(routes, 1):
+            if not (r.get("label") or "").strip():
+                errs.append(f"scene {i} route {j}: label is empty")
+            _fits(errs, f"scene {i} route {j} label", r.get("label", ""), "dg_route")
+
+    elif shape == "flow":
+        nodes = [n for n in (sc.get("nodes") or []) if (n or "").strip()]
+        if not 3 <= len(nodes) <= 4:
+            errs.append(f"scene {i} (flow): needs 3-4 nodes, got {len(nodes)}")
+        for j, n in enumerate(nodes, 1):
+            _fits(errs, f"scene {i} flow node {j}", n, "dg_flow")
+
     return errs
 
 
@@ -279,7 +420,16 @@ def draft(topic: dict, attempts: int = 4) -> dict:
         raise RuntimeError("GEMINI_API_KEY is not set")
     base = PROMPT.format(question=topic["question"], mechanism=topic["mechanism"],
                          beats=BEATS, wmin=WORDS_MIN, wmax=WORDS_MAX,
-                         types=SCENE_TYPES, motifs=MOTIFS, hmax=HEADLINE_MAX)
+                         types=SCENE_TYPES, motifs=MOTIFS, hmax=HEADLINE_MAX,
+                         dmin=MIN_DIAGRAM, dmax=MAX_DIAGRAM,
+                         # the caps the model is told are the caps the
+                         # validator measures, so the two cannot drift apart
+                         dglab=textfit.budget("dg_label"),
+                         dghole=textfit.budget("dg_hole"),
+                         dgnote=textfit.budget("dg_note"),
+                         dgnode=textfit.budget("dg_node"),
+                         dgroute=textfit.budget("dg_route"),
+                         dgflow=textfit.budget("dg_flow"))
     prompt, problems = base, []
     for n in range(1, attempts + 1):
         try:
@@ -309,8 +459,10 @@ def to_spec(topic: dict, d: dict, duration: float = 40.0) -> dict:
         out = {k: v for k, v in sc.items() if v not in (None, "", [], {})}
         if out["type"] == "endcard" and "headline" in out:
             out["lines"] = out.pop("headline")
-        if out["type"] in ("card", "compare", "metric"):
+        if out["type"] in ("card", "compare", "metric", "diagram"):
             out.pop("motif", None)      # these draw their own panel; compose drops it anyway
+        if out["type"] == "diagram":
+            out.pop("stock", None)      # the diagram IS the art; build.py drops it anyway
         scenes.append(out)
     return {"slug": topic["id"], "title": d["title"].replace(" #Shorts", ""),
             "stock_fallback": d.get("stock_fallback", topic["question"]),

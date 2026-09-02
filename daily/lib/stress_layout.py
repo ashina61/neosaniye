@@ -56,9 +56,18 @@ def spec() -> dict:
             {"type": "compare", "headline": [H16, H16], "columns": [
                 {"chip": "a rather long chip", "value": _widest("col_big"), "label": LONG},
                 {"chip": "another long chip", "value": _widest("col_big"), "label": LONG, "risk": True}]},
-            {"type": "statement", "motif": "beam", "accent": "cyan", "headline": [H16, H16]},
-            {"type": "statement", "motif": "particles", "accent": "amber", "headline": [H16, H16]},
-            {"type": "list", "motif": "rings", "items": [H16, H16]},
+            {"type": "diagram", "shape": "layers", "headline": [H16, H16], "layers": [
+                {"label": _widest("dg_label"), "note": _widest("dg_note")},
+                {"label": _widest("dg_hole"), "mark": "hole",
+                 "mark_label": _widest("dg_note")},
+                {"label": _widest("dg_label"), "note": _widest("dg_note")},
+                {"label": _widest("dg_label")}]},
+            {"type": "diagram", "shape": "route", "headline": [H16, H16],
+             "from": _widest("dg_node"), "to": _widest("dg_node"), "routes": [
+                {"label": _widest("dg_route"), "state": "open"},
+                {"label": _widest("dg_route"), "state": "blocked"}]},
+            {"type": "diagram", "shape": "flow", "headline": [H16, H16],
+             "nodes": [_widest("dg_flow")] * 4},
             {"type": "endcard", "motif": "rings", "lines": [_widest("endcard")] * 2},
         ]}
 

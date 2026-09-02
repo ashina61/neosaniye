@@ -18,13 +18,22 @@ Learned constraints baked in here (each one cost a render to find):
     counts as an opaque coverer, and any headline near the frame edge then
     trips `text_occluded` — a class of failure no per-element escape hatch
     settles, because the next scene layout finds a new way to hit it.
+  * `data-layout-allow-overlap` silences every finding on the element carrying
+    it, so it goes on the narrowest possible element — see ALLOW_OVERLAP below.
+  * Identical anonymous elements collapse into one finding keyed by selector,
+    and a finding seen at three sample times is an error rather than an info.
+    Give every repeated block an id so a failure names the scene it is in.
 """
 from __future__ import annotations
 
 import html
 import json
 import random
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import diagram                   # noqa: E402
 
 W, H, FPS = 1080, 1920, 30
 ZONE_HEADLINE, CAPTION_TOP = 1150, 1490
@@ -105,13 +114,30 @@ def _backdrop(kind: str, rng: random.Random, idp: str) -> str:
 
 
 # -------------------------------------------------------------- scene bodies
+# Two overlaps here are real and unavoidable, and this declares exactly those.
+#
+# Anton's inline box is 1.51em tall, so at any leading that keeps a two-line
+# headline inside its zone the line boxes overlap by ~60px. The ink clears by
+# 17px (caps are .859em against a 118px baseline step) — the boxes do not. A
+# list item likewise enters at scale 1.5 about its own middle and crosses its
+# neighbours mid-animation.
+#
+# The attribute silences EVERY finding on the element it sits on, not just the
+# pair it was meant for: hatching both headline lines also hid a tagline landing
+# on the first one, which was a real fault and is now fixed at the source. So it
+# goes on the second line only, leaving the first line still gated. It has to
+# sit on the element itself; on a container it is read but not applied.
+ALLOW_OVERLAP = " data-layout-allow-overlap"
+
+
 def _headline_block(sc: dict, sid: str) -> str:
     """The two-line band under a panel. Shared so panel scenes match the rest."""
     lines = (sc.get("headline") or [])[:2]
     if not lines:
         return ""
     acc = sc.get("accent", "cyan")
-    inner = "".join(f'<div class="kh{"" if i == 0 else f" kh-{acc}"}">{esc(x)}</div>'
+    inner = "".join(f'<div id="{sid}-k{i}" class="kh{"" if i == 0 else f" kh-{acc}"}"'
+                    f'{ALLOW_OVERLAP if i else ""}>{esc(x)}</div>'
                     for i, x in enumerate(lines))
     return f'<div id="{sid}-k" class="klines">{inner}</div>'
 
@@ -123,8 +149,9 @@ def _scene_body(sc: dict, sid: str, rng: random.Random) -> str:
     # left to a spec author to remember.
     # A scene running stock footage drops both backdrop and motif: the footage is
     # the art, and graphics layered on it just fight for the frame.
-    on_footage = bool(sc.get("_has_stock"))
-    wants_motif = sc.get("motif") and t not in ("card", "compare", "metric") and not on_footage
+    on_footage = bool(sc.get("_has_stock")) and t != "diagram"
+    wants_motif = (sc.get("motif") and not on_footage
+                   and t not in ("card", "compare", "metric", "diagram"))
     art = sc.get("art_svg") or ("" if on_footage else (
         _backdrop(sc.get("backdrop", "plain"), rng, sid)
         + ('<svg class="art" viewBox="0 0 1080 1920" preserveAspectRatio="xMidYMid slice">'
@@ -146,9 +173,11 @@ def _scene_body(sc: dict, sid: str, rng: random.Random) -> str:
     if t == "statement":
         lines = sc.get("headline", [])[:2]
         acc = sc.get("accent", "cyan")
-        body = "".join(f'<div id="{sid}-k{i}" class="kh{"" if i == 0 else f" kh-{acc}"}">{esc(x)}</div>'
+        body = "".join(f'<div id="{sid}-k{i}" class="kh{"" if i == 0 else f" kh-{acc}"}"'
+                       f'{ALLOW_OVERLAP if i else ""}>{esc(x)}</div>'
                        for i, x in enumerate(lines))
-        return f'<div class="stage">{art}<div id="{sid}-lines" class="klines">{body}</div></div>'
+        return (f'<div class="stage">{art}'
+                f'<div id="{sid}-lines" class="klines">{body}</div></div>')
 
     if t == "card":
         legend = (f'<div id="{sid}-lg" class="eq-legend">{sc["legend"]}</div>'
@@ -161,7 +190,8 @@ def _scene_body(sc: dict, sid: str, rng: random.Random) -> str:
                 f'{tag}{_headline_block(sc, sid)}</div>')
 
     if t == "metric":
-        heads = "".join(f'<div class="kh{" kh-amber" if i else ""}">{esc(x)}</div>'
+        heads = "".join(f'<div id="{sid}-k{i}" class="kh{" kh-amber" if i else ""}"'
+                        f'{ALLOW_OVERLAP if i else ""}>{esc(x)}</div>'
                         for i, x in enumerate(sc.get("headline", [])[:2]))
         return (f'<div class="stage">{art}'
                 f'<div id="{sid}-meter" class="meter{" meter-danger" if sc.get("danger") else ""}">'
@@ -172,8 +202,8 @@ def _scene_body(sc: dict, sid: str, rng: random.Random) -> str:
     if t == "list":
         items = sc.get("items", [])[:3]
         body = "".join(
-            f'<div id="{sid}-i{i}" class="slam{" slam-amber" if i == len(items)-1 else ""}">{esc(x)}</div>'
-            for i, x in enumerate(items))
+            f'<div id="{sid}-i{i}" class="slam{" slam-amber" if i == len(items)-1 else ""}"'
+            f'{ALLOW_OVERLAP}>{esc(x)}</div>' for i, x in enumerate(items))
         return f'<div class="stage">{art}<div class="stack">{body}</div></div>'
 
     if t == "compare":
@@ -187,6 +217,10 @@ def _scene_body(sc: dict, sid: str, rng: random.Random) -> str:
             for i, c in enumerate(cols))
         return f'<div class="stage">{art}<div class="cols">{cells}</div>{head}</div>'
 
+    if t == "diagram":
+        return (f'<div class="stage">{diagram.build(sid, sc)}'
+                f'{_headline_block(sc, sid)}</div>')
+
     if t == "endcard":
         l = sc.get("lines", ["", ""])
         return (f'<div class="stage">{art}<div id="{sid}-end" class="endcard">'
@@ -199,7 +233,7 @@ def _scene_body(sc: dict, sid: str, rng: random.Random) -> str:
 # ------------------------------------------------------------------ timeline
 def _motif_tweens(sc: dict, sid: str, st: float, A) -> None:
     kind = sc.get("motif")
-    if not kind or sc["type"] in ("card", "compare", "metric") or sc.get("_has_stock"):
+    if not kind or sc["type"] in ("card", "compare", "metric", "diagram") or sc.get("_has_stock"):
         return                                          # see _scene_body
     if kind == "wave":
         A(f'tl.fromTo("#{sid}-motif .mfbar",{{scaleY:0.06,opacity:0}},'
@@ -273,6 +307,31 @@ def _scene_tweens(sc: dict, sid: str, st: float, du: float, A) -> None:
               f'{st+0.3+i*0.22:.2f});')
         if sc.get("headline"):
             A(f'tl.fromTo("#{sid}-k",{{opacity:0,y:34}},{{opacity:1,y:0,duration:.45,ease:E}},{st+0.95:.2f});')
+    elif t == "diagram":
+        shape = sc.get("shape", "layers")
+        if shape == "layers":
+            A(f'tl.fromTo("#{sid}-dg .dgband",{{opacity:0,x:-70}},'
+              f'{{opacity:1,x:0,duration:.5,ease:E,stagger:.13}},{st+0.2:.2f});')
+            A(f'tl.fromTo("#{sid}-dg .dglabel, #{sid}-dg .dgnote",{{opacity:0}},'
+              f'{{opacity:1,duration:.4,stagger:.09}},{st+0.45:.2f});')
+            A(f'tl.fromTo("#{sid}-dg .dghole, #{sid}-dg .dgtag",{{opacity:0,scale:.6}},'
+              f'{{opacity:1,scale:1,duration:.5,ease:B}},{st+1.15:.2f});')
+        elif shape == "route":
+            A(f'tl.fromTo("#{sid}-dg .dgnode, #{sid}-dg .dgnodetext",{{opacity:0,scale:.7}},'
+              f'{{opacity:1,scale:1,duration:.45,ease:B}},{st+0.2:.2f});')
+            A(f'tl.fromTo("#{sid}-dg .dgpath",{{strokeDashoffset:1200,opacity:0}},'
+              f'{{strokeDashoffset:0,opacity:1,duration:1.0,ease:EI,stagger:.28}},{st+0.5:.2f});')
+            A(f'tl.fromTo("#{sid}-dg .dgnote",{{opacity:0}},{{opacity:1,duration:.4,stagger:.2}},{st+0.9:.2f});')
+            A(f'tl.fromTo("#{sid}-dg .dgcross",{{scale:0,opacity:0}},'
+              f'{{scale:1,opacity:1,duration:.4,ease:B}},{st+1.6:.2f});')
+        else:
+            A(f'tl.fromTo("#{sid}-dg .dgbox, #{sid}-dg .dglabel",{{opacity:0,y:26}},'
+              f'{{opacity:1,y:0,duration:.45,ease:E,stagger:.14}},{st+0.2:.2f});')
+            A(f'tl.fromTo("#{sid}-dg .dgarrow",{{opacity:0}},'
+              f'{{opacity:1,duration:.35,stagger:.14}},{st+0.55:.2f});')
+        if sc.get("headline"):
+            A(f'tl.fromTo("#{sid}-k",{{opacity:0,y:34}},{{opacity:1,y:0,duration:.45,ease:E}},{st+1.2:.2f});')
+
     elif t == "endcard":
         A(f'tl.fromTo("#{sid}-end .end-1",{{opacity:0,y:44}},{{opacity:1,y:0,duration:.45,ease:E}},{st+0.3:.2f});')
         A(f'tl.fromTo("#{sid}-end .end-2",{{opacity:0,y:44}},{{opacity:1,y:0,duration:.45,ease:E}},{st+0.55:.2f});')
@@ -315,6 +374,23 @@ CSS = """
       .mfsplit { fill:none; stroke:#8A96AC; stroke-width:10; stroke-linecap:round; stroke-dasharray:900; }
       .mfsplit-a { stroke:#46E0FF; } .mfsplit-b { stroke:#F5B942; }
       .mfp { fill:#46E0FF; }
+      .diagram text { font-family:"InterL", sans-serif; }
+      .dgband { fill:rgba(14,24,42,.92); stroke:#46E0FF; stroke-width:3; }
+      .dghole { fill:rgba(245,185,66,.16); stroke:#F5B942; stroke-width:5;
+                filter:drop-shadow(0 0 22px rgba(245,185,66,.75)); }
+      .dgtag { font-size:30px; font-weight:800; fill:#F5B942; letter-spacing:.06em; }
+      .dgbox  { fill:rgba(14,24,42,.92); stroke:#6E86AE; stroke-width:3; }
+      .dgbox-end { stroke:#46E0FF; }
+      .dgnode { fill:rgba(14,24,42,.95); stroke:#46E0FF; stroke-width:4; }
+      .dglabel { font-size:46px; font-weight:800; fill:#F2F5FA; }
+      .dgnodetext { font-size:38px; font-weight:800; fill:#F2F5FA; }
+      .dgnote { font-size:32px; font-weight:600; fill:#8A96AC; }
+      .dgpath { fill:none; stroke-width:9; stroke-linecap:round; stroke-dasharray:1200; }
+      .dgpath-open { stroke:#46E0FF; }
+      .dgpath-blocked { stroke:#FF6161; stroke-dasharray:18 22; }
+      .dgcross line { stroke:#FF6161; stroke-width:11; stroke-linecap:round; }
+      .dgarrow { fill:none; stroke:#8A96AC; stroke-width:6; stroke-linecap:round;
+                 stroke-linejoin:round; }
       .kh { font-family:"AntonL", sans-serif; font-size:118px; line-height:.98; white-space:nowrap; letter-spacing:.01em; color:#F2F5FA; text-transform:uppercase; }
       .kh-amber { color:#F5B942; } .kh-cyan { color:#46E0FF; } .kh-red { color:#FF6161; }
       .klines { position:absolute; left:78px; top:1160px; }
@@ -328,7 +404,7 @@ CSS = """
       .card-body em { color:#46E0FF; font-style:normal; }
       .eq-legend { margin-top:30px; font-size:40px; color:#B9C4D6; font-weight:600; }
       .eq-legend em { color:#46E0FF; font-style:normal; font-weight:800; }
-      .zerotag { position:absolute; left:78px; right:78px; top:1120px; text-align:center; font-family:"AntonL", sans-serif; font-size:74px; color:#46E0FF; }
+      .zerotag { position:absolute; left:78px; right:78px; top:1032px; text-align:center; font-family:"AntonL", sans-serif; font-size:74px; color:#46E0FF; }
       .meter { position:absolute; left:50%; transform:translateX(-50%); top:700px; min-width:620px; padding:30px 44px; border-radius:26px; text-align:center; background:rgba(9,16,30,.92); border:2px solid rgba(70,224,255,.35); }
       .meter-k { font-size:24px; letter-spacing:.24em; color:#8A96AC; font-weight:800; }
       .meter-v { margin-top:10px; font-size:96px; color:#F2F5FA; font-weight:800; display:flex; align-items:baseline; justify-content:center; gap:14px; }

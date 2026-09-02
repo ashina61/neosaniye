@@ -75,6 +75,9 @@ def build(spec_path: Path, work_root: Path | None = None) -> Path:
     print("[3/8] stock footage")
     proj = work / "project"
     proj.mkdir(exist_ok=True)
+    for sc in spec["scenes"]:          # a diagram is the art; footage would bury it
+        if sc.get("type") == "diagram":
+            sc.pop("stock", None)
     stock = stock_mod.gather(spec["scenes"], proj, timing,
                              spec.get("stock_fallback", "")) if any(
         sc.get("stock") for sc in spec["scenes"]) else {}
