@@ -29,7 +29,11 @@ import requests
 
 AUTH = "https://accounts.google.com/o/oauth2/v2/auth"
 TOKEN = "https://oauth2.googleapis.com/token"
-SCOPE = "https://www.googleapis.com/auth/youtube.upload"
+# upload puts the video up; force-ssl is what lets the job post the first
+# comment under it. Asking for both here means the token never has to be
+# re-minted to add the comment later.
+SCOPE = ("https://www.googleapis.com/auth/youtube.upload"
+         " https://www.googleapis.com/auth/youtube.force-ssl")
 
 
 def free_port() -> int:

@@ -148,8 +148,12 @@ jobs:
           META_USER_TOKEN:       ${{ secrets.META_USER_TOKEN }}
         run: |
           set -euo pipefail
+          # A manual run uses whatever the dispatch form said, and its form
+          # defaults to upload:none / unlisted so the chain can be exercised
+          # without posting. These fallbacks are what a SCHEDULED run gets,
+          # where there are no inputs at all: publish everywhere, publicly.
           UPLOAD='${{ inputs.upload || 'all' }}'
-          PRIVACY='${{ inputs.privacy || 'unlisted' }}'
+          PRIVACY='${{ inputs.privacy || 'public' }}'
           python daily/lib/publish.py \
             "out/${{ steps.spec.outputs.slug }}" \
             --spec "${{ steps.spec.outputs.path }}" \

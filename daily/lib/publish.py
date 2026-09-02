@@ -104,6 +104,14 @@ def main() -> int:
             vid = youtube.upload(video, meta)
             results["youtube"] = f"https://youtube.com/shorts/{vid}"
             print(f"youtube: {results['youtube']}")
+            # The tags go in the first comment, not the description. A failure
+            # here is cosmetic — the video is already up — and the usual cause
+            # is a token minted for upload only, so it must not fail the run.
+            try:
+                youtube.comment(vid, f"{a.hook}\n\n{tagline}")
+                print("youtube: first comment posted")
+            except Exception as e:                  # noqa: BLE001
+                print(f"youtube: first comment skipped ({e})", file=sys.stderr)
         except youtube.MissingCredentials as e:
             results["youtube"] = f"skipped: {e}"
             print(f"youtube: SKIPPED ({e})")

@@ -5,7 +5,8 @@ needs: no browser, no expiry as long as the grant stands. Supply three env vars:
 
     YOUTUBE_CLIENT_ID
     YOUTUBE_CLIENT_SECRET
-    YOUTUBE_REFRESH_TOKEN     # minted once, with scope youtube.upload
+    YOUTUBE_REFRESH_TOKEN     # minted once, with scopes youtube.upload
+                              # and youtube.force-ssl (the latter for comments)
 
 `--dry-run` exercises everything except the two network calls, so the pipeline
 can be verified end to end without credentials.
@@ -22,6 +23,7 @@ import requests
 
 TOKEN_URL = "https://oauth2.googleapis.com/token"
 UPLOAD_URL = "https://www.googleapis.com/upload/youtube/v3/videos"
+COMMENTS_URL = "https://www.googleapis.com/youtube/v3/commentThreads"
 CHUNK = 8 * 1024 * 1024
 
 
@@ -43,6 +45,24 @@ def access_token() -> str:
     if r.status_code != 200:
         raise RuntimeError(f"token refresh failed [{r.status_code}]: {r.text[:400]}")
     return r.json()["access_token"]
+
+
+def comment(video_id: str, text: str, token: str | None = None) -> str:
+    """Post the first comment on a video we just uploaded.
+
+    Hashtags belong here rather than crowding the description: the description's
+    first two lines are what a viewer actually sees under a Short, and a wall of
+    tags there buys nothing. Needs the youtube.force-ssl scope, which an upload
+    -only token does not carry, so the caller treats a failure as cosmetic.
+    """
+    r = requests.post(COMMENTS_URL, params={"part": "snippet"},
+                      headers={"Authorization": f"Bearer {token or access_token()}"},
+                      json={"snippet": {"videoId": video_id,
+                                        "topLevelComment": {"snippet": {"textOriginal": text}}}},
+                      timeout=60)
+    if r.status_code not in (200, 201):
+        raise RuntimeError(f"comment failed [{r.status_code}]: {r.text[:300]}")
+    return r.json()["id"]
 
 
 def build_metadata(title: str, description: str, tags: list[str],
