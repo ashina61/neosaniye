@@ -127,8 +127,11 @@ static diagram whenever the topic has a moving part; at most two per video.
         "from":"PYLON","to":"PYLON","perch":"BIRD",
         "flow_label":"current runs along","branch":{{"label":"no path to ground"}}}}
       `from`/`to`/`perch` uppercase, {mnode} characters. `flow_label` and the
-      branch label lowercase, {mflow} and {mbranch} characters. `perch` and
-      `branch` are optional - drop `perch` when nothing sits on the path.
+      branch label lowercase, {mflow} and {mbranch} characters. `branch` is
+      REQUIRED - the way the thing does NOT go is what this shape explains, and
+      without it the frame is a line with dots on it. If nothing is blocked in
+      your mechanism, use a different shape. `perch` is optional: drop it when
+      nothing sits on the path.
 
   "wave" - one or two travelling waves. Light, sound, pitch, colour. Give two
       when the comparison between them is the explanation.
@@ -520,9 +523,11 @@ def _motion(i: int, sc: dict) -> list[str]:
         if sc.get("flow_label"):
             _cap(errs, f"scene {i} circuit flow_label", sc["flow_label"], "flow")
         br = sc.get("branch") or {}
-        if br and not (br.get("label") or "").strip():
-            errs.append(f"scene {i} (circuit): the branch needs a label saying "
-                        f"where it does not go")
+        if not (br.get("label") or "").strip():
+            errs.append(f"scene {i} (circuit): needs a `branch` with a label "
+                        f"saying where the flow does NOT go — that contrast is "
+                        f"the whole shape, and without it the frame is a line "
+                        f"with dots on it. Use another shape if nothing is blocked")
         if br.get("label"):
             _cap(errs, f"scene {i} circuit branch", br["label"], "branch")
 

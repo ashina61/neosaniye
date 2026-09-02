@@ -68,7 +68,13 @@ def spec() -> dict:
                 {"label": _widest("dg_route"), "state": "blocked"}]},
             {"type": "diagram", "shape": "flow", "headline": [H16, H16],
              "nodes": [_widest("dg_flow")] * 4},
-            {"type": "motion", "shape": "circuit", "headline": [H16, H16]},
+            # every optional field filled, each at its cap, so the harness
+            # exercises the dense case rather than the sparse one
+            {"type": "motion", "shape": "circuit", "headline": [H16, H16],
+             "from": "M" * motion.CAPS["node"], "to": "M" * motion.CAPS["node"],
+             "perch": "M" * motion.CAPS["node"],
+             "flow_label": "m" * motion.CAPS["flow"],
+             "branch": {"label": "m" * motion.CAPS["branch"]}},
             {"type": "endcard", "motif": "rings", "lines": [_widest("endcard")] * 2},
         ]}
 

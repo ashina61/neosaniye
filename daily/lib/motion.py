@@ -24,30 +24,35 @@ import subprocess
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import textfit  # noqa: E402
+
 LIB = Path(__file__).resolve().parent
 SCENE = LIB / "motion_scene.py"
 FONTS_SRC = LIB.parent / "assets" / "fonts"
 
 SHAPES = ("circuit", "wave", "rays", "orbit")
 
-# How long each label may be. Unlike the SVG diagrams, these are character
-# counts rather than measured widths: the text goes through Pango at a Manim
-# scale factor, and deriving a pixel width through that chain would be a guess
-# dressed up as a measurement. They are set from what actually fits at each
-# position — `flow_label` is the tight one because the blocked branch drops
-# through the middle of the frame beside it. motion_scene.py truncates anything
-# longer, and write_spec rejects it before that can happen.
-CAPS = {
-    "node": 12,        # circuit from/to/perch, orbit center/satellite
-    "flow": 22,        # circuit flow_label, beside the branch
-    "branch": 24,      # circuit branch label, under the floor
-    "label": 14,       # wave and rays labels
-    "mark": 10,        # orbit marks, close to the frame edge
-    "note": 34,        # the line under a wave or an orbit
+# How long each label may be, measured rather than guessed. Each entry is the
+# room that position actually has in composition pixels and the Manim scale it
+# is set at; textfit turns those into a character budget using the real Inter
+# metrics, the same way the SVG diagram caps are derived.
+#
+# The budget is for average glyphs. A line of unusually wide ones still fits
+# because the two end labels are anchored to the frame edges rather than
+# centred, and motion_scene truncates anything past the cap as a last resort.
+_BUDGETS = {
+    "node":   (400, 0.50),   # circuit from/to (edge-anchored), orbit center/satellite
+    "flow":   (620, 0.50),   # circuit flow_label, clearing the branch at x=2.6
+    "branch": (900, 0.50),   # circuit branch label, under the full-width floor
+    "label":  (430, 0.56),   # wave and rays labels
+    "mark":   (280, 0.44),   # orbit marks, close to the frame edge
+    "note":   (900, 0.50),   # the line under a wave or an orbit
 }
-# Every scene is written to outrun the longest beat, and build.py trims it to
-# the beat's exact length. A clip that ends early would show the frame's bare
-# background for the remainder, which reads as a bug.
+CAPS = {k: textfit.manim_chars(px, scale) for k, (px, scale) in _BUDGETS.items()}
+# the same room, in the frame units motion_scene draws in (120px per unit)
+ROOM = {k: px / 120.0 for k, (px, _s) in _BUDGETS.items()}
+
 MIN_SECONDS = 5.0
 
 
@@ -93,7 +98,7 @@ def render(sc: dict, out: Path, work: Path) -> Path | None:
     data = {k: v for k, v in sc.items()
             if k not in ("type", "headline", "stock", "motif", "_has_stock")}
     env = dict(os.environ, MOTION_DATA=json.dumps(data), MOTION_FONTS=_fonts(work),
-               MOTION_CAPS=json.dumps(CAPS))
+               MOTION_CAPS=json.dumps(CAPS), MOTION_ROOM=json.dumps(ROOM))
     media = work / "manim"
     try:
         r = subprocess.run(

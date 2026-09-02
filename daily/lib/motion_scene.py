@@ -38,8 +38,9 @@ if FONTS and os.path.isdir(FONTS):
 
 
 # the same caps write_spec validates against, so a line that passed the
-# validator is never truncated here
+# validator is never truncated here, and the room each position actually has
 CAPS = json.loads(os.environ.get("MOTION_CAPS") or "{}")
+ROOM = json.loads(os.environ.get("MOTION_ROOM") or "{}")
 
 
 def cap(s, kind):
@@ -49,8 +50,19 @@ def cap(s, kind):
 
 
 def label(s, kind, size=0.58, color=TEXT, bold=True):
-    return Text(cap(s, kind), font=FACE, color=color,
-                weight=BOLD if bold else NORMAL).scale(size)
+    """Set the line, then shrink it if its glyphs are wider than average.
+
+    The cap is a character budget for average glyphs, so a legal line of
+    unusually wide ones still overruns its room. Shrinking it is the same trade
+    the headline band makes: smaller type beats type that collides with the
+    label opposite it.
+    """
+    t = Text(cap(s, kind), font=FACE, color=color,
+             weight=BOLD if bold else NORMAL).scale(size)
+    room = ROOM.get(kind)
+    if room and t.width > room:
+        t.scale(room / t.width)
+    return t
 
 
 MIN_SECONDS = 5.5
@@ -66,13 +78,26 @@ class Motion(Scene):
     # ------------------------------------------------------------- circuit
     def shape_circuit(self):
         """Something flowing from A to B, and a way it does not go."""
-        wy = TOP - 1.2
+        # With a branch the wire sits high to leave the frame below it for the
+        # detour. Without one there is nothing to leave room for, and holding
+        # the wire up there leaves two thirds of the art zone empty — the frame
+        # reads as unfinished rather than spare. So it centres instead.
+        branched = bool(DATA.get("branch"))
+        wy = TOP - 1.2 if branched else CY
         self.play(Create(Line([L, wy, 0], [R, wy, 0], color=CYAN, stroke_width=13)),
                   FadeIn(VGroup(*[Dot(radius=0.17, color=CYAN).move_to([x, wy, 0])
                                   for x in (L, R)])), run_time=0.6)
 
-        tags = [FadeIn(label(DATA[k], "node", 0.5, CYAN).move_to([x, wy + 0.8, 0]), shift=DOWN * 0.15)
-                for x, k in ((L + 1.0, "from"), (R - 1.0, "to")) if DATA.get(k)]
+        # anchored to the frame edges, not centred on a point: a centred label
+        # of unusually wide glyphs runs off the side, and there is nothing out
+        # there to notice it
+        tags = []
+        for k, edge, sign in (("from", L, 1), ("to", R, -1)):
+            if not DATA.get(k):
+                continue
+            t = label(DATA[k], "node", 0.5, CYAN)
+            t.move_to([edge + sign * t.width / 2, wy + 0.8, 0])
+            tags.append(FadeIn(t, shift=DOWN * 0.15))
         if tags:
             self.play(*tags, run_time=0.4)
 
@@ -94,7 +119,7 @@ class Motion(Scene):
                   run_time=2.0, lag_ratio=0.06, rate_func=linear)
 
         br = DATA.get("branch") or {}
-        if br:
+        if branched:
             bx, gy = 2.6, BOT + 1.0
             self.play(Create(DashedVMobject(Line([bx, wy, 0], [bx, gy, 0], color=RED,
                                                  stroke_width=11), num_dashes=10)),

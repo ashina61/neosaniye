@@ -119,3 +119,28 @@ def fit_size(text: str, kind: str = "kh") -> int | None:
         return k["size"]
     size = int(k["size"] * k["limit"] / w)
     return size if size >= int(k["size"] * MIN_SCALE) else None
+
+
+# Manim sets its text through Pango at its own scale, so a font-size in px is
+# not available the way it is for the CSS and SVG above. This is the missing
+# constant, measured rather than derived: render a string on an otherwise empty
+# 1080x1920 stage, count its ink columns in the PNG, divide by its width in em.
+# Ten Inter-800 "M"s at Manim scale 0.5 come out 384px wide, which is this.
+# (Measure on a bare stage. Doing it inside a real scene once caught the edge of
+# a full-width stroke and gave 220, nearly three times the truth.)
+MANIM_PX_PER_EM = 81.4
+
+
+def manim_px(text: str, scale: float, face: str = "inter-800") -> float:
+    """How wide `text` renders in a Manim scene, in composition pixels."""
+    return width_em(text, face, 0.0) * scale * MANIM_PX_PER_EM
+
+
+def manim_chars(px_limit: float, scale: float, face: str = "inter-800") -> int:
+    """A character budget for a Manim label with `px_limit` of room.
+
+    Average advance, like `budget` above: a line of average glyphs fits, and
+    motion_scene truncates the rare line of unusually wide ones.
+    """
+    _, avg = _metrics(face)
+    return max(4, int(px_limit / (avg * scale * MANIM_PX_PER_EM)))
