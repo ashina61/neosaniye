@@ -105,11 +105,11 @@ jobs:
 
       - name: Build the video
         env:
-          # This key's tier cannot serve the TTS preview models — synthesis 429s
-          # on the first call. Probing anyway costs three doomed requests and a
-          # confusing error in every run's log, so narration is pinned to the
-          # local voice. Set this to `auto` if Gemini billing is ever enabled.
-          TTS_ENGINE: piper
+          # Narration asks Gemini once for the whole script and cuts the take
+          # locally, so a video costs one request rather than ten. That may fit
+          # the free tier where per-beat calls did not; if it refuses, the run
+          # falls back to the local voice and still produces a video.
+          TTS_ENGINE: auto
           GEMINI_API_KEY:  ${{ secrets.GEMINI_API_KEY }}
           PEXELS_API_KEY:  ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}

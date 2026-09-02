@@ -17,11 +17,15 @@ import base64
 import os
 import re
 import subprocess
+import sys
 import time
 import wave
 from pathlib import Path
 
 import requests
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import tts_split                 # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 PIPER_VOICE = ROOT / ".voices" / "en-us-ryan-high.onnx"
@@ -34,6 +38,15 @@ URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateC
 GEMINI_VOICE = "Charon"          # informative male narrator
 STYLE = ("Read this line as a confident science documentary narrator: "
          "calm, clear, unhurried, no rising question intonation. Say only the line.\n\n")
+# One request for the whole script instead of one per beat. Quota is charged per
+# request, so this is the difference between a free tier that cannot finish a
+# single video and one that can carry two a day. The take is cut locally.
+SCRIPT_STYLE = (
+    "Read the following as a confident science documentary narrator: calm, clear,"
+    " unhurried, no rising question intonation.\n"
+    "Leave a distinct pause of about one second between paragraphs — longer than"
+    " any pause inside a sentence.\n"
+    "Read only the words themselves.\n\n")
 
 _chosen: str | None = None       # model proven to work this process
 _dead: set[str] = set()          # models that returned a quota or access error
@@ -70,11 +83,11 @@ def _rate_from_mime(mime: str) -> int:
     return int(m.group(1)) if m else 24_000
 
 
-def _call(model: str, text: str, voice: str, out: Path) -> None:
-    """One synthesis. Raises QuotaExhausted for 429/403, RuntimeError otherwise."""
+def _call_raw(model: str, text: str, voice: str, out: Path) -> None:
+    """One synthesis of `text` verbatim. QuotaExhausted for 429/403, else RuntimeError."""
     r = requests.post(
-        URL.format(model=model), params={"key": _key()}, timeout=180,
-        json={"contents": [{"parts": [{"text": STYLE + text}]}],
+        URL.format(model=model), params={"key": _key()}, timeout=300,
+        json={"contents": [{"parts": [{"text": text}]}],
               "generationConfig": {
                   "responseModalities": ["AUDIO"],
                   "speechConfig": {"voiceConfig": {
@@ -91,7 +104,11 @@ def _call(model: str, text: str, voice: str, out: Path) -> None:
 
 
 def _gemini_line(text: str, out: Path, voice: str, retries: int = 2) -> str:
-    """Synthesize with the first usable model, retrying a rate limit once or twice."""
+    return _gemini_line_raw(STYLE + text, out, voice, retries)
+
+
+def _gemini_line_raw(text: str, out: Path, voice: str, retries: int = 2) -> str:
+    """Synthesize `text` verbatim with the first usable model, retrying a rate limit."""
     global _chosen
     order = ([_chosen] if _chosen else []) + [m for m in GEMINI_TTS_MODELS
                                               if m != _chosen and m not in _dead]
@@ -99,7 +116,7 @@ def _gemini_line(text: str, out: Path, voice: str, retries: int = 2) -> str:
     for model in order:
         for attempt in range(retries + 1):
             try:
-                _call(model, text, voice, out)
+                _call_raw(model, text, voice, out)
                 _chosen = model
                 return model
             except QuotaExhausted as e:
@@ -129,6 +146,26 @@ def _piper_line(text: str, out: Path) -> None:
                         "-f", str(out)], input=text, capture_output=True, text=True)
     if p.returncode != 0:
         raise RuntimeError(f"piper failed: {p.stderr[-300:]}")
+
+
+def say_script(lines: list[str], out_dir: Path, voice: str | None = None) -> str | None:
+    """Narrate the whole script in one request and cut it into per-beat clips.
+
+    Returns the model that produced it, or None when the take could not be cut
+    into exactly one trustworthy segment per beat — in which case the caller
+    should fall back rather than ship a mistimed cut.
+    """
+    if configured_engine() == "piper" or not _key():
+        return None
+    whole = out_dir / "whole.wav"
+    whole.parent.mkdir(parents=True, exist_ok=True)
+    text = SCRIPT_STYLE + "\n\n".join(lines)
+    model = _gemini_line_raw(text, whole, voice or GEMINI_VOICE)
+    spans = tts_split.split(whole, lines, out_dir)
+    if spans is None:
+        print("      one-shot narration could not be cut reliably; falling back")
+        return None
+    return model
 
 
 def probe() -> tuple[str, str]:

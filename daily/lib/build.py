@@ -75,7 +75,8 @@ def build(spec_path: Path, work_root: Path | None = None) -> Path:
     print("[3/8] stock footage")
     proj = work / "project"
     proj.mkdir(exist_ok=True)
-    stock = stock_mod.gather(spec["scenes"], proj, timing) if any(
+    stock = stock_mod.gather(spec["scenes"], proj, timing,
+                             spec.get("stock_fallback", "")) if any(
         sc.get("stock") for sc in spec["scenes"]) else {}
     for i, info in stock.items():
         info["rel"] = str(Path(info["clip"]).relative_to(proj))

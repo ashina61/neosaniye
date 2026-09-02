@@ -26,6 +26,7 @@ URL = "https://generativelanguage.googleapis.com/v1beta/models/{m}:generateConte
 BEATS = 10
 WORDS_MIN, WORDS_MAX = 95, 115
 HEADLINE_MAX = 16          # characters; headlines are nowrap in a condensed face
+MIN_STOCK = 7              # of BEATS; graphics are the exception, not the rule
 SCENE_TYPES = ["hook", "statement", "card", "metric", "list", "compare", "endcard"]
 MOTIFS = ["wave", "rings", "beam", "split", "particles"]
 
@@ -59,11 +60,13 @@ For each beat also give a scene:
   motif: one of {motifs}   (omit for type card and compare - they draw a panel)
   stock: 2-4 plain English words naming REAL FOOTAGE that exists in a stock
          library and shows the beat's subject literally. Concrete nouns only
-         ("power line closeup", "ocean waves aerial"). Give AT LEAST FIVE of the
-         {beats} beats a stock query - real footage carries a short far better
-         than graphics do, and most beats have something honest to show. Omit it
-         only where the beat is genuinely abstract and any footage would show
-         the wrong thing; a graphics scene beats misleading footage.
+         ("power line closeup", "ocean waves aerial"). Give AT LEAST SEVEN of the
+         {beats} beats a stock query - this is a footage-led format and graphics
+         are the exception, not the rule. The panel types work over footage too:
+         a card, a comparison or a metric reads well sitting on top of b-roll, so
+         do not skip stock just because the beat is a panel. Omit it only where
+         the beat is genuinely abstract and any footage would show the wrong
+         thing; a graphics scene beats misleading footage.
   headline: for EVERY type except `list`, exactly two lines, EACH AT MOST {hmax}
          CHARACTERS INCLUDING SPACES. This is a hard limit: longer lines run off
          the screen. Uppercase. The panel types (card, compare, metric) need one
@@ -83,6 +86,8 @@ Also give:
   hook_line: one sentence for the social caption
   caption: two or three sentences explaining the mechanism for a caption
   hashtags: 6 lowercase tags, no # prefix
+  stock_fallback: 2-3 plain words naming footage that suits the topic as a
+         whole, used when a specific beat's search comes back empty
 
 Return ONE JSON object and nothing else, in exactly this shape. `script` and
 `scenes` must both hold exactly {beats} entries, index for index.
@@ -108,7 +113,8 @@ Return ONE JSON object and nothing else, in exactly this shape. `script` and
   "title": "...",
   "hook_line": "...",
   "caption": "...",
-  "hashtags": ["science", "physics", "shorts", "explained", "didyouknow", "learn"]
+  "hashtags": ["science", "physics", "shorts", "explained", "didyouknow", "learn"],
+  "stock_fallback": "birds power lines"
 }}
 
 Those seven objects are examples of each type, not the answer — your `scenes`
@@ -202,6 +208,11 @@ def validate(d: dict) -> list[str]:
                     errs.append(f"scene {i}: column value {problem}")
         if t == "metric" and not sc.get("label"):
             errs.append(f"scene {i} (metric): label is missing")
+
+    with_stock = sum(1 for sc in scenes if (sc.get("stock") or "").strip())
+    if scenes and with_stock < MIN_STOCK:
+        errs.append(f"only {with_stock} of {len(scenes)} scenes carry a stock query, "
+                    f"need at least {MIN_STOCK} — this is a footage-led format")
 
     if d.get("title") and len(d["title"]) > 100:
         errs.append(f"title is {len(d['title'])} chars, YouTube allows 100")
@@ -302,6 +313,7 @@ def to_spec(topic: dict, d: dict, duration: float = 40.0) -> dict:
             out.pop("motif", None)      # these draw their own panel; compose drops it anyway
         scenes.append(out)
     return {"slug": topic["id"], "title": d["title"].replace(" #Shorts", ""),
+            "stock_fallback": d.get("stock_fallback", topic["question"]),
             "duration": duration, "mood": topic.get("mood", "curious"),
             # str.hash is salted per process, so it would give a different seed
             # every run; crc32 keeps a topic's decorative layout reproducible.

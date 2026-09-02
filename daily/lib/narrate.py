@@ -37,34 +37,32 @@ def synthesize(lines: list[str], out_dir: Path,
                voice: str | None = None) -> tuple[list[float], str]:
     """Render one wav per line. Returns (durations, engine).
 
-    The engine is settled before the first real line, by synthesizing a throwaway
-    one: a working API key does not imply access to the TTS preview models, which
-    can refuse on the very first call. If Gemini runs out partway through anyway,
-    the whole narration is redone with piper — a video that changes voice halfway
-    is worse than one in the plainer voice throughout.
+    Gemini is asked for the whole script in a single request and the take is cut
+    locally, because quota is charged per request and ten short calls cost ten
+    times one. If that take cannot be cut into exactly one trustworthy segment
+    per beat, or Gemini refuses at all, the whole narration is redone with piper
+    — a video that changes voice halfway is worse than one in the plainer voice
+    throughout.
     """
     out_dir.mkdir(parents=True, exist_ok=True)
-    engine, detail = tts.probe()
-    if engine == "piper" and tts._key():
-        print(f"      Gemini TTS unavailable, using piper — {detail}")
-    elif engine == "gemini":
-        print(f"      Gemini TTS via {detail}")
-
-    for attempt in ("first", "fallback"):
-        durs = []
+    engine = "piper"
+    if tts.configured_engine() != "piper" and tts._key():
         try:
-            for i, line in enumerate(lines, 1):
-                wav = out_dir / f"{i:02d}.wav"
-                tts.say(line, wav, voice, engine=engine)
-                durs.append(duration(wav))
-            return durs, engine
+            model = tts.say_script(lines, out_dir, voice)
+            if model:
+                print(f"      Gemini TTS via {model}, one request for the whole script")
+                engine = "gemini"
         except tts.QuotaExhausted as e:
-            if attempt == "fallback" or engine == "piper":
-                raise
-            print(f"      Gemini TTS ran out mid-script ({str(e)[:160]})")
-            print("      redoing the whole narration with piper")
-            engine = "piper"
-    raise RuntimeError("unreachable")
+            print(f"      Gemini TTS unavailable: {str(e)[:200]}")
+        except Exception as e:                    # noqa: BLE001 - never block on the voice
+            print(f"      Gemini TTS failed ({type(e).__name__}: {str(e)[:160]}); using piper")
+    if engine == "piper":
+        print("      narration: piper" if not tts._key() else "      falling back to piper")
+        for i, line in enumerate(lines, 1):
+            tts.say(line, out_dir / f"{i:02d}.wav", voice, engine="piper")
+
+    durs = [duration(out_dir / f"{i:02d}.wav") for i in range(1, len(lines) + 1)]
+    return durs, engine
 
 
 def plan(lines: list[str], durs: list[float], target: float,

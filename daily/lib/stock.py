@@ -125,8 +125,14 @@ def normalise(src: Path, dest: Path, duration: float, start: float = 0.0) -> Pat
     return dest
 
 
-def gather(scenes: list[dict], work: Path, timing: dict) -> dict:
-    """Fetch a clip for every scene that asks for one. Returns {index: info}."""
+def gather(scenes: list[dict], work: Path, timing: dict,
+           fallback_query: str = "") -> dict:
+    """Fetch a clip for every scene that asks for one. Returns {index: info}.
+
+    A beat whose own search comes back empty retries against the topic-level
+    query, so one unlucky phrase does not quietly drop the footage coverage the
+    format depends on.
+    """
     got: dict[int, dict] = {}
     creds = []
     for i, (sc, beat) in enumerate(zip(scenes, timing["beats"])):
@@ -136,6 +142,9 @@ def gather(scenes: list[dict], work: Path, timing: dict) -> dict:
         need = max(beat["dur"] + 1.2, 3.0)
         raw = work / "stock" / f"{i:02d}-raw.mp4"
         info = find(q, raw, min_duration=min(need, 6.0))
+        if not info and fallback_query:
+            print(f"    scene {i+1}: nothing for {q!r}, retrying {fallback_query!r}")
+            info = find(fallback_query, raw, min_duration=min(need, 6.0))
         if not info:
             print(f"    scene {i+1}: no stock clip for {q!r} — falling back to graphics")
             continue
@@ -148,4 +157,6 @@ def gather(scenes: list[dict], work: Path, timing: dict) -> dict:
     if creds:
         (work / "attribution.txt").write_text("\n".join(creds) + "\n")
     (work / "stock.json").write_text(json.dumps(got, indent=1))
+    asked = sum(1 for sc in scenes if (sc.get("stock") or "").strip())
+    print(f"    footage on {len(got)}/{len(scenes)} scenes ({asked} asked for)")
     return got
