@@ -17,6 +17,9 @@ from pathlib import Path
 import requests
 import yaml
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import textfit                   # noqa: E402
+
 MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-flash-latest"]
 URL = "https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent"
 
@@ -61,9 +64,11 @@ For each beat also give a scene:
          than graphics do, and most beats have something honest to show. Omit it
          only where the beat is genuinely abstract and any footage would show
          the wrong thing; a graphics scene beats misleading footage.
-  headline: for hook/statement/endcard, exactly two lines, EACH AT MOST {hmax}
+  headline: for EVERY type except `list`, exactly two lines, EACH AT MOST {hmax}
          CHARACTERS INCLUDING SPACES. This is a hard limit: longer lines run off
-         the screen. Uppercase.
+         the screen. Uppercase. The panel types (card, compare, metric) need one
+         too — without it the lower half of the frame is empty while every other
+         scene fills it.
   items: for list, 2-3 short uppercase lines, each at most {hmax} characters.
   body/legend/eyebrow: for card. body is a short uppercase phrase, may wrap one
          word in <em></em> to accent it.
@@ -91,10 +96,11 @@ Return ONE JSON object and nothing else, in exactly this shape. `script` and
       "headline": ["FIRST LINE", "SECOND LINE"]}},
     {{"type": "list", "motif": "split", "items": ["ONE THING", "OTHER THING"]}},
     {{"type": "card", "eyebrow": "THE MECHANISM",
-      "body": "SHORT <em>PHRASE</em>", "legend": "one clarifying line"}},
+      "body": "SHORT <em>PHRASE</em>", "legend": "one clarifying line",
+      "headline": ["FIRST LINE", "SECOND LINE"]}},
     {{"type": "metric", "label": "WHAT IS MEASURED", "count_to": 92, "unit": "%",
       "headline": ["FIRST LINE", "SECOND LINE"]}},
-    {{"type": "compare", "columns": [
+    {{"type": "compare", "headline": ["FIRST LINE", "SECOND LINE"], "columns": [
       {{"chip": "case one", "value": "SHORT", "label": "what it means"}},
       {{"chip": "case two", "value": "LONG", "label": "what it means", "risk": true}}]}},
     {{"type": "endcard", "motif": "rings", "headline": ["LAST LINE", "FINAL LINE"]}}
@@ -164,21 +170,26 @@ def validate(d: dict) -> list[str]:
             errs.append(f"scene {i}: three `statement` scenes in a row — vary the types")
         if sc.get("motif") and sc["motif"] not in MOTIFS:
             errs.append(f"scene {i}: motif {sc['motif']!r} is not one of {MOTIFS}")
-        if t in ("hook", "statement", "endcard"):
+        if t in ("hook", "statement", "endcard", "card", "compare", "metric"):
             key = "lines" if t == "endcard" else "headline"
             lines = sc.get(key) or sc.get("headline") or sc.get("lines") or []
             if len(lines) != 2:
                 errs.append(f"scene {i} ({t}): needs exactly 2 headline lines, got {len(lines)}")
+            kind = "endcard" if t == "endcard" else "kh"
             for ln in lines:
-                if len(ln) > HEADLINE_MAX:
-                    errs.append(f"scene {i}: headline {ln!r} is {len(ln)} chars, max {HEADLINE_MAX}")
+                # measured, not counted: sixteen narrow characters fit and
+                # sixteen wide ones run half a frame off the edge
+                problem = textfit.check(ln, kind)
+                if problem:
+                    errs.append(f"scene {i}: headline {problem}")
         if t == "list":
             items = sc.get("items") or []
             if not 2 <= len(items) <= 3:
                 errs.append(f"scene {i} (list): needs 2-3 items, got {len(items)}")
             for it in items:
-                if len(it) > HEADLINE_MAX:
-                    errs.append(f"scene {i}: item {it!r} is {len(it)} chars, max {HEADLINE_MAX}")
+                problem = textfit.check(it, "slam")
+                if problem:
+                    errs.append(f"scene {i}: item {problem}")
         if t == "card" and not _plain(sc.get("body", "")).strip():
             errs.append(f"scene {i} (card): body is empty")
         if t == "compare":
@@ -186,8 +197,9 @@ def validate(d: dict) -> list[str]:
             if len(cols) != 2:
                 errs.append(f"scene {i} (compare): needs exactly 2 columns, got {len(cols)}")
             for c in cols:
-                if len(c.get("value", "")) > 8:
-                    errs.append(f"scene {i}: column value {c.get('value')!r} is over 8 chars")
+                problem = textfit.check(c.get("value", ""), "col_big")
+                if problem:
+                    errs.append(f"scene {i}: column value {problem}")
         if t == "metric" and not sc.get("label"):
             errs.append(f"scene {i} (metric): label is missing")
 

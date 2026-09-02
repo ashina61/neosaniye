@@ -105,6 +105,17 @@ def _backdrop(kind: str, rng: random.Random, idp: str) -> str:
 
 
 # -------------------------------------------------------------- scene bodies
+def _headline_block(sc: dict, sid: str) -> str:
+    """The two-line band under a panel. Shared so panel scenes match the rest."""
+    lines = (sc.get("headline") or [])[:2]
+    if not lines:
+        return ""
+    acc = sc.get("accent", "cyan")
+    inner = "".join(f'<div class="kh{"" if i == 0 else f" kh-{acc}"}">{esc(x)}</div>'
+                    for i, x in enumerate(lines))
+    return f'<div id="{sid}-k" class="klines">{inner}</div>'
+
+
 def _scene_body(sc: dict, sid: str, rng: random.Random) -> str:
     t = sc["type"]
     # `card` and `compare` already fill the art zone with a panel; a motif behind
@@ -146,7 +157,8 @@ def _scene_body(sc: dict, sid: str, rng: random.Random) -> str:
                if sc.get("tagline") else "")
         return (f'<div class="stage">{art}<div id="{sid}-card" class="card">'
                 f'<div class="card-top">{esc(sc.get("eyebrow","THE RULE"))}</div>'
-                f'<div id="{sid}-body" class="card-body">{sc["body"]}</div>{legend}</div>{tag}</div>')
+                f'<div id="{sid}-body" class="card-body">{sc["body"]}</div>{legend}</div>'
+                f'{tag}{_headline_block(sc, sid)}</div>')
 
     if t == "metric":
         heads = "".join(f'<div class="kh{" kh-amber" if i else ""}">{esc(x)}</div>'
@@ -165,6 +177,7 @@ def _scene_body(sc: dict, sid: str, rng: random.Random) -> str:
         return f'<div class="stage">{art}<div class="stack">{body}</div></div>'
 
     if t == "compare":
+        head = _headline_block(sc, sid)
         cols = sc.get("columns", [])[:2]
         cells = "".join(
             f'<div id="{sid}-c{i}" class="col">'
@@ -172,7 +185,7 @@ def _scene_body(sc: dict, sid: str, rng: random.Random) -> str:
             f'<div class="col-big">{esc(c["value"])}</div>'
             f'<div class="col-lab">{esc(c["label"])}</div></div>'
             for i, c in enumerate(cols))
-        return f'<div class="stage">{art}<div class="cols">{cells}</div></div>'
+        return f'<div class="stage">{art}<div class="cols">{cells}</div>{head}</div>'
 
     if t == "endcard":
         l = sc.get("lines", ["", ""])
@@ -239,6 +252,8 @@ def _scene_tweens(sc: dict, sid: str, st: float, du: float, A) -> None:
             A(f'tl.fromTo("#{sid}-lg",{{opacity:0,y:20}},{{opacity:1,y:0,duration:.4,ease:E}},{st+0.95:.2f});')
         if sc.get("tagline"):
             A(f'tl.fromTo("#{sid}-tag",{{opacity:0,y:28}},{{opacity:1,y:0,duration:.45,ease:E}},{st+1.35:.2f});')
+        if sc.get("headline"):
+            A(f'tl.fromTo("#{sid}-k",{{opacity:0,y:34}},{{opacity:1,y:0,duration:.45,ease:E}},{st+1.1:.2f});')
     elif t == "metric":
         A(f'tl.fromTo("#{sid}-meter",{{opacity:0,scale:.9}},{{opacity:1,scale:1,duration:.4,ease:B}},{st+0.2:.2f});')
         frm, to = sc.get("count_from", 0), sc.get("count_to", 0)
@@ -256,6 +271,8 @@ def _scene_tweens(sc: dict, sid: str, st: float, du: float, A) -> None:
         for i in range(len(sc.get("columns", [])[:2])):
             A(f'tl.fromTo("#{sid}-c{i}",{{opacity:0,y:30}},{{opacity:1,y:0,duration:.45,ease:E}},'
               f'{st+0.3+i*0.22:.2f});')
+        if sc.get("headline"):
+            A(f'tl.fromTo("#{sid}-k",{{opacity:0,y:34}},{{opacity:1,y:0,duration:.45,ease:E}},{st+0.95:.2f});')
     elif t == "endcard":
         A(f'tl.fromTo("#{sid}-end .end-1",{{opacity:0,y:44}},{{opacity:1,y:0,duration:.45,ease:E}},{st+0.3:.2f});')
         A(f'tl.fromTo("#{sid}-end .end-2",{{opacity:0,y:44}},{{opacity:1,y:0,duration:.45,ease:E}},{st+0.55:.2f});')

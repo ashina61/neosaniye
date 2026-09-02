@@ -53,7 +53,7 @@ jobs:
           ffmpeg -version | head -1
 
       - name: Python dependencies
-        run: pip install --quiet pyyaml numpy requests piper-tts
+        run: pip install --quiet pyyaml numpy requests piper-tts fonttools brotli
 
       # Access to Gemini's TTS preview models is not implied by a working key —
       # they can refuse on the first call. Without a local voice the run would

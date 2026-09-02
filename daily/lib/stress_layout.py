@@ -18,9 +18,22 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import compose      # noqa: E402
+import textfit      # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
-H16 = "MMMMMMMMMMMMMMMM"      # the headline cap, in the widest glyph there is
+def _widest(kind: str) -> str:
+    """The widest line the validator would still accept, in the widest glyph.
+
+    Hard-coding a character count here would test the wrong thing: the real
+    limit is rendered width, so ask for it rather than guess.
+    """
+    s = ""
+    while textfit.overflow(s + "M", kind) <= 0:
+        s += "M"
+    return s
+
+
+H16 = _widest("kh")           # widest legal headline
 LONG = "a considerably longer descriptive line than any topic should need"
 
 
@@ -34,18 +47,19 @@ def spec() -> dict:
             {"type": "hook", "motif": "rings", "headline": [H16, H16],
              "badge": {"label": "A VERY LONG BADGE LABEL", "count_to": 1234567, "unit": "MW"}},
             {"type": "statement", "motif": "wave", "accent": "red", "headline": [H16, H16]},
-            {"type": "list", "motif": "split", "items": [H16, H16, H16]},
+            {"type": "list", "motif": "split", "items": [_widest("slam")] * 3},
             {"type": "card", "eyebrow": "AN UNUSUALLY LONG EYEBROW LABEL",
-             "body": "A VERY LONG <em>CARD BODY</em> PHRASE", "legend": LONG, "tagline": H16},
+             "body": "A VERY LONG <em>CARD BODY</em> PHRASE", "legend": LONG,
+             "tagline": H16, "headline": [H16, H16]},
             {"type": "metric", "label": "AN EXTREMELY LONG METRIC LABEL HERE",
              "count_to": 9876543, "unit": "units", "headline": [H16, H16]},
-            {"type": "compare", "columns": [
-                {"chip": "a rather long chip", "value": "MMMMMMMM", "label": LONG},
-                {"chip": "another long chip", "value": "MMMMMMMM", "label": LONG, "risk": True}]},
+            {"type": "compare", "headline": [H16, H16], "columns": [
+                {"chip": "a rather long chip", "value": _widest("col_big"), "label": LONG},
+                {"chip": "another long chip", "value": _widest("col_big"), "label": LONG, "risk": True}]},
             {"type": "statement", "motif": "beam", "accent": "cyan", "headline": [H16, H16]},
             {"type": "statement", "motif": "particles", "accent": "amber", "headline": [H16, H16]},
             {"type": "list", "motif": "rings", "items": [H16, H16]},
-            {"type": "endcard", "motif": "rings", "lines": [H16, H16]},
+            {"type": "endcard", "motif": "rings", "lines": [_widest("endcard")] * 2},
         ]}
 
 

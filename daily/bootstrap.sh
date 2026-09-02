@@ -21,6 +21,7 @@ fi
 source .venv/bin/activate
 python -m pip install -q --upgrade pip >/dev/null 2>&1 || true
 python -m pip install -q -r requirements.txt
+ python -m pip install -q fonttools brotli
 python -m pip install -q piper-tts
 python -c "import yaml, numpy, google.auth, requests; print('python deps ok')"
 
