@@ -6,8 +6,9 @@ only supplies content: the script, which scene archetype each beat uses, and the
 words on screen. Scene timing is derived from measured narration, never guessed.
 
 Learned constraints baked in here (each one cost a render to find):
-  * Zones: art 260-1120, headline 1150-1420, caption 1490-1740. Overlapping the
-    caption band is the most common way a scene becomes unreadable.
+  * Zones: art 260-1120, headline 1150-1420, caption 1450-1600. Nothing goes
+    below SAFE_BOTTOM (1620) or inside the right 200px of that band — that is
+    where every platform draws its own UI over the video.
   * Headlines are Anton (condensed) and set `nowrap`; at 118px a 16-character
     line just fits the 924px column.
   * Adjacent scenes alternate tracks so they can cross-fade without a same-track
@@ -23,6 +24,10 @@ Learned constraints baked in here (each one cost a render to find):
   * Identical anonymous elements collapse into one finding keyed by selector,
     and a finding seen at three sample times is an error rather than an info.
     Give every repeated block an id so a failure names the scene it is in.
+  * A motion clip is screened, not layered opaquely: its ground is the same
+    near-black as the frame, so `mix-blend-mode:screen` lets the gradient and
+    stars carry on behind the animation instead of a black rectangle punching
+    through the backdrop.
 """
 from __future__ import annotations
 
@@ -36,7 +41,18 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import diagram                   # noqa: E402
 
 W, H, FPS = 1080, 1920, 30
-ZONE_HEADLINE, CAPTION_TOP = 1150, 1490
+# DOM order is paint order: background(1), footage(2-3), scrim(4), vignette(5),
+# motion clips(6-7), scenes(8-9), captions(10), hud(11). Footage sits under the
+# scrim so text stays readable over it; a motion clip sits above both, because
+# it is already dark on-palette artwork and dimming it defeats drawing it.
+TRACK_MOTION, TRACK_SCENE, TRACK_CAPS, TRACK_HUD = 6, 8, 10, 11
+ZONE_HEADLINE, CAPTION_TOP = 1150, 1450
+# The bottom of a vertical frame belongs to the app, not to us: TikTok stacks a
+# username, description and music ticker there, Reels and Shorts a title and
+# channel row, and all three put action buttons up the right edge. Anything
+# below this line is read by the platform as its own chrome and covers whatever
+# we put there, so captions stop above it.
+SAFE_BOTTOM = 1620
 XFADE = 0.35
 
 
@@ -117,7 +133,7 @@ def _backdrop(kind: str, rng: random.Random, idp: str) -> str:
 # Two overlaps here are real and unavoidable, and this declares exactly those.
 #
 # Anton's inline box is 1.51em tall, so at any leading that keeps a two-line
-# headline inside its zone the line boxes overlap by ~60px. The ink clears by
+# headline or endcard inside its zone the line boxes overlap by ~60px. The ink clears by
 # 17px (caps are .859em against a 118px baseline step) — the boxes do not. A
 # list item likewise enters at scale 1.5 about its own middle and crosses its
 # neighbours mid-animation.
@@ -149,9 +165,9 @@ def _scene_body(sc: dict, sid: str, rng: random.Random) -> str:
     # left to a spec author to remember.
     # A scene running stock footage drops both backdrop and motif: the footage is
     # the art, and graphics layered on it just fight for the frame.
-    on_footage = bool(sc.get("_has_stock")) and t != "diagram"
+    on_footage = bool(sc.get("_has_stock")) and t not in ("diagram", "motion")
     wants_motif = (sc.get("motif") and not on_footage
-                   and t not in ("card", "compare", "metric", "diagram"))
+                   and t not in ("card", "compare", "metric", "diagram", "motion"))
     art = sc.get("art_svg") or ("" if on_footage else (
         _backdrop(sc.get("backdrop", "plain"), rng, sid)
         + ('<svg class="art" viewBox="0 0 1080 1920" preserveAspectRatio="xMidYMid slice">'
@@ -221,10 +237,15 @@ def _scene_body(sc: dict, sid: str, rng: random.Random) -> str:
         return (f'<div class="stage">{diagram.build(sid, sc)}'
                 f'{_headline_block(sc, sid)}</div>')
 
+    if t == "motion":
+        # the animation plays on its own track above the vignette; all this
+        # scene owns is the headline over it
+        return f'<div class="stage">{_headline_block(sc, sid)}</div>'
+
     if t == "endcard":
         l = sc.get("lines", ["", ""])
         return (f'<div class="stage">{art}<div id="{sid}-end" class="endcard">'
-                f'<div class="end-1">{esc(l[0])}</div><div class="end-2">{esc(l[1] if len(l)>1 else "")}</div>'
+                f'<div class="end-1">{esc(l[0])}</div><div class="end-2"{ALLOW_OVERLAP}>{esc(l[1] if len(l)>1 else "")}</div>'
                 f'</div></div>')
 
     raise ValueError(f"unknown scene type {t!r}")
@@ -233,7 +254,8 @@ def _scene_body(sc: dict, sid: str, rng: random.Random) -> str:
 # ------------------------------------------------------------------ timeline
 def _motif_tweens(sc: dict, sid: str, st: float, A) -> None:
     kind = sc.get("motif")
-    if not kind or sc["type"] in ("card", "compare", "metric", "diagram") or sc.get("_has_stock"):
+    if not kind or sc["type"] in ("card", "compare", "metric", "diagram", "motion") \
+            or sc.get("_has_stock"):
         return                                          # see _scene_body
     if kind == "wave":
         A(f'tl.fromTo("#{sid}-motif .mfbar",{{scaleY:0.06,opacity:0}},'
@@ -332,6 +354,10 @@ def _scene_tweens(sc: dict, sid: str, st: float, du: float, A) -> None:
         if sc.get("headline"):
             A(f'tl.fromTo("#{sid}-k",{{opacity:0,y:34}},{{opacity:1,y:0,duration:.45,ease:E}},{st+1.2:.2f});')
 
+    elif t == "motion":
+        if sc.get("headline"):
+            A(f'tl.fromTo("#{sid}-k",{{opacity:0,y:34}},{{opacity:1,y:0,duration:.45,ease:E}},{st+1.0:.2f});')
+
     elif t == "endcard":
         A(f'tl.fromTo("#{sid}-end .end-1",{{opacity:0,y:44}},{{opacity:1,y:0,duration:.45,ease:E}},{st+0.3:.2f});')
         A(f'tl.fromTo("#{sid}-end .end-2",{{opacity:0,y:44}},{{opacity:1,y:0,duration:.45,ease:E}},{st+0.55:.2f});')
@@ -351,7 +377,12 @@ CSS = """
       #stars { position:absolute; inset:0; }
       #stars i { position:absolute; display:block; background:#CFE2FF; border-radius:50%; }
       #vig { position:absolute; inset:0; pointer-events:none; background:radial-gradient(115% 78% at 50% 44%, rgba(0,0,0,0) 52%, rgba(0,0,0,.62) 100%); }
-      video.stock { position:absolute; inset:0; width:1080px; height:1920px; object-fit:cover; }
+      video.stock, video.motion { position:absolute; inset:0; width:1080px; height:1920px; object-fit:cover; }
+      /* A motion clip is bright strokes on the same near-black the frame uses.
+         Screening it drops that ground to almost nothing (8,13,24 of 255) so the
+         gradient and stars carry on behind the animation, instead of the clip
+         punching an opaque black rectangle through the backdrop. */
+      video.motion { mix-blend-mode:screen; }
       /* Footage cannot be contrast-checked statically, so this ramp is the only
          guarantee that headlines stay readable over it. It stays light through
          the art zone and deepens from 62% down, where the headline band sits. */
@@ -423,9 +454,9 @@ CSS = """
       .chip-ok { color:#5BE39A; background:rgba(12,40,28,.9); border:2px solid rgba(91,227,154,.45); }
       .chip-risk { color:#FF6161; background:rgba(46,12,12,.9); border:2px solid rgba(255,97,97,.5); }
       .endcard { position:absolute; left:78px; right:78px; top:1150px; text-align:center; }
-      .end-1, .end-2 { font-family:"AntonL", sans-serif; font-size:124px; white-space:nowrap; }
+      .end-1, .end-2 { font-family:"AntonL", sans-serif; font-size:124px; line-height:1.02; white-space:nowrap; }
       .end-1 { color:#F2F5FA; } .end-2 { color:#F5B942; }
-      #caps { position:absolute; left:64px; right:64px; bottom:180px; height:250px; }
+      #caps { position:absolute; left:64px; right:200px; bottom:320px; height:170px; }
       .cap { position:absolute; left:0; right:0; bottom:0; text-align:center; opacity:0; }
       .cap span { display:inline-block; padding:18px 30px; border-radius:20px; background:rgba(5,8,16,.78); font-size:48px; line-height:1.25; font-weight:700; color:#F2F5FA; box-shadow:0 10px 40px rgba(0,0,0,.45); }
       #hud { position:absolute; left:0; right:0; top:0; height:8px; }
@@ -433,21 +464,29 @@ CSS = """
 """
 
 
-def build(spec: dict, timing: dict, out: Path, stock: dict | None = None) -> Path:
+def build(spec: dict, timing: dict, out: Path, stock: dict | None = None,
+          motion: dict | None = None) -> Path:
     """Emit index.html for `spec`, cut to the measured narration in `timing`.
 
-    `stock` maps a scene index to a downloaded, normalised clip. Video elements
-    must be direct children of the composition root — the framework owns their
-    playback — so footage cannot sit inside the scene divs and gets its own
-    tracks underneath instead.
+    `stock` maps a scene index to a downloaded, normalised clip, and `motion` to
+    a Manim clip rendered for that scene. Video elements must be direct children
+    of the composition root — the framework owns their playback — so neither can
+    sit inside a scene div; both get their own tracks instead.
+
+    The two sit at different depths on purpose. Footage goes under the scrim
+    that makes text readable over it; a motion clip is already dark, on-palette
+    artwork and goes above the scrim and the vignette, because dimming a diagram
+    is the one thing that would defeat drawing it.
     """
     beats = timing["beats"]
     dur = float(timing["target"])
     rng = random.Random(spec.get("seed", 20260901))
     scenes = spec["scenes"]
     stock = stock or {}
+    motion = motion or {}
     for i, sc in enumerate(scenes):
         sc["_has_stock"] = i in stock
+        sc["_has_motion"] = i in motion
     if len(scenes) != len(beats):
         raise ValueError(f"spec has {len(scenes)} scenes but the script has {len(beats)} beats")
 
@@ -457,7 +496,7 @@ def build(spec: dict, timing: dict, out: Path, stock: dict | None = None) -> Pat
         st = max(0.0, b["start"] - (XFADE if i else b["start"]))
         end = (beats[i + 1]["start"] + XFADE * 0.0) if i + 1 < len(beats) else dur
         end = min(dur, end + (XFADE if i + 1 < len(beats) else 0.0))
-        placed.append((f"s{i+1}", sc, round(st, 2), round(end - st, 2), 6 + (i % 2)))
+        placed.append((f"s{i+1}", sc, round(st, 2), round(end - st, 2), TRACK_SCENE + (i % 2)))
 
     body = "\n".join(
         f'      <div id="{sid}" class="clip scene" data-start="{st}" data-duration="{du}" '
@@ -478,6 +517,20 @@ def build(spec: dict, timing: dict, out: Path, stock: dict | None = None) -> Pat
             f'data-track-index="{2 + (i % 2)}" data-media-start="0" muted '
             f'src="{esc(info["rel"])}"></video>')
     stock_markup = chr(10).join("      " + v for v in stock_html)
+
+    # A motion clip covers exactly its own scene: unlike footage it is not a
+    # bed that cuts on the beat, it is the scene's artwork and must not bleed
+    # onto the neighbours that have their own.
+    motion_html, motion_ids = [], []
+    for i, info in sorted(motion.items()):
+        sid, _sc, st, du, _tr = placed[i]
+        vid = f"mot{i}"
+        motion_ids.append((vid, st))
+        motion_html.append(
+            f'<video id="{vid}" class="motion" data-start="{st}" data-duration="{du}" '
+            f'data-track-index="{TRACK_MOTION + (i % 2)}" data-media-start="0" muted '
+            f'src="{esc(info["rel"])}"></video>')
+    motion_markup = chr(10).join("      " + v for v in motion_html)
     scrim = (f'      <div id="scrimclip" class="clip" data-start="0" data-duration="{dur}" '
              f'data-track-index="4"><div id="scrim" data-layout-ignore></div></div>'
              if stock else "")
@@ -530,9 +583,10 @@ def build(spec: dict, timing: dict, out: Path, stock: dict | None = None) -> Pat
 {stock_markup}
 {scrim}
       <div id="fx" class="clip" data-start="0" data-duration="{dur}" data-track-index="5"><div id="vig" data-layout-ignore></div></div>
+{motion_markup}
 {body}
-      <div id="caps" class="clip" data-start="0" data-duration="{dur}" data-track-index="8">{caps}</div>
-      <div id="hud" class="clip" data-start="0" data-duration="{dur}" data-track-index="9"><div id="prog"></div></div>
+      <div id="caps" class="clip" data-start="0" data-duration="{dur}" data-track-index="{TRACK_CAPS}">{caps}</div>
+      <div id="hud" class="clip" data-start="0" data-duration="{dur}" data-track-index="{TRACK_HUD}"><div id="prog"></div></div>
     </div>
     <script>
       window.__timelines = window.__timelines || {{}};

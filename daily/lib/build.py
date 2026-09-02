@@ -16,6 +16,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import compose            # noqa: E402
+import motion             # noqa: E402
 import narrate            # noqa: E402
 import score              # noqa: E402
 import stock as stock_mod  # noqa: E402
@@ -75,8 +76,8 @@ def build(spec_path: Path, work_root: Path | None = None) -> Path:
     print("[3/8] stock footage")
     proj = work / "project"
     proj.mkdir(exist_ok=True)
-    for sc in spec["scenes"]:          # a diagram is the art; footage would bury it
-        if sc.get("type") == "diagram":
+    for sc in spec["scenes"]:          # a drawn beat is the art; footage would bury it
+        if sc.get("type") in ("diagram", "motion"):
             sc.pop("stock", None)
     stock = stock_mod.gather(spec["scenes"], proj, timing,
                              spec.get("stock_fallback", "")) if any(
@@ -86,13 +87,43 @@ def build(spec_path: Path, work_root: Path | None = None) -> Path:
     if not stock and any(sc.get("stock") for sc in spec["scenes"]):
         print("      none retrieved — the composition falls back to graphics")
 
+    print("[3b/8] motion clips")
+    # Each animation is rendered to its beat's exact length. A failure here is
+    # not fatal: the scene falls back to a plain headline over the backdrop,
+    # which is a worse frame but still a video, and losing the whole run to an
+    # optional dependency would be the wrong trade.
+    motion_clips: dict[int, dict] = {}
+    for i, sc in enumerate(spec["scenes"]):
+        if sc.get("type") != "motion":
+            continue
+        raw = proj / "motion" / f"{i:02d}-raw.mp4"
+        try:
+            made = motion.render(sc, raw, work / "motion" / f"w{i}")
+        except Exception as e:
+            print(f"    scene {i+1}: motion failed ({type(e).__name__}: {e})")
+            made = None
+        if not made:
+            continue
+        need = beats[i]["dur"] + 1.4
+        clip = stock_mod.normalise(raw, proj / "motion" / f"{i:02d}.mp4", need)
+        raw.unlink(missing_ok=True)
+        motion_clips[i] = {"rel": str(clip.relative_to(proj))}
+        print(f"    scene {i+1}: {sc.get('shape')} -> {clip.name}")
+    for i, sc in enumerate(spec["scenes"]):
+        if sc.get("type") == "motion" and i not in motion_clips:
+            # a motion scene without its clip has an empty art zone, so it
+            # becomes a statement and at least gets a motif behind the headline
+            sc["type"] = "statement"
+            sc.setdefault("motif", ("wave", "rings", "beam")[i % 3])
+            print(f"    scene {i+1}: no clip — demoted to a statement")
+
     print("[4/8] composition")
     for name in ("assets", "node_modules"):
         link = proj / name
         if not link.exists():
             link.symlink_to(PIPE / name)
     shutil.copy(PIPE / "hyperframes.json", proj / "hyperframes.json")
-    compose.build(spec, timing, proj / "index.html", stock)
+    compose.build(spec, timing, proj / "index.html", stock, motion_clips)
 
     print("[5/8] gates")
     env = render_env()

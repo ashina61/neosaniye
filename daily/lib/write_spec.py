@@ -18,6 +18,7 @@ import requests
 import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import motion                    # noqa: E402
 import textfit                   # noqa: E402
 
 MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-flash-latest"]
@@ -31,16 +32,19 @@ HEADLINE_MAX = 16          # characters; headlines are nowrap in a condensed fac
 # cross-section of a window, so the beats that need a cross-section get a
 # diagram and the rest carry real footage.
 MIN_STOCK = 5              # of the scenes that can take footage
-MIN_DIAGRAM, MAX_DIAGRAM = 2, 3
 # A `statement` is a headline over footage and nothing else. Banning three in a
 # row still permitted five per video, which is what every early video did, and
 # is why they all looked alike. Capping the count forces the panel types and the
 # diagrams to carry their share of the frames.
 MAX_STATEMENT = 3
 SCENE_TYPES = ["hook", "statement", "card", "metric", "list", "compare",
-               "diagram", "endcard"]
+               "diagram", "motion", "endcard"]
 MOTIFS = ["wave", "rings", "beam", "split", "particles"]
 SHAPES = ["layers", "route", "flow"]
+MOTION_SHAPES = ["circuit", "wave", "rays", "orbit"]
+# A drawn beat is a diagram or a motion clip. Both count: what matters is that
+# the mechanism beats draw the mechanism, not which renderer does it.
+MIN_DRAWN, MAX_DRAWN = 2, 4
 
 PROMPT = """You are writing a 40-second vertical science short. It must teach one
 mechanism clearly enough that a viewer can repeat the explanation afterwards.
@@ -94,14 +98,52 @@ For each beat also give a scene:
          characters, uppercase.
   shape + its fields: for diagram. See below.
 
-DIAGRAMS. Between {dmin} and {dmax} of the {beats} beats must be `diagram`
-scenes, and they must be the beats that carry the mechanism itself (beats 3-7).
-A diagram draws the thing being explained, which is the one thing stock footage
-cannot do: a library has a photograph of an aeroplane, never a cross-section of
-its window. Give a diagram scene NO stock and NO motif - it is the artwork.
-Every diagram still needs a two-line `headline`.
+DRAWN BEATS. Between {dmin} and {dmax} of the {beats} beats must draw the
+mechanism rather than caption footage, and they must be the beats that carry the
+mechanism itself (beats 3-8). A drawing is the one thing a stock library cannot
+supply: it has a photograph of an aeroplane, never a cross-section of its
+window. Give a drawn scene NO stock and NO motif - it is the artwork. Every one
+still needs a two-line `headline`.
 
-Pick the shape that matches the mechanism:
+There are two kinds, and the difference is whether the explanation moves.
+
+`motion` scenes are animated. Use one when the mechanism IS a movement -
+something travelling, cycling, spreading or splitting. Prefer motion over a
+static diagram whenever the topic has a moving part; at most two per video.
+
+  "circuit" - something flowing from A to B, and a way it does not go. Current,
+      heat, air, water, a signal. The blocked branch is the point.
+      {{"type":"motion","shape":"circuit","headline":["...","..."],
+        "from":"PYLON","to":"PYLON","perch":"BIRD",
+        "flow_label":"current runs along","branch":{{"label":"no path to ground"}}}}
+      `from`/`to`/`perch` uppercase, {mnode} characters. `flow_label` and the
+      branch label lowercase, {mflow} and {mbranch} characters. `perch` and
+      `branch` are optional - drop `perch` when nothing sits on the path.
+
+  "wave" - one or two travelling waves. Light, sound, pitch, colour. Give two
+      when the comparison between them is the explanation.
+      {{"type":"motion","shape":"wave","headline":["...","..."],"waves":[
+        {{"label":"BLUE LIGHT","wavelength":1.0,"amplitude":0.9}},
+        {{"label":"RED LIGHT","wavelength":2.9,"amplitude":0.9}}],
+        "note":"short waves scatter more"}}
+      `wavelength` 0.7-4.0 (small means a short, tight wave), `amplitude`
+      0.35-1.05. Labels uppercase, {mlabel} characters; `note` lowercase.
+
+  "rays" - a beam meeting a boundary and leaving it changed. Scattering,
+      refraction, filtering, absorption.
+      {{"type":"motion","shape":"rays","headline":["...","..."],
+        "medium":"ATMOSPHERE","incoming":"SUNLIGHT","outgoing":[
+        {{"label":"BLUE"}},{{"label":"GREEN"}},{{"label":"RED"}}]}}
+      1-3 outgoing rays. All labels uppercase, {mlabel} characters.
+
+  "orbit" - one body going round another. Tides, phases, seasons, cycles.
+      {{"type":"motion","shape":"orbit","headline":["...","..."],
+        "center":"EARTH","satellite":"MOON","marks":["HIGH TIDE","HIGH TIDE"],
+        "note":"one bulge on each side"}}
+      `marks` are 0-2 fixed points on either side, {mmark} characters each.
+
+`diagram` scenes are still drawings, for a mechanism that is a structure rather
+than a movement. Pick the shape that matches:
 
   "layers" - things stacked in order: panes of glass, layers of atmosphere,
       rock strata, skin and nerve. 2-4 entries, outermost first.
@@ -130,7 +172,7 @@ Pick the shape that matches the mechanism:
         "nodes":["CABIN AIR","BLEED HOLE","MIDDLE PANE","OUTER PANE"]}}
       Nodes uppercase, at most {dgflow} characters each.
 
-Every word inside a diagram must come from THIS topic. A diagram labelled with
+Every word inside a drawing must come from THIS topic. One labelled with
 generic words teaches nothing and is worse than the footage it replaced.
 
 Vary the scene types. A `statement` is a headline over footage and nothing
@@ -173,6 +215,9 @@ Return ONE JSON object and nothing else, in exactly this shape. `script` and
                  {{"label": "INNER PART", "mark": "hole", "mark_label": "the gap"}}]}},
     {{"type": "diagram", "shape": "flow", "headline": ["FIRST LINE", "SECOND LINE"],
       "nodes": ["FIRST CAUSE", "THEN THIS", "THEN THIS"]}},
+    {{"type": "motion", "shape": "circuit", "headline": ["FIRST LINE", "SECOND LINE"],
+      "from": "START", "to": "END", "flow_label": "what moves along it",
+      "branch": {{"label": "where it does not go"}}}},
     {{"type": "endcard", "motif": "rings", "headline": ["LAST LINE", "FINAL LINE"]}}
   ],
   "title": "...",
@@ -287,9 +332,12 @@ def validate(d: dict) -> list[str]:
             errs.append(f"scene {i} (metric): label is missing")
         if t == "diagram":
             errs += _diagram(i, sc)
+        if t == "motion":
+            errs += _motion(i, sc)
 
-    # a diagram IS the artwork, so it is not counted against footage coverage
-    footage_scenes = [sc for sc in scenes if sc.get("type") != "diagram"]
+    # a drawn beat IS the artwork, so it is not counted against footage coverage
+    DRAWN = ("diagram", "motion")
+    footage_scenes = [sc for sc in scenes if sc.get("type") not in DRAWN]
     with_stock = sum(1 for sc in footage_scenes if (sc.get("stock") or "").strip())
     if footage_scenes and with_stock < MIN_STOCK:
         errs.append(f"only {with_stock} of the {len(footage_scenes)} non-diagram "
@@ -302,10 +350,15 @@ def validate(d: dict) -> list[str]:
                     f"a statement is a headline over footage, and a video made "
                     f"mostly of them is ten frames with one layout")
 
-    diagrams = len(scenes) - len(footage_scenes)
-    if scenes and not MIN_DIAGRAM <= diagrams <= MAX_DIAGRAM:
-        errs.append(f"{diagrams} diagram scenes, need {MIN_DIAGRAM}-{MAX_DIAGRAM} — "
-                    f"the mechanism beats have to draw the mechanism")
+    drawn = len(scenes) - len(footage_scenes)
+    if scenes and not MIN_DRAWN <= drawn <= MAX_DRAWN:
+        errs.append(f"{drawn} drawn scenes (diagram + motion), need "
+                    f"{MIN_DRAWN}-{MAX_DRAWN} — the mechanism beats have to "
+                    f"draw the mechanism")
+    motions = sum(1 for sc in scenes if sc.get("type") == "motion")
+    if motions > 2:
+        errs.append(f"{motions} `motion` scenes, at most 2 — each one is a "
+                    f"separate render and they slow the whole video down")
 
     if d.get("title") and len(d["title"]) > 100:
         errs.append(f"title is {len(d['title'])} chars, YouTube allows 100")
@@ -379,6 +432,93 @@ def _diagram(i: int, sc: dict) -> list[str]:
     return errs
 
 
+def _cap(errs: list[str], where: str, text, kind: str) -> None:
+    """Motion labels are capped by character count, not measured width.
+
+    The text goes through Pango at a Manim scale factor, and deriving a pixel
+    width through that chain would be a guess dressed up as a measurement. The
+    renderer truncates anything longer; rejecting it here means it never has to.
+    """
+    n = len(str(text or "").strip())
+    limit = motion.CAPS[kind]
+    if n > limit:
+        errs.append(f"{where}: {str(text)[:40]!r} is {n} characters, "
+                    f"at most {limit} — it would be truncated on screen")
+
+
+def _motion(i: int, sc: dict) -> list[str]:
+    errs: list[str] = []
+    shape = sc.get("shape")
+    if shape not in MOTION_SHAPES:
+        return [f"scene {i} (motion): shape {shape!r} is not one of {MOTION_SHAPES}"]
+
+    if shape == "circuit":
+        for key in ("from", "to", "perch"):
+            if sc.get(key):
+                _cap(errs, f"scene {i} circuit `{key}`", sc[key], "node")
+        if sc.get("flow_label"):
+            _cap(errs, f"scene {i} circuit flow_label", sc["flow_label"], "flow")
+        br = sc.get("branch") or {}
+        if br and not (br.get("label") or "").strip():
+            errs.append(f"scene {i} (circuit): the branch needs a label saying "
+                        f"where it does not go")
+        if br.get("label"):
+            _cap(errs, f"scene {i} circuit branch", br["label"], "branch")
+
+    elif shape == "wave":
+        waves = sc.get("waves") or []
+        if not 1 <= len(waves) <= 2:
+            errs.append(f"scene {i} (wave): needs 1-2 waves, got {len(waves)}")
+        for j, w in enumerate(waves, 1):
+            _cap(errs, f"scene {i} wave {j} label", w.get("label"), "label")
+            for key, lo, hi in (("wavelength", 0.7, 4.0), ("amplitude", 0.35, 1.05)):
+                if key in w:
+                    try:
+                        v = float(w[key])
+                    except (TypeError, ValueError):
+                        errs.append(f"scene {i} wave {j}: {key} {w[key]!r} is not a number")
+                        continue
+                    if not lo <= v <= hi:
+                        errs.append(f"scene {i} wave {j}: {key} {v} is outside "
+                                    f"{lo}-{hi} and would be clamped")
+        if len(waves) == 2 and all("wavelength" in w for w in waves):
+            try:
+                a, b = (float(w["wavelength"]) for w in waves)
+                if abs(a - b) < 0.5:
+                    errs.append(f"scene {i} (wave): the two wavelengths are {a} and "
+                                f"{b} — too close to tell apart, which is the "
+                                f"whole point of drawing two")
+            except (TypeError, ValueError):
+                pass
+        if sc.get("note"):
+            _cap(errs, f"scene {i} wave note", sc["note"], "note")
+
+    elif shape == "rays":
+        outs = sc.get("outgoing") or []
+        if not 1 <= len(outs) <= 3:
+            errs.append(f"scene {i} (rays): needs 1-3 outgoing rays, got {len(outs)}")
+        for key in ("medium", "incoming"):
+            if sc.get(key):
+                _cap(errs, f"scene {i} rays `{key}`", sc[key], "label")
+        for j, o in enumerate(outs, 1):
+            _cap(errs, f"scene {i} rays outgoing {j}", o.get("label"), "label")
+
+    elif shape == "orbit":
+        for key in ("center", "satellite"):
+            if not (sc.get(key) or "").strip():
+                errs.append(f"scene {i} (orbit): `{key}` is missing")
+            _cap(errs, f"scene {i} orbit `{key}`", sc.get(key), "node")
+        marks = sc.get("marks") or []
+        if len(marks) > 2:
+            errs.append(f"scene {i} (orbit): {len(marks)} marks, at most 2")
+        for j, m in enumerate(marks, 1):
+            _cap(errs, f"scene {i} orbit mark {j}", m, "mark")
+        if sc.get("note"):
+            _cap(errs, f"scene {i} orbit note", sc["note"], "note")
+
+    return errs
+
+
 class DraftFailed(RuntimeError):
     """One attempt did not produce usable JSON. Retryable."""
 
@@ -440,10 +580,13 @@ def draft(topic: dict, attempts: int = 4) -> dict:
     base = PROMPT.format(question=topic["question"], mechanism=topic["mechanism"],
                          beats=BEATS, wmin=WORDS_MIN, wmax=WORDS_MAX,
                          types=SCENE_TYPES, motifs=MOTIFS, hmax=HEADLINE_MAX,
-                         dmin=MIN_DIAGRAM, dmax=MAX_DIAGRAM,
+                         dmin=MIN_DRAWN, dmax=MAX_DRAWN,
                          smax=MAX_STATEMENT,
                          # the caps the model is told are the caps the
                          # validator measures, so the two cannot drift apart
+                         mnode=motion.CAPS["node"], mflow=motion.CAPS["flow"],
+                         mbranch=motion.CAPS["branch"], mlabel=motion.CAPS["label"],
+                         mmark=motion.CAPS["mark"],
                          dglab=textfit.budget("dg_label"),
                          dghole=textfit.budget("dg_hole"),
                          dgnote=textfit.budget("dg_note"),
@@ -479,10 +622,10 @@ def to_spec(topic: dict, d: dict, duration: float = 40.0) -> dict:
         out = {k: v for k, v in sc.items() if v not in (None, "", [], {})}
         if out["type"] == "endcard" and "headline" in out:
             out["lines"] = out.pop("headline")
-        if out["type"] in ("card", "compare", "metric", "diagram"):
+        if out["type"] in ("card", "compare", "metric", "diagram", "motion"):
             out.pop("motif", None)      # these draw their own panel; compose drops it anyway
-        if out["type"] == "diagram":
-            out.pop("stock", None)      # the diagram IS the art; build.py drops it anyway
+        if out["type"] in ("diagram", "motion"):
+            out.pop("stock", None)      # the drawing IS the art; build.py drops it anyway
         scenes.append(out)
     return {"slug": topic["id"], "title": d["title"].replace(" #Shorts", ""),
             "stock_fallback": d.get("stock_fallback", topic["question"]),

@@ -49,11 +49,23 @@ jobs:
       - name: System packages
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq ffmpeg
+          # pango and cairo are what Manim's text and vector rendering sit on;
+          # without them manimpango falls back to building from source and fails
+          sudo apt-get install -y -qq ffmpeg libcairo2-dev libpango1.0-dev pkg-config
           ffmpeg -version | head -1
 
       - name: Python dependencies
         run: pip install --quiet pyyaml numpy requests piper-tts fonttools brotli
+
+      # Manim draws the animated mechanism scenes. It is deliberately a separate,
+      # non-fatal step: it is the heaviest install in the job, and the pipeline
+      # already falls back to a static scene when it is missing, so a bad day on
+      # PyPI should cost a nicer frame, not the whole video.
+      - name: Manim (optional)
+        continue-on-error: true
+        run: |
+          pip install --quiet manim
+          python -c "import manim; print('manim', manim.__version__)"
 
       # Access to Gemini's TTS preview models is not implied by a working key —
       # they can refuse on the first call. Without a local voice the run would

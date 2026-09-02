@@ -18,6 +18,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import compose      # noqa: E402
+import motion       # noqa: E402
 import textfit      # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -46,7 +47,6 @@ def spec() -> dict:
         "scenes": [
             {"type": "hook", "motif": "rings", "headline": [H16, H16],
              "badge": {"label": "A VERY LONG BADGE LABEL", "count_to": 1234567, "unit": "MW"}},
-            {"type": "statement", "motif": "wave", "accent": "red", "headline": [H16, H16]},
             {"type": "list", "motif": "split", "items": [_widest("slam")] * 3},
             {"type": "card", "eyebrow": "AN UNUSUALLY LONG EYEBROW LABEL",
              "body": "A VERY LONG <em>CARD BODY</em> PHRASE", "legend": LONG,
@@ -68,6 +68,7 @@ def spec() -> dict:
                 {"label": _widest("dg_route"), "state": "blocked"}]},
             {"type": "diagram", "shape": "flow", "headline": [H16, H16],
              "nodes": [_widest("dg_flow")] * 4},
+            {"type": "motion", "shape": "circuit", "headline": [H16, H16]},
             {"type": "endcard", "motif": "rings", "lines": [_widest("endcard")] * 2},
         ]}
 
@@ -84,7 +85,23 @@ def main() -> int:
     proj = ROOT / "out" / "stress"
     shutil.rmtree(proj, ignore_errors=True)
     proj.mkdir(parents=True)
-    compose.build(spec(), timing(), proj / "index.html")
+    sp, tm = spec(), timing()
+
+    # A motion scene's artwork is a real video element, so the harness renders
+    # one: checking the layout around a clip that is not there would prove
+    # nothing about the layout around a clip that is.
+    import stock as stock_mod
+    mo = {}
+    for i, sc in enumerate(sp["scenes"]):
+        if sc.get("type") != "motion":
+            continue
+        raw = proj / "motion" / f"{i:02d}-raw.mp4"
+        if motion.render(sc, raw, proj / "motion" / f"w{i}"):
+            stock_mod.normalise(raw, proj / "motion" / f"{i:02d}.mp4",
+                                tm["beats"][i]["dur"] + 1.4)
+            raw.unlink(missing_ok=True)
+            mo[i] = {"rel": f"motion/{i:02d}.mp4"}
+    compose.build(sp, tm, proj / "index.html", motion=mo)
     for name in ("assets", "node_modules"):
         (proj / name).symlink_to(ROOT / "daily" / name)
     shutil.copy(ROOT / "daily" / "hyperframes.json", proj / "hyperframes.json")
@@ -102,9 +119,13 @@ def main() -> int:
         r = subprocess.run(["npx", "--yes", "hyperframes", gate], cwd=proj,
                            capture_output=True, text=True, env=env, timeout=1800)
         out = r.stdout + r.stderr
-        verdict = next((l for l in out.splitlines() if "error(s)" in l), "no verdict")
+        # hyperframes reports either "N error(s), ..." or, when a gate finds
+        # nothing at all, "0 layout issues across N sample(s)" — treat both as
+        # the verdict, or a clean run reads as a missing one.
+        verdict = next((l for l in out.splitlines()
+                        if "error(s)" in l or "layout issues" in l), "no verdict")
         print(f"  {gate}: {verdict.strip()}")
-        if "0 error(s)" not in out:
+        if "0 error(s)" not in out and "0 layout issues" not in out:
             failed = True
             for line in out.splitlines():
                 if line.strip().startswith("✗"):
