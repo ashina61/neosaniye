@@ -98,3 +98,24 @@ def budget(kind: str) -> int:
     k = KINDS[kind]
     _, avg = _metrics(k["face"])
     return int(k["limit"] / ((avg + k["track"]) * k["size"]))
+
+
+# How far a line may be shrunk to fit its column before the type stops reading
+# as a display headline. Below this it is genuinely too long, not just wide.
+MIN_SCALE = 0.76
+
+
+def fit_size(text: str, kind: str = "kh") -> int | None:
+    """The font-size at which `text` fits its column, or None if it cannot.
+
+    Rejecting a whole draft because a headline is 55px too wide was the
+    validator enforcing a font-size that this template chose, not a limit the
+    frame actually has. A line that overflows is set smaller instead, and only
+    a line that would have to shrink past MIN_SCALE is a real problem.
+    """
+    k = KINDS[kind]
+    w = rendered(text, kind)
+    if w <= k["limit"]:
+        return k["size"]
+    size = int(k["size"] * k["limit"] / w)
+    return size if size >= int(k["size"] * MIN_SCALE) else None

@@ -25,13 +25,20 @@ MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-flash-latest"]
 URL = "https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent"
 
 BEATS = 10
-WORDS_MIN, WORDS_MAX = 95, 115
+# The floor is what keeps a 40-second cut from being mostly silence; narrate.plan
+# spreads any slack into the gaps, so a few words under is a worse video, not a
+# broken one, and is not worth spending a free-tier attempt on.
+WORDS_MIN, WORDS_MAX = 88, 115
 HEADLINE_MAX = 16          # characters; headlines are nowrap in a condensed face
 # Stock coverage is counted over the scenes that can carry footage. Raising the
 # floor across all ten only bought generic b-roll: a library has a wing, not a
 # cross-section of a window, so the beats that need a cross-section get a
 # diagram and the rest carry real footage.
-MIN_STOCK = 5              # of the scenes that can take footage
+# Real footage keeps the video from reading as a slideshow, but padding up to a
+# number with generic b-roll is what made the early videos worse, so the floor
+# is low and repair() meets it with the topic's own fallback query rather than
+# the draft being rejected over it.
+MIN_STOCK = 4              # of the scenes that can take footage
 # A `statement` is a headline over footage and nothing else. Banning three in a
 # row still permitted five per video, which is what every early video did, and
 # is why they all looked alike. Capping the count forces the panel types and the
@@ -105,7 +112,10 @@ supply: it has a photograph of an aeroplane, never a cross-section of its
 window. Give a drawn scene NO stock and NO motif - it is the artwork. Every one
 still needs a two-line `headline`.
 
-There are two kinds, and the difference is whether the explanation moves.
+There are two kinds, and the difference is whether the explanation moves. The
+shape names do NOT overlap: circuit, wave, rays and orbit are ALWAYS
+"type":"motion", and layers, route and flow are ALWAYS "type":"diagram". Never
+put one kind's shape on the other kind's type.
 
 `motion` scenes are animated. Use one when the mechanism IS a movement -
 something travelling, cycling, spreading or splitting. Prefer motion over a
@@ -270,6 +280,53 @@ SCHEMA = {
 }
 
 
+def repair(d: dict, topic: dict) -> list[str]:
+    """Fix what is mechanically fixable, before anything is rejected over it.
+
+    Four attempts against a free-tier key is not much headroom, and it was being
+    spent on faults that have one obvious correct answer. A validator should
+    reject what it cannot fix; everything here it can. Returns what it changed,
+    for the log.
+    """
+    fixed: list[str] = []
+    scenes = d.get("scenes") or []
+
+    # A drawn beat put on the wrong renderer. The model chose a real shape and
+    # attached it to the other scene type — the shape is the intent, so the
+    # type follows it rather than the draft dying over the mismatch.
+    # the fields each shape needs, so a swap only happens when the scene really
+    # carries that shape's data — a bare shape name is a broken scene, not a
+    # misfiled one, and rewriting its type would hide that
+    FIELDS = {"layers": ("layers",), "route": ("routes", "from", "to"), "flow": ("nodes",),
+              "circuit": ("from", "to", "perch", "flow_label", "branch"),
+              "wave": ("waves",), "rays": ("outgoing", "incoming", "medium"),
+              "orbit": ("center", "satellite", "marks")}
+    for i, sc in enumerate(scenes, 1):
+        t, shape = sc.get("type"), sc.get("shape")
+        want = "motion" if (t == "diagram" and shape in MOTION_SHAPES) else \
+               "diagram" if (t == "motion" and shape in SHAPES) else None
+        if want and any(sc.get(f) for f in FIELDS.get(shape, ())):
+            sc["type"] = want
+            fixed.append(f"scene {i}: shape {shape!r} belongs to a {want} scene — moved it")
+
+    # Under-tagged footage. `stock` is only a search query, and gather() already
+    # falls back to the topic-level one when a beat's own search comes up empty,
+    # so filling the gap here costs nothing a missing tag would not have cost.
+    fallback = (d.get("stock_fallback") or topic.get("question", "")).strip()
+    if fallback:
+        can = [sc for sc in scenes if sc.get("type") not in ("diagram", "motion", "endcard")]
+        have = sum(1 for sc in can if (sc.get("stock") or "").strip())
+        for sc in can:
+            if have >= MIN_STOCK:
+                break
+            if not (sc.get("stock") or "").strip():
+                sc["stock"] = fallback
+                have += 1
+                fixed.append(f"scene {scenes.index(sc) + 1}: no stock query — "
+                             f"used the topic fallback {fallback!r}")
+    return fixed
+
+
 def _plain(s: str) -> str:
     return re.sub(r"<[^>]+>", "", s or "")
 
@@ -284,8 +341,13 @@ def validate(d: dict) -> list[str]:
     if len(scenes) != BEATS:
         errs.append(f"scenes has {len(scenes)} entries, needs exactly {BEATS}")
     words = sum(len(b.split()) for b in script)
-    if not WORDS_MIN <= words <= WORDS_MAX:
-        errs.append(f"script is {words} words, needs {WORDS_MIN}-{WORDS_MAX}")
+    if words < WORDS_MIN:
+        errs.append(f"script is {words} words, needs at least {WORDS_MIN} — add about "
+                    f"{WORDS_MIN - words + 4} more, spread across the beats that "
+                    f"carry the mechanism, not the hook")
+    elif words > WORDS_MAX:
+        errs.append(f"script is {words} words, needs at most {WORDS_MAX} — cut about "
+                    f"{words - WORDS_MAX + 4}")
 
     runs = 0
     for i, sc in enumerate(scenes, 1):
@@ -305,19 +367,18 @@ def validate(d: dict) -> list[str]:
                 errs.append(f"scene {i} ({t}): needs exactly 2 headline lines, got {len(lines)}")
             kind = "endcard" if t == "endcard" else "kh"
             for ln in lines:
-                # measured, not counted: sixteen narrow characters fit and
-                # sixteen wide ones run half a frame off the edge
-                problem = textfit.check(ln, kind)
-                if problem:
-                    errs.append(f"scene {i}: headline {problem}")
+                # compose sets an over-wide line smaller rather than letting it
+                # run off frame, so the only real failure is a line so long it
+                # would have to shrink out of being a display headline
+                if textfit.fit_size(ln, kind) is None:
+                    errs.append(f"scene {i}: headline {textfit.check(ln, kind)}")
         if t == "list":
             items = sc.get("items") or []
             if not 2 <= len(items) <= 3:
                 errs.append(f"scene {i} (list): needs 2-3 items, got {len(items)}")
             for it in items:
-                problem = textfit.check(it, "slam")
-                if problem:
-                    errs.append(f"scene {i}: item {problem}")
+                if textfit.fit_size(it, "slam") is None:
+                    errs.append(f"scene {i}: item {textfit.check(it, 'slam')}")
         if t == "card" and not _plain(sc.get("body", "")).strip():
             errs.append(f"scene {i} (card): body is empty")
         if t == "compare":
@@ -325,9 +386,9 @@ def validate(d: dict) -> list[str]:
             if len(cols) != 2:
                 errs.append(f"scene {i} (compare): needs exactly 2 columns, got {len(cols)}")
             for c in cols:
-                problem = textfit.check(c.get("value", ""), "col_big")
-                if problem:
-                    errs.append(f"scene {i}: column value {problem}")
+                if textfit.fit_size(c.get("value", ""), "col_big") is None:
+                    errs.append(f"scene {i}: column value "
+                                f"{textfit.check(c.get('value', ''), 'col_big')}")
         if t == "metric" and not sc.get("label"):
             errs.append(f"scene {i} (metric): label is missing")
         if t == "diagram":
@@ -597,6 +658,8 @@ def draft(topic: dict, attempts: int = 4) -> dict:
     for n in range(1, attempts + 1):
         try:
             d = _ask(prompt, key)
+            for note in repair(d, topic):
+                print(f"    repaired: {note}")
         except DraftFailed as e:
             problems = [str(e)]
             print(f"    attempt {n} failed: {e}")

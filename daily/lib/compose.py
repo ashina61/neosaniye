@@ -39,6 +39,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import diagram                   # noqa: E402
+import textfit                   # noqa: E402
 
 W, H, FPS = 1080, 1920, 30
 # DOM order is paint order: background(1), footage(2-3), scrim(4), vignette(5),
@@ -146,6 +147,20 @@ def _backdrop(kind: str, rng: random.Random, idp: str) -> str:
 ALLOW_OVERLAP = " data-layout-allow-overlap"
 
 
+def _kh_style(text: str, kind: str = "kh") -> str:
+    """Set an over-wide line smaller rather than letting it run off the frame.
+
+    118px is this template's choice, not a limit the frame has, so a headline
+    that misses the column by a few percent is shrunk to fit. Only a line that
+    would have to go below textfit.MIN_SCALE is genuinely too long, and that is
+    the one the validator still rejects.
+    """
+    size = textfit.fit_size(text, kind)
+    if size is None or size >= textfit.KINDS[kind]["size"]:
+        return ""
+    return f' style="font-size:{size}px"'
+
+
 def _headline_block(sc: dict, sid: str) -> str:
     """The two-line band under a panel. Shared so panel scenes match the rest."""
     lines = (sc.get("headline") or [])[:2]
@@ -153,7 +168,7 @@ def _headline_block(sc: dict, sid: str) -> str:
         return ""
     acc = sc.get("accent", "cyan")
     inner = "".join(f'<div id="{sid}-k{i}" class="kh{"" if i == 0 else f" kh-{acc}"}"'
-                    f'{ALLOW_OVERLAP if i else ""}>{esc(x)}</div>'
+                    f'{ALLOW_OVERLAP if i else ""}{_kh_style(x)}>{esc(x)}</div>'
                     for i, x in enumerate(lines))
     return f'<div id="{sid}-k" class="klines">{inner}</div>'
 
@@ -190,7 +205,7 @@ def _scene_body(sc: dict, sid: str, rng: random.Random) -> str:
         lines = sc.get("headline", [])[:2]
         acc = sc.get("accent", "cyan")
         body = "".join(f'<div id="{sid}-k{i}" class="kh{"" if i == 0 else f" kh-{acc}"}"'
-                       f'{ALLOW_OVERLAP if i else ""}>{esc(x)}</div>'
+                       f'{ALLOW_OVERLAP if i else ""}{_kh_style(x)}>{esc(x)}</div>'
                        for i, x in enumerate(lines))
         return (f'<div class="stage">{art}'
                 f'<div id="{sid}-lines" class="klines">{body}</div></div>')
@@ -207,7 +222,7 @@ def _scene_body(sc: dict, sid: str, rng: random.Random) -> str:
 
     if t == "metric":
         heads = "".join(f'<div id="{sid}-k{i}" class="kh{" kh-amber" if i else ""}"'
-                        f'{ALLOW_OVERLAP if i else ""}>{esc(x)}</div>'
+                        f'{ALLOW_OVERLAP if i else ""}{_kh_style(x)}>{esc(x)}</div>'
                         for i, x in enumerate(sc.get("headline", [])[:2]))
         return (f'<div class="stage">{art}'
                 f'<div id="{sid}-meter" class="meter{" meter-danger" if sc.get("danger") else ""}">'
@@ -219,7 +234,8 @@ def _scene_body(sc: dict, sid: str, rng: random.Random) -> str:
         items = sc.get("items", [])[:3]
         body = "".join(
             f'<div id="{sid}-i{i}" class="slam{" slam-amber" if i == len(items)-1 else ""}"'
-            f'{ALLOW_OVERLAP}>{esc(x)}</div>' for i, x in enumerate(items))
+            f'{ALLOW_OVERLAP}{_kh_style(x, "slam")}>{esc(x)}</div>'
+            for i, x in enumerate(items))
         return f'<div class="stage">{art}<div class="stack">{body}</div></div>'
 
     if t == "compare":
@@ -245,7 +261,7 @@ def _scene_body(sc: dict, sid: str, rng: random.Random) -> str:
     if t == "endcard":
         l = sc.get("lines", ["", ""])
         return (f'<div class="stage">{art}<div id="{sid}-end" class="endcard">'
-                f'<div class="end-1">{esc(l[0])}</div><div class="end-2"{ALLOW_OVERLAP}>{esc(l[1] if len(l)>1 else "")}</div>'
+                f'<div class="end-1"{_kh_style(l[0], "endcard")}>{esc(l[0])}</div><div class="end-2"{ALLOW_OVERLAP}{_kh_style(l[1] if len(l)>1 else "", "endcard")}>{esc(l[1] if len(l)>1 else "")}</div>'
                 f'</div></div>')
 
     raise ValueError(f"unknown scene type {t!r}")
