@@ -1,0 +1,98 @@
+slug: plane-window-hole
+title: Why Does Every Plane Window Have A Tiny Hole?
+stock_fallback: clouds from plane
+duration: 40.0
+mood: curious
+seed: 1101576
+script:
+- Every airplane window has a tiny hole in it.
+- This is not a defect or an accident.
+- 'The window is three panes: an outer pane, a middle pane, and an inner pane.'
+- The outer pane carries the primary pressure load.
+- The inner pane is a scratch shield.
+- The bleed hole makes the middle pane carry no pressure load.
+- This ensures the outer pane takes the full pressure load.
+- If the outer pane fails, the middle pane becomes the primary load bearer.
+- This design provides crucial redundancy for cabin pressure.
+- The tiny hole keeps everyone safe at cruising altitude.
+scenes:
+- type: hook
+  motif: rings
+  stock: airplane window closeup
+  headline:
+  - TINY HOLE
+  - PLANE WINDOW
+- type: statement
+  motif: wave
+  stock: airplane wing view
+  headline:
+  - NOT A DEFECT
+  - BY DESIGN
+- type: list
+  motif: split
+  stock: layers of glass
+  items:
+  - OUTER PANE
+  - MIDDLE PANE
+  - INNER PANE
+- type: statement
+  motif: beam
+  stock: airplane fuselage exterior
+  headline:
+  - OUTER PANE
+  - PRIMARY LOAD
+- type: statement
+  motif: particles
+  stock: hand touching window
+  headline:
+  - INNER PANE
+  - SCRATCH SHIELD
+- type: card
+  eyebrow: THE MECHANISM
+  body: MIDDLE PANE <em>NO</em> LOAD
+  legend: the bleed hole ensures this
+  headline:
+  - BLEED HOLE
+  - RELEASES PRESSURE
+- type: statement
+  motif: wave
+  stock: airplane flying high
+  headline:
+  - OUTER PANE
+  - TAKES FULL LOAD
+- type: compare
+  headline:
+  - REDUNDANCY
+  - BUILT IN
+  columns:
+  - chip: NORMAL
+    value: OUTER
+    label: pane holds load
+  - chip: FAILURE
+    value: MIDDLE
+    label: pane holds load
+    risk: true
+- type: statement
+  motif: beam
+  stock: cabin interior window
+  headline:
+  - CRUCIAL
+  - REDUNDANCY
+- type: endcard
+  motif: rings
+  stock: clear sky airplane
+  lines:
+  - STAY SAFE
+  - IN THE AIR
+copy:
+  title: 'Why Does Every Plane Window Have A Tiny Hole? #Shorts'
+  hook: The tiny hole in airplane windows isn't a flaw; it's a vital safety feature.
+  caption: 'That small hole in an airplane window serves a critical safety function. It''s a ''bleed hole'' that equalizes pressure between the outer and middle panes, ensuring the outer pane bears the
+    full pressure load. This design creates a crucial backup: if the outer pane ever fails, the middle pane is ready to take over and maintain cabin pressure.'
+  hashtags:
+  - science
+  - physics
+  - shorts
+  - explained
+  - didyouknow
+  - learn
