@@ -1,20 +1,35 @@
 """Find and download real stock footage for a scene.
 
-Pexels first, Pixabay as the fallback — both free to use commercially. Vertical
-clips are strongly preferred: a landscape clip cropped to 9:16 loses most of its
-subject. Each download records its attribution so the bundle can credit it.
+Pexels first, Pixabay next — both free to use commercially. Vertical clips are
+strongly preferred: a landscape clip cropped to 9:16 loses most of its subject.
+Each download records its attribution so the bundle can credit it.
+
+Behind those sit the repo's keyless public-domain adapters: NASA, Wikimedia,
+Archive.org, the Library of Congress and the rest. They are searched only when
+the commercial libraries come back with nothing, because their footage is
+mostly landscape and archival — but for the topics this pipeline covers they
+hold the specific thing a stock library never does: an actual aurora, an actual
+hurricane from orbit, actual laboratory footage. Nothing there is required to
+work: a source that errors, times out or returns junk is skipped, and the scene
+falls back to graphics exactly as it did before.
 """
 from __future__ import annotations
 
 import json
+import logging
 import os
 import subprocess
+import sys
 from pathlib import Path
 
 import requests
 
 TIMEOUT = 60
 TARGET_W, TARGET_H = 1080, 1920
+# An archival master can be gigabytes. The runner's disk is a fixed allowance,
+# and a clip is trimmed to about four seconds anyway, so a download that runs
+# past this is abandoned rather than allowed to fill the volume.
+MAX_DOWNLOAD = 220 << 20
 
 
 def _score(w: int, h: int, want_min_side: int = 900) -> float:
@@ -84,20 +99,98 @@ def _pixabay(query: str, min_duration: float) -> list[dict]:
     return out
 
 
+def _archives(query: str, min_duration: float) -> list[dict]:
+    """The keyless public-domain sources the repo already ships adapters for.
+
+    Every call is wrapped: these adapters scrape websites rather than call APIs,
+    so one of them being redesigned overnight must cost this query and nothing
+    more. Anything that cannot be scored is dropped rather than guessed at.
+    """
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+        from tools.video.stock_sources import available_sources, SearchFilters
+    except Exception as e:
+        print(f"      archive sources unavailable ({type(e).__name__})")
+        return []
+
+    # each adapter logs its own failures with a full URL and traceback; a dozen
+    # of those per beat would bury the log, and the one-line summary below says
+    # everything the run needs
+    quiet = logging.getLogger("tools.video.stock_sources")
+    was = quiet.level
+    quiet.setLevel(logging.CRITICAL)
+    try:
+        return _archive_hits(available_sources(), SearchFilters, query, min_duration)
+    finally:
+        quiet.setLevel(was)
+
+
+def _archive_hits(sources, SearchFilters, query: str, min_duration: float) -> list[dict]:
+    out: list[dict] = []
+    for src in sources:
+        try:
+            hits = src.search(query, SearchFilters())
+        except Exception as e:
+            print(f"      {src.name}: {type(e).__name__}")
+            continue
+        for c in hits[:6]:
+            if getattr(c, "kind", "video") != "video" or not c.download_url:
+                continue
+            if c.duration and c.duration < min_duration:
+                continue
+            score = _score(c.width or 0, c.height or 0)
+            if score <= 0:
+                continue
+            out.append({"source": src.name, "url": c.download_url,
+                        "w": c.width, "h": c.height, "duration": c.duration or 0.0,
+                        "credit": f"{c.creator or src.name} ({c.license or 'public domain'})",
+                        # archival footage is nearly always landscape, so it
+                        # ranks below anything the vertical libraries returned
+                        "page": c.source_url or "", "score": score * 0.6,
+                        # duration is often unknown here, so it is verified
+                        # after download rather than trusted from the listing
+                        "verify": not c.duration})
+    return out
+
+
+def _duration(path: Path) -> float:
+    p = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration",
+                        "-of", "csv=p=0", str(path)], capture_output=True, text=True)
+    try:
+        return float(p.stdout.strip())
+    except ValueError:
+        return 0.0
+
+
 def find(query: str, out: Path, min_duration: float = 4.0) -> dict | None:
     """Download the best vertical clip for `query`. None when nothing fits."""
     candidates = sorted(_pexels(query, min_duration) + _pixabay(query, min_duration),
                         key=lambda c: c["score"], reverse=True)
+    if not candidates:
+        candidates = sorted(_archives(query, min_duration),
+                            key=lambda c: c["score"], reverse=True)
     for c in candidates[:4]:
         try:
             r = requests.get(c["url"], timeout=300, stream=True)
             if r.status_code != 200:
                 continue
             out.parent.mkdir(parents=True, exist_ok=True)
+            size, over = 0, False
             with out.open("wb") as fh:
                 for chunk in r.iter_content(1 << 20):
+                    size += len(chunk)
+                    if size > MAX_DOWNLOAD:
+                        over = True
+                        break
                     fh.write(chunk)
-            if out.stat().st_size < 40_000:      # a truncated or placeholder file
+            if over:
+                print(f"      {c['source']}: over {MAX_DOWNLOAD >> 20}MB, skipped")
+                out.unlink(missing_ok=True)
+                continue
+            if size < 40_000:                    # a truncated or placeholder file
+                continue
+            if c.get("verify") and _duration(out) < min_duration:
+                out.unlink(missing_ok=True)
                 continue
             c["path"] = str(out)
             return c
