@@ -1,0 +1,88 @@
+slug: deja-vu
+title: The Neuroscience of Deja Vu Explained
+duration: 40.0
+mood: curious
+seed: 656027
+script:
+- Deja vu is not a memory from your past.
+- It is a live error check inside your temporal lobe.
+- Recognition requires two separate brain signals to agree.
+- The rhinal cortex generates a feeling of familiarity.
+- The hippocampus searches for the actual details to match it.
+- Deja vu happens when the familiarity signal fires, but memory retrieval comes up empty.
+- Your prefrontal cortex catches this conflict immediately.
+- You feel certain you know the moment, while knowing you cannot.
+- Healthy brains run this check to prevent false memories from sticking.
+- The sensation is not a recovered past, but a working error detector.
+scenes:
+- type: hook
+  motif: rings
+  stock: person staring cafe
+  headline:
+  - NOT A PAST
+  - MEMORY
+- type: statement
+  motif: split
+  stock: brain mri scan
+  headline:
+  - LIVE ERROR
+  - CHECK DETECTED
+- type: list
+  motif: beam
+  items:
+  - FAMILIARITY
+  - RETRIEVAL
+- type: card
+  eyebrow: SIGNAL ONE
+  body: RHINAL <em>FAMILIARITY</em>
+  legend: triggers the feeling
+- type: card
+  eyebrow: SIGNAL TWO
+  body: HIPPOCAMPUS <em>SEARCH</em>
+  legend: finds the context
+- type: compare
+  columns:
+  - chip: SIGNAL 1
+    value: FIRED
+    label: familiarity
+  - chip: SIGNAL 2
+    value: EMPTY
+    label: no memory
+    risk: true
+- type: metric
+  label: SIGNAL CONFLICT
+  count_to: 100
+  unit: '%'
+  headline:
+  - PREFRONTAL
+  - CATCHES MISMATCH
+- type: statement
+  motif: wave
+  stock: woman walking street
+  headline:
+  - IMPOSSIBLE
+  - CERTAINTY
+- type: statement
+  motif: particles
+  stock: human brain model
+  headline:
+  - PREVENTS FALSE
+  - MEMORIES
+- type: endcard
+  motif: rings
+  stock: person eyes closeup
+  lines:
+  - ACTIVE ERROR
+  - DETECTOR
+copy:
+  title: 'The Neuroscience of Deja Vu Explained #Shorts'
+  hook: Deja vu is not a forgotten memory resurfacing in your brain.
+  caption: Deja vu occurs when the brain's familiarity signal fires without an actual memory to support it. The rhinal cortex flags the moment as known, but the hippocampus finds no record. Your prefrontal
+    cortex catches this mismatch as a live error check.
+  hashtags:
+  - neuroscience
+  - brain
+  - dejavu
+  - psychology
+  - science
+  - memory
