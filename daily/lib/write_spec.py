@@ -32,6 +32,11 @@ HEADLINE_MAX = 16          # characters; headlines are nowrap in a condensed fac
 # diagram and the rest carry real footage.
 MIN_STOCK = 5              # of the scenes that can take footage
 MIN_DIAGRAM, MAX_DIAGRAM = 2, 3
+# A `statement` is a headline over footage and nothing else. Banning three in a
+# row still permitted five per video, which is what every early video did, and
+# is why they all looked alike. Capping the count forces the panel types and the
+# diagrams to carry their share of the frames.
+MAX_STATEMENT = 3
 SCENE_TYPES = ["hook", "statement", "card", "metric", "list", "compare",
                "diagram", "endcard"]
 MOTIFS = ["wave", "rings", "beam", "split", "particles"]
@@ -45,17 +50,19 @@ MECHANISM (the truth you must convey, do not contradict it): {mechanism}
 
 Write exactly {beats} narration beats, {wmin}-{wmax} words in total.
 
-Beat shape:
- 1 hook - the surprising fact, stated flat. No "did you know", no question.
- 2 reframe - overturn the assumption the hook creates.
- 3 setup - name the parts of the mechanism.
- 4 first part.
- 5 second part.
- 6 the rule - the one sentence that does the explaining.
- 7 consequence - what follows from the rule.
- 8 the turn - the case where it breaks, or the limit.
- 9 why that matters.
-10 payoff - land it, echoing the hook's language.
+Beat shape, with the scene each beat wants. Follow it unless the topic gives
+you a better reason, and if you depart from it keep the same variety:
+ 1 hook      - the surprising fact, stated flat. No "did you know", no question.
+               scene: hook
+ 2 reframe   - overturn the assumption the hook creates.        scene: statement
+ 3 setup     - name the parts of the mechanism.                 scene: list
+ 4 first part.                                                  scene: diagram
+ 5 second part.                                                 scene: diagram
+ 6 the rule  - the one sentence that does the explaining.        scene: card
+ 7 consequence - what follows from the rule.                    scene: metric
+ 8 the turn  - the case where it breaks, or the limit.          scene: compare
+ 9 why that matters.                                            scene: statement
+10 payoff    - land it, echoing the hook's language.            scene: endcard
 
 Voice: plain, short sentences, present tense. Say the mechanism, not a metaphor
 for it. No filler adjectives, no hedging, no "basically", no exclamation marks.
@@ -126,7 +133,13 @@ Pick the shape that matches the mechanism:
 Every word inside a diagram must come from THIS topic. A diagram labelled with
 generic words teaches nothing and is worse than the footage it replaced.
 
-Vary the scene types - never more than two `statement` scenes in a row.
+Vary the scene types. A `statement` is a headline over footage and nothing
+else, so use AT MOST {smax} of them in the whole video and never two in a row.
+The other beats must earn a shape: a diagram where something is being taken
+apart, a `compare` where two cases sit against each other, a `metric` where a
+number is the point, a `list` where three things are being named, a `card` where
+one sentence is the rule. Ten beats should not produce ten frames that look the
+same.
 
 Also give:
   title: a YouTube title, at most 90 characters, ending with " #Shorts"
@@ -236,8 +249,8 @@ def validate(d: dict) -> list[str]:
             errs.append(f"scene {i}: type {t!r} is not one of {SCENE_TYPES}")
             continue
         runs = runs + 1 if t == "statement" else 0
-        if runs > 2:
-            errs.append(f"scene {i}: three `statement` scenes in a row — vary the types")
+        if runs > 1:
+            errs.append(f"scene {i}: two `statement` scenes in a row — vary the types")
         if sc.get("motif") and sc["motif"] not in MOTIFS:
             errs.append(f"scene {i}: motif {sc['motif']!r} is not one of {MOTIFS}")
         if t in ("hook", "statement", "endcard", "card", "compare", "metric"):
@@ -282,6 +295,12 @@ def validate(d: dict) -> list[str]:
         errs.append(f"only {with_stock} of the {len(footage_scenes)} non-diagram "
                     f"scenes carry a stock query, need at least {MIN_STOCK} — "
                     f"this is a footage-led format")
+
+    statements = sum(1 for sc in scenes if sc.get("type") == "statement")
+    if statements > MAX_STATEMENT:
+        errs.append(f"{statements} `statement` scenes, at most {MAX_STATEMENT} — "
+                    f"a statement is a headline over footage, and a video made "
+                    f"mostly of them is ten frames with one layout")
 
     diagrams = len(scenes) - len(footage_scenes)
     if scenes and not MIN_DIAGRAM <= diagrams <= MAX_DIAGRAM:
@@ -422,6 +441,7 @@ def draft(topic: dict, attempts: int = 4) -> dict:
                          beats=BEATS, wmin=WORDS_MIN, wmax=WORDS_MAX,
                          types=SCENE_TYPES, motifs=MOTIFS, hmax=HEADLINE_MAX,
                          dmin=MIN_DIAGRAM, dmax=MAX_DIAGRAM,
+                         smax=MAX_STATEMENT,
                          # the caps the model is told are the caps the
                          # validator measures, so the two cannot drift apart
                          dglab=textfit.budget("dg_label"),
