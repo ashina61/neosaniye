@@ -1,0 +1,3 @@
+Putting metal in a microwave causes sparks and fire, but do you know why?
+
+When microwaves hit metal, they induce electric fields and currents. These currents concentrate at any sharp edges on the metal, intensifying the field until the air around it ionizes and creates a spark, or arc. This arcing can damage your microwave.

@@ -1,0 +1,106 @@
+slug: microwave-metal
+title: Why Can't You Put Metal in a Microwave? Explained!
+stock_fallback: microwave oven interior
+duration: 40.0
+mood: tense
+seed: 2261515
+script:
+- Metal in a microwave produces sparks and fire.
+- Microwaves induce electric fields in metal.
+- The metal in a microwave oven has edges and surfaces.
+- Microwaves induce a current flow across the metal's surface.
+- The induced current concentrates at any sharp edges of the metal.
+- Edges concentrate the induced field until air breaks down and arcs.
+- The concentrated energy at the edges is intense enough to ionize the air.
+- Smooth metal, like a spoon, may not spark because it lacks sharp edges.
+- This arcing damages both the microwave and the metal.
+- This is why metal in a microwave produces sparks and fire.
+scenes:
+- type: hook
+  motif: rings
+  stock: microwave arcing metal
+  headline:
+  - METAL IN A MICROWAVE
+  - CAUSES SPARKS AND FIRE
+- type: statement
+  motif: wave
+  stock: microwave oven interior
+  headline:
+  - MICROWAVES INDUCE
+  - ELECTRIC FIELDS
+- type: list
+  motif: split
+  stock: metal object close up
+  items:
+  - METAL
+  - EDGES
+  - SURFACES
+- type: motion
+  shape: circuit
+  headline:
+  - CURRENT FLOWS
+  - ON SURFACES
+  from: MICROWAVE
+  to: METAL
+  flow_label: induced current
+  branch:
+    label: no path through metal
+- type: diagram
+  shape: layers
+  headline:
+  - CURRENT CONCENTRATES
+  - AT EDGES
+  layers:
+  - label: METAL SURFACE
+    note: current spreads here
+  - label: SHARP EDGE
+    mark: hole
+    mark_label: current concentrates here
+- type: card
+  eyebrow: THE MECHANISM
+  body: EDGES CONCENTRATE THE <em>INDUCED</em> FIELD
+  legend: until air breaks down and arcs
+  headline:
+  - WHY METAL SPARKS
+  - IN A MICROWAVE
+- type: statement
+  motif: beam
+  stock: plasma discharge close
+  headline:
+  - ENERGY IONIZES AIR
+  - CAUSING ARCS
+- type: compare
+  headline:
+  - SMOOTH VS SHARP
+  - METAL EDGES
+  columns:
+  - chip: SMOOTH
+    value: 'NO'
+    label: SPARK RISK
+  - chip: SHARP
+    value: 'YES'
+    label: SPARK RISK
+    risk: true
+- type: statement
+  motif: particles
+  stock: damaged microwave oven
+  headline:
+  - ARCING DAMAGES
+  - APPLIANCE AND METAL
+- type: endcard
+  motif: rings
+  lines:
+  - NEVER PUT METAL
+  - IN THE MICROWAVE
+copy:
+  title: 'Why Can''t You Put Metal in a Microwave? Explained! #Shorts'
+  hook: Putting metal in a microwave causes sparks and fire, but do you know why?
+  caption: When microwaves hit metal, they induce electric fields and currents. These currents concentrate at any sharp edges on the metal, intensifying the field until the air around it ionizes and creates
+    a spark, or arc. This arcing can damage your microwave.
+  hashtags:
+  - science
+  - physics
+  - shorts
+  - explained
+  - didyouknow
+  - learn
