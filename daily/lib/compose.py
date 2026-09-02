@@ -14,7 +14,10 @@ Learned constraints baked in here (each one cost a render to find):
     overlap error.
   * Every fade-out that lands on a clip boundary needs a `tl.set` hard kill, or
     non-linear seeking leaves stale opacity behind.
-  * Panels sitting over the vignette need `data-layout-allow-occlusion`.
+  * The vignette is painted under the scenes, not over them. Above them it
+    counts as an opaque coverer, and any headline near the frame edge then
+    trips `text_occluded` — a class of failure no per-element escape hatch
+    settles, because the next scene layout finds a new way to hit it.
 """
 from __future__ import annotations
 
@@ -115,13 +118,12 @@ def _scene_body(sc: dict, sid: str, rng: random.Random) -> str:
         _backdrop(sc.get("backdrop", "plain"), rng, sid)
         + ('<svg class="art" viewBox="0 0 1080 1920" preserveAspectRatio="xMidYMid slice">'
            + _motif(sc["motif"], sid) + "</svg>" if wants_motif else "")))
-    occl = " data-layout-allow-occlusion"
 
     if t == "hook":
         badge = ""
         if sc.get("badge"):
             b = sc["badge"]
-            badge = (f'<div id="{sid}-badge" class="badge"{occl}>'
+            badge = (f'<div id="{sid}-badge" class="badge">'
                      f'<span class="badge-k">{esc(b["label"])}</span>'
                      f'<span class="badge-v"><b id="{sid}-count">0</b> {esc(b.get("unit",""))}</span></div>')
         heads = "".join(
@@ -142,7 +144,7 @@ def _scene_body(sc: dict, sid: str, rng: random.Random) -> str:
                   if sc.get("legend") else "")
         tag = (f'<div id="{sid}-tag" class="zerotag">{esc(sc["tagline"])}</div>'
                if sc.get("tagline") else "")
-        return (f'<div class="stage">{art}<div id="{sid}-card" class="card"{occl}>'
+        return (f'<div class="stage">{art}<div id="{sid}-card" class="card">'
                 f'<div class="card-top">{esc(sc.get("eyebrow","THE RULE"))}</div>'
                 f'<div id="{sid}-body" class="card-body">{sc["body"]}</div>{legend}</div>{tag}</div>')
 
@@ -150,7 +152,7 @@ def _scene_body(sc: dict, sid: str, rng: random.Random) -> str:
         heads = "".join(f'<div class="kh{" kh-amber" if i else ""}">{esc(x)}</div>'
                         for i, x in enumerate(sc.get("headline", [])[:2]))
         return (f'<div class="stage">{art}'
-                f'<div id="{sid}-meter" class="meter{" meter-danger" if sc.get("danger") else ""}"{occl}>'
+                f'<div id="{sid}-meter" class="meter{" meter-danger" if sc.get("danger") else ""}">'
                 f'<div class="meter-k">{esc(sc["label"])}</div>'
                 f'<div class="meter-v"><b id="{sid}-mv">0</b><span>{esc(sc.get("unit",""))}</span></div></div>'
                 f'<div id="{sid}-k" class="klines">{heads}</div></div>')
@@ -362,7 +364,7 @@ def build(spec: dict, timing: dict, out: Path, stock: dict | None = None) -> Pat
         st = max(0.0, b["start"] - (XFADE if i else b["start"]))
         end = (beats[i + 1]["start"] + XFADE * 0.0) if i + 1 < len(beats) else dur
         end = min(dur, end + (XFADE if i + 1 < len(beats) else 0.0))
-        placed.append((f"s{i+1}", sc, round(st, 2), round(end - st, 2), 5 + (i % 2)))
+        placed.append((f"s{i+1}", sc, round(st, 2), round(end - st, 2), 6 + (i % 2)))
 
     body = "\n".join(
         f'      <div id="{sid}" class="clip scene" data-start="{st}" data-duration="{du}" '
@@ -434,8 +436,8 @@ def build(spec: dict, timing: dict, out: Path, stock: dict | None = None) -> Pat
       </div>
 {stock_markup}
 {scrim}
+      <div id="fx" class="clip" data-start="0" data-duration="{dur}" data-track-index="5"><div id="vig" data-layout-ignore></div></div>
 {body}
-      <div id="fx" class="clip" data-start="0" data-duration="{dur}" data-track-index="7"><div id="vig" data-layout-ignore></div></div>
       <div id="caps" class="clip" data-start="0" data-duration="{dur}" data-track-index="8">{caps}</div>
       <div id="hud" class="clip" data-start="0" data-duration="{dur}" data-track-index="9"><div id="prog"></div></div>
     </div>
