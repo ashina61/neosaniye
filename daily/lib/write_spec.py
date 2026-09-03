@@ -60,14 +60,23 @@ def budgets(duration: float, wps: float | None = None) -> dict:
     beats = max(8, min(16, round(duration / BEAT_SECONDS)))
     speech = duration - narrate.HEAD - narrate.TAIL - narrate.MIN_GAP * (beats - 1)
     target_words = speech * SPEECH_SHARE * wps
-    # never let the ceiling reach the point where the narration cannot physically
-    # fit, whatever share of the gaps it eats
-    ceiling = round(speech * wps) - 4
+    # Two different numbers, and conflating them cost a run. `wmax` is the
+    # comfortable target the model is asked for — a script that length needs no
+    # help to fit. `wlimit` is where the pipeline genuinely cannot deliver: past
+    # the comfortable length narrate speeds the take up, inaudibly, by up to
+    # MAX_SPEEDUP, so rejecting a script it could have carried throws away a run
+    # for nothing. The 3% is because `wps` is a recorded estimate, not a promise.
+    wmax = round(target_words * 1.12)
+    wlimit = int(speech * wps * 0.97 * narrate.MAX_SPEEDUP)
     return {
         "beats": beats,
         "wps": wps,
         "wmin": round(target_words * 0.88),
-        "wmax": min(round(target_words * 1.12), ceiling),
+        "wmax": min(wmax, wlimit),
+        "wlimit": wlimit,
+        # what the model actually controls: a beat at a time, not a total
+        # across ten of them
+        "wper": max(4, round(target_words / beats)),
         "drawn_min": max(2, round(beats * 0.25)),
         "drawn_max": max(3, round(beats * 0.40)),
         "motion_max": max(2, beats // 5),
@@ -153,7 +162,15 @@ long to fit the cut at all.
 TOPIC: {question}
 MECHANISM (the truth you must convey, do not contradict it): {mechanism}
 
-Write exactly {beats} narration beats, {wmin}-{wmax} words in total.
+Write exactly {beats} narration beats.
+
+LENGTH. Each beat is about {wper} words — one short sentence, not two. That is
+the number to hold in your head while writing; the whole script then comes to
+{wmin}-{wmax} words, which is what the voice can say in the time available.
+Counting {wper} words per sentence as you go is reliable; adding all the beats
+up at the end is not, and a script that runs long is thrown away rather than
+trimmed. If a beat needs more than {wper} words to make sense, it is trying to
+carry two ideas — give one of them to the next beat instead.
 
 Beat shape, with the scene each beat wants. Follow it unless the topic gives
 you a better reason, and if you depart from it keep the same variety:
@@ -511,9 +528,11 @@ def validate(d: dict, b: dict | None = None) -> list[str]:
         errs.append(f"script is {words} words, needs at least {b['wmin']} — add about "
                     f"{b['wmin'] - words + 4} more, spread across the beats that "
                     f"carry the mechanism, not the hook")
-    elif words > b["wmax"]:
-        errs.append(f"script is {words} words, needs at most {b['wmax']} — cut about "
-                    f"{words - b['wmax'] + 4}")
+    elif words > b.get("wlimit", b["wmax"]):
+        per = words / max(len(script), 1)
+        errs.append(f"script is {words} words and cannot fit — at most "
+                    f"{b['wlimit']}. Your beats average {per:.1f} words; they need "
+                    f"to average about {b['wper']}. Shorten the beats, do not drop one")
 
     errs += _restated(script)
 
@@ -840,6 +859,7 @@ def draft(topic: dict, attempts: int = 4, duration: float = 40.0,
     base = PROMPT.format(question=topic["question"], mechanism=topic["mechanism"],
                          seconds=duration, plan=beat_plan(b["beats"]),
                          beats=b["beats"], wmin=b["wmin"], wmax=b["wmax"],
+                         wper=b["wper"],
                          types=SCENE_TYPES, motifs=MOTIFS, hmax=HEADLINE_MAX,
                          dmin=b["drawn_min"], dmax=b["drawn_max"],
                          smax=b["statement_max"], mmax=b["motion_max"],
