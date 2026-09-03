@@ -20,6 +20,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import motion                    # noqa: E402
+import kokoro_tts                # noqa: E402
 import narrate                   # noqa: E402
 import rates                     # noqa: E402
 import textfit                   # noqa: E402
@@ -837,9 +838,15 @@ def narration_rate() -> tuple[str, float]:
     may end up falling back — budgeting slow and being served fast only leaves
     a little more silence, while the reverse loses the run.
     """
-    engine = "piper" if tts.configured_engine() == "piper" or not (
-        os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
-    ) else "gemini"
+    pinned = tts.configured_engine()
+    if pinned in ("piper", "kokoro", "gemini"):
+        engine = pinned
+    elif os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY"):
+        engine = "gemini"
+    elif kokoro_tts.available():
+        engine = "kokoro"
+    else:
+        engine = "piper"
     return engine, rates.words_per_second(engine)
 
 

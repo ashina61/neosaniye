@@ -13,6 +13,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import kokoro_tts                # noqa: E402
 import rates                     # noqa: E402
 import tts                       # noqa: E402
 
@@ -38,16 +39,22 @@ def synthesize(lines: list[str], out_dir: Path,
                voice: str | None = None) -> tuple[list[float], str]:
     """Render one wav per line. Returns (durations, engine).
 
+    Three engines, in descending order of how good they sound and ascending
+    order of how reliably they are there: Gemini, then Kokoro, then piper.
+
     Gemini is asked for the whole script in a single request and the take is cut
     locally, because quota is charged per request and ten short calls cost ten
-    times one. If that take cannot be cut into exactly one trustworthy segment
-    per beat, or Gemini refuses at all, the whole narration is redone with piper
-    — a video that changes voice halfway is worse than one in the plainer voice
-    throughout.
+    times one. Kokoro runs on the machine with no key and no quota, so it is
+    what catches a Gemini that has run out. piper is the floor — always present,
+    plainest voice.
+
+    A video never mixes engines: if one fails partway the whole narration is
+    redone in the next one down, because changing voice halfway through is
+    worse than the plainer voice throughout.
     """
     out_dir.mkdir(parents=True, exist_ok=True)
-    engine = "piper"
-    if tts.configured_engine() != "piper" and tts._key():
+    engine = ""
+    if tts.configured_engine() not in ("piper", "kokoro") and tts._key():
         try:
             model = tts.say_script(lines, out_dir, voice)
             if model:
@@ -56,11 +63,22 @@ def synthesize(lines: list[str], out_dir: Path,
         except tts.QuotaExhausted as e:
             print(f"      Gemini TTS unavailable: {str(e)[:200]}")
         except Exception as e:                    # noqa: BLE001 - never block on the voice
-            print(f"      Gemini TTS failed ({type(e).__name__}: {str(e)[:160]}); using piper")
-    if engine == "piper":
-        print("      narration: piper" if not tts._key() else "      falling back to piper")
+            print(f"      Gemini TTS failed ({type(e).__name__}: {str(e)[:160]})")
+
+    if not engine and tts.configured_engine() != "piper" and kokoro_tts.available():
+        try:
+            for i, line in enumerate(lines, 1):
+                kokoro_tts.say(line, out_dir / f"{i:02d}.wav", voice)
+            print(f"      narration: kokoro ({kokoro_tts.VOICE})")
+            engine = "kokoro"
+        except Exception as e:                    # noqa: BLE001
+            print(f"      kokoro failed ({type(e).__name__}: {str(e)[:160]})")
+
+    if not engine:
+        print("      narration: piper")
         for i, line in enumerate(lines, 1):
             tts.say(line, out_dir / f"{i:02d}.wav", voice, engine="piper")
+        engine = "piper"
 
     durs = [duration(out_dir / f"{i:02d}.wav") for i in range(1, len(lines) + 1)]
     return durs, engine

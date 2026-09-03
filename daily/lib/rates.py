@@ -22,6 +22,7 @@ STORE = Path(__file__).resolve().parents[1] / "rates.json"
 SEED = {
     "piper": 3.18,     # measured: 397 words of real scripts in 125.05s
     "gemini": 1.90,    # derived from run 149, where 11.70s of overrun gave it away
+    "kokoro": 3.00,    # measured: 117 words of real scripts in 39.02s (am_adam)
 }
 # A run whose measurement is wildly off — a take that failed to split, a script
 # in the wrong language — should not poison the next one.

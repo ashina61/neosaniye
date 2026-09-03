@@ -30,6 +30,15 @@ on:
         type: choice
         default: '40'
         options: ['30', '40', '50', '60', '75', '90']
+      voice:
+        # auto walks the ladder Gemini -> Kokoro -> piper. Picking kokoro skips
+        # Gemini entirely: no quota to run out of, and because it reads at about
+        # 3.0 words a second against Gemini's 1.9 the script it gets is half
+        # again longer for the same running time.
+        description: 'Narration voice'
+        type: choice
+        default: 'auto'
+        options: ['auto', 'kokoro', 'piper']
 
   # There is deliberately no schedule: videos are made when you ask for one.
   # To go back to two a day, uncomment this and remember that a scheduled run
@@ -69,7 +78,7 @@ jobs:
           ffmpeg -version | head -1
 
       - name: Python dependencies
-        run: pip install --quiet pyyaml numpy requests piper-tts fonttools brotli
+        run: pip install --quiet pyyaml numpy requests piper-tts fonttools brotli kokoro-onnx soundfile
 
       # Manim draws the animated mechanism scenes. It is deliberately a separate,
       # non-fatal step: it is the heaviest install in the job, and the pipeline
@@ -84,21 +93,31 @@ jobs:
       # Access to Gemini's TTS preview models is not implied by a working key —
       # they can refuse on the first call. Without a local voice the run would
       # have nowhere to fall back to, so the model is cached and always present.
-      - name: Cache the offline narration voice
+      # Both local voices live under .voices, so one cache covers them. Kokoro
+      # is ~350MB and would otherwise be re-downloaded on every single run.
+      - name: Cache the local narration voices
         id: voice
         uses: actions/cache@v4
         with:
           path: .voices
-          key: piper-voice-en-us-ryan-high-v1
+          key: voices-piper-ryan-high-kokoro-v1.0
 
-      - name: Fetch the offline narration voice
+      - name: Fetch the local narration voices
         if: steps.voice.outputs.cache-hit != 'true'
         run: |
-          mkdir -p .voices
+          mkdir -p .voices/kokoro
           curl -sL --max-time 600 -o /tmp/voice.tar.gz \
             https://github.com/rhasspy/piper/releases/download/v0.0.2/voice-en-us-ryan-high.tar.gz
           tar xzf /tmp/voice.tar.gz -C .voices && rm -f /tmp/voice.tar.gz
-          ls -1 .voices
+          # Kokoro is the middle voice: better than piper, and unlike Gemini it
+          # has no quota to run out of. A failure here is not fatal — the
+          # pipeline drops to piper — so this step does not stop the run.
+          base=https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0
+          curl -sL --fail --max-time 900 -o .voices/kokoro/kokoro-v1.0.onnx \
+            "$base/kokoro-v1.0.onnx" || echo "kokoro model unavailable; piper will cover"
+          curl -sL --fail --max-time 300 -o .voices/kokoro/voices-v1.0.bin \
+            "$base/voices-v1.0.bin" || echo "kokoro voices unavailable; piper will cover"
+          ls -la .voices .voices/kokoro
 
       - name: Node dependencies
         run: cd daily && npm install --no-audit --no-fund --silent
@@ -120,6 +139,9 @@ jobs:
         id: spec
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          # the script is budgeted for whichever voice will read it, so the
+          # spec step has to see the same choice the build step gets
+          TTS_ENGINE: ${{ inputs.voice || 'auto' }}
           TOPIC: ${{ inputs.topic }}
           MECHANISM: ${{ inputs.mechanism }}
           DURATION: ${{ inputs.duration || '40' }}
@@ -140,7 +162,7 @@ jobs:
           # locally, so a video costs one request rather than ten. That may fit
           # the free tier where per-beat calls did not; if it refuses, the run
           # falls back to the local voice and still produces a video.
-          TTS_ENGINE: auto
+          TTS_ENGINE: ${{ inputs.voice || 'auto' }}
           GEMINI_API_KEY:  ${{ secrets.GEMINI_API_KEY }}
           PEXELS_API_KEY:  ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
