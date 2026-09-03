@@ -1,0 +1,107 @@
+slug: cats-purr
+title: Why Do Cats Purr? The Surprising Science Behind The Sound
+stock_fallback: cat closeups
+duration: 40.0
+mood: warm
+seed: 1733195
+script:
+- Cats purr at a frequency between 25 and 150 Hertz.
+- This sound is not just for happiness.
+- The purr involves the brain, the larynx, and the diaphragm.
+- A neural oscillator in the brain sends rhythmic signals.
+- These signals reach the larynx, causing vocal folds to vibrate.
+- The neural oscillator drives the larynx.
+- The diaphragm muscles contract and relax, changing air pressure for the purr.
+- The purr sounds the same whether a cat is happy, stressed, or healing.
+- This means purring has multiple functions beyond contentment.
+- Purring is a complex signal, not just a sign of a happy cat.
+scenes:
+- type: hook
+  motif: wave
+  stock: cat purring closeup
+  headline:
+  - CATS PURR AT
+  - 25-150 HERTZ
+- type: statement
+  motif: rings
+  stock: cat sleeping peacefully
+  headline:
+  - MORE THAN
+  - JUST CONTENT
+- type: list
+  motif: split
+  items:
+  - THE BRAIN
+  - THE LARYNX
+  - THE DIAPHRAGM
+  stock: cat closeups
+- type: diagram
+  shape: flow
+  headline:
+  - THE OSCILLATOR
+  - IN THE BRAIN
+  nodes:
+  - BRAIN
+  - NEURAL OSCILLATOR
+  - RHYTHMIC SIGNALS
+- type: motion
+  shape: wave
+  headline:
+  - LARYNX VIBRATION
+  - CREATES SOUND
+  waves:
+  - label: PURR SOUND
+    wavelength: 1.0
+    amplitude: 0.9
+  note: vocal folds vibrate
+- type: card
+  eyebrow: THE MECHANISM
+  body: A NEURAL OSCILLATOR <em>DRIVES</em> THE LARYNX
+  legend: this creates the purring sound
+  headline:
+  - HOW THE PURR
+  - IS MADE
+- type: diagram
+  shape: layers
+  headline:
+  - DIAPHRAGM'S ROLE
+  - IN PURRING
+  layers:
+  - label: DIAPHRAGM
+    note: muscles contract and relax
+  - label: AIR PRESSURE
+    note: changes for purr generation
+- type: compare
+  headline:
+  - PURR SOUNDS
+  - ARE THE SAME
+  columns:
+  - chip: HAPPY CAT
+    value: PURR
+    label: contentment signal
+  - chip: STRESSED CAT
+    value: PURR
+    label: stress response
+- type: statement
+  motif: beam
+  stock: cat vet exam
+  headline:
+  - PURRING HAS
+  - MANY FUNCTIONS
+- type: endcard
+  motif: rings
+  lines:
+  - 'PURRING: MORE THAN'
+  - JUST CONTENTMENT
+copy:
+  title: 'Why Do Cats Purr? The Surprising Science Behind The Sound #Shorts'
+  hook: Cats purr at a frequency between 25 and 150 Hertz, but it's not always a sign of happiness.
+  caption: A neural oscillator in a cat's brain sends rhythmic signals to the larynx. This causes the vocal folds to vibrate, producing the purring sound. While often associated with contentment, cats also
+    purr when stressed or injured, suggesting it serves multiple functions beyond just happiness.
+  hashtags:
+  - cats
+  - purring
+  - animals
+  - science
+  - shorts
+  - explained
