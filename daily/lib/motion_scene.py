@@ -6,7 +6,7 @@ pipeline — motion.render() hands the path to `manim render`, which imports it 
 a subprocess of its own.
 
 Geometry: the frame is 16 units tall by 9 wide, so one unit is 120px. CY is the
-centre of the art zone (260-1120px of 1920) and TOP/BOT/L/R are the box a scene
+centre of the art zone (260-1000px of 1920) and TOP/BOT/L/R are the box a scene
 may draw in. Below BOT is the headline band, and nothing here may reach it.
 """
 import json
@@ -15,12 +15,19 @@ import os
 import manimpango
 from manim import *
 
+import diagram
+
 DATA = json.loads(os.environ["MOTION_DATA"])
 FONTS = os.environ.get("MOTION_FONTS", "")
 BG, CYAN, AMBER, RED, TEXT, MUTED = (
     "#080D18", "#46E0FF", "#F5B942", "#FF6161", "#F2F5FA", "#8A96AC")
-CY = 2.25
-TOP, BOT = CY + 3.4, CY - 3.4
+# The art zone comes from diagram.py, converted here rather than restated: the
+# frame is 16 units over 1920px, so one unit is 120px and the centre of the
+# frame is 960px.
+_PX = diagram.FRAME_H / 16.0
+CY = (diagram.FRAME_H / 2 - (diagram.ART_TOP + diagram.ART_BOTTOM) / 2) / _PX
+_HALF = (diagram.ART_BOTTOM - diagram.ART_TOP) / 2 / _PX
+TOP, BOT = CY + _HALF, CY - _HALF
 L, R = -4.0, 4.0
 
 config.pixel_width, config.pixel_height = 1080, 1920

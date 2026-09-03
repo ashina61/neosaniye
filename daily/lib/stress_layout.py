@@ -51,7 +51,7 @@ def spec() -> dict:
             {"type": "list", "motif": "split", "items": [_widest("slam")] * 3},
             {"type": "card", "eyebrow": "AN UNUSUALLY LONG EYEBROW LABEL",
              "body": "A VERY LONG <em>CARD BODY</em> PHRASE", "legend": LONG,
-             "tagline": H16, "headline": [H16, H16]},
+             "headline": [H16, H16]},
             {"type": "metric", "label": "AN EXTREMELY LONG METRIC LABEL HERE",
              "count_to": 9876543, "unit": "units", "headline": [H16, H16]},
             {"type": "compare", "headline": [H16, H16], "columns": [

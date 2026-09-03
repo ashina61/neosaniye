@@ -36,6 +36,7 @@ import json
 import random
 import sys
 from pathlib import Path
+from string import Template
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import diagram                   # noqa: E402
@@ -47,7 +48,15 @@ W, H, FPS = 1080, 1920, 30
 # scrim so text stays readable over it; a motion clip sits above both, because
 # it is already dark on-palette artwork and dimming it defeats drawing it.
 TRACK_MOTION, TRACK_SCENE, TRACK_CAPS, TRACK_HUD = 6, 8, 10, 11
-ZONE_HEADLINE, CAPTION_TOP = 1150, 1450
+
+# The vertical stack, and the gaps are the point. A 118px headline sitting 30px
+# above a 48px caption reads as one four-line block, not as a headline with a
+# subtitle under it — the caption looks like the headline's third line. The gap
+# between the two has to be several times the gap between the headline's own
+# two lines (13px at this leading), so it is 100px here.
+ZONE_ART_TOP, ZONE_ART_BOTTOM = diagram.ART_TOP, diagram.ART_BOTTOM
+ZONE_HEADLINE = 1055           # two lines end around 1290
+CAPTION_TOP, CAPTION_HEIGHT = 1390, 210
 # The bottom of a vertical frame belongs to the app, not to us: TikTok stacks a
 # username, description and music ticker there, Reels and Shorts a title and
 # channel row, and all three put action buttons up the right edge. Anything
@@ -140,10 +149,10 @@ def _backdrop(kind: str, rng: random.Random, idp: str) -> str:
 # neighbours mid-animation.
 #
 # The attribute silences EVERY finding on the element it sits on, not just the
-# pair it was meant for: hatching both headline lines also hid a tagline landing
-# on the first one, which was a real fault and is now fixed at the source. So it
-# goes on the second line only, leaving the first line still gated. It has to
-# sit on the element itself; on a container it is read but not applied.
+# pair it was meant for: hatching both headline lines once hid a card element
+# landing on the first one, which was a real fault. So it goes on the second
+# line only, leaving the first line still gated. It has to sit on the element
+# itself; on a container it is read but not applied.
 ALLOW_OVERLAP = " data-layout-allow-overlap"
 
 
@@ -213,12 +222,10 @@ def _scene_body(sc: dict, sid: str, rng: random.Random) -> str:
     if t == "card":
         legend = (f'<div id="{sid}-lg" class="eq-legend">{sc["legend"]}</div>'
                   if sc.get("legend") else "")
-        tag = (f'<div id="{sid}-tag" class="zerotag">{esc(sc["tagline"])}</div>'
-               if sc.get("tagline") else "")
         return (f'<div class="stage">{art}<div id="{sid}-card" class="card">'
                 f'<div class="card-top">{esc(sc.get("eyebrow","THE RULE"))}</div>'
                 f'<div id="{sid}-body" class="card-body">{sc["body"]}</div>{legend}</div>'
-                f'{tag}{_headline_block(sc, sid)}</div>')
+                f'{_headline_block(sc, sid)}</div>')
 
     if t == "metric":
         heads = "".join(f'<div id="{sid}-k{i}" class="kh{" kh-amber" if i else ""}"'
@@ -322,8 +329,6 @@ def _scene_tweens(sc: dict, sid: str, st: float, du: float, A) -> None:
           f'{{opacity:1,y:0,scale:1,duration:.55,ease:B}},{st+0.15:.2f});')
         if sc.get("legend"):
             A(f'tl.fromTo("#{sid}-lg",{{opacity:0,y:20}},{{opacity:1,y:0,duration:.4,ease:E}},{st+0.95:.2f});')
-        if sc.get("tagline"):
-            A(f'tl.fromTo("#{sid}-tag",{{opacity:0,y:28}},{{opacity:1,y:0,duration:.45,ease:E}},{st+1.35:.2f});')
         if sc.get("headline"):
             A(f'tl.fromTo("#{sid}-k",{{opacity:0,y:34}},{{opacity:1,y:0,duration:.45,ease:E}},{st+1.1:.2f});')
     elif t == "metric":
@@ -379,7 +384,7 @@ def _scene_tweens(sc: dict, sid: str, st: float, du: float, A) -> None:
         A(f'tl.fromTo("#{sid}-end .end-2",{{opacity:0,y:44}},{{opacity:1,y:0,duration:.45,ease:E}},{st+0.55:.2f});')
 
 
-CSS = """
+CSS = Template("""
       @font-face { font-family:"AntonL"; src:url("assets/fonts/anton-400.woff2") format("woff2"); font-weight:400; font-display:block; }
       @font-face { font-family:"InterL"; src:url("assets/fonts/inter-400.woff2") format("woff2"); font-weight:400; font-display:block; }
       @font-face { font-family:"InterL"; src:url("assets/fonts/inter-600.woff2") format("woff2"); font-weight:600; font-display:block; }
@@ -440,44 +445,48 @@ CSS = """
                  stroke-linejoin:round; }
       .kh { font-family:"AntonL", sans-serif; font-size:118px; line-height:.98; white-space:nowrap; letter-spacing:.01em; color:#F2F5FA; text-transform:uppercase; }
       .kh-amber { color:#F5B942; } .kh-cyan { color:#46E0FF; } .kh-red { color:#FF6161; }
-      .klines { position:absolute; left:78px; top:1160px; }
-      .badge { position:absolute; left:78px; top:760px; padding:22px 32px; border-radius:20px; background:rgba(9,16,30,.82); border:2px solid rgba(70,224,255,.35); }
+      .klines { position:absolute; left:78px; top:${headline}px; }
+      .badge { position:absolute; left:78px; top:700px; padding:22px 32px; border-radius:20px; background:rgba(9,16,30,.82); border:2px solid rgba(70,224,255,.35); }
       .badge-k { display:block; font-size:26px; letter-spacing:.26em; color:#46E0FF; font-weight:800; }
       .badge-v { display:block; margin-top:8px; font-size:76px; font-weight:800; color:#F2F5FA; }
       .badge-v b { font-family:"AntonL", sans-serif; font-weight:400; }
-      .card { position:absolute; left:78px; right:78px; top:590px; padding:56px 48px 52px; border-radius:34px; background:rgba(10,18,34,.9); border:2px solid rgba(138,150,172,.22); text-align:center; }
+      .card { position:absolute; left:78px; right:78px; top:520px; padding:56px 48px 52px; border-radius:34px; background:rgba(10,18,34,.9); border:2px solid rgba(138,150,172,.22); text-align:center; }
       .card-top { font-size:28px; letter-spacing:.3em; color:#8A96AC; font-weight:800; }
       .card-body { margin-top:34px; font-family:"AntonL", sans-serif; font-size:96px; line-height:1.05; color:#F2F5FA; }
       .card-body em { color:#46E0FF; font-style:normal; }
       .eq-legend { margin-top:30px; font-size:40px; color:#B9C4D6; font-weight:600; }
       .eq-legend em { color:#46E0FF; font-style:normal; font-weight:800; }
-      .zerotag { position:absolute; left:78px; right:78px; top:1032px; text-align:center; font-family:"AntonL", sans-serif; font-size:74px; color:#46E0FF; }
-      .meter { position:absolute; left:50%; transform:translateX(-50%); top:700px; min-width:620px; padding:30px 44px; border-radius:26px; text-align:center; background:rgba(9,16,30,.92); border:2px solid rgba(70,224,255,.35); }
+      .meter { position:absolute; left:50%; transform:translateX(-50%); top:640px; min-width:620px; padding:30px 44px; border-radius:26px; text-align:center; background:rgba(9,16,30,.92); border:2px solid rgba(70,224,255,.35); }
       .meter-k { font-size:24px; letter-spacing:.24em; color:#8A96AC; font-weight:800; }
       .meter-v { margin-top:10px; font-size:96px; color:#F2F5FA; font-weight:800; display:flex; align-items:baseline; justify-content:center; gap:14px; }
       .meter-v b { font-family:"AntonL", sans-serif; font-weight:400; }
       .meter-v span { font-size:46px; color:#8A96AC; }
       .meter-danger { border-color:rgba(255,90,90,.5); }
       .meter-danger .meter-v b { color:#FF6161; }
-      .stack { position:absolute; left:78px; right:78px; top:1000px; }
+      .stack { position:absolute; left:78px; right:78px; top:900px; }
       .slam { font-family:"AntonL", sans-serif; font-size:112px; line-height:1.04; white-space:nowrap; color:#F2F5FA; text-transform:uppercase; transform-origin:0% 50%; }
       .slam-amber { color:#F5B942; }
-      .cols { position:absolute; left:78px; right:78px; top:600px; display:flex; gap:36px; }
+      .cols { position:absolute; left:78px; right:78px; top:540px; display:flex; gap:36px; }
       .col { flex:1; padding:36px 26px; border-radius:28px; background:rgba(9,16,30,.85); border:2px solid rgba(138,150,172,.2); text-align:center; }
       .col-big { margin-top:22px; font-family:"AntonL", sans-serif; font-size:104px; color:#F2F5FA; line-height:1; }
       .col-lab { margin-top:16px; font-size:34px; color:#B9C4D6; font-weight:600; }
       .chip { display:inline-block; padding:12px 24px; border-radius:999px; font-size:32px; font-weight:800; letter-spacing:.06em; }
       .chip-ok { color:#5BE39A; background:rgba(12,40,28,.9); border:2px solid rgba(91,227,154,.45); }
       .chip-risk { color:#FF6161; background:rgba(46,12,12,.9); border:2px solid rgba(255,97,97,.5); }
-      .endcard { position:absolute; left:78px; right:78px; top:1150px; text-align:center; }
+      .endcard { position:absolute; left:78px; right:78px; top:${headline}px; text-align:center; }
       .end-1, .end-2 { font-family:"AntonL", sans-serif; font-size:124px; line-height:1.02; white-space:nowrap; }
       .end-1 { color:#F2F5FA; } .end-2 { color:#F5B942; }
-      #caps { position:absolute; left:64px; right:200px; bottom:320px; height:170px; }
-      .cap { position:absolute; left:0; right:0; bottom:0; text-align:center; opacity:0; }
-      .cap span { display:inline-block; padding:18px 30px; border-radius:20px; background:rgba(5,8,16,.78); font-size:48px; line-height:1.25; font-weight:700; color:#F2F5FA; box-shadow:0 10px 40px rgba(0,0,0,.45); }
+      /* Anchored to the TOP of the band, not the bottom. Bottom-anchored, a
+         three-line caption grows upward into the headline, so the gap between
+         them shrank exactly when there was most text to separate. Growing
+         downward instead keeps that gap fixed whatever the caption's length. */
+      #caps { position:absolute; left:64px; right:200px; top:${captop}px; height:${capheight}px; }
+      .cap { position:absolute; left:0; right:0; top:0; text-align:center; opacity:0; }
+      .cap span { display:inline-block; padding:16px 28px; border-radius:18px; background:rgba(5,8,16,.72); font-size:42px; line-height:1.28; font-weight:600; color:#E4EAF4; box-shadow:0 10px 40px rgba(0,0,0,.4); }
       #hud { position:absolute; left:0; right:0; top:0; height:8px; }
       #prog { position:absolute; inset:0; transform-origin:0% 50%; transform:scaleX(0); background:linear-gradient(90deg,#46E0FF,#F5B942); opacity:.85; }
-"""
+""").substitute(headline=ZONE_HEADLINE, captop=CAPTION_TOP,
+                capheight=CAPTION_HEIGHT)
 
 
 def build(spec: dict, timing: dict, out: Path, stock: dict | None = None,

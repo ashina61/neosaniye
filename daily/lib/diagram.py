@@ -13,7 +13,12 @@ from __future__ import annotations
 
 import html
 
-ART_TOP, ART_BOTTOM = 260, 1120
+# The art zone, in composition pixels, and the single definition of it: compose
+# lays the headline band out below ART_BOTTOM and motion_scene converts these
+# same two numbers into Manim units. Three copies of a layout constant is how
+# they drift apart.
+ART_TOP, ART_BOTTOM = 260, 1000
+FRAME_H = 1920
 MID_X = 540
 
 
