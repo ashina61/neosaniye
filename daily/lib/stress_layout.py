@@ -18,6 +18,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import compose      # noqa: E402
+import gates        # noqa: E402
 import motion       # noqa: E402
 import textfit      # noqa: E402
 
@@ -125,13 +126,9 @@ def main() -> int:
         r = subprocess.run(["npx", "--yes", "hyperframes", gate], cwd=proj,
                            capture_output=True, text=True, env=env, timeout=1800)
         out = r.stdout + r.stderr
-        # hyperframes reports either "N error(s), ..." or, when a gate finds
-        # nothing at all, "0 layout issues across N sample(s)" — treat both as
-        # the verdict, or a clean run reads as a missing one.
-        verdict = next((l for l in out.splitlines()
-                        if "error(s)" in l or "layout issues" in l), "no verdict")
-        print(f"  {gate}: {verdict.strip()}")
-        if "0 error(s)" not in out and "0 layout issues" not in out:
+        ok, verdict = gates.verdict(out)
+        print(f"  {gate}: {verdict}")
+        if not ok:
             failed = True
             for line in out.splitlines():
                 if line.strip().startswith("✗"):

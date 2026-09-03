@@ -16,6 +16,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import compose            # noqa: E402
+import gates              # noqa: E402
 import motion             # noqa: E402
 import narrate            # noqa: E402
 import score              # noqa: E402
@@ -43,10 +44,11 @@ def render_env() -> dict:
 
 def gate(name: str, proc: subprocess.CompletedProcess) -> None:
     out = proc.stdout + proc.stderr
-    if "0 error(s)" not in out:
+    ok, line = gates.verdict(out)
+    if not ok:
         tail = "\n".join(l for l in out.splitlines() if l.strip().startswith(("✗", "◇")))
-        raise RuntimeError(f"{name} gate failed:\n{tail or out[-1200:]}")
-    print(f"  {name}: clean")
+        raise RuntimeError(f"{name} gate failed ({line}):\n{tail or out[-1200:]}")
+    print(f"  {name}: clean — {line}")
 
 
 def build(spec_path: Path, work_root: Path | None = None) -> Path:
