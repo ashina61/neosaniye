@@ -1,0 +1,160 @@
+slug: altin-neden-en-degerli
+title: Why Is Gold the Most Valuable Metal?
+stock_fallback: gold bullion coins
+duration: 60.0
+mood: curious
+seed: 6023187
+script:
+- Gold is the most valuable metal.
+- This is not just because it is rare.
+- 'Three properties make gold unique: its high density, corrosion resistance, and unique luster.'
+- Gold atoms are tightly packed, giving it a high density.
+- This means more mass is in a smaller volume than other metals.
+- It resists chemical reactions, so it does not rust or tarnish.
+- This corrosion resistance keeps gold pure over long periods.
+- Gold reflects light in a specific way, giving it a unique shine.
+- This luster is why it stands out from other elements.
+- The density and resistance make gold a stable element.
+- Gold is a rare element because of its high density, corrosion resistance, and unique luster.
+- These properties ensure gold remains stable and attractive.
+- Other metals like silver can tarnish and lose their shine.
+- Its lasting beauty and stability give gold its value.
+- This is why gold is the most valuable metal.
+scenes:
+- type: hook
+  motif: rings
+  stock: gold bars stack
+  headline:
+  - GOLD IS THE
+  - MOST VALUABLE
+- type: statement
+  motif: wave
+  headline:
+  - NOT JUST
+  - BECAUSE IT'S RARE
+  stock: gold bullion coins
+- type: list
+  motif: split
+  items:
+  - HIGH DENSITY
+  - CORROSION RESIST
+  - UNIQUE LUSTER
+  stock: gold bullion coins
+- type: diagram
+  shape: layers
+  headline:
+  - HIGH DENSITY
+  - TIGHTLY PACKED
+  layers:
+  - label: GOLD ATOM
+    note: high atomic mass
+  - label: GOLD ATOM
+    note: packed tightly together
+  - label: GOLD ATOM
+    note: more mass in volume
+- type: motion
+  shape: orbit
+  headline:
+  - MORE MASS IN
+  - SMALLER VOLUME
+  center: GOLD
+  satellite: MASS
+  marks:
+  - HIGH DENSITY
+  note: atoms are very close
+- type: diagram
+  shape: route
+  headline:
+  - CORROSION
+  - RESISTANCE
+  from: GOLD SURFACE
+  to: STABLE STATE
+  routes:
+  - label: react with oxygen
+    state: blocked
+  - label: remain unreactive
+    state: open
+- type: motion
+  shape: circuit
+  headline:
+  - IT DOES NOT
+  - RUST OR TARNISH
+  from: GOLD
+  to: GOLD
+  flow_label: purity is maintained
+  branch:
+    label: no degradation pathway
+- type: motion
+  shape: rays
+  headline:
+  - UNIQUE
+  - LUSTER
+  medium: GOLD SURFACE
+  incoming: WHITE LIGHT
+  outgoing:
+  - label: YELLOW LIGHT
+  - label: RED LIGHT
+- type: statement
+  motif: beam
+  stock: gold jewelry close
+  headline:
+  - IT REFLECTS
+  - LIGHT UNIQUELY
+- type: card
+  eyebrow: THE MECHANISM
+  body: GOLD IS A <em>RARE</em> ELEMENT
+  legend: due to its density, resistance, and luster
+  headline:
+  - A STABLE
+  - ELEMENT
+  stock: gold bullion coins
+- type: card
+  eyebrow: THE MECHANISM
+  body: GOLD IS A <em>RARE</em> ELEMENT
+  legend: due to its density, resistance, and luster
+  headline:
+  - WHY GOLD
+  - IS VALUABLE
+- type: metric
+  label: GOLD PURITY
+  count_to: 100
+  unit: '%'
+  headline:
+  - STABLE AND
+  - ATTRACTIVE
+- type: compare
+  headline:
+  - OTHER METALS
+  - LOSE SHINE
+  columns:
+  - chip: GOLD
+    value: LASTING
+    label: retains luster
+  - chip: SILVER
+    value: TARNSH
+    label: oxidizes over time
+    risk: true
+- type: statement
+  motif: particles
+  stock: gold coins pile
+  headline:
+  - ITS LASTING
+  - BEAUTY AND STABILITY
+- type: endcard
+  motif: rings
+  lines:
+  - THE MOST
+  - VALUABLE METAL
+copy:
+  title: 'Why Is Gold the Most Valuable Metal? #Shorts'
+  hook: Gold's value isn't just about rarity; it's unique density, corrosion resistance, and luster make it truly special.
+  caption: Gold stands out as the most valuable metal due to its exceptional properties. Its high density means more mass in a smaller volume. Gold's corrosion resistance prevents it from tarnishing or
+    reacting with other elements, maintaining its purity. Finally, its unique luster, a specific way it reflects light, gives it an unparalleled shine that lasts. These combined characteristics make gold
+    a rare and highly sought-after element.
+  hashtags:
+  - gold
+  - science
+  - elements
+  - chemistry
+  - preciousmetals
+  - explained
