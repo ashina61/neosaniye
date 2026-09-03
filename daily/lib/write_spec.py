@@ -109,9 +109,22 @@ def beat_plan(beats: int) -> str:
     # on the optional closers
     extras = max(0, min(len(_OPTIONAL), beats - 8))
     rows = list(_OPENING)
+    cycle = 0
     for i in range(beats - 6 - extras):
-        rows.append((f"part {i + 1}", "one step of the mechanism, in order",
-                     _MIDDLE[i % len(_MIDDLE)]))
+        # The plan must satisfy the same no-two-in-a-row rule the validator
+        # applies, including where the last middle beat meets the card that
+        # follows it — at sixteen beats it used to hand the model two cards
+        # back to back and then reject the model for writing them.
+        nxt = rows[i + 1][2] if i + 1 < len(rows) else None
+        for step in range(len(_MIDDLE)):
+            pick = _MIDDLE[(cycle + step) % len(_MIDDLE)]
+            if pick != rows[-1][2] and not (
+                    i == beats - 7 - extras and pick == _RULE[2]):
+                cycle = (cycle + step + 1) % len(_MIDDLE)
+                break
+        rows.append((f"part {i + 1}",
+                     "one part of the mechanism the beats before it have not covered",
+                     pick))
     rows.append(_RULE)
     if extras >= 1:
         rows.append(_OPTIONAL[0])
@@ -146,6 +159,29 @@ Beat shape, with the scene each beat wants. Follow it unless the topic gives
 you a better reason, and if you depart from it keep the same variety:
 {plan}
 
+THE MIDDLE BEATS. Those numbered parts are the explanation, and they come in
+two shapes. Work out which one this topic has before you write them:
+
+  a CHAIN — one thing causes the next, which causes the next. Each part is a
+      step, and they only make sense in order.
+  a SET — several independent reasons or properties that happen to be true at
+      once. Each part stands alone and the order is yours to choose.
+
+Getting this wrong is what makes a video repeat itself. A topic with three
+reasons cannot fill seven chain-steps, so it ends up saying each reason twice
+in different words.
+
+NEVER RESTATE. Every beat must add something the beats before it did not. If
+you find yourself writing "this means", "in other words" or a sentence that a
+reader who saw the previous beat could already predict, that beat is wasted —
+replace it with something new, or use fewer beats and say more in each. A
+shorter script that never repeats itself is better than a full one that does.
+
+SWAP A SCENE THAT DOES NOT FIT. The plan above suggests a scene for each beat,
+but a `metric` needs a real number this topic actually has, and a `compare`
+needs two cases genuinely worth putting side by side. If the beat has neither,
+use a different scene rather than inventing a number or a comparison.
+
 Voice: plain, short sentences, present tense. Say the mechanism, not a metaphor
 for it. No filler adjectives, no hedging, no "basically", no exclamation marks.
 Every sentence must be defensible as written; if you are unsure of a number,
@@ -173,7 +209,8 @@ For each beat also give a scene:
          word in <em></em> to accent it.
   label/unit/count_to: for metric.
   columns: for compare, exactly 2, each {{chip, value, label}}; value at most 8
-         characters, uppercase.
+         characters, uppercase. Never abbreviate or misspell a word to fit a
+         cap — "TARNSH" is not a word. Pick a shorter real one.
   shape + its fields: for diagram. See below.
 
 DRAWN BEATS. Between {dmin} and {dmax} of the {beats} beats must draw the
@@ -401,6 +438,55 @@ def repair(d: dict, topic: dict, stock_min: int = 4) -> list[str]:
     return fixed
 
 
+# Words too common to say anything about what a beat is about.
+_STOP = frozenset(
+    "the a an is are was were be been it its this that these those of to in on at for with "
+    "and or but so as by from into than then them they there their you your we our not no "
+    "do does did has have had can could will would more most other which what why how when "
+    "where because make makes made give gives given".split())
+# Two beats sharing this much of their content words are saying the same thing.
+# Calibrated against real scripts: the gold video's worst pair scored 0.64 (both
+# beats listed the same three properties), while videos that read well top out
+# at 0.33. The hook and the payoff are exempt — the payoff is *told* to echo it.
+SAME_BEAT = 0.45
+
+
+def _content(line: str) -> set:
+    return {w for w in re.findall(r"[a-z]+", line.lower())
+            if w not in _STOP and len(w) > 2}
+
+
+# A thoroughly repetitive fifteen-beat script has a hundred offending pairs, and
+# feeding all of them back would bury every other problem in the retry prompt.
+# The worst few make the point.
+MAX_RESTATED = 3
+
+
+def _restated(script: list[str]) -> list[str]:
+    """The beats that most clearly make the same point twice."""
+    n = len(script)
+    pairs = []
+    for i in range(n):
+        for j in range(i + 1, n):
+            if i == 0 and j == n - 1:
+                continue                      # the payoff is meant to echo the hook
+            a, b = _content(script[i]), _content(script[j])
+            if not a or not b:
+                continue
+            overlap = len(a & b) / len(a | b)
+            if overlap >= SAME_BEAT:
+                pairs.append((overlap, i + 1, j + 1))
+    pairs.sort(reverse=True)
+    errs = [f"beats {i} and {j} say the same thing ({v:.0%} of the same words) — "
+            f"every beat has to add something the ones before it did not. Replace "
+            f"one or cut to fewer beats" for v, i, j in pairs[:MAX_RESTATED]]
+    if len(pairs) > MAX_RESTATED:
+        errs.append(f"...and {len(pairs) - MAX_RESTATED} more pairs of beats that "
+                    f"repeat each other. The script is padded — say fewer things "
+                    f"properly rather than the same thing many ways")
+    return errs
+
+
 def _plain(s: str) -> str:
     return re.sub(r"<[^>]+>", "", s or "")
 
@@ -429,15 +515,20 @@ def validate(d: dict, b: dict | None = None) -> list[str]:
         errs.append(f"script is {words} words, needs at most {b['wmax']} — cut about "
                     f"{words - b['wmax'] + 4}")
 
+    errs += _restated(script)
+
     runs = 0
     for i, sc in enumerate(scenes, 1):
         t = sc.get("type")
         if t not in SCENE_TYPES:
             errs.append(f"scene {i}: type {t!r} is not one of {SCENE_TYPES}")
             continue
+        # No two neighbours of the same kind, whatever the kind. The rule used to
+        # cover `statement` only, and the gold video put two identical `card`
+        # panels back to back because nothing said it could not.
+        if i > 1 and t == scenes[i - 2].get("type"):
+            errs.append(f"scene {i}: two `{t}` scenes in a row — vary the types")
         runs = runs + 1 if t == "statement" else 0
-        if runs > 1:
-            errs.append(f"scene {i}: two `statement` scenes in a row — vary the types")
         if sc.get("motif") and sc["motif"] not in MOTIFS:
             errs.append(f"scene {i}: motif {sc['motif']!r} is not one of {MOTIFS}")
         if t in ("hook", "statement", "endcard", "card", "compare", "metric"):
