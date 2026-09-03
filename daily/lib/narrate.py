@@ -13,6 +13,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import rates                     # noqa: E402
 import tts                       # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -163,6 +164,9 @@ def build(lines: list[str], target: float, work: Path,
         durs = _speed_up(work / "lines", len(lines), e.speed)
         timing = plan(lines, durs, target, weights)
     timing["engine"] = engine
+    # What this engine really did, so the next script is budgeted from a
+    # measurement rather than from a guess about the voice that will read it.
+    rates.record(engine, sum(len(l.split()) for l in lines), sum(durs))
     assemble(timing["beats"], work / "lines", target, work / "vo.wav")
     (work / "timing.json").write_text(json.dumps(timing, indent=1))
     return timing

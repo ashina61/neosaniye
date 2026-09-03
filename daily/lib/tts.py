@@ -37,20 +37,23 @@ GEMINI_TTS_MODELS = ["gemini-2.5-flash-preview-tts",
 URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 GEMINI_VOICE = "Charon"          # informative male narrator
 STYLE = ("Read this line as a confident science documentary narrator: "
-         "calm, clear, unhurried, no rising question intonation. Say only the line.\n\n")
+         "clear and brisk, the pace of a good explainer rather than a meditation. No rising question intonation. Say only the line.\n\n")
 # One request for the whole script instead of one per beat. Quota is charged per
 # request, so this is the difference between a free tier that cannot finish a
 # single video and one that can carry two a day. The take is cut locally.
 SCRIPT_STYLE = (
-    "Read the following as a confident science documentary narrator: calm, clear,"
-    " unhurried, no rising question intonation.\n"
+    "Read the following as a confident science narrator: clear and brisk, the"
+    " pace of a good explainer rather than a meditation. Keep it moving — this"
+    " is a forty-second short, not a documentary. No rising question"
+    " intonation.\n"
     "Leave a distinct pause of about one second between paragraphs — longer than"
     " any pause inside a sentence.\n"
     "Read only the words themselves.\n\n")
 
 SCRIPT_STYLE_INSISTENT = (
-    "Read the following as a confident science documentary narrator: calm,"
-    " clear, unhurried, no rising question intonation.\n"
+    "Read the following as a confident science narrator: clear and brisk, the"
+    " pace of a good explainer rather than a meditation. No rising question"
+    " intonation.\n"
     "CRITICAL: the paragraphs are separate lines of narration. Stop completely"
     " between them and stay silent for a full second before starting the next"
     " one. This silence matters more than the pacing: without it the recording"

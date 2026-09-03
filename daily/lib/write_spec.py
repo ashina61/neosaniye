@@ -21,7 +21,9 @@ import yaml
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import motion                    # noqa: E402
 import narrate                   # noqa: E402
+import rates                     # noqa: E402
 import textfit                   # noqa: E402
+import tts                       # noqa: E402
 
 MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-flash-latest"]
 URL = "https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent"
@@ -33,11 +35,6 @@ URL = "https://generativelanguage.googleapis.com/v1beta/models/{m}:generateConte
 # being mostly silence at one end or unreadably dense at the other; narrate.plan
 # spreads any slack into the gaps, so a few words under is a worse video, not a
 # broken one, and not worth spending a free-tier attempt on.
-# Words a second of actual speech, measured by running 40 beats of the scripts
-# already produced through the local voice: 397 words in 125.05s. The narration
-# engine can change under us, so this is deliberately on the slow side of what
-# was measured, and narrate can still rescue a take that comes out a little long.
-WORDS_PER_SECOND = 3.0
 # How much of the time available for speech to actually fill. The rest becomes
 # the pauses between beats; at 1.0 the narration would run wall to wall with
 # only the minimum gap anywhere, which is breathless.
@@ -45,7 +42,7 @@ SPEECH_SHARE = 0.85
 BEAT_SECONDS = 4.0             # a beat much longer than this stops feeling like a short
 
 
-def budgets(duration: float) -> dict:
+def budgets(duration: float, wps: float | None = None) -> dict:
     """Every count this prompt and validator need, for a cut of `duration`.
 
     The word budget is derived from the time actually available for speech —
@@ -53,15 +50,21 @@ def budgets(duration: float) -> dict:
     of beats — rather than from the cut's length. Those are not the same number
     and treating them as one is how a 60-second script came out 13 seconds too
     long to fit in 60 seconds.
+
+    `wps` is how fast the voice that will read it talks. It is not a constant:
+    the local voice runs at 3.18 words a second and Gemini at about 1.9, so a
+    script written for one is unusable by the other. See narration_rate().
     """
+    wps = wps or rates.words_per_second("piper")
     beats = max(8, min(16, round(duration / BEAT_SECONDS)))
     speech = duration - narrate.HEAD - narrate.TAIL - narrate.MIN_GAP * (beats - 1)
-    target_words = speech * SPEECH_SHARE * WORDS_PER_SECOND
+    target_words = speech * SPEECH_SHARE * wps
     # never let the ceiling reach the point where the narration cannot physically
     # fit, whatever share of the gaps it eats
-    ceiling = round(speech * WORDS_PER_SECOND) - 4
+    ceiling = round(speech * wps) - 4
     return {
         "beats": beats,
+        "wps": wps,
         "wmin": round(target_words * 0.88),
         "wmax": min(round(target_words * 1.12), ceiling),
         "drawn_min": max(2, round(beats * 0.25)),
@@ -736,11 +739,12 @@ def _ask_text(prompt: str, key: str) -> str:
     raise DraftFailed("no Gemini model answered — " + " | ".join(problems))
 
 
-def draft(topic: dict, attempts: int = 4, duration: float = 40.0) -> dict:
+def draft(topic: dict, attempts: int = 4, duration: float = 40.0,
+          wps: float | None = None) -> dict:
     key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
     if not key:
         raise RuntimeError("GEMINI_API_KEY is not set")
-    b = budgets(duration)
+    b = budgets(duration, wps)
     base = PROMPT.format(question=topic["question"], mechanism=topic["mechanism"],
                          seconds=duration, plan=beat_plan(b["beats"]),
                          beats=b["beats"], wmin=b["wmin"], wmax=b["wmax"],
@@ -823,6 +827,22 @@ Return only that sentence."""
 _FOLD = str.maketrans("ıİĞğŞşÇçÖöÜü", "iIGgSsCcOoUu")
 
 
+def narration_rate() -> tuple[str, float]:
+    """The engine that will most likely read this, and how fast it talks.
+
+    Deliberately no probe call: a probe is another TTS request against the same
+    free quota, and it could be the one that tips a run into a 429. So the
+    engine is inferred from configuration, and the inference errs slow. If a
+    Gemini key is present the script is budgeted for Gemini even though the run
+    may end up falling back — budgeting slow and being served fast only leaves
+    a little more silence, while the reverse loses the run.
+    """
+    engine = "piper" if tts.configured_engine() == "piper" or not (
+        os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+    ) else "gemini"
+    return engine, rates.words_per_second(engine)
+
+
 def slugify(question: str) -> str:
     flat = unicodedata.normalize("NFKD", question.translate(_FOLD))
     flat = "".join(c for c in flat if not unicodedata.combining(c))
@@ -880,7 +900,9 @@ def main() -> int:
     else:
         topic = topics_queue.take(1)[0]
     print(f"  topic: {topic['id']} — {topic['question']}")
-    spec = to_spec(topic, draft(topic, duration=a.duration), a.duration)
+    engine, wps = narration_rate()
+    print(f"  narration: {engine} at {wps} words/s — budgeting the script for it")
+    spec = to_spec(topic, draft(topic, duration=a.duration, wps=wps), a.duration)
     out = a.out or Path(__file__).resolve().parents[1] / "specs" / f"{topic['id']}.yaml"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(yaml.safe_dump(spec, sort_keys=False, allow_unicode=True, width=200))
