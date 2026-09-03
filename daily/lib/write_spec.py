@@ -11,6 +11,7 @@ import json
 import os
 import re
 import sys
+import unicodedata
 import zlib
 from pathlib import Path
 
@@ -24,36 +25,87 @@ import textfit                   # noqa: E402
 MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-flash-latest"]
 URL = "https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent"
 
-BEATS = 10
-# The floor is what keeps a 40-second cut from being mostly silence; narrate.plan
+# Everything below is derived from the target length rather than fixed at the
+# 40 seconds this started as. The rates come from the videos already made: five
+# 40-second cuts came in at 98-101 words and a 30-second one at 74, which is
+# 2.5 words a second either way. The band around that is what keeps a cut from
+# being mostly silence at one end or unreadably dense at the other; narrate.plan
 # spreads any slack into the gaps, so a few words under is a worse video, not a
-# broken one, and is not worth spending a free-tier attempt on.
-WORDS_MIN, WORDS_MAX = 88, 115
+# broken one, and not worth spending a free-tier attempt on.
+WORDS_PER_SECOND = 2.5
+BEAT_SECONDS = 4.0             # a beat much longer than this stops feeling like a short
+
+
+def budgets(duration: float) -> dict:
+    """Every count this prompt and validator need, for a cut of `duration`.
+
+    At 40 seconds these reproduce the numbers the format was tuned with:
+    10 beats, 88-116 words, 2-4 drawn, at most 3 statements, at least 4 stock.
+    """
+    beats = max(8, min(16, round(duration / BEAT_SECONDS)))
+    return {
+        "beats": beats,
+        "wmin": round(duration * WORDS_PER_SECOND * 0.88),
+        "wmax": round(duration * WORDS_PER_SECOND * 1.16),
+        "drawn_min": max(2, round(beats * 0.25)),
+        "drawn_max": max(3, round(beats * 0.40)),
+        "motion_max": max(2, beats // 5),
+        "statement_max": max(2, beats // 3),
+        "stock_min": max(3, round(beats * 0.40)),
+    }
 HEADLINE_MAX = 16          # characters; headlines are nowrap in a condensed face
 # Stock coverage is counted over the scenes that can carry footage. Raising the
 # floor across all ten only bought generic b-roll: a library has a wing, not a
 # cross-section of a window, so the beats that need a cross-section get a
 # diagram and the rest carry real footage.
-# Real footage keeps the video from reading as a slideshow, but padding up to a
-# number with generic b-roll is what made the early videos worse, so the floor
-# is low and repair() meets it with the topic's own fallback query rather than
-# the draft being rejected over it.
-MIN_STOCK = 4              # of the scenes that can take footage
-# A `statement` is a headline over footage and nothing else. Banning three in a
-# row still permitted five per video, which is what every early video did, and
-# is why they all looked alike. Capping the count forces the panel types and the
-# diagrams to carry their share of the frames.
-MAX_STATEMENT = 3
 SCENE_TYPES = ["hook", "statement", "card", "metric", "list", "compare",
                "diagram", "motion", "endcard"]
+
+# The dramatic spine, which does not change with length: a hook, the assumption
+# it creates overturned, the parts named, then the mechanism, then what follows
+# from it, where it breaks, why it matters, and a landing. Only the number of
+# mechanism beats in the middle grows with the running time — stretching the
+# same ten beats over a minute makes each one slow, which is the one thing a
+# short cannot be.
+_OPENING = [("hook", "the surprising fact, stated flat. No \"did you know\", no question", "hook"),
+            ("reframe", "overturn the assumption the hook creates", "statement"),
+            ("setup", "name the parts of the mechanism", "list")]
+_RULE = ("the rule", "the one sentence that does the explaining", "card")
+_TURN = ("the turn", "the case where it breaks, or the limit", "compare")
+_PAYOFF = ("payoff", "land it, echoing the hook's language", "endcard")
+# Dropped first when the cut is short. The six beats around them are the spine
+# proper; these two are the ones an eight-beat cut can do without, and it has
+# to — a spine that fills every beat leaves nothing in the middle to draw.
+_OPTIONAL = [("consequence", "what follows from the rule", "metric"),
+             ("why that matters", "", "statement")]
+# what each middle beat wants, cycled so seven of them do not look alike
+_MIDDLE = ["diagram", "motion", "diagram", "compare", "metric", "diagram",
+           "motion", "card"]
+
+
+def beat_plan(beats: int) -> str:
+    # keep at least two mechanism beats in the middle, then spend what is left
+    # on the optional closers
+    extras = max(0, min(len(_OPTIONAL), beats - 8))
+    rows = list(_OPENING)
+    for i in range(beats - 6 - extras):
+        rows.append((f"part {i + 1}", "one step of the mechanism, in order",
+                     _MIDDLE[i % len(_MIDDLE)]))
+    rows.append(_RULE)
+    if extras >= 1:
+        rows.append(_OPTIONAL[0])
+    rows.append(_TURN)
+    if extras >= 2:
+        rows.append(_OPTIONAL[1])
+    rows.append(_PAYOFF)
+    w = max(len(n) for n, _d, _s in rows)
+    return "\n".join(
+        f"{i:2d} {name:<{w}}  {('- ' + desc) if desc else '':<52} scene: {scene}"
+        for i, (name, desc, scene) in enumerate(rows, 1))
 MOTIFS = ["wave", "rings", "beam", "split", "particles"]
 SHAPES = ["layers", "route", "flow"]
 MOTION_SHAPES = ["circuit", "wave", "rays", "orbit"]
-# A drawn beat is a diagram or a motion clip. Both count: what matters is that
-# the mechanism beats draw the mechanism, not which renderer does it.
-MIN_DRAWN, MAX_DRAWN = 2, 4
-
-PROMPT = """You are writing a 40-second vertical science short. It must teach one
+PROMPT = """You are writing a {seconds:.0f}-second vertical science short. It must teach one
 mechanism clearly enough that a viewer can repeat the explanation afterwards.
 
 TOPIC: {question}
@@ -63,17 +115,7 @@ Write exactly {beats} narration beats, {wmin}-{wmax} words in total.
 
 Beat shape, with the scene each beat wants. Follow it unless the topic gives
 you a better reason, and if you depart from it keep the same variety:
- 1 hook      - the surprising fact, stated flat. No "did you know", no question.
-               scene: hook
- 2 reframe   - overturn the assumption the hook creates.        scene: statement
- 3 setup     - name the parts of the mechanism.                 scene: list
- 4 first part.                                                  scene: diagram
- 5 second part.                                                 scene: diagram
- 6 the rule  - the one sentence that does the explaining.        scene: card
- 7 consequence - what follows from the rule.                    scene: metric
- 8 the turn  - the case where it breaks, or the limit.          scene: compare
- 9 why that matters.                                            scene: statement
-10 payoff    - land it, echoing the hook's language.            scene: endcard
+{plan}
 
 Voice: plain, short sentences, present tense. Say the mechanism, not a metaphor
 for it. No filler adjectives, no hedging, no "basically", no exclamation marks.
@@ -119,7 +161,7 @@ put one kind's shape on the other kind's type.
 
 `motion` scenes are animated. Use one when the mechanism IS a movement -
 something travelling, cycling, spreading or splitting. Prefer motion over a
-static diagram whenever the topic has a moving part; at most two per video.
+static diagram whenever the topic has a moving part; at most {mmax} per video.
 
   "circuit" - something flowing from A to B, and a way it does not go. Current,
       heat, air, water, a signal. The blocked branch is the point.
@@ -283,7 +325,7 @@ SCHEMA = {
 }
 
 
-def repair(d: dict, topic: dict) -> list[str]:
+def repair(d: dict, topic: dict, stock_min: int = 4) -> list[str]:
     """Fix what is mechanically fixable, before anything is rejected over it.
 
     Four attempts against a free-tier key is not much headroom, and it was being
@@ -320,7 +362,7 @@ def repair(d: dict, topic: dict) -> list[str]:
         can = [sc for sc in scenes if sc.get("type") not in ("diagram", "motion", "endcard")]
         have = sum(1 for sc in can if (sc.get("stock") or "").strip())
         for sc in can:
-            if have >= MIN_STOCK:
+            if have >= stock_min:
                 break
             if not (sc.get("stock") or "").strip():
                 sc["stock"] = fallback
@@ -334,8 +376,14 @@ def _plain(s: str) -> str:
     return re.sub(r"<[^>]+>", "", s or "")
 
 
-def validate(d: dict) -> list[str]:
-    """Every house rule, checked. Returns the problems, empty when clean."""
+def validate(d: dict, b: dict | None = None) -> list[str]:
+    """Every house rule, checked. Returns the problems, empty when clean.
+
+    `b` is the budget table for this video's length; it defaults to the
+    40-second one so a caller that does not care about length need not pass it.
+    """
+    b = b or budgets(40.0)
+    BEATS = b["beats"]
     errs: list[str] = []
     script = d.get("script") or []
     scenes = d.get("scenes") or []
@@ -344,13 +392,13 @@ def validate(d: dict) -> list[str]:
     if len(scenes) != BEATS:
         errs.append(f"scenes has {len(scenes)} entries, needs exactly {BEATS}")
     words = sum(len(b.split()) for b in script)
-    if words < WORDS_MIN:
-        errs.append(f"script is {words} words, needs at least {WORDS_MIN} — add about "
-                    f"{WORDS_MIN - words + 4} more, spread across the beats that "
+    if words < b["wmin"]:
+        errs.append(f"script is {words} words, needs at least {b['wmin']} — add about "
+                    f"{b['wmin'] - words + 4} more, spread across the beats that "
                     f"carry the mechanism, not the hook")
-    elif words > WORDS_MAX:
-        errs.append(f"script is {words} words, needs at most {WORDS_MAX} — cut about "
-                    f"{words - WORDS_MAX + 4}")
+    elif words > b["wmax"]:
+        errs.append(f"script is {words} words, needs at most {b['wmax']} — cut about "
+                    f"{words - b['wmax'] + 4}")
 
     runs = 0
     for i, sc in enumerate(scenes, 1):
@@ -403,26 +451,26 @@ def validate(d: dict) -> list[str]:
     DRAWN = ("diagram", "motion")
     footage_scenes = [sc for sc in scenes if sc.get("type") not in DRAWN]
     with_stock = sum(1 for sc in footage_scenes if (sc.get("stock") or "").strip())
-    if footage_scenes and with_stock < MIN_STOCK:
+    if footage_scenes and with_stock < b["stock_min"]:
         errs.append(f"only {with_stock} of the {len(footage_scenes)} non-diagram "
-                    f"scenes carry a stock query, need at least {MIN_STOCK} — "
+                    f"scenes carry a stock query, need at least {b['stock_min']} — "
                     f"this is a footage-led format")
 
     statements = sum(1 for sc in scenes if sc.get("type") == "statement")
-    if statements > MAX_STATEMENT:
-        errs.append(f"{statements} `statement` scenes, at most {MAX_STATEMENT} — "
+    if statements > b["statement_max"]:
+        errs.append(f"{statements} `statement` scenes, at most {b['statement_max']} — "
                     f"a statement is a headline over footage, and a video made "
                     f"mostly of them is ten frames with one layout")
 
     drawn = len(scenes) - len(footage_scenes)
-    if scenes and not MIN_DRAWN <= drawn <= MAX_DRAWN:
+    if scenes and not b["drawn_min"] <= drawn <= b["drawn_max"]:
         errs.append(f"{drawn} drawn scenes (diagram + motion), need "
-                    f"{MIN_DRAWN}-{MAX_DRAWN} — the mechanism beats have to "
-                    f"draw the mechanism")
+                    f"{b['drawn_min']}-{b['drawn_max']} — the mechanism beats "
+                    f"have to draw the mechanism")
     motions = sum(1 for sc in scenes if sc.get("type") == "motion")
-    if motions > 2:
-        errs.append(f"{motions} `motion` scenes, at most 2 — each one is a "
-                    f"separate render and they slow the whole video down")
+    if motions > b["motion_max"]:
+        errs.append(f"{motions} `motion` scenes, at most {b['motion_max']} — each "
+                    f"one is a separate render and they slow the whole video down")
 
     if d.get("title") and len(d["title"]) > 100:
         errs.append(f"title is {len(d['title'])} chars, YouTube allows 100")
@@ -639,15 +687,41 @@ def _ask(prompt: str, key: str) -> dict:
     raise DraftFailed("no Gemini model produced usable JSON — " + " | ".join(problems))
 
 
-def draft(topic: dict, attempts: int = 4) -> dict:
+def _ask_text(prompt: str, key: str) -> str:
+    """One short plain-text answer. Same models and fallbacks as _ask."""
+    problems = []
+    for m in MODELS:
+        cfg = {"temperature": 0.3, "maxOutputTokens": 2048}
+        if m.startswith("gemini-2.5"):
+            cfg["thinkingConfig"] = {"thinkingBudget": 0}
+        try:
+            r = requests.post(URL.format(m=m), params={"key": key}, timeout=120, json={
+                "contents": [{"parts": [{"text": prompt}]}], "generationConfig": cfg})
+        except requests.RequestException as e:
+            problems.append(f"{m}: {type(e).__name__}")
+            continue
+        if r.status_code != 200:
+            problems.append(f"{m}: HTTP {r.status_code} {r.text[:160]}")
+            continue
+        parts = ((r.json().get("candidates") or [{}])[0].get("content") or {}).get("parts") or []
+        text = (parts[0].get("text") if parts else "") or ""
+        if text.strip():
+            return text.strip()
+        problems.append(f"{m}: empty answer")
+    raise DraftFailed("no Gemini model answered — " + " | ".join(problems))
+
+
+def draft(topic: dict, attempts: int = 4, duration: float = 40.0) -> dict:
     key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
     if not key:
         raise RuntimeError("GEMINI_API_KEY is not set")
+    b = budgets(duration)
     base = PROMPT.format(question=topic["question"], mechanism=topic["mechanism"],
-                         beats=BEATS, wmin=WORDS_MIN, wmax=WORDS_MAX,
+                         seconds=duration, plan=beat_plan(b["beats"]),
+                         beats=b["beats"], wmin=b["wmin"], wmax=b["wmax"],
                          types=SCENE_TYPES, motifs=MOTIFS, hmax=HEADLINE_MAX,
-                         dmin=MIN_DRAWN, dmax=MAX_DRAWN,
-                         smax=MAX_STATEMENT,
+                         dmin=b["drawn_min"], dmax=b["drawn_max"],
+                         smax=b["statement_max"], mmax=b["motion_max"],
                          # the caps the model is told are the caps the
                          # validator measures, so the two cannot drift apart
                          mnode=motion.CAPS["node"], mflow=motion.CAPS["flow"],
@@ -663,14 +737,14 @@ def draft(topic: dict, attempts: int = 4) -> dict:
     for n in range(1, attempts + 1):
         try:
             d = _ask(prompt, key)
-            for note in repair(d, topic):
+            for note in repair(d, topic, b["stock_min"]):
                 print(f"    repaired: {note}")
         except DraftFailed as e:
             problems = [str(e)]
             print(f"    attempt {n} failed: {e}")
             prompt = base          # a malformed reply teaches nothing; start clean
             continue
-        problems = validate(d)
+        problems = validate(d, b)
         if not problems:
             print(f"    draft accepted on attempt {n}")
             return d
@@ -706,21 +780,79 @@ def to_spec(topic: dict, d: dict, duration: float = 40.0) -> dict:
                      "caption": d["caption"], "hashtags": d["hashtags"]}}
 
 
+MECHANISM_PROMPT = """In one sentence of at most 25 words, state the actual physical
+or biological mechanism that answers this question. No preamble, no hedging, no
+restating the question — just the mechanism, as a claim you would defend.
+
+QUESTION: {question}
+
+Return only that sentence."""
+
+
+# Turkish is the language topics arrive in even though the video is in English.
+# NFKD decomposes most of it (ö, ü, ç, ş, ğ) but not the dotless ı, which is a
+# letter in its own right rather than an i with something removed.
+_FOLD = str.maketrans("ıİĞğŞşÇçÖöÜü", "iIGgSsCcOoUu")
+
+
+def slugify(question: str) -> str:
+    flat = unicodedata.normalize("NFKD", question.translate(_FOLD))
+    flat = "".join(c for c in flat if not unicodedata.combining(c))
+    words = re.findall(r"[a-z0-9]+", flat.lower())
+    drop = {"why", "what", "how", "does", "do", "is", "are", "the", "a", "an",
+            "you", "your", "it", "when", "can", "cant", "and", "of", "to", "in"}
+    keep = [w for w in words if w not in drop][:4] or words[:4]
+    return "-".join(keep) or "topic"
+
+
+def ad_hoc_topic(question: str, mechanism: str | None = None) -> dict:
+    """A topic row for a question that is not in topics.yaml.
+
+    The `mechanism` field is what keeps the script from drifting into vibes —
+    the prompt hands it to the model as the truth it must not contradict — so
+    when the caller has not supplied one it is asked for on its own first, and
+    printed, because it decides what every one of the beats will claim.
+    """
+    question = question.strip().rstrip("?") + "?"
+    if not mechanism:
+        key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+        if not key:
+            raise RuntimeError("GEMINI_API_KEY is not set")
+        got = _ask_text(MECHANISM_PROMPT.format(question=question), key)
+        mechanism = " ".join(got.split())
+    print(f"  mechanism: {mechanism}")
+    return {"id": slugify(question), "question": question,
+            "mechanism": mechanism, "mood": "curious"}
+
+
 def main() -> int:
     import argparse
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     import topics_queue
 
     ap = argparse.ArgumentParser()
-    ap.add_argument("--topic-id", default=None)
+    ap.add_argument("--topic-id", default=None,
+                    help="an id from topics.yaml; omit to take the next in the queue")
+    ap.add_argument("--topic", default=None,
+                    help="any question, in place of a topics.yaml row")
+    ap.add_argument("--mechanism", default=None,
+                    help="the truth the script must not contradict; asked for if omitted")
     ap.add_argument("--out", type=Path, default=None)
     ap.add_argument("--duration", type=float, default=40.0)
     a = ap.parse_args()
 
-    topic = (next(t for t in topics_queue.all_topics() if t["id"] == a.topic_id)
-             if a.topic_id else topics_queue.take(1)[0])
+    if a.topic:
+        # a free-text question may still name a row: prefer the hand-written
+        # mechanism over one the model invents on the spot
+        known = {t["id"]: t for t in topics_queue.all_topics()}
+        topic = known.get(a.topic) or known.get(slugify(a.topic)) \
+            or ad_hoc_topic(a.topic, a.mechanism)
+    elif a.topic_id:
+        topic = next(t for t in topics_queue.all_topics() if t["id"] == a.topic_id)
+    else:
+        topic = topics_queue.take(1)[0]
     print(f"  topic: {topic['id']} — {topic['question']}")
-    spec = to_spec(topic, draft(topic), a.duration)
+    spec = to_spec(topic, draft(topic, duration=a.duration), a.duration)
     out = a.out or Path(__file__).resolve().parents[1] / "specs" / f"{topic['id']}.yaml"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(yaml.safe_dump(spec, sort_keys=False, allow_unicode=True, width=200))

@@ -1,7 +1,8 @@
 name: Daily short
 
-# Two vertical shorts a day. Manual runs default to upload disabled, so the
-# whole chain can be exercised against the real APIs without posting anything.
+# Runs only when you start it. Upload defaults to off, so the whole chain can be
+# exercised against the real APIs without posting anything; set it to `all` in
+# the form when you want the video published.
 
 on:
   workflow_dispatch:
@@ -17,12 +18,25 @@ on:
         default: 'unlisted'
         options: ['unlisted', 'public', 'private']
       topic:
-        description: 'Topic id (blank = next in the queue)'
+        description: 'Any question, or a topics.yaml id. Blank = next in the queue'
         type: string
         default: ''
-  schedule:
-    - cron: '0 4 * * *'    # 07:00 Istanbul
-    - cron: '0 15 * * *'   # 18:00 Istanbul
+      mechanism:
+        description: 'Optional: the one-sentence truth the script must not contradict'
+        type: string
+        default: ''
+      duration:
+        description: 'Seconds'
+        type: choice
+        default: '40'
+        options: ['30', '40', '50', '60', '75', '90']
+
+  # There is deliberately no schedule: videos are made when you ask for one.
+  # To go back to two a day, uncomment this and remember that a scheduled run
+  # has no inputs, so the Publish step's fallbacks decide what it does.
+  # schedule:
+  #   - cron: '0 4 * * *'    # 07:00 Istanbul
+  #   - cron: '0 15 * * *'   # 18:00 Istanbul
 
 concurrency:
   group: daily-short          # two runs must never draw from the queue at once
@@ -106,11 +120,16 @@ jobs:
         id: spec
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TOPIC: ${{ inputs.topic }}
+          MECHANISM: ${{ inputs.mechanism }}
+          DURATION: ${{ inputs.duration || '40' }}
         run: |
           set -euo pipefail
-          ARGS=""
-          if [ -n "${{ inputs.topic }}" ]; then ARGS="--topic-id ${{ inputs.topic }}"; fi
-          python daily/lib/write_spec.py $ARGS --duration 40 | tee /tmp/spec.log
+          # --topic takes a question or a topics.yaml id; write_spec prefers a
+          # hand-written mechanism when the text names a known row.
+          python daily/lib/write_spec.py \
+            ${TOPIC:+--topic "$TOPIC"} ${MECHANISM:+--mechanism "$MECHANISM"} \
+            --duration "$DURATION" | tee /tmp/spec.log
           SPEC=$(tail -1 /tmp/spec.log)
           echo "path=$SPEC" >> "$GITHUB_OUTPUT"
           echo "slug=$(basename "$SPEC" .yaml)" >> "$GITHUB_OUTPUT"
@@ -148,12 +167,10 @@ jobs:
           META_USER_TOKEN:       ${{ secrets.META_USER_TOKEN }}
         run: |
           set -euo pipefail
-          # A manual run uses whatever the dispatch form said, and its form
-          # defaults to upload:none / unlisted so the chain can be exercised
-          # without posting. These fallbacks are what a SCHEDULED run gets,
-          # where there are no inputs at all: publish everywhere, publicly.
-          UPLOAD='${{ inputs.upload || 'all' }}'
-          PRIVACY='${{ inputs.privacy || 'public' }}'
+          # Whatever the form said. It defaults to upload:none, so a run you
+          # start to look at the result does not publish it by accident.
+          UPLOAD='${{ inputs.upload }}'
+          PRIVACY='${{ inputs.privacy }}'
           python daily/lib/publish.py \
             "out/${{ steps.spec.outputs.slug }}" \
             --spec "${{ steps.spec.outputs.path }}" \
