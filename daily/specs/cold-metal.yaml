@@ -1,0 +1,111 @@
+slug: cold-metal
+title: Why Does Metal Feel Colder Than Wood? It's Not What You Think!
+stock_fallback: metal wood close up
+duration: 40.0
+mood: curious
+seed: 5291854
+script:
+- Metal feels colder than wood, even at the same temperature.
+- This feeling is not about the object's temperature, but how it transfers heat.
+- Our skin constantly produces heat, maintaining our body temperature.
+- Materials conduct heat differently, some pulling it away faster.
+- Metal is an excellent thermal conductor, moving heat quickly from your skin.
+- You feel the rate of heat flux, not the absolute temperature.
+- Wood, a poor conductor, removes heat from your skin much slower.
+- This difference makes metal feel colder, while wood feels warmer.
+- Understanding heat transfer helps us design better insulation and materials.
+- So, metal isn't actually colder; it just steals your warmth faster.
+scenes:
+- type: hook
+  motif: rings
+  stock: hand touching metal
+  headline:
+  - METAL FEELS COLDER
+  - THAN WOOD?
+- type: statement
+  motif: wave
+  accent: cyan
+  headline:
+  - IT'S NOT ITS TEMP
+  - IT'S HEAT TRANSFER
+  stock: metal wood close up
+- type: list
+  motif: split
+  items:
+  - BODY HEAT
+  - MATERIAL
+  - CONDUCTIVITY
+  stock: metal wood close up
+- type: diagram
+  shape: layers
+  headline:
+  - SKIN PRODUCES HEAT
+  - CONSTANTLY
+  layers:
+  - label: SKIN SURFACE
+    note: heat radiates outwards
+  - label: EPIDERMIS
+    note: outer protective layer
+  - label: DERMIS
+    note: contains nerve endings
+- type: motion
+  shape: circuit
+  headline:
+  - METAL MOVES HEAT
+  - QUICKLY AWAY
+  from: YOUR SKIN
+  to: METAL OBJECT
+  perch: HEAT
+  flow_label: heat flows along
+  branch:
+    label: wood's path is much slower
+- type: card
+  eyebrow: THE MECHANISM
+  body: YOU FEEL <em>HEAT FLUX</em>,
+  legend: NOT TEMPERATURE ITSELF
+  headline:
+  - FLUX, NOT TEMP
+  - IS WHAT YOU FEEL
+  stock: metal wood close up
+- type: metric
+  label: WOOD CONDUCTIVITY
+  count_to: 0.16
+  unit: W/mK
+  headline:
+  - WOOD IS A POOR
+  - HEAT CONDUCTOR
+- type: compare
+  headline:
+  - CONDUCTIVITY
+  - FEELING
+  columns:
+  - chip: METAL
+    value: HIGH
+    label: feels colder
+  - chip: WOOD
+    value: LOW
+    label: feels warmer
+- type: statement
+  motif: beam
+  accent: cyan
+  headline:
+  - HEAT TRANSFER IS
+  - KEY IN DESIGN
+- type: endcard
+  motif: rings
+  lines:
+  - METAL JUST STEALS
+  - YOUR WARMTH FASTER
+copy:
+  title: 'Why Does Metal Feel Colder Than Wood? It''s Not What You Think! #Shorts'
+  hook: Ever wondered why metal feels colder than wood at the same temperature? It's all about how quickly materials conduct heat away from your skin!
+  caption: It's a common misconception that metal objects are colder than wood objects when they've been in the same room. The truth lies in thermal conductivity! Metal is a much better conductor of heat
+    than wood, meaning it pulls heat away from your skin faster. You perceive this rapid heat loss as 'coldness', even though both materials are at the same ambient temperature. It's the rate of heat transfer,
+    or flux, that tricks your senses.
+  hashtags:
+  - science
+  - physics
+  - shorts
+  - explained
+  - thermalconductivity
+  - heattransfer
