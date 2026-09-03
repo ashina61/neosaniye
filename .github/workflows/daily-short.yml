@@ -40,12 +40,13 @@ on:
         default: 'auto'
         options: ['auto', 'kokoro', 'piper']
 
-  # There is deliberately no schedule: videos are made when you ask for one.
-  # To go back to two a day, uncomment this and remember that a scheduled run
-  # has no inputs, so the Publish step's fallbacks decide what it does.
-  # schedule:
-  #   - cron: '0 4 * * *'    # 07:00 Istanbul
-  #   - cron: '0 15 * * *'   # 18:00 Istanbul
+  # A scheduled run carries NO inputs at all, so every `inputs.x` below is
+  # empty for it and the `|| default` fallbacks are what actually configure it.
+  # Forgetting that on the Publish step is not a loud failure: the run makes a
+  # video, publishes nothing, and reports success.
+  schedule:
+    - cron: '0 4 * * *'    # 07:00 Istanbul
+    - cron: '0 15 * * *'   # 18:00 Istanbul
 
 concurrency:
   group: daily-short          # two runs must never draw from the queue at once
@@ -139,9 +140,13 @@ jobs:
         id: spec
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          # the script is budgeted for whichever voice will read it, so the
-          # spec step has to see the same choice the build step gets
-          TTS_ENGINE: ${{ inputs.voice || 'auto' }}
+          # The script is budgeted for whichever voice will read it, so the
+          # spec step has to see the same choice the build step gets.
+          # A scheduled run gets kokoro rather than auto on purpose: auto
+          # budgets the script for Gemini's 1.9 words a second and then, when
+          # the quota refuses, has Kokoro read that thin script anyway. Going
+          # straight to Kokoro touches no quota and carries a third more words.
+          TTS_ENGINE: ${{ inputs.voice || 'kokoro' }}
           TOPIC: ${{ inputs.topic }}
           MECHANISM: ${{ inputs.mechanism }}
           DURATION: ${{ inputs.duration || '40' }}
@@ -162,7 +167,7 @@ jobs:
           # locally, so a video costs one request rather than ten. That may fit
           # the free tier where per-beat calls did not; if it refuses, the run
           # falls back to the local voice and still produces a video.
-          TTS_ENGINE: ${{ inputs.voice || 'auto' }}
+          TTS_ENGINE: ${{ inputs.voice || 'kokoro' }}
           GEMINI_API_KEY:  ${{ secrets.GEMINI_API_KEY }}
           PEXELS_API_KEY:  ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
@@ -189,10 +194,12 @@ jobs:
           META_USER_TOKEN:       ${{ secrets.META_USER_TOKEN }}
         run: |
           set -euo pipefail
-          # Whatever the form said. It defaults to upload:none, so a run you
-          # start to look at the result does not publish it by accident.
-          UPLOAD='${{ inputs.upload }}'
-          PRIVACY='${{ inputs.privacy }}'
+          # A run you start yourself uses the form, which defaults to
+          # upload:none so looking at a result does not publish it. A scheduled
+          # run has no form, and these fallbacks are its whole configuration:
+          # publish everywhere, publicly.
+          UPLOAD='${{ inputs.upload || 'all' }}'
+          PRIVACY='${{ inputs.privacy || 'public' }}'
           python daily/lib/publish.py \
             "out/${{ steps.spec.outputs.slug }}" \
             --spec "${{ steps.spec.outputs.path }}" \
