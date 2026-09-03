@@ -65,6 +65,26 @@ def synthesize(lines: list[str], out_dir: Path,
     return durs, engine
 
 
+class Overlong(ValueError):
+    """The narration does not fit. `speed` is what it would have to be sped up by.
+
+    A run that reaches this point has already spent a Gemini draft, a TTS take
+    and a stock search, so losing it to a script a few percent long is a bad
+    trade — build() speeds the take up instead when the factor is small enough
+    to be inaudible.
+    """
+
+    def __init__(self, msg: str, speed: float = 1.0):
+        super().__init__(msg)
+        self.speed = speed
+
+
+# Beyond this a sped-up narration starts to sound hurried rather than merely
+# brisk. It is a rescue for a script that came out slightly long, not a licence
+# to ignore the word budget.
+MAX_SPEEDUP = 1.08
+
+
 def plan(lines: list[str], durs: list[float], target: float,
          weights: list[float] | None = None) -> dict:
     """Place each line on the timeline so the track ends exactly at `target`.
@@ -79,9 +99,12 @@ def plan(lines: list[str], durs: list[float], target: float,
     if slack < 0:
         over = -slack
         rate = speech / max(sum(len(l.split()) for l in lines), 1)   # seconds per word, measured
-        raise ValueError(
+        raise Overlong(
             f"script is {over:.2f}s too long for a {target:.0f}s cut — "
-            f"cut roughly {max(1, int(over / max(rate, 0.01)))} words")
+            f"cut roughly {max(1, int(over / max(rate, 0.01)))} words",
+            # aim a little past the line rather than exactly at it: atempo's
+            # own rounding is enough to land a hair over and fail twice
+            speed=speech / max((speech - over) * 0.98, 0.01))
     w = weights or [1.0] * gaps
     if len(w) != gaps:
         raise ValueError(f"need {gaps} weights, got {len(w)}")
@@ -116,10 +139,29 @@ def assemble(beats: list[dict], line_dir: Path, target: float, out: Path) -> Non
           "-ar", "48000", "-ac", "1", "-c:a", "pcm_s16le", str(out)])
 
 
+def _speed_up(line_dir: Path, n: int, factor: float) -> list[float]:
+    """Re-time every line by `factor`, in place. Returns the new durations."""
+    out = []
+    for i in range(1, n + 1):
+        src, dst = line_dir / f"{i:02d}.wav", line_dir / f"{i:02d}-fast.wav"
+        subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(src),
+                        "-filter:a", f"atempo={factor:.4f}", str(dst)], check=True)
+        dst.replace(src)
+        out.append(duration(src))
+    return out
+
+
 def build(lines: list[str], target: float, work: Path,
           weights: list[float] | None = None, voice: str | None = None) -> dict:
     durs, engine = synthesize(lines, work / "lines", voice)
-    timing = plan(lines, durs, target, weights)
+    try:
+        timing = plan(lines, durs, target, weights)
+    except Overlong as e:
+        if e.speed > MAX_SPEEDUP:
+            raise
+        print(f"      narration is long; speeding it {e.speed:.3f}x to fit")
+        durs = _speed_up(work / "lines", len(lines), e.speed)
+        timing = plan(lines, durs, target, weights)
     timing["engine"] = engine
     assemble(timing["beats"], work / "lines", target, work / "vo.wav")
     (work / "timing.json").write_text(json.dumps(timing, indent=1))

@@ -20,6 +20,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import motion                    # noqa: E402
+import narrate                   # noqa: E402
 import textfit                   # noqa: E402
 
 MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-flash-latest"]
@@ -32,21 +33,37 @@ URL = "https://generativelanguage.googleapis.com/v1beta/models/{m}:generateConte
 # being mostly silence at one end or unreadably dense at the other; narrate.plan
 # spreads any slack into the gaps, so a few words under is a worse video, not a
 # broken one, and not worth spending a free-tier attempt on.
-WORDS_PER_SECOND = 2.5
+# Words a second of actual speech, measured by running 40 beats of the scripts
+# already produced through the local voice: 397 words in 125.05s. The narration
+# engine can change under us, so this is deliberately on the slow side of what
+# was measured, and narrate can still rescue a take that comes out a little long.
+WORDS_PER_SECOND = 3.0
+# How much of the time available for speech to actually fill. The rest becomes
+# the pauses between beats; at 1.0 the narration would run wall to wall with
+# only the minimum gap anywhere, which is breathless.
+SPEECH_SHARE = 0.85
 BEAT_SECONDS = 4.0             # a beat much longer than this stops feeling like a short
 
 
 def budgets(duration: float) -> dict:
     """Every count this prompt and validator need, for a cut of `duration`.
 
-    At 40 seconds these reproduce the numbers the format was tuned with:
-    10 beats, 88-116 words, 2-4 drawn, at most 3 statements, at least 4 stock.
+    The word budget is derived from the time actually available for speech —
+    the cut, less the lead-in, the tail and the minimum gap between every pair
+    of beats — rather than from the cut's length. Those are not the same number
+    and treating them as one is how a 60-second script came out 13 seconds too
+    long to fit in 60 seconds.
     """
     beats = max(8, min(16, round(duration / BEAT_SECONDS)))
+    speech = duration - narrate.HEAD - narrate.TAIL - narrate.MIN_GAP * (beats - 1)
+    target_words = speech * SPEECH_SHARE * WORDS_PER_SECOND
+    # never let the ceiling reach the point where the narration cannot physically
+    # fit, whatever share of the gaps it eats
+    ceiling = round(speech * WORDS_PER_SECOND) - 4
     return {
         "beats": beats,
-        "wmin": round(duration * WORDS_PER_SECOND * 0.88),
-        "wmax": round(duration * WORDS_PER_SECOND * 1.16),
+        "wmin": round(target_words * 0.88),
+        "wmax": min(round(target_words * 1.12), ceiling),
         "drawn_min": max(2, round(beats * 0.25)),
         "drawn_max": max(3, round(beats * 0.40)),
         "motion_max": max(2, beats // 5),
@@ -107,6 +124,14 @@ SHAPES = ["layers", "route", "flow"]
 MOTION_SHAPES = ["circuit", "wave", "rays", "orbit"]
 PROMPT = """You are writing a {seconds:.0f}-second vertical science short. It must teach one
 mechanism clearly enough that a viewer can repeat the explanation afterwards.
+
+LANGUAGE. Write EVERYTHING in English: the narration, every headline and label
+that appears on screen, the title, the caption and the hashtags. The topic and
+the mechanism below may be written in another language — that is the language
+the topic was asked in, not the language of the video. Translate them and work
+in English. The narration is read by an English voice, so a script in any other
+language comes out mispronounced and, because it is read far more slowly, too
+long to fit the cut at all.
 
 TOPIC: {question}
 MECHANISM (the truth you must convey, do not contradict it): {mechanism}
@@ -783,6 +808,9 @@ def to_spec(topic: dict, d: dict, duration: float = 40.0) -> dict:
 MECHANISM_PROMPT = """In one sentence of at most 25 words, state the actual physical
 or biological mechanism that answers this question. No preamble, no hedging, no
 restating the question — just the mechanism, as a claim you would defend.
+
+Answer in ENGLISH even when the question is asked in another language: this
+sentence becomes the anchor for an English script.
 
 QUESTION: {question}
 
