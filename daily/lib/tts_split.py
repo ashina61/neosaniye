@@ -39,6 +39,16 @@ def silences(path: Path) -> list[tuple[float, float]]:
     return [(s, e) for s, e in zip(starts, ends) if e > s]
 
 
+class Unsplittable(RuntimeError):
+    """The take cannot be cut into one trustworthy clip per beat.
+
+    Carries which check refused, because "could not be cut reliably" in a run
+    log says nothing about whether the model read the script without pausing,
+    ran two beats together, or produced a take of the wrong shape entirely —
+    and those want different fixes.
+    """
+
+
 def _gaps(path: Path, n: int) -> list[tuple[float, float]] | None:
     """The n-1 gaps most likely to be beat boundaries, longest first then sorted.
 
@@ -49,17 +59,16 @@ def _gaps(path: Path, n: int) -> list[tuple[float, float]] | None:
     total = duration(path)
     inner = [(s, e) for s, e in silences(path) if s > 0.30 and e < total - 0.20]
     if len(inner) < n - 1:
-        return None
+        raise Unsplittable(f"only {len(inner)} inner pauses for {n} beats "
+                           f"(need {n - 1}) — the take runs beats together")
     longest = sorted(inner, key=lambda se: se[1] - se[0], reverse=True)[: n - 1]
     return sorted(longest)
 
 
-def split(wav: Path, lines: list[str], out_dir: Path) -> list[tuple[float, float]] | None:
-    """Cut `wav` into one clip per line. None when the cut cannot be trusted."""
+def split(wav: Path, lines: list[str], out_dir: Path) -> list[tuple[float, float]]:
+    """Cut `wav` into one clip per line. Raises Unsplittable when it cannot."""
     n = len(lines)
     gaps = _gaps(wav, n)
-    if gaps is None:
-        return None
     total = duration(wav)
 
     # Cut at the edges of each gap, not its middle: a segment padded with half a
@@ -73,14 +82,17 @@ def split(wav: Path, lines: list[str], out_dir: Path) -> list[tuple[float, float
         start = ge
     spans.append((start, tail))
 
-    if any(e - s < MIN_SEGMENT for s, e in spans):
-        return None
+    short = [i for i, (s, e) in enumerate(spans, 1) if e - s < MIN_SEGMENT]
+    if short:
+        raise Unsplittable(f"beat(s) {short} came out under {MIN_SEGMENT}s — "
+                           f"a pause was mistaken for a beat boundary")
     words = [max(len(l.split()), 1) for l in lines]
     share = [w / sum(words) for w in words]
-    for (s, e), sh in zip(spans, share):
+    for i, ((s, e), sh) in enumerate(zip(spans, share), 1):
         got = (e - s) / total
         if abs(got - sh) / sh > MAX_SHARE_ERROR:
-            return None
+            raise Unsplittable(f"beat {i} is {got:.0%} of the take but {sh:.0%} "
+                               f"of the words — the cut is in the wrong place")
 
     out_dir.mkdir(parents=True, exist_ok=True)
     for i, (s, e) in enumerate(spans, 1):
@@ -89,5 +101,5 @@ def split(wav: Path, lines: list[str], out_dir: Path) -> list[tuple[float, float
                             "-ar", "48000", "-ac", "1", "-c:a", "pcm_s16le",
                             str(out_dir / f"{i:02d}.wav")], capture_output=True, text=True)
         if r.returncode != 0:
-            return None
+            raise Unsplittable(f"ffmpeg could not cut beat {i}: {r.stderr[-160:].strip()}")
     return spans

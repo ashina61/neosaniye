@@ -48,6 +48,15 @@ SCRIPT_STYLE = (
     " any pause inside a sentence.\n"
     "Read only the words themselves.\n\n")
 
+SCRIPT_STYLE_INSISTENT = (
+    "Read the following as a confident science documentary narrator: calm,"
+    " clear, unhurried, no rising question intonation.\n"
+    "CRITICAL: the paragraphs are separate lines of narration. Stop completely"
+    " between them and stay silent for a full second before starting the next"
+    " one. This silence matters more than the pacing: without it the recording"
+    " cannot be used. Do not run two paragraphs together.\n"
+    "Read only the words themselves.\n\n")
+
 _chosen: str | None = None       # model proven to work this process
 _dead: set[str] = set()          # models that returned a quota or access error
 
@@ -159,13 +168,19 @@ def say_script(lines: list[str], out_dir: Path, voice: str | None = None) -> str
         return None
     whole = out_dir / "whole.wav"
     whole.parent.mkdir(parents=True, exist_ok=True)
-    text = SCRIPT_STYLE + "\n\n".join(lines)
-    model = _gemini_line_raw(text, whole, voice or GEMINI_VOICE)
-    spans = tts_split.split(whole, lines, out_dir)
-    if spans is None:
-        print("      one-shot narration could not be cut reliably; falling back")
-        return None
-    return model
+    # A flat read is the usual reason a take cannot be cut, and the fix is to
+    # ask again more firmly rather than to give up on the voice the brief asks
+    # for. One extra request, only on failure.
+    for attempt, style in enumerate((SCRIPT_STYLE, SCRIPT_STYLE_INSISTENT), 1):
+        model = _gemini_line_raw(style + "\n\n".join(lines), whole,
+                                 voice or GEMINI_VOICE)
+        try:
+            tts_split.split(whole, lines, out_dir)
+            return model
+        except tts_split.Unsplittable as e:
+            print(f"      take {attempt} could not be cut: {e}")
+    print("      one-shot narration could not be cut reliably; falling back")
+    return None
 
 
 def probe() -> tuple[str, str]:
