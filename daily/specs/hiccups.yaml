@@ -1,0 +1,107 @@
+slug: hiccups
+title: What Causes Hiccups And Why Do They Stop? The Science Explained
+stock_fallback: human body anatomy
+duration: 40.0
+mood: curious
+seed: 7722581
+script:
+- Hiccups are a mystery, but they always stop.
+- No, it is not your breathing, or your stomach.
+- It is a reflex arc, involving two key parts.
+- The diaphragm is a large muscle below your lungs.
+- The glottis is a valve at the top of your windpipe.
+- A reflex arc spasms the diaphragm, then the glottis snaps shut.
+- This sudden closure makes the characteristic 'hic' sound.
+- When the reflex arc breaks, the hiccups finally subside.
+- Your brain takes over, overriding the involuntary spasm.
+- So, hiccups stop when your brain reclaims control.
+scenes:
+- type: hook
+  motif: rings
+  stock: person hiccuping closeup
+  headline:
+  - HICCUPS
+  - ALWAYS STOP
+- type: statement
+  motif: wave
+  headline:
+  - NOT BREATHING
+  - NOT STOMACH
+  stock: human body anatomy
+- type: list
+  motif: split
+  items:
+  - REFLEX ARC
+  - DIAPHRAGM
+  - GLOTTIS
+- type: diagram
+  shape: layers
+  headline:
+  - THE DIAPHRAGM
+  - MUSCLE BELOW LUNGS
+  layers:
+  - label: LUNGS
+    note: inflates with air
+  - label: DIAPHRAGM
+    note: large breathing muscle
+  - label: STOMACH
+    note: digestive organ
+- type: motion
+  shape: circuit
+  headline:
+  - THE GLOTTIS
+  - VALVE CLOSES
+  from: WINDPIPE
+  to: LUNGS
+  perch: GLOTTIS
+  flow_label: air travels through
+  branch:
+    label: glottis snaps shut, blocking air
+- type: card
+  eyebrow: THE MECHANISM
+  body: REFLEX SPASMS <em>DIAPHRAGM</em>, GLOTTIS SHUTS
+  legend: this involuntary action causes hiccups
+  headline:
+  - HICCUPS START
+  - WITH A SPASM
+- type: statement
+  motif: beam
+  stock: person surprised reaction
+  headline:
+  - THE 'HIC'
+  - SOUND
+- type: compare
+  headline:
+  - HICCUPS
+  - AND THEIR END
+  columns:
+  - chip: HICCUP
+    value: REFLEX
+    label: INVOLUNTARY
+  - chip: STOP
+    value: BREAK
+    label: REFLEX STOPS
+    risk: true
+- type: statement
+  motif: particles
+  stock: brain scan abstract
+  headline:
+  - BRAIN REGAINS
+  - CONTROL
+- type: endcard
+  motif: rings
+  lines:
+  - BRAIN OVERRIDES
+  - THE HICCUP REFLEX
+copy:
+  title: 'What Causes Hiccups And Why Do They Stop? The Science Explained #Shorts'
+  hook: Hiccups are a common and often annoying phenomenon, but what actually causes them and why do they eventually stop?
+  caption: Hiccups occur due to an involuntary reflex arc. First, the diaphragm spasms, pulling air into the lungs. Immediately after, the glottis snaps shut, creating the characteristic 'hic' sound. Hiccups
+    stop when the brain's voluntary control overrides this reflex arc.
+  hashtags:
+  - hiccups
+  - science
+  - bodyfacts
+  - explained
+  - shorts
+  - humanbody
