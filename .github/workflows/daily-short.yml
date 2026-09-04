@@ -40,13 +40,21 @@ on:
         default: 'auto'
         options: ['auto', 'kokoro', 'piper']
 
-  # A scheduled run carries NO inputs at all, so every `inputs.x` below is
-  # empty for it and the `|| default` fallbacks are what actually configure it.
-  # Forgetting that on the Publish step is not a loud failure: the run makes a
-  # video, publishes nothing, and reports success.
-  schedule:
-    - cron: '0 4 * * *'    # 07:00 Istanbul
-    - cron: '0 15 * * *'   # 18:00 Istanbul
+  # The schedule is OFF. It published twice a day, publicly, to YouTube,
+  # Instagram and Facebook, and what it published was the templated look this
+  # repository moved away from: every video assembled from one fixed vocabulary
+  # of scene pieces, so every video looked the same. Production now happens in a
+  # session through OpenMontage's own pipeline and ships via
+  # publish-production.yml.
+  #
+  # If you turn this back on, re-read the Publish step first. A scheduled run
+  # carries NO inputs at all, so every `inputs.x` there is empty for it and the
+  # `|| default` fallbacks are its whole configuration: upload everywhere,
+  # publicly. That is not a loud failure either way — it is simply what happens.
+  #
+  # schedule:
+  #   - cron: '0 4 * * *'    # 07:00 Istanbul
+  #   - cron: '0 15 * * *'   # 18:00 Istanbul
 
 concurrency:
   group: daily-short          # two runs must never draw from the queue at once
