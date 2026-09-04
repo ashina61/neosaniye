@@ -1,0 +1,94 @@
+name: Publish a production
+
+# Uploads a video that was produced by hand, through OpenMontage's own pipeline,
+# and committed under productions/<slug>/. Nothing is generated here: no model
+# runs in this job, and no model-written code is executed. The runner holds the
+# upload tokens, so the only thing it is trusted to do is move a finished file
+# that a human has already watched.
+#
+# There is no schedule. It runs when you start it, and upload defaults to none
+# so you can exercise the chain without posting anything.
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: 'Folder under productions/'
+        type: string
+        required: true
+        default: 'how-headphones-erase-sound'
+      upload:
+        description: 'Where to publish'
+        type: choice
+        default: 'none'
+        options: ['none', 'youtube', 'all']
+      privacy:
+        description: 'YouTube privacy'
+        type: choice
+        default: 'unlisted'
+        options: ['unlisted', 'public', 'private']
+
+concurrency:
+  group: publish-production
+  cancel-in-progress: false
+
+permissions:
+  contents: write             # cut the release Instagram fetches the file from
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+
+      - name: Python dependencies
+        run: pip install --quiet pyyaml requests
+
+      - name: Check the production
+        id: prod
+        run: |
+          set -euo pipefail
+          DIR="productions/${{ inputs.slug }}"
+          test -d "$DIR" || { echo "no such production: $DIR"; exit 1; }
+          test -f "$DIR/spec.yaml" || { echo "missing $DIR/spec.yaml"; exit 1; }
+          VIDEO=$(ls "$DIR"/*_1080x1920.mp4 2>/dev/null | head -1)
+          test -n "$VIDEO" || { echo "no *_1080x1920.mp4 in $DIR"; exit 1; }
+          echo "dir=$DIR" >> "$GITHUB_OUTPUT"
+          # Prove the file is what it claims to be before it goes near an
+          # account: the wrong aspect ratio is not a Shorts upload, it is a
+          # letterboxed embarrassment that cannot be edited after the fact.
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          ffprobe -v error -select_streams v:0 \
+            -show_entries stream=width,height,codec_name \
+            -show_entries format=duration -of default=noprint_wrappers=1 "$VIDEO"
+          W=$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 "$VIDEO")
+          H=$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 "$VIDEO")
+          test "$W" = "1080" && test "$H" = "1920" || { echo "not 1080x1920: ${W}x${H}"; exit 1; }
+          ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of csv=p=0 "$VIDEO" \
+            | grep -q . || { echo "no audio track"; exit 1; }
+
+      - name: Publish
+        env:
+          GITHUB_TOKEN:          ${{ secrets.GITHUB_TOKEN }}
+          YOUTUBE_CLIENT_ID:     ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          META_USER_TOKEN:       ${{ secrets.META_USER_TOKEN }}
+        run: |
+          set -euo pipefail
+          python daily/lib/publish.py \
+            "${{ steps.prod.outputs.dir }}" \
+            --spec "${{ steps.prod.outputs.dir }}/spec.yaml" \
+            --upload '${{ inputs.upload }}' \
+            --privacy '${{ inputs.privacy }}' \
+            --dest "videos/${{ inputs.slug }}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bundle-${{ inputs.slug }}
+          path: videos/${{ inputs.slug }}
+          retention-days: 14

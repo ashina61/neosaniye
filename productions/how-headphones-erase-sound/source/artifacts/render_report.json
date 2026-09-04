@@ -1,0 +1,35 @@
+{
+  "version": "1.0",
+  "render_grammar": "animation-first",
+  "outputs": [
+    {
+      "path": "/home/user/neosaniye/projects/how-headphones-erase-sound/renders/final.mp4",
+      "format": "mp4",
+      "codec": "h264",
+      "audio_codec": "aac",
+      "resolution": "1080x1920",
+      "fps": 30,
+      "duration_seconds": 41.5,
+      "file_size_bytes": 5192686,
+      "platform_target": "youtube_shorts"
+    }
+  ],
+  "verification_notes": [
+    "ffprobe: 1080x1920 h264 30fps, aac 48000 Hz 2ch, 41.5s.",
+    "Duration target was 41.5s and the render is 41.5s exactly - the scene plan was built from measured narration rather than estimated, so there is no drift to reconcile.",
+    "Loudness normalised to -14.2 LUFS integrated, true peak -4.2 dBTP; +faststart set.",
+    "Atelier doctrine check passed: no stock-registry imports, art direction declared.",
+    "10 review stills rendered at the assets gate; a 16-frame contact sheet was inspected after the render."
+  ],
+  "warnings": [
+    "transcript_comparison was skipped - no narration transcript was supplied to the reviewer. The narration is synthesised from the script itself, so the text is known exactly; a whisper pass would only be checking Piper's pronunciation.",
+    "Narration voice is Piper en_US-ryan-high. It is intelligible and correctly paced but it is not an expressive voice; a cloud TTS key would be the single biggest quality upgrade available to this piece."
+  ],
+  "decision_log_ref": "/home/user/neosaniye/projects/how-headphones-erase-sound/artifacts/decision_log.json",
+  "final_review_ref": "/home/user/neosaniye/projects/how-headphones-erase-sound/artifacts/final_review.json",
+  "metadata": {
+    "render_runtime": "remotion",
+    "composition_mode": "atelier",
+    "cost_usd": 0.0
+  }
+}

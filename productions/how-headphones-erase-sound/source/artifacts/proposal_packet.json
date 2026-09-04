@@ -1,0 +1,314 @@
+{
+  "version": "1.0",
+  "concept_options": [
+    {
+      "id": "c1",
+      "title": "The Deadline Inside Your Headphones",
+      "hook": "The noise is already on its way to your eardrum when the microphone hears it.",
+      "narrative_structure": "data_narrative",
+      "visual_approach": "An oscilloscope in a dark room. One cyan trace enters from the top - the world. A second amber trace is drawn against it, upside down, and where they meet the frame goes flat and silent. A microsecond clock runs in the corner from the first frame and never stops. No headphone product shot appears anywhere in the video.",
+      "suggested_playbook": "custom",
+      "target_audience": "Anyone who owns noise-cancelling headphones and has never been told what the hard part actually is.",
+      "target_platform": "youtube",
+      "target_duration_seconds": 40,
+      "key_points": [
+        "Nothing is blocked - a second sound is added, the exact inverse of the first",
+        "The microphone hears the noise only microseconds before your eardrum does",
+        "Feedforward designs must land the anti-noise within roughly 25-40 microseconds",
+        "Miss by 100 microseconds and you are already a tenth of a cycle wrong at 1 kHz",
+        "That deadline, not the speaker, is what decides which sounds can be erased"
+      ],
+      "core_message": "Noise cancelling is not a wall. It is a sprint against sound itself, and the finish line is measured in microseconds.",
+      "tone": "precise, quietly dramatic, engineering-respectful",
+      "grounded_in": [
+        "25-40 microsecond alignment requirement (US 9,786,264)",
+        "100 microseconds = 10% of a 1 kHz cycle (HN)",
+        "underserved_gaps: nobody makes the deadline the spine"
+      ],
+      "why_this_works": "Every competing explainer stops at 'opposite waves cancel'. The research shows the real constraint is a timing budget in the tens of microseconds - documented in the feedforward patent literature - and that constraint is both dramatic and never used as the spine of a short."
+    },
+    {
+      "id": "c2",
+      "title": "Why The Engine Vanishes And The Voice Does Not",
+      "hook": "Your headphones erase a jet engine and fail at the person one seat away. That is not a defect.",
+      "narrative_structure": "myth_busting",
+      "visual_approach": "A frequency axis running the full height of the vertical frame. Cancellation floods up from the bottom - the low end - and stops dead somewhere below speech. Everything above the line keeps moving. The viewer's own complaint appears as a caption, then gets answered by the graph.",
+      "suggested_playbook": "custom",
+      "target_audience": "People disappointed by an expensive pair of ANC headphones in an open-plan office or a cafe.",
+      "target_platform": "youtube",
+      "target_duration_seconds": 40,
+      "key_points": [
+        "Active cancellation works from roughly 50 Hz to 2 kHz",
+        "Speech lives largely above where the cancellation runs out",
+        "Short wavelengths leave too little time and too little margin at the eardrum",
+        "Above that band the job belongs to passive isolation - foam and clamp, not electronics"
+      ],
+      "core_message": "ANC is not failing at voices. It was never physically in that race.",
+      "tone": "corrective, slightly blunt, reassuring at the end",
+      "grounded_in": [
+        "50 Hz - 2 kHz effective band (SoundGuys)",
+        "common_questions: why can I still hear people talking",
+        "misconception: better headphones would cancel voices"
+      ],
+      "why_this_works": "This is the single most-asked question in the forum research and the source of most negative ANC sentiment. It has a precise, visualisable answer, and answering a complaint the viewer has personally had is strong retention."
+    },
+    {
+      "id": "c3",
+      "title": "The Napkin That Took Twenty-Two Years",
+      "hook": "One irritated passenger did the acoustic maths on a napkin, then spent twenty-two years proving it.",
+      "narrative_structure": "story",
+      "visual_approach": "Ink on paper. A napkin fills the frame; the waveform is drawn by hand, in real time, as the narration speaks. Years tick past in the margin while the same sketch is redrawn cleaner and cleaner until it becomes a circuit, then a product.",
+      "suggested_playbook": "ink-sketch",
+      "target_audience": "General audience who enjoy origin stories more than physics.",
+      "target_platform": "youtube",
+      "target_duration_seconds": 40,
+      "key_points": [
+        "1978: Amar Bose is handed airline headphones he cannot hear over the engines",
+        "He works out on the flight that noise could be subtracted rather than covered",
+        "Roughly 22 years and 50 million dollars separate the napkin from the product",
+        "The idea was never the hard part - the deadline was"
+      ],
+      "core_message": "The idea fit on a napkin. Making it arrive in time took two decades.",
+      "tone": "warm, narrative, admiring",
+      "grounded_in": [
+        "Bose 1978 napkin, 22-year 50 million dollar programme"
+      ],
+      "why_this_works": "A human story with two hard numbers attached, and it is not the spine of any short-form video found in the landscape scan. It also gives the physics an emotional container."
+    },
+    {
+      "id": "c4",
+      "title": "That Pressure You Feel Is Not Pressure",
+      "hook": "Switch on noise cancelling and your ears feel squeezed. Nothing is pressing on them.",
+      "narrative_structure": "problem_solution",
+      "visual_approach": "Start inside the ear: a field of low-frequency energy the viewer has never noticed, drawn as a constant restless texture. ANC engages and the texture is stripped away in one motion, leaving a silence that reads visually as a held, uncomfortable emptiness - then the frame names what the brain did with it.",
+      "suggested_playbook": "custom",
+      "target_audience": "The large group who find ANC physically uncomfortable and assume it is doing something to their ears.",
+      "target_platform": "youtube",
+      "target_duration_seconds": 40,
+      "key_points": [
+        "Air pressure in the ear canal does not change when ANC engages",
+        "Your hearing is always bathed in low-frequency background energy",
+        "ANC removes that energy sharply while higher frequencies stay",
+        "The brain reads the sudden imbalance as pressure - the effect is called eardrum suck"
+      ],
+      "core_message": "The discomfort is real. The pressure is not.",
+      "tone": "reassuring, body-aware, slightly eerie",
+      "grounded_in": [
+        "eardrum suck is a perception effect, not pressure (SoundStage! Solo)",
+        "pain_points: discomfort makes people switch ANC off"
+      ],
+      "why_this_works": "Correcting a bodily sensation the viewer has personally felt is unusually sticky, and the research shows almost every top result explains it wrongly as a pressure effect. Genuine information gap, high comment potential."
+    }
+  ],
+  "selected_concept": {
+    "concept_id": "c1",
+    "rationale": "C1 is the only concept built on the gap the research actually found. It also absorbs C2: once the deadline is established, 'why voices survive' stops being a separate video and becomes the consequence beat of this one - one causal chain instead of two claims. C3 and C4 stay on the shelf as separate videos; C4 in particular is a strong standalone.",
+    "modifications": [
+      "Fold C2's payoff into the late beats: the deadline is why the cancelled band stops below speech.",
+      "Close on the reframe rather than a call to action - the last line is the takeaway, not a subscribe prompt.",
+      "No headphone product photography anywhere; the video never shows the object it is about."
+    ]
+  },
+  "production_plan": {
+    "pipeline": "animated-explainer",
+    "playbook": "custom",
+    "renderer_family": "animation-first",
+    "render_runtime": "remotion",
+    "composition_mode": "atelier",
+    "art_direction": "Oscilloscope in a dark room. Ground is near-black ink (#080B10) with a faint grid that breathes. The world's noise is a cyan trace (#3FE0D0); the sound the headphone adds is amber (#FF8A3D) and always drawn as a mirror of whatever cyan just did. White (#F2F5F7) is reserved for type. When cancellation lands, both colours collapse into a single flat hairline and the grid stops moving - silence is the only moment in the video without motion. Numbers are set in a monospace face because the whole story is a measurement; the headline face is a heavy grotesk with tight tracking. Every scene is hand-authored for this piece: no stock scene-type is used, and the two-sine-waves-on-a-whiteboard cliche appears exactly once, early, and is then abandoned.",
+    "taste_profile": {
+      "design_read": "Instrument-panel precision with a held-breath ending. Technical, unfussy, slightly cold - the drama comes from the clock, not from decoration.",
+      "visual_variance": 7,
+      "motion_intensity": 7,
+      "information_density": 4,
+      "palette_discipline": "Two signal colours (cyan = the world, amber = the headphone's answer) plus white type on near-black. No gradients, no glow stacks, no third accent.",
+      "layout_variation": "Each beat owns a different visual mode: full-frame trace, split mic-to-ear geometry, a running microsecond counter, a vertical frequency axis, and one deliberately empty frame. No two consecutive beats share a layout.",
+      "reference_strategy": "No AI-generated imagery and no stock footage in this piece - every frame is drawn by the composition itself, so the reference pass is the art-direction note above rather than mood stills.",
+      "anti_patterns": [
+        "Centred caption block sitting over generic b-roll",
+        "The two-sine-waves-cancel diagram used as the entire video",
+        "Purple or blue AI-gradient backgrounds",
+        "Stock headphone product shots",
+        "Any layout reused from a previous OpenMontage video"
+      ],
+      "quality_gates": [
+        "A viewer with the sound off must still be able to follow the argument",
+        "The silence beat must be the only still frame in the video",
+        "No scene may be recognisable as a stock scene-type"
+      ]
+    },
+    "delivery_promise": {
+      "promise_type": "motion_led",
+      "motion_required": true,
+      "source_required": false,
+      "tone_mode": "precise, quietly dramatic",
+      "quality_floor": "presentable",
+      "approved_fallback": null
+    },
+    "voice_selection": {
+      "provider": "piper",
+      "voice_id": "en_US-ryan-high",
+      "rationale": "Piper is the only TTS provider configured on this machine (1 of 10 - every cloud provider needs an API key that is not present here). It is local, offline and free, which matches the standing no-spend constraint. Honest tradeoff: it is less expressive than a cloud voice, so the script is written short and declarative, with the drama carried by the visuals and the cut rather than by vocal performance.",
+      "estimated_cost_usd": 0.0,
+      "delivery_style": "brisk, level, no rising sing-song; let the numbers land flat",
+      "pacing_policy": "Short sentences. One idea per breath. Hard stop before the silence beat.",
+      "sample_approval_required": false
+    },
+    "music_source": {
+      "source_type": "ai_generated",
+      "provider": "pixabay_music",
+      "mood_direction": "Low, ticking, minimal - a pulse rather than a melody. Must be able to drop to nothing for the silence beat and come back.",
+      "estimated_cost_usd": 0.0
+    },
+    "stages": [
+      {
+        "stage": "assets",
+        "approach": "No image or video generation is used at all. Narration is synthesised locally with Piper; the background bed is pulled from Pixabay's free royalty-free library; every visual is hand-authored TSX inside the project's own Remotion composition.",
+        "tools": [
+          {
+            "tool_name": "piper_tts",
+            "role": "narration",
+            "provider": "piper",
+            "available": true,
+            "estimated_cost_usd": 0.0,
+            "why_this_provider": "Only TTS available on this machine; local and free."
+          },
+          {
+            "tool_name": "pixabay_music",
+            "role": "background bed",
+            "provider": "pixabay_music",
+            "available": true,
+            "estimated_cost_usd": 0.0,
+            "why_this_provider": "Royalty-free, needs no API key, and is the only configured music source."
+          },
+          {
+            "tool_name": "image_selector",
+            "role": "would supply stills",
+            "provider": "none",
+            "available": false,
+            "estimated_cost_usd": 0.0,
+            "why_this_provider": "0 of 16 image providers are configured on this machine. Not a gap for this concept: the approved visual approach is hand-drawn motion, so no still is required. Recorded here so the constraint is visible rather than hidden."
+          }
+        ],
+        "fallback_if_unavailable": "If Piper cannot synthesise, the run stops and the blocker is reported - there is no second TTS provider on this machine."
+      },
+      {
+        "stage": "compose",
+        "approach": "Render the hand-authored composition through video_compose in atelier mode, then mux the narration and music bed. 1080x1920, 30 fps.",
+        "tools": [
+          {
+            "tool_name": "video_compose",
+            "role": "render",
+            "provider": "remotion",
+            "available": true,
+            "estimated_cost_usd": 0.0,
+            "why_this_provider": "Atelier mode renders a project-local composition and deliberately bypasses the stock scene registry."
+          },
+          {
+            "tool_name": "audio_mixer",
+            "role": "narration and music mix with ducking",
+            "provider": "ffmpeg",
+            "available": true,
+            "estimated_cost_usd": 0.0,
+            "why_this_provider": "Local ffmpeg; always available."
+          }
+        ],
+        "fallback_if_unavailable": "None needed - both are local."
+      }
+    ],
+    "quality_tradeoffs": [
+      {
+        "tradeoff": "TTS: Piper (local, free, flat) vs a cloud voice (expressive, needs a key and money)",
+        "recommendation": "Piper",
+        "quality_impact": "Narration will sound level rather than performed. Mitigated by writing shorter sentences and letting the picture carry the emphasis."
+      },
+      {
+        "tradeoff": "Composition: templated stock scene-types (fast, reliable, and the reason videos look alike) vs atelier hand-authoring (slower, no reuse, fresh language each time)",
+        "recommendation": "Atelier",
+        "quality_impact": "Costs materially more authoring time and carries render risk that the stock path does not. It is the whole point of this run: the previous five videos were identical because they were assembled from a fixed vocabulary."
+      },
+      {
+        "tradeoff": "Visuals: AI-generated stills or stock footage vs drawing every frame in the composition",
+        "recommendation": "Draw every frame",
+        "quality_impact": "No photographic texture. In exchange the visuals are exactly the argument - a stock clip of someone wearing headphones would illustrate nothing that the narration says."
+      }
+    ],
+    "alternative_paths": [
+      {
+        "description": "Free path (selected): Piper narration, Pixabay bed, hand-authored Remotion atelier composition.",
+        "total_cost_usd": 0.0,
+        "quality_level": "free",
+        "what_changes": "Nothing is paid for. Voice is the weak point."
+      },
+      {
+        "description": "Budget path: same visuals, cloud TTS for a natural voice.",
+        "total_cost_usd": 0.1,
+        "quality_level": "budget",
+        "what_changes": "Narration stops sounding synthetic. Needs an API key that is not on this machine."
+      },
+      {
+        "description": "Standard path: cloud TTS plus generated stills for two texture beats.",
+        "total_cost_usd": 0.35,
+        "quality_level": "standard",
+        "what_changes": "Adds photographic contrast against the diagram language. Needs two keys; not available here."
+      }
+    ]
+  },
+  "cost_estimate": {
+    "total_estimated_usd": 0.0,
+    "budget_cap_usd": 0.0,
+    "budget_verdict": "within_budget",
+    "line_items": [
+      {
+        "tool": "piper_tts",
+        "operation": "narration synthesis (~100 words)",
+        "quantity": 1,
+        "estimated_usd": 0.0,
+        "notes": "Local model, no network cost."
+      },
+      {
+        "tool": "pixabay_music",
+        "operation": "royalty-free track download",
+        "quantity": 1,
+        "estimated_usd": 0.0,
+        "notes": "Free library, no API key required."
+      },
+      {
+        "tool": "video_compose",
+        "operation": "atelier Remotion render, 40s at 1080x1920",
+        "quantity": 1,
+        "estimated_usd": 0.0,
+        "notes": "Local CPU render."
+      },
+      {
+        "tool": "audio_mixer",
+        "operation": "narration + bed mix with ducking",
+        "quantity": 1,
+        "estimated_usd": 0.0,
+        "notes": "Local ffmpeg."
+      }
+    ],
+    "savings_options": []
+  },
+  "approval": {
+    "status": "approved",
+    "approved_budget_usd": 0.0,
+    "user_notes": "Standing pre-authorisation from the user, restated across this project: full decision authority, ask nothing, spend nothing. Reaffirmed in the message that opened this run - the OpenMontage system is to be used as it is, prompt in and video out, rather than modified. This run is therefore executed unattended: every gated stage is recorded as approved under that standing authorisation, with each decision written into the decision log so the choices remain reviewable after the fact instead of before it. Note for the record: AGENT_GUIDE.md asks that a full-run pre-authorisation be logged as a decision_log entry with category 'approval_policy', but that value is absent from the decision_log schema enum, so it is recorded here instead."
+  },
+  "metadata": {
+    "unattended_run": true,
+    "gates_prosecuted_under": "standing user pre-authorisation",
+    "preflight": {
+      "composition_runtimes": {
+        "ffmpeg": true,
+        "remotion": true,
+        "hyperframes": true
+      },
+      "tts": "1/10 configured (piper)",
+      "image_generation": "0/16 configured",
+      "video_generation": "0/26 configured",
+      "music_search": "1/2 configured (pixabay_music)",
+      "verdict": "degraded - no image or video generation on this machine; the selected concept does not require either"
+    }
+  }
+}

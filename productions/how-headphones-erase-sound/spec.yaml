@@ -1,0 +1,56 @@
+# Publish spec for a hand-produced short.
+#
+# Nothing in this folder was built by daily/. The video was produced through
+# OpenMontage's own animated-explainer pipeline in atelier mode (see
+# source/art-direction.md and source/artifacts/decision_log.json); this file
+# exists only so daily/lib/publish.py — the tested upload path — can consume it.
+slug: how-headphones-erase-sound
+title: The Deadline Inside Your Headphones
+duration_seconds: 41.5
+produced_by: openmontage/animated-explainer (atelier, remotion)
+produced_on: "2026-09-03"
+
+copy:
+  title: "Your headphones don't block sound. They add it."
+  hook: "The noise is already on its way to your eardrum when the microphone hears it."
+  caption: >-
+    Noise cancelling has a deadline. Three centimetres of air is about 87
+    microseconds — that is the entire window the headphone has to measure the
+    wave, invert it and play it back. Land it 40 microseconds late and the
+    cancelling starts to fail. Miss by 100 and, at 1 kHz, you are a tenth of a
+    wave wrong. That is why an engine disappears and the person next to you
+    does not.
+  description: |-
+    Noise cancelling has a deadline.
+
+    The microphone hears the noise roughly 87 microseconds before your eardrum
+    does — three centimetres of air at 343 m/s. In that window the headphone has
+    to measure the wave, invert it and play it back. Land it 40 microseconds late
+    and the cancelling starts to fail. Miss by 100 and, at 1 kHz, you are a tenth
+    of a wave wrong.
+
+    That single constraint explains the thing everyone complains about: an engine
+    disappears and the person one seat away does not. Active cancellation covers
+    roughly 50 Hz to 2 kHz. A voice lives above it. There is no time.
+
+    The residual wave in this video is not drawn — it is the actual sum of the
+    two traces, computed per sample.
+
+    Sources
+    US 9,786,264, feedforward time alignment:
+    https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/9786264
+    SoundGuys, how active noise cancelling works:
+    https://www.soundguys.com/how-noise-cancelling-headphones-work-12380/
+    Measured ANC attenuation:
+    https://pmc.ncbi.nlm.nih.gov/articles/PMC9572409/
+
+    #Shorts
+  hashtags:
+    - noisecancelling
+    - anc
+    - physics
+    - audio
+    - howitworks
+    - headphones
+    - engineering
+    - Shorts

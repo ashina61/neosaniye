@@ -1,0 +1,119 @@
+{
+  "length_scale": 1.06,
+  "voice": "en_US-ryan-high",
+  "sections": [
+    {
+      "id": "s1",
+      "file": "/home/user/neosaniye/projects/how-headphones-erase-sound/assets/audio/narration_s1.wav",
+      "seconds": 2.855,
+      "words": 10,
+      "pause_before": 0.0,
+      "pause_after": 0.25
+    },
+    {
+      "id": "s2",
+      "file": "/home/user/neosaniye/projects/how-headphones-erase-sound/assets/audio/narration_s2.wav",
+      "seconds": 6.152,
+      "words": 19,
+      "pause_before": 0.0,
+      "pause_after": 0.2
+    },
+    {
+      "id": "s3",
+      "file": "/home/user/neosaniye/projects/how-headphones-erase-sound/assets/audio/narration_s3.wav",
+      "seconds": 3.285,
+      "words": 10,
+      "pause_before": 0.2,
+      "pause_after": 0.0
+    },
+    {
+      "id": "s4",
+      "file": "/home/user/neosaniye/projects/how-headphones-erase-sound/assets/audio/narration_s4.wav",
+      "seconds": 7.093,
+      "words": 22,
+      "pause_before": 0.0,
+      "pause_after": 0.2
+    },
+    {
+      "id": "s5",
+      "file": "/home/user/neosaniye/projects/how-headphones-erase-sound/assets/audio/narration_s5.wav",
+      "seconds": 7.128,
+      "words": 26,
+      "pause_before": 0.0,
+      "pause_after": 0.15
+    },
+    {
+      "id": "s6",
+      "file": "/home/user/neosaniye/projects/how-headphones-erase-sound/assets/audio/narration_s6.wav",
+      "seconds": 8.172,
+      "words": 28,
+      "pause_before": 0.0,
+      "pause_after": 0.6
+    },
+    {
+      "id": "s7",
+      "file": "/home/user/neosaniye/projects/how-headphones-erase-sound/assets/audio/narration_s7.wav",
+      "seconds": 2.937,
+      "words": 10,
+      "pause_before": 0.7,
+      "pause_after": 0.0
+    }
+  ],
+  "speech_seconds": 37.622,
+  "pause_seconds": 2.3,
+  "lead_in": 0.25,
+  "tail": 1.2,
+  "placed": [
+    {
+      "id": "s1",
+      "file": "/home/user/neosaniye/projects/how-headphones-erase-sound/assets/audio/narration_s1.wav",
+      "start": 0.25,
+      "end": 3.105,
+      "seconds": 2.855
+    },
+    {
+      "id": "s2",
+      "file": "/home/user/neosaniye/projects/how-headphones-erase-sound/assets/audio/narration_s2.wav",
+      "start": 3.355,
+      "end": 9.507,
+      "seconds": 6.152
+    },
+    {
+      "id": "s3",
+      "file": "/home/user/neosaniye/projects/how-headphones-erase-sound/assets/audio/narration_s3.wav",
+      "start": 9.907,
+      "end": 13.192,
+      "seconds": 3.285
+    },
+    {
+      "id": "s4",
+      "file": "/home/user/neosaniye/projects/how-headphones-erase-sound/assets/audio/narration_s4.wav",
+      "start": 13.192,
+      "end": 20.285,
+      "seconds": 7.093
+    },
+    {
+      "id": "s5",
+      "file": "/home/user/neosaniye/projects/how-headphones-erase-sound/assets/audio/narration_s5.wav",
+      "start": 20.485,
+      "end": 27.613,
+      "seconds": 7.128
+    },
+    {
+      "id": "s6",
+      "file": "/home/user/neosaniye/projects/how-headphones-erase-sound/assets/audio/narration_s6.wav",
+      "start": 27.763,
+      "end": 35.935,
+      "seconds": 8.172
+    },
+    {
+      "id": "s7",
+      "file": "/home/user/neosaniye/projects/how-headphones-erase-sound/assets/audio/narration_s7.wav",
+      "start": 37.235,
+      "end": 40.172,
+      "seconds": 2.937
+    }
+  ],
+  "narration_path": "/home/user/neosaniye/projects/how-headphones-erase-sound/assets/audio/narration.wav",
+  "total_seconds": 41.372
+}

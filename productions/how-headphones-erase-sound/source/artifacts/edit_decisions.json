@@ -1,0 +1,167 @@
+{
+  "version": "1.0",
+  "renderer_family": "animation-first",
+  "render_runtime": "remotion",
+  "composition_mode": "atelier",
+  "bespoke": {
+    "entry": "projects/how-headphones-erase-sound/index.tsx",
+    "composition_id": "HowHeadphonesEraseSound",
+    "art_direction": "projects/how-headphones-erase-sound/art-direction.md",
+    "props_path": "/home/user/neosaniye/projects/how-headphones-erase-sound/artifacts/props.json",
+    "crf": 18,
+    "concurrency": 2
+  },
+  "cuts": [
+    {
+      "id": "sc-01",
+      "source": "atelier:HowHeadphonesEraseSound",
+      "in_seconds": 0.0,
+      "out_seconds": 3.367,
+      "layer": "primary",
+      "reason": "Descent - the world's noise entering and never being stopped."
+    },
+    {
+      "id": "sc-02",
+      "source": "atelier:HowHeadphonesEraseSound",
+      "in_seconds": 3.367,
+      "out_seconds": 9.9,
+      "layer": "primary",
+      "reason": "Mirror - the known mechanism, delivered fast."
+    },
+    {
+      "id": "sc-03",
+      "source": "atelier:HowHeadphonesEraseSound",
+      "in_seconds": 9.9,
+      "out_seconds": 13.2,
+      "layer": "primary",
+      "reason": "The turn - typography in an empty frame."
+    },
+    {
+      "id": "sc-04",
+      "source": "atelier:HowHeadphonesEraseSound",
+      "in_seconds": 13.2,
+      "out_seconds": 17.5,
+      "layer": "primary",
+      "reason": "The race - a pulse crossing the mic-to-ear gap."
+    },
+    {
+      "id": "sc-05",
+      "source": "atelier:HowHeadphonesEraseSound",
+      "in_seconds": 17.5,
+      "out_seconds": 20.5,
+      "layer": "primary",
+      "reason": "Dimensioned - 3 cm of air is 87 microseconds."
+    },
+    {
+      "id": "sc-06",
+      "source": "atelier:HowHeadphonesEraseSound",
+      "in_seconds": 20.5,
+      "out_seconds": 24.2,
+      "layer": "primary",
+      "reason": "Tolerance - 40 microseconds late, residual still small."
+    },
+    {
+      "id": "sc-07",
+      "source": "atelier:HowHeadphonesEraseSound",
+      "in_seconds": 24.2,
+      "out_seconds": 27.767,
+      "layer": "primary",
+      "reason": "The slip - 100 microseconds late, the sum breaks. Hero beat."
+    },
+    {
+      "id": "sc-08",
+      "source": "atelier:HowHeadphonesEraseSound",
+      "in_seconds": 27.767,
+      "out_seconds": 32.5,
+      "layer": "primary",
+      "reason": "The band - cancellation floods up the spectrum and stops."
+    },
+    {
+      "id": "sc-09",
+      "source": "atelier:HowHeadphonesEraseSound",
+      "in_seconds": 32.5,
+      "out_seconds": 36.6,
+      "layer": "primary",
+      "reason": "Above the line - the band a voice lives in."
+    },
+    {
+      "id": "sc-10",
+      "source": "atelier:HowHeadphonesEraseSound",
+      "in_seconds": 36.6,
+      "out_seconds": 41.5,
+      "layer": "primary",
+      "reason": "Stillness - the only motionless shot."
+    }
+  ],
+  "audio": {
+    "narration": {
+      "segments": [
+        {
+          "asset_id": "narration-s1",
+          "start_seconds": 0.25,
+          "end_seconds": 3.105
+        },
+        {
+          "asset_id": "narration-s2",
+          "start_seconds": 3.355,
+          "end_seconds": 9.507
+        },
+        {
+          "asset_id": "narration-s3",
+          "start_seconds": 9.907,
+          "end_seconds": 13.192
+        },
+        {
+          "asset_id": "narration-s4",
+          "start_seconds": 13.192,
+          "end_seconds": 20.285
+        },
+        {
+          "asset_id": "narration-s5",
+          "start_seconds": 20.485,
+          "end_seconds": 27.613
+        },
+        {
+          "asset_id": "narration-s6",
+          "start_seconds": 27.763,
+          "end_seconds": 35.935
+        },
+        {
+          "asset_id": "narration-s7",
+          "start_seconds": 37.235,
+          "end_seconds": 40.172
+        }
+      ]
+    },
+    "music": {
+      "asset_id": "music-bed",
+      "volume": 0.5,
+      "fade_in_seconds": 2.2,
+      "fade_out_seconds": 1.1,
+      "ducking": {
+        "enabled": true,
+        "attack_ms": 180,
+        "release_ms": 450
+      }
+    }
+  },
+  "subtitles": {
+    "enabled": false
+  },
+  "transitions": [
+    {
+      "at_seconds": 9.9,
+      "type": "wipe",
+      "duration_seconds": 0.47,
+      "reason": "The hairline is swept off frame - the only non-cut transition in the video."
+    }
+  ],
+  "metadata": {
+    "frame": "1080x1920 @ 30fps, 1245 frames",
+    "audio_muxed_by": "video_compose atelier path (inputs.audio_path), not by the composition",
+    "subtitles_off_because": "Deliberate. The composition already carries typographic beats (BLOCK/ADD, 'That part is easy.', the microsecond readouts, the axis labels) and a per-scene keyline that says something different from the narration. Burning verbatim subtitles on top would double the same phrases on screen - the failure mode bespoke-composition.md names explicitly. Sound-off comprehension is carried by the keylines and the drawn argument instead.",
+    "audio_approach": "Narration is placed on a measured timeline, the self-produced bed sits under it with ducking, and the whole mix is loudness-normalised. The bed ramps to nothing at 35.8-36.9s and never returns, so the closing line is spoken into real silence.",
+    "music_source_note": "Pixabay is unreachable from this environment (the proxy denies the host) and 0 of 5 music-generation providers are configured, so the bed was produced locally. See decision d-009.",
+    "mix_path": "/home/user/neosaniye/projects/how-headphones-erase-sound/assets/audio/final_mix.wav"
+  }
+}

@@ -1,0 +1,303 @@
+{
+  "version": "1.0",
+  "project_id": "how-headphones-erase-sound",
+  "decisions": [
+    {
+      "decision_id": "d-001",
+      "stage": "proposal",
+      "category": "pipeline_selection",
+      "subject": "Pipeline for this production",
+      "options_considered": [
+        {
+          "option_id": "animated-explainer",
+          "label": "animated-explainer",
+          "score": 0.9,
+          "reason": "Topic-to-explainer, production stability, research-first pre-production, and the stage directors that produce a different visual design per topic."
+        },
+        {
+          "option_id": "animation",
+          "label": "animation (motion-graphics first)",
+          "score": 0.7,
+          "reason": "Also a fit for a fully drawn piece.",
+          "rejected_because": "The value here is the research-to-concept chain, which animated-explainer runs and animation does not."
+        },
+        {
+          "option_id": "daily-template",
+          "label": "The repo's own daily/ template pipeline",
+          "score": 0.2,
+          "reason": "Fast, gate-verified, unattended, free.",
+          "rejected_because": "It assembles a fixed vocabulary of 19 pieces, which is precisely why the last five videos were visually identical. The user asked for OpenMontage's own path instead."
+        }
+      ],
+      "selected": "animated-explainer",
+      "reason": "The user asked that production run through OpenMontage as it is rather than through the fixed template. animated-explainer is the pipeline whose directors design a fresh treatment per topic.",
+      "user_visible": true,
+      "user_approved": true,
+      "confidence": 0.9
+    },
+    {
+      "decision_id": "d-002",
+      "stage": "proposal",
+      "category": "concept_selection",
+      "subject": "Concept for the noise-cancelling short",
+      "options_considered": [
+        {
+          "option_id": "c1",
+          "label": "The Deadline Inside Your Headphones",
+          "score": 0.92,
+          "reason": "Built on the gap the research found - the microsecond timing budget - and it explains every other beat as a consequence."
+        },
+        {
+          "option_id": "c2",
+          "label": "Why The Engine Vanishes And The Voice Does Not",
+          "score": 0.8,
+          "reason": "Answers the most-asked forum question with a precise, drawable answer.",
+          "rejected_because": "Absorbed into C1 as its consequence beat rather than run as a separate video."
+        },
+        {
+          "option_id": "c3",
+          "label": "The Napkin That Took Twenty-Two Years",
+          "score": 0.65,
+          "reason": "Human origin story with two hard numbers.",
+          "rejected_because": "Charming but it teaches nothing mechanical; kept on the shelf as its own piece."
+        },
+        {
+          "option_id": "c4",
+          "label": "That Pressure You Feel Is Not Pressure",
+          "score": 0.78,
+          "reason": "Corrects a bodily sensation the viewer has felt - unusually sticky.",
+          "rejected_because": "Strong enough to be its own video; folding it in would give this one two spines."
+        }
+      ],
+      "selected": "c1",
+      "reason": "One causal chain instead of a list of facts: the deadline is established, then it explains the band limit, then the reframe lands. The other three remain viable standalone videos.",
+      "user_visible": true,
+      "user_approved": true,
+      "confidence": 0.85
+    },
+    {
+      "decision_id": "d-003",
+      "stage": "proposal",
+      "category": "render_runtime_selection",
+      "subject": "Composition runtime",
+      "options_considered": [
+        {
+          "option_id": "remotion",
+          "label": "Remotion (React composition)",
+          "score": 0.88,
+          "reason": "Available on this machine (node 22, node_modules installed). Its atelier path renders a project-local, hand-authored composition and deliberately bypasses the stock scene registry - and it enforces that bypass with a stock-reuse scan at render time, which is exactly the guarantee this run needs."
+        },
+        {
+          "option_id": "hyperframes",
+          "label": "HyperFrames (HTML/CSS/GSAP)",
+          "score": 0.8,
+          "reason": "Also available and verified: doctor reports 0.8.27, node 22, ffmpeg and npx all resolve. Excellent at kinetic typography and GSAP motion.",
+          "rejected_because": "It is the runtime the previous five videos already used, and its lint/inspect gates are tuned to that template. Choosing the other runtime removes any chance of the old layout habits leaking in - and Remotion's atelier path has an automated doctrine check that HyperFrames does not."
+        },
+        {
+          "option_id": "ffmpeg",
+          "label": "FFmpeg only",
+          "score": 0.15,
+          "reason": "Always available, zero risk.",
+          "rejected_because": "Ken Burns on stills cannot draw a waveform being cancelled. The delivery promise is motion_led, so a still-led fallback is forbidden."
+        }
+      ],
+      "selected": "remotion",
+      "reason": "The brief promises motion that IS the argument, and the atelier path gives a fresh visual language per video with a machine-checked ban on reusing stock creative components. Both runtimes were available and both were assessed.",
+      "user_visible": true,
+      "user_approved": true,
+      "confidence": 0.85
+    },
+    {
+      "decision_id": "d-004",
+      "stage": "proposal",
+      "category": "composition_mode",
+      "subject": "Composition authoring mode",
+      "options_considered": [
+        {
+          "option_id": "atelier",
+          "label": "Atelier - hand-author the composition from scratch",
+          "score": 0.95,
+          "reason": "No reusable creative components; a fresh visual language for this piece."
+        },
+        {
+          "option_id": "templated",
+          "label": "Templated - assemble stock cut.type scene-types",
+          "score": 0.25,
+          "reason": "Fast, cheap, reliable.",
+          "rejected_because": "It is the documented reason most videos look alike, and sameness is the exact complaint that started this run."
+        }
+      ],
+      "selected": "atelier",
+      "reason": "The user's complaint was that five videos shared one look. Templated mode would reproduce that on a different engine. Atelier costs more authoring time and carries render risk; that cost is the point.",
+      "user_visible": true,
+      "user_approved": true,
+      "confidence": 0.9
+    },
+    {
+      "decision_id": "d-005",
+      "stage": "proposal",
+      "category": "playbook_selection",
+      "subject": "Visual identity",
+      "options_considered": [
+        {
+          "option_id": "custom",
+          "label": "Custom art direction: oscilloscope in a dark room",
+          "score": 0.9,
+          "reason": "Derived from the subject - the video is about a measurement, so the frame is an instrument. Cyan is the world, amber is the headphone's answer, and silence is the only still moment."
+        },
+        {
+          "option_id": "minimalist-diagram",
+          "label": "minimalist-diagram preset",
+          "score": 0.6,
+          "reason": "Genuinely close to the subject matter.",
+          "rejected_because": "A preset carries a frozen look; the taste-direction skill asks for a designed identity when the topic has its own visual world, and sound does."
+        },
+        {
+          "option_id": "flat-motion-graphics",
+          "label": "flat-motion-graphics preset",
+          "score": 0.4,
+          "reason": "Standard social-media look.",
+          "rejected_because": "Bright flat shapes would flatten the one thing this video sells - precision."
+        }
+      ],
+      "selected": "custom",
+      "reason": "The subject supplies the design read. Two signal colours and a monospace number face say 'measurement' without a single label explaining it.",
+      "user_visible": true,
+      "user_approved": true,
+      "confidence": 0.85
+    },
+    {
+      "decision_id": "d-006",
+      "stage": "proposal",
+      "category": "voice_selection",
+      "subject": "Narration TTS provider",
+      "options_considered": [
+        {
+          "option_id": "piper",
+          "label": "Piper (local, offline)",
+          "score": 0.6,
+          "reason": "The only configured TTS on this machine, free and offline."
+        },
+        {
+          "option_id": "elevenlabs",
+          "label": "ElevenLabs",
+          "score": 0.0,
+          "reason": "Best-in-class expressiveness.",
+          "rejected_because": "Unavailable - no API key on this machine, and paid, which the standing no-spend constraint forbids."
+        },
+        {
+          "option_id": "google_tts",
+          "label": "Google / Gemini TTS",
+          "score": 0.0,
+          "reason": "Natural voice on a free tier.",
+          "rejected_because": "No key present in this environment. The key lives only in the repository's Actions secrets."
+        }
+      ],
+      "selected": "piper",
+      "reason": "1 of 10 TTS providers is configured here and it is the free local one. The script is written short and declarative to compensate for a level delivery.",
+      "user_visible": true,
+      "user_approved": true,
+      "confidence": 0.95
+    },
+    {
+      "decision_id": "d-007",
+      "stage": "proposal",
+      "category": "music_source",
+      "subject": "Background music",
+      "options_considered": [
+        {
+          "option_id": "pixabay_music",
+          "label": "Pixabay royalty-free library",
+          "score": 0.85,
+          "reason": "Available with no API key, royalty-free, and matches the user's standing requirement for free music."
+        },
+        {
+          "option_id": "music_library",
+          "label": "User's own music_library/ folder",
+          "score": 0.0,
+          "reason": "Free and intentional if it exists.",
+          "rejected_because": "No music_library/ directory exists in this checkout."
+        },
+        {
+          "option_id": "music_gen",
+          "label": "Generated music",
+          "score": 0.0,
+          "reason": "Bespoke bed.",
+          "rejected_because": "0 of 5 music generation providers are configured."
+        },
+        {
+          "option_id": "none",
+          "label": "No music",
+          "score": 0.3,
+          "reason": "Zero risk.",
+          "rejected_because": "The silence beat only reads as silence if something was playing before it."
+        }
+      ],
+      "selected": "pixabay_music",
+      "reason": "The only configured music source, and the one that satisfies the royalty-free requirement without a key or a payment.",
+      "user_visible": true,
+      "user_approved": true,
+      "confidence": 0.8
+    },
+    {
+      "decision_id": "d-008",
+      "stage": "proposal",
+      "category": "motion_commitment",
+      "subject": "Motion requirement for the delivery promise",
+      "options_considered": [
+        {
+          "option_id": "motion_led",
+          "label": "Motion-led - the animation carries the argument",
+          "score": 1.0,
+          "reason": "A wave being cancelled cannot be shown as a still. The motion is the explanation, not decoration."
+        },
+        {
+          "option_id": "still_led",
+          "label": "Still-led with Ken Burns",
+          "score": 0.0,
+          "reason": "Cheaper and lower risk.",
+          "rejected_because": "Forbidden for a motion-required brief, and it would make the video meaningless."
+        }
+      ],
+      "selected": "motion_led",
+      "reason": "Locked at proposal so no later stage can quietly downgrade to stills if the render gets difficult.",
+      "user_visible": true,
+      "user_approved": true,
+      "confidence": 1.0
+    },
+    {
+      "decision_id": "d-009",
+      "stage": "assets",
+      "category": "music_source",
+      "subject": "Background music",
+      "options_considered": [
+        {
+          "option_id": "pixabay_music",
+          "label": "Pixabay royalty-free library",
+          "score": 0.0,
+          "reason": "Chosen at proposal as the only configured music source.",
+          "rejected_because": "Unreachable from this environment - the agent proxy denies pixabay.com and cdn.pixabay.com by policy. Not a tool bug; the tool reports available because it needs no API key."
+        },
+        {
+          "option_id": "self_produced",
+          "label": "A bed produced for this video",
+          "score": 0.8,
+          "reason": "The user's standing brief allows royalty-free OR self-produced music. A pulse rather than a melody suits a video about a clock, costs nothing, carries no third-party rights, and can be written to stop exactly where the silence beat needs it to."
+        },
+        {
+          "option_id": "none",
+          "label": "No music",
+          "score": 0.3,
+          "reason": "Zero risk.",
+          "rejected_because": "The silence beat only reads as silence if something was playing before it."
+        }
+      ],
+      "selected": "self_produced",
+      "reason": "Revises d-007. Pixabay could not be reached at asset time, so the bed was produced locally: a 62 Hz tick every half second that doubles under the two numbers, over a low drone, ramping to nothing at 35.8s and never returning.",
+      "user_visible": true,
+      "user_approved": true,
+      "confidence": 0.8
+    }
+  ]
+}

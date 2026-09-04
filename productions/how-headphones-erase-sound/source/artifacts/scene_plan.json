@@ -1,0 +1,260 @@
+{
+  "version": "1.0",
+  "style_playbook": "custom",
+  "scenes": [
+    {
+      "id": "sc-01",
+      "type": "animation",
+      "script_section_id": "s1",
+      "description": "DESCENT. Near-black frame, faint instrument grid breathing at the edges. A single cyan trace enters from the top edge and keeps travelling downward through the whole shot - it is never stopped, never blocked. On 'They add one', the word BLOCK, set small in white above the trace, is struck through and the word ADD takes its place without the layout shifting. Hand-authored Remotion scene; no stock template.",
+      "start_seconds": 0.0,
+      "end_seconds": 3.355,
+      "framing": "full-frame vertical, trace occupying the centre column, type in the upper third",
+      "movement": "continuous downward travel, constant speed - nothing eases",
+      "transition_in": "cut from black",
+      "transition_out": "cut",
+      "overlay_notes": "BLOCK struck through, ADD replacing it in place at 2.6s",
+      "narrative_role": "establish_context",
+      "information_role": "Overturn the assumption in the first sentence, before any explanation exists.",
+      "hero_moment": false,
+      "texture_keywords": ["oscilloscope", "ink black", "single trace", "cold"],
+      "required_assets": [
+        {
+          "type": "remotion_scene",
+          "description": "Bespoke TSX scene: parametric cyan waveform path travelling down a 1080x1920 frame over a breathing grid, plus an in-place word swap.",
+          "source": "generate"
+        }
+      ]
+    },
+    {
+      "id": "sc-02",
+      "type": "animation",
+      "script_section_id": "s2",
+      "description": "MIRROR. The cyan trace is joined by an amber trace that is its exact vertical mirror, drawn on in real time as the narration says 'flips the wave upside down'. On 'The two meet' the pair slide together; on 'Both disappear' they collapse into one flat hairline and the grid dims. This is the only appearance of the canonical cancellation diagram in the video, and it is over in six seconds.",
+      "start_seconds": 3.355,
+      "end_seconds": 9.907,
+      "framing": "full-frame, both traces stacked around the horizontal centre line",
+      "movement": "amber draws left-to-right, then vertical convergence into a single line",
+      "transition_in": "cut",
+      "transition_out": "wipe - the hairline is swept off frame",
+      "overlay_notes": "No labels. The colours are the labels: cyan is the world, amber is the headphone.",
+      "narrative_role": "deliver_payload",
+      "information_role": "The mechanism everybody already knows, delivered fast so the video can move past it.",
+      "hero_moment": false,
+      "texture_keywords": ["mirrored waveform", "convergence", "amber against cyan"],
+      "required_assets": [
+        {
+          "type": "remotion_scene",
+          "description": "Bespoke TSX scene: two parametric waveform paths, one the negation of the other, with a convergence-to-flat interpolation driven by frame.",
+          "source": "generate"
+        }
+      ]
+    },
+    {
+      "id": "sc-03",
+      "type": "text_card",
+      "script_section_id": "s3",
+      "description": "THE TURN. The hairline is wiped away and the frame is briefly empty. Heavy white type, left-aligned, low in the frame: 'That part is easy.' It holds, then is replaced by the geometry of the rest of the video - a microphone glyph at the top of the frame, an ear at the bottom, and a deliberately unexplained gap between them. Intended render treatment is a bespoke title beat, not the stock TextCard component.",
+      "start_seconds": 9.907,
+      "end_seconds": 13.192,
+      "framing": "type in the lower third; the upper two-thirds intentionally empty",
+      "movement": "type sets in without spring or bounce; the geometry fades up beneath it",
+      "transition_in": "wipe",
+      "transition_out": "cut",
+      "overlay_notes": "The only moment the video speaks in plain type instead of drawing.",
+      "narrative_role": "transition",
+      "information_role": "Signal that the known explanation has ended and the real subject is starting.",
+      "hero_moment": false,
+      "texture_keywords": ["negative space", "heavy grotesk", "left aligned"],
+      "required_assets": [
+        {
+          "type": "remotion_scene",
+          "description": "Bespoke TSX scene: typographic pivot beat with the mic/ear geometry establishing underneath.",
+          "source": "generate"
+        }
+      ]
+    },
+    {
+      "id": "sc-04",
+      "type": "animation",
+      "script_section_id": "s4",
+      "description": "THE RACE. A microphone at the top, an ear at the bottom, and a cyan pulse that leaves the microphone and travels down the gap toward the ear. In the right margin a microsecond counter starts running and does not stop for the rest of the video. The pulse arrives before anything has been drawn to answer it - the frame is losing the race and the viewer sees it.",
+      "start_seconds": 13.192,
+      "end_seconds": 17.5,
+      "framing": "vertical mic-to-ear axis with a monospace counter pinned to the right margin",
+      "movement": "single downward pulse, counter incrementing continuously",
+      "transition_in": "cut",
+      "transition_out": "hold - the geometry stays for the next scene",
+      "overlay_notes": "Counter is set in monospace; it is the only element that never pauses.",
+      "narrative_role": "build_tension",
+      "information_role": "Establish that the sound is already in flight when the microphone hears it.",
+      "hero_moment": false,
+      "texture_keywords": ["signal path", "running counter", "downward pressure"],
+      "required_assets": [
+        {
+          "type": "remotion_scene",
+          "description": "Bespoke TSX scene: mic and ear glyphs drawn as vector primitives, a travelling pulse, and a frame-driven microsecond readout.",
+          "source": "generate"
+        }
+      ]
+    },
+    {
+      "id": "sc-05",
+      "type": "diagram",
+      "script_section_id": "s4",
+      "description": "DIMENSIONED. The same mic-to-ear axis, now annotated like an engineering drawing: extension lines, arrowheads, and the gap called out in centimetres, with the time that distance actually buys set beneath it in monospace. Static composition, animated only by the ticking counter and the dimension lines drawing themselves on.",
+      "start_seconds": 17.5,
+      "end_seconds": 20.485,
+      "framing": "same axis, pushed slightly left to make room for the dimension callout",
+      "movement": "dimension lines draw on; everything else holds",
+      "transition_in": "hold",
+      "transition_out": "cut",
+      "overlay_notes": "Engineering-drawing grammar, not infographic grammar. Thin lines, no fills.",
+      "narrative_role": "evidence",
+      "information_role": "Convert the abstract 'microseconds out' into a measurable distance.",
+      "hero_moment": false,
+      "texture_keywords": ["technical drawing", "extension lines", "monospace callout"],
+      "required_assets": [
+        {
+          "type": "remotion_scene",
+          "description": "Bespoke TSX scene: dimension-line annotation layer over the mic-to-ear geometry.",
+          "source": "generate"
+        }
+      ]
+    },
+    {
+      "id": "sc-06",
+      "type": "animation",
+      "script_section_id": "s5",
+      "description": "TOLERANCE. Back to the two traces, now with a thin tolerance band drawn around the amber one and labelled 40 microseconds in monospace. Inside the band the traces still cancel - the flat line holds. The band is visibly narrow against the width of one wave cycle, which is the point.",
+      "start_seconds": 20.485,
+      "end_seconds": 24.2,
+      "framing": "traces centred, tolerance band and label to the right",
+      "movement": "band draws on and breathes very slightly; traces hold their cancellation",
+      "transition_in": "cut",
+      "transition_out": "hold",
+      "overlay_notes": "40 microseconds appears once, in monospace, and stays put.",
+      "narrative_role": "evidence",
+      "information_role": "Give the deadline a number and show that inside it, the trick still works.",
+      "hero_moment": false,
+      "texture_keywords": ["tolerance band", "monospace numeral", "held flat line"],
+      "required_assets": [
+        {
+          "type": "remotion_scene",
+          "description": "Bespoke TSX scene: tolerance band around a waveform path with a monospace numeric label.",
+          "source": "generate"
+        }
+      ]
+    },
+    {
+      "id": "sc-07",
+      "type": "animation",
+      "script_section_id": "s5",
+      "description": "SLIP. The label rolls to 100 microseconds and the amber trace slides out of register with the cyan one. The flat line breaks apart and residue comes back into the frame - the cancellation visibly fails, and it fails by an amount the viewer can see is small. The hero shot of the video: the argument is won here, in picture, not in narration.",
+      "start_seconds": 24.2,
+      "end_seconds": 27.763,
+      "framing": "traces centred and slightly enlarged as the register breaks",
+      "movement": "phase offset interpolates in; the flat line fractures into residue",
+      "transition_in": "hold",
+      "transition_out": "cut",
+      "overlay_notes": "The number rolls rather than cuts, so the failure reads as continuous, not as a new fact.",
+      "narrative_role": "deliver_payload",
+      "information_role": "Prove that a tiny timing error destroys the whole effect.",
+      "hero_moment": true,
+      "texture_keywords": ["phase slip", "broken flat line", "residue"],
+      "required_assets": [
+        {
+          "type": "remotion_scene",
+          "description": "Bespoke TSX scene: phase-offset interpolation between two waveform paths plus a rolling monospace numeral.",
+          "source": "generate"
+        }
+      ]
+    },
+    {
+      "id": "sc-08",
+      "type": "diagram",
+      "script_section_id": "s6",
+      "description": "THE BAND. The frame turns into a frequency axis running the full height of the vertical format, low frequencies at the bottom. Cancellation floods up from the bottom as a cool field and stops dead partway up. The narration names the engine at the moment the flood covers the low end.",
+      "start_seconds": 27.763,
+      "end_seconds": 32.5,
+      "framing": "full-height axis, ticks and labels along the right edge",
+      "movement": "the cancelled field rises from the bottom and halts",
+      "transition_in": "cut",
+      "transition_out": "hold",
+      "overlay_notes": "No legend. The rise stopping IS the explanation.",
+      "narrative_role": "comparison",
+      "information_role": "Show that cancellation covers only the bottom of the spectrum.",
+      "hero_moment": false,
+      "texture_keywords": ["vertical spectrum", "rising field", "hard ceiling"],
+      "required_assets": [
+        {
+          "type": "remotion_scene",
+          "description": "Bespoke TSX scene: vertical frequency axis with an animated cancellation field and tick labels.",
+          "source": "generate"
+        }
+      ]
+    },
+    {
+      "id": "sc-09",
+      "type": "diagram",
+      "script_section_id": "s6",
+      "description": "ABOVE THE LINE. The same axis. Everything above the ceiling keeps moving - a restless band of activity where speech lives, drawn in white so it reads as untouched rather than as an enemy. The covered band is labelled once, in monospace, against the axis. On 'There is no time' the whole frame stops moving except that band.",
+      "start_seconds": 32.5,
+      "end_seconds": 36.6,
+      "framing": "same axis; the live band occupies the upper third",
+      "movement": "activity above the ceiling; everything below now still",
+      "transition_in": "hold",
+      "transition_out": "cut to stillness",
+      "overlay_notes": "One monospace label on the covered band. Nothing else is named.",
+      "narrative_role": "evidence",
+      "information_role": "Answer the viewer's own complaint: voices sit above where the trick can reach.",
+      "hero_moment": false,
+      "texture_keywords": ["untouched band", "monospace label", "residual motion"],
+      "required_assets": [
+        {
+          "type": "remotion_scene",
+          "description": "Bespoke TSX scene: live upper band over a settled lower field, with a single axis annotation.",
+          "source": "generate"
+        }
+      ]
+    },
+    {
+      "id": "sc-10",
+      "type": "text_card",
+      "script_section_id": "s7",
+      "description": "STILLNESS. Everything stops. One flat hairline across the centre of the frame, the microsecond counter frozen mid-count, the grid holding for the only time in the video. The closing line sets small and low. The title appears once, in the corner, and the frame does not move again. No end card, no subscribe prompt, no logo animation.",
+      "start_seconds": 36.6,
+      "end_seconds": 41.5,
+      "framing": "hairline on the centre line, type low-left, frozen counter in the right margin",
+      "movement": "none - this is the only motionless shot in the video, and that is the payoff",
+      "transition_in": "cut",
+      "transition_out": "cut to black",
+      "overlay_notes": "The stillness is the point; do not add a fade-up or a drift.",
+      "narrative_role": "resolution",
+      "information_role": "Reframe silence as a deadline met, and stop.",
+      "hero_moment": true,
+      "texture_keywords": ["frozen counter", "single hairline", "held silence"],
+      "required_assets": [
+        {
+          "type": "remotion_scene",
+          "description": "Bespoke TSX scene: the frozen end state of every element the video has used.",
+          "source": "generate"
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "composition_mode": "atelier",
+    "render_runtime": "remotion",
+    "frame": "1080x1920 at 30fps, 1245 frames",
+    "coverage": "Scenes run 0.0 to 41.5s with no gaps and no overlaps; every script section is covered and the tail holds 1.13s past the last word.",
+    "variety_check": "Types in order: animation, animation, text_card, animation, diagram, animation, animation, diagram, diagram, text_card. No three consecutive scenes share a type, and no two consecutive scenes share a layout mode.",
+    "feasibility": "Every required asset is a hand-authored Remotion scene rendered locally through video_compose in atelier mode. Nothing in this plan needs image generation, video generation, or stock footage - which is what makes it buildable on this machine, where 0 of 16 image providers and 0 of 26 video providers are configured.",
+    "palette": {
+      "ground": "#080B10",
+      "world": "#3FE0D0",
+      "headphone": "#FF8A3D",
+      "type": "#F2F5F7"
+    }
+  }
+}

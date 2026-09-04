@@ -1,0 +1,15 @@
+{
+  "title": "The Deadline Inside Your Headphones",
+  "scenes": [
+    { "id": "sc-01", "from": 0, "durationInFrames": 101 },
+    { "id": "sc-02", "from": 101, "durationInFrames": 196, "keyline": "IT ADDS THE OPPOSITE WAVE" },
+    { "id": "sc-03", "from": 297, "durationInFrames": 99 },
+    { "id": "sc-04", "from": 396, "durationInFrames": 129, "keyline": "THE SOUND IS ALREADY MOVING" },
+    { "id": "sc-05", "from": 525, "durationInFrames": 90 },
+    { "id": "sc-06", "from": 615, "durationInFrames": 111, "keyline": "INSIDE THE DEADLINE" },
+    { "id": "sc-07", "from": 726, "durationInFrames": 107, "keyline": "OUTSIDE IT, NOTHING CANCELS" },
+    { "id": "sc-08", "from": 833, "durationInFrames": 142, "keyline": "ONLY THE LOW END IS COVERED" },
+    { "id": "sc-09", "from": 975, "durationInFrames": 123, "keyline": "A VOICE IS TOO QUICK" },
+    { "id": "sc-10", "from": 1098, "durationInFrames": 147 }
+  ]
+}

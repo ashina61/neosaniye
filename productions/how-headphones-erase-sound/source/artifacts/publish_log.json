@@ -1,0 +1,55 @@
+{
+  "version": "1.0",
+  "entries": [
+    {
+      "platform": "local_export",
+      "status": "exported",
+      "export_path": "/home/user/neosaniye/projects/how-headphones-erase-sound/export",
+      "timestamp": "2026-09-03T22:22:46+00:00",
+      "visibility": "private",
+      "metadata_used": {
+        "title": "Your headphones don't block sound. They add it.",
+        "description": "Noise cancelling has a deadline. The microphone hears the noise about 87 microseconds before your eardrum does \u2014 three centimetres of air \u2014 and in that window the headphone has to measure the wave, invert it and play it back. Land it 40 microseconds late and the cancelling starts to fail. Miss by 100 and, at 1 kHz, you're a tenth of a wave wrong. That's why an engine disappears and the person next to you doesn't.\n\nSources:\nUS 9,786,264 (feedforward time alignment) \u00b7 https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/9786264\nSoundGuys, how active noise cancelling works \u00b7 https://www.soundguys.com/how-noise-cancelling-headphones-work-12380/\nPMC, measured ANC attenuation \u00b7 https://pmc.ncbi.nlm.nih.gov/articles/PMC9572409/",
+        "hashtags": [
+          "#noisecancelling",
+          "#anc",
+          "#physics",
+          "#audio",
+          "#howitworks",
+          "#headphones",
+          "#engineering",
+          "#sound"
+        ],
+        "chapters": [
+          {
+            "start": 0.0,
+            "title": "It adds, it doesn't block"
+          },
+          {
+            "start": 9.9,
+            "title": "The part nobody mentions"
+          },
+          {
+            "start": 13.2,
+            "title": "87 microseconds of warning"
+          },
+          {
+            "start": 20.5,
+            "title": "40 late, then 100 late"
+          },
+          {
+            "start": 27.8,
+            "title": "Why voices survive"
+          },
+          {
+            "start": 36.6,
+            "title": "Arriving on time"
+          }
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "note": "Exported, not uploaded. No publishing credentials are present in this environment, and uploading is the user's call in any case. The bundle holds the video, the SEO metadata with chapters, and a thumbnail frame taken from the hero beat at 26.5s."
+  }
+}

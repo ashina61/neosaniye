@@ -1,0 +1,312 @@
+{
+  "version": "1.0",
+  "topic": "How noise-cancelling headphones erase sound",
+  "research_date": "2026-09-03",
+  "research_summary": "Every explainer on this topic stops at the same sentence: 'the headphones play an opposite wave and the two cancel out.' That is true and it is not the interesting part. The interesting part is that the trick has a hard physical deadline. Sound is already moving toward your eardrum when the outside microphone hears it, so the headphone has tens of microseconds to measure, invert and replay it; feedforward designs need time alignment inside roughly 25-40 microseconds, and a 100-microsecond slip is already 10 percent of a 1 kHz cycle. That single constraint explains everything people actually complain about: why plane rumble vanishes but the person next to you does not, why the effective band stops around 1-2 kHz, and why 'eardrum suck' is not pressure at all but a brain reading missing bass as pressure. The video should be built on the deadline, not on the cancellation cartoon.",
+  "landscape": {
+    "existing_content": [
+      {
+        "title": "How does active noise canceling (ANC) work?",
+        "url": "https://www.soundguys.com/how-noise-cancelling-headphones-work-12380/",
+        "source": "blog",
+        "angle": "Technical reference walkthrough",
+        "what_it_covers": "Anti-phase principle, feedforward vs feedback vs hybrid microphone placement, passive isolation as the high-frequency partner.",
+        "what_it_misses": "Never dramatises the timing budget; the microsecond deadline is mentioned as an engineering footnote rather than the story.",
+        "engagement_signal": "Top organic result for the query across several phrasings"
+      },
+      {
+        "title": "How do noise-cancelling headphones cancel sounds?",
+        "url": "https://www.sciencefocus.com/science/how-do-noise-cancelling-headphones-cancel-sounds",
+        "source": "blog",
+        "angle": "Popular-science 180-degrees-out-of-phase explanation",
+        "what_it_covers": "Mic picks up noise, DSP computes the inverse, speaker plays it, destructive interference.",
+        "what_it_misses": "No treatment of why the effect collapses above ~1-2 kHz; leaves the reader thinking ANC simply works on everything."
+      },
+      {
+        "title": "How Noise-Canceling Headsets Work",
+        "url": "https://electronics.howstuffworks.com/gadgets/audio-music/noise-canceling-headset.htm",
+        "source": "blog",
+        "angle": "Evergreen encyclopedia entry",
+        "what_it_covers": "Passive vs active cancellation, the Bose aviation origin, block diagram of the signal path.",
+        "what_it_misses": "Written for readers, not viewers - nothing here is designed to be animated."
+      },
+      {
+        "title": "How Noise-Canceling Headphones Work: The Physics of Silence",
+        "url": "https://physicscommunication.ie/how-noise-canceling-headphones-work-the-physics-of-silence/",
+        "source": "blog",
+        "angle": "Waves-and-interference physics lesson",
+        "what_it_covers": "Superposition, phase, why long wavelengths are easier to align.",
+        "what_it_misses": "Stays abstract - never connects the wavelength argument to the everyday experience of still hearing voices."
+      },
+      {
+        "title": "Eardrum Suck: The Mystery Solved!",
+        "url": "https://www.soundstagesolo.com/index.php/features/178-eardrum-suck-the-mystery-solved",
+        "source": "blog",
+        "angle": "Single-mystery investigation",
+        "what_it_covers": "Why aggressive ANC produces a pressure sensation, and that no real pressure change occurs.",
+        "what_it_misses": "Treated as a niche audiophile curiosity rather than the most relatable entry point into how ANC actually behaves."
+      }
+    ],
+    "saturated_angles": [
+      "Two sine waves drawn on a whiteboard adding to a flat line",
+      "Generic 'ANC explained in 60 seconds' product-marketing recap",
+      "Best noise-cancelling headphones buying-guide framing"
+    ],
+    "underserved_gaps": [
+      "Nobody makes the microsecond deadline the spine of the story - it is always an aside",
+      "The everyday failure (voices get through, engines do not) is rarely explained by wavelength and latency together",
+      "'Eardrum suck' is widely felt, widely searched, and almost never explained as a perception effect rather than a pressure effect"
+    ]
+  },
+  "trending": {
+    "recent_developments": [
+      {
+        "headline": "The search for a rare physics event gets some noise cancelling headphones",
+        "url": "https://news.yale.edu/2025/10/23/search-rare-physics-event-gets-some-noise-cancelling-headphones",
+        "date": "2025-10-23",
+        "relevance": "Shows the same destructive-interference idea being borrowed by particle physics - a credible 'this is bigger than headphones' closing beat."
+      }
+    ],
+    "active_discussions": [
+      {
+        "platform": "hackernews",
+        "topic_or_url": "https://news.ycombinator.com/item?id=18453460",
+        "sentiment": "Technical, precise, latency-obsessed",
+        "key_quotes": [
+          "ANC headphones are really sensitive to latency",
+          "a delay of 100 microseconds is 10% of one period of a 1 kHz sound wave"
+        ]
+      },
+      {
+        "platform": "forums",
+        "topic_or_url": "https://forums.whathifi.com/threads/do-i-expect-to-much-from-activ-e-noise-canceling.68072/latest",
+        "sentiment": "Mild disappointment - buyers expect silence and get quieted rumble",
+        "key_quotes": [
+          "Do I expect too much from active noise cancelling?"
+        ]
+      }
+    ],
+    "timeliness_window": "evergreen"
+  },
+  "data_points": [
+    {
+      "claim": "For feedforward cancellation the anti-noise must line up with the arriving sound to within roughly 25-40 microseconds.",
+      "source_url": "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/9786264",
+      "source_name": "US Patent 9,786,264 - Ambient noise reduction arrangements",
+      "credibility": "primary_source",
+      "surprise_factor": "counterintuitive",
+      "usable_as": "hook"
+    },
+    {
+      "claim": "A 100-microsecond delay is already 10 percent of one full cycle of a 1 kHz tone, which is why latency destroys cancellation at higher frequencies.",
+      "source_url": "https://news.ycombinator.com/item?id=18453460",
+      "source_name": "Hacker News - ANC latency discussion",
+      "credibility": "secondary_source",
+      "surprise_factor": "surprising",
+      "usable_as": "script_anchor"
+    },
+    {
+      "claim": "Active cancellation works over roughly 50 Hz to 2 kHz; above that the reduction falls away and passive isolation has to do the work.",
+      "source_url": "https://www.soundguys.com/how-noise-cancelling-headphones-work-12380/",
+      "source_name": "SoundGuys",
+      "credibility": "secondary_source",
+      "surprise_factor": "notable",
+      "usable_as": "stat_card"
+    },
+    {
+      "claim": "Measured attenuation is typically 10-15 dB broadband and up to about 20 dB on steady low-frequency noise, with the largest reductions at the low end.",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9572409/",
+      "source_name": "PMC - Objective signal analysis of ANC in hearing screening",
+      "credibility": "primary_source",
+      "surprise_factor": "notable",
+      "usable_as": "stat_card"
+    },
+    {
+      "claim": "The pressure sensation known as 'eardrum suck' is not a pressure change at all - ANC strips the low-frequency energy your hearing constantly expects, and the brain reports the absence as pressure.",
+      "source_url": "https://www.soundstagesolo.com/index.php/features/178-eardrum-suck-the-mystery-solved",
+      "source_name": "SoundStage! Solo",
+      "credibility": "secondary_source",
+      "surprise_factor": "counterintuitive",
+      "usable_as": "closing_punch"
+    },
+    {
+      "claim": "Amar Bose sketched the idea on a napkin during a 1978 flight; it took a roughly 22-year, 50 million dollar programme before the consumer QuietComfort shipped in 2000.",
+      "source_url": "https://boseaviation.com/about/history/",
+      "source_name": "Bose Aviation - History",
+      "credibility": "secondary_source",
+      "surprise_factor": "surprising",
+      "usable_as": "script_anchor"
+    },
+    {
+      "claim": "Hybrid ANC uses two microphones per ear - one outside listening to the world, one inside checking what actually reached the ear - because the outside microphone alone cannot know what you heard.",
+      "source_url": "https://www.soundguys.com/noise-canceling-anc-explained-28344/",
+      "source_name": "SoundGuys - ANC technology types",
+      "credibility": "secondary_source",
+      "surprise_factor": "notable",
+      "usable_as": "script_anchor"
+    }
+  ],
+  "audience_insights": {
+    "common_questions": [
+      "Why can I still hear people talking when noise cancelling is on?",
+      "Why does noise cancelling make my ears feel pressure?",
+      "Does noise cancelling actually block sound or just play something over it?",
+      "Why does it work so well on a plane but not in a cafe?",
+      "Is noise cancelling bad for your hearing?"
+    ],
+    "misconceptions": [
+      {
+        "myth": "Noise cancelling blocks sound from getting in.",
+        "reality": "Nothing is blocked. The headphone adds a second sound - the inverse of the first - and the two collapse into near-silence inside your ear.",
+        "source": "https://www.sciencefocus.com/science/how-do-noise-cancelling-headphones-cancel-sounds"
+      },
+      {
+        "myth": "Better headphones would cancel voices too.",
+        "reality": "Voices sit above the band where cancellation is physically practical - short wavelengths leave too little time and too little margin for error at the eardrum.",
+        "source": "https://www.soundguys.com/how-noise-cancelling-headphones-work-12380/"
+      },
+      {
+        "myth": "The pressure you feel means the headphones are pushing on your eardrum.",
+        "reality": "Air pressure does not change. The brain interprets suddenly missing low-frequency sound as pressure.",
+        "source": "https://www.soundstagesolo.com/index.php/features/178-eardrum-suck-the-mystery-solved"
+      }
+    ],
+    "knowledge_level": "General audience who own or have tried ANC headphones. They know the feature exists and roughly that 'opposite waves cancel'. New to them: the timing deadline, why the cancelled band stops where it does, and that eardrum suck is a perception effect.",
+    "pain_points": [
+      "Bought expensive ANC and were disappointed that office chatter still comes through",
+      "Physical discomfort or pressure feeling that makes some people switch ANC off",
+      "No intuition for when ANC will help, so the purchase feels like a gamble"
+    ]
+  },
+  "expert_voices": [
+    {
+      "name": "Amar Bose",
+      "title_or_affiliation": "MIT professor, founder of Bose Corporation",
+      "position": "Worked out on a 1978 flight that headphones could subtract engine noise rather than merely cover it - and committed two decades to proving it.",
+      "source_url": "https://boseaviation.com/about/history/",
+      "contrarian": false
+    }
+  ],
+  "angles_discovered": [
+    {
+      "name": "The Microsecond Deadline Inside Your Headphones",
+      "hook": "The sound is already on its way to your eardrum when the microphone hears it - the headphone has microseconds to answer.",
+      "type": "evergreen",
+      "why_now": "Every existing explainer treats the timing budget as a footnote, yet the 25-40 microsecond alignment requirement in the feedforward patent literature is the constraint that explains all of ANC's real-world behaviour. This is the underserved gap.",
+      "grounded_in": [
+        "25-40 microsecond alignment requirement",
+        "100 microseconds equals 10 percent of a 1 kHz cycle",
+        "underserved_gaps: nobody makes the deadline the spine"
+      ]
+    },
+    {
+      "name": "Why Engines Disappear And Voices Do Not",
+      "hook": "Your headphones erase a jet engine and fail at the person one seat away - that is not a defect, it is arithmetic.",
+      "type": "contrarian",
+      "why_now": "The single most asked question in forums, and the disappointment behind most negative ANC reviews. Answerable precisely with the 50 Hz-2 kHz band and the wavelength argument.",
+      "grounded_in": [
+        "50 Hz to 2 kHz effective band",
+        "common_questions: why can I still hear people talking",
+        "misconception: better headphones would cancel voices"
+      ]
+    },
+    {
+      "name": "Eardrum Suck Is Not Pressure",
+      "hook": "That squeeze you feel when noise cancelling kicks in is not pressure - it is your brain reporting a silence it has never had.",
+      "type": "data_driven",
+      "why_now": "Widely felt and widely searched, and almost every result explains it wrongly as a pressure effect. Correcting a bodily sensation the viewer has personally felt is unusually strong retention material.",
+      "grounded_in": [
+        "eardrum suck is a perception effect, not pressure",
+        "pain_points: discomfort makes people switch ANC off"
+      ]
+    },
+    {
+      "name": "The Napkin On The 1978 Flight",
+      "hook": "One irritated passenger did the acoustic maths on a napkin, then spent twenty-two years and fifty million dollars proving it.",
+      "type": "narrative",
+      "why_now": "A human origin story with concrete numbers, useful as a cold open or a closing beat, and not the spine of any short-form video on this topic.",
+      "grounded_in": [
+        "Bose 1978 napkin, 22-year 50 million dollar programme"
+      ]
+    }
+  ],
+  "visual_references": [
+    {
+      "description": "Two superimposed sine waves resolving to a flat line - the canonical ANC visual.",
+      "url": "https://en.wikipedia.org/wiki/Noise-cancelling_headphones",
+      "what_works": "Instantly legible. But it is the saturated image; use it once, early, then move past it rather than building the whole video on it."
+    },
+    {
+      "description": "Frequency-response attenuation curve showing large reduction at the low end tapering to nothing above a couple of kilohertz.",
+      "url": "https://www.soundguys.com/how-noise-cancelling-headphones-work-12380/",
+      "what_works": "One picture answers 'why do I still hear voices' - the curve visibly runs out before speech does."
+    },
+    {
+      "description": "Signal-path diagram: outside mic, processor, driver, inside mic.",
+      "url": "https://www.soundguys.com/noise-canceling-anc-explained-28344/",
+      "what_works": "Turns an abstract effect into a loop with a start and an end - and the loop is where the deadline lives."
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.soundguys.com/how-noise-cancelling-headphones-work-12380/",
+      "title": "How does active noise canceling (ANC) work? - SoundGuys",
+      "used_for": "landscape, data_points, misconceptions, visual_references",
+      "reliability": "secondary"
+    },
+    {
+      "url": "https://www.soundguys.com/noise-canceling-anc-explained-28344/",
+      "title": "Active noise canceling (ANC) technology types explained - SoundGuys",
+      "used_for": "data_points (hybrid two-microphone architecture), visual_references",
+      "reliability": "secondary"
+    },
+    {
+      "url": "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/9786264",
+      "title": "US Patent 9,786,264 - Ambient noise reduction arrangements",
+      "used_for": "data_points (25-40 microsecond time alignment)",
+      "reliability": "primary"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9572409/",
+      "title": "Objective Signal Analysis for Investigating Feasibility of Active Noise Cancellation in Hearing Screening",
+      "used_for": "data_points (measured attenuation in dB)",
+      "reliability": "primary"
+    },
+    {
+      "url": "https://www.soundstagesolo.com/index.php/features/178-eardrum-suck-the-mystery-solved",
+      "title": "Eardrum Suck: The Mystery Solved!",
+      "used_for": "data_points, misconceptions, closing angle",
+      "reliability": "secondary"
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=18453460",
+      "title": "ANC headphones are really sensitive to latency - Hacker News",
+      "used_for": "trending discussion, data_points (100 microseconds vs 1 kHz cycle)",
+      "reliability": "anecdotal"
+    },
+    {
+      "url": "https://boseaviation.com/about/history/",
+      "title": "History - Bose Aviation Headsets",
+      "used_for": "expert_voices, narrative angle",
+      "reliability": "secondary"
+    },
+    {
+      "url": "https://www.sciencefocus.com/science/how-do-noise-cancelling-headphones-cancel-sounds",
+      "title": "How do noise-cancelling headphones cancel sounds? - BBC Science Focus",
+      "used_for": "landscape, misconceptions",
+      "reliability": "secondary"
+    },
+    {
+      "url": "https://physicscommunication.ie/how-noise-canceling-headphones-work-the-physics-of-silence/",
+      "title": "How Noise-Canceling Headphones Work: The Physics of Silence - Trinity College Dublin",
+      "used_for": "landscape, wavelength argument",
+      "reliability": "secondary"
+    },
+    {
+      "url": "https://news.yale.edu/2025/10/23/search-rare-physics-event-gets-some-noise-cancelling-headphones",
+      "title": "The search for a rare physics event gets some noise cancelling headphones - Yale News",
+      "used_for": "trending, closing beat",
+      "reliability": "secondary"
+    }
+  ]
+}

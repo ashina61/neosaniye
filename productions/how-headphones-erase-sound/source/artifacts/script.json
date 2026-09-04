@@ -1,0 +1,235 @@
+{
+  "version": "1.0",
+  "title": "The Deadline Inside Your Headphones",
+  "total_duration_seconds": 41.5,
+  "voice_performance": {
+    "performance_intent": "An engineer telling you something precise, not a narrator selling you something. Level, unhurried in the vowels but never slow, and completely unsentimental about the numbers. The drama belongs to the picture and the cut; the voice's job is to be trusted.",
+    "pacing_profile": "technical",
+    "energy_curve": "Flat and close on the hook. Slight lift at 'here is the part nobody mentions'. Tightest and fastest through the two numbers. Then a hard drop into the silence beat, and the last line spoken quieter than everything before it.",
+    "pause_policy": "One real pause only, before the closing line, so the silence beat lands as silence rather than as a gap. Elsewhere the sentence breaks do the work; no filler pauses between clauses.",
+    "sample_section_id": "s1",
+    "provider_notes": {
+      "piper": "Piper has no SSML and no per-word emphasis. Emphasis is written into the sentence structure instead - short declaratives, fragments where a stress is wanted. Pauses are inserted as real silence in the audio between per-section renders, not as tags in the text."
+    }
+  },
+  "sections": [
+    {
+      "id": "s1",
+      "label": "Hook",
+      "text": "Your headphones do not block that sound. They add one.",
+      "start_seconds": 0.25,
+      "end_seconds": 3.105,
+      "speaker_directions": "Flat, close, certain. No lift at the end of the second sentence - it is a statement, not a reveal.",
+      "delivery_cues": {
+        "pace": "measured",
+        "energy": "level, matter-of-fact",
+        "emphasis_words": [
+          "block",
+          "add"
+        ],
+        "pause_after_seconds": 0.25,
+        "delivery_note": "The whole video rests on the contradiction in these two sentences. Do not decorate it."
+      },
+      "enhancement_cues": [
+        {
+          "type": "animation",
+          "description": "Black frame. A single cyan waveform pushes in from the top edge and keeps travelling downward - the world's noise heading somewhere. Nothing stops it.",
+          "timestamp_seconds": 0
+        },
+        {
+          "type": "overlay",
+          "description": "The word BLOCK is struck through and replaced by ADD, in place, without moving.",
+          "timestamp_seconds": 2.6
+        }
+      ],
+      "pronunciation_guides": []
+    },
+    {
+      "id": "s2",
+      "label": "The easy half",
+      "text": "It listens to the world, flips the wave upside down, and plays it back. The two meet. Both disappear.",
+      "start_seconds": 3.355,
+      "end_seconds": 9.507,
+      "speaker_directions": "Brisk through the three verbs, then two short sentences delivered as facts, not as a magic trick.",
+      "delivery_cues": {
+        "pace": "brisk",
+        "energy": "explanatory",
+        "emphasis_words": [
+          "upside",
+          "disappear"
+        ],
+        "pause_after_seconds": 0.2,
+        "delivery_note": "This is the part every other explainer stops at, so get through it cleanly and do not linger."
+      },
+      "enhancement_cues": [
+        {
+          "type": "animation",
+          "description": "The cyan trace is joined by an amber trace that is its exact mirror. They slide together and flatten into a single hairline. This is the only time the canonical cancellation diagram appears.",
+          "timestamp_seconds": 5.0
+        }
+      ],
+      "pronunciation_guides": []
+    },
+    {
+      "id": "s3",
+      "label": "The turn",
+      "text": "That part is easy. Here is the part nobody mentions.",
+      "start_seconds": 9.907,
+      "end_seconds": 13.192,
+      "speaker_directions": "Slight lift on the second sentence - the only place in the video where the voice invites you in.",
+      "delivery_cues": {
+        "pace": "measured",
+        "energy": "confiding",
+        "emphasis_words": [
+          "easy",
+          "nobody"
+        ],
+        "pause_before_seconds": 0.2,
+        "delivery_note": "The pivot of the script. Everything before was setup; everything after is the actual idea."
+      },
+      "enhancement_cues": [
+        {
+          "type": "animation",
+          "description": "The flat hairline is wiped away and the frame reorganises: a microphone at the top of the vertical frame, an ear at the bottom, and the empty distance between them left deliberately unexplained for a beat.",
+          "timestamp_seconds": 11.4
+        }
+      ],
+      "pronunciation_guides": []
+    },
+    {
+      "id": "s4",
+      "label": "The deadline",
+      "text": "When the microphone hears the noise, the noise is already on its way to your eardrum. A few centimeters away. Microseconds out.",
+      "start_seconds": 13.192,
+      "end_seconds": 20.285,
+      "speaker_directions": "Even through the first sentence. The two fragments land separately, each one a fact being set down.",
+      "delivery_cues": {
+        "pace": "measured",
+        "energy": "tightening",
+        "emphasis_words": [
+          "already",
+          "microseconds"
+        ],
+        "pause_after_seconds": 0.2,
+        "delivery_note": "'Already' is the load-bearing word in the whole script."
+      },
+      "enhancement_cues": [
+        {
+          "type": "animation",
+          "description": "A pulse leaves the microphone and races down the frame toward the ear. A microsecond counter starts in the margin and does not stop for the rest of the video.",
+          "timestamp_seconds": 15.0
+        },
+        {
+          "type": "stat_card",
+          "description": "The gap between microphone and ear is dimensioned like an engineering drawing: a few centimeters, and the time that distance actually buys.",
+          "timestamp_seconds": 19.5
+        }
+      ],
+      "pronunciation_guides": []
+    },
+    {
+      "id": "s5",
+      "label": "The numbers",
+      "text": "Be forty microseconds late, and the cancelling starts to fail. Miss by a hundred, and at one kilohertz you are a tenth of a wave wrong.",
+      "start_seconds": 20.485,
+      "end_seconds": 27.613,
+      "speaker_directions": "Fastest and tightest passage in the video. The numbers are not dramatised; the speed does that.",
+      "delivery_cues": {
+        "pace": "brisk",
+        "energy": "clipped, technical",
+        "emphasis_words": [
+          "forty",
+          "hundred",
+          "tenth"
+        ],
+        "pause_after_seconds": 0.15,
+        "delivery_note": "No rising intonation on the numbers - they are measurements, not surprises."
+      },
+      "enhancement_cues": [
+        {
+          "type": "stat_card",
+          "description": "40 microseconds appears in monospace as a tolerance band around the amber trace. Then 100 microseconds, and the amber trace slips visibly out of register with the cyan one - the flat line breaks and audible-looking residue returns.",
+          "timestamp_seconds": 23.0
+        }
+      ],
+      "pronunciation_guides": [
+        {
+          "word": "kilohertz",
+          "phonetic": "KILL-oh-hurts"
+        },
+        {
+          "word": "microseconds",
+          "phonetic": "MY-kroh-seconds"
+        }
+      ]
+    },
+    {
+      "id": "s6",
+      "label": "The consequence",
+      "text": "That is why an engine disappears and the person next to you does not. Low sound is slow and wide. A voice is quick. There is no time.",
+      "start_seconds": 27.763,
+      "end_seconds": 35.935,
+      "speaker_directions": "Slowing across the three short sentences. 'There is no time' is the flattest line in the video.",
+      "delivery_cues": {
+        "pace": "measured",
+        "energy": "settling",
+        "emphasis_words": [
+          "engine",
+          "voice",
+          "no"
+        ],
+        "pause_after_seconds": 0.6,
+        "delivery_note": "This answers the complaint the viewer already has, so let it land before the close."
+      },
+      "enhancement_cues": [
+        {
+          "type": "diagram",
+          "description": "A frequency axis running the full height of the frame. Cancellation floods up from the low end and stops dead below where speech lives. Everything above the line keeps moving.",
+          "timestamp_seconds": 30.8
+        },
+        {
+          "type": "overlay",
+          "description": "The band that cancellation actually covers is labelled once, in monospace, against the axis.",
+          "timestamp_seconds": 34.0
+        }
+      ],
+      "pronunciation_guides": []
+    },
+    {
+      "id": "s7",
+      "label": "Landing",
+      "text": "Silence is not a wall. It is arriving on time.",
+      "start_seconds": 37.235,
+      "end_seconds": 40.172,
+      "speaker_directions": "Quieter than everything before it. A real pause before the line - the picture is already still.",
+      "delivery_cues": {
+        "pace": "slow",
+        "energy": "quiet, resolved",
+        "emphasis_words": [
+          "wall",
+          "time"
+        ],
+        "pause_before_seconds": 0.7,
+        "delivery_note": "No call to action. The reframe is the ending."
+      },
+      "enhancement_cues": [
+        {
+          "type": "animation",
+          "description": "Everything stops. The grid holds still for the only time in the video, one flat hairline across the centre, the microsecond counter frozen mid-count. The title appears once, small, and the frame does not move again.",
+          "timestamp_seconds": 38.4
+        }
+      ],
+      "pronunciation_guides": []
+    }
+  ],
+  "metadata": {
+    "word_count": 118,
+    "grounding": {
+      "s4": "US 9,786,264 - anti-noise must be time-aligned with the arriving sound at the ear canal entry",
+      "s5": "US 9,786,264 (40 microseconds or less, preferably 25); Hacker News - 100 microseconds is 10 percent of one 1 kHz cycle",
+      "s6": "SoundGuys - active cancellation covers roughly 50 Hz to 2 kHz; speech sits largely above it"
+    },
+    "timing_note": "Section boundaries are measured from the rendered Piper audio (voice en_US-ryan-high, length_scale 1.06), not estimated. Video runs 41.5s: 0.25s lead-in, 40.17s of narration timeline, 1.13s of held silence after the last word.",
+    "measured_rate_words_per_second": 3.32
+  }
+}
