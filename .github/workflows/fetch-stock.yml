@@ -1,0 +1,109 @@
+name: Fetch stock media
+
+# Pexels and Pixabay are unreachable from a production session: the cloud
+# environment's network policy denies every one of their hosts, so a key alone
+# does not help. A GitHub runner has open egress. This job does the fetching
+# there and commits the files, so a session can pick them up with a git pull.
+#
+# The clean alternative is to open those domains on the environment
+# (productions/ENVIRONMENT.md lists them) and skip this job entirely. This
+# exists so stock media does not have to wait for that.
+#
+# Pixabay music needs no API key at all. Pexels and Pixabay video/photo need a
+# free key each, as repository secrets:
+#   PEXELS_API_KEY   https://www.pexels.com/api/
+#   PIXABAY_API_KEY  https://pixabay.com/api/docs/
+# A missing key is reported as skipped, not as a failure.
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: 'Production folder under productions/'
+        type: string
+        required: true
+      video:
+        description: 'Video searches, comma separated (e.g. "storm sea,coastline aerial")'
+        type: string
+        default: ''
+      photo:
+        description: 'Photo searches, comma separated'
+        type: string
+        default: ''
+      music:
+        description: 'Music searches, comma separated (needs no key)'
+        type: string
+        default: ''
+      per_query:
+        description: 'How many results per search'
+        type: choice
+        default: '1'
+        options: ['1', '2', '3']
+      orientation:
+        description: 'Framing for video and photo'
+        type: choice
+        default: 'portrait'
+        options: ['portrait', 'landscape', 'square', 'all']
+
+concurrency:
+  group: fetch-stock-${{ inputs.slug }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+
+      - name: Python dependencies
+        run: pip install --quiet pyyaml requests pydantic jsonschema python-dotenv Pillow numpy
+
+      - name: Fetch
+        env:
+          PEXELS_API_KEY:  ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -d "productions/${{ inputs.slug }}" || {
+            echo "no such production: productions/${{ inputs.slug }}"; exit 1; }
+          python scripts/fetch_stock.py "${{ inputs.slug }}" \
+            --video "${{ inputs.video }}" \
+            --photo "${{ inputs.photo }}" \
+            --music "${{ inputs.music }}" \
+            --per-query "${{ inputs.per_query }}" \
+            --orientation "${{ inputs.orientation }}"
+
+      - name: Commit what landed
+        run: |
+          set -euo pipefail
+          DIR="productions/${{ inputs.slug }}/media"
+          if [ -z "$(ls -A "$DIR" 2>/dev/null || true)" ]; then
+            echo "nothing fetched — most likely a missing API key. Nothing to commit."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$DIR"
+          git diff --cached --quiet && { echo "no change"; exit 0; }
+          git commit -m "Stock media for ${{ inputs.slug }}
+
+          Fetched on a runner because the production environment cannot reach
+          Pexels or Pixabay. Provenance and licence notes are in
+          $DIR/SOURCES.md."
+          git push
+          echo "committed. Pull it into a session with: git pull"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: stock-${{ inputs.slug }}
+          path: productions/${{ inputs.slug }}/media
+          if-no-files-found: ignore
+          retention-days: 7

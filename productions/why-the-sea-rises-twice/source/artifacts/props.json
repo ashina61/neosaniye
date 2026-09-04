@@ -1,3 +1,90 @@
 {
-  "caption": "A tide is not gravity being strong.\nIt is gravity being uneven."
+  "caption": "A tide is not gravity being strong.\nIt is gravity being uneven.",
+  "captions": [
+    {
+      "text": "There are two high tides a day.",
+      "fromFrame": 9,
+      "durationInFrames": 47
+    },
+    {
+      "text": "Only one of them makes any sense.",
+      "fromFrame": 56,
+      "durationInFrames": 49
+    },
+    {
+      "text": "The Moon passes overhead and the sea rises to meet it. Fine.",
+      "fromFrame": 114,
+      "durationInFrames": 105
+    },
+    {
+      "text": "But twelve hours later it rises again,",
+      "fromFrame": 219,
+      "durationInFrames": 67
+    },
+    {
+      "text": "on the side of the planet facing away.",
+      "fromFrame": 286,
+      "durationInFrames": 67
+    },
+    {
+      "text": "You were probably taught that centrifugal force",
+      "fromFrame": 371,
+      "durationInFrames": 76
+    },
+    {
+      "text": "flings the far water outward.",
+      "fromFrame": 447,
+      "durationInFrames": 48
+    },
+    {
+      "text": "Physicists call that one a misconception.",
+      "fromFrame": 495,
+      "durationInFrames": 67
+    },
+    {
+      "text": "Nothing out there is being pushed.",
+      "fromFrame": 562,
+      "durationInFrames": 55
+    },
+    {
+      "text": "Gravity gets weaker with distance.",
+      "fromFrame": 623,
+      "durationInFrames": 61
+    },
+    {
+      "text": "So the Moon pulls the near ocean hardest.",
+      "fromFrame": 684,
+      "durationInFrames": 73
+    },
+    {
+      "text": "It pulls the solid Earth a little less.",
+      "fromFrame": 757,
+      "durationInFrames": 69
+    },
+    {
+      "text": "And the far ocean least of all.",
+      "fromFrame": 826,
+      "durationInFrames": 55
+    },
+    {
+      "text": "So the planet gets pulled out from under its own water.",
+      "fromFrame": 904,
+      "durationInFrames": 84
+    },
+    {
+      "text": "It is also why your bath has no tide.",
+      "fromFrame": 995,
+      "durationInFrames": 73
+    },
+    {
+      "text": "Across a bathtub,",
+      "fromFrame": 1068,
+      "durationInFrames": 34
+    },
+    {
+      "text": "that difference is far too small to move anything.",
+      "fromFrame": 1102,
+      "durationInFrames": 98
+    }
+  ]
 }

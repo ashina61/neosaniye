@@ -52,11 +52,19 @@ Changing only these is not a new design — it is the same video with new data:
 | Narrative structure | myth_busting |
 | Narration | Piper `en_US-ryan-high` at length_scale 1.12, 3.27 w/s measured |
 | Music | Silent underneath; one low swell arriving at 39.6s and never resolving |
+| Captions | Burned in, in the plate's own serif at y=1270, skipped over the closing figure caption so no phrase is doubled |
 | Providers used | none — zero API keys |
 
 **Burned for future videos:** paper-and-ink plate framing, the annotate-then-strike-out
 correction device, arrows-as-argument, an ocean drawn as a ring around a circle, the
 bathtub-as-control-experiment gag, ending on unresolved drift.
+
+**Captions are now expected on every video.** Timings come from
+`scripts/../captions.py`: the narration is synthesised from text we wrote, so the
+words are known and only their position inside each measured section is
+estimated by character count. Whisper would be more exact but its models come
+from HuggingFace, which this environment denies. Style the caption band per
+piece — it is a design element, not a fixture.
 
 **Note on the pair so far:** both videos are now line drawings on a flat ground with
 narration and near-silence. The third should break that too — a piece with real

@@ -1,0 +1,155 @@
+[
+  {
+    "section": "s1",
+    "text": "There are two high tides a day.",
+    "start": 0.3,
+    "end": 1.859,
+    "fromFrame": 9,
+    "toFrame": 56,
+    "durationInFrames": 47
+  },
+  {
+    "section": "s1",
+    "text": "Only one of them makes any sense.",
+    "start": 1.859,
+    "end": 3.515,
+    "fromFrame": 56,
+    "toFrame": 105,
+    "durationInFrames": 49
+  },
+  {
+    "section": "s2",
+    "text": "The Moon passes overhead and the sea rises to meet it. Fine.",
+    "start": 3.815,
+    "end": 7.305,
+    "fromFrame": 114,
+    "toFrame": 219,
+    "durationInFrames": 105
+  },
+  {
+    "section": "s2",
+    "text": "But twelve hours later it rises again,",
+    "start": 7.305,
+    "end": 9.536,
+    "fromFrame": 219,
+    "toFrame": 286,
+    "durationInFrames": 67
+  },
+  {
+    "section": "s2",
+    "text": "on the side of the planet facing away.",
+    "start": 9.536,
+    "end": 11.767,
+    "fromFrame": 286,
+    "toFrame": 353,
+    "durationInFrames": 67
+  },
+  {
+    "section": "s3",
+    "text": "You were probably taught that centrifugal force",
+    "start": 12.367,
+    "end": 14.909,
+    "fromFrame": 371,
+    "toFrame": 447,
+    "durationInFrames": 76
+  },
+  {
+    "section": "s3",
+    "text": "flings the far water outward.",
+    "start": 14.909,
+    "end": 16.497,
+    "fromFrame": 447,
+    "toFrame": 495,
+    "durationInFrames": 48
+  },
+  {
+    "section": "s3",
+    "text": "Physicists call that one a misconception.",
+    "start": 16.497,
+    "end": 18.721,
+    "fromFrame": 495,
+    "toFrame": 562,
+    "durationInFrames": 67
+  },
+  {
+    "section": "s3",
+    "text": "Nothing out there is being pushed.",
+    "start": 18.721,
+    "end": 20.574,
+    "fromFrame": 562,
+    "toFrame": 617,
+    "durationInFrames": 55
+  },
+  {
+    "section": "s4",
+    "text": "Gravity gets weaker with distance.",
+    "start": 20.774,
+    "end": 22.794,
+    "fromFrame": 623,
+    "toFrame": 684,
+    "durationInFrames": 61
+  },
+  {
+    "section": "s4",
+    "text": "So the Moon pulls the near ocean hardest.",
+    "start": 22.794,
+    "end": 25.219,
+    "fromFrame": 684,
+    "toFrame": 757,
+    "durationInFrames": 73
+  },
+  {
+    "section": "s4",
+    "text": "It pulls the solid Earth a little less.",
+    "start": 25.219,
+    "end": 27.528,
+    "fromFrame": 757,
+    "toFrame": 826,
+    "durationInFrames": 69
+  },
+  {
+    "section": "s4",
+    "text": "And the far ocean least of all.",
+    "start": 27.528,
+    "end": 29.375,
+    "fromFrame": 826,
+    "toFrame": 881,
+    "durationInFrames": 55
+  },
+  {
+    "section": "s5",
+    "text": "So the planet gets pulled out from under its own water.",
+    "start": 30.125,
+    "end": 32.923,
+    "fromFrame": 904,
+    "toFrame": 988,
+    "durationInFrames": 84
+  },
+  {
+    "section": "s6",
+    "text": "It is also why your bath has no tide.",
+    "start": 33.173,
+    "end": 35.593,
+    "fromFrame": 995,
+    "toFrame": 1068,
+    "durationInFrames": 73
+  },
+  {
+    "section": "s6",
+    "text": "Across a bathtub,",
+    "start": 35.593,
+    "end": 36.739,
+    "fromFrame": 1068,
+    "toFrame": 1102,
+    "durationInFrames": 34
+  },
+  {
+    "section": "s6",
+    "text": "that difference is far too small to move anything.",
+    "start": 36.739,
+    "end": 39.987,
+    "fromFrame": 1102,
+    "toFrame": 1200,
+    "durationInFrames": 98
+  }
+]

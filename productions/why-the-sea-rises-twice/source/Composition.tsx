@@ -66,9 +66,16 @@ export interface SceneSpec {
   durationInFrames: number;
 }
 
+export interface CaptionChunk {
+  text: string;
+  fromFrame: number;
+  durationInFrames: number;
+}
+
 export interface SceneProps {
   caption?: string;
   scenes?: SceneSpec[];
+  captions?: CaptionChunk[];
 }
 
 const DEFAULT_SCENES: SceneSpec[] = [
@@ -278,12 +285,12 @@ const Marks: React.FC<{ duration: number }> = ({ duration }) => {
   const { fps } = useVideoConfig();
   // A shoreline in section: a headland on the left, the seabed falling away
   // to the right, and two ruled marks the water climbs between.
-  const CLIFF_TOP = 1090;
+  const CLIFF_TOP = 820;
   const CLIFF_X = 250;
   const BEACH_X = 470;
-  const SEABED = 1470;
-  const HIGH = 1180;
-  const LOW = 1360;
+  const SEABED = 1200;
+  const HIGH = 910;
+  const LOW = 1090;
 
   const t = f / duration;
   const level = LOW + ((1 - Math.cos(2 * Math.PI * 2 * t)) / 2) * (HIGH - LOW);
@@ -612,6 +619,40 @@ const Leaving: React.FC<{ text: string; duration: number }> = ({ text, duration 
   );
 };
 
+/** Spoken text, set in the plate's own serif rather than in a social-video
+ *  caption style: this is a page, so the words belong to the page. The band sits
+ *  at 1270 — below every figure and well clear of the platform's own furniture
+ *  at the bottom of a vertical frame. The closing line is skipped, because it is
+ *  already on screen as the figure caption. */
+const Captions: React.FC<{ items: CaptionChunk[] }> = ({ items }) => {
+  const f = useCurrentFrame();
+  const cur = items.find((c) => f >= c.fromFrame && f < c.fromFrame + c.durationInFrames);
+  if (!cur) return null;
+  const o = interpolate(f - cur.fromFrame, [0, 3], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  return (
+    <div
+      style={{
+        position: "absolute",
+        left: 96,
+        right: 110,
+        top: 1270,
+        fontFamily: SERIF,
+        fontWeight: 600,
+        fontSize: 52,
+        lineHeight: 1.26,
+        letterSpacing: -0.2,
+        color: INK,
+        opacity: o,
+      }}
+    >
+      {cur.text}
+    </div>
+  );
+};
+
 // -------------------------------------------------------------------- scene
 
 const BODY: Record<string, (d: number, caption: string) => React.ReactNode> = {
@@ -626,7 +667,7 @@ const BODY: Record<string, (d: number, caption: string) => React.ReactNode> = {
   "sc-09": (d, c) => <Leaving text={c} duration={d} />,
 };
 
-export const Scene: React.FC<SceneProps> = ({ caption, scenes }) => {
+export const Scene: React.FC<SceneProps> = ({ caption, scenes, captions }) => {
   const list = scenes && scenes.length ? scenes : DEFAULT_SCENES;
   const text = caption ?? DEFAULT_CAPTION;
   return (
@@ -637,6 +678,7 @@ export const Scene: React.FC<SceneProps> = ({ caption, scenes }) => {
           <AbsoluteFill>{BODY[s.id] ? BODY[s.id](s.durationInFrames, text) : null}</AbsoluteFill>
         </Sequence>
       ))}
+      {captions && captions.length ? <Captions items={captions} /> : null}
     </AbsoluteFill>
   );
 };
