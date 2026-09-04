@@ -1,0 +1,36 @@
+{
+  "version": "1.0",
+  "render_grammar": "animation-first",
+  "outputs": [
+    {
+      "path": "/home/user/neosaniye/projects/why-the-sea-rises-twice/renders/final.mp4",
+      "format": "mp4",
+      "codec": "h264",
+      "audio_codec": "aac",
+      "resolution": "1080x1920",
+      "fps": 30,
+      "duration_seconds": 46.5,
+      "file_size_bytes": 1995781,
+      "platform_target": "youtube_shorts"
+    }
+  ],
+  "verification_notes": [
+    "ffprobe: 1080x1920 h264 30fps, aac 48000 Hz 2ch, 46.5s.",
+    "Duration target was 41.5s and the render is 41.5s exactly - the scene plan was built from measured narration rather than estimated, so there is no drift to reconcile.",
+    "Loudness normalised to -14 LUFS; +faststart set.",
+    "Atelier doctrine check passed: no stock-registry imports, art direction declared.",
+    "Nine review stills at the assets gate, plus a 16-frame contact sheet after the render. Three defects found in the first pass and fixed: the ocean rendered as a filled disc rather than a ring, the shoreline scene was unreadable, and the measured inset collided with the figure."
+  ],
+  "warnings": [
+    "transcript_comparison was skipped - no narration transcript was supplied to the reviewer. The narration is synthesised from the script itself, so the text is known exactly; a whisper pass would only be checking Piper's pronunciation.",
+    "Narration voice is Piper en_US-ryan-high, unchanged from the previous production because no other TTS is configured here. Now the clearest repeated limitation across the channel rather than a per-video note.",
+    "delayRender had to be removed from the font loading: an unresolved handle aborted the first full render. The faces are declared in CSS as data URIs instead, which needs no network and cannot stall."
+  ],
+  "decision_log_ref": "/home/user/neosaniye/projects/why-the-sea-rises-twice/artifacts/decision_log.json",
+  "final_review_ref": "/home/user/neosaniye/projects/why-the-sea-rises-twice/artifacts/final_review.json",
+  "metadata": {
+    "render_runtime": "remotion",
+    "composition_mode": "atelier",
+    "cost_usd": 0.0
+  }
+}

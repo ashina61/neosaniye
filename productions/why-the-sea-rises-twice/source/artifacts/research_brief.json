@@ -1,0 +1,292 @@
+{
+  "version": "1.0",
+  "topic": "Why there are two high tides a day, and why the far-side bulge is the part everyone gets wrong",
+  "research_date": "2026-09-04",
+  "research_summary": "Everybody can explain the first bulge: the Moon pulls the water up. Almost nobody can explain the second one, on the opposite side of the planet, and the explanation most people were taught for it - centrifugal force - is one the physics literature specifically calls a misconception. There is no push. Gravity weakens with distance, so the Moon pulls the near ocean hardest, the solid Earth less, and the far ocean least of all; the planet is dragged out from under its own far-side water. The whole Earth is being stretched. And that stretch has a bill attached: the friction of it is bleeding rotation out of the planet, lengthening the day by about 1.6 milliseconds a century and pushing the Moon 3.83 cm further away each year - a number measured by bouncing lasers off mirrors Apollo astronauts left behind.",
+  "landscape": {
+    "existing_content": [
+      {
+        "title": "Gravity, Inertia, and the Two Bulges",
+        "url": "https://oceanservice.noaa.gov/education/tutorial_tides/tides03_gravity.html",
+        "source": "government education",
+        "angle": "Standard equilibrium-theory tutorial",
+        "what_it_covers": "Both bulges, the lunar day, spring and neap tides.",
+        "what_it_misses": "Leans on inertia language that the physics literature says confuses students; never says out loud that the popular explanation is wrong.",
+        "engagement_signal": "The canonical first result for the query"
+      },
+      {
+        "title": "What [Really] Causes our Twice-Daily Ocean Tides?",
+        "url": "https://profmattstrassler.com/2023/10/27/what-really-causes-our-twice-daily-ocean-tides/",
+        "source": "blog",
+        "angle": "A physicist correcting the popular account",
+        "what_it_covers": "That the double bulge comes from the gradient of gravity, and that Earth's rotation has nothing to do with creating the bulges.",
+        "what_it_misses": "Text and equations. Nothing here is animated, and the correction never reaches the audience that holds the misconception."
+      },
+      {
+        "title": "Confusion around the tidal force and the centrifugal force",
+        "url": "https://arxiv.org/pdf/1506.04085",
+        "source": "preprint",
+        "angle": "Academic audit of how textbooks explain tides",
+        "what_it_covers": "That many oceanography textbooks adopt a rotating frame and introduce a fictitious centrifugal force, and that this breeds misconceptions.",
+        "what_it_misses": "Written for teachers, not for the people who were taught wrong."
+      },
+      {
+        "title": "Why the Tidal Bulge Doesn't Exist",
+        "url": "https://www.physicsforums.com/insights/there-is-no-tidal-bulge-2/",
+        "source": "forum article",
+        "angle": "Second-level correction: even the two-bulge picture is a simplification",
+        "what_it_covers": "A free wave in the ocean cannot travel fast enough to keep up with Earth's rotation, so real tides are basin resonances rather than a bulge sliding around the planet.",
+        "what_it_misses": "Assumes the reader already accepts the two-bulge model; useless as a first explanation."
+      },
+      {
+        "title": "Tides - NASA Science",
+        "url": "https://science.nasa.gov/moon/tides/",
+        "source": "government education",
+        "angle": "Illustrated primer",
+        "what_it_covers": "Bulges, phases, spring and neap.",
+        "what_it_misses": "No mechanism for the far side beyond 'it bulges too'."
+      }
+    ],
+    "saturated_angles": [
+      "The Moon pulls the water up, here is a diagram",
+      "Spring tides versus neap tides as the whole video",
+      "Tide tables and how to read them"
+    ],
+    "underserved_gaps": [
+      "Nobody builds the video around the far-side bulge as the actual puzzle - it is always a footnote in a diagram",
+      "The centrifugal-force explanation is still what most people were taught, and almost no popular video says plainly that it is wrong",
+      "The energy bill - the tides are slowing the planet and the Moon is measurably leaving - is never connected back to the bulge that causes it"
+    ]
+  },
+  "trending": {
+    "timeliness_window": "evergreen"
+  },
+  "data_points": [
+    {
+      "claim": "The far-side bulge is not a push. Gravity weakens with distance, so the Moon pulls the near ocean hardest, the solid Earth less, and the far ocean least - the planet is pulled out from under its own far-side water.",
+      "source_url": "https://oceanservice.noaa.gov/education/tutorial_tides/tides03_gravity.html",
+      "source_name": "NOAA National Ocean Service",
+      "credibility": "primary_source",
+      "surprise_factor": "counterintuitive",
+      "usable_as": "hook"
+    },
+    {
+      "claim": "Many oceanography textbooks explain tides in a rotating frame using a fictitious centrifugal force, and the physics literature identifies this as a source of student misconception.",
+      "source_url": "https://arxiv.org/pdf/1506.04085",
+      "source_name": "Confusion around the tidal force and the centrifugal force (arXiv)",
+      "credibility": "primary_source",
+      "surprise_factor": "surprising",
+      "usable_as": "script_anchor"
+    },
+    {
+      "claim": "A lunar day is 24 hours 50 minutes, because the Moon moves along its orbit while Earth turns - so high tide arrives about 50 minutes later each day, and successive high tides are 12 h 25 min apart.",
+      "source_url": "https://oceanservice.noaa.gov/education/tutorial_tides/tides05_lunarday.html",
+      "source_name": "NOAA - Frequency of Tides, the Lunar Day",
+      "credibility": "primary_source",
+      "surprise_factor": "notable",
+      "usable_as": "stat_card"
+    },
+    {
+      "claim": "The Sun is far more massive than the Moon but about 390 times further away, and tidal force falls off with the cube of distance, so the Sun's tidal effect is roughly half the Moon's.",
+      "source_url": "https://beltoforion.de/en/tides/tidal_effect_of_the_sun.php",
+      "source_name": "Tides explained - tidal effect of the Sun",
+      "credibility": "secondary_source",
+      "surprise_factor": "surprising",
+      "usable_as": "script_anchor"
+    },
+    {
+      "claim": "The Bay of Fundy moves roughly 160 billion tonnes of water in and out twice a day, with a tidal range up to about 16 metres - more water than the combined flow of every freshwater river on Earth.",
+      "source_url": "https://www.noaa.gov/ocean/fundy-max",
+      "source_name": "NOAA - Bay of Fundy",
+      "credibility": "primary_source",
+      "surprise_factor": "surprising",
+      "usable_as": "stat_card"
+    },
+    {
+      "claim": "Tidal friction is bleeding rotation out of the planet: the day lengthens by roughly 1.6-1.7 milliseconds per century and the Moon recedes at 3.83 +/- 0.008 cm per year, measured by laser ranging off the mirrors Apollo astronauts left on the surface.",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4959131/",
+      "source_name": "The past and present Earth-Moon system (PMC)",
+      "credibility": "primary_source",
+      "surprise_factor": "counterintuitive",
+      "usable_as": "closing_punch"
+    },
+    {
+      "claim": "Even the two-bulge picture is a simplification: a free ocean wave tops out near 330 m/s over the deepest trench while the equator turns at about 465 m/s, so no bulge can keep pace with the planet - real tides are basin-scale resonances.",
+      "source_url": "https://www.physicsforums.com/insights/there-is-no-tidal-bulge-2/",
+      "source_name": "PhysicsForums Insights - There is no tidal bulge",
+      "credibility": "secondary_source",
+      "surprise_factor": "counterintuitive",
+      "usable_as": "script_anchor"
+    },
+    {
+      "claim": "Lakes, cups and puddles have no tides: the gradient across them is far too small to move the liquid toward the Earth-Moon line.",
+      "source_url": "https://science.nasa.gov/moon/tides/",
+      "source_name": "NASA Science - Tides",
+      "credibility": "primary_source",
+      "surprise_factor": "notable",
+      "usable_as": "script_anchor"
+    }
+  ],
+  "audience_insights": {
+    "common_questions": [
+      "Why are there two high tides a day and not one?",
+      "Why does the water bulge on the side facing away from the Moon?",
+      "If the Moon causes tides, why doesn't my bathtub have them?",
+      "Why is high tide later every day?",
+      "Does the Sun cause tides too?"
+    ],
+    "misconceptions": [
+      {
+        "myth": "Centrifugal force from the Earth-Moon system flings the far-side water outward.",
+        "reality": "That is a fictitious force in a rotating frame, and the physics literature names it as a textbook-bred misconception. The real cause is the gradient of gravity across the planet.",
+        "source": "https://arxiv.org/pdf/1506.04085"
+      },
+      {
+        "myth": "The Moon pushes the water away on the far side.",
+        "reality": "Nothing pushes. The Moon pulls everything - it simply pulls the far water least, so the Earth is pulled away from it.",
+        "source": "https://oceanservice.noaa.gov/education/tutorial_tides/tides03_gravity.html"
+      },
+      {
+        "myth": "A bulge of water travels around the planet once a day.",
+        "reality": "It cannot: a free wave cannot move fast enough. The tide is a forced wave and real tides are basin resonances.",
+        "source": "https://www.physicsforums.com/insights/there-is-no-tidal-bulge-2/"
+      }
+    ],
+    "knowledge_level": "General audience who have seen a tide and know the Moon is involved. New to them: that gravity's variation across a body, not its strength, is what makes a tide; that the explanation they were taught is disowned by physicists; and that the tide is quietly slowing the planet down.",
+    "pain_points": [
+      "Being shown a two-bulge diagram and sensing that the second bulge was never actually explained",
+      "Half-remembering 'centrifugal force' and not being able to defend it",
+      "No intuition for why an ocean has tides and a lake does not"
+    ]
+  },
+  "expert_voices": [
+    {
+      "name": "Matt Strassler",
+      "title_or_affiliation": "Theoretical physicist",
+      "position": "The double bulge comes from the gradient of gravity across the Earth, and the planet's rotation has nothing to do with creating the bulges.",
+      "source_url": "https://profmattstrassler.com/2023/10/27/what-really-causes-our-twice-daily-ocean-tides/",
+      "contrarian": true
+    }
+  ],
+  "angles_discovered": [
+    {
+      "name": "The Bulge Nobody Can Explain",
+      "hook": "Everyone can tell you why the sea rises under the Moon. Nobody can tell you why it also rises on the far side.",
+      "type": "contrarian",
+      "why_now": "The far-side bulge is the actual puzzle and every existing explainer treats it as a footnote in a diagram. The correct answer - the Earth is pulled out from under its own water - is both simple and genuinely surprising, and it is grounded in NOAA's own tutorial and in the arXiv audit of textbook explanations.",
+      "grounded_in": [
+        "far-side bulge is a gradient effect, not a push",
+        "textbooks breed the centrifugal misconception",
+        "underserved_gaps: nobody builds the video around the far side"
+      ]
+    },
+    {
+      "name": "You Were Taught A Fictitious Force",
+      "hook": "The explanation for tides you were given in school is one physicists specifically call wrong.",
+      "type": "contrarian",
+      "why_now": "There is a peer-reviewed paper auditing exactly this, and 'the thing you were taught is wrong' is a strong engagement frame that here happens to be literally true and citable.",
+      "grounded_in": [
+        "arXiv: confusion around the tidal force and the centrifugal force",
+        "misconception: centrifugal force flings the far water out"
+      ]
+    },
+    {
+      "name": "The Tide Is Sending Us A Bill",
+      "hook": "The tides are stealing the Earth's spin, and the Moon is leaving at 3.83 centimetres a year.",
+      "type": "data_driven",
+      "why_now": "A hard, laser-measured number with an Apollo hook attached, and it turns a static diagram into a process with consequences.",
+      "grounded_in": [
+        "day lengthening 1.6-1.7 ms/century, Moon receding 3.83 cm/yr, lunar laser ranging"
+      ]
+    },
+    {
+      "name": "Why Your Bathtub Has No Tide",
+      "hook": "The Moon pulls your bathwater exactly as hard as it pulls the Pacific. One of them moves.",
+      "type": "evergreen",
+      "why_now": "Answers a real forum question and isolates the actual mechanism - it is not the strength of gravity but how much it *changes* across the thing being pulled.",
+      "grounded_in": [
+        "lakes and cups have no tides",
+        "common_questions: why doesn't my bathtub have tides"
+      ]
+    }
+  ],
+  "visual_references": [
+    {
+      "description": "The standard two-bulge diagram: an ellipse of water around a circular Earth with the Moon off to one side.",
+      "url": "https://oceanservice.noaa.gov/education/tutorial_tides/tides03_gravity.html",
+      "what_works": "Instantly readable, and universally recognised. It is also the image that hides the question - use it as the thing to interrogate, not as the answer."
+    },
+    {
+      "description": "Arrow fields showing the differential force across the Earth's body.",
+      "url": "https://profmattstrassler.com/2023/10/27/what-really-causes-our-twice-daily-ocean-tides/",
+      "what_works": "Three arrows of different lengths do the whole explanation without a word. This is the drawing that should carry the video."
+    },
+    {
+      "description": "Historical engraved plates of celestial mechanics.",
+      "url": "https://science.nasa.gov/resource/tides/",
+      "what_works": "Ink-on-paper line work reads as 'derived, not decorated' - the right register for correcting a textbook."
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://oceanservice.noaa.gov/education/tutorial_tides/tides03_gravity.html",
+      "title": "Gravity, Inertia, and the Two Bulges - NOAA",
+      "used_for": "landscape, data_points, misconceptions, visual_references",
+      "reliability": "primary"
+    },
+    {
+      "url": "https://oceanservice.noaa.gov/education/tutorial_tides/tides05_lunarday.html",
+      "title": "Frequency of Tides - The Lunar Day - NOAA",
+      "used_for": "data_points (24 h 50 min lunar day, 12 h 25 min interval)",
+      "reliability": "primary"
+    },
+    {
+      "url": "https://arxiv.org/pdf/1506.04085",
+      "title": "Confusion around the tidal force and the centrifugal force",
+      "used_for": "data_points, misconceptions, the contrarian angle",
+      "reliability": "primary"
+    },
+    {
+      "url": "https://profmattstrassler.com/2023/10/27/what-really-causes-our-twice-daily-ocean-tides/",
+      "title": "What [Really] Causes our Twice-Daily Ocean Tides?",
+      "used_for": "landscape, expert_voices, visual_references",
+      "reliability": "secondary"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4959131/",
+      "title": "The past and present Earth-Moon system",
+      "used_for": "data_points (day lengthening, lunar recession, laser ranging)",
+      "reliability": "primary"
+    },
+    {
+      "url": "https://www.noaa.gov/ocean/fundy-max",
+      "title": "JetStream Max: Bay of Fundy - NOAA",
+      "used_for": "data_points (tidal range and water volume)",
+      "reliability": "primary"
+    },
+    {
+      "url": "https://www.physicsforums.com/insights/there-is-no-tidal-bulge-2/",
+      "title": "Why the Tidal Bulge Doesn't Exist",
+      "used_for": "landscape, data_points, misconceptions",
+      "reliability": "secondary"
+    },
+    {
+      "url": "https://science.nasa.gov/moon/tides/",
+      "title": "Tides - NASA Science",
+      "used_for": "landscape, data_points (no tides in small bodies of water)",
+      "reliability": "primary"
+    },
+    {
+      "url": "https://beltoforion.de/en/tides/tidal_effect_of_the_sun.php",
+      "title": "Tides explained - Tidal effect of the Sun",
+      "used_for": "data_points (Sun's tidal contribution)",
+      "reliability": "secondary"
+    },
+    {
+      "url": "https://www.bayoffundy.com/about/highest-tides/",
+      "title": "Bay of Fundy Tides: The Highest Tides in the World",
+      "used_for": "data_points (corroboration of tidal range)",
+      "reliability": "anecdotal"
+    }
+  ]
+}

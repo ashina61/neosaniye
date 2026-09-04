@@ -1,0 +1,119 @@
+{
+  "length_scale": 1.12,
+  "voice": "en_US-ryan-high",
+  "sections": [
+    {
+      "id": "s1",
+      "file": "/home/user/neosaniye/projects/why-the-sea-rises-twice/assets/audio/narration_s1.wav",
+      "seconds": 3.215,
+      "words": 14,
+      "pause_before": 0.0,
+      "pause_after": 0.3
+    },
+    {
+      "id": "s2",
+      "file": "/home/user/neosaniye/projects/why-the-sea-rises-twice/assets/audio/narration_s2.wav",
+      "seconds": 7.952,
+      "words": 27,
+      "pause_before": 0.0,
+      "pause_after": 0.25
+    },
+    {
+      "id": "s3",
+      "file": "/home/user/neosaniye/projects/why-the-sea-rises-twice/assets/audio/narration_s3.wav",
+      "seconds": 8.207,
+      "words": 24,
+      "pause_before": 0.35,
+      "pause_after": 0.2
+    },
+    {
+      "id": "s4",
+      "file": "/home/user/neosaniye/projects/why-the-sea-rises-twice/assets/audio/narration_s4.wav",
+      "seconds": 8.601,
+      "words": 28,
+      "pause_before": 0.0,
+      "pause_after": 0.35
+    },
+    {
+      "id": "s5",
+      "file": "/home/user/neosaniye/projects/why-the-sea-rises-twice/assets/audio/narration_s5.wav",
+      "seconds": 2.798,
+      "words": 11,
+      "pause_before": 0.4,
+      "pause_after": 0.25
+    },
+    {
+      "id": "s6",
+      "file": "/home/user/neosaniye/projects/why-the-sea-rises-twice/assets/audio/narration_s6.wav",
+      "seconds": 6.814,
+      "words": 21,
+      "pause_before": 0.0,
+      "pause_after": 0.25
+    },
+    {
+      "id": "s7",
+      "file": "/home/user/neosaniye/projects/why-the-sea-rises-twice/assets/audio/narration_s7.wav",
+      "seconds": 4.33,
+      "words": 12,
+      "pause_before": 0.3,
+      "pause_after": 0.0
+    }
+  ],
+  "speech_seconds": 41.917,
+  "pause_seconds": 2.65,
+  "lead_in": 0.3,
+  "tail": 1.5,
+  "placed": [
+    {
+      "id": "s1",
+      "file": "/home/user/neosaniye/projects/why-the-sea-rises-twice/assets/audio/narration_s1.wav",
+      "start": 0.3,
+      "end": 3.515,
+      "seconds": 3.215
+    },
+    {
+      "id": "s2",
+      "file": "/home/user/neosaniye/projects/why-the-sea-rises-twice/assets/audio/narration_s2.wav",
+      "start": 3.815,
+      "end": 11.767,
+      "seconds": 7.952
+    },
+    {
+      "id": "s3",
+      "file": "/home/user/neosaniye/projects/why-the-sea-rises-twice/assets/audio/narration_s3.wav",
+      "start": 12.367,
+      "end": 20.574,
+      "seconds": 8.207
+    },
+    {
+      "id": "s4",
+      "file": "/home/user/neosaniye/projects/why-the-sea-rises-twice/assets/audio/narration_s4.wav",
+      "start": 20.774,
+      "end": 29.375,
+      "seconds": 8.601
+    },
+    {
+      "id": "s5",
+      "file": "/home/user/neosaniye/projects/why-the-sea-rises-twice/assets/audio/narration_s5.wav",
+      "start": 30.125,
+      "end": 32.923,
+      "seconds": 2.798
+    },
+    {
+      "id": "s6",
+      "file": "/home/user/neosaniye/projects/why-the-sea-rises-twice/assets/audio/narration_s6.wav",
+      "start": 33.173,
+      "end": 39.987,
+      "seconds": 6.814
+    },
+    {
+      "id": "s7",
+      "file": "/home/user/neosaniye/projects/why-the-sea-rises-twice/assets/audio/narration_s7.wav",
+      "start": 40.537,
+      "end": 44.867,
+      "seconds": 4.33
+    }
+  ],
+  "narration_path": "/home/user/neosaniye/projects/why-the-sea-rises-twice/assets/audio/narration.wav",
+  "total_seconds": 46.367
+}

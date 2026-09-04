@@ -1,0 +1,297 @@
+{
+  "version": "1.0",
+  "concept_options": [
+    {
+      "id": "t1",
+      "title": "The Bulge Nobody Can Explain",
+      "hook": "Everyone knows the Moon lifts the sea. Nobody can tell you why it also rises on the opposite side.",
+      "narrative_structure": "myth_busting",
+      "visual_approach": "A page from a physics book, corrected in front of you. Warm paper, ink line work, one blue for water and one vermilion for force. The familiar two-bulge diagram is drawn, then struck through, then replaced by three arrows of unequal length across the planet - which is the whole explanation and needs no words.",
+      "suggested_playbook": "custom",
+      "target_audience": "Anyone who has stood on a beach and half-remembers a diagram from school.",
+      "target_platform": "youtube",
+      "target_duration_seconds": 42,
+      "key_points": [
+        "Two high tides a day, and the far-side one is the puzzle",
+        "The answer you were taught - centrifugal force - is a fictitious force in a rotating frame, and the literature calls it a misconception",
+        "Nothing pushes: the Moon pulls the near ocean hardest, the Earth less, the far ocean least",
+        "So the planet is pulled out from under its own far-side water",
+        "The tide is not gravity being strong. It is gravity being uneven."
+      ],
+      "core_message": "A tide is not the Moon pulling hard. It is the Moon pulling unevenly - and the far side rises because the Earth is dragged away from it.",
+      "tone": "corrective, unhurried, quietly delighted by the fix",
+      "grounded_in": [
+        "NOAA: gradient, not push",
+        "arXiv: textbooks breed the centrifugal misconception",
+        "underserved_gaps: the far side is always a footnote"
+      ],
+      "why_this_works": "The far-side bulge is a question the audience already half-holds and has never had answered. The correction is short, drawable in three arrows, and backed by both NOAA and a peer-reviewed audit of how textbooks get it wrong."
+    },
+    {
+      "id": "t2",
+      "title": "The Moon Is Leaving, And You Are Paying For It",
+      "hook": "Every tide takes a little spin out of the planet. The Moon is 3.83 centimetres further away than last year.",
+      "narrative_structure": "data_narrative",
+      "visual_approach": "A ledger, literally: an accounting page where energy moves from one column to another. The Earth's rotation is debited, the Moon's orbit credited, and a laser line runs off the top of the frame to the mirrors Apollo left behind.",
+      "suggested_playbook": "custom",
+      "target_audience": "People who like a number with a consequence attached.",
+      "target_platform": "youtube",
+      "target_duration_seconds": 42,
+      "key_points": [
+        "The bulges are dragged slightly ahead of the Moon by the planet's rotation",
+        "Their gravity tows the Moon forward, and friction bleeds spin out of the Earth",
+        "The day lengthens by about 1.6 milliseconds a century",
+        "The Moon recedes 3.83 cm a year, measured by laser off Apollo retroreflectors"
+      ],
+      "core_message": "The tide is a transaction, and the receipt is measurable to a hundredth of a centimetre.",
+      "tone": "dry, financial, faintly ominous",
+      "grounded_in": [
+        "PMC: 1.6-1.7 ms/century, 3.83 +/- 0.008 cm/yr, lunar laser ranging"
+      ],
+      "why_this_works": "One extraordinary number that is precisely measured, with an Apollo hook. But it assumes the viewer already accepts the bulges, which is exactly what they do not understand."
+    },
+    {
+      "id": "t3",
+      "title": "Why Your Bathtub Has No Tide",
+      "hook": "The Moon pulls your bathwater exactly as hard as it pulls the Pacific. Only one of them moves.",
+      "narrative_structure": "comparison",
+      "visual_approach": "Two vessels side by side for the whole video - a bath and an ocean - with the same arrows drawn on both. The arrows on the bath are identical to each other; the arrows on the ocean are not. That single difference is the entire film.",
+      "suggested_playbook": "custom",
+      "target_audience": "People who want the mechanism isolated rather than the phenomenon described.",
+      "target_platform": "youtube",
+      "target_duration_seconds": 42,
+      "key_points": [
+        "Gravity's strength is not what makes a tide",
+        "What matters is how much it changes across the thing being pulled",
+        "A bath is too small for the difference to exist",
+        "An ocean is 12,000 km wide, and that is the whole story"
+      ],
+      "core_message": "Tides are made of difference, not force.",
+      "tone": "plain, almost conversational",
+      "grounded_in": [
+        "NASA: small bodies of water have no tides",
+        "common_questions: why doesn't my bathtub have tides"
+      ],
+      "why_this_works": "The cleanest isolation of the mechanism, and it answers a real forum question. Risk: without the far-side puzzle it is a definition rather than a revelation."
+    },
+    {
+      "id": "t4",
+      "title": "There Is No Bulge",
+      "hook": "The diagram in your textbook shows a wave of water circling the planet. It cannot exist.",
+      "narrative_structure": "debate",
+      "visual_approach": "Start by animating the familiar diagram faithfully, then run the numbers on it live on screen until it breaks: a free wave tops out around 330 m/s, the equator turns at 465, and the drawing tears.",
+      "suggested_playbook": "custom",
+      "target_audience": "Viewers who already know the standard model and enjoy having it dismantled.",
+      "target_platform": "youtube",
+      "target_duration_seconds": 42,
+      "key_points": [
+        "A tidal bulge would be a shallow-water wave half the planet's circumference long",
+        "Such a wave cannot exceed about 330 m/s even over the deepest trench",
+        "The equator moves at 465 m/s, so nothing can keep up",
+        "Real tides are basin resonances, not a bulge sliding around the world"
+      ],
+      "core_message": "The picture everyone uses is a teaching fiction, and the real answer is stranger.",
+      "tone": "provocative, slightly gleeful",
+      "grounded_in": [
+        "PhysicsForums: free wave speed versus rotational speed"
+      ],
+      "why_this_works": "The most genuinely surprising claim available, and the riskiest: it demolishes a model the audience does not yet hold correctly. Better as a follow-up than as an introduction."
+    }
+  ],
+  "selected_concept": {
+    "concept_id": "t1",
+    "rationale": "T1 answers the question the audience is actually carrying, and the answer fits in one drawing - three arrows of unequal length. T3's mechanism ('difference, not force') is the same insight stated abstractly, so it folds in as the closing line rather than running as its own video. T2 and T4 both assume the viewer already accepts the bulges, which is the thing this video has to establish first; they stay on the shelf as sequels, in that order.",
+    "modifications": [
+      "Fold T3's payoff into the last beat: a tide is made of difference, not force.",
+      "Borrow one shot from T2 as the closing image - the Moon drifting out of frame - so the video ends on a consequence rather than a summary.",
+      "The familiar diagram is drawn correctly first and then interrogated. Never mock it; the viewer learned it in good faith."
+    ]
+  },
+  "production_plan": {
+    "pipeline": "animated-explainer",
+    "playbook": "custom",
+    "renderer_family": "animation-first",
+    "render_runtime": "remotion",
+    "composition_mode": "atelier",
+    "art_direction": "An engraved plate from a physics book, redrawn and corrected in front of you. Warm paper ground (#EDE6D6) with a faint deckle grain, everything set in ink (#141210) line work with visible construction lines - the drawing shows its own working. Water is a single deep sea blue (#1F4E6B); force is vermilion (#C1452F) and appears nowhere else, so every red mark on screen is a force. Language is set in a serif, including the numbers, because this is a page rather than an instrument. Ink draws on with a small overshoot and settles, the way a hand draws; nothing moves at constant velocity. The video does not end still - the Moon keeps drifting out of frame after the last word.",
+    "taste_profile": {
+      "design_read": "A page being corrected. Warm, patient, made of paper and ink rather than glass and light - the register of someone showing you the working, not of an instrument reporting a measurement.",
+      "visual_variance": 6,
+      "motion_intensity": 4,
+      "information_density": 4,
+      "palette_discipline": "Paper ground, ink line, one blue for water, one vermilion reserved exclusively for force. No fourth colour, no fills except water.",
+      "layout_variation": "Full-bleed plate with a centred body \u00b7 a struck-through wrong diagram \u00b7 body with three unequal arrows \u00b7 the same arrows with the middle one subtracted \u00b7 a lunar-day clock face \u00b7 a wide field with the Moon small and leaving.",
+      "reference_strategy": "Historical celestial-mechanics engravings as the register; no AI imagery and no stock footage - every mark is drawn by the composition.",
+      "anti_patterns": [
+        "Anything from the previous video: dark ground, cyan/amber signal pair, a running counter, waveforms on a grid, a still final frame",
+        "Monospace type - this is a page, not a readout",
+        "Photographic space imagery or a realistic Earth",
+        "Mocking the textbook diagram",
+        "Centred caption block over b-roll"
+      ],
+      "quality_gates": [
+        "A viewer with the sound off must be able to reach the answer from the arrows alone",
+        "Vermilion may only ever mean force",
+        "The last shot must still be moving",
+        "No layout may be recognisable from the previous production"
+      ]
+    },
+    "delivery_promise": {
+      "promise_type": "motion_led",
+      "motion_required": true,
+      "source_required": false,
+      "tone_mode": "corrective, unhurried",
+      "quality_floor": "presentable",
+      "approved_fallback": null
+    },
+    "voice_selection": {
+      "provider": "piper",
+      "voice_id": "en_US-ryan-high",
+      "rationale": "Still the only TTS configured on this machine, and still free and offline. Unchanged from the previous production, which is a real limitation rather than a choice: the environment has no cloud TTS key.",
+      "estimated_cost_usd": 0.0,
+      "delivery_style": "warmer and slower than the previous video - this one is a correction offered, not a measurement reported",
+      "pacing_policy": "Longer sentences than last time, and one deliberate pause before the correction lands.",
+      "sample_approval_required": false
+    },
+    "music_source": {
+      "source_type": "none",
+      "mood_direction": "Deliberately no bed under most of the video. The previous production used a pulse; this one uses the absence of one, so the two do not share a sound. A single low swell arrives only at the closing beat.",
+      "estimated_cost_usd": 0.0
+    },
+    "stages": [
+      {
+        "stage": "assets",
+        "approach": "Narration synthesised locally with Piper. No music bed except one self-produced swell at the end. Every visual hand-authored as TSX in the project's own Remotion composition.",
+        "tools": [
+          {
+            "tool_name": "piper_tts",
+            "role": "narration",
+            "provider": "piper",
+            "available": true,
+            "estimated_cost_usd": 0.0,
+            "why_this_provider": "The only TTS on this machine; local and free."
+          },
+          {
+            "tool_name": "pexels_video",
+            "role": "would supply real footage of a tide",
+            "provider": "pexels",
+            "available": false,
+            "estimated_cost_usd": 0.0,
+            "why_this_provider": "Unavailable twice over: no API key, and every Pexels host is denied by this environment's network policy (verified). Recorded rather than hidden. It would not have been used here anyway - a shot of a beach cannot show a force gradient - but a later video about the Bay of Fundy would genuinely want it."
+          }
+        ],
+        "fallback_if_unavailable": "If Piper cannot synthesise, the run stops and the blocker is reported."
+      },
+      {
+        "stage": "compose",
+        "approach": "Render the hand-authored composition through video_compose in atelier mode, then mux narration. 1080x1920, 30 fps.",
+        "tools": [
+          {
+            "tool_name": "video_compose",
+            "role": "render",
+            "provider": "remotion",
+            "available": true,
+            "estimated_cost_usd": 0.0,
+            "why_this_provider": "Atelier mode renders a project-local composition and bypasses the stock scene registry, with a stock-reuse scan enforcing it."
+          },
+          {
+            "tool_name": "audio_mixer",
+            "role": "narration timeline and final mix",
+            "provider": "ffmpeg",
+            "available": true,
+            "estimated_cost_usd": 0.0,
+            "why_this_provider": "Local ffmpeg."
+          }
+        ],
+        "fallback_if_unavailable": "None needed - both are local."
+      }
+    ],
+    "quality_tradeoffs": [
+      {
+        "tradeoff": "Narration: Piper again (free, local, flat) vs a cloud voice",
+        "recommendation": "Piper",
+        "quality_impact": "Same ceiling as last time. This is now the clearest single upgrade available to the channel and it costs one environment variable."
+      },
+      {
+        "tradeoff": "Music: a bed under the whole video vs almost none",
+        "recommendation": "Almost none",
+        "quality_impact": "Quieter and less conventionally 'produced'. Chosen partly so this video does not share a sound signature with the previous one - sameness is not only visual."
+      },
+      {
+        "tradeoff": "Visuals: real footage of tides vs drawing every mark",
+        "recommendation": "Draw every mark",
+        "quality_impact": "No photographic texture. But the subject is a force gradient, which no camera can photograph; footage would decorate rather than explain."
+      }
+    ],
+    "alternative_paths": [
+      {
+        "description": "Free path (selected): Piper narration, one self-produced swell, hand-authored Remotion atelier composition.",
+        "total_cost_usd": 0.0,
+        "quality_level": "free",
+        "what_changes": "Nothing is paid for. Voice is the weak point."
+      },
+      {
+        "description": "Budget path: same visuals, cloud TTS.",
+        "total_cost_usd": 0.1,
+        "quality_level": "budget",
+        "what_changes": "The narration stops sounding synthetic. Needs one key that is not in this environment."
+      },
+      {
+        "description": "Standard path: cloud TTS plus real Bay of Fundy footage for the scale beat.",
+        "total_cost_usd": 0.1,
+        "quality_level": "standard",
+        "what_changes": "One photographic beat against the drawn plate. Needs a Pexels key AND the network policy opened - both currently absent."
+      }
+    ]
+  },
+  "cost_estimate": {
+    "total_estimated_usd": 0.0,
+    "budget_cap_usd": 0.0,
+    "budget_verdict": "within_budget",
+    "line_items": [
+      {
+        "tool": "piper_tts",
+        "operation": "narration synthesis",
+        "quantity": 1,
+        "estimated_usd": 0.0,
+        "notes": "Local model."
+      },
+      {
+        "tool": "video_compose",
+        "operation": "atelier Remotion render at 1080x1920",
+        "quantity": 1,
+        "estimated_usd": 0.0,
+        "notes": "Local CPU render."
+      },
+      {
+        "tool": "audio_mixer",
+        "operation": "narration timeline and mix",
+        "quantity": 1,
+        "estimated_usd": 0.0,
+        "notes": "Local ffmpeg."
+      }
+    ],
+    "savings_options": []
+  },
+  "approval": {
+    "status": "approved",
+    "approved_budget_usd": 0.0,
+    "user_notes": "Standing pre-authorisation, reaffirmed in this session: the user asked for the next video to be produced here, with full decision authority and nothing asked. Every gated stage is recorded as approved under that authorisation, with the reasoning written into the decision log so it stays reviewable afterwards. As with the previous production, AGENT_GUIDE.md asks for an 'approval_policy' decision_log category that the schema enum does not contain, so it is recorded here."
+  },
+  "metadata": {
+    "unattended_run": true,
+    "style_ledger_checked": true,
+    "divergence_from_previous": "All five ledger fields differ from how-headphones-erase-sound: paper ground instead of near-black, ink/blue/vermilion instead of cyan/amber, three unequal arrows instead of a running counter, plate layouts instead of axes and traces, hand-drawn settle instead of constant velocity. Narrative structure and type family differ too, and the video ends moving rather than still.",
+    "preflight": {
+      "composition_runtimes": {
+        "ffmpeg": true,
+        "remotion": true,
+        "hyperframes": true
+      },
+      "tts": "1/10 configured (piper)",
+      "image_generation": "0/16 configured",
+      "video_generation": "0/26 configured \u2014 and every Pexels/Pixabay host is denied by the network policy",
+      "verdict": "degraded \u2014 unchanged since the previous production; the selected concept needs none of the missing capabilities"
+    }
+  }
+}

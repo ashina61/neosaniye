@@ -1,0 +1,47 @@
+{
+  "version": "1.0",
+  "renderer_family": "animation-first",
+  "render_runtime": "remotion",
+  "composition_mode": "atelier",
+  "bespoke": {
+    "entry": "projects/why-the-sea-rises-twice/index.tsx",
+    "composition_id": "WhyTheSeaRisesTwice",
+    "art_direction": "projects/why-the-sea-rises-twice/art-direction.md",
+    "props_path": "/home/user/neosaniye/projects/why-the-sea-rises-twice/artifacts/props.json",
+    "crf": 18,
+    "concurrency": 2
+  },
+  "cuts": [
+    {"id": "sc-01", "source": "atelier:WhyTheSeaRisesTwice", "in_seconds": 0.0, "out_seconds": 3.8, "layer": "primary", "reason": "The marks - the phenomenon at human scale."},
+    {"id": "sc-02", "source": "atelier:WhyTheSeaRisesTwice", "in_seconds": 3.8, "out_seconds": 12.37, "layer": "primary", "reason": "The plate - the familiar diagram, drawn faithfully."},
+    {"id": "sc-03", "source": "atelier:WhyTheSeaRisesTwice", "in_seconds": 12.37, "out_seconds": 20.77, "layer": "primary", "reason": "The annotation - the wrong answer, struck out, kept."},
+    {"id": "sc-04", "source": "atelier:WhyTheSeaRisesTwice", "in_seconds": 20.77, "out_seconds": 26.0, "layer": "primary", "reason": "Three pulls - one arrow per clause."},
+    {"id": "sc-05", "source": "atelier:WhyTheSeaRisesTwice", "in_seconds": 26.0, "out_seconds": 30.13, "layer": "primary", "reason": "Stacked - the gradient measured on its own."},
+    {"id": "sc-06", "source": "atelier:WhyTheSeaRisesTwice", "in_seconds": 30.13, "out_seconds": 33.17, "layer": "primary", "reason": "The subtraction - hero beat, both bulges as arithmetic."},
+    {"id": "sc-07", "source": "atelier:WhyTheSeaRisesTwice", "in_seconds": 33.17, "out_seconds": 40.53, "layer": "primary", "reason": "The bath - the mechanism proved by removing it."},
+    {"id": "sc-08", "source": "atelier:WhyTheSeaRisesTwice", "in_seconds": 40.53, "out_seconds": 43.5, "layer": "primary", "reason": "The caption."},
+    {"id": "sc-09", "source": "atelier:WhyTheSeaRisesTwice", "in_seconds": 43.5, "out_seconds": 46.5, "layer": "primary", "reason": "Still leaving - cut mid-motion."}
+  ],
+  "audio": {
+    "narration": {
+      "segments": [
+        {"asset_id": "narration-s1", "start_seconds": 0.3, "end_seconds": 3.52},
+        {"asset_id": "narration-s2", "start_seconds": 3.81, "end_seconds": 11.77},
+        {"asset_id": "narration-s3", "start_seconds": 12.37, "end_seconds": 20.57},
+        {"asset_id": "narration-s4", "start_seconds": 20.77, "end_seconds": 29.38},
+        {"asset_id": "narration-s5", "start_seconds": 30.12, "end_seconds": 32.92},
+        {"asset_id": "narration-s6", "start_seconds": 33.17, "end_seconds": 39.99},
+        {"asset_id": "narration-s7", "start_seconds": 40.54, "end_seconds": 44.87}
+      ]
+    }
+  },
+  "subtitles": {"enabled": false},
+  "transitions": [],
+  "metadata": {
+    "frame": "1080x1920 @ 30fps, 1395 frames",
+    "audio_muxed_by": "video_compose atelier path (inputs.audio_path)",
+    "music": "None under the body of the video, by design - the previous production carried a pulse throughout and repeating that would give the two videos one sound. See decision d-006.",
+    "subtitles_off_because": "Same reasoning as the previous production: the composition carries its own typography and the narration is not duplicated on screen. There are no burned captions.",
+    "no_transitions_because": "Every scene change is a hard cut. The previous production used one wipe; this one uses none, so even the cutting grammar differs."
+  }
+}

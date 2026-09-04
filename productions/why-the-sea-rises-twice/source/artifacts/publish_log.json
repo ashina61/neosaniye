@@ -1,0 +1,55 @@
+{
+  "version": "1.0",
+  "entries": [
+    {
+      "platform": "local_export",
+      "status": "exported",
+      "export_path": "/home/user/neosaniye/projects/why-the-sea-rises-twice/export",
+      "timestamp": "2026-09-04T13:37:07+00:00",
+      "visibility": "private",
+      "metadata_used": {
+        "title": "The tide nobody can explain.",
+        "description": "There are two high tides a day, and only one of them makes sense.\n\nThe Moon lifts the near ocean \u2014 fine. But twelve hours later the sea rises again on the side of the planet facing away. The explanation most of us were taught for that one \u2014 centrifugal force \u2014 is named as a misconception in the physics literature. Nothing out there is being pushed.\n\nGravity weakens with distance. The Moon pulls the near ocean hardest, the solid Earth a little less, and the far ocean least of all. Subtract the pull on the Earth itself and what is left points outward at both ends. The planet is pulled out from under its own water.\n\nA tide is not gravity being strong. It is gravity being uneven \u2014 which is also why your bath has no tide.\n\nSources:\nNOAA, Gravity, Inertia and the Two Bulges \u00b7 https://oceanservice.noaa.gov/education/tutorial_tides/tides03_gravity.html\nConfusion around the tidal force and the centrifugal force \u00b7 https://arxiv.org/pdf/1506.04085\nNASA Science, Tides \u00b7 https://science.nasa.gov/moon/tides/",
+        "hashtags": [
+          "#tides",
+          "#physics",
+          "#moon",
+          "#gravity",
+          "#ocean",
+          "#howitworks",
+          "#science",
+          "#Shorts"
+        ],
+        "chapters": [
+          {
+            "start": 0.0,
+            "title": "Two tides, one explanation"
+          },
+          {
+            "start": 12.4,
+            "title": "The answer you were taught"
+          },
+          {
+            "start": 20.8,
+            "title": "Three different pulls"
+          },
+          {
+            "start": 30.1,
+            "title": "Pulled out from under the water"
+          },
+          {
+            "start": 33.2,
+            "title": "Why your bath has no tide"
+          },
+          {
+            "start": 40.5,
+            "title": "Uneven, not strong"
+          }
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "note": "Exported, not uploaded. No publishing credentials are present in this environment, and uploading is the user's call in any case. The bundle holds the video, the SEO metadata with chapters, and a thumbnail frame taken from the hero beat at 26.5s."
+  }
+}

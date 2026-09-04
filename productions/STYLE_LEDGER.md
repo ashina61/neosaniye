@@ -37,6 +37,32 @@ Changing only these is not a new design — it is the same video with new data:
 
 ## Ledger
 
+### 2026-09-04 — why-the-sea-rises-twice
+*"The Bulge Nobody Can Explain"* · 46.5s · remotion / atelier
+
+| Field | Value |
+|---|---|
+| Design read | A page from a physics book, being corrected in front of you. |
+| Ground | Warm paper `#EDE6D6` with a deterministic grain and a soft plate border |
+| Palette roles | ink `#141210` = the drawing · sea blue `#1F4E6B` = water only · vermilion `#C1452F` = force only |
+| Signature device | Three arrows of unequal length along the Moon's axis; used in two beats, and the middle one is subtracted in the second |
+| Layout set | shoreline section with hatched rock · centred plate with an ocean ring · struck-out margin annotation · three arrows on a bare body · measured inset against a baseline in the upper third · vector subtraction · a bathtub in the figure's position · a figure caption low-left · a departing Moon |
+| Motion character | Ink draws on and settles with a spring overshoot. Nothing at constant velocity. Cut mid-motion at the end — the Moon is still drifting. |
+| Type | Spectral 600 for language, Spectral 400 letterspaced for labels, Caveat 600 for exactly one struck-out annotation. No monospace. |
+| Narrative structure | myth_busting |
+| Narration | Piper `en_US-ryan-high` at length_scale 1.12, 3.27 w/s measured |
+| Music | Silent underneath; one low swell arriving at 39.6s and never resolving |
+| Providers used | none — zero API keys |
+
+**Burned for future videos:** paper-and-ink plate framing, the annotate-then-strike-out
+correction device, arrows-as-argument, an ocean drawn as a ring around a circle, the
+bathtub-as-control-experiment gag, ending on unresolved drift.
+
+**Note on the pair so far:** both videos are now line drawings on a flat ground with
+narration and near-silence. The third should break that too — a piece with real
+photographic texture, or one built on typography rather than diagram, or one with
+an actual music bed. Two data points do not make a house style, but three would.
+
 ### 2026-09-03 — how-headphones-erase-sound
 *"The Deadline Inside Your Headphones"* · 41.5s · remotion / atelier
 

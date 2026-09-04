@@ -1,0 +1,231 @@
+{
+  "version": "1.0",
+  "title": "The Bulge Nobody Can Explain",
+  "total_duration_seconds": 46.5,
+  "voice_performance": {
+    "performance_intent": "Someone showing you the working, patiently, because they think you will enjoy the fix. Warmer and slower than the previous production - this is a correction offered, not a measurement reported. No triumph in the voice when the textbook is contradicted.",
+    "pacing_profile": "conversational",
+    "energy_curve": "Even and low on the hook. A small lift on 'it rises again'. The correction is delivered flatly, without relish. Then slows through the three pulls, and the turn is the quietest line in the video.",
+    "pause_policy": "Two real pauses: one before the correction, one before the turn. Everywhere else the sentence breaks carry it.",
+    "sample_section_id": "s3",
+    "provider_notes": {
+      "piper": "Piper has no SSML. The warmth has to come from longer clauses and from length_scale, not from tags; the pauses are real silence placed between per-section renders."
+    }
+  },
+  "sections": [
+    {
+      "id": "s1",
+      "label": "Hook",
+      "text": "There are two high tides a day. Only one of them makes any sense.",
+      "start_seconds": 0.3,
+      "end_seconds": 3.515,
+      "speaker_directions": "Flat and unhurried. 'Only one' carries the whole hook; do not push it.",
+      "delivery_cues": {
+        "pace": "measured",
+        "energy": "even, low",
+        "emphasis_words": [
+          "two",
+          "one"
+        ],
+        "pause_after_seconds": 0.3,
+        "delivery_note": "State it like a fact that has been sitting there for years, which it has."
+      },
+      "enhancement_cues": [
+        {
+          "type": "diagram",
+          "description": "Warm paper. A coastal section drawn in ink: a strip of shore, the sea, and two horizontal tide marks. The upper mark is labelled once. Construction lines stay visible.",
+          "timestamp_seconds": 0.3
+        }
+      ],
+      "pronunciation_guides": []
+    },
+    {
+      "id": "s2",
+      "label": "The half that makes sense",
+      "text": "The Moon passes overhead and the sea rises to meet it. Fine. But twelve hours later it rises again, on the side of the planet facing away.",
+      "start_seconds": 3.815,
+      "end_seconds": 11.767,
+      "speaker_directions": "Even through the first sentence. 'Fine' is dropped in, almost thrown away. Slight lift on 'rises again'.",
+      "delivery_cues": {
+        "pace": "conversational",
+        "energy": "explanatory, then curious",
+        "emphasis_words": [
+          "overhead",
+          "again",
+          "away"
+        ],
+        "pause_after_seconds": 0.25,
+        "delivery_note": "'Fine' should sound like someone conceding the easy half so they can get to the hard one."
+      },
+      "enhancement_cues": [
+        {
+          "type": "diagram",
+          "description": "The view pulls back to the whole planet on the plate. The Moon is drawn small at the right margin. The near-side water swells toward it in sea blue. Then, without ceremony, the far side swells too - and the drawing simply sits there being impossible.",
+          "timestamp_seconds": 5.0
+        }
+      ],
+      "pronunciation_guides": []
+    },
+    {
+      "id": "s3",
+      "label": "The wrong answer",
+      "text": "You were probably taught that centrifugal force flings the far water outward. Physicists call that one a misconception. Nothing out there is being pushed.",
+      "start_seconds": 12.367,
+      "end_seconds": 20.574,
+      "speaker_directions": "Deliver the correction completely flatly. No relish, no gotcha. A real pause before 'You were probably taught'.",
+      "delivery_cues": {
+        "pace": "measured",
+        "energy": "level, unhurried",
+        "emphasis_words": [
+          "taught",
+          "misconception",
+          "nothing"
+        ],
+        "pause_before_seconds": 0.35,
+        "pause_after_seconds": 0.2,
+        "delivery_note": "The viewer learned this in good faith. The line lands harder if the voice is kind about it."
+      },
+      "enhancement_cues": [
+        {
+          "type": "animation",
+          "description": "A curved arrow is drawn onto the plate in vermilion, sweeping outward from the far side, exactly the way a textbook margin would annotate it - and labelled the way a textbook would. Then a single vermilion stroke crosses it out. The struck-through annotation stays on the page; it is not erased.",
+          "timestamp_seconds": 13.0
+        }
+      ],
+      "pronunciation_guides": [
+        {
+          "word": "centrifugal",
+          "phonetic": "sen-TRIF-yuh-gul"
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "label": "Three pulls",
+      "text": "Gravity gets weaker with distance. So the Moon pulls the near ocean hardest. It pulls the solid Earth a little less. And the far ocean least of all.",
+      "start_seconds": 20.774,
+      "end_seconds": 29.375,
+      "speaker_directions": "Slow and even across the three pulls, each one landing as its arrow is drawn. Do not accelerate.",
+      "delivery_cues": {
+        "pace": "measured",
+        "energy": "building, patient",
+        "emphasis_words": [
+          "weaker",
+          "hardest",
+          "less",
+          "least"
+        ],
+        "pause_after_seconds": 0.35,
+        "delivery_note": "Three clauses, three arrows. The rhythm of the voice and the rhythm of the drawing must be the same."
+      },
+      "enhancement_cues": [
+        {
+          "type": "animation",
+          "description": "Three vermilion arrows are drawn across the planet on the Moon's axis - near, centre, far - each shorter than the last, each drawn as its clause is spoken. Their lengths are the argument; nothing is labelled.",
+          "timestamp_seconds": 22.0
+        },
+        {
+          "type": "diagram",
+          "description": "The three arrows are stacked at the margin against a common baseline so the difference between them is unmistakable.",
+          "timestamp_seconds": 27.5
+        }
+      ],
+      "pronunciation_guides": []
+    },
+    {
+      "id": "s5",
+      "label": "The turn",
+      "text": "So the planet gets pulled out from under its own water.",
+      "start_seconds": 30.125,
+      "end_seconds": 32.923,
+      "speaker_directions": "The quietest line in the video. A real pause before it. Let the drawing finish the sentence.",
+      "delivery_cues": {
+        "pace": "slow",
+        "energy": "quiet, resolved",
+        "emphasis_words": [
+          "out",
+          "under"
+        ],
+        "pause_before_seconds": 0.4,
+        "pause_after_seconds": 0.25,
+        "delivery_note": "This is the whole video in one sentence. Do not decorate it."
+      },
+      "enhancement_cues": [
+        {
+          "type": "animation",
+          "description": "The middle arrow - the pull on the Earth itself - is subtracted from all three. What is left points outward at both ends: away from the centre on the near side, and away from the centre on the far side. Two bulges, drawn as arithmetic. This is the hero beat.",
+          "timestamp_seconds": 30.8
+        }
+      ],
+      "pronunciation_guides": []
+    },
+    {
+      "id": "s6",
+      "label": "The check",
+      "text": "It is also why your bath has no tide. Across a bathtub, that difference is far too small to move anything.",
+      "start_seconds": 33.173,
+      "end_seconds": 39.987,
+      "speaker_directions": "Lighter, almost an aside. This is the reward for following the argument.",
+      "delivery_cues": {
+        "pace": "conversational",
+        "energy": "warm, offhand",
+        "emphasis_words": [
+          "bath",
+          "difference"
+        ],
+        "pause_after_seconds": 0.25,
+        "delivery_note": "A small joke told straight."
+      },
+      "enhancement_cues": [
+        {
+          "type": "diagram",
+          "description": "A bathtub drawn in the same ink on the same plate, with the same three arrows on it - and this time all three are identical. Nothing happens. The still water is the punchline.",
+          "timestamp_seconds": 35.0
+        }
+      ],
+      "pronunciation_guides": []
+    },
+    {
+      "id": "s7",
+      "label": "Landing",
+      "text": "A tide is not gravity being strong. It is gravity being uneven.",
+      "start_seconds": 40.537,
+      "end_seconds": 44.867,
+      "speaker_directions": "Even, closing, no lift on the last word.",
+      "delivery_cues": {
+        "pace": "measured",
+        "energy": "settled",
+        "emphasis_words": [
+          "strong",
+          "uneven"
+        ],
+        "pause_before_seconds": 0.3,
+        "delivery_note": "No call to action. The reframe is the ending."
+      },
+      "enhancement_cues": [
+        {
+          "type": "overlay",
+          "description": "The closing line set in the plate's serif, low on the page, as a caption under a figure.",
+          "timestamp_seconds": 40.8
+        },
+        {
+          "type": "animation",
+          "description": "The plate holds, and the small Moon at the margin keeps drifting slowly outward, still moving as the video ends. It never stops, and it never reaches the edge.",
+          "timestamp_seconds": 43.0
+        }
+      ],
+      "pronunciation_guides": []
+    }
+  ],
+  "metadata": {
+    "word_count": 137,
+    "grounding": {
+      "s3": "arXiv 1506.04085 - textbooks introduce a fictitious centrifugal force in a rotating frame, identified as a source of misconception",
+      "s4": "NOAA - the Moon's pull varies across the Earth: strongest on the near ocean, weakest on the far",
+      "s5": "NOAA / Strassler - the differential force, not rotation, produces both bulges",
+      "s6": "NASA - small bodies of water have no tides because the gradient across them is negligible"
+    },
+    "timing_note": "Measured from the rendered Piper audio (en_US-ryan-high, length_scale 1.12 - slower than the previous production by design). Video runs 46.5s: 0.3s lead-in, 44.87s narration timeline, 1.63s of drift after the last word.",
+    "measured_rate_words_per_second": 3.27
+  }
+}

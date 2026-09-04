@@ -1,0 +1,60 @@
+# Publish spec for a hand-produced short.
+#
+# Produced through OpenMontage's animated-explainer pipeline in atelier mode.
+# See source/art-direction.md, source/scenes.md and
+# source/artifacts/decision_log.json. This file exists only so
+# daily/lib/publish.py can consume the folder.
+slug: why-the-sea-rises-twice
+title: The Bulge Nobody Can Explain
+duration_seconds: 46.5
+produced_by: openmontage/animated-explainer (atelier, remotion)
+produced_on: "2026-09-04"
+
+copy:
+  title: "The tide nobody can explain."
+  hook: "There are two high tides a day. Only one of them makes any sense."
+  caption: >-
+    The Moon lifts the near ocean — fine. But twelve hours later the sea rises
+    again on the side of the planet facing away, and the explanation most of us
+    were taught for that one is named as a misconception in the physics
+    literature. Nothing out there is being pushed. Gravity weakens with
+    distance, so the planet is pulled out from under its own far-side water.
+  description: |-
+    There are two high tides a day, and only one of them makes sense.
+
+    The Moon lifts the near ocean — fine. But twelve hours later the sea rises
+    again on the side of the planet facing away. The explanation most of us were
+    taught for that one, centrifugal force, is named as a misconception in the
+    physics literature. Nothing out there is being pushed.
+
+    Gravity weakens with distance. The Moon pulls the near ocean hardest, the
+    solid Earth a little less, and the far ocean least of all. Subtract the pull
+    on the Earth itself and what is left points outward at both ends. The planet
+    is pulled out from under its own water.
+
+    A tide is not gravity being strong. It is gravity being uneven — which is
+    also why your bath has no tide.
+
+    The arrows in this video are not decorative. Their lengths come from the real
+    inverse-square pull at the Moon's distance; the spread is exaggerated so it
+    is visible on a phone, but the two remainders after the subtraction are
+    exactly to scale with each other, which is why the near bulge draws slightly
+    larger than the far one.
+
+    Sources
+    NOAA, Gravity, Inertia and the Two Bulges:
+    https://oceanservice.noaa.gov/education/tutorial_tides/tides03_gravity.html
+    Confusion around the tidal force and the centrifugal force:
+    https://arxiv.org/pdf/1506.04085
+    NASA Science, Tides: https://science.nasa.gov/moon/tides/
+
+    #Shorts
+  hashtags:
+    - tides
+    - physics
+    - moon
+    - gravity
+    - ocean
+    - howitworks
+    - science
+    - Shorts

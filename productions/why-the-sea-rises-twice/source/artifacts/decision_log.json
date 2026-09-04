@@ -1,0 +1,152 @@
+{
+  "version": "1.0",
+  "project_id": "why-the-sea-rises-twice",
+  "decisions": [
+    {
+      "decision_id": "d-001",
+      "stage": "proposal",
+      "category": "concept_selection",
+      "subject": "Concept for the tides short",
+      "options_considered": [
+        {"option_id": "t1", "label": "The Bulge Nobody Can Explain", "score": 0.93,
+         "reason": "Answers the question the audience already half-holds, and the answer is one drawing: three arrows of unequal length."},
+        {"option_id": "t2", "label": "The Moon Is Leaving, And You Are Paying For It", "score": 0.75,
+         "reason": "One extraordinary laser-measured number with an Apollo hook.",
+         "rejected_because": "Assumes the viewer already accepts the bulges. Kept as the first sequel."},
+        {"option_id": "t3", "label": "Why Your Bathtub Has No Tide", "score": 0.7,
+         "reason": "Cleanest isolation of the mechanism.",
+         "rejected_because": "Same insight as T1 stated abstractly, so it folds into T1's last beat instead of running alone."},
+        {"option_id": "t4", "label": "There Is No Bulge", "score": 0.68,
+         "reason": "The most surprising claim available.",
+         "rejected_because": "Demolishes a model the audience does not yet hold correctly. A second video, not a first."}
+      ],
+      "selected": "t1",
+      "reason": "The far-side bulge is the actual puzzle and every existing explainer treats it as a footnote. The correction is short, drawable without words, and backed by NOAA plus a peer-reviewed audit of textbook explanations.",
+      "user_visible": true, "user_approved": true, "confidence": 0.9
+    },
+    {
+      "decision_id": "d-002",
+      "stage": "proposal",
+      "category": "playbook_selection",
+      "subject": "Visual identity",
+      "options_considered": [
+        {"option_id": "engraved-plate", "label": "Custom: an engraved plate being corrected", "score": 0.92,
+         "reason": "Paper ground, ink line work, one blue for water, one vermilion reserved for force. Fits a video whose job is to correct a page, and shares nothing with the previous production."},
+        {"option_id": "reuse-oscilloscope", "label": "The previous video's instrument look", "score": 0.05,
+         "reason": "Proven, already built, would be quick.",
+         "rejected_because": "Every one of its five ledger fields is burned in productions/STYLE_LEDGER.md. Reusing it is exactly the failure this project is correcting."},
+        {"option_id": "minimalist-diagram", "label": "minimalist-diagram preset", "score": 0.5,
+         "reason": "Close to the subject.",
+         "rejected_because": "A preset is a frozen look, and the subject has its own visual world - a physics plate."},
+        {"option_id": "space-realism", "label": "Photographic space / realistic Earth", "score": 0.2,
+         "reason": "Immediately legible.",
+         "rejected_because": "A force gradient cannot be photographed, and realism would hide the one thing the video is about."}
+      ],
+      "selected": "engraved-plate",
+      "reason": "Checked against the style ledger before designing. All five recorded fields differ from the previous production: ground, palette roles, signature device, layout set and motion character. The video also ends moving rather than still, which the previous one used as its closing device.",
+      "user_visible": true, "user_approved": true, "confidence": 0.85
+    },
+    {
+      "decision_id": "d-003",
+      "stage": "proposal",
+      "category": "render_runtime_selection",
+      "subject": "Composition runtime",
+      "options_considered": [
+        {"option_id": "remotion", "label": "Remotion (React composition)", "score": 0.86,
+         "reason": "Available; its atelier path bypasses the stock scene registry and enforces that with a stock-reuse scan at render time. The environment plumbing for it - a browser and inlined fonts - is already worked out."},
+        {"option_id": "hyperframes", "label": "HyperFrames (HTML/CSS/GSAP)", "score": 0.78,
+         "reason": "Available and verified (0.8.27). Its drawing model would suit ink line work well.",
+         "rejected_because": "Would cost a second set of environment workarounds for no gain the concept needs. Worth revisiting for a piece whose motion is genuinely typographic."},
+        {"option_id": "ffmpeg", "label": "FFmpeg only", "score": 0.1,
+         "reason": "Always available.",
+         "rejected_because": "Cannot draw arrows appearing on a body. The delivery promise is motion_led."}
+      ],
+      "selected": "remotion",
+      "reason": "Both runtimes were available and both were assessed. Remotion wins on the doctrine check plus environment work already done, not on being the default.",
+      "user_visible": true, "user_approved": true, "confidence": 0.8
+    },
+    {
+      "decision_id": "d-004",
+      "stage": "proposal",
+      "category": "composition_mode",
+      "subject": "Composition authoring mode",
+      "options_considered": [
+        {"option_id": "atelier", "label": "Atelier - hand-author from scratch", "score": 0.95,
+         "reason": "A fresh visual language per video, with no reusable creative components."},
+        {"option_id": "templated", "label": "Templated - stock cut.type scenes", "score": 0.1,
+         "reason": "Fast and reliable.",
+         "rejected_because": "The documented cause of videos looking alike."}
+      ],
+      "selected": "atelier",
+      "reason": "Unchanged from the previous production, and for the same reason.",
+      "user_visible": true, "user_approved": true, "confidence": 0.95
+    },
+    {
+      "decision_id": "d-005",
+      "stage": "proposal",
+      "category": "voice_selection",
+      "subject": "Narration TTS provider",
+      "options_considered": [
+        {"option_id": "piper", "label": "Piper en_US-ryan-high (local)", "score": 0.6,
+         "reason": "The only TTS configured on this machine; free and offline."},
+        {"option_id": "cloud-tts", "label": "Any cloud voice (ElevenLabs, Gemini, Azure)", "score": 0.0,
+         "reason": "Would be the single largest quality gain available to this video.",
+         "rejected_because": "No key present in this environment. Not a judgement call - an absence."}
+      ],
+      "selected": "piper",
+      "reason": "Same constraint as last time. The delivery direction changes (warmer, slower) even though the voice cannot.",
+      "user_visible": true, "user_approved": true, "confidence": 0.95
+    },
+    {
+      "decision_id": "d-006",
+      "stage": "proposal",
+      "category": "music_source",
+      "subject": "Background music",
+      "options_considered": [
+        {"option_id": "near-silence", "label": "No bed except one closing swell, produced here", "score": 0.8,
+         "reason": "The previous video's sound signature was a pulse under the whole runtime. Repeating that would make the two sound like one series entry twice, so this one carries almost no bed and lets the swell arrive only at the end."},
+        {"option_id": "pixabay", "label": "Pixabay royalty-free track", "score": 0.0,
+         "reason": "Free and royalty-free.",
+         "rejected_because": "Every Pixabay host is denied by this environment's network policy - verified again this session, not assumed."},
+        {"option_id": "full-bed", "label": "A bed under the whole video", "score": 0.4,
+         "reason": "Conventional and safe.",
+         "rejected_because": "Sameness is not only visual. Two videos with the same sonic shape read as the same video."}
+      ],
+      "selected": "near-silence",
+      "reason": "A deliberate contrast with the previous production, and the only option the environment actually permits.",
+      "user_visible": true, "user_approved": true, "confidence": 0.75
+    },
+    {
+      "decision_id": "d-007",
+      "stage": "proposal",
+      "category": "motion_commitment",
+      "subject": "Motion requirement for the delivery promise",
+      "options_considered": [
+        {"option_id": "motion_led", "label": "Motion-led - the drawing carries the argument", "score": 1.0,
+         "reason": "Three arrows of unequal length only explain anything once they are drawn in sequence and then one is subtracted. A still cannot do it."},
+        {"option_id": "still_led", "label": "Still-led with Ken Burns", "score": 0.0,
+         "reason": "Cheaper.",
+         "rejected_because": "Forbidden for a motion-required brief, and it would destroy the explanation."}
+      ],
+      "selected": "motion_led",
+      "reason": "Locked at proposal so no later stage can quietly downgrade it.",
+      "user_visible": true, "user_approved": true, "confidence": 1.0
+    },
+    {
+      "decision_id": "d-008",
+      "stage": "proposal",
+      "category": "fallback_decision",
+      "subject": "Stock footage for this production",
+      "options_considered": [
+        {"option_id": "none", "label": "No stock footage", "score": 0.9,
+         "reason": "The subject is a force gradient across a planet. No camera can photograph it, so footage would decorate rather than explain."},
+        {"option_id": "pexels", "label": "Pexels clips of tides and coastline", "score": 0.0,
+         "reason": "Would give a photographic beat for the Bay of Fundy scale line.",
+         "rejected_because": "Unavailable twice over: no API key, and all Pexels hosts denied by the network policy (verified this session). Recorded so the absence is visible rather than silently designed around."}
+      ],
+      "selected": "none",
+      "reason": "Not a compromise for this concept, but it would be for a future video about the size of a tide. Worth reopening once the environment allows the hosts.",
+      "user_visible": true, "user_approved": true, "confidence": 0.9
+    }
+  ]
+}
