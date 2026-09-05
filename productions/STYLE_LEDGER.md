@@ -2,8 +2,10 @@
 
 Every production in `productions/` gets one row here, written when it ships.
 
-**Read this before designing a new video, and treat it as a list of things you
-may not do again.** An agent has no memory across sessions; this file is the
+Read [`MANIFESTO.md`](MANIFESTO.md) first — it says what kind of channel this is
+and lists the drawn worlds available. Then read this.
+
+**Treat the rows below as a list of things you may not do again.** An agent has no memory across sessions; this file is the
 memory. Without it, the second video quietly inherits the first one's habits and
 we are back to five identical videos.
 
@@ -66,10 +68,14 @@ estimated by character count. Whisper would be more exact but its models come
 from HuggingFace, which this environment denies. Style the caption band per
 piece — it is a design element, not a fixture.
 
-**Note on the pair so far:** both videos are now line drawings on a flat ground with
-narration and near-silence. The third should break that too — a piece with real
-photographic texture, or one built on typography rather than diagram, or one with
-an actual music bed. Two data points do not make a house style, but three would.
+**Note on the pair so far:** both videos are line drawings on a flat ground with
+even narration and near-silence. Photography is off the table by choice — see
+`MANIFESTO.md` — so the third has to break the groove from inside the drawing:
+a different *world* (Manim, Three.js, Ink Theater, kinetic typography), not a
+different palette. Two data points do not make a house style. Three would.
+
+**Worlds used so far:** Remotion atelier ×2. Everything else in the manifesto's
+table is untouched.
 
 ### 2026-09-03 — how-headphones-erase-sound
 *"The Deadline Inside Your Headphones"* · 41.5s · remotion / atelier
