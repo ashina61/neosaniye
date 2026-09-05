@@ -44,6 +44,16 @@ re-projected and before root motion existed.
    scales about the vanishing point by `D/(D + u*sin(angle))`. At angle 0 that
    is 1 everywhere, so the closed door needs no fudge.
 
+7. **The costume.** Flat cap with a solid ink peak, boiler suit, boots, pencil
+   behind the ear. Nothing in this file draws any of it — it is all
+   `InkFigure.NIB`, so every video gets the same man.
+
+8. **A misty threshold.** What is through the door is never drawn: a pale
+   suggestion under a constant blur that does not resolve. After the cut the
+   new room comes out of the haze around him — a paper veil and a blur, both
+   **under the actor**, so he stays sharp while the place he has walked into
+   works out what it is.
+
 ## Running it
 
 ```sh

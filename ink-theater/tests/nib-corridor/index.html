@@ -59,12 +59,26 @@
                 <feTurbulence id="boilTurb" type="fractalNoise" baseFrequency="0.012" numOctaves="1" seed="1" result="n"/>
                 <feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/>
               </filter>
+              <!-- Haze. Through the doorway it never resolves: you cannot see
+                   into a room from outside it. After the cut the room resolves
+                   out of it, which is the shot. -->
+              <filter id="hazeFar" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="9"/>
+              </filter>
+              <filter id="hazeNear" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur id="hazeBlur" stdDeviation="15"/>
+              </filter>
+              <filter id="wisp" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="7"/>
+              </filter>
             </defs>
             <g id="camera">
               <g id="worldA" filter="url(#boil)"></g>
-              <g id="worldB" filter="url(#boil)"></g>
+              <g id="hazeWrap" filter="url(#hazeNear)"><g id="worldB" filter="url(#boil)"></g></g>
+              <rect id="veil" x="-200" y="-200" width="1480" height="2320" fill="#FCFBF8" opacity="0"/>
               <g id="actorScale"><g id="actorMount"></g></g>
               <g id="propLayer"></g>
+              <g id="mist" filter="url(#wisp)"></g>
             </g>
           </svg>
         </div>
@@ -86,6 +100,9 @@
       var worldB = document.getElementById("worldB");
       var propLayer = document.getElementById("propLayer");
       var camera = document.getElementById("camera");
+      var veil = document.getElementById("veil");
+      var mistG = document.getElementById("mist");
+      var hazeBlur = document.getElementById("hazeBlur");
 
       function node(tag, a, parent) {
         var n = document.createElementNS(NS, tag);
@@ -193,18 +210,34 @@
       var swRock = box(SW_X - mm(62), GROUND - mm(1120), SW_X - mm(23), GROUND - mm(1075), 3, swG);
 
       // what is on the other side of the door, seen through the opening
+      // ── what is through the door: nothing you can make out ───────────────
+      // Not hatching. A doorway you have not gone through yet is the whole
+      // point of a doorway, so what is behind it is a soft pale suggestion of a
+      // room — a window's light, something hanging, an edge — blurred past
+      // reading and never resolving. The room arrives after the cut, not here.
       var clipA = node("clipPath", { id: "openA" }, worldA);
       node("rect", { x: OPEN_X0 + 3, y: OPEN_Y0 + 3, width: OPEN_X1 - OPEN_X0 - 6, height: GROUND - OPEN_Y0 - 3 }, clipA);
-      var beyondA = node("g", { "clip-path": "url(#openA)" }, worldA);
+      var beyondA = node("g", { "clip-path": "url(#openA)", filter: "url(#hazeFar)" }, worldA);
       node("path", { d: "M " + OPEN_X0 + " " + OPEN_Y0 + " H " + OPEN_X1 + " V " + GROUND + " H " + OPEN_X0 + " Z",
                      fill: PAPER, stroke: "none" }, beyondA);
       var farY = GROUND - mm(1350);
-      for (var b = -14; b < 26; b++) {
-        var hx = OPEN_X0 + b * mm(150);
-        stroke("M " + hx + " " + (OPEN_Y0 - 20) + " L " + (hx + (farY - OPEN_Y0) + 40) + " " + (farY + 20), 2.5, DIM, beyondA);
-      }
-      stroke("M " + (OPEN_X0 + 3) + " " + farY + " L " + (OPEN_X1 - 3) + " " + farY, 4, DIM, beyondA);
+      // a window's worth of light, off at the back
+      node("path", { d: "M " + (OPEN_X0 + mm(300)) + " " + (GROUND - mm(2000)) +
+                        " H " + (OPEN_X0 + mm(1150)) + " V " + (GROUND - mm(900)) +
+                        " H " + (OPEN_X0 + mm(300)) + " Z", fill: "#EFECE4", stroke: "none" }, beyondA);
+      stroke("M " + (OPEN_X0 + mm(700)) + " " + (GROUND - mm(2300)) + " L " + (OPEN_X0 + mm(700)) + " " + (GROUND - mm(1750)), 5, DIM, beyondA);
+      node("path", { d: "M " + (OPEN_X0 + mm(620)) + " " + (GROUND - mm(1750)) +
+                        " h " + mm(160) + " l " + mm(70) + " " + mm(200) + " h " + (-mm(300)) + " Z",
+                     fill: "#E6E2D8", stroke: "none" }, beyondA);   // a shade
+      stroke("M " + (OPEN_X0 + 6) + " " + farY + " L " + (OPEN_X1 - 6) + " " + farY, 5, DIM, beyondA);
       stroke("M " + OPEN_X0 + " " + (GROUND - mm(14)) + " L " + OPEN_X1 + " " + (GROUND - mm(14)), 4, DIM, beyondA);
+      // and mist moving in it
+      var doorMist = [];
+      for (var dm = 0; dm < 4; dm++) {
+        var my = OPEN_Y0 + mm(300) + dm * mm(430);
+        doorMist.push(stroke("M " + (OPEN_X0 - 120) + " " + my + " q " + mm(500) + " " + (-mm(70)) + " " +
+                             mm(1100) + " 0", 16, "#DAD5C8", beyondA));
+      }
 
       // ── the leaf, in one-point perspective ───────────────────────────────
       // Square on, a door swinging away is a pure horizontal squash: right, and
@@ -444,6 +477,18 @@
       to(fig.hold, { on: 0, duration: 0.40, ease: IT.ease.soft }, 7.85);
       to(door,     { a: 66, duration: 1.40, ease: IT.ease.settle }, 7.80);
 
+      // ── mist ─────────────────────────────────────────────────────────────
+      // Six wisps in front of everything, drifting the way he is walking and
+      // thinning out. They are the only thing in the piece that is not a line:
+      // pale, blurred, and gone in two seconds.
+      var wisps = [];
+      for (var wi = 0; wi < 6; wi++) {
+        var wy = 380 + wi * 210, wl = 900 + (wi % 3) * 320;
+        wisps.push(node("path", { d: "M 0 " + wy + " q " + (wl * 0.5) + " " + (wi % 2 ? -46 : 40) + " " + wl + " 0",
+                                  fill: "none", stroke: "#D8D3C6", "stroke-width": 26 + (wi % 3) * 12,
+                                  "stroke-linecap": "round", opacity: 0 }, mistG));
+      }
+
       // ── the cut ──────────────────────────────────────────────────────────
       // On the action, mid-stride. The camera also gives a little ground, which
       // is what says a camera moved rather than the world having jumped.
@@ -451,6 +496,30 @@
       set(worldB, { opacity: 1 }, CUT);
       set(inRoom, { v: 1 }, CUT);
       tl.set(camera, { transform: "translate(" + CX + "," + GROUND + ") scale(0.93) translate(" + (-CX) + "," + (-GROUND) + ")" }, CUT);
+
+      // ── and the room comes out of it ─────────────────────────────────────
+      // He is the only thing in focus at the cut: the veil and the blur are on
+      // the world, under the actor, so the man is sharp and the place he has
+      // walked into has not decided what it is yet. It takes about as long as
+      // his eyes would.
+      var haze = { r: 15 };
+      gsap.set(veil, { opacity: 0 });
+      tl.set(veil, { opacity: 0.92 }, CUT);
+      tl.to(veil, { opacity: 0, duration: 1.70, ease: "power2.out" }, CUT + 0.05);
+      tl.set(haze, { r: 15, onComplete: function () { hazeBlur.setAttribute("stdDeviation", 15); } }, CUT);
+      tl.to(haze, { r: 0, duration: 1.90, ease: "power2.out",
+                    onUpdate: function () { hazeBlur.setAttribute("stdDeviation", haze.r.toFixed(2)); } }, CUT + 0.05);
+      wisps.forEach(function (w, i) {
+        gsap.set(w, { x: -420 - i * 140, opacity: 0 });
+        tl.to(w, { opacity: 0.85 - i * 0.06, duration: 0.30 }, CUT + i * 0.05);
+        tl.to(w, { x: 620 + i * 90, duration: 2.60 + i * 0.25, ease: "none" }, CUT);
+        tl.to(w, { opacity: 0, duration: 1.30, ease: "power1.in" }, CUT + 0.75 + i * 0.12);
+      });
+      // the mist beyond the door drifts the whole time it is visible
+      doorMist.forEach(function (m, i) {
+        gsap.set(m, { x: -60 - i * 40, opacity: 0.9 });
+        tl.to(m, { x: 90 + i * 50, duration: 7.4, ease: "sine.inOut" }, 2.2);
+      });
 
       // ── he puts the toolbox on the bench ─────────────────────────────────
       set(placed, { on: 1 }, 12.35);            // the near hand starts aiming at the bench

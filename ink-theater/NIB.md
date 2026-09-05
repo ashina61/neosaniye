@@ -51,11 +51,59 @@ each other almost exactly and read as one thick arm with two hands on the end of
 it. Every 2D animator offsets the far limbs backwards a little for exactly this
 reason.
 
-**The face** is two ink eyes and a nose, all on the **+x side** of the head, plus
-a two-stroke cowlick at the back. This is not decoration. A symmetrical figure
-has no facing, so a turn — flipping him to walk back — is invisible without it.
-White-dot eyes are in the style playbook and are wrong here: on an unfilled head
-on white paper they disappear.
+---
+
+## The costume
+
+**He is a fitter.** That is not a costume idea, it is what the channel does: it
+opens things up and looks inside them, and the toolbox has been in his hand
+since the first shot.
+
+A recurring character has to be recognisable as a **silhouette**, at thumbnail
+size, in one frame. A plain figure is not — it is every figure. So:
+
+| | what it is | why |
+|---|---|---|
+| **flat cap** | a low paper crown with a **solid ink peak** | the silhouette, and the peak says which way he is looking from across the room, which two 6px eyes do not |
+| **boiler suit** | collar, placket, two buttons, chest pocket, belt with a buckle | one garment, five strokes, and the torso stops being a shape and becomes clothing |
+| **rolled sleeves** | a cuff stroke across each forearm | says "working" in one line per arm |
+| **turned-up trousers** | a stroke across each shin above the boot | same, and it separates the leg from the boot |
+| **boots** | blunter than a shoe, with a sole line | he stands on floors for a living |
+| **pencil behind the ear** | a short solid taper under the cap's back edge | it is his name |
+
+**No colour.** The palette carries meaning — orange is flow, red is the problem,
+blue is the resolution — and a character wearing one of those would be lying.
+He is ink on paper like everything else, and his identity is shape.
+
+**The face** is two ink eyes, a brow and a nose, all on the **+x side** of the
+head, sitting **under the brim** — which is where a face goes when a man is
+wearing a cap. This is not decoration. A symmetrical figure has no facing, so a
+turn — flipping him to walk back — is invisible without it. White-dot eyes are
+in the style playbook and are wrong here: on an unfilled head on white paper
+they disappear.
+
+`fig.face.brow` is the one thing on him that moves. Flat at 0, tilts a few
+units. No mouth. A brow that is usually flat is not mugging; it is the
+difference between deadpan and blank.
+
+### Four ways the cap came out wrong
+
+Every one of these rendered before it was right, and they are all the same
+mistake — trying to describe a shape as a formula:
+
+1. **Arc, then peak, then close.** The closing segment runs from the peak tip
+   back to the arc's start: a straight line across his eyes.
+2. **`a1 = (2 - sit)π`.** The mirror of `1.10π` over the top is `1.90π`, which
+   is `(3 - sit)π`. `(2 - sit)π` is `0.90π` — a sliver on the wrong side of the
+   head, and the whole cap collapses into a flat lens.
+3. **Closing back along the head at its own radius.** A thin crescent. Reads as
+   a hairband.
+4. **One path out along the peak and back.** Catmull-Rom through a direction
+   reversal loops, so the peak comes out as a thin hook.
+
+It is **two convex shapes**: a low dome, and a separate blunt peak off the front
+of the band, drawn first so the dome's edge covers its root. Two convex blobs
+cannot self-intersect. When a shape is fighting you, state the shape.
 
 **Scale on the page.** Whatever `SCALE` the composition puts him at, everything
 else in the scene follows from it:
@@ -209,6 +257,35 @@ Every one of these cost a render to find. None of them is visible in a still.
    worst defects so far were all invisible in stills.
 
 ---
+
+## Mist, and revealing a place
+
+A door you have not walked through yet is the whole point of a door. So what is
+behind it is **not drawn**: a soft pale suggestion — a window's worth of light,
+something hanging, an edge — under a constant `feGaussianBlur`, blurred past
+reading, and it never resolves. Then the cut, and the new room comes out of the
+haze around him.
+
+Three layers, and the order matters:
+
+```
+<g id="worldA" filter="url(#boil)"/>                     the place he is leaving
+<g filter="url(#hazeNear)"><g id="worldB" filter="url(#boil)"/></g>
+<rect id="veil" fill="paper" opacity="0"/>               over the world
+<g id="actorScale">…</g>                                 HE IS ALWAYS SHARP
+<g id="mist" filter="url(#wisp)"/>                       a few wisps in front
+```
+
+- The veil and the blur are **under the actor**, so the man is in focus and the
+  place he has walked into has not decided what it is yet. That is the shot.
+- Blur is animated by writing `stdDeviation` from a tween's `onUpdate` — a
+  proxy number, so it stays deterministic and seek-safe.
+- The veil goes 0.92 → 0 over about 1.7s and the blur 15 → 0 over 1.9s, both
+  `power2.out`. It takes about as long as his eyes would.
+- The wisps are the only things in the piece that are not a line: pale, wide,
+  blurred, drifting the way he is walking, and gone in two seconds.
+- Keep the boil filter on the world underneath the haze wrapper. Replacing it
+  loses the hand-drawn wobble on the whole room.
 
 ## Cutting
 
