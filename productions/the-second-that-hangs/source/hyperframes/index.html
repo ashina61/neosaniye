@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!--
+      THE SECOND THAT HANGS — chronostasis, and the forty thousand small
+      blindnesses a day that cause it.
+
+      DESIGN READ: the drawing keeps disappearing, and the man in it never
+      notices. The page itself is the subject. Video four's read was a doodle
+      losing an errand to a doorway; this one is not about anything the
+      character does, it is about what is missing from the frame.
+
+      SIGNATURE DEVICE: the blank. Every time his gaze jumps, the entire
+      drawing is not there for two frames. Sixty milliseconds of nothing, eight
+      times in the film, and the sound goes with it — the clock's tick is
+      driven by the same function as its hand, so when the picture stops the
+      tick stops too. The device IS the idea; there is nothing to explain.
+
+      LAYOUT SET: a cut on every look. Two setups — the room, and the clock
+      face — and the film alternates between them. Video four was one
+      continuous shot with no cut anywhere in it; this is the opposite.
+
+      MOTION CHARACTER: stillness. He stands, he turns his back, he turns
+      round. The only things that move in this film are a second hand and the
+      cuts. One walk, four seconds, at the end.
+
+      ONE CLOCK. drawClock() draws it, and both setups call it — so the clock
+      in the close-up is provably the same object as the clock on the wall,
+      down to the number of minute marks.
+
+      SCALE. Everything is a real measurement. He is 534 units crown to sole
+      and a person is 1750mm, so the page is 0.595 px/mm: a 300mm wall clock,
+      its centre 1900mm off the floor, a 450 seat, a 100 skirting.
+    -->
+    <script src="gsap.min.js"></script>
+    <script src="ink-theater.js"></script>
+    <script src="ink-puppet.js"></script>
+    <script src="ink-figure.js"></script>
+    <script src="clips.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      @font-face { font-family: "InkHand"; src: url("assets/patrickhand.ttf") format("truetype"); font-display: block; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #FCFBF8; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+      .stage { position: absolute; inset: 0; background: #FCFBF8; }
+      .stage svg { position: absolute; inset: 0; display: block; width: 1080px; height: 1920px; }
+      #overlay { position: absolute; inset: 0; }
+      .cap { position: absolute; left: 60px; width: 960px; top: 1660px; text-align: center;
+             font-family: "InkHand", cursive; font-size: 60px; line-height: 1.18; color: #333333; opacity: 0; }
+      .cap b { font-weight: normal; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="48.60"
+         data-width="1080" data-height="1920" data-fps="30">
+      <section id="scene" class="clip" data-start="0" data-duration="48.60">
+        <div class="stage">
+          <svg viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="boil" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence id="boilTurb" type="fractalNoise" baseFrequency="0.012" numOctaves="1" seed="1" result="n"/>
+                <feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/>
+              </filter>
+              <!-- the smear: what you would see if the picture were NOT cut -->
+              <filter id="smear" x="-40%" y="-40%" width="180%" height="180%">
+                <feGaussianBlur stdDeviation="26 1"/>
+              </filter>
+            </defs>
+            <!-- #blank wraps everything: setting its opacity to 0 empties the
+                 page, which is the whole film -->
+            <g id="blank">
+              <g id="camera">
+                <g id="wide" filter="url(#boil)"></g>
+                <g id="actorScale"><g id="actorFace"><g id="actorMount"></g></g></g>
+                <g id="close" filter="url(#boil)"></g>
+                <g id="smearG" filter="url(#smear)" opacity="0"></g>
+              </g>
+            </g>
+          </svg>
+          <div id="overlay"></div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      var IT = window.InkTheater, IP = window.InkPuppet, IF = window.InkFigure;
+      var tl = gsap.timeline({ paused: true });
+      var NS = "http://www.w3.org/2000/svg";
+      if (document.fonts && document.fonts.load) { document.fonts.load("60px InkHand"); }
+
+      var INK = IF.ADEM.ink, PAPER = IF.ADEM.paper, DIM = "#8A857A";
+      // Orange is the invented time and nothing else. Blue appears once, at the
+      // end, as the honest measure against it. No red in this film.
+      var MADE_UP = "#D4611B", TRUE_TIME = "#2E6E9E";
+      var CX = 540, GROUND = 1600, SCALE = 1.95;
+      var MM = (SCALE * 534) / 1750;
+      function mm(v) { return v * MM; }
+
+      var wide = document.getElementById("wide");
+      var close = document.getElementById("close");
+      var smearG = document.getElementById("smearG");
+      var blank = document.getElementById("blank");
+      var camera = document.getElementById("camera");
+      var overlay = document.getElementById("overlay");
+
+      function node(tag, a, parent) {
+        var n = document.createElementNS(NS, tag);
+        for (var k in a) n.setAttribute(k, a[k]);
+        (parent || wide).appendChild(n); return n;
+      }
+      function stroke(d, sw, color, parent) {
+        return node("path", { d: d, fill: "none", stroke: color || INK, "stroke-width": sw || 5,
+                              "stroke-linecap": "round", "stroke-linejoin": "round" }, parent);
+      }
+      var seed = 20260907;
+      function rnd() { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296 - 0.5; }
+      function seg(a, b, amp, step) {
+        var n = Math.max(1, Math.round(Math.hypot(b[0] - a[0], b[1] - a[1]) / (step || 90))), out = [], i;
+        for (i = 0; i <= n; i++) {
+          var t = i / n, e = (i === 0 || i === n) ? 0 : 1;
+          out.push([a[0] + (b[0] - a[0]) * t + rnd() * amp * 2 * e,
+                    a[1] + (b[1] - a[1]) * t + rnd() * amp * 2 * e]);
+        }
+        return out;
+      }
+      function dd(pts, close_) {
+        var s = "", i;
+        for (i = 0; i < pts.length; i++) s += (i ? "L" : "M") + pts[i][0].toFixed(1) + " " + pts[i][1].toFixed(1) + " ";
+        return s + (close_ ? "Z" : "");
+      }
+      function box(x0, y0, x1, y1, sw, parent, fill) {
+        return node("path", { d: dd(seg([x0, y0], [x1, y0], 1.4).concat(seg([x1, y0], [x1, y1], 1.4),
+                                    seg([x1, y1], [x0, y1], 1.4), seg([x0, y1], [x0, y0], 1.4)), true),
+                              fill: fill || "none", stroke: INK, "stroke-width": sw || 5,
+                              "stroke-linejoin": "round" }, parent);
+      }
+      function ring(cx, cy, r, sw, color, parent, fill) {
+        var pts = [], i;
+        for (i = 0; i <= 40; i++) {
+          var a = i / 40 * Math.PI * 2, rr = r + rnd() * (r > 200 ? 2.4 : 1.2);
+          pts.push([cx + Math.cos(a) * rr, cy + Math.sin(a) * rr]);
+        }
+        return node("path", { d: IF.smooth(pts, true), fill: fill || "none", stroke: color || INK,
+                              "stroke-width": sw || 5 }, parent);
+      }
+      function drawOn(el, t, dur, ease) {
+        var L = el.getTotalLength();
+        el.style.strokeDasharray = L; el.style.strokeDashoffset = L;
+        tl.to(el, { strokeDashoffset: 0, duration: dur, ease: ease || "none" }, t);
+        tl.set(el, { strokeDasharray: "none" }, t + dur);
+      }
+      function polar(cx, cy, r, deg) {
+        var a = (deg - 90) * Math.PI / 180;
+        return [cx + Math.cos(a) * r, cy + Math.sin(a) * r];
+      }
+
+      // ── ONE clock, drawn twice ───────────────────────────────────────────
+      // A 300mm wall clock. Both setups call this, so the face in the close-up
+      // is provably the same object as the one on the wall — same twelve hour
+      // marks, same sixty minute marks, same hands.
+      function drawClock(parent, cx, cy, R) {
+        var c = {};
+        c.g = node("g", {}, parent);
+        c.case_ = ring(cx, cy, R, R > 200 ? 7 : 5, INK, c.g, PAPER);
+        c.bezel = ring(cx, cy, R * 0.90, R > 200 ? 4 : 3, INK, c.g);
+        var marks = "", i, p0, p1;
+        for (i = 0; i < 60; i++) {
+          var big = i % 5 === 0;
+          p0 = polar(cx, cy, R * (big ? 0.68 : 0.78), i * 6);
+          p1 = polar(cx, cy, R * 0.83, i * 6);
+          if (big || R > 200) marks += "M" + p0[0].toFixed(1) + " " + p0[1].toFixed(1) +
+                                       " L" + p1[0].toFixed(1) + " " + p1[1].toFixed(1) + " ";
+        }
+        c.marks = stroke(marks, R > 200 ? 4 : 3, INK, c.g);
+        c.hours = stroke(marks.split("M").filter(function (_, k) { return k % 5 === 1; }).map(function (s) { return "M" + s; }).join(""),
+                         R > 200 ? 8 : 5, INK, c.g);
+        c.hour = stroke("M" + cx + " " + cy + " L" + polar(cx, cy, R * 0.44, 302)[0].toFixed(1) +
+                        " " + polar(cx, cy, R * 0.44, 302)[1].toFixed(1), R > 200 ? 12 : 7, INK, c.g);
+        c.min = stroke("M" + cx + " " + cy + " L" + polar(cx, cy, R * 0.70, 56)[0].toFixed(1) +
+                       " " + polar(cx, cy, R * 0.70, 56)[1].toFixed(1), R > 200 ? 9 : 5, INK, c.g);
+        c.secG = node("g", {}, c.g);
+        c.sec = stroke("M" + (cx) + " " + (cy + R * 0.17) + " L" + cx + " " + (cy - R * 0.80),
+                       R > 200 ? 5 : 3, INK, c.secG);
+        c.pin = node("circle", { cx: cx, cy: cy, r: R * 0.035, fill: INK }, c.g);
+        c.cx = cx; c.cy = cy; c.R = R;
+        return c;
+      }
+
+      // ══ THE CLOCK'S OWN TIME ═════════════════════════════════════════════
+      // One function drives the hand AND the tick track in the audio, so when
+      // the picture stops the sound stops with it. It runs at one second per
+      // second, stands completely still through the hang, and whirls at the
+      // end. Everything about the second hand is derived, never tweened.
+      var T_START = 3.00;          // the clock starts running
+      var HANG0 = 8.10, HANG1 = 10.90;   // the second that does not move
+      var SPIN0 = 36.10, SPIN1 = 42.30, SPIN_RATE = 46;
+      function dialSeconds(t) {
+        if (t <= T_START) return 0;
+        if (t <= HANG0) return t - T_START;
+        var a = HANG0 - T_START;
+        if (t <= HANG1) return a;
+        if (t <= SPIN0) return a + (t - HANG1);
+        var b = a + (SPIN0 - HANG1);
+        if (t <= SPIN1) return b + (t - SPIN0) * SPIN_RATE;
+        // and back to one second per second, or the hand is still whirling on
+        // the wall behind him in the last shot
+        return b + (SPIN1 - SPIN0) * SPIN_RATE + (t - SPIN1);
+      }
+
+      // ══ SETUP A — the room ═══════════════════════════════════════════════
+      var SKIRT = mm(100), skY = GROUND - SKIRT;
+      var aGround = stroke(dd(seg([-600, GROUND], [1700, GROUND], 2.2, 110)), 5, INK, wide);
+      var aSkirt = stroke(dd(seg([-600, skY], [1700, skY], 1.4, 100)), 4, INK, wide);
+      var CLOCK_X = 812, CLOCK_Y = GROUND - mm(1900), CLOCK_R = mm(300) / 2;
+      var wallClock = drawClock(wide, CLOCK_X, CLOCK_Y, CLOCK_R);
+      // a chair, because this is a room where a man waits: 450 seat, 900 back
+      var CH_X = 168, CH_W = mm(440), CH_S = GROUND - mm(450);
+      var chairG = node("g", {}, wide);
+      var chSeat = box(CH_X, CH_S, CH_X + CH_W, CH_S + mm(40), 5, chairG, PAPER);
+      var chLegs = stroke("M" + (CH_X + mm(40)) + " " + (CH_S + mm(40)) + " L" + (CH_X + mm(40)) + " " + GROUND +
+                          " M" + (CH_X + CH_W - mm(40)) + " " + (CH_S + mm(40)) + " L" + (CH_X + CH_W - mm(40)) + " " + GROUND, 5, INK, chairG);
+      var chBack = stroke("M" + (CH_X + mm(30)) + " " + CH_S + " L" + (CH_X + mm(30)) + " " + (GROUND - mm(900)) +
+                          " M" + (CH_X + CH_W - mm(60)) + " " + CH_S + " L" + (CH_X + CH_W - mm(60)) + " " + (GROUND - mm(880)) +
+                          " M" + (CH_X + mm(20)) + " " + (GROUND - mm(880)) + " L" + (CH_X + CH_W - mm(50)) + " " + (GROUND - mm(860)), 5, INK, chairG);
+
+      // ══ SETUP B — the clock face ═════════════════════════════════════════
+      var BR = 352, BX = 540, BY = 690;
+      var bigClock = drawClock(close, BX, BY, BR);
+      gsap.set(close, { opacity: 0 });
+
+      // the gap in the tape: an arc of the minute track that is simply missing,
+      // and the orange that gets painted backwards into it
+      var GAP_FROM = -66, GAP_TO = -6;          // degrees on the dial
+      function arcPath(r, from, to, steps) {
+        var s = "", i, p;
+        for (i = 0; i <= steps; i++) {
+          p = polar(BX, BY, r, from + (to - from) * i / steps);
+          s += (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1) + " ";
+        }
+        return s;
+      }
+      var gapMask = node("path", { d: arcPath(BR * 0.755, GAP_FROM, GAP_TO, 26), fill: "none",
+                                   stroke: PAPER, "stroke-width": BR * 0.20, opacity: 0 }, close);
+      var gapEdge = stroke(arcPath(BR * 0.80, GAP_FROM, GAP_TO, 26), 5, DIM, close);
+      gsap.set(gapEdge, { opacity: 0 });
+      var fill = stroke(arcPath(BR * 0.80, GAP_TO, GAP_FROM, 26), 13, MADE_UP, close);
+      gsap.set(fill, { opacity: 0 });
+
+      // the tally: one orange tick on the rim per jump, then all of them slid
+      // together into a single wedge, with the whole dial marked in blue
+      var tallyG = node("g", {}, close), ticks = [];
+      for (var q = 0; q < 60; q++) {
+        var a0 = q * 6 - 90;
+        // ±1.8 degrees, not ±2.6: at 6 degrees apart the wider ones touch and
+        // the tally reads as one solid band instead of a count
+        ticks.push(stroke(arcPath(BR * 1.02, a0 - 1.8, a0 + 1.8, 3), 9, MADE_UP, tallyG));
+      }
+      gsap.set(ticks, { opacity: 0 });
+      var wedge = stroke(arcPath(BR * 1.02, -90, -54, 14), 13, MADE_UP, close);
+      var whole = stroke(arcPath(BR * 1.14, -90, 268, 90), 5, TRUE_TIME, close);
+      gsap.set([wedge, whole], { opacity: 0 });
+
+      // ── the figure ───────────────────────────────────────────────────────
+      var mount = document.getElementById("actorMount");
+      var pup = IP.create(mount, { cx: CX, ground: GROUND, boil: "boil", headR: IF.ADEM.headR - 2, strokeWidth: 4 });
+      var actorScale = document.getElementById("actorScale");
+      actorScale.setAttribute("transform",
+        "translate(" + CX + "," + GROUND + ") scale(" + SCALE + ") translate(" + (-CX) + "," + (-GROUND) + ")");
+      var fig = IF.attach(pup, { unit: SCALE });     // this IS Adem
+      IP.still("shuffle", 34);
+
+      // ── everything that has to agree, per frame ──────────────────────────
+      var clockT = { v: 0 };
+      function sync() {
+        var s = Math.floor(dialSeconds(clockT.v));
+        var deg = s * 6;
+        wallClock.secG.setAttribute("transform", "rotate(" + deg + " " + CLOCK_X + " " + CLOCK_Y + ")");
+        bigClock.secG.setAttribute("transform", "rotate(" + deg + " " + BX + " " + BY + ")");
+        pup.setPose(fig.pose());
+      }
+      tl.to(clockT, { v: 48.60, duration: 48.60, ease: "none", onUpdate: sync }, 0);
+
+      // ── the page draws itself ────────────────────────────────────────────
+      drawOn(aGround, 0.10, 0.50);
+      drawOn(aSkirt, 0.34, 0.42);
+      drawOn(wallClock.case_, 0.62, 0.52);
+      drawOn(wallClock.bezel, 0.94, 0.30);
+      drawOn(wallClock.marks, 1.18, 0.34);
+      drawOn(wallClock.hours, 1.34, 0.26);
+      drawOn(wallClock.hour, 1.54, 0.18);
+      drawOn(wallClock.min, 1.66, 0.18);
+      drawOn(wallClock.sec, 1.80, 0.16);
+      drawOn(chSeat, 1.10, 0.30); drawOn(chLegs, 1.30, 0.24); drawOn(chBack, 1.46, 0.30);
+      fig.pencilIn(tl, { start: 0.90, each: 0.26 });
+      fig.inkIn(tl, { at: 2.30, dur: 0.50 });
+
+      // He stands. That is the motion character of this film: the only things
+      // that move are a second hand and the cuts. Started at 0, not at 3, or
+      // he holds InkPuppet.STAND until the choreography begins — a different
+      // size and a different shape from every clip.
+      IP.choreograph(tl, pup, [{ clip: "still", dur: 48.60 }], { start: 0 });
+
+      // ── the cuts ─────────────────────────────────────────────────────────
+      // A look is a cut. He turns away and back; everything else is the camera.
+      function toClose(t) { tl.set(wide, { opacity: 0 }, t); tl.set(actorScale, { opacity: 0 }, t); tl.set(close, { opacity: 1 }, t); }
+      function toWide(t)  { tl.set(wide, { opacity: 1 }, t); tl.set(actorScale, { opacity: 1 }, t); tl.set(close, { opacity: 0 }, t); }
+      // The flip goes on its own group. Tweening scaleX on #actorScale makes
+      // gsap rewrite that element's transform — including the 1.95 scale that
+      // is sitting in it — and he comes out stretched to twice his height.
+      var actorFace = document.getElementById("actorFace");
+      function turn(t, dir) {
+        tl.to(actorFace, { scaleX: dir, duration: 0.24, ease: IT.ease.settle,
+              svgOrigin: CX + " " + GROUND }, t);
+      }
+
+      turn(5.10, -1);          // look away
+      turn(6.10, 1);           // look back
+      toClose(6.60);
+      toWide(13.10);
+      toClose(21.95);          // in time for the smear, which is the big face
+      // Back to him for the two lines that are about him, not about the clock.
+      // Without this the film sits on one dial for twenty-one seconds with only
+      // the caption changing, which is the templating trap the ledger warns
+      // about in writing.
+      toWide(30.55);
+      toClose(35.90);
+      toWide(43.20);
+
+      // ── THE BLANKS ───────────────────────────────────────────────────────
+      // Two frames each. The whole drawing is not there. The tick track in the
+      // audio is cut at exactly these times, from the same list.
+      var BLANKS = [[6.52, 0.08], [13.02, 0.08], [16.40, 0.07], [17.28, 0.07],
+                    [18.16, 0.07], [21.40, 0.30], [24.52, 0.08], [43.12, 0.08]];
+      BLANKS.forEach(function (b) {
+        tl.set(blank, { opacity: 0 }, b[0]);
+        tl.set(blank, { opacity: 1 }, b[0] + b[1]);
+      });
+
+      // ── the smear: what you would see if it were NOT cut ─────────────────
+      var smearClock = drawClock(smearG, BX, BY, BR);
+      tl.set(smearG, { opacity: 0 }, 0);
+      tl.to(smearG, { opacity: 0.85, duration: 0.10 }, 22.70);
+      tl.to(smearG, { x: 240, duration: 0.40, ease: "power1.inOut" }, 22.70);
+      tl.to(smearG, { opacity: 0, duration: 0.14 }, 23.10);
+
+      // ── the hole in the tape, and the orange painted backwards into it ───
+      tl.to(gapMask, { opacity: 1, duration: 0.001 }, 25.50);
+      tl.to(gapEdge, { opacity: 1, duration: 0.30 }, 25.60);
+      tl.set(fill, { opacity: 1 }, 27.60);
+      drawOn(fill, 27.60, 1.60, "power2.out");          // painted BACKWARDS
+      tl.to(gapMask, { opacity: 0, duration: 0.40 }, 29.30);
+
+      // ── every jump, all day ──────────────────────────────────────────────
+      ticks.forEach(function (e, i) {
+        tl.to(e, { opacity: 1, duration: 0.001 }, 36.30 + i * 0.075);
+      });
+      tl.to([gapEdge, fill], { opacity: 0, duration: 0.40 }, 35.90);
+      // they collect into one wedge — a tenth of the dial — and blue measures
+      // the whole of it against them
+      tl.to(ticks, { opacity: 0, duration: 0.30 }, 40.90);
+      tl.set(wedge, { opacity: 1 }, 41.00);
+      drawOn(wedge, 41.00, 0.50, "power2.out");
+      tl.set(whole, { opacity: 1 }, 41.40);
+      drawOn(whole, 41.40, 1.30, "power1.inOut");
+
+      // The one thing on his face that moves, once, on the last line. He does
+      // not react to anything else in the film.
+      tl.to(fig.face, { brow: 5.5, duration: 0.34, ease: IT.ease.settle, onUpdate: sync }, 44.60);
+      tl.to(fig.face, { brow: 0, duration: 0.60, ease: IT.ease.soft, onUpdate: sync }, 45.30);
+
+      // ── the last blank, and it stays ─────────────────────────────────────
+      tl.set(blank, { opacity: 0 }, 46.00);
+
+      // ── captions ─────────────────────────────────────────────────────────
+      // Burned in, Patrick Hand, in the clear band under the picture. The one
+      // marked word in each line takes the colour the drawing is using on that
+      // beat — orange for invented time, blue for the real thing.
+      var CAPS = [
+        [3.20, 2.95, "Find a clock with a second hand.<br>Look away, then look back."],
+        [6.60, 1.46, "The first second is <b style='color:#D4611B'>too long</b>."],
+        [9.70, 3.00, "It just hangs there. Then it ticks on,<br>perfectly normal."],
+        [13.15, 1.72, "The clock is fine.<br>You were not there."],
+        [15.45, 3.66, "Your eyes do not glide. They jump.<br>Three, four times a second."],
+        [19.15, 2.59, "And while they are moving,<br>the picture is <b>switched off</b>."],
+        [22.00, 3.35, "You would see a smear otherwise.<br>So your brain cuts it out."],
+        [25.40, 1.68, "But now there is a <b>hole</b> in the tape."],
+        [27.45, 3.15, "So it fills the hole <b style='color:#D4611B'>backwards</b>,<br>with the first thing you land on."],
+        [30.65, 2.74, "That is your long second.<br>It is not a long second at all."],
+        [33.45, 2.30, "It is a blank, painted over<br>with the clock."],
+        [36.20, 1.51, "Every jump. All day long."],
+        [39.30, 3.05, "Something like <b style='color:#2E6E9E'>a tenth</b> of your waking<br>life happens with the lights off."],
+        [43.30, 2.18, "And the one time you catch it,<br>you blame the clock.", 47.90]
+      ];
+      CAPS.forEach(function (c, i) {
+        var d_ = document.createElement("div");
+        d_.className = "cap"; d_.innerHTML = c[2];
+        overlay.appendChild(d_);
+        var IN = c[0] - 0.10;
+        // Out before the next one is in. Held for the line's own length plus a
+        // beat, two captions end up on the page at once wherever the lines run
+        // close together — and four of them do.
+        var next = CAPS[i + 1] ? CAPS[i + 1][0] - 0.26 : 1e9;
+        var OUT = c[3] ? c[3] : Math.min(c[0] + c[1] + 0.14, next);
+        tl.to(d_, { opacity: 1, duration: 0.18 }, IN);
+        tl.to(d_, { opacity: 0, duration: 0.20 }, OUT);
+      });
+
+      sync();
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

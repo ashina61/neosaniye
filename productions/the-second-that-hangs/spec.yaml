@@ -1,0 +1,72 @@
+# Publish spec for a hand-produced short.
+#
+# Built as an atelier composition on the ink-sketch playbook, rendered by
+# HyperFrames. The character is Adem (ink-theater/ADEM.md), driven by real CMU
+# motion capture; no frame of his movement was authored. See
+# source/art-direction.md, source/scenes.md and source/artifacts/. This file
+# exists only so daily/lib/publish.py can consume the folder.
+slug: the-second-that-hangs
+title: The Second That Hangs
+duration_seconds: 48.60
+has_burned_captions: true
+produced_by: openmontage/animation (ink-sketch, hyperframes, CMU mocap, Adem)
+produced_on: "2026-09-06"
+
+copy:
+  title: "The clock isn't broken. You were."
+  hook: "Look at a clock with a second hand. The first second is too long. Every time."
+  caption: >-
+    Your eyes don't glide, they jump — three or four times a second — and the
+    picture is switched off while they move. Your brain fills the gap
+    backwards, with whatever you land on. That's the long second: a blank,
+    painted over with the clock.
+  description: |-
+    Find a clock with a second hand. Look away, then look back. The first
+    second is too long. It hangs there, and then it ticks on perfectly
+    normally.
+
+    The clock is fine. You were not there.
+
+    Your eyes do not glide across a scene. They jump, three or four times a
+    second, and while they are moving your vision is suppressed — you would see
+    a smear otherwise, so the picture is cut. That is saccadic masking.
+
+    But cutting it leaves a hole in the tape, and your brain does not tolerate
+    a hole. So it backfills it with the first thing your eyes land on, and it
+    backdates that image to when the jump began. The clock face you land on
+    gets stamped with a start time from before you actually saw it. That is
+    chronostasis, measured by Yarrow and colleagues in Nature in 2001: the
+    first interval can be stretched by up to about 120 milliseconds.
+
+    So the long second is not a long second. It is a blank, painted over with
+    the clock.
+
+    Do that three or four times a second, all day, and something like a tenth
+    of your waking life happens with the lights off — and the one time you ever
+    catch it, you blame the clock.
+
+    Every frame of this is drawn. The character is a hand-drawn ink figure
+    posed by real motion capture from the CMU database. Nothing in it was
+    generated, photographed or licensed.
+
+    Sources
+    Yarrow, Haggard, Heal, Brown & Rothwell, Illusory perceptions of space and
+    time preserve cross-saccadic perceptual continuity, Nature (2001):
+    https://www.nature.com/articles/35107599
+    Burr, Morrone & Ross, Selective suppression of the magnocellular visual
+    pathway during saccadic eye movements, Nature (1994):
+    https://www.nature.com/articles/371511a0
+    Binda & Morrone, Vision during saccadic eye movements, Annual Review of
+    Vision Science (2018):
+    https://pubmed.ncbi.nlm.nih.gov/30222534/
+
+    #Shorts
+  hashtags:
+    - brain
+    - illusion
+    - chronostasis
+    - perception
+    - neuroscience
+    - animation
+    - howitworks
+    - Shorts

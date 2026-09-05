@@ -27,6 +27,28 @@ The test at the end, from `skills/meta/bespoke-composition.md`: *could this be
 any other video's frame? does it reuse a look I have made before?* If either
 answer is yes, the art direction failed.
 
+## The rule changed on 2026-09-06
+
+The five fields above were written when every video invented its own world, and
+they are what stopped the channel making five identical videos. That phase is
+over: the channel now has **a character and a look** — Adem, Ink Theater, warm
+paper, one weight of ink line, Patrick Hand — and consistency is the point of
+them. Rotating the look now would throw away the only thing an audience can
+recognise.
+
+So, from the fifth production on:
+
+- **Fixed, on purpose:** the character, the ground, the ink, the type, the
+  engine. These are the channel. They are listed in `ink-theater/ADEM.md` and
+  `styles/ink-sketch.yaml`, not here.
+- **Still may not repeat, and the five tests still apply to them:** the
+  **design read**, the **signature device**, the **layout set**, the **motion
+  character**, and **which colour means what** (the accents are rationed and
+  re-assigned every time; the ground is not).
+
+If two productions in a row share a device or a motion character, that is still
+a re-design, exactly as before.
+
 ## What does NOT count as variation
 
 Changing only these is not a new design — it is the same video with new data:
@@ -39,6 +61,25 @@ Changing only these is not a new design — it is the same video with new data:
 
 
 ## Ledger
+
+### 2026-09-06 — the-second-that-hangs
+*"The clock isn't broken. You were."* · 48.6s · **ink-theater + Adem** / hyperframes / atelier
+
+| Field | Value |
+|---|---|
+| Design read | **The drawing keeps disappearing, and the man in it never notices.** Not about what the character does — about what is missing from the frame, which is the subject. He stands still for forty-five seconds and the film happens to him. |
+| Ground | Warm white paper `#FCFBF8`, live boil. The channel's fixed ground from here on. |
+| Palette roles | ink `#333333` = the room, the man, the clock · orange `#D4611B` = **invented time and nothing else** — the arc painted backwards into the gap, then the tally of jumps · blue `#2E6E9E` = **once**, drawn round the whole dial as the honest measure against it · **no red** |
+| Signature device | **The blank.** The entire drawing is not there for two frames, nine times — including one 300ms blank under the line *the picture is switched off*, and a last one that never comes back. The tick track is generated from the same function that turns the second hand, so the sound goes out with the picture. The device is the argument. |
+| Layout set | **Two setups, six cuts, cut on the looks.** The room and the clock face, alternating. Video four was one continuous shot with no cut anywhere in it. |
+| Motion character | **Stillness.** One `InkPuppet.still()` pose for the whole film, one turn away and back, and one eyebrow on the last line. The only things that move are a second hand and the cuts. |
+| Type | Patrick Hand, full TTF, HTML overlay divs. The channel's type. |
+| Narrative structure | observation → mechanism → scale → turn |
+| Narration | Piper `en_US-ryan-high`, 143 words over 48.6s |
+| Music | None. One synthesised tick per second of clock time, from `dialSeconds()` — silent through the 2.8s hang, cut out in every blank, fifteen a second under the tally. |
+| Captions | Burned in, Patrick Hand 60px. Three of fourteen lines mark a word, in the colour that beat is using. |
+| Providers used | none — zero API keys, zero generated images, zero stock |
+| Note | Built as an atelier composition rather than through the 11-stage pipeline; `skills/creative/ink-theater.md` declares the style pipeline-exempt. `source/artifacts/decision_log.json` says so. |
 
 ### 2026-09-05 — the-doorway-did-it
 *"Why you forget the second you walk in."* · 47.0s · **ink-theater + ink-puppet** / hyperframes / atelier

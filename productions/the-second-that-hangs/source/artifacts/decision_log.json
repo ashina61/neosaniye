@@ -1,0 +1,60 @@
+{
+  "slug": "the-second-that-hangs",
+  "built": "atelier composition on the ink-sketch playbook",
+  "decisions": [
+    {
+      "id": "d01",
+      "area": "subject",
+      "choice": "chronostasis \u2014 the stopped-clock illusion, and saccadic masking underneath it",
+      "why": "universally experienced, genuinely counterintuitive, and it can be PERFORMED by a single still figure and one prop. The ledger forbids repeating the doorway effect's read; this one is about what is absent from the frame rather than about what the character does."
+    },
+    {
+      "id": "d02",
+      "area": "signature device",
+      "choice": "the page goes blank for two frames, nine times",
+      "why": "the device IS the argument. Nothing has to be explained about it; the audience experiences the thing the narration is describing, including once under the exact line that names it."
+    },
+    {
+      "id": "d03",
+      "area": "sound",
+      "choice": "one tick per second of clock time, generated from the same function that turns the hand",
+      "why": "so the sound cannot drift from the picture. The hang and every blank are silent because dialSeconds() says so, not because they were placed by hand."
+    },
+    {
+      "id": "d04",
+      "area": "layout",
+      "choice": "two setups, six cuts, cut on the looks",
+      "why": "video four was one continuous shot and said so in writing. Also: a look IS a cut \u2014 the figure's head cannot turn, so the edit does the looking."
+    },
+    {
+      "id": "d05",
+      "area": "layout",
+      "choice": "cut back to the wide for 30.55-35.90",
+      "why": "the close-up ran 21 seconds with only the caption changing, which is the scene-level templating trap the ledger names. The two lines in that window are about him, not about the clock."
+    },
+    {
+      "id": "d06",
+      "area": "motion",
+      "choice": "stillness \u2014 one still pose for 48 seconds, one turn, one eyebrow",
+      "why": "a different motion character from video four's six travelling mocap clips, and true to the subject: nothing is moving except time and the cuts."
+    },
+    {
+      "id": "d07",
+      "area": "palette",
+      "choice": "orange = invented time, blue once = the true measure, no red",
+      "why": "different roles from video four, where orange was an object and blue was an end-state."
+    },
+    {
+      "id": "d08",
+      "area": "claims",
+      "choice": "'something like a tenth of your waking life', not a figure in minutes",
+      "why": "popular accounts quote anything from 40 minutes to 1.5 hours because the arithmetic depends on saccade rate and how suppression is counted. A tenth is defensible at 3-4 saccades/s and ~50ms each, and it is a stronger line."
+    },
+    {
+      "id": "d09",
+      "area": "process",
+      "choice": "built as an atelier composition, not through the 11-stage character-animation pipeline",
+      "why": "skills/creative/ink-theater.md declares the style pipeline-exempt. The artifacts that carry information \u2014 script, timing, this log, the render report, the source docs \u2014 are written; the schema-validated stage checkpoints are not."
+    }
+  ]
+}

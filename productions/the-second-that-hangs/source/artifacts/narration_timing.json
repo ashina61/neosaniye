@@ -1,0 +1,90 @@
+{
+  "fps": 30,
+  "duration_seconds": 48.6,
+  "lines": [
+    {
+      "id": "s01",
+      "at": 3.2,
+      "seconds": 2.949,
+      "text": "Find a clock with a second hand. Look away, then look back."
+    },
+    {
+      "id": "s02",
+      "at": 6.6,
+      "seconds": 1.463,
+      "text": "The first second is too long."
+    },
+    {
+      "id": "s03",
+      "at": 9.7,
+      "seconds": 2.995,
+      "text": "It just hangs there. Then it ticks on, perfectly normal."
+    },
+    {
+      "id": "s04",
+      "at": 13.15,
+      "seconds": 1.718,
+      "text": "The clock is fine. You were not there."
+    },
+    {
+      "id": "s05",
+      "at": 15.45,
+      "seconds": 3.657,
+      "text": "Your eyes do not glide. They jump. Three, four times a second."
+    },
+    {
+      "id": "s06",
+      "at": 19.15,
+      "seconds": 2.589,
+      "text": "And while they are moving, the picture is switched off."
+    },
+    {
+      "id": "s07",
+      "at": 22.0,
+      "seconds": 3.344,
+      "text": "You would see a smear otherwise. So your brain cuts it out."
+    },
+    {
+      "id": "s08",
+      "at": 25.4,
+      "seconds": 1.672,
+      "text": "But now there is a hole in the tape."
+    },
+    {
+      "id": "s09",
+      "at": 27.45,
+      "seconds": 3.146,
+      "text": "So it fills the hole backwards, with the first thing you land on."
+    },
+    {
+      "id": "s10",
+      "at": 30.65,
+      "seconds": 2.74,
+      "text": "That is your long second. It is not a long second at all."
+    },
+    {
+      "id": "s11",
+      "at": 33.45,
+      "seconds": 2.299,
+      "text": "It is a blank, painted over with the clock."
+    },
+    {
+      "id": "s12",
+      "at": 36.2,
+      "seconds": 1.509,
+      "text": "Every jump. All day long."
+    },
+    {
+      "id": "s13",
+      "at": 39.3,
+      "seconds": 3.042,
+      "text": "Something like a tenth of your waking life happens with the lights off."
+    },
+    {
+      "id": "s14",
+      "at": 43.3,
+      "seconds": 2.171,
+      "text": "And the one time you catch it, you blame the clock."
+    }
+  ]
+}
