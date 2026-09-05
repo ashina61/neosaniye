@@ -1,0 +1,299 @@
+{
+  "version": "1.0",
+  "source": {
+    "type": "local_file",
+    "local_path": "user-supplied screen recording of a YouTube page",
+    "title": "Two vertical shorts shown inside 'Yapay Zekay\u0131 Video Makinesine \u00c7evirdim!' by @wpmavi",
+    "duration_seconds": 71.4,
+    "resolution": "cropped from the recording to 1080x1920",
+    "platform_metadata": {
+      "uploader": "@wpmavi",
+      "description": "The recording is of a YouTube watch page, not of the shorts themselves. The player window was cropped out and upscaled, so shot boundaries and layout are reliable while fine typography is not."
+    }
+  },
+  "content_analysis": {
+    "summary": "Two vertical explainer shorts made by the same system. The first answers why a bird on a high-voltage line is not electrocuted: both feet sit at the same potential, so no current flows through it, and the danger only appears at a second contact with a different potential. The second walks through how an offshore wind farm is built and how its power reaches shore.",
+    "topics": [
+      "electricity",
+      "voltage difference",
+      "birds",
+      "offshore wind",
+      "infrastructure",
+      "how things work"
+    ],
+    "key_claims": [
+      "A bird's two feet are on the same wire, so at the same electrical potential",
+      "Current follows a difference, not a voltage on its own",
+      "A second contact at a different potential - a pole, the ground - is what makes current flow",
+      "Undersea cables carry the farm's electricity to shore"
+    ],
+    "target_audience": "General Turkish-speaking audience on Shorts; curiosity-driven, no technical background assumed",
+    "tone": "educational",
+    "hook_technique": "A calm, familiar image with an implicit question written over it - a bird sitting on a line, and the line 'why isn't it electrocuted?'",
+    "call_to_action": "None visible in the frames sampled"
+  },
+  "structure_analysis": {
+    "total_scenes": 13,
+    "pacing_profile": {
+      "avg_scene_duration_seconds": 5.5,
+      "shortest_scene_seconds": 3.0,
+      "longest_scene_seconds": 12.1,
+      "cuts_per_minute": 10.9,
+      "pacing_style": "steady_educational"
+    },
+    "scenes": [
+      {
+        "scene_index": 0,
+        "start_time": 0.0,
+        "end_time": 7.8,
+        "visual_type": "stock_footage",
+        "energy_level": "medium",
+        "description": "Birds crowded along a power line against a blue sky, shot from below. Chip top-left reads B\u0130NLERCE VOLT.",
+        "on_screen_text": "B\u0130NLERCE VOLT / 'Binlerce voltluk telde sakin bir ku\u015f. Neden \u00e7arp\u0131lm\u0131yor?'",
+        "shot_language": {
+          "shot_size": "wide",
+          "camera_movement": "static or very slow",
+          "lighting_key": "natural",
+          "depth_of_field": "deep"
+        },
+        "dominant_colors": [
+          "#4E8FC4",
+          "#0E0E10",
+          "#E8C33A"
+        ]
+      },
+      {
+        "scene_index": 1,
+        "start_time": 7.8,
+        "end_time": 11.8,
+        "visual_type": "stock_footage",
+        "energy_level": "medium",
+        "description": "A transmission pylon seen from directly beneath, geometry filling the frame. Chip reads GER\u0130L\u0130M FARKI.",
+        "on_screen_text": "GER\u0130L\u0130M FARKI / 'Elektrik gerilim fark\u0131 olan iki'"
+      },
+      {
+        "scene_index": 2,
+        "start_time": 11.8,
+        "end_time": 16.3,
+        "visual_type": "stock_footage",
+        "energy_level": "medium",
+        "description": "Close-up of a sparrow on a branch, with a small vector diagram drawn over the footage: two yellow dots joined by a line, each labelled AYNI SEV\u0130YE.",
+        "on_screen_text": "'Ku\u015fun iki aya\u011f\u0131 ayn\u0131 telde,' + AYNI SEV\u0130YE / AYNI SEV\u0130YE"
+      },
+      {
+        "scene_index": 3,
+        "start_time": 16.3,
+        "end_time": 20.8,
+        "visual_type": "stock_footage",
+        "energy_level": "medium",
+        "description": "Birds silhouetted on a wire against pale sky, with a yellow rule drawn along the wire. Chip reads AKIM TELDE KALIR.",
+        "on_screen_text": "AKIM TELDE KALIR / 'Bu y\u00fczden ak\u0131m v\u00fccudundan ge\u00e7mez.'"
+      },
+      {
+        "scene_index": 4,
+        "start_time": 20.8,
+        "end_time": 25.8,
+        "visual_type": "stock_footage",
+        "energy_level": "high",
+        "description": "A wooden pole against dramatic cloud, with a red-orange arrow drawn down the wire and a yellow dashed line. Chip is red-orange here, the only time: FARK OLU\u015eUR \u00b7 \u0130K\u0130NC\u0130 TEMAS.",
+        "on_screen_text": "FARK OLU\u015eUR \u00b7 \u0130K\u0130NC\u0130 TEMAS / 'da toprakl\u0131 dire\u011fe dokunursa fark'"
+      },
+      {
+        "scene_index": 5,
+        "start_time": 25.8,
+        "end_time": 29.8,
+        "visual_type": "text_card",
+        "energy_level": "peak",
+        "description": "The only full-graphic beat: pale cream ground, a flat silhouette of wires and a small bird, and the sentence set large in a dark pill with a yellow underline. No photography.",
+        "on_screen_text": "AKIM, FARKI TAK\u0130P EDER."
+      },
+      {
+        "scene_index": 6,
+        "start_time": 29.8,
+        "end_time": 36.8,
+        "visual_type": "stock_footage",
+        "energy_level": "medium",
+        "description": "A cormorant on a wire, sky behind. Closing beat of the first short.",
+        "on_screen_text": "'Ak\u0131m ku\u015fun i\u00e7inden ge\u00e7ebilir.'"
+      },
+      {
+        "scene_index": 7,
+        "start_time": 36.8,
+        "end_time": 42.8,
+        "visual_type": "other",
+        "energy_level": "low",
+        "description": "Recording scrolls; the second short begins. Framing changes: footage now sits inside a white rounded frame rather than full-bleed."
+      },
+      {
+        "scene_index": 8,
+        "start_time": 42.8,
+        "end_time": 46.8,
+        "visual_type": "diagram",
+        "energy_level": "medium",
+        "description": "Split composition: a drawn wind turbine above a waterline, sand-coloured seabed below, with a vertical scale down the right margin.",
+        "on_screen_text": "6 m / 90 m Y\u00dcKSEKL\u0130\u011e\u0130"
+      },
+      {
+        "scene_index": 9,
+        "start_time": 46.8,
+        "end_time": 50.3,
+        "visual_type": "stock_footage",
+        "energy_level": "medium",
+        "description": "A dock crane over water with an orange arc drawn along the lifting cable. Chip reads A\u011eIR KALDIRMA.",
+        "on_screen_text": "A\u011eIR KALDIRMA / 'kule, sonra motor b\u00f6l\u00fcm\u00fc'"
+      },
+      {
+        "scene_index": 10,
+        "start_time": 50.3,
+        "end_time": 56.3,
+        "visual_type": "stock_footage",
+        "energy_level": "medium",
+        "description": "Industrial rig at dusk with an orange cable route drawn over it. Chip reads KABLO ROTASI \u00b7 ELEKTR\u0130K AKI\u015eI.",
+        "on_screen_text": "KABLO ROTASI / ELEKTR\u0130K AKI\u015eI / 'Denizin alt\u0131ndaki kablolar elektri\u011fi'"
+      },
+      {
+        "scene_index": 11,
+        "start_time": 56.3,
+        "end_time": 68.4,
+        "visual_type": "diagram",
+        "energy_level": "medium",
+        "description": "A floating platform drawn over sea and sky, mooring lines in orange running down to the seabed. Chip reads Y\u00dcZER PLATFORM.",
+        "on_screen_text": "Y\u00dcZER PLATFORM / 'gemiyle g\u00f6t\u00fcr\u00fcl\u00fcr ve halatlarla'"
+      },
+      {
+        "scene_index": 12,
+        "start_time": 68.4,
+        "end_time": 71.4,
+        "visual_type": "other",
+        "energy_level": "low",
+        "description": "Recording ends; page furniture only."
+      }
+    ]
+  },
+  "style_profile": {
+    "color_palette": {
+      "primary_colors": [
+        "#0E0E10",
+        "#F2F2F0",
+        "#4E8FC4"
+      ],
+      "accent_colors": [
+        "#E8C33A",
+        "#E4552B"
+      ],
+      "overall_mood": "Clean, editorial, high-contrast. The photography supplies the colour; the graphics supply exactly two - a yellow for emphasis and a red-orange reserved for the moment of danger or flow."
+    },
+    "typography_observed": "A single humanist sans throughout. Captions in sentence case at medium weight; chips in small uppercase with wide letterspacing; the statement card in heavy uppercase.",
+    "transition_types": [
+      "hard cut"
+    ],
+    "music_style": "Not assessable from the recording - the phone was playing the host video's own audio over it",
+    "narration_style": {
+      "has_narration": true,
+      "speaker_count": 1,
+      "delivery_style": "Turkish, calm and even, closely matched to the caption chunks"
+    },
+    "subtitle_style": "Burned in, bottom-centre, on a dark rounded pill with generous padding. One word per chunk is set in yellow - the load-bearing word of that line, not a random highlight. Two lines maximum. Sits roughly 15% up from the bottom edge, clear of platform furniture.",
+    "production_quality": "prosumer",
+    "closest_playbook": "custom",
+    "playbook_delta": "No preset matches. It is a stock-footage bed with a persistent two-element HUD (top-left chip, bottom caption pill) plus per-scene vector annotation drawn onto the photograph."
+  },
+  "replication_guidance": {
+    "suggested_pipeline": "animated-explainer",
+    "suggested_playbook": "custom",
+    "estimated_complexity": "moderate",
+    "motion_required": true,
+    "key_elements_to_replicate": [
+      "Real photographic footage as the bed for most scenes, full-bleed vertical",
+      "A persistent HUD: a small uppercase chip top-left naming the current idea, and a caption pill bottom-centre",
+      "Exactly one accent colour for emphasis and one reserved for the turning point - and the reserved colour used once",
+      "Vector annotation drawn ON the photograph: dots, rules, arrows, dashed leaders that point at the thing being described",
+      "One full-graphic statement card at the climax, breaking from photography entirely",
+      "A cut roughly every 4 to 5 seconds",
+      "One highlighted word per caption line, chosen as the load-bearing word"
+    ],
+    "elements_requiring_custom_work": [
+      "The annotation layer - the arrows and dots are authored per shot to match what is in that particular photograph, and cannot be templated",
+      "Choosing footage where the annotation has something real to point at; a generic pretty clip defeats the whole device"
+    ],
+    "creative_differentiation_seeds": [
+      "Their chip is a rounded dark pill; ours could be a rule-and-label in the margin, or a struck ledger line - the function is 'name the current idea', the form is ours",
+      "They highlight one word in yellow; we could instead set the load-bearing word in a different weight, or let the annotation colour spill into the caption",
+      "They cut on a steady 4-5s metronome; a deliberate long hold on the climax would read as ours rather than theirs",
+      "Their statement card is cream with a flat silhouette; ours should come out of our own art direction for that piece, not theirs"
+    ],
+    "playbook_customizations": {
+      "hud": "chip + caption pill, both persistent",
+      "annotation_colour_policy": "one emphasis colour, one reserved colour used exactly once",
+      "cut_cadence_seconds": 4.5
+    }
+  },
+  "keyframes": [
+    {
+      "timestamp": 3.5,
+      "scene_index": 0,
+      "path": "keyframes/t003.5.jpg",
+      "description": "Birds on the line, chip B\u0130NLERCE VOLT"
+    },
+    {
+      "timestamp": 9.5,
+      "scene_index": 1,
+      "path": "keyframes/t009.5.jpg",
+      "description": "Pylon from below, chip GER\u0130L\u0130M FARKI"
+    },
+    {
+      "timestamp": 14.0,
+      "scene_index": 2,
+      "path": "keyframes/t014.0.jpg",
+      "description": "Sparrow with the AYNI SEV\u0130YE two-dot annotation"
+    },
+    {
+      "timestamp": 18.5,
+      "scene_index": 3,
+      "path": "keyframes/t018.5.jpg",
+      "description": "Birds silhouetted, yellow rule along the wire"
+    },
+    {
+      "timestamp": 23.0,
+      "scene_index": 4,
+      "path": "keyframes/t023.0.jpg",
+      "description": "Red arrow down the wire, red chip - the turning point"
+    },
+    {
+      "timestamp": 27.5,
+      "scene_index": 5,
+      "path": "keyframes/t027.5.jpg",
+      "description": "The statement card, AKIM FARKI TAK\u0130P EDER"
+    },
+    {
+      "timestamp": 33.0,
+      "scene_index": 6,
+      "path": "keyframes/t033.0.jpg",
+      "description": "Cormorant, closing beat"
+    },
+    {
+      "timestamp": 44.5,
+      "scene_index": 8,
+      "path": "keyframes/t044.5.jpg",
+      "description": "Second short: turbine diagram with a scale"
+    },
+    {
+      "timestamp": 48.5,
+      "scene_index": 9,
+      "path": "keyframes/t048.5.jpg",
+      "description": "Crane with an orange arc annotation"
+    },
+    {
+      "timestamp": 53.0,
+      "scene_index": 10,
+      "path": "keyframes/t053.0.jpg",
+      "description": "Rig with the cable route drawn on"
+    },
+    {
+      "timestamp": 62.0,
+      "scene_index": 11,
+      "path": "keyframes/t062.0.jpg",
+      "description": "Floating platform with mooring lines"
+    }
+  ]
+}
