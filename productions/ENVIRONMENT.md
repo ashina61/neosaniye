@@ -129,6 +129,12 @@ Three things that are not obvious and each cost a cycle:
   to miss; on a `snapshot --at` seek it is whatever the previous seek left
   behind, which is how it was finally caught. Redraw from the tweens that move
   the data, not only from a global ticker.
+- **Every clip in `mocap/clips.js` opens with the skeleton's rest pose.** The
+  converter kept the BVH's first frame, so a T-pose flashed for a single frame
+  at the start of every choreograph segment — six times in the fourth video.
+  One frame at 30fps never appears in a snapshot; it is only visible in the
+  render, or by measuring frame 0's hand span against the clip's median (it
+  stands out by 2x to 11x). `InkPuppet` now trims it on first use.
 - **`hyperframes render` can fail its own FFmpeg probe spuriously.** "FFmpeg
   cannot start / Install a working 64-bit FFmpeg build" while `ffmpeg -version`
   runs fine from the shell is a transient spawn failure. Re-run the render before

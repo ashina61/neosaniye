@@ -116,6 +116,15 @@ in `walk` is off the end of the arm in `shuffle`. `InkPuppet.STAND` itself was
 mirrored relative to every clip in the catalogue — a bug that had been sitting
 in the engine, not in the video.
 
+He is now written down. **`ink-theater/NIB.md` is the character sheet** — the
+locked proportions, how to pose him, how to scale a scene off him, and every
+trap that has cost a render. A composition attaches him with no options; passing
+options makes a different character. `ink-theater/tests/nib-door/` is the
+reference build: he walks to a door, works the lever and pushes it open, with
+every dimension on the page derived from a real millimetre figure and the leaf
+projected in one-point perspective. Nothing in it is narrated, scored or
+captioned — it exists so the next video does not have to rediscover any of it.
+
 **Worlds used so far:** Remotion atelier ×2, Manim ×1, Ink Theater ×1. Three.js,
 HyperFrames-as-a-style (kinetic typography), Mermaid and code are untouched. Ink
 Theater may be used again *because Nib lives there* — but if it is, the world has

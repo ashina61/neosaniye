@@ -77,7 +77,9 @@ asset_generation:
   diagram_style: "hand-drawn ink, single weight, wobbled centerline, no fill"
   consistency_anchors:
     - "black ink #333 on warm white #FCFBF8, one stroke weight for structure"
-    - "deadpan mascot or stick figure with white-dot eyes, never cute, never mugging"
+    - "the character is Nib and he is not redrawn per video — InkFigure.attach(pup) with no options. Proportions, palette and line weights are locked in InkFigure.NIB; the character sheet is ink-theater/NIB.md"
+    - "deadpan, never cute, never mugging. Ink eyes and a nose on one side of the head: white dots vanish on an unfilled head on white paper, and a symmetrical figure has no facing"
+    - "props and architecture are drawn to real dimensions, derived in millimetres off the character's height"
     - "orange is flow and only flow; red is the problem; blue is the good end-state"
     - "every stroke carries the boil filter"
     - "handwriting is Patrick Hand, embedded as a full TTF on HTML overlay divs"

@@ -29,7 +29,7 @@ Then stage as beats on one continuous white page with a camera (pan / push).
 ## Color grammar (strict)
 
 - **black** = structure & mascot · **orange** = flow / arrows ONLY · **red** = the problem / warning · **blue** = the good end-state.
-- Pure white paper, ≥35% negative space, subject ~40–60%. Deadpan mascot (white-dot eyes), never cute.
+- Pure white paper, ≥35% negative space, subject ~40–60%. Deadpan, never cute. (The playbook's "white-dot eyes" do not survive an unfilled head on white paper — Nib's eyes are ink, both on one side. See `ink-theater/NIB.md`.)
 
 ## Engine cheat-sheet (`InkTheater`)
 
@@ -39,14 +39,38 @@ Then stage as beats on one continuous white page with a camera (pan / push).
 - Machines: `parts.{crank,gauge,hopper,slot,lever,box}` — compose them.
 - Full API + determinism rules: `ink-theater/README.md`.
 
-## Characters — Ink Puppet + real mocap (never hand-tune motion)
+## Characters — Nib, the recurring one
 
-For a character that walks / dances / etc., do NOT hand-author motion (sine curves, hand-posed frames). Use the puppet + the **mocap action library**:
+> **Read `ink-theater/NIB.md` before drawing or posing a character. It is the character sheet, and it is binding.**
+
+The channel has one recurring character. He is not redrawn per video: `InkFigure.attach(pup)` with **no options** IS the character. Passing options makes a different character.
+
+```js
+var pup = InkPuppet.create(mount, { cx: CX, ground: GROUND, boil: "boil" });
+var fig = InkFigure.attach(pup);                 // Nib
+InkPuppet.still("walk", 0);                      // a standing pose that matches the clips
+InkPuppet.choreograph(tl, pup, [{clip:'walk',dur:4},{clip:'still',dur:3},{clip:'walk',dur:4}], {start:3.1});
+```
+
+**Scale everything else in the scene off him.** He is 538 units crown to sole and 1750mm tall, so `MM = SCALE*538/1750` and then every prop is drawn in real millimetres — a door is 2030x820 with its handle 1050 off the floor. Look the number up; do not eyeball it.
+
+**His hands:** `fig.carry = {on, from, dx, dy}`, tweened from the timeline. Measure a reach from `"shoulder"`, never the chest — the clips are shot from different angles and a chest-relative target that is a comfortable bent arm in `walk` is off the end of the arm in `shuffle`, where FABRIK straightens it and points. To hold something that moves on its own (a handle, a crank), use `from:"point"` with `InkFigure.toPose()` recomputed every frame.
+
+**Redraw from the tweens that move him.** A gsap timeline renders children in start-time order, so a per-frame redraw tween at position 0 runs *before* a gesture tween further along the timeline has written its values. Give every tween that moves him `onUpdate: () => pup.setPose(fig.pose())`.
+
+**Motion is never hand-authored.** Use the **mocap action library**:
 
 - `InkPuppet.create(mount,{cx,ground,boil})` → `p.drawIn(tl,{start})` (self-drawing reveal) → `InkPuppet.choreograph(tl, p, [{clip:'walk'},{clip:'dance_spin'},{clip:'wave'}], {start})`.
 - **Read `ink-theater/mocap/catalog.json` and pick moves that fit each beat — vary them, and NEVER loop one clip** (looping is what makes videos feel repetitive). 12 today (all CMU-sourced): walk, run, climb, march, shuffle, jump, kick, sit, wave, twist, dance_spin, dance_glide.
 - **Move not in the catalog?** `node ink-theater/mocap/add-motion.mjs <name> <cmu-id|url|path> <category> "<desc>"` — fetches, converts (auto-maps fair1 / CMU / Mixamo skeletons), rebundles + updates the catalog. Free CMU mocap (`una-dinosauria/cmu-mocap`) has thousands. Then copy `mocap/clips.js` into the project.
 - **Speech balloons** (characters "talking"): `InkTheater.balloon(tl, {into, overlay, at, dur, text, mouth:[x,y], center:[x,y], boil})` — HTML text so the webfont applies.
+
+## Draw it right, not just tidy
+
+The bar is "close to real". Two things carry most of it:
+
+- **Real dimensions.** Anything a person uses has a standard size. Derive it in millimetres off the character's height, in the composition, with the millimetre figure in the comment beside it.
+- **Perspective where flat elevation is ambiguous.** Seen exactly square on, a door swinging away is a pure horizontal squash — geometrically right and unreadable, because it just looks like a narrower door. Project it instead: a point `u` from the hinge sits at depth `u*sin(angle)` and scales about the vanishing point by `D/(D + u*sin(angle))`. At angle 0 the scale is 1 everywhere, so the closed state needs no fudge. The vanishing point is the camera's axis and is fixed to the PAGE, so it moves through world coordinates as the world scrolls. Worked example: `ink-theater/tests/nib-door/`.
 
 ## ⚠ Non-negotiables
 
@@ -57,4 +81,5 @@ For a character that walks / dances / etc., do NOT hand-author motion (sine curv
 
 ## Reference builds
 
+- `ink-theater/tests/nib-door/` — Nib works a lever and pushes a door open. The reference for real dimensions, perspective, and a hand that holds a moving thing.
 - `projects/ink-theater-reel/` — capabilities reel. · `projects/ink-theater-momentum/` — "Momentum" story (handwriting via HTML divs).

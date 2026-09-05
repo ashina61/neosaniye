@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!--
+      NIB OPENS A DOOR — a rig test, not a production. No narration, no music,
+      no captions, no chip. One shot, one action, drawn as correctly as I can
+      make it.
+
+      Two things are being tested:
+
+      1. Nib as a fixed character. Every proportion comes from InkFigure.NIB
+         and nothing here overrides it, so this is what he looks like in every
+         video from now on. See ink-theater/NIB.md.
+
+      2. A hand that holds onto something that is moving on its own. The door
+         handle is drawn in the world layer and swings with the door; the hand
+         is IK'd to it every frame through InkFigure.toPose(). The arm follows
+         the handle, the handle does not follow the arm.
+
+      SCALE. Everything on this page is a real measurement. Nib stands 773px
+      from sole to crown, and a person is 1750mm, so the page is 0.4417 px/mm
+      and every number below is derived from a millimetre figure in the comment
+      beside it. That is the whole point of the test: the drawing has to be
+      right, not just tidy.
+    -->
+    <script src="gsap.min.js"></script>
+    <script src="ink-theater.js"></script>
+    <script src="ink-puppet.js"></script>
+    <script src="ink-figure.js"></script>
+    <script src="clips.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #FCFBF8; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+      .stage { position: absolute; inset: 0; background: #FCFBF8; }
+      .stage svg { position: absolute; inset: 0; display: block; width: 1080px; height: 1920px; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="15.2"
+         data-width="1080" data-height="1920" data-fps="30">
+      <section id="scene-door" class="clip" data-start="0" data-duration="15.2">
+        <div class="stage">
+          <svg viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="boil" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence id="boilTurb" type="fractalNoise" baseFrequency="0.012" numOctaves="1" seed="1" result="n"/>
+                <feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/>
+              </filter>
+            </defs>
+            <g id="camera">
+              <g id="world" filter="url(#boil)"></g>
+              <g id="actorScale">
+                <g id="actorMount"></g>
+              </g>
+            </g>
+          </svg>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      var IT = window.InkTheater, IP = window.InkPuppet, IF = window.InkFigure;
+      var tl = gsap.timeline({ paused: true });
+      var SVGNS = "http://www.w3.org/2000/svg";
+
+      var INK = IF.NIB.ink, PAPER = IF.NIB.paper, DIM = "#8A857A";
+      var CX = 540, GROUND = 1600, SCALE = 1.95;
+
+      // ── the page is 0.574 px per millimetre ──────────────────────────────
+      // Everything below is a real measurement scaled by this. Nib is 1750mm
+      // and the standing pose measures 538 units from the crown of the drawn
+      // head to the sole of the drawn foot — the DRAWN height, not the joint
+      // span, which is 4% shorter and made the door 4% too small. The one
+      // number that sets the page is SCALE; the millimetres follow it.
+      var MM = (SCALE * 538) / 1750;
+      function mm(v) { return v * MM; }
+
+      // ── the door, in millimetres ─────────────────────────────────────────
+      var LEAF_W = mm(820), LEAF_H = mm(2030);        // a standard door leaf
+      var CLEAR  = mm(3);                             // the gap round the leaf
+      var CASE_W = mm(70);                            // the architrave
+      var STILE  = mm(120), RAIL_TOP = mm(120);       // the leaf's own frame
+      var RAIL_LOCK = mm(200), RAIL_BOT = mm(240);
+      var MOULD  = mm(20);                            // panel moulding inset
+      var HANDLE_H = mm(1050);                        // handle height off the floor
+      var HANDLE_E = mm(65);                          // spindle back from the edge
+      var ROSE_R = mm(52), LEVER_L = mm(120), LEVER_D = mm(28);
+      var HINGE_H = mm(100), HINGE_W = mm(32);
+      var SKIRT_H = mm(100);
+
+      // Solved, not chosen: the handle has to land where Nib's hand can
+      // comfortably reach it. His near shoulder stands at (669, 765) and his
+      // arm is 320px, so a grip 110px in front and 232px down is 0.8 of full
+      // stretch — which puts the grip at x 779, and the hinge follows from the
+      // leaf's width and where the lever sits on it.
+      var HINGE_X = 395;                              // hinge side of the opening
+      var LEAF_X0 = HINGE_X, LEAF_X1 = HINGE_X + LEAF_W;
+      var LEAF_Y0 = GROUND - LEAF_H, LEAF_Y1 = GROUND;
+      var OPEN_X0 = LEAF_X0 - CLEAR, OPEN_X1 = LEAF_X1 + CLEAR, OPEN_Y0 = LEAF_Y0 - CLEAR;
+      var ROSE_X = LEAF_X1 - HANDLE_E, ROSE_Y = GROUND - HANDLE_H;
+      var GRIP_L = LEVER_L * 0.72;                    // where a hand actually grips
+
+      var world = document.getElementById("world");
+      function node(tag, a, parent) {
+        var n = document.createElementNS(SVGNS, tag);
+        for (var k in a) n.setAttribute(k, a[k]);
+        (parent || world).appendChild(n); return n;
+      }
+      function stroke(d, sw, color, parent) {
+        return node("path", { d: d, fill: "none", stroke: color || INK, "stroke-width": sw || 6,
+                              "stroke-linecap": "round", "stroke-linejoin": "round" }, parent);
+      }
+      function box(x0, y0, x1, y1, sw, parent, fill) {
+        return node("path", { d: IT.inkPath([[x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]],
+                                            { wobble: 1.5, step: 90 }),
+                              fill: fill || "none", stroke: INK, "stroke-width": sw || 6,
+                              "stroke-linejoin": "round" }, parent);
+      }
+      function drawOn(el, t, dur, ease) {
+        var L = el.getTotalLength();
+        el.style.strokeDasharray = L; el.style.strokeDashoffset = L;
+        tl.to(el, { strokeDashoffset: 0, duration: dur, ease: ease || "none" }, t);
+        tl.set(el, { strokeDasharray: "none" }, t + dur);
+      }
+
+      // ── the wall ─────────────────────────────────────────────────────────
+      var ground = stroke(IT.inkPath([[-900, GROUND], [0, GROUND + 3], [1100, GROUND - 2], [2000, GROUND + 2]],
+                                     { wobble: 2.0, step: 90 }), 5, INK);
+      var skirtY = GROUND - SKIRT_H;
+      var skirtL = stroke(IT.inkPath([[-900, skirtY], [200, skirtY + 2], [OPEN_X0 - CASE_W, skirtY]], { wobble: 1.4, step: 80 }) +
+                          " L " + (OPEN_X0 - CASE_W) + " " + GROUND, 5, INK);
+      var skirtR = stroke("M " + (OPEN_X1 + CASE_W) + " " + GROUND + " L " + (OPEN_X1 + CASE_W) + " " + skirtY +
+                          IT.inkPath([[OPEN_X1 + CASE_W, skirtY], [1400, skirtY - 2], [2000, skirtY]], { wobble: 1.4, step: 80 }).replace(/^M[^C]*/, " L "), 5, INK);
+
+      // ── what is on the other side, seen through the opening ──────────────
+      // Behind the leaf, so it is revealed rather than drawn on. A room, not a
+      // texture: the floor carries through, the far wall's skirting sits where
+      // a wall a few metres back would put it, and the hatch is sparse and at
+      // 45 degrees. Dense near-vertical hatching reads as a curtain hung in
+      // the doorway, which is what the first pass looked like.
+      var clipG = node("clipPath", { id: "openingClip" }, world);
+      node("rect", { x: OPEN_X0 + 3, y: OPEN_Y0 + 3, width: OPEN_X1 - OPEN_X0 - 6,
+                     height: GROUND - OPEN_Y0 - 3 }, clipG);
+      var beyond = node("g", { "clip-path": "url(#openingClip)" });
+      node("path", { d: "M " + OPEN_X0 + " " + OPEN_Y0 + " H " + OPEN_X1 + " V " + GROUND + " H " + OPEN_X0 + " Z",
+                     fill: PAPER, stroke: "none" }, beyond);
+      var farY = GROUND - mm(1350);                   // the far wall's foot
+      // 45 degrees and sparse, and clipped to the opening rather than trimmed
+      // line by line — the first pass hatched a triangle, which reads as a
+      // shadow cast on the paper instead of a room behind the wall.
+      for (var b = -14; b < 26; b++) {
+        var hx0 = OPEN_X0 + b * mm(150);
+        stroke("M " + hx0 + " " + (OPEN_Y0 - 20) + " L " + (hx0 + (farY - OPEN_Y0) + 40) + " " + (farY + 20), 2.5, DIM, beyond);
+      }
+      stroke("M " + (OPEN_X0 + 3) + " " + farY + " L " + (OPEN_X1 - 3) + " " + farY, 4, DIM, beyond);
+      stroke("M " + (OPEN_X0 + 3) + " " + (farY + mm(100)) + " L " + (OPEN_X1 - 3) + " " + (farY + mm(100)), 3, DIM, beyond);
+      // the threshold, where this floor stops and that one starts
+      stroke("M " + OPEN_X0 + " " + (GROUND - mm(14)) + " L " + OPEN_X1 + " " + (GROUND - mm(14)), 4, DIM, beyond);
+      gsap.set(beyond, { opacity: 0 });
+      tl.to(beyond, { opacity: 1, duration: 0.001 }, 1.28);
+
+      // ── the leaf, in one-point perspective ───────────────────────────────
+      // Seen exactly square on, a door swinging away is a pure horizontal
+      // squash — geometrically right, and unreadable: it just looks like a
+      // narrower door. What tells you a door is open is that its far edge is
+      // FURTHER AWAY, so it shrinks toward eye level. That needs a real camera,
+      // so the leaf is projected rather than scaled:
+      //
+      //   a point u along the leaf from the hinge sits at depth u·sin(angle),
+      //   and everything at that depth is scaled about the vanishing point by
+      //   D / (D + u·sin(angle)).
+      //
+      // At angle 0 the scale is 1 everywhere and the leaf is exactly the
+      // opening, so nothing has to be fudged for the closed state. The
+      // vanishing point is the camera's axis, which is fixed to the PAGE, not
+      // to the world — so it moves through world coordinates as the world
+      // scrolls, and the open door shifts with the camera the way a real one
+      // would.
+      var EYE_H = mm(1500);                           // the camera is a person
+      var VIEW_D = mm(3200);                          // standing 3.2m back
+      var VPY = GROUND - EYE_H;
+
+      // Geometry is built ONCE, in the leaf's own coordinates — u across the
+      // leaf from the hinge, v down the page — with the hand-drawn wobble
+      // already baked in. Only the projection is redone per frame, so the
+      // wobble is the same wobble every frame instead of boiling twice.
+      var wSeed = 20260905;
+      function rnd() { wSeed = (wSeed * 1664525 + 1013904223) % 4294967296; return wSeed / 4294967296 - 0.5; }
+      function seg(a, b, amp, step) {                 // a wobbled straight line
+        var n = Math.max(1, Math.round(Math.hypot(b[0] - a[0], b[1] - a[1]) / (step || 90))), out = [], i;
+        for (i = 0; i <= n; i++) {
+          var t = i / n, e = (i === 0 || i === n) ? 0 : 1;
+          out.push([a[0] + (b[0] - a[0]) * t + rnd() * amp * 2 * e,
+                    a[1] + (b[1] - a[1]) * t + rnd() * amp * 2 * e]);
+        }
+        return out;
+      }
+      function rect(u0, v0, u1, v1, amp) {
+        return seg([u0, v0], [u1, v0], amp).concat(seg([u1, v0], [u1, v1], amp),
+               seg([u1, v1], [u0, v1], amp), seg([u0, v1], [u0, v0], amp));
+      }
+      function ring(cu, cv, r, n) {
+        var out = [], i;
+        for (i = 0; i <= n; i++) { var a = i / n * Math.PI * 2; out.push([cu + Math.cos(a) * r, cv + Math.sin(a) * r]); }
+        return out;
+      }
+
+      var leafG = node("g", {});
+      var leafParts = [];                             // { pts, el, spin }
+      function part(pts, sw, spin) {
+        var el = node("path", { d: "", fill: "none", stroke: INK, "stroke-width": sw,
+                                "stroke-linecap": "round", "stroke-linejoin": "round" }, leafG);
+        var rec = { pts: pts, el: el, spin: spin || false };
+        leafParts.push(rec); return rec;
+      }
+      var leafFill = node("path", { d: "", fill: PAPER, stroke: "none" }, leafG);
+      leafG.insertBefore(leafFill, leafG.firstChild);
+
+      var panelTopY0 = LEAF_Y0 + RAIL_TOP, panelTopY1 = ROSE_Y - RAIL_LOCK / 2;
+      var panelBotY0 = ROSE_Y + RAIL_LOCK / 2, panelBotY1 = GROUND - RAIL_BOT;
+      var leafOutline = rect(0, LEAF_Y0, LEAF_W, GROUND, 1.6);
+      var leaf   = part(leafOutline, 7);
+      var panels = [
+        part(rect(STILE, panelTopY0, LEAF_W - STILE, panelTopY1, 1.3), 5),
+        part(rect(STILE + MOULD, panelTopY0 + MOULD, LEAF_W - STILE - MOULD, panelTopY1 - MOULD, 1.0), 3),
+        part(rect(STILE, panelBotY0, LEAF_W - STILE, panelBotY1, 1.3), 5),
+        part(rect(STILE + MOULD, panelBotY0 + MOULD, LEAF_W - STILE - MOULD, panelBotY1 - MOULD, 1.0), 3)
+      ];
+      var hinges = [0.14, 0.5, 0.86].map(function (u) {
+        var hy = LEAF_Y0 + LEAF_H * u;
+        return part(rect(0, hy - HINGE_H / 2, HINGE_W, hy + HINGE_H / 2, 0.8), 4);
+      });
+      // Declared here, not next to the tweens that drive them: projectLeaf()
+      // runs from the draw-on block above, and a `var` initialiser further down
+      // the file has not run yet at that point.
+      var door  = { a: 0 };            // degrees open, about the hinge
+      var latch = { p: 0 };            // 0 = lever up, 1 = lever pressed right down
+      var LEVER_MAX = 26;              // degrees; a lever throws about this far
+
+      var ROSE_U = LEAF_W - HANDLE_E;
+      var rose    = part(ring(ROSE_U, ROSE_Y, ROSE_R, 22), 5);
+      var spindle = part(ring(ROSE_U, ROSE_Y, mm(13), 12), 4);
+      // the lever points back at the hinge, which is the way round a lever goes
+      var lever   = part([[ROSE_U, ROSE_Y], [ROSE_U - LEVER_L, ROSE_Y],
+                          [ROSE_U - LEVER_L, ROSE_Y + LEVER_D]], 9, true);
+
+      // ── the architrave, drawn last so it laps over the opening's edges ────
+      var caseG = node("g", {});
+      var caseL = box(OPEN_X0 - CASE_W, OPEN_Y0 - CASE_W, OPEN_X0, GROUND, 6, caseG);
+      var caseR = box(OPEN_X1, OPEN_Y0 - CASE_W, OPEN_X1 + CASE_W, GROUND, 6, caseG);
+      var caseT = box(OPEN_X0 - CASE_W, OPEN_Y0 - CASE_W, OPEN_X1 + CASE_W, OPEN_Y0, 6, caseG);
+
+      // ── the drawing order the page is made in ────────────────────────────
+      drawOn(ground, 0.15, 0.55);
+      drawOn(skirtL, 0.45, 0.40); drawOn(skirtR, 0.62, 0.40);
+      drawOn(caseL, 0.86, 0.34); drawOn(caseR, 1.02, 0.34); drawOn(caseT, 1.18, 0.34);
+      projectLeaf();                    // so the draw-on has real path lengths
+      drawOn(leaf.el, 1.34, 0.46);
+      panels.forEach(function (p, i) { drawOn(p.el, 1.62 + i * 0.10, 0.24); });
+      hinges.forEach(function (h, i) { drawOn(h.el, 1.90 + i * 0.06, 0.14); });
+      gsap.set([rose.el, spindle.el], { opacity: 0 });
+      tl.to([rose.el, spindle.el], { opacity: 1, duration: 0.14 }, 2.02);
+      drawOn(lever.el, 2.10, 0.16);
+
+      // ── Nib ──────────────────────────────────────────────────────────────
+      var mount = document.getElementById("actorMount");
+      var pup = IP.create(mount, { cx: CX, ground: GROUND, boil: "boil",
+                                   headR: IF.NIB.headR - 2, strokeWidth: 7 });
+      document.getElementById("actorScale").setAttribute(
+        "transform", "translate(" + CX + "," + GROUND + ") scale(" + SCALE + ") translate(" + (-CX) + "," + (-GROUND) + ")");
+      var fig = IF.attach(pup);        // no overrides: this IS the character
+
+      // A standing pose taken from the walk clip itself, so standing still does
+      // not change the figure's size or handedness the way the hand-authored
+      // STAND does. Frame 0 of the trimmed walk is the one where both feet are
+      // down together, the arms hang, and the near arm projects at close to its
+      // full length — which is what makes the reach below possible. (Trimmed:
+      // every clip ships with the skeleton's rest pose as its first frame and
+      // InkPuppet drops it, so this is the raw clip's frame 1.)
+      IP.still("walk", 0);
+
+      // ── how the door is drawn at whatever angle it is at ─────────────────
+      function spun(pt, phi) {         // a point carried round by the lever
+        var dx = pt[0] - ROSE_U, dy = pt[1] - ROSE_Y, c = Math.cos(phi), s = Math.sin(phi);
+        return [ROSE_U + dx * c - dy * s, ROSE_Y + dx * s + dy * c];
+      }
+
+      function projectLeaf() {
+        var rad = door.a * Math.PI / 180, ca = Math.cos(rad), sa = Math.sin(rad);
+        var wx = gsap.getProperty(world, "x") || 0;
+        var vpx = CX - wx;             // the camera axis, in world coordinates
+        var phi = latch.p * LEVER_MAX * Math.PI / 180;
+        function proj(u, v) {
+          var k = VIEW_D / (VIEW_D + u * sa);
+          return [vpx + (HINGE_X + u * ca - vpx) * k, VPY + (v - VPY) * k];
+        }
+        function path(pts, phiSpin) {
+          var d = "", i, q;
+          for (i = 0; i < pts.length; i++) {
+            q = phiSpin ? spun(pts[i], phi) : pts[i];
+            q = proj(q[0], q[1]);
+            d += (i ? "L" : "M") + q[0].toFixed(2) + " " + q[1].toFixed(2) + " ";
+          }
+          return d;
+        }
+        for (var i = 0; i < leafParts.length; i++) {
+          leafParts[i].el.setAttribute("d", path(leafParts[i].pts, leafParts[i].spin));
+        }
+        leafFill.setAttribute("d", path(leafOutline, false) + "Z");
+        return proj;
+      }
+
+      function syncDoor() {
+        var proj = projectLeaf();
+        if (fig.carry.on > 0.001) {
+          // where the hand has to be: along the lever, swung with the lever,
+          // carried round with the door, then moved with the world. Its screen
+          // position, back through the actor's own transforms, is the IK target.
+          var phi = latch.p * LEVER_MAX * Math.PI / 180;
+          var g = spun([ROSE_U - GRIP_L, ROSE_Y], phi);
+          var gp = proj(g[0], g[1]);
+          var wx = gsap.getProperty(world, "x") || 0;
+          var p = IF.toPose(pup, gp[0] + wx, gp[1], { scale: SCALE, aboutX: CX, aboutY: GROUND });
+          fig.carry.from = "point"; fig.carry.dx = p[0]; fig.carry.dy = p[1];
+        }
+        pup.setPose(fig.pose());
+      }
+      var SYNC = { onUpdate: syncDoor, onComplete: syncDoor };
+      function to(target, vars, at) { tl.to(target, Object.assign({}, vars, SYNC), at); }
+
+      fig.pencilIn(tl, { start: 1.30, each: 0.30 });
+      fig.inkIn(tl, { at: 2.70, dur: 0.55 });
+
+      // ── the acting ───────────────────────────────────────────────────────
+      // 104 px/s is the walk clip's own stride length over its own cycle time,
+      // at this scale.
+      // The clip is captured on the spot, so a planted foot never slides
+      // backwards in it and some foot slide is unavoidable whatever the world
+      // does; matching the stride is the least wrong speed available.
+      IP.choreograph(tl, pup, [
+        { clip: "walk",  dur: 4.00 },        // 3.10  comes down the wall
+        { clip: "still", dur: 3.10 },        // 7.10  stands and works the door
+        { clip: "walk",  dur: 4.20 },        // 10.20 goes through
+        { clip: "still", dur: 0.80 }         // 14.40
+      ], { start: 3.10 });
+
+      var tick = { v: 0 };
+      tl.to(tick, { v: 1, duration: 15.2, ease: "none", onUpdate: syncDoor }, 0);
+
+      gsap.set(world, { x: 416 });
+      to(world, { x: 0,    duration: 4.00, ease: "none" }, 3.10);
+      to(world, { x: -437, duration: 4.20, ease: "none" }, 10.20);
+
+      // reaches, takes the lever, presses it, pushes the door, lets go
+      to(fig.carry, { on: 1, duration: 0.60, ease: IT.ease.settle }, 7.25);
+      to(latch,     { p: 1, duration: 0.20, ease: "power2.in" }, 7.95);
+      to(door,      { a: 40, duration: 0.90, ease: "power2.out" }, 8.25);
+      to(latch,     { p: 0, duration: 0.20, ease: "power1.out" }, 9.15);
+      to(fig.carry, { on: 0, duration: 0.40, ease: IT.ease.soft }, 9.20);
+      // and it carries on by itself, which is what a pushed door does. It stops
+      // at 66: seen square on a door projects to cos(angle) of its width, so at
+      // 78 it is down to a fifth of itself and reads as having vanished rather
+      // than opened.
+      to(door,      { a: 66, duration: 1.55, ease: IT.ease.settle }, 9.15);
+
+      syncDoor();
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

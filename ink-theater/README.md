@@ -78,6 +78,27 @@ node mocap/add-motion.mjs backflip 05_20 dance "a backflip"   # CMU id, or a URL
 ```
 Free **CMU mocap** (`una-dinosauria/cmu-mocap`) has thousands. This is what Meta's *Animated Drawings* does, but here it stays **vector, white-ink, with a draw-on reveal** (AD is raster, humanoid-only, no reveal). Provenance (all clips CMU, free for any use): `mocap/NOTE.md` · `THIRD_PARTY_NOTICES.md`.
 
+## Nib — the recurring character
+
+`InkFigure.attach(pup)` with no options is **Nib**, the one character this
+channel repeats. His proportions, palette and line weights are `InkFigure.NIB`
+and they do not change between videos. The character sheet — what is fixed, how
+to pose him, how to scale a scene off him, and every trap that has cost a render
+— is **[`NIB.md`](NIB.md)**. Read it before drawing or posing a character.
+
+Two rig facilities he depends on:
+
+- **`InkPuppet.still(clip, frame)`** registers a one-frame clip so a character
+  can stand still mid-shot. Use it instead of `InkPuppet.STAND`, which is
+  hand-authored, a different size from the mocap, and visibly shrinks the figure
+  when you hold it between segments.
+- **Every clip ships with the skeleton's rest pose as its first frame** — arms
+  straight out — because that is the first frame of the BVH the converter read.
+  `InkPuppet` finds and drops it on first use (measured against each clip's own
+  median hand span it stands out by 2x to 11x). Before that fix, a T-pose
+  flashed for one frame at the start of every segment: invisible in a snapshot,
+  obvious in the render. **Frame indices are numbered on the trimmed clip.**
+
 ## Ink Figure — a drawn character on top of the rig (`ink-figure.js`)
 
 InkPuppet gives you motion. What it *draws* from that motion is a wireframe: six

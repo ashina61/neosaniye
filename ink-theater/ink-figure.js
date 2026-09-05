@@ -122,16 +122,40 @@
   function mixPt(a, b, t) { return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]; }
 
 
+  /* NIB — the channel's recurring character. These are not defaults in the
+     "some sensible starting numbers" sense; they are the character, and the
+     point of them is that they do not change between videos. A viewer
+     recognises a figure by its proportions long before its face. Read
+     ink-theater/NIB.md before touching any of them. */
+  var NIB = {
+    headR: 46,                    // head radius; the figure is ~5.4 heads tall
+    ink: "#333333",
+    paper: "#FCFBF8",
+    pencil: "#BDB7AA",            // the under-drawing, rubbed out after the ink
+    weights: {
+      arm0: 30, arm1: 19,         // shoulder → wrist
+      leg0: 40, leg1: 22,         // hip → ankle
+      body: 7,                    // torso, neck and head outline
+      limb: 6                     // arms, legs, feet, hands
+    },
+    torso: { hip: 1.06, chest: 0.90, shoulder: 0.86,   // × the pose's own spans
+             hipMin: 46, chestMin: 64, shoulderMin: 58 },
+    face: { eye: 6, eyeA: 8, eyeB: 27, eyeY: -10,      // both eyes on the +x side
+            noseFrom: 41, noseTo: 58, noseStroke: 6 },
+    foot: { heel: -13, ball: 6, toe: 28, w0: 17, w1: 12, plantOver: 55 },
+    hand: 12                      // the fist, a paper circle with an ink outline
+  };
+
   function attach(pup, opt) {
     opt = opt || {};
-    var INK = opt.color || "#333333";
-    var PAPER = opt.paper || "#FCFBF8";
-    var headR = opt.headR || 46;
-    var W = opt.weights || {};
-    var wArm0 = W.arm0 || 30, wArm1 = W.arm1 || 19;
-    var wLeg0 = W.leg0 || 40, wLeg1 = W.leg1 || 22;
-    var bodyStroke = W.body || 7;
-    var limbStroke = W.limb || 6;
+    var INK = opt.color || NIB.ink;
+    var PAPER = opt.paper || NIB.paper;
+    var headR = opt.headR || NIB.headR;
+    var W = opt.weights || NIB.weights;
+    var wArm0 = W.arm0 || NIB.weights.arm0, wArm1 = W.arm1 || NIB.weights.arm1;
+    var wLeg0 = W.leg0 || NIB.weights.leg0, wLeg1 = W.leg1 || NIB.weights.leg1;
+    var bodyStroke = W.body || NIB.weights.body;
+    var limbStroke = W.limb || NIB.weights.limb;
 
     // The wireframe becomes the pencil under-drawing: thin, grey, and drawn
     // first. It is the same six paths InkPuppet already poses, restyled.
@@ -190,7 +214,12 @@
        an object riding in that hand reads as swinging loose rather than carried.
 
          on   0 = pure mocap, 1 = fully posed to the target
-         from "shoulder", "chest" or "head" — what the target is measured from
+         from "shoulder", "chest", "head", or "point" — what dx,dy mean.
+              "point" is an absolute position in the figure's own coordinates,
+              which is how the hand holds onto something that is not part of
+              the figure and is moving on its own — a door handle, a crank, a
+              rung. Convert the page position with InkFigure.toPose() every
+              frame and write it into carry.dx / carry.dy.
          dx,dy  offset from it, in the figure's own units
 
        Measure from the shoulder unless you have a reason not to. The clips are
@@ -208,7 +237,7 @@
        straightens it, so the one gesture the whole piece turns on reads as a
        bar laid across the chest. */
     var carry = { on: 0, from: "shoulder", dx: 39, dy: 123 };
-    var handNow = [0, 0];
+    var handNow = [0, 0], ZERO = [0, 0];
 
     function draw(po) {
       // The body is a closed outline around the spine, with its own width at
@@ -241,7 +270,8 @@
 
       var elN = po.elL, haN = po.haL;
       if (carry.on > 0.001) {
-        var anchor = carry.from === "head" ? po.head
+        var anchor = carry.from === "point" ? ZERO
+                   : carry.from === "head" ? po.head
                    : carry.from === "shoulder" ? po.shL : po.chest;
         var ik = reachArm(po.shL, po.elL, po.haL,
                           [anchor[0] + carry.dx, anchor[1] + carry.dy]);
@@ -306,5 +336,29 @@
     };
   }
 
-  root.InkFigure = { attach: attach, taper: taper, smooth: smooth };
+  /* Page coordinates → pose coordinates. The figure normally sits inside a
+     scale group (the mocap skeleton is about 490 units tall and a portrait
+     frame wants more) and sometimes a flip group, so a point on the page — the
+     handle of a door drawn in the world layer, say — is several transforms away
+     from the numbers the pose is written in. Undo them in the order the browser
+     applied them, outermost first.
+
+       var p = InkFigure.toPose(pup, handleX + worldOffset, handleY,
+                                { scale: 1.5, aboutX: CX, aboutY: GROUND });
+       fig.carry.from = "point"; fig.carry.dx = p[0]; fig.carry.dy = p[1];
+
+     pup.originY changes every frame (it carries the clip's ground and the
+     pose's rootY), so this has to be recomputed per frame, not once. */
+  function toPose(pup, px, py, o) {
+    o = o || {};
+    var s = o.scale || 1, f = o.flipX || 1;
+    var ax = o.aboutX != null ? o.aboutX : pup.cx;
+    var ay = o.aboutY != null ? o.aboutY : pup.ground;
+    var x = ax + (px - ax) / s, y = ay + (py - ay) / s;   // undo the scale group
+    x = ax + (x - ax) / f;                                // undo the flip group
+    return [x - pup.originX, y - pup.originY];            // undo place()
+  }
+
+  root.InkFigure = { attach: attach, taper: taper, smooth: smooth,
+                     toPose: toPose, NIB: NIB };
 })(window);
