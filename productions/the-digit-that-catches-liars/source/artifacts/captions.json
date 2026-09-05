@@ -1,0 +1,425 @@
+[
+  {
+    "section": "s01",
+    "text": "Take any big pile of real numbers.",
+    "start": 0.0,
+    "end": 2.394,
+    "fromFrame": 0,
+    "toFrame": 72,
+    "durationInFrames": 72,
+    "emph": [
+      "real"
+    ],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s01",
+    "text": "Populations. Invoices. River lengths.",
+    "start": 2.394,
+    "end": 4.994,
+    "fromFrame": 72,
+    "toFrame": 150,
+    "durationInFrames": 78,
+    "emph": [],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s02",
+    "text": "Nine possible first digits.",
+    "start": 5.214,
+    "end": 6.618,
+    "fromFrame": 156,
+    "toFrame": 199,
+    "durationInFrames": 43,
+    "emph": [],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s02",
+    "text": "Each should turn up about",
+    "start": 6.618,
+    "end": 7.917,
+    "emph": [
+      "should"
+    ],
+    "emphColor": "accent",
+    "fromFrame": 199,
+    "toFrame": 238,
+    "durationInFrames": 39
+  },
+  {
+    "section": "s02",
+    "text": "eleven percent of the time.",
+    "start": 7.917,
+    "end": 9.325,
+    "emph": [],
+    "emphColor": "accent",
+    "fromFrame": 238,
+    "toFrame": 280,
+    "durationInFrames": 42
+  },
+  {
+    "section": "s03",
+    "text": "It doesn't.",
+    "start": 9.485,
+    "end": 10.199,
+    "fromFrame": 285,
+    "toFrame": 306,
+    "durationInFrames": 21,
+    "emph": [
+      "doesn't."
+    ],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s03",
+    "text": "One turns up thirty percent",
+    "start": 10.199,
+    "end": 11.866,
+    "fromFrame": 306,
+    "toFrame": 356,
+    "durationInFrames": 50,
+    "emph": [],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s03",
+    "text": "of the time.",
+    "start": 11.866,
+    "end": 12.64,
+    "fromFrame": 356,
+    "toFrame": 379,
+    "durationInFrames": 23,
+    "emph": [],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s03",
+    "text": "Nine comes up under five.",
+    "start": 12.64,
+    "end": 14.188,
+    "fromFrame": 379,
+    "toFrame": 426,
+    "durationInFrames": 47,
+    "emph": [],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s04",
+    "text": "The reason isn't statistics. It's spacing.",
+    "start": 14.528,
+    "end": 16.978,
+    "fromFrame": 436,
+    "toFrame": 509,
+    "durationInFrames": 73,
+    "emph": [
+      "spacing."
+    ],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s05",
+    "text": "Real quantities grow by multiplying.",
+    "start": 17.528,
+    "end": 19.747,
+    "fromFrame": 526,
+    "toFrame": 592,
+    "durationInFrames": 66,
+    "emph": [
+      "multiplying."
+    ],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s05",
+    "text": "So build a ruler the way",
+    "start": 19.747,
+    "end": 21.251,
+    "emph": [],
+    "emphColor": "accent",
+    "fromFrame": 592,
+    "toFrame": 638,
+    "durationInFrames": 46
+  },
+  {
+    "section": "s05",
+    "text": "multiplying works:",
+    "start": 21.251,
+    "end": 22.386,
+    "emph": [],
+    "emphColor": "accent",
+    "fromFrame": 638,
+    "toFrame": 672,
+    "durationInFrames": 34
+  },
+  {
+    "section": "s05",
+    "text": "one to two is the same move",
+    "start": 22.386,
+    "end": 24.065,
+    "fromFrame": 672,
+    "toFrame": 722,
+    "durationInFrames": 50,
+    "emph": [
+      "same"
+    ],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s05",
+    "text": "as ten to twenty.",
+    "start": 24.065,
+    "end": 25.145,
+    "fromFrame": 722,
+    "toFrame": 754,
+    "durationInFrames": 32,
+    "emph": [],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s06",
+    "text": "On that ruler the stretch labelled",
+    "start": 25.345,
+    "end": 27.271,
+    "fromFrame": 760,
+    "toFrame": 818,
+    "durationInFrames": 58,
+    "emph": [],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s06",
+    "text": "one is six times wider than",
+    "start": 27.271,
+    "end": 28.812,
+    "fromFrame": 818,
+    "toFrame": 864,
+    "durationInFrames": 46,
+    "emph": [
+      "six",
+      "times",
+      "wider"
+    ],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s06",
+    "text": "the one labelled nine.",
+    "start": 28.812,
+    "end": 30.077,
+    "fromFrame": 864,
+    "toFrame": 902,
+    "durationInFrames": 38,
+    "emph": [],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s06",
+    "text": "Drop a number anywhere;",
+    "start": 30.077,
+    "end": 31.398,
+    "fromFrame": 902,
+    "toFrame": 942,
+    "durationInFrames": 40,
+    "emph": [],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s06",
+    "text": "it lands on one far more often.",
+    "start": 31.398,
+    "end": 33.159,
+    "fromFrame": 942,
+    "toFrame": 995,
+    "durationInFrames": 53,
+    "emph": [],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s07",
+    "text": "That's the whole law.",
+    "start": 33.359,
+    "end": 34.426,
+    "fromFrame": 1001,
+    "toFrame": 1033,
+    "durationInFrames": 32,
+    "emph": [
+      "whole"
+    ],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s07",
+    "text": "And it's why auditors run it",
+    "start": 34.426,
+    "end": 35.834,
+    "fromFrame": 1033,
+    "toFrame": 1075,
+    "durationInFrames": 42,
+    "emph": [],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s07",
+    "text": "across company books.",
+    "start": 35.834,
+    "end": 36.901,
+    "fromFrame": 1075,
+    "toFrame": 1107,
+    "durationInFrames": 32,
+    "emph": [],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s08",
+    "text": "Invent figures by hand and",
+    "start": 37.061,
+    "end": 38.352,
+    "fromFrame": 1112,
+    "toFrame": 1151,
+    "durationInFrames": 39,
+    "emph": [],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s08",
+    "text": "your digits come out too even.",
+    "start": 38.352,
+    "end": 39.834,
+    "fromFrame": 1151,
+    "toFrame": 1195,
+    "durationInFrames": 44,
+    "emph": [
+      "too",
+      "even."
+    ],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s08",
+    "text": "Even is what people reach for",
+    "start": 39.834,
+    "end": 41.269,
+    "fromFrame": 1195,
+    "toFrame": 1238,
+    "durationInFrames": 43,
+    "emph": [],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s08",
+    "text": "when they want to look random.",
+    "start": 41.269,
+    "end": 42.751,
+    "fromFrame": 1238,
+    "toFrame": 1283,
+    "durationInFrames": 45,
+    "emph": [],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s09",
+    "text": "Greece reported a",
+    "start": 42.971,
+    "end": 44.131,
+    "emph": [],
+    "emphColor": "accent",
+    "fromFrame": 1289,
+    "toFrame": 1324,
+    "durationInFrames": 35
+  },
+  {
+    "section": "s09",
+    "text": "three point seven percent deficit.",
+    "start": 44.131,
+    "end": 45.87,
+    "emph": [],
+    "emphColor": "accent",
+    "fromFrame": 1324,
+    "toFrame": 1376,
+    "durationInFrames": 52
+  },
+  {
+    "section": "s09",
+    "text": "It was fifteen.",
+    "start": 45.87,
+    "end": 46.745,
+    "fromFrame": 1376,
+    "toFrame": 1402,
+    "durationInFrames": 26,
+    "emph": [
+      "fifteen."
+    ],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s10",
+    "text": "But the ruler only reads numbers",
+    "start": 47.165,
+    "end": 48.926,
+    "fromFrame": 1415,
+    "toFrame": 1468,
+    "durationInFrames": 53,
+    "emph": [],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s10",
+    "text": "that span orders of magnitude.",
+    "start": 48.926,
+    "end": 50.581,
+    "fromFrame": 1468,
+    "toFrame": 1517,
+    "durationInFrames": 49,
+    "emph": [
+      "span"
+    ],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s10",
+    "text": "Heights don't.",
+    "start": 50.581,
+    "end": 51.381,
+    "fromFrame": 1517,
+    "toFrame": 1541,
+    "durationInFrames": 24,
+    "emph": [],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s10",
+    "text": "Votes in one precinct don't.",
+    "start": 51.381,
+    "end": 52.929,
+    "fromFrame": 1541,
+    "toFrame": 1588,
+    "durationInFrames": 47,
+    "emph": [],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s10",
+    "text": "Point it at those and it isn't",
+    "start": 52.929,
+    "end": 54.584,
+    "fromFrame": 1588,
+    "toFrame": 1638,
+    "durationInFrames": 50,
+    "emph": [],
+    "emphColor": "accent"
+  },
+  {
+    "section": "s10",
+    "text": "saying anything.",
+    "start": 54.584,
+    "end": 55.491,
+    "fromFrame": 1638,
+    "toFrame": 1665,
+    "durationInFrames": 27,
+    "emph": [
+      "anything."
+    ],
+    "emphColor": "magenta"
+  }
+]

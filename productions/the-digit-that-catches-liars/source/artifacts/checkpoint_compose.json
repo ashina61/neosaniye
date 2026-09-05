@@ -1,0 +1,78 @@
+{
+  "version": "1.0",
+  "project_id": "the-digit-that-catches-liars",
+  "pipeline_type": "animated-explainer",
+  "stage": "compose",
+  "status": "completed",
+  "timestamp": "2026-09-05T08:53:12.126079+00:00",
+  "checkpoint_policy": "guided",
+  "human_approval_required": false,
+  "human_approved": false,
+  "artifacts": {
+    "render_report": {
+      "version": "1.0",
+      "outputs": [
+        {
+          "path": "productions/the-digit-that-catches-liars/the-digit-that-catches-liars_1080x1920.mp4",
+          "format": "mp4",
+          "codec": "h264",
+          "audio_codec": "aac",
+          "resolution": "1080x1920",
+          "fps": 30,
+          "duration_seconds": 56.6,
+          "file_size_bytes": 3872697,
+          "platform_target": "youtube_shorts"
+        }
+      ],
+      "warnings": [
+        "video_compose's final review reports 'Subtitles expected but not found in output and no subtitle source file exists for burn-in'. This is a false positive: the captions are burned by the Remotion layer from artifacts/captions.json, so there is no .srt for the checker to find. Verified visually on sampled frames across all thirteen shots.",
+        "transcript_comparison was skipped \u2014 no narration transcript was supplied. The narration was synthesised from the script text we wrote, so a transcript would be a round trip through a speech recogniser we do not have (whisper's models come from HuggingFace, which this environment denies)."
+      ],
+      "verification_notes": [
+        "1698 frames at 30fps, 1080x1920, h264 + aac 48kHz stereo, +faststart.",
+        "Integrated loudness -14.1 LUFS after a flat -0.6 dB trim; dynamics untouched (no compressor, no limiter).",
+        "Thirteen Manim clips padded to exact frame counts so the sum is 1698 with no drift.",
+        "Sync checked against the measured caption timings on a first full render, and four shots re-cut as a result: sc06's decade steps now land on 'as ten to twenty', sc11's figure changes on 'It was fifteen', and the sc12/sc13 boundary moved a second earlier so the magenta arrives on 'Heights don't' rather than a beat after it. Re-verified on the second render.",
+        "Magenta appears in sc13 and nowhere else, in the drawing and in exactly one caption. Verified on sampled frames.",
+        "Atelier doctrine check passed: stock_reuse_detected false, no offending imports, art direction declared.",
+        "Zero cost. No API key was used anywhere in this production."
+      ],
+      "render_grammar": "explainer-data",
+      "slideshow_risk_score": {
+        "average": 0.06,
+        "verdict": "strong"
+      },
+      "decision_log_ref": "artifacts/decision_log.json",
+      "metadata": {
+        "runtimes": "Manim CE 0.21.0 for every pixel of the picture; Remotion 4 (atelier) for the chip, the burned captions and two annotations.",
+        "narration": "Piper en_US-ryan-high, length_scale 0.98, measured 3.23 words per second.",
+        "music": "None. One locally synthesised machined tick per caliper move, sixteen in total.",
+        "deliverable": "productions/the-digit-that-catches-liars/the-digit-that-catches-liars_1080x1920.mp4",
+        "published": false
+      }
+    }
+  },
+  "style_playbook": "minimalist-diagram",
+  "review": {
+    "status": "passed",
+    "rounds": 2,
+    "findings": [
+      {
+        "severity": "critical",
+        "note": "First render: two Remotion annotations had no upper frame bound and leaked across every later shot. Both are now bounded to their own shot."
+      },
+      {
+        "severity": "critical",
+        "note": "First render: four shots were out of sync with the narration by up to 1.3s. Re-cut and re-verified."
+      },
+      {
+        "severity": "nitpick",
+        "note": "final review's subtitle warning is a false positive \u2014 captions are burned by the composition, not from an .srt."
+      }
+    ]
+  },
+  "cost_snapshot": {
+    "spent_usd": 0,
+    "estimated_total_usd": 0
+  }
+}

@@ -37,7 +37,51 @@ Changing only these is not a new design — it is the same video with new data:
 - the same "hero element repeated every beat with new text underneath"
   (this is the scene-level templating trap; see bespoke-composition.md §1.5)
 
+
 ## Ledger
+
+### 2026-09-05 — the-digit-that-catches-liars
+*"One digit shows up 30% of the time."* · 56.6s · **manim** (picture) + remotion / atelier (glass)
+
+| Field | Value |
+|---|---|
+| Design read | A machine shop for numbers. The frame is a slate bench with a measuring instrument on it, and the video is that instrument being read. |
+| Ground | Flat slate `#161A26`. No grain, no glow, no border, no texture of any kind. |
+| Palette roles | bone `#F0EAD8` = structure and all language · `#79809A` = scaffolding that is not the subject · chartreuse `#C9E265` = whatever is measurably true · magenta `#E5487B` = **used once**, in sc13, on the data the ruler cannot read. Fabricated data is hollow bone outline — empty rather than coloured, so the real/fake contrast costs no hue. |
+| Signature device | A vernier caliper: fixed full-width beam, two sliding jaws, and the reading on the instrument rather than over the measurement. It measures a digit's stretch in sc07 and the span of a dataset in sc12–13 — the power and the limit as the same gesture. |
+| Layout set | scatter of unlike magnitudes · 3×3 grid of hollow boxes · descending bar column · a bare rule on an empty frame · a segmented ruler with digits under each stretch · a chartreuse span whose labels change decade while it does not move · a caliper above the ruler · a tally growing above the ruler · nine stretches standing up into a chart · a ledger over a flat hollow tally · one typographic figure overwritten in place · a five-decade ruler with a sample cloud · the same ruler with the jaws almost shut |
+| Motion character | Mechanical stepping. Things snap between fixed positions or run at a machined constant rate; nothing eases in, nothing overshoots. **Exactly one exception** — sc09, where the ruler stands up into the chart — and it is the centrepiece because everything around it is machined. |
+| Type | Space Grotesk 500/700 for language, Space Mono 400 for every measured number. Numbers are always mono and language is never mono; the distinction is load-bearing. |
+| Narrative structure | problem_solution, ending on the limit of the solution rather than on the solution |
+| Narration | Piper `en_US-ryan-high` at length_scale 0.98, 3.23 w/s measured |
+| Music | None. Silence under the voice, and one locally synthesised machined tick per caliper move — sixteen in total, and no other sound in the video. |
+| Captions | Burned in, Space Grotesk 500 at 54px centred in the clear band under the drawing. Twelve chunks mark a load-bearing word in the accent; the last marks one word in the reserved colour, on the same beat as the only magenta in the picture. |
+| Providers used | none — zero API keys |
+
+**Burned for future videos:** the slate/bone/chartreuse instrument palette, the
+caliper, hollow-outline-as-fabricated, stepped motion with one eased exception,
+the "labels change but the bar does not move" proof, the chip-as-index-mark
+(accent bar plus letterspaced caps), Space Grotesk with Space Mono.
+
+**One honest overlap to record:** the caliper is adjacent to the engineering
+dimension line used once in *how-headphones-erase-sound*. They are drawn as
+different objects — a caliper has a beam, jaws and feet and is present as a tool;
+a dimension line is an annotation — and the overlap is part of one field out of
+five, which the rule above treats as a warning, not a re-design. The next
+production should not reach for a measuring instrument at all.
+
+**What this one proved:** the drawn world can be *split* — Manim for every pixel
+of the picture, Remotion for the chip, the captions and the annotation over it.
+That is the reference video's grammar with drawn footage underneath, and it is
+reusable as an *architecture* without reusing anything about the look. It also
+doubles the failure surface: on the first render, two Remotion annotations had no
+upper frame bound and leaked across every later shot, and four Manim shots were
+out of sync with the narration by up to 1.3 seconds. Both classes of bug are
+invisible in stills and only show up when you sample the finished file.
+
+**Worlds used so far:** Remotion atelier ×2, Manim ×1. Three-JS, Ink Theater,
+HyperFrames, Mermaid and code are untouched. The next production may not use
+Manim.
 
 ### 2026-09-04 — why-the-sea-rises-twice
 *"The Bulge Nobody Can Explain"* · 46.5s · remotion / atelier
@@ -73,9 +117,6 @@ even narration and near-silence. Photography is off the table by choice — see
 `MANIFESTO.md` — so the third has to break the groove from inside the drawing:
 a different *world* (Manim, Three.js, Ink Theater, kinetic typography), not a
 different palette. Two data points do not make a house style. Three would.
-
-**Worlds used so far:** Remotion atelier ×2. Everything else in the manifesto's
-table is untouched.
 
 ### 2026-09-03 — how-headphones-erase-sound
 *"The Deadline Inside Your Headphones"* · 41.5s · remotion / atelier

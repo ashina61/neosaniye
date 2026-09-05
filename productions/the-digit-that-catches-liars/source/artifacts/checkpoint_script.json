@@ -1,0 +1,327 @@
+{
+  "version": "1.0",
+  "project_id": "the-digit-that-catches-liars",
+  "pipeline_type": "animated-explainer",
+  "stage": "script",
+  "status": "completed",
+  "timestamp": "2026-09-05T08:44:06.986880+00:00",
+  "checkpoint_policy": "guided",
+  "human_approval_required": true,
+  "human_approved": true,
+  "artifacts": {
+    "script": {
+      "version": "1.0",
+      "title": "The Digit That Catches Liars",
+      "total_duration_seconds": 56.59,
+      "voice_performance": {
+        "performance_intent": "Someone showing you a measurement rather than telling you a fact. Level, unhurried, faintly forensic. No rising social-media inflection, no sell. The line 'It's spacing.' is the only place the voice is allowed to land hard, and it lands by stopping rather than by rising.",
+        "pacing_profile": "technical",
+        "energy_curve": "Flat and even through the first three sections. A held stop at the pivot. Then steady again \u2014 the images accelerate, the voice does not. The last section slows very slightly, because it is taking something back.",
+        "pause_policy": "Pauses are cut into the edit, not performed. Each section is synthesised separately and the silence between sections is placed at composition time, so the picture and the breath are timed together rather than the voice guessing.",
+        "sample_section_id": "s04",
+        "provider_notes": {
+          "piper": "en_US-ryan-high with length_scale 0.98, sentence_silence 0.14, measured at 3.23 words per second. Numerals are spelled out in provider_text so the voice never has to guess a reading. The word 'ruler' recurs and must stay unstressed \u2014 it is a noun in this piece, not an emphasis."
+        }
+      },
+      "sections": [
+        {
+          "id": "s01",
+          "label": "The pile",
+          "text": "Take any big pile of real numbers. Populations. Invoices. River lengths.",
+          "start_seconds": 0.0,
+          "end_seconds": 4.994,
+          "speaker_directions": "Open flat and matter-of-fact. The three examples are a list, not a build \u2014 no escalation.",
+          "delivery_cues": {
+            "pace": "measured",
+            "energy": "low, even",
+            "emphasis_words": [
+              "real"
+            ],
+            "pause_after_seconds": 0.2,
+            "delivery_note": "Do not sell the opening. The image is doing the work.",
+            "provider_text": "Take any big pile of real numbers. Populations. Invoices. River lengths."
+          },
+          "enhancement_cues": [
+            {
+              "type": "animation",
+              "description": "Manim: numbers arrive into the frame in a loose drift and settle. They are unlike each other in magnitude on purpose \u2014 four figures, seven figures, two figures. Nothing is labelled yet.",
+              "timestamp_seconds": 0.0
+            }
+          ],
+          "source_ref": "https://www.scientificamerican.com/article/what-is-benfords-law-why-this-unexpected-pattern-of-numbers-is-everywhere/"
+        },
+        {
+          "id": "s02",
+          "label": "The obvious guess",
+          "text": "Nine possible first digits. Each should turn up about eleven percent of the time.",
+          "start_seconds": 5.214,
+          "end_seconds": 9.325,
+          "speaker_directions": "Reasonable, agreeable. This is the sentence the viewer would have said themselves.",
+          "delivery_cues": {
+            "pace": "measured",
+            "energy": "low, even",
+            "emphasis_words": [
+              "should"
+            ],
+            "delivery_note": "'should' carries the whole setup. Lean on it very slightly and no more.",
+            "provider_text": "Nine possible first digits. Each should turn up about eleven percent of the time."
+          },
+          "enhancement_cues": [
+            {
+              "type": "animation",
+              "description": "Manim: the leading digit of each floating number lifts out and files into a three by three grid of nine hollow boxes, each box captioned 11.1% in the mono face. Nine equal boxes, perfectly regular.",
+              "timestamp_seconds": 4.6
+            }
+          ],
+          "source_ref": "https://mathworld.wolfram.com/BenfordsLaw.html"
+        },
+        {
+          "id": "s03",
+          "label": "It isn't eleven",
+          "text": "It doesn't. One turns up thirty percent of the time. Nine comes up under five.",
+          "start_seconds": 9.485,
+          "end_seconds": 14.188,
+          "speaker_directions": "No triumph. State the correction the way an instrument would.",
+          "delivery_cues": {
+            "pace": "measured",
+            "energy": "level",
+            "emphasis_words": [
+              "doesn't"
+            ],
+            "pause_after_seconds": 0.25,
+            "provider_text": "It doesn't. One turns up thirty percent of the time. Nine comes up under five."
+          },
+          "enhancement_cues": [
+            {
+              "type": "animation",
+              "description": "Manim: the nine equal boxes break their grid. Box 1 inflates to 30.1% and fills chartreuse; box 9 shrinks to 4.6%. The other seven redistribute to their true values. The regularity of the previous shot is destroyed in one stepped move, not eased.",
+              "timestamp_seconds": 9.0
+            }
+          ],
+          "source_ref": "https://mathworld.wolfram.com/BenfordsLaw.html"
+        },
+        {
+          "id": "s04",
+          "label": "The pivot",
+          "text": "The reason isn't statistics. It's spacing.",
+          "start_seconds": 14.528,
+          "end_seconds": 16.978,
+          "speaker_directions": "The only line allowed to land. It lands by stopping, not by rising.",
+          "delivery_cues": {
+            "pace": "slow",
+            "energy": "held",
+            "emphasis_words": [
+              "spacing"
+            ],
+            "pause_before_seconds": 0.3,
+            "pause_after_seconds": 0.5,
+            "delivery_note": "Full stop after 'spacing'. The picture goes empty here and stays empty for a beat \u2014 do not fill it.",
+            "provider_text": "The reason isn't statistics. It's spacing."
+          },
+          "enhancement_cues": [
+            {
+              "type": "animation",
+              "description": "Manim: everything clears. A single bone rule draws itself across the middle of the empty slate frame, left to right at a constant machined rate. No labels, no ticks yet.",
+              "timestamp_seconds": 13.6
+            }
+          ]
+        },
+        {
+          "id": "s05",
+          "label": "Building the ruler",
+          "text": "Real quantities grow by multiplying. So build a ruler the way multiplying works: one to two is the same move as ten to twenty.",
+          "start_seconds": 17.528,
+          "end_seconds": 25.145,
+          "speaker_directions": "Instructional and calm. This is the only section that teaches; let it breathe.",
+          "delivery_cues": {
+            "pace": "measured",
+            "energy": "level",
+            "emphasis_words": [
+              "multiplying",
+              "same"
+            ],
+            "delivery_note": "'the same move' is the load-bearing phrase of the video. Do not rush the second half of the sentence.",
+            "provider_text": "Real quantities grow by multiplying. So build a ruler the way multiplying works: one to two is the same move as ten to twenty."
+          },
+          "enhancement_cues": [
+            {
+              "type": "animation",
+              "description": "Manim: ticks snap onto the bare rule at log10 positions, one at a time, 1 through 10. Two chartreuse span bars appear beneath it \u2014 1 to 2 and 10 to 20 \u2014 and are shown to be exactly the same length. Tick positions are computed, never placed by eye.",
+              "timestamp_seconds": 16.4
+            }
+          ],
+          "source_ref": "https://assets.press.princeton.edu/chapters/s10526.pdf"
+        },
+        {
+          "id": "s06",
+          "label": "Measuring the stretches",
+          "text": "On that ruler the stretch labelled one is six times wider than the one labelled nine. Drop a number anywhere; it lands on one far more often.",
+          "start_seconds": 25.345,
+          "end_seconds": 33.159,
+          "speaker_directions": "This is a measurement being read aloud. Flat, certain, no wonder in the voice \u2014 the wonder is the viewer's job.",
+          "delivery_cues": {
+            "pace": "measured",
+            "energy": "level",
+            "emphasis_words": [
+              "six times wider"
+            ],
+            "provider_text": "On that ruler the stretch labelled one is six times wider than the one labelled nine. Drop a number anywhere; it lands on one far more often."
+          },
+          "enhancement_cues": [
+            {
+              "type": "animation",
+              "description": "Manim: the caliper enters and snaps its jaws across the stretch from 1 to 2, reporting .301 in the mono face. It steps along to 9-to-10 and reports .046. Then a marker is dropped repeatedly onto the ruler at uniform random positions and tallies where it lands; the tally builds the true distribution.",
+              "timestamp_seconds": 24.2
+            }
+          ],
+          "source_ref": "https://en.wikipedia.org/wiki/Benford%27s_law"
+        },
+        {
+          "id": "s07",
+          "label": "The chart is the ruler",
+          "text": "That's the whole law. And it's why auditors run it across company books.",
+          "start_seconds": 33.359,
+          "end_seconds": 36.901,
+          "speaker_directions": "Close the mechanism and open the stakes in one breath. No pause between the two sentences.",
+          "delivery_cues": {
+            "pace": "measured",
+            "energy": "level",
+            "emphasis_words": [
+              "whole"
+            ],
+            "provider_text": "That's the whole law. And it's why auditors run it across company books."
+          },
+          "enhancement_cues": [
+            {
+              "type": "animation",
+              "description": "Manim: the single continuous move of the entire piece. The nine stretches detach from the ruler and rotate upright into the nine bars of the Benford distribution, keeping their exact widths as heights. Nothing else in the video eases; this does.",
+              "timestamp_seconds": 32.6
+            }
+          ],
+          "source_ref": "https://onlinelibrary.wiley.com/doi/book/10.1002/9781119203094"
+        },
+        {
+          "id": "s08",
+          "label": "Too even",
+          "text": "Invent figures by hand and your digits come out too even. Even is what people reach for when they want to look random.",
+          "start_seconds": 37.061,
+          "end_seconds": 42.751,
+          "speaker_directions": "Second person, but not accusatory. A fact about people, said without judgement.",
+          "delivery_cues": {
+            "pace": "measured",
+            "energy": "level",
+            "emphasis_words": [
+              "too even"
+            ],
+            "provider_text": "Invent figures by hand and your digits come out too even. Even is what people reach for when they want to look random."
+          },
+          "enhancement_cues": [
+            {
+              "type": "animation",
+              "description": "Manim: a column of invented figures writes itself in from the top, each one's leading digit tallying into hollow bone outline bars beside it. The hollow bars come out nearly flat. The filled chartreuse Benford curve from the previous shot drops in over them and does not match.",
+              "timestamp_seconds": 36.8
+            }
+          ],
+          "source_ref": "https://onlinelibrary.wiley.com/doi/book/10.1002/9781119203094"
+        },
+        {
+          "id": "s09",
+          "label": "Greece",
+          "text": "Greece reported a three point seven percent deficit. It was fifteen.",
+          "start_seconds": 42.971,
+          "end_seconds": 46.745,
+          "speaker_directions": "Drop the register slightly. Two flat facts, the second one shorter than the listener expects.",
+          "delivery_cues": {
+            "pace": "measured",
+            "energy": "lower",
+            "emphasis_words": [
+              "fifteen"
+            ],
+            "pause_after_seconds": 0.4,
+            "provider_text": "Greece reported a three point seven percent deficit. It was fifteen."
+          },
+          "enhancement_cues": [
+            {
+              "type": "animation",
+              "description": "Manim: the figure 3.7% stands alone in the mono face and is overwritten in place, in one stepped cut, by 15.4%. No transition, no travel \u2014 the number is simply a different number.",
+              "timestamp_seconds": 44.2
+            }
+          ],
+          "source_ref": "https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1468-0475.2011.00542.x"
+        },
+        {
+          "id": "s10",
+          "label": "What it cannot read",
+          "text": "But the ruler only reads numbers that span orders of magnitude. Heights don't. Votes in one precinct don't. Point it at those and it isn't saying anything.",
+          "start_seconds": 47.165,
+          "end_seconds": 55.491,
+          "speaker_directions": "Slightly slower. This section takes something back, and it should sound like it knows that.",
+          "delivery_cues": {
+            "pace": "slow",
+            "energy": "level, settling",
+            "emphasis_words": [
+              "span",
+              "anything at all"
+            ],
+            "pause_before_seconds": 0.3,
+            "delivery_note": "The final clause is the only place magenta appears on screen. Let the voice finish a beat before the picture does.",
+            "provider_text": "But the ruler only reads numbers that span orders of magnitude. Heights don't. Votes in one precinct don't. Point it at those and it isn't saying anything."
+          },
+          "enhancement_cues": [
+            {
+              "type": "animation",
+              "description": "Manim: the caliper returns, but now it measures the span of a dataset rather than a digit. It opens wide across a set that crosses several decades of the ruler \u2014 the jaws clear the whole frame. Then it closes onto a bounded set that occupies one narrow stretch, and the jaws are almost shut. The narrow set is drawn in magenta, its only appearance in the video. Final frame: the caliper left open on the ruler, nothing moving.",
+              "timestamp_seconds": 48.8
+            }
+          ],
+          "source_ref": "https://arxiv.org/pdf/2011.13015"
+        }
+      ],
+      "metadata": {
+        "word_count": 171,
+        "target_rate_words_per_second": 3.3,
+        "timing_policy": "Every start_seconds and end_seconds above is measured, not planned: each section was synthesised separately with Piper and its real wav duration read back, then the gaps below were placed between them. The animation is cut to these numbers. The voice is never stretched to the animation.",
+        "not_said_aloud": [
+          "The word logarithm, and the formula log10(1 + 1/d). The formula appears once as a small caption on the ruler, where it labels something visible instead of standing in for an explanation.",
+          "Newcomb's worn logarithm tables. The research marks that opening as the most saturated in the corpus; it is carried by one visual aside in the ruler build rather than by a line of narration.",
+          "The name Benford, until the description. The piece is about a measurement, and a surname is not one."
+        ],
+        "claim_traceability": "Every factual sentence carries a source_ref to a research_brief data point. The two numbers spoken aloud \u2014 thirty percent and under five percent \u2014 are 30.1% and 4.6%, rounded down in speech and exact on screen.",
+        "narrative_structure": "problem_solution, with the solution arriving at s04 and the limit of the solution arriving at s10. The video ends on what the tool cannot do, which is the shape the research argued for.",
+        "measured_rate_words_per_second": 3.23,
+        "gaps_after_section_seconds": {
+          "s01": 0.22,
+          "s02": 0.16,
+          "s03": 0.34,
+          "s04": 0.55,
+          "s05": 0.2,
+          "s06": 0.2,
+          "s07": 0.16,
+          "s08": 0.22,
+          "s09": 0.42,
+          "s10": 0.0
+        },
+        "closing_tail_seconds": 1.1
+      }
+    }
+  },
+  "style_playbook": "minimalist-diagram",
+  "review": {
+    "status": "passed",
+    "rounds": 1,
+    "findings": [
+      {
+        "severity": "note",
+        "note": "Every timing in the artifact is measured from synthesised audio, not planned. 171 words at 3.23 w/s."
+      },
+      {
+        "severity": "note",
+        "note": "Every factual sentence carries a source_ref to a research_brief data point."
+      }
+    ]
+  },
+  "cost_snapshot": {
+    "spent_usd": 0,
+    "estimated_total_usd": 0
+  }
+}

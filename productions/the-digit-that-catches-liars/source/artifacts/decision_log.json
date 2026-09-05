@@ -1,0 +1,319 @@
+{
+  "version": "1.0",
+  "project_id": "the-digit-that-catches-liars",
+  "decisions": [
+    {
+      "decision_id": "d-001",
+      "stage": "proposal",
+      "category": "pipeline_selection",
+      "subject": "Pipeline for a fully generated vertical explainer short",
+      "options_considered": [
+        {
+          "option_id": "animated-explainer",
+          "label": "animated-explainer",
+          "score": 1.0,
+          "reason": "Topic-to-explainer with a research stage, an eight-stage contract and schema-validated artifacts. The subject has no source footage and no presenter."
+        },
+        {
+          "option_id": "animation",
+          "label": "animation",
+          "score": 0.5,
+          "reason": "Motion-graphics-first. Would suit the visual, but drops the research stage that the concept depends on.",
+          "rejected_because": "The whole concept came out of the research stage's landscape scan; a pipeline without one would have produced the saturated angle."
+        },
+        {
+          "option_id": "hybrid",
+          "label": "hybrid",
+          "score": 0.1,
+          "reason": "Source footage plus support visuals.",
+          "rejected_because": "There is no source footage and, under productions/MANIFESTO.md, there never will be."
+        }
+      ],
+      "selected": "animated-explainer",
+      "reason": "It is the pipeline whose first stage is research, and this concept exists only because the research found that the standard explanation and the standard visual have never been joined.",
+      "user_visible": true,
+      "user_approved": true
+    },
+    {
+      "decision_id": "d-002",
+      "stage": "proposal",
+      "category": "concept_selection",
+      "subject": "Angle and narrative structure for the Benford's Law short",
+      "options_considered": [
+        {
+          "option_id": "c-ruler",
+          "label": "The ruler where 1 is six times wider than 9",
+          "score": 0.95,
+          "reason": "Closes the identified gap by assembling the bar chart out of the ruler that causes it, in one continuous move, with no formula spoken. Also the only concept whose central image is native to the drawn world the ledger requires next."
+        },
+        {
+          "option_id": "c-forger",
+          "label": "Fake numbers are too fair",
+          "score": 0.7,
+          "reason": "The strongest hook of the four and a genuinely underserved framing.",
+          "rejected_because": "The mechanism does not fit inside the story, so the video would have to assert the uneven distribution at exactly the moment the ruler concept can demonstrate it. Its hook survives inside c-ruler's fraud beat."
+        },
+        {
+          "option_id": "c-threewindows",
+          "label": "Three datasets, one test, one result you should not trust",
+          "score": 0.6,
+          "reason": "The most publicly useful and the most defensible of the four.",
+          "rejected_because": "A correction has to assume the thing it corrects; in fifty seconds it would spend its whole budget establishing a law it never explains. Its payload was absorbed as c-ruler's closing turn."
+        },
+        {
+          "option_id": "c-dirtybook",
+          "label": "Read from the dirt on the page",
+          "score": 0.3,
+          "reason": "Charming, true, and the origin of the whole subject.",
+          "rejected_because": "The research marks it as the single most saturated opening in the corpus, and a timeline spends its running time on chronology rather than mechanism. Reduced to one aside."
+        }
+      ],
+      "selected": "c-ruler",
+      "reason": "It is the only one of the four that shows rather than states, and the only one that ends on a limit rather than a capability. The other three each contributed something: the forger's hook, the precondition turn, and one line of history.",
+      "user_visible": true,
+      "user_approved": true
+    },
+    {
+      "decision_id": "d-003",
+      "stage": "proposal",
+      "category": "renderer_family_selection",
+      "subject": "Drawn world for this production, under the manifesto's rotation rule",
+      "options_considered": [
+        {
+          "option_id": "manim",
+          "label": "Manim CE 0.21.0 (math_animate)",
+          "score": 0.95,
+          "reason": "Unused by this channel, and its native subject is exactly this video's central image: a measured geometric transformation carried out continuously in front of the viewer."
+        },
+        {
+          "option_id": "remotion-atelier",
+          "label": "Remotion atelier vector composition",
+          "score": 0.4,
+          "reason": "Proven twice here and fully understood; would certainly work.",
+          "rejected_because": "It carried both prior productions. productions/MANIFESTO.md forbids two consecutive productions sharing a world, and STYLE_LEDGER.md records the groove that rule exists to break."
+        },
+        {
+          "option_id": "threejs",
+          "label": "threejs_world",
+          "score": 0.15,
+          "reason": "Unused, and would satisfy the rotation rule.",
+          "rejected_because": "The argument is one-dimensional — a length along a ruler. Putting it in a 3D world would add dimensions the subject does not have."
+        },
+        {
+          "option_id": "hyperframes",
+          "label": "HyperFrames kinetic typography",
+          "score": 0.2,
+          "reason": "Unused, available, and strong when the words are the visual.",
+          "rejected_because": "Here the words are not the visual; a measured width is. Held for a future production where the type is the subject."
+        },
+        {
+          "option_id": "ink-theater",
+          "label": "Ink Theater / Ink Puppet",
+          "score": 0.1,
+          "reason": "Unused and would rotate the world decisively.",
+          "rejected_because": "A hand-drawn character acting out an interval width would be charming and imprecise, and this piece's entire claim is that you can check the measurement."
+        }
+      ],
+      "selected": "manim",
+      "reason": "The ledger requires a world that is not Remotion atelier, and of the four unused worlds Manim is the only one whose native object is a measured transformation. Its factory look is explicitly rejected in the art direction — the engine is used for its geometry, never for its taste.",
+      "user_visible": true,
+      "user_approved": true
+    },
+    {
+      "decision_id": "d-004",
+      "stage": "proposal",
+      "category": "render_runtime_selection",
+      "subject": "Composition runtime for the final assembly",
+      "options_considered": [
+        {
+          "option_id": "remotion",
+          "label": "Remotion (available: true)",
+          "score": 0.9,
+          "reason": "The only runtime here that can mount the Manim clips as a footage bed via OffthreadVideo and lay frame-exact burned captions, a persistent section chip and annotation callouts over them. Chromium is already symlinked into remotion-composer from the Playwright install, so the blocked remotion.media download does not apply."
+        },
+        {
+          "option_id": "hyperframes",
+          "label": "HyperFrames (available: true)",
+          "score": 0.45,
+          "reason": "Available on this machine and excellent at HTML/GSAP kinetic typography.",
+          "rejected_because": "Its strength is generating the visual, and here the visual arrives pre-rendered from Manim. It would be carrying type over video, which is the one job Remotion does better and which this repository already has a caption pipeline for."
+        },
+        {
+          "option_id": "ffmpeg",
+          "label": "FFmpeg with a burned SRT (available: true)",
+          "score": 0.25,
+          "reason": "Simplest possible path, always available, and it would concatenate the Manim clips correctly.",
+          "rejected_because": "It cannot carry the persistent section chip or the annotation layer, and an SRT burn discards the per-piece caption styling the manifesto calls for. Retained as the escalation fallback only."
+        }
+      ],
+      "selected": "remotion",
+      "reason": "All three runtimes are available on this machine and all three were evaluated. Remotion is chosen for compositing only — it supplies the glass over the Manim image, not the image. If it became unavailable at compose time that is a blocker to escalate, not a silent swap.",
+      "user_visible": true,
+      "user_approved": true
+    },
+    {
+      "decision_id": "d-005",
+      "stage": "proposal",
+      "category": "composition_mode",
+      "subject": "Authoring mode for the Remotion composition",
+      "options_considered": [
+        {
+          "option_id": "atelier",
+          "label": "Atelier — hand-authored composition",
+          "score": 1.0,
+          "reason": "Hero work for a channel whose entire stated identity is that nothing is reused. The stock scene-type catalog is off-limits and the atelier path's import scan enforces it."
+        },
+        {
+          "option_id": "templated",
+          "label": "Templated — stock cut.type scenes",
+          "score": 0.05,
+          "reason": "Fast, cheap and reliable.",
+          "rejected_because": "It is the documented reason videos look alike, and this channel exists because five of them did."
+        }
+      ],
+      "selected": "atelier",
+      "reason": "Consistent with both prior productions and with the manifesto. Costs more tokens and more iteration; that is the accepted price.",
+      "user_visible": true,
+      "user_approved": true
+    },
+    {
+      "decision_id": "d-006",
+      "stage": "proposal",
+      "category": "voice_selection",
+      "subject": "Narration TTS provider",
+      "options_considered": [
+        {
+          "option_id": "piper",
+          "label": "Piper en_US-ryan-high (local)",
+          "score": 0.7,
+          "reason": "The only TTS configured on this machine. Fluent, correctly stressed, free, offline. Measured at 3.3 words per second across the two prior productions."
+        },
+        {
+          "option_id": "cloud-tts",
+          "label": "A cloud voice (ElevenLabs or Gemini)",
+          "score": 0.95,
+          "reason": "Materially better narration, and the single largest quality upgrade available to this channel.",
+          "rejected_because": "No key is configured, and the user's standing constraint is that nothing is paid for until the channel earns. Recorded so the option stays visible rather than forgotten."
+        }
+      ],
+      "selected": "piper",
+      "reason": "Availability and the zero-cost constraint. It remains the weakest component of all three productions and is named as such in the proposal's quality tradeoffs.",
+      "user_visible": true,
+      "user_approved": true
+    },
+    {
+      "decision_id": "d-007",
+      "stage": "proposal",
+      "category": "music_source",
+      "subject": "Music and sound bed",
+      "options_considered": [
+        {
+          "option_id": "none-plus-tick",
+          "label": "Silence, with one self-produced machined tick",
+          "score": 0.9,
+          "reason": "The piece's tone is forensic and unhurried; a bed would fight it. A single locally synthesised tick that runs only while the caliper is on screen makes the instrument audible and then leaves."
+        },
+        {
+          "option_id": "ai_generated",
+          "label": "Generated background track",
+          "score": 0.3,
+          "reason": "Available in principle through the music_generation capability.",
+          "rejected_because": "A continuous bed would flatten the one thing this edit is built on, which is that only one element makes a sound at a time."
+        },
+        {
+          "option_id": "user_library",
+          "label": "A track from music_library/",
+          "score": 0.0,
+          "reason": "The drop path exists.",
+          "rejected_because": "music_library/ is empty on this machine."
+        }
+      ],
+      "selected": "none-plus-tick",
+      "reason": "Silence is the design, not a shortage. The tick is produced locally with ffmpeg synthesis, so nothing is licensed and nothing is fetched.",
+      "user_visible": true,
+      "user_approved": true
+    },
+    {
+      "decision_id": "d-008",
+      "stage": "proposal",
+      "category": "provider_selection",
+      "subject": "Source of the visual material — drawn versus photographed",
+      "options_considered": [
+        {
+          "option_id": "drawn-only",
+          "label": "Every frame drawn (Manim), per productions/MANIFESTO.md",
+          "score": 1.0,
+          "reason": "The channel's stated position. A stock clip is a picture of a subject; this video's subject is an interval width, which has no photograph."
+        },
+        {
+          "option_id": "stock-footage",
+          "label": "Pexels or Pixabay footage under the annotation layer",
+          "score": 0.0,
+          "reason": "Would reproduce the reference video's literal form.",
+          "rejected_because": "Two reasons, and the second is the real one. Mechanically, this environment's network policy denies every media host tested — thirteen of them, recorded in productions/ENVIRONMENT.md. Editorially, the manifesto rejects it regardless: an annotation over a photograph can only point at whatever the photograph happens to contain, and nothing photographable contains 30.1% of a logarithmic ruler."
+        }
+      ],
+      "selected": "drawn-only",
+      "reason": "The manifesto, and the subject. This topic was chosen partly because it has no photographable object at all.",
+      "user_visible": true,
+      "user_approved": true
+    },
+    {
+      "decision_id": "d-009",
+      "stage": "proposal",
+      "category": "playbook_selection",
+      "subject": "Style playbook",
+      "options_considered": [
+        {
+          "option_id": "minimalist-diagram",
+          "label": "minimalist-diagram",
+          "score": 0.85,
+          "reason": "Technical deep-dive framing, one idea per frame, structure over decoration. Closest of the five to a measuring instrument being read."
+        },
+        {
+          "option_id": "premium-minimalist",
+          "label": "premium-minimalist",
+          "score": 0.5,
+          "reason": "Expert-explainer register.",
+          "rejected_because": "Its restraint is a luxury register; this piece's restraint is a workshop register."
+        },
+        {
+          "option_id": "flat-motion-graphics",
+          "label": "flat-motion-graphics",
+          "score": 0.2,
+          "reason": "Built for social pacing.",
+          "rejected_because": "Its bounce and colour would undo the mechanical motion character the ledger requires this piece to establish."
+        }
+      ],
+      "selected": "minimalist-diagram",
+      "reason": "Carried as taste input only. The binding art direction is the taste_profile in the proposal, which overrides the playbook wherever they disagree — the playbook is a starting register, not a look.",
+      "user_visible": true,
+      "user_approved": true
+    },
+    {
+      "decision_id": "d-010",
+      "stage": "proposal",
+      "category": "visual_accuracy_check",
+      "subject": "Whether the drawn ruler is dimensionally true",
+      "options_considered": [
+        {
+          "option_id": "true-widths",
+          "label": "Tick positions computed from log10, widths reported to three decimals",
+          "score": 1.0,
+          "reason": "The piece's whole claim is that you can check the measurement. If the stretch labelled 1 is not really 0.301 of the ruler, the argument is a picture of an argument."
+        },
+        {
+          "option_id": "eyeballed",
+          "label": "Approximate spacing tuned for legibility",
+          "score": 0.1,
+          "reason": "Slightly easier to lay out on a narrow frame.",
+          "rejected_because": "The previous production established that the geometry is load-bearing — its arrow lengths came from the real inverse-square pull. Breaking that here would cost more than it saves."
+        }
+      ],
+      "selected": "true-widths",
+      "reason": "Every tick position in the Manim scenes is computed as log10(d), and the nine reported widths are log10(1 + 1/d) rounded to three decimals: .301 .176 .125 .097 .079 .067 .058 .051 .046. They sum to 1.000. Nothing is exaggerated for legibility.",
+      "user_visible": true,
+      "user_approved": true
+    }
+  ]
+}

@@ -47,8 +47,8 @@ them. Two consecutive productions should not use the same one.
 
 | World | Tool | What it is good at |
 |---|---|---|
-| Vector composition | Remotion atelier (`video_compose`, `composition_mode: atelier`) | Anything hand-authored: instruments, plates, typography, data. Both productions so far. |
-| Mathematical animation | Manim 0.21 (`math_animate`) | Transformations, proofs, graphs that morph, things that are literally equations |
+| Vector composition | Remotion atelier (`video_compose`, `composition_mode: atelier`) | Anything hand-authored: instruments, plates, typography, data. Used for productions 1 and 2, and as the glass layer over Manim in production 3. |
+| Mathematical animation | Manim 0.21 (`math_animate`) | Transformations, proofs, graphs that morph, things that are literally equations. Production 3. |
 | 3D worlds | `threejs_world`, `threejs_asset_catalog` | Terrain, scale, camera flight, anything where the point is spatial |
 | Hand-drawn character | Ink Theater + Ink Puppet (`ink-theater/`, `character_spec_generator`, `character_rig_renderer`) | A figure that draws itself and acts the idea out; contraption explainers |
 | Kinetic typography | HyperFrames (`hyperframes_compose`) | When the words *are* the visual — quotes, counts, lists, rhythm |
@@ -75,6 +75,20 @@ Its grammar, not its clothes:
 What we do not take: their chip shape, their yellow, their typeface, their
 layout. Copying those would make our work read as theirs, and it would be a
 worse video for it — a channel that looks borrowed is not a channel.
+
+## Splitting the world
+
+Production 3 found an architecture worth keeping, separately from its look:
+**one world draws every pixel, and a second runtime is glass over the top** —
+the chip, the burned captions, the annotation. Manim rendered thirteen silent
+clips; Remotion mounted them with `OffthreadVideo` and drew on them.
+
+That is the reference video's grammar exactly, with a drawing where the
+photograph was. It is reusable as a structure with any of the worlds below, and
+it reuses nothing about the look. Its price is a doubled failure surface: on the
+first render, two overlay elements had no upper frame bound and leaked across
+every later shot, and four clips were out of sync with the narration. Neither
+bug is visible in a still. Sample the finished file, not the frames.
 
 ## The standing brief, restated
 

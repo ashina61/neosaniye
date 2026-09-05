@@ -1,0 +1,300 @@
+{
+  "version": "1.0",
+  "concept_options": [
+    {
+      "id": "c-ruler",
+      "title": "The ruler where 1 is six times wider than 9",
+      "hook": "Nine digits, and the ruler they live on was never evenly marked.",
+      "narrative_structure": "problem_solution",
+      "visual_approach": "A logarithmic ruler built in Manim as a physical object — bone-white rules on a slate ground, unequal tick spacing, a vernier caliper that opens across a stretch and reports its width. The nine stretches are measured, then the ruler performs one continuous transformation: it stands up and becomes the familiar Benford bar chart. Every frame is drawn geometry; nothing is photographed and nothing is a stock chart component. A Remotion layer sits on top of the Manim footage carrying the section chip, the burned captions and the annotation callouts.",
+      "suggested_playbook": "minimalist-diagram",
+      "target_audience": "General audience on a phone. No mathematics assumed; the word 'logarithm' is never spoken.",
+      "target_platform": "youtube",
+      "target_duration_seconds": 52,
+      "key_points": [
+        "Nine possible leading digits, so eleven percent each is the obvious guess",
+        "The real answer is 30.1% for 1 and 4.6% for 9",
+        "The cause is spacing, not statistics: growth is multiplicative, so the number line that matters is the one where 1 to 2 is the same move as 10 to 20",
+        "On that ruler the stretch labelled 1 is 0.301 of the length and the stretch labelled 9 is 0.046 — six and a half times smaller",
+        "Cut the nine stretches out, stand them up, and you have built the distribution",
+        "Auditors use the mismatch: hand-invented figures come out too even, because even is what a person reaches for when trying to look random",
+        "The precondition — data spanning orders of magnitude — is also the limit: point the ruler at bounded data and it can say nothing"
+      ],
+      "core_message": "The bias in leading digits is not a statistical curiosity, it is the visible width of an interval; and the same width that makes the test work is what makes most public uses of it invalid.",
+      "cta": "none",
+      "tone": "Precise, unhurried, faintly forensic. The tone of someone showing you a measurement rather than telling you a fact.",
+      "grounded_in": [
+        "underserved_gap: the log ruler as a measurable object, drawn rather than named",
+        "underserved_gap: fusing the power and the limit into one sentence",
+        "data_point: log10(1+1/d) is the width of [log d, log d+1]",
+        "data_point: precinct counts and adult heights fail the precondition",
+        "audience pain point: every explanation loses the reader at 'uniformly distributed on a logarithmic scale'"
+      ],
+      "why_this_works": "It closes the exact gap the research found. The canonical treatments state the reason in words and then show the bar chart as a separate object, leaving the viewer to accept the link on faith. Here the link is a single continuous move that the viewer watches happen, so the chart is not presented as evidence — it is assembled in front of them out of the thing that caused it. It is also the only concept whose central image is impossible to photograph and awkward in every runtime except a mathematical-animation engine, which is the world the style ledger requires next."
+    },
+    {
+      "id": "c-forger",
+      "title": "Fake numbers are too fair",
+      "hook": "Sit down and invent a hundred figures. You will give yourself away in the first digit.",
+      "narrative_structure": "story",
+      "visual_approach": "Open inside the act of fabrication: a column of invented figures accumulating, their leading digits tallied beside them into nine near-equal stacks. Then the real distribution drops in over the top and refuses to match. The law is never named until the last five seconds.",
+      "target_audience": "General audience; skews toward the true-crime and 'how they got caught' appetite",
+      "target_platform": "youtube",
+      "target_duration_seconds": 45,
+      "key_points": [
+        "A person inventing numbers spreads leading digits roughly evenly",
+        "Even is what feels random and real data is never even",
+        "Nearly half of real leading digits are 1 or 2",
+        "Digit analysis is a screen that tells an auditor where to look"
+      ],
+      "core_message": "The tell is not that the fake numbers are wrong, it is that they are too fair.",
+      "cta": "none",
+      "tone": "Conspiratorial, close, second-person",
+      "grounded_in": [
+        "underserved_gap: the forger's-eye framing",
+        "data_point: fabricated statements usually do not conform",
+        "data_point: nearly half of real leading digits are 1 or 2"
+      ],
+      "why_this_works": "The strongest hook of the four, because it puts the viewer in the seat of the person being caught rather than the person doing the catching. Its weakness is that it can only assert why the real distribution is uneven — the actual mechanism does not fit inside the story, so the video ends up asking for trust at exactly the moment the ruler concept earns it."
+    },
+    {
+      "id": "c-dirtybook",
+      "title": "Read from the dirt on the page",
+      "hook": "In 1881 a man worked out a law of nature by noticing which pages of a book were dirty.",
+      "narrative_structure": "timeline",
+      "visual_approach": "The fore-edge of a closed book of logarithm tables, the dirt graded across it; the grading is itself the distribution. Then Benford in 1938 with twenty unrelated datasets converging on the same curve, and the modern forensic use as the final beat.",
+      "target_audience": "General audience with an appetite for history-of-science",
+      "target_platform": "youtube",
+      "target_duration_seconds": 50,
+      "key_points": [
+        "Newcomb, 1881: the early pages of shared logarithm tables were more worn",
+        "Benford, 1938: over 20,000 numbers from 20 unrelated datasets",
+        "River lengths, physical constants, street addresses, baseball statistics — all the same curve",
+        "The same curve is now a forensic screen"
+      ],
+      "core_message": "A distribution was read off the grease on a book before anyone could explain it.",
+      "cta": "none",
+      "tone": "Warm, archival",
+      "grounded_in": [
+        "data_point: Newcomb 1881 worn pages",
+        "data_point: Benford 1938, 20,000+ numbers"
+      ],
+      "why_this_works": "Genuinely charming and completely true. It is also the single most saturated opening in the entire corpus — the research found it leading nearly every article on the subject — and a timeline spends its running time on chronology rather than on mechanism. Kept as one line inside the selected concept rather than as its spine."
+    },
+    {
+      "id": "c-threewindows",
+      "title": "Three datasets, one test, one result you should not trust",
+      "hook": "Same test, three datasets. It is only telling the truth about two of them.",
+      "narrative_structure": "data_narrative",
+      "visual_approach": "Three panels running the same digit test in parallel — a set of invoices, a set of adult heights, a set of precinct vote counts — with the expected curve overlaid on each. Two deviate. Only one of the deviations means anything.",
+      "target_audience": "Numerate general audience; people who have seen the law invoked online",
+      "target_platform": "youtube",
+      "target_duration_seconds": 55,
+      "key_points": [
+        "The test is a comparison against a fixed curve",
+        "Bounded data deviates for reasons that have nothing to do with honesty",
+        "Adult heights are almost all between 1 and 2 metres",
+        "Precinct counts do not span orders of magnitude, so researchers reject Benford tests as election evidence"
+      ],
+      "core_message": "A failed test is not a finding until you have checked that the test applied.",
+      "cta": "none",
+      "tone": "Corrective, slightly severe",
+      "grounded_in": [
+        "data_point: the precondition is data spanning orders of magnitude",
+        "expert: Golbeck — useful for many things, invalidating an election is not one",
+        "misconception: a failed test proves fabrication"
+      ],
+      "why_this_works": "The most publicly useful of the four and the most defensible. But it is a correction, and a correction has to assume the thing it corrects — in fifty vertical seconds it would spend its whole budget establishing a law it then spends no time explaining. Its payload is folded into the last twelve seconds of the selected concept instead, where it lands as a turn rather than a lecture."
+    }
+  ],
+  "selected_concept": {
+    "concept_id": "c-ruler",
+    "rationale": "It is the only concept that both closes the gap the research identified and satisfies the style ledger. The gap: every existing treatment says 'uniformly distributed on a logarithmic scale' and then shows the nine descending bars, with the connection left to trust — here the bars are physically assembled out of the ruler that caused them, in one continuous move, and no formula is ever spoken. The ledger: the two prior productions were both hand-authored Remotion vector compositions, and the manifesto requires a different drawn world; this concept's central image is a measured geometric transformation, which is Manim's native subject and nobody else's. Concept c-threewindows contributed its payload to the final twelve seconds, and c-dirtybook contributed one line.",
+    "modifications": [
+      "Absorb the precondition argument from c-threewindows as the closing turn, so the video ends on a limit rather than on a capability",
+      "Absorb one line from c-dirtybook — the worn pages — as a single aside rather than an opening beat, because the research marks that opening as saturated",
+      "Drop the formula log10(1 + 1/d) from the narration entirely; it appears once, small, as a measured caption on the ruler, where it is a label on something visible rather than an explanation"
+    ]
+  },
+  "production_plan": {
+    "pipeline": "animated-explainer",
+    "playbook": "minimalist-diagram",
+    "stages": [
+      {
+        "stage": "assets",
+        "tools": [
+          {
+            "tool_name": "math_animate",
+            "role": "Every moving image in the video. Manim CE 0.21.0 renders the ruler, the caliper, the stretch measurement, the stand-up transformation, the fabricated ledger and the two span windows as separate 1080x1920 clips.",
+            "provider": "manim",
+            "available": true,
+            "estimated_cost_usd": 0,
+            "why_this_provider": "The world required by the style ledger, and the only local engine whose native object is a measured geometric transformation. Runs offline; no key, no network."
+          },
+          {
+            "tool_name": "piper_tts",
+            "role": "English narration, synthesised per script section so each section's true duration is measured rather than estimated",
+            "provider": "piper",
+            "available": true,
+            "estimated_cost_usd": 0,
+            "why_this_provider": "The only TTS configured on this machine. The en_US-ryan-high voice was fetched from the rhasspy/piper GitHub release because the HuggingFace voice host is blocked by the environment's network policy."
+          }
+        ],
+        "approach": "Author the Manim scenes by hand as one Python module per beat, rendered at 1080x1920 30fps to projects/<id>/assets/video/. Read .agents/skills/manimce-best-practices before writing any scene. Narration is synthesised first so the animation timings are cut to real measured audio, not the other way round.",
+        "fallback_if_unavailable": "None accepted. Manim is the approved world; substituting a different runtime would be a silent world swap and is forbidden by the manifesto's rotation rule."
+      },
+      {
+        "stage": "compose",
+        "tools": [
+          {
+            "tool_name": "video_compose",
+            "role": "Hand-authored Remotion composition in atelier mode: the Manim clips are the footage bed, and the Remotion layer carries the section chip, the burned captions, the annotation callouts and the closing card.",
+            "provider": "remotion",
+            "available": true,
+            "estimated_cost_usd": 0,
+            "why_this_provider": "Remotion is the only runtime here that can composite typography over an existing video track with frame-exact caption timing. It supplies the glass, not the image."
+          }
+        ],
+        "approach": "composition_mode: atelier. Manim clips are mounted with OffthreadVideo from absolute paths; every typographic element is written for this piece. No stock scene types, no reusable components — the atelier import scan enforces this.",
+        "fallback_if_unavailable": "ffmpeg burn-in of an SRT, which would lose the chip and the annotations. Escalate before accepting."
+      }
+    ],
+    "quality_tradeoffs": [
+      {
+        "tradeoff": "Piper is a small local neural voice. It is intelligible and correctly stressed but has a narrower dynamic range than a cloud voice, and it is the weakest component of all three productions so far.",
+        "recommendation": "Ship on Piper. A cloud TTS key would be the single largest quality upgrade available to this channel, but the standing constraint is that nothing is paid for until the channel earns.",
+        "quality_impact": "moderate"
+      },
+      {
+        "tradeoff": "Manim's default look — dark navy ground, thin smooth vector strokes, its bundled typeface — is instantly recognisable and would make this read as a generic maths channel.",
+        "recommendation": "Override every default: slate ground, bone-white heavy rules, Space Grotesk and Space Mono installed to the system font path, mechanical stepped motion instead of Manim's default smooth easing. The engine is used for its geometry, never for its taste.",
+        "quality_impact": "high if ignored"
+      },
+      {
+        "tradeoff": "Compositing two runtimes doubles the render surface and adds a class of failure — path handling, colour, frame alignment — that a single-runtime piece does not have.",
+        "recommendation": "Accept it. It is the architecture that makes the manifesto concrete: the reference video's grammar of annotation-over-footage, with drawn footage underneath. Render Manim first, review stills, then composite.",
+        "quality_impact": "low"
+      }
+    ],
+    "alternative_paths": [
+      {
+        "description": "Manim only — burn the captions and the chip inside Manim and skip Remotion entirely.",
+        "total_cost_usd": 0,
+        "quality_level": "standard",
+        "what_changes": "One runtime, simpler pipeline. But caption timing becomes hand-placed inside animation code, the section chip cannot persist cleanly across clip boundaries, and the annotation layer loses the reference's grammar. Rejected."
+      },
+      {
+        "description": "Remotion atelier only — draw the ruler in SVG by hand as in the two previous productions.",
+        "total_cost_usd": 0,
+        "quality_level": "standard",
+        "what_changes": "A third consecutive Remotion vector piece. Violates the manifesto's world-rotation rule and the style ledger's motion-character field. Rejected on identity grounds, not capability grounds."
+      },
+      {
+        "description": "The same edit with a cloud TTS voice in place of Piper.",
+        "total_cost_usd": 2,
+        "quality_level": "premium",
+        "what_changes": "Materially better narration — the one upgrade that would lift all three videos. Blocked by the standing 'nothing paid' constraint; recorded so the option stays visible."
+      }
+    ],
+    "delivery_promise": {
+      "promise_type": "data_explainer",
+      "motion_required": true,
+      "tone_mode": "precise, forensic, unhurried",
+      "quality_floor": "broadcast",
+      "approved_fallback": null
+    },
+    "renderer_family": "explainer-data",
+    "render_runtime": "remotion",
+    "composition_mode": "atelier",
+    "art_direction": "Design read: a machine shop for numbers. The frame is a slate work surface on which a measuring instrument is laid out and read. Ground is deep slate-navy #161A26 — deliberately neither the near-black of the oscilloscope piece nor the warm paper of the plate piece. All structure and all language are bone #F0EAD8, drawn as heavy matte rules rather than thin glowing traces. One accent, chartreuse #C9E265, marks whatever is actually true: the measured widths, the real distribution. One reserved colour, magenta #E5487B, appears exactly once, at the turn, on the beat where the law is pointed at data it cannot judge. Fabricated data is drawn as hollow bone outline — empty, not coloured — so the real/fake contrast costs no additional hue. Signature device: a vernier caliper, drawn as a physical object with jaws, which opens across a stretch of the ruler and reports its width; it returns in the last beat measuring the span of a dataset instead of a digit, which is how the power and the limit become the same gesture. Motion character: mechanical stepping. The caliper snaps between fixed positions, bars rise in quantised jumps, nothing eases in or out and nothing overshoots — with one exception, the single continuous move where the ruler stands up and becomes the chart, which is the centrepiece precisely because it is the only smooth thing in the piece. Type: Space Grotesk 700 for language, Space Mono 400 for every measured number; neither family has been used before here. Layout set: a 3x3 grid of hollow boxes, a horizontal ruler in the middle third with the caliper above it, a shaded stretch column, the standing-up transformation across the lower two thirds, a top-anchored ledger of invented figures, two stacked span windows, and a closing frame with the caliper left open. The test at the end: could this be any other video's frame — no, the whole piece is one instrument being read; does it reuse a look made before — no, neither previous production has a grid, a caliper, a slate ground, stepped motion, or these two typefaces.",
+    "taste_profile": {
+      "design_read": "A machine shop for numbers: an instrument laid on a slate bench and read aloud.",
+      "visual_variance": 9,
+      "motion_intensity": 3,
+      "information_density": 2,
+      "reference_strategy": "grammar only, from productions/references/wpmavi-power-lines: a persistent chip naming the current idea, burned captions with the load-bearing word marked, annotation drawn onto what you are looking at, one accent plus one reserved colour used exactly once, cuts every four to five seconds. None of the reference's clothes — not its pill shape, not its yellow, not its typeface.",
+      "anti_patterns": [
+        "Manim's factory defaults in any form — its ground colour, its stroke weight, its bundled typeface, its smooth default easing",
+        "The nine descending bars presented as the argument rather than assembled as its result",
+        "Speaking the formula aloud",
+        "The worn-logarithm-tables origin as an opening beat",
+        "Any glow, bloom or scanline — that is the oscilloscope piece",
+        "Any paper grain, plate border or ink texture — that is the tides piece"
+      ],
+      "palette_discipline": "Four values, no more. Slate ground #161A26, bone #F0EAD8 for all structure and all language, chartreuse #C9E265 as the single accent marking whatever is measurably true, magenta #E5487B held in reserve for exactly one appearance at the turn. Fabricated data is drawn as hollow bone outline rather than given a hue, so the real/fake contrast costs nothing from the budget.",
+      "layout_variation": "A different disposition of the frame in every beat: a 3x3 grid of hollow boxes; a horizontal ruler in the middle third with the caliper above it; a shaded stretch column; the standing-up transformation across the lower two thirds; a top-anchored ledger of invented figures; two stacked span windows; a closing frame with the caliper left open. No hero element repeated beat to beat with new text underneath — that is the scene-level templating trap.",
+      "quality_gates": [
+        "Every tick position computed from log10; the nine reported widths sum to 1.000",
+        "No Manim default survives: not its ground colour, not its stroke weight, not its bundled typeface, not its easing",
+        "Exactly one continuous move in the whole piece; everything else steps or runs at a machined constant rate",
+        "Magenta appears once and only once",
+        "Reviewed against both STYLE_LEDGER.md rows on all five fields before render"
+      ]
+    },
+    "music_source": {
+      "source_type": "none",
+      "mood_direction": "Silence under the narration, with one self-produced element: a low machined tick that runs only while the caliper is on screen and stops the moment the ruler begins to stand up. Produced locally with ffmpeg synthesis; no library, no provider, no key.",
+      "estimated_cost_usd": 0
+    },
+    "voice_selection": {
+      "provider": "piper",
+      "voice_id": "en_US-ryan-high",
+      "rationale": "The only TTS available offline on this machine. Measured at 3.3 words per second on the two prior productions, which is the basis for the timing plan.",
+      "estimated_cost_usd": 0,
+      "delivery_style": "Level and unhurried, with the pauses carried by the edit rather than by the voice. The forensic tone comes from the pacing of the images, not from performance.",
+      "pacing_policy": "Synthesise per script section, measure the real duration of each, and cut the animation to those measurements. Never estimate.",
+      "sample_approval_required": false
+    },
+    "decision_log_ref": "artifacts/decision_log.json"
+  },
+  "cost_estimate": {
+    "total_estimated_usd": 0,
+    "line_items": [
+      {
+        "tool": "math_animate",
+        "operation": "Manim CE local render, seven scenes at 1080x1920 30fps",
+        "quantity": 7,
+        "estimated_usd": 0,
+        "notes": "Local CPU render, no API"
+      },
+      {
+        "tool": "piper_tts",
+        "operation": "Narration synthesis, one wav per script section",
+        "quantity": 9,
+        "estimated_usd": 0,
+        "notes": "Local neural TTS, voice fetched from a GitHub release"
+      },
+      {
+        "tool": "video_compose",
+        "operation": "Remotion atelier render, ~52s at 1080x1920 30fps",
+        "quantity": 1,
+        "estimated_usd": 0,
+        "notes": "Local Node render using the Playwright Chromium already symlinked into remotion-composer"
+      },
+      {
+        "tool": "ffmpeg",
+        "operation": "Audio mux, loudness normalisation to -14 LUFS, faststart",
+        "quantity": 1,
+        "estimated_usd": 0,
+        "notes": "Local"
+      }
+    ],
+    "budget_cap_usd": 0,
+    "budget_verdict": "within_budget",
+    "savings_options": [
+      "Already at zero. The only paid option anywhere in this plan is a cloud TTS voice, which is declined under the standing constraint."
+    ]
+  },
+  "approval": {
+    "status": "approved",
+    "user_notes": "Standing pre-authorisation from the user, given explicitly and repeatedly across this channel's productions: full decision authority, no questions at any gate, choose the topic and the design. The constraints attached to that authority are: vertical short, original script, natural fluent English narration, burned captions, royalty-free or self-produced audio, and nothing paid for. Recorded here rather than as a decision_log entry because the decision_log schema's category enum does not contain 'approval_policy' even though AGENT_GUIDE.md requires that category for full-run pre-authorisation — the same schema/guide disagreement flagged on the two previous productions.",
+    "approved_budget_usd": 0
+  },
+  "metadata": {
+    "world_rotation_check": "productions/STYLE_LEDGER.md records Remotion atelier as the world for both prior productions. Manim is unused. The manifesto requires that two consecutive productions not share a world; this satisfies it. Remotion still appears in the plan, but only as the compositing layer over Manim imagery — the drawn world, meaning where every pixel of the image comes from, is Manim.",
+    "ledger_overlap_check": "Checked against both existing rows on all five fields. Design read: new (machine shop for numbers; prior rows are an oscilloscope in a dark room and a corrected physics-book page). Ground and palette roles: new (slate #161A26, bone, chartreuse, magenta reserved once; prior grounds were #080B10 and #EDE6D6). Signature device: new (a caliper as a physical object; prior devices were a running microsecond counter and three unequal arrows). Layout set: new. Motion character: new (mechanical stepping with a single continuous exception; prior characters were constant-velocity flight and spring overshoot). One honest warning to record in the ledger: the caliper is adjacent to the engineering dimension line used once in the oscilloscope piece. They are drawn as different objects — a caliper has jaws and a body and is present as a tool, a dimension line is an annotation — and the overlap is on part of one field of five, which the ledger's own rule treats as a warning rather than a re-design.",
+    "duration_target_seconds": 52,
+    "estimated_narration_words": 172,
+    "decision_log_schema_note": "AGENT_GUIDE.md requires full-run pre-authorisation to be recorded as a decision_log entry with category 'approval_policy', but that value is absent from the category enum in schemas/artifacts/decision_log.schema.json. The pre-authorisation is therefore recorded in proposal_packet.approval.user_notes, as on the two previous productions. The disagreement between the guide and the schema is a standing defect worth fixing in one place or the other."
+  }
+}

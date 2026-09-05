@@ -1,0 +1,75 @@
+# Publish spec for a hand-produced short.
+#
+# Produced through OpenMontage's animated-explainer pipeline. Every frame drawn
+# in Manim; the Remotion layer over it carries only the chip, the burned
+# captions and two annotations. See source/art-direction.md, source/scenes.md
+# and source/artifacts/decision_log.json. This file exists only so
+# daily/lib/publish.py can consume the folder.
+slug: the-digit-that-catches-liars
+title: The Digit That Catches Liars
+duration_seconds: 56.6
+has_burned_captions: true
+produced_by: openmontage/animated-explainer (manim world, remotion atelier overlay)
+produced_on: "2026-09-05"
+
+copy:
+  title: "One digit shows up 30% of the time."
+  hook: "Nine possible first digits. You would expect eleven percent each. One of them turns up thirty."
+  caption: >-
+    The first digit of real-world data is 1 about 30% of the time and 9 under
+    5%. The reason is not statistics, it is spacing: on a ruler built the way
+    multiplying works, the stretch labelled 1 is six and a half times wider than
+    the stretch labelled 9. Auditors use the gap to flag invented figures. But
+    the same ruler is why the test says nothing at all about heights, or about
+    the votes in one precinct.
+  description: |-
+    Nine possible first digits, so eleven percent each is the obvious guess. It
+    isn't eleven. In real-world data the leading digit is 1 about 30.1% of the
+    time, and 9 less than 4.6%.
+
+    The reason is not statistics. It's spacing. Real quantities grow by
+    multiplying, so lay them out on a ruler built the way multiplying works —
+    one where the move from 1 to 2 is the same distance as the move from 10 to
+    20. On that ruler the stretch labelled 1 takes up 0.301 of the length and
+    the stretch labelled 9 takes up 0.046. Six and a half times smaller. Drop a
+    number anywhere and it lands on 1 far more often. Cut those nine stretches
+    out and stand them up, and you have built the distribution.
+
+    That is why auditors run digit tests across company books. A person
+    inventing figures spreads the leading digits roughly evenly, because even is
+    what feels random — and real data is never even. Greek data reported to
+    Eurostat deviated further from the expected distribution than any other
+    euro-area member's; the 2009 deficit reported at 3.7% of GDP was later
+    revised to 12.5%, then 15.4%.
+
+    But the ruler only reads numbers that span orders of magnitude. Adult
+    heights don't — almost every value sits between 1.4 and 2.0 metres. Votes in
+    a single precinct don't either. Point the test at those and it isn't saying
+    anything at all, no matter what it looks like it's saying. That precondition
+    is exactly why researchers reject Benford tests as evidence of election
+    fraud.
+
+    Every tick position in this video is computed as log10 of the value it
+    stands for, and the nine widths are log10(1 + 1/d): .301 .176 .125 .097 .079
+    .067 .058 .051 .046, which sum to 1.000. Nothing was nudged to look better.
+
+    Sources
+    An Introduction to Benford's Law (Princeton University Press), ch. 1:
+    https://assets.press.princeton.edu/chapters/s10526.pdf
+    Nigrini, Benford's Law: Applications for Forensic Accounting, Auditing, and
+    Fraud Detection: https://onlinelibrary.wiley.com/doi/book/10.1002/9781119203094
+    Rauch et al., Fact and Fiction in EU-Governmental Economic Data (2011):
+    https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1468-0475.2011.00542.x
+    A Widespread Error in the Use of Benford's Law to Detect Election and Other
+    Fraud: https://arxiv.org/pdf/2011.13015
+
+    #Shorts
+  hashtags:
+    - benfordslaw
+    - mathematics
+    - statistics
+    - fraud
+    - datascience
+    - howitworks
+    - science
+    - Shorts

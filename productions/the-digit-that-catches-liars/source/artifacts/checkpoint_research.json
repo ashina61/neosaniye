@@ -1,0 +1,361 @@
+{
+  "version": "1.0",
+  "project_id": "the-digit-that-catches-liars",
+  "pipeline_type": "animated-explainer",
+  "stage": "research",
+  "status": "completed",
+  "timestamp": "2026-09-05T08:04:25.010082+00:00",
+  "checkpoint_policy": "guided",
+  "human_approval_required": false,
+  "human_approved": false,
+  "artifacts": {
+    "research_brief": {
+      "version": "1.0",
+      "topic": "Benford's Law \u2014 why real-world numbers start with 1 about 30% of the time, how auditors use it to catch fabricated data, and where it stops working",
+      "research_date": "2026-09-05",
+      "landscape": {
+        "existing_content": [
+          {
+            "title": "Number 1 and Benford's Law",
+            "url": "https://www.numberphile.com/videos/number-1-and-benfords-law",
+            "source": "youtube",
+            "angle": "Two people at a table, marker on brown paper, walking through the digit frequencies with Steve Mould",
+            "what_it_covers": "The observed frequencies, the log(1 + 1/d) formula, a demonstration on real datasets",
+            "what_it_misses": "The visual argument. The log ruler is described in words rather than drawn as a measurable object, and the piece stops at 'isn't that neat' without stakes.",
+            "engagement_signal": "The canonical treatment of this topic on YouTube since 2013"
+          },
+          {
+            "title": "Benford's law explained: a response to Numberphile",
+            "url": "https://www.youtube.com/watch?v=Az3kXCPZpYs",
+            "source": "youtube",
+            "angle": "Constructively critical follow-up arguing the popular explanation of WHY is hand-waved",
+            "what_it_covers": "That 'large spread implies Benford' is not a real derivation; the scale-invariance framing",
+            "what_it_misses": "It is a correction to another video, so it assumes the first one. It is also long-form and horizontal \u2014 nothing here is built for a phone.",
+            "engagement_signal": "Veritasium, October 2013"
+          },
+          {
+            "title": "What Is Benford's Law? Why This Unexpected Pattern of Numbers Is Everywhere",
+            "url": "https://www.scientificamerican.com/article/what-is-benfords-law-why-this-unexpected-pattern-of-numbers-is-everywhere/",
+            "source": "blog",
+            "angle": "Popular-science explainer: the wonder framing, 'this pattern is everywhere'",
+            "what_it_covers": "Newcomb's worn logarithm tables, Benford's 20,000 numbers, fraud detection as a footnote",
+            "what_it_misses": "Where the law fails. The failure condition is the whole reason the fraud application is delicate, and popular coverage treats it as an asterisk."
+          },
+          {
+            "title": "Benford's Law Does Not Prove Fraud in the 2020 US Presidential Election",
+            "url": "https://jengolbeck.medium.com/benfords-law-does-not-prove-fraud-in-the-2020-us-presidential-election-cc81715bfbda",
+            "source": "blog",
+            "angle": "Debunk: an expert on the law explaining why this specific application of it is invalid",
+            "what_it_covers": "Precinct vote counts are bounded and do not span orders of magnitude, so the law's precondition fails",
+            "what_it_misses": "It is written for people who already reached for the law. Nobody has folded the misuse back into the explanation of the law itself, where it belongs."
+          }
+        ],
+        "saturated_angles": [
+          "'Here are the digit frequencies, isn't that strange' \u2014 the wonder-only treatment, done definitively by Numberphile in 2013",
+          "The worn-logarithm-tables origin story as the opening beat; every article leads with Newcomb",
+          "'Benford's Law catches fraud' stated as a capability with no precondition attached",
+          "Reciting the formula log(1 + 1/d) as if the formula were the explanation"
+        ],
+        "underserved_gaps": [
+          "The log ruler as a physical object you can measure. Every treatment says 'uniform on a logarithmic scale'; almost none draws the ruler and lets you see that the stretch labelled 1 really is six times the stretch labelled 9. This is the single strongest available visual and it is native to Manim.",
+          "Fusing the power and the limit into one argument instead of two. The law works because the data spans orders of magnitude \u2014 which is simultaneously why it catches Enron and why it cannot judge a precinct. Same sentence, both halves.",
+          "The forger's-eye framing: the reason invented numbers fail the test is that a human writing fake figures spreads leading digits roughly evenly, because even feels random. Nobody dramatises the act of faking.",
+          "A vertical, 50-second treatment of any of the above. The entire corpus is horizontal long-form."
+        ]
+      },
+      "trending": {
+        "recent_developments": [
+          {
+            "headline": "Benford's Law repeatedly invoked in online election-fraud claims and repeatedly rejected by the researchers who study it",
+            "url": "https://today.umd.edu/oped-breaking-benfords-law-1ccdc2ba-c7b0-4515-a1ea-103f16607f5c",
+            "date": "2020 onward, still recurring",
+            "relevance": "Gives an evergreen mathematical fact a live public stake: the law is now something people wield badly, which makes 'when it does not apply' the most useful half of the explanation."
+          },
+          {
+            "headline": "A Widespread Error in the Use of Benford's Law to Detect Election and Other Fraud",
+            "url": "https://arxiv.org/pdf/2011.13015",
+            "date": "2020",
+            "relevance": "A citable, peer-reviewed statement of exactly the failure condition the video turns on."
+          }
+        ],
+        "active_discussions": [
+          {
+            "platform": "academic and statistics commentary",
+            "topic_or_url": "https://hill.math.gatech.edu/publications/PAPER%20PDFS/BenfordsLawStrikesBack2011.pdf",
+            "sentiment": "Irritation. Working mathematicians object that the popular explanation ('regularity plus large spread implies Benford') is not merely loose but fallacious, and that published texts keep repeating it.",
+            "key_quotes": [
+              "The claim that regularity and large spread implies Benford's Law is fallacious for any reasonable definitions of regularity and spread."
+            ]
+          }
+        ],
+        "timeliness_window": "evergreen"
+      },
+      "data_points": [
+        {
+          "claim": "The leading digit of real-world data is 1 about 30.1% of the time and 9 about 4.6% of the time, against the 11.1% each that uniformity would predict.",
+          "source_url": "https://mathworld.wolfram.com/BenfordsLaw.html",
+          "source_name": "Wolfram MathWorld, Benford's Law",
+          "credibility": "primary_source",
+          "surprise_factor": "counterintuitive",
+          "usable_as": "hook"
+        },
+        {
+          "claim": "The frequency of leading digit d is exactly log10(1 + 1/d), which is the width of the interval [log d, log (d+1)] on a base-10 logarithmic scale: 0.301 for 1 and 0.046 for 9.",
+          "source_url": "https://en.wikipedia.org/wiki/Benford%27s_law",
+          "source_name": "Benford's law",
+          "credibility": "primary_source",
+          "surprise_factor": "notable",
+          "usable_as": "script_anchor"
+        },
+        {
+          "claim": "The distance from 1 to 2 on a logarithmic ruler is the same distance as 2 to 4, or 10 to 20, or 100 to 200 \u2014 so a point dropped anywhere on that ruler lands in the stretch labelled 1 with probability 0.301.",
+          "source_url": "https://assets.press.princeton.edu/chapters/s10526.pdf",
+          "source_name": "An Introduction to Benford's Law, Princeton University Press, chapter 1",
+          "credibility": "primary_source",
+          "surprise_factor": "surprising",
+          "usable_as": "script_anchor"
+        },
+        {
+          "claim": "In 1881 Simon Newcomb noticed that the early pages of shared logarithm tables \u2014 the ones for numbers beginning with 1 \u2014 were dirtier and more worn than the later pages, and inferred the distribution from the wear.",
+          "source_url": "https://arxiv.org/pdf/1702.00554",
+          "source_name": "Benford's law: a 'sleeping beauty' sleeping in the dirty pages of logarithmic tables",
+          "credibility": "primary_source",
+          "surprise_factor": "surprising",
+          "usable_as": "script_anchor"
+        },
+        {
+          "claim": "Frank Benford re-derived it in 1938 from more than 20,000 numbers collected across 20 unrelated datasets, including river lengths, physical constants, street addresses of scientists, and baseball statistics.",
+          "source_url": "https://www.scientificamerican.com/article/what-is-benfords-law-why-this-unexpected-pattern-of-numbers-is-everywhere/",
+          "source_name": "Scientific American",
+          "credibility": "secondary_source",
+          "surprise_factor": "notable",
+          "usable_as": "script_anchor"
+        },
+        {
+          "claim": "Nearly half of all leading digits in unaltered tabulated data are 1 or 2; fabricated financial statements and assigned numbers such as telephone numbers usually do not conform, which is what makes digit analysis a screening tool in forensic accounting.",
+          "source_url": "https://www.wiley.com/en-us/Benford's+Law:+Applications+for+Forensic+Accounting-p-9781118152850",
+          "source_name": "Nigrini, Benford's Law: Applications for Forensic Accounting, Auditing, and Fraud Detection (Wiley)",
+          "credibility": "primary_source",
+          "surprise_factor": "surprising",
+          "usable_as": "script_anchor"
+        },
+        {
+          "claim": "Greek data reported to Eurostat showed the largest deviation from Benford's law of any euro-area state; the 2009 deficit reported at 3.7% of GDP was later revised to 12.5% and then 15.4%.",
+          "source_url": "https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1468-0475.2011.00542.x",
+          "source_name": "Rauch et al., 'Fact and Fiction in EU-Governmental Economic Data', German Economic Review 2011",
+          "credibility": "primary_source",
+          "surprise_factor": "surprising",
+          "usable_as": "closing_punch"
+        },
+        {
+          "claim": "The law's precondition is data spanning several orders of magnitude. Adult heights fail it because almost every value lies between 1 and 2 metres; precinct vote counts fail it for the same reason, which is why researchers reject Benford tests as evidence of election fraud.",
+          "source_url": "https://arxiv.org/pdf/2011.13015",
+          "source_name": "A Widespread Error in the Use of Benford's Law to Detect Election and Other Fraud",
+          "credibility": "primary_source",
+          "surprise_factor": "counterintuitive",
+          "usable_as": "closing_punch"
+        }
+      ],
+      "audience_insights": {
+        "common_questions": [
+          "Why would the first digit be biased at all? Shouldn't every digit be equally likely?",
+          "Does it depend on the units? What happens if I convert dollars to euros, or miles to kilometres?",
+          "Can it actually prove someone committed fraud, or only suggest it?",
+          "Why doesn't it work on things like heights, ages, or phone numbers?",
+          "If a fraudster knows about the law, can't they just fake numbers that obey it?"
+        ],
+        "misconceptions": [
+          {
+            "myth": "Benford's Law applies to any large pile of numbers.",
+            "reality": "It needs values spread across several orders of magnitude. A bounded or assigned set \u2014 heights, ages, phone numbers, precinct vote counts \u2014 has no reason to obey it, and does not.",
+            "source": "https://arxiv.org/pdf/2011.13015"
+          },
+          {
+            "myth": "A dataset failing the Benford test proves the numbers were faked.",
+            "reality": "It is a screening tool, not proof. Deviation flags a set for a human to look at; legitimate constraints produce deviation too, and a fraudster who knows the law can fabricate figures that pass.",
+            "source": "https://www.theglobeandmail.com/report-on-business/rob-magazine/benfords-law-a-useful-but-imperfect-fraud-catcher/article560409/"
+          },
+          {
+            "myth": "It works because big datasets are 'random and spread out'.",
+            "reality": "Statisticians specifically reject this as a derivation \u2014 spread alone implies nothing. The property that matters is being uniform on a logarithmic scale, which multiplicative and exponential processes produce.",
+            "source": "https://hill.math.gatech.edu/publications/PAPER%20PDFS/BenfordsLawStrikesBack2011.pdf"
+          }
+        ],
+        "knowledge_level": "General audience on a phone. Some will have heard the name from a crime drama or a viral post and know only the headline '1 comes up 30% of the time'. Almost none can say why, and almost none know the precondition \u2014 which is precisely the part that makes the fact usable rather than trivia. Assume no logarithms; the log ruler has to be shown as an object with unequal spacing, never named as a function.",
+        "pain_points": [
+          "Every explanation reaches the phrase 'uniformly distributed on a logarithmic scale' and loses the reader there.",
+          "The formula is offered as an explanation when it is only a restatement.",
+          "People who encounter the law through a fraud claim have no way to judge whether this particular use of it is legitimate."
+        ]
+      },
+      "expert_voices": [
+        {
+          "name": "Mark J. Nigrini",
+          "title_or_affiliation": "Accounting professor; author of Benford's Law: Applications for Forensic Accounting, Auditing, and Fraud Detection (Wiley)",
+          "position": "Brought digit analysis into practical auditing; documents its use against vendor fraud, payroll fraud, tax evasion, and fabricated financial statements including Enron and Madoff-era data \u2014 while framing it as an initial screen rather than evidence.",
+          "source_url": "https://onlinelibrary.wiley.com/doi/book/10.1002/9781119203094",
+          "contrarian": false
+        },
+        {
+          "name": "Theodore P. Hill",
+          "title_or_affiliation": "Mathematician, Georgia Tech; proved the base-invariance characterisation of the law",
+          "position": "Publicly objects that the common popular explanation \u2014 regularity plus large spread \u2014 is fallacious, and that the law resists easy derivation.",
+          "source_url": "https://hill.math.gatech.edu/publications/PAPER%20PDFS/BenfordsLawStrikesBack2011.pdf",
+          "contrarian": true
+        },
+        {
+          "name": "Jen Golbeck",
+          "title_or_affiliation": "Professor, University of Maryland",
+          "position": "Benford's Law is useful for many things; invalidating an election is not one of them. Precinct counts do not meet the law's precondition.",
+          "source_url": "https://today.umd.edu/oped-breaking-benfords-law-1ccdc2ba-c7b0-4515-a1ea-103f16607f5c",
+          "contrarian": true
+        }
+      ],
+      "angles_discovered": [
+        {
+          "name": "The ruler where 1 is six times wider than 9",
+          "hook": "Nine digits. One ruler. They were never the same size.",
+          "type": "evergreen",
+          "why_now": "The strongest gap in the landscape: every existing treatment says 'uniform on a log scale' and none of them draws the ruler as a measurable object. Manim can build that ruler, mark the nine stretches, and let the width do the arguing \u2014 no formula spoken aloud. This turns the standard hand-wave into something a viewer can see is true.",
+          "grounded_in": [
+            "log10(1 + 1/d) equals the width of [log d, log d+1]",
+            "1 to 2 spans the same distance as 10 to 20 on a logarithmic ruler",
+            "audience pain point: everyone loses the reader at 'logarithmic scale'"
+          ]
+        },
+        {
+          "name": "Fake numbers are too fair",
+          "hook": "When a person invents numbers, they spread the digits evenly. That is the tell.",
+          "type": "narrative",
+          "why_now": "Inverts the usual framing. Instead of 'the law catches fraud', the argument is about what a forger does wrong: even feels random to a human, and even is exactly what real data never is. Puts the viewer briefly in the forger's seat, which is a stronger position than the auditor's.",
+          "grounded_in": [
+            "Fabricated financial statements usually do not conform",
+            "Nearly half of real leading digits are 1 or 2",
+            "Greek deficit revised 3.7% to 15.4%"
+          ]
+        },
+        {
+          "name": "The same sentence that convicts and acquits",
+          "hook": "The reason it catches Enron is the reason it cannot judge an election.",
+          "type": "contrarian",
+          "why_now": "The precondition \u2014 data spanning orders of magnitude \u2014 is simultaneously the source of the law's power and the source of its most common public misuse. Existing content splits these into a main story and an asterisk. Fusing them gives a short a real turn at the end and leaves the viewer with a test they can apply, not a piece of trivia.",
+          "grounded_in": [
+            "Precinct vote counts are bounded and fail the precondition",
+            "Adult heights fail for the same reason",
+            "It is a screening tool, not proof"
+          ]
+        },
+        {
+          "name": "Read from the dirt on the page",
+          "hook": "The first person to notice did it by looking at how dirty a book was.",
+          "type": "narrative",
+          "why_now": "Newcomb inferred a distribution from finger grease on shared logarithm tables in 1881. Charming and true \u2014 but it is the opening beat of nearly every article on the subject, which makes it saturated. Recorded here as material for one line, not as a spine.",
+          "grounded_in": [
+            "Newcomb 1881, worn early pages",
+            "Benford 1938, 20,000+ numbers across 20 datasets"
+          ]
+        }
+      ],
+      "visual_references": [
+        {
+          "description": "The standard Benford bar chart: nine descending bars, 30.1% down to 4.6%",
+          "url": "https://en.wikipedia.org/wiki/Benford%27s_law",
+          "what_works": "Instantly legible and universally recognised \u2014 which is also its problem. It states the result without containing the reason. Usable as the endpoint of an argument, never as the argument."
+        },
+        {
+          "description": "The logarithmic number line with 1, 2, 3 \u2026 9, 10 marked at unequal spacing",
+          "url": "https://assets.press.princeton.edu/chapters/s10526.pdf",
+          "what_works": "The reason is visible in the geometry. If the nine stretches are shaded and then stacked, they become the bar chart \u2014 meaning one continuous transformation can carry the viewer from cause to result without a formula. This is the video."
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Benford%27s_law",
+          "title": "Benford's law",
+          "used_for": "Frequencies, formula, precondition on orders of magnitude",
+          "reliability": "secondary"
+        },
+        {
+          "url": "https://mathworld.wolfram.com/BenfordsLaw.html",
+          "title": "Benford's Law \u2014 Wolfram MathWorld",
+          "used_for": "Exact digit probabilities",
+          "reliability": "primary"
+        },
+        {
+          "url": "https://assets.press.princeton.edu/chapters/s10526.pdf",
+          "title": "An Introduction to Benford's Law, chapter 1 (Princeton University Press)",
+          "used_for": "The logarithmic-scale derivation and the interval-width argument",
+          "reliability": "primary"
+        },
+        {
+          "url": "https://arxiv.org/pdf/1702.00554",
+          "title": "Benford's law: a 'sleeping beauty' sleeping in the dirty pages of logarithmic tables",
+          "used_for": "Newcomb 1881 origin",
+          "reliability": "primary"
+        },
+        {
+          "url": "https://www.scientificamerican.com/article/what-is-benfords-law-why-this-unexpected-pattern-of-numbers-is-everywhere/",
+          "title": "What Is Benford's Law? Why This Unexpected Pattern of Numbers Is Everywhere",
+          "used_for": "Benford 1938 dataset count and composition; popular framing",
+          "reliability": "secondary"
+        },
+        {
+          "url": "https://onlinelibrary.wiley.com/doi/book/10.1002/9781119203094",
+          "title": "Nigrini, Benford's Law: Applications for Forensic Accounting, Auditing, and Fraud Detection",
+          "used_for": "Forensic use, Enron and Ponzi-scheme case material, screening-not-proof framing",
+          "reliability": "primary"
+        },
+        {
+          "url": "https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1468-0475.2011.00542.x",
+          "title": "Fact and Fiction in EU-Governmental Economic Data (German Economic Review, 2011)",
+          "used_for": "Greek deficit deviation and the 3.7% to 15.4% revision",
+          "reliability": "primary"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2011.13015",
+          "title": "A Widespread Error in the Use of Benford's Law to Detect Election and Other Fraud",
+          "used_for": "The precondition failure for bounded data and precinct counts",
+          "reliability": "primary"
+        },
+        {
+          "url": "https://today.umd.edu/oped-breaking-benfords-law-1ccdc2ba-c7b0-4515-a1ea-103f16607f5c",
+          "title": "Op/ed: Breaking the (Benford's) Law?",
+          "used_for": "Expert rejection of election applications",
+          "reliability": "secondary"
+        },
+        {
+          "url": "https://hill.math.gatech.edu/publications/PAPER%20PDFS/BenfordsLawStrikesBack2011.pdf",
+          "title": "Benford's Law Strikes Back (Hill et al.)",
+          "used_for": "Rejection of the 'spread implies Benford' explanation",
+          "reliability": "primary"
+        },
+        {
+          "url": "https://www.numberphile.com/videos/number-1-and-benfords-law",
+          "title": "Number 1 and Benford's Law \u2014 Numberphile",
+          "used_for": "Landscape: the canonical existing treatment",
+          "reliability": "secondary"
+        },
+        {
+          "url": "https://www.youtube.com/watch?v=Az3kXCPZpYs",
+          "title": "Benford's law explained: a response to Numberphile",
+          "used_for": "Landscape: the critical follow-up and the weakness of popular derivations",
+          "reliability": "secondary"
+        }
+      ],
+      "research_summary": "The one thing worth taking from this research is that the standard explanation and the standard visual are two different objects, and nobody has joined them. Every treatment eventually says the values are 'uniformly distributed on a logarithmic scale' and then shows the nine descending bars \u2014 but the bars are the result, and the sentence is the reason, and a viewer is left to take the connection on trust. The connection is geometric and completely showable: on a logarithmic ruler the stretch labelled 1 is 0.301 of the length and the stretch labelled 9 is 0.046, six and a half times smaller, and if you cut those nine stretches out and stand them upright you have built the bar chart. That single continuous move is the video, it needs no formula spoken aloud, and it is exactly what a mathematical-animation runtime is for. The second finding gives it a spine: the precondition that makes the ruler argument work \u2014 data spanning orders of magnitude \u2014 is the same precondition that makes the law able to flag Enron-shaped books and unable to say anything at all about a precinct's vote count. The power and the limit are one sentence, and folding the misuse into the explanation instead of appending it as an asterisk is the gap the existing corpus leaves open.",
+      "metadata": {
+        "searches_run": 8,
+        "manifesto_note": "Nothing photographed. The topic was chosen partly because it has no photographable subject at all \u2014 the argument is a ruler and a distribution, and the drawing is not an illustration of the mechanism, it is the mechanism.",
+        "ledger_note": "Remotion atelier has carried the two prior productions. The ledger requires a different drawn world; Manim is the only world on the manifesto's table whose native subject is this exact kind of argument."
+      }
+    }
+  },
+  "review": {
+    "status": "passed",
+    "findings": [],
+    "rounds": 1
+  },
+  "metadata": {
+    "searches_run": 8
+  }
+}

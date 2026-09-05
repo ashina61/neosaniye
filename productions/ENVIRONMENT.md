@@ -73,3 +73,30 @@ they are not a substitute for opening the hosts:
   at render time fails with `ERR_CERT_AUTHORITY_INVALID`. Inlining also makes the
   render offline and deterministic — worth keeping even after the domains open.
 - **Music**: produced locally when Pixabay is unreachable.
+
+## Fonts
+
+`fonts.googleapis.com` and `fonts.gstatic.com` are reachable with curl, but the
+render browser does not trust this environment's proxy CA, so a face fetched at
+render time fails inside Remotion. Two workarounds, both needed:
+
+- **For Remotion**: fetch the woff2 once with curl (a modern User-Agent gets
+  woff2; an IE6 UA gets EOT, which is useless), base64 it into a `fonts.ts`, and
+  declare it in CSS. Never wrap it in `delayRender` — Remotion fakes timers
+  during a render, so a `setTimeout` fallback never fires and an uncleared
+  `delayRender` aborts the whole render.
+- **For Manim**, which uses system fontconfig: fetch the TTF from
+  `raw.githubusercontent.com/google/fonts/main/ofl/<family>/…` — GitHub is on the
+  allowlist and serves the real TTF, including variable fonts with named
+  instances. Drop it in `~/.local/share/fonts/` and run `fc-cache -f`. Google
+  Fonts' CSS API will not give you a TTF at any User-Agent worth using.
+
+## Manim
+
+Manim CE 0.21.0 is installed and needs no key and no network. Set
+`config.pixel_width/pixel_height/frame_rate` **in the module**, not on the CLI:
+module-scope assignment runs after CLI parsing and wins, so `-qh` still produces
+1080x1920 at 30fps if the module says so. Note that `self.wait()` quantises down
+to whole frames, so a scene built from many short waits comes out a few frames
+short of its nominal duration — pad each clip to an exact frame count with
+`tpad=stop_mode=clone` rather than trying to make the waits add up.

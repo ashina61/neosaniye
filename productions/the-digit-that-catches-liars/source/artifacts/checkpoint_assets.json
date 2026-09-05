@@ -1,0 +1,530 @@
+{
+  "version": "1.0",
+  "project_id": "the-digit-that-catches-liars",
+  "pipeline_type": "animated-explainer",
+  "stage": "assets",
+  "status": "completed",
+  "timestamp": "2026-09-05T08:44:07.300720+00:00",
+  "checkpoint_policy": "guided",
+  "human_approval_required": true,
+  "human_approved": true,
+  "artifacts": {
+    "asset_manifest": {
+      "version": "1.0",
+      "assets": [
+        {
+          "id": "vid-sc01",
+          "type": "animation",
+          "path": "assets/video/sc01.mp4",
+          "source_tool": "math_animate",
+          "scene_id": "sc01",
+          "provider": "manim",
+          "model": "manim-ce-0.21.0",
+          "cost_usd": 0.0,
+          "duration_seconds": 5.21,
+          "resolution": "1080x1920",
+          "format": "mp4",
+          "subtype": "mathematical_animation",
+          "license": "self-produced",
+          "generation_summary": "Slate frame. Fourteen numbers drift in from beyond the edges and settle into a loose scatter, deliberately unlike each other in magnitude: 8, 47, 312, 1904, 26, 5, 118, 9430, 63, 271, 12, 704, 3, 1580. They are set in Space Mono at three different sizes so the scatter has weight variation without colour variation. Nothing is labelled, nothing is explained, and no digit is highlighted yet. The last two numbers are still settling when the cut comes."
+        },
+        {
+          "id": "vid-sc02",
+          "type": "animation",
+          "path": "assets/video/sc02.mp4",
+          "source_tool": "math_animate",
+          "scene_id": "sc02",
+          "provider": "manim",
+          "model": "manim-ce-0.21.0",
+          "cost_usd": 0.0,
+          "duration_seconds": 4.27,
+          "resolution": "1080x1920",
+          "format": "mp4",
+          "subtype": "mathematical_animation",
+          "license": "self-produced",
+          "generation_summary": "The leading digit of each scattered number detaches and flies to a three-by-three grid of nine hollow bone boxes, digit 1 top-left through digit 9 bottom-right. Each box carries 11.1% beneath it in Space Mono. The grid is exactly regular: equal boxes, equal gaps, equal captions. This shot exists to be destroyed by the next one."
+        },
+        {
+          "id": "vid-sc03",
+          "type": "animation",
+          "path": "assets/video/sc03.mp4",
+          "source_tool": "math_animate",
+          "scene_id": "sc03",
+          "provider": "manim",
+          "model": "manim-ce-0.21.0",
+          "cost_usd": 0.0,
+          "duration_seconds": 5.05,
+          "resolution": "1080x1920",
+          "format": "mp4",
+          "subtype": "mathematical_animation",
+          "license": "self-produced",
+          "generation_summary": "The grid breaks. All nine boxes leave the grid and reflow into a single vertical column of nine horizontal bars whose lengths are the true Benford frequencies. Bar 1 fills chartreuse and reads 30.1%; bar 9 collapses to a stub reading 4.6%; the other seven take their true values in bone. The regularity of the previous shot is gone in one stepped move."
+        },
+        {
+          "id": "vid-sc04",
+          "type": "animation",
+          "path": "assets/video/sc04.mp4",
+          "source_tool": "math_animate",
+          "scene_id": "sc04",
+          "provider": "manim",
+          "model": "manim-ce-0.21.0",
+          "cost_usd": 0.0,
+          "duration_seconds": 3.0,
+          "resolution": "1080x1920",
+          "format": "mp4",
+          "subtype": "mathematical_animation",
+          "license": "self-produced",
+          "generation_summary": "Everything clears in one cut. The frame is empty slate for a beat. Then a single heavy bone rule draws itself horizontally across the middle at a constant rate, left edge to right edge, and stops. No ticks, no labels, no caliper. The frame stays with it in silence for the remaining half second."
+        },
+        {
+          "id": "vid-sc05",
+          "type": "animation",
+          "path": "assets/video/sc05.mp4",
+          "source_tool": "math_animate",
+          "scene_id": "sc05",
+          "provider": "manim",
+          "model": "manim-ce-0.21.0",
+          "cost_usd": 0.0,
+          "duration_seconds": 3.87,
+          "resolution": "1080x1920",
+          "format": "mp4",
+          "subtype": "mathematical_animation",
+          "license": "self-produced",
+          "generation_summary": "Ticks snap onto the bare rule one at a time at positions computed as log10(d) for d = 1..10, each with its numeral beneath in Space Mono. The spacing is visibly and correctly uneven: the gap between 1 and 2 is enormous, the gap between 9 and 10 is a sliver. Nothing announces this \u2014 the ticks simply land where they land."
+        },
+        {
+          "id": "vid-sc06",
+          "type": "animation",
+          "path": "assets/video/sc06.mp4",
+          "source_tool": "math_animate",
+          "scene_id": "sc06",
+          "provider": "manim",
+          "model": "manim-ce-0.21.0",
+          "cost_usd": 0.0,
+          "duration_seconds": 3.94,
+          "resolution": "1080x1920",
+          "format": "mp4",
+          "subtype": "mathematical_animation",
+          "license": "self-produced",
+          "generation_summary": "Two chartreuse span bars appear under the ruler: one from 1 to 2, one from 10 to 20. The second is shown to be exactly the same length as the first \u2014 it detaches, travels along the ruler and lays itself over the first, matching edge to edge. This is the only place in the video where the ruler's defining property is demonstrated rather than stated."
+        },
+        {
+          "id": "vid-sc07",
+          "type": "animation",
+          "path": "assets/video/sc07.mp4",
+          "source_tool": "math_animate",
+          "scene_id": "sc07",
+          "provider": "manim",
+          "model": "manim-ce-0.21.0",
+          "cost_usd": 0.0,
+          "duration_seconds": 4.06,
+          "resolution": "1080x1920",
+          "format": "mp4",
+          "subtype": "mathematical_animation",
+          "license": "self-produced",
+          "generation_summary": "The caliper enters from the top \u2014 a drawn vernier caliper with a fixed jaw, a sliding jaw and a beam, in bone. It closes across the stretch from 1 to 2 and reports .301 in Space Mono on its beam. It then steps along the ruler in seven discrete jumps, one per digit, and closes on 9 to 10, reporting .046. The two readings are left on screen beneath their stretches."
+        },
+        {
+          "id": "vid-sc08",
+          "type": "animation",
+          "path": "assets/video/sc08.mp4",
+          "source_tool": "math_animate",
+          "scene_id": "sc08",
+          "provider": "manim",
+          "model": "manim-ce-0.21.0",
+          "cost_usd": 0.0,
+          "duration_seconds": 3.96,
+          "resolution": "1080x1920",
+          "format": "mp4",
+          "subtype": "mathematical_animation",
+          "license": "self-produced",
+          "generation_summary": "A marker drops onto the ruler from above at uniformly random positions, forty times, accelerating. Each landing lights the stretch it fell in and adds one to a tally kept under that digit. The tally is deliberately allowed to be ragged \u2014 it is a sample, not the law. By the end the shape of the tally is unmistakably the shape of the distribution from sc03."
+        },
+        {
+          "id": "vid-sc09",
+          "type": "animation",
+          "path": "assets/video/sc09.mp4",
+          "source_tool": "math_animate",
+          "scene_id": "sc09",
+          "provider": "manim",
+          "model": "manim-ce-0.21.0",
+          "cost_usd": 0.0,
+          "duration_seconds": 3.7,
+          "resolution": "1080x1920",
+          "format": "mp4",
+          "subtype": "mathematical_animation",
+          "license": "self-produced",
+          "generation_summary": "The single continuous move of the entire piece. The nine stretches detach from the ruler, rotate ninety degrees and stand upright, keeping their exact lengths as heights, until they are the nine bars of the Benford distribution \u2014 the same object the viewer already saw in sc03, now assembled out of the thing that caused it. This is the only shot in the video with an eased rate function."
+        },
+        {
+          "id": "vid-sc10",
+          "type": "animation",
+          "path": "assets/video/sc10.mp4",
+          "source_tool": "math_animate",
+          "scene_id": "sc10",
+          "provider": "manim",
+          "model": "manim-ce-0.21.0",
+          "cost_usd": 0.0,
+          "duration_seconds": 5.91,
+          "resolution": "1080x1920",
+          "format": "mp4",
+          "subtype": "mathematical_animation",
+          "license": "self-produced",
+          "generation_summary": "A column of invented figures writes itself in from the top of the frame \u2014 plausible expense-report amounts, one line at a time. Each line's leading digit adds to a tally of nine hollow bone outline bars on the right. The hollow bars come out nearly flat, because a person inventing numbers spreads them evenly. Then the filled chartreuse Benford curve from sc09 drops in over the hollow bars and does not match. Real is filled; fabricated is empty."
+        },
+        {
+          "id": "vid-sc11",
+          "type": "animation",
+          "path": "assets/video/sc11.mp4",
+          "source_tool": "math_animate",
+          "scene_id": "sc11",
+          "provider": "manim",
+          "model": "manim-ce-0.21.0",
+          "cost_usd": 0.0,
+          "duration_seconds": 4.19,
+          "resolution": "1080x1920",
+          "format": "mp4",
+          "subtype": "mathematical_animation",
+          "license": "self-produced",
+          "generation_summary": "The frame holds one figure: 3.7% set large in Space Mono, with the word DEFICIT small above it and GREECE, 2009 small below. On the beat, the number is overwritten in place by 15.4% in a single frame \u2014 no travel, no morph, no transition. The number is simply a different number. The old value is left as a struck ghost at low opacity for the remaining second."
+        },
+        {
+          "id": "vid-sc12",
+          "type": "animation",
+          "path": "assets/video/sc12.mp4",
+          "source_tool": "math_animate",
+          "scene_id": "sc12",
+          "provider": "manim",
+          "model": "manim-ce-0.21.0",
+          "cost_usd": 0.0,
+          "duration_seconds": 4.34,
+          "resolution": "1080x1920",
+          "format": "mp4",
+          "subtype": "mathematical_animation",
+          "license": "self-produced",
+          "generation_summary": "The ruler returns, but rescaled: it now runs from 1 to 100000, five decades across the frame. The caliper returns too, and this time it does not measure a digit \u2014 it opens across the span of a dataset. A cloud of chartreuse sample points is scattered across four of the five decades, and the caliper's jaws open wide to enclose them. The reading on the beam is not a width now but a count of decades: 4."
+        },
+        {
+          "id": "vid-sc13",
+          "type": "animation",
+          "path": "assets/video/sc13.mp4",
+          "source_tool": "math_animate",
+          "scene_id": "sc13",
+          "provider": "manim",
+          "model": "manim-ce-0.21.0",
+          "cost_usd": 0.0,
+          "duration_seconds": 5.09,
+          "resolution": "1080x1920",
+          "format": "mp4",
+          "subtype": "mathematical_animation",
+          "license": "self-produced",
+          "generation_summary": "The chartreuse cloud is replaced in one step by a magenta cloud crushed into a single narrow stretch of the ruler \u2014 adult heights between 1.4 and 2.0 metres, then precinct counts between 200 and 900. The caliper closes onto them and its jaws are almost shut; the beam reads 0. This is the only magenta in the video. The final frame holds: the caliper left closed on the ruler, the magenta cloud under it, nothing moving, for the last second and a half."
+        },
+        {
+          "id": "nar-s01",
+          "type": "narration",
+          "path": "assets/audio/s01.wav",
+          "source_tool": "piper_tts",
+          "scene_id": "s01",
+          "provider": "piper",
+          "model": "en_US-ryan-high",
+          "cost_usd": 0.0,
+          "duration_seconds": 4.994,
+          "format": "wav",
+          "license": "self-produced",
+          "voice_performance": {
+            "source_section_id": "s01",
+            "delivery_cues_applied": true,
+            "provider_text_used": true,
+            "sample_approved": true,
+            "provider_settings": {
+              "length_scale": 0.98,
+              "sentence_silence": 0.14,
+              "model_path": ".voices/piper/en_US-ryan-high.onnx"
+            },
+            "review_notes": "Synthesised per section so the real duration could be measured; the animation was cut to those measurements."
+          }
+        },
+        {
+          "id": "nar-s02",
+          "type": "narration",
+          "path": "assets/audio/s02.wav",
+          "source_tool": "piper_tts",
+          "scene_id": "s02",
+          "provider": "piper",
+          "model": "en_US-ryan-high",
+          "cost_usd": 0.0,
+          "duration_seconds": 4.111,
+          "format": "wav",
+          "license": "self-produced",
+          "voice_performance": {
+            "source_section_id": "s02",
+            "delivery_cues_applied": true,
+            "provider_text_used": true,
+            "sample_approved": true,
+            "provider_settings": {
+              "length_scale": 0.98,
+              "sentence_silence": 0.14,
+              "model_path": ".voices/piper/en_US-ryan-high.onnx"
+            },
+            "review_notes": "Synthesised per section so the real duration could be measured; the animation was cut to those measurements."
+          }
+        },
+        {
+          "id": "nar-s03",
+          "type": "narration",
+          "path": "assets/audio/s03.wav",
+          "source_tool": "piper_tts",
+          "scene_id": "s03",
+          "provider": "piper",
+          "model": "en_US-ryan-high",
+          "cost_usd": 0.0,
+          "duration_seconds": 4.703,
+          "format": "wav",
+          "license": "self-produced",
+          "voice_performance": {
+            "source_section_id": "s03",
+            "delivery_cues_applied": true,
+            "provider_text_used": true,
+            "sample_approved": true,
+            "provider_settings": {
+              "length_scale": 0.98,
+              "sentence_silence": 0.14,
+              "model_path": ".voices/piper/en_US-ryan-high.onnx"
+            },
+            "review_notes": "Synthesised per section so the real duration could be measured; the animation was cut to those measurements."
+          }
+        },
+        {
+          "id": "nar-s04",
+          "type": "narration",
+          "path": "assets/audio/s04.wav",
+          "source_tool": "piper_tts",
+          "scene_id": "s04",
+          "provider": "piper",
+          "model": "en_US-ryan-high",
+          "cost_usd": 0.0,
+          "duration_seconds": 2.45,
+          "format": "wav",
+          "license": "self-produced",
+          "voice_performance": {
+            "source_section_id": "s04",
+            "delivery_cues_applied": true,
+            "provider_text_used": true,
+            "sample_approved": true,
+            "provider_settings": {
+              "length_scale": 0.98,
+              "sentence_silence": 0.14,
+              "model_path": ".voices/piper/en_US-ryan-high.onnx"
+            },
+            "review_notes": "Synthesised per section so the real duration could be measured; the animation was cut to those measurements."
+          }
+        },
+        {
+          "id": "nar-s05",
+          "type": "narration",
+          "path": "assets/audio/s05.wav",
+          "source_tool": "piper_tts",
+          "scene_id": "s05",
+          "provider": "piper",
+          "model": "en_US-ryan-high",
+          "cost_usd": 0.0,
+          "duration_seconds": 7.617,
+          "format": "wav",
+          "license": "self-produced",
+          "voice_performance": {
+            "source_section_id": "s05",
+            "delivery_cues_applied": true,
+            "provider_text_used": true,
+            "sample_approved": true,
+            "provider_settings": {
+              "length_scale": 0.98,
+              "sentence_silence": 0.14,
+              "model_path": ".voices/piper/en_US-ryan-high.onnx"
+            },
+            "review_notes": "Synthesised per section so the real duration could be measured; the animation was cut to those measurements."
+          }
+        },
+        {
+          "id": "nar-s06",
+          "type": "narration",
+          "path": "assets/audio/s06.wav",
+          "source_tool": "piper_tts",
+          "scene_id": "s06",
+          "provider": "piper",
+          "model": "en_US-ryan-high",
+          "cost_usd": 0.0,
+          "duration_seconds": 7.814,
+          "format": "wav",
+          "license": "self-produced",
+          "voice_performance": {
+            "source_section_id": "s06",
+            "delivery_cues_applied": true,
+            "provider_text_used": true,
+            "sample_approved": true,
+            "provider_settings": {
+              "length_scale": 0.98,
+              "sentence_silence": 0.14,
+              "model_path": ".voices/piper/en_US-ryan-high.onnx"
+            },
+            "review_notes": "Synthesised per section so the real duration could be measured; the animation was cut to those measurements."
+          }
+        },
+        {
+          "id": "nar-s07",
+          "type": "narration",
+          "path": "assets/audio/s07.wav",
+          "source_tool": "piper_tts",
+          "scene_id": "s07",
+          "provider": "piper",
+          "model": "en_US-ryan-high",
+          "cost_usd": 0.0,
+          "duration_seconds": 3.542,
+          "format": "wav",
+          "license": "self-produced",
+          "voice_performance": {
+            "source_section_id": "s07",
+            "delivery_cues_applied": true,
+            "provider_text_used": true,
+            "sample_approved": true,
+            "provider_settings": {
+              "length_scale": 0.98,
+              "sentence_silence": 0.14,
+              "model_path": ".voices/piper/en_US-ryan-high.onnx"
+            },
+            "review_notes": "Synthesised per section so the real duration could be measured; the animation was cut to those measurements."
+          }
+        },
+        {
+          "id": "nar-s08",
+          "type": "narration",
+          "path": "assets/audio/s08.wav",
+          "source_tool": "piper_tts",
+          "scene_id": "s08",
+          "provider": "piper",
+          "model": "en_US-ryan-high",
+          "cost_usd": 0.0,
+          "duration_seconds": 5.69,
+          "format": "wav",
+          "license": "self-produced",
+          "voice_performance": {
+            "source_section_id": "s08",
+            "delivery_cues_applied": true,
+            "provider_text_used": true,
+            "sample_approved": true,
+            "provider_settings": {
+              "length_scale": 0.98,
+              "sentence_silence": 0.14,
+              "model_path": ".voices/piper/en_US-ryan-high.onnx"
+            },
+            "review_notes": "Synthesised per section so the real duration could be measured; the animation was cut to those measurements."
+          }
+        },
+        {
+          "id": "nar-s09",
+          "type": "narration",
+          "path": "assets/audio/s09.wav",
+          "source_tool": "piper_tts",
+          "scene_id": "s09",
+          "provider": "piper",
+          "model": "en_US-ryan-high",
+          "cost_usd": 0.0,
+          "duration_seconds": 3.774,
+          "format": "wav",
+          "license": "self-produced",
+          "voice_performance": {
+            "source_section_id": "s09",
+            "delivery_cues_applied": true,
+            "provider_text_used": true,
+            "sample_approved": true,
+            "provider_settings": {
+              "length_scale": 0.98,
+              "sentence_silence": 0.14,
+              "model_path": ".voices/piper/en_US-ryan-high.onnx"
+            },
+            "review_notes": "Synthesised per section so the real duration could be measured; the animation was cut to those measurements."
+          }
+        },
+        {
+          "id": "nar-s10",
+          "type": "narration",
+          "path": "assets/audio/s10.wav",
+          "source_tool": "piper_tts",
+          "scene_id": "s10",
+          "provider": "piper",
+          "model": "en_US-ryan-high",
+          "cost_usd": 0.0,
+          "duration_seconds": 8.326,
+          "format": "wav",
+          "license": "self-produced",
+          "voice_performance": {
+            "source_section_id": "s10",
+            "delivery_cues_applied": true,
+            "provider_text_used": true,
+            "sample_approved": true,
+            "provider_settings": {
+              "length_scale": 0.98,
+              "sentence_silence": 0.14,
+              "model_path": ".voices/piper/en_US-ryan-high.onnx"
+            },
+            "review_notes": "Synthesised per section so the real duration could be measured; the animation was cut to those measurements."
+          }
+        },
+        {
+          "id": "mix-narration",
+          "type": "audio",
+          "path": "assets/audio/narration_mix.wav",
+          "source_tool": "numpy+wave",
+          "scene_id": "all",
+          "provider": "local",
+          "cost_usd": 0.0,
+          "duration_seconds": 56.6,
+          "format": "wav",
+          "license": "self-produced",
+          "generation_summary": "The ten narration sections placed at their measured start times, plus sixteen machined ticks \u2014 one per caliper move in sc07, sc12 and sc13. There is no music bed: silence under the voice is the design, and the only sound the picture makes is the instrument."
+        }
+      ],
+      "total_cost_usd": 0.0,
+      "metadata": {
+        "providers_used": [
+          "manim (local)",
+          "piper (local)"
+        ],
+        "api_keys_used": "none",
+        "fonts": "Space Grotesk and Space Mono, fetched once from the google/fonts GitHub repository because fonts.gstatic.com is reachable but the render browser does not trust this environment's proxy CA. TTFs installed to the system font path for Manim; woff2 inlined as data URIs for Remotion.",
+        "determinism": "Every random position in the piece comes from a seeded LCG in benford.py, so the drop test and the sample clouds redraw identically."
+      }
+    }
+  },
+  "style_playbook": "minimalist-diagram",
+  "review": {
+    "status": "passed",
+    "rounds": 3,
+    "findings": [
+      {
+        "severity": "critical",
+        "note": "Round 1: percentage labels in sc03 overlapped their bars; the sc09 caliper was illegible when nearly shut; sc06 decade labels collided; sc10 layout collided with the ledger. All fixed before any full render."
+      },
+      {
+        "severity": "critical",
+        "note": "Round 2: the caliper was re-designed with a fixed full-width beam and a reading on the instrument rather than over the measurement, which is what made a nearly-shut jaw readable."
+      },
+      {
+        "severity": "suggestion",
+        "note": "Round 3: the scatter fought the grid in sc02; it now recedes to 18% opacity when the grid arrives."
+      }
+    ]
+  },
+  "cost_snapshot": {
+    "spent_usd": 0,
+    "estimated_total_usd": 0
+  },
+  "metadata": {
+    "assets": 24,
+    "providers": [
+      "manim",
+      "piper"
+    ],
+    "cost_usd": 0
+  }
+}

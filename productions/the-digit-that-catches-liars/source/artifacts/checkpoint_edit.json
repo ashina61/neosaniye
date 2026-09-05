@@ -1,0 +1,284 @@
+{
+  "version": "1.0",
+  "project_id": "the-digit-that-catches-liars",
+  "pipeline_type": "animated-explainer",
+  "stage": "edit",
+  "status": "completed",
+  "timestamp": "2026-09-05T08:53:11.889481+00:00",
+  "checkpoint_policy": "guided",
+  "human_approval_required": false,
+  "human_approved": false,
+  "artifacts": {
+    "edit_decisions": {
+      "version": "1.0",
+      "cuts": [
+        {
+          "id": "sc01",
+          "source": "assets/video/sc01.mp4",
+          "in_seconds": 0.0,
+          "out_seconds": 5.2,
+          "layer": "primary",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "transition_duration": 0.0,
+          "backgroundColor": "#161A26",
+          "reason": "Hard cut. There is not a single dissolve in this video; the reference's four-to-five-second cadence is kept and nothing else about it is."
+        },
+        {
+          "id": "sc02",
+          "source": "assets/video/sc02.mp4",
+          "in_seconds": 0.0,
+          "out_seconds": 4.267,
+          "layer": "primary",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "transition_duration": 0.0,
+          "backgroundColor": "#161A26",
+          "reason": "Hard cut. There is not a single dissolve in this video; the reference's four-to-five-second cadence is kept and nothing else about it is."
+        },
+        {
+          "id": "sc03",
+          "source": "assets/video/sc03.mp4",
+          "in_seconds": 0.0,
+          "out_seconds": 5.067,
+          "layer": "primary",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "transition_duration": 0.0,
+          "backgroundColor": "#161A26",
+          "reason": "Hard cut. There is not a single dissolve in this video; the reference's four-to-five-second cadence is kept and nothing else about it is."
+        },
+        {
+          "id": "sc04",
+          "source": "assets/video/sc04.mp4",
+          "in_seconds": 0.0,
+          "out_seconds": 3.0,
+          "layer": "primary",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "transition_duration": 0.0,
+          "backgroundColor": "#161A26",
+          "reason": "Hard cut. There is not a single dissolve in this video; the reference's four-to-five-second cadence is kept and nothing else about it is."
+        },
+        {
+          "id": "sc05",
+          "source": "assets/video/sc05.mp4",
+          "in_seconds": 0.0,
+          "out_seconds": 3.867,
+          "layer": "primary",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "transition_duration": 0.0,
+          "backgroundColor": "#161A26",
+          "reason": "Hard cut. There is not a single dissolve in this video; the reference's four-to-five-second cadence is kept and nothing else about it is."
+        },
+        {
+          "id": "sc06",
+          "source": "assets/video/sc06.mp4",
+          "in_seconds": 0.0,
+          "out_seconds": 3.933,
+          "layer": "primary",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "transition_duration": 0.0,
+          "backgroundColor": "#161A26",
+          "reason": "Hard cut. There is not a single dissolve in this video; the reference's four-to-five-second cadence is kept and nothing else about it is."
+        },
+        {
+          "id": "sc07",
+          "source": "assets/video/sc07.mp4",
+          "in_seconds": 0.0,
+          "out_seconds": 4.067,
+          "layer": "primary",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "transition_duration": 0.0,
+          "backgroundColor": "#161A26",
+          "reason": "Hard cut. There is not a single dissolve in this video; the reference's four-to-five-second cadence is kept and nothing else about it is."
+        },
+        {
+          "id": "sc08",
+          "source": "assets/video/sc08.mp4",
+          "in_seconds": 0.0,
+          "out_seconds": 3.967,
+          "layer": "primary",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "transition_duration": 0.0,
+          "backgroundColor": "#161A26",
+          "reason": "Hard cut. There is not a single dissolve in this video; the reference's four-to-five-second cadence is kept and nothing else about it is."
+        },
+        {
+          "id": "sc09",
+          "source": "assets/video/sc09.mp4",
+          "in_seconds": 0.0,
+          "out_seconds": 3.7,
+          "layer": "primary",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "transition_duration": 0.0,
+          "backgroundColor": "#161A26",
+          "reason": "Hard cut. There is not a single dissolve in this video; the reference's four-to-five-second cadence is kept and nothing else about it is."
+        },
+        {
+          "id": "sc10",
+          "source": "assets/video/sc10.mp4",
+          "in_seconds": 0.0,
+          "out_seconds": 5.9,
+          "layer": "primary",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "transition_duration": 0.0,
+          "backgroundColor": "#161A26",
+          "reason": "Hard cut. There is not a single dissolve in this video; the reference's four-to-five-second cadence is kept and nothing else about it is."
+        },
+        {
+          "id": "sc11",
+          "source": "assets/video/sc11.mp4",
+          "in_seconds": 0.0,
+          "out_seconds": 4.2,
+          "layer": "primary",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "transition_duration": 0.0,
+          "backgroundColor": "#161A26",
+          "reason": "Hard cut. There is not a single dissolve in this video; the reference's four-to-five-second cadence is kept and nothing else about it is."
+        },
+        {
+          "id": "sc12",
+          "source": "assets/video/sc12.mp4",
+          "in_seconds": 0.0,
+          "out_seconds": 3.333,
+          "layer": "primary",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "transition_duration": 0.0,
+          "backgroundColor": "#161A26",
+          "reason": "Hard cut. There is not a single dissolve in this video; the reference's four-to-five-second cadence is kept and nothing else about it is."
+        },
+        {
+          "id": "sc13",
+          "source": "assets/video/sc13.mp4",
+          "in_seconds": 0.0,
+          "out_seconds": 6.1,
+          "layer": "primary",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "transition_duration": 0.0,
+          "backgroundColor": "#161A26",
+          "reason": "Hard cut. There is not a single dissolve in this video; the reference's four-to-five-second cadence is kept and nothing else about it is."
+        }
+      ],
+      "audio": {
+        "narration": {
+          "segments": [
+            {
+              "asset_id": "nar-s01",
+              "start_seconds": 0.0,
+              "end_seconds": 4.994
+            },
+            {
+              "asset_id": "nar-s02",
+              "start_seconds": 5.214,
+              "end_seconds": 9.325
+            },
+            {
+              "asset_id": "nar-s03",
+              "start_seconds": 9.485,
+              "end_seconds": 14.188
+            },
+            {
+              "asset_id": "nar-s04",
+              "start_seconds": 14.528,
+              "end_seconds": 16.978
+            },
+            {
+              "asset_id": "nar-s05",
+              "start_seconds": 17.528,
+              "end_seconds": 25.145
+            },
+            {
+              "asset_id": "nar-s06",
+              "start_seconds": 25.345,
+              "end_seconds": 33.159
+            },
+            {
+              "asset_id": "nar-s07",
+              "start_seconds": 33.359,
+              "end_seconds": 36.901
+            },
+            {
+              "asset_id": "nar-s08",
+              "start_seconds": 37.061,
+              "end_seconds": 42.751
+            },
+            {
+              "asset_id": "nar-s09",
+              "start_seconds": 42.971,
+              "end_seconds": 46.745
+            },
+            {
+              "asset_id": "nar-s10",
+              "start_seconds": 47.165,
+              "end_seconds": 55.491
+            }
+          ]
+        },
+        "sfx": [
+          {
+            "asset_id": "mix-narration",
+            "start_seconds": 0.0,
+            "volume": 1.0
+          }
+        ]
+      },
+      "subtitles": {
+        "enabled": true,
+        "style": "burned",
+        "source": "artifacts/captions.json",
+        "font": "Space Grotesk 500",
+        "font_size": 54,
+        "color": "#F0EAD8",
+        "background": "none",
+        "position": "bottom-center",
+        "max_words_per_line": 6
+      },
+      "transitions": [],
+      "renderer_family": "explainer-data",
+      "render_runtime": "remotion",
+      "composition_mode": "atelier",
+      "bespoke": {
+        "entry": "/home/user/neosaniye/projects/the-digit-that-catches-liars/source/index.tsx",
+        "composition_id": "TheDigitThatCatchesLiars",
+        "props_path": "/home/user/neosaniye/projects/the-digit-that-catches-liars/artifacts/remotion_props.json",
+        "public_dir": "/home/user/neosaniye/projects/the-digit-that-catches-liars/public",
+        "crf": 16,
+        "concurrency": 2,
+        "art_direction": "A machine shop for numbers. Slate #161A26 ground, bone #F0EAD8 for all structure and all language, chartreuse #C9E265 marking whatever is measurably true, magenta #E5487B held for exactly one appearance at the turn. Fabricated data is drawn as hollow bone outline rather than given a hue. The signature device is a vernier caliper with a fixed beam and sliding jaws, which measures digit widths in sc07 and the span of a dataset in sc12-13 \u2014 the power and the limit as the same gesture. Motion is stepped or constant-rate everywhere except sc09, the single continuous move where the ruler stands up into the chart. Type is Space Grotesk 500/700 for language and Space Mono 400 for every measured number. Manim supplies every pixel of the picture; this Remotion layer is glass \u2014 the chip, the burned captions and two annotations, nothing else."
+      },
+      "slideshow_risk_score": {
+        "average": 0.06,
+        "verdict": "strong"
+      },
+      "metadata": {
+        "total_seconds": 56.6,
+        "total_frames": 1698,
+        "fps": 30,
+        "audio_path": "assets/audio/narration_mix.wav",
+        "loudness_target_lufs": -14,
+        "music": "None. Silence under the narration is the design, not a shortage \u2014 see decision_log d-007. The only non-voice sound is a machined tick, produced locally, that marks each caliper move and stops when the caliper leaves.",
+        "why_two_runtimes": "Manim renders thirteen silent clips; Remotion mounts them as a footage bed and draws the annotation layer over them. That is the reference video's grammar with drawn footage underneath, which is what makes productions/MANIFESTO.md concrete rather than a slogan."
+      }
+    }
+  },
+  "style_playbook": "minimalist-diagram",
+  "review": {
+    "status": "passed",
+    "rounds": 1,
+    "findings": []
+  },
+  "cost_snapshot": {
+    "spent_usd": 0,
+    "estimated_total_usd": 0
+  }
+}

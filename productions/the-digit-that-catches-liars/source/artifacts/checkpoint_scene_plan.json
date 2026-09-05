@@ -1,0 +1,435 @@
+{
+  "version": "1.0",
+  "project_id": "the-digit-that-catches-liars",
+  "pipeline_type": "animated-explainer",
+  "stage": "scene_plan",
+  "status": "completed",
+  "timestamp": "2026-09-05T08:44:07.134641+00:00",
+  "checkpoint_policy": "guided",
+  "human_approval_required": true,
+  "human_approved": true,
+  "artifacts": {
+    "scene_plan": {
+      "version": "1.0",
+      "style_playbook": "minimalist-diagram",
+      "scenes": [
+        {
+          "id": "sc01",
+          "type": "animation",
+          "script_section_id": "s01",
+          "start_seconds": 0.0,
+          "end_seconds": 5.21,
+          "description": "Slate frame. Fourteen numbers drift in from beyond the edges and settle into a loose scatter, deliberately unlike each other in magnitude: 8, 47, 312, 1904, 26, 5, 118, 9430, 63, 271, 12, 704, 3, 1580. They are set in Space Mono at three different sizes so the scatter has weight variation without colour variation. Nothing is labelled, nothing is explained, and no digit is highlighted yet. The last two numbers are still settling when the cut comes.",
+          "framing": "Full frame, no margin device. The scatter is centred but not symmetrical.",
+          "movement": "Each number travels in a straight line at a constant machined rate and stops dead \u2014 no deceleration, no overshoot. They arrive on a stagger, not together.",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "overlay_notes": "Remotion: the section chip fades up at 0.6s reading REAL NUMBERS. Captions begin at 0.0.",
+          "narrative_role": "establish_context",
+          "information_role": "Establish that the subject is a heap of ordinary unrelated quantities, and that their magnitudes are wildly different \u2014 which is the precondition the last scene will name.",
+          "hero_moment": false,
+          "texture_keywords": [
+            "slate",
+            "bone",
+            "mono numerals",
+            "scatter",
+            "no hierarchy"
+          ],
+          "required_assets": [
+            {
+              "type": "video",
+              "description": "Manim scene S01Pile, 1080x1920 30fps, 5.21s",
+              "source": "generate"
+            }
+          ]
+        },
+        {
+          "id": "sc02",
+          "type": "animation",
+          "script_section_id": "s02",
+          "start_seconds": 5.21,
+          "end_seconds": 9.48,
+          "description": "The leading digit of each scattered number detaches and flies to a three-by-three grid of nine hollow bone boxes, digit 1 top-left through digit 9 bottom-right. Each box carries 11.1% beneath it in Space Mono. The grid is exactly regular: equal boxes, equal gaps, equal captions. This shot exists to be destroyed by the next one.",
+          "framing": "Centred grid occupying the middle 60% of the frame height, with air above and below.",
+          "movement": "Digits travel at constant rate and snap into their boxes. The boxes draw themselves in a single stepped pass, all nine at once.",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "overlay_notes": "Remotion: chip changes to THE OBVIOUS GUESS. Caption marks the word 'should'.",
+          "narrative_role": "build_tension",
+          "information_role": "State the intuition the viewer already holds, in its most reasonable form, so that the correction has something to land on.",
+          "hero_moment": false,
+          "texture_keywords": [
+            "grid",
+            "hollow boxes",
+            "equal",
+            "regular"
+          ],
+          "required_assets": [
+            {
+              "type": "video",
+              "description": "Manim scene S02Grid, 1080x1920 30fps, 4.27s",
+              "source": "generate"
+            }
+          ]
+        },
+        {
+          "id": "sc03",
+          "type": "animation",
+          "script_section_id": "s03",
+          "start_seconds": 9.48,
+          "end_seconds": 14.53,
+          "description": "The grid breaks. All nine boxes leave the grid and reflow into a single vertical column of nine horizontal bars whose lengths are the true Benford frequencies. Bar 1 fills chartreuse and reads 30.1%; bar 9 collapses to a stub reading 4.6%; the other seven take their true values in bone. The regularity of the previous shot is gone in one stepped move.",
+          "framing": "Column occupying the middle 70% of the frame, digits labelled at the left, percentages at the right in Space Mono.",
+          "movement": "Stepped. The boxes do not travel to their new lengths, they are replaced at them in three quantised jumps. Nothing eases.",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "overlay_notes": "Remotion: chip changes to WHAT ACTUALLY HAPPENS. Caption marks 'thirty percent'.",
+          "narrative_role": "deliver_payload",
+          "information_role": "The result, stated early and without explanation, so that the rest of the video is spent earning it rather than building to it.",
+          "hero_moment": false,
+          "texture_keywords": [
+            "broken grid",
+            "unequal bars",
+            "chartreuse",
+            "collapse"
+          ],
+          "required_assets": [
+            {
+              "type": "video",
+              "description": "Manim scene S03Break, 1080x1920 30fps, 5.05s",
+              "source": "generate"
+            }
+          ]
+        },
+        {
+          "id": "sc04",
+          "type": "animation",
+          "script_section_id": "s04",
+          "start_seconds": 14.53,
+          "end_seconds": 17.53,
+          "description": "Everything clears in one cut. The frame is empty slate for a beat. Then a single heavy bone rule draws itself horizontally across the middle at a constant rate, left edge to right edge, and stops. No ticks, no labels, no caliper. The frame stays with it in silence for the remaining half second.",
+          "framing": "The emptiest frame in the video. Deliberate \u2014 the pivot line is the only thing the viewer should be holding.",
+          "movement": "One constant-rate draw. Nothing else moves.",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "overlay_notes": "Remotion: the chip goes dark for this shot only, the one place in the video with no chip. Caption carries the two short sentences and holds.",
+          "narrative_role": "transition",
+          "information_role": "Reset the frame. Every previous shot was about digits; from here the subject is a length.",
+          "hero_moment": false,
+          "texture_keywords": [
+            "empty",
+            "single rule",
+            "silence",
+            "reset"
+          ],
+          "required_assets": [
+            {
+              "type": "video",
+              "description": "Manim scene S04Rule, 1080x1920 30fps, 3.0s",
+              "source": "generate"
+            }
+          ]
+        },
+        {
+          "id": "sc05",
+          "type": "animation",
+          "script_section_id": "s05",
+          "start_seconds": 17.53,
+          "end_seconds": 21.4,
+          "description": "Ticks snap onto the bare rule one at a time at positions computed as log10(d) for d = 1..10, each with its numeral beneath in Space Mono. The spacing is visibly and correctly uneven: the gap between 1 and 2 is enormous, the gap between 9 and 10 is a sliver. Nothing announces this \u2014 the ticks simply land where they land.",
+          "framing": "The rule sits in the middle third; the numerals hang below it. Air above is reserved for the caliper, which has not arrived yet.",
+          "movement": "Ten discrete snaps on a stagger, constant rate, no easing. The unevenness of the result is the only thing that changes.",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "overlay_notes": "Remotion: chip reads A RULER BUILT FOR MULTIPLYING. A small annotation in the piece's own hand marks the wide first gap.",
+          "narrative_role": "introduce_subject",
+          "information_role": "Introduce the instrument. Its unevenness is presented as a fact of construction, not yet as an explanation.",
+          "hero_moment": false,
+          "texture_keywords": [
+            "ticks",
+            "uneven spacing",
+            "computed positions",
+            "instrument"
+          ],
+          "required_assets": [
+            {
+              "type": "video",
+              "description": "Manim scene S05Ticks, 1080x1920 30fps, 3.87s",
+              "source": "generate"
+            }
+          ]
+        },
+        {
+          "id": "sc06",
+          "type": "animation",
+          "script_section_id": "s05",
+          "start_seconds": 21.4,
+          "end_seconds": 25.34,
+          "description": "Two chartreuse span bars appear under the ruler: one from 1 to 2, one from 10 to 20. The second is shown to be exactly the same length as the first \u2014 it detaches, travels along the ruler and lays itself over the first, matching edge to edge. This is the only place in the video where the ruler's defining property is demonstrated rather than stated.",
+          "framing": "The ruler holds its position; the span bars occupy the band immediately beneath it.",
+          "movement": "The travelling bar moves at constant rate and stops exactly on the other. No ease, no bounce \u2014 the match has to look like a measurement, not a trick.",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "overlay_notes": "Remotion: caption marks 'the same move'.",
+          "narrative_role": "evidence",
+          "information_role": "Establish scale invariance without the phrase. One to two and ten to twenty are the same distance, shown by superposition.",
+          "hero_moment": false,
+          "texture_keywords": [
+            "span bars",
+            "superposition",
+            "chartreuse",
+            "equal lengths"
+          ],
+          "required_assets": [
+            {
+              "type": "video",
+              "description": "Manim scene S06Spans, 1080x1920 30fps, 3.94s",
+              "source": "generate"
+            }
+          ]
+        },
+        {
+          "id": "sc07",
+          "type": "animation",
+          "script_section_id": "s06",
+          "start_seconds": 25.34,
+          "end_seconds": 29.4,
+          "description": "The caliper enters from the top \u2014 a drawn vernier caliper with a fixed jaw, a sliding jaw and a beam, in bone. It closes across the stretch from 1 to 2 and reports .301 in Space Mono on its beam. It then steps along the ruler in seven discrete jumps, one per digit, and closes on 9 to 10, reporting .046. The two readings are left on screen beneath their stretches.",
+          "framing": "Caliper above the rule, readings on the beam. This is the first appearance of the signature device.",
+          "movement": "Pure stepping. The sliding jaw snaps between tick positions; the whole instrument translates between digits in single frames, never a glide.",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "overlay_notes": "Remotion: chip reads .301 AGAINST .046. Caption marks 'six times wider'.",
+          "narrative_role": "evidence",
+          "information_role": "Quantify the unevenness. The two numbers are the whole argument and they are measured on screen, not asserted.",
+          "hero_moment": true,
+          "texture_keywords": [
+            "caliper",
+            "jaws",
+            "vernier",
+            "measurement",
+            "stepping"
+          ],
+          "required_assets": [
+            {
+              "type": "video",
+              "description": "Manim scene S07Caliper, 1080x1920 30fps, 4.06s",
+              "source": "generate"
+            }
+          ]
+        },
+        {
+          "id": "sc08",
+          "type": "animation",
+          "script_section_id": "s06",
+          "start_seconds": 29.4,
+          "end_seconds": 33.36,
+          "description": "A marker drops onto the ruler from above at uniformly random positions, forty times, accelerating. Each landing lights the stretch it fell in and adds one to a tally kept under that digit. The tally is deliberately allowed to be ragged \u2014 it is a sample, not the law. By the end the shape of the tally is unmistakably the shape of the distribution from sc03.",
+          "framing": "Ruler in the middle third, tally counts building below each digit's stretch.",
+          "movement": "Drops are instantaneous \u2014 the marker appears at the top and appears on the ruler, with no travel drawn. The rhythm accelerates from one every 0.2s to several per frame.",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "overlay_notes": "Remotion: caption marks 'far more often'.",
+          "narrative_role": "evidence",
+          "information_role": "Convert the measured widths into a frequency in front of the viewer, so the link between length and probability is watched rather than claimed.",
+          "hero_moment": false,
+          "texture_keywords": [
+            "drops",
+            "tally",
+            "sampling",
+            "ragged",
+            "accelerating"
+          ],
+          "required_assets": [
+            {
+              "type": "video",
+              "description": "Manim scene S08Drops, 1080x1920 30fps, 3.96s",
+              "source": "generate"
+            }
+          ]
+        },
+        {
+          "id": "sc09",
+          "type": "animation",
+          "script_section_id": "s07",
+          "start_seconds": 33.36,
+          "end_seconds": 37.06,
+          "description": "The single continuous move of the entire piece. The nine stretches detach from the ruler, rotate ninety degrees and stand upright, keeping their exact lengths as heights, until they are the nine bars of the Benford distribution \u2014 the same object the viewer already saw in sc03, now assembled out of the thing that caused it. This is the only shot in the video with an eased rate function.",
+          "framing": "Starts on the horizontal ruler in the middle third and ends on a column of bars occupying the lower two thirds.",
+          "movement": "One continuous eased rotation and translation, all nine stretches on a slight stagger so the chart assembles rather than snapping into place. Everything else in the video steps; this does not.",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "overlay_notes": "Remotion: chip reads THE WHOLE LAW. Caption marks 'whole'.",
+          "narrative_role": "resolution",
+          "information_role": "Close the mechanism. The chart is not evidence presented to the viewer, it is a consequence built in front of them.",
+          "hero_moment": true,
+          "texture_keywords": [
+            "stand up",
+            "rotation",
+            "assembly",
+            "the one smooth move"
+          ],
+          "required_assets": [
+            {
+              "type": "video",
+              "description": "Manim scene S09StandUp, 1080x1920 30fps, 3.7s",
+              "source": "generate"
+            }
+          ]
+        },
+        {
+          "id": "sc10",
+          "type": "animation",
+          "script_section_id": "s08",
+          "start_seconds": 37.06,
+          "end_seconds": 42.97,
+          "description": "A column of invented figures writes itself in from the top of the frame \u2014 plausible expense-report amounts, one line at a time. Each line's leading digit adds to a tally of nine hollow bone outline bars on the right. The hollow bars come out nearly flat, because a person inventing numbers spreads them evenly. Then the filled chartreuse Benford curve from sc09 drops in over the hollow bars and does not match. Real is filled; fabricated is empty.",
+          "framing": "Ledger column on the left two thirds, tally bars on the right third, sharing a baseline.",
+          "movement": "Lines write in at a constant machined rate, one per 0.2s. The overlay curve drops in a single step.",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "overlay_notes": "Remotion: chip reads WHY AUDITORS RUN IT. Caption marks 'too even'.",
+          "narrative_role": "comparison",
+          "information_role": "Give the mechanism a consequence. The contrast is carried by fill versus outline, so no new colour is spent.",
+          "hero_moment": false,
+          "texture_keywords": [
+            "ledger",
+            "hollow bars",
+            "flat tally",
+            "mismatch",
+            "fill versus outline"
+          ],
+          "required_assets": [
+            {
+              "type": "video",
+              "description": "Manim scene S10Ledger, 1080x1920 30fps, 5.91s",
+              "source": "generate"
+            }
+          ]
+        },
+        {
+          "id": "sc11",
+          "type": "animation",
+          "script_section_id": "s09",
+          "start_seconds": 42.97,
+          "end_seconds": 47.16,
+          "description": "The frame holds one figure: 3.7% set large in Space Mono, with the word DEFICIT small above it and GREECE, 2009 small below. On the beat, the number is overwritten in place by 15.4% in a single frame \u2014 no travel, no morph, no transition. The number is simply a different number. The old value is left as a struck ghost at low opacity for the remaining second.",
+          "framing": "Single centred figure, the most typographic frame in the video and the only one with no drawn geometry at all.",
+          "movement": "One cut, inside the shot. Nothing else moves.",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "overlay_notes": "Remotion: chip reads ONE REAL CASE. Caption marks 'fifteen'.",
+          "narrative_role": "evidence",
+          "information_role": "Attach a real consequence to the method, in the fewest possible elements, immediately before the video takes the method back.",
+          "hero_moment": false,
+          "texture_keywords": [
+            "single figure",
+            "overwrite",
+            "ghost",
+            "typographic"
+          ],
+          "required_assets": [
+            {
+              "type": "video",
+              "description": "Manim scene S11Greece, 1080x1920 30fps, 4.19s",
+              "source": "generate"
+            }
+          ]
+        },
+        {
+          "id": "sc12",
+          "type": "animation",
+          "script_section_id": "s10",
+          "start_seconds": 47.16,
+          "end_seconds": 51.5,
+          "description": "The ruler returns, but rescaled: it now runs from 1 to 100000, five decades across the frame. The caliper returns too, and this time it does not measure a digit \u2014 it opens across the span of a dataset. A cloud of chartreuse sample points is scattered across four of the five decades, and the caliper's jaws open wide to enclose them. The reading on the beam is not a width now but a count of decades: 4.",
+          "framing": "Ruler across the middle third with decade labels; sample cloud on it; caliper jaws spanning almost the full frame width.",
+          "movement": "The jaws open at a constant machined rate and stop. Sample points appear in one stepped pass.",
+          "transition_in": "cut",
+          "transition_out": "cut",
+          "overlay_notes": "Remotion: chip reads THE CONDITION. Caption marks 'span orders of magnitude'.",
+          "narrative_role": "build_tension",
+          "information_role": "Name the precondition by measuring it with the same instrument that measured the digits, so power and limit are the same gesture.",
+          "hero_moment": false,
+          "texture_keywords": [
+            "five decades",
+            "sample cloud",
+            "wide jaws",
+            "decade count"
+          ],
+          "required_assets": [
+            {
+              "type": "video",
+              "description": "Manim scene S12Span, 1080x1920 30fps, 4.34s",
+              "source": "generate"
+            }
+          ]
+        },
+        {
+          "id": "sc13",
+          "type": "animation",
+          "script_section_id": "s10",
+          "start_seconds": 51.5,
+          "end_seconds": 56.59,
+          "description": "The chartreuse cloud is replaced in one step by a magenta cloud crushed into a single narrow stretch of the ruler \u2014 adult heights between 1.4 and 2.0 metres, then precinct counts between 200 and 900. The caliper closes onto them and its jaws are almost shut; the beam reads 0. This is the only magenta in the video. The final frame holds: the caliper left closed on the ruler, the magenta cloud under it, nothing moving, for the last second and a half.",
+          "framing": "Same ruler and same caliper as sc12, so the difference is entirely in how far the jaws travel.",
+          "movement": "The jaws close at constant rate and stop. Then everything stops. The video ends on a still frame \u2014 the second one in three productions to do so, and the first to end on a closed instrument rather than an open question.",
+          "transition_in": "cut",
+          "transition_out": "hold",
+          "overlay_notes": "Remotion: chip reads THE CONDITION, unchanged, so the two shots read as one measurement. Caption marks 'anything at all' and clears before the last 0.8s, leaving the frame silent and unlabelled.",
+          "narrative_role": "resolution",
+          "information_role": "Take the tool back. A viewer who remembers nothing else should leave holding the test: does this data span decades or not.",
+          "hero_moment": true,
+          "texture_keywords": [
+            "magenta",
+            "crushed cloud",
+            "closed jaws",
+            "zero",
+            "still ending"
+          ],
+          "required_assets": [
+            {
+              "type": "video",
+              "description": "Manim scene S13Narrow, 1080x1920 30fps, 5.09s",
+              "source": "generate"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "total_duration_seconds": 56.59,
+        "frame_rate": 30,
+        "resolution": "1080x1920",
+        "shot_count": 13,
+        "average_shot_seconds": 4.35,
+        "cut_policy": "Every cut is hard. There is not a single dissolve, wipe or fade between shots in the video. The reference video cuts roughly every four to five seconds and that cadence is kept, but the cadence is the only thing taken from it.",
+        "palette": {
+          "ground": "#161A26",
+          "bone": "#F0EAD8",
+          "chartreuse": "#C9E265",
+          "magenta": "#E5487B",
+          "magenta_policy": "sc13 only. If magenta appears anywhere else in the finished render, that is a defect."
+        },
+        "geometry_policy": "Every tick position in sc05 through sc09 and sc12 through sc13 is computed as log10(d). The nine stretch widths are log10(1 + 1/d): .301 .176 .125 .097 .079 .067 .058 .051 .046, summing to 1.000. Nothing is nudged for legibility. The bar heights in sc03 and sc09 are those same nine numbers.",
+        "motion_policy": "Stepped or constant-rate everywhere. Exactly one eased animation exists in the video: the stand-up in sc09. If a second one appears, the motion character has been broken.",
+        "manim_default_rejection": "Manim's factory background, stroke weight, typeface and default smooth easing are all overridden. The engine is used for its geometry only.",
+        "layer_architecture": "Manim renders thirteen silent clips into assets/video/. Remotion mounts them with OffthreadVideo as a footage bed and draws the section chip, the burned captions and the annotation callouts over the top. This is the reference video's grammar \u2014 annotation over footage \u2014 with drawn footage underneath."
+      }
+    }
+  },
+  "style_playbook": "minimalist-diagram",
+  "review": {
+    "status": "passed",
+    "rounds": 1,
+    "findings": [
+      {
+        "severity": "note",
+        "note": "13 shots, average 4.35s, every cut hard. Checked against both STYLE_LEDGER rows on all five fields."
+      }
+    ]
+  },
+  "cost_snapshot": {
+    "spent_usd": 0,
+    "estimated_total_usd": 0
+  }
+}
