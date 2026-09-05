@@ -54,17 +54,65 @@ a doodle that moves from a doodle that is alive.
 | Problem | `#C8322B` | **Once**, on the lid seam at 30.15s, on the box that will not open. |
 | Resolution | `#2E6E9E` | **Once**, drawn along the line of closed lids from 41.4s. |
 
+## The drawing
+
+The rig plays the motion; **`ink-theater/ink-figure.js`** does the drawing, and it
+is in the engine rather than in this file because the character recurs. See
+`productions/STYLE_LEDGER.md` — his name is Nib.
+
+Every part is the same construction as the head, the doorway and the boxes: a
+paper-filled shape with an ink outline. That is not a taste decision. The fill is
+what lets one limb pass in **front** of another; a solid-ink limb crossing a
+solid-ink body is one black shape, and no amount of motion capture survives that.
+The torso is a closed outline whose width at hips, chest and shoulders is
+measured off a single axis — the spine — because a polygon through shL, shR,
+hipR, hipL self-intersects the moment the shoulders rotate past each other in a
+walk and the torso pinches into an hourglass.
+
+Feet are not drawn at a fixed angle. The ankle takes its angle from the shin and
+flattens onto the ground as the foot plants. Feet drawn the obvious way skate,
+and skating feet are the loudest tell that a walk is fake.
+
+## Holding things
+
+The body stays on motion capture. **One arm** is overridden, and only when the
+story needs the hand somewhere: holding the errand, being robbed of it, looking
+at itself empty, and swatting at the errands round its head. A generic walk cycle
+swings an empty arm, so a prop riding in that hand reads as swinging loose rather
+than carried.
+
+Three things that are not obvious and cost a render each to find:
+
+- The reach is measured from the **shoulder**, never the chest. The clips are not
+  all shot from the same angle — a near-profile one collapses both shoulders onto
+  the spine — so a chest-relative target that is a comfortable bent arm in `walk`
+  is past the end of the arm in `shuffle`, and FABRIK answers an unreachable
+  target by straightening the arm and pointing at it.
+- The elbow is forced onto the side the motion capture already has it. FABRIK has
+  no elbow preference of its own and the joint flips between frames, which reads
+  as the arm snapping inside out.
+- `march` and `walk` do not agree on which side is which — the twelve CMU clips
+  have mixed handedness, and `InkPuppet.STAND` had it backwards from every one of
+  them, so the figure carried on the wrong side of the screen until the first
+  clip started and then jumped across its own body.
+
 ## The signature device
 
 **The doorway is a machine.** A barrier arm hinged on the left upright at exactly
-hand height, folded flat up the post so it reads as part of the architecture,
-cocked past vertical at 13.5s like a trap being set, and dropped to horizontal at
-20.33s to sweep the errand out of the figure's hand.
+the height the errand is actually carried at, folded flat up the post so it reads
+as part of the architecture, cocked past vertical at 13.5s like a trap being set,
+dropped to horizontal to sweep the errand out of the figure's hand, and then
+folded innocently back up the post.
 
-Every number in that sentence was solved backwards from one thing: the arm falls
-on the word **"closes"**. The door's position on the page, the scroll rate of the
-world (37.6 px/s), and the moment the walk starts are all consequences of that,
-not choices.
+Every number in that sentence was solved backwards from one thing: the arm lands
+on the word **"closes"** — lands, not starts, so the swing begins 0.15s early.
+The door's position on the page, the scroll rate of the world (37.6 px/s), the
+arm's length (310) and its pivot height (728) are all consequences of that and of
+where the hand actually ends up, not choices. `ARM_Y` is not the figure's own
+hand height: the actor is scaled 1.5x about the ground, so the screen height and
+the rig height are different numbers, and using the rig's one puts the sweep
+200px under the errand — which is invisible in a still, because the errand is
+swapped for a falling copy two frames later.
 
 ## The camera
 

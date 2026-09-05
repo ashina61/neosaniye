@@ -122,6 +122,18 @@ Three things that are not obvious and each cost a cycle:
   lengths are in `ink-theater/mocap/catalog.json` (most are 6.00s; `walk` is
   2.87s, `run` 1.27s). Pass `loop: false` to hold the last frame.
 
+- **A gsap timeline renders its children in start-time order, not insertion
+  order.** A tween at position 0 that redraws something every frame therefore
+  always runs *before* a tween at 22.9s that sets what it should be drawing, and
+  the drawing lags its own data by one render. Sequentially that is 33ms and easy
+  to miss; on a `snapshot --at` seek it is whatever the previous seek left
+  behind, which is how it was finally caught. Redraw from the tweens that move
+  the data, not only from a global ticker.
+- **`hyperframes render` can fail its own FFmpeg probe spuriously.** "FFmpeg
+  cannot start / Install a working 64-bit FFmpeg build" while `ffmpeg -version`
+  runs fine from the shell is a transient spawn failure. Re-run the render before
+  believing it.
+
 `hyperframes lint`, `hyperframes validate` and `hyperframes snapshot --at` are
 the review loop this repository otherwise lacks. `validate` runs real WCAG
 contrast checks in headless Chrome — it is how the errand orange was caught at

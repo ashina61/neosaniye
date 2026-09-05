@@ -25,8 +25,12 @@
 
   var STAND = {
     hips: [0, 0], chest: [0, -88], neck: [0, -150], head: [0, -182],
-    shR: [52, -140], elR: [64, -58], haR: [72, 26], shL: [-52, -140], elL: [-64, -58], haL: [-72, 26],
-    hipR: [26, -6], knR: [32, 120], ftR: [40, 262], hipL: [-26, -6], knL: [-32, 120], ftL: [-40, 262],
+    // L on +x, R on -x. That is the handedness every clip in mocap/clips.js
+    // uses, and STAND had it the other way round: a figure that carries
+    // something in its L hand carried it on the wrong side of the screen until
+    // the first clip started, then jumped across the body.
+    shR: [-52, -140], elR: [-64, -58], haR: [-72, 26], shL: [52, -140], elL: [64, -58], haL: [72, 26],
+    hipR: [-26, -6], knR: [-32, 120], ftR: [-40, 262], hipL: [26, -6], knL: [32, 120], ftL: [40, 262],
     rootY: 0, groundY: 262
   };
 

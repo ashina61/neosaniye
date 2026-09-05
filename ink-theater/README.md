@@ -78,6 +78,71 @@ node mocap/add-motion.mjs backflip 05_20 dance "a backflip"   # CMU id, or a URL
 ```
 Free **CMU mocap** (`una-dinosauria/cmu-mocap`) has thousands. This is what Meta's *Animated Drawings* does, but here it stays **vector, white-ink, with a draw-on reveal** (AD is raster, humanoid-only, no reveal). Provenance (all clips CMU, free for any use): `mocap/NOTE.md` · `THIRD_PARTY_NOTICES.md`.
 
+## Ink Figure — a drawn character on top of the rig (`ink-figure.js`)
+
+InkPuppet gives you motion. What it *draws* from that motion is a wireframe: six
+uniform strokes and a circle. That is right for a capability demo and wrong for a
+channel, because a wireframe reads as a placeholder however good the motion under
+it is. `InkFigure` replaces the drawing and keeps everything else — same rig, same
+clips, same seek-safe determinism.
+
+```js
+var pup = InkPuppet.create(mount, { cx: 540, ground: 1180, boil: "boil" });
+var fig = InkFigure.attach(pup, { headR: 46 });
+fig.pencilIn(tl, { start: 0.15, each: 0.34 });   // the rough sketch draws itself
+fig.inkIn(tl, { at: 1.95, dur: 0.6 });           // then the ink goes on over it
+InkPuppet.choreograph(tl, pup, [ ... ], { start: 6.0 });
+```
+
+What it adds: a torso with a silhouette, limbs as tapered brush ribbons (thick at
+the shoulder, thin at the wrist), hands and feet that follow the shin, a face on
+one side of the head, and a two-stage reveal — pencil under-drawing, then ink.
+
+Five things it gets right that are easy to get wrong:
+
+- **Every part is paper-filled with an ink outline**, like the head. The fill is
+  not decoration — it is what lets one limb pass in front of another. Two solid
+  shapes overlapping is one black shape, and no amount of motion capture
+  survives that.
+- **Build the torso along the spine, not through the joints.** A polygon through
+  `shL, shR, hipR, hipL` self-intersects the moment the shoulders rotate past
+  each other in a walk, and the body pinches into an hourglass. Measuring hip,
+  chest and shoulder widths off one axis cannot.
+- **The foot takes its angle from the shin and flattens as it plants.** Drawn at
+  a fixed angle — the obvious way — the feet skate, and skating feet are the
+  loudest tell that a walk is fake.
+- **Put the face on one side.** A symmetrical figure has no facing, so flipping
+  it to walk back is invisible. The face is the only thing that says which way
+  the motion is going.
+- **Measure a carry target from the shoulder, not the chest.** See below.
+
+### Carrying something — `fig.carry`
+
+`fig.carry` is four plain numbers the timeline can tween: `on` (0 = pure mocap,
+1 = fully posed), `from` (`"shoulder"`, `"chest"` or `"head"`), and `dx, dy`. The
+body stays on motion capture; only the near arm is overridden, and only when the
+story needs the hand somewhere. This is not hand-authored character motion — the
+style rule is about locomotion — it is prop work, and a generic walk cycle swings
+an empty arm, so an object riding in that hand reads as swinging loose.
+
+- **Measure from the shoulder.** The twelve clips are not all shot from the same
+  angle: `walk` spreads the shoulders 145 units apart, `shuffle` collapses them
+  onto the spine. A chest-relative target that is a comfortable bent arm in one
+  is past the end of the arm in the other, and FABRIK answers an unreachable
+  target by straightening the arm and pointing at it.
+- **The clips have mixed handedness.** `shL - shR` averages +145 in `walk`, -27
+  in `march`, -105 in `wave`. Whichever chain you nominate as the carrying one,
+  check it against the clips you actually sequence.
+- **Repose on every carry tween.** A gsap timeline renders its children in
+  start-time order, so a per-frame redraw tween at position 0 always draws
+  *before* a carry tween at 22.9s has written its values, and the figure comes
+  out one render behind its own gesture. Give the carry tweens
+  `onUpdate: function () { pup.setPose(fig.pose()); }`.
+
+`InkTheater.inkRibbon` swells in the middle and thins at both ends, which is
+right for a drawn line and wrong for a limb. `InkFigure.taper(pts, w0, w1)` is
+the one-sided version and is exported for reuse.
+
 ### Speech balloons — `InkTheater.balloon(tl, opts)`
 Comic balloon that grows from the mouth, with HTML overlay text (so the webfont applies). `opts`: `into` (an SVG `<g>`), `overlay` (an HTML div), `at`, `dur`, `text`, `mouth:[x,y]`, `center:[x,y]`, `w`, `size`, `boil`.
 

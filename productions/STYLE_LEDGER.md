@@ -45,7 +45,7 @@ Changing only these is not a new design — it is the same video with new data:
 
 | Field | Value |
 |---|---|
-| Design read | A doodle on a sheet of paper is trying to run an errand, and the paper keeps taking it away. The first production that is a character rather than an instrument. |
+| Design read | A doodle on a sheet of paper is trying to run an errand, and the paper keeps taking it away. The first production that is a character rather than an instrument, and the one that introduced **Nib**. |
 | Ground | Warm white paper `#FCFBF8`, no grain, no border, no texture. Live hand-drawn boil on every ink stroke. |
 | Palette roles | ink `#333333` = the figure and every object · orange `#D4611B` = **the errand and nothing else** · red `#C8322B` = **once**, on the lid seam of the box that will not open · blue `#2E6E9E` = **once**, drawn along the line of closed lids at the end |
 | Signature device | The doorway is a machine: a barrier arm hinged on the left upright at exactly hand height, folded flat up the post until it drops to horizontal and sweeps the errand out of the figure's hand. Every number in its geometry was solved backwards from the requirement that it falls on the word *closes*. |
@@ -58,11 +58,14 @@ Changing only these is not a new design — it is the same video with new data:
 | Captions | Burned in, Patrick Hand at 62px under the figure's feet. 13 of 28 chunks mark a load-bearing word, and the mark takes the colour the drawing is using on that same beat. |
 | Providers used | none — zero API keys, zero generated images, zero stock |
 
-**Burned for future videos:** the ink-on-white doodle world, the stick figure with
-two eyes and a nose on one side, a machine disguised as architecture, an errand
-as a coloured object that can be taken, the world-slides-past-a-fixed-character
-camera, one-continuous-shot as a structure, motion capture as the motion
-language, handwriting as the type.
+**Burned for future videos:** a machine disguised as architecture, an errand as a
+coloured object that can be taken, the world-slides-past-a-fixed-character
+camera, one-continuous-shot as a structure.
+
+**Explicitly NOT burned — these recur by design:** Nib (the figure, the brush
+weights, the face on one side), motion capture as the motion language, and
+handwriting as the type when Nib is on screen. These are the channel, not this
+video.
 
 **What this one proved:** the channel can *act*. The three before it explained;
 this one performs, and the performance carries content no diagram could — a
@@ -83,11 +86,41 @@ rest.
    until the face went on. On a mocap character, the face is not decoration; it
    is the only thing that says which way the motion is going.
 
+**The character stays. This overrides the rotation rule, on purpose.**
+
+My first note here said the next production should not have a character, because
+two in a row would make the character the channel rather than the subject. The
+user overruled it, and they were right: for a channel with no audience yet, a
+character people recognise *is* the asset, and the subject changes every week
+anyway. So the figure is now the one thing that carries across productions, and
+it has a name — **Nib**.
+
+That changes what this ledger is for. Everything else still may not repeat: the
+world, the palette, the signature device, the layout, the motion character. Nib
+is the deliberate exception, and the exception is exactly one character. If a
+second recurring element appears, the ledger has failed.
+
+Nib lives in `ink-theater/ink-figure.js`, not in any one video's HTML, so the
+next production inherits the drawing rather than redrawing it. The rig, the
+clips and the determinism are InkPuppet's; the body, the brush weights, the
+hands, the feet and the face are Nib.
+
+What the second pass on him fixed, and what the next production inherits for
+free: every part is now paper-filled with an ink outline, like the head and like
+the world, so limbs occlude each other instead of merging into one black shape;
+the torso is a closed outline measured off the spine rather than a ribbon; the
+feet take their angle from the shin and flatten as they plant; and the carrying
+arm is measured from the shoulder, because the CMU clips are shot from different
+angles and have mixed handedness, so a chest-relative reach that is comfortable
+in `walk` is off the end of the arm in `shuffle`. `InkPuppet.STAND` itself was
+mirrored relative to every clip in the catalogue — a bug that had been sitting
+in the engine, not in the video.
+
 **Worlds used so far:** Remotion atelier ×2, Manim ×1, Ink Theater ×1. Three.js,
-HyperFrames-as-a-style (kinetic typography), Mermaid and code are untouched. The
-next production may not use Ink Theater, and it should probably not have a
-character at all — two character pieces in a row would make the character the
-channel rather than the subject.
+HyperFrames-as-a-style (kinetic typography), Mermaid and code are untouched. Ink
+Theater may be used again *because Nib lives there* — but if it is, the world has
+to be pushed somewhere it has not been: a different ground, different props,
+different camera. The character recurring is not a licence for the video to.
 
 
 ### 2026-09-05 — the-digit-that-catches-liars

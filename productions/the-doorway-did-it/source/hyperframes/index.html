@@ -23,6 +23,7 @@
     <script src="gsap.min.js"></script>
     <script src="ink-theater.js"></script>
     <script src="ink-puppet.js"></script>
+    <script src="ink-figure.js"></script>
     <script src="clips.js"></script>
     <script src="captions.js"></script>
     <style>
@@ -86,7 +87,14 @@
       // ── the page ─────────────────────────────────────────────────────────
       var INK = "#333333", ERRAND = "#D4611B", PROBLEM = "#C8322B", RESOLVE = "#2E6E9E", DIM = "#8A857A";
       var CX = 540, GROUND = 1180, LINTEL = 420, DOOR_X = 880, BOX_X = 770;
-      var ARM_Y = 820, ARM_LEN = 262;   // the arm sweeps at exactly hand height
+      var ARM_Y = 728, ARM_LEN = 310;   // both solved, not chosen: ARM_Y is the
+                                  // screen height the carried errand actually
+                                  // sits at (the actor is scaled 1.5x about the
+                                  // ground, so it is not the figure's own hand
+                                  // height), and ARM_LEN puts the paddle on the
+                                  // errand at exactly SWIPE. Folded up the post
+                                  // the tip lands on the lintel, which is why
+                                  // the arm reads as part of the doorway.
       var world = document.getElementById("world"), fx = document.getElementById("fx");
       var overlay = document.getElementById("overlay"), camera = document.getElementById("camera");
 
@@ -146,7 +154,10 @@
         var hx = DOOR_X - 148 + h * 59;
         hatch.push(stroke("M " + hx + " " + (LINTEL - 4) + " L " + (hx + 44) + " " + (LINTEL - 74), 5, INK, door));
       }
+      // "Step over the line" is in the narration, so there is a line
+      var sill = stroke("M " + DOOR_X + " " + (GROUND - 26) + " L " + DOOR_X + " " + (GROUND + 12), 6, DIM, door);
       drawOn(upL, 3.90, 0.44); drawOn(upR, 4.18, 0.44); drawOn(lint, 4.46, 0.42);
+      drawOn(sill, 4.90, 0.22);
       hatch.forEach(function (e, i) { drawOn(e, 4.60 + i * 0.05, 0.16); });
       drawOn(arm, 4.76, 0.32);
       gsap.set(paddle, { opacity: 0 });
@@ -156,8 +167,14 @@
       var SWIPE = 20.33;
       tl.set(armG, { svgOrigin: armPivot }, 0);
       tl.to(armG, { rotation: -108, duration: 0.55, ease: IT.ease.settle }, 13.5);
-      tl.to(armG, { rotation: 0, duration: 0.15, ease: "power3.in" }, SWIPE);
+      // the fall LANDS on the word rather than starting on it — the arm has to
+      // already be through the errand at SWIPE, not just beginning to move
+      tl.to(armG, { rotation: 0, duration: 0.15, ease: "power3.in" }, SWIPE - 0.15);
       tl.to(armG, { rotation: -14, duration: 0.7, ease: IT.ease.settle }, SWIPE + 0.34);
+      // and then it folds itself back up the post, innocent. Left horizontal it
+      // also draws a bar straight across the figure for the remaining 26
+      // seconds, which is the kind of thing only a render shows you.
+      tl.to(armG, { rotation: -90, duration: 0.9, ease: IT.ease.settle }, 21.30);
 
       // ── the box the errand ends up in ────────────────────────────────────
       function makeBox(x, opts) {
@@ -165,9 +182,11 @@
         var w = 176, h = 142, g = node("g", {}, opts.parent || world);
         var body = stroke("M " + (x - w / 2) + " " + GROUND + " L " + (x - w / 2) + " " + (GROUND - h) +
                           " M " + (x + w / 2) + " " + GROUND + " L " + (x + w / 2) + " " + (GROUND - h) +
-                          " M " + (x - w / 2) + " " + GROUND + " L " + (x + w / 2) + " " + GROUND, 6, INK, g);
+                          " M " + (x - w / 2) + " " + GROUND + " L " + (x + w / 2) + " " + GROUND +
+                          " M " + (x - w / 2 + 34) + " " + (GROUND - 6) + " L " + (x - w / 2 + 34) + " " + (GROUND - h + 4), 6, INK, g);
         var lidG = node("g", {}, g);
-        var lid = stroke("M " + (x - w / 2 - 12) + " " + (GROUND - h) + " L " + (x + w / 2 + 12) + " " + (GROUND - h), 7, INK, lidG);
+        var lid = stroke("M " + (x - w / 2 - 13) + " " + (GROUND - h) + " L " + (x + w / 2 + 13) + " " + (GROUND - h) +
+                         " M " + (x - w / 2 - 13) + " " + (GROUND - h + 13) + " L " + (x + w / 2 + 13) + " " + (GROUND - h + 13), 6, INK, lidG);
         return { g: g, body: body, lid: lid, lidG: lidG, x: x, top: GROUND - h };
       }
       var box = makeBox(BOX_X);
@@ -207,35 +226,37 @@
         "transform", "translate(" + CX + "," + GROUND + ") scale(1.5) translate(" + (-CX) + "," + (-GROUND) + ")");
       var face = document.getElementById("actorFace");
 
-      // two white dots, so it has somewhere to not-look from
-      var eyeL = node("circle", { cx: 0, cy: 0, r: 6, fill: INK }, pup.ink);
-      var eyeR = node("circle", { cx: 0, cy: 0, r: 6, fill: INK }, pup.ink);
-      var nose = node("path", { d: "", fill: "none", stroke: INK, "stroke-width": 6,
-                                "stroke-linecap": "round" }, pup.ink);
+      // The rig supplies the motion; InkFigure supplies the drawing. Same pose,
+      // same clips, same determinism — a brush instead of a wireframe.
+      var fig = window.InkFigure.attach(pup, { headR: 46, color: INK });
 
-      // the errand rides in the right hand, in the figure's own local space
+      // the errand rides in the near hand, in the figure's own local space
       var errand = node("g", {}, pup.ink);
-      node("circle", { cx: 0, cy: 0, r: 21, fill: ERRAND }, errand);
-      node("path", { d: "M -8 -21 L 0 -34 L 8 -21", fill: "none", stroke: ERRAND, "stroke-width": 6, "stroke-linecap": "round" }, errand);
+      node("circle", { cx: 0, cy: 0, r: 23, fill: ERRAND }, errand);
+      node("path", { d: "M -9 -22 L 0 -36 L 9 -22", fill: "none", stroke: ERRAND,
+                     "stroke-width": 7, "stroke-linecap": "round" }, errand);
       gsap.set(errand, { opacity: 0 });
 
-      // follow the hand and the head without authoring either
-      var basePose = pup.setPose;
+      var posed = pup.setPose;
       pup.setPose = function (po) {
-        basePose(po);
-        errand.setAttribute("transform", "translate(" + po.haR[0] + "," + (po.haR[1] - 4) + ")");
-        var hx = po.head[0], hy = po.head[1] - 44 * 0.32;
-        eyeL.setAttribute("cx", hx + 7);  eyeL.setAttribute("cy", hy - 9);
-        eyeR.setAttribute("cx", hx + 26); eyeR.setAttribute("cy", hy - 9);
-        nose.setAttribute("d", "M " + (hx + 40) + " " + (hy + 3) +
-                               " L " + (hx + 57) + " " + (hy + 9));
+        posed(po);
+        var h = fig.hand();     // where the hand ended up AFTER the IK, not before
+        errand.setAttribute("transform", "translate(" + h[0] + "," + (h[1] + 24) + ")");
       };
       pup.setPose(IP.STAND); pup.place(IP.STAND.groundY, 0);
 
-      // 1) the pencil draws it in, then the errand pops into its hand
-      pup.drawIn(tl, { start: 0.15, each: 0.42 });
+      // The figure has to be redrawn on every frame of the film, not only on the
+      // frames a mocap segment is running — otherwise the arm cannot move before
+      // the choreography starts or between its segments. Added after the
+      // choreograph tweens so it always draws last.
+      var tick = { v: 0 };
+
+      // 1) the pencil roughs it in, then the ink goes on over it and the pencil
+      //    is rubbed out — which is how anybody actually draws a person
+      fig.pencilIn(tl, { start: 0.15, each: 0.34 });
+      fig.inkIn(tl, { at: 1.95, dur: 0.60 });
       tl.fromTo(errand, { opacity: 0, scale: 0.2, svgOrigin: "0 0" },
-                        { opacity: 1, scale: 1, duration: 0.5, ease: IT.ease.overshoot }, 2.55);
+                        { opacity: 1, scale: 1, duration: 0.5, ease: IT.ease.overshoot }, 2.60);
 
       // 2) the acting — named clips only, and never the same one twice running
       IP.choreograph(tl, pup, [
@@ -250,6 +271,54 @@
         { clip: "sit",     dur: 6.60, loop: false }   // 34.00 sits, then stands
       ], { start: 6.00 });
 
+      // setPose, not fig.redraw() — redraw only repaints the figure, and the
+      // errand is parented to the hand by this file, so it has to go through
+      // the same wrapper the choreography does or it stops following the hand.
+      function repose() { pup.setPose(fig.pose()); }
+      tl.to(tick, { v: 1, duration: 47.033, ease: "none", onUpdate: repose }, 0);
+
+      // Every tween that moves the arm has to repose the figure itself. A gsap
+      // timeline renders its children in start-time order, so this one — which
+      // starts at 0 — always draws BEFORE the carry tweens below have written
+      // their values for the frame, and the figure comes out one render behind
+      // its own gesture. Sequentially that is 33ms; on a seek it is whatever
+      // the last seek left behind, which is how it was found.
+      var REPOSE = { onUpdate: repose, onComplete: repose };
+      function carryTo(v, at) { tl.to(fig.carry, Object.assign({}, v, REPOSE), at); }
+      function carrySet(v, at) { tl.set(fig.carry, Object.assign({}, v, REPOSE), at); }
+
+      // ── what the near arm is doing ───────────────────────────────────────
+      // The body stays on motion capture throughout. Only this one arm is
+      // overridden, and only when the story needs the hand to be somewhere:
+      // holding the errand, being robbed of it, and looking at itself empty.
+      // A generic walk cycle swings an empty arm, so an object riding in that
+      // hand reads as swinging loose rather than being carried.
+      carryTo({ on: 1, duration: 0.45, ease: IT.ease.settle }, 2.55);   // takes hold
+
+      // held further out through the march. That clip is shot nearly in
+      // profile, so both shoulders sit on the spine and a close carry folds the
+      // arm up and parks the errand on top of the legs; further out straightens
+      // the arm and clears them. It settles back as the walk begins.
+      carryTo({ dx: 70, duration: 0.5, ease: IT.ease.settle }, 5.90);
+      carryTo({ dx: 39, duration: 0.6, ease: IT.ease.settle }, 11.30);
+
+      // the yank: the arm is pulled out and back as the errand is scraped away
+      carryTo({ dx: 65, dy: 105, duration: 0.10, ease: "power3.in" }, SWIPE);
+      carryTo({ on: 0, duration: 0.45, ease: IT.ease.soft }, SWIPE + 0.16);
+      carrySet({ dx: 39, dy: 123 }, SWIPE + 0.70);
+
+      // it looks at the hand that is not holding anything
+      carrySet({ from: "shoulder", dx: 118, dy: -6 }, 22.85);
+      carryTo({ on: 1, duration: 0.5, ease: IT.ease.settle }, 22.90);
+      carryTo({ on: 0, duration: 0.6, ease: IT.ease.soft }, 25.10);
+      carrySet({ dx: 39, dy: 123 }, 25.80);
+
+      // and it swipes at one of the errands crowding its head, and misses
+      carrySet({ dx: 70, dy: -110 }, 35.10);
+      carryTo({ on: 0.9, duration: 0.28, ease: "power2.out" }, 35.15);
+      carryTo({ on: 0, duration: 0.5, ease: IT.ease.soft }, 35.90);
+      carrySet({ dx: 39, dy: 123 }, 36.50);
+
       // the turn: the only time it changes facing
       // svgOrigin, not transformOrigin: face is an SVG <g>, so the origin is in
       // user units. Getting this wrong throws the whole figure off the page and
@@ -262,18 +331,40 @@
       // -414 over 11.00s is 37.6 px/s, which puts the threshold on the figure at
       // exactly SWIPE. The rate is derived from the word, not chosen.
       tl.to(world, { x: -414, duration: 11.00, ease: "none" }, 11.30);   // out
-      tl.to(world, { x: -230, duration: 3.40, ease: "none" }, 26.20);    // back
+      // ends 100px short of centre so the figure stands BESIDE the box it comes
+      // back for, not on top of it — otherwise its own legs hide the red seam
+      tl.to(world, { x: -330, duration: 3.40, ease: "none" }, 26.20);    // back
 
       // 4) the errand is taken
-      var falling = node("g", {});
+      // in #fx, not #world: #world is painted before the actor, so an errand
+      // knocked backwards past the body would spend its whole flight hidden
+      // behind it. #fx is painted after, and 0.24s of scroll is 9px, which is
+      // nothing against a 176-wide box.
+      var W_SWIPE = -339.9;                       // world offset at SWIPE
+      var falling = node("g", {}, fx);
       node("circle", { cx: 0, cy: 0, r: 21, fill: ERRAND }, falling);
       node("path", { d: "M -8 -21 L 0 -34 L 8 -21", fill: "none", stroke: ERRAND, "stroke-width": 6, "stroke-linecap": "round" }, falling);
-      gsap.set(falling, { opacity: 0, x: DOOR_X, y: ARM_Y + 6 });
+      // it leaves from where it was actually being held, not from the doorway —
+      // starting it at DOOR_X teleports it 170px before it starts falling
+      gsap.set(falling, { opacity: 0, x: 708, y: ARM_Y });   // where the hand was
       tl.to(errand, { opacity: 0, duration: 0.001 }, SWIPE + 0.05);
       tl.to(falling, { opacity: 1, duration: 0.001 }, SWIPE + 0.05);
-      tl.to(falling, { x: BOX_X, duration: 0.24, ease: "power1.out" }, SWIPE + 0.05);
+      tl.to(falling, { x: BOX_X + W_SWIPE, duration: 0.24, ease: "power1.out" }, SWIPE + 0.05);
       tl.to(falling, { y: GROUND - 62, duration: 0.24, ease: "power2.in" }, SWIPE + 0.05);
       tl.to(falling, { opacity: 0, duration: 0.001 }, SWIPE + 0.30);
+
+      // the hit itself. The barrier lives in #world, which is painted behind the
+      // actor, so the middle of its swing passes behind the body and only the
+      // paddle clears it. Three ink ticks in #fx put the contact on the front
+      // plane, which is the whole point of the shot.
+      var hit = node("g", {}, fx);
+      [[-1, -0.9], [0.2, -1.25], [1.1, -0.35]].forEach(function (d) {
+        stroke("M " + (708 + d[0] * 34) + " " + (ARM_Y + d[1] * 34) +
+               " L " + (708 + d[0] * 76) + " " + (ARM_Y + d[1] * 76), 7, INK, hit);
+      });
+      gsap.set(hit, { opacity: 0, scale: 0.55, svgOrigin: "708 " + ARM_Y });
+      tl.to(hit, { opacity: 1, scale: 1, duration: 0.09, ease: "power2.out" }, SWIPE);
+      tl.to(hit, { opacity: 0, scale: 1.35, duration: 0.22, ease: "power1.in" }, SWIPE + 0.11);
 
       // 5) three more errands crowd the head — the honest qualifier
       var crowd = [];
