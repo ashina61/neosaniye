@@ -130,7 +130,54 @@ let upAxis = spread[1] >= spread[2] ? 1 : 2;      // Y or Z, whichever spans hea
 if (opt.axis === "xy") upAxis = 1; if (opt.axis === "zy") upAxis = 2;
 const horizAxis = 0;                              // X = left/right (arms)
 const upSign = (p0[JN.head][upAxis] - p0[JN.ftR][upAxis]) > 0 ? 1 : -1;
-function proj(P) { return [P[horizAxis], -upSign * P[upAxis]]; }
+
+// ---- pick the horizontal DIRECTION, not a hard-coded axis ----
+// This used to be `P[0]` — world X, always. CMU subjects walk in whatever
+// direction their capture happened to be set up in, so a subject who walked
+// along Z came out projected FRONT ON: shoulders spread wide, feet barely
+// separating, a 30-unit stride on a 538-unit figure. It looks like a person
+// marching on the spot and it cannot travel, which is fatal for a side-scroller.
+// So: project onto the plane that contains the up axis and the direction the
+// motion actually goes in — travel if the take travels, otherwise the direction
+// the feet point.
+const hAx = [0, 1, 2].filter((a) => a !== upAxis);        // the two ground axes
+function hvec(P) { return [P[hAx[0]], P[hAx[1]]]; }
+function hlen(v) { return Math.hypot(v[0], v[1]); }
+const pLast = fk(motion[motion.length - 1]);
+let dir = null, dirFrom = "";
+{
+  const a = hvec(p0[JN.hips]), b = hvec(pLast[JN.hips]);
+  const travel = [b[0] - a[0], b[1] - a[1]];
+  const reach = hlen([p0[JN.head][hAx[0]] - p0[JN.ftR][hAx[0]], p0[JN.head][hAx[1]] - p0[JN.ftR][hAx[1]]]);
+  const legUp = Math.abs(p0[JN.head][upAxis] - p0[JN.ftR][upAxis]);
+  if (hlen(travel) > legUp * 0.25) { dir = travel; dirFrom = "travel"; }
+  else {
+    // in-place take: face the way the feet point (ankle → toe end site)
+    // the toe is whatever hangs off the ankle: CMU has a LeftToeBase JOINT,
+    // other skeletons just have an End Site. Take the ankle's first child.
+    function toeOf(ankleName) {
+      const j = joints.find((x) => x.name === ankleName);
+      return j && j.children.length ? j.children[0].name : ankleName + "_end";
+    }
+    const toes = { ftL: toeOf(JN.ftL), ftR: toeOf(JN.ftR) };
+    let acc = [0, 0], n = 0;
+    for (let f = 0; f < motion.length; f += Math.max(1, motion.length >> 5)) {
+      const P = fk(motion[f]);
+      ["ftL", "ftR"].forEach((k) => {
+        const toe = toes[k];
+        if (!P[toe]) return;
+        const t = hvec(P[toe]), h = hvec(P[JN[k]]);
+        acc = [acc[0] + t[0] - h[0], acc[1] + t[1] - h[1]]; n++;
+      });
+    }
+    if (n && hlen(acc) > 1e-6) { dir = acc; dirFrom = "facing"; }
+  }
+  if (!dir) { dir = [1, 0]; dirFrom = "fallback-x"; }
+  const L = hlen(dir); dir = [dir[0] / L, dir[1] / L];
+}
+function proj(P) {
+  return [P[hAx[0]] * dir[0] + P[hAx[1]] * dir[1], -upSign * P[upAxis]];
+}
 
 // scale from the SKELETON rest height (rotation-free FK) so every clip of the
 // same skeleton renders the figure at an identical size.
@@ -152,7 +199,12 @@ for (let f = 0; f < motion.length; f += step) {
   const h = proj(P[JN.hips]);
   const rootY = (h[1] - hips0[1]) * scale;         // vertical root motion (jumps)
   const rootX = opt.lockx ? h[0] : hips0[0];       // in-place unless drift wanted
-  const out = { rootY: Math.round(rootY * 10) / 10 };
+  // How far the take has actually travelled, in the same px as the pose. The
+  // pose stays hips-relative — the figure is still pinned at cx — but a
+  // composition can now scroll the world by exactly this and the planted foot
+  // stops sliding, because the world is moving at the speed the feet chose.
+  const out = { rootY: Math.round(rootY * 10) / 10,
+                rootX: Math.round((h[0] - hips0[0]) * scale * 10) / 10 };
   for (const key in JN) {
     const j = P[JN[key]]; if (!j) continue;
     const q = proj(j);
@@ -168,4 +220,5 @@ const name = opt.name || inPath.split(/[\\/]/).pop().replace(/\.bvh$/i, "");
 const clip = { name, fps: opt.fps, height: Math.round(520), groundY: Math.round(groundY), frameCount: frames.length, frames };
 mkdirSync(dirname(outPath), { recursive: true });
 writeFileSync(outPath, JSON.stringify(clip));
-console.log(`${name}: ${frames.length} frames @${opt.fps}fps · upAxis=${upAxis}(${upSign}) · scale=${scale.toFixed(2)} · groundY=${clip.groundY}`);
+const travelled = frames.length ? frames[frames.length - 1].rootX - frames[0].rootX : 0;
+console.log(`${name}: ${frames.length} frames @${opt.fps}fps · upAxis=${upAxis}(${upSign}) · dir=${dirFrom}[${dir.map((v) => v.toFixed(2)).join(",")}] · scale=${scale.toFixed(2)} · groundY=${clip.groundY} · travel=${travelled.toFixed(0)}px`);

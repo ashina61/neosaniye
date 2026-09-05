@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!--
+      NIB CARRIES A TOOLBOX DOWN A CORRIDOR, OPENS A DOOR, AND GOES IN.
+      A rig test. No narration, no music, no captions.
+
+      What is new here, over ink-theater/tests/nib-door/:
+
+      1. THE WALK IS REAL. The clips used to be projected onto world X whatever
+         direction the subject actually walked in, so a subject who walked along
+         Z came out FRONT ON: shoulders 145 units apart, a 30-unit stride on a
+         538-unit figure, marching on the spot. bvh2clip.mjs now projects onto
+         the direction the motion travels, so walk is a true side view with a
+         438-unit stride — 0.84 of his own height, which is what a stride is.
+
+      2. THE GROUND MOVES AT THE SPEED THE FEET CHOSE. Each clip carries rootX
+         now, so InkPuppet reports how far the choreography has walked and the
+         world slides by exactly that. Planted-foot slip per frame drops from
+         13px to 1.2px. Nothing here picks a walking speed; it comes out at
+         1.43 m/s because that is how fast the man in the capture walked.
+
+      3. TWO HANDS. fig.carry drives the near arm and fig.hold the far one, so
+         he keeps the toolbox in one hand and works the lever with the other,
+         instead of having to put his only prop down before he can touch
+         anything.
+
+      4. A CUT. He steps through the doorway and the scene changes, on the
+         action, mid-stride — one walk segment spanning both scenes, so the legs
+         carry through the cut and the camera has plainly moved rather than the
+         world having jumped.
+
+      SCALE. Everything is a real measurement. He stands 534 units crown to sole
+      and a person is 1750mm, so the page is 0.595 px/mm and every number below
+      comes from a millimetre figure in the comment beside it.
+    -->
+    <script src="gsap.min.js"></script>
+    <script src="ink-theater.js"></script>
+    <script src="ink-puppet.js"></script>
+    <script src="ink-figure.js"></script>
+    <script src="clips.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #FCFBF8; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+      .stage { position: absolute; inset: 0; background: #FCFBF8; }
+      .stage svg { position: absolute; inset: 0; display: block; width: 1080px; height: 1920px; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="14.6"
+         data-width="1080" data-height="1920" data-fps="30">
+      <section id="scene" class="clip" data-start="0" data-duration="14.6">
+        <div class="stage">
+          <svg viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="boil" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence id="boilTurb" type="fractalNoise" baseFrequency="0.012" numOctaves="1" seed="1" result="n"/>
+                <feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/>
+              </filter>
+            </defs>
+            <g id="camera">
+              <g id="worldA" filter="url(#boil)"></g>
+              <g id="worldB" filter="url(#boil)"></g>
+              <g id="actorScale"><g id="actorMount"></g></g>
+              <g id="propLayer"></g>
+            </g>
+          </svg>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      var IT = window.InkTheater, IP = window.InkPuppet, IF = window.InkFigure;
+      var tl = gsap.timeline({ paused: true });
+      var NS = "http://www.w3.org/2000/svg";
+
+      var INK = IF.NIB.ink, PAPER = IF.NIB.paper, DIM = "#8A857A";
+      var CX = 540, GROUND = 1600, SCALE = 1.95;
+      var MM = (SCALE * 534) / 1750;              // he sets the scale of the world
+      function mm(v) { return v * MM; }
+
+      var worldA = document.getElementById("worldA");
+      var worldB = document.getElementById("worldB");
+      var propLayer = document.getElementById("propLayer");
+      var camera = document.getElementById("camera");
+
+      function node(tag, a, parent) {
+        var n = document.createElementNS(NS, tag);
+        for (var k in a) n.setAttribute(k, a[k]);
+        (parent || worldA).appendChild(n); return n;
+      }
+      function stroke(d, sw, color, parent) {
+        return node("path", { d: d, fill: "none", stroke: color || INK, "stroke-width": sw || 6,
+                              "stroke-linecap": "round", "stroke-linejoin": "round" }, parent);
+      }
+      var wSeed = 20260906;
+      function rnd() { wSeed = (wSeed * 1664525 + 1013904223) % 4294967296; return wSeed / 4294967296 - 0.5; }
+      function seg(a, b, amp, step) {
+        var n = Math.max(1, Math.round(Math.hypot(b[0] - a[0], b[1] - a[1]) / (step || 90))), out = [], i;
+        for (i = 0; i <= n; i++) {
+          var t = i / n, e = (i === 0 || i === n) ? 0 : 1;
+          out.push([a[0] + (b[0] - a[0]) * t + rnd() * amp * 2 * e,
+                    a[1] + (b[1] - a[1]) * t + rnd() * amp * 2 * e]);
+        }
+        return out;
+      }
+      function rectPts(x0, y0, x1, y1, amp) {
+        return seg([x0, y0], [x1, y0], amp).concat(seg([x1, y0], [x1, y1], amp),
+               seg([x1, y1], [x0, y1], amp), seg([x0, y1], [x0, y0], amp));
+      }
+      function ringPts(cx, cy, r, n) {
+        var out = [], i;
+        for (i = 0; i <= n; i++) { var a = i / n * Math.PI * 2; out.push([cx + Math.cos(a) * r, cy + Math.sin(a) * r]); }
+        return out;
+      }
+      function d(pts, close) {
+        var s = "", i;
+        for (i = 0; i < pts.length; i++) s += (i ? "L" : "M") + pts[i][0].toFixed(1) + " " + pts[i][1].toFixed(1) + " ";
+        return s + (close ? "Z" : "");
+      }
+      function box(x0, y0, x1, y1, sw, parent, fill, amp) {
+        return node("path", { d: d(rectPts(x0, y0, x1, y1, amp == null ? 1.5 : amp), true),
+                              fill: fill || "none", stroke: INK, "stroke-width": sw || 6,
+                              "stroke-linejoin": "round" }, parent);
+      }
+      function drawOn(el, t, dur, ease) {
+        var L = el.getTotalLength();
+        el.style.strokeDasharray = L; el.style.strokeDashoffset = L;
+        tl.to(el, { strokeDashoffset: 0, duration: dur, ease: ease || "none" }, t);
+        tl.set(el, { strokeDasharray: "none" }, t + dur);
+      }
+
+      // ── the door, in millimetres ─────────────────────────────────────────
+      var LEAF_W = mm(820), LEAF_H = mm(2030), CLEAR = mm(3), CASE_W = mm(70);
+      var STILE = mm(120), RAIL_TOP = mm(120), RAIL_LOCK = mm(200), RAIL_BOT = mm(240), MOULD = mm(20);
+      var HANDLE_H = mm(1050), HANDLE_E = mm(65);
+      var ROSE_R = mm(52), LEVER_L = mm(120), LEVER_D = mm(28), HINGE_H = mm(100), HINGE_W = mm(32);
+      var SKIRT_H = mm(100);
+      var LEAF_Y0 = GROUND - LEAF_H;
+      var OPEN_X0 = -CLEAR, OPEN_X1 = LEAF_W + CLEAR, OPEN_Y0 = LEAF_Y0 - CLEAR;
+      var ROSE_U = LEAF_W - HANDLE_E, ROSE_Y = GROUND - HANDLE_H;
+      var GRIP_L = LEVER_L * 0.72, GRIP_U = ROSE_U - GRIP_L;
+
+      // ── the acting, and the layout that follows from it ──────────────────
+      var T_DRAW = 3.10, T_APPROACH = 2.60, T_DOOR = 3.30, T_THROUGH = 2.30, T_BENCH = 3.30;
+      var T_WALK2 = T_DRAW + T_APPROACH + T_DOOR;          // 9.00
+      var CUT = T_WALK2 + 0.40;                            // 9.40, mid-stride
+      var s = function (t) { return IP.travel("walk", t) * SCALE; };   // px walked in t
+      var trA = s(T_APPROACH), trCut = trA + s(CUT - T_WALK2), trEnd = trA + s(T_THROUGH);
+
+      // Nothing here is a chosen number. The far shoulder stands at (511, 793)
+      // in the standing pose and the arm is 341px, so a grip at x 700 and the
+      // handle's own height is 0.78 of full stretch — a bent arm. Everything
+      // else is solved back from that.
+      var A0 = 700 - GRIP_U + trA;                 // corridor offset
+      var B0 = 300 + trCut;                        // room offset, set at the cut
+      var BENCH_X = 640 - B0 + trEnd;              // the bench meets him where he stops
+      function worldXA() { return A0 - pup.travel * SCALE; }
+      function worldXB() { return B0 - pup.travel * SCALE; }
+
+      // ══ SCENE A — a corridor ═════════════════════════════════════════════
+      var aGround = stroke(d(seg([-4200, GROUND], [900, GROUND], 2.2, 110)), 5, INK, worldA);
+      var skY = GROUND - SKIRT_H;
+      var aSkirtL = stroke(d(seg([-4200, skY], [OPEN_X0 - CASE_W, skY], 1.4, 100)) +
+                           "L " + (OPEN_X0 - CASE_W) + " " + GROUND, 5, INK, worldA);
+      var aSkirtR = stroke("M " + (OPEN_X1 + CASE_W) + " " + GROUND + " L " + (OPEN_X1 + CASE_W) + " " + skY +
+                           d(seg([OPEN_X1 + CASE_W, skY], [1600, skY], 1.4, 100)).replace(/^M[^L]*/, "L "), 5, INK, worldA);
+
+      // a radiator: 1200 x 600, 120 off the floor
+      var radG = node("g", {}, worldA), RAD_X = -2500;
+      var radBody = box(RAD_X, GROUND - mm(720), RAD_X + mm(1200), GROUND - mm(120), 5, radG);
+      var radFins = [];
+      for (var r = 1; r < 11; r++) {
+        var rx = RAD_X + mm(1200) * r / 11;
+        radFins.push(stroke("M " + rx + " " + (GROUND - mm(700)) + " L " + rx + " " + (GROUND - mm(140)), 3, INK, radG));
+      }
+      var radLegs = stroke("M " + (RAD_X + mm(120)) + " " + (GROUND - mm(120)) + " L " + (RAD_X + mm(120)) + " " + GROUND +
+                           " M " + (RAD_X + mm(1080)) + " " + (GROUND - mm(120)) + " L " + (RAD_X + mm(1080)) + " " + GROUND, 4, INK, radG);
+
+      // a framed picture: 500 x 700, its middle at 1500 off the floor
+      var picG = node("g", {}, worldA), PIC_X = -1500, PIC_MID = GROUND - mm(1500);
+      var picF = box(PIC_X, PIC_MID - mm(350), PIC_X + mm(500), PIC_MID + mm(350), 5, picG);
+      var picIn = box(PIC_X + mm(45), PIC_MID - mm(305), PIC_X + mm(455), PIC_MID + mm(305), 3, picG);
+      var picArt = stroke("M " + (PIC_X + mm(80)) + " " + (PIC_MID + mm(200)) + " L " + (PIC_X + mm(200)) + " " + (PIC_MID - mm(80)) +
+                          " L " + (PIC_X + mm(300)) + " " + (PIC_MID + mm(90)) + " L " + (PIC_X + mm(420)) + " " + (PIC_MID + mm(200)), 4, DIM, picG);
+
+      // a light switch: 85 x 85 at 1100, beside the door
+      var swG = node("g", {}, worldA), SW_X = -mm(380);
+      var swPlate = box(SW_X - mm(85), GROUND - mm(1140), SW_X, GROUND - mm(1055), 4, swG);
+      var swRock = box(SW_X - mm(62), GROUND - mm(1120), SW_X - mm(23), GROUND - mm(1075), 3, swG);
+
+      // what is on the other side of the door, seen through the opening
+      var clipA = node("clipPath", { id: "openA" }, worldA);
+      node("rect", { x: OPEN_X0 + 3, y: OPEN_Y0 + 3, width: OPEN_X1 - OPEN_X0 - 6, height: GROUND - OPEN_Y0 - 3 }, clipA);
+      var beyondA = node("g", { "clip-path": "url(#openA)" }, worldA);
+      node("path", { d: "M " + OPEN_X0 + " " + OPEN_Y0 + " H " + OPEN_X1 + " V " + GROUND + " H " + OPEN_X0 + " Z",
+                     fill: PAPER, stroke: "none" }, beyondA);
+      var farY = GROUND - mm(1350);
+      for (var b = -14; b < 26; b++) {
+        var hx = OPEN_X0 + b * mm(150);
+        stroke("M " + hx + " " + (OPEN_Y0 - 20) + " L " + (hx + (farY - OPEN_Y0) + 40) + " " + (farY + 20), 2.5, DIM, beyondA);
+      }
+      stroke("M " + (OPEN_X0 + 3) + " " + farY + " L " + (OPEN_X1 - 3) + " " + farY, 4, DIM, beyondA);
+      stroke("M " + OPEN_X0 + " " + (GROUND - mm(14)) + " L " + OPEN_X1 + " " + (GROUND - mm(14)), 4, DIM, beyondA);
+
+      // ── the leaf, in one-point perspective ───────────────────────────────
+      // Square on, a door swinging away is a pure horizontal squash: right, and
+      // unreadable, because it just looks like a narrower door. What says a
+      // door is open is that its far edge is further away. A point u from the
+      // hinge sits at depth u*sin(angle) and scales about the vanishing point
+      // by D/(D + u*sin(angle)). At angle 0 that is 1 everywhere, so the closed
+      // door needs no fudge. The vanishing point is the camera's axis, so it is
+      // fixed to the PAGE and travels through world coordinates as he walks —
+      // which gives the open door real parallax when he passes it.
+      var VPY = GROUND - mm(1500), VIEW_D = mm(3200);
+      var door = { a: 0 }, latch = { p: 0 }, LEVER_MAX = 26;
+
+      var leafG = node("g", {}, worldA);
+      var leafFill = node("path", { d: "", fill: PAPER, stroke: "none" }, leafG);
+      var leafParts = [];
+      function part(pts, sw, spin) {
+        var el = node("path", { d: "", fill: "none", stroke: INK, "stroke-width": sw,
+                                "stroke-linecap": "round", "stroke-linejoin": "round" }, leafG);
+        var rec = { pts: pts, el: el, spin: !!spin }; leafParts.push(rec); return rec;
+      }
+      var pT0 = LEAF_Y0 + RAIL_TOP, pT1 = ROSE_Y - RAIL_LOCK / 2;
+      var pB0 = ROSE_Y + RAIL_LOCK / 2, pB1 = GROUND - RAIL_BOT;
+      var leafOutline = rectPts(0, LEAF_Y0, LEAF_W, GROUND, 1.6);
+      var leaf = part(leafOutline, 7);
+      var panels = [
+        part(rectPts(STILE, pT0, LEAF_W - STILE, pT1, 1.3), 5),
+        part(rectPts(STILE + MOULD, pT0 + MOULD, LEAF_W - STILE - MOULD, pT1 - MOULD, 1.0), 3),
+        part(rectPts(STILE, pB0, LEAF_W - STILE, pB1, 1.3), 5),
+        part(rectPts(STILE + MOULD, pB0 + MOULD, LEAF_W - STILE - MOULD, pB1 - MOULD, 1.0), 3)
+      ];
+      var hinges = [0.14, 0.5, 0.86].map(function (u) {
+        var hy = LEAF_Y0 + LEAF_H * u;
+        return part(rectPts(0, hy - HINGE_H / 2, HINGE_W, hy + HINGE_H / 2, 0.8), 4);
+      });
+      var rose = part(ringPts(ROSE_U, ROSE_Y, ROSE_R, 22), 5);
+      var spindle = part(ringPts(ROSE_U, ROSE_Y, mm(13), 12), 4);
+      var lever = part([[ROSE_U, ROSE_Y], [ROSE_U - LEVER_L, ROSE_Y], [ROSE_U - LEVER_L, ROSE_Y + LEVER_D]], 9, true);
+
+      function spun(pt, phi) {
+        var dx = pt[0] - ROSE_U, dy = pt[1] - ROSE_Y, c = Math.cos(phi), sn = Math.sin(phi);
+        return [ROSE_U + dx * c - dy * sn, ROSE_Y + dx * sn + dy * c];
+      }
+      function projectLeaf() {
+        var rad = door.a * Math.PI / 180, ca = Math.cos(rad), sa = Math.sin(rad);
+        var vpx = CX - worldXA();
+        var phi = latch.p * LEVER_MAX * Math.PI / 180;
+        function proj(u, v) {
+          var k = VIEW_D / (VIEW_D + u * sa);
+          return [vpx + (u * ca - vpx) * k, VPY + (v - VPY) * k];
+        }
+        function path(pts, doSpin) {
+          var out = "", i, q;
+          for (i = 0; i < pts.length; i++) {
+            q = doSpin ? spun(pts[i], phi) : pts[i];
+            q = proj(q[0], q[1]);
+            out += (i ? "L" : "M") + q[0].toFixed(2) + " " + q[1].toFixed(2) + " ";
+          }
+          return out;
+        }
+        for (var i = 0; i < leafParts.length; i++)
+          leafParts[i].el.setAttribute("d", path(leafParts[i].pts, leafParts[i].spin));
+        leafFill.setAttribute("d", path(leafOutline, false) + "Z");
+        return proj;
+      }
+
+      var caseG = node("g", {}, worldA);
+      var caseL = box(OPEN_X0 - CASE_W, OPEN_Y0 - CASE_W, OPEN_X0, GROUND, 6, caseG);
+      var caseR = box(OPEN_X1, OPEN_Y0 - CASE_W, OPEN_X1 + CASE_W, GROUND, 6, caseG);
+      var caseT = box(OPEN_X0 - CASE_W, OPEN_Y0 - CASE_W, OPEN_X1 + CASE_W, OPEN_Y0, 6, caseG);
+
+      // ══ SCENE B — the room he goes into ══════════════════════════════════
+      var bGround = stroke(d(seg([-1400, GROUND], [4600, GROUND], 2.2, 110)), 5, INK, worldB);
+      var bSkirt = stroke("M 420 " + GROUND + " L 420 " + skY +
+                          d(seg([420, skY], [4600, skY], 1.4, 100)).replace(/^M[^L]*/, "L "), 5, INK, worldB);
+
+      // The doorway he came through, seen almost edge-on in the corner of the
+      // room. This is a NINETY DEGREE camera change, not the same wall from
+      // behind: looking back at the door wall would swap left and right, and a
+      // man who walked right down the corridor would be walking left in the
+      // room. Crossing the line is the one thing a cut must not do.
+      var REV_X0 = 150, REV_X1 = REV_X0 + mm(200), COR_X = REV_X1 + mm(60);
+      var revG = node("g", {}, worldB);
+      node("path", { d: "M " + REV_X0 + " " + OPEN_Y0 + " H " + REV_X1 + " V " + GROUND + " H " + REV_X0 + " Z",
+                     fill: PAPER, stroke: "none" }, revG);
+      for (var b2 = 0; b2 < 9; b2++) {
+        var hy2 = OPEN_Y0 + 14 + b2 * ((GROUND - OPEN_Y0) / 9);
+        stroke("M " + (REV_X0 + 4) + " " + hy2 + " L " + (REV_X1 - 4) + " " + (hy2 - mm(200)), 2.5, DIM, revG);
+      }
+      stroke("M " + REV_X0 + " " + GROUND + " L " + REV_X0 + " " + OPEN_Y0 + " L " + REV_X1 + " " + OPEN_Y0 +
+             " L " + REV_X1 + " " + GROUND, 6, INK, revG);
+      // the corner of the room, and the reveal's own return
+      stroke("M " + COR_X + " " + GROUND + " L " + COR_X + " " + (OPEN_Y0 - CASE_W - mm(300)), 5, INK, revG);
+      stroke("M " + REV_X1 + " " + OPEN_Y0 + " L " + COR_X + " " + (OPEN_Y0 - mm(90)), 5, INK, revG);
+
+      // a shelf on the way, so the new room says what it is before he gets to
+      // the bench: 900 long at 1400, with three tins on it
+      var SH_X = BENCH_X - mm(2400), SH_Y = GROUND - mm(1780), SH_W = mm(760);
+      var shelfG = node("g", {}, worldB);
+      box(SH_X, SH_Y, SH_X + SH_W, SH_Y + mm(40), 5, shelfG, PAPER);
+      [mm(60), SH_W - mm(60) - mm(60)].forEach(function (bx) {
+        stroke("M " + (SH_X + bx) + " " + (SH_Y + mm(40)) + " L " + (SH_X + bx + mm(60)) + " " + (SH_Y + mm(150)), 4, INK, shelfG);
+      });
+      [[mm(90), mm(150), mm(190)], [mm(300), mm(120), mm(150)], [mm(480), mm(170), mm(210)]].forEach(function (t) {
+        box(SH_X + t[0], SH_Y - t[2], SH_X + t[0] + t[1], SH_Y, 4, shelfG, PAPER);
+      });
+
+      // a bench: 1600 long, 750 high, with a rail and a shelf
+      var BENCH_W = mm(1600), BENCH_H = mm(750), BENCH_TOP = GROUND - BENCH_H;
+      var benchG = node("g", {}, worldB);
+      box(BENCH_X, BENCH_TOP, BENCH_X + BENCH_W, BENCH_TOP + mm(60), 6, benchG, PAPER);
+      [mm(90), BENCH_W - mm(90) - mm(70)].forEach(function (lx) {
+        box(BENCH_X + lx, BENCH_TOP + mm(60), BENCH_X + lx + mm(70), GROUND, 5, benchG, PAPER);
+      });
+      stroke("M " + (BENCH_X + mm(90)) + " " + (GROUND - mm(180)) + " L " + (BENCH_X + BENCH_W - mm(90)) + " " + (GROUND - mm(180)), 5, INK, benchG);
+
+      // a window above it: 1200 x 1200, sill at 900
+      var WIN_X = BENCH_X + mm(200), WIN_W = mm(1200), WIN_SILL = GROUND - mm(900), WIN_TOP = GROUND - mm(2100);
+      var winG = node("g", {}, worldB);
+      box(WIN_X, WIN_TOP, WIN_X + WIN_W, WIN_SILL, 6, winG);
+      box(WIN_X + mm(60), WIN_TOP + mm(60), WIN_X + WIN_W - mm(60), WIN_SILL - mm(60), 4, winG);
+      stroke("M " + (WIN_X + WIN_W / 2) + " " + (WIN_TOP + mm(60)) + " L " + (WIN_X + WIN_W / 2) + " " + (WIN_SILL - mm(60)) +
+             " M " + (WIN_X + mm(60)) + " " + ((WIN_TOP + WIN_SILL) / 2) + " L " + (WIN_X + WIN_W - mm(60)) + " " + ((WIN_TOP + WIN_SILL) / 2), 4, INK, winG);
+      stroke("M " + (WIN_X - mm(60)) + " " + WIN_SILL + " L " + (WIN_X + WIN_W + mm(60)) + " " + WIN_SILL, 6, INK, winG);
+
+      gsap.set(worldB, { opacity: 0 });
+
+      // ── the figure ───────────────────────────────────────────────────────
+      var mount = document.getElementById("actorMount");
+      var pup = IP.create(mount, { cx: CX, ground: GROUND, boil: "boil", headR: IF.NIB.headR - 2, strokeWidth: 7 });
+      document.getElementById("actorScale").setAttribute(
+        "transform", "translate(" + CX + "," + GROUND + ") scale(" + SCALE + ") translate(" + (-CX) + "," + (-GROUND) + ")");
+      var fig = IF.attach(pup);                    // no options: this IS Nib
+      // Frame 34 of the trimmed shuffle: both feet flat, arms hanging, and the
+      // arm projecting at its full length, which is what makes the reach work.
+      IP.still("shuffle", 34);
+
+      // ── the toolbox: 450 x 200 body, a 200 x 100 handle over it ──────────
+      var TB_W = mm(450), TB_H = mm(200), TB_HW = mm(200), TB_HH = mm(100);
+      var tbG = node("g", {}, propLayer);
+      box(-TB_W / 2, -TB_H, TB_W / 2, 0, 6, tbG, PAPER);
+      stroke("M " + (-TB_W / 2) + " " + (-TB_H + mm(55)) + " L " + (TB_W / 2) + " " + (-TB_H + mm(55)), 4, INK, tbG);
+      [-mm(120), mm(120)].forEach(function (lx) {
+        box(lx - mm(28), -TB_H + mm(30), lx + mm(28), -TB_H + mm(80), 3, tbG);
+      });
+      stroke("M " + (-TB_HW / 2) + " " + (-TB_H) + " L " + (-TB_HW / 2) + " " + (-TB_H - TB_HH + mm(22)) +
+             " Q " + (-TB_HW / 2) + " " + (-TB_H - TB_HH) + " " + (-TB_HW / 2 + mm(30)) + " " + (-TB_H - TB_HH) +
+             " L " + (TB_HW / 2 - mm(30)) + " " + (-TB_H - TB_HH) +
+             " Q " + (TB_HW / 2) + " " + (-TB_H - TB_HH) + " " + (TB_HW / 2) + " " + (-TB_H - TB_HH + mm(22)) +
+             " L " + (TB_HW / 2) + " " + (-TB_H), 6, INK, tbG);
+      gsap.set(tbG, { opacity: 0 });
+
+      // where it ends up: standing on the bench, in room B
+      var placed = { on: 0 };
+      var TB_REST = [BENCH_X + mm(420), BENCH_TOP];
+
+      // ── everything that has to agree with everything else, per frame ─────
+      var inRoom = { v: 0 };                       // 0 = corridor, 1 = the room
+      function sync() {
+        worldA.setAttribute("transform", "translate(" + worldXA().toFixed(2) + ",0)");
+        worldB.setAttribute("transform", "translate(" + worldXB().toFixed(2) + ",0)");
+        var proj = projectLeaf();
+
+        // the far hand works the lever; the near hand keeps the toolbox
+        if (fig.hold.on > 0.001) {
+          var phi = latch.p * LEVER_MAX * Math.PI / 180;
+          var g = spun([GRIP_U, ROSE_Y], phi);
+          var gp = proj(g[0], g[1]);
+          var p = IF.toPose(pup, gp[0] + worldXA(), gp[1], { scale: SCALE, aboutX: CX, aboutY: GROUND });
+          fig.hold.from = "point"; fig.hold.dx = p[0]; fig.hold.dy = p[1];
+        }
+        // and when he puts it down, the near hand goes where the toolbox goes
+        if (placed.on > 0.001 && fig.carry.on > 0.001) {
+          var rest = [TB_REST[0] + worldXB(), TB_REST[1] - TB_H - TB_HH];
+          var q = IF.toPose(pup, rest[0], rest[1], { scale: SCALE, aboutX: CX, aboutY: GROUND });
+          fig.carry.from = "point"; fig.carry.dx = q[0]; fig.carry.dy = q[1];
+        }
+        pup.setPose(fig.pose());
+
+        // the toolbox hangs from the near hand until it is standing on the bench
+        if (placed.on > 0.999) {
+          tbG.setAttribute("transform", "translate(" + (TB_REST[0] + worldXB()).toFixed(1) + "," + TB_REST[1].toFixed(1) + ")");
+        } else {
+          var h = fig.hand();
+          tbG.setAttribute("transform", "translate(" +
+            (CX + SCALE * h[0]).toFixed(1) + "," +
+            (GROUND + SCALE * ((pup.originY + h[1]) - GROUND) + TB_H + TB_HH).toFixed(1) + ")");
+        }
+      }
+      var SYNC = { onUpdate: sync, onComplete: sync };
+      function to(target, vars, at) { tl.to(target, Object.assign({}, vars, SYNC), at); }
+      function set(target, vars, at) { tl.set(target, Object.assign({}, vars, SYNC), at); }
+
+      // ── the page draws itself ────────────────────────────────────────────
+      projectLeaf();
+      drawOn(aGround, 0.10, 0.50);
+      drawOn(aSkirtL, 0.36, 0.40); drawOn(aSkirtR, 0.52, 0.36);
+      drawOn(radBody, 0.62, 0.30); radFins.forEach(function (e, i) { drawOn(e, 0.78 + i * 0.02, 0.10); });
+      drawOn(radLegs, 0.96, 0.12);
+      drawOn(picF, 1.00, 0.24); drawOn(picIn, 1.16, 0.16); drawOn(picArt, 1.26, 0.22);
+      drawOn(swPlate, 1.44, 0.12); drawOn(swRock, 1.52, 0.08);
+      drawOn(caseL, 1.58, 0.30); drawOn(caseR, 1.72, 0.30); drawOn(caseT, 1.86, 0.30);
+      drawOn(leaf.el, 2.00, 0.42);
+      panels.forEach(function (p, i) { drawOn(p.el, 2.26 + i * 0.09, 0.22); });
+      hinges.forEach(function (h, i) { drawOn(h.el, 2.50 + i * 0.05, 0.12); });
+      gsap.set([rose.el, spindle.el], { opacity: 0 });
+      tl.to([rose.el, spindle.el], { opacity: 1, duration: 0.12 }, 2.62);
+      drawOn(lever.el, 2.70, 0.14);
+      gsap.set(beyondA, { opacity: 0 });
+      tl.to(beyondA, { opacity: 1, duration: 0.001 }, 1.99);
+
+      fig.pencilIn(tl, { start: 1.10, each: 0.28 });
+      fig.inkIn(tl, { at: 2.40, dur: 0.50 });
+      // A toolbox hangs by your knee, not across your thigh: 157 of a 175 arm,
+      // which is the nearly-straight arm you actually carry weight with.
+      fig.carry.dx = 26; fig.carry.dy = 155;
+      to(fig.carry, { on: 1, duration: 0.45, ease: IT.ease.settle }, 2.55);   // takes the toolbox
+      tl.fromTo(tbG, { opacity: 0, scale: 0.4, svgOrigin: "0 0" },
+                     { opacity: 1, scale: 1, duration: 0.45, ease: IT.ease.overshoot, onUpdate: sync }, 2.60);
+
+      // ── the acting ───────────────────────────────────────────────────────
+      IP.choreograph(tl, pup, [
+        { clip: "walk",  dur: T_APPROACH },     // 3.10  down the corridor
+        { clip: "still", dur: T_DOOR },         // 5.70  works the door
+        { clip: "walk",  dur: T_THROUGH },      // 9.00  through it — the cut is mid-stride
+        { clip: "still", dur: T_BENCH }         // 12.10 puts the toolbox down
+      ], { start: T_DRAW });
+
+      var tick = { v: 0 };
+      tl.to(tick, { v: 1, duration: 14.6, ease: "none", onUpdate: sync }, 0);
+
+      // the door
+      to(fig.hold, { on: 1, duration: 0.55, ease: IT.ease.settle }, 5.95);
+      to(latch,    { p: 1, duration: 0.18, ease: "power2.in" }, 6.70);
+      to(door,     { a: 40, duration: 0.85, ease: "power2.out" }, 6.95);
+      to(latch,    { p: 0, duration: 0.18, ease: "power1.out" }, 7.80);
+      to(fig.hold, { on: 0, duration: 0.40, ease: IT.ease.soft }, 7.85);
+      to(door,     { a: 66, duration: 1.40, ease: IT.ease.settle }, 7.80);
+
+      // ── the cut ──────────────────────────────────────────────────────────
+      // On the action, mid-stride. The camera also gives a little ground, which
+      // is what says a camera moved rather than the world having jumped.
+      set(worldA, { opacity: 0 }, CUT);
+      set(worldB, { opacity: 1 }, CUT);
+      set(inRoom, { v: 1 }, CUT);
+      tl.set(camera, { transform: "translate(" + CX + "," + GROUND + ") scale(0.93) translate(" + (-CX) + "," + (-GROUND) + ")" }, CUT);
+
+      // ── he puts the toolbox on the bench ─────────────────────────────────
+      set(placed, { on: 1 }, 12.35);            // the near hand starts aiming at the bench
+      to(fig.carry, { on: 1, duration: 0.85, ease: IT.ease.settle }, 12.40);
+      to(placed, { on: 1.001, duration: 0.001 }, 13.30);   // it is standing on the bench now
+      to(fig.carry, { on: 0, duration: 0.55, ease: IT.ease.soft }, 13.35);
+
+      sync();
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

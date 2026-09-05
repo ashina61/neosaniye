@@ -91,6 +91,12 @@
       // handle, a crank, a rung — needs them to convert a page point into pose
       // coordinates, and they change every frame because rootY does.
       originX: cx, originY: ground,
+      // How far the choreography has travelled, in pose px, since it started.
+      // The figure itself never moves — place() pins it at cx — so a
+      // composition that wants honest walking slides the world by -travel.
+      // That is the whole fix for foot slide: the ground moves at the speed the
+      // feet chose, not at a speed somebody guessed.
+      travel: 0,
       place: function (groundY, rootY) {
         pup.originY = ground - groundY + (rootY || 0);
         outer.setAttribute("transform", "translate(" + cx + "," + pup.originY + ")");
@@ -113,27 +119,46 @@
     return pup;
   }
 
+  // Where a clip has got to, in pose px, after idxTotal frames of play —
+  // counting whole loops, because a clip that travels has to keep travelling
+  // when it wraps rather than teleporting back to its start.
+  function travelAt(clip, idxTotal, noLoop) {
+    var F = clip.frames, n = F.length, x0 = F[0].rootX || 0;
+    if (noLoop) return (F[Math.min(idxTotal, n - 1)].rootX || 0) - x0;
+    var cycle = (F[n - 1].rootX || 0) - x0;
+    return ((F[idxTotal % n].rootX || 0) - x0) + Math.floor(idxTotal / n) * cycle;
+  }
+
   // Sequence named mocap clips on the timeline. Each clip loops at native fps to
   // fill its duration. Seek-safe: pose is a pure function of the segment's local time.
+  //
+  // pup.travel is updated every frame with how far the choreography has walked.
+  // Slide the world by -pup.travel * SCALE and the planted foot stops sliding;
+  // ignore it and you get the in-place treadmill, which is what every
+  // composition written before root motion existed expects.
   function choreograph(tl, pup, segments, opts) {
     prepare();
     opts = opts || {};
     var t = opts.start != null ? opts.start : 0;
     var CLIPS = root.INK_CLIPS || {};
+    var base = 0;
     segments.forEach(function (seg) {
       var clip = CLIPS[seg.clip];
       if (!clip) {
         console.warn('[InkPuppet] unknown clip "' + seg.clip + '" — skipping ' + seg.dur + 's (holds pose). Known clips: ' + Object.keys(CLIPS).join(", "));
         t += seg.dur; return;
       }
-      var proxy = { u: 0 };
+      var proxy = { u: 0 }, segBase = base, noLoop = seg.loop === false;
+      var dir = seg.back ? -1 : 1;          // walking the other way
+      base += travelAt(clip, Math.floor(seg.dur * clip.fps), noLoop) * dir;
       tl.to(proxy, {
         u: 1, duration: seg.dur, ease: "none",
         onUpdate: function () {
           var lt = proxy.u * seg.dur;
-          var idx = Math.floor(lt * clip.fps);
-          idx = seg.loop === false ? Math.min(idx, clip.frames.length - 1) : idx % clip.frames.length;
+          var idxTotal = Math.floor(lt * clip.fps);
+          var idx = noLoop ? Math.min(idxTotal, clip.frames.length - 1) : idxTotal % clip.frames.length;
           var fr = clip.frames[idx];
+          pup.travel = segBase + travelAt(clip, idxTotal, noLoop) * dir;
           pup.setPose(fr);
           pup.place(clip.groundY, fr.rootY || 0);
         }
@@ -175,6 +200,16 @@
     return name;
   }
 
+  /** How far a clip walks in `seconds`, in pose px. Lets a composition solve
+      its layout backwards from the acting: "he must be at the handle when the
+      walk ends" becomes one line of arithmetic instead of a guessed speed. */
+  function travel(clipName, seconds, noLoop) {
+    prepare();
+    var clip = (root.INK_CLIPS || {})[clipName];
+    if (!clip) return 0;
+    return travelAt(clip, Math.floor(seconds * clip.fps), !!noLoop);
+  }
+
   root.InkPuppet = { create: create, choreograph: choreograph, still: still,
-                     prepare: prepare, STAND: STAND };
+                     travel: travel, prepare: prepare, STAND: STAND };
 })(window);

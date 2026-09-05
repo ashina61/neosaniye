@@ -48,13 +48,17 @@ The channel has one recurring character. He is not redrawn per video: `InkFigure
 ```js
 var pup = InkPuppet.create(mount, { cx: CX, ground: GROUND, boil: "boil" });
 var fig = InkFigure.attach(pup);                 // Nib
-InkPuppet.still("walk", 0);                      // a standing pose that matches the clips
+InkPuppet.still("shuffle", 34);                  // a standing pose that matches the clips
 InkPuppet.choreograph(tl, pup, [{clip:'walk',dur:4},{clip:'still',dur:3},{clip:'walk',dur:4}], {start:3.1});
+// never pick a walking speed — slide the world by what the feet actually did
+function worldX() { return WORLD0 - pup.travel * SCALE; }
 ```
+
+**Root motion.** Clips carry `rootX`; `pup.travel` is how far the choreography has walked and `InkPuppet.travel(clip, seconds)` answers the same question ahead of time, so a layout is solved backwards from the acting. Planted-foot slip per frame is 1.2px doing this and 13.0px with any chosen speed. The clips are projected **side on** (onto the direction the motion travels) — they used to be projected onto world X regardless, which gave a 30-unit stride on a 538-unit figure and a walk that could not travel.
 
 **Scale everything else in the scene off him.** He is 538 units crown to sole and 1750mm tall, so `MM = SCALE*538/1750` and then every prop is drawn in real millimetres — a door is 2030x820 with its handle 1050 off the floor. Look the number up; do not eyeball it.
 
-**His hands:** `fig.carry = {on, from, dx, dy}`, tweened from the timeline. Measure a reach from `"shoulder"`, never the chest — the clips are shot from different angles and a chest-relative target that is a comfortable bent arm in `walk` is off the end of the arm in `shuffle`, where FABRIK straightens it and points. To hold something that moves on its own (a handle, a crank), use `from:"point"` with `InkFigure.toPose()` recomputed every frame.
+**His hands:** `fig.carry` (near arm) and `fig.hold` (far arm), each `{on, from, dx, dy}`, tweened from the timeline. Two hands, so he can hold a thing and work a handle at the same time. Measure a reach from `"shoulder"`, never the chest — the clips are shot from different angles and a chest-relative target that is a comfortable bent arm in `walk` is off the end of the arm in `shuffle`, where FABRIK straightens it and points. To hold something that moves on its own (a handle, a crank), use `from:"point"` with `InkFigure.toPose()` recomputed every frame.
 
 **Redraw from the tweens that move him.** A gsap timeline renders children in start-time order, so a per-frame redraw tween at position 0 runs *before* a gesture tween further along the timeline has written its values. Give every tween that moves him `onUpdate: () => pup.setPose(fig.pose())`.
 
@@ -70,6 +74,7 @@ InkPuppet.choreograph(tl, pup, [{clip:'walk',dur:4},{clip:'still',dur:3},{clip:'
 The bar is "close to real". Two things carry most of it:
 
 - **Real dimensions.** Anything a person uses has a standard size. Derive it in millimetres off the character's height, in the composition, with the millimetre figure in the comment beside it.
+- **Cutting.** Land the cut on the action, inside one movement, and do NOT cross the line: if he walks right in scene A he walks right in scene B. Cutting to "the same door from the other side" swaps left and right and turns him round — cut ninety degrees instead, to a different wall, with the door he came through seen edge-on in the corner. Move the camera a few percent as well, or a cut reads as the wall having changed behind a man standing still.
 - **Perspective where flat elevation is ambiguous.** Seen exactly square on, a door swinging away is a pure horizontal squash — geometrically right and unreadable, because it just looks like a narrower door. Project it instead: a point `u` from the hinge sits at depth `u*sin(angle)` and scales about the vanishing point by `D/(D + u*sin(angle))`. At angle 0 the scale is 1 everywhere, so the closed state needs no fudge. The vanishing point is the camera's axis and is fixed to the PAGE, so it moves through world coordinates as the world scrolls. Worked example: `ink-theater/tests/nib-door/`.
 
 ## ⚠ Non-negotiables
@@ -81,5 +86,5 @@ The bar is "close to real". Two things carry most of it:
 
 ## Reference builds
 
-- `ink-theater/tests/nib-door/` — Nib works a lever and pushes a door open. The reference for real dimensions, perspective, and a hand that holds a moving thing.
+- `ink-theater/tests/nib-corridor/` — **the rig reference.** Corridor, toolbox, lever, door, cut, room, bench: the walk, root motion, two hands, the cut, real dimensions and the perspective door, all in one 15s build.
 - `projects/ink-theater-reel/` — capabilities reel. · `projects/ink-theater-momentum/` — "Momentum" story (handwriting via HTML divs).

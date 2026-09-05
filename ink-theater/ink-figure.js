@@ -143,7 +143,13 @@
     face: { eye: 6, eyeA: 8, eyeB: 27, eyeY: -10,      // both eyes on the +x side
             noseFrom: 41, noseTo: 58, noseStroke: 6 },
     foot: { heel: -13, ball: 6, toe: 28, w0: 17, w1: 12, plantOver: 55 },
-    hand: 12                      // the fist, a paper circle with an ink outline
+    hand: 12,                     // the fist, a paper circle with an ink outline
+    /* How far behind the near side the far arm and leg are drawn. In a true
+       side view the two arms project onto each other almost exactly and read as
+       one thick arm with two hands on the end of it. Every 2D animator offsets
+       the far limbs a little for exactly this reason; the offset is backwards,
+       away from the direction he faces. */
+    depth: 11
   };
 
   function attach(pup, opt) {
@@ -156,6 +162,8 @@
     var wLeg0 = W.leg0 || NIB.weights.leg0, wLeg1 = W.leg1 || NIB.weights.leg1;
     var bodyStroke = W.body || NIB.weights.body;
     var limbStroke = W.limb || NIB.weights.limb;
+    var DEPTH = opt.depth != null ? opt.depth : NIB.depth;
+    function back(p) { return [p[0] - DEPTH, p[1]]; }
 
     // The wireframe becomes the pencil under-drawing: thin, grey, and drawn
     // first. It is the same six paths InkPuppet already poses, restyled.
@@ -237,7 +245,13 @@
        straightens it, so the one gesture the whole piece turns on reads as a
        bar laid across the chest. */
     var carry = { on: 0, from: "shoulder", dx: 39, dy: 123 };
-    var handNow = [0, 0], ZERO = [0, 0];
+    /* The same thing for the other arm. Two hands is not a luxury: you hold the
+       bag in one and turn the handle with the other, and a character that has
+       to put its only prop down before it can touch anything is a character
+       that cannot act. `hold` drives the far arm; everything about it works
+       exactly like `carry`. */
+    var hold = { on: 0, from: "shoulder", dx: 39, dy: 123 };
+    var handNow = [0, 0], handFarNow = [0, 0], ZERO = [0, 0];
 
     function draw(po) {
       // The body is a closed outline around the spine, with its own width at
@@ -266,27 +280,30 @@
       // The L side reads as the near side: it is the side the face points at,
       // and the side that carries.
       var armRootF = lerp(po.shR, shMid, 0.22), armRootN = lerp(po.shL, shMid, 0.22);
-      armFar.setAttribute("d", taper([armRootF, po.elR, po.haR], wArm0, wArm1));
 
-      var elN = po.elL, haN = po.haL;
-      if (carry.on > 0.001) {
-        var anchor = carry.from === "point" ? ZERO
-                   : carry.from === "head" ? po.head
-                   : carry.from === "shoulder" ? po.shL : po.chest;
-        var ik = reachArm(po.shL, po.elL, po.haL,
-                          [anchor[0] + carry.dx, anchor[1] + carry.dy]);
-        elN = mixPt(po.elL, ik[0], carry.on);
-        haN = mixPt(po.haL, ik[1], carry.on);
+      function posed(c, sh, el0, ha0) {
+        if (!(c.on > 0.001)) return [el0, ha0];
+        var anchor = c.from === "point" ? ZERO
+                   : c.from === "head" ? po.head
+                   : c.from === "shoulder" ? sh : po.chest;
+        var ik = reachArm(sh, el0, ha0, [anchor[0] + c.dx, anchor[1] + c.dy]);
+        return [mixPt(el0, ik[0], c.on), mixPt(ha0, ik[1], c.on)];
       }
+      var far = posed(hold, po.shR, po.elR, po.haR);
+      handFarNow = far[1];
+      armFar.setAttribute("d", taper([back(armRootF), back(far[0]), back(far[1])], wArm0, wArm1));
+
+      var near = posed(carry, po.shL, po.elL, po.haL);
+      var elN = near[0], haN = near[1];
       handNow = haN;
       armNear.setAttribute("d", taper([armRootN, elN, haN], wArm0, wArm1));
 
       var plantY = Math.max(po.ftL[1], po.ftR[1]);
-      legFar.setAttribute("d", taper([po.hipR, po.knR, po.ftR], wLeg0, wLeg1));
+      legFar.setAttribute("d", taper([back(po.hipR), back(po.knR), back(po.ftR)], wLeg0, wLeg1));
       legNear.setAttribute("d", taper([po.hipL, po.knL, po.ftL], wLeg0, wLeg1));
-      footFar.setAttribute("d", foot(po.ftR, po.knR, plantY));
+      footFar.setAttribute("d", foot(back(po.ftR), back(po.knR), plantY));
       footNear.setAttribute("d", foot(po.ftL, po.knL, plantY));
-      handFar.setAttribute("cx", po.haR[0]); handFar.setAttribute("cy", po.haR[1]);
+      handFar.setAttribute("cx", handFarNow[0] - DEPTH); handFar.setAttribute("cy", handFarNow[1]);
       handNear.setAttribute("cx", haN[0]); handNear.setAttribute("cy", haN[1]);
 
       var hx = po.head[0], hy = po.head[1] - headR * 0.32;
@@ -314,8 +331,12 @@
       pencil: pencil,
       /** what the near arm is doing — tween these from the timeline */
       carry: carry,
+      /** the same for the far arm, so he can use both hands at once */
+      hold: hold,
       /** where the near hand actually ended up, after any IK. Hang props here. */
       hand: function () { return handNow; },
+      /** and the far one */
+      handFar: function () { return handFarNow; },
       /** the pose currently on screen. Feed it back through pup.setPose() every
           frame if anything is parented to the hand — redraw() only repaints the
           figure, so a prop hung off the hand by the caller would not follow it. */

@@ -98,6 +98,17 @@ Two rig facilities he depends on:
   median hand span it stands out by 2x to 11x). Before that fix, a T-pose
   flashed for one frame at the start of every segment: invisible in a snapshot,
   obvious in the render. **Frame indices are numbered on the trimmed clip.**
+- **Root motion.** Clips carry `rootX`, `pup.travel` reports how far the
+  choreography has walked, and `InkPuppet.travel(clip, seconds)` answers the
+  same question ahead of time. Slide the world by `pup.travel * SCALE` and the
+  planted foot stops sliding — 1.2px of slip per frame instead of 13.0px — and
+  no composition ever has to pick a walking speed again.
+- **The clips are side-on now.** `bvh2clip.mjs` used to project onto world X
+  whatever direction the subject walked in, so a CMU subject who walked along Z
+  came out front on, with a 30-unit stride on a 538-unit figure. It projects
+  onto the direction the motion travels now (or, for an in-place take, the way
+  the feet point). Re-derived clips change the look of anything built against
+  the old ones.
 
 ## Ink Figure — a drawn character on top of the rig (`ink-figure.js`)
 

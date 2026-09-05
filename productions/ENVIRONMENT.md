@@ -135,6 +135,10 @@ Three things that are not obvious and each cost a cycle:
   One frame at 30fps never appears in a snapshot; it is only visible in the
   render, or by measuring frame 0's hand span against the clip's median (it
   stands out by 2x to 11x). `InkPuppet` now trims it on first use.
+- **CMU mocap fetches work.** `raw.githubusercontent.com` is on the allowlist, so
+  `ink-theater/mocap/add-motion.mjs` can pull BVH files from
+  `una-dinosauria/cmu-mocap` and the whole clip library can be re-derived
+  offline-ish in about a minute. No other media host is reachable.
 - **`hyperframes render` can fail its own FFmpeg probe spuriously.** "FFmpeg
   cannot start / Install a working 64-bit FFmpeg build" while `ffmpeg -version`
   runs fine from the shell is a transient spawn failure. Re-run the render before

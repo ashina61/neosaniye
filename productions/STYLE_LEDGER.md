@@ -105,6 +105,17 @@ next production inherits the drawing rather than redrawing it. The rig, the
 clips and the determinism are InkPuppet's; the body, the brush weights, the
 hands, the feet and the face are Nib.
 
+**The clip library was re-derived on 2026-09-06 and the fourth video no longer
+reproduces from its source.** `bvh2clip.mjs` had been projecting every clip onto
+world X whatever direction the subject actually walked in, so a CMU subject who
+walked along Z came out front on: shoulders 145 units apart, a 30-unit stride on
+a 538-unit figure. Every clip is now projected side on, carries root motion, and
+has its leading T-pose trimmed. The committed mp4 of the-doorway-did-it is
+unaffected — it is a rendered file — but its composition was fitted to the old
+projections number by number, so re-running it produces something else.
+Rebuilding it on the current rig means re-solving its geometry. That is a real
+cost and it is the right trade: the walk was the weakest thing in it.
+
 What the second pass on him fixed, and what the next production inherits for
 free: every part is now paper-filled with an ink outline, like the head and like
 the world, so limbs occlude each other instead of merging into one black shape;
