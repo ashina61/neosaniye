@@ -1,0 +1,81 @@
+{
+  "version": "1.0",
+  "project_id": "the-doorway-did-it",
+  "pipeline_type": "character-animation",
+  "stage": "character_design",
+  "status": "completed",
+  "timestamp": "2026-09-05T12:51:27.606201+00:00",
+  "checkpoint_policy": "guided",
+  "human_approval_required": true,
+  "human_approved": true,
+  "artifacts": {
+    "character_design": {
+      "version": "1.0",
+      "style": {
+        "visual_style": "ink-sketch: black ink on warm white paper, single stroke weight, live hand-drawn boil"
+      },
+      "characters": [
+        {
+          "id": "the-figure",
+          "display_name": "The Figure",
+          "role": "lead \u2014 the only character; stands in for the viewer",
+          "body_type": "six-part hand-drawn stick figure: circular head, spine, two arms, two legs. Head radius 44, stroke width 7, drawn at ~440 units tall.",
+          "style": "ink-sketch",
+          "silhouette_notes": "Readable at phone size from the silhouette alone, which is the whole reason the design is this bare. Two white-dot eyes on the head and nothing else \u2014 no mouth, no clothes, no hair. The one variable in the silhouette is whether a hand is holding the orange errand or is empty, and that difference has to carry the entire middle of the video, so it is never obscured by a limb.",
+          "required_emotions": [
+            "oblivious",
+            "stopped",
+            "searching",
+            "defeated",
+            "resolved"
+          ],
+          "required_actions": [
+            "draw_in",
+            "march",
+            "walk",
+            "walk_mirrored",
+            "shuffle",
+            "kick",
+            "sit"
+          ],
+          "required_views": [
+            "side"
+          ],
+          "props": [
+            "orange errand (a small round parcel, held in the raised hand)"
+          ],
+          "constraints": [
+            "Motion is never hand-authored. Every action maps to a named clip in ink-theater/mocap/catalog.json.",
+            "No clip is used twice in a row.",
+            "The figure is horizontally fixed at cx; travel is expressed by sliding the world past it.",
+            "Emotion is carried by staging \u2014 empty hands, stillness, the balloon \u2014 not by facial expression, because there is no face to change.",
+            "Never cute. It does not mug, wink or address the camera."
+          ]
+        }
+      ],
+      "metadata": {
+        "source": "character_spec_generator",
+        "brief": "One hand-drawn ink figure on white paper, running an errand it will lose to a doorway. Deadpan and never cute; the comedy is that it keeps doing a reasonable thing. Motion comes entirely from retargeted CMU motion capture through ink-theater/ink-puppet.js \u2014 no pose is hand-authored, which is why the required_actions below are named mocap clips rather than drawn poses."
+      }
+    }
+  },
+  "style_playbook": "ink-sketch",
+  "review": {
+    "status": "passed",
+    "rounds": 1,
+    "findings": [
+      {
+        "severity": "note",
+        "note": "One character. Required actions are named mocap clips rather than drawn poses, because the style forbids hand-authored character motion."
+      },
+      {
+        "severity": "note",
+        "note": "Silhouette carries the whole story: the only variable is whether the raised hand holds the errand."
+      }
+    ]
+  },
+  "cost_snapshot": {
+    "spent_usd": 0,
+    "estimated_total_usd": 0
+  }
+}

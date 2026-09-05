@@ -1,0 +1,343 @@
+{
+  "version": "1.0",
+  "project_id": "the-doorway-did-it",
+  "decisions": [
+    {
+      "decision_id": "d-001",
+      "stage": "proposal",
+      "category": "pipeline_selection",
+      "subject": "Pipeline for a character-led vertical explainer",
+      "options_considered": [
+        {
+          "option_id": "character-animation",
+          "label": "character-animation",
+          "score": 0.95,
+          "reason": "The subject is a person carrying something across a threshold. That is acting, and this is the only pipeline whose stages are character design, rig plan, pose library and action timeline."
+        },
+        {
+          "option_id": "animated-explainer",
+          "label": "animated-explainer",
+          "score": 0.55,
+          "reason": "Carried the three previous productions and is fully understood.",
+          "rejected_because": "Its stages assume the visual is composed rather than performed. It has no character_design or rig_plan stage, which is exactly where the work is here."
+        },
+        {
+          "option_id": "animation",
+          "label": "animation",
+          "score": 0.5,
+          "reason": "Motion-graphics-first, and the ink-sketch style runs on it for illustration pieces.",
+          "rejected_because": "skills/creative/ink-theater.md routes a mocap character to character-animation and an illustration or contraption piece to animation. This has a mocap character."
+        }
+      ],
+      "selected": "character-animation",
+      "reason": "The pipeline whose contract matches the work. It is also beta, which is worth saying out loud: expect rough edges in its tooling and be ready to hand-author an artifact against the schema if a stage tool disagrees with it.",
+      "user_visible": true,
+      "user_approved": true
+    },
+    {
+      "decision_id": "d-002",
+      "stage": "proposal",
+      "category": "concept_selection",
+      "subject": "Angle and staging for the doorway-effect short",
+      "options_considered": [
+        {
+          "option_id": "c-boxes",
+          "label": "The box shuts behind you",
+          "score": 0.95,
+          "reason": "The only concept where the character does the thing the video is about rather than demonstrating it. Carries all three omitted findings and holds the strongest one — the failed return — as the turn."
+        },
+        {
+          "option_id": "c-load",
+          "label": "It only gets you when your arms are full",
+          "score": 0.7,
+          "reason": "The most honest framing in the literature and the funniest single image in the set.",
+          "rejected_because": "It deflates the phenomenon before the viewer has been allowed to enjoy it, and a myth-bust needs a belief to bust; the audience holds an experience, not a belief. Absorbed as the late qualifier."
+        },
+        {
+          "option_id": "c-restage",
+          "label": "They actually ran this",
+          "score": 0.55,
+          "reason": "The most rigorous, and it would satisfy anyone who suspects pop psychology.",
+          "rejected_because": "Spends the runtime on method rather than on the thing the viewer feels, and turns the character into a lab subject — which throws away the only reason to have a character. Its best beat became the turn."
+        },
+        {
+          "option_id": "c-argument",
+          "label": "An argument with a door",
+          "score": 0.45,
+          "reason": "The funniest, and InkTheater.balloon exists precisely for it.",
+          "rejected_because": "Dialogue would carry the video instead of the mechanism, and it doubles the reading load on a phone. One balloon survives."
+        }
+      ],
+      "selected": "c-boxes",
+      "reason": "The mechanism is physical and so is the concept. The other three each contributed one thing: the load qualifier, the return condition, and a single speech balloon.",
+      "user_visible": true,
+      "user_approved": true
+    },
+    {
+      "decision_id": "d-003",
+      "stage": "proposal",
+      "category": "renderer_family_selection",
+      "subject": "Drawn world for this production, under the manifesto's rotation rule",
+      "options_considered": [
+        {
+          "option_id": "ink-theater",
+          "label": "Ink Theater + Ink Puppet (ink-sketch playbook)",
+          "score": 0.95,
+          "reason": "Unused. It is also the only world on the manifesto's table whose native subject is a character performing an action, which is what this topic is made of, and its register — a doodle on paper — is the most immediately readable thing available for a topic the user asked to be understandable by everyone."
+        },
+        {
+          "option_id": "manim",
+          "label": "Manim",
+          "score": 0.0,
+          "reason": "Carried the previous production and worked well.",
+          "rejected_because": "STYLE_LEDGER.md states in writing that production 4 may not use Manim. It is also the wrong register for this brief."
+        },
+        {
+          "option_id": "remotion-atelier",
+          "label": "Remotion atelier vector composition",
+          "score": 0.3,
+          "reason": "Carried productions 1 and 2; fully understood.",
+          "rejected_because": "Two of the last three. And hand-authoring a walk cycle in it would be hand-tuned character motion, which the ink-sketch style forbids outright."
+        },
+        {
+          "option_id": "hyperframes-kinetic",
+          "label": "HyperFrames kinetic typography",
+          "score": 0.35,
+          "reason": "Unused as a *style*, and strong when the words are the visual.",
+          "rejected_because": "Here the words are not the visual; a person losing something is. The runtime is used, the style is not — held for a future production where the type is the subject."
+        },
+        {
+          "option_id": "threejs",
+          "label": "threejs_world",
+          "score": 0.2,
+          "reason": "Unused, and a doorway is genuinely spatial.",
+          "rejected_because": "A 3D room would make the piece about the room. The point is that the room is a container, not a place, and a flat doodle says that better than a rendered space."
+        }
+      ],
+      "selected": "ink-theater",
+      "reason": "Rotation requires a new world, the topic requires acting, and this is the only world that does acting. Its character motion is real motion capture, which also makes it the largest single change to this channel's motion language so far.",
+      "user_visible": true,
+      "user_approved": true
+    },
+    {
+      "decision_id": "d-004",
+      "stage": "proposal",
+      "category": "render_runtime_selection",
+      "subject": "Composition runtime for the final assembly",
+      "options_considered": [
+        {
+          "option_id": "hyperframes",
+          "label": "HyperFrames 0.8.29 (available: true)",
+          "score": 0.95,
+          "reason": "The runtime the ink-sketch style is built for: HTML/SVG/CSS driven by one paused GSAP timeline, rendered to MP4. It also ships lint, validate, snapshot and inspect, which give this production a review loop the previous three had to improvise. A vertical 1080x1920 smoke build rendered in 18 seconds wall clock before this decision was taken."
+        },
+        {
+          "option_id": "remotion",
+          "label": "Remotion (available: true)",
+          "score": 0.4,
+          "reason": "Carried all three previous productions and is completely understood here.",
+          "rejected_because": "Ink Theater and Ink Puppet are written against HyperFrames' contract — one paused timeline, seek-safe determinism. Porting them to Remotion would mean rewriting the engine to use it, which is the opposite of reusing engine knowledge."
+        },
+        {
+          "option_id": "ffmpeg",
+          "label": "FFmpeg (available: true)",
+          "score": 0.1,
+          "reason": "Always available, and it will still do the audio mux and the loudness pass.",
+          "rejected_because": "It cannot render a browser composition. Retained for exactly the job it is right for: muxing the narration and normalising to -14 LUFS."
+        }
+      ],
+      "selected": "hyperframes",
+      "reason": "All three runtimes are available on this machine and all three were evaluated, as the hard rule requires. HyperFrames is chosen because the style's engine is written for its contract. If it became unavailable at compose time that is a blocker to escalate, not a silent swap.",
+      "user_visible": true,
+      "user_approved": true
+    },
+    {
+      "decision_id": "d-005",
+      "stage": "proposal",
+      "category": "motion_commitment",
+      "subject": "How the character's movement is authored",
+      "options_considered": [
+        {
+          "option_id": "mocap",
+          "label": "Real CMU motion capture via InkPuppet.choreograph",
+          "score": 1.0,
+          "reason": "The agent chooses named clips and nothing else. Motion looks human because a human did it, and it is deterministic and seek-safe because each pose is a pure function of the segment's local time."
+        },
+        {
+          "option_id": "hand-tuned",
+          "label": "Hand-authored limb curves",
+          "score": 0.0,
+          "reason": "Total control.",
+          "rejected_because": "Explicitly forbidden by skills/creative/ink-theater.md — 'never hand-tune character motion' — and it is forbidden for a good reason: hand-tuned walk cycles are the tell that separates a doodle that moves from a doodle that is alive."
+        }
+      ],
+      "selected": "mocap",
+      "reason": "The style's rule, and the whole reason the character world is worth using. Clips are picked per beat from mocap/catalog.json and no clip is used twice in a row.",
+      "user_visible": true,
+      "user_approved": true
+    },
+    {
+      "decision_id": "d-006",
+      "stage": "proposal",
+      "category": "composition_mode",
+      "subject": "Authoring mode",
+      "options_considered": [
+        {
+          "option_id": "atelier",
+          "label": "Atelier — hand-authored composition on the engine primitives",
+          "score": 1.0,
+          "reason": "Consistent with the three previous productions and with the manifesto. The engine supplies strokes, boil, springs and the puppet; every scene, prop and beat in this piece is written for it alone."
+        },
+        {
+          "option_id": "templated",
+          "label": "HyperFrames registry blocks",
+          "score": 0.05,
+          "reason": "Fast and reliable.",
+          "rejected_because": "Registry blocks are frozen looks. The atelier doctrine puts them off-limits for hero work, and this channel exists because five templated videos looked identical."
+        }
+      ],
+      "selected": "atelier",
+      "reason": "Engine knowledge is reused; creative components are not.",
+      "user_visible": true,
+      "user_approved": true
+    },
+    {
+      "decision_id": "d-007",
+      "stage": "proposal",
+      "category": "playbook_selection",
+      "subject": "Style playbook",
+      "options_considered": [
+        {
+          "option_id": "ink-sketch",
+          "label": "ink-sketch (Ink Theater)",
+          "score": 1.0,
+          "reason": "Hand-drawn ink-on-white doodle animation with a character that draws itself and acts the idea out. It is the playbook this concept is made of."
+        },
+        {
+          "option_id": "flat-motion-graphics",
+          "label": "flat-motion-graphics",
+          "score": 0.3,
+          "reason": "The pipeline manifest's recommended playbook for character-animation.",
+          "rejected_because": "The manifest recommends it; a recommendation is input, not a decision. Its bounce and colour would fight motion capture, which is quiet and human rather than snappy."
+        },
+        {
+          "option_id": "minimalist-diagram",
+          "label": "minimalist-diagram",
+          "score": 0.1,
+          "reason": "Carried the previous production well.",
+          "rejected_because": "That is the previous production, and the user asked for something everyone can understand rather than something precise."
+        }
+      ],
+      "selected": "ink-sketch",
+      "reason": "The playbook and the concept are the same object. Its strict colour grammar is adopted and mapped to this story explicitly in the art direction.",
+      "user_visible": true,
+      "user_approved": true
+    },
+    {
+      "decision_id": "d-008",
+      "stage": "proposal",
+      "category": "voice_selection",
+      "subject": "Narration TTS provider",
+      "options_considered": [
+        {
+          "option_id": "piper",
+          "label": "Piper en_US-ryan-high (local)",
+          "score": 0.7,
+          "reason": "The only TTS configured here. Fluent, correctly stressed, free, offline, and measured at about 3.2 words per second across the previous productions."
+        },
+        {
+          "option_id": "cloud-tts",
+          "label": "A cloud voice (ElevenLabs, Azure or Gemini)",
+          "score": 0.95,
+          "reason": "Materially better, and this is the production that would benefit most — it is the first script with any warmth in it, and Piper is level by nature.",
+          "rejected_because": "No key is configured and the standing constraint is that nothing is paid for until the channel earns. Recorded again so the option stays visible; it is now the fourth production to name it."
+        }
+      ],
+      "selected": "piper",
+      "reason": "Availability and the zero-cost constraint. Named in the quality tradeoffs as the weakest component.",
+      "user_visible": true,
+      "user_approved": true
+    },
+    {
+      "decision_id": "d-009",
+      "stage": "proposal",
+      "category": "music_source",
+      "subject": "Music and sound",
+      "options_considered": [
+        {
+          "option_id": "three-sounds",
+          "label": "Silence plus three self-produced sounds",
+          "score": 0.9,
+          "reason": "A pencil scratch while the figure draws itself, a wooden clack when the lid stamps shut, and nothing under the close. Each one marks a physical event, which is what a piece about physical acting needs."
+        },
+        {
+          "option_id": "ai_generated",
+          "label": "A generated background track",
+          "score": 0.25,
+          "reason": "Available in principle through music_generation.",
+          "rejected_because": "0 of 5 music_generation providers are configured on this machine, and a bed would flatten three sounds that are meant to be the only things you hear."
+        },
+        {
+          "option_id": "user_library",
+          "label": "A track from music_library/",
+          "score": 0.0,
+          "reason": "The drop path exists.",
+          "rejected_because": "music_library/ is empty; the capability reports 0 of 1 configured."
+        }
+      ],
+      "selected": "three-sounds",
+      "reason": "Silence is the design. The three sounds are synthesised locally with ffmpeg, so nothing is licensed and nothing is fetched.",
+      "user_visible": true,
+      "user_approved": true
+    },
+    {
+      "decision_id": "d-010",
+      "stage": "proposal",
+      "category": "provider_selection",
+      "subject": "Source of the visual material — drawn versus photographed",
+      "options_considered": [
+        {
+          "option_id": "drawn-only",
+          "label": "Every frame drawn, per productions/MANIFESTO.md",
+          "score": 1.0,
+          "reason": "The channel's position, and here it is also the only workable choice: the only thing a camera can show is a person looking puzzled in a kitchen, which is a picture of the symptom."
+        },
+        {
+          "option_id": "stock-footage",
+          "label": "Stock footage of a person in a doorway",
+          "score": 0.0,
+          "reason": "It is what every other treatment uses.",
+          "rejected_because": "Two reasons and the second is the real one. This environment's network policy denies every media host tested — thirteen of them, recorded in productions/ENVIRONMENT.md. Editorially, a photograph of a doorway contains no boxes, no lid and no stack, so the annotation would have nothing to point at."
+        }
+      ],
+      "selected": "drawn-only",
+      "reason": "The manifesto, and the fact that the mechanism has no photograph.",
+      "user_visible": true,
+      "user_approved": true
+    },
+    {
+      "decision_id": "d-011",
+      "stage": "proposal",
+      "category": "capability_extension",
+      "subject": "Whether to extend the mocap action library for this piece",
+      "options_considered": [
+        {
+          "option_id": "catalog-only",
+          "label": "Use only the twelve clips already in mocap/catalog.json",
+          "score": 0.75,
+          "reason": "No new dependency, no fetch, no conversion step. `shuffle` — a slow sneaking creep — reads convincingly as aimless searching, which is the beat that matters most."
+        },
+        {
+          "option_id": "extend",
+          "label": "Add clips with ink-theater/mocap/add-motion.mjs",
+          "score": 0.6,
+          "reason": "The script pulls free CMU motion through GitHub, which is on this environment's allowlist, and auto-maps the skeleton. A dedicated 'look around, confused' clip would be better than shuffle for the central beat."
+        }
+      ],
+      "selected": "catalog-only",
+      "reason": "Start with what ships and let the snapshot review decide. If the wandering beat does not read as confusion on the contact sheet, extend then — the option is live and the host is reachable, so this is a deferral rather than a rejection.",
+      "user_visible": true,
+      "user_approved": true
+    }
+  ]
+}

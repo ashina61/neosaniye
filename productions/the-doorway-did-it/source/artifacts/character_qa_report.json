@@ -1,0 +1,29 @@
+{
+  "version": "1.0",
+  "status": "pass",
+  "preview_path": "/home/user/neosaniye/productions/the-doorway-did-it/the-doorway-did-it_1080x1920.mp4",
+  "checks": {
+    "schema_valid": true,
+    "assets_exist": true,
+    "pivots_defined": true,
+    "poses_defined": true,
+    "actions_timed": true,
+    "motion_detected": true,
+    "browser_preview_checked": true,
+    "frame_samples_checked": true
+  },
+  "issues": [
+    "Resolved before render: the actor's facing flip used transformOrigin in px on an SVG <g>. GSAP needs svgOrigin in user units there, and the wrong one threw the whole figure off the page from 26.2s to the end. It is invisible in a still and only showed up on the first full render — the reason this pipeline's compose stage insists on sampling the finished file.",
+    "Resolved before render: the sit clip is exactly 6.00s and the segment was 6.60s, so it wrapped and began sitting down again instead of ending on its feet. Fixed with loop:false, which holds the clip's last frame.",
+    "Resolved before render: the character had no visible face — the style's white-dot eyes are invisible on an unfilled head on white paper — so the turn at 26.2s did not read at all on a symmetrical stick figure. Two ink eyes and a nose, both on one side, fixed both problems at once.",
+    "Accepted: the catalog has no 'stands still, confused' clip, so the search beat is carried by shuffle plus staging. Verified legible on the contact sheet; the library was not extended."
+  ],
+  "recommended_action": "present_to_user",
+  "metadata": {
+    "source": "character_animation_reviewer, then extended by hand with the checks the tool marks false by default",
+    "confidence": "static artifact review; run Playwright/FFmpeg checks in compose for final output",
+    "browser_preview": "hyperframes validate — no console errors, no missing assets, 14 of 14 text elements pass WCAG AA after the errand orange was darkened from #E8722C (2.95:1) to #D4611B (3.67:1)",
+    "frame_samples": "Four snapshot passes during the build (snapA-snapD) plus a 1fps strip of all 47 seconds and two frame-by-frame samples at 3-frame intervals, one over the swipe and one over the walk cycle",
+    "mocap_verification": "Six named clips, no clip adjacent to itself, zero hand-authored character motion"
+  }
+}

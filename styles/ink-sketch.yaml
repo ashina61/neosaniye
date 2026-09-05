@@ -1,0 +1,98 @@
+# Ink Sketch — the playbook AGENT_GUIDE.md's Style Playbooks table has always
+# listed and styles/ never actually contained. skills/creative/ink-theater.md
+# declares `Style id: ink-sketch`, so any run that named it failed the
+# checkpoint writer's playbook validation. Written here from the engine's own
+# stated grammar (skills/creative/ink-theater.md + ink-theater/README.md) so
+# the promise in the guide and the contents of this directory agree.
+#
+# Engine: ink-theater/ink-theater.js (+ ink-puppet.js for characters)
+# Runtime: HyperFrames, atelier mode.
+
+identity:
+  name: "Ink Sketch"
+  category: whiteboard
+  mood: deadpan, hand-drawn, faintly slapstick, never cute
+  pace: moderate
+  best_for: "Hand-drawn ink-on-white doodle animation: a character that draws itself and physically performs an abstract idea, and deadpan contraption explainers"
+
+visual_language:
+  color_palette:
+    primary: ["#333333"]
+    accent: ["#D4611B", "#C8322B", "#2E6E9E"]
+    background: "#FCFBF8"
+    text: "#333333"
+    muted: "#8A857A"
+  composition: >
+    Pure paper. At least 35% negative space, subject occupying roughly 40-60%
+    of the frame. One continuous page with a camera that pans or pushes, rather
+    than a stack of cut scenes.
+  texture: >
+    Live hand-drawn line boil on every ink stroke — a seek-safe stepped
+    feTurbulence seed at about 9-10fps, never SMIL. Variable-width brush
+    ribbons, wobbled centerlines. No fills, no gradients, no shadows.
+
+typography:
+  headings:
+    font: "Patrick Hand"
+    weight: 400
+    tracking: "0"
+  body:
+    font: "Patrick Hand"
+    weight: 400
+    line_height: 1.35
+  scale_system: "major_third"
+  weight_matrix:
+    title: 400
+    heading: 400
+    body: 400
+    caption: 400
+
+motion:
+  transitions: [cut, pan, push]
+  animation_style: >
+    Closed-form damped-spring eases for objects (anticipation, overshoot,
+    settle) and real retargeted motion capture for characters. Character motion
+    is never hand-authored.
+  pacing_rules:
+    min_scene_hold_seconds: 2.0
+    max_scene_hold_seconds: 8.0
+    text_card_hold_seconds: 2.5
+    stat_card_hold_seconds: 2.5
+    transition_duration_seconds: 0.4
+  entrance: "the pencil draws it in, stroke by stroke"
+  exit: "it is taken out of frame by something, or the camera leaves it"
+
+audio:
+  voice_style: "dry, warm, unhurried — a friend telling you something, not a narrator announcing it"
+  music_mood: "silence by default; the paper is quiet"
+  music_volume: 0.0
+  sfx_style: "one sound per physical event — a pencil scratch, a clack, a thud. Nothing ambient."
+  voice_variation_allowed: true
+
+asset_generation:
+  image_prompt_prefix: >
+    Not applicable: this style generates nothing. Every mark is vector ink drawn
+    programmatically from the InkTheater primitives, so there is no image model
+    in the path and no API key is required.
+  diagram_style: "hand-drawn ink, single weight, wobbled centerline, no fill"
+  consistency_anchors:
+    - "black ink #333 on warm white #FCFBF8, one stroke weight for structure"
+    - "deadpan mascot or stick figure with white-dot eyes, never cute, never mugging"
+    - "orange is flow and only flow; red is the problem; blue is the good end-state"
+    - "every stroke carries the boil filter"
+    - "handwriting is Patrick Hand, embedded as a full TTF on HTML overlay divs"
+
+quality_rules:
+  - "Character motion comes from named clips in ink-theater/mocap/catalog.json. Hand-tuned limb curves are forbidden."
+  - "Never loop one mocap clip through a piece — varying the moves is what stops character work feeling repetitive."
+  - "If you can delete the character and the metaphor still survives, the character is decoration. Redo the metaphor."
+  - "Embed the FULL handwriting TTF. A Google Fonts css2 subset is missing basic-latin and falls back to serif silently while the renderer still reports the font as loaded."
+  - "Determinism: closed-form springs, seed-stepped boil off the timeline, seeded PRNG, no repeat:-1, no render-time network fetch."
+  - "One paused gsap.timeline registered on window.__timelines. Validate with hyperframes lint and read a snapshot contact sheet before rendering."
+  - "At least 35% negative space. The paper is part of the drawing."
+  - "Colour is rationed: orange, red and blue each carry one meaning and appear only where that meaning applies."
+
+color_rules:
+  harmony_type: triadic
+  contrast_validation: true
+  colorblind_safe: true

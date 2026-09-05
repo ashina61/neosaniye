@@ -1,0 +1,365 @@
+{
+  "version": "1.0",
+  "concept_options": [
+    {
+      "id": "c-boxes",
+      "title": "The box shuts behind you",
+      "hook": "You walk into the kitchen with no idea why. The door did that.",
+      "narrative_structure": "story",
+      "visual_approach": "Black ink on white paper. A hand-drawn figure sketches itself into existence, then carries a small orange errand across the frame. The doorway it walks through is a contraption: a frame with a lid-arm that swipes the errand off as the figure crosses, drops it in a box, stamps the lid shut and slides the box onto a growing stack of identical closed boxes. The figure arrives empty-handed and wanders. It walks back through the door — the box stays shut, and that is the beat the whole piece turns on. It ends pulled back on the stack, every box a finished room. Every movement of the figure is real motion capture; nothing about the acting is hand-tuned.",
+      "suggested_playbook": "ink-sketch",
+      "target_audience": "Everyone. This is the one topic where the viewer has already run the experiment on themselves this week.",
+      "target_platform": "youtube",
+      "target_duration_seconds": 50,
+      "key_points": [
+        "You walk into a room and the reason is gone — universally recognised, mildly humiliating",
+        "It is not age and not decline; it happens to healthy people at every age",
+        "The experiment: same distance, across a room versus through a doorway; the doorway one is worse",
+        "A room is treated as one finished event; crossing the threshold closes it and files it",
+        "The remedy everyone has been given — go back to where you were — was tested and did not work",
+        "It mostly only catches you when your head was already full",
+        "Splitting into events costs you the errand and buys you the understanding"
+      ],
+      "core_message": "The forgetting is not a fault in the machine, it is the sound the machine makes when it finishes a room — and the advice you were given about going back does not work.",
+      "cta": "none",
+      "tone": "Deadpan, warm, faintly slapstick. The character is never cute and never mugs; the comedy is that it keeps doing a reasonable thing and the door keeps taking its errand.",
+      "grounded_in": [
+        "underserved_gap: nobody has staged this as an action, and it is entirely an action",
+        "underserved_gap: the folk remedy was tested and failed",
+        "underserved_gap: the effect is load-dependent, not universal",
+        "data_point: surface memory worse, mental model better"
+      ],
+      "why_this_works": "The topic is the most saturated the channel has touched — dozens of shorts run the same script — so the differentiation has to come from two places at once, and this concept has both. The content differentiation is the three findings the corpus omits, in the order that makes them land. The form differentiation is that the mechanism here is literally a person carrying something across a threshold, so for the first time this channel can act the idea out instead of diagramming it, and a doodle losing its errand to a door is funny in a way no chart has ever been."
+    },
+    {
+      "id": "c-load",
+      "title": "It only gets you when your arms are full",
+      "hook": "The door isn't taking things from you. It's just where you drop them.",
+      "narrative_structure": "myth_busting",
+      "visual_approach": "The figure staggers under a swaying tower of objects. Doorway after doorway; each crossing knocks the top item off. When it carries one thing, the doorway takes nothing.",
+      "target_audience": "General, skewing toward people who feel scattered",
+      "target_platform": "youtube",
+      "target_duration_seconds": 45,
+      "key_points": [
+        "Four experiments in 2021 found no reliable doorway effect",
+        "Except under working-memory load",
+        "So the doorway is where an overloaded head drops something",
+        "The fix is not the doorway, it is the load"
+      ],
+      "core_message": "Doorways don't erase things. Overloaded heads do, and the doorway is only where it shows.",
+      "cta": "none",
+      "tone": "Corrective, sympathetic",
+      "grounded_in": [
+        "2021 multimodal study: no significant effect except under working-memory load"
+      ],
+      "why_this_works": "The most honest framing in the literature, the most actionable, and visually the funniest single image in the whole set — a doodle under a swaying tower. Its weakness is that it opens by deflating the phenomenon before the viewer has been allowed to enjoy it, and a myth-bust needs a myth the audience currently holds; here the audience holds the *experience*, not a belief. Its payload becomes the qualifier late in c-boxes."
+    },
+    {
+      "id": "c-restage",
+      "title": "They actually ran this",
+      "hook": "Somebody put this in a lab. Two tables, one door, and a box you can't look in.",
+      "narrative_structure": "data_narrative",
+      "visual_approach": "The figure re-enacts the real protocol as a diagram that it walks through: table, object into a box, cross the room or cross the doorway, get probed. A tally builds beside each condition.",
+      "target_audience": "Viewers who like knowing how a claim was actually established",
+      "target_platform": "youtube",
+      "target_duration_seconds": 55,
+      "key_points": [
+        "Objects concealed in boxes so vision cannot help",
+        "The distance is held constant; only the doorway varies",
+        "Virtual first, then a real building, same result",
+        "Then the third condition: back through two doorways to the start"
+      ],
+      "core_message": "The finding is not folklore; it is a controlled comparison with the distance held constant.",
+      "cta": "none",
+      "tone": "Procedural, dry",
+      "grounded_in": [
+        "Same distance across a room versus through a doorway",
+        "Virtual and real environments",
+        "The return condition"
+      ],
+      "why_this_works": "The most rigorous, and it would satisfy anyone who suspects pop psychology. But re-enacting a protocol spends the running time on method rather than on the thing the viewer feels, and it turns the character into a lab subject rather than a person — which throws away the one advantage of having a character at all. Its best beat, the return condition, is the turn in c-boxes."
+    },
+    {
+      "id": "c-argument",
+      "title": "An argument with a door",
+      "hook": "The door is not sorry.",
+      "narrative_structure": "debate",
+      "visual_approach": "Two characters: the figure and the doorway itself, which answers in speech balloons. The figure accuses; the door explains itself; the figure concedes.",
+      "target_audience": "General, comedy-forward",
+      "target_platform": "youtube",
+      "target_duration_seconds": 50,
+      "key_points": [
+        "The door did it on purpose",
+        "The door is doing its job",
+        "Filing is the job",
+        "The figure has no rebuttal"
+      ],
+      "core_message": "The thing that lost your errand is the thing that lets you think.",
+      "cta": "none",
+      "tone": "Comic, dialogue-led",
+      "grounded_in": [
+        "Event segmentation as a feature rather than a fault",
+        "Surface memory worse, mental model better"
+      ],
+      "why_this_works": "The funniest, and InkTheater.balloon exists precisely for it. But dialogue between a figure and a door means the video is carried by written jokes rather than by the mechanism, the reading load on a phone doubles, and a talking door is a bigger swing than a first character piece should take. One balloon survives into c-boxes."
+    }
+  ],
+  "selected_concept": {
+    "concept_id": "c-boxes",
+    "rationale": "It is the only one of the four in which the character is doing the thing the video is about, rather than demonstrating it, arguing about it or being a subject in it. The mechanism — carrying something across a threshold and losing it — is physical acting, and physical acting is the register this channel has never used and the style ledger now requires. It also carries all three of the findings the saturated corpus omits, and it holds the strongest of them, the failed return, as its turn rather than as an aside.",
+    "modifications": [
+      "Absorb c-load's payload as the late qualifier, so the video does not overstate the effect the way every other treatment does",
+      "Absorb c-restage's return condition as the turn — but staged as the character walking back, not as a protocol diagram",
+      "Keep exactly one speech balloon from c-argument, at the moment the character arrives empty-handed, and let it be the only written joke in the piece",
+      "One character, not two. The doorway is a contraption, not a co-star; giving it a voice would double the reading load."
+    ]
+  },
+  "production_plan": {
+    "pipeline": "character-animation",
+    "playbook": "ink-sketch",
+    "stages": [
+      {
+        "stage": "character_design",
+        "tools": [
+          {
+            "tool_name": "character_spec_generator",
+            "role": "Turn the approved concept into a schema-valid character_design: silhouette, emotional range, required actions and views for the single figure",
+            "provider": "openmontage",
+            "available": true,
+            "estimated_cost_usd": 0,
+            "why_this_provider": "The pipeline's own spec tool; local, deterministic, no key"
+          }
+        ],
+        "approach": "One character. The design is deliberately minimal — a stick figure with a circular head and two white-dot eyes — because the acting has to carry it and any decoration competes with the mocap.",
+        "fallback_if_unavailable": "Hand-author the character_design artifact against the schema."
+      },
+      {
+        "stage": "rig_plan",
+        "tools": [
+          {
+            "tool_name": "svg_rig_builder",
+            "role": "Produce the rig_plan artifact: parts, pivots, layers, views",
+            "provider": "openmontage",
+            "available": true,
+            "estimated_cost_usd": 0,
+            "why_this_provider": "Pipeline tool for the stage"
+          },
+          {
+            "tool_name": "pose_library_builder",
+            "role": "Produce the pose_library artifact from the required actions",
+            "provider": "openmontage",
+            "available": true,
+            "estimated_cost_usd": 0,
+            "why_this_provider": "Pipeline tool for the stage"
+          }
+        ],
+        "approach": "The artifacts are produced by the pipeline tools, but the rig that actually renders is ink-theater/ink-puppet.js: a six-part hand-drawn figure posed frame by frame from baked CMU motion-capture clips. This is stated plainly rather than papered over — skills/creative/ink-theater.md forbids hand-tuning character motion, and InkPuppet is the mocap path that rule points at.",
+        "fallback_if_unavailable": "None needed; both tools are available and the rig ships with the repository."
+      },
+      {
+        "stage": "assets",
+        "tools": [
+          {
+            "tool_name": "tts_selector",
+            "role": "Narration, routed to Piper, synthesised per script section so each section's real duration is measured",
+            "provider": "piper",
+            "available": true,
+            "estimated_cost_usd": 0,
+            "why_this_provider": "The only TTS configured on this machine; the voice was fetched from the rhasspy/piper GitHub release because the HuggingFace voice host is blocked here"
+          },
+          {
+            "tool_name": "character_rig_renderer",
+            "role": "Browser preview of the rig for QA before the full render",
+            "provider": "openmontage",
+            "available": true,
+            "estimated_cost_usd": 0,
+            "why_this_provider": "Pipeline tool for rig verification"
+          }
+        ],
+        "approach": "No image generation and no stock: every prop — the doorway, the lid arm, the boxes, the stack — is parametric ink drawn with InkTheater.inkPath and inkRibbon. The mocap clips are pre-baked and ship with the repository. Narration is synthesised first so the acting is cut to real measured audio.",
+        "fallback_if_unavailable": "None accepted for the character motion. Hand-tuned motion is forbidden by the style."
+      },
+      {
+        "stage": "compose",
+        "tools": [
+          {
+            "tool_name": "video_compose",
+            "role": "Not used for this production's picture — HyperFrames renders the composition directly via its own CLI, which is the documented path for an ink-theater build",
+            "provider": "hyperframes",
+            "available": true,
+            "estimated_cost_usd": 0,
+            "why_this_provider": "HyperFrames is the runtime the ink-sketch style is built for: one paused GSAP timeline over HTML/SVG, rendered to MP4"
+          },
+          {
+            "tool_name": "audio_mixer",
+            "role": "Mux the measured narration under the silent render and normalise to -14 LUFS",
+            "provider": "ffmpeg",
+            "available": true,
+            "estimated_cost_usd": 0,
+            "why_this_provider": "Local, exact, already the pattern for the three previous productions"
+          },
+          {
+            "tool_name": "character_animation_reviewer",
+            "role": "Character QA on the finished file",
+            "provider": "openmontage",
+            "available": true,
+            "estimated_cost_usd": 0,
+            "why_this_provider": "Pipeline tool; produces the character_qa_report the stage requires"
+          }
+        ],
+        "approach": "hyperframes lint, then snapshot and read the contact sheet, then render at 1080x1920 30fps, then mux. The snapshot-and-read loop is the equivalent of the still review that caught the layout defects on the previous three productions.",
+        "fallback_if_unavailable": "If HyperFrames became unavailable this is a blocker to escalate, not a silent swap to Remotion."
+      }
+    ],
+    "quality_tradeoffs": [
+      {
+        "tradeoff": "The mocap library has twelve clips and none of them is 'stands still and looks around, confused' — which is the single most important beat in the video.",
+        "recommendation": "Use `shuffle` (a slow sneaking creep) for the wandering, which reads exactly as aimless searching, and carry the confusion in the staging — the empty hands, the balloon, the stillness — rather than in a pose. If it does not read, extend the library with ink-theater/mocap/add-motion.mjs, which pulls free CMU motion through GitHub and is reachable from here.",
+        "quality_impact": "moderate"
+      },
+      {
+        "tradeoff": "InkPuppet keeps the figure horizontally fixed at cx and only moves it vertically, so a walk clip walks on the spot.",
+        "recommendation": "Move the world instead of the character: the room, the doorway and the boxes live in a group that slides past a fixed figure. This is the classic side-scroller solution, it is deterministic, and it puts the doorway's arrival under exact timeline control — which matters because the swipe has to land on a specific word.",
+        "quality_impact": "low"
+      },
+      {
+        "tradeoff": "Piper is a small local neural voice and remains the weakest component across all four productions.",
+        "recommendation": "Ship on Piper. A cloud TTS key is still the single largest available quality upgrade, and still declined under the standing 'nothing paid' constraint.",
+        "quality_impact": "moderate"
+      },
+      {
+        "tradeoff": "The topic is genuinely saturated — dozens of near-identical shorts exist.",
+        "recommendation": "Accept it, because the differentiation is real and double: three findings the corpus omits, and a form nobody has used on it. But say so honestly in the ledger rather than pretending the field was empty.",
+        "quality_impact": "low"
+      }
+    ],
+    "alternative_paths": [
+      {
+        "description": "Remotion atelier again, hand-drawing the figure and animating it by hand",
+        "total_cost_usd": 0,
+        "quality_level": "standard",
+        "what_changes": "A fourth production on a runtime used by two of the previous three, with hand-tuned character motion that the ink-sketch style explicitly forbids. Rejected on both counts."
+      },
+      {
+        "description": "Manim again, diagramming the effect as boxes and arrows",
+        "total_cost_usd": 0,
+        "quality_level": "standard",
+        "what_changes": "Would work and would look good, and the style ledger forbids it outright for this production. It is also the wrong register for a topic the user asked to be understandable by everyone."
+      },
+      {
+        "description": "The same edit with a cloud TTS voice",
+        "total_cost_usd": 2,
+        "quality_level": "premium",
+        "what_changes": "Materially better narration across the whole channel. Blocked by the standing constraint; recorded so it stays visible."
+      }
+    ],
+    "delivery_promise": {
+      "promise_type": "teacher_explainer",
+      "motion_required": true,
+      "tone_mode": "deadpan, warm, faintly slapstick",
+      "quality_floor": "broadcast",
+      "approved_fallback": null
+    },
+    "renderer_family": "animation-first",
+    "render_runtime": "hyperframes",
+    "composition_mode": "atelier",
+    "art_direction": "Black ink on warm white paper (#FCFBF8), the ink-sketch playbook. All structure and the character are ink #333 with a live hand-drawn boil on every stroke. The colour grammar is the style's own, mapped to this story: orange #D4611B is the errand and only the errand — it is the thing that flows through the piece and the only warm mark on the page; red #C8322B appears once, on the lid of the box that will not open; blue #2E6E9E appears once, at the close, on the stack that turns out to be the point. Type is Patrick Hand, the full TTF, on HTML overlay divs — the first handwriting this channel has used. The signature device is the doorway itself, drawn as a contraption: an upright frame with a hinged lid-arm that swipes across as the figure crosses, and a box that stamps shut under it. Motion character is the largest departure of all four productions: real human motion capture. The figure walks, creeps and sits like a person because a person did it; nothing about the acting is authored. The world slides past a fixed figure, so the camera language is a single horizontal scroll rather than cuts — the whole piece is one continuous shot with the doorway arriving and leaving.",
+    "taste_profile": {
+      "design_read": "A doodle on a sheet of paper is trying to run an errand, and the paper keeps taking it away.",
+      "visual_variance": 6,
+      "motion_intensity": 7,
+      "information_density": 2,
+      "palette_discipline": "Ink on white, plus three marks. Orange is the errand and nothing else. Red appears exactly once, on the shut lid. Blue appears exactly once, on the closing stack. If any of the three shows up anywhere else in the render, that is a defect.",
+      "layout_variation": "One continuous horizontal scroll rather than a cut list: room, doorway, room, back through the doorway, then a pull-back onto the stack. The variation is in what enters the frame, not in how the frame is divided — which is the opposite of the previous three productions and is the point.",
+      "reference_strategy": "Grammar only, from productions/references/wpmavi-power-lines: name the current idea on screen, caption the words with the load-bearing word marked, one accent plus one reserved colour. The reference's cut-every-four-seconds rule is deliberately broken here — this piece is one shot, because the joke needs continuity to work.",
+      "anti_patterns": [
+        "Hand-tuned character motion of any kind — sine curves, hand-posed keyframes, an eased limb. Forbidden by the style and by this plan.",
+        "A cute mascot. Deadpan or nothing.",
+        "Looping one mocap clip for the whole video — the skill names this as what makes character work feel repetitive",
+        "Any grid, ruler, caliper, chart or measured number — that is the previous production and it must not leak in",
+        "Any dark ground, glow or instrument framing — that is the two before it",
+        "Explaining with the words 'event boundary', 'event segmentation' or 'event horizon model'. The mechanism is described in furniture."
+      ],
+      "quality_gates": [
+        "Every character movement traces to a named clip in ink-theater/mocap/catalog.json; no clip is used twice in a row",
+        "Orange appears only on the errand; red once; blue once",
+        "The handwriting renders as handwriting, verified on a snapshot — the font-subset trap makes this fail silently",
+        "hyperframes lint clean before every render",
+        "Reviewed against all three STYLE_LEDGER rows on all five fields before render"
+      ]
+    },
+    "music_source": {
+      "source_type": "none",
+      "mood_direction": "Silence under the narration, and three locally synthesised sounds only: a pencil scratch as the figure draws itself in, a wooden clack as the lid stamps shut, and nothing at all under the closing pull-back. Produced with ffmpeg synthesis; no library, no provider, no key.",
+      "estimated_cost_usd": 0
+    },
+    "voice_selection": {
+      "provider": "piper",
+      "voice_id": "en_US-ryan-high",
+      "rationale": "The only TTS available offline here. Measured at 3.2 words per second across the previous productions.",
+      "estimated_cost_usd": 0,
+      "delivery_style": "Warm and dry, closer to a friend telling you something than to a narrator. This is the first production where the voice should sound amused; the three before it were all deliberately level.",
+      "pacing_policy": "Synthesise per section, measure each real duration, and cut the animation to those measurements. Never estimate.",
+      "sample_approval_required": false
+    },
+    "decision_log_ref": "artifacts/decision_log.json"
+  },
+  "cost_estimate": {
+    "total_estimated_usd": 0,
+    "line_items": [
+      {
+        "tool": "hyperframes",
+        "operation": "Local browser render, ~50s at 1080x1920 30fps",
+        "quantity": 1,
+        "estimated_usd": 0,
+        "notes": "Local Chromium; the smoke test rendered 4s in 18s wall clock"
+      },
+      {
+        "tool": "piper_tts",
+        "operation": "Narration synthesis, one wav per script section",
+        "quantity": 9,
+        "estimated_usd": 0,
+        "notes": "Local neural TTS"
+      },
+      {
+        "tool": "ink-puppet + CMU mocap",
+        "operation": "Pre-baked motion clips, chosen by name",
+        "quantity": 1,
+        "estimated_usd": 0,
+        "notes": "Ships with the repository; CMU mocap is free for any use"
+      },
+      {
+        "tool": "ffmpeg",
+        "operation": "Sound synthesis, audio mux, -14 LUFS, faststart",
+        "quantity": 1,
+        "estimated_usd": 0,
+        "notes": "Local"
+      }
+    ],
+    "budget_cap_usd": 0,
+    "budget_verdict": "within_budget",
+    "savings_options": [
+      "Already at zero. The only paid option anywhere in the plan is a cloud TTS voice, declined under the standing constraint."
+    ]
+  },
+  "approval": {
+    "status": "approved",
+    "user_notes": "Standing pre-authorisation, restated by the user for this production: pick a topic everyone can understand and build it using OpenMontage's full capability set, no questions. The constraints attached remain: vertical short, original script, natural fluent English narration, burned captions, royalty-free or self-produced audio, nothing paid for. Recorded here rather than as a decision_log entry because the decision_log schema's category enum still has no 'approval_policy' value even though AGENT_GUIDE.md requires that category for full-run pre-authorisation — the same schema/guide disagreement flagged on all three previous productions.",
+    "approved_budget_usd": 0
+  },
+  "metadata": {
+    "character_count": 1,
+    "rig_complexity": "low — one six-part hand-drawn figure (head, spine, two arms, two legs) posed from baked motion-capture frames. No per-character code path; the character is data.",
+    "reuse_strategy": "One rig, one draw-in reveal, and named clips from the shared mocap catalog. Every prop in the piece is parametric ink from the InkTheater primitives rather than authored art, so nothing has to be drawn twice and nothing is generated.",
+    "render_runtime": "hyperframes",
+    "sample_first_plan": "A four-second vertical smoke build was rendered before any production work: the figure draws itself in, walks on real mocap, the boil filter runs and the handwriting font resolves — all at 1080x1920, 120 frames, 18 seconds wall clock. This de-risked the three things most likely to fail (vertical output, a blocked gsap CDN, and the silent font-subset fallback) before a line of the real composition was written.",
+    "world_rotation_check": "STYLE_LEDGER.md records Remotion atelier for productions 1 and 2, Manim for production 3, and states plainly that production 4 may not use Manim. Ink Theater plus Ink Puppet is untouched. This is also the first production not composited in Remotion at all.",
+    "ledger_overlap_check": "Checked against all three rows on all five fields. Design read: new — the previous three were an oscilloscope, a corrected physics plate and a machine shop; this is a doodle on a sheet of paper. Ground: new — warm white paper with no grain and no border, against #080B10, #EDE6D6 with grain and a plate border, and #161A26. Palette roles: new — ink plus orange/red/blue, none of which has appeared. Signature device: new — a doorway with a lid-arm, against a running counter, three unequal arrows and a caliper. Layout set: new, and structurally new — one continuous horizontal scroll instead of a cut list. Motion character: the largest departure in the channel's history — real human motion capture, against constant-velocity flight, spring overshoot and mechanical stepping. No warnings to record on this one.",
+    "runtimes_available_at_proposal": {
+      "ffmpeg": true,
+      "remotion": true,
+      "hyperframes": true
+    },
+    "duration_target_seconds": 50
+  }
+}

@@ -100,3 +100,29 @@ module-scope assignment runs after CLI parsing and wins, so `-qh` still produces
 to whole frames, so a scene built from many short waits comes out a few frames
 short of its nominal duration — pad each clip to an exact frame count with
 `tpad=stop_mode=clone` rather than trying to make the waits add up.
+
+## HyperFrames and Ink Theater
+
+`npx hyperframes` (0.8.29) works offline and renders about 4 seconds of
+1080x1920 per 18 seconds of wall clock — roughly four times faster than Remotion
+here. Set the frame size with `data-width` / `data-height` on the composition
+wrapper; there is no portrait preset to look for.
+
+Three things that are not obvious and each cost a cycle:
+
+- **`cdn.jsdelivr.net` is denied** by this environment's network policy, so the
+  `<script src="https://cdn.jsdelivr.net/npm/gsap@3/...">` in every HyperFrames
+  example silently loads nothing. Vendor gsap from `daily/node_modules/gsap/dist/`
+  instead. A render-time fetch would break determinism anyway.
+- **`transformOrigin` in pixels does not work on an SVG `<g>`.** GSAP needs
+  `svgOrigin` in user units. Getting it wrong throws the element off the page,
+  and — this is the expensive part — it is invisible in a snapshot of the wrong
+  frame. Sample the rendered file.
+- **A mocap segment longer than its clip wraps and replays the action.** Clip
+  lengths are in `ink-theater/mocap/catalog.json` (most are 6.00s; `walk` is
+  2.87s, `run` 1.27s). Pass `loop: false` to hold the last frame.
+
+`hyperframes lint`, `hyperframes validate` and `hyperframes snapshot --at` are
+the review loop this repository otherwise lacks. `validate` runs real WCAG
+contrast checks in headless Chrome — it is how the errand orange was caught at
+2.95:1 against the paper and darkened to pass.

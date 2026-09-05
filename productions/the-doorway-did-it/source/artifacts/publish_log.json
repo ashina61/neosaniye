@@ -1,0 +1,36 @@
+{
+  "version": "1.0",
+  "entries": [
+    {
+      "platform": "local_export",
+      "status": "exported",
+      "export_path": "productions/the-doorway-did-it/the-doorway-did-it_1080x1920.mp4",
+      "timestamp": "2026-09-05T13:20:48+00:00",
+      "metadata_used": {
+        "title": "Why you forget the second you walk in.",
+        "description": "Full description in productions/the-doorway-did-it/spec.yaml — carries all four sources, including the two findings the popular corpus omits.",
+        "hashtags": [
+          "memory",
+          "psychology",
+          "doorwayeffect",
+          "brain",
+          "animation",
+          "howitworks",
+          "science",
+          "Shorts"
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "published": false,
+    "how_to_publish": "GitHub Actions -> 'Publish a production' -> slug the-doorway-did-it. The workflow verifies 1080x1920 and an audio track with ffprobe and then hands the folder to daily/lib/publish.py. No model runs in that job.",
+    "delivery_notes": [
+      "Piper is still the weakest component, and this is the first script with warmth in it, so the gap between what the writing asks for and what the voice gives is wider here than on the three before it. A cloud TTS key remains the single largest available upgrade for the whole channel.",
+      "The topic is genuinely saturated — dozens of near-identical shorts exist. The differentiation is real but it is in the last twenty seconds: the failed return, the load qualifier, and the trade. A viewer who leaves at ten seconds gets the same video everyone else made.",
+      "The character is a bare stick figure by choice, so the piece lives or dies on the motion capture and the staging rather than on drawing quality.",
+      "The approach from 12s to 19s is the slowest stretch in the video. It is carrying narration throughout and the barrier arm cocks partway in, but it is where a second pass would go first."
+    ],
+    "poster_frame_suggestion": "20.6s — the arm horizontal, the errand in mid-air, the figure still walking. It is the only frame that contains the whole idea."
+  }
+}

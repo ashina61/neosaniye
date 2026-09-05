@@ -1,0 +1,425 @@
+{
+  "version": "1.0",
+  "project_id": "the-doorway-did-it",
+  "pipeline_type": "character-animation",
+  "stage": "assets",
+  "status": "completed",
+  "timestamp": "2026-09-05T13:19:13.801569+00:00",
+  "checkpoint_policy": "guided",
+  "human_approval_required": true,
+  "human_approved": true,
+  "artifacts": {
+    "asset_manifest": {
+      "version": "1.0",
+      "assets": [
+        {
+          "id": "nar-s01",
+          "type": "narration",
+          "path": "assets/audio/s01.wav",
+          "source_tool": "piper_tts",
+          "scene_id": "one-continuous-shot",
+          "provider": "piper",
+          "model": "en_US-ryan-high",
+          "cost_usd": 0.0,
+          "duration_seconds": 3.263,
+          "format": "wav",
+          "license": "self-produced",
+          "voice_performance": {
+            "source_section_id": "s01",
+            "delivery_cues_applied": true,
+            "provider_text_used": true,
+            "sample_approved": true,
+            "provider_settings": {
+              "length_scale": 1.0,
+              "sentence_silence": 0.14,
+              "model_path": ".voices/piper/en_US-ryan-high.onnx"
+            },
+            "review_notes": "Synthesised per section so the real duration could be measured; the acting and the gaps were cut to those measurements."
+          }
+        },
+        {
+          "id": "nar-s02",
+          "type": "narration",
+          "path": "assets/audio/s02.wav",
+          "source_tool": "piper_tts",
+          "scene_id": "one-continuous-shot",
+          "provider": "piper",
+          "model": "en_US-ryan-high",
+          "cost_usd": 0.0,
+          "duration_seconds": 1.719,
+          "format": "wav",
+          "license": "self-produced",
+          "voice_performance": {
+            "source_section_id": "s02",
+            "delivery_cues_applied": true,
+            "provider_text_used": true,
+            "sample_approved": true,
+            "provider_settings": {
+              "length_scale": 1.0,
+              "sentence_silence": 0.14,
+              "model_path": ".voices/piper/en_US-ryan-high.onnx"
+            },
+            "review_notes": "Synthesised per section so the real duration could be measured; the acting and the gaps were cut to those measurements."
+          }
+        },
+        {
+          "id": "nar-s03",
+          "type": "narration",
+          "path": "assets/audio/s03.wav",
+          "source_tool": "piper_tts",
+          "scene_id": "one-continuous-shot",
+          "provider": "piper",
+          "model": "en_US-ryan-high",
+          "cost_usd": 0.0,
+          "duration_seconds": 5.201,
+          "format": "wav",
+          "license": "self-produced",
+          "voice_performance": {
+            "source_section_id": "s03",
+            "delivery_cues_applied": true,
+            "provider_text_used": true,
+            "sample_approved": true,
+            "provider_settings": {
+              "length_scale": 1.0,
+              "sentence_silence": 0.14,
+              "model_path": ".voices/piper/en_US-ryan-high.onnx"
+            },
+            "review_notes": "Synthesised per section so the real duration could be measured; the acting and the gaps were cut to those measurements."
+          }
+        },
+        {
+          "id": "nar-s04",
+          "type": "narration",
+          "path": "assets/audio/s04.wav",
+          "source_tool": "piper_tts",
+          "scene_id": "one-continuous-shot",
+          "provider": "piper",
+          "model": "en_US-ryan-high",
+          "cost_usd": 0.0,
+          "duration_seconds": 3.669,
+          "format": "wav",
+          "license": "self-produced",
+          "voice_performance": {
+            "source_section_id": "s04",
+            "delivery_cues_applied": true,
+            "provider_text_used": true,
+            "sample_approved": true,
+            "provider_settings": {
+              "length_scale": 1.0,
+              "sentence_silence": 0.14,
+              "model_path": ".voices/piper/en_US-ryan-high.onnx"
+            },
+            "review_notes": "Synthesised per section so the real duration could be measured; the acting and the gaps were cut to those measurements."
+          }
+        },
+        {
+          "id": "nar-s05",
+          "type": "narration",
+          "path": "assets/audio/s05.wav",
+          "source_tool": "piper_tts",
+          "scene_id": "one-continuous-shot",
+          "provider": "piper",
+          "model": "en_US-ryan-high",
+          "cost_usd": 0.0,
+          "duration_seconds": 5.306,
+          "format": "wav",
+          "license": "self-produced",
+          "voice_performance": {
+            "source_section_id": "s05",
+            "delivery_cues_applied": true,
+            "provider_text_used": true,
+            "sample_approved": true,
+            "provider_settings": {
+              "length_scale": 1.0,
+              "sentence_silence": 0.14,
+              "model_path": ".voices/piper/en_US-ryan-high.onnx"
+            },
+            "review_notes": "Synthesised per section so the real duration could be measured; the acting and the gaps were cut to those measurements."
+          }
+        },
+        {
+          "id": "nar-s06",
+          "type": "narration",
+          "path": "assets/audio/s06.wav",
+          "source_tool": "piper_tts",
+          "scene_id": "one-continuous-shot",
+          "provider": "piper",
+          "model": "en_US-ryan-high",
+          "cost_usd": 0.0,
+          "duration_seconds": 4.529,
+          "format": "wav",
+          "license": "self-produced",
+          "voice_performance": {
+            "source_section_id": "s06",
+            "delivery_cues_applied": true,
+            "provider_text_used": true,
+            "sample_approved": true,
+            "provider_settings": {
+              "length_scale": 1.0,
+              "sentence_silence": 0.14,
+              "model_path": ".voices/piper/en_US-ryan-high.onnx"
+            },
+            "review_notes": "Synthesised per section so the real duration could be measured; the acting and the gaps were cut to those measurements."
+          }
+        },
+        {
+          "id": "nar-s07",
+          "type": "narration",
+          "path": "assets/audio/s07.wav",
+          "source_tool": "piper_tts",
+          "scene_id": "one-continuous-shot",
+          "provider": "piper",
+          "model": "en_US-ryan-high",
+          "cost_usd": 0.0,
+          "duration_seconds": 3.867,
+          "format": "wav",
+          "license": "self-produced",
+          "voice_performance": {
+            "source_section_id": "s07",
+            "delivery_cues_applied": true,
+            "provider_text_used": true,
+            "sample_approved": true,
+            "provider_settings": {
+              "length_scale": 1.0,
+              "sentence_silence": 0.14,
+              "model_path": ".voices/piper/en_US-ryan-high.onnx"
+            },
+            "review_notes": "Synthesised per section so the real duration could be measured; the acting and the gaps were cut to those measurements."
+          }
+        },
+        {
+          "id": "nar-s08",
+          "type": "narration",
+          "path": "assets/audio/s08.wav",
+          "source_tool": "piper_tts",
+          "scene_id": "one-continuous-shot",
+          "provider": "piper",
+          "model": "en_US-ryan-high",
+          "cost_usd": 0.0,
+          "duration_seconds": 2.949,
+          "format": "wav",
+          "license": "self-produced",
+          "voice_performance": {
+            "source_section_id": "s08",
+            "delivery_cues_applied": true,
+            "provider_text_used": true,
+            "sample_approved": true,
+            "provider_settings": {
+              "length_scale": 1.0,
+              "sentence_silence": 0.14,
+              "model_path": ".voices/piper/en_US-ryan-high.onnx"
+            },
+            "review_notes": "Synthesised per section so the real duration could be measured; the acting and the gaps were cut to those measurements."
+          }
+        },
+        {
+          "id": "nar-s09",
+          "type": "narration",
+          "path": "assets/audio/s09.wav",
+          "source_tool": "piper_tts",
+          "scene_id": "one-continuous-shot",
+          "provider": "piper",
+          "model": "en_US-ryan-high",
+          "cost_usd": 0.0,
+          "duration_seconds": 2.45,
+          "format": "wav",
+          "license": "self-produced",
+          "voice_performance": {
+            "source_section_id": "s09",
+            "delivery_cues_applied": true,
+            "provider_text_used": true,
+            "sample_approved": true,
+            "provider_settings": {
+              "length_scale": 1.0,
+              "sentence_silence": 0.14,
+              "model_path": ".voices/piper/en_US-ryan-high.onnx"
+            },
+            "review_notes": "Synthesised per section so the real duration could be measured; the acting and the gaps were cut to those measurements."
+          }
+        },
+        {
+          "id": "nar-s10",
+          "type": "narration",
+          "path": "assets/audio/s10.wav",
+          "source_tool": "piper_tts",
+          "scene_id": "one-continuous-shot",
+          "provider": "piper",
+          "model": "en_US-ryan-high",
+          "cost_usd": 0.0,
+          "duration_seconds": 3.89,
+          "format": "wav",
+          "license": "self-produced",
+          "voice_performance": {
+            "source_section_id": "s10",
+            "delivery_cues_applied": true,
+            "provider_text_used": true,
+            "sample_approved": true,
+            "provider_settings": {
+              "length_scale": 1.0,
+              "sentence_silence": 0.14,
+              "model_path": ".voices/piper/en_US-ryan-high.onnx"
+            },
+            "review_notes": "Synthesised per section so the real duration could be measured; the acting and the gaps were cut to those measurements."
+          }
+        },
+        {
+          "id": "mix-narration",
+          "type": "audio",
+          "path": "assets/audio/narration_mix.wav",
+          "source_tool": "numpy+wave",
+          "scene_id": "one-continuous-shot",
+          "provider": "local",
+          "cost_usd": 0.0,
+          "duration_seconds": 47.033,
+          "format": "wav",
+          "license": "self-produced",
+          "generation_summary": "Ten narration sections at their measured start times, plus three synthesised sounds and nothing else: a pencil scratch gated into six bursts under the draw-in (0.18s), a wooden clack of two decaying partials as the lid stamps (20.61s), and a lower, shorter thud on the kick (30.62s) that deliberately goes nowhere. No music at any point."
+        },
+        {
+          "id": "sfx-pencil",
+          "type": "sfx",
+          "path": "assets/audio/narration_mix.wav",
+          "source_tool": "numpy",
+          "scene_id": "one-continuous-shot",
+          "provider": "local",
+          "cost_usd": 0.0,
+          "duration_seconds": 2.4,
+          "format": "wav",
+          "license": "self-produced",
+          "generation_summary": "Twice-differenced white noise gated into six hanning bursts, one per limb the pencil draws. Synthesised into the mix rather than stored separately."
+        },
+        {
+          "id": "sfx-clack",
+          "type": "sfx",
+          "path": "assets/audio/narration_mix.wav",
+          "source_tool": "numpy",
+          "scene_id": "one-continuous-shot",
+          "provider": "local",
+          "cost_usd": 0.0,
+          "duration_seconds": 0.42,
+          "format": "wav",
+          "license": "self-produced",
+          "generation_summary": "232 Hz and 617 Hz decaying together with a 4 ms noise transient \u2014 a wooden lid. Lands at 20.61s, a quarter second after the swipe."
+        },
+        {
+          "id": "sfx-thud",
+          "type": "sfx",
+          "path": "assets/audio/narration_mix.wav",
+          "source_tool": "numpy",
+          "scene_id": "one-continuous-shot",
+          "provider": "local",
+          "cost_usd": 0.0,
+          "duration_seconds": 0.3,
+          "format": "wav",
+          "license": "self-produced",
+          "generation_summary": "96 Hz and 141 Hz, shorter and quieter than the clack, with almost no transient. The kick sounds like it achieved nothing because it did."
+        },
+        {
+          "id": "rig-inkpuppet",
+          "type": "animation",
+          "path": "hyperframes/ink-puppet.js",
+          "source_tool": "ink_puppet",
+          "scene_id": "one-continuous-shot",
+          "provider": "openmontage",
+          "cost_usd": 0.0,
+          "format": "js",
+          "license": "repository",
+          "generation_summary": "The six-path hand-drawn figure and the clip player. Two ink eyes and a nose were added on top of it in the composition, both on one side, because the turn at 26.2s is otherwise invisible on a symmetrical figure."
+        },
+        {
+          "id": "mocap-clips",
+          "type": "animation",
+          "path": "hyperframes/clips.js",
+          "source_tool": "bvh2clip",
+          "scene_id": "one-continuous-shot",
+          "provider": "cmu",
+          "cost_usd": 0.0,
+          "format": "js",
+          "license": "CMU motion capture database \u2014 free for any use",
+          "generation_summary": "Twelve baked 2D motion-capture clips. Six are used: march, walk, shuffle, walk again (mirrored), kick, sit. Provenance in ink-theater/mocap/NOTE.md and THIRD_PARTY_NOTICES.md."
+        },
+        {
+          "id": "engine-inktheater",
+          "type": "animation",
+          "path": "hyperframes/ink-theater.js",
+          "source_tool": "ink_theater",
+          "scene_id": "one-continuous-shot",
+          "provider": "openmontage",
+          "cost_usd": 0.0,
+          "format": "js",
+          "license": "repository",
+          "generation_summary": "Ink strokes, the seek-safe boil, the closed-form spring eases and the speech balloon. Engine primitives only \u2014 no finished component from it appears in the piece."
+        },
+        {
+          "id": "font-patrickhand",
+          "type": "font",
+          "path": "hyperframes/assets/patrickhand.ttf",
+          "source_tool": "repository",
+          "scene_id": "one-continuous-shot",
+          "provider": "sil",
+          "cost_usd": 0.0,
+          "format": "ttf",
+          "license": "SIL Open Font License (OFL.txt ships beside it)",
+          "generation_summary": "The FULL TrueType, not a Google Fonts css2 subset. The subset is missing basic-latin and falls back to serif silently while the renderer still reports the font as loaded \u2014 the single most expensive trap in this style."
+        },
+        {
+          "id": "gsap",
+          "type": "code_snippet",
+          "path": "hyperframes/gsap.min.js",
+          "source_tool": "vendored",
+          "scene_id": "one-continuous-shot",
+          "provider": "greensock",
+          "cost_usd": 0.0,
+          "format": "js",
+          "license": "GreenSock standard (no-charge) license",
+          "generation_summary": "Vendored from daily/node_modules rather than hot-linked: cdn.jsdelivr.net returns nothing under this environment's network policy, and a render-time fetch would break determinism regardless."
+        },
+        {
+          "id": "captions",
+          "type": "subtitle",
+          "path": "artifacts/captions.json",
+          "source_tool": "scripts/build_captions.py",
+          "scene_id": "one-continuous-shot",
+          "provider": "local",
+          "cost_usd": 0.0,
+          "format": "json",
+          "license": "self-produced",
+          "generation_summary": "28 chunks from the script text and the measured section durations, then a hand pass marking the load-bearing word in 13 of them."
+        }
+      ],
+      "total_cost_usd": 0.0,
+      "metadata": {
+        "providers_used": [
+          "piper (local)",
+          "CMU mocap (pre-baked, free)",
+          "ink-theater + ink-puppet (local)",
+          "hyperframes (local)"
+        ],
+        "api_keys_used": "none",
+        "generated_images": 0,
+        "stock_media": 0,
+        "note": "Nothing here was generated by a model and nothing is fetched at render time. Every prop in the video \u2014 the doorway, the barrier arm, the boxes, the ground \u2014 is drawn programmatically from the InkTheater primitives inside the composition, so it has no asset file of its own.",
+        "character_assets_location": "There is no projects/<name>/assets/characters directory, because this character has no image assets: it is six SVG paths built at runtime and posed from motion capture. The pipeline's asset-director expects drawn parts; a mocap rig has none, and inventing files to satisfy the convention would have been dishonest."
+      }
+    }
+  },
+  "style_playbook": "ink-sketch",
+  "review": {
+    "status": "passed",
+    "rounds": 1,
+    "findings": [
+      {
+        "severity": "note",
+        "note": "20 assets, zero generated images, zero stock, zero cost. No projects/<name>/assets/characters directory exists because a mocap rig has no image parts; said plainly in the manifest rather than faked."
+      },
+      {
+        "severity": "note",
+        "note": "gsap is vendored because cdn.jsdelivr.net is denied here; the full Patrick Hand TTF is used because the Google subset silently falls back to serif."
+      }
+    ]
+  },
+  "cost_snapshot": {
+    "spent_usd": 0,
+    "estimated_total_usd": 0
+  }
+}

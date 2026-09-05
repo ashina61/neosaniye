@@ -1,0 +1,71 @@
+{
+  "version": "1.0",
+  "characters": [
+    {
+      "character_id": "the-figure",
+      "poses": {
+        "stand": {
+          "description": "InkPuppet.STAND — the neutral pose the draw-in reveals and every clip departs from",
+          "source": "ink-puppet.js STAND constant",
+          "hold_frames": 0
+        }
+      },
+      "action_cycles": {
+        "draw_in": {
+          "description": "the pencil sketches the six parts in, one after another",
+          "mocap_clip": null,
+          "used_in": "s01",
+          "authored": false,
+          "source": "ink-puppet.js drawIn()"
+        },
+        "march": {
+          "description": "marches on the spot — travelling nowhere, which is the joke under 'same distance'",
+          "mocap_clip": "march",
+          "used_in": "s03",
+          "authored": false,
+          "source": "ink-theater/mocap/catalog.json (CMU)"
+        },
+        "walk": {
+          "description": "walks; the world slides left past it",
+          "mocap_clip": "walk",
+          "used_in": "s04-s05",
+          "authored": false,
+          "source": "ink-theater/mocap/catalog.json (CMU)"
+        },
+        "walk_mirrored": {
+          "description": "walks back the other way; actor scaleX -1, world slides right",
+          "mocap_clip": "walk",
+          "used_in": "s06",
+          "authored": false,
+          "source": "ink-theater/mocap/catalog.json (CMU)"
+        },
+        "shuffle": {
+          "description": "a slow sneaking creep — aimless searching of an empty room",
+          "mocap_clip": "shuffle",
+          "used_in": "s06",
+          "authored": false,
+          "source": "ink-theater/mocap/catalog.json (CMU)"
+        },
+        "kick": {
+          "description": "kicks the box that will not open",
+          "mocap_clip": "kick",
+          "used_in": "s07",
+          "authored": false,
+          "source": "ink-theater/mocap/catalog.json (CMU)"
+        },
+        "sit": {
+          "description": "sits down defeated, and stands back up on its own before the last beat",
+          "mocap_clip": "sit",
+          "used_in": "s08",
+          "authored": false,
+          "source": "ink-theater/mocap/catalog.json (CMU)"
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "source": "pose_library_builder produced the first draft. It was replaced because its default poses (blink, look_left, surprised) describe a face this character does not have. A mocap-driven figure has no pose library in the usual sense — it has one neutral pose and a list of clips.",
+    "hand_authored_poses": 0,
+    "clip_repeat_check": "walk is used twice and never back to back; shuffle separates them and the second is mirrored."
+  }
+}

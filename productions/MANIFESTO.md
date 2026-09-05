@@ -50,8 +50,8 @@ them. Two consecutive productions should not use the same one.
 | Vector composition | Remotion atelier (`video_compose`, `composition_mode: atelier`) | Anything hand-authored: instruments, plates, typography, data. Used for productions 1 and 2, and as the glass layer over Manim in production 3. |
 | Mathematical animation | Manim 0.21 (`math_animate`) | Transformations, proofs, graphs that morph, things that are literally equations. Production 3. |
 | 3D worlds | `threejs_world`, `threejs_asset_catalog` | Terrain, scale, camera flight, anything where the point is spatial |
-| Hand-drawn character | Ink Theater + Ink Puppet (`ink-theater/`, `character_spec_generator`, `character_rig_renderer`) | A figure that draws itself and acts the idea out; contraption explainers |
-| Kinetic typography | HyperFrames (`hyperframes_compose`) | When the words *are* the visual — quotes, counts, lists, rhythm |
+| Hand-drawn character | Ink Theater + Ink Puppet (`ink-theater/`, `character_spec_generator`, `character_rig_renderer`) | A figure that draws itself and acts the idea out; contraption explainers. Production 4 — and the only world here whose motion is *recorded* rather than authored. |
+| Kinetic typography | HyperFrames (`hyperframes_compose`) | When the words *are* the visual — quotes, counts, lists, rhythm. The runtime carried production 4; the style is still untouched. |
 | Structural diagram | `diagram_gen` (Mermaid) | Flows, states, architectures |
 | Code | `code_snippet` | When the subject is software and the code should be read |
 
@@ -89,6 +89,31 @@ it reuses nothing about the look. Its price is a doubled failure surface: on the
 first render, two overlay elements had no upper frame bound and leaked across
 every later shot, and four clips were out of sync with the narration. Neither
 bug is visible in a still. Sample the finished file, not the frames.
+
+## When to stop drawing and start acting
+
+Production 4 found the second architecture worth keeping. Splitting the world
+(production 3) was about where the pixels come from. This one is about what the
+frame is *doing*:
+
+**If the mechanism is something a person does, act it. If it is something a
+person can only look at, draw it.**
+
+The doorway effect is a person carrying something across a threshold, so a
+character losing an errand to a door *is* the explanation — there is nothing left
+to describe once you have watched it happen. The three productions before it were
+all instruments, because their subjects (a microsecond of flight time, a
+gravitational difference, an interval width) have nothing anyone can do.
+
+The acting itself does not have to be authored. `ink-theater/mocap/catalog.json`
+holds real motion capture; the agent chooses clip names and a person who sat in a
+capture volume supplies the rest. Hand-tuning a walk cycle is both forbidden by
+the style and worse than the free alternative.
+
+Its price is a class of bug that stills cannot catch — a transform origin in the
+wrong coordinate system put the character off the page for a third of the first
+render while every snapshot looked correct. Sample the finished file, not the
+frames.
 
 ## The standing brief, restated
 

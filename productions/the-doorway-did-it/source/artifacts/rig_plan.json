@@ -1,0 +1,207 @@
+{
+  "version": "1.0",
+  "characters": [
+    {
+      "character_id": "the-figure",
+      "rig_type": "svg_rig",
+      "parts": [
+        {
+          "id": "head",
+          "kind": "circle",
+          "layer": 6,
+          "parent": "ink"
+        },
+        {
+          "id": "spine",
+          "kind": "polyline hips-chest-neck-head",
+          "layer": 5,
+          "parent": "ink"
+        },
+        {
+          "id": "armR",
+          "kind": "polyline shoulder-elbow-hand",
+          "layer": 4,
+          "parent": "ink"
+        },
+        {
+          "id": "armL",
+          "kind": "polyline shoulder-elbow-hand",
+          "layer": 4,
+          "parent": "ink"
+        },
+        {
+          "id": "legR",
+          "kind": "polyline hip-knee-foot",
+          "layer": 3,
+          "parent": "ink"
+        },
+        {
+          "id": "legL",
+          "kind": "polyline hip-knee-foot",
+          "layer": 3,
+          "parent": "ink"
+        },
+        {
+          "id": "eyes",
+          "kind": "two white dots on the head",
+          "layer": 7,
+          "parent": "head"
+        },
+        {
+          "id": "ink",
+          "kind": "group carrying the boil filter",
+          "layer": 2,
+          "parent": "outer"
+        },
+        {
+          "id": "outer",
+          "kind": "group; InkPuppet.place() rewrites its transform every frame",
+          "layer": 1,
+          "parent": "actor"
+        },
+        {
+          "id": "actor",
+          "kind": "group owned by the composition; carries facing (scaleX) only",
+          "layer": 0
+        }
+      ],
+      "joints": {
+        "hips": {
+          "pivot": [
+            0,
+            0
+          ]
+        },
+        "chest": {
+          "pivot": [
+            0,
+            -88
+          ]
+        },
+        "neck": {
+          "pivot": [
+            0,
+            -150
+          ]
+        },
+        "head": {
+          "pivot": [
+            0,
+            -182
+          ]
+        },
+        "shR": {
+          "pivot": [
+            52,
+            -140
+          ]
+        },
+        "elR": {
+          "pivot": [
+            64,
+            -58
+          ]
+        },
+        "haR": {
+          "pivot": [
+            72,
+            26
+          ]
+        },
+        "shL": {
+          "pivot": [
+            -52,
+            -140
+          ]
+        },
+        "elL": {
+          "pivot": [
+            -64,
+            -58
+          ]
+        },
+        "haL": {
+          "pivot": [
+            -72,
+            26
+          ]
+        },
+        "hipR": {
+          "pivot": [
+            26,
+            -6
+          ]
+        },
+        "knR": {
+          "pivot": [
+            32,
+            120
+          ]
+        },
+        "ftR": {
+          "pivot": [
+            40,
+            262
+          ]
+        },
+        "hipL": {
+          "pivot": [
+            -26,
+            -6
+          ]
+        },
+        "knL": {
+          "pivot": [
+            -32,
+            120
+          ]
+        },
+        "ftL": {
+          "pivot": [
+            -40,
+            262
+          ]
+        }
+      },
+      "layers": [
+        "actor",
+        "outer",
+        "ink",
+        "legs",
+        "arms",
+        "spine",
+        "head",
+        "eyes"
+      ],
+      "views": [
+        "side"
+      ],
+      "required_poses": [
+        "stand"
+      ],
+      "required_actions": [
+        "draw_in",
+        "march",
+        "walk",
+        "walk_mirrored",
+        "shuffle",
+        "kick",
+        "sit"
+      ],
+      "risks": [
+        "InkPuppet.place() rewrites outer's transform on every frame, so horizontal travel must never be animated on outer. Travel is expressed by sliding the world group past a fixed figure; facing is expressed by scaleX on the actor group, which place() does not touch.",
+        "The catalog has no 'stands still, confused' clip, which is the emotional centre of the piece. Mitigation: shuffle reads as aimless searching, and the confusion is carried by the empty hand, the stillness and the one speech balloon. If the contact sheet disagrees, extend with ink-theater/mocap/add-motion.mjs — GitHub is reachable from here.",
+        "A mocap clip loops to fill its segment duration, so a segment much longer than the clip visibly repeats. Keep walk segments near a multiple of the clip length and break long travel with a different clip.",
+        "The figure has no face, so no emotion can be played on it. Every emotional beat has to be staged instead."
+      ]
+    }
+  ],
+  "metadata": {
+    "source": "svg_rig_builder produced the first draft. It was replaced here because the tool's default scaffold assumes a cartoon rig with a mouth and pupils, and the rig that actually renders is ink-theater/ink-puppet.js — six hand-drawn paths posed from motion capture. Recording the generic scaffold as the plan would have made the artifact a fiction. character-animation is marked beta and this is the kind of rough edge that comes with that.",
+    "engine": "ink-theater/ink-puppet.js",
+    "joints_note": "The pivots above are the neutral STAND pose from ink-puppet.js, in figure-local units with hips at the origin. They are the pose the draw-in reveals and the pose every clip departs from; they are not keyframes. During a clip, all sixteen joints are supplied per frame by the baked motion capture and written straight onto the six paths — no IK solve, no interpolation, nothing to tune.",
+    "motion_source": "baked CMU motion capture, ink-theater/mocap/catalog.json",
+    "hand_authored_joint_curves": 0,
+    "per_character_code_paths": 0
+  }
+}

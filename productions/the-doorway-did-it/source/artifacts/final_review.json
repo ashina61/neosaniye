@@ -1,0 +1,79 @@
+{
+  "version": "1.0",
+  "output_path": "productions/the-doorway-did-it/the-doorway-did-it_1080x1920.mp4",
+  "status": "pass",
+  "checks": {
+    "technical_probe": {
+      "valid_container": true,
+      "duration_seconds": 47.033,
+      "resolution": "1080x1920",
+      "fps": 30,
+      "has_audio": true,
+      "codec": "h264 + aac",
+      "file_size_bytes": 8825187,
+      "issues": []
+    },
+    "visual_spotcheck": {
+      "frames_sampled": 47,
+      "frame_paths": [],
+      "black_frames_detected": false,
+      "broken_overlays": false,
+      "missing_assets": false,
+      "unreadable_text": false,
+      "issues": [
+        "The first render had the figure missing from 26.2s onward — an SVG transform-origin bug. Caught by sampling the render, not by any still. Fixed and re-verified."
+      ]
+    },
+    "audio_spotcheck": {
+      "narration_present": true,
+      "music_present": false,
+      "unexpected_silence": false,
+      "clipping_detected": false,
+      "mix_intelligible": true,
+      "issues": [
+        "There is a great deal of intentional silence: 2.2s after the errand is taken, 1.6s for the search, 1.0s after the kick and 2.6s on the closing image. It is the design, not a defect — the acting lives there."
+      ]
+    },
+    "promise_preservation": {
+      "delivery_promise_honored": true,
+      "renderer_family_used": "animation-first",
+      "render_runtime_used": "hyperframes",
+      "runtime_swap_detected": false,
+      "runtime_swap_check": "hyperframes was locked at proposal (d-004, with all three runtimes recorded) and hyperframes rendered the file. No swap.",
+      "motion_ratio_actual": 1.0,
+      "silent_downgrade_detected": false,
+      "issues": []
+    },
+    "subtitle_check": {
+      "subtitles_expected": true,
+      "subtitles_present": true,
+      "coverage_ratio": 0.94,
+      "timing_drift_detected": false,
+      "issues": [
+        "Coverage is 0.94 rather than 1.0 because the captions deliberately clear during the four long silences and for the last 2.6s."
+      ]
+    },
+    "atelier": {
+      "stock_reuse_detected": false,
+      "offending_imports": [],
+      "art_direction_declared": true,
+      "art_direction": "Black ink on warm white paper #FCFBF8, the ink-sketch playbook. All structure and the character are ink #333 with a live hand-drawn boil on every stroke. Orange #D4611B is the errand and only the errand; red #C8322B appears once, on the lid seam of the box that will not open; blue #2E6E9E appears once, drawn along the line of closed boxes at the end. Type is Patrick Hand, the full TTF, on HTML overlay divs — the first handwriting this channel has used. The signature device is the doorway itself, drawn as a contraption: a barrier arm hinged on the left upright at exactly hand height, folded flat against the post until it drops to horizontal and sweeps the errand out of the figure's hand. Motion character is the largest departure of the four productions: real human motion capture. The figure walks, creeps, kicks and sits like a person because a person did it; nothing about the acting is authored. The world slides past a fixed figure, so the camera language is one horizontal scroll and one pull-back rather than a cut list — the whole piece is a single shot.",
+      "issues": [
+        "No HyperFrames registry block appears in the composition. Engine primitives only — InkTheater strokes, boil, springs, balloon, and the InkPuppet rig."
+      ]
+    }
+  },
+  "issues_found": [],
+  "recommended_action": "present_to_user",
+  "metadata": {
+    "loudness_lufs": -14.1,
+    "verification_notes": [
+      "1411 frames at 30fps, 1080x1920, h264 + aac 48kHz stereo, +faststart.",
+      "Integrated loudness -14.1 LUFS after a flat -1.0 dB trim; no compressor, no limiter.",
+      "hyperframes lint clean; hyperframes validate reports no console errors and 14 of 14 text elements passing WCAG AA.",
+      "Orange appears only on the errand, red only on the lid seam at 30.15s, blue only on the closing line from 41.4s.",
+      "Zero API keys, zero generated images, zero stock media, zero cost.",
+      "Every character movement traces to a named CMU clip; hand-authored character motion is 0.0 seconds."
+    ]
+  }
+}

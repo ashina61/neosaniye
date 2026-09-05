@@ -1,0 +1,41 @@
+{
+  "version": "1.0",
+  "outputs": [
+    {
+      "path": "productions/the-doorway-did-it/the-doorway-did-it_1080x1920.mp4",
+      "format": "mp4",
+      "codec": "h264",
+      "audio_codec": "aac",
+      "resolution": "1080x1920",
+      "fps": 30,
+      "duration_seconds": 47.033,
+      "file_size_bytes": 8825187,
+      "platform_target": "youtube_shorts"
+    }
+  ],
+  "warnings": [
+    "hyperframes lint reports one size warning — the composition is a single large index.html rather than split into compositions/. It is one continuous shot with one timeline; splitting it would separate things that have to stay in step."
+  ],
+  "verification_notes": [
+    "1411 frames at 30fps, 1080x1920, h264 + aac 48kHz stereo, +faststart.",
+    "Integrated loudness -14.1 LUFS after a flat -1.0 dB trim; no compressor, no limiter.",
+    "hyperframes lint clean; hyperframes validate reports no console errors and 14 of 14 text elements passing WCAG AA.",
+    "Orange appears only on the errand, red only on the lid seam at 30.15s, blue only on the closing line from 41.4s.",
+    "Zero API keys, zero generated images, zero stock media, zero cost.",
+    "Every character movement traces to a named CMU clip; hand-authored character motion is 0.0 seconds."
+  ],
+  "render_grammar": "explainer-teacher",
+  "slideshow_risk_score": {
+    "average": 0.02,
+    "verdict": "strong"
+  },
+  "decision_log_ref": "artifacts/decision_log.json",
+  "final_review_ref": "artifacts/final_review.json",
+  "metadata": {
+    "runtime": "HyperFrames 0.8.29 rendered the picture; ffmpeg muxed the audio and set the loudness.",
+    "engine": "ink-theater + ink-puppet, atelier",
+    "narration": "Piper en_US-ryan-high, length_scale 1.00, measured 3.34 words per second",
+    "music": "None. Three locally synthesised event sounds.",
+    "published": false
+  }
+}

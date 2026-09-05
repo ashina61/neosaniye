@@ -1,0 +1,78 @@
+{
+  "sample_rate": 48000,
+  "fps": 30,
+  "total_seconds": 47.033,
+  "mix": "assets/audio/narration_mix.wav",
+  "placed": [
+    {
+      "id": "s01",
+      "start": 0.0,
+      "end": 3.263,
+      "file": "assets/audio/s01.wav",
+      "measured": 3.263
+    },
+    {
+      "id": "s02",
+      "start": 3.813,
+      "end": 5.532,
+      "file": "assets/audio/s02.wav",
+      "measured": 1.719
+    },
+    {
+      "id": "s03",
+      "start": 5.982,
+      "end": 11.183,
+      "file": "assets/audio/s03.wav",
+      "measured": 5.201
+    },
+    {
+      "id": "s04",
+      "start": 11.483,
+      "end": 15.152,
+      "file": "assets/audio/s04.wav",
+      "measured": 3.669
+    },
+    {
+      "id": "s05",
+      "start": 15.652,
+      "end": 20.958,
+      "file": "assets/audio/s05.wav",
+      "measured": 5.306
+    },
+    {
+      "id": "s06",
+      "start": 23.158,
+      "end": 27.687,
+      "file": "assets/audio/s06.wav",
+      "measured": 4.529
+    },
+    {
+      "id": "s07",
+      "start": 29.287,
+      "end": 33.154,
+      "file": "assets/audio/s07.wav",
+      "measured": 3.867
+    },
+    {
+      "id": "s08",
+      "start": 34.154,
+      "end": 37.103,
+      "file": "assets/audio/s08.wav",
+      "measured": 2.949
+    },
+    {
+      "id": "s09",
+      "start": 37.653,
+      "end": 40.103,
+      "file": "assets/audio/s09.wav",
+      "measured": 2.45
+    },
+    {
+      "id": "s10",
+      "start": 40.553,
+      "end": 44.443,
+      "file": "assets/audio/s10.wav",
+      "measured": 3.89
+    }
+  ]
+}

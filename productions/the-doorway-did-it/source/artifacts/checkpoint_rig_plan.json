@@ -1,0 +1,310 @@
+{
+  "version": "1.0",
+  "project_id": "the-doorway-did-it",
+  "pipeline_type": "character-animation",
+  "stage": "rig_plan",
+  "status": "completed",
+  "timestamp": "2026-09-05T12:51:27.787719+00:00",
+  "checkpoint_policy": "guided",
+  "human_approval_required": false,
+  "human_approved": false,
+  "artifacts": {
+    "rig_plan": {
+      "version": "1.0",
+      "characters": [
+        {
+          "character_id": "the-figure",
+          "rig_type": "svg_rig",
+          "parts": [
+            {
+              "id": "head",
+              "kind": "circle",
+              "layer": 6,
+              "parent": "ink"
+            },
+            {
+              "id": "spine",
+              "kind": "polyline hips-chest-neck-head",
+              "layer": 5,
+              "parent": "ink"
+            },
+            {
+              "id": "armR",
+              "kind": "polyline shoulder-elbow-hand",
+              "layer": 4,
+              "parent": "ink"
+            },
+            {
+              "id": "armL",
+              "kind": "polyline shoulder-elbow-hand",
+              "layer": 4,
+              "parent": "ink"
+            },
+            {
+              "id": "legR",
+              "kind": "polyline hip-knee-foot",
+              "layer": 3,
+              "parent": "ink"
+            },
+            {
+              "id": "legL",
+              "kind": "polyline hip-knee-foot",
+              "layer": 3,
+              "parent": "ink"
+            },
+            {
+              "id": "eyes",
+              "kind": "two white dots on the head",
+              "layer": 7,
+              "parent": "head"
+            },
+            {
+              "id": "ink",
+              "kind": "group carrying the boil filter",
+              "layer": 2,
+              "parent": "outer"
+            },
+            {
+              "id": "outer",
+              "kind": "group; InkPuppet.place() rewrites its transform every frame",
+              "layer": 1,
+              "parent": "actor"
+            },
+            {
+              "id": "actor",
+              "kind": "group owned by the composition; carries facing (scaleX) only",
+              "layer": 0
+            }
+          ],
+          "joints": {
+            "hips": {
+              "pivot": [
+                0,
+                0
+              ]
+            },
+            "chest": {
+              "pivot": [
+                0,
+                -88
+              ]
+            },
+            "neck": {
+              "pivot": [
+                0,
+                -150
+              ]
+            },
+            "head": {
+              "pivot": [
+                0,
+                -182
+              ]
+            },
+            "shR": {
+              "pivot": [
+                52,
+                -140
+              ]
+            },
+            "elR": {
+              "pivot": [
+                64,
+                -58
+              ]
+            },
+            "haR": {
+              "pivot": [
+                72,
+                26
+              ]
+            },
+            "shL": {
+              "pivot": [
+                -52,
+                -140
+              ]
+            },
+            "elL": {
+              "pivot": [
+                -64,
+                -58
+              ]
+            },
+            "haL": {
+              "pivot": [
+                -72,
+                26
+              ]
+            },
+            "hipR": {
+              "pivot": [
+                26,
+                -6
+              ]
+            },
+            "knR": {
+              "pivot": [
+                32,
+                120
+              ]
+            },
+            "ftR": {
+              "pivot": [
+                40,
+                262
+              ]
+            },
+            "hipL": {
+              "pivot": [
+                -26,
+                -6
+              ]
+            },
+            "knL": {
+              "pivot": [
+                -32,
+                120
+              ]
+            },
+            "ftL": {
+              "pivot": [
+                -40,
+                262
+              ]
+            }
+          },
+          "layers": [
+            "actor",
+            "outer",
+            "ink",
+            "legs",
+            "arms",
+            "spine",
+            "head",
+            "eyes"
+          ],
+          "views": [
+            "side"
+          ],
+          "required_poses": [
+            "stand"
+          ],
+          "required_actions": [
+            "draw_in",
+            "march",
+            "walk",
+            "walk_mirrored",
+            "shuffle",
+            "kick",
+            "sit"
+          ],
+          "risks": [
+            "InkPuppet.place() rewrites outer's transform on every frame, so horizontal travel must never be animated on outer. Travel is expressed by sliding the world group past a fixed figure; facing is expressed by scaleX on the actor group, which place() does not touch.",
+            "The catalog has no 'stands still, confused' clip, which is the emotional centre of the piece. Mitigation: shuffle reads as aimless searching, and the confusion is carried by the empty hand, the stillness and the one speech balloon. If the contact sheet disagrees, extend with ink-theater/mocap/add-motion.mjs \u2014 GitHub is reachable from here.",
+            "A mocap clip loops to fill its segment duration, so a segment much longer than the clip visibly repeats. Keep walk segments near a multiple of the clip length and break long travel with a different clip.",
+            "The figure has no face, so no emotion can be played on it. Every emotional beat has to be staged instead."
+          ]
+        }
+      ],
+      "metadata": {
+        "source": "svg_rig_builder produced the first draft. It was replaced here because the tool's default scaffold assumes a cartoon rig with a mouth and pupils, and the rig that actually renders is ink-theater/ink-puppet.js \u2014 six hand-drawn paths posed from motion capture. Recording the generic scaffold as the plan would have made the artifact a fiction. character-animation is marked beta and this is the kind of rough edge that comes with that.",
+        "engine": "ink-theater/ink-puppet.js",
+        "joints_note": "The pivots above are the neutral STAND pose from ink-puppet.js, in figure-local units with hips at the origin. They are the pose the draw-in reveals and the pose every clip departs from; they are not keyframes. During a clip, all sixteen joints are supplied per frame by the baked motion capture and written straight onto the six paths \u2014 no IK solve, no interpolation, nothing to tune.",
+        "motion_source": "baked CMU motion capture, ink-theater/mocap/catalog.json",
+        "hand_authored_joint_curves": 0,
+        "per_character_code_paths": 0
+      }
+    },
+    "pose_library": {
+      "version": "1.0",
+      "characters": [
+        {
+          "character_id": "the-figure",
+          "poses": {
+            "stand": {
+              "description": "InkPuppet.STAND \u2014 the neutral pose the draw-in reveals and every clip departs from",
+              "source": "ink-puppet.js STAND constant",
+              "hold_frames": 0
+            }
+          },
+          "action_cycles": {
+            "draw_in": {
+              "description": "the pencil sketches the six parts in, one after another",
+              "mocap_clip": null,
+              "used_in": "s01",
+              "authored": false,
+              "source": "ink-puppet.js drawIn()"
+            },
+            "march": {
+              "description": "marches on the spot \u2014 travelling nowhere, which is the joke under 'same distance'",
+              "mocap_clip": "march",
+              "used_in": "s03",
+              "authored": false,
+              "source": "ink-theater/mocap/catalog.json (CMU)"
+            },
+            "walk": {
+              "description": "walks; the world slides left past it",
+              "mocap_clip": "walk",
+              "used_in": "s04-s05",
+              "authored": false,
+              "source": "ink-theater/mocap/catalog.json (CMU)"
+            },
+            "walk_mirrored": {
+              "description": "walks back the other way; actor scaleX -1, world slides right",
+              "mocap_clip": "walk",
+              "used_in": "s06",
+              "authored": false,
+              "source": "ink-theater/mocap/catalog.json (CMU)"
+            },
+            "shuffle": {
+              "description": "a slow sneaking creep \u2014 aimless searching of an empty room",
+              "mocap_clip": "shuffle",
+              "used_in": "s06",
+              "authored": false,
+              "source": "ink-theater/mocap/catalog.json (CMU)"
+            },
+            "kick": {
+              "description": "kicks the box that will not open",
+              "mocap_clip": "kick",
+              "used_in": "s07",
+              "authored": false,
+              "source": "ink-theater/mocap/catalog.json (CMU)"
+            },
+            "sit": {
+              "description": "sits down defeated, and stands back up on its own before the last beat",
+              "mocap_clip": "sit",
+              "used_in": "s08",
+              "authored": false,
+              "source": "ink-theater/mocap/catalog.json (CMU)"
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "source": "pose_library_builder produced the first draft. It was replaced because its default poses (blink, look_left, surprised) describe a face this character does not have. A mocap-driven figure has no pose library in the usual sense \u2014 it has one neutral pose and a list of clips.",
+        "hand_authored_poses": 0,
+        "clip_repeat_check": "walk is used twice and never back to back; shuffle separates them and the second is mirrored."
+      }
+    }
+  },
+  "style_playbook": "ink-sketch",
+  "review": {
+    "status": "passed",
+    "rounds": 2,
+    "findings": [
+      {
+        "severity": "critical",
+        "note": "svg_rig_builder and pose_library_builder both emitted their generic cartoon scaffold \u2014 a rig with a mouth and pupils, and poses like blink and look_left. This character has no face. Both artifacts were rewritten to describe ink-puppet.js's six paths and the mocap clip list; keeping the scaffold would have made the artifacts fiction."
+      },
+      {
+        "severity": "note",
+        "note": "Four risks surfaced before asset work, including the one that actually shaped the composition: place() rewrites the transform every frame, so travel has to move the world instead of the figure."
+      }
+    ]
+  },
+  "cost_snapshot": {
+    "spent_usd": 0,
+    "estimated_total_usd": 0
+  }
+}

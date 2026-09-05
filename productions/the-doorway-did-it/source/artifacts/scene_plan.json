@@ -1,0 +1,374 @@
+{
+  "version": "1.0",
+  "style_playbook": "ink-sketch",
+  "scenes": [
+    {
+      "id": "b01",
+      "type": "character_scene",
+      "script_section_id": "s01",
+      "start_seconds": 0.0,
+      "end_seconds": 3.81,
+      "description": "Empty warm-white paper. The pencil draws the figure in, part by part, under a pencil-scratch sound. On the last word an orange errand pops into its raised hand with a spring overshoot. Nothing else exists on the page yet — no floor, no door.",
+      "framing": "Figure centred at cx 540 standing on an implied ground at y 1180, occupying about a third of the frame height. Everything above and below is paper.",
+      "movement": "The draw-in is the only 'entrance' in the piece; from here nothing else ever fades in, things are drawn or carried.",
+      "transition_in": "cut",
+      "transition_out": "none",
+      "overlay_notes": "Chip appears at 0.6s: NOBODY IS IMMUNE. Caption marks 'no idea why'.",
+      "narrative_role": "introduce_subject",
+      "information_role": "Establish the character and the one object the whole video is about, before any context exists to distract from it.",
+      "hero_moment": true,
+      "texture_keywords": [
+        "paper",
+        "pencil scratch",
+        "draw-in",
+        "orange errand"
+      ],
+      "character_actions": [
+        {
+          "character_id": "the-figure",
+          "emotion": "oblivious",
+          "action_sequence": [
+            "draw_in"
+          ],
+          "notes": "InkPuppet.drawIn — the pencil sketches head, spine, arms, legs in sequence, then holds STAND."
+        }
+      ],
+      "required_assets": [
+        {
+          "type": "animation",
+          "description": "HyperFrames beat 1 — one continuous composition, no separate clip",
+          "source": "generate"
+        }
+      ]
+    },
+    {
+      "id": "b02",
+      "type": "character_scene",
+      "script_section_id": "s02",
+      "start_seconds": 3.81,
+      "end_seconds": 5.98,
+      "description": "The doorway draws itself in at the right of the frame: two uprights, a lintel, and a hinged lid-arm folded up flat against the lintel where it reads as part of the architecture. The figure does not react to it.",
+      "framing": "Doorway enters from the right third; the figure holds its position at centre. The ground line draws in beneath both.",
+      "movement": "Constant-rate draw-on, left to right, the same hand as the figure's own reveal.",
+      "transition_in": "none",
+      "transition_out": "none",
+      "overlay_notes": "Chip changes to IT'S THE DOOR. Caption marks 'door'.",
+      "narrative_role": "build_tension",
+      "information_role": "Put the antagonist on screen four seconds before it does anything, so the swipe is a payoff rather than a surprise.",
+      "hero_moment": false,
+      "texture_keywords": [
+        "doorway",
+        "lid-arm",
+        "cocked",
+        "architecture"
+      ],
+      "character_actions": [
+        {
+          "character_id": "the-figure",
+          "emotion": "oblivious",
+          "action_sequence": [
+            "stand"
+          ],
+          "notes": "Holds STAND. The point of this beat is that the character does not notice the thing that is about to rob it."
+        }
+      ],
+      "required_assets": [
+        {
+          "type": "animation",
+          "description": "HyperFrames beat 2 — one continuous composition, no separate clip",
+          "source": "generate"
+        }
+      ]
+    },
+    {
+      "id": "b03",
+      "type": "character_scene",
+      "script_section_id": "s03",
+      "start_seconds": 5.98,
+      "end_seconds": 11.48,
+      "description": "The figure marches on the spot while a plain measured rule draws along the floor beneath it with a bracket at each end. It is walking and getting nowhere, which is the entire content of 'same distance every time'.",
+      "framing": "Figure centred, rule along the floor from x 120 to x 960. The doorway waits, unchanged, at the right.",
+      "movement": "The world does not slide in this beat — that is the joke. Only the rule draws.",
+      "transition_in": "none",
+      "transition_out": "none",
+      "overlay_notes": "Chip changes to THEY ACTUALLY RAN THIS. Caption marks 'same distance'.",
+      "narrative_role": "evidence",
+      "information_role": "The credibility beat. This is a controlled comparison with distance held constant, and the picture says so without a word of methodology.",
+      "hero_moment": false,
+      "texture_keywords": [
+        "measured rule",
+        "bracket",
+        "marching on the spot"
+      ],
+      "character_actions": [
+        {
+          "character_id": "the-figure",
+          "emotion": "oblivious",
+          "action_sequence": [
+            "march"
+          ],
+          "notes": "mocap clip: march. Marching on the spot is the only clip in the catalog that travels nowhere, which is exactly what this line needs."
+        }
+      ],
+      "required_assets": [
+        {
+          "type": "animation",
+          "description": "HyperFrames beat 3 — one continuous composition, no separate clip",
+          "source": "generate"
+        }
+      ]
+    },
+    {
+      "id": "b04",
+      "type": "character_scene",
+      "script_section_id": "s04",
+      "start_seconds": 11.48,
+      "end_seconds": 15.65,
+      "description": "The figure breaks into a walk and the world starts sliding left, so the doorway comes toward the camera. As it arrives the lid-arm unfolds and cocks above the lintel, like a mousetrap being set. The figure still does not see it.",
+      "framing": "Figure fixed at centre; the doorway travels from the right third to just off centre-right.",
+      "movement": "One constant-rate world slide. The cock of the lid-arm is the only sprung movement in the beat.",
+      "transition_in": "none",
+      "transition_out": "none",
+      "overlay_notes": "Chip holds. Caption marks 'doorway'.",
+      "narrative_role": "build_tension",
+      "information_role": "Close the distance and arm the trap, so that the crossing needs no explanation when it happens.",
+      "hero_moment": false,
+      "texture_keywords": [
+        "walk",
+        "world slide",
+        "cocking"
+      ],
+      "character_actions": [
+        {
+          "character_id": "the-figure",
+          "emotion": "oblivious",
+          "action_sequence": [
+            "walk"
+          ],
+          "notes": "mocap clip: walk, looped to fill the segment. The world moves, not the figure — InkPuppet pins the figure horizontally."
+        }
+      ],
+      "required_assets": [
+        {
+          "type": "animation",
+          "description": "HyperFrames beat 4 — one continuous composition, no separate clip",
+          "source": "generate"
+        }
+      ]
+    },
+    {
+      "id": "b05",
+      "type": "character_scene",
+      "script_section_id": "s05",
+      "start_seconds": 15.65,
+      "end_seconds": 23.16,
+      "description": "THE BEAT. The figure crosses the threshold and the lid-arm swipes down and across: the orange errand is scraped out of its hand, drops into a box below, and the lid stamps shut with a wooden clack. The box slides back and lands on a small stack of identical closed boxes behind the door. The figure walks on with its arm still raised, holding nothing, for a full two seconds of silence.",
+      "framing": "The doorway passes through the centre of frame and exits left. The box and the stack are left behind at the ground line, receding.",
+      "movement": "The swipe is the fastest thing in the video and lands exactly on the word 'closes'. Everything after it is slow.",
+      "transition_in": "none",
+      "transition_out": "none",
+      "overlay_notes": "Chip changes to ONE ROOM, ONE FILE. Caption marks 'closes the file'.",
+      "narrative_role": "deliver_payload",
+      "information_role": "The mechanism, performed rather than described: a room is one event, and crossing the boundary closes and files it.",
+      "hero_moment": true,
+      "texture_keywords": [
+        "swipe",
+        "stamp",
+        "clack",
+        "closed box",
+        "stack"
+      ],
+      "character_actions": [
+        {
+          "character_id": "the-figure",
+          "emotion": "oblivious",
+          "action_sequence": [
+            "walk"
+          ],
+          "notes": "The walk does not change. That is the joke and the point: nothing about the character registers the loss at the moment it happens."
+        }
+      ],
+      "required_assets": [
+        {
+          "type": "animation",
+          "description": "HyperFrames beat 5 — one continuous composition, no separate clip",
+          "source": "generate"
+        }
+      ]
+    },
+    {
+      "id": "b06",
+      "type": "character_scene",
+      "script_section_id": "s06",
+      "start_seconds": 23.16,
+      "end_seconds": 29.29,
+      "description": "The figure stops dead and looks at its empty hand. One speech balloon grows from its head — 'why did I come in here' — the only written joke and the only balloon in the video. It creeps around the empty room searching, finds nothing, turns, and walks back the way it came while the world slides right.",
+      "framing": "Figure centred throughout; the room is empty except for the ground line. The doorway re-enters from the left as the figure walks back.",
+      "movement": "Stillness, then the balloon, then the creep, then the turn. The turn is a scaleX flip on the actor group — the only time the character changes facing.",
+      "transition_in": "none",
+      "transition_out": "none",
+      "overlay_notes": "Chip changes to SO GO BACK. Caption marks 'tried that'.",
+      "narrative_role": "emotional_beat",
+      "information_role": "The recognition beat, and the only laugh in the video. It also sets up the remedy the viewer is about to be told does not work.",
+      "hero_moment": false,
+      "texture_keywords": [
+        "empty hand",
+        "speech balloon",
+        "creep",
+        "turn"
+      ],
+      "character_actions": [
+        {
+          "character_id": "the-figure",
+          "emotion": "stopped",
+          "action_sequence": [
+            "shuffle",
+            "walk_mirrored"
+          ],
+          "notes": "mocap clips: shuffle then walk mirrored. Never the same clip twice in a row."
+        }
+      ],
+      "required_assets": [
+        {
+          "type": "animation",
+          "description": "HyperFrames beat 6 — one continuous composition, no separate clip",
+          "source": "generate"
+        }
+      ]
+    },
+    {
+      "id": "b07",
+      "type": "character_scene",
+      "script_section_id": "s07",
+      "start_seconds": 29.29,
+      "end_seconds": 34.15,
+      "description": "The figure arrives back at the box and pokes the lid. Red flashes once around the lid seam — the only red in the video. Nothing opens. It kicks the box. The box does not move.",
+      "framing": "Figure and box together at centre, the doorway behind them. The frame is at its tightest here.",
+      "movement": "One poke, one flash, one kick, then stillness. Nothing recovers.",
+      "transition_in": "none",
+      "transition_out": "none",
+      "overlay_notes": "Chip changes to THEY TESTED THAT. Caption marks 'didn't'.",
+      "narrative_role": "resolution",
+      "information_role": "The turn. The remedy everybody has been given was tested and it failed, and the picture refuses to give the character the relief the viewer expects.",
+      "hero_moment": true,
+      "texture_keywords": [
+        "poke",
+        "red seam",
+        "kick",
+        "immovable"
+      ],
+      "character_actions": [
+        {
+          "character_id": "the-figure",
+          "emotion": "defeated",
+          "action_sequence": [
+            "kick"
+          ],
+          "notes": "mocap clip: kick. The kick is played straight — no cartoon bounce, no reaction, because a real kick against a thing that does not move is funnier and sadder than a staged one."
+        }
+      ],
+      "required_assets": [
+        {
+          "type": "animation",
+          "description": "HyperFrames beat 7 — one continuous composition, no separate clip",
+          "source": "generate"
+        }
+      ]
+    },
+    {
+      "id": "b08",
+      "type": "character_scene",
+      "script_section_id": "s08",
+      "start_seconds": 34.15,
+      "end_seconds": 37.65,
+      "description": "Three more orange errands rise and circle above the figure's head, crowding it. The figure sits down.",
+      "framing": "Figure centred and lower in frame as it sits; the errands orbit in the space its head has vacated.",
+      "movement": "The errands drift on a slow closed-form spring — the only thing in the video that floats.",
+      "transition_in": "none",
+      "transition_out": "none",
+      "overlay_notes": "Chip changes to ONLY WHEN YOU'RE FULL. Caption marks 'already full'.",
+      "narrative_role": "comparison",
+      "information_role": "The honest qualifier. The effect is load-dependent, and saying so is what stops this video overstating itself the way every other treatment of the topic does.",
+      "hero_moment": false,
+      "texture_keywords": [
+        "crowding",
+        "orbit",
+        "sitting down"
+      ],
+      "character_actions": [
+        {
+          "character_id": "the-figure",
+          "emotion": "defeated",
+          "action_sequence": [
+            "sit"
+          ],
+          "notes": "mocap clip: sit. The clip stands back up on its own, which is exactly the recovery the last beat needs and is the reason it was chosen over anything else in the posture category."
+        }
+      ],
+      "required_assets": [
+        {
+          "type": "animation",
+          "description": "HyperFrames beat 8 — one continuous composition, no separate clip",
+          "source": "generate"
+        }
+      ]
+    },
+    {
+      "id": "b09",
+      "type": "character_scene",
+      "script_section_id": "s10",
+      "start_seconds": 37.65,
+      "end_seconds": 47.033,
+      "description": "The camera pulls back. The one box turns out to be the near end of a long line of closed boxes running away across the paper — every room the figure ever finished. The figure stands up and looks along it. Blue draws along the whole line in one continuous stroke, the only blue in the video, and everything stops.",
+      "framing": "The widest frame in the piece by a long way: the figure becomes small and the line of boxes becomes the subject.",
+      "movement": "One continuous pull-back and one continuous blue stroke. The video ends on a still frame with nothing moving.",
+      "transition_in": "none",
+      "transition_out": "none",
+      "overlay_notes": "Chip changes to WHAT IT BOUGHT. Captions mark 'finished' and 'understanding'; the caption clears before the final second.",
+      "narrative_role": "resolution",
+      "information_role": "What the forgetting bought. Surface memory is worse and the mental model is better, and the line of boxes is that sentence as a picture.",
+      "hero_moment": true,
+      "texture_keywords": [
+        "pull-back",
+        "line of boxes",
+        "blue stroke",
+        "stillness"
+      ],
+      "character_actions": [
+        {
+          "character_id": "the-figure",
+          "emotion": "resolved",
+          "action_sequence": [
+            "stand"
+          ],
+          "notes": "The sit clip has already returned the figure to standing; it holds there and does not act again. The last thing the character does is look."
+        }
+      ],
+      "required_assets": [
+        {
+          "type": "animation",
+          "description": "HyperFrames beat 9 — one continuous composition, no separate clip",
+          "source": "generate"
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "total_duration_seconds": 47.033,
+    "frame_rate": 30,
+    "resolution": "1080x1920",
+    "beat_count": 9,
+    "cut_policy": "There is not one cut in this video. It is a single continuous shot with a horizontal camera and one pull-back at the end. This deliberately breaks the reference video's cut-every-four-seconds rule, which the three previous productions all followed: a joke about someone losing something needs continuity, because a cut would let the viewer suspect the errand was taken off-screen.",
+    "camera": "The figure is pinned horizontally at cx 540 and the world slides past it — InkPuppet rewrites the figure's transform every frame, so this is the only way travel can be expressed. It also puts the doorway's arrival under exact timeline control, which matters because the swipe has to land on one specific word.",
+    "palette": {
+      "paper": "#FCFBF8",
+      "ink": "#333333",
+      "errand": "#D4611B",
+      "problem": "#C8322B",
+      "resolution": "#2E6E9E",
+      "policy": "Orange is the errand and only the errand. Red appears once, on the lid seam in b07. Blue appears once, on the line of boxes in b09. Any other appearance is a defect."
+    },
+    "mocap_policy": "Every character movement is a named clip from ink-theater/mocap/catalog.json: march, walk, shuffle, walk mirrored, kick, sit. Nothing is hand-authored. No clip runs twice in a row.",
+    "sound": "Three self-produced sounds, one per physical event: a pencil scratch under the draw-in, a wooden clack as the lid stamps at b05, a dull thud on the kick at b07. No music anywhere."
+  }
+}

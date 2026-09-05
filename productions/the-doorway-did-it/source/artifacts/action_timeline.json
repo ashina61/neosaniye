@@ -1,0 +1,107 @@
+{
+  "version": "1.0",
+  "fps": 30,
+  "scenes": [
+    {
+      "scene_id": "one-continuous-shot",
+      "start_seconds": 0.0,
+      "end_seconds": 47.033,
+      "camera": {
+        "language": "one horizontal scroll and one pull-back, no cuts",
+        "scroll": "#world x: 0 to -414 over 11.30-22.30, then back to -230 over 26.20-29.60",
+        "pull_back": "#camera scale 1 to 0.55, x +220, y -80 over 37.70-41.10, svgOrigin 540 1180",
+        "why": "InkPuppet.place() rewrites the figure's transform every frame, so the figure cannot travel. Moving the world instead is the only way, and it happens to give exact control over when the doorway reaches the hand."
+      },
+      "background": "warm white paper #FCFBF8, one ink ground line, no texture",
+      "effects": [
+        "seek-safe boil on every ink stroke, stepped feTurbulence seed at 9fps",
+        "spring overshoot on the errand's arrival",
+        "one speech balloon at 23.05, tethered to the head",
+        "red on the lid seam at 30.15 — once",
+        "blue drawn along the closed lids from 41.40 — once"
+      ],
+      "actions": [
+        {
+          "at_seconds": 0.15,
+          "duration_seconds": 2.4,
+          "character_id": "the-figure",
+          "action": "draw_in",
+          "pose": "stand",
+          "emotion": "oblivious",
+          "easing": "power1.inOut",
+          "notes": "InkPuppet.drawIn — the pencil sketches the six parts in sequence. The only entrance in the video."
+        },
+        {
+          "at_seconds": 6.0,
+          "duration_seconds": 5.3,
+          "character_id": "the-figure",
+          "action": "march",
+          "emotion": "oblivious",
+          "easing": "none",
+          "notes": "[b03] mocap clip 'march' from ink-theater/mocap/catalog.json. going nowhere on purpose — the world does not slide under this one"
+        },
+        {
+          "at_seconds": 11.3,
+          "duration_seconds": 11.0,
+          "character_id": "the-figure",
+          "action": "walk",
+          "emotion": "oblivious",
+          "easing": "none",
+          "notes": "[b04] mocap clip 'walk' from ink-theater/mocap/catalog.json. the approach and the crossing; the world slides at 37.6 px/s, a rate derived from where the swipe has to land"
+        },
+        {
+          "at_seconds": 22.3,
+          "duration_seconds": 3.9,
+          "character_id": "the-figure",
+          "action": "shuffle",
+          "emotion": "stopped",
+          "easing": "none",
+          "notes": "[b06] mocap clip 'shuffle' from ink-theater/mocap/catalog.json. a slow creep around a room it has no reason to be in"
+        },
+        {
+          "at_seconds": 26.2,
+          "duration_seconds": 3.4,
+          "character_id": "the-figure",
+          "action": "walk",
+          "emotion": "searching",
+          "easing": "none",
+          "notes": "[b06] mocap clip 'walk' from ink-theater/mocap/catalog.json. mirrored — the actor group flips scaleX about the figure's own ground point"
+        },
+        {
+          "at_seconds": 29.6,
+          "duration_seconds": 4.4,
+          "character_id": "the-figure",
+          "action": "kick",
+          "emotion": "defeated",
+          "easing": "none",
+          "notes": "[b07] mocap clip 'kick' from ink-theater/mocap/catalog.json. played straight, no cartoon reaction; the box does not move"
+        },
+        {
+          "at_seconds": 34.0,
+          "duration_seconds": 6.6,
+          "character_id": "the-figure",
+          "action": "sit",
+          "emotion": "defeated",
+          "easing": "none",
+          "notes": "[b08] mocap clip 'sit' from ink-theater/mocap/catalog.json. loop:false so it holds its last frame standing, which is where the ending needs it"
+        },
+        {
+          "at_seconds": 26.2,
+          "duration_seconds": 0.26,
+          "character_id": "the-figure",
+          "action": "turn",
+          "emotion": "searching",
+          "easing": "spring settle",
+          "notes": "scaleX -1 on the actor group about svgOrigin 540 1180. The face — two ink eyes and a nose, both on one side — is what makes the turn legible; a symmetrical stick figure has no facing to flip."
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "source": "Hand-authored against the composition. action_timeline_compiler was not run: it compiles pose-to-pose transitions with holds and anticipation, and there are no poses here to transition between — every frame of this character comes from motion capture. Compiling authored transitions would have produced a timeline the render does not use.",
+    "clip_repeat_check": "walk twice, never adjacent; shuffle separates them and the second is mirrored.",
+    "hand_authored_character_motion_seconds": 0.0,
+    "swipe_time_seconds": 20.33,
+    "swipe_derivation": "The lid-arm falls on the word 'closes'. Everything else about the approach — the door's world position, the scroll rate, the walk's start — was solved backwards from that."
+  }
+}

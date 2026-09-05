@@ -1,0 +1,289 @@
+{
+  "version": "1.0",
+  "topic": "The doorway effect — why walking into a room makes you forget why you came, whether going back helps, and what the forgetting is actually buying you",
+  "research_date": "2026-09-05",
+  "landscape": {
+    "existing_content": [
+      {
+        "title": "Why You Forget Why You Walk Into a Room (Doorway Effect Explained)",
+        "url": "https://www.youtube.com/shorts/Y5sxzL715so",
+        "source": "youtube",
+        "angle": "Fun-fact short: name the effect, say the brain segments events, end",
+        "what_it_covers": "The phenomenon, the phrase 'event boundary', reassurance that it is not memory loss",
+        "what_it_misses": "Stops at the naming. No experiment, no test of the folk remedy, no cost/benefit.",
+        "engagement_signal": "One of dozens of near-identical shorts on the same script"
+      },
+      {
+        "title": "The Strange 'Doorway Effect' Explained",
+        "url": "https://www.youtube.com/shorts/M0zRZnDmS5U",
+        "source": "youtube",
+        "angle": "Talking-head or stock-footage short with on-screen text",
+        "what_it_covers": "Same beats: you forget, doorways cause it, your brain files events",
+        "what_it_misses": "Same. The field is saturated with one script told at slightly different speeds."
+      },
+      {
+        "title": "Why Walking through a Doorway Makes You Forget",
+        "url": "https://www.scientificamerican.com/article/why-walking-through-doorway-makes-you-forget/",
+        "source": "blog",
+        "angle": "Popular-science write-up of the Radvansky work",
+        "what_it_covers": "The virtual and real-world experiments, the event-model explanation",
+        "what_it_misses": "Buries the most interesting result — that returning to the original room did not restore the memory — in a sentence."
+      },
+      {
+        "title": "Doorways do not always cause forgetting: a multimodal investigation",
+        "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7938580/",
+        "source": "journal",
+        "angle": "Failed replication across four experiments in immersive VR and real movement",
+        "what_it_covers": "No significant doorway effect except under working-memory load",
+        "what_it_misses": "Nothing — but no popular treatment mentions it at all, so every short on the topic overstates the effect."
+      }
+    ],
+    "saturated_angles": [
+      "'Your brain files events and doorways are boundaries' as the whole video — the entire corpus of shorts is this one script",
+      "The reassurance beat ('it's not dementia') as the payoff",
+      "Life-hack framing: say it out loud, write it down, keep the object in your hand",
+      "Naming the 'event horizon model' as if the name were the explanation"
+    ],
+    "underserved_gaps": [
+      "The folk remedy is wrong and it was actually tested. Radvansky walked people back through two doorways into the original room, specifically to check whether reinstating the context restores the memory. It did not. Every short on this topic implies going back helps; none of them say the experiment says otherwise.",
+      "The effect is not universal. A 2021 four-experiment study in immersive VR and real movement found no significant doorway effect — except under working-memory load. The honest version is 'the doorway gets you when your head was already full', which is both truer and more relatable than 'doorways make you forget'.",
+      "The trade. A 2025 study found that splitting information across events makes surface memory worse and the mental model better. The forgetting is the price of the filing, and the filing is what lets you understand one room at a time. Nobody ends the story there.",
+      "Nobody has staged it as an action. This is a phenomenon whose entire content is a person walking through a door carrying something — it is a piece of physical acting, and every existing treatment shows a stock clip of a fridge."
+    ]
+  },
+  "trending": {
+    "recent_developments": [
+      {
+        "headline": "Walking through doorways causes forgetting: But it may help understanding",
+        "url": "https://www.sciencedirect.com/science/article/pii/S266651822500035X",
+        "date": "2025",
+        "relevance": "Gives the video an ending that is not a life hack: surface memory and textbase memory are better within one event, but the mental-model level shows the opposite pattern. Memory worse, understanding better."
+      },
+      {
+        "headline": "Walking through doorways helps remembering, but not for long",
+        "url": "https://link.springer.com/article/10.3758/s13421-025-01832-8",
+        "date": "2025",
+        "relevance": "The literature is still moving. Worth knowing so the video does not overstate a settled finding."
+      }
+    ],
+    "timeliness_window": "evergreen"
+  },
+  "data_points": [
+    {
+      "claim": "Radvansky's participants moved the same distance either across one room or through a doorway into another; memory for the carried object was worse after the doorway.",
+      "source_url": "https://news.nd.edu/news/walking-through-doorways-causes-forgetting-new-research-shows/",
+      "source_name": "University of Notre Dame, Radvansky et al.",
+      "credibility": "primary_source",
+      "surprise_factor": "surprising",
+      "usable_as": "script_anchor"
+    },
+    {
+      "claim": "The effect held in a virtual environment and again in a real one, where subjects concealed the objects in boxes and carried them — so it is not an artefact of the simulation.",
+      "source_url": "https://memorylab.nd.edu/assets/259392/pettijohn_radvansky_2016_quarterly_journal_of_experimental_psychology_.pdf",
+      "source_name": "Pettijohn & Radvansky 2016, Quarterly Journal of Experimental Psychology",
+      "credibility": "primary_source",
+      "surprise_factor": "notable",
+      "usable_as": "script_anchor"
+    },
+    {
+      "claim": "In the third condition participants were walked back through two doorways into the room where the object was first picked up, to test whether reinstating the original context restores the memory. It did not.",
+      "source_url": "https://memorylab.nd.edu/assets/258705/radvansky_krawietz_tamplin_2011_qjep_.pdf",
+      "source_name": "Radvansky, Krawietz & Tamplin 2011, 'Walking through doorways causes forgetting: Further explorations'",
+      "credibility": "primary_source",
+      "surprise_factor": "counterintuitive",
+      "usable_as": "closing_punch"
+    },
+    {
+      "claim": "A 2021 study ran four experiments — immersive VR with and without working-memory load, passive video, and real walking — and found no significant doorway effect except under working-memory load, where recognition was more susceptible to interference after crossing.",
+      "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7938580/",
+      "source_name": "Doorways do not always cause forgetting: a multimodal investigation, BMC Psychology 2021",
+      "credibility": "primary_source",
+      "surprise_factor": "counterintuitive",
+      "usable_as": "script_anchor"
+    },
+    {
+      "claim": "Information learned as one continuous event produces better surface and textbase memory, but the mental-model level shows the opposite pattern — splitting it across events improves understanding.",
+      "source_url": "https://www.sciencedirect.com/science/article/pii/S266651822500035X",
+      "source_name": "Crockett, Parra, Doolen & Radvansky 2025, Current Research in Behavioral Sciences",
+      "credibility": "primary_source",
+      "surprise_factor": "counterintuitive",
+      "usable_as": "closing_punch"
+    },
+    {
+      "claim": "The doorway effect occurs across all ages in healthy people and is not a sign of cognitive decline; it is a consequence of ordinary event segmentation.",
+      "source_url": "https://www.huffingtonpost.co.uk/entry/doorway-effect-memory-room-forget_uk_6a7c8dc7e4b0ecad6d3db693",
+      "source_name": "HuffPost UK, summarising the memory literature",
+      "credibility": "secondary_source",
+      "surprise_factor": "expected",
+      "usable_as": "script_anchor"
+    }
+  ],
+  "audience_insights": {
+    "common_questions": [
+      "Why do I forget the moment I get to the room?",
+      "Is this a sign that something is wrong with my memory?",
+      "Why does it come back when I go back to where I was — or does it?",
+      "Does it happen to everyone or is it just me?",
+      "Is there anything I can actually do about it?"
+    ],
+    "misconceptions": [
+      {
+        "myth": "Going back to the room where you had the thought brings it back.",
+        "reality": "This was tested directly. Participants were walked back through two doorways into the original room and memory did not improve. Reinstating the context did not undo the segmentation.",
+        "source": "https://memorylab.nd.edu/assets/258705/radvansky_krawietz_tamplin_2011_qjep_.pdf"
+      },
+      {
+        "myth": "Doorways reliably make you forget.",
+        "reality": "A four-experiment 2021 study found no significant effect except under working-memory load. The doorway gets you when you were already carrying too much.",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7938580/"
+      },
+      {
+        "myth": "It means your memory is getting worse with age.",
+        "reality": "It shows up in healthy people of every age. It is a property of how experience is segmented, not of decline.",
+        "source": "https://www.huffingtonpost.co.uk/entry/doorway-effect-memory-room-forget_uk_6a7c8dc7e4b0ecad6d3db693"
+      }
+    ],
+    "knowledge_level": "Everyone. This is the one topic where the audience has already run the experiment on themselves this week. No vocabulary is needed and none should be introduced: the phrases 'event boundary', 'event segmentation' and 'event horizon model' are jargon that names the thing without explaining it, and the video should describe the mechanism in furniture instead.",
+    "pain_points": [
+      "The experience is mildly humiliating, so the reassurance beat matters — but every existing video spends its whole runtime there.",
+      "People are told to go back and retrace their steps, which the research says does not work, so the advice quietly makes them feel worse when it fails."
+    ]
+  },
+  "expert_voices": [
+    {
+      "name": "Gabriel A. Radvansky",
+      "title_or_affiliation": "Professor of Psychology, University of Notre Dame",
+      "position": "Doorways act as event boundaries: crossing one closes the current event and files it, which is why the reason you set out becomes harder to retrieve. His group also tested and rejected the obvious remedy of returning to the original room.",
+      "source_url": "https://memorylab.nd.edu/",
+      "contrarian": false
+    },
+    {
+      "name": "The BMC Psychology 2021 team",
+      "title_or_affiliation": "Bond University / UCL",
+      "position": "Across four experiments they found no reliable doorway effect except under working-memory load, and argue the evidence is inconsistent with the location-updating effect as previously reported.",
+      "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7938580/",
+      "contrarian": true
+    }
+  ],
+  "angles_discovered": [
+    {
+      "name": "The box shuts behind you",
+      "hook": "You walk into the kitchen with absolutely no idea why. The door did that.",
+      "type": "narrative",
+      "why_now": "The mechanism is a physical action — someone carrying something across a threshold — so it can be acted rather than narrated. Every existing treatment is a talking head or a stock clip of a fridge; none of them stages the thing itself. Pairing it with the two findings the corpus omits (going back does not help, and it mostly gets you when your head was already full) turns a saturated fun fact into something the viewer did not already know.",
+      "grounded_in": [
+        "Same distance, doorway versus no doorway",
+        "Returning to the original room did not restore the memory",
+        "No significant effect except under working-memory load"
+      ]
+    },
+    {
+      "name": "The advice you were given is wrong",
+      "hook": "Go back to where you were and it'll come to you. They tested that. It doesn't.",
+      "type": "contrarian",
+      "why_now": "The single strongest unused fact in the whole literature for a general audience, because everyone has been told the remedy and everyone has watched it fail. Strong, but as a whole video it is a correction with nothing to correct until the effect is established — better as the turn inside the narrative angle.",
+      "grounded_in": [
+        "Radvansky 2011 third condition: back through two doorways, no improvement"
+      ]
+    },
+    {
+      "name": "It only gets you when your head is full",
+      "hook": "Doorways don't erase things. Overloaded heads do, and a doorway is where it shows.",
+      "type": "data_driven",
+      "why_now": "The 2021 failed replication is the most honest framing available and it reframes the experience as a load problem rather than a memory problem. Slightly deflationary as a spine — it takes the phenomenon away before the viewer has enjoyed it — so it belongs late, as the qualifier.",
+      "grounded_in": [
+        "Four experiments, no significant effect except under working-memory load"
+      ]
+    },
+    {
+      "name": "The forgetting is the receipt",
+      "hook": "You lost the errand because your brain finished the room. That's the same machine.",
+      "type": "evergreen",
+      "why_now": "The 2025 finding that splitting across events hurts memory and helps understanding gives an ending that neither reassures nor advises — it explains what the forgetting bought. Nothing in the existing corpus ends anywhere near here.",
+      "grounded_in": [
+        "Surface and textbase memory better within one event; mental model better across events"
+      ]
+    }
+  ],
+  "visual_references": [
+    {
+      "description": "Every popular treatment: a stock clip of a person standing in a kitchen looking puzzled, with text over it",
+      "url": "https://www.iflscience.com/why-did-i-come-in-here-how-the-doorway-effect-makes-us-forget-what-we-were-doing-77674",
+      "what_works": "Instantly recognisable, and completely inert — the clip illustrates the feeling and can show nothing of the mechanism. The mechanism is invisible in any photograph of a person in a doorway, which is exactly the case productions/MANIFESTO.md makes for drawing it instead."
+    },
+    {
+      "description": "The pipeline's own reference build: a hand-drawn figure that sketches itself in and then performs real motion capture",
+      "url": "https://github.com/una-dinosauria/cmu-mocap",
+      "what_works": "A doodle carrying something through a doorway is a piece of acting, and acting is the one thing this channel has never done. The character can be shown holding the errand, losing it, and going back for it — three beats no diagram can carry."
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://news.nd.edu/news/walking-through-doorways-causes-forgetting-new-research-shows/",
+      "title": "Walking through doorways causes forgetting, new research shows",
+      "used_for": "Experiment design: same distance, virtual and real, objects concealed in boxes",
+      "reliability": "primary"
+    },
+    {
+      "url": "https://memorylab.nd.edu/assets/258705/radvansky_krawietz_tamplin_2011_qjep_.pdf",
+      "title": "Walking through doorways causes forgetting: Further explorations (2011)",
+      "used_for": "The return-to-the-original-room condition, and the finding that it did not help",
+      "reliability": "primary"
+    },
+    {
+      "url": "https://memorylab.nd.edu/assets/259392/pettijohn_radvansky_2016_quarterly_journal_of_experimental_psychology_.pdf",
+      "title": "Pettijohn & Radvansky 2016, Quarterly Journal of Experimental Psychology",
+      "used_for": "Replication and the event-model account",
+      "reliability": "primary"
+    },
+    {
+      "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7938580/",
+      "title": "Doorways do not always cause forgetting: a multimodal investigation (2021)",
+      "used_for": "The failed replication and the working-memory-load qualifier",
+      "reliability": "primary"
+    },
+    {
+      "url": "https://www.sciencedirect.com/science/article/pii/S266651822500035X",
+      "title": "Walking through doorways causes forgetting: But it may help understanding (2025)",
+      "used_for": "The closing trade — memory worse, mental model better",
+      "reliability": "primary"
+    },
+    {
+      "url": "https://www.scientificamerican.com/article/why-walking-through-doorway-makes-you-forget/",
+      "title": "Why Walking through a Doorway Makes You Forget",
+      "used_for": "Landscape and the popular framing",
+      "reliability": "secondary"
+    },
+    {
+      "url": "https://www.huffingtonpost.co.uk/entry/doorway-effect-memory-room-forget_uk_6a7c8dc7e4b0ecad6d3db693",
+      "title": "Doorway Effect: Science Explains Why You Sometimes Forget Why You Entered A Room",
+      "used_for": "That it occurs at all ages and is not decline",
+      "reliability": "secondary"
+    },
+    {
+      "url": "https://www.iflscience.com/why-did-i-come-in-here-how-the-doorway-effect-makes-us-forget-what-we-were-doing-77674",
+      "title": "Why Did I Come In Here? How The Doorway Effect Makes Us Forget What We Were Doing",
+      "used_for": "Landscape: the standard visual treatment",
+      "reliability": "secondary"
+    },
+    {
+      "url": "https://www.youtube.com/shorts/Y5sxzL715so",
+      "title": "Why You Forget Why You Walk Into a Room (Doorway Effect Explained)",
+      "used_for": "Landscape: the saturated shorts script",
+      "reliability": "anecdotal"
+    },
+    {
+      "url": "https://link.springer.com/article/10.3758/s13421-025-01832-8",
+      "title": "Walking through doorways helps remembering, but not for long (2025)",
+      "used_for": "Checking that the video does not overstate a settled finding",
+      "reliability": "primary"
+    }
+  ],
+  "research_summary": "This is the most saturated topic the channel has touched — there are dozens of near-identical shorts, all running the same script: you forget, doorways are event boundaries, don't worry it isn't dementia. What none of them carry is the part of the research that would actually change what a viewer does. Radvansky's group specifically tested the remedy everyone has been given — they walked people back through two doorways into the room where the thought started — and memory did not improve. A 2021 four-experiment study then failed to find the effect at all except under working-memory load, which reframes the whole thing from 'doorways erase memories' to 'a doorway is where an overloaded head drops something'. And a 2025 study found that splitting information across events hurts surface memory while improving the mental model, which means the forgetting is not a malfunction, it is the receipt for having finished understanding a room. Those three findings, in that order, are a video nobody has made. The second thing this research settles is the form: the mechanism here is literally a person carrying something across a threshold, so it is a piece of physical acting, and physical acting is the one register this channel has never used.",
+  "metadata": {
+    "searches_run": 7,
+    "technique_notes": "Character-animation feasibility, per this pipeline's research stage. The character is a hand-drawn ink figure driven by real CMU motion capture through ink-theater/ink-puppet.js, not frame-by-frame animation and not hand-tuned curves — the ink-theater skill forbids hand-tuning character motion. Reusable across the piece: one rig, one draw-in reveal, and named clips from mocap/catalog.json (walk, run, shuffle, sit, wave, jump and eight others). Everything else in the frame — the doorway, the boxes, the lid arm — is parametric ink drawn with InkTheater.inkPath / inkRibbon, so there is no per-scene art to generate and no image model is needed. Effects needed: the seek-safe boil filter for hand-drawn line wobble, and a speech balloon for one beat. Nothing in the plan requires an API key.",
+    "manifesto_note": "Nothing photographed. The topic was partly chosen because the only thing a camera can show here is a person looking puzzled in a kitchen, which is a picture of the symptom and can never be a picture of the mechanism.",
+    "ledger_note": "STYLE_LEDGER.md records Remotion atelier for productions 1 and 2 and Manim for production 3, and states that production 4 may not use Manim. Ink Theater plus Ink Puppet is untouched, and it is also the only world on the manifesto's table whose subject is a character performing an action."
+  }
+}

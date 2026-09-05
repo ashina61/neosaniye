@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!--
+      THE DOORWAY DID IT — ink-sketch, atelier, HyperFrames.
+
+      One continuous shot. The figure is pinned at screen x 540 because
+      InkPuppet.place() rewrites its transform every frame; travel is therefore
+      expressed by sliding #world past it, which also puts the doorway's arrival
+      under exact timeline control — the swipe has to land on one word.
+
+      Every movement the character makes is a named CMU motion-capture clip.
+      Nothing about the acting is authored here. See
+      ../artifacts/rig_plan.json and productions/STYLE_LEDGER.md.
+
+      gsap is vendored rather than hot-linked: cdn.jsdelivr.net is denied by this
+      environment's network policy, and a render-time fetch would break
+      determinism anyway. The handwriting is the FULL Patrick Hand TTF — a Google
+      Fonts css2 subset is missing basic-latin and falls back to serif silently
+      while the renderer still reports the font as loaded.
+    -->
+    <script src="gsap.min.js"></script>
+    <script src="ink-theater.js"></script>
+    <script src="ink-puppet.js"></script>
+    <script src="clips.js"></script>
+    <script src="captions.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      @font-face { font-family: "InkHand"; src: url("assets/patrickhand.ttf") format("truetype"); font-display: block; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #FCFBF8; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+      .stage { position: absolute; inset: 0; background: #FCFBF8; }
+      .stage svg { position: absolute; inset: 0; display: block; width: 1080px; height: 1920px; }
+      #overlay { position: absolute; inset: 0; }
+
+      /* the chip: an index mark, not a pill — a short rule and letterspaced caps */
+      #chipRow { position: absolute; left: 64px; top: 132px; display: flex; align-items: center; gap: 18px; opacity: 0; }
+      #chipBar { width: 6px; height: 34px; background: #333; }
+      .chip { position: absolute; left: 88px; top: 136px; font-family: "InkHand", cursive;
+              font-size: 34px; letter-spacing: 0.12em; color: #333; opacity: 0; white-space: nowrap; }
+
+      /* captions live in the clear band under the figure's feet */
+      .cap { position: absolute; left: 60px; width: 960px; top: 1420px; text-align: center;
+             font-family: "InkHand", cursive; font-size: 62px; line-height: 1.2; color: #333; opacity: 0; }
+      .cap b { font-weight: normal; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="47.033"
+         data-width="1080" data-height="1920" data-fps="30">
+      <section id="scene-doorway" class="clip" data-start="0" data-duration="47.033">
+        <div class="stage">
+          <svg viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="boil" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence id="boilTurb" type="fractalNoise" baseFrequency="0.012" numOctaves="1" seed="1" result="n"/>
+                <feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/>
+              </filter>
+            </defs>
+            <g id="camera">
+              <g id="world" filter="url(#boil)"></g>
+              <g id="actorScale">
+                <g id="actorFace">
+                  <g id="actorMount"></g>
+                </g>
+              </g>
+            </g>
+            <g id="fx"></g>
+          </svg>
+          <div id="overlay">
+            <div id="chipRow"><div id="chipBar"></div></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      if (document.fonts && document.fonts.load) { document.fonts.load("62px InkHand"); }
+
+      var IT = window.InkTheater, IP = window.InkPuppet;
+      var tl = gsap.timeline({ paused: true });
+      var SVGNS = "http://www.w3.org/2000/svg";
+
+      // ── the page ─────────────────────────────────────────────────────────
+      var INK = "#333333", ERRAND = "#D4611B", PROBLEM = "#C8322B", RESOLVE = "#2E6E9E", DIM = "#8A857A";
+      var CX = 540, GROUND = 1180, LINTEL = 420, DOOR_X = 880, BOX_X = 770;
+      var ARM_Y = 820, ARM_LEN = 262;   // the arm sweeps at exactly hand height
+      var world = document.getElementById("world"), fx = document.getElementById("fx");
+      var overlay = document.getElementById("overlay"), camera = document.getElementById("camera");
+
+      function node(tag, a, parent) {
+        var n = document.createElementNS(SVGNS, tag);
+        for (var k in a) n.setAttribute(k, a[k]);
+        (parent || world).appendChild(n); return n;
+      }
+      function stroke(d, sw, color, parent) {
+        return node("path", { d: d, fill: "none", stroke: color || INK, "stroke-width": sw || 6,
+                              "stroke-linecap": "round", "stroke-linejoin": "round" }, parent);
+      }
+      function drawOn(el, t, dur, ease) {                // the pencil draws it in
+        var L = el.getTotalLength();
+        el.style.strokeDasharray = L; el.style.strokeDashoffset = L;
+        tl.to(el, { strokeDashoffset: 0, duration: dur, ease: ease || "none" }, t);
+        tl.set(el, { strokeDasharray: "none" }, t + dur);
+      }
+
+      // ── the floor ────────────────────────────────────────────────────────
+      var ground = stroke(IT.inkPath([[-1500, GROUND], [0, GROUND + 3], [1200, GROUND - 2], [2600, GROUND + 3]],
+                                     { wobble: 2.0, step: 90 }), 5, INK);
+      gsap.set(ground, { opacity: 0 });
+      tl.to(ground, { opacity: 1, duration: 0.5 }, 3.9);
+
+      // ── the measured rule (b03) ──────────────────────────────────────────
+      var ruleY = GROUND + 66;
+      var ruleG = node("g", {});
+      var rule = stroke(IT.inkPath([[120, ruleY], [560, ruleY + 2], [1000, ruleY]], { wobble: 1.4, step: 70 }), 4, DIM, ruleG);
+      stroke("M 120 " + (ruleY - 18) + " L 120 " + (ruleY + 18), 4, DIM, ruleG);
+      stroke("M 1000 " + (ruleY - 18) + " L 1000 " + (ruleY + 18), 4, DIM, ruleG);
+      gsap.set(ruleG, { opacity: 0 });
+      tl.to(ruleG, { opacity: 1, duration: 0.4 }, 6.3);
+      drawOn(rule, 6.3, 1.5);
+      tl.to(ruleG, { opacity: 0, duration: 0.4 }, 11.3);
+
+      // ── the doorway, and the arm on it ───────────────────────────────────
+      // The arm is a barrier: hinged on the left upright at hand height, folded
+      // flat up the post at rest, and it drops to horizontal to sweep straight
+      // through the threshold. Nothing about it is decorative — its pivot, its
+      // length and the moment it falls are all set by where the hand will be.
+      var door = node("g", {});
+      gsap.set(door, { opacity: 0 });
+      tl.to(door, { opacity: 1, duration: 0.001 }, 3.88);
+      var upL = stroke(IT.inkPath([[DOOR_X - 130, GROUND], [DOOR_X - 135, 800], [DOOR_X - 130, LINTEL]], { wobble: 1.8, step: 100 }), 8, INK, door);
+      var upR = stroke(IT.inkPath([[DOOR_X + 130, GROUND], [DOOR_X + 136, 800], [DOOR_X + 130, LINTEL]], { wobble: 1.8, step: 100 }), 8, INK, door);
+      var lint = stroke(IT.inkPath([[DOOR_X - 152, LINTEL], [DOOR_X, LINTEL - 7], [DOOR_X + 152, LINTEL]], { wobble: 1.8, step: 80 }), 8, INK, door);
+      var armPivot = (DOOR_X - 130) + " " + ARM_Y;
+      var armG = node("g", { transform: "translate(" + (DOOR_X - 130) + "," + ARM_Y + ") rotate(-90)" }, door);
+      var arm = stroke("M 0 0 L " + ARM_LEN + " 0", 8, INK, armG);
+      var paddle = node("rect", { x: ARM_LEN - 26, y: -30, width: 30, height: 60, rx: 4, fill: INK }, armG);
+      node("circle", { cx: 0, cy: 0, r: 9, fill: INK }, armG);
+      // hatch above the lintel, so the frame reads as a hole in a wall rather
+      // than as a goalpost standing in space
+      var hatch = [];
+      for (var h = 0; h < 6; h++) {
+        var hx = DOOR_X - 148 + h * 59;
+        hatch.push(stroke("M " + hx + " " + (LINTEL - 4) + " L " + (hx + 44) + " " + (LINTEL - 74), 5, INK, door));
+      }
+      drawOn(upL, 3.90, 0.44); drawOn(upR, 4.18, 0.44); drawOn(lint, 4.46, 0.42);
+      hatch.forEach(function (e, i) { drawOn(e, 4.60 + i * 0.05, 0.16); });
+      drawOn(arm, 4.76, 0.32);
+      gsap.set(paddle, { opacity: 0 });
+      tl.to(paddle, { opacity: 1, duration: 0.18 }, 5.02);
+
+      // cocked past vertical, like a trap being set — then the swipe
+      var SWIPE = 20.33;
+      tl.set(armG, { svgOrigin: armPivot }, 0);
+      tl.to(armG, { rotation: -108, duration: 0.55, ease: IT.ease.settle }, 13.5);
+      tl.to(armG, { rotation: 0, duration: 0.15, ease: "power3.in" }, SWIPE);
+      tl.to(armG, { rotation: -14, duration: 0.7, ease: IT.ease.settle }, SWIPE + 0.34);
+
+      // ── the box the errand ends up in ────────────────────────────────────
+      function makeBox(x, opts) {
+        opts = opts || {};
+        var w = 176, h = 142, g = node("g", {}, opts.parent || world);
+        var body = stroke("M " + (x - w / 2) + " " + GROUND + " L " + (x - w / 2) + " " + (GROUND - h) +
+                          " M " + (x + w / 2) + " " + GROUND + " L " + (x + w / 2) + " " + (GROUND - h) +
+                          " M " + (x - w / 2) + " " + GROUND + " L " + (x + w / 2) + " " + GROUND, 6, INK, g);
+        var lidG = node("g", {}, g);
+        var lid = stroke("M " + (x - w / 2 - 12) + " " + (GROUND - h) + " L " + (x + w / 2 + 12) + " " + (GROUND - h), 7, INK, lidG);
+        return { g: g, body: body, lid: lid, lidG: lidG, x: x, top: GROUND - h };
+      }
+      var box = makeBox(BOX_X);
+      gsap.set(box.g, { opacity: 0 });
+      gsap.set(box.lidG, { y: -230, opacity: 0 });
+      tl.to(box.g, { opacity: 1, duration: 0.001 }, SWIPE + 0.06);
+      tl.to(box.lidG, { opacity: 1, duration: 0.001 }, SWIPE + 0.20);
+      tl.to(box.lidG, { y: 0, duration: 0.14, ease: "power4.in" }, SWIPE + 0.20);
+      tl.to(box.lidG, { y: 0, duration: 0.3, ease: IT.ease.bouncy }, SWIPE + 0.34);
+
+      // the seam goes red once, and only here
+      var seam = stroke("M " + (BOX_X - 100) + " " + (GROUND - 142) + " L " + (BOX_X + 100) + " " + (GROUND - 142), 9, PROBLEM);
+      gsap.set(seam, { opacity: 0 });
+      tl.to(seam, { opacity: 1, duration: 0.12 }, 30.15);
+      tl.to(seam, { opacity: 0, duration: 0.7 }, 30.65);
+
+      // ── the line of finished rooms, revealed at the end ──────────────────
+      var line = [], LINE_X = [];
+      for (var i = 1; i <= 7; i++) LINE_X.push(BOX_X - i * 200);
+      LINE_X.forEach(function (x, i) {
+        var b = makeBox(x);
+        gsap.set(b.g, { opacity: 0 });
+        gsap.set(b.lidG, { y: 0 });
+        tl.to(b.g, { opacity: 1, duration: 0.35 }, 38.4 + i * 0.20);
+        line.push(b);
+      });
+      // one blue stroke along every closed lid — the only blue in the video
+      var blueD = "M " + (LINE_X[LINE_X.length - 1] - 100) + " " + (GROUND - 154) +
+                  " L " + (BOX_X + 100) + " " + (GROUND - 154);
+      var blue = stroke(blueD, 13, RESOLVE);
+      drawOn(blue, 41.4, 2.6, "power1.inOut");
+
+      // ── the figure ───────────────────────────────────────────────────────
+      var mount = document.getElementById("actorMount");
+      var pup = IP.create(mount, { cx: CX, ground: GROUND, boil: "boil", headR: 44, strokeWidth: 7 });
+      document.getElementById("actorScale").setAttribute(
+        "transform", "translate(" + CX + "," + GROUND + ") scale(1.5) translate(" + (-CX) + "," + (-GROUND) + ")");
+      var face = document.getElementById("actorFace");
+
+      // two white dots, so it has somewhere to not-look from
+      var eyeL = node("circle", { cx: 0, cy: 0, r: 6, fill: INK }, pup.ink);
+      var eyeR = node("circle", { cx: 0, cy: 0, r: 6, fill: INK }, pup.ink);
+      var nose = node("path", { d: "", fill: "none", stroke: INK, "stroke-width": 6,
+                                "stroke-linecap": "round" }, pup.ink);
+
+      // the errand rides in the right hand, in the figure's own local space
+      var errand = node("g", {}, pup.ink);
+      node("circle", { cx: 0, cy: 0, r: 21, fill: ERRAND }, errand);
+      node("path", { d: "M -8 -21 L 0 -34 L 8 -21", fill: "none", stroke: ERRAND, "stroke-width": 6, "stroke-linecap": "round" }, errand);
+      gsap.set(errand, { opacity: 0 });
+
+      // follow the hand and the head without authoring either
+      var basePose = pup.setPose;
+      pup.setPose = function (po) {
+        basePose(po);
+        errand.setAttribute("transform", "translate(" + po.haR[0] + "," + (po.haR[1] - 4) + ")");
+        var hx = po.head[0], hy = po.head[1] - 44 * 0.32;
+        eyeL.setAttribute("cx", hx + 7);  eyeL.setAttribute("cy", hy - 9);
+        eyeR.setAttribute("cx", hx + 26); eyeR.setAttribute("cy", hy - 9);
+        nose.setAttribute("d", "M " + (hx + 40) + " " + (hy + 3) +
+                               " L " + (hx + 57) + " " + (hy + 9));
+      };
+      pup.setPose(IP.STAND); pup.place(IP.STAND.groundY, 0);
+
+      // 1) the pencil draws it in, then the errand pops into its hand
+      pup.drawIn(tl, { start: 0.15, each: 0.42 });
+      tl.fromTo(errand, { opacity: 0, scale: 0.2, svgOrigin: "0 0" },
+                        { opacity: 1, scale: 1, duration: 0.5, ease: IT.ease.overshoot }, 2.55);
+
+      // 2) the acting — named clips only, and never the same one twice running
+      IP.choreograph(tl, pup, [
+        { clip: "march",   dur: 5.30 },   // 6.00  going nowhere, on purpose
+        { clip: "walk",    dur: 11.00 },  // 11.30 the approach and the crossing
+        { clip: "shuffle", dur: 3.90 },   // 22.30 searching an empty room
+        { clip: "walk",    dur: 3.40 },   // 26.20 walking back (mirrored)
+        { clip: "kick",    dur: 4.40 },   // 29.60 the box does not move
+        // loop:false matters here — the sit clip is exactly 6.00s, so a 6.60s
+        // segment would wrap and start sitting down again. Held on its last
+        // frame, it leaves the figure standing, which is the ending.
+        { clip: "sit",     dur: 6.60, loop: false }   // 34.00 sits, then stands
+      ], { start: 6.00 });
+
+      // the turn: the only time it changes facing
+      // svgOrigin, not transformOrigin: face is an SVG <g>, so the origin is in
+      // user units. Getting this wrong throws the whole figure off the page and
+      // it is invisible in a still — it only shows up when you watch the render.
+      tl.to(face, { scaleX: -1, duration: 0.26, ease: IT.ease.settle,
+                    svgOrigin: CX + " " + GROUND }, 26.20);
+
+      // 3) the world slides past it
+      tl.set(world, { x: 0 }, 0);
+      // -414 over 11.00s is 37.6 px/s, which puts the threshold on the figure at
+      // exactly SWIPE. The rate is derived from the word, not chosen.
+      tl.to(world, { x: -414, duration: 11.00, ease: "none" }, 11.30);   // out
+      tl.to(world, { x: -230, duration: 3.40, ease: "none" }, 26.20);    // back
+
+      // 4) the errand is taken
+      var falling = node("g", {});
+      node("circle", { cx: 0, cy: 0, r: 21, fill: ERRAND }, falling);
+      node("path", { d: "M -8 -21 L 0 -34 L 8 -21", fill: "none", stroke: ERRAND, "stroke-width": 6, "stroke-linecap": "round" }, falling);
+      gsap.set(falling, { opacity: 0, x: DOOR_X, y: ARM_Y + 6 });
+      tl.to(errand, { opacity: 0, duration: 0.001 }, SWIPE + 0.05);
+      tl.to(falling, { opacity: 1, duration: 0.001 }, SWIPE + 0.05);
+      tl.to(falling, { x: BOX_X, duration: 0.24, ease: "power1.out" }, SWIPE + 0.05);
+      tl.to(falling, { y: GROUND - 62, duration: 0.24, ease: "power2.in" }, SWIPE + 0.05);
+      tl.to(falling, { opacity: 0, duration: 0.001 }, SWIPE + 0.30);
+
+      // 5) three more errands crowd the head — the honest qualifier
+      var crowd = [];
+      [[-150, -250], [140, -300], [-20, -370]].forEach(function (p, i) {
+        var g = node("g", {}, fx);
+        node("circle", { cx: 0, cy: 0, r: 23, fill: ERRAND }, g);
+        gsap.set(g, { opacity: 0, x: CX + p[0], y: 500 + p[1] * 0.35 });
+        tl.to(g, { opacity: 1, duration: 0.3 }, 34.3 + i * 0.22);
+        tl.to(g, { y: "+=26", duration: 1.6, ease: IT.ease.soft }, 34.6 + i * 0.22);
+        tl.to(g, { y: "-=26", duration: 1.6, ease: IT.ease.soft }, 36.2 + i * 0.22);
+        tl.to(g, { opacity: 0, duration: 0.5 }, 37.9 + i * 0.1);
+        crowd.push(g);
+      });
+
+      // 6) one speech balloon, and only one
+      IT.balloon(tl, { into: fx, overlay: overlay, at: 23.05, dur: 2.6,
+                       text: "why did I come in here", center: [700, 300], mouth: [566, 452],
+                       w: 560, size: 48, boil: "boil" });
+
+      // 7) the pull-back: the one box turns out to be the near end of a line
+      tl.to(camera, { scale: 0.55, x: 220, y: -80, duration: 3.4, ease: IT.ease.soft,
+                      svgOrigin: CX + " " + GROUND }, 37.7);
+
+      // ── the chip and the captions ────────────────────────────────────────
+      var CHIPS = [
+        [0.55, 3.60, "nobody is immune"],
+        [3.90, 5.85, "it's the door"],
+        [6.05, 11.35, "they actually ran this"],
+        [11.55, 15.55, "same walk, two endings"],
+        [15.70, 22.95, "one room, one file"],
+        [23.10, 29.10, "so go back"],
+        [29.25, 34.00, "they tested that"],
+        [34.10, 37.55, "only when you're full"],
+        [37.70, 45.60, "what it bought"]
+      ];
+      var chipBar = document.getElementById("chipBar"), chipRow = document.getElementById("chipRow");
+      tl.to(chipRow, { opacity: 1, duration: 0.3 }, 0.55);
+      tl.to(chipRow, { opacity: 0, duration: 0.5 }, 45.6);
+      CHIPS.forEach(function (c) {
+        var d = document.createElement("div");
+        d.className = "chip"; d.textContent = c[2];
+        overlay.appendChild(d);
+        tl.to(d, { opacity: 1, duration: 0.22 }, c[0]);
+        tl.to(d, { opacity: 0, duration: 0.18 }, c[1]);
+      });
+
+      var CAPS = window.__CAPTIONS__ || [];
+      var MARK = { errand: ERRAND, problem: PROBLEM, resolution: RESOLVE };
+      CAPS.forEach(function (c) {
+        var d = document.createElement("div");
+        d.className = "cap";
+        var mark = MARK[c.emphColor] || ERRAND;
+        d.innerHTML = c.text.split(" ").map(function (w) {
+          return (c.emph.indexOf(w) >= 0)
+            ? '<b style="color:' + mark + '">' + w + "</b>" : w;
+        }).join(" ");
+        overlay.appendChild(d);
+        var s = c.fromFrame / 30, e = (c.fromFrame + c.durationInFrames) / 30;
+        tl.to(d, { opacity: 1, duration: 0.12 }, s);
+        tl.to(d, { opacity: 0, duration: 0.12 }, Math.max(s + 0.2, e - 0.06));
+      });
+
+      IT.boil(document.getElementById("boilTurb"), tl, { duration: 47.033, fps: 9 });
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

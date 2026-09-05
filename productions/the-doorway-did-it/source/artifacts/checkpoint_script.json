@@ -1,0 +1,343 @@
+{
+  "version": "1.0",
+  "project_id": "the-doorway-did-it",
+  "pipeline_type": "character-animation",
+  "stage": "script",
+  "status": "completed",
+  "timestamp": "2026-09-05T12:51:27.434972+00:00",
+  "checkpoint_policy": "guided",
+  "human_approval_required": true,
+  "human_approved": true,
+  "artifacts": {
+    "script": {
+      "version": "1.0",
+      "title": "The Doorway Did It",
+      "total_duration_seconds": 47.033,
+      "voice_performance": {
+        "performance_intent": "A friend telling you something slightly funny that happens to be true. Warm and dry. This is the first script on this channel with any amusement in it \u2014 the three before were deliberately level \u2014 but the amusement is in the writing, not in the delivery: the voice never winks and never does a punchline lilt. The character on screen is doing the comedy.",
+        "pacing_profile": "conversational",
+        "energy_curve": "Light and quick through the setup. Flat and factual through the experiment. A real stop before 'It didn't help.' Then quieter to the end, because the last two lines are the only ones that are not a joke.",
+        "pause_policy": "The gaps are long by this channel's standards and they are load-bearing: the acting happens inside them. Silence after the errand is taken, silence while the figure wanders, silence on the pull-back. Each section is synthesised separately and the silence is placed at composition time.",
+        "sample_section_id": "s07",
+        "provider_notes": {
+          "piper": "en_US-ryan-high, length_scale 1.00, sentence_silence 0.14, measured at 3.34 words per second."
+        }
+      },
+      "sections": [
+        {
+          "id": "s01",
+          "label": "Everyone has done this",
+          "text": "You walk into the kitchen. And you have absolutely no idea why.",
+          "start_seconds": 0.0,
+          "end_seconds": 3.263,
+          "speaker_directions": "Open light. This is the shared experience; say it like the viewer already knows.",
+          "delivery_cues": {
+            "pace": "conversational",
+            "energy": "light",
+            "emphasis_words": [
+              "no",
+              "idea",
+              "why."
+            ],
+            "pause_after_seconds": 0.4,
+            "provider_text": "You walk into the kitchen. And you have absolutely no idea why."
+          },
+          "enhancement_cues": [
+            {
+              "type": "animation",
+              "description": "ACTION \u2014 The pencil draws the figure in, limb by limb, on empty paper (InkPuppet.drawIn). A pencil-scratch sound runs under it. On the last word an orange errand pops into its hand with a spring overshoot. Nothing else is on the page yet.",
+              "timestamp_seconds": 0.0
+            }
+          ],
+          "source_ref": "https://www.huffingtonpost.co.uk/entry/doorway-effect-memory-room-forget_uk_6a7c8dc7e4b0ecad6d3db693"
+        },
+        {
+          "id": "s02",
+          "label": "The accusation",
+          "text": "It's not your age. It's the door.",
+          "start_seconds": 3.813,
+          "end_seconds": 5.532,
+          "speaker_directions": "Flat. The second sentence is the whole premise and it should land as a plain statement, not as a reveal.",
+          "delivery_cues": {
+            "pace": "measured",
+            "energy": "flat",
+            "emphasis_words": [
+              "door."
+            ],
+            "pause_before_seconds": 0.2,
+            "pause_after_seconds": 0.35,
+            "delivery_note": "Full stop after 'door', no lilt. The picture does the pointing.",
+            "provider_text": "It's not your age. It's the door."
+          },
+          "enhancement_cues": [
+            {
+              "type": "animation",
+              "description": "ACTION \u2014 The doorway draws itself in at the right of the frame: two uprights, a lintel, and a hinged lid-arm folded up against the lintel. The figure stands holding its errand and does not react.",
+              "timestamp_seconds": 4.4
+            }
+          ]
+        },
+        {
+          "id": "s03",
+          "label": "They actually ran this",
+          "text": "Psychologists had people carry an object between two rooms \u2014 same distance every time.",
+          "start_seconds": 5.982,
+          "end_seconds": 11.183,
+          "speaker_directions": "Matter-of-fact. This is the credibility beat; do not sell it.",
+          "delivery_cues": {
+            "pace": "conversational",
+            "energy": "level",
+            "emphasis_words": [
+              "same",
+              "distance"
+            ],
+            "provider_text": "Psychologists had people carry an object between two rooms, same distance every time."
+          },
+          "enhancement_cues": [
+            {
+              "type": "animation",
+              "description": "ACTION \u2014 The figure does not travel here. It marches on the spot (mocap clip: march) while a measured rule draws along the floor beneath it \u2014 walking without getting anywhere is the visual pun for 'same distance every time', and it keeps the approach to the door short enough to stay interesting. The world does not slide during this beat.",
+              "timestamp_seconds": 6.95
+            }
+          ],
+          "source_ref": "https://news.nd.edu/news/walking-through-doorways-causes-forgetting-new-research-shows/"
+        },
+        {
+          "id": "s04",
+          "label": "The comparison",
+          "text": "Cross a room, you remember. Cross a doorway, you forget more.",
+          "start_seconds": 11.483,
+          "end_seconds": 15.152,
+          "speaker_directions": "Two halves, matched rhythm. The second half is not louder, just later.",
+          "delivery_cues": {
+            "pace": "conversational",
+            "energy": "level",
+            "emphasis_words": [
+              "doorway,"
+            ],
+            "provider_text": "Cross a room, you remember. Cross a doorway, you forget more."
+          },
+          "enhancement_cues": [
+            {
+              "type": "animation",
+              "description": "ACTION \u2014 The figure breaks into a walk (mocap clip: walk) and the world starts sliding left, so the doorway comes toward the camera. The lid-arm above the lintel visibly cocks, like a mousetrap being set. The figure does not see it.",
+              "timestamp_seconds": 11.4
+            }
+          ],
+          "source_ref": "https://memorylab.nd.edu/assets/259392/pettijohn_radvansky_2016_quarterly_journal_of_experimental_psychology_.pdf"
+        },
+        {
+          "id": "s05",
+          "label": "The crossing",
+          "text": "Your brain treats a room as one whole event. Step over the line, it closes the file.",
+          "start_seconds": 15.652,
+          "end_seconds": 20.958,
+          "speaker_directions": "This is the mechanism. Even and unhurried \u2014 the picture is doing something violent and the voice should not join in.",
+          "delivery_cues": {
+            "pace": "measured",
+            "energy": "level",
+            "emphasis_words": [
+              "one",
+              "whole",
+              "event.",
+              "closes"
+            ],
+            "delivery_note": "'closes the file' lands exactly as the lid stamps. The edit is cut to this word.",
+            "provider_text": "Your brain treats a room as one whole event. Step over the line, and it closes the file."
+          },
+          "enhancement_cues": [
+            {
+              "type": "animation",
+              "description": "ACTION \u2014 THE BEAT. As the figure crosses the threshold the lid-arm swipes down and across: the orange errand is scraped out of its hand, drops into a box below, and the lid stamps shut with a wooden clack. The box slides back and lands on a small stack of identical closed boxes behind the door. The figure walks on, arm still raised, holding nothing.",
+              "timestamp_seconds": 15.55
+            }
+          ],
+          "source_ref": "https://memorylab.nd.edu/assets/259392/pettijohn_radvansky_2016_quarterly_journal_of_experimental_psychology_.pdf"
+        },
+        {
+          "id": "s06",
+          "label": "So go back",
+          "text": "So go back, right? They tried that. Walked people all the way back to where they started.",
+          "start_seconds": 23.158,
+          "end_seconds": 27.687,
+          "speaker_directions": "Conversational, slightly leading \u2014 you are voicing the viewer's own idea back at them before taking it away.",
+          "delivery_cues": {
+            "pace": "conversational",
+            "energy": "light",
+            "emphasis_words": [
+              "back,",
+              "tried"
+            ],
+            "provider_text": "So go back, right? They tried that. Walked people all the way back to where they started."
+          },
+          "enhancement_cues": [
+            {
+              "type": "animation",
+              "description": "ACTION \u2014 The figure stops dead, looks at its empty hand, and a single speech balloon grows from its head: 'why did I come in here'. It is the only written joke and the only balloon in the video. Then it creeps around the empty room looking for the reason (mocap clip: shuffle) before turning and walking back the way it came (mocap clip: walk, figure mirrored, world sliding right).",
+              "timestamp_seconds": 21.65
+            }
+          ],
+          "source_ref": "https://memorylab.nd.edu/assets/258705/radvansky_krawietz_tamplin_2011_qjep_.pdf"
+        },
+        {
+          "id": "s07",
+          "label": "It didn't help",
+          "text": "It didn't help. The box is shut. Standing where you shut it doesn't open it.",
+          "start_seconds": 29.287,
+          "end_seconds": 33.154,
+          "speaker_directions": "The turn. Stop before it. Three flat sentences, no consolation in any of them.",
+          "delivery_cues": {
+            "pace": "measured",
+            "energy": "lower",
+            "emphasis_words": [
+              "didn't",
+              "shut."
+            ],
+            "pause_before_seconds": 0.35,
+            "provider_text": "It didn't help. The box is shut. Standing where you shut it doesn't open it.",
+            "delivery_note": "The one place in the video where the voice should sound like it is delivering bad news."
+          },
+          "enhancement_cues": [
+            {
+              "type": "animation",
+              "description": "ACTION \u2014 The figure is back at the start, standing over the box. It pokes the lid. Red flashes once around the lid seam \u2014 the only red in the video. Nothing opens. It kicks the box (mocap clip: kick). The box does not move.",
+              "timestamp_seconds": 27.75
+            }
+          ],
+          "source_ref": "https://memorylab.nd.edu/assets/258705/radvansky_krawietz_tamplin_2011_qjep_.pdf"
+        },
+        {
+          "id": "s08",
+          "label": "The honest qualifier",
+          "text": "And it mostly only catches you when your head was already full.",
+          "start_seconds": 34.154,
+          "end_seconds": 37.103,
+          "speaker_directions": "Softer, almost an aside. This is the line that stops the video overstating itself, and it should sound like an admission rather than a twist.",
+          "delivery_cues": {
+            "pace": "conversational",
+            "energy": "soft",
+            "emphasis_words": [
+              "already",
+              "full."
+            ],
+            "provider_text": "And it mostly only catches you when your head was already full."
+          },
+          "enhancement_cues": [
+            {
+              "type": "animation",
+              "description": "ACTION \u2014 Three more orange errands rise and circle above the figure's head, crowding it. The figure sits down (mocap clip: sit \u2014 which stands back up on its own, which is the recovery the last beat needs).",
+              "timestamp_seconds": 33.15
+            }
+          ],
+          "source_ref": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7938580/"
+        },
+        {
+          "id": "s09",
+          "label": "What it bought",
+          "text": "You lost the errand because your brain finished the room.",
+          "start_seconds": 37.653,
+          "end_seconds": 40.103,
+          "speaker_directions": "Quiet and plain. The joke is over.",
+          "delivery_cues": {
+            "pace": "measured",
+            "energy": "quiet",
+            "emphasis_words": [
+              "finished"
+            ],
+            "provider_text": "You lost the errand because your brain finished the room."
+          },
+          "enhancement_cues": [
+            {
+              "type": "animation",
+              "description": "ACTION \u2014 The camera pulls back. The one box behind the door turns out to be the near end of a long line of closed boxes running away across the paper \u2014 every room the figure has ever finished. The figure stands up and looks along it.",
+              "timestamp_seconds": 37.35
+            }
+          ],
+          "source_ref": "https://www.sciencedirect.com/science/article/pii/S266651822500035X"
+        },
+        {
+          "id": "s10",
+          "label": "The trade",
+          "text": "Worse memory, better understanding. Same machine, same second.",
+          "start_seconds": 40.553,
+          "end_seconds": 44.443,
+          "speaker_directions": "The last line. Land it and stop; do not warm it up at the end.",
+          "delivery_cues": {
+            "pace": "measured",
+            "energy": "quiet",
+            "emphasis_words": [
+              "understanding."
+            ],
+            "pause_before_seconds": 0.3,
+            "provider_text": "Worse memory, better understanding. Same machine, same second."
+          },
+          "enhancement_cues": [
+            {
+              "type": "animation",
+              "description": "ACTION \u2014 Blue draws along the whole line of boxes in one continuous stroke, the only blue in the video. The figure stands still and the drawing stops moving. The video ends on that frame.",
+              "timestamp_seconds": 41.55
+            }
+          ],
+          "source_ref": "https://www.sciencedirect.com/science/article/pii/S266651822500035X"
+        }
+      ],
+      "metadata": {
+        "word_count": 125,
+        "audio_architecture": "Single narrator, no character dialogue. The figure never speaks aloud; it gets exactly one written speech balloon, at 21.65s, and that is the only text in the video that is not a caption. Three self-produced sounds mark physical events \u2014 a pencil scratch under the draw-in, a wooden clack as the lid stamps, a dull thud on the kick \u2014 and there is no music at any point.",
+        "character_beats": "Every section carries an ACTION line, because in this pipeline the script is a shooting document rather than a voiceover. The acting arc is: appears with an errand \u2192 walks \u2192 is robbed without noticing \u2192 stops and realises \u2192 searches \u2192 returns \u2192 finds it locked \u2192 gives up \u2192 sees what it bought. Nine beats, one character, no cuts.",
+        "mocap_clips_used": [
+          "walk",
+          "shuffle",
+          "walk (mirrored)",
+          "kick",
+          "sit"
+        ],
+        "clip_repeat_check": "walk appears twice but never back to back \u2014 shuffle separates them, and the second is mirrored. No clip loops through more than one beat.",
+        "timing_policy": "Every start_seconds and end_seconds above is measured: each section was synthesised with Piper and its real wav duration read back, then these gaps were placed between them. The gaps are long by this channel's standards and that is deliberate \u2014 2.20s after the theft, 1.60s for the search, 1.00s for the kick. The acting lives in the silence, so the silence is part of the edit and not left over from it.",
+        "not_said_aloud": [
+          "'Event boundary', 'event segmentation' and 'event horizon model'. They name the thing without explaining it. The mechanism is described in furniture: a room, a file, a lid, a box.",
+          "The word 'dementia'. Every other treatment of this topic spends its runtime on reassurance; 'It's not your age' does that job in four words and moves on.",
+          "Any life hack. The research says the obvious one does not work, and inventing a replacement would be the one dishonest thing this video could do."
+        ],
+        "claim_traceability": "Every factual sentence carries a source_ref to a research_brief data point. The three findings the saturated corpus omits are s06-s07 (the return was tested and failed), s08 (the effect is load-dependent) and s09-s10 (memory worse, mental model better).",
+        "measured_rate_words_per_second": 3.34,
+        "gaps_after_section_seconds": {
+          "s01": 0.55,
+          "s02": 0.45,
+          "s03": 0.3,
+          "s04": 0.5,
+          "s05": 2.2,
+          "s06": 1.6,
+          "s07": 1.0,
+          "s08": 0.55,
+          "s09": 0.45,
+          "s10": 0.0
+        },
+        "closing_tail_seconds": 2.6
+      }
+    }
+  },
+  "style_playbook": "ink-sketch",
+  "review": {
+    "status": "passed",
+    "rounds": 1,
+    "findings": [
+      {
+        "severity": "note",
+        "note": "Every section carries an ACTION line; the script is a shooting document, not a voiceover."
+      },
+      {
+        "severity": "note",
+        "note": "Audio architecture locked: single narrator, no character dialogue, one written speech balloon, three self-produced event sounds, no music."
+      },
+      {
+        "severity": "note",
+        "note": "All timings measured from synthesised audio. 123 words at 3.34 w/s, 1411 frames."
+      }
+    ]
+  },
+  "cost_snapshot": {
+    "spent_usd": 0,
+    "estimated_total_usd": 0
+  }
+}

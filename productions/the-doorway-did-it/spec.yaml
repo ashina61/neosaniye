@@ -1,0 +1,77 @@
+# Publish spec for a hand-produced short.
+#
+# Produced through OpenMontage's character-animation pipeline in atelier mode,
+# ink-sketch playbook, rendered by HyperFrames. The character is a hand-drawn
+# ink figure driven by real CMU motion capture; no frame of its movement was
+# authored. See source/art-direction.md, source/scenes.md and
+# source/artifacts/decision_log.json. This file exists only so
+# daily/lib/publish.py can consume the folder.
+slug: the-doorway-did-it
+title: The Doorway Did It
+duration_seconds: 47.03
+has_burned_captions: true
+produced_by: openmontage/character-animation (ink-sketch, hyperframes, CMU mocap)
+produced_on: "2026-09-05"
+
+copy:
+  title: "Why you forget the second you walk in."
+  hook: "You walk into the kitchen with absolutely no idea why. It isn't your age. It's the door."
+  caption: >-
+    Psychologists made people carry an object between rooms, holding the
+    distance constant. Cross a room and you remember; cross a doorway and you
+    forget more. Your brain treats a room as one whole event and closes the file
+    on the way out. And the advice everyone gives you — go back to where you
+    were — was tested directly, and it did not help.
+  description: |-
+    You walk into the kitchen and you have absolutely no idea why. It is not
+    your age. It is the door.
+
+    Psychologists had people carry an object between two rooms, with the
+    distance held constant, in a virtual environment and then in a real
+    building. Cross a room and you remember. Cross a doorway and you forget
+    more. Your brain treats a room as one whole event, and stepping over the
+    threshold closes it and files it.
+
+    Then the part nobody mentions. The remedy everybody has been given — go back
+    to where you were and it will come to you — was tested directly. Radvansky's
+    group walked people back through two doorways into the room where the object
+    was first picked up, to see whether reinstating the original context would
+    restore the memory. It did not. The box is shut, and standing where you shut
+    it does not open it.
+
+    And it does not get everyone every time. A 2021 study ran four experiments
+    in immersive VR, passive video and real walking, and found no reliable
+    doorway effect at all — except under working-memory load. So the honest
+    version is that a doorway is where an already-full head drops something.
+
+    What the forgetting bought you is the last thing. A 2025 study found that
+    splitting information across events makes surface memory worse and the
+    mental model better. Worse memory, better understanding. Same machine, same
+    second.
+
+    Every frame of this is drawn. The character is a hand-drawn ink figure posed
+    by real motion capture from the CMU database — the walk, the creep, the
+    kick and the sit are a person's, not an animator's.
+
+    Sources
+    Radvansky, Krawietz & Tamplin, Walking through doorways causes forgetting:
+    Further explorations (2011):
+    https://memorylab.nd.edu/assets/258705/radvansky_krawietz_tamplin_2011_qjep_.pdf
+    Pettijohn & Radvansky, Quarterly Journal of Experimental Psychology (2016):
+    https://memorylab.nd.edu/assets/259392/pettijohn_radvansky_2016_quarterly_journal_of_experimental_psychology_.pdf
+    Doorways do not always cause forgetting: a multimodal investigation (2021):
+    https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7938580/
+    Crockett et al., Walking through doorways causes forgetting: But it may help
+    understanding (2025):
+    https://www.sciencedirect.com/science/article/pii/S266651822500035X
+
+    #Shorts
+  hashtags:
+    - memory
+    - psychology
+    - doorwayeffect
+    - brain
+    - animation
+    - howitworks
+    - science
+    - Shorts

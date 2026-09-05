@@ -40,6 +40,56 @@ Changing only these is not a new design — it is the same video with new data:
 
 ## Ledger
 
+### 2026-09-05 — the-doorway-did-it
+*"Why you forget the second you walk in."* · 47.0s · **ink-theater + ink-puppet** / hyperframes / atelier
+
+| Field | Value |
+|---|---|
+| Design read | A doodle on a sheet of paper is trying to run an errand, and the paper keeps taking it away. The first production that is a character rather than an instrument. |
+| Ground | Warm white paper `#FCFBF8`, no grain, no border, no texture. Live hand-drawn boil on every ink stroke. |
+| Palette roles | ink `#333333` = the figure and every object · orange `#D4611B` = **the errand and nothing else** · red `#C8322B` = **once**, on the lid seam of the box that will not open · blue `#2E6E9E` = **once**, drawn along the line of closed lids at the end |
+| Signature device | The doorway is a machine: a barrier arm hinged on the left upright at exactly hand height, folded flat up the post until it drops to horizontal and sweeps the errand out of the figure's hand. Every number in its geometry was solved backwards from the requirement that it falls on the word *closes*. |
+| Layout set | Not a layout set — **one continuous shot**. A figure pinned at screen centre while the world slides past it, and one pull-back at the end. There is no cut anywhere in the video. |
+| Motion character | **Real human motion capture.** Six named CMU clips — march, walk, shuffle, walk mirrored, kick, sit — retargeted onto a hand-drawn stick figure. Hand-authored character motion: 0.0 seconds. |
+| Type | Patrick Hand, the full TTF, on HTML overlay divs. The channel's first handwriting. |
+| Narrative structure | story |
+| Narration | Piper `en_US-ryan-high` at length_scale 1.00, 3.34 w/s measured. Warmer register than the three before it. |
+| Music | None. Three synthesised event sounds: a pencil scratch under the draw-in, a wooden clack as the lid stamps, a duller thud on the kick that goes nowhere. |
+| Captions | Burned in, Patrick Hand at 62px under the figure's feet. 13 of 28 chunks mark a load-bearing word, and the mark takes the colour the drawing is using on that same beat. |
+| Providers used | none — zero API keys, zero generated images, zero stock |
+
+**Burned for future videos:** the ink-on-white doodle world, the stick figure with
+two eyes and a nose on one side, a machine disguised as architecture, an errand
+as a coloured object that can be taken, the world-slides-past-a-fixed-character
+camera, one-continuous-shot as a structure, motion capture as the motion
+language, handwriting as the type.
+
+**What this one proved:** the channel can *act*. The three before it explained;
+this one performs, and the performance carries content no diagram could — a
+character not noticing it has been robbed is the doorway effect, exactly, with
+nothing left to describe. It also proved the acting does not have to be authored:
+the agent chose six clip names and a person from a 2003 mocap session did the
+rest.
+
+**Three defects worth remembering, none of them visible in a still:**
+1. `transformOrigin` in px on an SVG `<g>` — GSAP needs `svgOrigin` in user units
+   there. The figure was off the page for the last third of the video and every
+   snapshot looked fine, because the snapshots I chose were of frames where it
+   happened to be absent for other reasons. **Sample the finished file.**
+2. A mocap segment longer than its clip wraps and starts the action again. `sit`
+   is 6.00s; a 6.60s segment sat down twice. `loop: false` holds the last frame.
+3. The style's white-dot eyes are invisible on an unfilled head on white paper,
+   and a symmetrical stick figure has no facing — so the turn was unreadable
+   until the face went on. On a mocap character, the face is not decoration; it
+   is the only thing that says which way the motion is going.
+
+**Worlds used so far:** Remotion atelier ×2, Manim ×1, Ink Theater ×1. Three.js,
+HyperFrames-as-a-style (kinetic typography), Mermaid and code are untouched. The
+next production may not use Ink Theater, and it should probably not have a
+character at all — two character pieces in a row would make the character the
+channel rather than the subject.
+
+
 ### 2026-09-05 — the-digit-that-catches-liars
 *"One digit shows up 30% of the time."* · 56.6s · **manim** (picture) + remotion / atelier (glass)
 

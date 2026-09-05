@@ -1,0 +1,125 @@
+{
+  "version": "1.0",
+  "cuts": [
+    {
+      "id": "one-continuous-shot",
+      "source": "hyperframes/index.html",
+      "in_seconds": 0.0,
+      "out_seconds": 47.033,
+      "layer": "primary",
+      "transition_in": "cut",
+      "transition_out": "cut",
+      "transition_duration": 0.0,
+      "backgroundColor": "#FCFBF8",
+      "reason": "There is exactly one cut in this video and it is the one at the start. The three previous productions all followed the reference's cut-every-four-to-five-seconds rule; this one breaks it on purpose. A joke about somebody losing something needs continuity — a cut would let the viewer suspect the errand was taken off-screen, and the entire point is that it was taken in full view and the character did not notice."
+    }
+  ],
+  "audio": {
+    "narration": {
+      "segments": [
+        {
+          "asset_id": "nar-s01",
+          "start_seconds": 0.0,
+          "end_seconds": 3.263
+        },
+        {
+          "asset_id": "nar-s02",
+          "start_seconds": 3.813,
+          "end_seconds": 5.532
+        },
+        {
+          "asset_id": "nar-s03",
+          "start_seconds": 5.982,
+          "end_seconds": 11.183
+        },
+        {
+          "asset_id": "nar-s04",
+          "start_seconds": 11.483,
+          "end_seconds": 15.152
+        },
+        {
+          "asset_id": "nar-s05",
+          "start_seconds": 15.652,
+          "end_seconds": 20.958
+        },
+        {
+          "asset_id": "nar-s06",
+          "start_seconds": 23.158,
+          "end_seconds": 27.687
+        },
+        {
+          "asset_id": "nar-s07",
+          "start_seconds": 29.287,
+          "end_seconds": 33.154
+        },
+        {
+          "asset_id": "nar-s08",
+          "start_seconds": 34.154,
+          "end_seconds": 37.103
+        },
+        {
+          "asset_id": "nar-s09",
+          "start_seconds": 37.653,
+          "end_seconds": 40.103
+        },
+        {
+          "asset_id": "nar-s10",
+          "start_seconds": 40.553,
+          "end_seconds": 44.443
+        }
+      ]
+    },
+    "sfx": [
+      {
+        "asset_id": "sfx-pencil",
+        "start_seconds": 0.18,
+        "volume": 1.0
+      },
+      {
+        "asset_id": "sfx-clack",
+        "start_seconds": 20.61,
+        "volume": 1.0
+      },
+      {
+        "asset_id": "sfx-thud",
+        "start_seconds": 30.62,
+        "volume": 1.0
+      }
+    ]
+  },
+  "subtitles": {
+    "enabled": true,
+    "style": "burned",
+    "source": "artifacts/captions.json",
+    "font": "Patrick Hand (full TTF)",
+    "font_size": 62,
+    "color": "#333333",
+    "background": "none",
+    "position": "bottom-center",
+    "max_words_per_line": 7
+  },
+  "transitions": [],
+  "renderer_family": "animation-first",
+  "render_runtime": "hyperframes",
+  "composition_mode": "atelier",
+  "bespoke": {
+    "entry": "/home/user/neosaniye/projects/the-doorway-did-it/hyperframes/index.html",
+    "composition_id": "main",
+    "art_direction": "Black ink on warm white paper #FCFBF8, the ink-sketch playbook. All structure and the character are ink #333 with a live hand-drawn boil on every stroke. Orange #D4611B is the errand and only the errand; red #C8322B appears once, on the lid seam of the box that will not open; blue #2E6E9E appears once, drawn along the line of closed boxes at the end. Type is Patrick Hand, the full TTF, on HTML overlay divs — the first handwriting this channel has used. The signature device is the doorway itself, drawn as a contraption: a barrier arm hinged on the left upright at exactly hand height, folded flat against the post until it drops to horizontal and sweeps the errand out of the figure's hand. Motion character is the largest departure of the four productions: real human motion capture. The figure walks, creeps, kicks and sits like a person because a person did it; nothing about the acting is authored. The world slides past a fixed figure, so the camera language is one horizontal scroll and one pull-back rather than a cut list — the whole piece is a single shot."
+  },
+  "slideshow_risk_score": {
+    "average": 0.02,
+    "verdict": "strong"
+  },
+  "metadata": {
+    "total_seconds": 47.033,
+    "total_frames": 1411,
+    "fps": 30,
+    "audio_path": "assets/audio/narration_mix.wav",
+    "loudness_target_lufs": -14,
+    "render_command": "npx hyperframes render . -o renders/v2.mp4 -f 30 -q high",
+    "music": "None. Three self-produced event sounds and silence otherwise — see decision_log d-009.",
+    "why_hyperframes": "Ink Theater and Ink Puppet are written against HyperFrames' contract: one paused GSAP timeline, every frame a pure function of time. Porting them to Remotion would have meant rewriting the engine in order to use it. All three runtimes were available and all three are recorded in d-004.",
+    "video_compose_not_used": "video_compose is the repository's usual entry point and it does route to HyperFrames, but the ink-theater skill's documented path is the hyperframes CLI directly, which also gives lint, validate and snapshot — the review loop that caught the two real defects in this build. video_compose would have added a layer without adding anything."
+  }
+}

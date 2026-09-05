@@ -1,0 +1,338 @@
+[
+  {
+    "section": "s01",
+    "text": "You walk into the kitchen.",
+    "start": 0.0,
+    "end": 1.377,
+    "fromFrame": 0,
+    "toFrame": 41,
+    "durationInFrames": 41,
+    "emph": [],
+    "emphColor": "errand"
+  },
+  {
+    "section": "s01",
+    "text": "And you have absolutely no idea why.",
+    "start": 1.377,
+    "end": 3.263,
+    "fromFrame": 41,
+    "toFrame": 98,
+    "durationInFrames": 57,
+    "emph": [
+      "absolutely"
+    ],
+    "emphColor": "errand"
+  },
+  {
+    "section": "s02",
+    "text": "It's not your age.",
+    "start": 3.813,
+    "end": 4.774,
+    "fromFrame": 114,
+    "toFrame": 143,
+    "durationInFrames": 29,
+    "emph": [
+      "age."
+    ],
+    "emphColor": "errand"
+  },
+  {
+    "section": "s02",
+    "text": "It's the door.",
+    "start": 4.774,
+    "end": 5.532,
+    "fromFrame": 143,
+    "toFrame": 166,
+    "durationInFrames": 23,
+    "emph": [
+      "door."
+    ],
+    "emphColor": "problem"
+  },
+  {
+    "section": "s03",
+    "text": "Psychologists had people carry",
+    "start": 5.982,
+    "end": 7.835,
+    "fromFrame": 179,
+    "toFrame": 235,
+    "durationInFrames": 56,
+    "emph": [],
+    "emphColor": "errand"
+  },
+  {
+    "section": "s03",
+    "text": "an object between two rooms",
+    "start": 7.835,
+    "end": 9.509,
+    "fromFrame": 235,
+    "toFrame": 285,
+    "durationInFrames": 50,
+    "emph": [],
+    "emphColor": "errand"
+  },
+  {
+    "section": "s03",
+    "text": "\u2014 same distance every time.",
+    "start": 9.509,
+    "end": 11.183,
+    "fromFrame": 285,
+    "toFrame": 335,
+    "durationInFrames": 50,
+    "emph": [
+      "same",
+      "distance"
+    ],
+    "emphColor": "errand"
+  },
+  {
+    "section": "s04",
+    "text": "Cross a room, you remember.",
+    "start": 11.483,
+    "end": 13.14,
+    "fromFrame": 344,
+    "toFrame": 394,
+    "durationInFrames": 50,
+    "emph": [],
+    "emphColor": "errand"
+  },
+  {
+    "section": "s04",
+    "text": "Cross a doorway,",
+    "start": 13.14,
+    "end": 14.146,
+    "fromFrame": 394,
+    "toFrame": 424,
+    "durationInFrames": 30,
+    "emph": [
+      "doorway,"
+    ],
+    "emphColor": "errand"
+  },
+  {
+    "section": "s04",
+    "text": "you forget more.",
+    "start": 14.146,
+    "end": 15.152,
+    "fromFrame": 424,
+    "toFrame": 455,
+    "durationInFrames": 31,
+    "emph": [],
+    "emphColor": "errand"
+  },
+  {
+    "section": "s05",
+    "text": "Your brain treats a room as",
+    "start": 15.652,
+    "end": 17.4,
+    "fromFrame": 470,
+    "toFrame": 522,
+    "durationInFrames": 52,
+    "emph": [],
+    "emphColor": "errand"
+  },
+  {
+    "section": "s05",
+    "text": "one whole event.",
+    "start": 17.4,
+    "end": 18.461,
+    "fromFrame": 522,
+    "toFrame": 554,
+    "durationInFrames": 32,
+    "emph": [
+      "whole"
+    ],
+    "emphColor": "errand"
+  },
+  {
+    "section": "s05",
+    "text": "Step over the line,",
+    "start": 18.461,
+    "end": 19.71,
+    "fromFrame": 554,
+    "toFrame": 591,
+    "durationInFrames": 37,
+    "emph": [],
+    "emphColor": "errand"
+  },
+  {
+    "section": "s05",
+    "text": "it closes the file.",
+    "start": 19.71,
+    "end": 20.958,
+    "fromFrame": 591,
+    "toFrame": 629,
+    "durationInFrames": 38,
+    "emph": [
+      "closes"
+    ],
+    "emphColor": "errand"
+  },
+  {
+    "section": "s06",
+    "text": "So go back, right?",
+    "start": 23.158,
+    "end": 24.114,
+    "fromFrame": 695,
+    "toFrame": 723,
+    "durationInFrames": 28,
+    "emph": [],
+    "emphColor": "errand"
+  },
+  {
+    "section": "s06",
+    "text": "They tried that.",
+    "start": 24.114,
+    "end": 24.97,
+    "fromFrame": 723,
+    "toFrame": 749,
+    "durationInFrames": 26,
+    "emph": [
+      "tried"
+    ],
+    "emphColor": "errand"
+  },
+  {
+    "section": "s06",
+    "text": "Walked people all the way back",
+    "start": 24.97,
+    "end": 26.53,
+    "fromFrame": 749,
+    "toFrame": 796,
+    "durationInFrames": 47,
+    "emph": [],
+    "emphColor": "errand"
+  },
+  {
+    "section": "s06",
+    "text": "to where they started.",
+    "start": 26.53,
+    "end": 27.687,
+    "fromFrame": 796,
+    "toFrame": 831,
+    "durationInFrames": 35,
+    "emph": [],
+    "emphColor": "errand"
+  },
+  {
+    "section": "s07",
+    "text": "It didn't help.",
+    "start": 29.287,
+    "end": 30.091,
+    "fromFrame": 879,
+    "toFrame": 903,
+    "durationInFrames": 24,
+    "emph": [
+      "didn't"
+    ],
+    "emphColor": "problem"
+  },
+  {
+    "section": "s07",
+    "text": "The box is shut.",
+    "start": 30.091,
+    "end": 30.944,
+    "fromFrame": 903,
+    "toFrame": 928,
+    "durationInFrames": 25,
+    "emph": [
+      "shut."
+    ],
+    "emphColor": "errand"
+  },
+  {
+    "section": "s07",
+    "text": "Standing where you shut it",
+    "start": 30.944,
+    "end": 32.3,
+    "fromFrame": 928,
+    "toFrame": 969,
+    "durationInFrames": 41,
+    "emph": [],
+    "emphColor": "errand"
+  },
+  {
+    "section": "s07",
+    "text": "doesn't open it.",
+    "start": 32.3,
+    "end": 33.154,
+    "fromFrame": 969,
+    "toFrame": 995,
+    "durationInFrames": 26,
+    "emph": [],
+    "emphColor": "errand"
+  },
+  {
+    "section": "s08",
+    "text": "And it mostly only catches",
+    "start": 34.154,
+    "end": 35.398,
+    "fromFrame": 1025,
+    "toFrame": 1062,
+    "durationInFrames": 37,
+    "emph": [],
+    "emphColor": "errand"
+  },
+  {
+    "section": "s08",
+    "text": "you when your head was already full.",
+    "start": 35.398,
+    "end": 37.103,
+    "fromFrame": 1062,
+    "toFrame": 1113,
+    "durationInFrames": 51,
+    "emph": [
+      "already",
+      "full."
+    ],
+    "emphColor": "errand"
+  },
+  {
+    "section": "s09",
+    "text": "You lost the errand because",
+    "start": 37.653,
+    "end": 38.836,
+    "fromFrame": 1130,
+    "toFrame": 1165,
+    "durationInFrames": 35,
+    "emph": [],
+    "emphColor": "errand"
+  },
+  {
+    "section": "s09",
+    "text": "your brain finished the room.",
+    "start": 38.836,
+    "end": 40.103,
+    "fromFrame": 1165,
+    "toFrame": 1203,
+    "durationInFrames": 38,
+    "emph": [
+      "finished"
+    ],
+    "emphColor": "errand"
+  },
+  {
+    "section": "s10",
+    "text": "Worse memory, better understanding.",
+    "start": 40.553,
+    "end": 42.776,
+    "fromFrame": 1217,
+    "toFrame": 1283,
+    "durationInFrames": 66,
+    "emph": [
+      "understanding."
+    ],
+    "emphColor": "resolution"
+  },
+  {
+    "section": "s10",
+    "text": "Same machine, same second.",
+    "start": 42.776,
+    "end": 44.443,
+    "fromFrame": 1283,
+    "toFrame": 1333,
+    "durationInFrames": 50,
+    "emph": [],
+    "emphColor": "errand"
+  }
+]
