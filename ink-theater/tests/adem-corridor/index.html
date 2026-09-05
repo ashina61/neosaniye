@@ -91,7 +91,7 @@
       var tl = gsap.timeline({ paused: true });
       var NS = "http://www.w3.org/2000/svg";
 
-      var INK = IF.NIB.ink, PAPER = IF.NIB.paper, DIM = "#8A857A";
+      var INK = IF.ADEM.ink, PAPER = IF.ADEM.paper, DIM = "#8A857A";
       var CX = 540, GROUND = 1600, SCALE = 1.95;
       var MM = (SCALE * 534) / 1750;              // he sets the scale of the world
       function mm(v) { return v * MM; }
@@ -367,10 +367,13 @@
 
       // ── the figure ───────────────────────────────────────────────────────
       var mount = document.getElementById("actorMount");
-      var pup = IP.create(mount, { cx: CX, ground: GROUND, boil: "boil", headR: IF.NIB.headR - 2, strokeWidth: 7 });
+      var pup = IP.create(mount, { cx: CX, ground: GROUND, boil: "boil", headR: IF.ADEM.headR - 2, strokeWidth: 4 });
       document.getElementById("actorScale").setAttribute(
         "transform", "translate(" + CX + "," + GROUND + ") scale(" + SCALE + ") translate(" + (-CX) + "," + (-GROUND) + ")");
-      var fig = IF.attach(pup);                    // no options: this IS Nib
+      // unit: SCALE so his line weight comes out the same as the set's. He is
+      // inside a 1.95x group; without it every line on him is nearly twice the
+      // weight of the door he is standing next to.
+      var fig = IF.attach(pup, { unit: SCALE });   // otherwise no options: this IS Adem
       // Frame 34 of the trimmed shuffle: both feet flat, arms hanging, and the
       // arm projecting at its full length, which is what makes the reach work.
       IP.still("shuffle", 34);

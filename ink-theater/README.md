@@ -78,13 +78,13 @@ node mocap/add-motion.mjs backflip 05_20 dance "a backflip"   # CMU id, or a URL
 ```
 Free **CMU mocap** (`una-dinosauria/cmu-mocap`) has thousands. This is what Meta's *Animated Drawings* does, but here it stays **vector, white-ink, with a draw-on reveal** (AD is raster, humanoid-only, no reveal). Provenance (all clips CMU, free for any use): `mocap/NOTE.md` · `THIRD_PARTY_NOTICES.md`.
 
-## Nib — the recurring character
+## Adem — the recurring character
 
-`InkFigure.attach(pup)` with no options is **Nib**, the one character this
-channel repeats. His proportions, palette and line weights are `InkFigure.NIB`
+`InkFigure.attach(pup)` with no options is **Adem**, the one character this
+channel repeats. His proportions, palette and line weights are `InkFigure.ADEM`
 and they do not change between videos. The character sheet — what is fixed, how
 to pose him, how to scale a scene off him, and every trap that has cost a render
-— is **[`NIB.md`](NIB.md)**. Read it before drawing or posing a character.
+— is **[`ADEM.md`](ADEM.md)**. Read it before drawing or posing a character.
 
 Two rig facilities he depends on:
 

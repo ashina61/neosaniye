@@ -122,69 +122,72 @@
   function mixPt(a, b, t) { return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]; }
 
 
-  /* NIB — the channel's recurring character. These are not defaults in the
-     "some sensible starting numbers" sense; they are the character, and the
-     point of them is that they do not change between videos. A viewer
-     recognises a figure by its proportions long before its face. Read
-     ink-theater/NIB.md before touching any of them. */
-  var NIB = {
-    headR: 46,                    // head radius; the figure is ~5.4 heads tall
+  /* ADEM — the channel's character. Everything here is his identity, and the
+     point of it is that it does not change between videos.
+
+     He replaced an earlier design (a fitter in a flat cap and a boiler suit).
+     Two things about this one are better and worth keeping in mind if it is
+     ever revisited: real proportions — about 6.7 heads, not 5.4 — and ONE
+     solid mass on the whole figure, his hair. Everything else is line. A
+     drawing with exactly one dark shape in it has a place for the eye to land,
+     and that shape is what you recognise from across a room.
+
+     Line weights are in PAGE pixels. The actor normally lives inside a scale
+     group, so pass `unit: SCALE` when attaching and they come out matching the
+     set instead of nearly twice its weight. */
+  var ADEM = {
+    headR: 40,                    // ~6.7 heads tall
     ink: "#333333",
     paper: "#FCFBF8",
     pencil: "#BDB7AA",            // the under-drawing, rubbed out after the ink
     weights: {
-      arm0: 30, arm1: 19,         // shoulder → wrist
-      leg0: 40, leg1: 22,         // hip → ankle
-      body: 7,                    // torso, neck and head outline
-      limb: 6                     // arms, legs, feet, hands
+      arm0: 27, arm1: 17,         // shoulder to wrist
+      leg0: 38, leg1: 21,         // hip to ankle
+      body: 5.4,                  // torso, neck, head outline (page px)
+      limb: 4.4,                  // arms, legs, shoes, hands
+      seam: 3.6,                  // hems, sleeve edges, pocket
+      face: 3.8
     },
-    /* The torso's width is the pose's own span, floored. The floors matter
-       more than the multipliers, because side-on the mocap gives a shoulder
-       span of about 13 units and the floor is the whole answer. They were set
-       for a front view and made him a slab. A body seen from the side is about
-       0.24 of its height deep at the chest — 128 units on a 534 figure — and
-       front on the multipliers land within a few units of the same numbers, so
-       he is now the same mass whichever way the clip is projected. */
-    torso: { hip: 1.06, chest: 0.90, shoulder: 0.86,   // × the pose's own spans
-             hipMin: 104, chestMin: 128, shoulderMin: 116 },
-    face: { eye: 6, eyeA: 8, eyeB: 27, eyeY: -10,      // both eyes on the +x side
-            noseFrom: 41, noseTo: 58, noseStroke: 6 },
-    foot: { heel: -13, ball: 6, toe: 28, w0: 17, w1: 12, plantOver: 55 },
-    hand: 12,                     // the fist, a paper circle with an ink outline
-    /* How far behind the near side the far arm and leg are drawn. In a true
-       side view the two arms project onto each other almost exactly and read as
-       one thick arm with two hands on the end of it. Every 2D animator offsets
-       the far limbs a little for exactly this reason; the offset is backwards,
-       away from the direction he faces. */
-    depth: 11,
-
-    /* THE COSTUME. A recurring character has to be recognisable as a
-       SILHOUETTE, at thumbnail size, in one frame. A plain figure is not — it
-       is every figure. So: he is a fitter. A flat cap, a boiler suit, boots,
-       and a pencil behind his ear, which is also his name.
-
-       That is not decoration either. It is what the channel does: it opens
-       things up and looks inside them, and the toolbox has been in his hand
-       since the first shot. Everything here is ink on paper — no colour. The
-       palette carries meaning (orange is flow, red is the problem, blue is the
-       resolution) and a character wearing one of those would be lying. */
-    cap:   { band: 12, wide: 1.10, high: 0.82, peak: 26, thick: 16, stroke: 6 },
-    suit:  { collar: 5, placket: 4, button: 5, pocket: 5, belt: 6, cuff: 5, turnup: 5 },
-    boot:  { heel: -15, ball: 6, toe: 30, w0: 21, w1: 15, sole: 4, plantOver: 55 },
-    quill: { back: 0.86, up: -0.14, len: 34, rise: 0.24, w0: 10, w1: 4 }
+    /* Width at hip, chest and shoulder: the pose's own span, floored. Side on
+       the mocap gives about a 13-unit shoulder span, so the floor IS the
+       answer; a body is roughly 0.21 of its height deep at the chest. */
+    torso: { hip: 1.06, chest: 0.90, shoulder: 0.86,
+             hipMin: 98, chestMin: 116, shoulderMin: 106 },
+    /* The undercut. A solid ink band over the skull, thickest at the front
+       where it sweeps up, tapering to nothing at the nape, with a few short
+       strokes under it for the faded sides. It is the only filled shape on
+       him. */
+    hair: { front: -0.19, back: -1.16, thick: 14, quiff: 10 },
+    /* Small, low on the head, and entirely inside it. Written for a 46 head
+       and left alone when the head became 40, the nose and mouth hang off the
+       side of his face like whiskers. */
+    face: { eye: 4.5, eyeA: 7, eyeB: 21, eyeY: 3, brow: 8, browY: -9,
+            noseFrom: 26, noseTo: 29, noseY: 8, noseDrop: 8,
+            mouthFrom: 12, mouthTo: 23, mouthY: 21 },
+    /* A plain t-shirt over straight trousers: a crew neck, two sleeve hems, a
+       shirt hem, one pocket line. Five strokes, and the body stops being a
+       shape and becomes a person dressed for a Tuesday. */
+    shirt: { neck: 0.13, sleeve: 0.42, hem: 0.22, pocket: 0.30 },
+    shoe:  { heel: -13, ball: 6, toe: 27, w0: 18, w1: 13, sole: 5, plantOver: 55 },
+    hand: 11,
+    depth: 10                     // the far arm and leg, drawn this far behind
   };
 
   function attach(pup, opt) {
     opt = opt || {};
-    var INK = opt.color || NIB.ink;
-    var PAPER = opt.paper || NIB.paper;
-    var headR = opt.headR || NIB.headR;
-    var W = opt.weights || NIB.weights;
-    var wArm0 = W.arm0 || NIB.weights.arm0, wArm1 = W.arm1 || NIB.weights.arm1;
-    var wLeg0 = W.leg0 || NIB.weights.leg0, wLeg1 = W.leg1 || NIB.weights.leg1;
-    var bodyStroke = W.body || NIB.weights.body;
-    var limbStroke = W.limb || NIB.weights.limb;
-    var DEPTH = opt.depth != null ? opt.depth : NIB.depth;
+    var INK = opt.color || ADEM.ink;
+    var PAPER = opt.paper || ADEM.paper;
+    var headR = opt.headR || ADEM.headR;
+    var W = ADEM.weights, F = ADEM.face, SH = ADEM.shirt;
+    var wArm0 = W.arm0, wArm1 = W.arm1, wLeg0 = W.leg0, wLeg1 = W.leg1;
+    /* Line weights are page pixels. He lives inside a scale group — the mocap
+       skeleton is about 490 units tall and a portrait frame wants more — so
+       without this every line on him renders at SCALE times the weight of the
+       set he is standing in, and he looks pasted on. */
+    var U = opt.unit || 1;
+    function w(px) { return px / U; }
+    var bodyStroke = w(W.body), limbStroke = w(W.limb);
+    var DEPTH = opt.depth != null ? opt.depth : ADEM.depth;
     function back(p) { return [p[0] - DEPTH, p[1]]; }
 
     // The wireframe becomes the pencil under-drawing: thin, grey, and drawn
@@ -192,56 +195,40 @@
     var pencil = [pup.parts.head, pup.parts.spine, pup.parts.armL, pup.parts.armR,
                   pup.parts.legL, pup.parts.legR];
     pencil.forEach(function (p) {
-      p.setAttribute("stroke", opt.pencil || "#BDB7AA");
-      p.setAttribute("stroke-width", 3);
+      p.setAttribute("stroke", opt.pencil || ADEM.pencil);
+      p.setAttribute("stroke-width", w(2.6));
     });
 
     /* Every part is a paper-filled shape with an ink outline — the same
        construction as the head, the doorway and the boxes. It is not decoration
-       that they all match: the fill is what makes one limb pass in front of
+       that they all match: the fill is what lets one limb pass in FRONT of
        another. A solid-ink limb crossing a solid-ink body is one black shape,
        and no amount of motion capture survives that. */
     var g = el("g", { opacity: 0 }, pup.ink);          // inside the boil group
-    function part(w) {
-      return el("path", { fill: PAPER, stroke: INK, "stroke-width": w || limbStroke,
+    function part(sw) {
+      return el("path", { fill: PAPER, stroke: INK, "stroke-width": sw || limbStroke,
                           "stroke-linejoin": "round", "stroke-linecap": "round" }, g);
     }
-    function seam(w) {
-      return el("path", { fill: "none", stroke: INK, "stroke-width": w,
+    function seam(sw) {
+      return el("path", { fill: "none", stroke: INK, "stroke-width": sw || w(W.seam),
                           "stroke-linecap": "round", "stroke-linejoin": "round" }, g);
     }
-    // Paint order IS depth order, and every seam has to sit directly on the
-    // thing it is sewn to: a cuff drawn after the torso but before the arm ends
-    // up inside the sleeve, and a collar drawn after the arm lies across it.
-    var legFar = part(), footFar = part(), soleF = seam(NIB.boot.sole), turnF = seam(NIB.suit.turnup);
-    var armFar = part();
-    var handFar = el("circle", { fill: PAPER, stroke: INK, "stroke-width": limbStroke, r: NIB.hand }, g);
-    var cuffF = seam(NIB.suit.cuff);
-    var torso = part(bodyStroke);                       // the boiler suit
-    var collar = seam(NIB.suit.collar), placket = seam(NIB.suit.placket);
-    var buttons = seam(NIB.suit.button), pocket = seam(NIB.suit.pocket), belt = seam(NIB.suit.belt);
+    // Paint order IS depth order, and every seam sits directly on the thing it
+    // is sewn to: a sleeve hem drawn before the arm ends up inside the sleeve.
+    var legFar = part(), footFar = part(), soleF = seam(w(W.limb)), armFar = part();
+    var handFar = el("circle", { fill: PAPER, stroke: INK, "stroke-width": limbStroke, r: ADEM.hand }, g);
+    var sleeveF = seam();
+    var torso = part(bodyStroke);                       // the t-shirt
+    var neckline = seam(), hem = seam(), pocket = seam();
     var neck = part(bodyStroke);
-    var legNear = part(), footNear = part(), soleN = seam(NIB.boot.sole), turnN = seam(NIB.suit.turnup);
-    var armNear = part();
-    var handNear = el("circle", { fill: PAPER, stroke: INK, "stroke-width": limbStroke, r: NIB.hand }, g);
-    var cuffN = seam(NIB.suit.cuff);
+    var legNear = part(), footNear = part(), soleN = seam(w(W.limb)), armNear = part();
+    var handNear = el("circle", { fill: PAPER, stroke: INK, "stroke-width": limbStroke, r: ADEM.hand }, g);
+    var sleeveN = seam();
     var head = el("circle", { fill: PAPER, stroke: INK, "stroke-width": bodyStroke, r: headR }, g);
-    // TWO shapes, not one. A cap outline that goes out along the peak and
-    // comes back doubles direction, and a Catmull-Rom through a reversal loops:
-    // every single-path attempt produced a thin hook where the peak should be.
-    // Two convex blobs cannot do that. The peak goes down first so the crown's
-    // edge covers its root.
-    // The peak is SOLID ink against the paper crown. Outlined, at 15 units
-    // thick against a 6px stroke, there is almost no paper left inside it and
-    // it reads as a hollow loop. Solid, it is the one dark mass on him and it
-    // anchors the whole silhouette.
-    var capPeak = el("path", { fill: INK, stroke: "none" }, g);
-    var capCrown = part(NIB.cap.stroke);
-    var quill = el("path", { fill: INK, stroke: "none" }, g);    // a pencil behind the ear
-    var eyeA = el("circle", { fill: INK, r: 6 }, g);
-    var eyeB = el("circle", { fill: INK, r: 6 }, g);
-    var brow = seam(5);
-    var nose = seam(6);
+    var hair = el("path", { fill: INK, stroke: "none" }, g);   // the one solid mass
+    var eyeA = el("circle", { fill: INK, r: F.eye }, g);
+    var eyeB = el("circle", { fill: INK, r: F.eye }, g);
+    var brow = seam(w(W.face)), nose = seam(w(W.face)), mouth = seam(w(W.face * 0.85));
 
     /* A shoe that knows what the leg is doing. The ankle angle is not free: a
        planted foot lies flat on the ground whatever the shin is doing above it,
@@ -257,10 +244,11 @@
       var m = Math.hypot(dx, dy) || 1; dx /= m; dy /= m;
       var ux = dy, uy = -dx;                         // "up" in the foot's own frame
       function at(a, b) { return [ankle[0] + dx * a + ux * b, ankle[1] + dy * a + uy * b]; }
-      var B = NIB.boot;
+      var B = ADEM.shoe;
+      // a low sneaker: the upper, and a midsole line under it
       return { d: taper([at(B.heel, 5), at(B.ball, -1), at(B.toe, 5)], B.w0, B.w1, 9),
-               sole: "M" + r2(at(B.heel, -3)[0]) + " " + r2(at(B.heel, -3)[1]) +
-                     " L" + r2(at(B.toe - 3, -3)[0]) + " " + r2(at(B.toe - 3, -3)[1]) };
+               sole: "M" + r2(at(B.heel + 1, -4)[0]) + " " + r2(at(B.heel + 1, -4)[1]) +
+                     " L" + r2(at(B.toe - 4, -4)[0]) + " " + r2(at(B.toe - 4, -4)[1]) };
     }
 
     // a stroke laid across a limb — a cuff, a turn-up
@@ -327,7 +315,7 @@
       var sx = shMid[0] - hipMid[0], sy = shMid[1] - hipMid[1];
       var sL = Math.hypot(sx, sy) || 1;
       var nx = -sy / sL, ny = sx / sL;                       // across the body
-      var T = NIB.torso;
+      var T = ADEM.torso;
       var wH = Math.max(T.hipMin, hipW * T.hip) / 2;
       var wC = Math.max(T.chestMin, shW * T.chest) / 2;
       var wS = Math.max(T.shoulderMin, shW * T.shoulder) / 2;
@@ -337,7 +325,7 @@
         off(shMid, wS, -1), off(po.chest, wC, -1), off(hipMid, wH, -1),
         [hipMid[0] - sx / sL * 9, hipMid[1] - sy / sL * 9]
       ], true));
-      neck.setAttribute("d", taper([nudge(shMid, 0, 4), nudge(po.head, 0, 10)], 30, 26, 12));
+      neck.setAttribute("d", taper([nudge(shMid, 0, 4), nudge(po.head, 0, 10)], 23, 20, 12));
 
       // The L side reads as the near side: it is the side the face points at,
       // and the side that carries.
@@ -369,92 +357,59 @@
       handFar.setAttribute("cx", handFarNow[0] - DEPTH); handFar.setAttribute("cy", handFarNow[1]);
       handNear.setAttribute("cx", haN[0]); handNear.setAttribute("cy", haN[1]);
 
-      // ── the suit ──────────────────────────────────────────────────────
-      // Seams are what turn a shape into a garment, and each one is a pure
-      // function of the pose like everything else. +n is the side he faces, so
-      // the placket runs down the front edge and the pocket sits on the chest.
-      var vTip = off(lerp(shMid, po.chest, 0.42), wC * 0.20, 1);
-      collar.setAttribute("d",
-        "M" + r2(off(shMid, wS * 1.00, -1)[0]) + " " + r2(off(shMid, wS * 1.00, -1)[1]) +
-        " L" + r2(vTip[0]) + " " + r2(vTip[1]) +
-        " L" + r2(off(shMid, wS * 1.00, 1)[0]) + " " + r2(off(shMid, wS * 1.00, 1)[1]));
-      var hemPt = off(lerp(hipMid, po.chest, 0.22), wH * 0.34, 1);
-      placket.setAttribute("d", "M" + r2(vTip[0]) + " " + r2(vTip[1]) +
-                                " L" + r2(hemPt[0]) + " " + r2(hemPt[1]));
-      var bd = "";
-      [0.34, 0.68].forEach(function (t) {
-        var b = lerp(vTip, hemPt, t), rr = NIB.suit.button;
-        bd += "M" + r2(b[0] - rr) + " " + r2(b[1]) + "a" + rr + " " + rr + " 0 1 0 " + (rr * 2) + " 0" +
-              "a" + rr + " " + rr + " 0 1 0 " + (-rr * 2) + " 0 ";
-      });
-      buttons.setAttribute("d", bd);
-      // a chest pocket, squared to the body's own axes
-      // low enough on the chest that the torso is still full width there — at
-      // 0.30 toward the shoulders the body has narrowed and the pocket hangs
-      // outside the suit
-      var pc = off(lerp(po.chest, shMid, 0.08), wC * 0.40, 1);
-      var ax = sx / sL, ay = sy / sL;                  // up the spine
-      function pp(u, v) { return [pc[0] + ax * u + nx * v, pc[1] + ay * u + ny * v]; }
-      pocket.setAttribute("d", "M" + r2(pp(16, -13)[0]) + " " + r2(pp(16, -13)[1]) +
-                               " L" + r2(pp(16, 13)[0]) + " " + r2(pp(16, 13)[1]) +
-                               " L" + r2(pp(-20, 13)[0]) + " " + r2(pp(-20, 13)[1]) +
-                               " L" + r2(pp(-20, -13)[0]) + " " + r2(pp(-20, -13)[1]) + " Z");
-      // the belt, with a buckle at the front
-      var bp = lerp(hipMid, po.chest, 0.20);
-      var b0 = off(bp, wH * 1.04, -1), b1 = off(bp, wH * 1.04, 1);
-      var bk = lerp(b0, b1, 0.80);
-      belt.setAttribute("d", "M" + r2(b0[0]) + " " + r2(b0[1]) + " L" + r2(b1[0]) + " " + r2(b1[1]) +
-                             " M" + r2(bk[0] + ax * 9) + " " + r2(bk[1] + ay * 9) +
-                             " L" + r2(bk[0] - ax * 9) + " " + r2(bk[1] - ay * 9));
-      // rolled sleeves and turned-up trousers
-      cuffN.setAttribute("d", crossAt(elN, haN, 0.58, wArm1 * 0.80));
-      cuffF.setAttribute("d", crossAt(back(far[0]), back(far[1]), 0.58, wArm1 * 0.80));
-      turnN.setAttribute("d", crossAt(po.knL, po.ftL, 0.82, wLeg1 * 0.78));
-      turnF.setAttribute("d", crossAt(back(po.knR), back(po.ftR), 0.82, wLeg1 * 0.78));
+      // ── the t-shirt ───────────────────────────────────────────────────
+      // Five strokes. +n is the side he faces, so the hem curves toward it and
+      // the pocket sits on the near hip.
+      var nkL = off(shMid, wS * 0.86, -1), nkR = off(shMid, wS * 0.86, 1);
+      var nkD = off(lerp(shMid, po.chest, SH.neck), wC * 0.10, 1);
+      neckline.setAttribute("d", smooth([nkL, nkD, nkR], false));
+      var hp0 = lerp(hipMid, po.chest, SH.hem);
+      var h0 = off(hp0, wH * 1.02, -1), h1 = off(hp0, wH * 1.02, 1);
+      var hMid = off(lerp(hp0, hipMid, 0.34), 0, 1);
+      hem.setAttribute("d", smooth([h0, hMid, h1], false));
+      var pk = off(lerp(hipMid, po.chest, -0.10), wH * SH.pocket, 1);
+      pocket.setAttribute("d", smooth([
+        off(lerp(hipMid, po.chest, 0.16), wH * 0.86, 1), pk,
+        off(lerp(hipMid, po.chest, -0.34), wH * 0.52, 1)
+      ], false));
+      // short sleeves — a hem across each upper arm, not a cuff at the wrist
+      sleeveN.setAttribute("d", crossAt(armRootN, elN, SH.sleeve, wArm0 * 0.44));
+      sleeveF.setAttribute("d", crossAt(back(armRootF), back(far[0]), SH.sleeve, wArm0 * 0.44));
 
       // ── the head ──────────────────────────────────────────────────────────
       var hx = po.head[0], hy = po.head[1] - headR * 0.32;
       head.setAttribute("cx", hx); head.setAttribute("cy", hy);
 
-      // The flat cap. It is the silhouette: a plain round head is every
-      // character, and a peak also tells you which way he is looking from
-      // across the room, which two 6px eyes do not.
-      // THE CAP — the silhouette. A plain round head is every character; a cap
-      // is one character, and its peak says which way he is looking from across
-      // the room, which two 6px eyes do not.
-      var C = NIB.cap, R = headR, band = hy - C.band;
-      var cxk = hx - 4, rx = R * C.wide, ry = R * C.high, cp = [], ci;
-      for (ci = 0; ci <= 18; ci++) {                    // a low dome, back to front
-        var aa = Math.PI + Math.PI * ci / 18;
-        cp.push([cxk + Math.cos(aa) * rx, band + Math.sin(aa) * ry]);
+      // THE HAIR — the one solid mass on the whole figure, and the silhouette.
+      // A band over the skull: an outer edge that sweeps up at the front and
+      // tapers to nothing at the nape, and an inner edge that is the skull. A
+      // band cannot self-intersect the way a single out-and-back outline does,
+      // and the taper IS the undercut.
+      var HR = ADEM.hair, R = headR, hp = [], hi, tt, ang, th;
+      function hairAng(t) { return Math.PI * (HR.front + (HR.back - HR.front) * t); }
+      for (hi = 0; hi <= 22; hi++) {
+        tt = hi / 22; ang = hairAng(tt);
+        th = HR.thick * (1 - 0.92 * tt) + 2 + HR.quiff * Math.max(0, 1 - tt / 0.18);
+        hp.push([hx + Math.cos(ang) * (R + th), hy + Math.sin(ang) * (R + th)]);
       }
-      capCrown.setAttribute("d", smooth(cp, true));
-      // it comes off the FRONT of the band and points forward and slightly
-      // down, thick at the root. Starting it mid-head lays a sliver across his
-      // face and doubles the band line.
-      capPeak.setAttribute("d", smooth([
-        [hx + R * 0.80, band - 4],
-        [hx + R + C.peak, band + 4],
-        [hx + R + C.peak * 0.86, band + C.thick + 4],
-        [hx + R * 0.80, band + C.thick]
-      ], true));
-
-      // a pencil behind his ear, which is also his name
-      var Q = NIB.quill;
-      var qx = hx - headR * Q.back, qy = hy - headR * Q.up;
-      quill.setAttribute("d", taper([[qx, qy], [qx - Q.len, qy - Q.len * Q.rise]], Q.w0, Q.w1, 8));
-
-      // the face sits on one side. This is not decoration: it is the only thing
-      // that gives a symmetrical figure a facing, and without it a turn is
-      // invisible no matter how good the motion capture is.
-      // everything on the face sits UNDER the brim, which is where a face goes
-      // when a man is wearing a cap
-      eyeA.setAttribute("cx", hx + 10); eyeA.setAttribute("cy", hy + 10);
-      eyeB.setAttribute("cx", hx + 29); eyeB.setAttribute("cy", hy + 10);
-      brow.setAttribute("d", "M" + r2(hx + 5) + " " + r2(hy - 2 + face.brow) +
-                             " L" + r2(hx + 33) + " " + r2(hy - 1 - face.brow));
-      nose.setAttribute("d", "M" + r2(hx + 41) + " " + r2(hy + 15) +
-                             " L" + r2(hx + 57) + " " + r2(hy + 22));
+      for (hi = 22; hi >= 0; hi--) {
+        tt = hi / 22; ang = hairAng(tt);
+        hp.push([hx + Math.cos(ang) * R * 0.99, hy + Math.sin(ang) * R * 0.99]);
+      }
+      hair.setAttribute("d", smooth(hp, true));
+      // the face is on the +x side, under the hairline
+      eyeA.setAttribute("cx", hx + F.eyeA); eyeA.setAttribute("cy", hy + F.eyeY);
+      eyeB.setAttribute("cx", hx + F.eyeB); eyeB.setAttribute("cy", hy + F.eyeY);
+      // two brows, not one bar across both eyes
+      brow.setAttribute("d",
+        "M" + r2(hx + F.eyeA - F.brow / 2) + " " + r2(hy + F.browY + face.brow) +
+        " L" + r2(hx + F.eyeA + F.brow / 2) + " " + r2(hy + F.browY - face.brow * 0.4) +
+        " M" + r2(hx + F.eyeB - F.brow / 2) + " " + r2(hy + F.browY - face.brow * 0.4) +
+        " L" + r2(hx + F.eyeB + F.brow / 2) + " " + r2(hy + F.browY - face.brow));
+      nose.setAttribute("d", "M" + r2(hx + F.noseFrom) + " " + r2(hy + F.noseY) +
+                             " L" + r2(hx + F.noseTo) + " " + r2(hy + F.noseY + F.noseDrop));
+      mouth.setAttribute("d", "M" + r2(hx + F.mouthFrom) + " " + r2(hy + F.mouthY) +
+                              " L" + r2(hx + F.mouthTo) + " " + r2(hy + F.mouthY + 1));
     }
 
     var basePose = pup.setPose, lastPose = root.InkPuppet.STAND;
@@ -519,5 +474,5 @@
   }
 
   root.InkFigure = { attach: attach, taper: taper, smooth: smooth,
-                     toPose: toPose, NIB: NIB };
+                     toPose: toPose, ADEM: ADEM };
 })(window);

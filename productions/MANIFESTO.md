@@ -115,7 +115,7 @@ wrong coordinate system put the character off the page for a third of the first
 render while every snapshot looked correct. Sample the finished file, not the
 frames.
 
-## Nib
+## Adem
 
 From production 4 there is a character, and the character recurs. This is a
 deliberate exception to everything else in this file: the world rotates, the
@@ -127,18 +127,18 @@ craft is invisible to someone scrolling. A character is the one thing that
 survives the scroll, and it costs nothing to keep because it lives in
 `ink-theater/ink-figure.js` rather than in any video's source.
 
-**Nib** is a hand-drawn ink figure: a torso built as a ribbon along the spine,
+**Adem** is a hand-drawn ink figure: a torso built as a ribbon along the spine,
 limbs as brush strokes that are thick at the shoulder and thin at the wrist,
 mitten hands, blunt shoes, and a face — two eyes and a nose — on one side of the
 head. The face is not decoration. A symmetrical figure has no facing, so without
 it a turn is invisible no matter how good the motion under it is.
 
-Nib never speaks aloud and never addresses the camera. It gets speech balloons
+Adem never speaks aloud and never addresses the camera. It gets speech balloons
 when it needs them and it is deadpan the rest of the time. Its motion is always
 real motion capture, never authored.
 
-**The rule this creates:** if Nib is in a video, the video has to be somewhere
-Nib has not been. The character recurring is not a licence for the ground, the
+**The rule this creates:** if Adem is in a video, the video has to be somewhere
+Adem has not been. The character recurring is not a licence for the ground, the
 props, the camera or the palette to recur. One familiar thing and everything
 else new — that is the whole trade.
 

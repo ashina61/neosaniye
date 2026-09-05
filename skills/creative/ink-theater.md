@@ -29,7 +29,7 @@ Then stage as beats on one continuous white page with a camera (pan / push).
 ## Color grammar (strict)
 
 - **black** = structure & mascot · **orange** = flow / arrows ONLY · **red** = the problem / warning · **blue** = the good end-state.
-- Pure white paper, ≥35% negative space, subject ~40–60%. Deadpan, never cute. (The playbook's "white-dot eyes" do not survive an unfilled head on white paper — Nib's eyes are ink, both on one side. See `ink-theater/NIB.md`.)
+- Pure white paper, ≥35% negative space, subject ~40–60%. Deadpan, never cute. (The playbook's "white-dot eyes" do not survive an unfilled head on white paper — Adem's eyes are ink, both on one side. See `ink-theater/ADEM.md`.)
 
 ## Engine cheat-sheet (`InkTheater`)
 
@@ -39,15 +39,15 @@ Then stage as beats on one continuous white page with a camera (pan / push).
 - Machines: `parts.{crank,gauge,hopper,slot,lever,box}` — compose them.
 - Full API + determinism rules: `ink-theater/README.md`.
 
-## Characters — Nib, the recurring one
+## Characters — Adem, the recurring one
 
-> **Read `ink-theater/NIB.md` before drawing or posing a character. It is the character sheet, and it is binding.**
+> **Read `ink-theater/ADEM.md` before drawing or posing a character. It is the character sheet, and it is binding.**
 
-The channel has one recurring character: **Nib, a fitter** — flat cap with a solid ink peak, boiler suit, boots, a pencil behind his ear, a toolbox. He is not redrawn per video: `InkFigure.attach(pup)` with **no options** IS the character, costume and all. Passing options makes a different character. No colour on him: the palette carries meaning and a character wearing one of those would be lying.
+The channel has one recurring character: **Adem** — a young man in a plain t-shirt and straight trousers, real proportions (~6.7 heads), clean line art, and **exactly one solid mass on him: his hair**. He is not redrawn per video: `InkFigure.attach(pup, { unit: SCALE })` IS the character, and `unit` is the only option you pass — it puts his line weight in page pixels so he matches the set instead of rendering at SCALE times its weight. Anything else makes a different character. No colour on him: the palette carries meaning and a character wearing one of those would be lying.
 
 ```js
 var pup = InkPuppet.create(mount, { cx: CX, ground: GROUND, boil: "boil" });
-var fig = InkFigure.attach(pup);                 // Nib
+var fig = InkFigure.attach(pup, { unit: SCALE });   // Adem, at the set's weight
 InkPuppet.still("shuffle", 34);                  // a standing pose that matches the clips
 InkPuppet.choreograph(tl, pup, [{clip:'walk',dur:4},{clip:'still',dur:3},{clip:'walk',dur:4}], {start:3.1});
 // never pick a walking speed — slide the world by what the feet actually did
@@ -75,8 +75,8 @@ The bar is "close to real". Two things carry most of it:
 
 - **Real dimensions.** Anything a person uses has a standard size. Derive it in millimetres off the character's height, in the composition, with the millimetre figure in the comment beside it.
 - **Cutting.** Land the cut on the action, inside one movement, and do NOT cross the line: if he walks right in scene A he walks right in scene B. Cutting to "the same door from the other side" swaps left and right and turns him round — cut ninety degrees instead, to a different wall, with the door he came through seen edge-on in the corner. Move the camera a few percent as well, or a cut reads as the wall having changed behind a man standing still.
-- **Mist to reveal a place.** What is behind a door he has not opened is a pale suggestion under a constant blur that never resolves. After the cut the room comes out of the haze: a paper veil and an `feGaussianBlur` whose `stdDeviation` is written from a tween's `onUpdate`, both layered UNDER the actor so he stays sharp. A few wide, blurred, pale wisps drift in front of everything. Worked example: `ink-theater/tests/nib-corridor/`.
-- **Perspective where flat elevation is ambiguous.** Seen exactly square on, a door swinging away is a pure horizontal squash — geometrically right and unreadable, because it just looks like a narrower door. Project it instead: a point `u` from the hinge sits at depth `u*sin(angle)` and scales about the vanishing point by `D/(D + u*sin(angle))`. At angle 0 the scale is 1 everywhere, so the closed state needs no fudge. The vanishing point is the camera's axis and is fixed to the PAGE, so it moves through world coordinates as the world scrolls. Worked example: `ink-theater/tests/nib-door/`.
+- **Mist to reveal a place.** What is behind a door he has not opened is a pale suggestion under a constant blur that never resolves. After the cut the room comes out of the haze: a paper veil and an `feGaussianBlur` whose `stdDeviation` is written from a tween's `onUpdate`, both layered UNDER the actor so he stays sharp. A few wide, blurred, pale wisps drift in front of everything. Worked example: `ink-theater/tests/adem-corridor/`.
+- **Perspective where flat elevation is ambiguous.** Seen exactly square on, a door swinging away is a pure horizontal squash — geometrically right and unreadable, because it just looks like a narrower door. Project it instead: a point `u` from the hinge sits at depth `u*sin(angle)` and scales about the vanishing point by `D/(D + u*sin(angle))`. At angle 0 the scale is 1 everywhere, so the closed state needs no fudge. The vanishing point is the camera's axis and is fixed to the PAGE, so it moves through world coordinates as the world scrolls. Worked example: `ink-theater/tests/adem-door/`.
 
 ## ⚠ Non-negotiables
 
@@ -87,5 +87,5 @@ The bar is "close to real". Two things carry most of it:
 
 ## Reference builds
 
-- `ink-theater/tests/nib-corridor/` — **the rig reference.** Corridor, toolbox, lever, door, cut, room, bench: the walk, root motion, two hands, the cut, real dimensions and the perspective door, all in one 15s build.
+- `ink-theater/tests/adem-corridor/` — **the rig reference.** Corridor, toolbox, lever, door, cut, room, bench: the walk, root motion, two hands, the cut, real dimensions and the perspective door, all in one 15s build.
 - `projects/ink-theater-reel/` — capabilities reel. · `projects/ink-theater-momentum/` — "Momentum" story (handwriting via HTML divs).

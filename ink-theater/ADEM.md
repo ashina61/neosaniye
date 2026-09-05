@@ -1,9 +1,9 @@
-# Nib — the character sheet
+# Adem — the character sheet
 
-Nib is the one thing this channel repeats. Everything else rotates by rule —
+Adem is the one thing this channel repeats. Everything else rotates by rule —
 the world, the palette, the signature device, the layout, the motion character,
 all of it is in `productions/STYLE_LEDGER.md` as a list of things that may not
-happen twice. Nib is the deliberate exception, and he is exactly one exception.
+happen twice. Adem is the deliberate exception, and he is exactly one exception.
 If a second recurring element appears, the ledger has failed.
 
 **He is not redrawn per video.** He lives in `ink-theater/ink-figure.js`. A
@@ -11,7 +11,7 @@ composition attaches him and does not override him:
 
 ```js
 var pup = InkPuppet.create(mount, { cx: CX, ground: GROUND, boil: "boil" });
-var fig = InkFigure.attach(pup);        // no options: this IS the character
+var fig = InkFigure.attach(pup, { unit: SCALE });   // this IS the character
 ```
 
 Passing options to `attach()` makes a different character. Don't, unless the
@@ -21,89 +21,79 @@ brief is explicitly "a second character".
 
 ## What he is
 
-A person, drawn as a doodle: paper-filled shapes with an ink outline, one weight
-of line, live boil on everything. Not a stick figure and not a mascot. Deadpan.
-Never cute, never mugging, no eyebrows, no mouth.
+A young man in a plain t-shirt and straight trousers, drawn as clean line art:
+paper-filled shapes with an ink outline, one weight of line, live boil on
+everything. Real proportions — about **6.7 heads**, not a cartoon five — and
+**exactly one solid mass on the whole figure: his hair.** Everything else is
+line. A drawing with one dark shape in it has a place for the eye to land, and
+that shape is what you recognise from across a room.
 
-The proportions are in `InkFigure.NIB` and they are the character. A viewer
+The numbers are in `InkFigure.ADEM` and they are the character. A viewer
 recognises a figure by its proportions long before its face.
 
 | | value | what it is |
 |---|---|---|
-| head | `headR: 46` | radius. He is about 5.4 heads tall — real, not cartoon |
+| head | `headR: 40` | radius |
+| height | **534 units** | crown of the drawn head to the sole of the drawn shoe |
 | ink | `#333333` | never pure black |
 | paper | `#FCFBF8` | warm white; also the fill inside every part of him |
-| pencil | `#BDB7AA` | the under-drawing, rubbed out once the ink is on |
-| arm | `30 → 19` | shoulder to wrist |
-| leg | `40 → 22` | hip to ankle |
-| body line | `7` | torso, neck, head outline |
-| limb line | `6` | arms, legs, feet, hands |
-| torso | `1.06 / 0.90 / 0.86` | hip / chest / shoulder, × the pose's own spans |
-| hand | `12` | a paper circle with an ink outline — a mitten, not fingers |
-| depth | `11` | how far behind the near side the far arm and leg are drawn |
-| height | 534 units | crown of the drawn head to the sole of the drawn foot |
+| arm | `27 → 17` | shoulder to wrist |
+| leg | `38 → 21` | hip to ankle |
+| body / limb / seam / face | `5.4 / 4.4 / 3.6 / 3.8` | **page pixels** — see below |
+| torso | floors `98 / 116 / 106` | hip / chest / shoulder |
+| hand | `11` | a paper circle with an ink outline |
+| depth | `10` | how far behind the near side the far arm and leg are drawn |
 
-That last number is the one to use when sizing anything he stands next to. The
-joint span is 515 and using it makes everything in the scene 4% too small.
+`height` is the number to use when sizing anything he stands next to. The joint
+span is 515 and using it makes everything in the scene 4% too small.
 
 `depth` is not a detail. The clips are side-on, so the two arms project onto
 each other almost exactly and read as one thick arm with two hands on the end of
-it. Every 2D animator offsets the far limbs backwards a little for exactly this
-reason.
+it. Every 2D animator offsets the far limbs backwards a little for this reason.
+
+### Line weight — pass `unit`
+
+```js
+var fig = InkFigure.attach(pup, { unit: SCALE });   // the only option you pass
+```
+
+Weights are in **page pixels**. He lives inside a scale group — the mocap
+skeleton is about 490 units tall and a portrait frame wants more — so without
+`unit` every line on him renders at SCALE times the weight of the set he is
+standing in, and he looks pasted on. This is the one option that is not a
+different character.
 
 ---
 
-## The costume
-
-**He is a fitter.** That is not a costume idea, it is what the channel does: it
-opens things up and looks inside them, and the toolbox has been in his hand
-since the first shot.
-
-A recurring character has to be recognisable as a **silhouette**, at thumbnail
-size, in one frame. A plain figure is not — it is every figure. So:
+## The look
 
 | | what it is | why |
 |---|---|---|
-| **flat cap** | a low paper crown with a **solid ink peak** | the silhouette, and the peak says which way he is looking from across the room, which two 6px eyes do not |
-| **boiler suit** | collar, placket, two buttons, chest pocket, belt with a buckle | one garment, five strokes, and the torso stops being a shape and becomes clothing |
-| **rolled sleeves** | a cuff stroke across each forearm | says "working" in one line per arm |
-| **turned-up trousers** | a stroke across each shin above the boot | same, and it separates the leg from the boot |
-| **boots** | blunter than a shoe, with a sole line | he stands on floors for a living |
-| **pencil behind the ear** | a short solid taper under the cap's back edge | it is his name |
+| **hair** | a solid ink band over the skull: a fringe swept up at the front, tapering to nothing at the nape | the silhouette, and the only filled shape on him |
+| **t-shirt** | crew neck, two sleeve hems across the upper arms, a hem at the hip | five strokes and the body stops being a shape |
+| **trousers** | straight, one pocket line on the near hip | |
+| **sneakers** | a low upper with a midsole line under it | |
+| **face** | two eyes, two brows, a small nose, a small mouth — all on the **+x side**, all **inside** the head | a symmetrical figure has no facing; without it a turn is invisible |
 
 **No colour.** The palette carries meaning — orange is flow, red is the problem,
 blue is the resolution — and a character wearing one of those would be lying.
-He is ink on paper like everything else, and his identity is shape.
+His identity is shape, which is also what survives at thumbnail size.
 
-**The face** is two ink eyes, a brow and a nose, all on the **+x side** of the
-head, sitting **under the brim** — which is where a face goes when a man is
-wearing a cap. This is not decoration. A symmetrical figure has no facing, so a
-turn — flipping him to walk back — is invisible without it. White-dot eyes are
-in the style playbook and are wrong here: on an unfilled head on white paper
-they disappear.
+`fig.face.brow` tilts the brows a few units. Flat at 0. It is the only thing on
+him that moves.
 
-`fig.face.brow` is the one thing on him that moves. Flat at 0, tilts a few
-units. No mouth. A brow that is usually flat is not mugging; it is the
-difference between deadpan and blank.
+### Two ways the drawing came out wrong
 
-### Four ways the cap came out wrong
+Both were rendered before they were right, and both are the same mistake —
+describing a shape as a formula instead of stating the shape:
 
-Every one of these rendered before it was right, and they are all the same
-mistake — trying to describe a shape as a formula:
-
-1. **Arc, then peak, then close.** The closing segment runs from the peak tip
-   back to the arc's start: a straight line across his eyes.
-2. **`a1 = (2 - sit)π`.** The mirror of `1.10π` over the top is `1.90π`, which
-   is `(3 - sit)π`. `(2 - sit)π` is `0.90π` — a sliver on the wrong side of the
-   head, and the whole cap collapses into a flat lens.
-3. **Closing back along the head at its own radius.** A thin crescent. Reads as
-   a hairband.
-4. **One path out along the peak and back.** Catmull-Rom through a direction
-   reversal loops, so the peak comes out as a thin hook.
-
-It is **two convex shapes**: a low dome, and a separate blunt peak off the front
-of the band, drawn first so the dome's edge covers its root. Two convex blobs
-cannot self-intersect. When a shape is fighting you, state the shape.
+1. **A single outline that goes out along a shape and comes back.** Catmull-Rom
+   through a direction reversal loops. An earlier design's cap peak came out as
+   a thin hook four separate times. The hair works because it is a **band** —
+   an outer edge and an inner edge — which cannot self-intersect.
+2. **Face offsets left over from a bigger head.** They were written for a 46
+   radius; at 40 the nose and mouth hang off the side of his face like whiskers.
+   Anything positioned on the head has to be re-checked against `headR`.
 
 **Scale on the page.** Whatever `SCALE` the composition puts him at, everything
 else in the scene follows from it:
@@ -320,7 +310,7 @@ not a bespoke redraw inside one video's HTML.
 
 ## Reference builds
 
-- `ink-theater/tests/nib-corridor/` — **the reference build.** Corridor, toolbox,
+- `ink-theater/tests/adem-corridor/` — **the reference build.** Corridor, a case,
   lever, door, cut, room, bench. Everything above is demonstrated in it.
 - `productions/the-doorway-did-it/` — the first video he is in. Note that it was
   made against the old front-on clips and does not use root motion, so its

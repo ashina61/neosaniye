@@ -45,7 +45,7 @@ Changing only these is not a new design — it is the same video with new data:
 
 | Field | Value |
 |---|---|
-| Design read | A doodle on a sheet of paper is trying to run an errand, and the paper keeps taking it away. The first production that is a character rather than an instrument, and the one that introduced **Nib**. |
+| Design read | A doodle on a sheet of paper is trying to run an errand, and the paper keeps taking it away. The first production that is a character rather than an instrument, and the one that introduced **Adem**. |
 | Ground | Warm white paper `#FCFBF8`, no grain, no border, no texture. Live hand-drawn boil on every ink stroke. |
 | Palette roles | ink `#333333` = the figure and every object · orange `#D4611B` = **the errand and nothing else** · red `#C8322B` = **once**, on the lid seam of the box that will not open · blue `#2E6E9E` = **once**, drawn along the line of closed lids at the end |
 | Signature device | The doorway is a machine: a barrier arm hinged on the left upright at exactly hand height, folded flat up the post until it drops to horizontal and sweeps the errand out of the figure's hand. Every number in its geometry was solved backwards from the requirement that it falls on the word *closes*. |
@@ -62,9 +62,9 @@ Changing only these is not a new design — it is the same video with new data:
 coloured object that can be taken, the world-slides-past-a-fixed-character
 camera, one-continuous-shot as a structure.
 
-**Explicitly NOT burned — these recur by design:** Nib (the figure, the brush
+**Explicitly NOT burned — these recur by design:** Adem (the figure, the brush
 weights, the face on one side), motion capture as the motion language, and
-handwriting as the type when Nib is on screen. These are the channel, not this
+handwriting as the type when Adem is on screen. These are the channel, not this
 video.
 
 **What this one proved:** the channel can *act*. The three before it explained;
@@ -93,17 +93,26 @@ two in a row would make the character the channel rather than the subject. The
 user overruled it, and they were right: for a channel with no audience yet, a
 character people recognise *is* the asset, and the subject changes every week
 anyway. So the figure is now the one thing that carries across productions, and
-it has a name — **Nib**.
+it has a name — **Adem**.
 
 That changes what this ledger is for. Everything else still may not repeat: the
-world, the palette, the signature device, the layout, the motion character. Nib
+world, the palette, the signature device, the layout, the motion character. Adem
 is the deliberate exception, and the exception is exactly one character. If a
 second recurring element appears, the ledger has failed.
 
-Nib lives in `ink-theater/ink-figure.js`, not in any one video's HTML, so the
+**He was redesigned on 2026-09-06 from a reference sheet the user drew up.** The
+first version was a fitter in a flat cap and a boiler suit; Adem is a young man
+in a t-shirt, real proportions (6.7 heads, not 5.4), clean line art at the set's
+own weight, and exactly one solid mass on him — his hair. Two things carried
+over and are worth keeping if he is ever revisited: **one dark shape** gives the
+eye somewhere to land and is what survives at thumbnail size, and **line weight
+has to be in page pixels** (`unit: SCALE`), or he renders at nearly twice the
+weight of everything he is standing next to.
+
+Adem lives in `ink-theater/ink-figure.js`, not in any one video's HTML, so the
 next production inherits the drawing rather than redrawing it. The rig, the
 clips and the determinism are InkPuppet's; the body, the brush weights, the
-hands, the feet and the face are Nib.
+hands, the feet and the face are Adem.
 
 **The clip library was re-derived on 2026-09-06 and the fourth video no longer
 reproduces from its source.** `bvh2clip.mjs` had been projecting every clip onto
@@ -127,10 +136,10 @@ in `walk` is off the end of the arm in `shuffle`. `InkPuppet.STAND` itself was
 mirrored relative to every clip in the catalogue — a bug that had been sitting
 in the engine, not in the video.
 
-He is now written down. **`ink-theater/NIB.md` is the character sheet** — the
+He is now written down. **`ink-theater/ADEM.md` is the character sheet** — the
 locked proportions, how to pose him, how to scale a scene off him, and every
 trap that has cost a render. A composition attaches him with no options; passing
-options makes a different character. `ink-theater/tests/nib-door/` is the
+options makes a different character. `ink-theater/tests/adem-door/` is the
 reference build: he walks to a door, works the lever and pushes it open, with
 every dimension on the page derived from a real millimetre figure and the leaf
 projected in one-point perspective. Nothing in it is narrated, scored or
@@ -138,7 +147,7 @@ captioned — it exists so the next video does not have to rediscover any of it.
 
 **Worlds used so far:** Remotion atelier ×2, Manim ×1, Ink Theater ×1. Three.js,
 HyperFrames-as-a-style (kinetic typography), Mermaid and code are untouched. Ink
-Theater may be used again *because Nib lives there* — but if it is, the world has
+Theater may be used again *because Adem lives there* — but if it is, the world has
 to be pushed somewhere it has not been: a different ground, different props,
 different camera. The character recurring is not a licence for the video to.
 

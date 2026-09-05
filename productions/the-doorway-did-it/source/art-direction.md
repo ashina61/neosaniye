@@ -58,7 +58,8 @@ a doodle that moves from a doodle that is alive.
 
 The rig plays the motion; **`ink-theater/ink-figure.js`** does the drawing, and it
 is in the engine rather than in this file because the character recurs. See
-`productions/STYLE_LEDGER.md` — his name is Nib.
+`productions/STYLE_LEDGER.md`. He was called Nib when this was made and was
+redesigned as **Adem** afterwards; this video shows the earliest version of him.
 
 Every part is the same construction as the head, the doorway and the boxes: a
 paper-filled shape with an ink outline. That is not a taste decision. The fill is

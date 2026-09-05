@@ -1,10 +1,10 @@
-# nib-corridor — the rig reference
+# adem-corridor — the rig reference
 
-Nib walks down a corridor carrying a toolbox, works the lever, pushes the door
+Adem walks down a corridor carrying a toolbox, works the lever, pushes the door
 open, steps through — cut — and is in another room, where he puts the toolbox on
 a bench. No narration, no music, no captions: this is the rig, not a production.
 
-It supersedes the earlier `nib-door` test, which was built before the clips were
+It supersedes the earlier `adem-door` test, which was built before the clips were
 re-projected and before root motion existed.
 
 ## What it is the reference for
@@ -46,7 +46,7 @@ re-projected and before root motion existed.
 
 7. **The costume.** Flat cap with a solid ink peak, boiler suit, boots, pencil
    behind the ear. Nothing in this file draws any of it — it is all
-   `InkFigure.NIB`, so every video gets the same man.
+   `InkFigure.ADEM`, so every video gets the same man.
 
 8. **A misty threshold.** What is through the door is never drawn: a pale
    suggestion under a constant blur that does not resolve. After the cut the
@@ -58,12 +58,12 @@ re-projected and before root motion existed.
 
 ```sh
 mkdir -p /tmp/nib && cd /tmp/nib
-cp ink-theater/tests/nib-corridor/index.html .
+cp ink-theater/tests/adem-corridor/index.html .
 cp ink-theater/{ink-theater.js,ink-puppet.js,ink-figure.js} .
 cp ink-theater/mocap/clips.js .
 cp <any project>/hyperframes/gsap.min.js .          # vendored; jsdelivr is blocked
 npx hyperframes lint . && npx hyperframes snapshot . --at 4.2,7.3,9.4,11.2,13.4 --no-end -o snap
-npx hyperframes render . -o nib-corridor.mp4 -f 30 -q high
+npx hyperframes render . -o adem-corridor.mp4 -f 30 -q high
 ```
 
 `hyperframes render` sometimes fails its own FFmpeg probe on the first run
