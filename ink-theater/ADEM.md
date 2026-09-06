@@ -417,12 +417,51 @@ up beside his ear.
 ## Two traps in gsap that cost a render each
 
 - **`gsap.set(el, {opacity: 0})` writes an inline STYLE**, and an inline style
-  beats `setAttribute("opacity", …)`. Any element whose opacity is driven per
+  beats both `setAttribute("opacity", …)` **and a later `{attr: {opacity: 1}}`
+  tween.** This has now cost four renders across two videos, in both
+  directions. The rule is: **pick one channel per element and never mix.** If
+  anything ever sets that element's opacity as a style, everything must; if
+  `sync()` drives it per frame, gsap must never touch it at all. Any element whose opacity is driven per
   frame from `sync()` must never be touched by gsap — set `opacity` as an
   attribute when you create it. A whole film's worth of clap flashes rendered
   invisible this way and nothing errored.
 - If a timeline does need to fade such an element in, tween the **attribute**:
   `tl.to(el, { attr: { opacity: 1 }, duration: 0.2 })`.
+
+## Measuring inside a timeline callback
+
+`hyperframes lint` will catch this and it is right to: `getTotalLength()`,
+`getBoundingClientRect()` and friends called from a gsap callback are measured
+against whatever DOM state the render worker's **non-linear seek order** left
+behind, so a value that is correct in a preview is garbage in a render. Anything
+a per-frame function needs, measure once at build time:
+
+```js
+var LENGTHS = [];
+function measure(el) { LENGTHS.push(el); return el; }
+function measureAll() { LENGTHS.forEach(function (e) { e._L = e.getTotalLength(); }); }
+// ...at the very bottom, before window.__timelines is set:
+measureAll();
+```
+
+## Revealing a path from a number
+
+`drawOn()` is a tween and cannot express "as far as this other thing has got".
+For anything driven by data, drive the dash directly:
+
+```js
+function reveal(el, f) {                       // f is 0..1
+  var L = el._L;                               // measured at build time
+  el.style.strokeDasharray = L;
+  el.style.strokeDashoffset = L * (1 - Math.max(0, Math.min(1, f)));
+  el.setAttribute("opacity", f > 0.0005 ? 1 : 0);
+}
+```
+
+Three copies of one path, revealed to three different numbers, with paper on
+top, is a **subtraction you can watch**: draw A, draw B over it, then paint
+paper over `min(A, B)`. Where both got to, nothing is left. That is the whole
+device of the seventh video and it is four lines of code.
 
 ## Mist, and revealing a place
 

@@ -62,6 +62,29 @@ Changing only these is not a new design — it is the same video with new data:
 
 ## Ledger
 
+### 2026-09-06 — why-you-cannot-tickle-yourself
+*"You cannot tickle yourself. Here is why."* · 61.7s · **ink-theater + Adem** / hyperframes / atelier
+
+| Field | Value |
+|---|---|
+| Design read | **Everything in the frame is drawn twice — once as what is about to happen, once as what happens — and the film is the one time they do not line up.** |
+| Ground | Warm white paper `#FCFBF8`, live boil. The channel's fixed ground. |
+| Palette roles | **One accent, and its job is to disappear.** ink `#333333` = the room, the man, what actually arrives · grey `#8A857A` = the dark through the doorway, the ruler · teal `#0F7B6C` = **what the brain has already worked out, and nothing else.** Teal is drawn only so it can be subtracted; the previous film's accent piled up until it filled the page, this one is spent as fast as it is made, and the payoff is the frame where it fails to be. No orange, no blue, no violet. |
+| Signature device | **The prediction, drawn ahead of the event and subtracted by it.** Three copies of one path — teal prediction, ink arrival, paper cancellation — and the paint order is the arithmetic. His own hand: paper wipes everything, the arm stays blank. Somebody else's: nothing predicted it, the whole ink stroke stays. Delayed by 200ms: nothing cancels, and **the gap between the two leading edges is the delay.** The soundtrack does the same sum with the same waveform inverted — 9.4 dB between the same stroke predicted and not, measured out of the finished file. |
+| Layout set | **Three setups, nine cuts.** A small bare room with an open doorway and the dark in it (so the other hand has somewhere to come from) · the forearm, big enough to watch · three lanes of time with a minus and an equals sign in ink. The order and its copy are drawn on his own body, not in a diagram. |
+| Motion character | **Anticipation.** Every movement is announced before it happens. Exactly one thing is not — the flinch, twice, a four-frame jolt of the whole page. The one un-anticipated event in a film built out of anticipation is the one that makes him jump. |
+| Type | Patrick Hand, HTML overlay divs, y=1250. |
+| Narrative structure | try it → mechanism → the difference → the counter-example → the experiment → the turn |
+| Narration | Kokoro v1.0 `am_michael`, local. Voice measured at **+14.1 dB** over the bed while speaking. |
+| Music | A single held low fifth that opens a fourth when the mechanism is named, and nothing else. Under it, twelve synthesised brushes and their inverted predictions. Nothing licensed, nothing sampled. |
+| Captions | Burned in, Patrick Hand 62px at y=1250. Two of fourteen lines mark a word, in the one accent. |
+| Brand | `InkBrand.mark()` top left with the play triangle in teal; `InkBrand.subscribe()` at 58.50, after the last line. |
+| Providers used | none — zero API keys, zero generated images, zero stock, zero licensed audio |
+
+**Burned for future videos:** a prediction drawn ahead of an event, cancellation
+by paint order, a soundtrack that is an instance of the argument rather than a
+rendering of it, and the un-announced event in a film of announced ones.
+
 ### 2026-09-06 — nobody-is-conducting
 *"Nobody is conducting the applause."* · 58.2s · **ink-theater + Adem + a simulation** / hyperframes / atelier
 

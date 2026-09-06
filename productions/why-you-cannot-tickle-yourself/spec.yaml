@@ -1,0 +1,73 @@
+# Publish spec for a hand-produced short.
+#
+# Atelier composition on the ink-sketch playbook, rendered by HyperFrames. The
+# picture and the soundtrack perform the same subtraction off one list of
+# events (source/sim/events.json): every touch is a synthesised brush, and every
+# prediction is that same waveform inverted at the instant the forward model
+# says the touch will land. See source/art-direction.md.
+slug: why-you-cannot-tickle-yourself
+title: Why You Cannot Tickle Yourself
+duration_seconds: 61.70
+has_burned_captions: true
+produced_by: openmontage/animation (ink-sketch, hyperframes, Adem)
+produced_on: "2026-09-06"
+
+copy:
+  title: "You cannot tickle yourself. Here is why."
+  hook: "Try it. Nothing happens — and it is not because you are doing it wrong."
+  caption: >-
+    Every time you move, your brain sends the order to your muscles and a copy
+    of that order somewhere else, and the copy is used to work out in advance
+    exactly what you are about to feel. Then it subtracts it. What reaches you
+    is only the difference — everything you did not see coming.
+  description: |-
+    Try to tickle yourself. Ribs, neck, under the arm. Nothing happens, and
+    it is not that you are doing it wrong.
+
+    Every time you move, your brain sends the order to your muscles — and a
+    copy of that order somewhere else. That copy is used to work out, in
+    advance, exactly what the movement is about to feel like. Then it
+    subtracts that prediction from what actually arrives.
+
+    What reaches you is only the difference: everything you did not see
+    coming. Your own hand is completely predicted, so there is nothing left
+    of it to feel. Somebody else's hand is not predicted at all, which is why
+    it works.
+
+    The best evidence for this is a delay. In Blakemore, Frith and Wolpert's
+    experiment, people moved a lever that drove a robot arm to stroke their
+    own palm — and the researchers put a delay between the two. With no delay
+    it was barely ticklish. Push the delay out toward 200 milliseconds and the
+    same self-produced stroke becomes about as ticklish as somebody else doing
+    it. Same hand, same stroke: the prediction simply lands at the wrong
+    moment, so it cancels nothing.
+
+    You are not feeling the world. You are feeling the part of it your brain
+    got wrong.
+
+    Everything here is drawn, and the soundtrack does the arithmetic the film
+    describes: every touch is a synthesised brush of noise, and every
+    prediction is that same waveform inverted at the instant the model says
+    the touch will land. A self-touch sums to twelve percent. An unpredicted
+    one does not cancel at all — 9.4 dB louder in the finished file. Nothing
+    in this video was generated, photographed or licensed.
+
+    Sources
+    Blakemore, Wolpert & Frith, "Central cancellation of self-produced tickle
+    sensation", Nature Neuroscience 1, 635-640 (1998).
+    Blakemore, Frith & Wolpert, "Spatio-temporal prediction modulates the
+    perception of self-produced stimuli", Journal of Cognitive Neuroscience
+    11, 551-559 (1999).
+    Wolpert & Flanagan, "Motor prediction", Current Biology 11, R729-R732
+    (2001).
+
+    #Shorts
+  hashtags:
+    - neuroscience
+    - brain
+    - tickle
+    - perception
+    - psychology
+    - animation
+    - howitworks
+    - Shorts
