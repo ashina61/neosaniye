@@ -1,0 +1,90 @@
+{
+  "voice": "kokoro-v1.0 am_michael",
+  "sample_rate": 24000,
+  "lines": [
+    {
+      "id": "s01",
+      "seconds": 1.435,
+      "words": 4,
+      "text": "Try to tickle yourself."
+    },
+    {
+      "id": "s02",
+      "seconds": 2.207,
+      "words": 7,
+      "text": "Go on. Ribs, neck, under the arm."
+    },
+    {
+      "id": "s03",
+      "seconds": 2.827,
+      "words": 11,
+      "text": "Nothing. And it is not that you are doing it wrong."
+    },
+    {
+      "id": "s04",
+      "seconds": 6.483,
+      "words": 20,
+      "text": "Every time you move, your brain sends the order to your muscles, and a copy of that order somewhere else."
+    },
+    {
+      "id": "s05",
+      "seconds": 4.831,
+      "words": 16,
+      "text": "The copy is used to work out, in advance, exactly what you are about to feel."
+    },
+    {
+      "id": "s06",
+      "seconds": 1.161,
+      "words": 4,
+      "text": "Then it subtracts it."
+    },
+    {
+      "id": "s07",
+      "seconds": 2.236,
+      "words": 7,
+      "text": "What reaches you is only the difference."
+    },
+    {
+      "id": "s08",
+      "seconds": 1.999,
+      "words": 6,
+      "text": "Everything you did not see coming."
+    },
+    {
+      "id": "s09",
+      "seconds": 4.504,
+      "words": 14,
+      "text": "Your own hand is completely predicted. There is nothing left of it to feel."
+    },
+    {
+      "id": "s10",
+      "seconds": 3.025,
+      "words": 8,
+      "text": "Somebody else's hand is not predicted at all."
+    },
+    {
+      "id": "s11",
+      "seconds": 4.379,
+      "words": 16,
+      "text": "So in one experiment, they put a delay in the middle. A fifth of a second."
+    },
+    {
+      "id": "s12",
+      "seconds": 7.382,
+      "words": 20,
+      "text": "Same hand, same stroke. But now the prediction lands early, and the touch arrives on ground that is already clear."
+    },
+    {
+      "id": "s13",
+      "seconds": 0.981,
+      "words": 3,
+      "text": "And it tickles."
+    },
+    {
+      "id": "s14",
+      "seconds": 4.788,
+      "words": 17,
+      "text": "You are not feeling the world. You are feeling the part of it your brain got wrong."
+    }
+  ]
+}

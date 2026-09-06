@@ -1,0 +1,57 @@
+[
+  {
+    "category": "pipeline_selection",
+    "subject": "How this production is built",
+    "decision": "atelier composition on the ink-sketch playbook",
+    "options_considered": [
+      "animation pipeline (templated)",
+      "character-animation pipeline",
+      "atelier / ink-theater"
+    ],
+    "rejected_because": "skills/creative/ink-theater.md declares the style pipeline-exempt"
+  },
+  {
+    "category": "render_runtime_selection",
+    "subject": "Composition runtime",
+    "decision": "hyperframes 0.8.29",
+    "options_considered": [
+      "hyperframes",
+      "remotion",
+      "ffmpeg"
+    ],
+    "rejected_because": "the device is three SVG paths revealed to three numbers per frame \u2014 DOM work. ffmpeg has no composition capability."
+  },
+  {
+    "category": "voice_selection",
+    "subject": "Narration TTS provider",
+    "decision": "Kokoro v1.0 am_michael, local, free",
+    "options_considered": [
+      "kokoro am_michael",
+      "piper en_US-ryan-high"
+    ],
+    "rejected_because": "the channel moved off Piper at production 6; am_michael is the house voice"
+  },
+  {
+    "category": "music_selection",
+    "subject": "Music and score",
+    "decision": "self-produced: one held low fifth, and twelve/sixteen synthesised brushes with their inverted predictions",
+    "options_considered": [
+      "no music",
+      "music_library track",
+      "generated music API",
+      "a score that performs the film's own subtraction"
+    ],
+    "rejected_because": "a licensed or generated track would play alongside the argument; a mix that literally cancels a waveform against its own prediction IS the argument"
+  },
+  {
+    "category": "provider_selection",
+    "subject": "Images, video and stock",
+    "decision": "none \u2014 every mark is drawn by the composition",
+    "options_considered": [
+      "image generation",
+      "stock",
+      "drawn"
+    ],
+    "rejected_because": "user constraint: nothing paid, zero API keys"
+  }
+]

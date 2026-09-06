@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!--
+      WHY YOU CANNOT TICKLE YOURSELF — the forward model, and the 200ms that
+      breaks it.
+
+      DESIGN READ: everything in the frame is drawn twice — once as what is
+      about to happen, once as what happens — and the film is the one time they
+      do not line up.
+
+      SIGNATURE DEVICE: THE PREDICTION, DRAWN AHEAD OF THE EVENT, AND SUBTRACTED
+      BY IT. A teal line is laid along his forearm before the finger gets there.
+      Where the touch lands on its own prediction, both are gone and the arm
+      stays blank — that is why you feel nothing. Where nothing predicted the
+      touch, the ink stays. And where the prediction is 200ms early, both stay,
+      and the gap between their two leading edges IS the delay.
+
+      THE SOUNDTRACK DOES THE SAME ARITHMETIC. Every touch is a synthesised
+      brush; every prediction is THE SAME WAVEFORM INVERTED at the instant the
+      model says the touch will land, and sim/mix.py adds them. A self-touch
+      sums to 12%. An unpredicted one does not cancel at all. Measured out of
+      the finished file: 9.4 dB between the same stroke predicted and not. The
+      film never claims the subtraction happens — it performs it, in the
+      picture and in the speakers, off one list of events.
+
+      LAYOUT SET: three setups. A the room, where he does it to himself and
+      where the order and its copy are drawn down his own arm · B the forearm,
+      where the subtraction is big enough to watch · C three lanes of time —
+      prediction, touch, and what is left.
+
+      MOTION CHARACTER: ANTICIPATION. Every movement is announced before it
+      happens. Exactly one thing in the film is not: the flinch, twice. That is
+      the whole point of the film, wired into how it moves.
+
+      PALETTE: one accent, and its job is to disappear. Teal is what your brain
+      has already worked out, and it is drawn only so it can be subtracted. The
+      previous film's accent piled up until it filled the page; this one is
+      spent as fast as it is made, and the payoff is the frame where it fails to
+      be. Nothing else is coloured, ever.
+
+      THE FRAME: Shorts owns below 1450 and the right rail under 950. Picture
+      200-1200, captions 1250-1400.
+    -->
+    <script src="gsap.min.js"></script>
+    <script src="ink-theater.js"></script>
+    <script src="ink-puppet.js"></script>
+    <script src="ink-figure.js"></script>
+    <script src="clips.js"></script>
+    <script src="brand.js"></script>
+    <script src="events.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      @font-face { font-family: "InkHand"; src: url("assets/patrickhand.ttf") format("truetype"); font-display: block; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #FCFBF8; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+      .stage { position: absolute; inset: 0; background: #FCFBF8; }
+      .stage svg { position: absolute; inset: 0; display: block; width: 1080px; height: 1920px; }
+      #overlay { position: absolute; inset: 0; }
+      .cap { position: absolute; left: 56px; width: 968px; top: 1250px; text-align: center;
+             font-family: "InkHand", cursive; font-size: 62px; line-height: 1.16; color: #333333; opacity: 0; }
+      .cap b { font-weight: normal; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="61.70"
+         data-width="1080" data-height="1920" data-fps="30">
+      <section id="scene" class="clip" data-start="0" data-duration="61.70">
+        <div class="stage">
+          <svg viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="boil" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="1" seed="1" result="n"/>
+                <feDisplacementMap in="SourceGraphic" in2="n" scale="2.4"/>
+              </filter>
+            </defs>
+            <g id="jolt">
+              <g id="camera">
+                <g id="room" filter="url(#boil)"></g>
+                <g id="actorScale"><g id="actorFace"><g id="actorMount"></g></g></g>
+                <g id="roomFront" filter="url(#boil)"></g>
+                <g id="arm"  filter="url(#boil)"></g>
+                <g id="strip" filter="url(#boil)"></g>
+              </g>
+            </g>
+            <g id="brandLayer"></g>
+          </svg>
+          <div id="overlay"></div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      var IT = window.InkTheater, IP = window.InkPuppet, IF = window.InkFigure;
+      var tl = gsap.timeline({ paused: true });
+      var NS = "http://www.w3.org/2000/svg";
+      if (document.fonts && document.fonts.load) { document.fonts.load("62px InkHand"); }
+
+      var INK = IF.ADEM.ink, PAPER = IF.ADEM.paper, DIM = "#8A857A";
+      // ONE accent, and its job is to be subtracted.
+      var PRED = "#0F7B6C";
+      var EV = window.EV, DELAY = EV.delay, DUR = EV.duration;
+
+      var CX = 440, GROUND = 1140, SCALE = 1.44;
+      var MM = (SCALE * 534) / 1750;
+      function mm(v) { return v * MM; }
+
+      var room = document.getElementById("room"), roomFront = document.getElementById("roomFront");
+      var arm = document.getElementById("arm"), strip = document.getElementById("strip");
+      var camera = document.getElementById("camera"), jolt = document.getElementById("jolt");
+      var overlay = document.getElementById("overlay"), defs = document.querySelector("defs");
+
+      function node(tag, a, parent) {
+        var n = document.createElementNS(NS, tag);
+        for (var k in a) n.setAttribute(k, a[k]);
+        parent.appendChild(n); return n;
+      }
+      function stroke(d, sw, color, parent) {
+        return node("path", { d: d, fill: "none", stroke: color || INK, "stroke-width": sw || 5,
+                              "stroke-linecap": "round", "stroke-linejoin": "round" }, parent);
+      }
+      var seed = 20260909;
+      function rnd() { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296 - 0.5; }
+      function seg(a, b, amp, step) {
+        var n = Math.max(1, Math.round(Math.hypot(b[0] - a[0], b[1] - a[1]) / (step || 100))), out = [], i;
+        for (i = 0; i <= n; i++) {
+          var t = i / n, e = (i === 0 || i === n) ? 0 : 1;
+          out.push([a[0] + (b[0] - a[0]) * t + rnd() * amp * 2 * e,
+                    a[1] + (b[1] - a[1]) * t + rnd() * amp * 2 * e]);
+        }
+        return out;
+      }
+      function dd(p) { var s = "", i; for (i = 0; i < p.length; i++) s += (i ? "L" : "M") + p[i][0].toFixed(1) + " " + p[i][1].toFixed(1) + " "; return s; }
+      function line(x0, y0, x1, y1, sw, parent, color, amp) {
+        return stroke(dd(seg([x0, y0], [x1, y1], amp == null ? 1.4 : amp, 110)), sw, color, parent);
+      }
+      function poly(pts, sw, parent, fill, color) {
+        var d = "", i;
+        for (i = 0; i < pts.length; i++) d += dd(seg(pts[i], pts[(i + 1) % pts.length], 1.4));
+        return node("path", { d: d + "Z", fill: fill || "none", stroke: color || INK,
+                              "stroke-width": sw || 5, "stroke-linejoin": "round" }, parent);
+      }
+      function box(x0, y0, x1, y1, sw, parent, fill) { return poly([[x0,y0],[x1,y0],[x1,y1],[x0,y1]], sw, parent, fill); }
+      function drawOn(el, t, dur, ease) {
+        var L = el.getTotalLength();
+        el.style.strokeDasharray = L; el.style.strokeDashoffset = L;
+        tl.to(el, { strokeDashoffset: 0, duration: dur, ease: ease || "none" }, t);
+        tl.set(el, { strokeDasharray: "none" }, t + dur);
+      }
+      // Reveal a path from 0 to f, every frame, from a number rather than a tween.
+      // The length is measured ONCE, at build time, by measureAll() below: a
+      // getTotalLength() inside a timeline callback is measured against whatever
+      // DOM state the render worker's non-linear seek happened to produce.
+      var LENGTHS = [];
+      function measure(el) { LENGTHS.push(el); return el; }
+      function measureAll() { LENGTHS.forEach(function (e) { e._L = e.getTotalLength(); }); }
+      function reveal(el, f) {
+        var L = el._L;
+        el.style.strokeDasharray = L;
+        el.style.strokeDashoffset = L * (1 - Math.max(0, Math.min(1, f)));
+        el.setAttribute("opacity", f > 0.0005 ? 1 : 0);
+      }
+
+      // ══ SETUP A — a small bare room ══════════════════════════════════════
+      var SET = [];
+      function A(e) { SET.push(e); return e; }
+      var skY = GROUND - mm(100);
+      A(line(-40, GROUND, 1120, GROUND, 5, room, INK, 2.2));
+      A(line(-40, skY, 1120, skY, 4, room));
+      A(line(120, GROUND + 46, 1000, GROUND + 46, 3, room, DIM));
+      // a doorway on his right, and it is dark in there — the other hand has to
+      // come from somewhere
+      var DX0 = 762, DW = mm(820), DY = GROUND - mm(2030);
+      A(box(DX0, DY, DX0 + DW, GROUND, 6, room, PAPER));
+      A(box(DX0 + 18, DY + 18, DX0 + DW - 18, GROUND, 4, room));
+      var hatch = "", hi;
+      for (hi = 0; hi < 26; hi++) {
+        var hy = DY + 34 + hi * 30;
+        hatch += "M" + (DX0 + 30) + " " + hy + "L" + (DX0 + DW - 30) + " " + (hy - 22) + " ";
+      }
+      A(stroke(hatch, 3, DIM, room));
+      // a bare bulb over him
+      A(line(250, -10, 250, 168, 3, room));
+      A(poly([[228, 168], [272, 168], [286, 196], [214, 196]], 5, room, PAPER));
+      var bulb = A(node("path", { d: "M214 196 a36,36 0 1,0 72,0 a36,36 0 1,0 -72,0", fill: PAPER, stroke: INK, "stroke-width": 5 }, room));
+      A(stroke("M196 262 l-24 26 M540 262 l24 26 M250 268 l0 34", 3, DIM, room));
+      // a shelf with two things on it
+      A(box(58, 662, 292, 682, 5, room, PAPER));
+      A(stroke("M92 682 l14 44 M258 682 l-14 44", 4, INK, room));
+      A(box(96, 606, 158, 662, 5, room, PAPER));
+      A(poly([[196, 610], [238, 610], [238, 662], [196, 662]], 5, room, PAPER));
+      A(line(196, 622, 238, 622, 3, room));
+      // a light switch
+      A(box(636, 690, 682, 742, 5, room, PAPER));
+      A(line(650, 716, 668, 716, 4, room));
+
+      // ── the figure ───────────────────────────────────────────────────────
+      var mount = document.getElementById("actorMount");
+      var pup = IP.create(mount, { cx: CX, ground: GROUND, boil: "boil", headR: IF.ADEM.headR - 2, strokeWidth: 4 });
+      var actorScale = document.getElementById("actorScale");
+      actorScale.setAttribute("transform",
+        "translate(" + CX + "," + GROUND + ") scale(" + SCALE + ") translate(" + (-CX) + "," + (-GROUND) + ")");
+      var fig = IF.attach(pup, { unit: SCALE });     // this IS Adem
+      IP.still("shuffle", 34);
+      fig.carry.from = "point"; fig.hold.from = "point";
+
+      // where his own stroke runs, in PAGE coordinates: along the far forearm
+      var FAR = [CX + 240, GROUND - 548];                  // the hand held out
+      var S0 = [CX + 116, GROUND - 570], S1 = [CX + 226, GROUND - 552];
+      function pageToPose(p) { return IF.toPose(pup, p[0], p[1], { scale: SCALE, aboutX: CX, aboutY: GROUND }); }
+
+      // the order, and the copy of it — drawn down his own arm, which is where
+      // this actually happens
+      // THE ORDER goes down to the hand. THE COPY branches off at the top, goes
+      // the long way round, and still gets there first — which is the only
+      // thing about the forward model you have to believe.
+      var order = stroke("M500 418 Q596 470 650 546 Q676 582 " + (FAR[0] - 16) + " " + (FAR[1] - 8), 8, INK, roomFront);
+      var orderHead = node("path", { d: "M" + (FAR[0] - 10) + " " + (FAR[1] - 6) + " l-34 -12 l8 14 l-6 16 Z",
+                                     fill: INK, stroke: "none" }, roomFront);
+      var copy = stroke("M500 412 Q664 282 826 396 Q880 442 " + (S1[0] + 46) + " " + (S1[1] - 44), 8, PRED, roomFront);
+      var copyHead = node("path", { d: "M" + (S1[0] + 34) + " " + (S1[1] - 34) + " l30 -10 l-10 14 l6 16 Z",
+                                    fill: PRED, stroke: "none" }, roomFront);
+      var branch = node("circle", { cx: 500, cy: 415, r: 13, fill: INK }, roomFront);
+      gsap.set([order, copy, orderHead, copyHead, branch], { opacity: 0 });
+      // the hand that comes out of the dark
+      var otherHand = node("g", {}, roomFront);
+      gsap.set(otherHand, { opacity: 0 });
+      node("path", { d: IF.taper([[1140, 604], [1010, 636], [906, 666]], 66, 46, 14),
+                     fill: PAPER, stroke: INK, "stroke-width": 6, "stroke-linejoin": "round" }, otherHand);
+      node("path", { d: "M906 640 q-46 -8 -62 14 q-20 30 10 44 q30 14 56 -2 q10 -24 -4 -56 Z",
+                     fill: PAPER, stroke: INK, "stroke-width": 6, "stroke-linejoin": "round" }, otherHand);
+      stroke("M852 654 l-34 -6 M846 672 l-38 2 M852 690 l-32 12", 6, INK, otherHand);
+
+      // ══ SETUP B — the forearm, big ═══════════════════════════════════════
+      // Same stroke, same arm, at a size where the subtraction is watchable.
+      var A0 = [140, 962], A1 = [846, 706];
+      var armShape = node("path", { d: IF.taper([[A0[0], A0[1]], [500, 848], [A1[0], A1[1]]], 138, 96, 26),
+                                    fill: PAPER, stroke: INK, "stroke-width": 7, "stroke-linejoin": "round" }, arm);
+      var armCuff = stroke("M186 900 q40 76 -6 132", 6, INK, arm);
+      // wrist, palm, four fingers and a thumb — at this size it has to be a hand
+      var wristL = stroke("M832 664 q26 34 10 76", 5, DIM, arm);
+      var palm = node("path", { d: "M846 660 q80 -30 128 22 q42 46 6 92 q-38 48 -104 32 q-48 -12 -56 -60 q-6 -50 26 -86 Z",
+                                fill: PAPER, stroke: INK, "stroke-width": 7, "stroke-linejoin": "round" }, arm);
+      var fingers = node("path", { d: [
+        IF.taper([[952, 648], [1010, 608], [1052, 596]], 30, 20, 10),
+        IF.taper([[976, 676], [1040, 648], [1084, 644]], 30, 20, 10),
+        IF.taper([[982, 712], [1044, 704], [1082, 710]], 28, 19, 10),
+        IF.taper([[970, 748], [1024, 758], [1058, 772]], 26, 17, 10)
+      ].join(" "), fill: PAPER, stroke: INK, "stroke-width": 6, "stroke-linejoin": "round" }, arm);
+      var thumb = node("path", { d: IF.taper([[864, 726], [900, 792], [896, 844]], 34, 24, 12),
+                                 fill: PAPER, stroke: INK, "stroke-width": 6, "stroke-linejoin": "round" }, arm);
+      var P0 = [236, 916], P1 = [788, 742];
+      var pathPts = seg(P0, P1, 3.2, 74);
+      var PATH_D = dd(pathPts);
+      // paint order IS the arithmetic: the prediction, the touch on top of it,
+      // and paper on top of both wherever the two coincided
+      var ghost  = measure(stroke(PATH_D, 30, PRED, arm));
+      var real   = measure(stroke(PATH_D, 15, INK, arm));
+      var cancel = measure(stroke(PATH_D, 40, PAPER, arm));
+      var tip = node("path", { d: "", fill: PAPER, stroke: INK, "stroke-width": 7, "stroke-linejoin": "round", opacity: 0 }, arm);
+      var tipDetail = node("path", { d: "", fill: "none", stroke: INK, "stroke-width": 5,
+                                     "stroke-linecap": "round", opacity: 0 }, arm);
+      var ghostTip = node("circle", { r: 22, fill: PRED, opacity: 0 }, arm);
+      gsap.set(arm, { opacity: 0 });
+
+      // ══ SETUP C — three lanes of time ════════════════════════════════════
+      // prediction · touch · what is left over. The third lane is the film.
+      var LX0 = 110, LX1 = 970, LY = [660, 850, 1046];
+      var lanes = [], laneMark = [], i2;
+      for (i2 = 0; i2 < 3; i2++) {
+        lanes.push(line(LX0, LY[i2], LX1, LY[i2], i2 === 2 ? 5 : 4, strip, i2 === 2 ? INK : DIM));
+      }
+      stroke("M" + (LX0 + 30) + " " + ((LY[0] + LY[1]) / 2) + "L" + (LX0 + 88) + " " + ((LY[0] + LY[1]) / 2), 11, INK, strip);
+      stroke("M" + (LX0 + 30) + " " + ((LY[1] + LY[2]) / 2 - 14) + "L" + (LX0 + 88) + " " + ((LY[1] + LY[2]) / 2 - 14) +
+             "M" + (LX0 + 30) + " " + ((LY[1] + LY[2]) / 2 + 14) + "L" + (LX0 + 88) + " " + ((LY[1] + LY[2]) / 2 + 14), 11, INK, strip);
+      var grads = "", gi;
+      for (gi = 0; gi <= 10; gi++) { var gx = LX0 + (LX1 - LX0) * gi / 10;
+        grads += "M" + gx.toFixed(1) + " " + (LY[2] + 16) + "L" + gx.toFixed(1) + " " + (LY[2] + (gi % 5 ? 34 : 48)) + " "; }
+      line(LX0, LY[2] + 16, LX1, LY[2] + 16, 4, strip, DIM);
+      stroke(grads, 4, DIM, strip);
+      var predMark = node("path", { d: "", fill: PRED, stroke: "none", opacity: 0 }, strip);
+      var touchMark = node("path", { d: "", fill: INK, stroke: "none", opacity: 0 }, strip);
+      var leftMark = node("path", { d: "", fill: INK, stroke: "none", opacity: 0 }, strip);
+      var zero = stroke("", 6, DIM, strip);
+      var gapBar = stroke("", 6, PRED, strip);
+      var gapCap = stroke("", 5, PRED, strip);
+      var nowLine = stroke("M0 0", 4, DIM, strip);
+      gsap.set(strip, { opacity: 0 });
+      function diamond(cx, cy, r) {
+        return "M" + cx + " " + (cy - r) + "L" + (cx + r * 0.72) + " " + cy +
+               "L" + cx + " " + (cy + r) + "L" + (cx - r * 0.72) + " " + cy + "Z";
+      }
+      // C runs on its own clock, so the mechanism can be shown twice: once
+      // matched and once with the delay pushed in. Two tweened numbers, and
+      // they are the only tweened positions in the film that are not the camera.
+      var C = { at: 0.30, gap: 0.0, show: 0 };
+
+      // ══ what is happening at time t ══════════════════════════════════════
+      var ARM_BLOCKS = [[15.55, 22.75], [27.90, 32.95], [41.95, 50.75]];
+      function blockStart(t) {
+        for (var b = 0; b < ARM_BLOCKS.length; b++)
+          if (t >= ARM_BLOCKS[b][0] - 0.30 && t < ARM_BLOCKS[b][1]) return ARM_BLOCKS[b][0] - 0.40;
+        return -1e9;
+      }
+      function strokeAt(t) {
+        var e, k, best = null, from = blockStart(t);
+        for (k = 0; k < EV.events.length; k++) {
+          e = EV.events[k];
+          // no upper bound: what a stroke left behind stays on the arm until the
+          // next one, which is why the delayed section reads as accumulating
+          if (t >= e.t - 0.02 && e.t >= from) best = e;
+        }
+        if (!best) return null;
+        var LEAD = 0.075;                       // the prediction is never late
+        var p = (t - best.t) / best.dur + (best.kind === "self" ? LEAD : 0);
+        var q = (t - best.t - (best.kind === "delayed" ? DELAY : 0)) / best.dur;
+        return { e: best,
+                 p: best.kind === "other" ? 0 : Math.max(0, Math.min(1, p)),
+                 q: Math.max(0, Math.min(1, q)),
+                 matched: best.kind === "self" ? 1 : 0,
+                 live: t < best.t + best.dur + (best.kind === "delayed" ? DELAY : 0) + 0.10 };
+      }
+      function pointOn(f) {
+        var n = pathPts.length - 1, x = Math.max(0, Math.min(1, f)) * n, i = Math.floor(x), u = x - i;
+        var a = pathPts[Math.min(i, n)], b = pathPts[Math.min(i + 1, n)];
+        return [a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u];
+      }
+
+      var clockT = { v: 0 };
+      var shown = { room: 1, arm: 0, strip: 0 };
+      function sync() {
+        var t = clockT.v, st = strokeAt(t);
+
+        if (shown.arm) {
+          var p = st ? st.p : 0, q = st ? st.q : 0, m = st ? st.matched : 0;
+          reveal(ghost, p);
+          reveal(real, q);
+          reveal(cancel, m ? Math.min(p, q) : 0);
+          if (st && st.live && q > 0.001) {
+            var pt = pointOn(q);
+            tip.setAttribute("d",
+              IF.taper([[pt[0] - 122, pt[1] - 176], [pt[0] - 74, pt[1] - 104], [pt[0] - 6, pt[1] - 12]], 70, 42, 21));
+            tipDetail.setAttribute("d",
+              "M" + (pt[0] - 96) + " " + (pt[1] - 118) + " l40 -28" +
+              "M" + (pt[0] - 44) + " " + (pt[1] - 44) + " q18 -10 26 6");
+            tipDetail.setAttribute("opacity", 1);
+            tip.setAttribute("opacity", 1);
+          } else { tip.setAttribute("opacity", 0); tipDetail.setAttribute("opacity", 0); }
+          if (st && st.live && p > 0.001 && p < 0.999) {
+            var gp = pointOn(p);
+            ghostTip.setAttribute("cx", gp[0].toFixed(1)); ghostTip.setAttribute("cy", gp[1].toFixed(1));
+            ghostTip.setAttribute("opacity", 0.9);
+          } else { ghostTip.setAttribute("opacity", 0); }
+        }
+
+        if (shown.strip) {
+          var px = LX0 + (LX1 - LX0) * C.at, tx = px + (LX1 - LX0) * C.gap;
+          var s = C.show;
+          predMark.setAttribute("d", diamond(px, LY[0], 26));
+          predMark.setAttribute("opacity", s);
+          touchMark.setAttribute("d", diamond(tx, LY[1], 26));
+          touchMark.setAttribute("opacity", s);
+          nowLine.setAttribute("d", "M" + px.toFixed(1) + " " + (LY[0] - 62) + "L" + px.toFixed(1) + " " + (LY[2] + 62));
+          nowLine.setAttribute("opacity", s * 0.8);
+          var apart = Math.abs(C.gap) > 0.012;
+          leftMark.setAttribute("d", diamond(tx, LY[2], 26));
+          leftMark.setAttribute("opacity", apart ? s : 0);
+          zero.setAttribute("d", "M" + (px - 26) + " " + LY[2] + "L" + (px + 26) + " " + LY[2]);
+          zero.setAttribute("opacity", apart ? 0 : s);
+          gapBar.setAttribute("d", "M" + px.toFixed(1) + " " + (LY[1] - 76) + "L" + tx.toFixed(1) + " " + (LY[1] - 76));
+          gapCap.setAttribute("d", "M" + px.toFixed(1) + " " + (LY[1] - 96) + "L" + px.toFixed(1) + " " + (LY[1] - 56) +
+                                   "M" + tx.toFixed(1) + " " + (LY[1] - 96) + "L" + tx.toFixed(1) + " " + (LY[1] - 56));
+          gapBar.setAttribute("opacity", apart ? s : 0);
+          gapCap.setAttribute("opacity", apart ? s : 0);
+        }
+
+        if (shown.room) {
+          // his own hands: the far arm held out, the near finger running along it
+          var f = st && st.e.kind !== "other" ? st.q : 0;
+          var sp = [S0[0] + (S1[0] - S0[0]) * f, S0[1] + (S1[1] - S0[1]) * f];
+          var a = pageToPose(FAR), b = pageToPose(sp);
+          fig.hold.dx = a[0]; fig.hold.dy = a[1];
+          fig.carry.dx = b[0]; fig.carry.dy = b[1];
+        }
+        pup.setPose(fig.pose());
+      }
+      tl.to(clockT, { v: DUR, duration: DUR, ease: "none", onUpdate: sync }, 0);
+
+      // ── the page draws itself ────────────────────────────────────────────
+      SET.forEach(function (e, i) { drawOn(e, 0.04 + i * 0.052, 0.32); });
+      fig.pencilIn(tl, { start: 0.50, each: 0.20 });
+      fig.inkIn(tl, { at: 1.40, dur: 0.40 });
+      IP.choreograph(tl, pup, [{ clip: "still", dur: DUR }], { start: 0 });
+      function to(o, v, t) { v.onUpdate = sync; return tl.to(o, v, t); }
+      to(fig.hold, { on: 1, duration: 0.60, ease: IT.ease.settle }, 2.20);
+      to(fig.carry, { on: 1, duration: 0.50, ease: IT.ease.settle }, 2.60);
+
+      // ── the cuts ─────────────────────────────────────────────────────────
+      var GROUPS = [["room", room], ["arm", arm], ["strip", strip]];
+      function cut(t, name, s, ox, oy) {
+        GROUPS.forEach(function (g) { tl.set(g[1], { opacity: g[0] === name ? 1 : 0 }, t); });
+        tl.set([actorScale, roomFront], { opacity: name === "room" ? 1 : 0 }, t);
+        tl.set(camera, { scale: s || 1, svgOrigin: (ox || 540) + " " + (oy || 720) }, t);
+        tl.call(function () {
+          shown.room = name === "room" ? 1 : 0; shown.arm = name === "arm" ? 1 : 0;
+          shown.strip = name === "strip" ? 1 : 0; sync();
+        }, null, t);
+      }
+      cut(0.00, "room", 1.09, 500, 720);
+      cut(9.10, "room", 1.16, 560, 640);      // in close for the order and the copy
+      cut(15.55, "arm", 1.00);
+      cut(22.75, "strip", 1.00);
+      cut(27.90, "arm", 1.06, 540, 800);
+      cut(32.95, "room", 1.10, 600, 700);     // the doorway, and the hand in it
+      cut(36.90, "strip", 1.00);
+      cut(41.95, "arm", 1.03, 540, 780);
+      cut(50.75, "room", 1.12, 500, 700);
+
+      // the order runs down his arm, and the copy overtakes it
+      tl.set([order, copy, branch], { opacity: 1 }, 9.80);
+      drawOn(order, 9.90, 1.70, "power1.inOut");
+      tl.to(orderHead, { opacity: 1, duration: 0.001 }, 11.60);
+      drawOn(copy, 11.05, 1.30, "power1.out");            // later, and it lands first
+      tl.to(copyHead, { opacity: 1, duration: 0.001 }, 12.35);
+      tl.to([order, copy, orderHead, copyHead, branch], { opacity: 0, duration: 0.50 }, 14.70);
+
+      // ── setup C, run twice: matched, then 200ms apart ────────────────────
+      tl.set(C, { at: 0.18, gap: 0, show: 0 }, 22.75);
+      tl.to(C, { show: 1, duration: 0.40, onUpdate: sync }, 23.00);
+      tl.to(C, { at: 0.62, duration: 2.40, ease: "none", onUpdate: sync }, 23.40);
+      tl.set(C, { at: 0.18, gap: 0 }, 36.90);
+      tl.set(C, { show: 1 }, 36.90);
+      tl.to(C, { at: 0.46, duration: 1.60, ease: "none", onUpdate: sync }, 37.20);
+      tl.to(C, { gap: 0.150, duration: 0.90, ease: "power2.out", onUpdate: sync }, 38.90);   // the delay, pushed in
+      tl.to(C, { at: 0.70, duration: 2.10, ease: "none", onUpdate: sync }, 39.90);
+
+      // ── the hand out of the dark, and the two flinches ───────────────────
+      var OT = EV.events.filter(function (e) { return e.kind === "other"; })[0];
+      tl.fromTo(otherHand, { opacity: 0, x: 210 },
+                           { opacity: 1, x: 0, duration: 0.34, ease: "power2.out" }, OT.t - 0.30);
+      tl.to(otherHand, { x: 240, opacity: 0, duration: 0.40, ease: "power2.in" }, OT.t + OT.dur + 0.30);
+      // THE ONLY THING IN THE FILM THAT IS NOT ANNOUNCED FIRST
+      EV.flinches.forEach(function (ft) {
+        [[0, 0, 0], [0.03, -26, 16], [0.07, 20, -12], [0.11, -12, 7], [0.16, 0, 0]].forEach(function (s) {
+          tl.set(jolt, { x: s[1], y: s[2] }, ft + s[0]);
+        });
+        to(fig.face, { brow: -7, duration: 0.10, ease: "power2.out" }, ft);
+        to(fig.face, { brow: 0, duration: 0.70, ease: IT.ease.soft }, ft + 0.55);
+        to(fig.hold, { dx: fig.hold.dx, duration: 0.001 }, ft);
+      });
+
+      // after the second flinch he takes his arm down, which is what anybody
+      // does, and it stops the last six seconds being a held frame
+      to(fig.hold, { on: 0, duration: 0.90, ease: IT.ease.soft }, 54.30);
+      to(fig.carry, { on: 0, duration: 0.70, ease: IT.ease.soft }, 54.55);
+      to(fig.face, { brow: 3.2, duration: 0.40, ease: IT.ease.settle }, 55.60);
+      to(fig.face, { brow: 0, duration: 0.80, ease: IT.ease.soft }, 56.90);
+
+      // ── captions ─────────────────────────────────────────────────────────
+      var TXT = {
+        s01: "Try to tickle yourself.",
+        s02: "Go on. Ribs, neck, under the arm.",
+        s03: "Nothing. And it is not that<br>you are doing it wrong.",
+        s04: "Every time you move, your brain sends the<br>order to your muscles — and a <b style='color:#0F7B6C'>copy</b> of it<br>somewhere else.",
+        s05: "The copy works out, in advance,<br>exactly what you are about to feel.",
+        s06: "Then it <b style='color:#0F7B6C'>subtracts</b> it.",
+        s07: "What reaches you is only the difference.",
+        s08: "Everything you did not see coming.",
+        s09: "Your own hand is completely predicted.<br>There is nothing left of it to feel.",
+        s10: "Somebody else's hand<br>is not predicted at all.",
+        s11: "So in one experiment they put a delay<br>in the middle. A fifth of a second.",
+        s12: "Same hand, same stroke. But the prediction<br>lands early, and the touch arrives on<br>ground that is already clear.",
+        s13: "And it tickles.",
+        s14: "You are not feeling the world. You are<br>feeling the part of it your brain got wrong."
+      };
+      var DURS = { s01:1.43,s02:2.21,s03:2.83,s04:6.48,s05:4.83,s06:1.16,s07:2.24,
+                   s08:2.00,s09:4.50,s10:3.02,s11:4.38,s12:7.38,s13:0.98,s14:4.79 };
+      var ids = Object.keys(TXT);
+      ids.forEach(function (id, i) {
+        var at = EV.narration[id], d_ = document.createElement("div");
+        d_.className = "cap"; d_.innerHTML = TXT[id];
+        overlay.appendChild(d_);
+        var next = ids[i + 1] ? EV.narration[ids[i + 1]] - 0.26 : 1e9;
+        var out = i === ids.length - 1 ? at + DURS[id] + 0.70 : Math.min(at + DURS[id] + 0.16, next);
+        tl.to(d_, { opacity: 1, duration: 0.18 }, at - 0.10);
+        tl.to(d_, { opacity: 0, duration: 0.20 }, out);
+      });
+
+      // ── the channel ──────────────────────────────────────────────────────
+      var brandLayer = document.getElementById("brandLayer");
+      InkBrand.mark(defs, brandLayer, { x: 46, y: 54, w: 128, ink: INK, accent: PRED, opacity: 0.70 });
+      InkBrand.subscribe(tl, brandLayer, { at: 58.50, accent: PRED, ink: INK, paper: PAPER });
+
+      measureAll();
+      sync();
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

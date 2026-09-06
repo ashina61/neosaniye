@@ -1,0 +1,39 @@
+{
+  "renderer": "hyperframes 0.8.29",
+  "fps": 30,
+  "size": "1080x1920",
+  "duration_seconds": 61.7,
+  "device": {
+    "name": "the prediction, drawn ahead of the event and subtracted by it",
+    "implementation": "three copies of one path \u2014 ghost (teal, 30px), real (ink, 15px), cancel (paper, 40px) \u2014 revealed to p, q and matched?min(p,q):0. Paint order is the arithmetic.",
+    "events": 16,
+    "prediction_lead_self": 0.075,
+    "delay_seconds": 0.2
+  },
+  "audio": {
+    "narration": "kokoro-v1.0 am_michael (local, 24kHz, resampled to 48k)",
+    "music": "a single held low fifth that opens a fourth when the mechanism is named; nothing licensed or sampled",
+    "sfx": "every touch is a synthesised brush of filtered noise; every prediction is that same waveform INVERTED at the instant the forward model says the touch will land, and the mixer adds them",
+    "voice_over_bed_db": 12.6,
+    "loudness_lufs": -14.47,
+    "true_peak_db": -1.8,
+    "measured_subtraction": {
+      "self_touch_rms": 7.4,
+      "unpredicted_rms": 85.0,
+      "difference_db": 21.2,
+      "in_finished_file_db": 9.4,
+      "payoff_in_a_caption_gap": "34 -> 103 rms at 49.95s"
+    },
+    "built_by": "sim/mix.py"
+  },
+  "brand": {
+    "logo": "InkBrand.mark(), play triangle in this film's teal #0F7B6C",
+    "subscribe": "InkBrand.subscribe() at 58.50s"
+  },
+  "delivery_encode": {
+    "master": "CRF 15 preset slow",
+    "shipped": "CRF 20, muxed in the same pass",
+    "size_bytes": 3518977
+  },
+  "providers_used": "none \u2014 zero API keys, zero generated images, zero stock, zero licensed audio"
+}
