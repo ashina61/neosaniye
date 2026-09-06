@@ -11,14 +11,23 @@
 # quietly published everywhere, publicly, twice a day. Nothing here falls back
 # to anything. If an entry does not say `upload` and `privacy`, it is skipped.
 #
-# THE MASTER SWITCH IS OFF. Nothing is published while `enabled` is false. Turn
-# it on when you have watched the first few and you are happy for them to go.
+# THE MASTER SWITCH. Nothing is published while `enabled` is false. Turn it on
+# when you have watched the first few and you are happy for them to go.
 
 enabled: true
 
-# Tuesdays, 18:00 Istanbul. The workflow's cron is the authority; this is here
+# Sundays, 18:00 Istanbul. The workflow's cron is the authority; this is here
 # so the file says what it does.
 schedule: "0 15 * * 0   # 18:00 Europe/Istanbul, Sundays"
+
+# THE GAP THAT MAKES A LATE CRON HARMLESS. On 2026-09-06 a manual run published
+# at 17:25 and the week's cron — two and a half hours late, not skipped — fired
+# at 17:27 and published the next one as well. Two videos, two minutes apart.
+# Neither run was wrong; nothing was asking whether anything was actually due.
+# `bin/queue.py next` now compares today against the newest `published_on`
+# below and hands out nothing until this many days have passed, so any number of
+# runs in the same week still publish one video. `--force` overrides it.
+min_days_between: 5
 
 topics_used:
   # the eight already made — these ids must not come round again

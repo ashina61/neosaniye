@@ -21,6 +21,10 @@ name: Publish the next one in the queue
 #  4. The file is proved to be 1080x1920 with an audio track before it goes
 #     near an account.
 #  5. It publishes ONE and stops. A bad video costs one week, not the queue.
+#  5b. IT ASKS THE QUEUE WHETHER ANYTHING IS DUE, not the clock. Two runs in the
+#     same week publish one video, because bin/queue.py measures the gap from
+#     the last `published_on` and hands out nothing inside it. See the note
+#     under `on:` for the day that made this necessary.
 #  6. It PROVES the upload happened before ticking the entry off.
 #     daily/lib/publish.py always returns 0 — it catches every upload failure,
 #     records it as `failed:`/`skipped:` and exits cleanly, because it is built
@@ -30,21 +34,25 @@ name: Publish the next one in the queue
 #     and fails the job unless every destination came back with a real URL.
 #
 # NOTE: a `schedule:` trigger only ever fires from the repository's DEFAULT
-# branch. While this file lives only on claude/openmontage-setup-dh10g0 the cron
-# below is inert, and the queue has to be driven by hand through
-# publish-production.yml. Merging the branch is what switches the weekly rhythm
-# on.
+# branch. On a feature branch this cron is inert and the queue has to be driven
+# by hand.
 
-# GITHUB DOES NOT PICK UP A NEW CRON STRAIGHT AWAY. This workflow landed on
-# main at 13:53 UTC with its first occurrence set for 15:00 UTC the same day,
-# and that occurrence was skipped — GitHub registers new schedules on its own
-# cycle and routinely drops one that close to the push. Scheduled runs are also
-# delayed under load and are best-effort in general.
+# A GITHUB CRON IS NOT A CLOCK, IT IS A QUEUE POSITION. It can run hours late.
+# This one is set for 15:00 UTC on Sundays; on 2026-09-06 it fired at 17:27 —
+# two hours and twenty-seven minutes late — and by then a manual run at 17:25
+# had already published that week's video. The late cron took the next
+# `pending` and published that too: two videos, two minutes apart. Both runs
+# did exactly what they were told, which is the point. A schedule you cannot
+# predict cannot also be the thing that decides what is due.
 #
-# So: the first publish after adding or changing this cron is worth doing by
-# hand (Run workflow, and UNTICK dry_run — it defaults to on). After that the
-# schedule is registered and runs on its own. If a Sunday ever passes with no
-# run, nothing is lost: the entry is still `pending` and the next run takes it.
+# So the queue decides. bin/queue.py compares today against the newest
+# `published_on` in QUEUE.yaml and prints an empty slug inside `min_days_between`
+# days, whatever started the run. A late cron now lands on "nothing is due"
+# instead of on the next video, and the job below is safe to start by hand at
+# any time. `force: true` is the deliberate override.
+#
+# If a Sunday ever passes with no run, nothing is lost: the entry is still
+# `pending` and the next run takes it.
 on:
   schedule:
     - cron: '0 15 * * 0'        # Sundays 18:00 Europe/Istanbul
@@ -54,6 +62,10 @@ on:
         description: 'Say what it would do, and do nothing'
         type: boolean
         default: true
+      force:
+        description: 'Publish even if the last one went out less than min_days_between ago'
+        type: boolean
+        default: false
 
 concurrency:
   group: publish-production     # never at the same time as a manual publish
@@ -82,11 +94,14 @@ jobs:
 
       - name: Take the next one
         id: q
-        run: python bin/queue.py next >> "$GITHUB_OUTPUT"
+        run: |
+          python bin/queue.py next ${{ inputs.force && '--force' || '' }} >> "$GITHUB_OUTPUT"
 
       - name: Nothing to do
         if: steps.q.outputs.slug == ''
-        run: echo "The queue is off, empty, or the next entry is not publishable. See the status above."
+        run: |
+          echo "Nothing is due — the queue is off or empty, the next entry is not"
+          echo "publishable, or one went out too recently. The step above says which."
 
       - name: Check the file
         if: steps.q.outputs.slug != ''

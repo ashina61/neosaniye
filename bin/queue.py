@@ -2,7 +2,7 @@
 """The publish queue: read it, find the next one, mark it done.
 
     bin/queue.py status                     what is where
-    bin/queue.py next                       the next entry, as KEY=VALUE
+    bin/queue.py next [--force]             the next entry, as KEY=VALUE
     bin/queue.py done <slug> [--url URL]    mark it published
     bin/queue.py topic                      the next unused topic, as KEY=VALUE
     bin/queue.py add <slug> --topic <id>    put a finished production on the end
@@ -11,6 +11,15 @@
 can skip cleanly instead of failing. It also refuses an entry that does not
 say both `upload` and `privacy`, because an unstated destination is how this
 repository once published everywhere by accident.
+
+AND IT REFUSES TO HAND OUT A SECOND VIDEO TOO SOON. On 2026-09-06 a manual run
+published one at 17:25 and the week's cron — two and a half hours late, not
+skipped — fired at 17:27, took the next `pending`, and published that too. Two
+videos, two minutes apart, on a channel that posts one a week. Nothing was
+broken: both runs did exactly what they were told. So `next` now looks at the
+`published_on` dates it writes itself and says nothing is due unless the last
+one is at least `min_days_between` days old. `--force` overrides it, out loud,
+and is meant for a human who has decided to.
 """
 import argparse, datetime, pathlib, signal, sys, yaml
 
@@ -21,6 +30,7 @@ except (AttributeError, ValueError): pass
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 QUEUE = ROOT / "productions" / "QUEUE.yaml"
 VALID_UPLOAD = {"none", "youtube", "all"}
+DEFAULT_MIN_DAYS = 5        # if QUEUE.yaml does not say
 VALID_PRIVACY = {"unlisted", "public", "private"}
 
 
@@ -46,6 +56,35 @@ def problems(e):
     return out
 
 
+def last_published(d):
+    """(date, slug) of the most recent thing that went out, or None.
+
+    A `published_on` that will not parse raises: a date this cannot read is a
+    date the gap below cannot be measured from, and the safe reading of "I do
+    not know when the last one went out" is not "publish another".
+    """
+    best = None
+    for e in d["queue"]:
+        raw = e.get("published_on")
+        if not raw:
+            continue
+        try:
+            day = datetime.date.fromisoformat(str(raw))
+        except ValueError:
+            raise ValueError(f"{e.get('slug')} has published_on: {raw!r}, "
+                             f"which is not a YYYY-MM-DD date")
+        if best is None or day > best[0]:
+            best = (day, e.get("slug"))
+    return best
+
+
+def min_days(d):
+    try:
+        return max(0, int(d.get("min_days_between", DEFAULT_MIN_DAYS)))
+    except (TypeError, ValueError):
+        return DEFAULT_MIN_DAYS
+
+
 def cmd_status(d):
     print(f"queue: {'ENABLED' if d.get('enabled') else 'disabled (nothing will publish)'}"
           f"   {d.get('schedule', '')}")
@@ -63,14 +102,44 @@ def cmd_status(d):
         for b in bad:
             print(f"      ! {b}")
     print(f"\n {n.get('pending',0)} pending · {n.get('published',0)} published · {n.get('hold',0)} on hold")
+    gap = min_days(d)
+    try:
+        last = last_published(d)
+    except ValueError as err:
+        print(f" ! {err}")
+        last = None
+    if last:
+        age = (datetime.date.today() - last[0]).days
+        print(f" last out: {last[1]} on {last[0]} ({age}d ago)"
+              f" · minimum gap {gap}d"
+              f" · {'DUE' if age >= gap else f'not due for {gap - age}d more'}")
     return 0
 
 
-def cmd_next(d):
+def cmd_next(d, force=False):
     if not d.get("enabled"):
         print("slug=")
         print("reason=the queue's master switch is off", file=sys.stderr)
         return 0
+    # Two runs that overlap in time are not the risk; two runs that both find a
+    # `pending` entry are. A late cron is a normal event, so the queue — not the
+    # schedule — is what decides whether anything is due.
+    gap = min_days(d)
+    try:
+        last = last_published(d)
+    except ValueError as err:
+        print("slug=")
+        print(f"reason={err}", file=sys.stderr)
+        return 0
+    if last and gap:
+        age = (datetime.date.today() - last[0]).days
+        if age < gap:
+            if not force:
+                print("slug=")
+                print(f"reason={last[1]} went out on {last[0]} ({age}d ago) and this "
+                      f"queue publishes at most one every {gap} days", file=sys.stderr)
+                return 0
+            print(f"--force: publishing anyway, {age}d after {last[1]}", file=sys.stderr)
     for e in d["queue"]:
         if e.get("state") != "pending":
             continue
@@ -171,14 +240,16 @@ def main():
     p = argparse.ArgumentParser()
     sub = p.add_subparsers(dest="cmd", required=True)
     sub.add_parser("status")
-    sub.add_parser("next")
+    nx = sub.add_parser("next")
+    nx.add_argument("--force", action="store_true",
+                    help="ignore the minimum gap between publishes")
     sub.add_parser("topic")
     ad = sub.add_parser("add"); ad.add_argument("slug"); ad.add_argument("--topic", default="")
     dn = sub.add_parser("done"); dn.add_argument("slug"); dn.add_argument("--url", default="")
     a = p.parse_args()
     d = load()
     if a.cmd == "status": return cmd_status(d)
-    if a.cmd == "next": return cmd_next(d)
+    if a.cmd == "next": return cmd_next(d, a.force)
     if a.cmd == "topic": return cmd_topic(d)
     if a.cmd == "add": return cmd_add(d, a.slug, a.topic)
     if a.cmd == "done": return cmd_done(d, a.slug, a.url)

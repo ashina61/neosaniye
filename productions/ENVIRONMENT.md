@@ -299,13 +299,14 @@ Automating the taste is what made them all look alike.
 ## Publishing on a schedule: `productions/QUEUE.yaml`
 
 One video a week, with nobody in the loop.
-`.github/workflows/publish-queue.yml` runs Tuesdays 18:00 Istanbul, takes the
+`.github/workflows/publish-queue.yml` runs Sundays 18:00 Istanbul, takes the
 **first** entry whose `state` is `pending`, publishes it exactly as that entry
 says, and commits the state back so next week takes the next one.
 
 ```
-bin/queue.py status        what is where
+bin/queue.py status        what is where, and whether anything is due
 bin/queue.py next          the next entry, as KEY=VALUE for a workflow
+bin/queue.py next --force  ignore the minimum gap, on purpose
 bin/queue.py done <slug>   mark it published
 ```
 
@@ -333,6 +334,11 @@ retired generator failed:
    and fails the job unless every destination that was asked for came back with
    a real URL. **That step failing is the safety net**, not an inconvenience —
    the entry stays `pending` and next week tries the same video.
+7. **The queue decides what is due, not the clock.** `min_days_between` in
+   `QUEUE.yaml` (5) is measured against the newest `published_on`, so any
+   number of runs inside that window publish one video between them. This is
+   the fix for the day described below, and it is why the job is now safe to
+   start by hand at any time.
 
 `workflow_dispatch` has `dry_run: true` by default — it says what it would do
 and does nothing.
@@ -361,11 +367,24 @@ there are films ahead of it, and the queue's `enabled` switch is a second gate
 on top of that. `PRODUCE.md` tells the daily session that switch is not its to
 touch.
 
-**A newly added cron skips its first occurrence.** `publish-queue.yml` went on
-to main at 13:53 UTC with its first run set for 15:00 UTC and nothing happened —
-GitHub registers new schedules on its own cycle. Run it by hand the first time
-after adding or changing the cron, with `dry_run` UNTICKED. Nothing is lost when
-a Sunday is missed: the entry stays `pending` and the next run takes it.
+**A GitHub cron can be hours late, and on 2026-09-06 that published two videos
+two minutes apart.** The workflow landed on `main` at 13:53 UTC with its first
+occurrence set for 15:00. Nothing happened at 15:00, so it looked skipped, and
+an earlier note in this file said so. It was not skipped — it was **2h27m
+late**. It fired at 17:27, by which time the manual run at 17:25 had published
+`butter-side-down` and committed the tick-off. The late cron checked out that
+commit, found the next `pending`, and published `why-you-cannot-tickle-yourself`
+as well.
+
+Neither run misbehaved. Both did exactly what the queue told them, because
+nothing in the chain was asking whether a video was actually *due* — the
+schedule was carrying that meaning, and a schedule that can slip by hours
+cannot carry it. Hence `min_days_between`: the gap now lives in the data, where
+every run reads it, whatever started that run.
+
+Nothing is lost when a Sunday is missed either: the entry stays `pending` and
+the next run takes it. To publish deliberately inside the gap, tick `force` on
+`workflow_dispatch`.
 
 **If the queue gets longer than about six**, the producer is running faster than
 the ledger can stay honest — the five fields have to be genuinely new every
@@ -375,20 +394,18 @@ rather than letting it repeat itself.
 To change the pace or stop it: the Routine is `trig_01PHEpQNDJXg2BLV7XJT7X6b`,
 editable from the Routines list on claude.ai or with `update_trigger`.
 
-## The one thing that blocks the weekly rhythm
+## Which branch this runs from
 
 **A GitHub `schedule:` trigger only ever fires from the repository's DEFAULT
-branch.** `publish-queue.yml` and `render-production.yml` live only on
-`claude/openmontage-setup-dh10g0`, so:
+branch.** That was the one thing blocking the weekly rhythm, and it is now
+resolved: `publish-queue.yml` and `render-production.yml` are on `main`, so
 
-- the weekly cron is **inert** until the branch reaches `main`
-- neither workflow appears in the Actions tab at all
-- `publish-production.yml` IS on `main` and works — pick the branch under
-  *Use workflow from* and give it a slug
+- the weekly cron is **live** — it fired for the first time on 2026-09-06
+- both workflows appear in the Actions tab, on `main`
+- `publish-production.yml` is still there for publishing one named slug by hand
 
-So today the shape is: the **producer runs by itself** (a Claude Routine, which
-does not care which branch it is on) and the **publisher does not**. Videos will
-pile up in the queue and nothing will go out until either the branch is merged
-or somebody runs `publish-production.yml` by hand each week.
-
-Merging is the fix, and it is the owner's call.
+So the shape today is: the **producer** runs by itself (a Claude Routine, which
+does not care which branch it is on) and the **publisher** runs by itself too.
+The work still happens on `claude/openmontage-setup-dh10g0`; what has to reach
+`main` is anything the scheduled jobs read — the workflows, `bin/`, and
+`productions/QUEUE.yaml` with the productions it points at.
