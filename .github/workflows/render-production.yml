@@ -1,0 +1,52 @@
+name: Render a production
+
+# Rebuilds one hand-authored Ink Theater production from its source and checks
+# it against the house standards. It GENERATES nothing creative: the composition,
+# the simulation and the script are all committed, and this only runs them.
+#
+# There is no schedule, on purpose. The scheduled generator this repository used
+# to have is retired at the bottom of daily-short.yml, and the reason is written
+# there: a pipeline that invents a video every day invents the same video every
+# day. Automating the BUILD is free; automating the taste is what made them all
+# look alike.
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: 'Project slug under projects/'
+        type: string
+        required: true
+      ship:
+        description: 'Copy the result into productions/ and upload it as an artifact'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: pip install numpy scipy soundfile
+      - name: Build
+        run: bin/build-ink.sh "${{ inputs.slug }}" ${{ inputs.ship && ' ' || '--no-ship' }}
+      - name: Contact sheet
+        uses: actions/upload-artifact@v4
+        with:
+          name: strip-${{ inputs.slug }}
+          path: projects/${{ inputs.slug }}/renders/strip
+      - name: The video
+        if: ${{ inputs.ship }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: video-${{ inputs.slug }}
+          path: productions/${{ inputs.slug }}/${{ inputs.slug }}_1080x1920.mp4

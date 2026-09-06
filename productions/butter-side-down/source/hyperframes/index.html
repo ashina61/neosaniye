@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!--
+      BUTTER SIDE DOWN — why toast really does, and what that has to do with
+      the size of atoms.
+
+      DESIGN READ: a kitchen, and one question asked five times — how far did it
+      get to turn before the floor arrived.
+
+      SIGNATURE DEVICE: THE ROTATION GAUGE. A dial locked to the toast that
+      fills with the angle it has turned through. Everything in the film is that
+      one number: 190 degrees off a table, 380 off three metres, and the whole
+      argument is which side of 360 you land on.
+
+      AND IT IS NOT FITTED. Angular speed is set at the edge and does not change
+      in flight; fall time goes as sqrt(h). So four times the height is twice
+      the fall and twice the turn — 190 and 380 are one number, not two. That is
+      why three metres is the answer and not a guess.
+
+      MOTION CHARACTER: FREE FALL. There is no easing function in this film
+      except gravity. Every falling thing is at y = 1/2 g t^2 and every turning
+      thing is at theta = omega t, computed from the real numbers, and the only
+      reason anything ever moves slowly is that the film slows time down to
+      one eighth so you can watch a third of a second happen.
+
+      PALETTE: one accent, and its job is to change which way up it is. Ochre is
+      the buttered face and nothing else. It never changes amount and never
+      changes intensity — the only thing that ever happens to it is that it ends
+      the film underneath instead of on top, and that is the answer.
+
+      THE ANNOTATION LAYER is new in this production (ink-theater/annotate.js).
+      The note on the last one was that some shots do not say what they are, and
+      that was a missing layer rather than a drawing problem: every technical
+      illustration ever made has handwritten labels and arrows over the picture.
+      Two on screen at a time, never over the caption band, and they are WRITTEN
+      on rather than faded in, because a label that fades is a graphic laid over
+      a drawing and a label that is written is part of it.
+
+      THE SOUNDTRACK CARRIES THE PUNCHLINE. Two landings: a wet slap and a dry
+      clack. When the toast turns 190 you hear butter hit tile; when it turns
+      380 you hear crust. Nothing in the narration has to point at it.
+    -->
+    <script src="gsap.min.js"></script>
+    <script src="ink-theater.js"></script>
+    <script src="ink-puppet.js"></script>
+    <script src="ink-figure.js"></script>
+    <script src="clips.js"></script>
+    <script src="brand.js"></script>
+    <script src="annotate.js"></script>
+    <script src="events.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      @font-face { font-family: "InkHand"; src: url("assets/patrickhand.ttf") format("truetype"); font-display: block; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #FCFBF8; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+      .stage { position: absolute; inset: 0; background: #FCFBF8; }
+      .stage svg { position: absolute; inset: 0; display: block; width: 1080px; height: 1920px; }
+      #overlay { position: absolute; inset: 0; }
+      .cap { position: absolute; left: 56px; width: 968px; top: 1250px; text-align: center;
+             font-family: "InkHand", cursive; font-size: 62px; line-height: 1.16; color: #333333; opacity: 0; }
+      .cap b { font-weight: normal; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="60.90"
+         data-width="1080" data-height="1920" data-fps="30">
+      <section id="scene" class="clip" data-start="0" data-duration="60.90">
+        <div class="stage">
+          <svg viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="boil" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="1" seed="1" result="n"/>
+                <feDisplacementMap in="SourceGraphic" in2="n" scale="2.4"/>
+              </filter>
+            </defs>
+            <g id="camera">
+              <g id="room"  filter="url(#boil)"></g>
+              <g id="actorScale"><g id="actorFace"><g id="actorMount"></g></g></g>
+              <g id="roomFront" filter="url(#boil)"></g>
+              <g id="fall"    filter="url(#boil)"></g>
+              <g id="compare" filter="url(#boil)"></g>
+              <g id="chain"   filter="url(#boil)"></g>
+              <g id="notes"></g>
+            </g>
+            <g id="brandLayer"></g>
+          </svg>
+          <div id="overlay"></div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      var IT = window.InkTheater, IP = window.InkPuppet, IF = window.InkFigure;
+      var IA = window.InkAnnotate;
+      var tl = gsap.timeline({ paused: true });
+      var NS = "http://www.w3.org/2000/svg";
+      if (document.fonts && document.fonts.load) { document.fonts.load("62px InkHand"); }
+
+      var INK = IF.ADEM.ink, PAPER = IF.ADEM.paper, DIM = "#8A857A";
+      var BUTTER = "#A8710C";                 // the buttered face, and nothing else
+      var EV = window.EV, PH = EV.physics, DUR = EV.duration;
+      var G = PH.g, OM = PH.omega_rad_s;
+
+      var CX = 402, GROUND = 1150, SCALE = 1.40;
+      var MM = (SCALE * 534) / 1750;
+      function mm(v) { return v * MM; }
+
+      var room = document.getElementById("room"), roomFront = document.getElementById("roomFront");
+      var fallG = document.getElementById("fall"), compare = document.getElementById("compare");
+      var chain = document.getElementById("chain"), notes = document.getElementById("notes");
+      var camera = document.getElementById("camera"), overlay = document.getElementById("overlay");
+      var defs = document.querySelector("defs");
+
+      function node(tag, a, parent) {
+        var n = document.createElementNS(NS, tag);
+        for (var k in a) n.setAttribute(k, a[k]);
+        parent.appendChild(n); return n;
+      }
+      function stroke(d, sw, color, parent) {
+        return node("path", { d: d, fill: "none", stroke: color || INK, "stroke-width": sw || 5,
+                              "stroke-linecap": "round", "stroke-linejoin": "round" }, parent);
+      }
+      var seed = 20260910;
+      function rnd() { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296 - 0.5; }
+      function seg(a, b, amp, step) {
+        var n = Math.max(1, Math.round(Math.hypot(b[0] - a[0], b[1] - a[1]) / (step || 100))), o = [], i;
+        for (i = 0; i <= n; i++) { var t = i / n, e = (i === 0 || i === n) ? 0 : 1;
+          o.push([a[0] + (b[0] - a[0]) * t + rnd() * amp * 2 * e, a[1] + (b[1] - a[1]) * t + rnd() * amp * 2 * e]); }
+        return o;
+      }
+      function dd(p) { var s = "", i; for (i = 0; i < p.length; i++) s += (i ? "L" : "M") + p[i][0].toFixed(1) + " " + p[i][1].toFixed(1) + " "; return s; }
+      function line(x0, y0, x1, y1, sw, parent, color, amp) {
+        return stroke(dd(seg([x0, y0], [x1, y1], amp == null ? 1.4 : amp, 110)), sw, color, parent);
+      }
+      function poly(pts, sw, parent, fill, color) {
+        var d = "", i; for (i = 0; i < pts.length; i++) d += dd(seg(pts[i], pts[(i + 1) % pts.length], 1.4));
+        return node("path", { d: d + "Z", fill: fill || "none", stroke: color || INK,
+                              "stroke-width": sw || 5, "stroke-linejoin": "round" }, parent);
+      }
+      function box(x0, y0, x1, y1, sw, parent, fill) { return poly([[x0,y0],[x1,y0],[x1,y1],[x0,y1]], sw, parent, fill); }
+      function drawOn(el, t, dur, ease) {
+        var L = el.getTotalLength();
+        el.style.strokeDasharray = L; el.style.strokeDashoffset = L;
+        tl.to(el, { strokeDashoffset: 0, duration: dur, ease: ease || "none" }, t);
+        tl.set(el, { strokeDasharray: "none" }, t + dur);
+      }
+
+      // ══ the physics, used by everything ══════════════════════════════════
+      function fallT(h) { return Math.sqrt(2 * h / G); }
+      function dropAt(t, d) {
+        var T = fallT(d.h), e = (t - d.t) * d.rate;
+        if (e < 0) return { f: 0, y: 0, th: 0, before: true };
+        var f = Math.min(1, e / T), s = f * T;
+        return { f: f, y: 0.5 * G * s * s / d.h, th: OM * s, done: e >= T,
+                 after: (t - d.t) - T / d.rate };
+      }
+
+      // ══ a slice of toast, seen edge on ═══════════════════════════════════
+      // The butter is on the -y face at zero, so a hundred and eighty degrees
+      // puts it underneath. That is the entire film.
+      function makeToast(parent, L, T) {
+        var g = node("g", {}, parent);
+        var c = poly([[-L/2, -T/2], [L/2, -T/2], [L/2, T/2], [-L/2, T/2]], Math.max(3, T * 0.14), g, PAPER);
+        node("path", { d: "M" + (-L/2 + T*0.16) + " " + (-T/2 + T*0.20) +
+                          "L" + (L/2 - T*0.16) + " " + (-T/2 + T*0.20),
+                       fill: "none", stroke: BUTTER, "stroke-width": T * 0.40,
+                       "stroke-linecap": "round" }, g);
+        // a crust corner so you can tell one end from the other
+        stroke("M" + (-L/2 + T*0.5) + " " + (T/2 - T*0.24) + "L" + (L/2 - T*0.5) + " " + (T/2 - T*0.24),
+               Math.max(2, T * 0.10), DIM, g);
+        return g;
+      }
+      function setToast(g, x, y, thRad, s) {
+        g.setAttribute("transform", "translate(" + x.toFixed(1) + "," + y.toFixed(1) + ") rotate(" +
+                       (thRad * 180 / Math.PI).toFixed(1) + ")" + (s ? " scale(" + s + ")" : ""));
+      }
+
+      // ══ the gauge — the device ═══════════════════════════════════════════
+      function makeGauge(parent, cx, cy, r) {
+        var g = node("g", {}, parent);
+        var pts = [], i;
+        for (i = 0; i <= 60; i++) { var a = i / 60 * Math.PI * 2;
+          pts.push([cx + Math.cos(a) * (r + rnd() * 2.4), cy + Math.sin(a) * (r + rnd() * 2.4)]); }
+        node("path", { d: IF.smooth(pts, true), fill: PAPER, stroke: INK, "stroke-width": 5 }, g);
+        var tk = "", k;
+        for (k = 0; k < 12; k++) { var a2 = k / 12 * Math.PI * 2 - Math.PI / 2, big = k % 3 === 0;
+          tk += "M" + (cx + Math.cos(a2) * r * (big ? 0.80 : 0.88)).toFixed(1) + " " + (cy + Math.sin(a2) * r * (big ? 0.80 : 0.88)).toFixed(1) +
+                "L" + (cx + Math.cos(a2) * r * 0.96).toFixed(1) + " " + (cy + Math.sin(a2) * r * 0.96).toFixed(1) + " "; }
+        stroke(tk, 4, DIM, g);
+        var arc = stroke("", r * 0.16, BUTTER, g);
+        var needle = stroke("", 6, INK, g);
+        node("circle", { cx: cx, cy: cy, r: r * 0.055, fill: INK }, g);
+        var num = node("text", { x: cx, y: cy + r + 78, "text-anchor": "middle",
+                                 "font-family": "InkHand, cursive", "font-size": r * 0.52, fill: INK }, g);
+        return { g: g, cx: cx, cy: cy, r: r, arc: arc, needle: needle, num: num };
+      }
+      function setGauge(G_, th) {
+        var r = G_.r * 0.62, d = "", i, n = Math.max(1, Math.ceil(Math.abs(th) / 0.10));
+        for (i = 0; i <= n; i++) { var a = -Math.PI / 2 + th * i / n;
+          d += (i ? "L" : "M") + (G_.cx + Math.cos(a) * r).toFixed(1) + " " + (G_.cy + Math.sin(a) * r).toFixed(1) + " "; }
+        G_.arc.setAttribute("d", th > 0.01 ? d : "");
+        var na = -Math.PI / 2 + th;
+        G_.needle.setAttribute("d", "M" + G_.cx + " " + G_.cy + "L" +
+          (G_.cx + Math.cos(na) * G_.r * 0.86).toFixed(1) + " " + (G_.cy + Math.sin(na) * G_.r * 0.86).toFixed(1));
+        G_.num.textContent = Math.round(th * 180 / Math.PI) + "°";
+      }
+
+      // ══ SETUP A — the kitchen ════════════════════════════════════════════
+      var SET = [];
+      function A(e) { SET.push(e); return e; }
+      var skY = GROUND - mm(100);
+      A(line(-760, GROUND, 1840, GROUND, 5, room, INK, 2.2));
+      A(line(-760, skY, 1840, skY, 4, room));
+      A(line(-600, GROUND + 46, 1700, GROUND + 46, 3, room, DIM));
+      // a splashback of tiles behind the worktop
+      var tile = "", ti;
+      for (ti = 0; ti <= 10; ti++) tile += "M" + (500 + ti * 78) + " 596L" + (500 + ti * 78) + " 806 ";
+      for (ti = 1; ti <= 2; ti++) tile += "M492 " + (596 + ti * 70) + "L1290 " + (596 + ti * 70) + " ";
+      A(line(492, 596, 1290, 596, 4, room));
+      A(stroke(tile, 3, DIM, room));
+      // a wall cupboard
+      A(box(600, 292, 1006, 520, 6, room, PAPER));
+      A(line(803, 300, 803, 512, 4, room));
+      A(stroke("M770 400 l0 44 M836 400 l0 44", 6, INK, room));
+      // a mug on a hook, and a tea towel over the rail
+      A(node("path", { d: "M636 540 a26,26 0 1,0 52,0 l-6 -34 l-40 0 Z", fill: PAPER, stroke: INK, "stroke-width": 5 }, room));
+      A(stroke("M688 520 q26 8 20 30 q-6 20 -22 16", 5, INK, room));
+      // the chair he is not sitting on
+      A(stroke("M96 GROUND".replace("GROUND", GROUND) + " L96 " + (GROUND - mm(450)) + " M232 " + GROUND + " L232 " + (GROUND - mm(450)), 5, INK, room));
+      A(box(84, GROUND - mm(460), 244, GROUND - mm(440), 5, room, PAPER));
+      A(box(90, GROUND - mm(880), 238, GROUND - mm(860), 5, room, PAPER));
+      A(stroke("M98 " + (GROUND - mm(860)) + " L98 " + (GROUND - mm(460)) + " M230 " + (GROUND - mm(860)) + " L230 " + (GROUND - mm(460)), 4, INK, room));
+
+      // ── the table, drawn from a number so it can grow ────────────────────
+      var T = { h: 750 };                      // millimetres
+      var TX0 = 492, TX1 = 1124;
+      var tTop = poly([[0,0],[1,0],[1,1],[0,1]], 6, roomFront, PAPER);
+      var tApron = poly([[0,0],[1,0],[1,1],[0,1]], 5, roomFront, PAPER);
+      var tLegs = stroke("", 6, INK, roomFront);
+      var plate = node("path", { d: "", fill: PAPER, stroke: INK, "stroke-width": 5 }, roomFront);
+      var toastA = makeToast(roomFront, 96, 20);
+      function layTable() {
+        var y = GROUND - mm(T.h), th = mm(46);
+        tTop.setAttribute("d", dd(seg([TX0, y], [TX1, y], 1.4)) + dd(seg([TX1, y], [TX1, y + th], 1.4)) +
+                               dd(seg([TX1, y + th], [TX0, y + th], 1.4)) + dd(seg([TX0, y + th], [TX0, y], 1.4)) + "Z");
+        tApron.setAttribute("d", dd(seg([TX0 + 16, y + th], [TX1, y + th], 1.4)) + dd(seg([TX1, y + th], [TX1, y + th + mm(90)], 1.4)) +
+                                 dd(seg([TX1, y + th + mm(90)], [TX0 + 16, y + th + mm(90)], 1.4)) +
+                                 dd(seg([TX0 + 16, y + th + mm(90)], [TX0 + 16, y + th], 1.4)) + "Z");
+        tLegs.setAttribute("d", "M" + (TX0 + 40) + " " + (y + th + mm(90)) + "L" + (TX0 + 40) + " " + GROUND +
+                                "M" + (TX1 - 60) + " " + (y + th + mm(90)) + "L" + (TX1 - 60) + " " + GROUND);
+        var py = y - 6;
+        plate.setAttribute("d", "M" + (TX0 + 24) + " " + py + " q68 -26 136 0 q-68 22 -136 0 Z");
+        return y;
+      }
+
+      // ── the figure ───────────────────────────────────────────────────────
+      var mount = document.getElementById("actorMount");
+      var pup = IP.create(mount, { cx: CX, ground: GROUND, boil: "boil", headR: IF.ADEM.headR - 2, strokeWidth: 4 });
+      var actorScale = document.getElementById("actorScale");
+      actorScale.setAttribute("transform",
+        "translate(" + CX + "," + GROUND + ") scale(" + SCALE + ") translate(" + (-CX) + "," + (-GROUND) + ")");
+      var fig = IF.attach(pup, { unit: SCALE });      // this IS Adem
+      IP.still("shuffle", 34);
+      fig.carry.from = "point"; fig.hold.from = "point";
+      var REACH = { x: TX0 + 96, y: 0, on: 0, up: 0 };
+      function pageToPose(x, y) { return IF.toPose(pup, x, y, { scale: SCALE, aboutX: CX, aboutY: GROUND }); }
+
+      // ══ SETUP B — the fall, big ══════════════════════════════════════════
+      var EDGE = [232, 392], FLOOR_B = 1128;
+      var bEdge = stroke(dd(seg([-40, EDGE[1]], [EDGE[0], EDGE[1]], 1.6)) +
+                         dd(seg([EDGE[0], EDGE[1]], [EDGE[0], EDGE[1] + 96], 1.6)), 8, INK, fallG);
+      var bApron = stroke(dd(seg([-40, EDGE[1] + 34], [EDGE[0] - 10, EDGE[1] + 34], 1.4)), 5, DIM, fallG);
+      var bFloor = line(-40, FLOOR_B, 1120, FLOOR_B, 6, fallG, INK, 2.0);
+      var bFloor2 = line(60, FLOOR_B + 40, 1000, FLOOR_B + 40, 3, fallG, DIM);
+      var trace = stroke("", 5, DIM, fallG);
+      trace.setAttribute("stroke-dasharray", "3 22");
+      var gaugeB = makeGauge(fallG, 782, 616, 208);
+      var toastB = makeToast(fallG, 262, 52);
+      gsap.set(fallG, { opacity: 0 });
+      var B_X0 = EDGE[0] + 26, B_DX = 150;
+
+      // ══ SETUP C — two heights, one number ════════════════════════════════
+      var PPM = 200, C_FLOOR = 1150;             // pixels per metre in the diagram
+      function cTable(x0, x1, h) {
+        var y = C_FLOOR - h * PPM;
+        box(x0, y, x1, y + 20, 6, compare, PAPER);
+        stroke("M" + (x0 + 28) + " " + (y + 20) + "L" + (x0 + 28) + " " + C_FLOOR +
+               "M" + (x1 - 28) + " " + (y + 20) + "L" + (x1 - 28) + " " + C_FLOOR, 5, INK, compare);
+        return y;
+      }
+      line(-40, C_FLOOR, 1120, C_FLOOR, 6, compare, INK, 2.0);
+      var CY1 = cTable(96, 376, 0.75), CY2 = cTable(640, 920, 3.00);
+      // the two numbers the film is about, side by side and read off the same dial
+      var gaugeC1 = makeGauge(compare, 236, 272, 100);
+      var gaugeC2 = makeGauge(compare, 830, 272, 100);
+      var toastC1 = makeToast(compare, 122, 24), toastC2 = makeToast(compare, 122, 24);
+      var traceC1 = stroke("", 4, DIM, compare), traceC2 = stroke("", 4, DIM, compare);
+      traceC1.setAttribute("stroke-dasharray", "3 18"); traceC2.setAttribute("stroke-dasharray", "3 18");
+      gsap.set(compare, { opacity: 0 });
+
+      // ══ SETUP D — the chain ══════════════════════════════════════════════
+      // Five things, each one the reason for the next. This is the only place
+      // the film draws an idea rather than an object, and the arrows are the
+      // grammar that makes it a sentence.
+      var chainBits = [];
+      (function () {
+        var CXs = 540;
+        // 1 two atoms, bonded
+        var g1 = node("g", {}, chain);
+        node("circle", { cx: CXs - 52, cy: 300, r: 42, fill: PAPER, stroke: INK, "stroke-width": 6 }, g1);
+        node("circle", { cx: CXs + 52, cy: 300, r: 42, fill: PAPER, stroke: INK, "stroke-width": 6 }, g1);
+        stroke("M" + (CXs - 14) + " 288L" + (CXs + 14) + " 288 M" + (CXs - 14) + " 312L" + (CXs + 14) + " 312", 6, INK, g1);
+        chainBits.push(g1);
+        // 2 how hard they hold on
+        var g2 = node("g", {}, chain);
+        stroke("M" + (CXs - 150) + " 500L" + (CXs - 58) + " 500 M" + (CXs + 58) + " 500L" + (CXs + 150) + " 500", 7, INK, g2);
+        node("path", { d: "M" + (CXs - 58) + " 500 l-34 -18 l0 36 Z", fill: INK }, g2);
+        node("path", { d: "M" + (CXs + 58) + " 500 l34 -18 l0 36 Z", fill: INK }, g2);
+        chainBits.push(g2);
+        // 3 a person, with a height
+        var g3 = node("g", {}, chain);
+        node("circle", { cx: CXs, cy: 654, r: 26, fill: PAPER, stroke: INK, "stroke-width": 6 }, g3);
+        stroke("M" + CXs + " 680L" + CXs + " 764 M" + (CXs - 44) + " 706L" + (CXs + 44) + " 706 " +
+               "M" + CXs + " 764L" + (CXs - 34) + " 826 M" + CXs + " 764L" + (CXs + 34) + " 826", 6, INK, g3);
+        chainBits.push(g3);
+        // 4 a table, at half of that
+        var g4 = node("g", {}, chain);
+        box(CXs - 118, 940, CXs + 118, 954, 6, g4, PAPER);
+        stroke("M" + (CXs - 96) + " 954L" + (CXs - 96) + " 1016 M" + (CXs + 96) + " 954L" + (CXs + 96) + " 1016", 5, INK, g4);
+        chainBits.push(g4);
+        // 5 and the answer
+        var g5 = node("g", {}, chain);
+        var tg = makeToast(g5, 150, 30);
+        setToast(tg, CXs, 1112, Math.PI);
+        chainBits.push(g5);
+      })();
+      chainBits.forEach(function (g) { gsap.set(g, { opacity: 0 }); });
+      var chainArrows = [];
+      [[300 + 62, 500 - 46], [500 + 40, 654 - 52], [826 + 24, 940 - 30], [1016 + 20, 1112 - 40]].forEach(function (p, i) {
+        var a = IA.arrow(chain, [540 + (i % 2 ? 96 : -96), p[0]], [540 + (i % 2 ? 60 : -60), p[1]],
+                         { color: DIM, width: 6, bend: (i % 2 ? 34 : -34), head: 22, gap: 8 });
+        gsap.set([a.shaft, a.head], { opacity: 0 });
+        chainArrows.push(a);
+      });
+      gsap.set(chain, { opacity: 0 });
+
+      // ══ per frame ════════════════════════════════════════════════════════
+      var clockT = { v: 0 };
+      var shown = { room: 1, fall: 0, compare: 0, chain: 0 };
+      function drops(where) { return EV.drops.filter(function (d) { return d.where === where; }); }
+      var D_KITCHEN = drops("kitchen"), D_FALL = drops("fall")[0], D_CMP = drops("compare");
+
+      function sync() {
+        var t = clockT.v;
+        if (shown.room) {
+          var ty = layTable();
+          // the toast: on the plate until it goes, then real free fall
+          var d = null, k;
+          for (k = 0; k < D_KITCHEN.length; k++) if (t >= D_KITCHEN[k].t - 0.55) d = D_KITCHEN[k];
+          var tx = TX0 + 96, tyy = ty - 16, th = 0;
+          if (d) {
+            var s = dropAt(t, d);
+            if (s.before) { tx = TX0 + 96 + (t - (d.t - 0.55)) / 0.55 * 26; }
+            else {
+              tx = TX0 + 122 + s.f * 70;
+              tyy = (ty - 16) + s.y * (GROUND - (ty - 16) - 14);
+              th = s.th;
+              if (s.done) { tyy = GROUND - 14; th = OM * fallT(d.h); }
+            }
+          }
+          setToast(toastA, tx, tyy, th);
+          // his hand: out to the toast, or up at a table he cannot reach
+          var hx = REACH.up ? TX0 + 150 : tx, hy = REACH.up ? (GROUND - mm(T.h) + 40) : (ty - 40);
+          var p = pageToPose(hx, hy);
+          fig.carry.dx = p[0]; fig.carry.dy = p[1]; fig.carry.on = REACH.on;
+        }
+        if (shown.fall) {
+          var s2 = dropAt(t, D_FALL);
+          var yTop = EDGE[1] - 10, yEnd = FLOOR_B - 30;
+          var x = B_X0 + s2.f * B_DX, y = yTop + s2.y * (yEnd - yTop);
+          setToast(toastB, x, y, s2.th);
+          var d3 = "", i3, n3 = 26;
+          for (i3 = 0; i3 <= n3; i3++) {
+            var ff = s2.f * i3 / n3, ss = ff * fallT(D_FALL.h);
+            d3 += (i3 ? "L" : "M") + (B_X0 + ff * B_DX).toFixed(1) + " " +
+                  (yTop + (0.5 * G * ss * ss / D_FALL.h) * (yEnd - yTop)).toFixed(1) + " ";
+          }
+          trace.setAttribute("d", s2.f > 0.02 ? d3 : "");
+          setGauge(gaugeB, s2.th);
+        }
+        if (shown.compare) {
+          [[D_CMP[0], toastC1, traceC1, 96, 376, 0.75, gaugeC1], [D_CMP[1], toastC2, traceC2, 640, 920, 3.00, gaugeC2]].forEach(function (c) {
+            var d4 = c[0], s4 = dropAt(t, d4);
+            setGauge(c[6], s4.th);
+            var y0 = C_FLOOR - c[5] * PPM - 22, y1 = C_FLOOR - 14;
+            var x0 = c[4] - 6, x = x0 + s4.f * 62, y = y0 + s4.y * (y1 - y0);
+            setToast(c[1], x, y, s4.th);
+            var dd4 = "", i4;
+            for (i4 = 0; i4 <= 22; i4++) {
+              var ff4 = s4.f * i4 / 22, ss4 = ff4 * fallT(d4.h);
+              dd4 += (i4 ? "L" : "M") + (x0 + ff4 * 62).toFixed(1) + " " +
+                     (y0 + (0.5 * G * ss4 * ss4 / d4.h) * (y1 - y0)).toFixed(1) + " ";
+            }
+            c[2].setAttribute("d", s4.f > 0.02 ? dd4 : "");
+          });
+        }
+        pup.setPose(fig.pose());
+      }
+      tl.to(clockT, { v: DUR, duration: DUR, ease: "none", onUpdate: sync }, 0);
+
+      // ── the page draws itself ────────────────────────────────────────────
+      SET.forEach(function (e, i) { drawOn(e, 0.02 + i * 0.030, 0.24); });
+      [tTop, tApron, tLegs, plate].forEach(function (e, i) { tl.set(e, { opacity: 0 }, 0); tl.to(e, { opacity: 1, duration: 0.18 }, 0.30 + i * 0.08); });
+      tl.set(toastA, { opacity: 0 }, 0); tl.to(toastA, { opacity: 1, duration: 0.18 }, 0.34);
+      fig.pencilIn(tl, { start: 0.16, each: 0.13 });
+      fig.inkIn(tl, { at: 0.86, dur: 0.30 });
+      IP.choreograph(tl, pup, [{ clip: "still", dur: DUR }], { start: 0 });
+      function to(o, v, t) { v.onUpdate = sync; return tl.to(o, v, t); }
+
+      // he pushes it off, and takes his hand back
+      to(REACH, { on: 1, duration: 0.34, ease: IT.ease.settle }, 0.00);
+      to(REACH, { on: 0, duration: 0.60, ease: IT.ease.soft }, 1.10);
+      to(REACH, { on: 1, duration: 0.34, ease: IT.ease.settle }, 55.75);
+      to(REACH, { on: 0, duration: 0.60, ease: IT.ease.soft }, 56.90);
+
+      // ── the cuts ─────────────────────────────────────────────────────────
+      var GROUPS = [["room", room], ["fall", fallG], ["compare", compare], ["chain", chain]];
+      function cut(t, name, s, ox, oy) {
+        GROUPS.forEach(function (g) { tl.set(g[1], { opacity: g[0] === name ? 1 : 0 }, t); });
+        tl.set([actorScale, roomFront], { opacity: name === "room" ? 1 : 0 }, t);
+        tl.set(camera, { scale: s || 1, svgOrigin: (ox || 540) + " " + (oy || 720) }, t);
+        tl.call(function () {
+          shown.room = name === "room" ? 1 : 0; shown.fall = name === "fall" ? 1 : 0;
+          shown.compare = name === "compare" ? 1 : 0; shown.chain = name === "chain" ? 1 : 0;
+          sync();
+        }, null, t);
+      }
+      cut(0.00, "room", 1.00, 540, 780);
+      cut(6.90, "room", 1.34, 560, 800);         // in on the edge
+      cut(9.45, "fall", 1.00);
+      cut(26.30, "compare", 1.00);
+      cut(31.05, "room", 1.00, 540, 1150);
+      cut(40.40, "chain", 1.00);
+      cut(52.60, "room", 1.10, 470, 780);
+
+      // ── the table grows, and he cannot reach it ──────────────────────────
+      tl.set(T, { h: 750 }, 31.05);
+      to(T, { h: 3000, duration: 1.15, ease: "power2.inOut" }, 32.20);
+      // A three metre table does not fit, and that is the joke. The camera
+      // backs off to get it in and he goes small in the frame doing nothing.
+      tl.to(camera, { scale: 0.60, duration: 1.15, ease: "power2.inOut",
+                      svgOrigin: "540 1150" }, 32.20);
+      tl.to(camera, { scale: 1.00, duration: 0.90, ease: "power2.inOut",
+                      svgOrigin: "540 1150" }, 39.30);
+      to(REACH, { up: 1, on: 1, duration: 0.50, ease: IT.ease.settle }, 34.90);
+      to(fig.face, { brow: 4.6, duration: 0.40, ease: IT.ease.settle }, 35.40);
+      to(fig.face, { brow: 0, duration: 0.70, ease: IT.ease.soft }, 37.60);
+      to(REACH, { up: 0, on: 0, duration: 0.60, ease: IT.ease.soft }, 39.60);
+      tl.set(T, { h: 750 }, 52.60);
+
+      // ── the chain assembles itself, one link per clause ──────────────────
+      [41.10, 43.10, 45.10, 46.90, 48.60].forEach(function (at, i) {
+        tl.to(chainBits[i], { opacity: 1, duration: 0.34 }, at);
+        if (i < 4) {
+          tl.to(chainArrows[i].shaft, { opacity: 1, duration: 0.001 }, at + 0.44);
+          tl.to(chainArrows[i].head, { opacity: 1, duration: 0.001 }, at + 0.62);
+          var L = chainArrows[i].shaft.getTotalLength ? 0 : 0;
+        }
+      });
+
+      // ── the annotation layer ─────────────────────────────────────────────
+      IA.callout(tl, notes, { at: 10.10, out: 13.10, text: "it pivots here",
+                              x: 640, y: 300, to: [EDGE[0] + 16, EDGE[1] + 8], bend: 40, size: 46 });
+      IA.measure(tl, notes, { at: 11.40, out: 15.20, from: [118, EDGE[1] + 12], to: [118, FLOOR_B - 6],
+                              text: "75 cm", side: -56, color: DIM, textColor: INK });
+      IA.callout(tl, notes, { at: 15.30, out: 18.10, text: "half a turn",
+                              x: 470, y: 968, to: [gaugeB.cx - 150, gaugeB.cy + 110], bend: -30, size: 46 });
+      IA.measure(tl, notes, { at: 27.00, out: 30.60, from: [462, C_FLOOR], to: [462, CY1], text: "75 cm",
+                              side: 52, color: DIM, textColor: INK, cap: 16, size: 40 });
+      IA.measure(tl, notes, { at: 27.40, out: 30.60, from: [590, C_FLOOR], to: [590, CY2], text: "3 m",
+                              side: -46, color: DIM, textColor: INK, cap: 16, size: 40 });
+      // and the answer is on the floor: one lands on its face, one does not
+      IA.ring(tl, notes, { at: 29.10, out: 30.60, cx: 396, cy: C_FLOOR - 30, r: 78, sy: 0.52, color: BUTTER, width: 7 });
+
+      // ── captions ─────────────────────────────────────────────────────────
+      var TXT = {
+        s01: "Toast really does land <b style='color:#A8710C'>butter side down</b>.",
+        s02: "It is not luck,<br>and it is not Murphy's law.",
+        s03: "Watch what actually happens at the edge.",
+        s04: "It does not fall flat. It pivots on the edge,<br>and leaves the table already turning.",
+        s05: "From a table, it has time<br>for about <b>half a turn</b>.",
+        s06: "And half a turn is exactly<br>the wrong number.",
+        s07: "Butter side up. A hundred and eighty<br>degrees. <b style='color:#A8710C'>Butter side down.</b>",
+        s08: "To get all the way round, it would have<br>to fall from about three metres.",
+        s09: "So build a three metre table,<br>and the problem goes away.",
+        s10: "Except you cannot reach it.",
+        s11: "A table is that height<br>because <b>you</b> are that height.",
+        s12: "And how tall a person can be is not a<br>choice either. It is set by how strong<br>chemical bonds are, against gravity.",
+        s13: "Fall much further than your own<br>height, and the bonds lose.",
+        s14: "Your toast lands butter side down<br>because of the <b>size of atoms</b>."
+      };
+      var DURS = { s01:2.39,s02:2.72,s03:2.17,s04:4.98,s05:2.95,s06:2.75,s07:4.14,
+                   s08:4.11,s09:3.61,s10:1.48,s11:2.61,s12:7.70,s13:3.50,s14:3.90 };
+      var ids = Object.keys(TXT);
+      ids.forEach(function (id, i) {
+        var at = EV.narration[id], d_ = document.createElement("div");
+        d_.className = "cap"; d_.innerHTML = TXT[id];
+        overlay.appendChild(d_);
+        var next = ids[i + 1] ? EV.narration[ids[i + 1]] - 0.26 : 1e9;
+        var out = i === ids.length - 1 ? at + DURS[id] + 0.60 : Math.min(at + DURS[id] + 0.16, next);
+        tl.to(d_, { opacity: 1, duration: 0.18 }, at - 0.10);
+        tl.to(d_, { opacity: 0, duration: 0.20 }, out);
+      });
+
+      // ── the channel ──────────────────────────────────────────────────────
+      var brandLayer = document.getElementById("brandLayer");
+      InkBrand.mark(defs, brandLayer, { x: 46, y: 54, w: 128, ink: INK, accent: BUTTER, opacity: 0.70 });
+      InkBrand.subscribe(tl, brandLayer, { at: EV.subscribe_at, accent: BUTTER, ink: INK, paper: PAPER });
+
+      setGauge(gaugeB, 0);
+      sync();
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

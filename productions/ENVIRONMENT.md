@@ -265,3 +265,33 @@ productions.
   about 3 seconds, so the film is built 3 seconds longer than its script and
   the last shot holds under it. A film that interrupts its own argument to beg
   has lost the argument.
+
+
+## Building a production: `bin/build-ink.sh <slug>`
+
+The chain used to be ten commands run by hand, which is how four defects
+shipped. It is now one:
+
+```
+simulation -> mix -> lint -> validate -> render -> delivery encode -> checks -> ship
+```
+
+and every step with a number attached to it is **checked**, not remembered:
+
+| gate | why it exists |
+|---|---|
+| `voice over bed >= +10 dB` | video six shipped at +1.4 and was unhearable |
+| captions not below y=1400 | video five shipped at 1660, under the Shorts title |
+| 1080×1920 | anything else is not a Shorts upload |
+| −14 ±1 LUFS, TP ≤ −1.0 | the house loudness |
+| ≤ 12 Mbps | video six's master was 6.9 Mbps and 50 MB; CRF 20 is 20 MB |
+| a 1 fps contact sheet | three of the worst defects were invisible in a still |
+
+`.github/workflows/render-production.yml` runs the same script in CI and uploads
+the video and the contact sheet.
+
+**What is deliberately NOT automated: the video itself.** The scheduled
+generator this repository used to have is retired at the bottom of
+`daily-short.yml`, and the reason is written there — a pipeline that invents a
+video every day invents the same video every day. Automating the BUILD is free.
+Automating the taste is what made them all look alike.

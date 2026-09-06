@@ -62,6 +62,32 @@ Changing only these is not a new design — it is the same video with new data:
 
 ## Ledger
 
+### 2026-09-06 — butter-side-down
+*"Toast really does land butter side down."* · 60.9s · **ink-theater + Adem** / hyperframes / atelier
+
+| Field | Value |
+|---|---|
+| Design read | **A kitchen, and one question asked five times: how far did it get to turn before the floor arrived.** |
+| Ground | Warm white paper `#FCFBF8`, live boil. The channel's fixed ground. |
+| Palette roles | **One accent, and the only thing that ever happens to it is which way up it is.** ink `#333333` = the kitchen, the man, the toast · grey `#8A857A` = tiles, the trace, dimension lines · ochre `#A8710C` = **the buttered face, and nothing else.** It never changes amount and never changes intensity; it ends the film underneath instead of on top, and that is the answer. |
+| Signature device | **The rotation gauge.** A dial locked to the toast that fills with the angle it has turned through, and every beat of the film is that one number. It is not fitted: angular speed is set at the edge and fall time goes as sqrt(h), so four times the height is twice the turn — **190° off a table, 380° off three metres are one number, not two.** The comparison shot puts both dials side by side. |
+| Layout set | **Four setups, seven cuts.** The kitchen, with a table drawn from a NUMBER so it can grow to three metres while he stands next to it and the camera pulls back to 0.60 to fit it · the fall, at one eighth speed, with the dotted parabola and the gauge · the comparison, two tables and two dials in one frame · the chain, five links assembled one per clause with arrows. |
+| Motion character | **Free fall.** There is no easing function in this film except gravity: every falling thing is at `y = ½gt²` and every turning thing at `θ = ωt`, from the real numbers. The only reason anything moves slowly is that the film slows time to one eighth. |
+| Type | Patrick Hand, HTML overlay divs at y=1250, plus the new handwritten annotation layer. |
+| Narrative structure | the claim → the mechanism → the number → the escape route → why the escape route is closed |
+| Narration | Kokoro v1.0 `am_michael`, local. |
+| Music | A low pedal that drops a fifth when the film stops being about toast and starts being about atoms, and one struck note on the last line. Under it: **a wet slap and a dry clack** — the two landings ARE the punchline, and the narration never mentions either. All synthesised in `ink-theater/sfx.py`. |
+| Captions | Burned in, Patrick Hand 62px at y=1250. Three of fourteen lines mark a word. |
+| Brand | Logo top left with its play triangle in ochre; subscribe card at 57.60, **and the tap now clicks.** |
+| Providers used | none — zero API keys, zero generated images, zero stock, zero licensed audio |
+
+**New in the engine with this production, and available to everything after it:**
+`ink-theater/annotate.js` (handwritten callouts, dimension lines and scribbled
+rings — the layer that says which part of the picture is which),
+`ink-theater/sfx.py` (every sound this channel makes, synthesised, plus the
+non-negotiable mix rules), and `bin/build-ink.sh` (the whole chain in one
+command, with every house standard enforced rather than remembered).
+
 ### 2026-09-06 — why-you-cannot-tickle-yourself
 *"You cannot tickle yourself. Here is why."* · 61.7s · **ink-theater + Adem** / hyperframes / atelier
 

@@ -1,0 +1,90 @@
+{
+  "voice": "kokoro-v1.0 am_michael",
+  "sample_rate": 24000,
+  "lines": [
+    {
+      "id": "s01",
+      "seconds": 2.389,
+      "words": 7,
+      "text": "Toast really does land butter side down."
+    },
+    {
+      "id": "s02",
+      "seconds": 2.721,
+      "words": 10,
+      "text": "It is not luck, and it is not Murphy's law."
+    },
+    {
+      "id": "s03",
+      "seconds": 2.17,
+      "words": 7,
+      "text": "Watch what actually happens at the edge."
+    },
+    {
+      "id": "s04",
+      "seconds": 4.977,
+      "words": 16,
+      "text": "It does not fall flat. It pivots on the edge, and leaves the table already turning."
+    },
+    {
+      "id": "s05",
+      "seconds": 2.946,
+      "words": 11,
+      "text": "From a table, it has time for about half a turn."
+    },
+    {
+      "id": "s06",
+      "seconds": 2.753,
+      "words": 9,
+      "text": "And half a turn is exactly the wrong number."
+    },
+    {
+      "id": "s07",
+      "seconds": 4.144,
+      "words": 11,
+      "text": "Butter side up. A hundred and eighty degrees. Butter side down."
+    },
+    {
+      "id": "s08",
+      "seconds": 4.115,
+      "words": 15,
+      "text": "To get all the way round, it would have to fall from about three metres."
+    },
+    {
+      "id": "s09",
+      "seconds": 3.614,
+      "words": 11,
+      "text": "So build a three metre table, and the problem goes away."
+    },
+    {
+      "id": "s10",
+      "seconds": 1.484,
+      "words": 5,
+      "text": "Except you cannot reach it."
+    },
+    {
+      "id": "s11",
+      "seconds": 2.612,
+      "words": 10,
+      "text": "A table is that height because you are that height."
+    },
+    {
+      "id": "s12",
+      "seconds": 7.696,
+      "words": 23,
+      "text": "And how tall a person can be is not a choice either. It is set by how strong chemical bonds are, against gravity."
+    },
+    {
+      "id": "s13",
+      "seconds": 3.504,
+      "words": 11,
+      "text": "Fall much further than your own height, and the bonds lose."
+    },
+    {
+      "id": "s14",
+      "seconds": 3.901,
+      "words": 12,
+      "text": "Your toast lands butter side down because of the size of atoms."
+    }
+  ]
+}

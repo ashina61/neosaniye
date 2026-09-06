@@ -1,0 +1,65 @@
+{
+  "duration": 60.9,
+  "fps": 30,
+  "physics": {
+    "g": 9.81,
+    "table_m": 0.75,
+    "tall_m": 3.0,
+    "omega_rad_s": 8.48,
+    "_": "omega is fixed at the edge and does not change in flight, and fall time goes as sqrt(h). So four times the height is twice the fall and twice the turn: 190 degrees from a table, 380 from three metres. Nothing in the film is fitted \u2014 those two numbers are one number."
+  },
+  "drops": [
+    {
+      "t": 0.52,
+      "h": 0.75,
+      "rate": 1.0,
+      "land": "wet",
+      "where": "kitchen"
+    },
+    {
+      "t": 10.2,
+      "h": 0.75,
+      "rate": 0.125,
+      "land": "soft",
+      "where": "fall"
+    },
+    {
+      "t": 27.8,
+      "h": 0.75,
+      "rate": 0.55,
+      "land": "wet",
+      "where": "compare"
+    },
+    {
+      "t": 27.8,
+      "h": 3.0,
+      "rate": 0.55,
+      "land": "dry",
+      "where": "compare"
+    },
+    {
+      "t": 56.3,
+      "h": 0.75,
+      "rate": 1.0,
+      "land": "wet",
+      "where": "kitchen"
+    }
+  ],
+  "narration": {
+    "s01": 1.1,
+    "s02": 3.8,
+    "s03": 7.0,
+    "s04": 9.6,
+    "s05": 15.0,
+    "s06": 18.4,
+    "s07": 21.6,
+    "s08": 26.5,
+    "s09": 31.2,
+    "s10": 35.2,
+    "s11": 37.4,
+    "s12": 40.7,
+    "s13": 48.7,
+    "s14": 52.9
+  },
+  "subscribe_at": 57.6
+}

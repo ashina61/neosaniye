@@ -1,0 +1,20 @@
+{
+  "title": "Butter Side Down",
+  "voice": "kokoro v1.0 am_michael, 24kHz, local",
+  "lines": [
+    {"id":"s01","text":"Toast really does land butter side down."},
+    {"id":"s02","text":"It is not luck, and it is not Murphy's law."},
+    {"id":"s03","text":"Watch what actually happens at the edge."},
+    {"id":"s04","text":"It does not fall flat. It pivots on the edge, and leaves the table already turning."},
+    {"id":"s05","text":"From a table, it has time for about half a turn."},
+    {"id":"s06","text":"And half a turn is exactly the wrong number."},
+    {"id":"s07","text":"Butter side up. A hundred and eighty degrees. Butter side down."},
+    {"id":"s08","text":"To get all the way round, it would have to fall from about three metres."},
+    {"id":"s09","text":"So build a three metre table, and the problem goes away."},
+    {"id":"s10","text":"Except you cannot reach it."},
+    {"id":"s11","text":"A table is that height because you are that height."},
+    {"id":"s12","text":"And how tall a person can be is not a choice either. It is set by how strong chemical bonds are, against gravity."},
+    {"id":"s13","text":"Fall much further than your own height, and the bonds lose."},
+    {"id":"s14","text":"Your toast lands butter side down because of the size of atoms."}
+  ]
+}

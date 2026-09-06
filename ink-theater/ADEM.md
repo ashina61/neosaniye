@@ -463,6 +463,58 @@ top, is a **subtraction you can watch**: draw A, draw B over it, then paint
 paper over `min(A, B)`. Where both got to, nothing is left. That is the whole
 device of the seventh video and it is four lines of code.
 
+## Saying what a shot is: the annotation layer
+
+`ink-theater/annotate.js`. The note that produced it was *"in some shots you
+cannot tell what you are looking at"*, and that is a **missing layer**, not a
+drawing problem — every technical illustration ever made has handwritten labels
+and arrows over the picture.
+
+```js
+InkAnnotate.callout(tl, notes, { at: 10.1, out: 13.1, text: "it pivots here",
+                                 x: 640, y: 300, to: [248, 400], bend: 40 });
+InkAnnotate.measure(tl, notes, { at: 27, out: 30.6, from: [462,1150], to: [462,1000],
+                                 text: "75 cm", side: 52 });
+InkAnnotate.ring(tl, notes, { at: 29.1, out: 30.6, cx: 396, cy: 1120, r: 78, sy: 0.52 });
+```
+
+- **A `#notes` group, outside every setup and inside the camera.** Outside the
+  setups so a cut does not take a label with it; inside the camera so a label
+  stays stuck to the thing it names when the camera moves.
+- **Aim at the EDGE of the thing, and use `bend`** to swing the shaft clear of
+  whatever is between. An arrow that crosses what it points at is worse than no
+  arrow.
+- **Two on screen at once is the limit.** Three is a diagram, and this channel
+  does not make diagrams.
+- **Keep them out of 1250–1400** (the captions) and inside 40–1040 × 200–1180.
+  A `measure` at x=58 with `side: -50` printed "cm" off the left edge of a
+  render, so put the dimension line where its label has room.
+- **Never annotate and narrate the same fact at the same instant.** The label is
+  for what the caption cannot say: *which part of the picture is which*.
+- They are **written on**, not faded in. A label that fades is a graphic laid
+  over a drawing; a label that is written is part of it.
+
+## Sound: `ink-theater/sfx.py`
+
+Everything this channel has ever made a noise with, synthesised in numpy: no
+sample library, no licence, no key.
+
+`ui_click` · `thud` · `clack` · `scrape` · `whoosh` · `pencil` · `tone` ·
+`room` / `reverb` · `place` · and the mix rules that are not negotiable —
+`DUCK = 0.86`, `VOICE_PEAK = 0.93`, `speech_key()`, and
+**`voice_over_bed_db()`, which must be printed by every mix.py and must read
++10 dB or better.**
+
+- **`SUBSCRIBE_TAP = 1.48`** — seconds after `InkBrand.subscribe()`'s `at`, when
+  the hand lands. Put a `ui_click` there. A button that does not click has not
+  been pressed, and the seventh video shipped without one.
+- **Two sounds for the same event, differing only in timbre, can carry an
+  argument.** In the eighth video a wet slap and a dry clack are the punchline
+  and the narration never mentions either.
+- A reverb tail longer than the gap between the events it is applied to erases
+  the rhythm of a piece. Measure it: fold the envelope at the beat period and
+  look at peak-to-trough.
+
 ## Mist, and revealing a place
 
 A door you have not walked through yet is the whole point of a door. So what is
