@@ -30,7 +30,7 @@ Nothing is tuned to produce the arc; the arc is what those three numbers do.
 import json, base64, numpy as np
 
 FPS      = 30
-DUR      = 58.20
+DUR      = 61.60
 FRAMES   = int(round(DUR * FPS))
 N        = 120
 SUB      = 4                      # integration substeps per rendered frame
@@ -45,7 +45,7 @@ def mean_rate(t):
     if t < 8.30:  return 4.00 + (2.00 - 4.00) * (t - 7.40) / 0.90
     if t < 49.40: return 2.00
     if t < 54.50: return 2.00 + (3.70 - 2.00) * (t - 49.40) / 5.10
-    return 3.70
+    return 3.70                       # and it stays scattered under the end card
 
 rng   = np.random.default_rng(SEED)
 eps   = rng.normal(0.0, REL_SIG, N)          # each person's rate, as a fraction

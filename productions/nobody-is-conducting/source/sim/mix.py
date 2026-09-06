@@ -84,7 +84,7 @@ bed = 0.86 * dry + 0.34 * wet
 rate = np.array(SIM["rate"])
 comp = np.interp(np.arange(NS)/SR, np.arange(len(rate))/FPS, np.sqrt(4.0/rate))
 env  = np.clip((np.arange(NS)/SR - 0.20) / 1.00, 0, 1)                   # in
-env *= np.clip((DUR - np.arange(NS)/SR) / 1.6, 0, 1)                     # out
+env *= np.clip((DUR - np.arange(NS)/SR) / 2.6, 0, 1)                     # out
 bed *= (comp * env)[:, None]
 bed /= (np.abs(bed).max() + 1e-9)
 
@@ -111,17 +111,40 @@ for sid, at in AT.items():
     if s.ndim > 1: s = s.mean(1)
     s = resample_poly(s, SR, sr)
     p = int(at * SR); vox[p:p+len(s)] += s
-vox *= 0.78 / (np.abs(vox).max() + 1e-9)
+vox *= 0.93 / (np.abs(vox).max() + 1e-9)
 
-# duck the room under the voice — 4.5 dB, slow, so it never pumps
-d = np.convolve(np.abs(vox), np.ones(int(0.14*SR))/int(0.14*SR), mode="same")
-d = np.clip(d / (d.max() + 1e-9) * 3.4, 0, 1)
-d = np.convolve(d, np.ones(int(0.22*SR))/int(0.22*SR), mode="same")
-mix *= (1.0 - 0.40 * d)[:, None]
+# Duck the room under the voice. The first cut used 0.40 — four and a half
+# decibels — and the narration was inaudible under two hundred and forty claps
+# a second. A dense broadband bed needs FOURTEEN, and it needs to open early
+# and close late or the first syllable of every line is eaten.
+#
+# The gate is built from the speech envelope: fast attack (30ms) so it is
+# already down before the word arrives, slow release (400ms) so it never pumps
+# between words inside a sentence.
+sm = np.convolve(np.abs(vox), np.ones(int(0.02*SR))/int(0.02*SR), mode="same")
+key = np.clip(sm / (np.percentile(sm[sm > 1e-4], 70) + 1e-9), 0, 1) ** 0.5
+# widen the key both ways so the duck is open before the word and stays open
+# across the gaps inside a sentence
+wide = np.maximum(np.convolve(key, np.ones(int(0.30*SR)), mode="same"), 0)
+key = np.clip(wide / (int(0.30*SR) * 0.22), 0, 1)
+key = np.convolve(key, np.ones(int(0.16*SR))/int(0.16*SR), mode="same")
+DUCK = 0.86                                               # 17 dB. Measured, not guessed — see the check at the bottom.
+mix *= (1.0 - DUCK * key)[:, None]
 mix += np.stack([vox, vox], axis=1)
 
 mix = mix[:int(DUR * SR)]
 mix *= 0.90 / (np.abs(mix).max() + 1e-9)
 sf.write("../assets/audio/mix.wav", mix, SR)
-print(f"{nclap} claps · {DUR}s · peak {np.abs(mix).max():.3f} · "
-      f"rms {np.sqrt((mix**2).mean()):.4f}")
+
+# Is the voice actually above the room? Measure it, in the band the voice lives
+# in, over the frames where somebody is speaking. Broadcast practice wants the
+# dialogue 10-15 dB over the bed; under about 8 it starts costing you words.
+from scipy.signal import sosfilt as _sf, butter as _bt
+band = _bt(4, [300/(SR/2), 4000/(SR/2)], btype="band", output="sos")
+NT = mix.shape[0]
+speech = key[:NT] > 0.5
+def rms(x): return float(np.sqrt((x**2).mean()) + 1e-12)
+v = _sf(band, vox[:NT])[speech]
+b = _sf(band, (mix.mean(1) - vox[:NT]))[speech]
+print(f"{nclap} claps · {DUR}s · peak {np.abs(mix).max():.3f} · rms {np.sqrt((mix**2).mean()):.4f}")
+print(f"voice over room, 300Hz-4kHz, while speaking: {20*np.log10(rms(v)/rms(b)):+.1f} dB")

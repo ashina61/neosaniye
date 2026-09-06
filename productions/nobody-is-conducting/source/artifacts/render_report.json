@@ -2,7 +2,7 @@
   "renderer": "hyperframes 0.8.29",
   "fps": 30,
   "size": "1080x1920",
-  "duration_seconds": 58.2,
+  "duration_seconds": 61.6,
   "simulation": {
     "model": "globally coupled Kuramoto",
     "oscillators": 120,
@@ -19,15 +19,17 @@
     "music": "none purchased or licensed \u2014 a low pad synthesised in numpy whose amplitude is the Kuramoto order parameter r",
     "sfx": "17,121 claps synthesised in numpy from the simulation, seated, panned, and convolved with a 260ms room",
     "built_by": "sim/mix.py",
-    "loudness_lufs": -14.25,
-    "true_peak_db": -1.85,
+    "loudness_lufs": -14.37,
+    "true_peak_db": -1.71,
     "rhythmicity_peak_to_trough": {
       "1-7s at 4.0/s": "1.35:1 (a wash)",
       "12-20s at 2.0/s": "3.13:1 (a pulse)",
       "30-46s at 2.0/s": "2.65:1",
       "53-57s at 3.7/s": "1.44:1 (a wash again)",
       "method": "amplitude envelope of the finished mix, folded at the beat period"
-    }
+    },
+    "voice_over_bed_db": 13.0,
+    "note": "revision 2: the first cut had the voice only +1.4 dB over the applause and was unhearable. Duck raised 0.40 -> 0.86 (17 dB), narration to 0.93 peak, measured at +13.0 dB in 300Hz-4kHz while speaking."
   },
   "providers_used": "none \u2014 zero API keys, zero generated images, zero stock, zero licensed audio",
   "delivery_encode": {
@@ -37,9 +39,11 @@
     "why": "the boil filter puts per-pixel turbulence on 120 figures, which is the most expensive thing there is to compress"
   },
   "probe": {
-    "duration": "58.200000",
-    "size": "20335193",
-    "video": "h264 1080x1920",
-    "audio": "aac 48000 stereo"
+    "duration": "61.600000",
+    "size": "20507414"
+  },
+  "brand": {
+    "logo": "InkBrand.mark() \u2014 two alpha masks, monogram in ink, play triangle in this film's accent (#6B4E9E)",
+    "subscribe": "InkBrand.subscribe() at 58.55s, after the last line"
   }
 }

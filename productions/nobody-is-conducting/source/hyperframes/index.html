@@ -49,6 +49,7 @@
     <script src="ink-puppet.js"></script>
     <script src="ink-figure.js"></script>
     <script src="clips.js"></script>
+    <script src="brand.js"></script>
     <script src="sim.js"></script>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -64,9 +65,9 @@
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="main" data-start="0" data-duration="58.20"
+    <div id="root" data-composition-id="main" data-start="0" data-duration="61.60"
          data-width="1080" data-height="1920" data-fps="30">
-      <section id="scene" class="clip" data-start="0" data-duration="58.20">
+      <section id="scene" class="clip" data-start="0" data-duration="61.60">
         <div class="stage">
           <svg viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -83,6 +84,7 @@
               <g id="ring"   filter="url(#boil)"></g>
               <g id="spread" filter="url(#boil)"></g>
             </g>
+            <g id="brandLayer"></g>
           </svg>
           <div id="overlay"></div>
         </div>
@@ -464,7 +466,7 @@
           adFlash.setAttribute("stroke-width", hot[ADEM_I] ? 8 : 5);
         }
       }
-      tl.to(clockT, { v: 58.20, duration: 58.20, ease: "none", onUpdate: sync }, 0);
+      tl.to(clockT, { v: 61.60, duration: 61.60, ease: "none", onUpdate: sync }, 0);
 
       // ── the house draws itself, back row first ───────────────────────────
       drawOn(wallTop, 0.05, 0.30); drawOn(wallL, 0.14, 0.34); drawOn(wallR, 0.14, 0.34);
@@ -559,6 +561,16 @@
         tl.to(d_, { opacity: 1, duration: 0.18 }, cc[0] - 0.10);
         tl.to(d_, { opacity: 0, duration: 0.20 }, cc[3] ? cc[3] : Math.min(cc[0] + cc[1] + 0.16, next));
       });
+
+      // ── the channel ──────────────────────────────────────────────────────
+      // Outside #camera, so the mark does not zoom with the shot, and outside
+      // the setups, so it survives every cut. The play triangle inside it takes
+      // THIS film's accent.
+      var brandLayer = document.getElementById("brandLayer");
+      var defs = document.querySelector("defs");
+      InkBrand.mark(defs, brandLayer, { x: 46, y: 54, w: 128, ink: INK, accent: STEP, opacity: 0.70 });
+      // and the one ask, after the last line rather than over it
+      InkBrand.subscribe(tl, brandLayer, { at: 58.55, accent: STEP, ink: INK, paper: PAPER });
 
       sync();
       window.__timelines["main"] = tl;

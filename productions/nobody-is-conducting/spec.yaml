@@ -9,7 +9,7 @@
 # This file exists only so daily/lib/publish.py can consume the folder.
 slug: nobody-is-conducting
 title: Nobody Is Conducting
-duration_seconds: 58.20
+duration_seconds: 61.60
 has_burned_captions: true
 produced_by: openmontage/animation (ink-sketch, hyperframes, Kuramoto simulation, Adem)
 produced_on: "2026-09-06"
