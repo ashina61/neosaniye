@@ -4,6 +4,13 @@ Read `productions/MANIFESTO.md`, `productions/STYLE_LEDGER.md` and
 `ink-theater/ADEM.md` before this. Fifth production, first one with Adem in his
 settled design.
 
+**Revision 2.** The first cut shipped with four faults, all of them real:
+the sets were empty, the close-up of the dial carried too much of the film on
+its own, he stood for forty-eight seconds without using his hands, and the
+captions sat at y=1660 — underneath the Shorts title block, where they cannot
+be read at all. Everything below describes the film as it now stands; where a
+decision changed, the old one is named.
+
 ## The design read
 
 **The drawing keeps disappearing, and the man in it never notices.**
@@ -28,25 +35,63 @@ there is nothing left to explain.
 
 ## Layout set: a cut on every look
 
-Two setups and nothing else — **the room**, and **the clock face**. The film
-alternates between them and the cuts land where his eyes would move. Six cuts.
+**Three** setups, eleven cuts:
+
+| | | |
+|---|---|---|
+| **A** | the waiting room | 19.4s |
+| **B** | the clock face | 19.0s |
+| **C** | **his eyes**, close enough to watch them jump | 10.2s |
 
 Video four was one continuous shot with no cut anywhere in it, and said so in
 writing. This is the opposite, deliberately.
 
-The second stretch on the clock face originally ran twenty-one seconds with only
-the caption changing. That is the templating trap the ledger names, so it is cut
-back to him for the two lines that are about him rather than about the clock.
+**C is the fix for the dial.** The first cut had two setups, and the dial was on
+screen for 22.4 seconds of 48.6 — including a six-second stretch under *your
+eyes do not glide, they jump* where the picture was a clock face and the
+sentence was about eyes. The film was describing its own subject over a
+photograph of something else. Setup C is that subject: his fringe, his brows,
+two eyes, and a pair of irises that **jump** — `tl.set`, never a tween, because
+an eye does not glide and that is the entire point. Three and a half jumps a
+second, and the page-blanks at 16.40 / 17.28 / 18.16 land on three of them.
 
-## Motion character: stillness
+It takes nine seconds off the dial and gives the film a picture of the thing it
+is arguing about.
 
-He stands. He turns his back once and turns round once, and on the last line one
-eyebrow moves. That is the entire performance. The only things that move in this
-film are a second hand and the cuts.
+**Cut where the page is already empty.** Six of the eleven cuts are placed
+*inside* a blank — 6.56 sits in the blank at 6.52, 21.52 inside the 300ms one at
+21.40 — so the cut itself is invisible and the audience reads it as a look
+rather than an edit. The film's own device is doubling as its transition.
 
-The stand is `InkPuppet.still("shuffle", 34)` — a real captured frame, not the
-hand-authored `STAND`, which is a different size from the clips. It runs from
-t=0, because otherwise he holds the wrong pose through the whole draw-in.
+**The camera moves too.** Every cut sets a slightly different scale on the
+camera group — 1.00 to 1.08 — so a return to a setup is a new framing rather
+than the same picture again. Without it a cut back reads as the wall having
+changed behind a man standing still.
+
+## Motion character: stillness, done with his hands
+
+His body never leaves one captured pose — the stand is
+`InkPuppet.still("shuffle", 34)`, a real captured frame rather than the
+hand-authored `STAND`, which is a different size from the clips, and it runs
+from t=0 or he holds the wrong pose through the whole draw-in.
+
+But stillness is not the same as doing nothing, and the first cut confused the
+two: he stood for forty-eight seconds with both arms hanging. **He is holding
+his number.** A paper ticket, drawn in pose units, hung off `fig.hand()` every
+frame, and the near arm picks it up and reads it three times — before the first
+look, in the middle, and on the last line. The far hand finds his hip at 13.30
+and stays there. That is a man waiting his turn, and it is the reason his eyes
+keep going to the clock, which is the reason the film has anything to describe.
+
+Prop rules that cost renders to learn, all of them in `ADEM.md`: reaches are
+measured **from the shoulder** (a chest-relative target that is a comfortable
+bent arm in one clip is past the end of the arm in another, and FABRIK answers
+an unreachable target by straightening and pointing); a prop parented to a hand
+needs `pup.setPose()`, never `fig.redraw()`; and every tween that moves him
+carries `onUpdate: sync`, or gsap renders it a frame behind its own gesture.
+
+On the last line one eyebrow moves. That is still the only thing on his face
+that ever does.
 
 ## One clock, drawn twice
 
@@ -80,10 +125,43 @@ Silence, one tick, and a voice. The tick is two decaying partials at 2.15k and
 `dialSeconds` — so it stops dead during the hang, cuts out in every blank, and
 rattles up to fifteen a second during the tally. No music.
 
+## The set
+
+The first cut's room was a floor line, a skirting, one chair and the clock, and
+it read as nothing — which is exactly what it was. It is now a public waiting
+room, and every dimension in it is looked up rather than eyeballed, because
+`MM = SCALE * 534 / 1750` makes that free:
+
+an 860 × 1400 window with its sill at 900 and a roller blind a third of the way
+down · a linked bench of three 420 seats at 450, with a newspaper somebody left
+on the end one · a bin · a notice nobody reads · a pendant lamp straight over
+his head · a 300 clock at 1900 · a 100 skirting · the corner where the room
+turns, just inside the right edge · two joints in the floor.
+
+Two things about it went wrong first and are worth keeping written down:
+
+1. **A filled back rail under a window sill is a kitchen.** The bench's back
+   panel landed at the sill's height and the two fused into one continuous
+   counter, which turned the bench beneath it into base units. Open slats on
+   posts, offset from the window's edge, and it is a bench again. Aligned
+   edges fuse; a dado rail at exactly the sill height did the same thing and
+   was deleted.
+2. **A fringe at half the frame is a black bar.** Setup C's hair started as a
+   band to y=350 and every camera push cropped it into a stripe. Shallow, and
+   it reads as his head again.
+
+## The frame
+
+Shorts eats the bottom of the picture — title, handle, description and scrubber
+below y≈1450, the button rail on the right under y≈950. The first cut put the
+captions at **y=1660**, which is inside all of it: the user could not read a
+single line of the film. They are now at **1250**, the floor is at **1130**, and
+nothing that has to be read goes below 1400.
+
 ## The distinctness test
 
-*Could this be any other video's frame?* No: a wall clock, a chair, and a man
-who does not move.
+*Could this be any other video's frame?* No: a man waiting his turn under a
+clock, and a pair of his own eyes big enough to watch them jump.
 
 *Does it reuse a look I have made before?* No, on all five ledger fields. The
 read, the device, the layout set, the motion character and the palette roles are

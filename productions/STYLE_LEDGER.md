@@ -64,6 +64,7 @@ Changing only these is not a new design — it is the same video with new data:
 
 ### 2026-09-06 — the-second-that-hangs
 *"The clock isn't broken. You were."* · 48.6s · **ink-theater + Adem** / hyperframes / atelier
+· **revised 2026-09-06 (rev 2)** — see the four faults at the bottom of this entry
 
 | Field | Value |
 |---|---|
@@ -71,15 +72,33 @@ Changing only these is not a new design — it is the same video with new data:
 | Ground | Warm white paper `#FCFBF8`, live boil. The channel's fixed ground from here on. |
 | Palette roles | ink `#333333` = the room, the man, the clock · orange `#D4611B` = **invented time and nothing else** — the arc painted backwards into the gap, then the tally of jumps · blue `#2E6E9E` = **once**, drawn round the whole dial as the honest measure against it · **no red** |
 | Signature device | **The blank.** The entire drawing is not there for two frames, nine times — including one 300ms blank under the line *the picture is switched off*, and a last one that never comes back. The tick track is generated from the same function that turns the second hand, so the sound goes out with the picture. The device is the argument. |
-| Layout set | **Two setups, six cuts, cut on the looks.** The room and the clock face, alternating. Video four was one continuous shot with no cut anywhere in it. |
-| Motion character | **Stillness.** One `InkPuppet.still()` pose for the whole film, one turn away and back, and one eyebrow on the last line. The only things that move are a second hand and the cuts. |
+| Layout set | **Three setups, eleven cuts, cut on the looks.** A furnished waiting room · the clock face · **his eyes, close enough to watch them jump**. Six of the eleven cuts are placed inside a blank, so the cut itself is invisible and each one also changes the camera scale. Video four was one continuous shot with no cut anywhere in it. |
+| Motion character | **Stillness, done with his hands.** The body never leaves one `InkPuppet.still()` pose — but he is holding a paper ticket and the near arm reads it three times, and the far hand finds his hip. One turn away and back; one eyebrow on the last line. The only other things that move are a second hand and the cuts. |
 | Type | Patrick Hand, full TTF, HTML overlay divs. The channel's type. |
 | Narrative structure | observation → mechanism → scale → turn |
 | Narration | Piper `en_US-ryan-high`, 143 words over 48.6s |
 | Music | None. One synthesised tick per second of clock time, from `dialSeconds()` — silent through the 2.8s hang, cut out in every blank, fifteen a second under the tally. |
-| Captions | Burned in, Patrick Hand 60px. Three of fourteen lines mark a word, in the colour that beat is using. |
+| Captions | Burned in, Patrick Hand 62px **at y=1250**. Three of fourteen lines mark a word, in the colour that beat is using. |
 | Providers used | none — zero API keys, zero generated images, zero stock |
 | Note | Built as an atelier composition rather than through the 11-stage pipeline; `skills/creative/ink-theater.md` declares the style pipeline-exempt. `source/artifacts/decision_log.json` says so. |
+
+**The four faults in revision 1, and what they cost.** All four were visible to
+the viewer in one pass and none of them was visible in a still:
+
+1. **The captions were at y=1660.** On a 1080×1920 Shorts frame everything below
+   about 1450 is under the title, the handle, the description and the scrubber.
+   Every line of the film was unreadable on the platform it was made for.
+   → **The caption band is 1250–1400. Nothing that must be read goes below
+   1400, and nothing important goes right of 900 below y=950 either** (the
+   button rail). See `productions/ENVIRONMENT.md`.
+2. **The sets were empty.** "A room" was a floor line, a skirting, one chair and
+   the clock. → **A place needs about ten objects, and `mm()` makes them free.**
+3. **The dial carried 22 of 48 seconds**, including six seconds of clock face
+   under a sentence about eyes. → **When the film has a subject, show the
+   subject.** The fix was a third setup, not a shorter one.
+4. **He stood for forty-eight seconds with both arms hanging.** `fig.carry` and
+   `fig.hold` existed and were unused. → **Stillness is a body that does not
+   travel, not a character that does nothing.** Give him something to hold.
 
 ### 2026-09-05 — the-doorway-did-it
 *"Why you forget the second you walk in."* · 47.0s · **ink-theater + ink-puppet** / hyperframes / atelier
@@ -98,6 +117,10 @@ Changing only these is not a new design — it is the same video with new data:
 | Music | None. Three synthesised event sounds: a pencil scratch under the draw-in, a wooden clack as the lid stamps, a duller thud on the kick that goes nowhere. |
 | Captions | Burned in, Patrick Hand at 62px under the figure's feet. 13 of 28 chunks mark a load-bearing word, and the mark takes the colour the drawing is using on that same beat. |
 | Providers used | none — zero API keys, zero generated images, zero stock |
+
+**Burned for future videos (video 5):** the page going blank as a device, the
+one-object-drawn-twice trick, a cut hidden inside the device, and the
+big-close-up-of-his-own-eyes setup.
 
 **Burned for future videos:** a machine disguised as architecture, an errand as a
 coloured object that can be taken, the world-slides-past-a-fixed-character

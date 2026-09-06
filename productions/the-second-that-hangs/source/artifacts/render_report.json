@@ -8,7 +8,8 @@
     "music": "none",
     "sfx": "one synthesised tick per second of clock time, generated from dialSeconds()",
     "loudness_lufs": -14.06,
-    "true_peak_db": -2.12
+    "true_peak_db": -2.12,
+    "note": "unchanged from revision 1 \u2014 dialSeconds() and the BLANKS list were not touched, so the tick track and the narration mix still line up frame for frame"
   },
   "probe": {
     "programs": [],
@@ -24,7 +25,16 @@
     ],
     "format": {
       "duration": "48.600000",
-      "size": "4128498"
+      "size": "4551542"
     }
-  }
+  },
+  "revision": 2,
+  "revision_2_changes": [
+    "captions moved from y=1660 to y=1250: at 1660 every line sat under the Shorts title block and could not be read",
+    "setup A rebuilt as a furnished waiting room (window+blind+sill, linked bench, newspaper, bin, notice, pendant lamp, wall corner, floor joints) instead of a floor line, a skirting and one chair",
+    "setup C added \u2014 his eyes, with ballistic iris jumps \u2014 which takes the dial from 22.4s to 19.0s and gives the film a picture of its own subject",
+    "he now holds a paper ticket and reads it three times; the far hand goes to his hip at 13.30. Previously both arms hung for 48 seconds",
+    "eleven cuts instead of six, six of them placed inside a blank; each cut also sets a different camera scale",
+    "figure rescaled 1.95 -> 1.42 and the ground raised 1600 -> 1130 to clear the caption band"
+  ]
 }

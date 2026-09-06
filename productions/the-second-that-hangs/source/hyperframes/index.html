@@ -4,34 +4,41 @@
     <meta charset="UTF-8" />
     <!--
       THE SECOND THAT HANGS — chronostasis, and the forty thousand small
-      blindnesses a day that cause it.
+      blindnesses a day that cause it.                          (revision 2)
 
       DESIGN READ: the drawing keeps disappearing, and the man in it never
-      notices. The page itself is the subject. Video four's read was a doodle
-      losing an errand to a doorway; this one is not about anything the
-      character does, it is about what is missing from the frame.
+      notices. The page itself is the subject.
 
       SIGNATURE DEVICE: the blank. Every time his gaze jumps, the entire
-      drawing is not there for two frames. Sixty milliseconds of nothing, eight
-      times in the film, and the sound goes with it — the clock's tick is
-      driven by the same function as its hand, so when the picture stops the
-      tick stops too. The device IS the idea; there is nothing to explain.
+      drawing is not there for two frames. The clock's tick is driven by the
+      same function as its hand, so when the picture stops the tick stops too.
 
-      LAYOUT SET: a cut on every look. Two setups — the room, and the clock
-      face — and the film alternates between them. Video four was one
-      continuous shot with no cut anywhere in it; this is the opposite.
+      LAYOUT SET: a cut on every look. THREE setups now, not two —
+        A  the waiting room
+        B  the clock face
+        C  HIS EYES, close enough to watch them jump
+      C is the film's actual subject and it was missing: the piece talked
+      about saccades over a picture of a dial. It also takes nine seconds off
+      the dial, which was carrying too much of the film on its own.
 
-      MOTION CHARACTER: stillness. He stands, he turns his back, he turns
-      round. The only things that move in this film are a second hand and the
-      cuts. One walk, four seconds, at the end.
+      MOTION CHARACTER: stillness, with his hands. He stands the whole film —
+      the body never leaves one captured pose — but he is holding a numbered
+      ticket, and the near arm reads it, drops it, reads it again. That is a
+      man waiting, and it is the reason his eyes keep jumping.
 
-      ONE CLOCK. drawClock() draws it, and both setups call it — so the clock
-      in the close-up is provably the same object as the clock on the wall,
-      down to the number of minute marks.
+      ONE CLOCK. drawClock() draws it, and both A and B call it — so the face
+      in the close-up is provably the same object as the one on the wall.
 
       SCALE. Everything is a real measurement. He is 534 units crown to sole
-      and a person is 1750mm, so the page is 0.595 px/mm: a 300mm wall clock,
-      its centre 1900mm off the floor, a 450 seat, a 100 skirting.
+      and a person is 1750mm, so the page is 0.433 px/mm: a 300 wall clock at
+      1900 off the floor, an 860x1400 window with its sill at 900, a 450 seat,
+      a 100 skirting, a 900 dado.
+
+      THE FRAME. Shorts eats the bottom of the picture: the title, the handle,
+      the description and the scrubber live below y=1450, and the button rail
+      owns the right edge under y=950. Nothing that has to be read goes there.
+      The floor line is at 1130 and the captions run 1250-1400, which is the
+      last clear band on the page.
     -->
     <script src="gsap.min.js"></script>
     <script src="ink-theater.js"></script>
@@ -46,8 +53,10 @@
       .stage { position: absolute; inset: 0; background: #FCFBF8; }
       .stage svg { position: absolute; inset: 0; display: block; width: 1080px; height: 1920px; }
       #overlay { position: absolute; inset: 0; }
-      .cap { position: absolute; left: 60px; width: 960px; top: 1660px; text-align: center;
-             font-family: "InkHand", cursive; font-size: 60px; line-height: 1.18; color: #333333; opacity: 0; }
+      /* 1250, not 1660. At 1660 the second line of every caption sits under
+         the Shorts title block and cannot be read at all. */
+      .cap { position: absolute; left: 56px; width: 968px; top: 1250px; text-align: center;
+             font-family: "InkHand", cursive; font-size: 62px; line-height: 1.16; color: #333333; opacity: 0; }
       .cap b { font-weight: normal; }
     </style>
   </head>
@@ -74,6 +83,7 @@
                 <g id="wide" filter="url(#boil)"></g>
                 <g id="actorScale"><g id="actorFace"><g id="actorMount"></g></g></g>
                 <g id="close" filter="url(#boil)"></g>
+                <g id="eyes" filter="url(#boil)"></g>
                 <g id="smearG" filter="url(#smear)" opacity="0"></g>
               </g>
             </g>
@@ -88,18 +98,21 @@
       var IT = window.InkTheater, IP = window.InkPuppet, IF = window.InkFigure;
       var tl = gsap.timeline({ paused: true });
       var NS = "http://www.w3.org/2000/svg";
-      if (document.fonts && document.fonts.load) { document.fonts.load("60px InkHand"); }
+      if (document.fonts && document.fonts.load) { document.fonts.load("62px InkHand"); }
 
       var INK = IF.ADEM.ink, PAPER = IF.ADEM.paper, DIM = "#8A857A";
       // Orange is the invented time and nothing else. Blue appears once, at the
       // end, as the honest measure against it. No red in this film.
       var MADE_UP = "#D4611B", TRUE_TIME = "#2E6E9E";
-      var CX = 540, GROUND = 1600, SCALE = 1.95;
+      // He stands right of centre so the look at the clock crosses the frame,
+      // and the floor sits at 1130 so the caption band below it is clear page.
+      var CX = 690, GROUND = 1130, SCALE = 1.42;
       var MM = (SCALE * 534) / 1750;
       function mm(v) { return v * MM; }
 
       var wide = document.getElementById("wide");
       var close = document.getElementById("close");
+      var eyes = document.getElementById("eyes");
       var smearG = document.getElementById("smearG");
       var blank = document.getElementById("blank");
       var camera = document.getElementById("camera");
@@ -130,11 +143,20 @@
         for (i = 0; i < pts.length; i++) s += (i ? "L" : "M") + pts[i][0].toFixed(1) + " " + pts[i][1].toFixed(1) + " ";
         return s + (close_ ? "Z" : "");
       }
+      function line(x0, y0, x1, y1, sw, parent, color, amp) {
+        return stroke(dd(seg([x0, y0], [x1, y1], amp == null ? 1.4 : amp, 100)), sw || 5, color || INK, parent);
+      }
+      function poly(pts, sw, parent, fill, color) {
+        var d = "", i;
+        for (i = 0; i < pts.length; i++) {
+          var a = pts[i], b = pts[(i + 1) % pts.length];
+          d += dd(seg(a, b, 1.4), false);
+        }
+        return node("path", { d: d + "Z", fill: fill || "none", stroke: color || INK,
+                              "stroke-width": sw || 5, "stroke-linejoin": "round" }, parent);
+      }
       function box(x0, y0, x1, y1, sw, parent, fill) {
-        return node("path", { d: dd(seg([x0, y0], [x1, y0], 1.4).concat(seg([x1, y0], [x1, y1], 1.4),
-                                    seg([x1, y1], [x0, y1], 1.4), seg([x0, y1], [x0, y0], 1.4)), true),
-                              fill: fill || "none", stroke: INK, "stroke-width": sw || 5,
-                              "stroke-linejoin": "round" }, parent);
+        return poly([[x0, y0], [x1, y0], [x1, y1], [x0, y1]], sw, parent, fill);
       }
       function ring(cx, cy, r, sw, color, parent, fill) {
         var pts = [], i;
@@ -157,9 +179,6 @@
       }
 
       // ── ONE clock, drawn twice ───────────────────────────────────────────
-      // A 300mm wall clock. Both setups call this, so the face in the close-up
-      // is provably the same object as the one on the wall — same twelve hour
-      // marks, same sixty minute marks, same hands.
       function drawClock(parent, cx, cy, R) {
         var c = {};
         c.g = node("g", {}, parent);
@@ -189,12 +208,11 @@
       }
 
       // ══ THE CLOCK'S OWN TIME ═════════════════════════════════════════════
-      // One function drives the hand AND the tick track in the audio, so when
-      // the picture stops the sound stops with it. It runs at one second per
-      // second, stands completely still through the hang, and whirls at the
-      // end. Everything about the second hand is derived, never tweened.
-      var T_START = 3.00;          // the clock starts running
-      var HANG0 = 8.10, HANG1 = 10.90;   // the second that does not move
+      // One function drives the hand AND the tick track in the audio. Do not
+      // touch these numbers without regenerating the mix — the ticks were cut
+      // from this function and from the BLANKS list below.
+      var T_START = 3.00;
+      var HANG0 = 8.10, HANG1 = 10.90;
       var SPIN0 = 36.10, SPIN1 = 42.30, SPIN_RATE = 46;
       function dialSeconds(t) {
         if (t <= T_START) return 0;
@@ -204,35 +222,103 @@
         if (t <= SPIN0) return a + (t - HANG1);
         var b = a + (SPIN0 - HANG1);
         if (t <= SPIN1) return b + (t - SPIN0) * SPIN_RATE;
-        // and back to one second per second, or the hand is still whirling on
-        // the wall behind him in the last shot
         return b + (SPIN1 - SPIN0) * SPIN_RATE + (t - SPIN1);
       }
 
-      // ══ SETUP A — the room ═══════════════════════════════════════════════
-      var SKIRT = mm(100), skY = GROUND - SKIRT;
-      var aGround = stroke(dd(seg([-600, GROUND], [1700, GROUND], 2.2, 110)), 5, INK, wide);
-      var aSkirt = stroke(dd(seg([-600, skY], [1700, skY], 1.4, 100)), 4, INK, wide);
-      var CLOCK_X = 812, CLOCK_Y = GROUND - mm(1900), CLOCK_R = mm(300) / 2;
+      // ══ SETUP A — the waiting room ═══════════════════════════════════════
+      // A room, not a floor line. Everything below is a looked-up dimension:
+      // a 900 dado, an 860x1400 window with its sill on the dado, a linked
+      // bench of three 420 seats at 450, a 300 clock at 1900, a 100 skirting.
+      var SET = [];                                   // draw-in order
+      function A(el) { SET.push(el); return el; }
+
+      var skY   = GROUND - mm(100);
+      var sillY = GROUND - mm(900);
+
+      var aGround = A(line(-40, GROUND, 1120, GROUND, 5, wide, INK, 2.2));
+      var aSkirt  = A(line(-40, skY, 1120, skY, 4, wide));
+      // the room turns a corner just inside the right edge — one line, and the
+      // wall stops being infinite
+      var corner  = A(line(1036, 0, 1036, GROUND, 3, wide, DIM));
+      // two joints in the floor: the only thing that says the floor is a plane
+      var floorJ  = A(stroke(dd(seg([120, GROUND + 46], [980, GROUND + 46], 1.2, 120)) +
+                             dd(seg([250, GROUND + 100], [860, GROUND + 100], 1.2, 120)), 3, DIM, wide));
+
+      // the window, its sill sitting on the dado
+      var WX0 = 82, WW = mm(860), WH = mm(1400);
+      var WX1 = WX0 + WW, WY1 = sillY, WY0 = WY1 - WH;
+      var winFrame  = A(box(WX0, WY0, WX1, WY1, 5, wide));
+      var winReveal = A(box(WX0 + 14, WY0 + 14, WX1 - 14, WY1 - 14, 3, wide));
+      var winBars   = A(stroke(dd(seg([(WX0 + WX1) / 2, WY0 + 14], [(WX0 + WX1) / 2, WY1 - 14], 1.2, 110)) +
+                               dd(seg([WX0 + 14, WY0 + WH * 0.44], [WX1 - 14, WY0 + WH * 0.44], 1.2, 110)), 3, INK, wide));
+      var sill      = A(box(WX0 - 16, WY1, WX1 + 16, WY1 + 18, 5, wide, PAPER));
+      // a roller blind, half down. Paper-filled, so it covers the glazing bars.
+      var BLY = WY0 + WH * 0.32;
+      var blind     = A(box(WX0 + 14, WY0 + 14, WX1 - 14, BLY, 4, wide, PAPER));
+      var blindHem  = A(line(WX0 + 14, BLY, WX1 - 14, BLY, 7, wide));
+      var blindFold = A(stroke(dd(seg([WX0 + 78, WY0 + 20], [WX0 + 78, BLY - 8], 1.0, 90)) +
+                               dd(seg([WX0 + 176, WY0 + 20], [WX0 + 176, BLY - 8], 1.0, 90)) +
+                               dd(seg([WX0 + 274, WY0 + 20], [WX0 + 274, BLY - 8], 1.0, 90)), 3, DIM, wide));
+      var blindPull = A(stroke("M" + ((WX0 + WX1) / 2) + " " + BLY + " L" + ((WX0 + WX1) / 2) + " " + (BLY + 46), 3, INK, wide));
+      var blindRing = A(ring((WX0 + WX1) / 2, BLY + 56, 11, 3, INK, wide));
+
+      // a linked bench under the window. Two open slats on posts, not a panel:
+      // a filled back rail lands just under the window sill and the two of them
+      // read as one continuous counter with base units below it. Offset from
+      // the window's edge for the same reason — aligned edges fuse.
+      var BX0 = 104, SEATW = mm(420), BX1 = BX0 + SEATW * 3;
+      var seatY = GROUND - mm(450), backY = GROUND - mm(760);
+      var benchSeat = A(box(BX0, seatY, BX1, seatY + mm(40), 5, wide, PAPER));
+      var benchDiv  = A(stroke(dd(seg([BX0 + SEATW, seatY], [BX0 + SEATW, seatY + mm(40)], 1.0, 90)) +
+                               dd(seg([BX0 + SEATW * 2, seatY], [BX0 + SEATW * 2, seatY + mm(40)], 1.0, 90)), 3, INK, wide));
+      var benchSlat = A(stroke(dd(seg([BX0 + 16, backY], [BX1 - 16, backY], 1.2, 110)) +
+                               dd(seg([BX0 + 16, backY + 48], [BX1 - 16, backY + 48], 1.2, 110)), 9, INK, wide));
+      var benchPost = A(stroke(dd(seg([BX0 + 14, backY - 8], [BX0 + 14, seatY], 1.0, 90)) +
+                               dd(seg([BX0 + SEATW, backY - 8], [BX0 + SEATW, seatY], 1.0, 90)) +
+                               dd(seg([BX0 + SEATW * 2, backY - 8], [BX0 + SEATW * 2, seatY], 1.0, 90)) +
+                               dd(seg([BX1 - 14, backY - 8], [BX1 - 14, seatY], 1.0, 90)), 4, INK, wide));
+      var benchLegs = A(stroke(dd(seg([BX0 + 20, seatY + mm(40)], [BX0 + 20, GROUND], 1.2, 90)) +
+                               dd(seg([BX0 + SEATW * 1.5, seatY + mm(40)], [BX0 + SEATW * 1.5, GROUND], 1.2, 90)) +
+                               dd(seg([BX1 - 20, seatY + mm(40)], [BX1 - 20, GROUND], 1.2, 90)), 5, INK, wide));
+      // somebody left a newspaper on the end seat
+      var magX = BX0 + SEATW * 2.5;
+      var mag  = A(poly([[magX - 62, seatY - 4], [magX + 58, seatY - 12], [magX + 62, seatY + 2], [magX - 58, seatY + 10]], 4, wide, PAPER));
+      var magF = A(line(magX - 58, seatY - 1, magX + 60, seatY - 8, 3, wide));
+
+      // a bin between the bench and where he stands
+      var bin    = A(poly([[560, GROUND - mm(300)], [632, GROUND - mm(300)], [622, GROUND], [570, GROUND]], 5, wide, PAPER));
+      var binRim = A(line(556, GROUND - mm(300) + 12, 636, GROUND - mm(300) + 12, 4, wide));
+
+      // a notice on the wall, the kind nobody in a waiting room ever reads
+      var NX0 = 802, NY0 = 486, NX1 = 992, NY1 = 620;
+      var noticeBox = A(box(NX0, NY0, NX1, NY1, 5, wide, PAPER));
+      var noticeLn  = A(stroke(dd(seg([NX0 + 20, NY0 + 34], [NX1 - 20, NY0 + 34], 1.2, 90)) +
+                               dd(seg([NX0 + 20, NY0 + 66], [NX1 - 42, NY0 + 66], 1.2, 90)) +
+                               dd(seg([NX0 + 20, NY0 + 98], [NX1 - 26, NY0 + 98], 1.2, 90)), 4, INK, wide));
+
+      // a pendant light, straight over his head
+      var lampCord  = A(line(CX, -10, CX, 126, 3, wide));
+      var lampShade = A(poly([[CX - 26, 126], [CX + 26, 126], [CX + 64, 208], [CX - 64, 208]], 5, wide, PAPER));
+      var lampGlow  = A(line(CX - 58, 216, CX + 58, 216, 3, wide, DIM));
+
+      var CLOCK_X = 900, CLOCK_Y = GROUND - mm(1900), CLOCK_R = mm(300) / 2;
       var wallClock = drawClock(wide, CLOCK_X, CLOCK_Y, CLOCK_R);
-      // a chair, because this is a room where a man waits: 450 seat, 900 back
-      var CH_X = 168, CH_W = mm(440), CH_S = GROUND - mm(450);
-      var chairG = node("g", {}, wide);
-      var chSeat = box(CH_X, CH_S, CH_X + CH_W, CH_S + mm(40), 5, chairG, PAPER);
-      var chLegs = stroke("M" + (CH_X + mm(40)) + " " + (CH_S + mm(40)) + " L" + (CH_X + mm(40)) + " " + GROUND +
-                          " M" + (CH_X + CH_W - mm(40)) + " " + (CH_S + mm(40)) + " L" + (CH_X + CH_W - mm(40)) + " " + GROUND, 5, INK, chairG);
-      var chBack = stroke("M" + (CH_X + mm(30)) + " " + CH_S + " L" + (CH_X + mm(30)) + " " + (GROUND - mm(900)) +
-                          " M" + (CH_X + CH_W - mm(60)) + " " + CH_S + " L" + (CH_X + CH_W - mm(60)) + " " + (GROUND - mm(880)) +
-                          " M" + (CH_X + mm(20)) + " " + (GROUND - mm(880)) + " L" + (CH_X + CH_W - mm(50)) + " " + (GROUND - mm(860)), 5, INK, chairG);
+      var CLOCK_PARTS = [wallClock.case_, wallClock.bezel, wallClock.marks, wallClock.hours,
+                         wallClock.hour, wallClock.min, wallClock.sec];
 
       // ══ SETUP B — the clock face ═════════════════════════════════════════
       var BR = 352, BX = 540, BY = 690;
+      // it hangs on a wall; it does not float. A hook, a cord, and a shadow.
+      var bHook = stroke("M" + BX + " " + (BY - BR - 96) + " L" + BX + " " + (BY - BR - 18), 5, INK, close);
+      var bShade = stroke(function () {
+        var s = "", i, p;
+        for (i = 0; i <= 24; i++) { p = polar(BX + 16, BY + 12, BR + 13, 12 + i * 6); s += (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1) + " "; }
+        return s;
+      }(), 9, DIM, close);
       var bigClock = drawClock(close, BX, BY, BR);
       gsap.set(close, { opacity: 0 });
 
-      // the gap in the tape: an arc of the minute track that is simply missing,
-      // and the orange that gets painted backwards into it
-      var GAP_FROM = -66, GAP_TO = -6;          // degrees on the dial
+      var GAP_FROM = -66, GAP_TO = -6;
       function arcPath(r, from, to, steps) {
         var s = "", i, p;
         for (i = 0; i <= steps; i++) {
@@ -248,19 +334,57 @@
       var fill = stroke(arcPath(BR * 0.80, GAP_TO, GAP_FROM, 26), 13, MADE_UP, close);
       gsap.set(fill, { opacity: 0 });
 
-      // the tally: one orange tick on the rim per jump, then all of them slid
-      // together into a single wedge, with the whole dial marked in blue
       var tallyG = node("g", {}, close), ticks = [];
       for (var q = 0; q < 60; q++) {
         var a0 = q * 6 - 90;
-        // ±1.8 degrees, not ±2.6: at 6 degrees apart the wider ones touch and
-        // the tally reads as one solid band instead of a count
         ticks.push(stroke(arcPath(BR * 1.02, a0 - 1.8, a0 + 1.8, 3), 9, MADE_UP, tallyG));
       }
       gsap.set(ticks, { opacity: 0 });
       var wedge = stroke(arcPath(BR * 1.02, -90, -54, 14), 13, MADE_UP, close);
       var whole = stroke(arcPath(BR * 1.14, -90, 268, 90), 5, TRUE_TIME, close);
       gsap.set([wedge, whole], { opacity: 0 });
+
+      // ══ SETUP C — his eyes ═══════════════════════════════════════════════
+      // The film is about what the eyes do, and for five versions it showed a
+      // dial while saying so. This is the same face he already has, close
+      // enough to see the one thing on it that matters: it does not glide.
+      // His fringe is the only solid mass on the character and it is what
+      // makes this crop read as HIM and not as a pair of eyes.
+      var EY = 690, ELx = 336, ERx = 744, EHW = 132, LID_UP = 74, LID_DN = 62;
+      function eyeShape(cx) {
+        return IF.smooth([
+          [cx - EHW, EY], [cx - EHW * 0.52, EY - LID_UP * 0.86], [cx, EY - LID_UP],
+          [cx + EHW * 0.52, EY - LID_UP * 0.82], [cx + EHW, EY],
+          [cx + EHW * 0.50, EY + LID_DN * 0.86], [cx, EY + LID_DN], [cx - EHW * 0.50, EY + LID_DN * 0.88]
+        ], true);
+      }
+      // the fringe. Shallow: at half the frame it stops being a silhouette and
+      // becomes a black bar, and every camera push crops it into one.
+      var frPts = [[-40, -40], [1120, -40], [1120, 148]];
+      var frEdge = seg([1120, 148], [-40, 258], 11, 90);
+      for (var fi = 1; fi < frEdge.length; fi++) frPts.push(frEdge[fi]);
+      var fringe = node("path", { d: IF.smooth(frPts, true), fill: INK, stroke: "none" }, eyes);
+      var strand = stroke("M846 196 L826 296 M318 240 L306 330 M566 218 L552 300", 8, INK, eyes);
+      // flat. A brow that rises to the nose is a scowl, and he is not scowling
+      // — he is waiting, which is the whole situation of the film.
+      var browL = stroke(dd(seg([ELx - 128, 500], [ELx + 128, 512], 1.8, 90)), 20, INK, eyes);
+      var browR = stroke(dd(seg([ERx - 128, 512], [ERx + 128, 500], 1.8, 90)), 20, INK, eyes);
+      var eyeL = node("path", { d: eyeShape(ELx), fill: PAPER, stroke: INK, "stroke-width": 8, "stroke-linejoin": "round" }, eyes);
+      var eyeR = node("path", { d: eyeShape(ERx), fill: PAPER, stroke: INK, "stroke-width": 8, "stroke-linejoin": "round" }, eyes);
+      var creaseL = stroke(dd(seg([ELx - 104, EY - 60], [ELx + 100, EY - 106], 1.8, 90)), 5, INK, eyes);
+      var creaseR = stroke(dd(seg([ERx - 100, EY - 106], [ERx + 104, EY - 60], 1.8, 90)), 5, INK, eyes);
+      // under-eye lines: without them the features float and it is a mask
+      var underL = stroke(dd(seg([ELx - 88, EY + 96], [ELx + 92, EY + 84], 1.6, 90)), 4, DIM, eyes);
+      var underR = stroke(dd(seg([ERx - 92, EY + 84], [ERx + 88, EY + 96], 1.6, 90)), 4, DIM, eyes);
+      // a bridge that ENDS in a nose, instead of two lines running off the crop
+      var nose = stroke(dd(seg([514, 792], [478, 940], 1.4, 110)) + dd(seg([572, 792], [608, 940], 1.4, 110)) +
+                        "M478 940 Q494 986 543 984 Q592 982 608 940" +
+                        " M504 962 L520 958 M566 958 L582 962", 5, INK, eyes);
+      // both irises live in ONE group: eyes move together, always
+      var irisG = node("g", {}, eyes);
+      node("circle", { cx: ELx, cy: EY, r: 40, fill: INK }, irisG);
+      node("circle", { cx: ERx, cy: EY, r: 40, fill: INK }, irisG);
+      gsap.set(eyes, { opacity: 0 });
 
       // ── the figure ───────────────────────────────────────────────────────
       var mount = document.getElementById("actorMount");
@@ -271,6 +395,26 @@
       var fig = IF.attach(pup, { unit: SCALE });     // this IS Adem
       IP.still("shuffle", 34);
 
+      // ── the ticket ───────────────────────────────────────────────────────
+      // He is waiting his turn, so he is holding his number. It lives in the
+      // actor group in POSE units, hung off fig.hand() every frame — a prop
+      // parented to a hand needs pup.setPose(), never fig.redraw().
+      function pw(px) { return px / SCALE; }
+      var cardG = document.createElementNS(NS, "g");
+      cardG.setAttribute("opacity", "0");
+      pup.ink.appendChild(cardG);                    // after the figure = on top
+      node("path", { d: "M-17 -3 L17 -3 L17 45 L-17 45 Z", fill: PAPER, stroke: INK,
+                     "stroke-width": pw(4.4), "stroke-linejoin": "round" }, cardG);
+      node("path", { d: "M-17 -3 L17 -3 L17 9 L-17 9 Z", fill: INK, stroke: "none" }, cardG);
+      node("path", { d: "M-10 20 L10 20 M-10 32 L6 32", fill: "none", stroke: INK,
+                     "stroke-width": pw(3.4), "stroke-linecap": "round" }, cardG);
+      var card = { lift: 0, tilt: 6 };
+      function paintCard() {
+        var h = fig.hand();
+        cardG.setAttribute("transform",
+          "translate(" + h[0].toFixed(1) + "," + (h[1] + card.lift).toFixed(1) + ") rotate(" + card.tilt.toFixed(1) + ")");
+      }
+
       // ── everything that has to agree, per frame ──────────────────────────
       var clockT = { v: 0 };
       function sync() {
@@ -279,35 +423,64 @@
         wallClock.secG.setAttribute("transform", "rotate(" + deg + " " + CLOCK_X + " " + CLOCK_Y + ")");
         bigClock.secG.setAttribute("transform", "rotate(" + deg + " " + BX + " " + BY + ")");
         pup.setPose(fig.pose());
+        paintCard();
       }
       tl.to(clockT, { v: 48.60, duration: 48.60, ease: "none", onUpdate: sync }, 0);
 
       // ── the page draws itself ────────────────────────────────────────────
-      drawOn(aGround, 0.10, 0.50);
-      drawOn(aSkirt, 0.34, 0.42);
-      drawOn(wallClock.case_, 0.62, 0.52);
-      drawOn(wallClock.bezel, 0.94, 0.30);
-      drawOn(wallClock.marks, 1.18, 0.34);
-      drawOn(wallClock.hours, 1.34, 0.26);
-      drawOn(wallClock.hour, 1.54, 0.18);
-      drawOn(wallClock.min, 1.66, 0.18);
-      drawOn(wallClock.sec, 1.80, 0.16);
-      drawOn(chSeat, 1.10, 0.30); drawOn(chLegs, 1.30, 0.24); drawOn(chBack, 1.46, 0.30);
+      // Twenty-four objects in a second and a third, then the clock, then him.
+      SET.forEach(function (e, i) { drawOn(e, 0.05 + i * 0.052, 0.34); });
+      CLOCK_PARTS.forEach(function (e, i) { drawOn(e, 1.44 + i * 0.085, 0.30); });
       fig.pencilIn(tl, { start: 0.90, each: 0.26 });
       fig.inkIn(tl, { at: 2.30, dur: 0.50 });
+      tl.to(cardG, { opacity: 1, duration: 0.40 }, 2.44);
 
-      // He stands. That is the motion character of this film: the only things
-      // that move are a second hand and the cuts. Started at 0, not at 3, or
-      // he holds InkPuppet.STAND until the choreography begins — a different
-      // size and a different shape from every clip.
+      // The body never leaves one captured pose — the motion character of this
+      // film is stillness — but the arms are not the body. Started at 0, or he
+      // holds InkPuppet.STAND until the choreography begins, which is a
+      // different size and shape from every clip.
       IP.choreograph(tl, pup, [{ clip: "still", dur: 48.60 }], { start: 0 });
 
+      // ── his hands ────────────────────────────────────────────────────────
+      // Reaches are measured FROM THE SHOULDER: a chest-relative target that
+      // is a comfortable bent arm in one clip is past the end of the arm in
+      // another, and FABRIK answers an unreachable target by straightening and
+      // pointing. And every tween that moves him carries onUpdate: sync, or it
+      // renders a frame behind its own gesture.
+      function to(o, v, t) { v.onUpdate = sync; return tl.to(o, v, t); }
+      var HANG = { dx: 26, dy: 152 }, READ = { dx: 102, dy: 30 };
+      fig.carry.dx = HANG.dx; fig.carry.dy = HANG.dy;
+      fig.hold.dx = -34; fig.hold.dy = 118;
+
+      function readTicket(t, hold_) {
+        to(fig.carry, { on: 1, dx: READ.dx, dy: READ.dy, duration: 0.62, ease: IT.ease.settle }, t);
+        to(card, { lift: -26, tilt: -16, duration: 0.62, ease: IT.ease.settle }, t);
+        to(fig.carry, { dx: HANG.dx, dy: HANG.dy, duration: 0.70, ease: IT.ease.soft }, t + hold_);
+        to(card, { lift: 0, tilt: 6, duration: 0.70, ease: IT.ease.soft }, t + hold_);
+        to(fig.carry, { on: 0, duration: 0.34, ease: "none" }, t + hold_ + 0.52);
+      }
+
+      readTicket(3.16, 1.10);      // checks his number, before the first look
+      // the far hand finds his hip and stays there — a man settling in to wait
+      to(fig.hold, { on: 1, duration: 0.70, ease: IT.ease.settle }, 13.30);
+      readTicket(30.95, 1.60);     // still waiting
+      readTicket(43.55, 1.10);     // and one more time, on the last line
+
       // ── the cuts ─────────────────────────────────────────────────────────
-      // A look is a cut. He turns away and back; everything else is the camera.
-      function toClose(t) { tl.set(wide, { opacity: 0 }, t); tl.set(actorScale, { opacity: 0 }, t); tl.set(close, { opacity: 1 }, t); }
-      function toWide(t)  { tl.set(wide, { opacity: 1 }, t); tl.set(actorScale, { opacity: 1 }, t); tl.set(close, { opacity: 0 }, t); }
+      // Every cut that can be lands INSIDE a blank, where it is invisible.
+      var SETUPS = [wide, close, eyes];
+      function cut(t, on, s, ox, oy) {
+        SETUPS.forEach(function (g) { tl.set(g, { opacity: g === on ? 1 : 0 }, t); });
+        tl.set(actorScale, { opacity: on === wide ? 1 : 0 }, t);
+        // a few percent of scale says a camera moved, not a wall
+        tl.set(camera, { scale: s, svgOrigin: ox + " " + oy }, t);
+      }
+      function toWide(t, s)  { cut(t, wide,  s || 1, CX, 620); }
+      function toClose(t, s) { cut(t, close, s || 1, BX, BY); }
+      function toEyes(t, s)  { cut(t, eyes,  s || 1, 540, 660); }
+
       // The flip goes on its own group. Tweening scaleX on #actorScale makes
-      // gsap rewrite that element's transform — including the 1.95 scale that
+      // gsap rewrite that element's transform — including the 1.42 scale that
       // is sitting in it — and he comes out stretched to twice his height.
       var actorFace = document.getElementById("actorFace");
       function turn(t, dir) {
@@ -317,16 +490,36 @@
 
       turn(5.10, -1);          // look away
       turn(6.10, 1);           // look back
-      toClose(6.60);
-      toWide(13.10);
-      toClose(21.95);          // in time for the smear, which is the big face
-      // Back to him for the two lines that are about him, not about the clock.
-      // Without this the film sits on one dial for twenty-one seconds with only
-      // the caption changing, which is the templating trap the ledger warns
-      // about in writing.
-      toWide(30.55);
-      toClose(35.90);
-      toWide(43.20);
+
+      toClose(6.56);           // inside the blank at 6.52
+      toWide(13.06, 1.07);     // inside the blank at 13.02 — and closer on him
+      toEyes(15.32);           // HIS EYES, for the two lines that are about them
+      toEyes(17.30, 1.04);     // ... and closer, on "three, four times a second"
+      toClose(21.52, 1.00);    // inside the 0.30 blank at 21.40
+      toEyes(24.56, 1.06);     // one beat, on "so your brain cuts it out"
+      toClose(25.30, 1.04);
+      toWide(30.55, 1.03);
+      toEyes(35.90, 1.05);     // "every jump, all day long" — watch it happen
+      toClose(39.00, 1.00);    // and here is the bill for it
+      toWide(43.16, 1.05);     // inside the blank at 43.12
+
+      // ── the saccades ─────────────────────────────────────────────────────
+      // Ballistic, never tweened: an eye does not glide, which is the whole
+      // point of the film. tl.set, three and a half times a second, and the
+      // page-blanks at 16.40 / 17.28 / 18.16 land on three of them.
+      var LOOKS = [[0, 0], [54, -12], [-44, 8], [26, 20], [-62, -6], [17, -18], [-24, 15],
+                   [49, 5], [-14, -20], [36, 10], [-52, -10], [7, 18], [64, -4], [-34, -17],
+                   [20, 13], [-59, 5], [42, -15], [-8, 17], [56, 8], [-39, -14], [13, -7]];
+      var li = 0;
+      function saccades(t0, t1, every) {
+        for (var t = t0; t < t1; t += every) {
+          var p = LOOKS[li++ % LOOKS.length];
+          tl.set(irisG, { x: p[0], y: p[1] }, t);
+        }
+      }
+      saccades(15.36, 21.50, 0.29);
+      saccades(24.58, 25.28, 0.24);
+      saccades(35.94, 38.98, 0.21);   // faster: this is the "all day long" one
 
       // ── THE BLANKS ───────────────────────────────────────────────────────
       // Two frames each. The whole drawing is not there. The tick track in the
@@ -353,30 +546,26 @@
       tl.to(gapMask, { opacity: 0, duration: 0.40 }, 29.30);
 
       // ── every jump, all day ──────────────────────────────────────────────
+      // The tally now lands after the cut back from his eyes, so it arrives as
+      // a burst rather than crawling round the rim for four and a half seconds.
+      tl.to([gapEdge, fill], { opacity: 0, duration: 0.40 }, 35.60);
       ticks.forEach(function (e, i) {
-        tl.to(e, { opacity: 1, duration: 0.001 }, 36.30 + i * 0.075);
+        tl.to(e, { opacity: 1, duration: 0.001 }, 39.10 + i * 0.028);
       });
-      tl.to([gapEdge, fill], { opacity: 0, duration: 0.40 }, 35.90);
-      // they collect into one wedge — a tenth of the dial — and blue measures
-      // the whole of it against them
-      tl.to(ticks, { opacity: 0, duration: 0.30 }, 40.90);
-      tl.set(wedge, { opacity: 1 }, 41.00);
-      drawOn(wedge, 41.00, 0.50, "power2.out");
+      tl.to(ticks, { opacity: 0, duration: 0.26 }, 40.94);
+      tl.set(wedge, { opacity: 1 }, 41.02);
+      drawOn(wedge, 41.02, 0.46, "power2.out");
       tl.set(whole, { opacity: 1 }, 41.40);
       drawOn(whole, 41.40, 1.30, "power1.inOut");
 
-      // The one thing on his face that moves, once, on the last line. He does
-      // not react to anything else in the film.
-      tl.to(fig.face, { brow: 5.5, duration: 0.34, ease: IT.ease.settle, onUpdate: sync }, 44.60);
-      tl.to(fig.face, { brow: 0, duration: 0.60, ease: IT.ease.soft, onUpdate: sync }, 45.30);
+      // The one thing on his face that moves, once, on the last line.
+      to(fig.face, { brow: 5.5, duration: 0.34, ease: IT.ease.settle }, 44.90);
+      to(fig.face, { brow: 0, duration: 0.60, ease: IT.ease.soft }, 45.60);
 
       // ── the last blank, and it stays ─────────────────────────────────────
-      tl.set(blank, { opacity: 0 }, 46.00);
+      tl.set(blank, { opacity: 0 }, 46.20);
 
       // ── captions ─────────────────────────────────────────────────────────
-      // Burned in, Patrick Hand, in the clear band under the picture. The one
-      // marked word in each line takes the colour the drawing is using on that
-      // beat — orange for invented time, blue for the real thing.
       var CAPS = [
         [3.20, 2.95, "Find a clock with a second hand.<br>Look away, then look back."],
         [6.60, 1.46, "The first second is <b style='color:#D4611B'>too long</b>."],
@@ -398,9 +587,6 @@
         d_.className = "cap"; d_.innerHTML = c[2];
         overlay.appendChild(d_);
         var IN = c[0] - 0.10;
-        // Out before the next one is in. Held for the line's own length plus a
-        // beat, two captions end up on the page at once wherever the lines run
-        // close together — and four of them do.
         var next = CAPS[i + 1] ? CAPS[i + 1][0] - 0.26 : 1e9;
         var OUT = c[3] ? c[3] : Math.min(c[0] + c[1] + 0.14, next);
         tl.to(d_, { opacity: 1, duration: 0.18 }, IN);

@@ -148,3 +148,25 @@ Three things that are not obvious and each cost a cycle:
 the review loop this repository otherwise lacks. `validate` runs real WCAG
 contrast checks in headless Chrome — it is how the errand orange was caught at
 2.95:1 against the paper and darkened to pass.
+
+## The Shorts safe frame (1080×1920)
+
+Everything this channel makes is watched inside the YouTube Shorts / Reels /
+TikTok chrome, and the chrome covers the picture. Measure against this, not
+against the bare frame:
+
+| band | what owns it |
+|---|---|
+| y > ~1450 | the title, the channel handle, the description, the scrubber |
+| x > ~900, y 950–1560 | the like / comment / share button rail |
+| **y 200–1400** | **yours** |
+
+House numbers that came out of it:
+
+- **captions 1250–1400**, never lower
+- **the ground line at ~1130**, so the caption band is clear page under the figure
+- nothing load-bearing in the button rail
+
+`the-second-that-hangs` shipped its first cut with captions at y=1660 and not a
+single line of it could be read on the platform it was made for. It cost a full
+re-render. `ink-theater/ADEM.md` carries the same table.

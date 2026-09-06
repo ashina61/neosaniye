@@ -195,6 +195,32 @@ the rule is about locomotion — it is prop work, and it is necessary: a generic
 walk cycle swings an empty arm, so an object riding in that hand reads as
 swinging loose rather than being carried.
 
+**Give him something to hold.** A character standing with both arms hanging is
+a character doing nothing, and "the motion character is stillness" does not
+license it — stillness means a body that does not travel, not a man who never
+moves. In `the-second-that-hangs` he waits in a queue holding his paper number,
+and the near arm picks it up and reads it three times across the film. One prop
+and three reaches turned forty-eight seconds of standing into a performance,
+and the prop also explains why he keeps looking at the clock.
+
+A prop lives in **pose units** inside `pup.ink`, appended *after* the figure
+group so it paints on top, and is hung off `fig.hand()` from `sync()`:
+
+```js
+var cardG = document.createElementNS(NS, "g");
+pup.ink.appendChild(cardG);                 // after fig's group = in front
+function paintCard() {
+  var h = fig.hand();
+  cardG.setAttribute("transform", "translate(" + h[0] + "," + (h[1] + card.lift) +
+                                  ") rotate(" + card.tilt + ")");
+}
+```
+
+Its stroke widths divide by `SCALE` exactly like the figure's, and it is inside
+the flip group, so a turn takes the prop with it. `card.lift` and `card.tilt`
+are plain numbers the timeline tweens alongside `fig.carry`, which is what makes
+a hand *pick something up* rather than teleport it.
+
 **Holding something that moves on its own** — a door handle, a crank, a rung —
 uses `from: "point"` and `InkFigure.toPose()`, per frame:
 
@@ -248,6 +274,86 @@ Every one of these cost a render to find. None of them is visible in a still.
 
 ---
 
+## The frame he is standing in
+
+He is only ever seen on Shorts / Reels / TikTok, and those interfaces eat the
+picture. On a 1080×1920 frame:
+
+| band | what owns it |
+|---|---|
+| y > ~1450 | the title, the handle, the description, the scrubber |
+| x > ~900, y 950–1560 | the like / comment / share rail |
+| y 200–1400 | **yours** |
+
+`the-second-that-hangs` shipped its first cut with the captions at **y=1660**
+and not one line of the film could be read. The rule that came out of it:
+
+- **caption band 1250–1400**, and never below 1400
+- **his feet on the floor at about y=1130**, which leaves the caption band clear
+  page under him
+- at `SCALE ≈ 1.42` he is 758px tall, which is 39% of the frame — a full figure
+  with a room around him, and still readable at thumbnail size
+- nothing that carries meaning goes into the button rail
+
+Work the scale backwards from the caption band, not from how big he looks.
+
+## Dressing a place
+
+"A room" is not a floor line and one object. The first cut of
+`the-second-that-hangs` had a ground line, a skirting, a chair and the clock,
+and the note that came back was *arkaplan sahneler hiç bişey yok* — and it was
+right. **About ten objects**, and because `mm()` exists they cost nothing but
+the looking-up:
+
+> a window 860 × 1400 with its sill at 900 and a roller blind a third down · a
+> linked bench of three 420 seats at 450 · a newspaper somebody left on it · a
+> bin · a notice nobody reads · a pendant lamp on a cord from the top edge · a
+> 300 clock at 1900 · a 100 skirting · the corner where the room turns, just
+> inside the frame · two joints in the floor
+
+Three things that go wrong, all of them invisible until it is rendered:
+
+1. **Aligned edges fuse.** A bench's back rail landed at the window sill's
+   height and the two became one continuous counter — which turned the bench
+   under it into base units, and the waiting room into a kitchen. A dado rail
+   at exactly the sill height did the same thing. Offset the heights, offset
+   the ends, and if two horizontals want the same y, delete one.
+2. **A filled panel between two rails is a cupboard door.** Bench backs are
+   **open slats on posts**; you should see the wall through the furniture.
+3. **Put the lamp over his head, not next to the clock.** One object directly
+   above him anchors the composition and stops the wall being a field of
+   scattered things.
+
+Draw the whole set in about 1.4 seconds with a stagger —
+`SET.forEach(function (e, i) { drawOn(e, 0.05 + i * 0.052, 0.34); })` — then the
+hero object, then him. The page building itself fast is half the charm.
+
+## Big close-ups of him
+
+He has a face, and at 40px of head radius nobody can see it. A **macro of his
+eyes** is a legitimate third setup and it is often the shot the film actually
+needs — `the-second-that-hangs` spent six seconds on a clock face under the
+sentence *your eyes do not glide, they jump*, which is describing the subject
+over a picture of something else.
+
+Build it from his own vocabulary, at about 8× :
+
+- **the fringe** — a filled ink band across the top with a swept lower edge, and
+  two or three strands hanging. This is what makes the crop read as *him*.
+  **Keep it shallow** (bottom edge around y 150–260 on a 1920 frame): at half
+  the frame it stops being a silhouette and becomes a black bar, and every
+  camera push crops it into a stripe.
+- **flat brows.** A brow that rises toward the nose is a scowl. His are flat.
+- **almond eyes**, paper fill and ink outline, with an upper-lid crease and a
+  DIM under-eye line — without the under-eye line the features float and it
+  reads as a mask rather than a face.
+- **a nose that ends.** Two bridge lines that run off the bottom of the crop are
+  a beard; give it a tip curve and two nostril dashes.
+- **both irises in one group.** Eyes move together, always.
+
+And when they move, **`tl.set`, never a tween** — a saccade is ballistic, and a
+tweened eye is the one thing the shot exists to disprove.
+
 ## Mist, and revealing a place
 
 A door you have not walked through yet is the whole point of a door. So what is
@@ -291,6 +397,11 @@ He can be in more than one place. A cut is two world groups and a swap:
 - **Move the camera as well as the set.** A few percent of scale on the camera
   group says a camera moved. Without it a cut can read as the wall having
   changed behind a man standing still.
+- **Hide the cut inside the device.** If the piece has a moment where the page
+  is already empty — a blank, a flash, a wipe — put the cut there. Six of
+  `the-second-that-hangs`'s eleven cuts land inside a two-frame blank, so the
+  audience reads a look rather than an edit, and the film's own idea is doing
+  the editing.
 - **Give the new place something to say in its first second.** He walks about
   850px a second; two seconds of blank wall between the doorway and the first
   object is two seconds of nothing.
