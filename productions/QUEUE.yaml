@@ -34,7 +34,9 @@ topics_used:
 queue:
   # ── Adem, the ink, the logo and the end card ────────────────────────────
   - slug: butter-side-down
-    state: pending
+    state: published
+    published_on: "2026-09-06"
+    url: "https://youtube.com/shorts/qWoiB6npUhE"
     upload: youtube
     privacy: public
     why_first: "the most relatable hook of the eight, and it is funny"
