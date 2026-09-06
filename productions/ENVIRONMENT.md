@@ -295,3 +295,35 @@ generator this repository used to have is retired at the bottom of
 `daily-short.yml`, and the reason is written there — a pipeline that invents a
 video every day invents the same video every day. Automating the BUILD is free.
 Automating the taste is what made them all look alike.
+
+## Publishing on a schedule: `productions/QUEUE.yaml`
+
+One video a week, with nobody in the loop.
+`.github/workflows/publish-queue.yml` runs Tuesdays 18:00 Istanbul, takes the
+**first** entry whose `state` is `pending`, publishes it exactly as that entry
+says, and commits the state back so next week takes the next one.
+
+```
+bin/queue.py status        what is where
+bin/queue.py next          the next entry, as KEY=VALUE for a workflow
+bin/queue.py done <slug>   mark it published
+```
+
+The five things that make it safe to leave running are all reactions to how the
+retired generator failed:
+
+1. **A master switch.** `enabled: false` and the job does nothing. Merging the
+   workflow does not start publishing.
+2. **Nothing falls back.** Every entry states its own `upload` and `privacy`,
+   and an entry that does not is skipped. A scheduled run carries no inputs, so
+   `inputs.x || default` becomes the whole configuration — which is how this
+   repository once published everywhere, publicly, twice a day.
+3. **No model runs in the job.** The runner holds the upload tokens; the only
+   thing it is trusted to do is move a committed file.
+4. **The file is proved 1080×1920 with an audio track** before it goes near an
+   account.
+5. **It publishes one and stops**, and only ticks the entry off if the upload
+   actually succeeded. A bad video costs a week, not the queue.
+
+`workflow_dispatch` has `dry_run: true` by default — it says what it would do
+and does nothing.

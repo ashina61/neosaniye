@@ -1,0 +1,77 @@
+# THE PUBLISH QUEUE
+#
+# `publish-queue.yml` reads this file, takes the FIRST entry whose state is
+# `pending`, publishes it exactly as that entry says, and writes the state back
+# to this file in a commit. One video a week, with nobody in the loop.
+#
+# WHY EVERY ENTRY CARRIES ITS OWN SETTINGS. The generator this repository used
+# to run is retired at the bottom of daily-short.yml, and the note there is the
+# reason this file is shaped the way it is: a scheduled run carries no inputs,
+# so `inputs.x || default` fallbacks become its whole configuration, and it
+# quietly published everywhere, publicly, twice a day. Nothing here falls back
+# to anything. If an entry does not say `upload` and `privacy`, it is skipped.
+#
+# THE MASTER SWITCH IS OFF. Nothing is published while `enabled` is false. Turn
+# it on when you have watched the first few and you are happy for them to go.
+
+enabled: false
+
+# Tuesdays, 18:00 Istanbul. The workflow's cron is the authority; this is here
+# so the file says what it does.
+schedule: "0 15 * * 2   # 18:00 Europe/Istanbul, weekly"
+
+queue:
+  # ── Adem, the ink, the logo and the end card ────────────────────────────
+  - slug: butter-side-down
+    state: pending
+    upload: youtube
+    privacy: public
+    why_first: "the most relatable hook of the eight, and it is funny"
+
+  - slug: why-you-cannot-tickle-yourself
+    state: pending
+    upload: youtube
+    privacy: public
+    why_first: "the viewer can test it in the first two seconds"
+
+  - slug: nobody-is-conducting
+    state: pending
+    upload: youtube
+    privacy: public
+
+  # ── Adem, but made before the channel had a logo or an end card ─────────
+  - slug: the-second-that-hangs
+    state: pending
+    upload: youtube
+    privacy: public
+    note: "no logo and no subscribe card — both were added after it shipped"
+
+  - slug: the-doorway-did-it
+    state: pending
+    upload: youtube
+    privacy: public
+    note: >-
+      no logo, no end card, and its source no longer reproduces (it was fitted
+      to the old front-on mocap projections). The committed mp4 is unaffected.
+
+  # ── Before Adem existed. A different look entirely: instruments, not a
+  #    character. Held, because dropping them into the middle of a run of
+  #    Adem films changes what the channel looks like from one week to the
+  #    next. Change `hold` to `pending` if you want them in.
+  - slug: how-headphones-erase-sound
+    state: hold
+    upload: youtube
+    privacy: public
+    note: "pre-Adem: an oscilloscope in a dark room, no character"
+
+  - slug: the-digit-that-catches-liars
+    state: hold
+    upload: youtube
+    privacy: public
+    note: "pre-Adem: a machine shop for numbers"
+
+  - slug: why-the-sea-rises-twice
+    state: hold
+    upload: youtube
+    privacy: public
+    note: "pre-Adem: a page from a physics book"

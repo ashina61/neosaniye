@@ -1,0 +1,127 @@
+name: Publish the next one in the queue
+
+# One video a week, with nobody in the loop.
+#
+# It reads productions/QUEUE.yaml, takes the FIRST entry whose state is
+# `pending`, publishes it exactly as that entry says, and commits the state back
+# so the next run takes the next one.
+#
+# THE THINGS THAT MAKE THIS SAFE TO LEAVE RUNNING, and every one of them is
+# here because the generator this repository retired did the opposite:
+#
+#  1. The queue has a master switch. `enabled: false` and this job does nothing
+#     at all. A merge of this workflow does not start publishing anything.
+#  2. NOTHING FALLS BACK. Each entry states its own `upload` and `privacy`, and
+#     bin/queue.py skips any entry that does not. A scheduled run carries no
+#     inputs, so `inputs.x || default` is how a pipeline ends up publishing
+#     everywhere, publicly, without anyone choosing that.
+#  3. No model runs in this job and no model-written code is executed. The
+#     runner holds the upload tokens; the only thing it is trusted to do is move
+#     a file that is already committed and already watched.
+#  4. The file is proved to be 1080x1920 with an audio track before it goes
+#     near an account.
+#  5. It publishes ONE and stops. A bad video costs one week, not the queue.
+
+on:
+  schedule:
+    - cron: '0 15 * * 2'        # Tuesdays 18:00 Europe/Istanbul
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Say what it would do, and do nothing'
+        type: boolean
+        default: true
+
+concurrency:
+  group: publish-production     # never at the same time as a manual publish
+  cancel-in-progress: false
+
+permissions:
+  contents: write               # the release, and the state written back
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+
+      - run: pip install --quiet pyyaml requests
+
+      - name: What is in the queue
+        run: python bin/queue.py status
+
+      - name: Take the next one
+        id: q
+        run: python bin/queue.py next >> "$GITHUB_OUTPUT"
+
+      - name: Nothing to do
+        if: steps.q.outputs.slug == ''
+        run: echo "The queue is off, empty, or the next entry is not publishable. See the status above."
+
+      - name: Check the file
+        if: steps.q.outputs.slug != ''
+        id: prod
+        run: |
+          set -euo pipefail
+          DIR="productions/${{ steps.q.outputs.slug }}"
+          test -f "$DIR/spec.yaml" || { echo "missing $DIR/spec.yaml"; exit 1; }
+          VIDEO=$(ls "$DIR"/*_1080x1920.mp4 2>/dev/null | head -1)
+          test -n "$VIDEO" || { echo "no *_1080x1920.mp4 in $DIR"; exit 1; }
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          W=$(ffprobe -v error -select_streams v:0 -show_entries stream=width  -of csv=p=0 "$VIDEO")
+          H=$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 "$VIDEO")
+          test "$W" = "1080" && test "$H" = "1920" || { echo "not 1080x1920: ${W}x${H}"; exit 1; }
+          ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of csv=p=0 "$VIDEO" \
+            | grep -q . || { echo "no audio track"; exit 1; }
+          echo "dir=$DIR" >> "$GITHUB_OUTPUT"
+          echo "OK: $VIDEO  ->  ${{ steps.q.outputs.upload }} / ${{ steps.q.outputs.privacy }}"
+
+      - name: Dry run stops here
+        if: steps.q.outputs.slug != '' && inputs.dry_run
+        run: echo "dry_run — ${{ steps.q.outputs.slug }} would go to ${{ steps.q.outputs.upload }} as ${{ steps.q.outputs.privacy }}. Nothing was published."
+
+      - name: Publish
+        if: steps.q.outputs.slug != '' && !inputs.dry_run
+        env:
+          GITHUB_TOKEN:          ${{ secrets.GITHUB_TOKEN }}
+          YOUTUBE_CLIENT_ID:     ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          META_USER_TOKEN:       ${{ secrets.META_USER_TOKEN }}
+        run: |
+          set -euo pipefail
+          python daily/lib/publish.py \
+            "${{ steps.prod.outputs.dir }}" \
+            --spec "${{ steps.prod.outputs.dir }}/spec.yaml" \
+            --upload '${{ steps.q.outputs.upload }}' \
+            --privacy '${{ steps.q.outputs.privacy }}' \
+            --dest "videos/${{ steps.q.outputs.slug }}"
+
+      # Only after it actually went. A failed upload leaves the entry pending,
+      # so next week tries the same one rather than skipping it silently.
+      - name: Tick it off
+        if: success() && steps.q.outputs.slug != '' && !inputs.dry_run
+        run: |
+          set -euo pipefail
+          BUNDLE="videos/${{ steps.q.outputs.slug }}/publish.json"
+          URL=$(test -f "$BUNDLE" && python -c "import json,sys; print(json.load(open(sys.argv[1])).get('youtube',{}).get('url',''))" "$BUNDLE" || echo "")
+          python bin/queue.py done "${{ steps.q.outputs.slug }}" --url "$URL"
+          git config user.name  "openmontage-queue"
+          git config user.email "openmontage-queue@users.noreply.github.com"
+          git add productions/QUEUE.yaml
+          git commit -m "Published ${{ steps.q.outputs.slug }}" || exit 0
+          git pull --rebase --autostash origin "${{ github.ref_name }}"
+          git push origin "HEAD:${{ github.ref_name }}"
+
+      - uses: actions/upload-artifact@v4
+        if: steps.q.outputs.slug != '' && !inputs.dry_run
+        with:
+          name: bundle-${{ steps.q.outputs.slug }}
+          path: videos/${{ steps.q.outputs.slug }}
+          retention-days: 14
