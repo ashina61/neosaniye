@@ -220,3 +220,48 @@ ffmpeg -y -i renders/vN.mp4 -i assets/audio/mix.wav \
 
 A sparse composition (a room, one figure) compresses to well under a megabyte a
 second on its own and does not need this. Check the size before deciding.
+
+## The mix: measure the voice against the bed, do not guess
+
+`nobody-is-conducting` shipped with the narration **+1.4 dB** over the applause
+and the user could not hear a word of it. The duck was 0.40 — four and a half
+decibels — which is nothing under a broadband bed of 240 claps a second.
+
+Broadcast practice is **dialogue 10–15 dB over the bed**, and under about 8 dB
+you start losing words. Measure it rather than listening for it, because an
+agent cannot listen:
+
+```python
+from scipy.signal import butter, sosfilt
+band = butter(4, [300/(SR/2), 4000/(SR/2)], btype="band", output="sos")
+speech = key > 0.5                      # the ducking key, i.e. "somebody is talking"
+v = sosfilt(band, vox)[speech]
+b = sosfilt(band, (mix.mean(1) - vox))[speech]
+print(20*np.log10(rms(v)/rms(b)), "dB")
+```
+
+Measured on that film: duck 0.40 → **+1.4 dB** · 0.80 → +10.6 · **0.86 → +13.1**
+· 0.90 → +14.7. The house setting is **0.86 with narration at 0.93 peak**.
+
+Build the key from the speech envelope and **widen it both ways** (about 300 ms)
+before smoothing, so the duck is already open before the first syllable and does
+not close in the gaps inside a sentence. A key that tracks the waveform directly
+pumps on every word.
+
+## The channel's marks live in `ink-theater/brand.js`
+
+`InkBrand.mark()` (the logo) and `InkBrand.subscribe()` (the one ask). Both are
+in the shared module, not in any video, so they cannot drift apart between
+productions.
+
+- The logo is two **alpha masks** cut out of the source artwork — the monogram
+  and the play triangle — painted rather than drawn, so the monogram is always
+  ink and **the triangle takes that film's accent colour.** The mark is the
+  channel's, the highlight is the video's, and the brand never fights a
+  palette that is rationed to one meaning.
+- It goes **outside the camera group**, so it does not zoom with the shot, and
+  outside the setups, so it survives every cut. Top left, ~130px, 0.70 opacity.
+- The subscribe beat goes **after the last line, never over one.** It needs
+  about 3 seconds, so the film is built 3 seconds longer than its script and
+  the last shot holds under it. A film that interrupts its own argument to beg
+  has lost the argument.
