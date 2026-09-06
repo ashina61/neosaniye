@@ -327,3 +327,35 @@ retired generator failed:
 
 `workflow_dispatch` has `dry_run: true` by default — it says what it would do
 and does nothing.
+
+## The daily producer
+
+A Routine fires a **fresh session every day at 09:00 Istanbul** with one
+instruction: read `PRODUCE.md` and follow it. It has no memory of the videos
+before it — the repository is the memory, which is what `STYLE_LEDGER.md`,
+`ADEM.md` and `MANIFESTO.md` are for.
+
+```
+Routine   Daily video — Ink Theater
+cron      0 6 * * *      (09:00 Europe/Istanbul)
+session   a new one each firing
+notify    push when it finishes
+```
+
+It ends by running `bin/queue.py add <slug> --topic <id>` and pushing.
+
+**The two jobs are deliberately at different speeds.** The producer runs daily
+and the publisher runs weekly, so a film made today enters the queue behind
+everything already in the line. That gap is the review window. Nothing reaches
+the channel that has not sat in `productions/` for at least as many days as
+there are films ahead of it, and the queue's `enabled` switch is a second gate
+on top of that. `PRODUCE.md` tells the daily session that switch is not its to
+touch.
+
+**If the queue gets longer than about six**, the producer is running faster than
+the ledger can stay honest — the five fields have to be genuinely new every
+time, and there are only so many ways to divide a frame. Slow the cron down
+rather than letting it repeat itself.
+
+To change the pace or stop it: the Routine is `trig_01PHEpQNDJXg2BLV7XJT7X6b`,
+editable from the Routines list on claude.ai or with `update_trigger`.
