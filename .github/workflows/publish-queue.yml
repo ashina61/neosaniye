@@ -35,6 +35,16 @@ name: Publish the next one in the queue
 # publish-production.yml. Merging the branch is what switches the weekly rhythm
 # on.
 
+# GITHUB DOES NOT PICK UP A NEW CRON STRAIGHT AWAY. This workflow landed on
+# main at 13:53 UTC with its first occurrence set for 15:00 UTC the same day,
+# and that occurrence was skipped — GitHub registers new schedules on its own
+# cycle and routinely drops one that close to the push. Scheduled runs are also
+# delayed under load and are best-effort in general.
+#
+# So: the first publish after adding or changing this cron is worth doing by
+# hand (Run workflow, and UNTICK dry_run — it defaults to on). After that the
+# schedule is registered and runs on its own. If a Sunday ever passes with no
+# run, nothing is lost: the entry is still `pending` and the next run takes it.
 on:
   schedule:
     - cron: '0 15 * * 0'        # Sundays 18:00 Europe/Istanbul

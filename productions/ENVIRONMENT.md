@@ -361,6 +361,12 @@ there are films ahead of it, and the queue's `enabled` switch is a second gate
 on top of that. `PRODUCE.md` tells the daily session that switch is not its to
 touch.
 
+**A newly added cron skips its first occurrence.** `publish-queue.yml` went on
+to main at 13:53 UTC with its first run set for 15:00 UTC and nothing happened —
+GitHub registers new schedules on its own cycle. Run it by hand the first time
+after adding or changing the cron, with `dry_run` UNTICKED. Nothing is lost when
+a Sunday is missed: the entry stays `pending` and the next run takes it.
+
 **If the queue gets longer than about six**, the producer is running faster than
 the ledger can stay honest — the five fields have to be genuinely new every
 time, and there are only so many ways to divide a frame. Slow the cron down
