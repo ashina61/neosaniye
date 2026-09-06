@@ -20,6 +20,17 @@ enabled: false
 # so the file says what it does.
 schedule: "0 15 * * 2   # 18:00 Europe/Istanbul, weekly"
 
+topics_used:
+  # the eight already made — these ids must not come round again
+  - noise-cancelling
+  - tides-twice
+  - benfords-law
+  - doorway-effect
+  - chronostasis
+  - applause-sync
+  - self-tickle
+  - buttered-toast
+
 queue:
   # ── Adem, the ink, the logo and the end card ────────────────────────────
   - slug: butter-side-down

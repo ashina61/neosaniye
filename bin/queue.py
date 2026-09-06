@@ -4,6 +4,8 @@
     bin/queue.py status                     what is where
     bin/queue.py next                       the next entry, as KEY=VALUE
     bin/queue.py done <slug> [--url URL]    mark it published
+    bin/queue.py topic                      the next unused topic, as KEY=VALUE
+    bin/queue.py add <slug> --topic <id>    put a finished production on the end
 
 `next` prints nothing but `slug=` when there is nothing to do, so a workflow
 can skip cleanly instead of failing. It also refuses an entry that does not
@@ -85,6 +87,55 @@ def cmd_next(d):
     return 0
 
 
+TOPICS = ROOT / "daily" / "topics.yaml"
+
+
+def cmd_topic(d):
+    """The next topic nobody has made yet. Topics are curated in
+    daily/topics.yaml with the mechanism already written down, so picking one
+    needs no model and cannot invent a physics claim."""
+    used = set(d.get("topics_used") or [])
+    for t in yaml.safe_load(TOPICS.read_text())["topics"]:
+        if t["id"] in used:
+            continue
+        print(f"id={t['id']}")
+        print(f"question={t['question']}")
+        print(f"mechanism={t['mechanism']}")
+        return 0
+    print("id=")
+    print("reason=every topic in daily/topics.yaml has been made", file=sys.stderr)
+    return 0
+
+
+def cmd_add(d, slug, topic):
+    """Put a finished production on the end of the queue. It goes in as
+    `pending`, which means it will be published — but the queue publishes ONE A
+    WEEK, so a video made today sits behind everything already in the line.
+    That gap is the review window, and it is the reason a daily producer and a
+    weekly publisher are safe together."""
+    if any(e.get("slug") == slug for e in d["queue"]):
+        print(f"{slug} is already in the queue"); return 0
+    bad = problems({"slug": slug, "upload": "youtube", "privacy": "public"})
+    if bad:
+        sys.exit(f"{slug} is not shippable: {'; '.join(bad)}")
+    txt = QUEUE.read_text().rstrip("\n")
+    txt += (f"\n\n  - slug: {slug}\n"
+            f"    state: pending\n"
+            f"    upload: youtube\n"
+            f"    privacy: public\n"
+            f"    made_on: \"{datetime.date.today().isoformat()}\"\n")
+    if topic:
+        txt += f"    topic: {topic}\n"
+        if "topics_used:" in txt:
+            txt = txt.replace("topics_used:", f"topics_used:\n  - {topic}", 1)
+        else:
+            txt = txt.replace("queue:", f"topics_used:\n  - {topic}\n\nqueue:", 1)
+    QUEUE.write_text(txt + "\n")
+    n = sum(1 for e in d["queue"] if e.get("state") == "pending") + 1
+    print(f"{slug} added — {n} pending, so it is about {n} weeks out")
+    return 0
+
+
 def cmd_done(d, slug, url):
     txt = QUEUE.read_text()
     hit = None
@@ -121,11 +172,15 @@ def main():
     sub = p.add_subparsers(dest="cmd", required=True)
     sub.add_parser("status")
     sub.add_parser("next")
+    sub.add_parser("topic")
+    ad = sub.add_parser("add"); ad.add_argument("slug"); ad.add_argument("--topic", default="")
     dn = sub.add_parser("done"); dn.add_argument("slug"); dn.add_argument("--url", default="")
     a = p.parse_args()
     d = load()
     if a.cmd == "status": return cmd_status(d)
     if a.cmd == "next": return cmd_next(d)
+    if a.cmd == "topic": return cmd_topic(d)
+    if a.cmd == "add": return cmd_add(d, a.slug, a.topic)
     if a.cmd == "done": return cmd_done(d, a.slug, a.url)
 
 
