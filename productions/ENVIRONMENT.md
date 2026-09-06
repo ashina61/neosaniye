@@ -324,6 +324,15 @@ retired generator failed:
    account.
 5. **It publishes one and stops**, and only ticks the entry off if the upload
    actually succeeded. A bad video costs a week, not the queue.
+6. **It proves the upload happened.** `daily/lib/publish.py` **always returns
+   0** — it catches every upload failure, records it as `failed:` / `skipped:`
+   and exits cleanly, because it is built to publish to several places and not
+   lose the ones that worked. Correct for it, fatal for a queue: a dead token
+   would tick the video off, move on next week, and drop it in silence.
+   `bin/confirm-publish.py` reads the `published.json` the bundle leaves behind
+   and fails the job unless every destination that was asked for came back with
+   a real URL. **That step failing is the safety net**, not an inconvenience —
+   the entry stays `pending` and next week tries the same video.
 
 `workflow_dispatch` has `dry_run: true` by default — it says what it would do
 and does nothing.
