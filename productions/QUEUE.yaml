@@ -42,7 +42,9 @@ queue:
     why_first: "the most relatable hook of the eight, and it is funny"
 
   - slug: why-you-cannot-tickle-yourself
-    state: pending
+    state: published
+    published_on: "2026-09-06"
+    url: "https://youtube.com/shorts/FX-r1lPZctk"
     upload: youtube
     privacy: public
     why_first: "the viewer can test it in the first two seconds"
