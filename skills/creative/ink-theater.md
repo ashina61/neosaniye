@@ -42,6 +42,12 @@ Then stage as beats on one continuous white page with a camera (pan / push).
 ## Characters — Adem, the recurring one
 
 > **Read `ink-theater/ADEM.md` before drawing or posing a character. It is the character sheet, and it is binding.**
+>
+> It also carries, past the character itself: the Shorts safe frame and where
+> captions go, how to dress a place so it reads as one, big close-ups of him,
+> **drawing a crowd** (one mark repeated with variation, rows painted back to
+> front), **driving his arms per frame from an array** instead of from a
+> timeline, and the two gsap traps that each cost a render.
 
 The channel has one recurring character: **Adem** — a young man in a plain t-shirt and straight trousers, real proportions (~6.7 heads), clean line art, and **exactly one solid mass on him: his hair**. He is not redrawn per video: `InkFigure.attach(pup, { unit: SCALE })` IS the character, and `unit` is the only option you pass — it puts his line weight in page pixels so he matches the set instead of rendering at SCALE times its weight. Anything else makes a different character. No colour on him: the palette carries meaning and a character wearing one of those would be lying.
 

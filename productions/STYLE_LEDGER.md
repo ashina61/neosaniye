@@ -62,6 +62,34 @@ Changing only these is not a new design — it is the same video with new data:
 
 ## Ledger
 
+### 2026-09-06 — nobody-is-conducting
+*"Nobody is conducting the applause."* · 58.2s · **ink-theater + Adem + a simulation** / hyperframes / atelier
+
+| Field | Value |
+|---|---|
+| Design read | **The frame is a full house seen from the stage, and the film is the twelve seconds in which two hundred pairs of hands stop being two hundred things.** Nobody in it decides anything, Adem included — he is one of the two hundred. The subject is a statistic, and the statistic is loud. |
+| Ground | Warm white paper `#FCFBF8`, live boil. The channel's fixed ground. |
+| Palette roles | **One accent, and it is a measurement.** ink `#333333` = the hall and the people · grey `#8A857A` = **a clap out of step** · violet `#6B4E9E` = **a clap within half a radian of the room's mean phase, and nothing else.** The amount of violet on the page IS the Kuramoto order parameter — the page goes from a grey shimmer to a wall of violet on one frame and nothing has to say so. First production with a single accent; first with no orange. |
+| Signature device | **The simulation is the film.** `sim/kuramoto.py` integrates 120 globally coupled phase oscillators and writes one array. Every hand in the composition is at the phase that array says, and every one of the 17,121 claps in the soundtrack was synthesised at the instant that array says it crossed. Picture and sound are two readings of the same numbers. The argument is not asserted anywhere in the film — it *runs*, twice, and you can hear both times. |
+| Layout set | **Four setups, fifteen cuts.** The house in real perspective (front row wider than the frame, cropped by it) · one man in it with four neighbours on their own oscillators · the phase ring, which is the measurement · the spread against the pull, which is the proof. |
+| Motion character | **Phase.** Not one thing eases, snaps, springs or travels. Every moving object is a cosine of its own phase — hands on `(1 − cos θ)/2`, dots on the rim at θ, the arrow `r` long at ψ, even the scatter in the diagram bobbing on the phases of the people it stands for. The only tweened positions in the file are the camera and two numbers in one chart. |
+| Type | Patrick Hand, HTML overlay divs, y=1250. The channel's type. |
+| Narrative structure | phenomenon → mechanism → the constraint that forces it → collapse |
+| Narration | **Kokoro v1.0 `am_michael`, local, free, 24kHz.** First production not on Piper, which was the weakest component in the five before it. |
+| Music | **First production with a score, and the score is the physics.** A low pad whose amplitude is `r^1.6` — inaudible while the room disagrees, open when it agrees. Under it, 17,121 synthesised claps in eight timbres, each in a seat, panned and attenuated by where that seat is, through a 260ms room. Nothing licensed, nothing sampled. |
+| Captions | Burned in, Patrick Hand 62px at y=1250. Two of fourteen lines mark a word, in the one accent. |
+| Providers used | none — zero API keys, zero generated images, zero stock, zero licensed audio |
+| Note | Atelier composition; `skills/creative/ink-theater.md` declares the style pipeline-exempt. |
+
+**Burned for future videos:** a simulation as the signature device, an accent
+whose *quantity* is a measured number, a crowd of many small figures in real
+perspective, and a soundtrack synthesised from the same array as the picture.
+
+**Two things that had to be fixed before a crowd read as a crowd,** both now in
+`ADEM.md`: rows go into the DOM **back row first** (front-first collapses eight
+rows of perspective into a flat knitted pattern), and every head needs a few
+percent of jitter in size, height and position — a crowd on a grid is wallpaper.
+
 ### 2026-09-06 — the-second-that-hangs
 *"The clock isn't broken. You were."* · 48.6s · **ink-theater + Adem** / hyperframes / atelier
 · **revised 2026-09-06 (rev 2)** — see the four faults at the bottom of this entry

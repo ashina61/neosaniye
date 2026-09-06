@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!--
+      NOBODY IS CONDUCTING — why applause suddenly locks into rhythm.
+
+      DESIGN READ: the frame is a full house seen from the stage, and the film
+      is the ninety seconds in which two hundred hands stop being two hundred
+      things. Nothing in it is a character doing something; the subject is a
+      statistic, and the statistic is loud.
+
+      SIGNATURE DEVICE: THE SIMULATION IS THE FILM. sim.js is the output of a
+      Kuramoto integration (sim/kuramoto.py) — one phase oscillator per pair of
+      hands, globally coupled. Every hand in this composition is at the phase
+      that model says it is at, and every clap in the soundtrack was synthesised
+      at the instant that model says it crossed. Picture and sound are two
+      readings of one array. Nothing here is animated and nothing is sequenced.
+
+      And the argument is not asserted, it happens: Kuramoto locks when the
+      coupling beats the spread of natural rates, K > 2 sigma sqrt(2/pi), and a
+      crowd's spread of clapping rates is a roughly constant FRACTION of its
+      rate. So the threshold scales with the rate and the coupling does not.
+      4.0 Hz: threshold 6.22, coupling 4.60 — no lock, for anyone, ever.
+      2.0 Hz: threshold 3.11, coupling 4.60 — locks, without anyone deciding to.
+      The room does not choose to slow down; slowing down is the only way it can
+      agree, and agreeing is what it wanted.
+
+      LAYOUT SET: four setups. A the house · B one man in it · C the phase ring,
+      which is the measurement · D the spread of natural rates against the reach
+      of the coupling, which is the proof. Twelve cuts.
+
+      MOTION CHARACTER: PHASE. Not one thing in this film eases, snaps, springs
+      or travels. Every moving object is a cosine of its own phase, and the whole
+      piece is a hundred and twenty of them drifting into alignment and back out.
+      There is exactly one tween on a position anywhere in the file, and it is
+      the camera.
+
+      PALETTE: one accent, and it means one thing. Violet is IN STEP WITH THE
+      ROOM — a clap within half a radian of the crowd's mean phase. It is not a
+      highlight and it is not decoration; the amount of violet on the page is
+      the order parameter, and you are watching a measurement.
+
+      THE FRAME: Shorts owns everything below 1450 and the right rail under 950.
+      The house runs 200-1180, the captions 1250-1400.
+    -->
+    <script src="gsap.min.js"></script>
+    <script src="ink-theater.js"></script>
+    <script src="ink-puppet.js"></script>
+    <script src="ink-figure.js"></script>
+    <script src="clips.js"></script>
+    <script src="sim.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      @font-face { font-family: "InkHand"; src: url("assets/patrickhand.ttf") format("truetype"); font-display: block; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #FCFBF8; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+      .stage { position: absolute; inset: 0; background: #FCFBF8; }
+      .stage svg { position: absolute; inset: 0; display: block; width: 1080px; height: 1920px; }
+      #overlay { position: absolute; inset: 0; }
+      .cap { position: absolute; left: 56px; width: 968px; top: 1250px; text-align: center;
+             font-family: "InkHand", cursive; font-size: 62px; line-height: 1.16; color: #333333; opacity: 0; }
+      .cap b { font-weight: normal; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="58.20"
+         data-width="1080" data-height="1920" data-fps="30">
+      <section id="scene" class="clip" data-start="0" data-duration="58.20">
+        <div class="stage">
+          <svg viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="boil" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="1" seed="1" result="n"/>
+                <feDisplacementMap in="SourceGraphic" in2="n" scale="2.4"/>
+              </filter>
+            </defs>
+            <g id="camera">
+              <g id="house"  filter="url(#boil)"></g>
+              <g id="near"   filter="url(#boil)"></g>
+              <g id="actorScale"><g id="actorFace"><g id="actorMount"></g></g></g>
+              <g id="nearFront" filter="url(#boil)"></g>
+              <g id="ring"   filter="url(#boil)"></g>
+              <g id="spread" filter="url(#boil)"></g>
+            </g>
+          </svg>
+          <div id="overlay"></div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      var IT = window.InkTheater, IP = window.InkPuppet, IF = window.InkFigure;
+      var tl = gsap.timeline({ paused: true });
+      var NS = "http://www.w3.org/2000/svg", TAU = Math.PI * 2;
+      if (document.fonts && document.fonts.load) { document.fonts.load("62px InkHand"); }
+
+      var INK = IF.ADEM.ink, PAPER = IF.ADEM.paper, DIM = "#8A857A";
+      // ONE accent. It means: this pair of hands is within half a radian of the
+      // room's mean phase. How much of it is on the page IS the order parameter.
+      var STEP = "#6B4E9E";
+
+      // ── the array everything is read out of ──────────────────────────────
+      var SIM = window.SIM, N = SIM.n, FPS = SIM.fps, FRAMES = SIM.frames;
+      var TH = (function (b64) {
+        var bin = atob(b64), a = new Uint8Array(bin.length), i;
+        for (i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i);
+        return a;
+      })(SIM.theta);
+      function th(f, i) { return TH[f * N + i] / 256 * TAU; }
+
+      var house = document.getElementById("house");
+      var near = document.getElementById("near");
+      var nearFront = document.getElementById("nearFront");
+      var ring = document.getElementById("ring");
+      var spread = document.getElementById("spread");
+      var camera = document.getElementById("camera");
+      var overlay = document.getElementById("overlay");
+
+      function node(tag, a, parent) {
+        var n = document.createElementNS(NS, tag);
+        for (var k in a) n.setAttribute(k, a[k]);
+        parent.appendChild(n); return n;
+      }
+      function stroke(d, sw, color, parent) {
+        return node("path", { d: d, fill: "none", stroke: color || INK, "stroke-width": sw || 5,
+                              "stroke-linecap": "round", "stroke-linejoin": "round" }, parent);
+      }
+      var seed = 20260908;
+      function rnd() { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296 - 0.5; }
+      function seg(a, b, amp, step) {
+        var n = Math.max(1, Math.round(Math.hypot(b[0] - a[0], b[1] - a[1]) / (step || 90))), out = [], i;
+        for (i = 0; i <= n; i++) {
+          var t = i / n, e = (i === 0 || i === n) ? 0 : 1;
+          out.push([a[0] + (b[0] - a[0]) * t + rnd() * amp * 2 * e,
+                    a[1] + (b[1] - a[1]) * t + rnd() * amp * 2 * e]);
+        }
+        return out;
+      }
+      function dd(pts) { var s = "", i; for (i = 0; i < pts.length; i++) s += (i ? "L" : "M") + pts[i][0].toFixed(1) + " " + pts[i][1].toFixed(1) + " "; return s; }
+      function line(x0, y0, x1, y1, sw, parent, color, amp) {
+        return stroke(dd(seg([x0, y0], [x1, y1], amp == null ? 1.4 : amp, 110)), sw, color, parent);
+      }
+      // a circle as ONE path, so a whole row of heads can be a single element
+      // that draws itself in one stroke
+      function circD(cx, cy, r) {
+        return "M" + (cx - r).toFixed(1) + " " + cy.toFixed(1) +
+               "a" + r.toFixed(1) + "," + r.toFixed(1) + " 0 1,0 " + (2 * r).toFixed(1) + ",0" +
+               "a" + r.toFixed(1) + "," + r.toFixed(1) + " 0 1,0 " + (-2 * r).toFixed(1) + ",0 ";
+      }
+      function drawOn(el, t, dur, ease) {
+        var L = el.getTotalLength();
+        el.style.strokeDasharray = L; el.style.strokeDashoffset = L;
+        tl.to(el, { strokeDashoffset: 0, duration: dur, ease: ease || "none" }, t);
+        tl.set(el, { strokeDasharray: "none" }, t + dur);
+      }
+      function wrap(a) { return Math.atan2(Math.sin(a), Math.cos(a)); }
+
+      // ══ SETUP A — the house, from the stage ══════════════════════════════
+      // Eight raked rows of fourteen and a balcony of eight. Real perspective:
+      // the front row is wider than the frame and is cropped by it, which is
+      // what a house looks like from where the performer stands.
+      var ROWS = 8, COLS = 14;
+      var RS = [1.000, 0.868, 0.755, 0.658, 0.575, 0.505, 0.447, 0.400];
+      var RY = [1178, 1046, 930, 826, 734, 654, 586, 530];
+      var seat = [];
+      var k, c, i;
+      for (k = 0; k < ROWS; k++) {
+        var pitch = 1560 * RS[k] / (COLS - 1);
+        for (c = 0; c < COLS; c++) {
+          // Jitter is not decoration. A crowd drawn on a grid reads as knitting;
+          // a few percent of variation in height, size and position is the whole
+          // difference between two hundred people and a repeat pattern.
+          var hr = 0.250 * pitch * (0.90 + rnd() * 0.34);
+          var x = 540 + (c - (COLS - 1) / 2) * pitch + (k % 2 ? pitch * 0.5 : 0) + rnd() * pitch * 0.20;
+          var y = RY[k] + rnd() * pitch * 0.14;
+          seat.push({ x: x, y: y, r: hr, row: k, lw: Math.max(2.8, 4.8 * RS[k]),
+                      sw: 0.42 * pitch, hy: y - 0.22 * hr, hh: 0.44 * hr,
+                      D: 2.5 * hr, d0: 0.16 * hr });
+        }
+      }
+      var BALP = 122;
+      for (c = 0; c < 8; c++) {
+        var bx = 540 + (c - 3.5) * BALP + rnd() * 16, br = 17 + rnd() * 4;
+        seat.push({ x: bx, y: 416 + rnd() * 6, r: br, row: 8, lw: 2.8,
+                    sw: 40, hy: 416 - 0.22 * br, hh: 0.44 * br, D: 2.5 * br, d0: 0.16 * br });
+      }
+
+      // the room itself
+      var wallTop = line(40, 206, 1040, 206, 3, house, DIM);
+      var wallL = line(46, 206, 46, 1200, 3, house, DIM);
+      var wallR = line(1034, 206, 1034, 1200, 3, house, DIM);
+      var balcRail, balcUnder;
+
+      // Every row is its own group, and the groups go into the DOM BACK ROW
+      // FIRST — otherwise the balcony is painted over the stalls and eight rows
+      // of perspective collapse into a flat pattern, which is what the first
+      // pass of this looked like.
+      var rowHeads = [], rowTorsos = [], hands = [], flashes = [];
+      for (i = 0; i < N; i++) { hands.push(null); flashes.push(null); }
+      var ORDER = [ROWS];                                   // the balcony is furthest
+      for (k = ROWS - 1; k >= 0; k--) ORDER.push(k);
+      ORDER.forEach(function (k2, ord) {
+        if (k2 === ROWS - 1) {                              // the balcony sits in front
+          balcRail = stroke(dd(seg([26, 440], [1054, 440], 1.6, 120)) +
+                            dd(seg([1054, 462], [26, 462], 1.6, 120)), 5, INK, house);
+          balcUnder = line(26, 492, 1054, 492, 3, house, DIM);
+        }
+        var g = node("g", {}, house);
+        var n0 = k2 < ROWS ? k2 * COLS : ROWS * COLS, n1 = k2 < ROWS ? n0 + COLS : N;
+        var td = "", hd = "", j;
+        for (j = n0; j < n1; j++) {
+          var s = seat[j], w = s.sw, r = s.r, y = s.y;
+          // a closed torso, paper-filled, so the row in front hides the row behind
+          td += "M" + (s.x - w) + " " + (y + 1.5 * r) +
+                "L" + (s.x - w * 0.94) + " " + (y + 0.12 * r) +
+                "Q" + (s.x - w * 0.60) + " " + (y - 0.56 * r) + " " + s.x + " " + (y - 0.70 * r) +
+                "Q" + (s.x + w * 0.60) + " " + (y - 0.56 * r) + " " + (s.x + w * 0.94) + " " + (y + 0.12 * r) +
+                "L" + (s.x + w) + " " + (y + 1.5 * r) + "Z ";
+          hd += circD(s.x, y - 1.62 * r, r);
+        }
+        rowTorsos[k2] = node("path", { d: td, fill: PAPER, stroke: INK, "stroke-width": seat[n0].lw,
+                                       "stroke-linejoin": "round" }, g);
+        rowHeads[k2] = node("path", { d: hd, fill: PAPER, stroke: INK, "stroke-width": seat[n0].lw }, g);
+        for (j = n0; j < n1; j++) {
+          var s3 = seat[j];
+          flashes[j] = node("path", { d: function (cx, cy, R) {
+            var d = "", q; for (q = 0; q < 6; q++) { var a = q * Math.PI / 3 + 0.26;
+              d += "M" + (cx + Math.cos(a) * R * 0.46).toFixed(1) + " " + (cy + Math.sin(a) * R * 0.46).toFixed(1) +
+                   "L" + (cx + Math.cos(a) * R).toFixed(1) + " " + (cy + Math.sin(a) * R).toFixed(1) + " "; }
+            return d; }(s3.x, s3.hy, s3.r * 3.0),
+            fill: "none", stroke: DIM, "stroke-width": Math.max(2.6, s3.lw), 
+            "stroke-linecap": "round", opacity: 0 }, g);
+          hands[j] = [node("circle", { cx: s3.x, cy: s3.hy, r: s3.hh, fill: PAPER, stroke: INK,
+                                       "stroke-width": s3.lw * 0.85, opacity: 0 }, g),
+                      node("circle", { cx: s3.x, cy: s3.hy, r: s3.hh, fill: PAPER, stroke: INK,
+                                       "stroke-width": s3.lw * 0.85, opacity: 0 }, g)];
+        }
+      });
+
+      // ══ SETUP B — one man in it ══════════════════════════════════════════
+      var ADEM_I = 45;                     // row 3, seat 3 — a nobody in the crowd
+      var BCX = 548, BGROUND = 1268, BSCALE = 1.36;
+      // Adem is IN the crowd, not in front of it: the row ahead is cropped by
+      // the bottom of the frame and the row behind is over his shoulder. The
+      // four neighbours clap on their own oscillators, so the shot is him
+      // against the people either side of him — which is the whole film.
+      function person(cx, cy, r, sw) {
+        return { torso: "M" + (cx - sw) + " " + (cy + 2.4 * r) +
+                        "L" + (cx - sw * 0.94) + " " + (cy + 0.12 * r) +
+                        "Q" + (cx - sw * 0.60) + " " + (cy - 0.56 * r) + " " + cx + " " + (cy - 0.70 * r) +
+                        "Q" + (cx + sw * 0.60) + " " + (cy - 0.56 * r) + " " + (cx + sw * 0.94) + " " + (cy + 0.12 * r) +
+                        "L" + (cx + sw) + " " + (cy + 2.4 * r) + "Z",
+                 head: circD(cx, cy - 1.62 * r, r) };
+      }
+      var mates = [];                        // [handL, handR, flash, simIndex, x, y, r]
+      (function () {
+        var j, front = [[-46, 1876, 84], [268, 1908, 76], [598, 1884, 88], [906, 1912, 74]];
+        for (j = 0; j < front.length; j++) {
+          var q = person(front[j][0] + 40, front[j][1], front[j][2], front[j][2] * 1.7);
+          node("path", { d: q.torso, fill: PAPER, stroke: INK, "stroke-width": 7, "stroke-linejoin": "round" }, nearFront);
+          node("path", { d: q.head, fill: PAPER, stroke: INK, "stroke-width": 7 }, nearFront);
+        }
+        var back = [[54, 742, 46, 12], [286, 728, 44, 26], [806, 736, 45, 63], [1038, 750, 47, 88]];
+        for (j = 0; j < back.length; j++) {
+          var b = back[j], q2 = person(b[0], b[1], b[2], b[2] * 1.6);
+          node("path", { d: q2.torso, fill: PAPER, stroke: DIM, "stroke-width": 5, "stroke-linejoin": "round" }, near);
+          node("path", { d: q2.head, fill: PAPER, stroke: DIM, "stroke-width": 5 }, near);
+          var hy = b[1] - 0.22 * b[2];
+          mates.push({ hL: node("circle", { cx: b[0], cy: hy, r: b[2] * 0.60, fill: PAPER, stroke: DIM, "stroke-width": 5 }, near),
+                       hR: node("circle", { cx: b[0], cy: hy, r: b[2] * 0.60, fill: PAPER, stroke: DIM, "stroke-width": 5 }, near),
+                       fl: node("path", { d: "", fill: "none", stroke: DIM, "stroke-width": 5, "stroke-linecap": "round", opacity: 0 }, near),
+                       i: b[3], x: b[0], y: hy, r: b[2] });
+        }
+        line(-20, 862, 1100, 862, 3, near, DIM);
+      })();
+      var mount = document.getElementById("actorMount");
+      var pup = IP.create(mount, { cx: BCX, ground: BGROUND, boil: "boil", headR: IF.ADEM.headR - 2, strokeWidth: 4 });
+      var actorScale = document.getElementById("actorScale");
+      actorScale.setAttribute("transform",
+        "translate(" + BCX + "," + BGROUND + ") scale(" + BSCALE + ") translate(" + (-BCX) + "," + (-BGROUND) + ")");
+      var fig = IF.attach(pup, { unit: BSCALE });    // this IS Adem
+      IP.still("shuffle", 34);
+      fig.carry.from = "point"; fig.hold.from = "point";
+      fig.carry.on = 1; fig.hold.on = 1;
+      // his own clap flash, in the actor group so it sits with his hands
+      var adFlash = node("path", { d: "", fill: "none", stroke: INK, "stroke-width": 5,
+                                   "stroke-linecap": "round", opacity: 0 }, pup.ink);
+
+      // ══ SETUP C — the phase ring ═════════════════════════════════════════
+      // The measurement. One dot per pair of hands at the phase it is at, and
+      // one arrow whose LENGTH is how much the room agrees. Both are read from
+      // the same array as the house; this is the same thing, counted.
+      var RX = 540, RY0 = 700, RR = 328;
+      var ringRim = stroke(function () {
+        var p = [], j; for (j = 0; j <= 72; j++) { var a = j / 72 * TAU;
+          p.push([RX + Math.cos(a) * (RR + rnd() * 3), RY0 + Math.sin(a) * (RR + rnd() * 3)]); }
+        return IF.smooth(p, true);
+      }(), 5, INK, ring);
+      var ringWin = stroke("", 15, STEP, ring);        // the half-radian window
+      gsap.set(ringWin, { opacity: 0.30 });
+      var dots = [];
+      for (i = 0; i < N; i++) dots.push(node("circle", { cx: RX, cy: RY0, r: 9, fill: INK }, ring));
+      var arrow = stroke("", 9, STEP, ring);
+      var arrowHead = node("path", { d: "", fill: STEP, stroke: "none" }, ring);
+      var pivot = node("circle", { cx: RX, cy: RY0, r: 8, fill: INK }, ring);
+      gsap.set(ring, { opacity: 0 });
+
+      // ══ SETUP D — the spread against the pull ════════════════════════════
+      // The proof, and the only diagram in the film. Every tick is one person's
+      // OWN clapping rate. The violet bar is how far the room can pull someone
+      // in. Halving the rate halves the spread and leaves the bar alone — so
+      // the room slows down not because it wants to but because that is the
+      // only way the scatter ever fits inside the bar.
+      var SX0 = 96, SX1 = 984, SY = 1052, SFMAX = 5.4;
+      function fx(f) { return SX0 + (SX1 - SX0) * f / SFMAX; }
+      var sAxis = line(SX0 - 34, SY, SX1 + 34, SY, 5, spread);
+      var sGrad = stroke(function () {
+        var d = "", j; for (j = 1; j <= 5; j++) d += "M" + fx(j).toFixed(1) + " " + SY + "L" + fx(j).toFixed(1) + " " + (SY + 24) + " ";
+        return d;
+      }(), 4, INK, spread);
+      // one dot per person, at their OWN clapping rate. Scattered vertically so
+      // a hundred and twenty of them are a cloud you can see the width of,
+      // rather than a rug you cannot count.
+      var sDots = [], sYs = [];
+      for (i = 0; i < N; i++) { sYs.push(596 + ((i * 97) % 100) / 100 * 372); sDots.push(node("circle", { cx: 0, cy: sYs[i], r: 9, fill: INK }, spread)); }
+      var sBand = node("path", { d: "", fill: STEP, "fill-opacity": 0.13, stroke: "none", opacity: 0 }, spread);
+      var sEdges = stroke("", 6, STEP, spread); gsap.set(sEdges, { opacity: 0 });
+      var sMean = stroke("", 4, DIM, spread);
+      // two measurements, one over the other: how far the room can pull (violet)
+      // and how far apart the room actually is (ink). The film is which is wider.
+      var sPull = stroke("", 14, STEP, spread); gsap.set(sPull, { opacity: 0 });
+      var sPullCap = stroke("", 8, STEP, spread); gsap.set(sPullCap, { opacity: 0 });
+      var sSpread = stroke("", 8, INK, spread); gsap.set(sSpread, { opacity: 0 });
+      var sSpreadCap = stroke("", 5, INK, spread); gsap.set(sSpreadCap, { opacity: 0 });
+      function bar(y, x0, x1, cap) {
+        return ["M" + x0.toFixed(1) + " " + y + "L" + x1.toFixed(1) + " " + y,
+                "M" + x0.toFixed(1) + " " + (y - cap) + "L" + x0.toFixed(1) + " " + (y + cap) +
+                "M" + x1.toFixed(1) + " " + (y - cap) + "L" + x1.toFixed(1) + " " + (y + cap)];
+      }
+      var D = { rate: 4.00, r: 0.13 };
+
+      // ══ per frame ════════════════════════════════════════════════════════
+      var clockT = { v: 0 };
+      var life = new Float32Array(N), hot = new Uint8Array(N);
+      function collectFlashes(f) {
+        life.fill(0);
+        for (var back = 4; back >= 0; back--) {
+          var g = f - back; if (g < 0 || g >= FRAMES) continue;
+          var arr = SIM.claps[g], j;
+          for (j = 0; j < arr.length; j++) {
+            var cc = arr[j], p = cc >= 0 ? cc : -cc - 1;
+            life[p] = 1 - back / 5; hot[p] = cc >= 0 ? 1 : 0;
+          }
+        }
+      }
+      var shown = { house: 1, ring: 0, spread: 0, adem: 0 };
+
+      function sync() {
+        var f = Math.max(0, Math.min(FRAMES - 1, Math.round(clockT.v * FPS)));
+        var psi = SIM.psi[f], r = SIM.r[f];
+        collectFlashes(f);
+        // The sound is already in the room while the page is still drawing it,
+        // which is the channel's convention — but a clap-flash over an empty
+        // page is a starburst with nobody under it. Derived from t, not tweened,
+        // so it survives a seek.
+        var gate = Math.max(0, Math.min(1, (clockT.v - 1.55) / 0.55));
+        if (gate < 1) for (var gi = 0; gi < N; gi++) life[gi] *= gate;
+
+        if (shown.house) {
+          for (var i2 = 0; i2 < N; i2++) {
+            var s = seat[i2], a = th(f, i2);
+            var sep = s.d0 + (s.D - s.d0) * (1 - Math.cos(a)) * 0.5;
+            var h = hands[i2];
+            h[0].setAttribute("cx", (s.x - sep * 0.5).toFixed(1));
+            h[1].setAttribute("cx", (s.x + sep * 0.5).toFixed(1));
+            // The whole measurement is on the page here: a clap out of step is a
+            // grey scratch, a clap in step is a violet star and violet hands.
+            // The AMOUNT of violet is the order parameter — nothing else in the
+            // film has to say so.
+            var fl = flashes[i2], on = life[i2] > 0.001 && hot[i2];
+            fl.setAttribute("opacity", (life[i2] * (hot[i2] ? 1 : 0.44)).toFixed(3));
+            fl.setAttribute("stroke", hot[i2] ? STEP : DIM);
+            fl.setAttribute("stroke-width", (Math.max(2.6, s.lw) * (hot[i2] ? 1.45 : 0.85)).toFixed(2));
+            h[0].setAttribute("stroke", on ? STEP : INK);
+            h[1].setAttribute("stroke", on ? STEP : INK);
+          }
+        }
+        if (shown.ring) {
+          for (var i3 = 0; i3 < N; i3++) {
+            var a3 = th(f, i3), d3 = dots[i3];
+            d3.setAttribute("cx", (RX + Math.cos(a3) * RR).toFixed(1));
+            d3.setAttribute("cy", (RY0 + Math.sin(a3) * RR).toFixed(1));
+            d3.setAttribute("fill", Math.abs(wrap(a3 - psi)) < 0.50 ? STEP : INK);
+          }
+          var w = "", j3;
+          for (j3 = 0; j3 <= 12; j3++) {
+            var aw = psi - 0.50 + j3 / 12;
+            w += (j3 ? "L" : "M") + (RX + Math.cos(aw) * RR).toFixed(1) + " " + (RY0 + Math.sin(aw) * RR).toFixed(1) + " ";
+          }
+          ringWin.setAttribute("d", w);
+          var L = r * RR, ex = RX + Math.cos(psi) * L, ey = RY0 + Math.sin(psi) * L;
+          arrow.setAttribute("d", "M" + RX + " " + RY0 + "L" + ex.toFixed(1) + " " + ey.toFixed(1));
+          var hw = 17, hl = 30;
+          arrowHead.setAttribute("d",
+            "M" + (ex + Math.cos(psi) * hl).toFixed(1) + " " + (ey + Math.sin(psi) * hl).toFixed(1) +
+            "L" + (ex - Math.sin(psi) * hw).toFixed(1) + " " + (ey + Math.cos(psi) * hw).toFixed(1) +
+            "L" + (ex + Math.sin(psi) * hw).toFixed(1) + " " + (ey - Math.cos(psi) * hw).toFixed(1) + "Z");
+        }
+        if (shown.spread) {
+          var half = SIM.K * D.r / TAU;                 // how far the room can pull
+          var lo = 9, hi = -9;
+          for (var i4 = 0; i4 < N; i4++) {
+            var fi = D.rate * (1 + SIM.eps[i4]), inside = Math.abs(fi - D.rate) < half;
+            if (fi < lo) lo = fi; if (fi > hi) hi = fi;
+            sDots[i4].setAttribute("cx", fx(fi).toFixed(1));
+            // they have not stopped clapping just because we are looking at a
+            // diagram of them: each dot bobs on its own phase
+            sDots[i4].setAttribute("cy", (sYs[i4] + 13 * Math.cos(th(f, i4))).toFixed(1));
+            sDots[i4].setAttribute("fill", inside ? STEP : INK);
+          }
+          var bx0 = fx(D.rate - half), bx1 = fx(D.rate + half);
+          sBand.setAttribute("d", "M" + bx0.toFixed(1) + " 560L" + bx1.toFixed(1) + " 560L" +
+                                       bx1.toFixed(1) + " 1010L" + bx0.toFixed(1) + " 1010Z");
+          sEdges.setAttribute("d", "M" + bx0.toFixed(1) + " 560L" + bx0.toFixed(1) + " 1010" +
+                                   "M" + bx1.toFixed(1) + " 560L" + bx1.toFixed(1) + " 1010");
+          sMean.setAttribute("d", "M" + fx(D.rate).toFixed(1) + " 528L" + fx(D.rate).toFixed(1) + " 1010");
+          var p1 = bar(496, bx0, bx1, 20);
+          sPull.setAttribute("d", p1[0]); sPullCap.setAttribute("d", p1[1]);
+          var p2 = bar(1158, fx(lo), fx(hi), 15);
+          sSpread.setAttribute("d", p2[0]); sSpreadCap.setAttribute("d", p2[1]);
+        }
+        if (shown.adem) {
+          for (var mi = 0; mi < mates.length; mi++) {
+            var M = mates[mi], am = th(f, M.i);
+            var sm = M.r * 0.34 + M.r * 2.6 * (1 - Math.cos(am)) * 0.5;
+            M.hL.setAttribute("cx", (M.x - sm * 0.5).toFixed(1));
+            M.hR.setAttribute("cx", (M.x + sm * 0.5).toFixed(1));
+            var lm = life[M.i], hm = hot[M.i];
+            var fdm = "", jm; for (jm = 0; jm < 6; jm++) { var am2 = jm * Math.PI / 3 + 0.26;
+              fdm += "M" + (M.x + Math.cos(am2) * M.r * 0.6).toFixed(1) + " " + (M.y + Math.sin(am2) * M.r * 0.6).toFixed(1) +
+                     "L" + (M.x + Math.cos(am2) * M.r * 1.5).toFixed(1) + " " + (M.y + Math.sin(am2) * M.r * 1.5).toFixed(1) + " "; }
+            M.fl.setAttribute("d", fdm);
+            M.fl.setAttribute("opacity", (lm * (hm ? 1 : 0.44)).toFixed(3));
+            M.fl.setAttribute("stroke", hm ? STEP : DIM);
+          }
+          var aa = th(f, ADEM_I);
+          var sepA = 22 + 226 * (1 - Math.cos(aa)) * 0.5;
+          var cxP = BCX + 182, cyP = BGROUND - 585;    // where his hands meet, on the page
+          var pn = IF.toPose(pup, cxP + sepA * 0.5, cyP, { scale: BSCALE, aboutX: BCX, aboutY: BGROUND });
+          var pf = IF.toPose(pup, cxP - sepA * 0.5, cyP, { scale: BSCALE, aboutX: BCX, aboutY: BGROUND });
+          fig.carry.dx = pn[0]; fig.carry.dy = pn[1];
+          fig.hold.dx = pf[0]; fig.hold.dy = pf[1];
+          pup.setPose(fig.pose());
+          var q = IF.toPose(pup, cxP, cyP, { scale: BSCALE, aboutX: BCX, aboutY: BGROUND });
+          var fd = "", j5;
+          for (j5 = 0; j5 < 6; j5++) { var a5 = j5 * Math.PI / 3 + 0.26;
+            fd += "M" + (q[0] + Math.cos(a5) * 30).toFixed(1) + " " + (q[1] + Math.sin(a5) * 30).toFixed(1) +
+                  "L" + (q[0] + Math.cos(a5) * 74).toFixed(1) + " " + (q[1] + Math.sin(a5) * 74).toFixed(1) + " "; }
+          adFlash.setAttribute("d", fd);
+          adFlash.setAttribute("opacity", life[ADEM_I].toFixed(3));
+          adFlash.setAttribute("stroke", hot[ADEM_I] ? STEP : DIM);
+          adFlash.setAttribute("stroke-width", hot[ADEM_I] ? 8 : 5);
+        }
+      }
+      tl.to(clockT, { v: 58.20, duration: 58.20, ease: "none", onUpdate: sync }, 0);
+
+      // ── the house draws itself, back row first ───────────────────────────
+      drawOn(wallTop, 0.05, 0.30); drawOn(wallL, 0.14, 0.34); drawOn(wallR, 0.14, 0.34);
+      drawOn(balcRail, 0.34, 0.30); drawOn(balcUnder, 0.46, 0.24);
+      for (k = ROWS; k >= 0; k--) {
+        var at = 0.40 + (ROWS - k) * 0.115;
+        void 0;
+        drawOn(rowTorsos[k], at, 0.26);
+        drawOn(rowHeads[k], at + 0.06, 0.26);
+        var n0b = k < ROWS ? k * COLS : ROWS * COLS, n1b = k < ROWS ? n0b + COLS : N;
+        for (i = n0b; i < n1b; i++) tl.to(hands[i], { attr: { opacity: 1 }, duration: 0.20 }, at + 0.22);
+      }
+      fig.pencilIn(tl, { start: 0.60, each: 0.20 });
+      fig.inkIn(tl, { at: 1.70, dur: 0.40 });
+
+      // ── the cuts ─────────────────────────────────────────────────────────
+      var GROUPS = [["house", house], ["ring", ring], ["spread", spread]];
+      function cut(t, name, s, ox, oy) {
+        GROUPS.forEach(function (g) { tl.set(g[1], { opacity: g[0] === name ? 1 : 0 }, t); });
+        var isA = name === "house";
+        tl.set([actorScale, near, nearFront], { opacity: name === "adem" ? 1 : 0 }, t);
+        if (name === "adem") tl.set(house, { opacity: 0 }, t);
+        tl.set(camera, { scale: s || 1, svgOrigin: (ox || 540) + " " + (oy || 700) }, t);
+        tl.call(function () {
+          shown.house = name === "house" ? 1 : 0; shown.ring = name === "ring" ? 1 : 0;
+          shown.spread = name === "spread" ? 1 : 0; shown.adem = name === "adem" ? 1 : 0;
+          sync();
+        }, null, t);
+      }
+      // a slow push into the house while the room finds itself — the ONE
+      // position tween in the film that is not a phase
+      function push(t, dur, from, to, ox, oy) {
+        tl.fromTo(camera, { scale: from, svgOrigin: ox + " " + oy },
+                          { scale: to, duration: dur, ease: "none", svgOrigin: ox + " " + oy }, t);
+      }
+
+      cut(0.00, "house", 1.00, 540, 760);
+      cut(6.30, "ring",  1.00);
+      cut(9.10, "house", 1.00, 540, 820);
+      push(9.10, 4.40, 1.00, 1.13, 540, 820);          // in, as it locks
+      cut(13.60, "adem", 1.00, 540, 800);
+      cut(18.30, "house", 1.06, 540, 700);
+      cut(20.55, "ring", 1.00);
+      cut(24.60, "house", 1.10, 400, 900);
+      cut(26.60, "ring", 1.04);
+      cut(30.75, "house", 1.00, 540, 760);
+      cut(33.20, "adem", 1.05, 560, 760);
+      cut(36.05, "spread", 1.00, 540, 780);
+      cut(42.60, "adem", 1.03, 560, 780);
+      cut(44.10, "spread", 1.00, 540, 780);
+      cut(50.00, "house", 1.03, 540, 800);
+      push(50.00, 6.20, 1.03, 1.00, 540, 800);         // and back out, as it fails
+      cut(56.20, "adem", 1.00, 540, 800);
+
+      // D's replay of the transition. Two numbers, and they are the only tweened
+      // positions in the film.
+      // D is on screen for fourteen seconds. A chart that does not change for
+      // fourteen seconds is the scene-level templating trap in a lab coat, so
+      // the argument arrives in four pieces: the people, then how far apart they
+      // are, then how far the room can reach, and only then the halving.
+      tl.set(D, { rate: 4.00, r: 0.13 }, 36.05);
+      tl.set([sBand, sEdges, sPull, sSpread], { opacity: 0 }, 36.05);
+      tl.to(sSpread,           { opacity: 1, duration: 0.55 }, 38.20);   // the spread
+      tl.to(sSpreadCap,        { opacity: 1, duration: 0.55 }, 38.20);
+      tl.to([sBand, sEdges],   { opacity: 1, duration: 0.55 }, 40.30);   // the reach
+      tl.to([sPull, sPullCap], { opacity: 1, duration: 0.55 }, 41.40);   // and measured
+      tl.to(D, { rate: 2.00, duration: 0.90, ease: "none", onUpdate: sync }, 46.05);
+      tl.to(D, { r: 0.82, duration: 2.20, ease: "none", onUpdate: sync }, 46.35);
+
+      // ── captions ─────────────────────────────────────────────────────────
+      var CAPS = [
+        [2.40, 1.63, "Applause starts as noise."],
+        [4.40, 2.78, "Two hundred people,<br>two hundred different rhythms."],
+        [7.60, 1.24, "Give it a few seconds."],
+        [11.90, 3.57, "It <b style='color:#6B4E9E'>locks</b>. Everybody together,<br>and nobody said a word."],
+        [15.90, 4.09, "Physicists recorded this in concert halls,<br>and put numbers on it."],
+        [20.55, 1.74, "Here is the whole mechanism."],
+        [22.75, 3.00, "You are not keeping your own time.<br>You are listening."],
+        [26.20, 4.05, "Every clap lands a little early, or a little<br>late, pulled toward the room."],
+        [30.75, 4.78, "Two hundred people all nudging each<br>other has only one place to end up."],
+        [36.05, 2.74, "But watch what the room<br>has to give up to get there."],
+        [39.30, 5.52, "Clapping fast, everyone's natural rate is<br>too spread out. The pull is not enough."],
+        [45.35, 4.50, "So the room <b>halves its speed</b>. Now the<br>spread is half as wide, and it <b style='color:#6B4E9E'>fits</b>."],
+        [50.35, 3.89, "Then it gets loud, and it drifts,<br>and the room comes apart again."],
+        [54.75, 3.34, "There is no conductor in an audience.<br>There never was.", 57.90]
+      ];
+      CAPS.forEach(function (cc, ii) {
+        var d_ = document.createElement("div");
+        d_.className = "cap"; d_.innerHTML = cc[2];
+        overlay.appendChild(d_);
+        var next = CAPS[ii + 1] ? CAPS[ii + 1][0] - 0.26 : 1e9;
+        tl.to(d_, { opacity: 1, duration: 0.18 }, cc[0] - 0.10);
+        tl.to(d_, { opacity: 0, duration: 0.20 }, cc[3] ? cc[3] : Math.min(cc[0] + cc[1] + 0.16, next));
+      });
+
+      sync();
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

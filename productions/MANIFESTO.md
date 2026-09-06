@@ -115,6 +115,34 @@ wrong coordinate system put the character off the page for a third of the first
 render while every snapshot looked correct. Sample the finished file, not the
 frames.
 
+## When to stop drawing and start simulating
+
+Production 6 found the third architecture. Splitting the world was about where
+the pixels come from; acting was about what the frame is doing; this one is
+about **where the truth in a video comes from.**
+
+**If the mechanism is a rule that a lot of things follow at once, do not draw
+the result — run the rule and draw what it does.**
+
+Applause locking into rhythm is not something a person does and not something a
+person can look at. It is what a hundred and twenty people who are all only
+listening to each other end up doing, and no drawing of it is honest, because a
+drawing is the animator asserting the result. So `nobody-is-conducting`
+integrates the model instead: one Python script writes one array, and the
+picture and the soundtrack are both readings of it. Every hand is at the phase
+the model says, every clap was synthesised at the instant the model says, and
+the film's claim — that the room has to halve its speed in order to be able to
+agree at all — was never typed into the animation. It came out.
+
+What this buys, and it is worth more than it costs: **the video cannot lie about
+its subject.** If the model does not do the thing, there is no film, and you find
+that out in ten seconds at a terminal instead of after a render. It also buys a
+soundtrack for nothing — if a simulation emits events, those events are a score.
+
+Its price is that everything must be derived from `t` and nothing accumulated,
+because `snapshot --at` seeks; and that the events must carry their exact times,
+not the frame they landed in. Both are written up in `ink-theater/ADEM.md`.
+
 ## Adem
 
 From production 4 there is a character, and the character recurs. This is a
@@ -136,6 +164,11 @@ it a turn is invisible no matter how good the motion under it is.
 Adem never speaks aloud and never addresses the camera. It gets speech balloons
 when it needs them and it is deadpan the rest of the time. Its motion is always
 real motion capture, never authored.
+
+He is also not required to be the point. In production 6 he is one of a hundred
+and twenty people in an audience and he decides nothing; the film cuts to him so
+that the statistic has a face, and cuts away again. A recurring character does
+not have to be a protagonist.
 
 **The rule this creates:** if Adem is in a video, the video has to be somewhere
 Adem has not been. The character recurring is not a licence for the ground, the

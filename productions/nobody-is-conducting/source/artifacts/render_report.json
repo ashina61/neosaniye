@@ -1,0 +1,45 @@
+{
+  "renderer": "hyperframes 0.8.29",
+  "fps": 30,
+  "size": "1080x1920",
+  "duration_seconds": 58.2,
+  "simulation": {
+    "model": "globally coupled Kuramoto",
+    "oscillators": 120,
+    "coupling_K": 4.6,
+    "relative_dispersion": 0.155,
+    "substeps_per_frame": 4,
+    "seed": 71828,
+    "claps": 17121,
+    "source": "sim/kuramoto.py",
+    "reference": "Neda, Ravasz, Brechet, Vicsek & Barabasi, Nature 403 (2000) 849-850"
+  },
+  "audio": {
+    "narration": "kokoro-v1.0 am_michael (local, 24kHz, resampled to 48k)",
+    "music": "none purchased or licensed \u2014 a low pad synthesised in numpy whose amplitude is the Kuramoto order parameter r",
+    "sfx": "17,121 claps synthesised in numpy from the simulation, seated, panned, and convolved with a 260ms room",
+    "built_by": "sim/mix.py",
+    "loudness_lufs": -14.25,
+    "true_peak_db": -1.85,
+    "rhythmicity_peak_to_trough": {
+      "1-7s at 4.0/s": "1.35:1 (a wash)",
+      "12-20s at 2.0/s": "3.13:1 (a pulse)",
+      "30-46s at 2.0/s": "2.65:1",
+      "53-57s at 3.7/s": "1.44:1 (a wash again)",
+      "method": "amplitude envelope of the finished mix, folded at the beat period"
+    }
+  },
+  "providers_used": "none \u2014 zero API keys, zero generated images, zero stock, zero licensed audio",
+  "delivery_encode": {
+    "master": "hyperframes -q high = x264 CRF 15 preset slow, 45.1 MB",
+    "shipped": "x264 CRF 20 preset slow, muxed in the same pass, 20.3 MB",
+    "ssim_vs_master": 0.999,
+    "why": "the boil filter puts per-pixel turbulence on 120 figures, which is the most expensive thing there is to compress"
+  },
+  "probe": {
+    "duration": "58.200000",
+    "size": "20335193",
+    "video": "h264 1080x1920",
+    "audio": "aac 48000 stereo"
+  }
+}

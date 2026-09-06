@@ -1,0 +1,76 @@
+# Publish spec for a hand-produced short.
+#
+# Built as an atelier composition on the ink-sketch playbook, rendered by
+# HyperFrames. The picture and the soundtrack are two readings of one array:
+# source/sim/kuramoto.py integrates a globally coupled Kuramoto model of 120
+# clapping hands, source/sim/mix.py synthesises every one of the 17,121 claps at
+# the instant that model says it happened, and the composition draws every hand
+# at the phase that model says it is at. See source/art-direction.md.
+# This file exists only so daily/lib/publish.py can consume the folder.
+slug: nobody-is-conducting
+title: Nobody Is Conducting
+duration_seconds: 58.20
+has_burned_captions: true
+produced_by: openmontage/animation (ink-sketch, hyperframes, Kuramoto simulation, Adem)
+produced_on: "2026-09-06"
+
+copy:
+  title: "Nobody is conducting the applause."
+  hook: "Applause starts as noise. Then, with nobody saying a word, two hundred people lock into one rhythm."
+  caption: >-
+    You are not keeping your own time when you clap — you are listening, and
+    every clap lands a fraction early or late, pulled toward the room. Do that
+    in a room of two hundred and there is only one place to end up. But it only
+    works slowly, so the room halves its speed to get there.
+  description: |-
+    Applause starts as noise. Two hundred people, two hundred different
+    rhythms. Give it a few seconds and it locks — everybody together, and
+    nobody said a word.
+
+    Physicists recorded exactly this in concert halls in Romania and Hungary
+    and put numbers on it. The room does not just fall into step; it falls
+    into step at about HALF the speed it was clapping before.
+
+    Here is why it has to. You are not keeping your own time. You are
+    listening, and every clap lands a little early or a little late, pulled
+    toward the sound around you. That is a room full of coupled oscillators,
+    and coupled oscillators synchronise when the pull between them beats the
+    spread of their natural rates.
+
+    The catch: the spread of clapping rates in a crowd is a roughly constant
+    FRACTION of the rate — about 15% either way. So the spread scales with the
+    speed and the pull does not. Clapping fast, the spread is wider than the
+    pull can reach and nothing locks, no matter how much anybody wants it to.
+    Halve the speed and the spread halves with it, drops under the pull, and
+    the room locks. Then the applause gets loud, it speeds up, the spread grows
+    again, and the whole thing comes apart.
+
+    Nobody decided any of that. There is no conductor in an audience.
+
+    Everything in this video is drawn, and everything in it is simulated. The
+    120 pairs of hands are a globally coupled Kuramoto model, and the picture
+    and the soundtrack are two readings of the same array: every clap you hear
+    was synthesised at the instant that model says that person's phase crossed.
+    The low tone that comes in when the room locks is not music — its loudness
+    is the order parameter, which is the number the physicists measure. Nothing
+    in it was generated, photographed or licensed.
+
+    Sources
+    Neda, Ravasz, Brechet, Vicsek & Barabasi, "The sound of many hands
+    clapping", Nature 403, 849-850 (2000).
+    Neda, Ravasz, Vicsek, Brechet & Barabasi, "Physics of the rhythmic
+    applause", Physical Review E 61, 6987-6992 (2000).
+    Strogatz, "From Kuramoto to Crawford: exploring the onset of
+    synchronization in populations of coupled oscillators", Physica D 143,
+    1-20 (2000).
+
+    #Shorts
+  hashtags:
+    - physics
+    - synchronisation
+    - emergence
+    - complexity
+    - applause
+    - animation
+    - howitworks
+    - Shorts

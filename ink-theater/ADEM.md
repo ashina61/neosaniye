@@ -354,6 +354,76 @@ Build it from his own vocabulary, at about 8× :
 And when they move, **`tl.set`, never a tween** — a saccade is ballistic, and a
 tweened eye is the one thing the shot exists to disprove.
 
+## A crowd
+
+Adem is one character, and `InkPuppet` is one rig. A hundred and twenty people
+are not a hundred and twenty rigs — they are one drawn mark repeated with
+variation, and the rig is reserved for the one you cut to. `nobody-is-conducting`
+puts him in an audience of 120 and the crowd costs four paths per row.
+
+**The mark.** Per person: a closed paper-filled **torso** (a bell: up the side,
+over the shoulders, down the other side, closed at the bottom), a paper-filled
+**head** circle sitting on it, and whatever the film needs them to be doing —
+there, two hands. Paper fill is not decoration: it is what lets the row in front
+hide the row behind.
+
+**Two things that must be right or it is not a crowd, it is wallpaper:**
+
+1. **Rows go into the DOM back row first.** Painting front-to-back puts the
+   furthest row on top and eight rows of perspective collapse into a flat
+   knitted pattern. One row = one `<g>`, appended furthest first.
+2. **Jitter every head.** A few percent on size, height and horizontal position,
+   from the composition's seeded `rnd()`. Without it the eye reads the grid and
+   sees a repeat, not people. This is the single biggest difference between the
+   first pass and the second.
+
+**Perspective, done honestly.** Pick a scale per row and let everything follow
+it: pitch `= W·s/(cols−1)`, head radius `≈ 0.25·pitch`, line weight
+`max(2.8, 4.8·s)` — thinner at the back, but never below the point where it
+stops reading as the same pen. Make the row width **wider than the frame** so
+the front row is cropped by it; that crop is what says the camera is standing
+in the room rather than looking at a diagram of it.
+
+**Him inside it.** Cut to a shot where he is at normal scale with the row ahead
+cropped by the bottom of the frame and the row behind over his shoulder, drawn
+in `DIM`. Give the neighbours the same behaviour he has, driven by their own
+data — a shot of him against four people doing the same thing slightly
+differently is the whole reason to cut to him at all.
+
+## Driving him from data instead of a timeline
+
+Every previous production moved his arms with gsap tweens. They can also be
+driven **per frame from an array**, which is how he takes part in something the
+film is simulating rather than performing:
+
+```js
+fig.carry.from = "point"; fig.hold.from = "point";
+fig.carry.on = 1; fig.hold.on = 1;
+// ...every frame, from sync():
+var sep = MIN + SPAN * (1 - Math.cos(phase)) * 0.5;      // his own oscillator
+var a = IF.toPose(pup, clapX + sep/2, clapY, { scale: SCALE, aboutX: CX, aboutY: GROUND });
+var b = IF.toPose(pup, clapX - sep/2, clapY, { scale: SCALE, aboutX: CX, aboutY: GROUND });
+fig.carry.dx = a[0]; fig.carry.dy = a[1];
+fig.hold.dx  = b[0]; fig.hold.dy  = b[1];
+pup.setPose(fig.pose());
+```
+
+Both hands meeting at one place needs `from: "point"` for both — `"shoulder"`
+measures each arm from its own shoulder, and the two hands then miss each other
+by the width of his chest. Put the meeting point about 180px in front of him and
+just below shoulder height at `SCALE ≈ 1.4`; closer than that and the arms fold
+up beside his ear.
+
+## Two traps in gsap that cost a render each
+
+- **`gsap.set(el, {opacity: 0})` writes an inline STYLE**, and an inline style
+  beats `setAttribute("opacity", …)`. Any element whose opacity is driven per
+  frame from `sync()` must never be touched by gsap — set `opacity` as an
+  attribute when you create it. A whole film's worth of clap flashes rendered
+  invisible this way and nothing errored.
+- If a timeline does need to fade such an element in, tween the **attribute**:
+  `tl.to(el, { attr: { opacity: 1 }, duration: 0.2 })`.
+
 ## Mist, and revealing a place
 
 A door you have not walked through yet is the whole point of a door. So what is
@@ -428,3 +498,42 @@ not a bespoke redraw inside one video's HTML.
   committed mp4 no longer reproduces from its source. Rebuilding it on the
   current rig means re-solving its geometry, because every number in it was
   fitted to shoulders 145 units apart.
+
+---
+
+## Simulating the thing instead of animating it
+
+`nobody-is-conducting` is the first production where the argument is not drawn
+but **run**: a Python script integrates a model, writes one array, and both the
+picture and the soundtrack are readings of it. If a brief has a mechanism in it,
+this is the strongest form the channel has found — the claim never has to be
+asserted, because it happens on screen and in the speakers at the same instant.
+
+The shape that worked:
+
+```
+sim/model.py   →  hyperframes/sim.js      (base64 uint8 state per frame + events)
+               →  sim/events.json         (exact event TIMES, not frames)
+sim/mix.py     →  assets/audio/mix.wav    (one synthesised sound per event)
+index.html     →  reads sim.js every frame
+```
+
+- **Quantise the state, not the events.** Per-frame state goes to `sim.js` as a
+  base64 `Uint8Array` (a phase in 8 bits is 0.025 rad — invisible) so a hundred
+  and twenty channels over eighteen hundred frames is 380 KB of JS, which Chrome
+  loads without noticing.
+- **The sound needs the instant, not the frame.** Emit the exact crossing time
+  by interpolating inside the integration substep. Quantising events to 33 ms
+  frames and jittering them puts ±16 ms of noise on top of whatever precision
+  the film is about, and the first mix of that video lost the rhythm entirely
+  to it.
+- **Derive per-frame visual state from `t`, never accumulate it.** `snapshot --at`
+  seeks; anything that decays by multiplying its own previous value renders
+  differently in a snapshot than in a render. Look *back* N frames in the event
+  list instead.
+- **Do not tune the model to get the story.** Set the constants the paper gives
+  and check the arc came out. If it did not, the story was wrong, not the model.
+- **Reverb is the enemy of a rhythm.** A tail longer than the beat period fills
+  every gap between beats. Measure it: fold the finished audio's amplitude
+  envelope at the beat period and look at peak-to-trough. 1.3:1 is a wash,
+  3:1 is a pulse.

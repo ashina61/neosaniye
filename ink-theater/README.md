@@ -84,7 +84,9 @@ Free **CMU mocap** (`una-dinosauria/cmu-mocap`) has thousands. This is what Meta
 channel repeats. His proportions, palette and line weights are `InkFigure.ADEM`
 and they do not change between videos. The character sheet — what is fixed, how
 to pose him, how to scale a scene off him, and every trap that has cost a render
-— is **[`ADEM.md`](ADEM.md)**. Read it before drawing or posing a character.
+— is **[`ADEM.md`](ADEM.md)**. Read it before drawing or posing a character. It
+covers more than him now: the Shorts safe frame, dressing a place, crowds,
+driving the rig from simulated data, and the traps that each cost a render.
 
 Two rig facilities he depends on:
 

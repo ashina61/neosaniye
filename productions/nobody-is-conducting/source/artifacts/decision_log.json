@@ -1,0 +1,22 @@
+[
+  {"category":"pipeline_selection","subject":"How this production is built",
+   "decision":"atelier composition on the ink-sketch playbook, not the 11-stage pipeline",
+   "options_considered":["animation pipeline (templated)","character-animation pipeline","atelier / ink-theater"],
+   "rejected_because":"skills/creative/ink-theater.md declares the style pipeline-exempt; the stock scene-type catalogue cannot express a 120-body simulation"},
+  {"category":"render_runtime_selection","subject":"Composition runtime",
+   "decision":"hyperframes 0.8.29",
+   "options_considered":["hyperframes","remotion","ffmpeg"],
+   "rejected_because":"remotion: the piece is 120 SVG bodies rewritten per frame from a typed array, which is DOM work, not React scene work. ffmpeg: no composition capability."},
+  {"category":"voice_selection","subject":"Narration TTS provider",
+   "decision":"Kokoro v1.0 am_michael, local ONNX, 24kHz, free",
+   "options_considered":["kokoro am_michael","kokoro bm_george","kokoro bm_fable","kokoro am_fenrir","kokoro af_heart","piper en_US-ryan-high"],
+   "rejected_because":"piper was the weakest component in productions 1-5 and Kokoro is already on this machine; am_michael measured 2.90 w/s on the audition line, the calmest of the male voices, with 0.42 of headroom"},
+  {"category":"music_selection","subject":"Music and score",
+   "decision":"self-produced: 17,121 claps synthesised in numpy from the simulation, plus a low pad whose amplitude is the Kuramoto order parameter",
+   "options_considered":["no music (productions 1-5)","music_library track","generated music API","a score synthesised from the simulation itself"],
+   "rejected_because":"a library or generated track would be playing alongside the argument; a pad driven by r IS the argument, and it costs nothing"},
+  {"category":"provider_selection","subject":"Images, video and stock",
+   "decision":"none — every mark is drawn by the composition",
+   "options_considered":["image generation","stock","drawn"],
+   "rejected_because":"user constraint: nothing paid, zero API keys"}
+]

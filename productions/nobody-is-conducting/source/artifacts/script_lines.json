@@ -1,0 +1,20 @@
+{
+  "title": "Nobody Is Conducting",
+  "voice": "kokoro v1.0 am_michael, 24kHz, local",
+  "lines": [
+    {"id":"s01","text":"Applause starts as noise."},
+    {"id":"s02","text":"Two hundred people, two hundred different rhythms."},
+    {"id":"s03","text":"Give it a few seconds."},
+    {"id":"s04","text":"It locks. Everybody together, and nobody said a word."},
+    {"id":"s05","text":"Physicists recorded this in concert halls, and put numbers on it."},
+    {"id":"s06","text":"Here is the whole mechanism."},
+    {"id":"s07","text":"You are not keeping your own time. You are listening."},
+    {"id":"s08","text":"Every clap lands a little early, or a little late, pulled toward the room."},
+    {"id":"s09","text":"Two hundred people all nudging each other has only one place to end up."},
+    {"id":"s10","text":"But watch what the room has to give up to get there."},
+    {"id":"s11","text":"Clapping fast, everyone's natural rate is too spread out. The pull is not strong enough."},
+    {"id":"s12","text":"So the room halves its speed. Now the spread is half as wide, and it fits."},
+    {"id":"s13","text":"Then it gets loud, and it drifts, and the room comes apart again."},
+    {"id":"s14","text":"There is no conductor in an audience. There never was."}
+  ]
+}

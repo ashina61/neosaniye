@@ -170,3 +170,53 @@ House numbers that came out of it:
 `the-second-that-hangs` shipped its first cut with captions at y=1660 and not a
 single line of it could be read on the platform it was made for. It cost a full
 re-render. `ink-theater/ADEM.md` carries the same table.
+
+## Local text-to-speech: use Kokoro, not Piper
+
+`.voices/kokoro/` holds **Kokoro v1.0** (`kokoro-v1.0.onnx` + `voices-v1.0.bin`,
+353 MB) and `kokoro_onnx` + `onnxruntime` are installed. It is local, free, needs
+no key, and it is a large step up from Piper — which was the weakest component in
+the first five productions.
+
+```python
+from kokoro_onnx import Kokoro
+k = Kokoro(".voices/kokoro/kokoro-v1.0.onnx", ".voices/kokoro/voices-v1.0.bin")
+s, sr = k.create(text, voice="am_michael", speed=1.0, lang="en-us")   # sr = 24000
+```
+
+- Loading the model takes about 30 seconds; load it **once** and loop the lines.
+- 24 kHz — resample to 48 k (`scipy.signal.resample_poly(s, 48000, 24000)`) before
+  it goes anywhere near the mix.
+- Voices audited on the same line: `am_michael` 2.90 w/s (calm, measured — the
+  channel's default), `bm_george` 2.85, `bm_fable` 3.04, `am_fenrir` 3.20,
+  `af_heart` 3.35. Peaks 0.50–0.98, so check headroom per voice.
+- Trim the leading and trailing near-silence off each line before timing anything
+  against it, or every caption is late by the model's padding.
+
+Piper (`.voices/en-us-ryan-high.onnx`) still works and is what productions 1–5
+used. Don't go back to it without a reason.
+
+## Delivery encode: `hyperframes render` output is a master, not a deliverable
+
+`hyperframes render -q high` writes **x264 CRF 15, preset slow**. That is the
+right setting for a master and the wrong one to ship: the boil filter puts
+per-pixel turbulence on every stroke, which is the most expensive thing there is
+to compress, so a dense composition comes out enormous.
+
+`nobody-is-conducting` (120 drawn figures, boil on all of them) rendered to
+**50 MB for 58 seconds — 6.9 Mbps.** Re-encoded at CRF 20 it is **9 MB**, at
+**SSIM 0.9990** against the master and pixel-indistinguishable on a 2x crop of
+the line work.
+
+So: render at `-q high`, then encode the delivery file once, muxing the audio in
+the same pass so the picture is only re-encoded once.
+
+```bash
+ffmpeg -y -i renders/vN.mp4 -i assets/audio/mix.wav \
+  -af "loudnorm=I=-14:TP=-2.0:LRA=11:measured_I=...:linear=true,aresample=48000" \
+  -c:v libx264 -preset slow -crf 20 -pix_fmt yuv420p \
+  -c:a aac -b:a 192k -ar 48000 -ac 2 -movflags +faststart -shortest renders/final.mp4
+```
+
+A sparse composition (a room, one figure) compresses to well under a megabyte a
+second on its own and does not need this. Check the size before deciding.

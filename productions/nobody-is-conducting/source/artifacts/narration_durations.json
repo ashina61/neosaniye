@@ -1,0 +1,90 @@
+{
+  "voice": "kokoro-v1.0 am_michael",
+  "sample_rate": 24000,
+  "lines": [
+    {
+      "id": "s01",
+      "seconds": 1.632,
+      "words": 4,
+      "text": "Applause starts as noise."
+    },
+    {
+      "id": "s02",
+      "seconds": 2.78,
+      "words": 7,
+      "text": "Two hundred people, two hundred different rhythms."
+    },
+    {
+      "id": "s03",
+      "seconds": 1.239,
+      "words": 5,
+      "text": "Give it a few seconds."
+    },
+    {
+      "id": "s04",
+      "seconds": 3.571,
+      "words": 9,
+      "text": "It locks. Everybody together, and nobody said a word."
+    },
+    {
+      "id": "s05",
+      "seconds": 4.094,
+      "words": 11,
+      "text": "Physicists recorded this in concert halls, and put numbers on it."
+    },
+    {
+      "id": "s06",
+      "seconds": 1.739,
+      "words": 5,
+      "text": "Here is the whole mechanism."
+    },
+    {
+      "id": "s07",
+      "seconds": 3.0,
+      "words": 10,
+      "text": "You are not keeping your own time. You are listening."
+    },
+    {
+      "id": "s08",
+      "seconds": 4.048,
+      "words": 14,
+      "text": "Every clap lands a little early, or a little late, pulled toward the room."
+    },
+    {
+      "id": "s09",
+      "seconds": 4.784,
+      "words": 14,
+      "text": "Two hundred people all nudging each other has only one place to end up."
+    },
+    {
+      "id": "s10",
+      "seconds": 2.738,
+      "words": 12,
+      "text": "But watch what the room has to give up to get there."
+    },
+    {
+      "id": "s11",
+      "seconds": 5.517,
+      "words": 15,
+      "text": "Clapping fast, everyone's natural rate is too spread out. The pull is not strong enough."
+    },
+    {
+      "id": "s12",
+      "seconds": 4.499,
+      "words": 16,
+      "text": "So the room halves its speed. Now the spread is half as wide, and it fits."
+    },
+    {
+      "id": "s13",
+      "seconds": 3.889,
+      "words": 13,
+      "text": "Then it gets loud, and it drifts, and the room comes apart again."
+    },
+    {
+      "id": "s14",
+      "seconds": 3.337,
+      "words": 10,
+      "text": "There is no conductor in an audience. There never was."
+    }
+  ]
+}
