@@ -298,10 +298,13 @@ Automating the taste is what made them all look alike.
 
 ## Publishing on a schedule: `productions/QUEUE.yaml`
 
-One video a week, with nobody in the loop.
-`.github/workflows/publish-queue.yml` runs Sundays 18:00 Istanbul, takes the
-**first** entry whose `state` is `pending`, publishes it exactly as that entry
-says, and commits the state back so next week takes the next one.
+Two videos a day, with nobody in the loop.
+`.github/workflows/publish-queue.yml` runs at **09:00 and 20:00 Istanbul**,
+takes the **first** entry whose `state` is `pending`, publishes it exactly as
+that entry says, and commits the state back so the next slot takes the next one.
+The file lives on `main` (a cron only fires from the default branch) but it
+checks out the **production branch** — that is where the queue, the films and
+the tick-off commits live.
 
 ```
 bin/queue.py status        what is where, and whether anything is due
@@ -334,11 +337,12 @@ retired generator failed:
    and fails the job unless every destination that was asked for came back with
    a real URL. **That step failing is the safety net**, not an inconvenience —
    the entry stays `pending` and next week tries the same video.
-7. **The queue decides what is due, not the clock.** `min_days_between` in
-   `QUEUE.yaml` (5) is measured against the newest `published_on`, so any
-   number of runs inside that window publish one video between them. This is
-   the fix for the day described below, and it is why the job is now safe to
-   start by hand at any time.
+7. **The queue decides what is due, not the clock.** `min_hours_between` in
+   `QUEUE.yaml` (8) is measured against the newest `published_at`, so any
+   number of runs inside one slot publish one video between them. The two slots
+   are 11 and 13 hours apart, so 8 lets every honest slot through and still
+   catches a cron eight hours late. This is the fix for the day described
+   below, and it is why the job is safe to start by hand at any time.
 
 `workflow_dispatch` has `dry_run: true` by default — it says what it would do
 and does nothing.
@@ -359,13 +363,24 @@ notify    push when it finishes
 
 It ends by running `bin/queue.py add <slug> --topic <id>` and pushing.
 
-**The two jobs are deliberately at different speeds.** The producer runs daily
-and the publisher runs weekly, so a film made today enters the queue behind
-everything already in the line. That gap is the review window. Nothing reaches
-the channel that has not sat in `productions/` for at least as many days as
-there are films ahead of it, and the queue's `enabled` switch is a second gate
-on top of that. `PRODUCE.md` tells the daily session that switch is not its to
-touch.
+**The two jobs now run at the same speed: two a day each.** The producer fires
+at 06:00 and 15:00 Istanbul, the publisher at 09:00 and 20:00.
+
+**This is the trade the owner made on 2026-09-07, and it is worth stating
+plainly.** Under the weekly publisher a film sat in `productions/` for weeks
+before it went out, and that queue depth was the review window — the thing that
+meant a bad film could be caught by a human before the channel saw it. At two a
+day the window is about half a day, and with only three pending it is shorter
+than that. What is left as a gate:
+
+- the build gates in `bin/build-ink.sh` (aspect, loudness, true peak, caption
+  band, voice-over-bed margin) — mechanical, and they hold
+- the producer's own instruction not to queue a film it is not happy with
+- `enabled: false` in `QUEUE.yaml`, which stops everything at once
+
+`bin/queue.py status` prints a **runway** line — how many days of queue is left
+at `slots_per_day`. Under 1.5 days it says so loudly. If the producer misses a
+run, the runway is what tells you before the channel goes quiet.
 
 **A GitHub cron can be hours late, and on 2026-09-06 that published two videos
 two minutes apart.** The workflow landed on `main` at 13:53 UTC with its first
@@ -379,11 +394,11 @@ as well.
 Neither run misbehaved. Both did exactly what the queue told them, because
 nothing in the chain was asking whether a video was actually *due* — the
 schedule was carrying that meaning, and a schedule that can slip by hours
-cannot carry it. Hence `min_days_between`: the gap now lives in the data, where
+cannot carry it. Hence `min_hours_between`: the gap lives in the data, where
 every run reads it, whatever started that run.
 
-Nothing is lost when a Sunday is missed either: the entry stays `pending` and
-the next run takes it. To publish deliberately inside the gap, tick `force` on
+Nothing is lost when a slot is missed either: the entry stays `pending` and the
+next slot takes it. To publish deliberately inside the gap, tick `force` on
 `workflow_dispatch`.
 
 **If the queue gets longer than about six**, the producer is running faster than

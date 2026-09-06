@@ -2,7 +2,8 @@
 #
 # `publish-queue.yml` reads this file, takes the FIRST entry whose state is
 # `pending`, publishes it exactly as that entry says, and writes the state back
-# to this file in a commit. One video a week, with nobody in the loop.
+# to this file in a commit. TWO videos a day — morning and evening — with
+# nobody in the loop.
 #
 # WHY EVERY ENTRY CARRIES ITS OWN SETTINGS. The generator this repository used
 # to run is retired at the bottom of daily-short.yml, and the note there is the
@@ -16,18 +17,29 @@
 
 enabled: true
 
-# Sundays, 18:00 Istanbul. The workflow's cron is the authority; this is here
-# so the file says what it does.
-schedule: "0 15 * * 0   # 18:00 Europe/Istanbul, Sundays"
+# 09:00 and 20:00 Europe/Istanbul, every day. The workflow's cron is the
+# authority; this is here so the file says what it does.
+schedule: "0 6,17 * * *   # 09:00 and 20:00 Europe/Istanbul, daily"
 
 # THE GAP THAT MAKES A LATE CRON HARMLESS. On 2026-09-06 a manual run published
 # at 17:25 and the week's cron — two and a half hours late, not skipped — fired
 # at 17:27 and published the next one as well. Two videos, two minutes apart.
 # Neither run was wrong; nothing was asking whether anything was actually due.
-# `bin/queue.py next` now compares today against the newest `published_on`
-# below and hands out nothing until this many days have passed, so any number of
-# runs in the same week still publish one video. `--force` overrides it.
-min_days_between: 5
+# `bin/queue.py next` compares now against the newest `published_at` below and
+# hands out nothing inside this many hours, so any number of runs inside one
+# slot still publish one video. `--force` overrides it.
+#
+# WHY 8. The two slots are 11 and 13 hours apart, so 8 leaves every honest slot
+# through and still catches a cron up to 8 hours late — far beyond the 2h27m
+# that caused the double. Raise it towards 10 to be stricter; do not raise it
+# past 11 or the evening slot starts refusing itself.
+min_hours_between: 8
+
+# How many go out a day. Only `status` reads it, to say how many days of queue
+# is left — the cron is what actually decides. It is here because two a day
+# eats a queue twice as fast as the producer fills it, and the runway line is
+# the thing that says so before the queue runs dry.
+slots_per_day: 2
 
 topics_used:
   # the eight already made — these ids must not come round again
@@ -45,6 +57,7 @@ queue:
   - slug: butter-side-down
     state: published
     published_on: "2026-09-06"
+    published_at: "2026-09-06T17:28:00Z"
     url: "https://youtube.com/shorts/qWoiB6npUhE"
     upload: youtube
     privacy: public
@@ -53,6 +66,7 @@ queue:
   - slug: why-you-cannot-tickle-yourself
     state: published
     published_on: "2026-09-06"
+    published_at: "2026-09-06T17:30:00Z"
     url: "https://youtube.com/shorts/FX-r1lPZctk"
     upload: youtube
     privacy: public

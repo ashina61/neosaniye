@@ -1,6 +1,6 @@
 name: Publish the next one in the queue
 
-# One video a week, with nobody in the loop.
+# Two videos a day — morning and evening — with nobody in the loop.
 #
 # It reads productions/QUEUE.yaml, takes the FIRST entry whose state is
 # `pending`, publishes it exactly as that entry says, and commits the state back
@@ -20,11 +20,11 @@ name: Publish the next one in the queue
 #     a file that is already committed and already watched.
 #  4. The file is proved to be 1080x1920 with an audio track before it goes
 #     near an account.
-#  5. It publishes ONE and stops. A bad video costs one week, not the queue.
-#  5b. IT ASKS THE QUEUE WHETHER ANYTHING IS DUE, not the clock. Two runs in the
-#     same week publish one video, because bin/queue.py measures the gap from
-#     the last `published_on` and hands out nothing inside it. See the note
-#     under `on:` for the day that made this necessary.
+#  5. It publishes ONE and stops. A bad video costs one slot, not the queue.
+#  5b. IT ASKS THE QUEUE WHETHER ANYTHING IS DUE, not the clock. Two runs inside
+#     one slot publish one video, because bin/queue.py measures the gap from the
+#     last `published_at` and hands out nothing inside `min_hours_between`. See
+#     the note under `on:` for the day that made this necessary.
 #  6. It PROVES the upload happened before ticking the entry off.
 #     daily/lib/publish.py always returns 0 — it catches every upload failure,
 #     records it as `failed:`/`skipped:` and exits cleanly, because it is built
@@ -33,9 +33,13 @@ name: Publish the next one in the queue
 #     week, and drop it in silence. bin/confirm-publish.py reads published.json
 #     and fails the job unless every destination came back with a real URL.
 #
-# NOTE: a `schedule:` trigger only ever fires from the repository's DEFAULT
-# branch. On a feature branch this cron is inert and the queue has to be driven
-# by hand.
+# WHICH BRANCH THIS READS. A `schedule:` trigger only ever fires from the
+# repository's DEFAULT branch, so this FILE has to live on main — but the queue
+# it reads, the productions it publishes and the tick-off it writes back all
+# live on the production branch, which is where the daily producer pushes. So
+# the job checks out BRANCH below explicitly rather than trusting the ref it
+# was started from. Main is a mirror: the producer fast-forwards it after every
+# run, which is also how a change to this file reaches the scheduler.
 
 # A GITHUB CRON IS NOT A CLOCK, IT IS A QUEUE POSITION. It can run hours late.
 # This one is set for 15:00 UTC on Sundays; on 2026-09-06 it fired at 17:27 —
@@ -45,17 +49,20 @@ name: Publish the next one in the queue
 # did exactly what they were told, which is the point. A schedule you cannot
 # predict cannot also be the thing that decides what is due.
 #
-# So the queue decides. bin/queue.py compares today against the newest
-# `published_on` in QUEUE.yaml and prints an empty slug inside `min_days_between`
-# days, whatever started the run. A late cron now lands on "nothing is due"
-# instead of on the next video, and the job below is safe to start by hand at
-# any time. `force: true` is the deliberate override.
+# So the queue decides. bin/queue.py compares now against the newest
+# `published_at` in QUEUE.yaml and prints an empty slug inside
+# `min_hours_between` (8), whatever started the run. A late cron lands on
+# "nothing is due" instead of on the next video, and this job is safe to start
+# by hand at any time. `force: true` is the deliberate override.
 #
-# If a Sunday ever passes with no run, nothing is lost: the entry is still
-# `pending` and the next run takes it.
+# THE TWO SLOTS ARE 11 AND 13 HOURS APART, which is what makes an 8 hour gap
+# both honest and strict: every real slot passes, and a cron would have to be
+# eight hours late to reach the next one. If a slot ever passes with no run,
+# nothing is lost — the entry stays `pending` and the next slot takes it.
 on:
   schedule:
-    - cron: '0 15 * * 0'        # Sundays 18:00 Europe/Istanbul
+    - cron: '0 6 * * *'         # 09:00 Europe/Istanbul — the morning one
+    - cron: '0 17 * * *'        # 20:00 Europe/Istanbul — the evening one
   workflow_dispatch:
     inputs:
       dry_run:
@@ -63,7 +70,7 @@ on:
         type: boolean
         default: true
       force:
-        description: 'Publish even if the last one went out less than min_days_between ago'
+        description: 'Publish even if the last one went out less than min_hours_between ago'
         type: boolean
         default: false
 
@@ -74,6 +81,9 @@ concurrency:
 permissions:
   contents: write               # the release, and the state written back
 
+env:
+  BRANCH: claude/openmontage-setup-dh10g0   # where the queue and the films live
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -81,7 +91,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref_name }}
+          ref: ${{ env.BRANCH }}
           fetch-depth: 0        # the tick-off step rebases; a shallow clone cannot
 
       - uses: actions/setup-python@v5
@@ -162,8 +172,8 @@ jobs:
           git config user.email "openmontage-queue@users.noreply.github.com"
           git add productions/QUEUE.yaml
           git commit -m "Published ${{ steps.q.outputs.slug }}" || exit 0
-          git pull --rebase --autostash origin "${{ github.ref_name }}"
-          git push origin "HEAD:${{ github.ref_name }}"
+          git pull --rebase --autostash origin "$BRANCH"
+          git push origin "HEAD:$BRANCH"
 
       - uses: actions/upload-artifact@v4
         if: steps.q.outputs.slug != '' && !inputs.dry_run

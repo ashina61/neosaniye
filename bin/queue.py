@@ -12,14 +12,17 @@ can skip cleanly instead of failing. It also refuses an entry that does not
 say both `upload` and `privacy`, because an unstated destination is how this
 repository once published everywhere by accident.
 
-AND IT REFUSES TO HAND OUT A SECOND VIDEO TOO SOON. On 2026-09-06 a manual run
+AND IT REFUSES TO HAND OUT THE NEXT ONE TOO SOON. On 2026-09-06 a manual run
 published one at 17:25 and the week's cron — two and a half hours late, not
 skipped — fired at 17:27, took the next `pending`, and published that too. Two
-videos, two minutes apart, on a channel that posts one a week. Nothing was
-broken: both runs did exactly what they were told. So `next` now looks at the
-`published_on` dates it writes itself and says nothing is due unless the last
-one is at least `min_days_between` days old. `--force` overrides it, out loud,
-and is meant for a human who has decided to.
+videos, two minutes apart. Nothing was broken: both runs did exactly what they
+were told, and nothing was asking whether a video was actually due. So `next`
+measures the gap from the `published_at` stamp it writes itself and says
+nothing is due inside `min_hours_between`. The channel now posts twice a day,
+morning and evening, so the gap is counted in HOURS: a slot is ~11-13 hours
+from its neighbour and a late cron lands on "nothing is due" rather than on
+tomorrow morning's video. `--force` overrides it, out loud, for a human who has
+decided to.
 """
 import argparse, datetime, pathlib, signal, sys, yaml
 
@@ -30,7 +33,7 @@ except (AttributeError, ValueError): pass
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 QUEUE = ROOT / "productions" / "QUEUE.yaml"
 VALID_UPLOAD = {"none", "youtube", "all"}
-DEFAULT_MIN_DAYS = 5        # if QUEUE.yaml does not say
+DEFAULT_MIN_HOURS = 8       # if QUEUE.yaml does not say
 VALID_PRIVACY = {"unlisted", "public", "private"}
 
 
@@ -56,33 +59,67 @@ def problems(e):
     return out
 
 
-def last_published(d):
-    """(date, slug) of the most recent thing that went out, or None.
+UTC = datetime.timezone.utc
 
-    A `published_on` that will not parse raises: a date this cannot read is a
-    date the gap below cannot be measured from, and the safe reading of "I do
-    not know when the last one went out" is not "publish another".
+
+def stamp(e):
+    """When this entry went out, as an aware UTC datetime, or None.
+
+    `published_at` is the truth and `done` always writes it. `published_on` is
+    a date, kept because it reads well in the file — an entry that carries only
+    the date is read as the END of that day, which is the fail-safe direction:
+    a gap counted in hours cannot be measured from an unknown hour, and the
+    safe reading of "I am not sure when it went out" is not "send another".
+
+    Anything unparseable raises, for the same reason.
     """
+    raw = e.get("published_at")
+    if raw:
+        try:
+            t = datetime.datetime.fromisoformat(str(raw).replace("Z", "+00:00"))
+        except ValueError:
+            raise ValueError(f"{e.get('slug')} has published_at: {raw!r}, "
+                             f"which is not an ISO timestamp")
+        return t if t.tzinfo else t.replace(tzinfo=UTC)
+    raw = e.get("published_on")
+    if not raw:
+        return None
+    try:
+        day = datetime.date.fromisoformat(str(raw))
+    except ValueError:
+        raise ValueError(f"{e.get('slug')} has published_on: {raw!r}, "
+                         f"which is not a YYYY-MM-DD date")
+    return datetime.datetime.combine(day, datetime.time(23, 59, 59), tzinfo=UTC)
+
+
+def last_published(d):
+    """(when, slug) of the most recent thing that went out, or None."""
     best = None
     for e in d["queue"]:
-        raw = e.get("published_on")
-        if not raw:
+        t = stamp(e)
+        if t is None:
             continue
-        try:
-            day = datetime.date.fromisoformat(str(raw))
-        except ValueError:
-            raise ValueError(f"{e.get('slug')} has published_on: {raw!r}, "
-                             f"which is not a YYYY-MM-DD date")
-        if best is None or day > best[0]:
-            best = (day, e.get("slug"))
+        if best is None or t > best[0]:
+            best = (t, e.get("slug"))
     return best
 
 
-def min_days(d):
+def slots_per_day(d):
     try:
-        return max(0, int(d.get("min_days_between", DEFAULT_MIN_DAYS)))
+        return max(1, int(d.get("slots_per_day", 2)))
     except (TypeError, ValueError):
-        return DEFAULT_MIN_DAYS
+        return 2
+
+
+def min_hours(d):
+    try:
+        return max(0.0, float(d.get("min_hours_between", DEFAULT_MIN_HOURS)))
+    except (TypeError, ValueError):
+        return DEFAULT_MIN_HOURS
+
+
+def hours_since(t):
+    return (datetime.datetime.now(UTC) - t).total_seconds() / 3600.0
 
 
 def cmd_status(d):
@@ -101,18 +138,22 @@ def cmd_status(d):
         print(line)
         for b in bad:
             print(f"      ! {b}")
+    per_day = slots_per_day(d)
+    runway = n.get("pending", 0) / per_day
     print(f"\n {n.get('pending',0)} pending · {n.get('published',0)} published · {n.get('hold',0)} on hold")
-    gap = min_days(d)
+    print(f" runway: {runway:.1f} days at {per_day} a day"
+          + ("   ← MAKE MORE, the queue runs dry inside a day" if runway < 1.5 else ""))
+    gap = min_hours(d)
     try:
         last = last_published(d)
     except ValueError as err:
         print(f" ! {err}")
         last = None
     if last:
-        age = (datetime.date.today() - last[0]).days
-        print(f" last out: {last[1]} on {last[0]} ({age}d ago)"
-              f" · minimum gap {gap}d"
-              f" · {'DUE' if age >= gap else f'not due for {gap - age}d more'}")
+        age = hours_since(last[0])
+        print(f" last out: {last[1]} at {last[0]:%Y-%m-%d %H:%M} UTC ({age:.1f}h ago)"
+              f" · minimum gap {gap:g}h"
+              f" · {'DUE' if age >= gap else f'not due for {gap - age:.1f}h more'}")
     return 0
 
 
@@ -124,7 +165,7 @@ def cmd_next(d, force=False):
     # Two runs that overlap in time are not the risk; two runs that both find a
     # `pending` entry are. A late cron is a normal event, so the queue — not the
     # schedule — is what decides whether anything is due.
-    gap = min_days(d)
+    gap = min_hours(d)
     try:
         last = last_published(d)
     except ValueError as err:
@@ -132,14 +173,14 @@ def cmd_next(d, force=False):
         print(f"reason={err}", file=sys.stderr)
         return 0
     if last and gap:
-        age = (datetime.date.today() - last[0]).days
+        age = hours_since(last[0])
         if age < gap:
             if not force:
                 print("slug=")
-                print(f"reason={last[1]} went out on {last[0]} ({age}d ago) and this "
-                      f"queue publishes at most one every {gap} days", file=sys.stderr)
+                print(f"reason={last[1]} went out {age:.1f}h ago and this queue "
+                      f"publishes at most one every {gap:g}h", file=sys.stderr)
                 return 0
-            print(f"--force: publishing anyway, {age}d after {last[1]}", file=sys.stderr)
+            print(f"--force: publishing anyway, {age:.1f}h after {last[1]}", file=sys.stderr)
     for e in d["queue"]:
         if e.get("state") != "pending":
             continue
@@ -178,10 +219,10 @@ def cmd_topic(d):
 
 def cmd_add(d, slug, topic):
     """Put a finished production on the end of the queue. It goes in as
-    `pending`, which means it will be published — but the queue publishes ONE A
-    WEEK, so a video made today sits behind everything already in the line.
-    That gap is the review window, and it is the reason a daily producer and a
-    weekly publisher are safe together."""
+    `pending`, which means it WILL be published — and the queue publishes twice
+    a day, so a film added this morning can be on the channel this evening.
+    There is no multi-day review window to catch a bad one any more: the build
+    gates and the judgement of whoever added it are the review."""
     if any(e.get("slug") == slug for e in d["queue"]):
         print(f"{slug} is already in the queue"); return 0
     bad = problems({"slug": slug, "upload": "youtube", "privacy": "public"})
@@ -223,8 +264,10 @@ def cmd_done(d, slug, url):
             seen = True
         elif seen and ln.strip() == "state: pending":
             pad = ln[: len(ln) - len(ln.lstrip())]
+            now = datetime.datetime.now(UTC).replace(microsecond=0)
             lines[i] = f"{pad}state: published"
-            extra = [f"{pad}published_on: \"{datetime.date.today().isoformat()}\""]
+            extra = [f"{pad}published_on: \"{now.date().isoformat()}\"",
+                     f"{pad}published_at: \"{now.strftime('%Y-%m-%dT%H:%M:%SZ')}\""]
             if url:
                 extra.append(f'{pad}url: "{url}"')
             lines[i + 1 : i + 1] = extra

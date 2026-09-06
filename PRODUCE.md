@@ -156,12 +156,25 @@ Three of the worst defects here were invisible in a still and obvious in a strip
 ```bash
 python3 bin/queue.py add <slug> --topic <topic-id>
 git add -A && git commit && git push -u origin claude/openmontage-setup-dh10g0
+git push origin claude/openmontage-setup-dh10g0:main    # mirror, see below
 ```
 
-It goes in as `pending`. **The queue publishes one a week**, so a film made
-today sits behind everything already in the line — that gap is the review
-window, and it is the only reason a daily producer and a weekly publisher are
-safe together. Never touch `enabled` in `QUEUE.yaml`; that switch is not yours.
+It goes in as `pending`. **The queue publishes two a day**, 09:00 and 20:00
+Istanbul, and there are two producer runs a day to feed it. So the line is
+short: a film made this morning can be on the channel this evening. There is no
+multi-day review window any more — the build gates and your own judgement are
+the review. `python3 bin/queue.py status` prints a **runway** line; if it says
+under 1.5 days, the channel is one missed run from going quiet, and that is
+worth saying in your report.
+
+**Push to both.** The publisher's cron can only fire from `main`, so the
+workflow file has to be there, but the job checks out
+`claude/openmontage-setup-dh10g0` and reads the queue from it. Mirroring the
+branch onto `main` after your push keeps the scheduler and the workflow file
+current. It is a fast-forward; if it is refused, say so in your report rather
+than forcing it.
+
+Never touch `enabled` in `QUEUE.yaml`; that switch is not yours.
 
 ---
 
@@ -170,4 +183,5 @@ safe together. Never touch `enabled` in `QUEUE.yaml`; that switch is not yours.
 Push what you have and say so in the commit. A half-built project in
 `projects/<slug>/` is a fine place for tomorrow to start. **Do not ship
 something you have not looked at, and do not add it to the queue.** An empty
-week costs nothing; a bad video on the channel costs more than a week.
+slot costs nothing; a bad video on the channel costs more than an empty slot —
+and at two a day it is seen sooner.
