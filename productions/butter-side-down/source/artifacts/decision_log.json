@@ -1,0 +1,57 @@
+[
+  {
+    "category": "pipeline_selection",
+    "subject": "How this production is built",
+    "decision": "atelier composition, built with bin/build-ink.sh",
+    "options_considered": [
+      "animation pipeline (templated)",
+      "atelier / ink-theater by hand",
+      "atelier via bin/build-ink.sh"
+    ],
+    "rejected_because": "the chain was ten hand-run commands and four shipped defects were things a check would have caught"
+  },
+  {
+    "category": "render_runtime_selection",
+    "subject": "Composition runtime",
+    "decision": "hyperframes 0.8.29",
+    "options_considered": [
+      "hyperframes",
+      "remotion",
+      "ffmpeg"
+    ],
+    "rejected_because": "SVG paths and transforms rewritten per frame from a physics function"
+  },
+  {
+    "category": "voice_selection",
+    "subject": "Narration TTS provider",
+    "decision": "Kokoro v1.0 am_michael, local, free",
+    "options_considered": [
+      "kokoro am_michael",
+      "piper"
+    ],
+    "rejected_because": "the house voice since production 6"
+  },
+  {
+    "category": "music_selection",
+    "subject": "Music and sound effects",
+    "decision": "self-produced: a low pedal and one struck note, over synthesised foley from ink-theater/sfx.py",
+    "options_considered": [
+      "no sound",
+      "library SFX",
+      "generated music API",
+      "synthesised from ink-theater/sfx.py"
+    ],
+    "rejected_because": "the two landings ARE the punchline and had to be built to differ in timbre rather than picked from a library"
+  },
+  {
+    "category": "provider_selection",
+    "subject": "Images, video and stock",
+    "decision": "none \u2014 every mark is drawn by the composition",
+    "options_considered": [
+      "image generation",
+      "stock",
+      "drawn"
+    ],
+    "rejected_because": "user constraint: nothing paid, zero API keys"
+  }
+]

@@ -1,0 +1,67 @@
+# Publish spec for a hand-produced short.
+#
+# Atelier composition on the ink-sketch playbook, rendered by HyperFrames and
+# built with bin/build-ink.sh. Everything falls at 1/2gt^2 and turns at omega*t
+# from the real numbers; the two landings are a wet slap and a dry clack and
+# they carry the punchline. See source/art-direction.md.
+slug: butter-side-down
+title: Butter Side Down
+duration_seconds: 60.90
+has_burned_captions: true
+produced_by: openmontage/animation (ink-sketch, hyperframes, Adem)
+produced_on: "2026-09-06"
+
+copy:
+  title: "Toast really does land butter side down."
+  hook: "It is not luck. It has time for about half a turn, and half a turn is exactly the wrong number."
+  caption: >-
+    Toast does not fall flat off a table — it pivots on the edge and leaves
+    already turning. From a table it has time for about half a rotation, which
+    takes butter side up to butter side down. To get all the way round it would
+    have to fall from about three metres.
+  description: |-
+    Toast really does land butter side down. It is not luck and it is not
+    Murphy's law.
+
+    It does not fall flat. It overhangs the edge, tips, and pivots — so it
+    leaves the table already rotating. Angular speed is set at that edge and
+    does not change in flight, and the time it has is the time it takes to
+    fall. From a table, that is about 0.39 seconds, and about half a turn.
+    Half a turn takes butter side up to butter side down.
+
+    The arithmetic is unusually neat. Fall time goes as the square root of the
+    height, so four times the height is twice the fall and twice the turn:
+    190 degrees off a 75 cm table, 380 degrees off three metres. That is why
+    three metres is the answer — it is the height at which the toast gets all
+    the way round and lands on its crust.
+
+    So build a three metre table. Except you cannot reach it. A table is that
+    height because you are that height — and how tall a person can be is not a
+    free choice either. Robert Matthews' point, and the reason this won an Ig
+    Nobel prize, is that maximum human height is limited by the strength of
+    chemical bonds against gravity: fall much further than your own height and
+    the bonds lose. That sets how tall you are, which sets how high a table is,
+    which sets how long the toast falls for.
+
+    Your toast lands butter side down because of the size of atoms.
+
+    Everything here is drawn, and everything in it is computed: every fall is
+    y = 1/2 g t squared and every rotation is omega t, from the real numbers.
+    The soundtrack is synthesised in numpy — the two landings are a wet slap
+    and a dry clack, and the difference between them is the argument. Nothing
+    in this video was generated, photographed or licensed.
+
+    Source
+    Robert A. J. Matthews, "Tumbling toast, Murphy's Law and the fundamental
+    constants", European Journal of Physics 16, 172-176 (1995).
+
+    #Shorts
+  hashtags:
+    - physics
+    - toast
+    - murphyslaw
+    - science
+    - ignobel
+    - animation
+    - howitworks
+    - Shorts

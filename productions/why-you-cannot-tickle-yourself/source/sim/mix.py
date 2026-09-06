@@ -15,7 +15,9 @@ Nothing here is mixed to taste. The reason you can hear the delayed strokes and
 not the self strokes is that one pair sums to nearly zero and the other does
 not, which is the claim the narration is making.
 """
-import json, numpy as np, soundfile as sf
+import json, os, sys, numpy as np, soundfile as sf
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', 'ink-theater'))
+from sfx import ui_click, place, SUBSCRIBE_TAP
 from scipy.signal import butter, sosfilt, resample_poly, fftconvolve
 
 SR  = 48000
@@ -82,6 +84,10 @@ drone += 0.26 * np.sin(2*np.pi*146.83*t) * sw(15.5, 18.5)          # opens at th
 drone += 0.18 * np.sin(2*np.pi*220.00*t) * sw(41.5, 44.5) * (1 - sw(53.4, 57.0))
 drone *= 0.052 * (sw(0.4, 2.2) * (1 - sw(59.5, 61.7)))
 mix = bed + air + drone
+
+# A button that does not click has not been pressed. The tap lands
+# SUBSCRIBE_TAP seconds after InkBrand.subscribe()'s `at`.
+place(bed, SR, ui_click(SR) * 0.5, 58.5 + SUBSCRIBE_TAP)
 
 # ── the voice ────────────────────────────────────────────────────────────
 AT = EV["narration"]

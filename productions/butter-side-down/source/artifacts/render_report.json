@@ -1,0 +1,50 @@
+{
+  "renderer": "hyperframes 0.8.29 via bin/build-ink.sh",
+  "fps": 30,
+  "size": "1080x1920",
+  "duration_seconds": 60.9,
+  "physics": {
+    "g": 9.81,
+    "omega_rad_s": 8.48,
+    "note": "angular speed is set at the edge and does not change in flight; fall time goes as sqrt(h). Four times the height is twice the turn.",
+    "table_0_75m": {
+      "fall_s": 0.391,
+      "turn_deg": 190,
+      "lands": "butter side down"
+    },
+    "tall_3_00m": {
+      "fall_s": 0.782,
+      "turn_deg": 380,
+      "lands": "butter side up"
+    }
+  },
+  "audio": {
+    "narration": "kokoro-v1.0 am_michael (local, 24kHz, resampled to 48k)",
+    "music": "a low pedal that drops a fifth at the turn of the argument, and one struck note on the last line",
+    "sfx": "all synthesised in ink-theater/sfx.py \u2014 a wet slap and a dry clack are the punchline; the fall whoosh rises as v^2 and flutters once per half turn",
+    "subscribe_click": "ui_click at subscribe_at + 1.48s",
+    "voice_over_bed_db": 16.7,
+    "loudness_lufs": -14.44,
+    "true_peak_db": -1.87
+  },
+  "annotation": "ink-theater/annotate.js \u2014 3 callouts, 3 dimension lines, 1 ring",
+  "brand": {
+    "logo": "InkBrand.mark(), play triangle in ochre #A8710C",
+    "subscribe": "InkBrand.subscribe() at 57.60, and the tap clicks"
+  },
+  "delivery_encode": {
+    "shipped": "x264 CRF 20 preset slow, audio muxed in the same pass",
+    "size_mb": 4.4,
+    "mbps": 0.6
+  },
+  "gates_passed": [
+    "voice +16.7 dB over bed",
+    "captions above y=1400",
+    "1080x1920",
+    "-14.44 LUFS",
+    "-1.87 dBTP",
+    "0.6 Mbps",
+    "61-frame contact sheet"
+  ],
+  "providers_used": "none \u2014 zero API keys, zero generated images, zero stock, zero licensed audio"
+}

@@ -281,6 +281,29 @@
       var toastB = makeToast(fallG, 262, 52);
       gsap.set(fallG, { opacity: 0 });
       var B_X0 = EDGE[0] + 26, B_DX = 150;
+      // The title of the film gets its own beat: the slice lifted out of the
+      // fall and turned over, slowly, with the dial following it. Eight seconds
+      // on a gauge that has stopped is the static-shot trap, and this line is
+      // the one the whole thing is named after.
+      // Derived from t, not held in a proxy that a tl.set writes. A gsap
+      // timeline renders its children in START-TIME order, so a set() at 21.6
+      // lands AFTER the per-frame sync at position 0 — and on a seek the frame
+      // is drawn with the old value. Everything that changes state rather than
+      // easing a value is a function of t in this file.
+      var FLIP0 = 21.60, FLIP_A = 22.60, FLIP_B = 24.30, FLIP1 = 26.30;
+      function flipAt(t) {
+        if (t < FLIP0 || t >= FLIP1) return null;
+        var u = Math.max(0, Math.min(1, (t - FLIP_A) / (FLIP_B - FLIP_A)));
+        return Math.PI * (u < 0.5 ? 2 * u * u : 1 - 2 * (1 - u) * (1 - u));   // power1.inOut
+      }
+      // and the table is a number the film changes, so it is one too
+      var TALL0 = 32.20, TALL1 = 33.35, TALL_BACK = 52.60;
+      function tableH(t) {
+        if (t >= TALL_BACK || t < TALL0) return 750;
+        var u = Math.max(0, Math.min(1, (t - TALL0) / (TALL1 - TALL0)));
+        u = u < 0.5 ? 2 * u * u : 1 - 2 * (1 - u) * (1 - u);
+        return 750 + (3000 - 750) * u;
+      }
 
       // ══ SETUP C — two heights, one number ════════════════════════════════
       var PPM = 200, C_FLOOR = 1150;             // pixels per metre in the diagram
@@ -356,6 +379,7 @@
       function sync() {
         var t = clockT.v;
         if (shown.room) {
+          T.h = tableH(t);
           var ty = layTable();
           // the toast: on the plate until it goes, then real free fall
           var d = null, k;
@@ -377,7 +401,12 @@
           var p = pageToPose(hx, hy);
           fig.carry.dx = p[0]; fig.carry.dy = p[1]; fig.carry.on = REACH.on;
         }
-        if (shown.fall) {
+        var fth = flipAt(t);
+        if (shown.fall && fth !== null) {
+          setToast(toastB, 322, 462, fth, 1.30);
+          trace.setAttribute("d", "");
+          setGauge(gaugeB, fth);
+        } else if (shown.fall) {
           var s2 = dropAt(t, D_FALL);
           var yTop = EDGE[1] - 10, yEnd = FLOOR_B - 30;
           var x = B_X0 + s2.f * B_DX, y = yTop + s2.y * (yEnd - yTop);
@@ -446,9 +475,16 @@
       cut(40.40, "chain", 1.00);
       cut(52.60, "room", 1.10, 470, 780);
 
+      // ── the flip ─────────────────────────────────────────────────────────
+      tl.to([bEdge, bApron, bFloor, bFloor2, trace], { opacity: 0, duration: 0.40 }, 21.30);
+      IA.callout(tl, notes, { at: 21.75, out: 24.90, text: "butter side up",
+                              x: 320, y: 250, to: [322, 400], bend: 0, size: 46 });
+      IA.callout(tl, notes, { at: 24.50, out: 26.10, text: "butter side down",
+                              x: 330, y: 700, to: [322, 524], bend: 0, size: 46, color: BUTTER });
+      // a slow push while the gauge sits on 190, so the shot is not frozen
+      tl.to(camera, { scale: 1.14, duration: 6.20, ease: "none", svgOrigin: "560 640" }, 15.10);
+
       // ── the table grows, and he cannot reach it ──────────────────────────
-      tl.set(T, { h: 750 }, 31.05);
-      to(T, { h: 3000, duration: 1.15, ease: "power2.inOut" }, 32.20);
       // A three metre table does not fit, and that is the joke. The camera
       // backs off to get it in and he goes small in the frame doing nothing.
       tl.to(camera, { scale: 0.60, duration: 1.15, ease: "power2.inOut",
@@ -459,10 +495,9 @@
       to(fig.face, { brow: 4.6, duration: 0.40, ease: IT.ease.settle }, 35.40);
       to(fig.face, { brow: 0, duration: 0.70, ease: IT.ease.soft }, 37.60);
       to(REACH, { up: 0, on: 0, duration: 0.60, ease: IT.ease.soft }, 39.60);
-      tl.set(T, { h: 750 }, 52.60);
 
       // ── the chain assembles itself, one link per clause ──────────────────
-      [41.10, 43.10, 45.10, 46.90, 48.60].forEach(function (at, i) {
+      [40.70, 42.70, 44.70, 46.70, 48.50].forEach(function (at, i) {
         tl.to(chainBits[i], { opacity: 1, duration: 0.34 }, at);
         if (i < 4) {
           tl.to(chainArrows[i].shaft, { opacity: 1, duration: 0.001 }, at + 0.44);

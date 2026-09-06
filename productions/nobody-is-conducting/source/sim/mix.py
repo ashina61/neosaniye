@@ -10,7 +10,9 @@ The only tonal element is a low pad whose amplitude is the Kuramoto order
 parameter r — so the pad is literally the sound of the room agreeing, and it
 cannot be heard while the room disagrees. That is the whole score.
 """
-import json, numpy as np, soundfile as sf
+import json, os, sys, numpy as np, soundfile as sf
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', 'ink-theater'))
+from sfx import ui_click, place, SUBSCRIBE_TAP
 from scipy.signal import fftconvolve, resample_poly, butter, sosfilt
 
 SR   = 48000
@@ -100,6 +102,10 @@ for f, a, dt_ in [(55.0, 1.00, 0.0), (82.5, 0.42, 0.11), (110.0, 0.55, -0.07),
 pad += 0.10 * np.sin(2*np.pi*440*t) * np.clip(rr, 0, 1)**3               # it opens up
 pad *= 0.105 * np.clip(rr, 0, 1)**1.6 * env
 mix = bed + np.stack([pad, pad], axis=1)
+
+# A button that does not click has not been pressed. The tap lands
+# SUBSCRIBE_TAP seconds after InkBrand.subscribe()'s `at`.
+place(bed, SR, ui_click(SR) * 0.5, 58.55 + SUBSCRIBE_TAP)
 
 # ── the voice ────────────────────────────────────────────────────────────
 AT = {"s01":2.40,"s02":4.40,"s03":7.60,"s04":11.90,"s05":15.90,"s06":20.55,
