@@ -14,11 +14,11 @@
 # THE MASTER SWITCH IS OFF. Nothing is published while `enabled` is false. Turn
 # it on when you have watched the first few and you are happy for them to go.
 
-enabled: false
+enabled: true
 
 # Tuesdays, 18:00 Istanbul. The workflow's cron is the authority; this is here
 # so the file says what it does.
-schedule: "0 15 * * 2   # 18:00 Europe/Istanbul, weekly"
+schedule: "0 15 * * 0   # 18:00 Europe/Istanbul, Sundays"
 
 topics_used:
   # the eight already made — these ids must not come round again

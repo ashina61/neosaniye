@@ -359,3 +359,21 @@ rather than letting it repeat itself.
 
 To change the pace or stop it: the Routine is `trig_01PHEpQNDJXg2BLV7XJT7X6b`,
 editable from the Routines list on claude.ai or with `update_trigger`.
+
+## The one thing that blocks the weekly rhythm
+
+**A GitHub `schedule:` trigger only ever fires from the repository's DEFAULT
+branch.** `publish-queue.yml` and `render-production.yml` live only on
+`claude/openmontage-setup-dh10g0`, so:
+
+- the weekly cron is **inert** until the branch reaches `main`
+- neither workflow appears in the Actions tab at all
+- `publish-production.yml` IS on `main` and works — pick the branch under
+  *Use workflow from* and give it a slug
+
+So today the shape is: the **producer runs by itself** (a Claude Routine, which
+does not care which branch it is on) and the **publisher does not**. Videos will
+pile up in the queue and nothing will go out until either the branch is merged
+or somebody runs `publish-production.yml` by hand each week.
+
+Merging is the fix, and it is the owner's call.

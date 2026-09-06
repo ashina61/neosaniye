@@ -21,10 +21,16 @@ name: Publish the next one in the queue
 #  4. The file is proved to be 1080x1920 with an audio track before it goes
 #     near an account.
 #  5. It publishes ONE and stops. A bad video costs one week, not the queue.
+#
+# NOTE: a `schedule:` trigger only ever fires from the repository's DEFAULT
+# branch. While this file lives only on claude/openmontage-setup-dh10g0 the cron
+# below is inert, and the queue has to be driven by hand through
+# publish-production.yml. Merging the branch is what switches the weekly rhythm
+# on.
 
 on:
   schedule:
-    - cron: '0 15 * * 2'        # Tuesdays 18:00 Europe/Istanbul
+    - cron: '0 15 * * 0'        # Sundays 18:00 Europe/Istanbul
   workflow_dispatch:
     inputs:
       dry_run:
