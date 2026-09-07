@@ -1,0 +1,53 @@
+{
+ "duration": 48.9,
+ "narration": {
+  "s01": 1.1,
+  "s02": 5.4,
+  "s03": 8.35,
+  "s04": 10.9,
+  "s05": 13.5,
+  "s06": 18.15,
+  "s07": 20.8,
+  "s08": 23.05,
+  "s09": 28.75,
+  "s10": 32.05,
+  "s11": 35.2,
+  "s12": 39.8
+ },
+ "durations": {
+  "s01": 3.95,
+  "s02": 2.62,
+  "s03": 2.27,
+  "s04": 2.2,
+  "s05": 4.2,
+  "s06": 2.27,
+  "s07": 1.86,
+  "s08": 5.14,
+  "s09": 2.93,
+  "s10": 2.57,
+  "s11": 3.86,
+  "s12": 5.55
+ },
+ "subscribe_at": 45.6,
+ "cuts": {
+  "street": 0.0,
+  "feet": 8.2,
+  "shelves": 17.95,
+  "street2": 34.95
+ },
+ "physics": {
+  "wire_volts": 11000,
+  "law": "current needs a potential difference; two contacts at one potential have none"
+ },
+ "events": {
+  "chirp": [
+   2.1,
+   40.6
+  ],
+  "step_at": 29.6,
+  "roll_at": 32.15,
+  "roll_dur": 1.45,
+  "arc_at": 37.05,
+  "hum_open": 29.4
+ }
+}

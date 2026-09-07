@@ -62,6 +62,35 @@ Changing only these is not a new design — it is the same video with new data:
 
 ## Ledger
 
+### 2026-09-07 — birds-and-the-wire
+*"A bird sits on 11,000 volts. Nothing happens."* · 48.9s · **ink-theater + Adem** / hyperframes / atelier
+
+| Field | Value |
+|---|---|
+| Design read | **The frame keeps being re-read.** The same strokes are a street in one shot and a height diagram in the next, because that is what the physics says: there is no such thing as high voltage, only a drop between two places. The middle of the film draws voltage as elevation, and the payoff of doing so is that the wire — eleven thousand volts, twenty feet up — is the **flattest place in the picture**. |
+| Ground | Warm white paper `#FCFBF8`, live boil. The channel's fixed ground. |
+| Palette roles | **One accent, and it is embargoed.** ink `#333333` = the street, the man, the bird, the shelves · grey `#8A857A` = the sky, the house, every dimension line · red `#C8322B` = **a potential difference, and nothing else.** There is therefore NO RED ANYWHERE in the first twenty-nine seconds — including on the channel's own logo, which wears grey in this film, and on the subscribe card, which wears ink. The first red is the step under the bird's foot; the last is the arc. |
+| Signature device | **The drop.** Every creature is drawn touching things and the only number on the page is the difference between the things it touches. It reads **0 V** for two thirds of the film. The charge is a ball that only ever moves down a step, so it sits perfectly still for eleven seconds on a flat shelf — the argument stated as a picture rather than a sentence — and then accelerates at `s = f²`, the same curve the sound uses. |
+| Layout set | **Three setups, four cuts.** A street with a pole, two crossarms, a transformer can and a bird · the feet, at 3.15× , where the whole frame is two feet and one conductor · the height diagram: two shelves, a hatched ground and 11,000 V of empty page between them. The film returns to the street for the wingspan and the payoff. |
+| Motion character | **The re-read.** Transitions are not cuts to new drawings — the wire slides up into being the top shelf and the pavement into the bottom one. The only other motion in the film is a ball that is either perfectly still or accelerating, and a bird that is alive: it breathes, its head flicks the way a bird's does, and once, on the line about both feet, it hops sideways along the **same wire**, which changes nothing. |
+| Type | Patrick Hand, HTML overlay divs at y=1250, plus the annotation layer. Every caption is two lines or fewer and under ~34 characters a line, so nothing lands in the Shorts title block. |
+| Narrative structure | the claim → what voltage actually is → the mechanism drawn as terrain → the exception → what the exception costs |
+| Narration | Kokoro v1.0 `am_michael`, local. 123 words over 39.4s of speech. |
+| Music | None, and that is the point. **The wire hums** — 50 Hz and its harmonics, quiet, steady, going nowhere. When the step appears the hum grows a 100 Hz buzz it did not have: nothing is added to the mix, the same oscillator opens. Two buses, ducked differently — ambience at the house 0.86 and the film's own events at 0.34, because ducking the arc under the narration buried the one bang in the film. |
+| Captions | Burned in, Patrick Hand 62px at y=1250. Three of twelve lines mark a word; one marks it in the accent, and only after the accent exists. |
+| Brand | `InkBrand.mark()` top left with its play triangle in **grey**, not the accent — the embargo applies to the channel's furniture too. Subscribe card at 45.60 in ink, and the tap clicks. |
+| Providers used | none — zero API keys, zero generated images, zero stock, zero licensed audio |
+
+**Burned for future videos:** voltage-as-elevation, an accent that does not exist
+until the film's subject does, a ball that only moves down a step, and the
+two-bus duck (ambience hard, the film's own events light).
+
+**What the contact strip caught that eleven stills did not:** nine seconds of a
+completely motionless bird in the close-up and twelve more in the diagram. A
+still cannot show you that nothing is moving. The fix — breath, a head flick on
+a hash of `t`, and one sideways hop — is in `liveBird()` and is worth copying.
+
+
 ### 2026-09-06 — butter-side-down
 *"Toast really does land butter side down."* · 60.9s · **ink-theater + Adem** / hyperframes / atelier
 

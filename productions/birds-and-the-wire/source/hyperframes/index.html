@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!--
+      BIRDS AND THE WIRE — why a bird on eleven thousand volts is fine, and
+      what actually kills the ones that are not.
+
+      DESIGN READ: the frame keeps being re-read. The same strokes are a street
+      in one shot and a height diagram in the next, because voltage IS height:
+      there is no such thing as high voltage, only a drop between two places.
+      Nothing enters and nothing leaves — the drawing rearranges itself.
+
+      SIGNATURE DEVICE: THE DROP. Every creature in this film is drawn touching
+      things, and the only number on the page is the difference between what it
+      is touching. It reads ZERO for two thirds of the film. The moment it is
+      not zero, a step appears under the bird and something rolls down it.
+
+      MOTION CHARACTER: THE RE-READ. Transitions are not cuts to new drawings;
+      the wire slides into being the top shelf, the pavement into the bottom
+      one, and back. The only other motion is a ball that either sits perfectly
+      still or accelerates — and it is still for most of the film, because flat
+      is the whole argument.
+
+      PALETTE: one accent, and IT IS NOT ON THE PAGE UNTIL SOMETHING IS WRONG.
+      Red is a potential difference and nothing else. For twenty-nine seconds
+      there is no red anywhere; the first red in the film is the step, and the
+      last is the arc.
+    -->
+    <script src="gsap.min.js"></script>
+    <script src="ink-theater.js"></script>
+    <script src="ink-puppet.js"></script>
+    <script src="ink-figure.js"></script>
+    <script src="clips.js"></script>
+    <script src="brand.js"></script>
+    <script src="annotate.js"></script>
+    <script src="events.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      @font-face { font-family: "InkHand"; src: url("assets/patrickhand.ttf") format("truetype"); font-display: block; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #FCFBF8; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+      .stage { position: absolute; inset: 0; background: #FCFBF8; }
+      .stage svg { position: absolute; inset: 0; display: block; width: 1080px; height: 1920px; }
+      #overlay { position: absolute; inset: 0; }
+      .cap { position: absolute; left: 56px; width: 968px; top: 1250px; text-align: center;
+             font-family: "InkHand", cursive; font-size: 62px; line-height: 1.16; color: #333333; opacity: 0; }
+      .cap b { font-weight: normal; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="48.90"
+         data-width="1080" data-height="1920" data-fps="30">
+      <section id="scene" class="clip" data-start="0" data-duration="48.90">
+        <div class="stage">
+          <svg viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="boil" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="1" seed="1" result="n"/>
+                <feDisplacementMap in="SourceGraphic" in2="n" scale="2.4"/>
+              </filter>
+            </defs>
+            <g id="camera">
+              <g id="street" filter="url(#boil)"></g>
+              <g id="actorScale"><g id="actorFace"><g id="actorMount"></g></g></g>
+              <g id="wires"  filter="url(#boil)"></g>
+              <g id="feet"   filter="url(#boil)"></g>
+              <g id="shelf"  filter="url(#boil)"></g>
+              <g id="notes"></g>
+            </g>
+            <g id="brandLayer"></g>
+          </svg>
+          <div id="overlay"></div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      var IT = window.InkTheater, IP = window.InkPuppet, IF = window.InkFigure;
+      var IA = window.InkAnnotate;
+      var tl = gsap.timeline({ paused: true });
+      var NS = "http://www.w3.org/2000/svg";
+      if (document.fonts && document.fonts.load) { document.fonts.load("62px InkHand"); }
+
+      var INK = IF.ADEM.ink, PAPER = IF.ADEM.paper, DIM = "#8A857A";
+      var VOLT = "#C8322B";                  // a potential difference, and nothing else
+      var EV = window.EV, DUR = EV.duration, E = EV.events, CUT = EV.cuts;
+
+      var CX = 286, GROUND = 1130, SCALE = 1.36;
+      var MM = (SCALE * 534) / 1750;
+      function mm(v) { return v * MM; }
+
+      var street = document.getElementById("street"), wiresG = document.getElementById("wires");
+      var feetG = document.getElementById("feet"), shelfG = document.getElementById("shelf");
+      var notes = document.getElementById("notes"), camera = document.getElementById("camera");
+      var overlay = document.getElementById("overlay"), defs = document.querySelector("defs");
+
+      function node(tag, a, parent) {
+        var n = document.createElementNS(NS, tag);
+        for (var k in a) n.setAttribute(k, a[k]);
+        parent.appendChild(n); return n;
+      }
+      function stroke(d, sw, color, parent) {
+        return node("path", { d: d, fill: "none", stroke: color || INK, "stroke-width": sw || 5,
+                              "stroke-linecap": "round", "stroke-linejoin": "round" }, parent);
+      }
+      var seed = 20260907;
+      function rnd() { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296 - 0.5; }
+      function seg(a, b, amp, step) {
+        var n = Math.max(1, Math.round(Math.hypot(b[0] - a[0], b[1] - a[1]) / (step || 100))), o = [], i;
+        for (i = 0; i <= n; i++) { var t = i / n, e = (i === 0 || i === n) ? 0 : 1;
+          o.push([a[0] + (b[0] - a[0]) * t + rnd() * amp * 2 * e, a[1] + (b[1] - a[1]) * t + rnd() * amp * 2 * e]); }
+        return o;
+      }
+      function dd(p) { var s = "", i; for (i = 0; i < p.length; i++) s += (i ? "L" : "M") + p[i][0].toFixed(1) + " " + p[i][1].toFixed(1) + " "; return s; }
+      function line(x0, y0, x1, y1, sw, parent, color, amp) {
+        return stroke(dd(seg([x0, y0], [x1, y1], amp == null ? 1.4 : amp, 110)), sw, color, parent);
+      }
+      function poly(pts, sw, parent, fill, color) {
+        var d = "", i; for (i = 0; i < pts.length; i++) d += dd(seg(pts[i], pts[(i + 1) % pts.length], 1.4));
+        return node("path", { d: d + "Z", fill: fill || "none", stroke: color || INK,
+                              "stroke-width": sw || 5, "stroke-linejoin": "round" }, parent);
+      }
+      function box(x0, y0, x1, y1, sw, parent, fill) { return poly([[x0,y0],[x1,y0],[x1,y1],[x0,y1]], sw, parent, fill); }
+      function drawOn(el, t, dur, ease) {
+        var L = el.getTotalLength();                       // build time, never in a callback
+        el.style.strokeDasharray = L; el.style.strokeDashoffset = L;
+        tl.to(el, { strokeDashoffset: 0, duration: dur, ease: ease || "none" }, t);
+        tl.set(el, { strokeDasharray: "none" }, t + dur);
+      }
+
+      // ══ a small bird, seen side on ═══════════════════════════════════════
+      // Body, head, beak, tail, and two legs that actually grip: the toes wrap
+      // the wire, because "both feet on the same wire" is the whole film and a
+      // bird whose feet hover is a bird making the opposite argument.
+      function makeBird(parent, s, span) {
+        var g = node("g", {}, parent), sw = 5 / (s || 1);
+        var body = [], i;
+        for (i = 0; i <= 40; i++) {
+          var a = i / 40 * Math.PI * 2;
+          body.push([Math.cos(a) * 62 + rnd() * 2, Math.sin(a) * 40 - 44 + rnd() * 2]);
+        }
+        node("path", { d: IF.smooth(body, true), fill: PAPER, stroke: INK, "stroke-width": sw }, g);
+        var head = node("g", {}, g);
+        node("circle", { cx: -52, cy: -92, r: 30, fill: PAPER, stroke: INK, "stroke-width": sw }, head);
+        stroke("M-80 -94 l-30 8 l30 9 Z", sw, INK, head).setAttribute("fill", INK);   // beak
+        node("circle", { cx: -60, cy: -98, r: 4.6, fill: INK }, head);                 // eye
+        stroke("M52 -58 q54 -14 74 -40 q-8 34 -60 60", sw, INK, g);                 // tail
+        stroke("M-16 -60 q40 8 56 34 q-40 4 -62 -18", sw, DIM, g);                  // wing
+        // the legs: one per contact, and their x is the span the film is about
+        var sp = (span == null ? 74 : span) / 2;
+        var legs = stroke("M" + (-sp) + " -8 L" + (-sp) + " 16 M" + sp + " -8 L" + sp + " 16", sw, INK, g);
+        var toes = stroke("M" + (-sp - 15) + " 24 q15 -12 15 -8 q0 -4 15 8" +
+                          "M" + (sp - 15) + " 24 q15 -12 15 -8 q0 -4 15 8", sw * 0.9, INK, g);
+        return { g: g, head: head, legs: legs, toes: toes };
+      }
+      function put(g, x, y, s) {
+        g.setAttribute("transform", "translate(" + x.toFixed(1) + "," + y.toFixed(1) + ")" +
+                       (s && s !== 1 ? " scale(" + s + ")" : ""));
+        if (g.__bird) { g.__bird.bx = x; g.__bird.by = y; g.__bird.bs = s || 1; }
+      }
+
+      // A BIRD THAT DOES NOT MOVE IS A DRAWING OF A BIRD. The contact strip of
+      // the first build showed nine seconds of a perfectly still bird in the
+      // close-up and twelve more in the diagram — the static-shot trap, twice,
+      // and invisible in every still I looked at. So it breathes, its head
+      // flicks the way a bird's does (fast, held, fast), and once, on the line
+      // about both feet, it hops sideways along the SAME wire: still one
+      // conductor, still nothing to flow.
+      //
+      // All of it is a function of t. Nothing is a tl.set on a proxy: the
+      // timeline renders children in start-time order and a seek would draw
+      // the previous state.
+      function hash(i) { var x = Math.sin(i * 12.9898 + 78.233) * 43758.5453; return x - Math.floor(x); }
+      function flick(t, ph) {
+        var u = t * 0.62 + ph, k = Math.floor(u), f = u - k;
+        var a0 = (hash(k) - 0.5) * 26, a1 = (hash(k + 1) - 0.5) * 26;
+        var e = Math.min(1, f / 0.10);                       // fast, then held
+        return a0 + (a1 - a0) * (e * e * (3 - 2 * e));
+      }
+      function liveBird(b, t, ph, hop) {
+        var bob = 1.3 * Math.sin(2 * Math.PI * 0.85 * t + ph * 5.1);
+        var dx = 0, lift = 0;
+        if (hop) {
+          var h = Math.max(0, Math.min(1, (t - hop.at) / hop.dur));
+          dx = h * hop.dx;
+          lift = Math.sin(Math.PI * h) * hop.lift;
+        }
+        b.g.setAttribute("transform", "translate(" + (b.bx + dx).toFixed(1) + "," +
+          (b.by + bob - lift).toFixed(1) + ")" + (b.bs !== 1 ? " scale(" + b.bs + ")" : ""));
+        b.head.setAttribute("transform", "rotate(" + flick(t, ph).toFixed(2) + ",-52,-92)");
+      }
+
+      // ══ SETUP A — the street ═════════════════════════════════════════════
+      var SET = [];
+      function A(e) { SET.push(e); return e; }
+      var POLE = 792, ARM1 = 298, ARM2 = 374, WA = 278, WB = 354;
+
+      A(line(-60, GROUND, 1140, GROUND, 5, street, INK, 2.2));            // pavement
+      A(line(-60, GROUND + 34, 1140, GROUND + 34, 3, street, DIM));       // kerb
+      A(line(-60, GROUND + 74, 1140, GROUND + 74, 4, street, INK, 2.0));  // road
+      A(stroke("M120 " + (GROUND + 56) + " l84 0 M420 " + (GROUND + 56) + " l84 0 M720 " + (GROUND + 56) + " l84 0", 3, DIM, street));
+      // the house behind him: a gable, a wall, a window with a sill
+      A(stroke(dd(seg([-40, 812], [196, 646], 1.6)) + dd(seg([196, 646], [432, 812], 1.6)), 5, DIM, street));
+      A(line(-40, 812, -40, GROUND, 4, street, DIM));
+      A(line(432, 812, 432, GROUND, 4, street, DIM));
+      A(box(64, 872, 236, 1044, 4, street, PAPER));
+      A(line(64, 1052, 236, 1052, 4, street, DIM));
+      A(stroke("M150 872 L150 1044 M64 958 L236 958", 3, DIM, street));
+      // the pole, its two crossarms, four insulators and the transformer can
+      A(line(POLE, GROUND, POLE, 226, 7, street, INK, 1.6));
+      A(line(POLE - 6, 640, POLE + 30, 640, 4, street, DIM));             // a bolt plate
+      A(line(POLE - 132, ARM1, POLE + 132, ARM1, 6, street));
+      A(line(POLE - 108, ARM2, POLE + 108, ARM2, 6, street));
+      A(stroke("M" + (POLE - 96) + " " + ARM1 + " l0 -20 M" + (POLE + 96) + " " + ARM1 + " l0 -20" +
+               "M" + (POLE - 78) + " " + ARM2 + " l0 -20 M" + (POLE + 78) + " " + ARM2 + " l0 -20", 5, INK, street));
+      A(node("path", { d: "M" + (POLE - 112) + " " + (ARM1 - 20) + " q16 -22 32 0 Z", fill: PAPER, stroke: INK, "stroke-width": 4 }, street));
+      A(box(POLE + 44, 700, POLE + 156, 856, 5, street, PAPER));          // transformer can
+      A(stroke("M" + (POLE + 60) + " 700 l0 -26 M" + (POLE + 140) + " 700 l0 -26 M" + (POLE + 56) + " 812 l88 0", 4, DIM, street));
+      // the street furniture: a sign, a bin, a puddle, a low rail
+      A(line(468, GROUND, 468, 806, 5, street, INK, 1.4));
+      A(box(414, 726, 522, 800, 4, street, PAPER));
+      A(line(424, 764, 512, 764, 3, street, DIM));
+      A(box(650, 1010, 726, GROUND, 4, street, PAPER));
+      A(line(650, 1030, 726, 1030, 3, street, DIM));
+      A(stroke("M300 " + (GROUND + 60) + " q56 -16 112 2 q-52 18 -112 -2 Z", 3, DIM, street));
+      A(line(940, GROUND, 940, 1030, 4, street, DIM));
+      A(line(1010, GROUND, 1010, 1030, 4, street, DIM));
+      A(line(920, 1030, 1060, 1030, 4, street, DIM));
+
+      // two clouds and a chimney, so the top third is a sky and not a margin
+      A(stroke("M40 506 q-26 -34 14 -46 q10 -34 54 -18 q34 -30 66 8 q34 4 20 40 q-84 22 -154 16 Z", 4, DIM, street));
+      A(stroke("M452 452 q-20 -26 12 -34 q10 -24 42 -12 q26 -22 50 8 q24 4 12 30 q-64 16 -116 8 Z", 4, DIM, street));
+      A(box(268, 592, 316, 682, 4, street, PAPER));
+
+      // the two wires live in their own group: they are what re-reads into the
+      // diagram, so nothing else may be welded to them
+      var wireA = line(-60, WA, 1140, WA + 6, 6, wiresG, INK, 1.2);
+      var wireB = line(-60, WB, 1140, WB + 6, 6, wiresG, INK, 1.2);
+      var birdA = makeBird(wiresG, 0.62, 74);
+      birdA.g.__bird = birdA; put(birdA.g, 300, WA + 2, 0.62);
+      // the big one, later: same drawing, wider feet, and its span reaches both
+      var birdBig = makeBird(wiresG, 0.95, 122);
+      birdBig.g.__bird = birdBig; put(birdBig.g, 452, WA + 2, 0.95);
+      gsap.set(birdBig.g, { opacity: 0 });
+      var bigWing = stroke(dd(seg([472, WA + 26], [560, WB - 4], 1.6)) +
+                           dd(seg([560, WB - 4], [524, WB + 6], 1.4)), 6, INK, wiresG);
+      gsap.set(bigWing, { opacity: 0 });
+      var arcG = node("g", {}, wiresG);
+      var arcBolt = stroke("", 11, VOLT, arcG);
+      gsap.set(arcG, { opacity: 0 });
+
+      // ── the figure ───────────────────────────────────────────────────────
+      var mount = document.getElementById("actorMount");
+      var pup = IP.create(mount, { cx: CX, ground: GROUND, boil: "boil", headR: IF.ADEM.headR - 2, strokeWidth: 4 });
+      var actorScale = document.getElementById("actorScale");
+      actorScale.setAttribute("transform",
+        "translate(" + CX + "," + GROUND + ") scale(" + SCALE + ") translate(" + (-CX) + "," + (-GROUND) + ")");
+      var fig = IF.attach(pup, { unit: SCALE });
+      IP.still("shuffle", 34);
+      fig.carry.from = "point"; fig.hold.from = "point";
+      // he is holding the one thing he touches: a paper cup, and at the end he
+      // puts his free hand ON the pole — one contact, which is the payoff
+      var LOOK = { on: 0, up: 0 }, POLEHAND = { on: 0 };
+      function pageToPose(x, y) { return IF.toPose(pup, x, y, { scale: SCALE, aboutX: CX, aboutY: GROUND }); }
+
+      // ══ SETUP B — the feet, big ══════════════════════════════════════════
+      var FWIRE = 792;
+      var fWire = line(-40, FWIRE, 1120, FWIRE + 4, 14, feetG, INK, 1.2);
+      var birdC = makeBird(feetG, 3.15, 74);
+      birdC.g.__bird = birdC; put(birdC.g, 512, FWIRE - 6, 3.15);
+
+      gsap.set(feetG, { opacity: 0 });
+
+      // ══ SETUP C — the height diagram ═════════════════════════════════════
+      // The wire is not high in this shot. It is FLAT, and the ground is a long
+      // way down: the film's argument drawn as terrain.
+      var TOPY = 470, GNDY = 1086, SHX0 = 96, SHX1 = 984, STEPX = 509, STEPD = 104;
+      var topShelf = line(SHX0, TOPY, SHX1, TOPY, 7, shelfG, INK, 1.4);
+      var gndShelf = line(SHX0, GNDY, SHX1, GNDY, 7, shelfG, INK, 1.4);
+      var gndHatch = stroke((function () { var s = "", i; for (i = 0; i < 15; i++) { var x = SHX0 + 18 + i * 62;
+        s += "M" + x + " " + (GNDY + 8) + " l-26 34 "; } return s; })(), 4, DIM, shelfG);
+      var topLabel = node("text", { x: SHX1, y: TOPY - 30, "text-anchor": "end", "font-family": "InkHand, cursive",
+                                    "font-size": 46, fill: DIM }, shelfG);
+      topLabel.textContent = "11,000 V";
+      var gndLabel = node("text", { x: SHX1, y: GNDY + 78, "text-anchor": "end", "font-family": "InkHand, cursive",
+                                    "font-size": 46, fill: DIM }, shelfG);
+      gndLabel.textContent = "0 V";
+      // the second conductor, and the step it puts under one foot
+      var stepShelf = line(STEPX, TOPY + STEPD, SHX1, TOPY + STEPD, 7, shelfG, INK, 1.4);
+      var stepRiser = line(STEPX, TOPY, STEPX, TOPY + STEPD, 8, shelfG, VOLT, 1.2);
+      gsap.set([stepShelf, stepRiser], { opacity: 0 });
+      var birdD = makeBird(shelfG, 1.05, 74);
+      birdD.g.__bird = birdD; put(birdD.g, 470, TOPY + 2, 1.05);
+      // the same bird with the far leg let down onto the second conductor. Two
+      // drawings rather than one animated leg, because the claim is a state:
+      // one contact, or two at different potentials.
+      var birdE = makeBird(shelfG, 1.05, 74);
+      birdE.g.__bird = birdE; put(birdE.g, 470, TOPY + 2, 1.05);
+      stroke("M39 -8 L39 " + Math.round(STEPD / 1.05 + 16) + " M24 " + Math.round(STEPD / 1.05 + 24) +
+             " q15 -12 15 -8 q0 -4 15 8", 5 / 1.05, VOLT, birdE.g);
+      gsap.set(birdE.g, { opacity: 0 });
+      // the charge: a ball that only ever moves down a step
+      var ball = node("circle", { cx: 0, cy: 0, r: 17, fill: INK }, shelfG);
+      var ballTrail = stroke("", 5, VOLT, shelfG);
+      gsap.set(shelfG, { opacity: 0 });
+
+      // ── ball state is a function of t. Never a tl.set on a proxy: a timeline
+      //    renders children in start-time order, so a set at 32.15 lands after
+      //    the per-frame sync at 0 and a seek draws last frame's ball.
+      var ROLL0 = E.roll_at, ROLLD = E.roll_dur;
+      var BALL_REST = [318, TOPY - 22];
+      function ballAt(t) {
+        if (t < ROLL0) return { x: BALL_REST[0], y: BALL_REST[1], f: 0 };
+        var f = Math.min(1, (t - ROLL0) / ROLLD);
+        // it accelerates: down the riser first, then along the lower shelf
+        var s = f * f;
+        var x = BALL_REST[0] + s * (STEPX + 210 - BALL_REST[0]);
+        var y = BALL_REST[1] + Math.min(1, s * 2.1) * STEPD;
+        return { x: x, y: y, f: f };
+      }
+
+      // ══ what is on screen ════════════════════════════════════════════════
+      var shown = { street: 1, feet: 0, shelf: 0 };
+      var clockT = { v: 0 };
+
+      function sync() {
+        var t = clockT.v;
+
+        if (shown.street) {
+          liveBird(birdA, t, 0.21);
+          liveBird(birdBig, t, 0.63);
+          // he looks up at the bird, and later puts a hand on the pole
+          var lookY = GROUND - mm(1480) - LOOK.up * 60;
+          var p = pageToPose(CX + 78, lookY);
+          fig.carry.dx = p[0]; fig.carry.dy = p[1]; fig.carry.on = LOOK.on;
+          var q = pageToPose(466, 802);
+          fig.hold.dx = q[0]; fig.hold.dy = q[1]; fig.hold.on = POLEHAND.on;
+          // the arc, when it comes, is drawn from the wingspan it bridges
+          if (t >= E.arc_at && t < E.arc_at + 0.9) {
+            var k = (t - E.arc_at) / 0.9, d2 = "", i2;
+            for (i2 = 0; i2 <= 7; i2++) {
+              var yy = WA + (WB - WA) * i2 / 7;
+              var bx = 472 + (560 - 472) * i2 / 7;
+              d2 += (i2 ? "L" : "M") + (bx + (i2 % 2 ? 22 : -22) * (1 - k) + rnd() * 5).toFixed(1) + " " + yy.toFixed(1) + " ";
+            }
+            arcBolt.setAttribute("d", d2);
+          }
+        }
+
+        if (shown.feet) {
+          // the hop: sideways along the same wire, on the line that says both
+          // feet are in one place. It changes nothing, which is the joke.
+          liveBird(birdC, t, 0.37, { at: 12.55, dur: 0.46, dx: 26, lift: 9 });
+        }
+
+        if (shown.shelf) {
+          liveBird(t < E.step_at ? birdD : birdE, t, 0.11);
+          var b = ballAt(t);
+          ball.setAttribute("cx", b.x.toFixed(1)); ball.setAttribute("cy", b.y.toFixed(1));
+          if (b.f > 0.02) {
+            var tr = "", i3, n3 = 16;
+            for (i3 = 0; i3 <= n3; i3++) {
+              var bb = ballAt(ROLL0 + (t - ROLL0) * i3 / n3);
+              tr += (i3 ? "L" : "M") + bb.x.toFixed(1) + " " + bb.y.toFixed(1) + " ";
+            }
+            ballTrail.setAttribute("d", tr);
+          } else { ballTrail.setAttribute("d", ""); }
+        }
+        pup.setPose(fig.pose());
+      }
+      tl.to(clockT, { v: DUR, duration: DUR, ease: "none", onUpdate: sync }, 0);
+
+      // ── the page draws itself ────────────────────────────────────────────
+      SET.forEach(function (e, i) { drawOn(e, 0.02 + i * 0.028, 0.24); });
+      drawOn(wireA, 0.30, 0.55); drawOn(wireB, 0.46, 0.55);
+      tl.set(birdA.g, { opacity: 0 }, 0); tl.to(birdA.g, { opacity: 1, duration: 0.22 }, 1.02);
+      fig.pencilIn(tl, { start: 0.16, each: 0.12 });
+      fig.inkIn(tl, { at: 0.82, dur: 0.30 });
+      IP.choreograph(tl, pup, [{ clip: "still", dur: DUR }], { start: 0 });
+      function to(o, v, t) { v.onUpdate = sync; return tl.to(o, v, t); }
+
+      // he looks up at it, twice, and at the end takes hold of the pole
+      to(LOOK, { on: 1, up: 1, duration: 0.42, ease: IT.ease.settle }, 1.30);
+      to(fig.face, { brow: 5.0, duration: 0.34 }, 1.60);
+      to(fig.face, { brow: 0, duration: 0.60 }, 4.40);
+      to(LOOK, { on: 0, up: 0, duration: 0.70, ease: IT.ease.soft }, 6.60);
+      to(LOOK, { on: 1, up: 1, duration: 0.42, ease: IT.ease.settle }, 35.60);
+      to(LOOK, { on: 0, up: 0, duration: 0.60, ease: IT.ease.soft }, 39.20);
+      to(POLEHAND, { on: 1, duration: 0.52, ease: IT.ease.settle }, 41.60);
+      // seven seconds of a man standing still is the trap the strip showed on
+      // the bird; he gets a brow and he takes his hand back at the end
+      to(fig.face, { brow: 4.2, duration: 0.36, ease: IT.ease.settle }, 43.35);
+      to(fig.face, { brow: 0, duration: 0.60, ease: IT.ease.soft }, 44.90);
+      to(POLEHAND, { on: 0, duration: 0.66, ease: IT.ease.soft }, 47.30);
+
+      // ── the cuts, and the re-read between them ───────────────────────────
+      var GROUPS = [["street", street], ["feet", feetG], ["shelf", shelfG]];
+      function cut(t, name, s, ox, oy) {
+        GROUPS.forEach(function (g) { tl.set(g[1], { opacity: g[0] === name ? 1 : 0 }, t); });
+        tl.set([actorScale, wiresG], { opacity: name === "street" ? 1 : 0 }, t);
+        tl.set(camera, { scale: s || 1, svgOrigin: (ox || 540) + " " + (oy || 720) }, t);
+        tl.call(function () {
+          shown.street = name === "street" ? 1 : 0;
+          shown.feet = name === "feet" ? 1 : 0;
+          shown.shelf = name === "shelf" ? 1 : 0;
+          sync();
+        }, null, t);
+      }
+      cut(CUT.street, "street", 1.00, 540, 760);
+      cut(CUT.feet, "feet", 1.00);
+      cut(CUT.shelves, "shelf", 1.00);
+      cut(CUT.street2, "street", 1.00, 540, 760);
+
+      // the feet shot arrives already moving: the wire slides up into place
+      tl.from(feetG, { y: 62, duration: 0.60, ease: "power2.out" }, CUT.feet);
+      tl.from(shelfG, { y: -54, duration: 0.70, ease: "power2.out" }, CUT.shelves);
+      // and neither shot is allowed to sit still: a slow push on each
+      tl.to(camera, { scale: 1.12, duration: 7.9, ease: "none", svgOrigin: "500 700" }, CUT.feet + 0.30);
+      tl.to(camera, { scale: 1.08, duration: 9.6, ease: "none", svgOrigin: "520 700" }, CUT.shelves + 0.40);
+      tl.to(camera, { scale: 1.05, duration: 4.20, ease: "none", svgOrigin: "540 640" }, CUT.street2 + 0.20);
+      tl.to(camera, { scale: 1.00, duration: 1.10, ease: "power2.inOut", svgOrigin: "540 760" }, 41.20);
+
+      // ── the drop, which is the device ────────────────────────────────────
+      // Under the bird's feet, and it says zero. It is the only number on the
+      // page for twenty-nine seconds.
+      IA.measure(tl, notes, { at: 14.30, out: 17.70, from: [422, FWIRE + 118], to: [654, FWIRE + 118],
+                              text: "0 volts between them", side: 56, cap: 20, size: 46,
+                              color: DIM, textColor: INK });
+      IA.callout(tl, notes, { at: 9.10, out: 12.80, text: "bare feet", x: 96, y: 640,
+                              to: [392, FWIRE + 34], bend: 34, size: 44, anchor: "start" });
+
+      IA.callout(tl, notes, { at: 20.95, out: 23.10, text: "charge", x: 214, y: 322,
+                              to: [BALL_REST[0] - 22, BALL_REST[1] - 6], bend: 26, size: 46 });
+
+      // the diagram: how far down the ground is, and then the step
+      IA.measure(tl, notes, { at: 23.60, out: 28.30, from: [188, TOPY + 14], to: [188, GNDY - 14],
+                              text: "11,000 V", side: 60, cap: 18, size: 44, color: DIM, textColor: INK });
+      tl.to(stepShelf, { opacity: 1, duration: 0.001 }, E.step_at);
+      drawOn(stepRiser, E.step_at, 0.30);
+      tl.to(stepRiser, { opacity: 1, duration: 0.001 }, E.step_at);
+      IA.callout(tl, notes, { at: E.step_at + 0.55, out: 34.60, text: "a step", x: 690, y: 300,
+                              to: [STEPX + 14, TOPY + 42], bend: -34, size: 46, color: VOLT });
+      // one foot moves onto the lower conductor, which is what makes the step
+      tl.to(birdD.g, { opacity: 0, duration: 0.001 }, E.step_at);
+      tl.to(birdE.g, { opacity: 1, duration: 0.001 }, E.step_at);
+      tl.to(ballTrail, { opacity: 1, duration: 0.001 }, ROLL0);
+
+      // ── back in the street: the wingspan that bridges both ───────────────
+      tl.to(birdA.g, { opacity: 0, duration: 0.30 }, 35.10);
+      tl.to(birdBig.g, { opacity: 1, duration: 0.30 }, 35.40);
+      tl.to(birdBig.g, { attr: { transform: "translate(452," + (WA + 2) + ") scale(0.95) rotate(7)" },
+                         duration: 0.50, ease: IT.ease.settle }, E.arc_at - 0.55);
+      drawOn(bigWing, E.arc_at - 0.52, 0.34);
+      tl.to(bigWing, { opacity: 1, duration: 0.001 }, E.arc_at - 0.52);
+      tl.to(bigWing, { opacity: 0, duration: 0.34 }, 39.60);
+      tl.to(arcG, { opacity: 1, duration: 0.001 }, E.arc_at);
+      tl.to(arcG, { opacity: 0, duration: 0.34 }, E.arc_at + 0.86);
+      IA.ring(tl, notes, { at: E.arc_at + 0.20, out: 39.40, cx: 516, cy: (WA + WB) / 2,
+                           r: 92, sy: 0.86, color: VOLT, width: 7 });
+      tl.to(birdBig.g, { opacity: 0, duration: 0.40 }, 39.60);
+
+      // ── captions ─────────────────────────────────────────────────────────
+      // Every line is two lines or fewer and each under ~34 characters: at 62px
+      // in a 968px box a longer line wraps, and a third line lands at y=1466 —
+      // under the Shorts title block, which is where video four lost its whole
+      // script. The narration says the full sentence; the caption is the beat.
+      var TXT = {
+        s01: "A bird sits on <b>11,000 volts</b><br>and nothing happens to it.",
+        s02: "It is not insulated.<br>Its feet are bare.",
+        s03: "Voltage is not something<br>you touch.",
+        s04: "It is a <b>difference</b><br>between two places.",
+        s05: "Both feet are on one wire —<br>so both feet are in one place.",
+        s06: "Draw it as height,<br>and the wire is <b>flat</b>.",
+        s07: "Nothing rolls on flat ground.",
+        s08: "The ground is 11,000 volts below.<br>The bird is not touching it.",
+        s09: "Touch a second wire, and a<br><b style='color:#C8322B'>step</b> appears under you.",
+        s10: "Now something rolls —<br>and it rolls <b>through you</b>.",
+        s11: "That is why big birds die<br>where small birds sit. <b>Wingspan.</b>",
+        s12: "You are safe because you only<br>touched <b>one thing</b>."
+      };
+      var DURS = EV.durations, ids = Object.keys(TXT);
+      ids.forEach(function (id, i) {
+        var at = EV.narration[id], d_ = document.createElement("div");
+        d_.className = "cap"; d_.innerHTML = TXT[id];
+        overlay.appendChild(d_);
+        var next = ids[i + 1] ? EV.narration[ids[i + 1]] - 0.24 : 1e9;
+        var out = i === ids.length - 1 ? at + DURS[id] + 0.50 : Math.min(at + DURS[id] + 0.16, next);
+        tl.to(d_, { opacity: 1, duration: 0.18 }, at - 0.10);
+        tl.to(d_, { opacity: 0, duration: 0.20 }, out);
+      });
+
+      // ── the channel ──────────────────────────────────────────────────────
+      var brandLayer = document.getElementById("brandLayer");
+      InkBrand.mark(defs, brandLayer, { x: 46, y: 54, w: 128, ink: INK, accent: DIM, opacity: 0.70 });
+      InkBrand.subscribe(tl, brandLayer, { at: EV.subscribe_at, accent: INK, ink: INK, paper: PAPER });
+
+      sync();
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

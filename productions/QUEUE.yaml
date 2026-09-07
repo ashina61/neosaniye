@@ -50,6 +50,7 @@ slots_per_day: 2
 # from now on lands in the range.
 
 topics_used:
+  - birds-power-lines
   # the eight already made — these ids must not come round again
   - noise-cancelling
   - tides-twice
@@ -121,3 +122,11 @@ queue:
     upload: youtube
     privacy: public
     note: "pre-Adem: a page from a physics book"
+
+  - slug: birds-and-the-wire
+    state: pending
+    upload: youtube
+    privacy: public
+    made_on: "2026-09-07"
+    topic: birds-power-lines
+

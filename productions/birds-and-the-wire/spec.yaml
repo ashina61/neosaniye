@@ -1,0 +1,35 @@
+# Publish spec for a hand-produced short.
+#
+# Atelier composition on the ink-sketch playbook, rendered by HyperFrames and
+# built with bin/build-ink.sh. The film's argument is that voltage is a
+# difference, so the frame keeps re-reading itself as height: the wire is not
+# high in the diagram, it is FLAT. See source/art-direction.md.
+slug: birds-and-the-wire
+title: Why Birds Don't Get Shocked
+duration_seconds: 48.90
+has_burned_captions: true
+produced_by: openmontage/animation (ink-sketch, hyperframes, Adem)
+produced_on: "2026-09-07"
+
+copy:
+  title: "A bird sits on 11,000 volts. Nothing happens."
+  hook: "It is not insulated and its feet are bare. It is fine because both feet are in the same place."
+  caption: >-
+    Voltage is not something you touch — it is a difference between two places.
+    Both of the bird's feet are on one wire, so there is no difference between
+    them and nothing flows. Draw it as height and the wire is flat. What kills
+    the big birds is bridging two conductors at once: wingspan.
+  description: |-
+    A bird sits on 11,000 volts and nothing happens to it. It is not insulated.
+
+    Voltage is a difference between two places, and both of its feet are in the same place. Draw it as height and the wire is flat — nothing rolls on flat ground. Touch a second conductor and a step appears under you, which is why big birds die where small birds sit.
+
+    #Physics #Electricity #Birds #HowItWorks #Shorts
+  hashtags:
+    - physics
+    - electricity
+    - birds
+    - voltage
+    - howitworks
+    - science
+    - shorts

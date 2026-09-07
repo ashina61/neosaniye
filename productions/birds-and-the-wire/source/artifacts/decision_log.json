@@ -1,0 +1,25 @@
+{
+ "slug": "birds-and-the-wire",
+ "built": "2026-09-07",
+ "route": "atelier composition, not the 11-stage pipeline (skills/creative/ink-theater.md declares the style pipeline-exempt)",
+ "topic_id": "birds-power-lines",
+ "mechanism": "Both feet sit at the same potential, so no current flows; danger comes from bridging two conductors.",
+ "decisions": [
+  "Voltage is drawn as ELEVATION. The middle section re-reads the street as terrain so the wire can be shown to be flat, which is the whole mechanism.",
+  "The accent is embargoed: red means a potential difference, so there is no red in the film until 29.6s — the logo wears grey and the subscribe card wears ink.",
+  "The charge is a ball. It sits perfectly still for eleven seconds, then accelerates at s=f^2 down the step; the sound follows the same curve.",
+  "Two audio buses ducked differently (ambience 0.86, the film's own events 0.34). The first mix ducked the arc under the narration and buried the one bang in the film.",
+  "The wire hums at 50Hz from frame one and grows a 100Hz buzz when the step appears: the same oscillator opens rather than a new sound arriving."
+ ],
+ "faults_found_and_fixed": [
+  "The wires were at his head height: the bird sat on his hair and the picture said he was touching 11kV. Wires up, SCALE 1.42 -> 1.36.",
+  "The step appeared 80px clear of the bird, which draws the opposite claim. The riser now goes under its right foot and a second drawing has the leg reaching the lower conductor.",
+  "His hand closed on air 80px above the signpost he was supposed to be holding.",
+  "A 1.16 zoom on the street put the kerb line through the last two captions.",
+  "The last caption was three lines: y=1466, under the Shorts title block. Every caption is now two lines and under ~34 characters.",
+  "THE CONTACT STRIP: nine seconds of a motionless bird in the close-up and twelve more in the diagram. A still cannot show you that nothing is moving. Fixed with liveBird(): breath, a head flick hashed off t, and one sideways hop along the same wire."
+ ],
+ "providers": [],
+ "gates": {"aspect": "1080x1920", "duration_s": 48.9, "loudness_LUFS": -14.65,
+           "true_peak_dBTP": -1.4, "voice_over_bed_dB": 22.4, "bitrate_Mbps": 0.7}
+}

@@ -242,7 +242,8 @@ def cmd_add(d, slug, topic):
             txt = txt.replace("queue:", f"topics_used:\n  - {topic}\n\nqueue:", 1)
     QUEUE.write_text(txt + "\n")
     n = sum(1 for e in d["queue"] if e.get("state") == "pending") + 1
-    print(f"{slug} added — {n} pending, so it is about {n} weeks out")
+    per = slots_per_day(d)
+    print(f"{slug} added — {n} pending, which is {n / per:.1f} days at {per} a day")
     return 0
 
 
