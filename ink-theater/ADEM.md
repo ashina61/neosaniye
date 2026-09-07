@@ -428,6 +428,23 @@ up beside his ear.
 - If a timeline does need to fade such an element in, tween the **attribute**:
   `tl.to(el, { attr: { opacity: 1 }, duration: 0.2 })`.
 
+## The sound trap: adding to a buffer that has already been summed
+
+`place(buf, ...)` adds into `buf` in place, so WHERE the call sits in `mix.py`
+is the whole of it. Two films shipped a subscribe button with no click because
+the line was written under the `# ── the voice ─` heading — which comes *after*
+`mix = bed + pad`. Adding to `bed` at that point changes nothing that reaches
+the file, nothing errors, and the log still says the mix was written.
+
+**Add the click to `mix`, after the bed is summed into it** (and stack it to
+stereo: `np.stack([ui_click(SR)]*2, axis=1)`), or place it into `bed` *above*
+the line that sums bed into mix, the way `butter-side-down` does.
+
+And then MEASURE it, because a silent button looks exactly like a working one
+in a waveform overview. Band-limit 2–9 kHz around `subscribe_at + SUBSCRIBE_TAP`
+and compare the peak there against the bed's rms just before it: a real click
+lands +15 dB or better over the bed in its own band.
+
 ## Measuring inside a timeline callback
 
 `hyperframes lint` will catch this and it is right to: `getTotalLength()`,

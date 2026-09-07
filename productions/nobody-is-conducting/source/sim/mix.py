@@ -104,8 +104,10 @@ pad *= 0.105 * np.clip(rr, 0, 1)**1.6 * env
 mix = bed + np.stack([pad, pad], axis=1)
 
 # A button that does not click has not been pressed. The tap lands
-# SUBSCRIBE_TAP seconds after InkBrand.subscribe()'s `at`.
-place(bed, SR, ui_click(SR) * 0.5, 58.55 + SUBSCRIBE_TAP)
+# SUBSCRIBE_TAP seconds after InkBrand.subscribe()'s `at`. It goes into
+# `mix`, NOT into `bed`: bed has already been summed into mix by this point,
+# and adding to it here is a no-op that ships a silent button.
+place(mix, SR, np.stack([ui_click(SR)]*2, axis=1) * 0.5, 58.55 + SUBSCRIBE_TAP)
 
 # ── the voice ────────────────────────────────────────────────────────────
 AT = {"s01":2.40,"s02":4.40,"s03":7.60,"s04":11.90,"s05":15.90,"s06":20.55,

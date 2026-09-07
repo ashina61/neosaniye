@@ -86,8 +86,10 @@ drone *= 0.052 * (sw(0.4, 2.2) * (1 - sw(59.5, 61.7)))
 mix = bed + air + drone
 
 # A button that does not click has not been pressed. The tap lands
-# SUBSCRIBE_TAP seconds after InkBrand.subscribe()'s `at`.
-place(bed, SR, ui_click(SR) * 0.5, 58.5 + SUBSCRIBE_TAP)
+# SUBSCRIBE_TAP seconds after InkBrand.subscribe()'s `at`. It goes into
+# `mix`, NOT into `bed`: bed has already been summed into mix by this point,
+# and adding to it here is a no-op that ships a silent button.
+place(mix, SR, np.stack([ui_click(SR)]*2, axis=1) * 0.5, 58.5 + SUBSCRIBE_TAP)
 
 # ── the voice ────────────────────────────────────────────────────────────
 AT = EV["narration"]
