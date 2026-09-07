@@ -44,6 +44,25 @@ name: Publish the next one in the queue
 # was started from. Main is a mirror: the producer fast-forwards it after every
 # run, which is also how a change to this file reaches the scheduler.
 
+# THE CRON DOES NOT FIRE HERE, SO IT IS NO LONGER THE TRIGGER. Actions itself
+# is healthy — CI runs on every push, in seconds — but of the scheduled
+# occurrences this repository has asked for, exactly one has ever fired, and
+# that one was 2h27m late. On the hour, off the hour, weekly, daily: it does
+# not matter. Scheduled runs are best effort and this repository does not get
+# the effort.
+#
+# So a PUSH publishes. The queue was already the thing that decides what is
+# due — `min_hours_between` means any number of runs inside one slot put out
+# one video — which makes the trigger free to be anything that happens often
+# enough. The daily producer pushes when it finishes a film, and a human
+# pushing anything at all works too. The cron stays below in case it ever
+# starts working; if it fires and a push already published, the gap check
+# turns it into a no-op, which is exactly what it was built for.
+#
+# A push at 3am does not publish: outside 05:00-20:00 UTC the job skips, so a
+# late-night commit does not put a video out while Istanbul is asleep. A manual
+# run ignores that window.
+
 # A GITHUB CRON IS NOT A CLOCK, IT IS A QUEUE POSITION. It can run hours late.
 # This one is set for 15:00 UTC on Sundays; on 2026-09-06 it fired at 17:27 —
 # two hours and twenty-seven minutes late — and by then a manual run at 17:25
@@ -68,14 +87,16 @@ on:
     # :00 is the most contended minute there is; a run set for the hour is the
     # first to be delayed and the first to be dropped. The 15:00 cron missed its
     # slot twice and arrived 2h27m late once. These are deliberately odd minutes.
-    - cron: '23 6 * * *'        # 09:23 Europe/Istanbul — the morning one
-    - cron: '23 17 * * *'       # 20:23 Europe/Istanbul — the evening one
+    - cron: '23 6 * * *'        # 09:23 Europe/Istanbul — if it ever fires
+    - cron: '23 17 * * *'       # 20:23 Europe/Istanbul — if it ever fires
+  push:
+    branches: [main]            # the trigger that actually works
   workflow_dispatch:
     inputs:
       dry_run:
         description: 'Say what it would do, and do nothing'
         type: boolean
-        default: true
+        default: false
       force:
         description: 'Publish even if the last one went out less than min_hours_between ago'
         type: boolean
@@ -109,8 +130,23 @@ jobs:
       - name: What is in the queue
         run: python bin/queue.py status
 
+      # A push is the trigger, so a push in the middle of the night would be
+      # one too. The window is Istanbul's waking hours; a hand-started run is
+      # not bound by it, because starting one by hand IS the decision.
+      - name: Is this a moment to publish in
+        id: win
+        run: |
+          H=$(date -u +%H)
+          if [ "${{ github.event_name }}" = "push" ] && { [ "$H" -lt 05 ] || [ "$H" -ge 20 ]; }; then
+            echo "go=0" >> "$GITHUB_OUTPUT"
+            echo "It is ${H}:00 UTC — outside 05-20, a push does not publish."
+          else
+            echo "go=1" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Take the next one
         id: q
+        if: steps.win.outputs.go == '1'
         run: |
           python bin/queue.py next ${{ inputs.force && '--force' || '' }} >> "$GITHUB_OUTPUT"
 

@@ -299,6 +299,14 @@ Automating the taste is what made them all look alike.
 ## Publishing on a schedule: `productions/QUEUE.yaml`
 
 Two videos a day, with nobody in the loop.
+**A push to `main` is what publishes.** GitHub's scheduler has fired exactly
+one of this repository's scheduled occurrences — 2h27m late — while CI runs on
+every push in seconds, so the trigger moved to the thing that works. The cron
+stays in the file in case it recovers, and if it ever fires after a push has
+already published, `min_hours_between` turns it into a no-op. A push outside
+05:00-20:00 UTC does not publish; a hand-started run is not bound by that.
+
+The old description, kept because the shape is the same:
 `.github/workflows/publish-queue.yml` runs at **09:00 and 20:00 Istanbul**,
 takes the **first** entry whose `state` is `pending`, publishes it exactly as
 that entry says, and commits the state back so the next slot takes the next one.
