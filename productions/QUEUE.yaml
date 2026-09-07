@@ -41,6 +41,14 @@ min_hours_between: 8
 # the thing that says so before the queue runs dry.
 slots_per_day: 2
 
+# HOUSE LENGTH: 40-50 SECONDS. bin/build-ink.sh refuses to build outside it.
+# Three films below were finished before that gate existed and run long —
+# butter-side-down 60.9s, why-you-cannot-tickle-yourself 61.7s (both already
+# public) and nobody-is-conducting 61.6s. They ship as they are: re-cutting a
+# finished film means re-timing the narration and re-rendering it, and ten
+# seconds is not worth taking the channel off the air for. Everything built
+# from now on lands in the range.
+
 topics_used:
   # the eight already made — these ids must not come round again
   - noise-cancelling

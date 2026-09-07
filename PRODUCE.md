@@ -56,7 +56,13 @@ The strongest films here did one of three things. Reach for one:
 
 ## 3. Script, then voice
 
-Fourteen lines, ~50 seconds of speech, ~60 seconds of film. Plain English, short
+**Eleven or twelve lines, ~38 seconds of speech, 45 seconds of film.** The house
+range is **40-50 seconds** and `bin/build-ink.sh` refuses anything outside it.
+This line used to say sixty, and sixty is what it got: three films ran 60-62s,
+which is a minute of somebody's attention asked for by a channel that has not
+earned a minute yet. Cut the third example, not the payoff.
+
+Plain English, short
 sentences, one idea per line, and a **last line that pays off**. Write it into
 `projects/<slug>/artifacts/script_lines.json`, then:
 

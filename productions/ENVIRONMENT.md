@@ -347,6 +347,24 @@ retired generator failed:
 `workflow_dispatch` has `dry_run: true` by default — it says what it would do
 and does nothing.
 
+## How long a film is
+
+**40-50 seconds.** `bin/build-ink.sh` fails outside it, before the render.
+
+The runbook used to say "~50 seconds of speech, ~60 seconds of film" and that
+is exactly what it got: three films came out 60-62s. A Short may be three
+minutes long, which is not a reason to be one — a minute is a lot to ask of
+someone who has not chosen you yet, and the difference between 60 and 45 is
+almost always a third example rather than the payoff. PRODUCE.md now asks for
+eleven or twelve lines and ~38 seconds of speech.
+
+The three that predate the gate — butter-side-down 60.9s,
+why-you-cannot-tickle-yourself 61.7s, nobody-is-conducting 61.6s — ship as they
+are. Re-cutting a finished film means re-timing the narration against the
+animation and re-rendering, and ten seconds does not buy that. The publisher
+prints the length and marks anything outside the range; it only refuses a film
+over the three-minute Shorts limit.
+
 ## The copy, and the two videos that went up with the old kind
 
 `bin/check-copy.py` gates every description before it is uploaded: 150-700

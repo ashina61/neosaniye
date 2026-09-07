@@ -53,6 +53,23 @@ fi
 echo "  caption band OK"
 
 DUR=$(grep -oE 'data-duration="[0-9.]+"' index.html | head -1 | grep -oE '[0-9.]+')
+
+# THE HOUSE LENGTH IS 40-50 SECONDS. The runbook once said "~60 seconds of
+# film" and three films came out 60-62s: a minute of someone's attention, asked
+# for by a channel that has not earned a minute. A Short is allowed to be three
+# minutes long; that is not a reason to be one. Cut the third example, never the
+# payoff. This is a gate and not a suggestion, because the drift was a sentence
+# in a document that nobody was measuring against.
+python3 - "$DUR" <<'DURCHECK'
+import sys
+d = float(sys.argv[1])
+if not 40.0 <= d <= 50.0:
+    print(f"FAIL: the film is {d:.1f}s — the house range is 40-50s"
+          + (" (cut a beat)" if d > 50 else " (it is too thin to land)"))
+    sys.exit(1)
+print(f"  length {d:.1f}s OK")
+DURCHECK
+
 say "render  (${DUR}s)"
 if [ "$SKIP_RENDER" = 0 ]; then
   rm -f "$PROJ/renders/master.mp4"

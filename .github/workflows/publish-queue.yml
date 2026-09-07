@@ -131,6 +131,15 @@ jobs:
           test "$W" = "1080" && test "$H" = "1920" || { echo "not 1080x1920: ${W}x${H}"; exit 1; }
           ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of csv=p=0 "$VIDEO" \
             | grep -q . || { echo "no audio track"; exit 1; }
+          # The house length is 40-50s and bin/build-ink.sh enforces it at build
+          # time. Here it is only reported: three films were finished and queued
+          # before that gate existed and run 56-62s, and blocking them would take
+          # the channel off the air to fix a ten second overrun.
+          D=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$VIDEO")
+          awk -v d="$D" 'BEGIN {
+            if (d > 180) { print "FAIL: " d "s is over the Shorts limit"; exit 1 }
+            printf "  length %.1fs%s\n", d,
+              (d >= 40 && d <= 50) ? "" : "   <- outside the 40-50s house range" }'
           python bin/check-copy.py "$DIR/spec.yaml"
           echo "dir=$DIR" >> "$GITHUB_OUTPUT"
           echo "OK: $VIDEO  ->  ${{ steps.q.outputs.upload }} / ${{ steps.q.outputs.privacy }}"
