@@ -38,13 +38,14 @@ visible in a film at 1.36×.
 
 | | value | what it is |
 |---|---|---|
-| head | `headR: 40` | radius |
+| head | `headR: 48` | radius. **21% of his height, crown to chin** — measured off the reference sheet |
 | height | **534 units** | crown of the drawn head to the sole of the drawn shoe |
 | ink | `#333333` | never pure black |
 | paper | `#FCFBF8` | warm white; also the fill inside every part of him |
 | arm | `27 → 17` | shoulder to wrist |
 | leg | `38 → 21` | hip to ankle |
 | body / limb / seam / face | `5.4 / 4.4 / 3.6 / 3.8` | **page pixels** — see below |
+| head shape | `narrow: 0.74` | the skull is an oval, not a ball: **width 0.70 of height**, measured |
 | torso | floors `100 / 116 / 132` | hip / chest / **shoulder — the widest** |
 | hand | `10` | a mitt with a thumb, built in the forearm's frame |
 | depth | `10` | how far behind the near side the far arm and leg are drawn |
@@ -55,6 +56,29 @@ span is 515 and using it makes everything in the scene 4% too small.
 `depth` is not a detail. The clips are side-on, so the two arms project onto
 each other almost exactly and read as one thick arm with two hands on the end of
 it. Every 2D animator offsets the far limbs backwards a little for this reason.
+
+### The proportions are measured, not chosen
+
+The reference sheet was measured pixel by pixel and the drawing was fitted to
+it. These are the numbers, as fractions, and they are the reason he reads as
+that character rather than a similar one:
+
+| | reference | ours |
+|---|---|---|
+| head, crown of the hair to the chin | 0.21 of total height | 0.19 |
+| head width ÷ head height | 0.69 | 0.70 |
+| brows, down from the top of the head | 0.435 of head height | 0.44 |
+| eyes | 0.516 | 0.52 |
+| nose ends | 0.69 | 0.69 |
+| mouth | 0.806 | 0.81 |
+
+The head was **17% of his height and round**; it is 19% and an oval. That one
+change did more than everything else put together: the features were all in the
+right band already, they were just on the wrong head.
+
+Two things the reference has that this rig cannot: a **front view** (the mocap
+is projected side on, so he is always three-quarter or profile) and **tapered
+ink with a shaded fade** (one line weight, and the fade is drawn as strokes).
 
 ### The drawing was rebuilt on 2026-09-07, against a reference sheet
 
