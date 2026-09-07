@@ -31,6 +31,11 @@ that shape is what you recognise from across a room.
 The numbers are in `InkFigure.ADEM` and they are the character. A viewer
 recognises a figure by its proportions long before its face.
 
+**Before you change any of them, render the model sheet and look at him:**
+`ink-theater/examples/model-sheet` puts six poses and a 2.6× head on one page.
+Every fault in the list further down was found there and none of them was
+visible in a film at 1.36×.
+
 | | value | what it is |
 |---|---|---|
 | head | `headR: 40` | radius |
@@ -40,8 +45,8 @@ recognises a figure by its proportions long before its face.
 | arm | `27 → 17` | shoulder to wrist |
 | leg | `38 → 21` | hip to ankle |
 | body / limb / seam / face | `5.4 / 4.4 / 3.6 / 3.8` | **page pixels** — see below |
-| torso | floors `98 / 116 / 106` | hip / chest / shoulder |
-| hand | `11` | a paper circle with an ink outline |
+| torso | floors `100 / 116 / 132` | hip / chest / **shoulder — the widest** |
+| hand | `10` | a mitt with a thumb, built in the forearm's frame |
 | depth | `10` | how far behind the near side the far arm and leg are drawn |
 
 `height` is the number to use when sizing anything he stands next to. The joint
@@ -50,6 +55,39 @@ span is 515 and using it makes everything in the scene 4% too small.
 `depth` is not a detail. The clips are side-on, so the two arms project onto
 each other almost exactly and read as one thick arm with two hands on the end of
 it. Every 2D animator offsets the far limbs backwards a little for this reason.
+
+### The drawing was rebuilt on 2026-09-07, against a reference sheet
+
+The channel's owner sent a model sheet and the note was: make the drawing more
+real, and cleaner. What that turned out to mean, part by part — and every one
+of these was found by rendering `ink-theater/examples/model-sheet` and looking
+at it, never inside a film:
+
+| was | is |
+|---|---|
+| a bare circle for a head | a **skull with a jaw**: brow, cheek, jawline, chin, and an ear to hang it on |
+| two ink dots for eyes | **almond eyes** with a lid and a pupil, the far one smaller and further from the nose |
+| one stroke of a nose, one of a mouth | a nose with a bridge and a nostril, a mouth with a slight turn up |
+| the hairline at the **cheek** | a hairline **above the brow**, a quiff just behind it, a fade down the temple |
+| paper discs for hands | a **mitt**: palm, thumb, fingers, built in the forearm's own frame so it turns with the wrist |
+| a cross-stroke for a sleeve | a **sleeve shape** that wraps the upper arm and tucks under the shirt |
+| a wedge for a shoe | a **low sneaker**: toe spring, instep, midsole, heel counter |
+| two tubes for legs | trousers — a seat under the shirt, and a **turn-up** above each shoe |
+| the near leg painted OVER the shirt | legs first, shirt over them, so the hem is a hem |
+| shoulders **narrower than the chest** | the shoulders are the widest thing in the drawing |
+| arms leaving the **sternum** | the arm leaves the edge of the shoulder — near side forward, far side back |
+
+**The arm root is a drawing decision, not a pose change.** The clips are
+projected side on, so both shoulders collapse onto the spine; an arm drawn from
+there hangs down the middle of the chest and the sleeve reads as a box parked
+on his ribs. Only the point the drawn arm LEAVES the body moves out
+(`torso.armOut`). The elbow and hand stay exactly where the capture and the IK
+put them, so props, `fig.hand()` and every existing composition are unaffected.
+
+**Every face number is a fraction of `headR`.** They were absolute once,
+written for a 46 head and left alone when the head became 40, and the nose and
+mouth hung off the side of his face for four videos. As fractions they cannot
+do that again.
 
 ### Line weight — pass `unit`
 

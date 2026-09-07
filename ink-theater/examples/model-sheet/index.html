@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- A MODEL SHEET, not a film. Six poses of Adem side by side so the
+         drawing can be judged on its own, the way the reference sheet the
+         channel's owner sent is laid out. Nothing here ships. -->
+    <script src="gsap.min.js"></script>
+    <script src="ink-theater.js"></script>
+    <script src="ink-puppet.js"></script>
+    <script src="ink-figure.js"></script>
+    <script src="clips.js"></script>
+    <style>
+      * { margin: 0; padding: 0; }
+      @font-face { font-family: "InkHand"; src: url("assets/patrickhand.ttf") format("truetype"); }
+      html, body { width: 1920px; height: 1200px; background: #FCFBF8; overflow: hidden; }
+      #root { position: relative; width: 1920px; height: 1200px; }
+      svg { position: absolute; inset: 0; width: 1920px; height: 1200px; }
+      .lbl { position: absolute; font-family: "InkHand", cursive; font-size: 26px; color: #8A857A; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="1"
+         data-width="1920" data-height="1200" data-fps="30">
+      <section class="clip" data-start="0" data-duration="1">
+        <svg viewBox="0 0 1920 1200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="boil" x="-20%" y="-20%" width="140%" height="140%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="1" seed="1" result="n"/>
+              <feDisplacementMap in="SourceGraphic" in2="n" scale="2.0"/>
+            </filter>
+          </defs>
+          <g id="sheet"></g>
+        </svg>
+        <div id="labels"></div>
+      </section>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var IP = window.InkPuppet, IF = window.InkFigure, NS = "http://www.w3.org/2000/svg";
+      var sheet = document.getElementById("sheet"), labels = document.getElementById("labels");
+      var GROUND = 1010, SCALE = 1.16;
+
+      // one figure per column, each posed from a real capture frame
+      var COLS = [
+        { x: 620,  clip: "shuffle", f: 34, label: "still" },
+        { x: 860,  clip: "walk",    f: 8,  label: "walk 8" },
+        { x: 1100, clip: "walk",    f: 20, label: "walk 20" },
+        { x: 1340, clip: "march",   f: 16, label: "march 16" },
+        { x: 1580, clip: "wave",    f: 30, label: "wave 30", carry: { dx: 46, dy: -96 } },
+        { x: 1820, clip: "sit",     f: 60, label: "sit 60" }
+      ];
+      COLS.forEach(function (c, i) {
+        var mount = document.createElementNS(NS, "g");
+        sheet.appendChild(mount);
+        var pup = IP.create(mount, { cx: c.x, ground: GROUND, boil: "boil",
+                                     headR: IF.ADEM.headR - 2, strokeWidth: 4 });
+        var scaleG = document.createElementNS(NS, "g");
+        // wrap: put the puppet's own group inside a scale group
+        mount.parentNode.insertBefore(scaleG, mount);
+        scaleG.appendChild(mount);
+        scaleG.setAttribute("transform", "translate(" + c.x + "," + GROUND + ") scale(" + SCALE +
+                            ") translate(" + (-c.x) + "," + (-GROUND) + ")");
+        var fig = IF.attach(pup, { unit: SCALE });
+        IP.still(c.clip, c.f, "pose" + i);
+        var po = IP.poseOf ? IP.poseOf("pose" + i) : null;
+        IP.choreograph(tl, pup, [{ clip: "pose" + i, dur: 1 }], { start: 0 });
+        if (c.carry) { fig.carry.on = 1; fig.carry.from = "shoulder";
+                       fig.carry.dx = c.carry.dx; fig.carry.dy = c.carry.dy; }
+        fig.group.setAttribute("opacity", 1);
+        fig.pencil.forEach(function (p) { p.setAttribute("opacity", 0); });
+        fig.redraw();
+        var d = document.createElement("div");
+        d.className = "lbl"; d.style.left = (c.x - 60) + "px"; d.style.top = (GROUND + 60) + "px";
+        d.textContent = c.label; labels.appendChild(d);
+      });
+      // a big head, so the face can be judged at all
+      var hMount = document.createElementNS(NS, "g");
+      sheet.appendChild(hMount);
+      var hScale = document.createElementNS(NS, "g");
+      hMount.parentNode.insertBefore(hScale, hMount); hScale.appendChild(hMount);
+      hScale.setAttribute("transform", "translate(240,470) scale(2.6) translate(-240,-470)");
+      var hPup = IP.create(hMount, { cx: 240, ground: 470 + 430, boil: "boil",
+                                     headR: IF.ADEM.headR - 2, strokeWidth: 4 });
+      var hFig = IF.attach(hPup, { unit: 3.4 });
+      IP.still("shuffle", 34, "poseH");
+      IP.choreograph(tl, hPup, [{ clip: "poseH", dur: 1 }], { start: 0 });
+      hFig.group.setAttribute("opacity", 1);
+      hFig.pencil.forEach(function (p) { p.setAttribute("opacity", 0); });
+      hFig.redraw();
+      tl.progress(0.001);
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

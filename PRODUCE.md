@@ -93,11 +93,17 @@ picture *and* the mix both need. Both read it. That is what keeps them together.
 
 ## 6. The composition
 
-Copy the engine in from the last production:
+Copy the engine in. **The character and the layers come from `ink-theater/`,
+which is where they are maintained** — copying them from the last production is
+how a session ends up shipping last week's drawing:
 
-```
-gsap.min.js ink-theater.js ink-puppet.js ink-figure.js clips.js
-brand.js annotate.js  +  assets/patrickhand.ttf
+```bash
+cp ink-theater/{ink-theater.js,ink-puppet.js,ink-figure.js,brand.js,annotate.js} \
+   projects/<slug>/hyperframes/
+mkdir -p projects/<slug>/hyperframes/assets
+cp ink-theater/assets/patrickhand.ttf projects/<slug>/hyperframes/assets/
+# only these two come from a previous production:
+cp projects/<last>/hyperframes/{gsap.min.js,clips.js} projects/<slug>/hyperframes/
 ```
 
 Non-negotiable, and every one of them cost a render:
