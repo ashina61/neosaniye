@@ -44,7 +44,7 @@ visible in a film at 1.36×.
 | paper | `#FCFBF8` | warm white; also the fill inside every part of him |
 | arm | `27 → 17` | shoulder to wrist |
 | leg | `38 → 21` | hip to ankle |
-| body / limb / seam / face | `5.4 / 4.4 / 3.6 / 3.8` | **page pixels** — see below |
+| body / limb / seam / face | `3.0 / 2.6 / 2.1 / 2.4` | **page pixels** — see below |
 | head shape | `narrow: 0.74` | the skull is an oval, not a ball: **width 0.70 of height**, measured |
 | torso | floors `100 / 116 / 132` | hip / chest / **shoulder — the widest** |
 | hand | `10` | a mitt with a thumb, built in the forearm's frame |
@@ -56,6 +56,32 @@ span is 515 and using it makes everything in the scene 4% too small.
 `depth` is not a detail. The clips are side-on, so the two arms project onto
 each other almost exactly and read as one thick arm with two hands on the end of
 it. Every 2D animator offsets the far limbs backwards a little for this reason.
+
+### The line is 0.45% of his height, and so is the set's
+
+Measured off the reference: its outline is about 0.45% of the figure's height.
+Ours was 0.87% — **twice as heavy**, and that one number is most of why a clean
+reference and our drawing did not look like the same hand. The weights are
+halved: `3.0 / 2.6 / 2.1 / 2.4`.
+
+**A set drawn at the old weight now overpowers him.** Compositions draw their
+own world with `stroke(d, 5, ...)`; use **3** for structure and **2** for
+detail from here on, or he reads as a lighter drawing pasted into a heavier
+one.
+
+### He can look at you: `fig.face.turn`
+
+The clips are projected side on and the face has always been painted on the +x
+side — a three-quarter head, which is why a portrait of him could never match a
+front-view reference. `face.turn` slides every feature to the middle of the
+skull and gives him his second ear. Tween it like `face.brow`:
+
+```js
+tl.to(fig.face, { turn: 1, duration: 0.5, onUpdate: sync }, 12.0);   // to camera
+```
+
+`0` is the character this channel has always drawn and is the default, so
+nothing that exists changes. `1` is him looking straight at you.
 
 ### The proportions are measured, not chosen
 

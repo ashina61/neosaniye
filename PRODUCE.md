@@ -108,6 +108,11 @@ cp projects/<last>/hyperframes/{gsap.min.js,clips.js} projects/<slug>/hyperframe
 
 Non-negotiable, and every one of them cost a render:
 
+- **line weight: 3 for structure, 2 for detail.** The figure's own lines were
+  halved on 2026-09-07 to match the reference sheet; a set drawn at 5 makes him
+  look pasted into someone else's drawing
+- **`fig.face.turn = 1` turns his head to the camera.** New, and the one beat
+  a talking-head moment needs
 - **captions at `top: 1250px`.** Below 1400 is under the Shorts title block
 - picture in **y 200–1180**, nothing load-bearing right of x 900 below y 950
 - `InkFigure.attach(pup, { unit: SCALE })`, and `InkPuppet.still("shuffle", 34)`
