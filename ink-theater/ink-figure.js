@@ -142,7 +142,7 @@
     pencil: "#BDB7AA",            // the under-drawing, rubbed out after the ink
     weights: {
       arm0: 27, arm1: 17,         // shoulder to wrist
-      leg0: 38, leg1: 21,         // hip to ankle
+      leg0: 33, leg1: 20,         // hip to ankle
       body: 3.0,                  // torso, neck, head outline (page px)
       limb: 2.6,                  // arms, legs, shoes, hands
       seam: 2.1,                  // hems, sleeve edges, pocket
@@ -153,7 +153,7 @@
        answer; a body is roughly 0.21 of its height deep at the chest. `waist`
        is new — a torso that goes straight from chest to hip is a bag, and the
        reference sheet's shirt comes in before it flares at the hem. */
-    torso: { hip: 1.02, chest: 0.88, shoulder: 1.02, waist: 0.86, armOut: 0.50,
+    torso: { hip: 1.02, chest: 0.88, shoulder: 1.02, waist: 0.80, armOut: 0.88, armDrop: 0.16,
              hipMin: 100, chestMin: 116, shoulderMin: 132 },
     /* The skull, as fractions of headR. It is not a circle: a jaw comes down
        from the cheek to a chin that is forward of centre, which is what gives
@@ -187,12 +187,12 @@
     shirt: { neck: 0.13, sleeve: 0.34, hem: 0.22, pocket: 0.30 },
     /* Trousers: `cuff` is how far down the shin the turn-up sits. One stroke,
        and the leg stops being a leg and becomes a trouser leg. */
-    trouser: { cuff: 0.86 },
+    trouser: { cuff: 0.80 },
     /* A low sneaker. `instep` is where the upper rises over the foot; `sole`
        lifts the whole shoe so the outline sits ON the ground rather than
        through it. */
-    shoe:  { heel: -14, ball: 7, toe: 29, instep: -4, w0: 18, w1: 13, sole: -4, plantOver: 55 },
-    hand: 10,
+    shoe:  { heel: -15, ball: 9, toe: 30, instep: 2, w0: 18, w1: 13, sole: 15, plantOver: 55 },
+    hand: 8.6,
     depth: 10                     // the far arm and leg, drawn this far behind
   };
 
@@ -281,18 +281,23 @@
       var ux = dy, uy = -dx;                         // "up" in the foot's own frame
       function at(a, b) { return [ankle[0] + dx * a + ux * b, ankle[1] + dy * a + uy * b]; }
       var B = ADEM.shoe;
-      // heel, sole, toe spring, over the toe box, the instep, the ankle collar
+      // THE SHOE IS BUILT FROM THE GROUND UP. The old one was drawn from the
+      // ankle outwards and ended up mostly ABOVE it, which is how a sneaker
+      // becomes a slipper with a diagonal through it. `sole` is how far below
+      // the ankle the ground is; every other number hangs off that.
+      var G0 = -B.sole;                              // the sole, in foot units
       var d = smooth([
-        at(B.heel, B.sole), at(B.heel - 1, B.sole + 5), at(B.ball, B.sole - 1),
-        at(B.toe - 2, B.sole + 1), at(B.toe, B.sole + 7), at(B.toe - 5, B.sole + 12),
-        at(B.ball - 2, B.sole + 15), at(B.instep, B.sole + 21), at(B.heel + 3, B.sole + 20),
-        at(B.heel - 1, B.sole + 12)
+        at(B.heel, G0 + 2), at(B.heel + 6, G0),      // heel, then the sole
+        at(B.ball, G0 - 0.5), at(B.toe - 6, G0 + 1),
+        at(B.toe, G0 + 5), at(B.toe - 5, G0 + 10),   // the toe curls up
+        at(B.ball - 2, G0 + 13), at(B.instep, G0 + 19),
+        at(B.heel + 5, G0 + 22), at(B.heel - 1, G0 + 14)
       ], true);
       return { d: d,
-               sole: "M" + r2(at(B.heel - 1, B.sole + 4)[0]) + " " + r2(at(B.heel - 1, B.sole + 4)[1]) +
-                     " L" + r2(at(B.toe - 3, B.sole + 4)[0]) + " " + r2(at(B.toe - 3, B.sole + 4)[1]) +
-                     " M" + r2(at(B.heel + 2, B.sole + 19)[0]) + " " + r2(at(B.heel + 2, B.sole + 19)[1]) +
-                     " L" + r2(at(B.heel + 4, B.sole + 9)[0]) + " " + r2(at(B.heel + 4, B.sole + 9)[1]) };
+               sole: "M" + r2(at(B.heel + 1, G0 + 5)[0]) + " " + r2(at(B.heel + 1, G0 + 5)[1]) +
+                     " L" + r2(at(B.toe - 5, G0 + 5)[0]) + " " + r2(at(B.toe - 5, G0 + 5)[1]) +
+                     " M" + r2(at(B.heel + 4, G0 + 21)[0]) + " " + r2(at(B.heel + 4, G0 + 21)[1]) +
+                     " L" + r2(at(B.heel + 6, G0 + 8)[0]) + " " + r2(at(B.heel + 6, G0 + 8)[1]) };
     }
 
     /* A HAND, not a circle. Four videos shipped with a paper disc stuck on the
@@ -306,24 +311,28 @@
       var bx = -ay, by = ax;                         // across it
       var H = ADEM.hand;
       function at(a, b) { return [wrist[0] + ax * a + bx * b, wrist[1] + ay * a + by * b]; }
+      // the thumb is on the +b side, which is the side the figure faces
       return smooth([
-        at(-2, -H * 0.52), at(H * 0.62, -H * 0.66), at(H * 1.16, -H * 0.36),
-        at(H * 1.22, H * 0.16), at(H * 0.86, H * 0.58), at(H * 0.16, H * 0.66),
-        at(-H * 0.26, H * 0.30)
-      ], true);
+        at(-2, -H * 0.44), at(H * 0.66, -H * 0.60), at(H * 1.22, -H * 0.34),
+        at(H * 1.34, H * 0.14), at(H * 1.00, H * 0.50),
+        at(H * 0.52, H * 0.72), at(H * 0.10, H * 0.62),   // the thumb's knuckle
+        at(-H * 0.22, H * 0.24)
+      ], true) +
+      " M" + r2(at(H * 0.62, -H * 0.34)[0]) + " " + r2(at(H * 0.62, -H * 0.34)[1]) +
+      " L" + r2(at(H * 0.78, H * 0.24)[0]) + " " + r2(at(H * 0.78, H * 0.24)[1]);
     }
 
     /* The sleeve: a short t-shirt sleeve that sits ON the upper arm and flares
        a little at its hem, drawn as its own paper shape so the shoulder reads
        as cloth over an arm rather than a line ruled across it. */
-    function sleeveShape(root, elbow) {
+    function sleeveShape(root, elbow, k) {
       var vx = elbow[0] - root[0], vy = elbow[1] - root[1], L = Math.hypot(vx, vy) || 1;
       var ax = vx / L, ay = vy / L, bx = -ay, by = ax;
-      var S = ADEM.shirt, w0 = wArm0 * 0.58, w1 = wArm0 * 0.52, Lc = L * S.sleeve;
+      var S = ADEM.shirt, kk = k || 1, w0 = wArm0 * 0.58 * kk, w1 = wArm0 * 0.52 * kk, Lc = L * S.sleeve;
       function at(a, b) { return [root[0] + ax * a + bx * b, root[1] + ay * a + by * b]; }
       return smooth([
-        at(-w0 * 1.05, -w0 * 0.74), at(Lc * 0.5, -w1), at(Lc, -w1 * 0.94),
-        at(Lc + 2, 0), at(Lc, w1 * 0.94), at(Lc * 0.5, w1), at(-w0 * 1.05, w0 * 0.74)
+        at(-w0 * 0.15, -w0 * 0.80), at(Lc * 0.5, -w1), at(Lc, -w1 * 0.94),
+        at(Lc + 2, 0), at(Lc, w1 * 0.94), at(Lc * 0.5, w1), at(-w0 * 0.15, w0 * 0.80)
       ], true);
     }
 
@@ -403,8 +412,10 @@
       var hemPt = lerp(hipMid, po.chest, 0.12);              // at the hip
 
       var A = ADEM.torso;
-      var armRootF = up(off(lerp(po.shR, shMid, 0.30), wS * A.armOut * 0.55, -1), -7);
-      var armRootN = off(lerp(po.shL, shMid, 0.22), wS * A.armOut, 1);
+      // the deltoid: where the shoulder ends and the arm begins, on each side
+      var deltN = off(up(shMid, -wS * A.armDrop), wS * A.armOut, 1);
+      var deltF = off(up(shMid, -wS * A.armDrop), wS * A.armOut * 0.62, -1);
+      var armRootN = deltN, armRootF = deltF;
 
       function posed(c, sh, el0, ha0) {
         if (!(c.on > 0.001)) return [el0, ha0];
@@ -422,17 +433,17 @@
       // ── the far arm, behind everything ────────────────────────────────────
       armFar.setAttribute("d", taper([back(armRootF), back(far[0]), back(far[1])], wArm0, wArm1));
       handFar.setAttribute("d", handShape(back(far[1]), back(far[0])));
-      sleeveFarG.setAttribute("d", sleeveShape(back(armRootF), back(far[0])));
+      sleeveFarG.setAttribute("d", sleeveShape(back(armRootF), back(far[0]), 0.80));
 
       // ── the legs, under the shirt ─────────────────────────────────────────
       var plantY = Math.max(po.ftL[1], po.ftR[1]);
       var crotch = lerp(hipMid, lerp(po.knL, po.knR, 0.5), 0.22);
       seat.setAttribute("d", smooth([
-        off(up(hipMid, 30), wH * 0.80, 1), off(hipMid, wH * 0.84, 1),
-        [crotch[0] + nx * wH * 0.26, crotch[1] + ny * wH * 0.26],
+        off(up(hipMid, 24), wH * 0.72, 1), off(hipMid, wH * 0.74, 1),
+        [crotch[0] + nx * wH * 0.20, crotch[1] + ny * wH * 0.20],
         crotch,
-        [crotch[0] - nx * wH * 0.26, crotch[1] - ny * wH * 0.26],
-        off(hipMid, wH * 0.84, -1), off(up(hipMid, 30), wH * 0.80, -1)
+        [crotch[0] - nx * wH * 0.20, crotch[1] - ny * wH * 0.20],
+        off(hipMid, wH * 0.74, -1), off(up(hipMid, 24), wH * 0.72, -1)
       ], true));
       legFar.setAttribute("d", taper([back(po.hipR), back(po.knR), back(po.ftR)], wLeg0, wLeg1));
       legNear.setAttribute("d", taper([po.hipL, po.knL, po.ftL], wLeg0, wLeg1));
@@ -450,9 +461,10 @@
       // rounded top, which is what it looked like.
       var nkBase = up(shMid, wS * 0.20);
       torso.setAttribute("d", smooth([
-        off(up(shMid, wS * 0.14), wS * 0.34, 1),               // the collar
-        off(up(shMid, wS * 0.05), wS * 0.70, 1),               // the shoulder slope
-        off(shMid, wS * 0.94, 1), off(up(shMid, -wS * 0.34), wS * 0.98, 1),
+        off(up(shMid, wS * 0.14), wS * 0.32, 1),               // the collar
+        off(up(shMid, wS * 0.04), wS * 0.66, 1),               // the shoulder slope
+        deltN,                                                 // and it turns here
+        off(up(shMid, -wS * 0.46), wS * 0.92, 1),
         off(po.chest, wC, 1), off(waistPt, wW, 1),
         off(hemPt, wH * 1.00, 1), off(up(hemPt, -7), wH * 0.92, 1),
         off(up(hemPt, -9), 0, 1),
@@ -463,8 +475,14 @@
         off(up(shMid, wS * 0.14), wS * 0.34, -1)
       ], true));
 
-      var h0 = off(hemPt, wH * 0.98, -1), h1 = off(hemPt, wH * 0.98, 1);
-      hem.setAttribute("d", smooth([h0, off(up(hemPt, -6), 0, 1), h1], false));
+      // a short tick at each side where the hem turns, and nothing across the
+      // middle: the torso outline is already the hem, and drawing it twice put
+      // a heavy band across his hips
+      hem.setAttribute("d",
+        "M" + r2(off(hemPt, wH * 0.94, 1)[0]) + " " + r2(off(hemPt, wH * 0.94, 1)[1]) +
+        " L" + r2(off(up(hemPt, 9), wH * 0.90, 1)[0]) + " " + r2(off(up(hemPt, 9), wH * 0.90, 1)[1]) +
+        " M" + r2(off(hemPt, wH * 0.94, -1)[0]) + " " + r2(off(hemPt, wH * 0.94, -1)[1]) +
+        " L" + r2(off(up(hemPt, 9), wH * 0.90, -1)[0]) + " " + r2(off(up(hemPt, 9), wH * 0.90, -1)[1]));
       // one fold where the shirt sits on the hip, on the side he faces
       pocket.setAttribute("d", smooth([
         off(lerp(hipMid, po.chest, 0.30), wH * 0.72, 1),

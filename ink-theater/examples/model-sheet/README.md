@@ -11,6 +11,10 @@ mkdir -p assets && cp ../../assets/patrickhand.ttf assets/
 npx hyperframes@0.8.29 snapshot . --at 0.02 -o /tmp/sheet
 ```
 
+There is a second page, `walk.html`, which draws **eight frames of one stride**
+against a ground line. Use it for anything about the shoulders, the waist, the
+feet or the hands — a single standing pose hides all four.
+
 Then **look at it**. The character was rebuilt against a reference sheet on
 2026-09-07 and every fault below was found this way and in no other way:
 

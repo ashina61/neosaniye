@@ -43,11 +43,11 @@ visible in a film at 1.36×.
 | ink | `#333333` | never pure black |
 | paper | `#FCFBF8` | warm white; also the fill inside every part of him |
 | arm | `27 → 17` | shoulder to wrist |
-| leg | `38 → 21` | hip to ankle |
+| leg | `33 → 20` | hip to ankle |
 | body / limb / seam / face | `3.0 / 2.6 / 2.1 / 2.4` | **page pixels** — see below |
 | head shape | `narrow: 0.74` | the skull is an oval, not a ball: **width 0.70 of height**, measured |
 | torso | floors `100 / 116 / 132` | hip / chest / **shoulder — the widest** |
-| hand | `10` | a mitt with a thumb, built in the forearm's frame |
+| hand | `8.6` | a mitt with a thumb and one crease, in the forearm's frame |
 | depth | `10` | how far behind the near side the far arm and leg are drawn |
 
 `height` is the number to use when sizing anything he stands next to. The joint
@@ -56,6 +56,34 @@ span is 515 and using it makes everything in the scene 4% too small.
 `depth` is not a detail. The clips are side-on, so the two arms project onto
 each other almost exactly and read as one thick arm with two hands on the end of
 it. Every 2D animator offsets the far limbs backwards a little for this reason.
+
+### The walk pass: shoulders, waist, feet, hands
+
+Rendered as eight frames of one stride — `examples/model-sheet/walk.html`,
+which draws a ground line so contact can be judged — and fixed in this order:
+
+- **The arm left the body halfway across his chest.** `armOut` was 0.50 of the
+  shoulder half-width while the shirt's edge is at 0.92, so the sleeve landed
+  on his ribs as a patch and the shoulder outline ran past it as a spur. The
+  arm root is now the **deltoid**, the same point the torso outline turns at,
+  so the sleeve continues the shoulder instead of interrupting it.
+- **The far arm drew a second shoulder.** Its sleeve was pushed back with the
+  arm and poked out past the shirt as a curl. It sits at 0.62 of the near
+  side's offset now, far enough in that the torso — paper-filled and painted
+  after it — hides the joint, which is what "behind" means.
+- **The hem was two lines**, the torso outline and a seam on top of it: a heavy
+  band across his hips. The outline IS the hem; all that is left is a short
+  tick where it turns.
+- **The shoe was a slipper.** It was drawn outwards from the ankle and ended up
+  mostly ABOVE it, with the midsole cutting a diagonal through the middle. It
+  is built from the ground up now — `sole` is how far below the ankle the
+  ground is, and the heel, sole, toe spring, instep and heel counter hang off
+  that. The turn-up moved to 0.80 of the shin so it is not swallowed by it.
+- **The hand was an oval.** It has a thumb on the side he faces and one crease
+  for the fingers, and it is smaller: 8.6 against a 20-unit wrist.
+- **The waist and the thigh.** `waist` 0.86 -> 0.80 so the shirt comes in
+  before it flares, and the leg 38 -> 33 at the hip so the trousers are not a
+  cone.
 
 ### The line is 0.45% of his height, and so is the set's
 
