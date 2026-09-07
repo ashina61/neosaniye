@@ -143,10 +143,10 @@
     weights: {
       arm0: 27, arm1: 17,         // shoulder to wrist
       leg0: 38, leg1: 21,         // hip to ankle
-      body: 5.4,                  // torso, neck, head outline (page px)
-      limb: 4.4,                  // arms, legs, shoes, hands
-      seam: 3.6,                  // hems, sleeve edges, pocket
-      face: 3.8
+      body: 3.0,                  // torso, neck, head outline (page px)
+      limb: 2.6,                  // arms, legs, shoes, hands
+      seam: 2.1,                  // hems, sleeve edges, pocket
+      face: 2.4
     },
     /* Width at hip, chest and shoulder: the pose's own span, floored. Side on
        the mocap gives about a 13-unit shoulder span, so the floor IS the
@@ -158,21 +158,29 @@
     /* The skull, as fractions of headR. It is not a circle: a jaw comes down
        from the cheek to a chin that is forward of centre, which is what gives
        the head a direction even before the face is drawn on it. */
-    skull: { brow: 0.76, face: 0.94, cheek: 0.90, jaw: 0.78, chin: 0.36, narrow: 0.74 },
+    /* The head is one curve, sampled: `rr(t)` is its radius at each angle.
+       jawIn narrows the lower half, cheek0 puts a cheekbone on the face side,
+       temple flattens above it, nape fills the back of the skull, tall is how
+       much longer than wide it is. Measured against the reference: the head is
+       0.21 of his height and its width is 0.69 of its height. */
+    skull: { narrow: 0.82, tall: 0.96, jawIn: 0.24, cheek0: 0.05, temple: 0.08, nape: 0.05 },
+    earAt: { t0: -3.55, t1: -2.75, out: 0.10 },
     neck: { w0: 24, w1: 20 },
     /* The undercut. A solid ink band over the skull, thickest at the front
        where it sweeps up, tapering to nothing at the nape, with a few short
        strokes under it for the faded sides. It is the only filled shape on
        him. */
-    hair: { front: -0.18, back: -1.02, thick: 13, quiff: 9 },
+    hair: { front: -0.16, back: -0.88, thick: 11, quiff: 8,
+            fade0: 0.62, fadeStep: 0.062, fadeLen: 0.13 },
     /* EVERY NUMBER IS A FRACTION OF headR. They were absolute once, written
        for a 46 head and left alone when the head became 40, and the nose and
        mouth hung off the side of his face like whiskers for four videos. As
        fractions they cannot do that again. */
-    face: { eyeNear: 0.56, eyeFar: 0.13, eyeY: -0.15, eyeW: 0.140, eyeH: 0.098,
-            pupil: 4, pupilR: 0.072, browGap: 0.16, browW: 0.19,
-            noseX: 0.56, noseY: -0.08,
-            mouthX: 0.62, mouthY: 0.41, mouthW: 0.16 },
+    face: { eyeNear: 0.56, eyeFar: 0.13, eyeNearF: 0.40, eyeFarF: -0.40,
+            eyeY: -0.15, eyeW: 0.140, eyeH: 0.098,
+            pupil: 4, pupilR: 0.066, browGap: 0.17, browW: 0.19, browTh: 0.035,
+            noseX: 0.56, noseXF: 0.02, noseY: -0.08,
+            mouthX: 0.62, mouthXF: 0.00, mouthY: 0.44, mouthW: 0.125 },
     /* A plain t-shirt over straight trousers: a crew neck, two short sleeves, a
        hem, one fold at the hip. The body stops being a shape and becomes a
        person dressed for a Tuesday. */
@@ -246,8 +254,10 @@
     var ear = seam(w(W.face));
     var hair = el("path", { fill: INK, stroke: "none" }, g);   // the one solid mass
     var fade = seam(w(W.face * 0.62));                   // the shaved sides
-    var browN = seam(w(W.face * 1.5)), browF = seam(w(W.face * 1.35));
-    var eyeNear = seam(w(W.face * 0.9)), eyeFar = seam(w(W.face * 0.9));
+    var browN = el("path", { fill: INK, stroke: "none" }, g);
+    var browF = el("path", { fill: INK, stroke: "none" }, g);
+    var eyeNear = seam(w(W.face * 0.85)), eyeFar = seam(w(W.face * 0.85));
+    var lidN = seam(w(W.face * 1.5)), lidF = seam(w(W.face * 1.35));
     var pupilN = el("circle", { fill: INK, r: F.pupil }, g);
     var pupilF = el("circle", { fill: INK, r: F.pupil }, g);
     var nose = seam(w(W.face)), mouth = seam(w(W.face * 1.15));
@@ -366,7 +376,7 @@
        few units is not mugging, it is the difference between deadpan and
        blank. Tween face.brow from the timeline; leave it at 0 and he is the
        same character he was. */
-    var face = { brow: 0 };
+    var face = { brow: 0, turn: 0 };
 
     function draw(po) {
       // The body is a closed outline around the spine, with its own width at
@@ -477,44 +487,66 @@
       sleeveNearG.setAttribute("d", sleeveShape(armRootN, elN));
 
       // ── the head ──────────────────────────────────────────────────────────
-      // A SKULL WITH A JAW. It was a circle for nine videos, and a circle has
-      // no chin, no cheekbone and nowhere for an ear to be: the face read as
-      // features floating on a ball. Every number below is a fraction of the
-      // head radius, so changing the head size can no longer leave the nose
-      // hanging off the side of his face — which it did, once, for four.
+      // ONE CURVE, SAMPLED — not a ten-point polygon smoothed into lumps. The
+      // outline is a function of the angle, so the cranium is round, the
+      // temple flattens, the cheekbone comes out, the jaw turns a corner and
+      // the chin is short: a head that reads as drawn rather than assembled.
+      // Everything else on the head — the hair, the fade, the ear — is built
+      // from the SAME function, so nothing floats off it.
       function hp(a, b) { return [hx + a * R * NW, hy + b * R]; }
-      head.setAttribute("d", smooth([
-        hp(-0.30, -0.98), hp(0.26, -0.96), hp(K.brow, -0.74), hp(K.face, -0.32), hp(K.cheek, 0.18),
-        hp(K.jaw, 0.56), hp(K.chin, 0.78), hp(-0.30, 0.70), hp(-0.68, 0.38),
-        hp(-0.92, -0.10), hp(-0.72, -0.72)
-      ], true));
-      // the ear, on the far side of the face, at eye height
-      ear.setAttribute("d", smooth([hp(-0.70, -0.30), hp(-1.00, -0.22), hp(-0.96, 0.10),
-                                    hp(-0.66, 0.14)], false));
+      // rr(t): the radius at angle t, as a multiple of R. t = 0 is the face
+      // side, -PI/2 the crown, PI/2 the chin.
+      function rr(t) {
+        var c = Math.cos(t), sn = Math.sin(t);
+        var v = 1.0;
+        v -= K.jawIn * Math.pow(Math.max(0, sn), 1.4) * (0.30 + 0.70 * Math.abs(c)); // jaw sides in, chin stays
+        v += K.cheek0 * Math.max(0, c) * Math.max(0, 1 - Math.abs(sn - 0.18) * 2.2); // cheekbone
+        v -= K.temple * Math.max(0, -sn) * Math.max(0, c) * 0.6;   // the temple flattens
+        v += K.nape * Math.max(0, -c) * Math.max(0, 0.5 - Math.abs(sn + 0.10)) * 2; // the nape
+        return v;
+      }
+      function skullPt(t, out) {
+        var r = rr(t) + (out || 0);
+        return [hx + Math.cos(t) * r * R * NW, hy + Math.sin(t) * r * R * K.tall];
+      }
+      var sp = [], si;
+      for (si = 0; si < 40; si++) sp.push(skullPt(si / 40 * Math.PI * 2));
+      head.setAttribute("d", smooth(sp, true));
+
+      // the ear sits ON the outline, behind the face, at eye height
+      var eA = ADEM.earAt;
+      function earD(t0, t1) {
+        return smooth([skullPt(t0, -0.04), skullPt(t0 + 0.10, eA.out),
+                       skullPt(t1 - 0.10, eA.out), skullPt(t1, -0.04)], false);
+      }
+      ear.setAttribute("d", earD(eA.t0, eA.t1) + (TU > 0.5 ? earD(-eA.t1 - Math.PI * 2 + 0.0, -eA.t0 - Math.PI * 2) : ""));
 
       // THE HAIR — the one solid mass on the whole figure, and the silhouette.
-      // A band over the skull: thick at the front where it sweeps up, tapering
-      // to nothing at the nape. A band cannot self-intersect the way a single
-      // out-and-back outline does, and the taper IS the undercut. Under it,
-      // short strokes down the temple: the faded sides of the reference.
+      // It is the SKULL CURVE offset outwards, so it lies on the head instead
+      // of hovering over it: an inner edge that is the head, an outer edge that
+      // is the head plus a thickness which rises just behind the hairline and
+      // dies at the nape. A band cannot self-intersect the way a single
+      // out-and-back outline does, and the taper IS the undercut.
       var HR = ADEM.hair, pts = [], hi, tt, ang, th;
       function hairAng(t) { return Math.PI * (HR.front + (HR.back - HR.front) * t); }
-      for (hi = 0; hi <= 24; hi++) {
-        tt = hi / 24; ang = hairAng(tt);
-        th = HR.thick * (1 - 0.66 * tt) + 2 + HR.quiff * Math.max(0, Math.sin(Math.PI * Math.min(1, tt / 0.46)));
-        pts.push([hx + Math.cos(ang) * (R + th) * NW, hy + Math.sin(ang) * (R + th)]);
+      for (hi = 0; hi <= 26; hi++) {
+        tt = hi / 26; ang = hairAng(tt);
+        th = HR.thick * (1 - 0.62 * tt) + HR.quiff * Math.max(0, Math.sin(Math.PI * Math.min(1, tt / 0.5)));
+        pts.push(skullPt(ang, th / R));
       }
-      for (hi = 24; hi >= 0; hi--) {
-        tt = hi / 24; ang = hairAng(tt);
-        pts.push([hx + Math.cos(ang) * R * 0.985 * NW, hy + Math.sin(ang) * R * 0.985]);
+      for (hi = 26; hi >= 0; hi--) {
+        tt = hi / 26;
+        pts.push(skullPt(hairAng(tt), -0.012));
       }
       hair.setAttribute("d", smooth(pts, true));
-      var fd = "", fi, fa, fl, fx, fy;
+      // the fade: short even strokes hanging off the hair's lower edge above
+      // the ear, which is where a fade is
+      var fd = "", fi, fa, fl, p0, p1;
       for (fi = 0; fi < 5; fi++) {
-        fa = hairAng(0.72 + fi * 0.055);
-        fl = R * (0.11 + fi * 0.006);
-        fx = hx + Math.cos(fa) * R * 0.99 * NW; fy = hy + Math.sin(fa) * R * 0.99;
-        fd += "M" + r2(fx) + " " + r2(fy) + " L" + r2(fx + fl * 0.42) + " " + r2(fy + fl * 0.86) + " ";
+        fa = hairAng(HR.fade0 + fi * HR.fadeStep);
+        fl = HR.fadeLen * (1 - fi * 0.10);
+        p0 = skullPt(fa, -0.02); p1 = skullPt(fa + 0.06, -0.02 - fl);
+        fd += "M" + r2(p0[0]) + " " + r2(p0[1]) + " L" + r2(p1[0]) + " " + r2(p1[1]) + " ";
       }
       fade.setAttribute("d", fd);
 
@@ -527,26 +559,44 @@
                        [cx + wid * 0.55, cy - hgt * 0.72], [cx + wid, cy + hgt * 0.10],
                        [cx + wid * 0.40, cy + hgt * 0.86], [cx - wid * 0.45, cy + hgt * 0.70]], true);
       }
-      var eN = hp(F.eyeNear, F.eyeY), eF = hp(F.eyeFar, F.eyeY + 0.01);
+      // turn slides every feature toward the middle of the head
+      var TU = Math.max(0, Math.min(1, face.turn));
+      function tx(sideOn, frontOn) { return sideOn + (frontOn - sideOn) * TU; }
+      var eN = hp(tx(F.eyeNear, F.eyeNearF), F.eyeY),
+          eF = hp(tx(F.eyeFar, F.eyeFarF), F.eyeY + 0.01 * (1 - TU));
+      function lidD(cx, cy, wid, hgt) {
+        return smooth([[cx - wid * 0.94, cy - hgt * 0.10], [cx - wid * 0.35, cy - hgt],
+                       [cx + wid * 0.55, cy - hgt * 0.72], [cx + wid * 0.96, cy - hgt * 0.02]], false);
+      }
+      lidN.setAttribute("d", lidD(eN[0], eN[1], R * F.eyeW * NW, R * F.eyeH));
+      lidF.setAttribute("d", lidD(eF[0], eF[1], R * F.eyeW * 0.82 * NW, R * F.eyeH * 0.88));
       eyeNear.setAttribute("d", eyeD(eN[0], eN[1], R * F.eyeW * NW, R * F.eyeH));
       eyeFar.setAttribute("d", eyeD(eF[0], eF[1], R * F.eyeW * 0.82 * NW, R * F.eyeH * 0.88));
       pupilN.setAttribute("cx", eN[0] + R * 0.03); pupilN.setAttribute("cy", eN[1] + R * 0.01);
       pupilF.setAttribute("cx", eF[0] + R * 0.02); pupilF.setAttribute("cy", eF[1] + R * 0.01);
       pupilN.setAttribute("r", R * F.pupilR); pupilF.setAttribute("r", R * F.pupilR * 0.9);
       // brows: a stroke with an arch, tilted by face.brow
-      function browD(cx, cy, wid, tilt) {
-        return smooth([[cx - wid, cy + tilt * 0.6], [cx - wid * 0.2, cy - wid * 0.30 + tilt * 0.2],
-                       [cx + wid, cy - wid * 0.10 - tilt]], false);
+      // a lens: thick at the inner end, tapering to the outer one
+      function browD(cx, cy, wid, tilt, th) {
+        var t0 = th, t1 = th * 0.28;
+        return smooth([
+          [cx - wid, cy + tilt * 0.6 - t0 * 0.5], [cx - wid * 0.25, cy - wid * 0.26 + tilt * 0.2 - t0],
+          [cx + wid, cy - wid * 0.08 - tilt - t1],
+          [cx + wid, cy - wid * 0.08 - tilt + t1], [cx - wid * 0.25, cy - wid * 0.26 + tilt * 0.2 + t0 * 0.55],
+          [cx - wid, cy + tilt * 0.6 + t0 * 0.5]
+        ], true);
       }
-      browN.setAttribute("d", browD(eN[0], eN[1] - R * F.browGap, R * F.browW * NW, face.brow));
-      browF.setAttribute("d", browD(eF[0], eF[1] - R * F.browGap, R * F.browW * 0.86 * NW, face.brow * 0.8));
+      browN.setAttribute("d", browD(eN[0], eN[1] - R * F.browGap, R * F.browW * NW, face.brow, R * F.browTh));
+      browF.setAttribute("d", browD(eF[0], eF[1] - R * F.browGap, R * F.browW * 0.92 * NW, face.brow * 0.8, R * F.browTh * 0.92));
       // the nose: a bridge that turns into a nostril, on the side he faces
-      nose.setAttribute("d", smooth([hp(F.noseX, F.noseY), hp(F.noseX + 0.12, F.noseY + 0.20),
-                                     hp(F.noseX - 0.06, F.noseY + 0.26)], false));
+      var nX = tx(F.noseX, F.noseXF);
+      nose.setAttribute("d", smooth([hp(nX, F.noseY), hp(nX + 0.12 * (1 - TU * 0.5), F.noseY + 0.20),
+                                     hp(nX - 0.06 - 0.08 * TU, F.noseY + 0.26)], false));
       // and a small mouth that is not quite a straight line
-      mouth.setAttribute("d", smooth([hp(F.mouthX - F.mouthW, F.mouthY),
-                                      hp(F.mouthX, F.mouthY + 0.03),
-                                      hp(F.mouthX + F.mouthW, F.mouthY - 0.01)], false));
+      var mX = tx(F.mouthX, F.mouthXF), mW = F.mouthW * (1 + 0.45 * TU);
+      mouth.setAttribute("d", smooth([hp(mX - mW, F.mouthY),
+                                      hp(mX, F.mouthY + 0.03),
+                                      hp(mX + mW, F.mouthY - 0.01)], false));
     }
 
     var basePose = pup.setPose, lastPose = root.InkPuppet.STAND;

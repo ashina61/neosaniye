@@ -47,7 +47,7 @@
         { x: 620,  clip: "shuffle", f: 34, label: "still" },
         { x: 860,  clip: "walk",    f: 8,  label: "walk 8" },
         { x: 1100, clip: "walk",    f: 20, label: "walk 20" },
-        { x: 1340, clip: "march",   f: 16, label: "march 16" },
+        { x: 1340, clip: "march",   f: 16, label: "march 16 · half turn", turn: 0.5 },
         { x: 1580, clip: "wave",    f: 30, label: "wave 30", carry: { dx: 46, dy: -96 } },
         { x: 1820, clip: "sit",     f: 60, label: "sit 60" }
       ];
@@ -66,6 +66,7 @@
         IP.still(c.clip, c.f, "pose" + i);
         var po = IP.poseOf ? IP.poseOf("pose" + i) : null;
         IP.choreograph(tl, pup, [{ clip: "pose" + i, dur: 1 }], { start: 0 });
+        if (c.turn) fig.face.turn = c.turn;
         if (c.carry) { fig.carry.on = 1; fig.carry.from = "shoulder";
                        fig.carry.dx = c.carry.dx; fig.carry.dy = c.carry.dy; }
         fig.group.setAttribute("opacity", 1);
@@ -81,11 +82,13 @@
       var hScale = document.createElementNS(NS, "g");
       hMount.parentNode.insertBefore(hScale, hMount); hScale.appendChild(hMount);
       hScale.setAttribute("transform", "translate(240,470) scale(2.6) translate(-240,-470)");
+      // the portrait stands up straight: the capture leans and a model sheet does not
       var hPup = IP.create(hMount, { cx: 240, ground: 470 + 430, boil: "boil",
                                      headR: IF.ADEM.headR - 2, strokeWidth: 4 });
       var hFig = IF.attach(hPup, { unit: 3.4 });
       IP.still("shuffle", 34, "poseH");
       IP.choreograph(tl, hPup, [{ clip: "poseH", dur: 1 }], { start: 0 });
+      hFig.face.turn = 1;                       // look at me
       hFig.group.setAttribute("opacity", 1);
       hFig.pencil.forEach(function (p) { p.setAttribute("opacity", 0); });
       hFig.redraw();
