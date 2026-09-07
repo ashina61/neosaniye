@@ -151,6 +151,39 @@ Three of the worst defects here were invisible in a still and obvious in a strip
 - a row in `productions/STYLE_LEDGER.md`, and anything that cost you a render
   goes into `ink-theater/ADEM.md` so tomorrow does not repeat it
 
+## 9b. The copy, and why it is short
+
+`spec.yaml`'s `copy` block is what the channel actually shows. The first eight
+films went up with 1800-character descriptions and one visible hashtag, which
+is a wall of text nobody opens and, in practice, no tags at all. The shape now:
+
+```
+copy:
+  title:  the on-screen claim, under 100 characters
+  hook:   one line — it becomes the first comment
+  caption: 2-3 sentences, for the bundle and for Meta
+  description: |-
+    The claim, in one line. This is all most people see.
+
+    The mechanism, two or three sentences. No bibliography.
+
+    Source: Author, Journal (year).
+
+    #Four #Or #Five #Visible #Shorts
+  hashtags: [four, to, fifteen, keyword, tags, no, hashes]
+```
+
+150-700 characters, first line under 160, at least four hashtags **in the
+description** — `hashtags:` is API metadata and nobody can see it. The full
+citations belong in `source/`, not under the video.
+
+```bash
+python3 bin/check-copy.py productions/<slug>/spec.yaml
+```
+
+The publisher runs the same check before every upload, and a failure keeps the
+entry `pending`. Run it yourself rather than finding out there.
+
 ## 10. Queue it and push
 
 ```bash

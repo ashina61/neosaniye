@@ -347,6 +347,34 @@ retired generator failed:
 `workflow_dispatch` has `dry_run: true` by default — it says what it would do
 and does nothing.
 
+## The copy, and the two videos that went up with the old kind
+
+`bin/check-copy.py` gates every description before it is uploaded: 150-700
+characters, a first line under 160, at least four hashtags **in the description
+itself**, `#Shorts` among them, one link at most. The `hashtags:` list in
+`spec.yaml` is the YouTube API's `tags` field — keyword metadata a viewer never
+sees — so a film whose tags lived only there had, to a viewer, no tags at all.
+That is what the first eight shipped with, alongside descriptions of 1000-2200
+characters.
+
+The specs are rewritten. Two films were already public by then, and re-uploading
+them would have thrown away their views and their comments, so:
+
+```bash
+bin/refresh-metadata.py --published --dry-run     # what it would send
+bin/refresh-metadata.py <slug>                    # rewrite one
+```
+
+or the **Refresh the copy on videos already up** workflow, which is
+dispatch-only and defaults to a dry run. It rewrites title, description and
+tags through `videos.update` and touches nothing else — not the file, not the
+thumbnail, not the privacy setting, not the comments. It only acts on a slug
+the queue records as published with a real URL, so it cannot guess a video id.
+
+If it comes back 403, the refresh token was minted for `youtube.upload` only:
+either remint it with `youtube.force-ssl`, or paste the description from
+`spec.yaml` into YouTube Studio by hand.
+
 ## The daily producer
 
 A Routine fires a **fresh session every day at 09:00 Istanbul** with one

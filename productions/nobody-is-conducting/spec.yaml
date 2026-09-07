@@ -23,54 +23,18 @@ copy:
     in a room of two hundred and there is only one place to end up. But it only
     works slowly, so the room halves its speed to get there.
   description: |-
-    Applause starts as noise. Two hundred people, two hundred different
-    rhythms. Give it a few seconds and it locks — everybody together, and
-    nobody said a word.
+    Applause starts as noise. Then two hundred people lock into one rhythm, with nobody saying a word.
 
-    Physicists recorded exactly this in concert halls in Romania and Hungary
-    and put numbers on it. The room does not just fall into step; it falls
-    into step at about HALF the speed it was clapping before.
+    Nobody is keeping their own time — every clap lands a fraction early or late, pulled toward the room, and in a room that big there is only one place to end up. It only works slowly, so the room halves its speed to get there.
 
-    Here is why it has to. You are not keeping your own time. You are
-    listening, and every clap lands a little early or a little late, pulled
-    toward the sound around you. That is a room full of coupled oscillators,
-    and coupled oscillators synchronise when the pull between them beats the
-    spread of their natural rates.
+    Source: Neda et al., Nature 403 (2000).
 
-    The catch: the spread of clapping rates in a crowd is a roughly constant
-    FRACTION of the rate — about 15% either way. So the spread scales with the
-    speed and the pull does not. Clapping fast, the spread is wider than the
-    pull can reach and nothing locks, no matter how much anybody wants it to.
-    Halve the speed and the spread halves with it, drops under the pull, and
-    the room locks. Then the applause gets loud, it speeds up, the spread grows
-    again, and the whole thing comes apart.
-
-    Nobody decided any of that. There is no conductor in an audience.
-
-    Everything in this video is drawn, and everything in it is simulated. The
-    120 pairs of hands are a globally coupled Kuramoto model, and the picture
-    and the soundtrack are two readings of the same array: every clap you hear
-    was synthesised at the instant that model says that person's phase crossed.
-    The low tone that comes in when the room locks is not music — its loudness
-    is the order parameter, which is the number the physicists measure. Nothing
-    in it was generated, photographed or licensed.
-
-    Sources
-    Neda, Ravasz, Brechet, Vicsek & Barabasi, "The sound of many hands
-    clapping", Nature 403, 849-850 (2000).
-    Neda, Ravasz, Vicsek, Brechet & Barabasi, "Physics of the rhythmic
-    applause", Physical Review E 61, 6987-6992 (2000).
-    Strogatz, "From Kuramoto to Crawford: exploring the onset of
-    synchronization in populations of coupled oscillators", Physica D 143,
-    1-20 (2000).
-
-    #Shorts
+    #Physics #Emergence #Synchronisation #Applause #Shorts
   hashtags:
     - physics
     - synchronisation
     - emergence
     - complexity
     - applause
-    - animation
     - howitworks
-    - Shorts
+    - shorts

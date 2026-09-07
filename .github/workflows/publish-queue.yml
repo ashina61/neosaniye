@@ -19,7 +19,10 @@ name: Publish the next one in the queue
 #     runner holds the upload tokens; the only thing it is trusted to do is move
 #     a file that is already committed and already watched.
 #  4. The file is proved to be 1080x1920 with an audio track before it goes
-#     near an account.
+#     near an account, and the COPY is checked with it: the first eight went up
+#     with 1800-character descriptions and one visible hashtag, which is a wall
+#     of text and, in practice, no tags. bin/check-copy.py fails the job rather
+#     than putting another one up.
 #  5. It publishes ONE and stops. A bad video costs one slot, not the queue.
 #  5b. IT ASKS THE QUEUE WHETHER ANYTHING IS DUE, not the clock. Two runs inside
 #     one slot publish one video, because bin/queue.py measures the gap from the
@@ -128,6 +131,7 @@ jobs:
           test "$W" = "1080" && test "$H" = "1920" || { echo "not 1080x1920: ${W}x${H}"; exit 1; }
           ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of csv=p=0 "$VIDEO" \
             | grep -q . || { echo "no audio track"; exit 1; }
+          python bin/check-copy.py "$DIR/spec.yaml"
           echo "dir=$DIR" >> "$GITHUB_OUTPUT"
           echo "OK: $VIDEO  ->  ${{ steps.q.outputs.upload }} / ${{ steps.q.outputs.privacy }}"
 

@@ -1,0 +1,68 @@
+name: Refresh the copy on videos already up
+
+# Rewrites the title, description and tags of videos that are already on the
+# channel, from the `copy` block in productions/<slug>/spec.yaml. It touches
+# metadata only — never the video, the thumbnail, the privacy setting or the
+# comments — and it only ever acts on a slug the queue records as published
+# with a real URL, so it cannot invent a video id.
+#
+# WHY THIS EXISTS. The first films went up with 1800-character descriptions and
+# one visible hashtag. bin/check-copy.py now stops that at the gate, but the
+# ones already public needed rewriting where they live, and re-uploading would
+# have thrown away their views and their comments.
+#
+# There is no schedule. dry_run defaults to true and prints exactly what it
+# would send.
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: 'One slug, or leave empty for every published entry'
+        type: string
+        required: false
+        default: ''
+      dry_run:
+        description: 'Print the new metadata and change nothing'
+        type: boolean
+        default: true
+
+concurrency:
+  group: publish-production     # never while something is being published
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  BRANCH: claude/openmontage-setup-dh10g0
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BRANCH }}
+
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+
+      - run: pip install --quiet pyyaml requests
+
+      # The copy has to pass the same gate a new upload passes, or this would
+      # be a way to put the essay back.
+      - name: Check the copy
+        run: python bin/check-copy.py
+
+      - name: Refresh
+        env:
+          YOUTUBE_CLIENT_ID:     ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          set -euo pipefail
+          python bin/refresh-metadata.py \
+            ${{ inputs.slug != '' && inputs.slug || '--published' }} \
+            ${{ inputs.dry_run && '--dry-run' || '' }}

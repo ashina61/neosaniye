@@ -23,6 +23,7 @@ import requests
 
 TOKEN_URL = "https://oauth2.googleapis.com/token"
 UPLOAD_URL = "https://www.googleapis.com/upload/youtube/v3/videos"
+VIDEOS_URL = "https://www.googleapis.com/youtube/v3/videos"
 COMMENTS_URL = "https://www.googleapis.com/youtube/v3/commentThreads"
 CHUNK = 8 * 1024 * 1024
 
@@ -50,10 +51,12 @@ def access_token() -> str:
 def comment(video_id: str, text: str, token: str | None = None) -> str:
     """Post the first comment on a video we just uploaded.
 
-    Hashtags belong here rather than crowding the description: the description's
-    first two lines are what a viewer actually sees under a Short, and a wall of
-    tags there buys nothing. Needs the youtube.force-ssl scope, which an upload
-    -only token does not carry, so the caller treats a failure as cosmetic.
+    This used to carry the hashtags, on the theory that they would crowd the
+    description. They did not appear anywhere a viewer could see them instead,
+    so the films shipped with no visible tags at all; they now live at the foot
+    of the description, where a Short shows them, and this comment carries the
+    hook alone. Needs the youtube.force-ssl scope, which an upload-only token
+    does not carry, so the caller treats a failure as cosmetic.
     """
     r = requests.post(COMMENTS_URL, params={"part": "snippet"},
                       headers={"Authorization": f"Bearer {token or access_token()}"},
@@ -76,6 +79,28 @@ def build_metadata(title: str, description: str, tags: list[str],
                         "tags": tags[:30],
                         "categoryId": category},
             "status": {"privacyStatus": privacy, "selfDeclaredMadeForKids": False}}
+
+
+def update_metadata(video_id: str, meta: dict, dry_run: bool = False) -> str:
+    """Rewrite the title, description and tags of a video that is already up.
+
+    videos.update REPLACES the parts it is given, so the snippet has to be
+    complete — a partial one silently drops the category and blanks the tags.
+    Needs a token with the youtube (not upload-only) scope.
+    """
+    snippet = dict(meta["snippet"])
+    if dry_run:
+        print(f"[dry-run] would rewrite {video_id}:")
+        print(json.dumps(snippet, indent=1)[:800])
+        return video_id
+    r = requests.put(VIDEOS_URL, params={"part": "snippet"},
+                     headers={"Authorization": f"Bearer {access_token()}",
+                              "Content-Type": "application/json; charset=UTF-8"},
+                     data=json.dumps({"id": video_id, "snippet": snippet}).encode(),
+                     timeout=60)
+    if r.status_code != 200:
+        raise RuntimeError(f"metadata update failed [{r.status_code}]: {r.text[:400]}")
+    return r.json()["id"]
 
 
 def upload(video: Path, meta: dict, dry_run: bool = False) -> str:
