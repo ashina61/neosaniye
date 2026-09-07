@@ -19,7 +19,7 @@ enabled: true
 
 # 09:00 and 20:00 Europe/Istanbul, every day. The workflow's cron is the
 # authority; this is here so the file says what it does.
-schedule: "0 6,17 * * *   # 09:00 and 20:00 Europe/Istanbul, daily"
+schedule: "23 6,17 * * *   # 09:23 and 20:23 Europe/Istanbul, daily"
 
 # THE GAP THAT MAKES A LATE CRON HARMLESS. On 2026-09-06 a manual run published
 # at 17:25 and the week's cron — two and a half hours late, not skipped — fired
