@@ -355,6 +355,35 @@ retired generator failed:
 `workflow_dispatch` has `dry_run: true` by default — it says what it would do
 and does nothing.
 
+## What actually triggers a publish, and why it is not a cron
+
+**GitHub's scheduler does not run this repository's crons.** Of every scheduled
+occurrence asked for — weekly, daily, on the hour, off the hour — exactly one
+has ever fired, and that one 2h27m late. Actions itself is healthy: CI and the
+publisher both run on every push, in seconds. So a **push to `main`** is what
+publishes, gated by `min_hours_between` in the queue and a 04:00-21:00 UTC
+window so nothing goes out while Istanbul is asleep.
+
+**A push trigger needs somebody to push.** On 2026-09-07 that cost an evening:
+eight pushes ran the job and every one was inside the eight-hour gap, the gap
+expired at 18:13, and the next push came after the window had shut. So the
+clock is a **Claude Routine**, which — unlike GitHub's scheduler — has fired on
+time every single time:
+
+```
+Routine   Publish tick
+cron      40 6,17 * * *      (09:40 and 20:40 Europe/Istanbul)
+does      python3 bin/queue.py tick
+          commit + push if the queue says one is due
+```
+
+`bin/queue.py tick` stamps `last_tick` in `QUEUE.yaml` and prints whether a
+video is due. If it is, the tick session commits that one line and pushes —
+and the push is what starts the upload. One line changes, it is the audit
+trail of the mechanism, and nothing about the safety changes: `enabled: false`
+still stops everything, the gap still allows one video per slot, and no model
+ever touches the upload tokens.
+
 ## How long a film is
 
 **40-50 seconds.** `bin/build-ink.sh` fails outside it, before the render.

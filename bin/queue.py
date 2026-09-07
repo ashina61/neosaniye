@@ -4,6 +4,7 @@
     bin/queue.py status                     what is where
     bin/queue.py next [--force]             the next entry, as KEY=VALUE
     bin/queue.py done <slug> [--url URL]    mark it published
+    bin/queue.py tick                       stamp the queue, say if one is due
     bin/queue.py topic                      the next unused topic, as KEY=VALUE
     bin/queue.py add <slug> --topic <id>    put a finished production on the end
 
@@ -247,6 +248,45 @@ def cmd_add(d, slug, topic):
     return 0
 
 
+def cmd_tick(d):
+    """Write the time of this check into the queue, and say whether a video is
+    due. It exists because GitHub's scheduler does not run this repository's
+    crons: the publisher is triggered by a PUSH, so something has to push when
+    the queue comes due. This is that something — one line changes, it is the
+    audit trail of the mechanism, and the commit it produces is what starts the
+    upload. `enabled: false` still stops everything; a tick is only a check."""
+    now = datetime.datetime.now(UTC).replace(microsecond=0)
+    stampline = f'last_tick: "{now.strftime("%Y-%m-%dT%H:%M:%SZ")}"'
+    lines = QUEUE.read_text().splitlines()
+    for i, ln in enumerate(lines):
+        if ln.startswith("last_tick:"):
+            lines[i] = stampline
+            break
+    else:
+        for i, ln in enumerate(lines):
+            if ln.startswith("enabled:"):
+                lines.insert(i + 1, "\n# When the queue was last checked by the tick Routine. GitHub's scheduler\n"
+                                    "# does not run this repository's crons, so a push is what publishes and\n"
+                                    "# this line is what makes the push.\n" + stampline)
+                break
+    QUEUE.write_text("\n".join(lines) + "\n")
+    gap, last = min_hours(d), last_published(d)
+    due = True
+    if not d.get("enabled"):
+        due = False; why = "the queue's master switch is off"
+    elif last and hours_since(last[0]) < gap:
+        due = False; why = f"{last[1]} went out {hours_since(last[0]):.1f}h ago, gap is {gap:g}h"
+    else:
+        nxt = [e for e in d["queue"] if e.get("state") == "pending" and not problems(e)]
+        if not nxt:
+            due = False; why = "nothing publishable is pending"
+        else:
+            why = f"{nxt[0]['slug']} is due"
+    print(("DUE: " if due else "not due: ") + why)
+    print("due=" + ("1" if due else "0"))
+    return 0
+
+
 def cmd_done(d, slug, url):
     txt = QUEUE.read_text()
     hit = None
@@ -288,6 +328,7 @@ def main():
     nx.add_argument("--force", action="store_true",
                     help="ignore the minimum gap between publishes")
     sub.add_parser("topic")
+    sub.add_parser("tick")
     ad = sub.add_parser("add"); ad.add_argument("slug"); ad.add_argument("--topic", default="")
     dn = sub.add_parser("done"); dn.add_argument("slug"); dn.add_argument("--url", default="")
     a = p.parse_args()
@@ -295,6 +336,7 @@ def main():
     if a.cmd == "status": return cmd_status(d)
     if a.cmd == "next": return cmd_next(d, a.force)
     if a.cmd == "topic": return cmd_topic(d)
+    if a.cmd == "tick": return cmd_tick(d)
     if a.cmd == "add": return cmd_add(d, a.slug, a.topic)
     if a.cmd == "done": return cmd_done(d, a.slug, a.url)
 

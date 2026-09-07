@@ -59,9 +59,17 @@ name: Publish the next one in the queue
 # starts working; if it fires and a push already published, the gap check
 # turns it into a no-op, which is exactly what it was built for.
 #
-# A push at 3am does not publish: outside 05:00-20:00 UTC the job skips, so a
-# late-night commit does not put a video out while Istanbul is asleep. A manual
-# run ignores that window.
+# A push in the middle of the night does not publish: outside 04:00-21:00 UTC
+# the job skips, so a 3am commit does not put a video out while Istanbul is
+# asleep. A manual run ignores that window.
+#
+# THE WINDOW WAS 05:00-20:00 AND IT COST AN EVENING. On 2026-09-07 eight pushes
+# ran this job and every one of them was inside the eight hour gap; the next
+# push after the gap expired at 18:13 would have published, and there wasn't
+# one until after 20:00, by which time the window had shut. A trigger that only
+# fires when somebody happens to push is not a schedule — see the tick Routine
+# in ENVIRONMENT.md, which pushes on purpose when the queue says something is
+# due.
 
 # A GITHUB CRON IS NOT A CLOCK, IT IS A QUEUE POSITION. It can run hours late.
 # This one is set for 15:00 UTC on Sundays; on 2026-09-06 it fired at 17:27 —
@@ -137,9 +145,9 @@ jobs:
         id: win
         run: |
           H=$(date -u +%H)
-          if [ "${{ github.event_name }}" = "push" ] && { [ "$H" -lt 05 ] || [ "$H" -ge 20 ]; }; then
+          if [ "${{ github.event_name }}" = "push" ] && { [ "$H" -lt 04 ] || [ "$H" -ge 21 ]; }; then
             echo "go=0" >> "$GITHUB_OUTPUT"
-            echo "It is ${H}:00 UTC — outside 05-20, a push does not publish."
+            echo "It is ${H}:00 UTC — outside 04-21, a push does not publish."
           else
             echo "go=1" >> "$GITHUB_OUTPUT"
           fi

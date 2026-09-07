@@ -17,6 +17,11 @@
 
 enabled: true
 
+# When the queue was last checked by the tick Routine. GitHub's scheduler
+# does not run this repository's crons, so a push is what publishes and
+# this line is what makes the push.
+last_tick: "2026-09-07T20:05:26Z"
+
 # A PUSH TO MAIN PUBLISHES. GitHub's scheduler has fired exactly one of this
 # repository's scheduled occurrences, and that one 2h27m late, so the cron is
 # kept only in case it recovers. What actually puts a video out is a push to
