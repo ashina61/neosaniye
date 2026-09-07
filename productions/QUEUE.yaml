@@ -100,7 +100,10 @@ queue:
 
   # ── Adem, but made before the channel had a logo or an end card ─────────
   - slug: the-second-that-hangs
-    state: pending
+    state: published
+    published_on: "2026-09-07"
+    published_at: "2026-09-07T20:06:35Z"
+    url: "https://youtube.com/shorts/KhT3cPVdefc"
     upload: youtube
     privacy: public
     note: "no logo and no subscribe card — both were added after it shipped"
