@@ -111,3 +111,9 @@ venv/
 # Daily pipeline scratch — deliverables are copied into videos/<slug>/
 out/
 .render-env
+
+# The model sheet runs on copies of the engine and the clips. Only its page is
+# source: committing the copies is the same stale-drawing trap PRODUCE.md just
+# stopped doing in productions.
+ink-theater/examples/model-sheet/*.js
+ink-theater/examples/model-sheet/assets/
