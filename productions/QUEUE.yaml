@@ -109,7 +109,10 @@ queue:
     note: "no logo and no subscribe card — both were added after it shipped"
 
   - slug: the-doorway-did-it
-    state: pending
+    state: published
+    published_on: "2026-09-08"
+    published_at: "2026-09-08T11:32:01Z"
+    url: "https://youtube.com/shorts/DsbTy2WcEms"
     upload: youtube
     privacy: public
     note: >-
