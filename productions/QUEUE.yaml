@@ -142,7 +142,10 @@ queue:
     note: "pre-Adem: a page from a physics book"
 
   - slug: birds-and-the-wire
-    state: pending
+    state: published
+    published_on: "2026-09-08"
+    published_at: "2026-09-08T20:07:57Z"
+    url: "https://youtube.com/shorts/dvVjy6L-qhY"
     upload: youtube
     privacy: public
     made_on: "2026-09-07"
