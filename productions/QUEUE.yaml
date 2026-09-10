@@ -59,6 +59,7 @@ slots_per_day: 2
 # from now on lands in the range.
 
 topics_used:
+  - recorded-voice
   - birds-power-lines
   # the eight already made — these ids must not come round again
   - noise-cancelling
@@ -150,4 +151,11 @@ queue:
     privacy: public
     made_on: "2026-09-07"
     topic: birds-power-lines
+
+  - slug: the-voice-that-stays
+    state: pending
+    upload: youtube
+    privacy: public
+    made_on: "2026-09-10"
+    topic: recorded-voice
 

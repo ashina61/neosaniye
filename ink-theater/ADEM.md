@@ -761,3 +761,62 @@ index.html     →  reads sim.js every frame
   every gap between beats. Measure it: fold the finished audio's amplitude
   envelope at the beat period and look at peak-to-trough. 1.3:1 is a wash,
   3:1 is a pulse.
+
+---
+
+## `fig.face.open` — the mouth moves now (2026-09-10)
+
+`face` is `{ brow, turn, open }`. `open` is 0..1 and turns the mouth line into
+a lens; at 0 he is exactly the character he was.
+
+**Drive it per frame from your `sync()`, never from a tween.** Speech is faster
+than any ease, and a paused timeline rendered by seeking will not run a
+real-time tween anyway (see the sound trap above — same trap, different
+symptom):
+
+```js
+fig.face.open = mouthOpen(t);   // set it, then call pup.setPose(po)
+```
+
+The shape that reads as speech is three detuned sines, rectified, with a
+syllable-group envelope over the top **and an offset that lets it reach zero**:
+
+```js
+var v = Math.sin(t*19.7) + 0.7*Math.sin(t*31.3+1.1) + 0.5*Math.sin(t*11.9+2.4);
+var env = 0.66 + 0.34*Math.sin(t*2.7+0.4);
+return Math.max(0, Math.min(1, (Math.abs(v)*0.58 - 0.17) * env * 1.6));
+```
+
+Without the `- 0.17` he holds one small permanent "o" for the whole take, which
+is worse than a shut mouth because it looks like a fault rather than a choice.
+
+### Why this exists
+
+The contact strip for `the-voice-that-stays` showed **nineteen seconds of a
+completely motionless head** under his own narration. This is the same defect
+the bird taught in video 9 and it will keep coming back, because a still frame
+cannot show you that nothing is moving. Only the strip can.
+
+The full fix for a talking close-up is four things, and all four are cheap:
+
+| | |
+|---|---|
+| the mouth | `face.open`, per frame |
+| blinks | six or seven, 0.11 s each, at irregular times |
+| a drift | ±3 px translate and ±0.5° rotate on slow detuned sines |
+| the eyes | a shut-eye stroke swapped in for the almonds and pupils |
+
+Put everything above the neck in its own `<g>` so the drift does not drag the
+shoulders with it.
+
+### And a drawing rule that cost four drafts
+
+**You cannot draw a there-and-back journey beside a head as one continuous
+stroke.** A stroke that leaves a face and returns to it encloses an area, and
+an enclosed area beside a head is a speech balloon. Tried and rejected: a loop
+round the skull (a balloon), a tighter loop (a halo), an open C (a balloon with
+a gap), and a two-legged wedge — which `smooth()` turns into an ellipse the
+moment it touches it, complete with a pointer at his ear.
+
+Draw the **ends** instead — arcs leaving, an arrow arriving — and let a moving
+dot carry the middle. Give the dot a six-sample tail or it reads as a fly.

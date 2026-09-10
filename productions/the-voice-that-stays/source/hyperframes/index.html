@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!--
+      THE VOICE THAT STAYS — why your recorded voice sounds wrong to you and
+      right to everyone else.
+
+      DESIGN READ: one mouth, two routes. The frame is a map of where a voice
+      goes: most of it leaves through the air and comes back into the ear like
+      anybody else's, and some of it never leaves at all — it goes through the
+      skull, and bone carries the low half of it. The film is the difference
+      between those two deliveries.
+
+      SIGNATURE DEVICE: THE TWO PATHS, AND WHAT EACH ONE CARRIES. Beside each
+      route is a comb of frequency bars: the air path's bars are even, the bone
+      path's are tall at the low end and almost nothing at the high. The bone
+      comb is the only green on the page.
+
+      MOTION CHARACTER: A PULSE TRAVELLING A ROUTE. Nothing eases, springs or
+      falls in this film. Every moving thing is a dot running along a drawn
+      line at the speed that line gives it, and the two dots arrive at the same
+      ear having carried different halves of the same voice.
+
+      PALETTE: one accent, and it is the half you never send. Green is the
+      bone-conducted low end and nothing else — the bone path, its comb, and
+      the one caption word.
+
+      AND THE SOUNDTRACK IS THE ARGUMENT. Line eight is the narration with a
+      +9 dB shelf under 320 Hz, which is what bone conduction adds; line nine
+      is the same voice band-limited the way a phone speaker delivers it. The
+      film plays both, one after the other, and says nothing about either.
+    -->
+    <script src="gsap.min.js"></script>
+    <script src="ink-theater.js"></script>
+    <script src="ink-puppet.js"></script>
+    <script src="ink-figure.js"></script>
+    <script src="clips.js"></script>
+    <script src="brand.js"></script>
+    <script src="annotate.js"></script>
+    <script src="events.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      @font-face { font-family: "InkHand"; src: url("assets/patrickhand.ttf") format("truetype"); font-display: block; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #FCFBF8; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+      .stage { position: absolute; inset: 0; background: #FCFBF8; }
+      .stage svg { position: absolute; inset: 0; display: block; width: 1080px; height: 1920px; }
+      #overlay { position: absolute; inset: 0; }
+      .cap { position: absolute; left: 56px; width: 968px; top: 1250px; text-align: center;
+             font-family: "InkHand", cursive; font-size: 62px; line-height: 1.16; color: #333333; opacity: 0; }
+      .cap b { font-weight: normal; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="47.35"
+         data-width="1080" data-height="1920" data-fps="30">
+      <section id="scene" class="clip" data-start="0" data-duration="47.35">
+        <div class="stage">
+          <svg viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="boil" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="1" seed="1" result="n"/>
+                <feDisplacementMap in="SourceGraphic" in2="n" scale="2.0"/>
+              </filter>
+            </defs>
+            <g id="camera">
+              <g id="room"  filter="url(#boil)"></g>
+              <g id="actorScale"><g id="actorFace"><g id="actorMount"></g></g></g>
+              <g id="front" filter="url(#boil)"></g>
+              <g id="bighead" filter="url(#boil)"></g>
+              <g id="paths"></g>
+              <g id="notes"></g>
+            </g>
+            <g id="brandLayer"></g>
+          </svg>
+          <div id="overlay"></div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      var IT = window.InkTheater, IP = window.InkPuppet, IF = window.InkFigure;
+      var IA = window.InkAnnotate;
+      var tl = gsap.timeline({ paused: true });
+      var NS = "http://www.w3.org/2000/svg";
+      if (document.fonts && document.fonts.load) { document.fonts.load("62px InkHand"); }
+
+      var INK = IF.ADEM.ink, PAPER = IF.ADEM.paper, DIM = "#8A857A";
+      var BONE = "#2E7D5B";                  // the low half that never leaves, and nothing else
+      var EV = window.EV, DUR = EV.duration, E = EV.events, CUT = EV.cuts;
+
+      var CX = 372, GROUND = 1130, SCALE = 1.30;
+      var MM = (SCALE * 534) / 1750;
+      function mm(v) { return v * MM; }
+
+      var room = document.getElementById("room"), front = document.getElementById("front");
+      var pathsG = document.getElementById("paths"), notes = document.getElementById("notes");
+      var bigG = document.getElementById("bighead");
+      var camera = document.getElementById("camera"), overlay = document.getElementById("overlay");
+      var defs = document.querySelector("defs");
+
+      function node(tag, a, parent) {
+        var n = document.createElementNS(NS, tag);
+        for (var k in a) n.setAttribute(k, a[k]);
+        parent.appendChild(n); return n;
+      }
+      function stroke(d, sw, color, parent) {
+        return node("path", { d: d, fill: "none", stroke: color || INK, "stroke-width": sw || 3,
+                              "stroke-linecap": "round", "stroke-linejoin": "round" }, parent);
+      }
+      var seed = 20260910;
+      function rnd() { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296 - 0.5; }
+      function seg(a, b, amp, step) {
+        var n = Math.max(1, Math.round(Math.hypot(b[0]-a[0], b[1]-a[1]) / (step || 100))), o = [], i;
+        for (i = 0; i <= n; i++) { var t = i/n, e = (i===0||i===n) ? 0 : 1;
+          o.push([a[0]+(b[0]-a[0])*t + rnd()*amp*2*e, a[1]+(b[1]-a[1])*t + rnd()*amp*2*e]); }
+        return o;
+      }
+      function dd(p) { var s = "", i; for (i=0;i<p.length;i++) s += (i?"L":"M") + p[i][0].toFixed(1) + " " + p[i][1].toFixed(1) + " "; return s; }
+      function line(x0,y0,x1,y1,sw,parent,color,amp) {
+        return stroke(dd(seg([x0,y0],[x1,y1], amp==null?1.2:amp, 110)), sw, color, parent);
+      }
+      function poly(pts, sw, parent, fill, color) {
+        var d = "", i; for (i=0;i<pts.length;i++) d += dd(seg(pts[i], pts[(i+1)%pts.length], 1.2));
+        return node("path", { d: d + "Z", fill: fill||"none", stroke: color||INK,
+                              "stroke-width": sw||3, "stroke-linejoin": "round" }, parent);
+      }
+      function box(x0,y0,x1,y1,sw,parent,fill) { return poly([[x0,y0],[x1,y0],[x1,y1],[x0,y1]], sw, parent, fill); }
+      function drawOn(el, t, dur, ease) {
+        var L = el.getTotalLength();
+        el.style.strokeDasharray = L; el.style.strokeDashoffset = L;
+        tl.to(el, { strokeDashoffset: 0, duration: dur, ease: ease || "none" }, t);
+        tl.set(el, { strokeDasharray: "none" }, t + dur);
+      }
+
+      // ══ THE ROOM ═════════════════════════════════════════════════════════
+      // Line weight 3 for structure and 2 for detail: the figure's own lines
+      // were halved to match the reference sheet, and a set drawn at 5 makes
+      // him look pasted into somebody else's drawing.
+      var SET = [];
+      function A(e) { SET.push(e); return e; }
+      var TBLY = GROUND - mm(740);
+
+      A(line(-60, GROUND, 1140, GROUND, 3, room, INK, 1.6));
+      A(line(-60, GROUND + 26, 1140, GROUND + 26, 2, room, DIM));
+      // the wall behind, with a window and a poster
+      A(line(-60, 250, 1140, 250, 2, room, DIM));
+      A(box(650, 330, 1000, 700, 3, room, PAPER));
+      A(line(825, 330, 825, 700, 2, room, DIM));
+      A(line(650, 515, 1000, 515, 2, room, DIM));
+      A(line(636, 706, 1014, 706, 3, room, INK, 1.2));
+      A(box(120, 340, 300, 600, 2, room, PAPER));
+      A(stroke("M150 420 l120 0 M150 470 l90 0 M150 520 l120 0", 2, DIM, room));
+      // a pendant lamp over the table
+      A(line(560, 250, 560, 420, 2, room, DIM));
+      A(node("path", { d: "M508 420 l104 0 l-30 76 l-44 0 Z", fill: PAPER, stroke: INK, "stroke-width": 3 }, room));
+      // a plant in the corner
+      A(node("path", { d: "M44 GROUND l0 -96 l84 0 l0 96 Z".replace("GROUND", GROUND), fill: PAPER, stroke: INK, "stroke-width": 3 }, room));
+      A(stroke("M86 " + (GROUND-96) + " q-54 -70 -18 -128 q40 52 22 128 M86 " + (GROUND-96) +
+               " q56 -58 78 -14 q-48 6 -70 46", 2, DIM, room));
+
+      // the table, and what is on it
+      var TX0 = 430, TX1 = 940;
+      A(box(TX0, TBLY, TX1, TBLY + mm(46), 3, front, PAPER));
+      A(line(TX0 + 44, TBLY + mm(46), TX0 + 52, GROUND, 3, front, INK, 1.0));
+      A(line(TX1 - 52, TBLY + mm(46), TX1 - 60, GROUND, 3, front, INK, 1.0));
+      A(node("path", { d: "M470 " + (TBLY-8) + " q40 -16 80 0 q-40 14 -80 0 Z", fill: PAPER, stroke: INK, "stroke-width": 2 }, front));
+      A(box(596, TBLY - 26, 640, TBLY - 6, 2, front, PAPER));      // a notebook
+      // THE PHONE, lying face up on the table: the film's second character
+      var phone = box(700, TBLY - 96, 792, TBLY - 6, 3, front, PAPER);
+      A(phone);
+      var phoneDot = node("circle", { cx: 746, cy: TBLY - 22, r: 7, fill: DIM }, front);
+      var recDot = node("circle", { cx: 746, cy: TBLY - 78, r: 9, fill: BONE, opacity: 0 }, front);
+      var phoneWaves = stroke("", 3, DIM, front);
+      gsap.set(phoneWaves, { opacity: 0 });
+
+      // ══ THE FIGURE ═══════════════════════════════════════════════════════
+      var mount = document.getElementById("actorMount");
+      var pup = IP.create(mount, { cx: CX, ground: GROUND, boil: "boil",
+                                   headR: IF.ADEM.headR - 2, strokeWidth: 3 });
+      var actorScale = document.getElementById("actorScale");
+      actorScale.setAttribute("transform",
+        "translate(" + CX + "," + GROUND + ") scale(" + SCALE + ") translate(" + (-CX) + "," + (-GROUND) + ")");
+      var fig = IF.attach(pup, { unit: SCALE });
+      IP.still("shuffle", 34);
+      fig.carry.from = "point"; fig.hold.from = "point";
+      var HAND = { on: 0 };
+
+      // pose coordinates -> page coordinates, so the paths can be glued to his
+      // head. pup.originY moves every frame, so this is per frame, never once.
+      function poseToPage(p) {
+        return [CX + (pup.originX + p[0] - CX) * SCALE,
+                GROUND + (pup.originY + p[1] - GROUND) * SCALE];
+      }
+
+      // ══ SETUP B — his head, big, and the two routes ══════════════════════
+      // Drawn rather than zoomed. A camera push on the wide shot dragged the
+      // table through the caption band and magnified the diagram with it; a
+      // close-up is its own setup, which is also what ADEM.md says a macro of
+      // him should be.
+      //
+      // FRONT ON, and that is the whole reason this shot works. Two earlier
+      // versions drew him in three-quarter, which puts the mouth on one side
+      // of the head and the ear on the other, so the air route had to go the
+      // long way round the skull -- and a line that circles a head is a speech
+      // balloon with him inside it, whatever size you draw it. Face on, the
+      // mouth is in the middle and there is an ear on each side, so the air
+      // can make its excursion OUT INTO THE ROOM AND BACK beside the head
+      // while bone goes STRAIGHT THROUGH it. Long way round outside, short way
+      // straight through, both arriving at the same ear: that is the film.
+      var HX = 400, HY = 524, HR = 206;
+      function headPt(a, out) {
+        // his skull, symmetric: 0.80 wide to 0.98 tall, and a jaw that comes
+        // in. The taper is on x alone -- scaling the radius instead pulls the
+        // chin up into the mouth.
+        var c = Math.cos(a), sn = Math.sin(a), o = 1 + (out || 0);
+        var narrow = 1 - 0.32 * Math.pow(Math.max(0, sn), 3.2);
+        var tall = 1 + 0.03 * Math.max(0, -sn);
+        return [HX + c * o * narrow * HR * 0.80, HY + sn * o * tall * HR * 0.98];
+      }
+      // shoulders and neck go down first, so the jaw covers the top of them
+      var bigShoulder = stroke(IF.smooth([[HX - 356, HY + 420], [HX - 150, HY + 310],
+                                          [HX, HY + 286], [HX + 150, HY + 310],
+                                          [HX + 356, HY + 420]], false), 3, INK, bigG);
+      var bigNeck = node("path", { d: IF.smooth([[HX - 56, HY + 150], [HX - 50, HY + 292],
+                                                 [HX + 50, HY + 292], [HX + 56, HY + 150]], false),
+                                   fill: PAPER, stroke: INK, "stroke-width": 3 }, bigG);
+      // Everything above the neck lives in its own group, because the contact
+      // strip of the first cut showed NINETEEN SECONDS of a completely
+      // motionless head. A still cannot show you that nothing is moving; the
+      // strip can, and this is the same lesson the bird taught in video 9.
+      var headG = node("g", {}, bigG);
+      var bigSkull = (function () {
+        var pts = [], i;
+        for (i = 0; i < 48; i++) pts.push(headPt(i / 48 * Math.PI * 2));
+        return node("path", { d: IF.smooth(pts, true), fill: PAPER, stroke: INK, "stroke-width": 3 }, headG);
+      })();
+      function ear(sign) {
+        var b = sign > 0 ? 0 : Math.PI;
+        return stroke(IF.smooth([headPt(b - sign * 0.40, -0.015), headPt(b - sign * 0.26, 0.055),
+                                 headPt(b + sign * 0.26, 0.055), headPt(b + sign * 0.40, -0.015)],
+                                false), 3, INK, headG);
+      }
+      var earR = ear(1), earL = ear(-1);
+      var bigHair = (function () {
+        // the outer edge runs further round than the hairline does, and the two
+        // ends meeting is what makes the faded sideburn
+        var out = [], inn = [], i, t, a, th;
+        for (i = 0; i <= 34; i++) {
+          t = i / 34; a = -Math.PI + 0.14 + (Math.PI - 0.28) * t;
+          th = 0.072 + 0.076 * Math.pow(Math.sin(Math.PI * t), 0.7)
+             + 0.056 * Math.exp(-Math.pow((t - 0.63) / 0.17, 2));   // the quiff
+          out.push(headPt(a, th));
+        }
+        for (i = 34; i >= 0; i--) {
+          t = i / 34; a = -Math.PI + 0.30 + (Math.PI - 0.60) * t;
+          inn.push(headPt(a, -0.020));
+        }
+        return node("path", { d: IF.smooth(out.concat(inn), true), fill: INK, stroke: "none" }, headG);
+      })();
+      var EYE = 84, EYEY = -30, MY = HY + 84;   // half the gap between the pupils
+      var bigNose = stroke("M" + (HX - 8) + " " + (HY - 12) +
+                           " c-8 34 -4 52 6 58 c11 6 21 2 25 -7", 3, INK, headG);
+      var bigEyes = stroke(
+        "M" + (HX - EYE - 28) + " " + (HY + EYEY + 4) + " q28 -24 56 -2 q-28 24 -56 2" +
+        " M" + (HX + EYE - 28) + " " + (HY + EYEY + 4) + " q28 -24 56 -2 q-28 24 -56 2", 3, INK, headG);
+      var bigBrow = stroke(
+        "M" + (HX - EYE - 34) + " " + (HY + EYEY - 38) + " q32 -18 66 -5" +
+        " M" + (HX + EYE + 34) + " " + (HY + EYEY - 38) + " q-32 -18 -66 -5", 5, INK, headG);
+      var pupilL = node("circle", { cx: HX - EYE, cy: HY + EYEY + 2, r: 8, fill: INK }, headG);
+      var pupilR = node("circle", { cx: HX + EYE, cy: HY + EYEY + 2, r: 8, fill: INK }, headG);
+      // shut eyes: two short strokes where the almonds were
+      var bigLids = stroke(
+        "M" + (HX - EYE - 28) + " " + (HY + EYEY + 2) + " q28 8 56 -2" +
+        " M" + (HX + EYE - 28) + " " + (HY + EYEY + 2) + " q28 8 56 -2", 3, INK, headG);
+      // HE IS THE ONE TALKING. Nineteen seconds of a shut mouth under his own
+      // narration is the single worst thing in the first cut of this film.
+      var bigMouth = stroke("", 3, INK, headG);
+      function mouthD(o) {
+        // The two arcs have to bow OPPOSITE ways or the open mouth is a sliver:
+        // the first draft bowed both downwards and he stayed shut all film.
+        var w = 34 + 5 * o;
+        var up = 16 - 26 * o;                    // a smile shut, flat wide open
+        var d = "M" + (HX - w) + " " + MY + " q" + w + " " + up.toFixed(1) +
+                " " + (2 * w) + " -2";
+        if (o > 0.06) d += " q-" + w + " " + (16 + 54 * o).toFixed(1) +
+                           " -" + (2 * w) + " 2";
+        return d;
+      }
+      gsap.set(bigLids, { opacity: 0 });
+      gsap.set(bigG, { opacity: 0 });
+      // (pathsG is switched with it, in cut())
+
+      // ══ THE TWO PATHS ════════════════════════════════════════════════════
+      var airPath = stroke("", 3, DIM, pathsG);
+      var bonePath = stroke("", 5, BONE, pathsG);
+      // A tail, because the air route is deliberately never stroked: without
+      // one the pulse is a single dot in empty paper, which reads as a fly.
+      var TRAIL = 6;
+      var airTail = [], boneTail = [], _k;
+      for (_k = TRAIL - 1; _k >= 1; _k--) {
+        airTail[_k]  = node("circle", { r: 13 - _k * 1.5, fill: DIM,  opacity: 0 }, pathsG);
+        boneTail[_k] = node("circle", { r: 13 - _k * 1.5, fill: BONE, opacity: 0 }, pathsG);
+      }
+      var airDot = airTail[0] = node("circle", { r: 13, fill: INK }, pathsG);
+      var boneDot = boneTail[0] = node("circle", { r: 13, fill: BONE }, pathsG);
+      var airComb = stroke("", 3, INK, pathsG);
+      var boneComb = stroke("", 3, BONE, pathsG);
+      var combAxis = stroke("", 2, DIM, pathsG);
+      gsap.set(pathsG, { opacity: 0 });          // the group is the switch
+      gsap.set([airDot, boneDot], { opacity: 0 });
+
+      // OUT INTO THE ROOM AND BACK -- and it is NOT DRAWN AS A LINE.
+      //
+      //   Four drafts tried to draw the journey as one continuous stroke: a
+      //   loop round the head, a tighter loop, an open C, a there-and-back
+      //   wedge. Every one of them read as a speech balloon, because a stroke
+      //   that leaves a face and comes back to it encloses an area, and an
+      //   enclosed area beside a head is a balloon. The wedge was the proof:
+      //   two legs converging at both ends is an ellipse the moment you smooth
+      //   it, and it grew a pointer at his ear.
+      //
+      //   So the air gets no route line at all. It gets the two things that
+      //   are actually being claimed, in the two symbols nobody misreads:
+      //   arcs LEAVING his mouth, and an arrow ARRIVING at his ear. The
+      //   journey between them is carried by the pulse, which is a moving dot
+      //   on a path that is never stroked. Motion can draw what a still line
+      //   cannot.
+      var MOUTH = [HX + 30, HY + 88], EARR = [HX + 176, HY + 2];
+      // concentric arcs opening away from the mouth, clear of his cheek
+      function fan(cx, cy, r0, n, step, a0, a1) {
+        var d = "", i, r, x0, y0, x1, y1;
+        for (i = 0; i < n; i++) {
+          r = r0 + i * step;
+          x0 = cx + Math.cos(a0) * r; y0 = cy + Math.sin(a0) * r;
+          x1 = cx + Math.cos(a1) * r; y1 = cy + Math.sin(a1) * r;
+          d += "M" + x0.toFixed(1) + " " + y0.toFixed(1) + " A" + r + " " + r +
+               " 0 0 1 " + x1.toFixed(1) + " " + y1.toFixed(1) + " ";
+        }
+        return d;
+      }
+      airPath.setAttribute("d", fan(HX + 10, HY + 84, 150, 3, 44, 0.10, 0.95));
+      // and the arrow that brings it back in, bowed so it clears the arcs
+      var airArrow = stroke("", 3, DIM, pathsG);
+      airArrow.setAttribute("d", IF.smooth([[HX + 466, HY - 210], [HX + 392, HY - 134],
+                                            [HX + 286, HY - 82], [HX + 214, HY - 34]], false));
+      var airHead = stroke("M" + (HX + 258) + " " + (HY - 62) +
+                           " L" + (HX + 190) + " " + (HY - 12) +
+                           " L" + (HX + 254) + " " + (HY + 6), 3, DIM, pathsG);
+      // The route the pulse flies. Never stroked -- see above.
+      var AIR = [MOUTH, [HX + 250, HY + 140], [HX + 452, HY + 96], [HX + 546, HY - 60],
+                 [HX + 466, HY - 210], [HX + 392, HY - 134], [HX + 286, HY - 82],
+                 [HX + 196, HY - 8]];
+      // The larynx, up through the jaw and the side of the skull, into the same
+      // ear. It starts at his throat because that is where the voice starts,
+      // and it is steep because a shallow one along the jaw read as a beard.
+      var BONEP = [[HX + 6, HY + 250], [HX + 44, HY + 182], [HX + 96, HY + 100],
+                   [HX + 142, HY + 24], EARR];
+      bonePath.setAttribute("d", IF.smooth(BONEP, false));
+      bonePath.setAttribute("stroke-dasharray", "1 14");     // it is inside the head
+      bonePath.setAttribute("stroke-linecap", "round");
+
+      function ptsOnPath(pts, u) {
+        var segs = [], i, L = 0;
+        for (i = 1; i < pts.length; i++) { var l = Math.hypot(pts[i][0]-pts[i-1][0], pts[i][1]-pts[i-1][1]); segs.push(l); L += l; }
+        var want = u * L, acc = 0;
+        for (i = 0; i < segs.length; i++) {
+          if (acc + segs[i] >= want) { var f = (want - acc) / (segs[i] || 1);
+            return [pts[i][0] + (pts[i+1][0]-pts[i][0])*f, pts[i][1] + (pts[i+1][1]-pts[i][1])*f]; }
+          acc += segs[i];
+        }
+        return pts[pts.length-1];
+      }
+      // the combs: what each route carries. Even for the air, all bass for bone.
+      function comb(x, y, w, h, bars, shape) {
+        var d = "", i, v;
+        for (i = 0; i < bars; i++) {
+          v = shape(i / (bars - 1));
+          d += "M" + (x + i*w).toFixed(1) + " " + y.toFixed(1) +
+               " L" + (x + i*w).toFixed(1) + " " + (y - v*h).toFixed(1) + " ";
+        }
+        return d;
+      }
+      var CY = 1120, CW = 17, CH = 96;
+      combAxis.setAttribute("d", "M96 " + CY + " L470 " + CY + " M600 " + CY + " L974 " + CY);
+      airComb.setAttribute("d", comb(110, CY, CW, CH, 22, function (u) { return 0.74 - 0.14 * u; }));
+      boneComb.setAttribute("d", comb(614, CY, CW, CH, 22, function (u) { return Math.max(0.03, Math.pow(1 - u, 2.8)); }));
+
+      // ══ what is on screen ════════════════════════════════════════════════
+      var shown = { paths: 0 };
+      var clockT = { v: 0 };
+      var PULSE = { air: -9, bone: -9 };        // when each pulse was launched
+
+      // A comet rather than a dot: six samples of where it has just been.
+      function tail(dots, route, u, step) {
+        for (var k = 0; k < dots.length; k++) {
+          var uk = u - k * step;
+          if (u <= 0 || u >= 1 || uk <= 0) { gsap.set(dots[k], { opacity: 0 }); continue; }
+          var q = ptsOnPath(route, uk);
+          dots[k].setAttribute("cx", q[0]); dots[k].setAttribute("cy", q[1]);
+          gsap.set(dots[k], { opacity: 0.95 - k * 0.15 });
+        }
+      }
+      // Is a line being spoken right now, and how open is his mouth on it? The
+      // shape is three detuned sines rectified: fast enough to be speech,
+      // irregular enough not to be a metronome.
+      var NAR = Object.keys(EV.narration);
+      function speaking(t) {
+        for (var i = 0; i < NAR.length; i++) {
+          var at = EV.narration[NAR[i]];
+          if (t >= at - 0.06 && t <= at + EV.durations[NAR[i]]) return 1;
+        }
+        return 0;
+      }
+      function mouthOpen(t) {
+        if (!speaking(t)) return 0;
+        // three detuned sines, rectified, with a syllable-group envelope over
+        // the top. The offset is what makes it CLOSE between syllables --
+        // without it he holds one small permanent "o" for the whole cut.
+        var v = Math.sin(t * 19.7) + 0.7 * Math.sin(t * 31.3 + 1.1) + 0.5 * Math.sin(t * 11.9 + 2.4);
+        var env = 0.66 + 0.34 * Math.sin(t * 2.7 + 0.4);
+        return Math.max(0, Math.min(1, (Math.abs(v) * 0.58 - 0.17) * env * 1.6));
+      }
+      var BLINKS = [13.90, 17.20, 20.10, 23.60, 26.40, 29.10, 31.40];
+      function blink(t) {
+        for (var i = 0; i < BLINKS.length; i++)
+          if (t >= BLINKS[i] && t < BLINKS[i] + 0.11) return 1;
+        return 0;
+      }
+
+      function sync() {
+        var t = clockT.v, po = fig.pose();
+        // he gestures once while he explains, and reaches for the phone at the end
+        var h = poseToPage(po.head);
+        var p1 = IF.toPose(pup, CX + 150, GROUND - mm(1180), { scale: SCALE, aboutX: CX, aboutY: GROUND });
+        fig.carry.dx = p1[0]; fig.carry.dy = p1[1]; fig.carry.on = HAND.on;
+        // He is narrating in the wide shots too. Set per frame, before
+        // setPose() below repaints him -- a tween cannot keep up with speech.
+        fig.face.open = mouthOpen(t);
+
+        if (shown.paths) {
+          // A PULSE TRAVELLING A ROUTE, and the two routes are different
+          // lengths: the air one goes the long way round the room and the bone
+          // one is four inches of skull. They leave together and do not arrive
+          // together, which is the whole diagram.
+          var ua = Math.max(0, Math.min(1, (t - PULSE.air) / 1.55));
+          var ub = Math.max(0, Math.min(1, (t - PULSE.bone) / 0.42));
+          tail(airTail,  AIR,   ua, 0.052);
+          tail(boneTail, BONEP, ub, 0.075);
+
+          // ── HE IS ALIVE FOR THESE NINETEEN SECONDS ──────────────────────
+          bigMouth.setAttribute("d", mouthD(mouthOpen(t)));
+          var bl = blink(t);
+          gsap.set([bigEyes, pupilL, pupilR], { opacity: bl ? 0 : 1 });
+          gsap.set(bigLids, { opacity: bl ? 1 : 0 });
+          // and the head is never quite still: a slow drift, and a nod on the
+          // stresses. Small enough that the routes stay glued to it.
+          var dx = 3.4 * Math.sin(t * 0.62) + 1.6 * Math.sin(t * 1.31 + 2.0);
+          var dy = 2.2 * Math.sin(t * 0.83 + 0.7) + 2.4 * mouthOpen(t);
+          var rot = 0.55 * Math.sin(t * 0.47 + 1.4);
+          headG.setAttribute("transform", "translate(" + dx.toFixed(2) + "," + dy.toFixed(2) +
+                             ") rotate(" + rot.toFixed(2) + " " + HX + " " + (HY + 190) + ")");
+        }
+        pup.setPose(po);
+      }
+      tl.to(clockT, { v: DUR, duration: DUR, ease: "none", onUpdate: sync }, 0);
+
+      // ── the page draws itself ────────────────────────────────────────────
+      SET.forEach(function (e, i) { drawOn(e, 0.02 + i * 0.030, 0.24); });
+      fig.pencilIn(tl, { start: 0.16, each: 0.12 });
+      fig.inkIn(tl, { at: 0.82, dur: 0.30 });
+      IP.choreograph(tl, pup, [{ clip: "still", dur: DUR }], { start: 0 });
+      function to(o, v, t) { v.onUpdate = sync; return tl.to(o, v, t); }
+
+      // the phone starts recording early, and plays it back at the end
+      tl.to(recDot, { opacity: 1, duration: 0.001 }, E.record_at);
+      tl.to(recDot, { opacity: 0.25, duration: 0.6, repeat: 24, yoyo: true }, E.record_at + 0.1);
+      tl.to(recDot, { opacity: 0, duration: 0.2 }, E.playback_at - 0.4);
+      drawOn(phoneWaves, E.playback_at, 0.40);
+      phoneWaves.setAttribute("d", "M812 " + (TBLY - 60) + " q26 -12 26 -34 M840 " + (TBLY - 46) +
+                                   " q44 -22 44 -62 M868 " + (TBLY - 34) + " q64 -32 64 -90");
+      tl.to(phoneWaves, { opacity: 1, duration: 0.001 }, E.playback_at);
+      tl.to(phoneWaves, { opacity: 0, duration: 0.5 }, 39.60);
+
+      // he talks with one hand, then puts it on the table by the phone
+      to(HAND, { on: 1, duration: 0.42, ease: IT.ease.settle }, 6.20);
+      to(HAND, { on: 0, duration: 0.60, ease: IT.ease.soft }, 9.60);
+      to(fig.face, { brow: 4.4, duration: 0.34 }, 26.00);
+      to(fig.face, { brow: 0, duration: 0.60 }, 29.20);
+      // and on the last line he turns to camera
+      to(fig.face, { turn: 1, duration: 0.55, ease: IT.ease.settle }, 39.90);
+
+      // ── the cuts: one room, and a camera that goes in on his head ────────
+      function cut(t, name, s, ox, oy) {
+        var head = name === "head";
+        tl.set([room, front, actorScale], { opacity: head ? 0 : 1 }, t);
+        tl.set(bigG, { opacity: head ? 1 : 0 }, t);
+        tl.set(pathsG, { opacity: head ? 1 : 0 }, t);
+        tl.set(camera, { scale: s || 1, svgOrigin: (ox || 540) + " " + (oy || 760) }, t);
+        tl.call(function () { shown.paths = head ? 1 : 0; sync(); }, null, t);
+      }
+      cut(CUT.room, "room", 1.00, 540, 760);
+      cut(CUT.head, "head", 1.00, 540, 700);
+      cut(CUT.phone, "phone", 1.30, 700, 1180);
+      // neither wide shot is allowed to sit still
+      tl.to(camera, { scale: 1.05, duration: 9.0, ease: "none", svgOrigin: "500 1180" }, 1.20);
+      tl.to(camera, { scale: 1.00, duration: 1.10, ease: "power2.inOut", svgOrigin: "540 1180" }, 38.90);
+
+      // ── the pulses ───────────────────────────────────────────────────────
+      E.air_pulse.forEach(function (at) { tl.call(function () { PULSE.air = at; }, null, at); });
+      E.bone_pulse.forEach(function (at) { tl.call(function () { PULSE.bone = at; }, null, at); });
+      // both routes are drawn on, in the order the film names them
+      drawOn(airPath, 13.55, 0.70);
+      drawOn(airArrow, 14.30, 0.42);
+      gsap.set(airHead, { opacity: 0 });
+      tl.to(airHead, { opacity: 1, duration: 0.001 }, 14.70);
+      // the bone path keeps its dashes — it is inside the head — so it is
+      // revealed by a clip on its own length rather than by the dash trick
+      (function () {
+        var L = bonePath.getTotalLength();
+        var rev = stroke(bonePath.getAttribute("d"), 5, BONE, pathsG);
+        rev.setAttribute("stroke-dasharray", L); rev.setAttribute("stroke-dashoffset", L);
+        rev.setAttribute("stroke-linecap", "round");
+        gsap.set(bonePath, { opacity: 0 });
+        tl.to(rev, { strokeDashoffset: 0, duration: 0.45, ease: "none" }, 18.85);
+        tl.set(rev, { opacity: 0 }, 19.35);
+        tl.set(bonePath, { opacity: 1 }, 19.35);
+      })();
+
+      // ── the annotation layer ─────────────────────────────────────────────
+      // There WAS a "through the air" label here. It said, word for word, what
+      // the caption under it already said, which annotate.js warns against --
+      // and its arrow had to cross the arcs it was pointing at to reach them.
+      // The arcs and the arrow into his ear carry it on their own.
+      //
+      // The bone one stays, because it does the job a label is actually for:
+      // it says which mark on his face is which. A green dotted line down a
+      // cheek is a scar until something names it.
+      IA.callout(tl, notes, { at: 19.60, out: 22.20, text: "bone", size: 40, color: BONE,
+                              x: 128, y: 690, to: [HX + 62, HY + 148], bend: -22 });
+      IA.words(pathsG, 150, CY + 66, "what the air carries", { size: 38, color: DIM });
+      IA.words(pathsG, 646, CY + 66, "what bone carries", { size: 38, color: BONE });
+
+      // ── captions ─────────────────────────────────────────────────────────
+      var TXT = {
+        s01: "Your recorded voice sounds wrong<br>to you — and right to everyone else.",
+        s02: "It is not a bad recording.<br>You are missing half of it.",
+        s03: "Your voice reaches you<br><b>two ways</b>.",
+        s04: "Most of it goes out through the air<br>and back into your ears.",
+        s05: "The rest goes straight<br>through your <b>skull</b>.",
+        s06: "Bone carries low frequencies well<br>and high ones badly.",
+        s07: "So the voice in your head has a<br><b style='color:#2E7D5B'>bass line</b> nobody else gets.",
+        s08: "This is the voice in your head.",
+        s09: "And this is the one<br>that leaves the room.",
+        s10: "The recording is not wrong.<br>It is the half that gets out.",
+        s11: "You have never heard the voice<br>everyone else knows you by."
+      };
+      var DURS = EV.durations, ids = Object.keys(TXT);
+      ids.forEach(function (id, i) {
+        var at = EV.narration[id], d_ = document.createElement("div");
+        d_.className = "cap"; d_.innerHTML = TXT[id];
+        overlay.appendChild(d_);
+        var next = ids[i+1] ? EV.narration[ids[i+1]] - 0.24 : 1e9;
+        var out = i === ids.length - 1 ? at + DURS[id] + 0.50 : Math.min(at + DURS[id] + 0.16, next);
+        tl.to(d_, { opacity: 1, duration: 0.18 }, at - 0.10);
+        tl.to(d_, { opacity: 0, duration: 0.20 }, out);
+      });
+
+      // ── the channel ──────────────────────────────────────────────────────
+      var brandLayer = document.getElementById("brandLayer");
+      InkBrand.mark(defs, brandLayer, { x: 46, y: 54, w: 128, ink: INK, accent: BONE, opacity: 0.70 });
+      InkBrand.subscribe(tl, brandLayer, { at: EV.subscribe_at, accent: BONE, ink: INK, paper: PAPER });
+
+      sync();
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,38 @@
+# Publish spec for a hand-produced short.
+#
+# Atelier composition on the ink-sketch playbook, rendered by HyperFrames and
+# built with bin/build-ink.sh. The first film whose ARGUMENT IS AUDIBLE: the
+# two demo lines are the same narration through two different halves of the
+# spectrum, and the mix measures the difference rather than asserting it.
+# See source/art-direction.md.
+slug: the-voice-that-stays
+title: Why Your Own Voice Sounds Wrong On A Recording
+duration_seconds: 47.35
+has_burned_captions: true
+produced_by: openmontage/animation (ink-sketch, hyperframes, Adem)
+produced_on: "2026-09-10"
+
+copy:
+  title: "You have never heard your own voice"
+  hook: "Everyone else hears one voice. You hear that one plus a bass line your skull adds — which is why the recording sounds wrong."
+  caption: >-
+    When you speak, the sound reaches your ears two ways: out through the air,
+    and straight through the bone of your skull. Bone carries low frequencies
+    well and high ones badly, so the voice in your head has a bass line nobody
+    else ever gets. A recording is not wrong. It is the half that got out.
+  description: |-
+    Your recorded voice sounds wrong to you and right to everyone else. Here is the half you are missing.
+
+    When you speak, sound reaches you two ways. Most of it leaves your mouth, travels through the air and comes back into your ears — that is the voice everyone else gets. The rest goes straight through your skull, and bone carries low frequencies well and high ones badly. So the voice you have listened to your whole life has a bass line attached that no microphone will ever pick up.
+
+    The recording is not wrong. It is the half that gets out.
+
+    #Sound #Voice #Acoustics #HowItWorks #Shorts
+  hashtags:
+    - sound
+    - voice
+    - acoustics
+    - boneconduction
+    - hearing
+    - howitworks
+    - shorts

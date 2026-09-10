@@ -62,6 +62,37 @@ Changing only these is not a new design — it is the same video with new data:
 
 ## Ledger
 
+### 2026-09-10 — the-voice-that-stays
+*"You have never heard your own voice"* · 47.4s · **ink-theater + Adem** / hyperframes / atelier
+
+| Field | Value |
+|---|---|
+| Design read | **One mouth, two routes.** Everything in the picture is either the long way round outside the head or the short way straight through it. And this is the first film on the channel whose **argument is audible rather than drawn**: the claim is about a sound you have heard your whole life and never heard isolated, so the last third of the film is the same narration twice — one take with the bottom lifted, one band-limited like the phone on the table. The picture sets up a comparison the soundtrack then performs. |
+| Ground | Warm white paper `#FCFBF8`, live boil. The channel's fixed ground. |
+| Palette roles | ink `#333333` = him, the room, the furniture · grey `#8A857A` = the air route, the wall, every dimension line · green `#2E7D5B` = **the bone-conducted low half, and nothing else.** |
+| Signature device | **The route that is never stroked.** Air gets arcs leaving his mouth and an arrow arriving at his ear; the journey between them exists only as a moving dot on a path that is drawn nowhere. Four earlier drafts drew that journey as a line and every one read as a speech balloon — a stroke that leaves a face and returns to it encloses an area, and an enclosed area beside a head is a bubble. Motion can draw what a still line cannot. |
+| Layout set | **Two setups, three cuts.** A kitchen table with a phone lying face up, recording from 4.2s · **his head, drawn front on** with the two routes and two frequency combs · a push to the phone for the playback. The close-up is a drawn setup, never a camera zoom. |
+| Motion character | **A pulse travelling a route**, and the two routes are different lengths: air takes 1.55s the long way round, bone takes 0.42s. They leave together and do not arrive together, which is the whole diagram. |
+| Type | Patrick Hand, HTML overlay divs at y=1250. Every caption two lines or fewer, under ~34 characters a line. |
+| Narrative structure | the complaint everyone has → it is not the recording → the two routes → what bone does to them → **hear it** → what the recording actually is |
+| Narration | Kokoro v1.0 `am_michael`, local. 122 words over 37.2s of speech. |
+| Music | None. A quiet room, a 50 Hz hum, eleven pencil strokes, and two pulses that are the argument in miniature: the air pulse is bright, **panned**, and goes away and comes back — the only panned sound in the film — and the bone pulse is 110 Hz with nothing above 400 in it, dead centre, because it has nowhere to go. |
+| Captions | Burned in, Patrick Hand 62px at y=1250. Two lines mark a word; one marks it in the accent. |
+| Brand | `InkBrand.mark()` top left, accent green. Subscribe card at 44.05, and the tap clicks. |
+| Providers used | none — zero API keys, zero generated images, zero stock, zero licensed audio |
+
+**Burned for future videos:** an argument the mix performs instead of the
+picture; RMS-matching an A/B demo so the difference is timbre and not volume;
+a route carried by a moving dot on an unstroked path; drawing a close-up as
+its own front-on setup rather than pushing the camera in.
+
+**What four rejected drafts taught, and it is a rule now:** you cannot draw a
+there-and-back journey beside a head as one continuous stroke. A loop reads as
+a balloon, a tighter loop reads as a halo, an open C reads as a balloon with a
+gap, and two legs converging at both ends become an ellipse the moment
+`IF.smooth` touches them. Use the emission and arrival symbols and let the
+motion carry the middle.
+
 ### 2026-09-07 — birds-and-the-wire
 *"A bird sits on 11,000 volts. Nothing happens."* · 48.9s · **ink-theater + Adem** / hyperframes / atelier
 

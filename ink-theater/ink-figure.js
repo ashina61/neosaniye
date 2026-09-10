@@ -385,7 +385,7 @@
        few units is not mugging, it is the difference between deadpan and
        blank. Tween face.brow from the timeline; leave it at 0 and he is the
        same character he was. */
-    var face = { brow: 0, turn: 0 };
+    var face = { brow: 0, turn: 0, open: 0 };
 
     function draw(po) {
       // The body is a closed outline around the spine, with its own width at
@@ -610,11 +610,23 @@
       var nX = tx(F.noseX, F.noseXF);
       nose.setAttribute("d", smooth([hp(nX, F.noseY), hp(nX + 0.12 * (1 - TU * 0.5), F.noseY + 0.20),
                                      hp(nX - 0.06 - 0.08 * TU, F.noseY + 0.26)], false));
-      // and a small mouth that is not quite a straight line
+      // and a small mouth that is not quite a straight line -- and that OPENS.
+      // The contact strip of video 10 caught nineteen seconds of a shut mouth
+      // under his own narration. face.open is 0..1 and turns the line into a
+      // lens; drive it per frame from the caller's sync(), not from a tween,
+      // because speech is faster than any ease.
       var mX = tx(F.mouthX, F.mouthXF), mW = F.mouthW * (1 + 0.45 * TU);
-      mouth.setAttribute("d", smooth([hp(mX - mW, F.mouthY),
-                                      hp(mX, F.mouthY + 0.03),
-                                      hp(mX + mW, F.mouthY - 0.01)], false));
+      var mo = Math.max(0, Math.min(1, face.open || 0));
+      if (mo > 0.08) {
+        mouth.setAttribute("d", smooth([hp(mX - mW * (1 + 0.12 * mo), F.mouthY),
+                                        hp(mX, F.mouthY + 0.01),
+                                        hp(mX + mW * (1 + 0.12 * mo), F.mouthY - 0.01),
+                                        hp(mX, F.mouthY + 0.05 + 0.085 * mo)], true));
+      } else {
+        mouth.setAttribute("d", smooth([hp(mX - mW, F.mouthY),
+                                        hp(mX, F.mouthY + 0.03),
+                                        hp(mX + mW, F.mouthY - 0.01)], false));
+      }
     }
 
     var basePose = pup.setPose, lastPose = root.InkPuppet.STAND;
@@ -629,7 +641,8 @@
       carry: carry,
       /** the same for the far arm, so he can use both hands at once */
       hold: hold,
-      /** face.brow — flat at 0, tilts a few units. The only thing that moves. */
+      /** face.brow — flat at 0, tilts a few units. face.open — 0..1, the mouth.
+          face.turn — 0 in profile, 1 facing camera. */
       face: face,
       /** where the near hand actually ended up, after any IK. Hang props here. */
       hand: function () { return handNow; },

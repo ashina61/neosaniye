@@ -1,0 +1,52 @@
+{
+ "duration": 47.35,
+ "narration": {
+  "s01": 1.1,
+  "s02": 5.45,
+  "s03": 10.35,
+  "s04": 13.4,
+  "s05": 18.7,
+  "s06": 21.05,
+  "s07": 25.1,
+  "s08": 30.4,
+  "s09": 32.9,
+  "s10": 35.9,
+  "s11": 40.0
+ },
+ "durations": {
+  "s01": 3.99,
+  "s02": 4.46,
+  "s03": 2.64,
+  "s04": 4.81,
+  "s05": 1.89,
+  "s06": 3.6,
+  "s07": 4.58,
+  "s08": 1.64,
+  "s09": 2.27,
+  "s10": 3.46,
+  "s11": 3.83
+ },
+ "subscribe_at": 44.05,
+ "cuts": {
+  "room": 0.0,
+  "head": 12.95,
+  "phone": 32.3
+ },
+ "physics": {
+  "law": "bone conducts low frequencies well and high ones badly; air delivers the rest"
+ },
+ "events": {
+  "air_pulse": [
+   14.3,
+   27.6
+  ],
+  "bone_pulse": [
+   19.1,
+   28.4
+  ],
+  "bone_demo": 30.4,
+  "air_demo": 32.9,
+  "record_at": 4.2,
+  "playback_at": 32.9
+ }
+}
