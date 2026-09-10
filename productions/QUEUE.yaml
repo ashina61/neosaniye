@@ -22,13 +22,21 @@ enabled: true
 # this line is what makes the push.
 last_tick: "2026-09-07T20:05:26Z"
 
-# A PUSH TO MAIN PUBLISHES. GitHub's scheduler has fired exactly one of this
-# repository's scheduled occurrences, and that one 2h27m late, so the cron is
+# A PUSH TO MAIN PUBLISHES -- and the cron is no longer the dead letter this
+# comment used to call it. On 2026-09-09 both scheduled occurrences fired and
+# both succeeded (runs 17 and 18, 11:36 and 19:48 UTC); they published nothing
+# because THE QUEUE WAS EMPTY, which is a production failure and not a trigger
+# failure. Keep both paths: the cron for when there is something to send, the
+# push for when a film lands between slots.
+#
+# The original note, kept because it is why the push trigger exists at all:
+# GitHub's scheduler had fired exactly one of this
+# repository's scheduled occurrences, and that one 2h27m late, so the cron was
 # kept only in case it recovers. What actually puts a video out is a push to
-# main between 05:00 and 20:00 UTC — the producer pushes when it finishes a
+# main between 04:00 and 21:00 UTC — the producer pushes when it finishes a
 # film, and a person pushing anything counts too. `min_hours_between` below is
 # what makes that safe: however many pushes happen, one video goes out.
-schedule: "on push to main, 05:00-20:00 UTC · cron 23 6,17 * * * if it fires"
+schedule: "on push to main, 04:00-21:00 UTC · cron 23 6,17 * * * — which DOES fire"
 
 # THE GAP THAT MAKES A LATE CRON HARMLESS. On 2026-09-06 a manual run published
 # at 17:25 and the week's cron — two and a half hours late, not skipped — fired
