@@ -62,6 +62,35 @@ Changing only these is not a new design — it is the same video with new data:
 
 ## Ledger
 
+### 2026-09-10 — what-the-sunset-left
+*"A red sunset is a blue sky happening to someone else"* · 47.6s · **ink-theater + Adem** / hyperframes / atelier
+
+| Field | Value |
+|---|---|
+| Design read | **One beam, and the only variable is how far it has come.** The physics here has exactly one independent variable — how much air the light crossed — and a single line already has a length, so the film refuses the side-by-side comparison every other version of it would use. No round Earth, no two diagrams, no two angles: one sunbeam crossing a band of air, with **two marks on it**. "noon" near the start where there is still blue to lose, "sunset" at the far end where there is not. The x-axis is the argument. |
+| Ground | Warm white paper `#FCFBF8`, live boil. The channel's fixed ground. |
+| Palette roles | **Two accents, and the house rule is broken on purpose.** blue `#2F6FA8` = short wavelengths · warm `#C8562B` = long ones · ink and grey = everything that is not light. The one-accent rule exists to stop decorative colour; here colour is the subject, and a monochrome cut of this film would have to say in words what a viewer can otherwise see. Neither accent ever touches anything that is not a photon. |
+| Signature device | **The blue that left.** Every blue photon that turns out of the beam keeps going off into the page and fades — those are the sky. By the sunset mark the beam is red because all of its blue is above somebody else, which is the last line of the script drawn twenty seconds before it is spoken. Cashed once more on the noon beat: we cut outside to Adem under a sky made of blue specks and a dozen come down out of it into his eye, **same colour, same radius, same dot** as the ones leaving the beam two cuts earlier. |
+| Layout set | **Two setups, five cuts.** Outside — a ground line, a ridge, a plant, a sun, and a sky drawn entirely out of blue specks · the beam — a shallow wide band of air, a sun on the left edge, and one line of photons crossing the whole frame. The film cuts out to him once in the middle and once for the ending. |
+| Motion character | **Traffic.** Nothing eases, springs or falls. 230 photons launch on a fixed schedule at one constant speed (268 px/s) and the only thing that ever happens to one is that it turns once and leaves. Scatter distance is `1/λ⁴` doing what it does: blue within a few hundred pixels, red mostly off the right of the page. |
+| Type | Patrick Hand, HTML overlay divs at y=1250, plus the annotation layer. Two lines or fewer, under ~34 characters a line. |
+| Narrative structure | two facts → same reason → the rule → what you are actually looking at at noon → what is missing by sunset → who the missing half belongs to |
+| Narration | Kokoro v1.0 `am_michael`, local. 116 words over 36.8s of speech. |
+| Music | None. **The bed loses its top end as the film runs.** It opens as a bright afternoon — air with sparkle in it, three birds, and a shimmer of 6-11 kHz ticks that is the scattering itself — and from 28.6s a low-pass walks from 13 kHz to 1.1 kHz, so the last two lines land in a room with nothing above a kilohertz in it. Nothing is faded and nothing is swapped: it is the same bed with its short wavelengths removed. Gated at 17.8 dB measured. The birds stop before the light does, because they do. |
+| Captions | Burned in, Patrick Hand 62px at y=1250. One line marks two words, one in each accent, and only after both have been named on the picture. |
+| Brand | `InkBrand.mark()` top left, accent blue. Subscribe card at 44.90 — moved back from 44.25 because it was drawing itself across the last caption. |
+| Providers used | none — zero API keys, zero generated images, zero stock, zero licensed audio |
+
+**Burned for future videos:** a diagram whose x-axis is the argument; a second
+accent earned by the subject rather than spent on decoration; a particle stream
+that recycles off a hash of (index, cycle) so it is endless, deterministic and
+seek-safe; and a bed that performs a subtraction the picture is also making.
+
+**The defect the first pass had, and it is the third time this channel has hit
+it:** the photon schedule ran out at t=20.7 and the whole sunset half of the
+film — the half it is named after — was an empty pair of lines. Anything driven
+by a finite list has to be checked at the END of its shot, not the start.
+
 ### 2026-09-10 — the-voice-that-stays
 *"You have never heard your own voice"* · 47.4s · **ink-theater + Adem** / hyperframes / atelier
 

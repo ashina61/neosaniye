@@ -1,0 +1,37 @@
+# Publish spec for a hand-produced short.
+#
+# Atelier composition on the ink-sketch playbook, rendered by HyperFrames and
+# built with bin/build-ink.sh. One beam, two marks on it, and the only variable
+# is how much air the light crossed. See source/art-direction.md.
+slug: what-the-sunset-left
+title: Why The Sky Is Blue And The Sunset Is Red
+duration_seconds: 47.60
+has_burned_captions: true
+produced_by: openmontage/animation (ink-sketch, hyperframes, Adem)
+produced_on: "2026-09-10"
+
+copy:
+  title: "A red sunset is a blue sky happening to someone else"
+  hook: "The blue never disappears at sunset. It got knocked out of the beam hundreds of miles earlier, and it is somebody else's sky right now."
+  caption: >-
+    Air scatters short wavelengths hard and long ones barely at all, so blue
+    light gets knocked sideways out of a sunbeam and red carries on straight.
+    Look up at noon and the blue you see is light that left somebody else's
+    beam. At sunset the light crosses far more air, so the blue is gone before
+    it reaches you and what arrives is what nobody scattered.
+  description: |-
+    The sky is blue and the sunset is red for exactly the same reason, and it is not the sun changing colour.
+
+    Air scatters short wavelengths hard and long ones barely at all. Blue light gets knocked sideways out of a sunbeam; red mostly carries on straight. When you look up at midday you are not looking at the sun at all — you are looking at air, lit by blue that was knocked out of somebody else's beam.
+
+    At sunset the light comes in low and crosses far more air, so by the time it reaches you the blue has already been scattered away. What arrives is what nobody scattered.
+
+    #Physics #Light #Sunset #HowItWorks #Shorts
+  hashtags:
+    - physics
+    - light
+    - sunset
+    - rayleigh
+    - sky
+    - howitworks
+    - shorts

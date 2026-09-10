@@ -1,0 +1,51 @@
+{
+ "duration": 47.6,
+ "narration": {
+  "s01": 1.0,
+  "s02": 5.45,
+  "s03": 7.4,
+  "s04": 11.9,
+  "s05": 16.9,
+  "s06": 20.9,
+  "s07": 24.9,
+  "s08": 29.6,
+  "s09": 33.55,
+  "s10": 36.5,
+  "s11": 40.2
+ },
+ "durations": {
+  "s01": 3.97,
+  "s02": 1.23,
+  "s03": 3.98,
+  "s04": 4.2,
+  "s05": 3.54,
+  "s06": 3.1,
+  "s07": 4.23,
+  "s08": 3.39,
+  "s09": 2.23,
+  "s10": 3.09,
+  "s11": 3.81
+ },
+ "subscribe_at": 44.9,
+ "cuts": {
+  "outside": 0.0,
+  "rule": 7.2,
+  "back": 16.55
+ },
+ "physics": {
+  "law": "Rayleigh scattering goes as 1/lambda^4, so what you see is a question of how much air the light crossed"
+ },
+ "events": {
+  "beam_on": 8.2,
+  "sun_drop": [
+   24.6,
+   29.4
+  ],
+  "look_up": 17.3,
+  "scatter_in": [
+   18.4,
+   22.1
+  ],
+  "red_through": 30.6
+ }
+}

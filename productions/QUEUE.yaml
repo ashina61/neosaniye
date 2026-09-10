@@ -67,6 +67,7 @@ slots_per_day: 2
 # from now on lands in the range.
 
 topics_used:
+  - sky-blue
   - recorded-voice
   - birds-power-lines
   # the eight already made — these ids must not come round again
@@ -169,4 +170,11 @@ queue:
     privacy: public
     made_on: "2026-09-10"
     topic: recorded-voice
+
+  - slug: what-the-sunset-left
+    state: pending
+    upload: youtube
+    privacy: public
+    made_on: "2026-09-10"
+    topic: sky-blue
 
