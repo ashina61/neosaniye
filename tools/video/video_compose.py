@@ -1333,10 +1333,27 @@ class VideoCompose(BaseTool):
 
             # Derive caption colors from the palette
             theme["captionHighlightColor"] = primary
-            # Caption background: semi-transparent version of the bg color
+            # Caption background: a bar the CAPTION TEXT can be read on.
+            #
+            # This used to test the background colour against a whitelist of
+            # three hex strings -- #FFFFFF, #FAFAFA, #F9FAFB -- and hand out a
+            # near-black bar for anything else. The ink-sketch playbook paints
+            # on warm paper, #FCFBF8, which is not on that list, so it got dark
+            # text #333333 on a bar that composited to #4A505E: 1.56:1, about a
+            # third of WCAG AA. Any playbook with a light ground that is not one
+            # of those three hexes had the same bug.
+            #
+            # The bar is decided by the TEXT, because the text is the thing that
+            # has to be read. Dark text gets a light bar and light text gets a
+            # dark one, whatever the ground happens to be.
+            from styles.playbook_loader import _relative_luminance
+
+            try:
+                text_is_dark = _relative_luminance(text) < 0.4
+            except Exception:
+                text_is_dark = True          # the safe half: dark ink on paper
             theme["captionBackgroundColor"] = (
-                f"rgba(255, 255, 255, 0.85)" if bg.upper() in ("#FFFFFF", "#FAFAFA", "#F9FAFB")
-                else f"rgba(15, 23, 42, 0.75)"
+                "rgba(255, 255, 255, 0.85)" if text_is_dark else "rgba(15, 23, 42, 0.75)"
             )
 
             # Motion style from playbook. `pace` is an identity field in the
